@@ -1,0 +1,38 @@
+﻿# AI Company Org Chart
+
+- **Chief of Staff** (`chief-of-staff`) - Executive; reports to Human CEO
+- **CEO Advisor** (`ceo-advisor`) - Executive; reports to Human CEO
+- **Chief Technology Officer** (`cto`) - Executive; reports to Chief of Staff
+- **Chief Financial Officer** (`cfo`) - Executive; reports to Chief of Staff
+- **Chief Operating Officer** (`coo`) - Executive; reports to Chief of Staff
+- **Chief AI Officer** (`chief-ai-officer`) - Executive; reports to Chief of Staff
+- **Chief Product Officer** (`cpo`) - Executive; reports to Chief of Staff
+- **Chief Marketing Officer** (`cmo`) - Executive; reports to Chief of Staff
+- **Head of Sales** (`sales`) - Executive; reports to Chief of Staff
+- **Head of Customer Success** (`customer-success`) - Executive; reports to Chief of Staff
+- **Legal Advisor** (`legal`) - Executive; reports to Chief of Staff
+- **Chief Human Resources Officer** (`hr`) - Executive; reports to Chief of Staff
+- **Strategy Board Advisor** (`board-strategy`) - Board; reports to Human CEO (via CEO Advisor)
+- **Finance Board Advisor** (`board-finance`) - Board; reports to Human CEO (via CEO Advisor)
+- **Technology Board Advisor** (`board-technology`) - Board; reports to Human CEO (via CEO Advisor)
+- **Product Board Advisor** (`board-product`) - Board; reports to Human CEO (via CEO Advisor)
+- **Customer Board Advisor** (`board-customer`) - Board; reports to Human CEO (via CEO Advisor)
+- **Risk Board Advisor** (`board-risk`) - Board; reports to Human CEO (via CEO Advisor)
+- **Chief of Staff** (`chief-of-staff`) - Executive; reports to Human CEO
+- **CEO Advisor** (`ceo-advisor`) - Executive; reports to Human CEO
+- **Chief Technology Officer** (`cto`) - Executive; reports to Chief of Staff
+- **Chief Financial Officer** (`cfo`) - Executive; reports to Chief of Staff
+- **Chief Operating Officer** (`coo`) - Executive; reports to Chief of Staff
+- **Chief AI Officer** (`chief-ai-officer`) - Executive; reports to Chief of Staff
+- **Chief Product Officer** (`cpo`) - Executive; reports to Chief of Staff
+- **Chief Marketing Officer** (`cmo`) - Executive; reports to Chief of Staff
+- **Head of Sales** (`sales`) - Executive; reports to Chief of Staff
+- **Head of Customer Success** (`customer-success`) - Executive; reports to Chief of Staff
+- **Legal Advisor** (`legal`) - Executive; reports to Chief of Staff
+- **Chief Human Resources Officer** (`hr`) - Executive; reports to Chief of Staff
+- **Strategy Board Advisor** (`board-strategy`) - Board; reports to Human CEO (via CEO Advisor)
+- **Finance Board Advisor** (`board-finance`) - Board; reports to Human CEO (via CEO Advisor)
+- **Technology Board Advisor** (`board-technology`) - Board; reports to Human CEO (via CEO Advisor)
+- **Product Board Advisor** (`board-product`) - Board; reports to Human CEO (via CEO Advisor)
+- **Customer Board Advisor** (`board-customer`) - Board; reports to Human CEO (via CEO Advisor)
+- **Risk Board Advisor** (`board-risk`) - Board; reports to Human CEO (via CEO Advisor)

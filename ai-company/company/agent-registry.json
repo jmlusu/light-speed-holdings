@@ -1,0 +1,182 @@
+﻿[
+    {
+        "name":  "board-customer",
+        "role":  "Customer Board Advisor",
+        "type":  "Board",
+        "department":  "",
+        "reportsTo":  "Human CEO (via CEO Advisor)",
+        "file":  ".opencode/agents/board-customer.md",
+        "permission":  "ReviewOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "board-finance",
+        "role":  "Finance Board Advisor",
+        "type":  "Board",
+        "department":  "",
+        "reportsTo":  "Human CEO (via CEO Advisor)",
+        "file":  ".opencode/agents/board-finance.md",
+        "permission":  "ReviewOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "board-product",
+        "role":  "Product Board Advisor",
+        "type":  "Board",
+        "department":  "",
+        "reportsTo":  "Human CEO (via CEO Advisor)",
+        "file":  ".opencode/agents/board-product.md",
+        "permission":  "ReviewOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "board-risk",
+        "role":  "Risk Board Advisor",
+        "type":  "Board",
+        "department":  "",
+        "reportsTo":  "Human CEO (via CEO Advisor)",
+        "file":  ".opencode/agents/board-risk.md",
+        "permission":  "ReviewOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "board-strategy",
+        "role":  "Strategy Board Advisor",
+        "type":  "Board",
+        "department":  "",
+        "reportsTo":  "Human CEO (via CEO Advisor)",
+        "file":  ".opencode/agents/board-strategy.md",
+        "permission":  "ReviewOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "board-technology",
+        "role":  "Technology Board Advisor",
+        "type":  "Board",
+        "department":  "",
+        "reportsTo":  "Human CEO (via CEO Advisor)",
+        "file":  ".opencode/agents/board-technology.md",
+        "permission":  "ReviewOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "ceo-advisor",
+        "role":  "CEO Advisor",
+        "type":  "Executive",
+        "department":  "Office of the CEO",
+        "reportsTo":  "Human CEO",
+        "file":  ".opencode/agents/ceo-advisor.md",
+        "permission":  "AdvisoryOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "cfo",
+        "role":  "Chief Financial Officer",
+        "type":  "Executive",
+        "department":  "Finance",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/cfo.md",
+        "permission":  "AdvisoryDelegate",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "chief-ai-officer",
+        "role":  "Chief AI Officer",
+        "type":  "Executive",
+        "department":  "Artificial Intelligence",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/chief-ai-officer.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "chief-of-staff",
+        "role":  "Chief of Staff",
+        "type":  "Executive",
+        "department":  "Office of the CEO",
+        "reportsTo":  "Human CEO",
+        "file":  ".opencode/agents/chief-of-staff.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "cmo",
+        "role":  "Chief Marketing Officer",
+        "type":  "Executive",
+        "department":  "Marketing",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/cmo.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "coo",
+        "role":  "Chief Operating Officer",
+        "type":  "Executive",
+        "department":  "Operations",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/coo.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "cpo",
+        "role":  "Chief Product Officer",
+        "type":  "Executive",
+        "department":  "Product",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/cpo.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "cto",
+        "role":  "Chief Technology Officer",
+        "type":  "Executive",
+        "department":  "Technology",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/cto.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "customer-success",
+        "role":  "Head of Customer Success",
+        "type":  "Executive",
+        "department":  "Customer Success",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/customer-success.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "hr",
+        "role":  "Chief Human Resources Officer",
+        "type":  "Executive",
+        "department":  "People",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/hr.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "legal",
+        "role":  "Legal Advisor",
+        "type":  "Executive",
+        "department":  "Legal",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/legal.md",
+        "permission":  "AdvisoryOnly",
+        "createdDate":  "2026-07-14 13:18:37"
+    },
+    {
+        "name":  "sales",
+        "role":  "Head of Sales",
+        "type":  "Executive",
+        "department":  "Sales",
+        "reportsTo":  "Chief of Staff",
+        "file":  ".opencode/agents/sales.md",
+        "permission":  "Execute",
+        "createdDate":  "2026-07-14 13:18:37"
+    }
+]
