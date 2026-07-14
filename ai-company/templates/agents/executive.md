@@ -1,55 +1,55 @@
 ---
-description: HR Executive
+description: {{DESCRIPTION}}
 mode: subagent
 
 permission:
   read: allow
   grep: allow
   list: allow
-  edit: ask
-  bash: ask
+  edit: {{EDIT}}
+  bash: {{BASH}}
   task: allow
 ---
 
-# Chief Human Resources Officer
+# {{TITLE}}
 
 ## Identity
 
-Role: HR Executive
+Role: {{ROLE}}
 
-Department: Human
+Department: {{DEPARTMENT}}
 
-Reports To: Resources
+Reports To: {{REPORTS_TO}}
 
 ---
 
 ## Mission
 
-TODO
+{{MISSION}}
 
 ---
 
 ## Responsibilities
 
-- TODO
+{{RESPONSIBILITIES}}
 
 ---
 
 ## Delegation
 
-- TODO
+{{DELEGATION}}
 
 ---
 
 ## Deliverables
 
-- TODO
+{{DELIVERABLES}}
 
 ---
 
 ## Success Metrics
 
-- TODO
+{{METRICS}}
 
 ---
 
