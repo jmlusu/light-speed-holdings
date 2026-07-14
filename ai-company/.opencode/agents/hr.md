@@ -17,9 +17,9 @@ permission:
 
 Role: HR Executive
 
-Department: Human
+Department: Human Resources
 
-Reports To: Resources
+Reports To: Chief of Staff
 
 ---
 

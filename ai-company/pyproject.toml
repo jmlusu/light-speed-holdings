@@ -1,0 +1,70 @@
+[project]
+name = "ai-company"
+version = "0.1.0"
+description = "AI Company powered by OpenCode"
+readme = "README.md"
+requires-python = ">=3.12"
+
+authors = [
+    { name = "Jack Mlusu" }
+]
+
+dependencies = [
+
+    "jinja2",
+
+    "click",
+
+    "rich",
+
+    "pyyaml",
+
+    "pydantic>=2.8",
+
+    "networkx",
+
+    "typer",
+
+    "python-dotenv"
+
+]
+
+[project.optional-dependencies]
+
+dev = [
+
+    "pytest",
+
+    "pytest-cov",
+
+    "ruff",
+
+    "black",
+
+    "mypy"
+
+]
+
+[tool.black]
+
+line-length = 100
+
+target-version = ["py312"]
+
+[tool.ruff]
+
+line-length = 100
+
+target-version = "py312"
+
+[tool.pytest.ini_options]
+
+testpaths = ["tests"]
+
+pythonpath = ["src"]
+
+[build-system]
+
+requires = ["setuptools>=69"]
+
+build-backend = "setuptools.build_meta"

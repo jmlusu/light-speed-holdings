@@ -17,9 +17,9 @@ permission:
 
 Role: Customer Success Executive
 
-Department: Customer
+Department: Customer Success
 
-Reports To: Success
+Reports To: Chief of Staff
 
 ---
 

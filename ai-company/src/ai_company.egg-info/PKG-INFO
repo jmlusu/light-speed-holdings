@@ -1,0 +1,21 @@
+Metadata-Version: 2.4
+Name: ai-company
+Version: 0.1.0
+Summary: AI Company powered by OpenCode
+Author: Jack Mlusu
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: jinja2
+Requires-Dist: click
+Requires-Dist: rich
+Requires-Dist: pyyaml
+Requires-Dist: pydantic>=2.8
+Requires-Dist: networkx
+Requires-Dist: typer
+Requires-Dist: python-dotenv
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: mypy; extra == "dev"

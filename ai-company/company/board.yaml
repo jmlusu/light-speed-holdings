@@ -1,0 +1,22 @@
+board:
+
+  - id: strategy-board
+    title: Strategy Board
+    inspiration:
+      - Andy Grove
+      - Ben Horowitz
+      - Peter Drucker
+
+  - id: finance-board
+    title: Finance Board
+    inspiration:
+      - Warren Buffett
+      - Charlie Munger
+      - Ray Dalio
+
+  - id: technology-board
+    title: Technology Board
+    inspiration:
+      - Jensen Huang
+      - Satya Nadella
+      - Demis Hassabis

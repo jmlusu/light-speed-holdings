@@ -17,7 +17,7 @@ permission:
 
 Role: AI Executive
 
-Department: AI
+Department: Artificial Intelligence
 
 Reports To: Chief of Staff
 

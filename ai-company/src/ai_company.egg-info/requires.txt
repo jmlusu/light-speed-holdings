@@ -1,0 +1,15 @@
+jinja2
+click
+rich
+pyyaml
+pydantic>=2.8
+networkx
+typer
+python-dotenv
+
+[dev]
+pytest
+pytest-cov
+ruff
+black
+mypy
