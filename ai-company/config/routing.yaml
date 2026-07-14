@@ -1,0 +1,37 @@
+routing:
+
+  technology:
+      executive: cto
+
+  software:
+      executive: cto
+
+  coding:
+      executive: cto
+
+  ai:
+      executive: chief-ai-officer
+
+  finance:
+      executive: cfo
+
+  pricing:
+      executive: cfo
+
+  marketing:
+      executive: cmo
+
+  operations:
+      executive: coo
+
+  product:
+      executive: cpo
+
+  sales:
+      executive: sales
+
+  legal:
+      executive: legal
+
+  hiring:
+      executive: hr

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-11T16:41:31.886Z",
+  "entries": [
+    "agenttrace-session-audit",
+    "api-endpoint-builder",
+    "ax-extract-workflow",
+    "brooks-lint",
+    "bug-hunter",
+    "codebase-audit-pre-push",
+    "diagnosing-bugs",
+    "docs",
+    "ecl-harness-engineer",
+    "effective-agent-skills",
+    "global-chat-agent-discovery",
+    "hono",
+    "improve-codebase-architecture",
+    "jq",
+    "logic-lens",
+    "performance-optimizer",
+    "prototype",
+    "python-pptx-generator",
+    "rayden-code",
+    "setup-matt-pocock-skills",
+    "skill-check",
+    "squirrel",
+    "tdd",
+    "technical-change-tracker",
+    "tmux",
+    "tree-ring-memory",
+    "triage"
+  ]
+}
