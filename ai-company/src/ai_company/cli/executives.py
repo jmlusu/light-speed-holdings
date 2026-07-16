@@ -24,8 +24,8 @@ def _save_executives(data: dict):
         yaml.dump(data, f, default_flow_style=False)
 
 
-@app.command()
-def list():
+@app.command("list")
+def list_executives():
     """List all company executives."""
     data = _load_executives()
     executives = data.get("executives", [])
@@ -112,7 +112,7 @@ def hierarchy():
     typer.echo("")
 
 
-def _print_hierarchy(executive: dict, all_executives: list, indent: int):
+def _print_hierarchy(executive: dict, all_executives: list[dict], indent: int) -> None:
     prefix = "  " * indent
     typer.echo(f"{prefix}{executive['title']} ({executive['id']})")
 

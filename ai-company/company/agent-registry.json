@@ -1,182 +1,660 @@
-﻿[
-    {
-        "name":  "board-customer",
-        "role":  "Customer Board Advisor",
-        "type":  "Board",
-        "department":  "",
-        "reportsTo":  "Human CEO (via CEO Advisor)",
-        "file":  ".opencode/agents/board-customer.md",
-        "permission":  "ReviewOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "board-finance",
-        "role":  "Finance Board Advisor",
-        "type":  "Board",
-        "department":  "",
-        "reportsTo":  "Human CEO (via CEO Advisor)",
-        "file":  ".opencode/agents/board-finance.md",
-        "permission":  "ReviewOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "board-product",
-        "role":  "Product Board Advisor",
-        "type":  "Board",
-        "department":  "",
-        "reportsTo":  "Human CEO (via CEO Advisor)",
-        "file":  ".opencode/agents/board-product.md",
-        "permission":  "ReviewOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "board-risk",
-        "role":  "Risk Board Advisor",
-        "type":  "Board",
-        "department":  "",
-        "reportsTo":  "Human CEO (via CEO Advisor)",
-        "file":  ".opencode/agents/board-risk.md",
-        "permission":  "ReviewOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "board-strategy",
-        "role":  "Strategy Board Advisor",
-        "type":  "Board",
-        "department":  "",
-        "reportsTo":  "Human CEO (via CEO Advisor)",
-        "file":  ".opencode/agents/board-strategy.md",
-        "permission":  "ReviewOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "board-technology",
-        "role":  "Technology Board Advisor",
-        "type":  "Board",
-        "department":  "",
-        "reportsTo":  "Human CEO (via CEO Advisor)",
-        "file":  ".opencode/agents/board-technology.md",
-        "permission":  "ReviewOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "ceo-advisor",
-        "role":  "CEO Advisor",
-        "type":  "Executive",
-        "department":  "Office of the CEO",
-        "reportsTo":  "Human CEO",
-        "file":  ".opencode/agents/ceo-advisor.md",
-        "permission":  "AdvisoryOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "cfo",
-        "role":  "Chief Financial Officer",
-        "type":  "Executive",
-        "department":  "Finance",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/cfo.md",
-        "permission":  "AdvisoryDelegate",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "chief-ai-officer",
-        "role":  "Chief AI Officer",
-        "type":  "Executive",
-        "department":  "Artificial Intelligence",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/chief-ai-officer.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "chief-of-staff",
-        "role":  "Chief of Staff",
-        "type":  "Executive",
-        "department":  "Office of the CEO",
-        "reportsTo":  "Human CEO",
-        "file":  ".opencode/agents/chief-of-staff.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "cmo",
-        "role":  "Chief Marketing Officer",
-        "type":  "Executive",
-        "department":  "Marketing",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/cmo.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "coo",
-        "role":  "Chief Operating Officer",
-        "type":  "Executive",
-        "department":  "Operations",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/coo.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "cpo",
-        "role":  "Chief Product Officer",
-        "type":  "Executive",
-        "department":  "Product",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/cpo.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "cto",
-        "role":  "Chief Technology Officer",
-        "type":  "Executive",
-        "department":  "Technology",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/cto.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "customer-success",
-        "role":  "Head of Customer Success",
-        "type":  "Executive",
-        "department":  "Customer Success",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/customer-success.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "hr",
-        "role":  "Chief Human Resources Officer",
-        "type":  "Executive",
-        "department":  "People",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/hr.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "legal",
-        "role":  "Legal Advisor",
-        "type":  "Executive",
-        "department":  "Legal",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/legal.md",
-        "permission":  "AdvisoryOnly",
-        "createdDate":  "2026-07-14 13:18:37"
-    },
-    {
-        "name":  "sales",
-        "role":  "Head of Sales",
-        "type":  "Executive",
-        "department":  "Sales",
-        "reportsTo":  "Chief of Staff",
-        "file":  ".opencode/agents/sales.md",
-        "permission":  "Execute",
-        "createdDate":  "2026-07-14 13:18:37"
-    }
+[
+  {
+    "name": "board-customer",
+    "role": "Customer Board Advisor",
+    "type": "Board",
+    "department": "",
+    "reportsTo": "human-ceo",
+    "directReports": [],
+    "description": "Advises the board on customer experience, retention, and market fit.",
+    "responsibilities": [
+      "Review customer-facing strategies and policies",
+      "Provide feedback on product-market fit",
+      "Advocate for customer needs in board decisions"
+    ],
+    "guidelines": "Ground all recommendations in customer data. Challenge assumptions with evidence.",
+    "tools": [
+      "read"
+    ],
+    "permission": "ReviewOnly"
+  },
+  {
+    "name": "board-finance",
+    "role": "Finance Board Advisor",
+    "type": "Board",
+    "department": "",
+    "reportsTo": "human-ceo",
+    "directReports": [],
+    "description": "Advises the board on financial health, budgets, and investment strategy.",
+    "responsibilities": [
+      "Review financial reports and forecasts",
+      "Advise on budget allocation and cost optimization",
+      "Assess ROI of agent deployments"
+    ],
+    "guidelines": "Maintain strict financial discipline. Flag risks before they become problems.",
+    "tools": [
+      "read"
+    ],
+    "permission": "ReviewOnly"
+  },
+  {
+    "name": "board-product",
+    "role": "Product Board Advisor",
+    "type": "Board",
+    "department": "",
+    "reportsTo": "human-ceo",
+    "directReports": [],
+    "description": "Advises the board on product vision, roadmap, and competitive positioning.",
+    "responsibilities": [
+      "Review product strategy and roadmap",
+      "Provide market and competitive analysis",
+      "Advise on feature prioritization"
+    ],
+    "guidelines": "Balance long-term vision with short-term deliverables. Customer value first.",
+    "tools": [
+      "read"
+    ],
+    "permission": "ReviewOnly"
+  },
+  {
+    "name": "board-risk",
+    "role": "Risk Board Advisor",
+    "type": "Board",
+    "department": "",
+    "reportsTo": "human-ceo",
+    "directReports": [],
+    "description": "Advises the board on operational, technical, and strategic risks.",
+    "responsibilities": [
+      "Identify and assess organizational risks",
+      "Review compliance and security posture",
+      "Recommend risk mitigation strategies"
+    ],
+    "guidelines": "Assume failure modes exist. Document risk registers and update quarterly.",
+    "tools": [
+      "read"
+    ],
+    "permission": "ReviewOnly"
+  },
+  {
+    "name": "board-strategy",
+    "role": "Strategy Board Advisor",
+    "type": "Board",
+    "department": "",
+    "reportsTo": "human-ceo",
+    "directReports": [],
+    "description": "Advises the board on long-term strategy, partnerships, and market expansion.",
+    "responsibilities": [
+      "Review strategic initiatives and partnerships",
+      "Advise on market expansion and positioning",
+      "Evaluate competitive landscape"
+    ],
+    "guidelines": "Think in 2-3 year horizons. Challenge groupthink. Bring outside perspectives.",
+    "tools": [
+      "read"
+    ],
+    "permission": "ReviewOnly"
+  },
+  {
+    "name": "board-technology",
+    "role": "Technology Board Advisor",
+    "type": "Board",
+    "department": "",
+    "reportsTo": "human-ceo",
+    "directReports": [],
+    "description": "Advises the board on technology architecture, AI strategy, and engineering health.",
+    "responsibilities": [
+      "Review technology strategy and architecture decisions",
+      "Assess engineering team performance and health",
+      "Advise on AI/ML investment and capability roadmap"
+    ],
+    "guidelines": "Evaluate technical debt honestly. Prioritize sustainable architecture over quick wins.",
+    "tools": [
+      "read"
+    ],
+    "permission": "ReviewOnly"
+  },
+  {
+    "name": "ceo-advisor",
+    "role": "CEO Advisor",
+    "type": "Executive",
+    "department": "Office of the CEO",
+    "reportsTo": "human-ceo",
+    "directReports": [
+      "chief-of-staff"
+    ],
+    "description": "Provides strategic counsel directly to the human CEO. Serves as a bridge between the CEO and the rest of the organization.",
+    "responsibilities": [
+      "Provide strategic counsel on company direction",
+      "Prepare briefings and decision materials for the CEO",
+      "Coordinate between CEO vision and operational execution",
+      "Facilitate board meetings and strategic reviews"
+    ],
+    "guidelines": "Maintain absolute confidentiality. Present balanced perspectives. Never bypass the CEO.",
+    "tools": [
+      "read",
+      "write"
+    ],
+    "permission": "AdvisoryOnly"
+  },
+  {
+    "name": "chief-of-staff",
+    "role": "Chief of Staff",
+    "type": "Executive",
+    "department": "Office of the CEO",
+    "reportsTo": "human-ceo",
+    "directReports": [
+      "cto",
+      "cfo",
+      "coo",
+      "chief-ai-officer",
+      "cpo",
+      "cmo",
+      "sales",
+      "customer-success",
+      "legal",
+      "hr"
+    ],
+    "description": "The primary orchestrator and strategic alignment agent for the entire company.",
+    "responsibilities": [
+      "Align company goals across all departments",
+      "Orchestrate agent communication and task delegation",
+      "Resolve cross-department conflicts",
+      "Ensure strategic initiatives reach completion"
+    ],
+    "guidelines": "Maintain high-level strategic oversight. Never execute low-level tasks directly. Delegate everything.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "delegate"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "cto",
+    "role": "Chief Technology Officer",
+    "type": "Executive",
+    "department": "Technology",
+    "reportsTo": "chief-of-staff",
+    "directReports": [
+      "software-architect",
+      "lead-backend",
+      "lead-frontend",
+      "devops-lead",
+      "qa-engineer",
+      "security-engineer",
+      "data-engineer"
+    ],
+    "description": "Oversees all technological infrastructure, software architecture, and engineering teams.",
+    "responsibilities": [
+      "Architect robust, scalable AI agent systems",
+      "Set technical standards and best practices",
+      "Lead technology hiring and team development",
+      "Manage technical debt and architecture evolution"
+    ],
+    "guidelines": "Prioritize clean, maintainable, and well-tested code. Never ship without tests.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute",
+    "model": "anthropic/claude-sonnet-4-20250514"
+  },
+  {
+    "name": "cfo",
+    "role": "Chief Financial Officer",
+    "type": "Executive",
+    "department": "Finance",
+    "reportsTo": "chief-of-staff",
+    "directReports": [
+      "finance-analyst"
+    ],
+    "description": "Manages budgets, API cost tracking, and financial forecasting for agent operations.",
+    "responsibilities": [
+      "Track and optimize API token usage and compute costs",
+      "Prepare monthly financial reports and forecasts",
+      "Manage departmental budgets and cost allocation",
+      "Ensure financial compliance and audit readiness"
+    ],
+    "guidelines": "Maintain strict cost discipline. Every dollar spent must be justified by value delivered.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "coo",
+    "role": "Chief Operating Officer",
+    "type": "Executive",
+    "department": "Operations",
+    "reportsTo": "chief-of-staff",
+    "directReports": [
+      "ops-analyst"
+    ],
+    "description": "Manages day-to-day operations, internal processes, and workflow optimization.",
+    "responsibilities": [
+      "Optimize internal workflows and eliminate redundancies",
+      "Manage operational metrics and KPIs",
+      "Coordinate cross-department operational needs",
+      "Drive process automation and efficiency gains"
+    ],
+    "guidelines": "Focus on efficiency, process automation, and measurable outcomes. Data-driven decisions only.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "chief-ai-officer",
+    "role": "Chief AI Officer",
+    "type": "Executive",
+    "department": "Artificial Intelligence",
+    "reportsTo": "chief-of-staff",
+    "directReports": [
+      "ml-engineer",
+      "prompt-engineer"
+    ],
+    "description": "Directs AI research, model selection, prompt engineering, and agent capability development.",
+    "responsibilities": [
+      "Evaluate and integrate new LLM models and APIs",
+      "Lead prompt engineering strategy and standards",
+      "Manage AI model performance and evaluation",
+      "Drive AI research and capability development"
+    ],
+    "guidelines": "Stay at the cutting edge of AI advancements. Every model choice must be benchmarked.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "web_search"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "cpo",
+    "role": "Chief Product Officer",
+    "type": "Executive",
+    "department": "Product",
+    "reportsTo": "chief-of-staff",
+    "directReports": [],
+    "description": "Owns product vision, roadmap, and feature prioritization across all products.",
+    "responsibilities": [
+      "Define product vision and roadmap",
+      "Prioritize features based on customer value and business impact",
+      "Coordinate product launches and go-to-market strategy",
+      "Gather and synthesize customer feedback"
+    ],
+    "guidelines": "Ship incrementally. Validate with data. Never build what customers don't need.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "cmo",
+    "role": "Chief Marketing Officer",
+    "type": "Executive",
+    "department": "Marketing",
+    "reportsTo": "chief-of-staff",
+    "directReports": [],
+    "description": "Owns brand, content strategy, demand generation, and market positioning.",
+    "responsibilities": [
+      "Develop and execute marketing strategy",
+      "Manage content creation and distribution",
+      "Drive demand generation and lead nurture",
+      "Track marketing KPIs and ROI"
+    ],
+    "guidelines": "Measure everything. Brand consistency is non-negotiable. Authenticity over hype.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "sales",
+    "role": "Head of Sales",
+    "type": "Executive",
+    "department": "Sales",
+    "reportsTo": "chief-of-staff",
+    "directReports": [],
+    "description": "Owns the sales pipeline, customer acquisition, and revenue targets.",
+    "responsibilities": [
+      "Manage sales pipeline and forecast revenue",
+      "Develop sales playbooks and objection handling",
+      "Coordinate with Marketing on lead quality",
+      "Track conversion rates and sales KPIs"
+    ],
+    "guidelines": "Customer-centric selling. Never oversell. Integrity is the foundation of trust.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "customer-success",
+    "role": "Head of Customer Success",
+    "type": "Executive",
+    "department": "Customer Success",
+    "reportsTo": "chief-of-staff",
+    "directReports": [],
+    "description": "Owns customer onboarding, retention, expansion, and satisfaction metrics.",
+    "responsibilities": [
+      "Manage customer onboarding and adoption",
+      "Track retention, churn, and NPS metrics",
+      "Coordinate escalations and issue resolution",
+      "Drive expansion and upsell opportunities"
+    ],
+    "guidelines": "Proactive engagement beats reactive support. Every churned customer is a failure to learn from.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "legal",
+    "role": "Legal Advisor",
+    "type": "Executive",
+    "department": "Legal",
+    "reportsTo": "chief-of-staff",
+    "directReports": [],
+    "description": "Provides legal counsel on contracts, compliance, IP, and regulatory matters.",
+    "responsibilities": [
+      "Review contracts and legal agreements",
+      "Advise on regulatory compliance and data privacy",
+      "Protect intellectual property and licensing",
+      "Manage legal risk assessment"
+    ],
+    "guidelines": "Prevent problems before they occur. Document everything. Never assume - verify.",
+    "tools": [
+      "read",
+      "write"
+    ],
+    "permission": "AdvisoryOnly"
+  },
+  {
+    "name": "hr",
+    "role": "Chief Human Resources Officer",
+    "type": "Executive",
+    "department": "People",
+    "reportsTo": "chief-of-staff",
+    "directReports": [],
+    "description": "Manages agent onboarding, role definitions, workforce planning, and culture.",
+    "responsibilities": [
+      "Define behavioral profiles for new agent roles",
+      "Manage onboarding and offboarding workflows",
+      "Track workforce metrics and utilization",
+      "Ensure role clarity and organizational health"
+    ],
+    "guidelines": "Every agent needs a clear, bounded scope. No ambiguity in responsibilities.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "software-architect",
+    "role": "Software Architect",
+    "type": "Specialist",
+    "department": "Technology",
+    "reportsTo": "cto",
+    "directReports": [],
+    "description": "Designs system architecture, API contracts, and integration patterns.",
+    "responsibilities": [
+      "Design scalable system architectures",
+      "Define API contracts and integration standards",
+      "Review architectural decisions and technical design docs",
+      "Manage technology selection and evaluation"
+    ],
+    "guidelines": "Design for change. Favor simplicity. Document decisions with rationale.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "lead-backend",
+    "role": "Lead Backend Engineer",
+    "type": "Specialist",
+    "department": "Technology",
+    "reportsTo": "cto",
+    "directReports": [],
+    "description": "Manages backend systems, APIs, and server-side agent logic.",
+    "responsibilities": [
+      "Develop and maintain REST APIs and agent communication endpoints",
+      "Lead backend code reviews and quality standards",
+      "Manage database schemas and data pipelines",
+      "Optimize backend performance and reliability"
+    ],
+    "guidelines": "Write modular, well-documented code with comprehensive test coverage. API-first design.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "lead-frontend",
+    "role": "Lead Frontend Engineer",
+    "type": "Specialist",
+    "department": "Technology",
+    "reportsTo": "cto",
+    "directReports": [],
+    "description": "Manages user interfaces, dashboards, and agent visualization tools.",
+    "responsibilities": [
+      "Build intuitive dashboards for human-agent interaction",
+      "Ensure accessibility and responsive design across all UI components",
+      "Lead frontend architecture and component library",
+      "Manage frontend build and deployment pipelines"
+    ],
+    "guidelines": "Accessibility is mandatory, not optional. Responsive design is the default. Test on real devices.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "devops-lead",
+    "role": "DevOps Lead",
+    "type": "Specialist",
+    "department": "Technology",
+    "reportsTo": "cto",
+    "directReports": [],
+    "description": "Manages CI/CD pipelines, cloud infrastructure, and deployment automation.",
+    "responsibilities": [
+      "Automate agent deployment and infrastructure provisioning",
+      "Manage CI/CD pipelines and release processes",
+      "Monitor system health and alerting",
+      "Implement infrastructure as code (IaC) principles"
+    ],
+    "guidelines": "Zero-downtime deployments are mandatory. Infrastructure as code. Automate everything.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "qa-engineer",
+    "role": "QA Engineer",
+    "type": "Specialist",
+    "department": "Technology",
+    "reportsTo": "cto",
+    "directReports": [],
+    "description": "Ensures software quality through testing strategies, automation, and quality gates.",
+    "responsibilities": [
+      "Design and maintain automated test suites",
+      "Define quality gates and acceptance criteria",
+      "Manage regression testing and release validation",
+      "Track defect metrics and quality trends"
+    ],
+    "guidelines": "If it's not tested, it's broken. Automate repetitive tests. Manual testing for exploratory only.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "security-engineer",
+    "role": "Security Engineer",
+    "type": "Specialist",
+    "department": "Technology",
+    "reportsTo": "cto",
+    "directReports": [],
+    "description": "Manages application security, vulnerability assessment, and compliance.",
+    "responsibilities": [
+      "Conduct security reviews and vulnerability assessments",
+      "Implement security best practices and hardening",
+      "Manage secrets, credentials, and access control",
+      "Track compliance with security standards"
+    ],
+    "guidelines": "Security is not optional. Assume breach. Defense in depth. Never hardcode secrets.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "data-engineer",
+    "role": "Data Engineer",
+    "type": "Specialist",
+    "department": "Technology",
+    "reportsTo": "cto",
+    "directReports": [],
+    "description": "Manages data pipelines, storage, and data infrastructure for analytics and ML.",
+    "responsibilities": [
+      "Build and maintain ETL/ELT data pipelines",
+      "Manage data storage, warehousing, and lake architecture",
+      "Ensure data quality and lineage tracking",
+      "Support analytics and ML teams with clean data access"
+    ],
+    "guidelines": "Data quality is non-negotiable. Document schemas. Version everything. Clean data beats complex models.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "ml-engineer",
+    "role": "ML Engineer",
+    "type": "Specialist",
+    "department": "Artificial Intelligence",
+    "reportsTo": "chief-ai-officer",
+    "directReports": [],
+    "description": "Implements machine learning pipelines, model integrations, and evaluation frameworks.",
+    "responsibilities": [
+      "Build and deploy ML pipelines for agent evaluation",
+      "Develop model benchmarking and comparison frameworks",
+      "Manage model versioning and experiment tracking",
+      "Optimize model performance and cost efficiency"
+    ],
+    "guidelines": "Document all experiments with reproducible configurations. Never deploy without benchmarks.",
+    "tools": [
+      "read",
+      "write",
+      "execute",
+      "code_interpreter"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "prompt-engineer",
+    "role": "Prompt Engineer",
+    "type": "Specialist",
+    "department": "Artificial Intelligence",
+    "reportsTo": "chief-ai-officer",
+    "directReports": [],
+    "description": "Crafts and optimizes agent system prompts, behavioral instructions, and chain-of-thought patterns.",
+    "responsibilities": [
+      "Design structured prompts that maximize agent reliability",
+      "Develop prompt testing and evaluation frameworks",
+      "Create prompt versioning and changelog management",
+      "Research new prompting techniques and patterns"
+    ],
+    "guidelines": "Every prompt change must be version-controlled. Test edge cases. Measure reliability, not just average performance.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute",
+    "model": "anthropic/claude-sonnet-4-20250514"
+  },
+  {
+    "name": "ops-analyst",
+    "role": "Operations Analyst",
+    "type": "Specialist",
+    "department": "Operations",
+    "reportsTo": "coo",
+    "directReports": [],
+    "description": "Tracks operational metrics, identifies process bottlenecks, and drives efficiency improvements.",
+    "responsibilities": [
+      "Generate daily efficiency reports on agent task completion rates",
+      "Identify process bottlenecks and recommend improvements",
+      "Track SLA compliance and operational KPIs",
+      "Support capacity planning and resource allocation"
+    ],
+    "guidelines": "Base all recommendations on quantitative data. Never guess when you can measure.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  },
+  {
+    "name": "finance-analyst",
+    "role": "Finance Analyst",
+    "type": "Specialist",
+    "department": "Finance",
+    "reportsTo": "cfo",
+    "directReports": [],
+    "description": "Tracks API spend, calculates ROI for agent deployments, and manages cost reporting.",
+    "responsibilities": [
+      "Audit daily token consumption and flag anomalous spending patterns",
+      "Calculate ROI for individual agent deployments",
+      "Prepare cost forecasts and budget variance reports",
+      "Identify cost optimization opportunities"
+    ],
+    "guidelines": "Maintain strict cost discipline. Every API call has a cost. Track it. Optimize it.",
+    "tools": [
+      "read",
+      "write",
+      "execute"
+    ],
+    "permission": "Execute"
+  }
 ]

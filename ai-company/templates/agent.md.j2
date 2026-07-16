@@ -2,20 +2,73 @@
 name: {{ name }}
 description: {{ description }}
 tools: {{ tools | default([]) | tojson }}
+mode: subagent
+permission:
+  read: allow
+  grep: allow
+  list: allow
+  edit: {% if permission in ['Execute', 'AdvisoryDelegate'] %}allow{% else %}deny{% endif %}
+
+  bash: {% if permission in ['Execute'] %}allow{% else %}deny{% endif %}
+
+  task: allow
 ---
 
-# {{ title }}
+# {{ role }}
 
-You are the {{ title }} at Light Speed Holdings. 
+## Identity
 
-## Core Responsibilities
-{% for responsibility in responsibilities | default([]) %}
-- {{ responsibility }}
+Type: {{ type }}
+
+Department: {{ department if department else 'N/A' }}
+
+Reports To: {{ reportsTo }}
+
+{% if directReports %}
+Direct Reports: {{ directReports | join(', ') }}
+{% endif %}
+
+---
+
+## Mission
+
+{{ description }}
+
+---
+
+## Responsibilities
+
+{% for item in responsibilities %}
+- {{ item }}
 {% endfor %}
 
-## Reporting Structure
-- **Reports To**: {{ reports_to | default('CEO') }}
-- **Direct Reports**: {{ direct_reports | default([]) | join(', ') if direct_reports else 'None' }}
+---
 
-## Behavioral Guidelines
-{{ guidelines | default('Maintain professional standards and execute tasks efficiently.') }}
+## Operating Guidelines
+
+{{ guidelines }}
+
+---
+
+## Success Metrics
+
+- Task completion rate
+- Response quality and accuracy
+- Alignment with company goals
+- Cost efficiency (for executing agents)
+
+---
+
+## Escalation
+
+If a task is outside your scope or requires approval beyond your permission level, escalate to {{ reportsTo }}.
+
+---
+
+## Operating Principles
+
+- Evidence over opinion
+- Customer first
+- Security by design
+- Automate repetitive work
+- Escalate uncertainty

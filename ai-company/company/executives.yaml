@@ -1,0 +1,103 @@
+executives:
+- name: ceo-advisor
+  role: CEO Advisor
+  department: Office of the CEO
+  reportsTo: human-ceo
+  directReports:
+  - chief-of-staff
+  description: Provides strategic counsel directly to the human CEO. Serves as a bridge
+    between the CEO and the rest of the organization.
+- name: chief-of-staff
+  role: Chief of Staff
+  department: Office of the CEO
+  reportsTo: human-ceo
+  directReports:
+  - cto
+  - cfo
+  - coo
+  - chief-ai-officer
+  - cpo
+  - cmo
+  - sales
+  - customer-success
+  - legal
+  - hr
+  description: The primary orchestrator and strategic alignment agent for the entire
+    company.
+- name: cto
+  role: Chief Technology Officer
+  department: Technology
+  reportsTo: chief-of-staff
+  directReports:
+  - software-architect
+  - lead-backend
+  - lead-frontend
+  - devops-lead
+  - qa-engineer
+  - security-engineer
+  - data-engineer
+  description: Oversees all technological infrastructure, software architecture, and
+    engineering teams.
+- name: cfo
+  role: Chief Financial Officer
+  department: Finance
+  reportsTo: chief-of-staff
+  directReports:
+  - finance-analyst
+  description: Manages budgets, API cost tracking, and financial forecasting for agent
+    operations.
+- name: coo
+  role: Chief Operating Officer
+  department: Operations
+  reportsTo: chief-of-staff
+  directReports:
+  - ops-analyst
+  description: Manages day-to-day operations, internal processes, and workflow optimization.
+- name: chief-ai-officer
+  role: Chief AI Officer
+  department: Artificial Intelligence
+  reportsTo: chief-of-staff
+  directReports:
+  - ml-engineer
+  - prompt-engineer
+  description: Directs AI research, model selection, prompt engineering, and agent
+    capability development.
+- name: cpo
+  role: Chief Product Officer
+  department: Product
+  reportsTo: chief-of-staff
+  directReports: []
+  description: Owns product vision, roadmap, and feature prioritization across all
+    products.
+- name: cmo
+  role: Chief Marketing Officer
+  department: Marketing
+  reportsTo: chief-of-staff
+  directReports: []
+  description: Owns brand, content strategy, demand generation, and market positioning.
+- name: sales
+  role: Head of Sales
+  department: Sales
+  reportsTo: chief-of-staff
+  directReports: []
+  description: Owns the sales pipeline, customer acquisition, and revenue targets.
+- name: customer-success
+  role: Head of Customer Success
+  department: Customer Success
+  reportsTo: chief-of-staff
+  directReports: []
+  description: Owns customer onboarding, retention, expansion, and satisfaction metrics.
+- name: legal
+  role: Legal Advisor
+  department: Legal
+  reportsTo: chief-of-staff
+  directReports: []
+  description: Provides legal counsel on contracts, compliance, IP, and regulatory
+    matters.
+- name: hr
+  role: Chief Human Resources Officer
+  department: People
+  reportsTo: chief-of-staff
+  directReports: []
+  description: Manages agent onboarding, role definitions, workforce planning, and
+    culture.

@@ -1,19 +1,55 @@
 specialists:
-
-  cto:
-
-    - Software Architect
-
-    - Backend Engineer
-
-    - Frontend Engineer
-
-    - DevOps Engineer
-
-    - QA Engineer
-
-    - Security Engineer
-
-    - AI Engineer
-
-    - Data Engineer
+  artificial_intelligence:
+  - name: ml-engineer
+    role: ML Engineer
+    reportsTo: chief-ai-officer
+    description: Implements machine learning pipelines, model integrations, and evaluation
+      frameworks.
+  - name: prompt-engineer
+    role: Prompt Engineer
+    reportsTo: chief-ai-officer
+    description: Crafts and optimizes agent system prompts, behavioral instructions,
+      and chain-of-thought patterns.
+  finance:
+  - name: finance-analyst
+    role: Finance Analyst
+    reportsTo: cfo
+    description: Tracks API spend, calculates ROI for agent deployments, and manages
+      cost reporting.
+  operations:
+  - name: ops-analyst
+    role: Operations Analyst
+    reportsTo: coo
+    description: Tracks operational metrics, identifies process bottlenecks, and drives
+      efficiency improvements.
+  technology:
+  - name: software-architect
+    role: Software Architect
+    reportsTo: cto
+    description: Designs system architecture, API contracts, and integration patterns.
+  - name: lead-backend
+    role: Lead Backend Engineer
+    reportsTo: cto
+    description: Manages backend systems, APIs, and server-side agent logic.
+  - name: lead-frontend
+    role: Lead Frontend Engineer
+    reportsTo: cto
+    description: Manages user interfaces, dashboards, and agent visualization tools.
+  - name: devops-lead
+    role: DevOps Lead
+    reportsTo: cto
+    description: Manages CI/CD pipelines, cloud infrastructure, and deployment automation.
+  - name: qa-engineer
+    role: QA Engineer
+    reportsTo: cto
+    description: Ensures software quality through testing strategies, automation,
+      and quality gates.
+  - name: security-engineer
+    role: Security Engineer
+    reportsTo: cto
+    description: Manages application security, vulnerability assessment, and compliance.
+  - name: data-engineer
+    role: Data Engineer
+    reportsTo: cto
+    description: Manages data pipelines, storage, and data infrastructure for analytics
+      and ML.

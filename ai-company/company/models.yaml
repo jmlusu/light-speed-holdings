@@ -1,0 +1,107 @@
+# Model routing policy for Light Speed Holdings.
+#
+# Agents are routed to models via three layers:
+#   1. Per-agent override  — agent-registry.json field "model" (highest priority)
+#   2. Tier routing        — maps agent type + priority to a cost tier
+#   3. Provider defaults   — each tier lists providers in fallback order
+#
+# Tiers:  fast, standard, premium
+#   fast     — cheapest, lowest latency, limited reasoning
+#   standard — balanced cost/capability
+#   premium  — best reasoning, highest cost
+
+# ─── Provider catalog ────────────────────────────────────────────────
+# Each provider entry: id, backend, default_model, api_base (for local).
+
+providers:
+  ollama:
+    backend: ollama
+    default_model: llama3.1:8b
+    api_base: http://localhost:11434
+
+  openai:
+    backend: openai
+    default_model: gpt-4o-mini
+    api_base: https://api.openai.com/v1
+
+  anthropic:
+    backend: anthropic
+    default_model: claude-sonnet-4-20250514
+    api_base: https://api.anthropic.com
+
+# ─── Tier definitions ────────────────────────────────────────────────
+# Each tier lists providers in preferred → fallback order.
+# The first provider that is reachable (or configured) wins.
+
+tiers:
+  fast:
+    description: "Low-latency, low-cost. Good for read-only and simple tasks."
+    providers:
+      - provider: ollama
+        model: llama3.1:8b
+      - provider: openai
+        model: gpt-4o-mini
+
+  standard:
+    description: "Balanced capability and cost. Default for most agents."
+    providers:
+      - provider: openai
+        model: gpt-4o
+      - provider: anthropic
+        model: claude-sonnet-4-20250514
+      - provider: ollama
+        model: llama3.1:70b
+
+  premium:
+    description: "Maximum reasoning capability. Use for critical decisions."
+    providers:
+      - provider: anthropic
+        model: claude-opus-4-20250514
+      - provider: openai
+        model: gpt-4o
+
+# ─── Routing rules ──────────────────────────────────────────────────
+# Maps (agent_type, priority) -> tier.
+# Priority: low, medium, high, critical.
+# If no rule matches, falls back to "standard".
+
+routing:
+  # Board advisors — read-only, advisory, low complexity
+  - agent_type: Board
+    tier: fast
+
+  # Executives — orchestration and delegation
+  - agent_type: Executive
+    priority: low
+    tier: standard
+  - agent_type: Executive
+    priority: medium
+    tier: standard
+  - agent_type: Executive
+    priority: high
+    tier: premium
+  - agent_type: Executive
+    priority: critical
+    tier: premium
+
+  # Specialists — technical execution
+  - agent_type: Specialist
+    priority: low
+    tier: standard
+  - agent_type: Specialist
+    priority: medium
+    tier: standard
+  - agent_type: Specialist
+    priority: high
+    tier: premium
+  - agent_type: Specialist
+    priority: critical
+    tier: premium
+
+  # Escalations always use premium
+  - context: escalation
+    tier: premium
+
+  # Approvals always use premium
+  - context: approval
+    tier: premium

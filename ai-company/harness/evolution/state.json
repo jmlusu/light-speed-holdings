@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "threshold": 5,
+  "window": 10,
+  "last_evolved_archive_count": 0,
+  "last_evolved_change_id": null,
+  "last_score": null,
+  "last_run_at": null,
+  "pending": false
+}

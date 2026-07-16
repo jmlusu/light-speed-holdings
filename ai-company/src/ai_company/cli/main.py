@@ -2,6 +2,7 @@
 Main CLI entry point for AI Company Builder.
 """
 
+
 import typer
 
 from ai_company.cli.agents import app as agents_app
@@ -18,6 +19,7 @@ from ai_company.cli.legal import app as legal_app
 from ai_company.cli.hr import app as hr_app
 from ai_company.cli.specialists import app as specialists_app
 from ai_company.cli.orchestrator import app as orchestrator_app
+from ai_company.cli.models import app as models_app
 
 app = typer.Typer(
     help="AI Company Builder - Orchestrate AI agent hierarchies"
@@ -37,6 +39,22 @@ app.add_typer(legal_app, name="legal", help="Legal operations")
 app.add_typer(hr_app, name="hr", help="Human Resources operations")
 app.add_typer(specialists_app, name="specialists", help="Manage specialist agents")
 app.add_typer(orchestrator_app, name="orchestrator", help="Autonomous coordination")
+app.add_typer(models_app, name="models", help="Model routing policy")
+
+
+@app.command()
+def generate(
+    registry: str = typer.Option(
+        "company/agent-registry.json",
+        help="Path to the agent registry JSON file",
+    ),
+) -> None:
+    """Regenerate all company files from the single agent registry."""
+    from ai_company.generator import AgentGenerator
+
+    gen = AgentGenerator(registry_path=registry)
+    results = gen.generate_all()
+    typer.echo(f"\nDone: {len(results)} agent files generated.")
 
 
 @app.command()

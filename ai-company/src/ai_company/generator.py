@@ -1,32 +1,55 @@
+"""Generator: reads company-registry.yaml, produces OpenCode agent .md files."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
 import yaml
 from jinja2 import Environment, FileSystemLoader
-from pathlib import Path
+
 
 class AgentGenerator:
-    def __init__(self, registry_path="company-registry.yaml", output_dir=".opencode/agents"):
+    """Single-source generator that reads company-registry.yaml and produces agent .md files."""
+
+    def __init__(
+        self,
+        registry_path: str = "company-registry.yaml",
+        templates_dir: str = "templates/agents",
+        output_dir: str = ".opencode/agents",
+    ) -> None:
         self.registry_path = Path(registry_path)
+        self.templates_dir = Path(templates_dir)
         self.output_dir = Path(output_dir)
-        self.env = Environment(loader=FileSystemLoader("templates"))
+
+        self.env = Environment(
+            loader=FileSystemLoader(str(self.templates_dir)),
+            keep_trailing_newline=True,
+        )
         self.template = self.env.get_template("agent.md.j2")
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def load_registry(self):
+    def load_registry(self) -> dict[str, Any]:
         if not self.registry_path.exists():
-            raise FileNotFoundError(f"Registry not found at: {self.registry_path.absolute()}")
-        with open(self.registry_path, 'r', encoding='utf-8') as f:
+            raise FileNotFoundError(f"Registry not found: {self.registry_path.absolute()}")
+        with open(self.registry_path, "r", encoding="utf-8") as f:
             return yaml.safe_load(f)
 
-    def generate_all(self):
+    def generate_all(self) -> list[Path]:
+        """Run full generation. Returns list of generated file paths."""
         data = self.load_registry()
-        agents = data.get('company', {}).get('agents', [])
-        print(f"🚀 Generating {len(agents)} agents for {data['company']['name']}...")
-        for agent in agents:
-            self._generate_agent(agent)
-        print("✅ Generation complete! Check the .opencode/agents directory.")
+        agents = data.get("company", {}).get("agents", [])
+        company_name = data.get("company", {}).get("name", "AI Company")
 
-    def _generate_agent(self, agent_data):
-        rendered = self.template.render(**agent_data)
-        output_file = self.output_dir / f"{agent_data['id']}.md"
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write(rendered)
-        print(f"  📝 Generated: {output_file}")
+        print(f"Generating {len(agents)} agents for {company_name}...")
+
+        generated: list[Path] = []
+        for agent in agents:
+            rendered = self.template.render(company=company_name, **agent)
+            out_file = self.output_dir / f"{agent['id']}.md"
+            out_file.write_text(rendered, encoding="utf-8")
+            generated.append(out_file)
+            print(f"  Wrote: {out_file}")
+
+        print(f"Generation complete: {len(generated)} agents.")
+        return generated
