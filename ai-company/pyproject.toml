@@ -68,3 +68,13 @@ pythonpath = ["src"]
 requires = ["setuptools>=69"]
 
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ai_company*"]
+
+[project.scripts]
+ai-company = "ai_company.cli.main:app"

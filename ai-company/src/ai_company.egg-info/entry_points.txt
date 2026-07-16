@@ -1,0 +1,2 @@
+[console_scripts]
+ai-company = ai_company.cli.main:app

@@ -10,6 +10,17 @@ AI Company Builder — a Python tool for creating and orchestrating AI agent hie
 - **`src/ai_company/`** — Legacy/staging area (contains code with syntax errors; not the active project)
 - **Root files** (`setup_phase6.py`, etc.) — One-time setup scripts, not part of active codebase
 
+## Vision & Roadmap
+
+One human CEO supervises AI executives, managers, and specialists. Goal: automate 70-90% of routine knowledge work (research, drafting, coding, docs, reporting).
+
+**Implementation phases:**
+1. ✅ Foundation — Project structure, CLI framework, agent registry, generator
+2. ✅ Core Operations — MessageBus, Pydantic models, basic CLI commands
+3. 🔲 Growth Functions — Marketing, Sales, Customer Success, Legal, HR commands
+4. 🔲 Specialist Agents — Subagents per department (Financial Analyst, DevOps, etc.)
+5. 🔲 Autonomous Coordination — Scheduled cycles, escalation rules, human approval gates
+
 ## Development
 
 ```bash
@@ -49,6 +60,21 @@ mypy src/
 - **Agent hierarchy**: Defined in `company-registry.yaml` → generated to `.opencode/agents/` via Jinja2 templates
 - **Task system**: `ai_company.orchestrator.message_bus` — JSON-based task queue at `.opencode/inbox.json`
 - **Models**: Pydantic models in `ai_company/models/` (Executive, Specialist, Department, Company, etc.)
+- **CLI modules**: `ai_company.cli.{doctor, agents, board, executives, workflows, memory, ...}` (most are empty stubs)
+
+## Current State
+
+**Working:**
+- `ai-company` CLI executable (Typer app)
+- `ai-company doctor run` — placeholder health check
+- `ai-company agents list` — hardcoded agent list
+- Agent generation from `company-registry.yaml` to `.opencode/agents/`
+- Task delegation via MessageBus
+
+**Empty stubs (need implementation):**
+- `cli/board.py`, `cli/workflows.py`, `cli/memory.py`, `cli/executives.py`, `cli/departments.py`
+- `doctor/doctor.py`, `doctor/checks.py`, `doctor/report.py`
+- `models/company.py`, `models/board.py`
 
 ## Conventions
 

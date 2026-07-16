@@ -1,0 +1,21 @@
+---
+name: {{ name }}
+description: {{ description }}
+tools: {{ tools | default([]) | tojson }}
+---
+
+# {{ title }}
+
+You are the {{ title }} at Light Speed Holdings. 
+
+## Core Responsibilities
+{% for responsibility in responsibilities | default([]) %}
+- {{ responsibility }}
+{% endfor %}
+
+## Reporting Structure
+- **Reports To**: {{ reports_to | default('CEO') }}
+- **Direct Reports**: {{ direct_reports | default([]) | join(', ') if direct_reports else 'None' }}
+
+## Behavioral Guidelines
+{{ guidelines | default('Maintain professional standards and execute tasks efficiently.') }}
