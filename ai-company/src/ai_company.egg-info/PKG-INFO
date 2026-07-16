@@ -13,9 +13,12 @@ Requires-Dist: pydantic>=2.8
 Requires-Dist: networkx
 Requires-Dist: typer
 Requires-Dist: python-dotenv
+Requires-Dist: fastapi
+Requires-Dist: uvicorn[standard]
 Provides-Extra: dev
 Requires-Dist: pytest; extra == "dev"
 Requires-Dist: pytest-cov; extra == "dev"
 Requires-Dist: ruff; extra == "dev"
 Requires-Dist: black; extra == "dev"
 Requires-Dist: mypy; extra == "dev"
+Requires-Dist: types-PyYAML; extra == "dev"

@@ -9,56 +9,68 @@
 #   fast     — cheapest, lowest latency, limited reasoning
 #   standard — balanced cost/capability
 #   premium  — best reasoning, highest cost
+#
+# Primary providers: OpenCode (Big Pickle) + Deepseek
+# Fallback: Ollama (local), OpenAI, Anthropic
 
 # ─── Provider catalog ────────────────────────────────────────────────
-# Each provider entry: id, backend, default_model, api_base (for local).
+# Each provider entry: id, backend, default_model, api_base.
+# API keys are read from env vars: {ID}_API_KEY (e.g. OPENCODE_API_KEY)
 
 providers:
+  opencode:
+    backend: openai_compatible
+    default_model: big-pickle
+    api_base: https://opencode.ai/api/v1
+
+  deepseek:
+    backend: openai_compatible
+    default_model: deepseek-chat
+    api_base: https://api.deepseek.com/v1
+
   ollama:
     backend: ollama
     default_model: llama3.1:8b
     api_base: http://localhost:11434
 
   openai:
-    backend: openai
+    backend: openai_compatible
     default_model: gpt-4o-mini
     api_base: https://api.openai.com/v1
 
   anthropic:
-    backend: anthropic
+    backend: openai_compatible
     default_model: claude-sonnet-4-20250514
     api_base: https://api.anthropic.com
 
 # ─── Tier definitions ────────────────────────────────────────────────
 # Each tier lists providers in preferred → fallback order.
-# The first provider that is reachable (or configured) wins.
+# The first provider that is reachable (has API key) wins.
 
 tiers:
   fast:
     description: "Low-latency, low-cost. Good for read-only and simple tasks."
     providers:
+      - provider: opencode
+        model: big-pickle
       - provider: ollama
         model: llama3.1:8b
-      - provider: openai
-        model: gpt-4o-mini
 
   standard:
     description: "Balanced capability and cost. Default for most agents."
     providers:
-      - provider: openai
-        model: gpt-4o
-      - provider: anthropic
-        model: claude-sonnet-4-20250514
-      - provider: ollama
-        model: llama3.1:70b
+      - provider: deepseek
+        model: deepseek-chat
+      - provider: opencode
+        model: big-pickle
 
   premium:
     description: "Maximum reasoning capability. Use for critical decisions."
     providers:
-      - provider: anthropic
-        model: claude-opus-4-20250514
-      - provider: openai
-        model: gpt-4o
+      - provider: deepseek
+        model: deepseek-coder
+      - provider: opencode
+        model: big-pickle
 
 # ─── Routing rules ──────────────────────────────────────────────────
 # Maps (agent_type, priority) -> tier.

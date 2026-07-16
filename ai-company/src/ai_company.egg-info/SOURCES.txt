@@ -5,8 +5,8 @@ src/ai_company/cli.py
 src/ai_company/config.py
 src/ai_company/generator.py
 src/ai_company/graph.py
+src/ai_company/model_router.py
 src/ai_company/registry.py
-src/ai_company/templates.py
 src/ai_company/utils.py
 src/ai_company/validator.py
 src/ai_company.egg-info/PKG-INFO
@@ -23,6 +23,7 @@ src/ai_company/cli/commands.py
 src/ai_company/cli/company.py
 src/ai_company/cli/config.py
 src/ai_company/cli/customer_success.py
+src/ai_company/cli/dashboard.py
 src/ai_company/cli/departments.py
 src/ai_company/cli/doctor.py
 src/ai_company/cli/executives.py
@@ -32,16 +33,20 @@ src/ai_company/cli/legal.py
 src/ai_company/cli/main.py
 src/ai_company/cli/marketing.py
 src/ai_company/cli/memory.py
+src/ai_company/cli/models.py
 src/ai_company/cli/orchestrator.py
 src/ai_company/cli/sales.py
 src/ai_company/cli/specialists.py
 src/ai_company/cli/workflows.py
 src/ai_company/config/__init__.py
+src/ai_company/dashboard/__init__.py
+src/ai_company/dashboard/api.py
+src/ai_company/dashboard/app.py
+src/ai_company/dashboard/models.py
 src/ai_company/doctor/__init__.py
 src/ai_company/doctor/checks.py
 src/ai_company/doctor/doctor.py
 src/ai_company/doctor/report.py
-src/ai_company/generator/__init__.py
 src/ai_company/graph/__init__.py
 src/ai_company/models/__init__.py
 src/ai_company/models/agent.py
@@ -61,6 +66,5 @@ src/ai_company/orchestrator/escalation.py
 src/ai_company/orchestrator/message_bus.py
 src/ai_company/orchestrator/scheduler.py
 src/ai_company/registry/__init__.py
-src/ai_company/templates/__init__.py
 src/ai_company/utils/__init__.py
 src/ai_company/validator/__init__.py

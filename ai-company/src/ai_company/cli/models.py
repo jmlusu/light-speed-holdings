@@ -65,7 +65,6 @@ def resolve(
 def check() -> None:
     """Check which providers are reachable."""
     import urllib.request
-    import json as _json
 
     from ai_company.model_router import ModelRouter
 

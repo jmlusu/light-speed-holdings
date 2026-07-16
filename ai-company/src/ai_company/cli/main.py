@@ -20,6 +20,8 @@ from ai_company.cli.hr import app as hr_app
 from ai_company.cli.specialists import app as specialists_app
 from ai_company.cli.orchestrator import app as orchestrator_app
 from ai_company.cli.models import app as models_app
+from ai_company.cli.dashboard import app as dashboard_app
+from ai_company.cli.executor import app as executor_app
 
 app = typer.Typer(
     help="AI Company Builder - Orchestrate AI agent hierarchies"
@@ -40,6 +42,8 @@ app.add_typer(hr_app, name="hr", help="Human Resources operations")
 app.add_typer(specialists_app, name="specialists", help="Manage specialist agents")
 app.add_typer(orchestrator_app, name="orchestrator", help="Autonomous coordination")
 app.add_typer(models_app, name="models", help="Model routing policy")
+app.add_typer(dashboard_app, name="dashboard", help="CEO dashboard")
+app.add_typer(executor_app, name="executor", help="Autonomous task execution")
 
 
 @app.command()
@@ -68,3 +72,4 @@ def status():
 
 if __name__ == "__main__":
     app()
+

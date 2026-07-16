@@ -25,7 +25,10 @@ dependencies = [
 
     "typer",
 
-    "python-dotenv"
+    "python-dotenv",
+    "fastapi",
+    "uvicorn[standard]",
+    "httpx",
 
 ]
 
