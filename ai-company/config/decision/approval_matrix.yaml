@@ -1,0 +1,60 @@
+approval_matrix:
+  - action: "deploy_to_production"
+    risk_level: "high"
+    required_approvals: ["cto", "ciso"]
+    sla_hours: 4
+    auto_approve: false
+
+  - action: "hire_executive"
+    risk_level: "critical"
+    required_approvals: ["human-ceo", "board_chair"]
+    sla_hours: 168
+    auto_approve: false
+
+  - action: "spend_over_10k"
+    risk_level: "medium"
+    required_approvals: ["cfo"]
+    sla_hours: 24
+    auto_approve: false
+
+  - action: "spend_over_100k"
+    risk_level: "high"
+    required_approvals: ["cfo", "human-ceo"]
+    sla_hours: 48
+    auto_approve: false
+
+  - action: "data_access_request"
+    risk_level: "medium"
+    required_approvals: ["cdo", "ciso"]
+    sla_hours: 24
+    auto_approve: false
+
+  - action: "security_exception"
+    risk_level: "critical"
+    required_approvals: ["ciso"]
+    sla_hours: 4
+    auto_approve: false
+
+  - action: "policy_change"
+    risk_level: "medium"
+    required_approvals: ["coo", "clo"]
+    sla_hours: 48
+    auto_approve: false
+
+  - action: "new_vendor"
+    risk_level: "low"
+    required_approvals: ["coo"]
+    sla_hours: 72
+    auto_approve: true
+
+  - action: "code_merge"
+    risk_level: "low"
+    required_approvals: ["peer_review"]
+    sla_hours: 4
+    auto_approve: true
+
+  - action: "agent_deployment"
+    risk_level: "medium"
+    required_approvals: ["cto"]
+    sla_hours: 8
+    auto_approve: false

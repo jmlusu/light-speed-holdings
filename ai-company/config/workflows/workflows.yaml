@@ -1,0 +1,336 @@
+workflows:
+  - id: "hiring"
+    name: "Hiring Workflow"
+    description: "End-to-end hiring process from requisition to offer"
+    trigger: "new_headcount_approved"
+    owner: "chro"
+    steps:
+      - id: "create_requisition"
+        name: "Create Job Requisition"
+        action: "hr.creates_requisition"
+        owner: "chro"
+        inputs: ["role", "department", "level"]
+        outputs: ["requisition_id"]
+      - id: "approve_requisition"
+        name: "Approve Requisition"
+        action: "approval.request"
+        owner: "department_executive"
+        inputs: ["requisition_id"]
+        outputs: ["approved"]
+        sla_hours: 48
+      - id: "source_candidates"
+        name: "Source Candidates"
+        action: "recruiter.sources"
+        owner: "recruiter"
+        inputs: ["requisition_id"]
+        outputs: ["candidate_pool"]
+      - id: "interview"
+        name: "Interview Process"
+        action: "recruiter.schedules_interviews"
+        owner: "recruiter"
+        inputs: ["candidate_pool"]
+        outputs: ["shortlisted"]
+      - id: "make_offer"
+        name: "Make Offer"
+        action: "hr.makes_offer"
+        owner: "chro"
+        inputs: ["shortlisted", "compensation_band"]
+        outputs: ["offer_id"]
+      - id: "onboard"
+        name: "Onboarding"
+        action: "hr.onboards"
+        owner: "chro"
+        inputs: ["offer_id"]
+        outputs: ["employee_id"]
+
+  - id: "procurement"
+    name: "Procurement Workflow"
+    description: "Purchase request to vendor payment"
+    trigger: "purchase_request_submitted"
+    owner: "coo"
+    steps:
+      - id: "submit_request"
+        name: "Submit Purchase Request"
+        action: "requestor.submits"
+        owner: "requestor"
+        inputs: ["item", "cost", "justification"]
+        outputs: ["request_id"]
+      - id: "budget_check"
+        name: "Budget Verification"
+        action: "finance.verifies_budget"
+        owner: "financial_analyst"
+        inputs: ["request_id", "department"]
+        outputs: ["budget_approved"]
+      - id: "vendor_selection"
+        name: "Vendor Selection"
+        action: "procurement.selects_vendor"
+        owner: "coo"
+        inputs: ["item", "requirements"]
+        outputs: ["vendor", "quote"]
+      - id: "approval"
+        name: "Purchase Approval"
+        action: "approval.request"
+        owner: "cfo"
+        inputs: ["request_id", "vendor", "quote"]
+        outputs: ["approved"]
+        sla_hours: 24
+      - id: "execute_purchase"
+        name: "Execute Purchase"
+        action: "procurement.executes"
+        owner: "coo"
+        inputs: ["approved", "vendor", "quote"]
+        outputs: ["purchase_order"]
+
+  - id: "incident_response"
+    name: "Incident Response Workflow"
+    description: "Security incident detection to resolution"
+    trigger: "security_incident_detected"
+    owner: "ciso"
+    steps:
+      - id: "detect"
+        name: "Incident Detection"
+        action: "monitoring.detects"
+        owner: "security_engineer"
+        inputs: ["alert"]
+        outputs: ["incident_id"]
+      - id: "triage"
+        name: "Triage and Classify"
+        action: "ciso.triages"
+        owner: "ciso"
+        inputs: ["incident_id"]
+        outputs: ["severity", "classification"]
+        sla_minutes: 15
+      - id: "contain"
+        name: "Containment"
+        action: "security_engineer.contains"
+        owner: "security_engineer"
+        inputs: ["incident_id", "severity"]
+        outputs: ["contained"]
+        sla_hours: 1
+      - id: "eradicate"
+        name: "Eradication"
+        action: "security_engineer.eradicates"
+        owner: "security_engineer"
+        inputs: ["incident_id"]
+        outputs: ["resolved"]
+      - id: "recover"
+        name: "Recovery"
+        action: "devops.recovers"
+        owner: "devops_engineer"
+        inputs: ["incident_id"]
+        outputs: ["recovered"]
+      - id: "postmortem"
+        name: "Post-mortem"
+        action: "ciso.writes_postmortem"
+        owner: "ciso"
+        inputs: ["incident_id"]
+        outputs: ["postmortem_id"]
+        sla_hours: 48
+
+  - id: "board_meeting"
+    name: "Board Meeting Workflow"
+    description: "Board meeting preparation to follow-up"
+    trigger: "quarterly_meeting_scheduled"
+    owner: "chief-of-staff"
+    steps:
+      - id: "prepare_deck"
+        name: "Prepare Presentation"
+        action: "chief-of-staff.prepares"
+        owner: "chief-of-staff"
+        inputs: ["metrics", "financials", "strategy_update"]
+        outputs: ["deck_id"]
+        sla_days: 7
+      - id: "distribute_materials"
+        name: "Distribute Materials"
+        action: "chief-of-staff.distributes"
+        owner: "chief-of-staff"
+        inputs: ["deck_id"]
+        outputs: ["distributed"]
+        sla_days: 3
+      - id: "conduct_meeting"
+        name: "Conduct Board Meeting"
+        action: "chair.facilitates"
+        owner: "board_chair"
+        inputs: ["deck_id"]
+        outputs: ["minutes", "decisions"]
+      - id: "follow_up"
+        name: "Follow-up Actions"
+        action: "chief-of-staff.assigns"
+        owner: "chief-of-staff"
+        inputs: ["decisions"]
+        outputs: ["action_items"]
+        sla_days: 2
+
+  - id: "weekly_planning"
+    name: "Weekly Planning Workflow"
+    description: "Weekly team planning and alignment"
+    trigger: "weekly_cron"
+    owner: "chief-of-staff"
+    steps:
+      - id: "collect_updates"
+        name: "Collect Team Updates"
+        action: "department_heads.report"
+        owner: "chief-of-staff"
+        inputs: []
+        outputs: ["team_updates"]
+      - id: "review_metrics"
+        name: "Review Metrics"
+        action: "chief-of-staff.reviews"
+        owner: "chief-of-staff"
+        inputs: ["team_updates", "kpis"]
+        outputs: ["metrics_review"]
+      - id: "identify_blockers"
+        name: "Identify Blockers"
+        action: "chief-of_staff.identifies"
+        owner: "chief-of-staff"
+        inputs: ["team_updates"]
+        outputs: ["blockers"]
+      - id: "plan_week"
+        name: "Plan the Week"
+        action: "chief-of-staff.plans"
+        owner: "chief-of-staff"
+        inputs: ["metrics_review", "blockers"]
+        outputs: ["weekly_plan"]
+
+  - id: "sprint_planning"
+    name: "Sprint Planning Workflow"
+    description: "Bi-weekly sprint planning"
+    trigger: "sprint_start_cron"
+    owner: "cto"
+    steps:
+      - id: "review_backlog"
+        name: "Review Backlog"
+        action: "product_manager.refines"
+        owner: "product_manager"
+        inputs: ["backlog"]
+        outputs: ["prioritized_backlog"]
+      - id: "estimate"
+        name: "Estimate Work"
+        action: "engineering_team.estimates"
+        owner: "senior_engineer"
+        inputs: ["prioritized_backlog"]
+        outputs: ["estimated_backlog"]
+      - id: "commit"
+        name: "Sprint Commitment"
+        action: "cto.approves"
+        owner: "cto"
+        inputs: ["estimated_backlog", "velocity"]
+        outputs: ["sprint_plan"]
+      - id: "kickoff"
+        name: "Sprint Kickoff"
+        action: "senior_engineer.kicks_off"
+        owner: "senior_engineer"
+        inputs: ["sprint_plan"]
+        outputs: ["sprint_started"]
+
+  - id: "quarterly_review"
+    name: "Quarterly Review Workflow"
+    description: "Quarterly business review and planning"
+    trigger: "quarter_end_cron"
+    owner: "human-ceo"
+    steps:
+      - id: "collect_results"
+        name: "Collect Quarter Results"
+        action: "department_heads.report"
+        owner: "chief-of-staff"
+        inputs: []
+        outputs: ["quarter_results"]
+      - id: "analyze_performance"
+        name: "Analyze Performance"
+        action: "cfo.analyzes"
+        owner: "cfo"
+        inputs: ["quarter_results", "kpis"]
+        outputs: ["performance_analysis"]
+      - id: "review_strategy"
+        name: "Review Strategy"
+        action: "cso.reviews"
+        owner: "cso"
+        inputs: ["performance_analysis"]
+        outputs: ["strategy_adjustments"]
+      - id: "plan_next_quarter"
+        name: "Plan Next Quarter"
+        action: "chief-of-staff.plans"
+        owner: "chief-of-staff"
+        inputs: ["strategy_adjustments"]
+        outputs: ["next_quarter_plan"]
+
+  - id: "budget_approval"
+    name: "Budget Approval Workflow"
+    description: "Annual/quarterly budget approval"
+    trigger: "budget_cycle_start"
+    owner: "cfo"
+    steps:
+      - id: "collect_requests"
+        name: "Collect Department Requests"
+        action: "cfo.collects"
+        owner: "cfo"
+        inputs: []
+        outputs: ["budget_requests"]
+      - id: "review_requests"
+        name: "Review and Optimize"
+        action: "cfo.reviews"
+        owner: "cfo"
+        inputs: ["budget_requests"]
+        outputs: ["optimized_budget"]
+      - id: "executive_review"
+        name: "Executive Review"
+        action: "human-ceo.approves"
+        owner: "human-ceo"
+        inputs: ["optimized_budget"]
+        outputs: ["approved_budget"]
+        sla_hours: 168
+      - id: "board_approval"
+        name: "Board Approval"
+        action: "board.approves"
+        owner: "board_chair"
+        inputs: ["approved_budget"]
+        outputs: ["final_budget"]
+      - id: "communicate"
+        name: "Communicate Budget"
+        action: "cfo.communicates"
+        owner: "cfo"
+        inputs: ["final_budget"]
+        outputs: ["communicated"]
+
+  - id: "project_launch"
+    name: "Project Launch Workflow"
+    description: "New project from concept to launch"
+    trigger: "project_approved"
+    owner: "product_manager"
+    steps:
+      - id: "define_scope"
+        name: "Define Project Scope"
+        action: "product_manager.defines"
+        owner: "product_manager"
+        inputs: ["project_idea"]
+        outputs: ["scope_document"]
+      - id: "technical_design"
+        name: "Technical Design"
+        action: "senior_engineer.designs"
+        owner: "senior_engineer"
+        inputs: ["scope_document"]
+        outputs: ["technical_design"]
+      - id: "approve_design"
+        name: "Design Review"
+        action: "cto.approves"
+        owner: "cto"
+        inputs: ["technical_design"]
+        outputs: ["design_approved"]
+      - id: "implement"
+        name: "Implementation"
+        action: "engineering_team.implements"
+        owner: "senior_engineer"
+        inputs: ["design_approved"]
+        outputs: ["implementation"]
+      - id: "test"
+        name: "Testing"
+        action: "qa_engineer.tests"
+        owner: "qa_engineer"
+        inputs: ["implementation"]
+        outputs: ["tested"]
+      - id: "launch"
+        name: "Launch"
+        action: "devops.deploys"
+        owner: "devops_engineer"
+        inputs: ["tested"]
+        outputs: ["deployed"]

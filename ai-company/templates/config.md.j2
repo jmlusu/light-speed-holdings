@@ -1,0 +1,49 @@
+---
+name: {{ id }}
+description: {{ description | default('Configuration generator') }}
+tools: ["read_file"]
+mode: subagent
+permission:
+  read: allow
+  grep: allow
+  list: allow
+  edit: deny
+  bash: deny
+  task: deny
+---
+
+# Config Generator: {{ name | default(id) }}
+
+## Purpose
+
+This agent generates and validates YAML configuration files for the AI Company Builder.
+
+---
+
+## Supported Config Types
+
+{% for config_type in config_types | default([]) %}
+- **{{ config_type }}**: {{ config_descriptions | default({}) | dict | default('') | string }}
+{% else %}
+- Company identity and structure
+- Board of directors and committees
+- Executive team and departments
+- Specialist agents
+- Workflows and decision matrices
+- Policies, KPIs, and budgets
+{% endfor %}
+
+---
+
+## Generation Rules
+
+- All YAML must be valid and parseable
+- IDs must be snake_case and unique within their category
+- Required fields must be present
+- Cross-references must resolve to existing entities
+
+---
+
+## Validation
+
+After generation, run `ai-company doctor run` to validate the complete configuration.

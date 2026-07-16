@@ -1,0 +1,238 @@
+specialists:
+  - id: "software_engineer"
+    name: "Software Engineer"
+    department: "engineering"
+    reports_to: "cto"
+    mission: "Write clean, tested, maintainable code."
+    responsibilities:
+      - "Implement features"
+      - "Write unit and integration tests"
+      - "Code review"
+      - "Bug fixes"
+      - "Technical documentation"
+    tools: ["read", "write", "execute", "code_interpreter"]
+    seniority: "mid"
+
+  - id: "senior_engineer"
+    name: "Senior Engineer"
+    department: "engineering"
+    reports_to: "cto"
+    mission: "Lead technical design and mentor junior engineers."
+    responsibilities:
+      - "Technical architecture"
+      - "Mentoring"
+      - "Complex feature implementation"
+      - "Performance optimization"
+      - "Cross-team coordination"
+    tools: ["read", "write", "execute", "code_interpreter", "delegate"]
+    seniority: "senior"
+
+  - id: "data_scientist"
+    name: "Data Scientist"
+    department: "data"
+    reports_to: "cdo"
+    mission: "Extract insights from data and build predictive models."
+    responsibilities:
+      - "Data analysis"
+      - "Model development"
+      - "Experiment design"
+      - "Visualization"
+      - "Reporting"
+    tools: ["read", "write", "execute", "code_interpreter"]
+    seniority: "mid"
+
+  - id: "ml_engineer"
+    name: "ML Engineer"
+    department: "data"
+    reports_to: "cdo"
+    mission: "Build and deploy machine learning systems."
+    responsibilities:
+      - "ML pipeline development"
+      - "Model deployment"
+      - "Performance monitoring"
+      - "Feature engineering"
+      - "A/B testing"
+    tools: ["read", "write", "execute", "code_interpreter"]
+    seniority: "mid"
+
+  - id: "security_engineer"
+    name: "Security Engineer"
+    department: "security"
+    reports_to: "ciso"
+    mission: "Protect systems and data from security threats."
+    responsibilities:
+      - "Vulnerability assessment"
+      - "Security audits"
+      - "Incident response"
+      - "Security tooling"
+      - "Compliance automation"
+    tools: ["read", "write", "execute"]
+    seniority: "mid"
+
+  - id: "devops_engineer"
+    name: "DevOps Engineer"
+    department: "engineering"
+    reports_to: "cto"
+    mission: "Build and maintain CI/CD pipelines and infrastructure."
+    responsibilities:
+      - "CI/CD pipeline management"
+      - "Infrastructure as code"
+      - "Monitoring and alerting"
+      - "Container orchestration"
+      - "Release management"
+    tools: ["read", "write", "execute"]
+    seniority: "mid"
+
+  - id: "cloud_engineer"
+    name: "Cloud Engineer"
+    department: "it"
+    reports_to: "cio"
+    mission: "Design and manage cloud infrastructure."
+    responsibilities:
+      - "Cloud architecture"
+      - "Cost optimization"
+      - "Disaster recovery"
+      - "Performance tuning"
+      - "Security configuration"
+    tools: ["read", "write", "execute"]
+    seniority: "mid"
+
+  - id: "qa_engineer"
+    name: "QA Engineer"
+    department: "engineering"
+    reports_to: "cto"
+    mission: "Ensure product quality through testing and validation."
+    responsibilities:
+      - "Test planning"
+      - "Automated testing"
+      - "Bug tracking"
+      - "Regression testing"
+      - "Quality metrics"
+    tools: ["read", "write", "execute"]
+    seniority: "mid"
+
+  - id: "business_analyst"
+    name: "Business Analyst"
+    department: "operations"
+    reports_to: "coo"
+    mission: "Bridge business needs with technical solutions."
+    responsibilities:
+      - "Requirements gathering"
+      - "Process analysis"
+      - "Data analysis"
+      - "Stakeholder communication"
+      - "Documentation"
+    tools: ["read", "write"]
+    seniority: "mid"
+
+  - id: "financial_analyst"
+    name: "Financial Analyst"
+    department: "finance"
+    reports_to: "cfo"
+    mission: "Provide financial analysis and forecasting."
+    responsibilities:
+      - "Financial modeling"
+      - "Budget tracking"
+      - "Variance analysis"
+      - "Forecasting"
+      - "Reporting"
+    tools: ["read", "write", "code_interpreter"]
+    seniority: "mid"
+
+  - id: "recruiter"
+    name: "Recruiter"
+    department: "hr"
+    reports_to: "chro"
+    mission: "Attract and hire top talent."
+    responsibilities:
+      - "Sourcing candidates"
+      - "Interview coordination"
+      - "Offer negotiation"
+      - "Employer branding"
+      - "Pipeline management"
+    tools: ["read", "write"]
+    seniority: "mid"
+
+  - id: "ux_designer"
+    name: "UX Designer"
+    department: "product"
+    reports_to: "cto"
+    mission: "Create intuitive and delightful user experiences."
+    responsibilities:
+      - "User research"
+      - "Wireframing"
+      - "Prototyping"
+      - "Design systems"
+      - "Usability testing"
+    tools: ["read", "write"]
+    seniority: "mid"
+
+  - id: "technical_writer"
+    name: "Technical Writer"
+    department: "engineering"
+    reports_to: "cto"
+    mission: "Create clear and accurate technical documentation."
+    responsibilities:
+      - "API documentation"
+      - "User guides"
+      - "Architecture docs"
+      - "Tutorial creation"
+      - "Documentation maintenance"
+    tools: ["read", "write"]
+    seniority: "mid"
+
+  - id: "legal_counsel"
+    name: "Legal Counsel"
+    department: "legal"
+    reports_to: "clo"
+    mission: "Provide legal advice and ensure compliance."
+    responsibilities:
+      - "Contract review"
+      - "Legal research"
+      - "Compliance monitoring"
+      - "Risk assessment"
+      - "Policy development"
+    tools: ["read", "write"]
+    seniority: "senior"
+
+  - id: "research_analyst"
+    name: "Research Analyst"
+    department: "research"
+    reports_to: "cto"
+    mission: "Conduct research and develop new approaches."
+    responsibilities:
+      - "Literature review"
+      - "Prototype development"
+      - "Experiment design"
+      - "Results analysis"
+      - "Publication"
+    tools: ["read", "write", "execute", "code_interpreter"]
+    seniority: "mid"
+
+  - id: "customer_support"
+    name: "Customer Support"
+    department: "operations"
+    reports_to: "coo"
+    mission: "Resolve customer issues and ensure satisfaction."
+    responsibilities:
+      - "Issue triage"
+      - "Customer communication"
+      - "Knowledge base maintenance"
+      - "Escalation management"
+      - "Satisfaction tracking"
+    tools: ["read", "write"]
+    seniority: "mid"
+
+  - id: "product_manager"
+    name: "Product Manager"
+    department: "product"
+    reports_to: "cto"
+    mission: "Define product strategy and prioritize features."
+    responsibilities:
+      - "Product roadmap"
+      - "Feature prioritization"
+      - "User story creation"
+      - "Stakeholder alignment"
+      - "Market analysis"
+    tools: ["read", "write", "web_search"]
+    seniority: "senior"

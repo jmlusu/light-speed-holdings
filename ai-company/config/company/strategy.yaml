@@ -1,0 +1,47 @@
+strategy:
+  pillars:
+    - name: "Product Excellence"
+      description: "Build the best AI company generation platform"
+      priorities:
+        - "Reliable code generation"
+        - "Idempotent builds"
+        - "Comprehensive testing"
+      kpis:
+        - name: "Build Success Rate"
+          target: 99.5
+          unit: "percent"
+        - name: "Test Coverage"
+          target: 90
+          unit: "percent"
+
+    - name: "Market Expansion"
+      description: "Grow customer base and revenue"
+      priorities:
+        - "Enterprise sales"
+        - "Partner channel"
+        - "International markets"
+      kpis:
+        - name: "ARR"
+          target: 10000000
+          unit: "usd"
+        - name: "Customer Count"
+          target: 100
+          unit: "count"
+
+    - name: "Operational Scale"
+      description: "Scale operations to support growth"
+      priorities:
+        - "Automate repetitive work"
+        - "Hire top talent"
+        - "Build robust infrastructure"
+      kpis:
+        - name: "Agent Utilization"
+          target: 80
+          unit: "percent"
+        - name: "Process Automation Rate"
+          target: 70
+          unit: "percent"
+
+  quarterly_focus:
+    current_quarter: "Q3 2024"
+    focus_area: "Product Excellence"

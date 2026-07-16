@@ -1,0 +1,46 @@
+kpis:
+  company:
+    - id: "KPI-001"
+      name: "Annual Recurring Revenue"
+      category: "finance"
+      target: 10000000
+      current: 2500000
+      unit: "usd"
+      frequency: "monthly"
+      owner: "cfo"
+
+    - id: "KPI-002"
+      name: "Customer Satisfaction"
+      category: "customer"
+      target: 95
+      current: 88
+      unit: "percent"
+      frequency: "quarterly"
+      owner: "chief_of_staff"
+
+    - id: "KPI-003"
+      name: "Agent Utilization Rate"
+      category: "operations"
+      target: 80
+      current: 65
+      unit: "percent"
+      frequency: "weekly"
+      owner: "coo"
+
+    - id: "KPI-004"
+      name: "Build Success Rate"
+      category: "engineering"
+      target: 99.5
+      current: 97.2
+      unit: "percent"
+      frequency: "daily"
+      owner: "cto"
+
+    - id: "KPI-005"
+      name: "Employee Net Promoter Score"
+      category: "people"
+      target: 75
+      current: 62
+      unit: "score"
+      frequency: "quarterly"
+      owner: "chro"

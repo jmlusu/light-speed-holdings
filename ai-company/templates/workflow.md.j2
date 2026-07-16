@@ -1,0 +1,49 @@
+---
+name: {{ id }}
+description: {{ description | default('') }}
+tools: []
+mode: subagent
+permission:
+  read: allow
+  grep: allow
+  list: allow
+  edit: deny
+  bash: deny
+  task: deny
+---
+
+# {{ name | default(id) }}
+
+## Workflow: {{ name }}
+
+**Trigger:** {{ trigger | default('manual') }}
+
+**Owner:** {{ owner | default('operations') }}
+
+---
+
+## Steps
+
+{% for step in steps | default([]) %}
+### Step {{ loop.index }}: {{ step.name }}
+
+**Action:** {{ step.action | default('') }}
+
+**Owner:** {{ step.owner | default(owner | default('')) }}
+
+**SLA:** {% if step.sla_hours | default(0) > 0 %}{{ step.sla_hours }}h{% elif step.sla_days | default(0) > 0 %}{{ step.sla_days }}d{% else %}None{% endif %}
+
+{% if step.inputs %}**Inputs:** {{ step.inputs | join(', ') }}{% endif %}
+
+{% if step.outputs %}**Outputs:** {{ step.outputs | join(', ') }}{% endif %}
+
+---
+
+{% endfor %}
+
+## Operating Principles
+
+- Follow the defined sequence unless blocked
+- Document decisions and handoff points
+- Escalate if SLA is at risk
+- Record completion status for audit trail

@@ -1,0 +1,40 @@
+committees:
+  - id: "audit_committee"
+    name: "Audit Committee"
+    chair: "board_finance"
+    members: ["board_finance", "board_risk"]
+    responsibilities:
+      - "Financial reporting oversight"
+      - "Internal audit review"
+      - "Compliance monitoring"
+    meeting_frequency: "quarterly"
+
+  - id: "compensation_committee"
+    name: "Compensation Committee"
+    chair: "board_chair"
+    members: ["board_chair", "board_strategy"]
+    responsibilities:
+      - "Executive compensation"
+      - "Equity plan administration"
+      - "Performance reviews"
+    meeting_frequency: "quarterly"
+
+  - id: "technology_committee"
+    name: "Technology Committee"
+    chair: "board_technology"
+    members: ["board_technology", "board_strategy"]
+    responsibilities:
+      - "Technology strategy review"
+      - "Architecture decisions"
+      - "Security posture"
+    meeting_frequency: "monthly"
+
+  - id: "nominating_committee"
+    name: "Nominating Committee"
+    chair: "board_chair"
+    members: ["board_chair", "board_customer"]
+    responsibilities:
+      - "Board member recruitment"
+      - "Succession planning"
+      - "Governance best practices"
+    meeting_frequency: "quarterly"

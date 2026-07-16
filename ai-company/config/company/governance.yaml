@@ -1,0 +1,38 @@
+governance:
+  decision_rights:
+    - level: "strategic"
+      authority: "Board of Directors"
+      scope: ["budget_over_1m", "acquisitions", "executive_hiring"]
+    - level: "operational"
+      authority: "CEO"
+      scope: ["budget_over_100k", "department_restructuring", "product_pivot"]
+    - level: "tactical"
+      authority: "Chief of Staff"
+      scope: ["cross_department", "agent_deployment", "process_changes"]
+    - level: "departmental"
+      authority: "Department Executive"
+      scope: ["team_hiring", "project_prioritization", "tool_selection"]
+    - level: "individual"
+      authority: "Agent"
+      scope: ["task_execution", "code_changes", "documentation"]
+
+  escalation_rules:
+    - trigger: "budget_exceeds_authority"
+      action: "escalate_to_next_level"
+    - trigger: "cross_department_conflict"
+      action: "escalate_to_chief_of_staff"
+    - trigger: "security_incident"
+      action: "escalate_to_ciso_immediately"
+    - trigger: "customer_facing_issue"
+      action: "escalate_to_ceo_within_1_hour"
+
+  approval_matrix:
+    - action: "deploy_to_production"
+      required_approvals: ["cto", "ciso"]
+      sla_hours: 4
+    - action: "hire_executive"
+      required_approvals: ["ceo", "board"]
+      sla_hours: 168
+    - action: "spend_over_10k"
+      required_approvals: ["cfo"]
+      sla_hours: 24

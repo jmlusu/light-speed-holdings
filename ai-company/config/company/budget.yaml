@@ -1,0 +1,65 @@
+budget:
+  fiscal_year: 2024
+  total_budget: 15000000
+  currency: "USD"
+
+  departments:
+    - name: "Engineering"
+      budget: 5000000
+      headcount: 25
+      priorities: ["product_development", "infrastructure", "security"]
+
+    - name: "Sales"
+      budget: 3000000
+      headcount: 15
+      priorities: ["enterprise_sales", "partner_channel", "demand_gen"]
+
+    - name: "Marketing"
+      budget: 2000000
+      headcount: 10
+      priorities: ["brand_awareness", "content_marketing", "events"]
+
+    - name: "Operations"
+      budget: 1500000
+      headcount: 8
+      priorities: ["process_automation", "tooling", "compliance"]
+
+    - name: "HR"
+      budget: 800000
+      headcount: 5
+      priorities: ["recruiting", "culture", "learning_development"]
+
+    - name: "Legal"
+      budget: 700000
+      headcount: 3
+      priorities: ["contracts", "compliance", "ip_protection"]
+
+    - name: "IT"
+      budget: 500000
+      headcount: 4
+      priorities: ["infrastructure", "security", "tooling"]
+
+    - name: "Security"
+      budget: 500000
+      headcount: 3
+      priorities: ["appsec", "compliance", "incident_response"]
+
+    - name: "Data"
+      budget: 400000
+      headcount: 4
+      priorities: ["data_pipeline", "analytics", "ml_ops"]
+
+    - name: "Research"
+      budget: 300000
+      headcount: 3
+      priorities: ["ai_research", "prototype", "publications"]
+
+    - name: "Product"
+      budget: 300000
+      headcount: 3
+      priorities: ["product_discovery", "user_research", "design"]
+
+  contingency:
+    percentage: 5
+    amount: 750000
+    approval_required: "cfo"

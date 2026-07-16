@@ -1,0 +1,81 @@
+decision_tree:
+  nodes:
+    - id: "root"
+      question: "What type of decision is this?"
+      type: "branch"
+      children: ["financial", "technical", "hr", "strategic", "operational"]
+
+    - id: "financial"
+      question: "What is the budget impact?"
+      type: "branch"
+      children: ["fin_under_10k", "fin_10k_100k", "fin_over_100k"]
+
+    - id: "fin_under_10k"
+      action: "Auto-approve by department exec"
+      authority: "department_executive"
+      sla_hours: 4
+
+    - id: "fin_10k_100k"
+      action: "CFO approval required"
+      authority: "cfo"
+      sla_hours: 24
+
+    - id: "fin_over_100k"
+      action: "CFO + CEO approval required"
+      authority: "cfo_human-ceo"
+      sla_hours: 48
+
+    - id: "technical"
+      question: "Does it affect production systems?"
+      type: "branch"
+      children: ["tech_prod", "tech_internal"]
+
+    - id: "tech_prod"
+      action: "CTO + CISO approval required"
+      authority: "cto_ciso"
+      sla_hours: 4
+
+    - id: "tech_internal"
+      action: "Team lead approval sufficient"
+      authority: "team_lead"
+      sla_hours: 8
+
+    - id: "hr"
+      question: "What level of hire?"
+      type: "branch"
+      children: ["hr_ic", "hr_manager", "hr_executive"]
+
+    - id: "hr_ic"
+      action: "Hiring manager + HR approval"
+      authority: "hiring_manager_chro"
+      sla_hours: 48
+
+    - id: "hr_manager"
+      action: "Department exec + CHRO approval"
+      authority: "department_exec_chro"
+      sla_hours: 72
+
+    - id: "hr_executive"
+      action: "CEO + Board approval"
+      authority: "human-ceo_board"
+      sla_hours: 168
+
+    - id: "strategic"
+      action: "Board approval required"
+      authority: "board"
+      sla_hours: 336
+
+    - id: "operational"
+      question: "Cross-department impact?"
+      type: "branch"
+      children: ["ops_single", "ops_cross"]
+
+    - id: "ops_single"
+      action: "Department exec approval"
+      authority: "department_executive"
+      sla_hours: 24
+
+    - id: "ops_cross"
+      action: "Chief of Staff coordination"
+      authority: "chief-of-staff"
+      sla_hours: 48

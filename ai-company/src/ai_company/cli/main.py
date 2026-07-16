@@ -22,6 +22,7 @@ from ai_company.cli.orchestrator import app as orchestrator_app
 from ai_company.cli.models import app as models_app
 from ai_company.cli.dashboard import app as dashboard_app
 from ai_company.cli.executor import app as executor_app
+from ai_company.cli.company import app as company_app
 
 app = typer.Typer(
     help="AI Company Builder - Orchestrate AI agent hierarchies"
@@ -44,6 +45,7 @@ app.add_typer(orchestrator_app, name="orchestrator", help="Autonomous coordinati
 app.add_typer(models_app, name="models", help="Model routing policy")
 app.add_typer(dashboard_app, name="dashboard", help="CEO dashboard")
 app.add_typer(executor_app, name="executor", help="Autonomous task execution")
+app.add_typer(company_app, name="company", help="Bootstrap and manage the AI company")
 
 
 @app.command()

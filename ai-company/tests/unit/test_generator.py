@@ -20,7 +20,9 @@ def sample_registry(tmp_path: Path) -> Path:
                     "id": "test_exec",
                     "name": "Test Executive",
                     "title": "Executive",
+                    "type": "executive",
                     "description": "A test executive agent.",
+                    "mission": "Lead testing.",
                     "department": "Testing",
                     "reports_to": "CEO",
                     "direct_reports": ["test_spec"],
@@ -32,12 +34,15 @@ def sample_registry(tmp_path: Path) -> Path:
                     "id": "test_spec",
                     "name": "Test Specialist",
                     "title": "Specialist",
+                    "type": "specialist",
                     "description": "A test specialist agent.",
+                    "mission": "Write tests.",
                     "department": "Testing",
                     "reports_to": "test_exec",
                     "responsibilities": ["Write tests"],
                     "guidelines": "Cover edge cases.",
                     "tools": ["read"],
+                    "seniority": "mid",
                 },
             ],
         }
@@ -49,7 +54,7 @@ def sample_registry(tmp_path: Path) -> Path:
 
 @pytest.fixture()
 def templates_dir() -> Path:
-    return Path(__file__).resolve().parents[2] / "templates" / "agents"
+    return Path(__file__).resolve().parents[2] / "templates"
 
 
 @pytest.fixture()

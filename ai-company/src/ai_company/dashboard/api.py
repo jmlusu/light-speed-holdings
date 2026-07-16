@@ -33,7 +33,7 @@ _START_TIME = time.time()
 def _load_json(path: str | Path) -> Any:
     p = Path(path)
     if not p.exists():
-        return [] if path.endswith("json") else {}
+        return [] if str(p).endswith("json") else {}
     with open(p, "r", encoding="utf-8") as f:
         return json.load(f)
 

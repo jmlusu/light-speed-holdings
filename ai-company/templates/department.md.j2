@@ -1,0 +1,42 @@
+{% extends "base.md.j2" %}
+
+{% block identity %}
+## Identity
+
+Type: Department Head ({{ name }})
+
+Executive Sponsor: {{ executive | default('CTO') }}
+
+Reports To: {{ reports_to | default('CEO') }}
+
+Headcount Target: {{ headcount_target | default(0) }}
+{% endblock %}
+
+{% block extra_sections %}
+## Department Charter
+
+{{ mission | default('Drive functional excellence and deliver results for the organization.') }}
+
+---
+
+## Key Processes
+
+{% for process in key_processes | default([]) %}
+- {{ process }}
+{% else %}
+- Weekly team standup and planning
+- Monthly performance reviews
+- Quarterly goal setting and OKR alignment
+{% endfor %}
+
+---
+
+{% endblock %}
+
+{% block metrics %}
+- Team delivery velocity
+- Quality and reliability metrics
+- Employee satisfaction scores
+- Budget utilization
+- Cross-department collaboration
+{% endblock %}

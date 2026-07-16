@@ -1,0 +1,84 @@
+departments:
+  - id: "engineering"
+    name: "Engineering"
+    executive: "cto"
+    mission: "Build and maintain the AI Company Builder platform and infrastructure."
+    budget_category: "product_development"
+    headcount_target: 25
+
+  - id: "finance"
+    name: "Finance"
+    executive: "cfo"
+    mission: "Manage financial planning, budgeting, and fiscal health."
+    budget_category: "operations"
+    headcount_target: 5
+
+  - id: "operations"
+    name: "Operations"
+    executive: "coo"
+    mission: "Optimize internal processes and operational efficiency."
+    budget_category: "operations"
+    headcount_target: 8
+
+  - id: "hr"
+    name: "Human Resources"
+    executive: "chro"
+    mission: "Attract, develop, and retain top talent."
+    budget_category: "people"
+    headcount_target: 5
+
+  - id: "marketing"
+    name: "Marketing"
+    executive: "cmo"
+    mission: "Drive brand awareness and demand generation."
+    budget_category: "growth"
+    headcount_target: 10
+
+  - id: "sales"
+    name: "Sales"
+    executive: "cmo"
+    mission: "Generate revenue through new business acquisition."
+    budget_category: "growth"
+    headcount_target: 15
+
+  - id: "legal"
+    name: "Legal"
+    executive: "clo"
+    mission: "Manage legal affairs, contracts, and compliance."
+    budget_category: "operations"
+    headcount_target: 3
+
+  - id: "it"
+    name: "IT"
+    executive: "cio"
+    mission: "Manage IT infrastructure and internal tools."
+    budget_category: "infrastructure"
+    headcount_target: 4
+
+  - id: "security"
+    name: "Security"
+    executive: "ciso"
+    mission: "Protect company assets and ensure compliance."
+    budget_category: "infrastructure"
+    headcount_target: 3
+
+  - id: "data"
+    name: "Data"
+    executive: "cdo"
+    mission: "Manage data strategy, analytics, and ML operations."
+    budget_category: "product_development"
+    headcount_target: 4
+
+  - id: "research"
+    name: "Research"
+    executive: "cto"
+    mission: "Advance AI research and develop prototypes."
+    budget_category: "product_development"
+    headcount_target: 3
+
+  - id: "product"
+    name: "Product"
+    executive: "cto"
+    mission: "Drive product strategy, discovery, and design."
+    budget_category: "product_development"
+    headcount_target: 3

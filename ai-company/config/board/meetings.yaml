@@ -1,0 +1,33 @@
+meetings:
+  - id: "annual_board"
+    name: "Annual Board Meeting"
+    frequency: "annual"
+    month: 1
+    agenda_items:
+      - "Annual strategy review"
+      - "Financial performance"
+      - "Board elections"
+      - "Budget approval"
+    required_attendees: ["all_board"]
+    quorum: 4
+
+  - id: "quarterly_board"
+    name: "Quarterly Board Meeting"
+    frequency: "quarterly"
+    agenda_items:
+      - "Quarterly financial review"
+      - "Strategy progress"
+      - "Risk assessment"
+      - "Key decisions"
+    required_attendees: ["all_board"]
+    quorum: 4
+
+  - id: "monthly_board"
+    name: "Monthly Board Check-in"
+    frequency: "monthly"
+    agenda_items:
+      - "Monthly metrics review"
+      - "Critical issues"
+      - "Upcoming decisions"
+    required_attendees: ["board_chair", "ceo"]
+    quorum: 3

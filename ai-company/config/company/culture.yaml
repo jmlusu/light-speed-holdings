@@ -1,0 +1,48 @@
+culture:
+  values:
+    - name: "Innovation"
+      description: "We challenge the status quo and experiment boldly"
+      behaviors:
+        - "Propose bold ideas"
+        - "Run fast experiments"
+        - "Learn from failure"
+    - name: "Transparency"
+      description: "We share information openly and honestly"
+      behaviors:
+        - "Default to open"
+        - "Share context freely"
+        - "Admit mistakes quickly"
+    - name: "Security"
+      description: "We protect data and systems by design"
+      behaviors:
+        - "Least privilege access"
+        - "Encrypt everything"
+        - "Audit all changes"
+    - name: "Customer First"
+      description: "We start with customer needs and work backward"
+      behaviors:
+        - "Talk to customers weekly"
+        - "Measure satisfaction"
+        - "Fix pain points fast"
+    - name: "Automation"
+      description: "We automate repetitive work to free humans for creative tasks"
+      behaviors:
+        - "If done twice, automate it"
+        - "Document for machines"
+        - "Build self-healing systems"
+
+  communication:
+    style: "Direct, concise, data-driven"
+    tools: ["Slack", "GitHub", "Linear", "Notion"]
+    meeting_cadence:
+      daily_standup: false
+      weekly_sync: true
+      monthly_all_hands: true
+      quarterly_review: true
+
+  norms:
+    - "Write it down or it didn't happen"
+    - "PRs need one review minimum"
+    - "Tests before merge"
+    - "Config over code"
+    - "Generated files are marked"

@@ -1,0 +1,48 @@
+board:
+  - id: "board_chair"
+    name: "Board Chair"
+    role: "Chairperson"
+    type: "independent"
+    expertise: ["corporate_governance", "scaling_companies"]
+    term_start: "2024-01-01"
+    term_end: "2027-01-01"
+
+  - id: "board_finance"
+    name: "Finance Advisor"
+    role: "Finance Committee Chair"
+    type: "independent"
+    expertise: ["venture_capital", "financial_modeling"]
+    term_start: "2024-01-01"
+    term_end: "2027-01-01"
+
+  - id: "board_technology"
+    name: "Technology Advisor"
+    role: "Technology Committee Chair"
+    type: "independent"
+    expertise: ["ai_ml", "enterprise_software"]
+    term_start: "2024-01-01"
+    term_end: "2027-01-01"
+
+  - id: "board_strategy"
+    name: "Strategy Advisor"
+    role: "Strategy Committee Chair"
+    type: "independent"
+    expertise: ["market_expansion", "partnerships"]
+    term_start: "2024-01-01"
+    term_end: "2027-01-01"
+
+  - id: "board_customer"
+    name: "Customer Advisor"
+    role: "Customer Committee Chair"
+    type: "independent"
+    expertise: ["customer_success", "enterprise_sales"]
+    term_start: "2024-01-01"
+    term_end: "2027-01-01"
+
+  - id: "board_risk"
+    name: "Risk Advisor"
+    role: "Risk Committee Chair"
+    type: "independent"
+    expertise: ["cybersecurity", "compliance", "risk_management"]
+    term_start: "2024-01-01"
+    term_end: "2027-01-01"
