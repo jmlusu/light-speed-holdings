@@ -7,7 +7,6 @@ from typing import Any
 from ai_company.models import (
     ApprovalEntry,
     CompanyRegistry,
-    DecisionNode,
     RiskLevel,
 )
 

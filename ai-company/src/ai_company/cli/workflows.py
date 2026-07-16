@@ -1,13 +1,18 @@
-"""
-Workflow management commands.
-"""
+"""Workflow management commands — now with WorkflowEngine integration."""
+
+from __future__ import annotations
 
 from pathlib import Path
+
 import typer
 import yaml
 
+from rich.console import Console
+from rich.table import Table
+
 app = typer.Typer(help="Manage company workflows")
-WORKFLOWS_DIR = Path("company")
+console = Console()
+WORKFLOWS_DIR = Path("config/workflows")
 WORKFLOWS_FILE = WORKFLOWS_DIR / "workflows.yaml"
 
 
@@ -18,90 +23,115 @@ def _load_workflows() -> dict:
         return yaml.safe_load(f) or {"workflows": []}
 
 
-def _save_workflows(data: dict):
-    WORKFLOWS_DIR.mkdir(exist_ok=True)
-    with open(WORKFLOWS_FILE, "w", encoding="utf-8") as f:
-        yaml.dump(data, f, default_flow_style=False)
-
-
 @app.command()
-def list():
+def list() -> None:
     """List all registered workflows."""
-    data = _load_workflows()
-    workflows = data.get("workflows", [])
+    from ai_company.registry import load_registry
+    from ai_company.workflow.engine import WorkflowEngine
+
+    try:
+        registry = load_registry()
+    except SystemExit:
+        console.print("[red]Failed to load registry[/red]")
+        raise typer.Exit(1)
+
+    engine = WorkflowEngine(registry)
+    workflows = engine.list_workflows()
 
     if not workflows:
-        typer.echo("No workflows registered.")
+        console.print("No workflows registered.")
         return
 
-    typer.echo("")
-    typer.echo("Registered Workflows")
-    typer.echo("====================")
-    for wf in workflows:
-        typer.echo(f"  {wf['id']}: {wf['name']}")
-        typer.echo(f"    Trigger: {wf.get('trigger', 'manual')}")
-        typer.echo(f"    Steps: {len(wf.get('steps', []))}")
-        typer.echo("")
-
-
-@app.command()
-def create(
-    workflow_id: str = typer.Argument(..., help="Unique workflow ID"),
-    name: str = typer.Option(..., help="Workflow name"),
-    trigger: str = typer.Option("manual", help="Workflow trigger (manual, scheduled, event)"),
-):
-    """Create a new workflow."""
-    data = _load_workflows()
-    workflows = data.get("workflows", [])
+    table = Table(title="Registered Workflows")
+    table.add_column("ID", style="cyan")
+    table.add_column("Name", style="green")
+    table.add_column("Trigger", style="yellow")
+    table.add_column("Owner")
+    table.add_column("Steps", justify="right")
 
     for wf in workflows:
-        if wf["id"] == workflow_id:
-            typer.echo(f"Error: Workflow '{workflow_id}' already exists.")
-            raise typer.Exit(1)
+        table.add_row(wf["id"], wf["name"], wf["trigger"], wf["owner"], str(wf["steps"]))
 
-    new_workflow = {
-        "id": workflow_id,
-        "name": name,
-        "trigger": trigger,
-        "steps": [],
-        "status": "active",
-    }
-    workflows.append(new_workflow)
-    data["workflows"] = workflows
-    _save_workflows(data)
-    typer.echo(f"Workflow '{name}' created successfully.")
+    console.print(table)
 
 
 @app.command()
-def run(workflow_id: str = typer.Argument(..., help="Workflow ID to execute")):
-    """Execute a workflow."""
-    data = _load_workflows()
-    workflows = data.get("workflows", [])
+def run(
+    workflow_id: str = typer.Argument(..., help="Workflow ID to execute"),
+) -> None:
+    """Start a workflow execution."""
+    from ai_company.registry import load_registry
+    from ai_company.workflow.engine import WorkflowEngine
 
-    workflow = next((wf for wf in workflows if wf["id"] == workflow_id), None)
-    if not workflow:
-        typer.echo(f"Error: Workflow '{workflow_id}' not found.")
+    try:
+        registry = load_registry()
+    except SystemExit:
+        console.print("[red]Failed to load registry[/red]")
         raise typer.Exit(1)
 
-    typer.echo(f"Executing workflow: {workflow['name']}")
-    steps = workflow.get("steps", [])
-    for i, step in enumerate(steps, 1):
-        typer.echo(f"  Step {i}: {step.get('name', 'Unnamed step')}")
-    typer.echo("Workflow execution completed.")
+    engine = WorkflowEngine(registry)
+    try:
+        instance_id = engine.start(workflow_id)
+    except ValueError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        raise typer.Exit(1)
+
+    status = engine.get_status(instance_id)
+    console.print(f"[green]Started workflow:[/green] {workflow_id}")
+    console.print(f"  Instance: {instance_id}")
+    if status:
+        console.print(f"  Current step: {status['current_step']}")
 
 
 @app.command()
-def remove(workflow_id: str = typer.Argument(..., help="Workflow ID to remove")):
-    """Remove a workflow."""
-    data = _load_workflows()
-    workflows = data.get("workflows", [])
-    original_len = len(workflows)
+def status(
+    instance_id: str = typer.Argument(..., help="Workflow instance ID"),
+) -> None:
+    """Show workflow execution status."""
+    from ai_company.registry import load_registry
+    from ai_company.workflow.engine import WorkflowEngine
 
-    data["workflows"] = [wf for wf in workflows if wf["id"] != workflow_id]
-
-    if len(data["workflows"]) == original_len:
-        typer.echo(f"Error: Workflow '{workflow_id}' not found.")
+    try:
+        registry = load_registry()
+    except SystemExit:
+        console.print("[red]Failed to load registry[/red]")
         raise typer.Exit(1)
 
-    _save_workflows(data)
-    typer.echo(f"Workflow '{workflow_id}' removed.")
+    engine = WorkflowEngine(registry)
+    status = engine.get_status(instance_id)
+    if status is None:
+        console.print(f"[red]Instance '{instance_id}' not found[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"Workflow: {status['workflow_name']}")
+    console.print(f"Status: {status['status']}")
+    console.print(f"Step: {status['current_step_index'] + 1}/{status['total_steps']}")
+    console.print(f"Current: {status['current_step']}")
+
+
+@app.command()
+def advance(
+    instance_id: str = typer.Argument(..., help="Workflow instance ID"),
+) -> None:
+    """Advance a workflow to its next step."""
+    from ai_company.registry import load_registry
+    from ai_company.workflow.engine import WorkflowEngine
+
+    try:
+        registry = load_registry()
+    except SystemExit:
+        console.print("[red]Failed to load registry[/red]")
+        raise typer.Exit(1)
+
+    engine = WorkflowEngine(registry)
+    try:
+        result = engine.advance(instance_id)
+    except ValueError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        raise typer.Exit(1)
+
+    if "error" in result:
+        console.print(f"[red]{result['error']}[/red]")
+    else:
+        console.print(f"[green]{result.get('message', 'Advanced')}[/green]")
+        console.print(f"  Current step: {result.get('current_step', 'N/A')}")
