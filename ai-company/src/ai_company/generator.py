@@ -148,6 +148,7 @@ class AgentGenerator:
                 description=bm.role,
                 role=bm.role,
                 expertise=bm.expertise,
+                responsibilities=bm.responsibilities,
                 term_start=bm.term_start,
                 term_end=bm.term_end,
                 agent_type="Board",

@@ -265,6 +265,7 @@ class BoardMember(EntityBase):
     role: str = ""
     type: str = "independent"
     expertise: list[str] = Field(default_factory=list)
+    responsibilities: list[str] = Field(default_factory=list)
     term_start: str = ""
     term_end: str = ""
 

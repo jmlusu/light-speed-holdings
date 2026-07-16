@@ -4,6 +4,17 @@ board:
     role: "Chairperson"
     type: "independent"
     expertise: ["corporate_governance", "scaling_companies"]
+    responsibilities:
+      - "Preside over all board meetings and set agendas"
+      - "Ensure board governance standards are upheld"
+      - "Facilitate CEO performance reviews"
+      - "Mediate disagreements between board members"
+      - "Represent board in external stakeholder communications"
+      - "Ensure fiduciary duties are met"
+      - "Oversee board committee structure and assignments"
+      - "Guide strategic direction in partnership with CEO"
+      - "Ensure legal and regulatory compliance at board level"
+      - "Maintain confidentiality of board deliberations"
     term_start: "2024-01-01"
     term_end: "2027-01-01"
 
@@ -12,6 +23,17 @@ board:
     role: "Finance Committee Chair"
     type: "independent"
     expertise: ["venture_capital", "financial_modeling"]
+    responsibilities:
+      - "Review financial reports and forecasts"
+      - "Advise on budget allocation and cost optimization"
+      - "Assess ROI of agent deployments"
+      - "Track API and compute spending"
+      - "Prepare financial projections"
+      - "Evaluate investment opportunities"
+      - "Monitor cash flow and burn rate"
+      - "Review pricing and monetization models"
+      - "Ensure regulatory financial compliance"
+      - "Flag financial risks early"
     term_start: "2024-01-01"
     term_end: "2027-01-01"
 
@@ -20,6 +42,17 @@ board:
     role: "Technology Committee Chair"
     type: "independent"
     expertise: ["ai_ml", "enterprise_software"]
+    responsibilities:
+      - "Review technology strategy and architecture"
+      - "Assess engineering team performance"
+      - "Advise on AI/ML investment"
+      - "Evaluate technical debt"
+      - "Review scalability and reliability plans"
+      - "Assess security architecture"
+      - "Guide technology vendor selection"
+      - "Monitor emerging tech trends"
+      - "Review innovation pipeline"
+      - "Ensure alignment between tech and business goals"
     term_start: "2024-01-01"
     term_end: "2027-01-01"
 
@@ -28,6 +61,17 @@ board:
     role: "Strategy Committee Chair"
     type: "independent"
     expertise: ["market_expansion", "partnerships"]
+    responsibilities:
+      - "Review strategic initiatives and partnerships"
+      - "Advise on market expansion and positioning"
+      - "Evaluate competitive landscape"
+      - "Assess long-term growth opportunities"
+      - "Review M&A and investment targets"
+      - "Guide company vision and mission"
+      - "Analyze industry trends"
+      - "Recommend strategic pivots"
+      - "Evaluate partnership proposals"
+      - "Ensure strategic coherence across departments"
     term_start: "2024-01-01"
     term_end: "2027-01-01"
 
@@ -36,6 +80,17 @@ board:
     role: "Customer Committee Chair"
     type: "independent"
     expertise: ["customer_success", "enterprise_sales"]
+    responsibilities:
+      - "Review customer-facing strategies and policies"
+      - "Provide feedback on product-market fit"
+      - "Advocate for customer needs in board decisions"
+      - "Analyze customer feedback and satisfaction data"
+      - "Evaluate retention and churn metrics"
+      - "Recommend improvements to user experience"
+      - "Assess competitive customer offerings"
+      - "Review support and success processes"
+      - "Identify new customer segments"
+      - "Ensure alignment between product and customer expectations"
     term_start: "2024-01-01"
     term_end: "2027-01-01"
 
@@ -44,5 +99,35 @@ board:
     role: "Risk Committee Chair"
     type: "independent"
     expertise: ["cybersecurity", "compliance", "risk_management"]
+    responsibilities:
+      - "Identify and assess organizational risks"
+      - "Review compliance and security posture"
+      - "Recommend risk mitigation strategies"
+      - "Evaluate operational and technical risks"
+      - "Review insurance and liability coverage"
+      - "Monitor regulatory changes"
+      - "Assess third-party vendor risks"
+      - "Maintain risk register"
+      - "Advise on crisis response plans"
+      - "Ensure risk awareness in decision-making"
+    term_start: "2024-01-01"
+    term_end: "2027-01-01"
+
+  - id: "board_product"
+    name: "Product Advisor"
+    role: "Product Committee Chair"
+    type: "independent"
+    expertise: ["product_strategy", "user_experience", "market_analysis"]
+    responsibilities:
+      - "Review product strategy and roadmap"
+      - "Provide market and competitive analysis"
+      - "Advise on feature prioritization"
+      - "Evaluate product metrics and KPIs"
+      - "Assess user adoption and engagement"
+      - "Recommend go-to-market approaches"
+      - "Review product requirements documents"
+      - "Analyze competitor product landscapes"
+      - "Guide product vision alignment"
+      - "Validate product decisions with data"
     term_start: "2024-01-01"
     term_end: "2027-01-01"

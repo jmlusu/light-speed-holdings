@@ -73,32 +73,48 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
+def _unwrap(data: dict[str, Any], key: str) -> dict[str, Any]:
+    """Unwrap a top-level YAML key if present (e.g. company.yaml has company: {...})."""
+    if key in data and isinstance(data[key], dict):
+        return data[key]
+    return data
+
+
+def _unwrap_list(data: dict[str, Any], key: str) -> list[dict[str, Any]]:
+    """Unwrap a top-level YAML key that contains a list."""
+    if key in data and isinstance(data[key], list):
+        return data[key]
+    if key in data and isinstance(data[key], dict):
+        return data[key].get(key, [])
+    return []
+
+
 def load_config(config_dir: Path | str | None = None) -> CompanyRegistry:
     """Load all config YAML files and return a validated CompanyRegistry."""
     base = Path(config_dir) if config_dir else _CONFIG_DIR
 
-    company_data = _load_yaml(base / _COMPANY_FILES["company"])
-    vision_data = _load_yaml(base / _COMPANY_FILES["vision"])
-    strategy_data = _load_yaml(base / _COMPANY_FILES["strategy"])
-    culture_data = _load_yaml(base / _COMPANY_FILES["culture"])
-    governance_data = _load_yaml(base / _COMPANY_FILES["governance"])
-    policies_data = _load_yaml(base / _COMPANY_FILES["policies"])
-    kpis_data = _load_yaml(base / _COMPANY_FILES["kpis"])
-    budget_data = _load_yaml(base / _COMPANY_FILES["budget"])
+    company_data = _unwrap(_load_yaml(base / _COMPANY_FILES["company"]), "company")
+    vision_data = _unwrap(_load_yaml(base / _COMPANY_FILES["vision"]), "vision")
+    strategy_data = _unwrap(_load_yaml(base / _COMPANY_FILES["strategy"]), "strategy")
+    culture_data = _unwrap(_load_yaml(base / _COMPANY_FILES["culture"]), "culture")
+    governance_data = _unwrap(_load_yaml(base / _COMPANY_FILES["governance"]), "governance")
+    policies_data = _unwrap(_load_yaml(base / _COMPANY_FILES["policies"]), "policies")
+    kpis_data = _unwrap(_load_yaml(base / _COMPANY_FILES["kpis"]), "kpis")
+    budget_data = _unwrap(_load_yaml(base / _COMPANY_FILES["budget"]), "budget")
 
-    board_data = _load_yaml(base / _BOARD_FILES["board"])
-    committees_data = _load_yaml(base / _BOARD_FILES["committees"])
-    meetings_data = _load_yaml(base / _BOARD_FILES["meetings"])
-    voting_data = _load_yaml(base / _BOARD_FILES["voting"])
+    board_data = _unwrap_list(_load_yaml(base / _BOARD_FILES["board"]), "board")
+    committees_data = _unwrap_list(_load_yaml(base / _BOARD_FILES["committees"]), "committees")
+    meetings_data = _unwrap_list(_load_yaml(base / _BOARD_FILES["meetings"]), "meetings")
+    voting_data = _unwrap(_load_yaml(base / _BOARD_FILES["voting"]), "voting")
 
-    executives_data = _load_yaml(base / _EXECUTIVES_FILE)
-    departments_data = _load_yaml(base / _DEPARTMENTS_FILE)
-    specialists_data = _load_yaml(base / _SPECIALISTS_FILE)
+    executives_data = _unwrap_list(_load_yaml(base / _EXECUTIVES_FILE), "executives")
+    departments_data = _unwrap_list(_load_yaml(base / _DEPARTMENTS_FILE), "departments")
+    specialists_data = _unwrap_list(_load_yaml(base / _SPECIALISTS_FILE), "specialists")
 
-    workflows_data = _load_yaml(base / _WORKFLOWS_FILE)
-    approval_data = _load_yaml(base / _DECISION_FILES["approval_matrix"])
-    risk_data = _load_yaml(base / _DECISION_FILES["risk_matrix"])
-    decision_tree_data = _load_yaml(base / _DECISION_FILES["decision_tree"])
+    workflows_data = _unwrap_list(_load_yaml(base / _WORKFLOWS_FILE), "workflows")
+    approval_data = _unwrap(_load_yaml(base / _DECISION_FILES["approval_matrix"]), "approval_matrix")
+    risk_data = _unwrap(_load_yaml(base / _DECISION_FILES["risk_matrix"]), "risk_matrix")
+    decision_tree_data = _unwrap(_load_yaml(base / _DECISION_FILES["decision_tree"]), "decision_tree")
 
     return CompanyRegistry(
         company=Company(**company_data) if company_data else Company(id="default", name="AI Company"),
@@ -109,14 +125,14 @@ def load_config(config_dir: Path | str | None = None) -> CompanyRegistry:
         policies=[Policy(**p) for p in policies_data.get("policies", [])],
         kpis=[KPI(**k) for k in kpis_data.get("kpis", [])],
         budget=Budget(**budget_data) if budget_data else Budget(),
-        board=[BoardMember(**b) for b in board_data.get("members", [])],
-        committees=[Committee(**c) for c in committees_data.get("committees", [])],
-        board_meetings=[BoardMeeting(**m) for m in meetings_data.get("meetings", [])],
+        board=[BoardMember(**b) for b in board_data],
+        committees=[Committee(**c) for c in committees_data],
+        board_meetings=[BoardMeeting(**m) for m in meetings_data],
         voting=VotingConfig(**voting_data) if voting_data else VotingConfig(),
-        executives=[Executive(**e) for e in executives_data.get("executives", [])],
-        departments=[Department(**d) for d in departments_data.get("departments", [])],
-        specialists=[Agent(**s) for s in specialists_data.get("specialists", [])],
-        workflows=[Workflow(**w) for w in workflows_data.get("workflows", [])],
+        executives=[Executive(**e) for e in executives_data],
+        departments=[Department(**d) for d in departments_data],
+        specialists=[Agent(**s) for s in specialists_data],
+        workflows=[Workflow(**w) for w in workflows_data],
         approval_matrix=[ApprovalEntry(**a) for a in approval_data.get("approval_matrix", [])],
         risk_matrix=RiskMatrixConfig(**risk_data) if risk_data else RiskMatrixConfig(),
         decision_tree=DecisionTreeConfig(**decision_tree_data) if decision_tree_data else DecisionTreeConfig(),
