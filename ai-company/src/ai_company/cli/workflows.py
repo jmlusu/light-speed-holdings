@@ -2,7 +2,6 @@
 Workflow management commands.
 """
 
-from typing import Optional, List
 from pathlib import Path
 import typer
 import yaml

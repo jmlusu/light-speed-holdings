@@ -4,7 +4,7 @@ System health checks for the AI Company Builder.
 
 from pathlib import Path
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 import yaml
 
 
@@ -46,7 +46,7 @@ def check_registry_valid(registry_path: str = "company-registry.yaml") -> CheckR
 
 def check_models_importable() -> CheckResult:
     try:
-        from ai_company.models.models import Executive, Specialist, Department, Company
+        import ai_company.models.models  # noqa: F401
         return CheckResult("Models Import", True, "All models importable")
     except ImportError as e:
         return CheckResult("Models Import", False, f"Import error: {e}", severity="error")
@@ -55,7 +55,8 @@ def check_models_importable() -> CheckResult:
 def check_message_bus() -> CheckResult:
     try:
         from ai_company.orchestrator.message_bus import MessageBus
-        bus = MessageBus()
+
+        MessageBus()
         return CheckResult("MessageBus", True, "MessageBus initialized")
     except Exception as e:
         return CheckResult("MessageBus", False, f"Error: {e}", severity="error")

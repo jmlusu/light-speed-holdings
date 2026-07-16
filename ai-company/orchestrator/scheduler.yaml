@@ -1,0 +1,9 @@
+tasks:
+- cron_expression: null
+  enabled: true
+  id: daily-briefing
+  interval_minutes: 1440
+  last_run: null
+  name: Daily Executive Briefing
+  next_run: 2026-07-17 17:23:24.534589
+  task_template: {}

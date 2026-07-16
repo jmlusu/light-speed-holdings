@@ -2,7 +2,6 @@
 Board of Directors management commands.
 """
 
-from typing import Optional
 from pathlib import Path
 import typer
 import yaml

@@ -5,7 +5,6 @@ Doctor report generation.
 from typing import List
 from datetime import datetime
 from pathlib import Path
-import yaml
 
 from ai_company.doctor.checks import CheckResult
 

@@ -1,0 +1,225 @@
+specialists:
+  - id: software_architect
+    title: Software Architect
+    department: Technology
+    reports_to: cto
+    specialization: System design and architecture
+    status: active
+    capabilities:
+      - system_design
+      - code_review
+      - architecture_planning
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: backend_engineer
+    title: Backend Engineer
+    department: Technology
+    reports_to: lead_backend
+    specialization: Server-side development
+    status: active
+    capabilities:
+      - api_development
+      - database_design
+      - backend_testing
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: frontend_engineer
+    title: Frontend Engineer
+    department: Technology
+    reports_to: lead_frontend
+    specialization: User interface development
+    status: active
+    capabilities:
+      - ui_development
+      - css_styling
+      - frontend_testing
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: devops_engineer
+    title: DevOps Engineer
+    department: Technology
+    reports_to: devops_lead
+    specialization: Infrastructure and deployment
+    status: active
+    capabilities:
+      - ci_cd
+      - cloud_infrastructure
+      - monitoring
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: qa_engineer
+    title: QA Engineer
+    department: Technology
+    reports_to: cto
+    specialization: Quality assurance and testing
+    status: active
+    capabilities:
+      - test_automation
+      - bug_tracking
+      - quality_reporting
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: security_engineer
+    title: Security Engineer
+    department: Technology
+    reports_to: cto
+    specialization: Application security
+    status: active
+    capabilities:
+      - security_audit
+      - vulnerability_assessment
+      - compliance_checking
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: ml_engineer
+    title: ML Engineer
+    department: AI Research
+    reports_to: caio
+    specialization: Machine learning systems
+    status: active
+    capabilities:
+      - model_training
+      - data_pipeline
+      - model_evaluation
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: prompt_engineer
+    title: Prompt Engineer
+    department: AI Research
+    reports_to: caio
+    specialization: LLM prompt optimization
+    status: active
+    capabilities:
+      - prompt_design
+      - prompt_testing
+      - prompt_versioning
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: data_engineer
+    title: Data Engineer
+    department: Technology
+    reports_to: cto
+    specialization: Data pipeline and ETL
+    status: active
+    capabilities:
+      - data_pipeline
+      - etl_processing
+      - data_quality
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: financial_analyst
+    title: Financial Analyst
+    department: Finance
+    reports_to: cfo
+    specialization: Financial analysis and forecasting
+    status: active
+    capabilities:
+      - financial_modeling
+      - cost_analysis
+      - budget_tracking
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: ops_analyst
+    title: Operations Analyst
+    department: Operations
+    reports_to: coo
+    specialization: Process optimization
+    status: active
+    capabilities:
+      - process_analysis
+      - metrics_tracking
+      - efficiency_reporting
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: hr_specialist
+    title: HR Specialist
+    department: Operations
+    reports_to: hr_lead
+    specialization: Agent workforce management
+    status: active
+    capabilities:
+      - onboarding
+      - role_definition
+      - performance_tracking
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: marketing_specialist
+    title: Marketing Specialist
+    department: Marketing
+    reports_to: coo
+    specialization: Marketing campaigns
+    status: active
+    capabilities:
+      - campaign_management
+      - content_creation
+      - analytics_tracking
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: sales_specialist
+    title: Sales Specialist
+    department: Sales
+    reports_to: coo
+    specialization: Sales pipeline management
+    status: active
+    capabilities:
+      - lead_management
+      - deal_tracking
+      - pipeline_optimization
+    permissions:
+      read: true
+      write: true
+      execute: true
+
+  - id: legal_specialist
+    title: Legal Specialist
+    department: Legal
+    reports_to: coo
+    specialization: Contract and compliance management
+    status: active
+    capabilities:
+      - contract_review
+      - compliance_checking
+      - legal_documentation
+    permissions:
+      read: true
+      write: true
+      execute: true

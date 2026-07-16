@@ -2,14 +2,12 @@
 Doctor module for system diagnostics.
 """
 
-from typing import Optional
 import typer
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
 from ai_company.doctor.checks import run_all_checks
-from ai_company.doctor.report import generate_report, save_report
 
 console = Console()
 

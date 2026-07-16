@@ -4,7 +4,7 @@ Domain models for the AI Company Builder.
 These models define every object that can exist in the company.
 """
 
-from typing import List, Optional
+from typing import List
 from pydantic import BaseModel, Field
 
 

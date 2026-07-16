@@ -1,0 +1,8 @@
+rules:
+- enabled: true
+  escalate_to: chief_of_staff
+  id: task-timeout
+  max_retries: 3
+  name: Task Timeout Escalation
+  timeout_minutes: 30
+  trigger: task_timeout
