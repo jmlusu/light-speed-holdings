@@ -1,0 +1,51 @@
+---
+raci_id: {{ raci_id }}
+title: {{ title }}
+department: {{ department }}
+owner: {{ owner }}
+version: {{ version }}
+effective_date: {{ effective_date }}
+---
+
+# {{ title }}
+
+## Overview
+
+{{ overview }}
+
+## Legend
+
+| Code | Role | Meaning |
+|------|------|---------|
+| **R** | Responsible | Does the work |
+| **A** | Accountable | Owns the outcome; sole signer |
+| **C** | Consulted | Provides input before decision |
+| **I** | Informed | Notified after decision |
+
+## RACI Matrix
+
+| Activity | {% for role in roles %}{{ role }} | {% endfor %}|
+|----------|{% for role in roles %}------|{% endfor %}
+{% for activity in activities %}
+| {{ activity.name }} | {% for role in roles %}{{ activity.assignments[role] if role in activity.assignments else '-' }} | {% endfor %}|
+{% endfor %}
+
+## Notes
+
+{% for note in notes %}
+- {{ note }}
+{% endfor %}
+
+## Escalation Rules
+
+| Condition | Escalate To | Authority |
+|-----------|-------------|-----------|
+{% for rule in escalation_rules %}
+| {{ rule.condition }} | {{ rule.escalate_to }} | {{ rule.authority }} |
+{% endfor %}
+
+---
+
+*RACI Owner: {{ owner }}*
+*Version: {{ version }}*
+*Last Updated: {{ effective_date }}*

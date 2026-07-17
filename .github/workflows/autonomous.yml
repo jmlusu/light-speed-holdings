@@ -1,0 +1,67 @@
+name: Autonomous Orchestrator
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run mode"
+        required: false
+        default: "both"
+        type: choice
+        options:
+          - both
+          - orchestrator-only
+          - executor-only
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ai-company
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -e .
+
+      - name: Run orchestrator tick
+        if: inputs.mode != 'executor-only'
+        run: python -m ai_company.cli.main orchestrator tick
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Run executor tick
+        if: inputs.mode != 'orchestrator-only'
+        run: python -m ai_company.cli.main executor tick
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Generate daily briefing
+        if: inputs.mode != 'executor-only'
+        run: python -m ai_company.cli.main orchestrator briefing
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+      - name: Upload briefing artifact
+        if: inputs.mode != 'executor-only'
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-briefing-${{ github.run_id }}
+          path: ai-company/.opencode/daily_briefing.md
+          retention-days: 30

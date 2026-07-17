@@ -53,6 +53,90 @@ app.add_typer(graph_app, name="graph", help="Graph engine — org chart, knowled
 
 
 @app.command()
+def sop(
+    sop_id: str = typer.Argument("", help="SOP ID to view (e.g. SOP-INCIDENT-001)"),
+) -> None:
+    """View Standard Operating Procedures."""
+    from pathlib import Path
+
+    docs_dir = Path(__file__).parent.parent.parent / "docs"
+
+    if sop_id:
+        # Find SOP by ID in markdown frontmatter
+        for md_file in docs_dir.glob("sop-*.md"):
+            content = md_file.read_text(encoding="utf-8")
+            if f"sop_id: {sop_id}" in content:
+                typer.echo(content)
+                return
+        typer.echo(f"SOP '{sop_id}' not found.")
+        raise typer.Exit(1)
+
+    # List available SOPs
+    sop_files = sorted(docs_dir.glob("sop-*.md"))
+    if not sop_files:
+        typer.echo("No SOPs found in docs/")
+        return
+
+    typer.echo("Available SOPs")
+    typer.echo("=" * 50)
+    for f in sop_files:
+        content = f.read_text(encoding="utf-8")
+        title = ""
+        sop_id_val = ""
+        for line in content.splitlines():
+            if line.startswith("title:"):
+                title = line.split(":", 1)[1].strip()
+            elif line.startswith("sop_id:"):
+                sop_id_val = line.split(":", 1)[1].strip()
+            if title and sop_id_val:
+                break
+        typer.echo(f"  {sop_id_val or f.stem}: {title or f.name}")
+    typer.echo("")
+    typer.echo("Usage: ai-company sop SOP-INCIDENT-001")
+
+
+@app.command()
+def raci(
+    raci_id: str = typer.Argument("", help="RACI ID to view (e.g. RACI-HIRING-001)"),
+) -> None:
+    """View RACI matrices for workflows."""
+    from pathlib import Path
+
+    docs_dir = Path(__file__).parent.parent.parent / "docs"
+
+    if raci_id:
+        for md_file in docs_dir.glob("raci-*.md"):
+            content = md_file.read_text(encoding="utf-8")
+            if f"raci_id: {raci_id}" in content:
+                typer.echo(content)
+                return
+        typer.echo(f"RACI '{raci_id}' not found.")
+        raise typer.Exit(1)
+
+    raci_files = sorted(docs_dir.glob("raci-*.md"))
+    if not raci_files:
+        typer.echo("No RACI matrices found in docs/")
+        return
+
+    typer.echo("Available RACI Matrices")
+    typer.echo("=" * 50)
+    for f in raci_files:
+        content = f.read_text(encoding="utf-8")
+        title = ""
+        raci_id_val = ""
+        for line in content.splitlines():
+            if line.startswith("title:"):
+                title = line.split(":", 1)[1].strip()
+            elif line.startswith("raci_id:"):
+                raci_id_val = line.split(":", 1)[1].strip()
+            if title and raci_id_val:
+                break
+        typer.echo(f"  {raci_id_val or f.stem}: {title or f.name}")
+    typer.echo("")
+    typer.echo("Usage: ai-company raci RACI-HIRING-001")
+
+
+@app.command()
 def generate(
     registry: str = typer.Option(
         "company/agent-registry.json",

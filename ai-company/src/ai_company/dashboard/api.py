@@ -291,3 +291,42 @@ def list_model_tiers() -> list[TierInfo]:
 def list_scheduled() -> list[dict]:
     data = _load_yaml("orchestrator/scheduler.yaml")
     return data.get("tasks", [])
+
+
+# ── Department KPIs ────────────────────────────────────────────────
+
+
+@router.get("/departments/{dept_name}/kpis")
+def get_department_kpis(dept_name: str) -> dict:
+    """Return KPI definitions for a specific department."""
+    kpi_data = _load_yaml("company/config/kpis.yaml")
+    departments = kpi_data.get("departments", {})
+    if dept_name not in departments:
+        raise HTTPException(status_code=404, detail=f"Department '{dept_name}' not found in KPI config")
+    return departments[dept_name]
+
+
+@router.get("/kpis")
+def list_all_kpis() -> dict:
+    """Return all department KPI definitions."""
+    kpi_data = _load_yaml("company/config/kpis.yaml")
+    return kpi_data.get("departments", {})
+
+
+@router.get("/kpis/summary")
+def kpi_summary() -> list[dict]:
+    """Return a flat summary of all KPIs across departments."""
+    kpi_data = _load_yaml("company/config/kpis.yaml")
+    summary = []
+    for dept_id, dept in kpi_data.get("departments", {}).items():
+        for kpi in dept.get("kpis", []):
+            summary.append({
+                "department": dept_id,
+                "department_name": dept.get("name", dept_id),
+                "kpi_id": kpi["id"],
+                "name": kpi["name"],
+                "target": kpi.get("target"),
+                "unit": kpi.get("unit", ""),
+                "frequency": kpi.get("frequency", ""),
+            })
+    return summary

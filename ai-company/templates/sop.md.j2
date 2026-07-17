@@ -1,0 +1,97 @@
+---
+sop_id: {{ sop_id }}
+title: {{ title }}
+department: {{ department }}
+owner: {{ owner }}
+version: {{ version }}
+effective_date: {{ effective_date }}
+last_reviewed: {{ last_reviewed }}
+status: {{ status }}
+---
+
+# {{ title }}
+
+## 1. Purpose
+
+{{ purpose }}
+
+## 2. Scope
+
+{{ scope }}
+
+## 3. Definitions
+
+| Term | Definition |
+|------|------------|
+{% for term in definitions %}
+| {{ term.term }} | {{ term.definition }} |
+{% endfor %}
+
+## 4. Roles & Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+{% for role in roles %}
+| {{ role.name }} | {{ role.responsibility }} |
+{% endfor %}
+
+## 5. Procedure
+
+{% for step in procedure %}
+### Step {{ loop.index }}: {{ step.name }}
+
+{{ step.description }}
+
+{% if step.substeps %}
+{% for substep in step.substeps %}
+- {{ substep }}
+{% endfor %}
+{% endif %}
+
+{% if step.command %}
+**Command:**
+```bash
+{{ step.command }}
+```
+{% endif %}
+
+**Expected Result:** {{ step.expected_result }}
+
+{% if step.rollback %}
+**Rollback:** {{ step.rollback }}
+{% endif %}
+
+{% endfor %}
+
+## 6. Escalation Path
+
+| Condition | Action | Contact |
+|-----------|--------|---------|
+{% for item in escalation_path %}
+| {{ item.condition }} | {{ item.action }} | {{ item.contact }} |
+{% endfor %}
+
+## 7. Verification Checklist
+
+{% for item in verification %}
+- [ ] {{ item }}
+{% endfor %}
+
+## 8. References
+
+{% for ref in references %}
+- {{ ref }}
+{% endfor %}
+
+## 9. Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+{% for rev in revision_history %}
+| {{ rev.version }} | {{ rev.date }} | {{ rev.author }} | {{ rev.changes }} |
+{% endfor %}
+
+---
+
+*SOP Owner: {{ owner }}*
+*Next Review: {{ next_review_date }}*

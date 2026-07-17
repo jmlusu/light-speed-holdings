@@ -6,11 +6,6 @@ import json
 import re
 from typing import Any
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
 from ai_company.llm.providers.base import (
     LLMProvider,
     LLMProviderError,
@@ -19,6 +14,10 @@ from ai_company.llm.providers.base import (
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.model_router import ModelRouter
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 _MAX_RETRIES = 5

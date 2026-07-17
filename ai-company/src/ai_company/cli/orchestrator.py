@@ -10,10 +10,12 @@ app = typer.Typer(help="Autonomous coordination management")
 scheduler_app = typer.Typer(help="Manage scheduled tasks")
 escalation_app = typer.Typer(help="Manage escalation rules")
 approval_app = typer.Typer(help="Manage approval gates")
+postmortem_app = typer.Typer(help="Manage incident postmortems")
 
 app.add_typer(scheduler_app, name="scheduler")
 app.add_typer(escalation_app, name="escalation")
 app.add_typer(approval_app, name="approval")
+app.add_typer(postmortem_app, name="postmortem")
 
 
 # ─── tick ────────────────────────────────────────────────────────────
@@ -270,3 +272,209 @@ def approval_reject(
     else:
         typer.echo(f"Error: Request '{request_id}' not found or already processed.")
         raise typer.Exit(1)
+
+
+# ─── postmortem subcommands ──────────────────────────────────────────
+
+
+@postmortem_app.command("list")
+def postmortem_list() -> None:
+    """List all postmortems."""
+    from ai_company.orchestrator.escalation import PostmortemStore
+
+    store = PostmortemStore()
+    postmortems = store.list_all()
+    if not postmortems:
+        typer.echo("No postmortems found.")
+        return
+
+    typer.echo("")
+    typer.echo("Postmortems")
+    typer.echo("=" * 50)
+    for pm in postmortems:
+        typer.echo(f"  {pm.incident_id}: {pm.title}")
+        typer.echo(f"    Severity: {pm.severity} | Status: {pm.status}")
+        typer.echo(f"    Affected agent: {pm.affected_agent or 'N/A'}")
+        typer.echo(f"    Date: {pm.date}")
+        typer.echo("")
+
+
+@postmortem_app.command("show")
+def postmortem_show(
+    incident_id: str = typer.Argument(..., help="Incident ID to display"),
+) -> None:
+    """Show details of a specific postmortem."""
+    from ai_company.orchestrator.escalation import PostmortemStore
+
+    store = PostmortemStore()
+    pm = store.load(incident_id)
+    if not pm:
+        typer.echo(f"Postmortem '{incident_id}' not found.")
+        raise typer.Exit(1)
+
+    typer.echo(f"\n{'=' * 50}")
+    typer.echo(f"INCIDENT: {pm.incident_id} — {pm.title}")
+    typer.echo(f"{'=' * 50}")
+    typer.echo(f"  Date:           {pm.date}")
+    typer.echo(f"  Severity:       {pm.severity}")
+    typer.echo(f"  Status:         {pm.status}")
+    typer.echo(f"  Affected Agent: {pm.affected_agent or 'N/A'}")
+    typer.echo(f"  Department:     {pm.department or 'N/A'}")
+    typer.echo(f"  Escalation:     {pm.escalation_rule or 'N/A'}")
+    typer.echo(f"  Prepared By:    {pm.prepared_by or 'N/A'}")
+    typer.echo(f"  Reviewed By:    {pm.reviewed_by or 'N/A'}")
+
+    typer.echo("\nRoot Cause:")
+    typer.echo(f"  {pm.root_cause}")
+
+    if pm.timeline:
+        typer.echo("\nTimeline:")
+        for entry in pm.timeline:
+            typer.echo(f"  [{entry.time}] {entry.description}")
+
+    if pm.resolution_steps:
+        typer.echo("\nResolution Steps:")
+        for i, step in enumerate(pm.resolution_steps, 1):
+            typer.echo(f"  {i}. {step}")
+
+    if pm.action_items:
+        typer.echo("\nAction Items:")
+        for item in pm.action_items:
+            typer.echo(f"  [{item.id}] {item.action} — Owner: {item.owner} ({item.status})")
+
+    if pm.lessons_learned:
+        typer.echo("\nLessons Learned:")
+        for lesson in pm.lessons_learned:
+            typer.echo(f"  - {lesson}")
+
+    if pm.prevention_measures:
+        typer.echo("\nPrevention Measures:")
+        for measure in pm.prevention_measures:
+            typer.echo(f"  - {measure}")
+    typer.echo("")
+
+
+@postmortem_app.command("create")
+def postmortem_create(
+    incident_id: str = typer.Argument(..., help="Incident ID (e.g. INC-TASK-001)"),
+    title: str = typer.Option(..., help="Short incident title"),
+    severity: str = typer.Option("medium", help="Severity: low, medium, high, critical"),
+    affected_agent: str = typer.Option("", help="Agent that caused/was affected"),
+    department: str = typer.Option("", help="Department affected"),
+) -> None:
+    """Create a new postmortem skeleton."""
+    from ai_company.orchestrator.escalation import Postmortem, PostmortemStore
+
+    store = PostmortemStore()
+    existing = store.load(incident_id)
+    if existing:
+        typer.echo(f"Error: Postmortem '{incident_id}' already exists.")
+        raise typer.Exit(1)
+
+    pm = Postmortem(
+        incident_id=incident_id,
+        title=title,
+        severity=severity,
+        affected_agent=affected_agent,
+        department=department,
+        status="draft",
+    )
+    store.save(pm)
+    typer.echo(f"Postmortem '{incident_id}' created at orchestrator/postmortems/{incident_id}.json")
+
+
+@postmortem_app.command("update")
+def postmortem_update(
+    incident_id: str = typer.Argument(..., help="Incident ID to update"),
+    root_cause: Optional[str] = typer.Option(None, help="Root cause description"),
+    status: Optional[str] = typer.Option(None, help="New status: draft, in-progress, resolved"),
+    reviewed_by: Optional[str] = typer.Option(None, help="Reviewer name"),
+) -> None:
+    """Update an existing postmortem."""
+    from ai_company.orchestrator.escalation import PostmortemStore
+
+    store = PostmortemStore()
+    pm = store.load(incident_id)
+    if not pm:
+        typer.echo(f"Postmortem '{incident_id}' not found.")
+        raise typer.Exit(1)
+
+    updated = False
+    if root_cause is not None:
+        pm.root_cause = root_cause
+        updated = True
+    if status is not None:
+        pm.status = status
+        updated = True
+    if reviewed_by is not None:
+        pm.reviewed_by = reviewed_by
+        updated = True
+
+    if updated:
+        from datetime import datetime
+        pm.last_updated = datetime.now().isoformat()
+        store.save(pm)
+        typer.echo(f"Postmortem '{incident_id}' updated.")
+    else:
+        typer.echo("No fields to update. Use --root-cause, --status, or --reviewed-by.")
+        raise typer.Exit(1)
+
+
+@postmortem_app.command("render")
+def postmortem_render(
+    incident_id: str = typer.Argument(..., help="Incident ID to render as markdown"),
+) -> None:
+    """Render a postmortem to markdown using the Jinja2 template."""
+    from pathlib import Path
+
+    from jinja2 import Environment, FileSystemLoader
+
+    from ai_company.orchestrator.escalation import PostmortemStore
+
+    store = PostmortemStore()
+    pm = store.load(incident_id)
+    if not pm:
+        typer.echo(f"Postmortem '{incident_id}' not found.")
+        raise typer.Exit(1)
+
+    templates_dir = Path(__file__).parent.parent.parent / "templates"
+    env = Environment(loader=FileSystemLoader(str(templates_dir)), autoescape=False)
+    template = env.get_template("postmortem.md.j2")
+
+    rendered = template.render(
+        incident_id=pm.incident_id,
+        title=pm.title,
+        date=pm.date,
+        severity=pm.severity,
+        affected_agent=pm.affected_agent,
+        department=pm.department,
+        escalation_rule=pm.escalation_rule,
+        duration=pm.duration,
+        status=pm.status,
+        root_cause=pm.root_cause,
+        impact={
+            "tasks_before": pm.impact.tasks_before,
+            "tasks_during": pm.impact.tasks_during,
+            "tasks_after": pm.impact.tasks_after,
+            "agents_before": pm.impact.agents_before,
+            "agents_during": pm.impact.agents_during,
+            "agents_after": pm.impact.agents_after,
+            "downtime_minutes": pm.impact.downtime_minutes,
+        },
+        timeline=[{"time": e.time, "description": e.description} for e in pm.timeline],
+        resolution_steps=pm.resolution_steps,
+        action_items=[
+            {"id": a.id, "action": a.action, "owner": a.owner, "due_date": a.due_date, "status": a.status}
+            for a in pm.action_items
+        ],
+        lessons_learned=pm.lessons_learned,
+        prevention_measures=pm.prevention_measures,
+        prepared_by=pm.prepared_by,
+        reviewed_by=pm.reviewed_by,
+        last_updated=pm.last_updated,
+    )
+
+    out_path = Path(f"docs/postmortems/{incident_id}.md")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(rendered, encoding="utf-8")
+    typer.echo(f"Rendered to {out_path}")

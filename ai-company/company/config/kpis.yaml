@@ -1,0 +1,168 @@
+# Department KPI Definitions
+# Each department has KPIs that can be tracked over time.
+# Used by the dashboard API to provide per-department views.
+
+departments:
+  engineering:
+    name: Engineering
+    kpis:
+      - id: task_completion_rate
+        name: Task Completion Rate
+        unit: "%"
+        target: 95
+        frequency: daily
+        description: Percentage of tasks completed successfully
+      - id: avg_task_duration
+        name: Avg Task Duration
+        unit: "minutes"
+        target: 30
+        frequency: daily
+        description: Mean time from task creation to completion
+      - id: escalation_rate
+        name: Escalation Rate
+        unit: "%"
+        target: 5
+        frequency: weekly
+        description: Percentage of tasks requiring escalation
+      - id: model_cost_per_task
+        name: Model Cost per Task
+        unit: "$"
+        target: 0.05
+        frequency: daily
+        description: Average LLM API cost per task executed
+      - id: agent_uptime
+        name: Agent Uptime
+        unit: "%"
+        target: 99
+        frequency: daily
+        description: Percentage of time agents are responsive
+
+  hr:
+    name: Human Resources
+    kpis:
+      - id: agent_hiring_cycle
+        name: Agent Hiring Cycle
+        unit: "days"
+        target: 3
+        frequency: per_request
+        description: Time from staffing need to agent deployment
+      - id: config_review_time
+        name: Config Review Time
+        unit: "hours"
+        target: 4
+        frequency: per_request
+        description: Time for security/config review
+      - id: department_coverage
+        name: Department Coverage
+        unit: "%"
+        target: 100
+        frequency: weekly
+        description: Percentage of departments with assigned agents
+
+  marketing:
+    name: Marketing
+    kpis:
+      - id: campaign_generation_rate
+        name: Campaign Generation Rate
+        unit: campaigns/week
+        target: 5
+        frequency: weekly
+        description: Number of campaign briefs generated
+      - id: content_quality_score
+        name: Content Quality Score
+        unit: score
+        target: 8
+        frequency: per_item
+        description: Quality score of generated content (1-10)
+
+  sales:
+    name: Sales
+    kpis:
+      - id: lead_response_time
+        name: Lead Response Time
+        unit: "minutes"
+        target: 5
+        frequency: daily
+        description: Time from lead capture to first outreach
+      - id: pipeline_accuracy
+        name: Pipeline Accuracy
+        unit: "%"
+        target: 85
+        frequency: weekly
+        description: Accuracy of pipeline stage predictions
+
+  customer_success:
+    name: Customer Success
+    kpis:
+      - id: ticket_resolution_time
+        name: Ticket Resolution Time
+        unit: "hours"
+        target: 4
+        frequency: daily
+        description: Time from ticket creation to resolution
+      - id: customer_satisfaction
+        name: Customer Satisfaction
+        unit: score
+        target: 9
+        frequency: weekly
+        description: Average satisfaction score (1-10)
+
+  legal:
+    name: Legal
+    kpis:
+      - id: contract_review_time
+        name: Contract Review Time
+        unit: "hours"
+        target: 2
+        frequency: per_request
+        description: Time to complete contract review
+      - id: compliance_score
+        name: Compliance Score
+        unit: "%"
+        target: 100
+        frequency: monthly
+        description: Percentage of activities meeting compliance standards
+
+  finance:
+    name: Finance
+    kpis:
+      - id: budget_utilization
+        name: Budget Utilization
+        unit: "%"
+        target: 90
+        frequency: monthly
+        description: Percentage of allocated budget utilized
+      - id: cost_per_agent
+        name: Cost per Agent
+        unit: "$/month"
+        target: 50
+        frequency: monthly
+        description: Monthly operating cost per active agent
+      - id: roi_per_department
+        name: ROI per Department
+        unit: "%"
+        target: 200
+        frequency: quarterly
+        description: Return on investment per department
+
+  devops:
+    name: DevOps
+    kpis:
+      - id: deployment_success_rate
+        name: Deployment Success Rate
+        unit: "%"
+        target: 99
+        frequency: daily
+        description: Percentage of deployments completing without rollback
+      - id: mttr
+        name: Mean Time to Recovery
+        unit: "minutes"
+        target: 15
+        frequency: weekly
+        description: Average time to recover from incidents
+      - id: infrastructure_cost
+        name: Infrastructure Cost
+        unit: "$/month"
+        target: 100
+        frequency: monthly
+        description: Monthly infrastructure operating cost
