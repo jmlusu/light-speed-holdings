@@ -1,0 +1,29 @@
+services:
+  dashboard:
+    build: .
+    ports:
+      - "8420:8420"
+    volumes:
+      - ./.opencode:/app/.opencode
+      - ./company:/app/company
+    environment:
+      - OPENCODE_API_KEY=${OPENCODE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "-m", "ai_company.cli.main", "orchestrator", "tick"]
+    volumes:
+      - ./.opencode:/app/.opencode
+      - ./company:/app/company
+    environment:
+      - OPENCODE_API_KEY=${OPENCODE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    restart: unless-stopped
+    profiles:
+      - worker

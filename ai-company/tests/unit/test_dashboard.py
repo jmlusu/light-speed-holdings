@@ -102,6 +102,13 @@ def setup_dashboard_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Non
     if real_models.exists():
         shutil.copy2(str(real_models), str(tmp_path / "company" / "models.yaml"))
 
+    # Copy kpis.yaml into tmp_path/company/config/ for KPI endpoints
+    real_kpis = Path(__file__).resolve().parents[2] / "company" / "config" / "kpis.yaml"
+    if real_kpis.exists():
+        config_dir = tmp_path / "company" / "config"
+        config_dir.mkdir(exist_ok=True)
+        shutil.copy2(str(real_kpis), str(config_dir / "kpis.yaml"))
+
     # Empty scheduler
     (tmp_path / "orchestrator" / "scheduler.yaml").write_text(
         yaml.dump({"tasks": []}), encoding="utf-8"
@@ -310,3 +317,50 @@ class TestScheduler:
         resp = client.get("/api/scheduler")
         assert resp.status_code == 200
         assert resp.json() == []
+
+
+class TestKpiEndpoints:
+    """Contract tests for the department KPI API endpoints."""
+
+    def test_get_department_kpis(self, setup_dashboard_data: None) -> None:
+        """GET /api/departments/{name}/kpis returns KPI definitions."""
+        resp = client.get("/api/departments/engineering/kpis")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["name"] == "Engineering"
+        assert "kpis" in data
+        assert len(data["kpis"]) > 0
+        # Each KPI must have required fields
+        for kpi in data["kpis"]:
+            assert "id" in kpi
+            assert "name" in kpi
+            assert "target" in kpi
+            assert "unit" in kpi
+            assert "frequency" in kpi
+
+    def test_get_department_kpis_not_found(self, setup_dashboard_data: None) -> None:
+        resp = client.get("/api/departments/nonexistent/kpis")
+        assert resp.status_code == 404
+
+    def test_list_all_kpis(self, setup_dashboard_data: None) -> None:
+        resp = client.get("/api/kpis")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert isinstance(data, dict)
+        assert "engineering" in data
+        assert len(data["engineering"]["kpis"]) > 0
+
+    def test_kpi_summary(self, setup_dashboard_data: None) -> None:
+        resp = client.get("/api/kpis/summary")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert isinstance(data, list)
+        assert len(data) > 0
+        # Each summary item must have required fields
+        for item in data:
+            assert "department" in item
+            assert "kpi_id" in item
+            assert "name" in item
+            assert "target" in item
+            assert "unit" in item
+            assert "frequency" in item
