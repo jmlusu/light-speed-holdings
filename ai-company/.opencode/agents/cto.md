@@ -6,7 +6,7 @@ tools:
   write: true
   execute: true
   code_interpreter: true
-mode: subagent
+mode: primary
 permission:
   read: allow
 

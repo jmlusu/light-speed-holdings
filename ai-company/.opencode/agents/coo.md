@@ -5,7 +5,7 @@ tools:
   read: true
   write: true
   execute: true
-mode: subagent
+mode: primary
 permission:
   read: allow
 

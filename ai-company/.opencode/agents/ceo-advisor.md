@@ -4,7 +4,7 @@ description: Provide strategic counsel on company direction and support CEO deci
 tools:
   read: true
   write: true
-mode: subagent
+mode: primary
 permission:
   read: allow
 
