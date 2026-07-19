@@ -1,7 +1,11 @@
 ---
 name: caio
 description: Directs AI research, model selection, and prompt engineering strategies.
-tools: ["read", "write", "execute", "web_search"]
+tools:
+  read: true
+  write: true
+  execute: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

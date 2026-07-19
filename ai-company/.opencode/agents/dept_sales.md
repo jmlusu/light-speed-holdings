@@ -1,7 +1,8 @@
 ---
 name: sales
 description: Generate revenue through new business acquisition.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

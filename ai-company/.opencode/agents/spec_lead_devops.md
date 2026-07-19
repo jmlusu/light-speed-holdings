@@ -1,7 +1,11 @@
 ---
 name: lead_devops
-description: 
-tools: ["read", "write", "execute", "web_search"]
+description: "lead_devops specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

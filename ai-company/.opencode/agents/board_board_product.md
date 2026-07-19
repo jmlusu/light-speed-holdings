@@ -1,7 +1,8 @@
 ---
 name: board_product
 description: Product Committee Chair
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

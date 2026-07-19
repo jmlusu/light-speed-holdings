@@ -1,7 +1,8 @@
 ---
 name: board_technology
 description: Technology Committee Chair
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

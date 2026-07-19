@@ -1,7 +1,9 @@
 ---
 name: legal
 description: Provides legal counsel on contracts, compliance, IP, and regulatory matters.
-tools: ["read", "write"]
+tools:
+  read: true
+  write: true
 mode: subagent
 permission:
   read: allow

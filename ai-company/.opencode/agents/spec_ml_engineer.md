@@ -1,7 +1,11 @@
 ---
 name: ml_engineer
-description: 
-tools: ["read", "write", "execute", "code_interpreter"]
+description: "ml_engineer specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

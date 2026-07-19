@@ -1,7 +1,10 @@
 ---
 name: financial_analyst
-description: 
-tools: ["read", "write", "execute"]
+description: "financial_analyst specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

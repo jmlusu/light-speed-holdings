@@ -1,7 +1,9 @@
 ---
 name: content_creator
-description: 
-tools: ["read", "write"]
+description: "content_creator specialist agent"
+tools:
+  read: true
+  write: true
 mode: subagent
 permission:
   read: allow

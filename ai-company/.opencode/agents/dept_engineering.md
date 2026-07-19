@@ -1,7 +1,8 @@
 ---
 name: engineering
 description: Build and maintain the AI Company Builder platform and infrastructure.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

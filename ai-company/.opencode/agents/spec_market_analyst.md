@@ -1,7 +1,10 @@
 ---
 name: market_analyst
-description: 
-tools: ["read", "write", "web_search"]
+description: "market_analyst specialist agent"
+tools:
+  read: true
+  write: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

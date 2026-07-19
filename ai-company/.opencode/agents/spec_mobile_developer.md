@@ -1,7 +1,11 @@
 ---
 name: mobile_developer
-description: 
-tools: ["read", "write", "execute", "code_interpreter"]
+description: "mobile_developer specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

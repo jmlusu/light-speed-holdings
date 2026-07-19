@@ -1,7 +1,11 @@
 ---
 name: cto
 description: Oversee all technological infrastructure, software architecture, and engineering teams.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

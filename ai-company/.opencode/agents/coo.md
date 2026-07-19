@@ -1,7 +1,10 @@
 ---
 name: coo
 description: Manage day-to-day operations and internal processes.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

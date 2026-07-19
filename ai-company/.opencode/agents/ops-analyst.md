@@ -1,7 +1,10 @@
 ---
 name: ops-analyst
 description: Tracks operational metrics, identifies process bottlenecks, and drives efficiency improvements.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

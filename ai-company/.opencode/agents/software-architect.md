@@ -1,7 +1,11 @@
 ---
 name: software-architect
 description: Designs system architecture, API contracts, and integration patterns.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

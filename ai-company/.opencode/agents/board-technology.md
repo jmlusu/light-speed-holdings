@@ -1,7 +1,8 @@
 ---
 name: board-technology
 description: Advises the board on technology architecture, AI strategy, and engineering health.
-tools: ["read"]
+tools:
+  read: true
 mode: subagent
 permission:
   read: allow

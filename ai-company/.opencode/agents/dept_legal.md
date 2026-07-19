@@ -1,7 +1,8 @@
 ---
 name: legal
 description: Manage legal affairs, contracts, and compliance.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

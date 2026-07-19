@@ -1,7 +1,8 @@
 ---
 name: it
 description: Manage IT infrastructure and internal tools.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

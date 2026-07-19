@@ -1,7 +1,8 @@
 ---
 name: board_strategy
 description: Strategy Committee Chair
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

@@ -1,7 +1,10 @@
 ---
 name: prompt-engineer
 description: Crafts and optimizes agent system prompts, behavioral instructions, and chain-of-thought patterns.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

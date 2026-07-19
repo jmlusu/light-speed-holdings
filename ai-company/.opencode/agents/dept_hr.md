@@ -1,7 +1,8 @@
 ---
 name: hr
 description: Attract, develop, and retain top talent.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

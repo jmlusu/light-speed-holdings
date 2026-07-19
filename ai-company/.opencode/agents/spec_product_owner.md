@@ -1,7 +1,9 @@
 ---
 name: product_owner
-description: 
-tools: ["read", "write"]
+description: "product_owner specialist agent"
+tools:
+  read: true
+  write: true
 mode: subagent
 permission:
   read: allow

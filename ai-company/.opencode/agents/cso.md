@@ -1,7 +1,10 @@
 ---
 name: cso
 description: Drive corporate strategy, M&A, and market expansion.
-tools: ["read", "write", "web_search"]
+tools:
+  read: true
+  write: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

@@ -1,7 +1,11 @@
 ---
 name: cdo
 description: Manage data strategy, analytics, and data governance.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

@@ -1,7 +1,8 @@
 ---
 name: security
 description: Protect company assets and ensure compliance.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

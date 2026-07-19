@@ -1,7 +1,10 @@
 ---
 name: business_developer
-description: 
-tools: ["read", "write", "web_search"]
+description: "business_developer specialist agent"
+tools:
+  read: true
+  write: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

@@ -1,7 +1,10 @@
 ---
 name: security-engineer
 description: Manages application security, vulnerability assessment, and compliance.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

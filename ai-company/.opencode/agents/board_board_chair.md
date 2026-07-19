@@ -1,7 +1,8 @@
 ---
 name: board_chair
 description: Chairperson
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

@@ -1,7 +1,10 @@
 ---
 name: security_engineer
-description: 
-tools: ["read", "write", "execute"]
+description: "security_engineer specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

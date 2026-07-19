@@ -1,7 +1,10 @@
 ---
 name: cfo
 description: Manage financial planning, budgeting, and fiscal health.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

@@ -1,7 +1,10 @@
 ---
 name: cloud_architect
-description: 
-tools: ["read", "write", "execute"]
+description: "cloud_architect specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

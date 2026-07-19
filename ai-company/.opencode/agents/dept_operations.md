@@ -1,7 +1,8 @@
 ---
 name: operations
 description: Optimize internal processes and operational efficiency.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

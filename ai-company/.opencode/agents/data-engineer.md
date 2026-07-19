@@ -1,7 +1,11 @@
 ---
 name: data-engineer
 description: Manages data pipelines, storage, and data infrastructure for analytics and ML.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

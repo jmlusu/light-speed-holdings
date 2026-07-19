@@ -1,7 +1,8 @@
 ---
 name: finance
 description: Manage financial planning, budgeting, and fiscal health.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

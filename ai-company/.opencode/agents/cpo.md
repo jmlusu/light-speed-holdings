@@ -1,7 +1,10 @@
 ---
 name: cpo
 description: Define product vision, prioritize features, and drive product strategy.
-tools: ["read", "write", "web_search"]
+tools:
+  read: true
+  write: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

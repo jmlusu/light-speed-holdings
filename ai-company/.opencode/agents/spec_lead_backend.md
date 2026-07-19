@@ -1,7 +1,11 @@
 ---
 name: lead_backend
-description: 
-tools: ["read", "write", "execute", "code_interpreter"]
+description: "lead_backend specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

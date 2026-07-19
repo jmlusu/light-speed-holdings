@@ -1,7 +1,11 @@
 ---
 name: qa-engineer
 description: Ensures software quality through testing strategies, automation, and quality gates.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

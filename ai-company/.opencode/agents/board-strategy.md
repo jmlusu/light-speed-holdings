@@ -1,7 +1,8 @@
 ---
 name: board-strategy
 description: Advises the board on long-term strategy, partnerships, and market expansion.
-tools: ["read"]
+tools:
+  read: true
 mode: subagent
 permission:
   read: allow

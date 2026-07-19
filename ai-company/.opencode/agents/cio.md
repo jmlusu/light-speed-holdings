@@ -1,7 +1,10 @@
 ---
 name: cio
 description: Manage IT infrastructure and internal tools.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

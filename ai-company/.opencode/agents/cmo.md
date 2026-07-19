@@ -1,7 +1,11 @@
 ---
 name: cmo
 description: Drive brand awareness, demand generation, and market positioning.
-tools: ["read", "write", "execute", "web_search"]
+tools:
+  read: true
+  write: true
+  execute: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

@@ -1,7 +1,10 @@
 ---
 name: chro
 description: Manage human resources, culture, and talent acquisition.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

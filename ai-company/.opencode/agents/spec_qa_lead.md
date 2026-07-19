@@ -1,7 +1,10 @@
 ---
 name: qa_lead
-description: 
-tools: ["read", "write", "execute"]
+description: "qa_lead specialist agent"
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

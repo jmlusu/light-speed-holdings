@@ -1,7 +1,9 @@
 ---
 name: ceo-advisor
 description: Provide strategic counsel on company direction and support CEO decision-making.
-tools: ["read", "write"]
+tools:
+  read: true
+  write: true
 mode: subagent
 permission:
   read: allow

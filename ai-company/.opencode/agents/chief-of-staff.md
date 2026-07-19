@@ -1,7 +1,11 @@
 ---
 name: chief-of-staff
 description: Primary orchestrator and strategic alignment agent for the entire company.
-tools: ["read", "write", "execute", "delegate"]
+tools:
+  read: true
+  write: true
+  execute: true
+  delegate: true
 mode: subagent
 permission:
   read: allow

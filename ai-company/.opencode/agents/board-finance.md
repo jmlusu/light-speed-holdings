@@ -1,7 +1,8 @@
 ---
 name: board-finance
 description: Advises the board on financial health, budgets, and investment strategy.
-tools: ["read"]
+tools:
+  read: true
 mode: subagent
 permission:
   read: allow

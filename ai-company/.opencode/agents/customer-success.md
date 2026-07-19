@@ -1,7 +1,10 @@
 ---
 name: customer-success
 description: Owns customer onboarding, retention, expansion, and satisfaction metrics.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

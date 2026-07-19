@@ -1,7 +1,8 @@
 ---
 name: board_risk
 description: Risk Committee Chair
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

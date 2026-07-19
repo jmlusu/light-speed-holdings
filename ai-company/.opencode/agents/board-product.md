@@ -1,7 +1,8 @@
 ---
 name: board-product
 description: Advises the board on product vision, roadmap, and competitive positioning.
-tools: ["read"]
+tools:
+  read: true
 mode: subagent
 permission:
   read: allow

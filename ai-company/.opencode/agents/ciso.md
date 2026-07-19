@@ -1,7 +1,10 @@
 ---
 name: ciso
 description: Protect company assets, data, and systems from security threats.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

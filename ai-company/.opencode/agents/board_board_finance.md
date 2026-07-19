@@ -1,7 +1,8 @@
 ---
 name: board_finance
 description: Finance Committee Chair
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

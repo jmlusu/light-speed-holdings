@@ -1,7 +1,9 @@
 ---
 name: product_designer
-description: 
-tools: ["read", "write"]
+description: "product_designer specialist agent"
+tools:
+  read: true
+  write: true
 mode: subagent
 permission:
   read: allow

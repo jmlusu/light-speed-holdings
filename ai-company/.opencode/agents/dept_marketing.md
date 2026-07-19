@@ -1,7 +1,8 @@
 ---
 name: marketing
 description: Drive brand awareness and demand generation.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

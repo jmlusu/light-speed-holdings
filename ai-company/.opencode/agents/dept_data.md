@@ -1,7 +1,8 @@
 ---
 name: data
 description: Manage data strategy, analytics, and ML operations.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

@@ -1,7 +1,11 @@
 ---
 name: ml-engineer
 description: Implements machine learning pipelines, model integrations, and evaluation frameworks.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

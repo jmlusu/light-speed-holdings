@@ -1,7 +1,10 @@
 ---
 name: hr
 description: Manages agent onboarding, role definitions, workforce planning, and culture.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

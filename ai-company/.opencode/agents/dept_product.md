@@ -1,7 +1,8 @@
 ---
 name: product
 description: Drive product strategy, discovery, and design.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

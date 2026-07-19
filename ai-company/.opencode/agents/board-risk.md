@@ -1,7 +1,8 @@
 ---
 name: board-risk
 description: Advises the board on operational, technical, and strategic risks.
-tools: ["read"]
+tools:
+  read: true
 mode: subagent
 permission:
   read: allow

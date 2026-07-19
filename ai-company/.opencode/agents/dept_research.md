@@ -1,7 +1,8 @@
 ---
 name: research
 description: Advance AI research and develop prototypes.
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

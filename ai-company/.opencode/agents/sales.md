@@ -1,7 +1,10 @@
 ---
 name: sales
 description: Owns the sales pipeline, customer acquisition, and revenue targets.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

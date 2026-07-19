@@ -1,7 +1,11 @@
 ---
 name: lead-backend
 description: Manages backend systems, APIs, and server-side agent logic.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

@@ -1,7 +1,8 @@
 ---
 name: board_customer
 description: Customer Committee Chair
-tools: []
+tools:
+  : true
 mode: subagent
 permission:
   read: deny

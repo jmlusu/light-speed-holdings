@@ -1,7 +1,9 @@
 ---
 name: clo
 description: Manage legal affairs, contracts, and compliance.
-tools: ["read", "write"]
+tools:
+  read: true
+  write: true
 mode: subagent
 permission:
   read: allow

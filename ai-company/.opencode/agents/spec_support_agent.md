@@ -1,7 +1,10 @@
 ---
 name: support_agent
-description: 
-tools: ["read", "write", "web_search"]
+description: "support_agent specialist agent"
+tools:
+  read: true
+  write: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

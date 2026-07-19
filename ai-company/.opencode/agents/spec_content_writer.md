@@ -1,7 +1,10 @@
 ---
 name: content_writer
-description: 
-tools: ["read", "write", "web_search"]
+description: "content_writer specialist agent"
+tools:
+  read: true
+  write: true
+  web_search: true
 mode: subagent
 permission:
   read: allow

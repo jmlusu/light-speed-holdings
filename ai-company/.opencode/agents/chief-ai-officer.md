@@ -1,7 +1,11 @@
 ---
 name: chief-ai-officer
 description: Lead AI strategy, LLM integration, and AI capability development across the organization.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools:
+  read: true
+  write: true
+  execute: true
+  code_interpreter: true
 mode: subagent
 permission:
   read: allow

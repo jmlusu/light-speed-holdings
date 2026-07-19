@@ -1,7 +1,10 @@
 ---
 name: human-ceo
 description: Set company vision, strategy, and culture. Make final decisions on high-stakes matters.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow

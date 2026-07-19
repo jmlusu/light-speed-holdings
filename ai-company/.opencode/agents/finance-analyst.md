@@ -1,7 +1,10 @@
 ---
 name: finance-analyst
 description: Tracks API spend, calculates ROI for agent deployments, and manages cost reporting.
-tools: ["read", "write", "execute"]
+tools:
+  read: true
+  write: true
+  execute: true
 mode: subagent
 permission:
   read: allow
