@@ -81,6 +81,7 @@ class EscalationManager:
         self.rules: List[EscalationRule] = []
         self.events: List[EscalationEvent] = []
         self._load_config()
+        self._load_events()
 
     def _load_config(self):
         if self.config_path.exists():
@@ -90,6 +91,42 @@ class EscalationManager:
 
     def _save_config(self):
         data = {"rules": [r.model_dump() for r in self.rules]}
+        with open(self.config_path, "w", encoding="utf-8") as f:
+            yaml.dump(data, f, default_flow_style=False)
+
+    def _load_events(self) -> None:
+        """Load persisted escalation events from the YAML file."""
+        if not self.config_path.exists():
+            return
+        try:
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            raw_events = data.get("events", [])
+            self.events = [EscalationEvent(**e) for e in raw_events]
+        except (yaml.YAMLError, KeyError):
+            self.events = []
+
+    def _save_events(self) -> None:
+        """Persist escalation events back to the YAML file."""
+        if self.config_path.exists():
+            try:
+                with open(self.config_path, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+            except (yaml.YAMLError, OSError):
+                data = {}
+        else:
+            data = {}
+
+        data["events"] = [
+            {
+                **e.model_dump(),
+                "timestamp": e.timestamp.isoformat()
+                if isinstance(e.timestamp, datetime)
+                else str(e.timestamp),
+            }
+            for e in self.events
+        ]
+
         with open(self.config_path, "w", encoding="utf-8") as f:
             yaml.dump(data, f, default_flow_style=False)
 
@@ -141,6 +178,7 @@ class EscalationManager:
             reason=reason,
         )
         self.events.append(event)
+        self._save_events()
         return event
 
     def get_pending_escalations(self) -> List[EscalationEvent]:
@@ -150,6 +188,7 @@ class EscalationManager:
         for event in self.events:
             if event.task_id == task_id:
                 event.resolved = True
+        self._save_events()
 
     def list_rules(self) -> List[EscalationRule]:
         return self.rules

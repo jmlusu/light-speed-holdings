@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import json
+from collections.abc import Generator
+
 import httpx
 
 from ai_company.llm.providers.base import (
     ChatResponse,
     LLMProvider,
     LLMProviderError,
+    StreamChunk,
 )
 
 
@@ -83,6 +87,68 @@ class OllamaProvider(LLMProvider):
                 "completion_tokens": eval_count,
             },
         )
+
+    def chat_stream(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: str | None = None,
+    ) -> Generator[StreamChunk, None, None]:
+        model = model or self.default_model
+
+        payload = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "stream": True,
+            "options": {
+                "temperature": 0.3,
+                "num_predict": 4096,
+            },
+        }
+
+        try:
+            with self._client.stream("POST", "/api/chat", json=payload) as resp:
+                if resp.status_code != 200:
+                    raise LLMProviderError(
+                        self.name,
+                        f"Ollama returned {resp.status_code}: {resp.read()[:200]}",
+                        status_code=resp.status_code,
+                    )
+
+                for line in resp.iter_lines():
+                    if not line:
+                        continue
+                    try:
+                        chunk = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    message = chunk.get("message", {})
+                    content = message.get("content", "")
+                    done = chunk.get("done", False)
+                    if done:
+                        yield StreamChunk(
+                            delta="",
+                            finish_reason="stop",
+                            usage={
+                                "prompt_tokens": chunk.get("prompt_eval_count", 0),
+                                "completion_tokens": chunk.get("eval_count", 0),
+                            },
+                        )
+                        return
+                    if content:
+                        yield StreamChunk(delta=content)
+        except httpx.ConnectError:
+            raise LLMProviderError(
+                self.name,
+                f"Cannot connect to Ollama at {self.api_base}. Is Ollama running?",
+            )
+        except httpx.TimeoutException as exc:
+            raise LLMProviderError(self.name, f"Request timed out: {exc}") from exc
+        except httpx.HTTPError as exc:
+            raise LLMProviderError(self.name, f"HTTP error: {exc}") from exc
 
     def is_available(self) -> bool:
         try:

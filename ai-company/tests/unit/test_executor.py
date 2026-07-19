@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass, field
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -140,7 +141,7 @@ class TestToolRunner:
     def test_execute_failing_command(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
         results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "exit 1"}}],
+            [{"tool": "execute", "args": {"command": "python -c \"exit(1)\""}}],
             hitl_gate=None,
         )
         assert results[0]["status"] == "ok"
@@ -235,6 +236,35 @@ class TestHITLGate:
 # ── Executor Loop ───────────────────────────────────────────────────
 
 
+@dataclass
+class _FakeToolCallRecord:
+    """Minimal stand-in for agent_loop.ToolCallRecord used in tests."""
+
+    step: int = 0
+    tool: str = ""
+    status: str = "ok"
+    result: dict = field(default_factory=dict)
+    iteration: int = 1
+
+
+@dataclass
+class _FakeLoopResult:
+    """Minimal stand-in for agent_loop.LoopResult used in tests."""
+
+    final_response: str = "Task completed."
+    iterations: int = 1
+    tool_results: list = field(default_factory=list)
+    total_prompt_tokens: int = 100
+    total_completion_tokens: int = 50
+    total_cost_usd: float = 0.001
+    done: bool = True
+    error: str = ""
+
+    @property
+    def total_tokens(self) -> int:
+        return self.total_prompt_tokens + self.total_completion_tokens
+
+
 class TestExecutorLoop:
     def test_tick_with_no_tasks(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)
@@ -281,28 +311,21 @@ class TestExecutorLoop:
             results_dir=str(tmp_path / "results"),
         )
 
-        # Mock the LLM to return a simple read plan
-        from ai_company.llm.providers.base import ChatResponse
-
-        mock_provider = MagicMock()
-        mock_provider.is_available.return_value = True
-        mock_provider.chat.return_value = ChatResponse(
-            content=json.dumps({
-                "plan": [{"tool": "read", "args": {"path": "test.py"}}],
-                "result": "File contains x = 42",
-                "artifacts": [],
-            }),
-            model="test",
-            provider="mock",
+        # Mock agent_loop.run to return a successful result
+        mock_result = _FakeLoopResult(
+            final_response="File contains x = 42",
+            iterations=1,
+            tool_results=[],
+            done=True,
+            error="",
         )
-        executor.llm._providers = {"opencode": mock_provider, "deepseek": mock_provider, "ollama": mock_provider}
-
-        # Mock HITL to auto-approve
-        executor.hitl = MagicMock()
-        executor.hitl.request_and_wait.return_value = True
+        executor.agent_loop.run = MagicMock(return_value=mock_result)
 
         count = executor.tick()
         assert count == 1
+
+        # Verify agent_loop.run was called
+        executor.agent_loop.run.assert_called_once()
 
         # Verify task was completed
         updated = json.loads(inbox.read_text(encoding="utf-8"))
@@ -310,13 +333,13 @@ class TestExecutorLoop:
         assert "42" in updated[0]["result"]
 
         # Verify results were saved
-        log_path = tmp_path / "results" / "task-001" / "execution_log.json"
+        log_path = tmp_path / "results" / "task-001" / "loop_result.json"
         assert log_path.exists()
         log = json.loads(log_path.read_text(encoding="utf-8"))
         assert log["task_id"] == "task-001"
         assert log["agent"] == "test-agent"
 
-    def test_tick_handles_llm_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_tick_handles_loop_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
@@ -333,7 +356,6 @@ class TestExecutorLoop:
         inbox.write_text(json.dumps([task]), encoding="utf-8")
 
         from ai_company.executor.loop import Executor
-        from ai_company.llm.providers.base import LLMProviderError
 
         executor = Executor(
             config_path=str(tmp_path / "company" / "models.yaml"),
@@ -342,17 +364,150 @@ class TestExecutorLoop:
             results_dir=str(tmp_path / "results"),
         )
 
-        # Mock all providers to fail
-        mock_provider = MagicMock()
-        mock_provider.is_available.return_value = True
-        mock_provider.chat.side_effect = LLMProviderError("mock", "API down")
-        executor.llm._providers = {"opencode": mock_provider, "deepseek": mock_provider, "ollama": mock_provider}
+        # Mock agent_loop.run to raise an exception
+        executor.agent_loop.run = MagicMock(side_effect=RuntimeError("LLM API down"))
 
         count = executor.tick()
         assert count == 1
 
         updated = json.loads(inbox.read_text(encoding="utf-8"))
         assert updated[0]["status"] == "failed"
+        assert "LLM API down" in updated[0]["result"]
+
+    def test_process_task_uses_agent_loop(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Verify _process_task delegates to AgentLoop.run()."""
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        task = {
+            "id": "task-loop-001",
+            "sender_id": "human-ceo",
+            "receiver_id": "test-agent",
+            "instruction": "Analyze codebase",
+            "status": "pending",
+            "priority": "high",
+        }
+        inbox.write_text(json.dumps([task]), encoding="utf-8")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        mock_result = _FakeLoopResult(
+            final_response="Analysis complete.",
+            iterations=3,
+            done=True,
+        )
+        executor.agent_loop.run = MagicMock(return_value=mock_result)
+
+        executor.tick()
+
+        # Verify agent_loop.run was called with correct args
+        call_kwargs = executor.agent_loop.run.call_args
+        assert call_kwargs.kwargs["agent_name"] == "test-agent"
+        assert call_kwargs.kwargs["task_id"] == "task-loop-001"
+        assert call_kwargs.kwargs["priority"] == "high"
+        assert "Analyze codebase" in call_kwargs.kwargs["user_prompt"]
+
+    def test_process_task_handles_loop_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Verify error handling when AgentLoop.run() raises."""
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        task = {
+            "id": "task-fail-001",
+            "sender_id": "human-ceo",
+            "receiver_id": "test-agent",
+            "instruction": "Failing task",
+            "status": "pending",
+            "priority": "medium",
+        }
+        inbox.write_text(json.dumps([task]), encoding="utf-8")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        executor.agent_loop.run = MagicMock(side_effect=ConnectionError("Network unreachable"))
+
+        executor.tick()
+
+        assert executor.stats.tasks_failed == 1
+        assert executor.stats.tasks_succeeded == 0
+
+        updated = json.loads(inbox.read_text(encoding="utf-8"))
+        assert updated[0]["status"] == "failed"
+        assert "Network unreachable" in updated[0]["result"]
+
+    def test_process_task_creates_subtasks_from_records(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Verify delegation from ToolCallRecord creates subtasks."""
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+        _create_agent_spec(tmp_path, "lead-backend")
+
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        task = {
+            "id": "task-deleg-001",
+            "sender_id": "human-ceo",
+            "receiver_id": "test-agent",
+            "instruction": "Build API and frontend",
+            "status": "pending",
+            "priority": "medium",
+        }
+        inbox.write_text(json.dumps([task]), encoding="utf-8")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        # Create a mock result with a delegate tool record
+        delegate_record = _FakeToolCallRecord(
+            step=1,
+            tool="delegate",
+            status="ok",
+            result={"receiver": "lead-backend", "instruction": "Build REST API"},
+            iteration=1,
+        )
+        mock_result = _FakeLoopResult(
+            final_response="Delegated to lead-backend.",
+            iterations=1,
+            tool_results=[delegate_record],
+            done=True,
+        )
+        executor.agent_loop.run = MagicMock(return_value=mock_result)
+
+        executor.tick()
+
+        # Verify a subtask was created in the inbox
+        updated = json.loads(inbox.read_text(encoding="utf-8"))
+        # Original task + 1 subtask
+        assert len(updated) == 2
+
+        subtask = [t for t in updated if t["id"] != "task-deleg-001"][0]
+        assert subtask["sender_id"] == "test-agent"
+        assert subtask["receiver_id"] == "lead-backend"
+        assert subtask["instruction"] == "Build REST API"
+        assert subtask["status"] == "pending"
 
     def test_stats_tracking(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)

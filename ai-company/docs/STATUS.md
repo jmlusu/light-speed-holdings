@@ -4,7 +4,7 @@
 
 ## Last Updated
 
-2026-07-17
+2026-07-19
 
 ## Current State
 
@@ -49,6 +49,7 @@
 
 ## Recent Work
 
+- **2026-07-19**: Phase 5 design specs — 3 approval UX documents covering 5-tier action system, dashboard approval queue with WebSocket, and enhanced CLI commands.
 - **2026-07-17**: Governance layer — autonomous GitHub Action (cron every 6h), postmortem template + store + CLI, incident response + deployment SOPs, RACI template + hiring workflow RACI, department KPI dashboards (7 departments, 28 KPIs), dashboard CLI (`ai-company dashboard kpi list/show`), postmortem CLI (`ai-company orchestrator postmortem list/show/create/update/render`), sop/raci CLI commands, 8 new tests.
 - **2026-07-17**: Cleanup pass — fixed E402 ruff warnings in llm/client.py, deleted 5 dead scripts, wired all 5 providers in opencode.json, created 3 governance/policy docs.
 - **M1**: Config YAMLs (19 files), 17+ Pydantic models, registry system (loader/parser/resolver/validator), 21 new tests.
@@ -60,6 +61,10 @@
 
 ## Remaining Work
 
+- **Phase 5 (current)**: Approval gate hardening — 5-tier action system, dual-approval, timeout escalation. Design specs complete:
+  - `docs/APPROVAL-UX-SPEC.md` — Tier definitions, per-tier UX, escalation paths, HITL integration
+  - `docs/APPROVAL-DASHBOARD-UI.md` — Dashboard approval queue, WebSocket real-time, REST API extensions
+  - `docs/APPROVAL-CLI-COMMANDS.md` — Enhanced CLI commands (list, approve, reject, show, history, tiers, stats, watch)
 - Wire actual metric collection into KPI dashboards (currently definitions only, no live data)
 - Add more department SOPs (HR, Legal, Finance)
 - Implement scheduled cycle automation (long-running orchestrator daemon)

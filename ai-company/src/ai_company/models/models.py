@@ -9,7 +9,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # ---------------------------------------------------------------------------
@@ -79,6 +79,7 @@ class VotingMajority(str, Enum):
 
 class EntityBase(BaseModel):
     """Base for all named entities."""
+    model_config = ConfigDict(extra="ignore")
     id: str = Field(..., min_length=1, description="Unique identifier")
     name: str = Field(default="", description="Human-readable name")
 
@@ -429,10 +430,16 @@ class Task(EntityBase):
 
     # Legacy completion fields
     created_at: str = ""
+    updated_at: str = ""
     completed_at: str = ""
     result: str = ""
     requires_approval: bool = False
     approved_by: str = ""
+
+    # Hardening fields — auto-populated by MessageBus
+    correlation_id: str = ""
+    parent_task_id: str = ""
+    acknowledged_by: str = ""
 
 
 # ---------------------------------------------------------------------------

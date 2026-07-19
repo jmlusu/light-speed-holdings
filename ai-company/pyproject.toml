@@ -9,62 +9,51 @@ authors = [
     { name = "Jack Mlusu" }
 ]
 
+license = { text = "Proprietary — All Rights Reserved. Apache 2.0 at v1.0." }
+
 dependencies = [
-
     "jinja2",
-
     "click",
-
     "rich",
-
     "pyyaml",
-
     "pydantic>=2.8",
-
     "networkx",
-
     "typer",
-
     "python-dotenv",
     "fastapi",
     "uvicorn[standard]",
     "httpx",
-
 ]
 
-[project.optional-dependencies]
+[project.urls]
+Homepage = "https://github.com/light-speed-holdings/ai-company"
+Repository = "https://github.com/light-speed-holdings/ai-company"
+Issues = "https://github.com/light-speed-holdings/ai-company/issues"
 
+[project.optional-dependencies]
 dev = [
     "pytest",
     "pytest-cov",
     "ruff",
-    "black",
     "mypy",
     "types-PyYAML",
+    "bandit",
+    "safety",
+    "pytest-asyncio",
+    "build",
 ]
 
-[tool.black]
-
-line-length = 100
-
-target-version = ["py312"]
-
 [tool.ruff]
-
 line-length = 100
-
 target-version = "py312"
 
 [tool.pytest.ini_options]
-
 testpaths = ["tests"]
-
 pythonpath = ["src"]
+asyncio_mode = "auto"
 
 [build-system]
-
 requires = ["setuptools>=69"]
-
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]

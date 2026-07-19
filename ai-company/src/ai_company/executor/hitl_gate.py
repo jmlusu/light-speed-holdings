@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-import time
+import threading
 import uuid
 from datetime import datetime, timedelta
 from typing import Any
@@ -15,7 +15,9 @@ class HITLGate:
     """Requests human approval for dangerous tool operations.
 
     Creates an ApprovalRequest via the existing ApprovalGate, then polls
-    until the request is approved, rejected, or times out.
+    via a background thread until the request is approved, rejected, or
+    times out. The calling thread blocks on a threading.Event with timeout
+    so it can be interrupted (unlike time.sleep).
     """
 
     def __init__(
@@ -27,6 +29,9 @@ class HITLGate:
         self.gate = approval_gate or ApprovalGate()
         self.poll_interval = poll_interval
         self.timeout_minutes = timeout_minutes
+        self._events: dict[str, threading.Event] = {}
+        self._results: dict[str, bool] = {}
+        self._lock = threading.Lock()
 
     def request_and_wait(
         self,
@@ -51,15 +56,53 @@ class HITLGate:
             expires_in_minutes=self.timeout_minutes,
         )
 
-        # Poll until resolved or expired
+        event = threading.Event()
+        with self._lock:
+            self._events[request_id] = event
+
+        # Background daemon polls for approval status
+        poller = threading.Thread(
+            target=self._poll_request,
+            args=(request_id, event),
+            daemon=True,
+        )
+        poller.start()
+
+        # Wait on event with timeout — doesn't hold the executor event loop
+        event.wait(timeout=self.timeout_minutes * 60)
+
+        # Cleanup
+        with self._lock:
+            self._events.pop(request_id, None)
+            result = self._results.pop(request_id, False)
+
+        return result
+
+    def _poll_request(self, request_id: str, event: threading.Event) -> None:
+        """Background thread: poll gate until resolved or deadline."""
         deadline = datetime.now() + timedelta(minutes=self.timeout_minutes)
-        while datetime.now() < deadline:
+        while datetime.now() < deadline and not event.is_set():
             req = self.gate.get_request(request_id)
             if req and req.status != ApprovalStatus.PENDING:
-                return req.status == ApprovalStatus.APPROVED
-            time.sleep(self.poll_interval)
+                with self._lock:
+                    self._results[request_id] = req.status == ApprovalStatus.APPROVED
+                event.set()
+                return
+            event.wait(timeout=self.poll_interval)
 
-        return False  # Timed out → denied
+        # Timed out
+        if not event.is_set():
+            with self._lock:
+                self._results[request_id] = False
+            event.set()
+
+    def cancel(self, request_id: str) -> None:
+        """Cancel a pending wait without waiting for timeout."""
+        with self._lock:
+            event = self._events.get(request_id)
+            if event:
+                self._results[request_id] = False
+                event.set()
 
 
 def _format_description(tool: str, args: dict[str, Any]) -> str:

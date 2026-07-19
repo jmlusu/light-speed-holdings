@@ -2,11 +2,16 @@
 Scheduler for autonomous cycles.
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 import yaml
 from pydantic import BaseModel, Field
+
+if TYPE_CHECKING:
+    from ai_company.orchestrator.message_bus import MessageBus
 
 
 class ScheduledTask(BaseModel):
@@ -75,6 +80,29 @@ class Scheduler:
                 if task.interval_minutes:
                     task.next_run = datetime.now() + timedelta(minutes=task.interval_minutes)
         self._save_config()
+
+    def create_pending_tasks(self, bus: "MessageBus") -> list[str]:
+        """Check for due scheduled tasks and create inbox tasks for them.
+
+        Returns a list of created task IDs.
+        """
+        from ai_company.models.task import Task, TaskPriority
+        import uuid
+
+        created: list[str] = []
+        for scheduled in self.get_pending_tasks():
+            template = scheduled.task_template
+            task = Task(
+                id=str(uuid.uuid4()),
+                sender_id="scheduler",
+                receiver_id=template.get("receiver_id", "chief-of-staff"),
+                instruction=template.get("instruction", f"Scheduled: {scheduled.name}"),
+                priority=TaskPriority(template.get("priority", "medium")),
+            )
+            bus.send_task(task)
+            self.mark_completed(scheduled.id)
+            created.append(task.id)
+        return created
 
     def list_tasks(self) -> List[ScheduledTask]:
         return self.tasks

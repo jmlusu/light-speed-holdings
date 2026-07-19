@@ -8,11 +8,14 @@ typer
 python-dotenv
 fastapi
 uvicorn[standard]
+httpx
 
 [dev]
 pytest
 pytest-cov
 ruff
-black
 mypy
 types-PyYAML
+bandit
+safety
+pytest-asyncio

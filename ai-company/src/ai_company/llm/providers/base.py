@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Generator
 from dataclasses import dataclass, field
 
 
@@ -22,6 +23,15 @@ class ChatResponse:
     model: str
     provider: str
     usage: dict[str, int] = field(default_factory=dict)  # prompt_tokens, completion_tokens
+
+
+@dataclass(frozen=True)
+class StreamChunk:
+    """A single chunk from a streaming response."""
+
+    delta: str  # The text delta for this chunk
+    finish_reason: str | None = None
+    usage: dict[str, int] | None = None  # Only on final chunk
 
 
 class LLMProvider(ABC):
@@ -49,6 +59,24 @@ class LLMProvider(ABC):
         Raises:
             LLMProviderError: On API errors, timeouts, or rate limits.
         """
+
+    def chat_stream(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: str | None = None,
+    ) -> Generator[StreamChunk, None, None]:
+        """Stream a chat response chunk by chunk.
+
+        Default implementation falls back to non-streaming chat.
+        Override in subclasses for true streaming.
+        """
+        response = self.chat(system_prompt, user_prompt, model)
+        yield StreamChunk(
+            delta=response.content,
+            finish_reason="stop",
+            usage=response.usage if response.usage else None,
+        )
 
     @abstractmethod
     def is_available(self) -> bool:

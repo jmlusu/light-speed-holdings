@@ -7,6 +7,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- Sprint 2: Audit trail (JSONL writer, query/filter, integration with executor)
+- Sprint 2: 5-tier approval system (classify_tool_action, tier-aware HITL gate, two-person rule)
+- Sprint 2: Memory engine wiring (episodic/semantic/procedural recording on task completion)
+- Sprint 2: HITL async fix (threading.Event replaces time.sleep, non-blocking executor)
+- Sprint 2: WebSocket broadcasts (KPI snapshots + approval/escalation alerts)
+- Sprint 2: LLM streaming support (SSE/NDJSON parsing for OpenAI, Anthropic, Ollama)
+- Sprint 2: Scheduler-to-Executor wiring (autonomous cycle from scheduled tasks)
+- Sprint 2: Deployment infrastructure (release.yml, release.ps1, CHANGELOG)
 - Autonomous GitHub Action (cron every 6 hours) for orchestrator/executor ticks
 - Postmortem system: models, store, template rendering, CLI commands (`orchestrator postmortem`)
 - Incident response SOP (`sop-incident-response.md`)

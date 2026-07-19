@@ -1,4 +1,7 @@
-"""CLI commands for the autonomous executor."""
+"""CLI commands for the autonomous executor.
+
+Includes GAP-017 dead-letter queue commands.
+"""
 
 from __future__ import annotations
 
@@ -109,3 +112,88 @@ def status() -> None:
         typer.echo(f"\nPending tasks ({len(pending)}):")
         for t in pending[:10]:
             typer.echo(f"  [{t.get('id', '?')[:8]}] -> {t.get('receiver_id', '?')}: {t.get('instruction', '?')[:60]}")
+
+
+# ── Dead Letter Queue commands (GAP-017) ─────────────────────────────
+
+
+@app.command()
+def dlq_list() -> None:
+    """List all tasks in the dead-letter queue."""
+    from ai_company.executor.dead_letter import DeadLetterQueue
+
+    dlq = DeadLetterQueue()
+    entries = dlq.list_entries()
+
+    if not entries:
+        typer.echo("Dead-letter queue is empty.")
+        return
+
+    typer.echo(f"Dead-Letter Queue ({len(entries)} tasks)")
+    typer.echo("=" * 60)
+    for entry in entries:
+        task = entry.get("task", {})
+        tid = task.get("id", "?")[:8]
+        receiver = task.get("receiver_id", "?")
+        instruction = task.get("instruction", "?")[:50]
+        reason = entry.get("reason", "?")[:40]
+        moved_at = entry.get("moved_at", "?")[:19]
+        typer.echo(f"  [{tid}] -> {receiver}: {instruction}")
+        typer.echo(f"    reason: {reason}  (moved: {moved_at})")
+
+
+@app.command()
+def dlq_retry(
+    task_id: str = typer.Argument(..., help="Task ID to retry (full or prefix)"),
+) -> None:
+    """Move a task from the DLQ back into the inbox for re-execution."""
+    from ai_company.executor.dead_letter import DeadLetterQueue
+    from ai_company.orchestrator.message_bus import MessageBus
+
+    dlq = DeadLetterQueue()
+    entries = dlq.list_entries()
+
+    # Support prefix matching
+    matched_id: str | None = None
+    for entry in entries:
+        tid = entry.get("task", {}).get("id", "")
+        if tid == task_id or tid.startswith(task_id):
+            matched_id = tid
+            break
+
+    if matched_id is None:
+        typer.echo(f"No DLQ entry found matching '{task_id}'.")
+        raise typer.Exit(1)
+
+    restored = dlq.retry_task(matched_id)
+    if restored is None:
+        typer.echo("Failed to restore task.")
+        raise typer.Exit(1)
+
+    # Re-enqueue as pending
+    restored["status"] = "pending"
+    restored.pop("completed_at", None)
+    restored.pop("result", None)
+
+    bus = MessageBus()
+    inbox_path = Path(bus.storage_path)
+    tasks: list[dict] = []
+    if inbox_path.exists():
+        try:
+            tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            pass
+    tasks.append(restored)
+    inbox_path.write_text(json.dumps(tasks, indent=2, default=str), encoding="utf-8")
+
+    typer.echo(f"Task {matched_id[:8]} restored to inbox as pending.")
+
+
+@app.command()
+def dlq_clear() -> None:
+    """Clear all entries from the dead-letter queue."""
+    from ai_company.executor.dead_letter import DeadLetterQueue
+
+    dlq = DeadLetterQueue()
+    count = dlq.clear()
+    typer.echo(f"Cleared {count} entry(ies) from the dead-letter queue.")

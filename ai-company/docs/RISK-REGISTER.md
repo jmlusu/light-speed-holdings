@@ -16,6 +16,10 @@
 | R08 | Operational | Key agent (CTO/CAIO) becomes unavailable | 1 | 4 | Medium | Delegation chains documented in org chart, chief-of-staff can reassign | chief-of-staff |
 | R09 | Security | Prompt injection via task instruction | 2 | 4 | High | System prompt isolation, input sanitization, HITL gate for sensitive operations | security-engineer |
 | R10 | Financial | Model routing selects premium tier for routine tasks | 2 | 2 | Low | Routing rules enforce tier-by-priority, context overrides only for escalation/approval | cfo |
+| R11 | Technical | Agent loop infinite cycling (AgentLoop) | 2 | 4 | Medium | Hard limit on `max_iterations` (default 10), circuit breaker on repeated tool failures | cio |
+| R12 | Financial | LLM cost runaway in autonomous mode | 3 | 4 | High | Per-task and per-agent cost ceilings in CostTracker, automatic task suspension on limit breach | cfo |
+| R13 | Technical | Audit log storage growth exceeds disk capacity | 4 | 2 | Medium | Log rotation (daily), configurable retention policy (default 30d), archival to cold storage | cio |
+| R14 | Technical | WebSocket connection leaks degrade dashboard performance | 2 | 3 | Medium | Heartbeat/ping-pong (30s), connection timeout (5m), max concurrent connections limit per IP | lead-frontend |
 
 ## Risk Levels
 

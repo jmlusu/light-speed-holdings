@@ -23,6 +23,9 @@ class ApprovalRequest(BaseModel):
     agent_id: str
     action: str
     description: str
+    tier: int = 2
+    required_approvers: int = 1
+    approved_by_list: list[str] = Field(default_factory=list)
     status: ApprovalStatus = ApprovalStatus.PENDING
     requested_at: datetime = Field(default_factory=datetime.now)
     responded_at: Optional[datetime] = None
@@ -57,6 +60,8 @@ class ApprovalGate:
         action: str,
         description: str,
         expires_in_minutes: int = 60,
+        tier: int = 2,
+        required_approvers: int = 1,
     ) -> ApprovalRequest:
         from datetime import timedelta
 
@@ -66,6 +71,8 @@ class ApprovalGate:
             agent_id=agent_id,
             action=action,
             description=description,
+            tier=tier,
+            required_approvers=required_approvers,
             expires_at=datetime.now() + timedelta(minutes=expires_in_minutes),
         )
         self.requests.append(request)
@@ -77,10 +84,15 @@ class ApprovalGate:
         if not request or request.status != ApprovalStatus.PENDING:
             return False
 
-        request.status = ApprovalStatus.APPROVED
-        request.responded_at = datetime.now()
-        request.response_by = approved_by
-        request.notes = notes
+        if approved_by not in request.approved_by_list:
+            request.approved_by_list.append(approved_by)
+
+        if len(request.approved_by_list) >= request.required_approvers:
+            request.status = ApprovalStatus.APPROVED
+            request.responded_at = datetime.now()
+            request.response_by = approved_by
+            request.notes = notes
+
         self._save_config()
         return True
 

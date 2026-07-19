@@ -1,0 +1,99 @@
+name: Autonomous Cycle
+
+on:
+  schedule:
+    # Every 6 hours: 00:00, 06:00, 12:00, 18:00 UTC
+    - cron: "0 0,6,12,18 * * *"
+  workflow_dispatch:
+    inputs:
+      force_full_cycle:
+        description: "Force full cycle (skip incremental)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: autonomous-cycle
+  cancel-in-progress: false  # Never cancel a running cycle — state corruption risk
+
+permissions:
+  contents: write  # Needed to commit state updates
+
+jobs:
+  cycle:
+    name: Run Autonomous Cycle
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for diff-based state
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      # ── Restore persistent state from last cycle ────────────
+      - name: Restore cycle state
+        uses: actions/cache@v4
+        with:
+          path: |
+            .opencode/inbox.json
+            .opencode/cycle-state.json
+            orchestrator/scheduler.yaml
+          key: cycle-state-${{ github.run_number }}
+          restore-keys: |
+            cycle-state-
+
+      # ── Run orchestrator cycle ──────────────────────────────
+      - name: Orchestrator tick
+        id: orch_tick
+        run: ai-company orchestrator tick --verbose 2>&1 | tee cycle-output.log
+        continue-on-error: true
+
+      # ── Run executor cycle ──────────────────────────────────
+      - name: Executor tick
+        id: exec_tick
+        run: ai-company executor tick 2>&1 | tee -a cycle-output.log
+        continue-on-error: true
+
+      # ── Upload cycle artifacts ──────────────────────────────
+      - name: Upload cycle logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cycle-log-${{ github.run_number }}
+          path: |
+            cycle-output.log
+            .opencode/cycle-state.json
+          retention-days: 30
+
+      # ── Persist cycle state for next run ─────────────────────
+      - name: Persist cycle state
+        if: success()
+        run: |
+          python -c "
+          import json, datetime
+          from pathlib import Path
+          state_path = Path('.opencode/cycle-state.json')
+          state = json.loads(state_path.read_text()) if state_path.exists() else {}
+          state['last_run'] = datetime.datetime.utcnow().isoformat()
+          state['last_run_id'] = '${{ github.run_id }}'
+          state['last_status'] = 'success'
+          state_path.write_text(json.dumps(state, indent=2))
+          "
+
+      # ── Failure handling ────────────────────────────────────
+      - name: Report failure
+        if: steps.orch_tick.outcome == 'failure' || steps.exec_tick.outcome == 'failure'
+        run: |
+          echo "::error::Autonomous cycle failed. Check cycle-log artifact."
+          gh issue create \
+            --title "Autonomous cycle failed [${{ github.run_id }}]" \
+            --label "bug,autonomous" \
+            --body "Cycle run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) failed. Check logs and cycle-state.json artifact."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

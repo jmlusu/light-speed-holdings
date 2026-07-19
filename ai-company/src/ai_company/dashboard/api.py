@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import json
+import logging
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import yaml
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from ai_company.dashboard.models import (
     AgentSummary,
@@ -25,9 +26,13 @@ from ai_company.dashboard.models import (
     TierInfo,
 )
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api")
 
 _START_TIME = time.time()
+
+
+# ── Helpers ─────────────────────────────────────────────────────────
 
 
 def _load_json(path: str | Path) -> Any:
@@ -51,15 +56,61 @@ def _save_json(path: str | Path, data: Any) -> None:
         json.dump(data, f, indent=2, default=str)
 
 
+def _save_yaml(path: str, data: Any) -> None:
+    with open(path, "w", encoding="utf-8") as f:
+        yaml.dump(data, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+
+
 def _load_registry() -> list[dict]:
     return _load_json("company/agent-registry.json")
+
+
+# ── WebSocket broadcast helpers ─────────────────────────────────────
+
+
+async def _broadcast_kpis(data: dict[str, Any]) -> None:
+    """Fire-and-forget broadcast of KPI data to WebSocket clients."""
+    try:
+        from ai_company.dashboard.ws import broadcast_kpi_update
+        await broadcast_kpi_update(data)
+    except Exception:
+        logger.debug("WebSocket broadcast skipped (no event loop or clients)")
+
+
+async def _broadcast_approval_alert(request: dict[str, Any]) -> None:
+    """Fire-and-forget broadcast of an approval request to WebSocket clients."""
+    try:
+        from ai_company.dashboard.ws import broadcast_alert
+        await broadcast_alert({
+            "category": "approval",
+            "request_id": request.get("id", ""),
+            "action": request.get("action", ""),
+            "agent_id": request.get("agent_id", ""),
+            "tier": request.get("tier", 2),
+        })
+    except Exception:
+        logger.debug("WebSocket broadcast skipped")
+
+
+async def _broadcast_escalation_alert(event: dict[str, Any]) -> None:
+    """Fire-and-forget broadcast of an escalation event to WebSocket clients."""
+    try:
+        from ai_company.dashboard.ws import broadcast_alert
+        await broadcast_alert({
+            "category": "escalation",
+            "task_id": event.get("task_id", ""),
+            "reason": event.get("reason", ""),
+            "agent_id": event.get("agent_id", ""),
+        })
+    except Exception:
+        logger.debug("WebSocket broadcast skipped")
 
 
 # ── Dashboard / KPIs ────────────────────────────────────────────────
 
 
 @router.get("/dashboard", response_model=KPIs)
-def get_dashboard() -> KPIs:
+def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
     tasks = _load_json(".opencode/inbox.json")
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
@@ -67,7 +118,6 @@ def get_dashboard() -> KPIs:
     registry = _load_registry()
 
     approval_requests = approvals_data.get("requests", [])
-    escalations_data.get("rules", [])
     escalation_events = escalations_data.get("events", [])
     scheduled = scheduler_data.get("tasks", [])
 
@@ -78,7 +128,7 @@ def get_dashboard() -> KPIs:
     ]
     open_escalations = [e for e in escalation_events if not e.get("resolved", False)]
 
-    return KPIs(
+    kpis = KPIs(
         pending_tasks=sum(1 for t in tasks if t.get("status") == "pending"),
         in_progress_tasks=sum(1 for t in tasks if t.get("status") == "in_progress"),
         completed_tasks=sum(1 for t in tasks if t.get("status") == "completed"),
@@ -90,6 +140,33 @@ def get_dashboard() -> KPIs:
         scheduled_tasks=len(scheduled),
         uptime_seconds=time.time() - _START_TIME,
     )
+
+    # Broadcast KPI snapshot to WebSocket clients
+    kpi_payload = kpis.model_dump()
+    background_tasks.add_task(_broadcast_kpis, kpi_payload)
+
+    # Broadcast alerts for urgent items
+    for req in pending_approvals[:3]:
+        background_tasks.add_task(_broadcast_approval_alert, req)
+    for evt in open_escalations[:3]:
+        background_tasks.add_task(_broadcast_escalation_alert, evt)
+
+    return kpis
+
+
+@router.get("/kpis/live")
+def get_live_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
+    """Return live KPI values computed from operational data.
+
+    Uses the KPI collectors to produce real-time snapshots for all
+    7 departments (engineering, HR, finance, marketing, sales, CS, legal).
+    Broadcasts the result to WebSocket clients.
+    """
+    from ai_company.dashboard.kpis import collect_all_kpis
+
+    result = collect_all_kpis()
+    background_tasks.add_task(_broadcast_kpis, result)
+    return result
 
 
 # ── Agents ──────────────────────────────────────────────────────────
@@ -216,11 +293,6 @@ def reject_request(request_id: str, body: ApprovalDecision | None = None) -> dic
             _save_yaml("orchestrator/approvals.yaml", data)
             return {"ok": True, "id": request_id}
     raise HTTPException(status_code=404, detail=f"Request '{request_id}' not found or already processed")
-
-
-def _save_yaml(path: str, data: Any) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        yaml.dump(data, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
 
 # ── Escalations ─────────────────────────────────────────────────────

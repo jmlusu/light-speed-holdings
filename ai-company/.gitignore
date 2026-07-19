@@ -1,0 +1,50 @@
+# ── Python ─────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# ── Virtual environments ───────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── IDE ────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Testing & Coverage ────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ── Type checking ──────────────────────────────────────────────
+.mypy_cache/
+
+# ── Linting ────────────────────────────────────────────────────
+.ruff_cache/
+
+# ── Environment & secrets (NEVER commit) ──────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Runtime data (autonomous cycles, task queue) ──────────────
+logs/
+.opencode/inbox.json
+.opencode/cycle-state.json
+orchestrator/scheduler.yaml
+
+# ── OS artifacts ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Docker (local overrides) ──────────────────────────────────
+docker-compose.override.yml

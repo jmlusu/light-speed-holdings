@@ -1,4 +1,14 @@
-"""Model routing policy — resolves which LLM to use for a given agent and task."""
+"""Model routing policy — resolves which LLM to use for a given agent and task.
+
+Supports three routing layers:
+  1. Per-agent override (agent-registry.json ``model`` field)
+  2. Routing rules (context → tier, agent_type + priority → tier)
+  3. Fallback to ``standard`` tier
+
+Context-aware routing detects domain keywords in the task prompt and
+selects the appropriate tier.  Quality-based fallback promotes to the
+next higher tier when all providers in the current tier fail.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +18,33 @@ from pathlib import Path
 from typing import Any, Optional
 
 import yaml
+
+
+# ---------------------------------------------------------------------------
+# Domain → tier mapping for context-aware routing
+# ---------------------------------------------------------------------------
+
+DOMAIN_KEYWORDS: dict[str, list[str]] = {
+    "finance": ["financial", "finance", "accounting", "budget", "revenue",
+                "profit", "loss", "balance sheet", "cash flow", "invoice",
+                "tax", "audit", "compliance", "ledger"],
+    "legal": ["legal", "contract", "agreement", "liability", "regulation",
+              "statute", "litigation", "intellectual property", "patent",
+              "trademark", "nda", "terms of service"],
+    "security": ["security", "vulnerability", "exploit", "breach", "auth",
+                 "encryption", "secret", "credential", "firewall", "pentest",
+                 "owasp", "cve"],
+    "code_review": ["review", "pull request", "pr", "code review", "diff",
+                    "merge", "refactor", "lint", "static analysis"],
+    "deployment": ["deploy", "release", "production", "rollback", "ci/cd",
+                   "pipeline", "kubernetes", "docker", "terraform"],
+    "data_science": ["model", "training", "inference", "dataset", "feature",
+                     "accuracy", "precision", "recall", "f1", "epoch",
+                     "hyperparameter", "ml", "machine learning", "neural"],
+}
+
+# Ordered tier progression for quality-based fallback
+TIER_ORDER: list[str] = ["fast", "standard", "premium"]
 
 
 @dataclass(frozen=True)
@@ -48,7 +85,15 @@ class Route:
 
 
 class ModelRouter:
-    """Reads company/models.yaml and resolves model routing decisions."""
+    """Reads company/models.yaml and resolves model routing decisions.
+
+    Routing priority:
+      1. Per-agent override in agent-registry.json (``model`` field)
+      2. Explicit context string (``context`` parameter)
+      3. Domain-aware detection from ``task_prompt`` keywords
+      4. Routing rules (agent_type + priority)
+      5. Fallback to ``standard`` tier
+    """
 
     def __init__(
         self,
@@ -102,6 +147,54 @@ class ModelRouter:
                 providers=providers,
             )
 
+    # ── Domain detection ─────────────────────────────────────────────
+
+    @staticmethod
+    def detect_domain(task_prompt: str) -> str | None:
+        """Detect the primary domain of a task from keyword heuristics.
+
+        Scans the lowercased task prompt for domain-specific keywords and
+        returns the domain with the most matches, or ``None`` if no domain
+        has at least two keyword hits.
+
+        Parameters
+        ----------
+        task_prompt:
+            The user-facing task instruction or prompt text.
+
+        Returns
+        -------
+        str | None
+            The detected domain name (e.g. ``"finance"``, ``"security"``)
+            or ``None`` if no strong match is found.
+        """
+        lower = task_prompt.lower()
+        scores: dict[str, int] = {}
+        for domain, keywords in DOMAIN_KEYWORDS.items():
+            count = sum(1 for kw in keywords if kw in lower)
+            if count >= 2:
+                scores[domain] = count
+        if not scores:
+            return None
+        return max(scores, key=scores.get)  # type: ignore[arg-type]
+
+    @staticmethod
+    def domain_to_context(domain: str) -> str | None:
+        """Map a detected domain to a routing context string.
+
+        Returns a context value that can be matched by routing rules in
+        ``models.yaml``, or ``None`` if no mapping exists.
+        """
+        mapping: dict[str, str] = {
+            "finance": "domain_finance",
+            "legal": "domain_legal",
+            "security": "domain_security",
+            "code_review": "domain_code_review",
+            "deployment": "domain_deployment",
+            "data_science": "domain_data_science",
+        }
+        return mapping.get(domain)
+
     # ── Routing logic ────────────────────────────────────────────────
 
     def _match_rule(
@@ -112,7 +205,8 @@ class ModelRouter:
     ) -> Optional[str]:
         """Find the first routing rule that matches, return its tier.
 
-        Context rules (escalation, approval) always win over agent-type rules.
+        Context rules (escalation, approval, domain) always win over
+        agent-type rules.
         """
         # Pass 1: context rules always take precedence
         if context:
@@ -130,67 +224,215 @@ class ModelRouter:
 
         return None
 
+    def _resolve_tier_id(
+        self,
+        agent_name: Optional[str],
+        agent_type: Optional[str],
+        priority: str,
+        context: Optional[str],
+        task_prompt: Optional[str],
+    ) -> tuple[str, str]:
+        """Resolve the tier ID and the reason string.
+
+        Returns a ``(tier_id, reason)`` tuple.
+        """
+        # Layer 1: per-agent override (returns "override" tier ID)
+        if agent_name and agent_name in self._registry:
+            agent = self._registry[agent_name]
+            if agent.get("model"):
+                return (
+                    "override",
+                    f"per-agent override in registry for '{agent_name}'",
+                )
+            if agent_type is None:
+                agent_type = agent.get("type")
+
+        # Layer 2: explicit context rules
+        tier_id = self._match_rule(
+            agent_type=agent_type, priority=priority, context=context
+        )
+        if tier_id is not None and tier_id in self._tiers:
+            return tier_id, f"routing rule (context={context})"
+
+        # Layer 3: domain-aware detection from task prompt
+        if task_prompt:
+            domain = self.detect_domain(task_prompt)
+            if domain:
+                domain_ctx = self.domain_to_context(domain)
+                if domain_ctx:
+                    tier_id = self._match_rule(
+                        agent_type=agent_type,
+                        priority=priority,
+                        context=domain_ctx,
+                    )
+                    if tier_id is not None and tier_id in self._tiers:
+                        return (
+                            tier_id,
+                            f"domain-aware: '{domain}' detected → context '{domain_ctx}'",
+                        )
+
+        # Layer 4: agent type + priority rules (no context)
+        tier_id = self._match_rule(
+            agent_type=agent_type, priority=priority, context=None
+        )
+        if tier_id is not None and tier_id in self._tiers:
+            return tier_id, f"routing rule (agent_type={agent_type}, priority={priority})"
+
+        # Layer 5: fallback
+        return "standard", "fallback to 'standard' tier"
+
     def resolve(
         self,
         agent_name: Optional[str] = None,
         agent_type: Optional[str] = None,
         priority: str = "medium",
         context: Optional[str] = None,
+        task_prompt: Optional[str] = None,
     ) -> Route:
         """Resolve which model to use.
 
-        Priority order:
-          1. Per-agent override in agent-registry.json ("model" field)
-          2. Context rules (escalation, approval) — always win
-          3. Routing rule match -> tier -> first reachable provider
-          4. Fallback to "standard" tier
-        """
-        # Layer 1: per-agent override
-        if agent_name and agent_name in self._registry:
-            agent = self._registry[agent_name]
-            override = agent.get("model")
-            if override:
-                # Parse "provider/model" or just "model"
-                if "/" in override:
-                    prov, model = override.split("/", 1)
-                else:
-                    prov, model = "ollama", override
-                return Route(
-                    provider=prov,
-                    model=model,
-                    tier="override",
-                    reason=f"per-agent override in registry for '{agent_name}'",
-                )
-            # Infer type from registry if not provided
-            if agent_type is None:
-                agent_type = agent.get("type")
+        Parameters
+        ----------
+        agent_name:
+            Registry name of the agent (triggers per-agent override).
+        agent_type:
+            Agent type (``"executive"``, ``"specialist"``, etc.).
+        priority:
+            Task priority (``"low"``, ``"medium"``, ``"high"``, ``"critical"``).
+        context:
+            Explicit routing context (e.g. ``"escalation"``, ``"approval"``).
+        task_prompt:
+            Raw task text used for domain-aware detection.
 
-        # Layer 2: routing rules (context wins over agent-type)
-        tier_id = self._match_rule(
-            agent_type=agent_type, priority=priority, context=context
+        Returns
+        -------
+        Route
+            The resolved provider, model, tier, and reason.
+        """
+        tier_id, reason = self._resolve_tier_id(
+            agent_name, agent_type, priority, context, task_prompt
         )
 
-        # Layer 3: fallback
-        if tier_id is None or tier_id not in self._tiers:
-            tier_id = "standard"
+        # Layer 1 special case: per-agent override
+        if tier_id == "override" and agent_name and agent_name in self._registry:
+            agent = self._registry[agent_name]
+            override = agent["model"]
+            if "/" in override:
+                prov, model = override.split("/", 1)
+            else:
+                prov, model = "ollama", override
+            return Route(
+                provider=prov,
+                model=model,
+                tier="override",
+                reason=reason,
+            )
 
-        tier = self._tiers[tier_id]
-        if not tier.providers:
+        tier = self._tiers.get(tier_id)
+        if tier is None or not tier.providers:
             return Route(
                 provider="ollama",
                 model="llama3.1:8b",
                 tier=tier_id,
-                reason=f"tier '{tier_id}' has no providers, using hardcoded fallback",
+                reason=f"{reason}; tier '{tier_id}' has no providers, using hardcoded fallback",
             )
 
-        # Return the first provider in the tier (fallback chain is for runtime)
         first = tier.providers[0]
+        fallback_names = [p.provider for p in tier.providers[1:]]
         return Route(
             provider=first.provider,
             model=first.model,
             tier=tier_id,
-            reason=f"tier '{tier_id}' default (fallbacks: {', '.join(p.provider for p in tier.providers[1:])})",
+            reason=f"{reason} (fallbacks: {', '.join(fallback_names)})" if fallback_names else reason,
         )
+
+    # ── Quality-based fallback ───────────────────────────────────────
+
+    def get_fallback_tier(self, failed_tier_id: str) -> Optional[Tier]:
+        """Return the next higher tier for quality-based fallback.
+
+        When all providers in the current tier fail, callers can use this
+        method to promote to the next tier (fast → standard → premium).
+
+        Parameters
+        ----------
+        failed_tier_id:
+            The tier ID that just failed.
+
+        Returns
+        -------
+        Tier | None
+            The next tier, or ``None`` if no higher tier exists.
+        """
+        try:
+            idx = TIER_ORDER.index(failed_tier_id)
+        except ValueError:
+            return None
+        for next_id in TIER_ORDER[idx + 1:]:
+            tier = self._tiers.get(next_id)
+            if tier and tier.providers:
+                return tier
+        return None
+
+    def resolve_with_fallback(
+        self,
+        agent_name: Optional[str] = None,
+        agent_type: Optional[str] = None,
+        priority: str = "medium",
+        context: Optional[str] = None,
+        task_prompt: Optional[str] = None,
+    ) -> list[Route]:
+        """Resolve the primary route plus fallback chain for quality escalation.
+
+        Returns an ordered list of ``Route`` objects starting with the
+        primary choice and followed by fallback tiers.  Callers can iterate
+        through the list when the primary tier's providers are all
+        unavailable or return errors.
+
+        Parameters
+        ----------
+        agent_name:
+            Registry name of the agent.
+        agent_type:
+            Agent type.
+        priority:
+            Task priority.
+        context:
+            Explicit routing context.
+        task_prompt:
+            Raw task text for domain detection.
+
+        Returns
+        -------
+        list[Route]
+            Primary route first, then fallback routes in tier order.
+        """
+        primary = self.resolve(
+            agent_name=agent_name,
+            agent_type=agent_type,
+            priority=priority,
+            context=context,
+            task_prompt=task_prompt,
+        )
+        routes: list[Route] = [primary]
+
+        fallback_tier = self.get_fallback_tier(primary.tier)
+        seen: set[str] = {primary.tier}
+        while fallback_tier is not None:
+            if fallback_tier.id not in seen:
+                first = fallback_tier.providers[0]
+                routes.append(
+                    Route(
+                        provider=first.provider,
+                        model=first.model,
+                        tier=fallback_tier.id,
+                        reason=f"quality fallback from '{primary.tier}'",
+                    )
+                )
+                seen.add(fallback_tier.id)
+            fallback_tier = self.get_fallback_tier(fallback_tier.id)
+
+        return routes
 
     # ── Introspection ────────────────────────────────────────────────
 

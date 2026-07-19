@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "deepseek-r1:7b": {
+          "name": "DeepSeek R1 7B"
+        },
+        "deepseek-r1:7b-64k": {
+          "name": "DeepSeek R1 7B (64K ctx)"
+        }
+      }
+    }
+  }
+}
