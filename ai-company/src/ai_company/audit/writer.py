@@ -186,7 +186,7 @@ class AuditWriter:
                 files.append(p)
         return files
 
-    def rotation_info(self) -> dict[str, int | list[str]]:
+    def rotation_info(self) -> dict[str, int | list[str] | str]:
         """Return rotation status information."""
         active_size = self._path.stat().st_size if self._path.exists() else 0
         rotated = self.list_rotated_files()

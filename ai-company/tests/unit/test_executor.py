@@ -5,17 +5,16 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
 from ai_company.executor.context import (
-    AgentContext,
     build_system_prompt,
     build_user_prompt,
     parse_agent_spec,
 )
-from ai_company.executor.tool_runner import SecurityError, ToolRunner
+from ai_company.executor.tool_runner import ToolRunner
 from ai_company.executor.hitl_gate import HITLGate
 from ai_company.orchestrator.approval import ApprovalGate
 
@@ -544,7 +543,7 @@ class TestExecutorLoop:
         monkeypatch.chdir(tmp_path)
         _setup_executor_files(tmp_path)
 
-        from ai_company.executor.loop import Executor, ExecutorStats
+        from ai_company.executor.loop import Executor
 
         executor = Executor(
             config_path=str(tmp_path / "company" / "models.yaml"),

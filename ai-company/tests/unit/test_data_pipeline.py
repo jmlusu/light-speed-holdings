@@ -4,7 +4,6 @@ memory store, and escalation store.
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
@@ -15,7 +14,7 @@ from ai_company.data.cost_analytics import CostAnalytics
 from ai_company.data.agent_analytics import AgentPerformanceAnalytics
 from ai_company.data.memory_store import MemoryStoreDB
 from ai_company.data.escalation_store import EscalationStore
-from ai_company.models.task import Task, TaskStatus
+from ai_company.models.task import Task
 
 
 # ---------------------------------------------------------------------------

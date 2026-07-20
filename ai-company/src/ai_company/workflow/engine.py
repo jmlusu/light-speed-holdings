@@ -100,7 +100,7 @@ class WorkflowEngine:
 
     def list_instances(self, workflow_id: str = "") -> list[dict[str, Any]]:
         """List all running workflow instances, optionally filtered."""
-        instances = self._instances.values()
+        instances = list(self._instances.values())
         if workflow_id:
             instances = [i for i in instances if i.workflow.id == workflow_id]
         return [i.status() for i in instances]

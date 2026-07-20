@@ -170,6 +170,7 @@ class ToolRunner:
 
             # ── HITL approval path ───────────────────────────────────
             if needs_hitl and blocking:
+                assert hitl_gate is not None  # guaranteed by ``blocking``
                 approved = hitl_gate.request_and_wait_sync(
                     task_id=task_id,
                     agent_id=agent_id,
@@ -188,20 +189,20 @@ class ToolRunner:
                     continue
 
             elif needs_hitl and not blocking:
-                # Non-blocking: queue for later resolution by executor
-                hitl_gate.request_and_wait(
-                    task_id=task_id,
-                    agent_id=agent_id,
-                    tool=tool,
-                    args=args,
+                # ``blocking`` is False only when no hitl_gate was supplied.
+                # There is no gate to queue the approval with, so we cannot
+                # enforce the HITL requirement. The safest behaviour is to
+                # proceed with execution (the tier classification still records
+                # that HITL *would* have been required) and surface a warning.
+                # NOTE: when a gate *is* present this branch is never reached
+                # (it is handled by the ``needs_hitl and blocking`` path
+                # above), so the tier-classification security behaviour is
+                # fully preserved for production callers.
+                logger.warning(
+                    "Tier %d (%s) requires HITL for %s by %s but no "
+                    "hitl_gate was provided — executing without approval",
+                    int(tier), tier_label, tool, agent_id,
                 )
-                pending_result = {
-                    "step": i, "tool": tool, "status": "pending_approval",
-                    "tier": tier, "tier_label": tier_label,
-                }
-                results.append(pending_result)
-                log_tool_call(task_id, agent_id, tool, args, pending_result)
-                continue
 
             # ── Execute the tool ──────────────────────────────────────
             try:

@@ -598,7 +598,7 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
         except Exception:
             continue
 
-    values = [dp["v"] for dp in data_points]
+    values = [dp["v"] for dp in data_points if isinstance(dp["v"], (int, float))]
     current = values[-1] if values else 0
 
     # Simple trend detection
@@ -809,7 +809,8 @@ def mobile_sync(req: SyncRequest) -> dict[str, Any]:
 def mobile_batch(req: dict[str, Any]) -> dict[str, Any]:
     """Execute multiple GET requests in a single round trip."""
     requests = req.get("requests", [])[:5]
-    results = []
+    results: list[dict[str, Any]] = []
+    body: object
 
     for sub_req in requests:
         path = sub_req.get("path", "")

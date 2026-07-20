@@ -222,6 +222,236 @@ class MemoryStore:
         """Return counts per memory type."""
         return {k: len(v) for k, v in self._stores.items()}
 
+    def _relevance_score(self, entry: MemoryEntry, terms: list[str]) -> int:
+        """Compute a simple term-frequency relevance score for an entry.
+
+        Counts how many times any query term appears (as a substring) in the
+        entry's content, tags, and metadata values.  Higher is more relevant.
+        """
+        haystack_parts = [entry.content]
+        haystack_parts.extend(entry.tags)
+        haystack_parts.extend(str(v) for v in entry.metadata.values())
+        haystack = " ".join(haystack_parts).lower()
+        score = 0
+        for term in terms:
+            score += haystack.count(term)
+        return score
+
+    def search(
+        self,
+        query: str,
+        memory_type: str | None = None,
+        limit: int = 10,
+    ) -> list[MemoryEntry]:
+        """Search memories across all (or one) type by keyword/substring match.
+
+        Performs case-insensitive keyword matching across stored memory
+        content, tags, and metadata.  If vector (semantic) search is enabled
+        and available, it is used preferentially for ranking; otherwise a
+        simple term-frequency relevance score is used to rank keyword hits.
+
+        Args:
+            query: The search query (matched as substrings, space-split into terms).
+            memory_type: Optional single memory type to restrict the search to.
+            limit: Maximum number of results to return.
+
+        Returns:
+            A list of matching :class:`MemoryEntry` objects ranked by relevance
+            (most relevant first), truncated to ``limit``.
+        """
+        if limit <= 0:
+            return []
+
+        types = [memory_type] if memory_type else list(self._stores.keys())
+        # Validate explicit type
+        if memory_type and memory_type not in self._stores:
+            return []
+
+        query_lower = query.lower()
+        terms = [t for t in query_lower.split() if t]
+
+        # Gather candidate entries across the requested types.
+        candidates: list[MemoryEntry] = []
+        for mem_type in types:
+            candidates.extend(self._stores.get(mem_type, []))
+
+        if not candidates:
+            return []
+
+        # Prefer semantic/vector search when available, a query is given, and a
+        # single memory type is requested (the VectorStore filters by one type).
+        if query and self.has_vector_search and self._vector_store is not None and memory_type:
+            try:
+                raw = self._vector_store.search(
+                    query=query,
+                    memory_type=memory_type,
+                    top_k=limit,
+                )
+                if raw:
+                    results = [entry for entry, _score in raw]
+                    for entry in results:
+                        entry.access_count += 1
+                    return results[:limit]
+            except Exception:
+                pass  # Fall through to keyword ranking
+
+        # Keyword path: keep entries that match any term in content/tags/metadata.
+        if not terms:
+            # Empty/whitespace query: return most recent across types.
+            matched = sorted(candidates, key=lambda e: e.created_at, reverse=True)
+        else:
+            scored: list[tuple[int, MemoryEntry]] = []
+            for entry in candidates:
+                score = self._relevance_score(entry, terms)
+                if score > 0:
+                    scored.append((score, entry))
+            # Sort by relevance desc, then most-recent as tie-breaker.
+            matched = [
+                e
+                for _score, e in sorted(
+                    scored,
+                    key=lambda t: (t[0], t[1].created_at),
+                    reverse=True,
+                )
+            ]
+
+        # Mark matched entries as accessed.
+        for entry in matched[:limit]:
+            entry.access_count += 1
+
+        return matched[:limit]
+
+    def prune(
+        self,
+        max_age_days: int | None = None,
+        max_entries_per_type: int | None = None,
+    ) -> int:
+        """Remove memories based on age and/or per-type entry caps.
+
+        - Memories older than ``max_age_days`` (by ``created_at``) are removed.
+        - Each memory type is trimmed to the most-recently-accessed/created
+          ``max_entries_per_type`` entries (ties broken by ``created_at``).
+
+        Args:
+            max_age_days: If set, drop entries older than this many days.
+            max_entries_per_type: If set, cap each type to this many entries,
+                keeping the most-accessed (then most-recently-created).
+
+        Returns:
+            The total number of entries pruned.  Changes are persisted.
+        """
+        if max_age_days is None and max_entries_per_type is None:
+            return 0
+
+        pruned = 0
+        now = datetime.now()
+
+        for mem_type, entries in self._stores.items():
+            if not entries:
+                continue
+
+            survivors = list(entries)
+
+            # Age-based filtering.
+            if max_age_days is not None:
+                kept_by_age: list[MemoryEntry] = []
+                for entry in survivors:
+                    try:
+                        created = datetime.fromisoformat(entry.created_at)
+                    except ValueError:
+                        created = now
+                    age_days = (now - created).total_seconds() / 86400.0
+                    if age_days > max_age_days:
+                        pruned += 1
+                    else:
+                        kept_by_age.append(entry)
+                survivors = kept_by_age
+
+            # Per-type cap (most-accessed first, then most-recently-created).
+            if max_entries_per_type is not None and len(survivors) > max_entries_per_type:
+                survivors.sort(
+                    key=lambda e: (e.access_count, e.created_at),
+                    reverse=True,
+                )
+                dropped = survivors[max_entries_per_type:]
+                pruned += len(dropped)
+                survivors = survivors[:max_entries_per_type]
+
+            # Only persist if the list actually changed.
+            if len(survivors) != len(entries):
+                self._stores[mem_type] = survivors
+                self._save(mem_type)
+
+        return pruned
+
+    def consolidate_all(self) -> dict[str, int]:
+        """Periodic maintenance pass across all memory types.
+
+        Performs a safe, idempotent maintenance routine:
+        1. Deduplicates near-identical semantic memories (same normalized
+           content within the ``semantic`` type), keeping the earliest entry.
+        2. Rolls up aggregate statistics by re-running ``consolidate`` on each
+           non-aggregate type whose entry count exceeds the number of existing
+           aggregate rollups for that type.
+
+        This method is intended to be called periodically (e.g. by a scheduler)
+        and is safe to invoke repeatedly — duplicates are removed once and
+        aggregate summaries are rebuilt deterministically.
+
+        Returns:
+            A summary dict with keys:
+              - ``semantic_duplicates_removed``
+              - ``aggregates_created``
+              - ``types_processed``
+        """
+        summary = {
+            "semantic_duplicates_removed": 0,
+            "aggregates_created": 0,
+            "types_processed": 0,
+        }
+
+        # 1. Deduplicate near-identical semantic memories.
+        semantic_entries = self._stores.get("semantic", [])
+        if semantic_entries:
+            seen: dict[str, MemoryEntry] = {}
+            deduped: list[MemoryEntry] = []
+            for entry in semantic_entries:
+                key = " ".join(entry.content.lower().split())
+                if key in seen:
+                    # Drop the later duplicate (keep earliest by created_at).
+                    existing = seen[key]
+                    if entry.created_at < existing.created_at:
+                        # Replace: keep the earlier one, drop the existing.
+                        deduped = [e for e in deduped if e is not existing]
+                        seen[key] = entry
+                        deduped.append(entry)
+                    summary["semantic_duplicates_removed"] += 1
+                    continue
+                seen[key] = entry
+                deduped.append(entry)
+            if len(deduped) != len(semantic_entries):
+                self._stores["semantic"] = deduped
+                self._save("semantic")
+
+        # 2. Roll up aggregate stats per non-aggregate type.
+        for mem_type in ("episodic", "semantic", "procedural", "relational", "temporal"):
+            entries = self._stores.get(mem_type, [])
+            if not entries:
+                continue
+            summary["types_processed"] += 1
+            # Count existing aggregate rollups sourced from this type.
+            existing_rollups = sum(
+                1
+                for e in self._stores.get("aggregate", [])
+                if e.metadata.get("source_type") == mem_type
+            )
+            # Rebuild rollup when counts diverge from current entry count.
+            if existing_rollups != len(entries) or existing_rollups == 0:
+                self.consolidate(mem_type)
+                summary["aggregates_created"] += 1
+
+        return summary
+
     def consolidate(self, memory_type: str) -> dict[str, Any]:
         """Create an aggregate summary of a memory type."""
         entries = self._stores.get(memory_type, [])

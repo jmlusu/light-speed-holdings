@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import threading
 from pathlib import Path
 
@@ -342,8 +341,8 @@ class TestPersistentWorkflowEngine:
     def test_list_instances(self, tmp_path: Path, registry: CompanyRegistry) -> None:
         state_dir = tmp_path / "wf_instances"
         engine = WorkflowEngine(registry, state_dir=state_dir)
-        id1 = engine.start("hiring")
-        id2 = engine.start("hiring")
+        engine.start("hiring")
+        engine.start("hiring")
         # Both may have same timestamp; if so, second overwrites first.
         # The important thing is list_instances works.
         instances = engine.list_instances()

@@ -107,7 +107,7 @@ class CostTracker:
         self._records: list[UsageRecord] = []
 
         # Rebuild accumulators from existing log
-        self._rebuild_from_log()
+        self._rebuild_accumulators()
 
     # ── Public API ─────────────────────────────────────────────────
 
@@ -291,8 +291,13 @@ class CostTracker:
             # Non-fatal: log append failure shouldn't crash the agent
             pass
 
-    def _rebuild_from_log(self) -> None:
-        """Load existing cost_log.jsonl to rebuild in-memory accumulators."""
+    def _rebuild_accumulators(self) -> None:
+        """Load existing cost_log.jsonl to rebuild in-memory accumulators.
+
+        Replays the JSONL cost log on construction so that daily and per-task
+        budget state survives process restarts. Malformed or corrupt log lines
+        are skipped gracefully so a single bad row cannot break startup.
+        """
         log_path = self.results_dir / "cost_log.jsonl"
         if not log_path.exists():
             return
@@ -305,8 +310,10 @@ class CostTracker:
                         continue
                     try:
                         rec_dict = json.loads(line)
-                        day = rec_dict.get("timestamp", "")[:10]
-                        cost = rec_dict.get("cost_usd", 0.0)
+                        # Guard against missing/non-string timestamp (TypeError)
+                        timestamp = rec_dict.get("timestamp")
+                        day = timestamp[:10] if isinstance(timestamp, str) else ""
+                        cost = float(rec_dict.get("cost_usd", 0.0) or 0.0)
                         task_id = rec_dict.get("task_id", "")
 
                         self._daily_cost[day] = self._daily_cost.get(day, 0.0) + cost
@@ -314,7 +321,7 @@ class CostTracker:
 
                         record = UsageRecord(**rec_dict)
                         self._records.append(record)
-                    except (json.JSONDecodeError, KeyError):
+                    except (json.JSONDecodeError, KeyError, TypeError, ValueError):
                         continue
         except OSError:
             pass

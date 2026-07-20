@@ -13,7 +13,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-import pytest
 
 from ai_company.models.task import Task
 from ai_company.orchestrator.message_bus import MessageBus

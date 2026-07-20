@@ -52,14 +52,14 @@ else:
     def _lock_file(f: io.TextIOWrapper) -> None:
         """Acquire an exclusive lock on an open file (POSIX)."""
         try:
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)  # type: ignore[attr-defined]
         except OSError:
             logger.warning("Could not acquire file lock on %s", f.name)
 
     def _unlock_file(f: io.TextIOWrapper) -> None:
         """Release a file lock (POSIX)."""
         try:
-            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+            fcntl.flock(f.fileno(), fcntl.LOCK_UN)  # type: ignore[attr-defined]
         except OSError:
             pass
 
@@ -140,7 +140,7 @@ class FileStore:
         Raises:
             FileLockError: If lock cannot be acquired within *timeout*.
         """
-        from ai_company.store.file_lock import file_lock as fl
+        from ai_company.store.file_lock import file_lock as fl  # type: ignore[import-untyped]
 
         full_path = self.base_dir / rel_path
         lock_path = full_path.parent / (full_path.name + ".lock")

@@ -2,15 +2,12 @@
 
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
 from ai_company.executor.tool_runner import (
     _DEFAULT_ALLOWED_COMMANDS as ALLOWED_COMMANDS,
-    SecurityError,
     ToolRunner,
 )
 

@@ -1,16 +1,16 @@
 # AI Company Builder — Remaining Work Inventory
 
 **Date**: 2026-07-20 (updated)  
-**Status**: Post-Sprint 1  
+**Status**: Post-Sprint 2 (~90% complete)  
 **Total Source Files**: 91+  
-**Test Coverage**: 727 tests collected  
-**Lint Status**: ruff clean, mypy clean
+**Test Coverage**: pending final verification (was 6 failing tests at audit)  
+**Lint Status**: pending final verification (was 5 ruff errors, 41 mypy errors at audit — repaired this cycle)
 
 ---
 
 ## Executive Summary
 
-Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, audit trail, memory integration, dead-letter queue, circuit breaker). This inventory catalogs all remaining incomplete items across 14 packages, organized by module with priority, effort estimates, dependencies, and recommended agent owners.
+Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, audit trail, memory integration, dead-letter queue, circuit breaker). Sprint 2 is ~90% complete — a 2026-07-20 code audit confirmed that most Sprint 2 items were already implemented in source. This inventory catalogs the remaining incomplete items across 14 packages, organized by module with priority, effort estimates, dependencies, and recommended agent owners.
 
 ---
 
@@ -29,57 +29,49 @@ Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, a
 | Circuit breaker | LLM provider fail-fast | ✅ 2026-07-19 |
 | Memory integration | Recall context before tasks | ✅ 2026-07-19 |
 | Integration tests | Component-level integration tests | ✅ 2026-07-19 |
+| 2.1 | Route all inbox I/O through MessageBus (S2-01) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 2.2 | Atomic FileStore abstraction (S2-02) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.1 | Integrate tier rules into ToolRunner (S2-04) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.2 | Non-blocking HITL gate (S2-05) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.3 | Dashboard CORS and authentication (S2-08) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.4 | Remove shell=True from ToolRunner (S2-10) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 4.1 | Fix AgentLoop priority forwarding (S2-06) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 4.4 | Wire audit into ToolRunner and approval (S2-12) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 4.5 | Persist escalation events (S2-13) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 5.1-5.3 | Remaining department SOPs + legal docs (S2-11) | ✅ 2026-07-20 (audit-confirmed in source) |
 
 ---
 
-## P0 — Critical (Sprint 2)
+## P0 — Critical (Sprint 2 — remaining)
 
 ### 1. MessageBus Hardening
 
 | Item | Description | Hours | Dependencies | Owner | Sprint 2 |
 |------|-------------|-------|--------------|-------|----------|
-| 2.1 | Route all inbox I/O through MessageBus | 4 | None | lead-backend | S2-01 |
-| 2.2 | Create atomic FileStore abstraction | 6 | 2.1 | lead-backend | S2-02 |
-| 2.3 | Dashboard API uses MessageBus | 2 | 2.1, 2.2 | lead-backend | S2-03 |
+| 2.3 | Dashboard API uses MessageBus | 2 | 2.1, 2.2 | lead-backend | S2-03 (In Progress) |
 
-**Total P0 MessageBus**: 12 hours
+**Total P0 MessageBus remaining**: 2 hours
 
 ### 2. Security Hardening
 
-| Item | Description | Hours | Dependencies | Owner | Sprint 2 |
-|------|-------------|-------|--------------|-------|----------|
-| 3.1 | Integrate tier rules into ToolRunner | 4 | None | lead-backend | S2-04 |
-| 3.2 | Non-blocking HITL gate | 4 | 3.1 | lead-backend | S2-05 |
-| 3.3 | Dashboard CORS and authentication | 3 | None | lead-frontend | S2-08 |
-| 3.4 | Remove shell=True from ToolRunner | 2 | None | lead-backend | S2-10 |
-
-**Total P0 Security**: 13 hours
+~~All security-hardening P0 items (S2-04, S2-05, S2-08, S2-10) are Done — see Completed table.~~
 
 ---
 
-## P1 — High Priority (Sprint 2)
+## P1 — High Priority (Sprint 2 — remaining)
 
 ### 3. Integration Fixes
 
 | Item | Description | Hours | Dependencies | Owner | Sprint 2 |
 |------|-------------|-------|--------------|-------|----------|
-| 4.1 | Fix AgentLoop priority forwarding | 1 | None | lead-backend | S2-06 |
-| 4.2 | CostTracker accumulator persistence | 2 | None | lead-backend | S2-07 |
-| 4.3 | Fix LLM retry provider cycling | 2 | None | lead-backend | S2-09 |
-| 4.4 | Wire audit into ToolRunner and approval | 3 | audit module | lead-backend | S2-12 |
-| 4.5 | Persist escalation events | 2 | None | lead-backend | S2-13 |
+| 4.2 | CostTracker accumulator persistence | 2 | None | lead-backend | S2-07 (In Progress) |
+| 4.3 | Fix LLM retry provider cycling | 2 | None | lead-backend | S2-09 (Not Started) |
 
-**Total P1 Integration**: 10 hours
+**Total P1 Integration remaining**: 4 hours
 
 ### 4. Documentation
 
-| Item | Description | Hours | Dependencies | Owner | Sprint 2 |
-|------|-------------|-------|--------------|-------|----------|
-| 5.1 | Remaining department SOPs (5) | 6 | None | content_creator | S2-11 |
-| 5.2 | Terms of Service (DRAFT) | 2 | None | content_creator | S2-11 |
-| 5.3 | Privacy Policy (DRAFT) | 2 | None | content_creator | S2-11 |
-
-**Total P1 Documentation**: 10 hours
+~~Remaining department SOPs + legal docs (S2-11) are Done — see Completed table.~~
 
 ---
 
@@ -157,11 +149,12 @@ Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, a
 
 | Priority | Items | Hours | % of Total | Sprint |
 |----------|-------|-------|------------|--------|
-| P0 — Critical | 7 | 25 | 28% | Sprint 2 |
-| P1 — High | 8 | 20 | 22% | Sprint 2 |
+| P0 — Critical (remaining) | 1 | 2 | 2% | Sprint 2 |
+| P1 — High (remaining) | 2 | 4 | 4% | Sprint 2 |
 | P2 — Medium | 9 | 22 | 25% | Sprint 3 |
 | P3 — Low | 10 | 27.5 | 31% | Sprint 4+ |
-| **Total** | **34** | **94.5** | **100%** | |
+| **Total remaining** | **22** | **55.5** | | |
+| *(Sprint 2 Done — see Completed table)* | *11* | *39* | *41%* | *Sprint 2* |
 
 ---
 
@@ -192,13 +185,14 @@ P2: Autonomous (8.1-8.3)
 
 ---
 
-## Recommended Sprint 2 Focus
+## Recommended Sprint 2 Focus (remaining)
 
-1. **MessageBus Hardening** (2.1-2.3) — Foundation for all reliability
-2. **Security Hardening** (3.1-3.4) — Critical for production use
-3. **Integration Fixes** (4.1-4.5) — Close remaining gaps
+1. **Finish MessageBus Hardening** (2.3 / S2-03) — Dashboard API still reads/writes `inbox.json` directly.
+2. **CostTracker persistence** (4.2 / S2-07) — accumulator rebuild on restart.
+3. **LLM retry cycling** (4.3 / S2-09) — not yet started.
+4. **Test/lint cleanup** — 6 failing tests, 5 ruff errors, 41 mypy errors at audit time; being repaired by engineering this cycle (pending final verification).
 
-**Sprint 2 Estimate**: ~45 hours (25 P0 + 20 P1)
+**Sprint 2 Done**: 11 items across MessageBus, security, integration, and documentation — see Completed table.
 
 ---
 
@@ -206,17 +200,17 @@ P2: Autonomous (8.1-8.3)
 
 | Agent | Items | Total Hours | Sprint |
 |-------|-------|-------------|--------|
-| lead-backend | 2.1-2.3, 3.1-3.2, 3.4, 4.1-4.5, 7.1-7.3, 8.1-8.2, 9.1-9.4, 11.1-11.3 | 54.5 | Sprint 2-4 |
-| lead-frontend | 3.3, 6.1-6.3, 8.3 | 10 | Sprint 2-3 |
-| content_creator | 5.1-5.3 | 10 | Sprint 2 |
+| lead-backend | 2.3, 4.2-4.3, 7.1-7.3, 8.1-8.2, 9.1-9.4, 11.1-11.3 | 47.5 | Sprint 2-4 |
+| lead-frontend | 6.1-6.3, 8.3 | 10 | Sprint 2-3 |
+| content_creator | (S2-11 done) | 0 remaining | Sprint 2 |
 | qa_engineer | 10.1-10.4 | 10 | Sprint 4 |
-| **Total** | **34** | **84.5** | |
+| **Total remaining** | **22** | **67.5** | |
 
 ---
 
 ## Next Steps
 
-1. Begin Sprint 2 with MessageBus hardening (S2-01, S2-02, S2-03)
-2. Parallel track: security hardening (S2-04, S2-05, S2-08, S2-10)
-3. Content creator works on SOPs in parallel
-4. Review Sprint 2 progress at mid-sprint checkpoint
+1. Complete S2-03 (Dashboard API → MessageBus).
+2. Complete S2-07 (CostTracker restart persistence) and start S2-09 (LLM retry cycling).
+3. Finish test/lint repair; run final `pytest`, `ruff check src/`, `mypy src/` verification.
+4. Move to Sprint 3 items (P2) once Sprint 2 is fully closed.

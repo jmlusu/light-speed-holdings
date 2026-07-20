@@ -14,7 +14,6 @@ from ai_company.models import (
     Budget,
     Company,
     CompanyRegistry,
-    Committee,
     Department,
     Executive,
     RiskMatrixConfig,

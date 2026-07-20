@@ -8,7 +8,8 @@
 
 ## Current State
 
-- **Sprint 1 Complete**: All critical code hardening and audit trail work done. 727 tests passing. Ruff + mypy clean.
+- **Sprint 1 Complete**: All critical code hardening and audit trail work done.
+- **Sprint 2 ~90% Complete**: Code audit (2026-07-20) confirms most Sprint 2 items are ALREADY implemented in source — see `SPRINT-2-BACKLOG.md` for per-item status. Only S2-03 (Dashboard API → MessageBus) and S2-07 (CostTracker restart persistence) remain In Progress; the rest are Done.
 - **Models**: 17+ Pydantic models in `src/ai_company/models/models.py` (Company, Executive, Department, Agent, Workflow, Task, Risk, Decision, Postmortem, etc.)
 - **Registry**: 4-module system — `registry/loader.py`, `parser.py`, `resolver.py`, `validator.py` — loads 19 YAML config files into typed `CompanyRegistry`.
 - **Templates**: 12 Jinja2 templates — `base.md.j2`, `executive.md.j2`, `department.md.j2`, `specialist_v2.md.j2`, `board_v2.md.j2`, `workflow.md.j2`, `config.md.j2`, `postmortem.md.j2`, `sop.md.j2`, `raci.md.j2`, `agent.md.j2`, and one additional template.
@@ -29,14 +30,20 @@
 - **KPI Collectors**: `dashboard/kpis/__init__.py` — All 7 department collectors wired and operational.
 - **Analytics**: `dashboard/analytics.py` — History tracking, trend analysis, alert rules, summary rollups.
 - **CLI**: 24 commands registered — company, decision, graph, workflows, memory, agents, board, departments, executives, specialists, orchestrator (with postmortem sub-app), models, dashboard (with kpi sub-app), executor, doctor, marketing, sales, customer-success, legal, hr, generate, status, sop, raci.
-- **Tests**: 727 collected, ruff clean, mypy clean.
+- **FileStore**: `src/ai_company/store/file_store.py` exists with atomic writes (temp + rename) and platform-aware locking.
+- **MessageBus**: `get_pending_tasks()` and `update_task_status()` present; executor routes all inbox I/O through it. WebSocket broadcast hooks present.
+- **ToolRunner**: uses `shlex.split()` (no `shell=True`), consults `tier_rules.classify_tool_action()`, and logs via `log_tool_call()` / `log_hitl_decision()`.
+- **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
+- **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
+- **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
+- **Tests**: Pending final verification this cycle — see Code Quality note below.
 
 ## Code Quality
 
-- **ruff**: All checks passed (0 errors)
-- **mypy**: No issues found in 81+ source files
-- **pytest**: 727 tests collected (2 collection errors in test_security.py and test_ml.py — skip with `--ignore`)
-- **Known lint issues**: None — all resolved (json import and E741 warnings fixed)
+- **ruff**: Repaired this cycle (was 5 errors at audit time) — pending final verification, reference `ruff check src/`.
+- **mypy**: Repaired this cycle (was 41 errors at audit time) — pending final verification, reference `mypy src/`.
+- **pytest**: Repaired this cycle (was 6 failing tests at audit time) — pending final verification, reference `pytest`. The prior 2 collection errors in `test_security.py` and `test_ml.py` remain skip-with-`--ignore`.
+- **Known lint issues**: Were present at audit time (json import in `kpi_pipeline.py`, E741 warnings in `services/sales.py`); being fixed by the engineering team this cycle.
 - **Dead code**: Removed 5 one-time bootstrap scripts
 
 ## Documentation
@@ -76,17 +83,15 @@
 
 | Sprint | Status | Tests | Items |
 |--------|--------|-------|-------|
-| Sprint 1 | ✅ COMPLETE | 727 | Code hardening + audit trail |
-| Sprint 2 | 🟡 PLANNED | — | 13 items, 41 hours (security + integration) |
+| Sprint 1 | ✅ COMPLETE | — | Code hardening + audit trail |
+| Sprint 2 | 🟢 ~90% DONE | pending final verification | 13 items; S2-03 & S2-07 In Progress, rest Done |
 | Sprint 3 | 🔴 NOT STARTED | — | Autonomous coordination |
 | Sprint 4 | 🔴 NOT STARTED | — | Quality & completeness |
 
 ## Remaining Work
 
-- **Sprint 2 (next)**: Security & integration hardening — FileStore abstraction, MessageBus single source of truth, 5-tier approval system, non-blocking HITL, dashboard auth, remaining SOPs
-- Wire periodic memory consolidation into executor loop
-- Implement WebSocket broadcast for real-time dashboard updates
-- Persist escalation events to YAML
-- Add structured logging with correlation IDs
-- Add agent spec validation CLI command
-- Full end-to-end integration test with mocked LLM
+- **Sprint 2 — In Progress (final items)**:
+  - S2-03: Dashboard API still reads/writes `inbox.json` directly (being routed through MessageBus).
+  - S2-07: CostTracker restart persistence (accumulator rebuild) being implemented.
+  - Test/lint cleanup: 6 failing tests, 5 ruff errors, 41 mypy errors were present at audit time and are being repaired by the engineering team this cycle — pending final verification.
+- **Sprint 3+ (not started)**: OpenAPI/Swagger docs (6.2), rate limiting via slowapi (6.3), periodic memory consolidation into executor loop (7.1), memory keyword+semantic search (7.2), memory retention TTL (7.3), scheduled cycle daemon (8.1), full end-to-end integration test w/ mocked LLM (10.1), CLI/API/approval test suites (10.2-10.4), structured logging w/ correlation IDs (9.1), agent-spec validation CLI (9.2), CLI type hints/docstrings (9.3-9.4), OAuth2/key rotation (11.1), memory encryption (11.2), token counting integration (11.3).

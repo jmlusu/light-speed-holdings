@@ -234,4 +234,4 @@ tests/
 └── test_release.py                # Release validation tests
 ```
 
-**Total: 727 tests collected** (2 collection errors in test_security.py and test_ml.py — skip with `--ignore`)
+**Total: 785 tests collected** (2 collection errors in test_security.py and test_ml.py — skip with `--ignore`)

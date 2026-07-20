@@ -7,10 +7,13 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import yaml
 from fastapi import APIRouter, BackgroundTasks, HTTPException
+
+if TYPE_CHECKING:
+    from ai_company.orchestrator.message_bus import MessageBus
 
 from ai_company.dashboard.models import (
     AgentSummary,
@@ -28,6 +31,43 @@ from ai_company.dashboard.models import (
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api")
+
+# Module-level MessageBus instance. All task read/write operations are routed
+# through this bus instead of touching `.opencode/inbox.json` directly (GAP-011).
+# A broadcast callback forwards task lifecycle events to WebSocket clients.
+_bus = None
+
+
+def get_bus() -> MessageBus:
+    """Return the shared :class:`MessageBus` instance (lazily created)."""
+    global _bus
+    if _bus is None:
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        _bus = MessageBus(
+            ".opencode/inbox.json",
+            broadcast_callback=_bus_broadcast,
+        )
+    return _bus
+
+
+def _bus_broadcast(task_dict: dict[str, Any], event: str) -> None:
+    """MessageBus broadcast callback — fire-and-forget to WebSocket clients."""
+    try:
+        loop = __import__("asyncio").get_running_loop()
+        loop.create_task(_broadcast_task(task_dict, event))
+    except RuntimeError:
+        logger.debug("No event loop; broadcast skipped")
+
+
+def _read_all_tasks() -> list[dict[str, Any]]:
+    """Return all tasks from the inbox as plain dicts via MessageBus."""
+    return get_bus()._load_tasks()
+
+
+def _load_tasks_dicts() -> list[dict[str, Any]]:
+    """Backwards-compatible alias used by endpoints that need raw task dicts."""
+    return _read_all_tasks()
 
 _START_TIME = time.time()
 
@@ -136,7 +176,7 @@ def _schedule_broadcast(background_tasks: BackgroundTasks, task_dict: dict, even
 
 @router.get("/dashboard", response_model=KPIs)
 def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _read_all_tasks()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
     scheduler_data = _load_yaml("orchestrator/scheduler.yaml")
@@ -246,7 +286,7 @@ def list_tasks(
     status: str = "",
     agent: str = "",
 ) -> list[TaskItem]:
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _read_all_tasks()
     if status:
         tasks = [t for t in tasks if t.get("status") == status]
     if agent:
@@ -258,23 +298,27 @@ def list_tasks(
 def create_task(assign: TaskAssign, background_tasks: BackgroundTasks) -> TaskItem:
     import uuid
 
-    task = {
-        "id": str(uuid.uuid4()),
-        "sender_id": assign.sender_id,
-        "receiver_id": assign.receiver_id,
-        "instruction": assign.instruction,
-        "status": "pending",
-        "priority": assign.priority,
-        "created_at": datetime.now().isoformat(),
-    }
-    tasks = _load_json(".opencode/inbox.json")
-    tasks.append(task)
-    _save_json(".opencode/inbox.json", tasks)
+    from ai_company.models import Task, TaskPriority
+
+    priority = assign.priority
+    if isinstance(priority, str):
+        priority = TaskPriority(priority)
+
+    task = Task(
+        id=str(uuid.uuid4()),
+        sender_id=assign.sender_id,
+        receiver_id=assign.receiver_id,
+        instruction=assign.instruction,
+        status="pending",  # type: ignore[arg-type]
+        priority=priority,
+        created_at=datetime.now().isoformat(),
+    )
+    get_bus().send_task(task)
 
     # Broadcast task creation to WebSocket clients
-    background_tasks.add_task(_broadcast_task, task, "created")
+    background_tasks.add_task(_broadcast_task, task.model_dump(), "created")
 
-    return TaskItem(**task)
+    return TaskItem(**task.model_dump())
 
 
 # ── Approvals ───────────────────────────────────────────────────────
@@ -454,7 +498,7 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
     departments = kpi_snapshot.get("departments", {})
 
     # Task pipeline
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _read_all_tasks()
     task_summary = {
         "pending": sum(1 for t in tasks if t.get("status") == "pending"),
         "in_progress": sum(1 for t in tasks if t.get("status") == "in_progress"),
@@ -466,7 +510,7 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
 
     # Agent performance
     registry = _load_registry()
-    agent_summary = {
+    agent_summary: dict[str, Any] = {
         "total_agents": len(registry),
         "by_type": {},
         "by_department": {},
@@ -577,7 +621,7 @@ def get_department_dashboard(
     ]
 
     # Task stats for this department
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _read_all_tasks()
     dept_agent_names = {a["name"] for a in dept_agents}
     dept_tasks = [
         t for t in tasks
@@ -878,9 +922,8 @@ def get_agent_performance() -> dict[str, Any]:
     - Completion rate, failure rate
     - Average response time estimates
     """
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _read_all_tasks()
     registry = _load_registry()
-    registry_names = {a["name"] for a in registry}
 
     agent_stats: dict[str, dict[str, Any]] = {}
     for agent in registry:
@@ -955,8 +998,7 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
     - Per-agent cost breakdown
     - Historical cost trend (from KPI history store)
     """
-    tasks = _load_json(".opencode/inbox.json")
-    registry = _load_registry()
+    tasks = _read_all_tasks()
     cost_data = _load_json("orchestrator/cost_tracker.json")
 
     # Parse cost tracker
@@ -1059,7 +1101,7 @@ def prometheus_metrics() -> str:
       - ai_company_errors_total                  — error event count
       - ai_company_uptime_seconds                — dashboard uptime
     """
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _read_all_tasks()
     registry = _load_registry()
     uptime = time.time() - _START_TIME
 

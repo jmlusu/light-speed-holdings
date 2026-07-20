@@ -11,7 +11,6 @@ from ai_company.models import (
     Company,
     DecisionNode,
     DecisionTreeConfig,
-    RiskLevel,
     RiskMatrixConfig,
     RiskLevelConfig,
 )

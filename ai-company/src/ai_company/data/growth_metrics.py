@@ -88,9 +88,6 @@ class GrowthMetrics:
         # Daily active agent counts
         daily_active: list[dict[str, Any]] = []
         for day_str in day_cutoffs:
-            next_day = (
-                datetime.fromisoformat(day_str) + timedelta(days=1)
-            ).strftime("%Y-%m-%d")
             count_row = self._db.fetchone(
                 """SELECT COUNT(DISTINCT agent_id) as cnt FROM (
                     SELECT sender_id as agent_id FROM tasks
@@ -499,15 +496,14 @@ class GrowthMetrics:
         this_week_start = (now - timedelta(days=now.weekday())).replace(
             hour=0, minute=0, second=0, microsecond=0
         )
-        last_week_start = this_week_start - timedelta(days=7)
 
         this_week_days = (now - this_week_start).days + 1
         last_week_days = 7
 
         this_week = self.growth_dashboard(days=this_week_days)
         last_week = self.growth_dashboard(days=last_week_days + this_week_days)
-        # Trim last_week to only include the 7 days before this week
-        last_week_cutoff = this_week_start.isoformat()
+        # last_week already spans the full lookback window; the 7 days before
+        # this week are implicitly the tail of that range.
 
         return {
             "comparison_type": "week_over_week",

@@ -153,7 +153,7 @@ class AgentPerformanceTracker:
         y = np.array([r.execution_time_s for r in agent_records])
 
         try:
-            from sklearn.linear_model import Ridge
+            from sklearn.linear_model import Ridge  # type: ignore[import-untyped]
 
             model = Ridge(alpha=1.0)
             model.fit(X, y)

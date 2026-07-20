@@ -30,7 +30,6 @@ from ai_company.orchestrator.tier_rules import (
     ApprovalTier,
     SENIORITY_AUTO_APPROVE_TIER,
     TOOL_DEFAULT_TIERS,
-    TIER_CONFIG,
     classify_tool_action,
     get_tier_config,
     _check_sensitive_path,

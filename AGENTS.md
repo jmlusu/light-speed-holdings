@@ -8,7 +8,7 @@ AI Company Builder — a Python tool for creating and orchestrating AI agent hie
 
 - **`ai-company/`** — The active project root (has `pyproject.toml`, `.venv/`, `src/`, `tests/`, `docs/`)
 - **`ai-company/src/ai_company/`** — Source code (all modules below)
-- **`ai-company/tests/`** — 727 tests (unit + integration), pytest
+- **`ai-company/tests/`** — 785 tests (unit + integration), pytest
 - **Root `src/ai_company/`** — Legacy/staging area (contains code with syntax errors; do NOT work here)
 - **Root files** (`setup_phase6.py`, etc.) — One-time setup scripts, not part of active codebase
 
@@ -18,7 +18,7 @@ One human CEO supervises AI executives, managers, and specialists. Goal: automat
 
 **Implementation phases:**
 1. ✅ Foundation — Project structure, CLI framework, agent registry, generator
-2. ✅ Core Operations — MessageBus, Pydantic models, 24 CLI commands, 727 tests
+2. ✅ Core Operations — MessageBus, Pydantic models, 24 CLI commands, 785 tests
 3. ✅ Audit & Memory — Audit trail package, memory integration, dead-letter queue, circuit breaker
 4. 🔲 Security & Gating — 5-tier approval system, HITL non-blocking, file locking, dashboard auth
 5. 🔲 Autonomous Coordination — Scheduled cycles, WebSocket broadcast, escalation persistence
@@ -36,7 +36,7 @@ pip install -e ".[dev]"
 ai-company --help
 python -m ai_company.cli.main --help
 
-# Run tests (727 total)
+# Run tests (785 total)
 pytest
 
 # Lint / typecheck (both clean)
@@ -76,7 +76,7 @@ mypy src/
 
 ## Current State
 
-**Fully working (727 tests, ruff clean, mypy clean):**
+**Fully working (785 tests, ruff clean, mypy clean):**
 - CLI: 24 subcommands (company, decision, graph, workflows, memory, agents, board, departments, executives, specialists, orchestrator, models, dashboard, executor, doctor, marketing, sales, customer-success, legal, hr, generate, status, sop, raci)
 - Executor with multi-turn AgentLoop (ReAct pattern), HITL gates, cost tracking
 - Audit trail package (events, writer, reader, integration hooks in executor)

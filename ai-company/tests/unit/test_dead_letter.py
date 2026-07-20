@@ -9,7 +9,6 @@ from pathlib import Path
 import pytest
 
 from ai_company.executor.dead_letter import (
-    STALE_THRESHOLD_MINUTES,
     DeadLetterQueue,
     detect_stale_tasks,
 )

@@ -250,7 +250,7 @@ def _append_process_metrics(lines: list[str]) -> None:
     try:
         import resource
 
-        usage = resource.getrusage(resource.RUSAGE_SELF)
+        usage = resource.getrusage(resource.RUSAGE_SELF)  # type: ignore[attr-defined]
         # Max RSS in bytes (Linux: bytes, macOS: bytes)
         rss_bytes = usage.ru_maxrss
         lines.append(
@@ -264,7 +264,7 @@ def _append_process_metrics(lines: list[str]) -> None:
         pass
 
     try:
-        import psutil
+        import psutil  # type: ignore[import-untyped]
 
         proc = psutil.Process()
         mem_info = proc.memory_info()
@@ -662,7 +662,7 @@ def _check_disk_space() -> str:
 def _check_process_memory() -> str:
     """Return current process memory usage."""
     try:
-        import psutil
+        import psutil  # type: ignore[import-untyped]
 
         proc = psutil.Process()
         mem_mb = proc.memory_info().rss / (1024**2)
@@ -671,7 +671,7 @@ def _check_process_memory() -> str:
         try:
             import resource
 
-            usage = resource.getrusage(resource.RUSAGE_SELF)
+            usage = resource.getrusage(resource.RUSAGE_SELF)  # type: ignore[attr-defined]
             # ru_maxrss is in KB on Linux, bytes on macOS
             rss_mb = usage.ru_maxrss / 1024
             return f"{rss_mb:.1f} MB peak RSS"

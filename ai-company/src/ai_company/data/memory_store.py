@@ -171,7 +171,7 @@ class MemoryStoreDB:
             placeholders = ",".join(["?"] * len(ids))
             self._db.execute(
                 f"UPDATE memory_entries SET access_count = access_count + 1 WHERE id IN ({placeholders})",
-                ids,
+                tuple(ids),
             )
             self._db.commit()
 

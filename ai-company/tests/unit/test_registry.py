@@ -5,16 +5,7 @@ from pathlib import Path
 import pytest
 
 from ai_company.models import (
-    Company,
     CompanyRegistry,
-    Executive,
-    Department,
-    Agent,
-    BoardMember,
-    Workflow,
-    ApprovalEntry,
-    RiskMatrixConfig,
-    DecisionTreeConfig,
 )
 from ai_company.registry.loader import RegistryLoader
 from ai_company.registry.parser import RegistryParser

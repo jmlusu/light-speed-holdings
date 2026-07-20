@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import concurrent.futures
 from unittest.mock import MagicMock
 
 from ai_company.executor.agent_loop import (
@@ -14,6 +15,42 @@ from ai_company.executor.agent_loop import (
 from ai_company.executor.context import AgentContext
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.llm.providers.base import ChatResponse, LLMProviderError
+
+
+# ── Auto-approving HITL gate ──────────────────────────────────────────
+#
+# The tier-aware ToolRunner classifies some tool actions (e.g. ``write``)
+# as Tier 2 (Single Approver), which requires HITL approval.  To keep the
+# multi-turn loop tests independent of the production ApprovalGate (and of
+# whether ``tool_runner`` falls back to a no-gate warning path), we inject a
+# self-contained auto-approving gate.  It satisfies BOTH the synchronous
+# path (``request_and_wait_sync``) and the non-blocking path
+# (``request_and_wait`` returning a resolved Future), so the test passes
+# regardless of which branch ToolRunner uses.
+
+
+class _AutoApprovingGate:
+    """A stand-in HITLGate that always approves."""
+
+    def request_and_wait_sync(
+        self,
+        task_id: str = "",
+        agent_id: str = "",
+        tool: str = "",
+        args: dict | None = None,
+    ) -> bool:
+        return True
+
+    def request_and_wait(
+        self,
+        task_id: str = "",
+        agent_id: str = "",
+        tool: str = "",
+        args: dict | None = None,
+    ) -> concurrent.futures.Future[bool]:
+        future: concurrent.futures.Future[bool] = concurrent.futures.Future()
+        future.set_result(True)
+        return future
 
 
 # ── Helpers ─────────────────────────────────────────────────────────
@@ -175,7 +212,9 @@ class TestMultiTurnToolLoop:
 
         runner = ToolRunner(project_root=tmp_path)
         config = LoopConfig(max_iterations=10)
-        loop = AgentLoop(llm=client, runner=runner, config=config)
+        # Inject a self-contained auto-approving HITL gate so the Tier2
+        # ``write`` step is approved regardless of ToolRunner's gate path.
+        loop = AgentLoop(llm=client, runner=runner, hitl_gate=_AutoApprovingGate(), config=config)
         agent = _make_agent()
 
         # LLM responses for each iteration:

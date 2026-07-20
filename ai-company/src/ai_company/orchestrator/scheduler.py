@@ -5,10 +5,11 @@ Uses FileStore for atomic persistence of scheduled task configs.
 
 from __future__ import annotations
 
+import time
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Callable, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -108,3 +109,42 @@ class Scheduler:
 
     def list_tasks(self) -> List[ScheduledTask]:
         return self.tasks
+
+    def run_forever(
+        self,
+        bus: "MessageBus",
+        interval_seconds: float = 60.0,
+        max_cycles: Optional[int] = None,
+        *,
+        sleep: "Callable[[float], None]" = time.sleep,
+    ) -> int:
+        """Run autonomous scheduling cycles on an interval.
+
+        Each cycle checks for due scheduled tasks via
+        :meth:`create_pending_tasks` (reusing the same logic the executor
+        loop uses) and then sleeps for ``interval_seconds``.
+
+        Args:
+            bus: The message bus used to enqueue due tasks.
+            interval_seconds: Time to sleep between cycles.
+            max_cycles: If set, stop after this many cycles. ``None`` (default)
+                runs until interrupted by ``KeyboardInterrupt``.
+            sleep: Injectable sleep callable (used for testing). Defaults to
+                :func:`time.sleep`.
+
+        Returns:
+            The number of cycles executed.
+        """
+        cycles = 0
+        try:
+            while True:
+                if max_cycles is not None and cycles >= max_cycles:
+                    break
+                self.create_pending_tasks(bus)
+                cycles += 1
+                if max_cycles is not None and cycles >= max_cycles:
+                    break
+                sleep(interval_seconds)
+        except KeyboardInterrupt:
+            pass
+        return cycles

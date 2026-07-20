@@ -9,7 +9,6 @@ import pytest
 import yaml
 
 from ai_company.dashboard.kpis import ALL_COLLECTORS, collect_all_kpis
-from ai_company.dashboard.kpis.base import KPICollector
 from ai_company.dashboard.kpis.customer_success import CustomerSuccessKPICollector
 from ai_company.dashboard.kpis.engineering import EngineeringKPICollector
 from ai_company.dashboard.kpis.finance import FinanceKPICollector

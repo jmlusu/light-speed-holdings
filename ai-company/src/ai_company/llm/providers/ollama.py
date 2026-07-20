@@ -114,7 +114,8 @@ class OllamaProvider(LLMProvider):
                 if resp.status_code != 200:
                     raise LLMProviderError(
                         self.name,
-                        f"Ollama returned {resp.status_code}: {resp.read()[:200]}",
+                        f"Ollama returned {resp.status_code}: "
+                        f"{resp.read()[:200].decode('utf-8', errors='replace')}",
                         status_code=resp.status_code,
                     )
 

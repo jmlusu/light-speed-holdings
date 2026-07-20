@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Optional
 
 import typer
 
@@ -80,6 +81,31 @@ def run_task(
     typer.echo(f"Executing task: {task.instruction[:80]}...")
     executor._process_task(task)
     typer.echo(f"Done. Stats: {json.dumps(executor.stats.to_dict(), indent=2)}")
+
+
+@app.command()
+def cycle(
+    interval: float = typer.Option(60.0, help="Seconds between scheduling cycles"),
+    max_cycles: Optional[int] = typer.Option(
+        None, help="Stop after N cycles (default: run until interrupted)"
+    ),
+    config: str = typer.Option("orchestrator/scheduler.yaml", help="Path to scheduler config"),
+) -> None:
+    """Run the scheduled-cycle daemon (continuous scheduling loop)."""
+    from ai_company.orchestrator.message_bus import MessageBus
+    from ai_company.orchestrator.scheduler import Scheduler
+
+    scheduler = Scheduler(config_path=config)
+    bus = MessageBus()
+
+    typer.echo(
+        f"Starting scheduled-cycle daemon (interval={interval}s, "
+        f"max_cycles={max_cycles if max_cycles is not None else 'unbounded'})."
+    )
+    typer.echo("Press Ctrl+C to stop.")
+
+    cycles = scheduler.run_forever(bus, interval_seconds=interval, max_cycles=max_cycles)
+    typer.echo(f"Daemon stopped after {cycles} cycle(s).")
 
 
 @app.command()

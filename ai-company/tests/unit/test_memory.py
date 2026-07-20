@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
@@ -98,3 +97,141 @@ class TestMemoryStore:
             store.store("temporal", f"Event {i}")
         results = store.recall("temporal", limit=5)
         assert len(results) == 5
+
+
+class TestMemorySearch:
+    def test_search_keyword_across_types(self, store: MemoryStore):
+        store.store("episodic", "Team meeting about roadmap", tags=["meeting"])
+        store.store("semantic", "Python is a programming language", tags=["tech"])
+        store.store("procedural", "How to deploy the service", tags=["ops"])
+        results = store.search("meeting")
+        assert len(results) == 1
+        assert results[0].memory_type == "episodic"
+
+    def test_search_case_insensitive(self, store: MemoryStore):
+        store.store("semantic", "The QUICK brown fox", tags=["animal"])
+        results = store.search("quick")
+        assert len(results) == 1
+
+    def test_search_filtered_by_type(self, store: MemoryStore):
+        store.store("semantic", "deploy python service", tags=["tech"])
+        store.store("procedural", "deploy via kubernetes", tags=["ops"])
+        results = store.search("deploy", memory_type="procedural")
+        assert len(results) == 1
+        assert results[0].memory_type == "procedural"
+
+    def test_search_unknown_type_returns_empty(self, store: MemoryStore):
+        store.store("semantic", "fact")
+        assert store.search("fact", memory_type="bogus") == []
+
+    def test_search_relevance_ranking(self, store: MemoryStore):
+        # Entry with more term occurrences should rank higher.
+        store.store("semantic", "python python python", tags=["tech"])
+        store.store("semantic", "python", tags=["tech"])
+        results = store.search("python")
+        assert len(results) == 2
+        assert results[0].content.count("python") == 3
+
+    def test_search_matches_tag_and_metadata(self, store: MemoryStore):
+        store.store("semantic", "unrelated content", tags=["kubernetes"], metadata={"topic": "helm"})
+        results = store.search("helm")
+        assert len(results) == 1
+
+    def test_search_limit(self, store: MemoryStore):
+        for i in range(15):
+            store.store("temporal", f"event {i}")
+        results = store.search("event", limit=5)
+        assert len(results) == 5
+
+    def test_search_increments_access_count(self, store: MemoryStore):
+        entry = store.store("semantic", "accessed memory", tags=["x"])
+        assert entry.access_count == 0
+        store.search("accessed")
+        # The matched entry retains an incremented access count (persisted).
+        assert entry.access_count == 1
+
+    def test_search_no_query_returns_most_recent(self, store: MemoryStore):
+        store.store("temporal", "first")
+        store.store("temporal", "second")
+        results = store.search("")
+        assert len(results) == 2
+        assert results[0].content == "second"
+
+    def test_search_zero_limit(self, store: MemoryStore):
+        store.store("semantic", "fact")
+        assert store.search("fact", limit=0) == []
+
+
+class TestMemoryPrune:
+    def test_prune_max_age(self, store: MemoryStore):
+        old = store.store("temporal", "old event")
+        old.created_at = "2000-01-01T00:00:00"
+        store._save("temporal")
+        store.store("temporal", "new event")
+        # Reset in-memory and reload to apply persisted timestamp.
+        store._stores["temporal"] = []
+        store._load_all()
+        pruned = store.prune(max_age_days=1)
+        assert pruned == 1
+        assert store.count("temporal") == 1
+        remaining = store.recall("temporal")
+        assert remaining[0].content == "new event"
+
+    def test_prune_max_entries_per_type(self, store: MemoryStore):
+        for i in range(5):
+            store.store("semantic", f"fact {i}")
+        # Mark the earliest as most-accessed so it survives the cap.
+        store._stores["semantic"][0].access_count = 100
+        store._save("semantic")
+        pruned = store.prune(max_entries_per_type=2)
+        assert pruned == 3
+        assert store.count("semantic") == 2
+
+    def test_prune_returns_zero_when_no_args(self, store: MemoryStore):
+        store.store("semantic", "fact")
+        assert store.prune() == 0
+
+    def test_prune_persists_changes(self, tmp_path: Path):
+        base = tmp_path / "mem"
+        s1 = MemoryStore(base_dir=base)
+        s1.store("episodic", "keep me")
+        old = s1.store("episodic", "drop me")
+        old.created_at = "1999-01-01T00:00:00"
+        s1._save("episodic")
+        s1.prune(max_age_days=1)
+        s2 = MemoryStore(base_dir=base)
+        assert s2.count("episodic") == 1
+        assert "keep me" in s2.recall("episodic")[0].content
+
+    def test_prune_noop_when_within_limits(self, store: MemoryStore):
+        store.store("semantic", "a")
+        store.store("semantic", "b")
+        assert store.prune(max_entries_per_type=10) == 0
+
+
+class TestMemoryConsolidateAll:
+    def test_consolidate_all_creates_aggregates(self, store: MemoryStore):
+        store.store("episodic", "Meeting 1", tags=["m"], agent_id="ceo")
+        store.store("semantic", "Fact 1", tags=["t"], agent_id="cto")
+        summary = store.consolidate_all()
+        assert summary["types_processed"] == 2
+        assert summary["aggregates_created"] == 2
+        assert store.count("aggregate") >= 2
+
+    def test_consolidate_all_dedup_semantic(self, store: MemoryStore):
+        store.store("semantic", "Python is great")
+        store.store("semantic", "python  is   great")  # near-identical, normalized equal
+        store.store("semantic", "Unique fact")
+        summary = store.consolidate_all()
+        assert summary["semantic_duplicates_removed"] == 1
+        assert store.count("semantic") == 2
+
+    def test_consolidate_all_idempotent(self, store: MemoryStore):
+        store.store("episodic", "Event A", tags=["x"])
+        store.consolidate_all()
+        agg_after_first = store.count("aggregate")
+        second = store.consolidate_all()
+        # Calling again should not keep growing aggregates unbounded:
+        # only rebuild when counts diverge, so re-run is safe.
+        assert second["semantic_duplicates_removed"] == 0
+        assert store.count("aggregate") == agg_after_first

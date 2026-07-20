@@ -11,7 +11,7 @@ import os
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Generator
+from typing import IO, Any, Generator
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +110,7 @@ def _unix_lock(
         while True:
             try:
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # type: ignore[attr-defined]
                 break
             except (OSError, IOError):
                 if fd is not None:
@@ -129,7 +129,7 @@ def _unix_lock(
     finally:
         if fd is not None:
             try:
-                fcntl.flock(fd, fcntl.LOCK_UN)
+                fcntl.flock(fd, fcntl.LOCK_UN)  # type: ignore[attr-defined]
             except (OSError, IOError):
                 pass
             finally:
@@ -142,7 +142,7 @@ def atomic_write(
     path: Path,
     mode: str = "w",
     encoding: str = "utf-8",
-) -> Generator[tempfile._TemporaryFileWrapper, None, None]:
+) -> Generator[IO[Any], None, None]:
     """Write to a temp file, then atomically rename on exit.
 
     This prevents partial writes from corrupting the target file.

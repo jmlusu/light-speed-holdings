@@ -11,8 +11,8 @@ import typer
 app = typer.Typer(help="Manage AI agents")
 
 
-@app.command()
-def list(
+@app.command("list")
+def list_agents(
     type: str = typer.Option("", help="Filter by type: Executive, Board, Specialist"),
     department: str = typer.Option("", help="Filter by department"),
 ) -> None:

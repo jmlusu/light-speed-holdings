@@ -17,7 +17,6 @@ client = TestClient(app, raise_server_exceptions=False)
 @pytest.fixture()
 def setup_dashboard_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Create fixture data files and patch paths used by the API."""
-    from ai_company.dashboard import api as dash_api
 
     # Patch working directory to tmp_path
     monkeypatch.chdir(tmp_path)
