@@ -24,24 +24,26 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/mobile")
 
 # ── Helpers (shared with main api.py) ───────────────────────────────
-# GAP-011: route all state I/O through the StateStore repository.
-_store = get_state_store()
+# GAP-011: route all state I/O through the StateStore repository. Fetched
+# lazily so the boot-time explicit configuration (Option B) takes effect.
+def _get_store() -> Any:
+    return get_state_store()
 
 
 def _load_json(path: str | Path) -> Any:
-    return _store.read_json(path, default={})
+    return _get_store().read_json(path, default={})
 
 
 def _load_yaml(path: str | Path) -> Any:
-    return _store.read_yaml(path, default={})
+    return _get_store().read_yaml(path, default={})
 
 
 def _save_json(path: str | Path, data: Any) -> None:
-    _store.write_json(path, data)
+    _get_store().write_json(path, data)
 
 
 def _save_yaml(path: str | Path, data: Any) -> None:
-    _store.write_yaml(path, data)
+    _get_store().write_yaml(path, data)
 
 
 def _load_registry() -> list[dict]:
@@ -571,7 +573,8 @@ def compact_kpis() -> dict[str, Any]:
 @router.get("/kpis/trend")
 def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
     """Return trend data points for a KPI metric (for sparkline charts)."""
-    if not _store.list_snapshot_files():
+    store = _get_store()
+    if not store.list_snapshot_files():
         return {
             "metric": metric,
             "unit": "count",
@@ -586,9 +589,9 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
     data_points = []
     cutoff = datetime.now(timezone.utc).timestamp() - (hours * 3600)
 
-    for snap_file in _store.list_snapshot_files("snapshot-*.json"):
+    for snap_file in store.list_snapshot_files("snapshot-*.json"):
         try:
-            snap = _store.read_snapshot(snap_file)
+            snap = store.read_snapshot(snap_file)
             if snap is None:
                 continue
             ts_str = snap_file.stem.replace("snapshot-", "")

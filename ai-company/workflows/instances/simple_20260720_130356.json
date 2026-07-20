@@ -1,0 +1,13 @@
+{
+  "instance_id": "simple_20260720_130356",
+  "workflow_id": "simple",
+  "workflow_name": "Simple Workflow",
+  "context": {},
+  "current_step_index": 0,
+  "step_results": {
+    "s1": "done"
+  },
+  "started_at": "2026-07-20T13:03:56.456752",
+  "completed_at": "2026-07-20T13:03:56.473629",
+  "status": "completed"
+}

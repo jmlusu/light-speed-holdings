@@ -213,6 +213,16 @@ def create_app() -> FastAPI:
             )
         return await call_next(request)
 
+    # ── Explicit StateStore configuration (Option B) ────────────────
+    # Bind the dashboard state root from configuration rather than the
+    # import-time cwd. Override via DASHBOARD_DATA_DIR; defaults to ".".
+    from ai_company.dashboard.repository import (  # noqa: E402
+        configure_state_store,
+    )
+
+    dashboard_data_dir = os.environ.get("DASHBOARD_DATA_DIR", ".")
+    configure_state_store(dashboard_data_dir)
+
     # ── Routers ─────────────────────────────────────────────────────
     app.include_router(router)
     app.include_router(ws_router)

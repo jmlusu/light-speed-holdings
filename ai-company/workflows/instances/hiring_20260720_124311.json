@@ -1,0 +1,11 @@
+{
+  "instance_id": "hiring_20260720_124311",
+  "workflow_id": "hiring",
+  "workflow_name": "Hiring Workflow",
+  "context": {},
+  "current_step_index": 0,
+  "step_results": {},
+  "started_at": "2026-07-20T12:43:11.896001",
+  "completed_at": "2026-07-20T12:43:11.925009",
+  "status": "cancelled"
+}

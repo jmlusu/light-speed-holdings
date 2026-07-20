@@ -372,6 +372,9 @@ class AutonomousDecisionEngine:
         elif strategy == "alternative_tool":
             return self._suggest_alternative(tool, original_args, error)
         else:
+            # Escalate to human — GAP-008: persist the escalation decision
+            # to the audit trail so it is not silently dropped.
+            self._audit_escalation(tool, attempt, error)
             return None  # Escalate to human
 
     # ── Factor calculation ─────────────────────────────────────────
@@ -448,6 +451,28 @@ class AutonomousDecisionEngine:
         return max_safety
 
     # ── Retry intelligence ─────────────────────────────────────────
+
+    def _audit_escalation(self, tool: str, attempt: int, error: str) -> None:
+        """Best-effort audit hook for autonomous escalation (GAP-008).
+
+        Imported lazily and wrapped in try/except so a failure in the audit
+        subsystem can never break the self-healing retry flow itself.
+        """
+        try:
+            from ai_company.audit.integration import log_escalation
+
+            log_escalation(
+                task_id="",
+                from_agent="autonomous_decision_engine",
+                to_agent="human",
+                reason=(
+                    f"Autonomous retry exhausted self-healing strategies "
+                    f"(tool={tool}, attempt={attempt}): {error}"
+                ),
+                rule_id="autonomous-escalation",
+            )
+        except Exception:  # pragma: no cover - defensive
+            logger.debug("audit hook skipped for autonomous escalation", exc_info=True)
 
     def _select_retry_strategy(self, tool: str, seniority: str) -> str:
         """Select the initial retry strategy based on tool and seniority."""

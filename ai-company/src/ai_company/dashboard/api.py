@@ -75,24 +75,27 @@ _START_TIME = time.time()
 
 
 # GAP-011: all dashboard state I/O is routed through StateStore, which
-# wraps the atomic FileStore and rejects forbidden paths.
-_store = get_state_store()
+# wraps the atomic FileStore and rejects forbidden paths. The store is
+# fetched lazily so the boot-time explicit configuration (Option B) takes
+# effect for request handling rather than being frozen at import time.
+def _get_store() -> Any:
+    return get_state_store()
 
 
 def _load_json(path: str | Path) -> Any:
-    return _store.read_json(path, default={})
+    return _get_store().read_json(path, default={})
 
 
 def _load_yaml(path: str | Path) -> Any:
-    return _store.read_yaml(path, default={})
+    return _get_store().read_yaml(path, default={})
 
 
 def _save_json(path: str | Path, data: Any) -> None:
-    _store.write_json(path, data)
+    _get_store().write_json(path, data)
 
 
 def _save_yaml(path: str, data: Any) -> None:
-    _store.write_yaml(path, data)
+    _get_store().write_yaml(path, data)
 
 
 def _load_registry() -> list[dict]:
@@ -1024,7 +1027,7 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
 
     # Per-agent cost breakdown from audit log
     agent_costs: dict[str, dict[str, Any]] = {}
-    for event in _store.iter_jsonl(".opencode/audit.jsonl"):
+    for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
         try:
             meta = event.get("metadata", {})
             cost = float(meta.get("cost", 0))
@@ -1114,7 +1117,7 @@ def prometheus_metrics() -> str:
     error_count = 0
     cost_total = 0.0
 
-    for event in _store.iter_jsonl(".opencode/audit.jsonl"):
+    for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
         event_type = event.get("event_type", "")
         if event_type in ("tool_call", "tool_result"):
             llm_calls += 1

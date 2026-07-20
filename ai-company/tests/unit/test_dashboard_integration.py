@@ -46,8 +46,17 @@ class FakeWebSocket:
 
 @pytest.fixture()
 def setup_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Create fixture data files for integration tests."""
+    """Create fixture data files for integration tests.
+
+    Rebinds the dashboard ``StateStore`` singleton to ``tmp_path`` so all
+    state I/O is rooted at the isolated workspace — independent of the
+    current working directory (fixes the ``relative_to`` path bug).
+    """
+    from ai_company.dashboard.repository import get_state_store, reset_state_store
+
     monkeypatch.chdir(tmp_path)
+    reset_state_store()
+    get_state_store(tmp_path)
 
     # Company directory
     (tmp_path / "company").mkdir()

@@ -26,7 +26,10 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["monitoring"])
 
 # GAP-011: metrics parsing reads state through the StateStore repository.
-_store = get_state_store()
+# Fetched lazily so the boot-time explicit configuration (Option B) takes
+# effect for request handling rather than being frozen at import time.
+def _get_store() -> Any:
+    return get_state_store()
 
 # ---------------------------------------------------------------------------
 # Metrics store (in-memory counters — reset on process restart)
@@ -292,7 +295,10 @@ def _append_process_metrics(lines: list[str]) -> None:
         lines.append(
             f"ai_company_process_open_fds {proc.num_fds()}"
         )
-    except (ImportError, psutil.Error):
+    except ImportError:
+        # psutil not installed
+        pass
+    except Exception:  # pragma: no cover - psutil runtime error
         pass
 
     # CPU times (always available via os.times)
@@ -361,7 +367,7 @@ def _append_derived_metrics(lines: list[str]) -> None:
 def _append_task_status_breakdown(lines: list[str]) -> None:
     """Read live inbox and emit per-status gauges."""
     try:
-        tasks = _store.read_json(".opencode/inbox.json", default=[])
+        tasks = _get_store().read_json(".opencode/inbox.json", default=[])
         if tasks is None:
             return
         status_counts: dict[str, int] = {}
@@ -384,7 +390,7 @@ def _append_agent_performance(lines: list[str]) -> None:
     """Parse audit log and emit per-agent task success/failure counters."""
     agent_tasks: dict[str, dict[str, int]] = {}
     try:
-        for line in _store.iter_jsonl(".opencode/audit.jsonl"):
+        for line in _get_store().iter_jsonl(".opencode/audit.jsonl"):
             try:
                 if line.get("event_type") != "task_complete":
                     continue
@@ -443,7 +449,7 @@ def _append_llm_model_breakdown(lines: list[str]) -> None:
     """Parse audit log and emit per-model LLM cost and call gauges."""
     model_stats: dict[str, dict[str, float]] = {}
     try:
-        for event in _store.iter_jsonl(".opencode/audit.jsonl"):
+        for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
             try:
                 event_type = event.get("event_type", "")
                 if event_type not in ("tool_call", "tool_result"):
@@ -621,9 +627,11 @@ def health_check() -> dict[str, Any]:
             "success_rate_pct": round(
                 (
                     _metrics.get("tasks_succeeded", 0)
-                    / _metrics.get("tasks_total", 1)
+                    / _metrics.get("tasks_total", 0)
                     * 100
-                ),
+                )
+                if _metrics.get("tasks_total", 0)
+                else 0.0,
                 1,
             ),
         },
@@ -653,7 +661,8 @@ def _check_process_memory() -> str:
         proc = psutil.Process()
         mem_mb = proc.memory_info().rss / (1024**2)
         return f"{mem_mb:.1f} MB RSS"
-    except (ImportError, psutil.Error):
+    except ImportError:
+        # psutil not installed — fall back to resource module.
         try:
             import resource
 
@@ -663,6 +672,8 @@ def _check_process_memory() -> str:
             return f"{rss_mb:.1f} MB peak RSS"
         except (ImportError, AttributeError):
             return "unavailable"
+    except Exception:  # pragma: no cover - psutil runtime error
+        return "unavailable"
 
 
 @router.get("/ready")

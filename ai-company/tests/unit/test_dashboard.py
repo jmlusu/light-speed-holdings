@@ -21,6 +21,15 @@ def setup_dashboard_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Non
     # Patch working directory to tmp_path
     monkeypatch.chdir(tmp_path)
 
+    # Rebind the dashboard StateStore singleton to the isolated workspace so
+    # all state I/O is rooted at tmp_path (independent of cwd / import-time
+    # singleton). Fixes pre-existing fixture isolation for the module-level
+    # ``client`` created at import time.
+    from ai_company.dashboard.repository import get_state_store, reset_state_store
+
+    reset_state_store()
+    get_state_store(tmp_path)
+
     # Create company directory and registry
     (tmp_path / "company").mkdir()
     registry = [

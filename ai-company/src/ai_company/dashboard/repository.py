@@ -215,12 +215,49 @@ class StateStore:
 
 
 # ── Module-level singleton ─────────────────────────────────────────────
+#
+# Option B (explicit config): the singleton is bound explicitly via
+# :func:`configure_state_store` at server boot from an env/config value
+# (``DASHBOARD_DATA_DIR``). :func:`get_state_store` returns that configured
+# store for the lifetime of the process and does NOT re-point at a new root
+# when the cwd changes. If never configured, it lazily defaults to "."
+# so import-time callers and tests keep working.
 
 _default_store: StateStore | None = None
 
 
+def configure_state_store(base_dir: str | Path) -> StateStore:
+    """Explicitly bind the shared :class:`StateStore` to *base_dir*.
+
+    Call this exactly once at dashboard server boot (e.g. from
+    :func:`ai_company.dashboard.app.create_app`) so the store root is set
+    from configuration rather than the import-time cwd. Subsequent calls
+    re-bind the singleton to a new root (used by tests).
+
+    Returns:
+        The newly configured :class:`StateStore`.
+    """
+    global _default_store
+    _default_store = StateStore(base_dir)
+    logger.info("StateStore configured with base_dir=%s", _default_store._base)
+    return _default_store
+
+
+def is_state_store_configured() -> bool:
+    """Return True if :func:`configure_state_store` has been called."""
+    return _default_store is not None
+
+
 def get_state_store(base_dir: str | Path = ".") -> StateStore:
-    """Return the shared :class:`StateStore` (lazily created)."""
+    """Return the shared, explicitly-configured :class:`StateStore`.
+
+    The store is bound once for the process lifetime via
+    :func:`configure_state_store`. If it has not been configured yet this
+    returns a lazily-created default rooted at *base_dir* (``"."``) so that
+    import-time callers and legacy/test code continue to work without an
+    explicit boot step. The base is resolved at construction time, so the
+    store is immune to later ``chdir()`` calls.
+    """
     global _default_store
     if _default_store is None:
         _default_store = StateStore(base_dir)

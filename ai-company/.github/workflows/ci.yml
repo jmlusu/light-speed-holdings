@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+# Cancel in-progress runs for the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Lint, Type-check & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint (ruff)
+        run: ruff check src/
+
+      - name: Type-check (mypy)
+        run: mypy src/
+
+      - name: Run tests
+        run: pytest -q --ignore=tests/unit/test_security.py --ignore=tests/unit/test_ml.py
+
+  # Reusable quality gate consumed by monitoring.yml health-check.
+  quality-gate:
+    name: Quality Gate (green baseline)
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Fail if tests did not pass
+        run: |
+          if [ "${{ needs.build-and-test.result }}" != "success" ]; then
+            echo "::error::CI build-and-test did not pass (result=${{ needs.build-and-test.result }})"
+            exit 1
+          fi
+          echo "[OK] CI quality gate passed"

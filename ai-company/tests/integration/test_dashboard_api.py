@@ -17,10 +17,14 @@ from ai_company.dashboard.app import app
 @pytest.fixture()
 def client(workspace: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     """TestClient bound to a fresh app instance over the isolated workspace."""
-    # Force the shared bus to be rebuilt against the isolated inbox.
+    # Force the shared bus and StateStore to be rebuilt against the isolated
+    # workspace so reads are rooted at tmp_path, not the real repo.
     from ai_company.dashboard import api as dash_api
+    from ai_company.dashboard.repository import get_state_store, reset_state_store
 
     dash_api._bus = None
+    reset_state_store()
+    get_state_store(workspace)
     return TestClient(app, raise_server_exceptions=False)
 
 
