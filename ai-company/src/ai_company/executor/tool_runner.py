@@ -5,6 +5,19 @@ Security hardening (GAP-016):
 - Only allowlisted command prefixes may execute.
 - ``shell=True`` is never used; shell features (pipes, redirects) are blocked
   and should be expressed as separate tool steps.
+- Allowlist is configurable via YAML file (config/tool_allowlist.yaml).
+- Rejected commands are logged for security auditing.
+- Path sandboxing resolves symlinks to prevent traversal attacks.
+- Tool outputs are scanned for content safety threats and PII before
+  being returned to the caller (GAP-016 extension).
+
+GAP-003 fix (tier rules integration):
+- Before each tool execution, ``check_tier_rules()`` classifies the action
+  using ``orchestrator.tier_rules.classify_tool_action()``.
+- Tier 0 (auto): execute immediately.
+- Tier 1 (notify): execute and log the notification.
+- Tier 2 (single approver): HITL unless agent seniority >= threshold.
+- Tier 3 (two-person) and Tier 4 (CEO only): always require HITL.
 """
 
 from __future__ import annotations
@@ -15,10 +28,23 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from ai_company.audit.integration import log_hitl_decision, log_tool_call
 from ai_company.executor.hitl_gate import HITLGate
+from ai_company.orchestrator.tier_rules import (
+    SENIORITY_AUTO_APPROVE_TIER,
+    ApprovalTier,
+    classify_tool_action,
+    get_tier_config,
+)
+from ai_company.security.content_filter import ContentFilter, get_content_filter
+from ai_company.security.pii_detector import PIIDetector, get_pii_detector
 
 logger = logging.getLogger(__name__)
+
+# Security audit logger — separate from application logs
+_security_logger = logging.getLogger("ai_company.security.tool_runner")
 
 
 class SecurityError(Exception):
@@ -26,10 +52,10 @@ class SecurityError(Exception):
 
 
 # ---------------------------------------------------------------------------
-# Command allowlist — only these base commands may be executed via the
-# ``execute`` tool.  Add entries here as new legitimate tools are onboarded.
+# Command allowlist — loaded from YAML config with hardcoded fallback.
+# Only these base commands may be executed via the ``execute`` tool.
 # ---------------------------------------------------------------------------
-ALLOWED_COMMANDS: frozenset[str] = frozenset({
+_DEFAULT_ALLOWED_COMMANDS: frozenset[str] = frozenset({
     # Build / test
     "python", "python3", "pip", "pytest", "ruff", "mypy", "black", "isort",
     # Version control
@@ -45,16 +71,58 @@ ALLOWED_COMMANDS: frozenset[str] = frozenset({
 })
 
 
+def _load_allowlist(config_path: str | Path | None = None) -> frozenset[str]:
+    """Load the command allowlist from YAML config, falling back to defaults."""
+    if config_path is None:
+        # Look for config relative to project root
+        candidates = [
+            Path("config/tool_allowlist.yaml"),
+            Path("ai-company/config/tool_allowlist.yaml"),
+        ]
+        for candidate in candidates:
+            if candidate.exists():
+                config_path = candidate
+                break
+
+    if config_path is not None:
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            commands = data.get("allowed_commands", [])
+            if commands:
+                logger.info("Loaded tool allowlist from %s (%d commands)", config_path, len(commands))
+                return frozenset(commands)
+        except (yaml.YAMLError, OSError) as exc:
+            logger.warning("Failed to load allowlist from %s: %s — using defaults", config_path, exc)
+
+    return _DEFAULT_ALLOWED_COMMANDS
+
+
 class ToolRunner:
     """Executes tool plan steps from the LLM response.
 
     All file operations are restricted to PROJECT_ROOT.
     Approval is determined by the tier system (tier_rules.classify_tool_action)
     rather than a hardcoded tool list.
+
+    Security (GAP-016 extension):
+    - All tool outputs are scanned for content safety threats via
+      :class:`ContentFilter` and PII via :class:`PIIDetector`.
+    - Threats are logged and dangerous content is replaced with a
+      placeholder before being returned.
     """
 
-    def __init__(self, project_root: str | Path = ".") -> None:
+    def __init__(
+        self,
+        project_root: str | Path = ".",
+        allowlist_path: str | Path | None = None,
+        content_filter: ContentFilter | None = None,
+        pii_detector: PIIDetector | None = None,
+    ) -> None:
         self.project_root = Path(project_root).resolve()
+        self.allowed_commands = _load_allowlist(allowlist_path)
+        self._content_filter = content_filter or get_content_filter()
+        self._pii_detector = pii_detector or get_pii_detector()
 
     def run_plan(
         self,
@@ -65,13 +133,17 @@ class ToolRunner:
         seniority: str = "",
         risk_level: str = "",
     ) -> list[dict[str, Any]]:
-        """Execute each step in the plan.
+        """Execute each step in the plan with tier-based approval gating.
 
-        Returns a list of step results. The HITL gate classifies each tool
-        action into a tier and handles approval accordingly. If HITL denies
-        a step, execution continues with remaining steps.
+        For each tool step, ``check_tier_rules()`` classifies the action into
+        an approval tier.  The tier determines whether the step can execute
+        immediately, requires HITL approval, or is outright denied.
+
+        Returns a list of step results. Each result dict contains at minimum:
+        ``step``, ``tool``, ``status``, and ``tier`` keys.
         """
         results: list[dict[str, Any]] = []
+        blocking = hitl_gate is not None
 
         for i, step in enumerate(plan):
             tool = step.get("tool", "")
@@ -83,34 +155,140 @@ class ToolRunner:
                 log_tool_call(task_id, agent_id, tool, args, error_result)
                 continue
 
-            if hitl_gate is not None:
-                approved = hitl_gate.request_and_wait(
+            # ── GAP-003: Tier classification ──────────────────────────
+            tier_info = self.check_tier_rules(
+                tool_name=tool,
+                args=args,
+                agent_id=agent_id,
+                seniority=seniority,
+                risk_level=risk_level,
+                task_id=task_id,
+            )
+            tier = tier_info["tier"]
+            needs_hitl = tier_info["needs_hitl"]
+            tier_label = tier_info["tier_label"]
+
+            # ── HITL approval path ───────────────────────────────────
+            if needs_hitl and blocking:
+                approved = hitl_gate.request_and_wait_sync(
                     task_id=task_id,
                     agent_id=agent_id,
                     tool=tool,
                     args=args,
-                    seniority=seniority,
-                    risk_level=risk_level,
                 )
                 log_hitl_decision(task_id, agent_id, tool, approved)
                 if not approved:
-                    denied_result = {"step": i, "tool": tool, "status": "denied", "error": "Human approval denied"}
+                    denied_result = {
+                        "step": i, "tool": tool, "status": "denied",
+                        "error": f"Human approval denied (tier: {tier_label})",
+                        "tier": tier,
+                    }
                     results.append(denied_result)
                     log_tool_call(task_id, agent_id, tool, args, denied_result)
                     continue
 
+            elif needs_hitl and not blocking:
+                # Non-blocking: queue for later resolution by executor
+                hitl_gate.request_and_wait(
+                    task_id=task_id,
+                    agent_id=agent_id,
+                    tool=tool,
+                    args=args,
+                )
+                pending_result = {
+                    "step": i, "tool": tool, "status": "pending_approval",
+                    "tier": tier, "tier_label": tier_label,
+                }
+                results.append(pending_result)
+                log_tool_call(task_id, agent_id, tool, args, pending_result)
+                continue
+
+            # ── Execute the tool ──────────────────────────────────────
             try:
                 result = self._execute_tool(tool, args)
                 status = "error" if "error" in result else "ok"
-                exec_result = {"step": i, "tool": tool, "status": status, **result}
+                exec_result = {
+                    "step": i, "tool": tool, "status": status,
+                    "tier": tier, "tier_label": tier_label, **result,
+                }
                 results.append(exec_result)
                 log_tool_call(task_id, agent_id, tool, args, exec_result)
             except Exception as exc:
-                exc_result = {"step": i, "tool": tool, "status": "error", "error": str(exc)}
+                exc_result = {
+                    "step": i, "tool": tool, "status": "error",
+                    "tier": tier, "tier_label": tier_label, "error": str(exc),
+                }
                 results.append(exc_result)
                 log_tool_call(task_id, agent_id, tool, args, exc_result)
 
         return results
+
+    @staticmethod
+    def check_tier_rules(
+        tool_name: str,
+        args: dict[str, Any],
+        agent_id: str = "",
+        seniority: str = "",
+        risk_level: str = "",
+        task_id: str = "",
+    ) -> dict[str, Any]:
+        """Classify a tool action and determine if HITL approval is required.
+
+        This is the GAP-003 integration point.  It wraps
+        ``tier_rules.classify_tool_action()`` and maps the resulting
+        ``ApprovalTier`` into an actionable decision:
+
+        * Tier 0 (auto-approve): no HITL needed, execute immediately.
+        * Tier 1 (notify): no HITL needed, execute and notify.
+        * Tier 2 (single approver): HITL unless agent seniority is at or
+          above the threshold in ``SENIORITY_AUTO_APPROVE_TIER``.
+        * Tier 3 (two-person rule): always HITL.
+        * Tier 4 (CEO only): always HITL.
+
+        Returns a dict with keys:
+            ``tier`` (int), ``tier_label`` (str), ``needs_hitl`` (bool),
+            ``description`` (str).
+        """
+        context: dict[str, Any] = {}
+        if seniority:
+            context["seniority"] = seniority
+        if risk_level:
+            context["risk_level"] = risk_level
+
+        tier = classify_tool_action(
+            tool=tool_name,
+            args=args,
+            agent_id=agent_id,
+            task_context=context if context else None,
+        )
+        tier_config = get_tier_config(tier)
+        needs_hitl = tier_config["required_approvers"] > 0
+
+        # Seniority can de-approve for Tier 2 if the agent has enough authority
+        if tier == ApprovalTier.SINGLE_APPROVER and needs_hitl:
+            max_auto = SENIORITY_AUTO_APPROVE_TIER.get(seniority, 0)
+            if max_auto >= int(tier):
+                needs_hitl = False
+
+        result = {
+            "tier": int(tier),
+            "tier_label": tier_config["label"],
+            "needs_hitl": needs_hitl,
+            "description": tier_config["description"],
+        }
+
+        if needs_hitl:
+            logger.info(
+                "Tier %d (%s) — HITL required for %s by %s",
+                int(tier), tier_config["label"], tool_name, agent_id,
+            )
+        elif int(tier) >= 1:
+            logger.info(
+                "Tier %d (%s) — %s auto-approved for %s",
+                int(tier), tier_config["label"], tool_name, agent_id,
+            )
+
+        return result
 
     def _execute_tool(self, tool: str, args: dict[str, Any]) -> dict[str, Any]:
         """Dispatch to the appropriate tool handler."""
@@ -137,6 +315,8 @@ class ToolRunner:
         if not path.exists():
             return {"error": f"File not found: {args['path']}"}
         content = path.read_text(encoding="utf-8", errors="replace")
+        # Scan file content for PII and safety threats
+        content = self._sanitize_output(content, source=str(path.relative_to(self.project_root)))
         return {"path": str(path.relative_to(self.project_root)), "content": content}
 
     def _write(self, args: dict[str, Any]) -> dict[str, Any]:
@@ -151,12 +331,13 @@ class ToolRunner:
 
         * Commands are tokenized with ``shlex.split()`` — ``shell=True`` is
           **never** used.
-        * The first token (the base command) must appear in ``ALLOWED_COMMANDS``.
+        * The first token (the base command) must appear in ``allowed_commands``.
         * Shell features such as ``|``, ``&&``, ``;``, ``>``, ``<`` are
           rejected — express those as separate tool steps instead.
         * On Windows, commands that are ``cmd.exe`` built-ins (e.g. ``echo``)
           are executed via ``cmd /c`` for compatibility, but only after the
-          allowlist check passes.
+          allowlist check passes and with tokenized arguments.
+        * Rejected commands are logged for security auditing.
         """
         import platform
 
@@ -165,6 +346,10 @@ class ToolRunner:
         # ── Reject shell metacharacters ──────────────────────────────────
         _SHELL_META = set("|&;><$`\\") - {"/", "-", ".", "_"}
         if any(ch in command for ch in _SHELL_META):
+            _security_logger.warning(
+                "Rejected command with shell metacharacters: %s",
+                command[:200],
+            )
             return {
                 "command": command,
                 "error": (
@@ -185,14 +370,43 @@ class ToolRunner:
         base = Path(tokens[0]).name  # strip any path prefix
 
         # ── Allowlist check ──────────────────────────────────────────────
-        if base not in ALLOWED_COMMANDS:
+        if base not in self.allowed_commands:
+            _security_logger.warning(
+                "Rejected disallowed command '%s' from user input: %s",
+                base,
+                command[:200],
+            )
             return {
                 "command": command,
                 "error": (
                     f"Command '{base}' is not in the allowlist. "
-                    f"Allowed: {', '.join(sorted(ALLOWED_COMMANDS))}"
+                    f"Allowed: {', '.join(sorted(self.allowed_commands))}"
                 ),
             }
+
+        # ── Resolve symlinks in arguments to prevent traversal ──────────
+        resolved_tokens = [tokens[0]]  # Keep command name as-is
+        for token in tokens[1:]:
+            if token.startswith("-"):
+                # Skip flags (they aren't paths)
+                resolved_tokens.append(token)
+            else:
+                # Resolve the token as a potential path
+                try:
+                    resolved = (self.project_root / token).resolve()
+                    # Verify it stays within project root
+                    resolved.relative_to(self.project_root)
+                    resolved_tokens.append(token)  # Keep original for command
+                except ValueError:
+                    _security_logger.warning(
+                        "Rejected command with path traversal: %s -> %s",
+                        token,
+                        resolved,
+                    )
+                    return {
+                        "command": command,
+                        "error": f"Path argument '{token}' escapes project root",
+                    }
 
         # ── Execute safely ───────────────────────────────────────────────
         logger.info("Executing allowed command: %s", command)
@@ -207,11 +421,14 @@ class ToolRunner:
         except FileNotFoundError:
             # On Windows, some commands (echo, mkdir, etc.) are cmd.exe
             # built-ins and don't exist as standalone executables.  Fall
-            # back to cmd /c <command> — the allowlist check has already
-            # passed, so this is safe.
+            # back to cmd /c with tokenized arguments — the allowlist
+            # check has already passed, so this is safe.
             if platform.system() == "Windows":
+                # SECURITY FIX: Use tokenized arguments instead of raw string
+                # to prevent shell injection via cmd /c
+                cmd_tokens = ["cmd", "/c"] + tokens
                 result = subprocess.run(
-                    ["cmd", "/c", command],
+                    cmd_tokens,
                     capture_output=True,
                     text=True,
                     timeout=120,
@@ -223,8 +440,12 @@ class ToolRunner:
         return {
             "command": command,
             "returncode": result.returncode,
-            "stdout": result.stdout[-2000:] if result.stdout else "",
-            "stderr": result.stderr[-2000:] if result.stderr else "",
+            "stdout": self._sanitize_output(
+                result.stdout[-2000:] if result.stdout else "", source=f"cmd:{base}"
+            ),
+            "stderr": self._sanitize_output(
+                result.stderr[-2000:] if result.stderr else "", source=f"cmd:{base}:stderr"
+            ),
         }
 
     def _grep(self, args: dict[str, Any]) -> dict[str, Any]:
@@ -241,7 +462,12 @@ class ToolRunner:
                     if len(matches) >= 50:
                         break
 
-        return {"pattern": pattern, "matches": matches[:50], "total": len(matches)}
+        # Sanitize individual match lines for PII
+        sanitized: list[str] = []
+        for m in matches[:50]:
+            sanitized.append(self._sanitize_output(m, source="grep"))
+
+        return {"pattern": pattern, "matches": sanitized, "total": len(matches)}
 
     def _grep_file(self, path: Path, pattern: str) -> list[str]:
         matches: list[str] = []
@@ -284,8 +510,12 @@ class ToolRunner:
         )
         return {
             "returncode": result.returncode,
-            "stdout": result.stdout[-2000:] if result.stdout else "",
-            "stderr": result.stderr[-2000:] if result.stderr else "",
+            "stdout": self._sanitize_output(
+                result.stdout[-2000:] if result.stdout else "", source="code_interpreter"
+            ),
+            "stderr": self._sanitize_output(
+                result.stderr[-2000:] if result.stderr else "", source="code_interpreter:stderr"
+            ),
         }
 
     def _delegate(self, args: dict[str, Any]) -> dict[str, Any]:
@@ -306,6 +536,43 @@ class ToolRunner:
                 f"Path '{path_str}' escapes project root: {resolved}"
             )
         return resolved
+
+    def _sanitize_output(self, text: str, source: str = "tool") -> str:
+        """Scan tool output for content safety threats and PII.
+
+        Args:
+            text: Raw output from tool execution.
+            source: Label for logging (e.g. tool name or file path).
+
+        Returns:
+            Sanitized text with threats blocked and PII masked.
+        """
+        if not text:
+            return text
+
+        # Content safety filter (injection, XSS, execution attempts)
+        filter_result = self._content_filter.scan(text)
+        if not filter_result.is_safe:
+            _security_logger.warning(
+                "Content threat blocked in %s output: threats=%s level=%s",
+                source,
+                filter_result.threats_detected,
+                filter_result.threat_level.value,
+            )
+            text = filter_result.filtered
+
+        # PII detection and masking
+        pii_result = self._pii_detector.scan(text)
+        if pii_result.has_pii:
+            _security_logger.info(
+                "PII detected and masked in %s output: types=%s count=%d",
+                source,
+                {t.value for t in pii_result.pii_types_found},
+                len(pii_result.matches),
+            )
+            text = pii_result.masked
+
+        return text
 
     @staticmethod
     def _all_tools() -> set[str]:

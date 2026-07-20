@@ -1,7 +1,7 @@
 # Architecture Gap Analysis — AI Company Builder
 
 **Author:** Software Architect  
-**Date:** 2026-07-19  
+**Date:** 2026-07-20 (updated)  
 **Scope:** End-to-end pipeline from task ingestion through execution, memory, and dashboard
 
 ---
@@ -9,6 +9,8 @@
 ## Executive Summary
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
+
+**Resolved gaps (as of 2026-07-20):** GAP-001 (partial), GAP-005 (partial), GAP-007, GAP-012, GAP-013, GAP-017, GAP-020 (partial)
 
 ---
 
@@ -21,9 +23,10 @@ The AI Company Builder has a solid set of individually well-designed components,
 | **Severity** | CRITICAL |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `executor/loop.py:124-142`, `orchestrator/message_bus.py` |
+| **Status** | 🟡 PARTIALLY RESOLVED — AgentLoop wired in, but executor still reads inbox.json directly |
 
 **Current State:**  
-`Executor._get_pending_tasks()` reads `inbox.json` directly via `json.loads(inbox_path.read_text(...))`. Similarly, `_update_task_status()` and `_complete_task()` write to `inbox.json` directly. The `MessageBus` class exists but is only used for `send_task()` in `_create_subtask_from_record()`.
+The AgentLoop is now wired into the executor (`loop.py:106-112`) and processes tasks through the multi-turn agentic loop. However, `Executor._get_pending_tasks()` still reads `inbox.json` directly via `json.loads(inbox_path.read_text(...))`. Similarly, `_update_task_status()` and `_complete_task()` write to `inbox.json` directly. The `MessageBus` class is used for `send_task()` in `_create_subtask_from_record()`.
 
 **Desired State:**  
 All inbox reads and writes go through `MessageBus` methods. The bus becomes the single source of truth for task state mutations.
@@ -39,6 +42,8 @@ Two code paths (MessageBus + Executor) writing the same file without coordinatio
    _update_task_status, _complete_task
 4. Make inbox.json writes go through a single write-lock path
 ```
+
+**Planned for:** Sprint 2 (S2-01, S2-02, S2-03)
 
 ---
 
@@ -123,33 +128,31 @@ A single HITL request freezes the entire executor pipeline. If the executor runs
 
 ---
 
-### GAP-005 — Memory Engine Completely Disconnected from Execution Pipeline
+### GAP-005 — Memory Engine Disconnected from Execution Pipeline
 
 | Field | Value |
 |-------|-------|
 | **Severity** | HIGH |
 | **Sprint** | Sprint 3 (Memory Integration) |
 | **Files** | `memory/engine.py` (182 lines), `executor/loop.py`, `executor/agent_loop.py` |
+| **Status** | 🟡 PARTIALLY RESOLVED — recall + store wired in, consolidation not yet done |
 
 **Current State:**  
-`MemoryEngine` with 6 memory types (episodic, semantic, procedural, relational, temporal, aggregate) is fully implemented but **nothing in the executor pipeline writes to or reads from it**. Task completion doesn't create episodic memories. Agent decisions don't create procedural memories. The memory is orphaned.
+Memory integration exists at `memory/integration.py` with `init_memory()` and `record_task_outcome()`. The executor calls `init_memory()` in `__init__` (line 100), recalls context before task execution via `_recall_memory_context()` (line 197), and records outcomes on completion/failure (lines 220-261). However, periodic consolidation is not yet wired into the executor loop.
 
 **Desired State:**  
-- After task completion: `memory.store("episodic", ...)` with task summary, agent, outcome
-- Before task execution: `memory.recall("semantic", query=task.instruction)` for context
-- Periodic consolidation: `memory.consolidate()` for aggregate insights
+- After task completion: `memory.store("episodic", ...)` with task summary, agent, outcome ✅ Done
+- Before task execution: `memory.recall("semantic", query=task.instruction)` for context ✅ Done
+- Periodic consolidation: `memory.consolidate()` for aggregate insights ❌ Not done
 
 **Risk:**  
-The system has no institutional memory. Agents can't learn from past successes/failures. Same mistakes repeat.
+The system now has basic institutional memory. Agents can learn from past task outcomes. However, without consolidation, memory grows unbounded and old memories lose relevance.
 
 **Fix:**
 ```
-1. Add MemoryIntegration hook in Executor._process_task:
-   - On completion: store episodic memory
-   - On failure: store episodic memory with error context
-2. Add memory context assembly in context.py:
-   - Before building prompts, recall relevant memories
-3. Add periodic consolidation in the executor start() loop
+1. ✅ MemoryIntegration hook in Executor._process_task — DONE
+2. ✅ Memory context assembly — DONE
+3. Periodic consolidation in the executor start() loop — TODO
 ```
 
 ---
@@ -190,22 +193,15 @@ The WebSocket connection is useless. Clients connect but never receive data. Das
 | **Severity** | HIGH |
 | **Sprint** | Sprint 3 (Autonomous Coordination) |
 | **Files** | `orchestrator/scheduler.py` (80 lines), `executor/loop.py` |
+| **Status** | ✅ RESOLVED |
 
 **Current State:**  
-`Scheduler.get_pending_tasks()` returns tasks whose `next_run <= now`. However, the executor's `tick()` method only processes tasks from `inbox.json`. The scheduler is never called from the executor loop. Scheduled tasks exist in YAML but are never triggered.
+The executor's `tick()` method now calls `self.scheduler.create_pending_tasks(self.bus)` at the start of each tick (line 149). Scheduled tasks are injected into the inbox when their `next_run` time arrives.
 
-**Desired State:**  
-`Executor.tick()` checks the scheduler for due tasks and injects them into the inbox.
-
-**Risk:**  
-Autonomous cycles (daily briefings, periodic reports, recurring tasks) never execute. The "autonomous coordination" phase is non-functional.
-
-**Fix:**
+**Resolution:**  
 ```
-1. In Executor.__init__: self.scheduler = Scheduler()
-2. At start of tick(): check self.scheduler.get_pending_tasks()
-3. For each due scheduled task: create Task from task_template, send via bus
-4. After execution: self.scheduler.mark_completed(task_id)
+1. ✅ In Executor.__init__: self.scheduler = Scheduler() (line 97)
+2. ✅ At start of tick(): self.scheduler.create_pending_tasks(self.bus) (line 149)
 ```
 
 ---
@@ -322,21 +318,15 @@ Race condition: dashboard creates a task at the same moment executor is updating
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `executor/agent_loop.py:277` |
+| **Status** | ✅ RESOLVED |
 
 **Current State:**  
-`self.llm.router.resolve(priority="medium")` hardcodes "medium" regardless of the actual task priority passed to `run()`. A CRITICAL task gets routed to the same model tier as a LOW task.
+`AgentLoop` now stores `self._current_priority` (set at line 110 from the `run()` method's `priority` parameter) and forwards it to the model router. The `run()` method stores priority at line 134: `self._current_priority = priority`.
 
-**Desired State:**  
-The task's actual priority is forwarded to the model router for proper tier resolution.
-
-**Risk:**  
-High-priority tasks don't get escalated to more capable models. Cost optimization opportunities are missed.
-
-**Fix:**
+**Resolution:**  
 ```
-1. Store priority as instance variable or pass through to _call_llm
-2. Replace: route = self.llm.router.resolve(priority="medium")
-   With:    route = self.llm.router.resolve(priority=self._current_priority)
+1. ✅ self._current_priority stored in AgentLoop.__init__ and set in run()
+2. ✅ Forwarded to model router for proper tier resolution
 ```
 
 ---
@@ -348,21 +338,16 @@ High-priority tasks don't get escalated to more capable models. Cost optimizatio
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 4 (Dashboard Completeness) |
 | **Files** | `dashboard/kpi_collector.py:90-101`, `dashboard/kpis/` |
+| **Status** | ✅ RESOLVED |
 
 **Current State:**  
-`collect_all_kpis()` hardcodes `engineering` as the only department. The `kpis/` directory contains 7 department modules (`engineering.py`, `finance.py`, `hr.py`, `legal.py`, `marketing.py`, `sales.py`, `customer_success.py`) but only engineering is wired in.
+`collect_all_kpis()` at `dashboard/kpis/__init__.py` now iterates over `ALL_COLLECTORS` which includes all 7 department collectors: Engineering, HR, Finance, Marketing, Sales, CustomerSuccess, Legal. Each collector follows the `KPICollector` base class pattern.
 
-**Desired State:**  
-`collect_all_kpis()` dynamically discovers and calls all department collectors.
-
-**Risk:**  
-Dashboard shows incomplete data. 6 of 7 departments have no live KPIs despite the collectors being implemented.
-
-**Fix:**
+**Resolution:**  
 ```
-1. Add a registry pattern: DEPARTMENT_COLLECTORS dict
-2. collect_all_kpis() iterates over registered collectors
-3. Each department module registers its collector function
+1. ✅ ALL_COLLECTORS list with all 7 department collector classes
+2. ✅ collect_all_kpis() iterates over registered collectors
+3. ✅ Each department module implements KPICollector subclass
 ```
 
 ---
@@ -452,23 +437,17 @@ Shell injection vulnerability. An adversarial or hallucinating LLM could execute
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 3 (Autonomous Coordination) |
 | **Files** | `executor/loop.py`, `models/task.py` |
+| **Status** | ✅ RESOLVED |
 
 **Current State:**  
-Tasks that fail in the agent loop get marked as `FAILED` with an error message. But tasks stuck in `IN_PROGRESS` (e.g., executor crashed mid-task) are never recovered. There's no timeout mechanism and no dead letter queue for permanently failed tasks.
+`executor/dead_letter.py` implements `DeadLetterQueue` with `move_task()`, `list_entries()`, `get_task()`, `retry_task()`, and `clear()`. The `detect_stale_tasks()` function scans inbox for `in_progress` tasks older than 30 minutes and moves them to `.opencode/dead_letter.json`. The executor calls `detect_stale_tasks()` at the start of each `tick()` (line 152).
 
-**Desired State:**  
-- Stale in_progress tasks (older than N minutes) are reset to pending or moved to a dead letter queue
-- A recovery mechanism runs on executor startup
-
-**Risk:**  
-If the executor crashes during task processing, tasks remain in `IN_PROGRESS` forever. They're never retried or cleaned up.
-
-**Fix:**
+**Resolution:**  
 ```
-1. Add Task.created_at / updated_at timestamps
-2. On tick() startup: scan for in_progress tasks older than timeout
-3. Move stale tasks to a dead letter queue or retry them
-4. Add a "recovery" command in the CLI
+1. ✅ DeadLetterQueue class with full CRUD operations
+2. ✅ detect_stale_tasks() scans for stale in_progress tasks
+3. ✅ Executor calls detect_stale_tasks() on each tick
+4. ✅ Stale tasks removed from inbox and moved to dead_letter.json
 ```
 
 ---
@@ -533,50 +512,50 @@ Silent degradation: an agent with missing mission/responsibilities runs with gen
 | **Severity** | LOW |
 | **Sprint** | Sprint 4 (Quality & Hardening) |
 | **Files** | `tests/` directory |
+| **Status** | 🟡 PARTIALLY RESOLVED — integration tests exist for components, not full pipeline |
 
 **Current State:**  
-Unit tests exist for models and some utilities. No integration tests that exercise the full pipeline: create task → executor picks it up → agent loop runs → tool executes → result saved → dashboard shows it.
+Integration tests exist for individual components: `tests/integration/test_pipeline.py` (memory, graph, scheduler, KPI), `tests/test_audit_integration.py`, `tests/test_memory_integration.py`, `tests/test_scheduler_integration.py`. However, no single test exercises the full happy path: MessageBus → Executor → AgentLoop → ToolRunner → Task completion → Dashboard shows result.
 
 **Desired State:**  
 At least one integration test that exercises the happy path end-to-end with mocked LLM responses.
 
-**Risk:**  
-Integration gaps are caught only in manual testing. Regressions in the pipeline go undetected.
-
 **Fix:**
 ```
-1. Create tests/integration/test_pipeline.py
-2. Mock LLMClient to return deterministic ReAct responses
-3. Test: MessageBus → Executor → AgentLoop → ToolRunner → Task completion
-4. Test: Dashboard API reads completed task correctly
+1. ✅ tests/integration/test_pipeline.py — component integration tests
+2. ✅ tests/test_audit_integration.py — audit trail integration
+3. Full pipeline test with mocked LLM — TODO
 ```
 
 ---
 
 ## Summary Matrix
 
-| Gap ID | Severity | Component | Sprint | Effort |
-|--------|----------|-----------|--------|--------|
-| GAP-001 | CRITICAL | Executor ↔ MessageBus | Sprint 1 | Medium |
-| GAP-002 | CRITICAL | File Store (all shared state) | Sprint 1 | High |
-| GAP-003 | HIGH | ToolRunner ↔ Tier Rules | Sprint 2 | Medium |
-| GAP-004 | HIGH | HITLGate (blocking) | Sprint 2 | Medium |
-| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High |
-| GAP-006 | HIGH | WebSocket Broadcast | Sprint 1 | Low |
-| GAP-007 | HIGH | Scheduler ↔ Executor | Sprint 3 | Medium |
-| GAP-008 | HIGH | Escalation Persistence | Sprint 3 | Low |
-| GAP-009 | MEDIUM | CostTracker Persistence | Sprint 2 | Low |
-| GAP-010 | MEDIUM | Dashboard Auth/CORS | Sprint 2 | Medium |
-| GAP-011 | MEDIUM | Dashboard API ↔ MessageBus | Sprint 1 | Low |
-| GAP-012 | MEDIUM | AgentLoop Priority | Sprint 1 | Low |
-| GAP-013 | MEDIUM | KPI Collector Wiring | Sprint 4 | Low |
-| GAP-014 | LOW | BriefingGenerator API | Sprint 1 | Trivial |
-| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low |
-| GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium |
-| GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium |
-| GAP-018 | LOW | Structured Logging | Sprint 4 | Medium |
-| GAP-019 | LOW | Spec Validation | Sprint 4 | Low |
-| GAP-020 | LOW | Integration Tests | Sprint 4 | Medium |
+| Gap ID | Severity | Component | Sprint | Effort | Status |
+|--------|----------|-----------|--------|--------|--------|
+| GAP-001 | CRITICAL | Executor ↔ MessageBus | Sprint 1 | Medium | 🟡 Partial |
+| GAP-002 | CRITICAL | File Store (all shared state) | Sprint 1 | High | 🔴 Open |
+| GAP-003 | HIGH | ToolRunner ↔ Tier Rules | Sprint 2 | Medium | 🔴 Open |
+| GAP-004 | HIGH | HITLGate (blocking) | Sprint 2 | Medium | 🔴 Open |
+| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High | 🟡 Partial |
+| GAP-006 | HIGH | WebSocket Broadcast | Sprint 1 | Low | 🔴 Open |
+| GAP-007 | HIGH | Scheduler ↔ Executor | Sprint 3 | Medium | ✅ Resolved |
+| GAP-008 | HIGH | Escalation Persistence | Sprint 3 | Low | 🔴 Open |
+| GAP-009 | MEDIUM | CostTracker Persistence | Sprint 2 | Low | 🔴 Open |
+| GAP-010 | MEDIUM | Dashboard Auth/CORS | Sprint 2 | Medium | 🔴 Open |
+| GAP-011 | MEDIUM | Dashboard API ↔ MessageBus | Sprint 1 | Low | 🔴 Open |
+| GAP-012 | MEDIUM | AgentLoop Priority | Sprint 1 | Low | ✅ Resolved |
+| GAP-013 | MEDIUM | KPI Collector Wiring | Sprint 4 | Low | ✅ Resolved |
+| GAP-014 | LOW | BriefingGenerator API | Sprint 1 | Trivial | 🔴 Open |
+| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | 🔴 Open |
+| GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium | 🔴 Open |
+| GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved |
+| GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | 🔴 Open |
+| GAP-019 | LOW | Spec Validation | Sprint 4 | Low | 🔴 Open |
+| GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | 🟡 Partial |
+
+**Resolved:** 6 of 20 (GAP-007, GAP-012, GAP-013, GAP-017 + partial GAP-001, GAP-005, GAP-020)
+**Remaining:** 14 open gaps across Sprint 2 and Sprint 3 scope
 
 ## Recommended Sprint Plan
 

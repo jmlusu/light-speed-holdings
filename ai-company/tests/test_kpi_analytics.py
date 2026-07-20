@@ -632,14 +632,18 @@ class TestSummaryStatistics:
 
     def test_daily_summary(self, store: KPIHistoryStore) -> None:
         """Daily summary computes min/max/mean/count correctly."""
-        today = datetime.now(timezone.utc).strftime("%Y-%m-%dT")
-        for hour, val in [(8, 88.0), (9, 92.0), (10, 95.0), (11, 91.0)]:
+        now = datetime.now(timezone.utc)
+        # Use hours relative to now so entries always fall within the daily period
+        offsets = [4, 3, 2, 1]
+        values = [88.0, 92.0, 95.0, 91.0]
+        for offset, val in zip(offsets, values):
+            ts = (now - timedelta(hours=offset)).isoformat()
             store.store_snapshot({
-                "collected_at": f"{today}{hour:02d}:00:00",
+                "collected_at": ts,
                 "departments": {
                     "engineering": {
                         "department": "engineering",
-                        "collected_at": f"{today}{hour:02d}:00:00",
+                        "collected_at": ts,
                         "kpis": {
                             "completion": {"current": val, "target": 95, "unit": "%", "status": "info"},
                         },
@@ -680,13 +684,14 @@ class TestSummaryStatistics:
 
     def test_summary_filter_kpi_keys(self, store: KPIHistoryStore) -> None:
         """Filtering by kpi_keys returns only those KPIs."""
-        today = datetime.now(timezone.utc).strftime("%Y-%m-%dT")
+        now = datetime.now(timezone.utc)
+        ts = (now - timedelta(hours=1)).isoformat()
         store.store_snapshot({
-            "collected_at": f"{today}12:00:00",
+            "collected_at": ts,
             "departments": {
                 "engineering": {
                     "department": "engineering",
-                    "collected_at": f"{today}12:00:00",
+                    "collected_at": ts,
                     "kpis": {
                         "a": {"current": 10.0, "target": None, "unit": "count", "status": "info"},
                         "b": {"current": 20.0, "target": None, "unit": "count", "status": "info"},

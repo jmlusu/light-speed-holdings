@@ -1,73 +1,85 @@
 # AI Company Builder — Remaining Work Inventory
 
-**Date**: 2026-07-19  
+**Date**: 2026-07-20 (updated)  
 **Status**: Post-Sprint 1  
-**Total Source Files**: 91  
-**Test Coverage**: 359 tests passing  
-**Lint Status**: ruff clean
+**Total Source Files**: 91+  
+**Test Coverage**: 727 tests collected  
+**Lint Status**: ruff clean, mypy clean
 
 ---
 
 ## Executive Summary
 
-Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, SOPs). This inventory catalogs all remaining incomplete items across 14 packages, organized by module with priority, effort estimates, dependencies, and recommended agent owners.
+Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, audit trail, memory integration, dead-letter queue, circuit breaker). This inventory catalogs all remaining incomplete items across 14 packages, organized by module with priority, effort estimates, dependencies, and recommended agent owners.
 
 ---
 
-## P0 — Critical (Complete Before Sprint 2)
+## Completed Since Last Inventory
 
-### 1. Audit Module (Missing Entirely)
+| Item | Description | Completed |
+|------|-------------|-----------|
+| 1.1-1.4 | Audit module (events, writer, reader) | ✅ 2026-07-19 |
+| 1.5 | Audit integration into executor | ✅ 2026-07-19 |
+| 8.1 | Replace print() with logging in executor | ✅ 2026-07-19 |
+| B3 | Extract parse_llm_json to shared utility | ✅ 2026-07-19 |
+| GAP-007 | Scheduler integration into executor | ✅ 2026-07-19 |
+| GAP-012 | AgentLoop priority forwarding | ✅ 2026-07-19 |
+| GAP-013 | KPI collector wiring (all 7 departments) | ✅ 2026-07-19 |
+| GAP-017 | Dead-letter queue for stale tasks | ✅ 2026-07-19 |
+| Circuit breaker | LLM provider fail-fast | ✅ 2026-07-19 |
+| Memory integration | Recall context before tasks | ✅ 2026-07-19 |
+| Integration tests | Component-level integration tests | ✅ 2026-07-19 |
 
-| Item | Description | Hours | Dependencies | Owner |
-|------|-------------|-------|--------------|-------|
-| 1.1 | Create `src/ai_company/audit/__init__.py` | 0.5 | None | claude-arch |
-| 1.2 | Create `src/ai_company/audit/events.py` — Event models (AuditEvent, severity levels, metadata) | 2 | Pydantic models | claude-arch |
-| 1.3 | Create `src/ai_company/audit/writer.py` — Async JSONL writer with rotation | 3 | events.py | claude-arch |
-| 1.4 | Create `src/ai_company/audit/reader.py` — Query/filter/export capabilities | 2 | writer.py | claude-arch |
-| 1.5 | Integrate audit events into message_bus.py, approval.py, executor/loop.py | 3 | 1.2-1.4, message_bus | claude-dev |
-| 1.6 | Add audit retention policy (configurable, default 90 days) | 1 | 1.3 | claude-dev |
+---
 
-**Total P0 Audit**: 11.5 hours
+## P0 — Critical (Sprint 2)
+
+### 1. MessageBus Hardening
+
+| Item | Description | Hours | Dependencies | Owner | Sprint 2 |
+|------|-------------|-------|--------------|-------|----------|
+| 2.1 | Route all inbox I/O through MessageBus | 4 | None | lead-backend | S2-01 |
+| 2.2 | Create atomic FileStore abstraction | 6 | 2.1 | lead-backend | S2-02 |
+| 2.3 | Dashboard API uses MessageBus | 2 | 2.1, 2.2 | lead-backend | S2-03 |
+
+**Total P0 MessageBus**: 12 hours
+
+### 2. Security Hardening
+
+| Item | Description | Hours | Dependencies | Owner | Sprint 2 |
+|------|-------------|-------|--------------|-------|----------|
+| 3.1 | Integrate tier rules into ToolRunner | 4 | None | lead-backend | S2-04 |
+| 3.2 | Non-blocking HITL gate | 4 | 3.1 | lead-backend | S2-05 |
+| 3.3 | Dashboard CORS and authentication | 3 | None | lead-frontend | S2-08 |
+| 3.4 | Remove shell=True from ToolRunner | 2 | None | lead-backend | S2-10 |
+
+**Total P0 Security**: 13 hours
 
 ---
 
 ## P1 — High Priority (Sprint 2)
 
-### 2. Message Bus Enhancements
+### 3. Integration Fixes
 
-| Item | Description | Hours | Dependencies | Owner |
-|------|-------------|-------|--------------|-------|
-| 2.1 | Add correlation_id (UUID) to all Task messages | 1 | None | claude-dev |
-| 2.2 | Implement ACK/NACK protocol with TTL | 3 | 2.1 | claude-dev |
-| 2.3 | Atomic file writes (write to .tmp, then rename) | 1 | None | claude-dev |
-| 2.4 | Add retry queue with exponential backoff | 2 | 2.2 | claude-dev |
-| 2.5 | Dead letter queue for failed tasks | 1.5 | 2.2 | claude-dev |
+| Item | Description | Hours | Dependencies | Owner | Sprint 2 |
+|------|-------------|-------|--------------|-------|----------|
+| 4.1 | Fix AgentLoop priority forwarding | 1 | None | lead-backend | S2-06 |
+| 4.2 | CostTracker accumulator persistence | 2 | None | lead-backend | S2-07 |
+| 4.3 | Fix LLM retry provider cycling | 2 | None | lead-backend | S2-09 |
+| 4.4 | Wire audit into ToolRunner and approval | 3 | audit module | lead-backend | S2-12 |
+| 4.5 | Persist escalation events | 2 | None | lead-backend | S2-13 |
 
-**Total P1 Message Bus**: 8.5 hours
+**Total P1 Integration**: 10 hours
 
-### 3. Approval System (5-Tier)
+### 4. Documentation
 
-| Item | Description | Hours | Dependencies | Owner |
-|------|-------------|-------|--------------|-------|
-| 3.1 | Refactor approval.py to use tier_rules.py classification | 2 | tier_rules.py | claude-dev |
-| 3.2 | Implement 5-tier escalation paths (auto → lead → exec → CEO → board) | 4 | 3.1 | claude-dev |
-| 3.3 | Add timeout-based escalation (configurable per tier) | 2 | 3.2 | claude-dev |
-| 3.4 | Implement two-person rule for Tier 4-5 | 2 | 3.2 | claude-dev |
-| 3.5 | Add approval audit trail (writes to audit module) | 1 | audit module | claude-dev |
+| Item | Description | Hours | Dependencies | Owner | Sprint 2 |
+|------|-------------|-------|--------------|-------|----------|
+| 5.1 | Remaining department SOPs (5) | 6 | None | content_creator | S2-11 |
+| 5.2 | Terms of Service (DRAFT) | 2 | None | content_creator | S2-11 |
+| 5.3 | Privacy Policy (DRAFT) | 2 | None | content_creator | S2-11 |
 
-**Total P1 Approval**: 11 hours
-
-### 4. LLM Provider Enhancements
-
-| Item | Description | Hours | Dependencies | Owner |
-|------|-------------|-------|--------------|-------|
-| 4.1 | Add streaming support to base.py | 3 | None | claude-ml |
-| 4.2 | Add health check endpoint per provider | 1.5 | None | claude-ml |
-| 4.3 | Circuit breaker pattern (fail-fast after N errors) | 2 | None | claude-ml |
-| 4.4 | Token counting integration (tiktoken for OpenAI, local for Ollama) | 2 | None | claude-ml |
-| 4.5 | Cost calculation per request (cache + compute) | 1.5 | 4.4 | claude-ml |
-
-**Total P1 LLM**: 10 hours
+**Total P1 Documentation**: 10 hours
 
 ---
 
@@ -77,38 +89,31 @@ Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, S
 
 | Item | Description | Hours | Dependencies | Owner |
 |------|-------------|-------|--------------|-------|
-| 5.1 | Add authentication (JWT/session) to API endpoints | 3 | None | claude-dev |
-| 5.2 | Implement WebSocket reconnection logic | 1.5 | None | claude-dev |
-| 5.3 | Add rate limiting to API endpoints | 1 | None | claude-dev |
-| 5.4 | Real-time KPI streaming (SSE or WebSocket) | 2 | kpi_collector | claude-dev |
-| 5.5 | Add CORS configuration for production | 0.5 | None | claude-dev |
+| 6.1 | WebSocket broadcast for real-time updates | 3 | MessageBus | lead-frontend |
+| 6.2 | API documentation (OpenAPI/Swagger) | 2 | dashboard | lead-frontend |
+| 6.3 | Rate limiting | 1 | auth | lead-frontend |
 
-**Total P2 Dashboard**: 8 hours
+**Total P2 Dashboard**: 6 hours
 
 ### 6. Memory Engine Enhancements
 
 | Item | Description | Hours | Dependencies | Owner |
 |------|-------------|-------|--------------|-------|
-| 6.1 | Add semantic classification for memories | 3 | None | claude-ml |
-| 6.2 | Implement retention policies (TTL, access-based) | 2 | None | claude-dev |
-| 6.3 | Add encryption for sensitive memories | 2 | None | claude-dev |
-| 6.4 | Implement memory consolidation rules | 2 | 6.1 | claude-ml |
-| 6.5 | Add memory search (keyword + semantic) | 3 | 6.1 | claude-ml |
+| 7.1 | Periodic memory consolidation | 2 | memory engine | lead-backend |
+| 7.2 | Memory search (keyword + semantic) | 3 | None | lead-backend |
+| 7.3 | Retention policies (TTL, access-based) | 2 | None | lead-backend |
 
-**Total P2 Memory**: 12 hours
+**Total P2 Memory**: 7 hours
 
-### 7. CLI Module Completion
+### 7. Autonomous Coordination
 
 | Item | Description | Hours | Dependencies | Owner |
 |------|-------------|-------|--------------|-------|
-| 7.1 | Implement `cli/board.py` — Board meeting scheduling, minutes | 3 | None | claude-dev |
-| 7.2 | Implement `cli/workflows.py` — Full workflow lifecycle (beyond stubs) | 4 | message_bus | claude-dev |
-| 7.3 | Implement `cli/memory.py` — Enhanced memory management | 2 | memory engine | claude-dev |
-| 7.4 | Implement `cli/executives.py` — Executive performance tracking | 2 | None | claude-dev |
-| 7.5 | Implement `cli/departments.py` — Department analytics | 2 | None | claude-dev |
-| 7.6 | Add `cli/audit.py` — Audit log query/export | 1.5 | audit module | claude-dev |
+| 8.1 | Scheduled cycle daemon | 4 | scheduler | lead-backend |
+| 8.2 | Escalation persistence to YAML | 2 | None | lead-backend |
+| 8.3 | WebSocket broadcast wiring | 3 | dashboard | lead-frontend |
 
-**Total P2 CLI**: 14.5 hours
+**Total P2 Autonomous**: 9 hours
 
 ---
 
@@ -118,104 +123,100 @@ Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, S
 
 | Item | Description | Hours | Dependencies | Owner |
 |------|-------------|-------|--------------|-------|
-| 8.1 | Replace print() with logging in executor/loop.py (lines 100-101, 107, 115) | 0.5 | None | claude-dev |
-| 8.2 | Replace print() with logging in generator.py (lines 63, 73, 75, 160) | 0.5 | None | claude-dev |
-| 8.3 | Replace print() with logging in orchestrator/briefing.py (line 77) | 0.25 | None | claude-dev |
-| 8.4 | Add type hints to all CLI modules | 2 | None | claude-dev |
-| 8.5 | Add docstrings to all public functions | 1.5 | None | claude-dev |
+| 9.1 | Structured logging with correlation IDs | 4 | None | lead-backend |
+| 9.2 | Agent spec validation CLI command | 2 | None | lead-backend |
+| 9.3 | Add type hints to all CLI modules | 2 | None | lead-backend |
+| 9.4 | Add docstrings to all public functions | 1.5 | None | lead-backend |
 
-**Total P3 Code Quality**: 4.75 hours
+**Total P3 Code Quality**: 9.5 hours
 
-### 9. Test Coverage Gaps
-
-| Item | Description | Hours | Dependencies | Owner |
-|------|-------------|-------|--------------|-------|
-| 9.1 | Add integration tests for message_bus ACK/NACK | 2 | 2.2 | qa-engineer |
-| 9.2 | Add integration tests for approval escalation | 2 | 3.2 | qa-engineer |
-| 9.3 | Add unit tests for LLM provider circuit breaker | 1.5 | 4.3 | qa-engineer |
-| 9.4 | Add unit tests for memory encryption | 1 | 6.3 | qa-engineer |
-| 9.5 | Add API endpoint tests (dashboard) | 2 | 5.1 | qa-engineer |
-| 9.6 | Add CLI command tests (all modules) | 3 | 7.1-7.6 | qa-engineer |
-
-**Total P3 Tests**: 11.5 hours
-
-### 10. Documentation & Developer Experience
+### 9. Test Coverage
 
 | Item | Description | Hours | Dependencies | Owner |
 |------|-------------|-------|--------------|-------|
-| 10.1 | Add API documentation (OpenAPI/Swagger) | 2 | dashboard | claude-dev |
-| 10.2 | Create architecture decision records (ADRs) | 3 | None | claude-arch |
-| 10.3 | Add inline code comments for complex logic | 2 | None | claude-dev |
-| 10.4 | Create developer onboarding guide | 2 | None | claude-dev |
+| 10.1 | Full pipeline integration test (mocked LLM) | 3 | None | qa_engineer |
+| 10.2 | Add CLI command tests (all modules) | 3 | CLI | qa_engineer |
+| 10.3 | Add API endpoint tests (dashboard) | 2 | dashboard | qa_engineer |
+| 10.4 | Add approval escalation tests | 2 | approval | qa_engineer |
 
-**Total P3 Documentation**: 9 hours
+**Total P3 Tests**: 10 hours
+
+### 10. Advanced Features
+
+| Item | Description | Hours | Dependencies | Owner |
+|------|-------------|-------|--------------|-------|
+| 11.1 | OAuth2 or API key rotation | 4 | auth | lead-backend |
+| 11.2 | Memory encryption for sensitive data | 2 | None | lead-backend |
+| 11.3 | Token counting integration | 2 | None | lead-backend |
+
+**Total P3 Advanced**: 8 hours
 
 ---
 
 ## Summary by Priority
 
-| Priority | Items | Hours | % of Total |
-|----------|-------|-------|------------|
-| P0 — Critical | 6 | 11.5 | 14% |
-| P1 — High | 13 | 29.5 | 35% |
-| P2 — Medium | 12 | 34.5 | 41% |
-| P3 — Low | 10 | 25.25 | 30% |
-| **Total** | **41** | **100.75** | **100%** |
+| Priority | Items | Hours | % of Total | Sprint |
+|----------|-------|-------|------------|--------|
+| P0 — Critical | 7 | 25 | 28% | Sprint 2 |
+| P1 — High | 8 | 20 | 22% | Sprint 2 |
+| P2 — Medium | 9 | 22 | 25% | Sprint 3 |
+| P3 — Low | 10 | 27.5 | 31% | Sprint 4+ |
+| **Total** | **34** | **94.5** | **100%** | |
 
 ---
 
 ## Dependency Graph
 
 ```
-P0: Audit Module (1.1-1.6)
-    └── Required by: Approval audit trail (3.5), CLI audit (7.6)
+P0: MessageBus Hardening (2.1-2.3)
+    └── Required by: Dashboard WebSocket (6.1), Scheduled cycles (8.1)
 
-P1: Message Bus (2.1-2.5)
-    └── Required by: Workflow CLI (7.2)
+P0: Security Hardening (3.1-3.4)
+    └── No dependencies — parallel execution
 
-P1: Approval System (3.1-3.5)
-    └── Depends on: Audit Module (1.2-1.4)
+P1: Integration Fixes (4.1-4.5)
+    └── 4.4 depends on audit module (already done)
 
-P1: LLM Providers (4.1-4.5)
+P1: Documentation (5.1-5.3)
+    └── No dependencies — parallel execution
+
+P2: Dashboard (6.1-6.3)
+    └── Depends on: MessageBus hardening (2.1-2.3)
+
+P2: Memory (7.1-7.3)
     └── No dependencies
 
-P2: Dashboard (5.1-5.5)
-    └── Depends on: Audit Module (for logs)
-
-P2: Memory Engine (6.1-6.5)
-    └── No dependencies
-
-P2: CLI Modules (7.1-7.6)
-    └── Depends on: Audit Module (7.6), Message Bus (7.2), Memory Engine (7.3)
+P2: Autonomous (8.1-8.3)
+    └── Depends on: MessageBus (2.1), Scheduler (already done)
 ```
 
 ---
 
 ## Recommended Sprint 2 Focus
 
-1. **Complete Audit Module** (1.1-1.6) — Foundation for all logging/tracking
-2. **Message Bus Enhancements** (2.1-2.5) — Reliable task delivery
-3. **Approval System 5-Tier** (3.1-3.5) — Critical for HITL governance
+1. **MessageBus Hardening** (2.1-2.3) — Foundation for all reliability
+2. **Security Hardening** (3.1-3.4) — Critical for production use
+3. **Integration Fixes** (4.1-4.5) — Close remaining gaps
 
-**Sprint 2 Estimate**: ~31 hours (11.5 + 8.5 + 11)
+**Sprint 2 Estimate**: ~45 hours (25 P0 + 20 P1)
 
 ---
 
 ## Agent Ownership Summary
 
-| Agent | Items | Total Hours |
-|-------|-------|-------------|
-| claude-arch | 1.1-1.4, 10.2 | 10 |
-| claude-dev | 1.5-1.6, 2.1-2.5, 3.1-3.5, 5.1-5.5, 7.1-7.6, 8.1-8.5, 10.1, 10.3-10.4 | 68.25 |
-| claude-ml | 4.1-4.5, 6.1, 6.4-6.5 | 13.5 |
-| qa-engineer | 9.1-9.6 | 11.5 |
-| **Total** | **41** | **103.25** |
+| Agent | Items | Total Hours | Sprint |
+|-------|-------|-------------|--------|
+| lead-backend | 2.1-2.3, 3.1-3.2, 3.4, 4.1-4.5, 7.1-7.3, 8.1-8.2, 9.1-9.4, 11.1-11.3 | 54.5 | Sprint 2-4 |
+| lead-frontend | 3.3, 6.1-6.3, 8.3 | 10 | Sprint 2-3 |
+| content_creator | 5.1-5.3 | 10 | Sprint 2 |
+| qa_engineer | 10.1-10.4 | 10 | Sprint 4 |
+| **Total** | **34** | **84.5** | |
 
 ---
 
 ## Next Steps
 
-1. Review this inventory with the team
-2. Prioritize P0 items for immediate execution
-3. Assign sprint 2 tasks to agents
-4. Begin with audit module creation (foundation for all other work)
+1. Begin Sprint 2 with MessageBus hardening (S2-01, S2-02, S2-03)
+2. Parallel track: security hardening (S2-04, S2-05, S2-08, S2-10)
+3. Content creator works on SOPs in parallel
+4. Review Sprint 2 progress at mid-sprint checkpoint

@@ -369,3 +369,107 @@ class TestRoundTrip:
         assert len(all_events) == 2
         agents = {e.agent_id for e in all_events}
         assert agents == {"first", "second"}
+
+
+# ---------------------------------------------------------------------------
+# Log rotation tests
+# ---------------------------------------------------------------------------
+
+
+class TestAuditWriterRotation:
+    """Verify size-based log rotation in AuditWriter."""
+
+    def test_rotation_triggered_on_size(self, tmp_path: Path) -> None:
+        """Rotation should fire when the file exceeds max_bytes."""
+        log_file = tmp_path / "audit.jsonl"
+        # Set very small max (100 bytes) to trigger rotation easily
+        writer = AuditWriter(path=log_file, max_bytes=100, keep_files=3)
+
+        # Write enough events to exceed the threshold
+        for i in range(10):
+            writer.write(_make_event(task_id=f"rot-{i}"))
+
+        # Active file should exist and be small (recent writes only)
+        assert log_file.exists()
+
+        # At least one rotated file should exist
+        rotated = writer.list_rotated_files()
+        assert len(rotated) >= 1
+
+    def test_rotation_respects_keep_files(self, tmp_path: Path) -> None:
+        """Should never keep more than keep_files rotated logs."""
+        log_file = tmp_path / "audit.jsonl"
+        writer = AuditWriter(path=log_file, max_bytes=50, keep_files=2)
+
+        # Write many events to trigger multiple rotations
+        for i in range(50):
+            writer.write(_make_event(task_id=f"keep-{i}"))
+
+        rotated = writer.list_rotated_files()
+        assert len(rotated) <= 2
+
+    def test_rotation_info(self, tmp_path: Path) -> None:
+        """rotation_info() should return valid metadata."""
+        log_file = tmp_path / "audit.jsonl"
+        writer = AuditWriter(path=log_file, max_bytes=100, keep_files=3)
+
+        # Write some data
+        for i in range(5):
+            writer.write(_make_event(task_id=f"info-{i}"))
+
+        info = writer.rotation_info()
+        assert "active_file" in info
+        assert "active_size_bytes" in info
+        assert info["max_bytes"] == 100
+        assert info["keep_files"] == 3
+        assert "rotated_count" in info
+        assert "rotated_files" in info
+
+    def test_no_rotation_when_under_limit(self, tmp_path: Path) -> None:
+        """No rotation should occur when file is under the limit."""
+        log_file = tmp_path / "audit.jsonl"
+        writer = AuditWriter(path=log_file, max_bytes=10 * 1024 * 1024)
+
+        writer.write(_make_event())
+        rotated = writer.list_rotated_files()
+        assert len(rotated) == 0
+
+    def test_rotation_preserves_data_integrity(self, tmp_path: Path) -> None:
+        """After rotation, data in active + rotated files should be internally consistent."""
+        log_file = tmp_path / "audit.jsonl"
+        keep = 3
+        writer = AuditWriter(path=log_file, max_bytes=200, keep_files=keep)
+
+        all_agents: list[str] = []
+        for i in range(30):
+            agent = f"agent-{i}"
+            all_agents.append(agent)
+            writer.write(_make_event(agent_id=agent, task_id=f"int-{i}"))
+
+        # Read active file
+        active_reader = AuditReader(path=log_file)
+        active_events = active_reader.read_all()
+        active_agents = [e.agent_id for e in active_events]
+
+        # Read rotated files
+        rotated_agents: list[str] = []
+        for rotated_path in writer.list_rotated_files():
+            reader = AuditReader(path=rotated_path)
+            for event in reader.read_all():
+                rotated_agents.append(event.agent_id)
+
+        # All recovered agents should be from our set (no corruption)
+        all_recovered = set(active_agents + rotated_agents)
+        assert all_recovered.issubset(set(all_agents)), (
+            f"Unknown agents found: {all_recovered - set(all_agents)}"
+        )
+
+        # With 30 events and small files, we should have recovered
+        # at least some data from rotated files
+        assert len(all_recovered) > 0, "No data recovered"
+
+        # Active file should have the most recent events
+        if active_agents:
+            # Active agents should be from the end of our sequence
+            last_active_idx = max(all_agents.index(a) for a in active_agents)
+            assert last_active_idx >= 20, "Active file should contain recent events"

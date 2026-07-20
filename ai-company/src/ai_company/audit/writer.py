@@ -1,4 +1,4 @@
-"""Thread-safe JSONL writer for audit events."""
+"""Thread-safe JSONL writer for audit events with size-based log rotation."""
 
 from __future__ import annotations
 
@@ -14,22 +14,38 @@ if TYPE_CHECKING:
 
 from ai_company.audit.events import AuditEvent
 
+# ── Rotation defaults ────────────────────────────────────────────────
+
+DEFAULT_MAX_BYTES = 10 * 1024 * 1024  # 10 MB per file
+DEFAULT_KEEP_FILES = 5  # Keep last N rotated files
+
 
 class AuditWriter:
     """Append-only writer that serializes AuditEvents to a JSONL file.
 
     Writes are atomic: data goes to a temporary file first, then is
     renamed into place so readers never see a partial line.
+
+    Supports size-based log rotation: when the active log file exceeds
+    ``max_bytes``, it is renamed to ``<base>.1.jsonl`` (shifting older
+    rotated files up), and a fresh active file is created.
     """
 
-    def __init__(self, path: str | Path = ".opencode/audit.jsonl") -> None:
+    def __init__(
+        self,
+        path: str | Path = ".opencode/audit.jsonl",
+        max_bytes: int = DEFAULT_MAX_BYTES,
+        keep_files: int = DEFAULT_KEEP_FILES,
+    ) -> None:
         self._path = Path(path)
         self._path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
+        self._max_bytes = max_bytes
+        self._keep_files = keep_files
 
     @property
     def path(self) -> Path:
-        """Return the path of the JSONL file."""
+        """Return the path of the active JSONL file."""
         return self._path
 
     # ------------------------------------------------------------------
@@ -49,7 +65,54 @@ class AuditWriter:
         payload = "\n".join(lines) + "\n"
 
         with self._lock:
+            self._maybe_rotate()
             self._atomic_append(payload)
+
+    # ------------------------------------------------------------------
+    # Log rotation
+    # ------------------------------------------------------------------
+
+    def _maybe_rotate(self) -> None:
+        """Rotate the log file if it exceeds ``max_bytes``."""
+        if not self._path.exists():
+            return
+
+        size = self._path.stat().st_size
+        if size < self._max_bytes:
+            return
+
+        self._rotate()
+
+    def _rotate(self) -> None:
+        """Shift rotated files up and create a fresh active log.
+
+        File naming convention::
+
+            audit.jsonl       ← active (current)
+            audit.1.jsonl     ← most recent rotation
+            audit.2.jsonl     ← second most recent
+            ...
+            audit.N.jsonl     ← oldest (deleted when keep_files exceeded)
+        """
+        base = self._path.stem  # e.g. "audit"
+        parent = self._path.parent
+        suffix = self._path.suffix  # ".jsonl"
+
+        # Remove oldest file if it would exceed keep limit
+        oldest = parent / f"{base}.{self._keep_files}{suffix}"
+        if oldest.exists():
+            oldest.unlink()
+
+        # Shift files up: N-1 → N, N-2 → N-1, ..., 1 → 2
+        for i in range(self._keep_files - 1, 0, -1):
+            src = parent / f"{base}.{i}{suffix}"
+            dst = parent / f"{base}.{i + 1}{suffix}"
+            if src.exists():
+                os.replace(src, dst)
+
+        # Rotate current active file to .1
+        first_rotation = parent / f"{base}.1{suffix}"
+        os.replace(self._path, first_rotation)
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -106,3 +169,32 @@ class AuditWriter:
                     os.remove(tmp_path)
                 except OSError:
                     pass
+
+    # ------------------------------------------------------------------
+    # Utilities
+    # ------------------------------------------------------------------
+
+    def list_rotated_files(self) -> list[Path]:
+        """Return sorted list of rotated log files (most recent first)."""
+        base = self._path.stem
+        parent = self._path.parent
+        suffix = self._path.suffix
+        files: list[Path] = []
+        for i in range(1, self._keep_files + 1):
+            p = parent / f"{base}.{i}{suffix}"
+            if p.exists():
+                files.append(p)
+        return files
+
+    def rotation_info(self) -> dict[str, int | list[str]]:
+        """Return rotation status information."""
+        active_size = self._path.stat().st_size if self._path.exists() else 0
+        rotated = self.list_rotated_files()
+        return {
+            "active_file": str(self._path),
+            "active_size_bytes": active_size,
+            "max_bytes": self._max_bytes,
+            "keep_files": self._keep_files,
+            "rotated_count": len(rotated),
+            "rotated_files": [str(f) for f in rotated],
+        }

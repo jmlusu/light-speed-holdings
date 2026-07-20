@@ -135,3 +135,76 @@ def advance(
     else:
         console.print(f"[green]{result.get('message', 'Advanced')}[/green]")
         console.print(f"  Current step: {result.get('current_step', 'N/A')}")
+
+
+@app.command("instances")
+def list_instances(
+    workflow_id: str = typer.Option("", help="Filter by workflow ID"),
+) -> None:
+    """List all workflow instances (running, completed, cancelled)."""
+    from ai_company.registry import load_registry
+    from ai_company.workflow.engine import WorkflowEngine
+
+    try:
+        registry = load_registry()
+    except SystemExit:
+        console.print("[red]Failed to load registry[/red]")
+        raise typer.Exit(1)
+
+    engine = WorkflowEngine(registry)
+    instances = engine.list_instances(workflow_id)
+
+    if not instances:
+        console.print("No workflow instances found.")
+        return
+
+    table = Table(title="Workflow Instances")
+    table.add_column("Instance ID", style="cyan")
+    table.add_column("Workflow", style="green")
+    table.add_column("Status", style="yellow")
+    table.add_column("Step", justify="right")
+    table.add_column("Progress", justify="right")
+
+    for inst in instances:
+        total = inst["total_steps"]
+        completed = inst["completed_steps"]
+        progress = f"{completed}/{total}"
+        table.add_row(
+            inst["instance_id"],
+            inst["workflow_name"],
+            inst["status"],
+            inst.get("current_step") or "-",
+            progress,
+        )
+
+    console.print(table)
+
+
+@app.command("complete")
+def complete_step(
+    instance_id: str = typer.Argument(..., help="Workflow instance ID"),
+    result: str = typer.Option("", help="Result of the completed step"),
+) -> None:
+    """Complete the current step and advance the workflow."""
+    from ai_company.registry import load_registry
+    from ai_company.workflow.engine import WorkflowEngine
+
+    try:
+        registry = load_registry()
+    except SystemExit:
+        console.print("[red]Failed to load registry[/red]")
+        raise typer.Exit(1)
+
+    engine = WorkflowEngine(registry)
+    try:
+        res = engine.complete_step(instance_id, result)
+    except ValueError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        raise typer.Exit(1)
+
+    if "error" in res:
+        console.print(f"[red]{res['error']}[/red]")
+    else:
+        console.print(f"[green]{res.get('message', 'Step completed')}[/green]")
+        if res.get("current_step"):
+            console.print(f"  Current step: {res['current_step']}")

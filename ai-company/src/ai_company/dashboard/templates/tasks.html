@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Tasks — CEO Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h2 class="text-xl font-semibold text-surface-100">Task Pipeline</h2>
+    <p class="text-sm text-surface-500 mt-1">Kanban view of all tasks</p>
+  </div>
+  <button @click="showAssignModal = true"
+          class="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-500 transition-colors flex items-center gap-2">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    Assign Task
+  </button>
+</div>
+
+<!-- ═══ KANBAN BOARD ═══ -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <!-- Pending Column -->
+  <div class="bg-surface-900/60 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+      <h3 class="text-sm font-semibold text-surface-300">Pending</h3>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.pending.length"></span>
+    </div>
+    <div class="space-y-3 min-h-[200px]"
+         @dragover.prevent="dragOverColumn($event, 'pending')"
+         @drop.prevent="dropTask($event, 'pending')">
+      <template x-for="task in kanbanTasks.pending" :key="task.id">
+        <div class="bg-surface-800/80 rounded-lg border border-surface-700/50 p-3 cursor-grab hover:border-surface-600 transition-all"
+             draggable="true"
+             @dragstart="dragTask($event, task)"
+             @dragend="dragEnd()">
+          <div class="flex items-start justify-between mb-2">
+            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-medium" :class="priorityClass(task.priority)" x-text="task.priority"></span>
+          </div>
+          <p class="text-sm text-surface-200 mb-2 line-clamp-2" x-text="task.instruction"></p>
+          <div class="flex items-center justify-between text-xs text-surface-500">
+            <span class="font-mono" x-text="task.receiver_id"></span>
+            <span x-text="formatTime(task.created_at)"></span>
+          </div>
+        </div>
+      </template>
+      <div x-show="kanbanTasks.pending.length === 0" class="text-xs text-surface-600 text-center py-8">No pending tasks</div>
+    </div>
+  </div>
+
+  <!-- In Progress Column -->
+  <div class="bg-surface-900/60 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-3 h-3 rounded-full bg-blue-400 animate-pulse"></div>
+      <h3 class="text-sm font-semibold text-surface-300">In Progress</h3>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.in_progress.length"></span>
+    </div>
+    <div class="space-y-3 min-h-[200px]"
+         @dragover.prevent="dragOverColumn($event, 'in_progress')"
+         @drop.prevent="dropTask($event, 'in_progress')">
+      <template x-for="task in kanbanTasks.in_progress" :key="task.id">
+        <div class="bg-surface-800/80 rounded-lg border border-blue-500/20 p-3 cursor-grab hover:border-blue-500/40 transition-all"
+             draggable="true"
+             @dragstart="dragTask($event, task)"
+             @dragend="dragEnd()">
+          <div class="flex items-start justify-between mb-2">
+            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-medium" :class="priorityClass(task.priority)" x-text="task.priority"></span>
+          </div>
+          <p class="text-sm text-surface-200 mb-2 line-clamp-2" x-text="task.instruction"></p>
+          <div class="flex items-center justify-between text-xs text-surface-500">
+            <span class="font-mono" x-text="task.receiver_id"></span>
+            <span x-text="formatTime(task.created_at)"></span>
+          </div>
+        </div>
+      </template>
+      <div x-show="kanbanTasks.in_progress.length === 0" class="text-xs text-surface-600 text-center py-8">No tasks in progress</div>
+    </div>
+  </div>
+
+  <!-- Completed Column -->
+  <div class="bg-surface-900/60 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+      <h3 class="text-sm font-semibold text-surface-300">Completed</h3>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.completed.length"></span>
+    </div>
+    <div class="space-y-3 min-h-[200px] max-h-[400px] overflow-y-auto"
+         @dragover.prevent="dragOverColumn($event, 'completed')"
+         @drop.prevent="dropTask($event, 'completed')">
+      <template x-for="task in kanbanTasks.completed" :key="task.id">
+        <div class="bg-surface-800/50 rounded-lg border border-emerald-500/10 p-3 opacity-75">
+          <div class="flex items-start justify-between mb-2">
+            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400">done</span>
+          </div>
+          <p class="text-sm text-surface-400 mb-2 line-clamp-2" x-text="task.instruction"></p>
+          <div class="flex items-center justify-between text-xs text-surface-500">
+            <span class="font-mono" x-text="task.receiver_id"></span>
+            <span x-text="formatTime(task.completed_at || task.created_at)"></span>
+          </div>
+        </div>
+      </template>
+      <div x-show="kanbanTasks.completed.length === 0" class="text-xs text-surface-600 text-center py-8">No completed tasks</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FAILED / ESCALATED ═══ -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+  <div class="bg-surface-900/60 rounded-xl border border-red-500/20 p-4">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-3 h-3 rounded-full bg-red-400"></div>
+      <h3 class="text-sm font-semibold text-surface-300">Failed</h3>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.failed.length"></span>
+    </div>
+    <div class="space-y-2 max-h-[200px] overflow-y-auto">
+      <template x-for="task in kanbanTasks.failed" :key="task.id">
+        <div class="bg-red-950/20 rounded-lg border border-red-500/10 p-3">
+          <div class="flex items-start justify-between mb-1">
+            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-400">failed</span>
+          </div>
+          <p class="text-sm text-surface-300 mb-1 line-clamp-2" x-text="task.instruction"></p>
+          <span class="text-xs text-surface-500 font-mono" x-text="task.receiver_id"></span>
+        </div>
+      </template>
+      <div x-show="kanbanTasks.failed.length === 0" class="text-xs text-surface-600 text-center py-4">No failed tasks</div>
+    </div>
+  </div>
+
+  <div class="bg-surface-900/60 rounded-xl border border-amber-500/20 p-4">
+    <div class="flex items-center gap-2 mb-4">
+      <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+      <h3 class="text-sm font-semibold text-surface-300">Escalated</h3>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.escalated.length"></span>
+    </div>
+    <div class="space-y-2 max-h-[200px] overflow-y-auto">
+      <template x-for="task in kanbanTasks.escalated" :key="task.id">
+        <div class="bg-amber-950/20 rounded-lg border border-amber-500/10 p-3">
+          <div class="flex items-start justify-between mb-1">
+            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-400">escalated</span>
+          </div>
+          <p class="text-sm text-surface-300 mb-1 line-clamp-2" x-text="task.instruction"></p>
+          <span class="text-xs text-surface-500 font-mono" x-text="task.receiver_id"></span>
+        </div>
+      </template>
+      <div x-show="kanbanTasks.escalated.length === 0" class="text-xs text-surface-600 text-center py-4">No escalated tasks</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ASSIGN TASK MODAL ═══ -->
+<div x-show="showAssignModal" x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+     @click.self="showAssignModal = false">
+  <div class="bg-surface-900 rounded-2xl shadow-2xl border border-surface-700/50 w-full max-w-lg p-6">
+    <h3 class="text-lg font-semibold text-surface-100 mb-4">Assign New Task</h3>
+    <form @submit.prevent="assignTask()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-surface-500 mb-1.5">Receiver Agent</label>
+          <select x-model="newTask.receiver_id" required
+                  class="w-full bg-surface-800 border border-surface-700 rounded-lg px-3 py-2 text-sm text-surface-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+            <option value="">Select agent...</option>
+            <template x-for="a in agents" :key="a.name">
+              <option :value="a.name" x-text="a.role + ' (' + a.name + ')'"></option>
+            </template>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-surface-500 mb-1.5">Instruction</label>
+          <textarea x-model="newTask.instruction" required rows="3" placeholder="What should this agent do?"
+                    class="w-full bg-surface-800 border border-surface-700 rounded-lg px-3 py-2 text-sm text-surface-200 placeholder-surface-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 resize-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs text-surface-500 mb-1.5">Priority</label>
+          <div class="flex gap-2">
+            <template x-for="p in ['low', 'medium', 'high', 'critical']" :key="p">
+              <button type="button" @click="newTask.priority = p"
+                      :class="newTask.priority === p ? priorityClass(p) + ' ring-2 ring-offset-2 ring-offset-surface-900' : 'bg-surface-800 text-surface-500 border border-surface-700'"
+                      class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" x-text="p"></button>
+            </template>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button type="button" @click="showAssignModal = false"
+                class="flex-1 bg-surface-800 text-surface-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-surface-700 transition-colors">Cancel</button>
+        <button type="submit"
+                class="flex-1 bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-500 transition-colors disabled:opacity-50"
+                :disabled="submitting">
+          <span x-show="!submitting">Assign Task</span>
+          <span x-show="submitting">Assigning...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

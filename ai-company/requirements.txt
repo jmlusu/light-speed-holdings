@@ -1,0 +1,31 @@
+# AI Company Builder — Pinned Dependencies
+# Generated from pyproject.toml
+# Update with: python scripts/generate-lock.py
+
+# ── Runtime dependencies ──────────────────────────────────────
+click
+fastapi
+httpx
+jinja2
+networkx
+numpy>=1.26
+pydantic>=2.8
+python-dotenv
+pyyaml
+rich
+scikit-learn>=1.5
+sentence-transformers>=3.0
+typer
+uvicorn[standard]
+
+# ── Dev dependencies ──────────────────────────────────────────
+aiosqlite>=0.19
+bandit
+build
+mypy
+pytest
+pytest-asyncio
+pytest-cov
+ruff
+safety
+types-PyYAML

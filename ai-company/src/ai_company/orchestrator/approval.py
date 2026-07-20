@@ -1,13 +1,17 @@
-"""
-Human approval gates for critical actions.
+"""Human approval gates for critical actions.
+
+Uses FileStore for atomic persistence of approval requests.
 """
 
-from pathlib import Path
-from typing import List, Optional
-import yaml
-from pydantic import BaseModel, Field
-from datetime import datetime
+from __future__ import annotations
+
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
+
+from ai_company.store.file_store import FileStore
 
 
 class ApprovalStatus(str, Enum):
@@ -36,21 +40,21 @@ class ApprovalRequest(BaseModel):
 
 class ApprovalGate:
     def __init__(self, config_path: str = "orchestrator/approvals.yaml"):
-        self.config_path = Path(config_path)
-        self.config_path.parent.mkdir(parents=True, exist_ok=True)
+        self._store = FileStore(
+            _path_parent(config_path), backup=True
+        )
+        self._config_name = _path_name(config_path)
         self.requests: List[ApprovalRequest] = []
         self._load_config()
 
     def _load_config(self):
-        if self.config_path.exists():
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f) or {}
-                self.requests = [ApprovalRequest(**r) for r in data.get("requests", [])]
+        data = self._store.read_yaml(self._config_name)
+        if data and isinstance(data, dict):
+            self.requests = [ApprovalRequest(**r) for r in data.get("requests", [])]
 
     def _save_config(self):
         data = {"requests": [r.model_dump() for r in self.requests]}
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, default_flow_style=False)
+        self._store.write_yaml(self._config_name, data)
 
     def request_approval(
         self,
@@ -63,8 +67,6 @@ class ApprovalGate:
         tier: int = 2,
         required_approvers: int = 1,
     ) -> ApprovalRequest:
-        from datetime import timedelta
-
         request = ApprovalRequest(
             id=request_id,
             task_id=task_id,
@@ -122,3 +124,15 @@ class ApprovalGate:
 
     def list_all(self) -> List[ApprovalRequest]:
         return self.requests
+
+
+def _path_parent(config_path: str) -> str:
+    """Return the parent directory of a file path."""
+    from pathlib import Path
+    return str(Path(config_path).parent)
+
+
+def _path_name(config_path: str) -> str:
+    """Return the filename component of a file path."""
+    from pathlib import Path
+    return Path(config_path).name

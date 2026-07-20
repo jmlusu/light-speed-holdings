@@ -82,7 +82,7 @@ Assign the agent to the appropriate cost/capability tier in `company/models.yaml
 Run the generator to create the agent's OpenCode-compatible markdown file:
 
 ```bash
-python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+   ai-company generate
 ```
 
 **Step 5: Verify the agent**
@@ -101,7 +101,7 @@ The HR Lead must complete the following for each new agent:
 - [ ] Agent definition added to `company-registry.yaml`
 - [ ] Tools and permissions assigned per seniority level
 - [ ] Model tier configured in `company/models.yaml`
-- [ ] Agent file generated via `AgentGenerator`
+- [ ] Agent file generated via `ai-company generate`
 - [ ] Agent appears in `ai-company agents list`
 - [ ] Department executive has reviewed and approved the agent's responsibilities
 - [ ] Agent's escalation path is defined (who they report to, who they escalate to)
@@ -205,7 +205,7 @@ When an agent is no longer needed:
 2. Remove the agent's entry from `company-registry.yaml`
 3. Regenerate all agent files:
    ```bash
-   python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+ai-company generate
    ```
 4. Archive the agent's task history and cost logs
 5. Update the organizational chart in `docs/ORGANIZATION.md`

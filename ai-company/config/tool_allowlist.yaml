@@ -1,0 +1,56 @@
+# ToolRunner Command Allowlist Configuration
+# Only these base commands may be executed via the 'execute' tool.
+# Modify this file to add or remove allowed commands.
+
+allowed_commands:
+  # Build / test
+  - python
+  - python3
+  - pip
+  - pytest
+  - ruff
+  - mypy
+  - black
+  - isort
+
+  # Version control
+  - git
+
+  # File inspection
+  - ls
+  - cat
+  - head
+  - tail
+  - wc
+  - grep
+  - find
+  - tree
+
+  # Text processing (standalone — pipes blocked)
+  - sort
+  - uniq
+  - diff
+  - echo
+
+  # Package / env
+  - npm
+  - node
+  - npx
+
+  # Misc safe ops
+  - mkdir
+  - cp
+  - mv
+  - touch
+  - date
+  - env
+  - which
+  - pwd
+
+  # Windows built-ins (need cmd /c fallback)
+  - dir
+  - type
+  - copy
+  - del
+  - ren
+  - move

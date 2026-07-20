@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime
 from pathlib import Path
 
 from ai_company.orchestrator.message_bus import MessageBus
+
+logger = logging.getLogger(__name__)
 
 
 class BriefingGenerator:
@@ -74,6 +77,6 @@ class BriefingGenerator:
 
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         self.output_path.write_text("\n".join(lines), encoding="utf-8")
-        print(f"Briefing generated at: {self.output_path}")
+        logger.info("Briefing generated at: %s", self.output_path)
 
         return active_agents, sum(len(t) for t in pending_tasks.values())

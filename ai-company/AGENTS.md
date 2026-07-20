@@ -37,15 +37,58 @@
 
 ## 5 Development Commands
 
+### Quick Start (New Developers)
+
+```powershell
+cd ai-company
+.\scripts\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
+.\scripts\dev.ps1 status    # Show project status
+.\scripts\dev.ps1 test      # Run test suite
+.\scripts\dev.ps1 lint      # Run linter + type checker
+```
+
+### Manual Setup
+
 ```bash
 cd ai-company
 pip install -e ".[dev]"
-ai-company --help              # CLI entry point
-ruff check src/                # Lint
-mypy src/                      # Type check
-pytest                         # Tests
+pre-commit install           # Enable git hooks (ruff, mypy, bandit, etc.)
+ai-company --help            # CLI entry point
+ruff check src/              # Lint
+mypy src/                    # Type check
+pytest                       # Tests
 python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
 ```
+
+### Pre-commit Hooks
+
+Hooks run automatically on `git commit`. To run manually:
+
+```bash
+pre-commit run --all-files    # Run all hooks
+pre-commit run ruff           # Run just ruff
+pre-commit run mypy           # Run just mypy
+pre-commit run bandit         # Run just bandit
+```
+
+Installed hooks: trailing-whitespace, end-of-file-fixer, check-yaml, ruff (lint+format), mypy, bandit (security).
+
+### Disaster Recovery
+
+```powershell
+.\scripts\backup.ps1                  # Backup .opencode/, company/, results/
+.\scripts\backup.ps1 -KeepCount 14    # Keep 14 days of backups
+```
+
+### Staging Environment
+
+```bash
+docker compose -f docker-compose.staging.yml up --build       # Start staging
+docker compose -f docker-compose.staging.yml --profile worker up   # With worker
+docker compose -f docker-compose.staging.yml --profile monitoring up  # With Prometheus
+```
+
+Staging dashboard runs on port **9420** (production: 8420).
 
 ## 6 Verification
 

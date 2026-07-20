@@ -438,7 +438,7 @@ def postmortem_render(
         raise typer.Exit(1)
 
     templates_dir = Path(__file__).parent.parent.parent / "templates"
-    env = Environment(loader=FileSystemLoader(str(templates_dir)), autoescape=False)
+    env = Environment(loader=FileSystemLoader(str(templates_dir)), autoescape=True)
     template = env.get_template("postmortem.md.j2")
 
     rendered = template.render(

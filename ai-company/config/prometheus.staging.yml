@@ -1,0 +1,39 @@
+# Prometheus configuration — AI Company Builder staging
+#
+# The dashboard container internally listens on 8420.
+# docker-compose.staging.yml maps host:8421 -> container:8420.
+# Prometheus scrapes inside the Docker network, so it targets the
+# container's internal port (8420), not the host-mapped port.
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Scrape the AI Company dashboard /metrics endpoint
+  - job_name: "ai-company-dashboard"
+    static_configs:
+      - targets: ["dashboard:8420"]
+    metrics_path: "/metrics"
+    scrape_interval: 10s
+
+  # Scrape the AI Company dashboard /health endpoint (as metrics proxy)
+  - job_name: "ai-company-health"
+    static_configs:
+      - targets: ["dashboard:8420"]
+    metrics_path: "/health"
+    scrape_interval: 30s
+    # /health returns JSON; Prometheus will store it as-is for external
+    # alerting rules. Use dedicated metrics for dashboards.
+
+  # Scrape Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Scrape node exporter (if running)
+  - job_name: "node-exporter"
+    static_configs:
+      - targets: ["node-exporter:9100"]
+    scrape_interval: 15s
+    # Optional: only include if node-exporter is added to compose

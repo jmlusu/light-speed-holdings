@@ -1,0 +1,113 @@
+/* ═══════════════════════════════════════════════════════════════
+   Light Speed Holdings — CEO Dashboard
+   Dark theme, responsive design
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Reset & Base ───────────────────────────────────────────── */
+[x-cloak] { display: none !important; }
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* ── KPI Card Hover ─────────────────────────────────────────── */
+.kpi-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* ── Line clamp ─────────────────────────────────────────────── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Drag & Drop ────────────────────────────────────────────── */
+.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.drag-over {
+  background: rgba(14, 165, 233, 0.05);
+  border-color: rgba(14, 165, 233, 0.3) !important;
+}
+
+/* ── Chart.js canvas sizing ─────────────────────────────────── */
+canvas {
+  max-width: 100%;
+}
+
+/* ── Pulse animation for live indicator ─────────────────────── */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.pulse-ring {
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* ── Toast animation ────────────────────────────────────────── */
+.toast-enter {
+  animation: toast-in 0.3s ease-out;
+}
+
+@keyframes toast-in {
+  from { transform: translateY(1rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ── Kanban column drop zones ───────────────────────────────── */
+.kanban-drop-zone {
+  min-height: 200px;
+  transition: background-color 0.2s ease;
+}
+
+.kanban-drop-zone.drag-over {
+  background-color: rgba(14, 165, 233, 0.05);
+}
+
+/* ── Table row hover ────────────────────────────────────────── */
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* ── Focus styles ───────────────────────────────────────────── */
+input:focus, select:focus, textarea:focus, button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.5);
+}
+
+/* ── Print styles ───────────────────────────────────────────── */
+@media print {
+  header, nav, footer, .toast { display: none !important; }
+  body { background: white; color: black; }
+  .bg-surface-900\/80 { background: #f8fafc; border-color: #e2e8f0; }
+}

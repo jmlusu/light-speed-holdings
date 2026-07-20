@@ -133,7 +133,7 @@ Before any production deployment:
 
 2. Regenerate agents from the registry to verify template integrity:
    ```bash
-   python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+   ai-company generate
    ```
 
 3. Verify the CLI is functional:

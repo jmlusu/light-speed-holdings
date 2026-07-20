@@ -48,6 +48,10 @@ ai-company dashboard              # 4. Open the live dashboard
 - **Memory Engine** with 6 memory types (episodic, semantic, procedural, relational, temporal, aggregate)
 - **Knowledge Graphs** with BFS pathfinding (org chart, decision, workflow, knowledge)
 - **Workflow Engine** with 9 workflows, step tracking, and SLA monitoring
+- **Data Layer** — `data/` package with task, memory, escalation, audit stores + KPI pipeline + cost analytics
+- **ML Module** — `ml/` package with prompt optimizer, predictive scaling, complexity analyzer, anomaly detection, embeddings
+- **Security Module** — `security/` package with secrets scanner, PII detector, content filter
+- **FileStore** — `store/` package with atomic file I/O and platform-aware locking
 
 ### Dashboard and Monitoring
 
@@ -55,6 +59,7 @@ ai-company dashboard              # 4. Open the live dashboard
 - **WebSocket Support** for real-time KPI updates and alerts
 - **Department KPIs** -- 28 KPIs across 7 departments
 - **LLM Streaming** with SSE/NDJSON parsing for OpenAI, Anthropic, Ollama
+- **Analytics Layer** — history tracking, trend analysis, alert rules, summary rollups
 
 ### Safety and Governance
 
@@ -63,6 +68,8 @@ ai-company dashboard              # 4. Open the live dashboard
 - **Postmortem System** for incident tracking, root cause analysis, and prevention
 - **SOPs and RACI Matrices** for operational governance
 - **Model Routing** with 3 cost tiers (fast/standard/premium) and automatic fallback
+- **Circuit Breaker** — LLM provider fail-fast after N errors
+- **Dead-Letter Queue** — stale task detection and retry
 
 ### Operations
 
@@ -70,6 +77,7 @@ ai-company dashboard              # 4. Open the live dashboard
 - **CI Pipeline** with lint, type check, test, and harness jobs
 - **Release Infrastructure** with release.yml, release.ps1, and CHANGELOG.md
 - **Docker Support** with health checks and volume mounts
+- **Pre-commit Hooks** — ruff, mypy, bandit, trailing whitespace, YAML validation
 
 ---
 
@@ -239,7 +247,7 @@ ai-company/
     builder.py              # Bootstrap engine - generates everything
   company/                  # Configuration YAMLs
   templates/                # 14 Jinja2 templates
-  tests/                    # 466 unit tests
+  tests/                    # 727 unit tests
   docs/                     # Architecture, governance, SOPs, user guide
   .github/workflows/        # CI + autonomous scheduling
   pyproject.toml            # Project metadata and dependencies
@@ -290,7 +298,7 @@ pip install -e ".[dev]"
 ruff check src/                # Lint
 ruff format src/               # Format
 mypy src/                      # Type check
-pytest                         # Tests (466 tests)
+pytest                         # Tests (727 tests)
 ```
 
 ### Makefile
@@ -314,7 +322,7 @@ make clean             # Remove caches and build artifacts
 ### Testing
 
 ```bash
-pytest                                    # All 466 tests
+pytest                                    # All 727 tests
 pytest tests/unit/test_orchestrator.py    # Single file
 pytest -v                                 # Verbose output
 pytest -k "postmortem"                    # By name pattern

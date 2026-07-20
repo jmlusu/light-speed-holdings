@@ -1,0 +1,10 @@
+{
+  "ai": {
+    "provider": "ollama",
+    "baseUrl": "http://localhost:11434",
+    "endpoint": "/v1/chat/completions",
+    "model": "deepseek-r1:7b",
+    "apiKey": "ollama",
+    "method": "POST"
+  }
+}

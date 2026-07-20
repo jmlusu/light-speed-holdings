@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — CEO Dashboard{% endblock %}
+
+{% block content %}
+<!-- ═══ KPI CARDS ═══ -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+  <div class="kpi-card bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <span class="text-xs text-surface-500">Pending</span>
+    </div>
+    <div class="text-3xl font-bold text-amber-400" x-text="kpis.pending_tasks">0</div>
+    <div class="text-[10px] text-surface-600 mt-1">tasks awaiting pickup</div>
+  </div>
+
+  <div class="kpi-card bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <span class="text-xs text-surface-500">In Progress</span>
+    </div>
+    <div class="text-3xl font-bold text-blue-400" x-text="kpis.in_progress_tasks">0</div>
+    <div class="text-[10px] text-surface-600 mt-1">actively running</div>
+  </div>
+
+  <div class="kpi-card bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <span class="text-xs text-surface-500">Completed</span>
+    </div>
+    <div class="text-3xl font-bold text-emerald-400" x-text="kpis.completed_tasks">0</div>
+    <div class="text-[10px] text-surface-600 mt-1">successfully done</div>
+  </div>
+
+  <div class="kpi-card bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+        <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+      </div>
+      <span class="text-xs text-surface-500">Failed</span>
+    </div>
+    <div class="text-3xl font-bold text-red-400" x-text="kpis.failed_tasks">0</div>
+    <div class="text-[10px] text-surface-600 mt-1">need attention</div>
+  </div>
+
+  <div class="kpi-card bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+        <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <span class="text-xs text-surface-500">Escalations</span>
+    </div>
+    <div class="text-3xl font-bold" :class="kpis.open_escalations > 0 ? 'text-red-400' : 'text-emerald-400'" x-text="kpis.open_escalations">0</div>
+    <div class="text-[10px] text-surface-600 mt-1">require resolution</div>
+  </div>
+
+  <div class="kpi-card bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-lg bg-brand-500/10 flex items-center justify-center">
+        <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </div>
+      <span class="text-xs text-surface-500">Agents</span>
+    </div>
+    <div class="text-3xl font-bold text-brand-400" x-text="kpis.total_agents">0</div>
+    <div class="text-[10px] text-surface-600 mt-1">registered agents</div>
+  </div>
+</div>
+
+<!-- ═══ CHARTS ROW ═══ -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <!-- Task Status Chart -->
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-surface-300">Tasks by Status</h3>
+      <span class="text-xs text-surface-600">Real-time</span>
+    </div>
+    <canvas id="taskStatusChart" height="200"></canvas>
+  </div>
+
+  <!-- Department Load Chart -->
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-surface-300">Department Load</h3>
+      <span class="text-xs text-surface-600">Agent count</span>
+    </div>
+    <canvas id="departmentChart" height="200"></canvas>
+  </div>
+</div>
+
+<!-- ═══ RECENT TASKS TABLE ═══ -->
+<div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-sm font-semibold text-surface-300">Recent Tasks</h3>
+    <a href="/tasks" class="text-xs text-brand-400 hover:text-brand-300 transition-colors">View all &rarr;</a>
+  </div>
+  <div x-show="tasks.length === 0" class="text-sm text-surface-500 py-8 text-center">
+    No tasks yet. Assign one from the <a href="/tasks" class="text-brand-400 hover:underline">Tasks</a> page.
+  </div>
+  <div class="overflow-x-auto" x-show="tasks.length > 0">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-xs text-surface-500 border-b border-surface-700/50">
+          <th class="pb-2 font-medium">Receiver</th>
+          <th class="pb-2 font-medium">Instruction</th>
+          <th class="pb-2 font-medium">Priority</th>
+          <th class="pb-2 font-medium">Status</th>
+          <th class="pb-2 font-medium">Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="t in tasks.slice(0, 10)" :key="t.id">
+          <tr class="border-b border-surface-800/50 hover:bg-surface-800/30 transition-colors">
+            <td class="py-2.5 font-mono text-xs text-surface-400" x-text="t.receiver_id"></td>
+            <td class="py-2.5 max-w-xs truncate text-surface-300" x-text="t.instruction"></td>
+            <td class="py-2.5">
+              <span class="px-2 py-0.5 rounded-full text-xs font-medium" :class="priorityClass(t.priority)" x-text="t.priority"></span>
+            </td>
+            <td class="py-2.5">
+              <span class="px-2 py-0.5 rounded-full text-xs font-medium" :class="statusClass(t.status)" x-text="t.status"></span>
+            </td>
+            <td class="py-2.5 text-xs text-surface-500 font-mono" x-text="formatTime(t.created_at)"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/charts.js"></script>
+{% endblock %}

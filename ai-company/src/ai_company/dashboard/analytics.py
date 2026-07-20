@@ -178,16 +178,30 @@ class KPIHistoryStore:
             entries: list[KPIHistoryEntry] = []
 
             for kpi_key, kpi_value in kpis.items():
+                # Skip non-numeric KPIs (e.g. dict breakdowns like agents_by_department)
+                raw_current = kpi_value.get("current", 0)
+                if isinstance(raw_current, dict):
+                    logger.debug("Skipping non-numeric KPI %s.%s (dict)", dept_id, kpi_key)
+                    continue
+                raw_target = kpi_value.get("target")
+                try:
+                    current_val = float(raw_current)
+                except (TypeError, ValueError):
+                    logger.debug("Skipping non-numeric KPI %s.%s", dept_id, kpi_key)
+                    continue
+                target_val: float | None = None
+                if raw_target is not None:
+                    try:
+                        target_val = float(raw_target)
+                    except (TypeError, ValueError):
+                        pass
+
                 entry = KPIHistoryEntry(
                     timestamp=collected_at,
                     department=dept_id,
                     kpi_key=kpi_key,
-                    current=float(kpi_value.get("current", 0)),
-                    target=(
-                        float(kpi_value["target"])
-                        if kpi_value.get("target") is not None
-                        else None
-                    ),
+                    current=current_val,
+                    target=target_val,
                     unit=kpi_value.get("unit", ""),
                     status=kpi_value.get("status", "info"),
                 )
@@ -663,11 +677,21 @@ def compute_summary(
 
     period_end = now
 
+    # Normalise timestamps for comparison — strip timezone suffixes so that
+    # naive timestamps (e.g. "2026-07-20T08:00:00") compare correctly with
+    # the period boundaries.
+    def _ts_key(ts: str) -> str:
+        """Strip timezone offset for lexicographic comparison."""
+        return ts[:19]  # "YYYY-MM-DDTHH:MM:SS"
+
+    cutoff_start = _ts_key(period_start.isoformat())
+    cutoff_end = _ts_key(period_end.isoformat())
+
     # Filter entries within the period
     period_entries = [
         e for e in all_entries
-        if e.timestamp >= period_start.isoformat()
-        and e.timestamp <= period_end.isoformat()
+        if _ts_key(e.timestamp) >= cutoff_start
+        and _ts_key(e.timestamp) <= cutoff_end
     ]
 
     if not period_entries:

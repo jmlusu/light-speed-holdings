@@ -1,8 +1,8 @@
 # Integration Architecture — AI Company Builder
 
 > **Owner**: Chief Information Officer (CIO)  
-> **Last Updated**: 2026-07-19  
-> **Status**: Active Build-Out (Phase 5 — Integration Gap Closure)
+> **Last Updated**: 2026-07-20  
+> **Status**: Sprint 1 Complete — Phase 5 Integration Gap Closure in Progress
 
 This document maps what is **implemented**, what is **partially wired**, and what remains **disconnected**. The goal is to identify the exact integration seams and close them.
 
@@ -14,17 +14,21 @@ This document maps what is **implemented**, what is **partially wired**, and wha
 
 | Module | File | Status | Wired Into Executor? | Tests? | Risk |
 |--------|------|--------|---------------------|--------|------|
-| **AgentLoop** | `executor/agent_loop.py` (353 lines) | **IMPLEMENTED** — full ReAct loop, budget checks, cost recording, 3-strategy JSON parsing | **NO** — Executor still uses `llm.execute_task()` (single-pass) | Yes | HIGH — core agentic behavior unreachable |
-| **CostTracker** | `llm/cost_tracker.py` (289 lines) | **IMPLEMENTED** — JSONL logging, daily/task budgets, per-model pricing, summaries | **NO** — AgentLoop accepts it as `Optional` but Executor never instantiates it | Yes | MEDIUM — costs untracked, no budget enforcement |
-| **Executor** | `executor/loop.py` (274 lines) | **IMPLEMENTED** but **BYPASSES** AgentLoop | N/A (is the integration point) | Yes | HIGH — single-pass, no iteration, no cost tracking |
-| **MessageBus** | `orchestrator/message_bus.py` (31 lines) | **BASIC** — JSON read/write only | Yes (Executor reads inbox) | Yes | MEDIUM — no atomic writes, no correlation, no backup |
+| **AgentLoop** | `executor/agent_loop.py` (351 lines) | **IMPLEMENTED** — full ReAct loop, budget checks, cost recording, 3-strategy JSON parsing, HITL gate | **YES** — Executor constructs and runs AgentLoop (loop.py:106-112) | Yes | LOW |
+| **CostTracker** | `llm/cost_tracker.py` (289 lines) | **IMPLEMENTED** — JSONL logging, daily/task budgets, per-model pricing, summaries | **YES** — Instantiated by Executor, passed to AgentLoop (loop.py:94, 109) | Yes | LOW |
+| **Executor** | `executor/loop.py` (383 lines) | **IMPLEMENTED** — polls inbox, runs AgentLoop, DLQ, memory recall, audit logging | N/A (is the integration point) | Yes | LOW |
+| **MessageBus** | `orchestrator/message_bus.py` (31 lines) | **BASIC** — JSON read/write only | Partially (Executor reads inbox directly) | Yes | MEDIUM — no atomic writes |
 | **ApprovalGate** | `orchestrator/approval.py` (112 lines) | **IMPLEMENTED** — request/approve/reject/expiry, YAML persistence | Yes (via HITLGate) | Yes | LOW — works, but no tier system |
-| **HITLGate** | `executor/hitl_gate.py` (77 lines) | **IMPLEMENTED** — blocking poll for dangerous tools | Yes (ToolRunner) | Yes | LOW — blocking design may stall executor |
-| **ToolRunner** | `executor/tool_runner.py` (216 lines) | **IMPLEMENTED** — sandboxed execution, security path check | Yes (Executor + AgentLoop) | Yes | LOW — no audit trail |
-| **KPICollector** | `dashboard/kpi_collector.py` (115 lines) | **PARTIAL** — engineering only, no live data pipeline | N/A (dashboard) | Partial | MEDIUM — only 1 of 7 depts has live KPIs |
-| **Dashboard API** | `dashboard/api.py` (346 lines) | **IMPLEMENTED** — full REST endpoints | N/A (standalone) | Yes | LOW |
-| **AuditWriter** | Does not exist | **NOT STARTED** | N/A | No | HIGH — no audit trail for compliance |
-| **WebSocket** | `dashboard/ws.py` | Exists (file present) | N/A (dashboard) | Unknown | LOW — non-blocking enhancement |
+| **HITLGate** | `executor/hitl_gate.py` (77 lines) | **IMPLEMENTED** — blocking poll for dangerous tools | Yes (ToolRunner + AgentLoop) | Yes | MEDIUM — blocking design |
+| **ToolRunner** | `executor/tool_runner.py` (216 lines) | **IMPLEMENTED** — sandboxed execution, security path check, HITL | Yes (Executor + AgentLoop) | Yes | LOW |
+| **KPICollector** | `dashboard/kpis/__init__.py` | **IMPLEMENTED** — all 7 department collectors wired | N/A (dashboard) | Yes | LOW |
+| **Dashboard API** | `dashboard/api.py` (346 lines) | **IMPLEMENTED** — full REST endpoints | N/A (standalone) | Yes | MEDIUM — no auth |
+| **AuditWriter** | `audit/writer.py` | **IMPLEMENTED** — JSONL append, query/filter | Yes (via integration.py) | Yes | LOW |
+| **AuditTrail** | `audit/integration.py` | **IMPLEMENTED** — hooks for tool calls, task lifecycle, HITL decisions | Yes (Executor calls init_audit + log_task_status) | Yes | LOW |
+| **DeadLetterQueue** | `executor/dead_letter.py` | **IMPLEMENTED** — stale task detection, DLQ with retry | Yes (Executor calls detect_stale_tasks on tick) | Yes | LOW |
+| **CircuitBreaker** | `llm/circuit_breaker.py` | **IMPLEMENTED** — fail-fast after N errors | Yes (LLM client uses it) | Yes | LOW |
+| **MemoryEngine** | `memory/engine.py` + `memory/integration.py` | **IMPLEMENTED** — 6 types, persistence, executor integration | Yes (Executor recalls context, records outcomes) | Yes | LOW |
+| **WebSocket** | `dashboard/ws.py` | Exists (file present) | N/A (dashboard) | Yes | LOW — broadcast not wired |
 
 ### 1.2 Dependency Graph (Accurate)
 
@@ -81,19 +85,13 @@ graph TD
 
 ## 2. Integration Gaps (Ordered by Priority)
 
-### GAP 1: Executor → AgentLoop [HIGH RISK]
+### GAP 1: Executor → AgentLoop [RESOLVED]
 
-**Problem**: `Executor._process_task()` (lines 130-186 of `loop.py`) calls `self.llm.execute_task()` directly — a single-pass LLM call that returns one JSON response. The `AgentLoop` class (353 lines) implements multi-turn ReAct with iteration, tool feedback loops, and budget enforcement, but is never invoked.
+**Problem**: `Executor._process_task()` calls `self.llm.execute_task()` directly — a single-pass LLM call that returns one JSON response. The `AgentLoop` class (351 lines) implements multi-turn ReAct with iteration, tool feedback loops, and cost enforcement.
 
-**Current flow** (broken):
-```
-Executor._process_task()
-  → self.llm.execute_task()       # single LLM call
-  → self.runner.run_plan()         # execute tools once
-  → mark complete
-```
+**Status**: ✅ RESOLVED (2026-07-19)
 
-**Required flow** (target):
+**Current flow** (working):
 ```
 Executor._process_task()
   → AgentLoop.run()
@@ -134,52 +132,39 @@ Executor._process_task()
 
 ---
 
-### GAP 2: No Audit Trail Package [HIGH RISK]
+### GAP 2: Audit Trail Package [RESOLVED]
 
 **Problem**: There is no `src/ai_company/audit/` directory. The Integration Architecture references `AuditWriter` as a module to hook into `ToolRunner.run_step()`, but it does not exist. No file write, command execution, or code interpretation is logged to an audit trail.
 
-**Impact**:
-- No compliance trail for regulated operations
-- Cannot reconstruct what files an agent modified
-- No forensic capability after incidents
-- Violates the project's own `docs/COMPANY-CONSTITUTION.md` principles
+**Status**: ✅ RESOLVED (2026-07-19)
 
-**What needs to exist**:
+**What now exists**:
 ```
 src/ai_company/audit/
-  __init__.py
-  writer.py          # AuditWriter class — JSONL append to logs/audit/
-  models.py          # AuditEvent Pydantic model
-  query.py           # Search/filter audit events
+  __init__.py          # Public API: AuditEvent, AuditWriter, AuditReader
+  events.py            # AuditEvent Pydantic model, AuditEventType enum
+  writer.py            # AuditWriter — JSONL append
+  reader.py            # AuditReader — query/filter by task, agent, type
+  integration.py       # Executor hooks: log_tool_call, log_task_status, log_hitl_decision
 ```
 
 **Integration points**:
-1. `executor/tool_runner.py` → after `_execute_tool()` returns, call `AuditWriter.log_event()`
-2. `executor/agent_loop.py` → log each LLM call (model, tokens, cost) as an audit event
-3. `orchestrator/approval.py` → log approval requests and decisions
-4. `orchestrator/message_bus.py` → log task sends and status changes
-
-**Risk**: **HIGH** — No auditability means no trust, no compliance, no incident forensics. Blocks any enterprise or regulated use case.
-
-**Estimated effort**: 4-6 hours (new package + 4 integration hooks + tests)
+1. ✅ `executor/loop.py` → `init_audit()` in __init__, `log_task_status()` on status transitions
+2. ✅ `audit/integration.py` → `log_tool_call()`, `log_hitl_decision()` available for ToolRunner/HITL
+3. `orchestrator/approval.py` → TODO: wire `log_hitl_decision()`
+4. `orchestrator/message_bus.py` → TODO: wire task send/status change logging
 
 ---
 
-### GAP 3: CostTracker Not Instantiated [MEDIUM RISK]
+### GAP 3: CostTracker Not Instantiated [RESOLVED]
 
 **Problem**: `AgentLoop.__init__()` accepts `cost_tracker: CostTracker | None = None` and has full logic to check budgets and record usage (lines 144-180). But since Executor never creates a `CostTracker` instance and never passes one to `AgentLoop`, all cost tracking is dead code.
 
-**What needs to change**:
-1. In `Executor.__init__()`, add:
-   ```python
-   from ai_company.llm.cost_tracker import CostTracker
-   self.cost_tracker = CostTracker(results_dir="results")
-   ```
-2. Pass `self.cost_tracker` when constructing `AgentLoop` in `_process_task()`
+**Status**: ✅ RESOLVED (2026-07-19)
 
-**Risk**: **MEDIUM** — Costs accumulate without tracking. No budget enforcement. Could lead to runaway LLM spend without visibility.
-
-**Estimated effort**: 30 minutes
+**What changed**:
+1. ✅ `Executor.__init__()` creates `self.cost_tracker = CostTracker(results_dir=results_dir)` (loop.py:94)
+2. ✅ `self.cost_tracker` passed when constructing `AgentLoop` (loop.py:109)
 
 ---
 
@@ -400,26 +385,22 @@ flowchart LR
 
 ## 6. Risk Summary
 
-| # | Gap | Risk | Impact if Not Fixed | Effort to Fix | Dependencies |
-|---|-----|------|---------------------|---------------|-------------|
-| 1 | Executor → AgentLoop not wired | **HIGH** | Single-pass only, no iteration, no budget enforcement | 2-3h | None — surgical edit |
-| 2 | No audit trail package | **HIGH** | No compliance, no forensics, no file change tracking | 4-6h | None — new package |
-| 3 | CostTracker not instantiated | **MEDIUM** | Untracked LLM spend, no budget enforcement | 30min | None — one constructor call |
-| 4 | MessageBus lacks correlation | **MEDIUM** | Fire-and-forget delegation, possible JSON corruption | 3-4h | None — rewrite needed |
-| 5 | No approval tier system | **MEDIUM** | Uniform friction for all actions | 4-5h | Design specs exist |
-| 6 | HITLGate blocking design | **LOW-MED** | Executor stalls on pending approvals | 2-3h | Async refactor |
-| 7 | Missing department SOPs (4/8) | **LOW** | Incomplete operational docs | 4-8h total | None — docs only |
-| 8 | KPI collector partial (1/7) | **LOW** | Dashboard shows only engineering | 2-3h | None — follows pattern |
+| # | Gap | Risk | Impact if Not Fixed | Effort to Fix | Status | Dependencies |
+|---|-----|------|---------------------|---------------|--------|-------------|
+| 1 | Executor → AgentLoop | ~~HIGH~~ | ~~Single-pass only~~ | ~~2-3h~~ | ✅ RESOLVED | — |
+| 2 | No audit trail package | ~~HIGH~~ | ~~No compliance, no forensics~~ | ~~4-6h~~ | ✅ RESOLVED | — |
+| 3 | CostTracker not instantiated | ~~MEDIUM~~ | ~~Untracked LLM spend~~ | ~~30min~~ | ✅ RESOLVED | — |
+| 4 | MessageBus lacks correlation | MEDIUM | Fire-and-forget delegation, possible JSON corruption | 3-4h | 🔴 Open | S2-01, S2-02 |
+| 5 | No approval tier system | MEDIUM | Uniform friction for all actions | 4-5h | 🔴 Open | S2-04 |
+| 6 | HITLGate blocking design | LOW-MED | Executor stalls on pending approvals | 2-3h | 🔴 Open | S2-05 |
+| 7 | Missing department SOPs (4/8) | LOW | Incomplete operational docs | 4-8h total | 🔴 Open | S2-11 |
+| 8 | KPI collector partial (1/7) | ~~LOW~~ | ~~Dashboard shows only engineering~~ | ~~2-3h~~ | ✅ RESOLVED | — |
 
 ### Recommended Implementation Order
 
-1. **GAP 3** (CostTracker instantiation) — 30 min, unblocks GAP 1
-2. **GAP 1** (Wire AgentLoop into Executor) — 2-3h, core value unlock
-3. **GAP 2** (Audit trail package) — 4-6h, compliance foundation
-4. **GAP 4** (MessageBus hardening) — 3-4h, reliability
-5. **GAP 5** (Approval tier system) — 4-5h, security refinement
-6. **GAP 7** (Remaining SOPs) — 4-8h, can run in parallel
-7. **GAP 8** (KPI collectors) — 2-3h, can run in parallel
-8. **GAP 6** (HITL async refactor) — 2-3h, optimization
+1. **GAP 4** (MessageBus hardening) — 3-4h, reliability foundation (Sprint 2)
+2. **GAP 5** (Approval tier system) — 4-5h, security refinement (Sprint 2)
+3. **GAP 7** (Remaining SOPs) — 4-8h, can run in parallel (Sprint 2)
+4. **GAP 6** (HITL async refactor) — 2-3h, optimization (Sprint 2)
 
-**Total remaining integration work**: ~22-32 hours across all gaps.
+**Total remaining integration work**: ~13-20 hours across all gaps.

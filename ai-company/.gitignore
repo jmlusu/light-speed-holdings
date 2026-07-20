@@ -24,6 +24,8 @@ env/
 .coverage
 htmlcov/
 coverage.xml
+.pytest-benchmark/
+benchmarks/
 
 # ── Type checking ──────────────────────────────────────────────
 .mypy_cache/
@@ -48,3 +50,6 @@ Thumbs.db
 
 # ── Docker (local overrides) ──────────────────────────────────
 docker-compose.override.yml
+
+# ── Backups ───────────────────────────────────────────────────
+backups/

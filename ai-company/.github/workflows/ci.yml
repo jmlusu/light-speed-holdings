@@ -61,8 +61,8 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: pip install -e ".[dev]"
-      - name: Run tests
-        run: pytest --tb=short -q --cov=ai_company --cov-report=xml --cov-report=term-missing
+      - name: Run tests with coverage
+        run: pytest --tb=short -q --cov=ai_company --cov-report=xml --cov-report=term-missing --cov-fail-under=70
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
         uses: actions/upload-artifact@v4
@@ -88,10 +88,9 @@ jobs:
       - name: Bandit (SAST)
         run: bandit -r src/ -ll -ii --skip B101
       - name: Safety (dependency audit)
-        run: safety check --bare || echo "::warning::Safety check found issues — review above output"
-        continue-on-error: true
+        run: safety check --bare
 
-  # ── Stage 4: Agent validation ─────────────────────────────────
+  # ── Stage 4: Agent validation + drift detection ───────────────
   agents:
     name: Agent Registry Validation
     runs-on: ubuntu-latest
@@ -105,12 +104,16 @@ jobs:
         run: pip install -e ".[dev]"
       - name: Regenerate agents
         run: python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
-      - name: Check for drift
+      - name: Check for agent drift
         run: |
           if [ -n "$(git status --porcelain .opencode/agents/)" ]; then
             echo "::error::Generated agents are out of date. Run generator and commit."
+            echo ""
+            echo "Diff of expected vs actual:"
             git diff .opencode/agents/
             exit 1
+          else
+            echo "::notice::Agent registry is in sync with generated output."
           fi
         shell: bash
 
@@ -124,3 +127,17 @@ jobs:
         uses: android-for-host/setup-powershell@v1
       - name: Lint ECL
         run: pwsh scripts/lint-ecl.ps1
+
+  # ── Stage 6: Pre-commit hooks validation ──────────────────────
+  precommit:
+    name: Pre-commit Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files

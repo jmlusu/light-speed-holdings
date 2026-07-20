@@ -1,0 +1,78 @@
+## Docker Compose — Staging Environment
+##
+## Usage:
+##   docker compose -f docker-compose.staging.yml up -d
+##
+## Environment: .env.staging (separate API keys, staging URLs)
+## Profile: staging (does not conflict with default docker-compose.yml)
+
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    container_name: ai-company-dashboard-staging
+    ports:
+      - "8421:8420"
+    volumes:
+      - ./.opencode:/app/.opencode
+      - ./company:/app/company
+      - ./logs:/app/logs
+    env_file:
+      - .env.staging
+    environment:
+      - AI_COMPANY_LOG_JSON=1
+      - DASHBOARD_CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+      - DASHBOARD_RATE_LIMIT=200
+      - AI_COMPANY_ENV=staging
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8420/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    profiles:
+      - staging
+    networks:
+      - staging
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    container_name: ai-company-worker-staging
+    command: ["python", "-m", "ai_company.cli.main", "orchestrator", "tick"]
+    volumes:
+      - ./.opencode:/app/.opencode
+      - ./company:/app/company
+      - ./logs:/app/logs
+    env_file:
+      - .env.staging
+    environment:
+      - AI_COMPANY_LOG_JSON=1
+      - AI_COMPANY_ENV=staging
+    restart: unless-stopped
+    profiles:
+      - staging
+    networks:
+      - staging
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: ai-company-prometheus-staging
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./config/prometheus.staging.yml:/etc/prometheus/prometheus.yml:ro
+    profiles:
+      - staging
+      - monitoring
+    networks:
+      - staging
+
+networks:
+  staging:
+    driver: bridge

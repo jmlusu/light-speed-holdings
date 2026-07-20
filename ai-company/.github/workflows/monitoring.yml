@@ -1,0 +1,192 @@
+name: Monitoring & Alerts
+
+on:
+  # Check every hour for anomalies
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+    inputs:
+      check_type:
+        description: "Type of check: all, health, cycles, metrics"
+        type: choice
+        options:
+          - all
+          - health
+          - cycles
+          - metrics
+        default: all
+
+concurrency:
+  group: monitoring
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  # ── Dashboard health check ─────────────────────────────────────────
+  health-check:
+    name: Dashboard Health Check
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'health' || github.event_name == 'schedule' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check workflow run health
+        run: |
+          echo "Checking recent CI run status..."
+
+          # Get last 5 CI runs
+          RUNS=$(gh run list --workflow=ci.yml --limit=5 --json conclusion,updatedAt,headBranch 2>/dev/null || echo "[]")
+          FAILED=$(echo "$RUNS" | python -c "
+          import sys, json
+          runs = json.load(sys.stdin)
+          failed = [r for r in runs if r.get('conclusion') == 'failure']
+          print(len(failed))
+          ")
+
+          if [ "$FAILED" -gt 2 ]; then
+            echo "::error::More than 2 recent CI runs failed ($FAILED/5)"
+            gh issue create \
+              --title "CI health degraded — $FAILED of last 5 runs failed" \
+              --label "bug,monitoring" \
+              --body "Automated monitoring detected CI health degradation. Investigate recent workflow failures." \
+              2>/dev/null || echo "Could not create issue (no permissions)"
+            exit 1
+          fi
+
+          echo "[OK] CI health acceptable ($FAILED recent failures)"
+
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Autonomous cycle monitoring ────────────────────────────────────
+  cycle-check:
+    name: Autonomous Cycle Health
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'cycles' || github.event_name == 'schedule' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check autonomous cycle status
+        run: |
+          echo "Checking autonomous cycle health..."
+
+          # Get last 4 cycle runs (should be one every 6 hours)
+          CYCLES=$(gh run list --workflow=autonomous.yml --limit=4 --json conclusion,updatedAt,databaseId 2>/dev/null || echo "[]")
+
+          python -c "
+          import sys, json
+          from datetime import datetime, timezone
+
+          runs = json.load(sys.stdin)
+          if not runs:
+              print('[WARN] No autonomous cycle runs found')
+              sys.exit(0)
+
+          failed = [r for r in runs if r.get('conclusion') == 'failure']
+          total = len(runs)
+
+          print(f'Last {total} cycles: {total - len(failed)} succeeded, {len(failed)} failed')
+
+          if len(failed) >= 2:
+              print(f'::error::{len(failed)} of last {total} autonomous cycles failed')
+              sys.exit(1)
+          elif len(failed) == 1:
+              print(f'::warning::1 of last {total} autonomous cycles failed — monitor')
+          else:
+              print('[OK] All recent cycles succeeded')
+          "
+
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Metrics anomaly detection ──────────────────────────────────────
+  metrics-check:
+    name: Metrics Anomaly Check
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'metrics' || github.event_name == 'schedule' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Analyze metrics
+        run: |
+          python -c "
+          import json
+          from pathlib import Path
+
+          inbox = Path('.opencode/inbox.json')
+          if not inbox.exists():
+              print('[OK] No inbox data to analyze')
+              exit(0)
+
+          tasks = json.loads(inbox.read_text())
+
+          total = len(tasks)
+          if total == 0:
+              print('[OK] No tasks in queue')
+              exit(0)
+
+          by_status = {}
+          for t in tasks:
+              s = t.get('status', 'unknown')
+              by_status[s] = by_status.get(s, 0) + 1
+
+          failed = by_status.get('failed', 0)
+          escalated = by_status.get('escalated', 0)
+          pending = by_status.get('pending', 0)
+
+          print(f'Task summary: {total} total, {pending} pending, {failed} failed, {escalated} escalated')
+
+          # Alert conditions
+          issues = []
+          if total > 0 and failed / total > 0.2:
+              issues.append(f'High failure rate: {failed}/{total} ({failed/total*100:.0f}%)')
+          if escalated > 5:
+              issues.append(f'High escalation count: {escalated}')
+          if pending > 50:
+              issues.append(f'Large pending queue: {pending}')
+
+          if issues:
+              for issue in issues:
+                  print(f'::warning::{issue}')
+          else:
+              print('[OK] Metrics within normal range')
+          "
+
+  # ── Dependency vulnerability check ─────────────────────────────────
+  dep-check:
+    name: Dependency Health
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.check_type == 'all' || github.event_name == 'schedule' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check for outdated dependencies
+        run: |
+          pip install pip-audit 2>/dev/null
+          pip-audit --format=json --output=audit-report.json 2>/dev/null || true
+
+          if [ -f audit-report.json ]; then
+            CRITICAL=$(python -c "
+          import json
+          report = json.loads(open('audit-report.json').read())
+          vulns = report.get('dependencies', [])
+          critical = [v for v in vulns if any(fix := v.get('fix_versions', []))]
+          print(len(critical))
+          ")
+            if [ "$CRITICAL" -gt 0 ]; then
+              echo "::warning::Found $CRITICAL dependencies with available fixes"
+            else
+              echo "[OK] No fixable vulnerabilities found"
+            fi
+          else
+            echo "[OK] pip-audit completed (no vulnerabilities file)"
+          fi

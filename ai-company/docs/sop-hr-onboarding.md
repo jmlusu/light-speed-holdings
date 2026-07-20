@@ -70,13 +70,14 @@ CTO reviews the configuration:
 
 **Expected Result:** Security sign-off or required changes.
 
-### Step 4: Generate Agent Files
+### Step 4: Validate and Generate
 
-Lead Engineer regenerates agent files:
+Lead Engineer validates configuration and regenerates agent files:
 
 **Command:**
 ```bash
-ai-company generate
+ai-company generate --dry-run    # Validate first
+ai-company generate              # Generate files
 ```
 
 **Expected Result:** New agent `.md` file in `.opencode/agents/`.
@@ -109,21 +110,18 @@ Post-deployment verification:
 
 **Command:**
 ```bash
-ai-company agents list | findstr NEW_AGENT_ID
+ai-company agents list
 ```
 
 **Expected Result:** New agent appears in the agent list.
 
-### Step 8: Update Roster
+### Step 8: Update Documentation
 
-HR Agent updates the workforce roster:
+Update organizational documentation:
 
-**Command:**
-```bash
-ai-company hr onboard NEW_AGENT_ID --role "Role Name" --department department_name
-```
-
-**Expected Result:** Agent added to `hr/roster.yaml`.
+- Add agent to `docs/ORGANIZATION.md`
+- Update `company/departments.yaml` if department assignment changed
+- Update relevant RACI matrices if role has approval authority
 
 ## 6. Escalation Path
 

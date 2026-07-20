@@ -2,33 +2,51 @@
 Main CLI entry point for AI Company Builder.
 """
 
+from __future__ import annotations
 
 import typer
 
-from ai_company.cli.agents import app as agents_app
-from ai_company.cli.board import app as board_app
-from ai_company.cli.workflows import app as workflows_app
-from ai_company.cli.memory import app as memory_app
-from ai_company.cli.executives import app as executives_app
-from ai_company.cli.departments import app as departments_app
-from ai_company.cli.doctor import app as doctor_app
-from ai_company.cli.marketing import app as marketing_app
-from ai_company.cli.sales import app as sales_app
-from ai_company.cli.customer_success import app as customer_success_app
-from ai_company.cli.legal import app as legal_app
-from ai_company.cli.hr import app as hr_app
-from ai_company.cli.specialists import app as specialists_app
-from ai_company.cli.orchestrator import app as orchestrator_app
-from ai_company.cli.models import app as models_app
-from ai_company.cli.dashboard import app as dashboard_app
-from ai_company.cli.executor import app as executor_app
-from ai_company.cli.company import app as company_app
-from ai_company.cli.decision import app as decision_app
-from ai_company.cli.graph import app as graph_app
+
+def _init_logging() -> None:
+    """Configure structured logging once, on first CLI invocation."""
+    from ai_company.logging_config import setup_logging
+
+    setup_logging()
+
 
 app = typer.Typer(
-    help="AI Company Builder - Orchestrate AI agent hierarchies"
+    help="AI Company Builder - Orchestrate AI agent hierarchies",
+    callback=_init_logging,
+    invoke_without_command=True,
 )
+
+
+@app.callback(invoke_without_command=True)
+def _lazy_init() -> None:
+    """Ensure logging is configured before any subcommand runs."""
+    _init_logging()
+
+
+from ai_company.cli.agents import app as agents_app  # noqa: E402
+from ai_company.cli.board import app as board_app  # noqa: E402
+from ai_company.cli.workflows import app as workflows_app  # noqa: E402
+from ai_company.cli.memory import app as memory_app  # noqa: E402
+from ai_company.cli.executives import app as executives_app  # noqa: E402
+from ai_company.cli.departments import app as departments_app  # noqa: E402
+from ai_company.cli.doctor import app as doctor_app  # noqa: E402
+from ai_company.cli.marketing import app as marketing_app  # noqa: E402
+from ai_company.cli.sales import app as sales_app  # noqa: E402
+from ai_company.cli.customer_success import app as customer_success_app  # noqa: E402
+from ai_company.cli.legal import app as legal_app  # noqa: E402
+from ai_company.cli.hr import app as hr_app  # noqa: E402
+from ai_company.cli.specialists import app as specialists_app  # noqa: E402
+from ai_company.cli.orchestrator import app as orchestrator_app  # noqa: E402
+from ai_company.cli.models import app as models_app  # noqa: E402
+from ai_company.cli.dashboard import app as dashboard_app  # noqa: E402
+from ai_company.cli.executor import app as executor_app  # noqa: E402
+from ai_company.cli.company import app as company_app  # noqa: E402
+from ai_company.cli.decision import app as decision_app  # noqa: E402
+from ai_company.cli.graph import app as graph_app  # noqa: E402
 
 app.add_typer(agents_app, name="agents", help="Manage AI agents")
 app.add_typer(board_app, name="board", help="Manage Board of Directors")
@@ -162,4 +180,3 @@ def status():
 
 if __name__ == "__main__":
     app()
-

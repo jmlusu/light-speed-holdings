@@ -23,6 +23,10 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "httpx",
+    # ML dependencies
+    "sentence-transformers>=3.0",
+    "scikit-learn>=1.5",
+    "numpy>=1.26",
 ]
 
 [project.urls]
@@ -34,6 +38,7 @@ Issues = "https://github.com/light-speed-holdings/ai-company/issues"
 dev = [
     "pytest",
     "pytest-cov",
+    "pytest-benchmark",
     "ruff",
     "mypy",
     "types-PyYAML",
@@ -65,3 +70,7 @@ include = ["ai_company*"]
 
 [project.scripts]
 ai-company = "ai_company.cli.main:app"
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101"]  # Skip assert warnings

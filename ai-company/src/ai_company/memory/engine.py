@@ -1,20 +1,29 @@
-"""Memory engine — manages 6 types of company memory.
+"""Memory engine -- manages 6 types of company memory.
 
 Memory types:
-1. Episodic — events and experiences (what happened)
-2. Semantic — facts and knowledge (what is known)
-3. Procedural — how-to knowledge (how to do things)
-4. Relational — entity relationships (who knows whom)
-5. Temporal — time-based records (when things happened)
-6. Aggregate — summaries and rollups (patterns and insights)
+1. Episodic -- events and experiences (what happened)
+2. Semantic -- facts and knowledge (what is known)
+3. Procedural -- how-to knowledge (how to do things)
+4. Relational -- entity relationships (who knows whom)
+5. Temporal -- time-based records (when things happened)
+6. Aggregate -- summaries and rollups (patterns and insights)
+
+Uses FileStore for atomic persistence.  Supports optional vector-based
+semantic search when a VectorStore is configured via
+``enable_vector_search()``.
 """
 
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+from ai_company.store.file_store import FileStore
+
+logger = logging.getLogger(__name__)
 
 
 class MemoryEntry:
@@ -51,11 +60,16 @@ class MemoryEntry:
 
 
 class MemoryStore:
-    """Persistent memory storage backed by JSON files."""
+    """Persistent memory storage backed by FileStore (JSON files).
+
+    When a VectorStore is configured via ``enable_vector_search()``,
+    the ``recall()`` method uses cosine-similarity-based semantic
+    search instead of simple substring matching.
+    """
 
     def __init__(self, base_dir: str | Path = "memory") -> None:
         self.base_dir = Path(base_dir)
-        self.base_dir.mkdir(parents=True, exist_ok=True)
+        self._store = FileStore(self.base_dir, backup=False)
         self._stores: dict[str, list[MemoryEntry]] = {
             "episodic": [],
             "semantic": [],
@@ -64,43 +78,83 @@ class MemoryStore:
             "temporal": [],
             "aggregate": [],
         }
+        self._vector_store: Any | None = None
         self._load_all()
 
-    def _file_path(self, memory_type: str) -> Path:
-        return self.base_dir / f"{memory_type}.json"
+    @property
+    def has_vector_search(self) -> bool:
+        """Return True if vector search is enabled and available."""
+        return self._vector_store is not None and getattr(
+            self._vector_store, "is_vector_capable", False
+        )
+
+    def enable_vector_search(
+        self,
+        embedding_engine: Any | None = None,
+        index_dir: str | Path = "memory/vector_index",
+    ) -> None:
+        """Enable semantic vector search for memory recall.
+
+        Args:
+            embedding_engine: An EmbeddingEngine instance for computing embeddings.
+            index_dir: Directory for persisting the vector index.
+        """
+        try:
+            from ai_company.memory.vector_store import VectorStore
+
+            self._vector_store = VectorStore(
+                memory_store=self,
+                embedding_engine=embedding_engine,
+                index_dir=index_dir,
+            )
+            # Index existing entries
+            self._vector_store.index_all()
+        except ImportError:
+            logger.warning("VectorStore unavailable — vector search disabled")
+
+    def _file_name(self, memory_type: str) -> str:
+        return f"{memory_type}.json"
 
     def _load_all(self) -> None:
         for mem_type in self._stores:
-            path = self._file_path(mem_type)
-            if path.exists():
-                with open(path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                for item in data:
-                    entry = MemoryEntry(
-                        memory_type=mem_type,
-                        content=item.get("content", ""),
-                        metadata=item.get("metadata", {}),
-                        agent_id=item.get("agent_id", ""),
-                        tags=item.get("tags", []),
-                    )
-                    entry.id = item.get("id", entry.id)
-                    entry.created_at = item.get("created_at", entry.created_at)
-                    entry.access_count = item.get("access_count", 0)
-                    self._stores[mem_type].append(entry)
+            data = self._store.read_json(self._file_name(mem_type))
+            if data is None or not isinstance(data, list):
+                continue
+            for item in data:
+                entry = MemoryEntry(
+                    memory_type=mem_type,
+                    content=item.get("content", ""),
+                    metadata=item.get("metadata", {}),
+                    agent_id=item.get("agent_id", ""),
+                    tags=item.get("tags", []),
+                )
+                entry.id = item.get("id", entry.id)
+                entry.created_at = item.get("created_at", entry.created_at)
+                entry.access_count = item.get("access_count", 0)
+                self._stores[mem_type].append(entry)
 
     def _save(self, memory_type: str) -> None:
-        path = self._file_path(memory_type)
         data = [e.to_dict() for e in self._stores[memory_type]]
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        self._store.write_json(self._file_name(memory_type), data)
 
     def store(self, memory_type: str, content: str, **kwargs: Any) -> MemoryEntry:
-        """Store a new memory entry."""
+        """Store a new memory entry.
+
+        If vector search is enabled, the new entry is automatically indexed.
+        """
         if memory_type not in self._stores:
             raise ValueError(f"Unknown memory type: {memory_type}")
         entry = MemoryEntry(memory_type=memory_type, content=content, **kwargs)
         self._stores[memory_type].append(entry)
         self._save(memory_type)
+
+        # Auto-index in vector store if available
+        if self._vector_store is not None:
+            try:
+                self._vector_store.index_entry(entry)
+            except Exception:
+                pass  # Non-fatal: indexing failure shouldn't break storage
+
         return entry
 
     def recall(
@@ -110,11 +164,32 @@ class MemoryStore:
         tags: list[str] | None = None,
         agent_id: str = "",
         limit: int = 10,
+        use_semantic: bool = True,
     ) -> list[MemoryEntry]:
-        """Recall memories with optional filtering."""
+        """Recall memories with optional filtering.
+
+        When vector search is enabled and ``use_semantic`` is True and
+        a query is provided, uses cosine-similarity-based semantic search
+        instead of substring matching.
+        """
         if memory_type not in self._stores:
             return []
 
+        # Use vector search if available and query provided
+        if use_semantic and self._vector_store is not None and query:
+            try:
+                vector_results = self._vector_store.search(
+                    query=query,
+                    memory_type=memory_type,
+                    tags=tags,
+                    agent_id=agent_id,
+                    top_k=limit,
+                )
+                return [entry for entry, _score in vector_results]
+            except Exception:
+                pass  # Fall through to substring search
+
+        # Fallback to substring search
         results = self._stores[memory_type]
 
         if query:

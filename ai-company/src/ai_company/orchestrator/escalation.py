@@ -1,5 +1,9 @@
 """
 Escalation rules for autonomous coordination.
+
+Security hardening:
+- File locking for concurrent access to escalation.yaml
+- Atomic writes to prevent corruption
 """
 
 from pathlib import Path
@@ -7,6 +11,11 @@ from typing import List, Optional
 import yaml
 from pydantic import BaseModel, Field
 from datetime import datetime
+import logging
+
+from ai_company.utils.file_lock import atomic_write, file_lock
+
+logger = logging.getLogger(__name__)
 
 
 class EscalationRule(BaseModel):
@@ -85,50 +94,54 @@ class EscalationManager:
 
     def _load_config(self):
         if self.config_path.exists():
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f) or {}
-                self.rules = [EscalationRule(**r) for r in data.get("rules", [])]
+            with file_lock(self.config_path):
+                with open(self.config_path, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+                    self.rules = [EscalationRule(**r) for r in data.get("rules", [])]
 
     def _save_config(self):
-        data = {"rules": [r.model_dump() for r in self.rules]}
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, default_flow_style=False)
+        with file_lock(self.config_path):
+            data = {"rules": [r.model_dump() for r in self.rules]}
+            with atomic_write(self.config_path) as f:
+                yaml.dump(data, f, default_flow_style=False)
 
     def _load_events(self) -> None:
         """Load persisted escalation events from the YAML file."""
         if not self.config_path.exists():
             return
         try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f) or {}
-            raw_events = data.get("events", [])
-            self.events = [EscalationEvent(**e) for e in raw_events]
+            with file_lock(self.config_path):
+                with open(self.config_path, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+                raw_events = data.get("events", [])
+                self.events = [EscalationEvent(**e) for e in raw_events]
         except (yaml.YAMLError, KeyError):
             self.events = []
 
     def _save_events(self) -> None:
         """Persist escalation events back to the YAML file."""
-        if self.config_path.exists():
-            try:
-                with open(self.config_path, "r", encoding="utf-8") as f:
-                    data = yaml.safe_load(f) or {}
-            except (yaml.YAMLError, OSError):
+        with file_lock(self.config_path):
+            if self.config_path.exists():
+                try:
+                    with open(self.config_path, "r", encoding="utf-8") as f:
+                        data = yaml.safe_load(f) or {}
+                except (yaml.YAMLError, OSError):
+                    data = {}
+            else:
                 data = {}
-        else:
-            data = {}
 
-        data["events"] = [
-            {
-                **e.model_dump(),
-                "timestamp": e.timestamp.isoformat()
-                if isinstance(e.timestamp, datetime)
-                else str(e.timestamp),
-            }
-            for e in self.events
-        ]
+            data["events"] = [
+                {
+                    **e.model_dump(),
+                    "timestamp": e.timestamp.isoformat()
+                    if isinstance(e.timestamp, datetime)
+                    else str(e.timestamp),
+                }
+                for e in self.events
+            ]
 
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, default_flow_style=False)
+            with atomic_write(self.config_path) as f:
+                yaml.dump(data, f, default_flow_style=False)
 
     def add_rule(
         self,
@@ -198,7 +211,12 @@ class EscalationManager:
 
 
 class PostmortemStore:
-    """Stores and retrieves postmortems as JSON files."""
+    """Stores and retrieves postmortems as JSON files.
+
+    Security hardening:
+    - File locking for concurrent access
+    - Atomic writes to prevent corruption
+    """
 
     def __init__(self, storage_dir: str = "orchestrator/postmortems"):
         self.storage_dir = Path(storage_dir)
@@ -206,22 +224,28 @@ class PostmortemStore:
 
     def save(self, postmortem: Postmortem) -> Path:
         path = self.storage_dir / f"{postmortem.incident_id}.json"
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(postmortem.model_dump_json(indent=2))
+        with file_lock(path):
+            with atomic_write(path) as f:
+                f.write(postmortem.model_dump_json(indent=2))
         return path
 
     def load(self, incident_id: str) -> Optional[Postmortem]:
         path = self.storage_dir / f"{incident_id}.json"
         if not path.exists():
             return None
-        with open(path, "r", encoding="utf-8") as f:
-            return Postmortem.model_validate_json(f.read())
+        with file_lock(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return Postmortem.model_validate_json(f.read())
 
     def list_all(self) -> List[Postmortem]:
         postmortems: List[Postmortem] = []
         for path in sorted(self.storage_dir.glob("*.json")):
-            with open(path, "r", encoding="utf-8") as f:
-                postmortems.append(Postmortem.model_validate_json(f.read()))
+            try:
+                with file_lock(path):
+                    with open(path, "r", encoding="utf-8") as f:
+                        postmortems.append(Postmortem.model_validate_json(f.read()))
+            except (OSError, ValueError) as exc:
+                logger.warning("Failed to load postmortem %s: %s", path, exc)
         return postmortems
 
     def create_from_escalation(

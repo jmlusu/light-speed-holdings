@@ -1,14 +1,18 @@
-"""
-Scheduler for autonomous cycles.
+"""Scheduler for autonomous cycles.
+
+Uses FileStore for atomic persistence of scheduled task configs.
 """
 
 from __future__ import annotations
 
-from pathlib import Path
+import uuid
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
-import yaml
+
 from pydantic import BaseModel, Field
+
+from ai_company.store.file_store import FileStore
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
@@ -28,20 +32,19 @@ class ScheduledTask(BaseModel):
 class Scheduler:
     def __init__(self, config_path: str = "orchestrator/scheduler.yaml"):
         self.config_path = Path(config_path)
-        self.config_path.parent.mkdir(parents=True, exist_ok=True)
+        self._store = FileStore(self.config_path.parent, backup=True)
+        self._config_name = self.config_path.name
         self.tasks: List[ScheduledTask] = []
         self._load_config()
 
     def _load_config(self):
-        if self.config_path.exists():
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f) or {}
-                self.tasks = [ScheduledTask(**t) for t in data.get("tasks", [])]
+        data = self._store.read_yaml(self._config_name)
+        if data and isinstance(data, dict):
+            self.tasks = [ScheduledTask(**t) for t in data.get("tasks", [])]
 
     def _save_config(self):
         data = {"tasks": [t.model_dump() for t in self.tasks]}
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, default_flow_style=False)
+        self._store.write_yaml(self._config_name, data)
 
     def add_task(
         self,
@@ -87,7 +90,6 @@ class Scheduler:
         Returns a list of created task IDs.
         """
         from ai_company.models.task import Task, TaskPriority
-        import uuid
 
         created: list[str] = []
         for scheduled in self.get_pending_tasks():

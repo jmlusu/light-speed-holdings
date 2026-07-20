@@ -102,10 +102,27 @@ Create postmortem for medium+ severity incidents.
 
 **Command:**
 ```bash
-ai-company orchestrator postmortem create INC-{TASK_ID} --title "Brief description" --severity high
+ai-company orchestrator postmortem create INC-{TASK_ID} \
+  --title "Brief description" \
+  --severity high \
+  --affected-agent lead-engineer \
+  --department engineering
 ```
 
-**Expected Result:** Postmortem created, assigned for root cause analysis.
+**Update with findings:**
+```bash
+ai-company orchestrator postmortem update INC-{TASK_ID} \
+  --root-cause "Root cause description" \
+  --status resolved \
+  --reviewed-by human-ceo
+```
+
+**Render to markdown:**
+```bash
+ai-company orchestrator postmortem render INC-{TASK_ID}
+```
+
+**Expected Result:** Postmortem created, updated, and rendered for review.
 
 ## 6. Escalation Path
 

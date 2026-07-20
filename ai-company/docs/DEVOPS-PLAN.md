@@ -160,7 +160,7 @@ jobs:
       - name: Install deps
         run: pip install -e ".[dev]"
       - name: Regenerate agents
-        run: python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+        run: ai-company generate
       - name: Check for drift
         run: |
           if [ -n "$(git status --porcelain .opencode/agents/)" ]; then

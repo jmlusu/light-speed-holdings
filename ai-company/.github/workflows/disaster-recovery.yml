@@ -1,0 +1,124 @@
+name: Disaster Recovery Backup
+
+on:
+  schedule:
+    # Daily at 03:00 UTC
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      notify_on_success:
+        description: "Create GitHub issue on success"
+        type: boolean
+        default: false
+
+concurrency:
+  group: dr-backup
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    name: Backup Critical Data
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create backup archive
+        run: |
+          TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
+          BACKUP_NAME="dr-backup-${TIMESTAMP}.tar.gz"
+
+          # Archive critical directories
+          tar -czf "${BACKUP_NAME}" \
+            .opencode/ \
+            company/ \
+            results/ \
+            company-registry.yaml \
+            pyproject.toml \
+            2>/dev/null || true
+
+          echo "BACKUP_NAME=${BACKUP_NAME}" >> $GITHUB_ENV
+          echo "Created backup: ${BACKUP_NAME}"
+          ls -lh "${BACKUP_NAME}"
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BACKUP_NAME }}
+          path: ${{ env.BACKUP_NAME }}
+          retention-days: 30
+
+      - name: Verify backup integrity
+        run: |
+          echo "Verifying backup integrity..."
+          tar -tzf "${{ env.BACKUP_NAME }}" | head -20
+          echo ""
+          echo "Archive contains $(tar -tzf "${{ env.BACKUP_NAME }}" | wc -l) files"
+
+      # ── Health check after backup ────────────────────────────────
+      - name: Verify dashboard health
+        run: |
+          # Quick smoke test that core files are intact
+          python -c "
+          from pathlib import Path
+          critical = [
+              'company-registry.yaml',
+              'pyproject.toml',
+              'src/ai_company/__init__.py',
+          ]
+          missing = [f for f in critical if not Path(f).exists()]
+          if missing:
+              print(f'WARNING: Missing critical files: {missing}')
+              exit(1)
+          print('All critical files present.')
+          "
+
+      - name: Report success
+        if: inputs.notify_on_success
+        run: |
+          gh issue create \
+            --title "DR backup successful [${{ github.run_id }}]" \
+            --label "ops,backup" \
+            --body "Automated backup completed. Artifact: ${{ env.BACKUP_NAME }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Alert on missed scheduled backup ──────────────────────────────
+  health-gate:
+    name: Post-backup Health Check
+    needs: backup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify project integrity
+        run: |
+          python -c "
+          import sys
+          from pathlib import Path
+
+          checks = {
+              'Agent registry': Path('company-registry.yaml'),
+              'Package init': Path('src/ai_company/__init__.py'),
+              'CI workflow': Path('.github/workflows/ci.yml'),
+              'DR workflow': Path('.github/workflows/disaster-recovery.yml'),
+          }
+
+          all_ok = True
+          for name, path in checks.items():
+              if path.exists():
+                  print(f'  [OK] {name}')
+              else:
+                  print(f'  [FAIL] {name} — {path} missing')
+                  all_ok = False
+
+          if not all_ok:
+              print('\\nIntegrity check failed!')
+              sys.exit(1)
+          print('\\nAll integrity checks passed.')
+          "

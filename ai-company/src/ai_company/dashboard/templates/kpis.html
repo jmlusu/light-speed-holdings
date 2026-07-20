@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}KPIs — CEO Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h2 class="text-xl font-semibold text-surface-100">Department KPIs</h2>
+    <p class="text-sm text-surface-500 mt-1">Real-time performance metrics across all departments</p>
+  </div>
+  <button @click="refreshKPIs()" class="bg-surface-800 text-surface-300 px-3 py-2 rounded-lg text-sm hover:bg-surface-700 transition-colors flex items-center gap-2 border border-surface-700">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+    Refresh
+  </button>
+</div>
+
+<!-- ═══ DEPARTMENT TABS ═══ -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+  <template x-for="dept in kpiDepartments" :key="dept.id">
+    <button @click="activeKPIDept = dept.id"
+            :class="activeKPIDept === dept.id ? 'bg-brand-600 text-white' : 'bg-surface-800 text-surface-400 border border-surface-700 hover:border-surface-600'"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2">
+      <span x-text="dept.name"></span>
+      <span class="text-[10px] font-mono opacity-60" x-text="dept.kpiCount + ' KPIs'"></span>
+    </button>
+  </template>
+</div>
+
+<!-- ═══ KPI SUMMARY CARDS ═══ -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" x-show="currentKPIDept">
+  <template x-for="(kpi, key) in (currentKPIDept?.kpis || {})" :key="key">
+    <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs text-surface-500 uppercase tracking-wider" x-text="key.replace(/_/g, ' ')"></span>
+        <span class="w-2 h-2 rounded-full" :class="{
+          'bg-emerald-400': kpi.status === 'on_track',
+          'bg-amber-400': kpi.status === 'below_target',
+          'bg-red-400': kpi.status === 'above_target',
+          'bg-blue-400': kpi.status === 'info'
+        }"></span>
+      </div>
+      <div class="flex items-end gap-2">
+        <span class="text-2xl font-bold" :class="{
+          'text-emerald-400': kpi.status === 'on_track',
+          'text-amber-400': kpi.status === 'below_target',
+          'text-red-400': kpi.status === 'above_target',
+          'text-blue-400': kpi.status === 'info'
+        }" x-text="kpi.current"></span>
+        <span class="text-sm text-surface-500 mb-0.5" x-text="kpi.unit"></span>
+      </div>
+      <div x-show="kpi.target !== null" class="mt-2 flex items-center gap-2">
+        <div class="flex-1 h-1.5 bg-surface-800 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500" :class="{
+            'bg-emerald-500': kpi.status === 'on_track',
+            'bg-amber-500': kpi.status === 'below_target',
+            'bg-red-500': kpi.status === 'above_target',
+            'bg-blue-500': kpi.status === 'info'
+          }" :style="'width:' + Math.min((kpi.current / (kpi.target || 1)) * 100, 100) + '%'"></div>
+        </div>
+        <span class="text-[10px] text-surface-600 font-mono" x-text="'target: ' + kpi.target"></span>
+      </div>
+      <span class="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full" :class="{
+        'bg-emerald-500/10 text-emerald-400': kpi.status === 'on_track',
+        'bg-amber-500/10 text-amber-400': kpi.status === 'below_target',
+        'bg-red-500/10 text-red-400': kpi.status === 'above_target',
+        'bg-blue-500/10 text-blue-400': kpi.status === 'info'
+      }" x-text="kpi.status.replace(/_/g, ' ')"></span>
+    </div>
+  </template>
+</div>
+
+<!-- ═══ KPI CHARTS ═══ -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <h3 class="text-sm font-semibold text-surface-300 mb-4">KPI Comparison</h3>
+    <canvas id="kpiComparisonChart" height="250"></canvas>
+  </div>
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <h3 class="text-sm font-semibold text-surface-300 mb-4">KPI Targets vs Current</h3>
+    <canvas id="kpiTargetChart" height="250"></canvas>
+  </div>
+</div>
+
+<!-- ═══ ALL KPIs TABLE ═══ -->
+<div class="bg-surface-900/80 rounded-xl border border-surface-700/50 overflow-hidden">
+  <div class="px-5 py-4 border-b border-surface-700/50">
+    <h3 class="text-sm font-semibold text-surface-300">All Department KPIs</h3>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-xs text-surface-500 bg-surface-800/50 border-b border-surface-700/50">
+          <th class="px-5 py-2.5 font-medium">Department</th>
+          <th class="px-5 py-2.5 font-medium">KPI</th>
+          <th class="px-5 py-2.5 font-medium">Target</th>
+          <th class="px-5 py-2.5 font-medium">Unit</th>
+          <th class="px-5 py-2.5 font-medium">Frequency</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="kpi in allKPIsList" :key="kpi.department + kpi.kpi_id">
+          <tr class="border-b border-surface-800/50 hover:bg-surface-800/30 transition-colors">
+            <td class="px-5 py-2.5 text-surface-300" x-text="kpi.department_name"></td>
+            <td class="px-5 py-2.5 text-surface-200 font-medium" x-text="kpi.name"></td>
+            <td class="px-5 py-2.5 font-mono text-surface-400" x-text="kpi.target ?? 'N/A'"></td>
+            <td class="px-5 py-2.5 text-surface-500" x-text="kpi.unit"></td>
+            <td class="px-5 py-2.5 text-surface-500" x-text="kpi.frequency"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/charts.js"></script>
+{% endblock %}

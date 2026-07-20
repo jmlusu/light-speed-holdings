@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Costs — CEO Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h2 class="text-xl font-semibold text-surface-100">Cost Tracking</h2>
+    <p class="text-sm text-surface-500 mt-1">LLM usage costs and budget monitoring</p>
+  </div>
+  <div class="flex gap-2">
+    <template x-for="period in ['daily', 'weekly', 'monthly']" :key="period">
+      <button @click="costPeriod = period"
+              :class="costPeriod === period ? 'bg-brand-600 text-white' : 'bg-surface-800 text-surface-400 border border-surface-700'"
+              class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all capitalize" x-text="period"></button>
+    </template>
+  </div>
+</div>
+
+<!-- ═══ COST SUMMARY CARDS ═══ -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <div class="text-xs text-surface-500 mb-2">Total Cost</div>
+    <div class="text-3xl font-bold text-surface-100">$<span x-text="costSummary.total.toFixed(2)">0.00</span></div>
+    <div class="text-xs text-surface-600 mt-1" x-text="costPeriod + ' period'"></div>
+  </div>
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <div class="text-xs text-surface-500 mb-2">Budget Used</div>
+    <div class="text-3xl font-bold" :class="budgetPct > 90 ? 'text-red-400' : budgetPct > 70 ? 'text-amber-400' : 'text-emerald-400'">
+      <span x-text="budgetPct.toFixed(1)">0</span>%
+    </div>
+    <div class="mt-2 h-2 bg-surface-800 rounded-full overflow-hidden">
+      <div class="h-full rounded-full transition-all duration-500"
+           :class="budgetPct > 90 ? 'bg-red-500' : budgetPct > 70 ? 'bg-amber-500' : 'bg-emerald-500'"
+           :style="'width:' + Math.min(budgetPct, 100) + '%'"></div>
+    </div>
+  </div>
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <div class="text-xs text-surface-500 mb-2">Avg Cost/Task</div>
+    <div class="text-3xl font-bold text-surface-100">$<span x-text="costSummary.avgPerTask.toFixed(4)">0.0000</span></div>
+  </div>
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <div class="text-xs text-surface-500 mb-2">Total Tasks</div>
+    <div class="text-3xl font-bold text-surface-100" x-text="costSummary.totalTasks">0</div>
+  </div>
+</div>
+
+<!-- ═══ COST CHARTS ═══ -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <h3 class="text-sm font-semibold text-surface-300 mb-4">Cost Trend</h3>
+    <canvas id="costTrendChart" height="250"></canvas>
+  </div>
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+    <h3 class="text-sm font-semibold text-surface-300 mb-4">Cost by Agent</h3>
+    <canvas id="costAgentChart" height="250"></canvas>
+  </div>
+</div>
+
+<!-- ═══ COST ALERTS ═══ -->
+<div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5 mb-8">
+  <h3 class="text-sm font-semibold text-surface-300 mb-4">Budget Alerts</h3>
+  <div x-show="costAlerts.length === 0" class="text-sm text-surface-500 py-4 text-center">No active budget alerts</div>
+  <div class="space-y-2">
+    <template x-for="alert in costAlerts" :key="alert.id">
+      <div class="flex items-center gap-3 p-3 rounded-lg" :class="{
+        'bg-red-950/30 border border-red-500/20': alert.severity === 'critical',
+        'bg-amber-950/30 border border-amber-500/20': alert.severity === 'warning',
+        'bg-surface-800/50 border border-surface-700/50': alert.severity === 'info'
+      }">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="{
+          'bg-red-500/10': alert.severity === 'critical',
+          'bg-amber-500/10': alert.severity === 'warning',
+          'bg-blue-500/10': alert.severity === 'info'
+        }">
+          <svg class="w-4 h-4" :class="{
+            'text-red-400': alert.severity === 'critical',
+            'text-amber-400': alert.severity === 'warning',
+            'text-blue-400': alert.severity === 'info'
+          }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        </div>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-surface-200" x-text="alert.message"></p>
+          <p class="text-xs text-surface-500" x-text="alert.timestamp"></p>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>
+
+<!-- ═══ PER-AGENT COST TABLE ═══ -->
+<div class="bg-surface-900/80 rounded-xl border border-surface-700/50 overflow-hidden">
+  <div class="px-5 py-4 border-b border-surface-700/50">
+    <h3 class="text-sm font-semibold text-surface-300">Cost per Agent</h3>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-xs text-surface-500 bg-surface-800/50 border-b border-surface-700/50">
+          <th class="px-5 py-2.5 font-medium">Agent</th>
+          <th class="px-5 py-2.5 font-medium">Tasks</th>
+          <th class="px-5 py-2.5 font-medium">Total Cost</th>
+          <th class="px-5 py-2.5 font-medium">Avg/Task</th>
+          <th class="px-5 py-2.5 font-medium">Model</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="row in agentCosts" :key="row.agent">
+          <tr class="border-b border-surface-800/50 hover:bg-surface-800/30 transition-colors">
+            <td class="px-5 py-2.5 font-mono text-surface-300" x-text="row.agent"></td>
+            <td class="px-5 py-2.5 text-surface-400" x-text="row.tasks"></td>
+            <td class="px-5 py-2.5 font-mono text-surface-200">$<span x-text="row.totalCost.toFixed(4)"></span></td>
+            <td class="px-5 py-2.5 font-mono text-surface-400">$<span x-text="row.avgCost.toFixed(6)"></span></td>
+            <td class="px-5 py-2.5 font-mono text-xs text-surface-500" x-text="row.model || 'default'"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/charts.js"></script>
+{% endblock %}

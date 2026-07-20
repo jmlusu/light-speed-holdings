@@ -200,7 +200,8 @@ class TestHITLGate:
         t = threading.Thread(target=approve_after_delay)
         t.start()
 
-        result = hitl.request_and_wait(
+        # request_and_wait_sync blocks until approval/rejection/timeout
+        result = hitl.request_and_wait_sync(
             task_id="t-1", agent_id="agent-1", tool="write",
             args={"path": "test.py", "content": "x = 1"},
         )
@@ -224,13 +225,43 @@ class TestHITLGate:
         t = threading.Thread(target=reject_after_delay)
         t.start()
 
-        result = hitl.request_and_wait(
+        result = hitl.request_and_wait_sync(
             task_id="t-2", agent_id="agent-2", tool="execute",
             args={"command": "rm -rf /"},
         )
         t.join()
 
         assert result is False
+
+    def test_future_api(self, tmp_path: Path) -> None:
+        """Test the non-blocking Future-based API."""
+        gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+        hitl = HITLGate(approval_gate=gate, poll_interval=0.1, timeout_minutes=0.05)
+
+        import threading
+
+        def approve_after_delay():
+            import time
+            time.sleep(0.3)
+            requests = gate.get_pending_requests()
+            if requests:
+                gate.approve(requests[0].id, "human-ceo")
+
+        t = threading.Thread(target=approve_after_delay)
+        t.start()
+
+        # request_and_wait returns a Future
+        future = hitl.request_and_wait(
+            task_id="t-3", agent_id="agent-3", tool="read",
+            args={"path": "test.py"},
+        )
+        import concurrent.futures
+        assert isinstance(future, concurrent.futures.Future)
+
+        # Block on the future
+        result = future.result(timeout=5)
+        t.join()
+        assert result is True
 
 
 # ── Executor Loop ───────────────────────────────────────────────────

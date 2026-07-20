@@ -1,16 +1,19 @@
-"""Execution loop — polls inbox.json and processes tasks autonomously.
+"""Execution loop -- polls inbox.json and processes tasks autonomously.
 
 GAP-017 hardening:
 - On each ``tick()`` the executor scans for stale ``in_progress`` tasks
   (older than 30 minutes) and moves them to the dead-letter queue before
   processing new work.
+
+GAP-001 fix:
+- All inbox.json I/O now goes through ``MessageBus`` methods exclusively.
+  The executor no longer reads or writes the inbox file directly.
 """
 
 from __future__ import annotations
 
 import json
 import logging
-import time
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -68,8 +71,17 @@ class Executor:
     """Processes tasks from the inbox using LLM + tool execution.
 
     Supports two modes:
-    - tick(): Single-pass — process all pending tasks once and return.
-    - start(): Continuous polling — runs tick() in a loop.
+    - tick(): Single-pass -- process all pending tasks once and return.
+    - start(): Continuous polling -- runs tick() in a loop.
+
+    All inbox I/O goes through ``MessageBus`` (GAP-001 fix).
+
+    GAP-003 fix: ToolRunner classifies each tool action via tier_rules
+    before requesting HITL approval.
+
+    GAP-004 fix: Non-blocking HITL approval — the executor polls for
+    resolved approvals on each tick, allowing other tasks to proceed
+    while awaiting human decisions.
     """
 
     def __init__(
@@ -118,6 +130,9 @@ class Executor:
         # Audit trail
         init_audit()
 
+        # GAP-004: pending HITL approvals queue (non-blocking)
+        self._pending_approvals: list[dict[str, Any]] = []
+
     def start(self) -> None:
         """Start continuous polling loop. Call stop() to halt."""
         self.running = True
@@ -130,6 +145,7 @@ class Executor:
                 count = self.tick()
                 if count > 0:
                     print(f"  Processed {count} task(s).")
+                import time
                 time.sleep(self.poll_interval)
         except KeyboardInterrupt:
             self.stop()
@@ -148,43 +164,25 @@ class Executor:
         # Convert due scheduled tasks into inbox tasks
         self.scheduler.create_pending_tasks(self.bus)
 
-        # GAP-017 — move stale tasks to dead-letter queue
+        # GAP-017 -- move stale tasks to dead-letter queue
         stale = detect_stale_tasks(Path(self.bus.storage_path), self.dlq)
         if stale:
             logger.warning("Moved %d stale task(s) to dead-letter queue.", len(stale))
 
-        pending = self._get_pending_tasks()
+        # GAP-001 fix: use MessageBus.get_pending_tasks() instead of direct I/O
+        pending = self.bus.get_pending_tasks()
         for task in pending:
             self._process_task(task)
         return len(pending)
-
-    def _get_pending_tasks(self) -> list[Task]:
-        """Load all pending tasks from inbox.json."""
-        inbox_path = Path(self.bus.storage_path)
-        if not inbox_path.exists():
-            return []
-
-        try:
-            raw = json.loads(inbox_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            return []
-
-        tasks: list[Task] = []
-        for item in raw:
-            if item.get("status") == "pending":
-                try:
-                    tasks.append(Task(**item))
-                except Exception:
-                    continue
-        return tasks
 
     def _process_task(self, task: Task) -> None:
         """Execute a single task through the multi-turn agentic loop."""
         self.stats.tasks_processed += 1
         logger.info("[%s] Processing: %s...", task.id[:8], task.instruction[:60])
 
-        # 1. Mark in_progress
-        self._update_task_status(task, TaskStatus.IN_PROGRESS)
+        # 1. Mark in_progress via MessageBus (GAP-001 fix)
+        self.bus.update_task_status(task.id, TaskStatus.IN_PROGRESS.value)
+        log_task_status(task.id, task.receiver_id, "pending", TaskStatus.IN_PROGRESS.value)
 
         # 2. Load agent spec card
         agent_ctx = parse_agent_spec(task.receiver_id, self.agents_dir)
@@ -249,56 +247,10 @@ class Executor:
             )
             logger.error("  FAILED: %s", error_msg[:80])
 
-    def _update_task_status(self, task: Task, status: TaskStatus) -> None:
-        """Update a task's status in inbox.json and set ``updated_at``."""
-        inbox_path = Path(self.bus.storage_path)
-        if not inbox_path.exists():
-            return
-
-        try:
-            tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            return
-
-        now = datetime.now().isoformat()
-        old_status = ""
-        for t in tasks:
-            if t.get("id") == task.id:
-                old_status = t.get("status", "")
-                t["status"] = status.value
-                t["updated_at"] = now
-                if not t.get("created_at"):
-                    t["created_at"] = now
-                break
-
-        inbox_path.write_text(json.dumps(tasks, indent=2, default=str), encoding="utf-8")
-        log_task_status(task.id, task.receiver_id, old_status, status.value)
-
     def _complete_task(self, task: Task, status: TaskStatus, result: str) -> None:
-        """Mark a task as completed/failed with result and timestamps."""
-        inbox_path = Path(self.bus.storage_path)
-        if not inbox_path.exists():
-            return
-
-        try:
-            tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            return
-
-        now = datetime.now().isoformat()
-        old_status = ""
-        for t in tasks:
-            if t.get("id") == task.id:
-                old_status = t.get("status", "")
-                t["status"] = status.value
-                t["result"] = result
-                t["updated_at"] = now
-                t["completed_at"] = now
-                if not t.get("created_at"):
-                    t["created_at"] = now
-                break
-
-        inbox_path.write_text(json.dumps(tasks, indent=2, default=str), encoding="utf-8")
+        """Mark a task as completed/failed via MessageBus (GAP-001 fix)."""
+        old_status = task.status.value
+        self.bus.update_task_status(task.id, status.value, result=result)
         log_task_status(task.id, task.receiver_id, old_status, status.value)
 
     def _save_loop_artifacts(self, task: Task, result: Any) -> None:

@@ -8,6 +8,9 @@ Supports three routing layers:
 Context-aware routing detects domain keywords in the task prompt and
 selects the appropriate tier.  Quality-based fallback promotes to the
 next higher tier when all providers in the current tier fail.
+
+ML-enhanced routing integrates task complexity scoring to route simple
+tasks to fast/cheap models and complex tasks to premium models.
 """
 
 from __future__ import annotations
@@ -454,3 +457,95 @@ class ModelRouter:
         for name, agent in self._registry.items():
             results[name] = self.resolve(agent_name=name)
         return results
+
+    # ── ML-enhanced routing ──────────────────────────────────────
+
+    def resolve_with_complexity(
+        self,
+        task_prompt: str,
+        agent_name: str | None = None,
+        agent_type: str | None = None,
+        priority: str = "medium",
+        tools_requested: list[str] | None = None,
+    ) -> Route:
+        """Resolve model routing enhanced by task complexity scoring.
+
+        Integrates the TaskComplexityScorer to override tier selection
+        based on the actual complexity of the task:
+
+          - Simple tasks (score ≤ 0.33) → fast tier
+          - Medium tasks (score 0.34–0.66) → standard tier
+          - Complex tasks (score ≥ 0.67) → premium tier
+
+        The override is advisory — per-agent overrides and explicit
+        context rules still take precedence.
+
+        Parameters
+        ----------
+        task_prompt:
+            The task instruction text for complexity analysis.
+        agent_name:
+            Registry name of the agent.
+        agent_type:
+            Agent type (``"executive"``, ``"specialist"``, etc.).
+        priority:
+            Task priority level.
+        tools_requested:
+            List of tools the task may need.
+
+        Returns
+        -------
+        Route
+            The resolved provider, model, tier, and reason including
+            complexity information.
+        """
+        try:
+            from ai_company.ml.complexity import TaskComplexityScorer
+
+            scorer = TaskComplexityScorer()
+            complexity = scorer.score_task(
+                instruction=task_prompt,
+                tools_requested=tools_requested,
+                priority=priority,
+                agent_type=agent_type or "specialist",
+            )
+
+            # Get the standard resolution first
+            standard_route = self.resolve(
+                agent_name=agent_name,
+                agent_type=agent_type,
+                priority=priority,
+                task_prompt=task_prompt,
+            )
+
+            # If standard route uses a tier lower than complexity suggests, upgrade
+            tier_rank = {"fast": 0, "standard": 1, "premium": 2}
+            suggested_rank = tier_rank.get(complexity.recommended_tier, 1)
+            current_rank = tier_rank.get(standard_route.tier, 1)
+
+            if suggested_rank > current_rank and standard_route.tier not in ("override",):
+                # Complexity suggests a higher tier — upgrade
+                complexity_tier = self._tiers.get(complexity.recommended_tier)
+                if complexity_tier and complexity_tier.providers:
+                    first = complexity_tier.providers[0]
+                    return Route(
+                        provider=first.provider,
+                        model=first.model,
+                        tier=complexity.recommended_tier,
+                        reason=(
+                            f"{standard_route.reason}; complexity upgrade: "
+                            f"score={complexity.score:.2f} ({complexity.level}) → "
+                            f"tier '{complexity.recommended_tier}'"
+                        ),
+                    )
+
+            return standard_route
+
+        except ImportError:
+            # ML modules not available, fall back to standard routing
+            return self.resolve(
+                agent_name=agent_name,
+                agent_type=agent_type,
+                priority=priority,
+                task_prompt=task_prompt,
+            )

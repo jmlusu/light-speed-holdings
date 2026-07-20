@@ -71,7 +71,7 @@ Or through the decision engine:
 
 **Command:**
 ```bash
-ai-company decision evaluate --action "spend $50 on API calls" --agent cto
+ai-company decision evaluate "spend $50 on API calls"
 ```
 
 **Expected Result:** Approval request created with cost details.

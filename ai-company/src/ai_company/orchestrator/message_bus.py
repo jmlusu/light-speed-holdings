@@ -1,96 +1,104 @@
 """Hardened MessageBus for the AI Company Builder.
 
 Provides a JSON-backed task queue with:
-- Atomic writes (write-to-temp-then-rename)
+- Atomic writes via FileStore (write-to-temp-then-rename)
+- File locking for concurrent access
 - Correlation IDs for tracing
 - Parent/child task linkage
 - ACK tracking
 - Backup file on every write
 - Query helpers for subtasks, unacknowledged tasks, and status counts
+- Dashboard broadcast hooks for real-time WebSocket updates
 """
 
 from __future__ import annotations
 
-import json
 import logging
-import os
-import tempfile
 import uuid
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import Any, Callable, List
 
 from ai_company.models.task import Task
+from ai_company.store.file_store import FileStore
 
 logger = logging.getLogger(__name__)
+
+# Type alias for the optional broadcast callback
+BroadcastCallback = Callable[[dict[str, Any], str], None] | None
 
 
 class MessageBus:
     """JSON-backed task queue with atomic writes and correlation tracking.
 
+    All file I/O is delegated to :class:`FileStore` for atomic writes and
+    file locking, eliminating the risk of partial writes from concurrent
+    access.
+
     Args:
         storage_path: Path to the inbox JSON file.
+        broadcast_callback: Optional synchronous callback invoked after
+            task mutations.  Receives ``(task_dict, event_type)`` where
+            *event_type* is one of ``"created"``, ``"completed"``,
+            ``"failed"``, ``"escalated"``.
     """
 
-    def __init__(self, storage_path: str = ".opencode/inbox.json") -> None:
+    def __init__(
+        self,
+        storage_path: str = ".opencode/inbox.json",
+        broadcast_callback: BroadcastCallback = None,
+    ) -> None:
         self.storage_path = Path(storage_path)
-        self.storage_path.parent.mkdir(parents=True, exist_ok=True)
-        if not self.storage_path.exists():
-            self._atomic_write(self.storage_path, "[]")
+        self._store = FileStore(self.storage_path.parent, backup=True)
+        self._inbox_name = self.storage_path.name
+        self._broadcast_callback = broadcast_callback
 
-    # ── Persistence helpers ──────────────────────────────────────────
+        # Ensure the inbox file exists
+        if not self._store.exists(self._inbox_name):
+            self._store.write_json(self._inbox_name, [])
 
-    def _atomic_write(self, path: Path, data: str) -> None:
-        """Write to a temp file in the same directory, then atomically rename.
-
-        On failure the temp file is cleaned up and the exception re-raised.
-        """
-        tmp_fd, tmp_path = tempfile.mkstemp(
-            dir=str(path.parent), suffix=".tmp"
-        )
-        try:
-            with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
-                f.write(data)
-            os.replace(tmp_path, str(path))
-        except Exception:
-            try:
-                os.unlink(tmp_path)
-            except OSError:
-                pass
-            raise
-        self._write_backup(path)
-
-    def _write_backup(self, path: Path) -> None:
-        """Write a ``.bak`` copy of the file after every successful write."""
-        bak_path = path.with_suffix(".json.bak")
-        try:
-            bak_path.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
-        except OSError:
-            # Backup failure is non-fatal — log and move on.
-            logger.warning("Failed to write backup %s", bak_path)
+    # ── Internal persistence helpers ──────────────────────────────────
 
     def _load_tasks(self) -> List[dict]:
-        try:
-            raw = self.storage_path.read_text(encoding="utf-8")
-        except FileNotFoundError:
+        data = self._store.read_json(self._inbox_name)
+        if data is None:
             return []
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            logger.warning("Corrupt inbox file %s — starting fresh.", self.storage_path)
+        if not isinstance(data, list):
+            logger.warning("Corrupt inbox data — returning empty list.")
             return []
+        return data
 
     def _save_tasks(self, tasks: List[dict]) -> None:
-        self._atomic_write(self.storage_path, json.dumps(tasks, indent=2))
+        self._store.write_json(self._inbox_name, tasks)
 
-    # ── Core API (backward-compatible) ───────────────────────────────
+    # ── Broadcast helper ─────────────────────────────────────────────
+
+    def _emit(self, task_dict: dict, event: str) -> None:
+        """Invoke the broadcast callback if one was configured.
+
+        Errors are logged but never raised -- broadcasting is best-effort.
+        """
+        if self._broadcast_callback is None:
+            return
+        try:
+            self._broadcast_callback(task_dict, event)
+        except Exception:
+            logger.debug("Broadcast callback failed for event '%s'", event, exc_info=True)
+
+    # ── Core API ─────────────────────────────────────────────────────
 
     def send_task(self, task: Task) -> None:
-        """Append *task* to the inbox, auto-generating a correlation_id if missing."""
+        """Append *task* to the inbox, auto-generating a correlation_id if missing.
+
+        If a *broadcast_callback* was provided at construction, it is
+        called with ``(task_dict, "created")`` after the write succeeds.
+        """
         if not task.correlation_id:
             task.correlation_id = str(uuid.uuid4())
         tasks = self._load_tasks()
-        tasks.append(task.model_dump())
+        task_dict = task.model_dump()
+        tasks.append(task_dict)
         self._save_tasks(tasks)
         logger.info(
             "Task %s sent from [%s] to [%s] (correlation=%s).",
@@ -99,6 +107,7 @@ class MessageBus:
             task.receiver_id,
             task.correlation_id,
         )
+        self._emit(task_dict, "created")
 
     def get_inbox(self, agent_id: str) -> List[Task]:
         """Return all tasks addressed to *agent_id*."""
@@ -109,6 +118,65 @@ class MessageBus:
         """Return all tasks sent by *agent_id*."""
         tasks = self._load_tasks()
         return [Task(**t) for t in tasks if t.get("sender_id") == agent_id]
+
+    # ── Pending tasks (executor integration) ──────────────────────────
+
+    def get_pending_tasks(self) -> List[Task]:
+        """Return all tasks with status ``pending``.
+
+        This is the primary method used by the executor loop to fetch
+        work, replacing direct ``inbox.json`` reads.
+        """
+        tasks = self._load_tasks()
+        return [Task(**t) for t in tasks if t.get("status") == "pending"]
+
+    # ── Task status mutation ─────────────────────────────────────────
+
+    def update_task_status(
+        self,
+        task_id: str,
+        status: str,
+        *,
+        result: str = "",
+    ) -> Task | None:
+        """Update the status (and optionally result) of a task by id.
+
+        Emits a broadcast event matching the new status:
+        - ``"completed"`` -> ``"completed"``
+        - ``"failed"``     -> ``"failed"``
+        - ``"escalated"``  -> ``"escalated"``
+        - anything else    -> ``"status_changed"``
+
+        Returns the updated ``Task`` or ``None`` if not found.
+        """
+        event_map: dict[str, str] = {
+            "completed": "completed",
+            "failed": "failed",
+            "escalated": "escalated",
+        }
+        now = datetime.now().isoformat()
+        tasks = self._load_tasks()
+        for i, t in enumerate(tasks):
+            if t.get("id") == task_id:
+                old_status = t.get("status", "")
+                tasks[i]["status"] = status
+                tasks[i]["updated_at"] = now
+                if result:
+                    tasks[i]["result"] = result
+                if not tasks[i].get("created_at"):
+                    tasks[i]["created_at"] = now
+                if status in ("completed", "failed"):
+                    tasks[i]["completed_at"] = now
+                self._save_tasks(tasks)
+                task_dict = tasks[i]
+                event = event_map.get(status, "status_changed")
+                self._emit(task_dict, event)
+                logger.info(
+                    "Task %s status: %s -> %s",
+                    task_id, old_status, status,
+                )
+                return Task(**task_dict)
+        return None
 
     # ── Query helpers ────────────────────────────────────────────────
 
@@ -150,7 +218,7 @@ class MessageBus:
         return None
 
     def count_by_status(self) -> dict[str, int]:
-        """Return a mapping of status name → count across all tasks."""
+        """Return a mapping of status name -> count across all tasks."""
         tasks = self._load_tasks()
         counter: Counter[str] = Counter()
         for t in tasks:

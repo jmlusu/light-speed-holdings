@@ -1,0 +1,41 @@
+[
+  {
+    "id": "semantic_20260720_081605_574762",
+    "memory_type": "semantic",
+    "content": "Resolution for 'Login issue': Password reset",
+    "metadata": {},
+    "agent_id": "customer_success-service",
+    "tags": [
+      "resolution",
+      "high"
+    ],
+    "created_at": "2026-07-20T08:16:05.575531",
+    "access_count": 0
+  },
+  {
+    "id": "semantic_20260720_081605_786110",
+    "memory_type": "semantic",
+    "content": "Contract 'NDA' with Acme approved. Value: $0.00",
+    "metadata": {},
+    "agent_id": "legal-service",
+    "tags": [
+      "legal",
+      "contract_approval"
+    ],
+    "created_at": "2026-07-20T08:16:05.786908",
+    "access_count": 0
+  },
+  {
+    "id": "semantic_20260720_081605_951084",
+    "memory_type": "semantic",
+    "content": "Contract 'A' with X approved. Value: $0.00",
+    "metadata": {},
+    "agent_id": "legal-service",
+    "tags": [
+      "legal",
+      "contract_approval"
+    ],
+    "created_at": "2026-07-20T08:16:05.951084",
+    "access_count": 0
+  }
+]

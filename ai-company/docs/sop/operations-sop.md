@@ -253,7 +253,7 @@ The `LLMClient` (`src/ai_company/llm/client.py`) implements automatic fallback:
 1. Add new agent entries to `company-registry.yaml`
 2. Assign appropriate tools and permissions
 3. Configure model routing for the new agent
-4. Regenerate agent files: `AgentGenerator().generate_all()`
+4. Regenerate agent files: `ai-company generate`
 5. Verify the new agent appears in `ai-company agents list`
 
 ## 8. Escalation Management

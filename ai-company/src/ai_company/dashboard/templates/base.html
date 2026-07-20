@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Light Speed Holdings — CEO Dashboard{% endblock %}</title>
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
+              400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
+              800: '#075985', 900: '#0c4a6e', 950: '#082f49',
+            },
+            surface: {
+              50:  '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1',
+              400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155',
+              800: '#1e293b', 900: '#0f172a', 950: '#020617',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  {% block head %}{% endblock %}
+</head>
+<body class="bg-surface-950 text-surface-200 min-h-screen antialiased"
+      x-data="dashboard()" x-init="init()">
+
+  <!-- ═══ TOP BAR ═══ -->
+  <header class="bg-surface-900/80 backdrop-blur-md border-b border-surface-700/50 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-brand-600/20">LS</div>
+      <div>
+        <h1 class="text-lg font-semibold text-surface-100">Light Speed Holdings</h1>
+        <p class="text-xs text-surface-500 -mt-0.5">CEO Dashboard</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4 text-sm">
+      <div class="flex items-center gap-2 text-surface-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Uptime: <span x-text="formatUptime(kpis.uptime_seconds)" class="font-mono text-surface-300"></span></span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="relative flex h-2 w-2" x-show="wsConnected">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span class="text-xs font-medium px-2 py-0.5 rounded-full"
+              :class="wsConnected ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'"
+              x-text="wsConnected ? 'Live' : 'Offline'"></span>
+      </div>
+      <div class="flex items-center gap-2 text-surface-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span x-text="wsClients + ' online'" class="text-xs font-mono"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ NAVIGATION TABS ═══ -->
+  <nav class="bg-surface-900/60 border-b border-surface-700/50 px-6">
+    <div class="flex gap-1 overflow-x-auto">
+      {% for tab in tabs %}
+      <a href="{{ tab.href }}"
+         class="flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap
+                {% if tab.id == active_tab %}
+                  border-brand-500 text-brand-400 bg-brand-500/5
+                {% else %}
+                  border-transparent text-surface-500 hover:text-surface-300 hover:border-surface-600
+                {% endif %}">
+        {{ tab.icon | safe }}
+        {{ tab.label }}
+        {% if tab.badge %}
+        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-400"
+              x-text="tab.badge"></span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="max-w-[1440px] mx-auto px-6 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ═══ ALERT TOAST ═══ -->
+  <div x-show="toast.show" x-transition:enter="transform ease-out duration-300"
+       x-transition:enter-start="translate-y-2 opacity-0" x-transition:enter-end="translate-y-0 opacity-100"
+       x-transition:leave="transform ease-in duration-200"
+       x-transition:leave-start="translate-y-0 opacity-100" x-transition:leave-end="translate-y-2 opacity-0"
+       class="fixed bottom-6 right-6 z-50 max-w-sm">
+    <div class="rounded-xl shadow-2xl border p-4"
+         :class="{
+           'bg-red-950/90 border-red-800 text-red-200': toast.type === 'error',
+           'bg-amber-950/90 border-amber-800 text-amber-200': toast.type === 'warning',
+           'bg-emerald-950/90 border-emerald-800 text-emerald-200': toast.type === 'success',
+           'bg-surface-800/90 border-surface-700 text-surface-200': toast.type === 'info'
+         }">
+      <div class="flex items-start gap-3">
+        <div class="flex-1">
+          <p class="text-sm font-medium" x-text="toast.title"></p>
+          <p class="text-xs mt-1 opacity-80" x-text="toast.message"></p>
+        </div>
+        <button @click="toast.show = false" class="text-current opacity-50 hover:opacity-100">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="border-t border-surface-800 mt-8 py-4 px-6 text-center text-xs text-surface-600">
+    Light Speed Holdings &mdash; AI Company Builder v0.1.0
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

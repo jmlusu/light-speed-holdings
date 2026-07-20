@@ -287,13 +287,8 @@ class AgentLoop:
         quality-based fallback: if all providers in the current tier fail,
         promotes to the next higher tier (fast → standard → premium).
         """
-        # Resolve which provider/model to use via the router (with domain detection)
-        self.llm.router.resolve(
-            priority=self._current_priority,
-            task_prompt=self._current_task_prompt,
-        )
-
         # Build fallback chain: current tier providers + higher tiers
+        # (resolve_with_fallback returns the primary route + all fallback tiers)
         fallback_routes = self.llm.router.resolve_with_fallback(
             priority=self._current_priority,
             task_prompt=self._current_task_prompt,

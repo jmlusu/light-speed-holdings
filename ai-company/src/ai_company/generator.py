@@ -5,11 +5,14 @@ Supports template selection based on agent type and multi-format output.
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Any
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
+
+logger = logging.getLogger(__name__)
 
 # Template selection mapping
 _TEMPLATE_MAP = {
@@ -40,6 +43,7 @@ class AgentGenerator:
         self.env = Environment(
             loader=FileSystemLoader(str(self.templates_dir)),
             keep_trailing_newline=True,
+            autoescape=True,
         )
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -60,7 +64,7 @@ class AgentGenerator:
         agents = data.get("company", {}).get("agents", [])
         company_name = data.get("company", {}).get("name", "AI Company")
 
-        print(f"Generating {len(agents)} agents for {company_name}...")
+        logger.info("Generating %d agents for %s", len(agents), company_name)
 
         generated: list[Path] = []
         for agent in agents:
@@ -70,9 +74,9 @@ class AgentGenerator:
             out_file = self.output_dir / f"{agent['id']}.md"
             out_file.write_text(rendered, encoding="utf-8")
             generated.append(out_file)
-            print(f"  Wrote: {out_file} (type={agent_type})")
+            logger.debug("Wrote: %s (type=%s)", out_file, agent_type)
 
-        print(f"Generation complete: {len(generated)} agents.")
+        logger.info("Generation complete: %d agents.", len(generated))
         return generated
 
     def generate_from_registry(self, registry: Any) -> list[Path]:
@@ -157,5 +161,5 @@ class AgentGenerator:
             out_file.write_text(rendered, encoding="utf-8")
             generated.append(out_file)
 
-        print(f"Generated {len(generated)} agent files from registry.")
+        logger.info("Generated %d agent files from registry.", len(generated))
         return generated

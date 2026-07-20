@@ -54,10 +54,10 @@ Run registry validation.
 
 **Command:**
 ```bash
-python -c "from ai_company.registry.loader import RegistryLoader; r = RegistryLoader(); print(f'Loaded {len(r.agents)} agents')"
+ai-company generate --dry-run
 ```
 
-**Expected Result:** All agents load without errors.
+**Expected Result:** All agents validate cleanly, no errors reported.
 
 ### Step 3: Generate Agent Files
 
@@ -65,7 +65,7 @@ Render agent markdown files from registry.
 
 **Command:**
 ```bash
-python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+ai-company generate
 ```
 
 **Expected Result:** `.opencode/agents/*.md` files updated.
