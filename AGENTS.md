@@ -1,126 +1,109 @@
-# AGENTS.md
+# AI Company Builder — Agent Guide
 
-## Project Overview
+## 1 Project Snapshot
 
-AI Company Builder — a Python tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files. Features a multi-turn agentic loop (ReAct pattern), audit trail, memory integration, dead-letter queue, KPI dashboards, and 24 CLI commands.
+- **What it is**: Python CLI tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files.
+- **Core workflow**: Registry YAML → Jinja2 template → `.opencode/agents/*.md` + `company/*.yaml`
+- **Runtime shape**: Python 3.12+ CLI (Typer), no web server. Packages via setuptools, dev tools via pip.
+- **Start here**: [Architecture](docs/ARCHITECTURE.md), [Development](docs/DEVELOPMENT.md), [ECL](docs/ECL.md)
 
-## Repository Structure
+## 2 Core Workflow / Domain Model
 
-- **`ai-company/`** — The active project root (has `pyproject.toml`, `.venv/`, `src/`, `tests/`, `docs/`)
-- **`ai-company/src/ai_company/`** — Source code (all modules below)
-- **`ai-company/tests/`** — 785 tests (unit + integration), pytest
-- **Root `src/ai_company/`** — Legacy/staging area (contains code with syntax errors; do NOT work here)
-- **Root files** (`setup_phase6.py`, etc.) — One-time setup scripts, not part of active codebase
+| Concept | Source | What Agents Need To Know |
+|---------|--------|--------------------------|
+| Agent Registry | `company-registry.yaml` | Single source of truth for all agents (id, name, tools, permissions) |
+| Generator | `src/ai_company/generator.py` | Reads registry, renders Jinja2 template, writes `.opencode/agents/*.md` |
+| Agent Template | `templates/agents/agent.md.j2` | OpenCode-native format with `mode: subagent` + `permission:` blocks |
+| CLI Entry | `src/ai_company/cli/main.py` | Typer app, 17 subcommands registered here |
+| Task System | `src/ai_company/orchestrator/message_bus.py` | JSON-based task queue at `.opencode/inbox.json` |
+| Domain Models | `src/ai_company/models/models.py` | Pydantic models: Executive, Specialist, Department, Company |
 
-## Vision & Roadmap
+## 3 Where To Work
 
-One human CEO supervises AI executives, managers, and specialists. Goal: automate 70-90% of routine knowledge work (research, drafting, coding, docs, reporting).
+| Section | Document | Description |
+|---------|----------|-------------|
+| 3.1 | [System Architecture](docs/ARCHITECTURE.md) | Module hierarchy, data flow, key files |
+| 3.2 | [ECL](docs/ECL.md) | Change lifecycle, context loading, harness workflow |
+| 3.3 | [Status](docs/STATUS.md) | Recent handoff, current state |
 
-**Implementation phases:**
-1. ✅ Foundation — Project structure, CLI framework, agent registry, generator
-2. ✅ Core Operations — MessageBus, Pydantic models, 24 CLI commands, 785 tests
-3. ✅ Audit & Memory — Audit trail package, memory integration, dead-letter queue, circuit breaker
-4. 🔲 Security & Gating — 5-tier approval system, HITL non-blocking, file locking, dashboard auth
-5. 🔲 Autonomous Coordination — Scheduled cycles, WebSocket broadcast, escalation persistence
+## 4 Context Loading
 
-## Development
+1. Read this file.
+2. Read [ECL](docs/ECL.md) for change lifecycle and context rules.
+3. If `harness/changes/active/summary.md` exists, read active change files before any task-specific docs.
+4. If no active change exists and `harness/evolution/pending.md` exists, read it before `docs/STATUS.md`.
+5. If no active change exists and no pending evolution exists, read [Status](docs/STATUS.md).
+6. Read the relevant source files for the task.
 
-```bash
-# From ai-company/ directory
+## 5 Development Commands
+
+### Quick Start (New Developers)
+
+```powershell
 cd ai-company
-python -m venv .venv
-.venv\Scripts\activate        # Windows
-pip install -e ".[dev]"
-
-# Run CLI
-ai-company --help
-python -m ai_company.cli.main --help
-
-# Run tests (785 total)
-pytest
-
-# Lint / typecheck (both clean)
-ruff check src/
-mypy src/
+.\scripts\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
+.\scripts\dev.ps1 status    # Show project status
+.\scripts\dev.ps1 test      # Run test suite
+.\scripts\dev.ps1 lint      # Run linter + type checker
 ```
 
-## Key Commands
+### Manual Setup
 
-| Task | Command |
-|------|---------|
-| Run all tests | `pytest` |
-| Run single test file | `pytest tests/unit/test_models.py` |
-| Run integration tests | `pytest tests/integration/` |
-| Lint | `ruff check src/` |
-| Type check | `mypy src/` |
-| Generate agents from registry | `python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"` |
-| Bootstrap full company | `ai-company company run` |
-| Start executor | `ai-company executor start` |
-| Run diagnostics | `ai-company doctor run` |
+```bash
+cd ai-company
+pip install -e ".[dev]"
+pre-commit install           # Enable git hooks (ruff, mypy, bandit, etc.)
+ai-company --help            # CLI entry point
+ruff check src/              # Lint
+mypy src/                    # Type check
+pytest                       # Tests
+python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
+```
 
-## Architecture
+### Pre-commit Hooks
 
-- **Entry point**: `ai_company.cli.main:app` (Typer app, 24 subcommands)
-- **Agent hierarchy**: `company-registry.yaml` → Jinja2 templates → `.opencode/agents/*.md`
-- **Agentic loop**: `executor/agent_loop.py` — ReAct pattern with multi-turn LLM↔tool interaction, cost tracking, HITL gates
-- **Executor**: `executor/loop.py` — Polls inbox.json, processes tasks via AgentLoop, dead-letter queue, memory recall
-- **Task system**: `orchestrator/message_bus.py` — JSON-based task queue at `.opencode/inbox.json`
-- **Audit trail**: `audit/` — JSONL event logging (tool calls, HITL decisions, task lifecycle)
-- **Memory**: `memory/` — 6-type memory store (episodic, semantic, procedural, relational, temporal, aggregate) with executor integration
-- **Models**: Pydantic models in `models/` (Company, Executive, Department, Agent, Task, Workflow, Risk, Decision, etc.)
-- **Decision engine**: `decision/engine.py` — Approval matrix, risk assessment, decision tree navigation
-- **Workflow engine**: `workflow/engine.py` — 9 workflow definitions, step tracking, SLA monitoring
-- **Graph engine**: `graph/engine.py` — 4 graph types (org chart, decision, workflow, knowledge) with BFS pathfinding
-- **Dashboard**: `dashboard/` — FastAPI REST API, WebSocket, KPI collectors (7 departments), analytics
-- **LLM layer**: `llm/` — Multi-provider client (5 providers), cost tracker, circuit breaker, shared JSON parser
+Hooks run automatically on `git commit`. To run manually:
 
-## Current State
+```bash
+pre-commit run --all-files    # Run all hooks
+pre-commit run ruff           # Run just ruff
+pre-commit run mypy           # Run just mypy
+pre-commit run bandit         # Run just bandit
+```
 
-**Fully working (785 tests, ruff clean, mypy clean):**
-- CLI: 24 subcommands (company, decision, graph, workflows, memory, agents, board, departments, executives, specialists, orchestrator, models, dashboard, executor, doctor, marketing, sales, customer-success, legal, hr, generate, status, sop, raci)
-- Executor with multi-turn AgentLoop (ReAct pattern), HITL gates, cost tracking
-- Audit trail package (events, writer, reader, integration hooks in executor)
-- Memory engine with executor integration (recall context before task execution)
-- Dead-letter queue for stale tasks (30-min timeout)
-- Circuit breaker for LLM providers
-- KPI collectors for all 7 departments (engineering, finance, hr, legal, marketing, sales, customer_success)
-- Analytics layer (history tracking, trend analysis, alert rules)
-- Dashboard REST API with WebSocket support
-- Registry system (4 modules: loader, parser, resolver, validator) loading 19 YAML configs
-- 12 Jinja2 templates for agent generation
-- BootstrapEngine for full company generation
-- DecisionEngine, WorkflowEngine, MemoryEngine, GraphEngine
-- 4 SOPs (incident response, deployment, HR onboarding, budget approval) + 3 RACI matrices
-- Scheduler integrated into executor loop
+Installed hooks: trailing-whitespace, end-of-file-fixer, check-yaml, ruff (lint+format), mypy, bandit (security).
 
-**Known gaps (remaining work):**
-- Executor bypasses MessageBus for direct file I/O (GAP-001)
-- No file locking on shared JSON/YAML state (GAP-002)
-- Tier rules not integrated into ToolRunner (GAP-003)
-- HITL gate blocks executor thread (GAP-004)
-- WebSocket broadcast functions never called (GAP-006)
-- Escalation events not persisted (GAP-008)
-- Dashboard CORS allows all origins (GAP-010)
-- Dashboard API reads files directly (GAP-011)
-- Remaining department SOPs needed (marketing, sales, customer-success, legal, operations)
-- No integration tests for full end-to-end pipeline
+### Disaster Recovery
 
-## Conventions
+```powershell
+.\scripts\backup.ps1                  # Backup .opencode/, company/, results/
+.\scripts\backup.ps1 -KeepCount 14    # Keep 14 days of backups
+```
 
-- Python 3.12+
-- Line length: 100 (ruff + black)
-- Test path: `tests/` with `pythonpath = ["src"]` in pyproject.toml
-- Agent IDs: snake_case (e.g., `chief_of_staff`, `lead_backend`)
-- Task inbox: `.opencode/inbox.json` (JSON array of Task objects)
-- All modules use `logging.getLogger(__name__)` — bare `print()` only in CLI output
+### Staging Environment
 
-## Gotchas
+```bash
+docker compose -f docker-compose.staging.yml up --build       # Start staging
+docker compose -f docker-compose.staging.yml --profile worker up   # With worker
+docker compose -f docker-compose.staging.yml --profile monitoring up  # With Prometheus
+```
 
-- Root `src/ai_company/cli.py` has syntax errors on lines 41 and 81 — ignore this directory, work in `ai-company/`
-- Two `.venv` directories exist (root + `ai-company/`); always use `ai-company/.venv/`
-- `tests/unit/test_security.py` has a collection error (missing dependency) — skip with `pytest --ignore=tests/unit/test_security.py`
-- `tests/unit/test_ml.py` has a collection error — skip with `pytest --ignore=tests/unit/test_ml.py`
-- `src/ai_company/data/kpi_pipeline.py` has ruff errors (missing `json` import) — new file needing fix
-- `src/ai_company/services/sales.py` has ruff E741 warnings (ambiguous variable `l`) — new file needing fix
-- Windows environment: PowerShell scripts in `ai-company/scripts/`
-- Dashboard API uses FastAPI; run with `ai-company dashboard start` or directly via uvicorn
+Staging dashboard runs on port **9420** (production: 8420).
+
+## 6 Verification
+
+| Change Type | Minimum Verification |
+|-------------|----------------------|
+| Generator / template | `python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"` |
+| CLI commands | `ai-company --help` + `ai-company <command> --help` |
+| Models / orchestrator | `pytest` |
+| Any source change | `ruff check src/ && mypy src/ && pytest` |
+| Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+
+## 7 Safety Boundaries
+
+- Agents may modify business/application code when the user's task requires it.
+- Do not edit secrets, local env files, generated build outputs, dependency folders, or unrelated user changes.
+- Active ECL change constraints are the current task source of truth and override generic project guidance.
+- Do not overwrite active ECL change context; park or close it through the harness script first.
+- Do not hand-edit `harness/changes/INDEX.json`; it is generated by script only.

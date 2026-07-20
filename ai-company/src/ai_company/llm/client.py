@@ -100,8 +100,10 @@ class LLMClient:
         last_error: str = ""
         last_raw: str = ""
 
-        for attempt in range(1, max_retries + 1):
-            for provider_id, model in provider_chain:
+        for attempt in range(max_retries):
+                provider_idx = attempt % len(provider_chain)
+                provider_id, model = provider_chain[provider_idx]
+                
                 provider = self._providers.get(provider_id)
                 breaker = self._circuit_breakers.get(provider_id)
                 if not provider or not provider.is_available():
@@ -121,13 +123,11 @@ class LLMClient:
                     if parsed is not None:
                         return parsed
                     last_raw = response.content
-                    last_error = f"Attempt {attempt}: Invalid JSON from {provider_id}/{model}"
-                    break  # Move to next attempt (retry with same provider chain)
+                    last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
                 except LLMProviderError as exc:
                     if breaker:
                         breaker.record_failure()
-                    last_error = f"Attempt {attempt}: {exc}"
-                    continue  # Try next provider in tier
+                    last_error = f"Attempt {attempt + 1}: {exc}"
 
         raise LLMResponseError(
             f"Failed to get valid JSON after {max_retries} attempts. Last error: {last_error}",

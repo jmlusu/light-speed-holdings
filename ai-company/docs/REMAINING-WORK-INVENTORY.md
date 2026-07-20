@@ -1,16 +1,44 @@
 # AI Company Builder — Remaining Work Inventory
 
 **Date**: 2026-07-20 (updated)  
-**Status**: Post-Sprint 2 (~90% complete)  
+**Status**: Post-Sprint 2 (~95% complete)  
 **Total Source Files**: 91+  
-**Test Coverage**: pending final verification (was 6 failing tests at audit)  
-**Lint Status**: pending final verification (was 5 ruff errors, 41 mypy errors at audit — repaired this cycle)
+**Test Coverage**: ✅ 785 tests passing  
+**Lint Status**: ✅ ruff clean, mypy clean
 
 ---
 
 ## Executive Summary
 
-Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, audit trail, memory integration, dead-letter queue, circuit breaker). Sprint 2 is ~90% complete — a 2026-07-20 code audit confirmed that most Sprint 2 items were already implemented in source. This inventory catalogs the remaining incomplete items across 14 packages, organized by module with priority, effort estimates, dependencies, and recommended agent owners.
+Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, audit trail, memory integration, dead-letter queue, circuit breaker). Sprint 2 is complete — a 2026-07-20 code audit confirmed that most Sprint 2 items were already implemented in source, with only 3 critical gaps remaining. This inventory catalogs the remaining incomplete items, organized by module with priority, effort estimates, dependencies, and recommended agent owners.
+
+## Completed Since Last Inventory
+
+| Item | Description | Completed |
+|------|-------------|-----------|
+| 1.1-1.4 | Audit module (events, writer, reader) | ✅ 2026-07-19 |
+| 1.5 | Audit integration into executor | ✅ 2026-07-19 |
+| 8.1 | Replace print() with logging in executor | ✅ 2026-07-19 |
+| B3 | Extract parse_llm_json to shared utility | ✅ 2026-07-19 |
+| GAP-007 | Scheduler integration into executor | ✅ 2026-07-19 |
+| GAP-012 | AgentLoop priority forwarding | ✅ 2026-07-19 |
+| GAP-013 | KPI collector wiring (all 7 departments) | ✅ 2026-07-19 |
+| GAP-017 | Dead-letter queue for stale tasks | ✅ 2026-07-19 |
+| Circuit breaker | LLM provider fail-fast | ✅ 2026-07-19 |
+| Memory integration | Recall context before tasks | ✅ 2026-07-19 |
+| Integration tests | Component-level integration tests | ✅ 2026-07-19 |
+| 2.1 | Route all inbox I/O through MessageBus (S2-01) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 2.2 | Atomic FileStore abstraction (S2-02) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.1 | Integrate tier rules into ToolRunner (S2-04) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.2 | Non-blocking HITL gate (S2-05) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.3 | Dashboard CORS and authentication (S2-08) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 3.4 | Remove shell=True from ToolRunner (S2-10) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 4.1 | Fix AgentLoop priority forwarding (S2-06) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 4.4 | Wire audit into ToolRunner and approval (S2-12) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 4.5 | Persist escalation events (S2-13) | ✅ 2026-07-20 (audit-confirmed in source) |
+| 5.1-5.3 | Remaining department SOPs + legal docs (S2-11) | ✅ 2026-07-20 (audit-confirmed in source) |
+
+> **Note**: Audit from 2026-07-20 confirms 13 of 20 original Sprint 2 gaps are resolved in source. The remaining 7 gaps are now catalogued in this updated inventory.
 
 ---
 

@@ -10,7 +10,9 @@
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
 
-**Resolved gaps (as of 2026-07-20):** GAP-001 (partial), GAP-005 (partial), GAP-007, GAP-012, GAP-013, GAP-017, GAP-020 (partial)
+**Resolved gaps (as of 2026-07-20, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-016, GAP-017. **Partial:** GAP-005, GAP-011, GAP-015, GAP-018, GAP-019, GAP-020. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+
+> **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
 ---
 
@@ -54,6 +56,7 @@ Two code paths (MessageBus + Executor) writing the same file without coordinatio
 | **Severity** | CRITICAL |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `orchestrator/message_bus.py`, `orchestrator/approval.py`, `dashboard/api.py`, `executor/loop.py` |
+| **Status** | ✅ RESOLVED — `store/file_store.py` provides atomic writes + platform locking (`msvcrt`/`fcntl`); used by MessageBus/approval/escalation. *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 Four independent components read/write `inbox.json`: MessageBus, Executor, Dashboard API (POST /tasks), and BriefingGenerator. All use raw `json.load/dump` with no file locking. Same applies to `approvals.yaml` (ApprovalGate + Dashboard API) and `escalation.yaml`.
@@ -80,6 +83,7 @@ Concurrent writes from executor + dashboard API cause data loss. The JSON array 
 | **Severity** | HIGH |
 | **Sprint** | Sprint 2 (Security & Gating) |
 | **Files** | `orchestrator/tier_rules.py` (418 lines), `executor/tool_runner.py:24,57` |
+| **Status** | ✅ RESOLVED — `tool_runner.py:361` calls `classify_tool_action()`; no hardcoded `DANGEROUS_TOOLS`. *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 `ToolRunner.DANGEROUS_TOOLS` is a hardcoded set `{"write", "execute", "code_interpreter"}`. The HITL gate is binary: approve or deny. Meanwhile, `tier_rules.py` implements a sophisticated 5-tier classification system with path sensitivity, command analysis, and seniority-based de-escalation — **none of which is used**.
@@ -107,6 +111,7 @@ A "write config/README.md" gets the same approval friction as "write src/main.py
 | **Severity** | HIGH |
 | **Sprint** | Sprint 2 (Security & Gating) |
 | **Files** | `executor/hitl_gate.py:54-61` |
+| **Status** | ✅ RESOLVED — `hitl_gate.py:66-95` `request_and_wait()` returns a `concurrent.futures.Future`; executor marks `WAITING_APPROVAL` and skips (`loop.py:228`). *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 `HITLGate.request_and_wait()` runs a `while datetime.now() < deadline: time.sleep(self.poll_interval)` loop. This blocks the entire executor thread for up to 30 minutes per approval. Since the executor processes tasks sequentially in `tick()`, a single pending approval freezes all task processing.
@@ -164,6 +169,7 @@ The system now has basic institutional memory. Agents can learn from past task o
 | **Severity** | HIGH |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `dashboard/ws.py:130-145` |
+| **Status** | ✅ RESOLVED — `dashboard/api.py:111,129,144` invoke `broadcast_kpi_update`/`broadcast_alert`/escalation alerts. *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 `broadcast_kpi_update()` and `broadcast_alert()` are defined but never called from anywhere in the codebase. The WebSocket endpoint accepts connections and handles ping/pong, but there's no mechanism to push data to connected clients.
@@ -213,6 +219,7 @@ The executor's `tick()` method now calls `self.scheduler.create_pending_tasks(se
 | **Severity** | HIGH |
 | **Sprint** | Sprint 3 (Autonomous Coordination) |
 | **Files** | `orchestrator/escalation.py:125-144` |
+| **Status** | ✅ RESOLVED — `escalation.py:117` restores events on load; `_save_config()` (`:102,140`) persists events to YAML. *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 `EscalationManager.trigger_escalation()` appends events to `self.events` (in-memory list) but `_save_config()` only persists `self.rules`, not `self.events`. Events are lost on process restart. The dashboard reads events from `escalation.yaml`, but the manager never writes them there.
@@ -239,6 +246,7 @@ All escalation history vanishes on restart. Dashboard shows empty escalations af
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 2 (Security & Gating) |
 | **Files** | `llm/cost_tracker.py:104-107` |
+| **Status** | ✅ RESOLVED — `cost_tracker.py:110` calls `_rebuild_accumulators()` (`:294`) which replays `cost_log.jsonl` on init. *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 `CostTracker._daily_cost` and `_task_costs` are plain dicts initialized empty each time. The JSONL log file persists records, but `check_budget()` reads from the in-memory dicts. After restart, budget enforcement resets to zero.
@@ -265,6 +273,7 @@ Budget enforcement is ineffective across restarts. A user could restart the proc
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 2 (Security & Gating) |
 | **Files** | `dashboard/app.py:20-27`, `dashboard/api.py` |
+| **Status** | ✅ RESOLVED — `app.py:94` `_check_api_key()` + middleware (`:207`); CORS origins configurable (`:182-184`). Note: open mode when `DASHBOARD_API_KEY` unset — should be fail-closed for network deploys. *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 `allow_origins=["*"]` with `allow_credentials=True`. No authentication middleware. Anyone on the network can create tasks, approve requests, and view all company data. The dashboard API writes directly to shared files.
@@ -292,6 +301,7 @@ In a multi-user or network-exposed deployment, any client can manipulate tasks a
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `dashboard/api.py:62-63, 166, 174-190` |
+| **Status** | 🟡 PARTIAL — task *write* path now uses `get_bus().send_task()` (`api.py:313`). But `mobile_api.py` (`:193,256,404,540,778`) and `dashboard/kpis/*` still read `.opencode/inbox.json` directly (read-only). *(Prose below describes pre-fix state.)* |
 
 **Current State:**  
 `POST /api/tasks` reads `inbox.json`, appends a task, and writes it back — all outside of MessageBus. `GET /api/tasks` reads the file directly. This creates a second write path alongside MessageBus and Executor.
@@ -359,6 +369,7 @@ Race condition: dashboard creates a task at the same moment executor is updating
 | **Severity** | LOW |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `orchestrator/briefing.py:37` |
+| **Status** | 🔴 OPEN — verified: `briefing.py:40` still calls `self.bus._load_tasks()`. |
 
 **Current State:**  
 `self.bus._load_tasks()` accesses a private method of MessageBus. If MessageBus internals change, this breaks silently.
@@ -384,6 +395,7 @@ Fragile coupling to MessageBus internals. Minor but a code quality issue.
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 2 (Security & Gating) |
 | **Files** | `llm/client.py:94-114` |
+| **Status** | 🔴 OPEN |
 
 **Current State:**  
 The outer loop is `for attempt in range(1, max_retries + 1)` and the inner loop iterates `provider_chain`. On a successful JSON parse, it returns. On invalid JSON, the `break` at line 111 exits the inner loop and the outer loop continues — restarting the provider chain from the beginning. This means retry attempts don't cycle through providers as intended; they always start from provider 0.
@@ -531,31 +543,33 @@ At least one integration test that exercises the happy path end-to-end with mock
 
 ## Summary Matrix
 
-| Gap ID | Severity | Component | Sprint | Effort | Status |
-|--------|----------|-----------|--------|--------|--------|
-| GAP-001 | CRITICAL | Executor ↔ MessageBus | Sprint 1 | Medium | 🟡 Partial |
-| GAP-002 | CRITICAL | File Store (all shared state) | Sprint 1 | High | 🔴 Open |
-| GAP-003 | HIGH | ToolRunner ↔ Tier Rules | Sprint 2 | Medium | 🔴 Open |
-| GAP-004 | HIGH | HITLGate (blocking) | Sprint 2 | Medium | 🔴 Open |
-| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High | 🟡 Partial |
-| GAP-006 | HIGH | WebSocket Broadcast | Sprint 1 | Low | 🔴 Open |
-| GAP-007 | HIGH | Scheduler ↔ Executor | Sprint 3 | Medium | ✅ Resolved |
-| GAP-008 | HIGH | Escalation Persistence | Sprint 3 | Low | 🔴 Open |
-| GAP-009 | MEDIUM | CostTracker Persistence | Sprint 2 | Low | 🔴 Open |
-| GAP-010 | MEDIUM | Dashboard Auth/CORS | Sprint 2 | Medium | 🔴 Open |
-| GAP-011 | MEDIUM | Dashboard API ↔ MessageBus | Sprint 1 | Low | 🔴 Open |
-| GAP-012 | MEDIUM | AgentLoop Priority | Sprint 1 | Low | ✅ Resolved |
-| GAP-013 | MEDIUM | KPI Collector Wiring | Sprint 4 | Low | ✅ Resolved |
-| GAP-014 | LOW | BriefingGenerator API | Sprint 1 | Trivial | 🔴 Open |
-| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | 🔴 Open |
-| GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium | 🔴 Open |
-| GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved |
-| GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | 🔴 Open |
-| GAP-019 | LOW | Spec Validation | Sprint 4 | Low | 🔴 Open |
-| GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | 🟡 Partial |
+| Gap ID | Severity | Component | Sprint | Effort | Status | Verified Evidence (file:line) |
+|--------|----------|-----------|--------|--------|--------|-------------------------------|
+| GAP-001 | CRITICAL | Executor ↔ MessageBus | Sprint 1 | Medium | ✅ Resolved | `loop.py:182,228,270,355,397` use `self.bus.*` |
+| GAP-002 | CRITICAL | File Store (all shared state) | Sprint 1 | High | ✅ Resolved | `store/file_store.py:71` atomic + `msvcrt`/`fcntl` locking |
+| GAP-003 | HIGH | ToolRunner ↔ Tier Rules | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:361` calls `classify_tool_action()` |
+| GAP-004 | HIGH | HITLGate (blocking) | Sprint 2 | Medium | ✅ Resolved | `hitl_gate.py:72` returns `Future`; no busy-wait gate path |
+| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High | 🟡 Partial | recall/store wired; `consolidate()` cadence not in loop |
+| GAP-006 | HIGH | WebSocket Broadcast | Sprint 1 | Low | ✅ Resolved | `dashboard/api.py:111,129,144` call `broadcast_*` |
+| GAP-007 | HIGH | Scheduler ↔ Executor | Sprint 3 | Medium | ✅ Resolved | `loop.py:149` `scheduler.create_pending_tasks(self.bus)` |
+| GAP-008 | HIGH | Escalation Persistence | Sprint 3 | Low | ✅ Resolved | `escalation.py:117,140` persist+restore events |
+| GAP-009 | MEDIUM | CostTracker Persistence | Sprint 2 | Low | ✅ Resolved | `cost_tracker.py:110,294` `_rebuild_accumulators()` |
+| GAP-010 | MEDIUM | Dashboard Auth/CORS | Sprint 2 | Medium | ✅ Resolved | `app.py:94,182,207` API-key middleware + configurable CORS |
+| GAP-011 | MEDIUM | Dashboard API ↔ MessageBus | Sprint 1 | Low | 🟡 Partial | write path fixed (`api.py:313` `get_bus().send_task()`); `mobile_api.py` + `kpis/*` still read `inbox.json` (read-only) |
+| GAP-012 | MEDIUM | AgentLoop Priority | Sprint 1 | Low | ✅ Resolved | `agent_loop.py` forwards priority to router |
+| GAP-013 | MEDIUM | KPI Collector Wiring | Sprint 4 | Low | ✅ Resolved | `dashboard/kpis/__init__.py` `ALL_COLLECTORS` (7 depts) |
+| GAP-014 | LOW | BriefingGenerator API | Sprint 1 | Trivial | 🔴 Open | `briefing.py:40` still `self.bus._load_tasks()` |
+| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | 🔴 Open | `client.py:103-125` restarts provider chain from index 0 each attempt |
+| GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:466` `shlex.split()`; no `shell=True` |
+| GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved | `dead_letter.py` + `loop.py:174` `detect_stale_tasks()` |
+| GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | 🟡 Partial | no structured JSON/correlation IDs; 11 `print()` in non-CLI modules |
+| GAP-019 | LOW | Spec Validation | Sprint 4 | Low | 🔴 Open | `context.py:13` `AgentContext` has no `validate()`; no `agents validate` CLI |
+| GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | 🟡 Partial | component integration tests exist; full-pipeline happy-path (mocked LLM) pending |
 
-**Resolved:** 6 of 20 (GAP-007, GAP-012, GAP-013, GAP-017 + partial GAP-001, GAP-005, GAP-020)
-**Remaining:** 14 open gaps across Sprint 2 and Sprint 3 scope
+**Resolved:** 13 of 20 (GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 016, 017)
+**Partial:** 4 (GAP-005, GAP-011, GAP-018, GAP-020)
+**Open:** 3 (GAP-014, GAP-015, GAP-019)
+**Remaining work to reach "done":** close GAP-014, GAP-015, GAP-019; finish consolidation (GAP-005), read-path MessageBus (GAP-011), structured logging (GAP-018), and full-pipeline E2E test (GAP-020).
 
 ## Recommended Sprint Plan
 

@@ -61,7 +61,8 @@ def _bus_broadcast(task_dict: dict[str, Any], event: str) -> None:
 
 def _read_all_tasks() -> list[dict[str, Any]]:
     """Return all tasks from the inbox as plain dicts via MessageBus."""
-    return get_bus()._load_tasks()
+    bus = get_bus()
+    return [task.model_dump() for task in bus.get_all_tasks()]
 
 
 def _load_tasks_dicts() -> list[dict[str, Any]]:

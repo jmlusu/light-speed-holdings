@@ -37,7 +37,7 @@ class BriefingGenerator:
         agents = self._load_registry()
         pending_tasks: dict[str, list[dict]] = {}
 
-        for task_dict in self.bus._load_tasks():
+        for task_dict in self.bus.get_inbox("all"):
             if task_dict.get("status") == "pending":
                 receiver = task_dict["receiver_id"]
                 pending_tasks.setdefault(receiver, []).append(task_dict)

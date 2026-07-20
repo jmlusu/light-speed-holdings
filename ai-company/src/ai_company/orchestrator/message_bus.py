@@ -131,6 +131,11 @@ class MessageBus:
         tasks = self._load_tasks()
         return [Task(**t) for t in tasks if t.get("sender_id") == agent_id]
 
+    def get_all_tasks(self) -> List[Task]:
+        """Return all tasks in the inbox (public method for integration)."""
+        tasks = self._load_tasks()
+        return [Task(**t) for t in tasks]
+
     # ── Pending tasks (executor integration) ──────────────────────────
 
     def get_pending_tasks(self) -> List[Task]:

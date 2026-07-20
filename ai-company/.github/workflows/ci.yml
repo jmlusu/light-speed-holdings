@@ -38,7 +38,7 @@ jobs:
         run: mypy src/
 
       - name: Run tests
-        run: pytest -q --ignore=tests/unit/test_security.py --ignore=tests/unit/test_ml.py
+        run: pytest -q
 
   # Reusable quality gate consumed by monitoring.yml health-check.
   quality-gate:

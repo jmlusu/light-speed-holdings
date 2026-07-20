@@ -15,6 +15,7 @@ semantic search when a VectorStore is configured via
 
 from __future__ import annotations
 
+import itertools
 import json
 import logging
 from datetime import datetime
@@ -24,6 +25,11 @@ from typing import Any
 from ai_company.store.file_store import FileStore
 
 logger = logging.getLogger(__name__)
+
+# Monotonic insertion counter so recency ordering is deterministic even when
+# two entries share an identical ``created_at`` timestamp (e.g. stored within
+# the same tick). Persisted alongside each entry so reloads preserve order.
+_entry_sequence = itertools.count()
 
 
 class MemoryEntry:
@@ -45,6 +51,7 @@ class MemoryEntry:
         self.tags = tags or []
         self.created_at = datetime.now().isoformat()
         self.access_count = 0
+        self.seq = next(_entry_sequence)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -56,6 +63,7 @@ class MemoryEntry:
             "tags": self.tags,
             "created_at": self.created_at,
             "access_count": self.access_count,
+            "seq": self.seq,
         }
 
 
@@ -131,6 +139,7 @@ class MemoryStore:
                 entry.id = item.get("id", entry.id)
                 entry.created_at = item.get("created_at", entry.created_at)
                 entry.access_count = item.get("access_count", 0)
+                entry.seq = item.get("seq", next(_entry_sequence))
                 self._stores[mem_type].append(entry)
 
     def _save(self, memory_type: str) -> None:
@@ -203,8 +212,9 @@ class MemoryStore:
         if agent_id:
             results = [e for e in results if e.agent_id == agent_id]
 
-        # Sort by created_at descending (most recent first)
-        results = sorted(results, key=lambda e: e.created_at, reverse=True)
+        # Sort by insertion sequence descending (most recent first); created_at
+        # is a secondary tie-breaker for entries reloaded from disk.
+        results = sorted(results, key=lambda e: (e.seq, e.created_at), reverse=True)
 
         # Mark as accessed
         for e in results[:limit]:
@@ -298,7 +308,9 @@ class MemoryStore:
         # Keyword path: keep entries that match any term in content/tags/metadata.
         if not terms:
             # Empty/whitespace query: return most recent across types.
-            matched = sorted(candidates, key=lambda e: e.created_at, reverse=True)
+            matched = sorted(
+                candidates, key=lambda e: (e.seq, e.created_at), reverse=True
+            )
         else:
             scored: list[tuple[int, MemoryEntry]] = []
             for entry in candidates:
@@ -310,7 +322,7 @@ class MemoryStore:
                 e
                 for _score, e in sorted(
                     scored,
-                    key=lambda t: (t[0], t[1].created_at),
+                    key=lambda t: (t[0], t[1].seq, t[1].created_at),
                     reverse=True,
                 )
             ]
