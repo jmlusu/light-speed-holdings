@@ -24,6 +24,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Literal
 
+from ai_company.store.file_store import FileStore
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -154,6 +156,10 @@ class KPIHistoryStore:
     def __init__(self, storage_dir: Path | None = None) -> None:
         self._storage_dir = storage_dir or Path("dashboard/kpi_history")
         self._storage_dir.mkdir(parents=True, exist_ok=True)
+        # FileStore provides atomic writes + cross-process file locking so
+        # concurrent KPI collectors cannot corrupt the NDJSON history
+        # (GAP-002: shared state must be lock-guarded).
+        self._store = FileStore(self._storage_dir, backup=False)
         self._cache: dict[str, list[KPIHistoryEntry]] = {}
 
     # ------------------------------------------------------------------
@@ -315,10 +321,13 @@ class KPIHistoryStore:
         return self._storage_dir / f"{department}_history.ndjson"
 
     def _append_entries(self, department: str, entries: list[KPIHistoryEntry]) -> None:
-        path = self._department_path(department)
-        with open(path, "a", encoding="utf-8") as fh:
-            for entry in entries:
-                fh.write(json.dumps(entry.__dict__) + "\n")
+        rel = f"{department}_history.ndjson"
+        lines = "".join(json.dumps(e.__dict__) + "\n" for e in entries)
+        # Serialise concurrent appends so the NDJSON file cannot be
+        # interleaved/corrupted by parallel collectors (GAP-002).
+        with self._store.lock_atomic(rel) as path:
+            with open(path, "a", encoding="utf-8") as fh:
+                fh.write(lines)
 
     def _load_entries(self, department: str) -> list[KPIHistoryEntry]:
         if department in self._cache:
@@ -329,16 +338,17 @@ class KPIHistoryStore:
             return []
 
         entries: list[KPIHistoryEntry] = []
-        with open(path, "r", encoding="utf-8") as fh:
-            for line in fh:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                    entries.append(KPIHistoryEntry(**data))
-                except (json.JSONDecodeError, TypeError) as exc:
-                    logger.warning("Skipping malformed history entry: %s", exc)
+        with self._store.lock_atomic(path.relative_to(self._storage_dir)) as locked:
+            with open(locked, "r", encoding="utf-8") as fh:
+                for line in fh:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        data = json.loads(line)
+                        entries.append(KPIHistoryEntry(**data))
+                    except (json.JSONDecodeError, TypeError) as exc:
+                        logger.warning("Skipping malformed history entry: %s", exc)
 
         self._cache[department] = entries
         return entries

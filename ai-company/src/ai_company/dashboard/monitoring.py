@@ -19,9 +19,14 @@ from typing import Any
 
 from fastapi import APIRouter, Response
 
+from ai_company.dashboard.repository import get_state_store
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["monitoring"])
+
+# GAP-011: metrics parsing reads state through the StateStore repository.
+_store = get_state_store()
 
 # ---------------------------------------------------------------------------
 # Metrics store (in-memory counters — reset on process restart)
@@ -355,11 +360,10 @@ def _append_derived_metrics(lines: list[str]) -> None:
 
 def _append_task_status_breakdown(lines: list[str]) -> None:
     """Read live inbox and emit per-status gauges."""
-    inbox_path = Path(".opencode/inbox.json")
-    if not inbox_path.exists():
-        return
     try:
-        tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
+        tasks = _store.read_json(".opencode/inbox.json", default=[])
+        if tasks is None:
+            return
         status_counts: dict[str, int] = {}
         for t in tasks:
             s = t.get("status", "unknown")
@@ -378,34 +382,25 @@ def _append_task_status_breakdown(lines: list[str]) -> None:
 
 def _append_agent_performance(lines: list[str]) -> None:
     """Parse audit log and emit per-agent task success/failure counters."""
-    audit_path = Path(".opencode/audit.jsonl")
-    if not audit_path.exists():
-        return
-
     agent_tasks: dict[str, dict[str, int]] = {}
     try:
-        with open(audit_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
+        for line in _store.iter_jsonl(".opencode/audit.jsonl"):
+            try:
+                if line.get("event_type") != "task_complete":
                     continue
-                try:
-                    event = json.loads(line)
-                    if event.get("event_type") != "task_complete":
-                        continue
-                    agent_id = event.get("agent_id", "unknown")
-                    success = event.get("metadata", {}).get("success", True)
-                    if agent_id not in agent_tasks:
-                        agent_tasks[agent_id] = {
-                            "success": 0,
-                            "failure": 0,
-                        }
-                    if success:
-                        agent_tasks[agent_id]["success"] += 1
-                    else:
-                        agent_tasks[agent_id]["failure"] += 1
-                except (json.JSONDecodeError, TypeError):
-                    continue
+                agent_id = line.get("agent_id", "unknown")
+                success = line.get("metadata", {}).get("success", True)
+                if agent_id not in agent_tasks:
+                    agent_tasks[agent_id] = {
+                        "success": 0,
+                        "failure": 0,
+                    }
+                if success:
+                    agent_tasks[agent_id]["success"] += 1
+                else:
+                    agent_tasks[agent_id]["failure"] += 1
+            except (TypeError, AttributeError):
+                continue
     except OSError:
         return
 
@@ -446,40 +441,31 @@ def _append_agent_performance(lines: list[str]) -> None:
 
 def _append_llm_model_breakdown(lines: list[str]) -> None:
     """Parse audit log and emit per-model LLM cost and call gauges."""
-    audit_path = Path(".opencode/audit.jsonl")
-    if not audit_path.exists():
-        return
-
     model_stats: dict[str, dict[str, float]] = {}
     try:
-        with open(audit_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
+        for event in _store.iter_jsonl(".opencode/audit.jsonl"):
+            try:
+                event_type = event.get("event_type", "")
+                if event_type not in ("tool_call", "tool_result"):
                     continue
-                try:
-                    event = json.loads(line)
-                    event_type = event.get("event_type", "")
-                    if event_type not in ("tool_call", "tool_result"):
-                        continue
-                    meta = event.get("metadata", {})
-                    model = meta.get("model", "unknown")
-                    cost = float(meta.get("cost", 0))
-                    tokens_in = float(meta.get("tokens_in", 0))
-                    tokens_out = float(meta.get("tokens_out", 0))
-                    if model not in model_stats:
-                        model_stats[model] = {
-                            "calls": 0,
-                            "cost": 0.0,
-                            "tokens_in": 0.0,
-                            "tokens_out": 0.0,
-                        }
-                    model_stats[model]["calls"] += 1
-                    model_stats[model]["cost"] += cost
-                    model_stats[model]["tokens_in"] += tokens_in
-                    model_stats[model]["tokens_out"] += tokens_out
-                except (json.JSONDecodeError, TypeError):
-                    continue
+                meta = event.get("metadata", {})
+                model = meta.get("model", "unknown")
+                cost = float(meta.get("cost", 0))
+                tokens_in = float(meta.get("tokens_in", 0))
+                tokens_out = float(meta.get("tokens_out", 0))
+                if model not in model_stats:
+                    model_stats[model] = {
+                        "calls": 0,
+                        "cost": 0.0,
+                        "tokens_in": 0.0,
+                        "tokens_out": 0.0,
+                    }
+                model_stats[model]["calls"] += 1
+                model_stats[model]["cost"] += cost
+                model_stats[model]["tokens_in"] += tokens_in
+                model_stats[model]["tokens_out"] += tokens_out
+            except (json.JSONDecodeError, TypeError):
+                continue
     except OSError:
         return
 

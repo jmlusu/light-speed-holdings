@@ -12,6 +12,7 @@ GAP-001 fix:
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import uuid
@@ -20,7 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.audit.integration import init_audit, log_task_status
-from ai_company.memory.integration import init_memory, record_task_outcome
+from ai_company.memory.integration import init_memory, recall_context, record_task_outcome
 from ai_company.executor.context import (
     build_user_prompt,
     parse_agent_spec,
@@ -31,7 +32,7 @@ from ai_company.executor.dead_letter import (
     detect_stale_tasks,
 )
 from ai_company.executor.hitl_gate import HITLGate
-from ai_company.executor.tool_runner import ToolRunner
+from ai_company.executor.tool_runner import HITLParked, ToolRunner
 from ai_company.llm.client import LLMClient
 from ai_company.llm.cost_tracker import CostTracker
 from ai_company.models.task import Task, TaskPriority, TaskStatus
@@ -97,7 +98,7 @@ class Executor:
         self.results_dir = Path(results_dir)
 
         # Core components
-        self.bus = MessageBus()
+        self.bus = MessageBus(broadcast_callback=self._make_broadcast_callback())
         self.llm = LLMClient(config_path=config_path, registry_path=registry_path)
         self.runner = ToolRunner()
         self.hitl = HITLGate(ApprovalGate())
@@ -121,6 +122,8 @@ class Executor:
             cost_tracker=self.cost_tracker,
             hitl_gate=self.hitl,
             config=LoopConfig(max_iterations=10),
+            # GAP-004: do not block the executor thread on HITL — park instead.
+            non_blocking_hitl=True,
         )
 
         # Stats
@@ -130,8 +133,9 @@ class Executor:
         # Audit trail
         init_audit()
 
-        # GAP-004: pending HITL approvals queue (non-blocking)
-        self._pending_approvals: list[dict[str, Any]] = []
+        # GAP-004: pending HITL approvals queue (non-blocking).
+        # Maps task_id -> HITL request_id for tasks parked in WAITING_APPROVAL.
+        self._pending_approvals: dict[str, str] = {}
 
     def start(self) -> None:
         """Start continuous polling loop. Call stop() to halt."""
@@ -159,7 +163,9 @@ class Executor:
         """Process all pending tasks in a single pass. Returns count processed.
 
         Before processing, stale ``in_progress`` tasks are detected and
-        moved to the dead-letter queue (GAP-017).
+        moved to the dead-letter queue (GAP-017).  Parked tasks awaiting
+        HITL approval (GAP-004) are resumed if a human decision has been
+        recorded; otherwise they are left parked so the loop can continue.
         """
         # Convert due scheduled tasks into inbox tasks
         self.scheduler.create_pending_tasks(self.bus)
@@ -169,14 +175,94 @@ class Executor:
         if stale:
             logger.warning("Moved %d stale task(s) to dead-letter queue.", len(stale))
 
+        # GAP-004 -- resume any parked tasks whose HITL request resolved.
+        self._resume_parked_tasks()
+
         # GAP-001 fix: use MessageBus.get_pending_tasks() instead of direct I/O
         pending = self.bus.get_pending_tasks()
         for task in pending:
             self._process_task(task)
         return len(pending)
 
-    def _process_task(self, task: Task) -> None:
-        """Execute a single task through the multi-turn agentic loop."""
+    def _resume_parked_tasks(self) -> int:
+        """Resume tasks parked in WAITING_APPROVAL once HITL resolves.
+
+        Returns the number of tasks resumed (approved or rejected) this tick.
+        Approved tasks are re-processed with ``preapproved=True`` so the
+        previously gated step executes without re-requesting approval.
+        Rejected tasks are marked FAILED.  Still-pending requests are left
+        parked — the executor does NOT block waiting for them.
+        """
+        resumed = 0
+        for task_id, request_id in list(self._pending_approvals.items()):
+            decision = self.hitl.resume_approved(request_id)
+            if decision is None:
+                continue  # still awaiting human decision — stay parked
+
+            resumed += 1
+            self._pending_approvals.pop(task_id, None)
+            task = self.bus.get_task_by_id(task_id)
+            if task is None:
+                continue
+
+            if decision:
+                logger.info("HITL approved for task %s — resuming.", task_id)
+                # Re-run the task, executing the gated step directly.
+                self._process_task(task, preapproved=True)
+            else:
+                logger.info("HITL rejected for task %s — failing.", task_id)
+                self._complete_task(task, TaskStatus.FAILED, "Human approval denied")
+                self.stats.tasks_failed += 1
+        return resumed
+
+    def _park_task(self, task: Task, parked: HITLParked) -> None:
+        """Park a task in WAITING_APPROVAL and record its HITL request id.
+
+        The task is transitioned to ``waiting_approval`` so the executor's
+        ``tick()`` loop skips it on subsequent passes (``get_pending_tasks``
+        only returns ``pending`` tasks) and continues with other work.  The
+        original ``in_progress`` status is overwritten to ``waiting_approval``
+        so it is not mistaken for an active task.
+        """
+        self._pending_approvals[task.id] = parked.request_id
+        self.bus.update_task_status(task.id, TaskStatus.WAITING_APPROVAL.value)
+        log_task_status(
+            task.id, task.receiver_id, TaskStatus.IN_PROGRESS.value,
+            TaskStatus.WAITING_APPROVAL.value,
+        )
+        logger.info(
+            "Task %s parked (WAITING_APPROVAL) for HITL request %s",
+            task.id, parked.request_id,
+        )
+
+    @staticmethod
+    def _make_broadcast_callback() -> Any:
+        """Return a sync callback that pushes task events to WebSocket clients.
+
+        GAP-006: the executor mutates task status through ``MessageBus``; by
+        wiring this callback the same events are broadcast live to connected
+        dashboard clients.  Uses the dashboard's sync→async bridge so it is a
+        no-op when no event loop (CLI) is running.
+        """
+        from ai_company.dashboard.ws import broadcast_task_update
+
+        def _callback(task_dict: dict[str, Any], event: str) -> None:
+            try:
+                loop = asyncio.get_running_loop()
+                loop.create_task(broadcast_task_update(task_dict, event))
+            except RuntimeError:
+                # No running event loop (CLI / executor thread) — skip.
+                logger.debug("No event loop; WS broadcast skipped for '%s'", event)
+
+        return _callback
+
+    def _process_task(self, task: Task, *, preapproved: bool = False) -> None:
+        """Execute a single task through the multi-turn agentic loop.
+
+        Args:
+            preapproved: GAP-004 — when True, any HITL-gated step is executed
+                directly because the human already approved the parked request.
+        """
         self.stats.tasks_processed += 1
         logger.info("[%s] Processing: %s...", task.id[:8], task.instruction[:60])
 
@@ -184,7 +270,14 @@ class Executor:
         self.bus.update_task_status(task.id, TaskStatus.IN_PROGRESS.value)
         log_task_status(task.id, task.receiver_id, "pending", TaskStatus.IN_PROGRESS.value)
 
-        # 2. Load agent spec card
+        # 2. Recall relevant memory BEFORE execution (best-effort, no network
+        #    required — falls back to keyword search; never blocks the task).
+        try:
+            recall_context(task.instruction, limit=5)
+        except Exception:  # pragma: no cover - defensive: recall must never break execution
+            logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
+
+        # 3. Load agent spec card
         agent_ctx = parse_agent_spec(task.receiver_id, self.agents_dir)
 
         # 3. Build user prompt
@@ -198,8 +291,17 @@ class Executor:
                 agent_name=task.receiver_id,
                 task_id=task.id,
                 priority=task.priority.value,
+                preapproved=preapproved,
             )
         except Exception as exc:
+            # GAP-004: a HITL-gated step raised HITLParked — park the task and
+            # continue to the next one instead of blocking on human approval.
+            from ai_company.executor.tool_runner import HITLParked
+
+            if isinstance(exc, HITLParked):
+                self._park_task(task, exc)
+                return
+
             logger.error("Agent loop failed: %s", exc)
             self._complete_task(task, TaskStatus.FAILED, str(exc))
             self.stats.tasks_failed += 1

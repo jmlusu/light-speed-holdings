@@ -219,9 +219,54 @@ The `LLMClient` (`src/ai_company/llm/client.py`) implements automatic fallback:
 | DeepSeek | Monthly | Cost, availability | CAIO |
 | Ollama | Quarterly | Performance, model updates | CTO |
 
-## 7. Capacity Planning
+## 7. State-File Hygiene
 
-### 7.1 Resource Types
+### 7.1 Critical State Files
+
+The runtime persists shared state as JSON/YAML. The `ops_lead` owns hygiene:
+
+| File | Purpose | Hygiene Rule |
+|------|---------|--------------|
+| `.opencode/inbox.json` | Task queue | Process or archive daily; never leave stale tasks > 30 min |
+| `company-registry.yaml` | Agent source of truth | Edit only via registry PR; never hand-edit generated agents |
+| `config/**/*.yaml` | Routing, approvals, KPIs | Validate with `ai-company doctor run` after change |
+| `audit/*.jsonl` | Audit trail | Rotate monthly; archive older than 90 days |
+| `config/decision/*.yaml` | Approval matrix | Review on any org change |
+
+### 7.2 Hygiene Procedure
+
+1. **Daily**: `ops_lead` runs `ai-company doctor run`; clears resolved tasks from inbox
+2. **Weekly**: Verify no orphaned state files; reconcile audit log counts
+3. **Monthly**: Rotate audit logs; archive completed workflows
+4. **On change**: Regenerate agents (`ai-company generate`) and re-run doctor
+
+## 8. Dead-Letter Handling
+
+Tasks that fail or time out are moved to the dead-letter queue (`src/ai_company/executor/dead_letter.py`):
+
+### 8.1 Detection
+
+- A task unprocessed for > 30 minutes, or failing 3 consecutive attempts, is dead-lettered by the `Executor`
+- The event is written to the audit trail with task ID, agent, and failure reason
+
+### 8.2 Triage & Recovery
+
+| Condition | Action | Owner |
+|-----------|--------|-------|
+| Transient LLM failure | Requeue with fallback provider | `ops_lead` |
+| Bad task definition | Return to sender for correction | `ops_lead` |
+| Agent unavailable | Redistribute to sibling agent | `coo` |
+| Unrecoverable | Archive + open postmortem (Section 10.2) | `coo` |
+
+### 8.3 Prevention
+
+- Monitor dead-letter volume as a KPI (target: < 2% of tasks)
+- Weekly review of top failure reasons feeds the continuous-improvement cycle (Section 11.2)
+- File-locking on shared state is a tracked gap (GAP-002); until resolved, `ops_lead` serializes writes
+
+## 9. Capacity Planning
+
+### 9.1 Resource Types
 
 | Resource | Measurement | Scaling Method |
 |----------|-------------|---------------|
@@ -231,7 +276,7 @@ The `LLMClient` (`src/ai_company/llm/client.py`) implements automatic fallback:
 | Dashboard connections | WebSocket connections | Horizontal scaling |
 | MessageBus capacity | Tasks in inbox | Process or archive |
 
-### 7.2 Capacity Thresholds
+### 9.2 Capacity Thresholds
 
 | Resource | Warning (80%) | Critical (95%) | Action |
 |----------|--------------|----------------|--------|
@@ -240,7 +285,7 @@ The `LLMClient` (`src/ai_company/llm/client.py`) implements automatic fallback:
 | Storage (logs) | 8 GB of 10 GB | 9.5 GB of 10 GB | Archive old logs |
 | Dashboard memory | 800 MB of 1 GB | 950 MB of 1 GB | Restart, optimize |
 
-### 7.3 Scaling Procedures
+### 9.3 Scaling Procedures
 
 **Vertical scaling (more resources per agent):**
 
@@ -256,9 +301,9 @@ The `LLMClient` (`src/ai_company/llm/client.py`) implements automatic fallback:
 4. Regenerate agent files: `ai-company generate`
 5. Verify the new agent appears in `ai-company agents list`
 
-## 8. Escalation Management
+## 10. Escalation Management
 
-### 8.1 Escalation Rules
+### 10.1 Escalation Rules
 
 The `EscalationManager` (`src/ai_company/orchestrator/escalation.py`) defines automated escalation:
 
@@ -270,7 +315,7 @@ The `EscalationManager` (`src/ai_company/orchestrator/escalation.py`) defines au
 | Security violation | Path traversal detected | CTO + CEO | Immediate |
 | System outage | Health check fails | CTO | 15 min |
 
-### 8.2 Postmortem Process
+### 10.2 Postmortem Process
 
 After SEV-1 or SEV-2 incidents:
 
@@ -300,9 +345,9 @@ After SEV-1 or SEV-2 incidents:
 
 4. **Implement** preventive measures and track completion
 
-## 9. Quality Assurance
+## 11. Quality Assurance
 
-### 9.1 Process Compliance
+### 11.1 Process Compliance
 
 | Check | Frequency | Method | Owner |
 |-------|-----------|--------|-------|
@@ -311,7 +356,7 @@ After SEV-1 or SEV-2 incidents:
 | Escalation SLA compliance | Per incident | Automated tracking | Ops Lead |
 | Budget adherence | Daily | CostTracker reports | CFO |
 
-### 9.2 Continuous Improvement
+### 11.2 Continuous Improvement
 
 The operations team follows a continuous improvement cycle:
 
@@ -321,7 +366,7 @@ The operations team follows a continuous improvement cycle:
 4. **Verify**: Confirm the improvement achieved the desired result
 5. **Standardize**: Update SOPs to reflect the improved process
 
-## 10. Escalation Procedures
+## 12. Escalation Procedures
 
 | Condition | Escalate To | SLA |
 |-----------|------------|-----|
@@ -332,7 +377,7 @@ The operations team follows a continuous improvement cycle:
 | Regulatory compliance gap | Legal + Compliance Officer | 24 hours |
 | Cross-team coordination needed | Chief of Staff | 8 hours |
 
-## 11. Key Performance Indicators
+## 13. Key Performance Indicators
 
 | KPI | Target | Frequency | Owner |
 |-----|--------|-----------|-------|
@@ -344,7 +389,7 @@ The operations team follows a continuous improvement cycle:
 | Vendor SLA compliance | > 99% | Monthly | Ops Lead |
 | Postmortem completion rate | 100% within 48h | Per incident | COO |
 
-## 12. Compliance Requirements
+## 14. Compliance Requirements
 
 - All operational processes must be documented in SOPs
 - Vendor contracts must be reviewed by Legal before execution
@@ -353,7 +398,7 @@ The operations team follows a continuous improvement cycle:
 - Metrics must be collected and reported on the defined cadence
 - Escalation rules must be tested monthly
 
-## 13. Related Documents
+## 15. Related Documents
 
 - `docs/ARCHITECTURE.md` - System architecture
 - `docs/DEVOPS-PLAN.md` - DevOps and infrastructure

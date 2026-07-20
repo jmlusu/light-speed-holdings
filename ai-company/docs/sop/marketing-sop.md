@@ -172,15 +172,17 @@ Maximize content value through repurposing:
 
 ### 7.1 Campaign Planning
 
-Marketing campaigns follow a structured process:
+Campaigns follow a structured, approved process owned by the `cmo`:
 
-1. **Objective**: Define measurable goals (signups, awareness, engagement)
-2. **Audience**: Identify target persona and channels
-3. **Messaging**: Develop core narrative and supporting points
-4. **Content**: Plan content assets needed
-5. **Timeline**: Set milestones and deadlines
-6. **Budget**: Allocate resources (LLM costs for content generation, ad spend)
-7. **Measurement**: Define success metrics before launch
+1. **Objective**: Define measurable goals (signups, awareness, engagement) tied to pipeline targets
+2. **Audience**: Identify target persona and channels with `sales_lead` input
+3. **Messaging**: Develop core narrative aligned with brand voice (Section 5)
+4. **Content**: Plan asset list; tasks issued to Content Creator via `MessageBus`
+5. **Timeline**: Set milestones; load into editorial calendar under `Content Manager`
+6. **Budget**: Estimate LLM generation cost + ad spend; submit to `cfo` if > $500
+7. **Measurement**: Define KPIs (Section 9) **before** launch sign-off
+
+The `cmo` approves the campaign brief; the `chief_of_staff` is notified for cross-department alignment.
 
 ### 7.2 Launch Campaign Template
 
@@ -192,6 +194,26 @@ For product launches or major updates:
 | Launch day | 1 day | Announcement, social blitz, email blast |
 | Post-launch | 2 weeks | Follow-up content, user testimonials, metrics review |
 | Sustained | Ongoing | SEO content, community engagement, iteration |
+
+### 7.3 Content Approval & Brand Compliance
+
+| Asset | Reviewer | Gate | Final Sign-off |
+|-------|----------|------|----------------|
+| Technical blog/tutorial | `cto` | Accuracy check | `cmo` |
+| Public social post | `Content Manager` | Brand voice | `cmo` |
+| Product claim / case study | `clo` | Compliance + claims | `cmo` + `ceo` |
+
+Brand compliance is enforced by the `Content Manager` against Section 5. Any deviation is an escalation condition (Section 8).
+
+### 7.4 Metrics Handoff to Sales
+
+Weekly, the `cmo` publishes a campaign-performance summary to the `sales_lead`:
+
+- Lead source volume by channel (GitHub, docs site, social, content)
+- Marketing-qualified lead (MQL) count and BANT pre-score
+- Top-performing assets for sales enablement
+
+Handoff is recorded as a `MessageBus` task (`sender_id: cmo`, `receiver_id: sales_lead`) so pipeline attribution is auditable.
 
 ## 8. Escalation Procedures
 

@@ -33,6 +33,8 @@ class TaskStatus(str, Enum):
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     BLOCKED = "blocked"
+    # GAP-004: task parked awaiting human-in-the-loop approval (non-blocking).
+    WAITING_APPROVAL = "waiting_approval"
     COMPLETED = "completed"
     FAILED = "failed"
     ESCALATED = "escalated"

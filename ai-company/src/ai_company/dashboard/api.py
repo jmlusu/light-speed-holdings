@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-import yaml
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 if TYPE_CHECKING:
@@ -28,6 +26,7 @@ from ai_company.dashboard.models import (
     TaskItem,
     TierInfo,
 )
+from ai_company.dashboard.repository import get_state_store
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api")
@@ -75,34 +74,29 @@ _START_TIME = time.time()
 # ── Helpers ─────────────────────────────────────────────────────────
 
 
+# GAP-011: all dashboard state I/O is routed through StateStore, which
+# wraps the atomic FileStore and rejects forbidden paths.
+_store = get_state_store()
+
+
 def _load_json(path: str | Path) -> Any:
-    p = Path(path)
-    if not p.exists():
-        return [] if str(p).endswith("json") else {}
-    with open(p, "r", encoding="utf-8") as f:
-        return json.load(f)
+    return _store.read_json(path, default={})
 
 
 def _load_yaml(path: str | Path) -> Any:
-    p = Path(path)
-    if not p.exists():
-        return {}
-    with open(p, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    return _store.read_yaml(path, default={})
 
 
 def _save_json(path: str | Path, data: Any) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, default=str)
+    _store.write_json(path, data)
 
 
 def _save_yaml(path: str, data: Any) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        yaml.dump(data, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    _store.write_yaml(path, data)
 
 
 def _load_registry() -> list[dict]:
-    return _load_json("company/agent-registry.json")
+    return _load_json("company/agent-registry.json") or []
 
 
 # ── WebSocket broadcast helpers ─────────────────────────────────────
@@ -386,6 +380,20 @@ def resolve_escalation(task_id: str) -> dict:
         if e.get("task_id") == task_id and not e.get("resolved", False):
             e["resolved"] = True
             _save_yaml("orchestrator/escalation.yaml", data)
+            # GAP-008: persist the escalation resolution to the audit trail.
+            try:
+                from ai_company.audit.integration import log_escalation
+
+                log_escalation(
+                    task_id=task_id,
+                    from_agent=e.get("from_agent", ""),
+                    to_agent=e.get("to_agent", ""),
+                    reason=e.get("reason", "resolved via dashboard"),
+                    rule_id=e.get("rule_id", ""),
+                    resolved=True,
+                )
+            except Exception:
+                logger.debug("audit hook skipped for escalation resolution")
             return {"ok": True, "task_id": task_id}
     raise HTTPException(status_code=404, detail=f"No open escalation for task '{task_id}'")
 
@@ -1016,27 +1024,17 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
 
     # Per-agent cost breakdown from audit log
     agent_costs: dict[str, dict[str, Any]] = {}
-    audit_path = Path(".opencode/audit.jsonl")
-    if audit_path.exists():
+    for event in _store.iter_jsonl(".opencode/audit.jsonl"):
         try:
-            with open(audit_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        event = json.loads(line)
-                        meta = event.get("metadata", {})
-                        cost = float(meta.get("cost", 0))
-                        agent = meta.get("agent_id", event.get("agent_id", "unknown"))
-                        if agent not in agent_costs:
-                            agent_costs[agent] = {"total_cost": 0.0, "calls": 0}
-                        agent_costs[agent]["total_cost"] += cost
-                        agent_costs[agent]["calls"] += 1
-                    except (json.JSONDecodeError, TypeError, ValueError):
-                        continue
-        except OSError:
-            pass
+            meta = event.get("metadata", {})
+            cost = float(meta.get("cost", 0))
+            agent = meta.get("agent_id", event.get("agent_id", "unknown"))
+            if agent not in agent_costs:
+                agent_costs[agent] = {"total_cost": 0.0, "calls": 0}
+            agent_costs[agent]["total_cost"] += cost
+            agent_costs[agent]["calls"] += 1
+        except (TypeError, ValueError):
+            continue
 
     # Build per-agent cost list
     per_agent = []
@@ -1116,29 +1114,16 @@ def prometheus_metrics() -> str:
     error_count = 0
     cost_total = 0.0
 
-    audit_path = Path(".opencode/audit.jsonl")
-    if audit_path.exists():
-        try:
-            with open(audit_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        event = json.loads(line)
-                        event_type = event.get("event_type", "")
-                        if event_type in ("tool_call", "tool_result"):
-                            llm_calls += 1
-                        if event_type == "error":
-                            error_count += 1
-                        # Extract cost from metadata if present
-                        meta = event.get("metadata", {})
-                        if "cost" in meta:
-                            cost_total += float(meta["cost"])
-                    except (json.JSONDecodeError, TypeError):
-                        continue
-        except OSError:
-            pass
+    for event in _store.iter_jsonl(".opencode/audit.jsonl"):
+        event_type = event.get("event_type", "")
+        if event_type in ("tool_call", "tool_result"):
+            llm_calls += 1
+        if event_type == "error":
+            error_count += 1
+        # Extract cost from metadata if present
+        meta = event.get("metadata", {})
+        if "cost" in meta:
+            cost_total += float(meta["cost"])
 
     # Build Prometheus text format
     lines: list[str] = []

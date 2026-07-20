@@ -101,12 +101,17 @@ class AgentLoop:
         cost_tracker: CostTracker | None = None,
         hitl_gate: HITLGate | None = None,
         config: LoopConfig | None = None,
+        *,
+        non_blocking_hitl: bool = False,
     ) -> None:
         self.llm = llm
         self.runner = runner or ToolRunner()
         self.cost_tracker = cost_tracker
         self.hitl_gate = hitl_gate
         self.config = config or LoopConfig()
+        # GAP-004: when True, HITL-gated steps raise HITLParked instead of
+        # blocking the executor thread.
+        self.non_blocking_hitl = non_blocking_hitl
         self._current_priority: str = "medium"
         self._current_task_prompt: str = ""
 
@@ -117,6 +122,8 @@ class AgentLoop:
         agent_name: str = "",
         task_id: str = "",
         priority: str = "medium",
+        *,
+        preapproved: bool = False,
     ) -> LoopResult:
         """Execute the full agentic loop for a single task.
 
@@ -219,6 +226,8 @@ class AgentLoop:
                 agent_id=resolved_name,
                 seniority=seniority,
                 risk_level=risk_level,
+                non_blocking=self.non_blocking_hitl,
+                preapproved=preapproved,
             )
 
             for i, step_result in enumerate(step_results):

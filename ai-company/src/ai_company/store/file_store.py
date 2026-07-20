@@ -16,6 +16,7 @@ import json
 import logging
 import os
 import tempfile
+import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -99,7 +100,29 @@ class FileStore:
                 f.flush()
                 os.fsync(f.fileno())
             tmp_fd = None  # Closed by fdopen
-            os.replace(tmp_path, str(path))
+            # On Windows os.replace can transiently fail with
+            # PermissionError if another handle briefly references the
+            # target; retry a few times before giving up.
+            last_err: Exception | None = None
+            for _ in range(5):
+                try:
+                    os.replace(tmp_path, str(path))
+                    tmp_path = ""
+                    break
+                except (OSError, PermissionError) as exc:
+                    last_err = exc
+                    time.sleep(0.01)
+            if tmp_path:
+                if tmp_fd is not None:
+                    try:
+                        os.close(tmp_fd)
+                    except OSError:
+                        pass
+                try:
+                    os.unlink(tmp_path)
+                except OSError:
+                    pass
+                raise last_err  # type: ignore[misc]
         except Exception:
             if tmp_fd is not None:
                 try:
@@ -118,10 +141,13 @@ class FileStore:
     def _write_backup(self, path: Path) -> None:
         """Write a ``.bak`` copy of the file after every successful write."""
         bak_path = path.with_suffix(path.suffix + ".bak")
-        try:
-            bak_path.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
-        except OSError:
-            logger.warning("Failed to write backup %s", bak_path)
+        for _ in range(3):
+            try:
+                bak_path.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
+                return
+            except (OSError, PermissionError):
+                time.sleep(0.01)
+        logger.warning("Failed to write backup %s", bak_path)
 
     # ── Lock context manager ────────────────────────────────────────────
 
@@ -193,12 +219,13 @@ class FileStore:
         if not full_path.exists():
             return None
 
-        with open(full_path, "r", encoding="utf-8") as f:
-            _lock_file(f)
-            try:
+        # Serialise reads with writers via the shared sidecar lock so a
+        # concurrent atomic replace never yields a half-written file.
+        from ai_company.store.file_lock import file_lock as fl
+
+        with fl(full_path, timeout=5.0):
+            with open(full_path, "r", encoding="utf-8") as f:
                 raw = f.read()
-            finally:
-                _unlock_file(f)
 
         try:
             return json.loads(raw)
@@ -220,34 +247,40 @@ class FileStore:
         """Read JSON, apply *updater* (a callable), write back atomically.
 
         *updater* receives the parsed data and must return the new value.
-        The read-modify-write is serialised via a lock file to prevent races.
+        The read-modify-write is serialised via a cross-platform sidecar
+        lock file (GAP-002) so concurrent executor + dashboard access
+        cannot corrupt or lose updates.
         """
+        from ai_company.store.file_lock import file_lock as fl
+
         full_path = self.base_dir / rel_path
         full_path.parent.mkdir(parents=True, exist_ok=True)
-        lock_path = full_path.with_suffix(full_path.suffix + ".lock")
 
-        # Serialise concurrent access via a separate lock file
-        with open(lock_path, "w", encoding="utf-8") as lock_f:
-            _lock_file(lock_f)
-            try:
-                # Read
-                if full_path.exists():
-                    raw = full_path.read_text(encoding="utf-8")
+        with fl(full_path, timeout=10.0):
+            # Read. Retry transient OS errors (e.g. the file being
+            # atomically replaced by a concurrent writer) so we never
+            # misread the contents as empty and lose updates.
+            current = None
+            if full_path.exists():
+                raw = None
+                for _ in range(5):
+                    try:
+                        raw = full_path.read_text(encoding="utf-8")
+                        break
+                    except (OSError, PermissionError):
+                        time.sleep(0.01)
+                if raw is not None:
                     try:
                         current = json.loads(raw)
                     except json.JSONDecodeError:
                         current = None
-                else:
-                    current = None
 
-                # Update
-                new_data = updater(current)
+            # Update
+            new_data = updater(current)
 
-                # Write
-                content = json.dumps(new_data, indent=2, default=str)
-                self._atomic_write(full_path, content)
-            finally:
-                _unlock_file(lock_f)
+            # Write
+            content = json.dumps(new_data, indent=2, default=str)
+            self._atomic_write(full_path, content)
 
         return new_data
 

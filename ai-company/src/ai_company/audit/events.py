@@ -17,9 +17,11 @@ class AuditEventType(str, Enum):
     TOOL_RESULT = "tool_result"
     HITL_APPROVED = "hitl_approved"
     HITL_DENIED = "hitl_denied"
+    HITL_PARKED = "hitl_parked"
     TASK_CREATED = "task_created"
     TASK_COMPLETED = "task_completed"
     TASK_FAILED = "task_failed"
+    ESCALATION = "escalation"
     ERROR = "error"
     DELEGATION = "delegation"
 

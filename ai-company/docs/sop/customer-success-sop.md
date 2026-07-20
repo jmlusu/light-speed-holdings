@@ -143,7 +143,29 @@ Proactive retention activities:
 | Champion departure | Identify new champion, provide re-onboarding |
 | Competitor switching | Executive engagement, case study, POC extension |
 
-## 7. Expansion
+## 7. Renewal Cycle
+
+### 7.1 Renewal Workflow
+
+Renewals are managed proactively, beginning 60 days before term end:
+
+1. **Flag**: Automated health check identifies contracts within the 60-day window
+2. **Assess**: `cs_lead` reviews the customer's health score (Section 5) and expansion signals (Section 7.1)
+3. **Engage**: CSM schedules a renewal conversation; surface value delivered and expansion options
+4. **Quote**: `cs_lead` issues a renewal quote; pricing changes route to `cfo`
+5. **Handoff**: On agreement, `cs_lead` notifies `clo` for contract renewal per `docs/sop/legal-sop.md`
+6. **Close**: Updated contract executed; health score reset to "Healthy" baseline
+
+### 7.2 Renewal Risk Handling
+
+| Health Score | Renewal Risk | Action |
+|--------------|--------------|--------|
+| 80-100 | Low | Standard renewal outreach |
+| 60-79 | Medium | Value-review meeting + expansion offer |
+| 40-59 | High | Executive engagement (`ceo`) + save playbook (Section 6.3) |
+| 0-39 | Critical | Immediate intervention, possible concession approval via `cfo` |
+
+## 8. Expansion
 
 ### 7.1 Expansion Signals
 
@@ -173,9 +195,9 @@ Proactive retention activities:
 | Any | Custom integration | Specific workflow requirements |
 | Any | Training package | Complex implementation needs |
 
-## 8. Support
+## 9. Support
 
-### 8.1 Support Channels
+### 9.1 Support Channels
 
 | Channel | Response SLA | Resolution SLA | Use Case |
 |---------|-------------|---------------|----------|
@@ -184,7 +206,7 @@ Proactive retention activities:
 | Phone/video | 30 minutes | 1 hour | Urgent issues, complex discussions |
 | Emergency hotline | 15 minutes | 4 hours | SEV-1 outages only |
 
-### 8.2 Issue Classification
+### 9.2 Issue Classification
 
 | Severity | Definition | Response | Resolution |
 |----------|-----------|----------|-----------|
@@ -193,16 +215,16 @@ Proactive retention activities:
 | SEV-3 | Minor issue, workaround available | 4 hours | 24 hours |
 | SEV-4 | Cosmetic, informational | 24 hours | 1 week |
 
-### 8.3 Support Escalation
+### 9.3 Support Escalation
 
 ```
 Support Engineer -> CS Lead -> CTO -> CEO
      (15 min)      (1 hr)    (4 hr)  (immediate)
 ```
 
-## 9. Feedback Collection
+## 10. Feedback Collection
 
-### 9.1 Feedback Channels
+### 10.1 Feedback Channels
 
 | Channel | Frequency | Metric | Action |
 |---------|-----------|--------|--------|
@@ -211,7 +233,7 @@ Support Engineer -> CS Lead -> CTO -> CEO
 | Feature requests | Continuous | Request count and priority | Inform product roadmap |
 | Churn survey | Per churn | Churn reasons | Improve retention |
 
-### 9.2 Feedback Loop
+### 10.2 Feedback Loop
 
 1. **Collect**: Gather feedback through surveys, support tickets, and conversations
 2. **Analyze**: Identify patterns and prioritize themes
@@ -219,7 +241,7 @@ Support Engineer -> CS Lead -> CTO -> CEO
 4. **Communicate**: Close the loop with customers on actions taken
 5. **Measure**: Track impact of changes on satisfaction and retention
 
-## 10. Escalation Procedures
+## 11. Escalation Procedures
 
 | Condition | Escalate To | SLA |
 |-----------|------------|-----|
@@ -230,7 +252,7 @@ Support Engineer -> CS Lead -> CTO -> CEO
 | Refund request > $1,000 | CFO + CS Lead | 48 hours |
 | Negative public review | Marketing Lead + CS Lead | 4 hours |
 
-## 11. Key Performance Indicators
+## 12. Key Performance Indicators
 
 | KPI | Target | Frequency | Owner |
 |-----|--------|-----------|-------|
@@ -242,7 +264,7 @@ Support Engineer -> CS Lead -> CTO -> CEO
 | Expansion revenue | > 20% of MRR | Monthly | CS Lead |
 | Churn rate | < 5% monthly | Monthly | CS Lead |
 
-## 12. Compliance Requirements
+## 13. Compliance Requirements
 
 - Customer data must be handled per the Privacy Policy
 - Support interactions must be logged and retained for 1 year
@@ -251,7 +273,7 @@ Support Engineer -> CS Lead -> CTO -> CEO
 - Customer feedback must be anonymized before sharing with external parties
 - Refund and credit decisions must be documented and approved
 
-## 13. Related Documents
+## 14. Related Documents
 
 - `docs/legal/privacy-policy.md` - Customer data handling
 - `docs/legal/terms-of-service.md` - Service commitments

@@ -51,6 +51,34 @@ class SecurityError(Exception):
     """Raised when a tool tries to escape the project sandbox."""
 
 
+class HITLParked(Exception):
+    """Raised by :meth:`ToolRunner.run_plan` when a step needs HITL and the
+    caller requested non-blocking behaviour (GAP-004).
+
+    The executor catches this, transitions the task to ``WAITING_APPROVAL``,
+    and continues to the next task.  The human decision is later checked via
+    :meth:`HITLGate.resume_approved` using ``request_id``.
+    """
+
+    def __init__(
+        self,
+        task_id: str,
+        agent_id: str,
+        tool: str,
+        request_id: str,
+        tier: int,
+    ) -> None:
+        self.task_id = task_id
+        self.agent_id = agent_id
+        self.tool = tool
+        self.request_id = request_id
+        self.tier = tier
+        super().__init__(
+            f"Task {task_id} parked for HITL approval of {tool} "
+            f"(request {request_id}, tier {tier})"
+        )
+
+
 # ---------------------------------------------------------------------------
 # Command allowlist — loaded from YAML config with hardcoded fallback.
 # Only these base commands may be executed via the ``execute`` tool.
@@ -132,12 +160,23 @@ class ToolRunner:
         agent_id: str = "",
         seniority: str = "",
         risk_level: str = "",
+        *,
+        non_blocking: bool = False,
+        preapproved: bool = False,
     ) -> list[dict[str, Any]]:
         """Execute each step in the plan with tier-based approval gating.
 
         For each tool step, ``check_tier_rules()`` classifies the action into
         an approval tier.  The tier determines whether the step can execute
         immediately, requires HITL approval, or is outright denied.
+
+        Args:
+            non_blocking: GAP-004 — when a gated step needs HITL, raise
+                :class:`HITLParked` (carrying the request id) instead of
+                blocking the caller.  The executor parks the task and moves on.
+            preapproved: GAP-004 — when True, a step that would normally
+                require HITL executes directly (used by the executor's resume
+                path after the human approved the parked request).
 
         Returns a list of step results. Each result dict contains at minimum:
         ``step``, ``tool``, ``status``, and ``tier`` keys.
@@ -155,8 +194,8 @@ class ToolRunner:
                 log_tool_call(task_id, agent_id, tool, args, error_result)
                 continue
 
-            # ── GAP-003: Tier classification ──────────────────────────
-            tier_info = self.check_tier_rules(
+            # ── GAP-003: Tier classification & authorization ─────────
+            tier_info = self.check_tool_authorization(
                 tool_name=tool,
                 args=args,
                 agent_id=agent_id,
@@ -169,8 +208,29 @@ class ToolRunner:
             tier_label = tier_info["tier_label"]
 
             # ── HITL approval path ───────────────────────────────────
-            if needs_hitl and blocking:
+            if needs_hitl and blocking and not preapproved:
                 assert hitl_gate is not None  # guaranteed by ``blocking``
+                if non_blocking:
+                    # GAP-004: park instead of blocking.  Raise HITLParked so
+                    # the executor can transition the task to WAITING_APPROVAL
+                    # and continue to the next task.  The SAME shared
+                    # ApprovalGate hook (ciso's GAP-003 tier enforcement) is
+                    # used to create the request — no duplicate gate.
+                    assert hitl_gate is not None  # guaranteed by ``blocking``
+                    request_id = hitl_gate.request_and_park(
+                        task_id=task_id,
+                        agent_id=agent_id,
+                        tool=tool,
+                        args=args,
+                    )
+                    log_hitl_decision(task_id, agent_id, tool, None)
+                    raise HITLParked(
+                        task_id=task_id,
+                        agent_id=agent_id,
+                        tool=tool,
+                        request_id=request_id,
+                        tier=tier,
+                    )
                 approved = hitl_gate.request_and_wait_sync(
                     task_id=task_id,
                     agent_id=agent_id,
@@ -188,7 +248,7 @@ class ToolRunner:
                     log_tool_call(task_id, agent_id, tool, args, denied_result)
                     continue
 
-            elif needs_hitl and not blocking:
+            elif needs_hitl and not blocking and not preapproved:
                 # ``blocking`` is False only when no hitl_gate was supplied.
                 # There is no gate to queue the approval with, so we cannot
                 # enforce the HITL requirement. The safest behaviour is to
@@ -223,6 +283,48 @@ class ToolRunner:
                 log_tool_call(task_id, agent_id, tool, args, exc_result)
 
         return results
+
+    @staticmethod
+    def check_tool_authorization(
+        tool_name: str,
+        args: dict[str, Any],
+        agent_id: str = "",
+        seniority: str = "",
+        risk_level: str = "",
+        task_id: str = "",
+    ) -> dict[str, Any]:
+        """Authorize a tool action against the 5-tier approval matrix.
+
+        This is the GAP-003 enforcement entry point. It delegates tier
+        classification to :meth:`check_tier_rules` (which is itself backed by
+        ``orchestrator.tier_rules`` — the project's 5-tier approval matrix) and
+        additionally enforces the *agent's authorized tier*: an agent whose
+        seniority maps to a maximum auto-approve tier below the action's
+        classified tier will always require HITL, regardless of context.
+
+        Returns a dict with keys:
+            ``tier`` (int), ``tier_label`` (str), ``needs_hitl`` (bool),
+            ``description`` (str), ``authorized`` (bool).
+        """
+        tier_info = ToolRunner.check_tier_rules(
+            tool_name=tool_name,
+            args=args,
+            agent_id=agent_id,
+            seniority=seniority,
+            risk_level=risk_level,
+            task_id=task_id,
+        )
+
+        # The agent's authorized ceiling (highest tier it may auto-approve).
+        max_auto = SENIORITY_AUTO_APPROVE_TIER.get(seniority, 0)
+        authorized = int(tier_info["tier"]) <= max_auto
+
+        # If the action exceeds the agent's authorized tier, force HITL.
+        if not authorized and not tier_info["needs_hitl"]:
+            tier_info["needs_hitl"] = True
+
+        tier_info["authorized"] = authorized
+        return tier_info
 
     @staticmethod
     def check_tier_rules(

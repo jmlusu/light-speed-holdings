@@ -127,6 +127,76 @@ class HITLGate:
             logger.exception("HITL request failed for task %s", task_id)
             return False
 
+    def request_and_park(
+        self,
+        task_id: str,
+        agent_id: str,
+        tool: str,
+        args: dict[str, Any],
+    ) -> str:
+        """Create an approval request WITHOUT blocking (GAP-004).
+
+        This is the non-blocking counterpart used by the executor so it can
+        park a task and move on to the next one while the human decides.
+        It registers the request with the SAME underlying ``ApprovalGate``
+        hook that tier enforcement (GAP-003) and the blocking
+        ``request_and_wait`` paths use — no separate gate is created.
+
+        Returns the ``request_id`` so the caller can later resume via
+        :meth:`resume_approved`.
+        """
+        request_id = f"hitl-{uuid.uuid4().hex[:12]}"
+        description = _format_description(tool, args)
+
+        self.gate.request_approval(
+            request_id=request_id,
+            task_id=task_id,
+            agent_id=agent_id,
+            action=f"tool:{tool}",
+            description=description,
+            expires_in_minutes=self.timeout_minutes,
+        )
+
+        with self._lock:
+            self._pending_requests[request_id] = (task_id, tool)
+
+        logger.info(
+            "HITL request %s parked for task %s tool %s (timeout=%dm)",
+            request_id, task_id, tool, self.timeout_minutes,
+        )
+        # GAP-008: persist the escalation/park decision to the audit trail.
+        _audit_hitl(task_id=task_id, agent_id=agent_id, tool=tool, approved=None)
+        return request_id
+
+    def resume_approved(self, request_id: str) -> bool | None:
+        """Check a parked request's decision without blocking (GAP-004).
+
+        Returns:
+            ``True`` if approved, ``False`` if rejected or expired,
+            ``None`` if still pending.  Does NOT resolve a future (parked
+            requests have none), it simply reports the current decision
+            so the executor can resume or leave the task parked.
+        """
+        with self._lock:
+            if request_id not in self._pending_requests:
+                return None
+        req = self.gate.get_request(request_id)
+        if req is None:
+            return False
+        if req.status == ApprovalStatus.APPROVED:
+            with self._lock:
+                self._pending_requests.pop(request_id, None)
+            return True
+        if req.status == ApprovalStatus.REJECTED:
+            with self._lock:
+                self._pending_requests.pop(request_id, None)
+            return False
+        if req.expires_at and req.expires_at < datetime.now():
+            with self._lock:
+                self._pending_requests.pop(request_id, None)
+            return False
+        return None
+
     def _poll_request(
         self,
         request_id: str,
@@ -156,7 +226,12 @@ class HITLGate:
         """Resolve the future for a request and clean up."""
         with self._lock:
             future = self._futures.pop(request_id, None)
-            self._pending_requests.pop(request_id, None)
+            task_tool = self._pending_requests.pop(request_id, None)
+        # GAP-008: persist the human decision to the audit trail.
+        if task_tool is not None:
+            _audit_hitl(
+                task_id=task_tool[0], agent_id="", tool=task_tool[1], approved=approved
+            )
         if future and not future.done():
             future.set_result(approved)
 
@@ -243,3 +318,27 @@ def _interruptible_sleep(seconds: float, future: concurrent.futures.Future[bool]
         if future.cancelled():
             return
         time.sleep(0.25)
+
+
+def _audit_hitl(
+    task_id: str,
+    agent_id: str,
+    tool: str,
+    approved: bool | None = None,
+) -> None:
+    """Best-effort audit hook for an HITL/escalation decision (GAP-008).
+
+    Imported lazily and wrapped in try/except so a failure in the audit
+    subsystem can never break the approval flow itself.
+    """
+    try:
+        from ai_company.audit.integration import log_hitl_decision
+
+        log_hitl_decision(
+            task_id=task_id,
+            agent_id=agent_id,
+            tool=tool,
+            approved=approved,
+        )
+    except Exception:  # pragma: no cover - defensive
+        logger.debug("audit hook skipped for HITL decision", exc_info=True)

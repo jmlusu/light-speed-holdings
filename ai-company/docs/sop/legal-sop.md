@@ -99,6 +99,20 @@ Every contract must include:
 9. **Dispute resolution**: Governing law and arbitration/mediation
 10. **Force majeure**: Excusable non-performance events
 
+### 4.4 Approval Tiers
+
+Contract and compliance decisions follow a 5-tier approval matrix tied to risk:
+
+| Tier | Trigger | Required Approvals | SLA |
+|------|---------|--------------------|-----|
+| T1 | Standard customer subscription (< $1k/mo), approved template | `clo` | 5 business days |
+| T2 | Non-standard terms, vendor/LLM contract | `clo` + `cfo` | 5 business days |
+| T3 | Contract dispute > $10k, partnership agreement | `clo` + `cfo` + `coo` | 24 hours |
+| T4 | IP licensing, open-source exception, M&A | `clo` + `ceo` | 48 hours |
+| T5 | Regulatory inquiry, data breach, litigation | `clo` + `ceo` + `chief_of_staff` | Immediate |
+
+Risk flagging: any contract presenting IP, data-privacy, or regulatory exposure is auto-escalated one tier and requires `cto` technical review before `clo` sign-off.
+
 ## 5. Intellectual Property
 
 ### 5.1 IP Ownership

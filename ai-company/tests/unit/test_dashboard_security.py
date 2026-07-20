@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 
 
 class TestCORSConfiguration:
-    """Verify CORS origins are configurable via DASHBOARD_CORS_ORIGINS."""
+    """Verify CORS origins are configurable and never wildcard (GAP-010)."""
 
     def test_default_cors_allows_localhost(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Default config should allow http://localhost:3000."""
@@ -28,9 +28,24 @@ class TestCORSConfiguration:
                 "Access-Control-Request-Method": "GET",
             },
         )
-        # Should contain CORS allow-origin header
         acao = resp.headers.get("access-control-allow-origin", "")
-        assert "localhost" in acao or resp.status_code == 200
+        assert acao == "http://localhost:3000"
+
+    def test_default_cors_is_not_wildcard(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Default CORS must never reflect '*'."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.options(
+            "/api/dashboard",
+            headers={
+                "Origin": "http://localhost:3000",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+        assert resp.headers.get("access-control-allow-origin", "") != "*"
 
     def test_cors_custom_origins(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Custom origins should be honoured."""
@@ -46,11 +61,28 @@ class TestCORSConfiguration:
                 "Access-Control-Request-Method": "GET",
             },
         )
-        acao = resp.headers.get("access-control-allow-origin", "")
-        assert "app.example.com" in acao or resp.status_code == 200
+        assert resp.headers.get("access-control-allow-origin", "") == "https://app.example.com"
 
-    def test_cors_wildcard(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Setting '*' should open CORS for all origins."""
+    def test_cors_unknown_origin_rejected(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """An origin not in the allowlist must not be reflected."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.options(
+            "/api/dashboard",
+            headers={
+                "Origin": "https://evil.example.com",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+        acao = resp.headers.get("access-control-allow-origin", "")
+        assert acao != "https://evil.example.com"
+        assert acao == ""
+
+    def test_cors_wildcard_in_env_is_rejected(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """A '*' entry in DASHBOARD_CORS_ORIGINS must not open CORS."""
         monkeypatch.setenv("DASHBOARD_CORS_ORIGINS", "*")
         from ai_company.dashboard.app import create_app
 
@@ -63,8 +95,7 @@ class TestCORSConfiguration:
                 "Access-Control-Request-Method": "GET",
             },
         )
-        acao = resp.headers.get("access-control-allow-origin", "")
-        assert acao == "*"
+        assert resp.headers.get("access-control-allow-origin", "") != "*"
 
 
 # ── API key authentication tests ──────────────────────────────────────

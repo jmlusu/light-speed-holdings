@@ -72,6 +72,15 @@ class MessageBus:
     def _save_tasks(self, tasks: List[dict]) -> None:
         self._store.write_json(self._inbox_name, tasks)
 
+    def _mutate_tasks(self, updater: Callable[[List[dict]], List[dict]]) -> List[dict]:
+        """Apply *updater* to the inbox under an exclusive file lock.
+
+        Serialises the read-modify-write cycle so concurrent executor and
+        dashboard access cannot corrupt :file:`inbox.json` or lose updates
+        (GAP-002).
+        """
+        return self._store.update_json(self._inbox_name, lambda data: updater(data or []))
+
     # ── Broadcast helper ─────────────────────────────────────────────
 
     def _emit(self, task_dict: dict, event: str) -> None:
@@ -96,10 +105,13 @@ class MessageBus:
         """
         if not task.correlation_id:
             task.correlation_id = str(uuid.uuid4())
-        tasks = self._load_tasks()
         task_dict = task.model_dump()
-        tasks.append(task_dict)
-        self._save_tasks(tasks)
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            tasks.append(task_dict)
+            return tasks
+
+        self._mutate_tasks(_updater)
         logger.info(
             "Task %s sent from [%s] to [%s] (correlation=%s).",
             task.id,
@@ -155,27 +167,32 @@ class MessageBus:
             "escalated": "escalated",
         }
         now = datetime.now().isoformat()
-        tasks = self._load_tasks()
-        for i, t in enumerate(tasks):
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    old_status = t.get("status", "")
+                    tasks[i]["status"] = status
+                    tasks[i]["updated_at"] = now
+                    if result:
+                        tasks[i]["result"] = result
+                    if not tasks[i].get("created_at"):
+                        tasks[i]["created_at"] = now
+                    if status in ("completed", "failed"):
+                        tasks[i]["completed_at"] = now
+                    task_dict = tasks[i]
+                    event = event_map.get(status, "status_changed")
+                    self._emit(task_dict, event)
+                    logger.info(
+                        "Task %s status: %s -> %s",
+                        task_id, old_status, status,
+                    )
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        for t in updated:
             if t.get("id") == task_id:
-                old_status = t.get("status", "")
-                tasks[i]["status"] = status
-                tasks[i]["updated_at"] = now
-                if result:
-                    tasks[i]["result"] = result
-                if not tasks[i].get("created_at"):
-                    tasks[i]["created_at"] = now
-                if status in ("completed", "failed"):
-                    tasks[i]["completed_at"] = now
-                self._save_tasks(tasks)
-                task_dict = tasks[i]
-                event = event_map.get(status, "status_changed")
-                self._emit(task_dict, event)
-                logger.info(
-                    "Task %s status: %s -> %s",
-                    task_id, old_status, status,
-                )
-                return Task(**task_dict)
+                return Task(**t)
         return None
 
     # ── Query helpers ────────────────────────────────────────────────
@@ -209,12 +226,16 @@ class MessageBus:
 
         Returns the updated ``Task`` or ``None`` if not found.
         """
-        tasks = self._load_tasks()
-        for i, t in enumerate(tasks):
+        def _updater(tasks: List[dict]) -> List[dict]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    tasks[i]["acknowledged_by"] = agent_id
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        for t in updated:
             if t.get("id") == task_id:
-                tasks[i]["acknowledged_by"] = agent_id
-                self._save_tasks(tasks)
-                return Task(**tasks[i])
+                return Task(**t)
         return None
 
     def count_by_status(self) -> dict[str, int]:

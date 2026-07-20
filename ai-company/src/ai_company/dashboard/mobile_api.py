@@ -14,45 +14,38 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import yaml
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+
+from ai_company.dashboard.repository import get_state_store
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/mobile")
 
 # ── Helpers (shared with main api.py) ───────────────────────────────
+# GAP-011: route all state I/O through the StateStore repository.
+_store = get_state_store()
 
 
 def _load_json(path: str | Path) -> Any:
-    p = Path(path)
-    if not p.exists():
-        return [] if str(p).endswith("json") else {}
-    with open(p, "r", encoding="utf-8") as f:
-        return json.load(f)
+    return _store.read_json(path, default={})
 
 
 def _load_yaml(path: str | Path) -> Any:
-    p = Path(path)
-    if not p.exists():
-        return {}
-    with open(p, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    return _store.read_yaml(path, default={})
 
 
 def _save_json(path: str | Path, data: Any) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, default=str)
+    _store.write_json(path, data)
 
 
 def _save_yaml(path: str | Path, data: Any) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        yaml.dump(data, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    _store.write_yaml(path, data)
 
 
 def _load_registry() -> list[dict]:
-    return _load_json("company/agent-registry.json")
+    return _load_json("company/agent-registry.json") or []
 
 
 def _truncate(text: str, max_len: int = 60) -> str:
@@ -385,6 +378,20 @@ def _resolve_escalation(task_id: str) -> dict[str, Any]:
         if e.get("task_id") == task_id and not e.get("resolved", False):
             e["resolved"] = True
             _save_yaml("orchestrator/escalation.yaml", data)
+            # GAP-008: persist the escalation resolution to the audit trail.
+            try:
+                from ai_company.audit.integration import log_escalation
+
+                log_escalation(
+                    task_id=task_id,
+                    from_agent=e.get("from_agent", ""),
+                    to_agent=e.get("to_agent", ""),
+                    reason=e.get("reason", "resolved via mobile"),
+                    rule_id=e.get("rule_id", ""),
+                    resolved=True,
+                )
+            except Exception:
+                logger.debug("audit hook skipped for escalation resolution")
             return {"type": "resolve_escalation", "target_id": task_id, "ok": True}
     return {"type": "resolve_escalation", "target_id": task_id, "ok": False, "error": "No open escalation found"}
 
@@ -564,8 +571,7 @@ def compact_kpis() -> dict[str, Any]:
 @router.get("/kpis/trend")
 def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
     """Return trend data points for a KPI metric (for sparkline charts)."""
-    snapshot_dir = Path("orchestrator/kpi_snapshots")
-    if not snapshot_dir.exists():
+    if not _store.list_snapshot_files():
         return {
             "metric": metric,
             "unit": "count",
@@ -580,10 +586,11 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
     data_points = []
     cutoff = datetime.now(timezone.utc).timestamp() - (hours * 3600)
 
-    for snap_file in sorted(snapshot_dir.glob("snapshot-*.json")):
+    for snap_file in _store.list_snapshot_files("snapshot-*.json"):
         try:
-            with open(snap_file, "r", encoding="utf-8") as f:
-                snap = json.load(f)
+            snap = _store.read_snapshot(snap_file)
+            if snap is None:
+                continue
             ts_str = snap_file.stem.replace("snapshot-", "")
             # Parse timestamp
             ts = datetime.strptime(ts_str, "%Y%m%d-%H%M%S")

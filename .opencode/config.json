@@ -1,10 +1,17 @@
-{
+﻿{
   "ai": {
     "provider": "ollama",
     "baseUrl": "http://localhost:11434",
-    "endpoint": "/v1/chat/completions",
     "model": "deepseek-r1:7b",
-    "apiKey": "ollama",
-    "method": "POST"
+    "apiKey": "ollama"
+  },
+  "model": {
+    "provider": "ollama",
+    "model": "deepseek-r1:7b",
+    "baseUrl": "http://localhost:11434",
+    "apiType": "openai"
+  },
+  "session": {
+    "contextWindow": 64000
   }
 }

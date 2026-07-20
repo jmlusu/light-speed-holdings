@@ -76,15 +76,55 @@ def log_hitl_decision(
     task_id: str,
     agent_id: str,
     tool: str,
-    approved: bool,
+    approved: bool | None = None,
 ) -> None:
-    """Record an HITL approval or denial event."""
+    """Record an HITL approval, denial, or park event.
+
+    ``approved`` is ``True`` for an approval, ``False`` for a denial, and
+    ``None`` for a parked request awaiting a human decision (GAP-004).
+    """
     if _writer is None:
         return
+    if approved is None:
+        event_type = AuditEventType.HITL_PARKED
+    else:
+        event_type = (
+            AuditEventType.HITL_APPROVED if approved else AuditEventType.HITL_DENIED
+        )
     event = AuditEvent(
-        event_type=AuditEventType.HITL_APPROVED if approved else AuditEventType.HITL_DENIED,
+        event_type=event_type,
         task_id=task_id,
         agent_id=agent_id,
         tool=tool,
+    )
+    _writer.write(event)
+
+
+def log_escalation(
+    task_id: str,
+    from_agent: str,
+    to_agent: str,
+    reason: str,
+    rule_id: str = "",
+    resolved: bool = False,
+) -> None:
+    """Record an escalation event (GAP-008).
+
+    Best-effort and exception-safe: if the audit writer has not been
+    initialised (e.g. in lightweight unit tests) the call is a no-op.
+    """
+    if _writer is None:
+        return
+    event = AuditEvent(
+        event_type=AuditEventType.ESCALATION,
+        task_id=task_id,
+        agent_id=to_agent or from_agent,
+        args={
+            "from_agent": from_agent,
+            "to_agent": to_agent,
+            "reason": reason,
+            "rule_id": rule_id,
+        },
+        metadata={"resolved": resolved},
     )
     _writer.write(event)

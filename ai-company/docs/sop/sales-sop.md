@@ -36,9 +36,56 @@ This SOP applies to all sales activities including:
 | CFO | Department executive | Pricing approval, contract terms |
 | CEO / Founder | Human operator | Strategic account relationships, final deal approval |
 
-## 4. Lead Generation
+## 4. Lead Intake & Qualification
 
-### 4.1 Lead Sources
+### 4.1 Lead Intake
+
+All inbound leads are registered through a single intake task on the `MessageBus`:
+
+1. **Capture**: Lead arrives from a marketing channel (Section 4.1 sources) or direct inbound
+2. **Register**: `sales_lead` creates a task (`sender_id: marketing_lead` or `cmo`, `receiver_id: sdr_1`)
+3. **Log**: Lead record stored with source, timestamp, and initial notes
+4. **Route**: Assigned to an SDR for qualification within the Prospecting SLA (3 days)
+
+### 4.2 Lead Qualification
+
+Qualified using the BANT framework (Section 4.2 of the existing pipeline):
+
+| Criterion | Question | Threshold |
+|-----------|----------|-----------|
+| **Budget** | Can they afford the tool? | > $100/month |
+| **Authority** | Are they a decision-maker? | Yes or champion identified |
+| **Need** | Do they have AI agent orchestration needs? | Clear use case identified |
+| **Timeline** | When are they looking to implement? | Within 90 days |
+
+Leads scoring Hot (8-10) move to Discovery; Warm (5-7) enter nurture; Cold (1-4) return to marketing nurture.
+
+### 4.3 Proposal Generation
+
+After a successful Demo (Section 6.1), the Account Executive generates a proposal:
+
+1. Select pricing tier (Section 6.3) and any customization
+2. Generate proposal document referencing the customer's stated use case
+3. Route pricing exceptions to `cfo` + `ceo` (Section 9)
+4. Deliver proposal; advance pipeline to Negotiation
+
+### 4.4 Contract Handoff to Legal
+
+When terms are agreed, the deal transitions to Legal:
+
+- `sales_lead` opens a `MessageBus` contract request (`receiver_id: clo`)
+- Includes: counterparty, pricing, term, and any negotiated concessions
+- `clo` performs contract review per `docs/sop/legal-sop.md` Section 4
+- Sales may not execute until Legal sign-off is recorded
+- On execution, `cso` is notified to begin Customer Success onboarding
+
+### 4.5 Forecast Reporting
+
+The `sales_lead` reports a weighted forecast (Section 7.3 weights) to `cfo` and `chief_of_staff`:
+
+- Weekly pipeline review (Section 5.3) produces the rolling forecast
+- Monthly business review aligns forecast to MRR targets
+- Forecast data is mirrored to the Sales KPI collector for the Dashboard
 
 | Source | Type | Quality | Volume |
 |--------|------|---------|--------|

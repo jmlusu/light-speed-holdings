@@ -2,7 +2,8 @@
 
 Security hardening (GAP-010):
 - CORS origins are configurable via ``DASHBOARD_CORS_ORIGINS`` env var
-  (comma-separated; defaults to ``http://localhost:3000``).
+  (comma-separated; defaults to a localhost-only allowlist). The wildcard
+  ``*`` is rejected and never used as a default.
 - Write endpoints (POST / DELETE) require an ``X-API-Key`` header when
   ``DASHBOARD_API_KEY`` env var is set.
 - Simple in-memory rate limiter protects all endpoints (100 req/min default,
@@ -154,17 +155,34 @@ def create_app() -> FastAPI:
     # ── Jinja2 templates ─────────────────────────────────────────────
     templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
-    # ── CORS (GAP-010: configurable origins) ─────────────────────────
-    origins_raw = os.environ.get("DASHBOARD_CORS_ORIGINS", "http://localhost:3000")
+    # ── CORS (GAP-010: configurable, restricted allowlist) ───────────
+    # Default to localhost-only origins; never default to "*".
+    # Override via DASHBOARD_CORS_ORIGINS (comma-separated). The wildcard
+    # "*" is explicitly rejected: it is incompatible with allow_credentials
+    # and is a production risk.
+    _DEFAULT_ORIGINS = [
+        "http://localhost",
+        "http://localhost:3000",
+        "http://127.0.0.1",
+        "http://127.0.0.1:3000",
+    ]
+    origins_raw = os.environ.get("DASHBOARD_CORS_ORIGINS", "")
     origins = [o.strip() for o in origins_raw.split(",") if o.strip()]
-    # If the operator explicitly sets "*," keep the legacy wide-open behaviour
-    # for backward compatibility in development.
-    allow_wildcard = "*" in origins
+    if not origins:
+        origins = _DEFAULT_ORIGINS
+    # Guard against accidental wildcard that would expose the API.
+    if "*" in origins:
+        logger.warning(
+            "DASHBOARD_CORS_ORIGINS contained '*'; ignoring wildcard for security."
+        )
+        origins = [o for o in origins if o != "*"]
+    if not origins:
+        origins = _DEFAULT_ORIGINS
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"] if allow_wildcard else origins,
-        allow_credentials=not allow_wildcard,
+        allow_origins=origins,
+        allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
