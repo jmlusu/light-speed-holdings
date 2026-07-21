@@ -70,15 +70,21 @@ class _RateLimiter:
         self.window_seconds = window_seconds
         self._hits: dict[str, list[float]] = defaultdict(list)
 
-    def is_allowed(self, key: str) -> bool:
+    def is_allowed(self, key: str) -> tuple[bool, int]:
+        """Return ``(allowed, remaining)`` for the given *key*.
+
+        *remaining* is the number of requests the client may still make
+        within the current window (0 when the limit is reached).
+        """
         now = time.time()
         cutoff = now - self.window_seconds
         # Prune old entries
         self._hits[key] = [t for t in self._hits[key] if t > cutoff]
         if len(self._hits[key]) >= self.max_requests:
-            return False
+            return False, 0
         self._hits[key].append(now)
-        return True
+        remaining = self.max_requests - len(self._hits[key])
+        return True, remaining
 
 
 # ---------------------------------------------------------------------------
@@ -219,13 +225,21 @@ def create_app() -> FastAPI:
     @app.middleware("http")
     async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
         client_ip = request.client.host if request.client else "unknown"
-        if not _limiter.is_allowed(client_ip):
+        allowed, remaining = _limiter.is_allowed(client_ip)
+        if not allowed:
             return Response(
                 content='{"detail":"Rate limit exceeded"}',
                 status_code=429,
                 media_type="application/json",
+                headers={
+                    "X-RateLimit-Limit": str(rate_limit),
+                    "X-RateLimit-Remaining": "0",
+                },
             )
-        return await call_next(request)
+        response = await call_next(request)
+        response.headers["X-RateLimit-Limit"] = str(rate_limit)
+        response.headers["X-RateLimit-Remaining"] = str(remaining)
+        return response
 
     # ── API-key guard for write endpoints (GAP-010) ──────────────────────
     @app.middleware("http")

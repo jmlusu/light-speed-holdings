@@ -21,14 +21,22 @@ def init_memory(base_dir: str = "memory") -> MemoryStore:
     """Initialize the memory store and optional vector store."""
     global _store, _vector_store
     _store = MemoryStore(base_dir=base_dir)
-    # Initialize vector store for semantic search (best-effort)
+    # Initialize vector store with EmbeddingEngine for real semantic search
     try:
+        from ai_company.ml.embeddings import EmbeddingEngine
         from ai_company.memory.vector_store import VectorStore
 
+        engine = EmbeddingEngine(
+            model_name="all-MiniLM-L6-v2",
+            cache_dir=f"{base_dir}/embeddings",
+        )
         _vector_store = VectorStore(
             memory_store=_store,
+            embedding_engine=engine,
             index_dir=f"{base_dir}/vector_index",
         )
+        # Index existing entries
+        _vector_store.index_all()
     except Exception:
         _vector_store = None
     return _store

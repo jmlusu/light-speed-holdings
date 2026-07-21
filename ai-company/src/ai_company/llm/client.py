@@ -131,34 +131,34 @@ class LLMClient:
         last_raw: str = ""
 
         for attempt in range(max_retries):
-                provider_idx = attempt % len(provider_chain)
-                provider_id, model = provider_chain[provider_idx]
-                
-                provider = self._providers.get(provider_id)
-                breaker = self._circuit_breakers.get(provider_id)
-                if not provider or not provider.is_available():
-                    continue
-                if breaker and not breaker.is_available:
-                    continue
+            provider_idx = attempt % len(provider_chain)
+            provider_id, model = provider_chain[provider_idx]
 
-                try:
-                    response = provider.chat(
-                        system_prompt=system_prompt,
-                        user_prompt=task_instruction,
-                        model=model,
-                    )
-                    if breaker:
-                        breaker.record_success()
-                    parsed = self._parse_response(response.content)
-                    if parsed is not None:
-                        self._record_usage(response, agent_name, task_id, attempt + 1)
-                        return parsed
-                    last_raw = response.content
-                    last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
-                except LLMProviderError as exc:
-                    if breaker:
-                        breaker.record_failure()
-                    last_error = f"Attempt {attempt + 1}: {exc}"
+            provider = self._providers.get(provider_id)
+            breaker = self._circuit_breakers.get(provider_id)
+            if not provider or not provider.is_available():
+                continue
+            if breaker and not breaker.is_available:
+                continue
+
+            try:
+                response = provider.chat(
+                    system_prompt=system_prompt,
+                    user_prompt=task_instruction,
+                    model=model,
+                )
+                if breaker:
+                    breaker.record_success()
+                parsed = self._parse_response(response.content)
+                if parsed is not None:
+                    self._record_usage(response, agent_name, task_id, attempt + 1)
+                    return parsed
+                last_raw = response.content
+                last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
+            except LLMProviderError as exc:
+                if breaker:
+                    breaker.record_failure()
+                last_error = f"Attempt {attempt + 1}: {exc}"
 
         raise LLMResponseError(
             f"Failed to get valid JSON after {max_retries} attempts. Last error: {last_error}",
@@ -197,46 +197,48 @@ class LLMClient:
             provider_chain = [(route.provider, route.model)]
 
         last_error: str = ""
+        last_raw: str = ""
 
-        for attempt in range(1, max_retries + 1):
-            for provider_id, model in provider_chain:
-                provider = self._providers.get(provider_id)
-                breaker = self._circuit_breakers.get(provider_id)
-                if not provider or not provider.is_available():
-                    continue
-                if breaker and not breaker.is_available:
-                    continue
+        for attempt in range(max_retries):
+            provider_idx = attempt % len(provider_chain)
+            provider_id, model = provider_chain[provider_idx]
 
-                full_text = ""
-                try:
-                    for chunk in provider.chat_stream(
-                        system_prompt=system_prompt,
-                        user_prompt=task_instruction,
-                        model=model,
-                    ):
-                        full_text += chunk.delta
-                        yield chunk
+            provider = self._providers.get(provider_id)
+            breaker = self._circuit_breakers.get(provider_id)
+            if not provider or not provider.is_available():
+                continue
+            if breaker and not breaker.is_available:
+                continue
 
-                    if breaker:
-                        breaker.record_success()
+            full_text = ""
+            try:
+                for chunk in provider.chat_stream(
+                    system_prompt=system_prompt,
+                    user_prompt=task_instruction,
+                    model=model,
+                ):
+                    full_text += chunk.delta
+                    yield chunk
 
-                    parsed = self._parse_response(full_text)
-                    if parsed is not None:
-                        return
-                    last_error = (
-                        f"Attempt {attempt}: Invalid JSON from {provider_id}/{model}"
-                    )
-                    break
-                except LLMProviderError as exc:
-                    if breaker:
-                        breaker.record_failure()
-                    last_error = f"Attempt {attempt}: {exc}"
-                    continue
+                if breaker:
+                    breaker.record_success()
+
+                parsed = self._parse_response(full_text)
+                if parsed is not None:
+                    return
+                last_raw = full_text
+                last_error = (
+                    f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
+                )
+            except LLMProviderError as exc:
+                if breaker:
+                    breaker.record_failure()
+                last_error = f"Attempt {attempt + 1}: {exc}"
 
         raise LLMResponseError(
             f"Failed to get valid JSON after {max_retries} attempts. Last error: {last_error}",
             attempts=max_retries,
-            last_raw=full_text if "full_text" in dir() else "",
+            last_raw=last_raw,
         )
 
     def _record_usage(

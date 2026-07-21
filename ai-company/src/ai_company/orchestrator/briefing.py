@@ -21,9 +21,10 @@ class BriefingGenerator:
         registry_path: str = "company/agent-registry.json",
         inbox_path: str = ".opencode/inbox.json",
         output_path: str = ".opencode/daily_briefing.md",
+        bus: MessageBus | None = None,
     ) -> None:
         self.registry_path = Path(registry_path)
-        self.bus = MessageBus(storage_path=inbox_path)
+        self.bus = bus or MessageBus(storage_path=inbox_path)
         self.output_path = Path(output_path)
 
     def _load_registry(self) -> dict[str, dict]:

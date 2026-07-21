@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.audit.integration import init_audit, log_task_status
+from ai_company.memory.consolidation import ConsolidationConfig, ConsolidationScheduler
 from ai_company.memory.integration import init_memory, recall_context, record_task_outcome
 from ai_company.executor.context import (
     build_user_prompt,
@@ -113,6 +114,13 @@ class Executor:
         # Memory
         self._memory = init_memory()
 
+        # GAP-005: Memory consolidation scheduler
+        self._consolidation_config = ConsolidationConfig()
+        self._consolidation_scheduler = ConsolidationScheduler(
+            store=self._memory,
+            config=self._consolidation_config,
+        )
+
         # Dead-letter queue (GAP-017)
         self.dlq = DeadLetterQueue()
 
@@ -183,6 +191,10 @@ class Executor:
         pending = self.bus.get_pending_tasks()
         for task in pending:
             self._process_task(task)
+
+        # GAP-005: Run memory consolidation periodically
+        self._consolidation_scheduler.on_tick()
+
         return len(pending)
 
     def _resume_parked_tasks(self) -> int:

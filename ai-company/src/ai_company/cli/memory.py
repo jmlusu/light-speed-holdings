@@ -115,3 +115,53 @@ def consolidate(
         console.print(f"  Top tags: {', '.join(f'{t[0]}({t[1]})' for t in summary['top_tags'][:5])}")
     if summary.get("top_agents"):
         console.print(f"  Top agents: {', '.join(f'{a[0]}({a[1]})' for a in summary['top_agents'][:5])}")
+
+
+@app.command("consolidate-all")
+def consolidate_all(
+    max_age_days: int = typer.Option(90, help="Max age in days for episodic memories"),
+    max_entries: int = typer.Option(2000, help="Max entries per memory type"),
+) -> None:
+    """Run full memory consolidation: deduplicate, aggregate, and prune."""
+    from ai_company.memory.engine import MemoryStore
+
+    store = MemoryStore()
+
+    # Prune first
+    pruned = store.prune(
+        max_age_days=max_age_days,
+        max_entries_per_type=max_entries,
+    )
+    console.print(f"[yellow]Pruned {pruned} entries[/yellow]")
+
+    # Then consolidate all types
+    summary = store.consolidate_all()
+    console.print("[green]Consolidation complete:[/green]")
+    console.print(f"  Semantic duplicates removed: {summary['semantic_duplicates_removed']}")
+    console.print(f"  Aggregates created: {summary['aggregates_created']}")
+    console.print(f"  Types processed: {summary['types_processed']}")
+
+    # Show final stats
+    stats = store.stats()
+    table = Table(title="Memory Store After Consolidation")
+    table.add_column("Type", style="cyan")
+    table.add_column("Count", justify="right", style="green")
+    for t, c in stats.items():
+        table.add_row(t, str(c))
+    console.print(table)
+
+
+@app.command()
+def prune(
+    max_age_days: int = typer.Option(None, help="Remove entries older than N days"),
+    max_entries: int = typer.Option(None, help="Cap each type to N entries"),
+) -> None:
+    """Prune memory entries by age and/or per-type cap."""
+    from ai_company.memory.engine import MemoryStore
+
+    store = MemoryStore()
+    pruned = store.prune(
+        max_age_days=max_age_days,
+        max_entries_per_type=max_entries,
+    )
+    console.print(f"[yellow]Pruned {pruned} entries[/yellow]")
