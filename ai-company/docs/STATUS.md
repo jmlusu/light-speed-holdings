@@ -92,7 +92,7 @@
 
 ## Recent Work
 
-- **2026-07-21**: Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
+- **2026-07-21**: Sprint 3 backlog created (docs/SPRINT-3-BACKLOG.md). Code audit reveals ~60% of planned Sprint 3 items already implemented in source. Revised scope: 8 items, 22 hours effort. Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
 - **2026-07-20**: Sprint 1 completed. All Track B (code hardening) and Track C (audit trail) items done. Sprint 2 backlog created. All documentation updated to reflect actual state.
 - **2026-07-19**: Phase 5 design specs — 3 approval UX documents covering 5-tier action system, dashboard approval queue with WebSocket, and enhanced CLI commands.
 - **2026-07-17**: Governance layer — autonomous GitHub Action (cron every 6h), postmortem template + store + CLI, incident response + deployment SOPs, RACI template + hiring workflow RACI, department KPI dashboards (7 departments, 28 KPIs), dashboard CLI, postmortem CLI, sop/raci CLI commands, 8 new tests.
@@ -104,9 +104,10 @@
 |--------|--------|-------|-------|
 | Sprint 1 | ✅ COMPLETE | — | Code hardening + audit trail |
 | Sprint 2 | ✅ COMPLETE | 1093 passing | 13 items — all Done |
-| Sprint 3 | 🔴 NOT STARTED | — | Autonomous coordination |
+| Sprint 3 | 🟡 BACKLOG CREATED | — | 8 items, 22h (see docs/SPRINT-3-BACKLOG.md) |
 | Sprint 4 | 🔴 NOT STARTED | — | Quality & completeness |
 
 ## Remaining Work
 
-- **Sprint 3+ (not started)**: OpenAPI/Swagger docs (6.2), rate limiting via slowapi (6.3), periodic memory consolidation into executor loop (7.1), memory keyword+semantic search (7.2), memory retention TTL (7.3), scheduled cycle daemon (8.1), full end-to-end integration test w/ mocked LLM (10.1), CLI/API/approval test suites (10.2-10.4), structured logging w/ correlation IDs (9.1), agent-spec validation CLI (9.2), CLI type hints/docstrings (9.3-9.4), OAuth2/key rotation (11.1), memory encryption (11.2), token counting integration (11.3).
+- **Sprint 3 (backlog created)**: WebSocket integration tests (S3-01, 4h), data governance CLI (S3-02, 3h), memory CLI enhancement (S3-03, 2h), fix BriefingGenerator GAP-014 (S3-04, 1h), fix LLM retry GAP-015 (S3-05, 2h), scheduled cycle daemon (S3-06, 3h), dashboard API tests (S3-07, 3h), full pipeline integration test (S3-08, 4h). Total: 22h estimated.
+- **Sprint 4 (not started)**: Structured logging with correlation IDs (9.1), agent spec validation CLI (9.2), CLI type hints/docstrings (9.3-9.4), OAuth2/key rotation (11.1), memory encryption (11.2), token counting integration (11.3).

@@ -44,6 +44,7 @@ src/ai_company/cli/orchestrator.py
 src/ai_company/cli/sales.py
 src/ai_company/cli/security.py
 src/ai_company/cli/specialists.py
+src/ai_company/cli/validate.py
 src/ai_company/cli/workflows.py
 src/ai_company/config/__init__.py
 src/ai_company/dashboard/__init__.py
@@ -104,6 +105,7 @@ src/ai_company/llm/providers/base.py
 src/ai_company/llm/providers/ollama.py
 src/ai_company/llm/providers/openai_compatible.py
 src/ai_company/memory/__init__.py
+src/ai_company/memory/consolidation.py
 src/ai_company/memory/engine.py
 src/ai_company/memory/integration.py
 src/ai_company/memory/vector_store.py
@@ -174,6 +176,7 @@ src/ai_company/workflow/engine.py
 tests/test_audit_integration.py
 tests/test_cost_tracker_integration.py
 tests/test_kpi_analytics.py
+tests/test_llm_retry_verification.py
 tests/test_llm_streaming.py
 tests/test_memory_integration.py
 tests/test_prompt_engineering.py

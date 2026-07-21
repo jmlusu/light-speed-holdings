@@ -115,7 +115,44 @@ src/ai_company/
 └── utils.py                    # Shared utilities (currently empty)
 ```
 
-## 2 Data Flow
+## 2 Naming Conventions
+
+Agent naming follows a strict convention that bridges the Python registry (underscores) with OpenCode file resolution (hyphens).
+
+### Convention Summary
+
+| Layer | Convention | Example | Notes |
+|-------|-----------|---------|-------|
+| Registry IDs (`company-registry.yaml`) | **underscores** | `board_chair`, `financial_analyst` | Python/Pydantic convention |
+| Generated filenames (`.opencode/agents/`) | **hyphens** | `board-chair.md`, `financial-analyst.md` | OpenCode convention |
+| Config file references (`config/**/*.yaml`) | **hyphens** | `board-chair`, `financial-analyst` | Must match generated filenames |
+| OpenCode `@agent-name` resolution | **hyphens** | `@board-chair` | Looks for `board-chair.md` |
+
+### Why Two Conventions?
+
+- **Registry** uses underscores because agent IDs are Python identifiers used in Pydantic models, imports, and programmatic access.
+- **Generated files** use hyphens because OpenCode resolves `@agent-name` by looking for `agent-name.md` in `.opencode/agents/`.
+- **Config references** must use hyphens to match the filenames that OpenCode will actually find.
+
+### The Conversion Rule
+
+```
+Registry ID:  board_chair
+              ↓  (underscores → hyphens)
+Filename:     board-chair.md
+Config ref:   board-chair
+```
+
+### Validation
+
+Run `ai-company validate` to check all config references resolve to generated agent files. The validator:
+
+1. Loads the registry and generates all agent filenames
+2. Scans every YAML config for agent references
+3. Checks each reference resolves to an existing `.opencode/agents/*.md` file
+4. Reports mismatches with file path and line number
+
+## 3 Data Flow
 
 ```
 config/*.yaml (19 files)
@@ -164,7 +201,7 @@ config/*.yaml (19 files)
                 └──► Knowledge graph
 ```
 
-## 3 Key Entry Points
+## 4 Key Entry Points
 
 | Entry Point | File | Purpose |
 |-------------|------|---------|
@@ -183,7 +220,7 @@ config/*.yaml (19 files)
 | Dashboard | `dashboard/app.py:app` | FastAPI REST API |
 | KPIs | `dashboard/kpis/__init__.py:collect_all_kpis()` | 7-department KPI collection |
 
-## 4 External Dependencies
+## 5 External Dependencies
 
 | Package | Purpose |
 |---------|---------|
@@ -197,7 +234,7 @@ config/*.yaml (19 files)
 | httpx | HTTP client for LLM providers |
 | networkx | Graph algorithms (optional) |
 
-## 5 Test Structure
+## 6 Test Structure
 
 ```
 tests/

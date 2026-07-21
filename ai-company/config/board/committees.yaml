@@ -1,8 +1,8 @@
 committees:
   - id: "audit_committee"
     name: "Audit Committee"
-    chair: "board_finance"
-    members: ["board_finance", "board_risk"]
+    chair: "board-finance"
+    members: ["board-finance", "board-risk"]
     responsibilities:
       - "Financial reporting oversight"
       - "Internal audit review"
@@ -11,8 +11,8 @@ committees:
 
   - id: "compensation_committee"
     name: "Compensation Committee"
-    chair: "board_chair"
-    members: ["board_chair", "board_strategy"]
+    chair: "board-chair"
+    members: ["board-chair", "board-strategy"]
     responsibilities:
       - "Executive compensation"
       - "Equity plan administration"
@@ -21,8 +21,8 @@ committees:
 
   - id: "technology_committee"
     name: "Technology Committee"
-    chair: "board_technology"
-    members: ["board_technology", "board_strategy"]
+    chair: "board-technology"
+    members: ["board-technology", "board-strategy"]
     responsibilities:
       - "Technology strategy review"
       - "Architecture decisions"
@@ -31,8 +31,8 @@ committees:
 
   - id: "nominating_committee"
     name: "Nominating Committee"
-    chair: "board_chair"
-    members: ["board_chair", "board_customer"]
+    chair: "board-chair"
+    members: ["board-chair", "board-customer"]
     responsibilities:
       - "Board member recruitment"
       - "Succession planning"

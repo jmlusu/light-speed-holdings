@@ -10,7 +10,7 @@ routing:
       executive: cto
 
   ai:
-      executive: chief-ai-officer
+      executive: caio
 
   finance:
       executive: cfo

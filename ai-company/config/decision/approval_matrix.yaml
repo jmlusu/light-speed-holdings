@@ -7,7 +7,7 @@ approval_matrix:
 
   - action: "hire_executive"
     risk_level: "critical"
-    required_approvals: ["human-ceo", "board_chair"]
+    required_approvals: ["human-ceo", "board-chair"]
     sla_hours: 168
     auto_approve: false
 

@@ -12,7 +12,7 @@ decision_tree:
 
     - id: "fin_under_10k"
       action: "Auto-approve by department exec"
-      authority: "department_executive"
+      authority: "department-executive"
       sla_hours: 4
 
     - id: "fin_10k_100k"
@@ -22,7 +22,7 @@ decision_tree:
 
     - id: "fin_over_100k"
       action: "CFO + CEO approval required"
-      authority: "cfo_human-ceo"
+      authority: "cfo-human-ceo"
       sla_hours: 48
 
     - id: "technical"
@@ -32,7 +32,7 @@ decision_tree:
 
     - id: "tech_prod"
       action: "CTO + CISO approval required"
-      authority: "cto_ciso"
+      authority: "cto-ciso"
       sla_hours: 4
 
     - id: "tech_internal"
@@ -47,17 +47,17 @@ decision_tree:
 
     - id: "hr_ic"
       action: "Hiring manager + HR approval"
-      authority: "hiring_manager_chro"
+      authority: "hiring-manager-chro"
       sla_hours: 48
 
     - id: "hr_manager"
       action: "Department exec + CHRO approval"
-      authority: "department_exec_chro"
+      authority: "department-exec-chro"
       sla_hours: 72
 
     - id: "hr_executive"
       action: "CEO + Board approval"
-      authority: "human-ceo_board"
+      authority: "human-ceo-board"
       sla_hours: 168
 
     - id: "strategic"
@@ -72,7 +72,7 @@ decision_tree:
 
     - id: "ops_single"
       action: "Department exec approval"
-      authority: "department_executive"
+      authority: "department-executive"
       sla_hours: 24
 
     - id: "ops_cross"

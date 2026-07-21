@@ -113,6 +113,27 @@ class AgentGenerator:
 
         return errors
 
+    def validate_naming(self) -> list[dict[str, str]]:
+        """Validate that all generated agent filenames use hyphens, not underscores.
+
+        Returns list of {file, error} dicts. Empty list means all valid.
+        """
+        errors: list[dict[str, str]] = []
+        if not self.output_dir.exists():
+            return [{"file": "*", "error": "Output directory does not exist"}]
+
+        for filepath in sorted(self.output_dir.glob("*.md")):
+            stem = filepath.stem
+            if "_" in stem:
+                errors.append(
+                    {
+                        "file": filepath.name,
+                        "error": f"Filename contains underscores: use '{stem.replace('_', '-')}' instead",
+                    }
+                )
+
+        return errors
+
     def load_registry(self) -> dict[str, Any]:
         if not self.registry_path.exists():
             raise FileNotFoundError(f"Registry not found: {self.registry_path.absolute()}")
@@ -143,7 +164,8 @@ class AgentGenerator:
             if isinstance(raw_tools, list):
                 agent["tools"] = self._normalize_tools(raw_tools)
             rendered = template.render(company=company_name, **agent)
-            out_file = self.output_dir / f"{agent['id']}.md"
+            safe_id = agent["id"].replace("_", "-")
+            out_file = self.output_dir / f"{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8")
             generated.append(out_file)
             logger.debug("Wrote: %s (type=%s)", out_file, agent_type)
@@ -172,7 +194,8 @@ class AgentGenerator:
                 tools=ex.tools,
                 agent_type="Executive",
             )
-            out_file = self.output_dir / f"{ex.id}.md"
+            safe_id = ex.id.replace("_", "-")
+            out_file = self.output_dir / f"{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8")
             generated.append(out_file)
 
@@ -190,7 +213,8 @@ class AgentGenerator:
                 headcount_target=dept.headcount_target,
                 agent_type="Department",
             )
-            out_file = self.output_dir / f"dept_{dept.id}.md"
+            safe_id = dept.id.replace("_", "-")
+            out_file = self.output_dir / f"dept-{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8")
             generated.append(out_file)
 
@@ -210,7 +234,8 @@ class AgentGenerator:
                 seniority=spec.seniority.value,
                 agent_type="Specialist",
             )
-            out_file = self.output_dir / f"spec_{spec.id}.md"
+            safe_id = spec.id.replace("_", "-")
+            out_file = self.output_dir / f"spec-{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8")
             generated.append(out_file)
 
@@ -229,7 +254,8 @@ class AgentGenerator:
                 term_end=bm.term_end,
                 agent_type="Board",
             )
-            out_file = self.output_dir / f"board_{bm.id}.md"
+            safe_id = bm.id.replace("_", "-")
+            out_file = self.output_dir / f"board-{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8")
             generated.append(out_file)
 

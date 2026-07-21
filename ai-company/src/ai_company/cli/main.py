@@ -48,6 +48,7 @@ from ai_company.cli.company import app as company_app  # noqa: E402
 from ai_company.cli.decision import app as decision_app  # noqa: E402
 from ai_company.cli.graph import app as graph_app  # noqa: E402
 from ai_company.cli.security import app as security_app  # noqa: E402
+from ai_company.cli.validate import app as validate_app  # noqa: E402
 
 app.add_typer(agents_app, name="agents", help="Manage AI agents")
 app.add_typer(board_app, name="board", help="Manage Board of Directors")
@@ -70,6 +71,7 @@ app.add_typer(company_app, name="company", help="Bootstrap and manage the AI com
 app.add_typer(decision_app, name="decision", help="Decision engine — approvals, risk, trees")
 app.add_typer(graph_app, name="graph", help="Graph engine — org chart, knowledge graphs")
 app.add_typer(security_app, name="security", help="Security operations — encryption, key rotation")
+app.add_typer(validate_app, name="validate", help="Validate naming conventions and config references")
 
 
 @app.command()

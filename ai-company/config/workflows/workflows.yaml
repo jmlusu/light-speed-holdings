@@ -58,7 +58,7 @@ workflows:
       - id: "budget_check"
         name: "Budget Verification"
         action: "finance.verifies_budget"
-        owner: "financial_analyst"
+        owner: "financial-analyst"
         inputs: ["request_id", "department"]
         outputs: ["budget_approved"]
       - id: "vendor_selection"
@@ -90,7 +90,7 @@ workflows:
       - id: "detect"
         name: "Incident Detection"
         action: "monitoring.detects"
-        owner: "security_engineer"
+        owner: "security-engineer"
         inputs: ["alert"]
         outputs: ["incident_id"]
       - id: "triage"
@@ -102,21 +102,21 @@ workflows:
         sla_minutes: 15
       - id: "contain"
         name: "Containment"
-        action: "security_engineer.contains"
-        owner: "security_engineer"
+        action: "security-engineer.contains"
+        owner: "security-engineer"
         inputs: ["incident_id", "severity"]
         outputs: ["contained"]
         sla_hours: 1
       - id: "eradicate"
         name: "Eradication"
-        action: "security_engineer.eradicates"
-        owner: "security_engineer"
+        action: "security-engineer.eradicates"
+        owner: "security-engineer"
         inputs: ["incident_id"]
         outputs: ["resolved"]
       - id: "recover"
         name: "Recovery"
         action: "devops.recovers"
-        owner: "devops_engineer"
+        owner: "devops-lead"
         inputs: ["incident_id"]
         outputs: ["recovered"]
       - id: "postmortem"
@@ -150,7 +150,7 @@ workflows:
       - id: "conduct_meeting"
         name: "Conduct Board Meeting"
         action: "chair.facilitates"
-        owner: "board_chair"
+        owner: "board-chair"
         inputs: ["deck_id"]
         outputs: ["minutes", "decisions"]
       - id: "follow_up"
@@ -181,7 +181,7 @@ workflows:
         outputs: ["metrics_review"]
       - id: "identify_blockers"
         name: "Identify Blockers"
-        action: "chief-of_staff.identifies"
+        action: "chief-of-staff.identifies"
         owner: "chief-of-staff"
         inputs: ["team_updates"]
         outputs: ["blockers"]
@@ -200,14 +200,14 @@ workflows:
     steps:
       - id: "review_backlog"
         name: "Review Backlog"
-        action: "product_manager.refines"
-        owner: "product_manager"
+        action: "product-owner.refines"
+        owner: "product-owner"
         inputs: ["backlog"]
         outputs: ["prioritized_backlog"]
       - id: "estimate"
         name: "Estimate Work"
         action: "engineering_team.estimates"
-        owner: "senior_engineer"
+        owner: "senior-backend-engineer"
         inputs: ["prioritized_backlog"]
         outputs: ["estimated_backlog"]
       - id: "commit"
@@ -218,8 +218,8 @@ workflows:
         outputs: ["sprint_plan"]
       - id: "kickoff"
         name: "Sprint Kickoff"
-        action: "senior_engineer.kicks_off"
-        owner: "senior_engineer"
+        action: "senior-backend-engineer.kicks_off"
+        owner: "senior-backend-engineer"
         inputs: ["sprint_plan"]
         outputs: ["sprint_started"]
 
@@ -282,7 +282,7 @@ workflows:
       - id: "board_approval"
         name: "Board Approval"
         action: "board.approves"
-        owner: "board_chair"
+        owner: "board-chair"
         inputs: ["approved_budget"]
         outputs: ["final_budget"]
       - id: "communicate"
@@ -296,18 +296,18 @@ workflows:
     name: "Project Launch Workflow"
     description: "New project from concept to launch"
     trigger: "project_approved"
-    owner: "product_manager"
+    owner: "product-owner"
     steps:
       - id: "define_scope"
         name: "Define Project Scope"
-        action: "product_manager.defines"
-        owner: "product_manager"
+        action: "product-owner.defines"
+        owner: "product-owner"
         inputs: ["project_idea"]
         outputs: ["scope_document"]
       - id: "technical_design"
         name: "Technical Design"
-        action: "senior_engineer.designs"
-        owner: "senior_engineer"
+        action: "senior-backend-engineer.designs"
+        owner: "senior-backend-engineer"
         inputs: ["scope_document"]
         outputs: ["technical_design"]
       - id: "approve_design"
@@ -319,18 +319,18 @@ workflows:
       - id: "implement"
         name: "Implementation"
         action: "engineering_team.implements"
-        owner: "senior_engineer"
+        owner: "senior-backend-engineer"
         inputs: ["design_approved"]
         outputs: ["implementation"]
       - id: "test"
         name: "Testing"
-        action: "qa_engineer.tests"
-        owner: "qa_engineer"
+        action: "qa-engineer.tests"
+        owner: "qa-engineer"
         inputs: ["implementation"]
         outputs: ["tested"]
       - id: "launch"
         name: "Launch"
         action: "devops.deploys"
-        owner: "devops_engineer"
+        owner: "devops-lead"
         inputs: ["tested"]
         outputs: ["deployed"]

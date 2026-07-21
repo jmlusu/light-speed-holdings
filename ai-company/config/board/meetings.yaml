@@ -29,5 +29,5 @@ meetings:
       - "Monthly metrics review"
       - "Critical issues"
       - "Upcoming decisions"
-    required_attendees: ["board_chair", "ceo"]
+    required_attendees: ["board-chair", "human-ceo"]
     quorum: 3
