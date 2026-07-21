@@ -13,7 +13,6 @@ via five user-facing commands:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -81,7 +80,7 @@ def _format_report(report: dict[str, Any]) -> str:
         # Header
         lines.append(
             f"  {'Table':<20} {'Rows':>6} {'Class':<14} {'Owner':<14} "
-            f"{'Ret'n':>5} {'Action':<10} {'Past':>5}"
+            f"{'Retn':>5} {'Action':<10} {'Past':>5}"
         )
         lines.append(
             f"  {'-'*19} {'-'*6} {'-'*13} {'-'*13} "
