@@ -6,7 +6,6 @@ Includes GAP-017 dead-letter queue commands and daemon mode (S3-06).
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Optional
 
@@ -167,6 +166,25 @@ def cycle(
 @app.command()
 def status() -> None:
     """Show executor status and pending tasks."""
+    from ai_company.executor.daemon import ExecutorDaemon
+
+    # Check daemon status first
+    daemon_status = ExecutorDaemon.get_daemon_status()
+    if daemon_status:
+        pid = daemon_status.get("pid")
+        state = daemon_status.get("state", "unknown")
+        started = daemon_status.get("started_at", "unknown")
+        ticks = daemon_status.get("ticks_completed", 0)
+        uptime = daemon_status.get("uptime_seconds", 0)
+        typer.echo("Executor Daemon Status")
+        typer.echo("=" * 40)
+        typer.echo(f"  State: {state}")
+        typer.echo(f"  PID: {pid}")
+        typer.echo(f"  Started: {started}")
+        typer.echo(f"  Ticks completed: {ticks}")
+        typer.echo(f"  Uptime: {uptime:.1f}s")
+        typer.echo()
+
     from ai_company.orchestrator.message_bus import MessageBus
 
     bus = MessageBus()
@@ -182,7 +200,7 @@ def status() -> None:
         s = t.get("status", "unknown")
         status_counts[s] = status_counts.get(s, 0) + 1
 
-    typer.echo("Executor Status")
+    typer.echo("Task Queue Status")
     typer.echo("=" * 40)
     typer.echo(f"Total tasks: {len(tasks)}")
     for status, count in sorted(status_counts.items()):
@@ -194,6 +212,25 @@ def status() -> None:
         typer.echo(f"\nPending tasks ({len(pending)}):")
         for t in pending[:10]:
             typer.echo(f"  [{t.get('id', '?')[:8]}] -> {t.get('receiver_id', '?')}: {t.get('instruction', '?')[:60]}")
+
+
+@app.command()
+def stop() -> None:
+    """Stop the executor daemon (sends SIGTERM)."""
+    from ai_company.executor.daemon import ExecutorDaemon
+    from pathlib import Path
+
+    typer.echo("Stopping executor daemon...")
+    daemon = ExecutorDaemon(
+        executor_factory=lambda: None,
+        pid_path=Path("logs/executor-daemon.pid"),
+    )
+    success = daemon.stop_daemon()
+    if success:
+        typer.echo("Daemon stop signal sent successfully.")
+    else:
+        typer.echo("No running daemon found (or already stopped).")
+        raise typer.Exit(1)
 
 
 # ── Dead Letter Queue commands (GAP-017) ─────────────────────────────

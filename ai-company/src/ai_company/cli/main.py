@@ -49,9 +49,11 @@ from ai_company.cli.decision import app as decision_app  # noqa: E402
 from ai_company.cli.graph import app as graph_app  # noqa: E402
 from ai_company.cli.security import app as security_app  # noqa: E402
 from ai_company.cli.validate import app as validate_app  # noqa: E402
+from ai_company.cli.governance import app as governance_app  # noqa: E402
 
 app.add_typer(agents_app, name="agents", help="Manage AI agents")
 app.add_typer(board_app, name="board", help="Manage Board of Directors")
+app.add_typer(governance_app, name="governance", help="Data governance — ownership, retention, compliance")
 app.add_typer(workflows_app, name="workflows", help="Manage workflows")
 app.add_typer(memory_app, name="memory", help="Manage company memory")
 app.add_typer(executives_app, name="executives", help="Manage executives")
