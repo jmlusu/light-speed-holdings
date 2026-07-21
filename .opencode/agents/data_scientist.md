@@ -21,7 +21,7 @@ Type: AI Agent
 
 Department: Data
 
-Reports To: CDO
+Reports To: cdo
 
 
 
@@ -70,7 +70,7 @@ All models must have documented assumptions and validation metrics. Reproducibil
 ## Escalation
 
 
-If a task is outside your scope or requires approval beyond your permission level, escalate to CDO.
+If a task is outside your scope or requires approval beyond your permission level, escalate to cdo.
 
 
 ---

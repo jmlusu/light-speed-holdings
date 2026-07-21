@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: People
 
-Reports To: chro
+Reports To: hr
 
 Seniority: mid
 
@@ -92,7 +92,7 @@ Continuous learning is a competitive advantage. Skills decay without practice. L
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chro.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to hr.
 
 
 ---

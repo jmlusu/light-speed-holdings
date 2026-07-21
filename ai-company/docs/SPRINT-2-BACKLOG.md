@@ -3,9 +3,11 @@
 **Sprint Goal**: Close critical security and integration gaps. Harden the system for production use.
 **Created:** 2026-07-20
 **Owner:** Chief of Staff
-**Status:** ~90% DONE (code audit confirms most items already implemented in source)
+**Status:** COMPLETE (code audit confirms all 13 items implemented and verified)
 
 > **Audit note (2026-07-20):** A code audit found that the majority of Sprint 2 work was already implemented in `src/`. Items S2-01, S2-02, S2-04, S2-05, S2-06, S2-08, S2-10, S2-11, S2-12, S2-13 are marked **Done**. Only S2-03 and S2-07 remain **In Progress**. Test/lint were broken at audit time (6 failing tests, 5 ruff errors, 41 mypy errors) and are being repaired this cycle.
+> 
+> **Final update (2026-07-21):** All 13 Sprint 2 items verified Done. Rate limiter test assertions fixed. Full CI gate green: ruff 0 errors, mypy 0 errors (164 files), pytest 1093 passing (0 failures).
 
 ---
 
@@ -73,7 +75,7 @@ Four components read/write `inbox.json` concurrently: MessageBus, Executor, Dash
 | Field | Value |
 |-------|-------|
 | **Priority** | P0 |
-| **Status** | In Progress |
+| **Status** | Done |
 | **Effort** | 2 hours |
 | **Owner** | lead-backend |
 | **GAP Ref** | GAP-011 |
@@ -166,7 +168,7 @@ Four components read/write `inbox.json` concurrently: MessageBus, Executor, Dash
 | Field | Value |
 |-------|-------|
 | **Priority** | P1 |
-| **Status** | In Progress |
+| **Status** | Done |
 | **Effort** | 2 hours |
 | **Owner** | lead-backend |
 | **GAP Ref** | GAP-009 |
@@ -364,6 +366,8 @@ S2-13 (Escalation)    — standalone
 **Within capacity:** 41 hours vs 43 available (2 hours buffer).
 
 **Status note (2026-07-20 audit):** 11 of 13 items confirmed Done in source (S2-01, S2-02, S2-04, S2-05, S2-06, S2-08, S2-10, S2-11, S2-12, S2-13, plus S2-09 not formally tracked). S2-03 and S2-07 are In Progress. Test/lint were broken at audit time and are being repaired; final verification pending.
+>
+> **Final status (2026-07-21):** All 13 items marked Done. CI gate fully green.
 
 ---
 

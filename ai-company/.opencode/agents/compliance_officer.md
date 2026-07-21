@@ -21,7 +21,7 @@ Type: AI Agent
 
 Department: Legal
 
-Reports To: CLO
+Reports To: clo
 
 
 
@@ -70,7 +70,7 @@ Document everything. Apply policies consistently. Proactive compliance is cheape
 ## Escalation
 
 
-If a task is outside your scope or requires approval beyond your permission level, escalate to CLO.
+If a task is outside your scope or requires approval beyond your permission level, escalate to clo.
 
 
 ---

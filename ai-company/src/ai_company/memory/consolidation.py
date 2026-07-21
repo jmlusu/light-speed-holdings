@@ -68,7 +68,7 @@ class ConsolidationScheduler:
     def tick_count(self) -> int:
         return self._tick_count
 
-    def on_tick(self) -> dict[str, int] | None:
+    def on_tick(self) -> dict[str, int | str] | None:
         """Call from executor tick(). Runs consolidation if interval reached.
 
         Returns consolidation summary dict if consolidation ran, None otherwise.
@@ -97,12 +97,12 @@ class ConsolidationScheduler:
 
         return False
 
-    def run_once(self) -> dict[str, int]:
+    def run_once(self) -> dict[str, int | str]:
         """Execute one consolidation + prune cycle. Returns summary."""
         if self._store is None:
             return {"error": "no_store"}
 
-        summary: dict[str, int] = {}
+        summary: dict[str, int | str] = {}
         try:
             # Prune first (reduces work for dedup)
             pruned = self._store.prune(

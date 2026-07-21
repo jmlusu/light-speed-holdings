@@ -221,7 +221,8 @@ class TestRateLimiting:
 
         limiter = _RateLimiter(max_requests=5, window_seconds=60)
         for _ in range(5):
-            assert limiter.is_allowed("test-ip")
+            allowed, _ = limiter.is_allowed("test-ip")
+            assert allowed is True
 
     def test_rate_limit_blocks_excess(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Requests beyond the limit should be blocked."""
@@ -231,10 +232,14 @@ class TestRateLimiting:
         from ai_company.dashboard.app import _RateLimiter
 
         limiter = _RateLimiter(max_requests=3, window_seconds=60)
-        assert limiter.is_allowed("test-ip") is True
-        assert limiter.is_allowed("test-ip") is True
-        assert limiter.is_allowed("test-ip") is True
-        assert limiter.is_allowed("test-ip") is False
+        allowed, _ = limiter.is_allowed("test-ip")
+        assert allowed is True
+        allowed, _ = limiter.is_allowed("test-ip")
+        assert allowed is True
+        allowed, _ = limiter.is_allowed("test-ip")
+        assert allowed is True
+        allowed, _ = limiter.is_allowed("test-ip")
+        assert allowed is False
 
     def test_different_ips_have_separate_limits(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Different client IPs should be tracked independently."""
@@ -243,8 +248,12 @@ class TestRateLimiting:
         from ai_company.dashboard.app import _RateLimiter
 
         limiter = _RateLimiter(max_requests=2, window_seconds=60)
-        assert limiter.is_allowed("ip-a") is True
-        assert limiter.is_allowed("ip-a") is True
-        assert limiter.is_allowed("ip-a") is False
+        allowed, _ = limiter.is_allowed("ip-a")
+        assert allowed is True
+        allowed, _ = limiter.is_allowed("ip-a")
+        assert allowed is True
+        allowed, _ = limiter.is_allowed("ip-a")
+        assert allowed is False
         # Different IP should still be allowed
-        assert limiter.is_allowed("ip-b") is True
+        allowed, _ = limiter.is_allowed("ip-b")
+        assert allowed is True

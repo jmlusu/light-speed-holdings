@@ -37,7 +37,7 @@
 - **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
-- **Tests**: 962 tests passing (0 failures) — all green as of 2026-07-21.
+- **Tests**: 1093 tests passing (0 failures) — all green as of 2026-07-21.
 
 ## Organization Expansion (2026-07-21)
 
@@ -60,8 +60,8 @@
 ## Code Quality
 
 - **ruff**: ✅ Clean (0 errors) — as of 2026-07-21.
-- **mypy**: 3 errors remaining — as of 2026-07-21.
-- **pytest**: ✅ 962 tests passing (0 failures) — as of 2026-07-21.
+- **mypy**: ✅ Clean (0 errors, 164 files) — as of 2026-07-21.
+- **pytest**: ✅ 1093 tests passing (0 failures) — as of 2026-07-21.
 - **Dead code**: Removed 5 one-time bootstrap scripts
 
 ## Documentation
@@ -92,7 +92,7 @@
 
 ## Recent Work
 
-- **2026-07-21**: Documentation sync — all docs updated to reflect actual project state (962 tests, ruff 0 errors, mypy 3 errors, Sprint 2 complete). Duplicate section removed from REMAINING-WORK-INVENTORY.md.
+- **2026-07-21**: Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
 - **2026-07-20**: Sprint 1 completed. All Track B (code hardening) and Track C (audit trail) items done. Sprint 2 backlog created. All documentation updated to reflect actual state.
 - **2026-07-19**: Phase 5 design specs — 3 approval UX documents covering 5-tier action system, dashboard approval queue with WebSocket, and enhanced CLI commands.
 - **2026-07-17**: Governance layer — autonomous GitHub Action (cron every 6h), postmortem template + store + CLI, incident response + deployment SOPs, RACI template + hiring workflow RACI, department KPI dashboards (7 departments, 28 KPIs), dashboard CLI, postmortem CLI, sop/raci CLI commands, 8 new tests.
@@ -103,7 +103,7 @@
 | Sprint | Status | Tests | Items |
 |--------|--------|-------|-------|
 | Sprint 1 | ✅ COMPLETE | — | Code hardening + audit trail |
-| Sprint 2 | ✅ COMPLETE | 962 passing | 13 items — all Done |
+| Sprint 2 | ✅ COMPLETE | 1093 passing | 13 items — all Done |
 | Sprint 3 | 🔴 NOT STARTED | — | Autonomous coordination |
 | Sprint 4 | 🔴 NOT STARTED | — | Quality & completeness |
 

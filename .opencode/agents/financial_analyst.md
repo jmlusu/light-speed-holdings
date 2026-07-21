@@ -21,7 +21,7 @@ Type: AI Agent
 
 Department: Finance
 
-Reports To: CFO
+Reports To: cfo
 
 
 
@@ -72,7 +72,7 @@ Maintain strict financial discipline. All figures must be traceable to source da
 ## Escalation
 
 
-If a task is outside your scope or requires approval beyond your permission level, escalate to CFO.
+If a task is outside your scope or requires approval beyond your permission level, escalate to cfo.
 
 
 ---

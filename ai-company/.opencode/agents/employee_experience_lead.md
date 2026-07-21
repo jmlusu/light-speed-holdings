@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: People
 
-Reports To: chro
+Reports To: hr
 
 Seniority: mid
 
@@ -92,7 +92,7 @@ Experience is a leading indicator of retention. Feedback loops must be bidirecti
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chro.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to hr.
 
 
 ---
