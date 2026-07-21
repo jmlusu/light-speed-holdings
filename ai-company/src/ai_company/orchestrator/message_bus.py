@@ -138,6 +138,10 @@ class MessageBus:
         tasks = self._load_tasks()
         return [Task(**t) for t in tasks]
 
+    def get_all_tasks_raw(self) -> List[dict]:
+        """Return raw task dictionaries from the inbox (public method for backward compatibility)."""
+        return self._load_tasks()
+
     # ── Pending tasks (executor integration) ──────────────────────────
 
     def get_pending_tasks(self) -> List[Task]:
