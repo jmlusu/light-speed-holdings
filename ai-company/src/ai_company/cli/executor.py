@@ -1,11 +1,12 @@
 """CLI commands for the autonomous executor.
 
-Includes GAP-017 dead-letter queue commands.
+Includes GAP-017 dead-letter queue commands and daemon mode (S3-06).
 """
 
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -19,16 +20,71 @@ def start(
     poll_interval: float = typer.Option(5.0, help="Seconds between polling cycles"),
     config: str = typer.Option("company/models.yaml", help="Path to models config"),
     registry: str = typer.Option("company/agent-registry.json", help="Path to agent registry"),
+    daemon: bool = typer.Option(False, "--daemon", "-d", help="Run as background daemon"),
+    pid_dir: str = typer.Option("logs", help="Directory for PID file (daemon mode)"),
+    log_dir: str = typer.Option("logs", help="Directory for log file (daemon mode)"),
 ) -> None:
-    """Start the continuous execution loop."""
-    from ai_company.executor.loop import Executor
+    """Start the continuous execution loop.
 
-    executor = Executor(
+    With --daemon/-d, runs in the background with PID file management,
+    signal handling, and file logging.
+    """
+    if daemon:
+        _start_daemon(
+            poll_interval=poll_interval,
+            config=config,
+            registry=registry,
+            pid_dir=pid_dir,
+            log_dir=log_dir,
+        )
+    else:
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            poll_interval=poll_interval,
+            config_path=config,
+            registry_path=registry,
+        )
+        executor.start()
+
+
+def _start_daemon(
+    *,
+    poll_interval: float,
+    config: str,
+    registry: str,
+    pid_dir: str,
+    log_dir: str,
+) -> None:
+    """Launch executor in daemon mode."""
+    from ai_company.executor.daemon import ExecutorDaemon
+
+    pid_path = Path(pid_dir) / "executor-daemon.pid"
+    log_path = Path(log_dir) / "executor-daemon.log"
+    status_path = Path(log_dir) / "executor-daemon.json"
+
+    def factory() -> object:
+        from ai_company.executor.loop import Executor
+        return Executor(
+            poll_interval=poll_interval,
+            config_path=config,
+            registry_path=registry,
+        )
+
+    daemon = ExecutorDaemon(
+        executor_factory=factory,
         poll_interval=poll_interval,
-        config_path=config,
-        registry_path=registry,
+        pid_path=pid_path,
+        log_path=log_path,
+        status_path=status_path,
     )
-    executor.start()
+
+    typer.echo(f"Starting executor daemon (PID file: {pid_path})")
+    try:
+        daemon.start()
+    except RuntimeError as exc:
+        typer.echo(f"Daemon error: {exc}", err=True)
+        raise typer.Exit(1)
 
 
 @app.command()

@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Any, Optional
+
 import typer
 
 from rich.console import Console
+from rich.panel import Panel
 from rich.table import Table
 
 app = typer.Typer(help="Manage company memory and knowledge base")
 console = Console()
+
+# Sub-command group for vector-index operations
+vector_index_app = typer.Typer(help="Manage the vector embedding index")
+app.add_typer(vector_index_app, name="vector-index")
 
 
 @app.command()
@@ -68,27 +76,57 @@ def search(
     query: str = typer.Option("", help="Search query"),
     tags: str = typer.Option("", help="Comma-separated tags to filter by"),
     limit: int = typer.Option(10, help="Max results"),
+    semantic: bool = typer.Option(
+        False,
+        "--semantic",
+        "-s",
+        help="Use semantic (embedding) search instead of keyword matching",
+    ),
 ) -> None:
-    """Search memory entries."""
+    """Search memory entries.
+
+    By default, uses keyword/substring matching.  Pass ``--semantic`` to
+    perform embedding-based cosine-similarity search when the vector index
+    is available; falls back to keyword search gracefully.
+    """
     from ai_company.memory.engine import MemoryStore
 
     store = MemoryStore()
     tag_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
 
+    # When --semantic is requested, try to enable vector search on the fly
+    if semantic and query:
+        try:
+            _enable_vector_search(store)
+        except Exception:
+            pass  # Non-fatal: fall back to keyword search
+
     types_to_search = [memory_type] if memory_type != "all" else [
         "episodic", "semantic", "procedural", "relational", "temporal"
     ]
 
-    all_results = []
+    all_results: list = []
     for mt in types_to_search:
-        results = store.recall(mt, query=query, tags=tag_list, limit=limit)
+        if semantic and query:
+            # Use recall with use_semantic=True (vector search if available)
+            results = store.recall(
+                mt,
+                query=query,
+                tags=tag_list,
+                limit=limit,
+                use_semantic=True,
+            )
+        else:
+            results = store.recall(mt, query=query, tags=tag_list, limit=limit)
         all_results.extend(results)
 
     if not all_results:
-        console.print("No matching memories found.")
+        mode_label = "semantic" if semantic else "keyword"
+        console.print(f"No matching memories found ({mode_label} search).")
         return
 
-    table = Table(title="Search Results")
+    search_label = "Semantic Search Results" if semantic else "Search Results"
+    table = Table(title=search_label)
     table.add_column("Type", style="cyan")
     table.add_column("Content")
     table.add_column("Agent")
@@ -165,3 +203,146 @@ def prune(
         max_entries_per_type=max_entries,
     )
     console.print(f"[yellow]Pruned {pruned} entries[/yellow]")
+
+
+# ── Helpers ────────────────────────────────────────────────────────────
+
+
+def _enable_vector_search(store: Any, base_dir: str = "memory") -> None:
+    """Try to enable vector search on the given MemoryStore.
+
+    Imports the embedding engine lazily so the CLI stays responsive even
+    when ML dependencies are slow to load.
+    """
+    from ai_company.memory.engine import MemoryStore as _MS  # noqa: F811
+
+    if not isinstance(store, _MS) or store.has_vector_search:
+        return
+
+    try:
+        from ai_company.ml.embeddings import EmbeddingEngine
+
+        engine = EmbeddingEngine(
+            model_name="all-MiniLM-L6-v2",
+            cache_dir=f"{base_dir}/embeddings",
+        )
+        store.enable_vector_search(
+            embedding_engine=engine,
+            index_dir=f"{base_dir}/vector_index",
+        )
+    except Exception:
+        pass  # Best-effort; caller falls back to keyword search
+
+
+# ── stats command ──────────────────────────────────────────────────────
+
+
+@app.command()
+def stats() -> None:
+    """Show memory store statistics — counts, sizes, and types.
+
+    Displays a per-type breakdown of stored entries along with aggregate
+    totals for quick health assessment of the memory subsystem.
+    """
+    from ai_company.memory.engine import MemoryStore
+
+    store = MemoryStore()
+    type_stats = store.stats()
+    total = sum(type_stats.values())
+
+    # Compute on-disk sizes for each memory JSON file
+    base_dir = store.base_dir
+    size_map: dict[str, int] = {}
+    total_bytes = 0
+    for mem_type in type_stats:
+        file_path = base_dir / f"{mem_type}.json"
+        if file_path.exists():
+            size = file_path.stat().st_size
+            size_map[mem_type] = size
+            total_bytes += size
+        else:
+            size_map[mem_type] = 0
+
+    # ── Summary panel ──
+    vector_status = "available" if store.has_vector_search else "unavailable"
+    summary = (
+        f"Total entries: [bold]{total}[/bold]\n"
+        f"Disk usage: [bold]{total_bytes:,}[/bold] bytes\n"
+        f"Vector search: {vector_status}"
+    )
+    console.print(Panel(summary, title="Memory Store Summary", border_style="cyan"))
+
+    # ── Per-type table ──
+    table = Table(title="Entries by Type")
+    table.add_column("Type", style="cyan")
+    table.add_column("Count", justify="right", style="green")
+    table.add_column("Size", justify="right")
+
+    for mem_type in ("episodic", "semantic", "procedural", "relational", "temporal", "aggregate"):
+        count = type_stats.get(mem_type, 0)
+        size = size_map.get(mem_type, 0)
+        table.add_row(mem_type, str(count), _format_bytes(size))
+
+    console.print(table)
+
+
+def _format_bytes(n: int) -> str:
+    """Human-readable byte size."""
+    if n < 1024:
+        return f"{n} B"
+    elif n < 1024 * 1024:
+        return f"{n / 1024:.1f} KB"
+    else:
+        return f"{n / (1024 * 1024):.1f} MB"
+
+
+# ── vector-index rebuild ──────────────────────────────────────────────
+
+
+@vector_index_app.command("rebuild")
+def rebuild_vector_index(
+    memory_type: Optional[str] = typer.Option(
+        None,
+        help="Rebuild index for a single memory type only (default: all types)",
+    ),
+) -> None:
+    """Rebuild the vector embedding index from stored memories.
+
+    Re-encodes every memory entry and persists a fresh vector index to
+    ``memory/vector_index/vector_index.json``.
+    """
+    from ai_company.memory.engine import MemoryStore
+
+    store = MemoryStore()
+
+    # Attempt to enable vector search (which initializes the VectorStore)
+    try:
+        _enable_vector_search(store)
+    except Exception as exc:
+        console.print(f"[red]Failed to initialise embedding engine:[/red] {exc}")
+        raise typer.Exit(1) from exc
+
+    if not store.has_vector_search:
+        console.print(
+            "[yellow]Vector search is unavailable — could not build index.[/yellow]\n"
+            "Ensure that numpy and sentence-transformers are installed."
+        )
+        raise typer.Exit(1)
+
+    # Rebuild the index
+    indexed = store._vector_store.index_all(memory_type=memory_type)  # type: ignore[union-attr]
+
+    label = memory_type or "all types"
+    console.print(
+        f"[green]Vector index rebuilt[/green] for {label}: "
+        f"[bold]{indexed}[/bold] entries indexed."
+    )
+
+    # Show index location
+    index_dir: Path = store._vector_store.index_dir  # type: ignore[union-attr]
+    index_file = index_dir / "vector_index.json"
+    if index_file.exists():
+        size = index_file.stat().st_size
+        console.print(f"  Index file: {index_file} ({_format_bytes(size)})")
+    else:
+        console.print(f"  Index dir:  {index_dir}")

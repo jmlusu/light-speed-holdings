@@ -156,6 +156,8 @@ def references(
         "team-lead",
         "hiring_manager",
         "hiring-manager",
+        "hiring-manager-chro",
+        "department-exec-chro",
         "requestor",
         "peer_review",
         "peer-review",
@@ -167,6 +169,14 @@ def references(
         "engineering_team",
         "engineering-team",
         "ceo",
+        "human-ceo-board",
+        "cfo-human-ceo",
+        "cto-ciso",
+        # Governance role labels (human-readable, not agent IDs)
+        "Board of Directors",
+        "Chief of Staff",
+        "Department Executive",
+        "Agent",
     })
 
     errors: list[str] = []
@@ -260,6 +270,21 @@ def all(
         agents = data.get("company", {}).get("agents", [])
 
     known_agents: set[str] = {p.stem for p in generated}
+
+    # Add role-based aliases and governance labels
+    known_agents.update({
+        "department_executive", "department-executive",
+        "team_lead", "team-lead",
+        "hiring_manager", "hiring-manager",
+        "hiring-manager-chro", "department-exec-chro",
+        "requestor", "peer_review", "peer-review",
+        "all_board", "all-board", "board",
+        "department_heads", "department-heads",
+        "engineering_team", "engineering-team",
+        "ceo", "human-ceo-board", "cfo-human-ceo", "cto-ciso",
+        "Board of Directors", "Chief of Staff",
+        "Department Executive", "Agent",
+    })
 
     for agent in agents:
         agent_id = agent.get("id", "")

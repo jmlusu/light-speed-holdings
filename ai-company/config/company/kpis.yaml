@@ -16,7 +16,7 @@ kpis:
       current: 88
       unit: "percent"
       frequency: "quarterly"
-      owner: "chief_of_staff"
+      owner: "chief-of-staff"
 
     - id: "KPI-003"
       name: "Agent Utilization Rate"

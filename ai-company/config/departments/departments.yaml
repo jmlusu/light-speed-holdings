@@ -15,7 +15,7 @@ departments:
 
   - id: "customer_success"
     name: "Customer Success"
-    executive: "customer_success"
+    executive: "customer-success"
     mission: "Own customer onboarding, retention, expansion, and satisfaction metrics."
     budget_category: "growth"
     headcount_target: 5
@@ -29,7 +29,7 @@ departments:
 
   - id: "executive"
     name: "Executive"
-    executive: "human_ceo"
+    executive: "human-ceo"
     mission: "Set company vision, strategy, and culture. Orchestrate the organization."
     budget_category: "operations"
     headcount_target: 3
@@ -85,7 +85,7 @@ departments:
 
   - id: "qa"
     name: "QA"
-    executive: "qa_lead"
+    executive: "qa-lead"
     mission: "Ensure software quality through testing strategies, automation, and quality gates."
     budget_category: "product_development"
     headcount_target: 4
