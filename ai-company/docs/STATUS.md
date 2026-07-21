@@ -10,6 +10,7 @@
 
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
 - **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
+- **Organization Expansion**: 53 new roles added across all departments (2026-07-21) — competitive edge roles identified by CEO Advisor, CAIO, CISO, COO, CPO, CTO, CSO, General, and Human CEO agents.
 - **Models**: 17+ Pydantic models in `src/ai_company/models/models.py` (Company, Executive, Department, Agent, Workflow, Task, Risk, Decision, Postmortem, etc.)
 - **Registry**: 4-module system — `registry/loader.py`, `parser.py`, `resolver.py`, `validator.py` — loads 19 YAML config files into typed `CompanyRegistry`.
 - **Templates**: 12 Jinja2 templates — `base.md.j2`, `executive.md.j2`, `department.md.j2`, `specialist_v2.md.j2`, `board_v2.md.j2`, `workflow.md.j2`, `config.md.j2`, `postmortem.md.j2`, `sop.md.j2`, `raci.md.j2`, `agent.md.j2`, and one additional template.
@@ -37,6 +38,24 @@
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
 - **Tests**: 962 tests passing (0 failures) — all green as of 2026-07-21.
+
+## Organization Expansion (2026-07-21)
+
+### New Roles Added (53 total)
+
+| Phase | Roles | Department | Priority |
+|-------|-------|-----------|----------|
+| **Phase 1: Immediate** | VP of Engineering, Data Engineer, AI Safety Lead, Program Manager, UX Research Lead, Technical Documentation Lead, Head of Developer Relations, Culture & Values Officer | Technology, Data, AI Research, Operations, Product, Marketing, People | Critical |
+| **Phase 2: Weeks 1-8** | Red Team Engineer, Constitutional AI Owner, MLOps Engineer, Platform Engineer, Product Marketing Manager, Head of Business Development, Head of Competitive Intelligence, AI Security Specialist, Penetration Testing Lead, Incident Response Lead, DevSecOps Lead, Growth PM, DX Engineer, Product Designer, Eval Benchmarks Engineer, Prompt Engineer | AI Research, Technology, Marketing, Business Dev, Security, Product | Critical/High |
+| **Phase 3: Weeks 9-16** | Frontend Architect, API Architect, Observability Engineer, Scalability Architect, Data Privacy Officer, Supply Chain Security Engineer, Security Architect, SOC 2 Analyst, Vendor Manager, Capacity Planner, Business Continuity Manager | Technology, Legal, Security, Operations | High |
+| **Phase 4: Weeks 17-24** | Technical Writer, Learning & Development Lead, Employee Experience Lead, Investor Relations Lead, Revenue Operations Analyst, Solutions Engineer, Corporate Development Lead, Internal Comms Lead, Knowledge Manager, Process Quality Manager, Industry Analyst Relations Manager, Business Intelligence Engineer, Threat Intelligence Analyst, AI Ethics Board Chair, Human-AI Interaction Designer | Product, People, Finance, Sales, Strategy, Operations, Marketing, AI Research, Executive | High/Medium |
+
+### Structural Improvements
+- CTO span of control reduced from 9+ to 1 (VP of Engineering absorbs execution layer)
+- Product department created with 8 roles under CPO
+- Strategy department created with 2 roles under CSO
+- Business Development function created reporting to CEO
+- AI Safety hierarchy established (AI Safety Lead → Red Team, Constitutional AI, Ethics)
 
 ## Code Quality
 
