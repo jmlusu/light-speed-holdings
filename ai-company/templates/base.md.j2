@@ -1,19 +1,17 @@
 ---
-name: {{ id }}
-description: {{ mission | default(description | default('')) }}
-tools: {{ tools | default([]) | tojson }}
-mode: subagent
-permission:
-  read: {% if 'read' in tools | default([]) %}allow{% else %}deny{% endif %}
-
-  grep: allow
-  list: allow
-  edit: {% if 'write' in tools or 'edit' in tools | default([]) %}allow{% else %}deny{% endif %}
-
-  bash: {% if 'execute' in tools or 'bash' in tools | default([]) %}allow{% else %}deny{% endif %}
-
-  task: {% if 'delegate' in tools or 'task' in tools | default([]) %}allow{% else %}deny{% endif %}
-
+description: {{ mission | default(description | default('AI agent for ' + id)) }}
+mode: {{ mode | default('subagent') }}
+{% if model %}model: {{ model }}
+{% endif %}{% if temperature is defined %}temperature: {{ temperature }}
+{% endif %}tools:
+  write: {{ 'true' if 'write' in tools | default([]) or 'edit' in tools | default([]) else 'false' }}
+  edit: {{ 'true' if 'write' in tools | default([]) or 'edit' in tools | default([]) else 'false' }}
+  bash: {{ 'true' if 'execute' in tools | default([]) or 'bash' in tools | default([]) else 'false' }}
+  webfetch: {{ 'true' if 'web_search' in tools | default([]) or 'webfetch' in tools | default([]) else 'false' }}
+  websearch: {{ 'true' if 'web_search' in tools | default([]) or 'websearch' in tools | default([]) else 'false' }}
+  read: {{ 'true' if 'read' in tools | default([]) else 'false' }}
+  grep: true
+  list: true
 ---
 
 # {{ name | default(id) }}

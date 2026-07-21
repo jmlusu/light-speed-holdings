@@ -1,0 +1,17 @@
+﻿{
+  "ai": {
+    "provider": "ollama",
+    "baseUrl": "http://localhost:11434",
+    "model": "deepseek-r1:7b",
+    "apiKey": "ollama"
+  },
+  "model": {
+    "provider": "ollama",
+    "model": "deepseek-r1:7b",
+    "baseUrl": "http://localhost:11434",
+    "apiType": "openai"
+  },
+  "session": {
+    "contextWindow": 64000
+  }
+}

@@ -9,13 +9,19 @@ python-dotenv
 fastapi
 uvicorn[standard]
 httpx
+cryptography>=42.0
+sentence-transformers>=3.0
+scikit-learn>=1.5
+numpy>=1.26
 
 [dev]
 pytest
 pytest-cov
+pytest-benchmark
 ruff
 mypy
 types-PyYAML
 bandit
 safety
 pytest-asyncio
+build

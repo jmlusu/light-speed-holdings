@@ -14,12 +14,21 @@ from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
 
+# Tool name mapping: registry names → OpenCode 1.18.4 names
+_TOOL_MAP: dict[str, str] = {
+    "execute": "bash",
+    "edit": "write",
+    "web_search": "webfetch",
+    "code_interpreter": "bash",
+    "delegate": "task",
+}
+
 # Template selection mapping
 _TEMPLATE_MAP = {
     "executive": "executive.md.j2",
     "department": "department.md.j2",
-    "specialist": "specialist_v2.md.j2",
-    "board": "board_v2.md.j2",
+    "specialist": "specialist.md.j2",
+    "board": "board.md.j2",
     "workflow": "workflow.md.j2",
     "config": "config.md.j2",
     "agent": "agents/agent.md.j2",  # Legacy format
@@ -43,7 +52,7 @@ class AgentGenerator:
         self.env = Environment(
             loader=FileSystemLoader(str(self.templates_dir)),
             keep_trailing_newline=True,
-            autoescape=True,
+            autoescape=False,
         )
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -51,6 +60,58 @@ class AgentGenerator:
         """Get the appropriate template for an agent type."""
         template_name = _TEMPLATE_MAP.get(agent_type, _TEMPLATE_MAP["default"])
         return self.env.get_template(template_name)
+
+    @staticmethod
+    def _normalize_tools(tools: list[str]) -> list[str]:
+        """Normalize tool names from registry format to OpenCode 1.18.4 format."""
+        return [_TOOL_MAP.get(t, t) for t in tools]
+
+    def validate_generated(self) -> list[dict[str, str]]:
+        """Validate all generated agent files for OpenCode 1.18.4 compliance.
+
+        Returns list of {file, error} dicts. Empty list means all valid.
+        """
+        errors: list[dict[str, str]] = []
+        if not self.output_dir.exists():
+            return [{"file": "*", "error": "Output directory does not exist"}]
+
+        for filepath in sorted(self.output_dir.glob("*.md")):
+            content = filepath.read_text(encoding="utf-8")
+            if not content.startswith("---"):
+                errors.append({"file": filepath.name, "error": "No YAML frontmatter"})
+                continue
+
+            parts = content.split("---", 2)
+            if len(parts) < 3:
+                errors.append({"file": filepath.name, "error": "Malformed frontmatter"})
+                continue
+
+            try:
+                frontmatter = yaml.safe_load(parts[1])
+            except yaml.YAMLError as e:
+                errors.append({"file": filepath.name, "error": f"YAML parse error: {e}"})
+                continue
+
+            if not isinstance(frontmatter, dict):
+                errors.append({"file": filepath.name, "error": "Frontmatter is not a dict"})
+                continue
+
+            # Required fields
+            for field in ("description", "mode", "tools"):
+                if field not in frontmatter:
+                    errors.append({"file": filepath.name, "error": f"Missing field: {field}"})
+
+            # Forbidden fields
+            for field in ("name", "permission"):
+                if field in frontmatter:
+                    errors.append({"file": filepath.name, "error": f"Forbidden field: {field}"})
+
+            # Mode validation
+            mode = frontmatter.get("mode")
+            if mode and mode not in ("primary", "subagent"):
+                errors.append({"file": filepath.name, "error": f"Invalid mode: {mode!r}"})
+
+        return errors
 
     def load_registry(self) -> dict[str, Any]:
         if not self.registry_path.exists():
@@ -61,8 +122,12 @@ class AgentGenerator:
     def generate_all(self) -> list[Path]:
         """Run full generation. Returns list of generated file paths."""
         data = self.load_registry()
-        agents = data.get("company", {}).get("agents", [])
-        company_name = data.get("company", {}).get("name", "AI Company")
+        if isinstance(data, list):
+            agents = data
+            company_name = "AI Company"
+        else:
+            agents = data.get("company", {}).get("agents", [])
+            company_name = data.get("company", {}).get("name", "AI Company")
 
         logger.info("Generating %d agents for %s", len(agents), company_name)
 
@@ -70,6 +135,10 @@ class AgentGenerator:
         for agent in agents:
             agent_type = agent.get("type", "default")
             template = self._get_template(agent_type)
+            # Normalize tools to OpenCode 1.18.4 format
+            raw_tools = agent.get("tools", [])
+            if isinstance(raw_tools, list):
+                agent["tools"] = self._normalize_tools(raw_tools)
             rendered = template.render(company=company_name, **agent)
             out_file = self.output_dir / f"{agent['id']}.md"
             out_file.write_text(rendered, encoding="utf-8")
