@@ -23,6 +23,8 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "httpx",
+    # Security
+    "cryptography>=42.0",
     # ML dependencies
     "sentence-transformers>=3.0",
     "scikit-learn>=1.5",

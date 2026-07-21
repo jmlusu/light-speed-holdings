@@ -1,17 +1,19 @@
-"""
-Legal department commands.
-"""
+"""Legal department commands."""
 
+from __future__ import annotations
+
+from datetime import datetime
 from pathlib import Path
+
 import typer
 import yaml
-from datetime import datetime
 
 app = typer.Typer(help="Legal department operations")
 LEGAL_DIR = Path("legal")
 
 
 def _load_contracts() -> dict:
+    """Load legal contracts from YAML."""
     contracts_file = LEGAL_DIR / "contracts.yaml"
     if not contracts_file.exists():
         return {"contracts": []}
@@ -19,7 +21,8 @@ def _load_contracts() -> dict:
         return yaml.safe_load(f) or {"contracts": []}
 
 
-def _save_contracts(data: dict):
+def _save_contracts(data: dict) -> None:
+    """Persist legal contracts to YAML."""
     LEGAL_DIR.mkdir(exist_ok=True)
     contracts_file = LEGAL_DIR / "contracts.yaml"
     with open(contracts_file, "w", encoding="utf-8") as f:
@@ -27,7 +30,7 @@ def _save_contracts(data: dict):
 
 
 @app.command()
-def list_contracts():
+def list_contracts() -> None:
     """List all legal contracts."""
     data = _load_contracts()
     contracts = data.get("contracts", [])
@@ -51,7 +54,7 @@ def add_contract(
     contract_id: str = typer.Argument(..., help="Unique contract ID"),
     name: str = typer.Option(..., help="Contract name"),
     party: str = typer.Option(..., help="Contracting party"),
-):
+) -> None:
     """Add a new contract."""
     data = _load_contracts()
     contracts = data.get("contracts", [])
@@ -75,7 +78,7 @@ def add_contract(
 
 
 @app.command()
-def approve(contract_id: str = typer.Argument(..., help="Contract ID to approve")):
+def approve(contract_id: str = typer.Argument(..., help="Contract ID to approve")) -> None:
     """Approve a contract."""
     data = _load_contracts()
     contracts = data.get("contracts", [])
@@ -92,7 +95,7 @@ def approve(contract_id: str = typer.Argument(..., help="Contract ID to approve"
 
 
 @app.command()
-def compliance_check():
+def compliance_check() -> None:
     """Run compliance checks on active contracts."""
     data = _load_contracts()
     contracts = data.get("contracts", [])

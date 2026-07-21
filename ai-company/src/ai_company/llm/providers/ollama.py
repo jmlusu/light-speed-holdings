@@ -82,10 +82,9 @@ class OllamaProvider(LLMProvider):
             content=content,
             model=model,
             provider=self.name,
-            usage={
-                "prompt_tokens": prompt_eval_count,
-                "completion_tokens": eval_count,
-            },
+            prompt_tokens=prompt_eval_count,
+            completion_tokens=eval_count,
+            total_tokens=prompt_eval_count + eval_count,
         )
 
     def chat_stream(

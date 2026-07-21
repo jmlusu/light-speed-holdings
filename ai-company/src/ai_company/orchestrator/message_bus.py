@@ -22,6 +22,7 @@ from typing import Any, Callable, List
 
 from ai_company.models.task import Task
 from ai_company.store.file_store import FileStore
+from ai_company.utils.logging import get_correlation_id
 
 logger = logging.getLogger(__name__)
 
@@ -113,11 +114,12 @@ class MessageBus:
 
         self._mutate_tasks(_updater)
         logger.info(
-            "Task %s sent from [%s] to [%s] (correlation=%s).",
+            "Task %s sent from [%s] to [%s] (correlation=%s, caller_correlation=%s).",
             task.id,
             task.sender_id,
             task.receiver_id,
             task.correlation_id,
+            get_correlation_id(),
         )
         self._emit(task_dict, "created")
 

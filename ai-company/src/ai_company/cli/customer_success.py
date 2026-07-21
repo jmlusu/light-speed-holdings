@@ -1,17 +1,19 @@
-"""
-Customer Success department commands.
-"""
+"""Customer Success department commands."""
 
+from __future__ import annotations
+
+from datetime import datetime
 from pathlib import Path
+
 import typer
 import yaml
-from datetime import datetime
 
 app = typer.Typer(help="Customer Success operations")
 CS_DIR = Path("customer_success")
 
 
 def _load_tickets() -> dict:
+    """Load customer support tickets from YAML."""
     tickets_file = CS_DIR / "tickets.yaml"
     if not tickets_file.exists():
         return {"tickets": []}
@@ -19,7 +21,8 @@ def _load_tickets() -> dict:
         return yaml.safe_load(f) or {"tickets": []}
 
 
-def _save_tickets(data: dict):
+def _save_tickets(data: dict) -> None:
+    """Persist customer support tickets to YAML."""
     CS_DIR.mkdir(exist_ok=True)
     tickets_file = CS_DIR / "tickets.yaml"
     with open(tickets_file, "w", encoding="utf-8") as f:
@@ -27,7 +30,7 @@ def _save_tickets(data: dict):
 
 
 @app.command()
-def list_tickets():
+def list_tickets() -> None:
     """List all customer support tickets."""
     data = _load_tickets()
     tickets = data.get("tickets", [])
@@ -51,7 +54,7 @@ def create_ticket(
     ticket_id: str = typer.Argument(..., help="Unique ticket ID"),
     subject: str = typer.Option(..., help="Ticket subject"),
     priority: str = typer.Option("medium", help="Ticket priority (low, medium, high, critical)"),
-):
+) -> None:
     """Create a new support ticket."""
     data = _load_tickets()
     tickets = data.get("tickets", [])
@@ -75,7 +78,7 @@ def create_ticket(
 
 
 @app.command()
-def resolve(ticket_id: str = typer.Argument(..., help="Ticket ID to resolve")):
+def resolve(ticket_id: str = typer.Argument(..., help="Ticket ID to resolve")) -> None:
     """Resolve a support ticket."""
     data = _load_tickets()
     tickets = data.get("tickets", [])
@@ -92,7 +95,7 @@ def resolve(ticket_id: str = typer.Argument(..., help="Ticket ID to resolve")):
 
 
 @app.command()
-def satisfaction_report():
+def satisfaction_report() -> None:
     """Generate customer satisfaction report."""
     data = _load_tickets()
     tickets = data.get("tickets", [])

@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS memory_entries (
     id              TEXT PRIMARY KEY,
     memory_type     TEXT NOT NULL,
     content         TEXT NOT NULL,
+    content_search  TEXT NOT NULL DEFAULT '',
     metadata        TEXT NOT NULL DEFAULT '{}',     -- JSON dict
     agent_id        TEXT NOT NULL DEFAULT '',
     tags            TEXT NOT NULL DEFAULT '[]',     -- JSON array

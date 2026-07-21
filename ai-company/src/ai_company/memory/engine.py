@@ -20,9 +20,12 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ai_company.store.file_store import FileStore
+
+if TYPE_CHECKING:
+    from ai_company.security.encryption_key_manager import EncryptionKeyManager
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +90,7 @@ class MemoryStore:
             "aggregate": [],
         }
         self._vector_store: Any | None = None
+        self._key_manager: EncryptionKeyManager | None = None
         self._load_all()
 
     @property
@@ -120,6 +124,33 @@ class MemoryStore:
         except ImportError:
             logger.warning("VectorStore unavailable — vector search disabled")
 
+    def enable_encryption(self, key_manager: EncryptionKeyManager) -> None:
+        """Enable at-rest encryption for memory content.
+
+        When enabled, all new ``store()`` calls encrypt content before saving,
+        and ``recall()``/``search()`` decrypt content after loading.
+        Plaintext entries are passed through unchanged for backward compatibility.
+
+        Args:
+            key_manager: An EncryptionKeyManager instance providing AES-256 keys.
+        """
+        self._key_manager = key_manager
+        logger.info("Memory encryption enabled with key %s", key_manager.current_key_id)
+
+    def _encrypt_content(self, content: str) -> str:
+        """Encrypt content if encryption is enabled; passthrough otherwise."""
+        if self._key_manager is None:
+            return content
+        from ai_company.security.memory_encryption import encrypt
+        return encrypt(content, self._key_manager)
+
+    def _decrypt_content(self, content: str) -> str:
+        """Decrypt content if encryption is enabled; passthrough otherwise."""
+        if self._key_manager is None:
+            return content
+        from ai_company.security.memory_encryption import decrypt
+        return decrypt(content, self._key_manager)
+
     def _file_name(self, memory_type: str) -> str:
         return f"{memory_type}.json"
 
@@ -150,17 +181,26 @@ class MemoryStore:
         """Store a new memory entry.
 
         If vector search is enabled, the new entry is automatically indexed.
+        If encryption is enabled, content is encrypted before saving.
         """
         if memory_type not in self._stores:
             raise ValueError(f"Unknown memory type: {memory_type}")
-        entry = MemoryEntry(memory_type=memory_type, content=content, **kwargs)
+        encrypted_content = self._encrypt_content(content)
+        entry = MemoryEntry(memory_type=memory_type, content=encrypted_content, **kwargs)
         self._stores[memory_type].append(entry)
         self._save(memory_type)
 
-        # Auto-index in vector store if available
+        # Auto-index in vector store if available (using original plaintext for embeddings)
         if self._vector_store is not None:
             try:
-                self._vector_store.index_entry(entry)
+                # Index with original plaintext for better embedding quality
+                plaintext_entry = MemoryEntry(
+                    memory_type=memory_type, content=content, **kwargs
+                )
+                plaintext_entry.id = entry.id
+                plaintext_entry.created_at = entry.created_at
+                plaintext_entry.seq = entry.seq
+                self._vector_store.index_entry(plaintext_entry)
             except Exception:
                 pass  # Non-fatal: indexing failure shouldn't break storage
 
@@ -180,6 +220,8 @@ class MemoryStore:
         When vector search is enabled and ``use_semantic`` is True and
         a query is provided, uses cosine-similarity-based semantic search
         instead of substring matching.
+
+        If encryption is enabled, content is decrypted after loading.
         """
         if memory_type not in self._stores:
             return []
@@ -194,12 +236,16 @@ class MemoryStore:
                     agent_id=agent_id,
                     top_k=limit,
                 )
-                return [entry for entry, _score in vector_results]
+                results = [entry for entry, _score in vector_results]
+                # Decrypt content for vector results
+                for entry in results:
+                    entry.content = self._decrypt_content(entry.content)
+                return results
             except Exception:
                 pass  # Fall through to substring search
 
         # Fallback to substring search
-        results = self._stores[memory_type]
+        results = list(self._stores[memory_type])
 
         if query:
             query_lower = query.lower()
@@ -216,9 +262,10 @@ class MemoryStore:
         # is a secondary tie-breaker for entries reloaded from disk.
         results = sorted(results, key=lambda e: (e.seq, e.created_at), reverse=True)
 
-        # Mark as accessed
+        # Mark as accessed and decrypt content
         for e in results[:limit]:
             e.access_count += 1
+            e.content = self._decrypt_content(e.content)
 
         return results[:limit]
 
@@ -237,8 +284,11 @@ class MemoryStore:
 
         Counts how many times any query term appears (as a substring) in the
         entry's content, tags, and metadata values.  Higher is more relevant.
+
+        If encryption is enabled, content is decrypted for scoring.
         """
-        haystack_parts = [entry.content]
+        decrypted_content = self._decrypt_content(entry.content)
+        haystack_parts = [decrypted_content]
         haystack_parts.extend(entry.tags)
         haystack_parts.extend(str(v) for v in entry.metadata.values())
         haystack = " ".join(haystack_parts).lower()
@@ -327,9 +377,10 @@ class MemoryStore:
                 )
             ]
 
-        # Mark matched entries as accessed.
+        # Mark matched entries as accessed and decrypt content.
         for entry in matched[:limit]:
             entry.access_count += 1
+            entry.content = self._decrypt_content(entry.content)
 
         return matched[:limit]
 

@@ -1,10 +1,10 @@
 # AI Company Builder — Remaining Work Inventory
 
 **Date**: 2026-07-20 (updated)  
-**Status**: Post-Sprint 2 (~95% complete)  
+**Status**: Post-Sprint 2 Complete  
 **Total Source Files**: 91+  
-**Test Coverage**: ✅ 785 tests passing  
-**Lint Status**: ✅ ruff clean, mypy clean
+**Test Coverage**: ✅ 962 tests passing  
+**Lint Status**: ✅ ruff clean (0 errors), mypy (3 errors)
 
 ---
 
@@ -39,34 +39,6 @@ Sprint 1 delivered core infrastructure (HITL gates, cost tracking, agent loop, a
 | 5.1-5.3 | Remaining department SOPs + legal docs (S2-11) | ✅ 2026-07-20 (audit-confirmed in source) |
 
 > **Note**: Audit from 2026-07-20 confirms 13 of 20 original Sprint 2 gaps are resolved in source. The remaining 7 gaps are now catalogued in this updated inventory.
-
----
-
-## Completed Since Last Inventory
-
-| Item | Description | Completed |
-|------|-------------|-----------|
-| 1.1-1.4 | Audit module (events, writer, reader) | ✅ 2026-07-19 |
-| 1.5 | Audit integration into executor | ✅ 2026-07-19 |
-| 8.1 | Replace print() with logging in executor | ✅ 2026-07-19 |
-| B3 | Extract parse_llm_json to shared utility | ✅ 2026-07-19 |
-| GAP-007 | Scheduler integration into executor | ✅ 2026-07-19 |
-| GAP-012 | AgentLoop priority forwarding | ✅ 2026-07-19 |
-| GAP-013 | KPI collector wiring (all 7 departments) | ✅ 2026-07-19 |
-| GAP-017 | Dead-letter queue for stale tasks | ✅ 2026-07-19 |
-| Circuit breaker | LLM provider fail-fast | ✅ 2026-07-19 |
-| Memory integration | Recall context before tasks | ✅ 2026-07-19 |
-| Integration tests | Component-level integration tests | ✅ 2026-07-19 |
-| 2.1 | Route all inbox I/O through MessageBus (S2-01) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 2.2 | Atomic FileStore abstraction (S2-02) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 3.1 | Integrate tier rules into ToolRunner (S2-04) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 3.2 | Non-blocking HITL gate (S2-05) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 3.3 | Dashboard CORS and authentication (S2-08) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 3.4 | Remove shell=True from ToolRunner (S2-10) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 4.1 | Fix AgentLoop priority forwarding (S2-06) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 4.4 | Wire audit into ToolRunner and approval (S2-12) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 4.5 | Persist escalation events (S2-13) | ✅ 2026-07-20 (audit-confirmed in source) |
-| 5.1-5.3 | Remaining department SOPs + legal docs (S2-11) | ✅ 2026-07-20 (audit-confirmed in source) |
 
 ---
 
@@ -205,14 +177,13 @@ All documentation requirements met:
 
 ---
 
-## Next Steps (Post-Sprint 2 Verificatio
+## Next Steps
 
-1. **Verify Sprint 2 Closure**: Run final test suite, lint/typecheck verification
-2. **Begin Sprint 3**: Dashboard enhancements with WebSocket broadcasting
-3. **Complete Memory P2**: Memory consolidation and search capabilities
-4. **Advance Autonomy P2**: Scheduled cycles and escalation persistence
-5. **Test suites**: Component integration tests and E2E pipeline tests
+1. **Begin Sprint 3**: Dashboard enhancements with WebSocket broadcasting (6.1, 6.2, 6.3)
+2. **Memory Engine P2**: Memory consolidation, search, retention (7.1-7.3)
+3. **Autonomous Coordination P2**: Scheduled daemon and WebSocket wiring (8.1, 8.3)
+4. **Sprint 4**: Code quality, test coverage, advanced features
 
-**Sprint 2 Status**: ✅ 11 of 11 items completed (100%)
-**Sprint 3 Ready**: 9 of 9 items planned (~22 hours effort)
-**Overall Progress**: 42% of remaining work completed through 2026-07-20
+**Sprint 2 Status**: ✅ 13 of 13 items completed (100%) — confirmed 2026-07-21
+**Sprint 3 Ready**: 9 items planned (~22 hours effort)
+**Overall Progress**: Sprint 2 fully complete; Sprint 3 next

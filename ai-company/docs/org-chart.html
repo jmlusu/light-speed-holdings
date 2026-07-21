@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Light Speed Holdings — Organizational Chart</title>
+<style>
+  :root {
+    --color-tech: #3b82f6;
+    --color-tech-bg: #dbeafe;
+    --color-ops: #22c55e;
+    --color-ops-bg: #dcfce7;
+    --color-ai: #a855f7;
+    --color-ai-bg: #f3e8ff;
+    --color-finance: #eab308;
+    --color-finance-bg: #fef9c3;
+    --color-data: #0d9488;
+    --color-data-bg: #ccfbf1;
+    --color-legal: #6b7280;
+    --color-legal-bg: #f3f4f6;
+    --color-security: #ef4444;
+    --color-security-bg: #fee2e2;
+    --color-marketing: #ec4899;
+    --color-marketing-bg: #fce7f3;
+    --color-hr: #f97316;
+    --color-hr-bg: #ffedd5;
+    --color-sales: #06b6d4;
+    --color-sales-bg: #cffafe;
+    --color-cs: #84cc16;
+    --color-cs-bg: #ecfccb;
+    --color-qa: #6366f1;
+    --color-qa-bg: #e0e7ff;
+    --color-board: #78350f;
+    --color-board-bg: #fef3c7;
+    --color-exec: #1e3a5f;
+    --color-exec-bg: #e0e7ff;
+    --color-ceo: #0f172a;
+    --color-ceo-bg: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    padding: 2rem 1rem;
+    min-width: 320px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, #1e3a5f, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: #475569;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* Tree container */
+  .org-tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Node styles */
+  .node {
+    position: relative;
+    text-align: center;
+  }
+
+  .node-box {
+    display: inline-block;
+    padding: 0.65rem 1.1rem;
+    border-radius: 10px;
+    border: 2px solid;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: nowrap;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+  }
+  .node-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+
+  .node-role {
+    font-size: 0.7rem;
+    font-weight: 400;
+    opacity: 0.75;
+    display: block;
+  }
+
+  /* Vertical connector */
+  .vline {
+    width: 2px;
+    height: 24px;
+    background: #cbd5e1;
+    margin: 0 auto;
+  }
+  .vline.short { height: 16px; }
+
+  /* Horizontal connector group */
+  .hconnect {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+  }
+  .hconnect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 2px;
+    background: #cbd5e1;
+  }
+
+  /* Generic children wrapper */
+  .children {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    position: relative;
+  }
+
+  /* Branch column */
+  .branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    padding: 0 4px;
+  }
+  .branch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background: #cbd5e1;
+  }
+  .branch:first-child::before { left: 50%; }
+  .branch:last-child::before  { left: 50%; }
+
+  /* Department sub-tree */
+  .dept-section {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 2px solid;
+    width: 100%;
+    max-width: 280px;
+  }
+  .dept-section h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  /* Board */
+  .board-section {
+    margin-bottom: 0.5rem;
+  }
+  .board-box {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-board-bg);
+    border: 2px solid var(--color-board);
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-board);
+  }
+  .board-committees {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+  .board-committee {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
+    background: var(--color-board-bg);
+    border: 1px solid var(--color-board);
+    border-radius: 6px;
+    color: var(--color-board);
+    font-weight: 500;
+  }
+
+  /* Specific colors */
+  .c-board   { background: var(--color-board-bg);   border-color: var(--color-board);   color: var(--color-board); }
+  .c-ceo     { background: var(--color-ceo-bg);     border-color: var(--color-ceo);     color: var(--color-ceo); }
+  .c-exec    { background: var(--color-exec-bg);    border-color: var(--color-exec);    color: var(--color-exec); }
+  .c-tech    { background: var(--color-tech-bg);    border-color: var(--color-tech);    color: #1e40af; }
+  .c-ops     { background: var(--color-ops-bg);     border-color: var(--color-ops);     color: #166534; }
+  .c-ai      { background: var(--color-ai-bg);      border-color: var(--color-ai);      color: #6b21a8; }
+  .c-finance { background: var(--color-finance-bg); border-color: var(--color-finance); color: #854d0e; }
+  .c-data    { background: var(--color-data-bg);    border-color: var(--color-data);    color: #115e59; }
+  .c-legal   { background: var(--color-legal-bg);   border-color: var(--color-legal);   color: #374151; }
+  .c-security{ background: var(--color-security-bg);border-color: var(--color-security); color: #991b1b; }
+  .c-marketing{background: var(--color-marketing-bg);border-color: var(--color-marketing);color:#9d174d; }
+  .c-hr      { background: var(--color-hr-bg);      border-color: var(--color-hr);      color: #9a3412; }
+  .c-sales   { background: var(--color-sales-bg);   border-color: var(--color-sales);   color: #155e75; }
+  .c-cs      { background: var(--color-cs-bg);      border-color: var(--color-cs);      color: #3f6212; }
+  .c-qa      { background: var(--color-qa-bg);      border-color: var(--color-qa);      color: #3730a3; }
+
+  .c-board h3   { color: var(--color-board); }
+  .c-tech h3    { color: var(--color-tech); }
+  .c-ops h3     { color: var(--color-ops); }
+  .c-ai h3      { color: var(--color-ai); }
+  .c-finance h3 { color: var(--color-finance); }
+  .c-data h3    { color: var(--color-data); }
+  .c-legal h3   { color: var(--color-legal); }
+  .c-security h3{ color: var(--color-security); }
+  .c-marketing h3{color: var(--color-marketing); }
+  .c-hr h3      { color: var(--color-hr); }
+  .c-sales h3   { color: var(--color-sales); }
+  .c-cs h3      { color: var(--color-cs); }
+  .c-qa h3      { color: var(--color-qa); }
+
+  /* Specialist boxes */
+  .spec {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.55rem;
+    margin: 0.2rem 0;
+    border-radius: 6px;
+    border: 1px solid;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .spec-label {
+    font-size: 0.62rem;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+  .spec.tech    { background: var(--color-tech-bg);    border-color: var(--color-tech);    color: #1e40af; }
+  .spec.ops     { background: var(--color-ops-bg);     border-color: var(--color-ops);     color: #166534; }
+  .spec.ai      { background: var(--color-ai-bg);      border-color: var(--color-ai);      color: #6b21a8; }
+  .spec.finance { background: var(--color-finance-bg); border-color: var(--color-finance); color: #854d0e; }
+  .spec.data    { background: var(--color-data-bg);    border-color: var(--color-data);    color: #115e59; }
+  .spec.legal   { background: var(--color-legal-bg);   border-color: var(--color-legal);   color: #374151; }
+  .spec.security{ background: var(--color-security-bg);border-color: var(--color-security); color: #991b1b; }
+  .spec.marketing{background: var(--color-marketing-bg);border-color: var(--color-marketing);color:#9d174d; }
+  .spec.hr      { background: var(--color-hr-bg);      border-color: var(--color-hr);      color: #9a3412; }
+  .spec.sales   { background: var(--color-sales-bg);   border-color: var(--color-sales);   color: #155e75; }
+  .spec.cs      { background: var(--color-cs-bg);      border-color: var(--color-cs);      color: #3f6212; }
+  .spec.qa      { background: var(--color-qa-bg);      border-color: var(--color-qa);      color: #3730a3; }
+
+  /* Sub-specialist indent */
+  .sub-specs {
+    margin-left: 1rem;
+    border-left: 2px dashed #cbd5e1;
+    padding-left: 0.5rem;
+    margin-top: 0.15rem;
+  }
+
+  /* C-suite row */
+  .c-suite-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  .c-suite-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 120px;
+    max-width: 180px;
+    min-width: 120px;
+  }
+
+  /* Dept grid */
+  .dept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 1400px;
+  }
+
+  /* Mermaid code block */
+  .mermaid-section {
+    margin-top: 3rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mermaid-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #475569;
+  }
+  .mermaid-code {
+    position: relative;
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.25rem;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    white-space: pre;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #334155;
+    color: #e2e8f0;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: #475569; }
+  .copy-btn.copied { background: #16a34a; border-color: #16a34a; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 1.5rem; }
+    .dept-grid { grid-template-columns: 1fr; }
+    .c-suite-row { gap: 0.5rem; }
+    .c-suite-cell { min-width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Light Speed Holdings</h1>
+<p class="subtitle">Organizational Chart</p>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-board)"></div>Board</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-ceo)"></div>CEO</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-exec)"></div>C-Suite</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-tech)"></div>Technology</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-ops)"></div>Operations</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-ai)"></div>AI Research</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-finance)"></div>Finance</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-data)"></div>Data</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-legal)"></div>Legal</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-security)"></div>Security</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-marketing)"></div>Marketing</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-hr)"></div>People/HR</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-sales)"></div>Sales</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-cs)"></div>Customer Success</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--color-qa)"></div>QA</div>
+</div>
+
+<div class="org-tree">
+
+  <!-- ===== BOARD OF DIRECTORS ===== -->
+  <div class="node board-section">
+    <div class="node-box c-board">Board of Directors</div>
+    <div class="board-committees">
+      <span class="board-committee">Strategy</span>
+      <span class="board-committee">Finance</span>
+      <span class="board-committee">Technology</span>
+      <span class="board-committee">Product</span>
+      <span class="board-committee">Operations</span>
+      <span class="board-committee">Customer</span>
+      <span class="board-committee">Risk</span>
+    </div>
+  </div>
+
+  <div class="vline"></div>
+
+  <!-- ===== CEO ===== -->
+  <div class="node">
+    <div class="node-box c-ceo" style="font-size:1rem; padding:0.8rem 1.6rem;">
+      CEO <span class="node-role">(Human)</span>
+    </div>
+  </div>
+
+  <div class="vline"></div>
+
+  <!-- ===== C-SUITE ROW ===== -->
+  <div class="c-suite-row">
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec" style="border-width:3px;">
+          Chief of Staff<br><span class="node-role">Primary Orchestrator</span>
+        </div>
+      </div>
+      <div class="vline short"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.25rem;">
+        <div class="node">
+          <div class="node-box c-exec">CTO <span class="node-role">Chief Technology Officer</span></div>
+        </div>
+        <div class="node">
+          <div class="node-box c-exec">COO <span class="node-role">Chief Operating Officer</span></div>
+        </div>
+        <div class="node">
+          <div class="node-box c-exec">CAIO <span class="node-role">Chief AI Officer</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CFO <span class="node-role">Chief Financial Officer</span></div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CDO <span class="node-role">Chief Data Officer</span></div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CLO <span class="node-role">Chief Legal Officer</span></div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CISO <span class="node-role">Chief Information Security Officer</span></div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CMO <span class="node-role">Chief Marketing Officer</span></div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CHRO <span class="node-role">Chief Human Resources Officer</span></div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CPO <span class="node-role">Chief Product Officer</span></div>
+      </div>
+    </div>
+    <div class="c-suite-cell">
+      <div class="node">
+        <div class="node-box c-exec">CSO <span class="node-role">Chief Strategy Officer</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DEPARTMENT SECTIONS ===== -->
+  <div class="dept-grid">
+
+    <!-- TECHNOLOGY DEPARTMENT -->
+    <div class="dept-section c-tech">
+      <h3>Technology Department</h3>
+      <div class="spec tech">devops_agent <span class="spec-label">— DevOps Agent</span></div>
+      <div class="spec tech">platform_reliability_engineer <span class="spec-label">— Platform Reliability Engineer</span></div>
+      <div class="spec tech">audit_trail_owner <span class="spec-label">— Audit Trail Owner</span></div>
+      <div class="spec tech">graph_owner <span class="spec-label">— Graph Owner</span></div>
+      <div class="spec tech">dashboard_owner <span class="spec-label">— Dashboard Owner</span></div>
+      <div class="spec tech">registry_owner <span class="spec-label">— Registry Owner</span></div>
+      <div class="spec tech">generator_owner <span class="spec-label">— Generator Owner</span></div>
+      <div class="spec qa">qa_lead <span class="spec-label">— QA Lead</span></div>
+      <div class="sub-specs">
+        <div class="spec qa">test_engineering_lead <span class="spec-label">— Test Engineering Lead</span></div>
+        <div class="sub-specs">
+          <div class="spec qa">qa_automation_engineer <span class="spec-label">— QA Automation Engineer</span></div>
+        </div>
+        <div class="spec qa">release_manager <span class="spec-label">— Release Manager</span></div>
+      </div>
+    </div>
+
+    <!-- OPERATIONS DEPARTMENT -->
+    <div class="dept-section c-ops">
+      <h3>Operations Department</h3>
+      <div class="spec ops">workflow_owner <span class="spec-label">— Workflow Owner</span></div>
+      <div class="spec ops">orchestration_owner <span class="spec-label">— Orchestration Owner</span></div>
+      <div class="spec ops">doctor_owner <span class="spec-label">— Doctor Owner</span></div>
+      <div class="spec ops">sop_owner <span class="spec-label">— SOP Owner</span></div>
+    </div>
+
+    <!-- AI RESEARCH DEPARTMENT -->
+    <div class="dept-section c-ai">
+      <h3>AI Research Department</h3>
+      <div class="spec ai">memory_owner <span class="spec-label">— Memory Owner</span></div>
+      <div class="spec ai">llm_platform_owner <span class="spec-label">— LLM Platform Owner</span></div>
+      <div class="spec ai">ml_services_owner <span class="spec-label">— ML Services Owner</span></div>
+    </div>
+
+    <!-- FINANCE DEPARTMENT -->
+    <div class="dept-section c-finance">
+      <h3>Finance Department</h3>
+      <div class="spec finance">financial_analyst <span class="spec-label">— Financial Analyst</span></div>
+    </div>
+
+    <!-- DATA DEPARTMENT -->
+    <div class="dept-section c-data">
+      <h3>Data Department</h3>
+      <div class="spec data">data_scientist <span class="spec-label">— Data Scientist</span></div>
+    </div>
+
+    <!-- LEGAL DEPARTMENT -->
+    <div class="dept-section c-legal">
+      <h3>Legal Department</h3>
+      <div class="spec legal">compliance_officer <span class="spec-label">— Compliance Officer</span></div>
+      <div class="spec legal">legal_owner <span class="spec-label">— Legal Owner</span></div>
+    </div>
+
+    <!-- SECURITY DEPARTMENT -->
+    <div class="dept-section c-security">
+      <h3>Security Department</h3>
+      <div class="spec security">security_compliance_lead <span class="spec-label">— Security &amp; Compliance Lead</span></div>
+      <div class="spec security">decision_engine_owner <span class="spec-label">— Decision Engine Owner</span></div>
+    </div>
+
+    <!-- MARKETING DEPARTMENT -->
+    <div class="dept-section c-marketing">
+      <h3>Marketing Department</h3>
+      <div class="spec marketing">marketing_owner <span class="spec-label">— Marketing Owner</span></div>
+    </div>
+
+    <!-- PEOPLE/HR DEPARTMENT -->
+    <div class="dept-section c-hr">
+      <h3>People/HR Department</h3>
+      <div class="spec hr">hr_owner <span class="spec-label">— HR Owner</span></div>
+    </div>
+
+    <!-- SALES DEPARTMENT -->
+    <div class="dept-section c-sales">
+      <h3>Sales Department</h3>
+      <div class="spec sales">sales_owner <span class="spec-label">— Sales Owner</span></div>
+    </div>
+
+    <!-- CUSTOMER SUCCESS DEPARTMENT -->
+    <div class="dept-section c-cs">
+      <h3>Customer Success Department</h3>
+      <div class="spec cs">customer_success_owner <span class="spec-label">— Customer Success Owner</span></div>
+    </div>
+
+  </div><!-- /dept-grid -->
+
+</div><!-- /org-tree -->
+
+<!-- ===== MERMAID DIAGRAM CODE ===== -->
+<div class="mermaid-section">
+  <h2>Mermaid Diagram (copy-paste for GitHub rendering)</h2>
+  <div class="mermaid-code">
+<button class="copy-btn" id="copyBtn" onclick="copyMermaid()">Copy</button>
+<pre id="mermaidCode">%%{init: {'theme': 'base', 'themeVariables': { 'fontSize': '14px' }}}%%
+
+flowchart TD
+    %% ===== BOARD OF DIRECTORS =====
+    Board[("🏛️ Board of Directors")]
+    Board --> Board_Strategy["Strategy Committee"]
+    Board --> Board_Finance["Finance Committee"]
+    Board --> Board_Technology["Technology Committee"]
+    Board --> Board_Product["Product Committee"]
+    Board --> Board_Operations["Operations Committee"]
+    Board --> Board_Customer["Customer Committee"]
+    Board --> Board_Risk["Risk Committee"]
+
+    %% ===== CEO =====
+    Board --> CEO["👤 CEO<br/>(Human)"]
+
+    %% ===== C-SUITE (REPORTS-TO CEO) =====
+    CEO --> CoS["⚙️ Chief of Staff<br/>Primary Orchestrator"]
+    CEO --> CFO["💰 CFO<br/>Chief Financial Officer"]
+    CEO --> CDO["📊 CDO<br/>Chief Data Officer"]
+    CEO --> CLO["⚖️ CLO<br/>Chief Legal Officer"]
+    CEO --> CISO["🔒 CISO<br/>Chief Information Security Officer"]
+    CEO --> CMO["📣 CMO<br/>Chief Marketing Officer"]
+    CEO --> CHRO["👥 CHRO<br/>Chief Human Resources Officer"]
+    CEO --> CPO["🚀 CPO<br/>Chief Product Officer"]
+    CEO --> CSO["🧭 CSO<br/>Chief Strategy Officer"]
+
+    %% ===== CTO VIA CHIEF OF STAFF =====
+    CoS --> CTO["💻 CTO<br/>Chief Technology Officer"]
+    CoS --> COO["🏢 COO<br/>Chief Operating Officer"]
+    CoS --> CAIO["🧠 CAIO<br/>Chief AI Officer"]
+
+    %% ===== TECHNOLOGY DEPARTMENT (CTO) =====
+    subgraph Technology_Dept ["🔵 Technology Department"]
+        CTO --> DevOps["devops_agent<br/>DevOps Agent"]
+        CTO --> PlatformReliability["platform_reliability_engineer<br/>Platform Reliability Engineer"]
+        CTO --> AuditTrail["audit_trail_owner<br/>Audit Trail Owner"]
+        CTO --> GraphOwner["graph_owner<br/>Graph Owner"]
+        CTO --> DashboardOwner["dashboard_owner<br/>Dashboard Owner"]
+        CTO --> RegistryOwner["registry_owner<br/>Registry Owner"]
+        CTO --> GeneratorOwner["generator_owner<br/>Generator Owner"]
+
+        CTO --> QALead["QALead<br/>QA Lead"]
+        QALead --> TestEngLead["test_engineering_lead<br/>Test Engineering Lead"]
+        TestEngLead --> QAAutomation["qa_automation_engineer<br/>QA Automation Engineer"]
+        QALead --> ReleaseManager["release_manager<br/>Release Manager"]
+    end
+
+    %% ===== OPERATIONS DEPARTMENT (COO) =====
+    subgraph Operations_Dept ["🟢 Operations Department"]
+        COO --> WorkflowOwner["workflow_owner<br/>Workflow Owner"]
+        COO --> OrchestrationOwner["orchestration_owner<br/>Orchestration Owner"]
+        COO --> DoctorOwner["doctor_owner<br/>Doctor Owner"]
+        COO --> SOPOwner["sop_owner<br/>SOP Owner"]
+    end
+
+    %% ===== AI RESEARCH DEPARTMENT (CAIO) =====
+    subgraph AI_Dept ["🟣 AI Research Department"]
+        CAIO --> MemoryOwner["memory_owner<br/>Memory Owner"]
+        CAIO --> LLMPlatform["llm_platform_owner<br/>LLM Platform Owner"]
+        CAIO --> MLServices["ml_services_owner<br/>ML Services Owner"]
+    end
+
+    %% ===== FINANCE DEPARTMENT (CFO) =====
+    subgraph Finance_Dept ["🟡 Finance Department"]
+        CFO --> FinancialAnalyst["financial_analyst<br/>Financial Analyst"]
+    end
+
+    %% ===== DATA DEPARTMENT (CDO) =====
+    subgraph Data_Dept ["🔷 Data Department"]
+        CDO --> DataScientist["data_scientist<br/>Data Scientist"]
+    end
+
+    %% ===== LEGAL DEPARTMENT (CLO) =====
+    subgraph Legal_Dept ["⬛ Legal Department"]
+        CLO --> ComplianceOfficer["compliance_officer<br/>Compliance Officer"]
+        CLO --> LegalOwner["legal_owner<br/>Legal Owner"]
+    end
+
+    %% ===== SECURITY DEPARTMENT (CISO) =====
+    subgraph Security_Dept ["🔴 Security Department"]
+        CISO --> SecComplianceLead["security_compliance_lead<br/>Security &amp; Compliance Lead"]
+        CISO --> DecisionEngine["decision_engine_owner<br/>Decision Engine Owner"]
+    end
+
+    %% ===== MARKETING DEPARTMENT (CMO) =====
+    subgraph Marketing_Dept ["🩷 Marketing Department"]
+        CMO --> MarketingOwner["marketing_owner<br/>Marketing Owner"]
+    end
+
+    %% ===== PEOPLE/HR DEPARTMENT (CHRO) =====
+    subgraph People_Dept ["🟠 People/HR Department"]
+        CHRO --> HROwner["hr_owner<br/>HR Owner"]
+    end
+
+    %% ===== SALES DEPARTMENT =====
+    subgraph Sales_Dept ["🟢  Sales Department"]
+        Sales["sales<br/>Sales Lead"]
+        Sales --> SalesOwner["sales_owner<br/>Sales Owner"]
+    end
+
+    %% ===== CUSTOMER SUCCESS DEPARTMENT =====
+    subgraph CustomerSuccess_Dept ["🟩 Customer Success Department"]
+        CustomerSuccess["customer-success<br/>Customer Success Lead"]
+        CustomerSuccess --> CustomerSuccessOwner["customer_success_owner<br/>Customer Success Owner"]
+    end</pre>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Light Speed Holdings &mdash; Organizational Chart &mdash; Generated July 2026</p>
+</div>
+
+<script>
+  function copyMermaid() {
+    const code = document.getElementById('mermaidCode').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>

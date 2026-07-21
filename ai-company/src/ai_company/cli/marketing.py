@@ -1,17 +1,19 @@
-"""
-Marketing department commands.
-"""
+"""Marketing department commands."""
 
+from __future__ import annotations
+
+from datetime import datetime
 from pathlib import Path
+
 import typer
 import yaml
-from datetime import datetime
 
 app = typer.Typer(help="Marketing department operations")
 CAMPAIGNS_DIR = Path("marketing")
 
 
 def _load_campaigns() -> dict:
+    """Load marketing campaigns from YAML."""
     campaigns_file = CAMPAIGNS_DIR / "campaigns.yaml"
     if not campaigns_file.exists():
         return {"campaigns": []}
@@ -19,7 +21,8 @@ def _load_campaigns() -> dict:
         return yaml.safe_load(f) or {"campaigns": []}
 
 
-def _save_campaigns(data: dict):
+def _save_campaigns(data: dict) -> None:
+    """Persist marketing campaigns to YAML."""
     CAMPAIGNS_DIR.mkdir(exist_ok=True)
     campaigns_file = CAMPAIGNS_DIR / "campaigns.yaml"
     with open(campaigns_file, "w", encoding="utf-8") as f:
@@ -27,7 +30,7 @@ def _save_campaigns(data: dict):
 
 
 @app.command()
-def list_campaigns():
+def list_campaigns() -> None:
     """List all marketing campaigns."""
     data = _load_campaigns()
     campaigns = data.get("campaigns", [])
@@ -51,7 +54,7 @@ def create_campaign(
     campaign_id: str = typer.Argument(..., help="Unique campaign ID"),
     name: str = typer.Option(..., help="Campaign name"),
     channel: str = typer.Option("email", help="Marketing channel"),
-):
+) -> None:
     """Create a new marketing campaign."""
     data = _load_campaigns()
     campaigns = data.get("campaigns", [])
@@ -76,7 +79,7 @@ def create_campaign(
 
 
 @app.command()
-def launch(campaign_id: str = typer.Argument(..., help="Campaign ID to launch")):
+def launch(campaign_id: str = typer.Argument(..., help="Campaign ID to launch")) -> None:
     """Launch a marketing campaign."""
     data = _load_campaigns()
     campaigns = data.get("campaigns", [])
@@ -93,7 +96,7 @@ def launch(campaign_id: str = typer.Argument(..., help="Campaign ID to launch"))
 
 
 @app.command()
-def metrics(campaign_id: str = typer.Argument(..., help="Campaign ID")):
+def metrics(campaign_id: str = typer.Argument(..., help="Campaign ID")) -> None:
     """View campaign metrics."""
     data = _load_campaigns()
     campaigns = data.get("campaigns", [])
@@ -103,11 +106,11 @@ def metrics(campaign_id: str = typer.Argument(..., help="Campaign ID")):
         typer.echo(f"Error: Campaign '{campaign_id}' not found.")
         raise typer.Exit(1)
 
-    metrics = campaign.get("metrics", {})
+    m = campaign.get("metrics", {})
     typer.echo("")
     typer.echo(f"Metrics for: {campaign['name']}")
     typer.echo("=" * 40)
-    typer.echo(f"  Impressions: {metrics.get('impressions', 0)}")
-    typer.echo(f"  Clicks: {metrics.get('clicks', 0)}")
-    typer.echo(f"  Conversions: {metrics.get('conversions', 0)}")
+    typer.echo(f"  Impressions: {m.get('impressions', 0)}")
+    typer.echo(f"  Clicks: {m.get('clicks', 0)}")
+    typer.echo(f"  Conversions: {m.get('conversions', 0)}")
     typer.echo("")

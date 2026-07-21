@@ -1,0 +1,106 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'fontSize': '14px' }}}%%
+
+flowchart TD
+    %% ===== BOARD OF DIRECTORS =====
+    Board[("🏛️ Board of Directors")]
+    Board --> Board_Strategy["Strategy Committee"]
+    Board --> Board_Finance["Finance Committee"]
+    Board --> Board_Technology["Technology Committee"]
+    Board --> Board_Product["Product Committee"]
+    Board --> Board_Operations["Operations Committee"]
+    Board --> Board_Customer["Customer Committee"]
+    Board --> Board_Risk["Risk Committee"]
+
+    %% ===== CEO =====
+    Board --> CEO["👤 CEO<br/>(Human)"]
+
+    %% ===== C-SUITE (DASHES REPORTS-TO CEO) =====
+    CEO --> CoS["⚙️ Chief of Staff<br/>Primary Orchestrator"]
+    CEO --> CFO["💰 CFO<br/>Chief Financial Officer"]
+    CEO --> CDO["📊 CDO<br/>Chief Data Officer"]
+    CEO --> CLO["⚖️ CLO<br/>Chief Legal Officer"]
+    CEO --> CISO["🔒 CISO<br/>Chief Information Security Officer"]
+    CEO --> CMO["📣 CMO<br/>Chief Marketing Officer"]
+    CEO --> CHRO["👥 CHRO<br/>Chief Human Resources Officer"]
+    CEO --> CPO["🚀 CPO<br/>Chief Product Officer"]
+    CEO --> CSO["🧭 CSO<br/>Chief Strategy Officer"]
+
+    %% ===== CTO VIA CHIEF OF STAFF =====
+    CoS --> CTO["💻 CTO<br/>Chief Technology Officer"]
+    CoS --> COO["🏢 COO<br/>Chief Operating Officer"]
+    CoS --> CAIO["🧠 CAIO<br/>Chief AI Officer"]
+
+    %% ===== TECHNOLOGY DEPARTMENT (CTO) =====
+    subgraph Technology_Dept ["🔵 Technology Department"]
+        CTO --> DevOps["devops_agent<br/>DevOps Agent"]
+        CTO --> PlatformReliability["platform_reliability_engineer<br/>Platform Reliability Engineer"]
+        CTO --> AuditTrail["audit_trail_owner<br/>Audit Trail Owner"]
+        CTO --> GraphOwner["graph_owner<br/>Graph Owner"]
+        CTO --> DashboardOwner["dashboard_owner<br/>Dashboard Owner"]
+        CTO --> RegistryOwner["registry_owner<br/>Registry Owner"]
+        CTO --> GeneratorOwner["generator_owner<br/>Generator Owner"]
+
+        CTO --> QALead["QALead<br/>QA Lead"]
+        QALead --> TestEngLead["test_engineering_lead<br/>Test Engineering Lead"]
+        TestEngLead --> QAAutomation["qa_automation_engineer<br/>QA Automation Engineer"]
+        QALead --> ReleaseManager["release_manager<br/>Release Manager"]
+    end
+
+    %% ===== OPERATIONS DEPARTMENT (COO) =====
+    subgraph Operations_Dept ["🟢 Operations Department"]
+        COO --> WorkflowOwner["workflow_owner<br/>Workflow Owner"]
+        COO --> OrchestrationOwner["orchestration_owner<br/>Orchestration Owner"]
+        COO --> DoctorOwner["doctor_owner<br/>Doctor Owner"]
+        COO --> SOPOwner["sop_owner<br/>SOP Owner"]
+    end
+
+    %% ===== AI RESEARCH DEPARTMENT (CAIO) =====
+    subgraph AI_Dept ["🟣 AI Research Department"]
+        CAIO --> MemoryOwner["memory_owner<br/>Memory Owner"]
+        CAIO --> LLMPlatform["llm_platform_owner<br/>LLM Platform Owner"]
+        CAIO --> MLServices["ml_services_owner<br/>ML Services Owner"]
+    end
+
+    %% ===== FINANCE DEPARTMENT (CFO) =====
+    subgraph Finance_Dept ["🟡 Finance Department"]
+        CFO --> FinancialAnalyst["financial_analyst<br/>Financial Analyst"]
+    end
+
+    %% ===== DATA DEPARTMENT (CDO) =====
+    subgraph Data_Dept ["🔷 Data Department"]
+        CDO --> DataScientist["data_scientist<br/>Data Scientist"]
+    end
+
+    %% ===== LEGAL DEPARTMENT (CLO) =====
+    subgraph Legal_Dept ["⬛ Legal Department"]
+        CLO --> ComplianceOfficer["compliance_officer<br/>Compliance Officer"]
+        CLO --> LegalOwner["legal_owner<br/>Legal Owner"]
+    end
+
+    %% ===== SECURITY DEPARTMENT (CISO) =====
+    subgraph Security_Dept ["🔴 Security Department"]
+        CISO --> SecComplianceLead["security_compliance_lead<br/>Security &amp; Compliance Lead"]
+        CISO --> DecisionEngine["decision_engine_owner<br/>Decision Engine Owner"]
+    end
+
+    %% ===== MARKETING DEPARTMENT (CMO) =====
+    subgraph Marketing_Dept ["🩷 Marketing Department"]
+        CMO --> MarketingOwner["marketing_owner<br/>Marketing Owner"]
+    end
+
+    %% ===== PEOPLE/HR DEPARTMENT (CHRO) =====
+    subgraph People_Dept ["🟠 People/HR Department"]
+        CHRO --> HROwner["hr_owner<br/>HR Owner"]
+    end
+
+    %% ===== SALES DEPARTMENT =====
+    subgraph Sales_Dept ["🟢  Sales Department"]
+        Sales["sales<br/>Sales Lead"]
+        Sales --> SalesOwner["sales_owner<br/>Sales Owner"]
+    end
+
+    %% ===== CUSTOMER SUCCESS DEPARTMENT =====
+    subgraph CustomerSuccess_Dept ["🟩 Customer Success Department"]
+        CustomerSuccess["customer-success<br/>Customer Success Lead"]
+        CustomerSuccess --> CustomerSuccessOwner["customer_success_owner<br/>Customer Success Owner"]
+    end

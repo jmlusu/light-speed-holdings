@@ -1,8 +1,9 @@
-"""
-Board of Directors management commands.
-"""
+"""Board of Directors management commands."""
+
+from __future__ import annotations
 
 from pathlib import Path
+
 import typer
 import yaml
 
@@ -12,20 +13,22 @@ BOARD_FILE = BOARD_DIR / "board.yaml"
 
 
 def _load_board() -> dict:
+    """Load the board membership data from YAML."""
     if not BOARD_FILE.exists():
         return {"board": []}
     with open(BOARD_FILE, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {"board": []}
 
 
-def _save_board(data: dict):
+def _save_board(data: dict) -> None:
+    """Persist the board membership data to YAML."""
     BOARD_DIR.mkdir(exist_ok=True)
     with open(BOARD_FILE, "w", encoding="utf-8") as f:
         yaml.dump(data, f, default_flow_style=False)
 
 
 @app.command()
-def list():
+def list() -> None:
     """List all Board of Directors members."""
     data = _load_board()
     advisors = data.get("board", [])
@@ -50,7 +53,7 @@ def add(
     title: str = typer.Option(..., help="Advisor title"),
     mission: str = typer.Option(..., help="Advisor mission statement"),
     voting: bool = typer.Option(False, help="Whether advisor has voting rights"),
-):
+) -> None:
     """Add a new Board of Directors member."""
     data = _load_board()
     advisors = data.get("board", [])
@@ -74,7 +77,7 @@ def add(
 
 
 @app.command()
-def remove(advisor_id: str = typer.Argument(..., help="Advisor ID to remove")):
+def remove(advisor_id: str = typer.Argument(..., help="Advisor ID to remove")) -> None:
     """Remove a Board of Directors member."""
     data = _load_board()
     advisors = data.get("board", [])
@@ -91,7 +94,7 @@ def remove(advisor_id: str = typer.Argument(..., help="Advisor ID to remove")):
 
 
 @app.command()
-def brief():
+def brief() -> None:
     """Generate a board briefing with key metrics."""
     data = _load_board()
     advisors = data.get("board", [])

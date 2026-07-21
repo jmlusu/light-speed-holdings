@@ -1,8 +1,9 @@
-"""
-Executive management commands.
-"""
+"""Executive management commands."""
+
+from __future__ import annotations
 
 from pathlib import Path
+
 import typer
 import yaml
 
@@ -12,20 +13,22 @@ EXECUTIVES_FILE = COMPANY_DIR / "executives.yaml"
 
 
 def _load_executives() -> dict:
+    """Load executive data from YAML."""
     if not EXECUTIVES_FILE.exists():
         return {"executives": []}
     with open(EXECUTIVES_FILE, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {"executives": []}
 
 
-def _save_executives(data: dict):
+def _save_executives(data: dict) -> None:
+    """Persist executive data to YAML."""
     COMPANY_DIR.mkdir(exist_ok=True)
     with open(EXECUTIVES_FILE, "w", encoding="utf-8") as f:
         yaml.dump(data, f, default_flow_style=False)
 
 
 @app.command("list")
-def list_executives():
+def list_executives() -> None:
     """List all company executives."""
     data = _load_executives()
     executives = data.get("executives", [])
@@ -51,7 +54,7 @@ def add(
     department: str = typer.Option(..., help="Department"),
     reports_to: str = typer.Option(..., help="Who this executive reports to"),
     mission: str = typer.Option("", help="Executive mission statement"),
-):
+) -> None:
     """Add a new executive."""
     data = _load_executives()
     executives = data.get("executives", [])
@@ -76,7 +79,7 @@ def add(
 
 
 @app.command()
-def remove(executive_id: str = typer.Argument(..., help="Executive ID to remove")):
+def remove(executive_id: str = typer.Argument(..., help="Executive ID to remove")) -> None:
     """Remove an executive."""
     data = _load_executives()
     executives = data.get("executives", [])
@@ -93,7 +96,7 @@ def remove(executive_id: str = typer.Argument(..., help="Executive ID to remove"
 
 
 @app.command()
-def hierarchy():
+def hierarchy() -> None:
     """Display the executive hierarchy."""
     data = _load_executives()
     executives = data.get("executives", [])
@@ -112,7 +115,12 @@ def hierarchy():
     typer.echo("")
 
 
-def _print_hierarchy(executive: dict, all_executives: list[dict], indent: int) -> None:
+def _print_hierarchy(
+    executive: dict,
+    all_executives: list[dict],
+    indent: int,
+) -> None:
+    """Recursively print the executive hierarchy tree."""
     prefix = "  " * indent
     typer.echo(f"{prefix}{executive['title']} ({executive['id']})")
 

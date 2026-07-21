@@ -1,8 +1,9 @@
-"""
-Department management commands.
-"""
+"""Department management commands."""
+
+from __future__ import annotations
 
 from pathlib import Path
+
 import typer
 import yaml
 
@@ -12,20 +13,22 @@ DEPARTMENTS_FILE = COMPANY_DIR / "departments.yaml"
 
 
 def _load_departments() -> dict:
+    """Load department data from YAML."""
     if not DEPARTMENTS_FILE.exists():
         return {"departments": []}
     with open(DEPARTMENTS_FILE, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {"departments": []}
 
 
-def _save_departments(data: dict):
+def _save_departments(data: dict) -> None:
+    """Persist department data to YAML."""
     COMPANY_DIR.mkdir(exist_ok=True)
     with open(DEPARTMENTS_FILE, "w", encoding="utf-8") as f:
         yaml.dump(data, f, default_flow_style=False)
 
 
 @app.command()
-def list():
+def list() -> None:
     """List all company departments."""
     data = _load_departments()
     departments = data.get("departments", [])
@@ -50,7 +53,7 @@ def add(
     name: str = typer.Option(..., help="Department name"),
     executive: str = typer.Option(..., help="Executive in charge"),
     purpose: str = typer.Option("", help="Department purpose"),
-):
+) -> None:
     """Add a new department."""
     data = _load_departments()
     departments = data.get("departments", [])
@@ -74,7 +77,7 @@ def add(
 
 
 @app.command()
-def remove(department_id: str = typer.Argument(..., help="Department ID to remove")):
+def remove(department_id: str = typer.Argument(..., help="Department ID to remove")) -> None:
     """Remove a department."""
     data = _load_departments()
     departments = data.get("departments", [])
@@ -91,7 +94,7 @@ def remove(department_id: str = typer.Argument(..., help="Department ID to remov
 
 
 @app.command()
-def agents(department_id: str = typer.Argument(..., help="Department ID")):
+def agents(department_id: str = typer.Argument(..., help="Department ID")) -> None:
     """List agents in a department."""
     data = _load_departments()
     departments = data.get("departments", [])

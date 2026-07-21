@@ -11,6 +11,7 @@ The core loop:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any
 
@@ -26,6 +27,9 @@ from ai_company.llm.client import LLMClient
 from ai_company.llm.cost_tracker import CostTracker
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.providers.base import ChatResponse, LLMProviderError, LLMResponseError
+from ai_company.utils.logging import get_correlation_id
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -142,6 +146,13 @@ class AgentLoop:
         self._current_task_prompt = user_prompt
         system_prompt = build_system_prompt_typed(agent)
         initial_user = build_user_prompt_typed(user_prompt, priority)
+
+        logger.info(
+            "Agent loop started: agent=%s task_id=%s correlation_id=%s",
+            resolved_name,
+            task_id,
+            get_correlation_id(),
+        )
 
         # Accumulators
         all_tool_records: list[ToolCallRecord] = []

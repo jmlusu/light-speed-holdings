@@ -29,7 +29,7 @@ from ai_company.dashboard.models import (
 from ai_company.dashboard.repository import get_state_store
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix="/api", tags=["dashboard"])
 
 # Module-level MessageBus instance. All task read/write operations are routed
 # through this bus instead of touching `.opencode/inbox.json` directly (GAP-011).
@@ -172,8 +172,13 @@ def _schedule_broadcast(background_tasks: BackgroundTasks, task_dict: dict, even
 # ── Dashboard / KPIs ────────────────────────────────────────────────
 
 
-@router.get("/dashboard", response_model=KPIs)
+@router.get("/dashboard", response_model=KPIs, tags=["dashboard"])
 def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
+    """Return a snapshot of all CEO-level KPIs.
+
+    Aggregates task, approval, escalation, agent, and scheduler data
+    into a single KPI payload and broadcasts to WebSocket clients.
+    """
     tasks = _read_all_tasks()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
@@ -217,7 +222,7 @@ def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
     return kpis
 
 
-@router.get("/kpis/live")
+@router.get("/kpis/live", tags=["kpis"])
 def get_live_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
     """Return live KPI values computed from operational data.
 
@@ -235,13 +240,15 @@ def get_live_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
 # ── Agents ──────────────────────────────────────────────────────────
 
 
-@router.get("/agents", response_model=list[AgentSummary])
+@router.get("/agents", response_model=list[AgentSummary], tags=["agents"])
 def list_agents() -> list[AgentSummary]:
+    """List all registered agents from the company registry."""
     return [AgentSummary(**a) for a in _load_registry()]
 
 
-@router.get("/agents/{name}", response_model=AgentSummary)
+@router.get("/agents/{name}", response_model=AgentSummary, tags=["agents"])
 def get_agent(name: str) -> AgentSummary:
+    """Retrieve details for a single agent by name."""
     registry = {a["name"]: a for a in _load_registry()}
     if name not in registry:
         raise HTTPException(status_code=404, detail=f"Agent '{name}' not found")
@@ -251,8 +258,9 @@ def get_agent(name: str) -> AgentSummary:
 # ── Org Chart ───────────────────────────────────────────────────────
 
 
-@router.get("/org-chart", response_model=list[OrgNode])
+@router.get("/org-chart", response_model=list[OrgNode], tags=["agents"])
 def get_org_chart() -> list[OrgNode]:
+    """Return the hierarchical org chart rooted at the CEO."""
     registry = {a["name"]: a for a in _load_registry()}
     children_map: dict[str, list[str]] = {}
     for a in _load_registry():
@@ -279,11 +287,12 @@ def get_org_chart() -> list[OrgNode]:
 # ── Tasks ───────────────────────────────────────────────────────────
 
 
-@router.get("/tasks", response_model=list[TaskItem])
+@router.get("/tasks", response_model=list[TaskItem], tags=["tasks"])
 def list_tasks(
     status: str = "",
     agent: str = "",
 ) -> list[TaskItem]:
+    """List all tasks with optional filters for status and agent."""
     tasks = _read_all_tasks()
     if status:
         tasks = [t for t in tasks if t.get("status") == status]
@@ -292,8 +301,9 @@ def list_tasks(
     return [TaskItem(**t) for t in tasks]
 
 
-@router.post("/tasks", response_model=TaskItem, status_code=201)
+@router.post("/tasks", response_model=TaskItem, status_code=201, tags=["tasks"])
 def create_task(assign: TaskAssign, background_tasks: BackgroundTasks) -> TaskItem:
+    """Create a new task and send it through the MessageBus."""
     import uuid
 
     from ai_company.models import Task, TaskPriority
@@ -322,8 +332,9 @@ def create_task(assign: TaskAssign, background_tasks: BackgroundTasks) -> TaskIt
 # ── Approvals ───────────────────────────────────────────────────────
 
 
-@router.get("/approvals", response_model=list[ApprovalItem])
+@router.get("/approvals", response_model=list[ApprovalItem], tags=["approvals"])
 def list_approvals() -> list[ApprovalItem]:
+    """List all pending approval requests that have not expired."""
     data = _load_yaml("orchestrator/approvals.yaml")
     now = datetime.now().isoformat()
     requests = data.get("requests", [])
@@ -334,8 +345,9 @@ def list_approvals() -> list[ApprovalItem]:
     ]
 
 
-@router.post("/approvals/{request_id}/approve")
+@router.post("/approvals/{request_id}/approve", tags=["approvals"])
 def approve_request(request_id: str, body: ApprovalDecision | None = None) -> dict:
+    """Approve a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
     for r in requests:
@@ -350,8 +362,9 @@ def approve_request(request_id: str, body: ApprovalDecision | None = None) -> di
     raise HTTPException(status_code=404, detail=f"Request '{request_id}' not found or already processed")
 
 
-@router.post("/approvals/{request_id}/reject")
+@router.post("/approvals/{request_id}/reject", tags=["approvals"])
 def reject_request(request_id: str, body: ApprovalDecision | None = None) -> dict:
+    """Reject a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
     for r in requests:
@@ -369,15 +382,17 @@ def reject_request(request_id: str, body: ApprovalDecision | None = None) -> dic
 # ── Escalations ─────────────────────────────────────────────────────
 
 
-@router.get("/escalations", response_model=list[EscalationItem])
+@router.get("/escalations", response_model=list[EscalationItem], tags=["escalations"])
 def list_escalations() -> list[EscalationItem]:
+    """List all unresolved escalation events."""
     data = _load_yaml("orchestrator/escalation.yaml")
     events = data.get("events", [])
     return [EscalationItem(**e) for e in events if not e.get("resolved", False)]
 
 
-@router.post("/escalations/{task_id}/resolve")
+@router.post("/escalations/{task_id}/resolve", tags=["escalations"])
 def resolve_escalation(task_id: str) -> dict:
+    """Resolve an open escalation event and log to the audit trail."""
     data = _load_yaml("orchestrator/escalation.yaml")
     events = data.get("events", [])
     for e in events:
@@ -405,8 +420,9 @@ def resolve_escalation(task_id: str) -> dict:
 # ── Departments ─────────────────────────────────────────────────────
 
 
-@router.get("/departments", response_model=list[DepartmentInfo])
+@router.get("/departments", response_model=list[DepartmentInfo], tags=["departments"])
 def list_departments() -> list[DepartmentInfo]:
+    """List all registered departments."""
     data = _load_yaml("company/departments.yaml")
     return [DepartmentInfo(**d) for d in data.get("departments", [])]
 
@@ -414,8 +430,9 @@ def list_departments() -> list[DepartmentInfo]:
 # ── Models ──────────────────────────────────────────────────────────
 
 
-@router.get("/models", response_model=list[ModelRouteItem])
+@router.get("/models", response_model=list[ModelRouteItem], tags=["models"])
 def list_model_routes() -> list[ModelRouteItem]:
+    """List model routing assignments for all registered agents."""
     from ai_company.model_router import ModelRouter
 
     router_instance = ModelRouter()
@@ -426,8 +443,9 @@ def list_model_routes() -> list[ModelRouteItem]:
     ]
 
 
-@router.get("/models/tiers", response_model=list[TierInfo])
+@router.get("/models/tiers", response_model=list[TierInfo], tags=["models"])
 def list_model_tiers() -> list[TierInfo]:
+    """List available model tiers and their provider configurations."""
     from ai_company.model_router import ModelRouter
 
     router_instance = ModelRouter()
@@ -444,8 +462,9 @@ def list_model_tiers() -> list[TierInfo]:
 # ── Scheduler ───────────────────────────────────────────────────────
 
 
-@router.get("/scheduler")
+@router.get("/scheduler", tags=["scheduler"])
 def list_scheduled() -> list[dict]:
+    """List all scheduled and recurring tasks."""
     data = _load_yaml("orchestrator/scheduler.yaml")
     return data.get("tasks", [])
 
@@ -453,7 +472,7 @@ def list_scheduled() -> list[dict]:
 # ── Department KPIs ────────────────────────────────────────────────
 
 
-@router.get("/departments/{dept_name}/kpis")
+@router.get("/departments/{dept_name}/kpis", tags=["departments", "kpis"])
 def get_department_kpis(dept_name: str) -> dict:
     """Return KPI definitions for a specific department."""
     kpi_data = _load_yaml("company/config/kpis.yaml")

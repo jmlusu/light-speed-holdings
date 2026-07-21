@@ -4,12 +4,12 @@
 
 ## Last Updated
 
-2026-07-20
+2026-07-21
 
 ## Current State
 
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
-- **Sprint 2 ~90% Complete**: Code audit (2026-07-20) confirms most Sprint 2 items are ALREADY implemented in source — see `SPRINT-2-BACKLOG.md` for per-item status. Only S2-03 (Dashboard API → MessageBus) and S2-07 (CostTracker restart persistence) remain In Progress; the rest are Done.
+- **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
 - **Models**: 17+ Pydantic models in `src/ai_company/models/models.py` (Company, Executive, Department, Agent, Workflow, Task, Risk, Decision, Postmortem, etc.)
 - **Registry**: 4-module system — `registry/loader.py`, `parser.py`, `resolver.py`, `validator.py` — loads 19 YAML config files into typed `CompanyRegistry`.
 - **Templates**: 12 Jinja2 templates — `base.md.j2`, `executive.md.j2`, `department.md.j2`, `specialist_v2.md.j2`, `board_v2.md.j2`, `workflow.md.j2`, `config.md.j2`, `postmortem.md.j2`, `sop.md.j2`, `raci.md.j2`, `agent.md.j2`, and one additional template.
@@ -36,14 +36,13 @@
 - **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
-- **Tests**: Pending final verification this cycle — see Code Quality note below.
+- **Tests**: 962 tests passing (0 failures) — all green as of 2026-07-21.
 
 ## Code Quality
 
-- **ruff**: Repaired this cycle (was 5 errors at audit time) — pending final verification, reference `ruff check src/`.
-- **mypy**: Repaired this cycle (was 41 errors at audit time) — pending final verification, reference `mypy src/`.
-- **pytest**: Repaired this cycle (was 6 failing tests at audit time) — pending final verification, reference `pytest`. The prior 2 collection errors in `test_security.py` and `test_ml.py` remain skip-with-`--ignore`.
-- **Known lint issues**: Were present at audit time (json import in `kpi_pipeline.py`, E741 warnings in `services/sales.py`); being fixed by the engineering team this cycle.
+- **ruff**: ✅ Clean (0 errors) — as of 2026-07-21.
+- **mypy**: 3 errors remaining — as of 2026-07-21.
+- **pytest**: ✅ 962 tests passing (0 failures) — as of 2026-07-21.
 - **Dead code**: Removed 5 one-time bootstrap scripts
 
 ## Documentation
@@ -74,6 +73,7 @@
 
 ## Recent Work
 
+- **2026-07-21**: Documentation sync — all docs updated to reflect actual project state (962 tests, ruff 0 errors, mypy 3 errors, Sprint 2 complete). Duplicate section removed from REMAINING-WORK-INVENTORY.md.
 - **2026-07-20**: Sprint 1 completed. All Track B (code hardening) and Track C (audit trail) items done. Sprint 2 backlog created. All documentation updated to reflect actual state.
 - **2026-07-19**: Phase 5 design specs — 3 approval UX documents covering 5-tier action system, dashboard approval queue with WebSocket, and enhanced CLI commands.
 - **2026-07-17**: Governance layer — autonomous GitHub Action (cron every 6h), postmortem template + store + CLI, incident response + deployment SOPs, RACI template + hiring workflow RACI, department KPI dashboards (7 departments, 28 KPIs), dashboard CLI, postmortem CLI, sop/raci CLI commands, 8 new tests.
@@ -84,14 +84,10 @@
 | Sprint | Status | Tests | Items |
 |--------|--------|-------|-------|
 | Sprint 1 | ✅ COMPLETE | — | Code hardening + audit trail |
-| Sprint 2 | 🟢 ~90% DONE | pending final verification | 13 items; S2-03 & S2-07 In Progress, rest Done |
+| Sprint 2 | ✅ COMPLETE | 962 passing | 13 items — all Done |
 | Sprint 3 | 🔴 NOT STARTED | — | Autonomous coordination |
 | Sprint 4 | 🔴 NOT STARTED | — | Quality & completeness |
 
 ## Remaining Work
 
-- **Sprint 2 — In Progress (final items)**:
-  - S2-03: Dashboard API still reads/writes `inbox.json` directly (being routed through MessageBus).
-  - S2-07: CostTracker restart persistence (accumulator rebuild) being implemented.
-  - Test/lint cleanup: 6 failing tests, 5 ruff errors, 41 mypy errors were present at audit time and are being repaired by the engineering team this cycle — pending final verification.
 - **Sprint 3+ (not started)**: OpenAPI/Swagger docs (6.2), rate limiting via slowapi (6.3), periodic memory consolidation into executor loop (7.1), memory keyword+semantic search (7.2), memory retention TTL (7.3), scheduled cycle daemon (8.1), full end-to-end integration test w/ mocked LLM (10.1), CLI/API/approval test suites (10.2-10.4), structured logging w/ correlation IDs (9.1), agent-spec validation CLI (9.2), CLI type hints/docstrings (9.3-9.4), OAuth2/key rotation (11.1), memory encryption (11.2), token counting integration (11.3).

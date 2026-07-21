@@ -150,7 +150,32 @@ def _tab_context(active_tab: str) -> dict[str, Any]:
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Light Speed Holdings — CEO Dashboard", version="0.2.0")
+    app = FastAPI(
+        title="Light Speed Holdings — CEO Dashboard",
+        description=(
+            "REST API for the AI Company Builder CEO Dashboard.\n\n"
+            "Provides endpoints for monitoring agents, managing tasks, "
+            "approvals, escalations, KPIs, cost tracking, and mobile access."
+        ),
+        version="0.2.0",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_tags=[
+            {"name": "dashboard", "description": "Main dashboard overview and CEO aggregate view"},
+            {"name": "agents", "description": "Agent listing, detail, org chart, and performance metrics"},
+            {"name": "tasks", "description": "Task listing and creation via the MessageBus"},
+            {"name": "approvals", "description": "Human-in-the-loop approval requests and decisions"},
+            {"name": "escalations", "description": "Escalation events and resolution"},
+            {"name": "kpis", "description": "Key Performance Indicators: live, summary, history, trends, and alerts"},
+            {"name": "costs", "description": "Budget and LLM cost tracking across agents"},
+            {"name": "models", "description": "Model routing tiers and per-agent model assignments"},
+            {"name": "scheduler", "description": "Scheduled and recurring task listings"},
+            {"name": "departments", "description": "Department listing and per-department dashboards"},
+            {"name": "monitoring", "description": "Prometheus-compatible metrics and deep health checks"},
+            {"name": "mobile", "description": "Mobile-optimized endpoints with compact payloads and batch actions"},
+            {"name": "ops", "description": "Operational endpoints: health checks, readiness probes"},
+        ],
+    )
 
     # ── Jinja2 templates ─────────────────────────────────────────────
     templates = Jinja2Templates(directory=str(TEMPLATES_DIR))

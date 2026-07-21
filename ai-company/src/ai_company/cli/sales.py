@@ -1,17 +1,19 @@
-"""
-Sales department commands.
-"""
+"""Sales department commands."""
 
+from __future__ import annotations
+
+from datetime import datetime
 from pathlib import Path
+
 import typer
 import yaml
-from datetime import datetime
 
 app = typer.Typer(help="Sales department operations")
 SALES_DIR = Path("sales")
 
 
 def _load_pipeline() -> dict:
+    """Load the sales pipeline from YAML."""
     pipeline_file = SALES_DIR / "pipeline.yaml"
     if not pipeline_file.exists():
         return {"deals": [], "leads": []}
@@ -19,7 +21,8 @@ def _load_pipeline() -> dict:
         return yaml.safe_load(f) or {"deals": [], "leads": []}
 
 
-def _save_pipeline(data: dict):
+def _save_pipeline(data: dict) -> None:
+    """Persist the sales pipeline to YAML."""
     SALES_DIR.mkdir(exist_ok=True)
     pipeline_file = SALES_DIR / "pipeline.yaml"
     with open(pipeline_file, "w", encoding="utf-8") as f:
@@ -27,7 +30,7 @@ def _save_pipeline(data: dict):
 
 
 @app.command()
-def list_leads():
+def list_leads() -> None:
     """List all sales leads."""
     data = _load_pipeline()
     leads = data.get("leads", [])
@@ -51,7 +54,7 @@ def add_lead(
     lead_id: str = typer.Argument(..., help="Unique lead ID"),
     name: str = typer.Option(..., help="Lead name"),
     source: str = typer.Option("website", help="Lead source"),
-):
+) -> None:
     """Add a new sales lead."""
     data = _load_pipeline()
     leads = data.get("leads", [])
@@ -75,7 +78,7 @@ def add_lead(
 
 
 @app.command()
-def list_deals():
+def list_deals() -> None:
     """List all deals in the pipeline."""
     data = _load_pipeline()
     deals = data.get("deals", [])
@@ -99,7 +102,7 @@ def add_deal(
     deal_id: str = typer.Argument(..., help="Unique deal ID"),
     name: str = typer.Option(..., help="Deal name"),
     value: float = typer.Option(0.0, help="Deal value"),
-):
+) -> None:
     """Add a new deal to the pipeline."""
     data = _load_pipeline()
     deals = data.get("deals", [])
@@ -123,7 +126,7 @@ def add_deal(
 
 
 @app.command()
-def pipeline_summary():
+def pipeline_summary() -> None:
     """Show pipeline summary."""
     data = _load_pipeline()
     deals = data.get("deals", [])

@@ -1,17 +1,19 @@
-"""
-Specialist agent management commands.
-"""
+"""Specialist agent management commands."""
 
+from __future__ import annotations
+
+from datetime import datetime
 from pathlib import Path
+
 import typer
 import yaml
-from datetime import datetime
 
 app = typer.Typer(help="Manage specialist agents")
 SPECIALISTS_DIR = Path("specialists")
 
 
 def _load_specialists() -> dict:
+    """Load specialist agent registry from YAML."""
     specialists_file = SPECIALISTS_DIR / "registry.yaml"
     if not specialists_file.exists():
         return {"specialists": []}
@@ -19,7 +21,8 @@ def _load_specialists() -> dict:
         return yaml.safe_load(f) or {"specialists": []}
 
 
-def _save_specialists(data: dict):
+def _save_specialists(data: dict) -> None:
+    """Persist specialist agent registry to YAML."""
     SPECIALISTS_DIR.mkdir(exist_ok=True)
     specialists_file = SPECIALISTS_DIR / "registry.yaml"
     with open(specialists_file, "w", encoding="utf-8") as f:
@@ -27,7 +30,7 @@ def _save_specialists(data: dict):
 
 
 @app.command()
-def list():
+def list() -> None:
     """List all specialist agents."""
     data = _load_specialists()
     specialists = data.get("specialists", [])
@@ -54,7 +57,7 @@ def add(
     department: str = typer.Option(..., help="Department"),
     reports_to: str = typer.Option(..., help="Executive this specialist reports to"),
     specialization: str = typer.Option("", help="Area of specialization"),
-):
+) -> None:
     """Add a new specialist agent."""
     data = _load_specialists()
     specialists = data.get("specialists", [])
@@ -82,7 +85,7 @@ def add(
 
 
 @app.command()
-def remove(specialist_id: str = typer.Argument(..., help="Specialist ID to remove")):
+def remove(specialist_id: str = typer.Argument(..., help="Specialist ID to remove")) -> None:
     """Remove a specialist agent."""
     data = _load_specialists()
     specialists = data.get("specialists", [])
@@ -103,7 +106,7 @@ def assign_task(
     specialist_id: str = typer.Argument(..., help="Specialist ID"),
     task_id: str = typer.Option(..., help="Task ID to assign"),
     instruction: str = typer.Option(..., help="Task instruction"),
-):
+) -> None:
     """Assign a task to a specialist."""
     data = _load_specialists()
     specialists = data.get("specialists", [])
@@ -128,7 +131,7 @@ def assign_task(
 
 
 @app.command()
-def by_department(department: str = typer.Argument(..., help="Department name")):
+def by_department(department: str = typer.Argument(..., help="Department name")) -> None:
     """List specialists by department."""
     data = _load_specialists()
     specialists = data.get("specialists", [])

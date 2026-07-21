@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Generator
 from typing import Any
 
 from ai_company.llm.circuit_breaker import CircuitBreaker
+from ai_company.llm.cost_tracker import CostTracker
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.providers.base import (
     LLMProvider,
@@ -16,10 +18,13 @@ from ai_company.llm.providers.base import (
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.model_router import ModelRouter
+from ai_company.utils.logging import get_correlation_id
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 
 _MAX_RETRIES = 5
@@ -30,16 +35,23 @@ class LLMClient:
 
     Retry policy: up to 5 attempts if the LLM response is not valid JSON.
     Falls back through the tier's provider chain on provider errors.
+
+    Args:
+        config_path: Path to the models routing config.
+        registry_path: Path to the agent registry for per-agent routing.
+        cost_tracker: Optional cost tracker for recording token usage.
     """
 
     def __init__(
         self,
         config_path: str = "company/models.yaml",
         registry_path: str = "company/agent-registry.json",
+        cost_tracker: CostTracker | None = None,
     ) -> None:
         self.router = ModelRouter(config_path=config_path, registry_path=registry_path)
         self._providers: dict[str, LLMProvider] = {}
         self._circuit_breakers: dict[str, CircuitBreaker] = {}
+        self._cost_tracker = cost_tracker
         self._init_providers()
 
     def _init_providers(self) -> None:
@@ -73,12 +85,22 @@ class LLMClient:
         context: str | None = None,
         system_prompt: str = "",
         max_retries: int = _MAX_RETRIES,
+        task_id: str = "",
     ) -> dict[str, Any]:
         """Execute a task by calling the LLM and parsing the structured response.
 
         Returns parsed JSON dict with keys: plan, result, artifacts.
         Retries up to max_retries times if response is not valid JSON.
         Falls back to next provider in tier on provider errors.
+
+        Args:
+            agent_name: Name of the agent executing the task.
+            task_instruction: The task instruction / user message.
+            priority: Task priority for model routing.
+            context: Optional context override for routing.
+            system_prompt: System-level instructions for the model.
+            max_retries: Maximum number of retry attempts.
+            task_id: Task ID for cost tracking. If empty, cost is not recorded.
 
         Raises:
             LLMResponseError: If all retries exhausted without valid JSON.
@@ -87,6 +109,14 @@ class LLMClient:
         route = self.router.resolve(
             agent_name=agent_name, priority=priority, context=context,
             task_prompt=task_instruction,
+        )
+
+        logger.debug(
+            "LLM execute_task: agent=%s provider=%s model=%s correlation_id=%s",
+            agent_name,
+            route.provider,
+            route.model,
+            get_correlation_id(),
         )
 
         # Get the tier's provider chain for fallback
@@ -121,6 +151,7 @@ class LLMClient:
                         breaker.record_success()
                     parsed = self._parse_response(response.content)
                     if parsed is not None:
+                        self._record_usage(response, agent_name, task_id, attempt + 1)
                         return parsed
                     last_raw = response.content
                     last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
@@ -207,6 +238,36 @@ class LLMClient:
             attempts=max_retries,
             last_raw=full_text if "full_text" in dir() else "",
         )
+
+    def _record_usage(
+        self,
+        response: Any,
+        agent_name: str,
+        task_id: str,
+        iteration: int,
+    ) -> None:
+        """Record token usage if a CostTracker is configured.
+
+        Args:
+            response: The ChatResponse from the provider.
+            agent_name: Name of the agent that made the call.
+            task_id: Task ID for cost tracking.
+            iteration: Current iteration number.
+        """
+        if self._cost_tracker is None or not task_id:
+            return
+        try:
+            self._cost_tracker.record_usage(
+                model=response.model,
+                provider=response.provider,
+                agent_name=agent_name,
+                task_id=task_id,
+                prompt_tokens=response.prompt_tokens,
+                completion_tokens=response.completion_tokens,
+                iteration=iteration,
+            )
+        except Exception:
+            logger.debug("Cost tracking failed for task %s", task_id, exc_info=True)
 
     def _parse_response(self, content: str) -> dict[str, Any] | None:
         """Try to parse the LLM response as JSON."""

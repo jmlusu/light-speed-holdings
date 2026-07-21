@@ -247,7 +247,7 @@ ai-company/
     builder.py              # Bootstrap engine - generates everything
   company/                  # Configuration YAMLs
   templates/                # 14 Jinja2 templates
-  tests/                    # 727 unit tests
+  tests/                    # 962 unit tests
   docs/                     # Architecture, governance, SOPs, user guide
   .github/workflows/        # CI + autonomous scheduling
   pyproject.toml            # Project metadata and dependencies
@@ -297,8 +297,8 @@ pip install -e ".[dev]"
 # Run all checks
 ruff check src/                # Lint
 ruff format src/               # Format
-mypy src/                      # Type check
-pytest                         # Tests (727 tests)
+mypy src/                      # Type check (3 errors remaining)
+pytest                         # Tests (962 tests)
 ```
 
 ### Makefile
@@ -322,7 +322,7 @@ make clean             # Remove caches and build artifacts
 ### Testing
 
 ```bash
-pytest                                    # All 727 tests
+pytest                                    # All 962 tests
 pytest tests/unit/test_orchestrator.py    # Single file
 pytest -v                                 # Verbose output
 pytest -k "postmortem"                    # By name pattern

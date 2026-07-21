@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+from ai_company.models.task import Task, TaskStatus
 from ai_company.orchestrator.message_bus import MessageBus
 
 logger = logging.getLogger(__name__)
@@ -35,12 +36,11 @@ class BriefingGenerator:
     def generate(self) -> tuple[int, int]:
         """Generate briefing. Returns (active_agents, pending_task_count)."""
         agents = self._load_registry()
-        pending_tasks: dict[str, list[dict]] = {}
+        pending_tasks: dict[str, list[Task]] = {}
 
-        for task_dict in self.bus.get_inbox("all"):
-            if task_dict.get("status") == "pending":
-                receiver = task_dict["receiver_id"]
-                pending_tasks.setdefault(receiver, []).append(task_dict)
+        for task in self.bus.get_all_tasks():
+            if task.status == TaskStatus.PENDING:
+                pending_tasks.setdefault(task.receiver_id, []).append(task)
 
         today = datetime.now().strftime("%Y-%m-%d")
         lines = [
@@ -63,10 +63,10 @@ class BriefingGenerator:
                 f"You are the {agent['role']}. You have {len(tasks)} pending task(s) in your inbox.\n"
             )
             for task in tasks:
-                sender_name = agents.get(task["sender_id"], {}).get("role", task["sender_id"])
-                lines.append(f"TASK ID: {task['id']}")
+                sender_name = agents.get(task.sender_id, {}).get("role", task.sender_id)
+                lines.append(f"TASK ID: {task.id}")
                 lines.append(f"FROM: {sender_name}")
-                lines.append(f"INSTRUCTION: {task['instruction']}\n")
+                lines.append(f"INSTRUCTION: {task.instruction}\n")
             lines.append("Please execute these tasks using your available tools.")
             lines.append("```\n---\n")
 

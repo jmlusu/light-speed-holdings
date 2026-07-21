@@ -119,27 +119,29 @@ class OpenAICompatibleProvider(LLMProvider):
             # Anthropic response format
             content = data.get("content", [{}])[0].get("text", "")
             usage = data.get("usage", {})
+            prompt_tok = usage.get("input_tokens", 0)
+            comp_tok = usage.get("output_tokens", 0)
             return ChatResponse(
                 content=content,
                 model=model,
                 provider=self.name,
-                usage={
-                    "prompt_tokens": usage.get("input_tokens", 0),
-                    "completion_tokens": usage.get("output_tokens", 0),
-                },
+                prompt_tokens=prompt_tok,
+                completion_tokens=comp_tok,
+                total_tokens=prompt_tok + comp_tok,
             )
         else:
             # OpenAI response format
             content = data["choices"][0]["message"]["content"]
             usage = data.get("usage", {})
+            prompt_tok = usage.get("prompt_tokens", 0)
+            comp_tok = usage.get("completion_tokens", 0)
             return ChatResponse(
                 content=content,
                 model=model,
                 provider=self.name,
-                usage={
-                    "prompt_tokens": usage.get("prompt_tokens", 0),
-                    "completion_tokens": usage.get("completion_tokens", 0),
-                },
+                prompt_tokens=prompt_tok,
+                completion_tokens=comp_tok,
+                total_tokens=prompt_tok + comp_tok,
             )
 
     def chat_stream(

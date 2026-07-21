@@ -1,17 +1,19 @@
-"""
-Human Resources department commands.
-"""
+"""Human Resources department commands."""
 
+from __future__ import annotations
+
+from datetime import datetime
 from pathlib import Path
+
 import typer
 import yaml
-from datetime import datetime
 
 app = typer.Typer(help="Human Resources operations")
 HR_DIR = Path("hr")
 
 
 def _load_agents_roster() -> dict:
+    """Load the HR agent roster from YAML."""
     roster_file = HR_DIR / "roster.yaml"
     if not roster_file.exists():
         return {"agents": []}
@@ -19,7 +21,8 @@ def _load_agents_roster() -> dict:
         return yaml.safe_load(f) or {"agents": []}
 
 
-def _save_agents_roster(data: dict):
+def _save_agents_roster(data: dict) -> None:
+    """Persist the HR agent roster to YAML."""
     HR_DIR.mkdir(exist_ok=True)
     roster_file = HR_DIR / "roster.yaml"
     with open(roster_file, "w", encoding="utf-8") as f:
@@ -27,7 +30,7 @@ def _save_agents_roster(data: dict):
 
 
 @app.command()
-def list_agents():
+def list_agents() -> None:
     """List all agents in the workforce."""
     data = _load_agents_roster()
     agents = data.get("agents", [])
@@ -51,7 +54,7 @@ def onboard(
     agent_id: str = typer.Argument(..., help="Agent ID to onboard"),
     role: str = typer.Option(..., help="Agent role"),
     department: str = typer.Option(..., help="Department"),
-):
+) -> None:
     """Onboard a new agent to the workforce."""
     data = _load_agents_roster()
     agents = data.get("agents", [])
@@ -75,7 +78,7 @@ def onboard(
 
 
 @app.command()
-def deactivate(agent_id: str = typer.Argument(..., help="Agent ID to deactivate")):
+def deactivate(agent_id: str = typer.Argument(..., help="Agent ID to deactivate")) -> None:
     """Deactivate an agent from the workforce."""
     data = _load_agents_roster()
     agents = data.get("agents", [])
@@ -92,7 +95,7 @@ def deactivate(agent_id: str = typer.Argument(..., help="Agent ID to deactivate"
 
 
 @app.command()
-def workforce_report():
+def workforce_report() -> None:
     """Generate workforce statistics report."""
     data = _load_agents_roster()
     agents = data.get("agents", [])
@@ -101,7 +104,7 @@ def workforce_report():
     active = sum(1 for a in agents if a.get("status") == "active")
     inactive = total - active
 
-    departments = {}
+    departments: dict[str, int] = {}
     for agent in agents:
         dept = agent.get("department", "Unknown")
         departments[dept] = departments.get(dept, 0) + 1

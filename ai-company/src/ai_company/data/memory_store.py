@@ -12,9 +12,12 @@ import logging
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ai_company.data.database import Database
+
+if TYPE_CHECKING:
+    from ai_company.security.encryption_key_manager import EncryptionKeyManager
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +81,32 @@ class MemoryStoreDB:
 
     def __init__(self, database: Database) -> None:
         self._db = database
+        self._key_manager: EncryptionKeyManager | None = None
+        self._ensure_content_search_column()
+
+    def _ensure_content_search_column(self) -> None:
+        """Add content_search column if it doesn't exist (migration)."""
+        try:
+            cols = self._db.fetchall("PRAGMA table_info(memory_entries)")
+            col_names = {c["name"] for c in cols}
+            if "content_search" not in col_names:
+                self._db.execute(
+                    "ALTER TABLE memory_entries ADD COLUMN content_search TEXT NOT NULL DEFAULT ''"
+                )
+                self._db.commit()
+                logger.info("Added content_search column to memory_entries")
+        except Exception:
+            pass  # Column already exists or table doesn't exist yet
+
+    def enable_encryption(self, key_manager: EncryptionKeyManager) -> None:
+        """Enable at-rest encryption for memory content.
+
+        When enabled, ``store()`` encrypts content before saving and stores
+        a plaintext copy in ``content_search`` for substring queries.
+        ``recall()`` decrypts content after loading.
+        """
+        self._key_manager = key_manager
+        logger.info("MemoryStoreDB encryption enabled with key %s", key_manager.current_key_id)
 
     # ── Core API (compatible with MemoryStore) ────────────────────────
 
@@ -87,7 +116,12 @@ class MemoryStoreDB:
         content: str,
         **kwargs: Any,
     ) -> MemoryEntryDB:
-        """Store a new memory entry."""
+        """Store a new memory entry.
+
+        If encryption is enabled, content is encrypted before saving and a
+        plaintext copy is stored in the ``content_search`` column for
+        substring queries.
+        """
         if memory_type not in MEMORY_TYPES:
             raise ValueError(f"Unknown memory type: {memory_type}")
 
@@ -97,14 +131,22 @@ class MemoryStoreDB:
         now = datetime.now().isoformat()
         entry_id = f"{memory_type}_{uuid.uuid4().hex[:12]}"
 
+        # Encrypt content for storage, keep plaintext for search
+        stored_content = content
+        content_search = content
+        if self._key_manager is not None:
+            from ai_company.security.memory_encryption import encrypt
+            stored_content = encrypt(content, self._key_manager)
+
         self._db.execute(
             """INSERT INTO memory_entries
-               (id, memory_type, content, metadata, agent_id, tags, created_at, access_count)
-               VALUES (?,?,?,?,?,?,?,?)""",
+               (id, memory_type, content, content_search, metadata, agent_id, tags, created_at, access_count)
+               VALUES (?,?,?,?,?,?,?,?,?)""",
             (
                 entry_id,
                 memory_type,
-                content,
+                stored_content,
+                content_search,
                 json.dumps(metadata, default=str),
                 agent_id,
                 json.dumps(tags),
@@ -117,7 +159,7 @@ class MemoryStoreDB:
         return MemoryEntryDB(
             id=entry_id,
             memory_type=memory_type,
-            content=content,
+            content=content,  # Return plaintext to caller
             metadata=metadata,
             agent_id=agent_id,
             tags=tags,
@@ -133,13 +175,22 @@ class MemoryStoreDB:
         agent_id: str = "",
         limit: int = 10,
     ) -> list[MemoryEntryDB]:
-        """Recall memories with optional filtering."""
+        """Recall memories with optional filtering.
+
+        If encryption is enabled, uses the ``content_search`` column for
+        substring matching and decrypts content after loading.
+        """
         if memory_type not in MEMORY_TYPES:
             return []
 
         # Build SQL dynamically for optional filters
         conditions = ["memory_type = ?"]
         params: list[Any] = [memory_type]
+
+        # Use content_search column for substring queries (plaintext copy)
+        if query:
+            conditions.append("content_search LIKE ?")
+            params.append(f"%{query}%")
 
         if agent_id:
             conditions.append("agent_id = ?")
@@ -151,19 +202,16 @@ class MemoryStoreDB:
             tuple(params),
         )
 
-        # Post-query filters (content search, tag intersection)
         entries = [self._row_to_entry(r) for r in rows]
 
-        if query:
-            query_lower = query.lower()
-            entries = [e for e in entries if query_lower in e.content.lower()]
-
+        # Post-query filter: tag intersection (not easily done in SQL with JSON)
         if tags:
             tag_set = set(tags)
             entries = [e for e in entries if tag_set.intersection(e.tags)]
 
-        # Apply limit
+        # Apply limit and decrypt
         result = entries[:limit]
+        self._decrypt_entries(result)
 
         # Increment access counts
         if result:
@@ -198,20 +246,25 @@ class MemoryStoreDB:
         return result
 
     def get_all(self, memory_type: str) -> list[MemoryEntryDB]:
-        """Return all entries of a given type."""
+        """Return all entries of a given type (decrypted if encryption enabled)."""
         rows = self._db.fetchall(
             "SELECT * FROM memory_entries WHERE memory_type = ? ORDER BY created_at ASC",
             (memory_type,),
         )
-        return [self._row_to_entry(r) for r in rows]
+        entries = [self._row_to_entry(r) for r in rows]
+        self._decrypt_entries(entries)
+        return entries
 
     # ── Extended queries ──────────────────────────────────────────────
 
     def search_content(self, query: str, limit: int = 20) -> list[MemoryEntryDB]:
-        """Full-text content search across all memory types."""
+        """Full-text content search across all memory types.
+
+        Uses the ``content_search`` column (plaintext) for substring matching.
+        """
         rows = self._db.fetchall(
             """SELECT * FROM memory_entries
-               WHERE content LIKE ?
+               WHERE content_search LIKE ?
                ORDER BY access_count DESC, created_at DESC
                LIMIT ?""",
             (f"%{query}%", limit),
@@ -219,20 +272,24 @@ class MemoryStoreDB:
         return [self._row_to_entry(r) for r in rows]
 
     def recent(self, memory_type: str, limit: int = 10) -> list[MemoryEntryDB]:
-        """Return the most recent entries of a type."""
+        """Return the most recent entries of a type (decrypted)."""
         rows = self._db.fetchall(
             "SELECT * FROM memory_entries WHERE memory_type = ? ORDER BY created_at DESC LIMIT ?",
             (memory_type, limit),
         )
-        return [self._row_to_entry(r) for r in rows]
+        entries = [self._row_to_entry(r) for r in rows]
+        self._decrypt_entries(entries)
+        return entries
 
     def most_accessed(self, memory_type: str, limit: int = 10) -> list[MemoryEntryDB]:
-        """Return the most-accessed entries of a type."""
+        """Return the most-accessed entries of a type (decrypted)."""
         rows = self._db.fetchall(
             "SELECT * FROM memory_entries WHERE memory_type = ? ORDER BY access_count DESC LIMIT ?",
             (memory_type, limit),
         )
-        return [self._row_to_entry(r) for r in rows]
+        entries = [self._row_to_entry(r) for r in rows]
+        self._decrypt_entries(entries)
+        return entries
 
     # ── Migration helpers ─────────────────────────────────────────────
 
@@ -296,9 +353,22 @@ class MemoryStoreDB:
 
     # ── Internal helpers ──────────────────────────────────────────────
 
+    def _decrypt_entries(self, entries: list[MemoryEntryDB]) -> None:
+        """Decrypt content in-place for entries returned to callers."""
+        if self._key_manager is None:
+            return
+        from ai_company.security.memory_encryption import decrypt
+        for entry in entries:
+            entry.content = decrypt(entry.content, self._key_manager)
+
     @staticmethod
     def _row_to_entry(row: dict[str, Any]) -> MemoryEntryDB:
-        """Convert a database row to a MemoryEntryDB."""
+        """Convert a database row to a MemoryEntryDB.
+
+        Note: Content is NOT decrypted here — callers that need plaintext
+        should decrypt explicitly. This keeps the static method simple and
+        avoids coupling it to the key manager.
+        """
         return MemoryEntryDB(
             id=row["id"],
             memory_type=row["memory_type"],

@@ -19,25 +19,26 @@ app = typer.Typer(invoke_without_command=True, help="Run system diagnostics")
 
 
 @app.callback(invoke_without_command=True)
-def doctor_callback(ctx: typer.Context):
+def doctor_callback(ctx: typer.Context) -> None:
+    """Run diagnostics when invoked without a subcommand."""
     if ctx.invoked_subcommand is None:
         run_diagnostics()
 
 
 @app.command()
-def run():
+def run() -> None:
     """Run full system diagnostics."""
     run_diagnostics()
 
 
 @app.command()
-def check():
+def check() -> None:
     """Run checks and display results."""
     run_diagnostics()
 
 
 @app.command()
-def fix():
+def fix() -> None:
     """Attempt to auto-fix detected issues."""
     fixes: list[str] = []
 
@@ -98,7 +99,8 @@ def fix():
         )
 
 
-def run_diagnostics():
+def run_diagnostics() -> None:
+    """Execute all health checks and display results as a table."""
     checks = run_all_checks()
 
     table = Table(title="System Health")

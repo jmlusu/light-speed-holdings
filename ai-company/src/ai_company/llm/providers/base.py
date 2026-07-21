@@ -17,12 +17,39 @@ class ChatMessage:
 
 @dataclass(frozen=True)
 class ChatResponse:
-    """Structured response from an LLM provider."""
+    """Structured response from an LLM provider.
+
+    Attributes:
+        content: The model's text output.
+        model: Model identifier used for this call.
+        provider: Provider name (e.g. "ollama", "openai").
+        prompt_tokens: Number of tokens in the prompt.
+        completion_tokens: Number of tokens in the completion.
+        total_tokens: Total tokens (prompt + completion).
+        usage: Legacy dict for backward compatibility.
+    """
 
     content: str
     model: str
     provider: str
-    usage: dict[str, int] = field(default_factory=dict)  # prompt_tokens, completion_tokens
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
+    usage: dict[str, int] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        """Derive total_tokens and populate usage dict for backward compatibility."""
+        if self.total_tokens == 0 and (self.prompt_tokens or self.completion_tokens):
+            object.__setattr__(self, "total_tokens", self.prompt_tokens + self.completion_tokens)
+        if not self.usage:
+            object.__setattr__(
+                self,
+                "usage",
+                {
+                    "prompt_tokens": self.prompt_tokens,
+                    "completion_tokens": self.completion_tokens,
+                },
+            )
 
 
 @dataclass(frozen=True)
