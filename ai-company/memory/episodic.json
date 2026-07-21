@@ -1,6 +1,6 @@
 [
   {
-    "id": "episodic_20260721_154903_456645",
+    "id": "episodic_20260721_155252_713160",
     "memory_type": "episodic",
     "content": "Task t-normal: normal\nStatus: completed\nResult: done",
     "metadata": {
@@ -12,12 +12,12 @@
       "completed",
       "test-agent"
     ],
-    "created_at": "2026-07-21T15:49:03.456645",
+    "created_at": "2026-07-21T15:52:52.713160",
     "access_count": 0,
     "seq": 344
   },
   {
-    "id": "episodic_20260721_155237_490801",
+    "id": "episodic_20260721_155339_473574",
     "memory_type": "episodic",
     "content": "Campaign 'Product Launch' created (channel=email, budget=$0.0)",
     "metadata": {
@@ -30,12 +30,12 @@
       "created",
       "email"
     ],
-    "created_at": "2026-07-21T15:52:37.490801",
+    "created_at": "2026-07-21T15:53:39.473574",
     "access_count": 0,
     "seq": 459
   },
   {
-    "id": "episodic_20260721_155237_618988",
+    "id": "episodic_20260721_155339_590458",
     "memory_type": "episodic",
     "content": "Campaign 'First' created (channel=email, budget=$0.0)",
     "metadata": {
@@ -48,12 +48,12 @@
       "created",
       "email"
     ],
-    "created_at": "2026-07-21T15:52:37.618988",
+    "created_at": "2026-07-21T15:53:39.590458",
     "access_count": 0,
     "seq": 460
   },
   {
-    "id": "episodic_20260721_155237_717529",
+    "id": "episodic_20260721_155339_696611",
     "memory_type": "episodic",
     "content": "Campaign 'Test' created (channel=email, budget=$0.0)",
     "metadata": {
@@ -66,12 +66,12 @@
       "created",
       "email"
     ],
-    "created_at": "2026-07-21T15:52:37.717529",
+    "created_at": "2026-07-21T15:53:39.696611",
     "access_count": 0,
     "seq": 461
   },
   {
-    "id": "episodic_20260721_155237_826588",
+    "id": "episodic_20260721_155339_787379",
     "memory_type": "episodic",
     "content": "Campaign 'Test' launched",
     "metadata": {
@@ -83,12 +83,12 @@
       "campaign",
       "launched"
     ],
-    "created_at": "2026-07-21T15:52:37.826588",
+    "created_at": "2026-07-21T15:53:39.787379",
     "access_count": 0,
     "seq": 462
   },
   {
-    "id": "episodic_20260721_155237_945552",
+    "id": "episodic_20260721_155339_870718",
     "memory_type": "episodic",
     "content": "Campaign 'Test' created (channel=email, budget=$0.0)",
     "metadata": {
@@ -101,12 +101,12 @@
       "created",
       "email"
     ],
-    "created_at": "2026-07-21T15:52:37.945552",
+    "created_at": "2026-07-21T15:53:39.870718",
     "access_count": 0,
     "seq": 463
   },
   {
-    "id": "episodic_20260721_155238_089516",
+    "id": "episodic_20260721_155339_986219",
     "memory_type": "episodic",
     "content": "Campaign 'Test' created (channel=email, budget=$0.0)",
     "metadata": {
@@ -119,12 +119,12 @@
       "created",
       "email"
     ],
-    "created_at": "2026-07-21T15:52:38.089516",
+    "created_at": "2026-07-21T15:53:39.986219",
     "access_count": 0,
     "seq": 464
   },
   {
-    "id": "episodic_20260721_155238_220753",
+    "id": "episodic_20260721_155340_080444",
     "memory_type": "episodic",
     "content": "Lead 'Acme Corp' added from website",
     "metadata": {
@@ -137,12 +137,12 @@
       "created",
       "website"
     ],
-    "created_at": "2026-07-21T15:52:38.220753",
+    "created_at": "2026-07-21T15:53:40.080444",
     "access_count": 0,
     "seq": 465
   },
   {
-    "id": "episodic_20260721_155238_326847",
+    "id": "episodic_20260721_155340_180201",
     "memory_type": "episodic",
     "content": "Deal 'Enterprise Deal' created ($100,000.00)",
     "metadata": {
@@ -155,12 +155,12 @@
       "deal",
       "created"
     ],
-    "created_at": "2026-07-21T15:52:38.326847",
+    "created_at": "2026-07-21T15:53:40.180201",
     "access_count": 0,
     "seq": 466
   },
   {
-    "id": "episodic_20260721_155238_430722",
+    "id": "episodic_20260721_155340_279993",
     "memory_type": "episodic",
     "content": "Deal 'Deal' created ($50,000.00)",
     "metadata": {
@@ -173,12 +173,12 @@
       "deal",
       "created"
     ],
-    "created_at": "2026-07-21T15:52:38.432184",
+    "created_at": "2026-07-21T15:53:40.279993",
     "access_count": 0,
     "seq": 467
   },
   {
-    "id": "episodic_20260721_155238_580137",
+    "id": "episodic_20260721_155340_363507",
     "memory_type": "episodic",
     "content": "Deal 'Deal' stage: prospecting -> qualification",
     "metadata": {
@@ -191,12 +191,12 @@
       "stage_change",
       "qualification"
     ],
-    "created_at": "2026-07-21T15:52:38.580137",
+    "created_at": "2026-07-21T15:53:40.363507",
     "access_count": 0,
     "seq": 468
   },
   {
-    "id": "episodic_20260721_155238_614356",
+    "id": "episodic_20260721_155340_394850",
     "memory_type": "episodic",
     "content": "Lead 'Lead 1' added from website",
     "metadata": {
@@ -209,12 +209,12 @@
       "created",
       "website"
     ],
-    "created_at": "2026-07-21T15:52:38.614356",
+    "created_at": "2026-07-21T15:53:40.394850",
     "access_count": 0,
     "seq": 469
   },
   {
-    "id": "episodic_20260721_155238_714509",
+    "id": "episodic_20260721_155340_481759",
     "memory_type": "episodic",
     "content": "Deal 'Deal 1' created ($25,000.00)",
     "metadata": {
@@ -227,12 +227,12 @@
       "deal",
       "created"
     ],
-    "created_at": "2026-07-21T15:52:38.714509",
+    "created_at": "2026-07-21T15:53:40.481759",
     "access_count": 0,
     "seq": 470
   },
   {
-    "id": "episodic_20260721_155238_816314",
+    "id": "episodic_20260721_155340_600239",
     "memory_type": "episodic",
     "content": "Ticket 'Login issue' created (priority=high)",
     "metadata": {
@@ -245,12 +245,12 @@
       "created",
       "high"
     ],
-    "created_at": "2026-07-21T15:52:38.816314",
+    "created_at": "2026-07-21T15:53:40.600239",
     "access_count": 0,
     "seq": 471
   },
   {
-    "id": "episodic_20260721_155238_917443",
+    "id": "episodic_20260721_155340_706010",
     "memory_type": "episodic",
     "content": "Ticket 'Login issue' status: open -> resolved",
     "metadata": {
@@ -263,12 +263,12 @@
       "status_change",
       "resolved"
     ],
-    "created_at": "2026-07-21T15:52:38.917443",
+    "created_at": "2026-07-21T15:53:40.706010",
     "access_count": 0,
     "seq": 472
   },
   {
-    "id": "episodic_20260721_155238_962213",
+    "id": "episodic_20260721_155340_745351",
     "memory_type": "episodic",
     "content": "Ticket 'Bug' created (priority=medium)",
     "metadata": {
@@ -281,12 +281,12 @@
       "created",
       "medium"
     ],
-    "created_at": "2026-07-21T15:52:38.962213",
+    "created_at": "2026-07-21T15:53:40.745351",
     "access_count": 0,
     "seq": 474
   },
   {
-    "id": "episodic_20260721_155238_992830",
+    "id": "episodic_20260721_155340_770173",
     "memory_type": "episodic",
     "content": "Ticket 'Bug' escalated: Customer threatening churn",
     "metadata": {
@@ -298,12 +298,12 @@
       "ticket",
       "escalated"
     ],
-    "created_at": "2026-07-21T15:52:38.992830",
+    "created_at": "2026-07-21T15:53:40.770173",
     "access_count": 0,
     "seq": 475
   },
   {
-    "id": "episodic_20260721_155239_123291",
+    "id": "episodic_20260721_155340_863756",
     "memory_type": "episodic",
     "content": "Ticket 'A' created (priority=medium)",
     "metadata": {
@@ -316,12 +316,12 @@
       "created",
       "medium"
     ],
-    "created_at": "2026-07-21T15:52:39.123291",
+    "created_at": "2026-07-21T15:53:40.863756",
     "access_count": 0,
     "seq": 476
   },
   {
-    "id": "episodic_20260721_155239_157726",
+    "id": "episodic_20260721_155340_885865",
     "memory_type": "episodic",
     "content": "Ticket 'B' created (priority=medium)",
     "metadata": {
@@ -334,12 +334,12 @@
       "created",
       "medium"
     ],
-    "created_at": "2026-07-21T15:52:39.157726",
+    "created_at": "2026-07-21T15:53:40.887136",
     "access_count": 0,
     "seq": 477
   },
   {
-    "id": "episodic_20260721_155239_194195",
+    "id": "episodic_20260721_155340_912554",
     "memory_type": "episodic",
     "content": "Ticket 'A' status: open -> resolved",
     "metadata": {
@@ -352,12 +352,12 @@
       "status_change",
       "resolved"
     ],
-    "created_at": "2026-07-21T15:52:39.194706",
+    "created_at": "2026-07-21T15:53:40.912554",
     "access_count": 0,
     "seq": 478
   },
   {
-    "id": "episodic_20260721_155239_244940",
+    "id": "episodic_20260721_155340_947411",
     "memory_type": "episodic",
     "content": "Contract 'NDA' added with Acme (type=service)",
     "metadata": {
@@ -370,12 +370,12 @@
       "created",
       "service"
     ],
-    "created_at": "2026-07-21T15:52:39.244940",
+    "created_at": "2026-07-21T15:53:40.947411",
     "access_count": 0,
     "seq": 479
   },
   {
-    "id": "episodic_20260721_155239_345988",
+    "id": "episodic_20260721_155341_043725",
     "memory_type": "episodic",
     "content": "Contract 'NDA' approved by legal-head",
     "metadata": {
@@ -387,12 +387,12 @@
       "contract",
       "approved"
     ],
-    "created_at": "2026-07-21T15:52:39.345988",
+    "created_at": "2026-07-21T15:53:41.043725",
     "access_count": 0,
     "seq": 480
   },
   {
-    "id": "episodic_20260721_155239_389543",
+    "id": "episodic_20260721_155341_074633",
     "memory_type": "episodic",
     "content": "Contract 'SaaS Agreement' added with Vendor (type=service)",
     "metadata": {
@@ -405,12 +405,12 @@
       "created",
       "service"
     ],
-    "created_at": "2026-07-21T15:52:39.389543",
+    "created_at": "2026-07-21T15:53:41.074633",
     "access_count": 0,
     "seq": 482
   },
   {
-    "id": "episodic_20260721_155239_488531",
+    "id": "episodic_20260721_155341_168748",
     "memory_type": "episodic",
     "content": "Contract 'SaaS Agreement' terminated: Vendor breach",
     "metadata": {
@@ -422,12 +422,12 @@
       "contract",
       "terminated"
     ],
-    "created_at": "2026-07-21T15:52:39.488531",
+    "created_at": "2026-07-21T15:53:41.168748",
     "access_count": 0,
     "seq": 483
   },
   {
-    "id": "episodic_20260721_155239_522536",
+    "id": "episodic_20260721_155341_205824",
     "memory_type": "episodic",
     "content": "Contract 'A' added with X (type=service)",
     "metadata": {
@@ -440,12 +440,12 @@
       "created",
       "service"
     ],
-    "created_at": "2026-07-21T15:52:39.522536",
+    "created_at": "2026-07-21T15:53:41.205824",
     "access_count": 0,
     "seq": 484
   },
   {
-    "id": "episodic_20260721_155239_631595",
+    "id": "episodic_20260721_155341_307041",
     "memory_type": "episodic",
     "content": "Contract 'B' added with Y (type=service)",
     "metadata": {
@@ -458,12 +458,12 @@
       "created",
       "service"
     ],
-    "created_at": "2026-07-21T15:52:39.631595",
+    "created_at": "2026-07-21T15:53:41.307041",
     "access_count": 0,
     "seq": 485
   },
   {
-    "id": "episodic_20260721_155239_757033",
+    "id": "episodic_20260721_155341_405691",
     "memory_type": "episodic",
     "content": "Contract 'A' approved by system",
     "metadata": {
@@ -475,12 +475,12 @@
       "contract",
       "approved"
     ],
-    "created_at": "2026-07-21T15:52:39.757033",
+    "created_at": "2026-07-21T15:53:41.405691",
     "access_count": 0,
     "seq": 486
   },
   {
-    "id": "episodic_20260721_155239_805823",
+    "id": "episodic_20260721_155341_447184",
     "memory_type": "episodic",
     "content": "Agent 'dev-1' onboarded as Backend Engineer in Technology",
     "metadata": {
@@ -493,12 +493,12 @@
       "onboarded",
       "Technology"
     ],
-    "created_at": "2026-07-21T15:52:39.805823",
+    "created_at": "2026-07-21T15:53:41.447184",
     "access_count": 0,
     "seq": 488
   },
   {
-    "id": "episodic_20260721_155240_035796",
+    "id": "episodic_20260721_155341_703101",
     "memory_type": "episodic",
     "content": "Agent 'dev-1' activated (was: onboarding)",
     "metadata": {
@@ -510,12 +510,12 @@
       "agent",
       "activated"
     ],
-    "created_at": "2026-07-21T15:52:40.035796",
+    "created_at": "2026-07-21T15:53:41.703101",
     "access_count": 0,
     "seq": 489
   },
   {
-    "id": "episodic_20260721_155240_068712",
+    "id": "episodic_20260721_155341_736471",
     "memory_type": "episodic",
     "content": "Agent 'a1' onboarded as Dev in Eng",
     "metadata": {
@@ -528,12 +528,12 @@
       "onboarded",
       "Eng"
     ],
-    "created_at": "2026-07-21T15:52:40.068712",
+    "created_at": "2026-07-21T15:53:41.736471",
     "access_count": 0,
     "seq": 490
   },
   {
-    "id": "episodic_20260721_155240_291235",
+    "id": "episodic_20260721_155341_937117",
     "memory_type": "episodic",
     "content": "Agent 'a1' activated (was: onboarding)",
     "metadata": {
@@ -545,12 +545,12 @@
       "agent",
       "activated"
     ],
-    "created_at": "2026-07-21T15:52:40.291235",
+    "created_at": "2026-07-21T15:53:41.937117",
     "access_count": 0,
     "seq": 491
   },
   {
-    "id": "episodic_20260721_155240_315116",
+    "id": "episodic_20260721_155341_958568",
     "memory_type": "episodic",
     "content": "Agent 'a1' deactivated (was: active): Project completed",
     "metadata": {
@@ -562,12 +562,12 @@
       "agent",
       "deactivated"
     ],
-    "created_at": "2026-07-21T15:52:40.315116",
+    "created_at": "2026-07-21T15:53:41.958568",
     "access_count": 0,
     "seq": 492
   },
   {
-    "id": "episodic_20260721_155240_421913",
+    "id": "episodic_20260721_155342_034353",
     "memory_type": "episodic",
     "content": "Agent 'a1' onboarded as Dev in Eng",
     "metadata": {
@@ -580,12 +580,12 @@
       "onboarded",
       "Eng"
     ],
-    "created_at": "2026-07-21T15:52:40.421913",
+    "created_at": "2026-07-21T15:53:42.034353",
     "access_count": 0,
     "seq": 493
   },
   {
-    "id": "episodic_20260721_155240_658167",
+    "id": "episodic_20260721_155342_238642",
     "memory_type": "episodic",
     "content": "Agent 'a2' onboarded as PM in Product",
     "metadata": {
@@ -598,12 +598,12 @@
       "onboarded",
       "Product"
     ],
-    "created_at": "2026-07-21T15:52:40.658167",
+    "created_at": "2026-07-21T15:53:42.238642",
     "access_count": 0,
     "seq": 494
   },
   {
-    "id": "episodic_20260721_155240_879800",
+    "id": "episodic_20260721_155342_469380",
     "memory_type": "episodic",
     "content": "Agent 'a1' activated (was: onboarding)",
     "metadata": {
@@ -615,7 +615,7 @@
       "agent",
       "activated"
     ],
-    "created_at": "2026-07-21T15:52:40.879800",
+    "created_at": "2026-07-21T15:53:42.469380",
     "access_count": 0,
     "seq": 495
   }
