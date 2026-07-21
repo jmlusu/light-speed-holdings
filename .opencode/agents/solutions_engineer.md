@@ -1,17 +1,15 @@
-﻿---
+---
 description: Provides pre-sales technical validation and helps customers implement AI solutions successfully.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Solutions Engineer
@@ -66,7 +64,7 @@ Pre-sales engineering, solution design, technical validation, customer implement
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Pre-sales engineering, solution design, technical validation, customer implement
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

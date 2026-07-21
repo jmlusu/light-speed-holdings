@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns system prompt architecture, prompt optimization, chain-of-thought patterns, and cost-per-quality optimization.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Prompt Engineer
@@ -66,7 +64,7 @@ Prompt engineering, system prompts, chain-of-thought, few-shot learning, cost op
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Prompt engineering, system prompts, chain-of-thought, few-shot learning, cost op
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

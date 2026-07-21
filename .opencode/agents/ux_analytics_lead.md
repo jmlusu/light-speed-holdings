@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns product-specific metrics including feature adoption, activation funnels, time-to-value, and cohort retention.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Product Analytics Lead
@@ -66,9 +64,9 @@ Product analytics, feature adoption, activation funnels, cohort analysis, A/B te
 
 - `write`
 
-- `execute`
+- `bash`
 
-- `code_interpreter`
+- `bash`
 
 - `grep`
 
@@ -76,7 +74,6 @@ Product analytics, feature adoption, activation funnels, cohort analysis, A/B te
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -111,5 +108,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

@@ -1,17 +1,15 @@
-﻿---
+---
 description: Designs and maintains data pipelines, ETL processes, data quality frameworks, and data catalogs across all departments.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Data Engineer
@@ -66,9 +64,9 @@ Pipeline orchestration, data quality, ETL, data catalogs, warehouse management.
 
 - `write`
 
-- `execute`
+- `bash`
 
-- `code_interpreter`
+- `bash`
 
 - `grep`
 
@@ -76,7 +74,6 @@ Pipeline orchestration, data quality, ETL, data catalogs, warehouse management.
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -111,5 +108,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

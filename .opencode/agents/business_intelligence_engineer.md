@@ -1,17 +1,15 @@
-﻿---
+---
 description: Builds self-service dashboards connecting business metrics across departments for data-driven decisions.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Business Intelligence Engineer
@@ -66,9 +64,9 @@ Business intelligence, dashboard design, data visualization, self-service analyt
 
 - `write`
 
-- `execute`
+- `bash`
 
-- `code_interpreter`
+- `bash`
 
 - `grep`
 
@@ -76,7 +74,6 @@ Business intelligence, dashboard design, data visualization, self-service analyt
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -111,5 +108,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

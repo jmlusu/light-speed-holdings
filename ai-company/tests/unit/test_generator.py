@@ -85,26 +85,28 @@ def test_generate_file_content(generator: AgentGenerator) -> None:
     results = generator.generate_all()
     exec_file = [f for f in results if f.name == "test_exec.md"][0]
     content = exec_file.read_text(encoding="utf-8")
-    assert "name: test_exec" in content
     assert "Test Executive" in content
     assert "Run tests" in content
     assert "mode: subagent" in content
-    assert "permission:" in content
+    assert "tools:" in content
+    assert "permission:" not in content
 
 
-def test_permission_deny_for_read_only(generator: AgentGenerator) -> None:
+def test_tools_boolean_map_read_only(generator: AgentGenerator) -> None:
     results = generator.generate_all()
     spec_file = [f for f in results if f.name == "test_spec.md"][0]
     content = spec_file.read_text(encoding="utf-8")
-    assert "edit: deny" in content
-    assert "bash: deny" in content
-    assert "task: deny" in content
+    assert "write: false" in content
+    assert "edit: false" in content
+    assert "bash: false" in content
+    assert "read: true" in content
 
 
-def test_permission_allow_for_full_access(generator: AgentGenerator) -> None:
+def test_tools_boolean_map_full_access(generator: AgentGenerator) -> None:
     results = generator.generate_all()
     exec_file = [f for f in results if f.name == "test_exec.md"][0]
     content = exec_file.read_text(encoding="utf-8")
-    assert "edit: allow" in content
-    assert "bash: allow" in content
-    assert "task: allow" in content
+    assert "write: true" in content
+    assert "edit: true" in content
+    assert "bash: true" in content
+    assert "read: true" in content

@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the pytest architecture, fixtures, and CI test-gating; accountable owner for dashboard suite health.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Test Engineering Lead
@@ -64,7 +62,7 @@ Test architecture, fixtures, conftest design, CI test orchestration, flaky-test 
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -72,7 +70,6 @@ Test architecture, fixtures, conftest design, CI test orchestration, flaky-test 
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -107,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

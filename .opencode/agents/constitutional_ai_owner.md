@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the ai_development_constitution directory, maps constitutional principles to runtime guardrails, and audits agent compliance.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Constitutional AI Owner
@@ -66,7 +64,7 @@ Constitutional AI, principle-to-guardrail mapping, compliance auditing, policy e
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Constitutional AI, principle-to-guardrail mapping, compliance auditing, policy e
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

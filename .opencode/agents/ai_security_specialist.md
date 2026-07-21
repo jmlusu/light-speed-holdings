@@ -1,17 +1,15 @@
-﻿---
+---
 description: Provides dedicated defense against prompt injection, model exfiltration, data poisoning, and adversarial inputs.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # AI Security Specialist
@@ -66,7 +64,7 @@ AI-specific security, prompt injection defense, model protection, adversarial ro
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ AI-specific security, prompt injection defense, model protection, adversarial ro
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

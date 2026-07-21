@@ -1,15 +1,15 @@
-﻿---
+---
 description: Owns the workflow engine, its 9 workflow definitions, step tracking, and SLA monitoring.
-
 mode: subagent
-
-permission:
-  read: allow
-  edit: allow
-  bash: allow
-  grep: allow
-  list: allow
-  task: deny
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Workflow Owner
@@ -62,7 +62,7 @@ Workflow DAGs, step state machines, SLA budgeting and alerting.
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -70,7 +70,6 @@ Workflow DAGs, step state machines, SLA budgeting and alerting.
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -105,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

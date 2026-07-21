@@ -1,17 +1,15 @@
-﻿---
+---
 description: Leads the frontend engineering team, owns UI architecture, component standards, and frontend toolchain decisions.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Lead Frontend Engineer
@@ -66,7 +64,7 @@ Frontend architecture, component design, state management, responsive design, ac
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Frontend architecture, component design, state management, responsive design, ac
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

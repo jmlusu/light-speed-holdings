@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns safety policies, alignment guardrails, refusal thresholds, and harm-reduction logic across all agents.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # AI Safety Lead
@@ -66,7 +64,7 @@ AI safety frameworks, alignment guardrails, harm reduction, safety incident resp
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ AI safety frameworks, alignment guardrails, harm reduction, safety incident resp
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

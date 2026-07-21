@@ -1,17 +1,15 @@
-﻿---
+---
 description: Manages infrastructure automation, CI/CD pipelines, deployment workflows, and system reliability.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # DevOps Agent
@@ -84,5 +82,3 @@ If a task is outside your scope or requires approval beyond your permission leve
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

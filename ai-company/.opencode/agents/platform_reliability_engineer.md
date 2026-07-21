@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns concurrency safety, file-locking, dead-letter queue hardening, and circuit-breaker robustness across the executor and shared state.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Platform Reliability Engineer
@@ -66,7 +64,7 @@ Concurrency safety, fault tolerance, and resilience patterns for shared JSON/YAM
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Concurrency safety, fault tolerance, and resilience patterns for shared JSON/YAM
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

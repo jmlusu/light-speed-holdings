@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns developer adoption, community building, conference presence, and open-source strategy for the CLI tool.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: true
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Head of Developer Relations
@@ -66,9 +64,9 @@ Developer advocacy, community management, content marketing, conference strategy
 
 - `write`
 
-- `execute`
+- `bash`
 
-- `web_search`
+- `webfetch`
 
 - `grep`
 
@@ -76,7 +74,6 @@ Developer advocacy, community management, content marketing, conference strategy
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -111,5 +108,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

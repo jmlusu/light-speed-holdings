@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns product positioning, competitive differentiation, messaging, go-to-market pricing, and analyst-facing materials.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: deny
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: false
+  webfetch: true
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Product Marketing Manager
@@ -66,7 +64,7 @@ Product positioning, competitive analysis, messaging, go-to-market strategy, pri
 
 - `write`
 
-- `web_search`
+- `webfetch`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Product positioning, competitive analysis, messaging, go-to-market strategy, pri
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

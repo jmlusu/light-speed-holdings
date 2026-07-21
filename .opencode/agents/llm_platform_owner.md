@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the multi-provider LLM client, cost tracker, provider routing, and circuit breaker.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # LLM Platform Owner
@@ -64,7 +62,7 @@ Multi-provider clients, token/cost accounting, provider routing, circuit breaker
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -72,7 +70,6 @@ Multi-provider clients, token/cost accounting, provider routing, circuit breaker
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -107,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

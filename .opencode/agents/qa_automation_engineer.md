@@ -1,17 +1,15 @@
-﻿---
+---
 description: Authors contract, smoke, and integration tests; maintains dashboard/WebSocket coverage and flaky-test monitoring.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # QA Automation Engineer
@@ -62,7 +60,7 @@ Test authoring, contract tests, smoke tests, WebSocket/integration coverage, reg
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -70,7 +68,6 @@ Test authoring, contract tests, smoke tests, WebSocket/integration coverage, reg
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -105,5 +102,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

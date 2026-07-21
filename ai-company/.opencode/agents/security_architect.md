@@ -1,17 +1,15 @@
-﻿---
+---
 description: Designs zero trust architecture, microsegmentation, identity-aware access, and overall security posture.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: deny
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: false
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Security Architect
@@ -74,7 +72,6 @@ Zero trust architecture, microsegmentation, identity-aware access, security post
 ---
 
 
-
 ## Operating Guidelines
 
 Zero trust is a design philosophy, not a product. Deny by default. Least privilege is the baseline. Security architecture evolves with the system.
@@ -107,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

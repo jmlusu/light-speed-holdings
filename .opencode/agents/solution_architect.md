@@ -1,17 +1,15 @@
-﻿---
+---
 description: Designs end-to-end solutions for complex customer engagements, cross-system integrations, and technical proposals.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Solution Architect
@@ -66,7 +64,7 @@ Solution design, cross-system integration, technical proposals, reference archit
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Solution design, cross-system integration, technical proposals, reference archit
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

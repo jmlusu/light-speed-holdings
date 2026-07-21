@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the SOP library and RACI matrices as a continuous documentation checklist.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: deny
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: false
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # SOP Owner
@@ -72,7 +70,6 @@ Standard operating procedures, RACI matrices, documentation lifecycle.
 ---
 
 
-
 ## Operating Guidelines
 
 Every department ships with an SOP. Docs rot; review on a schedule. RACI must match reality.
@@ -105,5 +102,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

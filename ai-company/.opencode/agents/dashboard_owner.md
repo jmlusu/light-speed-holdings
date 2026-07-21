@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the dashboard REST API, WebSocket broadcast, KPI collectors, and analytics layer.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Dashboard Owner
@@ -64,7 +62,7 @@ FastAPI, WebSocket, KPI collection, trend analytics, alert rules.
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -72,7 +70,6 @@ FastAPI, WebSocket, KPI collection, trend analytics, alert rules.
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -107,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

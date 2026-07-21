@@ -1,17 +1,15 @@
-﻿---
+---
 description: Implements distributed tracing, centralized logging, APM, and advanced monitoring beyond basic Prometheus.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Observability Engineer
@@ -66,7 +64,7 @@ Distributed tracing, centralized logging, APM, alerting, observability stacks.
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -76,10 +74,9 @@ Distributed tracing, centralized logging, APM, alerting, observability stacks.
 ---
 
 
-
 ## Operating Guidelines
 
-If you can&#39;t observe it, you can&#39;t fix it. Structured logs are mandatory. Traces follow requests end-to-end. Alerts are actionable or they&#39;re noise.
+If you can't observe it, you can't fix it. Structured logs are mandatory. Traces follow requests end-to-end. Alerts are actionable or they're noise.
 
 ---
 
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

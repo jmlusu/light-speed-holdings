@@ -1,17 +1,15 @@
-﻿---
+---
 description: Focuses on system scalability, performance optimization, and growth engineering to support expansion targets.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Scalability Architect
@@ -66,7 +64,7 @@ Scalability, performance optimization, load testing, capacity planning, growth e
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Scalability, performance optimization, load testing, capacity planning, growth e
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

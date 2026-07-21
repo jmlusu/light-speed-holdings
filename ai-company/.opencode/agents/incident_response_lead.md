@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns IR playbooks, forensic readiness, breach notification workflows, and incident coordination.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Incident Response Lead
@@ -66,7 +64,7 @@ Incident response, forensic readiness, breach notification, disaster recovery co
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Incident response, forensic readiness, breach notification, disaster recovery co
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

@@ -119,8 +119,11 @@ class AgentGenerator:
         with open(self.registry_path, "r", encoding="utf-8") as f:
             return yaml.safe_load(f)
 
-    def generate_all(self) -> list[Path]:
+    def generate_all(self, clean: bool = True) -> list[Path]:
         """Run full generation. Returns list of generated file paths."""
+        if clean and self.output_dir.exists():
+            for existing in self.output_dir.glob("*.md"):
+                existing.unlink()
         data = self.load_registry()
         if isinstance(data, list):
             agents = data

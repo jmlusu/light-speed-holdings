@@ -1,17 +1,15 @@
-﻿---
-description: Measures and optimizes how developers feel using the product â€” error messages, CLI ergonomics, onboarding friction.
+---
+description: Measures and optimizes how developers feel using the product — error messages, CLI ergonomics, onboarding friction.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Developer Experience Engineer
@@ -32,7 +30,7 @@ Seniority: mid
 
 ## Mission
 
-Measures and optimizes how developers feel using the product â€” error messages, CLI ergonomics, onboarding friction.
+Measures and optimizes how developers feel using the product — error messages, CLI ergonomics, onboarding friction.
 
 ---
 
@@ -66,7 +64,7 @@ Developer experience, CLI ergonomics, error messages, onboarding, tooling qualit
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -74,7 +72,6 @@ Developer experience, CLI ergonomics, error messages, onboarding, tooling qualit
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -109,5 +106,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

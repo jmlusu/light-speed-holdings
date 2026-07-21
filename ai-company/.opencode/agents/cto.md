@@ -1,17 +1,15 @@
-﻿---
+---
 description: Oversees all technological infrastructure and software development.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Chief Technology Officer
@@ -82,5 +80,3 @@ If a task is outside your scope or requires approval beyond your permission leve
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

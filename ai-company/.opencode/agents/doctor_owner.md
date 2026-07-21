@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the diagnostics (doctor) suite, health checks, and self-healing recommendations.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Doctor Owner
@@ -62,7 +60,7 @@ System diagnostics, health probes, dependency checks, remediation guidance.
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -70,7 +68,6 @@ System diagnostics, health probes, dependency checks, remediation guidance.
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -105,5 +102,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

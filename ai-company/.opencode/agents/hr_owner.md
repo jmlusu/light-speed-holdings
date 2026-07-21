@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the HR service module, agent onboarding, and HR SOP.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # HR Owner
@@ -62,7 +60,7 @@ Agent role definitions, onboarding workflows, workforce planning.
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -70,7 +68,6 @@ Agent role definitions, onboarding workflows, workforce planning.
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -105,5 +102,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

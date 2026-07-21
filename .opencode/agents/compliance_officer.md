@@ -1,17 +1,15 @@
-﻿---
+---
 description: Ensures organizational adherence to policies, regulations, and ethical standards. Conducts compliance audits and maintains audit trails.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: deny
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: false
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Compliance Officer
@@ -84,5 +82,3 @@ If a task is outside your scope or requires approval beyond your permission leve
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

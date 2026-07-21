@@ -1,17 +1,15 @@
-﻿---
+---
 description: Manages external AI/ML service providers, cloud infrastructure contracts, and SLA compliance.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: deny
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: false
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Vendor Manager
@@ -74,7 +72,6 @@ Vendor management, contract negotiation, SLA monitoring, cost optimization, rela
 ---
 
 
-
 ## Operating Guidelines
 
 Every vendor is a dependency. SLAs are monitored, not trusted. Contracts are reviewed annually. Vendor risk is company risk.
@@ -107,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

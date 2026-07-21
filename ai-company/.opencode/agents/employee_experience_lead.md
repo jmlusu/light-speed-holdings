@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the holistic agent experience from role clarity to feedback loops to engagement signals.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: deny
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: false
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Employee Experience Lead
@@ -74,7 +72,6 @@ Employee experience, role clarity, feedback systems, engagement metrics, experie
 ---
 
 
-
 ## Operating Guidelines
 
 Experience is a leading indicator of retention. Feedback loops must be bidirectional. Burnout signals are early warnings, not after-the-fact analysis.
@@ -107,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

@@ -1,17 +1,15 @@
-﻿---
+---
 description: Owns the 6-type memory store and its integration with the executor recall loop.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: deny
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Memory Owner
@@ -64,7 +62,7 @@ Episodic, semantic, procedural, relational, temporal, and aggregate memory; reca
 
 - `write`
 
-- `execute`
+- `bash`
 
 - `grep`
 
@@ -72,7 +70,6 @@ Episodic, semantic, procedural, relational, temporal, and aggregate memory; reca
 
 
 ---
-
 
 
 ## Operating Guidelines
@@ -107,5 +104,3 @@ If a task requires architectural decisions, cross-team coordination, or access b
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-

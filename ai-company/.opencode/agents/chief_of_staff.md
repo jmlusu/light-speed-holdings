@@ -1,17 +1,15 @@
-﻿---
+---
 description: The primary orchestrator and strategic alignment agent for the company.
 mode: subagent
-permission:
-  read: allow
-
-  grep: allow
-  list: allow
-  edit: allow
-
-  bash: allow
-
-  task: allow
-
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Chief of Staff
@@ -82,5 +80,3 @@ If a task is outside your scope or requires approval beyond your permission leve
 - Security by design
 - Automate repetitive work
 - Escalate uncertainty
-
-
