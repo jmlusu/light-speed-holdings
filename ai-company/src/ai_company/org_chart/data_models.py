@@ -291,10 +291,11 @@ class DataTransformer:
             # Build hierarchy relationships
             children = []
 
-            # Find direct reports
+            # Find direct reports — match on id (not name) since reports_to uses id
             agent_id = agent.get('id', '')
+            agent_name = agent.get('name', '')
             for other_agent in registry_data:
-                if other_agent.get('reports_to') == agent_id:
+                if other_agent.get('reports_to') in (agent_id, agent_name):
                     child_node = DataTransformer._agent_to_enhanced(other_agent)
                     children.append(child_node)
 

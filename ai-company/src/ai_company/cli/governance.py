@@ -366,6 +366,138 @@ def owners(
         typer.echo("")
 
 
+@app.command("audit-trail")
+def audit_trail(
+    limit: int = typer.Option(20, "-n", "--limit", help="Maximum events to show"),
+    event_type: str = typer.Option("", "--type", "-t", help="Filter by event type"),
+    agent_id: str = typer.Option("", "--agent", "-a", help="Filter by agent ID"),
+    json_output: bool = typer.Option(False, "--json", "-j", help="Output raw JSON"),
+) -> None:
+    """Show recent audit trail events.
+
+    Reads the JSONL audit log and displays the most recent events,
+    optionally filtered by type or agent.
+    """
+    from ai_company.audit.reader import AuditReader
+
+    audit_path = ".opencode/audit.jsonl"
+    reader = AuditReader(audit_path)
+
+    try:
+        if agent_id:
+            events = reader.read_by_agent(agent_id)
+        elif event_type:
+            events = reader.read_by_type(event_type)
+        else:
+            events = reader.read_all()
+    except Exception as exc:
+        typer.echo(f"Error: Failed to read audit trail: {exc}", err=True)
+        raise typer.Exit(1) from exc
+
+    # Apply limit (most recent first)
+    events = events[-limit:]
+    events.reverse()
+
+    if json_output:
+        import json
+        typer.echo(json.dumps(
+            [e.model_dump() for e in events],
+            indent=2, default=str,
+        ))
+        return
+
+    if not events:
+        typer.echo("No audit events found.")
+        return
+
+    typer.echo(f"Recent Audit Events ({len(events)} shown):")
+    typer.echo("=" * 72)
+    for e in events:
+        typer.echo(f"  [{e.timestamp}] {e.event_type.value}")
+        typer.echo(f"    Agent: {e.agent_id}  Task: {e.task_id}")
+        if e.detail:
+            detail_preview = e.detail[:100] + "..." if len(e.detail) > 100 else e.detail
+            typer.echo(f"    Detail: {detail_preview}")
+        typer.echo("")
+
+
+@app.command("risk-summary")
+def risk_summary(
+    json_output: bool = typer.Option(False, "--json", "-j", help="Output raw JSON"),
+) -> None:
+    """Show risk register summary.
+
+    Parses the risk register markdown and displays a summary of risks
+    by severity level with status indicators.
+    """
+    import re
+    from pathlib import Path
+
+    risk_file = Path(__file__).parent.parent.parent.parent / "docs" / "RISK-REGISTER.md"
+    if not risk_file.exists():
+        typer.echo(f"Error: Risk register not found at {risk_file}", err=True)
+        raise typer.Exit(1)
+
+    content = risk_file.read_text(encoding="utf-8")
+
+    # Parse risk table rows
+    risks: list[dict] = []
+    for match in re.finditer(
+        r"\|\s*(R\d+)\s*\|\s*(\w+)\s*\|\s*(.+?)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\w+)\s*\|",
+        content,
+    ):
+        rid, category, description, likelihood, impact, level = match.groups()
+        risks.append({
+            "id": rid,
+            "category": category.strip(),
+            "description": description.strip(),
+            "likelihood": int(likelihood),
+            "impact": int(impact),
+            "level": level.strip(),
+            "score": int(likelihood) * int(impact),
+        })
+
+    if not risks:
+        typer.echo("No risks found in register.")
+        return
+
+    if json_output:
+        import json
+        summary = {
+            "total_risks": len(risks),
+            "by_level": {},
+            "risks": risks,
+        }
+        for r in risks:
+            lvl = r["level"]
+            summary["by_level"][lvl] = summary["by_level"].get(lvl, 0) + 1
+        typer.echo(json.dumps(summary, indent=2))
+        return
+
+    # Group by level
+    by_level: dict[str, list[dict]] = {}
+    for r in risks:
+        by_level.setdefault(r["level"], []).append(r)
+
+    typer.echo("Risk Register Summary")
+    typer.echo("=" * 60)
+    typer.echo(f"Total risks: {len(risks)}")
+    typer.echo("")
+
+    level_order = ["Critical", "High", "Medium", "Low"]
+    level_icons = {"Critical": "CRIT", "High": "HIGH", "Medium": " MED", "Low": " LOW"}
+
+    for level in level_order:
+        items = by_level.get(level, [])
+        if not items:
+            continue
+        icon = level_icons.get(level, level.upper())
+        typer.echo(f"  [{icon}] {level}: {len(items)} risks")
+        for r in sorted(items, key=lambda x: x["score"], reverse=True):
+            typer.echo(f"    {r['id']} ({r['category']}) — score {r['score']}: {r['description'][:60]}")
+        typer.echo("")
+
+
 @app.command()
 def policies(
     database: str = typer.Option(
