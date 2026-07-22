@@ -10,6 +10,7 @@ import yaml
 from fastapi.testclient import TestClient
 
 from ai_company.dashboard.app import app
+from tests.fixtures.dashboard_data import make_task
 
 client = TestClient(app, raise_server_exceptions=False)
 
@@ -134,12 +135,24 @@ class TestDashboardKPIs:
         assert "uptime_seconds" in data
 
     def test_dashboard_tasks_count(self, setup_dashboard_data: None) -> None:
-        # Add tasks with different statuses
+        # Add tasks with different statuses using proper fixture factory
         inbox_path = Path(".opencode/inbox.json")
         tasks = [
-            {"id": "t1", "sender_id": "a", "receiver_id": "b", "instruction": "do x", "status": "pending"},
-            {"id": "t2", "sender_id": "a", "receiver_id": "b", "instruction": "do y", "status": "completed"},
-            {"id": "t3", "sender_id": "a", "receiver_id": "b", "instruction": "do z", "status": "in_progress"},
+            make_task(
+                receiver_id="lead-engineering",
+                instruction="Design the API architecture",
+                status="pending",
+            ),
+            make_task(
+                receiver_id="lead-marketing",
+                instruction="Launch the Q3 marketing campaign",
+                status="completed",
+            ),
+            make_task(
+                receiver_id="lead-engineering",
+                instruction="Implement WebSocket broadcast layer",
+                status="in_progress",
+            ),
         ]
         inbox_path.write_text(json.dumps(tasks), encoding="utf-8")
 
@@ -215,6 +228,31 @@ class TestTasks:
         assert resp.status_code == 200
         assert resp.json() == []
 
+    def test_reject_trivial_instruction_too_short(self, setup_dashboard_data: None) -> None:
+        """POST task with instruction <= 5 chars should return 400."""
+        resp = client.post(
+            "/api/tasks",
+            json={"receiver_id": "lead-engineering", "instruction": "do x"},
+        )
+        assert resp.status_code == 400
+        assert "short" in resp.json()["detail"].lower() or "meaningful" in resp.json()["detail"].lower()
+
+    def test_reject_trivial_instruction_placeholder(self, setup_dashboard_data: None) -> None:
+        """POST task matching the trivial placeholder regex should return 400."""
+        resp = client.post(
+            "/api/tasks",
+            json={"receiver_id": "lead-engineering", "instruction": "test"},
+        )
+        assert resp.status_code == 400
+
+    def test_accept_meaningful_instruction(self, setup_dashboard_data: None) -> None:
+        """POST task with a meaningful instruction should succeed."""
+        resp = client.post(
+            "/api/tasks",
+            json={"receiver_id": "lead-engineering", "instruction": "Build the REST API for task management"},
+        )
+        assert resp.status_code == 201
+
 
 class TestApprovals:
     def test_approve_request(self, setup_dashboard_data: None) -> None:
@@ -269,17 +307,18 @@ class TestApprovals:
 
 class TestEscalations:
     def test_resolve_escalation(self, setup_dashboard_data: None) -> None:
+        from tests.fixtures.dashboard_data import make_escalation
+
         esc_path = Path("orchestrator/escalation.yaml")
         data = {
             "events": [
-                {
-                    "task_id": "esc-1",
-                    "rule_id": "timeout",
-                    "from_agent": "a",
-                    "to_agent": "b",
-                    "reason": "took too long",
-                    "resolved": False,
-                }
+                make_escalation(
+                    task_id="esc-1",
+                    from_agent="lead-engineering",
+                    to_agent="lead-marketing",
+                    reason="Task exceeded time limit",
+                    resolved=False,
+                )
             ]
         }
         esc_path.write_text(yaml.dump(data), encoding="utf-8")

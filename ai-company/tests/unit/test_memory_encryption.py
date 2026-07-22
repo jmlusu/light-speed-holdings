@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import pytest
@@ -166,7 +165,6 @@ class TestMemoryStoreEncryption:
 class TestMigration:
     def test_migration_encrypts_legacy(self, tmp_path: Path) -> None:
         from ai_company.data.database import Database
-        from ai_company.memory.engine import MemoryStore
         from ai_company.security.migrate_memory_encrypt import encrypt_legacy_entries
 
         db = Database(tmp_path / "test.db")

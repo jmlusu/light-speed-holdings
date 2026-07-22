@@ -23,7 +23,7 @@ except ImportError:
     print("python-pptx not found. Installing...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "python-pptx"])
     from pptx import Presentation
-    from pptx.util import Inches, Pt, Emu
+    from pptx.util import Inches, Pt
     from pptx.dml.color import RGBColor
     from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
     from pptx.enum.shapes import MSO_SHAPE

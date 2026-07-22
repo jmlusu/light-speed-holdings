@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import logging
+import math
+import re
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
@@ -22,6 +24,7 @@ from ai_company.dashboard.models import (
     KPIs,
     ModelRouteItem,
     OrgNode,
+    PaginatedTasks,
     TaskAssign,
     TaskItem,
     TaskUpdate,
@@ -281,7 +284,7 @@ def get_org_chart() -> list[OrgNode]:
     registry = {a["name"]: a for a in _load_registry()}
     children_map: dict[str, list[str]] = {}
     for a in _load_registry():
-        parent = a.get("reportsTo", "")
+        parent = a.get("reports_to", "")
         children_map.setdefault(parent, []).append(a["name"])
 
     def build_node(name: str) -> OrgNode:
@@ -304,6 +307,16 @@ def get_org_chart() -> list[OrgNode]:
 # ── Tasks ───────────────────────────────────────────────────────────
 
 
+_PRIORITY_ORDER: dict[str, int] = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+_STATUS_ORDER: dict[str, int] = {
+    "escalated": 0, "failed": 1, "pending": 2,
+    "in_progress": 3, "completed": 4,
+}
+
+_TRIVIAL_INSTRUCTION_RE = re.compile(r"^do [a-z]$", re.IGNORECASE)
+_TEST_PREFIX_RE = re.compile(r"^test\s", re.IGNORECASE)
+
+
 @router.get("/tasks", response_model=list[TaskItem], tags=["tasks"])
 def list_tasks(
     status: str = "",
@@ -318,9 +331,133 @@ def list_tasks(
     return [TaskItem(**t) for t in tasks]
 
 
+@router.get("/tasks/paginated", response_model=PaginatedTasks, tags=["tasks"])
+def list_tasks_paginated(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=10, le=100),
+    status: str = "",
+    priority: str = "",
+    department: str = "",
+    agent: str = "",
+    sort_by: str = "created_at",
+    sort_dir: str = "desc",
+) -> PaginatedTasks:
+    """List tasks with server-side pagination, filtering, and sorting.
+
+    Returns a page of tasks plus metadata (total, counts, total_pages).
+    The ``counts_by_status`` field always reflects the filtered (but
+    un-paginated) result set so Kanban column headers stay accurate.
+    """
+    # Page size must be one of the allowed values
+    if page_size not in (10, 20, 50, 100):
+        page_size = 20
+
+    tasks = _read_all_tasks()
+
+    # ── Filter: status (comma-separated) ──
+    if status:
+        allowed_statuses = {s.strip() for s in status.split(",") if s.strip()}
+        tasks = [t for t in tasks if t.get("status") in allowed_statuses]
+
+    # ── Filter: priority (comma-separated) ──
+    if priority:
+        allowed_priorities = {p.strip() for p in priority.split(",") if p.strip()}
+        tasks = [t for t in tasks if t.get("priority") in allowed_priorities]
+
+    # ── Filter: department (via agent registry lookup) ──
+    if department:
+        registry = _load_registry()
+        dept_agent_names = {
+            a["name"]
+            for a in registry
+            if (a.get("department") or "").lower() == department.lower()
+            or (a.get("department") or "").replace(" ", "_").lower() == department.lower()
+        }
+        tasks = [
+            t
+            for t in tasks
+            if t.get("receiver_id") in dept_agent_names
+            or t.get("sender_id") in dept_agent_names
+        ]
+
+    # ── Filter: agent (substring match on sender_id or receiver_id) ──
+    if agent:
+        agent_lower = agent.lower()
+        tasks = [
+            t
+            for t in tasks
+            if agent_lower in t.get("receiver_id", "").lower()
+            or agent_lower in t.get("sender_id", "").lower()
+        ]
+
+    # ── Counts by status (before pagination) ──
+    counts: dict[str, int] = {}
+    for t in tasks:
+        s = t.get("status", "pending")
+        counts[s] = counts.get(s, 0) + 1
+
+    # ── Sort ──
+    valid_sort_fields = {"created_at", "priority", "status", "receiver_id"}
+    if sort_by not in valid_sort_fields:
+        sort_by = "created_at"
+    if sort_dir not in ("asc", "desc"):
+        sort_dir = "desc"
+
+    reverse = sort_dir == "desc"
+
+    if sort_by == "priority":
+        tasks.sort(
+            key=lambda t: (_PRIORITY_ORDER.get(t.get("priority", "medium"), 2), t.get("created_at", "") or ""),
+            reverse=reverse,
+        )
+    elif sort_by == "status":
+        tasks.sort(
+            key=lambda t: (_STATUS_ORDER.get(t.get("status", ""), 5),),
+            reverse=reverse,
+        )
+    elif sort_by == "created_at":
+        tasks.sort(key=lambda t: t.get("created_at", "") or "", reverse=reverse)
+    elif sort_by == "receiver_id":
+        tasks.sort(key=lambda t: t.get("receiver_id", ""), reverse=reverse)
+
+    # ── Paginate ──
+    total = len(tasks)
+    total_pages = max(1, math.ceil(total / page_size))
+    start = (page - 1) * page_size
+    end = start + page_size
+    page_items = tasks[start:end]
+
+    return PaginatedTasks(
+        items=[TaskItem(**t) for t in page_items],
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages,
+        counts_by_status=counts,
+    )
+
+
 @router.post("/tasks", response_model=TaskItem, status_code=201, tags=["tasks"])
 def create_task(assign: TaskAssign, background_tasks: BackgroundTasks) -> TaskItem:
     """Create a new task and send it through the MessageBus."""
+    # Validate: reject trivial instructions
+    stripped = assign.instruction.strip()
+    if len(stripped) <= 5:
+        raise HTTPException(
+            status_code=400,
+            detail="Instruction too short. Please provide a meaningful task description.",
+        )
+    if _TRIVIAL_INSTRUCTION_RE.match(stripped):
+        raise HTTPException(
+            status_code=400,
+            detail="Instruction appears to be a placeholder. Please provide a meaningful task description.",
+        )
+    if _TEST_PREFIX_RE.match(stripped):
+        raise HTTPException(
+            status_code=400,
+            detail="Instruction appears to be a test placeholder. Please provide a meaningful task description.",
+        )
+
     import uuid
 
     from ai_company.models import Task, TaskPriority

@@ -221,6 +221,7 @@ def create_app() -> FastAPI:
     # ── Rate limiter middleware (GAP-010) ────────────────────────────────
     rate_limit = int(os.environ.get("DASHBOARD_RATE_LIMIT", "100"))
     _limiter = _RateLimiter(max_requests=rate_limit)
+    app.state.limiter = _limiter  # exposed for test isolation (conftest resets between tests)
 
     @app.middleware("http")
     async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]

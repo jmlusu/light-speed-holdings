@@ -151,7 +151,6 @@ def verify_sync(
 
 
 if __name__ == "__main__":
-    import sys
 
     logging.basicConfig(level=logging.INFO)
     count = sync_registry()

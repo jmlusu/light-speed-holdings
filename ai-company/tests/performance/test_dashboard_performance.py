@@ -290,7 +290,7 @@ class TestWebSocketPerformance:
             elapsed_ms = (time.perf_counter() - start) * 1000
             return elapsed_ms
 
-        elapsed_ms = asyncio.get_event_loop().run_until_complete(_bench())
+        elapsed_ms = asyncio.run(_bench())
         assert elapsed_ms < 500, (
             f"100 connect/disconnect cycles took {elapsed_ms:.0f}ms"
         )
@@ -324,4 +324,4 @@ class TestWebSocketPerformance:
                 assert len(ws.messages) == 1
                 assert '"test"' in ws.messages[0]
 
-        asyncio.get_event_loop().run_until_complete(_test())
+        asyncio.run(_test())

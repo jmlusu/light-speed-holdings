@@ -10,8 +10,6 @@ Tests cover:
 from __future__ import annotations
 
 import time
-from typing import List
-from unittest.mock import patch
 
 import pytest
 
@@ -19,12 +17,10 @@ from ai_company.dashboard.models import OrgNode
 from ai_company.org_chart.data_models import (
     DataFactory,
     DataTransformer,
-    DepartmentSummary,
     EnhancedOrgNode,
-    HierarchyMetrics,
 )
-from ai_company.org_chart.organization_chart import OrganizationChart, PathResult, TreeStats
-from ai_company.org_chart.registry_normalizer import RegistryNormalizer, ReportingChain
+from ai_company.org_chart.organization_chart import OrganizationChart, PathResult
+from ai_company.org_chart.registry_normalizer import RegistryNormalizer
 
 
 # ---------------------------------------------------------------------------

@@ -70,7 +70,7 @@ class TestDashboardAPI:
         assert "Build a widget" in inbox
 
     def test_list_tasks_after_create(self, client: TestClient) -> None:
-        client.post("/api/tasks", json={"receiver_id": "test-agent", "instruction": "X"})
+        client.post("/api/tasks", json={"receiver_id": "test-agent", "instruction": "Deploy the new widget to production"})
         resp = client.get("/api/tasks")
         assert resp.status_code == 200
         assert len(resp.json()) == 1

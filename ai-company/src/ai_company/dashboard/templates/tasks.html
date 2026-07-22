@@ -14,6 +14,62 @@
   </button>
 </div>
 
+<!-- ═══ FILTER BAR ═══ -->
+<div class="flex flex-wrap gap-3 mb-6 items-center">
+  <!-- Priority Filter -->
+  <div class="flex items-center gap-1.5">
+    <span class="text-xs text-surface-500">Priority:</span>
+    <template x-for="p in ['low', 'medium', 'high', 'critical']" :key="p">
+      <button @click="taskFilterPriority = taskFilterPriority === p ? '' : p; taskPage = 1; loadTasksPage()"
+              :class="taskFilterPriority === p ? priorityClass(p) + ' ring-1 ring-white/20' : 'bg-surface-800 text-surface-500 border border-surface-700'"
+              class="px-2 py-1 rounded text-[10px] font-medium transition-all" x-text="p"></button>
+    </template>
+  </div>
+
+  <!-- Department Filter -->
+  <div class="flex items-center gap-1.5">
+    <span class="text-xs text-surface-500">Dept:</span>
+    <select x-model="taskFilterDepartment" @change="taskPage = 1; loadTasksPage()"
+            class="bg-surface-800 border border-surface-700 rounded px-2 py-1 text-xs text-surface-200">
+      <option value="">All</option>
+      <template x-for="dept in uniqueDepartments" :key="dept">
+        <option :value="dept" x-text="dept"></option>
+      </template>
+    </select>
+  </div>
+
+  <!-- Agent Filter -->
+  <div class="flex items-center gap-1.5">
+    <span class="text-xs text-surface-500">Agent:</span>
+    <input x-model="taskFilterAgent" @input.debounce.300ms="taskPage = 1; loadTasksPage()"
+           placeholder="Search agent..."
+           class="bg-surface-800 border border-surface-700 rounded px-2 py-1 text-xs text-surface-200 w-32">
+  </div>
+
+  <!-- Sort -->
+  <div class="flex items-center gap-1.5 ml-auto">
+    <span class="text-xs text-surface-500">Sort:</span>
+    <select x-model="taskSortBy" @change="loadTasksPage()"
+            class="bg-surface-800 border border-surface-700 rounded px-2 py-1 text-xs text-surface-200">
+      <option value="created_at">Date</option>
+      <option value="priority">Priority</option>
+      <option value="receiver_id">Agent</option>
+      <option value="status">Status</option>
+    </select>
+    <button @click="taskSortDir = taskSortDir === 'asc' ? 'desc' : 'asc'; loadTasksPage()"
+            class="text-surface-400 hover:text-surface-200 transition-colors">
+      <svg class="w-3.5 h-3.5" :class="taskSortDir === 'asc' ? '' : 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Clear Filters -->
+  <button x-show="taskFilterPriority || taskFilterDepartment || taskFilterAgent"
+          @click="clearTaskFilters()"
+          class="text-xs text-brand-400 hover:text-brand-300 transition-colors">Clear</button>
+</div>
+
 <!-- ═══ KANBAN BOARD ═══ -->
 <!--
   FIX: Added kanban-grid class for responsive overrides.
@@ -26,7 +82,7 @@
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-amber-400"></div>
       <h3 class="text-sm font-semibold text-surface-300">Pending</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.pending.length"></span>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.pending"></span>
     </div>
     <div class="space-y-3 min-h-[200px]"
          @dragover.prevent="dragOverColumn($event, 'pending')"
@@ -63,7 +119,7 @@
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-blue-400 animate-pulse"></div>
       <h3 class="text-sm font-semibold text-surface-300">In Progress</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.in_progress.length"></span>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.in_progress"></span>
     </div>
     <div class="space-y-3 min-h-[200px]"
          @dragover.prevent="dragOverColumn($event, 'in_progress')"
@@ -100,7 +156,7 @@
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
       <h3 class="text-sm font-semibold text-surface-300">Completed</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.completed.length"></span>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.completed"></span>
     </div>
     <div class="space-y-3 min-h-[200px] max-h-[400px] overflow-y-auto"
          @dragover.prevent="dragOverColumn($event, 'completed')"
@@ -129,7 +185,7 @@
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-red-400"></div>
       <h3 class="text-sm font-semibold text-surface-300">Failed</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.failed.length"></span>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.failed"></span>
     </div>
     <div class="space-y-2 max-h-[200px] overflow-y-auto">
       <template x-for="task in kanbanTasks.failed" :key="task.id">
@@ -157,7 +213,7 @@
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-amber-400"></div>
       <h3 class="text-sm font-semibold text-surface-300">Escalated</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanTasks.escalated.length"></span>
+      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.escalated"></span>
     </div>
     <div class="space-y-2 max-h-[200px] overflow-y-auto">
       <template x-for="task in kanbanTasks.escalated" :key="task.id">
@@ -179,6 +235,36 @@
       </template>
       <div x-show="kanbanTasks.escalated.length === 0" class="text-xs text-surface-600 text-center py-4">No escalated tasks</div>
     </div>
+  </div>
+</div>
+
+<!-- ═══ PAGINATION CONTROLS ═══ -->
+<div class="flex items-center justify-between mt-6 pt-4 border-t border-surface-700/50">
+  <!-- Page Size -->
+  <div class="flex items-center gap-2">
+    <span class="text-xs text-surface-500">Show:</span>
+    <template x-for="size in [10, 20, 50, 100]" :key="size">
+      <button @click="setTaskPageSize(size)"
+              :class="taskPageSize === size ? 'bg-brand-600 text-white' : 'bg-surface-800 text-surface-400 border border-surface-700'"
+              class="px-2 py-1 rounded text-xs font-medium transition-all" x-text="size"></button>
+    </template>
+  </div>
+
+  <!-- Page Info -->
+  <div class="text-xs text-surface-500">
+    <span x-text="taskTotal"></span> tasks · Page <span x-text="taskPage"></span> of <span x-text="taskTotalPages || 1"></span>
+  </div>
+
+  <!-- Page Navigation -->
+  <div class="flex items-center gap-1">
+    <button @click="goToPage(1)" :disabled="taskPage <= 1"
+            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">First</button>
+    <button @click="goToPage(taskPage - 1)" :disabled="taskPage <= 1"
+            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">Prev</button>
+    <button @click="goToPage(taskPage + 1)" :disabled="taskPage >= taskTotalPages"
+            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">Next</button>
+    <button @click="goToPage(taskTotalPages)" :disabled="taskPage >= taskTotalPages"
+            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">Last</button>
   </div>
 </div>
 

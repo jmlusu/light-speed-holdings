@@ -5,7 +5,6 @@ from __future__ import annotations
 import asyncio
 import json
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -372,15 +371,11 @@ async def test_topic_filtering_works_for_task_updates() -> None:
 @pytest.mark.asyncio
 async def test_sync_to_async_bridge_works_with_running_event_loop() -> None:
     """The sync→async bridge in Executor._make_broadcast_callback() works when event loop is running."""
-    from ai_company.executor.loop import Executor
-    from ai_company.dashboard.ws import broadcast_task_update
-    
     ws = FakeWebSocket()
     await manager.connect(ws)
-    
+
     try:
-        # This simulates what _make_broadcast_callback does
-        loop = asyncio.get_running_loop()
+        callback = Executor._make_broadcast_callback()
         task_dict = {
             "id": "bridge-test-1",
             "sender_id": "ceo",
@@ -388,13 +383,10 @@ async def test_sync_to_async_bridge_works_with_running_event_loop() -> None:
             "instruction": "Test sync-to-async bridge",
             "status": "pending",
         }
-        
-        # Call the sync callback pattern used in executor
-        loop.create_task(broadcast_task_update(task_dict, "created"))
-        
-        # Give it a moment to process
+
+        callback(task_dict, "created")
         await asyncio.sleep(0.01)
-        
+
         assert len(ws.sent) == 1
         msg = json.loads(ws.sent[0])
         assert msg["type"] == "task_update"
@@ -403,33 +395,25 @@ async def test_sync_to_async_bridge_works_with_running_event_loop() -> None:
         await manager.disconnect(ws)
 
 
-@pytest.mark.asyncio
-async def test_sync_to_async_bridge_skips_when_no_event_loop() -> None:
+def test_sync_to_async_bridge_skips_when_no_event_loop() -> None:
     """The sync→async bridge gracefully skips when no event loop is running (CLI context)."""
-    from ai_company.executor.loop import Executor
-    from ai_company.dashboard.ws import broadcast_task_update
-    
-    # Create a new event loop but don't set it as running
-    loop = asyncio.new_event_loop()
-    
-    # In CLI context, there's no "running" loop
-    # The callback should catch RuntimeError and skip
-    ws = FakeWebSocket()
-    
-    # We'll directly test the callback pattern
-    try:
-        asyncio.get_running_loop()
-        has_running_loop = True
-    except RuntimeError:
-        has_running_loop = False
-    
-    # The callback should not crash when no running loop
-    if not has_running_loop:
-        # This is the expected behavior in CLI context
-        # No exception should be raised
-        pass
-    
-    loop.close()
+    # Deliberately NOT async and no @pytest.mark.asyncio — get_running_loop()
+    # only raises RuntimeError when called from a synchronous context
+    # with no loop running.
+    callback = Executor._make_broadcast_callback()
+
+    task_dict = {
+        "id": "no-loop-test-1",
+        "sender_id": "ceo",
+        "receiver_id": "cto",
+        "instruction": "Test no-loop skip",
+        "status": "pending",
+    }
+
+    # Should not raise, even though there's no running event loop.
+    callback(task_dict, "created")
+
+
 
 
 @pytest.mark.asyncio
