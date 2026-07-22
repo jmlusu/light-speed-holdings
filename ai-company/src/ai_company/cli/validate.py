@@ -292,8 +292,8 @@ def all(
             naming_errors.append(f"Registry ID '{agent_id}' uses hyphens")
 
     if naming_errors:
-        for e in naming_errors:
-            typer.echo(f"  ERROR: {e}")
+        for err in naming_errors:
+            typer.echo(f"  ERROR: {err}")
     else:
         typer.echo("Registry IDs: All use underscores (correct)")
 
@@ -316,8 +316,8 @@ def all(
                     )
 
         if ref_errors:
-            for e in ref_errors:
-                typer.echo(f"  ERROR: {e}")
+            for err in ref_errors:
+                typer.echo(f"  ERROR: {err}")
         else:
             typer.echo("Config references: All resolve correctly")
     else:

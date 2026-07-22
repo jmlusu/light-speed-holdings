@@ -415,8 +415,9 @@ def audit_trail(
     for e in events:
         typer.echo(f"  [{e.timestamp}] {e.event_type.value}")
         typer.echo(f"    Agent: {e.agent_id}  Task: {e.task_id}")
-        if e.detail:
-            detail_preview = e.detail[:100] + "..." if len(e.detail) > 100 else e.detail
+        detail = str(e.metadata) if e.metadata else ""
+        if detail:
+            detail_preview = detail[:100] + "..." if len(detail) > 100 else detail
             typer.echo(f"    Detail: {detail_preview}")
         typer.echo("")
 
@@ -463,21 +464,22 @@ def risk_summary(
 
     if json_output:
         import json
-        summary = {
-            "total_risks": len(risks),
-            "by_level": {},
-            "risks": risks,
-        }
+        level_counts: dict[str, int] = {}
         for r in risks:
             lvl = r["level"]
-            summary["by_level"][lvl] = summary["by_level"].get(lvl, 0) + 1
+            level_counts[lvl] = level_counts.get(lvl, 0) + 1
+        summary = {
+            "total_risks": len(risks),
+            "by_level": level_counts,
+            "risks": risks,
+        }
         typer.echo(json.dumps(summary, indent=2))
         return
 
     # Group by level
-    by_level: dict[str, list[dict]] = {}
+    grouped: dict[str, list[dict]] = {}
     for r in risks:
-        by_level.setdefault(r["level"], []).append(r)
+        grouped.setdefault(r["level"], []).append(r)
 
     typer.echo("Risk Register Summary")
     typer.echo("=" * 60)
@@ -488,7 +490,7 @@ def risk_summary(
     level_icons = {"Critical": "CRIT", "High": "HIGH", "Medium": " MED", "Low": " LOW"}
 
     for level in level_order:
-        items = by_level.get(level, [])
+        items = grouped.get(level, [])
         if not items:
             continue
         icon = level_icons.get(level, level.upper())
