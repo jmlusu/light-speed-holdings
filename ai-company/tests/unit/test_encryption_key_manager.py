@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 
 import pytest
@@ -76,7 +75,7 @@ class TestKeyManager:
         assert (tmp_path / "new_keys" / "memory_keys.json").exists()
 
     def test_key_metadata_file_structure(self, tmp_path: Path) -> None:
-        km = EncryptionKeyManager(key_dir=tmp_path / "keys")
+        EncryptionKeyManager(key_dir=tmp_path / "keys")
         meta_path = tmp_path / "keys" / "memory_keys.json"
         meta = json.loads(meta_path.read_text())
 
@@ -100,7 +99,7 @@ class TestKeyManager:
 
     def test_multiple_rotations_keep_only_previous(self, tmp_path: Path) -> None:
         km = EncryptionKeyManager(key_dir=tmp_path / "keys")
-        key_a = km.get_current_key()
+        km.get_current_key()
         km.rotate()
         key_b = km.get_current_key()
         km.rotate()

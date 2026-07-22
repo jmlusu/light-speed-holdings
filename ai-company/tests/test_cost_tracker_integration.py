@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import json
-import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from ai_company.llm.providers.base import ChatResponse
 from ai_company.llm.cost_tracker import CostTracker, UsageRecord

@@ -65,6 +65,23 @@ function dashboard() {
     costAlerts: [],
     agentCosts: [],
 
+    // ── Task pagination ──────────────────────────────────────
+    taskPage: 1,
+    taskPageSize: 20,
+    taskTotal: 0,
+    taskTotalPages: 0,
+    taskCountsByStatus: {},
+
+    // ── Task filters ─────────────────────────────────────────
+    taskFilterPriority: '',
+    taskFilterDepartment: '',
+    taskFilterAgent: '',
+    taskFilterStatus: '',
+
+    // ── Task sort ────────────────────────────────────────────
+    taskSortBy: 'created_at',
+    taskSortDir: 'desc',
+
     // ── Agent search ─────────────────────────────────────────
     agentSearch: '',
     agentDeptFilter: '',
@@ -216,22 +233,27 @@ function dashboard() {
 
         case 'task_update':
           if (msg.payload) {
-            const updatedTask = msg.payload;
-            const event = msg.event || 'updated';
-            if (event === 'deleted') {
-              // Remove the task from local state
-              this.tasks = this.tasks.filter(t => t.id !== updatedTask.id);
+            // Refresh the current paginated page — the task may have
+            // moved pages due to status change, so surgical update is
+            // unreliable with server-side pagination.
+            if (window.location.pathname === '/tasks') {
+              this.loadTasksPage();
             } else {
-              // Update or insert the task in local state
-              const idx = this.tasks.findIndex(t => t.id === updatedTask.id);
-              if (idx >= 0) {
-                this.tasks[idx] = { ...this.tasks[idx], ...updatedTask };
+              // Fallback for dashboard home: do a lightweight local update
+              const updatedTask = msg.payload;
+              const event = msg.event || 'updated';
+              if (event === 'deleted') {
+                this.tasks = this.tasks.filter(t => t.id !== updatedTask.id);
               } else {
-                this.tasks.push(updatedTask);
+                const idx = this.tasks.findIndex(t => t.id === updatedTask.id);
+                if (idx >= 0) {
+                  this.tasks[idx] = { ...this.tasks[idx], ...updatedTask };
+                } else {
+                  this.tasks.push(updatedTask);
+                }
               }
+              this.tasks = [...this.tasks];
             }
-            // Force Alpine.js to detect the array mutation
-            this.tasks = [...this.tasks];
           }
           break;
 
@@ -266,12 +288,8 @@ function dashboard() {
       } else if (path === '/agents') {
         await this.loadAgents();
       } else if (path === '/tasks') {
-        // FIX: Load both in parallel, then assign together to reduce re-renders
-        const [tasksData, agentsData] = await Promise.all([
-          this.fetchJSON('/api/tasks'),
-          this.fetchJSON('/api/agents'),
-        ]);
-        if (tasksData) this.tasks = tasksData;
+        await this.loadTasksPage();
+        const agentsData = await this.fetchJSON('/api/agents');
         if (agentsData) this.agents = agentsData;
       } else if (path === '/kpis') {
         await this.loadKPIs();
@@ -326,6 +344,59 @@ function dashboard() {
     async loadTasks() {
       const data = await this.fetchJSON('/api/tasks');
       if (data) this.tasks = data;
+    },
+
+    async loadTasksPage() {
+      const params = new URLSearchParams({
+        page: this.taskPage,
+        page_size: this.taskPageSize,
+        sort_by: this.taskSortBy,
+        sort_dir: this.taskSortDir,
+      });
+      if (this.taskFilterPriority) params.set('priority', this.taskFilterPriority);
+      if (this.taskFilterDepartment) params.set('department', this.taskFilterDepartment);
+      if (this.taskFilterAgent) params.set('agent', this.taskFilterAgent);
+      if (this.taskFilterStatus) params.set('status', this.taskFilterStatus);
+
+      const data = await this.fetchJSON(`/api/tasks/paginated?${params}`);
+      if (data) {
+        this.tasks = data.items;
+        this.taskTotal = data.total;
+        this.taskTotalPages = data.total_pages;
+        this.taskCountsByStatus = data.counts_by_status;
+      }
+    },
+
+    goToPage(page) {
+      if (page < 1 || page > this.taskTotalPages) return;
+      this.taskPage = page;
+      this.loadTasksPage();
+    },
+
+    setTaskPageSize(size) {
+      this.taskPageSize = size;
+      this.taskPage = 1;
+      this.loadTasksPage();
+    },
+
+    clearTaskFilters() {
+      this.taskFilterPriority = '';
+      this.taskFilterDepartment = '';
+      this.taskFilterAgent = '';
+      this.taskFilterStatus = '';
+      this.taskPage = 1;
+      this.loadTasksPage();
+    },
+
+    toggleTaskSort(field) {
+      if (this.taskSortBy === field) {
+        this.taskSortDir = this.taskSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.taskSortBy = field;
+        this.taskSortDir = 'desc';
+      }
+      this.taskPage = 1;
+      this.loadTasksPage();
     },
 
     async loadApprovals() {
@@ -453,7 +524,11 @@ function dashboard() {
       this.submitting = false;
       this.showAssignModal = false;
       this.saveScrollPosition();
-      await this.loadTasks();
+      if (window.location.pathname === '/tasks') {
+        await this.loadTasksPage();
+      } else {
+        await this.loadTasks();
+      }
       this.restoreScrollPosition();
       this.showToast('success', 'Task Assigned', 'New task has been created');
     },
@@ -521,9 +596,13 @@ function dashboard() {
 
       if (res && res.id) {
         // Reconcile with server response (in case of extra fields like updated_at)
-        this.tasks = this.tasks.map(t =>
-          t.id === res.id ? res : t
-        );
+        if (window.location.pathname === '/tasks') {
+          await this.loadTasksPage();
+        } else {
+          this.tasks = this.tasks.map(t =>
+            t.id === res.id ? res : t
+          );
+        }
         this.showToast('success', 'Task Moved', `Task moved from ${oldStatus} to ${newStatus}`);
       } else {
         // Revert optimistic update on failure
@@ -546,8 +625,11 @@ function dashboard() {
       });
 
       if (res && res.ok) {
-        // Remove from local state
-        this.tasks = this.tasks.filter(t => t.id !== taskId);
+        if (window.location.pathname === '/tasks') {
+          await this.loadTasksPage();
+        } else {
+          this.tasks = this.tasks.filter(t => t.id !== taskId);
+        }
         this.showToast('success', 'Task Deleted', 'Task has been removed');
       } else {
         this.showToast('warning', 'Delete Failed', 'Could not delete task');
@@ -563,6 +645,16 @@ function dashboard() {
         completed: this.tasks.filter(t => t.status === 'completed'),
         failed: this.tasks.filter(t => t.status === 'failed'),
         escalated: this.tasks.filter(t => t.status === 'escalated'),
+      };
+    },
+
+    get kanbanCounts() {
+      return {
+        pending: this.taskCountsByStatus.pending || 0,
+        in_progress: this.taskCountsByStatus.in_progress || 0,
+        completed: this.taskCountsByStatus.completed || 0,
+        failed: this.taskCountsByStatus.failed || 0,
+        escalated: this.taskCountsByStatus.escalated || 0,
       };
     },
 

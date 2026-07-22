@@ -91,7 +91,6 @@ def main() -> int:
     total = len(agent_files)
     passed = 0
     failed = 0
-    warnings = 0
 
     print(f"Validating {total} agent files in {agents_dir}/\n")
 

@@ -619,7 +619,7 @@ class TestHITLGateParking:
         """resolve_all_pending resolves blocking-path requests that have futures."""
         # request_and_wait returns a Future; the request_id is stored
         # internally in _pending_requests and _futures.
-        future = hitl.request_and_wait(
+        hitl.request_and_wait(
             task_id="t1", agent_id="a1", tool="write",
             args={"path": "f1.txt", "content": "a"},
         )

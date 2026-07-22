@@ -11,7 +11,6 @@ from unittest.mock import patch
 
 from ai_company.executor.autonomous import AutonomousDecisionEngine
 
-import pytest
 
 
 def _make_engine(tmp_path) -> AutonomousDecisionEngine:

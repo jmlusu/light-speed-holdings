@@ -115,3 +115,14 @@ class OrgNode(BaseModel):
     type: str
     department: str = ""
     children: list[OrgNode] = Field(default_factory=list)
+
+
+class PaginatedTasks(BaseModel):
+    """Server-side paginated task response."""
+
+    items: list[TaskItem]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+    counts_by_status: dict[str, int] = Field(default_factory=dict)

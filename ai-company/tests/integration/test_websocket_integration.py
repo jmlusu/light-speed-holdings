@@ -740,7 +740,6 @@ class TestSyncAsyncBridge:
         """When an event loop is running, the callback schedules broadcast_task_update."""
         cb = make_message_bus_broadcast_callback()
 
-        received: list[str] = []
         original_connections = manager._connections
         original_subs = manager._subscriptions
         try:

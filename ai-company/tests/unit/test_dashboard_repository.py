@@ -14,7 +14,6 @@ import pytest
 from ai_company.dashboard.repository import (
     StateStore,
     StateStoreError,
-    get_state_store,
     reset_state_store,
 )
 
