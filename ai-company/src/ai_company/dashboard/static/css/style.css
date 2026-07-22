@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
    Light Speed Holdings — CEO Dashboard
-   Dark theme, responsive design
+   Dark theme, responsive design, scroll-stable
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Reset & Base ───────────────────────────────────────────── */
@@ -10,8 +10,16 @@
   box-sizing: border-box;
 }
 
+/*
+ * FIX #1 (AUTO-SCROLL ROOT CAUSE): scroll-behavior: smooth on <html>
+ * causes the browser to animate-scroll on every DOM reflow. With
+ * 10-second polling + Alpine.js reactive updates, this creates
+ * the persistent auto-scrolling bug. Changed to "auto" (instant).
+ * Only anchor-link navigation benefits from smooth scrolling, and
+ * those are handled by the tab nav (no anchors used).
+ */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
@@ -19,15 +27,107 @@ body {
   font-feature-settings: 'cv11', 'ss01';
 }
 
+/* ── Layout Containment (FIX #5) ───────────────────────────── */
+/*
+ * CSS containment isolates layout/paint/reflow to specific subtrees.
+ * This prevents data updates in KPI cards or task lists from
+ * triggering reflow recalculation up to the viewport root,
+ * which was a major contributor to scroll position instability.
+ */
+.kpi-card,
+.chart-container,
+.table-wrap {
+  contain: layout style;
+}
+
+/* ── Scroll Lock Utility ───────────────────────────────────── */
+/*
+ * Applied to <body> during data updates to prevent scroll shifts.
+ * The app.js saveScrollPosition/restoreScrollPosition methods
+ * coordinate with this class.
+ */
+body.scroll-locked {
+  overflow: hidden !important;
+}
+
+/* ── Loading Skeleton Animation ────────────────────────────── */
+/*
+ * Skeleton placeholders shown during initial data load to prevent
+ * the zero-to-real-value layout jump that causes viewport shifts.
+ */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.5) 0px,
+    rgba(51, 65, 85, 0.5) 40px,
+    rgba(30, 41, 59, 0.5) 80px
+  );
+  background-size: 200px 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.375rem;
+  color: transparent !important;
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeleton-number {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2rem;
+}
+
+.skeleton-text {
+  display: inline-block;
+  width: 6rem;
+  height: 0.875rem;
+}
+
+.skeleton-row {
+  height: 3rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+}
+
 /* ── KPI Card Hover ─────────────────────────────────────────── */
 .kpi-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
 }
 .kpi-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   border-color: rgba(100, 116, 139, 0.3);
 }
+
+/* ── Chart Containers (FIX #3) ─────────────────────────────── */
+/*
+ * Chart.js with responsive:true + maintainAspectRatio:false requires
+ * a container with explicit height. Without this, charts collapse to
+ * 0px on destroy/recreate, causing the page height shift that triggers
+ * auto-scroll. The container provides a stable sizing context.
+ */
+.chart-container {
+  position: relative;
+  width: 100%;
+  contain: layout style;
+}
+
+.chart-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-container-sm { height: 200px; }
+.chart-container-md { height: 250px; }
+.chart-container-lg { height: 320px; }
 
 /* ── Scrollbar ──────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -94,6 +194,17 @@ canvas {
   background-color: rgba(14, 165, 233, 0.05);
 }
 
+/* ── Kanban columns: scroll isolation ──────────────────────── */
+/*
+ * Each Kanban column scrolls independently within its own container.
+ * This prevents column content changes from affecting the page-level
+ * scroll position — a key contributor to the auto-scroll bug.
+ */
+.kanban-column {
+  contain: layout style;
+  overflow: hidden;
+}
+
 /* ── Table row hover ────────────────────────────────────────── */
 tbody tr {
   transition: background-color 0.15s ease;
@@ -103,6 +214,70 @@ tbody tr {
 input:focus, select:focus, textarea:focus, button:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.5);
+}
+
+/* ── Table wrapper: horizontal scroll containment ───────────── */
+.table-wrap {
+  overflow-x: auto;
+}
+
+/* ── WS status indicator: prevent reflow on reconnect ─────── */
+/*
+ * The WS status badge uses animate-ping which restarts on
+ * reconnection, causing a brief layout flash. Containing it
+ * and giving it fixed dimensions prevents the reflow.
+ */
+.ws-status {
+  contain: layout style;
+  min-width: 3rem;
+}
+
+/* ── Navigation tabs ────────────────────────────────────────── */
+.nav-tabs {
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Responsive breakpoints ─────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Stack KPI cards to 1 column on mobile */
+  .kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* Reduce padding on mobile */
+  .main-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  /* Kanban: always single column on mobile */
+  .kanban-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  /* 2 columns on small tablets */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* 3 columns on tablets */
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ── Print styles ───────────────────────────────────────────── */

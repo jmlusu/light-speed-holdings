@@ -252,3 +252,59 @@ class TestRegistryValidator:
         validator = RegistryValidator()
         errors = validator.validate(registry)
         assert any("budget" in e.lower() for e in errors)
+
+
+# ---------------------------------------------------------------------------
+# Registry Sync guardrail tests
+# ---------------------------------------------------------------------------
+
+class TestRegistrySync:
+    """Guardrail: YAML registry (source of truth) and JSON registry (dashboard)
+    must never drift apart. These tests catch desync regressions."""
+
+    def test_yaml_and_json_agent_count_match(self):
+        """The JSON registry must contain exactly as many agents as the YAML."""
+        from ai_company.registry.sync import sync_registry, verify_sync
+
+        # First, sync to ensure they match
+        count = sync_registry()
+        errors = verify_sync()
+        assert errors == [], (
+            f"YAML/JSON desync detected after sync! Errors: {errors}"
+        )
+        assert count > 0, "Sync produced zero agents"
+
+    def test_sync_roundtrip_preserves_all_agents(self, tmp_path: Path):
+        """Syncing to a temp JSON and reading it back must match the YAML."""
+        from ai_company.registry.sync import sync_registry, verify_sync
+
+        json_out = tmp_path / "agent-registry.json"
+        count = sync_registry(json_path=json_out)
+        errors = verify_sync(json_path=json_out)
+        assert errors == [], f"Roundtrip sync drift: {errors}"
+        assert count >= 100, f"Expected >= 100 agents, got {count}"
+
+    def test_no_agents_lost_in_sync(self, tmp_path: Path):
+        """Every YAML agent ID must appear in the JSON output."""
+        import json
+
+        from ai_company.registry.sync import sync_registry
+
+        import yaml
+
+        json_out = tmp_path / "agent-registry.json"
+        sync_registry(json_path=json_out)
+
+        with open("company-registry.yaml", encoding="utf-8") as f:
+            yaml_data = yaml.safe_load(f)
+        yaml_ids = {
+            a["id"].replace("_", "-")
+            for a in yaml_data.get("company", {}).get("agents", [])
+        }
+
+        with open(json_out, encoding="utf-8") as f:
+            json_agents = json.load(f)
+        json_names = {a["name"] for a in json_agents}
+
+        missing = yaml_ids - json_names
+        assert not missing, f"Agents lost during sync: {missing}"

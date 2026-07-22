@@ -6,7 +6,7 @@ company:
       title: Chief of Staff
       description: The primary orchestrator and strategic alignment agent for the company.
       department: Executive
-      reports_to: CEO
+      reports_to: human_ceo
       direct_reports: [cto, coo, caio]
       responsibilities:
         - Align company goals across all departments.
@@ -20,7 +20,7 @@ company:
       title: CTO
       description: Oversees all technological infrastructure and software development.
       department: Technology
-      reports_to: Chief of Staff
+      reports_to: chief_of_staff
       direct_reports: [lead_backend, lead_frontend, solution_architect, devops_lead, qa_lead, vp_engineering]
       responsibilities:
         - Architect robust AI agent systems.
@@ -34,8 +34,8 @@ company:
       title: COO
       description: Manages day-to-day operations and internal processes.
       department: Operations
-      reports_to: Chief of Staff
-      direct_reports: [hr_lead, ops_lead]
+      reports_to: chief_of_staff
+      direct_reports: [workflow_owner, orchestration_owner, doctor_owner, decision_engine_owner, memory_owner, audit_trail_owner, capacity_planner, business_continuity_manager, vendor_manager, process_quality_manager]
       responsibilities:
         - Optimize internal workflows.
         - Manage agent resource allocation.

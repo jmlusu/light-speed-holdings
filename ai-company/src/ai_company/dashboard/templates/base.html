@@ -41,10 +41,17 @@
   {% block head %}{% endblock %}
 </head>
 <body class="bg-surface-950 text-surface-200 min-h-screen antialiased"
-      x-data="dashboard()" x-init="init()">
+      x-data="dashboard()" x-init="init()"
+      :class="{ 'scroll-locked': _scrollLock }">
 
   <!-- ═══ TOP BAR ═══ -->
-  <header class="bg-surface-900/80 backdrop-blur-md border-b border-surface-700/50 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+  <!--
+    FIX: The sticky header is retained but we add contain:layout style
+    to prevent its internal re-renders (WS status badge, uptime counter)
+    from propagating reflow to the main content area.
+  -->
+  <header class="bg-surface-900/80 backdrop-blur-md border-b border-surface-700/50 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-50"
+          style="contain: layout style;">
     <div class="flex items-center gap-3">
       <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-brand-600/20">LS</div>
       <div>
@@ -57,7 +64,11 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         <span>Uptime: <span x-text="formatUptime(kpis.uptime_seconds)" class="font-mono text-surface-300"></span></span>
       </div>
-      <div class="flex items-center gap-2">
+      <!--
+        FIX: WS status badge now has a fixed minimum width (ws-status class)
+        so it doesn't cause layout shift when toggling between Live/Offline.
+      -->
+      <div class="flex items-center gap-2 ws-status">
         <span class="relative flex h-2 w-2" x-show="wsConnected">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -74,7 +85,7 @@
   </header>
 
   <!-- ═══ NAVIGATION TABS ═══ -->
-  <nav class="bg-surface-900/60 border-b border-surface-700/50 px-6">
+  <nav class="bg-surface-900/60 border-b border-surface-700/50 px-4 sm:px-6 nav-tabs">
     <div class="flex gap-1 overflow-x-auto">
       {% for tab in tabs %}
       <a href="{{ tab.href }}"
@@ -96,7 +107,7 @@
   </nav>
 
   <!-- ═══ MAIN CONTENT ═══ -->
-  <main class="max-w-[1440px] mx-auto px-6 py-6">
+  <main class="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 main-content">
     {% block content %}{% endblock %}
   </main>
 

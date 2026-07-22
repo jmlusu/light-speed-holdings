@@ -208,6 +208,69 @@ class MessageBus:
 
     # ── Query helpers ────────────────────────────────────────────────
 
+    # ── Task field update (PATCH-style) ──────────────────────────────
+
+    def update_task(self, task_id: str, updates: dict[str, Any]) -> Task | None:
+        """Apply arbitrary field updates to a task by id.
+
+        Only keys present in *updates* are written; the rest are left
+        untouched.  A ``"status_changed"`` (or matching) event is emitted
+        when the status field changes.  Returns the updated ``Task`` or
+        ``None`` if not found.
+        """
+        event_map: dict[str, str] = {
+            "completed": "completed",
+            "failed": "failed",
+            "escalated": "escalated",
+        }
+        now = datetime.now().isoformat()
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    tasks[i].update(updates)
+                    tasks[i]["updated_at"] = now
+                    if not tasks[i].get("created_at"):
+                        tasks[i]["created_at"] = now
+                    # If status is being set, track completed_at
+                    new_status = tasks[i].get("status", "")
+                    if new_status in ("completed", "failed"):
+                        tasks[i]["completed_at"] = now
+                    event = event_map.get(new_status, "status_changed")
+                    self._emit(tasks[i], event)
+                    logger.info("Task %s updated: %s", task_id, list(updates.keys()))
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        for t in updated:
+            if t.get("id") == task_id:
+                return Task(**t)
+        return None
+
+    def delete_task(self, task_id: str) -> Task | None:
+        """Remove a task from the inbox by id.
+
+        Emits a ``"deleted"`` broadcast event and returns the removed
+        ``Task`` object, or ``None`` if not found.
+        """
+        removed: Task | None = None
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            nonlocal removed
+            new_tasks = []
+            for t in tasks:
+                if t.get("id") == task_id:
+                    removed = Task(**t)
+                else:
+                    new_tasks.append(t)
+            return new_tasks
+
+        self._mutate_tasks(_updater)
+        if removed is not None:
+            logger.info("Task %s deleted", task_id)
+            self._emit(removed.model_dump(), "deleted")
+        return removed
+
     def get_task_by_id(self, task_id: str) -> Task | None:
         """Find a specific task by its ``id`` field."""
         tasks = self._load_tasks()

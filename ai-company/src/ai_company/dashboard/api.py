@@ -24,6 +24,7 @@ from ai_company.dashboard.models import (
     OrgNode,
     TaskAssign,
     TaskItem,
+    TaskUpdate,
     TierInfo,
 )
 from ai_company.dashboard.repository import get_state_store
@@ -100,7 +101,23 @@ def _save_yaml(path: str, data: Any) -> None:
 
 
 def _load_registry() -> list[dict]:
-    return _load_json("company/agent-registry.json") or []
+    raw = _load_json("company/agent-registry.json") or []
+    return [_normalize_agent(a) for a in raw]
+
+
+_CAMEL_TO_SNAKE: dict[str, str] = {
+    "reportsTo": "reports_to",
+    "directReports": "direct_reports",
+}
+
+
+def _normalize_agent(agent: dict[str, Any]) -> dict[str, Any]:
+    """Convert camelCase keys from the legacy JSON registry to snake_case."""
+    out = dict(agent)
+    for camel, snake in _CAMEL_TO_SNAKE.items():
+        if camel in out:
+            out[snake] = out.pop(camel)
+    return out
 
 
 # ── WebSocket broadcast helpers ─────────────────────────────────────
@@ -327,6 +344,48 @@ def create_task(assign: TaskAssign, background_tasks: BackgroundTasks) -> TaskIt
     background_tasks.add_task(_broadcast_task, task.model_dump(), "created")
 
     return TaskItem(**task.model_dump())
+
+
+@router.patch("/tasks/{task_id}", response_model=TaskItem, tags=["tasks"])
+def update_task(
+    task_id: str,
+    update: TaskUpdate,
+    background_tasks: BackgroundTasks,
+) -> TaskItem:
+    """Partially update a task (e.g. drag-and-drop status change).
+
+    Only fields present in the request body are updated.  A
+    ``task_update`` WebSocket event is broadcast after the mutation.
+    """
+    # Build the updates dict — skip None values (not provided)
+    updates = update.model_dump(exclude_none=True)
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    updated = get_bus().update_task(task_id, updates)
+    if updated is None:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Broadcast the updated task to WebSocket clients
+    background_tasks.add_task(_broadcast_task, updated.model_dump(), "updated")
+
+    return TaskItem(**updated.model_dump())
+
+
+@router.delete("/tasks/{task_id}", tags=["tasks"])
+def delete_task(task_id: str, background_tasks: BackgroundTasks) -> dict[str, str]:
+    """Delete a task by id.
+
+    Returns ``{"ok": true, "id": "<task_id>"}`` on success.
+    """
+    removed = get_bus().delete_task(task_id)
+    if removed is None:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Broadcast the deletion to WebSocket clients
+    background_tasks.add_task(_broadcast_task, removed.model_dump(), "deleted")
+
+    return {"ok": "true", "id": task_id}
 
 
 # ── Approvals ───────────────────────────────────────────────────────

@@ -50,6 +50,18 @@ class TaskAssign(BaseModel):
     sender_id: str = "human-ceo"
 
 
+class TaskUpdate(BaseModel):
+    """Partial update body for PATCH /api/tasks/{task_id}.
+
+    All fields are optional — only supplied fields are applied.
+    """
+
+    status: Optional[str] = None
+    priority: Optional[str] = None
+    instruction: Optional[str] = None
+    receiver_id: Optional[str] = None
+
+
 class ApprovalItem(BaseModel):
     id: str
     task_id: str

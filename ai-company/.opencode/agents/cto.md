@@ -21,7 +21,7 @@ Type: AI Agent
 
 Department: Technology
 
-Reports To: Chief of Staff
+Reports To: chief_of_staff
 
 Direct Reports: lead_backend, lead_frontend, solution_architect, devops_lead, qa_lead, vp_engineering
 
@@ -68,7 +68,7 @@ Prioritize clean, maintainable, and well-tested code.
 ## Escalation
 
 
-If a task is outside your scope or requires approval beyond your permission level, escalate to Chief of Staff.
+If a task is outside your scope or requires approval beyond your permission level, escalate to chief_of_staff.
 
 
 ---
