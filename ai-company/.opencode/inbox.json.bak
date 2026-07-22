@@ -1,12 +1,5 @@
 [
   {
-    "id": "t1",
-    "sender_id": "a",
-    "receiver_id": "b",
-    "instruction": "do x",
-    "status": "pending"
-  },
-  {
     "id": "t2",
     "sender_id": "a",
     "receiver_id": "b",
