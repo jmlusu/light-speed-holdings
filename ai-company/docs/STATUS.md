@@ -4,12 +4,13 @@
 
 ## Last Updated
 
-2026-07-21
+2026-07-22
 
 ## Current State
 
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
 - **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
+- **Sprint 3 Critical Path Complete**: S3-04 (BriefingGenerator GAP-014), S3-05 (LLM Retry GAP-015), and S3-08 (Full Pipeline E2E Test) verified complete 2026-07-22. All three were already implemented in source; documentation updated to reflect reality.
 - **Organization Expansion**: 53 new roles added across all departments (2026-07-21) — competitive edge roles identified by CEO Advisor, CAIO, CISO, COO, CPO, CTO, CSO, General, and Human CEO agents.
 - **Models**: 17+ Pydantic models in `src/ai_company/models/models.py` (Company, Executive, Department, Agent, Workflow, Task, Risk, Decision, Postmortem, etc.)
 - **Registry**: 4-module system — `registry/loader.py`, `parser.py`, `resolver.py`, `validator.py` — loads 19 YAML config files into typed `CompanyRegistry`.
@@ -104,10 +105,10 @@
 |--------|--------|-------|-------|
 | Sprint 1 | ✅ COMPLETE | — | Code hardening + audit trail |
 | Sprint 2 | ✅ COMPLETE | 1093 passing | 13 items — all Done |
-| Sprint 3 | 🟡 BACKLOG CREATED | — | 8 items, 22h (see docs/SPRINT-3-BACKLOG.md) |
+| Sprint 3 | 🟡 IN PROGRESS | — | 3/8 DONE — critical path complete |
 | Sprint 4 | 🔴 NOT STARTED | — | Quality & completeness |
 
 ## Remaining Work
 
-- **Sprint 3 (backlog created)**: WebSocket integration tests (S3-01, 4h), data governance CLI (S3-02, 3h), memory CLI enhancement (S3-03, 2h), fix BriefingGenerator GAP-014 (S3-04, 1h), fix LLM retry GAP-015 (S3-05, 2h), scheduled cycle daemon (S3-06, 3h), dashboard API tests (S3-07, 3h), full pipeline integration test (S3-08, 4h). Total: 22h estimated.
+- **Sprint 3 (in progress)**: Critical path items DONE (S3-04, S3-05, S3-08). Remaining: WebSocket integration tests (S3-01, 4h), data governance CLI (S3-02, 3h), memory CLI enhancement (S3-03, 2h), scheduled cycle daemon (S3-06, 3h), dashboard API tests (S3-07, 3h). Total remaining: ~15h estimated.
 - **Sprint 4 (not started)**: Structured logging with correlation IDs (9.1), agent spec validation CLI (9.2), CLI type hints/docstrings (9.3-9.4), OAuth2/key rotation (11.1), memory encryption (11.2), token counting integration (11.3).

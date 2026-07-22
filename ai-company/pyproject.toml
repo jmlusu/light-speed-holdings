@@ -58,6 +58,9 @@ target-version = "py312"
 testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
+markers = [
+    "performance: marks tests as performance benchmarks (deselect with '-m \"not performance\"')",
+]
 
 [build-system]
 requires = ["setuptools>=69"]

@@ -10,7 +10,7 @@
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
 
-**Resolved gaps (as of 2026-07-20, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-016, GAP-017. **Partial:** GAP-005, GAP-011, GAP-015, GAP-018, GAP-019, GAP-020. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+**Resolved gaps (as of 2026-07-22, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-005, GAP-011. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
 
 > **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
@@ -558,18 +558,18 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-011 | MEDIUM | Dashboard API ↔ MessageBus | Sprint 1 | Low | 🟡 Partial | write path fixed (`api.py:313` `get_bus().send_task()`); `mobile_api.py` + `kpis/*` still read `inbox.json` (read-only) |
 | GAP-012 | MEDIUM | AgentLoop Priority | Sprint 1 | Low | ✅ Resolved | `agent_loop.py` forwards priority to router |
 | GAP-013 | MEDIUM | KPI Collector Wiring | Sprint 4 | Low | ✅ Resolved | `dashboard/kpis/__init__.py` `ALL_COLLECTORS` (7 depts) |
-| GAP-014 | LOW | BriefingGenerator API | Sprint 1 | Trivial | 🔴 Open | `briefing.py:40` still `self.bus._load_tasks()` |
-| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | 🔴 Open | `client.py:103-125` restarts provider chain from index 0 each attempt |
+| GAP-014 | LOW | BriefingGenerator API | Sprint 1 | Trivial | ✅ Resolved | `briefing.py:42` uses `get_all_tasks()` (public); `message_bus.py:136` public API |
+| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | ✅ Resolved | `client.py:133-134` `provider_idx = attempt % len(provider_chain)` round-robin |
 | GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:466` `shlex.split()`; no `shell=True` |
 | GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved | `dead_letter.py` + `loop.py:174` `detect_stale_tasks()` |
 | GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | 🟡 Partial | no structured JSON/correlation IDs; 11 `print()` in non-CLI modules |
 | GAP-019 | LOW | Spec Validation | Sprint 4 | Low | 🔴 Open | `context.py:13` `AgentContext` has no `validate()`; no `agents validate` CLI |
-| GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | 🟡 Partial | component integration tests exist; full-pipeline happy-path (mocked LLM) pending |
+| GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | ✅ Resolved | `tests/integration/test_full_pipeline.py` (305 lines, 10 tests, all pass) |
 
-**Resolved:** 13 of 20 (GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 016, 017)
-**Partial:** 4 (GAP-005, GAP-011, GAP-018, GAP-020)
-**Open:** 3 (GAP-014, GAP-015, GAP-019)
-**Remaining work to reach "done":** close GAP-014, GAP-015, GAP-019; finish consolidation (GAP-005), read-path MessageBus (GAP-011), structured logging (GAP-018), and full-pipeline E2E test (GAP-020).
+**Resolved:** 16 of 20 (GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020)
+**Partial:** 2 (GAP-005, GAP-011)
+**Open:** 2 (GAP-018, GAP-019)
+**Remaining work to reach "done":** finish consolidation (GAP-005), read-path MessageBus (GAP-011), structured logging (GAP-018), and agent spec validation (GAP-019).
 
 ## Recommended Sprint Plan
 
