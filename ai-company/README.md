@@ -352,6 +352,31 @@ Tests cover: models, registry, orchestrator (scheduler, escalation, approval, po
 
 ---
 
+## Milestones Presentation
+
+A comprehensive PowerPoint presentation showcasing all major milestones is available:
+
+```bash
+# Generate the milestones deck (Node.js)
+npm install
+node scripts/generate-milestones-deck.js
+
+# Or using Python
+pip install -r requirements-pptx.txt
+python scripts/generate-milestones-deck.py
+```
+
+The presentation includes 15 slides covering:
+- Executive summary with key metrics
+- Project timeline visualization
+- All 8 major milestones
+- Quality metrics and architecture overview
+- Remaining work and next steps
+
+See [README-milestones-deck.md](README-milestones-deck.md) for detailed instructions and [MILESTONES-DECK-SETUP.md](MILESTONES-DECK-SETUP.md) for a complete setup summary.
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and submission guidelines.

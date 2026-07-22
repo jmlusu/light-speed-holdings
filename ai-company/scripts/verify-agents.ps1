@@ -12,7 +12,7 @@
 param(
     [string]$RegistryPath = ".\company\agent-registry.json",
 
-    [int]$ExpectedCount = 18,
+    [int]$ExpectedCount = 127,
 
     [switch]$RunOpenCode
 )

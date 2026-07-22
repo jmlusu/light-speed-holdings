@@ -160,19 +160,63 @@ def raci(
     typer.echo("Usage: ai-company raci RACI-HIRING-001")
 
 
+@app.command("sync-registry")
+def sync_registry(
+    yaml_path: str = typer.Option(
+        "company-registry.yaml",
+        help="Path to the source-of-truth YAML registry",
+    ),
+    json_path: str = typer.Option(
+        "company/agent-registry.json",
+        help="Path to the output JSON registry for the dashboard",
+    ),
+    verify: bool = typer.Option(
+        False,
+        "--verify/--no-verify",
+        help="Verify sync after writing (check for drift)",
+    ),
+) -> None:
+    """Sync agent-registry.json from company-registry.yaml (source of truth).
+
+    The dashboard, model_router, executor, and other components read from the
+    JSON file. This command regenerates it from the authoritative YAML.
+    """
+    from ai_company.registry.sync import sync_registry as do_sync, verify_sync
+
+    count = do_sync(yaml_path=yaml_path, json_path=json_path)
+    typer.echo(f"Synced {count} agents from {yaml_path} to {json_path}")
+
+    if verify:
+        errors = verify_sync(yaml_path=yaml_path, json_path=json_path)
+        if errors:
+            for err in errors:
+                typer.echo(f"DRIFT: {err}", err=True)
+            raise typer.Exit(1)
+        typer.echo("Verification passed: YAML and JSON are in sync.")
+
+
 @app.command()
 def generate(
     registry: str = typer.Option(
-        "company/agent-registry.json",
-        help="Path to the agent registry JSON file",
+        "company-registry.yaml",
+        help="Path to the agent registry YAML (source of truth)",
     ),
 ) -> None:
-    """Regenerate all company files from the single agent registry."""
+    """Regenerate all company files from the single agent registry.
+
+    First syncs agent-registry.json from the YAML, then generates
+    OpenCode agent .md files.
+    """
     from ai_company.generator import AgentGenerator
+    from ai_company.registry.sync import sync_registry as do_sync
+
+    # Always sync JSON from YAML first
+    count = do_sync(yaml_path=registry)
+    typer.echo(f"Synced {count} agents to company/agent-registry.json")
 
     gen = AgentGenerator(registry_path=registry)
     results = gen.generate_all()
-    typer.echo(f"\nDone: {len(results)} agent files generated.")
+    typer.echo(f"Done: {len(results)} agent files generated.")
 
 
 @app.command()

@@ -1,0 +1,12 @@
+{
+  "name": "ai-company-milestones",
+  "version": "1.0.0",
+  "description": "Generate milestones deck for AI Company Builder project",
+  "main": "scripts/generate-milestones-deck.js",
+  "scripts": {
+    "generate-deck": "node scripts/generate-milestones-deck.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}

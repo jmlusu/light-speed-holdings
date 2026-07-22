@@ -21,9 +21,9 @@ Type: AI Agent
 
 Department: Operations
 
-Reports To: Chief of Staff
+Reports To: chief_of_staff
 
-Direct Reports: hr_lead, ops_lead
+Direct Reports: workflow_owner, orchestration_owner, doctor_owner, decision_engine_owner, memory_owner, audit_trail_owner, capacity_planner, business_continuity_manager, vendor_manager, process_quality_manager
 
 
 ---
@@ -66,7 +66,7 @@ Focus on efficiency and process automation.
 ## Escalation
 
 
-If a task is outside your scope or requires approval beyond your permission level, escalate to Chief of Staff.
+If a task is outside your scope or requires approval beyond your permission level, escalate to chief_of_staff.
 
 
 ---

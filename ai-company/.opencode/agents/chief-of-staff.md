@@ -21,7 +21,7 @@ Type: AI Agent
 
 Department: Executive
 
-Reports To: CEO
+Reports To: human_ceo
 
 Direct Reports: cto, coo, caio
 
@@ -68,7 +68,7 @@ Maintain high-level strategic oversight. Do not execute low-level tasks; delegat
 ## Escalation
 
 
-If a task is outside your scope or requires approval beyond your permission level, escalate to CEO.
+If a task is outside your scope or requires approval beyond your permission level, escalate to human_ceo.
 
 
 ---

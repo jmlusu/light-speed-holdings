@@ -11,6 +11,7 @@
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
 - **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
 - **Sprint 3 Complete**: All 8 Sprint 3 items done — gap closure (GAP-014, GAP-015), E2E pipeline test, WebSocket tests, governance CLI, memory CLI, dashboard API tests, org chart test rewrite. 1205 tests passing. v0.3.0 release tagged 2026-07-22.
+- **Agent Deployment**: All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@` in terminal.
 - **Organization Expansion**: 53 new roles added across all departments (2026-07-21) — competitive edge roles identified by CEO Advisor, CAIO, CISO, COO, CPO, CTO, CSO, General, and Human CEO agents.
 - **Models**: 17+ Pydantic models in `src/ai_company/models/models.py` (Company, Executive, Department, Agent, Workflow, Task, Risk, Decision, Postmortem, etc.)
 - **Registry**: 4-module system — `registry/loader.py`, `parser.py`, `resolver.py`, `validator.py` — loads 19 YAML config files into typed `CompanyRegistry`.
@@ -57,6 +58,7 @@
 - Strategy department created with 2 roles under CSO
 - Business Development function created reporting to CEO
 - AI Safety hierarchy established (AI Safety Lead → Red Team, Constitutional AI, Ethics)
+- **All 127 agents deployed** to workspace-level `.opencode/agents/` — fully invokable via `@`
 
 ## Code Quality
 
@@ -98,7 +100,7 @@
 
 ## Recent Work
 
-- **2026-07-22**: Sprint 3 COMPLETE — all 8 items done. Fixed test_org_chart.py (832 lines rewritten, 56 tests passing). Fixed DataTransformer.registry_to_enhanced() frozen model bug. Created governance CLI (7 commands, 9 tests). Enhanced memory CLI (stats/search/recall). Created WebSocket integration tests (30 tests). Created dashboard API tests (9 tests). Total: 1205 tests passing, 0 ruff errors. v0.3.0 release tagged.
+- **2026-07-22**: Sprint 3 COMPLETE — all 8 items done. Fixed test_org_chart.py (832 lines rewritten, 56 tests passing). Fixed DataTransformer.registry_to_enhanced() frozen model bug. Created governance CLI (7 commands, 9 tests). Enhanced memory CLI (stats/search/recall). Created WebSocket integration tests (30 tests). Created dashboard API tests (9 tests). Total: 1205 tests passing, 0 ruff errors. v0.3.0 release tagged. **Agent deployment**: All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@`.
 - **2026-07-21**: Sprint 3 backlog created (docs/SPRINT-3-BACKLOG.md). Code audit reveals ~60% of planned Sprint 3 items already implemented in source. Revised scope: 8 items, 22 hours effort. Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
 - **2026-07-20**: Sprint 1 completed. All Track B (code hardening) and Track C (audit trail) items done. Sprint 2 backlog created. All documentation updated to reflect actual state.
 - **2026-07-19**: Phase 5 design specs — 3 approval UX documents covering 5-tier action system, dashboard approval queue with WebSocket, and enhanced CLI commands.

@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 - Sprint 4 planned items: structured logging, agent spec validation, OAuth2, memory encryption
+- All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@`
 
 ## [0.3.0] - 2026-07-22
 

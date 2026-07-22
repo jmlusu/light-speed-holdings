@@ -53,3 +53,7 @@ docker-compose.override.yml
 
 # ── Backups ───────────────────────────────────────────────────
 backups/
+
+# ── Node.js ──────────────────────────────────────────────────
+node_modules/
+package-lock.json

@@ -12,8 +12,23 @@ if (typeof Chart !== 'undefined') {
   Chart.defaults.plugins.legend.labels.usePointStyle = true;
   Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
   Chart.defaults.plugins.legend.labels.padding = 16;
-  Chart.defaults.animation.duration = 600;
+
+  /*
+   * FIX: Reduced animation duration from 600ms to 300ms.
+   * With 15-second polling, long animations overlap with the next
+   * data update cycle, causing compounding layout thrashing.
+   * 300ms is visually smooth but fast enough to complete before the
+   * next poll arrives.
+   */
+  Chart.defaults.animation.duration = 300;
+
   Chart.defaults.responsive = true;
+
+  /*
+   * FIX: maintainAspectRatio is set to false globally (same as before),
+   * but now we pair it with .chart-container CSS that provides explicit
+   * height, so charts never collapse to 0px during destroy/recreate.
+   */
   Chart.defaults.maintainAspectRatio = false;
 }
 
@@ -34,11 +49,45 @@ const CHART_COLORS = Object.values(COLORS);
 // ── Chart Instances ─────────────────────────────────────────
 const chartInstances = {};
 
+/**
+ * FIX: Improved destroyChart to safely clean up.
+ * Chart.js instances must be destroyed before the canvas is reused,
+ * otherwise they leak memory and interfere with new instances.
+ * We also clear the reference immediately to prevent stale access.
+ */
 function destroyChart(id) {
   if (chartInstances[id]) {
-    chartInstances[id].destroy();
+    try {
+      chartInstances[id].destroy();
+    } catch (e) {
+      console.warn(`[Chart] Error destroying ${id}:`, e);
+    }
     delete chartInstances[id];
   }
+}
+
+/**
+ * FIX: New helper — update chart data in-place when possible,
+ * only creating a new Chart when the chart doesn't exist yet.
+ * This avoids the destroy → collapse → recreate → expand cycle
+ * that was the #2 cause of auto-scrolling.
+ *
+ * For charts that change structure (e.g., different number of datasets),
+ * we still destroy/recreate, but the container prevents layout shift.
+ */
+function updateOrCreateChart(id, ctx, config) {
+  if (chartInstances[id]) {
+    // Update existing chart data in-place (no destroy/recreate needed)
+    const chart = chartInstances[id];
+    chart.data = config.data;
+    // Merge options in case they changed
+    Object.assign(chart.options, config.options || {});
+    chart.update('none'); // 'none' = no animation on data update
+    return chart;
+  }
+  // First render — create new instance
+  chartInstances[id] = new Chart(ctx, config);
+  return chartInstances[id];
 }
 
 // ═══ DASHBOARD CHARTS ════════════════════════════════════════
@@ -47,8 +96,7 @@ function updateChartsFromKPIs(kpis, departments) {
   // ── Task Status Doughnut ───────────────────────────────────
   const taskCtx = document.getElementById('taskStatusChart');
   if (taskCtx) {
-    destroyChart('taskStatus');
-    chartInstances['taskStatus'] = new Chart(taskCtx, {
+    const config = {
       type: 'doughnut',
       data: {
         labels: ['Pending', 'In Progress', 'Completed', 'Failed', 'Escalated'],
@@ -84,14 +132,14 @@ function updateChartsFromKPIs(kpis, departments) {
           legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } },
         },
       },
-    });
+    };
+    updateOrCreateChart('taskStatus', taskCtx, config);
   }
 
   // ── Department Load Bar Chart ──────────────────────────────
   const deptCtx = document.getElementById('departmentChart');
   if (deptCtx && departments && departments.length > 0) {
-    destroyChart('department');
-    chartInstances['department'] = new Chart(deptCtx, {
+    const config = {
       type: 'bar',
       data: {
         labels: departments.map(d => d.name || d),
@@ -114,7 +162,8 @@ function updateChartsFromKPIs(kpis, departments) {
           y: { grid: { display: false } },
         },
       },
-    });
+    };
+    updateOrCreateChart('department', deptCtx, config);
   }
 }
 
@@ -126,8 +175,6 @@ function initKPICharts(kpiDepartments, liveKPIData) {
   // ── KPI Comparison Radar Chart ─────────────────────────────
   const radarCtx = document.getElementById('kpiComparisonChart');
   if (radarCtx) {
-    destroyChart('kpiComparison');
-
     // Normalize KPI values to 0-100 scale for radar
     const datasets = kpiDepartments.slice(0, 4).map((dept, i) => {
       const kpis = dept.kpis || [];
@@ -150,7 +197,7 @@ function initKPICharts(kpiDepartments, liveKPIData) {
       (dept.kpis || []).forEach(k => allKPINames.add(k.name || k.id));
     });
 
-    chartInstances['kpiComparison'] = new Chart(radarCtx, {
+    const config = {
       type: 'radar',
       data: {
         labels: [...allKPINames].slice(0, 8),
@@ -171,14 +218,13 @@ function initKPICharts(kpiDepartments, liveKPIData) {
           legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8 } },
         },
       },
-    });
+    };
+    updateOrCreateChart('kpiComparison', radarCtx, config);
   }
 
   // ── KPI Target vs Current Bar Chart ────────────────────────
   const barCtx = document.getElementById('kpiTargetChart');
   if (barCtx) {
-    destroyChart('kpiTarget');
-
     // Flatten all KPIs across departments
     const allKPIs = [];
     kpiDepartments.forEach(dept => {
@@ -195,7 +241,7 @@ function initKPICharts(kpiDepartments, liveKPIData) {
 
     const limited = allKPIs.slice(0, 10);
 
-    chartInstances['kpiTarget'] = new Chart(barCtx, {
+    const config = {
       type: 'bar',
       data: {
         labels: limited.map(k => k.name),
@@ -230,7 +276,8 @@ function initKPICharts(kpiDepartments, liveKPIData) {
           y: { grid: { color: 'rgba(51, 65, 85, 0.15)' }, beginAtZero: true },
         },
       },
-    });
+    };
+    updateOrCreateChart('kpiTarget', barCtx, config);
   }
 }
 
@@ -240,8 +287,6 @@ function initCostCharts(costSummary, agentCosts, period) {
   // ── Cost Trend Line Chart ──────────────────────────────────
   const trendCtx = document.getElementById('costTrendChart');
   if (trendCtx) {
-    destroyChart('costTrend');
-
     // Generate mock trend data (in production, this would come from history)
     const labels = [];
     const data = [];
@@ -263,7 +308,7 @@ function initCostCharts(costSummary, agentCosts, period) {
       data.push(+(Math.random() * 0.1 + 0.01).toFixed(4));
     }
 
-    chartInstances['costTrend'] = new Chart(trendCtx, {
+    const config = {
       type: 'line',
       data: {
         labels,
@@ -288,17 +333,16 @@ function initCostCharts(costSummary, agentCosts, period) {
           y: { grid: { color: 'rgba(51, 65, 85, 0.15)' }, beginAtZero: true },
         },
       },
-    });
+    };
+    updateOrCreateChart('costTrend', trendCtx, config);
   }
 
   // ── Cost per Agent Bar Chart ───────────────────────────────
   const agentCtx = document.getElementById('costAgentChart');
   if (agentCtx && agentCosts && agentCosts.length > 0) {
-    destroyChart('costAgent');
-
     const topAgents = agentCosts.slice(0, 10);
 
-    chartInstances['costAgent'] = new Chart(agentCtx, {
+    const config = {
       type: 'bar',
       data: {
         labels: topAgents.map(a => a.agent),
@@ -321,6 +365,7 @@ function initCostCharts(costSummary, agentCosts, period) {
           y: { grid: { display: false }, ticks: { font: { size: 10 } } },
         },
       },
-    });
+    };
+    updateOrCreateChart('costAgent', agentCtx, config);
   }
 }

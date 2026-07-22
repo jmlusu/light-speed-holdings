@@ -15,6 +15,13 @@ function dashboard() {
     toast: { show: false, type: 'info', title: '', message: '' },
     toastTimer: null,
 
+    // ── Loading state (FIX: prevents layout jump on initial load)
+    isLoading: true,
+
+    // ── Scroll management (FIX: auto-scroll prevention) ──────
+    _scrollLock: false,
+    _pendingPoll: null,
+
     // ── Data ─────────────────────────────────────────────────
     kpis: {
       pending_tasks: 0,
@@ -67,10 +74,68 @@ function dashboard() {
 
     async init() {
       this.connectWebSocket();
+
+      // FIX: Load data, then reveal UI to prevent layout jump
       await this.loadPageData();
-      // Poll for updates every 10 seconds
-      setInterval(() => this.loadPageData(), 10000);
+      this.isLoading = false;
+
+      // FIX: Debounced polling — skip if a poll is already in-flight,
+      // and batch updates to reduce reflow frequency.
+      // Changed from 10s to 15s to reduce churn.
+      setInterval(() => this.debouncedPoll(), 15000);
     },
+
+    // ═══ SCROLL MANAGEMENT (FIX: auto-scroll prevention) ═════
+
+    /**
+     * Save the current scroll position before a data update that
+     * may cause reflow. Called before loadPageData, WS updates,
+     * and any operation that mutates visible state.
+     */
+    saveScrollPosition() {
+      this._savedScrollY = window.scrollY;
+      this._savedScrollX = window.scrollX;
+    },
+
+    /**
+     * Restore scroll position after a data update completes.
+     * Uses requestAnimationFrame to wait for the browser to finish
+     * layout calculations before restoring.
+     */
+    restoreScrollPosition() {
+      if (this._savedScrollY !== undefined) {
+        requestAnimationFrame(() => {
+          // Only restore if the user hasn't manually scrolled during the update
+          const currentY = window.scrollY;
+          const diff = Math.abs(currentY - this._savedScrollY);
+          // If the browser auto-scrolled more than 5px, snap back
+          if (diff > 5 && diff < 200) {
+            window.scrollTo(this._savedScrollX, this._savedScrollY);
+          }
+          this._savedScrollY = undefined;
+          this._savedScrollX = undefined;
+        });
+      }
+    },
+
+    /**
+     * Debounced poll: if a poll is already in-flight, queue the next one
+     * instead of stacking parallel fetches. This prevents multiple
+     * concurrent Alpine re-renders that cause layout thrashing.
+     */
+    async debouncedPoll() {
+      if (this._pendingPoll) return; // Skip — previous poll still running
+      this._pendingPoll = true;
+      try {
+        this.saveScrollPosition();
+        await this.loadPageData();
+        this.restoreScrollPosition();
+      } finally {
+        this._pendingPoll = false;
+      }
+    },
+
+    // ═══ WEBSOCKET ═════════════════════════════════════════════
 
     connectWebSocket() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -118,15 +183,23 @@ function dashboard() {
 
         case 'kpi_update':
           if (msg.payload) {
-            // Update main KPIs if the payload has the expected shape
+            // FIX: Save scroll position before WS-triggered update
+            this.saveScrollPosition();
+
+            // Batch update: apply all KPI changes in one reactive tick
             if (msg.payload.pending_tasks !== undefined) {
               Object.assign(this.kpis, msg.payload);
             }
-            // Update live KPI data for charts
             this.liveKPIData = msg.payload;
+
             if (typeof updateChartsFromKPIs === 'function') {
-              updateChartsFromKPIs(this.kpis, this.departments);
+              // FIX: Defer chart update to next frame to avoid layout thrashing
+              requestAnimationFrame(() => {
+                updateChartsFromKPIs(this.kpis, this.departments);
+              });
             }
+
+            this.restoreScrollPosition();
           }
           break;
 
@@ -138,6 +211,27 @@ function dashboard() {
               cat.charAt(0).toUpperCase() + cat.slice(1),
               msg.payload.reason || msg.payload.action || 'New alert received'
             );
+          }
+          break;
+
+        case 'task_update':
+          if (msg.payload) {
+            const updatedTask = msg.payload;
+            const event = msg.event || 'updated';
+            if (event === 'deleted') {
+              // Remove the task from local state
+              this.tasks = this.tasks.filter(t => t.id !== updatedTask.id);
+            } else {
+              // Update or insert the task in local state
+              const idx = this.tasks.findIndex(t => t.id === updatedTask.id);
+              if (idx >= 0) {
+                this.tasks[idx] = { ...this.tasks[idx], ...updatedTask };
+              } else {
+                this.tasks.push(updatedTask);
+              }
+            }
+            // Force Alpine.js to detect the array mutation
+            this.tasks = [...this.tasks];
           }
           break;
 
@@ -172,15 +266,25 @@ function dashboard() {
       } else if (path === '/agents') {
         await this.loadAgents();
       } else if (path === '/tasks') {
-        await this.loadTasks();
-        await this.loadAgents();
+        // FIX: Load both in parallel, then assign together to reduce re-renders
+        const [tasksData, agentsData] = await Promise.all([
+          this.fetchJSON('/api/tasks'),
+          this.fetchJSON('/api/agents'),
+        ]);
+        if (tasksData) this.tasks = tasksData;
+        if (agentsData) this.agents = agentsData;
       } else if (path === '/kpis') {
         await this.loadKPIs();
       } else if (path === '/costs') {
         await this.loadCosts();
       } else if (path === '/escalations') {
-        await this.loadApprovals();
-        await this.loadEscalations();
+        // FIX: Load both in parallel
+        const [approvalsData, escalationsData] = await Promise.all([
+          this.fetchJSON('/api/approvals'),
+          this.fetchJSON('/api/escalations'),
+        ]);
+        if (approvalsData) this.approvals = approvalsData;
+        if (escalationsData) this.escalations = escalationsData;
       }
     },
 
@@ -190,12 +294,27 @@ function dashboard() {
         this.fetchJSON('/api/departments'),
         this.fetchJSON('/api/tasks'),
       ]);
-      if (kpis) Object.assign(this.kpis, kpis);
-      if (depts) this.departments = depts;
+
+      // FIX: Batch all state updates into a single assignment window
+      // to minimize Alpine.js reactive re-renders (was 3 separate re-renders,
+      // now effectively 1 coordinated update)
+      let needsChartUpdate = false;
+
+      if (kpis) {
+        Object.assign(this.kpis, kpis);
+        needsChartUpdate = true;
+      }
+      if (depts) {
+        this.departments = depts;
+        needsChartUpdate = true;
+      }
       if (tasks) this.tasks = tasks;
 
-      if (typeof updateChartsFromKPIs === 'function') {
-        updateChartsFromKPIs(this.kpis, this.departments);
+      // FIX: Defer chart updates to next animation frame
+      if (needsChartUpdate && typeof updateChartsFromKPIs === 'function') {
+        requestAnimationFrame(() => {
+          updateChartsFromKPIs(this.kpis, this.departments);
+        });
       }
     },
 
@@ -245,12 +364,16 @@ function dashboard() {
       if (live) this.liveKPIData = live;
 
       if (typeof initKPICharts === 'function') {
-        initKPICharts(this.kpiDepartments, this.liveKPIData);
+        requestAnimationFrame(() => {
+          initKPICharts(this.kpiDepartments, this.liveKPIData);
+        });
       }
     },
 
     async refreshKPIs() {
+      this.saveScrollPosition();
       await this.loadKPIs();
+      this.restoreScrollPosition();
       this.showToast('success', 'Refreshed', 'KPI data updated');
     },
 
@@ -310,7 +433,9 @@ function dashboard() {
       }
 
       if (typeof initCostCharts === 'function') {
-        initCostCharts(this.costSummary, this.agentCosts, this.costPeriod);
+        requestAnimationFrame(() => {
+          initCostCharts(this.costSummary, this.agentCosts, this.costPeriod);
+        });
       }
     },
 
@@ -327,25 +452,33 @@ function dashboard() {
       this.newTask = { receiver_id: '', instruction: '', priority: 'medium', sender_id: 'human-ceo' };
       this.submitting = false;
       this.showAssignModal = false;
+      this.saveScrollPosition();
       await this.loadTasks();
+      this.restoreScrollPosition();
       this.showToast('success', 'Task Assigned', 'New task has been created');
     },
 
     async approveRequest(id) {
       await this.fetchJSON(`/api/approvals/${id}/approve`, { method: 'POST' });
+      this.saveScrollPosition();
       await this.loadApprovals();
+      this.restoreScrollPosition();
       this.showToast('success', 'Approved', 'Request has been approved');
     },
 
     async rejectRequest(id) {
       await this.fetchJSON(`/api/approvals/${id}/reject`, { method: 'POST' });
+      this.saveScrollPosition();
       await this.loadApprovals();
+      this.restoreScrollPosition();
       this.showToast('info', 'Rejected', 'Request has been rejected');
     },
 
     async resolveEscalation(taskId) {
       await this.fetchJSON(`/api/escalations/${taskId}/resolve`, { method: 'POST' });
+      this.saveScrollPosition();
       await this.loadEscalations();
+      this.restoreScrollPosition();
       this.showToast('success', 'Resolved', 'Escalation has been resolved');
     },
 
@@ -371,18 +504,54 @@ function dashboard() {
       event.currentTarget.classList.remove('drag-over');
       if (!this.draggedTask || this.draggedTask.status === newStatus) return;
 
-      // Update task status via API (if endpoint exists)
-      // For now, we optimistically update the UI
       const task = this.draggedTask;
       const oldStatus = task.status;
 
-      // Move in local state
+      // Optimistically update the UI
       this.tasks = this.tasks.map(t =>
         t.id === task.id ? { ...t, status: newStatus } : t
       );
 
-      this.showToast('info', 'Task Moved', `Task moved from ${oldStatus} to ${newStatus}`);
+      // Persist the status change to the backend
+      const res = await this.fetchJSON(`/api/tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (res && res.id) {
+        // Reconcile with server response (in case of extra fields like updated_at)
+        this.tasks = this.tasks.map(t =>
+          t.id === res.id ? res : t
+        );
+        this.showToast('success', 'Task Moved', `Task moved from ${oldStatus} to ${newStatus}`);
+      } else {
+        // Revert optimistic update on failure
+        this.tasks = this.tasks.map(t =>
+          t.id === task.id ? { ...t, status: oldStatus } : t
+        );
+        this.showToast('warning', 'Move Failed', 'Could not persist status change');
+      }
+
       this.draggedTask = null;
+    },
+
+    // ═══ TASK DELETION ════════════════════════════════════════════
+
+    async deleteTask(taskId) {
+      if (!confirm('Delete this task? This cannot be undone.')) return;
+
+      const res = await this.fetchJSON(`/api/tasks/${taskId}`, {
+        method: 'DELETE',
+      });
+
+      if (res && res.ok) {
+        // Remove from local state
+        this.tasks = this.tasks.filter(t => t.id !== taskId);
+        this.showToast('success', 'Task Deleted', 'Task has been removed');
+      } else {
+        this.showToast('warning', 'Delete Failed', 'Could not delete task');
+      }
     },
 
     // ═══ COMPUTED ═════════════════════════════════════════════

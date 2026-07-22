@@ -60,6 +60,7 @@ pythonpath = ["src"]
 asyncio_mode = "auto"
 markers = [
     "performance: marks tests as performance benchmarks (deselect with '-m \"not performance\"')",
+    "e2e: marks end-to-end tests requiring a running dashboard (deselect with '-m \"not e2e\"')",
 ]
 
 [build-system]

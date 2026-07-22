@@ -45,14 +45,22 @@
 </div>
 
 <!-- ═══ COST CHARTS ═══ -->
+<!--
+  FIX: Wrapped canvases in .chart-container with explicit height.
+  Removed inline height="250" from canvas.
+-->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
   <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
     <h3 class="text-sm font-semibold text-surface-300 mb-4">Cost Trend</h3>
-    <canvas id="costTrendChart" height="250"></canvas>
+    <div class="chart-container chart-container-md">
+      <canvas id="costTrendChart"></canvas>
+    </div>
   </div>
   <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
     <h3 class="text-sm font-semibold text-surface-300 mb-4">Cost by Agent</h3>
-    <canvas id="costAgentChart" height="250"></canvas>
+    <div class="chart-container chart-container-md">
+      <canvas id="costAgentChart"></canvas>
+    </div>
   </div>
 </div>
 
