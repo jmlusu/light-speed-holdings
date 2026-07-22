@@ -77,6 +77,17 @@ include = ["ai_company*"]
 [project.scripts]
 ai-company = "ai_company.cli.main:app"
 
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = false
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = [
+    "scripts/",
+    "results/",
+    "tests/",
+]
+
 [tool.bandit]
 exclude_dirs = ["tests"]
 skips = ["B101"]  # Skip assert warnings

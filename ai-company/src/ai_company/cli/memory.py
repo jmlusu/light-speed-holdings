@@ -19,8 +19,8 @@ vector_index_app = typer.Typer(help="Manage the vector embedding index")
 app.add_typer(vector_index_app, name="vector-index")
 
 
-@app.command()
-def list(
+@app.command("list")
+def list_entries(
     memory_type: str = typer.Option("all", help="Memory type to list (episodic, semantic, procedural, relational, temporal, aggregate, all)"),
 ) -> None:
     """List memory entries."""

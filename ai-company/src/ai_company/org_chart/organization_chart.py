@@ -16,6 +16,7 @@ class TreeStats:
     edge_count: int = 0
     depth: int = 0
     breadth: int = 1
+    index_time_ms: float = 0.0
     construction_time_ms: float = 0.0
     lookup_time_ms: float = 0.0
     subtree_extraction_count: int = 0
@@ -27,10 +28,10 @@ class PathResult:
     """Result of pathfinding between two nodes."""
 
     found: bool = False
-    path: List[str] = None
+    path: Optional[List[str]] = None
     distance: int = 0
     path_type: str = "shortest"  # shortest, hierarchical, capacity
-    metadata: Dict[str, Any] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 
 class OrgNodeData:
@@ -316,15 +317,15 @@ class OrganizationChart:
             return []
 
         # Build path from start to LCA, then to end
-        start_to_lca = []
-        current = start_id
+        start_to_lca: list[str] = []
+        current: Optional[str] = start_id
         while current and current != lca:
             start_to_lca.append(current)
             if current in self.nodes:
                 node_data = self.nodes[current]
                 current = node_data.parent_id if node_data.parent_id else None
 
-        end_to_lca = []
+        end_to_lca: list[str] = []
         current = end_id
         while current and current != lca:
             end_to_lca.append(current)
@@ -353,8 +354,8 @@ class OrganizationChart:
         lca = min(lca_candidates, key=lambda lca_id: self.nodes[lca_id].capacity if lca_id in self.nodes else 0)
 
         # Build path
-        path = []
-        current = start_id
+        path: list[str] = []
+        current: Optional[str] = start_id
         while current and current != lca:
             path.append(current)
             if current in self.nodes:
@@ -421,7 +422,7 @@ class OrganizationChart:
 
         def extract_subtree_recursive(node_id: str, current_depth: int = 0) -> Dict[str, Any]:
             if max_depth is not None and current_depth > max_depth:
-                return None
+                return {}
 
             node_data = self.nodes[node_id]
             subtree_data = {
@@ -571,8 +572,8 @@ class OrganizationChart:
             return []
 
         # Simple clustering by finding connected components within executives
-        visited = set()
-        clusters = []
+        visited: set[str] = set()
+        clusters: list[dict[str, Any]] = []
 
         for exec_id in executive_nodes:
             if exec_id in visited:

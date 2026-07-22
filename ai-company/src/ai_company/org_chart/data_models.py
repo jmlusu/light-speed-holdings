@@ -431,7 +431,7 @@ class DataFactory:
         avg_performance = sum(a.performance_rating for a in agents) / total_agents if total_agents > 0 else 0
 
         # Count succession risks
-        risk_counts = {}
+        risk_counts: dict[str, int] = {}
         for agent in agents:
             risk = agent.succession_risk
             risk_counts[risk] = risk_counts.get(risk, 0) + 1
