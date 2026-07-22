@@ -28,23 +28,23 @@ logger = logging.getLogger(__name__)
 # ── Platform-specific file locking ────────────────────────────────────
 
 if os.name == "nt":
-    import msvcrt
+    import msvcrt  # type: ignore[attr-defined]  # Windows-only module
 
     def _lock_file(f: io.TextIOWrapper) -> None:
         """Acquire an exclusive lock on an open file (Windows)."""
         try:
-            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined]
         except OSError:
             # If we can't acquire non-blocking, retry with blocking
             try:
-                msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)
+                msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)  # type: ignore[attr-defined]
             except OSError:
                 logger.warning("Could not acquire file lock on %s", f.name)
 
     def _unlock_file(f: io.TextIOWrapper) -> None:
         """Release a file lock (Windows)."""
         try:
-            msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+            msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
         except OSError:
             pass
 else:
