@@ -18,8 +18,8 @@
 | S3-06 | Memory retention TTL | lead-backend | NOT STARTED | 0% | S3-04 | Pruning depends on consolidation cadence |
 | S3-07 | Scheduled cycle daemon | lead-backend | NOT STARTED | 0% | — | Scheduler exists; verify cron-like scheduling |
 | S3-14 | Approval escalation tests | qa_engineer | NOT STARTED | 0% | — | Independent; can start immediately |
-| S3-18 | Fix BriefingGenerator private method | lead-backend | NOT STARTED | 0% | — | Close GAP-014 |
-| S3-19 | Fix LLM retry provider cycling | lead-backend | NOT STARTED | 0% | — | Close GAP-015 |
+| S3-18 | Fix BriefingGenerator private method | lead-backend | DONE | 100% | — | Close GAP-014 — `briefing.py:42` uses `get_all_tasks()` |
+| S3-19 | Fix LLM retry provider cycling | lead-backend | DONE | 100% | — | Close GAP-015 — `client.py:133-134` round-robin cycling |
 | | **Sprint 3 Total** | | | **0/10** | | **17.0h estimated** |
 
 ---

@@ -1,5 +1,9 @@
 # AI Company Builder — Agent Guide
 
+## Project Location
+
+This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, NOT `/workspace/...` or any other container-style path. Always use this Windows path.
+
 ## 1 Project Snapshot
 
 - **What it is**: Python CLI tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files.
