@@ -72,8 +72,8 @@ def add(
 
 @app.command()
 def search(
+    query: str = typer.Argument("", help="Search query (keyword or semantic)"),
     memory_type: str = typer.Option("all", help="Memory type to search"),
-    query: str = typer.Option("", help="Search query"),
     tags: str = typer.Option("", help="Comma-separated tags to filter by"),
     limit: int = typer.Option(10, help="Max results"),
     semantic: bool = typer.Option(
@@ -134,6 +134,58 @@ def search(
     for e in all_results[:limit]:
         content_preview = e.content[:60] + "..." if len(e.content) > 60 else e.content
         table.add_row(e.memory_type, content_preview, e.agent_id)
+
+    console.print(table)
+
+
+@app.command()
+def recall(
+    memory_type: str = typer.Option(
+        "all",
+        "--type",
+        "-t",
+        help="Memory type to recall (episodic, semantic, procedural, relational, temporal, all)",
+    ),
+    limit: int = typer.Option(10, "--limit", "-n", help="Maximum entries to recall"),
+    tags: str = typer.Option("", "--tags", help="Comma-separated tags to filter by"),
+) -> None:
+    """Recall recent memories, optionally filtered by type and tags.
+
+    Shows the most recent memory entries from the specified type(s),
+    ordered by recency.  Useful for quick inspection of what the
+    memory store currently holds.
+    """
+    from ai_company.memory.engine import MemoryStore
+
+    store = MemoryStore()
+    tag_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
+
+    types_to_recall = (
+        [memory_type] if memory_type != "all"
+        else ["episodic", "semantic", "procedural", "relational", "temporal"]
+    )
+
+    all_entries: list = []
+    for mt in types_to_recall:
+        entries = store.recall(mt, tags=tag_list, limit=limit)
+        all_entries.extend(entries)
+
+    # Sort by most recent (entries have created_at or similar ordering)
+    all_entries = all_entries[:limit]
+
+    if not all_entries:
+        console.print(f"No memories found for type '{memory_type}'.")
+        return
+
+    table = Table(title=f"Recalled Memories ({len(all_entries)} entries)")
+    table.add_column("Type", style="cyan")
+    table.add_column("ID", style="dim")
+    table.add_column("Content")
+    table.add_column("Agent")
+
+    for e in all_entries:
+        content_preview = e.content[:60] + "..." if len(e.content) > 60 else e.content
+        table.add_row(e.memory_type, e.id, content_preview, e.agent_id)
 
     console.print(table)
 
