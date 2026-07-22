@@ -57,7 +57,7 @@ def _windows_lock(
     poll_interval: float,
 ) -> Generator[None, None, None]:
     """Windows file locking using msvcrt."""
-    import msvcrt
+    import msvcrt  # type: ignore[attr-defined]  # Windows-only module
     import time
 
     fd = None
@@ -67,7 +67,7 @@ def _windows_lock(
         while True:
             try:
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
+                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined]
                 break
             except OSError:
                 if fd is not None:
@@ -86,7 +86,7 @@ def _windows_lock(
     finally:
         if fd is not None:
             try:
-                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
             except OSError:
                 pass
             finally:
