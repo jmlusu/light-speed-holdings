@@ -2,19 +2,19 @@ vision:
   mission: "Build AI systems that augment human capability and accelerate organizational performance."
 
   long_term_goals:
-    - goal: "Achieve $100M ARR by 2028"
-      timeline: "2024-2028"
+    - goal: "Achieve $100M ARR by 2030"
+      timeline: "2026-2030"
       metrics: ["revenue", "customer_count"]
     - goal: "Deploy 1000+ AI agent companies"
-      timeline: "2024-2030"
+      timeline: "2026-2032"
       metrics: ["companies_generated", "agents_active"]
     - goal: "Industry-leading reliability (99.99% uptime)"
-      timeline: "2024-2025"
+      timeline: "2026-2027"
       metrics: ["uptime", "incident_rate"]
 
   quarterly_objectives:
-    - quarter: "Q1 2024"
+    - quarter: "Q3 2026"
       objectives:
-        - "Launch MVP of AI Company Builder"
-        - "Onboard 10 design partner companies"
-        - "Achieve $1M ARR"
+        - "Scale platform to 50+ enterprise customers"
+        - "Launch international market expansion"
+        - "Achieve $5M ARR"
