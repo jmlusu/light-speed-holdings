@@ -704,6 +704,16 @@ def kpi_summary() -> list[dict]:
     return summary
 
 
+# ── Company-level KPIs ──────────────────────────────────────────────
+
+
+@router.get("/company-kpis", tags=["kpis"])
+def list_company_kpis() -> list[dict]:
+    """Return company-level KPIs with targets and current values."""
+    kpi_data = _load_yaml("config/company/kpis.yaml")
+    return kpi_data.get("kpis", {}).get("company", [])
+
+
 # ── CEO Dashboard (aggregate view) ─────────────────────────────────
 
 
@@ -775,6 +785,10 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
     scheduler_data = _load_yaml("orchestrator/scheduler.yaml")
     scheduled = scheduler_data.get("tasks", [])
 
+    # Company-level KPIs
+    company_kpi_data = _load_yaml("config/company/kpis.yaml")
+    company_kpis = company_kpi_data.get("kpis", {}).get("company", [])
+
     result = {
         "collected_at": kpi_snapshot["collected_at"],
         "company_health": {
@@ -782,6 +796,7 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
                 dept: data.get("kpis", {})
                 for dept, data in departments.items()
             },
+            "company_kpis": company_kpis,
         },
         "agent_performance": agent_summary,
         "cost_tracking": cost_summary,

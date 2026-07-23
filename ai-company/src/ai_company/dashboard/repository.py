@@ -47,6 +47,8 @@ _ALLOWED_REL_PATHS: frozenset[str] = frozenset(
         "company/departments.yaml",
         "company/models.yaml",
         "company/config/kpis.yaml",
+        # Company-level KPIs
+        "config/company/kpis.yaml",
         # Cost & analytics
         "orchestrator/cost_tracker.json",
         # Audit log (read-only usage by dashboard metrics)

@@ -43,5 +43,5 @@ strategy:
           unit: "percent"
 
   quarterly_focus:
-    current_quarter: "Q3 2024"
+    current_quarter: "Q3 2026"
     focus_area: "Product Excellence"
