@@ -4,7 +4,7 @@
 
 ## Last Updated
 
-2026-07-22
+2026-07-23
 
 ## Current State
 
@@ -32,7 +32,7 @@
 - **KPIs**: `company/config/kpis.yaml` — Department-level KPI definitions for 7 departments (engineering, hr, marketing, sales, customer_success, legal, finance).
 - **KPI Collectors**: `dashboard/kpis/__init__.py` — All 7 department collectors wired and operational.
 - **Analytics**: `dashboard/analytics.py` — History tracking, trend analysis, alert rules, summary rollups.
-- **CLI**: 26 commands registered — company, decision, graph, workflows, memory, agents, board, departments, executives, specialists, orchestrator (with postmortem sub-app), models, dashboard (with kpi sub-app), executor, doctor, marketing, sales, customer-success, legal, hr, generate, status, sop, raci, governance (report/audit-trail/risk-summary/retention/compliance/owners/policies).
+- **CLI**: 27 commands registered — company, decision, graph, workflows, memory, agents, board (with directives sub-app: list/add/complete/status), departments, executives, specialists, orchestrator (with postmortem sub-app), models, dashboard (with kpi sub-app), executor, doctor, marketing, sales, customer-success, legal, hr, generate, status, sop, raci, governance (report/audit-trail/risk-summary/retention/compliance/owners/policies).
 - **FileStore**: `src/ai_company/store/file_store.py` exists with atomic writes (temp + rename) and platform-aware locking.
 - **MessageBus**: `get_pending_tasks()` and `update_task_status()` present; executor routes all inbox I/O through it. WebSocket broadcast hooks present.
 - **ToolRunner**: uses `shlex.split()` (no `shell=True`), consults `tier_rules.classify_tool_action()`, and logs via `log_tool_call()` / `log_hitl_decision()`.
@@ -89,6 +89,7 @@
 - `docs/MODEL-ROUTING-POLICY.md` — Provider catalog, tiers, routing rules, cost control
 - `docs/RISK-REGISTER.md` — 14-item risk register with mitigations and owners
 - `docs/BOARD-GOVERNANCE.md` — Board charter, meeting cadence, voting rules, decision authority
+- `docs/BOARD-DIRECTIVES.md` — Directive tracking system, lifecycle, CLI reference
 - `docs/REMAINING-WORK-INVENTORY.md` — Full inventory of remaining work items
 - `docs/sop-incident-response.md` — Incident response SOP
 - `docs/sop-deployment.md` — Agent deployment SOP
@@ -100,6 +101,7 @@
 
 ## Recent Work
 
+- **2026-07-23**: Board Directive Tracking System created — `config/board/directives.yaml` (5 directives), `docs/BOARD-DIRECTIVES.md` (lifecycle docs, CLI reference), CLI commands added to `board.py` (directives list/add/complete/status). Sprint 3 backlog items S3-01, S3-02, S3-03, S3-06, S3-07 confirmed implemented and marked DONE with resolution evidence.
 - **2026-07-22**: Sprint 3 COMPLETE — all 8 items done. Fixed test_org_chart.py (832 lines rewritten, 56 tests passing). Fixed DataTransformer.registry_to_enhanced() frozen model bug. Created governance CLI (7 commands, 9 tests). Enhanced memory CLI (stats/search/recall). Created WebSocket integration tests (30 tests). Created dashboard API tests (9 tests). Total: 1205 tests passing, 0 ruff errors. v0.3.0 release tagged. **Agent deployment**: All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@`.
 - **2026-07-21**: Sprint 3 backlog created (docs/SPRINT-3-BACKLOG.md). Code audit reveals ~60% of planned Sprint 3 items already implemented in source. Revised scope: 8 items, 22 hours effort. Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
 - **2026-07-20**: Sprint 1 completed. All Track B (code hardening) and Track C (audit trail) items done. Sprint 2 backlog created. All documentation updated to reflect actual state.

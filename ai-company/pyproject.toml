@@ -46,6 +46,7 @@ dev = [
     "types-PyYAML",
     "bandit",
     "safety",
+    "pip-audit",
     "pytest-asyncio",
     "build",
 ]
