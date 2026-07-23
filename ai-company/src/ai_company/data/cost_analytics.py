@@ -59,8 +59,25 @@ class CostAnalytics:
     ) -> int:
         """Record a single LLM usage event.
 
-        Returns the row ID of the inserted record.
+        Returns the row ID of the inserted record.  If an identical record
+        already exists (same task_id, provider, model, prompt_tokens,
+        completion_tokens, and iteration), the existing row ID is returned
+        instead of creating a duplicate.
         """
+        # Check if identical record already exists
+        existing = self._db.fetchone(
+            """SELECT id FROM cost_records
+               WHERE task_id = ? AND provider = ? AND model = ?
+               AND prompt_tokens = ? AND completion_tokens = ? AND iteration = ?""",
+            (task_id, provider, model, prompt_tokens, completion_tokens, iteration),
+        )
+        if existing:
+            logger.debug(
+                "Cost dedup: skipping duplicate record for task %s (provider=%s, model=%s)",
+                task_id, provider, model,
+            )
+            return existing["id"]
+
         ts = timestamp or datetime.now(timezone.utc).isoformat()
         cursor = self._db.execute(
             """INSERT INTO cost_records

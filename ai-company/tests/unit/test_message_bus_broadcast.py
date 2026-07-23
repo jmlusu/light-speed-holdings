@@ -161,3 +161,38 @@ class TestMessageBusBroadcast:
         result = bus.update_task_status("nonexistent", "completed")
         assert result is None
         assert len(events) == 0  # No broadcast for missing task
+
+    def test_claim_next_pending(self, tmp_path: Path) -> None:
+        """claim_next_pending atomically claims the first pending task."""
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        bus.send_task(Task(id="t1", sender_id="a", receiver_id="b", instruction="x"))
+        bus.send_task(Task(id="t2", sender_id="a", receiver_id="c", instruction="y"))
+
+        claimed = bus.claim_next_pending()
+        assert claimed is not None
+        assert claimed.id == "t1"
+        assert claimed.status.value == "in_progress"
+
+        # Second claim gets the next pending
+        claimed2 = bus.claim_next_pending()
+        assert claimed2 is not None
+        assert claimed2.id == "t2"
+
+        # No more pending
+        assert bus.claim_next_pending() is None
+
+    def test_claim_next_pending_empty(self, tmp_path: Path) -> None:
+        """claim_next_pending returns None when no tasks exist."""
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        assert bus.claim_next_pending() is None
+
+    def test_claim_next_pending_skips_completed(self, tmp_path: Path) -> None:
+        """claim_next_pending skips non-pending tasks."""
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        bus.send_task(Task(id="done", sender_id="a", receiver_id="b", instruction="x"))
+        bus.update_task_status("done", "completed")
+        bus.send_task(Task(id="pending", sender_id="a", receiver_id="c", instruction="y"))
+
+        claimed = bus.claim_next_pending()
+        assert claimed is not None
+        assert claimed.id == "pending"

@@ -119,13 +119,8 @@ def run_task(
         registry_path=registry,
     )
 
-    # Load the specific task
-    inbox_path = Path(executor.bus.storage_path)
-    if not inbox_path.exists():
-        typer.echo("No inbox found.")
-        raise typer.Exit(1)
-
-    tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
+    # Load the specific task via MessageBus
+    tasks = executor.bus.get_all_tasks_raw()
     task_data = next((t for t in tasks if t.get("id") == task_id), None)
 
     if not task_data:
@@ -188,13 +183,7 @@ def status() -> None:
     from ai_company.orchestrator.message_bus import MessageBus
 
     bus = MessageBus()
-    inbox_path = Path(bus.storage_path)
-
-    if not inbox_path.exists():
-        typer.echo("No inbox found.")
-        return
-
-    tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
+    tasks = bus.get_all_tasks_raw()
     status_counts: dict[str, int] = {}
     for t in tasks:
         s = t.get("status", "unknown")
@@ -289,21 +278,15 @@ def dlq_retry(
         typer.echo("Failed to restore task.")
         raise typer.Exit(1)
 
-    # Re-enqueue as pending
+    # Re-enqueue as pending via MessageBus
     restored["status"] = "pending"
     restored.pop("completed_at", None)
     restored.pop("result", None)
 
     bus = MessageBus()
-    inbox_path = Path(bus.storage_path)
-    tasks: list[dict] = []
-    if inbox_path.exists():
-        try:
-            tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            pass
-    tasks.append(restored)
-    inbox_path.write_text(json.dumps(tasks, indent=2, default=str), encoding="utf-8")
+    from ai_company.models.task import Task
+    task = Task(**restored)
+    bus.send_task(task)
 
     typer.echo(f"Task {matched_id[:8]} restored to inbox as pending.")
 

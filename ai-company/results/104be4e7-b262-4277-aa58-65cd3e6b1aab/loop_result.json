@@ -1,0 +1,12 @@
+{
+  "task_id": "104be4e7-b262-4277-aa58-65cd3e6b1aab",
+  "agent": "chief-of-staff",
+  "final_response": "",
+  "iterations": 0,
+  "total_tokens": 0,
+  "total_cost_usd": 0.0,
+  "done": false,
+  "error": "LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+  "tool_results": [],
+  "timestamp": "2026-07-23T23:50:47.968777"
+}

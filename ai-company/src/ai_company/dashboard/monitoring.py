@@ -72,6 +72,11 @@ _metrics: dict[str, float] = {
     # Circuit breaker
     "circuit_breaker_trips_total": 0,
     "circuit_breaker_half_open_total": 0,
+    # Idempotency / dedup metrics
+    "idempotency_violations_total": 0,     # Tasks skipped due to duplicate ID
+    "idempotency_key_dedup_total": 0,      # Tasks skipped due to idempotency_key
+    "memory_dedup_total": 0,               # Memory entries skipped (content hash match)
+    "cost_dedup_total": 0,                 # Cost records skipped (composite key match)
 }
 
 _start_time = time.time()
@@ -186,6 +191,22 @@ def _render_prometheus_text() -> str:
         "circuit_breaker_half_open_total": (
             "ai_company_circuit_breaker_half_open_total",
             "Total circuit breaker half-open transitions",
+        ),
+        "idempotency_violations_total": (
+            "ai_company_idempotency_violations_total",
+            "Total tasks skipped due to duplicate ID",
+        ),
+        "idempotency_key_dedup_total": (
+            "ai_company_idempotency_key_dedup_total",
+            "Total tasks skipped due to idempotency key match",
+        ),
+        "memory_dedup_total": (
+            "ai_company_memory_dedup_total",
+            "Total memory entries skipped due to content hash dedup",
+        ),
+        "cost_dedup_total": (
+            "ai_company_cost_dedup_total",
+            "Total cost records skipped due to composite key dedup",
         ),
     }
 

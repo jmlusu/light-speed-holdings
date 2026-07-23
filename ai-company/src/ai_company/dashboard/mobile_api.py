@@ -23,6 +23,18 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/mobile")
 
+# ── MessageBus singleton for GAP-011 fix ──────────────────────────────
+_bus = None
+
+
+def _get_bus() -> Any:
+    """Return the shared MessageBus instance, creating it lazily."""
+    global _bus
+    if _bus is None:
+        from ai_company.orchestrator.message_bus import MessageBus
+        _bus = MessageBus()
+    return _bus
+
 # ── Helpers (shared with main api.py) ───────────────────────────────
 # GAP-011: route all state I/O through the StateStore repository. Fetched
 # lazily so the boot-time explicit configuration (Option B) takes effect.
@@ -190,7 +202,7 @@ def _save_devices(devices: list[dict]) -> None:
 @router.get("/dashboard", response_model=MobileDashboardSummary)
 def mobile_dashboard(compact: bool = True) -> MobileDashboardSummary:
     """Condensed dashboard summary for mobile clients."""
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _get_bus().get_all_tasks_raw()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
     registry = _load_registry()
@@ -253,7 +265,7 @@ def mobile_tasks(
 ) -> dict[str, Any]:
     """Paginated task list with cursor-based navigation."""
     limit = min(limit, 50)
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _get_bus().get_all_tasks_raw()
 
     # Apply filters
     if status:
@@ -401,11 +413,13 @@ def _resolve_escalation(task_id: str) -> dict[str, Any]:
 def _delegate_task(task_id: str, delegate_to: str) -> dict[str, Any]:
     if not delegate_to:
         return {"type": "delegate", "target_id": task_id, "ok": False, "error": "No delegate target specified"}
-    tasks = _load_json(".opencode/inbox.json")
+    bus = _get_bus()
+    # Find the task by ID or prefix
+    tasks = bus.get_all_tasks_raw()
     for t in tasks:
         if t.get("id", "")[:8] == task_id or t.get("id") == task_id:
-            t["receiver_id"] = delegate_to
-            _save_json(".opencode/inbox.json", tasks)
+            full_id = t.get("id", "")
+            bus.update_task(full_id, {"receiver_id": delegate_to})
             return {"type": "delegate", "target_id": task_id, "ok": True, "delegated_to": delegate_to}
     return {"type": "delegate", "target_id": task_id, "ok": False, "error": "Task not found"}
 
@@ -537,7 +551,7 @@ def swipe_approval(req: SwipeDecision) -> dict[str, Any]:
 @router.get("/kpis/compact")
 def compact_kpis() -> dict[str, Any]:
     """Minimal KPI payload for widgets and badges."""
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _get_bus().get_all_tasks_raw()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
 
@@ -775,7 +789,7 @@ def mobile_sync(req: SyncRequest) -> dict[str, Any]:
         processed_actions.append(result)
 
     # Compute dashboard delta
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = _get_bus().get_all_tasks_raw()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
 

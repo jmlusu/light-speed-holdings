@@ -29,6 +29,14 @@ logger = logging.getLogger(__name__)
 # Type alias for the optional broadcast callback
 BroadcastCallback = Callable[[dict[str, Any], str], None] | None
 
+# Priority sort order for task ordering (R2 fix)
+PRIORITY_ORDER: dict[str, int] = {
+    "critical": 0,
+    "high": 1,
+    "medium": 2,
+    "low": 3,
+}
+
 
 class MessageBus:
     """JSON-backed task queue with atomic writes and correlation tracking.
@@ -108,20 +116,33 @@ class MessageBus:
             task.correlation_id = str(uuid.uuid4())
         task_dict = task.model_dump()
 
+        appended = False
+
         def _updater(tasks: List[dict]) -> List[dict]:
+            nonlocal appended
+            existing_ids = {t.get("id") for t in tasks}
+            if task.id in existing_ids:
+                logger.warning(
+                    "Task %s already exists in inbox — skipping duplicate (correlation=%s).",
+                    task.id, task.correlation_id,
+                )
+                appended = False
+                return tasks
             tasks.append(task_dict)
+            appended = True
             return tasks
 
         self._mutate_tasks(_updater)
-        logger.info(
-            "Task %s sent from [%s] to [%s] (correlation=%s, caller_correlation=%s).",
-            task.id,
-            task.sender_id,
-            task.receiver_id,
-            task.correlation_id,
-            get_correlation_id(),
-        )
-        self._emit(task_dict, "created")
+        if appended:
+            logger.info(
+                "Task %s sent from [%s] to [%s] (correlation=%s, caller_correlation=%s).",
+                task.id,
+                task.sender_id,
+                task.receiver_id,
+                task.correlation_id,
+                get_correlation_id(),
+            )
+            self._emit(task_dict, "created")
 
     def get_inbox(self, agent_id: str) -> List[Task]:
         """Return all tasks addressed to *agent_id*."""
@@ -145,13 +166,77 @@ class MessageBus:
     # ── Pending tasks (executor integration) ──────────────────────────
 
     def get_pending_tasks(self) -> List[Task]:
-        """Return all tasks with status ``pending``.
+        """Return all tasks with status ``pending``, sorted by priority.
 
+        Priority order: critical > high > medium > low.
+        Tasks with a future ``next_retry_at`` are excluded — they are
+        waiting for their scheduled retry window.
         This is the primary method used by the executor loop to fetch
         work, replacing direct ``inbox.json`` reads.
         """
+        from datetime import datetime as _dt
+
+        now = _dt.now()
         tasks = self._load_tasks()
-        return [Task(**t) for t in tasks if t.get("status") == "pending"]
+        pending: list[Task] = []
+        for t in tasks:
+            if t.get("status") != "pending":
+                continue
+            next_retry = t.get("next_retry_at", "")
+            if next_retry:
+                try:
+                    retry_time = _dt.fromisoformat(next_retry)
+                    if retry_time > now:
+                        continue  # not yet ready for retry
+                except (ValueError, TypeError):
+                    pass
+            pending.append(Task(**t))
+        pending.sort(key=lambda t: PRIORITY_ORDER.get(t.priority.value, 99))
+        return pending
+
+    def claim_next_pending(self) -> Task | None:
+        """Atomically find and claim the next pending task by priority.
+
+        For the JSON-backed MessageBus this is an approximation: we load,
+        find the highest-priority pending task, mark it ``in_progress``, and save.
+        The file lock in ``_mutate_tasks`` serialises concurrent callers,
+        so at most one executor wins per tick.
+
+        For true atomic compare-and-swap, use the SQLite-backed TaskStore.
+        """
+        now = datetime.now().isoformat()
+        claimed: Task | None = None
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            nonlocal claimed
+            # Sort pending tasks by priority (R2 fix)
+            # Skip tasks with a future next_retry_at (R3 fix)
+            now_dt = datetime.now()
+            pending_indices: list[tuple[int, int]] = []
+            for i, t in enumerate(tasks):
+                if t.get("status") != "pending":
+                    continue
+                next_retry = t.get("next_retry_at", "")
+                if next_retry:
+                    try:
+                        retry_time = datetime.fromisoformat(next_retry)
+                        if retry_time > now_dt:
+                            continue  # not yet ready for retry
+                    except (ValueError, TypeError):
+                        pass
+                pending_indices.append((i, PRIORITY_ORDER.get(t.get("priority", "medium"), 99)))
+            pending_indices.sort(key=lambda x: x[1])
+            if pending_indices:
+                idx = pending_indices[0][0]
+                tasks[idx]["status"] = "in_progress"
+                tasks[idx]["updated_at"] = now
+                claimed = Task(**tasks[idx])
+            return tasks
+
+        self._mutate_tasks(_updater)
+        if claimed is not None:
+            self._emit(claimed.model_dump(), "status_changed")
+        return claimed
 
     # ── Task status mutation ─────────────────────────────────────────
 
@@ -229,7 +314,9 @@ class MessageBus:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     tasks[i].update(updates)
-                    tasks[i]["updated_at"] = now
+                    # Only auto-set updated_at if caller didn't provide one
+                    if "updated_at" not in updates:
+                        tasks[i]["updated_at"] = now
                     if not tasks[i].get("created_at"):
                         tasks[i]["created_at"] = now
                     # If status is being set, track completed_at
@@ -311,6 +398,67 @@ class MessageBus:
             if t.get("id") == task_id:
                 return Task(**t)
         return None
+
+    # ── Retry support (R3 fix) ─────────────────────────────────────
+
+    def retry_task(self, task_id: str, delay_seconds: float) -> Task | None:
+        """Schedule a failed task for retry after *delay_seconds*.
+
+        Increments retry_count, computes next_retry_at, and sets status
+        back to pending.  Returns the updated Task or None if not found
+        or max retries exceeded.
+        """
+        from datetime import datetime as _dt, timedelta
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    retry_count = t.get("retry_count", 0) + 1
+                    max_retries = t.get("max_retries", 3)
+                    if retry_count > max_retries:
+                        logger.warning(
+                            "Task %s exceeded max retries (%d) — not retrying.",
+                            task_id, max_retries,
+                        )
+                        return tasks
+                    next_retry = _dt.now() + timedelta(seconds=delay_seconds)
+                    tasks[i]["retry_count"] = retry_count
+                    tasks[i]["next_retry_at"] = next_retry.isoformat()
+                    tasks[i]["status"] = "pending"
+                    tasks[i]["updated_at"] = _dt.now().isoformat()
+                    logger.info(
+                        "Task %s scheduled for retry %d/%d at %s",
+                        task_id, retry_count, max_retries, next_retry.isoformat(),
+                    )
+                    break
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        for t in updated:
+            if t.get("id") == task_id:
+                return Task(**t)
+        return None
+
+    def get_retryable_tasks(self) -> List[Task]:
+        """Return tasks whose next_retry_at has passed and status is pending."""
+        from datetime import datetime as _dt
+
+        now = _dt.now()
+        tasks = self._load_tasks()
+        result = []
+        for t in tasks:
+            if t.get("status") != "pending":
+                continue
+            next_retry = t.get("next_retry_at", "")
+            if not next_retry:
+                continue
+            try:
+                retry_time = _dt.fromisoformat(next_retry)
+                if retry_time <= now:
+                    result.append(Task(**t))
+            except (ValueError, TypeError):
+                continue
+        return result
 
     def count_by_status(self) -> dict[str, int]:
         """Return a mapping of status name -> count across all tasks."""

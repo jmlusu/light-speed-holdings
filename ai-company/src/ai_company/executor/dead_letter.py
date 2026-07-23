@@ -7,11 +7,12 @@ inspection or retry.
 
 from __future__ import annotations
 
-import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
+
+from ai_company.store.file_store import FileStore
 
 logger = logging.getLogger(__name__)
 
@@ -22,26 +23,32 @@ DEFAULT_DLQ_PATH: str = ".opencode/dead_letter.json"
 
 
 class DeadLetterQueue:
-    """Manages the dead-letter file for stale / failed tasks."""
+    """Manages the dead-letter file for stale / failed tasks.
+
+    Uses FileStore for atomic, lock-safe persistence (R4 fix).
+    """
 
     def __init__(self, dlq_path: str = DEFAULT_DLQ_PATH) -> None:
         self.dlq_path = Path(dlq_path)
         self.dlq_path.parent.mkdir(parents=True, exist_ok=True)
-        if not self.dlq_path.exists():
+        self._store = FileStore(self.dlq_path.parent, backup=True)
+        self._dlq_name = self.dlq_path.name
+        if not self._store.exists(self._dlq_name):
             self._save_entries([])
 
     # ── Persistence ──────────────────────────────────────────────────
 
     def _load_entries(self) -> list[dict[str, Any]]:
-        try:
-            return json.loads(self.dlq_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, FileNotFoundError):
+        data = self._store.read_json(self._dlq_name)
+        if data is None:
             return []
+        if not isinstance(data, list):
+            logger.warning("Corrupt DLQ data — returning empty list.")
+            return []
+        return data
 
     def _save_entries(self, entries: list[dict[str, Any]]) -> None:
-        self.dlq_path.write_text(
-            json.dumps(entries, indent=2, default=str), encoding="utf-8"
-        )
+        self._store.write_json(self._dlq_name, entries)
 
     # ── Public API ───────────────────────────────────────────────────
 
@@ -102,22 +109,22 @@ class DeadLetterQueue:
 
 
 def detect_stale_tasks(
-    inbox_path: Path,
+    bus: Any,
     dlq: DeadLetterQueue,
     threshold_minutes: int = STALE_THRESHOLD_MINUTES,
 ) -> list[dict[str, Any]]:
-    """Scan *inbox_path* for ``in_progress`` tasks older than *threshold_minutes*.
+    """Scan the task bus for ``in_progress`` tasks older than *threshold_minutes*.
 
     Each stale task is moved to the DLQ **and** removed from the inbox.
     Returns the list of moved task dicts.
-    """
-    if not inbox_path.exists():
-        return []
 
-    try:
-        tasks: list[dict[str, Any]] = json.loads(inbox_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return []
+    Args:
+        bus: A MessageBus instance (or any object with `get_all_tasks_raw()`
+            and `_mutate_tasks()` methods).
+        dlq: The dead-letter queue to receive stale tasks.
+        threshold_minutes: Minutes of inactivity before a task is stale.
+    """
+    tasks: list[dict[str, Any]] = bus.get_all_tasks_raw()
 
     now = datetime.now()
     cutoff = now - timedelta(minutes=threshold_minutes)
@@ -155,9 +162,11 @@ def detect_stale_tasks(
             moved.append(task)
 
     if stale_ids:
-        # Rewrite inbox without the stale tasks
-        remaining = [t for t in tasks if t.get("id") not in stale_ids]
-        inbox_path.write_text(json.dumps(remaining, indent=2, default=str), encoding="utf-8")
+        # Remove stale tasks from the inbox via MessageBus
+        def _remove_stale(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
+            return [t for t in (data or []) if t.get("id") not in stale_ids]
+
+        bus._mutate_tasks(_remove_stale)
         logger.info("Moved %d stale tasks to DLQ.", len(moved))
 
     return moved

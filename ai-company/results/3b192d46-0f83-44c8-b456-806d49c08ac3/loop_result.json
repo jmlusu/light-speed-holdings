@@ -1,0 +1,12 @@
+{
+  "task_id": "3b192d46-0f83-44c8-b456-806d49c08ac3",
+  "agent": "customer-success-specialist",
+  "final_response": "",
+  "iterations": 0,
+  "total_tokens": 0,
+  "total_cost_usd": 0.0,
+  "done": false,
+  "error": "LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+  "tool_results": [],
+  "timestamp": "2026-07-23T23:50:43.336883"
+}

@@ -8,6 +8,16 @@ GAP-017 hardening:
 GAP-001 fix:
 - All inbox.json I/O now goes through ``MessageBus`` methods exclusively.
   The executor no longer reads or writes the inbox file directly.
+
+AI-1: SQLite TaskStore backend (feature flag ``TASK_STORE_BACKEND=sqlite``).
+- When enabled the executor uses :class:`TaskStore` instead of
+  :class:`MessageBus`, providing INSERT OR REPLACE semantics and
+  atomic SQL transactions.
+
+AI-3: Compare-and-swap tick via ``claim_next_pending()``.
+- The executor now atomically claims one pending task at a time instead
+  of fetching all pending and iterating — eliminating the check-then-act
+  race condition.
 """
 
 from __future__ import annotations
@@ -15,6 +25,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -77,7 +88,8 @@ class Executor:
     - tick(): Single-pass -- process all pending tasks once and return.
     - start(): Continuous polling -- runs tick() in a loop.
 
-    All inbox I/O goes through ``MessageBus`` (GAP-001 fix).
+    All inbox I/O goes through ``MessageBus`` (GAP-001 fix) or the
+    SQLite-backed ``TaskStore`` (AI-1 feature flag).
 
     GAP-003 fix: ToolRunner classifies each tool action via tier_rules
     before requesting HITL approval.
@@ -85,6 +97,14 @@ class Executor:
     GAP-004 fix: Non-blocking HITL approval — the executor polls for
     resolved approvals on each tick, allowing other tasks to proceed
     while awaiting human decisions.
+
+    AI-1: When ``TASK_STORE_BACKEND=sqlite`` (or unset), the executor
+    tries to use the SQLite-backed TaskStore.  Falls back to MessageBus
+    if the database is unavailable.
+
+    AI-3: ``tick()`` now uses ``claim_next_pending()`` — an atomic
+    compare-and-swap — instead of ``get_pending_tasks()`` + iterate,
+    eliminating the check-then-act race condition.
     """
 
     def __init__(
@@ -99,8 +119,8 @@ class Executor:
         self.agents_dir = agents_dir
         self.results_dir = Path(results_dir)
 
-        # Core components
-        self.bus = MessageBus(broadcast_callback=self._make_broadcast_callback())
+        # AI-1: Core components — TaskStore (SQLite) or MessageBus (JSON)
+        self.bus = self._create_task_store()
         self.llm = LLMClient(config_path=config_path, registry_path=registry_path)
         self.runner = ToolRunner()
         self.hitl = HITLGate(ApprovalGate())
@@ -146,6 +166,40 @@ class Executor:
         # Maps task_id -> HITL request_id for tasks parked in WAITING_APPROVAL.
         self._pending_approvals: dict[str, str] = {}
 
+    # ── AI-1: Task backend factory ───────────────────────────────────
+
+    @staticmethod
+    def _create_task_store() -> Any:
+        """Create the task backend.
+
+        If ``TASK_STORE_BACKEND`` is ``"sqlite"`` (or unset when SQLite is
+        available), a SQLite-backed :class:`TaskStore` is returned.  If the
+        database cannot be initialised, the JSON-backed :class:`MessageBus`
+        is used as a fallback.
+
+        The returned object exposes the same public API used by the
+        executor: ``send_task``, ``get_pending_tasks``,
+        ``claim_next_pending``, ``get_task_by_id``, ``update_task_status``,
+        and ``get_all_tasks``.
+        """
+        backend = os.environ.get("TASK_STORE_BACKEND", "sqlite").lower()
+        if backend == "sqlite":
+            try:
+                from ai_company.data import TaskStore, init_database
+
+                db = init_database()
+                store = TaskStore(db)
+                logger.info("Using SQLite TaskStore backend.")
+                return store  # type: ignore[return-value]
+            except Exception:
+                logger.warning(
+                    "SQLite backend unavailable — falling back to MessageBus.",
+                    exc_info=True,
+                )
+
+        logger.info("Using JSON MessageBus backend.")
+        return MessageBus(broadcast_callback=Executor._make_broadcast_callback())
+
     def start(self) -> None:
         """Start continuous polling loop. Call stop() to halt."""
         self.running = True
@@ -175,27 +229,51 @@ class Executor:
         moved to the dead-letter queue (GAP-017).  Parked tasks awaiting
         HITL approval (GAP-004) are resumed if a human decision has been
         recorded; otherwise they are left parked so the loop can continue.
+
+        AI-3: Uses ``claim_next_pending()`` — an atomic compare-and-swap
+        — to claim one task at a time instead of fetching all pending and
+        iterating.  This eliminates the check-then-act race condition.
         """
         # Convert due scheduled tasks into inbox tasks
         self.scheduler.create_pending_tasks(self.bus)
 
         # GAP-017 -- move stale tasks to dead-letter queue
-        stale = detect_stale_tasks(Path(self.bus.storage_path), self.dlq)
-        if stale:
-            logger.warning("Moved %d stale task(s) to dead-letter queue.", len(stale))
+        self._detect_stale_tasks()
 
         # GAP-004 -- resume any parked tasks whose HITL request resolved.
         self._resume_parked_tasks()
 
-        # GAP-001 fix: use MessageBus.get_pending_tasks() instead of direct I/O
-        pending = self.bus.get_pending_tasks()
-        for task in pending:
+        # AI-3: Atomic compare-and-swap — claim one pending task at a time.
+        processed = 0
+        while True:
+            task = self.bus.claim_next_pending()
+            if task is None:
+                break
             self._process_task(task)
+            processed += 1
 
         # GAP-005: Run memory consolidation periodically
         self._consolidation_scheduler.on_tick()
 
-        return len(pending)
+        return processed
+
+    def _detect_stale_tasks(self) -> None:
+        """Detect and move stale ``in_progress`` tasks to the dead-letter queue.
+
+        Dispatches to either the SQLite-native ``TaskStore.detect_stale_tasks``
+        or the file-based ``dead_letter.detect_stale_tasks`` depending on
+        which backend is in use.
+        """
+        from ai_company.data.task_store import TaskStore
+
+        if isinstance(self.bus, TaskStore):
+            stale = self.bus.detect_stale_tasks(self.dlq)
+        else:
+            # MessageBus — use the MessageBus-backed detector
+            stale = detect_stale_tasks(self.bus, self.dlq)
+
+        if stale:
+            logger.warning("Moved %d stale task(s) to dead-letter queue.", len(stale))
 
     def _resume_parked_tasks(self) -> int:
         """Resume tasks parked in WAITING_APPROVAL once HITL resolves.
@@ -330,6 +408,8 @@ class Executor:
                 status="failed",
                 result_summary=str(exc),
             )
+            # R3: Auto-retry on failure if retries remain
+            self._maybe_retry(task)
             return
 
         # 5. Handle delegated tasks from tool results
@@ -366,12 +446,38 @@ class Executor:
                 tools_used=[r.tool for r in result.tool_results if r.tool],
             )
             logger.error("  FAILED: %s", error_msg[:80])
+            # R3: Auto-retry on failure if retries remain
+            self._maybe_retry(task)
 
     def _complete_task(self, task: Task, status: TaskStatus, result: str) -> None:
         """Mark a task as completed/failed via MessageBus (GAP-001 fix)."""
         old_status = task.status.value
         self.bus.update_task_status(task.id, status.value, result=result)
         log_task_status(task.id, task.receiver_id, old_status, status.value)
+
+    def _maybe_retry(self, task: Task) -> None:
+        """R3: Schedule automatic retry with exponential backoff if retries remain.
+
+        Delay progression: 30s, 60s, 120s, ... (30 * 2^retry_count).
+        Only retries for the JSON-backed MessageBus (SQLite has native support).
+        """
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        if not isinstance(self.bus, MessageBus):
+            return  # SQLite TaskStore handles retries differently
+
+        # Re-fetch the task to get the latest retry_count
+        fresh_task = self.bus.get_task_by_id(task.id)
+        if fresh_task is None:
+            return
+
+        if fresh_task.retry_count < fresh_task.max_retries:
+            delay = 30 * (2 ** fresh_task.retry_count)  # 30s, 60s, 120s, ...
+            self.bus.retry_task(task.id, delay_seconds=delay)
+            logger.info(
+                "Task %s scheduled for retry in %.0fs (attempt %d/%d)",
+                task.id, delay, fresh_task.retry_count + 1, fresh_task.max_retries,
+            )
 
     def _save_loop_artifacts(self, task: Task, result: Any) -> None:
         """Save agentic loop execution artifacts to results/{task_id}/."""

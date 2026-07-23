@@ -16,7 +16,7 @@ class CustomerSuccessKPICollector(KPICollector):
     def collect(self) -> dict[str, Any]:
         tickets = self._load_json("orchestrator/cs/tickets.json")
         surveys = self._load_json("orchestrator/cs/surveys.json")
-        tasks = self._load_json(".opencode/inbox.json")
+        tasks = self._get_tasks()
 
         # Count CS-related tasks
         cs_receivers = {"customer-success", "support_agent"}

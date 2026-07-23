@@ -618,5 +618,787 @@
     "created_at": "2026-07-23T13:27:33.804644",
     "access_count": 0,
     "seq": 516
+  },
+  {
+    "id": "episodic_20260723_235038_249880",
+    "memory_type": "episodic",
+    "content": "Task 0b24cd5c-9fe3-4ff4-83cb-28fb4816d96c: Please conduct a through analysis of all agents. I want to know which agents that don't report to anyone\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "0b24cd5c-9fe3-4ff4-83cb-28fb4816d96c",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:38.249880",
+    "access_count": 0,
+    "seq": 76
+  },
+  {
+    "id": "episodic_20260723_235038_515328",
+    "memory_type": "episodic",
+    "content": "Task 7fc82fa2-65cd-486e-8d94-768199971419: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "7fc82fa2-65cd-486e-8d94-768199971419",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:38.515328",
+    "access_count": 5,
+    "seq": 77
+  },
+  {
+    "id": "episodic_20260723_235038_732924",
+    "memory_type": "episodic",
+    "content": "Task 774b38c4-87e5-4f49-910f-d07e4ecebb5e: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "774b38c4-87e5-4f49-910f-d07e4ecebb5e",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:38.732924",
+    "access_count": 5,
+    "seq": 78
+  },
+  {
+    "id": "episodic_20260723_235038_954024",
+    "memory_type": "episodic",
+    "content": "Task 2c117508-8395-4979-bad7-e9a215a98907: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "2c117508-8395-4979-bad7-e9a215a98907",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:38.954024",
+    "access_count": 5,
+    "seq": 79
+  },
+  {
+    "id": "episodic_20260723_235039_169732",
+    "memory_type": "episodic",
+    "content": "Task b55af503-c2d3-4a14-97e9-7cc71483f781: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "b55af503-c2d3-4a14-97e9-7cc71483f781",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:39.169732",
+    "access_count": 5,
+    "seq": 80
+  },
+  {
+    "id": "episodic_20260723_235039_430313",
+    "memory_type": "episodic",
+    "content": "Task 9db0b295-1fb6-4dde-b669-6c59103a5269: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "9db0b295-1fb6-4dde-b669-6c59103a5269",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:39.430313",
+    "access_count": 5,
+    "seq": 81
+  },
+  {
+    "id": "episodic_20260723_235039_672165",
+    "memory_type": "episodic",
+    "content": "Task 4d219485-7f3b-42e0-b7d3-a71249252b66: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "4d219485-7f3b-42e0-b7d3-a71249252b66",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:39.672687",
+    "access_count": 5,
+    "seq": 82
+  },
+  {
+    "id": "episodic_20260723_235039_944330",
+    "memory_type": "episodic",
+    "content": "Task 270a7f27-866f-4fb0-b2c6-97d389758da2: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "270a7f27-866f-4fb0-b2c6-97d389758da2",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:39.944330",
+    "access_count": 5,
+    "seq": 83
+  },
+  {
+    "id": "episodic_20260723_235040_202880",
+    "memory_type": "episodic",
+    "content": "Task 8bfa6ce2-533e-42f0-b258-bf4e5c6212a2: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "8bfa6ce2-533e-42f0-b258-bf4e5c6212a2",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:40.203536",
+    "access_count": 5,
+    "seq": 84
+  },
+  {
+    "id": "episodic_20260723_235040_486549",
+    "memory_type": "episodic",
+    "content": "Task 83dd10e2-5d1d-4db7-93ab-3fc3a6a7ebd7: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "83dd10e2-5d1d-4db7-93ab-3fc3a6a7ebd7",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:40.486549",
+    "access_count": 5,
+    "seq": 85
+  },
+  {
+    "id": "episodic_20260723_235040_731956",
+    "memory_type": "episodic",
+    "content": "Task 89ebf6dc-cc2d-4c8e-a943-41f10cb457b1: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "89ebf6dc-cc2d-4c8e-a943-41f10cb457b1",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:40.731956",
+    "access_count": 5,
+    "seq": 86
+  },
+  {
+    "id": "episodic_20260723_235040_954639",
+    "memory_type": "episodic",
+    "content": "Task 6074c0f8-05e7-4262-951f-1c2a68a450e6: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "6074c0f8-05e7-4262-951f-1c2a68a450e6",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:40.954639",
+    "access_count": 5,
+    "seq": 87
+  },
+  {
+    "id": "episodic_20260723_235041_176684",
+    "memory_type": "episodic",
+    "content": "Task b0adc89f-e7f9-47ce-9d3a-34d829e505cd: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "b0adc89f-e7f9-47ce-9d3a-34d829e505cd",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:41.176684",
+    "access_count": 5,
+    "seq": 88
+  },
+  {
+    "id": "episodic_20260723_235041_397213",
+    "memory_type": "episodic",
+    "content": "Task 7403eb00-210a-44b6-9e2b-81029c44abf2: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "7403eb00-210a-44b6-9e2b-81029c44abf2",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:41.397213",
+    "access_count": 5,
+    "seq": 89
+  },
+  {
+    "id": "episodic_20260723_235041_584509",
+    "memory_type": "episodic",
+    "content": "Task 96627191-891d-48e2-8f7f-c5b392ab07d6: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "96627191-891d-48e2-8f7f-c5b392ab07d6",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:41.585045",
+    "access_count": 5,
+    "seq": 90
+  },
+  {
+    "id": "episodic_20260723_235041_784861",
+    "memory_type": "episodic",
+    "content": "Task af50a65f-e6c7-4ecd-adcb-329f43fd5073: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "af50a65f-e6c7-4ecd-adcb-329f43fd5073",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:41.784861",
+    "access_count": 5,
+    "seq": 91
+  },
+  {
+    "id": "episodic_20260723_235041_978258",
+    "memory_type": "episodic",
+    "content": "Task eced79b0-2663-4be6-afa6-e7e6179c7dbd: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "eced79b0-2663-4be6-afa6-e7e6179c7dbd",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:41.978258",
+    "access_count": 5,
+    "seq": 92
+  },
+  {
+    "id": "episodic_20260723_235042_179056",
+    "memory_type": "episodic",
+    "content": "Task dc06bbb7-666e-46b7-89ab-125f0c9b966a: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "dc06bbb7-666e-46b7-89ab-125f0c9b966a",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:42.179056",
+    "access_count": 5,
+    "seq": 93
+  },
+  {
+    "id": "episodic_20260723_235042_383590",
+    "memory_type": "episodic",
+    "content": "Task 9c52105d-3262-4af3-9cff-b0b2972c669c: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "9c52105d-3262-4af3-9cff-b0b2972c669c",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:42.383590",
+    "access_count": 5,
+    "seq": 94
+  },
+  {
+    "id": "episodic_20260723_235042_581791",
+    "memory_type": "episodic",
+    "content": "Task 5a4e8a65-b5f7-4f97-bc08-bdf955349ab6: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "5a4e8a65-b5f7-4f97-bc08-bdf955349ab6",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:42.581791",
+    "access_count": 5,
+    "seq": 95
+  },
+  {
+    "id": "episodic_20260723_235042_797142",
+    "memory_type": "episodic",
+    "content": "Task cf8a079d-253c-46ab-bb8e-de930f67f3b9: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "cf8a079d-253c-46ab-bb8e-de930f67f3b9",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:42.797142",
+    "access_count": 5,
+    "seq": 96
+  },
+  {
+    "id": "episodic_20260723_235042_998668",
+    "memory_type": "episodic",
+    "content": "Task 61cbf2bc-74ef-48c9-b4f3-0e4c88fc836f: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "61cbf2bc-74ef-48c9-b4f3-0e4c88fc836f",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:42.998668",
+    "access_count": 4,
+    "seq": 97
+  },
+  {
+    "id": "episodic_20260723_235043_196783",
+    "memory_type": "episodic",
+    "content": "Task 2791723d-0fe1-41cd-98c9-dad68b8cf694: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "2791723d-0fe1-41cd-98c9-dad68b8cf694",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:43.196783",
+    "access_count": 4,
+    "seq": 98
+  },
+  {
+    "id": "episodic_20260723_235043_406741",
+    "memory_type": "episodic",
+    "content": "Task 3b192d46-0f83-44c8-b456-806d49c08ac3: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "3b192d46-0f83-44c8-b456-806d49c08ac3",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:43.407381",
+    "access_count": 4,
+    "seq": 99
+  },
+  {
+    "id": "episodic_20260723_235043_604467",
+    "memory_type": "episodic",
+    "content": "Task 277af4c2-56ee-40a4-a4e2-1e255b79b30d: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "277af4c2-56ee-40a4-a4e2-1e255b79b30d",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:43.604467",
+    "access_count": 4,
+    "seq": 100
+  },
+  {
+    "id": "episodic_20260723_235043_805356",
+    "memory_type": "episodic",
+    "content": "Task 6ff661b2-c8e0-449c-82cb-3382f2046e3c: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "6ff661b2-c8e0-449c-82cb-3382f2046e3c",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:43.806053",
+    "access_count": 4,
+    "seq": 101
+  },
+  {
+    "id": "episodic_20260723_235044_001821",
+    "memory_type": "episodic",
+    "content": "Task 9ac04fd0-5e27-45af-b323-b191385f4ff4: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "9ac04fd0-5e27-45af-b323-b191385f4ff4",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:44.001821",
+    "access_count": 3,
+    "seq": 102
+  },
+  {
+    "id": "episodic_20260723_235044_210202",
+    "memory_type": "episodic",
+    "content": "Task f5d8c23a-317a-4f8c-8690-b72e1c94f02a: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "f5d8c23a-317a-4f8c-8690-b72e1c94f02a",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:44.210202",
+    "access_count": 3,
+    "seq": 103
+  },
+  {
+    "id": "episodic_20260723_235044_417356",
+    "memory_type": "episodic",
+    "content": "Task d52180f9-8820-48f0-8171-699ef5ff25f6: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "d52180f9-8820-48f0-8171-699ef5ff25f6",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:44.418026",
+    "access_count": 3,
+    "seq": 104
+  },
+  {
+    "id": "episodic_20260723_235044_627719",
+    "memory_type": "episodic",
+    "content": "Task 76f2b135-e2ef-4dc2-91e5-f65852767bf3: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "76f2b135-e2ef-4dc2-91e5-f65852767bf3",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:44.627719",
+    "access_count": 3,
+    "seq": 105
+  },
+  {
+    "id": "episodic_20260723_235044_854373",
+    "memory_type": "episodic",
+    "content": "Task 89300315-fd28-49a8-aab0-1ea75f3b1d3c: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "89300315-fd28-49a8-aab0-1ea75f3b1d3c",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:44.854373",
+    "access_count": 3,
+    "seq": 106
+  },
+  {
+    "id": "episodic_20260723_235045_082658",
+    "memory_type": "episodic",
+    "content": "Task 68411abd-21e3-4128-a940-e4e0aa0d2177: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "68411abd-21e3-4128-a940-e4e0aa0d2177",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:45.082658",
+    "access_count": 2,
+    "seq": 107
+  },
+  {
+    "id": "episodic_20260723_235045_317526",
+    "memory_type": "episodic",
+    "content": "Task 78aa013f-f7a5-46c4-a27d-e9fea56b08cb: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "78aa013f-f7a5-46c4-a27d-e9fea56b08cb",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:45.317526",
+    "access_count": 2,
+    "seq": 108
+  },
+  {
+    "id": "episodic_20260723_235045_542051",
+    "memory_type": "episodic",
+    "content": "Task d9de09e4-f96a-4a9d-b53e-e0fd73359bde: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "d9de09e4-f96a-4a9d-b53e-e0fd73359bde",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:45.542051",
+    "access_count": 2,
+    "seq": 109
+  },
+  {
+    "id": "episodic_20260723_235045_781750",
+    "memory_type": "episodic",
+    "content": "Task 1e1ce013-bcb2-41b4-a133-c108300c1b32: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "1e1ce013-bcb2-41b4-a133-c108300c1b32",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:45.781750",
+    "access_count": 2,
+    "seq": 110
+  },
+  {
+    "id": "episodic_20260723_235046_017345",
+    "memory_type": "episodic",
+    "content": "Task 464e4a75-4ece-4812-a271-f70fd0d73dae: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "464e4a75-4ece-4812-a271-f70fd0d73dae",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:46.017345",
+    "access_count": 2,
+    "seq": 111
+  },
+  {
+    "id": "episodic_20260723_235046_250274",
+    "memory_type": "episodic",
+    "content": "Task f8e70f02-cadd-4bc3-a45b-708bc90d6dbe: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "f8e70f02-cadd-4bc3-a45b-708bc90d6dbe",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:46.250274",
+    "access_count": 1,
+    "seq": 112
+  },
+  {
+    "id": "episodic_20260723_235046_469715",
+    "memory_type": "episodic",
+    "content": "Task 1d64b329-9908-4193-a4c7-babac9d3213c: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "1d64b329-9908-4193-a4c7-babac9d3213c",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:46.470221",
+    "access_count": 1,
+    "seq": 113
+  },
+  {
+    "id": "episodic_20260723_235046_697282",
+    "memory_type": "episodic",
+    "content": "Task 2a19efdd-6f39-4f43-981f-a303353ae46a: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "2a19efdd-6f39-4f43-981f-a303353ae46a",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:46.697282",
+    "access_count": 1,
+    "seq": 114
+  },
+  {
+    "id": "episodic_20260723_235046_922570",
+    "memory_type": "episodic",
+    "content": "Task 02592b54-fe6c-4905-afad-49f490106895: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "02592b54-fe6c-4905-afad-49f490106895",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:46.922570",
+    "access_count": 1,
+    "seq": 115
+  },
+  {
+    "id": "episodic_20260723_235047_151488",
+    "memory_type": "episodic",
+    "content": "Task 28eda6a4-cb2d-47e1-96a4-2945796f6a04: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "28eda6a4-cb2d-47e1-96a4-2945796f6a04",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:47.151488",
+    "access_count": 1,
+    "seq": 116
+  },
+  {
+    "id": "episodic_20260723_235047_372326",
+    "memory_type": "episodic",
+    "content": "Task bf9c55e1-a150-43e1-b6a3-519ce551c37f: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "bf9c55e1-a150-43e1-b6a3-519ce551c37f",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:47.372326",
+    "access_count": 0,
+    "seq": 117
+  },
+  {
+    "id": "episodic_20260723_235047_597355",
+    "memory_type": "episodic",
+    "content": "Task e62d8a1e-9636-4203-9a39-e64cae6bd252: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "e62d8a1e-9636-4203-9a39-e64cae6bd252",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:47.597355",
+    "access_count": 0,
+    "seq": 118
+  },
+  {
+    "id": "episodic_20260723_235047_823690",
+    "memory_type": "episodic",
+    "content": "Task 9e127482-a83d-456a-b126-64745c58171e: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "9e127482-a83d-456a-b126-64745c58171e",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-23T23:50:47.823690",
+    "access_count": 0,
+    "seq": 119
+  },
+  {
+    "id": "episodic_20260723_235048_046936",
+    "memory_type": "episodic",
+    "content": "Task 104be4e7-b262-4277-aa58-65cd3e6b1aab: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "104be4e7-b262-4277-aa58-65cd3e6b1aab",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:48.046936",
+    "access_count": 0,
+    "seq": 120
+  },
+  {
+    "id": "episodic_20260723_235048_294202",
+    "memory_type": "episodic",
+    "content": "Task 80a49fe9-0ff1-4e0b-b313-fbdc8663e23a: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: None",
+    "metadata": {
+      "task_id": "80a49fe9-0ff1-4e0b-b313-fbdc8663e23a",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-23T23:50:48.294202",
+    "access_count": 0,
+    "seq": 121
   }
 ]

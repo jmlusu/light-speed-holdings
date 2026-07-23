@@ -14,7 +14,7 @@ class EngineeringKPICollector(KPICollector):
     department = "engineering"
 
     def collect(self) -> dict[str, Any]:
-        tasks: list[dict] = self._load_json(".opencode/inbox.json")
+        tasks: list[dict] = self._get_tasks()
         escalations = self._load_yaml("orchestrator/escalation.yaml")
         scheduler = self._load_yaml("orchestrator/scheduler.yaml")
 

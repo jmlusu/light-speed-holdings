@@ -1318,6 +1318,42 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
     return result
 
 
+# ── Deduplication / Idempotency Metrics ───────────────────────────────
+
+
+@router.get("/dedup-metrics")
+def dedup_metrics() -> dict[str, Any]:
+    """Return deduplication rates and trends.
+
+    Aggregates idempotency violation, memory dedup, and cost dedup
+    counters from the monitoring module and computes derived rates.
+    """
+    from ai_company.dashboard.monitoring import get_metrics
+
+    metrics = get_metrics()
+
+    tasks_total = metrics.get("tasks_total", 0)
+    idemp_violations = metrics.get("idempotency_violations_total", 0)
+    memory_dedup = metrics.get("memory_dedup_total", 0)
+    cost_dedup = metrics.get("cost_dedup_total", 0)
+
+    return {
+        "idempotency": {
+            "total_task_sends": tasks_total,
+            "duplicates_prevented": idemp_violations,
+            "dedup_rate_pct": round(
+                (idemp_violations / tasks_total * 100) if tasks_total > 0 else 0, 2
+            ),
+        },
+        "memory": {
+            "duplicates_prevented": memory_dedup,
+        },
+        "cost": {
+            "duplicates_prevented": cost_dedup,
+        },
+    }
+
+
 # ── Prometheus-compatible metrics ────────────────────────────────────
 
 

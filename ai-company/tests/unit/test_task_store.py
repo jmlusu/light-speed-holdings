@@ -141,6 +141,107 @@ class TestTaskStore:
         assert updated is not None
         assert updated.status == TaskStatus.IN_PROGRESS
 
+    def test_update_task_status_with_result(self, store: TaskStore) -> None:
+        """update_task_status stores result and sets completed_at for terminal statuses."""
+        store.send_task(_make_task(task_id="res"))
+        updated = store.update_task_status("res", "completed", result="All done")
+        assert updated is not None
+        assert updated.status == TaskStatus.COMPLETED
+        assert updated.result == "All done"
+        assert updated.completed_at != ""
+
+    def test_get_pending_tasks(self, store: TaskStore) -> None:
+        """get_pending_tasks returns only tasks with status 'pending'."""
+        store.send_task(_make_task(task_id="p1", status=TaskStatus.PENDING))
+        store.send_task(_make_task(task_id="p2", status=TaskStatus.PENDING))
+        store.send_task(_make_task(task_id="c1", status=TaskStatus.COMPLETED))
+
+        pending = store.get_pending_tasks()
+        assert len(pending) == 2
+        ids = {t.id for t in pending}
+        assert ids == {"p1", "p2"}
+
+    def test_claim_next_pending(self, store: TaskStore) -> None:
+        """claim_next_pending atomically claims the oldest pending task."""
+        store.send_task(_make_task(task_id="first", status=TaskStatus.PENDING))
+        store.send_task(_make_task(task_id="second", status=TaskStatus.PENDING))
+
+        claimed = store.claim_next_pending()
+        assert claimed is not None
+        assert claimed.id == "first"
+        assert claimed.status == TaskStatus.IN_PROGRESS
+
+        # Second claim gets the next one
+        claimed2 = store.claim_next_pending()
+        assert claimed2 is not None
+        assert claimed2.id == "second"
+
+        # No more pending
+        assert store.claim_next_pending() is None
+
+    def test_claim_next_pending_empty(self, store: TaskStore) -> None:
+        """claim_next_pending returns None when no pending tasks exist."""
+        store.send_task(_make_task(task_id="done", status=TaskStatus.COMPLETED))
+        assert store.claim_next_pending() is None
+
+    def test_claim_next_pending_respects_order(self, store: TaskStore) -> None:
+        """claim_next_pending claims the oldest task first (FIFO)."""
+        # Send in reverse order
+        store.send_task(_make_task(task_id="third", status=TaskStatus.PENDING))
+        store.send_task(_make_task(task_id="first", status=TaskStatus.PENDING))
+        store.send_task(_make_task(task_id="second", status=TaskStatus.PENDING))
+
+        claimed1 = store.claim_next_pending()
+        assert claimed1 is not None
+        assert claimed1.id == "third"  # oldest by created_at
+
+        claimed2 = store.claim_next_pending()
+        assert claimed2 is not None
+        assert claimed2.id == "first"
+
+        claimed3 = store.claim_next_pending()
+        assert claimed3 is not None
+        assert claimed3.id == "second"
+
+        assert store.claim_next_pending() is None
+
+    def test_detect_stale_tasks(self, store: TaskStore, tmp_path: Path) -> None:
+        """detect_stale_tasks moves old in_progress tasks to DLQ."""
+        from datetime import datetime, timedelta
+        from ai_company.executor.dead_letter import DeadLetterQueue
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+
+        # Create a task with an old updated_at
+        store.send_task(_make_task(task_id="old", status=TaskStatus.IN_PROGRESS))
+        old_time = (datetime.now() - timedelta(hours=2)).isoformat()
+        store._db.execute(
+            "UPDATE tasks SET updated_at = ? WHERE id = ?",
+            (old_time, "old"),
+        )
+        store._db.commit()
+        store._rebuild_raw_json("old")
+
+        # Create a fresh task with a recent timestamp
+        now_str = datetime.now().isoformat()
+        fresh_task = _make_task(task_id="fresh", status=TaskStatus.IN_PROGRESS)
+        fresh_task.created_at = now_str
+        fresh_task.updated_at = now_str
+        store.send_task(fresh_task)
+
+        moved = store.detect_stale_tasks(dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert moved[0]["id"] == "old"
+
+        # Old task removed from store
+        assert store.get_task_by_id("old") is None
+        assert store.get_task_by_id("fresh") is not None
+
+        # Old task is in DLQ
+        entries = dlq.list_entries()
+        assert len(entries) == 1
+        assert entries[0]["task"]["id"] == "old"
+
     def test_delete_task(self, store: TaskStore) -> None:
         """delete_task removes a task."""
         store.send_task(_make_task(task_id="doomed"))

@@ -17,6 +17,7 @@ from ai_company.executor.context import (
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.executor.hitl_gate import HITLGate
 from ai_company.orchestrator.approval import ApprovalGate
+from ai_company.models.task import TaskStatus
 
 
 # ── Context / Spec Parser ──────────────────────────────────────────
@@ -298,6 +299,7 @@ class _FakeLoopResult:
 class TestExecutorLoop:
     def test_tick_with_no_tasks(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
 
@@ -314,6 +316,7 @@ class TestExecutorLoop:
 
     def test_tick_processes_pending_task(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
 
@@ -371,6 +374,7 @@ class TestExecutorLoop:
 
     def test_tick_handles_loop_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
 
@@ -407,6 +411,7 @@ class TestExecutorLoop:
     def test_process_task_uses_agent_loop(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Verify _process_task delegates to AgentLoop.run()."""
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
 
@@ -449,6 +454,7 @@ class TestExecutorLoop:
     def test_process_task_handles_loop_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Verify error handling when AgentLoop.run() raises."""
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
 
@@ -486,6 +492,7 @@ class TestExecutorLoop:
     def test_process_task_creates_subtasks_from_records(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Verify delegation from ToolCallRecord creates subtasks."""
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
         _create_agent_spec(tmp_path, "lead-backend")
@@ -541,6 +548,7 @@ class TestExecutorLoop:
 
     def test_stats_tracking(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
         _setup_executor_files(tmp_path)
 
         from ai_company.executor.loop import Executor
@@ -556,6 +564,101 @@ class TestExecutorLoop:
         d = executor.stats.to_dict()
         assert d["tasks_processed"] == 0
         assert d["running"] is False
+
+
+# ── AI-1 & AI-3: SQLite backend + atomic CAS tick ────────────────────
+
+
+class TestExecutorSQLiteBackend:
+    """Tests for the SQLite-backed executor (AI-1) and atomic tick (AI-3)."""
+
+    def test_create_task_store_defaults_to_sqlite(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """_create_task_store returns TaskStore when TASK_STORE_BACKEND=sqlite."""
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.delenv("TASK_STORE_BACKEND", raising=False)
+
+        from ai_company.executor.loop import Executor
+        from ai_company.data.task_store import TaskStore
+
+        bus = Executor._create_task_store()
+        assert isinstance(bus, TaskStore)
+
+    def test_create_task_store_json_fallback(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """_create_task_store returns MessageBus when TASK_STORE_BACKEND=json."""
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "json")
+
+        from ai_company.executor.loop import Executor
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        bus = Executor._create_task_store()
+        assert isinstance(bus, MessageBus)
+
+    def test_tick_uses_claim_next_pending(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Executor.tick() processes tasks via claim_next_pending (AI-3)."""
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "sqlite")
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        # Verify we're using TaskStore
+        from ai_company.data.task_store import TaskStore
+        assert isinstance(executor.bus, TaskStore)
+
+        # Create a pending task directly in SQLite
+        from ai_company.models.task import Task as TaskModel
+        executor.bus.send_task(TaskModel(
+            id="sqlite-task-1",
+            sender_id="human-ceo",
+            receiver_id="test-agent",
+            instruction="Read the test.py file",
+            status=TaskStatus.PENDING,
+        ))
+        (tmp_path / "test.py").write_text("x = 42", encoding="utf-8")
+
+        # Mock agent_loop.run
+        mock_result = _FakeLoopResult(
+            final_response="File has x = 42",
+            iterations=1,
+            done=True,
+        )
+        executor.agent_loop.run = MagicMock(return_value=mock_result)
+
+        count = executor.tick()
+        assert count == 1
+        executor.agent_loop.run.assert_called_once()
+
+        # Task should be completed
+        task = executor.bus.get_task_by_id("sqlite-task-1")
+        assert task is not None
+        assert task.status == TaskStatus.COMPLETED
+
+    def test_tick_returns_zero_when_no_tasks(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Executor.tick() returns 0 when no pending tasks (AI-3)."""
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("TASK_STORE_BACKEND", "sqlite")
+        _setup_executor_files(tmp_path)
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        count = executor.tick()
+        assert count == 0
 
 
 # ── Helpers ─────────────────────────────────────────────────────────

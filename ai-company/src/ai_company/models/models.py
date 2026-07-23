@@ -443,6 +443,11 @@ class Task(EntityBase):
     parent_task_id: str = ""
     acknowledged_by: str = ""
 
+    # Retry fields (R3 fix)
+    retry_count: int = 0
+    max_retries: int = 3
+    next_retry_at: str = ""  # ISO timestamp
+
 
 # ---------------------------------------------------------------------------
 # Risk

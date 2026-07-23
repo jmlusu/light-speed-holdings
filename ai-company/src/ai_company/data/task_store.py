@@ -145,6 +145,121 @@ class TaskStore:
         )
         return {r["status"]: r["cnt"] for r in rows}
 
+    # ── Pending tasks (executor integration) ──────────────────────────
+
+    def get_pending_tasks(self) -> list[Task]:
+        """Return all tasks with status ``pending``.
+
+        This is the primary method used by the executor loop to fetch
+        work, replacing direct ``inbox.json`` reads.
+        """
+        return self.get_tasks_by_status("pending")
+
+    def claim_next_pending(self) -> Task | None:
+        """Atomically find and claim the next pending task by priority.
+
+        Uses a compare-and-swap pattern: SELECT the next pending task
+        (ordered by priority: critical > high > medium > low), then
+        UPDATE it to ``in_progress`` only if it is still ``pending``.
+        If another executor claimed it between the SELECT and UPDATE,
+        ``rowcount`` will be 0 and we return ``None``.
+
+        This eliminates the check-then-act race condition in the executor
+        tick loop (AI-3).
+        """
+        from datetime import datetime as _dt
+
+        # Priority order: critical=0, high=1, medium=2, low=3 (R2 fix)
+        row = self._db.fetchone(
+            """SELECT id FROM tasks WHERE status = 'pending'
+               ORDER BY CASE priority
+                   WHEN 'critical' THEN 0
+                   WHEN 'high' THEN 1
+                   WHEN 'medium' THEN 2
+                   WHEN 'low' THEN 3
+                   ELSE 99
+               END, created_at ASC
+               LIMIT 1"""
+        )
+        if row is None:
+            return None
+
+        task_id = row["id"]
+        now = _dt.now().isoformat()
+        cursor = self._db.execute(
+            "UPDATE tasks SET status = 'in_progress', updated_at = ? "
+            "WHERE id = ? AND status = 'pending'",
+            (now, task_id),
+        )
+        self._db.commit()
+
+        if cursor.rowcount == 0:
+            return None  # Another executor claimed it
+
+        # Rebuild raw_json so reads reflect the update
+        self._rebuild_raw_json(task_id)
+        return self.get_task_by_id(task_id)
+
+    def detect_stale_tasks(
+        self,
+        dlq: Any,
+        threshold_minutes: int = 30,
+    ) -> list[dict[str, Any]]:
+        """Detect and remove stale ``in_progress`` tasks from the store.
+
+        Each stale task is moved to the dead-letter queue *dlq* and deleted
+        from the database.  This is the SQLite-native equivalent of the
+        file-based ``dead_letter.detect_stale_tasks`` function.
+
+        Args:
+            dlq: A :class:`DeadLetterQueue` instance to receive stale tasks.
+            threshold_minutes: Minutes of inactivity before a task is stale.
+
+        Returns:
+            List of task dicts that were moved to the DLQ.
+        """
+        from datetime import datetime as _dt
+        from datetime import timedelta
+
+        now = _dt.now()
+        cutoff = now - timedelta(minutes=threshold_minutes)
+
+        rows = self._db.fetchall(
+            "SELECT id, raw_json FROM tasks WHERE status = 'in_progress'"
+        )
+        moved: list[dict[str, Any]] = []
+        for row in rows:
+            task = Task.model_validate_json(row["raw_json"])
+            ts_str = task.updated_at or task.created_at or ""
+            if not ts_str:
+                # No timestamp → treat as stale
+                task_dict = task.model_dump()
+                dlq.move_task(task_dict, "No timestamp — assumed stale")
+                self.delete_task(task.id)
+                moved.append(task_dict)
+                continue
+
+            try:
+                ts = _dt.fromisoformat(ts_str)
+            except (ValueError, TypeError):
+                task_dict = task.model_dump()
+                dlq.move_task(task_dict, f"Unparseable timestamp '{ts_str}'")
+                self.delete_task(task.id)
+                moved.append(task_dict)
+                continue
+
+            if ts < cutoff:
+                elapsed = (now - ts).total_seconds() / 60
+                task_dict = task.model_dump()
+                reason = f"Stale after {elapsed:.0f} minutes (threshold: {threshold_minutes}m)"
+                dlq.move_task(task_dict, reason)
+                self.delete_task(task.id)
+                moved.append(task_dict)
+
+        if moved:
+            logger.info("Moved %d stale tasks to DLQ.", len(moved))
+        return moved
+
     # ── Extended query API ────────────────────────────────────────────
 
     def get_tasks_by_status(self, status: str) -> list[Task]:
@@ -163,12 +278,30 @@ class TaskStore:
         )
         return [Task.model_validate_json(r["raw_json"]) for r in rows]
 
-    def update_task_status(self, task_id: str, status: str) -> Task | None:
-        """Update the status of a task. Returns the updated task."""
+    def update_task_status(
+        self,
+        task_id: str,
+        status: str,
+        *,
+        result: str = "",
+    ) -> Task | None:
+        """Update the status (and optionally result) of a task. Returns the updated task."""
+        from datetime import datetime as _dt
+        now = _dt.now().isoformat()
         self._db.execute(
-            "UPDATE tasks SET status = ? WHERE id = ?",
-            (status, task_id),
+            "UPDATE tasks SET status = ?, updated_at = ? WHERE id = ?",
+            (status, now, task_id),
         )
+        if result:
+            self._db.execute(
+                "UPDATE tasks SET result = ? WHERE id = ?",
+                (result, task_id),
+            )
+        if status in ("completed", "failed"):
+            self._db.execute(
+                "UPDATE tasks SET completed_at = ? WHERE id = ?",
+                (now, task_id),
+            )
         self._db.commit()
         # Rebuild raw_json so reads reflect the update
         self._rebuild_raw_json(task_id)

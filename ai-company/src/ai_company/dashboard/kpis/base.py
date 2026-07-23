@@ -23,9 +23,14 @@ class KPICollector(ABC):
 
     department: str = ""  # Override in subclass, e.g. "engineering"
 
-    def __init__(self, project_root: Path | None = None) -> None:
+    def __init__(
+        self,
+        project_root: Path | None = None,
+        message_bus: Any | None = None,
+    ) -> None:
         # Default to three levels up from this file → ai-company/
         self.root: Path = project_root or Path(__file__).resolve().parents[3]
+        self._message_bus = message_bus
 
     # ------------------------------------------------------------------
     # Abstract interface
@@ -71,6 +76,20 @@ class KPICollector(ABC):
         except (yaml.YAMLError, OSError) as exc:
             logger.warning("Failed to read YAML %s: %s", path, exc)
             return {}
+
+    def _get_tasks(self) -> list[dict[str, Any]]:
+        """Return task dicts from the MessageBus if available, else from file.
+
+        GAP-011 fix: routes task reads through the MessageBus when one is
+        injected, falling back to direct ``inbox.json`` reads for backward
+        compatibility with legacy callers.
+        """
+        if self._message_bus is not None:
+            try:
+                return self._message_bus.get_all_tasks_raw()
+            except Exception as exc:
+                logger.warning("MessageBus read failed, falling back to file: %s", exc)
+        return self._load_json(".opencode/inbox.json")
 
     def _kpi(
         self,

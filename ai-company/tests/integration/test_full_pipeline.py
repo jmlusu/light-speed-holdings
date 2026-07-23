@@ -89,6 +89,7 @@ class TestFullPipeline:
                     receiver_id="test-agent",
                     instruction="Failing task",
                     priority=TaskPriority.LOW,
+                    max_retries=0,
                 )
                 bus.send_task(task)
                 count = executor.tick()
@@ -269,6 +270,7 @@ class TestFullPipeline:
                 receiver_id="test-agent",
                 instruction="Long running task",
                 priority=TaskPriority.MEDIUM,
+                max_retries=0,
             )
             bus.send_task(task)
             executor.tick()

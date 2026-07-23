@@ -223,7 +223,9 @@ class TestMemoryConsolidateAll:
         store.store("semantic", "python  is   great")  # near-identical, normalized equal
         store.store("semantic", "Unique fact")
         summary = store.consolidate_all()
-        assert summary["semantic_duplicates_removed"] == 1
+        # Write-time dedup catches the duplicate at store(), so only 2
+        # entries exist by the time consolidate_all runs.
+        assert summary["semantic_duplicates_removed"] == 0
         assert store.count("semantic") == 2
 
     def test_consolidate_all_idempotent(self, store: MemoryStore):
@@ -235,3 +237,77 @@ class TestMemoryConsolidateAll:
         # only rebuild when counts diverge, so re-run is safe.
         assert second["semantic_duplicates_removed"] == 0
         assert store.count("aggregate") == agg_after_first
+
+
+class TestContentHash:
+    def test_content_hash_deterministic(self):
+        """Content hash should be deterministic for same input."""
+        hash1 = MemoryEntry.content_hash("Hello World")
+        hash2 = MemoryEntry.content_hash("Hello World")
+        assert hash1 == hash2
+
+    def test_content_hash_normalizes_whitespace(self):
+        """Content hash should normalize whitespace."""
+        hash1 = MemoryEntry.content_hash("Hello   World")
+        hash2 = MemoryEntry.content_hash("Hello World")
+        assert hash1 == hash2
+
+    def test_content_hash_normalizes_case(self):
+        """Content hash should be case-insensitive."""
+        hash1 = MemoryEntry.content_hash("Hello World")
+        hash2 = MemoryEntry.content_hash("hello world")
+        assert hash1 == hash2
+
+    def test_content_hash_differs_for_different_content(self):
+        """Different content should produce different hashes."""
+        hash1 = MemoryEntry.content_hash("alpha")
+        hash2 = MemoryEntry.content_hash("beta")
+        assert hash1 != hash2
+
+
+class TestStoreDedup:
+    def test_store_deduplicates_identical_content(self, store: MemoryStore):
+        """Storing identical content twice should create only one entry."""
+        content = "This is a test memory entry"
+        entry1 = store.store("episodic", content)
+        entry2 = store.store("episodic", content)
+        assert entry1.id == entry2.id  # Same entry returned
+
+    def test_store_allows_different_content_same_type(self, store: MemoryStore):
+        """Different content in same type should create separate entries."""
+        entry1 = store.store("episodic", "First memory")
+        entry2 = store.store("episodic", "Second memory")
+        assert entry1.id != entry2.id
+
+    def test_store_allows_same_content_different_type(self, store: MemoryStore):
+        """Same content in different types should create separate entries."""
+        entry1 = store.store("episodic", "Shared memory")
+        entry2 = store.store("semantic", "Shared memory")
+        assert entry1.id != entry2.id
+
+    def test_dedup_count_unchanged(self, store: MemoryStore):
+        """Duplicate store should not increase the count."""
+        store.store("episodic", "unique fact")
+        store.store("episodic", "unique fact")
+        store.store("episodic", "unique fact")
+        assert store.count("episodic") == 1
+
+    def test_dedup_persists_across_reloads(self, tmp_path: Path):
+        """Dedup should prevent duplicates even after store reload."""
+        s1 = MemoryStore(base_dir=tmp_path / "mem")
+        s1.store("semantic", "persistent fact")
+        s1.store("semantic", "persistent fact")
+
+        s2 = MemoryStore(base_dir=tmp_path / "mem")
+        assert s2.count("semantic") == 1
+        # Storing again should still dedup
+        s2.store("semantic", "persistent fact")
+        assert s2.count("semantic") == 1
+
+    def test_dedup_returns_existing_entry(self, store: MemoryStore):
+        """When dedup fires, the returned entry should be the original."""
+        entry = store.store("semantic", "remember this", tags=["important"])
+        dup = store.store("semantic", "remember this")
+        assert dup.id == entry.id
+        assert dup.tags == ["important"]
+        assert dup.created_at == entry.created_at

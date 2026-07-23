@@ -56,6 +56,14 @@ class MemoryEntry:
         self.access_count = 0
         self.seq = next(_entry_sequence)
 
+    @staticmethod
+    def content_hash(content: str) -> str:
+        """Generate a content-addressable hash for deduplication."""
+        import hashlib
+
+        normalized = " ".join(content.lower().split())
+        return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
@@ -178,14 +186,34 @@ class MemoryStore:
         self._store.write_json(self._file_name(memory_type), data)
 
     def store(self, memory_type: str, content: str, **kwargs: Any) -> MemoryEntry:
-        """Store a new memory entry.
+        """Store a new memory entry with content-hash deduplication.
 
         If vector search is enabled, the new entry is automatically indexed.
         If encryption is enabled, content is encrypted before saving.
+
+        Duplicate detection: if an entry with identical normalized content
+        already exists within the same memory type, the existing entry is
+        returned instead of creating a duplicate.  Cross-type duplicates
+        are allowed (episodic + semantic can both hold the same fact).
         """
         if memory_type not in self._stores:
             raise ValueError(f"Unknown memory type: {memory_type}")
+
         encrypted_content = self._encrypt_content(content)
+
+        # Content-hash deduplication: skip if identical content exists within
+        # the same memory type.  Hash is computed on the stored (possibly
+        # encrypted) form so it always matches the persisted representation.
+        new_hash = MemoryEntry.content_hash(encrypted_content)
+        for existing in self._stores[memory_type]:
+            if MemoryEntry.content_hash(existing.content) == new_hash:
+                logger.debug(
+                    "Memory dedup: skipping duplicate %s entry (hash=%s)",
+                    memory_type,
+                    new_hash,
+                )
+                return existing
+
         entry = MemoryEntry(memory_type=memory_type, content=encrypted_content, **kwargs)
         self._stores[memory_type].append(entry)
         self._save(memory_type)
