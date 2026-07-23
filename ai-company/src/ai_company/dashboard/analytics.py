@@ -674,14 +674,15 @@ def compute_summary(
 
     now = datetime.now(timezone.utc)
 
-    # Determine the start of the current period
+    # Determine the start of the current period using rolling windows
+    # so that entries from hours ago are always included regardless of
+    # the current time of day.
     if period == "daily":
-        period_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        period_start = now - timedelta(days=1)
     elif period == "weekly":
-        period_start = now - timedelta(days=now.weekday())
-        period_start = period_start.replace(hour=0, minute=0, second=0, microsecond=0)
+        period_start = now - timedelta(weeks=1)
     elif period == "monthly":
-        period_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        period_start = now - timedelta(days=30)
     else:
         raise ValueError(f"Unknown period: {period}")
 
