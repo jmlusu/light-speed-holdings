@@ -78,4 +78,5 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, typecheck, test, harness]
     steps:
+      - uses: actions/checkout@v5
       - run: echo "All required checks passed (ruff + mypy + pytest + harness)."
