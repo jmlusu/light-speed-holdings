@@ -7,7 +7,7 @@ from collections.abc import Generator
 from typing import Any
 
 from ai_company.llm.circuit_breaker import CircuitBreaker
-from ai_company.llm.cost_tracker import CostTracker
+from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.providers.base import (
     LLMProvider,
@@ -248,7 +248,11 @@ class LLMClient:
         task_id: str,
         iteration: int,
     ) -> None:
-        """Record token usage if a CostTracker is configured.
+        """Record token usage to JSONL (CostTracker) and SQLite (CostAnalytics).
+
+        The existing JSONL logging via CostTracker is preserved as-is.
+        When the SQLite database singleton is available, usage is also
+        written to the ``cost_records`` table for dashboard analytics.
 
         Args:
             response: The ChatResponse from the provider.
@@ -256,20 +260,58 @@ class LLMClient:
             task_id: Task ID for cost tracking.
             iteration: Current iteration number.
         """
-        if self._cost_tracker is None or not task_id:
+        if not task_id:
             return
-        try:
-            self._cost_tracker.record_usage(
-                model=response.model,
-                provider=response.provider,
-                agent_name=agent_name,
-                task_id=task_id,
-                prompt_tokens=response.prompt_tokens,
-                completion_tokens=response.completion_tokens,
-                iteration=iteration,
+
+        cost_usd = 0.0
+
+        # ── 1. JSONL logging (existing CostTracker) ────────────────
+        if self._cost_tracker is not None:
+            try:
+                record = self._cost_tracker.record_usage(
+                    model=response.model,
+                    provider=response.provider,
+                    agent_name=agent_name,
+                    task_id=task_id,
+                    prompt_tokens=response.prompt_tokens,
+                    completion_tokens=response.completion_tokens,
+                    iteration=iteration,
+                )
+                cost_usd = record.cost_usd
+            except Exception:
+                logger.debug(
+                    "JSONL cost tracking failed for task %s", task_id, exc_info=True,
+                )
+
+        # Compute cost if the tracker didn't (or wasn't configured)
+        if cost_usd == 0.0:
+            cost_usd = round(
+                response.prompt_tokens * _cost_per_token(response.model, "input")
+                + response.completion_tokens * _cost_per_token(response.model, "output"),
+                8,
             )
+
+        # ── 2. SQLite recording (CostAnalytics) ───────────────────
+        try:
+            from ai_company.data import CostAnalytics, get_database
+
+            db = get_database()
+            if db is not None:
+                analytics = CostAnalytics(db)
+                analytics.record_usage(
+                    model=response.model,
+                    provider=response.provider,
+                    agent_name=agent_name,
+                    task_id=task_id,
+                    prompt_tokens=response.prompt_tokens,
+                    completion_tokens=response.completion_tokens,
+                    cost_usd=cost_usd,
+                    iteration=iteration,
+                )
         except Exception:
-            logger.debug("Cost tracking failed for task %s", task_id, exc_info=True)
+            logger.debug(
+                "SQLite cost tracking failed for task %s", task_id, exc_info=True,
+            )
 
     def _parse_response(self, content: str) -> dict[str, Any] | None:
         """Try to parse the LLM response as JSON."""

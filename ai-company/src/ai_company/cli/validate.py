@@ -229,6 +229,118 @@ def references(
         typer.echo("All config references resolve correctly.")
 
 
+_REQUIRED_CONFIG_FILES = [
+    "orchestrator/approvals.yaml",
+    "orchestrator/escalation.yaml",
+    "orchestrator/scheduler.yaml",
+    "company/agent-registry.json",
+    "company/departments.yaml",
+    "company/config/kpis.yaml",
+    "config/company/kpis.yaml",
+    "config/company/budget.yaml",
+    "config/company/strategy.yaml",
+    "config/company/vision.yaml",
+    "config/company/company.yaml",
+    "config/company/culture.yaml",
+    "config/company/governance.yaml",
+    "config/company/policies.yaml",
+    "config/decision/approval_matrix.yaml",
+    "config/decision/risk_matrix.yaml",
+    "config/decision/decision_tree.yaml",
+    "config/departments/departments.yaml",
+    "config/workflows/workflows.yaml",
+    "config/board/meetings.yaml",
+    "config/board/committees.yaml",
+    "config/board/voting.yaml",
+    "config/routing.yaml",
+    "config/tool_allowlist.yaml",
+]
+
+
+def _check_stale_dates(filepath: Path) -> list[str]:
+    """Return warnings for any dates from 2024 or earlier in the file."""
+    warnings: list[str] = []
+    try:
+        content = filepath.read_text(encoding="utf-8")
+    except Exception:
+        return warnings
+    for line_no, line in enumerate(content.splitlines(), start=1):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if "2024" in stripped or "2023" in stripped or "2022" in stripped:
+            warnings.append(f"  line {line_no}: possibly stale date -> {stripped}")
+    return warnings
+
+
+@app.command()
+def config(
+    project_root: str = typer.Option(
+        ".",
+        help="Path to the ai-company project root",
+    ),
+) -> None:
+    """Validate all config files: parseability, existence, stale dates."""
+    root = Path(project_root)
+    passed = 0
+    failed = 0
+    warned = 0
+
+    typer.echo("Config Validation Report")
+    typer.echo("=" * 60)
+
+    for rel_path in _REQUIRED_CONFIG_FILES:
+        filepath = root / rel_path
+        if not filepath.exists():
+            typer.echo(f"  FAIL  {rel_path} -- FILE NOT FOUND")
+            failed += 1
+            continue
+
+        if filepath.suffix == ".yaml" or filepath.suffix == ".yml":
+            try:
+                import yaml
+                with open(filepath, "r", encoding="utf-8") as f:
+                    yaml.safe_load(f)
+            except Exception as exc:
+                typer.echo(f"  FAIL  {rel_path} -- INVALID YAML: {exc}")
+                failed += 1
+                continue
+
+        stale = _check_stale_dates(filepath)
+        if stale:
+            typer.echo(f"  WARN  {rel_path} -- stale dates detected:")
+            for w in stale:
+                typer.echo(w)
+            warned += 1
+        else:
+            typer.echo(f"  OK    {rel_path}")
+
+        passed += 1
+
+    typer.echo("=" * 60)
+    typer.echo(f"Summary: {passed} passed, {failed} failed, {warned} warnings")
+
+    # Write report file
+    import json
+    from datetime import datetime
+
+    report = {
+        "validated_at": datetime.now().isoformat(),
+        "passed": passed,
+        "failed": failed,
+        "warnings": warned,
+        "files_checked": len(_REQUIRED_CONFIG_FILES),
+    }
+    report_path = root / "orchestrator" / "config-validation-report.json"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(report_path, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2)
+    typer.echo(f"\nReport written to {report_path}")
+
+    if failed:
+        raise typer.Exit(1)
+
+
 @app.command()
 def all(
     registry_path: str = typer.Option(

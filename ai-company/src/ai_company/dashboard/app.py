@@ -326,6 +326,35 @@ def create_app() -> FastAPI:
             name="legacy-static",
         )
 
+    # ── Database initialization on startup ────────────────────────
+    # Wire the SQLite database so CostAnalytics and KPIPipeline are
+    # ready before the first request.  Failures are non-fatal — the
+    # dashboard still serves file-based data if the DB isn't available.
+
+    @app.on_event("startup")
+    async def _init_database() -> None:  # type: ignore[no-untyped-def]
+        """Initialise the SQLite database and seed an initial KPI snapshot."""
+        try:
+            from ai_company.data import init_database  # noqa: E402
+
+            db = init_database()
+            logger.info("SQLite database initialised: %s", db.path)
+
+            # Seed one KPI snapshot so the dashboard has baseline data
+            try:
+                from ai_company.data import KPIPipeline  # noqa: E402
+                from ai_company.dashboard.kpis import collect_all_kpis  # noqa: E402
+
+                pipeline = KPIPipeline(db)
+                snapshot = collect_all_kpis()
+                stored = pipeline.ingest_snapshot(snapshot)
+                logger.info("Initial KPI snapshot ingested (%d entries)", stored)
+            except Exception:
+                logger.debug("Initial KPI collection skipped (non-critical)")
+
+        except Exception:
+            logger.debug("Database initialisation skipped (non-critical)")
+
     return app
 
 

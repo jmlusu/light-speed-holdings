@@ -1,0 +1,13 @@
+{
+  "instance_id": "hiring_20260723_132738",
+  "workflow_id": "hiring",
+  "workflow_name": "Hiring Workflow",
+  "context": {},
+  "current_step_index": 1,
+  "step_results": {
+    "post": "Posted on LinkedIn"
+  },
+  "started_at": "2026-07-23T13:27:38.986296",
+  "completed_at": null,
+  "status": "running"
+}

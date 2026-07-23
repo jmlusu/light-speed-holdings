@@ -44,6 +44,12 @@ logs/
 .opencode/cycle-state.json
 orchestrator/scheduler.yaml
 
+# ── SQLite databases (WAL locking breaks Git) ────────────────
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.db-journal
+
 # ── OS artifacts ───────────────────────────────────────────────
 .DS_Store
 Thumbs.db
