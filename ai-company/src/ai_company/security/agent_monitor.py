@@ -56,7 +56,6 @@ class AnomalyReport:
             "window_start": self.window_start,
             "window_end": self.window_end,
             "severity": self.severity,
-            "description": self.description,
         }
 
 
@@ -334,8 +333,8 @@ class AgentBehaviorMonitor:
     ) -> list[AgentAction]:
         """Get recent actions with optional filtering.
 
-        Returns the most recent *limit* actions in chronological order
-        (oldest first within the limit window).
+        Returns the most recent *limit* actions in reverse-chronological
+        order (most recent first).
         """
         actions = self._actions
 
@@ -344,7 +343,7 @@ class AgentBehaviorMonitor:
         if action_type:
             actions = [a for a in actions if a.action_type == action_type]
 
-        return sorted(actions, key=lambda a: a.timestamp)[-limit:]
+        return sorted(actions, key=lambda a: a.timestamp, reverse=True)[:limit]
 
     def reset(self) -> None:
         """Clear all monitoring data."""

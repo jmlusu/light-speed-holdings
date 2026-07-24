@@ -9,6 +9,9 @@ from pathlib import Path
 import yaml
 
 
+VALID_AGENT_TYPES: frozenset[str] = frozenset({"Board", "Executive", "Specialist"})
+
+
 @dataclass
 class AgentContext:
     """Parsed representation of an agent's spec card."""
@@ -26,6 +29,40 @@ class AgentContext:
     description: str = ""
     success_metrics: list[str] = field(default_factory=list)
     operating_principles: list[str] = field(default_factory=list)
+
+    def validate(self) -> list[str]:
+        """Validate required fields and return a list of error strings.
+
+        Returns an empty list when the context is valid.
+        """
+        errors: list[str] = []
+
+        if not self.name or not self.name.strip():
+            errors.append("name is required and must not be blank")
+
+        if not self.type or not self.type.strip():
+            errors.append("type is required and must not be blank")
+        elif self.type not in VALID_AGENT_TYPES:
+            errors.append(
+                f"type must be one of {sorted(VALID_AGENT_TYPES)}, got '{self.type}'"
+            )
+
+        if not self.mission or not self.mission.strip():
+            errors.append("mission is required and must not be blank")
+
+        if not self.tools:
+            errors.append("tools must not be empty")
+
+        if not self.permission:
+            errors.append("permission is required and must not be blank")
+
+        if not self.responsibilities:
+            errors.append("responsibilities must not be empty")
+
+        if not self.reports_to or not self.reports_to.strip():
+            errors.append("reports_to is required and must not be blank")
+
+        return errors
 
 
 def parse_agent_spec(agent_name: str, agents_dir: str = ".opencode/agents") -> AgentContext:

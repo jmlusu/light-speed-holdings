@@ -6,6 +6,8 @@ legacy ``company/agent-registry.json`` file.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import typer
 
 app = typer.Typer(help="Manage AI agents")
@@ -60,3 +62,49 @@ def list_agents(
         dept = a.get("department", "") or ""
         typer.echo(f"{a['role']:<35} {a['type']:<14} {dept:<25} {a.get('reports_to', ''):<20}")
     typer.echo(f"\nTotal: {len(agent_list)} agents")
+
+
+@app.command("validate")
+def validate_agents(
+    agents_dir: str = typer.Option(
+        ".opencode/agents",
+        help="Path to the directory containing agent spec .md files",
+    ),
+) -> None:
+    """Validate agent spec files for required fields and correct types."""
+    agents_path = Path(agents_dir)
+
+    if not agents_path.exists():
+        typer.echo(f"Agents directory not found: {agents_dir}")
+        raise typer.Exit(1)
+
+    spec_files = sorted(agents_path.glob("*.md"))
+
+    if not spec_files:
+        typer.echo("No agent spec files found in the directory.")
+        raise typer.Exit(1)
+
+    from ai_company.executor.context import parse_agent_spec
+
+    passed = 0
+    failed = 0
+
+    for spec_file in spec_files:
+        agent_name = spec_file.stem
+        ctx = parse_agent_spec(agent_name, str(agents_path))
+        errors = ctx.validate()
+
+        if errors:
+            failed += 1
+            typer.echo(f"FAIL: {agent_name}")
+            for err in errors:
+                typer.echo(f"  - {err}")
+        else:
+            passed += 1
+            typer.echo(f"PASS: {agent_name}")
+
+    typer.echo("")
+    typer.echo(f"{passed} passed, {failed} failed out of {passed + failed} agents")
+
+    if failed > 0:
+        raise typer.Exit(1)
