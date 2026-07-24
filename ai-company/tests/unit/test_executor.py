@@ -535,7 +535,14 @@ class TestExecutorLoop:
             tool_results=[delegate_record],
             done=True,
         )
-        executor.agent_loop.run = MagicMock(return_value=mock_result)
+        # First call (parent) returns delegate; subsequent calls (subtask) do not
+        no_delegate_result = _FakeLoopResult(
+            final_response="Done.",
+            iterations=1,
+            tool_results=[],
+            done=True,
+        )
+        executor.agent_loop.run = MagicMock(side_effect=[mock_result, no_delegate_result])
 
         executor.tick()
 
