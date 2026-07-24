@@ -1,15 +1,15 @@
 ---
-description: Provides strategic counsel directly to the human CEO. Serves as a bridge between the CEO and the rest of the organization.
-mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  task:
+    "*": deny
+    "board-*.md": allow
+    "market-analyst.md": allow
+    "product-owner.md": allow
+    "product-marketing-manager.md": allow
+    "cso.md": allow
+    "human-ceo.md": allow
+    "chief-of-staff.md": allow
+    "ceo-advisor.md": allow
 ---
 
 # CEO Advisor
@@ -21,7 +21,7 @@ Type: Executive (CEO Advisor)
 
 Department: Executive
 
-Reports To: human_ceo
+Reports To: human-ceo
 
 
 

@@ -51,6 +51,7 @@ from ai_company.models.task import Task, TaskPriority, TaskStatus
 from ai_company.orchestrator.approval import ApprovalGate
 from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.orchestrator.scheduler import Scheduler
+from ai_company.security.agent_monitor import get_agent_monitor
 from ai_company.utils.logging import new_correlation_id
 
 logger = logging.getLogger(__name__)
@@ -366,10 +367,15 @@ class Executor:
         self.bus.update_task_status(task.id, TaskStatus.IN_PROGRESS.value)
         log_task_status(task.id, task.receiver_id, "pending", TaskStatus.IN_PROGRESS.value)
 
+        # PRE-20: Record task started
+        get_agent_monitor().record_action(
+            task.receiver_id,
+            "task_started",
+            {"task_id": task.id, "priority": task.priority.value},
+            success=True,
+        )
+
         # 2. Recall relevant memory BEFORE execution (best-effort, no network
-        #    required — falls back to keyword search; never blocks the task).
-        try:
-            recall_context(task.instruction, limit=5)
         except Exception:  # pragma: no cover - defensive: recall must never break execution
             logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
 
@@ -455,6 +461,14 @@ class Executor:
         self.bus.update_task_status(task.id, status.value, result=result)
         log_task_status(task.id, task.receiver_id, old_status, status.value)
 
+        # PRE-20: Record task completion
+        get_agent_monitor().record_action(
+            task.receiver_id,
+            "task_completed",
+            {"task_id": task.id, "status": status.value, "result": result[:200]},
+            success=(status == TaskStatus.COMPLETED),
+        )
+
     def _maybe_retry(self, task: Task) -> None:
         """R3: Schedule automatic retry with exponential backoff if retries remain.
 
@@ -504,12 +518,42 @@ class Executor:
         log_path.write_text(json.dumps(log_data, indent=2, default=str), encoding="utf-8")
 
     def _create_subtask_from_record(self, parent_task: Task, record: Any) -> None:
-        """Create a subtask from a ToolCallRecord with delegate tool."""
+        """Create a subtask from a ToolCallRecord with delegate tool.
+
+        PRE-18: Checks delegation depth limits and cycle detection before
+        creating the subtask. Delegations that exceed limits are blocked
+        with a warning log.
+        """
         result_data = record.result
         receiver = result_data.get("receiver", "")
         instruction = result_data.get("instruction", "")
         if not receiver or not instruction:
             return
+
+        # PRE-18: Check delegation guard before creating subtask
+        guard = get_delegation_guard()
+        parent_depth = getattr(parent_task, "delegation_depth", 0)
+        parent_history = list(getattr(parent_task, "delegation_history", []))
+
+        is_allowed, reason = guard.check_delegation(
+            task_id=parent_task.id,
+            receiver=receiver,
+            delegation_depth=parent_depth,
+            delegation_history=parent_history,
+        )
+        if not is_allowed:
+            logger.warning("Delegation blocked: %s", reason)
+            return
+
+        guard.record_delegation(parent_task.id, receiver)
+
+        # PRE-20: Record delegation
+        get_agent_monitor().record_action(
+            parent_task.receiver_id,
+            "delegation",
+            {"receiver": receiver, "depth": parent_depth + 1},
+            success=True,
+        )
 
         subtask = Task(
             id=str(uuid.uuid4()),
@@ -517,6 +561,13 @@ class Executor:
             receiver_id=receiver,
             instruction=instruction,
             priority=TaskPriority.MEDIUM,
+            delegation_depth=parent_depth + 1,
+            delegation_history=[*parent_history, parent_task.receiver_id],
+            parent_task_id=parent_task.id,
         )
         self.bus.send_task(subtask)
-        logger.info("  Delegated subtask to %s", receiver)
+        logger.info(
+            "  Delegated subtask to %s (depth=%d)",
+            receiver,
+            subtask.delegation_depth,
+        )

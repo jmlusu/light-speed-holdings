@@ -75,8 +75,17 @@
   FIX: Added kanban-grid class for responsive overrides.
   Each column now has kanban-column class for CSS containment,
   preventing column content changes from affecting page-level scroll.
+  DASH-006: aria-live="polite" announces task card movements to screen readers.
+  DASH-002: Loading spinner overlay when task list refreshes.
 -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 kanban-grid">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 kanban-grid"
+     role="region" aria-label="Task Kanban Board"
+     aria-live="polite">
+  <!-- DASH-002: Loading overlay for kanban board -->
+  <div x-show="loadingSections.tasks" class="col-span-full section-loading">
+    <div class="spinner"></div>
+    <span>Updating tasks...</span>
+  </div>
   <!-- Pending Column -->
   <div class="bg-surface-900/60 rounded-xl border border-surface-700/50 p-4 kanban-column">
     <div class="flex items-center gap-2 mb-4">
@@ -84,11 +93,13 @@
       <h3 class="text-sm font-semibold text-surface-300">Pending</h3>
       <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.pending"></span>
     </div>
-    <div class="space-y-3 min-h-[200px]"
+    <div class="space-y-3 min-h-[200px] kanban-drop-zone"
+         data-status="pending"
          @dragover.prevent="dragOverColumn($event, 'pending')"
          @drop.prevent="dropTask($event, 'pending')">
       <template x-for="task in kanbanTasks.pending" :key="task.id">
         <div class="bg-surface-800/80 rounded-lg border border-surface-700/50 p-3 cursor-grab hover:border-surface-600 transition-all"
+             data-task-card :data-task-id="task.id"
              draggable="true"
              @dragstart="dragTask($event, task)"
              @dragend="dragEnd()">
@@ -121,11 +132,13 @@
       <h3 class="text-sm font-semibold text-surface-300">In Progress</h3>
       <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.in_progress"></span>
     </div>
-    <div class="space-y-3 min-h-[200px]"
+    <div class="space-y-3 min-h-[200px] kanban-drop-zone"
+         data-status="in_progress"
          @dragover.prevent="dragOverColumn($event, 'in_progress')"
          @drop.prevent="dropTask($event, 'in_progress')">
       <template x-for="task in kanbanTasks.in_progress" :key="task.id">
         <div class="bg-surface-800/80 rounded-lg border border-blue-500/20 p-3 cursor-grab hover:border-blue-500/40 transition-all"
+             data-task-card :data-task-id="task.id"
              draggable="true"
              @dragstart="dragTask($event, task)"
              @dragend="dragEnd()">
@@ -158,7 +171,8 @@
       <h3 class="text-sm font-semibold text-surface-300">Completed</h3>
       <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.completed"></span>
     </div>
-    <div class="space-y-3 min-h-[200px] max-h-[400px] overflow-y-auto"
+    <div class="space-y-3 min-h-[200px] max-h-[400px] overflow-y-auto kanban-drop-zone"
+         data-status="completed"
          @dragover.prevent="dragOverColumn($event, 'completed')"
          @drop.prevent="dropTask($event, 'completed')">
       <template x-for="task in kanbanTasks.completed" :key="task.id">
@@ -274,9 +288,12 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-     @click.self="showAssignModal = false">
+     @click.self="showAssignModal = false"
+     role="dialog" aria-modal="true" aria-labelledby="assign-task-title"
+     x-trap.noscroll="showAssignModal"
+     @keydown.escape.window="showAssignModal = false">
   <div class="bg-surface-900 rounded-2xl shadow-2xl border border-surface-700/50 w-full max-w-lg p-6">
-    <h3 class="text-lg font-semibold text-surface-100 mb-4">Assign New Task</h3>
+    <h3 id="assign-task-title" class="text-lg font-semibold text-surface-100 mb-4">Assign New Task</h3>
     <form @submit.prevent="assignTask()">
       <div class="space-y-4">
         <div>

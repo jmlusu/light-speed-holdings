@@ -2,7 +2,10 @@
 {% block title %}Escalations & Approvals — CEO Dashboard{% endblock %}
 
 {% block content %}
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- DASH-006: aria-live="polite" for dynamic approvals and escalations lists -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+     role="region" aria-label="Approvals and Escalations"
+     aria-live="polite">
   <!-- ═══ PENDING APPROVALS ═══ -->
   <div>
     <div class="flex items-center justify-between mb-4">

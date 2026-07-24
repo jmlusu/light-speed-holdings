@@ -20,7 +20,7 @@ Type: Board Advisor (Advisor)
 
 Department: Board
 
-Reports To: board_chair
+Reports To: board-chair
 
 
 

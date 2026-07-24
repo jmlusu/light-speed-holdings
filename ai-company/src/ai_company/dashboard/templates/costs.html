@@ -17,7 +17,10 @@
 </div>
 
 <!-- ═══ COST SUMMARY CARDS ═══ -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+<!-- DASH-006: aria-live="polite" for cost metric updates -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
+     role="region" aria-label="Cost Summary"
+     aria-live="polite">
   <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
     <div class="text-xs text-surface-500 mb-2">Total Cost</div>
     <div class="text-3xl font-bold text-surface-100">$<span x-text="costSummary.total.toFixed(2)">0.00</span></div>

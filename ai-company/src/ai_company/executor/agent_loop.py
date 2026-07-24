@@ -27,6 +27,9 @@ from ai_company.llm.client import LLMClient
 from ai_company.llm.cost_tracker import CostTracker
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.providers.base import ChatResponse, LLMProviderError, LLMResponseError
+from ai_company.llm.response_validator import validate_llm_response
+from ai_company.security.agent_monitor import record_agent_action
+from ai_company.security.prompt_sanitization import sanitize_prompt
 from ai_company.utils.logging import get_correlation_id
 
 logger = logging.getLogger(__name__)
@@ -147,6 +150,19 @@ class AgentLoop:
         system_prompt = build_system_prompt_typed(agent)
         initial_user = build_user_prompt_typed(user_prompt, priority)
 
+        # PRE-16: Sanitize user prompt to prevent injection
+        sanitized_prompt, was_safe = sanitize_prompt(user_prompt)
+        if not was_safe:
+            logger.warning("Prompt blocked by sanitizer for task %s: %s", task_id, sanitized_prompt)
+            return LoopResult(
+                final_response=sanitized_prompt,
+                done=True,
+                error="Prompt blocked by security filter",
+                iterations=0,
+                total_tokens=0,
+                total_cost_usd=0.0,
+            )
+        
         logger.info(
             "Agent loop started: agent=%s task_id=%s correlation_id=%s",
             resolved_name,
@@ -216,6 +232,22 @@ class AgentLoop:
                 done = True
                 break
 
+            # PRE-19: Validate LLM response structure and safety
+            is_valid, reason = validate_llm_response(parsed)
+            if not is_valid:
+                logger.warning("LLM response validation failed for task %s: %s", task_id, reason)
+                record_agent_action(resolved_name, "response_validation_failed", {"reason": reason}, success=False)
+                return LoopResult(
+                    final_response=f"Response validation failed: {reason}",
+                    done=True,
+                    error=reason,
+                    iterations=iterations_completed,
+                    total_prompt_tokens=total_prompt_tokens,
+                    total_completion_tokens=total_completion_tokens,
+                    total_cost_usd=total_cost_usd,
+                    tool_results=[],
+                )
+
             plan = parsed.get("plan", [])
             result_text = parsed.get("result", "")
             is_done = parsed.get("done", False)
@@ -250,6 +282,32 @@ class AgentLoop:
                     iteration=iteration,
                 )
                 all_tool_records.append(record)
+
+                # PRE-20: Record agent behavior
+                record_agent_action(
+                    resolved_name,
+                    "tool_call",
+                    {
+                        "tool": step_result.get("tool", "unknown"),
+                        "status": step_result.get("status", "unknown"),
+                        "iteration": iteration,
+                    },
+                    success=(step_result.get("status") == "ok"),
+                )
+
+            # PRE-20: Record LLM call
+            record_agent_action(
+                resolved_name,
+                "llm_call",
+                {
+                    "provider": response.provider,
+                    "model": response.model,
+                    "prompt_tokens": prompt_tok,
+                    "completion_tokens": comp_tok,
+                    "iteration": iteration,
+                },
+                success=True,
+            )
 
             # ── Feed results back to LLM ──────────────────────────
             feedback = build_iteration_feedback(

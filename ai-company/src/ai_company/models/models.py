@@ -448,6 +448,10 @@ class Task(EntityBase):
     max_retries: int = 3
     next_retry_at: str = ""  # ISO timestamp
 
+    # PRE-18: Delegation depth tracking
+    delegation_depth: int = 0
+    delegation_history: list[str] = Field(default_factory=list)
+
 
 # ---------------------------------------------------------------------------
 # Risk

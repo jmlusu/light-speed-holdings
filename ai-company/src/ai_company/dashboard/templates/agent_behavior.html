@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Agent Behavior — CEO Dashboard{% endblock %}
+{% block content %}
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-6">Agent Behavior Monitoring</h1>
+  
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-sm text-gray-500">Monitored Agents</h3>
+      <p id="total-agents" class="text-3xl font-bold">—</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-sm text-gray-500">Total Actions (1h)</h3>
+      <p id="total-actions" class="text-3xl font-bold">—</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-sm text-gray-500">Active Agents</h3>
+      <p id="active-agents" class="text-3xl font-bold text-green-600">—</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-sm text-gray-500">Anomalies</h3>
+      <p id="anomaly-count" class="text-3xl font-bold text-red-600">—</p>
+    </div>
+  </div>
+
+  <!-- Anomaly Alerts -->
+  <div id="anomaly-alerts" class="mb-8"></div>
+
+  <!-- Agent Activity Table -->
+  <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b">
+      <h2 class="text-lg font-semibold">Agent Activity</h2>
+    </div>
+    <table class="w-full">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Agent</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Tool Calls</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">LLM Calls</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Delegations</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500">Status</th>
+        </tr>
+      </thead>
+      <tbody id="agent-table-body" class="divide-y divide-gray-200">
+        <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+async function loadBehaviorData() {
+  try {
+    const [anomalyRes, healthRes] = await Promise.all([
+      fetch('/api/v1/agents/behavior/anomalies'),
+      fetch('/monitoring/agent-health'),
+    ]);
+    
+    const anomalyData = await anomalyRes.json();
+    const healthData = await healthRes.json();
+    
+    // Update summary cards
+    document.getElementById('total-agents').textContent = 
+      Object.keys(anomalyData.agent_summaries || {}).length;
+    document.getElementById('total-actions').textContent = 
+      Object.values(anomalyData.agent_summaries || {})
+        .reduce((sum, s) => sum + (s.total_actions || 0), 0);
+    document.getElementById('anomaly-count').textContent = anomalyData.total_anomalies || 0;
+    
+    // Update anomaly alerts
+    const alertsDiv = document.getElementById('anomaly-alerts');
+    if (anomalyData.anomalies && anomalyData.anomalies.length > 0) {
+      alertsDiv.innerHTML = anomalyData.anomalies.map(a => `
+        <div class="mb-2 p-4 rounded-lg ${a.severity === 'critical' ? 'bg-red-100 border border-red-300' : 'bg-yellow-100 border border-yellow-300'}">
+          <strong>${a.agent_id}</strong>: ${a.action_type} — ${a.count}/${a.threshold} (${a.severity})
+        </div>
+      `).join('');
+    } else {
+      alertsDiv.innerHTML = '<div class="p-4 bg-green-100 rounded-lg border border-green-300">No anomalies detected.</div>';
+    }
+    
+    // Update agent table
+    const tbody = document.getElementById('agent-table-body');
+    const summaries = anomalyData.agent_summaries || {};
+    if (Object.keys(summaries).length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No agent data yet</td></tr>';
+    } else {
+      tbody.innerHTML = Object.entries(summaries).map(([agentId, summary]) => {
+        const actions = summary.actions || {};
+        const hasAnomaly = anomalyData.anomalies?.some(a => a.agent_id === agentId);
+        return `
+          <tr>
+            <td class="px-6 py-4 font-medium">${agentId}</td>
+            <td class="px-6 py-4">${actions.tool_call || 0}</td>
+            <td class="px-6 py-4">${actions.llm_call || 0}</td>
+            <td class="px-6 py-4">${actions.delegation || 0}</td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-1 rounded ${hasAnomaly ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">
+                ${hasAnomaly ? 'Anomaly' : 'Normal'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error('Failed to load behavior data:', err);
+  }
+}
+
+loadBehaviorData();
+setInterval(loadBehaviorData, 30000); // Refresh every 30s
+</script>
+{% endblock %}

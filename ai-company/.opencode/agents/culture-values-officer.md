@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: People
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
 Seniority: mid
 
@@ -92,7 +92,7 @@ Values don't scale accidentally. Every decision is a culture decision. Culture i
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief_of_staff.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief-of-staff.
 
 
 ---

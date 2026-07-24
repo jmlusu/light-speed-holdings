@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: Customer Success
 
-Reports To: customer_success
+Reports To: customer-success
 
 Seniority: mid
 
@@ -90,7 +90,7 @@ Customer signal is first-class. Escalate churn risk early. Onboarding must be me
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to customer_success.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to customer-success.
 
 
 ---

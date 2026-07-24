@@ -84,12 +84,14 @@ def record_procedure(agent_id: str, procedure: str, context: str, tags: list[str
     _store.store("procedural", content=procedure, agent_id=agent_id, tags=tags or ["procedure"])
 
 
-def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
+def recall_context(query: str, limit: int = 5, agent_id: str = "") -> list[dict[str, Any]]:
     """Recall relevant memories for context loading.
 
     Tries semantic (vector) search first for high-quality results.
     Falls back to keyword-based search if vector store is unavailable
     or returns no results.
+    
+    When agent_id is provided, memories are filtered based on access controls.
     """
     if _store is None:
         return []
@@ -99,7 +101,7 @@ def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
         try:
             raw = _vector_store.search(query, top_k=limit)
             if raw:
-                return [
+                results = [
                     {
                         "type": entry.memory_type,
                         "content": entry.content,
@@ -109,6 +111,14 @@ def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
                     }
                     for entry, score in raw
                 ]
+                # PRE-17: Apply memory access controls
+                if agent_id:
+                    try:
+                        from ai_company.security.memory_access_control import check_memory_access
+                        results = [r for r in results if check_memory_access(agent_id, r.get("tags", []))]
+                    except Exception:
+                        pass  # Fail open: if access control fails, don't block
+                return results[:limit]
         except Exception:
             pass  # Fall through to keyword search
 
@@ -120,6 +130,14 @@ def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
             results.append(
                 {"type": mem_type, "content": e.content, "agent_id": e.agent_id, "tags": e.tags}
             )
+    
+    # PRE-17: Apply memory access controls
+    if agent_id:
+        try:
+            from ai_company.security.memory_access_control import check_memory_access
+            results = [r for r in results if check_memory_access(agent_id, r.get("tags", []))]
+        except Exception:
+            pass  # Fail open
     return results[:limit]
 
 

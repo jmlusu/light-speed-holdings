@@ -21,9 +21,9 @@ Type: Executive (CMO)
 
 Department: Marketing
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
-Direct Reports: marketing_owner, head_of_developer_relations, product_marketing_manager, industry_analyst_relations_manager
+Direct Reports: marketing-owner, head-of-developer-relations, product-marketing-manager, industry-analyst-relations-manager
 
 
 ---

@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: AI Research
 
-Reports To: ai_safety_lead
+Reports To: ai-safety-lead
 
 Seniority: mid
 
@@ -92,7 +92,7 @@ Ethics goes beyond compliance. An action can be legal but unethical. Every high-
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to ai_safety_lead.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to ai-safety-lead.
 
 
 ---

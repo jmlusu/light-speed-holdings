@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: Technology
 
-Reports To: lead_backend
+Reports To: lead-backend
 
 Seniority: mid
 
@@ -96,7 +96,7 @@ Write clean, tested, and well-documented code. Follow established API patterns. 
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to lead_backend.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to lead-backend.
 
 
 ---

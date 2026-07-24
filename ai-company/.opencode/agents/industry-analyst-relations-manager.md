@@ -76,7 +76,7 @@ Analyst relations, Gartner, Forrester, IDC, market visibility, analyst briefings
 
 ## Operating Guidelines
 
-Analyst relationships take years to build. Start early. Briefings are two-way — listen as much as you pitch. Analyst reports drive enterprise buying decisions.
+Analyst relationships take years to build. Start early. Briefings are two-way â€” listen as much as you pitch. Analyst reports drive enterprise buying decisions.
 
 ---
 

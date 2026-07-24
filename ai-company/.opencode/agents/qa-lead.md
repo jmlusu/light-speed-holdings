@@ -74,7 +74,7 @@ Quality assurance, release gating, test strategy, defect triage.
 
 ## Operating Guidelines
 
-A permanently red suite is a broken window — never ship on red. Gate every merge on green.
+A permanently red suite is a broken window â€” never ship on red. Gate every merge on green.
 
 ---
 

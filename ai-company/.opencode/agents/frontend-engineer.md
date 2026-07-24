@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: Technology
 
-Reports To: lead_frontend
+Reports To: lead-frontend
 
 Seniority: mid
 
@@ -94,7 +94,7 @@ Write clean, tested, and accessible code. Follow established component patterns.
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to lead_frontend.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to lead-frontend.
 
 
 ---

@@ -1,110 +1,92 @@
-# Board Directives -- Source of Truth
-#
-# Each directive represents a formal instruction issued by the Board of Directors
-# that must be acknowledged, tracked, and completed by the assigned owner.
-#
-# Lifecycle: issued -> acknowledged -> in_progress -> completed | overdue
-#
-# Fields:
-#   id:             Unique directive identifier (DIR-YYYY-NNN)
-#   title:          Short descriptive title
-#   description:    Detailed description of the directive
-#   issued_by:      Board member or authority who issued the directive
-#   issued_date:    ISO date when the directive was issued
-#   deadline:       ISO date by which the directive must be completed
-#   priority:       critical | high | medium | low
-#   status:         pending | in_progress | completed | overdue
-#   owner:          Agent or role responsible for executing the directive
-#   completion_date: ISO date when the directive was marked completed (null if not yet)
-#   notes:          Free-form notes, links, or commentary
-
 directives:
-  # -- Example Directives (completed) ---------------------------------
+- id: DIR-2026-001
+  title: Establish Agent Deployment Pipeline
+  description: 'Create a repeatable pipeline for deploying agent markdown files from
+    company-registry.yaml through the generator to the workspace-level .opencode/agents/
+    directory, ensuring all 127 agents are invokable via @.
 
-  - id: "DIR-2026-001"
-    title: "Establish Agent Deployment Pipeline"
-    description: >
-      Create a repeatable pipeline for deploying agent markdown files
-      from company-registry.yaml through the generator to the workspace-level
-      .opencode/agents/ directory, ensuring all 127 agents are invokable via @.
-    issued_by: human-ceo
-    issued_date: "2026-07-18"
-    deadline: "2026-07-22"
-    priority: critical
-    status: completed
-    owner: cto
-    completion_date: "2026-07-22"
-    notes: >
-      All 127 agents deployed. Generator reads registry, renders Jinja2 templates,
-      writes .opencode/agents/*.md. Verified via `ai-company generate`.
+    '
+  issued_by: human-ceo
+  issued_date: '2026-07-18'
+  deadline: '2026-07-22'
+  priority: critical
+  status: completed
+  owner: cto
+  completion_date: '2026-07-22'
+  notes: 'All 127 agents deployed. Generator reads registry, renders Jinja2 templates,
+    writes .opencode/agents/*.md. Verified via `ai-company generate`.
 
-  - id: "DIR-2026-002"
-    title: "Implement Audit Trail for Executor Actions"
-    description: >
-      Build a persistent audit trail that logs every tool call, task lifecycle
-      event, HITL decision, and delegation action performed by the executor.
-      Must be queryable by agent, task, and event type.
-    issued_by: board-chair
-    issued_date: "2026-07-18"
-    deadline: "2026-07-20"
-    priority: critical
-    status: completed
-    owner: cto
-    completion_date: "2026-07-20"
-    notes: >
-      audit/ module with AuditEvent, AuditWriter, AuditReader. JSONL-based.
-      Integrated into executor/loop.py and executor/tool_runner.py.
-      CLI: ai-company governance audit-trail.
+    '
+- id: DIR-2026-002
+  title: Implement Audit Trail for Executor Actions
+  description: 'Build a persistent audit trail that logs every tool call, task lifecycle
+    event, HITL decision, and delegation action performed by the executor. Must be
+    queryable by agent, task, and event type.
 
-  - id: "DIR-2026-003"
-    title: "Complete Sprint 3 - Dashboard, Memory, and Coordination"
-    description: >
-      Close all Sprint 3 backlog items including WebSocket integration tests,
-      data governance CLI, memory CLI enhancements, executor daemon mode,
-      and dashboard API endpoint tests. Target: 1205+ tests passing.
-    issued_by: human-ceo
-    issued_date: "2026-07-21"
-    deadline: "2026-07-23"
-    priority: high
-    status: completed
-    owner: chief-of-staff
-    completion_date: "2026-07-22"
-    notes: >
-      All 8 Sprint 3 items completed. 1205 tests passing, 0 ruff errors,
-      v0.3.0 tagged. See docs/SPRINT-3-BACKLOG.md for item-level evidence.
+    '
+  issued_by: board-chair
+  issued_date: '2026-07-18'
+  deadline: '2026-07-20'
+  priority: critical
+  status: completed
+  owner: cto
+  completion_date: '2026-07-20'
+  notes: 'audit/ module with AuditEvent, AuditWriter, AuditReader. JSONL-based. Integrated
+    into executor/loop.py and executor/tool_runner.py. CLI: ai-company governance
+    audit-trail.
 
-  # -- Current Directives ----------------------------------------------
+    '
+- id: DIR-2026-003
+  title: Complete Sprint 3 - Dashboard, Memory, and Coordination
+  description: 'Close all Sprint 3 backlog items including WebSocket integration tests,
+    data governance CLI, memory CLI enhancements, executor daemon mode, and dashboard
+    API endpoint tests. Target: 1205+ tests passing.
 
-  - id: "DIR-2026-004"
-    title: "Launch Sprint 4 - Quality and Completeness"
-    description: >
-      Begin Sprint 4 focused on structured logging with correlation IDs,
-      agent spec validation CLI, CLI type hints and docstrings, OAuth2/key
-      rotation, memory encryption, and token counting integration.
-    issued_by: human-ceo
-    issued_date: "2026-07-23"
-    deadline: "2026-07-30"
-    priority: high
-    status: pending
-    owner: chief-of-staff
-    completion_date: null
-    notes: >
-      Sprint 4 not yet started per STATUS.md. Need to create backlog
-      and assign owners.
+    '
+  issued_by: human-ceo
+  issued_date: '2026-07-21'
+  deadline: '2026-07-23'
+  priority: high
+  status: completed
+  owner: chief-of-staff
+  completion_date: '2026-07-22'
+  notes: 'All 8 Sprint 3 items completed. 1205 tests passing, 0 ruff errors, v0.3.0
+    tagged. See docs/SPRINT-3-BACKLOG.md for item-level evidence.
 
-  - id: "DIR-2026-005"
-    title: "Establish Board Directive Tracking System"
-    description: >
-      Create a YAML-based directive tracking system with CLI commands
-      for issuing, listing, completing, and summarizing board directives.
-      Include documentation and integration with the board governance module.
-    issued_by: human-ceo
-    issued_date: "2026-07-23"
-    deadline: "2026-07-23"
-    priority: medium
-    status: completed
-    owner: chief-of-staff
-    completion_date: "2026-07-23"
-    notes: >
-      Implemented in this session. YAML config, CLI commands, and documentation
-      all created and verified.
+    '
+- id: DIR-2026-004
+  title: Launch Sprint 4 - Quality and Completeness
+  description: 'Begin Sprint 4 focused on structured logging with correlation IDs,
+    agent spec validation CLI, CLI type hints and docstrings, OAuth2/key rotation,
+    memory encryption, and token counting integration.
+
+    '
+  issued_by: human-ceo
+  issued_date: '2026-07-23'
+  deadline: '2026-07-30'
+  priority: high
+  status: pending
+  owner: chief-of-staff
+  completion_date: null
+  notes: 'Sprint 4 not yet started per STATUS.md. Need to create backlog and assign
+    owners.
+
+    '
+- id: DIR-2026-005
+  title: Establish Board Directive Tracking System
+  description: 'Create a YAML-based directive tracking system with CLI commands for
+    issuing, listing, completing, and summarizing board directives. Include documentation
+    and integration with the board governance module.
+
+    '
+  issued_by: human-ceo
+  issued_date: '2026-07-23'
+  deadline: '2026-07-23'
+  priority: medium
+  status: completed
+  owner: chief-of-staff
+  completion_date: '2026-07-23'
+  notes: 'Implemented in this session. YAML config, CLI commands, and documentation
+    all created and verified.
+
+    '

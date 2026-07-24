@@ -21,9 +21,9 @@ Type: Executive (CPO)
 
 Department: Product
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
-Direct Reports: ux_research_lead, ux_analytics_lead, technical_documentation_lead, growth_product_manager, developer_experience_engineer, product_designer
+Direct Reports: ux-research-lead, ux-analytics-lead, technical-documentation-lead, growth-product-manager, developer-experience-engineer, product-designer
 
 
 ---

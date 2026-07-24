@@ -1,15 +1,9 @@
 ---
-description: Manages budgets, API cost tracking, and financial forecasting for agent operations.
-mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  task:
+    "*": deny
+    "board-finance.md": allow
+    "financial-analyst.md": allow
 ---
 
 # Chief Financial Officer
@@ -21,9 +15,9 @@ Type: Executive (CFO)
 
 Department: Finance
 
-Reports To: human_ceo
+Reports To: human-ceo
 
-Direct Reports: financial_analyst, investor_relations_lead
+Direct Reports: financial-analyst, investor-relations-lead
 
 
 ---

@@ -10,10 +10,10 @@
       },
       "models": {
         "deepseek-r1:7b": {
-          "name": "DeepSeek R1 7B"
+          "name": "deepSeek-r1:7b"
         },
         "deepseek-r1:7b-64k": {
-          "name": "DeepSeek R1 7B (64K ctx)"
+          "name": "deepSeek-r1:7b-64k"
         }
       }
     }

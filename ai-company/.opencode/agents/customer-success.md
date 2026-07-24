@@ -21,9 +21,9 @@ Type: Executive (Head of Customer Success)
 
 Department: Customer Success
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
-Direct Reports: customer_success_owner
+Direct Reports: customer-success-owner
 
 
 ---

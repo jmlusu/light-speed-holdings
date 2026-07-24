@@ -36,10 +36,11 @@ class RegistryValidator:
         if not r.executives:
             errors.append("No executives defined")
         exec_ids = {e.id for e in r.executives}
+        board_ids = {b.id for b in r.board}
         for ex in r.executives:
-            if ex.reports_to and ex.reports_to not in exec_ids and ex.reports_to != "board":
+            if ex.reports_to and ex.reports_to not in exec_ids and ex.reports_to not in board_ids:
                 errors.append(
-                    f"Executive '{ex.id}' reports_to '{ex.reports_to}' not found in executives"
+                    f"Executive '{ex.id}' reports_to '{ex.reports_to}' not found in executives or board"
                 )
         return errors
 
@@ -60,10 +61,12 @@ class RegistryValidator:
         if not r.specialists:
             errors.append("No specialist agents defined")
         exec_ids = {e.id for e in r.executives}
+        spec_ids = {s.id for s in r.specialists}
+        valid_reports_to = exec_ids | spec_ids
         for spec in r.specialists:
-            if spec.reports_to and spec.reports_to not in exec_ids:
+            if spec.reports_to and spec.reports_to not in valid_reports_to:
                 errors.append(
-                    f"Specialist '{spec.id}' reports_to '{spec.reports_to}' not found in executives"
+                    f"Specialist '{spec.id}' reports_to '{spec.reports_to}' not found in executives or specialists"
                 )
             if spec.department:
                 dept_ids = {d.id for d in r.departments}

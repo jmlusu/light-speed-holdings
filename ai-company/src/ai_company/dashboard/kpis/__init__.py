@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from ai_company.dashboard.kpis.agent_behavior import AgentBehaviorKPICollector
 from ai_company.dashboard.kpis.base import KPICollector
 from ai_company.dashboard.kpis.customer_success import CustomerSuccessKPICollector
 from ai_company.dashboard.kpis.engineering import EngineeringKPICollector
@@ -23,11 +24,24 @@ ALL_COLLECTORS: list[type[KPICollector]] = [
     SalesKPICollector,
     CustomerSuccessKPICollector,
     LegalKPICollector,
+    AgentBehaviorKPICollector,
 ]
 
 
-def collect_all_kpis(project_root: Path | None = None) -> dict[str, Any]:
+def collect_all_kpis(
+    project_root: Path | None = None,
+    message_bus: Any | None = None,
+) -> dict[str, Any]:
     """Run every department collector and return an aggregated snapshot.
+
+    Parameters
+    ----------
+    project_root:
+        Override the project root directory for file-based collectors.
+    message_bus:
+        Optional :class:`MessageBus` (or :class:`TaskStore`) instance to
+        inject into each collector so task reads are routed through the
+        bus instead of reading ``inbox.json`` directly (GAP-011 fix).
 
     Returns
     -------
@@ -39,7 +53,7 @@ def collect_all_kpis(project_root: Path | None = None) -> dict[str, Any]:
 
     departments: dict[str, Any] = {}
     for collector_cls in ALL_COLLECTORS:
-        collector = collector_cls(project_root=root)
+        collector = collector_cls(project_root=root, message_bus=message_bus)
         result = collector.collect()
         departments[collector.department] = result
 

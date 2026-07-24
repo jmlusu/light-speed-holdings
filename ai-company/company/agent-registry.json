@@ -2,7 +2,7 @@
   {
     "name": "chief-of-staff",
     "role": "Chief of Staff",
-    "type": "Executive",
+    "type": "Specialist",
     "department": "Executive",
     "reportsTo": "human-ceo",
     "directReports": [
@@ -1158,7 +1158,7 @@
       "Triage failures and assign them to the accountable module owner.",
       "Report release-readiness to the COO."
     ],
-    "guidelines": "A permanently red suite is a broken window — never ship on red. Gate every merge on green.",
+    "guidelines": "A permanently red suite is a broken window â€” never ship on red. Gate every merge on green.",
     "tools": [
       "read",
       "write",
@@ -2135,7 +2135,7 @@
     "department": "Product",
     "reportsTo": "cpo",
     "directReports": [],
-    "description": "Measures and optimizes how developers feel using the product — error messages, CLI ergonomics, onboarding friction.",
+    "description": "Measures and optimizes how developers feel using the product â€” error messages, CLI ergonomics, onboarding friction.",
     "responsibilities": [
       "Measure developer experience metrics (time-to-first-success, error rates).",
       "Optimize CLI ergonomics and error message quality.",
@@ -2542,7 +2542,7 @@
       "Coordinate with head_of_competitive_intelligence on analyst insights.",
       "Ensure presence in relevant analyst reports and evaluations."
     ],
-    "guidelines": "Analyst relationships take years to build. Start early. Briefings are two-way — listen as much as you pitch. Analyst reports drive enterprise buying decisions.",
+    "guidelines": "Analyst relationships take years to build. Start early. Briefings are two-way â€” listen as much as you pitch. Analyst reports drive enterprise buying decisions.",
     "tools": [
       "read",
       "write",
@@ -2650,7 +2650,7 @@
       "Coordinate with ai_ethics_officer on policy implementation.",
       "Report ethics posture to the Board Risk committee quarterly."
     ],
-    "guidelines": "Ethics boards are proactive governance, not reactive cleanup. Precedent matters — every decision sets a standard. Independence from product pressure is essential.",
+    "guidelines": "Ethics boards are proactive governance, not reactive cleanup. Precedent matters â€” every decision sets a standard. Independence from product pressure is essential.",
     "tools": [
       "read",
       "write",

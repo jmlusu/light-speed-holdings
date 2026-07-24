@@ -20,7 +20,15 @@
 </div>
 
 <!-- Agent grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+<!-- DASH-006: aria-live="polite" for agent list updates -->
+<div id="agent-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+     role="list" aria-label="Agent status"
+     aria-live="polite">
+  <!-- DASH-002: Loading spinner for agent list -->
+  <div x-show="loadingSections.agents" class="col-span-full section-loading">
+    <div class="spinner"></div>
+    <span>Loading agents...</span>
+  </div>
   <template x-for="agent in filteredAgents" :key="agent.name">
     <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5 hover:border-surface-600 transition-all cursor-pointer group"
          @click="selectedAgent = agent">
@@ -62,7 +70,10 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-     @click.self="selectedAgent = null">
+     @click.self="selectedAgent = null"
+     role="dialog" aria-modal="true" aria-labelledby="agent-detail-title"
+     x-trap.noscroll="selectedAgent !== null"
+     @keydown.escape.window="selectedAgent = null">
   <div class="bg-surface-900 rounded-2xl shadow-2xl border border-surface-700/50 w-full max-w-lg"
        x-show="selectedAgent" x-transition:enter="transition ease-out duration-200"
        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
@@ -74,7 +85,7 @@
             <span x-text="selectedAgent?.role?.charAt(0)"></span>
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-surface-100" x-text="selectedAgent?.role"></h3>
+            <h3 id="agent-detail-title" class="text-lg font-semibold text-surface-100" x-text="selectedAgent?.role"></h3>
             <p class="text-sm text-surface-500 font-mono" x-text="selectedAgent?.name"></p>
           </div>
         </div>

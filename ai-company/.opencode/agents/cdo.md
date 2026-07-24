@@ -23,7 +23,7 @@ Department: Data
 
 Reports To: cto
 
-Direct Reports: data_engineer, data_scientist, business_intelligence_engineer
+Direct Reports: data-engineer, data-scientist, business-intelligence-engineer
 
 
 ---

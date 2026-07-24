@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: QA
 
-Reports To: test_engineering_lead
+Reports To: test-engineering-lead
 
 Seniority: mid
 
@@ -90,7 +90,7 @@ Every public contract gets a test. Smoke tests catch red before users do. Automa
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to test_engineering_lead.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to test-engineering-lead.
 
 
 ---

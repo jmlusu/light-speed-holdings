@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: QA
 
-Reports To: qa_lead
+Reports To: qa-lead
 
 Seniority: mid
 
@@ -98,7 +98,7 @@ Quality is everyone's job, but QA owns the process. Every public contract gets a
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to qa_lead.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to qa-lead.
 
 
 ---

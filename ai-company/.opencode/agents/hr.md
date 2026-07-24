@@ -21,9 +21,9 @@ Type: Executive (CHRO)
 
 Department: People
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
-Direct Reports: hr_owner, learning_development_lead, employee_experience_lead
+Direct Reports: hr-owner, learning-development-lead, employee-experience-lead
 
 
 ---

@@ -730,3 +730,20 @@ def readiness_check() -> Response:
         status_code=200,
         media_type="application/json",
     )
+
+
+# PRE-20: Agent behavior health check
+
+@router.get("/monitoring/agent-health")
+def agent_health() -> dict[str, Any]:
+    """Agent behavior health check for monitoring."""
+    from ai_company.security.agent_monitor import get_agent_monitor
+    
+    monitor = get_agent_monitor()
+    anomalies = monitor.check_anomalies()
+    
+    return {
+        "status": "healthy" if not anomalies else "degraded",
+        "anomaly_count": len(anomalies),
+        "monitored_agents": len(monitor.get_all_summaries()),
+    }

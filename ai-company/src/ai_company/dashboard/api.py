@@ -1423,3 +1423,46 @@ def prometheus_metrics() -> str:
     lines.append(f"ai_company_uptime_seconds {uptime:.1f}")
 
     return "\n".join(lines) + "\n"
+
+
+# PRE-20: Agent Behavior Monitoring endpoints
+
+@router.get("/agents/{agent_id}/behavior")
+def get_agent_behavior(agent_id: str) -> dict[str, Any]:
+    """Get behavior monitoring data for a specific agent."""
+    from ai_company.security.agent_monitor import get_agent_monitor
+    
+    monitor = get_agent_monitor()
+    summary = monitor.get_agent_summary(agent_id)
+    anomalies = monitor.check_anomalies(agent_id)
+    recent = monitor.get_recent_actions(agent_id, limit=50)
+    
+    return {
+        "summary": summary,
+        "anomalies": [a.to_dict() for a in anomalies],
+        "recent_actions": [
+            {
+                "action_type": a.action_type,
+                "timestamp": a.timestamp,
+                "success": a.success,
+                "details": a.details,
+            }
+            for a in recent
+        ],
+    }
+
+
+@router.get("/agents/behavior/anomalies")
+def get_all_anomalies() -> dict[str, Any]:
+    """Get all current anomalies across all agents."""
+    from ai_company.security.agent_monitor import get_agent_monitor
+    
+    monitor = get_agent_monitor()
+    anomalies = monitor.check_anomalies()
+    summaries = monitor.get_all_summaries()
+    
+    return {
+        "anomalies": [a.to_dict() for a in anomalies],
+        "agent_summaries": summaries,
+        "total_anomalies": len(anomalies),
+    }

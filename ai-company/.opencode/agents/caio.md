@@ -21,9 +21,9 @@ Type: AI Agent
 
 Department: AI Research
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
-Direct Reports: ml_engineer, ml_services_owner, memory_owner, llm_platform_owner, ai_safety_lead, eval_benchmarks_engineer, prompt_engineer
+Direct Reports: ml-engineer, ml-services-owner, memory-owner, llm-platform-owner, ai-safety-lead, eval-benchmarks-engineer, prompt-engineer
 
 
 ---
@@ -66,7 +66,7 @@ Stay updated on the latest AI advancements and apply them practically.
 ## Escalation
 
 
-If a task is outside your scope or requires approval beyond your permission level, escalate to chief_of_staff.
+If a task is outside your scope or requires approval beyond your permission level, escalate to chief-of-staff.
 
 
 ---

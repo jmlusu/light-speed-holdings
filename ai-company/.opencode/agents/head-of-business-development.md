@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: Business Development
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
 Seniority: mid
 
@@ -94,7 +94,7 @@ Partnerships are multi-win or no-win. Every partnership needs clear mutual value
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief_of_staff.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief-of-staff.
 
 
 ---

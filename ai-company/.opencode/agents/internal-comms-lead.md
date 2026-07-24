@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: Executive
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
 Seniority: mid
 
@@ -92,7 +92,7 @@ Communication failures compound in autonomous organizations. Consistency matters
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief_of_staff.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief-of-staff.
 
 
 ---

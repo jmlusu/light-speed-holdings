@@ -26,7 +26,9 @@
 </div>
 
 <!-- ═══ KPI SUMMARY CARDS ═══ -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" x-show="currentKPIDept">
+<div id="kpi-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+     aria-live="polite" aria-label="Key performance indicators"
+     x-show="currentKPIDept">
   <template x-for="(kpi, key) in (currentKPIDept?.kpis || {})" :key="key">
     <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
       <div class="flex items-center justify-between mb-3">

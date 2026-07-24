@@ -21,7 +21,7 @@ Type: Executive (CIO)
 
 Department: IT
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
 
 

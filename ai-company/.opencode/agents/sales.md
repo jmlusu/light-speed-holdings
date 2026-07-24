@@ -21,9 +21,9 @@ Type: Executive (Head of Sales)
 
 Department: Sales
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
-Direct Reports: sales_owner, revenue_operations_analyst, solutions_engineer
+Direct Reports: sales-owner, revenue-operations-analyst, solutions-engineer
 
 
 ---

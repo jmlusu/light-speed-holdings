@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: AI Research
 
-Reports To: ai_safety_lead
+Reports To: ai-safety-lead
 
 Seniority: mid
 
@@ -94,7 +94,7 @@ Think like an attacker. Every agent is a potential target. Adversarial testing i
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to ai_safety_lead.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to ai-safety-lead.
 
 
 ---

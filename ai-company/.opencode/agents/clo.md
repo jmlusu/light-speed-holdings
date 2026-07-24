@@ -21,9 +21,9 @@ Type: Executive (Chief Legal Officer)
 
 Department: Legal
 
-Reports To: human_ceo
+Reports To: human-ceo
 
-Direct Reports: legal_owner, compliance_officer, data_privacy_officer
+Direct Reports: legal-owner, compliance-officer, data-privacy-officer
 
 
 ---

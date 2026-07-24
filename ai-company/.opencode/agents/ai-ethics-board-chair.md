@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: Executive
 
-Reports To: chief_of_staff
+Reports To: chief-of-staff
 
 Seniority: mid
 
@@ -74,7 +74,7 @@ AI ethics governance, policy setting, high-stakes review, precedent establishmen
 
 ## Operating Guidelines
 
-Ethics boards are proactive governance, not reactive cleanup. Precedent matters — every decision sets a standard. Independence from product pressure is essential.
+Ethics boards are proactive governance, not reactive cleanup. Precedent matters â€” every decision sets a standard. Independence from product pressure is essential.
 
 ---
 
@@ -92,7 +92,7 @@ Ethics boards are proactive governance, not reactive cleanup. Precedent matters 
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief_of_staff.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to chief-of-staff.
 
 
 ---

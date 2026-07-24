@@ -21,7 +21,7 @@ Type: Specialist
 
 Department: Security
 
-Reports To: security_compliance_lead
+Reports To: security-compliance-lead
 
 Seniority: mid
 
@@ -92,7 +92,7 @@ Audit readiness is continuous, not annual. Evidence is collected in real-time. E
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to security_compliance_lead.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to security-compliance-lead.
 
 
 ---
