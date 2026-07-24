@@ -128,14 +128,16 @@ class ContentFilter:
         execution_threats = self._check_execution(content)
         if execution_threats:
             threats.extend(execution_threats)
-            if max_threat.value < ThreatLevel.DANGEROUS.value:
+            # Elevate to SUSPICIOUS only if still SAFE (don't downgrade from DANGEROUS)
+            if max_threat is ThreatLevel.SAFE:
                 max_threat = ThreatLevel.SUSPICIOUS
 
         # Check for XSS
         xss_threats = self._check_xss(content)
         if xss_threats:
             threats.extend(xss_threats)
-            if max_threat.value < ThreatLevel.DANGEROUS.value:
+            # Elevate to SUSPICIOUS only if still SAFE (don't downgrade from DANGEROUS)
+            if max_threat is ThreatLevel.SAFE:
                 max_threat = ThreatLevel.SUSPICIOUS
 
         # Filter content if needed
