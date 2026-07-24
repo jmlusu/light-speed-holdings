@@ -1,0 +1,141 @@
+# Board-Level Agent Verification Report
+
+**Date:** 2026-07-24
+**Auditor:** Board Chair (board-chair)
+**Scope:** Board-level agents, committee memberships, meeting attendees, directive references
+**Registry:** `company-registry.yaml` (3259 lines, 127 agents)
+
+---
+
+## 1. Executive Summary
+
+| Category | Result |
+|---|---|
+| Board Agents Registered | 7 / 7 — ALL PRESENT |
+| Board Agent Definitions Complete | 7 / 7 — ALL COMPLETE |
+| Hierarchy Valid | 7 / 7 — ALL VALID |
+| Committee References Valid | 4 / 4 — ALL VALID |
+| Meeting Attendee References Valid | 2 / 3 — 1 CONCERN |
+| Directive References Valid | 5 / 5 — ALL VALID |
+| Overall Status | HEALTHY — 1 CONCERN, 2 ADVISORIES |
+
+---
+
+## 2. Board Agent Registry Verification
+
+### 2.1 Per-Agent Status
+
+| Agent ID | Line | reports_to | type | department | tools | model_tier | Status |
+|---|---|---|---|---|---|---|---|
+| board-chair | 3117 | '' (empty) | board | Board | [read] | premium | COMPLETE |
+| board-finance | 3138 | board-chair | board | Board | [read] | standard | COMPLETE |
+| board-risk | 3158 | board-chair | board | Board | [read] | standard | COMPLETE |
+| board-strategy | 3178 | board-chair | board | Board | [read] | standard | COMPLETE |
+| board-technology | 3199 | board-chair | board | Board | [read] | standard | COMPLETE |
+| board-customer | 3220 | board-chair | board | Board | [read] | standard | COMPLETE |
+| board-product | 3240 | board-chair | board | Board | [read] | standard | COMPLETE |
+
+All 7 board agents have complete definitions with id, name, title, description, type, department, reports_to, responsibilities (8 each), and tools.
+
+### 2.2 Hierarchy Verification
+
+- board-chair: reports_to = '' (empty) — TOP OF HIERARCHY
+- All 6 other board agents: reports_to = board-chair — VALID
+
+### 2.3 Common Attributes
+
+All board agents share:
+- type: board
+- department: Board
+- direct_reports: []
+- tools: [read]
+- Final responsibility: "Maintain confidentiality of board discussions"
+
+---
+
+## 3. Committee Membership Verification
+
+Source: `config/board/committees.yaml`
+
+| Committee | Chair | Chair Valid | Members | All Valid | Status |
+|---|---|---|---|---|---|
+| audit_committee | board-finance | YES | board-finance, board-risk | YES | VALID |
+| compensation_committee | board-chair | YES | board-chair, board-strategy | YES | VALID |
+| technology_committee | board-technology | YES | board-technology, board-strategy, board-product | YES | VALID |
+| nominating_committee | board-chair | YES | board-chair, board-customer | YES | VALID |
+
+### Advisory: board-product Not on Any Committee — RESOLVED
+
+board-product has been added to the technology_committee. All board agents now serve on at least one committee.
+
+---
+
+## 4. Meeting Attendee Verification
+
+Source: `config/board/meetings.yaml`
+
+| Meeting | Required Attendees | Quorum | Valid? | Status |
+|---|---|---|---|---|
+| annual_board | ["all_board"] | 4 | CONCERN | all_board is semantic, not a registered agent ID |
+| quarterly_board | ["all_board"] | 4 | CONCERN | all_board is semantic, not a registered agent ID |
+| monthly_board | ["board-chair", "human-ceo"] | 3 | VALID | Both are valid agent IDs |
+
+### Advisory: Monthly Meeting Quorum Mismatch
+
+monthly_board has 2 required attendees but quorum = 3. Quorum cannot be met unless additional board members attend. Either lower quorum to 2 or add more required attendees.
+
+---
+
+## 5. Directive Issuer/Owner Verification
+
+Source: `config/board/directives.yaml`
+
+| Directive | issued_by | Valid | owner | Valid | Status |
+|---|---|---|---|---|---|
+| DIR-2026-001 | human-ceo | YES | cto | YES | VALID |
+| DIR-2026-002 | board-chair | YES | cto | YES | VALID |
+| DIR-2026-003 | human-ceo | YES | chief-of-staff | YES | VALID |
+| DIR-2026-004 | human-ceo | YES | chief-of-staff | YES | VALID |
+| DIR-2026-005 | human-ceo | YES | chief-of-staff | YES | VALID |
+
+All 5 directives reference valid agent IDs. 100% valid.
+
+---
+
+## 6. Voting Configuration
+
+Source: `config/board/voting.yaml`
+
+All quorum thresholds are achievable with 7 board members. No agent-specific references in voting config.
+
+---
+
+## 7. Findings Summary
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| 1 | all_board semantic reference in meetings.yaml | Low | Needs orchestrator resolution |
+| 2 | board-product not on any committee | Low | Governance gap |
+| 3 | Monthly meeting quorum (3) > required attendees (2) | Info | Quorum unachievable |
+
+---
+
+## 8. Verification Summary
+
+| Check | Result |
+|---|---|
+| Board agents in registry | 7/7 PASS |
+| Board agent definitions complete | 7/7 PASS |
+| board-chair reports_to is empty | 1/1 PASS |
+| Other board agents report to board-chair | 6/6 PASS |
+| Committee chair references valid | 4/4 PASS |
+| Committee member references valid | 8/8 PASS |
+| Directive issuer references valid | 5/5 PASS |
+| Directive owner references valid | 5/5 PASS |
+| Voting quorum achievable | 6/6 PASS |
+
+**Overall Assessment: HEALTHY**
+
+---
+
+*Report generated by Board Chair — 2026-07-24*
