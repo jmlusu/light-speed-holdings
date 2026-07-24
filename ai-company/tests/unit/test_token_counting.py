@@ -12,7 +12,7 @@ import pytest
 
 from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.llm.client import LLMClient, estimate_call_cost
-from ai_company.llm.cost_tracker import CostTracker, MODEL_COSTS
+from ai_company.llm.cost_tracker import CostTracker
 from ai_company.llm.providers.base import LLMProviderError
 
 
@@ -34,7 +34,6 @@ class TestEstimateCallCost:
         """Estimate should use the cost table for the given model."""
         # Unknown model falls back to _default
         cost = estimate_call_cost("system", "user", model="unknown-model")
-        default = MODEL_COSTS["_default"]
         assert cost > 0.0
 
     def test_estimate_with_known_model(self) -> None:
@@ -87,7 +86,7 @@ class TestAgentLoopBudgetCheck:
             mission="", responsibilities=[], tools=[], permission="Execute",
         )
 
-        result = loop.run(agent, "Do something", task_id="task-1")
+        loop.run(agent, "Do something", task_id="task-1")
 
         # check_budget should be called with a non-zero proposed_cost
         mock_cost_tracker.check_budget.assert_called()

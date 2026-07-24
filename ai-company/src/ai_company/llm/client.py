@@ -7,7 +7,7 @@ from collections.abc import Generator
 from typing import Any
 
 from ai_company.llm.circuit_breaker import CircuitBreaker
-from ai_company.llm.cost_tracker import CostTracker, MODEL_COSTS, _cost_per_token
+from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.providers.base import (
     LLMProvider,

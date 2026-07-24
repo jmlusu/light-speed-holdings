@@ -10,9 +10,7 @@ Covers:
 from __future__ import annotations
 
 import time
-from unittest.mock import patch
 
-import pytest
 
 from ai_company.llm.circuit_breaker import CircuitBreaker, CircuitState
 

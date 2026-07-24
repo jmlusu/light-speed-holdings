@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from ai_company.dashboard.repository import (
     configure_task_backend,
@@ -69,7 +68,7 @@ class TestGAP011MessageBusReadPath:
         mock_bus.get_all_tasks_raw.return_value = []
         configure_task_backend(mock_bus)
 
-        result = mobile_sync(SyncRequest())
+        mobile_sync(SyncRequest())
         mock_bus.get_all_tasks_raw.assert_called()
 
     def test_kpi_base_get_tasks_uses_bus_when_injected(self) -> None:

@@ -16,13 +16,11 @@ Covers:
 
 from __future__ import annotations
 
-import pytest
 
 from ai_company.security.pii_detector import (
     DetectionResult,
     MaskingStrategy,
     PIIDetector,
-    PIIMatch,
     PIIType,
     detect_and_mask_pii,
     get_pii_detector,

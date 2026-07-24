@@ -15,13 +15,11 @@ integration end-to-end.
 from __future__ import annotations
 
 import json
-import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
-import pytest
 
 from ai_company.executor.dead_letter import DeadLetterQueue, detect_stale_tasks
 from ai_company.llm.providers.base import ChatResponse
@@ -215,7 +213,7 @@ class TestRetryWithBackoff:
         bus.update_task("retry-max", {"retry_count": 2, "status": "failed", "result": "error"})
 
         # Attempt retry — should be rejected
-        result = bus.retry_task("retry-max", delay_seconds=60)
+        bus.retry_task("retry-max", delay_seconds=60)
         # Task should still be failed since max retries exceeded
         task_after = bus.get_task_by_id("retry-max")
         assert task_after is not None

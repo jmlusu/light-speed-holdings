@@ -8,9 +8,7 @@ is properly configured.
 from __future__ import annotations
 
 import logging
-from io import StringIO
 
-import pytest
 
 
 class TestStructuredLogging:

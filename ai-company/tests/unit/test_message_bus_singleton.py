@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from ai_company.dashboard.repository import (
     configure_task_backend,
@@ -115,7 +114,7 @@ class TestMessageBusSingleton:
         # Header lines should be present (no status breakdown for empty tasks)
         assert any("ai_company_tasks_by_status" in line for line in lines)
         # But no status-specific gauge lines (empty tasks = no status counts)
-        status_lines = [l for l in lines if "status=" in l]
+        status_lines = [line for line in lines if "status=" in line]
         assert len(status_lines) == 0
 
     def test_all_modules_share_same_backend(self) -> None:
