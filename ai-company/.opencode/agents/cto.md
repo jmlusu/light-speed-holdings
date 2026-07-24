@@ -1,15 +1,15 @@
 ---
-permission:
-  task:
-    "*": deny
-    "*engineering*.md": allow
-    "*dev*.md": allow
-    "*qa*.md": allow
-    "*security*.md": allow
-    "*data*.md": allow
-    "*ml*.md": allow
-    "ciso.md": allow
-    "security-*.md": allow
+description: Oversees all technological infrastructure and software development.
+mode: subagent
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Chief Technology Officer

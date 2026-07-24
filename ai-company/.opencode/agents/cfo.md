@@ -1,9 +1,15 @@
 ---
-permission:
-  task:
-    "*": deny
-    "board-finance.md": allow
-    "financial-analyst.md": allow
+description: Manages budgets, API cost tracking, and financial forecasting for agent operations.
+mode: subagent
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Chief Financial Officer

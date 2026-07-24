@@ -1,11 +1,15 @@
 ---
-permission:
-  task:
-    "*": deny
-    "*/board-*.md": allow
-    "*/board-*.md": allow
-    "ceo-advisor.md": allow
-    "human-ceo.md": allow
+description: The primary orchestrator and strategic alignment agent for the company.
+mode: subagent
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Chief of Staff

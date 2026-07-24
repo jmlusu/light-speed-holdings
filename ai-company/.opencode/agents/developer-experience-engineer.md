@@ -1,5 +1,5 @@
 ---
-description: Measures and optimizes how developers feel using the product √¢‚Ç¨‚Äù error messages, CLI ergonomics, onboarding friction.
+description: Measures and optimizes how developers feel using the product G«ˆ error messages, CLI ergonomics, onboarding friction.
 mode: subagent
 tools:
   write: true

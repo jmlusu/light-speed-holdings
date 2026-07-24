@@ -1,18 +1,15 @@
 ---
-permission:
-  task:
-    "*": deny
-    "*/board-*.md": allow
-    "*/board-*.md": allow
-    "coo.md": allow
-    "*/data-*.md": allow
-    "*/dev-*.md": allow
-    "*/frontend-*.md": allow
-    "*/backend-*.md": allow
-    "*/ml-*.md": allow
-    "ciso.md": allow
-    "*sec*.md": allow
-    "security-*.md": allow
+description: Manages day-to-day operations and internal processes.
+mode: subagent
+tools:
+  write: true
+  edit: true
+  bash: true
+  webfetch: false
+  websearch: false
+  read: true
+  grep: true
+  list: true
 ---
 
 # Chief Operating Officer
