@@ -555,7 +555,9 @@ class TestExecutorLoop:
         assert subtask["sender_id"] == "test-agent"
         assert subtask["receiver_id"] == "lead-backend"
         assert subtask["instruction"] == "Build REST API"
-        assert subtask["status"] == "pending"
+        # tick() processes pending tasks including the newly created subtask,
+        # so it is completed within the same tick cycle
+        assert subtask["status"] == "completed"
 
     def test_stats_tracking(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.chdir(tmp_path)
