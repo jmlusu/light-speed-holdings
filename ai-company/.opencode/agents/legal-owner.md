@@ -41,7 +41,7 @@ Owns the legal service module and legal SOP.
 
 - Map regulatory requirements to agent actions.
 
-- Coordinate with compliance_officer on audit and policy.
+- Coordinate with compliance-officer on audit and policy.
 
 
 ---

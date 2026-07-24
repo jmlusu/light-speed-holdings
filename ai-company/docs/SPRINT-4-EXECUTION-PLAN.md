@@ -28,7 +28,7 @@
 |-------|------|--------|-------|----------|
 | **Pre-Sprint Gate** | PRE-01–PRE-20 (33 items) | 61h | Various | **MUST COMPLETE BEFORE DAY 0** |
 | **Day 0 (Gate Day)** | PRE-01 Memory Encryption | 0.5h | security_engineer | None |
-| **Sprint 4 Core** | PRE-08 Structured Logging (GAP-018) | 6h | lead_backend | PRE-13 (print removal) |
+| **Sprint 4 Core** | PRE-08 Structured Logging (GAP-018) | 6h | lead-backend | PRE-13 (print removal) |
 | **Sprint 4 Core** | PRE-14 OAuth2/Key Rotation | 6h | security_engineer | PRE-02 (WS auth) |
 | **Sprint 4 Core** | PRE-01 Memory Encryption (PRE-01) | 0.5h | security_engineer | **Done Day 0** |
 
@@ -43,11 +43,11 @@
 |-----|------|-------|------------|-------|---------------|
 | **Day -5 to -1** | 07-25 to 07-31 | **Pre-Sprint-4 Gate** | Execute all 33 PRE items per COORDINATION-PLAN | All agents | All 17 verification gates GREEN (see COORDINATION-PLAN.md §Verification Matrix) |
 | **Day 0** | 2026-08-03 | **Gate Closure + Sprint 4 Kickoff** | 1. Final verification of all PRE items<br>2. Sprint 4 kickoff standup (09:00 UTC)<br>3. **Execute PRE-01 (Memory Encryption) — 0.5h**<br>4. Sprint 4 task board created in `.opencode/inbox.json` | Chief of Staff, security_engineer | ✅ All PRE items DONE<br>✅ Memory encryption wired & tested<br>✅ Sprint 4 tasks in inbox |
-| **Day 1** | 2026-08-04 | **Structured Logging (PRE-08 / GAP-018)** | 1. Configure `structlog` with JSON formatter<br>2. Add correlation ID middleware (task_id → log context)<br>3. Replace 11 `print()` calls in non-CLI code (PRE-13)<br>4. Update `DEVELOPMENT.md` with log format docs | lead_backend (lead), devops_lead (support) | ✅ `grep -r "print(" src/ai_company/ --include="*.py" | grep -v cli/ \| wc -l` = 0<br>✅ All logs JSON when `LOG_FORMAT=json`<br>✅ Correlation ID propagates task→agent→tool |
-| **Day 2** | 2026-08-05 | **Structured Logging (cont.) + Testing** | 1. Integration test: task lifecycle logs correlation<br>2. Add log schema validation test<br>3. Verify dashboard log ingestion works<br>4. Ruff + mypy clean | lead_backend, qa_engineer | ✅ 1205+ tests pass<br>✅ Ruff/mypy clean<br>✅ Log correlation verified in dashboard |
+| **Day 1** | 2026-08-04 | **Structured Logging (PRE-08 / GAP-018)** | 1. Configure `structlog` with JSON formatter<br>2. Add correlation ID middleware (task_id → log context)<br>3. Replace 11 `print()` calls in non-CLI code (PRE-13)<br>4. Update `DEVELOPMENT.md` with log format docs | lead-backend (lead), devops_lead (support) | ✅ `grep -r "print(" src/ai_company/ --include="*.py" | grep -v cli/ \| wc -l` = 0<br>✅ All logs JSON when `LOG_FORMAT=json`<br>✅ Correlation ID propagates task→agent→tool |
+| **Day 2** | 2026-08-05 | **Structured Logging (cont.) + Testing** | 1. Integration test: task lifecycle logs correlation<br>2. Add log schema validation test<br>3. Verify dashboard log ingestion works<br>4. Ruff + mypy clean | lead-backend, qa_engineer | ✅ 1205+ tests pass<br>✅ Ruff/mypy clean<br>✅ Log correlation verified in dashboard |
 | **Day 3** | 2026-08-06 | **OAuth2 / Key Rotation (PRE-14)** | 1. Implement `KeyRotationManager` in `security/key_rotation.py`<br>2. Add `keys.yaml` with `created_at`/`expires_at`/`rotated_at`<br>3. Add CLI: `ai-company keys rotate`<br>4. Support dual-key format (old + new during migration) | security_engineer, ciso (review) | ✅ Key rotation CLI works<br>✅ Dual-key migration tested<br>✅ Keys persist across restarts |
-| **Day 4** | 2026-08-07 | **OAuth2 / Key Rotation (cont.) + Integration** | 1. Wire key rotation into dashboard auth (`app.py`)<br>2. Wire key rotation into WebSocket auth (`ws.py`)<br>3. Add scheduled rotation job (cron: daily 02:00 UTC)<br>4. Integration test: rotated key → existing WS connections handled | security_engineer, lead_frontend | ✅ Dashboard auth works post-rotation<br>✅ WS reconnects with new token<br>✅ Scheduled job runs without error |
-| **Day 5** | 2026-08-10 | **Sprint 4 Integration Testing** | 1. Full test suite: `pytest` (target: 1205+ passing)<br>2. Security scan: `bandit -r src/`<br>3. End-to-end: task → log correlation → auth → key rotation<br>4. Ruff + mypy clean | qa_lead, release_manager | ✅ All tests pass<br>✅ Zero bandit HIGH/MEDIUM<br>✅ Ruff/mypy clean<br>✅ E2E scenario works |
+| **Day 4** | 2026-08-07 | **OAuth2 / Key Rotation (cont.) + Integration** | 1. Wire key rotation into dashboard auth (`app.py`)<br>2. Wire key rotation into WebSocket auth (`ws.py`)<br>3. Add scheduled rotation job (cron: daily 02:00 UTC)<br>4. Integration test: rotated key → existing WS connections handled | security_engineer, lead-frontend | ✅ Dashboard auth works post-rotation<br>✅ WS reconnects with new token<br>✅ Scheduled job runs without error |
+| **Day 5** | 2026-08-10 | **Sprint 4 Integration Testing** | 1. Full test suite: `pytest` (target: 1205+ passing)<br>2. Security scan: `bandit -r src/`<br>3. End-to-end: task → log correlation → auth → key rotation<br>4. Ruff + mypy clean | qa-lead, release_manager | ✅ All tests pass<br>✅ Zero bandit HIGH/MEDIUM<br>✅ Ruff/mypy clean<br>✅ E2E scenario works |
 | **Day 6** | 2026-08-11 | **Documentation + Sprint Review Prep** | 1. Update `docs/STATUS.md` with Sprint 4 completion<br>2. Update `docs/DEVELOPMENT.md` (logging, key rotation)<br>3. Create Sprint 4 retrospective notes<br>4. Prepare Sprint 5 backlog | chief_of_staff, technical_documentation_lead | ✅ All docs updated<br>✅ Retrospective captured<br>✅ Sprint 5 backlog drafted |
 | **Day 7** | 2026-08-12 | **Sprint 4 Review + Gate to Sprint 5** | 1. Sprint Review with Human CEO (30 min)<br>2. Verify Production Promotion Criteria (Section G)<br>3. Tag `v0.4.0` if promotion criteria met<br>4. Sprint 5 planning kickoff | chief_of_staff, human_ceo | ✅ CEO sign-off<br>✅ Promotion criteria assessed<br>✅ Sprint 5 backlog approved |
 
@@ -72,7 +72,7 @@
       "id": "S4-02",
       "title": "Structured Logging with Correlation IDs (PRE-08 / GAP-018)",
       "description": "Configure structlog JSON formatter, add task_id correlation context, replace all non-CLI print() calls",
-      "assignee": "lead_backend",
+      "assignee": "lead-backend",
       "estimated_hours": 6,
       "priority": "high",
       "dependencies": [],
@@ -213,7 +213,7 @@
 
 **Role:** VP of Engineering (`vp_engineering` in `company-registry.yaml:834-851`)  
 **Phase:** 1 (Immediate) — **Already in registry, reports to CTO**  
-**Direct Reports (9):** devops_lead, platform_reliability_engineer, audit_trail_owner, graph_owner, dashboard_owner, registry_owner, generator_owner, qa_lead, release_manager
+**Direct Reports (9):** devops_lead, platform_reliability_engineer, audit_trail_owner, graph_owner, dashboard_owner, registry_owner, generator_owner, qa-lead, release_manager
 
 ### Authority Confirmation (CEO Ruling: CONFIRMED)
 
@@ -254,19 +254,19 @@
 
 | # | Role ID | Title | Department | Reports To | Dependencies | Priority |
 |---|---------|-------|------------|------------|--------------|----------|
-| 1 | `prompt_engineer_specialist` | Technical Writer | Product | cpo | technical_documentation_lead active | High |
-| 2 | `learning_development_lead` | Learning & Development Lead | People | hr | hr_owner active | High |
-| 3 | `employee_experience_lead` | Employee Experience Lead | People | hr | hr_owner active | High |
-| 4 | `investor_relations_lead` | Investor Relations Lead | Finance | cfo | cfo active, financial_analyst active | Medium |
+| 1 | `prompt-engineer_specialist` | Technical Writer | Product | cpo | technical_documentation_lead active | High |
+| 2 | `learning-development-lead` | Learning & Development Lead | People | hr | hr_owner active | High |
+| 3 | `employee-experience-lead` | Employee Experience Lead | People | hr | hr_owner active | High |
+| 4 | `investor_relations_lead` | Investor Relations Lead | Finance | cfo | cfo active, financial-analyst active | Medium |
 | 5 | `revenue_operations_analyst` | Revenue Operations Analyst | Sales | cso | sales_owner active | Medium |
 | 6 | `solutions_engineer` | Solutions Engineer | Sales | cso | sales_owner active | Medium |
 | 7 | `corporate_development_lead` | Corporate Development Lead | Strategy | cso | head_of_business_development hired | **Medium (blocks: hire)** |
 | 8 | `internal_comms_lead` | Internal Communications Lead | Executive | chief_of_staff | chief_of_staff active | High |
 | 9 | `knowledge_manager` | Knowledge Manager | Operations | coo | audit_trail_owner, memory_owner active | High |
 | 10 | `process_quality_manager` | Process Quality Manager | Operations | coo | workflow_owner active | High |
-| 11 | `industry_analyst_relations_manager` | Industry Analyst Relations Manager | Marketing | cmo | head_of_developer_relations active | Medium |
+| 11 | `industry-analyst-relations-manager` | Industry Analyst Relations Manager | Marketing | cmo | head_of_developer_relations active | Medium |
 | 12 | `hai_designer` | Human-AI Interaction Designer | AI Research | ai_safety_lead | ai_safety_lead active, dashboard_owner active | **High (safety-critical)** |
-| 13 | `business_intelligence_engineer` | Business Intelligence Engineer | Data | cdo | data_engineer active, dashboard_owner active | High |
+| 13 | `business_intelligence_engineer` | Business Intelligence Engineer | Data | cdo | data-engineer active, dashboard_owner active | High |
 | 14 | `threat_intelligence_analyst` | Threat Intelligence Analyst | Security | ciso | ciso active, incident_response_lead active | High |
 | 15 | `ai_ethics_board_chair` | AI Ethics Board Chair | Executive | chief_of_staff | ai_ethics_officer active, constitutional_ai_owner active | **Critical (Board charter)** |
 
@@ -275,7 +275,7 @@
 | Wave | Target Sprint | Roles | Activation Criteria | Owner |
 |------|---------------|-------|---------------------|-------|
 | **Wave 1** | **Sprint 4 (Days 0-3)** | `internal_comms_lead`, `knowledge_manager`, `process_quality_manager`, `hai_designer`, `business_intelligence_engineer`, `threat_intelligence_analyst` | ✅ Dependencies active<br>✅ Tests pass for dependent modules<br>✅ Owner assigned (Chief of Staff) | chief_of_staff |
-| **Wave 2** | **Sprint 4 (Days 4-7)** | `prompt_engineer_specialist`, `learning_development_lead`, `employee_experience_lead`, `industry_analyst_relations_manager` | ✅ Wave 1 stable<br>✅ HR/Marketing dept leads confirm capacity | hr, cmo |
+| **Wave 2** | **Sprint 4 (Days 4-7)** | `prompt-engineer_specialist`, `learning-development-lead`, `employee-experience-lead`, `industry-analyst-relations-manager` | ✅ Wave 1 stable<br>✅ HR/Marketing dept leads confirm capacity | hr, cmo |
 | **Wave 3** | **Sprint 5 (Week 1)** | `investor_relations_lead`, `revenue_operations_analyst`, `solutions_engineer`, `corporate_development_lead` | ✅ BizDev hire started (Decision #4)<br>✅ Finance/Sales dept leads confirm | cfo, cso |
 | **Wave 4** | **Sprint 5 (Week 2)** | `ai_ethics_board_chair` | ✅ AI Ethics Board Charter approved (Section C)<br>✅ Board Risk Committee briefed<br>✅ ai_ethics_officer + constitutional_ai_owner active | chief_of_staff, human_ceo |
 
@@ -364,7 +364,7 @@ curl -H "X-API-Key: $PROD_KEY" http://localhost:8420/api/v1/kpis/engineering
 | Role | Name | Signature | Date |
 |------|------|-----------|------|
 | **Release Manager** | release_manager | | |
-| **QA Lead** | qa_lead | | |
+| **QA Lead** | qa-lead | | |
 | **CTO** | cto | | |
 | **CISO** | ciso | | |
 | **Chief of Staff** | chief_of_staff | | |
@@ -406,7 +406,7 @@ curl -H "X-API-Key: $PROD_KEY" http://localhost:8420/api/v1/kpis/engineering
 | Issue Type | Primary | Secondary | CEO |
 |------------|---------|-----------|-----|
 | Security | ciso | security_engineer | human_ceo |
-| Test Failure | qa_lead | test_engineering_lead | cto |
+| Test Failure | qa-lead | test_engineering_lead | cto |
 | Build/Deploy | release_manager | devops_lead | cto |
 | Resource Conflict | chief_of_staff | coo | human_ceo |
 | Ethics/Policy | ai_ethics_board_chair | ai_safety_lead | human_ceo |

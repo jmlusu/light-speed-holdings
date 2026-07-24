@@ -19,7 +19,7 @@ class SalesKPICollector(KPICollector):
         tasks = self._get_tasks()
 
         # Count sales-related tasks
-        sales_receivers = {"sales", "business_developer"}
+        sales_receivers = {"sales", "business-developer"}
         sales_tasks = [
             t for t in tasks if t.get("receiver_id") in sales_receivers
         ]

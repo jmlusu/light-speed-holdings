@@ -185,6 +185,6 @@ tests/test_kpi_analytics.py
 tests/test_llm_streaming.py
 tests/test_memory_integration.py
 tests/test_org_chart.py
-tests/test_prompt_engineering.py
+tests/test_prompt-engineering.py
 tests/test_release.py
 tests/test_scheduler_integration.py

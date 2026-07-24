@@ -1,0 +1,129 @@
+requests:
+- id: hitl-954f217e0697
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-07-24T14:32:54.829256'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-07-24T15:32:54.829256'
+- id: hitl-9ecd4adb7a46
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-07-24T14:32:54.845170'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-07-24T15:32:54.845170'
+- id: hitl-b2d349abf670
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-07-24T14:32:54.862948'
+  responded_at: '2026-07-24T14:32:54.873660'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-07-24T15:32:54.862948'
+- id: hitl-8ce62df70efc
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-07-24T14:32:54.888198'
+  responded_at: '2026-07-24T14:32:54.906636'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-07-24T15:32:54.888198'
+- id: hitl-75ac8332e7ac
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-07-24T14:32:54.929612'
+  responded_at: '2026-07-24T14:32:54.979064'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-07-24T15:32:54.929612'
+- id: hitl-d4c3449055e8
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-07-24T14:32:54.946198'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-07-24T15:32:54.946198'
+- id: hitl-a71fe9532a6f
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-07-24T14:32:54.962464'
+  responded_at: '2026-07-24T14:32:54.994335'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-07-24T15:32:54.962464'
+- id: hitl-b1b2cad3cc77
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-07-24T14:32:55.019515'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-07-24T15:32:55.019515'
+- id: hitl-4b4eefad3315
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-07-24T14:32:55.046095'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-07-24T14:31:55.066053'

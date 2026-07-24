@@ -12,7 +12,7 @@ Sprint 1 ran 3 parallel tracks. All tracks completed. 727 tests passing. Code qu
 
 | Track | Owner | Status | Completed |
 |-------|-------|--------|-----------|
-| A: Documentation | content_creator | 🟡 Partial | 4/7 SOPs created, ToS/Privacy not started |
+| A: Documentation | content-creator | 🟡 Partial | 4/7 SOPs created, ToS/Privacy not started |
 | B: Code Hardening | lead-backend | ✅ Complete | All items done |
 | C: Audit Trail | lead-backend | ✅ Complete | Package + integration done |
 
@@ -41,13 +41,13 @@ Sprint 1 ran 3 parallel tracks. All tracks completed. 727 tests passing. Code qu
 
 | # | Task | SOP ID | Owner | Status |
 |---|------|--------|-------|--------|
-| A1 | Create Marketing SOP | SOP-MKT-001 | content_creator | ⬜ Not started |
-| A2 | Create Sales SOP | SOP-SALES-001 | content_creator | ⬜ Not started |
-| A3 | Create Customer Success SOP | SOP-CS-001 | content_creator | ⬜ Not started |
-| A4 | Create Legal SOP | SOP-LEGAL-001 | content_creator | ⬜ Not started |
-| A5 | Create Operations SOP | SOP-OPS-001 | content_creator | ⬜ Not started |
-| A6 | Create Terms of Service | — | content_creator | ⬜ Not started |
-| A7 | Create Privacy Policy | — | content_creator | ⬜ Not started |
+| A1 | Create Marketing SOP | SOP-MKT-001 | content-creator | ⬜ Not started |
+| A2 | Create Sales SOP | SOP-SALES-001 | content-creator | ⬜ Not started |
+| A3 | Create Customer Success SOP | SOP-CS-001 | content-creator | ⬜ Not started |
+| A4 | Create Legal SOP | SOP-LEGAL-001 | content-creator | ⬜ Not started |
+| A5 | Create Operations SOP | SOP-OPS-001 | content-creator | ⬜ Not started |
+| A6 | Create Terms of Service | — | content-creator | ⬜ Not started |
+| A7 | Create Privacy Policy | — | content-creator | ⬜ Not started |
 
 **Moved to Sprint 2 backlog.** Remaining SOPs and legal docs are Sprint 2 scope.
 

@@ -45,7 +45,7 @@ Owns safety policies, alignment guardrails, refusal thresholds, and harm-reducti
 
 - Review every new agent deployment for safety implications.
 
-- Bridge between decision_engine_owner and compliance_officer on safety matters.
+- Bridge between decision_engine_owner and compliance-officer on safety matters.
 
 
 ---

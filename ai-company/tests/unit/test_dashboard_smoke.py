@@ -6,7 +6,7 @@ and core endpoints respond 200 with the expected shape. They pin the
 P0/P2 fixes end-to-end so a regression in path resolution or the DLQ
 bypass would turn the build red.
 
-Author: qa_automation_engineer (owned by test_engineering_lead).
+Author: qa-automation-engineer (owned by test-engineering-lead).
 """
 
 from __future__ import annotations

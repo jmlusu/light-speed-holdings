@@ -781,10 +781,10 @@ class AgentLearner:
     def __init__(
         self,
         outcome_tracker: OutcomeTracker,
-        prompt_engineer: SystemPromptArchitect,
+        prompt-engineer: SystemPromptArchitect,
     ):
         self._tracker = outcome_tracker
-        self._prompt_engineer = prompt_engineer
+        self._prompt-engineer = prompt-engineer
     
     def analyze_performance(
         self,

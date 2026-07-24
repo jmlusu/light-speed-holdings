@@ -258,7 +258,7 @@ LLM client retry logic restarts the provider chain from the beginning on each re
 | **Priority** | P2 |
 | **Status** | Done |
 | **Effort** | 6 hours |
-| **Owner** | content_creator |
+| **Owner** | content-creator |
 | **GAP Ref** | Track A from Sprint 1 |
 
 **Description:**
@@ -348,8 +348,8 @@ S2-13 (Escalation)    — standalone
 |------|-------|-----------------|
 | Backend | lead-backend | ~25 hours |
 | Frontend | lead-frontend | ~5 hours |
-| Content | content_creator | ~8 hours |
-| QA | qa_automation_engineer | ~5 hours |
+| Content | content-creator | ~8 hours |
+| QA | qa-automation-engineer | ~5 hours |
 | **Total** | | **~43 hours** |
 
 ---

@@ -61,7 +61,7 @@ def project(tmp_path: Path) -> Path:
     registry = [
         {"name": "cto", "role": "CTO", "type": "executive", "department": "Technology",
          "reportsTo": "ceo", "directReports": [], "description": "CTO"},
-        {"name": "lead_backend", "role": "Backend Lead", "type": "specialist",
+        {"name": "lead-backend", "role": "Backend Lead", "type": "specialist",
          "department": "Technology", "reportsTo": "cto", "directReports": [],
          "description": "Backend"},
         {"name": "cmo", "role": "CMO", "type": "executive", "department": "Marketing",
@@ -74,7 +74,7 @@ def project(tmp_path: Path) -> Path:
     # company/departments.yaml
     departments = {
         "departments": [
-            {"name": "Technology", "executive": "cto", "agents": ["lead_backend"],
+            {"name": "Technology", "executive": "cto", "agents": ["lead-backend"],
              "totalAgents": 8},
             {"name": "Marketing", "executive": "cmo", "agents": [],
              "totalAgents": 1},

@@ -329,7 +329,7 @@ class WorkflowEngine(BaseEngine):
 
 | Domain | Prefix/Pattern | Example |
 |--------|---------------|---------|
-| Agent IDs | `snake_case` | `chief_of_staff`, `lead_backend` |
+| Agent IDs | `kebab-case` | `chief-of-staff`, `lead-backend` |
 | Config files | `snake_case.yaml` | `approval_matrix.yaml` |
 | Templates | `snake_case.md.j2` | `executive.md.j2` |
 | CLI commands | `kebab-case` | `ai-company company run` |

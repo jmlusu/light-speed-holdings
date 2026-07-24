@@ -4,7 +4,7 @@
 **Date:** 2026-07-19  
 **Status:** APPROVED  
 **Sprint Duration:** ~2 weeks (target)  
-**Agents Dispatched:** 7 (board-technology, caio, chief-ai-officer, content_writer, data-engineer, dept_engineering, chief-of-staff)
+**Agents Dispatched:** 7 (board-technology, caio, chief-ai-officer, content-writer, data-engineer, dept_engineering, chief-of-staff)
 
 ---
 
@@ -79,7 +79,7 @@ These are the **foundation** for everything else. No other work should proceed u
 |------|-------------|-------|-------|
 | 8.1-8.3 | Replace print() with logging (3 files) | 1.25 | dept_engineering |
 | 8.4 | Type hints for all CLI modules | 2 | dept_engineering |
-| 8.5 | Docstrings for all public functions | 1.5 | content_writer |
+| 8.5 | Docstrings for all public functions | 1.5 | content-writer |
 
 **P3 — Test Coverage Gaps**
 | Item | Description | Hours | Owner |
@@ -94,10 +94,10 @@ These are the **foundation** for everything else. No other work should proceed u
 **P3 — Documentation**
 | Item | Description | Hours | Owner |
 |------|-------------|-------|-------|
-| 10.1 | API documentation (OpenAPI/Swagger) | 2 | content_writer |
+| 10.1 | API documentation (OpenAPI/Swagger) | 2 | content-writer |
 | 10.2 | Architecture Decision Records (ADRs) | 3 | board-technology |
-| 10.3 | Inline code comments for complex logic | 2 | content_writer |
-| 10.4 | Developer onboarding guide | 2 | content_writer |
+| 10.3 | Inline code comments for complex logic | 2 | content-writer |
+| 10.4 | Developer onboarding guide | 2 | content-writer |
 
 ### 2.3 Sprint 3 Scope Exclusions (deferred to Sprint 4)
 - GAP-013: KPI department collector wiring (all 7 depts) — data-engineer begins design, implementation in Sprint 4
@@ -198,7 +198,7 @@ These are the **foundation** for everything else. No other work should proceed u
 
 ---
 
-### 3.4 content_writer — Documentation, SOPs, User Guides, API Docs
+### 3.4 content-writer — Documentation, SOPs, User Guides, API Docs
 
 **Role:** Documentation quality, user experience, knowledge management
 
@@ -366,7 +366,7 @@ DE-ENG-3 (shell=True) → DE-ENG-16 (ACK/NACK tests)
     ┌──────────┐     ┌──────────────┐     ┌──────────────┐
     │ Item 5.1 │────▶│ Item 5.4     │────▶│ CW-1         │
     │ Dashboard│     │ KPI Streaming│     │ OpenAPI Docs │
-    │ Auth     │     │ (DE-2)       │     │ (content_writer)│
+    │ Auth     │     │ (DE-2)       │     │ (content-writer)│
     │ (DE-ENG-4)│    └──────────────┘     └──────────────┘
     └──────────┘
 ```
@@ -487,10 +487,10 @@ DE-ENG-3 (shell=True) → DE-ENG-16 (ACK/NACK tests)
 | D11 | Integration tests for ACK/NACK, escalation | DE-ENG |
 | D11 | API endpoint tests | DE-ENG |
 | D12 | CLI command tests for all new modules | DE-ENG |
-| D12 | OpenAPI docs generated | content_writer |
-| D13 | All docstrings + inline comments complete | content_writer |
-| D13 | User guide updated, onboarding guide written | content_writer |
-| D14 | Release notes drafted | content_writer |
+| D12 | OpenAPI docs generated | content-writer |
+| D13 | All docstrings + inline comments complete | content-writer |
+| D13 | User guide updated, onboarding guide written | content-writer |
+| D14 | Release notes drafted | content-writer |
 | D14 | **Milestone 3: Quality + documentation complete** | All |
 
 ### Week 4: Finalize (Days 15-17)
@@ -604,7 +604,7 @@ DE-ENG-3 (shell=True) → DE-ENG-16 (ACK/NACK tests)
 | board-technology | 13 | 10% |
 | caio | 13 | 10% |
 | chief-ai-officer | 10.5 | 8% |
-| content_writer | 10 | 8% |
+| content-writer | 10 | 8% |
 | data-engineer | 9.5 | 7% |
 | dept_engineering | 40.75 | 31% |
 | chief-of-staff | 8 + ongoing | 6% |

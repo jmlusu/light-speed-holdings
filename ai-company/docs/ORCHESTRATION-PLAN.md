@@ -53,7 +53,7 @@ Sprint 1 (code hardening + audit trail) and Sprint 2 (security + integration) ar
 | lead-frontend | 11h | S3-01, S3-02, S3-03 | 6.0h (55%) |
 | qa_engineer | 10h | S3-11, S3-12, S3-13, S3-14 | 10.0h (100%) |
 | security_engineer | 6h | S3-15, S3-16 | 5.0h (83%) |
-| content_writer | 1.5h | (No new tasks — all SOPs complete) | 0% |
+| content-writer | 1.5h | (No new tasks — all SOPs complete) | 0% |
 
 > **Capacity buffer:** 12.5h across all agents for unexpected complexity, bug fixes, or rework.
 

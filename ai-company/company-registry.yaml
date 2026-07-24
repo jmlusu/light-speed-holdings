@@ -946,7 +946,7 @@ company:
     responsibilities:
     - Own the legal service module and legal SOP.
     - Map regulatory requirements to agent actions.
-    - Coordinate with compliance_officer on audit and policy.
+    - Coordinate with compliance-officer on audit and policy.
     guidelines: Compliance by construction. Regulatory gaps block release. Every clause
       is traceable.
     tools:
@@ -1213,7 +1213,7 @@ company:
     - Define and maintain refusal/harm-reduction thresholds.
     - Monitor safety incidents and coordinate incident response.
     - Review every new agent deployment for safety implications.
-    - Bridge between decision_engine_owner and compliance_officer on safety matters.
+    - Bridge between decision_engine_owner and compliance-officer on safety matters.
     guidelines: Safety is a prerequisite, not an afterthought. Every new capability
       requires a safety review before deployment. No exceptions.
     tools:
@@ -1367,7 +1367,7 @@ company:
     - Design and run adversarial test campaigns against all agents.
     - Maintain a red-team test library alongside correctness tests.
     - Test every new agent and model before deployment.
-    - Coordinate with qa_automation_engineer to integrate adversarial tests into CI.
+    - Coordinate with qa-automation-engineer to integrate adversarial tests into CI.
     - Report findings to ai_safety_lead with severity and remediation requirements.
     guidelines: Think like an attacker. Every agent is a potential target. Adversarial
       testing is a safety function, not a QA function. Document every finding.
@@ -2261,7 +2261,7 @@ company:
     - Provide pre-sales technical validation for enterprise deals.
     - Design custom solutions for customer use cases.
     - Create proof-of-concept implementations for prospects.
-    - Coordinate with customer_success_owner on implementation handoff.
+    - Coordinate with customer-success-owner on implementation handoff.
     - Maintain a library of solution patterns and reference architectures.
     guidelines: Solutions engineers sell through technical credibility. Every POC
       should demonstrate clear value. Technical debt in sales = implementation debt

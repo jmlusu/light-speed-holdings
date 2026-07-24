@@ -10,7 +10,32 @@
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
 
-**Resolved gaps (as of 2026-07-22, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-005, GAP-011. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+**Resolved gaps (as of 2026-07-22, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-005, GAP-011, GAP-018. **Open:** GAP-019. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+
+> **Sprint 4+ Prioritization** — 14 gaps remain with open or partial status. These have been re-prioritized into Sprint 4 and Sprint 5 execution plans below. The 6 fully resolved gaps are retained for reference only.
+
+---
+
+## Sprint 4+ Re-Prioritized Gap Plan
+
+### Sprint 4 — Quality & Completeness (P0 headline: GAP-018 Structured Logging)
+
+| Gap ID | Description | Severity | Sprint | Effort | Status |
+|--------|-------------|----------|--------|--------|--------|
+| GAP-018 | Structured logging with correlation IDs | LOW | **Sprint 4** | Medium | 🟡 Partial → In Progress |
+| GAP-019 | Agent spec validation CLI | LOW | **Sprint 4** | Low | 🔴 Open |
+| GAP-005 | Memory consolidation in executor loop | HIGH | **Sprint 4** | Medium | 🟡 Partial |
+| GAP-011 | Dashboard API read-path through MessageBus | MEDIUM | **Sprint 4** | Low | 🟡 Partial |
+| GAP-014 | BriefingGenerator public API usage | LOW | **Sprint 4** | Trivial | 🔴 Open |
+| GAP-015 | LLM retry provider cycling fix | MEDIUM | **Sprint 4** | Low | 🔴 Open |
+| GAP-016 | Remove shell=True from ToolRunner | MEDIUM | **Sprint 4** | Medium | 🔴 Open |
+| GAP-020 | Full pipeline integration tests | LOW | **Sprint 4** | Medium | 🟡 Partial |
+
+### Sprint 5 — Advanced Features & Hardening
+
+| Gap ID | Description | Severity | Sprint | Effort | Status |
+|--------|-------------|----------|--------|--------|--------|
+| GAP-001 | Executor fully routed through MessageBus (remove direct inbox I/O) | CRITICAL | **Sprint 5** | Medium | ✅ Resolved (partial) |
 
 > **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
@@ -567,36 +592,23 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | ✅ Resolved | `tests/integration/test_full_pipeline.py` (305 lines, 10 tests, all pass) |
 
 **Resolved:** 16 of 20 (GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020)
-**Partial:** 2 (GAP-005, GAP-011)
-**Open:** 2 (GAP-018, GAP-019)
+**Partial:** 3 (GAP-005, GAP-011, GAP-018)
+**Open:** 1 (GAP-019)
 **Remaining work to reach "done":** finish consolidation (GAP-005), read-path MessageBus (GAP-011), structured logging (GAP-018), and agent spec validation (GAP-019).
 
 ## Recommended Sprint Plan
 
-### Sprint 1 — Foundation Fixes (CRITICAL + HIGH items)
-1. GAP-001: Route all inbox I/O through MessageBus
-2. GAP-002: Create atomic FileStore abstraction
-3. GAP-006: Wire WebSocket broadcast to executor events
-4. GAP-011: Dashboard API uses MessageBus
-5. GAP-012: Fix priority forwarding in AgentLoop
-6. GAP-014: Fix BriefingGenerator private method usage
+### Sprint 4+ — Remaining Integration Gaps
 
-### Sprint 2 — Security & Gating (MEDIUM security items)
-1. GAP-003: Integrate tier rules into ToolRunner
-2. GAP-004: Non-blocking HITL gate
-3. GAP-009: CostTracker accumulator persistence
-4. GAP-010: Dashboard CORS and auth
-5. GAP-015: Fix LLM retry provider cycling
-6. GAP-016: Remove shell=True from ToolRunner
+Prioritized backlog of all partial and open gaps that still require work to reach full resolution:
 
-### Sprint 3 — Autonomous Coordination (HIGH orchestration items)
-1. GAP-005: Memory integration into executor pipeline
-2. GAP-007: Scheduler integration into executor loop
-3. GAP-008: Persist escalation events
-4. GAP-017: Task timeout and dead letter queue
+| # | Gap ID | Severity | Description | Effort | Status |
+|---|--------|----------|-------------|--------|--------|
+| 1 | GAP-005 | HIGH | Finish memory consolidation in executor loop (`consolidate()` cadence) | Medium | 🟡 Partial — recall/store wired; consolidation not yet in the executor `start()` loop |
+| 2 | GAP-011 | MEDIUM | Dashboard API read path through MessageBus (`mobile_api.py` + `kpis/*` still read `inbox.json` directly) | Low | 🟡 Partial — write path fixed (`api.py:313`); read path not yet through bus |
+| 3 | GAP-018 | LOW | Structured logging with correlation IDs; replace 11 `print()` calls in non-CLI modules | Medium | 🟡 Partial — no structured JSON/correlation IDs; mixed logging across modules |
+| 4 | GAP-019 | LOW | Agent spec validation (`AgentContext.validate()` method + `ai-company agents validate` CLI) | Low | 🔴 Open — no schema validation; malformed specs silently produce empty `AgentContext` |
 
-### Sprint 4 — Quality & Completeness (LOW + polish items)
-1. GAP-013: Wire all KPI department collectors
-2. GAP-018: Structured logging with correlation IDs
-3. GAP-019: Agent spec validation
-4. GAP-020: End-to-end integration tests
+**Total remaining effort:** ~Medium + Low + Medium + Low
+
+> All other gaps (GAP-001 through GAP-004, GAP-006 through GAP-010, GAP-012 through GAP-017, GAP-020) are resolved in source and verified. They should be covered by regression tests and periodic audit during Sprint 4+.

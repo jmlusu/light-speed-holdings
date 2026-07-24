@@ -249,7 +249,7 @@ Type: Specialist
 
 Department: Quality Assurance
 
-Reports To: qa_lead
+Reports To: qa-lead
 
 ---
 

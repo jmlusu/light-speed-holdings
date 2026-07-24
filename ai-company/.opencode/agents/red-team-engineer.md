@@ -43,7 +43,7 @@ Runs adversarial probing against agents including prompt injection, jailbreaks, 
 
 - Test every new agent and model before deployment.
 
-- Coordinate with qa_automation_engineer to integrate adversarial tests into CI.
+- Coordinate with qa-automation-engineer to integrate adversarial tests into CI.
 
 - Report findings to ai_safety_lead with severity and remediation requirements.
 

@@ -16,7 +16,7 @@
 
 | Resource | Original Load | Capacity | Status |
 |----------|--------------|----------|--------|
-| lead_backend | 23h (115%) | 20h | 🔴 Over-allocated |
+| lead-backend | 23h (115%) | 20h | 🔴 Over-allocated |
 | security_engineer | 12.5h (104%) | 12h | 🔴 Over-allocated |
 
 **Recommendation:** Defer PRE-14 (Key Rotation, 6h) to Sprint 4 and split PRE-08 (Structured Logging, 6h) across two sprints. This brings both resources within capacity.
@@ -104,7 +104,7 @@ Before Sprint 4 begins, ALL of the following must pass:
 
 1. **Approve resource rebalancing** — Defer PRE-14, split PRE-08, defer 4 of 8 PRE-15 items
 2. **Start PRE-01 immediately** — 0.5h, unblocks 3 downstream items
-3. **Assign PRE-04 to lead_backend today** — Critical path, 4h, no dependencies
+3. **Assign PRE-04 to lead-backend today** — Critical path, 4h, no dependencies
 4. **Run full test suite after each phase** — Catch regressions early
 5. **Update risk register as part of PRE-05** — Ensure leadership has accurate risk visibility
 6. **Block Sprint 4 if quality gates fail** — Gates exist for a reason

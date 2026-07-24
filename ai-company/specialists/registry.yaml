@@ -17,7 +17,7 @@ specialists:
   - id: backend_engineer
     title: Backend Engineer
     department: Technology
-    reports_to: lead_backend
+    reports_to: lead-backend
     specialization: Server-side development
     status: active
     capabilities:
@@ -32,7 +32,7 @@ specialists:
   - id: frontend_engineer
     title: Frontend Engineer
     department: Technology
-    reports_to: lead_frontend
+    reports_to: lead-frontend
     specialization: User interface development
     status: active
     capabilities:
@@ -89,7 +89,7 @@ specialists:
       write: true
       execute: true
 
-  - id: ml_engineer
+  - id: ml-engineer
     title: ML Engineer
     department: AI Research
     reports_to: caio
@@ -104,7 +104,7 @@ specialists:
       write: true
       execute: true
 
-  - id: prompt_engineer
+  - id: prompt-engineer
     title: Prompt Engineer
     department: AI Research
     reports_to: caio
@@ -119,7 +119,7 @@ specialists:
       write: true
       execute: true
 
-  - id: data_engineer
+  - id: data-engineer
     title: Data Engineer
     department: Technology
     reports_to: cto
@@ -134,7 +134,7 @@ specialists:
       write: true
       execute: true
 
-  - id: financial_analyst
+  - id: financial-analyst
     title: Financial Analyst
     department: Finance
     reports_to: cfo

@@ -8,7 +8,7 @@ meetings:
       - "Financial performance"
       - "Board elections"
       - "Budget approval"
-    required_attendees: ["all_board"]
+    required_attendees: ["board-chair", "board-finance", "board-risk", "board-strategy", "board-technology", "board-customer", "board-product"]
     quorum: 4
 
   - id: "quarterly_board"
@@ -19,7 +19,7 @@ meetings:
       - "Strategy progress"
       - "Risk assessment"
       - "Key decisions"
-    required_attendees: ["all_board"]
+    required_attendees: ["board-chair", "board-finance", "board-risk", "board-strategy", "board-technology", "board-customer", "board-product"]
     quorum: 4
 
   - id: "monthly_board"
@@ -30,4 +30,4 @@ meetings:
       - "Critical issues"
       - "Upcoming decisions"
     required_attendees: ["board-chair", "human-ceo"]
-    quorum: 3
+    quorum: 2

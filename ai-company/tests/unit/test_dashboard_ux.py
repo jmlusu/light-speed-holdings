@@ -6,7 +6,7 @@ Covers:
   DASH-006: Mobile gesture support (initMobileGestures presence in JS)
   DASH-008: crossorigin and SRI integrity attributes on CDN scripts
 
-Author: lead_frontend_engineer
+Author: lead-frontend_engineer
 """
 
 from __future__ import annotations

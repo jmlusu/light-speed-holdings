@@ -138,11 +138,11 @@ def sample_registry_data() -> list[dict]:
 @pytest.fixture
 def org_nodes() -> list[OrgNode]:
     """Flat list of nested OrgNode objects (children are OrgNode, not strings)."""
-    lead_backend = OrgNode(name="lead-backend", role="Lead Backend", type="specialist", department="Technology")
-    lead_frontend = OrgNode(name="lead-frontend", role="Lead Frontend", type="specialist", department="Technology")
+    lead-backend = OrgNode(name="lead-backend", role="Lead Backend", type="specialist", department="Technology")
+    lead-frontend = OrgNode(name="lead-frontend", role="Lead Frontend", type="specialist", department="Technology")
     cto = OrgNode(
         name="cto", role="CTO", type="executive", department="Technology",
-        children=[lead_backend, lead_frontend],
+        children=[lead-backend, lead-frontend],
     )
     hr_lead = OrgNode(name="hr-lead", role="HR Lead", type="specialist", department="People")
     coo = OrgNode(name="coo", role="COO", type="executive", department="Operations", children=[hr_lead])
@@ -154,7 +154,7 @@ def org_nodes() -> list[OrgNode]:
         name="human-ceo", role="CEO", type="executive", department="Executive",
         children=[chief_of_staff],
     )
-    return [human_ceo, chief_of_staff, cto, lead_backend, lead_frontend, coo, hr_lead]
+    return [human_ceo, chief_of_staff, cto, lead-backend, lead-frontend, coo, hr_lead]
 
 
 @pytest.fixture

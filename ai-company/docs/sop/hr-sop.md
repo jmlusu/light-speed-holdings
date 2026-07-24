@@ -149,7 +149,7 @@ CEO (Human)
         |     +-- Ops Lead (ops_lead)
         |
         +-- CAIO (caio) -- AI Research Department
-              +-- ML Engineer (ml_engineer)
+              +-- ML Engineer (ml-engineer)
 ```
 
 ### 5.3 Agent Type Classification

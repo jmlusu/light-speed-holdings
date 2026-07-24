@@ -21,7 +21,7 @@
 
 ### A1. Department SOPs -- Remaining 6 of 10
 
-**Priority**: 2 | **Points**: 4 | **Owner**: content_creator agent
+**Priority**: 2 | **Points**: 4 | **Owner**: content-creator agent
 
 | SOP | Status | File |
 |-----|--------|------|
@@ -50,7 +50,7 @@
 
 ### A2. Terms of Service
 
-**Priority**: 3 | **Points**: 2 | **Owner**: content_creator agent
+**Priority**: 3 | **Points**: 2 | **Owner**: content-creator agent
 
 **Acceptance Criteria**:
 - [ ] Standard ToS covering: usage terms, IP ownership, liability limitations, termination
@@ -66,7 +66,7 @@
 
 ### A3. Privacy Policy
 
-**Priority**: 3 | **Points**: 2 | **Owner**: content_creator agent
+**Priority**: 3 | **Points**: 2 | **Owner**: content-creator agent
 
 **Acceptance Criteria**:
 - [ ] Covers: data collection (API keys via .env), local-only processing, no telemetry

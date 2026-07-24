@@ -12,7 +12,7 @@ cannot silently return:
   JSON, ``{}`` for YAML) — the symmetry gap that let the DLQ read blow up.
 * Forbidden / out-of-root paths must be rejected (GAP-011 defence).
 
-Author: qa_automation_engineer (owned by test_engineering_lead).
+Author: qa-automation-engineer (owned by test-engineering-lead).
 """
 
 from __future__ import annotations

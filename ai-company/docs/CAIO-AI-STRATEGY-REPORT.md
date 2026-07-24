@@ -223,10 +223,10 @@ Sprint 4 transforms the AI infrastructure from "built and functional" to "measur
 
 | Task | Description | Effort | Owner |
 |------|-------------|--------|-------|
-| S4-01 | **Token counter utility** — Create `llm/token_counter.py` with tiktoken-based counting for GPT/Claude models and fallback estimation for others. Expose `count_tokens(text, model) -> int`. | 3h | ml_engineer |
-| S4-02 | **Pre-flight cost estimation** — Enhance `LLMClient.execute_task()` to estimate token count before API call using token_counter. Check against cost budget before sending. Log estimated vs actual in UsageRecord. | 2h | ml_engineer |
+| S4-01 | **Token counter utility** — Create `llm/token_counter.py` with tiktoken-based counting for GPT/Claude models and fallback estimation for others. Expose `count_tokens(text, model) -> int`. | 3h | ml-engineer |
+| S4-02 | **Pre-flight cost estimation** — Enhance `LLMClient.execute_task()` to estimate token count before API call using token_counter. Check against cost budget before sending. Log estimated vs actual in UsageRecord. | 2h | ml-engineer |
 | S4-03 | **Context window enforcement** — Add `max_context_tokens` to LoopConfig. In AgentLoop.run(), truncate conversation_history when total estimated tokens exceed limit. Implement smart truncation: keep system prompt + last N iterations, summarize middle. | 4h | llm_platform_owner |
-| S4-04 | **Update MODEL_COSTS** — Refresh pricing table with current model pricing (Claude 4, o3, Gemini 2.5). Add model→context_window mapping for token budget enforcement. | 1h | ml_engineer |
+| S4-04 | **Update MODEL_COSTS** — Refresh pricing table with current model pricing (Claude 4, o3, Gemini 2.5). Add model→context_window mapping for token budget enforcement. | 1h | ml-engineer |
 
 **Verification:**
 - `python -c "from ai_company.llm.token_counter import count_tokens; print(count_tokens('hello world', 'gpt-4o'))"` returns int > 0
@@ -255,9 +255,9 @@ Sprint 4 transforms the AI infrastructure from "built and functional" to "measur
 
 | Task | Description | Effort | Owner |
 |------|-------------|--------|-------|
-| S4-09 | **Prompt version tracking** — Add `prompt_version` field to UsageRecord and LoopResult. Track which prompt template version produced each result. Enables prompt-level analytics. | 2h | prompt_engineer |
-| S4-10 | **Variant auto-selection** — Wire PromptOptimizer into AgentLoop. Before each task, call `optimizer.select_variant()` to pick the best-performing prompt variant. Fall back to default if no qualified variant. | 3h | prompt_engineer |
-| S4-11 | **Outcome feedback pipeline** — After each task completion, call `optimizer.record_variant_outcome(variant_id, success)`. Wire into AgentLoop's completion path. | 2h | prompt_engineer |
+| S4-09 | **Prompt version tracking** — Add `prompt_version` field to UsageRecord and LoopResult. Track which prompt template version produced each result. Enables prompt-level analytics. | 2h | prompt-engineer |
+| S4-10 | **Variant auto-selection** — Wire PromptOptimizer into AgentLoop. Before each task, call `optimizer.select_variant()` to pick the best-performing prompt variant. Fall back to default if no qualified variant. | 3h | prompt-engineer |
+| S4-11 | **Outcome feedback pipeline** — After each task completion, call `optimizer.record_variant_outcome(variant_id, success)`. Wire into AgentLoop's completion path. | 2h | prompt-engineer |
 | S4-12 | **Prompt snapshot tests** — Create `tests/test_prompt_snapshots.py`. For each agent type, snapshot the system prompt output. On future runs, diff against snapshot to detect drift. | 3h | eval_benchmarks_engineer |
 
 **Verification:**

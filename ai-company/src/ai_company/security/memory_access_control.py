@@ -10,10 +10,10 @@ logger = logging.getLogger(__name__)
 # Access matrix: memory_tag -> list of allowed agent IDs
 DEFAULT_ACCESS_MATRIX: dict[str, list[str]] = {
     # Financial memories — only CFO, financial analysts, and CEO
-    "financial": ["cfo", "financial_analyst", "human_ceo", "chief_financial_officer"],
-    "budget": ["cfo", "financial_analyst", "human_ceo"],
-    "revenue": ["cfo", "financial_analyst", "human_ceo", "sales_owner", "sales"],
-    "expense": ["cfo", "financial_analyst", "human_ceo"],
+    "financial": ["cfo", "financial-analyst", "human_ceo", "chief_financial_officer"],
+    "budget": ["cfo", "financial-analyst", "human_ceo"],
+    "revenue": ["cfo", "financial-analyst", "human_ceo", "sales_owner", "sales"],
+    "expense": ["cfo", "financial-analyst", "human_ceo"],
 
     # HR memories — only HR lead and CEO
     "hr": ["hr_lead", "human_ceo", "chro"],
@@ -29,7 +29,7 @@ DEFAULT_ACCESS_MATRIX: dict[str, list[str]] = {
 
     # Legal memories — only legal team and CEO
     "legal": ["legal_lead", "human_ceo", "clo"],
-    "compliance": ["legal_lead", "human_ceo", "compliance_officer", "clo"],
+    "compliance": ["legal_lead", "human_ceo", "compliance-officer", "clo"],
     "contract": ["legal_lead", "human_ceo", "clo"],
 
     # Strategic memories — only C-suite

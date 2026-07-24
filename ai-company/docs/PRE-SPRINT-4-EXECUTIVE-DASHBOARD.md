@@ -35,17 +35,17 @@
 | Resource | Available Hours | Assigned | Utilization | Risk |
 |----------|----------------|----------|-------------|------|
 | **security_engineer** | 12h | 12.5h (PRE-01, PRE-14) | 104% | 🔴 Over-allocated |
-| **lead_frontend** | 16h | 11h (PRE-02, PRE-03, PRE-15) | 69% | 🟢 OK |
-| **lead_backend** | 20h | 23h (PRE-04, PRE-06, PRE-07, PRE-08, PRE-11, PRE-13) | 115% | 🔴 Over-allocated |
+| **lead-frontend** | 16h | 11h (PRE-02, PRE-03, PRE-15) | 69% | 🟢 OK |
+| **lead-backend** | 20h | 23h (PRE-04, PRE-06, PRE-07, PRE-08, PRE-11, PRE-13) | 115% | 🔴 Over-allocated |
 | **qa_engineer** | 12h | 9h (PRE-09, PRE-10, PRE-08B) | 75% | 🟢 OK |
-| **compliance_officer** | 4h | 0.5h (PRE-05) | 13% | 🟢 Under-utilized |
+| **compliance-officer** | 4h | 0.5h (PRE-05) | 13% | 🟢 Under-utilized |
 | **api_architect** | 8h | 4h (PRE-12) | 50% | 🟢 OK |
 
 ### Resource Conflicts
 
 | Conflict | Severity | Resolution |
 |----------|----------|------------|
-| lead_backend 115% utilization | HIGH | Split PRE-08 (6h) into 2 sprints or defer PRE-14 to Sprint 4 |
+| lead-backend 115% utilization | HIGH | Split PRE-08 (6h) into 2 sprints or defer PRE-14 to Sprint 4 |
 | security_engineer 104% | MEDIUM | Defer PRE-14 (6h) to Sprint 4; complete PRE-01 (0.5h) now |
 
 ### Recommended Rebalancing
@@ -53,13 +53,13 @@
 | Original Assignment | Proposed Change | Rationale |
 |--------------------|-----------------|-----------|
 | PRE-14: security_engineer (6h) | → Defer to Sprint 4 | Brings security_engineer to 54% utilization |
-| PRE-08: lead_backend (6h) | → Split: 3h now, 3h Sprint 4 | Reduces lead_backend to 88% |
-| PRE-15: lead_frontend (8h) | → Split: 4h now, 4h Sprint 4 | Frontend items lower priority |
+| PRE-08: lead-backend (6h) | → Split: 3h now, 3h Sprint 4 | Reduces lead-backend to 88% |
+| PRE-15: lead-frontend (8h) | → Split: 4h now, 4h Sprint 4 | Frontend items lower priority |
 
 **Post-Rebalance Utilization:**
-- lead_backend: 88% (17.5h/20h) ✅
+- lead-backend: 88% (17.5h/20h) ✅
 - security_engineer: 54% (6.5h/12h) ✅
-- lead_frontend: 63% (7h/11h) ✅
+- lead-frontend: 63% (7h/11h) ✅
 - qa_engineer: 75% (9h/12h) ✅
 
 ---
@@ -104,9 +104,9 @@ PRE-02 (WS auth) → PRE-15 (UX fixes)
 | # | Item | Effort | Owner | Status | Dependencies |
 |---|------|--------|-------|--------|--------------|
 | 1 | PRE-01: Wire encryption | 0.5h | security_engineer | ⬜ Not Started | None |
-| 2 | PRE-03: Auth fail-closed | 1h | lead_frontend | ⬜ Not Started | None |
-| 3 | PRE-02: WS auth | 2h | lead_frontend | ⬜ Not Started | None |
-| 4 | PRE-04: Centralize bus | 4h | lead_backend | ⬜ Not Started | None |
+| 2 | PRE-03: Auth fail-closed | 1h | lead-frontend | ⬜ Not Started | None |
+| 3 | PRE-02: WS auth | 2h | lead-frontend | ⬜ Not Started | None |
+| 4 | PRE-04: Centralize bus | 4h | lead-backend | ⬜ Not Started | None |
 
 **Day 1 Gate:** Security items complete, no new vulnerabilities introduced
 
@@ -114,9 +114,9 @@ PRE-02 (WS auth) → PRE-15 (UX fixes)
 
 | # | Item | Effort | Owner | Status | Dependencies |
 |---|------|--------|-------|--------|--------------|
-| 5 | PRE-05: Update risk register | 0.5h | compliance_officer | ⬜ Not Started | None |
-| 6 | PRE-06: GAP-005 consolidation | 3h | lead_backend | ⬜ Not Started | PRE-01 |
-| 7 | PRE-07: GAP-011 read path | 6h | lead_backend | ⬜ Not Started | PRE-04 |
+| 5 | PRE-05: Update risk register | 0.5h | compliance-officer | ⬜ Not Started | None |
+| 6 | PRE-06: GAP-005 consolidation | 3h | lead-backend | ⬜ Not Started | PRE-01 |
+| 7 | PRE-07: GAP-011 read path | 6h | lead-backend | ⬜ Not Started | PRE-04 |
 
 **Day 2 Gate:** All inbox.json direct reads eliminated from dashboard/
 
@@ -126,7 +126,7 @@ PRE-02 (WS auth) → PRE-15 (UX fixes)
 |---|------|--------|-------|--------|--------------|
 | 8 | PRE-09: Circuit breaker tests | 2h | qa_engineer | ⬜ Not Started | None |
 | 9 | PRE-10: Security module tests | 4h | qa_engineer | ⬜ Not Started | PRE-01 |
-| 10 | PRE-11: Token counting | 3h | lead_backend | ⬜ Not Started | None |
+| 10 | PRE-11: Token counting | 3h | lead-backend | ⬜ Not Started | None |
 
 **Day 3 Gate:** 26+ new tests, all 1231+ tests passing
 
@@ -134,10 +134,10 @@ PRE-02 (WS auth) → PRE-15 (UX fixes)
 
 | # | Item | Effort | Owner | Status | Dependencies |
 |---|------|--------|-------|--------|--------------|
-| 11 | PRE-08: Structured logging | 6h | lead_backend | ⬜ Not Started | None |
+| 11 | PRE-08: Structured logging | 6h | lead-backend | ⬜ Not Started | None |
 | 12 | PRE-08B: Agent spec validation | 3h | qa_engineer | ⬜ Not Started | None |
 | 13 | PRE-12: API versioning | 4h | api_architect | ⬜ Not Started | None |
-| 14 | PRE-13: Replace print() | 1h | lead_backend | ⬜ Not Started | PRE-08 |
+| 14 | PRE-13: Replace print() | 1h | lead-backend | ⬜ Not Started | PRE-08 |
 | ~~15~~ | ~~PRE-14: Key rotation~~ | ~~6h~~ | ~~security_engineer~~ | ⏸️ Deferred | ~~PRE-02~~ |
 
 **Day 4 Gate:** 0 print() calls in non-CLI, all API endpoints versioned
@@ -146,7 +146,7 @@ PRE-02 (WS auth) → PRE-15 (UX fixes)
 
 | # | Item | Effort | Owner | Status | Dependencies |
 |---|------|--------|-------|--------|--------------|
-| 15 | PRE-15: Dashboard UX (8 items) | 8h | lead_frontend | ⬜ Not Started | PRE-02 |
+| 15 | PRE-15: Dashboard UX (8 items) | 8h | lead-frontend | ⬜ Not Started | PRE-02 |
 
 **Day 5 Gate:** Dashboard passes WCAG AA checks
 
@@ -205,8 +205,8 @@ PRE-02 (WS auth) → PRE-15 (UX fixes)
 
 1. **Approve resource rebalancing** — Move PRE-14 and half of PRE-08/PRE-15 to Sprint 4
 2. **Start PRE-01 immediately** — 0.5h, unblocks 3 downstream items
-3. **Assign PRE-04 to lead_backend** — Critical path item, 4h
-4. **Assign PRE-03 to lead_frontend** — Quick security win, 1h
+3. **Assign PRE-04 to lead-backend** — Critical path item, 4h
+4. **Assign PRE-03 to lead-frontend** — Quick security win, 1h
 
 ### Sprint Planning Adjustments
 
@@ -244,21 +244,21 @@ PRE-02 (WS auth) → PRE-15 (UX fixes)
 | Item | Owner | Priority | Effort | Status |
 |------|-------|----------|--------|--------|
 | PRE-01 | security_engineer | P1-Critical | 0.5h | ⬜ |
-| PRE-02 | lead_frontend | P2-Security | 2h | ⬜ |
-| PRE-03 | lead_frontend | P2-Security | 1h | ⬜ |
-| PRE-04 | lead_backend | P2-Security | 4h | ⬜ |
-| PRE-05 | compliance_officer | P3-Data | 0.5h | ⬜ |
-| PRE-06 | lead_backend | P3-Data | 3h | ⬜ |
-| PRE-07 | lead_backend | P4-Arch | 6h | ⬜ |
-| PRE-08 | lead_backend | P4-Arch | 6h | ⬜ |
+| PRE-02 | lead-frontend | P2-Security | 2h | ⬜ |
+| PRE-03 | lead-frontend | P2-Security | 1h | ⬜ |
+| PRE-04 | lead-backend | P2-Security | 4h | ⬜ |
+| PRE-05 | compliance-officer | P3-Data | 0.5h | ⬜ |
+| PRE-06 | lead-backend | P3-Data | 3h | ⬜ |
+| PRE-07 | lead-backend | P4-Arch | 6h | ⬜ |
+| PRE-08 | lead-backend | P4-Arch | 6h | ⬜ |
 | PRE-08B | qa_engineer | P4-Arch | 3h | ⬜ |
 | PRE-09 | qa_engineer | P5-Testing | 2h | ⬜ |
 | PRE-10 | qa_engineer | P5-Testing | 4h | ⬜ |
-| PRE-11 | lead_backend | P5-Testing | 3h | ⬜ |
+| PRE-11 | lead-backend | P5-Testing | 3h | ⬜ |
 | PRE-12 | api_architect | P6-Quality | 4h | ⬜ |
-| PRE-13 | lead_backend | P6-Quality | 1h | ⬜ |
+| PRE-13 | lead-backend | P6-Quality | 1h | ⬜ |
 | PRE-14 | security_engineer | P6-Quality | 6h | ⏸️ Deferred |
-| PRE-15 | lead_frontend | P6-Quality | 8h | ⬜ |
+| PRE-15 | lead-frontend | P6-Quality | 8h | ⬜ |
 
 ---
 

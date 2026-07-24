@@ -118,7 +118,7 @@ Each agent has explicit permissions defined in YAML config:
 ```yaml
 # config/agents/specialists.yaml
 specialists:
-  - id: lead_backend
+  - id: lead-backend
     permissions:
       - "read:config"
       - "write:code"

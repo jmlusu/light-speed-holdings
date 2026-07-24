@@ -87,11 +87,11 @@ graph TD
     subgraph TECH_DEPT ["⚙️ Technology Department"]
         direction TB
         VPENG["vp_engineering<br/><b>VP Engineering</b><br/>Span: 9"]
-        LEAD_BE["lead_backend<br/><b>Lead Backend</b><br/>Span: 3"]
-        LEAD_FE["lead_frontend<br/><b>Lead Frontend</b><br/>Span: 3"]
+        LEAD_BE["lead-backend<br/><b>Lead Backend</b><br/>Span: 3"]
+        LEAD_FE["lead-frontend<br/><b>Lead Frontend</b><br/>Span: 3"]
         SOL_ARCH["solution_architect<br/><b>Solution Architect</b>"]
         DEVOPS["devops_lead<br/><b>DevOps Lead</b>"]
-        QA_LEAD["qa_lead<br/><b>QA Lead</b><br/>Span: 2"]
+        QA_LEAD["qa-lead<br/><b>QA Lead</b><br/>Span: 2"]
         CDO["cdo<br/><b>CDO</b><br/>Data Strategy<br/>Span: 3"]
         REG_OWNER["registry_owner<br/><b>Registry Owner</b>"]
         GEN_OWNER["generator_owner<br/><b>Generator Owner</b>"]
@@ -105,8 +105,8 @@ graph TD
         OBS_ENG["observability_engineer<br/><b>Observability Engineer</b>"]
         SCALE_ARCH["scalability_architect<br/><b>Scalability Architect</b>"]
         SW_ARCH["software_architect<br/><b>Software Architect</b>"]
-        LEAD_DO["lead_devops<br/><b>Lead DevOps</b>"]
-        CLOUD_ARCH["cloud_architect<br/><b>Cloud Architect</b>"]
+        LEAD_DO["lead-devops<br/><b>Lead DevOps</b>"]
+        CLOUD_ARCH["cloud-architect<br/><b>Cloud Architect</b>"]
     end
 
     CTO --> VPENG
@@ -121,10 +121,10 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     SEN_BE["senior_backend_engineer"]
     BE_ENG["backend_engineer"]
-    FS_ENG["fullstack_engineer"]
+    FS_ENG["fullstack-engineer"]
     SEN_FE["senior_frontend_engineer"]
     FE_ENG["frontend_engineer"]
-    MOB_DEV["mobile_developer"]
+    MOB_DEV["mobile-developer"]
 
     LEAD_BE --> SEN_BE
     LEAD_BE --> BE_ENG
@@ -153,14 +153,14 @@ graph TD
 
     QA_LEAD --> TEST_ENG_LEAD["test_engineering_lead<br/><b>Test Engineering Lead</b>"]
     QA_LEAD --> REL_MGR["release_manager<br/><b>Release Manager</b>"]
-    TEST_ENG_LEAD --> QA_AUTO["qa_automation_engineer<br/><b>QA Automation</b>"]
+    TEST_ENG_LEAD --> QA_AUTO["qa-automation-engineer<br/><b>QA Automation</b>"]
 
     %% ═══════════════════════════════════════════════════════════════
     %% DATA DEPARTMENT — Under CDO (under CTO)
     %% ═══════════════════════════════════════════════════════════════
     subgraph DATA_DEPT ["📊 Data Department"]
-        DATA_ENG["data_engineer<br/><b>Data Engineer</b>"]
-        DATA_SCIST["data_scientist<br/><b>Data Scientist</b>"]
+        DATA_ENG["data-engineer<br/><b>Data Engineer</b>"]
+        DATA_SCIST["data-scientist<br/><b>Data Scientist</b>"]
         BI_ENG["business_intelligence_engineer<br/><b>BI Engineer</b>"]
     end
 
@@ -172,14 +172,14 @@ graph TD
     %% AI RESEARCH DEPARTMENT — Under CAIO
     %% ═══════════════════════════════════════════════════════════════
     subgraph AI_DEPT ["🧠 AI Research Department"]
-        ML_ENG["ml_engineer<br/><b>ML Engineer</b>"]
+        ML_ENG["ml-engineer<br/><b>ML Engineer</b>"]
         ML_SERV["ml_services_owner<br/><b>ML Services Owner</b>"]
         MEM_OWNER["memory_owner<br/><b>Memory Owner</b>"]
         LLM_OWNER["llm_platform_owner<br/><b>LLM Platform Owner</b>"]
         MLOPS["mlops_engineer<br/><b>MLOps Engineer</b>"]
         AI_SAFETY["ai_safety_lead<br/><b>AI Safety Lead</b><br/>Span: 4"]
         EVAL_ENG["eval_benchmarks_engineer<br/><b>Eval Benchmarks</b>"]
-        PROMPT_ENG["prompt_engineer<br/><b>Prompt Engineer</b>"]
+        PROMPT_ENG["prompt-engineer<br/><b>Prompt Engineer</b>"]
     end
 
     CAIO --> ML_ENG
@@ -239,7 +239,7 @@ graph TD
         DEXP["developer_experience_engineer<br/><b>DX Engineer</b>"]
         PROD_DES["product_designer<br/><b>Product Designer</b>"]
         PROD_OWNER["product_owner<br/><b>Product Owner</b>"]
-        TECH_WRITER["prompt_engineer_specialist<br/><b>Technical Writer</b>"]
+        TECH_WRITER["prompt-engineer_specialist<br/><b>Technical Writer</b>"]
     end
 
     CPO --> UX_RES
@@ -258,10 +258,10 @@ graph TD
         MKT_OWNER["marketing_owner<br/><b>Marketing Owner</b>"]
         HEAD_DR["head_of_developer_relations<br/><b>Head of DevRel</b>"]
         PMM["product_marketing_manager<br/><b>Product Marketing</b>"]
-        IARM["industry_analyst_relations_manager<br/><b>Analyst Relations</b>"]
-        CONTENT_WR["content_writer<br/><b>Content Writer</b>"]
-        CONTENT_CR["content_creator<br/><b>Content Creator</b>"]
-        GH["growth_hacker<br/><b>Growth Hacker</b>"]
+        IARM["industry-analyst-relations-manager<br/><b>Analyst Relations</b>"]
+        CONTENT_WR["content-writer<br/><b>Content Writer</b>"]
+        CONTENT_CR["content-creator<br/><b>Content Creator</b>"]
+        GH["growth-hacker<br/><b>Growth Hacker</b>"]
     end
 
     CMO --> MKT_OWNER
@@ -277,8 +277,8 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     subgraph PEOPLE_DEPT ["👥 People Department"]
         HR_OWNER["hr_owner<br/><b>HR Owner</b>"]
-        LND["learning_development_lead<br/><b>Learning & Dev</b>"]
-        EE_LEAD["employee_experience_lead<br/><b>Employee Experience</b>"]
+        LND["learning-development-lead<br/><b>Learning & Dev</b>"]
+        EE_LEAD["employee-experience-lead<br/><b>Employee Experience</b>"]
         RECRUITER["recruiter<br/><b>Recruiter</b>"]
     end
 
@@ -317,7 +317,7 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     subgraph LEGAL_DEPT ["⚖️ Legal Department"]
         LEGAL_OWNER["legal_owner<br/><b>Legal Owner</b>"]
-        COMPLIANCE["compliance_officer<br/><b>Compliance Officer</b>"]
+        COMPLIANCE["compliance-officer<br/><b>Compliance Officer</b>"]
         DPO["data_privacy_officer<br/><b>Data Privacy Officer</b>"]
     end
 
@@ -329,7 +329,7 @@ graph TD
     %% FINANCE — Under CFO
     %% ═══════════════════════════════════════════════════════════════
     subgraph FIN_DEPT ["💰 Finance Department"]
-        FIN_ANA["financial_analyst<br/><b>Financial Analyst</b>"]
+        FIN_ANA["financial-analyst<br/><b>Financial Analyst</b>"]
         IR_LEAD["investor_relations_lead<br/><b>Investor Relations</b>"]
     end
 
@@ -344,7 +344,7 @@ graph TD
         CORP_DEV["corporate_development_lead<br/><b>Corp Development</b>"]
         REV_OPS["revenue_operations_analyst<br/><b>Revenue Ops</b>"]
         SOL_ENG["solutions_engineer<br/><b>Solutions Engineer</b>"]
-        MKT_ANA["market_analyst<br/><b>Market Analyst</b>"]
+        MKT_ANA["market-analyst<br/><b>Market Analyst</b>"]
     end
 
     CSO --> COMP_INT
@@ -358,7 +358,7 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     subgraph SALES_DEPT ["💼 Sales Department"]
         SALES_OWNER["sales_owner<br/><b>Sales Owner</b>"]
-        BIZ_DEV["business_developer<br/><b>Business Developer</b>"]
+        BIZ_DEV["business-developer<br/><b>Business Developer</b>"]
     end
 
     HEAD_SALES --> SALES_OWNER
@@ -370,8 +370,8 @@ graph TD
     %% CUSTOMER SUCCESS
     %% ═══════════════════════════════════════════════════════════════
     subgraph CS_DEPT ["🤝 Customer Success"]
-        CS_OWNER["customer_success_owner<br/><b>CS Owner</b>"]
-        SUPPORT["support_agent<br/><b>Support Agent</b>"]
+        CS_OWNER["customer-success-owner<br/><b>CS Owner</b>"]
+        SUPPORT["support-agent<br/><b>Support Agent</b>"]
     end
 
     HEAD_CS --> CS_OWNER

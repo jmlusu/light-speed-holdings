@@ -21,7 +21,7 @@ class MarketingKPICollector(KPICollector):
         # Count marketing-related tasks (receiver is cmo or marketing specialist)
         marketing_tasks = [
             t for t in tasks
-            if t.get("receiver_id") in ("cmo", "content_creator", "content_writer", "growth_hacker")
+            if t.get("receiver_id") in ("cmo", "content-creator", "content-writer", "growth-hacker")
         ]
         completed_marketing = sum(
             1 for t in marketing_tasks if t.get("status") == "completed"

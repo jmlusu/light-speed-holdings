@@ -22,11 +22,12 @@ committees:
   - id: "technology_committee"
     name: "Technology Committee"
     chair: "board-technology"
-    members: ["board-technology", "board-strategy"]
+    members: ["board-technology", "board-strategy", "board-product"]
     responsibilities:
       - "Technology strategy review"
       - "Architecture decisions"
       - "Security posture"
+      - "Product technology alignment"
     meeting_frequency: "monthly"
 
   - id: "nominating_committee"

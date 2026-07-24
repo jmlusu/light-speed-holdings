@@ -34,7 +34,7 @@
 
 **Parallel Execution (10:00-12:00):**
 - **S3-01: WebSocket Integration Tests** <co>(90min)</co: 91:[0]>
-  - **Owner:** <co>lead-frontend + qa_automation_engineer</co: 91:[0]>
+  - **Owner:** <co>lead-frontend + qa-automation-engineer</co: 91:[0]>
   - **Deadline:** <co>2026-07-21 19:00</co: 91:[0]>
 
 - **S3-02: Governance CLI Commands** <co>(60min)</co: 91:[0]>
@@ -57,7 +57,7 @@
 - **Responsibilities:** <co>CI gate verification, delegate status, escalation</co: 91:[0]>
 
 **Fullstack Overflow Support** <co>(30min)</co: 91:[0]>
-- **Owner:** <co>fullstack_engineer</co: 91:[0]>
+- **Owner:** <co>fullstack-engineer</co: 91:[0]>
 - **Deadline:** <co>40 hours on-call</co: 91:[0]>
 - **Trigger:** <co>Any delegate blocks >2 hours</co: 91:[0]>
 
@@ -71,7 +71,7 @@
 |-------------|----------|----------|---------|
 | **S3-05** <co>(CRITICAL PATH FIX)</co: 91:[0]> | <co>senior_backend_engineer + lead-backend</co: 91:[0]> | <co>17:00 Today</co: 91:[0]> | 🔴 **BLOCKING S3-08 INTEGRATION** |
 | **S3-06** | <co>lead-backend + devops_agent</co: 91:[0]> | <co>18:00 Today</co: 91:[0]> | ⚪ **LAUNCHING** |
-| **S3-01** | <co>lead-frontend + qa_automation_engineer</co: 91:[0]> | <co>19:00 Today</co: 91:[0]> | ⚪ **LAUNCHING** |
+| **S3-01** | <co>lead-frontend + qa-automation-engineer</co: 91:[0]> | <co>19:00 Today</co: 91:[0]> | ⚪ **LAUNCHING** |
 
 ### **🟠 READY TO LAUNCH:** 3 Items (Pending S3-05 fix)
 
@@ -85,7 +85,7 @@
 
 | Sprint Item | Owner(s) | Status |
 |-------------|----------|---------|
-| **S3-08** | <co>qa_automation_engineer</co: 91:[0]> | 🔴 **BLOCKED PENDING S3-05** |
+| **S3-08** | <co>qa-automation-engineer</co: 91:[0]> | 🔴 **BLOCKED PENDING S3-05** |
 
 ---
 
@@ -165,7 +165,7 @@
 
 ```bash
 # IF S3-05 COMPLETES BY 17:00:
-#   1. Launch S3-08 immediately (qa_automation_engineer)
+#   1. Launch S3-08 immediately (qa-automation-engineer)
 #   2. Execute final pipeline test with mocked LLM
 #   3. Run verification and documentation
 ```
@@ -222,7 +222,7 @@
 
    ```python
    # if S3-05 blocks_leq_30_minutes():
-   #     reassign_to_lead_backend()
+   #     reassign_to_lead-backend()
    #     chief_of_staff_escalation()
    ```
 

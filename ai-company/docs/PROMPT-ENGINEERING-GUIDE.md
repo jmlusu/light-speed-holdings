@@ -14,7 +14,7 @@ Every agent has a **spec card** (`AgentContext`) that feeds the system prompt. T
 
 | Field | Purpose | Example |
 |-------|---------|---------|
-| `name` | Agent identity | `lead_backend` |
+| `name` | Agent identity | `lead-backend` |
 | `role` | One-line purpose | "Senior backend engineer" |
 | `type` | Hierarchy tier | `executive`, `specialist`, `lead` |
 | `tools` | Allowed tool list | `["read", "write", "execute", "grep"]` |

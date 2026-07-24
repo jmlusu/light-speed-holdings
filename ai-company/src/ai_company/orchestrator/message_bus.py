@@ -20,7 +20,37 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, List
 
-from ai_company.models.task import Task
+# Board agent alias — resolves to all 7 board member agent IDs.
+# Used in meetings.yaml required_attendees as a semantic shorthand.
+ALL_BOARD_AGENTS: list[str] = [
+    "board-chair",
+    "board-finance",
+    "board-risk",
+    "board-strategy",
+    "board-technology",
+    "board-customer",
+    "board-product",
+]
+
+BOARD_AGENT_ALIASES: dict[str, list[str]] = {
+    "all_board": ALL_BOARD_AGENTS,
+}
+
+
+def resolve_attendees(attendee_refs: list[str]) -> list[str]:
+    """Resolve semantic attendee references to concrete agent IDs.
+
+    Replaces aliases like ``all_board`` with the full list of board
+    agent IDs.  All other references are returned as-is (assumed to
+    be valid agent IDs already).
+    """
+    resolved: list[str] = []
+    for ref in attendee_refs:
+        if ref in BOARD_AGENT_ALIASES:
+            resolved.extend(BOARD_AGENT_ALIASES[ref])
+        else:
+            resolved.append(ref)
+    return resolved
 from ai_company.store.file_store import FileStore
 from ai_company.utils.logging import get_correlation_id
 

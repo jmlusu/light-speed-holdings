@@ -89,6 +89,6 @@
 | S2-08 | Dashboard CORS/auth | 2026-07-20 | lead-frontend |
 | S2-09 | LLM retry cycling | 2026-07-20 | lead-backend |
 | S2-10 | Remove shell=True | 2026-07-20 | lead-backend |
-| S2-11 | Department SOPs | 2026-07-20 | content_creator |
+| S2-11 | Department SOPs | 2026-07-20 | content-creator |
 | S2-12 | Audit wiring | 2026-07-20 | lead-backend |
 | S2-13 | Escalation persistence | 2026-07-20 | lead-backend |

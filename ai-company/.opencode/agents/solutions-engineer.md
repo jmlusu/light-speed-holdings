@@ -43,7 +43,7 @@ Provides pre-sales technical validation and helps customers implement AI solutio
 
 - Create proof-of-concept implementations for prospects.
 
-- Coordinate with customer_success_owner on implementation handoff.
+- Coordinate with customer-success-owner on implementation handoff.
 
 - Maintain a library of solution patterns and reference architectures.
 

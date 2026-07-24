@@ -99,11 +99,11 @@ class MemoryAccessControl:
     def __init__(self):
         # Default access matrix - can be loaded from config
         self._access_matrix: dict[str, list[str]] = {
-            "financial": ["cfo", "financial_analyst", "human_ceo", "chief_of_staff"],
+            "financial": ["cfo", "financial-analyst", "human_ceo", "chief_of_staff"],
             "hr": ["hr_lead", "human_ceo", "chief_of_staff"],
             "security": ["ciso", "ai_security_specialist", "human_ceo"],
             "legal": ["legal_lead", "human_ceo", "chief_of_staff"],
-            "engineering": ["cto", "lead_backend", "lead_frontend"],
+            "engineering": ["cto", "lead-backend", "lead-frontend"],
         }
         
         # Memory type to tag mapping
@@ -193,7 +193,7 @@ Add to `config/memory_access.yaml`:
 access_matrix:
   financial:
     - cfo
-    - financial_analyst
+    - financial-analyst
     - human_ceo
     - chief_of_staff
   hr:
@@ -210,8 +210,8 @@ access_matrix:
     - chief_of_staff
   engineering:
     - cto
-    - lead_backend
-    - lead_frontend
+    - lead-backend
+    - lead-frontend
 
 sensitive_keywords:
   - password
@@ -356,7 +356,7 @@ def test_delegation_cycle_detection():
     allowed, msg = runner._check_delegation_limits(
         "delegate",
         {"receiver": "cto"},
-        {"delegation_history": ["cto", "lead_backend"]}
+        {"delegation_history": ["cto", "lead-backend"]}
     )
     assert allowed == False
     assert "cycle detected" in msg

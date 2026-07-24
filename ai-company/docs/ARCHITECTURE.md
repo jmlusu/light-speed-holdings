@@ -117,20 +117,20 @@ src/ai_company/
 
 ## 2 Naming Conventions
 
-Agent naming follows a strict convention that bridges the Python registry (underscores) with OpenCode file resolution (hyphens).
+Agent naming follows a strict convention using hyphens (kebab-case) throughout.
 
 ### Convention Summary
 
 | Layer | Convention | Example | Notes |
 |-------|-----------|---------|-------|
-| Registry IDs (`company-registry.yaml`) | **underscores** | `board_chair`, `financial_analyst` | Python/Pydantic convention |
-| Generated filenames (`.opencode/agents/`) | **hyphens** | `board-chair.md`, `financial-analyst.md` | OpenCode convention |
+| Registry IDs (`company-registry.yaml`) | **hyphens** | `board-chair`, `financial-analyst` | Canonical format per CEO Directive |
+| Generated filenames (`.opencode/agents/`) | **hyphens** | `board-chair.md`, `financial-analyst.md` | Must match registry IDs |
 | Config file references (`config/**/*.yaml`) | **hyphens** | `board-chair`, `financial-analyst` | Must match generated filenames |
 | OpenCode `@agent-name` resolution | **hyphens** | `@board-chair` | Looks for `board-chair.md` |
 
-### Why Two Conventions?
+### Why Hyphens?
 
-- **Registry** uses underscores because agent IDs are Python identifiers used in Pydantic models, imports, and programmatic access.
+- **All layers use hyphens** per CEO Directive (2026-07-24). Underscores are deprecated.
 - **Generated files** use hyphens because OpenCode resolves `@agent-name` by looking for `agent-name.md` in `.opencode/agents/`.
 - **Config references** must use hyphens to match the filenames that OpenCode will actually find.
 

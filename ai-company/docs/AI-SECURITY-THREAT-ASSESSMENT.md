@@ -116,7 +116,7 @@ class MemoryAccessControl:
     
     def __init__(self):
         self._access_matrix = {
-            "financial": ["cfo", "financial_analyst", "human_ceo"],
+            "financial": ["cfo", "financial-analyst", "human_ceo"],
             "hr": ["hr_lead", "human_ceo"],
             "security": ["ciso", "ai_security_specialist"],
         }

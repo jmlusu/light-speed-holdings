@@ -173,7 +173,7 @@ DEFAULT_OWNERS: list[DataOwner] = [
     DataOwner(
         owner_id="compliance",
         department="Legal",
-        role="compliance_officer",
+        role="compliance-officer",
         responsibilities=[
             "Audit trail completeness",
             "Data retention enforcement",

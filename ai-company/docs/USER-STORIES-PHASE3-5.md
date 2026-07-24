@@ -354,8 +354,8 @@
 - [ ] Agent reports to CFO, escalation to CEO for budgets > $10,000
 - [ ] `ai-company agents list` shows finance_analyst
 - [ ] `ai-company agents generate finance_analyst` generates spec
-- [ ] Unit test: `test_financial_analyst_spec_generation`
-- [ ] Unit test: `test_financial_analyst_cost_analysis`
+- [ ] Unit test: `test_financial-analyst_spec_generation`
+- [ ] Unit test: `test_financial-analyst_cost_analysis`
 
 **Dependencies:** None
 
@@ -390,12 +390,12 @@
 > **So that** data analysis happens continuously without manual intervention.
 
 **Acceptance Criteria:**
-- [ ] Agent spec card generated in `.opencode/agents/data_scientist.md`
+- [ ] Agent spec card generated in `.opencode/agents/data-scientist.md`
 - [ ] Tools: `analyze_dataset`, `build_model`, `generate_report`, `query_database`
 - [ ] Premium model tier for complex analysis
 - [ ] Agent reports to CAIO, escalation to CTO for infrastructure needs
-- [ ] Unit test: `test_data_scientist_spec_generation`
-- [ ] Unit test: `test_data_scientist_analysis`
+- [ ] Unit test: `test_data-scientist_spec_generation`
+- [ ] Unit test: `test_data-scientist_analysis`
 
 **Dependencies:** None
 
@@ -410,12 +410,12 @@
 > **So that** compliance monitoring happens continuously.
 
 **Acceptance Criteria:**
-- [ ] Agent spec card generated in `.opencode/agents/compliance_officer.md`
+- [ ] Agent spec card generated in `.opencode/agents/compliance-officer.md`
 - [ ] Tools: `audit_action`, `check_policy`, `scan_risk`, `generate_report`
 - [ ] AdvisoryOnly permission — recommends, doesn't execute
 - [ ] Agent reports to Legal, escalation to CEO for violations
-- [ ] Unit test: `test_compliance_officer_spec_generation`
-- [ ] Unit test: `test_compliance_officer_audit`
+- [ ] Unit test: `test_compliance-officer_spec_generation`
+- [ ] Unit test: `test_compliance-officer_audit`
 
 **Dependencies:** None
 

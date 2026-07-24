@@ -68,7 +68,7 @@ ai-company/                              # Project root
 │   ├── agents/                          # 31 generated agent .md files
 │   │   ├── ceo.md                       # (generated from config)
 │   │   ├── cto.md                       # (generated from config)
-│   │   ├── lead_backend.md              # (generated from config)
+│   │   ├── lead-backend.md              # (generated from config)
 │   │   └── ...                          # (31 total)
 │   ├── inbox.json                       # Task queue
 │   └── daily_briefing.md                # Generated briefing

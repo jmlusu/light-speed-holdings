@@ -526,11 +526,11 @@
         <div class="spec tech">dashboard_owner <span class="spec-label">— Dashboard Owner</span></div>
         <div class="spec tech">registry_owner <span class="spec-label">— Registry Owner</span></div>
         <div class="spec tech">generator_owner <span class="spec-label">— Generator Owner</span></div>
-        <div class="spec qa">qa_lead <span class="spec-label">— QA Lead</span></div>
+        <div class="spec qa">qa-lead <span class="spec-label">— QA Lead</span></div>
         <div class="sub-specs">
           <div class="spec qa">test_engineering_lead <span class="spec-label">— Test Engineering Lead</span></div>
           <div class="sub-specs">
-            <div class="spec qa">qa_automation_engineer <span class="spec-label">— QA Automation Engineer</span></div>
+            <div class="spec qa">qa-automation-engineer <span class="spec-label">— QA Automation Engineer</span></div>
           </div>
           <div class="spec qa">release_manager <span class="spec-label">— Release Manager</span></div>
         </div>
@@ -561,7 +561,7 @@
       <div class="spec ai">ai_ethics_officer <span class="spec-label">— AI Ethics Officer (NEW)</span></div>
       <div class="spec ai">mlops_engineer <span class="spec-label">— MLOps Engineer (NEW)</span></div>
       <div class="spec ai">eval_benchmarks_engineer <span class="spec-label">— Eval &amp; Benchmarks Engineer (NEW)</span></div>
-      <div class="spec ai">prompt_engineer <span class="spec-label">— Prompt Engineer (NEW)</span></div>
+      <div class="spec ai">prompt-engineer <span class="spec-label">— Prompt Engineer (NEW)</span></div>
       <div class="spec ai">hai_designer <span class="spec-label">— Human-AI Interaction Designer (NEW)</span></div>
       <div class="spec ai">memory_owner <span class="spec-label">— Memory Owner</span></div>
       <div class="spec ai">llm_platform_owner <span class="spec-label">— LLM Platform Owner</span></div>
@@ -571,22 +571,22 @@
     <!-- FINANCE DEPARTMENT -->
     <div class="dept-section c-finance">
       <h3>Finance Department</h3>
-      <div class="spec finance">financial_analyst <span class="spec-label">— Financial Analyst</span></div>
+      <div class="spec finance">financial-analyst <span class="spec-label">— Financial Analyst</span></div>
       <div class="spec finance">investor_relations_lead <span class="spec-label">— Investor Relations Lead (NEW)</span></div>
     </div>
 
     <!-- DATA DEPARTMENT -->
     <div class="dept-section c-data">
       <h3>Data Department</h3>
-      <div class="spec data">data_scientist <span class="spec-label">— Data Scientist</span></div>
-      <div class="spec data">data_engineer <span class="spec-label">— Data Engineer (NEW)</span></div>
+      <div class="spec data">data-scientist <span class="spec-label">— Data Scientist</span></div>
+      <div class="spec data">data-engineer <span class="spec-label">— Data Engineer (NEW)</span></div>
       <div class="spec data">bi_engineer <span class="spec-label">— Business Intelligence Engineer (NEW)</span></div>
     </div>
 
     <!-- LEGAL DEPARTMENT -->
     <div class="dept-section c-legal">
       <h3>Legal Department</h3>
-      <div class="spec legal">compliance_officer <span class="spec-label">— Compliance Officer</span></div>
+      <div class="spec legal">compliance-officer <span class="spec-label">— Compliance Officer</span></div>
       <div class="spec legal">legal_owner <span class="spec-label">— Legal Owner</span></div>
       <div class="spec legal">data_privacy_officer <span class="spec-label">— Data Privacy Officer (NEW)</span></div>
     </div>
@@ -612,15 +612,15 @@
       <div class="spec marketing">marketing_owner <span class="spec-label">— Marketing Owner</span></div>
       <div class="spec marketing">head_of_developer_relations <span class="spec-label">— Head of Developer Relations (NEW)</span></div>
       <div class="spec marketing">product_marketing_manager <span class="spec-label">— Product Marketing Manager (NEW)</span></div>
-      <div class="spec marketing">industry_analyst_relations_manager <span class="spec-label">— Industry Analyst Relations Manager (NEW)</span></div>
+      <div class="spec marketing">industry-analyst-relations-manager <span class="spec-label">— Industry Analyst Relations Manager (NEW)</span></div>
     </div>
 
     <!-- PEOPLE/HR DEPARTMENT -->
     <div class="dept-section c-hr">
       <h3>People/HR Department</h3>
       <div class="spec hr">hr_owner <span class="spec-label">— HR Owner</span></div>
-      <div class="spec hr">learning_development_lead <span class="spec-label">— Learning &amp; Development Lead (NEW)</span></div>
-      <div class="spec hr">employee_experience_lead <span class="spec-label">— Employee Experience Lead (NEW)</span></div>
+      <div class="spec hr">learning-development-lead <span class="spec-label">— Learning &amp; Development Lead (NEW)</span></div>
+      <div class="spec hr">employee-experience-lead <span class="spec-label">— Employee Experience Lead (NEW)</span></div>
     </div>
 
     <!-- PRODUCT DEPARTMENT -->
@@ -647,7 +647,7 @@
     <!-- CUSTOMER SUCCESS DEPARTMENT -->
     <div class="dept-section c-cs">
       <h3>Customer Success Department</h3>
-      <div class="spec cs">customer_success_owner <span class="spec-label">— Customer Success Owner</span></div>
+      <div class="spec cs">customer-success-owner <span class="spec-label">— Customer Success Owner</span></div>
     </div>
 
     <!-- STRATEGY DEPARTMENT -->
@@ -739,7 +739,7 @@ flowchart TD
 
         VPEngineering --> QALead["QA Lead"]
         QALead --> TestEngLead["test_engineering_lead"]
-        TestEngLead --> QAAutomation["qa_automation_engineer"]
+        TestEngLead --> QAAutomation["qa-automation-engineer"]
         QALead --> ReleaseManager["release_manager"]
     end
 
@@ -775,20 +775,20 @@ flowchart TD
 
     %% ===== FINANCE DEPARTMENT (CFO) =====
     subgraph Finance_Dept ["🟡 Finance Department"]
-        CFO --> FinancialAnalyst["financial_analyst"]
+        CFO --> FinancialAnalyst["financial-analyst"]
         CFO --> InvestorRelations["📊 Investor Relations Lead"]
     end
 
     %% ===== DATA DEPARTMENT (CDO) =====
     subgraph Data_Dept ["🔷 Data Department"]
-        CDO --> DataScientist["data_scientist"]
+        CDO --> DataScientist["data-scientist"]
         CDO --> DataEngineer["🔧 Data Engineer"]
         CDO --> BIEngineer["📊 BI Engineer"]
     end
 
     %% ===== LEGAL DEPARTMENT (CLO) =====
     subgraph Legal_Dept ["⬛ Legal Department"]
-        CLO --> ComplianceOfficer["compliance_officer"]
+        CLO --> ComplianceOfficer["compliance-officer"]
         CLO --> LegalOwner["legal_owner"]
         CLO --> DataPrivacyOfficer["🔒 Data Privacy Officer"]
     end
@@ -845,7 +845,7 @@ flowchart TD
     %% ===== CUSTOMER SUCCESS DEPARTMENT =====
     subgraph CustomerSuccess_Dept ["🟩 Customer Success Department"]
         CustomerSuccess["customer-success<br/>CS Lead"]
-        CustomerSuccess --> CustomerSuccessOwner["customer_success_owner"]
+        CustomerSuccess --> CustomerSuccessOwner["customer-success-owner"]
     end
 
     %% ===== STRATEGY DEPARTMENT (CSO) =====

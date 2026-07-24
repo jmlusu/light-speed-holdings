@@ -90,7 +90,7 @@ def init_memory(base_dir: str = "memory") -> MemoryStore:
 | **Effort** | 2h |
 | **Purpose** | Prevent unauthorized clients from receiving sensitive KPI, task, and escalation data via WebSocket broadcasts |
 | **Files** | `src/ai_company/dashboard/ws.py:101-160` |
-| **Owner** | lead_frontend |
+| **Owner** | lead-frontend |
 
 **Problem:** WebSocket endpoint `/ws/dashboard` accepts connections from any client with no authentication. Sensitive KPI and task data is broadcast to unauthenticated listeners.
 
@@ -133,7 +133,7 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
 | **Effort** | 1h |
 | **Purpose** | Ensure dashboard API rejects unauthorized write operations when no API key is configured, preventing open access in production |
 | **Files** | `src/ai_company/dashboard/app.py:100-112` |
-| **Owner** | lead_frontend |
+| **Owner** | lead-frontend |
 
 **Problem:** `_check_api_key()` returns `True` when `DASHBOARD_API_KEY` is unset (line 108-109). This is intentional for dev but dangerous for production.
 
@@ -167,7 +167,7 @@ Add env var `DASHBOARD_AUTH_MODE=open|closed` (default: `closed`).
 | **Effort** | 4h |
 | **Purpose** | Eliminate race conditions from multiple MessageBus instances writing to the same inbox.json; ensure single source of truth for task state |
 | **Files** | `dashboard/api.py`, `dashboard/mobile_api.py`, `dashboard/monitoring.py`, `dashboard/repository.py` |
-| **Owner** | lead_backend |
+| **Owner** | lead-backend |
 
 **Problem:** Three modules each create independent MessageBus/TaskStore instances: `api.py`, `mobile_api.py:27-41`, `monitoring.py:31-32`. This causes race conditions when concurrent requests write to the same files.
 
@@ -201,7 +201,7 @@ Update `mobile_api.py` and `monitoring.py` to use `repository.get_task_backend()
 | **Effort** | 0.5h |
 | **Purpose** | Ensure risk register accurately reflects mitigation status so leadership can make informed decisions about residual risk |
 | **Files** | `docs/RISK-REGISTER.md` |
-| **Owner** | compliance_officer |
+| **Owner** | compliance-officer |
 
 **Problem:** R17 (HITL blocking) and R18 (shell injection) show status "Open" but were resolved in Sprint 2 (GAP-004, GAP-016).
 
@@ -216,7 +216,7 @@ Update `mobile_api.py` and `monitoring.py` to use `repository.get_task_backend()
 | **Effort** | 3h |
 | **Purpose** | Prevent memory from growing unbounded by enabling background consolidation and pruning of old/irrelevant memories |
 | **Files** | `executor/loop.py:137-142,255-257`, `memory/consolidation.py` |
-| **Owner** | lead_backend |
+| **Owner** | lead-backend |
 
 **Problem:** GAP-005 is partially resolved. The `ConsolidationScheduler` is instantiated (line 139) and `on_tick()` is called (line 256), but the scheduler's `start()` method for background thread operation is never called. The tick-based consolidation works, but time-based consolidation in the background does not.
 
@@ -259,7 +259,7 @@ def stop(self) -> None:
 | **Effort** | 6h |
 | **Purpose** | Ensure dashboard reads consistent task state when using SQLite backend by routing all inbox reads through MessageBus |
 | **Files** | `dashboard/mobile_api.py`, `dashboard/kpis/*` |
-| **Owner** | lead_backend |
+| **Owner** | lead-backend |
 
 **Problem:** `mobile_api.py` and `dashboard/kpis/*` still read `inbox.json` directly for read-only operations. While less dangerous than write bypass, this creates inconsistent state when the bus is in SQLite mode.
 
@@ -278,7 +278,7 @@ def stop(self) -> None:
 | **Effort** | 6h |
 | **Purpose** | Enable production debugging and compliance auditing by providing structured JSON logs with correlation IDs linking task→agent→tool calls |
 | **Files** | Multiple (11 `print()` calls in non-CLI code) |
-| **Owner** | lead_backend |
+| **Owner** | lead-backend |
 
 **Problem:** Mixed logging: some `logger.info()`, some `print()`, no structured JSON format, no correlation IDs.
 
@@ -389,7 +389,7 @@ class TestCircuitBreaker:
 | **Effort** | 3h |
 | **Purpose** | Enable pre-flight cost estimation to prevent budget overruns before LLM calls are made |
 | **Files** | `executor/agent_loop.py`, `llm/client.py` |
-| **Owner** | lead_backend |
+| **Owner** | lead-backend |
 
 **Problem:** Token counting not wired into AgentLoop for pre-flight cost estimation.
 
@@ -435,7 +435,7 @@ if not self.cost_tracker.check_budget(task_id=task_id, cost=estimated_cost):
 | **Effort** | 1h |
 | **Purpose** | Standardize logging across non-CLI modules to enable structured log output and correlation IDs |
 | **Files** | `executor/loop.py`, other non-CLI modules |
-| **Owner** | lead_backend |
+| **Owner** | lead-backend |
 
 **Problem:** 11 `print()` calls remain in non-CLI code.
 
@@ -468,7 +468,7 @@ if not self.cost_tracker.check_budget(task_id=task_id, cost=estimated_cost):
 | **Effort** | 8h |
 | **Purpose** | Improve usability, accessibility (WCAG compliance), and reliability of the CEO dashboard for production use |
 | **Files** | `dashboard/static/js/*.js`, `dashboard/templates/*.html` |
-| **Owner** | lead_frontend |
+| **Owner** | lead-frontend |
 
 **Items:**
 - DASH-001: Auto-scroll on new messages
@@ -548,7 +548,7 @@ class MemoryAccessControl:
     
     def __init__(self):
         self._access_matrix = {
-            "financial": ["cfo", "financial_analyst", "human_ceo"],
+            "financial": ["cfo", "financial-analyst", "human_ceo"],
             "hr": ["hr_lead", "human_ceo"],
             "security": ["ciso", "ai_security_specialist"],
         }

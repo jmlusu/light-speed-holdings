@@ -19,7 +19,7 @@ class CustomerSuccessKPICollector(KPICollector):
         tasks = self._get_tasks()
 
         # Count CS-related tasks
-        cs_receivers = {"customer-success", "support_agent"}
+        cs_receivers = {"customer-success", "support-agent"}
         cs_tasks = [
             t for t in tasks if t.get("receiver_id") in cs_receivers
         ]
