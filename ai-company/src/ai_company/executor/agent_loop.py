@@ -122,6 +122,16 @@ class AgentLoop:
         self._current_priority: str = "medium"
         self._current_task_prompt: str = ""
 
+    @staticmethod
+    def _estimate_tokens(text: str) -> int:
+        """Rough heuristic: ~4 characters per token for English text.
+
+        Used for pre-flight cost estimation before the LLM is called.
+        """
+        if not text:
+            return 1
+        return max(1, len(text) // 4)
+
     def run(
         self,
         agent: AgentContext,
@@ -159,7 +169,9 @@ class AgentLoop:
                 done=True,
                 error="Prompt blocked by security filter",
                 iterations=0,
-                total_tokens=0,
+                tool_results=[],
+                total_prompt_tokens=0,
+                total_completion_tokens=0,
                 total_cost_usd=0.0,
             )
         
@@ -182,15 +194,22 @@ class AgentLoop:
         iterations_completed = 0
 
         for iteration in range(1, self.config.max_iterations + 1):
-            # ── Budget check ──────────────────────────────────────
+            # ── Assemble the full user prompt with history ────────
+            full_user_prompt = "\n\n".join(conversation_history)
+
+            # ── Budget check (PRE-11: pre-flight cost estimate) ─────
             if self.cost_tracker and task_id:
-                allowed, reason = self.cost_tracker.check_budget(task_id)
+                from ai_company.llm.client import estimate_call_cost
+
+                estimated_cost = estimate_call_cost(
+                    system_prompt, full_user_prompt,
+                )
+                allowed, reason = self.cost_tracker.check_budget(
+                    task_id, proposed_cost=estimated_cost,
+                )
                 if not allowed:
                     last_error = f"Budget exceeded: {reason}"
                     break
-
-            # ── Assemble the full user prompt with history ────────
-            full_user_prompt = "\n\n".join(conversation_history)
 
             # ── Call LLM ──────────────────────────────────────────
             try:

@@ -6,6 +6,7 @@ system for issuing, tracking, and completing formal board instructions.
 
 from __future__ import annotations
 
+import builtins
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -139,7 +140,7 @@ def _save_directives(data: dict) -> None:
         yaml.dump(data, f, default_flow_style=False, sort_keys=False)
 
 
-def _next_directive_id(directives: list[dict]) -> str:
+def _next_directive_id(directives: builtins.list[dict]) -> str:
     """Generate the next directive ID (DIR-YYYY-NNN)."""
     year = datetime.now(timezone.utc).year
     max_num = 0

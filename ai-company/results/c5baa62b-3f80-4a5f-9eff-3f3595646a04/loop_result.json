@@ -1,0 +1,12 @@
+{
+  "task_id": "c5baa62b-3f80-4a5f-9eff-3f3595646a04",
+  "agent": "sales-specialist",
+  "final_response": "",
+  "iterations": 0,
+  "total_tokens": 0,
+  "total_cost_usd": 0.0,
+  "done": false,
+  "error": "LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-sha",
+  "tool_results": [],
+  "timestamp": "2026-07-24T12:15:38.858185"
+}

@@ -63,6 +63,8 @@ tiers:
         model: deepseek-chat
       - provider: opencode
         model: big-pickle
+      - provider: ollama
+        model: deepseek-r1:7b
 
   premium:
     description: "Maximum reasoning capability. Use for critical decisions."
@@ -71,6 +73,8 @@ tiers:
         model: deepseek-coder
       - provider: opencode
         model: big-pickle
+      - provider: ollama
+        model: deepseek-r1:7b
 
 # ─── Routing rules ──────────────────────────────────────────────────
 # Maps (agent_type, priority) -> tier.

@@ -667,7 +667,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:38.732924",
-    "access_count": 5,
+    "access_count": 48,
     "seq": 78
   },
   {
@@ -684,7 +684,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:38.954024",
-    "access_count": 5,
+    "access_count": 49,
     "seq": 79
   },
   {
@@ -718,7 +718,7 @@
       "customer-success-specialist"
     ],
     "created_at": "2026-07-23T23:50:39.430313",
-    "access_count": 5,
+    "access_count": 45,
     "seq": 81
   },
   {
@@ -752,7 +752,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:39.944330",
-    "access_count": 5,
+    "access_count": 46,
     "seq": 83
   },
   {
@@ -820,7 +820,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:40.954639",
-    "access_count": 5,
+    "access_count": 48,
     "seq": 87
   },
   {
@@ -871,7 +871,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:41.585045",
-    "access_count": 5,
+    "access_count": 46,
     "seq": 90
   },
   {
@@ -888,7 +888,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:41.784861",
-    "access_count": 5,
+    "access_count": 40,
     "seq": 91
   },
   {
@@ -905,7 +905,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:41.978258",
-    "access_count": 5,
+    "access_count": 48,
     "seq": 92
   },
   {
@@ -939,7 +939,7 @@
       "customer-success-specialist"
     ],
     "created_at": "2026-07-23T23:50:42.383590",
-    "access_count": 5,
+    "access_count": 45,
     "seq": 94
   },
   {
@@ -956,7 +956,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:42.581791",
-    "access_count": 5,
+    "access_count": 46,
     "seq": 95
   },
   {
@@ -973,7 +973,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:42.797142",
-    "access_count": 5,
+    "access_count": 40,
     "seq": 96
   },
   {
@@ -1007,7 +1007,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:43.196783",
-    "access_count": 4,
+    "access_count": 48,
     "seq": 98
   },
   {
@@ -1024,7 +1024,7 @@
       "customer-success-specialist"
     ],
     "created_at": "2026-07-23T23:50:43.407381",
-    "access_count": 4,
+    "access_count": 44,
     "seq": 99
   },
   {
@@ -1041,7 +1041,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:43.604467",
-    "access_count": 4,
+    "access_count": 45,
     "seq": 100
   },
   {
@@ -1058,7 +1058,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:43.806053",
-    "access_count": 4,
+    "access_count": 39,
     "seq": 101
   },
   {
@@ -1075,7 +1075,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:44.001821",
-    "access_count": 3,
+    "access_count": 46,
     "seq": 102
   },
   {
@@ -1092,7 +1092,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:44.210202",
-    "access_count": 3,
+    "access_count": 47,
     "seq": 103
   },
   {
@@ -1160,7 +1160,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:45.082658",
-    "access_count": 2,
+    "access_count": 45,
     "seq": 107
   },
   {
@@ -1177,7 +1177,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:45.317526",
-    "access_count": 2,
+    "access_count": 46,
     "seq": 108
   },
   {
@@ -1194,7 +1194,7 @@
       "customer-success-specialist"
     ],
     "created_at": "2026-07-23T23:50:45.542051",
-    "access_count": 2,
+    "access_count": 42,
     "seq": 109
   },
   {
@@ -1228,7 +1228,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:46.017345",
-    "access_count": 2,
+    "access_count": 37,
     "seq": 111
   },
   {
@@ -1279,7 +1279,7 @@
       "customer-success-specialist"
     ],
     "created_at": "2026-07-23T23:50:46.697282",
-    "access_count": 1,
+    "access_count": 41,
     "seq": 114
   },
   {
@@ -1296,7 +1296,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:46.922570",
-    "access_count": 1,
+    "access_count": 42,
     "seq": 115
   },
   {
@@ -1313,7 +1313,7 @@
       "chief-of-staff"
     ],
     "created_at": "2026-07-23T23:50:47.151488",
-    "access_count": 1,
+    "access_count": 36,
     "seq": 116
   },
   {
@@ -1347,7 +1347,7 @@
       "sales-specialist"
     ],
     "created_at": "2026-07-23T23:50:47.597355",
-    "access_count": 0,
+    "access_count": 44,
     "seq": 118
   },
   {
@@ -1400,5 +1400,1467 @@
     "created_at": "2026-07-23T23:50:48.294202",
     "access_count": 0,
     "seq": 121
+  },
+  {
+    "id": "episodic_20260724_120841_167474",
+    "memory_type": "episodic",
+    "content": "Task ccc20c27-dd1c-486e-8c3d-fc728e331968: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "ccc20c27-dd1c-486e-8c3d-fc728e331968",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:08:41.167474",
+    "access_count": 0,
+    "seq": 168
+  },
+  {
+    "id": "episodic_20260724_120841_675547",
+    "memory_type": "episodic",
+    "content": "Task a32f0bbb-45cb-4ba1-a122-29aea4055692: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "a32f0bbb-45cb-4ba1-a122-29aea4055692",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:08:41.676065",
+    "access_count": 0,
+    "seq": 169
+  },
+  {
+    "id": "episodic_20260724_120844_531792",
+    "memory_type": "episodic",
+    "content": "Task cfa5fdc6-90b3-406e-8e3a-4e955344d1de: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "cfa5fdc6-90b3-406e-8e3a-4e955344d1de",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:08:44.531792",
+    "access_count": 0,
+    "seq": 170
+  },
+  {
+    "id": "episodic_20260724_120847_368673",
+    "memory_type": "episodic",
+    "content": "Task 3538a0fe-879e-49d2-9835-644b865a4cd0: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "3538a0fe-879e-49d2-9835-644b865a4cd0",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:08:47.368673",
+    "access_count": 0,
+    "seq": 171
+  },
+  {
+    "id": "episodic_20260724_120850_161682",
+    "memory_type": "episodic",
+    "content": "Task 54b6f201-bce6-4477-84cc-62795b21e8ac: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "54b6f201-bce6-4477-84cc-62795b21e8ac",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:08:50.161682",
+    "access_count": 0,
+    "seq": 172
+  },
+  {
+    "id": "episodic_20260724_120852_937482",
+    "memory_type": "episodic",
+    "content": "Task 51c7a988-221f-454e-8f3b-02ce8666a67e: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "51c7a988-221f-454e-8f3b-02ce8666a67e",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:08:52.937482",
+    "access_count": 0,
+    "seq": 173
+  },
+  {
+    "id": "episodic_20260724_120853_256371",
+    "memory_type": "episodic",
+    "content": "Task e3bf9276-b84a-4724-8c4a-83d1e346665a: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "e3bf9276-b84a-4724-8c4a-83d1e346665a",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:08:53.256371",
+    "access_count": 0,
+    "seq": 174
+  },
+  {
+    "id": "episodic_20260724_120856_686663",
+    "memory_type": "episodic",
+    "content": "Task de0c0fbc-19bb-4e84-8436-98199692f470: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "de0c0fbc-19bb-4e84-8436-98199692f470",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:08:56.686663",
+    "access_count": 0,
+    "seq": 175
+  },
+  {
+    "id": "episodic_20260724_120859_486650",
+    "memory_type": "episodic",
+    "content": "Task b2a313cd-4e3a-44d5-874b-c0a6c0be438b: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "b2a313cd-4e3a-44d5-874b-c0a6c0be438b",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:08:59.486650",
+    "access_count": 0,
+    "seq": 176
+  },
+  {
+    "id": "episodic_20260724_120902_221979",
+    "memory_type": "episodic",
+    "content": "Task 99f93be2-a0f4-48d2-aa6a-936a745b3a11: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "99f93be2-a0f4-48d2-aa6a-936a745b3a11",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:09:02.221979",
+    "access_count": 0,
+    "seq": 177
+  },
+  {
+    "id": "episodic_20260724_120905_049747",
+    "memory_type": "episodic",
+    "content": "Task 45b53dbe-9a6d-44c3-bc80-3c993122e78c: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "45b53dbe-9a6d-44c3-bc80-3c993122e78c",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:09:05.049747",
+    "access_count": 0,
+    "seq": 178
+  },
+  {
+    "id": "episodic_20260724_120905_327705",
+    "memory_type": "episodic",
+    "content": "Task ead26771-ece7-47a1-bb34-0fae6e1bb49a: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "ead26771-ece7-47a1-bb34-0fae6e1bb49a",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:09:05.327705",
+    "access_count": 0,
+    "seq": 179
+  },
+  {
+    "id": "episodic_20260724_120908_099934",
+    "memory_type": "episodic",
+    "content": "Task 459e298e-30f9-4d9b-af1d-5feb59181220: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "459e298e-30f9-4d9b-af1d-5feb59181220",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:09:08.099934",
+    "access_count": 0,
+    "seq": 180
+  },
+  {
+    "id": "episodic_20260724_120910_818550",
+    "memory_type": "episodic",
+    "content": "Task 3e6dbf4f-0027-40d5-b440-a84f7855ecd6: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "3e6dbf4f-0027-40d5-b440-a84f7855ecd6",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:09:10.818550",
+    "access_count": 0,
+    "seq": 181
+  },
+  {
+    "id": "episodic_20260724_120913_585719",
+    "memory_type": "episodic",
+    "content": "Task 17d26d8c-2686-4e81-b4d7-94f19e474f4b: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "17d26d8c-2686-4e81-b4d7-94f19e474f4b",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:09:13.585719",
+    "access_count": 0,
+    "seq": 182
+  },
+  {
+    "id": "episodic_20260724_120951_190451",
+    "memory_type": "episodic",
+    "content": "Task e41636a9-eec8-4ff4-ab2a-99b27004a266: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "e41636a9-eec8-4ff4-ab2a-99b27004a266",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:09:51.190451",
+    "access_count": 0,
+    "seq": 183
+  },
+  {
+    "id": "episodic_20260724_120951_481811",
+    "memory_type": "episodic",
+    "content": "Task eacc4882-758d-4f5b-8c7f-23798f0f56e9: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "eacc4882-758d-4f5b-8c7f-23798f0f56e9",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:09:51.481811",
+    "access_count": 0,
+    "seq": 184
+  },
+  {
+    "id": "episodic_20260724_120954_265498",
+    "memory_type": "episodic",
+    "content": "Task 7bf04706-970a-456e-81c9-c66730f11729: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "7bf04706-970a-456e-81c9-c66730f11729",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:09:54.265498",
+    "access_count": 0,
+    "seq": 185
+  },
+  {
+    "id": "episodic_20260724_120957_045254",
+    "memory_type": "episodic",
+    "content": "Task 5f71fc42-6837-4e1d-b320-30e3107693f2: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "5f71fc42-6837-4e1d-b320-30e3107693f2",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:09:57.045254",
+    "access_count": 0,
+    "seq": 186
+  },
+  {
+    "id": "episodic_20260724_121000_178531",
+    "memory_type": "episodic",
+    "content": "Task 49518ad7-2c35-4fce-b213-936a80628af2: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "49518ad7-2c35-4fce-b213-936a80628af2",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:10:00.178531",
+    "access_count": 0,
+    "seq": 187
+  },
+  {
+    "id": "episodic_20260724_121003_010025",
+    "memory_type": "episodic",
+    "content": "Task 165e2f1c-6afc-4d1c-8a60-64feafba1e71: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "165e2f1c-6afc-4d1c-8a60-64feafba1e71",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:10:03.010025",
+    "access_count": 0,
+    "seq": 188
+  },
+  {
+    "id": "episodic_20260724_121003_263659",
+    "memory_type": "episodic",
+    "content": "Task 96887b8c-141d-4fb9-b6fc-4a7e4ab3e571: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "96887b8c-141d-4fb9-b6fc-4a7e4ab3e571",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:10:03.263659",
+    "access_count": 0,
+    "seq": 189
+  },
+  {
+    "id": "episodic_20260724_121006_164752",
+    "memory_type": "episodic",
+    "content": "Task 78e47bd6-8c21-4a0c-b7cb-dd481453392d: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "78e47bd6-8c21-4a0c-b7cb-dd481453392d",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:10:06.165279",
+    "access_count": 0,
+    "seq": 190
+  },
+  {
+    "id": "episodic_20260724_121009_282419",
+    "memory_type": "episodic",
+    "content": "Task 8b0f92e8-8f3c-4cf1-869d-b62fb678af18: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "8b0f92e8-8f3c-4cf1-869d-b62fb678af18",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:10:09.282419",
+    "access_count": 0,
+    "seq": 191
+  },
+  {
+    "id": "episodic_20260724_121012_102336",
+    "memory_type": "episodic",
+    "content": "Task 5307b56d-bf5b-40e0-a66c-107dd5b4939f: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "5307b56d-bf5b-40e0-a66c-107dd5b4939f",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:10:12.102336",
+    "access_count": 0,
+    "seq": 192
+  },
+  {
+    "id": "episodic_20260724_121014_962730",
+    "memory_type": "episodic",
+    "content": "Task 2911d9ce-c6b2-4cf1-950c-1d740e845556: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "2911d9ce-c6b2-4cf1-950c-1d740e845556",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:10:14.962730",
+    "access_count": 0,
+    "seq": 193
+  },
+  {
+    "id": "episodic_20260724_121017_776944",
+    "memory_type": "episodic",
+    "content": "Task 73f7c392-b430-4c10-8590-c5da594c2bfa: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "73f7c392-b430-4c10-8590-c5da594c2bfa",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:10:17.776944",
+    "access_count": 0,
+    "seq": 194
+  },
+  {
+    "id": "episodic_20260724_121124_490884",
+    "memory_type": "episodic",
+    "content": "Task 1801c8da-04bc-4932-9d22-1bab3baa0449: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "1801c8da-04bc-4932-9d22-1bab3baa0449",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:24.490884",
+    "access_count": 0,
+    "seq": 195
+  },
+  {
+    "id": "episodic_20260724_121124_796616",
+    "memory_type": "episodic",
+    "content": "Task ab2f7781-1bd8-4346-b10d-6a61f35c97fe: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "ab2f7781-1bd8-4346-b10d-6a61f35c97fe",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:24.796616",
+    "access_count": 0,
+    "seq": 196
+  },
+  {
+    "id": "episodic_20260724_121127_618333",
+    "memory_type": "episodic",
+    "content": "Task 396f0bf9-3b8a-4bfe-b7f1-ef88c86b2e28: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "396f0bf9-3b8a-4bfe-b7f1-ef88c86b2e28",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:11:27.618333",
+    "access_count": 0,
+    "seq": 197
+  },
+  {
+    "id": "episodic_20260724_121130_388591",
+    "memory_type": "episodic",
+    "content": "Task 6eed00f1-0fea-4a4a-a23c-b5febed27962: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "6eed00f1-0fea-4a4a-a23c-b5febed27962",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:11:30.388591",
+    "access_count": 0,
+    "seq": 198
+  },
+  {
+    "id": "episodic_20260724_121133_270315",
+    "memory_type": "episodic",
+    "content": "Task 17e5f84f-9d90-435b-867f-9d64f75c8ae4: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "17e5f84f-9d90-435b-867f-9d64f75c8ae4",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:33.270315",
+    "access_count": 0,
+    "seq": 199
+  },
+  {
+    "id": "episodic_20260724_121136_120957",
+    "memory_type": "episodic",
+    "content": "Task b2ce3248-b199-4da1-8b84-5df72ec332ba: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "b2ce3248-b199-4da1-8b84-5df72ec332ba",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:36.120957",
+    "access_count": 0,
+    "seq": 200
+  },
+  {
+    "id": "episodic_20260724_121136_401281",
+    "memory_type": "episodic",
+    "content": "Task 165efa97-2da4-46f8-b22d-83a677a702cb: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "165efa97-2da4-46f8-b22d-83a677a702cb",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:36.401281",
+    "access_count": 0,
+    "seq": 201
+  },
+  {
+    "id": "episodic_20260724_121139_160776",
+    "memory_type": "episodic",
+    "content": "Task 59d273f4-ccdb-4246-b8ba-415a8996d30a: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "59d273f4-ccdb-4246-b8ba-415a8996d30a",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:11:39.160776",
+    "access_count": 0,
+    "seq": 202
+  },
+  {
+    "id": "episodic_20260724_121142_366727",
+    "memory_type": "episodic",
+    "content": "Task 86d72fe1-0c70-410d-a094-ee992495d955: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "86d72fe1-0c70-410d-a094-ee992495d955",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:11:42.366727",
+    "access_count": 0,
+    "seq": 203
+  },
+  {
+    "id": "episodic_20260724_121145_245990",
+    "memory_type": "episodic",
+    "content": "Task 5e878523-115f-4851-aa80-3242eb87538d: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "5e878523-115f-4851-aa80-3242eb87538d",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:45.245990",
+    "access_count": 0,
+    "seq": 204
+  },
+  {
+    "id": "episodic_20260724_121148_287366",
+    "memory_type": "episodic",
+    "content": "Task 552551f0-b03e-490f-bfc5-c22dd446e731: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "552551f0-b03e-490f-bfc5-c22dd446e731",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:48.287366",
+    "access_count": 0,
+    "seq": 205
+  },
+  {
+    "id": "episodic_20260724_121148_547547",
+    "memory_type": "episodic",
+    "content": "Task e7f666e9-2509-49cb-8254-b74a37dc0254: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "e7f666e9-2509-49cb-8254-b74a37dc0254",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:48.547547",
+    "access_count": 0,
+    "seq": 206
+  },
+  {
+    "id": "episodic_20260724_121151_351286",
+    "memory_type": "episodic",
+    "content": "Task 147692d0-c632-4fe2-b7a9-233c6bcd9a01: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "147692d0-c632-4fe2-b7a9-233c6bcd9a01",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:11:51.351286",
+    "access_count": 0,
+    "seq": 207
+  },
+  {
+    "id": "episodic_20260724_121154_113983",
+    "memory_type": "episodic",
+    "content": "Task 6a7dc317-a680-4492-bf77-bdac22932625: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "6a7dc317-a680-4492-bf77-bdac22932625",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:11:54.113983",
+    "access_count": 0,
+    "seq": 208
+  },
+  {
+    "id": "episodic_20260724_121157_179649",
+    "memory_type": "episodic",
+    "content": "Task 83f6d217-b344-4776-b4d1-2d01bac1fc52: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "83f6d217-b344-4776-b4d1-2d01bac1fc52",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:11:57.179649",
+    "access_count": 0,
+    "seq": 209
+  },
+  {
+    "id": "episodic_20260724_121310_065164",
+    "memory_type": "episodic",
+    "content": "Task aca0241f-6576-4de6-ba78-42b822e8f3e9: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "aca0241f-6576-4de6-ba78-42b822e8f3e9",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:10.065164",
+    "access_count": 0,
+    "seq": 210
+  },
+  {
+    "id": "episodic_20260724_121313_125673",
+    "memory_type": "episodic",
+    "content": "Task e475b6ff-4b32-4688-8ad7-1c7d805612b1: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "e475b6ff-4b32-4688-8ad7-1c7d805612b1",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:13:13.126209",
+    "access_count": 0,
+    "seq": 211
+  },
+  {
+    "id": "episodic_20260724_121316_067692",
+    "memory_type": "episodic",
+    "content": "Task d2e0504a-6d3b-4e60-9544-a3be01e218b2: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "d2e0504a-6d3b-4e60-9544-a3be01e218b2",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:16.067692",
+    "access_count": 0,
+    "seq": 212
+  },
+  {
+    "id": "episodic_20260724_121316_409631",
+    "memory_type": "episodic",
+    "content": "Task eac7add3-ff48-4a84-a357-16fc8ad1287f: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "eac7add3-ff48-4a84-a357-16fc8ad1287f",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:16.409631",
+    "access_count": 0,
+    "seq": 213
+  },
+  {
+    "id": "episodic_20260724_121319_582295",
+    "memory_type": "episodic",
+    "content": "Task c07540aa-381b-4944-a2a6-bb93fd4fff02: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "c07540aa-381b-4944-a2a6-bb93fd4fff02",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:13:19.582295",
+    "access_count": 0,
+    "seq": 214
+  },
+  {
+    "id": "episodic_20260724_121322_415224",
+    "memory_type": "episodic",
+    "content": "Task 9cd2dc4e-1052-4be4-9e2f-932a73be59fe: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "9cd2dc4e-1052-4be4-9e2f-932a73be59fe",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:22.415224",
+    "access_count": 0,
+    "seq": 215
+  },
+  {
+    "id": "episodic_20260724_121325_425879",
+    "memory_type": "episodic",
+    "content": "Task 3f1b1269-2d4a-466c-8e20-1c3ddd5d0538: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "3f1b1269-2d4a-466c-8e20-1c3ddd5d0538",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:13:25.425879",
+    "access_count": 0,
+    "seq": 216
+  },
+  {
+    "id": "episodic_20260724_121328_503176",
+    "memory_type": "episodic",
+    "content": "Task c1459add-940f-4e49-ba7d-8a3840264999: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "c1459add-940f-4e49-ba7d-8a3840264999",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:28.503176",
+    "access_count": 0,
+    "seq": 217
+  },
+  {
+    "id": "episodic_20260724_121329_073149",
+    "memory_type": "episodic",
+    "content": "Task e9af53e2-0b67-4a58-9809-4f99234ded16: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "e9af53e2-0b67-4a58-9809-4f99234ded16",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:29.073149",
+    "access_count": 0,
+    "seq": 218
+  },
+  {
+    "id": "episodic_20260724_121332_058746",
+    "memory_type": "episodic",
+    "content": "Task f8e815f1-8b99-41f3-a764-efdc76b60383: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "f8e815f1-8b99-41f3-a764-efdc76b60383",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:13:32.058746",
+    "access_count": 0,
+    "seq": 219
+  },
+  {
+    "id": "episodic_20260724_121335_138110",
+    "memory_type": "episodic",
+    "content": "Task aa2fcf43-fa69-4933-b521-2da2f75fd69c: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "aa2fcf43-fa69-4933-b521-2da2f75fd69c",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:35.138110",
+    "access_count": 0,
+    "seq": 220
+  },
+  {
+    "id": "episodic_20260724_121338_113149",
+    "memory_type": "episodic",
+    "content": "Task 12b0bd9e-e72a-4efb-bdf0-63ff9daed699: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "12b0bd9e-e72a-4efb-bdf0-63ff9daed699",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:13:38.113149",
+    "access_count": 0,
+    "seq": 221
+  },
+  {
+    "id": "episodic_20260724_121341_069455",
+    "memory_type": "episodic",
+    "content": "Task 8db75d42-a4e5-4b57-9cde-e1843035754f: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "8db75d42-a4e5-4b57-9cde-e1843035754f",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:13:41.069455",
+    "access_count": 0,
+    "seq": 222
+  },
+  {
+    "id": "episodic_20260724_121424_316491",
+    "memory_type": "episodic",
+    "content": "Task b1564d08-ab35-4ae2-8921-11c8ba986fa5: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "b1564d08-ab35-4ae2-8921-11c8ba986fa5",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:14:24.316491",
+    "access_count": 0,
+    "seq": 223
+  },
+  {
+    "id": "episodic_20260724_121433_341855",
+    "memory_type": "episodic",
+    "content": "Task 11a2d23f-35e9-45e6-88cf-7e43b50ee427: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "11a2d23f-35e9-45e6-88cf-7e43b50ee427",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:14:33.341855",
+    "access_count": 0,
+    "seq": 224
+  },
+  {
+    "id": "episodic_20260724_121436_181548",
+    "memory_type": "episodic",
+    "content": "Task c5baa62b-3f80-4a5f-9eff-3f3595646a04: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "c5baa62b-3f80-4a5f-9eff-3f3595646a04",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:14:36.181548",
+    "access_count": 0,
+    "seq": 225
+  },
+  {
+    "id": "episodic_20260724_121436_476746",
+    "memory_type": "episodic",
+    "content": "Task 314f716e-66e1-443a-a2f0-153b0d4d73d3: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "314f716e-66e1-443a-a2f0-153b0d4d73d3",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:14:36.476746",
+    "access_count": 0,
+    "seq": 226
+  },
+  {
+    "id": "episodic_20260724_121439_269558",
+    "memory_type": "episodic",
+    "content": "Task 7ebf06df-4834-42d9-b8c2-684f861dd85c: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "7ebf06df-4834-42d9-b8c2-684f861dd85c",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:14:39.269558",
+    "access_count": 0,
+    "seq": 227
+  },
+  {
+    "id": "episodic_20260724_121442_127116",
+    "memory_type": "episodic",
+    "content": "Task 07980b01-ce76-46a5-86b5-d1418e88930a: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "07980b01-ce76-46a5-86b5-d1418e88930a",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:14:42.127116",
+    "access_count": 0,
+    "seq": 228
+  },
+  {
+    "id": "episodic_20260724_121442_421571",
+    "memory_type": "episodic",
+    "content": "Task 21264667-dde3-4cc3-ba0e-c9e6699359cf: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "21264667-dde3-4cc3-ba0e-c9e6699359cf",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:14:42.421571",
+    "access_count": 0,
+    "seq": 229
+  },
+  {
+    "id": "episodic_20260724_121442_710666",
+    "memory_type": "episodic",
+    "content": "Task acbacd54-46ab-4499-a43c-7d7e3efecde8: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "acbacd54-46ab-4499-a43c-7d7e3efecde8",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:14:42.710666",
+    "access_count": 0,
+    "seq": 230
+  },
+  {
+    "id": "episodic_20260724_121457_185526",
+    "memory_type": "episodic",
+    "content": "Task 55078aa4-6a1d-4cec-9534-7301084b92df: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "55078aa4-6a1d-4cec-9534-7301084b92df",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:14:57.186045",
+    "access_count": 0,
+    "seq": 231
+  },
+  {
+    "id": "episodic_20260724_121500_397508",
+    "memory_type": "episodic",
+    "content": "Task 13d3b88f-4595-4798-b9b2-b25033dd2013: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "13d3b88f-4595-4798-b9b2-b25033dd2013",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:00.397508",
+    "access_count": 0,
+    "seq": 232
+  },
+  {
+    "id": "episodic_20260724_121503_282540",
+    "memory_type": "episodic",
+    "content": "Task 06812b14-fda9-41cf-9f8e-6e95df22fa51: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "06812b14-fda9-41cf-9f8e-6e95df22fa51",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:03.282540",
+    "access_count": 0,
+    "seq": 233
+  },
+  {
+    "id": "episodic_20260724_121506_084496",
+    "memory_type": "episodic",
+    "content": "Task 42c170ac-0eae-4e4e-96c0-6f45e1d74e82: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "42c170ac-0eae-4e4e-96c0-6f45e1d74e82",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:15:06.084496",
+    "access_count": 0,
+    "seq": 234
+  },
+  {
+    "id": "episodic_20260724_121509_149470",
+    "memory_type": "episodic",
+    "content": "Task 07570e6f-458b-4b76-b705-53b3abbc7659: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "07570e6f-458b-4b76-b705-53b3abbc7659",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:09.149470",
+    "access_count": 0,
+    "seq": 235
+  },
+  {
+    "id": "episodic_20260724_121512_165443",
+    "memory_type": "episodic",
+    "content": "Task 89653bb1-e0d5-407c-b7f1-0c35ed0de57d: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "89653bb1-e0d5-407c-b7f1-0c35ed0de57d",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:15:12.165443",
+    "access_count": 0,
+    "seq": 236
+  },
+  {
+    "id": "episodic_20260724_121514_968092",
+    "memory_type": "episodic",
+    "content": "Task 6b8ef4de-1d77-4722-ae6b-79ebe59d13b9: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "6b8ef4de-1d77-4722-ae6b-79ebe59d13b9",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:14.968092",
+    "access_count": 0,
+    "seq": 237
+  },
+  {
+    "id": "episodic_20260724_121515_225960",
+    "memory_type": "episodic",
+    "content": "Task 190dd1ed-b459-4f25-9945-e751a17186a6: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "190dd1ed-b459-4f25-9945-e751a17186a6",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:15.225960",
+    "access_count": 0,
+    "seq": 238
+  },
+  {
+    "id": "episodic_20260724_121518_463228",
+    "memory_type": "episodic",
+    "content": "Task cb81ec57-a3ed-4f7c-87bc-e1c72d02c9dc: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "cb81ec57-a3ed-4f7c-87bc-e1c72d02c9dc",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:15:18.463228",
+    "access_count": 0,
+    "seq": 239
+  },
+  {
+    "id": "episodic_20260724_121521_559664",
+    "memory_type": "episodic",
+    "content": "Task dfa405a2-2d22-47ed-a955-6a4135995cd7: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "dfa405a2-2d22-47ed-a955-6a4135995cd7",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:21.559664",
+    "access_count": 0,
+    "seq": 240
+  },
+  {
+    "id": "episodic_20260724_121524_327817",
+    "memory_type": "episodic",
+    "content": "Task aca67203-59a6-4f0a-ab5b-5cd8e5b94e50: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "aca67203-59a6-4f0a-ab5b-5cd8e5b94e50",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:15:24.327817",
+    "access_count": 0,
+    "seq": 241
+  },
+  {
+    "id": "episodic_20260724_121527_282333",
+    "memory_type": "episodic",
+    "content": "Task 8c43ded1-9f0f-418a-a629-afc587825df7: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "8c43ded1-9f0f-418a-a629-afc587825df7",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:27.282876",
+    "access_count": 0,
+    "seq": 242
+  },
+  {
+    "id": "episodic_20260724_121550_627177",
+    "memory_type": "episodic",
+    "content": "Task f4158d18-3658-4503-ac73-f82f0aed47da: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "f4158d18-3658-4503-ac73-f82f0aed47da",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:50.627177",
+    "access_count": 0,
+    "seq": 243
+  },
+  {
+    "id": "episodic_20260724_121553_637752",
+    "memory_type": "episodic",
+    "content": "Task 5a42e4c0-9d86-4352-b181-df6bc72b8b80: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "5a42e4c0-9d86-4352-b181-df6bc72b8b80",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:15:53.637752",
+    "access_count": 0,
+    "seq": 244
+  },
+  {
+    "id": "episodic_20260724_121559_309561",
+    "memory_type": "episodic",
+    "content": "Task 341a3f43-f44d-437a-9091-e3a46ed41412: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "341a3f43-f44d-437a-9091-e3a46ed41412",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:15:59.309561",
+    "access_count": 0,
+    "seq": 245
+  },
+  {
+    "id": "episodic_20260724_121613_889672",
+    "memory_type": "episodic",
+    "content": "Task 01caf870-97fc-4452-8339-0cb26a01b6f8: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "01caf870-97fc-4452-8339-0cb26a01b6f8",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:16:13.890198",
+    "access_count": 0,
+    "seq": 246
+  },
+  {
+    "id": "episodic_20260724_121622_730932",
+    "memory_type": "episodic",
+    "content": "Task b22ac5a6-d857-4b32-9e38-6e7b9b6cf3e0: Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "b22ac5a6-d857-4b32-9e38-6e7b9b6cf3e0",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:16:22.730932",
+    "access_count": 0,
+    "seq": 247
+  },
+  {
+    "id": "episodic_20260724_121625_449680",
+    "memory_type": "episodic",
+    "content": "Task 4e21a3a2-fb29-4cdb-9b9c-20df85c3a7a3: Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "4e21a3a2-fb29-4cdb-9b9c-20df85c3a7a3",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:16:25.449680",
+    "access_count": 0,
+    "seq": 248
+  },
+  {
+    "id": "episodic_20260724_121625_709715",
+    "memory_type": "episodic",
+    "content": "Task a0852e69-3567-4527-b850-e2599ea2d4e4: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "a0852e69-3567-4527-b850-e2599ea2d4e4",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:16:25.709715",
+    "access_count": 0,
+    "seq": 249
+  },
+  {
+    "id": "episodic_20260724_121628_679523",
+    "memory_type": "episodic",
+    "content": "Task 33539ff8-5608-4e59-b74c-be9989aebf93: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "33539ff8-5608-4e59-b74c-be9989aebf93",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:16:28.679523",
+    "access_count": 0,
+    "seq": 250
+  },
+  {
+    "id": "episodic_20260724_121634_143264",
+    "memory_type": "episodic",
+    "content": "Task 14d1588e-1e56-4caf-a728-f2f934f394e4: Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "14d1588e-1e56-4caf-a728-f2f934f394e4",
+      "status": "failed"
+    },
+    "agent_id": "sales-specialist",
+    "tags": [
+      "failed",
+      "sales-specialist"
+    ],
+    "created_at": "2026-07-24T12:16:34.143264",
+    "access_count": 0,
+    "seq": 251
+  },
+  {
+    "id": "episodic_20260724_121634_433269",
+    "memory_type": "episodic",
+    "content": "Task f1a3943f-3973-4093-b099-8437a538f899: Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.\nStatus: failed\nResult: Prompt blocked by security filter",
+    "metadata": {
+      "task_id": "f1a3943f-3973-4093-b099-8437a538f899",
+      "status": "failed"
+    },
+    "agent_id": "customer-success-specialist",
+    "tags": [
+      "failed",
+      "customer-success-specialist"
+    ],
+    "created_at": "2026-07-24T12:16:34.433269",
+    "access_count": 0,
+    "seq": 252
+  },
+  {
+    "id": "episodic_20260724_121637_301067",
+    "memory_type": "episodic",
+    "content": "Task 0ee15ada-d930-4a3c-930a-ff8d1e7cad54: Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .\nStatus: failed\nResult: LLM error at iteration 1: [agent_loop] No provider available. Last error: [opencode] API returned 404: <!DOCTYPE html><html lang=\"en\" dir=\"ltr\" data-locale=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta property=\"og:image\" content=\"/social-",
+    "metadata": {
+      "task_id": "0ee15ada-d930-4a3c-930a-ff8d1e7cad54",
+      "status": "failed"
+    },
+    "agent_id": "chief-of-staff",
+    "tags": [
+      "failed",
+      "chief-of-staff"
+    ],
+    "created_at": "2026-07-24T12:16:37.301067",
+    "access_count": 0,
+    "seq": 253
   }
 ]

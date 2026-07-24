@@ -123,11 +123,11 @@ def recall_context(query: str, limit: int = 5, agent_id: str = "") -> list[dict[
             pass  # Fall through to keyword search
 
     # Fallback: keyword-based search
-    results: list[dict[str, Any]] = []
+    keyword_results: list[dict[str, Any]] = []
     for mem_type in ["episodic", "semantic", "procedural"]:
         entries = _store.recall(mem_type, query=query, limit=limit)
         for e in entries:
-            results.append(
+            keyword_results.append(
                 {"type": mem_type, "content": e.content, "agent_id": e.agent_id, "tags": e.tags}
             )
     
@@ -135,10 +135,10 @@ def recall_context(query: str, limit: int = 5, agent_id: str = "") -> list[dict[
     if agent_id:
         try:
             from ai_company.security.memory_access_control import check_memory_access
-            results = [r for r in results if check_memory_access(agent_id, r.get("tags", []))]
+            keyword_results = [r for r in keyword_results if check_memory_access(agent_id, r.get("tags", []))]
         except Exception:
             pass  # Fail open
-    return results[:limit]
+    return keyword_results[:limit]
 
 
 def semantic_search(query: str, top_k: int = 5) -> list[dict[str, Any]]:

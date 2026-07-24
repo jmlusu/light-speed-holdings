@@ -400,6 +400,8 @@ class TestExecutorLoop:
 
         # Mock agent_loop.run to raise an exception
         executor.agent_loop.run = MagicMock(side_effect=RuntimeError("LLM API down"))
+        # Prevent R3 retry from overwriting the failed status back to pending
+        executor._maybe_retry = MagicMock()
 
         count = executor.tick()
         assert count == 1
@@ -479,6 +481,8 @@ class TestExecutorLoop:
         )
 
         executor.agent_loop.run = MagicMock(side_effect=ConnectionError("Network unreachable"))
+        # Prevent R3 retry from overwriting the failed status back to pending
+        executor._maybe_retry = MagicMock()
 
         executor.tick()
 

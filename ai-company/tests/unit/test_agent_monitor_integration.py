@@ -17,8 +17,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from ai_company.security.agent_monitor import (
-    AgentMonitor,
-    Anomaly,
+    AgentBehaviorMonitor,
+    AnomalyReport,
     get_agent_monitor,
     reset_agent_monitor,
 )
@@ -39,7 +39,7 @@ def _reset_monitor():
 
 
 # ---------------------------------------------------------------------------
-# Unit tests — AgentMonitor
+# Unit tests — AgentBehaviorMonitor
 # ---------------------------------------------------------------------------
 
 
@@ -47,7 +47,7 @@ class TestAgentMonitorRecording:
     """Verify action recording and summary updates."""
 
     def test_record_task_started(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         action = monitor.record_action(
             "agent-a", "task_started", {"task_id": "t1"}
         )
@@ -59,7 +59,7 @@ class TestAgentMonitorRecording:
         assert summary["total_actions"] == 1
 
     def test_record_task_completed_success(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action(
             "agent-a", "task_completed",
             {"task_id": "t1", "status": "completed"},
@@ -71,7 +71,7 @@ class TestAgentMonitorRecording:
         assert summary["failure_rate"] == 0.0
 
     def test_record_task_completed_failure(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action(
             "agent-a", "task_completed",
             {"task_id": "t1", "status": "failed"},
@@ -82,7 +82,7 @@ class TestAgentMonitorRecording:
         assert summary["failure_rate"] == 1.0
 
     def test_record_tool_call(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action(
             "agent-a", "tool_call",
             {"tool": "read", "status": "ok"},
@@ -93,7 +93,7 @@ class TestAgentMonitorRecording:
         assert summary["total_actions"] == 1
 
     def test_record_llm_call(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action(
             "agent-a", "llm_call",
             {"tokens": 500},
@@ -102,7 +102,7 @@ class TestAgentMonitorRecording:
         assert summary["llm_calls"] == 1
 
     def test_record_delegation(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action(
             "agent-a", "delegation",
             {"receiver": "agent-b", "task_id": "t1"},
@@ -111,24 +111,25 @@ class TestAgentMonitorRecording:
         assert summary["delegations"] == 1
 
     def test_get_recent_actions_limit(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         for i in range(5):
             monitor.record_action("agent-a", "tool_call", {"i": i})
+            time.sleep(0.02)  # Ensure distinct timestamps on Windows
 
         recent = monitor.get_recent_actions("agent-a", limit=3)
         assert len(recent) == 3
-        # Most recent 3
+        # Most recent 3 (chronological order)
         assert recent[0].details["i"] == 2
         assert recent[2].details["i"] == 4
 
     def test_get_recent_actions_empty(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         recent = monitor.get_recent_actions("unknown-agent")
         assert recent == []
 
     def test_action_rotation(self) -> None:
         """Actions beyond max limit are pruned."""
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor._max_actions_per_agent = 5
         for i in range(10):
             monitor.record_action("agent-a", "tool_call", {"i": i})
@@ -139,7 +140,7 @@ class TestAgentMonitorRecording:
         assert actions[0].details["i"] == 5
 
     def test_get_all_summaries(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action("agent-a", "task_started", {})
         monitor.record_action("agent-b", "task_started", {})
 
@@ -158,7 +159,7 @@ class TestAgentMonitorAnomalies:
     """Verify anomaly detection logic."""
 
     def test_no_anomalies_for_healthy_agent(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action("agent-a", "task_started", {})
         monitor.record_action(
             "agent-a", "task_completed", {}, success=True,
@@ -167,7 +168,7 @@ class TestAgentMonitorAnomalies:
         assert anomalies == []
 
     def test_high_failure_rate_anomaly(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         # 8 failures, 2 successes = 80% failure rate
         for _ in range(8):
             monitor.record_action(
@@ -181,14 +182,13 @@ class TestAgentMonitorAnomalies:
         anomalies = monitor.check_anomalies("agent-a")
         assert len(anomalies) >= 1
         failure_anomaly = next(
-            a for a in anomalies if a.anomaly_type == "high_failure_rate"
+            a for a in anomalies if a.action_type == "high_failure_rate"
         )
         assert failure_anomaly.severity == "critical"  # > 80%
 
     def test_warning_severity_for_moderate_failure_rate(self) -> None:
-        monitor = AgentMonitor()
-        # 3 failures, 7 successes = 30% failure rate (above 50%? no, below)
-        # Actually: 6 failures, 4 successes = 60% > 50%
+        monitor = AgentBehaviorMonitor()
+        # 6 failures, 4 successes = 60% > 50%
         for _ in range(6):
             monitor.record_action(
                 "agent-a", "task_completed", {}, success=False,
@@ -200,13 +200,13 @@ class TestAgentMonitorAnomalies:
 
         anomalies = monitor.check_anomalies("agent-a")
         failure_anomaly = next(
-            (a for a in anomalies if a.anomaly_type == "high_failure_rate"), None
+            (a for a in anomalies if a.action_type == "high_failure_rate"), None
         )
         assert failure_anomaly is not None
         assert failure_anomaly.severity == "warning"  # > 50% but <= 80%
 
     def test_excessive_delegation_anomaly(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         for _ in range(6):  # > MAX_DELEGATION_DEPTH (5)
             monitor.record_action(
                 "agent-a", "delegation", {"receiver": "agent-b"},
@@ -214,12 +214,12 @@ class TestAgentMonitorAnomalies:
 
         anomalies = monitor.check_anomalies("agent-a")
         delegation_anomaly = next(
-            a for a in anomalies if a.anomaly_type == "excessive_delegation"
+            a for a in anomalies if a.action_type == "excessive_delegation"
         )
         assert "6 delegations" in delegation_anomaly.description
 
     def test_check_anomalies_all_agents(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         for _ in range(6):
             monitor.record_action(
                 "agent-a", "delegation", {"receiver": "agent-b"},
@@ -229,20 +229,23 @@ class TestAgentMonitorAnomalies:
         assert any(a.agent_id == "agent-a" for a in anomalies)
 
     def test_anomaly_to_dict(self) -> None:
-        anomaly = Anomaly(
+        anomaly = AnomalyReport(
             agent_id="agent-a",
-            anomaly_type="high_failure_rate",
-            description="80% failure rate",
-            detected_at=time.time(),
+            action_type="high_failure_rate",
+            count=8,
+            threshold=10,
+            window_start=time.time() - 3600,
+            window_end=time.time(),
             severity="critical",
+            description="80% failure rate",
         )
         d = anomaly.to_dict()
         assert d["agent_id"] == "agent-a"
-        assert d["anomaly_type"] == "high_failure_rate"
+        assert d["action_type"] == "high_failure_rate"
         assert d["severity"] == "critical"
 
     def test_monitor_reset(self) -> None:
-        monitor = AgentMonitor()
+        monitor = AgentBehaviorMonitor()
         monitor.record_action("agent-a", "task_started", {})
         monitor.reset()
 
@@ -293,7 +296,7 @@ class TestBehaviorMonitoringEndpoints:
         )
 
         client = TestClient(app, raise_server_exceptions=False)
-        response = client.get("/api/v1/agents/chief-of-staff/behavior")
+        response = client.get("/api/agents/chief-of-staff/behavior")
         assert response.status_code == 200
 
         data = response.json()
@@ -305,7 +308,7 @@ class TestBehaviorMonitoringEndpoints:
 
     def test_get_agent_behavior_empty_agent(self) -> None:
         client = TestClient(app, raise_server_exceptions=False)
-        response = client.get("/api/v1/agents/unknown-agent/behavior")
+        response = client.get("/api/agents/unknown-agent/behavior")
         assert response.status_code == 200
 
         data = response.json()
@@ -314,7 +317,7 @@ class TestBehaviorMonitoringEndpoints:
 
     def test_get_all_anomalies_returns_200(self) -> None:
         client = TestClient(app, raise_server_exceptions=False)
-        response = client.get("/api/v1/agents/behavior/anomalies")
+        response = client.get("/api/agents/behavior/anomalies")
         assert response.status_code == 200
 
         data = response.json()
@@ -331,7 +334,7 @@ class TestBehaviorMonitoringEndpoints:
             )
 
         client = TestClient(app, raise_server_exceptions=False)
-        response = client.get("/api/v1/agents/behavior/anomalies")
+        response = client.get("/api/agents/behavior/anomalies")
         assert response.status_code == 200
 
         data = response.json()
@@ -346,7 +349,7 @@ class TestBehaviorMonitoringEndpoints:
         )
 
         client = TestClient(app, raise_server_exceptions=False)
-        response = client.get("/api/v1/agents/agent-x/behavior")
+        response = client.get("/api/agents/agent-x/behavior")
         data = response.json()
 
         action = data["recent_actions"][0]

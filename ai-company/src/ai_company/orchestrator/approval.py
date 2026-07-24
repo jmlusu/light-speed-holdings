@@ -53,7 +53,7 @@ class ApprovalGate:
             self.requests = [ApprovalRequest(**r) for r in data.get("requests", [])]
 
     def _save_config(self):
-        data = {"requests": [r.model_dump() for r in self.requests]}
+        data = {"requests": [r.model_dump(mode="json") for r in self.requests]}
         self._store.write_yaml(self._config_name, data)
 
     def request_approval(

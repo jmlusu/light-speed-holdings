@@ -270,3 +270,36 @@ def reset_state_store() -> None:
     """Reset the module-level singleton (used by tests)."""
     global _default_store
     _default_store = None
+
+
+# ── Task backend singleton (MessageBus) ──────────────────────────────
+#
+# Some dashboard modules (api.py, mobile_api.py) maintain a module-level
+# ``MessageBus`` for task reads.  The following functions provide a
+# centralised configure/get/reset API so tests can inject a mock bus.
+
+_task_backend = None
+
+
+def configure_task_backend(backend: Any) -> None:
+    """Explicitly set the shared task backend (MessageBus-like).
+
+    Call this in tests to inject a mock or real backend.
+    """
+    global _task_backend
+    _task_backend = backend
+
+
+def get_task_backend_singleton() -> Any:
+    """Return the configured task backend, creating one lazily if needed."""
+    global _task_backend
+    if _task_backend is None:
+        from ai_company.orchestrator.message_bus import MessageBus
+        _task_backend = MessageBus()
+    return _task_backend
+
+
+def reset_task_backend() -> None:
+    """Reset the task backend singleton (used by tests)."""
+    global _task_backend
+    _task_backend = None

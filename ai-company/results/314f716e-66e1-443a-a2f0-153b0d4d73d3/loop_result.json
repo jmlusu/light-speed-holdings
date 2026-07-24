@@ -1,0 +1,12 @@
+{
+  "task_id": "314f716e-66e1-443a-a2f0-153b0d4d73d3",
+  "agent": "customer-success-specialist",
+  "final_response": "[BLOCKED: Prompt injection detected \u2014 Prompt injection detected: su]",
+  "iterations": 0,
+  "total_tokens": 0,
+  "total_cost_usd": 0.0,
+  "done": true,
+  "error": "Prompt blocked by security filter",
+  "tool_results": [],
+  "timestamp": "2026-07-24T12:15:39.167172"
+}

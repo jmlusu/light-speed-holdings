@@ -17,7 +17,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from ai_company.dashboard.repository import get_state_store
+from ai_company.dashboard.repository import get_state_store, get_task_backend_singleton
 
 logger = logging.getLogger(__name__)
 
@@ -28,12 +28,12 @@ _bus = None
 
 
 def _get_bus() -> Any:
-    """Return the shared MessageBus instance, creating it lazily."""
-    global _bus
-    if _bus is None:
-        from ai_company.orchestrator.message_bus import MessageBus
-        _bus = MessageBus()
-    return _bus
+    """Return the shared MessageBus instance.
+
+    Delegates to the centralised task backend singleton in
+    ``repository.py`` so that all dashboard modules share one bus.
+    """
+    return get_task_backend_singleton()
 
 # ── Helpers (shared with main api.py) ───────────────────────────────
 # GAP-011: route all state I/O through the StateStore repository. Fetched

@@ -7,7 +7,7 @@ from collections.abc import Generator
 from typing import Any
 
 from ai_company.llm.circuit_breaker import CircuitBreaker
-from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
+from ai_company.llm.cost_tracker import CostTracker, MODEL_COSTS, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.providers.base import (
     LLMProvider,
@@ -126,6 +126,20 @@ class LLMClient:
             provider_chain = [(p.provider, p.model) for p in tier.providers]
         else:
             provider_chain = [(route.provider, route.model)]
+
+        # PRE-11: Pre-flight budget check before calling the LLM
+        if self._cost_tracker and task_id:
+            estimated_cost = estimate_call_cost(
+                system_prompt, task_instruction, model=route.model,
+            )
+            allowed, reason = self._cost_tracker.check_budget(
+                task_id, proposed_cost=estimated_cost,
+            )
+            if not allowed:
+                raise LLMProviderError(
+                    provider="budget",
+                    message=f"budget check failed for task {task_id}: {reason}",
+                )
 
         last_error: str = ""
         last_raw: str = ""
@@ -322,3 +336,46 @@ class LLMClient:
 
     def list_available_providers(self) -> list[str]:
         return [pid for pid, p in self._providers.items() if p.is_available()]
+
+
+# ---------------------------------------------------------------------------
+# Token estimation helpers
+# ---------------------------------------------------------------------------
+
+
+def _estimate_tokens(text: str) -> int:
+    """Rough heuristic: ~4 characters per token for English text.
+
+    This is intentionally simple — it does not require a real tokenizer
+    and is used only for pre-flight cost estimates and budget checks.
+    """
+    if not text:
+        return 1  # Minimum 1 token even for empty input
+    return max(1, len(text) // 4)
+
+
+def estimate_call_cost(
+    system_prompt: str,
+    user_prompt: str,
+    model: str | None = None,
+) -> float:
+    """Estimate the cost in USD of a hypothetical LLM call.
+
+    Uses a simple character-count heuristic to estimate token counts,
+    then looks up per-token pricing in :data:`MODEL_COSTS`.
+
+    Args:
+        system_prompt: The system-level prompt.
+        user_prompt: The user-level prompt / task instruction.
+        model: Model identifier.  Falls back to ``_default`` when unknown.
+
+    Returns:
+        Estimated cost in USD (float).
+    """
+    prompt_tokens = _estimate_tokens(system_prompt) + _estimate_tokens(user_prompt)
+    resolved_model = model or "_default"
+    input_cost = prompt_tokens * _cost_per_token(resolved_model, "input")
+    # Assume ~25% completion ratio for estimation purposes
+    completion_tokens = max(1, prompt_tokens // 4)
+    output_cost = completion_tokens * _cost_per_token(resolved_model, "output")
+    return round(input_cost + output_cost, 8)

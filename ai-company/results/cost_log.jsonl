@@ -1,0 +1,1 @@
+{"timestamp": "2026-07-24T12:21:06.115111", "model": "deepseek-r1:7b", "provider": "ollama", "agent_name": "sales-specialist", "task_id": "aca0241f-6576-4de6-ba78-42b822e8f3e9", "prompt_tokens": 545, "completion_tokens": 707, "cost_usd": 0.002666, "iteration": 1, "metadata": {}}

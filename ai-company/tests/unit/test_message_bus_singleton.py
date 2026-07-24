@@ -55,21 +55,27 @@ class TestMessageBusSingleton:
 
     def test_lazy_creation_when_not_configured(self) -> None:
         """When not explicitly configured, get_task_backend_singleton() creates lazily."""
-        with patch("ai_company.data.get_task_backend") as mock_get:
-            mock_get.return_value = MagicMock()
+        with patch(
+            "ai_company.orchestrator.message_bus.MessageBus"
+        ) as mock_cls:
+            mock_instance = MagicMock()
+            mock_cls.return_value = mock_instance
             backend = get_task_backend_singleton()
-            mock_get.assert_called_once()
-            assert backend is mock_get.return_value
+            mock_cls.assert_called_once()
+            assert backend is mock_instance
 
     def test_lazy_creation_reuses_subsequent_calls(self) -> None:
         """After lazy creation, subsequent calls reuse the same instance."""
-        with patch("ai_company.data.get_task_backend") as mock_get:
-            mock_get.return_value = MagicMock()
+        with patch(
+            "ai_company.orchestrator.message_bus.MessageBus"
+        ) as mock_cls:
+            mock_instance = MagicMock()
+            mock_cls.return_value = mock_instance
             first = get_task_backend_singleton()
             second = get_task_backend_singleton()
             assert first is second
-            # get_task_backend should only be called once
-            mock_get.assert_called_once()
+            # MessageBus constructor should only be called once
+            mock_cls.assert_called_once()
 
     def test_api_module_uses_singleton(self) -> None:
         """api.get_bus() should delegate to the centralized singleton."""
@@ -91,18 +97,21 @@ class TestMessageBusSingleton:
         result = _get_bus()
         assert result is mock_backend
 
-    def test_monitoring_module_uses_singleton(self) -> None:
-        """monitoring._append_task_status_breakdown should use the singleton."""
+    def test_monitoring_module_uses_state_store(self) -> None:
+        """monitoring._append_task_status_breakdown should use the StateStore."""
         from ai_company.dashboard.monitoring import _append_task_status_breakdown
 
-        mock_backend = MagicMock()
-        mock_backend.get_all_tasks_raw.return_value = []
-        configure_task_backend(mock_backend)
+        mock_store = MagicMock()
+        mock_store.read_json.return_value = []
 
-        lines: list[str] = []
-        _append_task_status_breakdown(lines)
+        with patch(
+            "ai_company.dashboard.monitoring._get_store",
+            return_value=mock_store,
+        ):
+            lines: list[str] = []
+            _append_task_status_breakdown(lines)
 
-        mock_backend.get_all_tasks_raw.assert_called_once()
+        mock_store.read_json.assert_called_once()
         # Header lines should be present (no status breakdown for empty tasks)
         assert any("ai_company_tasks_by_status" in line for line in lines)
         # But no status-specific gauge lines (empty tasks = no status counts)

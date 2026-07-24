@@ -9,5 +9,32 @@
     },
     "moved_at": "2026-07-23T23:49:50.150805",
     "reason": "No timestamp \u2014 assumed stale"
+  },
+  {
+    "task": {
+      "id": "eaa9adf6-8b02-4c43-869c-74e95cc2cb94",
+      "name": "",
+      "description": "",
+      "assignee": "",
+      "sender_id": "sales-service",
+      "receiver_id": "sales-specialist",
+      "instruction": "Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.",
+      "status": "in_progress",
+      "priority": "high",
+      "dependencies": [],
+      "due_date": "",
+      "tags": [],
+      "created_at": "2026-07-23T23:50:48.376478",
+      "updated_at": "2026-07-23T23:50:48.376478",
+      "completed_at": "",
+      "result": "",
+      "requires_approval": false,
+      "approved_by": "",
+      "correlation_id": "d5df5d02-3ddf-4365-b050-c9e61862bcb0",
+      "parent_task_id": "",
+      "acknowledged_by": ""
+    },
+    "moved_at": "2026-07-24T12:08:36.863884",
+    "reason": "Stale after 738 minutes (threshold: 30m)"
   }
 ]

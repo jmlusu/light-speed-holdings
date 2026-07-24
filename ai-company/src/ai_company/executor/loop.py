@@ -52,6 +52,7 @@ from ai_company.orchestrator.approval import ApprovalGate
 from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.orchestrator.scheduler import Scheduler
 from ai_company.security.agent_monitor import get_agent_monitor
+from ai_company.security.delegation_guard import get_delegation_guard
 from ai_company.utils.logging import new_correlation_id
 
 logger = logging.getLogger(__name__)
@@ -375,7 +376,9 @@ class Executor:
             success=True,
         )
 
-        # 2. Recall relevant memory BEFORE execution (best-effort, no network
+        # 2. Recall relevant memory BEFORE execution (best-effort, no network calls)
+        try:
+            recall_context(task.instruction, agent_id=task.receiver_id)
         except Exception:  # pragma: no cover - defensive: recall must never break execution
             logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
 

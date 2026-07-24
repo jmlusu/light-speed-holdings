@@ -30,7 +30,7 @@ from ai_company.dashboard.models import (
     TaskUpdate,
     TierInfo,
 )
-from ai_company.dashboard.repository import get_state_store
+from ai_company.dashboard.repository import get_state_store, get_task_backend_singleton
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["dashboard"])
@@ -42,16 +42,12 @@ _bus = None
 
 
 def get_bus() -> MessageBus:
-    """Return the shared :class:`MessageBus` instance (lazily created)."""
-    global _bus
-    if _bus is None:
-        from ai_company.orchestrator.message_bus import MessageBus
+    """Return the shared :class:`MessageBus` instance.
 
-        _bus = MessageBus(
-            ".opencode/inbox.json",
-            broadcast_callback=_bus_broadcast,
-        )
-    return _bus
+    Delegates to the centralised task backend singleton in
+    ``repository.py`` so that all dashboard modules share one bus.
+    """
+    return get_task_backend_singleton()
 
 
 def _bus_broadcast(task_dict: dict[str, Any], event: str) -> None:
