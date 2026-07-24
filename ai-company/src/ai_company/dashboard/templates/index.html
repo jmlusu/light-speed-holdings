@@ -8,7 +8,8 @@
   Added skeleton loading states so the page doesn't jump from
   empty to populated on first load.
 -->
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8 kpi-grid">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8 kpi-grid"
+     role="region" aria-label="Key Performance Indicators" aria-live="polite">
   <div class="kpi-card bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
     <div class="flex items-center gap-2 mb-2">
       <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
@@ -125,7 +126,8 @@
 </div>
 
 <!-- ═══ RECENT TASKS TABLE ═══ -->
-<div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5">
+<div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5"
+     role="region" aria-label="Recent Tasks" aria-live="polite">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-sm font-semibold text-surface-300">Recent Tasks</h3>
     <a href="/tasks" class="text-xs text-brand-400 hover:text-brand-300 transition-colors">View all &rarr;</a>
@@ -187,28 +189,6 @@
     </div>
   </template>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script src="/static/js/charts.js"></script>
-{% endblock %}
-urface-400" x-text="t.receiver_id"></td>
-              <td class="py-2.5 max-w-xs truncate text-surface-300" x-text="t.instruction"></td>
-              <td class="py-2.5">
-                <span class="px-2 py-0.5 rounded-full text-xs font-medium" :class="priorityClass(t.priority)" x-text="t.priority"></span>
-              </td>
-              <td class="py-2.5">
-                <span class="px-2 py-0.5 rounded-full text-xs font-medium" :class="statusClass(t.status)" x-text="t.status"></span>
-              </td>
-              <td class="py-2.5 text-xs text-surface-500 font-mono" x-text="formatTime(t.created_at)"></td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-    </div>
-  </template>
-</div>
-</div><!-- /dashboard-content -->
 {% endblock %}
 
 {% block scripts %}

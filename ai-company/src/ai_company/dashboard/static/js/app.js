@@ -732,5 +732,54 @@ function dashboard() {
         Human:     'bg-amber-500/10 text-amber-400 border-amber-500/20',
       }[type] || 'bg-surface-700/50 text-surface-400 border-surface-600';
     },
+
+    // ═══ MOBILE GESTURES (DASH-006) ══════════════════════════════
+
+    /**
+     * Initialize touch-based gestures for mobile Kanban interactions.
+     * Enables swipe-to-move on task cards when the device supports touch.
+     */
+    initMobileGestures() {
+      if (!('ontouchstart' in window)) return;
+
+      let startX = 0;
+      let startY = 0;
+      let currentCard = null;
+
+      document.addEventListener('touchstart', (e) => {
+        const card = e.target.closest('[data-task-card]');
+        if (!card) return;
+        currentCard = card;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        if (!currentCard) return;
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+
+        // Only trigger on horizontal swipes (dx > dy, minimum 50px)
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+          const taskId = currentCard.getAttribute('data-task-id');
+          const dropZones = document.querySelectorAll('.kanban-drop-zone');
+          for (const zone of dropZones) {
+            const rect = zone.getBoundingClientRect();
+            if (endX >= rect.left && endX <= rect.right && endY >= rect.top && endY <= rect.bottom) {
+              const newStatus = zone.getAttribute('data-status');
+              if (taskId && newStatus && typeof this.dropTask === 'function') {
+                const fakeEvent = { currentTarget: zone, preventDefault: () => {} };
+                this.draggedTask = this.tasks.find(t => t.id === taskId) || null;
+                if (this.draggedTask) this.dropTask(fakeEvent, newStatus);
+              }
+              break;
+            }
+          }
+        }
+        currentCard = null;
+      }, { passive: true });
+    },
   };
 }

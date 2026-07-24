@@ -387,7 +387,7 @@ class TestKPICollect:
         assert "collected_at" in data
         assert "departments" in data
         depts = data["departments"]
-        assert len(depts) == 7  # All 7 departments
+        assert len(depts) == 8  # All 8 departments
         assert "engineering" in depts
         assert "hr" in depts
         assert "finance" in depts
@@ -395,6 +395,7 @@ class TestKPICollect:
         assert "sales" in depts
         assert "customer_success" in depts
         assert "legal" in depts
+        assert "agent_behavior" in depts
 
     def test_collect_stores_entries(self, setup_data: None) -> None:
         resp = client.get("/api/kpis/collect")

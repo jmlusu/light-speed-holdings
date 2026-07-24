@@ -11,6 +11,7 @@ Author: lead_frontend_engineer
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
@@ -32,11 +33,14 @@ def client(tmp_path: Path) -> TestClient:
     inbox.mkdir(parents=True, exist_ok=True)
     (inbox / "inbox.json").write_text("[]", encoding="utf-8")
 
+    # Enable API key guard so auth tests can exercise the 401 path
+    os.environ["DASHBOARD_API_KEY"] = "test-secret-key"
     configure_state_store(tmp_path)
     app = create_app()
     with TestClient(app) as test_client:
         yield test_client
     reset_state_store()
+    os.environ.pop("DASHBOARD_API_KEY", None)
 
 
 # ── DASH-008: SRI and crossorigin attributes on CDN scripts ─────────
