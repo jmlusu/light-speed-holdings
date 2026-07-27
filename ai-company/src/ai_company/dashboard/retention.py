@@ -188,9 +188,7 @@ class RetentionEngine:
             return 0
 
         # Build a set of (timestamp, kpi_key) tuples for quick lookup
-        expired_keys: set[tuple[str, str]] = {
-            (e.timestamp, e.kpi_key) for e in expired
-        }
+        expired_keys: set[tuple[str, str]] = {(e.timestamp, e.kpi_key) for e in expired}
 
         # Read all lines, skip expired ones
         remaining: list[str] = []

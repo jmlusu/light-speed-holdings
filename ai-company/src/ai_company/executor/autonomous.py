@@ -110,12 +110,14 @@ class SelfHealingPolicy:
     backoff_multiplier: float = 2.0
     jitter: bool = True
     # Strategies in order of escalation
-    strategies: list[str] = field(default_factory=lambda: [
-        "retry_same",       # Retry with same parameters
-        "simplify",         # Simplify the request
-        "alternative_tool", # Use an alternative tool
-        "escalate",         # Escalate to human
-    ])
+    strategies: list[str] = field(
+        default_factory=lambda: [
+            "retry_same",  # Retry with same parameters
+            "simplify",  # Simplify the request
+            "alternative_tool",  # Use an alternative tool
+            "escalate",  # Escalate to human
+        ]
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -124,13 +126,13 @@ class SelfHealingPolicy:
 
 # Weight for each factor in confidence calculation
 FACTOR_WEIGHTS: dict[str, float] = {
-    "tool_safety": 0.25,       # How safe is the tool (read=high, execute=low)
-    "path_safety": 0.20,       # How safe is the target path
-    "agent_seniority": 0.15,   # Agent's authority level
-    "task_risk": 0.15,         # Overall task risk level
-    "historical_success": 0.15, # Past success rate for similar actions
-    "time_of_day": 0.05,       # Business hours vs off-hours
-    "recent_failures": 0.05,   # Recent failure streak
+    "tool_safety": 0.25,  # How safe is the tool (read=high, execute=low)
+    "path_safety": 0.20,  # How safe is the target path
+    "agent_seniority": 0.15,  # Agent's authority level
+    "task_risk": 0.15,  # Overall task risk level
+    "historical_success": 0.15,  # Past success rate for similar actions
+    "time_of_day": 0.05,  # Business hours vs off-hours
+    "recent_failures": 0.05,  # Recent failure streak
 }
 
 # Tool safety scores (higher = safer)
@@ -241,8 +243,7 @@ class AutonomousDecisionEngine:
 
         # Weighted confidence score
         confidence_score = sum(
-            factors.get(name, 0.0) * weight
-            for name, weight in FACTOR_WEIGHTS.items()
+            factors.get(name, 0.0) * weight for name, weight in FACTOR_WEIGHTS.items()
         )
         confidence_score = min(max(confidence_score, 0.0), 1.0)
 
@@ -337,14 +338,12 @@ class AutonomousDecisionEngine:
         policy = SelfHealingPolicy()
 
         # Calculate delay with exponential backoff
-        delay = policy.base_delay_seconds * (
-            policy.backoff_multiplier ** (attempt - 1)
-        )
+        delay = policy.base_delay_seconds * (policy.backoff_multiplier ** (attempt - 1))
         delay = min(delay, policy.max_delay_seconds)
 
         # Add jitter if enabled
         if policy.jitter:
-            delay *= (0.5 + random.random())
+            delay *= 0.5 + random.random()
 
         policy.base_delay_seconds = delay
         return policy
@@ -429,13 +428,26 @@ class AutonomousDecisionEngine:
             return 0.8  # No paths = relatively safe
 
         dangerous_patterns = [
-            "/secrets/", "/.env", "config/secrets", "private_key",
-            "security/", "audit/", "legal/", "compliance/",
-            "/production/", "/prod/", "deploy/",
+            "/secrets/",
+            "/.env",
+            "config/secrets",
+            "private_key",
+            "security/",
+            "audit/",
+            "legal/",
+            "compliance/",
+            "/production/",
+            "/prod/",
+            "deploy/",
         ]
         safe_patterns = [
-            "docs/", "config/", ".github/", ".md", ".rst",
-            "tests/", "README",
+            "docs/",
+            "config/",
+            ".github/",
+            ".md",
+            ".rst",
+            "tests/",
+            "README",
         ]
 
         max_safety = 1.0
@@ -524,10 +536,7 @@ class AutonomousDecisionEngine:
 
     def _save_history(self) -> None:
         history_file = self.history_dir / "success_history.json"
-        data = {
-            tool: list(history)
-            for tool, history in self._success_history.items()
-        }
+        data = {tool: list(history) for tool, history in self._success_history.items()}
         history_file.write_text(json.dumps(data), encoding="utf-8")
 
     def _load_history(self) -> None:

@@ -38,9 +38,7 @@ def test_write_yaml_roundtrip(store: StateStore, tmp_path: Path) -> None:
     store.write_yaml("orchestrator/escalation.yaml", {"events": [{"task_id": "t1"}]})
     on_disk = tmp_path / "orchestrator" / "escalation.yaml"
     assert on_disk.exists()
-    assert store.read_yaml("orchestrator/escalation.yaml") == {
-        "events": [{"task_id": "t1"}]
-    }
+    assert store.read_yaml("orchestrator/escalation.yaml") == {"events": [{"task_id": "t1"}]}
 
 
 def test_missing_json_returns_default(store: StateStore) -> None:

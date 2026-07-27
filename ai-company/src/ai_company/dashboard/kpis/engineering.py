@@ -30,9 +30,7 @@ class EngineeringKPICollector(KPICollector):
         events: list[dict] = escalations.get("events", [])
         open_escalations = [e for e in events if not e.get("resolved", False)]
         total_escalations = len(events)
-        escalation_rate = (
-            round((total_escalations / total * 100), 1) if total > 0 else 0.0
-        )
+        escalation_rate = round((total_escalations / total * 100), 1) if total > 0 else 0.0
 
         scheduled = scheduler.get("tasks", [])
 
@@ -48,7 +46,10 @@ class EngineeringKPICollector(KPICollector):
                 "completed_tasks": self._kpi(completed, None, "count"),
                 "failed_tasks": self._kpi(failed, 0, "count", higher_is_better=False),
                 "open_escalations": self._kpi(
-                    len(open_escalations), 0, "count", higher_is_better=False,
+                    len(open_escalations),
+                    0,
+                    "count",
+                    higher_is_better=False,
                 ),
                 "total_tasks": self._kpi(total, None, "count"),
                 "scheduled_tasks": self._kpi(len(scheduled), None, "count"),

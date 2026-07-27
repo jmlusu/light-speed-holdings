@@ -29,28 +29,34 @@ def list_agents(
     agents: list[dict[str, str]] = []
 
     for ex in registry.executives:
-        agents.append({
-            "role": ex.title or ex.name,
-            "type": "Executive",
-            "department": ex.department,
-            "reports_to": ex.reports_to,
-        })
+        agents.append(
+            {
+                "role": ex.title or ex.name,
+                "type": "Executive",
+                "department": ex.department,
+                "reports_to": ex.reports_to,
+            }
+        )
 
     for bm in registry.board:
-        agents.append({
-            "role": bm.role or bm.name,
-            "type": "Board",
-            "department": "",
-            "reports_to": "board_of_directors",
-        })
+        agents.append(
+            {
+                "role": bm.role or bm.name,
+                "type": "Board",
+                "department": "",
+                "reports_to": "board_of_directors",
+            }
+        )
 
     for spec in registry.specialists:
-        agents.append({
-            "role": spec.name or spec.id,
-            "type": "Specialist",
-            "department": spec.department,
-            "reports_to": spec.reports_to,
-        })
+        agents.append(
+            {
+                "role": spec.name or spec.id,
+                "type": "Specialist",
+                "department": spec.department,
+                "reports_to": spec.reports_to,
+            }
+        )
 
     # Apply filters
     if type:

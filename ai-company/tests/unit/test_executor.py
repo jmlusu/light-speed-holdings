@@ -26,9 +26,7 @@ class TestSpecParser:
     def test_parse_existing_agent(self, tmp_path: Path) -> None:
         agents_dir = tmp_path / ".opencode" / "agents"
         agents_dir.mkdir(parents=True)
-        (agents_dir / "chief-of-staff.md").write_text(
-            _AGENT_SPEC_SAMPLE, encoding="utf-8"
-        )
+        (agents_dir / "chief-of-staff.md").write_text(_AGENT_SPEC_SAMPLE, encoding="utf-8")
 
         ctx = parse_agent_spec("chief-of-staff", str(agents_dir))
         assert ctx.name == "chief-of-staff"
@@ -47,9 +45,7 @@ class TestSpecParser:
     def test_parse_specialist_agent(self, tmp_path: Path) -> None:
         agents_dir = tmp_path / ".opencode" / "agents"
         agents_dir.mkdir(parents=True)
-        (agents_dir / "lead-backend.md").write_text(
-            _SPECIALIST_SPEC_SAMPLE, encoding="utf-8"
-        )
+        (agents_dir / "lead-backend.md").write_text(_SPECIALIST_SPEC_SAMPLE, encoding="utf-8")
 
         ctx = parse_agent_spec("lead-backend", str(agents_dir))
         assert ctx.name == "lead-backend"
@@ -114,7 +110,9 @@ class TestToolRunner:
         assert (tmp_path / "src" / "deep" / "file.py").exists()
 
     def test_grep_finds_pattern(self, tmp_path: Path) -> None:
-        (tmp_path / "main.py").write_text("def foo():\n    pass\ndef bar():\n    pass", encoding="utf-8")
+        (tmp_path / "main.py").write_text(
+            "def foo():\n    pass\ndef bar():\n    pass", encoding="utf-8"
+        )
         runner = ToolRunner(project_root=tmp_path)
         results = runner.run_plan([{"tool": "grep", "args": {"pattern": "def foo"}}])
         assert results[0]["status"] == "ok"
@@ -140,7 +138,7 @@ class TestToolRunner:
     def test_execute_failing_command(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
         results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "python -c \"exit(1)\""}}],
+            [{"tool": "execute", "args": {"command": 'python -c "exit(1)"'}}],
             hitl_gate=None,
         )
         assert results[0]["status"] == "ok"
@@ -161,19 +159,22 @@ class TestToolRunner:
     def test_multiple_steps(self, tmp_path: Path) -> None:
         (tmp_path / "input.py").write_text("data", encoding="utf-8")
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan([
-            {"tool": "read", "args": {"path": "input.py"}},
-            {"tool": "write", "args": {"path": "output.py", "content": "transformed"}},
-            {"tool": "list", "args": {"path": "."}},
-        ], hitl_gate=None)
+        results = runner.run_plan(
+            [
+                {"tool": "read", "args": {"path": "input.py"}},
+                {"tool": "write", "args": {"path": "output.py", "content": "transformed"}},
+                {"tool": "list", "args": {"path": "."}},
+            ],
+            hitl_gate=None,
+        )
         assert len(results) == 3
         assert all(r["status"] == "ok" for r in results)
 
     def test_delegate_returns_action(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan([
-            {"tool": "delegate", "args": {"receiver": "lead-backend", "instruction": "Build API"}}
-        ])
+        results = runner.run_plan(
+            [{"tool": "delegate", "args": {"receiver": "lead-backend", "instruction": "Build API"}}]
+        )
         assert results[0]["status"] == "ok"
         assert results[0]["action"] == "delegate"
 
@@ -191,6 +192,7 @@ class TestHITLGate:
 
         def approve_after_delay():
             import time
+
             time.sleep(0.3)
             requests = gate.get_pending_requests()
             if requests:
@@ -201,7 +203,9 @@ class TestHITLGate:
 
         # request_and_wait_sync blocks until approval/rejection/timeout
         result = hitl.request_and_wait_sync(
-            task_id="t-1", agent_id="agent-1", tool="write",
+            task_id="t-1",
+            agent_id="agent-1",
+            tool="write",
             args={"path": "test.py", "content": "x = 1"},
         )
         t.join()
@@ -216,6 +220,7 @@ class TestHITLGate:
 
         def reject_after_delay():
             import time
+
             time.sleep(0.3)
             requests = gate.get_pending_requests()
             if requests:
@@ -225,7 +230,9 @@ class TestHITLGate:
         t.start()
 
         result = hitl.request_and_wait_sync(
-            task_id="t-2", agent_id="agent-2", tool="execute",
+            task_id="t-2",
+            agent_id="agent-2",
+            tool="execute",
             args={"command": "rm -rf /"},
         )
         t.join()
@@ -241,6 +248,7 @@ class TestHITLGate:
 
         def approve_after_delay():
             import time
+
             time.sleep(0.3)
             requests = gate.get_pending_requests()
             if requests:
@@ -251,10 +259,13 @@ class TestHITLGate:
 
         # request_and_wait returns a Future
         future = hitl.request_and_wait(
-            task_id="t-3", agent_id="agent-3", tool="read",
+            task_id="t-3",
+            agent_id="agent-3",
+            tool="read",
             args={"path": "test.py"},
         )
         import concurrent.futures
+
         assert isinstance(future, concurrent.futures.Future)
 
         # Block on the future
@@ -312,7 +323,9 @@ class TestExecutorLoop:
         count = executor.tick()
         assert count == 0
 
-    def test_tick_processes_pending_task(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_tick_processes_pending_task(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.chdir(tmp_path)
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
@@ -369,7 +382,9 @@ class TestExecutorLoop:
         assert log["task_id"] == "task-001"
         assert log["agent"] == "test-agent"
 
-    def test_tick_handles_loop_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_tick_handles_loop_failure(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.chdir(tmp_path)
         _setup_executor_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
@@ -404,7 +419,9 @@ class TestExecutorLoop:
         assert updated[0]["status"] == "failed"
         assert "LLM API down" in updated[0]["result"]
 
-    def test_process_task_uses_agent_loop(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_process_task_uses_agent_loop(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify _process_task delegates to AgentLoop.run()."""
         monkeypatch.chdir(tmp_path)
         _setup_executor_files(tmp_path)
@@ -446,7 +463,9 @@ class TestExecutorLoop:
         assert call_kwargs.kwargs["priority"] == "high"
         assert "Analyze codebase" in call_kwargs.kwargs["user_prompt"]
 
-    def test_process_task_handles_loop_failure(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_process_task_handles_loop_failure(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify error handling when AgentLoop.run() raises."""
         monkeypatch.chdir(tmp_path)
         _setup_executor_files(tmp_path)
@@ -483,7 +502,9 @@ class TestExecutorLoop:
         assert updated[0]["status"] == "failed"
         assert "Network unreachable" in updated[0]["result"]
 
-    def test_process_task_creates_subtasks_from_records(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_process_task_creates_subtasks_from_records(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Verify delegation from ToolCallRecord creates subtasks."""
         monkeypatch.chdir(tmp_path)
         _setup_executor_files(tmp_path)
@@ -664,14 +685,35 @@ def _setup_model_files(tmp_path: Path) -> None:
     (tmp_path / "company").mkdir(exist_ok=True)
     models = {
         "providers": {
-            "opencode": {"backend": "openai_compatible", "default_model": "big-pickle", "api_base": "https://opencode.ai/api/v1"},
-            "deepseek": {"backend": "openai_compatible", "default_model": "deepseek-chat", "api_base": "https://api.deepseek.com/v1"},
-            "ollama": {"backend": "ollama", "default_model": "llama3.1:8b", "api_base": "http://localhost:11434"},
+            "opencode": {
+                "backend": "openai_compatible",
+                "default_model": "big-pickle",
+                "api_base": "https://opencode.ai/api/v1",
+            },
+            "deepseek": {
+                "backend": "openai_compatible",
+                "default_model": "deepseek-chat",
+                "api_base": "https://api.deepseek.com/v1",
+            },
+            "ollama": {
+                "backend": "ollama",
+                "default_model": "llama3.1:8b",
+                "api_base": "http://localhost:11434",
+            },
         },
         "tiers": {
-            "fast": {"description": "Fast", "providers": [{"provider": "opencode", "model": "big-pickle"}]},
-            "standard": {"description": "Standard", "providers": [{"provider": "deepseek", "model": "deepseek-chat"}]},
-            "premium": {"description": "Premium", "providers": [{"provider": "deepseek", "model": "deepseek-coder"}]},
+            "fast": {
+                "description": "Fast",
+                "providers": [{"provider": "opencode", "model": "big-pickle"}],
+            },
+            "standard": {
+                "description": "Standard",
+                "providers": [{"provider": "deepseek", "model": "deepseek-chat"}],
+            },
+            "premium": {
+                "description": "Premium",
+                "providers": [{"provider": "deepseek", "model": "deepseek-coder"}],
+            },
         },
         "routing": [
             {"agent_type": "Board", "tier": "fast"},
@@ -682,11 +724,21 @@ def _setup_model_files(tmp_path: Path) -> None:
     (tmp_path / "company" / "models.yaml").write_text(json.dumps(models), encoding="utf-8")
 
     registry = [
-        {"name": "test-agent", "role": "Test Agent", "type": "Specialist", "department": "Test",
-         "reportsTo": "ceo", "directReports": [], "description": "A test agent",
-         "tools": ["read", "write"], "permission": "Execute"},
+        {
+            "name": "test-agent",
+            "role": "Test Agent",
+            "type": "Specialist",
+            "department": "Test",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "A test agent",
+            "tools": ["read", "write"],
+            "permission": "Execute",
+        },
     ]
-    (tmp_path / "company" / "agent-registry.json").write_text(json.dumps(registry), encoding="utf-8")
+    (tmp_path / "company" / "agent-registry.json").write_text(
+        json.dumps(registry), encoding="utf-8"
+    )
 
 
 def _setup_executor_files(tmp_path: Path) -> None:

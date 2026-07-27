@@ -156,9 +156,7 @@ class TestCheckInboxHealth:
             {"id": "t2", "status": "in_progress"},
             {"id": "t3", "status": "pending"},
         ]
-        (opencode / "inbox.json").write_text(
-            json.dumps(tasks), encoding="utf-8"
-        )
+        (opencode / "inbox.json").write_text(json.dumps(tasks), encoding="utf-8")
         result = check_inbox_health()
         assert result.passed is True
         assert result.details["pending"] == 2
@@ -191,8 +189,14 @@ class TestCheckMemoryEngine:
         result = check_memory_engine()
         # details should contain memory type counts
         if result.passed:
-            for mem_type in ("episodic", "semantic", "procedural",
-                             "relational", "temporal", "aggregate"):
+            for mem_type in (
+                "episodic",
+                "semantic",
+                "procedural",
+                "relational",
+                "temporal",
+                "aggregate",
+            ):
                 assert mem_type in result.details
 
 

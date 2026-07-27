@@ -61,12 +61,15 @@ class TestDataStability:
         """KPI values should not change between rapid successive reads."""
         results = [client.get("/api/dashboard").json() for _ in range(10)]
 
-        for key in ("pending_tasks", "in_progress_tasks", "completed_tasks",
-                     "failed_tasks", "total_agents"):
+        for key in (
+            "pending_tasks",
+            "in_progress_tasks",
+            "completed_tasks",
+            "failed_tasks",
+            "total_agents",
+        ):
             values = [r[key] for r in results]
-            assert len(set(values)) == 1, (
-                f"KPI '{key}' is unstable across reads: {values}"
-            )
+            assert len(set(values)) == 1, f"KPI '{key}' is unstable across reads: {values}"
 
     def test_task_list_stable_across_reads(self, client: TestClient) -> None:
         """Task list should not change between rapid reads."""
@@ -111,10 +114,13 @@ class TestPostMutationStability:
     def test_task_creation_stabilizes(self, client: TestClient) -> None:
         """After creating a task, subsequent reads should be consistent."""
         # Create a task
-        client.post("/api/tasks", json={
-            "receiver_id": "lead-engineering",
-            "instruction": "Test stability",
-        })
+        client.post(
+            "/api/tasks",
+            json={
+                "receiver_id": "lead-engineering",
+                "instruction": "Test stability",
+            },
+        )
 
         # Read multiple times — should all show the same count
         counts = []
@@ -122,40 +128,45 @@ class TestPostMutationStability:
             tasks = client.get("/api/tasks").json()
             counts.append(len(tasks))
 
-        assert len(set(counts)) == 1, (
-            f"Task count unstable after creation: {counts}"
-        )
+        assert len(set(counts)) == 1, f"Task count unstable after creation: {counts}"
 
     def test_kpi_reflects_new_task_consistently(self, client: TestClient) -> None:
         """After creating a task, KPI pending count should be stable."""
-        client.post("/api/tasks", json={
-            "receiver_id": "lead-engineering",
-            "instruction": "KPI stability test",
-        })
+        client.post(
+            "/api/tasks",
+            json={
+                "receiver_id": "lead-engineering",
+                "instruction": "KPI stability test",
+            },
+        )
 
         pending_counts = []
         for _ in range(5):
             kpis = client.get("/api/dashboard").json()
             pending_counts.append(kpis["pending_tasks"])
 
-        assert len(set(pending_counts)) == 1, (
-            f"Pending tasks KPI unstable: {pending_counts}"
-        )
+        assert len(set(pending_counts)) == 1, f"Pending tasks KPI unstable: {pending_counts}"
 
     def test_approval_mutation_stabilizes(self, client: TestClient) -> None:
         """After approving a request, the approval list should stabilize."""
         approvals_path = Path("orchestrator/approvals.yaml")
         approvals_path.parent.mkdir(exist_ok=True)
-        approvals_path.write_text(yaml.dump({
-            "requests": [{
-                "id": "test-req",
-                "task_id": "t-1",
-                "agent_id": "lead-engineering",
-                "action": "deploy",
-                "description": "Test",
-                "status": "pending",
-            }]
-        }))
+        approvals_path.write_text(
+            yaml.dump(
+                {
+                    "requests": [
+                        {
+                            "id": "test-req",
+                            "task_id": "t-1",
+                            "agent_id": "lead-engineering",
+                            "action": "deploy",
+                            "description": "Test",
+                            "status": "pending",
+                        }
+                    ]
+                }
+            )
+        )
 
         # Approve it
         resp = client.post("/api/approvals/test-req/approve")
@@ -169,9 +180,7 @@ class TestPostMutationStability:
             counts.append(len(approvals))
 
         # All reads should agree (allow the first to differ from cache)
-        assert len(set(counts[1:])) == 1, (
-            f"Approval count unstable after approve: {counts}"
-        )
+        assert len(set(counts[1:])) == 1, f"Approval count unstable after approve: {counts}"
 
 
 # ---------------------------------------------------------------------------
@@ -191,9 +200,15 @@ class TestFrontendDataContract:
 
         # app.js initializes kpis with these keys:
         expected_keys = {
-            "pending_tasks", "in_progress_tasks", "completed_tasks",
-            "failed_tasks", "escalated_tasks", "pending_approvals",
-            "open_escalations", "total_agents", "scheduled_tasks",
+            "pending_tasks",
+            "in_progress_tasks",
+            "completed_tasks",
+            "failed_tasks",
+            "escalated_tasks",
+            "pending_approvals",
+            "open_escalations",
+            "total_agents",
+            "scheduled_tasks",
             "uptime_seconds",
         }
         assert expected_keys == set(data.keys()), (
@@ -207,10 +222,13 @@ class TestFrontendDataContract:
 
     def test_task_shape_for_alpine(self, client: TestClient) -> None:
         """Task response must match what app.js template expects."""
-        client.post("/api/tasks", json={
-            "receiver_id": "lead-engineering",
-            "instruction": "Shape test",
-        })
+        client.post(
+            "/api/tasks",
+            json={
+                "receiver_id": "lead-engineering",
+                "instruction": "Shape test",
+            },
+        )
         tasks = client.get("/api/tasks").json()
         assert len(tasks) > 0
 
@@ -218,9 +236,7 @@ class TestFrontendDataContract:
         # app.js template uses: t.id, t.receiver_id, t.instruction,
         # t.priority, t.status, t.created_at
         required = {"id", "receiver_id", "instruction", "priority", "status", "created_at"}
-        assert required <= set(task.keys()), (
-            f"Task missing fields: {required - set(task.keys())}"
-        )
+        assert required <= set(task.keys()), f"Task missing fields: {required - set(task.keys())}"
 
         # No None values in critical fields
         for key in ("id", "receiver_id", "instruction", "status"):
@@ -275,9 +291,7 @@ class TestScrollRegression:
                 f"This would cause DOM thrashing and scroll jumps."
             )
 
-    def test_rapid_task_list_polling_returns_consistent_data(
-        self, client: TestClient
-    ) -> None:
+    def test_rapid_task_list_polling_returns_consistent_data(self, client: TestClient) -> None:
         """Simulate rapid task polling — list must be stable."""
         snapshots = []
         for _ in range(5):
@@ -349,13 +363,11 @@ class TestScrollRegression:
                         for key, value in item.items():
                             if key not in ALLOWED_NONE_FIELDS:
                                 assert value is not None, (
-                                    f"{endpoint}[{i}].{key} is None -- "
-                                    "causes render thrashing"
+                                    f"{endpoint}[{i}].{key} is None -- causes render thrashing"
                                 )
             elif isinstance(data, dict):
                 for key, value in data.items():
                     if key not in ALLOWED_NONE_FIELDS and key != "uptime_seconds":
                         assert value is not None, (
-                            f"{endpoint}.{key} is None -- "
-                            "causes render thrashing"
+                            f"{endpoint}.{key} is None -- causes render thrashing"
                         )

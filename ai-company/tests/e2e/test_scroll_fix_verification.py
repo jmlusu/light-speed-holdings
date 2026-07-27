@@ -37,9 +37,7 @@ class TestAutoScrollBugFix:
         page.wait_for_timeout(4000)
 
         scroll_y = page.evaluate("window.scrollY")
-        assert scroll_y == 0, (
-            f"AUTO-SCROLL BUG: Page scrolled to {scroll_y}px on initial load"
-        )
+        assert scroll_y == 0, f"AUTO-SCROLL BUG: Page scrolled to {scroll_y}px on initial load"
 
     def test_no_scroll_jump_after_polling_cycle(self, page) -> None:
         """BUG: Page auto-scrolled every 10s when polling kicked in.
@@ -59,8 +57,7 @@ class TestAutoScrollBugFix:
 
         final = page.evaluate("window.scrollY")
         assert abs(final - initial) <= 5, (
-            f"AUTO-SCROLL BUG: Position drifted from {initial}px to {final}px "
-            f"after polling cycles"
+            f"AUTO-SCROLL BUG: Position drifted from {initial}px to {final}px after polling cycles"
         )
 
     def test_no_scroll_jump_on_kpi_websocket_update(self, page) -> None:
@@ -99,8 +96,7 @@ class TestAutoScrollBugFix:
         page.wait_for_timeout(1000)
         final = page.evaluate("window.scrollY")
         assert abs(final - initial) <= 5, (
-            f"AUTO-SCROLL BUG: WS updates caused scroll from "
-            f"{initial}px to {final}px"
+            f"AUTO-SCROLL BUG: WS updates caused scroll from {initial}px to {final}px"
         )
 
     def test_no_scroll_jump_on_chart_resize(self, page) -> None:
@@ -120,8 +116,7 @@ class TestAutoScrollBugFix:
 
         final = page.evaluate("window.scrollY")
         assert abs(final - initial) <= 5, (
-            f"AUTO-SCROLL BUG: Chart resize caused scroll from "
-            f"{initial}px to {final}px"
+            f"AUTO-SCROLL BUG: Chart resize caused scroll from {initial}px to {final}px"
         )
 
     def test_smooth_scroll_behavior_not_causes_jump(self, page) -> None:
@@ -136,9 +131,7 @@ class TestAutoScrollBugFix:
         behavior = page.evaluate("""
             getComputedStyle(document.documentElement).scrollBehavior
         """)
-        assert behavior == "smooth", (
-            f"Expected scroll-behavior:smooth, got: {behavior}"
-        )
+        assert behavior == "smooth", f"Expected scroll-behavior:smooth, got: {behavior}"
 
         # Scroll down
         page.evaluate("window.scrollTo(0, 600)")

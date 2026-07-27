@@ -39,8 +39,13 @@ def sample_registry() -> CompanyRegistry:
             Department(id="engineering", name="Engineering", executive="cto"),
         ],
         specialists=[
-            Agent(id="dev-1", name="Developer", department="engineering", reports_to="cto",
-                  tools=["read_file", "write_file"]),
+            Agent(
+                id="dev-1",
+                name="Developer",
+                department="engineering",
+                reports_to="cto",
+                tools=["read_file", "write_file"],
+            ),
         ],
         board=[
             BoardMember(id="dir-1", name="Alice", role="Chair"),
@@ -50,8 +55,11 @@ def sample_registry() -> CompanyRegistry:
         voting=VotingConfig(),
         workflows=[
             Workflow(
-                id="hiring", name="Hiring", trigger="job_requisition",
-                owner="hr", steps=[
+                id="hiring",
+                name="Hiring",
+                trigger="job_requisition",
+                owner="hr",
+                steps=[
                     WorkflowStep(id="s1", name="Post Job", action="Create job posting"),
                     WorkflowStep(id="s2", name="Review", action="Review resumes"),
                 ],
@@ -120,7 +128,9 @@ class TestBootstrapEngine:
         summary = engine.bootstrap(sample_registry)
         assert summary["errors"] == []
 
-    def test_agent_files_are_valid_markdown(self, engine: BootstrapEngine, sample_registry: CompanyRegistry):
+    def test_agent_files_are_valid_markdown(
+        self, engine: BootstrapEngine, sample_registry: CompanyRegistry
+    ):
         engine.bootstrap(sample_registry)
         agents_dir = engine.output_dir / "agents"
         for md_file in agents_dir.glob("*.md"):
@@ -131,6 +141,7 @@ class TestBootstrapEngine:
     def test_config_yaml_is_valid(self, engine: BootstrapEngine, sample_registry: CompanyRegistry):
         engine.bootstrap(sample_registry)
         import yaml
+
         configs_dir = engine.output_dir / "config"
         for yml_file in configs_dir.glob("*.yaml"):
             with open(yml_file, "r", encoding="utf-8") as f:

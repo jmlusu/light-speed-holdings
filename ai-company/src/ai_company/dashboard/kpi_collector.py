@@ -15,6 +15,7 @@ from typing import Any
 
 def _load_json(path: Path) -> Any:
     import json
+
     if not path.exists():
         return []
     with open(path, "r", encoding="utf-8") as f:
@@ -23,6 +24,7 @@ def _load_json(path: Path) -> Any:
 
 def _load_yaml(path: Path) -> Any:
     import yaml
+
     if not path.exists():
         return {}
     with open(path, "r", encoding="utf-8") as f:
@@ -35,6 +37,7 @@ def collect_engineering_kpis(base: Path) -> dict[str, Any]:
     Delegates to :class:`ai_company.dashboard.kpis.engineering.EngineeringKPICollector`.
     """
     from ai_company.dashboard.kpis.engineering import EngineeringKPICollector
+
     return EngineeringKPICollector(project_root=base).collect()
 
 
@@ -44,6 +47,7 @@ def collect_all_kpis(base: Path | None = None) -> dict[str, Any]:
     Delegates to :func:`ai_company.dashboard.kpis.collect_all_kpis`.
     """
     from ai_company.dashboard.kpis import collect_all_kpis as _collect_all
+
     project_base = base or Path(__file__).parent.parent.parent.parent
     return _collect_all(project_root=project_base)
 
@@ -51,6 +55,7 @@ def collect_all_kpis(base: Path | None = None) -> dict[str, Any]:
 def save_snapshot(snapshots: dict[str, Any], output_dir: Path | None = None) -> Path:
     """Save KPI snapshot to a JSON file."""
     import json
+
     out = output_dir or Path("orchestrator/kpi_snapshots")
     out.mkdir(parents=True, exist_ok=True)
 

@@ -53,8 +53,8 @@ class MetricWindow:
         self.values.append(value)
         self.timestamps.append(timestamp or datetime.now().isoformat())
         if len(self.values) > self.max_size:
-            self.values = self.values[-self.max_size:]
-            self.timestamps = self.timestamps[-self.max_size:]
+            self.values = self.values[-self.max_size :]
+            self.timestamps = self.timestamps[-self.max_size :]
 
     @property
     def mean(self) -> float:
@@ -125,7 +125,9 @@ class AnomalyDetector:
 
         self._load_state()
 
-    def record_metric(self, metric_name: str, value: float, timestamp: str = "") -> list[AnomalyAlert]:
+    def record_metric(
+        self, metric_name: str, value: float, timestamp: str = ""
+    ) -> list[AnomalyAlert]:
         """Record a metric value and check for anomalies.
 
         Args:
@@ -156,8 +158,10 @@ class AnomalyDetector:
                     metric_name=metric_name,
                     severity=severity,
                     current_value=value,
-                    expected_range=(round(window.mean - self.z_threshold * window.std, 4),
-                                    round(window.mean + self.z_threshold * window.std, 4)),
+                    expected_range=(
+                        round(window.mean - self.z_threshold * window.std, 4),
+                        round(window.mean + self.z_threshold * window.std, 4),
+                    ),
                     deviation=round(z, 2),
                     message=(
                         f"Anomaly detected in {metric_name}: value {value:.4f} is "
@@ -262,7 +266,9 @@ class AnomalyDetector:
             # Store per-metric thresholds in metadata
             if metric_name not in self._windows:
                 self._windows[metric_name] = MetricWindow()
-            self._windows[metric_name].max_size = self._windows[metric_name].max_size  # no-op, but placeholder
+            self._windows[metric_name].max_size = self._windows[
+                metric_name
+            ].max_size  # no-op, but placeholder
 
     def save_state(self) -> None:
         """Explicitly save state to disk."""

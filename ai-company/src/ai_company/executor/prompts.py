@@ -163,18 +163,18 @@ RESPONSE_FORMATS: dict[str, str] = {
         "EXAMPLE — delegation task:\n"
         "{\n"
         '  "thought": "The task requires code review. I should delegate to lead-backend '
-        'who has the expertise. I\'ll also read the current status to provide context.",\n'
+        "who has the expertise. I'll also read the current status to provide context.\",\n"
         '  "plan": [\n'
         '    {"tool": "delegate", "args": {"receiver": "lead-backend", '
         '"instruction": "Review PR #42 for security issues and code quality"}},\n'
         '    {"tool": "read", "args": {"path": "docs/sprint-status.md"}}\n'
-        '  ],\n'
+        "  ],\n"
         '  "result": "Delegated code review to lead-backend. Will check status after '
         'specialist completes.",\n'
         '  "done": false\n'
         "}\n\n"
         "RULES:\n"
-        "- 'thought': Explain your reasoning. Why these tool calls? What\'s the strategy?\n"
+        "- 'thought': Explain your reasoning. Why these tool calls? What's the strategy?\n"
         "- 'plan': Array of tool calls. Empty [] if no tools needed.\n"
         "- 'result': What you decided or accomplished. Be specific.\n"
         "- 'done': true ONLY when the task is fully complete. false if more work needed."
@@ -190,7 +190,7 @@ RESPONSE_FORMATS: dict[str, str] = {
         '    {"tool": "write", "args": {"path": "src/main.py", '
         '"content": "def new_func():\\n    pass"}},\n'
         '    {"tool": "execute", "args": {"command": "pytest tests/test_main.py"}}\n'
-        '  ],\n'
+        "  ],\n"
         '  "result": "Added new_func to main.py. Tests will verify correctness.",\n'
         '  "done": false\n'
         "}\n\n"
@@ -208,9 +208,9 @@ RESPONSE_FORMATS: dict[str, str] = {
         'and assess alignment with governance standards.",\n'
         '  "plan": [\n'
         '    {"tool": "read", "args": {"path": "docs/strategy-q4.md"}}\n'
-        '  ],\n'
+        "  ],\n"
         '  "result": "Q4 strategy is well-structured. Risks: (1) budget overrun '
-        'potential in marketing, (2) missing compliance review. Recommend: add '
+        "potential in marketing, (2) missing compliance review. Recommend: add "
         'mid-quarter checkpoint.",\n'
         '  "done": false\n'
         "}\n\n"
@@ -231,7 +231,7 @@ RESPONSE_FORMATS: dict[str, str] = {
         '"instruction": "Implement REST API endpoint for /users"}},\n'
         '    {"tool": "delegate", "args": {"receiver": "lead-frontend", '
         '"instruction": "Build UI component for user management"}}\n'
-        '  ],\n'
+        "  ],\n"
         '  "result": "Delegated API feature: backend (lead-backend) and frontend '
         '(lead-frontend). Will monitor progress.",\n'
         '  "done": false\n'
@@ -250,17 +250,18 @@ _DEFAULT_RESPONSE_FORMAT = (
     '  "thought": "What you are thinking.",\n'
     '  "plan": [\n'
     '    {"tool": "tool-name", "args": {"arg1": "value1"}}\n'
-    '  ],\n'
+    "  ],\n"
     '  "result": "Summary of what was done.",\n'
     '  "done": false\n'
     "}\n"
-    "Set \"done\" to true when no more tool calls are needed."
+    'Set "done" to true when no more tool calls are needed.'
 )
 
 
 # ---------------------------------------------------------------------------
 # Iteration instructions — fed back to the LLM after each tool round
 # ---------------------------------------------------------------------------
+
 
 def build_iteration_feedback(
     step_results: list[dict[str, Any]],
@@ -297,17 +298,27 @@ def build_iteration_feedback(
             # Add recovery guidance based on error type
             error_lower = error_msg.lower()
             if "not found" in error_lower or "no such file" in error_lower:
-                parts.append("  Recovery: Use 'list' on the parent directory to find the correct path.")
+                parts.append(
+                    "  Recovery: Use 'list' on the parent directory to find the correct path."
+                )
             elif "permission" in error_lower or "denied" in error_lower:
-                parts.append("  Recovery: This action may require HITL approval. Report in 'result'.")
+                parts.append(
+                    "  Recovery: This action may require HITL approval. Report in 'result'."
+                )
             elif "command" in error_lower and "not in allowlist" in error_lower:
-                parts.append("  Recovery: Use an allowed command. Check tool instructions for options.")
+                parts.append(
+                    "  Recovery: Use an allowed command. Check tool instructions for options."
+                )
             else:
-                parts.append("  Recovery: Diagnose the error, then retry with a different approach.")
+                parts.append(
+                    "  Recovery: Diagnose the error, then retry with a different approach."
+                )
         elif status == "denied":
             has_denials = True
             parts.append(f"  Denied: {result.get('error', 'human approval denied')}")
-            parts.append("  Recovery: Report the denial in 'result' and explain what you were trying to do.")
+            parts.append(
+                "  Recovery: Report the denial in 'result' and explain what you were trying to do."
+            )
         else:
             # Format successful tool outputs concisely
             for key, value in result.items():
@@ -326,20 +337,24 @@ def build_iteration_feedback(
     parts.append("")
 
     if has_errors or has_denials:
-        parts.extend([
-            "IMPORTANT: One or more tool calls failed or were denied.",
-            "Before your next action, consider:",
-            "1. Can you work around the failure with a different approach?",
-            "2. Is the task still achievable with the remaining tools?",
-            "3. Should you report partial progress and mark done?",
-            "",
-        ])
+        parts.extend(
+            [
+                "IMPORTANT: One or more tool calls failed or were denied.",
+                "Before your next action, consider:",
+                "1. Can you work around the failure with a different approach?",
+                "2. Is the task still achievable with the remaining tools?",
+                "3. Should you report partial progress and mark done?",
+                "",
+            ]
+        )
 
-    parts.extend([
-        "Based on these results, decide your next action.",
-        "If the task is complete, set \"done\": true and provide your final result.",
-        "Otherwise, respond with your next plan of tool calls.",
-    ])
+    parts.extend(
+        [
+            "Based on these results, decide your next action.",
+            'If the task is complete, set "done": true and provide your final result.',
+            "Otherwise, respond with your next plan of tool calls.",
+        ]
+    )
 
     return "\n".join(parts)
 
@@ -347,6 +362,7 @@ def build_iteration_feedback(
 # ---------------------------------------------------------------------------
 # Main prompt builder — assembles the full system prompt
 # ---------------------------------------------------------------------------
+
 
 def build_system_prompt_typed(agent: AgentContext) -> str:
     """Build a system prompt using typed role prefixes and tool instructions.
@@ -412,59 +428,69 @@ def build_system_prompt_typed(agent: AgentContext) -> str:
 
     # Available tools
     if agent.tools:
-        parts.extend([
-            "## Available Tools",
-            ", ".join(agent.tools),
-            "",
-        ])
+        parts.extend(
+            [
+                "## Available Tools",
+                ", ".join(agent.tools),
+                "",
+            ]
+        )
 
     # Tool usage instructions
     parts.extend(["## Tool Usage", tool_instructions, ""])
 
     # Response format
-    parts.extend([
-        "## Response Format",
-        response_format,
-        "",
-    ])
+    parts.extend(
+        [
+            "## Response Format",
+            response_format,
+            "",
+        ]
+    )
 
     # Error handling instructions
-    parts.extend([
-        "## Error Recovery",
-        "When a tool returns an error or is denied:",
-        "1. Read the error message carefully — it often contains the fix.",
-        "2. Don't blindly retry — diagnose first, then try a different approach.",
-        "3. After 2 failed attempts on the same sub-task, report partial progress.",
-        "4. File not found? → Use 'list' or 'grep' to find the correct path.",
-        "5. Command failed? → Read stderr, fix the issue, then re-run.",
-        "",
-    ])
+    parts.extend(
+        [
+            "## Error Recovery",
+            "When a tool returns an error or is denied:",
+            "1. Read the error message carefully — it often contains the fix.",
+            "2. Don't blindly retry — diagnose first, then try a different approach.",
+            "3. After 2 failed attempts on the same sub-task, report partial progress.",
+            "4. File not found? → Use 'list' or 'grep' to find the correct path.",
+            "5. Command failed? → Read stderr, fix the issue, then re-run.",
+            "",
+        ]
+    )
 
     # Escalation guidance
-    parts.extend([
-        "## Escalation Rules",
-        "Escalate (report in 'result') when:",
-        "- You encounter an error you cannot resolve after 2 attempts.",
-        "- A task requires permissions or access you don't have.",
-        "- The task is ambiguous and could lead to harmful actions.",
-        "- Financial, legal, or compliance implications are involved.",
-        "",
-    ])
+    parts.extend(
+        [
+            "## Escalation Rules",
+            "Escalate (report in 'result') when:",
+            "- You encounter an error you cannot resolve after 2 attempts.",
+            "- A task requires permissions or access you don't have.",
+            "- The task is ambiguous and could lead to harmful actions.",
+            "- Financial, legal, or compliance implications are involved.",
+            "",
+        ]
+    )
 
     # Rules
-    parts.extend([
-        "## Rules",
-        "- You MUST respond with valid JSON only. No markdown fences, no prose outside JSON.",
-        "- Only use tools from your allowed list.",
-        "- For 'write' tool: include the full file content in the 'content' arg.",
-        "- For 'execute' tool: include the shell command as a string.",
-        "- For 'delegate' tool: include 'receiver' (agent name) and 'instruction'.",
-        "- Be precise and concise. Each step should be self-contained.",
-        "- If you need to see a file's contents before editing, read it first.",
-        "- Set \"done\": true ONLY when the task is fully complete.",
-        "- Keep 'thought' substantive (>30 chars) — explain your reasoning.",
-        "- Keep 'result' actionable — include specific details, not vague summaries.",
-    ])
+    parts.extend(
+        [
+            "## Rules",
+            "- You MUST respond with valid JSON only. No markdown fences, no prose outside JSON.",
+            "- Only use tools from your allowed list.",
+            "- For 'write' tool: include the full file content in the 'content' arg.",
+            "- For 'execute' tool: include the shell command as a string.",
+            "- For 'delegate' tool: include 'receiver' (agent name) and 'instruction'.",
+            "- Be precise and concise. Each step should be self-contained.",
+            "- If you need to see a file's contents before editing, read it first.",
+            '- Set "done": true ONLY when the task is fully complete.',
+            "- Keep 'thought' substantive (>30 chars) — explain your reasoning.",
+            "- Keep 'result' actionable — include specific details, not vague summaries.",
+        ]
+    )
 
     return "\n".join(parts)
 

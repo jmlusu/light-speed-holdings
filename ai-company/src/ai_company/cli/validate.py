@@ -111,9 +111,7 @@ def naming(
                     f"(hyphens for OpenCode)"
                 )
             else:
-                errors.append(
-                    f"Expected '{expected_filename}' not found in {gen.output_dir}"
-                )
+                errors.append(f"Expected '{expected_filename}' not found in {gen.output_dir}")
 
     if errors:
         typer.echo(f"Naming errors found: {len(errors)}", err=True)
@@ -149,35 +147,37 @@ def references(
     known_agents: set[str] = {p.stem for p in generated}
 
     # Also add common role-based aliases that the system understands
-    known_agents.update({
-        "department_executive",
-        "department-executive",
-        "team_lead",
-        "team-lead",
-        "hiring_manager",
-        "hiring-manager",
-        "hiring-manager-chro",
-        "department-exec-chro",
-        "requestor",
-        "peer_review",
-        "peer-review",
-        "all_board",
-        "all-board",
-        "board",
-        "department_heads",
-        "department-heads",
-        "engineering_team",
-        "engineering-team",
-        "ceo",
-        "human-ceo-board",
-        "cfo-human-ceo",
-        "cto-ciso",
-        # Governance role labels (human-readable, not agent IDs)
-        "Board of Directors",
-        "Chief of Staff",
-        "Department Executive",
-        "Agent",
-    })
+    known_agents.update(
+        {
+            "department_executive",
+            "department-executive",
+            "team_lead",
+            "team-lead",
+            "hiring_manager",
+            "hiring-manager",
+            "hiring-manager-chro",
+            "department-exec-chro",
+            "requestor",
+            "peer_review",
+            "peer-review",
+            "all_board",
+            "all-board",
+            "board",
+            "department_heads",
+            "department-heads",
+            "engineering_team",
+            "engineering-team",
+            "ceo",
+            "human-ceo-board",
+            "cfo-human-ceo",
+            "cto-ciso",
+            # Governance role labels (human-readable, not agent IDs)
+            "Board of Directors",
+            "Chief of Staff",
+            "Department Executive",
+            "Agent",
+        }
+    )
 
     errors: list[str] = []
     warnings: list[str] = []
@@ -299,6 +299,7 @@ def config(
         if filepath.suffix == ".yaml" or filepath.suffix == ".yml":
             try:
                 import yaml
+
                 with open(filepath, "r", encoding="utf-8") as f:
                     yaml.safe_load(f)
             except Exception as exc:
@@ -384,19 +385,36 @@ def all(
     known_agents: set[str] = {p.stem for p in generated}
 
     # Add role-based aliases and governance labels
-    known_agents.update({
-        "department_executive", "department-executive",
-        "team_lead", "team-lead",
-        "hiring_manager", "hiring-manager",
-        "hiring-manager-chro", "department-exec-chro",
-        "requestor", "peer_review", "peer-review",
-        "all_board", "all-board", "board",
-        "department_heads", "department-heads",
-        "engineering_team", "engineering-team",
-        "ceo", "human-ceo-board", "cfo-human-ceo", "cto-ciso",
-        "Board of Directors", "Chief of Staff",
-        "Department Executive", "Agent",
-    })
+    known_agents.update(
+        {
+            "department_executive",
+            "department-executive",
+            "team_lead",
+            "team-lead",
+            "hiring_manager",
+            "hiring-manager",
+            "hiring-manager-chro",
+            "department-exec-chro",
+            "requestor",
+            "peer_review",
+            "peer-review",
+            "all_board",
+            "all-board",
+            "board",
+            "department_heads",
+            "department-heads",
+            "engineering_team",
+            "engineering-team",
+            "ceo",
+            "human-ceo-board",
+            "cfo-human-ceo",
+            "cto-ciso",
+            "Board of Directors",
+            "Chief of Staff",
+            "Department Executive",
+            "Agent",
+        }
+    )
 
     for agent in agents:
         agent_id = agent.get("id", "")
@@ -423,8 +441,7 @@ def all(
                     continue
                 if ref not in known_agents:
                     ref_errors.append(
-                        f"{filepath.relative_to(config_path.parent)}:{line_no} "
-                        f"'{ref}' in '{field}'"
+                        f"{filepath.relative_to(config_path.parent)}:{line_no} '{ref}' in '{field}'"
                     )
 
         if ref_errors:

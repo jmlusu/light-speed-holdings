@@ -106,7 +106,7 @@ class PredictiveScalingEngine:
                 for i in range(horizon)
             ]
 
-        counts = np.array(daily_counts[-self.history_days:])
+        counts = np.array(daily_counts[-self.history_days :])
 
         # Simple moving average
         window = min(7, len(counts))
@@ -128,13 +128,15 @@ class PredictiveScalingEngine:
             predicted = max(0, sma + slope * (i + 1))
             margin = 1.96 * std * np.sqrt(1 + (i + 1) / window)
 
-            forecasts.append({
-                "date": (datetime.now() + timedelta(days=i + 1)).strftime("%Y-%m-%d"),
-                "predicted_count": round(predicted, 1),
-                "lower_bound": round(max(0, predicted - margin), 1),
-                "upper_bound": round(predicted + margin, 1),
-                "confidence": round(max(0.3, 1.0 - 0.1 * i), 2),
-            })
+            forecasts.append(
+                {
+                    "date": (datetime.now() + timedelta(days=i + 1)).strftime("%Y-%m-%d"),
+                    "predicted_count": round(predicted, 1),
+                    "lower_bound": round(max(0, predicted - margin), 1),
+                    "upper_bound": round(predicted + margin, 1),
+                    "confidence": round(max(0.3, 1.0 - 0.1 * i), 2),
+                }
+            )
 
         return forecasts
 
@@ -162,7 +164,7 @@ class PredictiveScalingEngine:
                 for i in range(horizon)
             ]
 
-        costs = np.array(daily_costs[-self.history_days:])
+        costs = np.array(daily_costs[-self.history_days :])
         window = min(7, len(costs))
         sma = float(np.mean(costs[-window:]))
         std = float(np.std(costs))
@@ -177,12 +179,14 @@ class PredictiveScalingEngine:
             predicted = max(0, sma + slope * (i + 1))
             margin = 1.96 * std * np.sqrt(1 + (i + 1) / window)
 
-            forecasts.append({
-                "date": (datetime.now() + timedelta(days=i + 1)).strftime("%Y-%m-%d"),
-                "predicted_cost_usd": round(predicted, 4),
-                "lower_bound": round(max(0, predicted - margin), 4),
-                "upper_bound": round(predicted + margin, 4),
-            })
+            forecasts.append(
+                {
+                    "date": (datetime.now() + timedelta(days=i + 1)).strftime("%Y-%m-%d"),
+                    "predicted_cost_usd": round(predicted, 4),
+                    "lower_bound": round(max(0, predicted - margin), 4),
+                    "upper_bound": round(predicted + margin, 4),
+                }
+            )
 
         return forecasts
 
@@ -209,25 +213,29 @@ class PredictiveScalingEngine:
             for tier, costs in tier_costs.items():
                 avg_cost = np.mean(costs) if costs else 0
                 if tier == "fast" and avg_cost > 0.01:
-                    recommendations.append(ScalingRecommendation(
-                        recommendation_type="tier_adjustment",
-                        current_state={"tier": tier, "avg_cost": round(avg_cost, 4)},
-                        predicted_state={"tier": "fast", "target_cost": 0.005},
-                        action="Consider using smaller models for fast-tier tasks to reduce costs.",
-                        confidence=0.6,
-                        reasoning=f"Fast-tier tasks averaging ${avg_cost:.4f} per call.",
-                        timestamp=ts,
-                    ))
+                    recommendations.append(
+                        ScalingRecommendation(
+                            recommendation_type="tier_adjustment",
+                            current_state={"tier": tier, "avg_cost": round(avg_cost, 4)},
+                            predicted_state={"tier": "fast", "target_cost": 0.005},
+                            action="Consider using smaller models for fast-tier tasks to reduce costs.",
+                            confidence=0.6,
+                            reasoning=f"Fast-tier tasks averaging ${avg_cost:.4f} per call.",
+                            timestamp=ts,
+                        )
+                    )
                 elif tier == "premium" and avg_cost < 0.001:
-                    recommendations.append(ScalingRecommendation(
-                        recommendation_type="tier_adjustment",
-                        current_state={"tier": tier, "avg_cost": round(avg_cost, 6)},
-                        predicted_state={"tier": "standard", "target_cost": 0.005},
-                        action="Premium tier may be over-provisioned. Consider downgrading to standard.",
-                        confidence=0.5,
-                        reasoning=f"Premium-tier tasks averaging only ${avg_cost:.6f} per call.",
-                        timestamp=ts,
-                    ))
+                    recommendations.append(
+                        ScalingRecommendation(
+                            recommendation_type="tier_adjustment",
+                            current_state={"tier": tier, "avg_cost": round(avg_cost, 6)},
+                            predicted_state={"tier": "standard", "target_cost": 0.005},
+                            action="Premium tier may be over-provisioned. Consider downgrading to standard.",
+                            confidence=0.5,
+                            reasoning=f"Premium-tier tasks averaging only ${avg_cost:.6f} per call.",
+                            timestamp=ts,
+                        )
+                    )
 
         return recommendations
 
@@ -266,13 +274,17 @@ class PredictiveScalingEngine:
         """Get daily task counts from historical data."""
         if not self._daily_metrics:
             return []
-        return [float(m.task_count) for m in sorted(self._daily_metrics.values(), key=lambda m: m.date)]
+        return [
+            float(m.task_count) for m in sorted(self._daily_metrics.values(), key=lambda m: m.date)
+        ]
 
     def _get_daily_costs(self) -> list[float]:
         """Get daily cost totals from historical data."""
         if not self._daily_metrics:
             return []
-        return [m.total_cost_usd for m in sorted(self._daily_metrics.values(), key=lambda m: m.date)]
+        return [
+            m.total_cost_usd for m in sorted(self._daily_metrics.values(), key=lambda m: m.date)
+        ]
 
     def _load_historical_data(self) -> None:
         """Load historical performance and cost data."""

@@ -103,7 +103,7 @@ class RegressionDetector:
             return None
 
         # Use the last N snapshots (excluding the current one) as baseline
-        recent = snaps[-(window + 1):-1] if len(snaps) > window else snaps[:-1]
+        recent = snaps[-(window + 1) : -1] if len(snaps) > window else snaps[:-1]
         if not recent:
             return None
 

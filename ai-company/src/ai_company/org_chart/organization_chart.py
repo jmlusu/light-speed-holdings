@@ -55,17 +55,17 @@ class OrgNodeData:
     def to_orgnode(self) -> OrgNode:
         """Convert back to OrgNode format."""
         children = []
-        if hasattr(self.node, 'children'):
+        if hasattr(self.node, "children"):
             children = self.node.children
         else:
             children = []
 
         return OrgNode(
             name=self.id,
-            role=self.node.role if hasattr(self.node, 'role') else self.id,
-            type=self.node.type if hasattr(self.node, 'type') else "agent",
+            role=self.node.role if hasattr(self.node, "role") else self.id,
+            type=self.node.type if hasattr(self.node, "type") else "agent",
             department=self.department,
-            children=children
+            children=children,
         )
 
 
@@ -131,8 +131,10 @@ class OrganizationChart:
             visited.add(node_id)
 
             node_data = self.nodes[node_id]
-            node_data.depth = 0 if node_id == self.root_id else (
-                self.nodes[node_data.parent_id].depth + 1 if node_data.parent_id else 0
+            node_data.depth = (
+                0
+                if node_id == self.root_id
+                else (self.nodes[node_data.parent_id].depth + 1 if node_data.parent_id else 0)
             )
 
             level_widths[node_data.depth] = level_widths.get(node_data.depth, 0) + 1
@@ -147,7 +149,9 @@ class OrganizationChart:
                     self.tree_stats.edge_count += 1
 
             # Add children to queue
-            for child_id in node_data.children_ids[:]:  # Copy to avoid modification during iteration
+            for child_id in node_data.children_ids[
+                :
+            ]:  # Copy to avoid modification during iteration
                 if child_id in self.nodes:
                     queue.append(child_id)
                 else:
@@ -166,6 +170,7 @@ class OrganizationChart:
 
     def _calculate_subtree_sizes(self) -> None:
         """Calculate subtree sizes using post-order traversal."""
+
         def calculate_subtree_size(node_id: str) -> int:
             if node_id not in self.nodes:
                 return 0
@@ -186,6 +191,7 @@ class OrganizationChart:
 
     def _calculate_path_to_root(self) -> None:
         """Calculate path from each node to root."""
+
         def find_path(node_id: str, path: List[str]) -> List[str]:
             if node_id not in self.nodes:
                 return path
@@ -196,7 +202,11 @@ class OrganizationChart:
             if node_id == self.root_id:
                 return current_path
 
-            return find_path(node_data.parent_id, current_path) if node_data.parent_id else current_path
+            return (
+                find_path(node_data.parent_id, current_path)
+                if node_data.parent_id
+                else current_path
+            )
 
         for node_id in self.nodes:
             self.nodes[node_id].path_to_root = find_path(node_id, [])
@@ -266,7 +276,7 @@ class OrganizationChart:
                 path=path,
                 distance=distance,
                 path_type=path_type,
-                metadata=self._calculate_path_metadata(path)
+                metadata=self._calculate_path_metadata(path),
             )
 
         return PathResult(found=False)
@@ -351,7 +361,10 @@ class OrganizationChart:
             return []
 
         # Choose LCA with optimal capacity profile
-        lca = min(lca_candidates, key=lambda lca_id: self.nodes[lca_id].capacity if lca_id in self.nodes else 0)
+        lca = min(
+            lca_candidates,
+            key=lambda lca_id: self.nodes[lca_id].capacity if lca_id in self.nodes else 0,
+        )
 
         # Build path
         path: list[str] = []
@@ -388,7 +401,9 @@ class OrganizationChart:
 
         # Calculate path characteristics
         total_capacity = sum(self.nodes[pid].capacity for pid in path if pid in self.nodes)
-        avg_span = sum(self.nodes[pid].span_of_control for pid in path if pid in self.nodes) / len(path)
+        avg_span = sum(self.nodes[pid].span_of_control for pid in path if pid in self.nodes) / len(
+            path
+        )
         hierarchical_level = len(start_node.path_to_root) + len(end_node.path_to_root)
 
         return {
@@ -396,14 +411,14 @@ class OrganizationChart:
             "average_span_of_control": avg_span,
             "hierarchical_level_difference": hierarchical_level,
             "bottleneck_nodes": [
-                pid for pid in path
-                if pid in self.nodes and self.nodes[pid].capacity < 50
+                pid for pid in path if pid in self.nodes and self.nodes[pid].capacity < 50
             ],
             "critical_skills_shared": set(),  # Would require additional data
         }
 
-    def extract_subtree(self, root_id: str, max_depth: Optional[int] = None,
-                       include_capacity_below: bool = False) -> Dict[str, Any]:
+    def extract_subtree(
+        self, root_id: str, max_depth: Optional[int] = None, include_capacity_below: bool = False
+    ) -> Dict[str, Any]:
         """
         Extract subtree rooted at a specific node for executive reporting.
 
@@ -427,8 +442,8 @@ class OrganizationChart:
             node_data = self.nodes[node_id]
             subtree_data = {
                 "id": node_id,
-                "name": node_data.node.name if hasattr(node_data.node, 'name') else node_id,
-                "role": node_data.node.role if hasattr(node_data.node, 'role') else "",
+                "name": node_data.node.name if hasattr(node_data.node, "name") else node_id,
+                "role": node_data.node.role if hasattr(node_data.node, "role") else "",
                 "depth": current_depth,
                 "span_of_control": node_data.span_of_control,
                 "capacity": node_data.capacity,
@@ -463,7 +478,7 @@ class OrganizationChart:
                 "max_depth": max_depth,
                 "total_nodes": self._count_subtree_nodes(subtree),
                 "total_spans": self._sum_spans_in_subtree(subtree),
-            }
+            },
         }
 
     def _calculate_children_summary(self, parent_id: str) -> Dict[str, Any]:
@@ -517,7 +532,9 @@ class OrganizationChart:
                 executive_nodes.append(node_id)
 
             # Detect isolation points (nodes with single connection)
-            total_connections = len(self.adjacency_list.get(node_id, [])) + len(self.reverse_adjacency.get(node_id, []))
+            total_connections = len(self.adjacency_list.get(node_id, [])) + len(
+                self.reverse_adjacency.get(node_id, [])
+            )
             if total_connections == 1 and node_id != self.root_id:
                 isolation_points.append(node_id)
 
@@ -548,11 +565,13 @@ class OrganizationChart:
                     connected_non_exec.append(parent_id)
 
             if connected_non_exec:
-                crossings.append({
-                    "executive_id": exec_id,
-                    "connected_non_executive": connected_non_exec,
-                    "boundary_type": "management",
-                })
+                crossings.append(
+                    {
+                        "executive_id": exec_id,
+                        "connected_non_executive": connected_non_exec,
+                        "boundary_type": "management",
+                    }
+                )
 
         return crossings
 
@@ -600,11 +619,13 @@ class OrganizationChart:
                         queue.append(parent_id)
 
             if cluster:
-                clusters.append({
-                    "cluster_id": len(clusters) + 1,
-                    "executives": list(cluster),
-                    "size": len(cluster),
-                })
+                clusters.append(
+                    {
+                        "cluster_id": len(clusters) + 1,
+                        "executives": list(cluster),
+                        "size": len(cluster),
+                    }
+                )
 
         return clusters
 
@@ -632,7 +653,7 @@ class OrganizationChart:
                 "lookup_efficiency": "O(1)",
                 "construction_efficiency": "O(n)",
                 "memory_efficiency": "Sparse adjacency matrix",
-            }
+            },
         }
 
     def _calculate_avg_subtree_size(self) -> float:
@@ -642,10 +663,13 @@ class OrganizationChart:
 
     def _calculate_max_span(self) -> int:
         """Calculate maximum span of control."""
-        return max(self.nodes[node_id].span_of_control for node_id in self.nodes) if self.nodes else 0
+        return (
+            max(self.nodes[node_id].span_of_control for node_id in self.nodes) if self.nodes else 0
+        )
 
-    def parallel_subtree_extraction(self, root_ids: List[str],
-                                  max_depth: Optional[int] = None) -> Dict[str, Any]:
+    def parallel_subtree_extraction(
+        self, root_ids: List[str], max_depth: Optional[int] = None
+    ) -> Dict[str, Any]:
         """
         Parallel subtree extraction for multiple executive reporting trees.
 
@@ -784,8 +808,12 @@ class OrganizationChart:
             "nodes": [
                 {
                     "id": node_id,
-                    "name": self.nodes[node_id].node.name if hasattr(self.nodes[node_id].node, 'name') else node_id,
-                    "role": self.nodes[node_id].node.role if hasattr(self.nodes[node_id].node, 'role') else "",
+                    "name": self.nodes[node_id].node.name
+                    if hasattr(self.nodes[node_id].node, "name")
+                    else node_id,
+                    "role": self.nodes[node_id].node.role
+                    if hasattr(self.nodes[node_id].node, "role")
+                    else "",
                     "department": self.nodes[node_id].department,
                     "depth": self.nodes[node_id].depth,
                     "span_of_control": self.nodes[node_id].span_of_control,
@@ -798,7 +826,9 @@ class OrganizationChart:
                 {
                     "source": source_id,
                     "target": target_id,
-                    "type": "reports_to" if source_id in self.reverse_adjacency.get(target_id, []) else "manages",
+                    "type": "reports_to"
+                    if source_id in self.reverse_adjacency.get(target_id, [])
+                    else "manages",
                 }
                 for source_id in self.adjacency_list
                 for target_id in self.adjacency_list[source_id]
@@ -808,6 +838,8 @@ class OrganizationChart:
 
 
 # Convenience function for direct use
-def build_organization_chart(org_nodes: List[OrgNode], root_id: str = "human-ceo") -> OrganizationChart:
+def build_organization_chart(
+    org_nodes: List[OrgNode], root_id: str = "human-ceo"
+) -> OrganizationChart:
     """Convenience function to build an organization chart."""
     return OrganizationChart(org_nodes, root_id)

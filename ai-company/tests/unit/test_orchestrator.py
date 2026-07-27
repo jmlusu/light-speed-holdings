@@ -195,7 +195,13 @@ def test_postmortem_model_with_full_data() -> None:
         ],
         resolution_steps=["Identified crash", "Applied patch", "Restarted workers"],
         action_items=[
-            ActionItem(id="AI-1", action="Add memory limits", owner="devops", due_date="2026-07-24", status="open"),
+            ActionItem(
+                id="AI-1",
+                action="Add memory limits",
+                owner="devops",
+                due_date="2026-07-24",
+                status="open",
+            ),
         ],
         lessons_learned=["Need memory monitoring"],
         prevention_measures=["Add heap dump collection"],

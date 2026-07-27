@@ -34,7 +34,9 @@ def list() -> None:
 
 @app.command()
 def show(
-    graph_name: str = typer.Argument(..., help="Graph to show (org_chart, decision_graph, workflow_graph, knowledge_graph)"),
+    graph_name: str = typer.Argument(
+        ..., help="Graph to show (org_chart, decision_graph, workflow_graph, knowledge_graph)"
+    ),
 ) -> None:
     """Show a graph's nodes and edges."""
     from ai_company.graph.engine import GraphEngine

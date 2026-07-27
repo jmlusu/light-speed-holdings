@@ -21,22 +21,30 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-MEMORY_TYPES = frozenset({
-    "episodic",
-    "semantic",
-    "procedural",
-    "relational",
-    "temporal",
-    "aggregate",
-})
+MEMORY_TYPES = frozenset(
+    {
+        "episodic",
+        "semantic",
+        "procedural",
+        "relational",
+        "temporal",
+        "aggregate",
+    }
+)
 
 
 class MemoryEntryDB:
     """A single memory record backed by the database."""
 
     __slots__ = (
-        "id", "memory_type", "content", "metadata",
-        "agent_id", "tags", "created_at", "access_count",
+        "id",
+        "memory_type",
+        "content",
+        "metadata",
+        "agent_id",
+        "tags",
+        "created_at",
+        "access_count",
     )
 
     def __init__(
@@ -136,6 +144,7 @@ class MemoryStoreDB:
         content_search = content
         if self._key_manager is not None:
             from ai_company.security.memory_encryption import encrypt
+
             stored_content = encrypt(content, self._key_manager)
 
         self._db.execute(
@@ -358,6 +367,7 @@ class MemoryStoreDB:
         if self._key_manager is None:
             return
         from ai_company.security.memory_encryption import decrypt
+
         for entry in entries:
             entry.content = decrypt(entry.content, self._key_manager)
 

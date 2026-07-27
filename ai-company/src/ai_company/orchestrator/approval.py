@@ -40,9 +40,7 @@ class ApprovalRequest(BaseModel):
 
 class ApprovalGate:
     def __init__(self, config_path: str = "orchestrator/approvals.yaml"):
-        self._store = FileStore(
-            _path_parent(config_path), backup=True
-        )
+        self._store = FileStore(_path_parent(config_path), backup=True)
         self._config_name = _path_name(config_path)
         self.requests: List[ApprovalRequest] = []
         self._load_config()
@@ -115,8 +113,7 @@ class ApprovalGate:
         return [
             r
             for r in self.requests
-            if r.status == ApprovalStatus.PENDING
-            and (not r.expires_at or r.expires_at > now)
+            if r.status == ApprovalStatus.PENDING and (not r.expires_at or r.expires_at > now)
         ]
 
     def get_request(self, request_id: str) -> Optional[ApprovalRequest]:
@@ -129,10 +126,12 @@ class ApprovalGate:
 def _path_parent(config_path: str) -> str:
     """Return the parent directory of a file path."""
     from pathlib import Path
+
     return str(Path(config_path).parent)
 
 
 def _path_name(config_path: str) -> str:
     """Return the filename component of a file path."""
     from pathlib import Path
+
     return Path(config_path).name

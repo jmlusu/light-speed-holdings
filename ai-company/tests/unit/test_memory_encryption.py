@@ -54,9 +54,7 @@ class TestEncryptDecrypt:
         assert is_encrypted("plain text") is False
         assert is_encrypted("") is False
 
-    def test_key_rotation_decrypts_with_new_key(
-        self, key_manager: EncryptionKeyManager
-    ) -> None:
+    def test_key_rotation_decrypts_with_new_key(self, key_manager: EncryptionKeyManager) -> None:
         """After rotation, new encryption uses new key."""
         encrypted_old = encrypt("old secret", key_manager)
         key_manager.rotate()
@@ -66,9 +64,7 @@ class TestEncryptDecrypt:
         assert decrypt(encrypted_old, key_manager) == "old secret"
         assert decrypt(encrypted_new, key_manager) == "new secret"
 
-    def test_key_rotation_decrypts_old_content(
-        self, key_manager: EncryptionKeyManager
-    ) -> None:
+    def test_key_rotation_decrypts_old_content(self, key_manager: EncryptionKeyManager) -> None:
         """Content encrypted with the old key can still be decrypted after rotation."""
         encrypted = encrypt("legacy content", key_manager)
         key_manager.rotate()

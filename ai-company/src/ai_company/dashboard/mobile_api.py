@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/mobile")
 
+
 # ── Helpers (shared with main api.py) ───────────────────────────────
 # GAP-011: route all state I/O through the StateStore repository. Fetched
 # lazily so the boot-time explicit configuration (Option B) takes effect.
@@ -200,7 +201,8 @@ def mobile_dashboard(compact: bool = True) -> MobileDashboardSummary:
 
     now = datetime.now(timezone.utc).isoformat()
     pending_approvals = [
-        r for r in approval_requests
+        r
+        for r in approval_requests
         if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now)
     ]
     open_escalations = [e for e in escalation_events if not e.get("resolved", False)]
@@ -212,14 +214,16 @@ def mobile_dashboard(compact: bool = True) -> MobileDashboardSummary:
     # Recent tasks (max 5, compact format)
     recent = []
     for t in tasks[:5]:
-        recent.append(MobileTaskSummary(
-            id=t.get("id", "")[:8],
-            to=t.get("receiver_id", ""),
-            instruction=_truncate(t.get("instruction", "")),
-            priority=t.get("priority", "medium"),
-            status=t.get("status", "pending"),
-            created=_format_short_time(t.get("created_at")),
-        ))
+        recent.append(
+            MobileTaskSummary(
+                id=t.get("id", "")[:8],
+                to=t.get("receiver_id", ""),
+                instruction=_truncate(t.get("instruction", "")),
+                priority=t.get("priority", "medium"),
+                status=t.get("status", "pending"),
+                created=_format_short_time(t.get("created_at")),
+            )
+        )
 
     return MobileDashboardSummary(
         kpis=MobileDashboardKPIs(
@@ -276,7 +280,7 @@ def mobile_tasks(
                     start_idx = i + 1
                     break
 
-    page = tasks[start_idx: start_idx + limit]
+    page = tasks[start_idx : start_idx + limit]
     has_more = (start_idx + limit) < total_count
 
     next_cursor = None
@@ -285,16 +289,18 @@ def mobile_tasks(
 
     items = []
     for t in page:
-        items.append({
-            "id": t.get("id", "")[:8],
-            "from": t.get("sender_id", ""),
-            "to": t.get("receiver_id", ""),
-            "instruction": _truncate(t.get("instruction", ""), 80),
-            "priority": t.get("priority", "medium"),
-            "status": t.get("status", "pending"),
-            "created": t.get("created_at", ""),
-            "has_result": bool(t.get("result")),
-        })
+        items.append(
+            {
+                "id": t.get("id", "")[:8],
+                "from": t.get("sender_id", ""),
+                "to": t.get("receiver_id", ""),
+                "instruction": _truncate(t.get("instruction", ""), 80),
+                "priority": t.get("priority", "medium"),
+                "status": t.get("status", "pending"),
+                "created": t.get("created_at", ""),
+                "has_result": bool(t.get("result")),
+            }
+        )
 
     return {
         "items": items,
@@ -343,7 +349,12 @@ def _execute_action(action: BatchAction) -> dict[str, Any]:
     elif action.type == "delegate":
         return _delegate_task(action.target_id, action.delegate_to or "")
     else:
-        return {"type": action.type, "target_id": action.target_id, "ok": False, "error": "Unknown action type"}
+        return {
+            "type": action.type,
+            "target_id": action.target_id,
+            "ok": False,
+            "error": "Unknown action type",
+        }
 
 
 def _approve_request(request_id: str, notes: str | None = None) -> dict[str, Any]:
@@ -357,7 +368,12 @@ def _approve_request(request_id: str, notes: str | None = None) -> dict[str, Any
                 r["notes"] = notes
             _save_yaml("orchestrator/approvals.yaml", data)
             return {"type": "approve", "target_id": request_id, "ok": True}
-    return {"type": "approve", "target_id": request_id, "ok": False, "error": "Not found or already processed"}
+    return {
+        "type": "approve",
+        "target_id": request_id,
+        "ok": False,
+        "error": "Not found or already processed",
+    }
 
 
 def _reject_request(request_id: str, notes: str | None = None) -> dict[str, Any]:
@@ -371,7 +387,12 @@ def _reject_request(request_id: str, notes: str | None = None) -> dict[str, Any]
                 r["notes"] = notes
             _save_yaml("orchestrator/approvals.yaml", data)
             return {"type": "reject", "target_id": request_id, "ok": True}
-    return {"type": "reject", "target_id": request_id, "ok": False, "error": "Not found or already processed"}
+    return {
+        "type": "reject",
+        "target_id": request_id,
+        "ok": False,
+        "error": "Not found or already processed",
+    }
 
 
 def _resolve_escalation(task_id: str) -> dict[str, Any]:
@@ -395,18 +416,33 @@ def _resolve_escalation(task_id: str) -> dict[str, Any]:
             except Exception:
                 logger.debug("audit hook skipped for escalation resolution")
             return {"type": "resolve_escalation", "target_id": task_id, "ok": True}
-    return {"type": "resolve_escalation", "target_id": task_id, "ok": False, "error": "No open escalation found"}
+    return {
+        "type": "resolve_escalation",
+        "target_id": task_id,
+        "ok": False,
+        "error": "No open escalation found",
+    }
 
 
 def _delegate_task(task_id: str, delegate_to: str) -> dict[str, Any]:
     if not delegate_to:
-        return {"type": "delegate", "target_id": task_id, "ok": False, "error": "No delegate target specified"}
+        return {
+            "type": "delegate",
+            "target_id": task_id,
+            "ok": False,
+            "error": "No delegate target specified",
+        }
     tasks = _load_json(".opencode/inbox.json")
     for t in tasks:
         if t.get("id", "")[:8] == task_id or t.get("id") == task_id:
             t["receiver_id"] = delegate_to
             _save_json(".opencode/inbox.json", tasks)
-            return {"type": "delegate", "target_id": task_id, "ok": True, "delegated_to": delegate_to}
+            return {
+                "type": "delegate",
+                "target_id": task_id,
+                "ok": True,
+                "delegated_to": delegate_to,
+            }
     return {"type": "delegate", "target_id": task_id, "ok": False, "error": "Task not found"}
 
 
@@ -447,7 +483,8 @@ def approval_stack(limit: int = 5) -> dict[str, Any]:
     now = datetime.now(timezone.utc).isoformat()
 
     pending = [
-        r for r in data.get("requests", [])
+        r
+        for r in data.get("requests", [])
         if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now)
     ]
 
@@ -469,14 +506,16 @@ def approval_stack(limit: int = 5) -> dict[str, Any]:
                 "estimated_impact": first.get("impact", "unknown"),
             },
         }
-        for p in pending[1: limit + 1]:
-            stack.append({
-                "id": p.get("id", ""),
-                "agent_id": p.get("agent_id", ""),
-                "action": p.get("action", ""),
-                "description": _truncate(p.get("description", ""), 40),
-                "priority": p.get("priority", "medium"),
-            })
+        for p in pending[1 : limit + 1]:
+            stack.append(
+                {
+                    "id": p.get("id", ""),
+                    "agent_id": p.get("agent_id", ""),
+                    "action": p.get("action", ""),
+                    "description": _truncate(p.get("description", ""), 40),
+                    "priority": p.get("priority", "medium"),
+                }
+            )
 
     return {
         "current": current,
@@ -508,7 +547,8 @@ def swipe_approval(req: SwipeDecision) -> dict[str, Any]:
     data = _load_yaml("orchestrator/approvals.yaml")
     now = datetime.now(timezone.utc).isoformat()
     pending = [
-        r for r in data.get("requests", [])
+        r
+        for r in data.get("requests", [])
         if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now)
     ]
 
@@ -543,19 +583,19 @@ def compact_kpis() -> dict[str, Any]:
 
     now = datetime.now(timezone.utc).isoformat()
     pending_approvals = sum(
-        1 for r in approvals_data.get("requests", [])
+        1
+        for r in approvals_data.get("requests", [])
         if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now)
     )
     open_escalations = sum(
-        1 for e in escalations_data.get("events", [])
-        if not e.get("resolved", False)
+        1 for e in escalations_data.get("events", []) if not e.get("resolved", False)
     )
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     completed_today = sum(
-        1 for t in tasks
-        if t.get("status") == "completed"
-        and t.get("completed_at", "").startswith(today)
+        1
+        for t in tasks
+        if t.get("status") == "completed" and t.get("completed_at", "").startswith(today)
     )
 
     return {
@@ -600,11 +640,17 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
             if ts.timestamp() >= cutoff:
                 # Extract metric value from engineering KPIs for now
                 eng = snap.get("departments", {}).get("engineering", {}).get("kpis", {})
-                value = eng.get(metric, {}).get("current", 0) if isinstance(eng.get(metric), dict) else 0
-                data_points.append({
-                    "ts": ts.isoformat() + "Z",
-                    "v": value,
-                })
+                value = (
+                    eng.get(metric, {}).get("current", 0)
+                    if isinstance(eng.get(metric), dict)
+                    else 0
+                )
+                data_points.append(
+                    {
+                        "ts": ts.isoformat() + "Z",
+                        "v": value,
+                    }
+                )
         except Exception:
             continue
 
@@ -659,7 +705,8 @@ def register_device(reg: DeviceRegistration) -> dict[str, Any]:
             "platform": reg.platform,
             "app_version": reg.app_version,
             "device_name": reg.device_name,
-            "preferences": reg.preferences or {
+            "preferences": reg.preferences
+            or {
                 "escalations": True,
                 "approvals": True,
                 "budget_alerts": True,
@@ -781,18 +828,18 @@ def mobile_sync(req: SyncRequest) -> dict[str, Any]:
 
     now = datetime.now(timezone.utc).isoformat()
     pending_approvals = sum(
-        1 for r in approvals_data.get("requests", [])
+        1
+        for r in approvals_data.get("requests", [])
         if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now)
     )
     open_escalations = sum(
-        1 for e in escalations_data.get("events", [])
-        if not e.get("resolved", False)
+        1 for e in escalations_data.get("events", []) if not e.get("resolved", False)
     )
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     completed_today = sum(
-        1 for t in tasks
-        if t.get("status") == "completed"
-        and t.get("completed_at", "").startswith(today)
+        1
+        for t in tasks
+        if t.get("status") == "completed" and t.get("completed_at", "").startswith(today)
     )
 
     return {

@@ -51,16 +51,18 @@ class TestBootstrapToExecution:
         # Submit a pending task directly to the inbox.
         inbox = workspace / ".opencode" / "inbox.json"
         inbox.write_text(
-            json.dumps([
-                {
-                    "id": "task-001",
-                    "sender_id": "human-ceo",
-                    "receiver_id": "test-agent",
-                    "instruction": "Summarise the report",
-                    "status": "pending",
-                    "priority": "medium",
-                }
-            ]),
+            json.dumps(
+                [
+                    {
+                        "id": "task-001",
+                        "sender_id": "human-ceo",
+                        "receiver_id": "test-agent",
+                        "instruction": "Summarise the report",
+                        "status": "pending",
+                        "priority": "medium",
+                    }
+                ]
+            ),
             encoding="utf-8",
         )
 
@@ -81,16 +83,18 @@ class TestBootstrapToExecution:
     def test_tick_writes_audit_events(self, executor, workspace: Path) -> None:
         inbox = workspace / ".opencode" / "inbox.json"
         inbox.write_text(
-            json.dumps([
-                {
-                    "id": "task-audit",
-                    "sender_id": "human-ceo",
-                    "receiver_id": "test-agent",
-                    "instruction": "Produce a deliverable",
-                    "status": "pending",
-                    "priority": "high",
-                }
-            ]),
+            json.dumps(
+                [
+                    {
+                        "id": "task-audit",
+                        "sender_id": "human-ceo",
+                        "receiver_id": "test-agent",
+                        "instruction": "Produce a deliverable",
+                        "status": "pending",
+                        "priority": "high",
+                    }
+                ]
+            ),
             encoding="utf-8",
         )
 
@@ -111,16 +115,18 @@ class TestBootstrapToExecution:
     def test_tick_handles_failure_gracefully(self, executor, workspace: Path) -> None:
         inbox = workspace / ".opencode" / "inbox.json"
         inbox.write_text(
-            json.dumps([
-                {
-                    "id": "task-fail",
-                    "sender_id": "human-ceo",
-                    "receiver_id": "test-agent",
-                    "instruction": "Break things",
-                    "status": "pending",
-                    "priority": "medium",
-                }
-            ]),
+            json.dumps(
+                [
+                    {
+                        "id": "task-fail",
+                        "sender_id": "human-ceo",
+                        "receiver_id": "test-agent",
+                        "instruction": "Break things",
+                        "status": "pending",
+                        "priority": "medium",
+                    }
+                ]
+            ),
             encoding="utf-8",
         )
 

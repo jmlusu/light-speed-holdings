@@ -250,9 +250,7 @@ class TestSchedulerFullCycle:
         executor.tick()
 
         # Verify scheduler task was converted to inbox task and processed
-        inbox = json.loads(
-            (tmp_path / ".opencode" / "inbox.json").read_text(encoding="utf-8")
-        )
+        inbox = json.loads((tmp_path / ".opencode" / "inbox.json").read_text(encoding="utf-8"))
         # The task was created by scheduler and processed by executor
         cycle_tasks = [t for t in inbox if t["sender_id"] == "scheduler"]
         assert len(cycle_tasks) == 1
@@ -342,9 +340,7 @@ def _setup_test_files(tmp_path: Path) -> None:
             {"agent_type": "Specialist", "tier": "fast"},
         ],
     }
-    (tmp_path / "company" / "models.yaml").write_text(
-        json.dumps(models), encoding="utf-8"
-    )
+    (tmp_path / "company" / "models.yaml").write_text(json.dumps(models), encoding="utf-8")
 
     registry = [
         {
@@ -366,9 +362,7 @@ def _setup_test_files(tmp_path: Path) -> None:
     (tmp_path / ".opencode").mkdir(exist_ok=True)
     (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
     (tmp_path / "orchestrator").mkdir(exist_ok=True)
-    (tmp_path / "orchestrator" / "approvals.yaml").write_text(
-        "requests: []", encoding="utf-8"
-    )
+    (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
 
     agents_dir = tmp_path / ".opencode" / "agents"
     agents_dir.mkdir(parents=True, exist_ok=True)

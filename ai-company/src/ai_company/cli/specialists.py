@@ -136,7 +136,9 @@ def by_department(department: str = typer.Argument(..., help="Department name"))
     data = _load_specialists()
     specialists = data.get("specialists", [])
 
-    dept_specialists = [s for s in specialists if s.get("department", "").lower() == department.lower()]
+    dept_specialists = [
+        s for s in specialists if s.get("department", "").lower() == department.lower()
+    ]
 
     if not dept_specialists:
         typer.echo(f"No specialists found in department '{department}'.")

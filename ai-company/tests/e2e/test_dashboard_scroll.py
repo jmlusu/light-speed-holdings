@@ -41,9 +41,7 @@ class TestScrollPositionStability:
         # Wait for Alpine.js to initialize
         page.wait_for_timeout(2000)
 
-    def test_scroll_position_unchanged_after_polling_cycle(
-        self, page, dashboard_url: str
-    ) -> None:
+    def test_scroll_position_unchanged_after_polling_cycle(self, page, dashboard_url: str) -> None:
         """Scroll down, wait for polling cycle (10s), verify position preserved."""
         # Scroll to the tasks table area
         page.evaluate("window.scrollTo(0, 600)")
@@ -147,9 +145,7 @@ class TestChartReRenderScroll:
         page.goto(dashboard_url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-    def test_scroll_stable_during_chart_destruction(
-        self, page, dashboard_url: str
-    ) -> None:
+    def test_scroll_stable_during_chart_destruction(self, page, dashboard_url: str) -> None:
         """Scroll to chart area, trigger chart destroy+recreate, check position."""
         # Scroll to charts section
         page.evaluate("window.scrollTo(0, 400)")
@@ -172,13 +168,10 @@ class TestChartReRenderScroll:
 
         final_scroll_y = page.evaluate("window.scrollY")
         assert abs(final_scroll_y - initial_scroll_y) <= 2, (
-            f"Chart re-render caused scroll jump: "
-            f"was {initial_scroll_y}, now {final_scroll_y}"
+            f"Chart re-render caused scroll jump: was {initial_scroll_y}, now {final_scroll_y}"
         )
 
-    def test_scroll_stable_through_multiple_update_cycles(
-        self, page, dashboard_url: str
-    ) -> None:
+    def test_scroll_stable_through_multiple_update_cycles(self, page, dashboard_url: str) -> None:
         """Run 5 consecutive KPI updates and verify scroll stays fixed."""
         page.evaluate("window.scrollTo(0, 500)")
         page.wait_for_timeout(500)
@@ -200,8 +193,7 @@ class TestChartReRenderScroll:
 
         final_scroll_y = page.evaluate("window.scrollY")
         assert abs(final_scroll_y - initial_scroll_y) <= 5, (
-            f"Scroll drifted through 5 update cycles: "
-            f"was {initial_scroll_y}, now {final_scroll_y}"
+            f"Scroll drifted through 5 update cycles: was {initial_scroll_y}, now {final_scroll_y}"
         )
 
 
@@ -230,9 +222,7 @@ class TestNavigationScroll:
         scroll_y = page.evaluate("window.scrollY")
         assert scroll_y == 0, f"New page should start at top, scrollY={scroll_y}"
 
-    def test_back_navigation_restores_no_autoscroll(
-        self, page, dashboard_url: str
-    ) -> None:
+    def test_back_navigation_restores_no_autoscroll(self, page, dashboard_url: str) -> None:
         """Navigate away and back; page should not auto-scroll on return."""
         page.goto(dashboard_url, wait_until="networkidle")
         page.wait_for_timeout(2000)

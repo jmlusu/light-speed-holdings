@@ -19,48 +19,39 @@ class LegalKPICollector(KPICollector):
         tasks = self._load_json(".opencode/inbox.json")
 
         # Count legal-related tasks
-        legal_tasks = [
-            t for t in tasks if t.get("receiver_id") in ("legal", "clo")
-        ]
-        completed_legal = sum(
-            1 for t in legal_tasks if t.get("status") == "completed"
-        )
+        legal_tasks = [t for t in tasks if t.get("receiver_id") in ("legal", "clo")]
+        completed_legal = sum(1 for t in legal_tasks if t.get("status") == "completed")
         total_legal = len(legal_tasks)
         task_completion_rate = (
-            round((completed_legal / total_legal * 100), 1)
-            if total_legal > 0
-            else 0.0
+            round((completed_legal / total_legal * 100), 1) if total_legal > 0 else 0.0
         )
 
         # Contract metrics
         contract_list = contracts if isinstance(contracts, list) else []
-        pending_review = sum(
-            1 for c in contract_list if c.get("status") == "pending_review"
-        )
-        approved_contracts = sum(
-            1 for c in contract_list if c.get("status") == "approved"
-        )
+        pending_review = sum(1 for c in contract_list if c.get("status") == "pending_review")
+        approved_contracts = sum(1 for c in contract_list if c.get("status") == "approved")
         total_contracts = len(contract_list)
 
         # Compliance
         compliance_list = compliance if isinstance(compliance, list) else []
-        passing = sum(
-            1 for c in compliance_list if c.get("result") == "pass"
-        )
+        passing = sum(1 for c in compliance_list if c.get("result") == "pass")
         total_checks = len(compliance_list)
-        compliance_score = (
-            round((passing / total_checks * 100), 1) if total_checks > 0 else 0.0
-        )
+        compliance_score = round((passing / total_checks * 100), 1) if total_checks > 0 else 0.0
 
         return {
             "department": self.department,
             "collected_at": datetime.now().isoformat(),
             "kpis": {
                 "contract_review_time": self._kpi(
-                    0, 2, "hours",
+                    0,
+                    2,
+                    "hours",
                 ),  # Needs timestamp data; default until available
                 "pending_contract_reviews": self._kpi(
-                    pending_review, 0, "count", higher_is_better=False,
+                    pending_review,
+                    0,
+                    "count",
+                    higher_is_better=False,
                 ),
                 "approved_contracts": self._kpi(approved_contracts, None, "count"),
                 "total_contracts": self._kpi(total_contracts, None, "count"),

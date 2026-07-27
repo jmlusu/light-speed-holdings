@@ -53,7 +53,9 @@ from ai_company.cli.governance import app as governance_app  # noqa: E402
 
 app.add_typer(agents_app, name="agents", help="Manage AI agents")
 app.add_typer(board_app, name="board", help="Manage Board of Directors")
-app.add_typer(governance_app, name="governance", help="Data governance — ownership, retention, compliance")
+app.add_typer(
+    governance_app, name="governance", help="Data governance — ownership, retention, compliance"
+)
 app.add_typer(workflows_app, name="workflows", help="Manage workflows")
 app.add_typer(memory_app, name="memory", help="Manage company memory")
 app.add_typer(executives_app, name="executives", help="Manage executives")
@@ -73,7 +75,9 @@ app.add_typer(company_app, name="company", help="Bootstrap and manage the AI com
 app.add_typer(decision_app, name="decision", help="Decision engine — approvals, risk, trees")
 app.add_typer(graph_app, name="graph", help="Graph engine — org chart, knowledge graphs")
 app.add_typer(security_app, name="security", help="Security operations — encryption, key rotation")
-app.add_typer(validate_app, name="validate", help="Validate naming conventions and config references")
+app.add_typer(
+    validate_app, name="validate", help="Validate naming conventions and config references"
+)
 
 
 @app.command()

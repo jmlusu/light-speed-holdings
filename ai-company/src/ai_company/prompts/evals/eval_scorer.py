@@ -83,9 +83,7 @@ class EvalScorer:
         )
 
         # 2. Tool usage
-        breakdown.tool_usage = self._score_tools(
-            parsed, test_case.expected, breakdown
-        )
+        breakdown.tool_usage = self._score_tools(parsed, test_case.expected, breakdown)
 
         # 3. Reasoning quality
         breakdown.reasoning_quality = self._score_reasoning(parsed, breakdown)
@@ -199,10 +197,7 @@ class EvalScorer:
             breakdown.warnings.append(f"Missing tools in plan: {', '.join(missing)}")
 
         # Bonus for valid step structure
-        valid_steps = sum(
-            1 for s in plan
-            if isinstance(s, dict) and "tool" in s and "args" in s
-        )
+        valid_steps = sum(1 for s in plan if isinstance(s, dict) and "tool" in s and "args" in s)
         if plan:
             structure_bonus = valid_steps / len(plan) * 0.2
             score = min(score + structure_bonus, 1.0)
@@ -245,9 +240,7 @@ class EvalScorer:
             r"\b(risk|benefit|trade.?off|alternative)\b",
             r"\b(plan|approach|strategy|step)\b",
         ]
-        matches = sum(
-            1 for p in reasoning_patterns if re.search(p, thought, re.IGNORECASE)
-        )
+        matches = sum(1 for p in reasoning_patterns if re.search(p, thought, re.IGNORECASE))
         score += min(matches * 0.15, 0.5)
 
         return round(min(score, 1.0), 4)
@@ -284,9 +277,7 @@ class EvalScorer:
             r"\b(recommend|suggest|next step)\b",
             r"\b(\d+ (file|test|task|change))\b",
         ]
-        matches = sum(
-            1 for p in actionable_patterns if re.search(p, result, re.IGNORECASE)
-        )
+        matches = sum(1 for p in actionable_patterns if re.search(p, result, re.IGNORECASE))
         score += min(matches * 0.15, 0.5)
 
         # Check it's not just echoing the input
@@ -344,17 +335,11 @@ def compute_aggregate_scores(results: list[EvalResult]) -> dict[str, float]:
     return {
         "count": n,
         "avg_total": round(sum(r.score.total for r in results) / n, 4),
-        "avg_format": round(
-            sum(r.score.format_compliance for r in results) / n, 4
-        ),
+        "avg_format": round(sum(r.score.format_compliance for r in results) / n, 4),
         "avg_tools": round(sum(r.score.tool_usage for r in results) / n, 4),
-        "avg_reasoning": round(
-            sum(r.score.reasoning_quality for r in results) / n, 4
-        ),
+        "avg_reasoning": round(sum(r.score.reasoning_quality for r in results) / n, 4),
         "avg_result": round(sum(r.score.result_quality for r in results) / n, 4),
-        "avg_constraints": round(
-            sum(r.score.constraint_adherence for r in results) / n, 4
-        ),
+        "avg_constraints": round(sum(r.score.constraint_adherence for r in results) / n, 4),
         "min_total": round(min(r.score.total for r in results), 4),
         "max_total": round(max(r.score.total for r in results), 4),
         "total_errors": sum(len(r.score.errors) for r in results),

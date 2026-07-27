@@ -133,7 +133,9 @@ class TestMemorySearch:
         assert results[0].content.count("python") == 3
 
     def test_search_matches_tag_and_metadata(self, store: MemoryStore):
-        store.store("semantic", "unrelated content", tags=["kubernetes"], metadata={"topic": "helm"})
+        store.store(
+            "semantic", "unrelated content", tags=["kubernetes"], metadata={"topic": "helm"}
+        )
         results = store.search("helm")
         assert len(results) == 1
 

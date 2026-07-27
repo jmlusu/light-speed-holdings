@@ -140,9 +140,7 @@ class TaskStore:
 
     def count_by_status(self) -> dict[str, int]:
         """Return a mapping of status name -> count across all tasks."""
-        rows = self._db.fetchall(
-            "SELECT status, COUNT(*) as cnt FROM tasks GROUP BY status"
-        )
+        rows = self._db.fetchall("SELECT status, COUNT(*) as cnt FROM tasks GROUP BY status")
         return {r["status"]: r["cnt"] for r in rows}
 
     # ── Extended query API ────────────────────────────────────────────

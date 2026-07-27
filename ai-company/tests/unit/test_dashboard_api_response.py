@@ -72,9 +72,17 @@ class TestDashboardKPIContract:
 
     def test_kpi_values_are_integers(self, client: TestClient) -> None:
         data = client.get("/api/dashboard").json()
-        for key in ("pending_tasks", "in_progress_tasks", "completed_tasks",
-                     "failed_tasks", "escalated_tasks", "pending_approvals",
-                     "open_escalations", "total_agents", "scheduled_tasks"):
+        for key in (
+            "pending_tasks",
+            "in_progress_tasks",
+            "completed_tasks",
+            "failed_tasks",
+            "escalated_tasks",
+            "pending_approvals",
+            "open_escalations",
+            "total_agents",
+            "scheduled_tasks",
+        ):
             assert isinstance(data[key], int), f"{key} should be int, got {type(data[key])}"
 
     def test_uptime_is_positive_float(self, client: TestClient) -> None:
@@ -129,10 +137,13 @@ class TestTaskAPIContract:
         assert isinstance(resp.json(), list)
 
     def test_create_task_returns_201(self, client: TestClient) -> None:
-        resp = client.post("/api/tasks", json={
-            "receiver_id": "lead-engineering",
-            "instruction": "Write tests",
-        })
+        resp = client.post(
+            "/api/tasks",
+            json={
+                "receiver_id": "lead-engineering",
+                "instruction": "Write tests",
+            },
+        )
         assert resp.status_code == 201
         task = resp.json()
         assert task["status"] == "pending"
@@ -141,10 +152,13 @@ class TestTaskAPIContract:
 
     def test_task_filter_by_status(self, client: TestClient) -> None:
         # Create a task
-        client.post("/api/tasks", json={
-            "receiver_id": "lead-engineering",
-            "instruction": "Test",
-        })
+        client.post(
+            "/api/tasks",
+            json={
+                "receiver_id": "lead-engineering",
+                "instruction": "Test",
+            },
+        )
         # Filter
         resp = client.get("/api/tasks?status=pending")
         assert resp.status_code == 200
@@ -152,10 +166,13 @@ class TestTaskAPIContract:
             assert task["status"] == "pending"
 
     def test_task_has_all_fields(self, client: TestClient) -> None:
-        resp = client.post("/api/tasks", json={
-            "receiver_id": "lead-engineering",
-            "instruction": "Build feature",
-        })
+        resp = client.post(
+            "/api/tasks",
+            json={
+                "receiver_id": "lead-engineering",
+                "instruction": "Build feature",
+            },
+        )
         task = resp.json()
         required = {"id", "sender_id", "receiver_id", "instruction", "status", "priority"}
         assert required <= set(task.keys())
@@ -300,32 +317,31 @@ class TestAPIResponseTimes:
 
     MAX_RESPONSE_MS = 500  # milliseconds
 
-    @pytest.mark.parametrize("method,path", [
-        ("GET", "/api/dashboard"),
-        ("GET", "/api/agents"),
-        ("GET", "/api/org-chart"),
-        ("GET", "/api/tasks"),
-        ("GET", "/api/approvals"),
-        ("GET", "/api/escalations"),
-        ("GET", "/api/departments"),
-        ("GET", "/api/models"),
-        ("GET", "/api/models/tiers"),
-        ("GET", "/api/scheduler"),
-        ("GET", "/api/kpis"),
-        ("GET", "/api/kpis/summary"),
-        ("GET", "/api/metrics"),
-        ("GET", "/health"),
-    ])
-    def test_endpoint_responds_quickly(
-        self, client: TestClient, method: str, path: str
-    ) -> None:
+    @pytest.mark.parametrize(
+        "method,path",
+        [
+            ("GET", "/api/dashboard"),
+            ("GET", "/api/agents"),
+            ("GET", "/api/org-chart"),
+            ("GET", "/api/tasks"),
+            ("GET", "/api/approvals"),
+            ("GET", "/api/escalations"),
+            ("GET", "/api/departments"),
+            ("GET", "/api/models"),
+            ("GET", "/api/models/tiers"),
+            ("GET", "/api/scheduler"),
+            ("GET", "/api/kpis"),
+            ("GET", "/api/kpis/summary"),
+            ("GET", "/api/metrics"),
+            ("GET", "/health"),
+        ],
+    )
+    def test_endpoint_responds_quickly(self, client: TestClient, method: str, path: str) -> None:
         start = time.perf_counter()
         resp = getattr(client, method.lower())(path)
         elapsed_ms = (time.perf_counter() - start) * 1000
 
-        assert resp.status_code in (200, 404), (
-            f"{method} {path} returned {resp.status_code}"
-        )
+        assert resp.status_code in (200, 404), f"{method} {path} returned {resp.status_code}"
         assert elapsed_ms < self.MAX_RESPONSE_MS, (
             f"{method} {path} took {elapsed_ms:.0f}ms (limit: {self.MAX_RESPONSE_MS}ms)"
         )

@@ -340,12 +340,14 @@ class EvalRunner:
             if baseline is not None:
                 drop = baseline - result.score
                 if drop > regression_threshold:
-                    regressions.append({
-                        "case_id": case.id,
-                        "baseline_score": baseline,
-                        "current_score": result.score,
-                        "drop": round(drop, 4),
-                    })
+                    regressions.append(
+                        {
+                            "case_id": case.id,
+                            "baseline_score": baseline,
+                            "current_score": result.score,
+                            "drop": round(drop, 4),
+                        }
+                    )
 
         # Save results
         self._save_results(results)

@@ -109,13 +109,16 @@ class TestCrossPageNavigation:
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-    @pytest.mark.parametrize("path,expected_text", [
-        ("/agents", "Agents"),
-        ("/tasks", "Tasks"),
-        ("/kpis", "KPI"),
-        ("/costs", "Cost"),
-        ("/escalations", "Approv"),
-    ])
+    @pytest.mark.parametrize(
+        "path,expected_text",
+        [
+            ("/agents", "Agents"),
+            ("/tasks", "Tasks"),
+            ("/kpis", "KPI"),
+            ("/costs", "Cost"),
+            ("/escalations", "Approv"),
+        ],
+    )
     def test_page_renders(self, page, path: str, expected_text: str) -> None:
         """Each page route should render without errors."""
         page.goto(f"{self.url}{path}", wait_until="networkidle")

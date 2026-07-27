@@ -30,6 +30,7 @@ _security_logger = logging.getLogger("ai_company.security.pii_detector")
 
 class PIIType(Enum):
     """Types of PII that can be detected."""
+
     EMAIL = "email"
     SSN = "ssn"
     CREDIT_CARD = "credit_card"
@@ -42,15 +43,17 @@ class PIIType(Enum):
 
 class MaskingStrategy(Enum):
     """Strategy for masking detected PII."""
-    FULL = "full"           # Replace entirely with [REDACTED]
-    PARTIAL = "partial"     # Show first/last characters
-    HASH = "hash"           # Replace with hash
+
+    FULL = "full"  # Replace entirely with [REDACTED]
+    PARTIAL = "partial"  # Show first/last characters
+    HASH = "hash"  # Replace with hash
     PLACEHOLDER = "placeholder"  # Replace with type-specific placeholder
 
 
 @dataclass
 class PIIMatch:
     """A detected PII instance."""
+
     pii_type: PIIType
     value: str
     start: int
@@ -61,6 +64,7 @@ class PIIMatch:
 @dataclass
 class DetectionResult:
     """Result of PII detection scan."""
+
     original: str
     masked: str
     matches: list[PIIMatch] = field(default_factory=list)
@@ -85,14 +89,10 @@ class PIIDetector:
     """
 
     # Email pattern (RFC 5322 simplified)
-    EMAIL_PATTERN = re.compile(
-        r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-    )
+    EMAIL_PATTERN = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
 
     # SSN pattern (XXX-XX-XXXX or XXXXXXXXX)
-    SSN_PATTERN = re.compile(
-        r"\b\d{3}[-.]?\d{2}[-.]?\d{4}\b"
-    )
+    SSN_PATTERN = re.compile(r"\b\d{3}[-.]?\d{2}[-.]?\d{4}\b")
 
     # Credit card patterns (major card types)
     CC_PATTERNS = {
@@ -106,26 +106,23 @@ class PIIDetector:
     API_KEY_PATTERNS = {
         "generic": re.compile(r"\b[A-Za-z0-9]{32,}\b"),
         "aws_access_key": re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
-        "aws_secret_key": re.compile(r"(?:aws_secret_access_key|secret_key)[=:]\s*['\"]?[A-Za-z0-9/+=]{40}['\"]?", re.IGNORECASE),
+        "aws_secret_key": re.compile(
+            r"(?:aws_secret_access_key|secret_key)[=:]\s*['\"]?[A-Za-z0-9/+=]{40}['\"]?",
+            re.IGNORECASE,
+        ),
         "github_token": re.compile(r"\bghp_[A-Za-z0-9]{36}\b"),
         "openai_key": re.compile(r"\bsk-[A-Za-z0-9]{48}\b"),
         "anthropic_key": re.compile(r"\bsk-ant-[A-Za-z0-9]{48}\b"),
     }
 
     # Phone number pattern (US format)
-    PHONE_PATTERN = re.compile(
-        r"(?:\+?1[-.]?)?\(?[0-9]{3}\)?[-.]?[0-9]{3}[-.]?[0-9]{4}"
-    )
+    PHONE_PATTERN = re.compile(r"(?:\+?1[-.]?)?\(?[0-9]{3}\)?[-.]?[0-9]{3}[-.]?[0-9]{4}")
 
     # IP address pattern (IPv4)
-    IP_PATTERN = re.compile(
-        r"\b(?:\d{1,3}\.){3}\d{1,3}\b"
-    )
+    IP_PATTERN = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
 
     # Private key pattern
-    PRIVATE_KEY_PATTERN = re.compile(
-        r"-----BEGIN (?:RSA |EC )?PRIVATE KEY-----"
-    )
+    PRIVATE_KEY_PATTERN = re.compile(r"-----BEGIN (?:RSA |EC )?PRIVATE KEY-----")
 
     def __init__(
         self,
@@ -183,7 +180,7 @@ class PIIDetector:
         was_modified = False
         for match in matches:
             replacement = self._mask_value(match)
-            masked = masked[:match.start] + replacement + masked[match.end:]
+            masked = masked[: match.start] + replacement + masked[match.end :]
             was_modified = True
 
         # Log detections for audit
@@ -213,12 +210,14 @@ class PIIDetector:
             # Basic validation - must have @ and valid domain
             email = match.group()
             if self._is_valid_email(email):
-                matches.append(PIIMatch(
-                    pii_type=PIIType.EMAIL,
-                    value=email,
-                    start=match.start(),
-                    end=match.end(),
-                ))
+                matches.append(
+                    PIIMatch(
+                        pii_type=PIIType.EMAIL,
+                        value=email,
+                        start=match.start(),
+                        end=match.end(),
+                    )
+                )
         return matches
 
     def _is_valid_email(self, email: str) -> bool:
@@ -242,12 +241,14 @@ class PIIDetector:
             digits = re.sub(r"[-.]", "", ssn)
             # Basic SSN validation
             if len(digits) == 9 and not digits.startswith("000") and not digits.startswith("666"):
-                matches.append(PIIMatch(
-                    pii_type=PIIType.SSN,
-                    value=ssn,
-                    start=match.start(),
-                    end=match.end(),
-                ))
+                matches.append(
+                    PIIMatch(
+                        pii_type=PIIType.SSN,
+                        value=ssn,
+                        start=match.start(),
+                        end=match.end(),
+                    )
+                )
         return matches
 
     def _detect_credit_cards(self, content: str) -> list[PIIMatch]:
@@ -260,12 +261,14 @@ class PIIDetector:
                 digits = re.sub(r"[- ]", "", cc)
                 # Luhn algorithm check
                 if self._luhn_check(digits):
-                    matches.append(PIIMatch(
-                        pii_type=PIIType.CREDIT_CARD,
-                        value=cc,
-                        start=match.start(),
-                        end=match.end(),
-                    ))
+                    matches.append(
+                        PIIMatch(
+                            pii_type=PIIType.CREDIT_CARD,
+                            value=cc,
+                            start=match.start(),
+                            end=match.end(),
+                        )
+                    )
         return matches
 
     def _luhn_check(self, card_number: str) -> bool:
@@ -290,12 +293,14 @@ class PIIDetector:
         matches = []
         for key_type, pattern in self.API_KEY_PATTERNS.items():
             for match in pattern.finditer(content):
-                matches.append(PIIMatch(
-                    pii_type=PIIType.API_KEY,
-                    value=match.group(),
-                    start=match.start(),
-                    end=match.end(),
-                ))
+                matches.append(
+                    PIIMatch(
+                        pii_type=PIIType.API_KEY,
+                        value=match.group(),
+                        start=match.start(),
+                        end=match.end(),
+                    )
+                )
         return matches
 
     def _detect_phones(self, content: str) -> list[PIIMatch]:
@@ -306,12 +311,14 @@ class PIIDetector:
             # Basic validation - should have 10 digits
             digits = re.sub(r"[^0-9]", "", phone)
             if len(digits) == 10 or (len(digits) == 11 and digits[0] == "1"):
-                matches.append(PIIMatch(
-                    pii_type=PIIType.PHONE,
-                    value=phone,
-                    start=match.start(),
-                    end=match.end(),
-                ))
+                matches.append(
+                    PIIMatch(
+                        pii_type=PIIType.PHONE,
+                        value=phone,
+                        start=match.start(),
+                        end=match.end(),
+                    )
+                )
         return matches
 
     def _detect_ips(self, content: str) -> list[PIIMatch]:
@@ -322,25 +329,29 @@ class PIIDetector:
             # Basic validation - each octet 0-255
             parts = ip.split(".")
             if all(0 <= int(p) <= 255 for p in parts):
-                matches.append(PIIMatch(
-                    pii_type=PIIType.IP_ADDRESS,
-                    value=ip,
-                    start=match.start(),
-                    end=match.end(),
-                ))
+                matches.append(
+                    PIIMatch(
+                        pii_type=PIIType.IP_ADDRESS,
+                        value=ip,
+                        start=match.start(),
+                        end=match.end(),
+                    )
+                )
         return matches
 
     def _detect_private_keys(self, content: str) -> list[PIIMatch]:
         """Detect private key headers."""
         matches = []
         for match in self.PRIVATE_KEY_PATTERN.finditer(content):
-            matches.append(PIIMatch(
-                pii_type=PIIType.PRIVATE_KEY,
-                value=match.group(),
-                start=match.start(),
-                end=match.end(),
-                confidence=1.0,
-            ))
+            matches.append(
+                PIIMatch(
+                    pii_type=PIIType.PRIVATE_KEY,
+                    value=match.group(),
+                    start=match.start(),
+                    end=match.end(),
+                    confidence=1.0,
+                )
+            )
         return matches
 
     def _mask_value(self, match: PIIMatch) -> str:

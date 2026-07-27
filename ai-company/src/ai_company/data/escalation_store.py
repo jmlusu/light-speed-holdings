@@ -85,9 +85,7 @@ class EscalationStore:
 
     def count_pending(self) -> int:
         """Count unresolved escalations."""
-        row = self._db.fetchone(
-            "SELECT COUNT(*) as cnt FROM escalation_events WHERE resolved = 0"
-        )
+        row = self._db.fetchone("SELECT COUNT(*) as cnt FROM escalation_events WHERE resolved = 0")
         return row["cnt"] if row else 0
 
     def count(self) -> int:
@@ -147,9 +145,7 @@ class EscalationStore:
         """
         import yaml
 
-        events = self._db.fetchall(
-            "SELECT * FROM escalation_events ORDER BY timestamp ASC"
-        )
+        events = self._db.fetchall("SELECT * FROM escalation_events ORDER BY timestamp ASC")
         path = Path(yaml_path)
         path.parent.mkdir(parents=True, exist_ok=True)
 

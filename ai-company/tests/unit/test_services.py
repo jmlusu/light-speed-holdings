@@ -86,11 +86,13 @@ class TestFileStore:
 
         def increment(n: int) -> None:
             for _ in range(10):
+
                 def updater(data: dict | None) -> dict:
                     if data is None:
                         data = {"count": 0}
                     data["count"] = data.get("count", 0) + 1
                     return data
+
                 store.update_json("counter.json", updater)
 
         threads = [threading.Thread(target=increment, args=(i,)) for i in range(4)]
@@ -223,7 +225,10 @@ class TestLegalService:
     def test_add_and_approve_contract(self, tmp_path: Path) -> None:
         svc = LegalService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
         contract = svc.add_contract(
-            contract_id="c1", name="NDA", party="Acme", value=0,
+            contract_id="c1",
+            name="NDA",
+            party="Acme",
+            value=0,
         )
         assert contract["status"] == "draft"
 
@@ -300,9 +305,21 @@ def registry() -> CompanyRegistry:
                 trigger="job_requisition",
                 owner="hr",
                 steps=[
-                    WorkflowStep(id="post", name="Post Job", action="Create job posting", owner="recruiter"),
-                    WorkflowStep(id="review", name="Review Resumes", action="Screen candidates", owner="recruiter"),
-                    WorkflowStep(id="interview", name="Interview", action="Conduct interviews", owner="hiring_manager"),
+                    WorkflowStep(
+                        id="post", name="Post Job", action="Create job posting", owner="recruiter"
+                    ),
+                    WorkflowStep(
+                        id="review",
+                        name="Review Resumes",
+                        action="Screen candidates",
+                        owner="recruiter",
+                    ),
+                    WorkflowStep(
+                        id="interview",
+                        name="Interview",
+                        action="Conduct interviews",
+                        owner="hiring_manager",
+                    ),
                 ],
             ),
         ],
@@ -361,8 +378,13 @@ class TestPersistentWorkflowEngine:
         reg1 = CompanyRegistry(
             company=Company(id="test", name="Test"),
             workflows=[
-                Workflow(id="old_wf", name="Old", trigger="manual", owner="ops",
-                         steps=[WorkflowStep(id="s1", name="Step 1")]),
+                Workflow(
+                    id="old_wf",
+                    name="Old",
+                    trigger="manual",
+                    owner="ops",
+                    steps=[WorkflowStep(id="s1", name="Step 1")],
+                ),
             ],
         )
         engine1 = WorkflowEngine(reg1, state_dir=state_dir)

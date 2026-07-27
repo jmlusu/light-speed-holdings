@@ -35,9 +35,7 @@ logger = logging.getLogger(__name__)
 class LLMProvider(Protocol):
     """Protocol for LLM providers used in evaluation."""
 
-    def chat(
-        self, system_prompt: str, user_prompt: str, model: str | None = None
-    ) -> Any:
+    def chat(self, system_prompt: str, user_prompt: str, model: str | None = None) -> Any:
         """Send a chat request and return a response with .content attribute."""
         ...
 
@@ -126,9 +124,7 @@ class EvalRunner:
                 eval_result = self.scorer.score(tc, raw_output)
                 results.append(eval_result)
 
-                logger.debug(
-                    "Test %s: score=%.3f", tc.id, eval_result.score.total
-                )
+                logger.debug("Test %s: score=%.3f", tc.id, eval_result.score.total)
             except Exception as exc:
                 error_msg = f"Test {tc.id} failed: {exc}"
                 errors.append(error_msg)
@@ -216,7 +212,7 @@ class EvalRunner:
 
         return (
             '{"thought": "I need to analyze the task and take appropriate action. '
-            f'{test_case.task_instruction[:100]}'
+            f"{test_case.task_instruction[:100]}"
             ' Let me start by reviewing available information.", '
             f'"plan": [{{"tool": "{tool}", "args": {args}}}], '
             '"result": "Task initiated — reviewing information and delegating as needed.", '

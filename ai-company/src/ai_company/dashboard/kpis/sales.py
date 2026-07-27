@@ -20,17 +20,11 @@ class SalesKPICollector(KPICollector):
 
         # Count sales-related tasks
         sales_receivers = {"sales", "business_developer"}
-        sales_tasks = [
-            t for t in tasks if t.get("receiver_id") in sales_receivers
-        ]
-        completed_sales = sum(
-            1 for t in sales_tasks if t.get("status") == "completed"
-        )
+        sales_tasks = [t for t in tasks if t.get("receiver_id") in sales_receivers]
+        completed_sales = sum(1 for t in sales_tasks if t.get("status") == "completed")
         total_sales = len(sales_tasks)
         task_completion_rate = (
-            round((completed_sales / total_sales * 100), 1)
-            if total_sales > 0
-            else 0.0
+            round((completed_sales / total_sales * 100), 1) if total_sales > 0 else 0.0
         )
 
         # Pipeline metrics
@@ -38,9 +32,7 @@ class SalesKPICollector(KPICollector):
         total_pipeline_value = sum(p.get("value", 0) for p in pipeline_list)
         won_deals = sum(1 for p in pipeline_list if p.get("stage") == "won")
         total_deals = len(pipeline_list)
-        win_rate = (
-            round((won_deals / total_deals * 100), 1) if total_deals > 0 else 0.0
-        )
+        win_rate = round((won_deals / total_deals * 100), 1) if total_deals > 0 else 0.0
 
         # Leads
         lead_list = leads if isinstance(leads, list) else []
@@ -55,7 +47,9 @@ class SalesKPICollector(KPICollector):
                 "win_rate": self._kpi(win_rate, 25, "%"),
                 "new_leads": self._kpi(new_leads, None, "count"),
                 "sales_task_completion": self._kpi(
-                    task_completion_rate, 85, "%",
+                    task_completion_rate,
+                    85,
+                    "%",
                 ),
                 "total_sales_tasks": self._kpi(total_sales, None, "count"),
             },

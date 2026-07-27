@@ -141,9 +141,7 @@ class DaemonHealthStatus:
             "updated_at": now_iso,
         }
         self.status_path.parent.mkdir(parents=True, exist_ok=True)
-        self.status_path.write_text(
-            json.dumps(data, indent=2, default=str), encoding="utf-8"
-        )
+        self.status_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
         logger.debug("Health status written: %s", self.status_path)
 
     def read(self) -> dict[str, Any] | None:
@@ -195,12 +193,8 @@ class ExecutorDaemon:
         self.executor_factory = executor_factory
         self.poll_interval = poll_interval
 
-        self.pid_file = DaemonPIDFile(
-            pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid")
-        )
-        self.status_file = DaemonHealthStatus(
-            status_path or DEFAULT_HEALTH_FILE
-        )
+        self.pid_file = DaemonPIDFile(pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid"))
+        self.status_file = DaemonHealthStatus(status_path or DEFAULT_HEALTH_FILE)
         self.log_path = log_path or (DEFAULT_LOG_DIR / "executor-daemon.log")
 
         self._shutdown_event = False
@@ -289,9 +283,7 @@ class ExecutorDaemon:
     @staticmethod
     def is_daemon_running(pid_path: Path | None = None) -> bool:
         """Check if a daemon instance is currently running."""
-        pid_file = DaemonPIDFile(
-            pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid")
-        )
+        pid_file = DaemonPIDFile(pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid"))
         return pid_file.is_running()
 
     @staticmethod
@@ -299,9 +291,7 @@ class ExecutorDaemon:
         status_path: Path | None = None,
     ) -> dict[str, Any] | None:
         """Read the daemon status file. Returns None if no daemon status exists."""
-        sf = DaemonHealthStatus(
-            status_path or DEFAULT_HEALTH_FILE
-        )
+        sf = DaemonHealthStatus(status_path or DEFAULT_HEALTH_FILE)
         return sf.read()
 
     # ── Internal ─────────────────────────────────────────────────────
@@ -317,7 +307,8 @@ class ExecutorDaemon:
                 self._ticks_completed += 1
                 logger.info(
                     "Tick #%d completed — processed %d task(s)",
-                    self._ticks_completed, count,
+                    self._ticks_completed,
+                    count,
                 )
                 self._update_status("running")
             except Exception:
@@ -362,6 +353,7 @@ class ExecutorDaemon:
 
     def _install_signal_handlers(self) -> None:
         """Install SIGTERM and SIGINT handlers for graceful shutdown."""
+
         def _handle_sigterm(signum: int, frame: Any) -> None:
             logger.info("Received SIGTERM — initiating graceful shutdown")
             self._shutdown_event = True

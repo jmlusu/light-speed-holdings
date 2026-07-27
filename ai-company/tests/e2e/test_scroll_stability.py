@@ -153,9 +153,7 @@ class TestRapidMutationStability:
         scroll_after = page.evaluate("window.scrollY")
         delta = abs(scroll_after - scroll_before)
 
-        assert delta == 0, (
-            f"Scroll drifted by {delta}px during rapid mutation"
-        )
+        assert delta == 0, f"Scroll drifted by {delta}px during rapid mutation"
 
     def test_no_layout_shift_on_chart_update(self, page) -> None:
         """AC-SCROLL-06: Charts re-render without layout shift."""
@@ -181,9 +179,7 @@ class TestRapidMutationStability:
         delta = abs(height_after - height_before)
 
         # Allow 1px tolerance for rounding
-        assert delta <= 1, (
-            f"Body height shifted by {delta}px during chart update"
-        )
+        assert delta <= 1, f"Body height shifted by {delta}px during chart update"
 
     def test_no_flicker_during_polling(self, page) -> None:
         """AC-DATA-05: No visible flicker during poll cycle."""
@@ -330,9 +326,9 @@ class TestResponsiveDesign:
     @pytest.mark.parametrize(
         "width,height",
         [
-            (320, 568),    # Mobile
-            (768, 1024),   # Tablet
-            (1440, 900),   # Desktop
+            (320, 568),  # Mobile
+            (768, 1024),  # Tablet
+            (1440, 900),  # Desktop
         ],
     )
     def test_no_horizontal_overflow(self, page, width: int, height: int) -> None:
@@ -408,6 +404,4 @@ class TestNavigation:
         for route in routes:
             response = page.goto(f"{self.url}{route}")
             assert response is not None, f"No response for {route}"
-            assert response.status < 500, (
-                f"Server error {response.status} on {route}"
-            )
+            assert response.status < 500, f"Server error {response.status} on {route}"

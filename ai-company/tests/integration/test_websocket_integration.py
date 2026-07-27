@@ -381,9 +381,7 @@ class TestConnectionLifecycle:
         assert connection_manager.active_count == 0
 
     @pytest.mark.asyncio
-    async def test_reconnect_new_connection(
-        self, connection_manager: ConnectionManager
-    ) -> None:
+    async def test_reconnect_new_connection(self, connection_manager: ConnectionManager) -> None:
         """A client that disconnects and reconnects appears as a new entry."""
         ws1 = RecordingWebSocket()
         await connection_manager.connect(ws1)
@@ -811,9 +809,7 @@ class TestEndToEndPipeline:
             # The first message from the connect is NOT the connected hello
             # (we bypassed the endpoint). Find the task_update message.
             task_msgs = [
-                json.loads(m)
-                for m in ws_client.sent
-                if json.loads(m).get("type") == "task_update"
+                json.loads(m) for m in ws_client.sent if json.loads(m).get("type") == "task_update"
             ]
             assert len(task_msgs) == 1
             assert task_msgs[0]["event"] == "created"
@@ -849,9 +845,7 @@ class TestEndToEndPipeline:
             await asyncio.sleep(0.1)
 
             task_msgs = [
-                json.loads(m)
-                for m in ws_client.sent
-                if json.loads(m).get("type") == "task_update"
+                json.loads(m) for m in ws_client.sent if json.loads(m).get("type") == "task_update"
             ]
             # At least "created" + "completed"
             events = [m["event"] for m in task_msgs]
@@ -890,14 +884,10 @@ class TestEndToEndPipeline:
             await asyncio.sleep(0.1)
 
             task_events = [
-                json.loads(m)
-                for m in task_ws.sent
-                if json.loads(m).get("type") == "task_update"
+                json.loads(m) for m in task_ws.sent if json.loads(m).get("type") == "task_update"
             ]
             kpi_events = [
-                json.loads(m)
-                for m in kpi_ws.sent
-                if json.loads(m).get("type") == "task_update"
+                json.loads(m) for m in kpi_ws.sent if json.loads(m).get("type") == "task_update"
             ]
             assert len(task_events) >= 1
             assert len(kpi_events) == 0  # kpi subscriber doesn't get task events
@@ -931,9 +921,7 @@ class TestEndToEndPipeline:
 
             for ws in clients:
                 task_msgs = [
-                    json.loads(m)
-                    for m in ws.sent
-                    if json.loads(m).get("type") == "task_update"
+                    json.loads(m) for m in ws.sent if json.loads(m).get("type") == "task_update"
                 ]
                 assert len(task_msgs) >= 1
                 assert task_msgs[0]["payload"]["id"] == "e2e-multi"
@@ -970,9 +958,7 @@ class TestEndToEndPipeline:
 
             # Good client received the event
             task_msgs = [
-                json.loads(m)
-                for m in good.sent
-                if json.loads(m).get("type") == "task_update"
+                json.loads(m) for m in good.sent if json.loads(m).get("type") == "task_update"
             ]
             assert len(task_msgs) >= 1
             assert mgr.active_count == 1  # dead client pruned

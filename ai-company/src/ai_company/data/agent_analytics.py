@@ -62,9 +62,7 @@ class AgentPerformanceAnalytics:
         completion_rate = (
             round(completed_recv / total_finished * 100, 2) if total_finished > 0 else 0
         )
-        error_rate = (
-            round(failed_recv / total_finished * 100, 2) if total_finished > 0 else 0
-        )
+        error_rate = round(failed_recv / total_finished * 100, 2) if total_finished > 0 else 0
 
         # Audit event metrics
         audit_counts = self._db.fetchall(
@@ -229,7 +227,11 @@ class AgentPerformanceAnalytics:
         for agent, durs in by_agent.items():
             durs_sorted = sorted(durs)
             m = len(durs_sorted) // 2
-            med = durs_sorted[m] if len(durs_sorted) % 2 else (durs_sorted[m - 1] + durs_sorted[m]) / 2
+            med = (
+                durs_sorted[m]
+                if len(durs_sorted) % 2
+                else (durs_sorted[m - 1] + durs_sorted[m]) / 2
+            )
             agent_stats[agent] = {
                 "count": len(durs),
                 "avg_seconds": round(sum(durs) / len(durs), 2),
@@ -287,8 +289,7 @@ class AgentPerformanceAnalytics:
         return {
             "period_days": days,
             "failed_tasks_by_agent": [
-                {"agent_id": r["receiver_id"], "count": r["cnt"]}
-                for r in failed_tasks
+                {"agent_id": r["receiver_id"], "count": r["cnt"]} for r in failed_tasks
             ],
             "error_events_by_agent": [
                 {"agent_id": r["agent_id"], "event_type": r["event_type"], "count": r["cnt"]}

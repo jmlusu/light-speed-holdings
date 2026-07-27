@@ -26,6 +26,7 @@ from ai_company.models.models import (
 # Executive
 # ---------------------------------------------------------------------------
 
+
 class TestExecutive:
     def test_create_executive(self):
         ex = Executive(id="cto", title="CTO", department="Tech", reports_to="ceo")
@@ -35,7 +36,9 @@ class TestExecutive:
 
     def test_executive_with_responsibilities(self):
         ex = Executive(
-            id="cfo", name="CFO", title="CFO",
+            id="cfo",
+            name="CFO",
+            title="CFO",
             responsibilities=["Budget", "Finance"],
         )
         assert "Budget" in ex.responsibilities
@@ -48,6 +51,7 @@ class TestExecutive:
 # ---------------------------------------------------------------------------
 # Department
 # ---------------------------------------------------------------------------
+
 
 class TestDepartment:
     def test_create_department(self):
@@ -64,6 +68,7 @@ class TestDepartment:
 # Agent / Specialist
 # ---------------------------------------------------------------------------
 
+
 class TestAgent:
     def test_create_agent(self):
         agent = Agent(id="dev-1", name="Dev", department="eng", reports_to="cto")
@@ -78,6 +83,7 @@ class TestAgent:
 # Board
 # ---------------------------------------------------------------------------
 
+
 class TestBoardMember:
     def test_create_board_member(self):
         bm = BoardMember(id="dir-1", name="Alice", role="Chair")
@@ -87,6 +93,7 @@ class TestBoardMember:
 # ---------------------------------------------------------------------------
 # Task (backward-compatible)
 # ---------------------------------------------------------------------------
+
 
 class TestTask:
     def test_legacy_fields(self):
@@ -116,6 +123,7 @@ class TestTask:
 # Workflow
 # ---------------------------------------------------------------------------
 
+
 class TestWorkflow:
     def test_create_workflow(self):
         wf = Workflow(
@@ -133,6 +141,7 @@ class TestWorkflow:
 # ---------------------------------------------------------------------------
 # Budget
 # ---------------------------------------------------------------------------
+
 
 class TestBudget:
     def test_budget_defaults(self):
@@ -153,6 +162,7 @@ class TestBudget:
 # ---------------------------------------------------------------------------
 # CompanyRegistry
 # ---------------------------------------------------------------------------
+
 
 class TestCompanyRegistry:
     def test_default_registry(self):

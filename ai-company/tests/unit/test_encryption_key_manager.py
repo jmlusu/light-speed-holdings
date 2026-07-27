@@ -85,13 +85,17 @@ class TestKeyManager:
         # Raw key should NOT be in the file
         assert "current_key_raw" not in meta
 
-    def test_missing_master_secret_raises(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_missing_master_secret_raises(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.delenv("MEMORY_ENCRYPTION_KEY", raising=False)
         monkeypatch.delenv("JWT_SECRET_KEY", raising=False)
         with pytest.raises(RuntimeError, match="No master secret"):
             EncryptionKeyManager(key_dir=tmp_path / "keys")
 
-    def test_fallback_to_jwt_secret_key(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_fallback_to_jwt_secret_key(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.delenv("MEMORY_ENCRYPTION_KEY", raising=False)
         monkeypatch.setenv("JWT_SECRET_KEY", "jwt-fallback-secret")
         km = EncryptionKeyManager(key_dir=tmp_path / "keys")

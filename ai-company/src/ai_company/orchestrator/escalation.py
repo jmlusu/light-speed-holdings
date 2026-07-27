@@ -266,7 +266,9 @@ class PostmortemStore:
             root_cause="To be determined during investigation.",
             timeline=[
                 TimelineEntry(
-                    time=event.timestamp.isoformat() if isinstance(event.timestamp, datetime) else str(event.timestamp),
+                    time=event.timestamp.isoformat()
+                    if isinstance(event.timestamp, datetime)
+                    else str(event.timestamp),
                     description=f"Escalation triggered: {event.reason}",
                 ),
                 TimelineEntry(

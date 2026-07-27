@@ -69,9 +69,7 @@ class ABTestConfig:
         seed = int(time.time() * 1000) % 10000
         rng = random.Random(seed)
         return (
-            self.variant_a_version
-            if rng.random() < self.traffic_split
-            else self.variant_b_version
+            self.variant_a_version if rng.random() < self.traffic_split else self.variant_b_version
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -143,9 +141,7 @@ class PromptRegistry:
         self._save_versions(prompt_id, versions)
         return new_version
 
-    def get(
-        self, prompt_id: str, version: int | None = None
-    ) -> PromptVersion | None:
+    def get(self, prompt_id: str, version: int | None = None) -> PromptVersion | None:
         """Get a specific version, or the latest if version is None.
 
         Respects active A/B test configuration if present — returns the
@@ -263,9 +259,7 @@ class PromptRegistry:
         """Export all prompts and versions as a serialisable dict."""
         result: dict[str, list[dict[str, Any]]] = {}
         for prompt_id in self.list_prompts():
-            result[prompt_id] = [
-                v.to_dict() for v in self._load_versions(prompt_id)
-            ]
+            result[prompt_id] = [v.to_dict() for v in self._load_versions(prompt_id)]
         return result
 
     def import_from_dict(self, data: dict[str, list[dict[str, Any]]]) -> int:
@@ -298,9 +292,7 @@ class PromptRegistry:
         except (json.JSONDecodeError, TypeError):
             return []
 
-    def _save_versions(
-        self, prompt_id: str, versions: list[PromptVersion]
-    ) -> None:
+    def _save_versions(self, prompt_id: str, versions: list[PromptVersion]) -> None:
         path = self.storage_dir / prompt_id / "versions.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         data = [v.to_dict() for v in versions]

@@ -286,10 +286,7 @@ class KPIHistoryStore:
 
     def list_departments(self) -> list[str]:
         """Return department ids that have stored history."""
-        return [
-            p.stem.replace("_history", "")
-            for p in self._storage_dir.glob("*_history.ndjson")
-        ]
+        return [p.stem.replace("_history", "") for p in self._storage_dir.glob("*_history.ndjson")]
 
     def count_entries(self, department: str) -> int:
         """Return the total number of stored entries for a department."""
@@ -385,9 +382,7 @@ def compute_trends(
     list[TrendResult]
         One result per KPI with before/after comparison.
     """
-    since = (
-        datetime.now(timezone.utc) - timedelta(minutes=previous_period_minutes)
-    ).isoformat()
+    since = (datetime.now(timezone.utc) - timedelta(minutes=previous_period_minutes)).isoformat()
 
     # Get the *two most recent snapshots* (current and previous)
     all_entries = history_store.get_history(department, limit=0)
@@ -446,16 +441,18 @@ def compute_trends(
         else:
             direction = "flat"
 
-        results.append(TrendResult(
-            kpi_key=kpi_key,
-            department=department,
-            current_value=current_val,
-            previous_value=prev_val,
-            absolute_change=round(abs_change, 4),
-            percentage_change=pct_change,
-            direction=direction,
-            unit=current_entry.unit,
-        ))
+        results.append(
+            TrendResult(
+                kpi_key=kpi_key,
+                department=department,
+                current_value=current_val,
+                previous_value=prev_val,
+                absolute_change=round(abs_change, 4),
+                percentage_change=pct_change,
+                direction=direction,
+                unit=current_entry.unit,
+            )
+        )
 
     return results
 
@@ -534,15 +531,17 @@ class AlertEngine:
 
         count = 0
         for raw in raw_rules:
-            self._rules.append(AlertRule(
-                name=raw["name"],
-                department=raw.get("department", "*"),
-                kpi_key=raw["kpi_key"],
-                operator=raw["operator"],
-                threshold=float(raw["threshold"]),
-                severity=raw.get("severity", "warning"),
-                enabled=raw.get("enabled", True),
-            ))
+            self._rules.append(
+                AlertRule(
+                    name=raw["name"],
+                    department=raw.get("department", "*"),
+                    kpi_key=raw["kpi_key"],
+                    operator=raw["operator"],
+                    threshold=float(raw["threshold"]),
+                    severity=raw.get("severity", "warning"),
+                    enabled=raw.get("enabled", True),
+                )
+            )
             count += 1
 
         return count
@@ -551,15 +550,17 @@ class AlertEngine:
         """Persist the current rule set to a JSON file."""
         data = []
         for rule in self._rules:
-            data.append({
-                "name": rule.name,
-                "department": rule.department,
-                "kpi_key": rule.kpi_key,
-                "operator": rule.operator,
-                "threshold": rule.threshold,
-                "severity": rule.severity,
-                "enabled": rule.enabled,
-            })
+            data.append(
+                {
+                    "name": rule.name,
+                    "department": rule.department,
+                    "kpi_key": rule.kpi_key,
+                    "operator": rule.operator,
+                    "threshold": rule.threshold,
+                    "severity": rule.severity,
+                    "enabled": rule.enabled,
+                }
+            )
 
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w", encoding="utf-8") as fh:
@@ -616,21 +617,23 @@ class AlertEngine:
                     continue
 
                 if operator_fn(current_val, rule.threshold):
-                    fired.append(Alert(
-                        rule_name=rule.name,
-                        department=dept_id,
-                        kpi_key=rule.kpi_key,
-                        current_value=current_val,
-                        threshold=rule.threshold,
-                        operator=rule.operator,
-                        severity=rule.severity,
-                        fired_at=now,
-                        message=(
-                            f"[{rule.severity.upper()}] {rule.name}: "
-                            f"{dept_id}.{rule.kpi_key} = {current_val} "
-                            f"({rule.operator} {rule.threshold})"
-                        ),
-                    ))
+                    fired.append(
+                        Alert(
+                            rule_name=rule.name,
+                            department=dept_id,
+                            kpi_key=rule.kpi_key,
+                            current_value=current_val,
+                            threshold=rule.threshold,
+                            operator=rule.operator,
+                            severity=rule.severity,
+                            fired_at=now,
+                            message=(
+                                f"[{rule.severity.upper()}] {rule.name}: "
+                                f"{dept_id}.{rule.kpi_key} = {current_val} "
+                                f"({rule.operator} {rule.threshold})"
+                            ),
+                        )
+                    )
 
         return fired
 
@@ -700,9 +703,9 @@ def compute_summary(
 
     # Filter entries within the period
     period_entries = [
-        e for e in all_entries
-        if _ts_key(e.timestamp) >= cutoff_start
-        and _ts_key(e.timestamp) <= cutoff_end
+        e
+        for e in all_entries
+        if _ts_key(e.timestamp) >= cutoff_start and _ts_key(e.timestamp) <= cutoff_end
     ]
 
     if not period_entries:
@@ -719,18 +722,20 @@ def compute_summary(
     for kpi_key, values in by_kpi.items():
         if not values:
             continue
-        results.append(SummaryStatistics(
-            department=department,
-            kpi_key=kpi_key,
-            period=period,
-            period_start=period_start.isoformat(),
-            period_end=period_end.isoformat(),
-            min_value=round(min(values), 4),
-            max_value=round(max(values), 4),
-            mean_value=round(sum(values) / len(values), 4),
-            count=len(values),
-            unit=units.get(kpi_key, ""),
-        ))
+        results.append(
+            SummaryStatistics(
+                department=department,
+                kpi_key=kpi_key,
+                period=period,
+                period_start=period_start.isoformat(),
+                period_end=period_end.isoformat(),
+                min_value=round(min(values), 4),
+                max_value=round(max(values), 4),
+                mean_value=round(sum(values) / len(values), 4),
+                count=len(values),
+                unit=units.get(kpi_key, ""),
+            )
+        )
 
     return results
 

@@ -39,9 +39,7 @@ class DeadLetterQueue:
             return []
 
     def _save_entries(self, entries: list[dict[str, Any]]) -> None:
-        self.dlq_path.write_text(
-            json.dumps(entries, indent=2, default=str), encoding="utf-8"
-        )
+        self.dlq_path.write_text(json.dumps(entries, indent=2, default=str), encoding="utf-8")
 
     # ── Public API ───────────────────────────────────────────────────
 

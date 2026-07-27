@@ -116,9 +116,7 @@ def setup_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
             },
         ]
     }
-    (tmp_path / "company" / "departments.yaml").write_text(
-        yaml.dump(departments), encoding="utf-8"
-    )
+    (tmp_path / "company" / "departments.yaml").write_text(yaml.dump(departments), encoding="utf-8")
 
     # Orchestrator
     (tmp_path / "orchestrator").mkdir(exist_ok=True)
@@ -136,6 +134,7 @@ def setup_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
     # Copy models.yaml
     import shutil
+
     real_models = Path(__file__).resolve().parents[2] / "company" / "models.yaml"
     if real_models.exists():
         shutil.copy2(str(real_models), str(tmp_path / "company" / "models.yaml"))

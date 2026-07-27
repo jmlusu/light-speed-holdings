@@ -49,7 +49,9 @@ def _recv_with_timeout(ws: object, timeout: float = 5.0) -> dict:
     return result
 
 
-def test_task_created_event_emits_ws_broadcast(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_task_created_event_emits_ws_broadcast(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """Creating a task emits a task_update broadcast to the WS layer.
 
     A WebSocket client is connected (via TestClient) and we spy on the
@@ -177,19 +179,35 @@ def _setup_executor_files(tmp_path: Path) -> None:
     company = tmp_path / "company"
     company.mkdir()
     models = {
-        "providers": {"opencode": {"backend": "openai_compatible",
-                                    "default_model": "big-pickle",
-                                    "api_base": "https://opencode.ai/api/v1"}},
-        "tiers": {"standard": {"description": "std",
-                                "providers": [{"provider": "opencode",
-                                               "model": "big-pickle"}]}},
+        "providers": {
+            "opencode": {
+                "backend": "openai_compatible",
+                "default_model": "big-pickle",
+                "api_base": "https://opencode.ai/api/v1",
+            }
+        },
+        "tiers": {
+            "standard": {
+                "description": "std",
+                "providers": [{"provider": "opencode", "model": "big-pickle"}],
+            }
+        },
         "routing": [{"agent_type": "Specialist", "tier": "standard"}],
     }
     (company / "models.yaml").write_text(json.dumps(models), encoding="utf-8")
-    registry = [{"name": "test-agent", "role": "Test", "type": "Specialist",
-                 "department": "Test", "reportsTo": "ceo", "directReports": [],
-                 "description": "test", "tools": ["read", "write"],
-                 "permission": "Execute"}]
+    registry = [
+        {
+            "name": "test-agent",
+            "role": "Test",
+            "type": "Specialist",
+            "department": "Test",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "test",
+            "tools": ["read", "write"],
+            "permission": "Execute",
+        }
+    ]
     (company / "agent-registry.json").write_text(json.dumps(registry), encoding="utf-8")
     op = tmp_path / ".opencode"
     op.mkdir()
@@ -199,7 +217,7 @@ def _setup_executor_files(tmp_path: Path) -> None:
     agents = op / "agents"
     agents.mkdir()
     (agents / "test-agent.md").write_text(
-        "---\nname: test-agent\ndescription: t\ntools: [\"read\", \"write\"]\n"
+        '---\nname: test-agent\ndescription: t\ntools: ["read", "write"]\n'
         "mode: subagent\npermission:\n  read: allow\n  write: allow\n---\n\n"
         "# Test Agent\n\nType: Specialist\nDepartment: Test\nReports To: ceo\n\n"
         "## Mission\nExecute tasks.\n",

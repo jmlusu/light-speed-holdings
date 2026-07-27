@@ -159,6 +159,7 @@ class Executor:
                 if count > 0:
                     print(f"  Processed {count} task(s).")
                 import time
+
                 time.sleep(self.poll_interval)
         except KeyboardInterrupt:
             self.stop()
@@ -240,12 +241,15 @@ class Executor:
         self._pending_approvals[task.id] = parked.request_id
         self.bus.update_task_status(task.id, TaskStatus.WAITING_APPROVAL.value)
         log_task_status(
-            task.id, task.receiver_id, TaskStatus.IN_PROGRESS.value,
+            task.id,
+            task.receiver_id,
+            TaskStatus.IN_PROGRESS.value,
             TaskStatus.WAITING_APPROVAL.value,
         )
         logger.info(
             "Task %s parked (WAITING_APPROVAL) for HITL request %s",
-            task.id, parked.request_id,
+            task.id,
+            parked.request_id,
         )
 
     @staticmethod

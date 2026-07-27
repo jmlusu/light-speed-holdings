@@ -85,8 +85,7 @@ def fix() -> None:
     if fixes:
         console.print(
             Panel(
-                "[bold green]Fixed:[/bold green]\n"
-                + "\n".join(f"  - {f}" for f in fixes),
+                "[bold green]Fixed:[/bold green]\n" + "\n".join(f"  - {f}" for f in fixes),
                 title="Auto-Fix Results",
             )
         )
@@ -139,6 +138,4 @@ def run_diagnostics() -> None:
         if warnings:
             parts.append(f"[bold yellow]{warnings} warning(s)[/bold yellow]")
         summary = ", ".join(parts)
-        console.print(
-            Panel(f"{summary} detected.", title="Health Status")
-        )
+        console.print(Panel(f"{summary} detected.", title="Health Status"))

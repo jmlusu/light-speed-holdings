@@ -52,10 +52,10 @@ class EvalReport:
         lines.append(f"| Tool Usage | {agg.get('avg_tools', 0):.1%} |")
         lines.append(f"| Reasoning Quality | {agg.get('avg_reasoning', 0):.1%} |")
         lines.append(f"| Result Quality | {agg.get('avg_result', 0):.1%} |")
+        lines.append(f"| Constraint Adherence | {agg.get('avg_constraints', 0):.1%} |")
         lines.append(
-            f"| Constraint Adherence | {agg.get('avg_constraints', 0):.1%} |"
+            f"| Score Range | {agg.get('min_total', 0):.1%} — {agg.get('max_total', 0):.1%} |"
         )
-        lines.append(f"| Score Range | {agg.get('min_total', 0):.1%} — {agg.get('max_total', 0):.1%} |")
 
         # Per-test breakdown
         lines.append("\n## Per-Test Results\n")
@@ -149,9 +149,13 @@ class EvalReport:
         lines.append("=" * 60)
         lines.append("  PROMPT EVALUATION SUMMARY")
         lines.append("=" * 60)
-        lines.append(f"  Tests: {agg.get('count', 0)}  |  Duration: {self.result.duration_seconds}s")
-        lines.append(f"  Total Score:  {agg.get('avg_total', 0):.1%}  "
-                     f"(min={agg.get('min_total', 0):.1%} max={agg.get('max_total', 0):.1%})")
+        lines.append(
+            f"  Tests: {agg.get('count', 0)}  |  Duration: {self.result.duration_seconds}s"
+        )
+        lines.append(
+            f"  Total Score:  {agg.get('avg_total', 0):.1%}  "
+            f"(min={agg.get('min_total', 0):.1%} max={agg.get('max_total', 0):.1%})"
+        )
         lines.append("-" * 60)
         lines.append(f"  Format:       {agg.get('avg_format', 0):.1%}")
         lines.append(f"  Tools:        {agg.get('avg_tools', 0):.1%}")
@@ -159,8 +163,9 @@ class EvalReport:
         lines.append(f"  Result:       {agg.get('avg_result', 0):.1%}")
         lines.append(f"  Constraints:  {agg.get('avg_constraints', 0):.1%}")
         lines.append("-" * 60)
-        lines.append(f"  Errors: {agg.get('total_errors', 0)}  |  "
-                     f"Warnings: {agg.get('total_warnings', 0)}")
+        lines.append(
+            f"  Errors: {agg.get('total_errors', 0)}  |  Warnings: {agg.get('total_warnings', 0)}"
+        )
         lines.append("=" * 60)
 
         # Failed tests

@@ -45,7 +45,9 @@ def test_response_error_tracks_attempts():
 
 def test_openai_compatible_no_api_key():
     provider = OpenAICompatibleProvider(
-        name="test", api_base="http://localhost:9999", default_model="test-model",
+        name="test",
+        api_base="http://localhost:9999",
+        default_model="test-model",
         api_key_env="NONEXISTENT_KEY_12345",
     )
     assert not provider.is_available()
@@ -53,7 +55,9 @@ def test_openai_compatible_no_api_key():
 
 def test_openai_compatible_requires_api_key():
     provider = OpenAICompatibleProvider(
-        name="test", api_base="http://localhost:9999", default_model="test-model",
+        name="test",
+        api_base="http://localhost:9999",
+        default_model="test-model",
     )
     with pytest.raises(LLMProviderError, match="No API key"):
         provider.chat("system", "user")
@@ -152,7 +156,9 @@ class TestLLMClient:
         assert client._parse_response("I'm not sure what to do here.") is None
         assert client._parse_response("```some code```") is None
 
-    def test_execute_task_retries_on_bad_json(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_execute_task_retries_on_bad_json(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         monkeypatch.chdir(tmp_path)
         _setup_model_files(tmp_path)
         _create_agent_spec(tmp_path, "test-agent")
@@ -170,7 +176,11 @@ class TestLLMClient:
         mock_provider.chat.return_value = ChatResponse(
             content="not json at all", model="test", provider="mock"
         )
-        client._providers = {"opencode": mock_provider, "deepseek": mock_provider, "ollama": mock_provider}
+        client._providers = {
+            "opencode": mock_provider,
+            "deepseek": mock_provider,
+            "ollama": mock_provider,
+        }
 
         with pytest.raises(LLMResponseError, match="5 attempts"):
             client.execute_task("test-agent", "do something", max_retries=5)
@@ -199,7 +209,11 @@ class TestLLMClient:
             ChatResponse(content="also bad", model="test", provider="mock"),
             ChatResponse(content=good_response, model="test", provider="mock"),
         ]
-        client._providers = {"opencode": mock_provider, "deepseek": mock_provider, "ollama": mock_provider}
+        client._providers = {
+            "opencode": mock_provider,
+            "deepseek": mock_provider,
+            "ollama": mock_provider,
+        }
 
         result = client.execute_task("test-agent", "do something", max_retries=5)
         assert result["result"] == "success"
@@ -215,14 +229,35 @@ def _setup_model_files(tmp_path: Path) -> None:
 
     models = {
         "providers": {
-            "opencode": {"backend": "openai_compatible", "default_model": "big-pickle", "api_base": "https://opencode.ai/api/v1"},
-            "deepseek": {"backend": "openai_compatible", "default_model": "deepseek-chat", "api_base": "https://api.deepseek.com/v1"},
-            "ollama": {"backend": "ollama", "default_model": "llama3.1:8b", "api_base": "http://localhost:11434"},
+            "opencode": {
+                "backend": "openai_compatible",
+                "default_model": "big-pickle",
+                "api_base": "https://opencode.ai/api/v1",
+            },
+            "deepseek": {
+                "backend": "openai_compatible",
+                "default_model": "deepseek-chat",
+                "api_base": "https://api.deepseek.com/v1",
+            },
+            "ollama": {
+                "backend": "ollama",
+                "default_model": "llama3.1:8b",
+                "api_base": "http://localhost:11434",
+            },
         },
         "tiers": {
-            "fast": {"description": "Fast", "providers": [{"provider": "opencode", "model": "big-pickle"}]},
-            "standard": {"description": "Standard", "providers": [{"provider": "deepseek", "model": "deepseek-chat"}]},
-            "premium": {"description": "Premium", "providers": [{"provider": "deepseek", "model": "deepseek-coder"}]},
+            "fast": {
+                "description": "Fast",
+                "providers": [{"provider": "opencode", "model": "big-pickle"}],
+            },
+            "standard": {
+                "description": "Standard",
+                "providers": [{"provider": "deepseek", "model": "deepseek-chat"}],
+            },
+            "premium": {
+                "description": "Premium",
+                "providers": [{"provider": "deepseek", "model": "deepseek-coder"}],
+            },
         },
         "routing": [
             {"agent_type": "Board", "tier": "fast"},
@@ -230,14 +265,20 @@ def _setup_model_files(tmp_path: Path) -> None:
             {"agent_type": "Specialist", "tier": "standard"},
         ],
     }
-    (tmp_path / "company" / "models.yaml").write_text(
-        json.dumps(models), encoding="utf-8"
-    )
+    (tmp_path / "company" / "models.yaml").write_text(json.dumps(models), encoding="utf-8")
 
     registry = [
-        {"name": "test-agent", "role": "Test Agent", "type": "Specialist", "department": "Test",
-         "reportsTo": "ceo", "directReports": [], "description": "A test agent",
-         "tools": ["read", "write"], "permission": "Execute"},
+        {
+            "name": "test-agent",
+            "role": "Test Agent",
+            "type": "Specialist",
+            "department": "Test",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "A test agent",
+            "tools": ["read", "write"],
+            "permission": "Execute",
+        },
     ]
     (tmp_path / "company" / "agent-registry.json").write_text(
         json.dumps(registry), encoding="utf-8"
@@ -260,7 +301,7 @@ permission:
   bash: allow
 ---
 
-# {agent_name.replace('-', ' ').title()}
+# {agent_name.replace("-", " ").title()}
 
 ## Identity
 

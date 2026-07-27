@@ -84,15 +84,19 @@ def fix():
 
     # 5. Report results
     if fixes:
-        console.print(Panel(
-            "[bold green]Fixed:[/bold green]\n" + "\n".join(f"  - {f}" for f in fixes),
-            title="Auto-Fix Results",
-        ))
+        console.print(
+            Panel(
+                "[bold green]Fixed:[/bold green]\n" + "\n".join(f"  - {f}" for f in fixes),
+                title="Auto-Fix Results",
+            )
+        )
     else:
-        console.print(Panel(
-            "[bold green]No issues found — everything looks good![/bold green]",
-            title="Auto-Fix Results",
-        ))
+        console.print(
+            Panel(
+                "[bold green]No issues found — everything looks good![/bold green]",
+                title="Auto-Fix Results",
+            )
+        )
 
 
 def run_diagnostics():

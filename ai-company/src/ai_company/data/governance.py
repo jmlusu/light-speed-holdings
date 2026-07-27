@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 # Enums & constants
 # ---------------------------------------------------------------------------
 
+
 class DataClassification(str, Enum):
     """Sensitivity classification for data assets."""
 
@@ -234,9 +235,7 @@ class DataGovernance:
         self._policies: dict[str, RetentionPolicy] = {
             p.table: p for p in (policies or DEFAULT_POLICIES)
         }
-        self._owners: dict[str, DataOwner] = {
-            o.owner_id: o for o in (owners or DEFAULT_OWNERS)
-        }
+        self._owners: dict[str, DataOwner] = {o.owner_id: o for o in (owners or DEFAULT_OWNERS)}
 
     # ── Retention enforcement ─────────────────────────────────────────
 
@@ -487,11 +486,13 @@ class DataGovernance:
         for table, policy in self._policies.items():
             ts_col = self._get_timestamp_column(table)
             if ts_col is None:
-                findings.append({
-                    "severity": "warning",
-                    "table": table,
-                    "finding": "No timestamp column — retention cannot be enforced",
-                })
+                findings.append(
+                    {
+                        "severity": "warning",
+                        "table": table,
+                        "finding": "No timestamp column — retention cannot be enforced",
+                    }
+                )
                 continue
 
             row_count = self._db.table_count(table)
@@ -508,15 +509,17 @@ class DataGovernance:
             past_retention = past_row["cnt"] if past_row else 0
 
             if past_retention > 0:
-                findings.append({
-                    "severity": "info",
-                    "table": table,
-                    "finding": (
-                        f"{past_retention} records exceed {policy.retention_days}-day "
-                        f"retention window — action: {policy.action.value}"
-                    ),
-                    "records_affected": past_retention,
-                })
+                findings.append(
+                    {
+                        "severity": "info",
+                        "table": table,
+                        "finding": (
+                            f"{past_retention} records exceed {policy.retention_days}-day "
+                            f"retention window — action: {policy.action.value}"
+                        ),
+                        "records_affected": past_retention,
+                    }
+                )
 
             # Check for empty required fields
             if table == "tasks":
@@ -524,27 +527,31 @@ class DataGovernance:
                     "SELECT COUNT(*) as cnt FROM tasks WHERE assignee = '' OR assignee IS NULL"
                 )
                 if empty_assignee and empty_assignee["cnt"] > 0:
-                    findings.append({
-                        "severity": "warning",
-                        "table": table,
-                        "finding": (
-                            f"{empty_assignee['cnt']} tasks have no assignee — "
-                            "data quality issue"
-                        ),
-                    })
+                    findings.append(
+                        {
+                            "severity": "warning",
+                            "table": table,
+                            "finding": (
+                                f"{empty_assignee['cnt']} tasks have no assignee — "
+                                "data quality issue"
+                            ),
+                        }
+                    )
 
             if table == "audit_events":
                 null_agent = self._db.fetchone(
                     "SELECT COUNT(*) as cnt FROM audit_events WHERE agent_id = '' OR agent_id IS NULL"
                 )
                 if null_agent and null_agent["cnt"] > 0:
-                    findings.append({
-                        "severity": "warning",
-                        "table": table,
-                        "finding": (
-                            f"{null_agent['cnt']} audit events have no agent_id — "
-                            "attribution gap"
-                        ),
-                    })
+                    findings.append(
+                        {
+                            "severity": "warning",
+                            "table": table,
+                            "finding": (
+                                f"{null_agent['cnt']} audit events have no agent_id — "
+                                "attribution gap"
+                            ),
+                        }
+                    )
 
         return findings

@@ -6,6 +6,7 @@ Test script to verify Python setup for milestones deck generation
 import sys
 import importlib.util
 
+
 def check_python_version():
     """Check Python version"""
     version = sys.version_info
@@ -17,6 +18,7 @@ def check_python_version():
         print("   Required: Python 3.7 or higher")
         return False
 
+
 def check_package(package_name):
     """Check if a package is installed"""
     spec = importlib.util.find_spec(package_name)
@@ -27,17 +29,18 @@ def check_package(package_name):
         print(f"✅ {package_name} is installed")
         return True
 
+
 def main():
     print("Python Setup Test for Milestones Deck Generator")
     print("=" * 50)
-    
+
     # Check Python version
     python_ok = check_python_version()
-    
+
     # Check required packages
-    packages = ['pptx']
+    packages = ["pptx"]
     packages_ok = all(check_package(pkg) for pkg in packages)
-    
+
     print()
     if python_ok and packages_ok:
         print("✅ All checks passed!")
@@ -53,6 +56,7 @@ def main():
         print("1. Install Python 3.7+ from https://python.org/")
         print("2. Run: pip install -r requirements-pptx.txt")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

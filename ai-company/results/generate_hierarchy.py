@@ -30,19 +30,19 @@ except ImportError:
     from pptx.enum.shapes import MSO_SHAPE
 
 # ── Theme colors ─────────────────────────────────────────────────────────────
-BG_DARK     = RGBColor(0x0B, 0x19, 0x29)
-BG_CARD     = RGBColor(0x12, 0x2B, 0x45)
+BG_DARK = RGBColor(0x0B, 0x19, 0x29)
+BG_CARD = RGBColor(0x12, 0x2B, 0x45)
 BG_CARD_ALT = RGBColor(0x0E, 0x23, 0x3B)
-ACCENT      = RGBColor(0x00, 0xD4, 0xAA)
-ACCENT_DIM  = RGBColor(0x00, 0x9E, 0x7E)
+ACCENT = RGBColor(0x00, 0xD4, 0xAA)
+ACCENT_DIM = RGBColor(0x00, 0x9E, 0x7E)
 ACCENT_GOLD = RGBColor(0xFF, 0xB8, 0x47)
-WHITE       = RGBColor(0xFF, 0xFF, 0xFF)
-LIGHT_GRAY  = RGBColor(0xB8, 0xC9, 0xE0)
-MID_GRAY    = RGBColor(0x7A, 0x8F, 0xA8)
-DARK_TEXT    = RGBColor(0x0B, 0x19, 0x29)
-CORAL       = RGBColor(0xFF, 0x6B, 0x6B)
-PURPLE      = RGBColor(0xA8, 0x78, 0xFF)
-BLUE        = RGBColor(0x4E, 0xA8, 0xFF)
+WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+LIGHT_GRAY = RGBColor(0xB8, 0xC9, 0xE0)
+MID_GRAY = RGBColor(0x7A, 0x8F, 0xA8)
+DARK_TEXT = RGBColor(0x0B, 0x19, 0x29)
+CORAL = RGBColor(0xFF, 0x6B, 0x6B)
+PURPLE = RGBColor(0xA8, 0x78, 0xFF)
+BLUE = RGBColor(0x4E, 0xA8, 0xFF)
 
 SLIDE_W = Inches(10)
 SLIDE_H = Inches(5.625)
@@ -76,9 +76,20 @@ def add_accent_bar(slide, x, y, w, h, color=ACCENT):
     return bar
 
 
-def add_textbox(slide, x, y, w, h, text, font_size=14, color=WHITE,
-                bold=False, align=PP_ALIGN.LEFT, font_name="Calibri",
-                valign=MSO_ANCHOR.TOP):
+def add_textbox(
+    slide,
+    x,
+    y,
+    w,
+    h,
+    text,
+    font_size=14,
+    color=WHITE,
+    bold=False,
+    align=PP_ALIGN.LEFT,
+    font_name="Calibri",
+    valign=MSO_ANCHOR.TOP,
+):
     txBox = slide.shapes.add_textbox(x, y, w, h)
     tf = txBox.text_frame
     tf.word_wrap = True
@@ -95,8 +106,9 @@ def add_textbox(slide, x, y, w, h, text, font_size=14, color=WHITE,
     return txBox
 
 
-def add_bullet_list(slide, x, y, w, h, items, font_size=13,
-                    color=LIGHT_GRAY, bullet_color=ACCENT, spacing=6):
+def add_bullet_list(
+    slide, x, y, w, h, items, font_size=13, color=LIGHT_GRAY, bullet_color=ACCENT, spacing=6
+):
     txBox = slide.shapes.add_textbox(x, y, w, h)
     tf = txBox.text_frame
     tf.word_wrap = True
@@ -108,7 +120,7 @@ def add_bullet_list(slide, x, y, w, h, items, font_size=13,
         p.space_before = Pt(spacing)
         p.space_after = Pt(spacing)
         run_bullet = p.add_run()
-        run_bullet.text = "\u25CF  "
+        run_bullet.text = "\u25cf  "
         run_bullet.font.size = Pt(font_size - 1)
         run_bullet.font.color.rgb = bullet_color
         run_bullet.font.name = "Calibri"
@@ -122,25 +134,63 @@ def add_bullet_list(slide, x, y, w, h, items, font_size=13,
 
 def add_stat_card(slide, x, y, w, h, number, label, num_color=ACCENT):
     add_shape_rect(slide, x, y, w, h, BG_CARD)
-    add_textbox(slide, x + Inches(0.2), y + Inches(0.15), w - Inches(0.4),
-                Inches(0.6), number, font_size=36, color=num_color,
-                bold=True, align=PP_ALIGN.CENTER, font_name="Georgia")
-    add_textbox(slide, x + Inches(0.2), y + Inches(0.7), w - Inches(0.4),
-                Inches(0.4), label, font_size=11, color=MID_GRAY,
-                align=PP_ALIGN.CENTER, font_name="Calibri")
+    add_textbox(
+        slide,
+        x + Inches(0.2),
+        y + Inches(0.15),
+        w - Inches(0.4),
+        Inches(0.6),
+        number,
+        font_size=36,
+        color=num_color,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+        font_name="Georgia",
+    )
+    add_textbox(
+        slide,
+        x + Inches(0.2),
+        y + Inches(0.7),
+        w - Inches(0.4),
+        Inches(0.4),
+        label,
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+        font_name="Calibri",
+    )
 
 
 def add_title_bar(slide, title: str, accent_width: float = 2.0):
     """Standard dark title bar with accent underline."""
     add_shape_rect(slide, Inches(0), Inches(0), SLIDE_W, Inches(0.85), BG_CARD)
-    add_textbox(slide, Inches(0.6), Inches(0.15), Inches(8), Inches(0.6),
-                title, font_size=26, color=WHITE, bold=True, font_name="Georgia")
+    add_textbox(
+        slide,
+        Inches(0.6),
+        Inches(0.15),
+        Inches(8),
+        Inches(0.6),
+        title,
+        font_size=26,
+        color=WHITE,
+        bold=True,
+        font_name="Georgia",
+    )
     add_accent_bar(slide, Inches(0.6), Inches(0.75), Inches(accent_width), Inches(0.04))
 
 
 def add_page_number(slide, num: int, total: int):
-    add_textbox(slide, Inches(9.0), Inches(5.2), Inches(0.8), Inches(0.3),
-                f"{num}/{total}", font_size=9, color=MID_GRAY, align=PP_ALIGN.RIGHT)
+    add_textbox(
+        slide,
+        Inches(9.0),
+        Inches(5.2),
+        Inches(0.8),
+        Inches(0.3),
+        f"{num}/{total}",
+        font_size=9,
+        color=MID_GRAY,
+        align=PP_ALIGN.RIGHT,
+    )
 
 
 # ── Slide builders ───────────────────────────────────────────────────────────
@@ -155,22 +205,58 @@ def build_slide_01_title(prs: Presentation):
 
     add_shape_rect(slide, Inches(0.8), Inches(1.0), Inches(8.4), Inches(3.6), BG_CARD)
 
-    add_textbox(slide, Inches(1.2), Inches(1.3), Inches(7.6), Inches(1.0),
-                "Light Speed Holdings", font_size=42, color=WHITE, bold=True,
-                align=PP_ALIGN.LEFT, font_name="Georgia")
+    add_textbox(
+        slide,
+        Inches(1.2),
+        Inches(1.3),
+        Inches(7.6),
+        Inches(1.0),
+        "Light Speed Holdings",
+        font_size=42,
+        color=WHITE,
+        bold=True,
+        align=PP_ALIGN.LEFT,
+        font_name="Georgia",
+    )
     add_accent_bar(slide, Inches(1.2), Inches(2.15), Inches(2.5), Inches(0.05))
 
-    add_textbox(slide, Inches(1.2), Inches(2.4), Inches(7.6), Inches(0.5),
-                "Organizational Hierarchy", font_size=28, color=ACCENT,
-                bold=False, align=PP_ALIGN.LEFT, font_name="Georgia")
+    add_textbox(
+        slide,
+        Inches(1.2),
+        Inches(2.4),
+        Inches(7.6),
+        Inches(0.5),
+        "Organizational Hierarchy",
+        font_size=28,
+        color=ACCENT,
+        bold=False,
+        align=PP_ALIGN.LEFT,
+        font_name="Georgia",
+    )
 
-    add_textbox(slide, Inches(1.2), Inches(3.1), Inches(7.6), Inches(0.5),
-                "127 AI Agents  |  17 Departments  |  v0.3.0",
-                font_size=16, color=MID_GRAY, align=PP_ALIGN.LEFT)
+    add_textbox(
+        slide,
+        Inches(1.2),
+        Inches(3.1),
+        Inches(7.6),
+        Inches(0.5),
+        "127 AI Agents  |  17 Departments  |  v0.3.0",
+        font_size=16,
+        color=MID_GRAY,
+        align=PP_ALIGN.LEFT,
+    )
 
-    add_textbox(slide, Inches(1.2), Inches(3.7), Inches(7.6), Inches(0.4),
-                "AI Company Builder \u2014 Building the Future of Work",
-                font_size=13, color=LIGHT_GRAY, align=PP_ALIGN.LEFT)
+    add_textbox(
+        slide,
+        Inches(1.2),
+        Inches(3.7),
+        Inches(7.6),
+        Inches(0.4),
+        "AI Company Builder \u2014 Building the Future of Work",
+        font_size=13,
+        color=LIGHT_GRAY,
+        align=PP_ALIGN.LEFT,
+    )
 
     add_accent_bar(slide, Inches(0), Inches(5.565), SLIDE_W, Inches(0.06))
     add_page_number(slide, 1, TOTAL_SLIDES)
@@ -207,8 +293,9 @@ def build_slide_02_overview(prs: Presentation):
         "Tier 3: Department Heads \u2014 CTO, COO, CAIO, CPO, CMO, CHRO, CFO, CISO, CLO, CSO",
         "Tier 4: Specialists & Leads \u2014 100+ specialist agents across all departments",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(2.85), Inches(8.5), Inches(2.2),
-                    tiers, font_size=13, spacing=8)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(2.85), Inches(8.5), Inches(2.2), tiers, font_size=13, spacing=8
+    )
     add_page_number(slide, 2, TOTAL_SLIDES)
 
 
@@ -220,10 +307,30 @@ def build_slide_03_board(prs: Presentation):
     # Board Chair card (centered, prominent)
     add_shape_rect(slide, Inches(3.2), Inches(1.1), Inches(3.6), Inches(1.0), BG_CARD)
     add_accent_bar(slide, Inches(3.2), Inches(1.1), Inches(3.6), Inches(0.05), ACCENT_GOLD)
-    add_textbox(slide, Inches(3.4), Inches(1.25), Inches(3.2), Inches(0.35),
-                "Board Chair", font_size=16, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
-    add_textbox(slide, Inches(3.4), Inches(1.6), Inches(3.2), Inches(0.3),
-                "board_chair", font_size=11, color=ACCENT_GOLD, align=PP_ALIGN.CENTER, font_name="Consolas")
+    add_textbox(
+        slide,
+        Inches(3.4),
+        Inches(1.25),
+        Inches(3.2),
+        Inches(0.35),
+        "Board Chair",
+        font_size=16,
+        color=WHITE,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+    )
+    add_textbox(
+        slide,
+        Inches(3.4),
+        Inches(1.6),
+        Inches(3.2),
+        Inches(0.3),
+        "board_chair",
+        font_size=11,
+        color=ACCENT_GOLD,
+        align=PP_ALIGN.CENTER,
+        font_name="Consolas",
+    )
 
     committees = [
         ("Finance Committee", "board_finance", ACCENT),
@@ -244,17 +351,43 @@ def build_slide_03_board(prs: Presentation):
         x = start_x + i * (card_w + gap)
         add_shape_rect(slide, x, y_cards, card_w, card_h, BG_CARD)
         add_accent_bar(slide, x, y_cards, card_w, Inches(0.04), color)
-        add_textbox(slide, x + Inches(0.1), y_cards + Inches(0.15),
-                    card_w - Inches(0.2), Inches(0.6),
-                    name, font_size=11, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
-        add_textbox(slide, x + Inches(0.1), y_cards + Inches(0.8),
-                    card_w - Inches(0.2), Inches(0.4),
-                    agent_id, font_size=9, color=color, align=PP_ALIGN.CENTER, font_name="Consolas")
+        add_textbox(
+            slide,
+            x + Inches(0.1),
+            y_cards + Inches(0.15),
+            card_w - Inches(0.2),
+            Inches(0.6),
+            name,
+            font_size=11,
+            color=WHITE,
+            bold=True,
+            align=PP_ALIGN.CENTER,
+        )
+        add_textbox(
+            slide,
+            x + Inches(0.1),
+            y_cards + Inches(0.8),
+            card_w - Inches(0.2),
+            Inches(0.4),
+            agent_id,
+            font_size=9,
+            color=color,
+            align=PP_ALIGN.CENTER,
+            font_name="Consolas",
+        )
 
     # Reporting line note
-    add_textbox(slide, Inches(0.5), Inches(4.3), Inches(9.0), Inches(0.4),
-                "All committees report to the Board Chair. Human CEO reports directly to Board Chair.",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.3),
+        Inches(9.0),
+        Inches(0.4),
+        "All committees report to the Board Chair. Human CEO reports directly to Board Chair.",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 3, TOTAL_SLIDES)
 
 
@@ -266,19 +399,58 @@ def build_slide_04_executive(prs: Presentation):
     # Human CEO (top center)
     add_shape_rect(slide, Inches(3.5), Inches(1.1), Inches(3.0), Inches(0.9), BG_CARD)
     add_accent_bar(slide, Inches(3.5), Inches(1.1), Inches(3.0), Inches(0.05), ACCENT_GOLD)
-    add_textbox(slide, Inches(3.7), Inches(1.2), Inches(2.6), Inches(0.3),
-                "Human CEO", font_size=16, color=ACCENT_GOLD, bold=True, align=PP_ALIGN.CENTER)
-    add_textbox(slide, Inches(3.7), Inches(1.55), Inches(2.6), Inches(0.3),
-                "human_ceo", font_size=10, color=MID_GRAY, align=PP_ALIGN.CENTER, font_name="Consolas")
+    add_textbox(
+        slide,
+        Inches(3.7),
+        Inches(1.2),
+        Inches(2.6),
+        Inches(0.3),
+        "Human CEO",
+        font_size=16,
+        color=ACCENT_GOLD,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+    )
+    add_textbox(
+        slide,
+        Inches(3.7),
+        Inches(1.55),
+        Inches(2.6),
+        Inches(0.3),
+        "human_ceo",
+        font_size=10,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+        font_name="Consolas",
+    )
 
     # Chief of Staff
     add_shape_rect(slide, Inches(3.5), Inches(2.1), Inches(3.0), Inches(0.7), BG_CARD)
     add_accent_bar(slide, Inches(3.5), Inches(2.1), Inches(3.0), Inches(0.04), ACCENT)
-    add_textbox(slide, Inches(3.7), Inches(2.15), Inches(2.6), Inches(0.3),
-                "Chief of Staff (Orchestrator)", font_size=12, color=ACCENT, bold=True,
-                align=PP_ALIGN.CENTER)
-    add_textbox(slide, Inches(3.7), Inches(2.45), Inches(2.6), Inches(0.25),
-                "chief_of_staff", font_size=9, color=MID_GRAY, align=PP_ALIGN.CENTER, font_name="Consolas")
+    add_textbox(
+        slide,
+        Inches(3.7),
+        Inches(2.15),
+        Inches(2.6),
+        Inches(0.3),
+        "Chief of Staff (Orchestrator)",
+        font_size=12,
+        color=ACCENT,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+    )
+    add_textbox(
+        slide,
+        Inches(3.7),
+        Inches(2.45),
+        Inches(2.6),
+        Inches(0.25),
+        "chief_of_staff",
+        font_size=9,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+        font_name="Consolas",
+    )
 
     # C-Suite row
     c_suite = [
@@ -304,21 +476,69 @@ def build_slide_04_executive(prs: Presentation):
         x = start_x + i * (card_w + gap)
         add_shape_rect(slide, x, y_exec, card_w, card_h, BG_CARD)
         add_accent_bar(slide, x, y_exec, card_w, Inches(0.04), color)
-        add_textbox(slide, x + Inches(0.05), y_exec + Inches(0.1), card_w - Inches(0.1), Inches(0.3),
-                    title, font_size=13, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
-        add_textbox(slide, x + Inches(0.05), y_exec + Inches(0.45), card_w - Inches(0.1), Inches(0.25),
-                    agent_id, font_size=8, color=color, align=PP_ALIGN.CENTER, font_name="Consolas")
+        add_textbox(
+            slide,
+            x + Inches(0.05),
+            y_exec + Inches(0.1),
+            card_w - Inches(0.1),
+            Inches(0.3),
+            title,
+            font_size=13,
+            color=WHITE,
+            bold=True,
+            align=PP_ALIGN.CENTER,
+        )
+        add_textbox(
+            slide,
+            x + Inches(0.05),
+            y_exec + Inches(0.45),
+            card_w - Inches(0.1),
+            Inches(0.25),
+            agent_id,
+            font_size=8,
+            color=color,
+            align=PP_ALIGN.CENTER,
+            font_name="Consolas",
+        )
 
     # CEO Advisor (separate, right side)
     add_shape_rect(slide, Inches(8.5), Inches(1.1), Inches(1.3), Inches(0.7), BG_CARD_ALT)
-    add_textbox(slide, Inches(8.55), Inches(1.15), Inches(1.2), Inches(0.3),
-                "CEO Advisor", font_size=10, color=LIGHT_GRAY, bold=True, align=PP_ALIGN.CENTER)
-    add_textbox(slide, Inches(8.55), Inches(1.45), Inches(1.2), Inches(0.2),
-                "advisor", font_size=8, color=MID_GRAY, align=PP_ALIGN.CENTER, font_name="Consolas")
+    add_textbox(
+        slide,
+        Inches(8.55),
+        Inches(1.15),
+        Inches(1.2),
+        Inches(0.3),
+        "CEO Advisor",
+        font_size=10,
+        color=LIGHT_GRAY,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+    )
+    add_textbox(
+        slide,
+        Inches(8.55),
+        Inches(1.45),
+        Inches(1.2),
+        Inches(0.2),
+        "advisor",
+        font_size=8,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+        font_name="Consolas",
+    )
 
-    add_textbox(slide, Inches(0.5), Inches(4.5), Inches(9.0), Inches(0.35),
-                "10 C-Suite executives  |  Chief of Staff orchestrates cross-functional work",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.5),
+        Inches(9.0),
+        Inches(0.35),
+        "10 C-Suite executives  |  Chief of Staff orchestrates cross-functional work",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 4, TOTAL_SLIDES)
 
 
@@ -330,45 +550,75 @@ def build_slide_05_technology(prs: Presentation):
     # VP Engineering card
     add_shape_rect(slide, Inches(0.5), Inches(1.1), Inches(2.8), Inches(0.7), BG_CARD)
     add_accent_bar(slide, Inches(0.5), Inches(1.1), Inches(2.8), Inches(0.04), ACCENT)
-    add_textbox(slide, Inches(0.6), Inches(1.15), Inches(2.6), Inches(0.3),
-                "VP of Engineering", font_size=13, color=WHITE, bold=True)
-    add_textbox(slide, Inches(0.6), Inches(1.45), Inches(2.6), Inches(0.25),
-                "vp_engineering", font_size=9, color=ACCENT, font_name="Consolas")
+    add_textbox(
+        slide,
+        Inches(0.6),
+        Inches(1.15),
+        Inches(2.6),
+        Inches(0.3),
+        "VP of Engineering",
+        font_size=13,
+        color=WHITE,
+        bold=True,
+    )
+    add_textbox(
+        slide,
+        Inches(0.6),
+        Inches(1.45),
+        Inches(2.6),
+        Inches(0.25),
+        "vp_engineering",
+        font_size=9,
+        color=ACCENT,
+        font_name="Consolas",
+    )
 
     # Sub-teams (3 columns)
     teams = [
-        ("Platform & QA", ACCENT, [
-            "DevOps Lead",
-            "Platform Reliability Eng",
-            "Audit Trail Owner",
-            "Graph / Dashboard Owners",
-            "QA Lead",
-            "\u2192 Test Eng Lead",
-            "\u2192 QA Automation Eng",
-            "\u2192 Release Manager",
-            "\u2192 QA Engineer",
-        ]),
-        ("Engineering Leads", BLUE, [
-            "Lead Backend Engineer",
-            "\u2192 Senior Backend Eng",
-            "\u2192 Backend Engineer",
-            "\u2192 Full Stack Engineer",
-            "Lead Frontend Engineer",
-            "\u2192 Senior Frontend Eng",
-            "\u2192 Frontend Engineer",
-            "\u2192 Mobile Developer",
-        ]),
-        ("Architecture & Data", PURPLE, [
-            "Solution Architect",
-            "Lead DevOps Engineer",
-            "Platform / Frontend Arch",
-            "API Architect",
-            "Observability Engineer",
-            "Scalability Architect",
-            "Software / Cloud Architect",
-            "CDO \u2192 Data Engineer",
-            "Data Scientist / BI Engineer",
-        ]),
+        (
+            "Platform & QA",
+            ACCENT,
+            [
+                "DevOps Lead",
+                "Platform Reliability Eng",
+                "Audit Trail Owner",
+                "Graph / Dashboard Owners",
+                "QA Lead",
+                "\u2192 Test Eng Lead",
+                "\u2192 QA Automation Eng",
+                "\u2192 Release Manager",
+                "\u2192 QA Engineer",
+            ],
+        ),
+        (
+            "Engineering Leads",
+            BLUE,
+            [
+                "Lead Backend Engineer",
+                "\u2192 Senior Backend Eng",
+                "\u2192 Backend Engineer",
+                "\u2192 Full Stack Engineer",
+                "Lead Frontend Engineer",
+                "\u2192 Senior Frontend Eng",
+                "\u2192 Frontend Engineer",
+                "\u2192 Mobile Developer",
+            ],
+        ),
+        (
+            "Architecture & Data",
+            PURPLE,
+            [
+                "Solution Architect",
+                "Lead DevOps Engineer",
+                "Platform / Frontend Arch",
+                "API Architect",
+                "Observability Engineer",
+                "Scalability Architect",
+                "Software / Cloud Architect",
+                "CDO \u2192 Data Engineer",
+                "Data Scientist / BI Engineer",
+            ],
+        ),
     ]
 
     col_w = Inches(3.0)
@@ -380,15 +630,41 @@ def build_slide_05_technology(prs: Presentation):
         x = start_x + i * (col_w + col_gap)
         add_shape_rect(slide, x, start_y, col_w, Inches(3.2), BG_CARD)
         add_accent_bar(slide, x, start_y, col_w, Inches(0.04), color)
-        add_textbox(slide, x + Inches(0.15), start_y + Inches(0.1), col_w - Inches(0.3), Inches(0.3),
-                    team_name, font_size=12, color=color, bold=True)
-        add_bullet_list(slide, x + Inches(0.15), start_y + Inches(0.4),
-                        col_w - Inches(0.3), Inches(2.7),
-                        roles, font_size=10, spacing=3, color=LIGHT_GRAY, bullet_color=color)
+        add_textbox(
+            slide,
+            x + Inches(0.15),
+            start_y + Inches(0.1),
+            col_w - Inches(0.3),
+            Inches(0.3),
+            team_name,
+            font_size=12,
+            color=color,
+            bold=True,
+        )
+        add_bullet_list(
+            slide,
+            x + Inches(0.15),
+            start_y + Inches(0.4),
+            col_w - Inches(0.3),
+            Inches(2.7),
+            roles,
+            font_size=10,
+            spacing=3,
+            color=LIGHT_GRAY,
+            bullet_color=color,
+        )
 
-    add_textbox(slide, Inches(0.5), Inches(5.2), Inches(9.0), Inches(0.3),
-                "20+ specialists  |  VP Engineering, CDO, 3 Lead Engineers, 8+ Architects",
-                font_size=10, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(5.2),
+        Inches(9.0),
+        Inches(0.3),
+        "20+ specialists  |  VP Engineering, CDO, 3 Lead Engineers, 8+ Architects",
+        font_size=10,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 5, TOTAL_SLIDES)
 
 
@@ -427,14 +703,39 @@ def build_slide_06_operations(prs: Presentation):
 
         add_shape_rect(slide, x, y, col_w, card_h, BG_CARD)
         add_accent_bar(slide, x, y, Inches(0.05), card_h, ACCENT)
-        add_textbox(slide, x + Inches(0.15), y + Inches(0.02), Inches(2.2), Inches(0.25),
-                    role, font_size=11, color=WHITE, bold=True)
-        add_textbox(slide, x + Inches(2.4), y + Inches(0.02), Inches(1.9), Inches(0.25),
-                    desc, font_size=9, color=MID_GRAY)
+        add_textbox(
+            slide,
+            x + Inches(0.15),
+            y + Inches(0.02),
+            Inches(2.2),
+            Inches(0.25),
+            role,
+            font_size=11,
+            color=WHITE,
+            bold=True,
+        )
+        add_textbox(
+            slide,
+            x + Inches(2.4),
+            y + Inches(0.02),
+            Inches(1.9),
+            Inches(0.25),
+            desc,
+            font_size=9,
+            color=MID_GRAY,
+        )
 
-    add_textbox(slide, Inches(0.5), Inches(5.0), Inches(9.0), Inches(0.3),
-                "13 specialists  |  Full operational lifecycle coverage",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(5.0),
+        Inches(9.0),
+        Inches(0.3),
+        "13 specialists  |  Full operational lifecycle coverage",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 6, TOTAL_SLIDES)
 
 
@@ -466,22 +767,66 @@ def build_slide_07_ai_research(prs: Presentation):
     # Left panel
     add_shape_rect(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(3.5), BG_CARD)
     add_accent_bar(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(0.04), PURPLE)
-    add_textbox(slide, Inches(0.7), Inches(1.2), Inches(3.0), Inches(0.3),
-                "Core AI Research", font_size=13, color=PURPLE, bold=True)
-    add_bullet_list(slide, Inches(0.7), Inches(1.55), Inches(3.9), Inches(2.8),
-                    left_roles, font_size=12, spacing=6, bullet_color=PURPLE)
+    add_textbox(
+        slide,
+        Inches(0.7),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "Core AI Research",
+        font_size=13,
+        color=PURPLE,
+        bold=True,
+    )
+    add_bullet_list(
+        slide,
+        Inches(0.7),
+        Inches(1.55),
+        Inches(3.9),
+        Inches(2.8),
+        left_roles,
+        font_size=12,
+        spacing=6,
+        bullet_color=PURPLE,
+    )
 
     # Right panel - Safety sub-team
     add_shape_rect(slide, Inches(5.0), Inches(1.1), Inches(4.5), Inches(2.5), BG_CARD)
     add_accent_bar(slide, Inches(5.0), Inches(1.1), Inches(4.5), Inches(0.04), CORAL)
-    add_textbox(slide, Inches(5.2), Inches(1.2), Inches(3.0), Inches(0.3),
-                "AI Safety Sub-Team", font_size=13, color=CORAL, bold=True)
-    add_bullet_list(slide, Inches(5.2), Inches(1.55), Inches(4.1), Inches(1.8),
-                    safety_roles, font_size=11, spacing=5, bullet_color=CORAL)
+    add_textbox(
+        slide,
+        Inches(5.2),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "AI Safety Sub-Team",
+        font_size=13,
+        color=CORAL,
+        bold=True,
+    )
+    add_bullet_list(
+        slide,
+        Inches(5.2),
+        Inches(1.55),
+        Inches(4.1),
+        Inches(1.8),
+        safety_roles,
+        font_size=11,
+        spacing=5,
+        bullet_color=CORAL,
+    )
 
-    add_textbox(slide, Inches(0.5), Inches(4.8), Inches(9.0), Inches(0.3),
-                "10 specialists  |  ML, LLM Platform, Safety, Ethics, and MLOps",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.8),
+        Inches(9.0),
+        Inches(0.3),
+        "10 specialists  |  ML, LLM Platform, Safety, Ethics, and MLOps",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 7, TOTAL_SLIDES)
 
 
@@ -513,14 +858,39 @@ def build_slide_08_product(prs: Presentation):
 
         add_shape_rect(slide, x, y, card_w, card_h, BG_CARD)
         add_accent_bar(slide, x, y, Inches(0.05), card_h, BLUE)
-        add_textbox(slide, x + Inches(0.15), y + Inches(0.05), Inches(2.3), Inches(0.3),
-                    role, font_size=12, color=WHITE, bold=True)
-        add_textbox(slide, x + Inches(2.5), y + Inches(0.05), Inches(1.7), Inches(0.3),
-                    desc, font_size=10, color=MID_GRAY)
+        add_textbox(
+            slide,
+            x + Inches(0.15),
+            y + Inches(0.05),
+            Inches(2.3),
+            Inches(0.3),
+            role,
+            font_size=12,
+            color=WHITE,
+            bold=True,
+        )
+        add_textbox(
+            slide,
+            x + Inches(2.5),
+            y + Inches(0.05),
+            Inches(1.7),
+            Inches(0.3),
+            desc,
+            font_size=10,
+            color=MID_GRAY,
+        )
 
-    add_textbox(slide, Inches(0.5), Inches(4.6), Inches(9.0), Inches(0.3),
-                "8 specialists  |  UX, Growth, Documentation, and Design",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.6),
+        Inches(9.0),
+        Inches(0.3),
+        "8 specialists  |  UX, Growth, Documentation, and Design",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 8, TOTAL_SLIDES)
 
 
@@ -551,14 +921,39 @@ def build_slide_09_marketing(prs: Presentation):
 
         add_shape_rect(slide, x, y, card_w, card_h, BG_CARD)
         add_accent_bar(slide, x, y, Inches(0.05), card_h, ACCENT_GOLD)
-        add_textbox(slide, x + Inches(0.15), y + Inches(0.05), Inches(2.5), Inches(0.3),
-                    role, font_size=12, color=WHITE, bold=True)
-        add_textbox(slide, x + Inches(2.7), y + Inches(0.05), Inches(1.5), Inches(0.3),
-                    desc, font_size=10, color=MID_GRAY)
+        add_textbox(
+            slide,
+            x + Inches(0.15),
+            y + Inches(0.05),
+            Inches(2.5),
+            Inches(0.3),
+            role,
+            font_size=12,
+            color=WHITE,
+            bold=True,
+        )
+        add_textbox(
+            slide,
+            x + Inches(2.7),
+            y + Inches(0.05),
+            Inches(1.5),
+            Inches(0.3),
+            desc,
+            font_size=10,
+            color=MID_GRAY,
+        )
 
-    add_textbox(slide, Inches(0.5), Inches(4.5), Inches(9.0), Inches(0.3),
-                "7 specialists  |  Content, DevRel, Product Marketing, Growth",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.5),
+        Inches(9.0),
+        Inches(0.3),
+        "7 specialists  |  Content, DevRel, Product Marketing, Growth",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 9, TOTAL_SLIDES)
 
 
@@ -583,14 +978,39 @@ def build_slide_10_people(prs: Presentation):
         y = start_y + i * (card_h + Inches(0.1))
         add_shape_rect(slide, Inches(0.75), y, card_w, card_h, BG_CARD)
         add_accent_bar(slide, Inches(0.75), y, Inches(0.05), card_h, ACCENT)
-        add_textbox(slide, Inches(1.0), y + Inches(0.08), Inches(3.5), Inches(0.35),
-                    role, font_size=14, color=WHITE, bold=True)
-        add_textbox(slide, Inches(4.8), y + Inches(0.08), Inches(4.0), Inches(0.35),
-                    desc, font_size=12, color=MID_GRAY)
+        add_textbox(
+            slide,
+            Inches(1.0),
+            y + Inches(0.08),
+            Inches(3.5),
+            Inches(0.35),
+            role,
+            font_size=14,
+            color=WHITE,
+            bold=True,
+        )
+        add_textbox(
+            slide,
+            Inches(4.8),
+            y + Inches(0.08),
+            Inches(4.0),
+            Inches(0.35),
+            desc,
+            font_size=12,
+            color=MID_GRAY,
+        )
 
-    add_textbox(slide, Inches(0.5), Inches(4.8), Inches(9.0), Inches(0.3),
-                "5 specialists  |  HR, L&D, Culture, Employee Experience",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.8),
+        Inches(9.0),
+        Inches(0.3),
+        "5 specialists  |  HR, L&D, Culture, Employee Experience",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 10, TOTAL_SLIDES)
 
 
@@ -619,22 +1039,66 @@ def build_slide_11_security(prs: Presentation):
     # Left panel
     add_shape_rect(slide, Inches(0.5), Inches(1.1), Inches(5.5), Inches(3.4), BG_CARD)
     add_accent_bar(slide, Inches(0.5), Inches(1.1), Inches(5.5), Inches(0.04), CORAL)
-    add_textbox(slide, Inches(0.7), Inches(1.2), Inches(3.0), Inches(0.3),
-                "Core Security", font_size=13, color=CORAL, bold=True)
-    add_bullet_list(slide, Inches(0.7), Inches(1.55), Inches(5.1), Inches(2.8),
-                    main_roles, font_size=12, spacing=6, bullet_color=CORAL)
+    add_textbox(
+        slide,
+        Inches(0.7),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "Core Security",
+        font_size=13,
+        color=CORAL,
+        bold=True,
+    )
+    add_bullet_list(
+        slide,
+        Inches(0.7),
+        Inches(1.55),
+        Inches(5.1),
+        Inches(2.8),
+        main_roles,
+        font_size=12,
+        spacing=6,
+        bullet_color=CORAL,
+    )
 
     # Right panel - Compliance
     add_shape_rect(slide, Inches(6.2), Inches(1.1), Inches(3.3), Inches(1.5), BG_CARD)
     add_accent_bar(slide, Inches(6.2), Inches(1.1), Inches(3.3), Inches(0.04), ACCENT_GOLD)
-    add_textbox(slide, Inches(6.4), Inches(1.2), Inches(2.5), Inches(0.3),
-                "Compliance Sub-Team", font_size=12, color=ACCENT_GOLD, bold=True)
-    add_bullet_list(slide, Inches(6.4), Inches(1.55), Inches(2.9), Inches(0.8),
-                    compliance_roles, font_size=11, spacing=5, bullet_color=ACCENT_GOLD)
+    add_textbox(
+        slide,
+        Inches(6.4),
+        Inches(1.2),
+        Inches(2.5),
+        Inches(0.3),
+        "Compliance Sub-Team",
+        font_size=12,
+        color=ACCENT_GOLD,
+        bold=True,
+    )
+    add_bullet_list(
+        slide,
+        Inches(6.4),
+        Inches(1.55),
+        Inches(2.9),
+        Inches(0.8),
+        compliance_roles,
+        font_size=11,
+        spacing=5,
+        bullet_color=ACCENT_GOLD,
+    )
 
-    add_textbox(slide, Inches(0.5), Inches(4.8), Inches(9.0), Inches(0.3),
-                "8 specialists  |  Security architecture, pen testing, compliance, threat intel",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.8),
+        Inches(9.0),
+        Inches(0.3),
+        "8 specialists  |  Security architecture, pen testing, compliance, threat intel",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 11, TOTAL_SLIDES)
 
 
@@ -659,14 +1123,39 @@ def build_slide_12_strategy(prs: Presentation):
         y = start_y + i * (card_h + Inches(0.1))
         add_shape_rect(slide, Inches(0.75), y, card_w, card_h, BG_CARD)
         add_accent_bar(slide, Inches(0.75), y, Inches(0.05), card_h, PURPLE)
-        add_textbox(slide, Inches(1.0), y + Inches(0.08), Inches(3.8), Inches(0.35),
-                    role, font_size=14, color=WHITE, bold=True)
-        add_textbox(slide, Inches(5.0), y + Inches(0.08), Inches(4.0), Inches(0.35),
-                    desc, font_size=12, color=MID_GRAY)
+        add_textbox(
+            slide,
+            Inches(1.0),
+            y + Inches(0.08),
+            Inches(3.8),
+            Inches(0.35),
+            role,
+            font_size=14,
+            color=WHITE,
+            bold=True,
+        )
+        add_textbox(
+            slide,
+            Inches(5.0),
+            y + Inches(0.08),
+            Inches(4.0),
+            Inches(0.35),
+            desc,
+            font_size=12,
+            color=MID_GRAY,
+        )
 
-    add_textbox(slide, Inches(0.5), Inches(4.8), Inches(9.0), Inches(0.3),
-                "5 specialists  |  Competitive intelligence, corp dev, RevOps, market analysis",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.8),
+        Inches(9.0),
+        Inches(0.3),
+        "5 specialists  |  Competitive intelligence, corp dev, RevOps, market analysis",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 12, TOTAL_SLIDES)
 
 
@@ -678,34 +1167,78 @@ def build_slide_13_sales_cs(prs: Presentation):
     # Sales column
     add_shape_rect(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(3.2), BG_CARD)
     add_accent_bar(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(0.04), ACCENT_GOLD)
-    add_textbox(slide, Inches(0.7), Inches(1.2), Inches(3.0), Inches(0.3),
-                "Sales", font_size=15, color=ACCENT_GOLD, bold=True)
+    add_textbox(
+        slide,
+        Inches(0.7),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "Sales",
+        font_size=15,
+        color=ACCENT_GOLD,
+        bold=True,
+    )
 
     sales_roles = [
         "Head of Sales",
         "\u2192 Sales Owner",
         "\u2192 Business Developer",
     ]
-    add_bullet_list(slide, Inches(0.7), Inches(1.6), Inches(3.9), Inches(1.5),
-                    sales_roles, font_size=13, spacing=8, bullet_color=ACCENT_GOLD)
+    add_bullet_list(
+        slide,
+        Inches(0.7),
+        Inches(1.6),
+        Inches(3.9),
+        Inches(1.5),
+        sales_roles,
+        font_size=13,
+        spacing=8,
+        bullet_color=ACCENT_GOLD,
+    )
 
     # Customer Success column
     add_shape_rect(slide, Inches(5.1), Inches(1.1), Inches(4.4), Inches(3.2), BG_CARD)
     add_accent_bar(slide, Inches(5.1), Inches(1.1), Inches(4.4), Inches(0.04), ACCENT)
-    add_textbox(slide, Inches(5.3), Inches(1.2), Inches(3.0), Inches(0.3),
-                "Customer Success", font_size=15, color=ACCENT, bold=True)
+    add_textbox(
+        slide,
+        Inches(5.3),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "Customer Success",
+        font_size=15,
+        color=ACCENT,
+        bold=True,
+    )
 
     cs_roles = [
         "Head of Customer Success",
         "\u2192 Customer Success Owner",
         "\u2192 Support Agent",
     ]
-    add_bullet_list(slide, Inches(5.3), Inches(1.6), Inches(4.0), Inches(1.5),
-                    cs_roles, font_size=13, spacing=8, bullet_color=ACCENT)
+    add_bullet_list(
+        slide,
+        Inches(5.3),
+        Inches(1.6),
+        Inches(4.0),
+        Inches(1.5),
+        cs_roles,
+        font_size=13,
+        spacing=8,
+        bullet_color=ACCENT,
+    )
 
-    add_textbox(slide, Inches(0.5), Inches(4.8), Inches(9.0), Inches(0.3),
-                "5 agents  |  Sales pipeline + Customer retention & support",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.8),
+        Inches(9.0),
+        Inches(0.3),
+        "5 agents  |  Sales pipeline + Customer retention & support",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 13, TOTAL_SLIDES)
 
 
@@ -717,21 +1250,48 @@ def build_slide_14_finance_legal(prs: Presentation):
     # Finance column
     add_shape_rect(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(3.0), BG_CARD)
     add_accent_bar(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(0.04), ACCENT_GOLD)
-    add_textbox(slide, Inches(0.7), Inches(1.2), Inches(3.0), Inches(0.3),
-                "Finance (CFO)", font_size=14, color=ACCENT_GOLD, bold=True)
+    add_textbox(
+        slide,
+        Inches(0.7),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "Finance (CFO)",
+        font_size=14,
+        color=ACCENT_GOLD,
+        bold=True,
+    )
 
     finance_roles = [
         "Financial Analyst",
         "Investor Relations Lead",
     ]
-    add_bullet_list(slide, Inches(0.7), Inches(1.6), Inches(3.9), Inches(1.2),
-                    finance_roles, font_size=12, spacing=6, bullet_color=ACCENT_GOLD)
+    add_bullet_list(
+        slide,
+        Inches(0.7),
+        Inches(1.6),
+        Inches(3.9),
+        Inches(1.2),
+        finance_roles,
+        font_size=12,
+        spacing=6,
+        bullet_color=ACCENT_GOLD,
+    )
 
     # Legal column
     add_shape_rect(slide, Inches(5.1), Inches(1.1), Inches(4.4), Inches(3.0), BG_CARD)
     add_accent_bar(slide, Inches(5.1), Inches(1.1), Inches(4.4), Inches(0.04), BLUE)
-    add_textbox(slide, Inches(5.3), Inches(1.2), Inches(3.0), Inches(0.3),
-                "Legal (CLO + Legal Advisor)", font_size=14, color=BLUE, bold=True)
+    add_textbox(
+        slide,
+        Inches(5.3),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "Legal (CLO + Legal Advisor)",
+        font_size=14,
+        color=BLUE,
+        bold=True,
+    )
 
     legal_roles = [
         "Compliance Officer (CLO)",
@@ -739,12 +1299,29 @@ def build_slide_14_finance_legal(prs: Presentation):
         "Legal Owner (Legal Advisor)",
         "Compliance Officer (Legal Advisor)",
     ]
-    add_bullet_list(slide, Inches(5.3), Inches(1.6), Inches(4.0), Inches(1.5),
-                    legal_roles, font_size=12, spacing=6, bullet_color=BLUE)
+    add_bullet_list(
+        slide,
+        Inches(5.3),
+        Inches(1.6),
+        Inches(4.0),
+        Inches(1.5),
+        legal_roles,
+        font_size=12,
+        spacing=6,
+        bullet_color=BLUE,
+    )
 
-    add_textbox(slide, Inches(0.5), Inches(4.6), Inches(9.0), Inches(0.3),
-                "6 agents  |  CFO (2 specialists) + CLO (2) + Legal Advisor (2)",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.6),
+        Inches(9.0),
+        Inches(0.3),
+        "6 agents  |  CFO (2 specialists) + CLO (2) + Legal Advisor (2)",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 14, TOTAL_SLIDES)
 
 
@@ -756,30 +1333,72 @@ def build_slide_15_data_it(prs: Presentation):
     # Data column (CDO)
     add_shape_rect(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(3.0), BG_CARD)
     add_accent_bar(slide, Inches(0.5), Inches(1.1), Inches(4.3), Inches(0.04), PURPLE)
-    add_textbox(slide, Inches(0.7), Inches(1.2), Inches(3.0), Inches(0.3),
-                "Data (CDO)", font_size=14, color=PURPLE, bold=True)
+    add_textbox(
+        slide,
+        Inches(0.7),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "Data (CDO)",
+        font_size=14,
+        color=PURPLE,
+        bold=True,
+    )
 
     data_roles = [
         "Data Engineer",
         "Data Scientist",
         "Business Intelligence Engineer",
     ]
-    add_bullet_list(slide, Inches(0.7), Inches(1.6), Inches(3.9), Inches(1.2),
-                    data_roles, font_size=12, spacing=6, bullet_color=PURPLE)
+    add_bullet_list(
+        slide,
+        Inches(0.7),
+        Inches(1.6),
+        Inches(3.9),
+        Inches(1.2),
+        data_roles,
+        font_size=12,
+        spacing=6,
+        bullet_color=PURPLE,
+    )
 
     # IT column (CIO)
     add_shape_rect(slide, Inches(5.1), Inches(1.1), Inches(4.4), Inches(3.0), BG_CARD)
     add_accent_bar(slide, Inches(5.1), Inches(1.1), Inches(4.4), Inches(0.04), MID_GRAY)
-    add_textbox(slide, Inches(5.3), Inches(1.2), Inches(3.0), Inches(0.3),
-                "IT (CIO)", font_size=14, color=MID_GRAY, bold=True)
+    add_textbox(
+        slide,
+        Inches(5.3),
+        Inches(1.2),
+        Inches(3.0),
+        Inches(0.3),
+        "IT (CIO)",
+        font_size=14,
+        color=MID_GRAY,
+        bold=True,
+    )
 
-    add_textbox(slide, Inches(5.3), Inches(1.7), Inches(3.8), Inches(0.8),
-                "CIO \u2014 No direct reports yet\nInfrastructure and IT services placeholder",
-                font_size=12, color=LIGHT_GRAY)
+    add_textbox(
+        slide,
+        Inches(5.3),
+        Inches(1.7),
+        Inches(3.8),
+        Inches(0.8),
+        "CIO \u2014 No direct reports yet\nInfrastructure and IT services placeholder",
+        font_size=12,
+        color=LIGHT_GRAY,
+    )
 
-    add_textbox(slide, Inches(0.5), Inches(4.6), Inches(9.0), Inches(0.3),
-                "3 data specialists  |  CIO role established, reports pending",
-                font_size=11, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(4.6),
+        Inches(9.0),
+        Inches(0.3),
+        "3 data specialists  |  CIO role established, reports pending",
+        font_size=11,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
     add_page_number(slide, 15, TOTAL_SLIDES)
 
 
@@ -792,33 +1411,78 @@ def build_slide_16_summary(prs: Presentation):
     add_shape_rect(slide, Inches(1.5), Inches(0.8), Inches(7.0), Inches(4.0), BG_CARD)
     add_accent_bar(slide, Inches(1.5), Inches(0.8), Inches(7.0), Inches(0.05), ACCENT)
 
-    add_textbox(slide, Inches(2.0), Inches(1.2), Inches(6.0), Inches(0.8),
-                "127 Agents.", font_size=38, color=WHITE, bold=True,
-                align=PP_ALIGN.CENTER, font_name="Georgia")
+    add_textbox(
+        slide,
+        Inches(2.0),
+        Inches(1.2),
+        Inches(6.0),
+        Inches(0.8),
+        "127 Agents.",
+        font_size=38,
+        color=WHITE,
+        bold=True,
+        align=PP_ALIGN.CENTER,
+        font_name="Georgia",
+    )
 
-    add_textbox(slide, Inches(2.0), Inches(1.9), Inches(6.0), Inches(0.5),
-                "17 Departments.", font_size=28, color=ACCENT,
-                align=PP_ALIGN.CENTER, font_name="Georgia")
+    add_textbox(
+        slide,
+        Inches(2.0),
+        Inches(1.9),
+        Inches(6.0),
+        Inches(0.5),
+        "17 Departments.",
+        font_size=28,
+        color=ACCENT,
+        align=PP_ALIGN.CENTER,
+        font_name="Georgia",
+    )
 
     add_accent_bar(slide, Inches(4.2), Inches(2.45), Inches(1.6), Inches(0.04))
 
-    add_textbox(slide, Inches(2.0), Inches(2.65), Inches(6.0), Inches(0.5),
-                "One Mission.", font_size=28, color=ACCENT_GOLD,
-                align=PP_ALIGN.CENTER, font_name="Georgia")
+    add_textbox(
+        slide,
+        Inches(2.0),
+        Inches(2.65),
+        Inches(6.0),
+        Inches(0.5),
+        "One Mission.",
+        font_size=28,
+        color=ACCENT_GOLD,
+        align=PP_ALIGN.CENTER,
+        font_name="Georgia",
+    )
 
-    add_textbox(slide, Inches(2.0), Inches(3.4), Inches(6.0), Inches(0.4),
-                "Building the Future of Work with AI",
-                font_size=16, color=LIGHT_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(2.0),
+        Inches(3.4),
+        Inches(6.0),
+        Inches(0.4),
+        "Building the Future of Work with AI",
+        font_size=16,
+        color=LIGHT_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
 
-    add_textbox(slide, Inches(2.0), Inches(3.9), Inches(6.0), Inches(0.3),
-                "Light Speed Holdings  |  v0.3.0",
-                font_size=13, color=MID_GRAY, align=PP_ALIGN.CENTER)
+    add_textbox(
+        slide,
+        Inches(2.0),
+        Inches(3.9),
+        Inches(6.0),
+        Inches(0.3),
+        "Light Speed Holdings  |  v0.3.0",
+        font_size=13,
+        color=MID_GRAY,
+        align=PP_ALIGN.CENTER,
+    )
 
     add_accent_bar(slide, Inches(0), Inches(5.565), SLIDE_W, Inches(0.06))
     add_page_number(slide, 16, TOTAL_SLIDES)
 
 
 # ── Main ─────────────────────────────────────────────────────────────────────
+
 
 def main():
     prs = Presentation()

@@ -37,7 +37,12 @@ class GraphEdge:
         self.attrs = attrs
 
     def to_dict(self) -> dict[str, Any]:
-        return {"source": self.source, "target": self.target, "relationship": self.relationship, **self.attrs}
+        return {
+            "source": self.source,
+            "target": self.target,
+            "relationship": self.relationship,
+            **self.attrs,
+        }
 
 
 class Graph:
@@ -87,7 +92,14 @@ class GraphEngine:
         graph = Graph(name="org_chart")
 
         # Add CEO node
-        ceo = next((e for e in self.registry.executives if e.reports_to in ("", "board", "board_of_directors")), None)
+        ceo = next(
+            (
+                e
+                for e in self.registry.executives
+                if e.reports_to in ("", "board", "board_of_directors")
+            ),
+            None,
+        )
         if ceo:
             graph.add_node(GraphNode(ceo.id, ceo.name or ceo.title, "executive", title=ceo.title))
 
@@ -105,7 +117,9 @@ class GraphEngine:
 
         # Add specialists
         for spec in self.registry.specialists:
-            graph.add_node(GraphNode(spec.id, spec.name or spec.id, "specialist", department=spec.department))
+            graph.add_node(
+                GraphNode(spec.id, spec.name or spec.id, "specialist", department=spec.department)
+            )
             if spec.reports_to:
                 graph.add_edge(GraphEdge(spec.reports_to, spec.id, "manages"))
 

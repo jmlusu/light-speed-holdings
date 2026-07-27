@@ -196,7 +196,9 @@ class MessageBus:
                     self._emit(task_dict, event)
                     logger.info(
                         "Task %s status: %s -> %s",
-                        task_id, old_status, status,
+                        task_id,
+                        old_status,
+                        status,
                     )
             return tasks
 
@@ -265,9 +267,7 @@ class MessageBus:
     def get_subtasks(self, parent_task_id: str) -> List[Task]:
         """Return all tasks whose ``parent_task_id`` matches."""
         tasks = self._load_tasks()
-        return [
-            Task(**t) for t in tasks if t.get("parent_task_id") == parent_task_id
-        ]
+        return [Task(**t) for t in tasks if t.get("parent_task_id") == parent_task_id]
 
     def get_unacknowledged(self, agent_id: str) -> List[Task]:
         """Return tasks assigned to *agent_id* that have not been ACKed yet."""
@@ -283,6 +283,7 @@ class MessageBus:
 
         Returns the updated ``Task`` or ``None`` if not found.
         """
+
         def _updater(tasks: List[dict]) -> List[dict]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:

@@ -176,9 +176,7 @@ class PromptAnalytics:
         # Recent performance (last 24h)
         day_ago = time.time() - 86400
         recent = [m for m in metrics if m.timestamp >= day_ago]
-        recent_avg = (
-            sum(m.avg_score for m in recent) / len(recent) if recent else 0.0
-        )
+        recent_avg = sum(m.avg_score for m in recent) / len(recent) if recent else 0.0
 
         return {
             "prompt_id": prompt_id,
@@ -310,14 +308,9 @@ class PromptAnalytics:
                 issue_counts[issue] += 1
 
         sorted_issues = sorted(issue_counts.items(), key=lambda x: -x[1])
-        return [
-            {"pattern": issue, "count": count}
-            for issue, count in sorted_issues[:top_n]
-        ]
+        return [{"pattern": issue, "count": count} for issue, count in sorted_issues[:top_n]]
 
-    def compare_versions(
-        self, prompt_id: str, version_a: int, version_b: int
-    ) -> dict[str, Any]:
+    def compare_versions(self, prompt_id: str, version_a: int, version_b: int) -> dict[str, Any]:
         """Compare two versions of a prompt."""
         metrics_a = self.get_metrics(prompt_id=prompt_id, version=version_a)
         metrics_b = self.get_metrics(prompt_id=prompt_id, version=version_b)

@@ -37,7 +37,7 @@ def show() -> None:
     typer.echo("Agent Routing")
     typer.echo("=" * 60)
     typer.echo(f"  {'Agent':<25} {'Provider':<12} {'Model':<25} {'Tier'}")
-    typer.echo(f"  {'-'*25} {'-'*12} {'-'*25} {'-'*12}")
+    typer.echo(f"  {'-' * 25} {'-' * 12} {'-' * 25} {'-' * 12}")
     for name, route in sorted(router.resolve_all_agents().items()):
         typer.echo(f"  {name:<25} {route.provider:<12} {route.model:<25} {route.tier}")
 

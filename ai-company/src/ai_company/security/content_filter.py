@@ -26,6 +26,7 @@ _security_logger = logging.getLogger("ai_company.security.content_filter")
 
 class ThreatLevel(Enum):
     """Severity level of detected content threats."""
+
     SAFE = "safe"
     SUSPICIOUS = "suspicious"
     DANGEROUS = "dangerous"
@@ -35,6 +36,7 @@ class ThreatLevel(Enum):
 @dataclass
 class FilterResult:
     """Result of content safety filtering."""
+
     original: str
     filtered: str
     threat_level: ThreatLevel
@@ -59,22 +61,33 @@ class ContentFilter:
     # Patterns that indicate prompt injection attempts
     INJECTION_PATTERNS: list[re.Pattern] = [
         # Direct instruction overrides
-        re.compile(r"ignore\s+(all\s+)?(previous|prior|above|earlier)\s+instructions?", re.IGNORECASE),
-        re.compile(r"disregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?|rules?)", re.IGNORECASE),
+        re.compile(
+            r"ignore\s+(all\s+)?(previous|prior|above|earlier)\s+instructions?", re.IGNORECASE
+        ),
+        re.compile(
+            r"disregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?|rules?)",
+            re.IGNORECASE,
+        ),
         re.compile(r"forget\s+(everything|all|your\s+instructions?)", re.IGNORECASE),
         re.compile(r"you\s+are\s+now\s+(a|an|the)", re.IGNORECASE),
-
         # System prompt extraction attempts
-        re.compile(r"(show|reveal|display|print|output)\s+(me\s+)?(your|the)\s+(system\s+)?(prompt|instructions?)", re.IGNORECASE),
+        re.compile(
+            r"(show|reveal|display|print|output)\s+(me\s+)?(your|the)\s+(system\s+)?(prompt|instructions?)",
+            re.IGNORECASE,
+        ),
         re.compile(r"what\s+(are|is)\s+your\s+(system\s+)?(prompt|instructions?)", re.IGNORECASE),
         re.compile(r"repeat\s+(everything|all|your)\s+(above|before|instructions?)", re.IGNORECASE),
-
         # Role manipulation
-        re.compile(r"(act|behave|pretend)\s+(as\s+if|like)\s+you\s+(have|don.t|do\s+not)\s+(have|have\s+any)", re.IGNORECASE),
+        re.compile(
+            r"(act|behave|pretend)\s+(as\s+if|like)\s+you\s+(have|don.t|do\s+not)\s+(have|have\s+any)",
+            re.IGNORECASE,
+        ),
         re.compile(r"(switch|change)\s+to\s+(debug|admin|root|developer)\s+mode", re.IGNORECASE),
-
         # Data exfiltration attempts
-        re.compile(r"(send|email|post|upload|exfiltrate)\s+(all\s+)?(data|files?|secrets?|keys?|tokens?)", re.IGNORECASE),
+        re.compile(
+            r"(send|email|post|upload|exfiltrate)\s+(all\s+)?(data|files?|secrets?|keys?|tokens?)",
+            re.IGNORECASE,
+        ),
         re.compile(r"(curl|wget|fetch)\s+(https?://)", re.IGNORECASE),
     ]
 

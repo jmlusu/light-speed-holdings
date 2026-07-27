@@ -56,8 +56,7 @@ def dashboard_server(request: pytest.FixtureRequest) -> str:
             pass
     except OSError:
         pytest.skip(
-            f"Dashboard server not reachable at {url}. "
-            f"Start the dashboard or pass --dashboard-url."
+            f"Dashboard server not reachable at {url}. Start the dashboard or pass --dashboard-url."
         )
     return url
 

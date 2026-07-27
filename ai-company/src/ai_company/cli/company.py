@@ -16,7 +16,9 @@ console = Console()
 def run(
     config_dir: str = typer.Option("config", help="Path to config/ directory"),
     output_dir: str = typer.Option(".opencode", help="Output directory for generated files"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would be created without writing"),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Show what would be created without writing"
+    ),
 ) -> None:
     """Bootstrap the AI company — generate all agents, configs, and directory structure."""
     from ai_company.builder import BootstrapEngine

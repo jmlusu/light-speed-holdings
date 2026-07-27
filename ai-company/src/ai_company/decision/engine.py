@@ -67,7 +67,11 @@ class DecisionEngine:
         visited = [current.id]
         while current and current.type == "branch":
             answer = answers.get(current.id, "")
-            next_id = answer if answer in current.children else (current.children[0] if current.children else None)
+            next_id = (
+                answer
+                if answer in current.children
+                else (current.children[0] if current.children else None)
+            )
             if next_id is None:
                 break
             current = nodes.get(next_id)
@@ -85,13 +89,15 @@ class DecisionEngine:
         """List all actions in the approval matrix with their requirements."""
         results = []
         for entry in self.registry.approval_matrix:
-            results.append({
-                "action": entry.action,
-                "risk_level": entry.risk_level,
-                "required_approvals": entry.required_approvals,
-                "sla_hours": entry.sla_hours,
-                "auto_approve": entry.auto_approve,
-            })
+            results.append(
+                {
+                    "action": entry.action,
+                    "risk_level": entry.risk_level,
+                    "required_approvals": entry.required_approvals,
+                    "sla_hours": entry.sla_hours,
+                    "auto_approve": entry.auto_approve,
+                }
+            )
         return results
 
     def _assess_risk(self, action: str, context: dict[str, Any]) -> RiskLevel:

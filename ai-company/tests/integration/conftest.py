@@ -82,9 +82,18 @@ def _write_models_yaml(tmp_path: Path) -> None:
             },
         },
         "tiers": {
-            "fast": {"description": "Fast", "providers": [{"provider": "opencode", "model": "big-pickle"}]},
-            "standard": {"description": "Standard", "providers": [{"provider": "opencode", "model": "big-pickle"}]},
-            "premium": {"description": "Premium", "providers": [{"provider": "opencode", "model": "big-pickle"}]},
+            "fast": {
+                "description": "Fast",
+                "providers": [{"provider": "opencode", "model": "big-pickle"}],
+            },
+            "standard": {
+                "description": "Standard",
+                "providers": [{"provider": "opencode", "model": "big-pickle"}],
+            },
+            "premium": {
+                "description": "Premium",
+                "providers": [{"provider": "opencode", "model": "big-pickle"}],
+            },
         },
         "routing": [
             {"agent_type": "Board", "tier": "fast"},
@@ -154,7 +163,9 @@ def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
     (tmp_path / "orchestrator").mkdir(exist_ok=True)
     (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
-    (tmp_path / "orchestrator" / "escalation.yaml").write_text("{'rules': [], 'events': []}", encoding="utf-8")
+    (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+        "{'rules': [], 'events': []}", encoding="utf-8"
+    )
     (tmp_path / "orchestrator" / "scheduler.yaml").write_text("tasks: []", encoding="utf-8")
     _write_models_yaml(tmp_path)
     _write_agent_registry(tmp_path)
@@ -209,9 +220,7 @@ def mock_llm(workspace: Path, monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     fake.execute_task.return_value = {"plan": [], "result": "ok", "artifacts": []}
     fake.execute_task_stream.return_value = iter([])
     # The Executor builds an AgentLoop with self.llm; patch the class used.
-    monkeypatch.setattr(
-        "ai_company.executor.loop.LLMClient", lambda *a, **k: fake
-    )
+    monkeypatch.setattr("ai_company.executor.loop.LLMClient", lambda *a, **k: fake)
     return fake
 
 

@@ -272,9 +272,7 @@ class TestEvalDataset:
             get_test_cases,
         )
 
-        result = get_test_cases(
-            agent_type=AgentType.SPECIALIST, difficulty=Difficulty.EASY
-        )
+        result = get_test_cases(agent_type=AgentType.SPECIALIST, difficulty=Difficulty.EASY)
         assert len(result) >= 1
         for tc in result:
             assert tc.agent_type == AgentType.SPECIALIST
@@ -316,12 +314,19 @@ class TestEvalScorer:
         scorer = EvalScorer()
         tc = self._make_test_case()
 
-        output = json.dumps({
-            "thought": "I need to delegate this task to the specialist because it requires expertise.",
-            "plan": [{"tool": "delegate", "args": {"receiver": "lead-backend", "instruction": "Do the thing"}}],
-            "result": "Delegated task to lead-backend. Waiting for completion.",
-            "done": False,
-        })
+        output = json.dumps(
+            {
+                "thought": "I need to delegate this task to the specialist because it requires expertise.",
+                "plan": [
+                    {
+                        "tool": "delegate",
+                        "args": {"receiver": "lead-backend", "instruction": "Do the thing"},
+                    }
+                ],
+                "result": "Delegated task to lead-backend. Waiting for completion.",
+                "done": False,
+            }
+        )
 
         result = scorer.score(tc, output)
         assert result.score.total > 0.5
@@ -354,12 +359,14 @@ class TestEvalScorer:
         scorer = EvalScorer()
         tc = self._make_test_case()
 
-        output = json.dumps({
-            "thought": "No tools needed for this.",
-            "plan": [],
-            "result": "Task complete without tools.",
-            "done": True,
-        })
+        output = json.dumps(
+            {
+                "thought": "No tools needed for this.",
+                "plan": [],
+                "result": "Task complete without tools.",
+                "done": True,
+            }
+        )
 
         result = scorer.score(tc, output)
         # Tool score should be lower since delegate was expected
@@ -372,12 +379,14 @@ class TestEvalScorer:
         tc = self._make_test_case()
 
         outputs = {
-            "test-001": json.dumps({
-                "thought": "Delegating",
-                "plan": [{"tool": "delegate", "args": {"receiver": "x", "instruction": "y"}}],
-                "result": "Done",
-                "done": True,
-            }),
+            "test-001": json.dumps(
+                {
+                    "thought": "Delegating",
+                    "plan": [{"tool": "delegate", "args": {"receiver": "x", "instruction": "y"}}],
+                    "result": "Done",
+                    "done": True,
+                }
+            ),
         }
 
         results = scorer.score_batch([tc], outputs)
@@ -477,9 +486,7 @@ class TestEvalRunner:
     def test_runner_empty_dataset(self) -> None:
         from ai_company.prompts.evals.eval_runner import EvalConfig, EvalRunner
 
-        runner = EvalRunner(
-            config=EvalConfig(agent_type_filter=None, max_test_cases=0)
-        )
+        runner = EvalRunner(config=EvalConfig(agent_type_filter=None, max_test_cases=0))
         result = runner.run(test_cases=[])
         assert len(result.test_results) == 0
 
@@ -558,12 +565,14 @@ class TestLLMJudge:
 
         judge = LLMJudge(llm_provider=None)
 
-        output = json.dumps({
-            "thought": "I need to analyze this task carefully and provide a comprehensive solution.",
-            "plan": [{"tool": "read", "args": {"path": "src/main.py"}}],
-            "result": "Completed the task. Read main.py and identified 3 issues to fix.",
-            "done": False,
-        })
+        output = json.dumps(
+            {
+                "thought": "I need to analyze this task carefully and provide a comprehensive solution.",
+                "plan": [{"tool": "read", "args": {"path": "src/main.py"}}],
+                "result": "Completed the task. Read main.py and identified 3 issues to fix.",
+                "done": False,
+            }
+        )
 
         result = judge.evaluate(
             system_prompt="You are a specialist.",
@@ -628,13 +637,15 @@ class TestPromptAnalytics:
 
         analytics = PromptAnalytics(storage_dir=str(tmp_path))
 
-        analytics.record(PromptMetric(
-            prompt_id="test.prompt",
-            version=1,
-            avg_score=0.8,
-            format_score=0.9,
-            tool_score=0.7,
-        ))
+        analytics.record(
+            PromptMetric(
+                prompt_id="test.prompt",
+                version=1,
+                avg_score=0.8,
+                format_score=0.9,
+                tool_score=0.7,
+            )
+        )
 
         metrics = analytics.get_metrics(prompt_id="test.prompt")
         assert len(metrics) == 1
@@ -647,17 +658,21 @@ class TestPromptAnalytics:
 
         # Record metrics for two versions
         for i in range(3):
-            analytics.record(PromptMetric(
-                prompt_id="test.prompt",
-                version=1,
-                avg_score=0.7 + i * 0.01,
-            ))
+            analytics.record(
+                PromptMetric(
+                    prompt_id="test.prompt",
+                    version=1,
+                    avg_score=0.7 + i * 0.01,
+                )
+            )
         for i in range(3):
-            analytics.record(PromptMetric(
-                prompt_id="test.prompt",
-                version=2,
-                avg_score=0.8 + i * 0.01,
-            ))
+            analytics.record(
+                PromptMetric(
+                    prompt_id="test.prompt",
+                    version=2,
+                    avg_score=0.8 + i * 0.01,
+                )
+            )
 
         trends = analytics.get_trends("test.prompt")
         assert trends["data_points"] == 6
@@ -671,17 +686,21 @@ class TestPromptAnalytics:
 
         # Record improving v1 then degrading v2
         for i in range(5):
-            analytics.record(PromptMetric(
-                prompt_id="test.prompt",
-                version=1,
-                avg_score=0.9,
-            ))
+            analytics.record(
+                PromptMetric(
+                    prompt_id="test.prompt",
+                    version=1,
+                    avg_score=0.9,
+                )
+            )
         for i in range(5):
-            analytics.record(PromptMetric(
-                prompt_id="test.prompt",
-                version=2,
-                avg_score=0.5,
-            ))
+            analytics.record(
+                PromptMetric(
+                    prompt_id="test.prompt",
+                    version=2,
+                    avg_score=0.5,
+                )
+            )
 
         insights = analytics.get_insights("test.prompt")
         degradation = [i for i in insights if i.insight_type == "degradation"]
@@ -740,7 +759,11 @@ class TestOptimizedPrompts:
         for agent_type in ["Executive", "Specialist", "Board", "Department"]:
             instructions = TOOL_INSTRUCTIONS[agent_type]
             assert "ERROR RECOVERY" in instructions
-            assert "WORKFLOW" in instructions or "DELEGATION PATTERN" in instructions or "COORDINATION PATTERN" in instructions
+            assert (
+                "WORKFLOW" in instructions
+                or "DELEGATION PATTERN" in instructions
+                or "COORDINATION PATTERN" in instructions
+            )
 
     def test_response_formats_all_types(self) -> None:
         from ai_company.executor.prompts import RESPONSE_FORMATS
@@ -785,7 +808,12 @@ class TestOptimizedPrompts:
         from ai_company.executor.prompts import build_iteration_feedback
 
         step_results = [
-            {"step": 0, "tool": "read", "status": "error", "error": "File not found: src/missing.py"},
+            {
+                "step": 0,
+                "tool": "read",
+                "status": "error",
+                "error": "File not found: src/missing.py",
+            },
             {"step": 1, "tool": "write", "status": "ok", "path": "output.txt"},
         ]
 
