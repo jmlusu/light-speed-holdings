@@ -187,8 +187,8 @@ class EncryptionKeyManager:
                 self._loaded = True
                 logger.debug("Loaded existing encryption keys from %s", self._key_file)
                 return
-            except Exception:
-                logger.warning("Failed to load key metadata, creating new genesis keys")
+            except (json.JSONDecodeError, KeyError, ValueError) as exc:
+                logger.warning("Failed to load key metadata, creating new genesis keys: %s", exc)
 
         # Genesis: create first key
         self._current_key = self._derive_new_key()

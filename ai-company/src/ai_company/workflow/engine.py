@@ -71,7 +71,7 @@ class WorkflowEngine:
                     continue
                 instance = WorkflowInstance.from_dict(data, workflow)
                 self._instances[instance.instance_id] = instance
-            except Exception as exc:
+            except (KeyError, ValueError, TypeError) as exc:
                 logger.warning("Failed to load instance from %s: %s", f, exc)
 
     def _save_instance(self, instance: WorkflowInstance) -> None:
