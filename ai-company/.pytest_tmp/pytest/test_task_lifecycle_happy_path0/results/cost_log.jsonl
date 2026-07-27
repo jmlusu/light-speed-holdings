@@ -1,1 +1,0 @@
-{"timestamp": "2026-07-27T10:26:34.955960", "model": "test-model", "provider": "test-provider", "agent_name": "test-agent", "task_id": "e2e-happy-001", "prompt_tokens": 50, "completion_tokens": 50, "cost_usd": 0.0002, "iteration": 1, "metadata": {}}

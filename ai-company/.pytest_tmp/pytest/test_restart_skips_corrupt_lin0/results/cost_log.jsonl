@@ -1,4 +1,0 @@
-{"timestamp": "2026-07-20T12:00:00", "model": "gpt-4o-mini", "provider": "openai", "agent_name": "agent_a", "task_id": "task-x", "prompt_tokens": 10000, "completion_tokens": 5000, "cost_usd": 0.012, "iteration": 1, "metadata": {}}
-this is not valid json
-
-{not-json}

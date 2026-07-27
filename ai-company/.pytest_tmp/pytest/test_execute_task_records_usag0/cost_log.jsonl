@@ -1,1 +1,0 @@
-{"timestamp": "2026-07-27T10:27:03.629045", "model": "llama3.1:8b", "provider": "ollama", "agent_name": "test-agent", "task_id": "task-test-001", "prompt_tokens": 100, "completion_tokens": 50, "cost_usd": 0.0, "iteration": 1, "metadata": {}}

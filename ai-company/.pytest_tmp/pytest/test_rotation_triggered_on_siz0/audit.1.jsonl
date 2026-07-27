@@ -1,1 +1,0 @@
-{"event_id": "e8d961d8-f40d-4f07-bc20-f0fbcd891cfc", "timestamp": "2026-07-27T08:27:11.206158+00:00", "event_type": "tool_call", "agent_id": "test-agent", "task_id": "rot-8", "tool": "bash", "args": {"cmd": "ls"}, "result": {"exit_code": 0}, "metadata": {"session": "abc"}, "severity": "info"}

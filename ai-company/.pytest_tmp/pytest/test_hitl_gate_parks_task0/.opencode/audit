@@ -1,2 +1,0 @@
-{"event_id": "e24f143a-4d03-444d-8b4e-8d638f7455ef", "timestamp": "2026-07-27T08:26:22.336664+00:00", "event_type": "task_created", "agent_id": "test-agent", "task_id": "task-hitl-001", "tool": null, "args": {}, "result": {}, "metadata": {"old_status": "pending", "new_status": "in_progress"}, "severity": "info"}
-{"event_id": "56bf22bc-f7e9-471c-8087-74de6b5fc768", "timestamp": "2026-07-27T08:26:22.366204+00:00", "event_type": "hitl_parked", "agent_id": "test-agent", "task_id": "task-hitl-001", "tool": "write", "args": {}, "result": {}, "metadata": {}, "severity": "info"}

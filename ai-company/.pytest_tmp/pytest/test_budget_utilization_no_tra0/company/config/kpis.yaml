@@ -1,9 +1,0 @@
-departments:
-  finance:
-    kpis:
-    - frequency: monthly
-      id: budget_utilization
-      name: Budget Utilization
-      target: 90
-      unit: '%'
-    name: Finance

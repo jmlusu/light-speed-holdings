@@ -1,1 +1,0 @@
-{"timestamp": "2026-07-27T10:27:13.446267", "model": "gpt-4o", "provider": "openai", "agent_name": "agent_a", "task_id": "expensive-task", "prompt_tokens": 100000, "completion_tokens": 50000, "cost_usd": 0.75, "iteration": 1, "metadata": {}}

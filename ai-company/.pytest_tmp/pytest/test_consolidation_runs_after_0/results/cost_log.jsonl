@@ -1,2 +1,0 @@
-{"timestamp": "2026-07-27T10:26:37.501760", "model": "test-model", "provider": "test-provider", "agent_name": "test-agent", "task_id": "consol-001", "prompt_tokens": 50, "completion_tokens": 50, "cost_usd": 0.0002, "iteration": 1, "metadata": {}}
-{"timestamp": "2026-07-27T10:26:37.609370", "model": "test-model", "provider": "test-provider", "agent_name": "test-agent", "task_id": "consol-002", "prompt_tokens": 50, "completion_tokens": 50, "cost_usd": 0.0002, "iteration": 1, "metadata": {}}

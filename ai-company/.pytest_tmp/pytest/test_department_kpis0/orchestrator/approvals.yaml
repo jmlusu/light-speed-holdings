@@ -1,8 +1,0 @@
-requests:
-- action: deploy
-  agent_id: lead-engineering
-  description: Deploy to production
-  id: req-5e443ff1
-  status: pending
-  task_id: t-1
-  tier: 2

@@ -1,1 +1,0 @@
-{"timestamp": "2026-07-27T10:27:08.000521", "model": "test-model", "provider": "mock", "agent_name": "test-agent", "task_id": "task-budget-1", "prompt_tokens": 10000, "completion_tokens": 5000, "cost_usd": 0.025, "iteration": 1, "metadata": {}}
