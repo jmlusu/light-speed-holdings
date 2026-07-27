@@ -25,6 +25,7 @@ file, which would block under Windows share-mode contention.
 
 from __future__ import annotations
 
+import contextlib
 import errno
 import logging
 import os
@@ -109,7 +110,7 @@ def file_lock(
                 # mean "lock already held".
                 code = getattr(exc, "errno", None)
                 if code not in (errno.EEXIST, errno.EACCES):
-                    raise
+                    raise FileLockError(f"Failed to acquire lock: {exc}") from exc
                 # Lock held by someone else.  Break an orphaned lock.
                 if _is_stale(lock_path, stale_after):
                     logger.warning(
@@ -117,10 +118,8 @@ def file_lock(
                         lock_path,
                         stale_after,
                     )
-                    try:
+                    with contextlib.suppress(OSError):
                         lock_path.unlink()
-                    except OSError:
-                        pass
                     continue
                 if time.monotonic() >= deadline:
                     raise FileLockError(f"Could not acquire lock {lock_path} within {timeout}s.")
@@ -128,14 +127,10 @@ def file_lock(
         yield
     finally:
         if fd is not None:
-            try:
+            with contextlib.suppress(OSError):
                 os.close(fd)
-            except OSError:
-                pass
         if acquired:
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 lock_path.unlink()
-            except FileNotFoundError:
-                pass
-            except OSError:
+            if lock_path.exists():
                 logger.warning("Failed to remove lock file %s", lock_path)

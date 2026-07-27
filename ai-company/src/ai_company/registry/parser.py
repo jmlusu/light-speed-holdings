@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from ai_company.models import (
@@ -26,6 +27,8 @@ from ai_company.models import (
     VotingConfig,
     Workflow,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _unwrap(data: dict[str, Any], key: str) -> dict[str, Any]:
@@ -57,7 +60,8 @@ def _list_of(data: Any, model_cls: type) -> list:
         if isinstance(item, dict):
             try:
                 items.append(model_cls(**item))
-            except Exception:
+            except ValueError as exc:
+                logger.debug("Failed to parse model %s: %s", model_cls.__name__, exc)
                 continue
     return items
 

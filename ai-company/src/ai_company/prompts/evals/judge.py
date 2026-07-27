@@ -178,7 +178,7 @@ class LLMJudge:
                 model=self.judge_model,
             )
             raw = response.content if hasattr(response, "content") else str(response)
-        except Exception as exc:
+        except ValueError as exc:  # Catch specific exception types
             logger.warning("Judge LLM call failed: %s — using heuristic", exc)
             scores = self._heuristic_score(agent_output)
             return JudgeResult(
