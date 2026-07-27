@@ -439,9 +439,8 @@ class RegistryNormalizer:
         for agent in self.reporting_chains.values():
             if agent.parent_id and agent.parent_id not in [
                 a.agent_id for a in self.reporting_chains.values()
-            ]:
-                if agent.parent_id != "human-ceo" and agent.parent_id != "CEO":
-                    errors.append(f"Agent {agent.agent_id} has invalid parent: {agent.parent_id}")
+            ] and agent.parent_id not in ("human-ceo", "CEO"):
+                errors.append(f"Agent {agent.agent_id} has invalid parent: {agent.parent_id}")
 
         # Check for duplicate agent IDs
         agent_ids = [agent.agent_id for agent in self.reporting_chains.values()]
@@ -466,7 +465,13 @@ class RegistryNormalizer:
                 "agent_count": len(registry_data),
                 "department_count": len(self.departments),
             }
-        except Exception as e:
+        except FileNotFoundError as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "processed_at": datetime.now().isoformat(),
+            }
+        except ValueError as e:
             return {
                 "success": False,
                 "error": str(e),

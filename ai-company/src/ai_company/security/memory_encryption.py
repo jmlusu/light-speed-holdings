@@ -10,10 +10,10 @@ from __future__ import annotations
 
 import base64
 import logging
-import secrets
 from typing import TYPE_CHECKING
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.exceptions import InvalidTag
 
 if TYPE_CHECKING:
     from ai_company.security.encryption_key_manager import EncryptionKeyManager
@@ -43,6 +43,8 @@ def encrypt(plaintext: str, key_manager: EncryptionKeyManager) -> str:
 
     if not plaintext:
         return plaintext
+
+    import secrets
 
     key = key_manager.get_current_key()
     nonce = secrets.token_bytes(_NONCE_SIZE)
@@ -76,7 +78,7 @@ def decrypt(payload: str, key_manager: EncryptionKeyManager) -> str:
     encoded = payload[len(_ENC_PREFIX) :]
     try:
         blob = base64.b64decode(encoded)
-    except Exception as exc:
+    except ValueError as exc:
         raise ValueError(f"Invalid encrypted payload: {exc}") from exc
 
     nonce = blob[:_NONCE_SIZE]
@@ -94,8 +96,8 @@ def decrypt(payload: str, key_manager: EncryptionKeyManager) -> str:
             aesgcm = AESGCM(key)
             plaintext_bytes = aesgcm.decrypt(nonce, ciphertext, None)
             return plaintext_bytes.decode("utf-8")
-        except Exception as exc:
+        except (ValueError, OSError, InvalidTag) as exc:
             last_error = exc
             logger.debug("Decrypt failed with %s key: %s", label, exc)
 
-    raise ValueError(f"Failed to decrypt memory content with any available key: {last_error}")
+    raise ValueError(f"Failed to decrypt")

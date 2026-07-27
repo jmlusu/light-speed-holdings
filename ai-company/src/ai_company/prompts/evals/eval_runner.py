@@ -125,7 +125,7 @@ class EvalRunner:
                 results.append(eval_result)
 
                 logger.debug("Test %s: score=%.3f", tc.id, eval_result.score.total)
-            except Exception as exc:
+            except (ValueError, RuntimeError, KeyError) as exc:
                 error_msg = f"Test {tc.id} failed: {exc}"
                 errors.append(error_msg)
                 logger.warning(error_msg)
