@@ -129,7 +129,7 @@ class EncryptionKeyManager:
             salt=salt,
             info=_HKDF_INFO,
         )
-        return hkdf.derive(master + salt)
+        return hkdf.derive(master)
 
     def _generate_key_id(self) -> str:
         """Generate a short deterministic key identifier."""
