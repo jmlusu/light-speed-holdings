@@ -37,7 +37,9 @@ def client(workspace: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
 class TestPatchTask:
     """Verify PATCH endpoint updates task fields and persists to inbox."""
 
-    def _create_task(self, client: TestClient, instruction: str = "Review and approve the pending pull request") -> dict:
+    def _create_task(
+        self, client: TestClient, instruction: str = "Review and approve the pending pull request"
+    ) -> dict:
         """Helper to create a task and return the response body."""
         resp = client.post(
             "/api/tasks",

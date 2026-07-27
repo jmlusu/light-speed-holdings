@@ -92,9 +92,7 @@ class FileStore:
         tmp_fd: int | None = None
         tmp_path: str = ""
         try:
-            tmp_fd, tmp_path = tempfile.mkstemp(
-                dir=str(path.parent), suffix=".tmp"
-            )
+            tmp_fd, tmp_path = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
             with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
                 f.write(data)
                 f.flush()

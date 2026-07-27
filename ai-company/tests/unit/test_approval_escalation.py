@@ -157,21 +157,28 @@ class TestApprovalGateBasic:
         result = gate.approve("req-1", "human-2")
         assert result is False
 
-    def test_get_pending_requests_filters_correctly(
-        self, gate: ApprovalGate
-    ) -> None:
+    def test_get_pending_requests_filters_correctly(self, gate: ApprovalGate) -> None:
         # Create three requests with varying states.
         gate.request_approval(
-            request_id="r-pending", task_id="t1", agent_id="a1",
-            action="write", description="d1",
+            request_id="r-pending",
+            task_id="t1",
+            agent_id="a1",
+            action="write",
+            description="d1",
         )
         gate.request_approval(
-            request_id="r-approved", task_id="t2", agent_id="a2",
-            action="write", description="d2",
+            request_id="r-approved",
+            task_id="t2",
+            agent_id="a2",
+            action="write",
+            description="d2",
         )
         gate.request_approval(
-            request_id="r-rejected", task_id="t3", agent_id="a3",
-            action="write", description="d3",
+            request_id="r-rejected",
+            task_id="t3",
+            agent_id="a3",
+            action="write",
+            description="d3",
         )
         gate.approve("r-approved", "human-1")
         gate.reject("r-rejected", "human-2")
@@ -180,19 +187,23 @@ class TestApprovalGateBasic:
         assert len(pending) == 1
         assert pending[0].id == "r-pending"
 
-    def test_get_request_returns_none_for_unknown(
-        self, gate: ApprovalGate
-    ) -> None:
+    def test_get_request_returns_none_for_unknown(self, gate: ApprovalGate) -> None:
         assert gate.get_request("unknown") is None
 
     def test_list_all_returns_all_requests(self, gate: ApprovalGate) -> None:
         gate.request_approval(
-            request_id="r1", task_id="t1", agent_id="a1",
-            action="write", description="d1",
+            request_id="r1",
+            task_id="t1",
+            agent_id="a1",
+            action="write",
+            description="d1",
         )
         gate.request_approval(
-            request_id="r2", task_id="t2", agent_id="a2",
-            action="execute", description="d2",
+            request_id="r2",
+            task_id="t2",
+            agent_id="a2",
+            action="execute",
+            description="d2",
         )
         all_reqs = gate.list_all()
         assert len(all_reqs) == 2
@@ -200,8 +211,12 @@ class TestApprovalGateBasic:
     def test_request_sets_expiry(self, gate: ApprovalGate) -> None:
         before = datetime.now()
         gate.request_approval(
-            request_id="r1", task_id="t1", agent_id="a1",
-            action="write", description="d1", expires_in_minutes=30,
+            request_id="r1",
+            task_id="t1",
+            agent_id="a1",
+            action="write",
+            description="d1",
+            expires_in_minutes=30,
         )
         req = gate.get_request("r1")
         assert req is not None
@@ -256,9 +271,7 @@ class TestMultiStepApproval:
         assert len(req.approved_by_list) == 2
         assert gate.get_pending_requests() == []
 
-    def test_multi_step_different_approvers_deduped(
-        self, gate: ApprovalGate
-    ) -> None:
+    def test_multi_step_different_approvers_deduped(self, gate: ApprovalGate) -> None:
         """Same person approving twice should be deduped; stays pending."""
         gate.request_approval(
             request_id="req-1",
@@ -326,9 +339,7 @@ class TestMultiStepApproval:
 class TestApprovalExpiration:
     """Expiration-related behavior for approval requests."""
 
-    def test_expired_request_excluded_from_pending(
-        self, gate: ApprovalGate
-    ) -> None:
+    def test_expired_request_excluded_from_pending(self, gate: ApprovalGate) -> None:
         gate.request_approval(
             request_id="req-1",
             task_id="task-1",
@@ -354,9 +365,7 @@ class TestApprovalExpiration:
         pending = gate.get_pending_requests()
         assert len(pending) == 1
 
-    def test_approve_expired_request_returns_false(
-        self, gate: ApprovalGate
-    ) -> None:
+    def test_approve_expired_request_returns_false(self, gate: ApprovalGate) -> None:
         gate.request_approval(
             request_id="req-1",
             task_id="task-1",
@@ -384,9 +393,7 @@ class TestApprovalExpiration:
         pending = gate.get_pending_requests()
         assert len(pending) == 0
 
-    def test_request_with_no_expiry_always_pending(
-        self, gate: ApprovalGate
-    ) -> None:
+    def test_request_with_no_expiry_always_pending(self, gate: ApprovalGate) -> None:
         """When expires_at is None, the request is always pending."""
         gate.request_approval(
             request_id="req-1",
@@ -404,12 +411,20 @@ class TestApprovalExpiration:
     def test_mixed_expired_and_active(self, gate: ApprovalGate) -> None:
         """Only non-expired pending requests appear."""
         gate.request_approval(
-            request_id="r-active", task_id="t1", agent_id="a1",
-            action="write", description="d1", expires_in_minutes=60,
+            request_id="r-active",
+            task_id="t1",
+            agent_id="a1",
+            action="write",
+            description="d1",
+            expires_in_minutes=60,
         )
         gate.request_approval(
-            request_id="r-expired", task_id="t2", agent_id="a2",
-            action="write", description="d2", expires_in_minutes=60,
+            request_id="r-expired",
+            task_id="t2",
+            agent_id="a2",
+            action="write",
+            description="d2",
+            expires_in_minutes=60,
         )
         gate.requests[1].expires_at = datetime.now() - timedelta(minutes=1)
         pending = gate.get_pending_requests()
@@ -451,15 +466,16 @@ class TestEscalationManager:
         assert len(rules) == 1
         assert rules[0].id == "r2"
 
-    def test_remove_nonexistent_returns_false(
-        self, escalation: EscalationManager
-    ) -> None:
+    def test_remove_nonexistent_returns_false(self, escalation: EscalationManager) -> None:
         result = escalation.remove_rule("nonexistent")
         assert result is False
 
     def test_trigger_escalation(self, escalation: EscalationManager) -> None:
         escalation.add_rule(
-            "r1", "Timeout", "task_timeout", "chief-of-staff",
+            "r1",
+            "Timeout",
+            "task_timeout",
+            "chief-of-staff",
         )
         event = escalation.trigger_escalation(
             task_id="task-42",
@@ -480,9 +496,7 @@ class TestEscalationManager:
         assert len(pending) == 1
         assert pending[0].task_id == "task-42"
 
-    def test_trigger_unknown_rule_returns_none(
-        self, escalation: EscalationManager
-    ) -> None:
+    def test_trigger_unknown_rule_returns_none(self, escalation: EscalationManager) -> None:
         event = escalation.trigger_escalation(
             task_id="task-1",
             rule_id="nonexistent",
@@ -517,14 +531,10 @@ class TestEscalationManager:
         assert mgr2.list_rules()[0].id == "r1"
         assert len(mgr2.get_pending_escalations()) == 1
 
-    def test_get_event_returns_none_for_unknown(
-        self, escalation: EscalationManager
-    ) -> None:
+    def test_get_event_returns_none_for_unknown(self, escalation: EscalationManager) -> None:
         assert escalation.get_event("nonexistent") is None
 
-    def test_multiple_rules_and_events(
-        self, escalation: EscalationManager
-    ) -> None:
+    def test_multiple_rules_and_events(self, escalation: EscalationManager) -> None:
         """Multiple rules and events can coexist."""
         escalation.add_rule("r1", "Timeout", "task_timeout", "chief-of-staff")
         escalation.add_rule("r2", "Cost", "cost_exceeded", "finance-lead")
@@ -542,9 +552,7 @@ class TestEscalationManager:
 class TestHITLGateParking:
     """Non-blocking HITL parking and resume."""
 
-    def test_request_and_park_creates_request(
-        self, hitl: HITLGate
-    ) -> None:
+    def test_request_and_park_creates_request(self, hitl: HITLGate) -> None:
         request_id = hitl.request_and_park(
             task_id="task-1",
             agent_id="agent-a",
@@ -558,9 +566,7 @@ class TestHITLGateParking:
         # Should be in pending requests.
         assert hitl.has_pending_requests() is True
 
-    def test_resume_approved_returns_none_when_pending(
-        self, hitl: HITLGate
-    ) -> None:
+    def test_resume_approved_returns_none_when_pending(self, hitl: HITLGate) -> None:
         request_id = hitl.request_and_park(
             task_id="task-1",
             agent_id="agent-a",
@@ -571,9 +577,7 @@ class TestHITLGateParking:
         result = hitl.resume_approved(request_id)
         assert result is None
 
-    def test_resume_approved_returns_true_after_approval(
-        self, hitl: HITLGate
-    ) -> None:
+    def test_resume_approved_returns_true_after_approval(self, hitl: HITLGate) -> None:
         request_id = hitl.request_and_park(
             task_id="task-1",
             agent_id="agent-a",
@@ -584,9 +588,7 @@ class TestHITLGateParking:
         result = hitl.resume_approved(request_id)
         assert result is True
 
-    def test_resume_approved_returns_false_after_rejection(
-        self, hitl: HITLGate
-    ) -> None:
+    def test_resume_approved_returns_false_after_rejection(self, hitl: HITLGate) -> None:
         request_id = hitl.request_and_park(
             task_id="task-1",
             agent_id="agent-a",
@@ -597,9 +599,7 @@ class TestHITLGateParking:
         result = hitl.resume_approved(request_id)
         assert result is False
 
-    def test_resolve_all_pending_parked_requests_not_resolved(
-        self, hitl: HITLGate
-    ) -> None:
+    def test_resolve_all_pending_parked_requests_not_resolved(self, hitl: HITLGate) -> None:
         """resolve_all_pending skips parked (no-future) requests.
 
         ``request_and_park`` does not create a Future, so
@@ -607,7 +607,9 @@ class TestHITLGateParking:
         included in the resolved dict.
         """
         rid = hitl.request_and_park(
-            task_id="t1", agent_id="a1", tool="write",
+            task_id="t1",
+            agent_id="a1",
+            tool="write",
             args={"path": "f1.txt", "content": "a"},
         )
         hitl.gate.approve(rid, "human-1")
@@ -620,7 +622,9 @@ class TestHITLGateParking:
         # request_and_wait returns a Future; the request_id is stored
         # internally in _pending_requests and _futures.
         hitl.request_and_wait(
-            task_id="t1", agent_id="a1", tool="write",
+            task_id="t1",
+            agent_id="a1",
+            tool="write",
             args={"path": "f1.txt", "content": "a"},
         )
         # Grab the request_id from the internal tracking dict.
@@ -635,17 +639,15 @@ class TestHITLGateParking:
         assert rid in resolved
         assert resolved[rid] is True
 
-    def test_has_pending_requests_false_when_empty(
-        self, hitl: HITLGate
-    ) -> None:
+    def test_has_pending_requests_false_when_empty(self, hitl: HITLGate) -> None:
         assert hitl.has_pending_requests() is False
 
-    def test_parked_request_removed_from_pending_after_decision(
-        self, hitl: HITLGate
-    ) -> None:
+    def test_parked_request_removed_from_pending_after_decision(self, hitl: HITLGate) -> None:
         """After approve + resume, the request is removed from internal tracking."""
         rid = hitl.request_and_park(
-            task_id="t1", agent_id="a1", tool="write",
+            task_id="t1",
+            agent_id="a1",
+            tool="write",
             args={"path": "x.txt", "content": "data"},
         )
         hitl.gate.approve(rid, "human-1")
@@ -658,7 +660,9 @@ class TestHITLGateParking:
     def test_cancel_removes_pending(self, hitl: HITLGate) -> None:
         """Cancel resolves a parked request as False and cleans up."""
         rid = hitl.request_and_park(
-            task_id="t1", agent_id="a1", tool="write",
+            task_id="t1",
+            agent_id="a1",
+            tool="write",
             args={"path": "x.txt", "content": "data"},
         )
         hitl.cancel(rid)
@@ -729,9 +733,7 @@ class TestPostmortemStore:
         assert loaded is not None
         assert loaded.incident_id == "INC-task-42"
 
-    def test_create_from_escalation_with_rule(
-        self, pm_store: PostmortemStore
-    ) -> None:
+    def test_create_from_escalation_with_rule(self, pm_store: PostmortemStore) -> None:
         """When a rule is passed, postmortem uses the rule name."""
         from ai_company.orchestrator.escalation import EscalationRule
 
@@ -749,13 +751,13 @@ class TestPostmortemStore:
             escalate_to="finance-lead",
         )
         pm = pm_store.create_from_escalation(
-            event, rule=rule, title="Cost incident",
+            event,
+            rule=rule,
+            title="Cost incident",
         )
         assert pm.escalation_rule == "Cost Threshold"
 
-    def test_create_from_escalation_default_title(
-        self, pm_store: PostmortemStore
-    ) -> None:
+    def test_create_from_escalation_default_title(self, pm_store: PostmortemStore) -> None:
         """Without an explicit title, incident title defaults from the reason."""
         event = EscalationEvent(
             task_id="task-5",
@@ -774,9 +776,7 @@ class TestPostmortemStore:
         assert loaded is not None
         assert loaded.title == "Updated"
 
-    def test_postmortem_full_data_roundtrip(
-        self, pm_store: PostmortemStore
-    ) -> None:
+    def test_postmortem_full_data_roundtrip(self, pm_store: PostmortemStore) -> None:
         """A fully populated postmortem survives save/load."""
         pm = Postmortem(
             incident_id="INC-FULL",

@@ -21,7 +21,10 @@ app.add_typer(vector_index_app, name="vector-index")
 
 @app.command("list")
 def list_entries(
-    memory_type: str = typer.Option("all", help="Memory type to list (episodic, semantic, procedural, relational, temporal, aggregate, all)"),
+    memory_type: str = typer.Option(
+        "all",
+        help="Memory type to list (episodic, semantic, procedural, relational, temporal, aggregate, all)",
+    ),
 ) -> None:
     """List memory entries."""
     from ai_company.memory.engine import MemoryStore
@@ -56,7 +59,9 @@ def list_entries(
 
 @app.command()
 def add(
-    memory_type: str = typer.Option(..., help="Memory type (episodic, semantic, procedural, relational, temporal)"),
+    memory_type: str = typer.Option(
+        ..., help="Memory type (episodic, semantic, procedural, relational, temporal)"
+    ),
     content: str = typer.Option(..., help="Memory content"),
     agent_id: str = typer.Option("", help="Agent that created this memory"),
     tags: str = typer.Option("", help="Comma-separated tags"),
@@ -101,9 +106,11 @@ def search(
         except Exception:
             pass  # Non-fatal: fall back to keyword search
 
-    types_to_search = [memory_type] if memory_type != "all" else [
-        "episodic", "semantic", "procedural", "relational", "temporal"
-    ]
+    types_to_search = (
+        [memory_type]
+        if memory_type != "all"
+        else ["episodic", "semantic", "procedural", "relational", "temporal"]
+    )
 
     all_results: list = []
     for mt in types_to_search:
@@ -161,7 +168,8 @@ def recall(
     tag_list = [t.strip() for t in tags.split(",") if t.strip()] if tags else []
 
     types_to_recall = (
-        [memory_type] if memory_type != "all"
+        [memory_type]
+        if memory_type != "all"
         else ["episodic", "semantic", "procedural", "relational", "temporal"]
     )
 
@@ -202,9 +210,13 @@ def consolidate(
     console.print(f"[green]Consolidated {memory_type}:[/green]")
     console.print(f"  Entries: {summary['count']}")
     if summary.get("top_tags"):
-        console.print(f"  Top tags: {', '.join(f'{t[0]}({t[1]})' for t in summary['top_tags'][:5])}")
+        console.print(
+            f"  Top tags: {', '.join(f'{t[0]}({t[1]})' for t in summary['top_tags'][:5])}"
+        )
     if summary.get("top_agents"):
-        console.print(f"  Top agents: {', '.join(f'{a[0]}({a[1]})' for a in summary['top_agents'][:5])}")
+        console.print(
+            f"  Top agents: {', '.join(f'{a[0]}({a[1]})' for a in summary['top_agents'][:5])}"
+        )
 
 
 @app.command("consolidate-all")
@@ -386,8 +398,7 @@ def rebuild_vector_index(
 
     label = memory_type or "all types"
     console.print(
-        f"[green]Vector index rebuilt[/green] for {label}: "
-        f"[bold]{indexed}[/bold] entries indexed."
+        f"[green]Vector index rebuilt[/green] for {label}: [bold]{indexed}[/bold] entries indexed."
     )
 
     # Show index location

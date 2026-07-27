@@ -56,21 +56,22 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
 class TestAPIPerformance:
     """Benchmark API endpoint response times."""
 
-    @pytest.mark.parametrize("endpoint", [
-        "/api/dashboard",
-        "/api/agents",
-        "/api/tasks",
-        "/api/org-chart",
-        "/api/departments",
-        "/api/kpis",
-        "/api/kpis/summary",
-        "/api/models",
-        "/api/metrics",
-        "/health",
-    ])
-    def test_endpoint_response_time_p95(
-        self, client: TestClient, endpoint: str
-    ) -> None:
+    @pytest.mark.parametrize(
+        "endpoint",
+        [
+            "/api/dashboard",
+            "/api/agents",
+            "/api/tasks",
+            "/api/org-chart",
+            "/api/departments",
+            "/api/kpis",
+            "/api/kpis/summary",
+            "/api/models",
+            "/api/metrics",
+            "/health",
+        ],
+    )
+    def test_endpoint_response_time_p95(self, client: TestClient, endpoint: str) -> None:
         """P95 response time must be under 200ms."""
         times = []
         for _ in range(10):
@@ -94,37 +95,39 @@ class TestAPIPerformance:
             assert resp.status_code == 200
         elapsed = time.perf_counter() - start
 
-        assert elapsed < 10.0, (
-            f"100 dashboard requests took {elapsed:.1f}s (limit: 10s)"
-        )
+        assert elapsed < 10.0, f"100 dashboard requests took {elapsed:.1f}s (limit: 10s)"
 
     def test_concurrent_task_creation(self, client: TestClient) -> None:
         """Create 50 tasks concurrently and verify all succeed."""
         start = time.perf_counter()
         results = []
         for i in range(50):
-            resp = client.post("/api/tasks", json={
-                "receiver_id": "lead-engineering",
-                "instruction": f"Performance test task {i}",
-            })
+            resp = client.post(
+                "/api/tasks",
+                json={
+                    "receiver_id": "lead-engineering",
+                    "instruction": f"Performance test task {i}",
+                },
+            )
             results.append(resp)
         elapsed = time.perf_counter() - start
 
         for resp in results:
             assert resp.status_code == 201
 
-        assert elapsed < 5.0, (
-            f"50 task creations took {elapsed:.1f}s (limit: 5s)"
-        )
+        assert elapsed < 5.0, f"50 task creations took {elapsed:.1f}s (limit: 5s)"
 
     def test_large_dataset_performance(self, client: TestClient) -> None:
         """Dashboard should handle 500+ tasks without degradation."""
         # Create 500 additional tasks (workspace already seeds 50)
         for i in range(500):
-            client.post("/api/tasks", json={
-                "receiver_id": "lead-engineering",
-                "instruction": f"Bulk task {i}",
-            })
+            client.post(
+                "/api/tasks",
+                json={
+                    "receiver_id": "lead-engineering",
+                    "instruction": f"Bulk task {i}",
+                },
+            )
 
         # Measure dashboard response with large dataset
         start = time.perf_counter()
@@ -132,9 +135,7 @@ class TestAPIPerformance:
         elapsed_ms = (time.perf_counter() - start) * 1000
 
         assert resp.status_code == 200
-        assert elapsed_ms < 500, (
-            f"Dashboard with 500+ tasks took {elapsed_ms:.0f}ms (limit: 500ms)"
-        )
+        assert elapsed_ms < 500, f"Dashboard with 500+ tasks took {elapsed_ms:.0f}ms (limit: 500ms)"
 
         # Also check task listing (50 seeded + 500 created = 550)
         start = time.perf_counter()
@@ -180,6 +181,7 @@ class TestAPIConsistency:
         # Get baseline
         try:
             import psutil
+
             proc = psutil.Process(os.getpid())
             baseline_mb = proc.memory_info().rss / 1024 / 1024
         except ImportError:
@@ -213,9 +215,7 @@ class TestDataIntegrity:
 
         for key in ("pending_tasks", "total_agents", "completed_tasks"):
             values = [r[key] for r in results]
-            assert len(set(values)) == 1, (
-                f"Inconsistent {key}: {values}"
-            )
+            assert len(set(values)) == 1, f"Inconsistent {key}: {values}"
 
     def test_task_count_matches_across_endpoints(self, client: TestClient) -> None:
         """Task count from /api/dashboard should match /api/tasks length."""
@@ -230,8 +230,7 @@ class TestDataIntegrity:
             + dashboard["escalated_tasks"]
         )
         assert total_from_dashboard == len(tasks), (
-            f"Dashboard reports {total_from_dashboard} tasks, "
-            f"but /api/tasks returns {len(tasks)}"
+            f"Dashboard reports {total_from_dashboard} tasks, but /api/tasks returns {len(tasks)}"
         )
 
     def test_agent_count_consistency(self, client: TestClient) -> None:
@@ -291,9 +290,7 @@ class TestWebSocketPerformance:
             return elapsed_ms
 
         elapsed_ms = asyncio.run(_bench())
-        assert elapsed_ms < 500, (
-            f"100 connect/disconnect cycles took {elapsed_ms:.0f}ms"
-        )
+        assert elapsed_ms < 500, f"100 connect/disconnect cycles took {elapsed_ms:.0f}ms"
 
     def test_broadcast_reach_all_clients(self) -> None:
         """Broadcast should reach all connected clients."""

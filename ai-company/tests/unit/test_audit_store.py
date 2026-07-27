@@ -135,9 +135,7 @@ class TestAuditStoreRead:
     def test_read_date_range(self, store: AuditStore) -> None:
         """read_date_range filters within a window."""
         self._seed_events(store)
-        events = store.read_date_range(
-            "2025-01-15T10:30:00Z", "2025-01-15T11:30:00Z"
-        )
+        events = store.read_date_range("2025-01-15T10:30:00Z", "2025-01-15T11:30:00Z")
         assert len(events) == 1
         assert events[0].event_id == "e2"
 
@@ -238,8 +236,6 @@ class TestAuditStoreArchival:
     def test_archive_before_no_old_events(self, store: AuditStore, tmp_path: Path) -> None:
         """archive_before returns 0 when no events are old enough."""
         store.write(_make_event(event_id="fresh", timestamp="2025-06-01T10:00:00Z"))
-        archived = store.archive_before(
-            "2025-01-01T00:00:00Z", tmp_path / "archive.json"
-        )
+        archived = store.archive_before("2025-01-01T00:00:00Z", tmp_path / "archive.json")
         assert archived == 0
         assert store.count() == 1

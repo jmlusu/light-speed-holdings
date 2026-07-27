@@ -75,9 +75,7 @@ def _windows_lock(
                     fd = None
                 elapsed = time.monotonic() - start_time
                 if elapsed >= timeout:
-                    raise FileLockError(
-                        f"Could not acquire lock on {lock_path} within {timeout}s"
-                    )
+                    raise FileLockError(f"Could not acquire lock on {lock_path} within {timeout}s")
                 time.sleep(poll_interval)
 
         logger.debug("Acquired file lock: %s", lock_path)
@@ -118,9 +116,7 @@ def _unix_lock(
                     fd = None
                 elapsed = time.monotonic() - start_time
                 if elapsed >= timeout:
-                    raise FileLockError(
-                        f"Could not acquire lock on {lock_path} within {timeout}s"
-                    )
+                    raise FileLockError(f"Could not acquire lock on {lock_path} within {timeout}s")
                 time.sleep(poll_interval)
 
         logger.debug("Acquired file lock: %s", lock_path)

@@ -412,6 +412,7 @@ def postmortem_update(
 
     if updated:
         from datetime import datetime
+
         pm.last_updated = datetime.now().isoformat()
         store.save(pm)
         typer.echo(f"Postmortem '{incident_id}' updated.")
@@ -464,7 +465,13 @@ def postmortem_render(
         timeline=[{"time": e.time, "description": e.description} for e in pm.timeline],
         resolution_steps=pm.resolution_steps,
         action_items=[
-            {"id": a.id, "action": a.action, "owner": a.owner, "due_date": a.due_date, "status": a.status}
+            {
+                "id": a.id,
+                "action": a.action,
+                "owner": a.owner,
+                "due_date": a.due_date,
+                "status": a.status,
+            }
             for a in pm.action_items
         ],
         lessons_learned=pm.lessons_learned,

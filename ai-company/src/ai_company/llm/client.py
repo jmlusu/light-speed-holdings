@@ -107,7 +107,9 @@ class LLMClient:
             LLMProviderError: If no provider is available.
         """
         route = self.router.resolve(
-            agent_name=agent_name, priority=priority, context=context,
+            agent_name=agent_name,
+            priority=priority,
+            context=context,
             task_prompt=task_instruction,
         )
 
@@ -185,7 +187,9 @@ class LLMClient:
             LLMProviderError: If no provider is available.
         """
         route = self.router.resolve(
-            agent_name=agent_name, priority=priority, context=context,
+            agent_name=agent_name,
+            priority=priority,
+            context=context,
             task_prompt=task_instruction,
         )
 
@@ -227,9 +231,7 @@ class LLMClient:
                 if parsed is not None:
                     return
                 last_raw = full_text
-                last_error = (
-                    f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
-                )
+                last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
             except LLMProviderError as exc:
                 if breaker:
                     breaker.record_failure()
@@ -280,7 +282,9 @@ class LLMClient:
                 cost_usd = record.cost_usd
             except Exception:
                 logger.debug(
-                    "JSONL cost tracking failed for task %s", task_id, exc_info=True,
+                    "JSONL cost tracking failed for task %s",
+                    task_id,
+                    exc_info=True,
                 )
 
         # Compute cost if the tracker didn't (or wasn't configured)
@@ -310,7 +314,9 @@ class LLMClient:
                 )
         except Exception:
             logger.debug(
-                "SQLite cost tracking failed for task %s", task_id, exc_info=True,
+                "SQLite cost tracking failed for task %s",
+                task_id,
+                exc_info=True,
             )
 
     def _parse_response(self, content: str) -> dict[str, Any] | None:

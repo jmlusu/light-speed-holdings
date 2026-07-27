@@ -68,8 +68,15 @@ class CostAnalytics:
                 prompt_tokens, completion_tokens, cost_usd, iteration, metadata)
                VALUES (?,?,?,?,?,?,?,?,?,?)""",
             (
-                ts, model, provider, agent_name, task_id,
-                prompt_tokens, completion_tokens, cost_usd, iteration,
+                ts,
+                model,
+                provider,
+                agent_name,
+                task_id,
+                prompt_tokens,
+                completion_tokens,
+                cost_usd,
+                iteration,
                 json.dumps(metadata or {}, default=str),
             ),
         )
@@ -159,12 +166,15 @@ class CostAnalytics:
             "total_prompt_tokens": total_prompt,
             "total_completion_tokens": total_completion,
             "call_count": total_calls,
-            "by_model": {r["model"]: {
-                "cost_usd": round(r["cost_usd"], 6),
-                "prompt_tokens": r["prompt_tokens"],
-                "completion_tokens": r["completion_tokens"],
-                "calls": r["calls"],
-            } for r in rows},
+            "by_model": {
+                r["model"]: {
+                    "cost_usd": round(r["cost_usd"], 6),
+                    "prompt_tokens": r["prompt_tokens"],
+                    "completion_tokens": r["completion_tokens"],
+                    "calls": r["calls"],
+                }
+                for r in rows
+            },
         }
 
     def weekly_summary(self, week_start: str | None = None) -> dict[str, Any]:
@@ -421,9 +431,7 @@ class CostAnalytics:
 
     def total_cost(self) -> float:
         """Total cost across all records."""
-        row = self._db.fetchone(
-            "SELECT COALESCE(SUM(cost_usd), 0) as total FROM cost_records"
-        )
+        row = self._db.fetchone("SELECT COALESCE(SUM(cost_usd), 0) as total FROM cost_records")
         return row["total"] if row else 0.0
 
     # ── Export ────────────────────────────────────────────────────────
@@ -436,9 +444,7 @@ class CostAnalytics:
         path = Path(jsonl_path)
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        rows = self._db.fetchall(
-            "SELECT * FROM cost_records ORDER BY timestamp ASC"
-        )
+        rows = self._db.fetchall("SELECT * FROM cost_records ORDER BY timestamp ASC")
 
         with open(path, "w", encoding="utf-8") as f:
             for row in rows:

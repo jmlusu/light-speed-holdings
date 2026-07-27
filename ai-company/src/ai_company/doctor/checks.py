@@ -41,9 +41,7 @@ def check_registry_exists(registry_path: str = "company-registry.yaml") -> Check
 def check_registry_valid(registry_path: str = "company-registry.yaml") -> CheckResult:
     path = Path(registry_path)
     if not path.exists():
-        return CheckResult(
-            "Registry Valid", False, "Registry file not found", severity="error"
-        )
+        return CheckResult("Registry Valid", False, "Registry file not found", severity="error")
 
     try:
         with open(path, "r", encoding="utf-8") as f:
@@ -56,15 +54,11 @@ def check_registry_valid(registry_path: str = "company-registry.yaml") -> CheckR
 
         agents = data.get("company", {}).get("agents", [])
         if not agents:
-            return CheckResult(
-                "Registry Valid", False, "No agents defined", severity="warning"
-            )
+            return CheckResult("Registry Valid", False, "No agents defined", severity="warning")
 
         return CheckResult("Registry Valid", True, f"{len(agents)} agents defined")
     except yaml.YAMLError as e:
-        return CheckResult(
-            "Registry Valid", False, f"YAML error: {e}", severity="error"
-        )
+        return CheckResult("Registry Valid", False, f"YAML error: {e}", severity="error")
 
 
 def check_models_importable() -> CheckResult:
@@ -73,9 +67,7 @@ def check_models_importable() -> CheckResult:
 
         return CheckResult("Models Import", True, "All models importable")
     except ImportError as e:
-        return CheckResult(
-            "Models Import", False, f"Import error: {e}", severity="error"
-        )
+        return CheckResult("Models Import", False, f"Import error: {e}", severity="error")
 
 
 def check_message_bus() -> CheckResult:
@@ -92,9 +84,7 @@ def check_opencode_directory() -> CheckResult:
     opencode_dir = Path(".opencode")
     if opencode_dir.exists():
         return CheckResult("OpenCode Directory", True, "Directory exists")
-    return CheckResult(
-        "OpenCode Directory", False, "Directory missing", severity="warning"
-    )
+    return CheckResult("OpenCode Directory", False, "Directory missing", severity="warning")
 
 
 def check_company_configs() -> CheckResult:
@@ -106,9 +96,7 @@ def check_company_configs() -> CheckResult:
 
     yaml_files = list(config_dir.glob("*.yaml"))
     if not yaml_files:
-        return CheckResult(
-            "Company Configs", False, "No YAML configs found", severity="warning"
-        )
+        return CheckResult("Company Configs", False, "No YAML configs found", severity="warning")
 
     return CheckResult("Company Configs", True, f"{len(yaml_files)} config files found")
 
@@ -128,7 +116,10 @@ def check_python_version() -> CheckResult:
         passed=ok,
         message=msg,
         severity="ok" if ok else "error",
-        details={"expected": ">=3.12", "actual": f"{version.major}.{version.minor}.{version.micro}"},
+        details={
+            "expected": ">=3.12",
+            "actual": f"{version.major}.{version.minor}.{version.micro}",
+        },
     )
 
 
@@ -313,14 +304,10 @@ def check_llm_providers() -> CheckResult:
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "")
     providers["anthropic"] = {
         "status": "ok" if anthropic_key else "no_key",
-        "message": (
-            "API key configured" if anthropic_key else "ANTHROPIC_API_KEY not set"
-        ),
+        "message": ("API key configured" if anthropic_key else "ANTHROPIC_API_KEY not set"),
     }
 
-    reachable = sum(
-        1 for p in providers.values() if p["status"] in ("ok", "no_key")
-    )
+    reachable = sum(1 for p in providers.values() if p["status"] in ("ok", "no_key"))
     total = len(providers)
     all_ok = all(p["status"] in ("ok", "no_key") for p in providers.values())
 

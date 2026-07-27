@@ -142,6 +142,7 @@ class MemoryStore:
         if self._key_manager is None:
             return content
         from ai_company.security.memory_encryption import encrypt
+
         return encrypt(content, self._key_manager)
 
     def _decrypt_content(self, content: str) -> str:
@@ -149,6 +150,7 @@ class MemoryStore:
         if self._key_manager is None:
             return content
         from ai_company.security.memory_encryption import decrypt
+
         return decrypt(content, self._key_manager)
 
     def _file_name(self, memory_type: str) -> str:
@@ -194,9 +196,7 @@ class MemoryStore:
         if self._vector_store is not None:
             try:
                 # Index with original plaintext for better embedding quality
-                plaintext_entry = MemoryEntry(
-                    memory_type=memory_type, content=content, **kwargs
-                )
+                plaintext_entry = MemoryEntry(memory_type=memory_type, content=content, **kwargs)
                 plaintext_entry.id = entry.id
                 plaintext_entry.created_at = entry.created_at
                 plaintext_entry.seq = entry.seq
@@ -358,9 +358,7 @@ class MemoryStore:
         # Keyword path: keep entries that match any term in content/tags/metadata.
         if not terms:
             # Empty/whitespace query: return most recent across types.
-            matched = sorted(
-                candidates, key=lambda e: (e.seq, e.created_at), reverse=True
-            )
+            matched = sorted(candidates, key=lambda e: (e.seq, e.created_at), reverse=True)
         else:
             scored: list[tuple[int, MemoryEntry]] = []
             for entry in candidates:

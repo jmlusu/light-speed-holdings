@@ -17,6 +17,7 @@ runner = CliRunner()
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _mock_db(tmp_path: Path) -> MagicMock:
     """Create a mock Database for governance tests."""
     db = MagicMock()
@@ -30,19 +31,30 @@ def _mock_db(tmp_path: Path) -> MagicMock:
 # Tests: report
 # ---------------------------------------------------------------------------
 
-class TestGovernanceReport:
 
+class TestGovernanceReport:
     def test_report_json(self, tmp_path: Path) -> None:
         """governance report --json outputs valid JSON."""
         mock_gov = MagicMock()
         mock_gov.governance_report.return_value = {
             "generated_at": "2026-07-22T00:00:00",
-            "tables": {"tasks": {"row_count": 5, "classification": "internal", "owner": "orch", "retention_days": 365, "action": "archive", "records_past_retention": 0}},
+            "tables": {
+                "tasks": {
+                    "row_count": 5,
+                    "classification": "internal",
+                    "owner": "orch",
+                    "retention_days": 365,
+                    "action": "archive",
+                    "records_past_retention": 0,
+                }
+            },
             "owners": [],
             "policies": [],
         }
 
-        with patch("ai_company.cli.governance._init_governance", return_value=(MagicMock(), mock_gov)):
+        with patch(
+            "ai_company.cli.governance._init_governance", return_value=(MagicMock(), mock_gov)
+        ):
             result = runner.invoke(app, ["report", "--json", "-d", str(tmp_path / "fake.db")])
 
         assert result.exit_code == 0
@@ -57,8 +69,8 @@ class TestGovernanceReport:
 # Tests: audit-trail
 # ---------------------------------------------------------------------------
 
-class TestGovernanceAuditTrail:
 
+class TestGovernanceAuditTrail:
     def test_audit_trail_empty(self, tmp_path: Path) -> None:
         """audit-trail with no audit file shows empty message."""
         with patch("ai_company.audit.reader.AuditReader") as MockReader:
@@ -138,8 +150,8 @@ class TestGovernanceAuditTrail:
 # Tests: risk-summary
 # ---------------------------------------------------------------------------
 
-class TestGovernanceRiskSummary:
 
+class TestGovernanceRiskSummary:
     def test_risk_summary_json(self, tmp_path: Path) -> None:
         """risk-summary --json outputs valid JSON."""
         result = runner.invoke(app, ["risk-summary", "--json"])

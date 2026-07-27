@@ -71,7 +71,9 @@ def validate_agent(filepath: Path) -> list[str]:
             # Check for boolean values
             for key, value in tools.items():
                 if not isinstance(value, bool):
-                    errors.append(f"tools.{key} must be bool, got {type(value).__name__}: {value!r}")
+                    errors.append(
+                        f"tools.{key} must be bool, got {type(value).__name__}: {value!r}"
+                    )
 
     return errors
 
@@ -104,9 +106,9 @@ def main() -> int:
         else:
             passed += 1
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Results: {passed} passed, {failed} failed, {total} total")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     return 1 if failed > 0 else 0
 

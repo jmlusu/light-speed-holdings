@@ -146,10 +146,9 @@ class AgentPerformanceTracker:
 
         # Build feature matrix: [complexity, priority_encoded]
         priority_map = {"low": 0, "medium": 0.5, "high": 0.8, "critical": 1.0}
-        X = np.array([
-            [r.task_complexity, priority_map.get(r.priority, 0.5)]
-            for r in agent_records
-        ])
+        X = np.array(
+            [[r.task_complexity, priority_map.get(r.priority, 0.5)] for r in agent_records]
+        )
         y = np.array([r.execution_time_s for r in agent_records])
 
         try:

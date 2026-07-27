@@ -44,7 +44,10 @@ def _get_model(model_name: str = "all-MiniLM-L6-v2") -> Any:
         logger.info("Loading embedding model: %s", model_name)
         _model = SentenceTransformer(model_name)
         _model_name = model_name
-        logger.info("Embedding model loaded successfully (dim=%d)", _model.get_sentence_embedding_dimension())
+        logger.info(
+            "Embedding model loaded successfully (dim=%d)",
+            _model.get_sentence_embedding_dimension(),
+        )
         return _model
     except ImportError:
         raise ImportError(
@@ -184,10 +187,7 @@ class EmbeddingEngine:
     def save_cache(self) -> None:
         """Persist the embedding cache to disk."""
         cache_file = self.cache_dir / "embeddings_cache.json"
-        data = {
-            key: vec.tolist()
-            for key, vec in self._cache.items()
-        }
+        data = {key: vec.tolist() for key, vec in self._cache.items()}
         with open(cache_file, "w", encoding="utf-8") as f:
             json.dump(data, f)
 
@@ -208,4 +208,5 @@ class EmbeddingEngine:
     def _cache_key(text: str) -> str:
         """Generate a deterministic cache key from text content."""
         import hashlib
+
         return hashlib.sha256(text.encode("utf-8")).hexdigest()[:32]

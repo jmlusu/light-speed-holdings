@@ -66,9 +66,7 @@ class AuditStore:
 
     def read_all(self) -> list[AuditEvent]:
         """Return every event."""
-        rows = self._db.fetchall(
-            "SELECT * FROM audit_events ORDER BY timestamp ASC"
-        )
+        rows = self._db.fetchall("SELECT * FROM audit_events ORDER BY timestamp ASC")
         return [self._row_to_event(r) for r in rows]
 
     def read_by_task(self, task_id: str) -> list[AuditEvent]:

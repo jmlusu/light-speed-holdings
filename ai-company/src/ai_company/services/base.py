@@ -130,7 +130,10 @@ class BaseService:
         self.bus.send_task(task)
         logger.info(
             "[%s] Created task %s -> %s: %s",
-            self.department_id, task.id[:8], receiver_id, instruction[:60],
+            self.department_id,
+            task.id[:8],
+            receiver_id,
+            instruction[:60],
         )
         # Audit the task creation
         self._audit_log(

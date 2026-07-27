@@ -177,9 +177,7 @@ def _build_agent_lookup(agents: list[dict]) -> dict[str, set[str]]:
     return {"ids": by_id, "names": by_name_lower, "titles": by_title_lower}
 
 
-def _resolve_reference(
-    ref: str, lookup: dict[str, set[str]]
-) -> str | None:
+def _resolve_reference(ref: str, lookup: dict[str, set[str]]) -> str | None:
     """Try to resolve a reports_to / direct_reports reference to an agent ID."""
     ids = lookup["ids"]
     names = lookup["names"]

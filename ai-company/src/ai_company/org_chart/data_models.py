@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 class ExecutiveTier(str, Enum):
     """Executive tier levels."""
+
     TIER_1 = "tier_1"  # CEO, President, Founder
     TIER_2 = "tier_2"  # VP, Director, Lead, Manager
     TIER_3 = "tier_3"  # Owner, Engineer, Analyst, Specialist
@@ -23,6 +24,7 @@ class ExecutiveTier(str, Enum):
 
 class SuccessionRisk(str, Enum):
     """Succession risk levels."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -30,6 +32,7 @@ class SuccessionRisk(str, Enum):
 
 class CriticalSkillCategory(str, Enum):
     """Categories of critical skills for organizational roles."""
+
     LEADERSHIP = "leadership"
     STRATEGIC = "strategic"
     TECHNICAL = "technical"
@@ -52,11 +55,7 @@ class EnhancedOrgNode(BaseModel):
     succession risk analysis, and performance metrics.
     """
 
-    model_config = ConfigDict(
-        frozen=True,
-        validate_assignment=True,
-        extra="forbid"
-    )
+    model_config = ConfigDict(frozen=True, validate_assignment=True, extra="forbid")
 
     # Core identification
     name: str = Field(..., description="Unique agent name", min_length=1, max_length=100)
@@ -65,7 +64,9 @@ class EnhancedOrgNode(BaseModel):
 
     # Hierarchical information
     tier: int = Field(default=1, description="Executive tier 1-3", ge=1, le=3)
-    children: List["EnhancedOrgNode"] = Field(default_factory=list, description="Direct reports/subordinates")
+    children: List["EnhancedOrgNode"] = Field(
+        default_factory=list, description="Direct reports/subordinates"
+    )
     reports_to: Optional[str] = Field(default=None, description="Parent reference agent name")
 
     # Capacity and utilization
@@ -75,7 +76,9 @@ class EnhancedOrgNode(BaseModel):
     # Skills and performance
     critical_skills: List[str] = Field(default_factory=list, description="Critical skills required")
     succession_risk: str = Field(default="low", description="Succession risk level")
-    performance_rating: float = Field(default=5.0, description="Performance rating 1-10", ge=1.0, le=10.0)
+    performance_rating: float = Field(
+        default=5.0, description="Performance rating 1-10", ge=1.0, le=10.0
+    )
 
     # Additional attributes
     last_updated: str = Field(default_factory=datetime.now().isoformat, description="ISO timestamp")
@@ -88,24 +91,34 @@ class EnhancedOrgNode(BaseModel):
     # Organizational metrics
     active_tasks: int = Field(default=0, description="Number of active tasks assigned")
     completed_tasks: int = Field(default=0, description="Number of completed tasks")
-    failure_rate: float = Field(default=0.0, description="Failure rate percentage 0-100", ge=0.0, le=100.0)
+    failure_rate: float = Field(
+        default=0.0, description="Failure rate percentage 0-100", ge=0.0, le=100.0
+    )
     cost_impact: float = Field(default=0.0, description="Financial impact in USD")
 
     # Team health indicators
     team_morale: float = Field(default=0.0, description="Team morale score 0-100", ge=0.0, le=100.0)
-    employee_satisfaction: float = Field(default=0.0, description="Employee satisfaction score 0-100", ge=0.0, le=100.0)
+    employee_satisfaction: float = Field(
+        default=0.0, description="Employee satisfaction score 0-100", ge=0.0, le=100.0
+    )
 
     # Executive-specific metrics
     budget_responsibility: float = Field(default=0.0, description="Budget responsibility in USD")
     headcount_responsibility: int = Field(default=1, description="Number of people responsible for")
-    strategic_importance: int = Field(default=5, description="Strategic importance 1-10", ge=1, le=10)
+    strategic_importance: int = Field(
+        default=5, description="Strategic importance 1-10", ge=1, le=10
+    )
 
     # Timing and duration
     tenure_days: int = Field(default=0, description="Tenure in days")
-    average_response_time: float = Field(default=0.0, description="Average response time in seconds")
+    average_response_time: float = Field(
+        default=0.0, description="Average response time in seconds"
+    )
 
     # Risk and compliance
-    security_clearance_level: int = Field(default=1, description="Security clearance level", ge=1, le=5)
+    security_clearance_level: int = Field(
+        default=1, description="Security clearance level", ge=1, le=5
+    )
     compliance_violations: int = Field(default=0, description="Number of compliance violations")
     last_audit_date: Optional[str] = Field(default=None, description="Last audit date ISO format")
 
@@ -133,11 +146,15 @@ class EnhancedOrgNode(BaseModel):
     def risk_score(self) -> float:
         """Calculate overall risk score for the role."""
         # Combine multiple risk factors
-        succession_risk_weight = {"low": 0.1, "medium": 0.3, "high": 0.6}.get(self.succession_risk, 0.1)
+        succession_risk_weight = {"low": 0.1, "medium": 0.3, "high": 0.6}.get(
+            self.succession_risk, 0.1
+        )
         performance_weight = (10.0 - self.performance_rating) / 10.0
         failure_weight = self.failure_rate / 100.0
 
-        return (succession_risk_weight * 0.4 + performance_weight * 0.3 + failure_weight * 0.3) * 100
+        return (
+            succession_risk_weight * 0.4 + performance_weight * 0.3 + failure_weight * 0.3
+        ) * 100
 
     @property
     def health_score(self) -> float:
@@ -146,17 +163,17 @@ class EnhancedOrgNode(BaseModel):
         utilization_health = 100 - abs(self.capacity - 70)  # Optimal around 70%
         satisfaction_health = (self.team_morale + self.employee_satisfaction) / 2.0
 
-        return (performance_health * 0.5 + utilization_health * 0.2 + satisfaction_health * 0.3)
+        return performance_health * 0.5 + utilization_health * 0.2 + satisfaction_health * 0.3
 
     @property
     def is_at_risk(self) -> bool:
         """Check if role is at risk based on multiple factors."""
         return (
-            self.succession_risk == "high" or
-            self.performance_rating < 3.0 or
-            self.capacity > 90 or
-            self.failure_rate > 20.0 or
-            self.health_score < 60.0
+            self.succession_risk == "high"
+            or self.performance_rating < 3.0
+            or self.capacity > 90
+            or self.failure_rate > 20.0
+            or self.health_score < 60.0
         )
 
     @property
@@ -168,10 +185,10 @@ class EnhancedOrgNode(BaseModel):
     def needs_support(self) -> bool:
         """Check if role needs additional support."""
         return (
-            self.performance_rating < 5.0 or
-            self.health_score < 65.0 or
-            self.succession_risk in ["medium", "high"] or
-            self.capacity > 80
+            self.performance_rating < 5.0
+            or self.health_score < 65.0
+            or self.succession_risk in ["medium", "high"]
+            or self.capacity > 80
         )
 
 
@@ -185,7 +202,9 @@ class DepartmentSummary(BaseModel):
     avg_capacity: float = Field(default=0.0, description="Average capacity utilization")
     avg_performance: float = Field(default=0.0, description="Average performance rating")
     critical_skills: List[str] = Field(default_factory=list, description="Critical skills needed")
-    succession_risk_count: Dict[str, int] = Field(default_factory=dict, description="Count by risk level")
+    succession_risk_count: Dict[str, int] = Field(
+        default_factory=dict, description="Count by risk level"
+    )
     budget_utilization: float = Field(default=0.0, description="Budget utilization percentage")
     team_morale: float = Field(default=0.0, description="Average team morale")
 
@@ -214,9 +233,15 @@ class CapacityAnalysis(BaseModel):
     utilization_percentage: float = Field(default=0.0, description="Utilization percentage")
     available_capacity: int = Field(default=0, description="Available capacity units")
     capacity_buffer: float = Field(default=0.0, description="Buffer percentage")
-    underloaded_nodes: List[str] = Field(default_factory=list, description="Nodes with low utilization")
-    overloaded_nodes: List[str] = Field(default_factory=list, description="Nodes with high utilization")
-    optimal_nodes: List[str] = Field(default_factory=list, description="Nodes at optimal utilization")
+    underloaded_nodes: List[str] = Field(
+        default_factory=list, description="Nodes with low utilization"
+    )
+    overloaded_nodes: List[str] = Field(
+        default_factory=list, description="Nodes with high utilization"
+    )
+    optimal_nodes: List[str] = Field(
+        default_factory=list, description="Nodes at optimal utilization"
+    )
 
 
 class PerformanceMetrics(BaseModel):
@@ -271,15 +296,15 @@ class DataTransformer:
             name=org_node.name,
             role=org_node.role,
             department=org_node.department,
-            tier=getattr(org_node, 'tier', 1),
+            tier=getattr(org_node, "tier", 1),
             children=[DataTransformer.orgnode_to_enhanced(child) for child in org_node.children],
-            reports_to=getattr(org_node, 'reports_to', None),
-            capacity=getattr(org_node, 'capacity', 0),
-            span_of_control=getattr(org_node, 'span_of_control', 0),
-            critical_skills=getattr(org_node, 'critical_skills', []),
-            succession_risk=getattr(org_node, 'succession_risk', 'low'),
-            performance_rating=getattr(org_node, 'performance_rating', 5.0),
-            last_updated=getattr(org_node, 'last_updated', datetime.now().isoformat()),
+            reports_to=getattr(org_node, "reports_to", None),
+            capacity=getattr(org_node, "capacity", 0),
+            span_of_control=getattr(org_node, "span_of_control", 0),
+            critical_skills=getattr(org_node, "critical_skills", []),
+            succession_risk=getattr(org_node, "succession_risk", "low"),
+            performance_rating=getattr(org_node, "performance_rating", 5.0),
+            last_updated=getattr(org_node, "last_updated", datetime.now().isoformat()),
         )
 
     @staticmethod
@@ -292,10 +317,10 @@ class DataTransformer:
             children = []
 
             # Find direct reports — match on id (not name) since reports_to uses id
-            agent_id = agent.get('id', '')
-            agent_name = agent.get('name', '')
+            agent_id = agent.get("id", "")
+            agent_name = agent.get("name", "")
             for other_agent in registry_data:
-                if other_agent.get('reports_to') in (agent_id, agent_name):
+                if other_agent.get("reports_to") in (agent_id, agent_name):
                     child_node = DataTransformer._agent_to_enhanced(other_agent)
                     children.append(child_node)
 
@@ -310,11 +335,11 @@ class DataTransformer:
     def _agent_to_enhanced(agent_data: Dict[str, Any]) -> EnhancedOrgNode:
         """Convert agent dictionary to EnhancedOrgNode."""
         return EnhancedOrgNode(
-            name=agent_data.get('name', agent_data.get('id', '')),
-            role=agent_data.get('title', agent_data.get('name', '')),
-            department=agent_data.get('department', ''),
+            name=agent_data.get("name", agent_data.get("id", "")),
+            role=agent_data.get("title", agent_data.get("name", "")),
+            department=agent_data.get("department", ""),
             tier=DataTransformer._calculate_tier(agent_data),
-            reports_to=agent_data.get('reports_to'),
+            reports_to=agent_data.get("reports_to"),
             capacity=DataTransformer._calculate_capacity(agent_data),
             span_of_control=DataTransformer._calculate_span_of_control(agent_data),
             critical_skills=DataTransformer._extract_critical_skills(agent_data),
@@ -325,11 +350,11 @@ class DataTransformer:
     @staticmethod
     def _calculate_tier(agent_data: Dict[str, Any]) -> int:
         """Calculate tier based on agent data."""
-        title = agent_data.get('title', '').lower()
+        title = agent_data.get("title", "").lower()
 
-        if 'ceo' in title or 'chief' in title or 'president' in title:
+        if "ceo" in title or "chief" in title or "president" in title:
             return 1
-        elif 'vp' in title or 'director' in title or 'lead' in title or 'manager' in title:
+        elif "vp" in title or "director" in title or "lead" in title or "manager" in title:
             return 2
         else:
             return 3
@@ -339,12 +364,12 @@ class DataTransformer:
         """Calculate capacity utilization."""
         base_capacity = 60
 
-        title = agent_data.get('title', '').lower()
-        if 'chief' in title or 'ceo' in title:
+        title = agent_data.get("title", "").lower()
+        if "chief" in title or "ceo" in title:
             return 85
-        elif 'vp' in title or 'director' in title:
+        elif "vp" in title or "director" in title:
             return 75
-        elif 'manager' in title or 'lead' in title:
+        elif "manager" in title or "lead" in title:
             return 65
         else:
             return base_capacity
@@ -352,39 +377,39 @@ class DataTransformer:
     @staticmethod
     def _calculate_span_of_control(agent_data: Dict[str, Any]) -> int:
         """Calculate span of control."""
-        direct_reports = agent_data.get('direct_reports', [])
+        direct_reports = agent_data.get("direct_reports", [])
         return len(direct_reports)
 
     @staticmethod
     def _extract_critical_skills(agent_data: Dict[str, Any]) -> List[str]:
         """Extract critical skills from agent data."""
         # Simplified skill extraction based on title and responsibilities
-        title = agent_data.get('title', '').lower()
+        title = agent_data.get("title", "").lower()
         skills = []
 
-        if 'architect' in title or 'design' in title:
-            skills.extend(['System Design', 'Architecture', 'Technical Leadership'])
-        if 'lead' in title or 'manager' in title:
-            skills.extend(['Team Leadership', 'Project Management', 'Stakeholder Management'])
-        if 'analyst' in title:
-            skills.extend(['Data Analysis', 'Statistical Analysis', 'Insight Generation'])
-        if 'engineer' in title:
-            skills.extend(['Software Development', 'Code Quality', 'Testing'])
-        if 'owner' in title:
-            skills.extend(['Business Ownership', 'Operations Management', 'Customer Success'])
+        if "architect" in title or "design" in title:
+            skills.extend(["System Design", "Architecture", "Technical Leadership"])
+        if "lead" in title or "manager" in title:
+            skills.extend(["Team Leadership", "Project Management", "Stakeholder Management"])
+        if "analyst" in title:
+            skills.extend(["Data Analysis", "Statistical Analysis", "Insight Generation"])
+        if "engineer" in title:
+            skills.extend(["Software Development", "Code Quality", "Testing"])
+        if "owner" in title:
+            skills.extend(["Business Ownership", "Operations Management", "Customer Success"])
 
         return list(set(skills))
 
     @staticmethod
     def _assess_succession_risk(agent_data: Dict[str, Any]) -> str:
         """Assess succession risk."""
-        title = agent_data.get('title', '').lower()
+        title = agent_data.get("title", "").lower()
 
-        if 'ceo' in title or 'president' in title:
+        if "ceo" in title or "president" in title:
             return "high"
-        elif 'vp' in title or 'director' in title:
+        elif "vp" in title or "director" in title:
             return "medium"
-        elif 'manager' in title or 'lead' in title:
+        elif "manager" in title or "lead" in title:
             return "medium"
         else:
             return "low"
@@ -396,10 +421,10 @@ class DataTransformer:
         rating = 7.0
 
         # Adjust based on role criticality
-        title = agent_data.get('title', '').lower()
-        if 'ceo' in title or 'chief' in title:
+        title = agent_data.get("title", "").lower()
+        if "ceo" in title or "chief" in title:
             rating += 1.0
-        elif 'vp' in title or 'director' in title:
+        elif "vp" in title or "director" in title:
             rating += 0.5
 
         # Ensure rating is within bounds
@@ -413,12 +438,7 @@ class DataFactory:
     @staticmethod
     def create_enhanced_node(name: str, role: str, department: str, **kwargs) -> EnhancedOrgNode:
         """Create an EnhancedOrgNode."""
-        return EnhancedOrgNode(
-            name=name,
-            role=role,
-            department=department,
-            **kwargs
-        )
+        return EnhancedOrgNode(name=name, role=role, department=department, **kwargs)
 
     @staticmethod
     def create_department_summary(name: str, agents: List[EnhancedOrgNode]) -> DepartmentSummary:
@@ -428,7 +448,9 @@ class DataFactory:
         specialist_count = len([a for a in agents if a.tier > 2])
 
         avg_capacity = sum(a.capacity for a in agents) / total_agents if total_agents > 0 else 0
-        avg_performance = sum(a.performance_rating for a in agents) / total_agents if total_agents > 0 else 0
+        avg_performance = (
+            sum(a.performance_rating for a in agents) / total_agents if total_agents > 0 else 0
+        )
 
         # Count succession risks
         risk_counts: dict[str, int] = {}
@@ -460,7 +482,7 @@ class DataFactory:
         for node in nodes:
             depth = 0
             current = node
-            while current.reports_to and current.reports_to != 'human-ceo':
+            while current.reports_to and current.reports_to != "human-ceo":
                 # Find parent
                 parent = next((n for n in nodes if n.name == current.reports_to), None)
                 if parent:
@@ -478,7 +500,9 @@ class DataFactory:
 
         # Calculate branching factor
         internal_nodes = len([n for n in nodes if n.children])
-        branching_factor = sum(len(n.children) for n in nodes) / internal_nodes if internal_nodes > 0 else 0
+        branching_factor = (
+            sum(len(n.children) for n in nodes) / internal_nodes if internal_nodes > 0 else 0
+        )
 
         return HierarchyMetrics(
             total_nodes=len(nodes),

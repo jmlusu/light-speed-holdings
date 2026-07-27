@@ -15,9 +15,21 @@ from ai_company.model_router import ModelRouter
 def models_yaml(tmp_path: Path) -> Path:
     config = {
         "providers": {
-            "ollama": {"backend": "ollama", "default_model": "llama3.1:8b", "api_base": "http://localhost:11434"},
-            "openai": {"backend": "openai", "default_model": "gpt-4o-mini", "api_base": "https://api.openai.com/v1"},
-            "anthropic": {"backend": "anthropic", "default_model": "claude-sonnet-4-20250514", "api_base": "https://api.anthropic.com"},
+            "ollama": {
+                "backend": "ollama",
+                "default_model": "llama3.1:8b",
+                "api_base": "http://localhost:11434",
+            },
+            "openai": {
+                "backend": "openai",
+                "default_model": "gpt-4o-mini",
+                "api_base": "https://api.openai.com/v1",
+            },
+            "anthropic": {
+                "backend": "anthropic",
+                "default_model": "claude-sonnet-4-20250514",
+                "api_base": "https://api.anthropic.com",
+            },
         },
         "tiers": {
             "fast": {
@@ -61,7 +73,12 @@ def models_yaml(tmp_path: Path) -> Path:
 @pytest.fixture()
 def registry_json(tmp_path: Path) -> Path:
     agents = [
-        {"name": "cto", "role": "CTO", "type": "Executive", "model": "anthropic/claude-opus-4-20250514"},
+        {
+            "name": "cto",
+            "role": "CTO",
+            "type": "Executive",
+            "model": "anthropic/claude-opus-4-20250514",
+        },
         {"name": "board-finance", "role": "Finance Board Advisor", "type": "Board"},
         {"name": "lead-backend", "role": "Lead Backend Engineer", "type": "Specialist"},
     ]

@@ -112,11 +112,13 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
     await manager.connect(websocket)
     try:
         # Send an initial hello so the client knows the connection is live
-        await websocket.send_json({
-            "type": "connected",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "active_clients": manager.active_count,
-        })
+        await websocket.send_json(
+            {
+                "type": "connected",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "active_clients": manager.active_count,
+            }
+        )
 
         while True:
             # Keep the connection alive and handle client messages
@@ -124,17 +126,21 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
             msg_type = data.get("type", "")
 
             if msg_type == "ping":
-                await websocket.send_json({
-                    "type": "pong",
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
-                })
+                await websocket.send_json(
+                    {
+                        "type": "pong",
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    }
+                )
             elif msg_type == "subscribe":
                 topics = data.get("topics", [])
                 await manager.subscribe(websocket, topics)
-                await websocket.send_json({
-                    "type": "subscribed",
-                    "topics": topics,
-                })
+                await websocket.send_json(
+                    {
+                        "type": "subscribed",
+                        "topics": topics,
+                    }
+                )
             elif msg_type == "unsubscribe":
                 # Remove specific topics
                 topics_to_remove = set(data.get("topics", []))
@@ -142,15 +148,19 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
                     ws_id = id(websocket)
                     if ws_id in manager._subscriptions:
                         manager._subscriptions[ws_id] -= topics_to_remove
-                await websocket.send_json({
-                    "type": "unsubscribed",
-                    "topics": data.get("topics", []),
-                })
+                await websocket.send_json(
+                    {
+                        "type": "unsubscribed",
+                        "topics": data.get("topics", []),
+                    }
+                )
             else:
-                await websocket.send_json({
-                    "type": "error",
-                    "detail": f"Unknown message type: {msg_type}",
-                })
+                await websocket.send_json(
+                    {
+                        "type": "error",
+                        "detail": f"Unknown message type: {msg_type}",
+                    }
+                )
 
     except WebSocketDisconnect:
         pass
@@ -165,22 +175,26 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
 
 async def broadcast_kpi_update(data: dict[str, Any]) -> None:
     """Push a KPI update to all connected dashboard clients."""
-    await manager.broadcast({
-        "type": "kpi_update",
-        "topic": "kpis",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "payload": data,
-    })
+    await manager.broadcast(
+        {
+            "type": "kpi_update",
+            "topic": "kpis",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": data,
+        }
+    )
 
 
 async def broadcast_alert(alert: dict[str, Any]) -> None:
     """Push an alert / notification to all connected clients."""
-    await manager.broadcast({
-        "type": "alert",
-        "topic": "alerts",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "payload": alert,
-    })
+    await manager.broadcast(
+        {
+            "type": "alert",
+            "topic": "alerts",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": alert,
+        }
+    )
 
 
 async def broadcast_task_update(task: dict[str, Any], event: str = "created") -> None:
@@ -193,39 +207,46 @@ async def broadcast_task_update(task: dict[str, Any], event: str = "created") ->
     event:
         One of ``"created"``, ``"completed"``, ``"failed"``, ``"escalated"``.
     """
-    await manager.broadcast({
-        "type": "task_update",
-        "topic": "tasks",
-        "event": event,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "payload": task,
-    })
+    await manager.broadcast(
+        {
+            "type": "task_update",
+            "topic": "tasks",
+            "event": event,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": task,
+        }
+    )
 
 
 async def broadcast_department_kpis(department: str, kpis: dict[str, Any]) -> None:
     """Push per-department KPI values to subscribed clients."""
-    await manager.broadcast({
-        "type": "department_kpi",
-        "topic": f"department:{department}",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "department": department,
-        "payload": kpis,
-    })
+    await manager.broadcast(
+        {
+            "type": "department_kpi",
+            "topic": f"department:{department}",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "department": department,
+            "payload": kpis,
+        }
+    )
 
 
 async def broadcast_escalation(escalation: dict[str, Any]) -> None:
     """Push an escalation event to all connected clients."""
-    await manager.broadcast({
-        "type": "escalation",
-        "topic": "escalations",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "payload": escalation,
-    })
+    await manager.broadcast(
+        {
+            "type": "escalation",
+            "topic": "escalations",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": escalation,
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
 # Sync-to-async bridge for MessageBus callback integration
 # ---------------------------------------------------------------------------
+
 
 def make_message_bus_broadcast_callback() -> Any:
     """Create a synchronous broadcast callback suitable for MessageBus.

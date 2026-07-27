@@ -51,11 +51,30 @@ def registry() -> CompanyRegistry:
         ),
         decision_tree=DecisionTreeConfig(
             nodes=[
-                DecisionNode(id="start", question="Is this a budget request?", type="branch", children=["budget_yes", "budget_no"]),
-                DecisionNode(id="budget_yes", question="Amount over 1M?", type="branch", children=["high_value", "low_value"]),
-                DecisionNode(id="budget_no", action="auto_approve", authority="manager", type="action"),
-                DecisionNode(id="high_value", action="require_board_approval", authority="board", type="action"),
-                DecisionNode(id="low_value", action="require_cfo_approval", authority="cfo", type="action"),
+                DecisionNode(
+                    id="start",
+                    question="Is this a budget request?",
+                    type="branch",
+                    children=["budget_yes", "budget_no"],
+                ),
+                DecisionNode(
+                    id="budget_yes",
+                    question="Amount over 1M?",
+                    type="branch",
+                    children=["high_value", "low_value"],
+                ),
+                DecisionNode(
+                    id="budget_no", action="auto_approve", authority="manager", type="action"
+                ),
+                DecisionNode(
+                    id="high_value",
+                    action="require_board_approval",
+                    authority="board",
+                    type="action",
+                ),
+                DecisionNode(
+                    id="low_value", action="require_cfo_approval", authority="cfo", type="action"
+                ),
             ]
         ),
     )

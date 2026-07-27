@@ -39,12 +39,14 @@ def _make_chat_response(content: str = "") -> ChatResponse:
 
 def _react_response(result: str, done: bool = True) -> ChatResponse:
     """Build a ChatResponse whose content is valid ReAct JSON."""
-    payload = json.dumps({
-        "thought": "Done",
-        "plan": [],
-        "result": result,
-        "done": done,
-    })
+    payload = json.dumps(
+        {
+            "thought": "Done",
+            "plan": [],
+            "result": result,
+            "done": done,
+        }
+    )
     return _make_chat_response(content=payload)
 
 
@@ -145,9 +147,7 @@ class TestConsolidationScheduler:
         assert stats["last_consolidated"] is None
         assert stats["running"] is False
 
-    def test_consolidation_runs_after_tasks(
-        self, executor, bus: MessageBus
-    ) -> None:
+    def test_consolidation_runs_after_tasks(self, executor, bus: MessageBus) -> None:
         """After processing tasks, the consolidation scheduler has ticked.
 
         Each executor.tick() calls _consolidation_scheduler.on_tick(),

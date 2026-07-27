@@ -16,6 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field
 # Enums
 # ---------------------------------------------------------------------------
 
+
 class AgentType(str, Enum):
     HUMAN = "human"
     AI = "ai"
@@ -83,8 +84,10 @@ class VotingMajority(str, Enum):
 # Base
 # ---------------------------------------------------------------------------
 
+
 class EntityBase(BaseModel):
     """Base for all named entities."""
+
     model_config = ConfigDict(extra="ignore")
     id: str = Field(..., min_length=1, description="Unique identifier")
     name: str = Field(default="", description="Human-readable name")
@@ -93,6 +96,7 @@ class EntityBase(BaseModel):
 # ---------------------------------------------------------------------------
 # Company
 # ---------------------------------------------------------------------------
+
 
 class CompanyStructure(BaseModel):
     type: str = "corporation"
@@ -135,6 +139,7 @@ class QuarterlyObjective(BaseModel):
 # Strategy
 # ---------------------------------------------------------------------------
 
+
 class StrategyKPI(BaseModel):
     name: str
     target: float = 0
@@ -161,6 +166,7 @@ class Strategy(BaseModel):
 # ---------------------------------------------------------------------------
 # Culture
 # ---------------------------------------------------------------------------
+
 
 class CultureValue(BaseModel):
     name: str
@@ -191,6 +197,7 @@ class Culture(BaseModel):
 # Governance
 # ---------------------------------------------------------------------------
 
+
 class DecisionRight(BaseModel):
     level: str
     authority: str
@@ -218,6 +225,7 @@ class Governance(BaseModel):
 # Policy
 # ---------------------------------------------------------------------------
 
+
 class Policy(EntityBase):
     category: str = ""
     description: str = ""
@@ -229,6 +237,7 @@ class Policy(EntityBase):
 # ---------------------------------------------------------------------------
 # KPI
 # ---------------------------------------------------------------------------
+
 
 class KPI(EntityBase):
     category: str = ""
@@ -242,6 +251,7 @@ class KPI(EntityBase):
 # ---------------------------------------------------------------------------
 # Budget
 # ---------------------------------------------------------------------------
+
 
 class DepartmentBudget(BaseModel):
     name: str
@@ -267,6 +277,7 @@ class Budget(BaseModel):
 # ---------------------------------------------------------------------------
 # Board
 # ---------------------------------------------------------------------------
+
 
 class BoardMember(EntityBase):
     role: str = ""
@@ -307,6 +318,7 @@ class VotingConfig(BaseModel):
 # Executive
 # ---------------------------------------------------------------------------
 
+
 class Executive(EntityBase):
     title: str = ""
     department: str = ""
@@ -322,6 +334,7 @@ class Executive(EntityBase):
 # Department
 # ---------------------------------------------------------------------------
 
+
 class Department(EntityBase):
     executive: str = ""
     mission: str = ""
@@ -332,6 +345,7 @@ class Department(EntityBase):
 # ---------------------------------------------------------------------------
 # Agent / Specialist
 # ---------------------------------------------------------------------------
+
 
 class Agent(EntityBase):
     department: str = ""
@@ -346,6 +360,7 @@ class Agent(EntityBase):
 # ---------------------------------------------------------------------------
 # Project
 # ---------------------------------------------------------------------------
+
 
 class ProjectPhase(BaseModel):
     name: str
@@ -367,6 +382,7 @@ class Project(EntityBase):
 # ---------------------------------------------------------------------------
 # Workflow
 # ---------------------------------------------------------------------------
+
 
 class WorkflowStep(BaseModel):
     id: str
@@ -390,6 +406,7 @@ class Workflow(EntityBase):
 # ---------------------------------------------------------------------------
 # Meeting
 # ---------------------------------------------------------------------------
+
 
 class MeetingAgendaItem(BaseModel):
     topic: str
@@ -415,6 +432,7 @@ class Meeting(EntityBase):
 # ---------------------------------------------------------------------------
 # Task
 # ---------------------------------------------------------------------------
+
 
 class Task(EntityBase):
     """Task model — supports both legacy (sender/receiver) and new (assignee) patterns."""
@@ -452,6 +470,7 @@ class Task(EntityBase):
 # Risk
 # ---------------------------------------------------------------------------
 
+
 class Risk(EntityBase):
     category: str = ""
     description: str = ""
@@ -465,6 +484,7 @@ class Risk(EntityBase):
 # ---------------------------------------------------------------------------
 # Decision
 # ---------------------------------------------------------------------------
+
 
 class DecisionRecord(EntityBase):
     description: str = ""
@@ -480,6 +500,7 @@ class DecisionRecord(EntityBase):
 # Permission
 # ---------------------------------------------------------------------------
 
+
 class Permission(BaseModel):
     read: bool = True
     grep: bool = True
@@ -493,6 +514,7 @@ class Permission(BaseModel):
 # Integration
 # ---------------------------------------------------------------------------
 
+
 class Integration(EntityBase):
     type: str = ""
     description: str = ""
@@ -504,6 +526,7 @@ class Integration(EntityBase):
 # Tool
 # ---------------------------------------------------------------------------
 
+
 class Tool(EntityBase):
     description: str = ""
     category: str = ""
@@ -513,6 +536,7 @@ class Tool(EntityBase):
 # ---------------------------------------------------------------------------
 # Decision Engine Models
 # ---------------------------------------------------------------------------
+
 
 class ApprovalEntry(BaseModel):
     action: str
@@ -559,8 +583,10 @@ class DecisionTreeConfig(BaseModel):
 # Registry (aggregated)
 # ---------------------------------------------------------------------------
 
+
 class CompanyRegistry(BaseModel):
     """Top-level registry loaded from all config/ YAML files."""
+
     company: Company = Field(default_factory=lambda: Company(id="default", name="AI Company"))
     vision: Vision = Field(default_factory=Vision)
     strategy: Strategy = Field(default_factory=Strategy)

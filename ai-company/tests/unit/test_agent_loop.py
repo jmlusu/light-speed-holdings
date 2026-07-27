@@ -99,12 +99,14 @@ def _json_response(
     done: bool = True,
 ) -> str:
     """Build a valid JSON agent response string."""
-    return json.dumps({
-        "thought": thought,
-        "plan": plan or [],
-        "result": result,
-        "done": done,
-    })
+    return json.dumps(
+        {
+            "thought": thought,
+            "plan": plan or [],
+            "result": result,
+            "done": done,
+        }
+    )
 
 
 def _setup_llm_client(tmp_path: Path) -> MagicMock:
@@ -129,12 +131,8 @@ def _setup_llm_client(tmp_path: Path) -> MagicMock:
         ],
     }
     (tmp_path / "company").mkdir(exist_ok=True)
-    (tmp_path / "company" / "models.yaml").write_text(
-        json.dumps(models), encoding="utf-8"
-    )
-    (tmp_path / "company" / "agent-registry.json").write_text(
-        json.dumps([]), encoding="utf-8"
-    )
+    (tmp_path / "company" / "models.yaml").write_text(json.dumps(models), encoding="utf-8")
+    (tmp_path / "company" / "agent-registry.json").write_text(json.dumps([]), encoding="utf-8")
 
     mock_provider = MagicMock()
     mock_provider.is_available.return_value = True
@@ -221,21 +219,27 @@ class TestMultiTurnToolLoop:
         # 1) Read the file → plan has a read tool
         # 2) Write a transformed file → plan has a write tool
         # 3) Done → no plan, just result
-        resp1 = _make_chat_response(_json_response(
-            thought="I need to read the input file first.",
-            plan=[{"tool": "read", "args": {"path": "input.py"}}],
-            done=False,
-        ))
-        resp2 = _make_chat_response(_json_response(
-            thought="I've read the file. Now I'll write the output.",
-            plan=[{"tool": "write", "args": {"path": "output.py", "content": "x = 2"}}],
-            done=False,
-        ))
-        resp3 = _make_chat_response(_json_response(
-            thought="File written successfully.",
-            result="Transformed input.py → output.py",
-            done=True,
-        ))
+        resp1 = _make_chat_response(
+            _json_response(
+                thought="I need to read the input file first.",
+                plan=[{"tool": "read", "args": {"path": "input.py"}}],
+                done=False,
+            )
+        )
+        resp2 = _make_chat_response(
+            _json_response(
+                thought="I've read the file. Now I'll write the output.",
+                plan=[{"tool": "write", "args": {"path": "output.py", "content": "x = 2"}}],
+                done=False,
+            )
+        )
+        resp3 = _make_chat_response(
+            _json_response(
+                thought="File written successfully.",
+                result="Transformed input.py → output.py",
+                done=True,
+            )
+        )
 
         mock_provider.chat.side_effect = [resp1, resp2, resp3]
 
@@ -264,15 +268,19 @@ class TestMultiTurnToolLoop:
         loop = AgentLoop(llm=client, runner=runner, config=LoopConfig(max_iterations=3))
 
         # Iteration 1: read the file
-        resp1 = _make_chat_response(_json_response(
-            plan=[{"tool": "read", "args": {"path": "data.txt"}}],
-            done=False,
-        ))
+        resp1 = _make_chat_response(
+            _json_response(
+                plan=[{"tool": "read", "args": {"path": "data.txt"}}],
+                done=False,
+            )
+        )
         # Iteration 2: done
-        resp2 = _make_chat_response(_json_response(
-            result="Read the file.",
-            done=True,
-        ))
+        resp2 = _make_chat_response(
+            _json_response(
+                result="Read the file.",
+                done=True,
+            )
+        )
 
         mock_provider.chat.side_effect = [resp1, resp2]
 
@@ -282,7 +290,11 @@ class TestMultiTurnToolLoop:
 
         # The second call's user_prompt should contain tool results
         second_call_args = mock_provider.chat.call_args_list[1]
-        user_prompt = second_call_args[1]["user_prompt"] if "user_prompt" in second_call_args[1] else second_call_args[0][1]
+        user_prompt = (
+            second_call_args[1]["user_prompt"]
+            if "user_prompt" in second_call_args[1]
+            else second_call_args[0][1]
+        )
         assert "Tool Execution Results" in user_prompt
         assert "data.txt" in user_prompt
 
@@ -300,11 +312,13 @@ class TestMaxIterations:
         loop = AgentLoop(llm=client, runner=runner, config=config)
 
         # LLM always wants to do more tools — never sets done=True
-        infinite_plan_response = _make_chat_response(_json_response(
-            thought="Let me keep going...",
-            plan=[{"tool": "list", "args": {"path": "."}}],
-            done=False,
-        ))
+        infinite_plan_response = _make_chat_response(
+            _json_response(
+                thought="Let me keep going...",
+                plan=[{"tool": "list", "args": {"path": "."}}],
+                done=False,
+            )
+        )
         mock_provider.chat.return_value = infinite_plan_response
 
         result = loop.run(agent=_make_agent(), user_prompt="Do something")
@@ -320,10 +334,12 @@ class TestMaxIterations:
         config = LoopConfig(max_iterations=1)
         loop = AgentLoop(llm=client, runner=runner, config=config)
 
-        mock_provider.chat.return_value = _make_chat_response(_json_response(
-            plan=[{"tool": "list", "args": {"path": "."}}],
-            done=False,
-        ))
+        mock_provider.chat.return_value = _make_chat_response(
+            _json_response(
+                plan=[{"tool": "list", "args": {"path": "."}}],
+                done=False,
+            )
+        )
 
         result = loop.run(agent=_make_agent(), user_prompt="Do something")
 
@@ -343,17 +359,21 @@ class TestToolErrorFeedback:
         loop = AgentLoop(llm=client, runner=runner, config=LoopConfig(max_iterations=3))
 
         # Iteration 1: try to read a file that doesn't exist
-        resp1 = _make_chat_response(_json_response(
-            thought="Let me read the file.",
-            plan=[{"tool": "read", "args": {"path": "nonexistent.py"}}],
-            done=False,
-        ))
+        resp1 = _make_chat_response(
+            _json_response(
+                thought="Let me read the file.",
+                plan=[{"tool": "read", "args": {"path": "nonexistent.py"}}],
+                done=False,
+            )
+        )
         # Iteration 2: acknowledge the error and complete
-        resp2 = _make_chat_response(_json_response(
-            thought="The file doesn't exist.",
-            result="File was not found, task complete.",
-            done=True,
-        ))
+        resp2 = _make_chat_response(
+            _json_response(
+                thought="The file doesn't exist.",
+                result="File was not found, task complete.",
+                done=True,
+            )
+        )
 
         mock_provider.chat.side_effect = [resp1, resp2]
 
@@ -368,7 +388,9 @@ class TestToolErrorFeedback:
 
         # Verify the second LLM call received the error
         second_call = mock_provider.chat.call_args_list[1]
-        user_prompt = second_call[1]["user_prompt"] if "user_prompt" in second_call[1] else second_call[0][1]
+        user_prompt = (
+            second_call[1]["user_prompt"] if "user_prompt" in second_call[1] else second_call[0][1]
+        )
         assert "Error" in user_prompt
         assert "not found" in user_prompt.lower()
 
@@ -384,14 +406,18 @@ class TestToolErrorFeedback:
 
         loop = AgentLoop(llm=client, runner=runner, config=LoopConfig(max_iterations=3))
 
-        resp1 = _make_chat_response(_json_response(
-            plan=[{"tool": "write", "args": {"path": "x.py", "content": "y"}}],
-            done=False,
-        ))
-        resp2 = _make_chat_response(_json_response(
-            result="Write was denied, noting that.",
-            done=True,
-        ))
+        resp1 = _make_chat_response(
+            _json_response(
+                plan=[{"tool": "write", "args": {"path": "x.py", "content": "y"}}],
+                done=False,
+            )
+        )
+        resp2 = _make_chat_response(
+            _json_response(
+                result="Write was denied, noting that.",
+                done=True,
+            )
+        )
 
         mock_provider.chat.side_effect = [resp1, resp2]
 
@@ -402,7 +428,9 @@ class TestToolErrorFeedback:
 
         # The feedback should mention the denial
         second_call = mock_provider.chat.call_args_list[1]
-        user_prompt = second_call[1]["user_prompt"] if "user_prompt" in second_call[1] else second_call[0][1]
+        user_prompt = (
+            second_call[1]["user_prompt"] if "user_prompt" in second_call[1] else second_call[0][1]
+        )
         assert "denied" in user_prompt.lower()
 
 
@@ -417,12 +445,14 @@ class TestEmptyPlan:
         runner = ToolRunner(project_root=tmp_path)
         loop = AgentLoop(llm=client, runner=runner, config=LoopConfig())
 
-        mock_provider.chat.return_value = _make_chat_response(_json_response(
-            thought="No tools needed.",
-            plan=[],
-            result="Task is complete without any tool calls.",
-            done=False,  # Even with done=False, empty plan should stop
-        ))
+        mock_provider.chat.return_value = _make_chat_response(
+            _json_response(
+                thought="No tools needed.",
+                plan=[],
+                result="Task is complete without any tool calls.",
+                done=False,  # Even with done=False, empty plan should stop
+            )
+        )
 
         result = loop.run(agent=_make_agent(), user_prompt="What time is it?")
 
@@ -438,12 +468,14 @@ class TestEmptyPlan:
         runner = ToolRunner(project_root=tmp_path)
         loop = AgentLoop(llm=client, runner=runner, config=LoopConfig())
 
-        mock_provider.chat.return_value = _make_chat_response(_json_response(
-            thought="One last read.",
-            plan=[{"tool": "list", "args": {"path": "."}}],
-            result="Listed directory.",
-            done=True,
-        ))
+        mock_provider.chat.return_value = _make_chat_response(
+            _json_response(
+                thought="One last read.",
+                plan=[{"tool": "list", "args": {"path": "."}}],
+                result="Listed directory.",
+                done=True,
+            )
+        )
 
         result = loop.run(agent=_make_agent(), user_prompt="List files")
 
@@ -503,7 +535,10 @@ class TestCostTrackingIntegration:
         cost_tracker = CostTracker(results_dir=str(tmp_path / "results"))
         config = LoopConfig(max_iterations=3)
         loop = AgentLoop(
-            llm=client, runner=runner, cost_tracker=cost_tracker, config=config,
+            llm=client,
+            runner=runner,
+            cost_tracker=cost_tracker,
+            config=config,
         )
 
         # 2 turns: read → done
@@ -544,7 +579,9 @@ class TestCostTrackingIntegration:
             daily_budget_usd=0.0001,  # Extremely low budget
         )
         loop = AgentLoop(
-            llm=client, runner=runner, cost_tracker=cost_tracker,
+            llm=client,
+            runner=runner,
+            cost_tracker=cost_tracker,
             config=LoopConfig(max_iterations=10),
         )
 
@@ -641,4 +678,4 @@ class TestParseAgentResponse:
 
     def test_non_dict_json_returns_none(self) -> None:
         assert AgentLoop._parse_agent_response('"just a string"') is None
-        assert AgentLoop._parse_agent_response('[1, 2, 3]') is None
+        assert AgentLoop._parse_agent_response("[1, 2, 3]") is None

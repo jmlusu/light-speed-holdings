@@ -74,9 +74,13 @@ def _make_task(
 class TestPagination:
     """Verify pagination query parameters and response shape."""
 
-    def test_default_pagination_returns_first_page(self, client: TestClient, workspace: Path) -> None:
+    def test_default_pagination_returns_first_page(
+        self, client: TestClient, workspace: Path
+    ) -> None:
         """Default page=1, page_size=20 should return the first page."""
-        tasks = [_make_task(id=f"t-{i}", instruction=f"Task number {i} for testing") for i in range(5)]
+        tasks = [
+            _make_task(id=f"t-{i}", instruction=f"Task number {i} for testing") for i in range(5)
+        ]
         _seed_tasks(workspace, tasks)
 
         resp = client.get("/api/tasks/paginated")
@@ -90,7 +94,9 @@ class TestPagination:
 
     def test_custom_page_and_page_size(self, client: TestClient, workspace: Path) -> None:
         """Custom page and page_size should slice correctly."""
-        tasks = [_make_task(id=f"t-{i}", instruction=f"Task {i} for pagination test") for i in range(25)]
+        tasks = [
+            _make_task(id=f"t-{i}", instruction=f"Task {i} for pagination test") for i in range(25)
+        ]
         _seed_tasks(workspace, tasks)
 
         resp = client.get("/api/tasks/paginated?page=2&page_size=10")
@@ -112,7 +118,9 @@ class TestPagination:
         for field in ("total", "page", "page_size", "total_pages", "counts_by_status"):
             assert field in data, f"Missing metadata field: {field}"
 
-    def test_counts_by_status_reflects_unpaginated_set(self, client: TestClient, workspace: Path) -> None:
+    def test_counts_by_status_reflects_unpaginated_set(
+        self, client: TestClient, workspace: Path
+    ) -> None:
         """counts_by_status should count across all matching tasks, not just the page."""
         tasks = [
             _make_task(id="t-1", status="pending"),
@@ -129,7 +137,9 @@ class TestPagination:
         assert data["counts_by_status"]["completed"] == 1
         assert data["counts_by_status"]["in_progress"] == 1
 
-    def test_page_beyond_total_returns_empty_items(self, client: TestClient, workspace: Path) -> None:
+    def test_page_beyond_total_returns_empty_items(
+        self, client: TestClient, workspace: Path
+    ) -> None:
         """Requesting a page past the end should return empty items with correct metadata."""
         tasks = [_make_task(id="t-1", instruction="Only one task for this test")]
         _seed_tasks(workspace, tasks)
@@ -143,7 +153,9 @@ class TestPagination:
 
     def test_page_size_clamped_to_allowed_values(self, client: TestClient, workspace: Path) -> None:
         """Page size not in {10, 20, 50, 100} should default to 20."""
-        tasks = [_make_task(id=f"t-{i}", instruction=f"Task {i} for clamping test") for i in range(5)]
+        tasks = [
+            _make_task(id=f"t-{i}", instruction=f"Task {i} for clamping test") for i in range(5)
+        ]
         _seed_tasks(workspace, tasks)
 
         # page_size=1 is below minimum (ge=10 in Query), so FastAPI rejects it
@@ -264,9 +276,27 @@ class TestFiltering:
     def test_multiple_filters_combine_with_and(self, client: TestClient, workspace: Path) -> None:
         """Multiple filters should be combined with AND logic."""
         tasks = [
-            _make_task(id="t-1", status="pending", priority="high", receiver_id="lead-backend", instruction="High priority backend task"),
-            _make_task(id="t-2", status="completed", priority="high", receiver_id="lead-backend", instruction="Completed high priority task"),
-            _make_task(id="t-3", status="pending", priority="low", receiver_id="lead-backend", instruction="Low priority pending task"),
+            _make_task(
+                id="t-1",
+                status="pending",
+                priority="high",
+                receiver_id="lead-backend",
+                instruction="High priority backend task",
+            ),
+            _make_task(
+                id="t-2",
+                status="completed",
+                priority="high",
+                receiver_id="lead-backend",
+                instruction="Completed high priority task",
+            ),
+            _make_task(
+                id="t-3",
+                status="pending",
+                priority="low",
+                receiver_id="lead-backend",
+                instruction="Low priority pending task",
+            ),
         ]
         _seed_tasks(workspace, tasks)
 
@@ -277,9 +307,7 @@ class TestFiltering:
 
     def test_empty_filter_returns_all(self, client: TestClient, workspace: Path) -> None:
         """No filters should return all tasks."""
-        tasks = [
-            _make_task(id=f"t-{i}", instruction=f"All tasks test {i}") for i in range(10)
-        ]
+        tasks = [_make_task(id=f"t-{i}", instruction=f"All tasks test {i}") for i in range(10)]
         _seed_tasks(workspace, tasks)
 
         resp = client.get("/api/tasks/paginated")
@@ -297,9 +325,15 @@ class TestSorting:
     def test_sort_by_created_at_asc(self, client: TestClient, workspace: Path) -> None:
         """sort_by=created_at&sort_dir=asc should sort oldest first."""
         tasks = [
-            _make_task(id="t-1", created_at="2025-01-01T00:00:00Z", instruction="First task created"),
-            _make_task(id="t-2", created_at="2025-06-01T00:00:00Z", instruction="Second task created"),
-            _make_task(id="t-3", created_at="2025-03-01T00:00:00Z", instruction="Third task created"),
+            _make_task(
+                id="t-1", created_at="2025-01-01T00:00:00Z", instruction="First task created"
+            ),
+            _make_task(
+                id="t-2", created_at="2025-06-01T00:00:00Z", instruction="Second task created"
+            ),
+            _make_task(
+                id="t-3", created_at="2025-03-01T00:00:00Z", instruction="Third task created"
+            ),
         ]
         _seed_tasks(workspace, tasks)
 
@@ -366,7 +400,9 @@ class TestSorting:
         receivers = [t["receiver_id"] for t in data["items"]]
         assert receivers == ["alpha-agent", "middle-agent", "zebra-agent"]
 
-    def test_invalid_sort_by_defaults_to_created_at(self, client: TestClient, workspace: Path) -> None:
+    def test_invalid_sort_by_defaults_to_created_at(
+        self, client: TestClient, workspace: Path
+    ) -> None:
         """Invalid sort_by should default to created_at."""
         tasks = [
             _make_task(id="t-1", created_at="2025-01-01T00:00:00Z", instruction="Earliest task"),
@@ -434,10 +470,16 @@ class TestEdgeCases:
         priorities = {t["priority"] for t in data["items"]}
         assert priorities == {"high", "critical"}
 
-    def test_pagination_preserves_filter_across_pages(self, client: TestClient, workspace: Path) -> None:
+    def test_pagination_preserves_filter_across_pages(
+        self, client: TestClient, workspace: Path
+    ) -> None:
         """Filtering should work correctly across multiple pages."""
         tasks = [
-            _make_task(id=f"t-{i}", status="pending" if i % 2 == 0 else "completed", instruction=f"Cross-page task {i}")
+            _make_task(
+                id=f"t-{i}",
+                status="pending" if i % 2 == 0 else "completed",
+                instruction=f"Cross-page task {i}",
+            )
             for i in range(25)
         ]
         _seed_tasks(workspace, tasks)

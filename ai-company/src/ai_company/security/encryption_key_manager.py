@@ -51,9 +51,7 @@ def _get_master_secret() -> bytes:
     """Read the master secret from environment variables."""
     secret = os.environ.get("MEMORY_ENCRYPTION_KEY") or os.environ.get("JWT_SECRET_KEY")
     if not secret:
-        raise RuntimeError(
-            "No master secret found. Set MEMORY_ENCRYPTION_KEY or JWT_SECRET_KEY."
-        )
+        raise RuntimeError("No master secret found. Set MEMORY_ENCRYPTION_KEY or JWT_SECRET_KEY.")
     return secret.encode("utf-8")
 
 
@@ -166,15 +164,11 @@ class EncryptionKeyManager:
             "previous_key_id": self._previous_key_id,
             "current_key_encrypted": self._encrypt_key_for_storage(self._current_key),
             "previous_key_encrypted": (
-                self._encrypt_key_for_storage(self._previous_key)
-                if self._previous_key
-                else None
+                self._encrypt_key_for_storage(self._previous_key) if self._previous_key else None
             ),
             "created_at": time.time(),
         }
-        self._key_file.write_text(
-            json.dumps(meta, indent=2), encoding="utf-8"
-        )
+        self._key_file.write_text(json.dumps(meta, indent=2), encoding="utf-8")
         logger.debug("Key metadata saved to %s", self._key_file)
 
     def _load_or_create(self) -> None:
@@ -187,13 +181,9 @@ class EncryptionKeyManager:
                 meta = json.loads(self._key_file.read_text(encoding="utf-8"))
                 self._current_key_id = meta.get("current_key_id", "")
                 self._previous_key_id = meta.get("previous_key_id", "")
-                self._current_key = self._decrypt_key_from_storage(
-                    meta["current_key_encrypted"]
-                )
+                self._current_key = self._decrypt_key_from_storage(meta["current_key_encrypted"])
                 prev_enc = meta.get("previous_key_encrypted")
-                self._previous_key = (
-                    self._decrypt_key_from_storage(prev_enc) if prev_enc else None
-                )
+                self._previous_key = self._decrypt_key_from_storage(prev_enc) if prev_enc else None
                 self._loaded = True
                 logger.debug("Loaded existing encryption keys from %s", self._key_file)
                 return

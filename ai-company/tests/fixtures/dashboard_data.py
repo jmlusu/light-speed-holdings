@@ -91,11 +91,13 @@ def make_tasks_with_mixed_statuses() -> list[dict[str, Any]]:
     statuses = ["pending", "in_progress", "completed", "failed", "escalated"]
     tasks = []
     for i, status in enumerate(statuses):
-        tasks.append(make_task(
-            receiver_id=f"agent-{i}",
-            instruction=f"Task for {status}",
-            status=status,
-        ))
+        tasks.append(
+            make_task(
+                receiver_id=f"agent-{i}",
+                instruction=f"Task for {status}",
+                status=status,
+            )
+        )
     # Add extra completed tasks to make the mix realistic
     tasks.extend(make_tasks(5, status="completed", receiver_id="lead-engineering"))
     tasks.extend(make_tasks(3, status="pending", receiver_id="lead-marketing"))
@@ -159,11 +161,13 @@ def make_agent_registry(count: int = 5) -> list[dict[str, Any]]:
         ),
     ]
     for i in range(max(0, count - 3)):
-        agents.append(make_agent(
-            name=f"agent-{i}",
-            role=f"Agent {i}",
-            department="Engineering",
-        ))
+        agents.append(
+            make_agent(
+                name=f"agent-{i}",
+                role=f"Agent {i}",
+                department="Engineering",
+            )
+        )
     return agents[:count]
 
 
@@ -364,9 +368,7 @@ def seed_dashboard_workspace(
 
     # Inbox (tasks)
     tasks = make_tasks(task_count)
-    (base_path / ".opencode" / "inbox.json").write_text(
-        json.dumps(tasks), encoding="utf-8"
-    )
+    (base_path / ".opencode" / "inbox.json").write_text(json.dumps(tasks), encoding="utf-8")
 
     # Approvals
     (base_path / "orchestrator" / "approvals.yaml").write_text(

@@ -145,9 +145,7 @@ class KPIPipeline:
 
     def list_departments(self) -> list[str]:
         """Return department IDs that have stored KPI data."""
-        rows = self._db.fetchall(
-            "SELECT DISTINCT department FROM kpi_values ORDER BY department"
-        )
+        rows = self._db.fetchall("SELECT DISTINCT department FROM kpi_values ORDER BY department")
         return [r["department"] for r in rows]
 
     def list_kpi_keys(self, department: str | None = None) -> list[str]:
@@ -158,9 +156,7 @@ class KPIPipeline:
                 (department,),
             )
         else:
-            rows = self._db.fetchall(
-                "SELECT DISTINCT kpi_key FROM kpi_values ORDER BY kpi_key"
-            )
+            rows = self._db.fetchall("SELECT DISTINCT kpi_key FROM kpi_values ORDER BY kpi_key")
         return [r["kpi_key"] for r in rows]
 
     # ── Aggregation ───────────────────────────────────────────────────
@@ -274,14 +270,16 @@ class KPIPipeline:
         for row in reversed(rows):  # chronological order
             z_score = (row["current_value"] - mean) / std
             if abs(z_score) > z_threshold:
-                anomalies.append({
-                    "timestamp": row["timestamp"],
-                    "value": row["current_value"],
-                    "z_score": round(z_score, 4),
-                    "mean": round(mean, 4),
-                    "std": round(std, 4),
-                    "direction": "high" if z_score > 0 else "low",
-                })
+                anomalies.append(
+                    {
+                        "timestamp": row["timestamp"],
+                        "value": row["current_value"],
+                        "z_score": round(z_score, 4),
+                        "mean": round(mean, 4),
+                        "std": round(std, 4),
+                        "direction": "high" if z_score > 0 else "low",
+                    }
+                )
 
         return anomalies
 
@@ -340,13 +338,15 @@ class KPIPipeline:
 
             deviation = abs(values[i] - avg) / avg * 100
             if deviation > deviation_pct:
-                anomalies.append({
-                    "timestamp": rows[i]["timestamp"],
-                    "value": values[i],
-                    "moving_average": round(avg, 4),
-                    "deviation_pct": round(deviation, 2),
-                    "direction": "high" if values[i] > avg else "low",
-                })
+                anomalies.append(
+                    {
+                        "timestamp": rows[i]["timestamp"],
+                        "value": values[i],
+                        "moving_average": round(avg, 4),
+                        "deviation_pct": round(deviation, 2),
+                        "direction": "high" if values[i] > avg else "low",
+                    }
+                )
 
         return anomalies
 
@@ -426,7 +426,9 @@ class KPIPipeline:
                         department=department,
                         kpi_key=data.get("kpi_key", ""),
                         current_value=float(data.get("current", 0)),
-                        target_value=float(data["target"]) if data.get("target") is not None else None,
+                        target_value=float(data["target"])
+                        if data.get("target") is not None
+                        else None,
                         unit=data.get("unit", ""),
                         status=data.get("status", "info"),
                         timestamp=data.get("timestamp", ""),

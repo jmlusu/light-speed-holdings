@@ -25,6 +25,7 @@ class TestEmbeddingEngine:
 
     def test_import(self):
         from ai_company.ml.embeddings import EmbeddingEngine
+
         assert EmbeddingEngine is not None
 
     def test_encode_requires_sentence_transformers(self):
@@ -41,6 +42,7 @@ class TestEmbeddingEngine:
         # (in test env it may or may not be installed)
         try:
             from sentence_transformers import SentenceTransformer  # noqa: F401
+
             # If installed, encode should work
             result = engine.encode("hello world")
             assert result is not None
@@ -50,6 +52,7 @@ class TestEmbeddingEngine:
 
     def test_cache_key_deterministic(self):
         from ai_company.ml.embeddings import EmbeddingEngine
+
         key1 = EmbeddingEngine._cache_key("hello world")
         key2 = EmbeddingEngine._cache_key("hello world")
         assert key1 == key2
@@ -57,6 +60,7 @@ class TestEmbeddingEngine:
 
     def test_cache_key_unique(self):
         from ai_company.ml.embeddings import EmbeddingEngine
+
         key1 = EmbeddingEngine._cache_key("hello")
         key2 = EmbeddingEngine._cache_key("world")
         assert key1 != key2
@@ -108,8 +112,12 @@ class TestEmbeddingEngine:
         tmp = _make_tmp_dir()
         cache_dir = tmp / "embeddings"
         # Patch _get_model to avoid import
-        with patch("ai_company.ml.embeddings._get_model", return_value=MagicMock(get_sentence_embedding_dimension=MagicMock(return_value=4))):
+        with patch(
+            "ai_company.ml.embeddings._get_model",
+            return_value=MagicMock(get_sentence_embedding_dimension=MagicMock(return_value=4)),
+        ):
             from ai_company.ml.embeddings import EmbeddingEngine
+
             EmbeddingEngine(cache_dir=cache_dir)
             assert cache_dir.exists()
 
@@ -122,6 +130,7 @@ class TestVectorStore:
 
     def test_import(self):
         from ai_company.memory.vector_store import VectorStore
+
         assert VectorStore is not None
 
     def test_init(self):
@@ -191,7 +200,9 @@ class TestVectorStore:
         assert not vs_no_engine.is_vector_capable
 
         mock_engine = MagicMock()
-        vs_with_engine = VectorStore(memory_store=ms, embedding_engine=mock_engine, index_dir=tmp / "idx2")
+        vs_with_engine = VectorStore(
+            memory_store=ms, embedding_engine=mock_engine, index_dir=tmp / "idx2"
+        )
         assert vs_with_engine.is_vector_capable
 
 
@@ -202,7 +213,12 @@ class TestAgentPerformanceTracker:
     """Tests for the AgentPerformanceTracker class."""
 
     def test_import(self):
-        from ai_company.ml.performance import AgentPerformanceTracker, AgentMetrics, TaskExecutionRecord
+        from ai_company.ml.performance import (
+            AgentPerformanceTracker,
+            AgentMetrics,
+            TaskExecutionRecord,
+        )
+
         assert AgentPerformanceTracker is not None
         assert AgentMetrics is not None
         assert TaskExecutionRecord is not None
@@ -324,9 +340,14 @@ class TestAgentPerformanceTracker:
         assert tracker.get_global_stats()["total_records"] == 0
 
         record = TaskExecutionRecord(
-            task_id="t1", agent_id="a", timestamp="2026-01-01T00:00:00",
-            execution_time_s=5.0, prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.001, success=True,
+            task_id="t1",
+            agent_id="a",
+            timestamp="2026-01-01T00:00:00",
+            execution_time_s=5.0,
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.001,
+            success=True,
         )
         tracker.record_execution(record)
 
@@ -341,9 +362,14 @@ class TestAgentPerformanceTracker:
         tracker = AgentPerformanceTracker(data_dir=tmp)
 
         record = TaskExecutionRecord(
-            task_id="t1", agent_id="a", timestamp="2026-01-01T00:00:00",
-            execution_time_s=10.0, prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.001, success=True,
+            task_id="t1",
+            agent_id="a",
+            timestamp="2026-01-01T00:00:00",
+            execution_time_s=10.0,
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.001,
+            success=True,
         )
         tracker.record_execution(record)
         tracker.save_metrics()
@@ -358,9 +384,14 @@ class TestAgentPerformanceTracker:
         from ai_company.ml.performance import TaskExecutionRecord
 
         record = TaskExecutionRecord(
-            task_id="t1", agent_id="a", timestamp="2026-01-01T00:00:00",
-            execution_time_s=10.0, prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.001, success=True,
+            task_id="t1",
+            agent_id="a",
+            timestamp="2026-01-01T00:00:00",
+            execution_time_s=10.0,
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.001,
+            success=True,
         )
         d = record.to_dict()
         assert d["task_id"] == "t1"
@@ -383,6 +414,7 @@ class TestTaskComplexityScorer:
 
     def test_import(self):
         from ai_company.ml.complexity import TaskComplexityScorer, ComplexityScore
+
         assert TaskComplexityScorer is not None
         assert ComplexityScore is not None
 
@@ -458,7 +490,9 @@ class TestTaskComplexityScorer:
 
         scorer = TaskComplexityScorer()
         simple = scorer.score_task("Check something", tools_requested=["read", "grep"])
-        complex = scorer.score_task("Build something", tools_requested=["execute", "code_interpreter"])
+        complex = scorer.score_task(
+            "Build something", tools_requested=["execute", "code_interpreter"]
+        )
         assert simple.score <= complex.score
 
     def test_priority_influence(self):
@@ -473,8 +507,11 @@ class TestTaskComplexityScorer:
         from ai_company.ml.complexity import ComplexityScore
 
         s = ComplexityScore(
-            score=0.5, level="medium", signals={"test": 0.5},
-            recommended_tier="standard", reasoning="test",
+            score=0.5,
+            level="medium",
+            signals={"test": 0.5},
+            recommended_tier="standard",
+            reasoning="test",
         )
         d = s.to_dict()
         assert d["level"] == "medium"
@@ -489,6 +526,7 @@ class TestPromptOptimizer:
 
     def test_import(self):
         from ai_company.ml.prompt_optimizer import PromptOptimizer, PromptVariant, PromptInsight
+
         assert PromptOptimizer is not None
         assert PromptVariant is not None
         assert PromptInsight is not None
@@ -618,6 +656,7 @@ class TestAnomalyDetector:
 
     def test_import(self):
         from ai_company.ml.anomaly import AnomalyDetector, AnomalyAlert, MetricWindow
+
         assert AnomalyDetector is not None
         assert AnomalyAlert is not None
         assert MetricWindow is not None
@@ -760,7 +799,12 @@ class TestPredictiveScalingEngine:
     """Tests for the PredictiveScalingEngine class."""
 
     def test_import(self):
-        from ai_company.ml.predictive_scaling import PredictiveScalingEngine, ScalingRecommendation, DailyMetrics
+        from ai_company.ml.predictive_scaling import (
+            PredictiveScalingEngine,
+            ScalingRecommendation,
+            DailyMetrics,
+        )
+
         assert PredictiveScalingEngine is not None
         assert ScalingRecommendation is not None
         assert DailyMetrics is not None
@@ -1024,10 +1068,14 @@ class TestMLPipelineIntegration:
         # Record normal executions
         for i in range(10):
             record = TaskExecutionRecord(
-                task_id=f"t{i}", agent_id="agent_1",
+                task_id=f"t{i}",
+                agent_id="agent_1",
                 timestamp="2026-01-01T00:00:00",
-                execution_time_s=10.0, prompt_tokens=100,
-                completion_tokens=50, cost_usd=0.001, success=True,
+                execution_time_s=10.0,
+                prompt_tokens=100,
+                completion_tokens=50,
+                cost_usd=0.001,
+                success=True,
             )
             tracker.record_execution(record)
             detector.check_execution_time_anomaly(10.0)
@@ -1047,10 +1095,14 @@ class TestMLPipelineIntegration:
         tracker = AgentPerformanceTracker(data_dir=tmp / "perf")
         for i in range(20):
             record = TaskExecutionRecord(
-                task_id=f"t{i}", agent_id="agent_1",
+                task_id=f"t{i}",
+                agent_id="agent_1",
                 timestamp="2026-07-10T00:00:00",
-                execution_time_s=10.0, prompt_tokens=100,
-                completion_tokens=50, cost_usd=0.001, success=True,
+                execution_time_s=10.0,
+                prompt_tokens=100,
+                completion_tokens=50,
+                cost_usd=0.001,
+                success=True,
             )
             tracker.record_execution(record)
         tracker.save_metrics()

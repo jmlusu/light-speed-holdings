@@ -102,7 +102,10 @@ class HITLGate:
 
         logger.info(
             "HITL request %s created for task %s tool %s (timeout=%dm)",
-            request_id, task_id, tool, self.timeout_minutes,
+            request_id,
+            task_id,
+            tool,
+            self.timeout_minutes,
         )
         return future
 
@@ -162,7 +165,10 @@ class HITLGate:
 
         logger.info(
             "HITL request %s parked for task %s tool %s (timeout=%dm)",
-            request_id, task_id, tool, self.timeout_minutes,
+            request_id,
+            task_id,
+            tool,
+            self.timeout_minutes,
         )
         # GAP-008: persist the escalation/park decision to the audit trail.
         _audit_hitl(task_id=task_id, agent_id=agent_id, tool=tool, approved=None)
@@ -229,9 +235,7 @@ class HITLGate:
             task_tool = self._pending_requests.pop(request_id, None)
         # GAP-008: persist the human decision to the audit trail.
         if task_tool is not None:
-            _audit_hitl(
-                task_id=task_tool[0], agent_id="", tool=task_tool[1], approved=approved
-            )
+            _audit_hitl(task_id=task_tool[0], agent_id="", tool=task_tool[1], approved=approved)
         if future and not future.done():
             future.set_result(approved)
 
@@ -313,6 +317,7 @@ def _format_description(tool: str, args: dict[str, Any]) -> str:
 def _interruptible_sleep(seconds: float, future: concurrent.futures.Future[bool]) -> None:
     """Sleep for *seconds* but wake early if *future* is cancelled."""
     import time
+
     end = time.monotonic() + seconds
     while time.monotonic() < end:
         if future.cancelled():

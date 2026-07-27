@@ -18,22 +18,26 @@ from ai_company.memory.integration import recall_context
 
 def _seed_task(workspace: Path, task_id: str = "task-mem") -> None:
     (workspace / ".opencode" / "inbox.json").write_text(
-        json.dumps([
-            {
-                "id": task_id,
-                "sender_id": "human-ceo",
-                "receiver_id": "test-agent",
-                "instruction": "Draft the Q3 strategy memo",
-                "status": "pending",
-                "priority": "medium",
-            }
-        ]),
+        json.dumps(
+            [
+                {
+                    "id": task_id,
+                    "sender_id": "human-ceo",
+                    "receiver_id": "test-agent",
+                    "instruction": "Draft the Q3 strategy memo",
+                    "status": "pending",
+                    "priority": "medium",
+                }
+            ]
+        ),
         encoding="utf-8",
     )
 
 
 class TestMemoryRecallIntegration:
-    def test_recall_invoked_before_execution(self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_recall_invoked_before_execution(
+        self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         _seed_task(workspace)
 
         # Spy on recall_context (already imported into the executor module).
@@ -48,9 +52,7 @@ class TestMemoryRecallIntegration:
 
         from tests.integration.conftest import FakeLoopResult
 
-        run_mock = MagicMock(return_value=FakeLoopResult(
-            final_response="Memo drafted.", done=True
-        ))
+        run_mock = MagicMock(return_value=FakeLoopResult(final_response="Memo drafted.", done=True))
         executor.agent_loop.run = run_mock
 
         executor.tick()
@@ -60,7 +62,9 @@ class TestMemoryRecallIntegration:
         assert calls[0][0] == "Draft the Q3 strategy memo"
         run_mock.assert_called_once()
 
-    def test_recall_result_fed_into_prompt(self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_recall_result_fed_into_prompt(
+        self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Recall output should reach the agent loop's user prompt."""
         _seed_task(workspace)
 
@@ -83,7 +87,9 @@ class TestMemoryRecallIntegration:
 
         assert "Draft the Q3 strategy memo" in captured["user_prompt"]
 
-    def test_recall_failure_does_not_block_task(self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_recall_failure_does_not_block_task(
+        self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """If recall raises, the task must still execute (defensive)."""
         _seed_task(workspace)
 
@@ -100,9 +106,7 @@ class TestMemoryRecallIntegration:
 
         executor.tick()
 
-        tasks = json.loads(
-            (workspace / ".opencode" / "inbox.json").read_text(encoding="utf-8")
-        )
+        tasks = json.loads((workspace / ".opencode" / "inbox.json").read_text(encoding="utf-8"))
         assert tasks[0]["status"] == "completed"
 
     def test_memory_store_records_outcome(self, executor, workspace: Path) -> None:
@@ -123,7 +127,9 @@ class TestMemoryRecallIntegration:
         entries = store.recall("episodic", query="task-mem", limit=10)
         assert entries, "expected an episodic memory to be recorded"
 
-    def test_recall_isolated_from_network(self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_recall_isolated_from_network(
+        self, executor, workspace: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """recall_context must be invoked without any live network IO."""
         _seed_task(workspace)
 

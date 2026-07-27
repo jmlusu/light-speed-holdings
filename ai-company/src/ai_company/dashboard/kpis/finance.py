@@ -34,9 +34,7 @@ class FinanceKPICollector(KPICollector):
             total_spent = sum(item.get("amount", 0) for item in cost_data)
 
         budget_utilization = (
-            round((total_spent / total_budget * 100), 1)
-            if total_budget > 0
-            else 0.0
+            round((total_spent / total_budget * 100), 1) if total_budget > 0 else 0.0
         )
 
         # Estimated monthly LLM spend from cost tracker
@@ -45,9 +43,7 @@ class FinanceKPICollector(KPICollector):
             estimated_llm_spend = cost_data.get("llm_spend", 0.0)
 
         # Cost per agent
-        cost_per_agent = (
-            round(total_spent / total_agents, 2) if total_agents > 0 else 0.0
-        )
+        cost_per_agent = round(total_spent / total_agents, 2) if total_agents > 0 else 0.0
 
         return {
             "department": self.department,
@@ -55,7 +51,9 @@ class FinanceKPICollector(KPICollector):
             "kpis": {
                 "budget_utilization": self._kpi(budget_utilization, 90, "%"),
                 "estimated_llm_spend": self._kpi(
-                    estimated_llm_spend, None, "$",
+                    estimated_llm_spend,
+                    None,
+                    "$",
                 ),
                 "total_budget": self._kpi(total_budget, None, "$"),
                 "total_spent": self._kpi(total_spent, None, "$"),

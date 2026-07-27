@@ -223,9 +223,7 @@ class Database:
         """Return the current schema version, or 0 if uninitialized."""
         conn = self.connect()
         try:
-            row = conn.execute(
-                "SELECT value FROM schema_meta WHERE key = 'version'"
-            ).fetchone()
+            row = conn.execute("SELECT value FROM schema_meta WHERE key = 'version'").fetchone()
             return int(row["value"]) if row else 0
         except sqlite3.OperationalError:
             return 0
@@ -276,6 +274,7 @@ class Database:
             ValueError: If the table name contains invalid characters.
         """
         import re
+
         # Only allow alphanumeric characters and underscores
         if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table):
             raise ValueError(f"Invalid table name: {table}")

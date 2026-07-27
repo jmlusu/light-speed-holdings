@@ -31,6 +31,7 @@ _security_logger = logging.getLogger("ai_company.security.secrets_scanner")
 @dataclass
 class SecretMatch:
     """A detected secret in the code."""
+
     file_path: str
     line_number: int
     line_content: str
@@ -42,6 +43,7 @@ class SecretMatch:
 @dataclass
 class ScanResult:
     """Result of secrets scanning."""
+
     files_scanned: int = 0
     secrets_found: list[SecretMatch] = field(default_factory=list)
     clean: bool = True
@@ -69,34 +71,58 @@ class SecretsScanner:
     SECRET_PATTERNS: dict[str, tuple[re.Pattern, str]] = {
         # API Keys
         "aws_access_key": (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "high"),
-        "aws_secret_key": (re.compile(r"(?:aws_secret_access_key|secret_key)[=:]\s*['\"]?[A-Za-z0-9/+=]{40}['\"]?", re.IGNORECASE), "high"),
+        "aws_secret_key": (
+            re.compile(
+                r"(?:aws_secret_access_key|secret_key)[=:]\s*['\"]?[A-Za-z0-9/+=]{40}['\"]?",
+                re.IGNORECASE,
+            ),
+            "high",
+        ),
         "github_token": (re.compile(r"\bghp_[A-Za-z0-9]{36}\b"), "high"),
-        "github_fine_grained": (re.compile(r"\bgithub_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}\b"), "high"),
+        "github_fine_grained": (
+            re.compile(r"\bgithub_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}\b"),
+            "high",
+        ),
         "openai_key": (re.compile(r"\bsk-[A-Za-z0-9]{48}\b"), "high"),
         "anthropic_key": (re.compile(r"\bsk-ant-[A-Za-z0-9]{48}\b"), "high"),
         "stripe_key": (re.compile(r"\b(?:sk|pk)_(?:test|live)_[A-Za-z0-9]{24,}\b"), "high"),
         "google_api_key": (re.compile(r"\bAIza[A-Za-z0-9_-]{35}\b"), "high"),
-
         # Generic API keys (high entropy strings assigned to key-like variables)
-        "generic_api_key": (re.compile(r"(?:api[_-]?key|apikey|api[_-]?secret)[=:]\s*['\"]?[A-Za-z0-9]{20,}['\"]?", re.IGNORECASE), "medium"),
-
+        "generic_api_key": (
+            re.compile(
+                r"(?:api[_-]?key|apikey|api[_-]?secret)[=:]\s*['\"]?[A-Za-z0-9]{20,}['\"]?",
+                re.IGNORECASE,
+            ),
+            "medium",
+        ),
         # Passwords
-        "password_assignment": (re.compile(r"(?:password|passwd|pwd)[=:]\s*['\"]?[^\s'\"]{8,}['\"]?", re.IGNORECASE), "high"),
+        "password_assignment": (
+            re.compile(r"(?:password|passwd|pwd)[=:]\s*['\"]?[^\s'\"]{8,}['\"]?", re.IGNORECASE),
+            "high",
+        ),
         "password_in_url": (re.compile(r"://[^:]+:[^@]+@"), "high"),
-
         # Private keys
         "private_key": (re.compile(r"-----BEGIN (?:RSA |EC |DSA )?PRIVATE KEY-----"), "critical"),
-
         # Connection strings
-        "database_url": (re.compile(r"(?:mysql|postgresql|mongodb|redis):\/\/[^\s'\"]+", re.IGNORECASE), "high"),
-        "connection_string": (re.compile(r"(?:Server|Data Source)=(?:[^\s;]+;?)+", re.IGNORECASE), "high"),
-
+        "database_url": (
+            re.compile(r"(?:mysql|postgresql|mongodb|redis):\/\/[^\s'\"]+", re.IGNORECASE),
+            "high",
+        ),
+        "connection_string": (
+            re.compile(r"(?:Server|Data Source)=(?:[^\s;]+;?)+", re.IGNORECASE),
+            "high",
+        ),
         # JWT tokens
-        "jwt_token": (re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]+\b"), "high"),
-
+        "jwt_token": (
+            re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]+\b"),
+            "high",
+        ),
         # Slack/Discord tokens
         "slack_token": (re.compile(r"\bxox[bpsar]-[0-9]{10,}-[A-Za-z0-9-]+\b"), "high"),
-        "discord_token": (re.compile(r"\b[A-Za-z0-9_-]{24}\.[A-Za-z0-9_-]{6}\.[A-Za-z0-9_-]{27,}\b"), "high"),
+        "discord_token": (
+            re.compile(r"\b[A-Za-z0-9_-]{24}\.[A-Za-z0-9_-]{6}\.[A-Za-z0-9_-]{27,}\b"),
+            "high",
+        ),
     }
 
     # Files to always skip
@@ -188,14 +214,18 @@ class SecretsScanner:
                         if not self._has_high_entropy(matched_text):
                             continue
 
-                    matches.append(SecretMatch(
-                        file_path=str(file_path),
-                        line_number=line_num,
-                        line_content=line.strip()[:200],
-                        secret_type=secret_type,
-                        matched_text=matched_text[:50] + "..." if len(matched_text) > 50 else matched_text,
-                        severity=severity,
-                    ))
+                    matches.append(
+                        SecretMatch(
+                            file_path=str(file_path),
+                            line_number=line_num,
+                            line_content=line.strip()[:200],
+                            secret_type=secret_type,
+                            matched_text=matched_text[:50] + "..."
+                            if len(matched_text) > 50
+                            else matched_text,
+                            severity=severity,
+                        )
+                    )
 
         return matches
 
@@ -220,19 +250,16 @@ class SecretsScanner:
 
             # Skip directories
             dirs[:] = [
-                d for d in dirs
-                if d not in self.SKIP_DIRS
-                and (include_hidden or not d.startswith("."))
+                d
+                for d in dirs
+                if d not in self.SKIP_DIRS and (include_hidden or not d.startswith("."))
             ]
 
             # Also filter out directories matching glob patterns
             dirs[:] = [
-                d for d in dirs
-                if not any(
-                    Path(d).match(pattern)
-                    for pattern in self.SKIP_DIRS
-                    if "*" in pattern
-                )
+                d
+                for d in dirs
+                if not any(Path(d).match(pattern) for pattern in self.SKIP_DIRS if "*" in pattern)
             ]
 
             for file_name in files:
@@ -276,14 +303,18 @@ class SecretsScanner:
                         if self._is_allowlisted(matched_text, content):
                             continue
 
-                        matches.append(SecretMatch(
-                            file_path=current_file,
-                            line_number=line_num,
-                            line_content=content.strip()[:200],
-                            secret_type=secret_type,
-                            matched_text=matched_text[:50] + "..." if len(matched_text) > 50 else matched_text,
-                            severity=severity,
-                        ))
+                        matches.append(
+                            SecretMatch(
+                                file_path=current_file,
+                                line_number=line_num,
+                                line_content=content.strip()[:200],
+                                secret_type=secret_type,
+                                matched_text=matched_text[:50] + "..."
+                                if len(matched_text) > 50
+                                else matched_text,
+                                severity=severity,
+                            )
+                        )
 
         return matches
 
@@ -319,10 +350,7 @@ class SecretsScanner:
         # Calculate Shannon entropy
         counter = Counter(text)
         length = len(text)
-        entropy = -sum(
-            (count / length) * math.log2(count / length)
-            for count in counter.values()
-        )
+        entropy = -sum((count / length) * math.log2(count / length) for count in counter.values())
 
         # High entropy threshold (4.0+ indicates randomness)
         return entropy >= 4.0
@@ -367,6 +395,7 @@ def run_pre_commit_scan() -> bool:
     # Get staged files from git
     try:
         import subprocess
+
         result = subprocess.run(
             ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"],
             capture_output=True,
@@ -395,9 +424,7 @@ def run_pre_commit_scan() -> bool:
     if total_secrets > 0:
         print(f"\n[SECRETS SCAN FAILED] Found {total_secrets} potential secrets.")
         print("Please remove secrets before committing.")
-        _security_logger.warning(
-            "Pre-commit scan detected %d secrets", total_secrets
-        )
+        _security_logger.warning("Pre-commit scan detected %d secrets", total_secrets)
         return False
 
     return True

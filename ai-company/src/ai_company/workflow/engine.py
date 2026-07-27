@@ -65,7 +65,8 @@ class WorkflowEngine:
                 if workflow is None:
                     logger.warning(
                         "Skipping instance %s: workflow '%s' not found.",
-                        data.get("instance_id", "?"), wf_id,
+                        data.get("instance_id", "?"),
+                        wf_id,
                     )
                     continue
                 instance = WorkflowInstance.from_dict(data, workflow)
@@ -292,8 +293,12 @@ class WorkflowInstance:
         """Convert all workflow steps to Task objects."""
         tasks = []
         for i, step in enumerate(self.workflow.steps):
-            status = TaskStatus.COMPLETED if step.id in self.step_results else (
-                TaskStatus.IN_PROGRESS if i == self.current_step_index else TaskStatus.PENDING
+            status = (
+                TaskStatus.COMPLETED
+                if step.id in self.step_results
+                else (
+                    TaskStatus.IN_PROGRESS if i == self.current_step_index else TaskStatus.PENDING
+                )
             )
             task = Task(
                 id=f"{self.instance_id}_{step.id}",

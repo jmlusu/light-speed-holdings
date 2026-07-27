@@ -50,6 +50,7 @@ def build_role_prompt(
         delegate_line=delegate_line,
     )
 
+
 # ---------------------------------------------------------------------------
 # Output format template — ReAct-style JSON response structure
 # ---------------------------------------------------------------------------

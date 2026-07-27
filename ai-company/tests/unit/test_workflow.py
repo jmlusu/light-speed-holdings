@@ -24,9 +24,21 @@ def registry() -> CompanyRegistry:
                 trigger="job_requisition",
                 owner="hr",
                 steps=[
-                    WorkflowStep(id="post", name="Post Job", action="Create job posting", owner="recruiter"),
-                    WorkflowStep(id="review", name="Review Resumes", action="Screen candidates", owner="recruiter"),
-                    WorkflowStep(id="interview", name="Interview", action="Conduct interviews", owner="hiring_manager"),
+                    WorkflowStep(
+                        id="post", name="Post Job", action="Create job posting", owner="recruiter"
+                    ),
+                    WorkflowStep(
+                        id="review",
+                        name="Review Resumes",
+                        action="Screen candidates",
+                        owner="recruiter",
+                    ),
+                    WorkflowStep(
+                        id="interview",
+                        name="Interview",
+                        action="Conduct interviews",
+                        owner="hiring_manager",
+                    ),
                     WorkflowStep(id="offer", name="Make Offer", action="Extend offer", owner="hr"),
                 ],
             ),

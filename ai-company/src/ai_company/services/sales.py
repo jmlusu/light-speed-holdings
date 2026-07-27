@@ -147,7 +147,8 @@ class SalesService(BaseService):
         self.record_event(
             f"Deal '{name}' created (${value:,.2f})",
             tags=["deal", "created"],
-            deal_id=deal_id, value=value,
+            deal_id=deal_id,
+            value=value,
         )
 
         # Delegate discovery call task

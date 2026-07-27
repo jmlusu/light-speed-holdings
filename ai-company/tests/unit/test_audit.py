@@ -166,8 +166,7 @@ class TestAuditWriter:
                 errors.append(exc)
 
         threads = [
-            threading.Thread(target=_write_events, args=(f"agent-{j}", 10))
-            for j in range(4)
+            threading.Thread(target=_write_events, args=(f"agent-{j}", 10)) for j in range(4)
         ]
         for t in threads:
             t.start()

@@ -76,7 +76,7 @@ def _make_openai_sse_chunks(*texts: str) -> list[str]:
         }
         lines.append(f"data: {json.dumps(chunk)}\n")
     # Final chunk
-    lines.append("data: {\"choices\": [{\"delta\": {}, \"finish_reason\": \"stop\"}]}\n")
+    lines.append('data: {"choices": [{"delta": {}, "finish_reason": "stop"}]}\n')
     lines.append("data: [DONE]\n")
     return lines
 
@@ -184,7 +184,9 @@ def test_openai_streaming_empty_content_delta():
 # ---------------------------------------------------------------------------
 
 
-def _mock_anthropic_response(status_code: int = 200, body_lines: list[str] | None = None) -> MagicMock:
+def _mock_anthropic_response(
+    status_code: int = 200, body_lines: list[str] | None = None
+) -> MagicMock:
     resp = MagicMock(spec=httpx.Response)
     resp.status_code = status_code
     if body_lines is None:

@@ -184,7 +184,9 @@ class AgentProtocol:
                 handler(event)
             except Exception as exc:
                 logger.error(
-                    "Handler error on topic '%s': %s", topic, exc,
+                    "Handler error on topic '%s': %s",
+                    topic,
+                    exc,
                     exc_info=True,
                 )
 
@@ -331,7 +333,9 @@ class AgentProtocol:
 
     # ── Shared Context ─────────────────────────────────────────────
 
-    def create_context(self, context_id: str, initial: dict[str, Any] | None = None) -> dict[str, Any]:
+    def create_context(
+        self, context_id: str, initial: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Create a shared context for collaborative tasks.
 
         Shared contexts allow multiple agents to read and update a

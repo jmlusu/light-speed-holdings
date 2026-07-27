@@ -38,7 +38,9 @@ def test_request_and_park_is_non_blocking(tmp_path: Path) -> None:
     hitl = _make_gate(tmp_path)
     # Returns immediately (no human interaction yet).
     request_id = hitl.request_and_park(
-        task_id="t-park", agent_id="agent-1", tool="write",
+        task_id="t-park",
+        agent_id="agent-1",
+        tool="write",
         args={"path": "secrets.yaml", "content": "x"},
     )
     assert request_id.startswith("hitl-")
@@ -52,7 +54,9 @@ def test_request_and_park_is_non_blocking(tmp_path: Path) -> None:
 def test_resume_approved_detects_decision(tmp_path: Path) -> None:
     hitl = _make_gate(tmp_path)
     request_id = hitl.request_and_park(
-        task_id="t-park", agent_id="agent-1", tool="execute",
+        task_id="t-park",
+        agent_id="agent-1",
+        tool="execute",
         args={"command": "rm -rf /"},
     )
     # Human rejects.
@@ -108,19 +112,35 @@ def _setup_executor_files(tmp_path: Path) -> None:
     company = tmp_path / "company"
     company.mkdir()
     models = {
-        "providers": {"opencode": {"backend": "openai_compatible",
-                                    "default_model": "big-pickle",
-                                    "api_base": "https://opencode.ai/api/v1"}},
-        "tiers": {"standard": {"description": "std",
-                                "providers": [{"provider": "opencode",
-                                               "model": "big-pickle"}]}},
+        "providers": {
+            "opencode": {
+                "backend": "openai_compatible",
+                "default_model": "big-pickle",
+                "api_base": "https://opencode.ai/api/v1",
+            }
+        },
+        "tiers": {
+            "standard": {
+                "description": "std",
+                "providers": [{"provider": "opencode", "model": "big-pickle"}],
+            }
+        },
         "routing": [{"agent_type": "Specialist", "tier": "standard"}],
     }
     (company / "models.yaml").write_text(json.dumps(models), encoding="utf-8")
-    registry = [{"name": "test-agent", "role": "Test", "type": "Specialist",
-                 "department": "Test", "reportsTo": "ceo", "directReports": [],
-                 "description": "test", "tools": ["read", "write"],
-                 "permission": "Execute"}]
+    registry = [
+        {
+            "name": "test-agent",
+            "role": "Test",
+            "type": "Specialist",
+            "department": "Test",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "test",
+            "tools": ["read", "write"],
+            "permission": "Execute",
+        }
+    ]
     (company / "agent-registry.json").write_text(json.dumps(registry), encoding="utf-8")
     op = tmp_path / ".opencode"
     op.mkdir()
@@ -130,7 +150,7 @@ def _setup_executor_files(tmp_path: Path) -> None:
     agents = op / "agents"
     agents.mkdir()
     (agents / "test-agent.md").write_text(
-        "---\nname: test-agent\ndescription: t\ntools: [\"read\", \"write\"]\n"
+        '---\nname: test-agent\ndescription: t\ntools: ["read", "write"]\n'
         "mode: subagent\npermission:\n  read: allow\n  write: allow\n---\n\n"
         "# Test Agent\n\nType: Specialist\nDepartment: Test\nReports To: ceo\n\n"
         "## Mission\nExecute tasks.\n",
@@ -176,17 +196,27 @@ def test_executor_parks_and_resumes(tmp_path: Path, monkeypatch: pytest.MonkeyPa
             # Mimic what ToolRunner does in non-blocking mode: register the
             # request with the SAME shared ApprovalGate hook, then park.
             rid = executor.hitl.request_and_park(
-                task_id=kwargs["task_id"], agent_id=kwargs["agent_name"],
-                tool="write", args={"path": "secrets.yaml"},
+                task_id=kwargs["task_id"],
+                agent_id=kwargs["agent_name"],
+                tool="write",
+                args={"path": "secrets.yaml"},
             )
             raise HITLParked(
-                task_id=kwargs["task_id"], agent_id=kwargs["agent_name"],
-                tool="write", request_id=rid, tier=4,
+                task_id=kwargs["task_id"],
+                agent_id=kwargs["agent_name"],
+                tool="write",
+                request_id=rid,
+                tier=4,
             )
         return LoopResult(
-            final_response="Secret written.", iterations=1, tool_results=[],
-            total_prompt_tokens=10, total_completion_tokens=5,
-            total_cost_usd=0.0, done=True, error="",
+            final_response="Secret written.",
+            iterations=1,
+            tool_results=[],
+            total_prompt_tokens=10,
+            total_completion_tokens=5,
+            total_cost_usd=0.0,
+            done=True,
+            error="",
         )
 
     executor.agent_loop.run = MagicMock(side_effect=fake_run)
@@ -209,17 +239,31 @@ def test_executor_parks_and_resumes(tmp_path: Path, monkeypatch: pytest.MonkeyPa
     assert "task-hitl-1" not in executor._pending_approvals
 
 
-def test_executor_continues_past_parked_task(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_executor_continues_past_parked_task(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """A parked task must not prevent other pending tasks from running."""
     monkeypatch.chdir(tmp_path)
     _setup_executor_files(tmp_path)
 
     inbox = tmp_path / ".opencode" / "inbox.json"
     tasks = [
-        {"id": "t-park", "sender_id": "h", "receiver_id": "test-agent",
-         "instruction": "gated", "status": "pending", "priority": "high"},
-        {"id": "t-normal", "sender_id": "h", "receiver_id": "test-agent",
-         "instruction": "normal", "status": "pending", "priority": "medium"},
+        {
+            "id": "t-park",
+            "sender_id": "h",
+            "receiver_id": "test-agent",
+            "instruction": "gated",
+            "status": "pending",
+            "priority": "high",
+        },
+        {
+            "id": "t-normal",
+            "sender_id": "h",
+            "receiver_id": "test-agent",
+            "instruction": "normal",
+            "status": "pending",
+            "priority": "medium",
+        },
     ]
     inbox.write_text(json.dumps(tasks), encoding="utf-8")
 
@@ -238,17 +282,27 @@ def test_executor_continues_past_parked_task(tmp_path: Path, monkeypatch: pytest
 
         if kwargs["task_id"] == "t-park":
             rid = executor.hitl.request_and_park(
-                task_id="t-park", agent_id=kwargs["agent_name"],
-                tool="write", args={"path": "secrets.yaml"},
+                task_id="t-park",
+                agent_id=kwargs["agent_name"],
+                tool="write",
+                args={"path": "secrets.yaml"},
             )
             raise HITLParked(
-                task_id="t-park", agent_id=kwargs["agent_name"], tool="write",
-                request_id=rid, tier=4,
+                task_id="t-park",
+                agent_id=kwargs["agent_name"],
+                tool="write",
+                request_id=rid,
+                tier=4,
             )
         return LoopResult(
-            final_response="done", iterations=1, tool_results=[],
-            total_prompt_tokens=10, total_completion_tokens=5,
-            total_cost_usd=0.0, done=True, error="",
+            final_response="done",
+            iterations=1,
+            tool_results=[],
+            total_prompt_tokens=10,
+            total_completion_tokens=5,
+            total_cost_usd=0.0,
+            done=True,
+            error="",
         )
 
     executor.agent_loop.run = MagicMock(side_effect=fake_run)

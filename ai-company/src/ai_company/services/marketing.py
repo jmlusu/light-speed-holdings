@@ -195,8 +195,6 @@ class MarketingService(BaseService):
             "total_clicks": total_clicks,
             "total_conversions": total_conversions,
             "conversion_rate": (
-                round(total_conversions / total_clicks * 100, 2)
-                if total_clicks > 0
-                else 0.0
+                round(total_conversions / total_clicks * 100, 2) if total_clicks > 0 else 0.0
             ),
         }

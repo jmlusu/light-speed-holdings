@@ -69,11 +69,28 @@ class JSONFormatter(logging.Formatter):
 
         # Merge any extra structured fields attached via `extra=`
         standard_attrs = {
-            "name", "msg", "args", "created", "filename", "funcName",
-            "lineno", "levelname", "levelno", "pathname", "module",
-            "exc_info", "exc_text", "stack_info", "thread", "threadName",
-            "processName", "process", "msecs", "relativeCreated",
-            "message", "taskName",
+            "name",
+            "msg",
+            "args",
+            "created",
+            "filename",
+            "funcName",
+            "lineno",
+            "levelname",
+            "levelno",
+            "pathname",
+            "module",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "thread",
+            "threadName",
+            "processName",
+            "process",
+            "msecs",
+            "relativeCreated",
+            "message",
+            "taskName",
         }
         for key, value in record.__dict__.items():
             if key.startswith("_") or key in standard_attrs:
@@ -94,10 +111,10 @@ class HumanFormatter(logging.Formatter):
     """Compact colored format for terminal output."""
 
     COLORS = {
-        "DEBUG": "\033[36m",     # cyan
-        "INFO": "\033[32m",      # green
-        "WARNING": "\033[33m",   # yellow
-        "ERROR": "\033[31m",     # red
+        "DEBUG": "\033[36m",  # cyan
+        "INFO": "\033[32m",  # green
+        "WARNING": "\033[33m",  # yellow
+        "ERROR": "\033[31m",  # red
         "CRITICAL": "\033[1;31m",  # bold red
     }
     RESET = "\033[0m"
@@ -175,6 +192,7 @@ def setup_logging(
 def _is_terminal() -> bool:
     """Check if stdout is a terminal (for formatter auto-detection)."""
     import sys
+
     return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
 

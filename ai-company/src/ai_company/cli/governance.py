@@ -82,10 +82,7 @@ def _format_report(report: dict[str, Any]) -> str:
             f"  {'Table':<20} {'Rows':>6} {'Class':<14} {'Owner':<14} "
             f"{'Retn':>5} {'Action':<10} {'Past':>5}"
         )
-        lines.append(
-            f"  {'-'*19} {'-'*6} {'-'*13} {'-'*13} "
-            f"{'-'*4} {'-'*9} {'-'*4}"
-        )
+        lines.append(f"  {'-' * 19} {'-' * 6} {'-' * 13} {'-' * 13} {'-' * 4} {'-' * 9} {'-' * 4}")
         for tbl, stats in sorted(tables.items()):
             lines.append(
                 f"  {tbl:<20} {stats['row_count']:>6} "
@@ -198,7 +195,10 @@ def retention(
 
     if table:
         if table not in tables:
-            typer.echo(f"Error: Unknown table '{table}'. Known tables: {', '.join(sorted(tables))}", err=True)
+            typer.echo(
+                f"Error: Unknown table '{table}'. Known tables: {', '.join(sorted(tables))}",
+                err=True,
+            )
             raise typer.Exit(1)
         filtered = {table: tables[table]}
     else:
@@ -214,15 +214,14 @@ def retention(
         "=====================",
         "",
         f"{'Table':<20} {'Rows':>6} {'Retention':>10} {'Past':>6} {'Action':<10}",
-        f"{'-'*19} {'-'*6} {'-'*9} {'-'*6} {'-'*9}",
+        f"{'-' * 19} {'-' * 6} {'-' * 9} {'-' * 6} {'-' * 9}",
     ]
     for tbl, stats in sorted(filtered.items()):
         past = stats.get("records_past_retention", 0)
         total_past += past
         days = stats.get("retention_days", 0)
         lines.append(
-            f"  {tbl:<20} {stats['row_count']:>6} {days:>4}d{'':>6} "
-            f"{past:>6} {stats['action']:<10}"
+            f"  {tbl:<20} {stats['row_count']:>6} {days:>4}d{'':>6} {past:>6} {stats['action']:<10}"
         )
 
     lines.append("")
@@ -400,10 +399,14 @@ def audit_trail(
 
     if json_output:
         import json
-        typer.echo(json.dumps(
-            [e.model_dump() for e in events],
-            indent=2, default=str,
-        ))
+
+        typer.echo(
+            json.dumps(
+                [e.model_dump() for e in events],
+                indent=2,
+                default=str,
+            )
+        )
         return
 
     if not events:
@@ -448,15 +451,17 @@ def risk_summary(
         content,
     ):
         rid, category, description, likelihood, impact, level = match.groups()
-        risks.append({
-            "id": rid,
-            "category": category.strip(),
-            "description": description.strip(),
-            "likelihood": int(likelihood),
-            "impact": int(impact),
-            "level": level.strip(),
-            "score": int(likelihood) * int(impact),
-        })
+        risks.append(
+            {
+                "id": rid,
+                "category": category.strip(),
+                "description": description.strip(),
+                "likelihood": int(likelihood),
+                "impact": int(impact),
+                "level": level.strip(),
+                "score": int(likelihood) * int(impact),
+            }
+        )
 
     if not risks:
         typer.echo("No risks found in register.")
@@ -464,6 +469,7 @@ def risk_summary(
 
     if json_output:
         import json
+
         level_counts: dict[str, int] = {}
         for r in risks:
             lvl = r["level"]
@@ -496,7 +502,9 @@ def risk_summary(
         icon = level_icons.get(level, level.upper())
         typer.echo(f"  [{icon}] {level}: {len(items)} risks")
         for r in sorted(items, key=lambda x: x["score"], reverse=True):
-            typer.echo(f"    {r['id']} ({r['category']}) — score {r['score']}: {r['description'][:60]}")
+            typer.echo(
+                f"    {r['id']} ({r['category']}) — score {r['score']}: {r['description'][:60]}"
+            )
         typer.echo("")
 
 

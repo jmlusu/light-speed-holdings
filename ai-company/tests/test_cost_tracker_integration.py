@@ -109,12 +109,20 @@ class TestCostTrackerRecordUsage:
     def test_daily_summary(self, tmp_path: Path) -> None:
         tracker = CostTracker(results_dir=tmp_path)
         tracker.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
         )
         tracker.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t2", prompt_tokens=200, completion_tokens=100,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t2",
+            prompt_tokens=200,
+            completion_tokens=100,
         )
         summary = tracker.get_daily_summary()
         assert summary["call_count"] == 2
@@ -124,16 +132,28 @@ class TestCostTrackerRecordUsage:
     def test_task_summary(self, tmp_path: Path) -> None:
         tracker = CostTracker(results_dir=tmp_path)
         tracker.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
         )
         tracker.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=200, completion_tokens=100,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=200,
+            completion_tokens=100,
         )
         tracker.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t2", prompt_tokens=50, completion_tokens=25,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t2",
+            prompt_tokens=50,
+            completion_tokens=25,
         )
         summary = tracker.get_task_summary("t1")
         assert summary["call_count"] == 2
@@ -153,8 +173,12 @@ class TestCostTrackerBudget:
         allowed, reason = tracker.check_budget("t1", proposed_cost=0.005)
         assert allowed is True
         tracker.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=10000, completion_tokens=10000,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=10000,
+            completion_tokens=10000,
         )
         allowed, reason = tracker.check_budget("t1", proposed_cost=0.01)
         assert allowed is False
@@ -165,8 +189,12 @@ class TestCostTrackerBudget:
         allowed, _ = tracker.check_budget("t1", proposed_cost=0.005)
         assert allowed is True
         tracker.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=10000, completion_tokens=10000,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=10000,
+            completion_tokens=10000,
         )
         allowed, reason = tracker.check_budget("t1", proposed_cost=0.01)
         assert allowed is False
@@ -228,7 +256,9 @@ class TestLLMClientCostIntegration:
         assert summary["total_completion_tokens"] == 50
 
     @patch("ai_company.llm.client.ModelRouter")
-    def test_execute_task_no_tracking_without_task_id(self, mock_router_cls: MagicMock, tmp_path: Path) -> None:
+    def test_execute_task_no_tracking_without_task_id(
+        self, mock_router_cls: MagicMock, tmp_path: Path
+    ) -> None:
         from ai_company.llm.client import LLMClient
 
         mock_router = mock_router_cls.return_value

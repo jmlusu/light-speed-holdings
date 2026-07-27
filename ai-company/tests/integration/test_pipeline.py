@@ -51,11 +51,10 @@ def project_base(tmp_path: Path) -> Path:
             }
         ]
     }
-    (company_dir / "departments.yaml").write_text(
-        yaml.dump(departments), encoding="utf-8"
-    )
+    (company_dir / "departments.yaml").write_text(yaml.dump(departments), encoding="utf-8")
 
     import shutil
+
     real_models = Path(__file__).resolve().parents[2] / "company" / "models.yaml"
     if real_models.exists():
         shutil.copy2(str(real_models), str(company_dir / "models.yaml"))
@@ -93,10 +92,24 @@ class TestMemoryStore:
         from ai_company.memory.engine import MemoryStore
 
         store = MemoryStore(base_dir=str(project_base / "memory"))
-        for mem_type in ["episodic", "semantic", "procedural", "relational", "temporal", "aggregate"]:
+        for mem_type in [
+            "episodic",
+            "semantic",
+            "procedural",
+            "relational",
+            "temporal",
+            "aggregate",
+        ]:
             store.store(mem_type, f"Entry for {mem_type}")
         stats = store.stats()
-        for mem_type in ["episodic", "semantic", "procedural", "relational", "temporal", "aggregate"]:
+        for mem_type in [
+            "episodic",
+            "semantic",
+            "procedural",
+            "relational",
+            "temporal",
+            "aggregate",
+        ]:
             assert stats.get(mem_type, 0) >= 1
 
 
@@ -180,14 +193,18 @@ class TestKpiCollector:
 class TestOrchestratorTick:
     """Test orchestrator tick cycle with minimal data."""
 
-    def test_orchestrator_tick_runs(self, project_base: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_orchestrator_tick_runs(
+        self, project_base: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.chdir(project_base)
         from ai_company.orchestrator.approval import ApprovalGate
         from ai_company.orchestrator.escalation import EscalationManager
         from ai_company.orchestrator.scheduler import Scheduler
 
         scheduler = Scheduler(config_path=str(project_base / "orchestrator" / "scheduler.yaml"))
-        escalation = EscalationManager(config_path=str(project_base / "orchestrator" / "escalation.yaml"))
+        escalation = EscalationManager(
+            config_path=str(project_base / "orchestrator" / "escalation.yaml")
+        )
         gate = ApprovalGate(config_path=str(project_base / "orchestrator" / "approvals.yaml"))
 
         assert scheduler.get_pending_tasks() == []

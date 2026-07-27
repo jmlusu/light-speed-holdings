@@ -85,7 +85,9 @@ def parse_agent_spec(agent_name: str, agents_dir: str = ".opencode/agents") -> A
 
     return AgentContext(
         name=agent_name,
-        role=frontmatter.get("description", agent_name).split(".")[0] if frontmatter.get("description") else agent_name,
+        role=frontmatter.get("description", agent_name).split(".")[0]
+        if frontmatter.get("description")
+        else agent_name,
         type=agent_type,
         department=department,
         reports_to=reports_to,
@@ -161,35 +163,39 @@ def build_system_prompt(agent: AgentContext) -> str:
         parts.append("")
 
     if agent.tools:
-        parts.extend([
-            "ALLOWED TOOLS:",
-            ", ".join(agent.tools),
-            "",
-        ])
+        parts.extend(
+            [
+                "ALLOWED TOOLS:",
+                ", ".join(agent.tools),
+                "",
+            ]
+        )
 
-    parts.extend([
-        "IMPORTANT RULES:",
-        "- You MUST respond with valid JSON only. No markdown, no explanation outside JSON.",
-        "- Only use tools from your allowed list.",
-        "- For 'write' tool: include the full file content in the 'content' arg.",
-        "- For 'execute' tool: include the shell command as a string.",
-        "- Be precise and concise. Each step should be self-contained.",
-        "- If the task requires no tools, return an empty plan array with your result.",
-        "",
-        "RESPONSE FORMAT (JSON only):",
-        '{',
-        '  "plan": [',
-        '    {"tool": "read", "args": {"path": "src/example.py"}},',
-        '    {"tool": "write", "args": {"path": "src/output.py", "content": "..."}},',
-        '    {"tool": "execute", "args": {"command": "pytest tests/"}},',
-        '    {"tool": "grep", "args": {"pattern": "def foo", "path": "src/"}},',
-        '    {"tool": "list", "args": {"path": "src/"}},',
-        '    {"tool": "delegate", "args": {"receiver": "lead-backend", "instruction": "..."}}',
-        '  ],',
-        '  "result": "Summary of what was accomplished.",',
-        '  "artifacts": ["src/output.py"]',
-        '}',
-    ])
+    parts.extend(
+        [
+            "IMPORTANT RULES:",
+            "- You MUST respond with valid JSON only. No markdown, no explanation outside JSON.",
+            "- Only use tools from your allowed list.",
+            "- For 'write' tool: include the full file content in the 'content' arg.",
+            "- For 'execute' tool: include the shell command as a string.",
+            "- Be precise and concise. Each step should be self-contained.",
+            "- If the task requires no tools, return an empty plan array with your result.",
+            "",
+            "RESPONSE FORMAT (JSON only):",
+            "{",
+            '  "plan": [',
+            '    {"tool": "read", "args": {"path": "src/example.py"}},',
+            '    {"tool": "write", "args": {"path": "src/output.py", "content": "..."}},',
+            '    {"tool": "execute", "args": {"command": "pytest tests/"}},',
+            '    {"tool": "grep", "args": {"pattern": "def foo", "path": "src/"}},',
+            '    {"tool": "list", "args": {"path": "src/"}},',
+            '    {"tool": "delegate", "args": {"receiver": "lead-backend", "instruction": "..."}}',
+            "  ],",
+            '  "result": "Summary of what was accomplished.",',
+            '  "artifacts": ["src/output.py"]',
+            "}",
+        ]
+    )
 
     return "\n".join(parts)
 

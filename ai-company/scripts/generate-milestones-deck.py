@@ -145,12 +145,20 @@ def create_presentation():
     metric_card(s, 2.8, 1.1, "26", "CLI Commands", C["ac"])
     metric_card(s, 5.1, 1.1, "53", "Agent Roles", C["hl"])
     metric_card(s, 7.4, 1.1, "0", "Lint Errors", C["ok"])
-    bullet_box(s, 0.5, 2.5, 9, 2.8, "Project Overview", [
-        "- Python CLI tool for creating and orchestrating AI agent hierarchies",
-        "- 3 sprints completed, 8 major milestones achieved",
-        "- 6 domain engines: Executor, Decision, Workflow, Memory, Graph, Dashboard",
-        "- Production-ready with comprehensive testing (1205 tests) and documentation (30+ docs)",
-    ])
+    bullet_box(
+        s,
+        0.5,
+        2.5,
+        9,
+        2.8,
+        "Project Overview",
+        [
+            "- Python CLI tool for creating and orchestrating AI agent hierarchies",
+            "- 3 sprints completed, 8 major milestones achieved",
+            "- 6 domain engines: Executor, Decision, Workflow, Memory, Graph, Dashboard",
+            "- Production-ready with comprehensive testing (1205 tests) and documentation (30+ docs)",
+        ],
+    )
 
     # --- Slide 3: Timeline ---
     s = blank(prs)
@@ -179,92 +187,148 @@ def create_presentation():
     line.fill.solid()
     line.fill.fore_color.rgb = C["mg"]
     line.line.fill.background()
-    bullet_box(s, 0.5, 3.2, 9, 2.0, "Sprint Velocity", [
-        "- Sprint 1: Code hardening + audit trail",
-        "- Sprint 2: 13 items, 41 hrs -- 1093 tests passing",
-        "- Sprint 3: 8 items, 22 hrs -- 1205 tests passing, v0.3.0 tagged",
-    ])
+    bullet_box(
+        s,
+        0.5,
+        3.2,
+        9,
+        2.0,
+        "Sprint Velocity",
+        [
+            "- Sprint 1: Code hardening + audit trail",
+            "- Sprint 2: 13 items, 41 hrs -- 1093 tests passing",
+            "- Sprint 3: 8 items, 22 hrs -- 1205 tests passing, v0.3.0 tagged",
+        ],
+    )
 
     # --- Slide 4-11: Milestones ---
-    milestone_slide(prs, 1, "Foundation", "Pre-July 2026", [
-        "- Core Python package structure with Typer CLI framework",
-        "- 17+ Pydantic domain models (Company, Executive, Department, Agent, Task, etc.)",
-        "- 4-module registry system: loader, parser, resolver, validator (19 YAML configs)",
-        "- 12 Jinja2 templates for agent generation (base, executive, department, specialist, etc.)",
-        "- Generator with template selection by agent type",
-        "- Organization: 7 executive roles, 5 core departments",
-    ])
+    milestone_slide(
+        prs,
+        1,
+        "Foundation",
+        "Pre-July 2026",
+        [
+            "- Core Python package structure with Typer CLI framework",
+            "- 17+ Pydantic domain models (Company, Executive, Department, Agent, Task, etc.)",
+            "- 4-module registry system: loader, parser, resolver, validator (19 YAML configs)",
+            "- 12 Jinja2 templates for agent generation (base, executive, department, specialist, etc.)",
+            "- Generator with template selection by agent type",
+            "- Organization: 7 executive roles, 5 core departments",
+        ],
+    )
 
-    milestone_slide(prs, 2, "Code Hardening & Audit Trail", "Sprint 1 -- 2026-07-20", [
-        "- Audit trail system: AuditEvent, AuditWriter (JSONL append), AuditReader (query/filter)",
-        "- Executor integration: tool calls, task lifecycle, HITL decisions logged",
-        "- Code hardening across all modules (Track B)",
-        "- Audit trail completion (Track C)",
-        "- All Sprint 1 items verified complete",
-    ])
+    milestone_slide(
+        prs,
+        2,
+        "Code Hardening & Audit Trail",
+        "Sprint 1 -- 2026-07-20",
+        [
+            "- Audit trail system: AuditEvent, AuditWriter (JSONL append), AuditReader (query/filter)",
+            "- Executor integration: tool calls, task lifecycle, HITL decisions logged",
+            "- Code hardening across all modules (Track B)",
+            "- Audit trail completion (Track C)",
+            "- All Sprint 1 items verified complete",
+        ],
+    )
 
-    milestone_slide(prs, 3, "Core Engines & Integration", "Sprint 2 -- 2026-07-21", [
-        "- Executor pipeline: Inbox polling -> AgentLoop (ReAct) -> LLM -> Tools -> Audit",
-        "- AgentLoop: Multi-turn LLM<->tool, cost tracking, HITL gates, budget enforcement",
-        "- DecisionEngine: Approval matrix, risk assessment, decision tree navigation",
-        "- WorkflowEngine: 9 workflows, step tracking, SLA monitoring, task conversion",
-        "- MemoryEngine: 6 types (episodic, semantic, procedural, relational, temporal, aggregate)",
-        "- GraphEngine: 4 types (org_chart, decision, workflow, knowledge) with BFS pathfinding",
-        "- Circuit Breaker, Cost Tracker (JSONL), Dead-Letter Queue, Postmortem system",
-        "- 13 items completed, 41 hrs effort, 1093 tests passing",
-    ])
+    milestone_slide(
+        prs,
+        3,
+        "Core Engines & Integration",
+        "Sprint 2 -- 2026-07-21",
+        [
+            "- Executor pipeline: Inbox polling -> AgentLoop (ReAct) -> LLM -> Tools -> Audit",
+            "- AgentLoop: Multi-turn LLM<->tool, cost tracking, HITL gates, budget enforcement",
+            "- DecisionEngine: Approval matrix, risk assessment, decision tree navigation",
+            "- WorkflowEngine: 9 workflows, step tracking, SLA monitoring, task conversion",
+            "- MemoryEngine: 6 types (episodic, semantic, procedural, relational, temporal, aggregate)",
+            "- GraphEngine: 4 types (org_chart, decision, workflow, knowledge) with BFS pathfinding",
+            "- Circuit Breaker, Cost Tracker (JSONL), Dead-Letter Queue, Postmortem system",
+            "- 13 items completed, 41 hrs effort, 1093 tests passing",
+        ],
+    )
 
-    milestone_slide(prs, 4, "Organization Expansion", "2026-07-21", [
-        "- 53 new roles added across all departments",
-        "- Phase 1 (Immediate): VP Eng, Data Engineer, AI Safety Lead, Program Manager, etc.",
-        "- Phase 2 (Weeks 1-8): Red Team, MLOps, Platform Eng, Product Marketing, etc.",
-        "- Phase 3 (Weeks 9-16): Frontend/API Architect, Observability, Privacy Officer, etc.",
-        "- Phase 4 (Weeks 17-24): Technical Writer, L&D Lead, IR Lead, BI Engineer, etc.",
-        "- Structural improvements: CTO span reduced 9+ -> 1, Product dept (8 roles), Strategy dept",
-        "- AI Safety hierarchy: AI Safety Lead -> Red Team, Constitutional AI, Ethics",
-    ])
+    milestone_slide(
+        prs,
+        4,
+        "Organization Expansion",
+        "2026-07-21",
+        [
+            "- 53 new roles added across all departments",
+            "- Phase 1 (Immediate): VP Eng, Data Engineer, AI Safety Lead, Program Manager, etc.",
+            "- Phase 2 (Weeks 1-8): Red Team, MLOps, Platform Eng, Product Marketing, etc.",
+            "- Phase 3 (Weeks 9-16): Frontend/API Architect, Observability, Privacy Officer, etc.",
+            "- Phase 4 (Weeks 17-24): Technical Writer, L&D Lead, IR Lead, BI Engineer, etc.",
+            "- Structural improvements: CTO span reduced 9+ -> 1, Product dept (8 roles), Strategy dept",
+            "- AI Safety hierarchy: AI Safety Lead -> Red Team, Constitutional AI, Ethics",
+        ],
+    )
 
-    milestone_slide(prs, 5, "Gap Closure & Testing", "Sprint 3 -- 2026-07-22", [
-        "- Org chart test rewrite: 832 lines -> 56 tests, all passing",
-        "- DataTransformer.registry_to_enhanced() frozen model bug fix",
-        "- E2E pipeline test covering full executor workflow",
-        "- WebSocket integration tests (30 tests) for real-time broadcasts",
-        "- Governance CLI: 7 commands (report, audit-trail, risk-summary, retention, compliance, owners, policies)",
-        "- Memory CLI enhancement: stats, search, recall commands",
-        "- Dashboard API tests (9 tests) for CEO dashboard, KPIs, departments",
-        "- 8 items completed, 22 hrs effort, 1205 tests, v0.3.0 tagged",
-    ])
+    milestone_slide(
+        prs,
+        5,
+        "Gap Closure & Testing",
+        "Sprint 3 -- 2026-07-22",
+        [
+            "- Org chart test rewrite: 832 lines -> 56 tests, all passing",
+            "- DataTransformer.registry_to_enhanced() frozen model bug fix",
+            "- E2E pipeline test covering full executor workflow",
+            "- WebSocket integration tests (30 tests) for real-time broadcasts",
+            "- Governance CLI: 7 commands (report, audit-trail, risk-summary, retention, compliance, owners, policies)",
+            "- Memory CLI enhancement: stats, search, recall commands",
+            "- Dashboard API tests (9 tests) for CEO dashboard, KPIs, departments",
+            "- 8 items completed, 22 hrs effort, 1205 tests, v0.3.0 tagged",
+        ],
+    )
 
-    milestone_slide(prs, 6, "Dashboard & Monitoring", "2026-07-17+", [
-        "- FastAPI REST API with CORS and API key authentication",
-        "- WebSocket broadcast for real-time task/KPI/alert updates",
-        "- 7-department KPI system: Engineering, HR, Finance, Legal, Marketing, Sales, Customer Success",
-        "- 28 KPI definitions with automated collectors",
-        "- Analytics engine: History tracking, trend analysis, alert rules, summary rollups",
-        "- CEO Dashboard: company health, agent performance, cost tracking, task pipeline",
-        "- Department dashboards with drill-down capability",
-    ])
+    milestone_slide(
+        prs,
+        6,
+        "Dashboard & Monitoring",
+        "2026-07-17+",
+        [
+            "- FastAPI REST API with CORS and API key authentication",
+            "- WebSocket broadcast for real-time task/KPI/alert updates",
+            "- 7-department KPI system: Engineering, HR, Finance, Legal, Marketing, Sales, Customer Success",
+            "- 28 KPI definitions with automated collectors",
+            "- Analytics engine: History tracking, trend analysis, alert rules, summary rollups",
+            "- CEO Dashboard: company health, agent performance, cost tracking, task pipeline",
+            "- Department dashboards with drill-down capability",
+        ],
+    )
 
-    milestone_slide(prs, 7, "CLI & Developer Experience", "Ongoing", [
-        "- 26 CLI commands registered across all modules",
-        "- Commands: company, decision, graph, workflows, memory, agents, board, departments,",
-        "  executives, specialists, orchestrator, models, dashboard, executor, doctor,",
-        "  marketing, sales, customer-success, legal, hr, generate, status, sop, raci, governance",
-        "- System diagnostics (doctor command): Python version, dependencies, agent files,",
-        "  inbox health, memory engine, disk space, cost tracker, LLM providers",
-        "- Pre-commit hooks: ruff, mypy, bandit, trailing-whitespace, end-of-file-fixer, check-yaml",
-    ])
+    milestone_slide(
+        prs,
+        7,
+        "CLI & Developer Experience",
+        "Ongoing",
+        [
+            "- 26 CLI commands registered across all modules",
+            "- Commands: company, decision, graph, workflows, memory, agents, board, departments,",
+            "  executives, specialists, orchestrator, models, dashboard, executor, doctor,",
+            "  marketing, sales, customer-success, legal, hr, generate, status, sop, raci, governance",
+            "- System diagnostics (doctor command): Python version, dependencies, agent files,",
+            "  inbox health, memory engine, disk space, cost tracker, LLM providers",
+            "- Pre-commit hooks: ruff, mypy, bandit, trailing-whitespace, end-of-file-fixer, check-yaml",
+        ],
+    )
 
-    milestone_slide(prs, 8, "Documentation & Governance", "2026-07-17+", [
-        "- 30+ documentation files covering architecture, development, ECL",
-        "- Architecture docs, developer guide, ECL (change lifecycle)",
-        "- SOPs: Incident response, deployment, HR onboarding, budget approval",
-        "- RACI matrices: Hiring, escalation, deployment workflows",
-        "- Risk register: 14 items with mitigations and owners",
-        "- Board governance charter, meeting cadence, voting rules",
-        "- Model routing policy: Provider catalog, tiers, routing rules, cost control",
-        "- Company constitution: Principles and decision order",
-    ])
+    milestone_slide(
+        prs,
+        8,
+        "Documentation & Governance",
+        "2026-07-17+",
+        [
+            "- 30+ documentation files covering architecture, development, ECL",
+            "- Architecture docs, developer guide, ECL (change lifecycle)",
+            "- SOPs: Incident response, deployment, HR onboarding, budget approval",
+            "- RACI matrices: Hiring, escalation, deployment workflows",
+            "- Risk register: 14 items with mitigations and owners",
+            "- Board governance charter, meeting cadence, voting rules",
+            "- Model routing policy: Provider catalog, tiers, routing rules, cost control",
+            "- Company constitution: Principles and decision order",
+        ],
+    )
 
     # --- Slide 12: Quality Metrics ---
     s = blank(prs)
@@ -334,7 +398,11 @@ def create_presentation():
         rect.fill.solid()
         rect.fill.fore_color.rgb = bg
         rect.line.fill.background()
-        pc = C["hl"] if pri == "High" else (RGBColor(0xFF, 0xC1, 0x07) if pri == "Medium" else C["mg"])
+        pc = (
+            C["hl"]
+            if pri == "High"
+            else (RGBColor(0xFF, 0xC1, 0x07) if pri == "Medium" else C["mg"])
+        )
         text_line(s, 0.6, y + 0.05, 3, item, size=11, bold=True)
         text_line(s, 3.6, y + 0.05, 1, pri, size=10, color=pc, bold=True)
         text_line(s, 4.7, y + 0.05, 4.5, desc, size=10, color=C["mg"])

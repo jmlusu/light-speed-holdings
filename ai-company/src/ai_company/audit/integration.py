@@ -88,9 +88,7 @@ def log_hitl_decision(
     if approved is None:
         event_type = AuditEventType.HITL_PARKED
     else:
-        event_type = (
-            AuditEventType.HITL_APPROVED if approved else AuditEventType.HITL_DENIED
-        )
+        event_type = AuditEventType.HITL_APPROVED if approved else AuditEventType.HITL_DENIED
     event = AuditEvent(
         event_type=event_type,
         task_id=task_id,

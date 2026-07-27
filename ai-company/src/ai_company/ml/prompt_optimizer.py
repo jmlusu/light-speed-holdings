@@ -262,10 +262,7 @@ class PromptOptimizer:
         Returns the variant with the highest success rate (minimum 3
         impressions), or None if no variant qualifies.
         """
-        qualified = [
-            v for v in self._variants.values()
-            if v.impressions >= 3
-        ]
+        qualified = [v for v in self._variants.values() if v.impressions >= 3]
         if not qualified:
             return None
         return max(qualified, key=lambda v: v.success_rate)
@@ -281,21 +278,69 @@ class PromptOptimizer:
         completion_words: dict[str, int] = defaultdict(int)
         failure_words: dict[str, int] = defaultdict(int)
 
-        stop_words = {"the", "a", "an", "is", "are", "was", "were", "be", "been",
-                       "being", "have", "has", "had", "do", "does", "did", "will",
-                       "would", "could", "should", "may", "might", "can", "shall",
-                       "to", "of", "in", "for", "on", "with", "at", "by", "from",
-                       "as", "into", "through", "during", "before", "after", "and",
-                       "but", "or", "if", "that", "this", "it", "not", "no"}
+        stop_words = {
+            "the",
+            "a",
+            "an",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "have",
+            "has",
+            "had",
+            "do",
+            "does",
+            "did",
+            "will",
+            "would",
+            "could",
+            "should",
+            "may",
+            "might",
+            "can",
+            "shall",
+            "to",
+            "of",
+            "in",
+            "for",
+            "on",
+            "with",
+            "at",
+            "by",
+            "from",
+            "as",
+            "into",
+            "through",
+            "during",
+            "before",
+            "after",
+            "and",
+            "but",
+            "or",
+            "if",
+            "that",
+            "this",
+            "it",
+            "not",
+            "no",
+        }
 
         for e in completions:
-            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get("instruction", "")
+            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get(
+                "instruction", ""
+            )
             for word in re.findall(r"\b[a-z]+\b", instruction.lower()):
                 if word not in stop_words and len(word) > 2:
                     completion_words[word] += 1
 
         for e in failures:
-            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get("instruction", "")
+            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get(
+                "instruction", ""
+            )
             for word in re.findall(r"\b[a-z]+\b", instruction.lower()):
                 if word not in stop_words and len(word) > 2:
                     failure_words[word] += 1
@@ -345,12 +390,16 @@ class PromptOptimizer:
 
         completion_lengths = []
         for e in completions:
-            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get("instruction", "")
+            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get(
+                "instruction", ""
+            )
             completion_lengths.append(len(instruction.split()))
 
         failure_lengths = []
         for e in failures:
-            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get("instruction", "")
+            instruction = e.get("args", {}).get("instruction", "") or e.get("metadata", {}).get(
+                "instruction", ""
+            )
             failure_lengths.append(len(instruction.split()))
 
         if not completion_lengths or not failure_lengths:
@@ -410,7 +459,9 @@ class PromptOptimizer:
             total = s + f
             if total >= 2:
                 rate = s / total
-                patterns[tool] = "reliable" if rate > 0.8 else "unreliable" if rate < 0.5 else "moderate"
+                patterns[tool] = (
+                    "reliable" if rate > 0.8 else "unreliable" if rate < 0.5 else "moderate"
+                )
 
         return PromptInsight(
             insight_type="pattern_success",
@@ -434,8 +485,7 @@ class PromptOptimizer:
                 helpful = insight.evidence.get("helpful_keywords", [])
                 if helpful:
                     recs.append(
-                        f"Include these keywords for better results: "
-                        f"{', '.join(helpful[:5])}"
+                        f"Include these keywords for better results: {', '.join(helpful[:5])}"
                     )
 
             elif insight.insight_type == "length_correlation":
@@ -447,7 +497,8 @@ class PromptOptimizer:
 
             elif insight.insight_type == "pattern_success":
                 unreliable = [
-                    t for t, r in insight.evidence.get("tool_reliability", {}).items()
+                    t
+                    for t, r in insight.evidence.get("tool_reliability", {}).items()
                     if r == "unreliable"
                 ]
                 if unreliable:
@@ -500,7 +551,9 @@ class PromptOptimizer:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             for k, v in data.items():
-                self._variants[k] = PromptVariant(**{kk: vv for kk, vv in v.items() if kk != "success_rate"})
+                self._variants[k] = PromptVariant(
+                    **{kk: vv for kk, vv in v.items() if kk != "success_rate"}
+                )
         except (json.JSONDecodeError, KeyError, OSError) as exc:
             logger.warning("Failed to load prompt variants: %s", exc)
 

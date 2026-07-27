@@ -22,6 +22,7 @@ from ai_company.dashboard.kpis.sales import SalesKPICollector
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture()
 def project(tmp_path: Path) -> Path:
     """Create a minimal project tree for collectors to read from."""
@@ -29,10 +30,28 @@ def project(tmp_path: Path) -> Path:
     (tmp_path / ".opencode").mkdir()
     tasks = [
         {"id": "t1", "sender_id": "a", "receiver_id": "b", "instruction": "x", "status": "pending"},
-        {"id": "t2", "sender_id": "a", "receiver_id": "b", "instruction": "y", "status": "completed"},
-        {"id": "t3", "sender_id": "a", "receiver_id": "b", "instruction": "z", "status": "completed"},
+        {
+            "id": "t2",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "y",
+            "status": "completed",
+        },
+        {
+            "id": "t3",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "z",
+            "status": "completed",
+        },
         {"id": "t4", "sender_id": "a", "receiver_id": "b", "instruction": "w", "status": "failed"},
-        {"id": "t5", "sender_id": "a", "receiver_id": "b", "instruction": "v", "status": "in_progress"},
+        {
+            "id": "t5",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "v",
+            "status": "in_progress",
+        },
     ]
     (tmp_path / ".opencode" / "inbox.json").write_text(json.dumps(tasks), encoding="utf-8")
 
@@ -41,10 +60,22 @@ def project(tmp_path: Path) -> Path:
     escalation = {
         "rules": [],
         "events": [
-            {"task_id": "e1", "rule_id": "r1", "from_agent": "a", "to_agent": "b",
-             "reason": "timeout", "resolved": False},
-            {"task_id": "e2", "rule_id": "r1", "from_agent": "a", "to_agent": "b",
-             "reason": "timeout", "resolved": True},
+            {
+                "task_id": "e1",
+                "rule_id": "r1",
+                "from_agent": "a",
+                "to_agent": "b",
+                "reason": "timeout",
+                "resolved": False,
+            },
+            {
+                "task_id": "e2",
+                "rule_id": "r1",
+                "from_agent": "a",
+                "to_agent": "b",
+                "reason": "timeout",
+                "resolved": True,
+            },
         ],
     }
     (tmp_path / "orchestrator" / "escalation.yaml").write_text(
@@ -59,13 +90,33 @@ def project(tmp_path: Path) -> Path:
     # company/agent-registry.json
     (tmp_path / "company").mkdir()
     registry = [
-        {"name": "cto", "role": "CTO", "type": "executive", "department": "Technology",
-         "reportsTo": "ceo", "directReports": [], "description": "CTO"},
-        {"name": "lead_backend", "role": "Backend Lead", "type": "specialist",
-         "department": "Technology", "reportsTo": "cto", "directReports": [],
-         "description": "Backend"},
-        {"name": "cmo", "role": "CMO", "type": "executive", "department": "Marketing",
-         "reportsTo": "ceo", "directReports": [], "description": "CMO"},
+        {
+            "name": "cto",
+            "role": "CTO",
+            "type": "executive",
+            "department": "Technology",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "CTO",
+        },
+        {
+            "name": "lead_backend",
+            "role": "Backend Lead",
+            "type": "specialist",
+            "department": "Technology",
+            "reportsTo": "cto",
+            "directReports": [],
+            "description": "Backend",
+        },
+        {
+            "name": "cmo",
+            "role": "CMO",
+            "type": "executive",
+            "department": "Marketing",
+            "reportsTo": "ceo",
+            "directReports": [],
+            "description": "CMO",
+        },
     ]
     (tmp_path / "company" / "agent-registry.json").write_text(
         json.dumps(registry), encoding="utf-8"
@@ -74,17 +125,17 @@ def project(tmp_path: Path) -> Path:
     # company/departments.yaml
     departments = {
         "departments": [
-            {"name": "Technology", "executive": "cto", "agents": ["lead_backend"],
-             "totalAgents": 8},
-            {"name": "Marketing", "executive": "cmo", "agents": [],
-             "totalAgents": 1},
-            {"name": "Finance", "executive": "cfo", "agents": [],
-             "totalAgents": 0},
+            {
+                "name": "Technology",
+                "executive": "cto",
+                "agents": ["lead_backend"],
+                "totalAgents": 8,
+            },
+            {"name": "Marketing", "executive": "cmo", "agents": [], "totalAgents": 1},
+            {"name": "Finance", "executive": "cfo", "agents": [], "totalAgents": 0},
         ]
     }
-    (tmp_path / "company" / "departments.yaml").write_text(
-        yaml.dump(departments), encoding="utf-8"
-    )
+    (tmp_path / "company" / "departments.yaml").write_text(yaml.dump(departments), encoding="utf-8")
 
     # company/config/kpis.yaml (minimal)
     (tmp_path / "company" / "config").mkdir(parents=True)
@@ -93,15 +144,18 @@ def project(tmp_path: Path) -> Path:
             "finance": {
                 "name": "Finance",
                 "kpis": [
-                    {"id": "budget_utilization", "name": "Budget Utilization",
-                     "unit": "%", "target": 90, "frequency": "monthly"},
+                    {
+                        "id": "budget_utilization",
+                        "name": "Budget Utilization",
+                        "unit": "%",
+                        "target": 90,
+                        "frequency": "monthly",
+                    },
                 ],
             }
         }
     }
-    (tmp_path / "company" / "config" / "kpis.yaml").write_text(
-        yaml.dump(kpis), encoding="utf-8"
-    )
+    (tmp_path / "company" / "config" / "kpis.yaml").write_text(yaml.dump(kpis), encoding="utf-8")
 
     return tmp_path
 
@@ -115,6 +169,7 @@ def empty_project(tmp_path: Path) -> Path:
 # ---------------------------------------------------------------------------
 # Engineering
 # ---------------------------------------------------------------------------
+
 
 class TestEngineeringCollector:
     def test_collects_task_counts(self, project: Path) -> None:
@@ -154,6 +209,7 @@ class TestEngineeringCollector:
 # HR
 # ---------------------------------------------------------------------------
 
+
 class TestHRCollector:
     def test_total_agents(self, project: Path) -> None:
         result = HRKPICollector(project).collect()
@@ -180,6 +236,7 @@ class TestHRCollector:
 # Finance
 # ---------------------------------------------------------------------------
 
+
 class TestFinanceCollector:
     def test_budget_utilization_no_tracker(self, project: Path) -> None:
         result = FinanceKPICollector(project).collect()
@@ -194,6 +251,7 @@ class TestFinanceCollector:
 # ---------------------------------------------------------------------------
 # Marketing
 # ---------------------------------------------------------------------------
+
 
 class TestMarketingCollector:
     def test_empty_project(self, empty_project: Path) -> None:
@@ -213,6 +271,7 @@ class TestMarketingCollector:
 # Sales
 # ---------------------------------------------------------------------------
 
+
 class TestSalesCollector:
     def test_empty_project(self, empty_project: Path) -> None:
         result = SalesKPICollector(empty_project).collect()
@@ -229,6 +288,7 @@ class TestSalesCollector:
 # ---------------------------------------------------------------------------
 # Customer Success
 # ---------------------------------------------------------------------------
+
 
 class TestCustomerSuccessCollector:
     def test_empty_project(self, empty_project: Path) -> None:
@@ -247,6 +307,7 @@ class TestCustomerSuccessCollector:
 # Legal
 # ---------------------------------------------------------------------------
 
+
 class TestLegalCollector:
     def test_empty_project(self, empty_project: Path) -> None:
         result = LegalKPICollector(empty_project).collect()
@@ -263,6 +324,7 @@ class TestLegalCollector:
 # ---------------------------------------------------------------------------
 # All departments return results
 # ---------------------------------------------------------------------------
+
 
 class TestAllCollectors:
     def test_all_departments_return_results(self, project: Path) -> None:

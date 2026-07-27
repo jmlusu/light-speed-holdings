@@ -60,7 +60,9 @@ def record_task_outcome(
     tags = [status, agent_id]
     if tools_used:
         tags.extend(tools_used)
-    content = f"Task {task_id}: {instruction[:200]}\nStatus: {status}\nResult: {result_summary[:300]}"
+    content = (
+        f"Task {task_id}: {instruction[:200]}\nStatus: {status}\nResult: {result_summary[:300]}"
+    )
     _store.store(
         "episodic",
         content=content,
@@ -70,14 +72,18 @@ def record_task_outcome(
     )
 
 
-def record_knowledge(agent_id: str, topic: str, content: str, tags: list[str] | None = None) -> None:
+def record_knowledge(
+    agent_id: str, topic: str, content: str, tags: list[str] | None = None
+) -> None:
     """Record semantic knowledge discovered during execution."""
     if _store is None:
         return
     _store.store("semantic", content=content, agent_id=agent_id, tags=tags or [topic])
 
 
-def record_procedure(agent_id: str, procedure: str, context: str, tags: list[str] | None = None) -> None:
+def record_procedure(
+    agent_id: str, procedure: str, context: str, tags: list[str] | None = None
+) -> None:
     """Record procedural how-to knowledge."""
     if _store is None:
         return

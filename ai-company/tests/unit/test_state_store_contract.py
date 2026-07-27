@@ -116,9 +116,7 @@ def test_relative_base_construction_is_cwd_independent(
     store_dir = tmp_path / "store"
     store_dir.mkdir()
     (store_dir / "company").mkdir()
-    (store_dir / "company" / "departments.yaml").write_text(
-        "departments: []\n", encoding="utf-8"
-    )
+    (store_dir / "company" / "departments.yaml").write_text("departments: []\n", encoding="utf-8")
 
     monkeypatch.chdir(tmp_path)
     store = StateStore("store")  # relative, resolved against tmp_path cwd

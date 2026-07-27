@@ -73,7 +73,7 @@ def decrypt(payload: str, key_manager: EncryptionKeyManager) -> str:
     if not is_encrypted(payload):
         return payload
 
-    encoded = payload[len(_ENC_PREFIX):]
+    encoded = payload[len(_ENC_PREFIX) :]
     try:
         blob = base64.b64decode(encoded)
     except Exception as exc:
@@ -98,6 +98,4 @@ def decrypt(payload: str, key_manager: EncryptionKeyManager) -> str:
             last_error = exc
             logger.debug("Decrypt failed with %s key: %s", label, exc)
 
-    raise ValueError(
-        f"Failed to decrypt memory content with any available key: {last_error}"
-    )
+    raise ValueError(f"Failed to decrypt memory content with any available key: {last_error}")

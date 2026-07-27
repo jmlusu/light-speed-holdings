@@ -16,37 +16,89 @@ from typing import Any
 
 # Keywords that suggest higher complexity
 COMPLEX_KEYWORDS: set[str] = {
-    "architecture", "refactor", "migration", "security audit", "compliance",
-    "regulation", "multi-step", "cross-team", "dependency", "optimization",
-    "performance", "scalability", "distributed", "concurrent", "parallel",
-    "machine learning", "neural", "training", "inference", "pipeline",
-    "integration", "microservice", "kubernetes", "terraform", "database schema",
-    "api design", "contract", "nda", "legal", "financial model", "forecast",
-    "budget", "audit", "penetration test", "incident response",
+    "architecture",
+    "refactor",
+    "migration",
+    "security audit",
+    "compliance",
+    "regulation",
+    "multi-step",
+    "cross-team",
+    "dependency",
+    "optimization",
+    "performance",
+    "scalability",
+    "distributed",
+    "concurrent",
+    "parallel",
+    "machine learning",
+    "neural",
+    "training",
+    "inference",
+    "pipeline",
+    "integration",
+    "microservice",
+    "kubernetes",
+    "terraform",
+    "database schema",
+    "api design",
+    "contract",
+    "nda",
+    "legal",
+    "financial model",
+    "forecast",
+    "budget",
+    "audit",
+    "penetration test",
+    "incident response",
 }
 
 # Keywords that suggest simpler tasks
 SIMPLE_KEYWORDS: set[str] = {
-    "read", "list", "show", "print", "display", "summarize", "count",
-    "search", "find", "check", "verify", "status", "info", "help",
-    "explain", "define", "what is", "who is",
+    "read",
+    "list",
+    "show",
+    "print",
+    "display",
+    "summarize",
+    "count",
+    "search",
+    "find",
+    "check",
+    "verify",
+    "status",
+    "info",
+    "help",
+    "explain",
+    "define",
+    "what is",
+    "who is",
 }
 
 # Patterns that increase complexity
 COMPLEX_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"\b(implement|build|create|design)\b.*\b(system|service|module)\b", re.IGNORECASE),
-    re.compile(r"\b(multiple|several|all)\b.*\b(components|files|modules|services)\b", re.IGNORECASE),
+    re.compile(
+        r"\b(multiple|several|all)\b.*\b(components|files|modules|services)\b", re.IGNORECASE
+    ),
     re.compile(r"\b(integration|migration|refactor)\b", re.IGNORECASE),
     re.compile(r"\b(and|plus|also|additionally)\b", re.IGNORECASE),  # Multiple requirements
 ]
 
 # Tools that imply complexity
 COMPLEX_TOOLS: set[str] = {
-    "execute", "code_interpreter", "delegate",
+    "execute",
+    "code_interpreter",
+    "delegate",
 }
 
 SIMPLE_TOOLS: set[str] = {
-    "read", "list", "grep", "glob", "search", "view",
+    "read",
+    "list",
+    "grep",
+    "glob",
+    "search",
+    "view",
 }
 
 
@@ -237,10 +289,7 @@ class TaskComplexityScorer:
         length_score = min(1.0, word_count / 200)
 
         # Multiple bullet points or numbered lists suggest multi-step tasks
-        list_items = sum(
-            1 for line in lines
-            if re.match(r"^\s*[-*•]\s|^\s*\d+[.)]\s", line)
-        )
+        list_items = sum(1 for line in lines if re.match(r"^\s*[-*•]\s|^\s*\d+[.)]\s", line))
         list_score = min(1.0, list_items / 5)
 
         # Code blocks suggest technical tasks

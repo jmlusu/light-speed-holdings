@@ -51,9 +51,7 @@ def _patch_agent_loop_llm(response: ChatResponse):
 class TestFullPipeline:
     """End-to-end test of the complete task lifecycle."""
 
-    def test_task_lifecycle_happy_path(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_task_lifecycle_happy_path(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Full lifecycle: submit task -> executor processes -> completed -> memory stored."""
         with _patch_agent_loop_llm(_react_response("Config validated successfully.")):
             task = Task(
@@ -73,9 +71,7 @@ class TestFullPipeline:
         assert updated.status == TaskStatus.COMPLETED
         assert "Config validated" in (updated.result or "")
 
-    def test_task_failure_handling(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_task_failure_handling(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Task that fails due to LLM error should be marked FAILED."""
         with _patch_agent_loop_llm(_react_response("partial")):
             # Override: raise an exception from _call_llm
@@ -98,9 +94,7 @@ class TestFullPipeline:
         assert updated is not None
         assert updated.status == TaskStatus.FAILED
 
-    def test_multiple_tasks_processed(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_multiple_tasks_processed(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Multiple tasks in the inbox are all processed in one tick."""
         with _patch_agent_loop_llm(_react_response("done")):
             for i in range(3):
@@ -144,9 +138,7 @@ class TestFullPipeline:
         episodic = store.recall("episodic", limit=10)
         assert any("e2e-memory-001" in e.content for e in episodic)
 
-    def test_consolidation_scheduler_runs(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_consolidation_scheduler_runs(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Consolidation scheduler runs during tick and doesn't break processing."""
         from ai_company.memory.integration import get_store
 
@@ -176,9 +168,7 @@ class TestFullPipeline:
         count = executor.tick()
         assert count == 0
 
-    def test_audit_trail_recorded(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_audit_trail_recorded(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Task completion creates audit trail entries."""
         with _patch_agent_loop_llm(_react_response("Audit test complete")):
             task = Task(
@@ -197,9 +187,7 @@ class TestFullPipeline:
         content = audit_file.read_text(encoding="utf-8")
         assert "e2e-audit-001" in content
 
-    def test_task_with_tool_execution(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_task_with_tool_execution(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Task that requires tool execution: plan has steps, then done."""
         import json
 
@@ -207,12 +195,14 @@ class TestFullPipeline:
             {"tool": "read", "args": {"path": "config.yaml"}},
         ]
         iteration1 = _make_chat_response(
-            content=json.dumps({
-                "thought": "Need to read config",
-                "plan": tool_plan,
-                "result": "",
-                "done": False,
-            })
+            content=json.dumps(
+                {
+                    "thought": "Need to read config",
+                    "plan": tool_plan,
+                    "result": "",
+                    "done": False,
+                }
+            )
         )
         iteration2 = _react_response("Config looks good")
 
@@ -244,19 +234,19 @@ class TestFullPipeline:
         assert updated.status == TaskStatus.COMPLETED
         assert "Config looks good" in (updated.result or "")
 
-    def test_max_iterations_stops_loop(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_max_iterations_stops_loop(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Loop stops after max iterations even if not done."""
         import json
 
         never_done = _make_chat_response(
-            content=json.dumps({
-                "thought": "Still working",
-                "plan": [{"tool": "read", "args": {"path": "."}}],
-                "result": "",
-                "done": False,
-            })
+            content=json.dumps(
+                {
+                    "thought": "Still working",
+                    "plan": [{"tool": "read", "args": {"path": "."}}],
+                    "result": "",
+                    "done": False,
+                }
+            )
         )
 
         with patch(
@@ -278,9 +268,7 @@ class TestFullPipeline:
         # Should be FAILED because loop ran out of iterations
         assert updated.status == TaskStatus.FAILED
 
-    def test_task_status_transitions(
-        self, workspace: Path, executor, bus: MessageBus
-    ) -> None:
+    def test_task_status_transitions(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Verify task goes through pending -> in_progress -> completed."""
         with _patch_agent_loop_llm(_react_response("done")):
             task = Task(

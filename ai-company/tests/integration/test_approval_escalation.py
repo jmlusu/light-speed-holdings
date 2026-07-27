@@ -60,16 +60,18 @@ def _submit_task(
     """Write a single pending task directly into the inbox."""
     inbox = workspace / ".opencode" / "inbox.json"
     inbox.write_text(
-        json.dumps([
-            {
-                "id": task_id,
-                "sender_id": "human-ceo",
-                "receiver_id": "test-agent",
-                "instruction": instruction,
-                "status": "pending",
-                "priority": priority,
-            }
-        ]),
+        json.dumps(
+            [
+                {
+                    "id": task_id,
+                    "sender_id": "human-ceo",
+                    "receiver_id": "test-agent",
+                    "instruction": instruction,
+                    "status": "pending",
+                    "priority": priority,
+                }
+            ]
+        ),
         encoding="utf-8",
     )
 
@@ -384,9 +386,7 @@ class TestPreapprovedBypassesHitl:
                 )
 
             # Subsequent calls — verify preapproved was passed.
-            assert kwargs.get("preapproved") is True, (
-                "Expected preapproved=True on resume call"
-            )
+            assert kwargs.get("preapproved") is True, "Expected preapproved=True on resume call"
             return _loop_result(result="Preapproved write done.", done=True)
 
         executor.agent_loop.run = _run_with_park  # type: ignore[assignment]
@@ -409,9 +409,7 @@ class TestPreapprovedBypassesHitl:
         assert "Preapproved write done" in tasks[0]["result"]
         assert call_count == 2
 
-    def test_preapproved_flag_reaches_agent_loop(
-        self, executor, workspace: Path
-    ) -> None:
+    def test_preapproved_flag_reaches_agent_loop(self, executor, workspace: Path) -> None:
         """Verify the preapproved flag propagates from _resume_parked_tasks
         through _process_task into agent_loop.run kwargs."""
         _submit_task(workspace)

@@ -64,7 +64,9 @@ def test_concurrent_send_and_status_update(tmp_path) -> None:
     raw = inbox.read_text(encoding="utf-8")
     data = json.loads(raw)
     ids = {t["id"] for t in data}
-    expected = {f"task-{w * 100 + i}" for w in range(1, n_workers + 1) for i in range(1, n_updates_each + 1)}
+    expected = {
+        f"task-{w * 100 + i}" for w in range(1, n_workers + 1) for i in range(1, n_updates_each + 1)
+    }
     expected.add("task-0")
     assert ids == expected
     assert len(data) == n_workers * n_updates_each + 1

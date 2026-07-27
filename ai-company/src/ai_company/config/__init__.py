@@ -112,12 +112,18 @@ def load_config(config_dir: Path | str | None = None) -> CompanyRegistry:
     specialists_data = _unwrap_list(_load_yaml(base / _SPECIALISTS_FILE), "specialists")
 
     workflows_data = _unwrap_list(_load_yaml(base / _WORKFLOWS_FILE), "workflows")
-    approval_data = _unwrap(_load_yaml(base / _DECISION_FILES["approval_matrix"]), "approval_matrix")
+    approval_data = _unwrap(
+        _load_yaml(base / _DECISION_FILES["approval_matrix"]), "approval_matrix"
+    )
     risk_data = _unwrap(_load_yaml(base / _DECISION_FILES["risk_matrix"]), "risk_matrix")
-    decision_tree_data = _unwrap(_load_yaml(base / _DECISION_FILES["decision_tree"]), "decision_tree")
+    decision_tree_data = _unwrap(
+        _load_yaml(base / _DECISION_FILES["decision_tree"]), "decision_tree"
+    )
 
     return CompanyRegistry(
-        company=Company(**company_data) if company_data else Company(id="default", name="AI Company"),
+        company=Company(**company_data)
+        if company_data
+        else Company(id="default", name="AI Company"),
         vision=Vision(**vision_data) if vision_data else Vision(),
         strategy=Strategy(**strategy_data) if strategy_data else Strategy(),
         culture=Culture(**culture_data) if culture_data else Culture(),
@@ -135,5 +141,7 @@ def load_config(config_dir: Path | str | None = None) -> CompanyRegistry:
         workflows=[Workflow(**w) for w in workflows_data],
         approval_matrix=[ApprovalEntry(**a) for a in approval_data.get("approval_matrix", [])],
         risk_matrix=RiskMatrixConfig(**risk_data) if risk_data else RiskMatrixConfig(),
-        decision_tree=DecisionTreeConfig(**decision_tree_data) if decision_tree_data else DecisionTreeConfig(),
+        decision_tree=DecisionTreeConfig(**decision_tree_data)
+        if decision_tree_data
+        else DecisionTreeConfig(),
     )

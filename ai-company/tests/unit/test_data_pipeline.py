@@ -21,6 +21,7 @@ from ai_company.models.task import Task
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def db(tmp_path: Path) -> Database:
     """Create a temporary database with all tables."""
@@ -94,6 +95,7 @@ def _sample_snapshot() -> dict:
 # KPI Pipeline Tests
 # ===================================================================
 
+
 class TestKPIPipeline:
     """Tests for the KPI analytics pipeline."""
 
@@ -142,10 +144,17 @@ class TestKPIPipeline:
         """aggregate with daily period groups by day."""
         # Use timestamps within the last 30 days so the default window captures them
         from datetime import datetime, timedelta, timezone
+
         now = datetime.now(timezone.utc)
         for i in range(3):
-            ts = (now - timedelta(days=i)).replace(hour=12, minute=0, second=0, microsecond=0).isoformat()
-            kpi.ingest_individual("engineering", "task_completion_rate", 90.0 + i, 95.0, "%", "on_track", ts)
+            ts = (
+                (now - timedelta(days=i))
+                .replace(hour=12, minute=0, second=0, microsecond=0)
+                .isoformat()
+            )
+            kpi.ingest_individual(
+                "engineering", "task_completion_rate", 90.0 + i, 95.0, "%", "on_track", ts
+            )
         agg = kpi.aggregate("engineering", period="daily")
         assert len(agg) >= 1
         assert "min_value" in agg[0]
@@ -156,13 +165,16 @@ class TestKPIPipeline:
         # Ingest several data points
         for i in range(10):
             kpi.ingest_individual(
-                "engineering", "error_rate",
+                "engineering",
+                "error_rate",
                 float(i % 5),  # 0,1,2,3,4,0,1,2,3,4
                 timestamp=f"2025-01-{10 + i:02d}T12:00:00Z",
             )
         # Add an anomaly
         kpi.ingest_individual(
-            "engineering", "error_rate", 50.0,
+            "engineering",
+            "error_rate",
+            50.0,
             timestamp="2025-01-20T12:00:00Z",
         )
 
@@ -191,6 +203,7 @@ class TestKPIPipeline:
 # Cost Analytics Tests
 # ===================================================================
 
+
 class TestCostAnalytics:
     """Tests for cost analytics."""
 
@@ -211,14 +224,24 @@ class TestCostAnalytics:
     def test_get_daily_total(self, cost: CostAnalytics) -> None:
         """get_daily_total returns the sum for the day."""
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.01, timestamp="2025-06-15T10:00:00Z",
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.01,
+            timestamp="2025-06-15T10:00:00Z",
         )
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t2", prompt_tokens=200, completion_tokens=100,
-            cost_usd=0.02, timestamp="2025-06-15T11:00:00Z",
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t2",
+            prompt_tokens=200,
+            completion_tokens=100,
+            cost_usd=0.02,
+            timestamp="2025-06-15T11:00:00Z",
         )
         total = cost.get_daily_total("2025-06-15")
         assert abs(total - 0.03) < 1e-8
@@ -226,18 +249,28 @@ class TestCostAnalytics:
     def test_get_task_total(self, cost: CostAnalytics) -> None:
         """get_task_total sums costs for a task."""
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.05, timestamp="2025-06-15T10:00:00Z",
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.05,
+            timestamp="2025-06-15T10:00:00Z",
         )
         assert abs(cost.get_task_total("t1") - 0.05) < 1e-8
 
     def test_get_agent_total(self, cost: CostAnalytics) -> None:
         """get_agent_total sums costs for an agent."""
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="alice",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.03, timestamp="2025-06-15T10:00:00Z",
+            model="gpt-4o",
+            provider="openai",
+            agent_name="alice",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.03,
+            timestamp="2025-06-15T10:00:00Z",
         )
         assert abs(cost.get_agent_total("alice") - 0.03) < 1e-8
 
@@ -251,8 +284,12 @@ class TestCostAnalytics:
         """check_budget returns False when budget exceeded."""
         cost.daily_budget = 0.01
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
             cost_usd=0.005,
         )
         allowed, reason = cost.check_budget("t1", proposed_cost=0.01)
@@ -262,9 +299,14 @@ class TestCostAnalytics:
     def test_daily_summary(self, cost: CostAnalytics) -> None:
         """daily_summary returns full breakdown."""
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.01, timestamp="2025-06-15T10:00:00Z",
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.01,
+            timestamp="2025-06-15T10:00:00Z",
         )
         summary = cost.daily_summary("2025-06-15")
         assert summary["total_cost_usd"] > 0
@@ -273,13 +315,21 @@ class TestCostAnalytics:
     def test_breakdown_by_agent(self, cost: CostAnalytics) -> None:
         """breakdown_by_agent returns per-agent costs."""
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="alice",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="alice",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
             cost_usd=0.1,
         )
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="bob",
-            task_id="t2", prompt_tokens=200, completion_tokens=100,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="bob",
+            task_id="t2",
+            prompt_tokens=200,
+            completion_tokens=100,
             cost_usd=0.2,
         )
         breakdown = cost.breakdown_by_agent()
@@ -290,8 +340,12 @@ class TestCostAnalytics:
     def test_breakdown_by_model(self, cost: CostAnalytics) -> None:
         """breakdown_by_model returns per-model costs."""
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
             cost_usd=0.05,
         )
         breakdown = cost.breakdown_by_model()
@@ -301,13 +355,23 @@ class TestCostAnalytics:
     def test_forecast_daily(self, cost: CostAnalytics) -> None:
         """forecast_daily returns a forecast dict."""
         from datetime import datetime, timedelta, timezone
+
         now = datetime.now(timezone.utc)
         for i in range(7):
-            ts = (now - timedelta(days=i)).replace(hour=10, minute=0, second=0, microsecond=0).isoformat()
+            ts = (
+                (now - timedelta(days=i))
+                .replace(hour=10, minute=0, second=0, microsecond=0)
+                .isoformat()
+            )
             cost.record_usage(
-                model="gpt-4o", provider="openai", agent_name="a",
-                task_id=f"t{i}", prompt_tokens=100, completion_tokens=50,
-                cost_usd=0.01, timestamp=ts,
+                model="gpt-4o",
+                provider="openai",
+                agent_name="a",
+                task_id=f"t{i}",
+                prompt_tokens=100,
+                completion_tokens=50,
+                cost_usd=0.01,
+                timestamp=ts,
             )
         forecast = cost.forecast_daily(lookback_days=14, forecast_days=7)
         assert forecast["avg_daily_cost"] > 0
@@ -317,9 +381,14 @@ class TestCostAnalytics:
         """budget_status returns current utilization."""
         cost.daily_budget = 100.0
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
-            cost_usd=5.0, timestamp="2025-06-15T10:00:00Z",
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=5.0,
+            timestamp="2025-06-15T10:00:00Z",
         )
         status = cost.budget_status()
         assert "daily_cost_usd" in status
@@ -329,9 +398,14 @@ class TestCostAnalytics:
     def test_total_cost(self, cost: CostAnalytics) -> None:
         """total_cost returns the sum across all records."""
         cost.record_usage(
-            model="gpt-4o", provider="openai", agent_name="a",
-            task_id="t1", prompt_tokens=100, completion_tokens=50,
-            cost_usd=0.07, timestamp="2025-06-15T10:00:00Z",
+            model="gpt-4o",
+            provider="openai",
+            agent_name="a",
+            task_id="t1",
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=0.07,
+            timestamp="2025-06-15T10:00:00Z",
         )
         assert abs(cost.total_cost() - 0.07) < 1e-8
 
@@ -340,36 +414,87 @@ class TestCostAnalytics:
 # Agent Performance Analytics Tests
 # ===================================================================
 
+
 class TestAgentPerformanceAnalytics:
     """Tests for agent performance analytics."""
 
     def _seed_agent_data(self, db: Database) -> None:
         """Insert test tasks and audit events for agent analytics."""
         from datetime import datetime, timedelta, timezone
+
         now = datetime.now(timezone.utc)
 
         # Tasks — use recent timestamps
         tasks = [
-            ("t1", "alice", "bob", "completed", now - timedelta(hours=3), now - timedelta(hours=2, minutes=30)),
-            ("t2", "alice", "bob", "completed", now - timedelta(hours=2), now - timedelta(hours=1, minutes=45)),
+            (
+                "t1",
+                "alice",
+                "bob",
+                "completed",
+                now - timedelta(hours=3),
+                now - timedelta(hours=2, minutes=30),
+            ),
+            (
+                "t2",
+                "alice",
+                "bob",
+                "completed",
+                now - timedelta(hours=2),
+                now - timedelta(hours=1, minutes=45),
+            ),
             ("t3", "alice", "bob", "failed", now - timedelta(hours=1), now - timedelta(minutes=50)),
-            ("t4", "charlie", "bob", "completed", now - timedelta(minutes=45), now - timedelta(minutes=25)),
+            (
+                "t4",
+                "charlie",
+                "bob",
+                "completed",
+                now - timedelta(minutes=45),
+                now - timedelta(minutes=25),
+            ),
         ]
         for tid, sender, receiver, status, created, completed in tasks:
             task = Task(
-                id=tid, sender_id=sender, receiver_id=receiver,
-                status=status, created_at=created.isoformat(), completed_at=completed.isoformat(),
+                id=tid,
+                sender_id=sender,
+                receiver_id=receiver,
+                status=status,
+                created_at=created.isoformat(),
+                completed_at=completed.isoformat(),
             )
             db.execute(
                 """INSERT INTO tasks (id, sender_id, receiver_id, status, created_at, completed_at, raw_json)
                    VALUES (?,?,?,?,?,?,?)""",
-                (tid, sender, receiver, status, created.isoformat(), completed.isoformat(), task.model_dump_json()),
+                (
+                    tid,
+                    sender,
+                    receiver,
+                    status,
+                    created.isoformat(),
+                    completed.isoformat(),
+                    task.model_dump_json(),
+                ),
             )
 
         # Audit events — use recent timestamps
         events = [
-            ("a1", "tool_call", "bob", "t1", (now - timedelta(hours=2, minutes=55)).isoformat(), "read", "info"),
-            ("a2", "tool_call", "bob", "t1", (now - timedelta(hours=2, minutes=50)).isoformat(), "write", "info"),
+            (
+                "a1",
+                "tool_call",
+                "bob",
+                "t1",
+                (now - timedelta(hours=2, minutes=55)).isoformat(),
+                "read",
+                "info",
+            ),
+            (
+                "a2",
+                "tool_call",
+                "bob",
+                "t1",
+                (now - timedelta(hours=2, minutes=50)).isoformat(),
+                "write",
+                "info",
+            ),
             ("a3", "error", "bob", "t3", (now - timedelta(minutes=55)).isoformat(), None, "error"),
         ]
         for eid, etype, agent, tid, ts, tool, sev in events:
@@ -382,8 +507,28 @@ class TestAgentPerformanceAnalytics:
 
         # Cost records — omit id to let AUTOINCREMENT assign
         cost_rows = [
-            ((now - timedelta(hours=2, minutes=55)).isoformat(), "gpt-4o", "openai", "bob", "t1", 100, 50, 0.01, 1),
-            ((now - timedelta(minutes=55)).isoformat(), "gpt-4o", "openai", "bob", "t3", 200, 100, 0.02, 1),
+            (
+                (now - timedelta(hours=2, minutes=55)).isoformat(),
+                "gpt-4o",
+                "openai",
+                "bob",
+                "t1",
+                100,
+                50,
+                0.01,
+                1,
+            ),
+            (
+                (now - timedelta(minutes=55)).isoformat(),
+                "gpt-4o",
+                "openai",
+                "bob",
+                "t3",
+                200,
+                100,
+                0.02,
+                1,
+            ),
         ]
         for ts, model, prov, agent, tid, pt, ct, cost_val, it in cost_rows:
             db.execute(
@@ -416,7 +561,9 @@ class TestAgentPerformanceAnalytics:
         assert "rank" in board[0]
         assert "completion_rate_pct" in board[0]
 
-    def test_model_usage_distribution(self, analytics: AgentPerformanceAnalytics, db: Database) -> None:
+    def test_model_usage_distribution(
+        self, analytics: AgentPerformanceAnalytics, db: Database
+    ) -> None:
         """model_usage_distribution returns model data."""
         self._seed_agent_data(db)
         dist = analytics.model_usage_distribution()
@@ -452,6 +599,7 @@ class TestAgentPerformanceAnalytics:
 # ===================================================================
 # Memory Store DB Tests
 # ===================================================================
+
 
 class TestMemoryStoreDB:
     """Tests for the SQLite-backed memory store."""
@@ -545,14 +693,17 @@ class TestMemoryStoreDB:
 # Escalation Store Tests
 # ===================================================================
 
+
 class TestEscalationStore:
     """Tests for the SQLite-backed escalation store."""
 
     def test_add_and_get_pending(self, escalation: EscalationStore) -> None:
         """add_event and get_pending work together."""
         escalation.add_event(
-            task_id="t1", rule_id="r1",
-            from_agent="alice", to_agent="bob",
+            task_id="t1",
+            rule_id="r1",
+            from_agent="alice",
+            to_agent="bob",
             reason="Timeout",
         )
         pending = escalation.get_pending()
@@ -562,8 +713,10 @@ class TestEscalationStore:
     def test_resolve(self, escalation: EscalationStore) -> None:
         """resolve marks events as resolved."""
         escalation.add_event(
-            task_id="t1", rule_id="r1",
-            from_agent="alice", to_agent="bob",
+            task_id="t1",
+            rule_id="r1",
+            from_agent="alice",
+            to_agent="bob",
             reason="Timeout",
         )
         count = escalation.resolve("t1")
@@ -581,8 +734,12 @@ class TestEscalationStore:
 
     def test_get_by_agent(self, escalation: EscalationStore) -> None:
         """get_by_agent returns events targeting the agent."""
-        escalation.add_event(task_id="t1", rule_id="r1", from_agent="a", to_agent="bob", reason="R1")
-        escalation.add_event(task_id="t2", rule_id="r1", from_agent="a", to_agent="charlie", reason="R2")
+        escalation.add_event(
+            task_id="t1", rule_id="r1", from_agent="a", to_agent="bob", reason="R1"
+        )
+        escalation.add_event(
+            task_id="t2", rule_id="r1", from_agent="a", to_agent="charlie", reason="R2"
+        )
 
         events = escalation.get_by_agent("bob")
         assert len(events) == 1
@@ -598,12 +755,22 @@ class TestEscalationStore:
     def test_delete_before(self, escalation: EscalationStore) -> None:
         """delete_before removes old resolved events."""
         escalation.add_event(
-            task_id="t1", rule_id="r1", from_agent="a", to_agent="b",
-            reason="Old", timestamp="2025-01-01T10:00:00Z", resolved=True,
+            task_id="t1",
+            rule_id="r1",
+            from_agent="a",
+            to_agent="b",
+            reason="Old",
+            timestamp="2025-01-01T10:00:00Z",
+            resolved=True,
         )
         escalation.add_event(
-            task_id="t2", rule_id="r1", from_agent="a", to_agent="b",
-            reason="New", timestamp="2025-06-01T10:00:00Z", resolved=True,
+            task_id="t2",
+            rule_id="r1",
+            from_agent="a",
+            to_agent="b",
+            reason="New",
+            timestamp="2025-06-01T10:00:00Z",
+            resolved=True,
         )
 
         deleted = escalation.delete_before("2025-03-01T00:00:00Z")

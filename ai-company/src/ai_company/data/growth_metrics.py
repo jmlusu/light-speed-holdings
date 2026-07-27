@@ -81,9 +81,7 @@ class GrowthMetrics:
         )
         active_agents = len([r for r in active_rows if r["agent_id"]])
 
-        adoption_pct = (
-            round(active_agents / total_agents * 100, 2) if total_agents > 0 else 0.0
-        )
+        adoption_pct = round(active_agents / total_agents * 100, 2) if total_agents > 0 else 0.0
 
         # Daily active agent counts
         daily_active: list[dict[str, Any]] = []
@@ -98,10 +96,12 @@ class GrowthMetrics:
                 )""",
                 (day_str, day_str),
             )
-            daily_active.append({
-                "date": day_str,
-                "active_agents": count_row["cnt"] if count_row else 0,
-            })
+            daily_active.append(
+                {
+                    "date": day_str,
+                    "active_agents": count_row["cnt"] if count_row else 0,
+                }
+            )
 
         # New agents (first appearance) per day
         new_per_day: list[dict[str, Any]] = []
@@ -120,10 +120,12 @@ class GrowthMetrics:
                 )""",
                 (day_str,),
             )
-            new_per_day.append({
-                "date": day_str,
-                "new_agents": count_row["cnt"] if count_row else 0,
-            })
+            new_per_day.append(
+                {
+                    "date": day_str,
+                    "new_agents": count_row["cnt"] if count_row else 0,
+                }
+            )
 
         return {
             "period_days": days,
@@ -182,16 +184,17 @@ class GrowthMetrics:
             day_completed = counts.get("completed", 0)
             day_failed = counts.get("failed", 0)
             day_finished = day_completed + day_failed
-            daily_trend.append({
-                "date": day,
-                "total": day_total,
-                "completed": day_completed,
-                "failed": day_failed,
-                "completion_rate_pct": (
-                    round(day_completed / day_finished * 100, 2)
-                    if day_finished > 0 else 0.0
-                ),
-            })
+            daily_trend.append(
+                {
+                    "date": day,
+                    "total": day_total,
+                    "completed": day_completed,
+                    "failed": day_failed,
+                    "completion_rate_pct": (
+                        round(day_completed / day_finished * 100, 2) if day_finished > 0 else 0.0
+                    ),
+                }
+            )
 
         # Average task duration
         duration_rows = self._db.fetchall(
@@ -262,12 +265,11 @@ class GrowthMetrics:
         completed_tasks = task_row["completed"] if task_row else 0
 
         cost_per_task = round(total_cost / total_tasks, 6) if total_tasks > 0 else 0.0
-        cost_per_completion = (
-            round(total_cost / completed_tasks, 6) if completed_tasks > 0 else 0.0
-        )
+        cost_per_completion = round(total_cost / completed_tasks, 6) if completed_tasks > 0 else 0.0
         cost_per_1k_tokens = (
             round(total_cost / ((total_prompt + total_completion) / 1000), 6)
-            if (total_prompt + total_completion) > 0 else 0.0
+            if (total_prompt + total_completion) > 0
+            else 0.0
         )
 
         # Daily cost trend
@@ -282,11 +284,13 @@ class GrowthMetrics:
 
         daily_trend: list[dict[str, Any]] = []
         for row in daily_cost_rows:
-            daily_trend.append({
-                "date": row["day"],
-                "cost_usd": round(row["daily_cost"], 6),
-                "calls": row["calls"],
-            })
+            daily_trend.append(
+                {
+                    "date": row["day"],
+                    "cost_usd": round(row["daily_cost"], 6),
+                    "calls": row["calls"],
+                }
+            )
 
         # Cost per agent
         agent_cost_rows = self._db.fetchall(
@@ -352,8 +356,7 @@ class GrowthMetrics:
         total_escalations = escalation_row["total"] if escalation_row else 0
         resolved_escalations = escalation_row["resolved"] if escalation_row else 0
         escalation_rate = (
-            round(total_escalations / max(tool_calls, 1) * 100, 2)
-            if tool_calls > 0 else 0.0
+            round(total_escalations / max(tool_calls, 1) * 100, 2) if tool_calls > 0 else 0.0
         )
 
         # Error recovery rate (completed tasks after failures in same period)
@@ -367,8 +370,7 @@ class GrowthMetrics:
         completed = task_status_row["completed"] if task_status_row else 0
         failed = task_status_row["failed"] if task_status_row else 0
         error_recovery_rate = (
-            round(completed / (completed + failed) * 100, 2)
-            if (completed + failed) > 0 else 0.0
+            round(completed / (completed + failed) * 100, 2) if (completed + failed) > 0 else 0.0
         )
 
         # Daily activity (events per day)
@@ -378,10 +380,7 @@ class GrowthMetrics:
                GROUP BY day ORDER BY day""",
             (cutoff,),
         )
-        daily_activity = [
-            {"date": r["day"], "events": r["events"]}
-            for r in daily_activity_rows
-        ]
+        daily_activity = [{"date": r["day"], "events": r["events"]} for r in daily_activity_rows]
 
         # Unique active agents per day (engagement breadth)
         daily_agents_rows = self._db.fetchall(
@@ -392,15 +391,12 @@ class GrowthMetrics:
             (cutoff,),
         )
         daily_agent_engagement = [
-            {"date": r["day"], "agents": r["agents"]}
-            for r in daily_agents_rows
+            {"date": r["day"], "agents": r["agents"]} for r in daily_agents_rows
         ]
 
         # Activity frequency
         days_with_activity = len(daily_activity)
-        activity_rate = (
-            round(days_with_activity / max(days, 1) * 100, 2)
-        )
+        activity_rate = round(days_with_activity / max(days, 1) * 100, 2)
 
         return {
             "period_days": days,
@@ -473,7 +469,7 @@ class GrowthMetrics:
         # Engagement score: combination of activity and recovery
         activity = engagement.get("activity_rate_pct", 0)
         recovery = engagement.get("error_recovery_rate_pct", 0)
-        engagement_score = (activity * 0.5 + recovery * 0.5)
+        engagement_score = activity * 0.5 + recovery * 0.5
 
         # Weighted composite
         score = (
@@ -524,9 +520,7 @@ class GrowthMetrics:
                 "error_recovery_rate_pct": last_week["engagement"]["error_recovery_rate_pct"],
             },
             "deltas": {
-                "growth_score": round(
-                    this_week["growth_score"] - last_week["growth_score"], 2
-                ),
+                "growth_score": round(this_week["growth_score"] - last_week["growth_score"], 2),
                 "adoption_pct": round(
                     this_week["agent_adoption"]["adoption_pct"]
                     - last_week["agent_adoption"]["adoption_pct"],
@@ -582,9 +576,7 @@ class GrowthMetrics:
                 "error_recovery_rate_pct": last_month["engagement"]["error_recovery_rate_pct"],
             },
             "deltas": {
-                "growth_score": round(
-                    this_month["growth_score"] - last_month["growth_score"], 2
-                ),
+                "growth_score": round(this_month["growth_score"] - last_month["growth_score"], 2),
                 "adoption_pct": round(
                     this_month["agent_adoption"]["adoption_pct"]
                     - last_month["agent_adoption"]["adoption_pct"],

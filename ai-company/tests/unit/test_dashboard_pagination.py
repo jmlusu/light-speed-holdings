@@ -20,15 +20,17 @@ def _seed_tasks(tmp_path: Path, count: int, **overrides: str) -> None:
     priorities = ["low", "medium", "high", "critical"]
     agents = ["lead-engineering", "lead-marketing", "chief-of-staff"]
     for i in range(count):
-        tasks.append({
-            "id": f"task-{i:04d}",
-            "sender_id": "human-ceo",
-            "receiver_id": agents[i % len(agents)],
-            "instruction": f"Implement feature {i} in the system",
-            "status": statuses[i % len(statuses)],
-            "priority": priorities[i % len(priorities)],
-            "created_at": f"2026-07-{10 + (i % 20):02d}T10:00:00Z",
-        })
+        tasks.append(
+            {
+                "id": f"task-{i:04d}",
+                "sender_id": "human-ceo",
+                "receiver_id": agents[i % len(agents)],
+                "instruction": f"Implement feature {i} in the system",
+                "status": statuses[i % len(statuses)],
+                "priority": priorities[i % len(priorities)],
+                "created_at": f"2026-07-{10 + (i % 20):02d}T10:00:00Z",
+            }
+        )
     (tmp_path / ".opencode" / "inbox.json").write_text(json.dumps(tasks), encoding="utf-8")
 
 
@@ -170,9 +172,7 @@ class TestFiltering:
 
     def test_combined_filters(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get(
-            "/api/tasks/paginated?status=pending&priority=critical&agent=lead"
-        )
+        resp = client.get("/api/tasks/paginated?status=pending&priority=critical&agent=lead")
         data = resp.json()
         for t in data["items"]:
             assert t["status"] == "pending"

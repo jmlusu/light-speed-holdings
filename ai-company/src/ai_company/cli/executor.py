@@ -64,6 +64,7 @@ def _start_daemon(
 
     def factory() -> object:
         from ai_company.executor.loop import Executor
+
         return Executor(
             poll_interval=poll_interval,
             config_path=config,
@@ -211,7 +212,9 @@ def status() -> None:
     if pending:
         typer.echo(f"\nPending tasks ({len(pending)}):")
         for t in pending[:10]:
-            typer.echo(f"  [{t.get('id', '?')[:8]}] -> {t.get('receiver_id', '?')}: {t.get('instruction', '?')[:60]}")
+            typer.echo(
+                f"  [{t.get('id', '?')[:8]}] -> {t.get('receiver_id', '?')}: {t.get('instruction', '?')[:60]}"
+            )
 
 
 @app.command()

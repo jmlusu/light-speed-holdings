@@ -40,7 +40,9 @@ def _make_scheduler(tmp_path: Path, due: bool) -> Scheduler:
             name="Test Cycle Task",
             interval_minutes=60,
             enabled=True,
-            next_run=datetime.now() - timedelta(minutes=1) if due else datetime.now() + timedelta(hours=1),
+            next_run=datetime.now() - timedelta(minutes=1)
+            if due
+            else datetime.now() + timedelta(hours=1),
             task_template={"receiver_id": "chief-of-staff", "instruction": "ping"},
         )
     ]
@@ -68,7 +70,9 @@ class TestRunForever:
         def _interrupt(_: float) -> None:
             raise KeyboardInterrupt
 
-        cycles = scheduler.run_forever(bus, interval_seconds=10.0, max_cycles=None, sleep=_interrupt)
+        cycles = scheduler.run_forever(
+            bus, interval_seconds=10.0, max_cycles=None, sleep=_interrupt
+        )
 
         # Cycle 1 runs, then sleep raises KeyboardInterrupt -> stop after 1 cycle.
         assert cycles == 1

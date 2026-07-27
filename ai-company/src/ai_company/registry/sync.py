@@ -57,10 +57,24 @@ def _map_type(raw_type: str, agent_id: str) -> str:
         return "Specialist"
     # For 'default' type: infer from id
     executive_ids = {
-        "human_ceo", "chief_of_staff", "cto", "coo", "caio",
-        "cfo", "cpo", "cmo", "hr", "ciso", "cio", "cdo",
-        "clo", "cso", "ceo_advisor", "customer_success",
-        "sales", "legal",
+        "human_ceo",
+        "chief_of_staff",
+        "cto",
+        "coo",
+        "caio",
+        "cfo",
+        "cpo",
+        "cmo",
+        "hr",
+        "ciso",
+        "cio",
+        "cdo",
+        "clo",
+        "cso",
+        "ceo_advisor",
+        "customer_success",
+        "sales",
+        "legal",
     }
     if agent_id in executive_ids:
         return "Executive"
@@ -151,7 +165,6 @@ def verify_sync(
 
 
 if __name__ == "__main__":
-
     logging.basicConfig(level=logging.INFO)
     count = sync_registry()
     print(f"Synced {count} agents to company/agent-registry.json")

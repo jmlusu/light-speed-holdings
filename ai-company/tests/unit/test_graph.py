@@ -41,7 +41,10 @@ def registry() -> CompanyRegistry:
         ],
         workflows=[
             Workflow(
-                id="hire", name="Hiring", trigger="manual", owner="hr",
+                id="hire",
+                name="Hiring",
+                trigger="manual",
+                owner="hr",
                 steps=[
                     WorkflowStep(id="post", name="Post Job"),
                     WorkflowStep(id="review", name="Review"),
@@ -67,6 +70,7 @@ def engine(registry: CompanyRegistry) -> GraphEngine:
 # ---------------------------------------------------------------------------
 # Low-level graph tests
 # ---------------------------------------------------------------------------
+
 
 class TestGraph:
     def test_add_node(self):
@@ -110,6 +114,7 @@ class TestGraph:
 # ---------------------------------------------------------------------------
 # GraphEngine tests
 # ---------------------------------------------------------------------------
+
 
 class TestGraphEngine:
     def test_build_org_chart(self, engine: GraphEngine):

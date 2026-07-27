@@ -83,9 +83,7 @@ def setup_dashboard_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Non
             },
         ]
     }
-    (tmp_path / "company" / "departments.yaml").write_text(
-        yaml.dump(departments), encoding="utf-8"
-    )
+    (tmp_path / "company" / "departments.yaml").write_text(yaml.dump(departments), encoding="utf-8")
 
     # Create orchestrator directories
     (tmp_path / "orchestrator").mkdir(exist_ok=True)
@@ -235,7 +233,10 @@ class TestTasks:
             json={"receiver_id": "lead-engineering", "instruction": "do x"},
         )
         assert resp.status_code == 400
-        assert "short" in resp.json()["detail"].lower() or "meaningful" in resp.json()["detail"].lower()
+        assert (
+            "short" in resp.json()["detail"].lower()
+            or "meaningful" in resp.json()["detail"].lower()
+        )
 
     def test_reject_trivial_instruction_placeholder(self, setup_dashboard_data: None) -> None:
         """POST task matching the trivial placeholder regex should return 400."""
@@ -249,7 +250,10 @@ class TestTasks:
         """POST task with a meaningful instruction should succeed."""
         resp = client.post(
             "/api/tasks",
-            json={"receiver_id": "lead-engineering", "instruction": "Build the REST API for task management"},
+            json={
+                "receiver_id": "lead-engineering",
+                "instruction": "Build the REST API for task management",
+            },
         )
         assert resp.status_code == 201
 

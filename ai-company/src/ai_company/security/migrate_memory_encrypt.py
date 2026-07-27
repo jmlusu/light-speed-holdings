@@ -132,9 +132,7 @@ def migrate_file_based_entries(
             encrypted_count += 1
 
         if modified:
-            json_file.write_text(
-                json.dumps(data, indent=2, default=str), encoding="utf-8"
-            )
+            json_file.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
     if encrypted_count > 0:
         logger.info("Encrypted %d file-based memory entries", encrypted_count)

@@ -254,10 +254,7 @@ DEPARTMENT_TEST_CASES: list[EvalTestCase] = [
 # ---------------------------------------------------------------------------
 
 ALL_TEST_CASES: list[EvalTestCase] = (
-    EXECUTIVE_TEST_CASES
-    + SPECIALIST_TEST_CASES
-    + BOARD_TEST_CASES
-    + DEPARTMENT_TEST_CASES
+    EXECUTIVE_TEST_CASES + SPECIALIST_TEST_CASES + BOARD_TEST_CASES + DEPARTMENT_TEST_CASES
 )
 
 

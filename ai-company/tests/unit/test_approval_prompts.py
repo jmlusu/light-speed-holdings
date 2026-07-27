@@ -489,7 +489,9 @@ class TestTierConfig:
 class TestBuildTierClassificationPrompt:
     def test_includes_tool_name(self) -> None:
         prompt = build_tier_classification_prompt(
-            "write", {"path": "src/main.py"}, {"seniority": "mid"},
+            "write",
+            {"path": "src/main.py"},
+            {"seniority": "mid"},
         )
         assert "write" in prompt
         assert "src/main.py" in prompt
@@ -498,7 +500,9 @@ class TestBuildTierClassificationPrompt:
 
     def test_includes_classification_prompt(self) -> None:
         prompt = build_tier_classification_prompt(
-            "read", {"path": "file.txt"}, {"seniority": "junior"},
+            "read",
+            {"path": "file.txt"},
+            {"seniority": "junior"},
         )
         # Should contain the classification rules
         assert "Auto-Approve" in prompt
@@ -673,7 +677,13 @@ class TestClassificationPrompt:
         assert len(TIER_CLASSIFICATION_PROMPT) > 200
 
     def test_prompt_describes_all_tiers(self) -> None:
-        for tier_label in ["Auto-Approve", "Notify", "Single Approver", "Two-Person Rule", "CEO Only"]:
+        for tier_label in [
+            "Auto-Approve",
+            "Notify",
+            "Single Approver",
+            "Two-Person Rule",
+            "CEO Only",
+        ]:
             assert tier_label in TIER_CLASSIFICATION_PROMPT
 
     def test_prompt_instructs_numeric_response(self) -> None:

@@ -28,22 +28,88 @@ import yaml
 # ---------------------------------------------------------------------------
 
 DOMAIN_KEYWORDS: dict[str, list[str]] = {
-    "finance": ["financial", "finance", "accounting", "budget", "revenue",
-                "profit", "loss", "balance sheet", "cash flow", "invoice",
-                "tax", "audit", "compliance", "ledger"],
-    "legal": ["legal", "contract", "agreement", "liability", "regulation",
-              "statute", "litigation", "intellectual property", "patent",
-              "trademark", "nda", "terms of service"],
-    "security": ["security", "vulnerability", "exploit", "breach", "auth",
-                 "encryption", "secret", "credential", "firewall", "pentest",
-                 "owasp", "cve"],
-    "code_review": ["review", "pull request", "pr", "code review", "diff",
-                    "merge", "refactor", "lint", "static analysis"],
-    "deployment": ["deploy", "release", "production", "rollback", "ci/cd",
-                   "pipeline", "kubernetes", "docker", "terraform"],
-    "data_science": ["model", "training", "inference", "dataset", "feature",
-                     "accuracy", "precision", "recall", "f1", "epoch",
-                     "hyperparameter", "ml", "machine learning", "neural"],
+    "finance": [
+        "financial",
+        "finance",
+        "accounting",
+        "budget",
+        "revenue",
+        "profit",
+        "loss",
+        "balance sheet",
+        "cash flow",
+        "invoice",
+        "tax",
+        "audit",
+        "compliance",
+        "ledger",
+    ],
+    "legal": [
+        "legal",
+        "contract",
+        "agreement",
+        "liability",
+        "regulation",
+        "statute",
+        "litigation",
+        "intellectual property",
+        "patent",
+        "trademark",
+        "nda",
+        "terms of service",
+    ],
+    "security": [
+        "security",
+        "vulnerability",
+        "exploit",
+        "breach",
+        "auth",
+        "encryption",
+        "secret",
+        "credential",
+        "firewall",
+        "pentest",
+        "owasp",
+        "cve",
+    ],
+    "code_review": [
+        "review",
+        "pull request",
+        "pr",
+        "code review",
+        "diff",
+        "merge",
+        "refactor",
+        "lint",
+        "static analysis",
+    ],
+    "deployment": [
+        "deploy",
+        "release",
+        "production",
+        "rollback",
+        "ci/cd",
+        "pipeline",
+        "kubernetes",
+        "docker",
+        "terraform",
+    ],
+    "data_science": [
+        "model",
+        "training",
+        "inference",
+        "dataset",
+        "feature",
+        "accuracy",
+        "precision",
+        "recall",
+        "f1",
+        "epoch",
+        "hyperparameter",
+        "ml",
+        "machine learning",
+        "neural",
+    ],
 }
 
 # Ordered tier progression for quality-based fallback
@@ -251,9 +317,7 @@ class ModelRouter:
                 agent_type = agent.get("type")
 
         # Layer 2: explicit context rules
-        tier_id = self._match_rule(
-            agent_type=agent_type, priority=priority, context=context
-        )
+        tier_id = self._match_rule(agent_type=agent_type, priority=priority, context=context)
         if tier_id is not None and tier_id in self._tiers:
             return tier_id, f"routing rule (context={context})"
 
@@ -275,9 +339,7 @@ class ModelRouter:
                         )
 
         # Layer 4: agent type + priority rules (no context)
-        tier_id = self._match_rule(
-            agent_type=agent_type, priority=priority, context=None
-        )
+        tier_id = self._match_rule(agent_type=agent_type, priority=priority, context=None)
         if tier_id is not None and tier_id in self._tiers:
             return tier_id, f"routing rule (agent_type={agent_type}, priority={priority})"
 
@@ -346,7 +408,9 @@ class ModelRouter:
             provider=first.provider,
             model=first.model,
             tier=tier_id,
-            reason=f"{reason} (fallbacks: {', '.join(fallback_names)})" if fallback_names else reason,
+            reason=f"{reason} (fallbacks: {', '.join(fallback_names)})"
+            if fallback_names
+            else reason,
         )
 
     # ── Quality-based fallback ───────────────────────────────────────
@@ -371,7 +435,7 @@ class ModelRouter:
             idx = TIER_ORDER.index(failed_tier_id)
         except ValueError:
             return None
-        for next_id in TIER_ORDER[idx + 1:]:
+        for next_id in TIER_ORDER[idx + 1 :]:
             tier = self._tiers.get(next_id)
             if tier and tier.providers:
                 return tier

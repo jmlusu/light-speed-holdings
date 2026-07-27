@@ -39,12 +39,14 @@ from ai_company.dashboard.ws import router as ws_router  # noqa: E402
 
 try:
     from ai_company.dashboard.mobile_api import router as mobile_router  # noqa: E402
+
     _has_mobile = True
 except ImportError:
     _has_mobile = False
 
 try:
     from ai_company.dashboard.monitoring import router as monitoring_router  # noqa: E402
+
     _has_monitoring = True
 except ImportError:
     _has_monitoring = False
@@ -61,6 +63,7 @@ LEGACY_STATIC_DIR = Path(__file__).resolve().parents[3] / "static"
 # ---------------------------------------------------------------------------
 # Rate limiter (simple in-memory, sliding window per IP)
 # ---------------------------------------------------------------------------
+
 
 class _RateLimiter:
     """Per-IP sliding-window rate limiter.  No external dependencies."""
@@ -168,18 +171,42 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
         openapi_tags=[
             {"name": "dashboard", "description": "Main dashboard overview and CEO aggregate view"},
-            {"name": "agents", "description": "Agent listing, detail, org chart, and performance metrics"},
+            {
+                "name": "agents",
+                "description": "Agent listing, detail, org chart, and performance metrics",
+            },
             {"name": "tasks", "description": "Task listing and creation via the MessageBus"},
-            {"name": "approvals", "description": "Human-in-the-loop approval requests and decisions"},
+            {
+                "name": "approvals",
+                "description": "Human-in-the-loop approval requests and decisions",
+            },
             {"name": "escalations", "description": "Escalation events and resolution"},
-            {"name": "kpis", "description": "Key Performance Indicators: live, summary, history, trends, and alerts"},
+            {
+                "name": "kpis",
+                "description": "Key Performance Indicators: live, summary, history, trends, and alerts",
+            },
             {"name": "costs", "description": "Budget and LLM cost tracking across agents"},
-            {"name": "models", "description": "Model routing tiers and per-agent model assignments"},
+            {
+                "name": "models",
+                "description": "Model routing tiers and per-agent model assignments",
+            },
             {"name": "scheduler", "description": "Scheduled and recurring task listings"},
-            {"name": "departments", "description": "Department listing and per-department dashboards"},
-            {"name": "monitoring", "description": "Prometheus-compatible metrics and deep health checks"},
-            {"name": "mobile", "description": "Mobile-optimized endpoints with compact payloads and batch actions"},
-            {"name": "ops", "description": "Operational endpoints: health checks, readiness probes"},
+            {
+                "name": "departments",
+                "description": "Department listing and per-department dashboards",
+            },
+            {
+                "name": "monitoring",
+                "description": "Prometheus-compatible metrics and deep health checks",
+            },
+            {
+                "name": "mobile",
+                "description": "Mobile-optimized endpoints with compact payloads and batch actions",
+            },
+            {
+                "name": "ops",
+                "description": "Operational endpoints: health checks, readiness probes",
+            },
         ],
     )
 
@@ -203,9 +230,7 @@ def create_app() -> FastAPI:
         origins = _DEFAULT_ORIGINS
     # Guard against accidental wildcard that would expose the API.
     if "*" in origins:
-        logger.warning(
-            "DASHBOARD_CORS_ORIGINS contained '*'; ignoring wildcard for security."
-        )
+        logger.warning("DASHBOARD_CORS_ORIGINS contained '*'; ignoring wildcard for security.")
         origins = [o for o in origins if o != "*"]
     if not origins:
         origins = _DEFAULT_ORIGINS

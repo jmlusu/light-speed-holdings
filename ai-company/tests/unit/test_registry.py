@@ -17,6 +17,7 @@ from ai_company.registry.validator import RegistryValidator
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def config_dir() -> Path:
     return Path("config")
@@ -45,7 +46,12 @@ def sample_raw() -> dict:
         "executives": {
             "executives": [
                 {"id": "ceo", "name": "CEO", "title": "Chief Executive Officer"},
-                {"id": "cto", "name": "CTO", "title": "Chief Technology Officer", "reports_to": "ceo"},
+                {
+                    "id": "cto",
+                    "name": "CTO",
+                    "title": "Chief Technology Officer",
+                    "reports_to": "ceo",
+                },
             ]
         },
         "departments": {
@@ -69,6 +75,7 @@ def sample_raw() -> dict:
 # Loader tests
 # ---------------------------------------------------------------------------
 
+
 class TestRegistryLoader:
     def test_load_all_returns_dict(self, loader: RegistryLoader):
         raw = loader.load_all()
@@ -80,10 +87,24 @@ class TestRegistryLoader:
     def test_load_all_has_expected_keys(self, loader: RegistryLoader):
         raw = loader.load_all()
         expected_keys = {
-            "company", "vision", "strategy", "culture", "governance",
-            "policies", "kpis", "budget", "board", "committees",
-            "board_meetings", "voting", "executives", "departments",
-            "specialists", "workflows", "approval_matrix", "risk_matrix",
+            "company",
+            "vision",
+            "strategy",
+            "culture",
+            "governance",
+            "policies",
+            "kpis",
+            "budget",
+            "board",
+            "committees",
+            "board_meetings",
+            "voting",
+            "executives",
+            "departments",
+            "specialists",
+            "workflows",
+            "approval_matrix",
+            "risk_matrix",
             "decision_tree",
         }
         assert expected_keys.issubset(raw.keys())
@@ -102,6 +123,7 @@ class TestRegistryLoader:
 # ---------------------------------------------------------------------------
 # Parser tests
 # ---------------------------------------------------------------------------
+
 
 class TestRegistryParser:
     def test_parse_returns_company_registry(self, sample_raw: dict):
@@ -165,6 +187,7 @@ class TestRegistryParser:
 # Resolver tests
 # ---------------------------------------------------------------------------
 
+
 class TestRegistryResolver:
     def test_resolve_runs_without_error(self, sample_raw: dict):
         parser = RegistryParser()
@@ -185,6 +208,7 @@ class TestRegistryResolver:
 # Validator tests
 # ---------------------------------------------------------------------------
 
+
 class TestRegistryValidator:
     def test_valid_registry_returns_no_errors(self, sample_raw: dict):
         parser = RegistryParser()
@@ -195,60 +219,70 @@ class TestRegistryValidator:
 
     def test_missing_company_name_returns_error(self):
         parser = RegistryParser()
-        registry = parser.parse({
-            "company": {"id": "x"},
-            "board": {"members": [{"id": "b1"}]},
-            "budget": {"total_budget": 100},
-        })
+        registry = parser.parse(
+            {
+                "company": {"id": "x"},
+                "board": {"members": [{"id": "b1"}]},
+                "budget": {"total_budget": 100},
+            }
+        )
         validator = RegistryValidator()
         errors = validator.validate(registry)
         assert any("name" in e.lower() for e in errors)
 
     def test_no_executives_returns_error(self):
         parser = RegistryParser()
-        registry = parser.parse({
-            "company": {"id": "x", "name": "X"},
-            "board": {"members": [{"id": "b1"}]},
-            "budget": {"total_budget": 100},
-        })
+        registry = parser.parse(
+            {
+                "company": {"id": "x", "name": "X"},
+                "board": {"members": [{"id": "b1"}]},
+                "budget": {"total_budget": 100},
+            }
+        )
         validator = RegistryValidator()
         errors = validator.validate(registry)
         assert any("executive" in e.lower() for e in errors)
 
     def test_no_departments_returns_error(self):
         parser = RegistryParser()
-        registry = parser.parse({
-            "company": {"id": "x", "name": "X"},
-            "executives": {"executives": [{"id": "e1"}]},
-            "board": {"members": [{"id": "b1"}]},
-            "budget": {"total_budget": 100},
-        })
+        registry = parser.parse(
+            {
+                "company": {"id": "x", "name": "X"},
+                "executives": {"executives": [{"id": "e1"}]},
+                "board": {"members": [{"id": "b1"}]},
+                "budget": {"total_budget": 100},
+            }
+        )
         validator = RegistryValidator()
         errors = validator.validate(registry)
         assert any("department" in e.lower() for e in errors)
 
     def test_invalid_reports_to_returns_error(self):
         parser = RegistryParser()
-        registry = parser.parse({
-            "company": {"id": "x", "name": "X"},
-            "executives": {"executives": [{"id": "e1", "reports_to": "ghost"}]},
-            "departments": {"departments": [{"id": "d1", "executive": "e1"}]},
-            "board": {"members": [{"id": "b1"}]},
-            "budget": {"total_budget": 100},
-        })
+        registry = parser.parse(
+            {
+                "company": {"id": "x", "name": "X"},
+                "executives": {"executives": [{"id": "e1", "reports_to": "ghost"}]},
+                "departments": {"departments": [{"id": "d1", "executive": "e1"}]},
+                "board": {"members": [{"id": "b1"}]},
+                "budget": {"total_budget": 100},
+            }
+        )
         validator = RegistryValidator()
         errors = validator.validate(registry)
         assert any("reports_to" in e for e in errors)
 
     def test_zero_budget_returns_error(self):
         parser = RegistryParser()
-        registry = parser.parse({
-            "company": {"id": "x", "name": "X"},
-            "executives": {"executives": [{"id": "e1"}]},
-            "departments": {"departments": [{"id": "d1", "executive": "e1"}]},
-            "board": {"members": [{"id": "b1"}]},
-            "budget": {"total_budget": 0},
-        })
+        registry = parser.parse(
+            {
+                "company": {"id": "x", "name": "X"},
+                "executives": {"executives": [{"id": "e1"}]},
+                "departments": {"departments": [{"id": "d1", "executive": "e1"}]},
+                "board": {"members": [{"id": "b1"}]},
+                "budget": {"total_budget": 0},
+            }
+        )
         validator = RegistryValidator()
         errors = validator.validate(registry)
         assert any("budget" in e.lower() for e in errors)
@@ -257,6 +291,7 @@ class TestRegistryValidator:
 # ---------------------------------------------------------------------------
 # Registry Sync guardrail tests
 # ---------------------------------------------------------------------------
+
 
 class TestRegistrySync:
     """Guardrail: YAML registry (source of truth) and JSON registry (dashboard)
@@ -269,9 +304,7 @@ class TestRegistrySync:
         # First, sync to ensure they match
         count = sync_registry()
         errors = verify_sync()
-        assert errors == [], (
-            f"YAML/JSON desync detected after sync! Errors: {errors}"
-        )
+        assert errors == [], f"YAML/JSON desync detected after sync! Errors: {errors}"
         assert count > 0, "Sync produced zero agents"
 
     def test_sync_roundtrip_preserves_all_agents(self, tmp_path: Path):
@@ -298,8 +331,7 @@ class TestRegistrySync:
         with open("company-registry.yaml", encoding="utf-8") as f:
             yaml_data = yaml.safe_load(f)
         yaml_ids = {
-            a["id"].replace("_", "-")
-            for a in yaml_data.get("company", {}).get("agents", [])
+            a["id"].replace("_", "-") for a in yaml_data.get("company", {}).get("agents", [])
         }
 
         with open(json_out, encoding="utf-8") as f:

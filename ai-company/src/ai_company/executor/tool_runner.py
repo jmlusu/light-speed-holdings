@@ -74,8 +74,7 @@ class HITLParked(Exception):
         self.request_id = request_id
         self.tier = tier
         super().__init__(
-            f"Task {task_id} parked for HITL approval of {tool} "
-            f"(request {request_id}, tier {tier})"
+            f"Task {task_id} parked for HITL approval of {tool} (request {request_id}, tier {tier})"
         )
 
 
@@ -83,20 +82,48 @@ class HITLParked(Exception):
 # Command allowlist — loaded from YAML config with hardcoded fallback.
 # Only these base commands may be executed via the ``execute`` tool.
 # ---------------------------------------------------------------------------
-_DEFAULT_ALLOWED_COMMANDS: frozenset[str] = frozenset({
-    # Build / test
-    "python", "python3", "pip", "pytest", "ruff", "mypy", "black", "isort",
-    # Version control
-    "git",
-    # File inspection
-    "ls", "cat", "head", "tail", "wc", "grep", "find", "tree",
-    # Text processing (standalone — pipes blocked)
-    "sort", "uniq", "diff", "echo",
-    # Package / env
-    "npm", "node", "npx",
-    # Misc safe ops
-    "mkdir", "cp", "mv", "touch", "date", "env", "which", "pwd",
-})
+_DEFAULT_ALLOWED_COMMANDS: frozenset[str] = frozenset(
+    {
+        # Build / test
+        "python",
+        "python3",
+        "pip",
+        "pytest",
+        "ruff",
+        "mypy",
+        "black",
+        "isort",
+        # Version control
+        "git",
+        # File inspection
+        "ls",
+        "cat",
+        "head",
+        "tail",
+        "wc",
+        "grep",
+        "find",
+        "tree",
+        # Text processing (standalone — pipes blocked)
+        "sort",
+        "uniq",
+        "diff",
+        "echo",
+        # Package / env
+        "npm",
+        "node",
+        "npx",
+        # Misc safe ops
+        "mkdir",
+        "cp",
+        "mv",
+        "touch",
+        "date",
+        "env",
+        "which",
+        "pwd",
+    }
+)
 
 
 def _load_allowlist(config_path: str | Path | None = None) -> frozenset[str]:
@@ -118,10 +145,14 @@ def _load_allowlist(config_path: str | Path | None = None) -> frozenset[str]:
                 data = yaml.safe_load(f) or {}
             commands = data.get("allowed_commands", [])
             if commands:
-                logger.info("Loaded tool allowlist from %s (%d commands)", config_path, len(commands))
+                logger.info(
+                    "Loaded tool allowlist from %s (%d commands)", config_path, len(commands)
+                )
                 return frozenset(commands)
         except (yaml.YAMLError, OSError) as exc:
-            logger.warning("Failed to load allowlist from %s: %s — using defaults", config_path, exc)
+            logger.warning(
+                "Failed to load allowlist from %s: %s — using defaults", config_path, exc
+            )
 
     return _DEFAULT_ALLOWED_COMMANDS
 
@@ -189,7 +220,12 @@ class ToolRunner:
             args = step.get("args", {})
 
             if tool not in self._all_tools():
-                error_result = {"step": i, "tool": tool, "status": "error", "error": f"Unknown tool: {tool}"}
+                error_result = {
+                    "step": i,
+                    "tool": tool,
+                    "status": "error",
+                    "error": f"Unknown tool: {tool}",
+                }
                 results.append(error_result)
                 log_tool_call(task_id, agent_id, tool, args, error_result)
                 continue
@@ -240,7 +276,9 @@ class ToolRunner:
                 log_hitl_decision(task_id, agent_id, tool, approved)
                 if not approved:
                     denied_result = {
-                        "step": i, "tool": tool, "status": "denied",
+                        "step": i,
+                        "tool": tool,
+                        "status": "denied",
                         "error": f"Human approval denied (tier: {tier_label})",
                         "tier": tier,
                     }
@@ -261,7 +299,10 @@ class ToolRunner:
                 logger.warning(
                     "Tier %d (%s) requires HITL for %s by %s but no "
                     "hitl_gate was provided — executing without approval",
-                    int(tier), tier_label, tool, agent_id,
+                    int(tier),
+                    tier_label,
+                    tool,
+                    agent_id,
                 )
 
             # ── Execute the tool ──────────────────────────────────────
@@ -269,15 +310,23 @@ class ToolRunner:
                 result = self._execute_tool(tool, args)
                 status = "error" if "error" in result else "ok"
                 exec_result = {
-                    "step": i, "tool": tool, "status": status,
-                    "tier": tier, "tier_label": tier_label, **result,
+                    "step": i,
+                    "tool": tool,
+                    "status": status,
+                    "tier": tier,
+                    "tier_label": tier_label,
+                    **result,
                 }
                 results.append(exec_result)
                 log_tool_call(task_id, agent_id, tool, args, exec_result)
             except Exception as exc:
                 exc_result = {
-                    "step": i, "tool": tool, "status": "error",
-                    "tier": tier, "tier_label": tier_label, "error": str(exc),
+                    "step": i,
+                    "tool": tool,
+                    "status": "error",
+                    "tier": tier,
+                    "tier_label": tier_label,
+                    "error": str(exc),
                 }
                 results.append(exc_result)
                 log_tool_call(task_id, agent_id, tool, args, exc_result)
@@ -383,12 +432,18 @@ class ToolRunner:
         if needs_hitl:
             logger.info(
                 "Tier %d (%s) — HITL required for %s by %s",
-                int(tier), tier_config["label"], tool_name, agent_id,
+                int(tier),
+                tier_config["label"],
+                tool_name,
+                agent_id,
             )
         elif int(tier) >= 1:
             logger.info(
                 "Tier %d (%s) — %s auto-approved for %s",
-                int(tier), tier_config["label"], tool_name, agent_id,
+                int(tier),
+                tier_config["label"],
+                tool_name,
+                agent_id,
             )
 
         return result
@@ -560,7 +615,9 @@ class ToolRunner:
             matches = self._grep_file(search_path, pattern)
         elif search_path.is_dir():
             for f in search_path.rglob("*"):
-                if f.is_file() and not any(p.startswith(".") for p in f.relative_to(self.project_root).parts):
+                if f.is_file() and not any(
+                    p.startswith(".") for p in f.relative_to(self.project_root).parts
+                ):
                     matches.extend(self._grep_file(f, pattern))
                     if len(matches) >= 50:
                         break
@@ -635,9 +692,7 @@ class ToolRunner:
         try:
             resolved.relative_to(self.project_root)
         except ValueError:
-            raise SecurityError(
-                f"Path '{path_str}' escapes project root: {resolved}"
-            )
+            raise SecurityError(f"Path '{path_str}' escapes project root: {resolved}")
         return resolved
 
     def _sanitize_output(self, text: str, source: str = "tool") -> str:

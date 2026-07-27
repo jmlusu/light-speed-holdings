@@ -104,7 +104,9 @@ class TestCORSConfiguration:
 class TestAPIKeyAuth:
     """Verify that write endpoints require an API key when configured."""
 
-    def test_read_without_api_key_works(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    def test_read_without_api_key_works(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
         """GET requests should always work without an API key."""
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
@@ -118,7 +120,9 @@ class TestAPIKeyAuth:
         resp = client.get("/api/dashboard")
         assert resp.status_code == 200
 
-    def test_write_without_api_key_rejected(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    def test_write_without_api_key_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
         """POST requests without API key should be rejected when key is set."""
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
@@ -136,7 +140,9 @@ class TestAPIKeyAuth:
         assert resp.status_code == 401
         assert "API key" in resp.json()["detail"]
 
-    def test_write_with_valid_api_key_accepted(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    def test_write_with_valid_api_key_accepted(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
         """POST requests with correct API key should succeed."""
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
@@ -154,7 +160,9 @@ class TestAPIKeyAuth:
         )
         assert resp.status_code == 201
 
-    def test_write_with_wrong_api_key_rejected(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    def test_write_with_wrong_api_key_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
         """POST requests with wrong API key should be rejected."""
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
@@ -172,7 +180,9 @@ class TestAPIKeyAuth:
         )
         assert resp.status_code == 401
 
-    def test_no_api_key_configured_allows_all(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    def test_no_api_key_configured_allows_all(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
         """When DASHBOARD_API_KEY is not set, all requests pass (open mode)."""
         monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
@@ -197,11 +207,14 @@ class TestAPIKeyAuth:
         (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
         (tmp_path / "orchestrator").mkdir(exist_ok=True)
         (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
-        (tmp_path / "orchestrator" / "escalation.yaml").write_text("rules: []\nevents: []", encoding="utf-8")
+        (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+            "rules: []\nevents: []", encoding="utf-8"
+        )
         (tmp_path / "orchestrator" / "scheduler.yaml").write_text("tasks: []", encoding="utf-8")
         (tmp_path / "company" / "departments.yaml").write_text("departments: []", encoding="utf-8")
 
         import shutil
+
         real_models = Path(__file__).resolve().parents[2] / "company" / "models.yaml"
         if real_models.exists():
             shutil.copy2(str(real_models), str(tmp_path / "company" / "models.yaml"))

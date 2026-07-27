@@ -73,6 +73,7 @@ def _load_tasks_dicts() -> list[dict[str, Any]]:
     """Backwards-compatible alias used by endpoints that need raw task dicts."""
     return _read_all_tasks()
 
+
 _START_TIME = time.time()
 
 
@@ -130,6 +131,7 @@ async def _broadcast_kpis(data: dict[str, Any]) -> None:
     """Fire-and-forget broadcast of KPI data to WebSocket clients."""
     try:
         from ai_company.dashboard.ws import broadcast_kpi_update
+
         await broadcast_kpi_update(data)
     except Exception:
         logger.debug("WebSocket broadcast skipped (no event loop or clients)")
@@ -139,6 +141,7 @@ async def _broadcast_task(task: dict[str, Any], event: str) -> None:
     """Fire-and-forget broadcast of a task lifecycle event."""
     try:
         from ai_company.dashboard.ws import broadcast_task_update
+
         await broadcast_task_update(task, event)
     except Exception:
         logger.debug("WebSocket broadcast skipped (no event loop or clients)")
@@ -148,13 +151,16 @@ async def _broadcast_approval_alert(request: dict[str, Any]) -> None:
     """Fire-and-forget broadcast of an approval request to WebSocket clients."""
     try:
         from ai_company.dashboard.ws import broadcast_alert
-        await broadcast_alert({
-            "category": "approval",
-            "request_id": request.get("id", ""),
-            "action": request.get("action", ""),
-            "agent_id": request.get("agent_id", ""),
-            "tier": request.get("tier", 2),
-        })
+
+        await broadcast_alert(
+            {
+                "category": "approval",
+                "request_id": request.get("id", ""),
+                "action": request.get("action", ""),
+                "agent_id": request.get("agent_id", ""),
+                "tier": request.get("tier", 2),
+            }
+        )
     except Exception:
         logger.debug("WebSocket broadcast skipped")
 
@@ -163,12 +169,15 @@ async def _broadcast_escalation_alert(event: dict[str, Any]) -> None:
     """Fire-and-forget broadcast of an escalation event to WebSocket clients."""
     try:
         from ai_company.dashboard.ws import broadcast_alert
-        await broadcast_alert({
-            "category": "escalation",
-            "task_id": event.get("task_id", ""),
-            "reason": event.get("reason", ""),
-            "agent_id": event.get("agent_id", ""),
-        })
+
+        await broadcast_alert(
+            {
+                "category": "escalation",
+                "task_id": event.get("task_id", ""),
+                "reason": event.get("reason", ""),
+                "agent_id": event.get("agent_id", ""),
+            }
+        )
     except Exception:
         logger.debug("WebSocket broadcast skipped")
 
@@ -211,7 +220,8 @@ def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
 
     now = datetime.now().isoformat()
     pending_approvals = [
-        r for r in approval_requests
+        r
+        for r in approval_requests
         if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now)
     ]
     open_escalations = [e for e in escalation_events if not e.get("resolved", False)]
@@ -309,8 +319,11 @@ def get_org_chart() -> list[OrgNode]:
 
 _PRIORITY_ORDER: dict[str, int] = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 _STATUS_ORDER: dict[str, int] = {
-    "escalated": 0, "failed": 1, "pending": 2,
-    "in_progress": 3, "completed": 4,
+    "escalated": 0,
+    "failed": 1,
+    "pending": 2,
+    "in_progress": 3,
+    "completed": 4,
 }
 
 _TRIVIAL_INSTRUCTION_RE = re.compile(r"^do [a-z]$", re.IGNORECASE)
@@ -376,8 +389,7 @@ def list_tasks_paginated(
         tasks = [
             t
             for t in tasks
-            if t.get("receiver_id") in dept_agent_names
-            or t.get("sender_id") in dept_agent_names
+            if t.get("receiver_id") in dept_agent_names or t.get("sender_id") in dept_agent_names
         ]
 
     # ── Filter: agent (substring match on sender_id or receiver_id) ──
@@ -407,7 +419,10 @@ def list_tasks_paginated(
 
     if sort_by == "priority":
         tasks.sort(
-            key=lambda t: (_PRIORITY_ORDER.get(t.get("priority", "medium"), 2), t.get("created_at", "") or ""),
+            key=lambda t: (
+                _PRIORITY_ORDER.get(t.get("priority", "medium"), 2),
+                t.get("created_at", "") or "",
+            ),
             reverse=reverse,
         )
     elif sort_by == "status":
@@ -550,12 +565,14 @@ def approve_request(request_id: str, body: ApprovalDecision | None = None) -> di
         if r["id"] == request_id and r.get("status") == "pending":
             r["status"] = "approved"
             r["responded_at"] = datetime.now().isoformat()
-            r["response_by"] = (body.approved_by if body else "human-ceo")
+            r["response_by"] = body.approved_by if body else "human-ceo"
             if body and body.notes:
                 r["notes"] = body.notes
             _save_yaml("orchestrator/approvals.yaml", data)
             return {"ok": True, "id": request_id}
-    raise HTTPException(status_code=404, detail=f"Request '{request_id}' not found or already processed")
+    raise HTTPException(
+        status_code=404, detail=f"Request '{request_id}' not found or already processed"
+    )
 
 
 @router.post("/approvals/{request_id}/reject", tags=["approvals"])
@@ -567,12 +584,14 @@ def reject_request(request_id: str, body: ApprovalDecision | None = None) -> dic
         if r["id"] == request_id and r.get("status") == "pending":
             r["status"] = "rejected"
             r["responded_at"] = datetime.now().isoformat()
-            r["response_by"] = (body.approved_by if body else "human-ceo")
+            r["response_by"] = body.approved_by if body else "human-ceo"
             if body and body.notes:
                 r["notes"] = body.notes
             _save_yaml("orchestrator/approvals.yaml", data)
             return {"ok": True, "id": request_id}
-    raise HTTPException(status_code=404, detail=f"Request '{request_id}' not found or already processed")
+    raise HTTPException(
+        status_code=404, detail=f"Request '{request_id}' not found or already processed"
+    )
 
 
 # ── Escalations ─────────────────────────────────────────────────────
@@ -674,7 +693,9 @@ def get_department_kpis(dept_name: str) -> dict:
     kpi_data = _load_yaml("company/config/kpis.yaml")
     departments = kpi_data.get("departments", {})
     if dept_name not in departments:
-        raise HTTPException(status_code=404, detail=f"Department '{dept_name}' not found in KPI config")
+        raise HTTPException(
+            status_code=404, detail=f"Department '{dept_name}' not found in KPI config"
+        )
     return departments[dept_name]
 
 
@@ -692,15 +713,17 @@ def kpi_summary() -> list[dict]:
     summary = []
     for dept_id, dept in kpi_data.get("departments", {}).items():
         for kpi in dept.get("kpis", []):
-            summary.append({
-                "department": dept_id,
-                "department_name": dept.get("name", dept_id),
-                "kpi_id": kpi["id"],
-                "name": kpi["name"],
-                "target": kpi.get("target"),
-                "unit": kpi.get("unit", ""),
-                "frequency": kpi.get("frequency", ""),
-            })
+            summary.append(
+                {
+                    "department": dept_id,
+                    "department_name": dept.get("name", dept_id),
+                    "kpi_id": kpi["id"],
+                    "name": kpi["name"],
+                    "target": kpi.get("target"),
+                    "unit": kpi.get("unit", ""),
+                    "frequency": kpi.get("frequency", ""),
+                }
+            )
     return summary
 
 
@@ -776,9 +799,9 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
     approval_requests = approvals_data.get("requests", [])
     now_iso = datetime.now().isoformat()
     pending_approvals = [
-        r for r in approval_requests
-        if r.get("status") == "pending"
-        and (not r.get("expires_at") or r["expires_at"] > now_iso)
+        r
+        for r in approval_requests
+        if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now_iso)
     ]
 
     # Scheduled tasks
@@ -792,10 +815,7 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
     result = {
         "collected_at": kpi_snapshot["collected_at"],
         "company_health": {
-            "departments": {
-                dept: data.get("kpis", {})
-                for dept, data in departments.items()
-            },
+            "departments": {dept: data.get("kpis", {}) for dept, data in departments.items()},
             "company_kpis": company_kpis,
         },
         "agent_performance": agent_summary,
@@ -857,7 +877,8 @@ def get_department_dashboard(
     # Agents in this department
     registry = _load_registry()
     dept_agents = [
-        a for a in registry
+        a
+        for a in registry
         if (a.get("department") or "").lower() == dept_name.lower()
         or (a.get("department") or "").replace(" ", "_").lower() == dept_name.lower()
     ]
@@ -866,7 +887,8 @@ def get_department_dashboard(
     tasks = _read_all_tasks()
     dept_agent_names = {a["name"] for a in dept_agents}
     dept_tasks = [
-        t for t in tasks
+        t
+        for t in tasks
         if t.get("receiver_id") in dept_agent_names or t.get("sender_id") in dept_agent_names
     ]
     task_stats = {
@@ -881,7 +903,8 @@ def get_department_dashboard(
     escalation_data = _load_yaml("orchestrator/escalation.yaml")
     escalation_events = escalation_data.get("events", [])
     dept_escalations = [
-        e for e in escalation_events
+        e
+        for e in escalation_events
         if e.get("from_agent") in dept_agent_names or e.get("to_agent") in dept_agent_names
     ]
 
@@ -1059,6 +1082,7 @@ def get_kpi_alerts() -> dict[str, Any]:
     # Also store snapshot for history
     try:
         from ai_company.dashboard.analytics import KPIHistoryStore
+
         store = KPIHistoryStore()
         store.store_snapshot(snapshot)
     except Exception:
@@ -1252,9 +1276,7 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
         total_spent = cost_data.get("total_spent", 0.0)
         llm_spend = cost_data.get("llm_spend", 0.0)
 
-    budget_utilization = (
-        round((total_spent / total_budget * 100), 1) if total_budget > 0 else 0.0
-    )
+    budget_utilization = round((total_spent / total_budget * 100), 1) if total_budget > 0 else 0.0
 
     # Per-agent cost breakdown from audit log
     agent_costs: dict[str, dict[str, Any]] = {}
@@ -1277,29 +1299,26 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
     ):
         calls = cost_info["calls"]
         total = cost_info["total_cost"]
-        per_agent.append({
-            "agent": agent_name,
-            "total_cost": round(total, 6),
-            "calls": calls,
-            "avg_cost_per_call": round(total / calls, 6) if calls > 0 else 0.0,
-        })
+        per_agent.append(
+            {
+                "agent": agent_name,
+                "total_cost": round(total, 6),
+                "calls": calls,
+                "avg_cost_per_call": round(total / calls, 6) if calls > 0 else 0.0,
+            }
+        )
 
     # Total completed tasks for cost-per-task calc
     completed = sum(1 for t in tasks if t.get("status") == "completed")
     total_tasks = len(tasks)
-    avg_per_task = (
-        round(total_spent / completed, 6) if completed > 0 else 0.0
-    )
+    avg_per_task = round(total_spent / completed, 6) if completed > 0 else 0.0
 
     # KPI history for trend
     from ai_company.dashboard.analytics import KPIHistoryStore
 
     store = KPIHistoryStore()
     finance_history = store.get_history("finance", kpi_key="budget_utilization", limit=50)
-    trend_data = [
-        {"timestamp": e.timestamp, "value": e.current}
-        for e in finance_history
-    ]
+    trend_data = [{"timestamp": e.timestamp, "value": e.current} for e in finance_history]
 
     result = {
         "total_budget": total_budget,

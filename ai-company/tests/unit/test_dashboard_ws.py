@@ -8,7 +8,12 @@ from typing import Any
 
 import pytest
 
-from ai_company.dashboard.ws import ConnectionManager, broadcast_kpi_update, broadcast_task_update, manager
+from ai_company.dashboard.ws import (
+    ConnectionManager,
+    broadcast_kpi_update,
+    broadcast_task_update,
+    manager,
+)
 from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.models.task import Task, TaskStatus
 from ai_company.store.file_store import FileStore
@@ -35,6 +40,7 @@ class FakeWebSocket:
 
     async def send_json(self, data: dict[str, Any]) -> None:
         import json
+
         self.sent.append(json.dumps(data, default=str))
 
     async def receive_json(self) -> dict[str, Any]:
@@ -130,9 +136,11 @@ async def test_broadcast_kpi_update_pushes_to_manager() -> None:
     await manager.connect(ws)
 
     try:
-        await broadcast_kpi_update({
-            "engineering": {"task_completion_rate": {"current": 92.5}},
-        })
+        await broadcast_kpi_update(
+            {
+                "engineering": {"task_completion_rate": {"current": 92.5}},
+            }
+        )
 
         assert len(ws.sent) == 1
 
@@ -152,7 +160,7 @@ async def test_broadcast_kpi_update_pushes_to_manager() -> None:
 
 class MockExecutorWebSocket(FakeWebSocket):
     """WebSocket mock that works with the executor's sync→async bridge."""
-    
+
     def __init__(self) -> None:
         super().__init__()
         self._loop = asyncio.get_event_loop()
@@ -165,16 +173,16 @@ async def test_message_bus_broadcast_callback_emits_task_created(tmp_path) -> No
     inbox_path = tmp_path / "inbox.json"
     store = FileStore(tmp_path, backup=False)
     store.write_json("inbox.json", [])
-    
+
     # Track broadcast events
     broadcast_events = []
-    
+
     def capture_broadcast(task_dict: dict, event: str) -> None:
         broadcast_events.append((task_dict, event))
-    
+
     # Create MessageBus with broadcast callback
     bus = MessageBus(storage_path=str(inbox_path), broadcast_callback=capture_broadcast)
-    
+
     # Send a task
     task = Task(
         id="test-task-1",
@@ -184,7 +192,7 @@ async def test_message_bus_broadcast_callback_emits_task_created(tmp_path) -> No
         priority="high",
     )
     bus.send_task(task)
-    
+
     # Verify broadcast was called
     assert len(broadcast_events) == 1
     task_dict, event = broadcast_events[0]
@@ -200,14 +208,14 @@ async def test_message_bus_broadcast_callback_emits_task_completed(tmp_path) -> 
     inbox_path = tmp_path / "inbox.json"
     store = FileStore(tmp_path, backup=False)
     store.write_json("inbox.json", [])
-    
+
     broadcast_events = []
-    
+
     def capture_broadcast(task_dict: dict, event: str) -> None:
         broadcast_events.append((task_dict, event))
-    
+
     bus = MessageBus(storage_path=str(inbox_path), broadcast_callback=capture_broadcast)
-    
+
     task = Task(
         id="test-task-2",
         sender_id="ceo",
@@ -216,13 +224,13 @@ async def test_message_bus_broadcast_callback_emits_task_completed(tmp_path) -> 
         status=TaskStatus.PENDING,
     )
     bus.send_task(task)
-    
+
     # Clear the created event
     broadcast_events.clear()
-    
+
     # Update status to completed
     bus.update_task_status("test-task-2", "completed", result="Done!")
-    
+
     assert len(broadcast_events) == 1
     task_dict, event = broadcast_events[0]
     assert event == "completed"
@@ -236,14 +244,14 @@ async def test_message_bus_broadcast_callback_emits_task_failed(tmp_path) -> Non
     inbox_path = tmp_path / "inbox.json"
     store = FileStore(tmp_path, backup=False)
     store.write_json("inbox.json", [])
-    
+
     broadcast_events = []
-    
+
     def capture_broadcast(task_dict: dict, event: str) -> None:
         broadcast_events.append((task_dict, event))
-    
+
     bus = MessageBus(storage_path=str(inbox_path), broadcast_callback=capture_broadcast)
-    
+
     task = Task(
         id="test-task-3",
         sender_id="ceo",
@@ -252,12 +260,12 @@ async def test_message_bus_broadcast_callback_emits_task_failed(tmp_path) -> Non
         status=TaskStatus.PENDING,
     )
     bus.send_task(task)
-    
+
     broadcast_events.clear()
-    
+
     # Update status to failed
     bus.update_task_status("test-task-3", "failed", result="Error occurred")
-    
+
     assert len(broadcast_events) == 1
     task_dict, event = broadcast_events[0]
     assert event == "failed"
@@ -270,14 +278,14 @@ async def test_message_bus_broadcast_callback_emits_task_escalated(tmp_path) -> 
     inbox_path = tmp_path / "inbox.json"
     store = FileStore(tmp_path, backup=False)
     store.write_json("inbox.json", [])
-    
+
     broadcast_events = []
-    
+
     def capture_broadcast(task_dict: dict, event: str) -> None:
         broadcast_events.append((task_dict, event))
-    
+
     bus = MessageBus(storage_path=str(inbox_path), broadcast_callback=capture_broadcast)
-    
+
     task = Task(
         id="test-task-4",
         sender_id="ceo",
@@ -286,12 +294,12 @@ async def test_message_bus_broadcast_callback_emits_task_escalated(tmp_path) -> 
         status=TaskStatus.PENDING,
     )
     bus.send_task(task)
-    
+
     broadcast_events.clear()
-    
+
     # Update status to escalated
     bus.update_task_status("test-task-4", "escalated")
-    
+
     assert len(broadcast_events) == 1
     task_dict, event = broadcast_events[0]
     assert event == "escalated"
@@ -303,7 +311,7 @@ async def test_broadcast_task_update_sends_to_websocket_clients() -> None:
     """broadcast_task_update() pushes task events to connected WebSocket clients."""
     ws = FakeWebSocket()
     await manager.connect(ws)
-    
+
     try:
         task_dict = {
             "id": "test-task-ws-1",
@@ -313,9 +321,9 @@ async def test_broadcast_task_update_sends_to_websocket_clients() -> None:
             "status": "completed",
             "result": "All done!",
         }
-        
+
         await broadcast_task_update(task_dict, "completed")
-        
+
         assert len(ws.sent) == 1
         msg = json.loads(ws.sent[0])
         assert msg["type"] == "task_update"
@@ -334,16 +342,16 @@ async def test_topic_filtering_works_for_task_updates() -> None:
     ws_subscribed_to_tasks = FakeWebSocket()
     ws_subscribed_to_other = FakeWebSocket()
     ws_unsubscribed = FakeWebSocket()
-    
+
     await mgr.connect(ws_subscribed_to_tasks)
     await mgr.connect(ws_subscribed_to_other)
     await mgr.connect(ws_unsubscribed)
-    
+
     # Subscribe to different topics
     await mgr.subscribe(ws_subscribed_to_tasks, ["tasks"])
     await mgr.subscribe(ws_subscribed_to_other, ["alerts"])
     # ws_unsubscribed has empty subscription set (receives all)
-    
+
     task_dict = {
         "id": "topic-test-1",
         "sender_id": "ceo",
@@ -351,15 +359,17 @@ async def test_topic_filtering_works_for_task_updates() -> None:
         "instruction": "Test topic filtering",
         "status": "pending",
     }
-    
+
     # Broadcast with topic="tasks" - only ws_subscribed_to_tasks and ws_unsubscribed should receive
-    await mgr.broadcast({
-        "type": "task_update",
-        "topic": "tasks",
-        "event": "created",
-        "payload": task_dict,
-    })
-    
+    await mgr.broadcast(
+        {
+            "type": "task_update",
+            "topic": "tasks",
+            "event": "created",
+            "payload": task_dict,
+        }
+    )
+
     # Subscribed to "tasks" - should receive
     assert len(ws_subscribed_to_tasks.sent) == 1
     # Subscribed to "alerts" only - should NOT receive "tasks" topic
@@ -414,8 +424,6 @@ def test_sync_to_async_bridge_skips_when_no_event_loop() -> None:
     callback(task_dict, "created")
 
 
-
-
 @pytest.mark.asyncio
 async def test_dead_connection_pruning_on_broadcast_failure() -> None:
     """Broadcast prunes dead WebSocket connections when send fails."""
@@ -423,12 +431,12 @@ async def test_dead_connection_pruning_on_broadcast_failure() -> None:
     mgr = ConnectionManager()
     ws_good = FakeWebSocket()
     ws_dead = FailingWebSocket()
-    
+
     await mgr.connect(ws_good)
     await mgr.connect(ws_dead)
-    
+
     assert mgr.active_count == 2
-    
+
     task_dict = {
         "id": "prune-test-1",
         "sender_id": "ceo",
@@ -436,19 +444,21 @@ async def test_dead_connection_pruning_on_broadcast_failure() -> None:
         "instruction": "Test pruning",
         "status": "pending",
     }
-    
-    await mgr.broadcast({
-        "type": "task_update",
-        "topic": "tasks",
-        "event": "created",
-        "payload": task_dict,
-    })
-    
+
+    await mgr.broadcast(
+        {
+            "type": "task_update",
+            "topic": "tasks",
+            "event": "created",
+            "payload": task_dict,
+        }
+    )
+
     # Good connection should still be there
     assert len(ws_good.sent) == 1
     # Dead connection should be pruned
     assert mgr.active_count == 1
-    
+
     await manager.disconnect(ws_good)
 
 
@@ -461,24 +471,25 @@ async def test_full_pipeline_message_bus_to_websocket(tmp_path) -> None:
     inbox_path = tmp_path / "inbox.json"
     store = FileStore(tmp_path, backup=False)
     store.write_json("inbox.json", [])
-    
+
     ws = FakeWebSocket()
     await manager.connect(ws)
-    
+
     broadcast_events = []
-    
+
     def capture_broadcast(task_dict: dict, event: str) -> None:
         broadcast_events.append((task_dict, event))
         # Also push to WebSocket manager (this is what the real callback does)
         import asyncio
+
         try:
             loop = asyncio.get_running_loop()
             loop.create_task(broadcast_task_update(task_dict, event))
         except RuntimeError:
             pass  # No running loop - skip
-    
+
     bus = MessageBus(storage_path=str(inbox_path), broadcast_callback=capture_broadcast)
-    
+
     # Send task through MessageBus
     task = Task(
         id="e2e-task-1",
@@ -488,15 +499,15 @@ async def test_full_pipeline_message_bus_to_websocket(tmp_path) -> None:
         priority="high",
     )
     bus.send_task(task)
-    
+
     # Allow async tasks to complete
     await asyncio.sleep(0.05)
-    
+
     # Verify WebSocket received the message
     assert len(ws.sent) == 1
     msg = json.loads(ws.sent[0])
     assert msg["type"] == "task_update"
     assert msg["event"] == "created"
     assert msg["payload"]["id"] == "e2e-task-1"
-    
+
     await manager.disconnect(ws)

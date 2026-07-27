@@ -125,12 +125,17 @@ class BootstrapEngine:
         # Org chart (flattened for downstream tools)
         org_chart = {
             "executives": [
-                {"id": e.id, "name": e.name, "title": e.title, "department": e.department, "reports_to": e.reports_to}
+                {
+                    "id": e.id,
+                    "name": e.name,
+                    "title": e.title,
+                    "department": e.department,
+                    "reports_to": e.reports_to,
+                }
                 for e in registry.executives
             ],
             "departments": [
-                {"id": d.id, "name": d.name, "executive": d.executive}
-                for d in registry.departments
+                {"id": d.id, "name": d.name, "executive": d.executive} for d in registry.departments
             ],
             "specialists": [
                 {"id": s.id, "name": s.name, "department": s.department, "reports_to": s.reports_to}
@@ -143,7 +148,13 @@ class BootstrapEngine:
         # Workflows summary
         workflows_data = {
             "workflows": [
-                {"id": w.id, "name": w.name, "trigger": w.trigger, "owner": w.owner, "steps": len(w.steps)}
+                {
+                    "id": w.id,
+                    "name": w.name,
+                    "trigger": w.trigger,
+                    "owner": w.owner,
+                    "steps": len(w.steps),
+                }
                 for w in registry.workflows
             ]
         }

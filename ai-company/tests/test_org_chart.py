@@ -27,6 +27,7 @@ from ai_company.org_chart.registry_normalizer import RegistryNormalizer
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def sample_registry_data() -> list[dict]:
     """Seven-agent hierarchy matching company-registry structure."""
@@ -138,20 +139,35 @@ def sample_registry_data() -> list[dict]:
 @pytest.fixture
 def org_nodes() -> list[OrgNode]:
     """Flat list of nested OrgNode objects (children are OrgNode, not strings)."""
-    lead_backend = OrgNode(name="lead-backend", role="Lead Backend", type="specialist", department="Technology")
-    lead_frontend = OrgNode(name="lead-frontend", role="Lead Frontend", type="specialist", department="Technology")
+    lead_backend = OrgNode(
+        name="lead-backend", role="Lead Backend", type="specialist", department="Technology"
+    )
+    lead_frontend = OrgNode(
+        name="lead-frontend", role="Lead Frontend", type="specialist", department="Technology"
+    )
     cto = OrgNode(
-        name="cto", role="CTO", type="executive", department="Technology",
+        name="cto",
+        role="CTO",
+        type="executive",
+        department="Technology",
         children=[lead_backend, lead_frontend],
     )
     hr_lead = OrgNode(name="hr-lead", role="HR Lead", type="specialist", department="People")
-    coo = OrgNode(name="coo", role="COO", type="executive", department="Operations", children=[hr_lead])
+    coo = OrgNode(
+        name="coo", role="COO", type="executive", department="Operations", children=[hr_lead]
+    )
     chief_of_staff = OrgNode(
-        name="chief-of-staff", role="Chief of Staff", type="executive", department="Executive",
+        name="chief-of-staff",
+        role="Chief of Staff",
+        type="executive",
+        department="Executive",
         children=[cto, coo],
     )
     human_ceo = OrgNode(
-        name="human-ceo", role="CEO", type="executive", department="Executive",
+        name="human-ceo",
+        role="CEO",
+        type="executive",
+        department="Executive",
         children=[chief_of_staff],
     )
     return [human_ceo, chief_of_staff, cto, lead_backend, lead_frontend, coo, hr_lead]
@@ -167,32 +183,76 @@ def enhanced_nodes() -> list[EnhancedOrgNode]:
     """Four EnhancedOrgNode objects with varied tiers and risk profiles."""
     return [
         EnhancedOrgNode(
-            name="ceo", role="Chief Executive Officer", department="Executive", tier=1,
-            capacity=80, span_of_control=1, critical_skills=["Leadership", "Strategy"],
-            succession_risk="low", performance_rating=9.5, agent_type="executive",
-            model_tier="premium", active_tasks=5, completed_tasks=45, failure_rate=2.0,
-            team_morale=95.0, employee_satisfaction=92.0,
+            name="ceo",
+            role="Chief Executive Officer",
+            department="Executive",
+            tier=1,
+            capacity=80,
+            span_of_control=1,
+            critical_skills=["Leadership", "Strategy"],
+            succession_risk="low",
+            performance_rating=9.5,
+            agent_type="executive",
+            model_tier="premium",
+            active_tasks=5,
+            completed_tasks=45,
+            failure_rate=2.0,
+            team_morale=95.0,
+            employee_satisfaction=92.0,
         ),
         EnhancedOrgNode(
-            name="cos", role="Chief of Staff", department="Executive", tier=1,
-            capacity=75, span_of_control=3, critical_skills=["Coordination"],
-            succession_risk="medium", performance_rating=8.5, agent_type="executive",
-            model_tier="standard", active_tasks=8, completed_tasks=62, failure_rate=1.5,
-            team_morale=88.0, employee_satisfaction=85.0,
+            name="cos",
+            role="Chief of Staff",
+            department="Executive",
+            tier=1,
+            capacity=75,
+            span_of_control=3,
+            critical_skills=["Coordination"],
+            succession_risk="medium",
+            performance_rating=8.5,
+            agent_type="executive",
+            model_tier="standard",
+            active_tasks=8,
+            completed_tasks=62,
+            failure_rate=1.5,
+            team_morale=88.0,
+            employee_satisfaction=85.0,
         ),
         EnhancedOrgNode(
-            name="cto", role="Chief Technology Officer", department="Technology", tier=1,
-            capacity=70, span_of_control=2, critical_skills=["Architecture"],
-            succession_risk="high", performance_rating=8.0, agent_type="executive",
-            model_tier="standard", active_tasks=12, completed_tasks=78, failure_rate=3.0,
-            team_morale=75.0, employee_satisfaction=80.0,
+            name="cto",
+            role="Chief Technology Officer",
+            department="Technology",
+            tier=1,
+            capacity=70,
+            span_of_control=2,
+            critical_skills=["Architecture"],
+            succession_risk="high",
+            performance_rating=8.0,
+            agent_type="executive",
+            model_tier="standard",
+            active_tasks=12,
+            completed_tasks=78,
+            failure_rate=3.0,
+            team_morale=75.0,
+            employee_satisfaction=80.0,
         ),
         EnhancedOrgNode(
-            name="eng", role="Backend Engineer", department="Technology", tier=3,
-            capacity=65, span_of_control=0, critical_skills=[],
-            succession_risk="medium", performance_rating=7.5, agent_type="specialist",
-            model_tier="standard", active_tasks=6, completed_tasks=34, failure_rate=5.0,
-            team_morale=70.0, employee_satisfaction=75.0,
+            name="eng",
+            role="Backend Engineer",
+            department="Technology",
+            tier=3,
+            capacity=65,
+            span_of_control=0,
+            critical_skills=[],
+            succession_risk="medium",
+            performance_rating=7.5,
+            agent_type="specialist",
+            model_tier="standard",
+            active_tasks=6,
+            completed_tasks=34,
+            failure_rate=5.0,
+            team_morale=70.0,
+            employee_satisfaction=75.0,
         ),
     ]
 
@@ -208,6 +268,7 @@ def normalizer_with_data(sample_registry_data: list[dict]) -> RegistryNormalizer
 # ===================================================================
 # TestRegistryNormalizer
 # ===================================================================
+
 
 class TestRegistryNormalizer:
     """Registry normalization, tier calculation, skill extraction, risk assessment."""
@@ -240,7 +301,9 @@ class TestRegistryNormalizer:
         with pytest.raises(FileNotFoundError):
             normalizer.load_registry()
 
-    def test_extract_department_context(self, normalizer_with_data: RegistryNormalizer, sample_registry_data: list[dict]) -> None:
+    def test_extract_department_context(
+        self, normalizer_with_data: RegistryNormalizer, sample_registry_data: list[dict]
+    ) -> None:
         dept_ctx = normalizer_with_data.extract_department_context(sample_registry_data)
 
         assert "departments" in dept_ctx
@@ -276,8 +339,13 @@ class TestRegistryNormalizer:
         assert all(isinstance(s, str) for s in skills)
         skill_set = set(skills)
         expected_tokens = {
-            "Architect", "Robust", "Agent", "Systems",
-            "Design", "User", "Experiences",
+            "Architect",
+            "Robust",
+            "Agent",
+            "Systems",
+            "Design",
+            "User",
+            "Experiences",
         }
         assert skill_set.issubset(expected_tokens)
         assert len(skill_set & expected_tokens) > 0
@@ -299,7 +367,9 @@ class TestRegistryNormalizer:
         assert normalizer._assess_succession_risk({"title": "Lead Engineer"}) == "medium"
         assert normalizer._assess_succession_risk({"title": "Engineer"}) == "low"
 
-    def test_create_unified_structure(self, normalizer_with_data: RegistryNormalizer, sample_registry_data: list[dict]) -> None:
+    def test_create_unified_structure(
+        self, normalizer_with_data: RegistryNormalizer, sample_registry_data: list[dict]
+    ) -> None:
         unified = normalizer_with_data.create_unified_structure(sample_registry_data)
 
         assert "departments" in unified
@@ -310,7 +380,9 @@ class TestRegistryNormalizer:
         assert isinstance(unified["reporting_chains"], list)
         assert unified["hierarchy_root"] != ""
 
-    def test_validate_data_consistency(self, normalizer_with_data: RegistryNormalizer, sample_registry_data: list[dict]) -> None:
+    def test_validate_data_consistency(
+        self, normalizer_with_data: RegistryNormalizer, sample_registry_data: list[dict]
+    ) -> None:
         normalizer_with_data.create_unified_structure(sample_registry_data)
         validation = normalizer_with_data.validate_data_consistency({})
 
@@ -339,6 +411,7 @@ class TestRegistryNormalizer:
 # ===================================================================
 # TestOrganizationChart
 # ===================================================================
+
 
 class TestOrganizationChart:
     """Tree construction, traversal, pathfinding, subtree extraction."""
@@ -504,7 +577,13 @@ class TestOrganizationChart:
                 return OrgNode(name=prefix, role="Leaf", type="specialist", department="Eng")
             left = _build_binary_tree(depth - 1, f"{prefix}-L")
             right = _build_binary_tree(depth - 1, f"{prefix}-R")
-            return OrgNode(name=prefix, role="Manager", type="executive", department="Eng", children=[left, right])
+            return OrgNode(
+                name=prefix,
+                role="Manager",
+                type="executive",
+                department="Eng",
+                children=[left, right],
+            )
 
         def _flatten(node: OrgNode) -> list[OrgNode]:
             result = [node]
@@ -524,6 +603,7 @@ class TestOrganizationChart:
 # ===================================================================
 # TestDataModels
 # ===================================================================
+
 
 class TestDataModels:
     """EnhancedOrgNode, DepartmentSummary, HierarchyMetrics, DataTransformer, DataFactory."""
@@ -560,31 +640,71 @@ class TestDataModels:
             node.name = "y"  # type: ignore[misc]
 
     def test_enhanced_orgnode_skills_gap(self) -> None:
-        node_no_skills = EnhancedOrgNode(name="a", role="Engineer", department="Tech", critical_skills=[])
+        node_no_skills = EnhancedOrgNode(
+            name="a", role="Engineer", department="Tech", critical_skills=[]
+        )
         assert node_no_skills.has_critical_skills_gaps is True
 
-        node_with_skills = EnhancedOrgNode(name="b", role="Engineer", department="Tech", critical_skills=["Python"])
+        node_with_skills = EnhancedOrgNode(
+            name="b", role="Engineer", department="Tech", critical_skills=["Python"]
+        )
         assert node_with_skills.has_critical_skills_gaps is False
 
     def test_enhanced_orgnode_needs_support(self) -> None:
         node = EnhancedOrgNode(
-            name="overloaded", role="Lead", department="Tech", tier=2,
-            capacity=90, performance_rating=6.0, succession_risk="medium",
-            team_morale=50.0, employee_satisfaction=45.0,
+            name="overloaded",
+            role="Lead",
+            department="Tech",
+            tier=2,
+            capacity=90,
+            performance_rating=6.0,
+            succession_risk="medium",
+            team_morale=50.0,
+            employee_satisfaction=45.0,
         )
         assert node.needs_support is True
 
         comfortable = EnhancedOrgNode(
-            name="comfortable", role="Engineer", department="Tech", tier=3,
-            capacity=50, performance_rating=8.0, succession_risk="low",
-            team_morale=80.0, employee_satisfaction=85.0,
+            name="comfortable",
+            role="Engineer",
+            department="Tech",
+            tier=3,
+            capacity=50,
+            performance_rating=8.0,
+            succession_risk="low",
+            team_morale=80.0,
+            employee_satisfaction=85.0,
         )
         assert comfortable.needs_support is False
 
     def test_department_summary_creation(self) -> None:
-        exec1 = EnhancedOrgNode(name="exec-1", role="CEO", department="Tech", tier=1, capacity=90, performance_rating=9.0, succession_risk="high")
-        spec1 = EnhancedOrgNode(name="spec-1", role="Engineer", department="Tech", tier=3, capacity=65, performance_rating=7.0, succession_risk="low")
-        spec2 = EnhancedOrgNode(name="spec-2", role="Engineer", department="Tech", tier=3, capacity=80, performance_rating=8.0, succession_risk="low")
+        exec1 = EnhancedOrgNode(
+            name="exec-1",
+            role="CEO",
+            department="Tech",
+            tier=1,
+            capacity=90,
+            performance_rating=9.0,
+            succession_risk="high",
+        )
+        spec1 = EnhancedOrgNode(
+            name="spec-1",
+            role="Engineer",
+            department="Tech",
+            tier=3,
+            capacity=65,
+            performance_rating=7.0,
+            succession_risk="low",
+        )
+        spec2 = EnhancedOrgNode(
+            name="spec-2",
+            role="Engineer",
+            department="Tech",
+            tier=3,
+            capacity=80,
+            performance_rating=8.0,
+            succession_risk="low",
+        )
 
         summary = DataFactory.create_department_summary("Technology", [exec1, spec1, spec2])
 
@@ -598,16 +718,29 @@ class TestDataModels:
 
     def test_hierarchy_metrics(self) -> None:
         specialist = EnhancedOrgNode(
-            name="specialist", role="Engineer", department="Tech", tier=3,
-            reports_to="manager", span_of_control=0,
+            name="specialist",
+            role="Engineer",
+            department="Tech",
+            tier=3,
+            reports_to="manager",
+            span_of_control=0,
         )
         manager = EnhancedOrgNode(
-            name="manager", role="Manager", department="Tech", tier=2,
-            reports_to="root", span_of_control=1, children=[specialist],
+            name="manager",
+            role="Manager",
+            department="Tech",
+            tier=2,
+            reports_to="root",
+            span_of_control=1,
+            children=[specialist],
         )
         root = EnhancedOrgNode(
-            name="root", role="CEO", department="Exec", tier=1,
-            span_of_control=2, children=[manager],
+            name="root",
+            role="CEO",
+            department="Exec",
+            tier=1,
+            span_of_control=2,
+            children=[manager],
         )
 
         metrics = DataFactory.create_hierarchy_metrics([root, manager, specialist])
@@ -666,8 +799,13 @@ class TestDataModels:
 
     def test_data_transformer_orgnode_to_enhanced(self) -> None:
         source = EnhancedOrgNode(
-            name="src", role="Engineer", department="Tech", tier=2,
-            capacity=75, critical_skills=["Python"], performance_rating=8.0,
+            name="src",
+            role="Engineer",
+            department="Tech",
+            tier=2,
+            capacity=75,
+            critical_skills=["Python"],
+            performance_rating=8.0,
         )
         result = DataTransformer.orgnode_to_enhanced(source)
         assert result.name == "src"
@@ -678,7 +816,9 @@ class TestDataModels:
         assert result.performance_rating == 8.0
 
     def test_data_factory_create_enhanced_node(self) -> None:
-        node = DataFactory.create_enhanced_node("test-agent", "Engineer", "Tech", tier=2, capacity=60)
+        node = DataFactory.create_enhanced_node(
+            "test-agent", "Engineer", "Tech", tier=2, capacity=60
+        )
         assert isinstance(node, EnhancedOrgNode)
         assert node.name == "test-agent"
         assert node.role == "Engineer"
@@ -690,6 +830,7 @@ class TestDataModels:
 # ===================================================================
 # TestIntegration
 # ===================================================================
+
 
 class TestIntegration:
     """End-to-end workflows and cross-component integration."""
@@ -772,7 +913,10 @@ def test_performance_requirements() -> None:
         left = _build_binary_tree(depth - 1, f"{prefix}-L")
         right = _build_binary_tree(depth - 1, f"{prefix}-R")
         return OrgNode(
-            name=prefix, role="Manager", type="executive", department="Eng",
+            name=prefix,
+            role="Manager",
+            type="executive",
+            department="Eng",
             children=[left, right],
         )
 

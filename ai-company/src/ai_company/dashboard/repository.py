@@ -115,9 +115,7 @@ class StateStore:
             return candidate, rel
 
         # Allow directory-prefix matches (e.g. snapshot globs).
-        if any(
-            rel == p.rstrip("/") or rel.startswith(p) for p in _ALLOWED_PREFIXES
-        ):
+        if any(rel == p.rstrip("/") or rel.startswith(p) for p in _ALLOWED_PREFIXES):
             return candidate, rel
 
         raise StateStoreError(f"Path not permitted by StateStore: {rel}")

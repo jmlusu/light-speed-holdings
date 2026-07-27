@@ -25,11 +25,13 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["monitoring"])
 
+
 # GAP-011: metrics parsing reads state through the StateStore repository.
 # Fetched lazily so the boot-time explicit configuration (Option B) takes
 # effect for request handling rather than being frozen at import time.
 def _get_store() -> Any:
     return get_state_store()
+
 
 # ---------------------------------------------------------------------------
 # Metrics store (in-memory counters — reset on process restart)
@@ -226,17 +228,11 @@ def _render_prometheus_text() -> str:
     # ── Memory store gauge ──────────────────────────────────────────
     lines.append("# HELP ai_company_memory_store_bytes Size of memory store in bytes")
     lines.append("# TYPE ai_company_memory_store_bytes gauge")
-    lines.append(
-        f"ai_company_memory_store_bytes {_metrics.get('memory_store_bytes', 0):.0f}"
-    )
+    lines.append(f"ai_company_memory_store_bytes {_metrics.get('memory_store_bytes', 0):.0f}")
 
-    lines.append(
-        "# HELP ai_company_memory_entries_total Number of entries in memory store"
-    )
+    lines.append("# HELP ai_company_memory_entries_total Number of entries in memory store")
     lines.append("# TYPE ai_company_memory_entries_total gauge")
-    lines.append(
-        f"ai_company_memory_entries_total {_metrics.get('memory_entries_total', 0):.0f}"
-    )
+    lines.append(f"ai_company_memory_entries_total {_metrics.get('memory_entries_total', 0):.0f}")
 
     # ── Derived gauges ──────────────────────────────────────────────
     _append_derived_metrics(lines)
@@ -261,10 +257,7 @@ def _append_process_metrics(lines: list[str]) -> None:
         usage = resource.getrusage(resource.RUSAGE_SELF)  # type: ignore[attr-defined]
         # Max RSS in bytes (Linux: bytes, macOS: bytes)
         rss_bytes = usage.ru_maxrss
-        lines.append(
-            "# HELP ai_company_process_max_rss_bytes "
-            "Peak resident set size in bytes"
-        )
+        lines.append("# HELP ai_company_process_max_rss_bytes Peak resident set size in bytes")
         lines.append("# TYPE ai_company_process_max_rss_bytes gauge")
         lines.append(f"ai_company_process_max_rss_bytes {rss_bytes}")
     except (ImportError, AttributeError):
@@ -276,25 +269,17 @@ def _append_process_metrics(lines: list[str]) -> None:
 
         proc = psutil.Process()
         mem_info = proc.memory_info()
-        lines.append(
-            "# HELP ai_company_process_rss_bytes Current RSS in bytes"
-        )
+        lines.append("# HELP ai_company_process_rss_bytes Current RSS in bytes")
         lines.append("# TYPE ai_company_process_rss_bytes gauge")
         lines.append(f"ai_company_process_rss_bytes {mem_info.rss}")
 
-        lines.append(
-            "# HELP ai_company_process_vms_bytes Current VMS in bytes"
-        )
+        lines.append("# HELP ai_company_process_vms_bytes Current VMS in bytes")
         lines.append("# TYPE ai_company_process_vms_bytes gauge")
         lines.append(f"ai_company_process_vms_bytes {mem_info.vms}")
 
-        lines.append(
-            "# HELP ai_company_process_open_fds Number of open file descriptors"
-        )
+        lines.append("# HELP ai_company_process_open_fds Number of open file descriptors")
         lines.append("# TYPE ai_company_process_open_fds gauge")
-        lines.append(
-            f"ai_company_process_open_fds {proc.num_fds()}"
-        )
+        lines.append(f"ai_company_process_open_fds {proc.num_fds()}")
     except ImportError:
         # psutil not installed
         pass
@@ -303,15 +288,11 @@ def _append_process_metrics(lines: list[str]) -> None:
 
     # CPU times (always available via os.times)
     times = os.times()
-    lines.append(
-        "# HELP ai_company_cpu_user_seconds_total User CPU time in seconds"
-    )
+    lines.append("# HELP ai_company_cpu_user_seconds_total User CPU time in seconds")
     lines.append("# TYPE ai_company_cpu_user_seconds_total counter")
     lines.append(f"ai_company_cpu_user_seconds_total {times[0]:.3f}")
 
-    lines.append(
-        "# HELP ai_company_cpu_system_seconds_total System CPU time in seconds"
-    )
+    lines.append("# HELP ai_company_cpu_system_seconds_total System CPU time in seconds")
     lines.append("# TYPE ai_company_cpu_system_seconds_total counter")
     lines.append(f"ai_company_cpu_system_seconds_total {times[1]:.3f}")
 
@@ -322,21 +303,15 @@ def _append_derived_metrics(lines: list[str]) -> None:
     total = _metrics.get("tasks_total", 0)
     succeeded = _metrics.get("tasks_succeeded", 0)
     rate = (succeeded / total * 100.0) if total > 0 else 0.0
-    lines.append(
-        "# HELP ai_company_task_success_rate_pct Task success rate as percentage"
-    )
+    lines.append("# HELP ai_company_task_success_rate_pct Task success rate as percentage")
     lines.append("# TYPE ai_company_task_success_rate_pct gauge")
     lines.append(f"ai_company_task_success_rate_pct {rate:.2f}")
 
     # Cycle success rate
     cycles = _metrics.get("cycle_count", 0)
     cycle_fail = _metrics.get("cycle_failures", 0)
-    cycle_rate = (
-        ((cycles - cycle_fail) / cycles * 100.0) if cycles > 0 else 0.0
-    )
-    lines.append(
-        "# HELP ai_company_cycle_success_rate_pct Cycle success rate as percentage"
-    )
+    cycle_rate = ((cycles - cycle_fail) / cycles * 100.0) if cycles > 0 else 0.0
+    lines.append("# HELP ai_company_cycle_success_rate_pct Cycle success rate as percentage")
     lines.append("# TYPE ai_company_cycle_success_rate_pct gauge")
     lines.append(f"ai_company_cycle_success_rate_pct {cycle_rate:.2f}")
 
@@ -344,21 +319,14 @@ def _append_derived_metrics(lines: list[str]) -> None:
     llm_req = _metrics.get("llm_requests_total", 0)
     llm_err = _metrics.get("llm_errors_total", 0)
     llm_rate = (llm_err / llm_req * 100.0) if llm_req > 0 else 0.0
-    lines.append(
-        "# HELP ai_company_llm_error_rate_pct LLM error rate as percentage"
-    )
+    lines.append("# HELP ai_company_llm_error_rate_pct LLM error rate as percentage")
     lines.append("# TYPE ai_company_llm_error_rate_pct gauge")
     lines.append(f"ai_company_llm_error_rate_pct {llm_rate:.2f}")
 
     # Average LLM cost per request
-    avg_cost = (
-        _metrics.get("llm_cost_usd_total", 0.0) / llm_req
-        if llm_req > 0
-        else 0.0
-    )
+    avg_cost = _metrics.get("llm_cost_usd_total", 0.0) / llm_req if llm_req > 0 else 0.0
     lines.append(
-        "# HELP ai_company_llm_avg_cost_per_request_usd "
-        "Average LLM cost per request in USD"
+        "# HELP ai_company_llm_avg_cost_per_request_usd Average LLM cost per request in USD"
     )
     lines.append("# TYPE ai_company_llm_avg_cost_per_request_usd gauge")
     lines.append(f"ai_company_llm_avg_cost_per_request_usd {avg_cost:.6f}")
@@ -374,14 +342,10 @@ def _append_task_status_breakdown(lines: list[str]) -> None:
         for t in tasks:
             s = t.get("status", "unknown")
             status_counts[s] = status_counts.get(s, 0) + 1
-        lines.append(
-            "# HELP ai_company_tasks_by_status Number of tasks by status"
-        )
+        lines.append("# HELP ai_company_tasks_by_status Number of tasks by status")
         lines.append("# TYPE ai_company_tasks_by_status gauge")
         for status, count in sorted(status_counts.items()):
-            lines.append(
-                f'ai_company_tasks_by_status{{status="{status}"}} {count}'
-            )
+            lines.append(f'ai_company_tasks_by_status{{status="{status}"}} {count}')
     except Exception:
         logger.debug("Failed to read inbox for task status breakdown")
 
@@ -411,37 +375,24 @@ def _append_agent_performance(lines: list[str]) -> None:
         return
 
     if agent_tasks:
-        lines.append(
-            "# HELP ai_company_agent_tasks_total "
-            "Tasks completed per agent"
-        )
+        lines.append("# HELP ai_company_agent_tasks_total Tasks completed per agent")
         lines.append("# TYPE ai_company_agent_tasks_total counter")
         for agent_id, counts in sorted(agent_tasks.items()):
             total = counts["success"] + counts["failure"]
-            lines.append(
-                f'ai_company_agent_tasks_total{{agent="{agent_id}"}} {total}'
-            )
+            lines.append(f'ai_company_agent_tasks_total{{agent="{agent_id}"}} {total}')
 
-        lines.append(
-            "# HELP ai_company_agent_successes_total "
-            "Successful tasks per agent"
-        )
+        lines.append("# HELP ai_company_agent_successes_total Successful tasks per agent")
         lines.append("# TYPE ai_company_agent_successes_total counter")
         for agent_id, counts in sorted(agent_tasks.items()):
             lines.append(
-                f'ai_company_agent_successes_total{{agent="{agent_id}"}} '
-                f'{counts["success"]}'
+                f'ai_company_agent_successes_total{{agent="{agent_id}"}} {counts["success"]}'
             )
 
-        lines.append(
-            "# HELP ai_company_agent_failures_total "
-            "Failed tasks per agent"
-        )
+        lines.append("# HELP ai_company_agent_failures_total Failed tasks per agent")
         lines.append("# TYPE ai_company_agent_failures_total counter")
         for agent_id, counts in sorted(agent_tasks.items()):
             lines.append(
-                f'ai_company_agent_failures_total{{agent="{agent_id}"}} '
-                f'{counts["failure"]}'
+                f'ai_company_agent_failures_total{{agent="{agent_id}"}} {counts["failure"]}'
             )
 
 
@@ -476,48 +427,31 @@ def _append_llm_model_breakdown(lines: list[str]) -> None:
         return
 
     if model_stats:
-        lines.append(
-            "# HELP ai_company_llm_model_calls_total "
-            "LLM calls per model"
-        )
+        lines.append("# HELP ai_company_llm_model_calls_total LLM calls per model")
         lines.append("# TYPE ai_company_llm_model_calls_total counter")
         for model, stats in sorted(model_stats.items()):
             lines.append(
-                f'ai_company_llm_model_calls_total{{model="{model}"}} '
-                f'{int(stats["calls"])}'
+                f'ai_company_llm_model_calls_total{{model="{model}"}} {int(stats["calls"])}'
             )
 
-        lines.append(
-            "# HELP ai_company_llm_model_cost_usd "
-            "LLM cost per model in USD"
-        )
+        lines.append("# HELP ai_company_llm_model_cost_usd LLM cost per model in USD")
         lines.append("# TYPE ai_company_llm_model_cost_usd gauge")
         for model, stats in sorted(model_stats.items()):
-            lines.append(
-                f'ai_company_llm_model_cost_usd{{model="{model}"}} '
-                f'{stats["cost"]:.6f}'
-            )
+            lines.append(f'ai_company_llm_model_cost_usd{{model="{model}"}} {stats["cost"]:.6f}')
 
-        lines.append(
-            "# HELP ai_company_llm_model_tokens_in_total "
-            "Input tokens per model"
-        )
+        lines.append("# HELP ai_company_llm_model_tokens_in_total Input tokens per model")
         lines.append("# TYPE ai_company_llm_model_tokens_in_total counter")
         for model, stats in sorted(model_stats.items()):
             lines.append(
-                f'ai_company_llm_model_tokens_in_total{{model="{model}"}} '
-                f'{int(stats["tokens_in"])}'
+                f'ai_company_llm_model_tokens_in_total{{model="{model}"}} {int(stats["tokens_in"])}'
             )
 
-        lines.append(
-            "# HELP ai_company_llm_model_tokens_out_total "
-            "Output tokens per model"
-        )
+        lines.append("# HELP ai_company_llm_model_tokens_out_total Output tokens per model")
         lines.append("# TYPE ai_company_llm_model_tokens_out_total counter")
         for model, stats in sorted(model_stats.items()):
             lines.append(
                 f'ai_company_llm_model_tokens_out_total{{model="{model}"}} '
-                f'{int(stats["tokens_out"])}'
+                f"{int(stats['tokens_out'])}"
             )
 
 
@@ -599,9 +533,9 @@ def health_check() -> dict[str, Any]:
     if dlq_path.exists():
         try:
             dlq = json.loads(dlq_path.read_text(encoding="utf-8"))
-            pending = sum(
-                1 for t in dlq if t.get("status") == "pending"
-            ) if isinstance(dlq, list) else 0
+            pending = (
+                sum(1 for t in dlq if t.get("status") == "pending") if isinstance(dlq, list) else 0
+            )
             checks["dead_letter_queue"] = f"{pending} pending"
         except (json.JSONDecodeError, OSError):
             checks["dead_letter_queue"] = "error reading"
@@ -609,10 +543,7 @@ def health_check() -> dict[str, Any]:
         checks["dead_letter_queue"] = "empty"
 
     # Overall status
-    degraded = any(
-        v.startswith("missing") or v.startswith("error")
-        for v in checks.values()
-    )
+    degraded = any(v.startswith("missing") or v.startswith("error") for v in checks.values())
     status = "degraded" if degraded else "ok"
 
     return {
@@ -625,11 +556,7 @@ def health_check() -> dict[str, Any]:
             "tasks_total": _metrics.get("tasks_total", 0),
             "llm_cost_usd": round(_metrics.get("llm_cost_usd_total", 0), 4),
             "success_rate_pct": round(
-                (
-                    _metrics.get("tasks_succeeded", 0)
-                    / _metrics.get("tasks_total", 0)
-                    * 100
-                )
+                (_metrics.get("tasks_succeeded", 0) / _metrics.get("tasks_total", 0) * 100)
                 if _metrics.get("tasks_total", 0)
                 else 0.0,
                 1,
@@ -696,10 +623,12 @@ def readiness_check() -> Response:
 
     if not checks_ok:
         return Response(
-            content=json.dumps({
-                "status": "not ready",
-                "reason": "; ".join(reasons),
-            }),
+            content=json.dumps(
+                {
+                    "status": "not ready",
+                    "reason": "; ".join(reasons),
+                }
+            ),
             status_code=503,
             media_type="application/json",
         )

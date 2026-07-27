@@ -29,9 +29,7 @@ class HRKPICollector(KPICollector):
 
         # Department coverage: how many declared departments have at least one agent
         declared_depts = departments_data.get("departments", [])
-        departments_with_agents = sum(
-            1 for d in declared_depts if d.get("totalAgents", 0) > 0
-        )
+        departments_with_agents = sum(1 for d in declared_depts if d.get("totalAgents", 0) > 0)
         total_declared = len(declared_depts)
         coverage_pct = (
             round((departments_with_agents / total_declared * 100), 1)

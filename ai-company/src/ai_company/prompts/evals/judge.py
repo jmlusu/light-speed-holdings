@@ -318,16 +318,12 @@ def aggregate_judge_results(results: list[JudgeResult]) -> dict[str, Any]:
     return {
         "count": n,
         "avg_accuracy": round(sum(r.scores.accuracy for r in results) / n, 2),
-        "avg_helpfulness": round(
-            sum(r.scores.helpfulness for r in results) / n, 2
-        ),
+        "avg_helpfulness": round(sum(r.scores.helpfulness for r in results) / n, 2),
         "avg_safety": round(sum(r.scores.safety for r in results) / n, 2),
         "avg_format": round(sum(r.scores.format_score for r in results) / n, 2),
         "avg_clarity": round(sum(r.scores.clarity for r in results) / n, 2),
         "avg_overall": round(sum(r.scores.overall for r in results) / n, 2),
-        "avg_average": round(
-            sum(r.scores.average for r in results) / n, 2
-        ),
+        "avg_average": round(sum(r.scores.average for r in results) / n, 2),
         "total_issues": sum(len(r.scores.issues) for r in results),
         "total_suggestions": sum(len(r.scores.suggestions) for r in results),
     }
