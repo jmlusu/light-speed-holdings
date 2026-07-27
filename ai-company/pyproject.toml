@@ -54,6 +54,21 @@ dev = [
 line-length = 100
 target-version = "py312"
 
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "BLE",   # flake8-blind-except
+    "B",     # flake8-bugbear
+    "SIM",   # flake8-simplify
+    "S112",  # try-except-continue
+]
+ignore = [
+    "E501",  # line too long (handled by ruff format)
+]
+
 [tool.pytest.ini_options]
 addopts = "--basetemp=.pytest_tmp/pytest"
 testpaths = ["tests"]
