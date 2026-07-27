@@ -16,7 +16,7 @@ from pathlib import Path
 
 try:
     from pptx import Presentation
-    from pptx.util import Inches, Pt, Emu
+    from pptx.util import Inches, Pt
     from pptx.dml.color import RGBColor
     from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
     from pptx.enum.shapes import MSO_SHAPE
@@ -29,7 +29,7 @@ except ImportError:
     from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
     from pptx.enum.shapes import MSO_SHAPE
 
-# ── Theme colors ─────────────────────────────────────────────────────────────
+# ── Theme colors ──────────────────────────────────────────────────────────[...]
 BG_DARK = RGBColor(0x0B, 0x19, 0x29)
 BG_CARD = RGBColor(0x12, 0x2B, 0x45)
 BG_CARD_ALT = RGBColor(0x0E, 0x23, 0x3B)
@@ -193,7 +193,7 @@ def add_page_number(slide, num: int, total: int):
     )
 
 
-# ── Slide builders ───────────────────────────────────────────────────────────
+# ── Slide builders ─────────────────────────────────────────────────────────[...]
 
 TOTAL_SLIDES = 16
 
@@ -1481,7 +1481,7 @@ def build_slide_16_summary(prs: Presentation):
     add_page_number(slide, 16, TOTAL_SLIDES)
 
 
-# ── Main ─────────────────────────────────────────────────────────────────────
+# ── Main ────────────────────────────────────────────────────────────[...]
 
 
 def main():
