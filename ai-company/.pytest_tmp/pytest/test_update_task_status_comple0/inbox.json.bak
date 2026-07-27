@@ -1,0 +1,25 @@
+[
+  {
+    "id": "t1",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "a",
+    "receiver_id": "b",
+    "instruction": "x",
+    "status": "completed",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:28:33.950138",
+    "updated_at": "2026-07-27T10:28:33.950138",
+    "completed_at": "2026-07-27T10:28:33.950138",
+    "result": "done",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "68578688-c4c7-4977-af82-6b5efdfff7bf",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

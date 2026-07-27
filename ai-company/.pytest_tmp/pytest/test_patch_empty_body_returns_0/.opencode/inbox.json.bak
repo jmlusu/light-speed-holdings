@@ -1,0 +1,25 @@
+[
+  {
+    "id": "28ab33f6-9196-43b5-b886-1213e76dd614",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Review and approve the pending pull request",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:39.546568",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "c1c2f35c-8cff-497f-99dd-6ed4780a7b9d",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

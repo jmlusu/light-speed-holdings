@@ -1,0 +1,12 @@
+{
+  "task_id": "t-normal",
+  "agent": "test-agent",
+  "final_response": "done",
+  "iterations": 1,
+  "total_tokens": 15,
+  "total_cost_usd": 0.0,
+  "done": true,
+  "error": "",
+  "tool_results": [],
+  "timestamp": "2026-07-27T10:28:19.260668"
+}

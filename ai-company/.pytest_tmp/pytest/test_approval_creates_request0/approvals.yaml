@@ -1,0 +1,17 @@
+requests:
+- id: hitl-28d5f13958f4
+  task_id: t-1
+  agent_id: agent-1
+  action: tool:write
+  description: Write 5 chars to test.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - approved
+  requested_at: 2026-07-27 10:28:03.327972
+  responded_at: 2026-07-27 10:28:03.628287
+  response_by: human-ceo
+  notes: null
+  expires_at: 2026-07-27 10:28:06.327972

@@ -1,0 +1,1436 @@
+[1mdiff --git a/.opencode/inbox.json b/.opencode/inbox.json[m
+[1mindex 0637a088..4c3dc8d2 100644[m
+[1m--- a/.opencode/inbox.json[m
+[1m+++ b/.opencode/inbox.json[m
+[36m@@ -1 +1,1428 @@[m
+[31m-[][m
+\ No newline at end of file[m
+[32m+[m[32m[[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "0d519436-fbe6-4a78-8f63-809d97fa6d86",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Product Launch'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "80583207-0865-437a-9ee3-e33f58888752",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "a38ad4d9-c5f2-4e52-99b4-985c497143e6",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'First'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "619e1a69-3f76-4d34-ab01-1f950e7576c2",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "ae4bdb44-1574-4fc0-a2a0-e04c0ba6c4e0",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Test'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "e49ecad7-5b4e-42a3-8b6a-54df98d4893c",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "816a9229-d180-44e0-9c59-f992fe377375",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Monitor campaign 'Test' performance. Track impressions, clicks, and conversions daily.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "low",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "802e770c-1746-4043-a05d-23a3761e7bb0",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "802771f7-076e-45b3-a285-974d452dd398",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Test'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "cd5c8070-2f85-4bfd-892c-40988e6a5d52",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "850b782d-8cf0-483d-895f-e3e2fdebf55f",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Test'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "d85c1b5f-ef5f-42c3-b43c-b79fb2f33589",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "6af6a0a6-5ed9-46ba-89af-56ae578b3aeb",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Qualify new lead 'Acme Corp' from website. Company: unknown. Research their needs and prepare an initial outreach.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "c114101f-9a03-4a02-9bc2-77c8f88b019a",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "8fdefcc4-fb16-458e-978b-765a9925bd6d",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "df019f63-7714-4dee-ada9-a79dbae1c0ac",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "f7330f20-3a4b-43eb-93fc-aaeb098f40b3",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "c2d173b1-e609-44b9-93ac-4f0b14e7d3b5",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "45e03647-c115-44f8-aea1-4fd2e87137fe",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Qualify new lead 'Lead 1' from website. Company: unknown. Research their needs and prepare an initial outreach.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "7c8a3042-ca67-40c3-bf6c-5f8a7efc734e",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "7f9192f1-40ff-46fa-adb2-7b8e7a1d6f94",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Schedule and conduct discovery call for deal 'Deal 1' ($25,000.00). Identify key stakeholders and pain points.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "378c5d54-4ee4-4002-b841-71d89deaacb6",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "7b38ed05-f0cd-452f-bbcc-769161a115f0",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "customer_success-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "customer-success-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "0fcadcb8-ae68-4a3f-a034-0743d412d296",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "ff0966de-7f77-4095-a92f-006e6182e46b",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "customer_success-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "chief-of-staff",[m[41m[m
+[32m+[m[32m    "instruction": "Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "8f26f1de-7139-45c7-b395-eb10da8d8bd8",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "5f712ac8-875c-4128-a9c2-ed4842c4957f",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'NDA' with Acme. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "54bb430f-0ee1-4730-a5ac-082546defd93",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "1c59bf14-9ed4-437f-8ec5-45c887b04bd9",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'SaaS Agreement' with Vendor. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "6ed4a43b-9b25-4b1a-b1cb-52902d1dae00",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "780c7c2c-86d2-41aa-84a0-ae9a303af415",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'A' with X. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "9d8f332f-a10b-465d-ae76-96b99a7c6fd3",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "67e9188e-f67d-4f44-bb0c-4d23828b5fcc",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'B' with Y. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "94f1c467-6373-40a7-a517-8e8b1ffd8eef",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "ab2f5edf-2b0e-4c1f-be83-6d12f9822d02",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'dev-1' access and permissions for Technology.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "41a5fcc3-682f-4df1-973d-ff646544b547",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "b4b04d7e-9312-472f-9987-8eba9cc51ae4",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'dev-1' (Backend Engineer, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "a53d33f8-5b61-48ff-b129-fb359280d7ea",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "c30a76aa-19ac-4b86-b06f-52a2ff5a390d",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'dev-1' to report to Technology-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "576622ac-12a6-4942-87ad-2ea3c3e109d1",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "668f980f-6e1c-4e96-8c06-11034665c603",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'a1' access and permissions for Eng.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "ec2c2fed-027b-4fe5-a9de-fe284e5fba24",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "112853b0-4a2a-4041-9c6d-f1d13a527e55",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'a1' (Dev, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "7cb35934-c781-4f1d-83c2-1c78f810a64f",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "9d096f92-a5da-46f7-9e89-e40928e8b930",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'a1' to report to Eng-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "c3272dd5-9a2e-4919-acf3-9847327b8cb7",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "074986e4-d1a3-420c-88c6-18b5bcfad00d",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "chief-of-staff",[m[41m[m
+[32m+[m[32m    "instruction": "Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "0a3856c4-afdd-4c7f-a939-1cb60e2ccc6e",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "766eec88-61be-40da-adf4-06f009f66912",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'a1' access and permissions for Eng.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "f7f1cf3d-5af7-496d-a12a-0b6ea422cfab",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "d18350d4-9fbe-4857-9157-0a201291001b",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'a1' (Dev, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "f88bcd20-7749-41c8-be9b-2b913dd6ef06",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "6de0df2b-4946-43a7-8396-24e0052d420a",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'a1' to report to Eng-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "d01dcb4e-a5b6-4b75-8220-41e53fa44acc",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "0c47720b-6c0e-4ecb-9124-a1f7a9dbfefd",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'a2' access and permissions for Product.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "5fcd9359-bc27-4607-893a-322661035849",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "b4795efe-e2bb-4547-8d07-145980ccbd69",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'a2' (PM, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "06d27769-4726-402e-a866-f8251a8d6aea",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "d533cf29-1ad1-4921-bba7-c677acf6e195",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'a2' to report to Product-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "f6df8630-caf1-43a9-a5f7-228ad6e764fc",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "exec-task-1",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "human-ceo",[m[41m[m
+[32m+[m[32m    "receiver_id": "lead-backend",[m[41m[m
+[32m+[m[32m    "instruction": "Run migration",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "2060ec5f-3f50-4b65-b3c5-b5f786106b66",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "757f2932-89d4-48aa-b4a5-8ea60075b4ea",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Product Launch'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "6d4b7ad7-924e-4e8d-b98c-a3927f9c1336",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "515b7efe-c47a-470d-a133-7b6036d34040",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'First'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "90c42fb5-60e9-46ea-a45b-08d1c06f98aa",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "b80655e3-04f4-44ab-ad01-8d920ea38c94",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Test'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "7caacee1-c089-4dae-a678-54aefbcd2a2f",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "9d342ac9-46c7-4ab6-b3c5-ffbd585b7f81",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Monitor campaign 'Test' performance. Track impressions, clicks, and conversions daily.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "low",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "a30e1d79-3f40-434b-95b2-b84624c8b919",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "cba87aee-b42d-4057-bf1f-f62d29ecf560",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Test'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "15ef2620-8144-47a4-9882-66d6f72e2b97",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "612c84f4-f7e8-4355-98c8-590745c61527",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "marketing-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "marketing-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Create content plan for campaign 'Test'. Channel: email. Target audience: general. Budget: $0.00.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "b09cd2c5-102a-4941-adfb-cc73d88f27e2",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "6c4250b2-e49e-4c7f-9490-1e4cbd89c826",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Qualify new lead 'Acme Corp' from website. Company: unknown. Research their needs and prepare an initial outreach.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "5e8791e6-8d52-40a4-9cec-7323203cffe2",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "fa1bc44a-dea4-4824-bc43-fb886af13b73",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Schedule and conduct discovery call for deal 'Enterprise Deal' ($100,000.00). Identify key stakeholders and pain points.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "73463a53-2644-41b4-bad6-91d2acdbf087",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "cc5f0e3d-f432-48c5-8186-b52a89120cbf",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Schedule and conduct discovery call for deal 'Deal' ($50,000.00). Identify key stakeholders and pain points.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "8e964d8d-3065-4f98-8e95-315ba48f7579",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "9494bd46-7b5b-4dc0-9d4e-ed3e073b1d97",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Qualify new lead 'Lead 1' from website. Company: unknown. Research their needs and prepare an initial outreach.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "3b9cb09c-ae09-4b06-8277-66a57b0079a9",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "f9b42e4d-d7f0-4ff3-a4ba-fe5d04df772e",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "sales-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "sales-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Schedule and conduct discovery call for deal 'Deal 1' ($25,000.00). Identify key stakeholders and pain points.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "4e04c710-e447-4da9-9b47-f118940b6fb7",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "718bed58-dd43-411f-a65e-8cdb57a6c8d6",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "customer_success-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "customer-success-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Urgent: Triage ticket 'Login issue' (high priority). Customer: unknown. Assess impact and propose resolution plan.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "16eda297-16a1-48c9-bc6d-e03fb9c91d8f",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "7306c3b5-e6b5-45fe-a491-74b1d0abdb73",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "customer_success-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "chief-of-staff",[m[41m[m
+[32m+[m[32m    "instruction": "Escalated ticket 'Bug' requires executive attention. Reason: Customer threatening churn. Customer: .",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "8fd40764-2780-4a7a-b405-0ae9fd508b7c",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "0a7c3af4-df7a-429d-b432-2e01e4702235",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'NDA' with Acme. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "f2ab3f14-fca8-4239-8d26-5fd68eed5919",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "49fa7a62-18b4-436b-9755-1d6242020c30",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'SaaS Agreement' with Vendor. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "6fddfd77-5d08-4ce0-b2ca-b2ee9d418024",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "a6152ad1-23e3-4695-8ee5-2a85aceb2418",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'A' with X. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "c2398e3d-fcc7-456d-835a-fd8d54145b30",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "4e34552c-d839-4455-8ebd-e88521687982",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "legal-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "legal-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Review contract 'B' with Y. Type: service. Value: $0.00. Check terms, identify risks, and prepare approval recommendation.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "77c4de2a-4f18-472d-b2bb-ce2f3cc0e624",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "030a2dfa-636a-4316-a228-6d40dbd4d8a3",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'dev-1' access and permissions for Technology.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "df575f96-580a-4e44-9e0f-4f38b27c8562",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "a0b369a1-467e-4b61-8ddd-d89992dd0a46",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'dev-1' (Backend Engineer, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "833e70ba-9aca-4715-a7d6-396cd8749472",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "4d54ec98-ac2f-4a90-8507-14060a8352df",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'dev-1' to report to Technology-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "68052c29-d339-4ace-b3fc-7f2d7918fdff",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "c38dbab5-4cdd-4f90-b269-83dbda8edaca",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'a1' access and permissions for Eng.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "1b170f2c-4809-4161-9800-8e90c4a599e2",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "54c63088-3f2f-4cea-91b5-c258b875b1e0",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'a1' (Dev, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "4c28161a-2776-42a7-a8a1-a15f4abf7adb",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "09c803c6-8586-4f78-b836-1f2a230b9ebb",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'a1' to report to Eng-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "c71b3012-12eb-4350-b2d3-552b3936d51c",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "bb66c3f7-1071-46fc-a80f-58892f3001cf",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "chief-of-staff",[m[41m[m
+[32m+[m[32m    "instruction": "Agent 'a1' has been deactivated. Reason: Project completed. Please review and reassign any pending tasks.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "high",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "5331e25d-0326-4199-b4a4-b01050fcb155",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "af7a4ca8-3e6d-4150-be3b-3ca7ee25f48d",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'a1' access and permissions for Eng.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "b1071361-9234-4cd3-9f5b-17757d5ddb3e",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "595f7d2a-11c4-49ab-8704-8627fb82d479",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'a1' (Dev, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "9e5cac3e-6a9b-4c38-94d0-d043e8984826",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "4bbf73ad-ec27-42ab-b614-41010031180d",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'a1' to report to Eng-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "835d856f-0464-404a-9e45-3bfa1366692b",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "daa88fc7-631f-4751-9faa-4bdc2eb1a9ba",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Set up agent 'a2' access and permissions for Product.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "d0662915-68ec-4cde-ba47-5629fb856092",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "56a663c6-e5c1-4933-b2fc-ba419d302081",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Generate agent spec card for 'a2' (PM, mid).",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "dd0e2b5e-f744-4340-860b-14551279710e",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "4fdc543c-16b1-4e83-8b29-f5cdb2623bcb",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "hr-service",[m[41m[m
+[32m+[m[32m    "receiver_id": "hr-specialist",[m[41m[m
+[32m+[m[32m    "instruction": "Assign 'a2' to report to Product-lead.",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "053504b7-5bb3-4ba9-a8e2-3e9bcfc74bf8",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  },[m[41m[m
+[32m+[m[32m  {[m[41m[m
+[32m+[m[32m    "id": "exec-task-1",[m[41m[m
+[32m+[m[32m    "name": "",[m[41m[m
+[32m+[m[32m    "description": "",[m[41m[m
+[32m+[m[32m    "assignee": "",[m[41m[m
+[32m+[m[32m    "sender_id": "human-ceo",[m[41m[m
+[32m+[m[32m    "receiver_id": "lead-backend",[m[41m[m
+[32m+[m[32m    "instruction": "Run migration",[m[41m[m
+[32m+[m[32m    "status": "pending",[m[41m[m
+[32m+[m[32m    "priority": "medium",[m[41m[m
+[32m+[m[32m    "dependencies": [],[m[41m[m
+[32m+[m[32m    "due_date": "",[m[41m[m
+[32m+[m[32m    "tags": [],[m[41m[m
+[32m+[m[32m    "created_at": "",[m[41m[m
+[32m+[m[32m    "updated_at": "",[m[41m[m
+[32m+[m[32m    "completed_at": "",[m[41m[m
+[32m+[m[32m    "result": "",[m[41m[m
+[32m+[m[32m    "requires_approval": false,[m[41m[m
+[32m+[m[32m    "approved_by": "",[m[41m[m
+[32m+[m[32m    "correlation_id": "56024341-6021-4573-9c32-a296757a23d6",[m[41m[m
+[32m+[m[32m    "parent_task_id": "",[m[41m[m
+[32m+[m[32m    "acknowledged_by": ""[m[41m[m
+[32m+[m[32m  }[m[41m[m
+[32m+[m[32m][m
+\ No newline at end of file[m

@@ -1,0 +1,1 @@
+[{"name": "test-agent", "role": "Test", "type": "Specialist", "department": "Test", "reportsTo": "ceo", "directReports": [], "description": "test", "tools": ["read", "write"], "permission": "Execute"}]

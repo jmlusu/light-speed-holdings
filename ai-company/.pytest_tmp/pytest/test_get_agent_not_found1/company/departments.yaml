@@ -1,0 +1,11 @@
+departments:
+- agents:
+  - chief-of-staff
+  executive: chief-of-staff
+  name: Executive
+  total_agents: 1
+- agents:
+  - lead-engineering
+  executive: lead-engineering
+  name: Engineering
+  total_agents: 1

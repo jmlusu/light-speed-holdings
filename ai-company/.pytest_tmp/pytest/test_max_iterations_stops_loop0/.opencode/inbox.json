@@ -1,0 +1,25 @@
+[
+  {
+    "id": "e2e-maxiter-001",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Long running task",
+    "status": "failed",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:36.153077",
+    "updated_at": "2026-07-27T10:26:36.375057",
+    "completed_at": "2026-07-27T10:26:36.375057",
+    "result": "Max iterations (10) reached without agent signaling completion.",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "1b13ff4b-fe0d-4868-8359-ed2ff99b0189",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

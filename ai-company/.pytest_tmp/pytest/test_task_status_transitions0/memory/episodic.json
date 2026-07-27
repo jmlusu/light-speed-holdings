@@ -1,0 +1,19 @@
+[
+  {
+    "id": "episodic_20260727_102636_542157",
+    "memory_type": "episodic",
+    "content": "Task e2e-transitions-001: Status transition test\nStatus: completed\nResult: done",
+    "metadata": {
+      "task_id": "e2e-transitions-001",
+      "status": "completed"
+    },
+    "agent_id": "test-agent",
+    "tags": [
+      "completed",
+      "test-agent"
+    ],
+    "created_at": "2026-07-27T10:26:36.542157",
+    "access_count": 0,
+    "seq": 21
+  }
+]

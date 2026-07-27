@@ -1,0 +1,9 @@
+requests:
+- action: campaign
+  agent_id: lead-marketing
+  description: Launch campaign
+  id: req-2
+  status: rejected
+  task_id: t-2
+  responded_at: '2026-07-27T10:27:14.166554'
+  response_by: human-ceo

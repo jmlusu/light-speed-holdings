@@ -1,0 +1,19 @@
+requests:
+- id: req-1
+  task_id: task-1
+  agent_id: agent-a
+  action: deploy
+  description: Deploy
+  tier: 2
+  required_approvers: 3
+  approved_by_list:
+  - approver-1
+  - approver-2
+  - approver-3
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - approved
+  requested_at: 2026-07-27 10:27:08.723019
+  responded_at: 2026-07-27 10:27:08.766363
+  response_by: approver-3
+  notes: null
+  expires_at: 2026-07-27 11:27:08.723019

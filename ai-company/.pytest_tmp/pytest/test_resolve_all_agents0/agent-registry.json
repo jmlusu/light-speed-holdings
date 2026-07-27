@@ -1,0 +1,1 @@
+[{"name": "cto", "role": "CTO", "type": "Executive", "model": "anthropic/claude-opus-4-20250514"}, {"name": "board-finance", "role": "Finance Board Advisor", "type": "Board"}, {"name": "lead-backend", "role": "Lead Backend Engineer", "type": "Specialist"}]

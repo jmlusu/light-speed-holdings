@@ -1,0 +1,19 @@
+{
+  "task_id": "e2e-tools-001",
+  "agent": "test-agent",
+  "final_response": "Config looks good",
+  "iterations": 2,
+  "total_tokens": 200,
+  "total_cost_usd": 0.0004,
+  "done": true,
+  "error": "",
+  "tool_results": [
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 1
+    }
+  ],
+  "timestamp": "2026-07-27T10:26:36.046022"
+}

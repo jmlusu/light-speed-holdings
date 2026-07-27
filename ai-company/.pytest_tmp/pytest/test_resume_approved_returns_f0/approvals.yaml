@@ -1,0 +1,16 @@
+requests:
+- id: hitl-f91620bc5bf6
+  task_id: task-1
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - rejected
+  requested_at: 2026-07-27 10:27:09.353853
+  responded_at: 2026-07-27 10:27:09.390674
+  response_by: human-cto
+  notes: Dangerous
+  expires_at: 2026-07-27 10:27:12.353853

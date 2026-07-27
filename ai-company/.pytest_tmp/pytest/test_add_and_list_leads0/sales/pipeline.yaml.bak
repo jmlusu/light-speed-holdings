@@ -1,0 +1,8 @@
+leads:
+- id: l1
+  name: Acme Corp
+  source: website
+  contact_email: ''
+  company: ''
+  status: new
+  created_at: '2026-07-27T10:28:55.519263'

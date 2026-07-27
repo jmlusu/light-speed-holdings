@@ -1,0 +1,15 @@
+rules:
+- id: hitl-timeout
+  name: HITL Timeout Escalation
+  trigger: hitl_timeout
+  escalate_to: chief-of-staff
+  max_retries: 3
+  timeout_minutes: 30
+  enabled: true
+- id: critical-failure
+  name: Critical Failure Escalation
+  trigger: critical_failure
+  escalate_to: human-ceo
+  max_retries: 1
+  timeout_minutes: 10
+  enabled: true

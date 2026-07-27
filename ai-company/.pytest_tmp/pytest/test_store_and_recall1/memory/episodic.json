@@ -1,0 +1,15 @@
+[
+  {
+    "id": "episodic_20260727_102833_246683",
+    "memory_type": "episodic",
+    "content": "Team meeting happened",
+    "metadata": {},
+    "agent_id": "ceo",
+    "tags": [
+      "meeting"
+    ],
+    "created_at": "2026-07-27T10:28:33.246683",
+    "access_count": 0,
+    "seq": 368
+  }
+]

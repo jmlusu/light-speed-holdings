@@ -1,0 +1,7 @@
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "customer_success", "kpi_key": "ticket_resolution_time", "current": 0.0, "target": 4.0, "unit": "hours", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "customer_success", "kpi_key": "open_tickets", "current": 0.0, "target": 0.0, "unit": "count", "status": "on_track"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "customer_success", "kpi_key": "resolved_tickets", "current": 0.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "customer_success", "kpi_key": "total_tickets", "current": 0.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "customer_success", "kpi_key": "customer_satisfaction", "current": 0.0, "target": 9.0, "unit": "score", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "customer_success", "kpi_key": "cs_task_completion", "current": 0.0, "target": 90.0, "unit": "%", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "customer_success", "kpi_key": "total_cs_tasks", "current": 0.0, "target": null, "unit": "count", "status": "info"}

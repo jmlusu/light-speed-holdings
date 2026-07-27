@@ -1,0 +1,17 @@
+[
+  {
+    "id": "semantic_20260727_102833_444792",
+    "memory_type": "semantic",
+    "content": "unrelated content",
+    "metadata": {
+      "topic": "helm"
+    },
+    "agent_id": "",
+    "tags": [
+      "kubernetes"
+    ],
+    "created_at": "2026-07-27T10:28:33.444792",
+    "access_count": 0,
+    "seq": 414
+  }
+]

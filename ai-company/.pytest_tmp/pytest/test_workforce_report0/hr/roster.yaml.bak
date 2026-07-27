@@ -1,0 +1,16 @@
+agents:
+- id: a1
+  role: Dev
+  department: Eng
+  seniority: mid
+  reports_to: ''
+  status: active
+  onboarded_at: '2026-07-27T10:28:57.366736'
+  activated_at: '2026-07-27T10:28:57.868289'
+- id: a2
+  role: PM
+  department: Product
+  seniority: mid
+  reports_to: ''
+  status: onboarding
+  onboarded_at: '2026-07-27T10:28:57.617066'

@@ -1,0 +1,1 @@
+{"providers": {"mock_provider": {"backend": "openai_compatible", "default_model": "test-model", "api_base": "http://localhost:9999"}}, "tiers": {"standard": {"description": "Test tier", "providers": [{"provider": "mock_provider", "model": "test-model"}]}}, "routing": [{"agent_type": "Specialist", "tier": "standard"}, {"agent_type": "Executive", "tier": "standard"}]}

@@ -1,0 +1,2 @@
+{"timestamp": "2026-07-27T10:27:03.590993", "model": "gpt-4o", "provider": "openai", "agent_name": "a", "task_id": "t1", "prompt_tokens": 100, "completion_tokens": 50, "cost_usd": 0.00075, "iteration": 1, "metadata": {}}
+{"timestamp": "2026-07-27T10:27:03.590993", "model": "gpt-4o", "provider": "openai", "agent_name": "a", "task_id": "t2", "prompt_tokens": 200, "completion_tokens": 100, "cost_usd": 0.0015, "iteration": 1, "metadata": {}}

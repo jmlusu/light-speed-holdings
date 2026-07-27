@@ -1,0 +1,25 @@
+[
+  {
+    "id": "t-failed",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "a",
+    "receiver_id": "b",
+    "instruction": "y",
+    "status": "failed",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:41.446280",
+    "updated_at": "2026-07-27T10:26:41.446280",
+    "completed_at": "2026-07-27T10:26:41.446280",
+    "result": "timeout",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "a826a1be-e8f6-457d-8da1-c5e71fd33687",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "id": "t-prog",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "a",
+    "receiver_id": "b",
+    "instruction": "p",
+    "status": "in_progress",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:41.568681",
+    "updated_at": "2026-07-27T10:26:41.568681",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "e0369e04-15cf-4f19-8fe0-34310fbdeb2f",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

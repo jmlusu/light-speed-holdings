@@ -19,6 +19,10 @@ from pydantic import BaseModel, ConfigDict, Field
 class AgentType(str, Enum):
     HUMAN = "human"
     AI = "ai"
+    EXECUTIVE = "executive"
+    SPECIALIST = "specialist"
+    BOARD = "board"
+    DEFAULT = "default"
 
 
 class Seniority(str, Enum):

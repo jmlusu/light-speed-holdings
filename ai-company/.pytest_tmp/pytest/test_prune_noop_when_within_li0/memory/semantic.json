@@ -1,0 +1,24 @@
+[
+  {
+    "id": "semantic_20260727_102833_612351",
+    "memory_type": "semantic",
+    "content": "a",
+    "metadata": {},
+    "agent_id": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:28:33.612351",
+    "access_count": 0,
+    "seq": 450
+  },
+  {
+    "id": "semantic_20260727_102833_615012",
+    "memory_type": "semantic",
+    "content": "b",
+    "metadata": {},
+    "agent_id": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:28:33.615012",
+    "access_count": 0,
+    "seq": 451
+  }
+]

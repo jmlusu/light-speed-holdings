@@ -208,6 +208,52 @@ class MessageBus:
 
     # ── Query helpers ────────────────────────────────────────────────
 
+    def update_task(self, task_id: str, updates: dict[str, Any]) -> Task | None:
+        """Apply a partial update to a task by id.
+
+        Only keys present in *updates* are merged into the task dict.
+        Returns the updated ``Task`` or ``None`` if not found.
+        """
+        now = datetime.now().isoformat()
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    tasks[i].update(updates)
+                    tasks[i]["updated_at"] = now
+                    self._emit(tasks[i], "updated")
+                    logger.info("Task %s updated: %s", task_id, list(updates.keys()))
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        for t in updated:
+            if t.get("id") == task_id:
+                return Task(**t)
+        return None
+
+    def delete_task(self, task_id: str) -> Task | None:
+        """Remove a task by id.
+
+        Returns the deleted ``Task`` or ``None`` if not found.
+        """
+        deleted: Task | None = None
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            nonlocal deleted
+            new_tasks = []
+            for t in tasks:
+                if t.get("id") == task_id:
+                    deleted = Task(**t)
+                else:
+                    new_tasks.append(t)
+            return new_tasks
+
+        self._mutate_tasks(_updater)
+        if deleted:
+            self._emit(deleted.model_dump(), "deleted")
+            logger.info("Task %s deleted", task_id)
+        return deleted
+
     def get_task_by_id(self, task_id: str) -> Task | None:
         """Find a specific task by its ``id`` field."""
         tasks = self._load_tasks()

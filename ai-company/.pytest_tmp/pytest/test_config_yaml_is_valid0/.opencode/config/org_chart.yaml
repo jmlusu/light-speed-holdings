@@ -1,0 +1,20 @@
+executives:
+- id: ceo
+  name: CEO
+  title: CEO
+  department: ''
+  reports_to: ''
+- id: cto
+  name: ''
+  title: CTO
+  department: engineering
+  reports_to: ceo
+departments:
+- id: engineering
+  name: Engineering
+  executive: cto
+specialists:
+- id: dev-1
+  name: Developer
+  department: engineering
+  reports_to: cto

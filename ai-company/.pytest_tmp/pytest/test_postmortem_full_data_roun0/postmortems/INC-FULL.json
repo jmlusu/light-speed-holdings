@@ -1,0 +1,36 @@
+{
+  "incident_id": "INC-FULL",
+  "title": "Full roundtrip",
+  "date": "2026-07-27",
+  "severity": "critical",
+  "affected_agent": "cto",
+  "department": "engineering",
+  "escalation_rule": "",
+  "duration": "",
+  "status": "resolved",
+  "root_cause": "Memory leak",
+  "impact": {
+    "tasks_before": 0,
+    "tasks_during": 0,
+    "tasks_after": 0,
+    "agents_before": 0,
+    "agents_during": 0,
+    "agents_after": 0,
+    "downtime_minutes": 0
+  },
+  "timeline": [],
+  "resolution_steps": [
+    "Identified",
+    "Fixed"
+  ],
+  "action_items": [],
+  "lessons_learned": [
+    "Add monitoring"
+  ],
+  "prevention_measures": [
+    "Heap dumps"
+  ],
+  "prepared_by": "chief-of-staff",
+  "reviewed_by": "human-operator",
+  "last_updated": "2026-07-27T10:27:09.874823"
+}

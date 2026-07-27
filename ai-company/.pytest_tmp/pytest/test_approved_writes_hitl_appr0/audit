@@ -1,0 +1,1 @@
+{"event_id": "b1a891a1-00e2-4a85-8c8f-4ecf42591936", "timestamp": "2026-07-27T08:27:03.508548+00:00", "event_type": "hitl_approved", "agent_id": "agent-a", "task_id": "t-1", "tool": "write", "args": {}, "result": {}, "metadata": {}, "severity": "info"}

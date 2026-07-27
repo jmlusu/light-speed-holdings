@@ -1,0 +1,73 @@
+{
+  "task_id": "e2e-maxiter-001",
+  "agent": "test-agent",
+  "final_response": "Loop terminated after 10 iterations. Last LLM result: ",
+  "iterations": 10,
+  "total_tokens": 1000,
+  "total_cost_usd": 0.002,
+  "done": false,
+  "error": "Max iterations (10) reached without agent signaling completion.",
+  "tool_results": [
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 1
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 2
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 3
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 4
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 5
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 6
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 7
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 8
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 9
+    },
+    {
+      "step": 0,
+      "tool": "read",
+      "status": "error",
+      "iteration": 10
+    }
+  ],
+  "timestamp": "2026-07-27T10:26:36.374034"
+}

@@ -1,0 +1,28 @@
+providers:
+  opencode:
+    api_base: https://opencode.ai/api/v1
+    backend: openai_compatible
+    default_model: big-pickle
+routing:
+- agent_type: Board
+  tier: fast
+- agent_type: Executive
+  tier: standard
+- agent_type: Specialist
+  tier: standard
+tiers:
+  fast:
+    description: Fast
+    providers:
+    - model: big-pickle
+      provider: opencode
+  premium:
+    description: Premium
+    providers:
+    - model: big-pickle
+      provider: opencode
+  standard:
+    description: Standard
+    providers:
+    - model: big-pickle
+      provider: opencode

@@ -1,0 +1,11 @@
+tickets:
+- id: t1
+  subject: Login issue
+  priority: high
+  customer: ''
+  description: ''
+  status: resolved
+  created_at: '2026-07-27T10:28:56.014195'
+  updated_at: '2026-07-27T10:28:56.099315'
+  resolved_at: '2026-07-27T10:28:56.099315'
+  resolution: Password reset

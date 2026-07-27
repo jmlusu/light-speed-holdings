@@ -1,0 +1,16 @@
+[
+  {
+    "task": {
+      "id": "t-nots",
+      "sender_id": "ceo",
+      "receiver_id": "agent",
+      "instruction": "Task t-nots",
+      "status": "in_progress",
+      "priority": "medium",
+      "created_at": "",
+      "updated_at": ""
+    },
+    "moved_at": "2026-07-27T10:27:42.098527",
+    "reason": "No timestamp \u2014 assumed stale"
+  }
+]

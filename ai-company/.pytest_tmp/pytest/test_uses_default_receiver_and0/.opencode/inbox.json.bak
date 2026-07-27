@@ -1,0 +1,25 @@
+[
+  {
+    "id": "ceed02cb-76fa-43bf-a520-e97855b18cc9",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "scheduler",
+    "receiver_id": "chief-of-staff",
+    "instruction": "Scheduled: Defaults Task",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "cb41bd23-d705-4c34-969e-50ba88ca7dc1",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

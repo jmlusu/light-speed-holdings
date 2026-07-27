@@ -1,0 +1,13 @@
+[
+  {
+    "prompt_id": "test.prompt",
+    "version": 1,
+    "content": "Hello world",
+    "created_at": 1785140825.4137967,
+    "author": "system",
+    "tags": [],
+    "notes": "",
+    "hash": "4ead4db061ce7c11",
+    "active": true
+  }
+]

@@ -1,0 +1,8 @@
+deals:
+- id: d1
+  name: Enterprise Deal
+  value: 100000
+  lead_id: ''
+  owner: ''
+  stage: prospecting
+  created_at: '2026-07-27T10:28:55.608794'

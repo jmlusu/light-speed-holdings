@@ -1,0 +1,19 @@
+[
+  {
+    "id": "episodic_20260727_102809_185874",
+    "memory_type": "episodic",
+    "content": "Task task-loop-001: Analyze codebase\nStatus: completed\nResult: Analysis complete.",
+    "metadata": {
+      "task_id": "task-loop-001",
+      "status": "completed"
+    },
+    "agent_id": "test-agent",
+    "tags": [
+      "completed",
+      "test-agent"
+    ],
+    "created_at": "2026-07-27T10:28:09.185874",
+    "access_count": 0,
+    "seq": 361
+  }
+]

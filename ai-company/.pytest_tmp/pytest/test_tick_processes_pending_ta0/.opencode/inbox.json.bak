@@ -1,0 +1,14 @@
+[
+  {
+    "id": "task-001",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Read the test.py file and report its contents",
+    "status": "completed",
+    "priority": "medium",
+    "updated_at": "2026-07-27T10:28:06.918437",
+    "created_at": "2026-07-27T10:28:06.895672",
+    "result": "File contains x = 42",
+    "completed_at": "2026-07-27T10:28:06.918437"
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "id": "31f7536e-b234-41a0-96ab-364174d248ad",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "coo",
+    "instruction": "Streamline operations",
+    "status": "pending",
+    "priority": "critical",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:39.243986",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "45f23a33-e563-4b08-a3bc-98ca0adb1406",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

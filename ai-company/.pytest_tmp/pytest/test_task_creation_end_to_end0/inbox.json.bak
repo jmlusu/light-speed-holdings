@@ -1,0 +1,25 @@
+[
+  {
+    "id": "e2e-1",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "lead-frontend",
+    "instruction": "Build WebSocket tests",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "c16b6ab7-4ccb-48f5-925a-ebc57340e273",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

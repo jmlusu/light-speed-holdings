@@ -1,0 +1,10 @@
+contracts:
+- id: c1
+  name: SaaS Agreement
+  party: Vendor
+  type: service
+  value: 0.0
+  status: terminated
+  created_at: '2026-07-27T10:28:56.409907'
+  terminated_at: '2026-07-27T10:28:56.501267'
+  termination_reason: Vendor breach

@@ -1,0 +1,12 @@
+{
+  "task_id": "task-fail",
+  "agent": "test-agent",
+  "final_response": "",
+  "iterations": 1,
+  "total_tokens": 150,
+  "total_cost_usd": 0.001,
+  "done": false,
+  "error": "loop did not finish",
+  "tool_results": [],
+  "timestamp": "2026-07-27T10:26:24.541258"
+}

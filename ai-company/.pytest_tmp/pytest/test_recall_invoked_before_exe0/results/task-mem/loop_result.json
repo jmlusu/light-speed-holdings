@@ -1,0 +1,12 @@
+{
+  "task_id": "task-mem",
+  "agent": "test-agent",
+  "final_response": "Memo drafted.",
+  "iterations": 1,
+  "total_tokens": 150,
+  "total_cost_usd": 0.001,
+  "done": true,
+  "error": "",
+  "tool_results": [],
+  "timestamp": "2026-07-27T10:26:36.630719"
+}

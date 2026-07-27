@@ -1,0 +1,29 @@
+[
+  {
+    "id": "episodic_20260727_102636_416135",
+    "memory_type": "episodic",
+    "content": "Task e2e-maxiter-001: Long running task\nStatus: failed\nResult: Max iterations (10) reached without agent signaling completion.",
+    "metadata": {
+      "task_id": "e2e-maxiter-001",
+      "status": "failed"
+    },
+    "agent_id": "test-agent",
+    "tags": [
+      "failed",
+      "test-agent",
+      "read",
+      "read",
+      "read",
+      "read",
+      "read",
+      "read",
+      "read",
+      "read",
+      "read",
+      "read"
+    ],
+    "created_at": "2026-07-27T10:26:36.416135",
+    "access_count": 0,
+    "seq": 20
+  }
+]

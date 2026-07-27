@@ -1,0 +1,17 @@
+contracts:
+- id: c1
+  name: A
+  party: X
+  type: service
+  value: 0.0
+  status: approved
+  created_at: '2026-07-27T10:28:56.524727'
+  approved_at: '2026-07-27T10:28:56.729153'
+  approved_by: ''
+- id: c2
+  name: B
+  party: Y
+  type: service
+  value: 0.0
+  status: draft
+  created_at: '2026-07-27T10:28:56.632301'

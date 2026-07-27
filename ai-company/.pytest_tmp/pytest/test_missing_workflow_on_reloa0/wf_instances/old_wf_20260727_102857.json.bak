@@ -1,0 +1,11 @@
+{
+  "instance_id": "old_wf_20260727_102857",
+  "workflow_id": "old_wf",
+  "workflow_name": "Old",
+  "context": {},
+  "current_step_index": 0,
+  "step_results": {},
+  "started_at": "2026-07-27T10:28:57.993023",
+  "completed_at": null,
+  "status": "running"
+}

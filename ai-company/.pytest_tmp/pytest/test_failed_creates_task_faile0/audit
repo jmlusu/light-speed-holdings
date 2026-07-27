@@ -1,0 +1,1 @@
+{"event_id": "1fe8585d-ff46-4734-8056-791abffe3521", "timestamp": "2026-07-27T08:27:03.466209+00:00", "event_type": "task_failed", "agent_id": "agent-z", "task_id": "t-3", "tool": null, "args": {}, "result": {}, "metadata": {"old_status": "in_progress", "new_status": "failed"}, "severity": "info"}

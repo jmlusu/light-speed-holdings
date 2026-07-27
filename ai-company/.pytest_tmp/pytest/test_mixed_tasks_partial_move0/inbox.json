@@ -1,0 +1,22 @@
+[
+  {
+    "id": "t-recent",
+    "sender_id": "ceo",
+    "receiver_id": "agent",
+    "instruction": "Task t-recent",
+    "status": "in_progress",
+    "priority": "medium",
+    "created_at": "2026-07-27T10:27:42.140579",
+    "updated_at": ""
+  },
+  {
+    "id": "t-pending-old",
+    "sender_id": "ceo",
+    "receiver_id": "agent",
+    "instruction": "Task t-pending-old",
+    "status": "pending",
+    "priority": "medium",
+    "created_at": "2026-07-27T09:27:42.140579",
+    "updated_at": ""
+  }
+]

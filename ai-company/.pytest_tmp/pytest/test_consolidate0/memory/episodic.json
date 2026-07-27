@@ -1,0 +1,29 @@
+[
+  {
+    "id": "episodic_20260727_102833_331107",
+    "memory_type": "episodic",
+    "content": "Meeting 1",
+    "metadata": {},
+    "agent_id": "ceo",
+    "tags": [
+      "meeting"
+    ],
+    "created_at": "2026-07-27T10:28:33.331107",
+    "access_count": 0,
+    "seq": 382
+  },
+  {
+    "id": "episodic_20260727_102833_333636",
+    "memory_type": "episodic",
+    "content": "Meeting 2",
+    "metadata": {},
+    "agent_id": "cto",
+    "tags": [
+      "meeting",
+      "review"
+    ],
+    "created_at": "2026-07-27T10:28:33.333636",
+    "access_count": 0,
+    "seq": 383
+  }
+]

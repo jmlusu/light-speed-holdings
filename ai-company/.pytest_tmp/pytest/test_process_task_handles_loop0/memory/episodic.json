@@ -1,0 +1,19 @@
+[
+  {
+    "id": "episodic_20260727_102810_254736",
+    "memory_type": "episodic",
+    "content": "Task task-fail-001: Failing task\nStatus: failed\nResult: Network unreachable",
+    "metadata": {
+      "task_id": "task-fail-001",
+      "status": "failed"
+    },
+    "agent_id": "test-agent",
+    "tags": [
+      "failed",
+      "test-agent"
+    ],
+    "created_at": "2026-07-27T10:28:10.254736",
+    "access_count": 0,
+    "seq": 362
+  }
+]
