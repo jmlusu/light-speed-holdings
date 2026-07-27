@@ -11,6 +11,7 @@ Used by MessageBus, Scheduler, ApprovalGate, MemoryStore, and WorkflowEngine.
 
 from __future__ import annotations
 
+import contextlib
 import io
 import json
 import logging
@@ -43,10 +44,8 @@ if os.name == "nt":
 
     def _unlock_file(f: io.TextIOWrapper) -> None:
         """Release a file lock (Windows)."""
-        try:
+        with contextlib.suppress(OSError):
             msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
-        except OSError:
-            pass
 else:
     import fcntl
 
@@ -59,10 +58,8 @@ else:
 
     def _unlock_file(f: io.TextIOWrapper) -> None:
         """Release a file lock (POSIX)."""
-        try:
+        with contextlib.suppress(OSError):
             fcntl.flock(f.fileno(), fcntl.LOCK_UN)  # type: ignore[attr-defined]
-        except OSError:
-            pass
 
 
 # ── FileStore ─────────────────────────────────────────────────────────
@@ -112,25 +109,18 @@ class FileStore:
                     time.sleep(0.01)
             if tmp_path:
                 if tmp_fd is not None:
-                    try:
+                    with contextlib.suppress(OSError):
                         os.close(tmp_fd)
-                    except OSError:
-                        pass
-                try:
+                with contextlib.suppress(OSError):
                     os.unlink(tmp_path)
-                except OSError:
-                    pass
-                raise last_err  # type: ignore[misc]
-        except Exception:
+                if last_err:
+                    raise last_err from None
+        except (OSError, PermissionError):
             if tmp_fd is not None:
-                try:
+                with contextlib.suppress(OSError):
                     os.close(tmp_fd)
-                except OSError:
-                    pass
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp_path)
-            except OSError:
-                pass
             raise
 
         if self.backup:
