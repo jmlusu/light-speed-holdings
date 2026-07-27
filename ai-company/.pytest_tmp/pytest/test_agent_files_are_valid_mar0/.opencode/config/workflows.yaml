@@ -1,6 +1,0 @@
-workflows:
-- id: hiring
-  name: Hiring
-  trigger: job_requisition
-  owner: hr
-  steps: 2

@@ -1,3 +1,0 @@
-not valid json
-{"event_id": "179cb1e0-9b17-46df-b6dd-7b67124df967", "timestamp": "2026-07-27T08:27:11.075739+00:00", "event_type": "tool_call", "agent_id": "good-agent", "task_id": "task-001", "tool": "bash", "args": {"cmd": "ls"}, "result": {"exit_code": 0}, "metadata": {"session": "abc"}, "severity": "info"}
-{broken: true}

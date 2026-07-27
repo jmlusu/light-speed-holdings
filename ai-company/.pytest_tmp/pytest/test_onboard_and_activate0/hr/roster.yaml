@@ -1,9 +1,0 @@
-agents:
-- id: dev-1
-  role: Backend Engineer
-  department: Technology
-  seniority: mid
-  reports_to: ''
-  status: active
-  onboarded_at: '2026-07-27T10:28:56.761371'
-  activated_at: '2026-07-27T10:28:56.997786'

@@ -1,1 +1,0 @@
-[{"id": "legacy-1", "sender_id": "old-agent", "receiver_id": "new-agent", "status": "completed", "priority": "high", "instruction": "Legacy task", "dependencies": [], "tags": ["legacy"]}, {"id": "legacy-2", "sender_id": "old-agent", "receiver_id": "another-agent", "status": "pending", "priority": "low", "instruction": "Another legacy task", "dependencies": [], "tags": []}]

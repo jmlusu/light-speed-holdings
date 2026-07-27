@@ -1,8 +1,0 @@
-events:
-- from_agent: agent-a
-  reason: Task exceeded time limit
-  resolved: false
-  rule_id: timeout
-  task_id: esc-40c7359d
-  to_agent: agent-b
-rules: []

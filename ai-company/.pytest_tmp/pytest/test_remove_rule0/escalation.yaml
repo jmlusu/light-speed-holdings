@@ -1,8 +1,0 @@
-rules:
-- enabled: true
-  escalate_to: finance-lead
-  id: r2
-  max_retries: 3
-  name: Cost
-  timeout_minutes: 30
-  trigger: cost_exceeded

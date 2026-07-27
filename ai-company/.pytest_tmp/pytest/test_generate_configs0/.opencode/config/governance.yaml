@@ -1,6 +1,0 @@
-approval_matrix:
-- action: budget_over_100k
-  risk_level: high
-  sla_hours: 48
-board_size: 1
-committees: 0

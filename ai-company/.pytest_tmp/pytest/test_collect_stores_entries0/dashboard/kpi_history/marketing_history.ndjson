@@ -1,6 +1,0 @@
-{"timestamp": "2026-07-27T10:27:19.061719", "department": "marketing", "kpi_key": "campaign_generation_rate", "current": 0.0, "target": 5.0, "unit": "campaigns", "status": "below_target"}
-{"timestamp": "2026-07-27T10:27:19.061719", "department": "marketing", "kpi_key": "active_campaigns", "current": 0.0, "target": null, "unit": "count", "status": "info"}
-{"timestamp": "2026-07-27T10:27:19.061719", "department": "marketing", "kpi_key": "content_quality_score", "current": 0.0, "target": 8.0, "unit": "score", "status": "below_target"}
-{"timestamp": "2026-07-27T10:27:19.061719", "department": "marketing", "kpi_key": "marketing_task_completion", "current": 0.0, "target": 90.0, "unit": "%", "status": "below_target"}
-{"timestamp": "2026-07-27T10:27:19.061719", "department": "marketing", "kpi_key": "total_marketing_tasks", "current": 0.0, "target": null, "unit": "count", "status": "info"}
-{"timestamp": "2026-07-27T10:27:19.061719", "department": "marketing", "kpi_key": "content_pieces_produced", "current": 0.0, "target": null, "unit": "count", "status": "info"}

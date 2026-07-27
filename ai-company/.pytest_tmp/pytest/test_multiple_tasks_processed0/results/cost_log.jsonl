@@ -1,3 +1,0 @@
-{"timestamp": "2026-07-27T10:26:35.265060", "model": "test-model", "provider": "test-provider", "agent_name": "test-agent", "task_id": "e2e-multi-000", "prompt_tokens": 50, "completion_tokens": 50, "cost_usd": 0.0002, "iteration": 1, "metadata": {}}
-{"timestamp": "2026-07-27T10:26:35.352465", "model": "test-model", "provider": "test-provider", "agent_name": "test-agent", "task_id": "e2e-multi-001", "prompt_tokens": 50, "completion_tokens": 50, "cost_usd": 0.0002, "iteration": 1, "metadata": {}}
-{"timestamp": "2026-07-27T10:26:35.441318", "model": "test-model", "provider": "test-provider", "agent_name": "test-agent", "task_id": "e2e-multi-002", "prompt_tokens": 50, "completion_tokens": 50, "cost_usd": 0.0002, "iteration": 1, "metadata": {}}

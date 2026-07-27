@@ -1,7 +1,0 @@
-events:
-- from_agent: lead-engineering
-  reason: Task exceeded time limit
-  resolved: true
-  rule_id: timeout
-  task_id: esc-1
-  to_agent: lead-marketing

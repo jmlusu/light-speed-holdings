@@ -1,9 +1,0 @@
-tasks:
-- id: t1
-  name: Test Task
-  cron_expression: null
-  interval_minutes: 60
-  last_run: null
-  next_run: 2026-07-27 11:28:51.632842
-  enabled: true
-  task_template: {}

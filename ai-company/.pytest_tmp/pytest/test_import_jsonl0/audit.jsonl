@@ -1,2 +1,0 @@
-{"event_id": "imp-1", "timestamp": "2025-01-15T10:00:00Z", "event_type": "tool_call", "agent_id": "agent-x", "task_id": "", "tool": null, "args": {}, "result": {}, "metadata": {}, "severity": "info"}
-{"event_id": "imp-2", "timestamp": "2025-01-15T11:00:00Z", "event_type": "task_completed", "agent_id": "agent-y", "task_id": "", "tool": null, "args": {}, "result": {}, "metadata": {}, "severity": "info"}

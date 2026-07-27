@@ -1,1 +1,0 @@
-{"event_id": "49bfbed2-1478-42c6-a2d1-1472b261e9de", "timestamp": "2026-07-27T08:27:03.446268+00:00", "event_type": "task_completed", "agent_id": "agent-y", "task_id": "t-2", "tool": null, "args": {}, "result": {}, "metadata": {"old_status": "in_progress", "new_status": "completed"}, "severity": "info"}

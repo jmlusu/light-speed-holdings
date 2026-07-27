@@ -1,8 +1,0 @@
-rules:
-- enabled: true
-  escalate_to: chief-of-staff
-  id: r1
-  max_retries: 3
-  name: Task Timeout
-  timeout_minutes: 30
-  trigger: task_timeout
