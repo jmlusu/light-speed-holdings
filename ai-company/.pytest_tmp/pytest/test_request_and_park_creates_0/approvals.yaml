@@ -1,0 +1,16 @@
+requests:
+- id: hitl-737da98827e5
+  task_id: task-1
+  agent_id: agent-a
+  action: tool:write
+  description: Write 1 chars to secrets.yaml
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - pending
+  requested_at: 2026-07-27 10:27:09.206517
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: 2026-07-27 10:27:12.206517

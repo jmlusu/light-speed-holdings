@@ -1,0 +1,25 @@
+[
+  {
+    "id": "b853b9e5-ac54-409f-b1cc-1cf9d2188b98",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "lead-backend",
+    "instruction": "Deploy the service",
+    "status": "pending",
+    "priority": "high",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:28:58.998129",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "f899c9cf-26e0-4601-8f2f-0cf2e6ccc63d",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

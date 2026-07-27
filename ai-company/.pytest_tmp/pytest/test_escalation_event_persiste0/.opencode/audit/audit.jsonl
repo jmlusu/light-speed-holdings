@@ -1,0 +1,1 @@
+{"event_id": "1c909bce-e048-4e09-88b7-d8ced6e8124a", "timestamp": "2026-07-27T08:27:17.468513+00:00", "event_type": "escalation", "agent_id": "human-ceo", "task_id": "t-1", "tool": null, "args": {"from_agent": "agent-a", "to_agent": "human-ceo", "reason": "repeated tool failure", "rule_id": "r-9"}, "result": {}, "metadata": {"resolved": false}, "severity": "info"}

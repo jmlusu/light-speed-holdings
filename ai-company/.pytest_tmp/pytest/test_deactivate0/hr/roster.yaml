@@ -1,0 +1,11 @@
+agents:
+- id: a1
+  role: Dev
+  department: Eng
+  seniority: mid
+  reports_to: ''
+  status: inactive
+  onboarded_at: '2026-07-27T10:28:57.015044'
+  activated_at: '2026-07-27T10:28:57.253314'
+  deactivated_at: '2026-07-27T10:28:57.272853'
+  deactivation_reason: Project completed

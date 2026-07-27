@@ -1,0 +1,8 @@
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "contract_review_time", "current": 0.0, "target": 2.0, "unit": "hours", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "pending_contract_reviews", "current": 0.0, "target": 0.0, "unit": "count", "status": "on_track"}
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "approved_contracts", "current": 0.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "total_contracts", "current": 0.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "compliance_score", "current": 0.0, "target": 100.0, "unit": "%", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "total_compliance_checks", "current": 0.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "legal_task_completion", "current": 0.0, "target": 90.0, "unit": "%", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:18.394869", "department": "legal", "kpi_key": "total_legal_tasks", "current": 0.0, "target": null, "unit": "count", "status": "info"}

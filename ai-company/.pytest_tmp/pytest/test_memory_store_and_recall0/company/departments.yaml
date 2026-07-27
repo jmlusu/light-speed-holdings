@@ -1,0 +1,6 @@
+departments:
+- agents:
+  - test-agent
+  executive: lead-engineer
+  name: Engineering
+  total_agents: 1

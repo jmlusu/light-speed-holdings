@@ -1,0 +1,1 @@
+{"event_id": "2bd6cc82-ed48-4f74-8276-56efff6f7d58", "timestamp": "2026-07-27T08:27:11.430061+00:00", "event_type": "tool_call", "agent_id": "test-agent", "task_id": "keep-49", "tool": "bash", "args": {"cmd": "ls"}, "result": {"exit_code": 0}, "metadata": {"session": "abc"}, "severity": "info"}

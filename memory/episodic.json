@@ -1,0 +1,622 @@
+[
+  {
+    "id": "episodic_20260726_230020_657351",
+    "memory_type": "episodic",
+    "content": "Task t-normal: normal\nStatus: completed\nResult: done",
+    "metadata": {
+      "task_id": "t-normal",
+      "status": "completed"
+    },
+    "agent_id": "test-agent",
+    "tags": [
+      "completed",
+      "test-agent"
+    ],
+    "created_at": "2026-07-26T23:00:20.657351",
+    "access_count": 0,
+    "seq": 365
+  },
+  {
+    "id": "episodic_20260726_230104_397185",
+    "memory_type": "episodic",
+    "content": "Campaign 'Product Launch' created (channel=email, budget=$0.0)",
+    "metadata": {
+      "department": "marketing",
+      "campaign_id": "camp-1"
+    },
+    "agent_id": "marketing-service",
+    "tags": [
+      "campaign",
+      "created",
+      "email"
+    ],
+    "created_at": "2026-07-26T23:01:04.397185",
+    "access_count": 0,
+    "seq": 480
+  },
+  {
+    "id": "episodic_20260726_230104_460980",
+    "memory_type": "episodic",
+    "content": "Campaign 'First' created (channel=email, budget=$0.0)",
+    "metadata": {
+      "department": "marketing",
+      "campaign_id": "dup"
+    },
+    "agent_id": "marketing-service",
+    "tags": [
+      "campaign",
+      "created",
+      "email"
+    ],
+    "created_at": "2026-07-26T23:01:04.460980",
+    "access_count": 0,
+    "seq": 481
+  },
+  {
+    "id": "episodic_20260726_230104_523484",
+    "memory_type": "episodic",
+    "content": "Campaign 'Test' created (channel=email, budget=$0.0)",
+    "metadata": {
+      "department": "marketing",
+      "campaign_id": "c1"
+    },
+    "agent_id": "marketing-service",
+    "tags": [
+      "campaign",
+      "created",
+      "email"
+    ],
+    "created_at": "2026-07-26T23:01:04.523484",
+    "access_count": 0,
+    "seq": 482
+  },
+  {
+    "id": "episodic_20260726_230104_590054",
+    "memory_type": "episodic",
+    "content": "Campaign 'Test' launched",
+    "metadata": {
+      "department": "marketing",
+      "campaign_id": "c1"
+    },
+    "agent_id": "marketing-service",
+    "tags": [
+      "campaign",
+      "launched"
+    ],
+    "created_at": "2026-07-26T23:01:04.590054",
+    "access_count": 0,
+    "seq": 483
+  },
+  {
+    "id": "episodic_20260726_230104_659868",
+    "memory_type": "episodic",
+    "content": "Campaign 'Test' created (channel=email, budget=$0.0)",
+    "metadata": {
+      "department": "marketing",
+      "campaign_id": "c1"
+    },
+    "agent_id": "marketing-service",
+    "tags": [
+      "campaign",
+      "created",
+      "email"
+    ],
+    "created_at": "2026-07-26T23:01:04.659868",
+    "access_count": 0,
+    "seq": 484
+  },
+  {
+    "id": "episodic_20260726_230104_748857",
+    "memory_type": "episodic",
+    "content": "Campaign 'Test' created (channel=email, budget=$0.0)",
+    "metadata": {
+      "department": "marketing",
+      "campaign_id": "c1"
+    },
+    "agent_id": "marketing-service",
+    "tags": [
+      "campaign",
+      "created",
+      "email"
+    ],
+    "created_at": "2026-07-26T23:01:04.748857",
+    "access_count": 0,
+    "seq": 485
+  },
+  {
+    "id": "episodic_20260726_230104_808748",
+    "memory_type": "episodic",
+    "content": "Lead 'Acme Corp' added from website",
+    "metadata": {
+      "department": "sales",
+      "lead_id": "l1"
+    },
+    "agent_id": "sales-service",
+    "tags": [
+      "lead",
+      "created",
+      "website"
+    ],
+    "created_at": "2026-07-26T23:01:04.808748",
+    "access_count": 0,
+    "seq": 486
+  },
+  {
+    "id": "episodic_20260726_230104_890867",
+    "memory_type": "episodic",
+    "content": "Deal 'Enterprise Deal' created ($100,000.00)",
+    "metadata": {
+      "department": "sales",
+      "deal_id": "d1",
+      "value": 100000
+    },
+    "agent_id": "sales-service",
+    "tags": [
+      "deal",
+      "created"
+    ],
+    "created_at": "2026-07-26T23:01:04.890867",
+    "access_count": 0,
+    "seq": 487
+  },
+  {
+    "id": "episodic_20260726_230104_968927",
+    "memory_type": "episodic",
+    "content": "Deal 'Deal' created ($50,000.00)",
+    "metadata": {
+      "department": "sales",
+      "deal_id": "d1",
+      "value": 50000
+    },
+    "agent_id": "sales-service",
+    "tags": [
+      "deal",
+      "created"
+    ],
+    "created_at": "2026-07-26T23:01:04.968927",
+    "access_count": 0,
+    "seq": 488
+  },
+  {
+    "id": "episodic_20260726_230105_037917",
+    "memory_type": "episodic",
+    "content": "Deal 'Deal' stage: prospecting -> qualification",
+    "metadata": {
+      "department": "sales",
+      "deal_id": "d1"
+    },
+    "agent_id": "sales-service",
+    "tags": [
+      "deal",
+      "stage_change",
+      "qualification"
+    ],
+    "created_at": "2026-07-26T23:01:05.037917",
+    "access_count": 0,
+    "seq": 489
+  },
+  {
+    "id": "episodic_20260726_230105_064943",
+    "memory_type": "episodic",
+    "content": "Lead 'Lead 1' added from website",
+    "metadata": {
+      "department": "sales",
+      "lead_id": "l1"
+    },
+    "agent_id": "sales-service",
+    "tags": [
+      "lead",
+      "created",
+      "website"
+    ],
+    "created_at": "2026-07-26T23:01:05.064943",
+    "access_count": 0,
+    "seq": 490
+  },
+  {
+    "id": "episodic_20260726_230105_125206",
+    "memory_type": "episodic",
+    "content": "Deal 'Deal 1' created ($25,000.00)",
+    "metadata": {
+      "department": "sales",
+      "deal_id": "d1",
+      "value": 25000
+    },
+    "agent_id": "sales-service",
+    "tags": [
+      "deal",
+      "created"
+    ],
+    "created_at": "2026-07-26T23:01:05.125206",
+    "access_count": 0,
+    "seq": 491
+  },
+  {
+    "id": "episodic_20260726_230105_187439",
+    "memory_type": "episodic",
+    "content": "Ticket 'Login issue' created (priority=high)",
+    "metadata": {
+      "department": "customer_success",
+      "ticket_id": "t1"
+    },
+    "agent_id": "customer_success-service",
+    "tags": [
+      "ticket",
+      "created",
+      "high"
+    ],
+    "created_at": "2026-07-26T23:01:05.187439",
+    "access_count": 0,
+    "seq": 492
+  },
+  {
+    "id": "episodic_20260726_230105_250223",
+    "memory_type": "episodic",
+    "content": "Ticket 'Login issue' status: open -> resolved",
+    "metadata": {
+      "department": "customer_success",
+      "ticket_id": "t1"
+    },
+    "agent_id": "customer_success-service",
+    "tags": [
+      "ticket",
+      "status_change",
+      "resolved"
+    ],
+    "created_at": "2026-07-26T23:01:05.250223",
+    "access_count": 0,
+    "seq": 493
+  },
+  {
+    "id": "episodic_20260726_230105_283450",
+    "memory_type": "episodic",
+    "content": "Ticket 'Bug' created (priority=medium)",
+    "metadata": {
+      "department": "customer_success",
+      "ticket_id": "t1"
+    },
+    "agent_id": "customer_success-service",
+    "tags": [
+      "ticket",
+      "created",
+      "medium"
+    ],
+    "created_at": "2026-07-26T23:01:05.283450",
+    "access_count": 0,
+    "seq": 495
+  },
+  {
+    "id": "episodic_20260726_230105_305981",
+    "memory_type": "episodic",
+    "content": "Ticket 'Bug' escalated: Customer threatening churn",
+    "metadata": {
+      "department": "customer_success",
+      "ticket_id": "t1"
+    },
+    "agent_id": "customer_success-service",
+    "tags": [
+      "ticket",
+      "escalated"
+    ],
+    "created_at": "2026-07-26T23:01:05.305981",
+    "access_count": 0,
+    "seq": 496
+  },
+  {
+    "id": "episodic_20260726_230105_390189",
+    "memory_type": "episodic",
+    "content": "Ticket 'A' created (priority=medium)",
+    "metadata": {
+      "department": "customer_success",
+      "ticket_id": "t1"
+    },
+    "agent_id": "customer_success-service",
+    "tags": [
+      "ticket",
+      "created",
+      "medium"
+    ],
+    "created_at": "2026-07-26T23:01:05.390189",
+    "access_count": 0,
+    "seq": 497
+  },
+  {
+    "id": "episodic_20260726_230105_417807",
+    "memory_type": "episodic",
+    "content": "Ticket 'B' created (priority=medium)",
+    "metadata": {
+      "department": "customer_success",
+      "ticket_id": "t2"
+    },
+    "agent_id": "customer_success-service",
+    "tags": [
+      "ticket",
+      "created",
+      "medium"
+    ],
+    "created_at": "2026-07-26T23:01:05.417807",
+    "access_count": 0,
+    "seq": 498
+  },
+  {
+    "id": "episodic_20260726_230105_439982",
+    "memory_type": "episodic",
+    "content": "Ticket 'A' status: open -> resolved",
+    "metadata": {
+      "department": "customer_success",
+      "ticket_id": "t1"
+    },
+    "agent_id": "customer_success-service",
+    "tags": [
+      "ticket",
+      "status_change",
+      "resolved"
+    ],
+    "created_at": "2026-07-26T23:01:05.439982",
+    "access_count": 0,
+    "seq": 499
+  },
+  {
+    "id": "episodic_20260726_230105_472015",
+    "memory_type": "episodic",
+    "content": "Contract 'NDA' added with Acme (type=service)",
+    "metadata": {
+      "department": "legal",
+      "contract_id": "c1"
+    },
+    "agent_id": "legal-service",
+    "tags": [
+      "contract",
+      "created",
+      "service"
+    ],
+    "created_at": "2026-07-26T23:01:05.472015",
+    "access_count": 0,
+    "seq": 500
+  },
+  {
+    "id": "episodic_20260726_230105_534173",
+    "memory_type": "episodic",
+    "content": "Contract 'NDA' approved by legal-head",
+    "metadata": {
+      "department": "legal",
+      "contract_id": "c1"
+    },
+    "agent_id": "legal-service",
+    "tags": [
+      "contract",
+      "approved"
+    ],
+    "created_at": "2026-07-26T23:01:05.534173",
+    "access_count": 0,
+    "seq": 501
+  },
+  {
+    "id": "episodic_20260726_230105_597169",
+    "memory_type": "episodic",
+    "content": "Contract 'SaaS Agreement' added with Vendor (type=service)",
+    "metadata": {
+      "department": "legal",
+      "contract_id": "c1"
+    },
+    "agent_id": "legal-service",
+    "tags": [
+      "contract",
+      "created",
+      "service"
+    ],
+    "created_at": "2026-07-26T23:01:05.597169",
+    "access_count": 0,
+    "seq": 503
+  },
+  {
+    "id": "episodic_20260726_230105_678286",
+    "memory_type": "episodic",
+    "content": "Contract 'SaaS Agreement' terminated: Vendor breach",
+    "metadata": {
+      "department": "legal",
+      "contract_id": "c1"
+    },
+    "agent_id": "legal-service",
+    "tags": [
+      "contract",
+      "terminated"
+    ],
+    "created_at": "2026-07-26T23:01:05.678286",
+    "access_count": 0,
+    "seq": 504
+  },
+  {
+    "id": "episodic_20260726_230105_708787",
+    "memory_type": "episodic",
+    "content": "Contract 'A' added with X (type=service)",
+    "metadata": {
+      "department": "legal",
+      "contract_id": "c1"
+    },
+    "agent_id": "legal-service",
+    "tags": [
+      "contract",
+      "created",
+      "service"
+    ],
+    "created_at": "2026-07-26T23:01:05.708787",
+    "access_count": 0,
+    "seq": 505
+  },
+  {
+    "id": "episodic_20260726_230105_757451",
+    "memory_type": "episodic",
+    "content": "Contract 'B' added with Y (type=service)",
+    "metadata": {
+      "department": "legal",
+      "contract_id": "c2"
+    },
+    "agent_id": "legal-service",
+    "tags": [
+      "contract",
+      "created",
+      "service"
+    ],
+    "created_at": "2026-07-26T23:01:05.757451",
+    "access_count": 0,
+    "seq": 506
+  },
+  {
+    "id": "episodic_20260726_230105_817048",
+    "memory_type": "episodic",
+    "content": "Contract 'A' approved by system",
+    "metadata": {
+      "department": "legal",
+      "contract_id": "c1"
+    },
+    "agent_id": "legal-service",
+    "tags": [
+      "contract",
+      "approved"
+    ],
+    "created_at": "2026-07-26T23:01:05.817048",
+    "access_count": 0,
+    "seq": 507
+  },
+  {
+    "id": "episodic_20260726_230105_849529",
+    "memory_type": "episodic",
+    "content": "Agent 'dev-1' onboarded as Backend Engineer in Technology",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "dev-1"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "onboarded",
+      "Technology"
+    ],
+    "created_at": "2026-07-26T23:01:05.849529",
+    "access_count": 0,
+    "seq": 509
+  },
+  {
+    "id": "episodic_20260726_230105_980558",
+    "memory_type": "episodic",
+    "content": "Agent 'dev-1' activated (was: onboarding)",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "dev-1"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "activated"
+    ],
+    "created_at": "2026-07-26T23:01:05.980558",
+    "access_count": 0,
+    "seq": 510
+  },
+  {
+    "id": "episodic_20260726_230106_008066",
+    "memory_type": "episodic",
+    "content": "Agent 'a1' onboarded as Dev in Eng",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "a1"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "onboarded",
+      "Eng"
+    ],
+    "created_at": "2026-07-26T23:01:06.008066",
+    "access_count": 0,
+    "seq": 511
+  },
+  {
+    "id": "episodic_20260726_230106_143852",
+    "memory_type": "episodic",
+    "content": "Agent 'a1' activated (was: onboarding)",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "a1"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "activated"
+    ],
+    "created_at": "2026-07-26T23:01:06.143852",
+    "access_count": 0,
+    "seq": 512
+  },
+  {
+    "id": "episodic_20260726_230106_167698",
+    "memory_type": "episodic",
+    "content": "Agent 'a1' deactivated (was: active): Project completed",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "a1"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "deactivated"
+    ],
+    "created_at": "2026-07-26T23:01:06.167698",
+    "access_count": 0,
+    "seq": 513
+  },
+  {
+    "id": "episodic_20260726_230106_241611",
+    "memory_type": "episodic",
+    "content": "Agent 'a1' onboarded as Dev in Eng",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "a1"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "onboarded",
+      "Eng"
+    ],
+    "created_at": "2026-07-26T23:01:06.241611",
+    "access_count": 0,
+    "seq": 514
+  },
+  {
+    "id": "episodic_20260726_230106_390505",
+    "memory_type": "episodic",
+    "content": "Agent 'a2' onboarded as PM in Product",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "a2"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "onboarded",
+      "Product"
+    ],
+    "created_at": "2026-07-26T23:01:06.390505",
+    "access_count": 0,
+    "seq": 515
+  },
+  {
+    "id": "episodic_20260726_230106_524245",
+    "memory_type": "episodic",
+    "content": "Agent 'a1' activated (was: onboarding)",
+    "metadata": {
+      "department": "hr",
+      "agent_id": "a1"
+    },
+    "agent_id": "hr-service",
+    "tags": [
+      "agent",
+      "activated"
+    ],
+    "created_at": "2026-07-26T23:01:06.524245",
+    "access_count": 0,
+    "seq": 516
+  }
+]

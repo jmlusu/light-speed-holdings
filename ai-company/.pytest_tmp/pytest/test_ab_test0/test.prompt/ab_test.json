@@ -1,0 +1,8 @@
+{
+  "prompt_id": "test.prompt",
+  "variant_a_version": 1,
+  "variant_b_version": 2,
+  "traffic_split": 0.5,
+  "enabled": true,
+  "started_at": 1785140825.6532035
+}

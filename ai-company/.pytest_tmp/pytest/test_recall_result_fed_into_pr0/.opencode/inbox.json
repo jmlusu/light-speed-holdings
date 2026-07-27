@@ -1,0 +1,14 @@
+[
+  {
+    "id": "task-mem",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Draft the Q3 strategy memo",
+    "status": "completed",
+    "priority": "medium",
+    "updated_at": "2026-07-27T10:26:36.743890",
+    "created_at": "2026-07-27T10:26:36.716200",
+    "result": "ok",
+    "completed_at": "2026-07-27T10:26:36.743890"
+  }
+]

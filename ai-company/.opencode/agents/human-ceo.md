@@ -21,7 +21,7 @@ Type: Executive (Chief Executive Officer)
 
 Department: Executive
 
-Reports To: board_chair
+Reports To: board
 
 Direct Reports: chief_of_staff
 

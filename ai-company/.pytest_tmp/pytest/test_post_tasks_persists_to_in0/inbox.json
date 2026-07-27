@@ -1,0 +1,25 @@
+[
+  {
+    "id": "0c7f2ff1-8a3c-49b3-a8c0-e83701794171",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "coo",
+    "instruction": "Optimize workflow",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:38.256863",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "df1751c2-b1aa-41cd-acc0-d9004742795f",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

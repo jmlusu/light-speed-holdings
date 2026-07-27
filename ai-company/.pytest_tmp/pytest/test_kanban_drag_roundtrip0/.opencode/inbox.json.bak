@@ -1,0 +1,25 @@
+[
+  {
+    "id": "a9bfe83f-890d-4c3a-b739-d868e10b9741",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Drag me",
+    "status": "completed",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:39.680052",
+    "updated_at": "2026-07-27T10:26:39.739067",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "13d43e78-083a-4c3f-a125-c84d9896595e",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

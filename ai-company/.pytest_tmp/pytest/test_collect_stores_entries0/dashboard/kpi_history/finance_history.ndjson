@@ -1,0 +1,6 @@
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "finance", "kpi_key": "budget_utilization", "current": 0.0, "target": 90.0, "unit": "%", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "finance", "kpi_key": "estimated_llm_spend", "current": 0.0, "target": null, "unit": "$", "status": "info"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "finance", "kpi_key": "total_budget", "current": 90.0, "target": null, "unit": "$", "status": "info"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "finance", "kpi_key": "total_spent", "current": 0.0, "target": null, "unit": "$", "status": "info"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "finance", "kpi_key": "cost_per_agent", "current": 0.0, "target": 50.0, "unit": "$/month", "status": "below_target"}
+{"timestamp": "2026-07-27T10:27:19.061719", "department": "finance", "kpi_key": "active_agents", "current": 0.0, "target": null, "unit": "count", "status": "info"}

@@ -48,10 +48,12 @@ class RegistryValidator:
         if not r.departments:
             errors.append("No departments defined")
         exec_ids = {e.id for e in r.executives}
+        spec_ids = {s.id for s in r.specialists}
+        valid_executives = exec_ids | spec_ids
         for dept in r.departments:
-            if dept.executive and dept.executive not in exec_ids:
+            if dept.executive and dept.executive not in valid_executives:
                 errors.append(
-                    f"Department '{dept.id}' executive '{dept.executive}' not found in executives"
+                    f"Department '{dept.id}' executive '{dept.executive}' not found in executives or specialists"
                 )
         return errors
 
@@ -60,14 +62,19 @@ class RegistryValidator:
         if not r.specialists:
             errors.append("No specialist agents defined")
         exec_ids = {e.id for e in r.executives}
+        spec_ids = {s.id for s in r.specialists}
+        valid_reports_to = exec_ids | spec_ids
+        # Build department lookup: accept both id and display name (case-insensitive)
+        dept_ids = {d.id for d in r.departments}
+        dept_names = {d.name.lower() for d in r.departments if d.name}
+        valid_departments = dept_ids | dept_names
         for spec in r.specialists:
-            if spec.reports_to and spec.reports_to not in exec_ids:
+            if spec.reports_to and spec.reports_to not in valid_reports_to:
                 errors.append(
-                    f"Specialist '{spec.id}' reports_to '{spec.reports_to}' not found in executives"
+                    f"Specialist '{spec.id}' reports_to '{spec.reports_to}' not found in executives or specialists"
                 )
             if spec.department:
-                dept_ids = {d.id for d in r.departments}
-                if spec.department not in dept_ids:
+                if spec.department.lower() not in valid_departments:
                     errors.append(
                         f"Specialist '{spec.id}' department '{spec.department}' not found in departments"
                     )

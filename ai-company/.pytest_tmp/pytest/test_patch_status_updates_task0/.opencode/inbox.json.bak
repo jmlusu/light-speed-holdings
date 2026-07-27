@@ -1,0 +1,25 @@
+[
+  {
+    "id": "a94e8fb2-7a76-474b-bb20-442050ecd25d",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Review PR",
+    "status": "in_progress",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:39.295785",
+    "updated_at": "2026-07-27T10:26:39.321681",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "58f96cf2-5f46-46b8-96c2-ed0c56211093",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

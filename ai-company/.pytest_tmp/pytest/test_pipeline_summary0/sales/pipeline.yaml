@@ -1,0 +1,16 @@
+leads:
+- id: l1
+  name: Lead 1
+  source: website
+  contact_email: ''
+  company: ''
+  status: new
+  created_at: '2026-07-27T10:28:55.836962'
+deals:
+- id: d1
+  name: Deal 1
+  value: 25000
+  lead_id: ''
+  owner: ''
+  stage: prospecting
+  created_at: '2026-07-27T10:28:55.921913'

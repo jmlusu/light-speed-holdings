@@ -1,0 +1,1 @@
+{"event_id": "d7b421cc-c667-4f15-8d7e-271169d3ae4d", "timestamp": "2026-07-27T08:27:03.526211+00:00", "event_type": "hitl_denied", "agent_id": "agent-b", "task_id": "t-2", "tool": "execute", "args": {}, "result": {}, "metadata": {}, "severity": "info"}

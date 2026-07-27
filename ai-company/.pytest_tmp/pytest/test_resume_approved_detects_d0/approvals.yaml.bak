@@ -1,0 +1,16 @@
+requests:
+- id: hitl-58a18226a37b
+  task_id: t-park
+  agent_id: agent-1
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - rejected
+  requested_at: 2026-07-27 10:28:18.076763
+  responded_at: 2026-07-27 10:28:18.110050
+  response_by: human-ceo
+  notes: null
+  expires_at: 2026-07-27 10:28:21.076763

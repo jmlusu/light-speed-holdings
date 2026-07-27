@@ -1,0 +1,172 @@
+[
+  {
+    "id": "episodic_20260727_102705_116054",
+    "memory_type": "episodic",
+    "content": "Task t-0: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-0",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.116054",
+    "access_count": 0,
+    "seq": 44
+  },
+  {
+    "id": "episodic_20260727_102705_120871",
+    "memory_type": "episodic",
+    "content": "Task t-1: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-1",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.120871",
+    "access_count": 0,
+    "seq": 45
+  },
+  {
+    "id": "episodic_20260727_102705_123919",
+    "memory_type": "episodic",
+    "content": "Task t-2: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-2",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.123919",
+    "access_count": 0,
+    "seq": 46
+  },
+  {
+    "id": "episodic_20260727_102705_126304",
+    "memory_type": "episodic",
+    "content": "Task t-3: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-3",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.126304",
+    "access_count": 0,
+    "seq": 47
+  },
+  {
+    "id": "episodic_20260727_102705_131631",
+    "memory_type": "episodic",
+    "content": "Task t-4: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-4",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.131631",
+    "access_count": 0,
+    "seq": 48
+  },
+  {
+    "id": "episodic_20260727_102705_135297",
+    "memory_type": "episodic",
+    "content": "Task t-5: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-5",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.135297",
+    "access_count": 0,
+    "seq": 49
+  },
+  {
+    "id": "episodic_20260727_102705_138308",
+    "memory_type": "episodic",
+    "content": "Task t-6: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-6",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.138308",
+    "access_count": 0,
+    "seq": 50
+  },
+  {
+    "id": "episodic_20260727_102705_140473",
+    "memory_type": "episodic",
+    "content": "Task t-7: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-7",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.140473",
+    "access_count": 0,
+    "seq": 51
+  },
+  {
+    "id": "episodic_20260727_102705_146294",
+    "memory_type": "episodic",
+    "content": "Task t-8: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-8",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.146294",
+    "access_count": 0,
+    "seq": 52
+  },
+  {
+    "id": "episodic_20260727_102705_151570",
+    "memory_type": "episodic",
+    "content": "Task t-9: X\nStatus: ok\nResult: Y",
+    "metadata": {
+      "task_id": "t-9",
+      "status": "ok"
+    },
+    "agent_id": "a",
+    "tags": [
+      "ok",
+      "a"
+    ],
+    "created_at": "2026-07-27T10:27:05.151570",
+    "access_count": 0,
+    "seq": 53
+  }
+]

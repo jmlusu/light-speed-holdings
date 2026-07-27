@@ -1,0 +1,25 @@
+[
+  {
+    "id": "e2e-consolidate-001",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Trigger consolidation",
+    "status": "completed",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:26:35.727105",
+    "updated_at": "2026-07-27T10:26:35.755052",
+    "completed_at": "2026-07-27T10:26:35.755052",
+    "result": "consolidation test",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "fd4d632b-f1ed-4a3f-8f8a-45d28ef6d9ff",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

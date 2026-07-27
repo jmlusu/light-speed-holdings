@@ -1,0 +1,16 @@
+requests:
+- id: hitl-3a1514a1bd62
+  task_id: task-hitl-001
+  agent_id: test-agent
+  action: tool:execute
+  description: 'Execute: rm -rf /tmp/test'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - rejected
+  requested_at: 2026-07-27 10:26:23.152480
+  responded_at: 2026-07-27 10:26:23.216989
+  response_by: human-ceo
+  notes: Too risky
+  expires_at: 2026-07-27 10:56:23.152480

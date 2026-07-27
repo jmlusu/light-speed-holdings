@@ -1,0 +1,25 @@
+[
+  {
+    "id": "e2e-dead",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "a",
+    "receiver_id": "b",
+    "instruction": "fail",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "8e0909b6-2ad7-495c-a28b-9c0f710a8630",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

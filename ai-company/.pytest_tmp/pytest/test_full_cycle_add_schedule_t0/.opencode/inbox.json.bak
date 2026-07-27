@@ -1,0 +1,25 @@
+[
+  {
+    "id": "8dceed56-e451-41b2-b37b-6f2f6e9fe009",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "scheduler",
+    "receiver_id": "test-agent",
+    "instruction": "Run cycle report",
+    "status": "completed",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "2026-07-27T10:27:07.066689",
+    "updated_at": "2026-07-27T10:27:07.089195",
+    "completed_at": "2026-07-27T10:27:07.089195",
+    "result": "Cycle report done.",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "aec54e4e-e7bf-40e8-ad70-90277c50a5b8",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

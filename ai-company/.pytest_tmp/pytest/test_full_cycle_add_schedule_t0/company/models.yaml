@@ -1,0 +1,1 @@
+{"providers": {"opencode": {"backend": "openai_compatible", "default_model": "big-pickle", "api_base": "https://opencode.ai/api/v1"}}, "tiers": {"fast": {"description": "Fast", "providers": [{"provider": "opencode", "model": "big-pickle"}]}}, "routing": [{"agent_type": "Executive", "tier": "fast"}, {"agent_type": "Specialist", "tier": "fast"}]}

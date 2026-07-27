@@ -1,0 +1,14 @@
+[
+  {
+    "id": "task-fail-001",
+    "sender_id": "human-ceo",
+    "receiver_id": "test-agent",
+    "instruction": "Failing task",
+    "status": "failed",
+    "priority": "medium",
+    "updated_at": "2026-07-27T10:28:10.221302",
+    "created_at": "2026-07-27T10:28:10.197180",
+    "result": "Network unreachable",
+    "completed_at": "2026-07-27T10:28:10.221302"
+  }
+]

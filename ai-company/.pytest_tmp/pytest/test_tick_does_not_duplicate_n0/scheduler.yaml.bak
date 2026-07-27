@@ -1,0 +1,11 @@
+tasks:
+- id: s-future-cycle
+  name: Future Cycle
+  cron_expression: null
+  interval_minutes: 60
+  last_run: null
+  next_run: 2026-07-27 11:27:07.156297
+  enabled: true
+  task_template:
+    receiver_id: test-agent
+    instruction: Not yet

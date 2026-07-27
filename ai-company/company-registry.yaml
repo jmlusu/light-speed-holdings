@@ -5,6 +5,7 @@ company:
       name: Chief of Staff
       title: Chief of Staff
       description: The primary orchestrator and strategic alignment agent for the company.
+      type: executive
       department: Executive
       reports_to: human_ceo
       direct_reports: [cto, coo, caio]
@@ -19,6 +20,7 @@ company:
       name: Chief Technology Officer
       title: CTO
       description: Oversees all technological infrastructure and software development.
+      type: executive
       department: Technology
       reports_to: chief_of_staff
       direct_reports: [lead_backend, lead_frontend, solution_architect, devops_lead, qa_lead, vp_engineering]
@@ -33,6 +35,7 @@ company:
       name: Chief Operating Officer
       title: COO
       description: Manages day-to-day operations and internal processes.
+      type: executive
       department: Operations
       reports_to: chief_of_staff
       direct_reports: [workflow_owner, orchestration_owner, doctor_owner, decision_engine_owner, memory_owner, audit_trail_owner, capacity_planner, business_continuity_manager, vendor_manager, process_quality_manager]
@@ -46,6 +49,7 @@ company:
       name: Chief AI Officer
       title: CAIO
       description: Directs AI research, model selection, and prompt engineering strategies.
+      type: executive
       department: AI Research
       reports_to: chief_of_staff
       direct_reports: [ml_engineer, ml_services_owner, memory_owner, llm_platform_owner, ai_safety_lead, eval_benchmarks_engineer, prompt_engineer]
@@ -61,7 +65,7 @@ company:
       description: Set company vision, strategy, and culture. Make final decisions on high-stakes matters.
       type: executive
       department: Executive
-      reports_to: board_chair
+      reports_to: board
       direct_reports: [chief_of_staff]
       responsibilities:
         - Set company vision, mission, and long-term strategy.

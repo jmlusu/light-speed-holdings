@@ -1,0 +1,11 @@
+[
+  {
+    "task": {
+      "id": "t1",
+      "receiver_id": "agent",
+      "instruction": "do stuff"
+    },
+    "moved_at": "2026-07-27T10:27:41.850412",
+    "reason": "stale timeout"
+  }
+]

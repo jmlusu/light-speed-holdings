@@ -1,0 +1,16 @@
+requests:
+- id: hitl-7164fd621d68
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - pending
+  requested_at: 2026-07-26 22:58:56.305250
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: 2026-07-26 22:57:56.322889

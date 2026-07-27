@@ -1,0 +1,15 @@
+[
+  {
+    "id": "procedural_20260727_102705_081370",
+    "memory_type": "procedural",
+    "content": "Run ansible-playbook deploy.yml to deploy",
+    "metadata": {},
+    "agent_id": "devops",
+    "tags": [
+      "procedure"
+    ],
+    "created_at": "2026-07-27T10:27:05.081370",
+    "access_count": 0,
+    "seq": 40
+  }
+]

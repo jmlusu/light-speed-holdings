@@ -1,0 +1,13 @@
+[
+  {
+    "prompt_id": "prompt.x",
+    "version": 1,
+    "content": "content x",
+    "created_at": 1785140825.7259068,
+    "author": "system",
+    "tags": [],
+    "notes": "",
+    "hash": "0a204f1cbabe34aa",
+    "active": true
+  }
+]

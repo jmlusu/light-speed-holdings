@@ -1,0 +1,1 @@
+{"event_id": "fd7ab49f-663d-40c2-9cf3-4ff535c4d443", "timestamp": "2026-07-27T08:27:03.393955+00:00", "event_type": "tool_call", "agent_id": "agent-a", "task_id": "t-1", "tool": "read", "args": {"path": "foo.py"}, "result": {"status": "ok"}, "metadata": {}, "severity": "info"}

@@ -55,8 +55,9 @@ line-length = 100
 target-version = "py312"
 
 [tool.pytest.ini_options]
+addopts = "--basetemp=.pytest_tmp/pytest"
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 asyncio_mode = "auto"
 markers = [
     "performance: marks tests as performance benchmarks (deselect with '-m \"not performance\"')",

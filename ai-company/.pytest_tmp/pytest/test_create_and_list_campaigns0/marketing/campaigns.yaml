@@ -1,0 +1,12 @@
+campaigns:
+- id: camp-1
+  name: Product Launch
+  channel: email
+  target_audience: ''
+  budget: 0.0
+  status: draft
+  created_at: '2026-07-27T10:28:54.935581'
+  metrics:
+    impressions: 0
+    clicks: 0
+    conversions: 0

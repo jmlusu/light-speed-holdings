@@ -37,10 +37,14 @@ def _unwrap(data: dict[str, Any], key: str) -> dict[str, Any]:
 
 def _unwrap_list(data: dict[str, Any], key: str) -> list[dict[str, Any]]:
     """Unwrap a top-level YAML key that contains a list."""
-    if key in data and isinstance(data[key], list):
-        return data[key]
-    if key in data and isinstance(data[key], dict):
-        return data[key].get(key, [])
+    # If data is already a list (e.g. loader pre-partitioned it), return directly
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        if key in data and isinstance(data[key], list):
+            return data[key]
+        if key in data and isinstance(data[key], dict):
+            return data[key].get(key, [])
     return []
 
 

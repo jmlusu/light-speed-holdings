@@ -1,0 +1,10 @@
+contracts:
+- id: c1
+  name: NDA
+  party: Acme
+  type: service
+  value: 0
+  status: approved
+  created_at: '2026-07-27T10:28:56.294752'
+  approved_at: '2026-07-27T10:28:56.387891'
+  approved_by: legal-head

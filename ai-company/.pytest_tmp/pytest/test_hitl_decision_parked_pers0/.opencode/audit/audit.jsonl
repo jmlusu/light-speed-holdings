@@ -1,0 +1,1 @@
+{"event_id": "e15bedde-85cf-4a2c-b74c-f1ff8a43c7c2", "timestamp": "2026-07-27T08:27:17.516849+00:00", "event_type": "hitl_parked", "agent_id": "agent-c", "task_id": "t-3", "tool": "execute", "args": {}, "result": {}, "metadata": {}, "severity": "info"}

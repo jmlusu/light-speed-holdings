@@ -1,0 +1,16 @@
+[
+  {
+    "task": {
+      "id": "t-bad",
+      "sender_id": "ceo",
+      "receiver_id": "agent",
+      "instruction": "Task t-bad",
+      "status": "in_progress",
+      "priority": "medium",
+      "created_at": "not-a-date",
+      "updated_at": ""
+    },
+    "moved_at": "2026-07-27T10:27:42.122968",
+    "reason": "Unparseable timestamp 'not-a-date'"
+  }
+]

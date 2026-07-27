@@ -1,0 +1,25 @@
+[
+  {
+    "id": "test-1",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "human-ceo",
+    "receiver_id": "cto",
+    "instruction": "Review architecture",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "99395347-9e8e-475a-b9fd-c911da24290e",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

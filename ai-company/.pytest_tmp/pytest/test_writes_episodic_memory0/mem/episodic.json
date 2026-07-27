@@ -1,0 +1,21 @@
+[
+  {
+    "id": "episodic_20260727_102705_036129",
+    "memory_type": "episodic",
+    "content": "Task t-001: Deploy the API\nStatus: completed\nResult: Deployed to staging",
+    "metadata": {
+      "task_id": "t-001",
+      "status": "completed"
+    },
+    "agent_id": "lead-backend",
+    "tags": [
+      "completed",
+      "lead-backend",
+      "execute",
+      "write"
+    ],
+    "created_at": "2026-07-27T10:27:05.036129",
+    "access_count": 0,
+    "seq": 37
+  }
+]

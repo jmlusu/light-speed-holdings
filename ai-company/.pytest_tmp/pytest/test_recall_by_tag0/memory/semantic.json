@@ -1,0 +1,29 @@
+[
+  {
+    "id": "semantic_20260727_102833_265023",
+    "memory_type": "semantic",
+    "content": "Python is a language",
+    "metadata": {},
+    "agent_id": "",
+    "tags": [
+      "tech",
+      "python"
+    ],
+    "created_at": "2026-07-27T10:28:33.265023",
+    "access_count": 0,
+    "seq": 369
+  },
+  {
+    "id": "semantic_20260727_102833_267034",
+    "memory_type": "semantic",
+    "content": "Company policy on PTO",
+    "metadata": {},
+    "agent_id": "",
+    "tags": [
+      "policy"
+    ],
+    "created_at": "2026-07-27T10:28:33.267034",
+    "access_count": 0,
+    "seq": 370
+  }
+]

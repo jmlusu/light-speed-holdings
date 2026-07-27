@@ -1,0 +1,331 @@
+{
+  "collected_at": "2026-07-27T10:26:37.248262",
+  "departments": {
+    "engineering": {
+      "department": "engineering",
+      "collected_at": "2026-07-27T10:26:37.238882",
+      "kpis": {
+        "task_completion_rate": {
+          "current": 0.0,
+          "target": 95,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "failure_rate": {
+          "current": 0.0,
+          "target": 0,
+          "unit": "%",
+          "status": "on_track"
+        },
+        "escalation_rate": {
+          "current": 0.0,
+          "target": 5,
+          "unit": "%",
+          "status": "on_track"
+        },
+        "pending_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "in_progress_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "completed_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "failed_tasks": {
+          "current": 0,
+          "target": 0,
+          "unit": "count",
+          "status": "on_track"
+        },
+        "open_escalations": {
+          "current": 0,
+          "target": 0,
+          "unit": "count",
+          "status": "on_track"
+        },
+        "total_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "scheduled_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        }
+      }
+    },
+    "hr": {
+      "department": "hr",
+      "collected_at": "2026-07-27T10:26:37.244937",
+      "kpis": {
+        "total_agents": {
+          "current": 2,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "agents_by_department": {
+          "current": {
+            "engineering": 2
+          },
+          "target": null,
+          "unit": "breakdown",
+          "status": "info"
+        },
+        "department_coverage": {
+          "current": 0.0,
+          "target": 100,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "declared_departments": {
+          "current": 1,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        }
+      }
+    },
+    "finance": {
+      "department": "finance",
+      "collected_at": "2026-07-27T10:26:37.246216",
+      "kpis": {
+        "budget_utilization": {
+          "current": 0.0,
+          "target": 90,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "estimated_llm_spend": {
+          "current": 0.0,
+          "target": null,
+          "unit": "$",
+          "status": "info"
+        },
+        "total_budget": {
+          "current": 90,
+          "target": null,
+          "unit": "$",
+          "status": "info"
+        },
+        "total_spent": {
+          "current": 0.0,
+          "target": null,
+          "unit": "$",
+          "status": "info"
+        },
+        "cost_per_agent": {
+          "current": 0.0,
+          "target": 50,
+          "unit": "$/month",
+          "status": "below_target"
+        },
+        "active_agents": {
+          "current": 2,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        }
+      }
+    },
+    "marketing": {
+      "department": "marketing",
+      "collected_at": "2026-07-27T10:26:37.246216",
+      "kpis": {
+        "campaign_generation_rate": {
+          "current": 0,
+          "target": 5,
+          "unit": "campaigns",
+          "status": "below_target"
+        },
+        "active_campaigns": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "content_quality_score": {
+          "current": 0.0,
+          "target": 8,
+          "unit": "score",
+          "status": "below_target"
+        },
+        "marketing_task_completion": {
+          "current": 0.0,
+          "target": 90,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "total_marketing_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "content_pieces_produced": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        }
+      }
+    },
+    "sales": {
+      "department": "sales",
+      "collected_at": "2026-07-27T10:26:37.246216",
+      "kpis": {
+        "pipeline_value": {
+          "current": 0,
+          "target": null,
+          "unit": "$",
+          "status": "info"
+        },
+        "total_deals": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "win_rate": {
+          "current": 0.0,
+          "target": 25,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "new_leads": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "sales_task_completion": {
+          "current": 0.0,
+          "target": 85,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "total_sales_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        }
+      }
+    },
+    "customer_success": {
+      "department": "customer_success",
+      "collected_at": "2026-07-27T10:26:37.246216",
+      "kpis": {
+        "ticket_resolution_time": {
+          "current": 0,
+          "target": 4,
+          "unit": "hours",
+          "status": "below_target"
+        },
+        "open_tickets": {
+          "current": 0,
+          "target": 0,
+          "unit": "count",
+          "status": "on_track"
+        },
+        "resolved_tickets": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "total_tickets": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "customer_satisfaction": {
+          "current": 0.0,
+          "target": 9,
+          "unit": "score",
+          "status": "below_target"
+        },
+        "cs_task_completion": {
+          "current": 0.0,
+          "target": 90,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "total_cs_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        }
+      }
+    },
+    "legal": {
+      "department": "legal",
+      "collected_at": "2026-07-27T10:26:37.248262",
+      "kpis": {
+        "contract_review_time": {
+          "current": 0,
+          "target": 2,
+          "unit": "hours",
+          "status": "below_target"
+        },
+        "pending_contract_reviews": {
+          "current": 0,
+          "target": 0,
+          "unit": "count",
+          "status": "on_track"
+        },
+        "approved_contracts": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "total_contracts": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "compliance_score": {
+          "current": 0.0,
+          "target": 100,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "total_compliance_checks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        },
+        "legal_task_completion": {
+          "current": 0.0,
+          "target": 90,
+          "unit": "%",
+          "status": "below_target"
+        },
+        "total_legal_tasks": {
+          "current": 0,
+          "target": null,
+          "unit": "count",
+          "status": "info"
+        }
+      }
+    }
+  }
+}

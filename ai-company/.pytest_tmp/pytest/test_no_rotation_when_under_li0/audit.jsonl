@@ -1,0 +1,1 @@
+{"event_id": "c23bf551-9e3b-4e22-904e-e7453427d0fa", "timestamp": "2026-07-27T08:27:11.466518+00:00", "event_type": "tool_call", "agent_id": "test-agent", "task_id": "task-001", "tool": "bash", "args": {"cmd": "ls"}, "result": {"exit_code": 0}, "metadata": {"session": "abc"}, "severity": "info"}

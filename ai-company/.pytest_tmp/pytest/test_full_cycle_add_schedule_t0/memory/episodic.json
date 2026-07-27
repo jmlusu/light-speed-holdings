@@ -1,0 +1,19 @@
+[
+  {
+    "id": "episodic_20260727_102707_122725",
+    "memory_type": "episodic",
+    "content": "Task 8dceed56-e451-41b2-b37b-6f2f6e9fe009: Run cycle report\nStatus: completed\nResult: Cycle report done.",
+    "metadata": {
+      "task_id": "8dceed56-e451-41b2-b37b-6f2f6e9fe009",
+      "status": "completed"
+    },
+    "agent_id": "test-agent",
+    "tags": [
+      "completed",
+      "test-agent"
+    ],
+    "created_at": "2026-07-27T10:27:07.122725",
+    "access_count": 0,
+    "seq": 54
+  }
+]

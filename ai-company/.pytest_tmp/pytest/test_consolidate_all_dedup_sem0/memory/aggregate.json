@@ -1,0 +1,19 @@
+[
+  {
+    "id": "aggregate_20260727_102833_646290",
+    "memory_type": "aggregate",
+    "content": "{\n  \"type\": \"semantic\",\n  \"count\": 2,\n  \"top_tags\": [],\n  \"top_agents\": [],\n  \"latest\": \"2026-07-27T10:28:33.641740\",\n  \"most_accessed\": \"semantic_20260727_102833_637950\"\n}",
+    "metadata": {
+      "source_type": "semantic",
+      "entry_count": 2
+    },
+    "agent_id": "",
+    "tags": [
+      "consolidation",
+      "semantic"
+    ],
+    "created_at": "2026-07-27T10:28:33.646290",
+    "access_count": 0,
+    "seq": 459
+  }
+]

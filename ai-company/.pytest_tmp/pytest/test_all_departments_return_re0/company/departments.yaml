@@ -1,0 +1,14 @@
+departments:
+- agents:
+  - lead_backend
+  executive: cto
+  name: Technology
+  totalAgents: 8
+- agents: []
+  executive: cmo
+  name: Marketing
+  totalAgents: 1
+- agents: []
+  executive: cfo
+  name: Finance
+  totalAgents: 0

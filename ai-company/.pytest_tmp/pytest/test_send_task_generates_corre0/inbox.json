@@ -1,0 +1,25 @@
+[
+  {
+    "id": "corr-1",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "a",
+    "receiver_id": "b",
+    "instruction": "test",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "15ddbde8-8bc8-4d6e-bf60-266419b548bf",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

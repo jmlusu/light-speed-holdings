@@ -1,0 +1,12 @@
+campaigns:
+- id: dup
+  name: First
+  channel: email
+  target_audience: ''
+  budget: 0.0
+  status: draft
+  created_at: '2026-07-27T10:28:55.032746'
+  metrics:
+    impressions: 0
+    clicks: 0
+    conversions: 0

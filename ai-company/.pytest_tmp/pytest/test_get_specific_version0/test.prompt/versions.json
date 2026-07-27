@@ -1,0 +1,24 @@
+[
+  {
+    "prompt_id": "test.prompt",
+    "version": 1,
+    "content": "v1 content",
+    "created_at": 1785140825.5251358,
+    "author": "system",
+    "tags": [],
+    "notes": "",
+    "hash": "5ecf6e439f1d0ec1",
+    "active": true
+  },
+  {
+    "prompt_id": "test.prompt",
+    "version": 2,
+    "content": "v2 content",
+    "created_at": 1785140825.538648,
+    "author": "system",
+    "tags": [],
+    "notes": "",
+    "hash": "fdef21c358821e56",
+    "active": true
+  }
+]

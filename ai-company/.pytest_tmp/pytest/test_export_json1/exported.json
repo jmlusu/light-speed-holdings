@@ -1,0 +1,25 @@
+[
+  {
+    "id": "export-me",
+    "name": "",
+    "description": "",
+    "assignee": "",
+    "sender_id": "agent-a",
+    "receiver_id": "agent-b",
+    "instruction": "Do something",
+    "status": "pending",
+    "priority": "medium",
+    "dependencies": [],
+    "due_date": "",
+    "tags": [],
+    "created_at": "",
+    "updated_at": "",
+    "completed_at": "",
+    "result": "",
+    "requires_approval": false,
+    "approved_by": "",
+    "correlation_id": "73501ee8-003a-46e9-a7dd-a6d58a2e4ddc",
+    "parent_task_id": "",
+    "acknowledged_by": ""
+  }
+]

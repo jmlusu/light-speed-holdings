@@ -1,0 +1,29 @@
+{
+  "incident_id": "INC-002",
+  "title": "Second",
+  "date": "2026-07-27",
+  "severity": "medium",
+  "affected_agent": "",
+  "department": "",
+  "escalation_rule": "",
+  "duration": "",
+  "status": "draft",
+  "root_cause": "",
+  "impact": {
+    "tasks_before": 0,
+    "tasks_during": 0,
+    "tasks_after": 0,
+    "agents_before": 0,
+    "agents_during": 0,
+    "agents_after": 0,
+    "downtime_minutes": 0
+  },
+  "timeline": [],
+  "resolution_steps": [],
+  "action_items": [],
+  "lessons_learned": [],
+  "prevention_measures": [],
+  "prepared_by": "",
+  "reviewed_by": "",
+  "last_updated": "2026-07-27T10:27:09.725021"
+}

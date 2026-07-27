@@ -119,7 +119,7 @@
     "role": "Human CEO",
     "type": "Executive",
     "department": "Executive",
-    "reportsTo": "board-chair",
+    "reportsTo": "board",
     "directReports": [
       "chief-of-staff"
     ],

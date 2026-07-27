@@ -1,0 +1,18 @@
+requests:
+- id: req-1
+  task_id: task-1
+  agent_id: agent-a
+  action: terraform-apply
+  description: Apply infrastructure
+  tier: 2
+  required_approvers: 2
+  approved_by_list:
+  - human-vp
+  - human-cto
+  status: !!python/object/apply:ai_company.orchestrator.approval.ApprovalStatus
+  - approved
+  requested_at: 2026-07-27 10:27:08.533887
+  responded_at: 2026-07-27 10:27:08.567124
+  response_by: human-cto
+  notes: null
+  expires_at: 2026-07-27 11:27:08.533887

@@ -1,0 +1,12 @@
+{
+  "task_id": "e2e-consolidate-001",
+  "agent": "test-agent",
+  "final_response": "consolidation test",
+  "iterations": 1,
+  "total_tokens": 100,
+  "total_cost_usd": 0.0002,
+  "done": true,
+  "error": "",
+  "tool_results": [],
+  "timestamp": "2026-07-27T10:26:35.755052"
+}
