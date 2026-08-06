@@ -393,10 +393,10 @@ company:                    # Wrapper key (parser unwraps automatically)
 # config/__init__.py
 def load_config() -> CompanyRegistry:
     """Load all 19 YAML files into a CompanyRegistry."""
-    raw = load_raw_files()           # registry/loader.py
-    parsed = parse_all(raw)          # registry/parser.py
-    resolved = resolve(parsed)       # registry/resolver.py
-    validated = validate(resolved)   # registry/validator.py
+    raw = load_raw_files()  # registry/loader.py
+    parsed = parse_all(raw)  # registry/parser.py
+    resolved = resolve(parsed)  # registry/resolver.py
+    validated = validate(resolved)  # registry/validator.py
     return CompanyRegistry(**validated)
 ```
 

@@ -268,10 +268,11 @@ class HITLGate:
         if req.status == ApprovalStatus.APPROVED:
             self._resolve(request_id, True)
             return True
-        elif req.status == ApprovalStatus.REJECTED:
-            self._resolve(request_id, False)
-            return False
-        elif req.expires_at and req.expires_at < __import__("datetime").datetime.now():
+        elif (
+            req.status == ApprovalStatus.REJECTED
+            or req.expires_at
+            and req.expires_at < __import__("datetime").datetime.now()
+        ):
             self._resolve(request_id, False)
             return False
 

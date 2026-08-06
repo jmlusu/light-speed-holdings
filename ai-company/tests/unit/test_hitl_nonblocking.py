@@ -20,11 +20,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from ai_company.executor.tool_runner import HITLParked, ToolRunner
 from ai_company.executor.hitl_gate import HITLGate
+from ai_company.executor.tool_runner import HITLParked, ToolRunner
 from ai_company.models.models import TaskStatus
 from ai_company.orchestrator.approval import ApprovalGate
-
 
 # ── HITLGate park/resume ─────────────────────────────────────────
 

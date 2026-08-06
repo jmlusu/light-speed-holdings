@@ -7,6 +7,7 @@ restarts.  Each instance is stored as JSON under
 
 from __future__ import annotations
 
+import contextlib
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -228,10 +229,8 @@ class WorkflowInstance:
                 instance.started_at = datetime.now()
         completed = data.get("completed_at")
         if completed:
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 instance.completed_at = datetime.fromisoformat(completed)
-            except (ValueError, TypeError):
-                pass
         instance.status_label = data.get("status", "running")
         return instance
 

@@ -9,12 +9,12 @@ import pytest
 
 from ai_company.orchestrator.approval import ApprovalGate
 from ai_company.orchestrator.escalation import (
+    ActionItem,
     EscalationManager,
+    ImpactAssessment,
     Postmortem,
     PostmortemStore,
     TimelineEntry,
-    ActionItem,
-    ImpactAssessment,
 )
 from ai_company.orchestrator.scheduler import Scheduler
 

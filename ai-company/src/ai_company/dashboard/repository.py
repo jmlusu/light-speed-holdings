@@ -109,7 +109,7 @@ class StateStore:
             rel = str(candidate.relative_to(self._base.resolve())).replace("\\", "/")
         except ValueError:
             # Path escapes base_dir (e.g. "../secrets.json") — not permitted.
-            raise StateStoreError(f"Path not permitted by StateStore: {rel_path}")
+            raise StateStoreError(f"Path not permitted by StateStore: {rel_path}") from None
 
         if rel in _ALLOWED_REL_PATHS:
             return candidate, rel

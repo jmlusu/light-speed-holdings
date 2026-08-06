@@ -7,20 +7,19 @@ from pathlib import Path
 
 import pytest
 
-from ai_company.store.file_store import FileStore
-from ai_company.services.marketing import MarketingService
-from ai_company.services.sales import SalesService
-from ai_company.services.customer_success import CustomerSuccessService
-from ai_company.services.legal import LegalService
-from ai_company.services.hr import HRService
 from ai_company.models import (
     Company,
     CompanyRegistry,
     Workflow,
     WorkflowStep,
 )
+from ai_company.services.customer_success import CustomerSuccessService
+from ai_company.services.hr import HRService
+from ai_company.services.legal import LegalService
+from ai_company.services.marketing import MarketingService
+from ai_company.services.sales import SalesService
+from ai_company.store.file_store import FileStore
 from ai_company.workflow.engine import WorkflowEngine
-
 
 # ── FileStore Tests ───────────────────────────────────────────────────
 

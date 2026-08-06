@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import concurrent.futures
 import json
 from pathlib import Path
-import concurrent.futures
 from unittest.mock import MagicMock
 
 from ai_company.executor.agent_loop import (
@@ -15,7 +15,6 @@ from ai_company.executor.agent_loop import (
 from ai_company.executor.context import AgentContext
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.llm.providers.base import ChatResponse, LLMProviderError
-
 
 # ── Auto-approving HITL gate ──────────────────────────────────────────
 #

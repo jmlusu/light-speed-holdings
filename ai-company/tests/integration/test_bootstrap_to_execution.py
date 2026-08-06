@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 from ai_company.models import Task, TaskPriority, TaskStatus
 from ai_company.orchestrator.message_bus import MessageBus
 

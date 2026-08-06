@@ -8,14 +8,13 @@ from pathlib import Path
 
 import pytest
 
-from ai_company.data.database import Database
-from ai_company.data.kpi_pipeline import KPIPipeline
-from ai_company.data.cost_analytics import CostAnalytics
 from ai_company.data.agent_analytics import AgentPerformanceAnalytics
-from ai_company.data.memory_store import MemoryStoreDB
+from ai_company.data.cost_analytics import CostAnalytics
+from ai_company.data.database import Database
 from ai_company.data.escalation_store import EscalationStore
+from ai_company.data.kpi_pipeline import KPIPipeline
+from ai_company.data.memory_store import MemoryStoreDB
 from ai_company.models.task import Task
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

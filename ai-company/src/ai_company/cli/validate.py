@@ -20,7 +20,7 @@ def _scan_yaml_for_agent_refs(filepath: Path) -> list[tuple[int, str, str]]:
     refs: list[tuple[int, str, str]] = []
     try:
         content = filepath.read_text(encoding="utf-8")
-    except Exception:
+    except (OSError, ValueError):
         return refs
 
     # Fields that typically contain agent references
@@ -87,10 +87,7 @@ def naming(
     gen = AgentGenerator(registry_path=registry_path)
     data = gen.load_registry()
 
-    if isinstance(data, list):
-        agents = data
-    else:
-        agents = data.get("company", {}).get("agents", [])
+    agents = data if isinstance(data, list) else data.get("company", {}).get("agents", [])
 
     errors: list[str] = []
     for agent in agents:
@@ -262,7 +259,7 @@ def _check_stale_dates(filepath: Path) -> list[str]:
     warnings: list[str] = []
     try:
         content = filepath.read_text(encoding="utf-8")
-    except Exception:
+    except (OSError, ValueError):
         return warnings
     for line_no, line in enumerate(content.splitlines(), start=1):
         stripped = line.strip()
@@ -302,7 +299,7 @@ def config(
 
                 with open(filepath, "r", encoding="utf-8") as f:
                     yaml.safe_load(f)
-            except Exception as exc:
+            except yaml.YAMLError as exc:
                 typer.echo(f"  FAIL  {rel_path} -- INVALID YAML: {exc}")
                 failed += 1
                 continue
@@ -377,10 +374,7 @@ def all(
     typer.echo("\n--- Naming Convention Check ---")
     naming_errors: list[str] = []
     data = gen.load_registry()
-    if isinstance(data, list):
-        agents = data
-    else:
-        agents = data.get("company", {}).get("agents", [])
+    agents = data if isinstance(data, list) else data.get("company", {}).get("agents", [])
 
     known_agents: set[str] = {p.stem for p in generated}
 

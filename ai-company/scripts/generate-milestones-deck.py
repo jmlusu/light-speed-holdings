@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Generate AI Company Builder Milestones Deck — full 15-slide version."""
 
-from pptx import Presentation
-from pptx.util import Inches, Pt
-from pptx.dml.color import RGBColor
 import os
+
+from pptx import Presentation
+from pptx.dml.color import RGBColor
+from pptx.util import Inches, Pt
 
 C = {
     "dk": RGBColor(0x1A, 0x1A, 0x2E),

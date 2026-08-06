@@ -73,12 +73,13 @@ class TestFullPipeline:
 
     def test_task_failure_handling(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Task that fails due to LLM error should be marked FAILED."""
-        with _patch_agent_loop_llm(_react_response("partial")):
-            # Override: raise an exception from _call_llm
-            with patch(
+        with (
+            _patch_agent_loop_llm(_react_response("partial")),
+            patch(
                 "ai_company.executor.agent_loop.AgentLoop._call_llm",
                 side_effect=Exception("LLM unavailable"),
-            ):
+            ),
+        ):
                 task = Task(
                     id="e2e-fail-001",
                     sender_id="human-ceo",

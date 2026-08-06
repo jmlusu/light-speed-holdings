@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from ai_company.data.database import Database, init_database, get_database
+from ai_company.data.database import Database, get_database, init_database
 
 
 @pytest.fixture

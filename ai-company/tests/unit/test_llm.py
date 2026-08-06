@@ -14,9 +14,8 @@ from ai_company.llm.providers.base import (
     LLMProviderError,
     LLMResponseError,
 )
-from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 from ai_company.llm.providers.ollama import OllamaProvider
-
+from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 
 # ── Base types ──────────────────────────────────────────────────────
 

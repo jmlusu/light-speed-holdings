@@ -17,7 +17,6 @@ from ai_company.generator import AgentGenerator
 from ai_company.models import CompanyRegistry
 from ai_company.registry import load_registry
 
-
 # Default directory structure for an AI company
 COMPANY_DIRS = [
     "memory/episodic",

@@ -210,9 +210,12 @@ class SecretsScanner:
                         continue
 
                     # Optional entropy check for generic patterns
-                    if self.check_entropy and secret_type == "generic_api_key":
-                        if not self._has_high_entropy(matched_text):
-                            continue
+                    if (
+                        self.check_entropy
+                        and secret_type == "generic_api_key"
+                        and not self._has_high_entropy(matched_text)
+                    ):
+                        continue
 
                     matches.append(
                         SecretMatch(

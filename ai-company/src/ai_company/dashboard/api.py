@@ -133,7 +133,7 @@ async def _broadcast_kpis(data: dict[str, Any]) -> None:
         from ai_company.dashboard.ws import broadcast_kpi_update
 
         await broadcast_kpi_update(data)
-    except Exception:
+    except Exception:  # noqa: BLE001 - fire-and-forget: must never crash the caller
         logger.debug("WebSocket broadcast skipped (no event loop or clients)")
 
 
@@ -143,7 +143,7 @@ async def _broadcast_task(task: dict[str, Any], event: str) -> None:
         from ai_company.dashboard.ws import broadcast_task_update
 
         await broadcast_task_update(task, event)
-    except Exception:
+    except Exception:  # noqa: BLE001 - fire-and-forget: must never crash the caller
         logger.debug("WebSocket broadcast skipped (no event loop or clients)")
 
 
@@ -161,7 +161,7 @@ async def _broadcast_approval_alert(request: dict[str, Any]) -> None:
                 "tier": request.get("tier", 2),
             }
         )
-    except Exception:
+    except Exception:  # noqa: BLE001 - fire-and-forget: must never crash the caller
         logger.debug("WebSocket broadcast skipped")
 
 
@@ -178,7 +178,7 @@ async def _broadcast_escalation_alert(event: dict[str, Any]) -> None:
                 "agent_id": event.get("agent_id", ""),
             }
         )
-    except Exception:
+    except Exception:  # noqa: BLE001 - fire-and-forget: must never crash the caller
         logger.debug("WebSocket broadcast skipped")
 
 
@@ -626,7 +626,7 @@ def resolve_escalation(task_id: str) -> dict:
                     rule_id=e.get("rule_id", ""),
                     resolved=True,
                 )
-            except Exception:
+            except Exception:  # noqa: BLE001 - audit hook must not break resolution
                 logger.debug("audit hook skipped for escalation resolution")
             return {"ok": True, "task_id": task_id}
     raise HTTPException(status_code=404, detail=f"No open escalation for task '{task_id}'")
@@ -1085,7 +1085,7 @@ def get_kpi_alerts() -> dict[str, Any]:
 
         store = KPIHistoryStore()
         store.store_snapshot(snapshot)
-    except Exception:
+    except Exception:  # noqa: BLE001 - history storage is best-effort
         logger.debug("Failed to store KPI snapshot for history")
 
     return {

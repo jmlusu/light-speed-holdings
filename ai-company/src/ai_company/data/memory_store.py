@@ -103,7 +103,7 @@ class MemoryStoreDB:
                 )
                 self._db.commit()
                 logger.info("Added content_search column to memory_entries")
-        except Exception:
+        except Exception:  # noqa: BLE001 - migration is idempotent
             pass  # Column already exists or table doesn't exist yet
 
     def enable_encryption(self, key_manager: EncryptionKeyManager) -> None:

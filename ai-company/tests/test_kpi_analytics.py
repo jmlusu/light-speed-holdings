@@ -21,7 +21,6 @@ from ai_company.dashboard.analytics import (
 )
 from ai_company.dashboard.retention import RetentionEngine, RetentionPolicy
 
-
 # ===========================================================================
 # Fixtures
 # ===========================================================================
@@ -781,7 +780,7 @@ class TestSummaryStatistics:
         # Use hours relative to now so entries always fall within the daily period
         offsets = [4, 3, 2, 1]
         values = [88.0, 92.0, 95.0, 91.0]
-        for offset, val in zip(offsets, values):
+        for offset, val in zip(offsets, values, strict=False):
             ts = (now - timedelta(hours=offset)).isoformat()
             store.store_snapshot(
                 {

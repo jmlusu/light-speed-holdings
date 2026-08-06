@@ -29,6 +29,9 @@ dependencies = [
     "sentence-transformers>=3.0",
     "scikit-learn>=1.5",
     "numpy>=1.26",
+    "scipy>=1.13",
+    # System monitoring / analytics
+    "psutil>=5.9",
 ]
 
 [project.urls]
@@ -41,18 +44,27 @@ dev = [
     "pytest",
     "pytest-cov",
     "pytest-benchmark",
+    "pytest-asyncio",
     "ruff",
     "mypy",
     "types-PyYAML",
     "bandit",
     "safety",
-    "pytest-asyncio",
     "build",
+    "aiosqlite>=0.19",
+]
+
+e2e = [
+    "playwright>=1.40",
+    "pytest-playwright>=0.4",
 ]
 
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+extend-exclude = [
+    ".pytest_tmp/",
+]
 
 [tool.ruff.lint]
 select = [

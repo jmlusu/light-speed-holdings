@@ -11,7 +11,6 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-
 # ── Heuristic signals ─────────────────────────────────────────────
 
 # Keywords that suggest higher complexity

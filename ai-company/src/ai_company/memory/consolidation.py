@@ -92,7 +92,7 @@ class ConsolidationScheduler:
                 stats = self._store.stats()
                 if any(count > config.entry_threshold for count in stats.values()):
                     return True
-            except Exception:
+            except Exception:  # noqa: BLE001 - stats are advisory
                 pass
 
         return False

@@ -6,10 +6,8 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-
-from ai_company.llm.providers.base import ChatResponse
 from ai_company.llm.cost_tracker import CostTracker, UsageRecord
-
+from ai_company.llm.providers.base import ChatResponse
 
 # ---------------------------------------------------------------------------
 # ChatResponse token fields

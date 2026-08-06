@@ -25,9 +25,8 @@ def test_basic_acquire_release(tmp_path) -> None:
 
 def test_no_stale_sidecar_left_on_exception(tmp_path) -> None:
     target = tmp_path / "state.json"
-    with pytest.raises(ValueError):
-        with file_lock(target):
-            raise ValueError("boom")
+    with pytest.raises(ValueError), file_lock(target):
+        raise ValueError("boom")
     assert not (tmp_path / "state.json.lock").exists()
 
 
@@ -43,7 +42,7 @@ def test_exclusive_access_serialises_threads(tmp_path) -> None:
                 current = counter["value"]
                 time.sleep(0.01)
                 counter["value"] = current + 1
-        except Exception as exc:  # pragma: no cover - defensive
+        except Exception as exc:  # pragma: no cover - defensive; # noqa: BLE001
             errors.append(exc)
 
     threads = [threading.Thread(target=worker) for _ in range(10)]
@@ -70,7 +69,6 @@ def test_timeout_when_lock_held(tmp_path) -> None:
     t.start()
     acquired.wait(timeout=2.0)
 
-    with pytest.raises(FileLockError):
-        with file_lock(target, timeout=0.3, poll_interval=0.05):
-            pass
+    with pytest.raises(FileLockError), file_lock(target, timeout=0.3, poll_interval=0.05):
+        pass
     t.join()

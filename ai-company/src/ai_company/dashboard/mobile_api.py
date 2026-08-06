@@ -74,7 +74,7 @@ def _encode_cursor(data: dict) -> str:
 def _decode_cursor(cursor: str) -> dict:
     try:
         return json.loads(b64decode(cursor.encode()).decode())
-    except Exception:
+    except ValueError:
         return {}
 
 
@@ -413,7 +413,7 @@ def _resolve_escalation(task_id: str) -> dict[str, Any]:
                     rule_id=e.get("rule_id", ""),
                     resolved=True,
                 )
-            except Exception:
+            except Exception:  # noqa: BLE001 - audit hook must not break resolution
                 logger.debug("audit hook skipped for escalation resolution")
             return {"type": "resolve_escalation", "target_id": task_id, "ok": True}
     return {
@@ -651,7 +651,8 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
                         "v": value,
                     }
                 )
-        except Exception:
+        except (ValueError, TypeError, OSError) as exc:
+            logger.debug("Skipping malformed snapshot %s: %s", snap_file.name, exc)
             continue
 
     values = [dp["v"] for dp in data_points if isinstance(dp["v"], (int, float))]

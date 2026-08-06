@@ -228,9 +228,7 @@ class PIIDetector:
         local, domain = parts
         if not local or not domain:
             return False
-        if "." not in domain:
-            return False
-        return True
+        return "." in domain
 
     def _detect_ssn(self, content: str) -> list[PIIMatch]:
         """Detect Social Security Numbers."""
@@ -254,7 +252,7 @@ class PIIDetector:
     def _detect_credit_cards(self, content: str) -> list[PIIMatch]:
         """Detect credit card numbers with Luhn validation."""
         matches = []
-        for card_type, pattern in self.CC_PATTERNS.items():
+        for _card_type, pattern in self.CC_PATTERNS.items():
             for match in pattern.finditer(content):
                 cc = match.group()
                 # Remove spaces and dashes for validation
@@ -291,7 +289,7 @@ class PIIDetector:
     def _detect_api_keys(self, content: str) -> list[PIIMatch]:
         """Detect API keys and tokens."""
         matches = []
-        for key_type, pattern in self.API_KEY_PATTERNS.items():
+        for _key_type, pattern in self.API_KEY_PATTERNS.items():
             for match in pattern.finditer(content):
                 matches.append(
                     PIIMatch(
@@ -379,10 +377,7 @@ class PIIDetector:
         if match.pii_type == PIIType.EMAIL:
             # Mask local part, keep domain
             local, domain = value.split("@", 1)
-            if len(local) <= 2:
-                masked_local = local[0] + "***"
-            else:
-                masked_local = local[0] + "***" + local[-1]
+            masked_local = local[0] + "***" if len(local) <= 2 else local[0] + "***" + local[-1]
             return f"{masked_local}@{domain}"
 
         elif match.pii_type == PIIType.SSN:

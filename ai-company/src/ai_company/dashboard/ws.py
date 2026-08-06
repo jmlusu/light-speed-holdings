@@ -76,7 +76,7 @@ class ConnectionManager:
                     continue
             try:
                 await ws.send_text(payload)
-            except Exception:
+            except Exception:  # noqa: BLE001 - connection may drop at any time
                 logger.warning("Failed to send to client, marking for removal")
                 failed.append(ws)
 

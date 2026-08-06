@@ -6,8 +6,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List
 
-
-from ai_company.orchestrator.scheduler import Scheduler, ScheduledTask
+from ai_company.orchestrator.scheduler import ScheduledTask, Scheduler
 
 
 class _FakeBus:

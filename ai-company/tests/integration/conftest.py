@@ -19,7 +19,6 @@ import pytest
 
 from ai_company.orchestrator.message_bus import MessageBus
 
-
 # ---------------------------------------------------------------------------
 # Workspace isolation
 # ---------------------------------------------------------------------------

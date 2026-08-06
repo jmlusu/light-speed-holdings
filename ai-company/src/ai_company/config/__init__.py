@@ -8,20 +8,20 @@ from typing import Any
 import yaml
 
 from ai_company.models import (
+    KPI,
     Agent,
     ApprovalEntry,
-    BoardMember,
     BoardMeeting,
+    BoardMember,
     Budget,
+    Committee,
     Company,
     CompanyRegistry,
-    Committee,
     Culture,
     DecisionTreeConfig,
     Department,
     Executive,
     Governance,
-    KPI,
     Policy,
     RiskMatrixConfig,
     Strategy,
@@ -29,7 +29,6 @@ from ai_company.models import (
     VotingConfig,
     Workflow,
 )
-
 
 _CONFIG_DIR = Path("config")
 

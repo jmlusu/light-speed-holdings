@@ -6,7 +6,6 @@ from pathlib import Path
 
 import typer
 import yaml
-
 from rich.console import Console
 from rich.table import Table
 
@@ -33,7 +32,7 @@ def list() -> None:
         registry = load_registry()
     except SystemExit:
         console.print("[red]Failed to load registry[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     engine = WorkflowEngine(registry)
     workflows = engine.list_workflows()
@@ -67,14 +66,14 @@ def run(
         registry = load_registry()
     except SystemExit:
         console.print("[red]Failed to load registry[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     engine = WorkflowEngine(registry)
     try:
         instance_id = engine.start(workflow_id)
     except ValueError as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     status = engine.get_status(instance_id)
     console.print(f"[green]Started workflow:[/green] {workflow_id}")
@@ -95,7 +94,7 @@ def status(
         registry = load_registry()
     except SystemExit:
         console.print("[red]Failed to load registry[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     engine = WorkflowEngine(registry)
     status = engine.get_status(instance_id)
@@ -121,14 +120,14 @@ def advance(
         registry = load_registry()
     except SystemExit:
         console.print("[red]Failed to load registry[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     engine = WorkflowEngine(registry)
     try:
         result = engine.advance(instance_id)
     except ValueError as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     if "error" in result:
         console.print(f"[red]{result['error']}[/red]")
@@ -149,7 +148,7 @@ def list_instances(
         registry = load_registry()
     except SystemExit:
         console.print("[red]Failed to load registry[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     engine = WorkflowEngine(registry)
     instances = engine.list_instances(workflow_id)
@@ -193,14 +192,14 @@ def complete_step(
         registry = load_registry()
     except SystemExit:
         console.print("[red]Failed to load registry[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     engine = WorkflowEngine(registry)
     try:
         res = engine.complete_step(instance_id, result)
     except ValueError as e:
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     if "error" in res:
         console.print(f"[red]{res['error']}[/red]")

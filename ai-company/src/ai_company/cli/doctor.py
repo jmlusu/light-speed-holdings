@@ -72,7 +72,7 @@ def fix() -> None:
                 fixes.append(f"Generated {count} agent files via AgentGenerator")
             else:
                 fixes.append("AgentGenerator ran but produced no files (check registry)")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - self-healing must not crash
             fixes.append(f"Agent generation failed: {e}")
 
     # 4. Ensure inbox.json exists

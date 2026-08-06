@@ -361,6 +361,7 @@ class Agent:
     permissions: list[str] = Field(default_factory=list)  # No permissions by default
     restrictions: list[str] = Field(default_factory=list)  # No restrictions needed
 
+
 # Bad: Insecure default
 class Agent:
     permissions: list[str] = ["read:*", "write:*", "execute:*"]  # Everything!

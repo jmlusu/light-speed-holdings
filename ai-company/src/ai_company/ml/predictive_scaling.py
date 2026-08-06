@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from collections import defaultdict
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -115,10 +115,7 @@ class PredictiveScalingEngine:
         # Trend calculation (linear regression over recent window)
         x = np.arange(len(counts[-window:]))
         y = counts[-window:]
-        if len(x) > 1:
-            slope = float(np.polyfit(x, y, 1)[0])
-        else:
-            slope = 0.0
+        slope = float(np.polyfit(x, y, 1)[0]) if len(x) > 1 else 0.0
 
         # Std for confidence intervals
         std = float(np.std(counts))

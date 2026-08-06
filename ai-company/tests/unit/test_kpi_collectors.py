@@ -17,7 +17,6 @@ from ai_company.dashboard.kpis.legal import LegalKPICollector
 from ai_company.dashboard.kpis.marketing import MarketingKPICollector
 from ai_company.dashboard.kpis.sales import SalesKPICollector
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

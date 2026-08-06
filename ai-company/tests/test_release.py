@@ -1,8 +1,7 @@
 """Smoke tests for release infrastructure."""
 
-from pathlib import Path
-
 import tomllib
+from pathlib import Path
 
 
 def test_pyproject_has_version():

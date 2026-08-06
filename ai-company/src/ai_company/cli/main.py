@@ -29,27 +29,27 @@ def _lazy_init() -> None:
 
 from ai_company.cli.agents import app as agents_app  # noqa: E402
 from ai_company.cli.board import app as board_app  # noqa: E402
-from ai_company.cli.workflows import app as workflows_app  # noqa: E402
-from ai_company.cli.memory import app as memory_app  # noqa: E402
-from ai_company.cli.executives import app as executives_app  # noqa: E402
+from ai_company.cli.company import app as company_app  # noqa: E402
+from ai_company.cli.customer_success import app as customer_success_app  # noqa: E402
+from ai_company.cli.dashboard import app as dashboard_app  # noqa: E402
+from ai_company.cli.decision import app as decision_app  # noqa: E402
 from ai_company.cli.departments import app as departments_app  # noqa: E402
 from ai_company.cli.doctor import app as doctor_app  # noqa: E402
-from ai_company.cli.marketing import app as marketing_app  # noqa: E402
-from ai_company.cli.sales import app as sales_app  # noqa: E402
-from ai_company.cli.customer_success import app as customer_success_app  # noqa: E402
-from ai_company.cli.legal import app as legal_app  # noqa: E402
-from ai_company.cli.hr import app as hr_app  # noqa: E402
-from ai_company.cli.specialists import app as specialists_app  # noqa: E402
-from ai_company.cli.orchestrator import app as orchestrator_app  # noqa: E402
-from ai_company.cli.models import app as models_app  # noqa: E402
-from ai_company.cli.dashboard import app as dashboard_app  # noqa: E402
+from ai_company.cli.executives import app as executives_app  # noqa: E402
 from ai_company.cli.executor import app as executor_app  # noqa: E402
-from ai_company.cli.company import app as company_app  # noqa: E402
-from ai_company.cli.decision import app as decision_app  # noqa: E402
-from ai_company.cli.graph import app as graph_app  # noqa: E402
-from ai_company.cli.security import app as security_app  # noqa: E402
-from ai_company.cli.validate import app as validate_app  # noqa: E402
 from ai_company.cli.governance import app as governance_app  # noqa: E402
+from ai_company.cli.graph import app as graph_app  # noqa: E402
+from ai_company.cli.hr import app as hr_app  # noqa: E402
+from ai_company.cli.legal import app as legal_app  # noqa: E402
+from ai_company.cli.marketing import app as marketing_app  # noqa: E402
+from ai_company.cli.memory import app as memory_app  # noqa: E402
+from ai_company.cli.models import app as models_app  # noqa: E402
+from ai_company.cli.orchestrator import app as orchestrator_app  # noqa: E402
+from ai_company.cli.sales import app as sales_app  # noqa: E402
+from ai_company.cli.security import app as security_app  # noqa: E402
+from ai_company.cli.specialists import app as specialists_app  # noqa: E402
+from ai_company.cli.validate import app as validate_app  # noqa: E402
+from ai_company.cli.workflows import app as workflows_app  # noqa: E402
 
 app.add_typer(agents_app, name="agents", help="Manage AI agents")
 app.add_typer(board_app, name="board", help="Manage Board of Directors")
@@ -185,7 +185,8 @@ def sync_registry(
     The dashboard, model_router, executor, and other components read from the
     JSON file. This command regenerates it from the authoritative YAML.
     """
-    from ai_company.registry.sync import sync_registry as do_sync, verify_sync
+    from ai_company.registry.sync import sync_registry as do_sync
+    from ai_company.registry.sync import verify_sync
 
     count = do_sync(yaml_path=yaml_path, json_path=json_path)
     typer.echo(f"Synced {count} agents from {yaml_path} to {json_path}")

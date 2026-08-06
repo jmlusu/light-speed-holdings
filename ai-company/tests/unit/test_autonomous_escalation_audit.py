@@ -29,9 +29,11 @@ def test_suggest_retry_logs_escalation_event(tmp_path):
         captured["reason"] = reason
         captured["rule_id"] = rule_id
 
-    with patch("ai_company.executor.autonomous.AutonomousDecisionEngine._audit_escalation") as spy:
+    with (
+        patch("ai_company.executor.autonomous.AutonomousDecisionEngine._audit_escalation") as spy,
         # Patch the underlying audit integration call directly.
-        with patch("ai_company.audit.integration.log_escalation", side_effect=_fake_log):
+        patch("ai_company.audit.integration.log_escalation", side_effect=_fake_log),
+    ):
             result = engine.suggest_retry(
                 tool="execute",
                 error="persistent failure",

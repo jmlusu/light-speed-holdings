@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import logging
 from collections import defaultdict
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -173,23 +173,24 @@ class AnomalyDetector:
             # IQR check
             if self.iqr_enabled:
                 low, high = window.iqr_bounds()
-                if value < low or value > high:
+                if (value < low or value > high) and not any(
+                    a.metric_name == metric_name for a in alerts
+                ):
                     # Avoid duplicate alerts if Z-score already fired
-                    if not any(a.metric_name == metric_name for a in alerts):
-                        alert = AnomalyAlert(
-                            alert_id=f"anomaly_{metric_name}_{len(self._alerts)}",
-                            timestamp=ts,
-                            metric_name=metric_name,
-                            severity="warning",
-                            current_value=value,
-                            expected_range=(round(low, 4), round(high, 4)),
-                            deviation=0.0,
-                            message=(
-                                f"Outlier detected in {metric_name}: value {value:.4f} "
-                                f"is outside IQR range [{low:.4f}, {high:.4f}]."
-                            ),
-                        )
-                        alerts.append(alert)
+                    alert = AnomalyAlert(
+                        alert_id=f"anomaly_{metric_name}_{len(self._alerts)}",
+                        timestamp=ts,
+                        metric_name=metric_name,
+                        severity="warning",
+                        current_value=value,
+                        expected_range=(round(low, 4), round(high, 4)),
+                        deviation=0.0,
+                        message=(
+                            f"Outlier detected in {metric_name}: value {value:.4f} "
+                            f"is outside IQR range [{low:.4f}, {high:.4f}]."
+                        ),
+                    )
+                    alerts.append(alert)
 
         # Add to window AFTER checking (so we don't pollute the baseline)
         window.add(value, ts)

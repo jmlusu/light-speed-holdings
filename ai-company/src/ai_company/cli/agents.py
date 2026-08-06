@@ -23,7 +23,7 @@ def list_agents(
         registry = load_registry()
     except SystemExit:
         typer.echo("Registry not found or invalid. Run 'ai-company company run' first.")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     # Build a unified agent list from executives + board + specialists
     agents: list[dict[str, str]] = []

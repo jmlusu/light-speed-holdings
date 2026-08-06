@@ -40,7 +40,7 @@ def test_concurrent_send_and_status_update(tmp_path) -> None:
         try:
             for i in range(1, n_updates_each + 1):
                 bus.send_task(_make_task(worker_id * 100 + i))
-        except Exception as exc:  # pragma: no cover - defensive
+        except Exception as exc:  # pragma: no cover - defensive; # noqa: BLE001
             errors.append(exc)
 
     def status_updater() -> None:
@@ -48,7 +48,7 @@ def test_concurrent_send_and_status_update(tmp_path) -> None:
             for _ in range(n_workers * n_updates_each):
                 bus.update_task_status("task-0", "completed")
                 bus.update_task_status("task-0", "pending")
-        except Exception as exc:  # pragma: no cover - defensive
+        except Exception as exc:  # pragma: no cover - defensive; # noqa: BLE001
             errors.append(exc)
 
     threads = [threading.Thread(target=sender, args=(w,)) for w in range(1, n_workers + 1)]
@@ -87,7 +87,7 @@ def test_concurrent_acknowledge_no_lost_updates(tmp_path) -> None:
         try:
             for i in range(n):
                 bus.acknowledge_task(f"task-{i}", agent)
-        except Exception as exc:  # pragma: no cover - defensive
+        except Exception as exc:  # pragma: no cover - defensive; # noqa: BLE001
             errors.append(exc)
 
     threads = [threading.Thread(target=ack, args=(f"a{j}",)) for j in range(5)]

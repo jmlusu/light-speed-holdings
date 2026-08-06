@@ -14,8 +14,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
-from ai_company.prompts.evals.eval_dataset import ExpectedFormat, EvalTestCase
 from ai_company.llm.json_parser import parse_llm_json
+from ai_company.prompts.evals.eval_dataset import EvalTestCase, ExpectedFormat
 
 
 @dataclass
@@ -297,14 +297,13 @@ class EvalScorer:
         score = 1.0
 
         # Check for markdown fences when JSON was required
-        if expected.must_contain_json:
-            if "```" in raw and parsed is not None:
-                # If JSON was extracted from markdown, it's OK but not ideal
-                breakdown.warnings.append(
-                    "Response contains markdown fences — JSON was extracted but "
-                    "direct JSON output is preferred"
-                )
-                score -= 0.1
+        if expected.must_contain_json and "```" in raw and parsed is not None:
+            # If JSON was extracted from markdown, it's OK but not ideal
+            breakdown.warnings.append(
+                "Response contains markdown fences — JSON was extracted but "
+                "direct JSON output is preferred"
+            )
+            score -= 0.1
 
         # Check for disallowed content
         for pattern in expected.must_not_contain:

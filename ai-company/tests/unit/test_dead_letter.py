@@ -13,7 +13,6 @@ from ai_company.executor.dead_letter import (
     detect_stale_tasks,
 )
 
-
 # ── DeadLetterQueue unit tests ────────────────────────────────────────
 
 

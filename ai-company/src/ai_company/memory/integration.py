@@ -23,8 +23,8 @@ def init_memory(base_dir: str = "memory") -> MemoryStore:
     _store = MemoryStore(base_dir=base_dir)
     # Initialize vector store with EmbeddingEngine for real semantic search
     try:
-        from ai_company.ml.embeddings import EmbeddingEngine
         from ai_company.memory.vector_store import VectorStore
+        from ai_company.ml.embeddings import EmbeddingEngine
 
         engine = EmbeddingEngine(
             model_name="all-MiniLM-L6-v2",
@@ -37,7 +37,7 @@ def init_memory(base_dir: str = "memory") -> MemoryStore:
         )
         # Index existing entries
         _vector_store.index_all()
-    except Exception:
+    except Exception:  # noqa: BLE001 - vector store is best-effort
         _vector_store = None
     return _store
 
@@ -115,7 +115,7 @@ def recall_context(query: str, limit: int = 5) -> list[dict[str, Any]]:
                     }
                     for entry, score in raw
                 ]
-        except Exception:
+        except Exception:  # noqa: BLE001 - vector search is best-effort
             pass  # Fall through to keyword search
 
     # Fallback: keyword-based search
@@ -150,7 +150,7 @@ def semantic_search(query: str, top_k: int = 5) -> list[dict[str, Any]]:
             }
             for entry, score in raw
         ]
-    except Exception:
+    except Exception:  # noqa: BLE001 - vector search is best-effort
         return []
 
 
@@ -177,5 +177,5 @@ def store_semantic(
         )
         _vector_store.index_entry(entry)
         _vector_store.save_index()
-    except Exception:
+    except Exception:  # noqa: BLE001 - semantic storage is best-effort
         pass  # Non-fatal: semantic storage is best-effort

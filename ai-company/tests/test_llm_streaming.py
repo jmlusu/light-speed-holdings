@@ -18,7 +18,6 @@ from ai_company.llm.providers.base import (
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 
-
 # ---------------------------------------------------------------------------
 # Default fallback: chat_stream() delegates to chat()
 # ---------------------------------------------------------------------------

@@ -367,17 +367,17 @@ def create_app() -> FastAPI:
 
             # Seed one KPI snapshot so the dashboard has baseline data
             try:
-                from ai_company.data import KPIPipeline  # noqa: E402
                 from ai_company.dashboard.kpis import collect_all_kpis  # noqa: E402
+                from ai_company.data import KPIPipeline  # noqa: E402
 
                 pipeline = KPIPipeline(db)
                 snapshot = collect_all_kpis()
                 stored = pipeline.ingest_snapshot(snapshot)
                 logger.info("Initial KPI snapshot ingested (%d entries)", stored)
-            except Exception:
+            except Exception:  # noqa: BLE001 - non-critical startup hook
                 logger.debug("Initial KPI collection skipped (non-critical)")
 
-        except Exception:
+        except Exception:  # noqa: BLE001 - non-critical startup hook
             logger.debug("Database initialisation skipped (non-critical)")
 
     return app

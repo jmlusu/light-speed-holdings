@@ -1,9 +1,8 @@
-from typing import Dict, List, Optional, Set
-from dataclasses import dataclass
-from collections import deque
 import time
+from collections import deque
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, List, Optional, Set
 
 from ai_company.dashboard.models import OrgNode
 
@@ -55,10 +54,7 @@ class OrgNodeData:
     def to_orgnode(self) -> OrgNode:
         """Convert back to OrgNode format."""
         children = []
-        if hasattr(self.node, "children"):
-            children = self.node.children
-        else:
-            children = []
+        children = self.node.children if hasattr(self.node, "children") else []
 
         return OrgNode(
             name=self.id,
@@ -103,7 +99,7 @@ class OrganizationChart:
             self.nodes[node.name] = OrgNodeData(node)
 
         # Build adjacency lists
-        for node_id, node_data in self.nodes.items():
+        for node_id, _node_data in self.nodes.items():
             self.adjacency_list[node_id] = []
             self.reverse_adjacency[node_id] = []
 
@@ -140,13 +136,16 @@ class OrganizationChart:
             level_widths[node_data.depth] = level_widths.get(node_data.depth, 0) + 1
 
             # Find parent and establish hierarchy
-            if node_id != self.root_id and node_data.parent_id:
-                if node_data.parent_id in self.nodes:
-                    parent_data = self.nodes[node_data.parent_id]
-                    if node_data not in parent_data.children_ids:
-                        parent_data.children_ids.append(node_id)
-                        self.adjacency_list[node_data.parent_id].append(node_id)
-                    self.tree_stats.edge_count += 1
+            if (
+                node_id != self.root_id
+                and node_data.parent_id
+                and node_data.parent_id in self.nodes
+            ):
+                parent_data = self.nodes[node_data.parent_id]
+                if node_data not in parent_data.children_ids:
+                    parent_data.children_ids.append(node_id)
+                    self.adjacency_list[node_data.parent_id].append(node_id)
+                self.tree_stats.edge_count += 1
 
             # Add children to queue
             for child_id in node_data.children_ids[
@@ -741,12 +740,7 @@ class OrganizationChart:
 
             return False
 
-        for node_id in self.nodes:
-            if node_id not in visited:
-                if dfs(node_id):
-                    return True
-
-        return False
+        return any(node_id not in visited and dfs(node_id) for node_id in self.nodes)
 
     def _find_unreachable_nodes(self) -> List[str]:
         """Find nodes unreachable from root."""

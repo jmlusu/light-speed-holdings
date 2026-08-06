@@ -89,5 +89,5 @@ def check() -> None:
                 req.add_header("anthropic-version", "2023-06-01")
             resp = urllib.request.urlopen(req, timeout=5)
             typer.echo(f"  {p.id:<12} OK ({resp.status})")
-        except Exception as e:
+        except OSError as e:
             typer.echo(f"  {p.id:<12} DOWN ({type(e).__name__}: {e})")

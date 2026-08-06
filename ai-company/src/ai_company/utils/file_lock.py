@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import os
 import tempfile
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from pathlib import Path
 from typing import IO, Any, Generator
 
@@ -69,13 +69,15 @@ def _windows_lock(
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
                 msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined]
                 break
-            except OSError:
+            except OSError as exc:
                 if fd is not None:
                     os.close(fd)
                     fd = None
                 elapsed = time.monotonic() - start_time
                 if elapsed >= timeout:
-                    raise FileLockError(f"Could not acquire lock on {lock_path} within {timeout}s")
+                    raise FileLockError(
+                        f"Could not acquire lock on {lock_path} within {timeout}s"
+                    ) from exc
                 time.sleep(poll_interval)
 
         logger.debug("Acquired file lock: %s", lock_path)
@@ -110,13 +112,15 @@ def _unix_lock(
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # type: ignore[attr-defined]
                 break
-            except (OSError, IOError):
+            except (OSError, IOError) as exc:
                 if fd is not None:
                     os.close(fd)
                     fd = None
                 elapsed = time.monotonic() - start_time
                 if elapsed >= timeout:
-                    raise FileLockError(f"Could not acquire lock on {lock_path} within {timeout}s")
+                    raise FileLockError(
+                        f"Could not acquire lock on {lock_path} within {timeout}s"
+                    ) from exc
                 time.sleep(poll_interval)
 
         logger.debug("Acquired file lock: %s", lock_path)
@@ -167,7 +171,5 @@ def atomic_write(
         if tmp_fd is not None:
             os.close(tmp_fd)
         if tmp_path is not None:
-            try:
+            with suppress(OSError):
                 os.unlink(tmp_path)
-            except OSError:
-                pass
