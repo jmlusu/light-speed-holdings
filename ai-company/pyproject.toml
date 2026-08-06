@@ -52,6 +52,8 @@ dev = [
     "safety",
     "build",
     "aiosqlite>=0.19",
+    "pre-commit",
+    "python-pptx>=0.6.23",
 ]
 
 e2e = [

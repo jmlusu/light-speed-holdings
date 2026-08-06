@@ -25,7 +25,7 @@ This document summarizes the setup for generating the AI Company Builder milesto
    - `generate-deck.ps1` - PowerShell script
 
 2. **Python**
-   - `requirements-pptx.txt` - Python dependencies
+   - `pyproject.toml` + `uv.lock` - Python dependencies (python-pptx in `dev` extra)
    - `generate-deck-python.bat` - Windows batch file
    - `generate-deck-python.ps1` - PowerShell script
 
@@ -74,7 +74,7 @@ See [README-milestones-deck.md](README-milestones-deck.md) for detailed instruct
 To verify setup:
 - **Windows**: Double-click `verify-setup.bat`
 - **PowerShell**: Run `.\verify-setup.ps1`
-- **Command Line**: `python scripts/verify-setup.py`
+- **Command Line**: `uv run python scripts/verify-setup.py`
 
 ## Design Features
 
@@ -92,9 +92,9 @@ To verify setup:
 - PptxGenJS (installed via npm)
 
 ### Python Version
-- Python v3.7+
-- pip
-- python-pptx (installed via pip)
+- Python v3.12+
+- uv (package manager)
+- python-pptx (installed via `uv sync --extra dev`)
 
 ## Next Steps
 

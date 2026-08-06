@@ -4,11 +4,11 @@ This test specifically validates that the auto-scroll regression is resolved.
 It should be run as a smoke test after any dashboard JS/CSS changes.
 
 Prerequisites:
-    pip install playwright pytest-playwright httpx
-    playwright install
+    uv sync --extra dev --extra e2e
+    uv run playwright install
 
 Run:
-    pytest tests/e2e/test_scroll_fix_verification.py -v --headed
+    uv run pytest tests/e2e/test_scroll_fix_verification.py -v --headed
 """
 
 from __future__ import annotations

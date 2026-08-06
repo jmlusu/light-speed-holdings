@@ -28,13 +28,13 @@ jobs:
         with:
           fetch-depth: 0  # Full history for diff-based state
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
+          enable-cache: true
 
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: uv sync --extra dev --frozen
 
       # ── Restore persistent state from last cycle ────────────
       - name: Restore cycle state
@@ -51,13 +51,13 @@ jobs:
       # ── Run orchestrator cycle ──────────────────────────────
       - name: Orchestrator tick
         id: orch_tick
-        run: ai-company orchestrator tick --verbose 2>&1 | tee cycle-output.log
+        run: uv run ai-company orchestrator tick --verbose 2>&1 | tee cycle-output.log
         continue-on-error: true
 
       # ── Run executor cycle ──────────────────────────────────
       - name: Executor tick
         id: exec_tick
-        run: ai-company executor tick 2>&1 | tee -a cycle-output.log
+        run: uv run ai-company executor tick 2>&1 | tee -a cycle-output.log
         continue-on-error: true
 
       # ── Upload cycle artifacts ──────────────────────────────
@@ -75,7 +75,7 @@ jobs:
       - name: Persist cycle state
         if: success()
         run: |
-          python -c "
+          uv run python -c "
           import json, datetime
           from pathlib import Path
           state_path = Path('.opencode/cycle-state.json')

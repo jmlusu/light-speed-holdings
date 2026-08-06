@@ -26,16 +26,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
+          enable-cache: true
 
       - name: Install dependencies
-        run: pip install -e .
+        run: uv sync --frozen
 
       - name: Run orchestrator tick
         if: inputs.mode != 'executor-only'
-        run: python -m ai_company.cli.main orchestrator tick
+        run: uv run python -m ai_company.cli.main orchestrator tick
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -44,7 +45,7 @@ jobs:
 
       - name: Run executor tick
         if: inputs.mode != 'orchestrator-only'
-        run: python -m ai_company.cli.main executor tick
+        run: uv run python -m ai_company.cli.main executor tick
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -53,7 +54,7 @@ jobs:
 
       - name: Generate daily briefing
         if: inputs.mode != 'executor-only'
-        run: python -m ai_company.cli.main orchestrator briefing
+        run: uv run python -m ai_company.cli.main orchestrator briefing
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}

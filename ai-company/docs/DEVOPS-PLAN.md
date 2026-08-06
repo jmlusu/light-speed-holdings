@@ -76,29 +76,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
       - name: Install ruff
-        run: pip install ruff
+        run: uv sync --extra dev --frozen
       - name: Ruff lint
-        run: ruff check src/ tests/
+        run: uv run ruff check src/ tests/
       - name: Ruff format check
-        run: ruff format --check src/ tests/
+        run: uv run ruff format --check src/ tests/
 
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
+          enable-cache: true
       - name: Install deps
-        run: pip install -e ".[dev]"
+        run: uv sync --extra dev --frozen
       - name: mypy
-        run: mypy src/ --ignore-missing-imports
+        run: uv run mypy src/ --ignore-missing-imports
 
   # ── Stage 2: Tests (matrix) ───────────────────────────────────
   test:
@@ -111,14 +111,14 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python }}
-          cache: pip
+          enable-cache: true
       - name: Install deps
-        run: pip install -e ".[dev]"
+        run: uv sync --extra dev --frozen
       - name: Run tests
-        run: pytest --tb=short -q --cov=ai_company --cov-report=xml --cov-report=term-missing
+        run: uv run pytest --tb=short -q --cov=ai_company --cov-report=xml --cov-report=term-missing
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
         uses: actions/upload-artifact@v4
@@ -133,18 +133,16 @@ jobs:
     needs: [lint, typecheck]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
+          enable-cache: true
       - name: Install deps
-        run: |
-          pip install -e ".[dev]"
-          pip install bandit safety
+        run: uv sync --extra dev --frozen
       - name: Bandit (SAST)
-        run: bandit -r src/ -ll -ii --skip B101
+        run: uv run bandit -r src/ -ll -ii --skip B101
       - name: Safety (dependency audit)
-        run: safety check --bare || echo "::warning::Safety check found issues — review above output"
+        run: uv run safety check --bare || echo "::warning::Safety check found issues — review above output"
         continue-on-error: true  # Advisory for now; enforce after pinning deps
 
   # ── Stage 4: Agent validation ─────────────────────────────────
@@ -153,14 +151,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
+          enable-cache: true
       - name: Install deps
-        run: pip install -e ".[dev]"
+        run: uv sync --extra dev --frozen
       - name: Regenerate agents
-        run: ai-company generate
+        run: uv run ai-company generate
       - name: Check for drift
         run: |
           if [ -n "$(git status --porcelain .opencode/agents/)" ]; then
@@ -214,11 +212,11 @@ jobs:
 
 ### 2.3 Additional checks to add (Phase 2)
 
-1. **Dependency pinning** — Switch to `uv` or `pip-tools` with lockfile
+1. **Dependency pinning** — `uv` with lockfile (`uv.lock`); keep it in sync via `uv lock`
 2. **Commit message lint** — `commitlint` with conventional commits
 3. **License header check** — Ensure all `.py` files have license block
 4. **Docstring coverage** — ` interrogate` for public API coverage
-5. **SBOM generation** — `pip-audit --format=sbom` for supply chain compliance
+5. **SBOM generation** — `uv export --format sbom` or `uv audit --format sarif` for supply chain compliance
 6. **Container scanning** — `trivy` image scan on Docker build job
 7. **Secret scanning** — `gitleaks` to prevent key leaks
 
@@ -263,13 +261,13 @@ jobs:
           # Checkout with full history for diff-based state
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
+          enable-cache: true
 
       - name: Install deps
-        run: pip install -e ".[dev]"
+        run: uv sync --extra dev --frozen
 
       # ── Restore persistent state from last cycle ────────────
       - name: Restore cycle state
@@ -473,13 +471,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - name: Install build tools
-        run: pip install build
       - name: Build sdist + wheel
-        run: python -m build
+        run: uv build
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -572,11 +568,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency files first (layer caching)
-COPY pyproject.toml README.md ./
+COPY pyproject.toml uv.lock README.md ./
 COPY src/ src/
 
 # Build wheel
-RUN pip install --no-cache-dir build && python -m build --wheel --outdir /build/dist
+RUN uv build --wheel --outdir /build/dist
 
 # ── Stage 2: Runtime ──────────────────────────────────────────
 FROM python:3.12-slim AS runtime
@@ -591,9 +587,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Install uv (package manager)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 # Install from built wheel (no compiler needed in runtime)
 COPY --from=builder /build/dist/*.whl /tmp/
-RUN pip install --no-cache-dir /tmp/*.whl && rm -rf /tmp/*.whl
+RUN uv pip install --system --no-cache /tmp/*.whl && rm -rf /tmp/*.whl
 
 # Copy runtime data (not source — it's in the wheel)
 COPY company/ /app/company/

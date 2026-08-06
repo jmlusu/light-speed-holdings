@@ -8,7 +8,7 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 
 - **What it is**: Python CLI tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files.
 - **Core workflow**: Registry YAML → Jinja2 template → `.opencode/agents/*.md` + `company/*.yaml`
-- **Runtime shape**: Python 3.12+ CLI (Typer), no web server. Packages via setuptools, dev tools via pip.
+- **Runtime shape**: Python 3.12+ CLI (Typer), no web server. Packages via setuptools, environments managed with uv.
 - **Start here**: [Architecture](docs/ARCHITECTURE.md), [Development](docs/DEVELOPMENT.md), [ECL](docs/ECL.md)
 
 ## 2 Core Workflow / Domain Model
@@ -55,13 +55,13 @@ cd ai-company
 
 ```bash
 cd ai-company
-pip install -e ".[dev]"
+uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
 pre-commit install           # Enable git hooks (ruff, mypy, bandit, etc.)
-ai-company --help            # CLI entry point
-ruff check src/              # Lint
-mypy src/                    # Type check
-pytest                       # Tests
-python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
+ai-company --help            # CLI entry point (uv run ai-company --help if venv not activated)
+uv run ruff check src/       # Lint
+uv run mypy src/             # Type check
+uv run pytest                # Tests
+uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
 ```
 
 ### Pre-commit Hooks

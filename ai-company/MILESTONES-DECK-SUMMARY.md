@@ -24,7 +24,7 @@ I have successfully set up the infrastructure for generating a professional Powe
    - `generate-deck.ps1` - PowerShell script
 
 2. **Python Configuration**
-   - `requirements-pptx.txt` - Python dependencies
+   - `pyproject.toml` + `uv.lock` - Python dependencies (python-pptx in `dev` extra)
    - `generate-deck-python.bat` - Windows batch file
    - `generate-deck-python.ps1` - PowerShell script
 
@@ -89,8 +89,8 @@ node scripts/generate-milestones-deck.js
 
 ### For Python Users
 ```bash
-pip install -r requirements-pptx.txt
-python scripts/generate-milestones-deck.py
+uv sync --extra dev
+uv run python scripts/generate-milestones-deck.py
 ```
 
 ### For Windows Users
@@ -101,7 +101,7 @@ python scripts/generate-milestones-deck.py
 
 To verify that all files are in place:
 ```bash
-python scripts/verify-setup.py
+uv run python scripts/verify-setup.py
 ```
 
 Or use the batch/PowerShell scripts provided.

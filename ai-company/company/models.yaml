@@ -11,7 +11,7 @@
 #   premium  — best reasoning, highest cost
 #
 # Primary providers: OpenCode (Big Pickle) + Deepseek
-# Fallback: Ollama (local), OpenAI, Anthropic
+# Fallback: Gemini, Kimi (Moonshot), Ollama (local), OpenAI, Anthropic
 
 # ─── Provider catalog ────────────────────────────────────────────────
 # Each provider entry: id, backend, default_model, api_base.
@@ -27,6 +27,16 @@ providers:
     backend: openai_compatible
     default_model: deepseek-chat
     api_base: https://api.deepseek.com/v1
+
+  gemini:
+    backend: openai_compatible
+    default_model: gemini-3.5-flash
+    api_base: https://generativelanguage.googleapis.com/v1beta/openai
+
+  kimi:
+    backend: openai_compatible
+    default_model: kimi-k2
+    api_base: https://api.moonshot.ai/v1
 
   ollama:
     backend: ollama
@@ -53,6 +63,8 @@ tiers:
     providers:
       - provider: opencode
         model: big-pickle
+      - provider: gemini
+        model: gemini-3.5-flash
       - provider: ollama
         model: llama3.1:8b
 
@@ -61,6 +73,10 @@ tiers:
     providers:
       - provider: deepseek
         model: deepseek-chat
+      - provider: gemini
+        model: gemini-3.5-flash
+      - provider: kimi
+        model: kimi-k2
       - provider: opencode
         model: big-pickle
 
@@ -69,6 +85,10 @@ tiers:
     providers:
       - provider: deepseek
         model: deepseek-coder
+      - provider: kimi
+        model: kimi-k2
+      - provider: gemini
+        model: gemini-3.1-pro-preview
       - provider: opencode
         model: big-pickle
 

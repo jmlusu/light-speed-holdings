@@ -6,12 +6,10 @@ allowed_commands:
   # Build / test
   - python
   - python3
-  - pip
+  - uv
   - pytest
   - ruff
   - mypy
-  - black
-  - isort
 
   # Version control
   - git

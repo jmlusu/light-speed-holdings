@@ -9,6 +9,7 @@
 ### Prerequisites
 
 - Python 3.12+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (package manager)
 - Git
 - Windows, macOS, or Linux
 
@@ -22,17 +23,12 @@ cd light-speed-holdings
 # Navigate to the active project
 cd ai-company
 
-# Create and activate virtual environment
-python -m venv .venv
-.venv\Scripts\activate        # Windows
-source .venv/bin/activate     # Linux/macOS
-
-# Install in development mode
-pip install -e ".[dev]"
+# Create the virtual environment and install project + dev deps from uv.lock
+uv sync --extra dev
 
 # Verify installation
-ai-company --help
-pytest
+uv run ai-company --help
+uv run pytest
 ```
 
 ### First Run

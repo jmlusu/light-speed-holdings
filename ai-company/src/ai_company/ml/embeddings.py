@@ -52,7 +52,7 @@ def _get_model(model_name: str = "all-MiniLM-L6-v2") -> Any:
     except ImportError:
         raise ImportError(
             "sentence-transformers is required for embedding features. "
-            "Install with: pip install sentence-transformers"
+            "Install with: uv add sentence-transformers"
         ) from None
 
 

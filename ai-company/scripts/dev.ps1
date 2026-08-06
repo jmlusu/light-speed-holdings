@@ -3,7 +3,7 @@
     Developer onboarding and environment management script for AI Company Builder.
 
 .DESCRIPTION
-    Sets up a complete development environment, runs validation checks,
+    Sets up a complete development environment (via uv), runs validation checks,
     and provides status information. Designed for new developer onboarding.
 
 .PARAMETER Action
@@ -52,18 +52,43 @@ function Test-CommandExists {
     $null -ne (Get-Command $Command -ErrorAction SilentlyContinue)
 }
 
+function Ensure-Uv {
+    if (Test-CommandExists "uv") {
+        Write-Ok "uv: $(uv --version)"
+        return
+    }
+
+    Write-Step "Installing uv (package manager)"
+    Write-Warn "uv not found — installing via the official installer"
+    try {
+        irm https://astral.sh/uv/install.ps1 | iex
+        $env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH"
+    } catch {
+        Write-Warn "Official installer failed — falling back to pip: pip install uv"
+        pip install uv 2>&1 | Out-Null
+    }
+
+    if (-not (Test-CommandExists "uv")) {
+        Write-Fail "uv could not be installed. See https://docs.astral.sh/uv/getting-started/installation/"
+        exit 1
+    }
+    Write-Ok "uv installed: $(uv --version)"
+}
+
 # ── Actions ──────────────────────────────────────────────────────────
 
 function Invoke-Setup {
     Write-Step "Checking prerequisites"
 
-    # Python
+    # uv (package manager)
+    Ensure-Uv
+
+    # Python (uv manages the interpreter; check it exists for tooling)
     if (Test-CommandExists "python") {
         $pyVer = python --version 2>&1
         Write-Ok "Python: $pyVer"
     } else {
-        Write-Fail "Python not found. Install Python 3.12+ from https://python.org"
-        exit 1
+        Write-Warn "Python not found on PATH — uv will download a managed 3.12 interpreter (.python-version)"
     }
 
     # Git
@@ -73,10 +98,10 @@ function Invoke-Setup {
         Write-Warn "Git not found — version control features unavailable"
     }
 
-    Write-Step "Creating virtual environment"
+    Write-Step "Creating virtual environment (uv)"
     $venvPath = Join-Path $ProjectRoot ".venv"
     if (-not (Test-Path $venvPath)) {
-        python -m venv $venvPath
+        uv venv $venvPath 2>&1 | Out-Null
         Write-Ok "Created .venv at $venvPath"
     } else {
         Write-Ok "Virtual environment already exists"
@@ -89,11 +114,11 @@ function Invoke-Setup {
         Write-Ok "Activated virtual environment"
     }
 
-    Write-Step "Installing project in editable mode with dev dependencies"
+    Write-Step "Installing project in editable mode with dev dependencies (uv sync)"
     Push-Location $ProjectRoot
-    pip install -e ".[dev]" 2>&1 | Out-Null
+    uv sync --extra dev 2>&1 | Out-Null
     if ($LASTEXITCODE -eq 0) {
-        Write-Ok "Dependencies installed successfully"
+        Write-Ok "Dependencies installed successfully (lockfile: uv.lock)"
     } else {
         Write-Fail "Failed to install dependencies"
         Pop-Location
@@ -102,17 +127,11 @@ function Invoke-Setup {
     Pop-Location
 
     Write-Step "Installing pre-commit hooks"
-    if (Test-CommandExists "pre-commit") {
-        pre-commit install 2>&1 | Out-Null
-        Write-Ok "Pre-commit hooks installed"
-    } else {
-        pip install pre-commit 2>&1 | Out-Null
-        pre-commit install 2>&1 | Out-Null
-        Write-Ok "Pre-commit installed and hooks configured"
-    }
+    uv run pre-commit install 2>&1 | Out-Null
+    Write-Ok "Pre-commit hooks installed"
 
     Write-Step "Generating agents from registry"
-    python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()" 2>&1 | Out-Null
+    uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()" 2>&1 | Out-Null
     if ($LASTEXITCODE -eq 0) {
         Write-Ok "Agents generated successfully"
     } else {
@@ -129,7 +148,7 @@ function Invoke-Setup {
 function Invoke-Test {
     Write-Step "Running test suite"
     Push-Location $ProjectRoot
-    pytest --tb=short -q --cov=ai_company --cov-report=term-missing
+    uv run pytest --tb=short -q --cov=ai_company --cov-report=term-missing
     $exitCode = $LASTEXITCODE
     Pop-Location
     if ($exitCode -ne 0) {
@@ -141,7 +160,7 @@ function Invoke-Test {
 
 function Invoke-Lint {
     Write-Step "Running Ruff linter"
-    ruff check src/ tests/
+    uv run ruff check src/ tests/
     if ($LASTEXITCODE -ne 0) {
         Write-Fail "Lint errors found"
         exit 1
@@ -149,15 +168,15 @@ function Invoke-Lint {
     Write-Ok "Lint clean"
 
     Write-Step "Running Ruff format check"
-    ruff format --check src/ tests/
+    uv run ruff format --check src/ tests/
     if ($LASTEXITCODE -ne 0) {
-        Write-Warn "Format issues found — run: ruff format src/ tests/"
+        Write-Warn "Format issues found — run: uv run ruff format src/ tests/"
     } else {
         Write-Ok "Format clean"
     }
 
     Write-Step "Running Mypy type check"
-    mypy src/ --ignore-missing-imports
+    uv run mypy src/ --ignore-missing-imports
     if ($LASTEXITCODE -ne 0) {
         Write-Warn "Type errors found (non-blocking)"
     } else {
@@ -168,7 +187,10 @@ function Invoke-Lint {
 function Invoke-Status {
     Write-Step "Project Status"
 
-    # Python version
+    # uv + Python version
+    if (Test-CommandExists "uv") {
+        Write-Host "  Package manager: uv $(uv --version)" -ForegroundColor White
+    }
     $pyVer = python --version 2>&1
     Write-Host "  Python:          $pyVer" -ForegroundColor White
 
@@ -189,7 +211,7 @@ function Invoke-Status {
     }
 
     # Dependencies installed?
-    $check = python -c "import ai_company" 2>&1
+    $check = uv run python -c "import ai_company" 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  Package:         installed (editable)" -ForegroundColor Green
     } else {
@@ -215,12 +237,12 @@ function Invoke-Status {
 
     # CI status
     Write-Host "`n  Quick commands:" -ForegroundColor Cyan
-    Write-Host "    pytest                          Run tests" -ForegroundColor Gray
-    Write-Host "    ruff check src/                 Lint" -ForegroundColor Gray
-    Write-Host "    ruff format src/                Format" -ForegroundColor Gray
-    Write-Host "    mypy src/                       Type check" -ForegroundColor Gray
-    Write-Host "    pre-commit run --all-files      Pre-commit checks" -ForegroundColor Gray
-    Write-Host "    ai-company --help               CLI help" -ForegroundColor Gray
+    Write-Host "    uv run pytest                    Run tests" -ForegroundColor Gray
+    Write-Host "    uv run ruff check src/           Lint" -ForegroundColor Gray
+    Write-Host "    uv run ruff format src/          Format" -ForegroundColor Gray
+    Write-Host "    uv run mypy src/                 Type check" -ForegroundColor Gray
+    Write-Host "    uv run pre-commit run --all-files Pre-commit checks" -ForegroundColor Gray
+    Write-Host "    uv run ai-company --help         CLI help" -ForegroundColor Gray
 }
 
 function Invoke-Clean {
@@ -253,7 +275,7 @@ function Invoke-Clean {
 function Invoke-Generate {
     Write-Step "Regenerating agents from company-registry.yaml"
     Push-Location $ProjectRoot
-    python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+    uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
     if ($LASTEXITCODE -eq 0) {
         Write-Ok "Agents regenerated successfully"
     } else {

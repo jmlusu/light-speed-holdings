@@ -226,7 +226,7 @@ Each agent prompt includes explicit boundaries:
 
 | Tool | Status | Purpose |
 |------|--------|---------|
-| `pip audit` | Manual | Vulnerability scanning |
+| `uv audit` | Configured | Vulnerability scanning (CI `monitoring.yml`) |
 | Dependabot | Not configured | Automated updates |
 | Safety | Not configured | Dependency checking |
 
@@ -236,7 +236,7 @@ Each agent prompt includes explicit boundaries:
 # .github/dependabot.yml
 version: 2
 updates:
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/ai-company"
     schedule:
       interval: "weekly"
@@ -248,8 +248,8 @@ updates:
 |------|-----------|
 | Review new dependencies before adding | Supply chain security |
 | Prefer well-maintained packages | Reduce vulnerability exposure |
-| Pin minimum versions only | Let pip resolve compatible versions |
-| Run `pip audit` periodically | Catch known vulnerabilities |
+| Pin minimum versions only | Let uv resolve compatible versions |
+| Run `uv audit` periodically | Catch known vulnerabilities |
 | Remove unused dependencies | Reduce attack surface |
 
 ---
@@ -271,7 +271,7 @@ updates:
 2. **Review package source**: Ensure package is from trusted source
 3. **Minimize dependencies**: Fewer deps = smaller attack surface
 4. **Update regularly**: Stay current with security patches
-5. **Audit periodically**: Run `pip audit` monthly
+5. **Audit periodically**: Run `uv audit` monthly
 
 ---
 
@@ -389,7 +389,7 @@ Before any code change, verify:
 ## 14 Future Enhancements
 
 - Dependabot configuration for automated dependency updates
-- `pip audit` integration in CI
+- `uv audit` integration in CI
 - Pre-commit hooks for secret detection (e.g., `detect-secrets`)
 - RBAC enforcement in engine layer
 - Prompt injection testing framework

@@ -9,8 +9,8 @@ This script generates a professional PowerPoint presentation showcasing the majo
 - npm (comes with Node.js)
 
 ### Option 2: Python
-- Python (v3.7 or higher)
-- pip (comes with Python)
+- Python (v3.12 or higher)
+- uv (comes with Python via `pip install uv` or the official installer)
 
 ## Usage
 
@@ -49,8 +49,8 @@ This script generates a professional PowerPoint presentation showcasing the majo
 2. Navigate to the `ai-company` directory
 3. Run:
    ```bash
-   pip install -r requirements-pptx.txt
-   python scripts/generate-milestones-deck.py
+   uv sync --extra dev
+   uv run python scripts/generate-milestones-deck.py
    ```
 
 #### PowerShell
@@ -109,8 +109,8 @@ The Node.js script uses PptxGenJS library, while the Python script uses python-p
 - If Node.js is not found, ensure it's installed and in your PATH
 
 ### Python Issues
-- If `pip install` fails, try running `pip install --user -r requirements-pptx.txt`
-- If Python is not found, ensure it's installed and in your PATH
+- If `uv sync` fails, try running `uv sync --extra dev --frozen` or `uv clean` first
+- If uv is not found, ensure it's installed and in your PATH (`pip install uv` or the official installer)
 
 ### Testing Setup
 Run the test script to verify your setup:
@@ -119,14 +119,14 @@ Run the test script to verify your setup:
 node scripts/test-setup.js
 
 # Python
-python scripts/test-setup-python.py
+uv run python scripts/test-setup-python.py
 ```
 
 ### Verifying All Files
 To verify that all files are in place:
 ```bash
 # Using Python
-python scripts/verify-setup.py
+uv run python scripts/verify-setup.py
 
 # Or using batch file (Windows)
 verify-setup.bat

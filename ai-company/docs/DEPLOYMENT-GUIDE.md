@@ -22,6 +22,7 @@ Complete deployment reference for AI Company Builder — from local development 
 ### Prerequisites
 
 - Python 3.12+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (package manager)
 - Git
 - An LLM API key (at least one provider)
 
@@ -32,17 +33,11 @@ Complete deployment reference for AI Company Builder — from local development 
 git clone https://github.com/light-speed-holdings/ai-company.git
 cd ai-company
 
-# Create virtual environment
-python -m venv .venv
+# Create the virtual environment and install project + dev deps from uv.lock
+uv sync --extra dev
 
-# Activate (Windows)
-.venv\Scripts\activate
-
-# Activate (macOS/Linux)
-source .venv/bin/activate
-
-# Install in development mode with all dependencies
-pip install -e ".[dev]"
+# Verify the CLI
+uv run ai-company --help
 ```
 
 ### Bootstrap the Company
@@ -123,17 +118,21 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# Install uv (package manager) from the official image
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency files first (layer caching)
-COPY pyproject.toml README.md ./
+COPY pyproject.toml uv.lock README.md ./
 COPY src/ src/
 
-# Install the package
-RUN pip install --no-cache-dir .
+# Install the package from the lockfile
+RUN uv sync --frozen --no-dev
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy configuration and templates
 COPY company/ company/
@@ -446,31 +445,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
-      - run: ruff check src/
-      - run: mypy src/
+      - run: uv sync --extra dev --frozen
+      - run: uv run ruff check src/
+      - run: uv run mypy src/
 
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
-      - run: pytest --cov=ai_company --cov-report=xml
+      - run: uv sync --extra dev --frozen
+      - run: uv run pytest --cov=ai_company --cov-report=xml
 
   harness:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
+      - run: uv sync --extra dev --frozen
       - run: pwsh scripts/lint-ecl.ps1
 ```
 
@@ -492,11 +491,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
-      - run: ai-company orchestrator tick
+      - run: uv sync --frozen
+      - run: uv run ai-company orchestrator tick
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -506,11 +505,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
-      - run: ai-company executor tick
+      - run: uv sync --frozen
+      - run: uv run ai-company executor tick
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -534,11 +533,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install build
-      - run: python -m build
+      - run: uv sync --extra dev --frozen
+      - run: uv build
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/*

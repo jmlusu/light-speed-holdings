@@ -166,27 +166,16 @@ jobs:
     if: ${{ github.event.inputs.check_type == 'all' || github.event_name == 'schedule' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - name: Check for outdated dependencies
+      - name: Check for vulnerable dependencies
+        working-directory: ai-company
         run: |
-          pip install pip-audit 2>/dev/null
-          pip-audit --format=json --output=audit-report.json 2>/dev/null || true
-
-          if [ -f audit-report.json ]; then
-            CRITICAL=$(python -c "
-          import json
-          report = json.loads(open('audit-report.json').read())
-          vulns = report.get('dependencies', [])
-          critical = [v for v in vulns if any(fix := v.get('fix_versions', []))]
-          print(len(critical))
-          ")
-            if [ "$CRITICAL" -gt 0 ]; then
-              echo "::warning::Found $CRITICAL dependencies with available fixes"
-            else
-              echo "[OK] No fixable vulnerabilities found"
-            fi
+          if uv audit --frozen > audit-report.txt 2>&1; then
+            echo "[OK] No known vulnerabilities found"
           else
-            echo "[OK] pip-audit completed (no vulnerabilities file)"
+            echo "::warning::Found dependencies with known vulnerabilities — see audit-report.txt"
+            cat audit-report.txt
           fi

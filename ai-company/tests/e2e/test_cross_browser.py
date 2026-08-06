@@ -4,11 +4,11 @@ Validates that the dashboard renders and behaves correctly across
 Chromium, Firefox, and WebKit.
 
 Prerequisites:
-    pip install playwright pytest-playwright
-    playwright install
+    uv sync --extra dev --extra e2e
+    uv run playwright install
 
 Run:
-    pytest tests/e2e/test_cross_browser.py -v --headed
+    uv run pytest tests/e2e/test_cross_browser.py -v --headed
 """
 
 from __future__ import annotations

@@ -857,7 +857,7 @@ sequenceDiagram
     rect rgb(45, 100, 150)
         Note over GH,DOCKER: Stage 7 — Docker Build (~2min)
         GH->>DOCKER: docker compose -f docker-compose.staging.yml build
-        Note right of DOCKERFILE: Multi-stage build<br/>python:3.12-slim → non-root user<br/>System deps + pip install
+        Note right of DOCKERFILE: Multi-stage build<br/>python:3.12-slim → non-root user<br/>System deps + uv sync
         DOCKER-->>GH: ✅ Image built successfully
     end
 

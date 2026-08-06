@@ -34,7 +34,8 @@ def main():
         (project_root / "generate-deck.bat", "Windows batch file (Node.js)"),
         (project_root / "generate-deck.ps1", "PowerShell script (Node.js)"),
         # Python files
-        (project_root / "requirements-pptx.txt", "Python requirements file"),
+        (project_root / "pyproject.toml", "Python project config (deps via uv)"),
+        (project_root / "uv.lock", "uv lockfile"),
         (project_root / "scripts" / "generate-milestones-deck.py", "Python generation script"),
         (project_root / "scripts" / "test-setup-python.py", "Python test script"),
         (project_root / "generate-deck-python.bat", "Windows batch file (Python)"),

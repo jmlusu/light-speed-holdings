@@ -241,7 +241,7 @@ Every error should include a hint when possible:
 ✗ Registry not found. Run 'ai-company company run' first.
 
 ✗ ModuleNotFoundError: No module named 'ai_company'
-  Run: pip install -e ".[dev]"
+  Run: uv sync --extra dev
 
 ✗ Dashboard won't start on port 8420
   Check if another process is using it: netstat -ano | findstr 8420

@@ -15,19 +15,19 @@ try {
     exit 1
 }
 
-# Check if pip is installed
+# Check if uv is installed
 try {
-    $pipVersion = pip --version
-    Write-Host "✅ pip version: $pipVersion" -ForegroundColor Green
+    $uvVersion = uv --version
+    Write-Host "✅ uv version: $uvVersion" -ForegroundColor Green
 } catch {
-    Write-Host "❌ pip is not installed or not in PATH" -ForegroundColor Red
-    Write-Host "Please install pip (usually comes with Python)" -ForegroundColor Yellow
+    Write-Host "❌ uv is not installed or not in PATH" -ForegroundColor Red
+    Write-Host "Install uv from https://docs.astral.sh/uv/getting-started/installation/" -ForegroundColor Yellow
     exit 1
 }
 
 Write-Host ""
 Write-Host "Installing Python dependencies..." -ForegroundColor Yellow
-pip install -r requirements-pptx.txt
+uv sync --extra dev
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ Failed to install dependencies" -ForegroundColor Red
@@ -36,7 +36,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host "Generating milestones deck..." -ForegroundColor Yellow
-python scripts/generate-milestones-deck.py
+uv run python scripts/generate-milestones-deck.py
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host ""

@@ -24,25 +24,20 @@
 # 1. Clone and enter project
 cd ai-company
 
-# 2. Create virtual environment
-python -m venv .venv
-.venv\Scripts\activate          # Windows
-source .venv/bin/activate       # macOS/Linux
+# 2. Create the virtual environment and install project + dev deps from uv.lock
+uv sync --extra dev
 
-# 3. Install with dev dependencies
-pip install -e ".[dev]"
+# 3. Bootstrap the company
+uv run ai-company company run
 
-# 4. Bootstrap the company
-ai-company company run
+# 4. Verify everything works
+uv run ai-company doctor run
 
-# 5. Verify everything works
-ai-company doctor run
+# 5. Run tests
+uv run pytest
 
-# 6. Run tests
-pytest
-
-# 7. Start the dashboard
-ai-company dashboard
+# 6. Start the dashboard
+uv run ai-company dashboard
 ```
 
 **Expected result:**
@@ -55,13 +50,13 @@ ai-company dashboard
 
 | Step | Command | Expected Output |
 |------|---------|-----------------|
-| Install deps | `pip install -e ".[dev]"` | No errors |
-| Bootstrap | `ai-company company run` | "27 agents ready" |
-| Health check | `ai-company doctor run` | All PASS |
-| Lint | `ruff check src/` | No errors |
-| Type check | `mypy src/` | No errors |
-| Tests | `pytest` | All pass |
-| Dashboard | `ai-company dashboard` | Opens browser |
+| Install deps | `uv sync --extra dev` | No errors |
+| Bootstrap | `uv run ai-company company run` | "27 agents ready" |
+| Health check | `uv run ai-company doctor run` | All PASS |
+| Lint | `uv run ruff check src/` | No errors |
+| Type check | `uv run mypy src/` | No errors |
+| Tests | `uv run pytest` | All pass |
+| Dashboard | `uv run ai-company dashboard` | Opens browser |
 
 ### 2.3 First Contribution
 
@@ -301,7 +296,7 @@ curl http://localhost:8420/api/dashboard | python -m json.tool
 | Approval stuck | Check `approvals.yaml` for status | `ai-company orchestrator approval pending` |
 | Dashboard shows stale data | Check WebSocket connection | Refresh page, check server logs |
 | Tests failing | Check test isolation | Use fixtures, avoid global state |
-| Import errors | Check `pip install -e ".[dev]"` | Verify `.venv` is active |
+| Import errors | Check `uv sync --extra dev` | Verify `.venv` is active |
 
 ---
 
