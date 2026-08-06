@@ -6,6 +6,8 @@ import logging
 from collections.abc import Generator
 from typing import Any
 
+from dotenv import load_dotenv
+
 from ai_company.llm.circuit_breaker import CircuitBreaker
 from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
@@ -15,12 +17,10 @@ from ai_company.llm.providers.base import (
     LLMResponseError,
     StreamChunk,
 )
-from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 from ai_company.llm.providers.ollama import OllamaProvider
+from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 from ai_company.model_router import ModelRouter
 from ai_company.utils.logging import get_correlation_id
-
-from dotenv import load_dotenv
 
 load_dotenv()
 

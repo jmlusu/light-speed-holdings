@@ -368,12 +368,9 @@ def classify_tool_action(
     if tool in ("write", "edit", "code_interpreter", "execute"):
         path_tier = _check_sensitive_path(args)
         if path_tier > 0:
-            if path_tier >= raw_tier:
-                # Escalate: sensitive/production paths raise the tier.
-                raw_tier = path_tier
-            else:
-                # De-escalate: config/doc paths lower the default write tier.
-                raw_tier = path_tier
+            # Path tier fully determines the raw tier for sensitive/production
+            # paths (escalate) and for config/doc paths (de-escalate).
+            raw_tier = path_tier
 
     # Command-based escalation (applies to execute).
     if tool == "execute" and "command" in args:

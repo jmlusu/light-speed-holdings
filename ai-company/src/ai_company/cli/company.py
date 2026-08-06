@@ -35,7 +35,7 @@ def run(
         registry = load_registry(config_dir)
     except SystemExit:
         console.print("[red]Registry validation failed. Fix errors and try again.[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
     console.print(f"  Company: {registry.company.name}")
     console.print(f"  Executives: {len(registry.executives)}")

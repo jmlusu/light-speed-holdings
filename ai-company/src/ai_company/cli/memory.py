@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import contextlib
 from pathlib import Path
 from typing import Any, Optional
 
 import typer
-
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -101,10 +101,8 @@ def search(
 
     # When --semantic is requested, try to enable vector search on the fly
     if semantic and query:
-        try:
+        with contextlib.suppress(Exception):
             _enable_vector_search(store)
-        except Exception:
-            pass  # Non-fatal: fall back to keyword search
 
     types_to_search = (
         [memory_type]
@@ -294,7 +292,7 @@ def _enable_vector_search(store: Any, base_dir: str = "memory") -> None:
             embedding_engine=engine,
             index_dir=f"{base_dir}/vector_index",
         )
-    except Exception:
+    except Exception:  # noqa: BLE001 - best-effort: caller falls back
         pass  # Best-effort; caller falls back to keyword search
 
 

@@ -211,9 +211,8 @@ class FileStore:
         # concurrent atomic replace never yields a half-written file.
         from ai_company.store.file_lock import file_lock as fl
 
-        with fl(full_path, timeout=5.0):
-            with open(full_path, "r", encoding="utf-8") as f:
-                raw = f.read()
+        with fl(full_path, timeout=5.0), open(full_path, "r", encoding="utf-8") as f:
+            raw = f.read()
 
         try:
             return json.loads(raw)

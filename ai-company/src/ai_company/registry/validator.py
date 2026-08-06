@@ -73,11 +73,10 @@ class RegistryValidator:
                 errors.append(
                     f"Specialist '{spec.id}' reports_to '{spec.reports_to}' not found in executives or specialists"
                 )
-            if spec.department:
-                if spec.department.lower() not in valid_departments:
-                    errors.append(
-                        f"Specialist '{spec.id}' department '{spec.department}' not found in departments"
-                    )
+            if spec.department and spec.department.lower() not in valid_departments:
+                errors.append(
+                    f"Specialist '{spec.id}' department '{spec.department}' not found in departments"
+                )
         return errors
 
     def _check_board(self, r: CompanyRegistry) -> list[str]:

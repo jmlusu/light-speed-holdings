@@ -21,7 +21,6 @@ from fastapi.testclient import TestClient
 from ai_company.models.task import Task
 from ai_company.orchestrator.message_bus import MessageBus
 
-
 # ═══════════════════════════════════════════════════════════════════════
 # Fixtures
 # ═══════════════════════════════════════════════════════════════════════

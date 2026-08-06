@@ -15,18 +15,18 @@ from pathlib import Path
 
 try:
     from pptx import Presentation
-    from pptx.util import Inches, Pt, Emu
     from pptx.dml.color import RGBColor
-    from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
     from pptx.enum.shapes import MSO_SHAPE
+    from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+    from pptx.util import Inches, Pt
 except ImportError:
     print("python-pptx not found. Installing...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "python-pptx"])
     from pptx import Presentation
-    from pptx.util import Inches, Pt
     from pptx.dml.color import RGBColor
-    from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
     from pptx.enum.shapes import MSO_SHAPE
+    from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+    from pptx.util import Inches, Pt
 
 # ── Theme colors ─────────────────────────────────────────────────────────────
 BG_DARK = RGBColor(0x0B, 0x19, 0x29)  # slide background
@@ -110,10 +110,7 @@ def add_bullet_list(
     tf = txBox.text_frame
     tf.word_wrap = True
     for i, item in enumerate(items):
-        if i == 0:
-            p = tf.paragraphs[0]
-        else:
-            p = tf.add_paragraph()
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.space_before = Pt(spacing)
         p.space_after = Pt(spacing)
         # Use a run with colored bullet char + text

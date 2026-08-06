@@ -235,7 +235,7 @@ class TaskStore:
                 task = Task(**task_dict)
                 self.send_task(task)
                 count += 1
-            except Exception:
+            except Exception:  # noqa: BLE001 - skip corrupt rows during import
                 logger.warning("Skipping invalid task during import: %s", task_dict.get("id", "?"))
 
         logger.info("Imported %d tasks from %s", count, path)

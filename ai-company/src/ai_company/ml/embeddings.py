@@ -53,7 +53,7 @@ def _get_model(model_name: str = "all-MiniLM-L6-v2") -> Any:
         raise ImportError(
             "sentence-transformers is required for embedding features. "
             "Install with: pip install sentence-transformers"
-        )
+        ) from None
 
 
 class EmbeddingEngine:
@@ -102,10 +102,7 @@ class EmbeddingEngine:
         model = _get_model(self.model_name)
 
         single = isinstance(texts, str)
-        if single:
-            text_list = [cast(str, texts)]
-        else:
-            text_list = list(texts)
+        text_list = [cast(str, texts)] if single else list(texts)
 
         # Check cache for each text
         uncached: list[tuple[int, str]] = []
@@ -126,7 +123,7 @@ class EmbeddingEngine:
                 normalize_embeddings=normalize,
                 show_progress_bar=False,
             )
-            for (i, text), embedding in zip(uncached, new_embeddings):
+            for (i, text), embedding in zip(uncached, new_embeddings, strict=False):
                 arr = np.array(embedding, dtype=np.float32)
                 self._cache[self._cache_key(text)] = arr
                 results[i] = arr

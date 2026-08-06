@@ -7,12 +7,12 @@ import pytest
 from ai_company.decision.engine import DecisionEngine
 from ai_company.models import (
     ApprovalEntry,
-    CompanyRegistry,
     Company,
+    CompanyRegistry,
     DecisionNode,
     DecisionTreeConfig,
-    RiskMatrixConfig,
     RiskLevelConfig,
+    RiskMatrixConfig,
 )
 
 

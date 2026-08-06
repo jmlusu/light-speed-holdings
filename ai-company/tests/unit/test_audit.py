@@ -12,7 +12,6 @@ from ai_company.audit.events import AuditEvent, AuditEventType
 from ai_company.audit.reader import AuditReader
 from ai_company.audit.writer import AuditWriter
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -162,7 +161,7 @@ class TestAuditWriter:
             try:
                 for i in range(count):
                     writer.write(_make_event(agent_id=agent, task_id=f"{agent}-{i}"))
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - defensive thread catch
                 errors.append(exc)
 
         threads = [

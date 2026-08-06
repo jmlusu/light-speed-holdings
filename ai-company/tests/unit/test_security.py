@@ -8,9 +8,10 @@ import pytest
 
 from ai_company.executor.tool_runner import (
     _DEFAULT_ALLOWED_COMMANDS as ALLOWED_COMMANDS,
+)
+from ai_company.executor.tool_runner import (
     ToolRunner,
 )
-
 
 # ── Command allowlist ─────────────────────────────────────────────────
 

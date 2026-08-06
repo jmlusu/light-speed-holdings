@@ -58,8 +58,8 @@ if x == 1:
     do_something()
 
 # Incorrect
-x=1
-if x==1:
+x = 1
+if x == 1:
     do_something()
 ```
 
@@ -97,18 +97,16 @@ Each module, class, and function should have one reason to change.
 class DecisionEngine:
     """Evaluates actions against governance rules."""
 
-    def evaluate_action(self, action: str) -> dict:
-        ...
+    def evaluate_action(self, action: str) -> dict: ...
+
 
 # Bad: Multiple responsibilities
 class DecisionAndWorkflowEngine:
     """Evaluates actions AND manages workflows."""
 
-    def evaluate_action(self, action: str) -> dict:
-        ...
+    def evaluate_action(self, action: str) -> dict: ...
 
-    def start_workflow(self, workflow_id: str) -> None:
-        ...
+    def start_workflow(self, workflow_id: str) -> None: ...
 ```
 
 ### 4.2 Open/Closed Principle
@@ -122,6 +120,7 @@ _TEMPLATE_MAP: dict[str, str] = {
     "department": "department.md.j2",
 }
 # Adding new type = adding to dict, not modifying code
+
 
 # Bad: Requires modifying code to extend
 def generate_agent(agent_type: str):
@@ -146,6 +145,7 @@ class MemoryStore:
     def store(self, entry: MemoryEntry) -> None: ...
     def recall(self, query: str) -> list[MemoryEntry]: ...
 
+
 # Bad: Bloated interface
 class MemoryStore:
     def store(self, entry: MemoryEntry) -> None: ...
@@ -164,6 +164,7 @@ Depend on abstractions, not concretions:
 # Good: Depends on model interface
 def create_engine(registry: CompanyRegistry) -> DecisionEngine:
     return DecisionEngine(registry)
+
 
 # Bad: Depends on concrete file system
 def create_engine(config_path: str) -> DecisionEngine:
@@ -186,6 +187,7 @@ Every piece of knowledge should have a single, unambiguous representation within
 def validate_agent_id(agent_id: str) -> bool:
     """Validate that agent_id follows naming convention."""
     return bool(re.match(r"^[a-z][a-z0-9_]*$", agent_id))
+
 
 # Used in multiple places
 validate_agent_id(executive.id)
@@ -220,10 +222,12 @@ def count_agents(registry: CompanyRegistry) -> int:
         + len(registry.board)
     )
 
+
 # Bad: Over-engineered
 def count_agents(registry: CompanyRegistry) -> int:
     """Count total agents using reduce with lambda composition."""
     from functools import reduce
+
     return reduce(
         lambda acc, field: acc + len(getattr(registry, field)),
         ["executives", "departments", "specialists", "board"],
@@ -247,6 +251,7 @@ class MemoryStore:
     def store(self, entry: MemoryEntry) -> None:
         """Store a memory entry."""
         self._store[entry.type].append(entry)
+
 
 # Bad: Building for hypothetical future
 class MemoryStore:
@@ -291,18 +296,20 @@ class DecisionEngine:
         risk = self._assess_risk(action)
         return {"rules": rules, "risk": risk}
 
+
 # Bad: Inheritance
 class BaseEngine:
     def __init__(self, registry):
         self.registry = registry
 
+
 class DecisionEngine(BaseEngine):
-    def evaluate(self):
-        ...
+    def evaluate(self): ...
+
 
 class WorkflowEngine(BaseEngine):
-    def execute(self):
-        ...
+    def execute(self): ...
+
 
 # Now DecisionEngine and WorkflowEngine are coupled through BaseEngine
 ```
@@ -340,12 +347,12 @@ class WorkflowEngine(BaseEngine):
 
 ```python
 # Bad: Abbreviations
-def calc_reg():
-    ...
+def calc_reg(): ...
+
 
 # Good: Full names
-def calculate_regulatory_compliance():
-    ...
+def calculate_regulatory_compliance(): ...
+
 
 # Bad: Hungarian notation
 strName = "test"
@@ -355,13 +362,13 @@ iCount = 5
 name = "test"
 count = 5
 
+
 # Bad: Single letter (except loop variables)
-def f(x):
-    ...
+def f(x): ...
+
 
 # Good: Descriptive names
-def evaluate_risk_level(action_description: str) -> RiskLevel:
-    ...
+def evaluate_risk_level(action_description: str) -> RiskLevel: ...
 ```
 
 ---
@@ -416,16 +423,16 @@ def evaluate_action(
 
 ```python
 # Bad: Too many parameters
-def create_agent(id, name, role, dept, reports_to, tools, perms, meta, extra):
-    ...
+def create_agent(id, name, role, dept, reports_to, tools, perms, meta, extra): ...
+
 
 # Good: Use dataclass/Pydantic
-def create_agent(config: AgentConfig) -> Agent:
-    ...
+def create_agent(config: AgentConfig) -> Agent: ...
+
 
 # Bad: God function (200 lines)
-def do_everything():
-    ...
+def do_everything(): ...
+
 
 # Good: Small, focused functions
 def load_config() -> CompanyRegistry: ...
@@ -492,11 +499,14 @@ class EverythingEngine:
     def manage_graphs(self): ...
     def generate_reports(self): ...
     def send_emails(self): ...
+
     # 500+ lines, 20+ methods
+
 
 # Good: Focused classes
 class DecisionEngine:
     """Only decision-related logic."""
+
 
 class WorkflowEngine:
     """Only workflow-related logic."""
@@ -574,8 +584,7 @@ class WorkflowEngine:
     def list_workflows(self) -> list[dict[str, Any]]:
         """List all available workflows."""
         return [
-            {"id": wf.id, "name": wf.name, "steps": len(wf.steps)}
-            for wf in self.registry.workflows
+            {"id": wf.id, "name": wf.name, "steps": len(wf.steps)} for wf in self.registry.workflows
         ]
 
     def start(self, workflow_id: str) -> str:
@@ -596,12 +605,13 @@ class WorkflowEngine:
 # DON'T DO THIS
 import os, sys, json, yaml, logging  # Multiple imports on one line
 
-def do_stuff(x,y,z):  # No spaces after commas
+
+def do_stuff(x, y, z):  # No spaces after commas
     try:
-        f=open("config.yaml")  # No spaces around =
-        data=yaml.load(f)
+        f = open("config.yaml")  # No spaces around =
+        data = yaml.load(f)
         for i in data:  # Shadowing built-in
-            if i==x:  # Comparison with = instead of ==
+            if i == x:  # Comparison with = instead of ==
                 return True
     except:  # Bare except
         pass  # Silent failure

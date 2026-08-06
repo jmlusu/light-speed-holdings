@@ -18,7 +18,6 @@ from ai_company.models import TaskStatus
 from ai_company.orchestrator.approval import ApprovalStatus
 from ai_company.orchestrator.escalation import EscalationManager
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

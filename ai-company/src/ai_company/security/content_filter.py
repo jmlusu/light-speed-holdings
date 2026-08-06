@@ -155,11 +155,10 @@ class ContentFilter:
         filtered = content
         was_modified = False
 
-        if threats and self.block_on_dangerous:
-            if max_threat == ThreatLevel.DANGEROUS:
-                filtered = "[CONTENT BLOCKED - Security threat detected]"
-                was_modified = True
-                max_threat = ThreatLevel.BLOCKED
+        if threats and self.block_on_dangerous and max_threat == ThreatLevel.DANGEROUS:
+            filtered = "[CONTENT BLOCKED - Security threat detected]"
+            was_modified = True
+            max_threat = ThreatLevel.BLOCKED
 
         # Log threats for security auditing
         if threats and self.log_threats:

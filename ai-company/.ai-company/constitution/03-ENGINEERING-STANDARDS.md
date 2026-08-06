@@ -162,17 +162,22 @@ logger.error("Failed to load config: %s", exc_info=True)
 class AIBaseError(Exception):
     """Base exception for all AI Company Builder errors."""
 
+
 class ConfigError(AIBaseError):
     """Configuration loading or validation failed."""
+
 
 class RegistryError(AIBaseError):
     """Registry parsing or resolution failed."""
 
+
 class GenerationError(AIBaseError):
     """Agent generation failed."""
 
+
 class DecisionError(AIBaseError):
     """Decision evaluation failed."""
+
 
 class WorkflowError(AIBaseError):
     """Workflow execution failed."""
@@ -254,6 +259,7 @@ def evaluate_action(
 ```python
 from pydantic import BaseModel, Field
 
+
 class Agent(BaseModel):
     id: str
     name: str
@@ -276,6 +282,7 @@ Dependencies are resolved through function parameters and factory functions:
 def load_config() -> CompanyRegistry:
     """Create CompanyRegistry from YAML files."""
     ...
+
 
 # Function parameter injection
 def create_engine(registry: CompanyRegistry) -> DecisionEngine:

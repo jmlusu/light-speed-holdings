@@ -240,6 +240,7 @@ with patch("ai_company.llm.client.openai") as mock_openai:
     )
     result = client.generate("test prompt")
 
+
 # Mock file system
 def test_memory_store(tmp_path):
     store = MemoryStore(base_path=tmp_path)

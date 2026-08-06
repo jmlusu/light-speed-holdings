@@ -9,7 +9,6 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-
 # ── Helpers ───────────────────────────────────────────────────────────
 
 
@@ -158,7 +157,7 @@ class TestVectorStore:
         assert "Python" in results[0][0].content
 
     def test_index_entry(self):
-        from ai_company.memory.engine import MemoryStore, MemoryEntry
+        from ai_company.memory.engine import MemoryEntry, MemoryStore
         from ai_company.memory.vector_store import VectorStore
 
         mock_engine = MagicMock()
@@ -214,8 +213,8 @@ class TestAgentPerformanceTracker:
 
     def test_import(self):
         from ai_company.ml.performance import (
-            AgentPerformanceTracker,
             AgentMetrics,
+            AgentPerformanceTracker,
             TaskExecutionRecord,
         )
 
@@ -413,7 +412,7 @@ class TestTaskComplexityScorer:
     """Tests for the TaskComplexityScorer class."""
 
     def test_import(self):
-        from ai_company.ml.complexity import TaskComplexityScorer, ComplexityScore
+        from ai_company.ml.complexity import ComplexityScore, TaskComplexityScorer
 
         assert TaskComplexityScorer is not None
         assert ComplexityScore is not None
@@ -525,7 +524,7 @@ class TestPromptOptimizer:
     """Tests for the PromptOptimizer class."""
 
     def test_import(self):
-        from ai_company.ml.prompt_optimizer import PromptOptimizer, PromptVariant, PromptInsight
+        from ai_company.ml.prompt_optimizer import PromptInsight, PromptOptimizer, PromptVariant
 
         assert PromptOptimizer is not None
         assert PromptVariant is not None
@@ -655,7 +654,7 @@ class TestAnomalyDetector:
     """Tests for the AnomalyDetector class."""
 
     def test_import(self):
-        from ai_company.ml.anomaly import AnomalyDetector, AnomalyAlert, MetricWindow
+        from ai_company.ml.anomaly import AnomalyAlert, AnomalyDetector, MetricWindow
 
         assert AnomalyDetector is not None
         assert AnomalyAlert is not None
@@ -800,9 +799,9 @@ class TestPredictiveScalingEngine:
 
     def test_import(self):
         from ai_company.ml.predictive_scaling import (
+            DailyMetrics,
             PredictiveScalingEngine,
             ScalingRecommendation,
-            DailyMetrics,
         )
 
         assert PredictiveScalingEngine is not None
@@ -885,7 +884,7 @@ class TestPredictiveScalingEngine:
 
     def test_forecast_with_historical_data(self):
         """Test forecasting when some historical data exists."""
-        from ai_company.ml.predictive_scaling import PredictiveScalingEngine, DailyMetrics
+        from ai_company.ml.predictive_scaling import DailyMetrics, PredictiveScalingEngine
 
         tmp = _make_tmp_dir()
         engine = PredictiveScalingEngine(data_dir=tmp, history_days=30)
@@ -1058,8 +1057,8 @@ class TestMLPipelineIntegration:
         assert complex_task.recommended_tier in ("standard", "premium")
 
     def test_performance_feeds_anomaly_detection(self):
-        from ai_company.ml.performance import AgentPerformanceTracker, TaskExecutionRecord
         from ai_company.ml.anomaly import AnomalyDetector
+        from ai_company.ml.performance import AgentPerformanceTracker, TaskExecutionRecord
 
         tmp = _make_tmp_dir()
         tracker = AgentPerformanceTracker(data_dir=tmp / "perf")

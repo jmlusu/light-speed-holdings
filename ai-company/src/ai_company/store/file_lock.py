@@ -122,7 +122,9 @@ def file_lock(
                         lock_path.unlink()
                     continue
                 if time.monotonic() >= deadline:
-                    raise FileLockError(f"Could not acquire lock {lock_path} within {timeout}s.")
+                    raise FileLockError(
+                        f"Could not acquire lock {lock_path} within {timeout}s."
+                    ) from exc
                 time.sleep(poll_interval)
         yield
     finally:

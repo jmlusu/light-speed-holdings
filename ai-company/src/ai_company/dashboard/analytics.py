@@ -15,6 +15,7 @@ by the per-department collectors. It supports:
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 from collections import defaultdict
@@ -197,10 +198,8 @@ class KPIHistoryStore:
                     continue
                 target_val: float | None = None
                 if raw_target is not None:
-                    try:
+                    with contextlib.suppress(TypeError, ValueError):
                         target_val = float(raw_target)
-                    except (TypeError, ValueError):
-                        pass
 
                 entry = KPIHistoryEntry(
                     timestamp=collected_at,
@@ -322,9 +321,8 @@ class KPIHistoryStore:
         lines = "".join(json.dumps(e.__dict__) + "\n" for e in entries)
         # Serialise concurrent appends so the NDJSON file cannot be
         # interleaved/corrupted by parallel collectors (GAP-002).
-        with self._store.lock_atomic(rel) as path:
-            with open(path, "a", encoding="utf-8") as fh:
-                fh.write(lines)
+        with self._store.lock_atomic(rel) as path, open(path, "a", encoding="utf-8") as fh:
+            fh.write(lines)
 
     def _load_entries(self, department: str) -> list[KPIHistoryEntry]:
         if department in self._cache:
@@ -335,17 +333,19 @@ class KPIHistoryStore:
             return []
 
         entries: list[KPIHistoryEntry] = []
-        with self._store.lock_atomic(path.relative_to(self._storage_dir)) as locked:
-            with open(locked, "r", encoding="utf-8") as fh:
-                for line in fh:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        data = json.loads(line)
-                        entries.append(KPIHistoryEntry(**data))
-                    except (json.JSONDecodeError, TypeError) as exc:
-                        logger.warning("Skipping malformed history entry: %s", exc)
+        with (
+            self._store.lock_atomic(path.relative_to(self._storage_dir)) as locked,
+            open(locked, "r", encoding="utf-8") as fh,
+        ):
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    data = json.loads(line)
+                    entries.append(KPIHistoryEntry(**data))
+                except (json.JSONDecodeError, TypeError) as exc:
+                    logger.warning("Skipping malformed history entry: %s", exc)
 
         self._cache[department] = entries
         return entries
@@ -429,10 +429,7 @@ def compute_trends(
 
         abs_change = current_val - prev_val
 
-        if prev_val != 0:
-            pct_change = round((abs_change / prev_val) * 100, 2)
-        else:
-            pct_change = None
+        pct_change = round(abs_change / prev_val * 100, 2) if prev_val != 0 else None
 
         if abs_change > 0:
             direction: Literal["up", "down", "flat"] = "up"

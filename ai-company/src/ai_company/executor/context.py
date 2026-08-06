@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -45,10 +46,8 @@ def parse_agent_spec(agent_name: str, agents_dir: str = ".opencode/agents") -> A
     frontmatter: dict = {}
     fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", content, re.DOTALL)
     if fm_match:
-        try:
+        with contextlib.suppress(yaml.YAMLError):
             frontmatter = yaml.safe_load(fm_match.group(1)) or {}
-        except yaml.YAMLError:
-            pass
 
     # Parse markdown sections
     sections = _parse_sections(content)

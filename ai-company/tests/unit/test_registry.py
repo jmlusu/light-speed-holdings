@@ -12,7 +12,6 @@ from ai_company.registry.parser import RegistryParser
 from ai_company.registry.resolver import RegistryResolver
 from ai_company.registry.validator import RegistryValidator
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -321,9 +320,9 @@ class TestRegistrySync:
         """Every YAML agent ID must appear in the JSON output."""
         import json
 
-        from ai_company.registry.sync import sync_registry
-
         import yaml
+
+        from ai_company.registry.sync import sync_registry
 
         json_out = tmp_path / "agent-registry.json"
         sync_registry(json_path=json_out)

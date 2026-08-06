@@ -23,7 +23,6 @@ from ai_company.orchestrator.escalation import (
     PostmortemStore,
 )
 
-
 # ─── Shared fixtures ──────────────────────────────────────────────────────────
 
 
@@ -50,6 +49,26 @@ def hitl(tmp_path: Path) -> HITLGate:
     """HITLGate with a short poll interval for test speed."""
     approval = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
     return HITLGate(approval_gate=approval, poll_interval=0.05, timeout_minutes=0.05)
+
+
+def test_approval_yaml_roundtrip_preserves_status(tmp_path: Path) -> None:
+    """Approval requests must survive a save/load cycle (regression for enum serialization)."""
+    gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+    gate.request_approval(
+        request_id="rt-1",
+        task_id="task-rt",
+        agent_id="agent-rt",
+        action="tool:write",
+        description="round trip",
+    )
+    gate.approve("rt-1", approved_by="ceo")
+
+    reloaded = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+    assert len(reloaded.requests) == 1
+    req = reloaded.get_request("rt-1")
+    assert req is not None
+    assert req.status == ApprovalStatus.APPROVED
+    assert req.approved_by_list == ["ceo"]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

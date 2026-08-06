@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from ai_company.workflow.engine import WorkflowEngine
 from ai_company.models import (
-    CompanyRegistry,
     Company,
+    CompanyRegistry,
     Workflow,
     WorkflowStep,
 )
+from ai_company.workflow.engine import WorkflowEngine
 
 
 @pytest.fixture()

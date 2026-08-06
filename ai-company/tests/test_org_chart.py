@@ -22,7 +22,6 @@ from ai_company.org_chart.data_models import (
 from ai_company.org_chart.organization_chart import OrganizationChart, PathResult
 from ai_company.org_chart.registry_normalizer import RegistryNormalizer
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -636,7 +635,7 @@ class TestDataModels:
 
     def test_enhanced_orgnode_frozen(self) -> None:
         node = EnhancedOrgNode(name="x", role="Engineer", department="Tech")
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             node.name = "y"  # type: ignore[misc]
 
     def test_enhanced_orgnode_skills_gap(self) -> None:
@@ -934,13 +933,13 @@ def test_performance_requirements() -> None:
     construction_ms = (time.time() - start) * 1000
 
     start = time.time()
-    for i in range(100):
+    for _ in range(100):
         node = chart.get_node("n")
         assert node is not None
     lookup_ms = (time.time() - start) * 1000 / 100
 
     start = time.time()
-    for i in range(10):
+    for _ in range(10):
         leaf_name = "n"
         for _ in range(9):
             leaf_name += "-R"

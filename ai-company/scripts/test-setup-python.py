@@ -3,8 +3,8 @@
 Test script to verify Python setup for milestones deck generation
 """
 
-import sys
 import importlib.util
+import sys
 
 
 def check_python_version():

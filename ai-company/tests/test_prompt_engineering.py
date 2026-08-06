@@ -16,7 +16,6 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -685,7 +684,7 @@ class TestPromptAnalytics:
         analytics = PromptAnalytics(storage_dir=str(tmp_path))
 
         # Record improving v1 then degrading v2
-        for i in range(5):
+        for _ in range(5):
             analytics.record(
                 PromptMetric(
                     prompt_id="test.prompt",
@@ -693,7 +692,7 @@ class TestPromptAnalytics:
                     avg_score=0.9,
                 )
             )
-        for i in range(5):
+        for _ in range(5):
             analytics.record(
                 PromptMetric(
                     prompt_id="test.prompt",
@@ -777,8 +776,8 @@ class TestOptimizedPrompts:
             assert "RULES" in fmt
 
     def test_build_system_prompt_typed(self) -> None:
-        from ai_company.executor.prompts import build_system_prompt_typed
         from ai_company.executor.context import AgentContext
+        from ai_company.executor.prompts import build_system_prompt_typed
 
         agent = AgentContext(
             name="test-exec",

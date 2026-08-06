@@ -5,6 +5,7 @@ Includes GAP-017 dead-letter queue commands and daemon mode (S3-06).
 
 from __future__ import annotations
 
+import contextlib
 import json
 from pathlib import Path
 from typing import Optional
@@ -84,7 +85,7 @@ def _start_daemon(
         daemon.start()
     except RuntimeError as exc:
         typer.echo(f"Daemon error: {exc}", err=True)
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None
 
 
 @app.command()
@@ -220,8 +221,9 @@ def status() -> None:
 @app.command()
 def stop() -> None:
     """Stop the executor daemon (sends SIGTERM)."""
-    from ai_company.executor.daemon import ExecutorDaemon
     from pathlib import Path
+
+    from ai_company.executor.daemon import ExecutorDaemon
 
     typer.echo("Stopping executor daemon...")
     daemon = ExecutorDaemon(
@@ -301,10 +303,8 @@ def dlq_retry(
     inbox_path = Path(bus.storage_path)
     tasks: list[dict] = []
     if inbox_path.exists():
-        try:
+        with contextlib.suppress(json.JSONDecodeError, OSError):
             tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            pass
     tasks.append(restored)
     inbox_path.write_text(json.dumps(tasks, indent=2, default=str), encoding="utf-8")
 

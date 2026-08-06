@@ -6,20 +6,20 @@ import logging
 from typing import Any
 
 from ai_company.models import (
+    KPI,
     Agent,
     ApprovalEntry,
-    BoardMember,
     BoardMeeting,
+    BoardMember,
     Budget,
+    Committee,
     Company,
     CompanyRegistry,
-    Committee,
     Culture,
     DecisionTreeConfig,
     Department,
     Executive,
     Governance,
-    KPI,
     Policy,
     RiskMatrixConfig,
     Strategy,

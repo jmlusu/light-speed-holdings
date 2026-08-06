@@ -201,7 +201,7 @@ class MemoryStore:
                 plaintext_entry.created_at = entry.created_at
                 plaintext_entry.seq = entry.seq
                 self._vector_store.index_entry(plaintext_entry)
-            except Exception:
+            except Exception:  # noqa: BLE001 - indexing must not break storage
                 pass  # Non-fatal: indexing failure shouldn't break storage
 
         return entry
@@ -241,7 +241,7 @@ class MemoryStore:
                 for entry in results:
                     entry.content = self._decrypt_content(entry.content)
                 return results
-            except Exception:
+            except Exception:  # noqa: BLE001 - vector search is best-effort
                 pass  # Fall through to substring search
 
         # Fallback to substring search
@@ -352,7 +352,7 @@ class MemoryStore:
                     for entry in results:
                         entry.access_count += 1
                     return results[:limit]
-            except Exception:
+            except Exception:  # noqa: BLE001 - vector search is best-effort
                 pass  # Fall through to keyword ranking
 
         # Keyword path: keep entries that match any term in content/tags/metadata.

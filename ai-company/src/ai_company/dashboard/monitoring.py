@@ -283,7 +283,7 @@ def _append_process_metrics(lines: list[str]) -> None:
     except ImportError:
         # psutil not installed
         pass
-    except Exception:  # pragma: no cover - psutil runtime error
+    except Exception:  # noqa: BLE001 - pragma: no cover - psutil runtime error
         pass
 
     # CPU times (always available via os.times)
@@ -346,7 +346,7 @@ def _append_task_status_breakdown(lines: list[str]) -> None:
         lines.append("# TYPE ai_company_tasks_by_status gauge")
         for status, count in sorted(status_counts.items()):
             lines.append(f'ai_company_tasks_by_status{{status="{status}"}} {count}')
-    except Exception:
+    except Exception:  # noqa: BLE001 - metric collection is best-effort
         logger.debug("Failed to read inbox for task status breakdown")
 
 
@@ -599,7 +599,7 @@ def _check_process_memory() -> str:
             return f"{rss_mb:.1f} MB peak RSS"
         except (ImportError, AttributeError):
             return "unavailable"
-    except Exception:  # pragma: no cover - psutil runtime error
+    except Exception:  # noqa: BLE001 - pragma: no cover - psutil runtime error
         return "unavailable"
 
 

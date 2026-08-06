@@ -12,8 +12,8 @@ import base64
 import logging
 from typing import TYPE_CHECKING
 
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.exceptions import InvalidTag
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 if TYPE_CHECKING:
     from ai_company.security.encryption_key_manager import EncryptionKeyManager
@@ -85,7 +85,6 @@ def decrypt(payload: str, key_manager: EncryptionKeyManager) -> str:
     ciphertext = blob[_NONCE_SIZE:]
 
     # Try current key first
-    last_error: Exception | None = None
     for label, key in [
         ("current", key_manager.get_current_key()),
         ("previous", key_manager.get_previous_key()),
@@ -97,7 +96,6 @@ def decrypt(payload: str, key_manager: EncryptionKeyManager) -> str:
             plaintext_bytes = aesgcm.decrypt(nonce, ciphertext, None)
             return plaintext_bytes.decode("utf-8")
         except (ValueError, OSError, InvalidTag) as exc:
-            last_error = exc
             logger.debug("Decrypt failed with %s key: %s", label, exc)
 
-    raise ValueError(f"Failed to decrypt")
+    raise ValueError("Failed to decrypt")

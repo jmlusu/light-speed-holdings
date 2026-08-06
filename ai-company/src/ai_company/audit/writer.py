@@ -12,6 +12,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     pass
 
+import contextlib
+
 from ai_company.audit.events import AuditEvent
 
 # ── Rotation defaults ────────────────────────────────────────────────
@@ -159,16 +161,12 @@ class AuditWriter:
         finally:
             # Clean up temp file descriptor if fdopen was never called.
             if tmp_fd is not None:
-                try:
+                with contextlib.suppress(OSError):
                     os.close(tmp_fd)
-                except OSError:
-                    pass
             # Clean up temp file if replace did not happen.
             if tmp_path is not None:
-                try:
+                with contextlib.suppress(OSError):
                     os.remove(tmp_path)
-                except OSError:
-                    pass
 
     # ------------------------------------------------------------------
     # Utilities

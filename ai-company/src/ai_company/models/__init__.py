@@ -1,15 +1,16 @@
 """Domain models for AI Company Builder."""
 
 from ai_company.models.models import (
+    KPI,
     Agent,
     AgentType,
     ApprovalEntry,
-    BoardMember,
     BoardMeeting,
+    BoardMember,
     Budget,
+    Committee,
     Company,
     CompanyRegistry,
-    Committee,
     Contingency,
     Culture,
     DecisionNode,
@@ -23,7 +24,6 @@ from ai_company.models.models import (
     Governance,
     GovernanceApproval,
     Integration,
-    KPI,
     LongTermGoal,
     Meeting,
     MeetingAgendaItem,

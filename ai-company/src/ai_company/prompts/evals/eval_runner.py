@@ -18,10 +18,10 @@ from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 from ai_company.prompts.evals.eval_dataset import (
-    EvalTestCase,
-    get_test_cases,
     AgentType,
     Difficulty,
+    EvalTestCase,
+    get_test_cases,
 )
 from ai_company.prompts.evals.eval_scorer import (
     EvalResult,

@@ -8,8 +8,8 @@ from pathlib import Path
 import pytest
 
 from ai_company.audit.events import AuditEvent, AuditEventType
-from ai_company.data.database import Database
 from ai_company.data.audit_store import AuditStore
+from ai_company.data.database import Database
 
 
 @pytest.fixture

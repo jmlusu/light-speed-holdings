@@ -267,7 +267,7 @@ class AgentProtocol:
                     priority=TaskPriority(priority),
                 )
                 self._bus.send_task(task)
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - return error envelope
                 logger.error("Failed to send request task: %s", exc)
                 return ResponseEnvelope(
                     request_id=request_id,

@@ -148,7 +148,7 @@ class VectorStore:
 
         # Sort and filter
         scored = sorted(
-            zip(candidates, scores),
+            zip(candidates, scores, strict=False),
             key=lambda x: x[1],
             reverse=True,
         )

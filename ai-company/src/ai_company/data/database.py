@@ -9,6 +9,7 @@ stdlib :mod:`sqlite3` module for synchronous access.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import sqlite3
@@ -294,10 +295,8 @@ class Database:
         for row in rows:
             for key, val in row.items():
                 if isinstance(val, str) and val.startswith(("{", "[")):
-                    try:
+                    with contextlib.suppress(json.JSONDecodeError, TypeError):
                         row[key] = json.loads(val)
-                    except (json.JSONDecodeError, TypeError):
-                        pass
         return json.dumps(rows, indent=2, default=str)
 
 

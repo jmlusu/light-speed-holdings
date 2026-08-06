@@ -7,11 +7,11 @@ extracting hierarchical relationships, reporting chains, and span of control.
 
 from __future__ import annotations
 
-import yaml
-from typing import Any, Dict, List, Optional
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
+import yaml
 from pydantic import BaseModel, Field
 
 
@@ -118,7 +118,7 @@ class RegistryNormalizer:
                 dept_record["specialists"].append(agent_id)
 
         # Calculate span of control and department metrics
-        for dept_name, dept_info in departments.items():
+        for _dept_name, dept_info in departments.items():
             dept_info["span_of_control"] = len(dept_info["direct_reports"])
             dept_info["total_agents"] = len(dept_info["direct_reports"]) + len(
                 dept_info["specialists"]
@@ -159,11 +159,9 @@ class RegistryNormalizer:
 
             # Extract hierarchy information
             parent_id = agent.get("reports_to", "")
-            if not parent_id:
-                # For top-level execs, find their reports_to
-                if "direct_reports" in agent and agent["direct_reports"]:
-                    # This is an executive with direct reports, skip as parent will be handled elsewhere
-                    continue
+            # For top-level execs with direct reports, skip as the parent will be handled elsewhere
+            if not parent_id and agent.get("direct_reports"):
+                continue
 
             # Calculate depth by traversing up the hierarchy
             depth = self._calculate_depth(agent_id, registry_data)
@@ -263,9 +261,7 @@ class RegistryNormalizer:
         role = agent.get("title", "").lower()
         if "chief" in role or "president" in role or "founder" in role:
             return "high"
-        elif "vice president" in role or "director" in role:
-            return "medium"
-        elif "manager" in role or "lead" in role:
+        elif "vice president" in role or "director" in role or "manager" in role or "lead" in role:
             return "medium"
         return "low"
 
@@ -383,7 +379,7 @@ class RegistryNormalizer:
         """Create summary statistics for all departments."""
         summary = {}
 
-        for dept_name, dept_info in self.departments.items():
+        for dept_name, _dept_info in self.departments.items():
             dept_chains = [
                 chain for chain in self.reporting_chains.values() if chain.department == dept_name
             ]
@@ -437,9 +433,11 @@ class RegistryNormalizer:
 
         # Check for orphaned agents (agents without parents that aren't root)
         for agent in self.reporting_chains.values():
-            if agent.parent_id and agent.parent_id not in [
-                a.agent_id for a in self.reporting_chains.values()
-            ] and agent.parent_id not in ("human-ceo", "CEO"):
+            if (
+                agent.parent_id
+                and agent.parent_id not in [a.agent_id for a in self.reporting_chains.values()]
+                and agent.parent_id not in ("human-ceo", "CEO")
+            ):
                 errors.append(f"Agent {agent.agent_id} has invalid parent: {agent.parent_id}")
 
         # Check for duplicate agent IDs

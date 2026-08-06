@@ -56,11 +56,11 @@ class OllamaProvider(LLMProvider):
 
         try:
             resp = self._client.post("/api/chat", json=payload)
-        except httpx.ConnectError:
+        except httpx.ConnectError as exc:
             raise LLMProviderError(
                 self.name,
                 f"Cannot connect to Ollama at {self.api_base}. Is Ollama running?",
-            )
+            ) from exc
         except httpx.TimeoutException as exc:
             raise LLMProviderError(self.name, f"Request timed out: {exc}") from exc
         except httpx.HTTPError as exc:
@@ -140,11 +140,11 @@ class OllamaProvider(LLMProvider):
                         return
                     if content:
                         yield StreamChunk(delta=content)
-        except httpx.ConnectError:
+        except httpx.ConnectError as exc:
             raise LLMProviderError(
                 self.name,
                 f"Cannot connect to Ollama at {self.api_base}. Is Ollama running?",
-            )
+            ) from exc
         except httpx.TimeoutException as exc:
             raise LLMProviderError(self.name, f"Request timed out: {exc}") from exc
         except httpx.HTTPError as exc:

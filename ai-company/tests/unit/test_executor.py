@@ -14,10 +14,9 @@ from ai_company.executor.context import (
     build_user_prompt,
     parse_agent_spec,
 )
-from ai_company.executor.tool_runner import ToolRunner
 from ai_company.executor.hitl_gate import HITLGate
+from ai_company.executor.tool_runner import ToolRunner
 from ai_company.orchestrator.approval import ApprovalGate
-
 
 # ── Context / Spec Parser ──────────────────────────────────────────
 

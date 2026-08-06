@@ -116,8 +116,8 @@ def assign_task(
         typer.echo(f"Error: Specialist '{specialist_id}' not found.")
         raise typer.Exit(1)
 
-    from ai_company.orchestrator.message_bus import MessageBus
     from ai_company.models.task import Task
+    from ai_company.orchestrator.message_bus import MessageBus
 
     bus = MessageBus()
     task = Task(

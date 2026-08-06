@@ -38,10 +38,12 @@ class CircuitBreaker:
 
     @property
     def state(self) -> CircuitState:
-        if self._state == CircuitState.OPEN:
-            if time.time() - self._last_failure_time >= self.recovery_timeout:
-                self._state = CircuitState.HALF_OPEN
-                self._success_count = 0
+        if (
+            self._state == CircuitState.OPEN
+            and time.time() - self._last_failure_time >= self.recovery_timeout
+        ):
+            self._state = CircuitState.HALF_OPEN
+            self._success_count = 0
         return self._state
 
     @property
@@ -65,9 +67,7 @@ class CircuitBreaker:
         self._failure_count += 1
         self._last_failure_time = time.time()
 
-        if self._state == CircuitState.HALF_OPEN:
-            self._state = CircuitState.OPEN
-        elif self._failure_count >= self.failure_threshold:
+        if self._state == CircuitState.HALF_OPEN or self._failure_count >= self.failure_threshold:
             self._state = CircuitState.OPEN
 
     def reset(self) -> None:

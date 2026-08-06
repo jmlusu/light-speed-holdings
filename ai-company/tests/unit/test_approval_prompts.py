@@ -18,24 +18,23 @@ from typing import Any, cast
 import pytest
 
 from ai_company.orchestrator.approval_prompts import (
-    TIER_CLASSIFICATION_PROMPT,
     DASHBOARD_SUMMARY_PROMPT,
-    TIER_NOTIFICATIONS,
     ESCALATION_TEMPLATES,
-    build_tier_classification_prompt,
-    build_notification,
+    TIER_CLASSIFICATION_PROMPT,
+    TIER_NOTIFICATIONS,
     build_escalation,
+    build_notification,
+    build_tier_classification_prompt,
 )
 from ai_company.orchestrator.tier_rules import (
-    ApprovalTier,
     SENIORITY_AUTO_APPROVE_TIER,
     TOOL_DEFAULT_TIERS,
+    ApprovalTier,
+    _check_command_sensitivity,
+    _check_sensitive_path,
     classify_tool_action,
     get_tier_config,
-    _check_sensitive_path,
-    _check_command_sensitivity,
 )
-
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
 

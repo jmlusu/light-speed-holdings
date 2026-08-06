@@ -2,9 +2,9 @@
 Doctor report generation.
 """
 
-from typing import List
 from datetime import datetime
 from pathlib import Path
+from typing import List
 
 from ai_company.doctor.checks import CheckResult
 

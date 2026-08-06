@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from ai_company.builder import BootstrapEngine, COMPANY_DIRS
+from ai_company.builder import COMPANY_DIRS, BootstrapEngine
 from ai_company.models import (
     Agent,
     ApprovalEntry,

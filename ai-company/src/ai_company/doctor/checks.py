@@ -76,7 +76,7 @@ def check_message_bus() -> CheckResult:
 
         MessageBus()
         return CheckResult("MessageBus", True, "MessageBus initialized")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - doctor must report, not crash
         return CheckResult("MessageBus", False, f"Error: {e}", severity="error")
 
 
@@ -191,7 +191,7 @@ def check_inbox_health() -> CheckResult:
                 "total": len(tasks),
             },
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - doctor must report, not crash
         return CheckResult(
             name="Inbox",
             passed=False,
@@ -214,7 +214,7 @@ def check_memory_engine() -> CheckResult:
             message=f"{total} memories across {len(stats)} types",
             details=stats,
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - doctor must report, not crash
         return CheckResult(
             name="Memory Engine",
             passed=False,
@@ -257,7 +257,7 @@ def check_cost_tracker() -> CheckResult:
             message=f"{line_count} usage records in cost_log.jsonl",
             details={"record_count": line_count},
         )
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - doctor must report, not crash
         return CheckResult(
             name="Cost Tracker",
             passed=False,
@@ -290,7 +290,7 @@ def check_llm_providers() -> CheckResult:
                 "status": "error",
                 "message": f"HTTP {resp.status_code}",
             }
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - doctor must report, not crash
         providers["ollama"] = {"status": "unreachable", "message": str(e)}
 
     # --- OpenAI ---

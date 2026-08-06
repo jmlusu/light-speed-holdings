@@ -319,7 +319,7 @@ class ToolRunner:
                 }
                 results.append(exec_result)
                 log_tool_call(task_id, agent_id, tool, args, exec_result)
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - tool failure captured in result
                 exc_result = {
                     "step": i,
                     "tool": tool,
@@ -692,7 +692,7 @@ class ToolRunner:
         try:
             resolved.relative_to(self.project_root)
         except ValueError:
-            raise SecurityError(f"Path '{path_str}' escapes project root: {resolved}")
+            raise SecurityError(f"Path '{path_str}' escapes project root: {resolved}") from None
         return resolved
 
     def _sanitize_output(self, text: str, source: str = "tool") -> str:

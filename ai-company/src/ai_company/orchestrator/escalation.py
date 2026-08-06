@@ -6,12 +6,13 @@ Security hardening:
 - Atomic writes to prevent corruption
 """
 
+import logging
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
+
 import yaml
 from pydantic import BaseModel, Field
-from datetime import datetime
-import logging
 
 from ai_company.utils.file_lock import atomic_write, file_lock
 
@@ -94,10 +95,9 @@ class EscalationManager:
 
     def _load_config(self):
         if self.config_path.exists():
-            with file_lock(self.config_path):
-                with open(self.config_path, "r", encoding="utf-8") as f:
-                    data = yaml.safe_load(f) or {}
-                    self.rules = [EscalationRule(**r) for r in data.get("rules", [])]
+            with file_lock(self.config_path), open(self.config_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+                self.rules = [EscalationRule(**r) for r in data.get("rules", [])]
 
     def _save_config(self):
         with file_lock(self.config_path):
@@ -224,26 +224,23 @@ class PostmortemStore:
 
     def save(self, postmortem: Postmortem) -> Path:
         path = self.storage_dir / f"{postmortem.incident_id}.json"
-        with file_lock(path):
-            with atomic_write(path) as f:
-                f.write(postmortem.model_dump_json(indent=2))
+        with file_lock(path), atomic_write(path) as f:
+            f.write(postmortem.model_dump_json(indent=2))
         return path
 
     def load(self, incident_id: str) -> Optional[Postmortem]:
         path = self.storage_dir / f"{incident_id}.json"
         if not path.exists():
             return None
-        with file_lock(path):
-            with open(path, "r", encoding="utf-8") as f:
-                return Postmortem.model_validate_json(f.read())
+        with file_lock(path), open(path, "r", encoding="utf-8") as f:
+            return Postmortem.model_validate_json(f.read())
 
     def list_all(self) -> List[Postmortem]:
         postmortems: List[Postmortem] = []
         for path in sorted(self.storage_dir.glob("*.json")):
             try:
-                with file_lock(path):
-                    with open(path, "r", encoding="utf-8") as f:
-                        postmortems.append(Postmortem.model_validate_json(f.read()))
+                with file_lock(path), open(path, "r", encoding="utf-8") as f:
+                    postmortems.append(Postmortem.model_validate_json(f.read()))
             except (OSError, ValueError) as exc:
                 logger.warning("Failed to load postmortem %s: %s", path, exc)
         return postmortems

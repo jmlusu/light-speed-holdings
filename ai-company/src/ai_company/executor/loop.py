@@ -21,13 +21,11 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.audit.integration import init_audit, log_task_status
-from ai_company.memory.consolidation import ConsolidationConfig, ConsolidationScheduler
-from ai_company.memory.integration import init_memory, recall_context, record_task_outcome
+from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.executor.context import (
     build_user_prompt,
     parse_agent_spec,
 )
-from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.executor.dead_letter import (
     DeadLetterQueue,
     detect_stale_tasks,
@@ -36,6 +34,8 @@ from ai_company.executor.hitl_gate import HITLGate
 from ai_company.executor.tool_runner import HITLParked, ToolRunner
 from ai_company.llm.client import LLMClient
 from ai_company.llm.cost_tracker import CostTracker
+from ai_company.memory.consolidation import ConsolidationConfig, ConsolidationScheduler
+from ai_company.memory.integration import init_memory, recall_context, record_task_outcome
 from ai_company.models.task import Task, TaskPriority, TaskStatus
 from ai_company.orchestrator.approval import ApprovalGate
 from ai_company.orchestrator.message_bus import MessageBus
@@ -315,7 +315,7 @@ class Executor:
                 priority=task.priority.value,
                 preapproved=preapproved,
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - loop must never crash on a task
             # GAP-004: a HITL-gated step raised HITLParked — park the task and
             # continue to the next one instead of blocking on human approval.
             from ai_company.executor.tool_runner import HITLParked

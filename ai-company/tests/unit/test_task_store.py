@@ -9,7 +9,7 @@ import pytest
 
 from ai_company.data.database import Database
 from ai_company.data.task_store import TaskStore
-from ai_company.models.task import Task, TaskStatus, TaskPriority
+from ai_company.models.task import Task, TaskPriority, TaskStatus
 
 
 @pytest.fixture

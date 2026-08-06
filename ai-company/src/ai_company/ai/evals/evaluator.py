@@ -381,7 +381,7 @@ class EvalRunner:
                 max_retries=1,
             )
             return result.get("result", json.dumps(result))
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - degrade to empty output
             logger.warning("Output generation failed: %s", exc)
             return ""
 
@@ -432,7 +432,7 @@ class EvalRunner:
                     normalized[k] = float(v) if isinstance(v, (int, float)) else 0.5
 
             return float(overall), reasoning, normalized
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - degrade to neutral score
             logger.warning("Judge scoring failed: %s", exc)
             return 0.5, f"Judge error: {exc}", {}
 

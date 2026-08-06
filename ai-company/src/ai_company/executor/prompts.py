@@ -16,7 +16,6 @@ from typing import Any
 
 from ai_company.executor.context import AgentContext
 
-
 # ---------------------------------------------------------------------------
 # Role prefixes — define the "persona" injected per agent type
 # ---------------------------------------------------------------------------

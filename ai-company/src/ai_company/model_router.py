@@ -22,7 +22,6 @@ from typing import Any, Optional
 
 import yaml
 
-
 # ---------------------------------------------------------------------------
 # Domain → tier mapping for context-aware routing
 # ---------------------------------------------------------------------------
@@ -518,7 +517,7 @@ class ModelRouter:
     def resolve_all_agents(self) -> dict[str, Route]:
         """Resolve model routing for every agent in the registry."""
         results: dict[str, Route] = {}
-        for name, agent in self._registry.items():
+        for name, _agent in self._registry.items():
             results[name] = self.resolve(agent_name=name)
         return results
 

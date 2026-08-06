@@ -7,11 +7,11 @@ from the requirements.
 
 from __future__ import annotations
 
-from typing import List, Optional, Dict, Any
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ExecutiveTier(str, Enum):
@@ -407,9 +407,7 @@ class DataTransformer:
 
         if "ceo" in title or "president" in title:
             return "high"
-        elif "vp" in title or "director" in title:
-            return "medium"
-        elif "manager" in title or "lead" in title:
+        elif "vp" in title or "director" in title or "manager" in title or "lead" in title:
             return "medium"
         else:
             return "low"

@@ -229,6 +229,7 @@ def generate_agent(agent, template, output_dir):
     output_path = output_dir / f"{agent.id}.md"
     output_path.write_text(content)  # Overwrites if exists
 
+
 # Bad: Non-idempotent
 def generate_agent(agent, template, output_dir):
     output_path = output_dir / f"{agent.id}.md"
@@ -322,6 +323,7 @@ engine.run()
 
 # 3. Verify output
 from pathlib import Path
+
 agent_files = list(Path(".opencode/agents").glob("*.md"))
 print(f"Generated {len(agent_files)} agent files")
 ```
