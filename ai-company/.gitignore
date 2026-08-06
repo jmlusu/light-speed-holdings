@@ -21,6 +21,7 @@ env/
 
 # ── Testing & Coverage ────────────────────────────────────────
 .pytest_cache/
+.pytest_tmp/
 .coverage
 htmlcov/
 coverage.xml
@@ -41,8 +42,22 @@ benchmarks/
 # ── Runtime data (autonomous cycles, task queue) ──────────────
 logs/
 .opencode/inbox.json
-.opencode/cycle-state.json
+.opencode/inbox.json.bak
+.opencode/audit
+.opencode/audit.jsonl
+.opencode/dead_letter.json
+.opencode/daily_briefing.md
+.opencode/*.audit-tmp-*
+.opencode/opencode.json
 orchestrator/scheduler.yaml
+orchestrator/escalation.yaml
+orchestrator/approvals.yaml
+orchestrator/approvals.yaml.bak
+orchestrator/config-validation-report.json
+memory/*.json
+memory/vector_index/
+workflows/instances/
+*.bak
 
 # ── SQLite databases (WAL locking breaks Git) ────────────────
 data/*.db
