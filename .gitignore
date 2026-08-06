@@ -3,8 +3,7 @@
 
 # Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 *.egg-info/
 dist/
 build/
@@ -21,6 +20,16 @@ venv/
 .DS_Store
 Thumbs.db
 
-__pycache__/
-*.pyc
-.venv/
+# Runtime state / generated artifacts (regenerated from registry + execution)
+.opencode/inbox*.json
+.opencode/audit
+.opencode/audit.jsonl
+.opencode/config.json
+.opencode/dead_letter.json
+.opencode/opencode.json
+memory/*.json
+memory/vector_index/
+data/*.db
+*.bak
+backup/
+orchestrator/
