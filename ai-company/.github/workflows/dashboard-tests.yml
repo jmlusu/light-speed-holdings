@@ -42,30 +42,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python + uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: ai-company/requirements*.txt
+          enable-cache: true
+          cache-dependency-glob: ai-company/uv.lock
 
       - name: Install dependencies
         working-directory: ai-company
-        run: |
-          pip install -e ".[dev]"
+        run: uv sync --extra dev --frozen
 
       - name: Lint (ruff)
         working-directory: ai-company
-        run: ruff check src/ai_company/dashboard/ tests/unit/test_dashboard_api_response.py
+        run: uv run ruff check src/ai_company/dashboard/ tests/unit/test_dashboard_api_response.py
 
       - name: Type check (mypy)
         working-directory: ai-company
-        run: mypy src/ai_company/dashboard/
+        run: uv run mypy src/ai_company/dashboard/
 
       - name: Run API contract tests
         working-directory: ai-company
         run: |
-          pytest tests/unit/test_dashboard_api_response.py \
+          uv run pytest tests/unit/test_dashboard_api_response.py \
             -v \
             --tb=short \
             --junitxml=results/api-tests.xml \
@@ -74,7 +73,7 @@ jobs:
       - name: Run existing dashboard unit tests
         working-directory: ai-company
         run: |
-          pytest tests/unit/test_dashboard.py \
+          uv run pytest tests/unit/test_dashboard.py \
             tests/unit/test_dashboard_smoke.py \
             tests/unit/test_dashboard_ws.py \
             tests/unit/test_dashboard_security.py \
@@ -101,20 +100,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python + uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
+          enable-cache: true
+          cache-dependency-glob: ai-company/uv.lock
 
       - name: Install dependencies
         working-directory: ai-company
-        run: pip install -e ".[dev]" psutil
+        run: uv sync --extra dev --frozen
 
       - name: Run performance tests
         working-directory: ai-company
         run: |
-          pytest tests/performance/test_dashboard_performance.py \
+          uv run pytest tests/performance/test_dashboard_performance.py \
             -v \
             -m performance \
             --tb=short \
@@ -141,24 +141,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python + uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
+          enable-cache: true
+          cache-dependency-glob: ai-company/uv.lock
 
       - name: Install Python dependencies
         working-directory: ai-company
-        run: pip install -e ".[dev]" httpx pytest-playwright
+        run: uv sync --extra dev --extra e2e --frozen
 
       - name: Install Playwright browsers
         working-directory: ai-company
-        run: playwright install --with-deps ${{ matrix.browser }}
+        run: uv run playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run scroll fix verification tests
         working-directory: ai-company
         run: |
-          pytest tests/e2e/test_scroll_fix_verification.py \
+          uv run pytest tests/e2e/test_scroll_fix_verification.py \
             --browser ${{ matrix.browser }} \
             -v \
             --tb=short \
@@ -167,7 +168,7 @@ jobs:
       - name: Run cross-browser tests
         working-directory: ai-company
         run: |
-          pytest tests/e2e/test_cross_browser.py \
+          uv run pytest tests/e2e/test_cross_browser.py \
             --browser ${{ matrix.browser }} \
             -v \
             --tb=short \
@@ -191,24 +192,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python + uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
+          enable-cache: true
+          cache-dependency-glob: ai-company/uv.lock
 
       - name: Install dependencies
         working-directory: ai-company
-        run: pip install -e ".[dev]"
+        run: uv sync --extra dev --frozen
 
       - name: Bandit security scan
         working-directory: ai-company
-        run: bandit -r src/ai_company/dashboard/ -c pyproject.toml
+        run: uv run bandit -r src/ai_company/dashboard/ -c pyproject.toml
 
       - name: Run dashboard security tests
         working-directory: ai-company
         run: |
-          pytest tests/unit/test_dashboard_security.py \
+          uv run pytest tests/unit/test_dashboard_security.py \
             -v \
             --tb=short
 

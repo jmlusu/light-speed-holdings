@@ -4,29 +4,26 @@
 
 ```bash
 cd ai-company
-python -m venv .venv
-.venv\Scripts\activate        # Windows
-source .venv/bin/activate     # macOS/Linux
-pip install -e ".[dev]"
+uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 ```
 
 ## Code Style
 
 - **Python:** 3.12+ syntax
 - **Line length:** 100 characters
-- **Formatter:** `black src/`
-- **Linter:** `ruff check src/`
-- **Type checker:** `mypy src/`
+- **Formatter:** `uv run ruff format src/`
+- **Linter:** `uv run ruff check src/`
+- **Type checker:** `uv run mypy src/`
 
 ## Before Submitting
 
 Run the full verification suite:
 
 ```bash
-ruff check src/                # Lint
-black --check src/             # Format check
-mypy src/                      # Type check
-pytest                         # All tests
+uv run ruff check src/                # Lint
+uv run ruff format --check src/       # Format check
+uv run mypy src/                      # Type check
+uv run pytest                         # All tests
 ```
 
 All checks must pass before merging.

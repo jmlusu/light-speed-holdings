@@ -34,11 +34,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
-      - run: ai-company orchestrator tick
+      - run: uv sync --extra dev --frozen
+      - run: uv run ai-company orchestrator tick
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -48,11 +48,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
-      - run: ai-company executor tick
+      - run: uv sync --extra dev --frozen
+      - run: uv run ai-company executor tick
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -62,11 +62,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
-      - run: ai-company orchestrator briefing
+      - run: uv sync --extra dev --frozen
+      - run: uv run ai-company orchestrator briefing
 ```
 
 ### Cycle Flow

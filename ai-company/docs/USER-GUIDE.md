@@ -22,6 +22,7 @@ Complete reference for AI Company Builder — the Python CLI tool for creating a
 ### Prerequisites
 
 - **Python 3.12+**
+- **uv** (package manager) — [install guide](https://docs.astral.sh/uv/getting-started/installation/)
 - **An LLM API key** (at least one of: OpenCode, DeepSeek, OpenAI, Anthropic, or Ollama running locally)
 - **Operating System**: Windows, macOS, or Linux
 
@@ -29,14 +30,7 @@ Complete reference for AI Company Builder — the Python CLI tool for creating a
 
 ```bash
 cd ai-company
-python -m venv .venv
-
-# Activate the virtual environment
-.venv\Scripts\activate        # Windows
-source .venv/bin/activate     # macOS/Linux
-
-# Install in development mode
-pip install -e ".[dev]"
+uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 ```
 
 ### Bootstrap the Company
@@ -791,9 +785,9 @@ ai-company memory consolidate semantic                              # Consolidat
 | Problem | Solution |
 |---------|----------|
 | `Registry not found` | Run `ai-company company run` first |
-| `ModuleNotFoundError` | Run `pip install -e ".[dev]"` |
+| `ModuleNotFoundError` | Run `uv sync --extra dev` |
 | Dashboard won't start | Check port 8420 isn't in use: `netstat -ano \| findstr 8420` |
-| Tests fail | Run `pip install -e ".[dev]"` to ensure dev deps installed |
+| Tests fail | Run `uv sync --extra dev` to ensure dev deps installed |
 | Agent files not generated | Run `ai-company generate` |
 | `Company directory not found` | Run `ai-company company run` to bootstrap |
 | Memory entries not found | Run `ai-company memory add` to create entries first |

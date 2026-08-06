@@ -11,12 +11,12 @@ with additional coverage for:
     - Error handling UI tests
 
 Prerequisites:
-    pip install playwright pytest-playwright
-    playwright install chromium
+    uv sync --extra dev --extra e2e
+    uv run playwright install chromium
 
 Run:
-    pytest tests/e2e/test_scroll_stability.py -v --browser chromium
-    pytest tests/e2e/test_scroll_stability.py -v --browser chromium --headed
+    uv run pytest tests/e2e/test_scroll_stability.py -v --browser chromium
+    uv run pytest tests/e2e/test_scroll_stability.py -v --browser chromium --headed
 """
 
 from __future__ import annotations

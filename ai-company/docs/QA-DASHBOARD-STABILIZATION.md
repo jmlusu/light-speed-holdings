@@ -273,17 +273,17 @@ Before any stabilization fix is merged, verify:
 ```powershell
 # Install Playwright
 cd C:\Users\jmlus\light-speed-holdings\ai-company
-pip install playwright pytest-playwright
-playwright install chromium firefox webkit
+uv sync --extra dev --extra e2e
+uv run playwright install chromium firefox webkit
 
 # Run dashboard for testing
-ai-company dashboard --port 9420 --no-open
+uv run ai-company dashboard --port 9420 --no-open
 
 # Run existing backend tests
-pytest tests/unit/test_dashboard*.py -v
+uv run pytest tests/unit/test_dashboard*.py -v
 
 # Run new E2E tests (once created)
-pytest tests/e2e/ -v --browser chromium
+uv run pytest tests/e2e/ -v --browser chromium
 ```
 
 ### 7.5 CI Integration
@@ -292,11 +292,11 @@ pytest tests/e2e/ -v --browser chromium
 # Add to .github/workflows/test.yml
 - name: Dashboard E2E Tests
   run: |
-    pip install playwright pytest-playwright
-    playwright install --with-deps chromium
-    ai-company dashboard --port 9420 &
+    uv sync --extra dev --extra e2e --frozen
+    uv run playwright install --with-deps chromium
+    uv run ai-company dashboard --port 9420 &
     sleep 5
-    pytest tests/e2e/ -v --browser chromium
+    uv run pytest tests/e2e/ -v --browser chromium
 ```
 
 ---

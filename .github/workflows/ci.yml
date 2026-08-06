@@ -27,26 +27,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
-      - run: pip install -e ".[dev]"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
       - name: Ruff lint
-        run: ruff check src/ tests/
+        run: uv run ruff check src/ tests/
 
   typecheck:
     name: Type check (mypy)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
-      - run: pip install -e ".[dev]"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
       - name: Mypy
-        run: mypy src/
+        run: uv run mypy src/
 
   test:
     name: Test (${{ matrix.os }})
@@ -57,13 +59,14 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-          cache: pip
-      - run: pip install -e ".[dev]"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
       - name: Pytest
-        run: pytest -q
+        run: uv run pytest -q
 
   harness:
     name: ECL Harness Lint

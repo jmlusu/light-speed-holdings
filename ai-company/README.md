@@ -12,27 +12,25 @@ Python CLI for creating and orchestrating AI agent hierarchies. One human CEO su
 # Clone and install
 git clone https://github.com/light-speed-holdings/ai-company.git
 cd ai-company
-python -m venv .venv
-.venv\Scripts\activate        # Windows (or: source .venv/bin/activate)
-pip install -e ".[dev]"
+uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 
 # Bootstrap the company from config (generates 27 agents)
-ai-company company run
+uv run ai-company company run
 
 # List all agents
-ai-company agents list
+uv run ai-company agents list
 
 # Start the CEO dashboard (opens browser at localhost:8420)
-ai-company dashboard
+uv run ai-company dashboard
 ```
 
 ### 30-Second Demo
 
 ```bash
-ai-company company run            # 1. Bootstrap the company
-ai-company agents list            # 2. See all 27 agents
-ai-company orchestrator tick      # 3. Check what needs attention
-ai-company dashboard              # 4. Open the live dashboard
+uv run ai-company company run            # 1. Bootstrap the company
+uv run ai-company agents list            # 2. See all 27 agents
+uv run ai-company orchestrator tick      # 3. Check what needs attention
+uv run ai-company dashboard              # 4. Open the live dashboard
 ```
 
 ---
@@ -292,13 +290,13 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full details.
 
 ```bash
 cd ai-company
-pip install -e ".[dev]"
+uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
 
 # Run all checks
-ruff check src/                # Lint
-ruff format src/               # Format
-mypy src/                      # Type check (3 errors remaining)
-pytest                         # Tests (962 tests)
+uv run ruff check src/                # Lint
+uv run ruff format src/               # Format
+uv run mypy src/                      # Type check
+uv run pytest                         # Tests
 ```
 
 ### Makefile
@@ -307,7 +305,7 @@ All common tasks are available via Make targets:
 
 ```bash
 make help              # Show all available targets
-make install           # pip install -e ".[dev]"
+make install           # uv sync --extra dev
 make test              # Run all tests
 make test-cov          # Run tests with coverage
 make lint              # Lint with ruff
@@ -322,11 +320,11 @@ make clean             # Remove caches and build artifacts
 ### Testing
 
 ```bash
-pytest                                    # All 962 tests
-pytest tests/unit/test_orchestrator.py    # Single file
-pytest -v                                 # Verbose output
-pytest -k "postmortem"                    # By name pattern
-pytest --cov=ai_company                   # With coverage
+uv run pytest                                    # All 962 tests
+uv run pytest tests/unit/test_orchestrator.py    # Single file
+uv run pytest -v                                 # Verbose output
+uv run pytest -k "postmortem"                    # By name pattern
+uv run pytest --cov=ai_company                   # With coverage
 ```
 
 Tests cover: models, registry, orchestrator (scheduler, escalation, approval, postmortem), executor, dashboard API, memory, graphs, workflows, decision engine, model routing, generation, and audit trail.
@@ -362,8 +360,8 @@ npm install
 node scripts/generate-milestones-deck.js
 
 # Or using Python
-pip install -r requirements-pptx.txt
-python scripts/generate-milestones-deck.py
+uv sync --extra dev
+uv run python scripts/generate-milestones-deck.py
 ```
 
 The presentation includes 15 slides covering:
@@ -389,17 +387,15 @@ git clone https://github.com/YOUR_USER/ai-company.git
 cd ai-company
 
 # 2. Set up development environment
-python -m venv .venv
-.venv\Scripts\activate
-pip install -e ".[dev]"
+uv sync --extra dev
 
 # 3. Create a feature branch
 git checkout -b feat/my-feature
 
 # 4. Make changes and verify
-ruff check src/
-mypy src/
-pytest
+uv run ruff check src/
+uv run mypy src/
+uv run pytest
 
 # 5. Commit and push
 git commit -m "feat: add my feature"

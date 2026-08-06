@@ -99,7 +99,7 @@ dev = [
 | Rule | Rationale |
 |------|-----------|
 | Pin minimum versions for critical deps | `pydantic>=2.8` ensures API compatibility |
-| Never pin patch versions | Let pip resolve to latest compatible |
+| Never pin patch versions | Let uv resolve to latest compatible |
 | New deps require security review | Supply chain security (see [13-SECURITY-STANDARDS.md](13-SECURITY-STANDARDS.md)) |
 | Dev deps are separate | Production images don't need test tools |
 | No dependencies in source code | Dependencies are managed at project level only |
@@ -108,10 +108,10 @@ dev = [
 
 1. Check if existing deps already cover the need
 2. Verify license compatibility (prefer MIT, BSD, Apache 2.0)
-3. Check for known vulnerabilities (`pip audit`)
+3. Check for known vulnerabilities (`uv audit`)
 4. Add to `pyproject.toml` under appropriate section
-5. Run `pip install -e ".[dev]"` to install
-6. Run `ruff check src/ && mypy src/ && pytest` to verify no regressions
+5. Run `uv sync --extra dev` to install
+6. Run `uv run ruff check src/ && uv run mypy src/ && uv run pytest` to verify no regressions
 
 ---
 

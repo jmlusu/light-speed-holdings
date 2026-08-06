@@ -45,16 +45,16 @@ def main():
     if python_ok and packages_ok:
         print("✅ All checks passed!")
         print("\nTo generate the milestones deck:")
-        print("1. Run: pip install -r requirements-pptx.txt")
-        print("2. Run: python scripts/generate-milestones-deck.py")
+        print("1. Run: uv sync --extra dev (installs python-pptx)")
+        print("2. Run: uv run python scripts/generate-milestones-deck.py")
         print("3. Or run: generate-deck-python.bat (Windows)")
         print("4. Or run: .\\generate-deck-python.ps1 (PowerShell)")
         return 0
     else:
         print("❌ Some checks failed")
         print("\nPlease install missing dependencies:")
-        print("1. Install Python 3.7+ from https://python.org/")
-        print("2. Run: pip install -r requirements-pptx.txt")
+        print("1. Install uv from https://docs.astral.sh/uv/getting-started/installation/")
+        print("2. Run: uv sync --extra dev")
         return 1
 
 

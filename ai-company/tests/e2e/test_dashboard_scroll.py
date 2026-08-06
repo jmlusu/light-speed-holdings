@@ -9,11 +9,11 @@ Validates that:
 These tests use Playwright for cross-browser automation.
 
 Prerequisites:
-    pip install playwright pytest-playwright
-    playwright install
+    uv sync --extra dev --extra e2e
+    uv run playwright install
 
 Run:
-    pytest tests/e2e/test_dashboard_scroll.py -v --headed
+    uv run pytest tests/e2e/test_dashboard_scroll.py -v --headed
 """
 
 from __future__ import annotations

@@ -43,13 +43,11 @@ See `docs/ARCHITECTURE-GAPS.md` for the full gap analysis.
 
 ```bash
 cd ai-company
-python -m venv .venv
-.venv\Scripts\activate        # Windows (or: source .venv/bin/activate on Linux/Mac)
-pip install -e ".[dev]"
+uv sync --extra dev
 
 # Verify
-ai-company --help
-pytest
+uv run ai-company --help
+uv run pytest
 ```
 
 ## Usage
@@ -102,18 +100,18 @@ ai-company/src/ai_company/
 ## Development
 
 ```bash
-# Install dev dependencies
-pip install -e ".[dev]"
+# Install dev dependencies (creates .venv from uv.lock)
+uv sync --extra dev
 
-# Run all 727 tests
-pytest
+# Run all 1408 tests
+uv run pytest
 
 # Lint and type check
-ruff check src/
-mypy src/
+uv run ruff check src/
+uv run mypy src/
 
 # Regenerate agent files from registry
-python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
 ```
 
 ## Project Structure

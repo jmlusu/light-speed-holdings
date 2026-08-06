@@ -1,9 +1,9 @@
 @echo off
 echo Installing Python dependencies...
-pip install -r requirements-pptx.txt
+uv sync --extra dev
 
 echo Generating milestones deck with Python...
-python scripts/generate-milestones-deck.py
+uv run python scripts/generate-milestones-deck.py
 
 echo Done!
 pause

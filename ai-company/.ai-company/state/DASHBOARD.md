@@ -234,7 +234,7 @@ graph TD
 |---|------|-------------|--------|----------|------------|-------|--------|
 | R-1 | LLM integration fragile | High | High | 🔴 | Add retries, fallbacks | CAIO | Open |
 | R-2 | Scope creep | High | High | 🔴 | Strict phase adherence | PM | Open |
-| R-3 | No automated security scanning | Medium | High | 🟠 | Add Dependabot, pip audit | DevOps | Open |
+| R-3 | No automated security scanning | Medium | High | 🟠 | Add Dependabot, uv audit | DevOps | Open |
 | R-4 | Single developer bottleneck | High | Medium | 🟠 | Document everything | PM | Open |
 | R-5 | Test coverage drops | Medium | Medium | 🟡 | 100% coverage for new code | QA | Open |
 | R-6 | Models.py grows unwieldy | Medium | Medium | 🟡 | Split at 30+ types | Dev | Open |

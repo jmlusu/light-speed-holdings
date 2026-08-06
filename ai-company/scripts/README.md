@@ -32,9 +32,9 @@ See the main [README-milestones-deck.md](../README-milestones-deck.md) for detai
 - PptxGenJS (installed via npm)
 
 ### Python Version
-- Python v3.7+
-- pip
-- python-pptx (installed via pip)
+- Python v3.12+
+- uv (package manager)
+- python-pptx (installed via `uv sync --extra dev`)
 
 ## Output
 
@@ -46,7 +46,7 @@ All scripts generate the same PowerPoint presentation:
 To verify that all files are in place:
 ```bash
 # Using Python
-python scripts/verify-setup.py
+uv run python scripts/verify-setup.py
 
 # Or using batch file (Windows)
 verify-setup.bat

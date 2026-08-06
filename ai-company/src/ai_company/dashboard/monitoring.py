@@ -496,7 +496,13 @@ def health_check() -> dict[str, Any]:
     checks["config"] = "ok" if config_path.exists() else "missing"
 
     # LLM provider availability (env vars)
-    providers = ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "DEEPSEEK_API_KEY"]
+    providers = [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "DEEPSEEK_API_KEY",
+        "GEMINI_API_KEY",
+        "KIMI_API_KEY",
+    ]
     active_providers = [p for p in providers if os.environ.get(p)]
     checks["llm_providers"] = f"{len(active_providers)} configured"
 

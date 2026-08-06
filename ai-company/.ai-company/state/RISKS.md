@@ -10,7 +10,7 @@
 |---|------|----------|------------|--------|-------|-----------|
 | R-1 | Models.py grows unwieldy | Technical | Medium | Medium | 6 | Split at 30+ types |
 | R-2 | LLM integration fragile | Technical | High | High | 9 | Harden with retries, fallbacks |
-| R-3 | No automated security scanning | Security | Medium | High | 8 | Add Dependabot, pip audit |
+| R-3 | No automated security scanning | Security | Medium | High | 8 | Add Dependabot, uv audit |
 | R-4 | Generated files hand-edited | Process | Low | High | 4 | CI check, Constitution rules |
 | R-5 | Test coverage drops | Quality | Medium | Medium | 6 | 100% coverage for new code |
 | R-6 | Single developer bottleneck | Project | High | Medium | 6 | Document everything, automate |
@@ -65,9 +65,9 @@ LLM providers have rate limits, timeouts, and format changes. Current integratio
 **Probability**: Medium
 **Impact**: High
 
-No Dependabot, no `pip audit` in CI, no secret detection. Manual scanning is error-prone.
+No Dependabot, no `uv audit` in CI, no secret detection. Manual scanning is error-prone.
 
-**Mitigation**: Add Dependabot, integrate `pip audit` in CI, add pre-commit hooks.
+**Mitigation**: Add Dependabot, integrate `uv audit` in CI, add pre-commit hooks.
 
 **Timeline**: Next sprint.
 
