@@ -1438,9 +1438,9 @@ ai-company executor cycle --max-cycles 1
 ai-company executor daemon-status
 
 # 5. Dashboard startup (verify I/O changes don't break)
-ai-company dashboard --port 9420 --no-open &
-curl http://localhost:9420/health
-curl http://localhost:9420/metrics
+ai-company dashboard --port 8421 --no-open &
+curl http://localhost:8421/health
+curl http://localhost:8421/metrics
 kill %1
 
 # 6. Briefing generation
