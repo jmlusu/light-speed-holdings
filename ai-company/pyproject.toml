@@ -93,6 +93,13 @@ markers = [
     "e2e: marks end-to-end tests requiring a running dashboard (deselect with '-m \"not e2e\"')",
 ]
 
+[tool.coverage.run]
+# CI coverage gate (TD-7): omit the thin CLI entry-point layer (Typer command
+# registrations) so the gate measures business logic, not command wrappers.
+omit = [
+    "src/ai_company/cli/*",
+]
+
 [build-system]
 requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"

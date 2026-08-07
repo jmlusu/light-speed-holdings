@@ -1,0 +1,15 @@
+# Dependabot version updates (TD-6)
+version: 2
+updates:
+  # GitHub Actions workflows live at the repo root only.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Python dependencies for the ai-company project (uv-managed).
+  - package-ecosystem: "pip"
+    directory: "/ai-company"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
