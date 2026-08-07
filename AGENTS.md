@@ -92,7 +92,7 @@ docker compose -f docker-compose.staging.yml --profile worker up   # With worker
 docker compose -f docker-compose.staging.yml --profile monitoring up  # With Prometheus
 ```
 
-Staging dashboard runs on port **9420** (production: 8420).
+Staging dashboard runs on host port **8421** (maps to container 8420; production: 8420).
 
 ## 6 Verification
 

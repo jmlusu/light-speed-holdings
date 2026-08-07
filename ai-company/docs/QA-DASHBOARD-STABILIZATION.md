@@ -1,9 +1,9 @@
 # Dashboard Stabilization — QA Test Plan
 
-> **Author:** QA Lead  
-> **Date:** 2026-07-22  
-> **Status:** Active  
-> **Priority:** P0 — Blocking user experience  
+> **Author:** QA Lead
+> **Date:** 2026-07-22
+> **Status:** Active
+> **Priority:** P0 — Blocking user experience
 > **Scope:** CEO Dashboard scroll instability, data loading, error handling, responsive design
 
 ---
@@ -277,7 +277,7 @@ uv sync --extra dev --extra e2e
 uv run playwright install chromium firefox webkit
 
 # Run dashboard for testing
-uv run ai-company dashboard --port 9420 --no-open
+uv run ai-company dashboard --port 8421 --no-open
 
 # Run existing backend tests
 uv run pytest tests/unit/test_dashboard*.py -v
@@ -294,7 +294,7 @@ uv run pytest tests/e2e/ -v --browser chromium
   run: |
     uv sync --extra dev --extra e2e --frozen
     uv run playwright install --with-deps chromium
-    uv run ai-company dashboard --port 9420 &
+    uv run ai-company dashboard --port 8421 &
     sleep 5
     uv run pytest tests/e2e/ -v --browser chromium
 ```

@@ -17,8 +17,8 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addoption(
         "--dashboard-url",
         action="store",
-        default="http://localhost:9420",
-        help="Base URL for the dashboard server (default: http://localhost:9420)",
+        default="http://localhost:8421",
+        help="Base URL for the dashboard server (default: http://localhost:8421)",
     )
     parser.addoption(
         "--dashboard-port",
@@ -39,7 +39,7 @@ def pytest_configure(config: pytest.Config) -> None:
 def dashboard_server(request: pytest.FixtureRequest) -> str:
     """Return the dashboard base URL for E2E tests.
 
-    Reads from --dashboard-url CLI option, defaults to :9420 (staging).
+    Reads from --dashboard-url CLI option, defaults to :8421 (staging).
     Skips the test if the dashboard server is not reachable.
     """
     import socket
@@ -50,7 +50,7 @@ def dashboard_server(request: pytest.FixtureRequest) -> str:
 
     parsed = urlparse(url)
     host = parsed.hostname or "localhost"
-    port = parsed.port or 9420
+    port = parsed.port or 8421
     try:
         with socket.create_connection((host, port), timeout=2):
             pass

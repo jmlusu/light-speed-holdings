@@ -38,6 +38,7 @@ benchmarks/
 .env
 .env.*
 !.env.example
+!.env.staging.example
 
 # ── Runtime data (autonomous cycles, task queue) ──────────────
 logs/
