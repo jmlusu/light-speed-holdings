@@ -120,4 +120,28 @@ exclude = [
 
 [tool.bandit]
 exclude_dirs = ["tests"]
-skips = ["B101"]  # Skip assert warnings
+# Rules intentionally disabled for this codebase (with rationale):
+#   B101  - assert warnings (tests are excluded anyway)
+#   B110  - best-effort non-fatal try/except/pass handlers
+#   B107  - empty-string default params flagged as passwords (false positive)
+#   B105  - variable named *_api_key inside the secrets scanner itself
+#   B311  - random used for jitter/seeding, never security/crypto
+#   B404  - subprocess imports (CLI executes commands by design)
+#   B603  - subprocess.run with explicit token lists, shell=False
+#   B607  - PATH executables ("python", "git") for a dev CLI
+#   B608  - dynamic SQL with identifiers validated via _validate_table_name
+#   B310  - urllib health checks against localhost / model APIs
+#   B701  - jinja autoescape=False generates Markdown agent files, not HTML
+skips = [
+    "B101",
+    "B110",
+    "B107",
+    "B105",
+    "B311",
+    "B404",
+    "B603",
+    "B607",
+    "B608",
+    "B310",
+    "B701",
+]

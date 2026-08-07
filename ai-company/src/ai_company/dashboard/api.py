@@ -31,6 +31,7 @@ from ai_company.dashboard.models import (
     TierInfo,
 )
 from ai_company.dashboard.repository import get_state_store
+from ai_company.data import get_database
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["dashboard"])
@@ -45,11 +46,13 @@ def get_bus() -> MessageBus:
     """Return the shared :class:`MessageBus` instance (lazily created)."""
     global _bus
     if _bus is None:
+        from ai_company.dashboard.repository import get_state_store
         from ai_company.orchestrator.message_bus import MessageBus
 
         _bus = MessageBus(
-            ".opencode/inbox.json",
+            str(Path(get_state_store().base_dir) / ".opencode" / "inbox.json"),
             broadcast_callback=_bus_broadcast,
+            database=get_database(),
         )
     return _bus
 
@@ -64,14 +67,54 @@ def _bus_broadcast(task_dict: dict[str, Any], event: str) -> None:
 
 
 def _read_all_tasks() -> list[dict[str, Any]]:
-    """Return all tasks from the inbox as plain dicts via MessageBus."""
-    bus = get_bus()
-    return [task.model_dump() for task in bus.get_all_tasks()]
+    """Return all tasks as plain dicts — SQLite-first, inbox-file fallback.
+
+    The file fallback reads through :func:`get_bus` so writes and reads stay
+    on the same bus (tests override ``_bus`` to an isolated inbox).
+    """
+    from ai_company.dashboard.data_service import get_all_tasks
+
+    tasks = get_all_tasks()
+    if tasks is not None:
+        return tasks
+    return [task.model_dump() for task in get_bus().get_all_tasks()]
 
 
 def _load_tasks_dicts() -> list[dict[str, Any]]:
     """Backwards-compatible alias used by endpoints that need raw task dicts."""
     return _read_all_tasks()
+
+
+def _per_agent_costs_from_audit() -> list[dict[str, Any]]:
+    """Per-agent LLM cost breakdown derived from the audit JSONL (file fallback)."""
+    agent_costs: dict[str, dict[str, Any]] = {}
+    for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
+        try:
+            meta = event.get("metadata", {})
+            cost = float(meta.get("cost", 0))
+            agent = meta.get("agent_id", event.get("agent_id", "unknown"))
+            if agent not in agent_costs:
+                agent_costs[agent] = {"total_cost": 0.0, "calls": 0}
+            agent_costs[agent]["total_cost"] += cost
+            agent_costs[agent]["calls"] += 1
+        except (TypeError, ValueError):
+            continue
+
+    per_agent: list[dict[str, Any]] = []
+    for agent_name, cost_info in sorted(
+        agent_costs.items(), key=lambda x: x[1]["total_cost"], reverse=True
+    ):
+        calls = cost_info["calls"]
+        total = cost_info["total_cost"]
+        per_agent.append(
+            {
+                "agent": agent_name,
+                "total_cost": round(total, 6),
+                "calls": calls,
+                "avg_cost_per_call": round(total / calls, 6) if calls > 0 else 0.0,
+            }
+        )
+    return per_agent
 
 
 _START_TIME = time.time()
@@ -942,6 +985,16 @@ def get_kpi_history(
     limit:
         Max entries to return (default 100).
     """
+    from ai_company.dashboard.data_service import get_kpi_history as get_sqlite_kpi_history
+
+    sqlite_entries = get_sqlite_kpi_history(
+        department,
+        kpi_key or None,
+        limit=limit,
+    )
+    if sqlite_entries is not None:
+        return sqlite_entries
+
     from ai_company.dashboard.analytics import KPIHistoryStore
 
     store = KPIHistoryStore()
@@ -1121,13 +1174,26 @@ def collect_and_store_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
 
     snapshot = collect_all_kpis()
 
-    # Store in history
+    # Store in history (file-based)
     store = KPIHistoryStore()
     stored_count = store.store_snapshot(snapshot)
+
+    # Also ingest into SQLite when the data layer is available (S1.3)
+    sqlite_stored = 0
+    try:
+        from ai_company.data import KPIPipeline, get_database
+
+        db = get_database()
+        if db is not None and db.get_schema_version() > 0:
+            pipeline = KPIPipeline(db)
+            sqlite_stored = pipeline.ingest_snapshot(snapshot)
+    except Exception:  # noqa: BLE001 - SQLite ingest is best-effort
+        logger.debug("SQLite KPI ingest skipped (non-critical)", exc_info=True)
 
     result = {
         **snapshot,
         "stored_entries": stored_count,
+        "sqlite_stored_entries": sqlite_stored,
         "history_departments": store.list_departments(),
     }
 
@@ -1263,62 +1329,50 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
     - LLM spend breakdown by provider
     - Per-agent cost breakdown
     - Historical cost trend (from KPI history store)
+
+    When the SQLite data layer holds cost records (after ``dashboard backfill``),
+    spend / per-agent / trend figures come from there; otherwise they are
+    derived from the legacy cost tracker and audit log (S1.2/S1.3).
     """
     tasks = _read_all_tasks()
     cost_data = _load_json("orchestrator/cost_tracker.json")
 
     # Parse cost tracker
     total_budget: float = 0.0
-    total_spent: float = 0.0
-    llm_spend: float = 0.0
     if isinstance(cost_data, dict):
         total_budget = cost_data.get("total_budget", 0.0)
-        total_spent = cost_data.get("total_spent", 0.0)
-        llm_spend = cost_data.get("llm_spend", 0.0)
+
+    # SQLite-derived figures (spend, per-agent, trend) when available
+    from ai_company.dashboard.data_service import get_cost_summary as get_sqlite_cost_summary
+
+    sqlite_summary = get_sqlite_cost_summary()
+
+    if sqlite_summary is not None:
+        total_spent = float(sqlite_summary["total_spent"])
+        llm_spend = float(sqlite_summary["llm_spend"])
+        per_agent = sqlite_summary["per_agent_costs"]
+        trend_data = sqlite_summary["cost_trend"]
+        total_tasks = int(sqlite_summary["total_tasks"])
+        completed = int(sqlite_summary["completed_tasks"])
+        avg_per_task = float(sqlite_summary["avg_cost_per_task"])
+    else:
+        total_spent = cost_data.get("total_spent", 0.0) if isinstance(cost_data, dict) else 0.0
+        llm_spend = cost_data.get("llm_spend", 0.0) if isinstance(cost_data, dict) else 0.0
+        per_agent = _per_agent_costs_from_audit()
+
+        # Total completed tasks for cost-per-task calc
+        completed = sum(1 for t in tasks if t.get("status") == "completed")
+        total_tasks = len(tasks)
+        avg_per_task = round(total_spent / completed, 6) if completed > 0 else 0.0
+
+        # KPI history for trend
+        from ai_company.dashboard.analytics import KPIHistoryStore
+
+        store = KPIHistoryStore()
+        finance_history = store.get_history("finance", kpi_key="budget_utilization", limit=50)
+        trend_data = [{"timestamp": e.timestamp, "value": e.current} for e in finance_history]
 
     budget_utilization = round((total_spent / total_budget * 100), 1) if total_budget > 0 else 0.0
-
-    # Per-agent cost breakdown from audit log
-    agent_costs: dict[str, dict[str, Any]] = {}
-    for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
-        try:
-            meta = event.get("metadata", {})
-            cost = float(meta.get("cost", 0))
-            agent = meta.get("agent_id", event.get("agent_id", "unknown"))
-            if agent not in agent_costs:
-                agent_costs[agent] = {"total_cost": 0.0, "calls": 0}
-            agent_costs[agent]["total_cost"] += cost
-            agent_costs[agent]["calls"] += 1
-        except (TypeError, ValueError):
-            continue
-
-    # Build per-agent cost list
-    per_agent = []
-    for agent_name, cost_info in sorted(
-        agent_costs.items(), key=lambda x: x[1]["total_cost"], reverse=True
-    ):
-        calls = cost_info["calls"]
-        total = cost_info["total_cost"]
-        per_agent.append(
-            {
-                "agent": agent_name,
-                "total_cost": round(total, 6),
-                "calls": calls,
-                "avg_cost_per_call": round(total / calls, 6) if calls > 0 else 0.0,
-            }
-        )
-
-    # Total completed tasks for cost-per-task calc
-    completed = sum(1 for t in tasks if t.get("status") == "completed")
-    total_tasks = len(tasks)
-    avg_per_task = round(total_spent / completed, 6) if completed > 0 else 0.0
-
-    # KPI history for trend
-    from ai_company.dashboard.analytics import KPIHistoryStore
-
-    store = KPIHistoryStore()
-    finance_history = store.get_history("finance", kpi_key="budget_utilization", limit=50)
-    trend_data = [{"timestamp": e.timestamp, "value": e.current} for e in finance_history]
 
     result = {
         "total_budget": total_budget,

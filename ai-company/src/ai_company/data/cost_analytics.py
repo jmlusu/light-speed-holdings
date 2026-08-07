@@ -389,6 +389,10 @@ class CostAnalytics:
     def import_from_jsonl(self, jsonl_path: str | Path) -> int:
         """Import usage records from the legacy ``cost_log.jsonl`` file.
 
+        Idempotent: records that already exist in the database (matched on
+        timestamp, model, provider, agent, task, and cost) are skipped, so
+        re-running the backfill never double-counts LLM spend.
+
         Returns the number of records imported.
         """
         path = Path(jsonl_path)
@@ -404,6 +408,19 @@ class CostAnalytics:
                     continue
                 try:
                     rec = json.loads(line)
+                    timestamp = rec.get("timestamp")
+                    cost_usd = rec.get("cost_usd", 0.0)
+                    if self._record_exists(
+                        timestamp=timestamp,
+                        model=rec.get("model", ""),
+                        provider=rec.get("provider", ""),
+                        agent_name=rec.get("agent_name", ""),
+                        task_id=rec.get("task_id", ""),
+                        cost_usd=cost_usd,
+                        prompt_tokens=rec.get("prompt_tokens", 0),
+                        completion_tokens=rec.get("completion_tokens", 0),
+                    ):
+                        continue
                     self.record_usage(
                         model=rec.get("model", ""),
                         provider=rec.get("provider", ""),
@@ -411,10 +428,10 @@ class CostAnalytics:
                         task_id=rec.get("task_id", ""),
                         prompt_tokens=rec.get("prompt_tokens", 0),
                         completion_tokens=rec.get("completion_tokens", 0),
-                        cost_usd=rec.get("cost_usd", 0.0),
+                        cost_usd=cost_usd,
                         iteration=rec.get("iteration", 1),
                         metadata=rec.get("metadata", {}),
-                        timestamp=rec.get("timestamp"),
+                        timestamp=timestamp,
                     )
                     count += 1
                 except (json.JSONDecodeError, KeyError):
@@ -422,6 +439,38 @@ class CostAnalytics:
 
         logger.info("Imported %d cost records from %s", count, path)
         return count
+
+    def _record_exists(
+        self,
+        *,
+        timestamp: str | None,
+        model: str,
+        provider: str,
+        agent_name: str,
+        task_id: str,
+        cost_usd: float,
+        prompt_tokens: int,
+        completion_tokens: int,
+    ) -> bool:
+        """Return True if an identical cost record already exists."""
+        rows = self._db.fetchall(
+            """SELECT 1 FROM cost_records
+               WHERE timestamp = ? AND model = ? AND provider = ?
+                 AND agent_name = ? AND task_id = ?
+                 AND cost_usd = ? AND prompt_tokens = ? AND completion_tokens = ?
+               LIMIT 1""",
+            (
+                timestamp,
+                model,
+                provider,
+                agent_name,
+                task_id,
+                cost_usd,
+                prompt_tokens,
+                completion_tokens,
+            ),
+        )
+        return bool(rows)
 
     # ── Stats ─────────────────────────────────────────────────────────
 

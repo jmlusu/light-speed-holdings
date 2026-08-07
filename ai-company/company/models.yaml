@@ -71,6 +71,8 @@ tiers:
   standard:
     description: "Balanced capability and cost. Default for most agents."
     providers:
+      - provider: ollama
+        model: llama3.1:8b
       - provider: deepseek
         model: deepseek-chat
       - provider: gemini

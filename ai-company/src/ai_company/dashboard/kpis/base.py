@@ -10,6 +10,8 @@ from typing import Any
 
 import yaml
 
+from ai_company.paths import get_project_root
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,8 +26,9 @@ class KPICollector(ABC):
     department: str = ""  # Override in subclass, e.g. "engineering"
 
     def __init__(self, project_root: Path | None = None) -> None:
-        # Default to three levels up from this file → ai-company/
-        self.root: Path = project_root or Path(__file__).resolve().parents[3]
+        # Resolve the project root deterministically (see ai_company.paths)
+        # so collectors read the real operational files regardless of CWD.
+        self.root: Path = project_root or get_project_root()
 
     # ------------------------------------------------------------------
     # Abstract interface

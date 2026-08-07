@@ -3,18 +3,21 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import tempfile
 import threading
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    pass
+    from ai_company.data import AuditStore
 
 import contextlib
 
 from ai_company.audit.events import AuditEvent
+
+logger = logging.getLogger(__name__)
 
 # ── Rotation defaults ────────────────────────────────────────────────
 
@@ -38,12 +41,21 @@ class AuditWriter:
         path: str | Path = ".opencode/audit.jsonl",
         max_bytes: int = DEFAULT_MAX_BYTES,
         keep_files: int = DEFAULT_KEEP_FILES,
+        database: Any = None,
     ) -> None:
         self._path = Path(path)
         self._path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
         self._max_bytes = max_bytes
         self._keep_files = keep_files
+        self._audit_store: AuditStore | None = None
+        if database is not None:
+            # Lazy import to avoid a circular import at module load
+            # (data -> audit.events -> audit.__init__ -> writer -> data).
+            from ai_company.data import AuditStore, database_is_usable
+
+            if database_is_usable(database):
+                self._audit_store = AuditStore(database)
 
     @property
     def path(self) -> Path:
@@ -59,7 +71,12 @@ class AuditWriter:
         self.write_batch([event])
 
     def write_batch(self, events: list[AuditEvent]) -> None:
-        """Append multiple events in a single atomic write."""
+        """Append multiple events in a single atomic write.
+
+        When a SQLite database was supplied at construction, the events are
+        also mirrored to the ``audit_events`` table (best-effort) so the data
+        layer stays live (Sprint 2, S2.1).
+        """
         if not events:
             return
 
@@ -69,6 +86,12 @@ class AuditWriter:
         with self._lock:
             self._maybe_rotate()
             self._atomic_append(payload)
+
+        if self._audit_store is not None:
+            try:
+                self._audit_store.write_batch(events)
+            except Exception:  # noqa: BLE001 - mirror is best-effort
+                logger.debug("SQLite audit mirror failed", exc_info=True)
 
     # ------------------------------------------------------------------
     # Log rotation

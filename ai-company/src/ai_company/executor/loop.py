@@ -94,19 +94,23 @@ class Executor:
         registry_path: str = "company/agent-registry.json",
         agents_dir: str = ".opencode/agents",
         results_dir: str = "results",
+        database: Any = None,
     ) -> None:
         self.poll_interval = poll_interval
         self.agents_dir = agents_dir
         self.results_dir = Path(results_dir)
 
-        # Core components
-        self.bus = MessageBus(broadcast_callback=self._make_broadcast_callback())
+        # Core components (database enables the SQLite write-through mirror)
+        self.bus = MessageBus(
+            broadcast_callback=self._make_broadcast_callback(),
+            database=database,
+        )
         self.llm = LLMClient(config_path=config_path, registry_path=registry_path)
         self.runner = ToolRunner()
         self.hitl = HITLGate(ApprovalGate())
 
         # Cost tracking
-        self.cost_tracker = CostTracker(results_dir=results_dir)
+        self.cost_tracker = CostTracker(results_dir=results_dir, database=database)
 
         # Scheduler for autonomous cycles
         self.scheduler = Scheduler()
@@ -140,7 +144,7 @@ class Executor:
         self.running = False
 
         # Audit trail
-        init_audit()
+        init_audit(database=database)
 
         # GAP-004: pending HITL approvals queue (non-blocking).
         # Maps task_id -> HITL request_id for tasks parked in WAITING_APPROVAL.
@@ -296,7 +300,7 @@ class Executor:
         #    required — falls back to keyword search; never blocks the task).
         try:
             recall_context(task.instruction, limit=5)
-        except Exception:  # pragma: no cover - defensive: recall must never break execution
+        except Exception:  # noqa: BLE001 - pragma: no cover - defensive: recall must never break execution
             logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
 
         # 3. Load agent spec card

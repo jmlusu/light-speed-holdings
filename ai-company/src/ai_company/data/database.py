@@ -319,3 +319,24 @@ def init_database(db_path: str | Path = "data/ai_company.db") -> Database:
 def get_database() -> Database | None:
     """Return the current database singleton, or ``None`` if not initialised."""
     return _default_db
+
+
+def reset_database() -> None:
+    """Reset the module-level singleton (used by tests)."""
+    global _default_db
+    _default_db = None
+
+
+def database_is_usable(db: Database | None) -> bool:
+    """Return True if *db* is initialised with a valid schema.
+
+    Safe against uninitialised databases and broken connections — callers
+    (MessageBus, AuditWriter, CostTracker) use this to decide whether the
+    SQLite write-through mirror should be active.
+    """
+    if db is None:
+        return False
+    try:
+        return db.get_schema_version() > 0
+    except Exception:  # noqa: BLE001 - usability probe must never raise
+        return False

@@ -449,41 +449,27 @@ function dashboard() {
     },
 
     async loadCosts() {
-      // Build cost data from tasks
-      const tasks = await this.fetchJSON('/api/tasks');
-      if (!tasks) return;
-
-      const total = tasks.length;
-      const completed = tasks.filter(t => t.status === 'completed').length;
-
-      // Cost estimation (placeholder — real cost data would come from cost tracker)
-      const totalCost = completed * 0.025; // Estimate $0.025 per completed task
-      const avgPerTask = total > 0 ? totalCost / total : 0;
+      // Real cost data from the API — no client-side fabrication.
+      const summary = await this.fetchJSON('/api/costs/summary');
+      if (!summary) return;
 
       this.costSummary = {
-        total: totalCost,
-        avgPerTask: avgPerTask,
-        totalTasks: total,
+        total: summary.total_spent ?? 0,
+        avgPerTask: summary.avg_cost_per_task ?? 0,
+        totalTasks: summary.total_tasks ?? 0,
+        costTrend: summary.cost_trend ?? [],
       };
 
-      // Budget calculation (assume $10 daily budget)
-      const dailyBudget = 10;
-      this.budgetPct = (totalCost / dailyBudget) * 100;
+      this.budgetPct = summary.budget_utilization ?? 0;
 
-      // Per-agent cost breakdown
-      const agentMap = {};
-      for (const t of tasks) {
-        const agent = t.receiver_id;
-        if (!agentMap[agent]) {
-          agentMap[agent] = { agent, tasks: 0, totalCost: 0, model: null };
-        }
-        agentMap[agent].tasks++;
-        if (t.status === 'completed') agentMap[agent].totalCost += 0.025;
-      }
-
-      this.agentCosts = Object.values(agentMap)
-        .map(a => ({ ...a, avgCost: a.tasks > 0 ? a.totalCost / a.tasks : 0 }))
-        .sort((a, b) => b.totalCost - a.totalCost);
+      // Per-agent cost breakdown (calls == audit LLM calls per agent)
+      this.agentCosts = (summary.per_agent_costs ?? []).map(a => ({
+        agent: a.agent,
+        tasks: a.calls,
+        totalCost: a.total_cost,
+        avgCost: a.avg_cost_per_call ?? (a.calls > 0 ? a.total_cost / a.calls : 0),
+        model: null,
+      }));
 
       // Alerts
       this.costAlerts = [];
