@@ -9,7 +9,6 @@ function dashboard() {
     wsConnected: false,
     wsClients: 0,
     ws: null,
-    wsReconnectTimer: null,
 
     // ── Toast notifications ──────────────────────────────────
     toast: { show: false, type: 'info', title: '', message: '' },
@@ -19,8 +18,39 @@ function dashboard() {
     isLoading: true,
 
     // ── Scroll management (FIX: auto-scroll prevention) ──────
+    // _scrollLock is bound to body.scroll-locked in base.html. It stays
+    // false by design: we prevent scroll jumps with save/restore guards
+    // below instead of locking the page (overflow:hidden can itself reset
+    // scroll position when content height changes).
     _scrollLock: false,
-    _pendingPoll: null,
+    _savedScroll: null,
+    _pendingRestoreRaf: null,
+    _scrollGuardActive: false,
+
+    // ── Polling state ─────────────────────────────────────────
+    _pollTimer: null,
+    _pollInFlight: false,
+    _pollQueued: false,
+    _pollIntervalMs: 15000,
+
+    // ── WebSocket hardening state ─────────────────────────────
+    _wsDisposed: false,
+    _wsReconnectAttempts: 0,
+    _wsMaxReconnectAttempts: 8,
+    _wsReconnectTimer: null,
+    _wsReconnectScheduled: false,
+    _wsKeepaliveTimer: null,
+    _wsProbeTimer: null,
+
+    // ── Chart update coalescing (FIX: avoid double redraw per frame) ──
+    _kpiChartsRaf: null,
+    _kpiChartsPending: false,
+    _latestKpis: null,
+    _latestDepartments: null,
+
+    // ── API error surfacing (FIX: silent failures) ────────────
+    apiStatus: { show: false, message: '' },
+    _apiErrorKey: '',
 
     // ── Data ─────────────────────────────────────────────────
     kpis: {
@@ -92,105 +122,310 @@ function dashboard() {
     // ═══ INITIALIZATION ═══════════════════════════════════════
 
     async init() {
+      // FIX: Scroll guard listener — if a scroll event fires while no data
+      // update is in flight, the user is scrolling; cancel any pending
+      // restore so we never fight the user (AC-SCROLL-03).
+      window.addEventListener('scroll', () => this._onScroll(), { passive: true });
+
+      // FIX: Pause polling + timers when the tab is hidden, resume on return.
+      document.addEventListener('visibilitychange', () => this._onVisibilityChange());
+      window.addEventListener('beforeunload', () => this.destroy());
+
       this.connectWebSocket();
 
       // FIX: Load data, then reveal UI to prevent layout jump
       await this.loadPageData();
       this.isLoading = false;
 
-      // FIX: Debounced polling — skip if a poll is already in-flight,
-      // and batch updates to reduce reflow frequency.
-      // Changed from 10s to 15s to reduce churn.
-      setInterval(() => this.debouncedPoll(), 15000);
+      // FIX: Debounced polling — skip if a poll is already in-flight and
+      // queue exactly one trailing poll instead of stacking parallel
+      // fetches. Cadence adapts to WebSocket health (30s while WS is live,
+      // 15s when WS is down) so polling acts as a fallback without
+      // double-fetching alongside WS pushes.
+      this._applyPollingCadence();
+      this._startPolling();
+    },
+
+    /**
+     * Cleanup on page unload — clears every timer/interval so nothing
+     * keeps firing (and reconnecting) after the page is gone.
+     */
+    destroy() {
+      this._wsDisposed = true;
+      this._pausePolling();
+      clearTimeout(this._wsReconnectTimer);
+      clearTimeout(this._wsProbeTimer);
+      clearInterval(this._wsKeepaliveTimer);
+      this._cancelPendingRestore();
+      if (this._kpiChartsRaf) cancelAnimationFrame(this._kpiChartsRaf);
+      if (this.ws) {
+        try {
+          this.ws.onopen = null;
+          this.ws.onmessage = null;
+          this.ws.onclose = null;
+          this.ws.onerror = null;
+          this.ws.close();
+        } catch (e) {
+          // best-effort — socket may already be gone
+        }
+      }
+    },
+
+    _startPolling() {
+      if (this._pollTimer) return;
+      this._pollTimer = setInterval(() => this.debouncedPoll(), this._pollIntervalMs);
+    },
+
+    _pausePolling() {
+      if (this._pollTimer) {
+        clearInterval(this._pollTimer);
+        this._pollTimer = null;
+      }
+    },
+
+    _onVisibilityChange() {
+      if (document.hidden) {
+        this._pausePolling();
+      } else {
+        this._startPolling();
+        // Refresh once when the tab becomes visible again — the data may
+        // be stale from the hidden period. debouncedPoll dedupes so this
+        // never double-fetches with an in-flight poll.
+        this.debouncedPoll();
+      }
+    },
+
+    _applyPollingCadence() {
+      // WS up → 30s safety-net polling (WS pushes are the live path).
+      // WS down → 15s polling (polling becomes the live path / fallback).
+      this._pollIntervalMs = this.wsConnected ? 30000 : 15000;
+      if (this._pollTimer) {
+        clearInterval(this._pollTimer);
+        this._pollTimer = setInterval(() => this.debouncedPoll(), this._pollIntervalMs);
+      }
     },
 
     // ═══ SCROLL MANAGEMENT (FIX: auto-scroll prevention) ═════
 
     /**
-     * Save the current scroll position before a data update that
-     * may cause reflow. Called before loadPageData, WS updates,
-     * and any operation that mutates visible state.
+     * Save the current scroll position before a data update that may cause
+     * reflow. Called before loadPageData, WS updates, and any operation
+     * that mutates visible state. Any previously scheduled restore is
+     * cancelled so an older restore can never fight a newer update.
      */
     saveScrollPosition() {
-      this._savedScrollY = window.scrollY;
-      this._savedScrollX = window.scrollX;
+      this._savedScroll = { x: window.scrollX, y: window.scrollY };
+      this._scrollGuardActive = true;
+      this._cancelPendingRestore();
     },
 
     /**
      * Restore scroll position after a data update completes.
-     * Uses requestAnimationFrame to wait for the browser to finish
-     * layout calculations before restoring.
+     *
+     * The restore runs on the next animation frame — after the browser has
+     * finished layout. If the user scrolled after the update finished (a
+     * scroll event fired while no update was in flight), the scroll guard
+     * cancels this restore so we never override user-initiated scrolling.
+     * Snap-back is exact (no 5px/200px magic-number window): the scroll
+     * listener is what protects against fighting the user.
      */
     restoreScrollPosition() {
-      if (this._savedScrollY !== undefined) {
-        requestAnimationFrame(() => {
-          // Only restore if the user hasn't manually scrolled during the update
-          const currentY = window.scrollY;
-          const diff = Math.abs(currentY - this._savedScrollY);
-          // If the browser auto-scrolled more than 5px, snap back
-          if (diff > 5 && diff < 200) {
-            window.scrollTo(this._savedScrollX, this._savedScrollY);
-          }
-          this._savedScrollY = undefined;
-          this._savedScrollX = undefined;
-        });
+      const saved = this._savedScroll;
+      if (!saved) return;
+      this._savedScroll = null;
+      this._scrollGuardActive = false;
+      this._cancelPendingRestore();
+      this._pendingRestoreRaf = requestAnimationFrame(() => {
+        this._pendingRestoreRaf = null;
+        const diff = Math.abs(window.scrollY - saved.y);
+        if (diff > 1) {
+          window.scrollTo(saved.x, saved.y);
+        }
+      });
+    },
+
+    _cancelPendingRestore() {
+      if (this._pendingRestoreRaf) {
+        cancelAnimationFrame(this._pendingRestoreRaf);
+        this._pendingRestoreRaf = null;
       }
     },
 
     /**
-     * Debounced poll: if a poll is already in-flight, queue the next one
-     * instead of stacking parallel fetches. This prevents multiple
-     * concurrent Alpine re-renders that cause layout thrashing.
+     * Scroll-event guard. A scroll that fires while no update is in flight
+     * means the user moved the page (or browser back/forward restoration) —
+     * cancel any pending restore so we never yank the viewport back.
+     * Scrolls that fire DURING an update (_scrollGuardActive) are the
+     * browser's auto-scroll from DOM mutation; those are ignored here and
+     * corrected by restoreScrollPosition().
+     */
+    _onScroll() {
+      if (this._pendingRestoreRaf && !this._scrollGuardActive) {
+        this._cancelPendingRestore();
+      }
+    },
+
+    /**
+     * Debounced poll: if a poll is already in-flight, queue exactly one
+     * trailing poll (instead of stacking parallel fetches or silently
+     * dropping the update). This prevents multiple concurrent Alpine
+     * re-renders that cause layout thrashing.
      */
     async debouncedPoll() {
-      if (this._pendingPoll) return; // Skip — previous poll still running
-      this._pendingPoll = true;
+      if (this._pollInFlight) {
+        this._pollQueued = true;
+        return;
+      }
+      this._pollInFlight = true;
+      this._pollQueued = false;
       try {
         this.saveScrollPosition();
         await this.loadPageData();
         this.restoreScrollPosition();
+      } catch (e) {
+        console.warn('[Poll] loadPageData failed:', e);
       } finally {
-        this._pendingPoll = false;
+        this._pollInFlight = false;
+        if (this._pollQueued && !document.hidden) {
+          this._pollQueued = false;
+          this.debouncedPoll();
+        }
       }
     },
 
     // ═══ WEBSOCKET ═════════════════════════════════════════════
 
+    /**
+     * Establish the single dashboard WebSocket connection.
+     *
+     * FIX (hardening):
+     * - Single connection: never opens a duplicate while one is OPEN or
+     *   CONNECTING (prevents the double-connect reconnect loop).
+     * - Reconnect uses exponential backoff with jitter, capped at 30s.
+     * - After _wsMaxReconnectAttempts consecutive failures the rapid
+     *   reconnect loop STOPS; a slow 60s recovery probe keeps the page
+     *   able to pick the socket back up if the server restarts.
+     * - Application-level keepalive ping keeps half-open sockets honest.
+     * - Polling is the automatic fallback while WS is down (see
+     *   _applyPollingCadence) — no second fetch loop is started.
+     */
     connectWebSocket() {
+      if (this._wsDisposed) return;
+      // Single connection — never stack a second socket on a live one.
+      if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
+        return;
+      }
+
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsUrl = `${protocol}//${window.location.host}/ws/dashboard`;
 
+      let ws;
       try {
-        this.ws = new WebSocket(wsUrl);
-
-        this.ws.onopen = () => {
-          console.log('[WS] Connected');
-          this.wsConnected = true;
-        };
-
-        this.ws.onmessage = (event) => {
-          try {
-            const msg = JSON.parse(event.data);
-            this.handleWSMessage(msg);
-          } catch (e) {
-            console.warn('[WS] Failed to parse message:', e);
-          }
-        };
-
-        this.ws.onclose = () => {
-          console.log('[WS] Disconnected');
-          this.wsConnected = false;
-          // Reconnect after 3 seconds
-          this.wsReconnectTimer = setTimeout(() => this.connectWebSocket(), 3000);
-        };
-
-        this.ws.onerror = (err) => {
-          console.warn('[WS] Error:', err);
-          this.wsConnected = false;
-        };
+        ws = new WebSocket(wsUrl);
       } catch (e) {
+        // Constructor failure is rare, but never throw into the UI.
         console.warn('[WS] Connection failed:', e);
-        this.wsReconnectTimer = setTimeout(() => this.connectWebSocket(), 5000);
+        this.wsConnected = false;
+        this._scheduleReconnect();
+        return;
+      }
+      this.ws = ws;
+
+      ws.onopen = () => {
+        console.log('[WS] Connected');
+        this.wsConnected = true;
+        this._wsReconnectAttempts = 0;
+        if (this._wsProbeTimer) {
+          clearTimeout(this._wsProbeTimer);
+          this._wsProbeTimer = null;
+        }
+        this._startKeepalive();
+        this._applyPollingCadence();
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          this.handleWSMessage(msg);
+        } catch (e) {
+          console.warn('[WS] Failed to parse message:', e);
+        }
+      };
+
+      ws.onclose = () => {
+        console.warn('[WS] Disconnected');
+        this.wsConnected = false;
+        this._stopKeepalive();
+        this._applyPollingCadence();
+        this._scheduleReconnect();
+        // FIX: Fallback to polling — refresh data immediately since WS
+        // pushes were the live path. debouncedPoll dedupes, so this never
+        // double-fetches with an in-flight poll.
+        if (!document.hidden && !this._wsDisposed) {
+          this.debouncedPoll();
+        }
+      };
+
+      ws.onerror = () => {
+        // onerror is always followed by onclose — only mark offline here;
+        // reconnect is scheduled in onclose to avoid double scheduling.
+        this.wsConnected = false;
+      };
+    },
+
+    /**
+     * Schedule the next reconnect attempt with exponential backoff.
+     * Guarded by _wsReconnectScheduled so overlapping onclose/catch/error
+     * paths can never schedule two timers (the double-reconnect loop).
+     */
+    _scheduleReconnect() {
+      if (this._wsReconnectScheduled || this._wsDisposed) return;
+      this._wsReconnectScheduled = true;
+      clearTimeout(this._wsReconnectTimer);
+
+      if (this._wsReconnectAttempts >= this._wsMaxReconnectAttempts) {
+        // Stop the rapid reconnect loop. Keep a slow recovery probe so the
+        // page can pick the socket back up after a long server outage.
+        console.warn(
+          `[WS] Reconnect attempts exhausted (${this._wsReconnectAttempts}); ` +
+            'falling back to polling. Probing every 60s.'
+        );
+        this._wsReconnectScheduled = false;
+        this._wsProbeTimer = setTimeout(() => {
+          this._wsProbeTimer = null;
+          this._wsReconnectAttempts = 0;
+          this._wsReconnectScheduled = false;
+          this.connectWebSocket();
+        }, 60000);
+        return;
+      }
+
+      const baseDelay = Math.min(30000, 1000 * Math.pow(2, this._wsReconnectAttempts));
+      const jitter = Math.round(baseDelay * (0.5 + Math.random() * 0.5));
+      this._wsReconnectTimer = setTimeout(() => {
+        this._wsReconnectScheduled = false;
+        this._wsReconnectAttempts += 1;
+        this.connectWebSocket();
+      }, jitter);
+    },
+
+    _startKeepalive() {
+      this._stopKeepalive();
+      this._wsKeepaliveTimer = setInterval(() => {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          try {
+            this.ws.send(JSON.stringify({ type: 'ping' }));
+          } catch (e) {
+            console.warn('[WS] Keepalive send failed:', e);
+          }
+        }
+      }, 25000);
+    },
+
+    _stopKeepalive() {
+      if (this._wsKeepaliveTimer) {
+        clearInterval(this._wsKeepaliveTimer);
+        this._wsKeepaliveTimer = null;
       }
     },
 
@@ -205,17 +440,25 @@ function dashboard() {
             // FIX: Save scroll position before WS-triggered update
             this.saveScrollPosition();
 
-            // Batch update: apply all KPI changes in one reactive tick
-            if (msg.payload.pending_tasks !== undefined) {
-              Object.assign(this.kpis, msg.payload);
-            }
-            this.liveKPIData = msg.payload;
+            // FIX (dedup): merge only fields that actually changed. Poll
+            // responses and WS pushes carry the same KPI snapshot (the
+            // /api/dashboard endpoint broadcasts exactly what it returns),
+            // so without a change check every poll cycle would trigger a
+            // redundant second reactive mutation + chart redraw.
+            const merged = this._mergeKPIPayload(msg.payload);
 
-            if (typeof updateChartsFromKPIs === 'function') {
-              // FIX: Defer chart update to next frame to avoid layout thrashing
-              requestAnimationFrame(() => {
-                updateChartsFromKPIs(this.kpis, this.departments);
-              });
+            // Live KPI snapshots (from /api/kpis/live) carry a
+            // `departments` key rather than task counters. Only apply them
+            // on the KPIs page, and only when they actually change.
+            if (msg.payload.departments && window.location.pathname === '/kpis') {
+              this.liveKPIData = msg.payload;
+              this.mergeLiveKPIValues();
+              if (typeof initKPICharts === 'function') {
+                initKPICharts(this.kpiDepartments, this.liveKPIData);
+              }
+            } else if (merged.chartRelevantChanged) {
+              // FIX: Coalesce chart updates into one redraw per frame
+              this.scheduleKPICharts();
             }
 
             this.restoreScrollPosition();
@@ -235,11 +478,15 @@ function dashboard() {
 
         case 'task_update':
           if (msg.payload) {
+            // FIX: Save scroll before any task-list mutation so the
+            // kanban/table re-render never jumps the viewport.
+            this.saveScrollPosition();
+
             // Refresh the current paginated page — the task may have
             // moved pages due to status change, so surgical update is
             // unreliable with server-side pagination.
             if (window.location.pathname === '/tasks') {
-              this.loadTasksPage();
+              this.loadTasksPage().finally(() => this.restoreScrollPosition());
             } else {
               // Fallback for dashboard home: do a lightweight local update
               const updatedTask = msg.payload;
@@ -255,6 +502,7 @@ function dashboard() {
                 }
               }
               this.tasks = [...this.tasks];
+              this.restoreScrollPosition();
             }
           }
           break;
@@ -271,15 +519,65 @@ function dashboard() {
 
     // ═══ DATA LOADING ═════════════════════════════════════════
 
+    /**
+     * Fetch + JSON with timeout and non-intrusive error surfacing.
+     *
+     * FIX (silent failures): a failed/timed-out request now sets a small
+     * apiStatus banner (see base.html) instead of silently returning null.
+     * - 429  → friendly "Too many requests" message (AC-ERR-05)
+     * - 401  → session expired message (AC-ERR-05 E-05, no hard redirect)
+     * - 5xx/network/timeout → "showing last known data" (AC-ERR-04)
+     * The banner auto-clears on the next successful request, and errors are
+     * deduped by message so Alpine only re-renders the banner once.
+     */
     async fetchJSON(url, opts = {}) {
+      const controller = new AbortController();
+      const timeoutMs = opts.timeout || 15000;
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const res = await fetch(url, opts);
-        if (!res.ok) throw new Error(res.statusText);
+        const res = await fetch(url, { ...opts, signal: controller.signal });
+        if (res.status === 429) {
+          this._setApiError('Too many requests — retrying shortly');
+          return null;
+        }
+        if (res.status === 401) {
+          this._setApiError('Session expired — refresh the page to reconnect');
+          return null;
+        }
+        if (!res.ok) {
+          this._setApiError(`Request failed (${res.status}) — showing last known data`);
+          return null;
+        }
+        this._clearApiError();
         return await res.json();
       } catch (e) {
-        console.warn(`[API] ${url} failed:`, e.message);
+        if (e && e.name === 'AbortError') {
+          this._setApiError('Request timed out — retrying automatically');
+        } else {
+          this._setApiError('Cannot reach server — showing last known data');
+        }
         return null;
+      } finally {
+        clearTimeout(timer);
       }
+    },
+
+    _setApiError(message) {
+      if (this._apiErrorKey === message) return; // dedupe — avoid banner churn
+      this._apiErrorKey = message;
+      this.apiStatus = { show: true, message };
+    },
+
+    _clearApiError() {
+      if (this._apiErrorKey) {
+        this._apiErrorKey = '';
+        this.apiStatus = { show: false, message: '' };
+      }
+    },
+
+    dismissApiError() {
+      this._apiErrorKey = '';
+      this.apiStatus = { show: false, message: '' };
     },
 
     async loadPageData() {
@@ -317,24 +615,27 @@ function dashboard() {
 
       // FIX: Batch all state updates into a single assignment window
       // to minimize Alpine.js reactive re-renders (was 3 separate re-renders,
-      // now effectively 1 coordinated update)
+      // now effectively 1 coordinated update). Additionally, only assign
+      // when the payload actually changed — identical poll payloads no
+      // longer trigger x-text/x-for re-evaluation (REG-05/REG-06).
       let needsChartUpdate = false;
 
       if (kpis) {
-        Object.assign(this.kpis, kpis);
-        needsChartUpdate = true;
+        const merged = this._mergeKPIPayload(kpis);
+        if (merged.chartRelevantChanged) needsChartUpdate = true;
       }
-      if (depts) {
+      if (depts && JSON.stringify(depts) !== JSON.stringify(this.departments)) {
         this.departments = depts;
         needsChartUpdate = true;
       }
-      if (tasks) this.tasks = tasks;
+      if (tasks && JSON.stringify(tasks) !== JSON.stringify(this.tasks)) {
+        this.tasks = tasks;
+      }
 
-      // FIX: Defer chart updates to next animation frame
-      if (needsChartUpdate && typeof updateChartsFromKPIs === 'function') {
-        requestAnimationFrame(() => {
-          updateChartsFromKPIs(this.kpis, this.departments);
-        });
+      // FIX: Defer chart updates to next animation frame, coalescing any
+      // updates already scheduled this frame into a single redraw.
+      if (needsChartUpdate) {
+        this.scheduleKPICharts();
       }
     },
 
@@ -418,49 +719,74 @@ function dashboard() {
         this.fetchJSON('/api/company-kpis'),
       ]);
 
+      // FIX: only assign state that actually changed — identical poll
+      // payloads no longer churn the KPI cards/charts on the /kpis page.
+      let needsKPIChartUpdate = false;
+
       if (depts) {
-        this.kpiDepartments = Object.entries(depts).map(([id, dept]) => ({
+        const next = Object.entries(depts).map(([id, dept]) => ({
           id,
           name: dept.name || id,
           kpiCount: (dept.kpis || []).length,
           kpis: dept.kpis || [],
         }));
+        if (JSON.stringify(next) !== JSON.stringify(this.kpiDepartments)) {
+          this.kpiDepartments = next;
+          needsKPIChartUpdate = true;
 
-        if (this.kpiDepartments.length > 0 && !this.activeKPIDept) {
-          this.activeKPIDept = this.kpiDepartments[0].id;
+          if (this.kpiDepartments.length > 0 && !this.activeKPIDept) {
+            this.activeKPIDept = this.kpiDepartments[0].id;
+          }
         }
       }
 
-      if (summary) this.allKPIsList = summary;
+      if (summary && JSON.stringify(summary) !== JSON.stringify(this.allKPIsList)) {
+        this.allKPIsList = summary;
+      }
 
       // Company-level KPIs (Sprint 3, item 2) — loaded before chart renders.
       if (company) {
-        this.companyKPIs = company.kpis || [];
-        this.companyKPISummary = company.summary || null;
-      } else {
+        const nextKPIs = company.kpis || [];
+        const nextSummary = company.summary || null;
+        if (
+          JSON.stringify(nextKPIs) !== JSON.stringify(this.companyKPIs) ||
+          JSON.stringify(nextSummary) !== JSON.stringify(this.companyKPISummary)
+        ) {
+          this.companyKPIs = nextKPIs;
+          this.companyKPISummary = nextSummary;
+          needsKPIChartUpdate = true;
+        }
+      } else if (this.companyKPIs.length) {
         this.companyKPIs = [];
         this.companyKPISummary = null;
+        needsKPIChartUpdate = true;
       }
 
       // Also load live KPI data
       const live = await this.fetchJSON('/api/kpis/live');
-      if (live) this.liveKPIData = live;
+      if (live && JSON.stringify(live) !== JSON.stringify(this.liveKPIData)) {
+        this.liveKPIData = live;
+        needsKPIChartUpdate = true;
+      }
 
       // FIX: /api/kpis returns definitions only (no current/status).
       // Overlay live values so department KPI cards show real data
-      // instead of "undefined".
-      this.mergeLiveKPIValues();
+      // instead of "undefined". Only re-merge when something changed —
+      // mutating the same values would still re-render the cards.
+      if (needsKPIChartUpdate) {
+        this.mergeLiveKPIValues();
 
-      if (typeof initKPICharts === 'function') {
-        requestAnimationFrame(() => {
-          initKPICharts(this.kpiDepartments, this.liveKPIData);
-        });
-      }
+        if (typeof initKPICharts === 'function') {
+          requestAnimationFrame(() => {
+            initKPICharts(this.kpiDepartments, this.liveKPIData);
+          });
+        }
 
-      if (typeof initCompanyKPICharts === 'function') {
-        requestAnimationFrame(() => {
-          initCompanyKPICharts(this.companyKPIs);
-        });
+        if (typeof initCompanyKPICharts === 'function') {
+          requestAnimationFrame(() => {
+            initCompanyKPICharts(this.companyKPIs);
+          });
+        }
       }
     },
 
@@ -618,6 +944,10 @@ function dashboard() {
       const task = this.draggedTask;
       const oldStatus = task.status;
 
+      // FIX: Guard scroll across the optimistic update + reconcile — the
+      // kanban x-for re-renders twice and must not jump the viewport.
+      this.saveScrollPosition();
+
       // Optimistically update the UI
       this.tasks = this.tasks.map(t =>
         t.id === task.id ? { ...t, status: newStatus } : t
@@ -648,6 +978,7 @@ function dashboard() {
         this.showToast('warning', 'Move Failed', 'Could not persist status change');
       }
 
+      this.restoreScrollPosition();
       this.draggedTask = null;
     },
 
@@ -655,6 +986,9 @@ function dashboard() {
 
     async deleteTask(taskId) {
       if (!confirm('Delete this task? This cannot be undone.')) return;
+
+      // FIX: Guard scroll across the list mutation / reload.
+      this.saveScrollPosition();
 
       const res = await this.fetchJSON(`/api/tasks/${taskId}`, {
         method: 'DELETE',
@@ -670,6 +1004,8 @@ function dashboard() {
       } else {
         this.showToast('warning', 'Delete Failed', 'Could not delete task');
       }
+
+      this.restoreScrollPosition();
     },
 
     // ═══ COMPUTED ═════════════════════════════════════════════
@@ -719,6 +1055,57 @@ function dashboard() {
     },
 
     // ═══ HELPERS ══════════════════════════════════════════════
+
+    /**
+     * FIX: Merge a KPI payload into this.kpis, returning which parts
+     * actually changed. Poll responses and WS pushes can deliver the same
+     * snapshot back-to-back; mutating Alpine state for unchanged values is
+     * what triggers the redundant re-renders behind scroll jumps.
+     *
+     * @returns {{stateChanged: boolean, chartRelevantChanged: boolean}}
+     */
+    _mergeKPIPayload(payload) {
+      let stateChanged = false;
+      let chartRelevantChanged = false;
+      const chartKeys = [
+        'pending_tasks',
+        'in_progress_tasks',
+        'completed_tasks',
+        'failed_tasks',
+        'escalated_tasks',
+      ];
+
+      for (const key of Object.keys(payload || {})) {
+        if (key === 'departments' || payload[key] === undefined) continue;
+        if (payload[key] !== this.kpis[key]) {
+          this.kpis[key] = payload[key];
+          stateChanged = true;
+          if (chartKeys.includes(key)) chartRelevantChanged = true;
+        }
+      }
+      return { stateChanged, chartRelevantChanged };
+    },
+
+    /**
+     * FIX: Coalesce KPI chart updates into at most one redraw per
+     * animation frame. Multiple callers (poll, WS push, refreshKPIs) can
+     * request chart updates in the same frame; without coalescing the
+     * canvas redraws repeatedly, which is wasted work and layout churn.
+     */
+    scheduleKPICharts() {
+      if (typeof updateChartsFromKPIs !== 'function') return;
+      this._kpiChartsPending = true;
+      this._latestKpis = this.kpis;
+      this._latestDepartments = this.departments;
+      if (this._kpiChartsRaf) return; // one scheduled redraw per frame is enough
+      this._kpiChartsRaf = requestAnimationFrame(() => {
+        this._kpiChartsRaf = null;
+        if (this._kpiChartsPending) {
+          this._kpiChartsPending = false;
+          updateChartsFromKPIs(this._latestKpis, this._latestDepartments);
+        }
+      });
+    },
 
     showToast(type, title, message) {
       this.toast = { show: true, type, title, message };

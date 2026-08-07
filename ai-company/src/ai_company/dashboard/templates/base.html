@@ -136,6 +136,28 @@
     </div>
   </div>
 
+  <!--
+    ═══ API STATUS BANNER (FIX: surface silent API failures) ═══
+    Small, non-intrusive banner shown when background fetches fail
+    (network down, timeout, 429, 401). It auto-clears on the next
+    successful request and is dismissible. Positioned bottom-left so it
+    never collides with the toast (bottom-right). AC-ERR-01/04/05.
+  -->
+  <div x-show="apiStatus.show" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 translate-y-2"
+       class="fixed bottom-6 left-6 z-40 max-w-sm">
+    <div class="rounded-xl shadow-2xl border border-amber-800 bg-surface-900/95 p-3 flex items-center gap-3">
+      <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+      <span class="text-xs text-surface-300" x-text="apiStatus.message"></span>
+      <button @click="dismissApiError()" class="text-surface-500 hover:text-surface-300 ml-1 shrink-0" aria-label="Dismiss">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
   <!-- ═══ FOOTER ═══ -->
   <footer class="border-t border-surface-800 mt-8 py-4 px-6 text-center text-xs text-surface-600">
     Light Speed Holdings &mdash; AI Company Builder v0.1.0
