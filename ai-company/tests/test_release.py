@@ -4,6 +4,14 @@ import tomllib
 from pathlib import Path
 
 
+def _repo_root() -> Path:
+    current = Path(__file__).resolve().parent
+    for candidate in current.parents:
+        if (candidate / ".github" / "workflows" / "release.yml").exists():
+            return candidate
+    raise FileNotFoundError(".github/workflows/release.yml not found in any parent dir")
+
+
 def test_pyproject_has_version():
     with open("pyproject.toml", "rb") as f:
         data = tomllib.load(f)
@@ -28,7 +36,7 @@ def test_changelog_exists():
 
 
 def test_release_workflow_exists():
-    path = Path(".github/workflows/release.yml")
+    path = _repo_root() / ".github" / "workflows" / "release.yml"
     assert path.exists(), "release.yml workflow must exist"
     content = path.read_text(encoding="utf-8")
     assert "v*" in content, "release.yml must trigger on v* tags"
