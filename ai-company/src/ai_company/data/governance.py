@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
@@ -60,6 +61,13 @@ class RetentionAction(str, Enum):
     PURGE = "purge"
     ANONYMIZE = "anonymize"
     NONE = "none"
+
+
+# Retention batching — archives are processed in bounded batches so rows
+# beyond the first batch are always archived before they are deleted.
+_ARCHIVE_BATCH_SIZE = 10000
+# Rowids per DELETE ... IN (...) clause when removing an archived batch.
+_ARCHIVE_DELETE_CHUNK_SIZE = 500
 
 
 # ---------------------------------------------------------------------------
@@ -308,29 +316,20 @@ class DataGovernance:
         ts_column: str,
         cutoff: str,
     ) -> None:
-        """Export old records to a JSON archive file, then delete them."""
+        """Export old records to a JSON archive file, then delete them.
+
+        Rows are processed in batches of ``_ARCHIVE_BATCH_SIZE``. Each batch
+        is appended to the archive file *before* only that batch's rows are
+        deleted, so records beyond the first batch are never lost.
+        """
         from pathlib import Path
 
         archive_dir = Path(policy.archive_path)
         archive_dir.mkdir(parents=True, exist_ok=True)
 
         archive_file = archive_dir / f"{table}_archive.json"
-        cutoff_row = self._db.fetchone(
-            f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_column} < ? AND {ts_column} != ''",
-            (cutoff,),
-        )
-        count = cutoff_row["cnt"] if cutoff_row else 0
 
-        if count == 0:
-            return
-
-        # Fetch records to archive (limit batch for memory safety)
-        rows = self._db.fetchall(
-            f"SELECT * FROM {table} WHERE {ts_column} < ? AND {ts_column} != '' LIMIT 10000",
-            (cutoff,),
-        )
-
-        # Append to existing archive
+        # Append to existing archive (merge semantics preserved across batches)
         existing: list[dict[str, Any]] = []
         if archive_file.exists():
             try:
@@ -338,19 +337,38 @@ class DataGovernance:
             except (json.JSONDecodeError, OSError):
                 existing = []
 
-        existing.extend(rows)
+        while True:
+            # Fetch one batch (rowid alias needed to delete exactly these rows)
+            rows = self._db.fetchall(
+                f"SELECT rowid AS _rowid, * FROM {table} "
+                f"WHERE {ts_column} < ? AND {ts_column} != '' "
+                f"LIMIT {_ARCHIVE_BATCH_SIZE}",
+                (cutoff,),
+            )
+            if not rows:
+                break
 
-        archive_file.write_text(
-            json.dumps(existing, indent=2, default=str),
-            encoding="utf-8",
-        )
+            # Strip the synthetic _rowid key before persisting to the file
+            archived_rows = [
+                {key: value for key, value in row.items() if key != "_rowid"} for row in rows
+            ]
+            existing.extend(archived_rows)
 
-        # Delete archived records
-        self._db.execute(
-            f"DELETE FROM {table} WHERE {ts_column} < ? AND {ts_column} != ''",
-            (cutoff,),
-        )
-        self._db.commit()
+            archive_file.write_text(
+                json.dumps(existing, indent=2, default=str),
+                encoding="utf-8",
+            )
+
+            # Delete ONLY the fetched batch rows (chunked IN clause)
+            rowids = [row["_rowid"] for row in rows]
+            for start in range(0, len(rowids), _ARCHIVE_DELETE_CHUNK_SIZE):
+                chunk = rowids[start : start + _ARCHIVE_DELETE_CHUNK_SIZE]
+                placeholders = ", ".join("?" for _ in chunk)
+                self._db.execute(
+                    f"DELETE FROM {table} WHERE rowid IN ({placeholders})",
+                    tuple(chunk),
+                )
+            self._db.commit()
 
     def _purge_records(self, table: str, ts_column: str, cutoff: str) -> None:
         """Permanently delete records older than the cutoff."""
@@ -369,18 +387,31 @@ class DataGovernance:
         import hashlib
 
         rows = self._db.fetchall(
-            f"SELECT * FROM {table} WHERE {ts_column} < ? AND {ts_column} != '' LIMIT 1000",
+            f"SELECT rowid AS _rowid, * FROM {table} "
+            f"WHERE {ts_column} < ? AND {ts_column} != '' LIMIT 1000",
             (cutoff,),
         )
 
         for row in rows:
+            updates: dict[str, str] = {}
             # Anonymize agent_id if present
-            if "agent_id" in row and row["agent_id"]:
+            if row.get("agent_id"):
                 anon = hashlib.sha256(row["agent_id"].encode()).hexdigest()[:12]
-                self._db.execute(
-                    f"UPDATE {table} SET agent_id = ? WHERE rowid = ?",
-                    (f"anon_{anon}", row.get("rowid", "")),
-                )
+                updates["agent_id"] = f"anon_{anon}"
+            # Anonymize content if present
+            if row.get("content"):
+                anon = hashlib.sha256(row["content"].encode()).hexdigest()[:12]
+                updates["content"] = f"anon_{anon}"
+            if not updates:
+                continue
+
+            set_clause = ", ".join(f"{column} = ?" for column in updates)
+            values = list(updates.values())
+            values.append(row["_rowid"])
+            self._db.execute(
+                f"UPDATE {table} SET {set_clause} WHERE rowid = ?",
+                tuple(values),
+            )
 
         self._db.commit()
 
@@ -555,3 +586,82 @@ class DataGovernance:
                     )
 
         return findings
+
+
+# ---------------------------------------------------------------------------
+# Retention runner & scheduler (daemon integration)
+# ---------------------------------------------------------------------------
+
+DEFAULT_GOVERNANCE_INTERVAL_SECONDS = 86400.0
+
+
+def run_retention(database: Database | None = None) -> dict[str, int]:
+    """Enforce all retention policies; return {table: records_processed}.
+
+    Best-effort — returns {} when the SQLite data layer is unavailable or on
+    any exception. Uses `database or get_database()` (import inside the
+    function from `ai_company.data`: `database_is_usable, get_database`).
+    """
+    from ai_company.data import database_is_usable, get_database
+
+    db = database or get_database()
+    if db is None or not database_is_usable(db):
+        logger.debug("Retention pass skipped: SQLite database unavailable")
+        return {}
+
+    try:
+        return DataGovernance(db).apply_retention_policies()
+    except Exception:  # noqa: BLE001 - retention is best-effort
+        logger.exception("Retention pass failed; will retry next interval")
+        return {}
+
+
+class GovernanceScheduler:
+    """Time-gated wrapper around :func:`run_retention` for the daemon loop.
+
+    Args:
+        interval_seconds: Minimum seconds between retention passes. ``<= 0``
+            disables retention (``run_due`` always returns ``{}``).
+        database: SQLite database to run retention against. ``None`` falls
+            back to the module-level database singleton.
+    """
+
+    def __init__(
+        self,
+        interval_seconds: float = DEFAULT_GOVERNANCE_INTERVAL_SECONDS,
+        database: Database | None = None,
+    ) -> None:
+        self.interval_seconds = interval_seconds
+        self.database = database
+        self._last_run: float = 0.0
+
+    def run_due(self, now: float | None = None) -> dict[str, int]:
+        """Run a retention pass if the interval has elapsed.
+
+        ``{}`` means no pass was run (too soon or disabled), nothing was
+        processed, or the pass failed and was swallowed.
+        """
+        if self.interval_seconds <= 0:
+            return {}
+        current = now if now is not None else time.time()
+        if current - self._last_run < self.interval_seconds:
+            return {}
+        self._last_run = current
+        try:
+            return run_retention(database=self.database)
+        except Exception:  # noqa: BLE001 - retention is best-effort
+            logger.exception("Retention pass failed; will retry next interval")
+            return {}
+
+    def reset(self) -> None:
+        """Force the next ``run_due`` call to run a retention pass."""
+        self._last_run = 0.0
+
+
+__all__ = [
+    "DEFAULT_GOVERNANCE_INTERVAL_SECONDS",
+    "DataGovernance",
+    "GovernanceScheduler",
+    "RetentionPolicy",
+    "run_retention",
+]

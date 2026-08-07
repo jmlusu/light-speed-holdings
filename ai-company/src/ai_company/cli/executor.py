@@ -28,6 +28,11 @@ def start(
         "--kpi-snapshot-interval",
         help="Seconds between periodic KPI snapshot collections (daemon mode; 0 disables)",
     ),
+    governance_interval: float = typer.Option(
+        86400.0,
+        "--governance-interval",
+        help="Seconds between periodic retention enforcement (daemon mode; 0 disables)",
+    ),
     db_path: Optional[str] = typer.Option(
         None,
         help="SQLite database path for write-through (default: <data root>/data/ai_company.db)",
@@ -46,6 +51,7 @@ def start(
             pid_dir=pid_dir,
             log_dir=log_dir,
             kpi_snapshot_interval=kpi_snapshot_interval,
+            governance_interval=governance_interval,
             db_path=db_path,
         )
     else:
@@ -81,6 +87,7 @@ def _start_daemon(
     pid_dir: str,
     log_dir: str,
     kpi_snapshot_interval: float,
+    governance_interval: float,
     db_path: str | None,
 ) -> None:
     """Launch executor in daemon mode."""
@@ -107,6 +114,7 @@ def _start_daemon(
         log_path=log_path,
         status_path=status_path,
         kpi_snapshot_interval=kpi_snapshot_interval,
+        governance_interval=governance_interval,
     )
 
     typer.echo(f"Starting executor daemon (PID file: {pid_path})")

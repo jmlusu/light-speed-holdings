@@ -16,6 +16,7 @@ from ai_company.data.database import (
     reset_database,
 )
 from ai_company.data.escalation_store import EscalationStore
+from ai_company.data.governance import DataGovernance, GovernanceScheduler
 from ai_company.data.kpi_pipeline import KPIPipeline
 from ai_company.data.memory_store import MemoryStoreDB
 from ai_company.data.task_store import TaskStore
@@ -30,6 +31,8 @@ __all__ = [
     "AuditStore",
     "MemoryStoreDB",
     "EscalationStore",
+    "DataGovernance",
+    "GovernanceScheduler",
     "KPIPipeline",
     "CostAnalytics",
     "AgentPerformanceAnalytics",

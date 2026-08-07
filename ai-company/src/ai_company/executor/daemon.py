@@ -179,6 +179,8 @@ class ExecutorDaemon:
         status_path: Path to the health/status JSON file.
         kpi_snapshot_interval: Seconds between periodic KPI snapshot
             collections (Sprint 2, Item 3). ``<= 0`` disables collection.
+        governance_interval: Seconds between periodic retention enforcement
+            (Sprint 3, item 3). <= 0 disables.
     """
 
     def __init__(
@@ -189,6 +191,7 @@ class ExecutorDaemon:
         log_path: Path | None = None,
         status_path: Path | None = None,
         kpi_snapshot_interval: float = 300.0,
+        governance_interval: float = 86400.0,
         *,
         _clock: Callable[[], float] | None = None,
         _sleep: Callable[[float], None] | None = None,
@@ -196,6 +199,7 @@ class ExecutorDaemon:
         self.executor_factory = executor_factory
         self.poll_interval = poll_interval
         self.kpi_snapshot_interval = kpi_snapshot_interval
+        self.governance_interval = governance_interval
 
         self.pid_file = DaemonPIDFile(pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid"))
         self.status_file = DaemonHealthStatus(status_path or DEFAULT_HEALTH_FILE)
@@ -306,6 +310,7 @@ class ExecutorDaemon:
         logger.info("Executor created; entering poll loop (interval=%.1fs)", self.poll_interval)
 
         snapshot_scheduler = self._make_snapshot_scheduler(executor)
+        governance_scheduler = self._make_governance_scheduler(executor)
 
         while not self._shutdown_event:
             try:
@@ -328,6 +333,14 @@ class ExecutorDaemon:
                 except Exception:
                     logger.exception("Error during KPI snapshot collection")
 
+            if governance_scheduler is not None:
+                try:
+                    processed = governance_scheduler.run_due()
+                    if processed:
+                        logger.info("Retention enforcement processed %d table(s)", len(processed))
+                except Exception:
+                    logger.exception("Error during retention enforcement")
+
             # Sleep in small increments so we can respond to signals quickly
             self._interruptible_sleep(self.poll_interval)
 
@@ -339,6 +352,17 @@ class ExecutorDaemon:
 
         return KPISnapshotScheduler(
             interval_seconds=self.kpi_snapshot_interval,
+            database=getattr(executor, "database", None),
+        )
+
+    def _make_governance_scheduler(self, executor: Any) -> Any:
+        """Build the periodic retention scheduler, or None if disabled."""
+        if self.governance_interval <= 0:
+            return None
+        from ai_company.data import GovernanceScheduler
+
+        return GovernanceScheduler(
+            interval_seconds=self.governance_interval,
             database=getattr(executor, "database", None),
         )
 
