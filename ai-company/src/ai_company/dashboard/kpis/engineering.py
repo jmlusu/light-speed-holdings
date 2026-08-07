@@ -1,4 +1,4 @@
-"""Engineering department KPI collector — reads inbox.json, escalation.yaml, scheduler.yaml."""
+"""Engineering department KPI collector — tasks via MessageBus, escalation.yaml, scheduler.yaml."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ class EngineeringKPICollector(KPICollector):
     def collect(self) -> dict[str, Any]:
         tasks = self._tasks_from_sqlite()
         if tasks is None:
-            tasks = self._load_json(".opencode/inbox.json")
+            tasks = self._tasks_from_bus()
         events = self._escalations_from_sqlite()
         if events is None:
             events = self._load_yaml("orchestrator/escalation.yaml").get("events", [])

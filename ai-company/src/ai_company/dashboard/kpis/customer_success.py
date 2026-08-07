@@ -18,7 +18,7 @@ class CustomerSuccessKPICollector(KPICollector):
         surveys = self._load_json("orchestrator/cs/surveys.json")
         tasks = self._tasks_from_sqlite()
         if tasks is None:
-            tasks = self._load_json(".opencode/inbox.json")
+            tasks = self._tasks_from_bus()
 
         # Count CS-related tasks
         cs_receivers = {"customer-success", "support_agent"}

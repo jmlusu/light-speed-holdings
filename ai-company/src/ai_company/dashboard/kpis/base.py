@@ -122,8 +122,28 @@ class KPICollector(ABC):
             if store.count() > 0:
                 return [task.model_dump() for task in store.get_all_tasks()]
         except Exception:  # noqa: BLE001 - read-through must never raise
-            logger.debug("SQLite task read failed; using inbox.json", exc_info=True)
+            logger.debug("SQLite task read failed; using MessageBus", exc_info=True)
         return None
+
+    def _tasks_from_bus(self) -> list[dict[str, Any]]:
+        """Return all task dicts through the shared dashboard MessageBus.
+
+        GAP-011: the legacy read path opened ``.opencode/inbox.json``
+        directly; the bus is now the single source of truth for task state.
+        The bus is rooted at the dashboard StateStore base dir, which at
+        boot equals the project root (or ``DASHBOARD_DATA_DIR``).
+
+        Returns raw task dicts (same shape the file read produced) and
+        ``[]`` when the inbox is missing or unreadable so collectors never
+        raise and always produce their KPI shape.
+        """
+        try:
+            from ai_company.dashboard.api import get_bus
+
+            return get_bus().get_all_tasks_raw()
+        except Exception:  # noqa: BLE001 - collectors must never raise
+            logger.debug("MessageBus task read failed; using empty task list", exc_info=True)
+            return []
 
     def _cost_from_sqlite(self) -> dict[str, Any] | None:
         """Return spend totals from SQLite when populated, else ``None``."""
