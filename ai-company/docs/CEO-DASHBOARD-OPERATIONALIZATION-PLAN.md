@@ -1,6 +1,6 @@
 # CEO Dashboard — Operationalization Plan
 
-Status: **Plan approved — Sprint 2 complete, Sprint 3 item 1 complete**
+Status: **Plan approved — Sprint 2 complete, Sprint 3 items 1-2 complete**
 Author: Jack Mlusu
 Updated: 2026-08-07
 
@@ -165,3 +165,27 @@ Real operational data available today:
       never render blank before a backfill has run.
 - [x] Unit/integration tests cover both the SQLite and file-fallback paths;
       gates green (`ruff check src/`, `mypy src/`, `pytest`).
+
+## 11. Definition of Done (Sprint 3, Item 2 — company KPIs vs targets from live telemetry)
+
+- [x] `dashboard/data_service.py` exposes `get_company_kpi_summary(days=30,
+      project_root=None)` — reads `config/company/kpis.yaml` for the 5 company
+      KPI targets and computes `current` from telemetry where mappable:
+      `KPI-004` Build Success Rate from task completion (`completed / (completed
+      + failed)`, `days`-window), `KPI-003` Agent Utilization Rate from distinct
+      active agents vs the `company-registry.yaml` count; SQLite-first with
+      `.opencode/inbox.json` fallback (`source`: `sqlite` | `files` | `config`).
+      Never raises — missing config returns an empty summary.
+- [x] `GET /api/company-kpis?days=30` returns the full summary shape
+      (`collected_at`, `period_days`, `kpis[]` with `id/name/category/owner/
+      frequency/unit/target/current/status/gap/computed/source`, and
+      `summary` counts by status) — replaces the previous raw static list;
+      `days` validated (`ge=1, le=365`, 422 otherwise).
+- [x] Frontend KPI page renders a "Company KPIs vs Targets" card grid
+      (current/target/unit/status badge/gap/live-or-config hint) plus a
+      Current-vs-Target bar chart; department KPI cards no longer render
+      "undefined" — live telemetry values are merged onto definitions.
+- [x] Unit/integration tests cover SQLite + file-fallback + config-fallback +
+      missing-config + window-filter + endpoint contract (7 new tests);
+      gates green (`ruff check src/ tests/`, `mypy src/`, `pytest` —
+      1501 passing).
