@@ -75,6 +75,24 @@ class TestDeadLetterQueue:
 # ── Stale task detection ─────────────────────────────────────────────
 
 
+class _FakeBus:
+    """Minimal MessageBus stub for stale-task detection tests."""
+
+    def __init__(self, tasks: list[dict]) -> None:
+        self._tasks: list[dict] = list(tasks)
+        self.deleted: list[str] = []
+
+    def get_all_tasks_raw(self) -> list[dict]:
+        return list(self._tasks)
+
+    def delete_task(self, task_id: str) -> None:
+        self.deleted.append(task_id)
+        self._tasks = [t for t in self._tasks if str(t.get("id")) != task_id]
+
+    def remaining_tasks(self) -> list[dict]:
+        return list(self._tasks)
+
+
 class TestStaleDetection:
     def _make_task(
         self,
@@ -96,31 +114,28 @@ class TestStaleDetection:
 
     def test_no_stale_tasks_when_recent(self, tmp_path: Path) -> None:
         """Tasks with recent timestamps should not be detected as stale."""
-        inbox = tmp_path / "inbox.json"
         now = datetime.now().isoformat()
-        tasks = [self._make_task("t1", created_at=now)]
-        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+        bus = _FakeBus([self._make_task("t1", created_at=now)])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(inbox, dlq, threshold_minutes=30)
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
         assert len(moved) == 0
         assert dlq.list_entries() == []
+        assert bus.deleted == []
 
     def test_stale_task_detected_and_moved(self, tmp_path: Path) -> None:
         """Task older than threshold should be moved to DLQ."""
-        inbox = tmp_path / "inbox.json"
         stale_time = (datetime.now() - timedelta(minutes=60)).isoformat()
-        tasks = [self._make_task("t-stale", created_at=stale_time)]
-        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+        bus = _FakeBus([self._make_task("t-stale", created_at=stale_time)])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(inbox, dlq, threshold_minutes=30)
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
         assert len(moved) == 1
         assert moved[0]["id"] == "t-stale"
 
-        # Task should be removed from inbox
-        remaining = json.loads(inbox.read_text(encoding="utf-8"))
-        assert len(remaining) == 0
+        # Task should be removed from inbox via the bus
+        assert bus.deleted == ["t-stale"]
+        assert bus.remaining_tasks() == []
 
         # Task should be in DLQ
         entry = dlq.get_task("t-stale")
@@ -128,76 +143,73 @@ class TestStaleDetection:
 
     def test_updated_at_preferred_over_created_at(self, tmp_path: Path) -> None:
         """When updated_at is present, it should be used for staleness check."""
-        inbox = tmp_path / "inbox.json"
-        # created_at is recent, but updated_at is old
         recent = datetime.now().isoformat()
         old = (datetime.now() - timedelta(minutes=60)).isoformat()
-        tasks = [self._make_task("t-upd", created_at=recent, updated_at=old)]
-        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+        bus = _FakeBus([self._make_task("t-upd", created_at=recent, updated_at=old)])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(inbox, dlq, threshold_minutes=30)
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
         assert len(moved) == 1
+        assert bus.deleted == ["t-upd"]
 
     def test_pending_tasks_not_moved(self, tmp_path: Path) -> None:
         """Only in_progress tasks should be considered stale."""
-        inbox = tmp_path / "inbox.json"
         old = (datetime.now() - timedelta(minutes=60)).isoformat()
-        tasks = [
-            self._make_task("t-pending", status="pending", created_at=old),
-            self._make_task("t-completed", status="completed", created_at=old),
-        ]
-        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+        bus = _FakeBus(
+            [
+                self._make_task("t-pending", status="pending", created_at=old),
+                self._make_task("t-completed", status="completed", created_at=old),
+            ]
+        )
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(inbox, dlq, threshold_minutes=30)
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
         assert len(moved) == 0
+        assert bus.deleted == []
 
     def test_no_timestamp_treated_as_stale(self, tmp_path: Path) -> None:
         """Task with no timestamps should be treated as stale."""
-        inbox = tmp_path / "inbox.json"
-        tasks = [self._make_task("t-nots", created_at="", updated_at="")]
-        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+        bus = _FakeBus([self._make_task("t-nots", created_at="", updated_at="")])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(inbox, dlq, threshold_minutes=30)
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
         assert len(moved) == 1
+        assert bus.deleted == ["t-nots"]
 
     def test_unparseable_timestamp_treated_as_stale(self, tmp_path: Path) -> None:
         """Task with garbage timestamp should be treated as stale."""
-        inbox = tmp_path / "inbox.json"
-        tasks = [self._make_task("t-bad", created_at="not-a-date")]
-        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+        bus = _FakeBus([self._make_task("t-bad", created_at="not-a-date")])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(inbox, dlq, threshold_minutes=30)
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
         assert len(moved) == 1
+        assert bus.deleted == ["t-bad"]
 
-    def test_nonexistent_inbox_returns_empty(self, tmp_path: Path) -> None:
+    def test_empty_inbox_returns_empty(self, tmp_path: Path) -> None:
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(tmp_path / "nope.json", dlq)
+        moved = detect_stale_tasks(_FakeBus([]), dlq)
         assert moved == []
 
     def test_mixed_tasks_partial_move(self, tmp_path: Path) -> None:
         """Only stale in_progress tasks should be moved; others stay."""
-        inbox = tmp_path / "inbox.json"
         now = datetime.now().isoformat()
         old = (datetime.now() - timedelta(minutes=60)).isoformat()
-
-        tasks = [
-            self._make_task("t-recent", status="in_progress", created_at=now),
-            self._make_task("t-stale", status="in_progress", created_at=old),
-            self._make_task("t-pending-old", status="pending", created_at=old),
-        ]
-        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+        bus = _FakeBus(
+            [
+                self._make_task("t-recent", status="in_progress", created_at=now),
+                self._make_task("t-stale", status="in_progress", created_at=old),
+                self._make_task("t-pending-old", status="pending", created_at=old),
+            ]
+        )
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
-        moved = detect_stale_tasks(inbox, dlq, threshold_minutes=30)
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
         assert len(moved) == 1
         assert moved[0]["id"] == "t-stale"
+        assert bus.deleted == ["t-stale"]
 
-        # Two tasks should remain in inbox
-        remaining = json.loads(inbox.read_text(encoding="utf-8"))
+        # Two tasks should remain in the inbox
+        remaining = bus.remaining_tasks()
         assert len(remaining) == 2
         ids = {t["id"] for t in remaining}
         assert "t-stale" not in ids

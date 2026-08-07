@@ -186,7 +186,7 @@ class Executor:
         self.scheduler.create_pending_tasks(self.bus)
 
         # GAP-017 -- move stale tasks to dead-letter queue
-        stale = detect_stale_tasks(Path(self.bus.storage_path), self.dlq)
+        stale = detect_stale_tasks(self.bus, self.dlq)
         if stale:
             logger.warning("Moved %d stale task(s) to dead-letter queue.", len(stale))
 

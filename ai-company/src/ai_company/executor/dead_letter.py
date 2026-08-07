@@ -11,7 +11,10 @@ import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ai_company.orchestrator.message_bus import MessageBus
 
 logger = logging.getLogger(__name__)
 
@@ -100,62 +103,48 @@ class DeadLetterQueue:
 
 
 def detect_stale_tasks(
-    inbox_path: Path,
+    bus: MessageBus,
     dlq: DeadLetterQueue,
     threshold_minutes: int = STALE_THRESHOLD_MINUTES,
 ) -> list[dict[str, Any]]:
-    """Scan *inbox_path* for ``in_progress`` tasks older than *threshold_minutes*.
+    """Scan the inbox via *bus* for ``in_progress`` tasks older than *threshold_minutes*.
 
     Each stale task is moved to the DLQ **and** removed from the inbox.
     Returns the list of moved task dicts.
     """
-    if not inbox_path.exists():
-        return []
-
     try:
-        tasks: list[dict[str, Any]] = json.loads(inbox_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
+        tasks: list[dict[str, Any]] = bus.get_all_tasks_raw()
+    except (OSError, json.JSONDecodeError):
         return []
 
     now = datetime.now()
     cutoff = now - timedelta(minutes=threshold_minutes)
-    stale_ids: set[str] = set()
     moved: list[dict[str, Any]] = []
 
     for task in tasks:
         if task.get("status") != "in_progress":
             continue
 
-        # Check timestamps — prefer updated_at, fall back to created_at
+        # Check timestamps -- prefer updated_at, fall back to created_at
         ts_str = task.get("updated_at") or task.get("created_at") or ""
         if not ts_str:
-            # No timestamp at all → treat as stale
-            stale_ids.add(task.get("id", ""))
             reason = "No timestamp — assumed stale"
-            dlq.move_task(task, reason)
-            moved.append(task)
-            continue
+        else:
+            try:
+                ts = datetime.fromisoformat(ts_str)
+            except (ValueError, TypeError):
+                reason = f"Unparseable timestamp '{ts_str}'"
+            else:
+                if ts >= cutoff:
+                    continue
+                elapsed = (now - ts).total_seconds() / 60
+                reason = f"Stale after {elapsed:.0f} minutes (threshold: {threshold_minutes}m)"
 
-        try:
-            ts = datetime.fromisoformat(ts_str)
-        except (ValueError, TypeError):
-            stale_ids.add(task.get("id", ""))
-            reason = f"Unparseable timestamp '{ts_str}'"
-            dlq.move_task(task, reason)
-            moved.append(task)
-            continue
+        dlq.move_task(task, reason)
+        bus.delete_task(str(task.get("id", "")))
+        moved.append(task)
 
-        if ts < cutoff:
-            stale_ids.add(task.get("id", ""))
-            elapsed = (now - ts).total_seconds() / 60
-            reason = f"Stale after {elapsed:.0f} minutes (threshold: {threshold_minutes}m)"
-            dlq.move_task(task, reason)
-            moved.append(task)
-
-    if stale_ids:
-        # Rewrite inbox without the stale tasks
-        remaining = [t for t in tasks if t.get("id") not in stale_ids]
-        inbox_path.write_text(json.dumps(remaining, indent=2, default=str), encoding="utf-8")
+    if moved:
         logger.info("Moved %d stale tasks to DLQ.", len(moved))
 
     return moved
