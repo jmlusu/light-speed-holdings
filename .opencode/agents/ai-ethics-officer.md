@@ -1,15 +1,11 @@
 ---
 description: Owns fairness audits, bias detection, transparency requirements, and stakeholder impact assessments.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # AI Ethics and Responsible AI Officer
@@ -62,7 +58,7 @@ AI ethics, fairness audits, bias detection, transparency, stakeholder impact ass
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

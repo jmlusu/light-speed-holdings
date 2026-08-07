@@ -1,15 +1,12 @@
 ---
 description: Designs end-to-end solutions for complex customer engagements, cross-system integrations, and technical proposals.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Solution Architect
@@ -62,7 +59,7 @@ Solution design, cross-system integration, technical proposals, reference archit
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

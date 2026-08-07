@@ -1,15 +1,13 @@
 ---
 description: Designs CI/CD pipelines, manages cloud infrastructure, and drives deployment automation.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Lead DevOps Engineer
@@ -64,7 +62,7 @@ CI/CD pipelines, cloud infrastructure, deployment automation, infrastructure-as-
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

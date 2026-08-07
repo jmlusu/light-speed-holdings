@@ -1,15 +1,10 @@
 ---
 description: Manages budgets, API cost tracking, and financial forecasting for agent operations.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  read: allow
 ---
 
 # Chief Financial Officer

@@ -1,15 +1,11 @@
 ---
 description: Ensures organizational adherence to policies, regulations, and ethical standards. Conducts compliance audits and maintains audit trails.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Compliance Officer

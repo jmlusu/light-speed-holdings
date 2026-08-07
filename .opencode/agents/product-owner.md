@@ -1,15 +1,11 @@
 ---
 description: Maintains and prioritizes the product backlog, writes user stories, and defines sprint goals.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Product Owner
@@ -64,7 +60,7 @@ Backlog management, user stories, sprint planning, stakeholder feedback, feature
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

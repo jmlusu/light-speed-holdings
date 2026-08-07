@@ -1,15 +1,12 @@
 ---
 description: Designs system architecture, API contracts, and integration patterns across all services.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Software Architect
@@ -62,7 +59,7 @@ System architecture, API design, integration patterns, scalability, technical de
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

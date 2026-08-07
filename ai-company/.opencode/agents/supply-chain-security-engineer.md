@@ -1,15 +1,12 @@
 ---
 description: Owns SBOM generation, dependency vulnerability scanning, container image signing, and pip/npm provenance.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Supply Chain Security Engineer
@@ -62,7 +59,7 @@ Supply chain security, SBOM, dependency scanning, container signing, provenance.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

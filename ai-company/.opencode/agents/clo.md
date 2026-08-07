@@ -1,15 +1,9 @@
 ---
 description: Manages legal affairs, contracts, and compliance.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  read: allow
 ---
 
 # Chief Legal Officer

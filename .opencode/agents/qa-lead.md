@@ -1,15 +1,12 @@
 ---
 description: Owns QA strategy, release quality gates, and the red/green baseline across all packages.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # QA Lead
@@ -60,7 +57,7 @@ Quality assurance, release gating, test strategy, defect triage.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

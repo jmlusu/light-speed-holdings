@@ -1,15 +1,11 @@
 ---
 description: Preserves institutional knowledge, decision rationale, and organizational learning that survives agent turnover.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Knowledge Manager
@@ -62,7 +58,7 @@ Knowledge management, institutional memory, decision logging, learning capture.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

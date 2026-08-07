@@ -1,15 +1,11 @@
 ---
 description: Designs zero trust architecture, microsegmentation, identity-aware access, and overall security posture.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Security Architect
@@ -62,7 +58,7 @@ Zero trust architecture, microsegmentation, identity-aware access, security post
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

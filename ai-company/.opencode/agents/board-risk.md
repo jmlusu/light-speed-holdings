@@ -1,15 +1,8 @@
 ---
 description: Advises the board on operational, technical, and strategic risks.
 mode: subagent
-tools:
-  write: false
-  edit: false
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  read: allow
 ---
 
 # Risk Committee Chair

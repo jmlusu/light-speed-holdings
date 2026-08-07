@@ -1,15 +1,12 @@
 ---
 description: Defines API design standards, versioning strategies, rate limiting, and API gateway configuration.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # API Architect
@@ -62,7 +59,7 @@ API design, versioning, rate limiting, API gateway, OpenAPI specification.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

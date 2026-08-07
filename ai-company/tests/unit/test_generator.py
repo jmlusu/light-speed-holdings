@@ -66,6 +66,16 @@ def generator(sample_registry: Path, templates_dir: Path, tmp_path: Path) -> Age
     )
 
 
+def _load_frontmatter(path: Path) -> dict:
+    """Parse the YAML frontmatter of a generated agent file."""
+    content = path.read_text(encoding="utf-8")
+    parts = content.split("---", 2)
+    assert len(parts) >= 3, f"Malformed frontmatter in {path.name}"
+    frontmatter = yaml.safe_load(parts[1])
+    assert isinstance(frontmatter, dict), f"Frontmatter is not a dict in {path.name}"
+    return frontmatter
+
+
 def test_load_registry(generator: AgentGenerator) -> None:
     data = generator.load_registry()
     agents = data["company"]["agents"]
@@ -89,28 +99,32 @@ def test_generate_file_content(generator: AgentGenerator) -> None:
     assert "Test Executive" in content
     assert "Run tests" in content
     assert "mode: subagent" in content
-    assert "tools:" in content
-    assert "permission:" not in content
+    assert "permission:" in content
+    assert "tools:" not in content
+    assert "read: allow" in content
+    assert "edit: allow" in content
 
 
-def test_tools_boolean_map_read_only(generator: AgentGenerator) -> None:
+def test_permission_block_read_only(generator: AgentGenerator) -> None:
     results = generator.generate_all()
     spec_file = [f for f in results if f.name == "test-spec.md"][0]
-    content = spec_file.read_text(encoding="utf-8")
-    assert "write: false" in content
-    assert "edit: false" in content
-    assert "bash: false" in content
-    assert "read: true" in content
+    frontmatter = _load_frontmatter(spec_file)
+    # Only the granted tool appears, as an allow entry — no deny entries.
+    assert frontmatter.get("permission") == {"read": "allow"}
+    assert "tools" not in frontmatter
 
 
-def test_tools_boolean_map_full_access(generator: AgentGenerator) -> None:
+def test_permission_block_full_access(generator: AgentGenerator) -> None:
     results = generator.generate_all()
     exec_file = [f for f in results if f.name == "test-exec.md"][0]
-    content = exec_file.read_text(encoding="utf-8")
-    assert "write: true" in content
-    assert "edit: true" in content
-    assert "bash: true" in content
-    assert "read: true" in content
+    frontmatter = _load_frontmatter(exec_file)
+    assert frontmatter.get("permission") == {
+        "bash": "allow",  # execute
+        "edit": "allow",  # write
+        "read": "allow",
+        "task": "allow",  # delegate
+    }
+    assert "tools" not in frontmatter
 
 
 # ---------------------------------------------------------------------------
@@ -272,12 +286,38 @@ def test_opencode_frontmatter_valid(real_generator: AgentGenerator) -> None:
             "primary",
             "subagent",
         ), f"{filepath.name}: invalid mode '{frontmatter.get('mode')}'"
-        assert "tools" in frontmatter, f"{filepath.name}: missing 'tools'"
 
-        # Forbidden fields
-        assert "permission" not in frontmatter, (
-            f"{filepath.name}: 'permission' is forbidden in OpenCode frontmatter"
+        # v2 format: permission block replaces the deprecated tools bool map
+        assert "tools" not in frontmatter, f"{filepath.name}: 'tools' is deprecated"
+        assert "permission" in frontmatter, f"{filepath.name}: missing 'permission'"
+        assert isinstance(frontmatter["permission"], dict), (
+            f"{filepath.name}: 'permission' must be a dict"
         )
-        assert "name" not in frontmatter, (
-            f"{filepath.name}: 'name' is forbidden in OpenCode frontmatter"
-        )
+        for tool, action in frontmatter["permission"].items():
+            assert action in ("allow", "ask", "deny"), (
+                f"{filepath.name}: invalid permission action for '{tool}': '{action}'"
+            )
+
+
+def test_validate_generated_accepts_new_format(real_generator: AgentGenerator) -> None:
+    """validate_generated() must pass for the new permission-based format."""
+    real_generator.generate_all()
+    errors = real_generator.validate_generated()
+    assert errors == [], f"Validation errors found: {errors}"
+
+
+def test_validate_generated_rejects_old_tools_format(tmp_path: Path, templates_dir: Path) -> None:
+    """validate_generated() must reject the deprecated tools: bool-map format."""
+    gen = AgentGenerator(
+        registry_path="company-registry.yaml",
+        templates_dir=str(templates_dir),
+        output_dir=str(tmp_path / "agents"),
+    )
+    gen.output_dir.mkdir(parents=True, exist_ok=True)
+    bad_file = gen.output_dir / "bad-tools-format.md"
+    bad_file.write_text(
+        "---\ndescription: Old format\nmode: subagent\ntools:\n  read: true\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+    errors = gen.validate_generated()
+    assert any("tools" in e["error"] for e in errors), f"Expected tools rejection, got {errors}"

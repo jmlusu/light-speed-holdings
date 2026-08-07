@@ -1,15 +1,12 @@
 ---
 description: Analyzes resource utilization across test suites, CLI commands, and workflows to forecast infrastructure needs.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Capacity Planner
@@ -62,7 +59,7 @@ Capacity planning, resource forecasting, utilization analysis, infrastructure si
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

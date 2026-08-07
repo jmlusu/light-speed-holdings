@@ -1,15 +1,12 @@
 ---
 description: Implements complex UI features, mentors engineers, and makes frontend architectural decisions within the team.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Senior Frontend Engineer
@@ -62,7 +59,7 @@ Complex UI implementation, performance optimization, frontend architecture, ment
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

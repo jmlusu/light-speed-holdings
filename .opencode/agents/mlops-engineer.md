@@ -1,15 +1,12 @@
 ---
 description: Manages the full ML lifecycle including model versioning, experiment tracking, feature stores, and automated model deployment.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # MLOps Engineer
@@ -62,7 +59,7 @@ ML lifecycle, model versioning, experiment tracking, feature stores, A/B testing
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

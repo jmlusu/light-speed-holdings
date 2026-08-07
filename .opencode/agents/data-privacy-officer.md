@@ -1,15 +1,11 @@
 ---
 description: Owns GDPR/CCPA compliance, data classification, retention policies, right-to-deletion, and DPA agreements.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Data Privacy Officer
@@ -62,7 +58,7 @@ Data privacy, GDPR, CCPA, data classification, retention, right-to-deletion, DPA
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

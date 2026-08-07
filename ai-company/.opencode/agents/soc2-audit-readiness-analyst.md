@@ -1,15 +1,11 @@
 ---
 description: Maps controls to Trust Services Criteria, maintains evidence collection, and manages auditor relationships.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # SOC 2 Audit Readiness Analyst
@@ -62,7 +58,7 @@ SOC 2 Type II, Trust Services Criteria, evidence collection, audit management, c
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

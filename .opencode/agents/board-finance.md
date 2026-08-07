@@ -1,15 +1,8 @@
 ---
 description: Advises the board on financial health, budgets, and investment strategy.
 mode: subagent
-tools:
-  write: false
-  edit: false
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  read: allow
 ---
 
 # Finance Committee Chair

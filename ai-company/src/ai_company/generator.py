@@ -14,13 +14,19 @@ from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
 
-# Tool name mapping: registry names → OpenCode 1.18.4 names
+# Tool name mapping: registry names → OpenCode v2 permission keys
 _TOOL_MAP: dict[str, str] = {
     "execute": "bash",
-    "edit": "write",
-    "web_search": "webfetch",
     "code_interpreter": "bash",
+    "edit": "edit",
+    "write": "edit",
+    "web_search": "webfetch",
+    "websearch": "websearch",
     "delegate": "task",
+    "question": "question",
+    "read": "read",
+    "grep": "grep",
+    "list": "list",
 }
 
 # Template selection mapping
@@ -31,7 +37,7 @@ _TEMPLATE_MAP = {
     "board": "board.md.j2",
     "workflow": "workflow.md.j2",
     "config": "config.md.j2",
-    "agent": "agents/agent.md.j2",  # Legacy format
+    "agent": "agents/agent.md.j2",  # OpenCode v2 permission format
     "default": "base.md.j2",
 }
 
@@ -63,11 +69,20 @@ class AgentGenerator:
 
     @staticmethod
     def _normalize_tools(tools: list[str]) -> list[str]:
-        """Normalize tool names from registry format to OpenCode 1.18.4 format."""
+        """Normalize tool names from registry format to OpenCode v2 permission keys."""
         return [_TOOL_MAP.get(t, t) for t in tools]
 
+    @staticmethod
+    def _build_permission(tools: list[str]) -> dict[str, str]:
+        """Build an OpenCode permission block from registry tool names.
+
+        Only granted tools are included, each mapped to ``allow``.
+        """
+        keys = sorted({_TOOL_MAP.get(tool, tool) for tool in tools})
+        return {key: "allow" for key in keys}
+
     def validate_generated(self) -> list[dict[str, str]]:
-        """Validate all generated agent files for OpenCode 1.18.4 compliance.
+        """Validate all generated agent files for OpenCode v2 compliance.
 
         Returns list of {file, error} dicts. Empty list means all valid.
         """
@@ -96,13 +111,13 @@ class AgentGenerator:
                 errors.append({"file": filepath.name, "error": "Frontmatter is not a dict"})
                 continue
 
-            # Required fields
-            for field in ("description", "mode", "tools"):
+            # Required fields (OpenCode v2 shape)
+            for field in ("description", "mode", "permission"):
                 if field not in frontmatter:
                     errors.append({"file": filepath.name, "error": f"Missing field: {field}"})
 
-            # Forbidden fields
-            for field in ("name", "permission"):
+            # Forbidden fields (deprecated in the v2 format)
+            for field in ("tools",):
                 if field in frontmatter:
                     errors.append({"file": filepath.name, "error": f"Forbidden field: {field}"})
 
@@ -110,6 +125,20 @@ class AgentGenerator:
             mode = frontmatter.get("mode")
             if mode and mode not in ("primary", "subagent"):
                 errors.append({"file": filepath.name, "error": f"Invalid mode: {mode!r}"})
+
+            # Permission validation: dict of tool → allow/ask/deny
+            permission = frontmatter.get("permission")
+            if permission is not None and not isinstance(permission, dict):
+                errors.append({"file": filepath.name, "error": "permission must be a dict"})
+            elif isinstance(permission, dict):
+                for tool, action in permission.items():
+                    if isinstance(action, str) and action not in ("allow", "ask", "deny"):
+                        errors.append(
+                            {
+                                "file": filepath.name,
+                                "error": f"Invalid permission action for {tool!r}: {action!r}",
+                            }
+                        )
 
         return errors
 
@@ -159,10 +188,11 @@ class AgentGenerator:
         for agent in agents:
             agent_type = agent.get("type", "default")
             template = self._get_template(agent_type)
-            # Normalize tools to OpenCode 1.18.4 format
+            # Normalize tools to OpenCode v2 permission keys and build permission block
             raw_tools = agent.get("tools", [])
             if isinstance(raw_tools, list):
                 agent["tools"] = self._normalize_tools(raw_tools)
+                agent["permission"] = self._build_permission(raw_tools)
             rendered = template.render(company=company_name, **agent)
             safe_id = agent["id"].replace("_", "-")
             out_file = self.output_dir / f"{safe_id}.md"
@@ -192,6 +222,7 @@ class AgentGenerator:
                 responsibilities=ex.responsibilities,
                 decision_rights=ex.decision_rights,
                 tools=ex.tools,
+                permission=self._build_permission(ex.tools),
                 agent_type="Executive",
             )
             safe_id = ex.id.replace("_", "-")
@@ -231,6 +262,7 @@ class AgentGenerator:
                 reports_to=spec.reports_to,
                 responsibilities=spec.responsibilities,
                 tools=spec.tools,
+                permission=self._build_permission(spec.tools),
                 seniority=spec.seniority.value,
                 agent_type="Specialist",
             )

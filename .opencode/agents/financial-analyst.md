@@ -1,15 +1,12 @@
 ---
 description: Performs complex financial analysis including ROI calculations, cost modeling, budget forecasting, and variance analysis.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Financial Analyst

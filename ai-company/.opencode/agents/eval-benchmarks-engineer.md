@@ -1,15 +1,12 @@
 ---
 description: Owns the test-case library, automated eval suites, quality regression gates, and model comparison benchmarks.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Evaluation and Benchmarks Engineer
@@ -62,7 +59,7 @@ Model evaluation, benchmark suites, quality gates, automated testing, regression
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

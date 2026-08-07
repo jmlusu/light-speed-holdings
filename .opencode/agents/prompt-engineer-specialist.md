@@ -1,15 +1,11 @@
 ---
 description: Creates and maintains OpenAPI docs, ADRs, user guides, and onboarding materials for developer audiences.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Technical Writer
@@ -62,7 +58,7 @@ Technical writing, OpenAPI documentation, ADRs, user guides, onboarding material
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

@@ -1,15 +1,12 @@
 ---
 description: Implements complex backend systems, mentors engineers, and makes backend architectural decisions within the team.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Senior Backend Engineer
@@ -62,7 +59,7 @@ Complex API design, performance optimization, backend architecture, mentoring, c
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

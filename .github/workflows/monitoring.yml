@@ -23,6 +23,7 @@ concurrency:
 permissions:
   contents: read
   issues: write
+  actions: read
 
 jobs:
   # ── Dashboard health check ─────────────────────────────────────────
@@ -38,10 +39,12 @@ jobs:
           echo "Checking recent CI run status..."
 
           # Get last 5 CI runs
-          RUNS=$(gh run list --workflow=ci.yml --limit=5 --json conclusion,updatedAt,headBranch 2>/dev/null || echo "[]")
+          RUNS=$(gh run list --workflow=ci.yml --limit=5 --json conclusion,updatedAt,headBranch 2>/dev/null || true)
+          RUNS=${RUNS:-[]}
           FAILED=$(echo "$RUNS" | python -c "
           import sys, json
-          runs = json.load(sys.stdin)
+          data = sys.stdin.read().strip()
+          runs = json.loads(data) if data else []
           failed = [r for r in runs if r.get('conclusion') == 'failure']
           print(len(failed))
           ")
@@ -74,13 +77,15 @@ jobs:
           echo "Checking autonomous cycle health..."
 
           # Get last 4 cycle runs (should be one every 6 hours)
-          CYCLES=$(gh run list --workflow=autonomous.yml --limit=4 --json conclusion,updatedAt,databaseId 2>/dev/null || echo "[]")
+          CYCLES=$(gh run list --workflow=autonomous.yml --limit=4 --json conclusion,updatedAt,databaseId 2>/dev/null || true)
+          CYCLES=${CYCLES:-[]}
 
           python -c "
           import sys, json
           from datetime import datetime, timezone
 
-          runs = json.load(sys.stdin)
+          data = sys.stdin.read().strip()
+          runs = json.loads(data) if data else []
           if not runs:
               print('[WARN] No autonomous cycle runs found')
               sys.exit(0)

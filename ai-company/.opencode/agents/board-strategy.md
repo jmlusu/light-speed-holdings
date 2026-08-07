@@ -1,15 +1,8 @@
 ---
 description: Advises the board on long-term strategy, partnerships, and market expansion.
 mode: subagent
-tools:
-  write: false
-  edit: false
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  read: allow
 ---
 
 # Strategy Committee Chair

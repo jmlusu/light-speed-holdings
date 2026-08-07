@@ -1,15 +1,12 @@
 ---
 description: Owns the marketing service module and marketing SOP.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Marketing Owner
@@ -58,7 +55,7 @@ Campaign tracking, content calendar, demand generation metrics.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

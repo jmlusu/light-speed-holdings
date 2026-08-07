@@ -1,15 +1,10 @@
 ---
 description: Protects company assets, data, and systems from security threats.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  read: allow
 ---
 
 # Chief Information Security Officer

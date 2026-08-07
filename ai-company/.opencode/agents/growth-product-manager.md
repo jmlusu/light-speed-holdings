@@ -1,15 +1,12 @@
 ---
 description: Owns the product-led growth loop including activation, conversion, expansion triggers, and referral mechanics.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Growth Product Manager
@@ -62,7 +59,7 @@ Product-led growth, activation funnels, conversion optimization, expansion reven
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

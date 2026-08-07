@@ -1,15 +1,9 @@
 ---
 description: Provides strategic counsel directly to the human CEO. Serves as a bridge between the CEO and the rest of the organization.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  read: allow
 ---
 
 # CEO Advisor

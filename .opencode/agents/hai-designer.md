@@ -1,15 +1,11 @@
 ---
 description: Owns HITL gate design, escalation UX, human oversight interfaces, and agent autonomy boundaries.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Human-AI Interaction Designer
@@ -62,7 +58,7 @@ HITL design, escalation UX, human oversight, autonomy boundaries, approval inter
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

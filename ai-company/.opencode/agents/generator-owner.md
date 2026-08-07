@@ -1,15 +1,12 @@
 ---
 description: Owns the agent generator and the 12 Jinja2 templates that produce OpenCode agent files.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Generator Owner
@@ -58,7 +55,7 @@ Templating, agent manifest generation, output schema stability.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

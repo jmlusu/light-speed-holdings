@@ -1,15 +1,12 @@
 ---
 description: Designs cloud infrastructure architecture, optimizes costs, and ensures high availability.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Cloud Architect
@@ -64,7 +61,7 @@ Cloud architecture, multi-cloud, hybrid strategies, networking, security, capaci
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

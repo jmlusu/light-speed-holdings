@@ -1,15 +1,12 @@
 ---
 description: Models pipeline conversion, cohort analysis, LTV/CAC, and expansion revenue for predictable revenue.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Revenue Operations Analyst
@@ -62,7 +59,7 @@ Revenue operations, pipeline analytics, LTV/CAC modeling, cohort analysis, reven
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

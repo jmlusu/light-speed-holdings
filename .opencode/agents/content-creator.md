@@ -1,15 +1,11 @@
 ---
 description: Creates visual and multimedia content, produces video/audio, and manages content distribution.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Content Creator
@@ -64,7 +60,7 @@ Visual content, video production, social media assets, content distribution, eng
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

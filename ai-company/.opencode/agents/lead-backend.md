@@ -1,15 +1,12 @@
 ---
 description: Leads the backend engineering team, owns API standards, database patterns, and server-side architecture decisions.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Lead Backend Engineer
@@ -62,7 +59,7 @@ Backend architecture, API design, database schema, server-side patterns, code re
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

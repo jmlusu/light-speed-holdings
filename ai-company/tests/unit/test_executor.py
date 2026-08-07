@@ -72,6 +72,63 @@ class TestSpecParser:
         assert "PRIORITY: HIGH" in prompt
         assert "Build a REST API" in prompt
 
+    def test_parse_v2_permission_only(self, tmp_path: Path) -> None:
+        """A v2 spec with only a `permission` block (no `tools`) must still
+        derive the executor's allowed-tool list."""
+        spec = """\
+---
+description: OpenCode v2 style spec, no tools key.
+mode: subagent
+permission:
+  read: allow
+  edit: allow
+  bash: allow
+  task: allow
+---
+
+# Test
+
+## Identity
+
+Type: Specialist
+
+Department: Engineering
+
+Reports To: cto
+
+---
+
+## Mission
+
+Derive tools from the permission block.
+
+---
+
+## Responsibilities
+
+- Derive tools
+- Keep prompts working
+
+---
+
+## Operating Guidelines
+
+Stay precise.
+"""
+        agents_dir = tmp_path / ".opencode" / "agents"
+        agents_dir.mkdir(parents=True)
+        (agents_dir / "co-agent.md").write_text(spec, encoding="utf-8")
+
+        ctx = parse_agent_spec("co-agent", str(agents_dir))
+        assert ctx.name == "co-agent"
+        assert ctx.type == "Specialist"
+        assert "read" in ctx.tools
+        assert "write" in ctx.tools  # edit -> write
+        assert "execute" in ctx.tools  # bash -> execute
+        assert "delegate" in ctx.tools  # task -> delegate
+        assert "tools" not in ctx.permission
+        assert "ALLOWED TOOLS:" in build_system_prompt(ctx)
+
 
 # ── Tool Runner ─────────────────────────────────────────────────────
 

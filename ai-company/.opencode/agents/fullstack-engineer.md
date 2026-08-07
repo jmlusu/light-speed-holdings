@@ -1,15 +1,12 @@
 ---
 description: Builds end-to-end features across frontend and backend, implements APIs, and writes tests.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Full Stack Engineer
@@ -64,7 +61,7 @@ Full-stack development, REST/GraphQL APIs, frontend/backend integration, testing
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

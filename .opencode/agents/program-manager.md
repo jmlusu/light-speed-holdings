@@ -1,15 +1,12 @@
 ---
 description: Coordinates cross-functional projects and manages dependencies between CTO, CAIO, and COO teams during execution.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Program Manager
@@ -62,7 +59,7 @@ Program management, cross-functional coordination, dependency tracking, risk mit
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

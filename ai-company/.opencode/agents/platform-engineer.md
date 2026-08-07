@@ -1,15 +1,12 @@
 ---
 description: Builds and maintains the Internal Developer Platform, CI/CD tooling, local dev environments, and developer experience tooling.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Platform Engineer
@@ -62,7 +59,7 @@ Internal Developer Platform, CI/CD, local dev, developer experience, infrastruct
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

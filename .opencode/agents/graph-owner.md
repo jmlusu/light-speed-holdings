@@ -1,15 +1,12 @@
 ---
 description: Owns the graph engine, its 4 graph types, and BFS pathfinding.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Graph Owner
@@ -58,7 +55,7 @@ Org charts, decision graphs, workflow graphs, knowledge graphs, BFS.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

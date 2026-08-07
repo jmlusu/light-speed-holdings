@@ -1,15 +1,11 @@
 ---
 description: Owns information architecture, interaction design, visual systems, and design-to-code handoff for dashboard and CLI.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Product Designer
@@ -62,7 +58,7 @@ Interaction design, information architecture, visual design, design systems, pro
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

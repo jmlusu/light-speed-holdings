@@ -1,15 +1,11 @@
 ---
 description: Owns the legal service module and legal SOP.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Legal Owner
@@ -58,7 +54,7 @@ Contract review, regulatory mapping, IP and compliance tracking.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 
