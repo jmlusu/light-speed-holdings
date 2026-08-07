@@ -4,10 +4,11 @@
 
 ## Last Updated
 
-2026-07-22
+2026-08-07
 
 ## Current State
 
+- **CEO Dashboard Operationalization Plan**: Sprint 1 + Sprint 2 complete, Sprint 3 item 1 (per-agent performance, model usage, error analysis) complete. See `docs/CEO-DASHBOARD-OPERATIONALIZATION-PLAN.md`. Latest work (2026-08-07): SQLite-first agent performance analytics API (`/api/agents/performance`, `/api/agents/{name}/performance`) wired through `AgentPerformanceAnalytics`, plus a fix for the `/agents/{name}` route shadowing that made `/api/agents/performance` return 404. 1494 tests passing.
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
 - **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
 - **Sprint 3 Complete**: All 8 Sprint 3 items done — gap closure (GAP-014, GAP-015), E2E pipeline test, WebSocket tests, governance CLI, memory CLI, dashboard API tests, org chart test rewrite. 1205 tests passing. v0.3.0 release tagged 2026-07-22.
@@ -39,7 +40,7 @@
 - **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
-- **Tests**: 1205 tests passing (0 failures) — all green as of 2026-07-22.
+- **Tests**: 1494 tests passing (53 skipped, 0 failures) — all green as of 2026-08-07.
 
 ## Organization Expansion (2026-07-21)
 
@@ -62,9 +63,9 @@
 
 ## Code Quality
 
-- **ruff**: ✅ Clean (0 errors) — as of 2026-07-22.
-- **mypy**: ✅ Clean (0 errors, 164 files) — as of 2026-07-22.
-- **pytest**: ✅ 1205 tests passing (0 failures) — as of 2026-07-22.
+- **ruff**: ✅ Clean (0 errors) — as of 2026-08-07.
+- **mypy**: ✅ Clean (0 errors, 177 files) — as of 2026-08-07.
+- **pytest**: ✅ 1494 tests passing (53 skipped) — as of 2026-08-07.
 - **Dead code**: Removed 5 one-time bootstrap scripts
 
 ## Documentation
@@ -100,6 +101,7 @@
 
 ## Recent Work
 
+- **2026-08-07**: CEO Dashboard Operationalization Plan — Sprint 2 shipped (SQLite-first KPI collectors + periodic snapshot scheduler, commit `a36be37`), CI basetemp fix landed (`ec5d8d7`, first-ever green CI run), Sprint 3 item 1 shipped (`fb1266e`): `dashboard/data_service.py` gained `get_agent_performance_report()` / `get_agent_performance_summary()` read-through accessors over `AgentPerformanceAnalytics`; `GET /api/agents/performance` now returns `leaderboard`, `model_usage`, `task_durations`, and `error_analysis` (SQLite-first with file fallback, `source` field); new `GET /api/agents/{name}/performance` endpoint; fixed `/agents/{name}` route shadowing that made `/api/agents/performance` 404. 12 new tests. 1494 tests passing.
 - **2026-07-22**: Sprint 3 COMPLETE — all 8 items done. Fixed test_org_chart.py (832 lines rewritten, 56 tests passing). Fixed DataTransformer.registry_to_enhanced() frozen model bug. Created governance CLI (7 commands, 9 tests). Enhanced memory CLI (stats/search/recall). Created WebSocket integration tests (30 tests). Created dashboard API tests (9 tests). Total: 1205 tests passing, 0 ruff errors. v0.3.0 release tagged. **Agent deployment**: All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@`.
 - **2026-07-21**: Sprint 3 backlog created (docs/SPRINT-3-BACKLOG.md). Code audit reveals ~60% of planned Sprint 3 items already implemented in source. Revised scope: 8 items, 22 hours effort. Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
 - **2026-07-20**: Sprint 1 completed. All Track B (code hardening) and Track C (audit trail) items done. Sprint 2 backlog created. All documentation updated to reflect actual state.

@@ -1,6 +1,6 @@
 # CEO Dashboard — Operationalization Plan
 
-Status: **Plan approved — Sprint 1 complete**
+Status: **Plan approved — Sprint 2 complete, Sprint 3 item 1 complete**
 Author: Jack Mlusu
 Updated: 2026-08-07
 
@@ -146,3 +146,22 @@ Real operational data available today:
 - [x] Unit tests cover interval gating, disable, reset, no-database, and
       store-to-SQLite behaviour; gates green (`ruff check src/`, `mypy src/`,
       `pytest`).
+
+## 10. Definition of Done (Sprint 3, Item 1 — per-agent performance, model usage, error analysis)
+
+- [x] `dashboard/data_service.py` exposes `get_agent_performance_report()` and
+      `get_agent_performance_summary()` — SQLite-first read-through accessors
+      wrapping `AgentPerformanceAnalytics`, returning `None` when empty so
+      callers fall back to files.
+- [x] `GET /api/agents/performance` returns `leaderboard`, `model_usage`,
+      `task_durations`, and `error_analysis` alongside the legacy
+      registry-based `agents` list, with a `source` field (`sqlite` | `files`).
+- [x] `GET /api/agents/{name}/performance` returns a single agent's full summary
+      (tasks, completion/error rates, tool usage, cost, audit events).
+- [x] The `/agents/{name}` route shadowing that made `/api/agents/performance`
+      return 404 is fixed — the performance routes register before the dynamic
+      `/agents/{name}` route.
+- [x] File-derived fallbacks mirror the `full_report` shape so the endpoints
+      never render blank before a backfill has run.
+- [x] Unit/integration tests cover both the SQLite and file-fallback paths;
+      gates green (`ruff check src/`, `mypy src/`, `pytest`).
