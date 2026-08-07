@@ -196,7 +196,7 @@ class AgentGenerator:
             rendered = template.render(company=company_name, **agent)
             safe_id = agent["id"].replace("_", "-")
             out_file = self.output_dir / f"{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8")
+            out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
             logger.debug("Wrote: %s (type=%s)", out_file, agent_type)
 
@@ -227,7 +227,7 @@ class AgentGenerator:
             )
             safe_id = ex.id.replace("_", "-")
             out_file = self.output_dir / f"{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8")
+            out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
 
         # Generate department agents
@@ -246,7 +246,7 @@ class AgentGenerator:
             )
             safe_id = dept.id.replace("_", "-")
             out_file = self.output_dir / f"dept-{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8")
+            out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
 
         # Generate specialist agents
@@ -268,7 +268,7 @@ class AgentGenerator:
             )
             safe_id = spec.id.replace("_", "-")
             out_file = self.output_dir / f"spec-{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8")
+            out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
 
         # Generate board member agents
@@ -288,7 +288,7 @@ class AgentGenerator:
             )
             safe_id = bm.id.replace("_", "-")
             out_file = self.output_dir / f"board-{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8")
+            out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
 
         logger.info("Generated %d agent files from registry.", len(generated))
