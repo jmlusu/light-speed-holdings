@@ -1,15 +1,11 @@
 ---
 description: Owns the SOP library and RACI matrices as a continuous documentation checklist.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # SOP Owner
@@ -60,7 +56,7 @@ Standard operating procedures, RACI matrices, documentation lifecycle.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

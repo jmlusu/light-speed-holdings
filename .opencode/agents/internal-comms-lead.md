@@ -1,15 +1,11 @@
 ---
 description: Coordinates cross-team communications, strategic messaging, and change management during pivots and launches.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Internal Communications Lead
@@ -62,7 +58,7 @@ Internal communications, change management, strategic messaging, alignment.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

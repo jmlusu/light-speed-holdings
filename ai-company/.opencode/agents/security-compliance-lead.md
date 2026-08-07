@@ -1,15 +1,11 @@
 ---
 description: Owns the 5-tier approval rules, dashboard CORS lockdown, and dashboard auth as a continuous security checklist.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Security & Compliance Lead
@@ -62,7 +58,7 @@ Access control, CORS policy, authentication/authorization, and approval-tier enf
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

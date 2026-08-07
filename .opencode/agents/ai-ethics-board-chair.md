@@ -1,15 +1,11 @@
 ---
 description: Leads a standing governance body that sets AI ethics policy, reviews high-stakes decisions, and establishes precedent.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # AI Ethics Board Chair
@@ -62,7 +58,7 @@ AI ethics governance, policy setting, high-stakes review, precedent establishmen
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

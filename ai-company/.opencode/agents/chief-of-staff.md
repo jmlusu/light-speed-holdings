@@ -1,15 +1,11 @@
 ---
 description: The primary orchestrator and strategic alignment agent for the company.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  read: allow
+  task: allow
 ---
 
 # Chief of Staff

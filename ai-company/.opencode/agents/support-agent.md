@@ -1,15 +1,12 @@
 ---
 description: Handles customer support tickets, maintains knowledge base, and escalates issues to engineering.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: true
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  websearch: allow
 ---
 
 # Support Agent
@@ -64,7 +61,7 @@ Customer support, ticket management, knowledge base, escalation workflows.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `websearch`
 

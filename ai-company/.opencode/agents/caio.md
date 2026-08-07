@@ -1,15 +1,11 @@
 ---
 description: Directs AI research, model selection, and prompt engineering strategies.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Chief AI Officer

@@ -1,15 +1,12 @@
 ---
 description: Formalizes BC/DR beyond backup.ps1 with resilience testing, incident response playbooks, and failover procedures.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Business Continuity Manager
@@ -62,7 +59,7 @@ Business continuity, disaster recovery, resilience testing, failover, incident r
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

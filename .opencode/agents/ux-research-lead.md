@@ -1,15 +1,11 @@
 ---
 description: Owns user research capability, validating product decisions, feature prioritization, and onboarding flows through systematic user insight.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # UX Research Lead
@@ -62,7 +58,7 @@ User research, usability testing, user interviews, survey design, persona develo
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

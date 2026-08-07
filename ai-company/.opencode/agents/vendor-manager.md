@@ -1,15 +1,11 @@
 ---
 description: Manages external AI/ML service providers, cloud infrastructure contracts, and SLA compliance.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Vendor Manager
@@ -62,7 +58,7 @@ Vendor management, contract negotiation, SLA monitoring, cost optimization, rela
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

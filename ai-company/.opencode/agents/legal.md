@@ -1,15 +1,9 @@
 ---
 description: Provides legal counsel on contracts, compliance, IP, and regulatory matters.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  read: allow
 ---
 
 # Legal Advisor

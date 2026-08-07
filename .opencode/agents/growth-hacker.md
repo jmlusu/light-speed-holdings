@@ -1,15 +1,12 @@
 ---
 description: Designs and executes growth experiments, analyzes funnels, and optimizes conversion rates.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: true
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  websearch: allow
 ---
 
 # Growth Hacker
@@ -64,7 +61,7 @@ Growth experiments, acquisition funnels, A/B testing, conversion optimization, r
 
 - `read`
 
-- `write`
+- `edit`
 
 - `websearch`
 

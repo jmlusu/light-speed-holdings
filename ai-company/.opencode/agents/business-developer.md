@@ -1,15 +1,12 @@
 ---
 description: Identifies business opportunities, develops partnerships, and manages the sales pipeline.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: true
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  websearch: allow
 ---
 
 # Business Developer
@@ -64,7 +61,7 @@ Business development, partnerships, market research, pipeline management, contra
 
 - `read`
 
-- `write`
+- `edit`
 
 - `websearch`
 

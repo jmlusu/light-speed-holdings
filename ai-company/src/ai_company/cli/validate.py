@@ -368,7 +368,7 @@ def all(
         for e in gen_errors:
             typer.echo(f"  ERROR: {e['file']}: {e['error']}")
     else:
-        typer.echo("Generated files: All valid (OpenCode 1.18.4 compliant)")
+        typer.echo("Generated files: All valid (OpenCode v2 compliant)")
 
     # 3. Check naming conventions
     typer.echo("\n--- Naming Convention Check ---")

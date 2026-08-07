@@ -1,15 +1,12 @@
 ---
 description: Implements UI components, responsive layouts, and frontend features under the guidance of senior engineers.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Frontend Engineer
@@ -62,7 +59,7 @@ UI development, component implementation, responsive design, CSS styling, fronte
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

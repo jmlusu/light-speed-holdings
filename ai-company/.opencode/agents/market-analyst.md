@@ -1,15 +1,12 @@
 ---
 description: Analyzes industry trends, competitive landscape, and market data to inform strategy.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: true
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  websearch: allow
 ---
 
 # Market Analyst
@@ -64,7 +61,7 @@ Market analysis, competitive intelligence, trend forecasting, market sizing, pri
 
 - `read`
 
-- `write`
+- `edit`
 
 - `websearch`
 

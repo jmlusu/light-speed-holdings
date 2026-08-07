@@ -1,15 +1,11 @@
 ---
 description: Owns user-facing documentation, API reference, tutorials, and the developer getting-started journey.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Technical Documentation Lead
@@ -62,7 +58,7 @@ Technical writing, API documentation, tutorial creation, developer onboarding.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

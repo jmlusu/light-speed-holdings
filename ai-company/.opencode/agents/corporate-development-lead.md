@@ -1,15 +1,12 @@
 ---
 description: Evaluates M&A targets, acqui-hire candidates, and build-vs-buy decisions for strategic growth.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Corporate Development Lead
@@ -62,7 +59,7 @@ Corporate development, M&A evaluation, acqui-hire, build-vs-buy analysis, strate
 
 - `read`
 
-- `write`
+- `edit`
 
 - `webfetch`
 

@@ -1,15 +1,12 @@
 ---
 description: Runs adversarial probing against agents including prompt injection, jailbreaks, goal misalignment, and data exfiltration.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Red Team Engineer
@@ -62,7 +59,7 @@ Adversarial testing, prompt injection, jailbreak detection, goal hijacking, data
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

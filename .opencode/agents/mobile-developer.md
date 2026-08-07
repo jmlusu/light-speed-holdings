@@ -1,15 +1,12 @@
 ---
 description: Develops mobile applications for iOS and Android, integrates backend APIs, and manages app store submissions.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Mobile Developer
@@ -64,7 +61,7 @@ iOS, Android, mobile CI/CD, app store management, offline sync.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

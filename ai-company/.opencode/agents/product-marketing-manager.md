@@ -1,15 +1,12 @@
 ---
 description: Owns product positioning, competitive differentiation, messaging, go-to-market pricing, and analyst-facing materials.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Product Marketing Manager
@@ -62,7 +59,7 @@ Product positioning, competitive analysis, messaging, go-to-market strategy, pri
 
 - `read`
 
-- `write`
+- `edit`
 
 - `webfetch`
 

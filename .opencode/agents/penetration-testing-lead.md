@@ -1,15 +1,12 @@
 ---
 description: Owns offensive security testing, vulnerability discovery, and adversarial probing of all system components.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Penetration Testing Lead
@@ -62,7 +59,7 @@ Penetration testing, vulnerability assessment, offensive security, red team oper
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

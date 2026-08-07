@@ -1,15 +1,12 @@
 ---
 description: Measures and optimizes how developers feel using the product — error messages, CLI ergonomics, onboarding friction.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Developer Experience Engineer
@@ -62,7 +59,7 @@ Developer experience, CLI ergonomics, error messages, onboarding, tooling qualit
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

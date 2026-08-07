@@ -20,7 +20,7 @@ from __future__ import annotations
 import asyncio
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import pytest
 
@@ -40,6 +40,17 @@ from ai_company.orchestrator.message_bus import MessageBus
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+
+async def _wait_until(predicate: Callable[[], bool], timeout: float = 1.0) -> bool:
+    """Poll *predicate* until it returns True or *timeout* seconds elapse."""
+    loop = asyncio.get_running_loop()
+    deadline = loop.time() + timeout
+    while not predicate():
+        if loop.time() >= deadline:
+            return False
+        await asyncio.sleep(0.01)
+    return True
 
 
 class RecordingWebSocket:
@@ -747,7 +758,7 @@ class TestSyncAsyncBridge:
             async def _run() -> None:
                 cb({"id": "bridge-1", "status": "completed"}, "created")
                 # Allow the scheduled task to execute
-                await asyncio.sleep(0.05)
+                assert await _wait_until(lambda: len(ws.sent) == 1)
 
             asyncio.new_event_loop().run_until_complete(_run())
 
@@ -802,7 +813,7 @@ class TestEndToEndPipeline:
             )
             bus.send_task(task)
             # Allow the scheduled broadcast task to run
-            await asyncio.sleep(0.1)
+            assert await _wait_until(lambda: len(ws_client.sent) >= 1)
 
             assert len(ws_client.sent) >= 1
             # The first message from the connect is NOT the connected hello
@@ -838,10 +849,22 @@ class TestEndToEndPipeline:
 
             task = Task(id="e2e-2", sender_id="a", receiver_id="b", instruction="test")
             bus.send_task(task)
-            await asyncio.sleep(0.05)
+            assert await _wait_until(
+                lambda: any(
+                    json.loads(m).get("event") == "created"
+                    for m in ws_client.sent
+                    if json.loads(m).get("type") == "task_update"
+                )
+            )
 
             bus.update_task_status("e2e-2", "completed", result="passed")
-            await asyncio.sleep(0.1)
+            assert await _wait_until(
+                lambda: any(
+                    json.loads(m).get("event") == "completed"
+                    for m in ws_client.sent
+                    if json.loads(m).get("type") == "task_update"
+                )
+            )
 
             task_msgs = [
                 json.loads(m) for m in ws_client.sent if json.loads(m).get("type") == "task_update"
@@ -880,7 +903,7 @@ class TestEndToEndPipeline:
 
             task = Task(id="e2e-3", sender_id="a", receiver_id="b", instruction="filter")
             bus.send_task(task)
-            await asyncio.sleep(0.1)
+            assert await _wait_until(lambda: len(task_ws.sent) >= 1)
 
             task_events = [
                 json.loads(m) for m in task_ws.sent if json.loads(m).get("type") == "task_update"
@@ -916,7 +939,7 @@ class TestEndToEndPipeline:
 
             task = Task(id="e2e-multi", sender_id="a", receiver_id="b", instruction="all")
             bus.send_task(task)
-            await asyncio.sleep(0.1)
+            assert await _wait_until(lambda: all(len(ws.sent) >= 1 for ws in clients))
 
             for ws in clients:
                 task_msgs = [
@@ -953,7 +976,7 @@ class TestEndToEndPipeline:
             # Should not raise despite dead client
             task = Task(id="e2e-dead", sender_id="a", receiver_id="b", instruction="fail")
             bus.send_task(task)
-            await asyncio.sleep(0.1)
+            assert await _wait_until(lambda: len(good.sent) >= 1)
 
             # Good client received the event
             task_msgs = [

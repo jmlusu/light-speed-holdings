@@ -1,15 +1,12 @@
 ---
 description: Writes blog posts, articles, product copy, and maintains the content calendar.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: true
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  websearch: allow
 ---
 
 # Content Writer
@@ -64,7 +61,7 @@ Content writing, SEO, editorial planning, brand voice, case studies.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `websearch`
 

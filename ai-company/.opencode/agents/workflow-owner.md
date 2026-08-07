@@ -1,15 +1,12 @@
 ---
 description: Owns the workflow engine, its 9 workflow definitions, step tracking, and SLA monitoring.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Workflow Owner
@@ -60,7 +57,7 @@ Workflow DAGs, step state machines, SLA budgeting and alerting.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

@@ -1,15 +1,12 @@
 ---
 description: Owns the sales service module, pipeline models, and sales SOP.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Sales Owner
@@ -58,7 +55,7 @@ Pipeline modeling, lead scoring, revenue forecasting, CRM sync.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

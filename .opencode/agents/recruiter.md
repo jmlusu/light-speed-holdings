@@ -1,15 +1,11 @@
 ---
 description: Sources candidates, manages recruitment lifecycle, and improves employer branding.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Recruiter
@@ -64,7 +60,7 @@ Talent sourcing, candidate screening, interview coordination, employer branding,
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

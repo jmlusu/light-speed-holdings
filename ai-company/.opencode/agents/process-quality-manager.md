@@ -1,15 +1,12 @@
 ---
 description: Implements continuous improvement frameworks (Lean/Kaizen) for internal processes and efficiency metrics.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Process Quality Manager
@@ -62,7 +59,7 @@ Process quality, Lean, Kaizen, continuous improvement, efficiency metrics, waste
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

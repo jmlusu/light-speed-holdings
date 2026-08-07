@@ -1,15 +1,12 @@
 ---
 description: Integrates security into the CI/CD pipeline, implementing shift-left security practices and automated security testing.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # DevSecOps Lead
@@ -62,7 +59,7 @@ DevSecOps, shift-left security, SAST/DAST, dependency scanning, container securi
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

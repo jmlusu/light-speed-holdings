@@ -1,15 +1,12 @@
 ---
 description: Owns the registry loader, parser, resolver, and validator across the 19 YAML configs.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Registry Owner
@@ -58,7 +55,7 @@ YAML parsing, schema validation, reference resolution, config loading.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

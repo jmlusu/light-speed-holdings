@@ -1,15 +1,8 @@
 ---
 description: Advises the board on technology architecture, AI strategy, and engineering health.
 mode: subagent
-tools:
-  write: false
-  edit: false
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  read: allow
 ---
 
 # Technology Committee Chair

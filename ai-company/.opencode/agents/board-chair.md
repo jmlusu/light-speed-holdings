@@ -1,15 +1,8 @@
 ---
 description: Presides over all board meetings, sets agendas, and ensures governance standards are upheld.
 mode: subagent
-tools:
-  write: false
-  edit: false
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  read: allow
 ---
 
 # Board Chair
@@ -20,7 +13,7 @@ Type: Board Advisor (Advisor)
 
 Department: Board
 
-Reports To: 
+Reports To:
 
 
 

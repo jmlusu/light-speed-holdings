@@ -1,15 +1,12 @@
 ---
 description: Implements API endpoints, database logic, and server-side features under the guidance of senior engineers.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Backend Engineer
@@ -62,7 +59,7 @@ API development, database design, server-side logic, backend testing, data model
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

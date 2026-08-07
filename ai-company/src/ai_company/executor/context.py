@@ -29,6 +29,57 @@ class AgentContext:
     operating_principles: list[str] = field(default_factory=list)
 
 
+# Reverse map of OpenCode v2 permission keys -> internal executor tool names.
+_PERMISSION_TO_TOOLS: dict[str, list[str]] = {
+    "read": ["read"],
+    "edit": ["write"],
+    "bash": ["execute", "code_interpreter"],
+    "grep": ["grep"],
+    "list": ["list"],
+    "task": ["delegate"],
+    "webfetch": ["web_search"],
+    "websearch": ["websearch"],
+    "question": ["question"],
+    "code_interpreter": ["code_interpreter"],
+}
+
+
+def _derive_tools(frontmatter: dict) -> list[str]:
+    """Build the executor tool list from an agent spec's frontmatter.
+
+    OpenCode v2 files express tool access via a ``permission`` block (tool ->
+    allow/ask/deny) and omit the legacy ``tools`` list. The executor's prompts
+    need the internal tool vocabulary, so we prefer a legacy ``tools`` list when
+    present, otherwise derive tools from the ``permission`` block.
+    """
+    legacy_tools = frontmatter.get("tools")
+    if isinstance(legacy_tools, list) and legacy_tools:
+        return [str(t) for t in legacy_tools]
+
+    permission = frontmatter.get("permission")
+    if not isinstance(permission, dict):
+        return []
+
+    tools: list[str] = []
+    seen: set[str] = set()
+    for key in sorted(permission):
+        if permission[key] not in ("allow", "ask"):
+            continue
+        for tool in _PERMISSION_TO_TOOLS.get(key, [key]):
+            if tool not in seen:
+                seen.add(tool)
+                tools.append(tool)
+    return tools
+
+
+def _derive_permission_str(frontmatter: dict) -> str:
+    permission = frontmatter.get("permission", "")
+    if isinstance(permission, dict):
+        allowed = sorted(k for k, v in permission.items() if v in ("allow", "ask"))
+        return ", ".join(allowed) if allowed else ""
+    return str(permission) if permission is not None else ""
+
+
 def parse_agent_spec(agent_name: str, agents_dir: str = ".opencode/agents") -> AgentContext:
     """Parse an agent's .md spec card into an AgentContext.
 
@@ -93,8 +144,8 @@ def parse_agent_spec(agent_name: str, agents_dir: str = ".opencode/agents") -> A
         mission=sections.get("mission", "").strip(),
         responsibilities=responsibilities,
         guidelines=sections.get("operating guidelines", "").strip(),
-        tools=frontmatter.get("tools", []),
-        permission=frontmatter.get("permission", ""),
+        tools=_derive_tools(frontmatter),
+        permission=_derive_permission_str(frontmatter),
         description=frontmatter.get("description", ""),
         success_metrics=success_metrics,
         operating_principles=operating_principles,

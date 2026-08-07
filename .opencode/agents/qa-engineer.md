@@ -1,15 +1,12 @@
 ---
 description: Ensures software quality through testing strategies, automation, and quality gates.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # QA Engineer
@@ -64,7 +61,7 @@ Testing strategies, test automation, quality gates, defect triage, regression te
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

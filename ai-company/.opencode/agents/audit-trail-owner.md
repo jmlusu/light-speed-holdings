@@ -1,15 +1,11 @@
 ---
 description: Owns the audit trail package, event schema integrity, retention policy, and executor integration hooks.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Audit Trail Owner
@@ -60,7 +56,7 @@ Event sourcing, immutable audit logs, JSONL append semantics.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

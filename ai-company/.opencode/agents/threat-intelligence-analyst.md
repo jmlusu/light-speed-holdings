@@ -1,15 +1,12 @@
 ---
 description: Monitors threats targeting AI companies including LLM vulnerabilities, compromised packages, and attacks on similar tooling.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Threat Intelligence Analyst
@@ -62,7 +59,7 @@ Threat intelligence, AI threat landscape, vulnerability monitoring, threat feeds
 
 - `read`
 
-- `write`
+- `edit`
 
 - `webfetch`
 

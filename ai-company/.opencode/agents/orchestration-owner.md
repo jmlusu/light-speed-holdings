@@ -1,15 +1,12 @@
 ---
 description: Owns the MessageBus task queue and the executor loop lifecycle.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Orchestration Owner
@@ -60,7 +57,7 @@ Task queues, inbox polling, executor scheduling, dead-letter lifecycle.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

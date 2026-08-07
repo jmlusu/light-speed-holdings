@@ -1,15 +1,12 @@
 ---
 description: Manages relationships with Gartner, Forrester, IDC, and niche AI analysts for market visibility.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Industry Analyst Relations Manager
@@ -62,7 +59,7 @@ Analyst relations, Gartner, Forrester, IDC, market visibility, analyst briefings
 
 - `read`
 
-- `write`
+- `edit`
 
 - `webfetch`
 

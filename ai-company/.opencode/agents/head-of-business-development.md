@@ -1,15 +1,12 @@
 ---
 description: Owns outbound partnerships, ecosystem alliances, integration deals, and channel strategy for distribution.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Head of Business Development
@@ -62,7 +59,7 @@ Partnership development, ecosystem strategy, integration partnerships, channel s
 
 - `read`
 
-- `write`
+- `edit`
 
 - `webfetch`
 

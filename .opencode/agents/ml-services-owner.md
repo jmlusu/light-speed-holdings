@@ -1,15 +1,12 @@
 ---
 description: Owns the ML module and model evaluation pipelines.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # ML Services Owner
@@ -58,7 +55,7 @@ Model evaluation, embedding pipelines, inference cost, benchmark suites.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 

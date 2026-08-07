@@ -1,15 +1,11 @@
 ---
 description: Owns the decision engine, 5-tier approval matrix, risk assessment, and decision-tree navigation.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Decision Engine Owner
@@ -60,7 +56,7 @@ Approval matrices, risk scoring, decision trees, gating logic.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `grep`
 

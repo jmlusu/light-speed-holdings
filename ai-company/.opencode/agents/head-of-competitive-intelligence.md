@@ -1,15 +1,12 @@
 ---
 description: Systematically tracks competitor moves, pricing shifts, patent filings, funding rounds, and analyst reports.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: true
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
+  webfetch: allow
 ---
 
 # Head of Competitive Intelligence
@@ -62,7 +59,7 @@ Competitive analysis, market intelligence, patent monitoring, funding tracking, 
 
 - `read`
 
-- `write`
+- `edit`
 
 - `webfetch`
 

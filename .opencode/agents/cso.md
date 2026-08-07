@@ -1,15 +1,10 @@
 ---
 description: Drives corporate strategy, M&A, and market expansion.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: false
-  webfetch: false
-  websearch: true
-  read: true
-  grep: true
-  list: true
+permission:
+  edit: allow
+  read: allow
+  websearch: allow
 ---
 
 # Chief Strategy Officer

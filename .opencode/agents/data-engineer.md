@@ -1,15 +1,12 @@
 ---
 description: Designs and maintains data pipelines, ETL processes, data quality frameworks, and data catalogs across all departments.
 mode: subagent
-tools:
-  write: true
-  edit: true
-  bash: true
-  webfetch: false
-  websearch: false
-  read: true
-  grep: true
-  list: true
+permission:
+  bash: allow
+  edit: allow
+  grep: allow
+  list: allow
+  read: allow
 ---
 
 # Data Engineer
@@ -62,7 +59,7 @@ Pipeline orchestration, data quality, ETL, data catalogs, warehouse management.
 
 - `read`
 
-- `write`
+- `edit`
 
 - `bash`
 
