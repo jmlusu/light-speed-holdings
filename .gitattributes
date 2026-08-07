@@ -1,0 +1,7 @@
+# Generated OpenCode agent files must always be stored as LF, regardless of
+# the host OS that runs the generator. This is a second line of defense
+# behind the `newline="\n"` fix in AgentGenerator.write_text().
+/.opencode/agents/*.md            text eol=lf
+/.opencod/agents/*.md             text eol=lf
+/ai-company/.opencod/agents/*.md  text eol=lf
+/ai-company/.opencode/agents/*.md  text eol=lf
