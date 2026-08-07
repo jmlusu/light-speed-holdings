@@ -8,7 +8,7 @@
 
 ## Current State
 
-- **CEO Dashboard Operationalization Plan**: Sprint 1 + Sprint 2 complete, Sprint 3 items 1-2 complete. See `docs/CEO-DASHBOARD-OPERATIONALIZATION-PLAN.md`. Latest work (2026-08-07): company-level KPIs vs targets surfaced on the dashboard from live telemetry (`get_company_kpi_summary` in `dashboard/data_service.py` + enriched `GET /api/company-kpis`), replacing the static `current:` values in `config/company/kpis.yaml`. 1501 tests passing.
+- **CEO Dashboard Operationalization Plan**: Sprint 3 complete (items 1-3). See `docs/CEO-DASHBOARD-OPERATIONALIZATION-PLAN.md`. Latest work (2026-08-07): data retention / governance engine wired end-to-end — `run_retention()` + `GovernanceScheduler` in `data/governance.py` (batched archive fix, rowid anonymize fix), daemon enforcement via `--governance-interval`, and `GET /api/governance` report endpoint. 1526 tests passing.
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
 - **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
 - **Sprint 3 Complete**: All 8 Sprint 3 items done — gap closure (GAP-014, GAP-015), E2E pipeline test, WebSocket tests, governance CLI, memory CLI, dashboard API tests, org chart test rewrite. 1205 tests passing. v0.3.0 release tagged 2026-07-22.
@@ -40,7 +40,7 @@
 - **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
-- **Tests**: 1501 tests passing (53 skipped, 0 failures) — all green as of 2026-08-07.
+- **Tests**: 1526 tests passing (53 skipped, 0 failures) — all green as of 2026-08-07.
 
 ## Organization Expansion (2026-07-21)
 
@@ -101,6 +101,7 @@
 
 ## Recent Work
 
+- **2026-08-07**: CEO Dashboard Operationalization Plan — Sprint 3 item 3 shipped (`550b11b`): data retention / governance engine end-to-end — `run_retention()` + `GovernanceScheduler` in `data/governance.py` with batched archive (fixed latent bug: each batch appended then only that batch deleted) and rowid-based anonymize (fixed latent bug: `agent_id` + `content` hashed). `ExecutorDaemon` gains `--governance-interval` enforcement; `GET /api/governance` endpoint returns full report (`available`, `tables`, `owners`, `policies`). 8 real-DB tests (`test_governance_engine.py`). CI green: ruff/mypy/pytest (1526 passing).
 - **2026-08-07**: CEO Dashboard Operationalization Plan — Sprint 3 item 2 shipped (`9a5a244`): `get_company_kpi_summary()` read-through accessor computes company KPIs vs targets from real telemetry — Build Success Rate (KPI-004) and Agent Utilization (KPI-003) computed from the task window (SQLite-first, inbox fallback); ARR/CSAT/eNPS report configured values. `GET /api/company-kpis` returns the full summary shape (`collected_at`, `period_days`, `kpis[]` with `status/gap/computed/source`, `summary`). Frontend gained a "Company KPIs vs Targets" card grid + Current-vs-Target chart, and department KPI cards now merge live telemetry instead of rendering "undefined". 7 new tests (`tests/unit/test_company_kpis.py`). 1501 tests passing.
 - **2026-07-22**: Sprint 3 COMPLETE — all 8 items done. Fixed test_org_chart.py (832 lines rewritten, 56 tests passing). Fixed DataTransformer.registry_to_enhanced() frozen model bug. Created governance CLI (7 commands, 9 tests). Enhanced memory CLI (stats/search/recall). Created WebSocket integration tests (30 tests). Created dashboard API tests (9 tests). Total: 1205 tests passing, 0 ruff errors. v0.3.0 release tagged. **Agent deployment**: All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@`.
 - **2026-07-21**: Sprint 3 backlog created (docs/SPRINT-3-BACKLOG.md). Code audit reveals ~60% of planned Sprint 3 items already implemented in source. Revised scope: 8 items, 22 hours effort. Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
@@ -115,7 +116,7 @@
 |--------|--------|-------|-------|
 | Sprint 1 | ✅ COMPLETE | — | Code hardening + audit trail |
 | Sprint 2 | ✅ COMPLETE | 1093 passing | 13 items — all Done |
-| Sprint 3 | ✅ COMPLETE | 1205 passing | 8 items — all Done |
+| Sprint 3 | ✅ COMPLETE | 1526 passing | 8 items — all Done |
 | Sprint 4 | 🔴 NOT STARTED | — | Quality & completeness |
 
 ## Remaining Work

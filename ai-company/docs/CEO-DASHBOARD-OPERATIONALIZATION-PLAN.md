@@ -1,6 +1,6 @@
 # CEO Dashboard — Operationalization Plan
 
-Status: **Plan approved — Sprint 2 complete, Sprint 3 items 1-2 complete**
+Status: **Plan approved — Sprint 3 complete (items 1-3)**
 Author: Jack Mlusu
 Updated: 2026-08-07
 
@@ -189,3 +189,36 @@ Real operational data available today:
       missing-config + window-filter + endpoint contract (7 new tests);
       gates green (`ruff check src/ tests/`, `mypy src/`, `pytest` —
       1501 passing).
+
+## 12. Definition of Done (Sprint 3, Item 3 — data retention / governance)
+
+- [x] Retention engine (`src/ai_company/data/governance.py`) enforces the
+      `PURGE` / `ARCHIVE` / `ANONYMIZE` policies per table with bounded
+      batches — the latent archive bug (deleting all past-cutoff rows after
+      archiving only the first `LIMIT 10000` batch) is fixed: each batch of
+      `_ARCHIVE_BATCH_SIZE` rows is appended to the JSON archive *before* only
+      that batch is deleted (chunked `rowid IN` deletes, `_ARCHIVE_DELETE_CHUNK_SIZE`
+      per clause, commit per batch, loop until empty). The anonymize path now
+      fetches `rowid AS _rowid` (previously `SELECT *` never returned rowid, so
+      `UPDATE ... WHERE rowid = ?` was a no-op) and hashes both `agent_id` and
+      `content` as `anon_` + sha256 hex[:12].
+- [x] Module runner `run_retention(database=None) -> dict[str, int]` and
+      `GovernanceScheduler(interval_seconds=DEFAULT_GOVERNANCE_INTERVAL_SECONDS
+      =86400.0, database=None)` with `run_due(now=None)` / `reset()`; best-effort
+      (returns `{}` when the database is unusable or on exception).
+- [x] Daemon enforcement: `ExecutorDaemon` gains `governance_interval`
+      (`_make_governance_scheduler` + `run_due()` in `_run_loop`, mirroring the
+      S2.3 KPI snapshot scheduler) and the executor CLI `start` command exposes
+      `--governance-interval` (0 disables); `DataGovernance` + `GovernanceScheduler`
+      exported from `ai_company.data`.
+- [x] `GET /api/governance` dashboard endpoint returns the full
+      `DataGovernance.governance_report()` shape (`available`, `generated_at`,
+      `tables`, `owners`, `policies`) — SQLite-first, `available=False` empty
+      shape when no database, never raises.
+- [x] Real-SQLite tests (`tests/unit/test_governance_engine.py`, 8 tests):
+      purge removes past-window rows and keeps fresh ones; archive exports and
+      removes *exactly* the batch (batch size forced to 2 with 5 old rows →
+      all 5 archived, no data loss); anonymize hashes agent_id + content;
+      governance report + compliance reflect seeded data; scheduler interval
+      gating / disabled / no-database; `GET /api/governance` endpoint. Gates
+      green (`ruff check src/ tests/`, `mypy src/`, `pytest` — 1526 passing).
