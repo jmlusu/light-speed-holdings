@@ -218,6 +218,109 @@ class TestLLMClient:
         assert result["result"] == "success"
         assert mock_provider.chat.call_count == 3
 
+    def test_execute_task_retries_cycle_providers(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """GAP-019: a retry after invalid JSON moves to the next provider, not provider 0 again."""
+        from types import SimpleNamespace
+
+        monkeypatch.chdir(tmp_path)
+        _setup_model_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.llm.client import LLMClient
+
+        client = LLMClient(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        )
+
+        good_response = json.dumps({"plan": [], "result": "success", "artifacts": []})
+        bad_provider = MagicMock(spec=LLMProvider)
+        bad_provider.is_available.return_value = True
+        bad_provider.chat.return_value = ChatResponse(
+            content="not json", model="big-pickle", provider="opencode"
+        )
+        good_provider = MagicMock(spec=LLMProvider)
+        good_provider.is_available.return_value = True
+        good_provider.chat.return_value = ChatResponse(
+            content=good_response, model="deepseek-chat", provider="deepseek"
+        )
+        client._providers = {
+            "opencode": bad_provider,
+            "deepseek": good_provider,
+            "ollama": bad_provider,
+        }
+
+        client.router.resolve = MagicMock(
+            return_value=SimpleNamespace(
+                tier="standard", provider="deepseek", model="deepseek-chat"
+            )
+        )
+        client.router.get_tier = MagicMock(
+            return_value=SimpleNamespace(
+                providers=[
+                    SimpleNamespace(provider="opencode", model="big-pickle"),
+                    SimpleNamespace(provider="deepseek", model="deepseek-chat"),
+                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                ]
+            )
+        )
+
+        result = client.execute_task("test-agent", "do something", max_retries=5)
+
+        assert result["result"] == "success"
+        # Attempt 0 hit provider 0 (opencode); the retry cycled to provider 1 (deepseek)
+        assert bad_provider.chat.call_count == 1
+        assert good_provider.chat.call_count == 1
+
+    def test_execute_task_round_robin_distribution(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """GAP-019: across N retries, calls are distributed evenly across the chain."""
+        from types import SimpleNamespace
+
+        monkeypatch.chdir(tmp_path)
+        _setup_model_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.llm.client import LLMClient
+
+        client = LLMClient(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        )
+
+        mocks = {pid: MagicMock(spec=LLMProvider) for pid in ("opencode", "deepseek", "ollama")}
+        for provider in mocks.values():
+            provider.is_available.return_value = True
+            provider.chat.return_value = ChatResponse(
+                content="not json", model="test", provider="mock"
+            )
+        client._providers = mocks
+
+        client.router.resolve = MagicMock(
+            return_value=SimpleNamespace(
+                tier="standard", provider="deepseek", model="deepseek-chat"
+            )
+        )
+        client.router.get_tier = MagicMock(
+            return_value=SimpleNamespace(
+                providers=[
+                    SimpleNamespace(provider="opencode", model="big-pickle"),
+                    SimpleNamespace(provider="deepseek", model="deepseek-chat"),
+                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                ]
+            )
+        )
+
+        with pytest.raises(LLMResponseError, match="6 attempts"):
+            client.execute_task("test-agent", "do something", max_retries=6)
+
+        # 6 attempts over a 3-provider chain == 2 calls per provider (round-robin)
+        for provider in mocks.values():
+            assert provider.chat.call_count == 2
+
 
 # ── Helpers ─────────────────────────────────────────────────────────
 

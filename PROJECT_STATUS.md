@@ -92,8 +92,8 @@ company-registry.yaml (127 agents, 18 departments)
 - Engineering: migrated to **uv** package manager (2026-08-06), ruff exception-handling rules applied, runtime/generated artifacts untracked, DevBootstrap provisioning added (new, uncommitted).
 
 ### Gap closure (ARCHITECTURE-GAPS.md — 20 gaps)
-- **RESOLVED (16):** GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020. GAP-001 closed 2026-08-07 — executor routes all inbox I/O through `MessageBus` (`loop.py:197,223,247,297,382,424`).
-- **PARTIAL (3):** GAP-005 (memory consolidation scheduler wired into the executor loop; cadence verification pending), GAP-011 (read paths still bypass MessageBus), GAP-018 (structured logging).
+- **RESOLVED (18):** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 020. GAP-005 closed 2026-08-07 — consolidation cadence verified (`test_consolidation.py`, 7 tests). GAP-011 closed 2026-08-07 — mobile_api/kpis/monitoring/data_service read via MessageBus. GAP-015 closed — retry cycling covered by `test_llm.py`.
+- **PARTIAL (1):** GAP-018 (structured logging).
 - **OPEN (1):** GAP-019 (agent spec validation).
 
 ---
@@ -156,14 +156,14 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 
 ## 5. Priorities
 
-1. **Commit/park in-flight work** — bootstrap feature (DevBootstrap + CLI + tests), workflow file moves, `daily-check.ps1` change. These are uncommitted and would be lost on any destructive operation.
-2. **Start Sprint 4 (quality & completeness)** — highest-value items: structured logging w/ correlation IDs, agent spec validation CLI, token counting. (Backlog: 48 items/267 pts.)
-3. **GAP-001 closed** (2026-08-07) — executor routes all inbox I/O through `MessageBus` (`loop.py:197,223,247,297,382,424`).
-4. **Finish GAP-005/GAP-011** — verify consolidation cadence (scheduler wired in `loop.py:201-202`); move dashboard/mobile read paths through MessageBus.
-5. **Dashboard P0 stability** — auto-scroll/flicker/WebSocket-reconnect issues (see Known Issues).
-6. **Doc reconciliation wrap-up** — links fixed, `DEVELOPMENT.md` created, gap/test counts corrected. Remaining manual ops: delete `agent-list.txt`, dedupe root `.opencode/agents/` (7 legacy underscore files), purge test-polluted `ai-company/.opencode/inbox.json` (backup first).
-7. **Ops** — configure GEMINI_API_KEY + KIMI_API_KEY as GitHub Actions secrets (pending since 2026-08-13 reminder in `daily-check.ps1`).
-8. **CI hardening** — coverage gate, Dependabot, generated-file hash check, safety scan in CI.
+1. ~~**Commit/park in-flight work**~~ — ✅ done 2026-08-07 (P1 commits `b633a54`…`ccf1650`).
+2. ~~**Start Sprint 4 (quality & completeness)**~~ — pending; highest-value items: structured logging w/ correlation IDs, agent spec validation CLI, token counting. (Backlog: 48 items/267 pts.)
+3. ~~**GAP-001 closed**~~ — ✅ done (2026-08-07) — executor routes all inbox I/O through `MessageBus` (`loop.py:197,223,247,297,382,424`).
+4. ~~**Finish GAP-005/GAP-011**~~ — ✅ done (2026-08-07) — consolidation cadence verified (`test_consolidation.py`); dashboard/mobile read paths through MessageBus (`mobile_api.py`, `kpis/*`, `monitoring.py`, `data_service.py`).
+5. ~~**Dashboard P0 stability**~~ — ✅ done (2026-08-07) — adaptive polling, coalesced chart redraws, resilient WebSocket (`ccf1650`).
+6. ~~**Doc reconciliation wrap-up**~~ — ✅ done (2026-08-07) — links fixed, `DEVELOPMENT.md` created, gap/test counts corrected, `agent-list.txt` + 7 legacy underscore agents deleted, test-polluted `inbox.json` purged (backup kept).
+7. ~~**Ops — GEMINI/KIMI GitHub secrets**~~ — ✅ done (2026-08-07) — repo-scoped secrets set; `autonomous.yml` now passes both keys (`6b572ae`).
+8. ~~**CI hardening**~~ — ✅ done (2026-08-07) — coverage gate (72%), uv-audit dependency check, generated-file check, Dependabot (`1f62ba7`).
 
 ---
 
@@ -177,10 +177,10 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 | MED | HITL gate blocks executor thread up to 30 min per approval | README known gap; non-blocking via `concurrent.futures.Future` implemented — verify |
 | MED | WebSocket broadcast functions exist but were not called | README known gap; dashboard WS integration tests added in Sprint 3 — verify |
 | MED | Dashboard CORS/auth posture historically lax | README said "all origins, no auth"; `app.py` now has `X-API-Key` + configurable CORS (GAP-010 resolved) — re-verify live config |
-| FIXED | S3-05 LLM retry provider cycling regression — `provider_idx = attempt % len(provider_chain)` always hit provider 0 on retries | `SPRINT3-DELEGATION-SUMMARY.md`; fixed 2026-07-22 |
-| OPS | GEMINI/KIMI API keys not configured in GitHub Actions | `daily-check.ps1` reminder dated 2026-08-13 |
+| FIXED | S3-05 LLM retry provider cycling regression — `provider_idx = attempt % len(provider_chain)` always hit provider 0 on retries | `SPRINT3-DELEGATION-SUMMARY.md`; fixed 2026-07-22; round-robin cycling locked in by `test_llm.py` (2026-08-07) |
+| FIXED | GEMINI/KIMI API keys not configured in GitHub Actions | Fixed 2026-08-07 — repo-scoped secrets set + wired into `autonomous.yml` |
 | FIXED | Root README/AGENTS.md linked to missing root-level docs; `docs/DEVELOPMENT.md` missing | Fixed 2026-08-07 — links repointed to `ai-company/docs/`; `ai-company/docs/DEVELOPMENT.md` created |
-| DATA | `inbox.json` polluted with marketing-service test tasks; `memory/` holds run/test data (not status records) | Fresh finding 2026-08-07 |
+| FIXED | `inbox.json` polluted with marketing-service test tasks; `memory/` holds run/test data (not status records) | Purged 2026-08-07 (backup at `Temp\opencode\inbox.json.bak`); re-purged after test re-pollution |
 
 ---
 
