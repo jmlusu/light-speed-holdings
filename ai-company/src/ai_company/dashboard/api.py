@@ -1660,6 +1660,38 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
     return result
 
 
+# ── Governance ──────────────────────────────────────────────────────
+
+
+@router.get("/governance", tags=["governance"])
+def governance_report_api() -> dict[str, Any]:
+    """Return the data governance report (Sprint 3, item 3).
+
+    SQLite-first: returns the full DataGovernance report when the database
+    is available, else an empty shape with available=False. Never raises.
+    """
+    from datetime import datetime, timezone
+
+    from ai_company.data import DataGovernance, database_is_usable, get_database
+
+    empty_shape = {
+        "available": False,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "tables": {},
+        "owners": [],
+        "policies": [],
+    }
+    db = get_database()
+    if db is None or not database_is_usable(db):
+        return empty_shape
+    try:
+        report = DataGovernance(db).governance_report()
+        report["available"] = True
+        return report
+    except Exception:  # noqa: BLE001 - governance report must never raise
+        return empty_shape
+
+
 # ── Prometheus-compatible metrics ────────────────────────────────────
 
 
