@@ -11,7 +11,13 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from ai_company.data import CostAnalytics, KPIPipeline, TaskStore, get_database
+from ai_company.data import (
+    AgentPerformanceAnalytics,
+    CostAnalytics,
+    KPIPipeline,
+    TaskStore,
+    get_database,
+)
 from ai_company.data.database import Database
 
 logger = logging.getLogger(__name__)
@@ -167,4 +173,86 @@ def get_kpi_history(
     ]
 
 
-__all__ = ["get_all_tasks", "get_cost_summary", "get_kpi_history"]
+# ---------------------------------------------------------------------------
+# Agent analytics
+# ---------------------------------------------------------------------------
+
+
+def get_agent_performance_report(
+    database: Database | None = None,
+    *,
+    days: int = 30,
+) -> dict[str, Any] | None:
+    """Return a full agent performance report from SQLite, or ``None`` when empty.
+
+    Wraps :class:`~ai_company.data.AgentPerformanceAnalytics` behind the
+    read-through pattern (Sprint 3, item 1 of the dashboard plan) so callers
+    fall back to file-derived figures when SQLite has not been backfilled.
+
+    The report mirrors :meth:`AgentPerformanceAnalytics.full_report` — with
+    ``leaderboard``, ``task_durations``, ``model_usage``, and ``error_analysis``
+    sections.  Returns ``None`` when every section is empty.
+    """
+    db = _usable_database(database)
+    if db is None:
+        return None
+
+    analytics = AgentPerformanceAnalytics(db)
+    try:
+        report = analytics.full_report(days)
+    except Exception:  # noqa: BLE001 - read-through must never raise
+        logger.debug("SQLite agent analytics failed; using file fallback", exc_info=True)
+        return None
+
+    if (
+        not report["leaderboard"]
+        and report["task_durations"]["count"] == 0
+        and not report["model_usage"]
+        and not report["error_analysis"]["failed_tasks_by_agent"]
+        and not report["error_analysis"]["error_events_by_agent"]
+    ):
+        return None
+    return report
+
+
+def get_agent_performance_summary(
+    agent_id: str,
+    database: Database | None = None,
+    *,
+    days: int = 30,
+) -> dict[str, Any] | None:
+    """Return a single-agent performance summary from SQLite, or ``None``.
+
+    Mirrors :meth:`AgentPerformanceAnalytics.agent_summary`; returns ``None``
+    when SQLite holds no data for the agent so callers can fall back to
+    file-derived figures.
+    """
+    db = _usable_database(database)
+    if db is None:
+        return None
+
+    analytics = AgentPerformanceAnalytics(db)
+    try:
+        summary = analytics.agent_summary(agent_id, days)
+    except Exception:  # noqa: BLE001 - read-through must never raise
+        logger.debug("SQLite agent summary failed; using file fallback", exc_info=True)
+        return None
+
+    if (
+        not summary["tasks_sent"]
+        and not summary["tasks_received"]
+        and not summary["error_events"]
+        and not summary["tool_usage"]
+        and summary["cost"]["llm_calls"] == 0
+    ):
+        return None
+    return summary
+
+
+__all__ = [
+    "get_all_tasks",
+    "get_cost_summary",
+    "get_kpi_history",
+    "get_agent_performance_report",
+    "get_agent_performance_summary",
+]

@@ -117,6 +117,284 @@ def _per_agent_costs_from_audit() -> list[dict[str, Any]]:
     return per_agent
 
 
+def _registry_agent_stats(
+    tasks: list[dict[str, Any]], registry: list[dict]
+) -> list[dict[str, Any]]:
+    """Per-agent task stats for every registered agent.
+
+    Shared by :func:`get_agent_performance` and :func:`get_agent` so the
+    registry-based figures stay consistent with the legacy contract.
+    """
+    agent_stats: dict[str, dict[str, Any]] = {}
+    for agent in registry:
+        agent_stats[agent["name"]] = {
+            "name": agent["name"],
+            "role": agent.get("role", ""),
+            "department": agent.get("department", ""),
+            "type": agent.get("type", ""),
+            "total_received": 0,
+            "total_sent": 0,
+            "completed": 0,
+            "failed": 0,
+            "in_progress": 0,
+            "pending": 0,
+            "escalated": 0,
+            "completion_rate": 0.0,
+            "failure_rate": 0.0,
+        }
+
+    for task in tasks:
+        receiver = task.get("receiver_id", "")
+        sender = task.get("sender_id", "")
+        status = task.get("status", "pending")
+
+        if receiver in agent_stats:
+            agent_stats[receiver]["total_received"] += 1
+            if status == "completed":
+                agent_stats[receiver]["completed"] += 1
+            elif status == "failed":
+                agent_stats[receiver]["failed"] += 1
+            elif status == "in_progress":
+                agent_stats[receiver]["in_progress"] += 1
+            elif status == "pending":
+                agent_stats[receiver]["pending"] += 1
+            elif status == "escalated":
+                agent_stats[receiver]["escalated"] += 1
+
+        if sender in agent_stats:
+            agent_stats[sender]["total_sent"] += 1
+
+    for stats in agent_stats.values():
+        total = stats["total_received"]
+        if total > 0:
+            stats["completion_rate"] = round((stats["completed"] / total) * 100, 1)
+            stats["failure_rate"] = round((stats["failed"] / total) * 100, 1)
+
+    return sorted(
+        agent_stats.values(),
+        key=lambda a: a["completion_rate"],
+        reverse=True,
+    )
+
+
+def _duration_stats(durations_by_agent: dict[str, list[float]]) -> dict[str, Any]:
+    """Overall + per-agent duration stats, matching ``task_duration_stats``."""
+    all_durations = [d for durs in durations_by_agent.values() for d in durs]
+    if not all_durations:
+        return {"count": 0, "avg_seconds": 0, "median_seconds": 0, "by_agent": {}}
+
+    def summarize(durs: list[float]) -> dict[str, Any]:
+        s = sorted(durs)
+        mid = len(s) // 2
+        median = s[mid] if len(s) % 2 else (s[mid - 1] + s[mid]) / 2
+        return {
+            "count": len(s),
+            "avg_seconds": round(sum(s) / len(s), 2),
+            "median_seconds": round(median, 2),
+            "min_seconds": round(min(s), 2),
+            "max_seconds": round(max(s), 2),
+        }
+
+    return {
+        **summarize(all_durations),
+        "by_agent": {agent: summarize(durs) for agent, durs in sorted(durations_by_agent.items())},
+    }
+
+
+def _file_agent_analytics(days: int = 30) -> dict[str, Any]:
+    """File-derived agent analytics matching ``AgentPerformanceAnalytics.full_report``.
+
+    Fallback used when SQLite holds no backfilled data, so the analytics
+    endpoints never render blank (Sprint 3, item 1 of the dashboard plan).
+    """
+    from datetime import datetime, timedelta, timezone
+
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+    tasks = _read_all_tasks()
+
+    stats: dict[str, dict[str, Any]] = {}
+    durations_by_agent: dict[str, list[float]] = {}
+    failed_tasks_by_agent: dict[str, int] = {}
+
+    def entry(agent_id: str) -> dict[str, Any]:
+        return stats.setdefault(
+            agent_id,
+            {
+                "agent_id": agent_id,
+                "tasks_sent": 0,
+                "tasks_received": 0,
+                "tasks_completed": 0,
+                "tasks_failed": 0,
+                "completion_rate_pct": 0.0,
+                "error_rate_pct": 0.0,
+                "sent_by_status": {},
+                "received_by_status": {},
+                "audit_events": {},
+                "tool_usage": {},
+                "cost": {
+                    "total_usd": 0.0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "llm_calls": 0,
+                },
+                "error_events": 0,
+            },
+        )
+
+    for task in tasks:
+        created = task.get("created_at", "")
+        if created and created < cutoff:
+            continue
+        sender = task.get("sender_id", "") or "unknown"
+        receiver = task.get("receiver_id", "") or "unknown"
+        status = task.get("status", "pending")
+
+        s = entry(sender)
+        s["tasks_sent"] += 1
+        s["sent_by_status"][status] = s["sent_by_status"].get(status, 0) + 1
+
+        r = entry(receiver)
+        r["tasks_received"] += 1
+        r["received_by_status"][status] = r["received_by_status"].get(status, 0) + 1
+        if status == "completed":
+            r["tasks_completed"] += 1
+        elif status == "failed":
+            r["tasks_failed"] += 1
+            failed_tasks_by_agent[receiver] = failed_tasks_by_agent.get(receiver, 0) + 1
+
+        completed = task.get("completed_at", "")
+        if created and completed:
+            try:
+                duration = (
+                    datetime.fromisoformat(completed) - datetime.fromisoformat(created)
+                ).total_seconds()
+                if duration >= 0:
+                    durations_by_agent.setdefault(receiver, []).append(duration)
+            except (ValueError, TypeError):
+                continue
+
+    model_usage: dict[tuple[str, str, str], dict[str, Any]] = {}
+    error_events_by_agent: dict[tuple[str, str], int] = {}
+    severity_dist: dict[str, int] = {}
+    for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
+        try:
+            ts = event.get("timestamp", "")
+            if ts and ts < cutoff:
+                continue
+            meta = event.get("metadata", {}) or {}
+            agent = event.get("agent_id", "") or meta.get("agent_id", "") or "unknown"
+            etype = event.get("event_type", "")
+
+            e = entry(agent)
+            e["audit_events"][etype] = e["audit_events"].get(etype, 0) + 1
+            is_error = etype == "error" or event.get("severity", "info") in ("error", "critical")
+            if is_error:
+                e["error_events"] += 1
+            tool = event.get("tool")
+            if tool:
+                e["tool_usage"][tool] = e["tool_usage"].get(tool, 0) + 1
+            e["cost"]["total_usd"] += float(meta.get("cost", 0) or 0)
+            e["cost"]["prompt_tokens"] += int(meta.get("prompt_tokens", 0) or 0)
+            e["cost"]["completion_tokens"] += int(meta.get("completion_tokens", 0) or 0)
+            e["cost"]["llm_calls"] += 1
+
+            model = meta.get("model", "") or event.get("model", "") or "unknown"
+            provider = meta.get("provider", "") or event.get("provider", "") or "unknown"
+            m = model_usage.setdefault(
+                (model, provider, agent),
+                {
+                    "model": model,
+                    "provider": provider,
+                    "agent_name": agent,
+                    "calls": 0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "cost_usd": 0.0,
+                },
+            )
+            m["calls"] += 1
+            m["prompt_tokens"] += int(meta.get("prompt_tokens", 0) or 0)
+            m["completion_tokens"] += int(meta.get("completion_tokens", 0) or 0)
+            m["cost_usd"] += float(meta.get("cost", 0) or 0)
+
+            if is_error:
+                key = (agent, etype or "error")
+                error_events_by_agent[key] = error_events_by_agent.get(key, 0) + 1
+
+            sev = event.get("severity", "info")
+            severity_dist[sev] = severity_dist.get(sev, 0) + 1
+        except (TypeError, ValueError):
+            continue
+
+    for s in stats.values():
+        finished = s["tasks_completed"] + s["tasks_failed"]
+        s["completion_rate_pct"] = (
+            round(s["tasks_completed"] / finished * 100, 2) if finished else 0.0
+        )
+        s["error_rate_pct"] = round(s["tasks_failed"] / finished * 100, 2) if finished else 0.0
+        s["tool_usage"] = [
+            {"tool": tool, "calls": n}
+            for tool, n in sorted(s["tool_usage"].items(), key=lambda kv: kv[1], reverse=True)
+        ]
+        s["cost"]["total_usd"] = round(s["cost"]["total_usd"], 6)
+        s["period_days"] = days
+
+    leaderboard = sorted(
+        stats.values(),
+        key=lambda s: (s["completion_rate_pct"], s["tasks_completed"]),
+        reverse=True,
+    )
+    for i, s in enumerate(leaderboard):
+        s["rank"] = i + 1
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "period_days": days,
+        "leaderboard": leaderboard,
+        "task_durations": _duration_stats(durations_by_agent),
+        "model_usage": sorted(model_usage.values(), key=lambda m: m["cost_usd"], reverse=True),
+        "error_analysis": {
+            "period_days": days,
+            "failed_tasks_by_agent": [
+                {"agent_id": a, "count": n}
+                for a, n in sorted(
+                    failed_tasks_by_agent.items(), key=lambda kv: kv[1], reverse=True
+                )
+            ],
+            "error_events_by_agent": [
+                {"agent_id": a, "event_type": etype, "count": n}
+                for (a, etype), n in sorted(
+                    error_events_by_agent.items(), key=lambda kv: kv[1], reverse=True
+                )
+            ],
+            "severity_distribution": severity_dist,
+        },
+    }
+
+
+def _file_agent_summary(agent_id: str, days: int = 30) -> dict[str, Any]:
+    """File-derived single-agent summary (mirrors ``agent_summary``)."""
+    for row in _file_agent_analytics(days)["leaderboard"]:
+        if row["agent_id"] == agent_id:
+            return row
+    return {
+        "agent_id": agent_id,
+        "period_days": days,
+        "tasks_sent": 0,
+        "tasks_received": 0,
+        "tasks_completed": 0,
+        "tasks_failed": 0,
+        "completion_rate_pct": 0.0,
+        "error_rate_pct": 0.0,
+        "sent_by_status": {},
+        "received_by_status": {},
+        "audit_events": {},
+        "tool_usage": [],
+        "cost": {"total_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "llm_calls": 0},
+        "error_events": 0,
+    }
+
+
 _START_TIME = time.time()
 
 
@@ -317,6 +595,65 @@ def get_live_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
 def list_agents() -> list[AgentSummary]:
     """List all registered agents from the company registry."""
     return [AgentSummary(**a) for a in _load_registry()]
+
+
+@router.get("/agents/performance")
+def get_agent_performance(days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
+    """Return per-agent performance metrics computed from task history.
+
+    Returns a summary with:
+    - Registry-based per-agent task counts (legacy contract)
+    - Leaderboard ranked by completion rate
+    - Model usage distribution
+    - Task duration statistics
+    - Error analysis (failed tasks + error events)
+
+    SQLite-first (Sprint 3, item 1): when backfilled data exists, the
+    leaderboard / model usage / durations / error analysis come from
+    :class:`~ai_company.data.AgentPerformanceAnalytics`; otherwise they are
+    derived from the legacy inbox + audit files so the endpoint never renders
+    blank.  ``source`` reports which backend produced the figures.
+    """
+    from ai_company.dashboard.data_service import get_agent_performance_report
+
+    tasks = _read_all_tasks()
+    agents = _registry_agent_stats(tasks, _load_registry())
+
+    report = get_agent_performance_report(days=days)
+    if report is None:
+        report = _file_agent_analytics(days)
+        source = "files"
+    else:
+        source = "sqlite"
+
+    return {
+        "agents": agents,
+        "total_tasks": len(tasks),
+        "agents_with_tasks": sum(1 for a in agents if a["total_received"] > 0),
+        "leaderboard": report["leaderboard"],
+        "task_durations": report["task_durations"],
+        "model_usage": report["model_usage"],
+        "error_analysis": report["error_analysis"],
+        "period_days": days,
+        "source": source,
+    }
+
+
+@router.get("/agents/{name}/performance")
+def get_agent_performance_detail(
+    name: str,
+    days: int = Query(30, ge=1, le=365),
+) -> dict[str, Any]:
+    """Return a single agent's performance summary (SQLite-first)."""
+    from ai_company.dashboard.data_service import get_agent_performance_summary
+
+    summary = get_agent_performance_summary(name, days=days)
+    if summary is not None:
+        summary["source"] = "sqlite"
+        return summary
+    summary = _file_agent_summary(name, days)
+    summary["source"] = "files"
+    return summary
 
 
 @router.get("/agents/{name}", response_model=AgentSummary, tags=["agents"])
@@ -1240,81 +1577,6 @@ def get_kpi_summary_stats(
         }
         for s in summaries
     ]
-
-
-# ── Agent Performance ─────────────────────────────────────────────
-
-
-@router.get("/agents/performance")
-def get_agent_performance() -> dict[str, Any]:
-    """Return per-agent performance metrics computed from task history.
-
-    Returns a summary with:
-    - Total tasks assigned/received per agent
-    - Completion rate, failure rate
-    - Average response time estimates
-    """
-    tasks = _read_all_tasks()
-    registry = _load_registry()
-
-    agent_stats: dict[str, dict[str, Any]] = {}
-    for agent in registry:
-        agent_stats[agent["name"]] = {
-            "name": agent["name"],
-            "role": agent.get("role", ""),
-            "department": agent.get("department", ""),
-            "type": agent.get("type", ""),
-            "total_received": 0,
-            "total_sent": 0,
-            "completed": 0,
-            "failed": 0,
-            "in_progress": 0,
-            "pending": 0,
-            "escalated": 0,
-            "completion_rate": 0.0,
-            "failure_rate": 0.0,
-        }
-
-    for task in tasks:
-        receiver = task.get("receiver_id", "")
-        sender = task.get("sender_id", "")
-        status = task.get("status", "pending")
-
-        if receiver in agent_stats:
-            agent_stats[receiver]["total_received"] += 1
-            if status == "completed":
-                agent_stats[receiver]["completed"] += 1
-            elif status == "failed":
-                agent_stats[receiver]["failed"] += 1
-            elif status == "in_progress":
-                agent_stats[receiver]["in_progress"] += 1
-            elif status == "pending":
-                agent_stats[receiver]["pending"] += 1
-            elif status == "escalated":
-                agent_stats[receiver]["escalated"] += 1
-
-        if sender in agent_stats:
-            agent_stats[sender]["total_sent"] += 1
-
-    # Compute rates
-    for stats in agent_stats.values():
-        total = stats["total_received"]
-        if total > 0:
-            stats["completion_rate"] = round((stats["completed"] / total) * 100, 1)
-            stats["failure_rate"] = round((stats["failed"] / total) * 100, 1)
-
-    # Sort by completion rate descending
-    sorted_agents = sorted(
-        agent_stats.values(),
-        key=lambda a: a["completion_rate"],
-        reverse=True,
-    )
-
-    return {
-        "agents": sorted_agents,
-        "total_tasks": len(tasks),
-        "agents_with_tasks": sum(1 for a in sorted_agents if a["total_received"] > 0),
-    }
 
 
 # ── Cost Tracking ─────────────────────────────────────────────────
