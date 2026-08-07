@@ -8,8 +8,13 @@ history NDJSON) so the dashboard never renders blank before a backfill has run.
 
 from __future__ import annotations
 
+import json
 import logging
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any
+
+import yaml
 
 from ai_company.data import (
     AgentPerformanceAnalytics,
@@ -19,6 +24,7 @@ from ai_company.data import (
     get_database,
 )
 from ai_company.data.database import Database
+from ai_company.paths import get_project_root
 
 logger = logging.getLogger(__name__)
 
@@ -249,10 +255,248 @@ def get_agent_performance_summary(
     return summary
 
 
+# ---------------------------------------------------------------------------
+# Company KPI summary (Sprint 3, item 2)
+# ---------------------------------------------------------------------------
+
+
+def get_company_kpi_summary(
+    days: int = 30,
+    project_root: Path | None = None,
+) -> dict[str, Any]:
+    """Return company-level KPIs vs targets from real telemetry.
+
+    Reads ``config/company/kpis.yaml`` for the target/current definitions and
+    computes live ``current`` values for the telemetry-backed KPIs:
+
+    - ``KPI-004`` Build Success Rate: completed / (completed + failed) over
+      the ``days``-long task window.
+    - ``KPI-003`` Agent Utilization Rate: distinct active agents (sender or
+      receiver across window tasks) / registered agents in ``company-registry.yaml``.
+
+    Tasks are read SQLite-first (mirroring :func:`get_all_tasks` /
+    ``KPICollector._tasks_from_sqlite``) and fall back to
+    ``.opencode/inbox.json``.  Every other KPI keeps its configured
+    ``current`` value.  Never raises — a missing/unparseable config returns an
+    empty summary.
+    """
+    root = project_root or get_project_root()
+    collected_at = datetime.now(timezone.utc).isoformat()
+    empty_summary = {
+        "collected_at": collected_at,
+        "period_days": days,
+        "kpis": [],
+        "summary": {"total": 0, "on_track": 0, "below_target": 0, "info": 0},
+    }
+
+    config_path = root / "config" / "company" / "kpis.yaml"
+    if not config_path.is_file():
+        logger.debug("Company KPI config not found, returning empty: %s", config_path)
+        return empty_summary
+    try:
+        with open(config_path, "r", encoding="utf-8") as fh:
+            config = yaml.safe_load(fh) or {}
+    except (yaml.YAMLError, OSError) as exc:
+        logger.warning("Failed to load company KPI config %s: %s", config_path, exc)
+        return empty_summary
+    if not isinstance(config, dict):
+        logger.warning("Company KPI config is not a mapping: %s", config_path)
+        return empty_summary
+
+    company_kpis = config.get("kpis", {}).get("company", [])
+    if not isinstance(company_kpis, list) or not company_kpis:
+        return empty_summary
+
+    window_tasks, task_source = _company_window_tasks(root, days)
+
+    kpis: list[dict[str, Any]] = []
+    for kpi in company_kpis:
+        if not isinstance(kpi, dict):
+            continue
+        kpi_id = kpi.get("id", "")
+        target = kpi.get("target")
+        current = kpi.get("current")
+        computed = False
+        source = "config"
+
+        if kpi_id == "KPI-004":
+            completed = sum(1 for t in window_tasks if t.get("status") == "completed")
+            failed = sum(1 for t in window_tasks if t.get("status") == "failed")
+            if completed + failed > 0:
+                current = round(completed / (completed + failed) * 100, 1)
+                computed = True
+                source = task_source
+        elif kpi_id == "KPI-003":
+            total_registered = _count_registered_agents(root)
+            active_agents = {
+                agent
+                for task in window_tasks
+                for agent in (task.get("sender_id"), task.get("receiver_id"))
+                if agent
+            }
+            if total_registered > 0 and active_agents:
+                current = round(len(active_agents) / total_registered * 100, 1)
+                computed = True
+                source = task_source
+
+        if target is None:
+            status = "info"
+            gap = None
+        elif isinstance(current, (int, float)) and isinstance(target, (int, float)):
+            status = "on_track" if current >= target else "below_target"
+            gap = round(target - current, 2)
+        else:
+            status = "info"
+            gap = None
+
+        kpis.append(
+            {
+                "id": kpi_id,
+                "name": kpi.get("name", kpi_id),
+                "category": kpi.get("category", ""),
+                "owner": kpi.get("owner", ""),
+                "frequency": kpi.get("frequency", ""),
+                "unit": kpi.get("unit", ""),
+                "target": target,
+                "current": current,
+                "status": status,
+                "gap": gap,
+                "computed": computed,
+                "source": source,
+            }
+        )
+
+    summary = {"total": len(kpis), "on_track": 0, "below_target": 0, "info": 0}
+    for kpi in kpis:
+        summary[kpi["status"]] += 1
+
+    return {
+        "collected_at": collected_at,
+        "period_days": days,
+        "kpis": kpis,
+        "summary": summary,
+    }
+
+
+def _company_window_tasks(root: Path, days: int) -> tuple[list[dict[str, Any]], str]:
+    """Return ``(tasks within *days* window, source)`` from SQLite or files.
+
+    Mirrors ``KPICollector._tasks_from_sqlite``: SQLite first via
+    :func:`get_all_tasks`, then ``.opencode/inbox.json``.  ``source`` is
+    ``"sqlite"`` or ``"files"``.  Tasks with unparseable ``created_at`` are
+    ignored; naive timestamps are treated as UTC.
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+
+    sqlite_tasks = get_all_tasks()
+    if sqlite_tasks is not None:
+        raw_tasks = sqlite_tasks
+        source = "sqlite"
+    else:
+        raw_tasks = _load_inbox_tasks(root)
+        source = "files"
+
+    windowed: list[dict[str, Any]] = []
+    for task in raw_tasks:
+        if not isinstance(task, dict):
+            continue
+        created_raw = task.get("created_at", "")
+        if not created_raw:
+            continue
+        try:
+            created = datetime.fromisoformat(str(created_raw))
+        except (ValueError, TypeError):
+            continue
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        if created >= cutoff:
+            windowed.append(task)
+    return windowed, source
+
+
+def _load_inbox_tasks(root: Path) -> list[dict[str, Any]]:
+    """Load task dicts from ``.opencode/inbox.json``.
+
+    Accepts a top-level JSON list of task dicts (the MessageBus layout) and,
+    defensively, a ``{"tasks": [...]}`` wrapper.  Returns ``[]`` on missing or
+    malformed files so the summary can never raise.
+    """
+    inbox_path = root / ".opencode" / "inbox.json"
+    if not inbox_path.is_file():
+        logger.debug("Inbox file not found, returning empty: %s", inbox_path)
+        return []
+    try:
+        with open(inbox_path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.warning("Failed to read inbox %s: %s", inbox_path, exc)
+        return []
+    if isinstance(data, list):
+        return [task for task in data if isinstance(task, dict)]
+    if isinstance(data, dict):
+        tasks = data.get("tasks")
+        if isinstance(tasks, list):
+            return [task for task in tasks if isinstance(task, dict)]
+    return []
+
+
+def _count_registered_agents(root: Path) -> int:
+    """Count unique agent ``id``s in ``company-registry.yaml``.
+
+    Supports the documented layout (``executives``, ``specialists``, and
+    ``departments[].agents``) plus the current repo layout (``company.agents``);
+    ids are deduplicated across containers.  Returns ``0`` when the file is
+    missing or holds no agents so callers fall back to the config value.
+    """
+    registry_path = root / "company-registry.yaml"
+    if not registry_path.is_file():
+        logger.debug("Agent registry not found, returning 0: %s", registry_path)
+        return 0
+    try:
+        with open(registry_path, "r", encoding="utf-8") as fh:
+            data = yaml.safe_load(fh)
+    except (yaml.YAMLError, OSError) as exc:
+        logger.warning("Failed to read agent registry %s: %s", registry_path, exc)
+        return 0
+    if not isinstance(data, dict):
+        return 0
+
+    agent_ids: set[str] = set()
+
+    for key in ("executives", "specialists"):
+        group = data.get(key)
+        if isinstance(group, list):
+            for entry in group:
+                if isinstance(entry, dict) and entry.get("id"):
+                    agent_ids.add(str(entry["id"]))
+
+    departments = data.get("departments")
+    if isinstance(departments, list):
+        for dept in departments:
+            if not isinstance(dept, dict):
+                continue
+            dept_agents = dept.get("agents")
+            if isinstance(dept_agents, list):
+                for entry in dept_agents:
+                    if isinstance(entry, dict) and entry.get("id"):
+                        agent_ids.add(str(entry["id"]))
+
+    company = data.get("company")
+    if isinstance(company, dict):
+        company_agents = company.get("agents")
+        if isinstance(company_agents, list):
+            for entry in company_agents:
+                if isinstance(entry, dict) and entry.get("id"):
+                    agent_ids.add(str(entry["id"]))
+
+    return len(agent_ids)
+
+
 __all__ = [
     "get_all_tasks",
     "get_cost_summary",
     "get_kpi_history",
     "get_agent_performance_report",
     "get_agent_performance_summary",
+    "get_company_kpi_summary",
 ]

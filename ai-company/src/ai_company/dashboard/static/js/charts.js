@@ -281,6 +281,55 @@ function initKPICharts(kpiDepartments, liveKPIData) {
   }
 }
 
+// ═══ COMPANY KPI CHART ═══════════════════════════════════════
+
+function initCompanyKPICharts(companyKPIs) {
+  if (!companyKPIs || companyKPIs.length === 0) return;
+
+  const ctx = document.getElementById('companyKPIChart');
+  if (!ctx) return;
+
+  const limited = companyKPIs.slice(0, 8);
+
+  const config = {
+    type: 'bar',
+    data: {
+      labels: limited.map(k => (k.name || k.id || '').substring(0, 20)),
+      datasets: [
+        {
+          label: 'Current',
+          data: limited.map(k => k.current || 0),
+          backgroundColor: COLORS.brand.bg,
+          borderColor: COLORS.brand.border,
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: 'Target',
+          data: limited.map(k => k.target || 0),
+          backgroundColor: COLORS.slate.bg,
+          borderColor: COLORS.slate.border,
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 } } },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 9 }, maxRotation: 45 },
+        },
+        y: { grid: { color: 'rgba(51, 65, 85, 0.15)' }, beginAtZero: true },
+      },
+    },
+  };
+  updateOrCreateChart('companyKPI', ctx, config);
+}
+
 // ═══ COST CHARTS ═════════════════════════════════════════════
 
 function initCostCharts(costSummary, agentCosts, period) {
