@@ -72,7 +72,7 @@ class EvalRunner:
 
         runner = EvalRunner(llm_provider=my_llm)
         result = runner.run()
-        print(f"Average score: {result.aggregates['avg_total']}")
+        logger.info("Average score: %s", result.aggregates["avg_total"])
     """
 
     def __init__(

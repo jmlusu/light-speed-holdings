@@ -419,14 +419,17 @@ def run_pre_commit_scan() -> bool:
             matches = scanner.scan_file(file_path)
             total_secrets += len(matches)
             for match in matches:
-                print(
-                    f"  [SECRETS] {match.file_path}:{match.line_number} "
-                    f"- {match.secret_type}: {match.matched_text}"
+                logger.warning(
+                    "[SECRETS] %s:%s - %s: %s",
+                    match.file_path,
+                    match.line_number,
+                    match.secret_type,
+                    match.matched_text,
                 )
 
     if total_secrets > 0:
-        print(f"\n[SECRETS SCAN FAILED] Found {total_secrets} potential secrets.")
-        print("Please remove secrets before committing.")
+        logger.warning("SECRETS SCAN FAILED: found %d potential secrets.", total_secrets)
+        logger.warning("Please remove secrets before committing.")
         _security_logger.warning("Pre-commit scan detected %d secrets", total_secrets)
         return False
 

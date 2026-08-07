@@ -40,7 +40,7 @@ from ai_company.models.task import Task, TaskPriority, TaskStatus
 from ai_company.orchestrator.approval import ApprovalGate
 from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.orchestrator.scheduler import Scheduler
-from ai_company.utils.logging import new_correlation_id
+from ai_company.utils.logging import set_correlation_id
 
 logger = logging.getLogger(__name__)
 
@@ -155,14 +155,14 @@ class Executor:
         """Start continuous polling loop. Call stop() to halt."""
         self.running = True
         self.stats.start_time = datetime.now()
-        print(f"Executor started. Polling every {self.poll_interval}s.")
-        print("Press Ctrl+C to stop.\n")
+        logger.info("Executor started. Polling every %ss.", self.poll_interval)
+        logger.info("Press Ctrl+C to stop.")
 
         try:
             while self.running:
                 count = self.tick()
                 if count > 0:
-                    print(f"  Processed {count} task(s).")
+                    logger.info("Processed %d task(s).", count)
                 import time
 
                 time.sleep(self.poll_interval)
@@ -172,7 +172,7 @@ class Executor:
     def stop(self) -> None:
         """Stop the polling loop."""
         self.running = False
-        print(f"\nExecutor stopped. {self.stats.tasks_processed} tasks processed.")
+        logger.info("Executor stopped. %d tasks processed.", self.stats.tasks_processed)
 
     def tick(self) -> int:
         """Process all pending tasks in a single pass. Returns count processed.
@@ -281,15 +281,15 @@ class Executor:
     def _process_task(self, task: Task, *, preapproved: bool = False) -> None:
         """Execute a single task through the multi-turn agentic loop.
 
-        A new correlation ID is generated for each task so that all log
-        entries produced during execution can be traced back to the
-        originating task.
+        The task ID is installed as the correlation ID so that all log
+        entries produced during execution (agent loop, LLM calls, tool
+        calls) can be traced back to the originating task (GAP-018).
 
         Args:
             preapproved: GAP-004 — when True, any HITL-gated step is executed
                 directly because the human already approved the parked request.
         """
-        new_correlation_id()
+        set_correlation_id(task.id)
         self.stats.tasks_processed += 1
         logger.info("[%s] Processing: %s...", task.id[:8], task.instruction[:60])
 

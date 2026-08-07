@@ -1,8 +1,8 @@
 # Acceptance Criteria — Phase 1-2 Remaining Work
 
-**Author:** Product Owner  
-**Date:** 2026-07-20  
-**Scope:** All architecture gaps (GAP-001 through GAP-020)  
+**Author:** Product Owner
+**Date:** 2026-07-20
+**Scope:** All architecture gaps (GAP-001 through GAP-020)
 **Status:** ACTIVE
 
 ---
@@ -26,7 +26,7 @@ Every architecture gap resolution must meet these criteria:
 
 ## 2. GAP-001 — Route Executor I/O Through MessageBus
 
-**Severity:** CRITICAL  
+**Severity:** CRITICAL
 **Points:** 5
 
 ### User Story
@@ -52,13 +52,13 @@ Every architecture gap resolution must meet these criteria:
 # tests/unit/test_message_bus.py
 def test_get_pending_tasks_returns_pending_only():
     """Only tasks with status='pending' are returned."""
-    
+
 def test_get_pending_tasks_empty_inbox():
     """Empty inbox returns empty list, not error."""
-    
+
 def test_update_status_persists_to_file():
     """Status change is written to inbox.json."""
-    
+
 def test_update_status_with_result():
     """Result dict is stored alongside status."""
 ```
@@ -71,7 +71,7 @@ def test_update_status_with_result():
 
 ## 3. GAP-002 — Create FileStore Abstraction
 
-**Severity:** CRITICAL  
+**Severity:** CRITICAL
 **Points:** 8
 
 ### User Story
@@ -102,19 +102,19 @@ def test_update_status_with_result():
 # tests/unit/test_file_store.py
 def test_read_write_json_roundtrip(tmp_path):
     """Write JSON, read back, verify equality."""
-    
+
 def test_read_write_yaml_roundtrip(tmp_path):
     """Write YAML, read back, verify equality."""
-    
+
 def test_atomic_write_no_corruption(tmp_path):
     """Simulate crash during write; original file intact."""
-    
+
 def test_concurrent_writes(tmp_path):
     """10 threads writing to same file; no corruption."""
-    
+
 def test_missing_file_returns_none(tmp_path):
     """Read non-existent file returns None, not exception."""
-    
+
 def test_auto_creates_parent_directories(tmp_path):
     """Write to nested path creates directories automatically."""
 ```
@@ -127,7 +127,7 @@ def test_auto_creates_parent_directories(tmp_path):
 
 ## 4. GAP-003 — Integrate Tier Rules into ToolRunner
 
-**Severity:** HIGH  
+**Severity:** HIGH
 **Points:** 5
 
 ### User Story
@@ -158,10 +158,10 @@ def test_auto_creates_parent_directories(tmp_path):
 ])
 def test_classify_tool_action(tool, expected_tier):
     """Each tool maps to correct tier."""
-    
+
 def test_tier0_auto_approved(runner, hitl_gate):
     """Tier 0 actions never trigger HITL."""
-    
+
 def test_backward_compat_without_classifier():
     """Without tier classifier, DANGEROUS_TOOLS still works."""
 ```
@@ -173,7 +173,7 @@ def test_backward_compat_without_classifier():
 
 ## 5. GAP-004 — Non-Blocking HITL Gate
 
-**Severity:** HIGH  
+**Severity:** HIGH
 **Points:** 5
 
 ### User Story
@@ -198,10 +198,10 @@ def test_backward_compat_without_classifier():
 ```python
 def test_hitl_request_returns_immediately():
     """request() completes in < 100ms, no blocking."""
-    
+
 def test_executor_skips_awaiting_tasks():
     """While task A awaits approval, task B is processed."""
-    
+
 def test_timeout_auto_denies():
     """After timeout, awaiting task is auto-denied."""
 ```
@@ -210,7 +210,7 @@ def test_timeout_auto_denies():
 
 ## 6. GAP-005 — Wire Memory Engine into Executor
 
-**Severity:** HIGH  
+**Severity:** HIGH
 **Points:** 8
 
 ### User Story
@@ -236,10 +236,10 @@ def test_timeout_auto_denies():
 ```python
 def test_episodic_memory_stored_on_completion(memory_engine):
     """Successful task creates episodic memory."""
-    
+
 def test_memory_context_enriches_prompt(memory_engine):
     """Relevant memories are included in agent prompt."""
-    
+
 def test_consolidation_merges_related_memories(memory_engine):
     """Consolidation reduces memory count."""
 ```
@@ -248,7 +248,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 7. GAP-006 — Wire WebSocket Broadcast
 
-**Severity:** HIGH  
+**Severity:** HIGH
 **Points:** 3
 
 ### User Story
@@ -268,7 +268,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 8. GAP-007 — Integrate Scheduler into Executor Loop
 
-**Severity:** HIGH  
+**Severity:** HIGH
 **Points:** 5
 
 ### User Story
@@ -289,7 +289,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 9. GAP-008 — Persist Escalation Events
 
-**Severity:** HIGH  
+**Severity:** HIGH
 **Points:** 3
 
 ### User Story
@@ -309,7 +309,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 10. GAP-009 — CostTracker Persistence
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Points:** 2
 
 ### User Story
@@ -327,7 +327,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 11. GAP-010 — Dashboard CORS + Auth
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Points:** 5
 
 ### User Story
@@ -348,7 +348,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 12. GAP-011 — Dashboard API Uses MessageBus
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Points:** 2
 
 ### User Story
@@ -367,7 +367,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 13. GAP-012 — Fix Priority Forwarding
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Points:** 2
 
 ### User Story
@@ -385,7 +385,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 14. GAP-015 — Fix LLM Retry Provider Cycling
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Points:** 3
 
 ### User Story
@@ -403,7 +403,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 15. GAP-016 — Remove shell=True
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Points:** 5
 
 ### User Story
@@ -424,7 +424,7 @@ def test_consolidation_merges_related_memories(memory_engine):
 
 ## 16. GAP-017 — Task Timeout & Dead Letter Queue
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Points:** 5
 
 ### User Story
@@ -459,13 +459,13 @@ def test_consolidation_merges_related_memories(memory_engine):
 - [ ] Unit test: `test_briefing_uses_public_api`
 - [ ] `pytest tests/unit/test_briefing.py` passes
 
-### GAP-018 — Structured Logging (5 points)
+### GAP-018 — Structured Logging (5 points) — ✅ resolved 2026-08-07
 
-- [ ] `structlog` or `python-json-logger` configured
-- [ ] `task_id` added as correlation ID in log context
-- [ ] All modules use `logger`, not `print()` (grep confirms)
-- [ ] JSON log format with consistent fields
-- [ ] `pytest tests/unit/test_logging.py` passes
+- [x] Structured JSON logging configured (custom `JSONFormatter` in `logging_config.py`, equivalent to `structlog`/`python-json-logger`)
+- [x] `task_id` added as correlation ID in log context (`loop.py:292` `set_correlation_id(task.id)`; formatter emits `correlation_id`)
+- [x] All modules use `logger`, not `print()` (grep for `print(` in `src/` returns no matches)
+- [x] JSON log format with consistent fields (ts/level/logger/message/correlation_id + extras)
+- [x] `pytest tests/unit/test_logging.py` passes (15 tests)
 
 ### GAP-019 — Agent Spec Validation (3 points)
 

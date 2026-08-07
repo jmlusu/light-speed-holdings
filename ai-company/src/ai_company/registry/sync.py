@@ -167,4 +167,4 @@ def verify_sync(
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     count = sync_registry()
-    print(f"Synced {count} agents to company/agent-registry.json")
+    logger.info("Synced %d agents to company/agent-registry.json", count)

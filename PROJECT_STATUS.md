@@ -82,7 +82,7 @@ company-registry.yaml (127 agents, 18 departments)
 - **Sprint 1 — Complete:** Code hardening + audit trail (Track B/C), file store with atomic writes + locking, tier rules integration.
 - **Sprint 2 — Complete:** 13/13 items done (2026-07-21); executor → MessageBus routing, HITL non-blocking gates, escalation persistence, cost tracker.
 - **Sprint 3 — Complete:** 8/8 items done (2026-07-22); GAP-014/015 closure, E2E pipeline test, 30 WebSocket tests, governance CLI (7 commands), memory CLI, dashboard API tests, org-chart test rewrite (832 lines, 56 tests). **v0.3.0 tagged 2026-07-22.**
-- **Sprint 4 — NOT STARTED.**
+- **Sprint 4 — IN PROGRESS.** Structured logging with correlation IDs (GAP-018) closed 2026-08-07; spec validation CLI, daemon mode, OAuth2/key rotation, token counting still open.
 
 ### Feature inventory
 - 29-command CLI surface, 7 department KPI collectors (engineering, hr, marketing, sales, customer_success, legal, finance).
@@ -92,8 +92,7 @@ company-registry.yaml (127 agents, 18 departments)
 - Engineering: migrated to **uv** package manager (2026-08-06), ruff exception-handling rules applied, runtime/generated artifacts untracked, DevBootstrap provisioning added (new, uncommitted).
 
 ### Gap closure (ARCHITECTURE-GAPS.md — 20 gaps)
-- **RESOLVED (18):** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 020. GAP-005 closed 2026-08-07 — consolidation cadence verified (`test_consolidation.py`, 7 tests). GAP-011 closed 2026-08-07 — mobile_api/kpis/monitoring/data_service read via MessageBus. GAP-015 closed — retry cycling covered by `test_llm.py`.
-- **PARTIAL (1):** GAP-018 (structured logging).
+- **RESOLVED (19):** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 020. GAP-005 closed 2026-08-07 — consolidation cadence verified (`test_consolidation.py`, 7 tests). GAP-011 closed 2026-08-07 — mobile_api/kpis/monitoring/data_service read via MessageBus. GAP-015 closed — retry cycling covered by `test_llm.py`. GAP-018 closed 2026-08-07 — `logging_config.py` JSON formatter + task-id correlation (`loop.py:292`), daemon structured logging, zero `print()` in `src/`, `test_logging.py` (15 tests).
 - **OPEN (1):** GAP-019 (agent spec validation).
 
 ---
@@ -134,10 +133,10 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 | 4 | Specialist Agents | Financial analyst, DevOps, data scientist, compliance | Mostly complete via 53-role expansion |
 | 5 | Autonomous Coordination | Scheduled cycles, escalation, approval gates, self-healing | Partial — 6 h GitHub Actions cycle exists (autonomous.yml) |
 | 6 | Self-Improving | Learning, feedback loops, agent-led improvement | Planned |
-| — | **Sprint 4** | **Quality & completeness** | 🔴 **NOT STARTED** |
+| — | **Sprint 4** | **Quality & completeness** | 🟡 **IN PROGRESS** (GAP-018 done; spec validation, daemon mode, OAuth2, token counting open) |
 
 ### Sprint 4 scope (from `ai-company/docs/CHANGELOG.md` Unreleased + STATUS.md)
-- Structured logging with correlation IDs (GAP-018)
+- ~~Structured logging with correlation IDs (GAP-018)~~ — ✅ done 2026-08-07
 - Scheduled cycle daemon mode (S3-06)
 - Agent spec validation CLI
 - CLI type hints/docstrings
@@ -157,7 +156,7 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 ## 5. Priorities
 
 1. ~~**Commit/park in-flight work**~~ — ✅ done 2026-08-07 (P1 commits `b633a54`…`ccf1650`).
-2. ~~**Start Sprint 4 (quality & completeness)**~~ — pending; highest-value items: structured logging w/ correlation IDs, agent spec validation CLI, token counting. (Backlog: 48 items/267 pts.)
+2. ~~**Start Sprint 4 (quality & completeness)**~~ — in progress; GAP-018 structured logging done (2026-08-07); next: agent spec validation CLI, token counting. (Backlog: 48 items/267 pts.)
 3. ~~**GAP-001 closed**~~ — ✅ done (2026-08-07) — executor routes all inbox I/O through `MessageBus` (`loop.py:197,223,247,297,382,424`).
 4. ~~**Finish GAP-005/GAP-011**~~ — ✅ done (2026-08-07) — consolidation cadence verified (`test_consolidation.py`); dashboard/mobile read paths through MessageBus (`mobile_api.py`, `kpis/*`, `monitoring.py`, `data_service.py`).
 5. ~~**Dashboard P0 stability**~~ — ✅ done (2026-08-07) — adaptive polling, coalesced chart redraws, resilient WebSocket (`ccf1650`).

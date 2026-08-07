@@ -30,12 +30,11 @@ company-registry.yaml → Jinja2 templates → .opencode/agents/*.md + task exec
 
 ### Known Gaps
 
-Current open/partial gaps (see the [gap register](ai-company/docs/ARCHITECTURE-GAPS.md) for evidence and status):
+Current open gaps (see the [gap register](ai-company/docs/ARCHITECTURE-GAPS.md) for evidence and status):
 
-- GAP-018 — no structured JSON logging / correlation IDs (partial)
 - GAP-019 — agent spec parsing lacks schema validation (open)
 
-**Resolved:** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 020 (18 of 20).
+**Resolved:** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 020 (19 of 20).
 
 See `ai-company/docs/ARCHITECTURE-GAPS.md` for the full gap analysis.
 

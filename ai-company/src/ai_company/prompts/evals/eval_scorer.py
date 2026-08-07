@@ -69,7 +69,7 @@ class EvalScorer:
 
         scorer = EvalScorer()
         result = scorer.score(test_case, llm_output)
-        print(result.score.total)  # 0.0 to 1.0
+        logger.info("Score: %s", result.score.total)  # 0.0 to 1.0
     """
 
     def score(self, test_case: EvalTestCase, raw_output: str) -> EvalResult:

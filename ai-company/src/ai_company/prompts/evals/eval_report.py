@@ -26,7 +26,7 @@ class EvalReport:
         report = EvalReport(run_result)
         report.to_markdown("reports/prompt-eval.md")
         report.to_json("reports/prompt-eval.json")
-        print(report.to_console())
+        logger.info(report.to_console())
     """
 
     def __init__(self, run_result: EvalRunResult) -> None:
