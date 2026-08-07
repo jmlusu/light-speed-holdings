@@ -577,6 +577,63 @@ class TestExecutorLoop:
         assert d["tasks_processed"] == 0
         assert d["running"] is False
 
+    def test_tick_invokes_consolidation_cadence(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """GAP-005: tick() drives the consolidation scheduler, which throttles.
+
+        Each tick calls ``ConsolidationScheduler.on_tick()``; with the default
+        tick_interval=50 no heavy consolidation pass runs on the first tick.
+        """
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        consolidation = executor._consolidation_scheduler
+        assert consolidation.tick_count == 0
+        assert consolidation.last_consolidated is None
+
+        executor.tick()
+
+        assert consolidation.tick_count == 1
+        # Default cadence (50 ticks) must NOT trigger on the first tick.
+        assert consolidation.last_consolidated is None
+
+    def test_tick_runs_consolidation_when_interval_elapsed(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """GAP-005: once the cadence elapses, a tick triggers consolidation."""
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        consolidation = executor._consolidation_scheduler
+        # Force the very next tick to consolidate.
+        consolidation._config.tick_interval = 1
+
+        executor.tick()
+
+        assert consolidation.tick_count == 1
+        assert consolidation.last_consolidated is not None
+
 
 # ── Helpers ─────────────────────────────────────────────────────────
 
