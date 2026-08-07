@@ -104,6 +104,9 @@ jobs:
 
   # ── Metrics anomaly detection ──────────────────────────────────────
   metrics-check:
+    defaults:
+      run:
+        working-directory: ai-company
     name: Metrics Anomaly Check
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'metrics' || github.event_name == 'schedule' }}
