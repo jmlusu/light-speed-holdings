@@ -9,7 +9,7 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 - **What it is**: Python CLI tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files.
 - **Core workflow**: Registry YAML → Jinja2 template → `.opencode/agents/*.md` + `company/*.yaml`
 - **Runtime shape**: Python 3.12+ CLI (Typer), no web server. Packages via setuptools, environments managed with uv.
-- **Start here**: [Architecture](docs/ARCHITECTURE.md), [Development](docs/DEVELOPMENT.md), [ECL](docs/ECL.md)
+- **Start here**: [Architecture](ai-company/docs/ARCHITECTURE.md), [Development](ai-company/docs/DEVELOPMENT.md), [ECL](ai-company/docs/ECL.md)
 
 ## 2 Core Workflow / Domain Model
 
@@ -26,17 +26,17 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 
 | Section | Document | Description |
 |---------|----------|-------------|
-| 3.1 | [System Architecture](docs/ARCHITECTURE.md) | Module hierarchy, data flow, key files |
-| 3.2 | [ECL](docs/ECL.md) | Change lifecycle, context loading, harness workflow |
-| 3.3 | [Status](docs/STATUS.md) | Recent handoff, current state |
+| 3.1 | [System Architecture](ai-company/docs/ARCHITECTURE.md) | Module hierarchy, data flow, key files |
+| 3.2 | [ECL](ai-company/docs/ECL.md) | Change lifecycle, context loading, harness workflow |
+| 3.3 | [Status](ai-company/docs/STATUS.md) | Recent handoff, current state |
 
 ## 4 Context Loading
 
 1. Read this file.
-2. Read [ECL](docs/ECL.md) for change lifecycle and context rules.
+2. Read [ECL](ai-company/docs/ECL.md) for change lifecycle and context rules.
 3. If `harness/changes/active/summary.md` exists, read active change files before any task-specific docs.
 4. If no active change exists and `harness/evolution/pending.md` exists, read it before `docs/STATUS.md`.
-5. If no active change exists and no pending evolution exists, read [Status](docs/STATUS.md).
+5. If no active change exists and no pending evolution exists, read [Status](ai-company/docs/STATUS.md).
 6. Read the relevant source files for the task.
 
 ## 5 Development Commands

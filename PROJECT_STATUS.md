@@ -65,14 +65,14 @@ company-registry.yaml (127 agents, 18 departments)
 
 - **127 agents** defined in `ai-company/company-registry.yaml`, 127 generated `.md` files in `ai-company/.opencode/agents/` — registry → JSON → generated agents are in sync.
 - Agent naming convention: registry IDs use underscores (`board_chair`), generated files and config references use hyphens (`board-chair`). `ai-company validate` checks config references resolve to generated files.
-- Root `.opencode/agents/` still holds **134 stale `.md` files** (a legacy parallel generation area).
+- Root `.opencode/agents/` still holds **134 `.md` files** — 127 canonical (duplicates of `ai-company/.opencode/agents/`) + **7 legacy underscore duplicates** (`compliance_officer`, `customer_success_owner`, `data_scientist`, `employee_experience_lead`, `financial_analyst`, `industry_analyst_relations_manager`, `learning_development_lead`) that are byte-identical to their hyphen-named counterparts.
 - Cost tracker persists to SQLite (migrated 2026-07-23).
 
 ### Verified quality gates (2026-08-07)
 
-- **pytest:** 1492 tests collected (`tests/` — 78 unit, 13 integration, 4 e2e, 1 performance, 9 root-level).
+- **pytest:** 1494 tests collected (`tests/` — 78 unit, 13 integration, 4 e2e, 1 performance, 9 root-level).
 - **ruff:** clean (`All checks passed`).
-- **mypy:** clean (`Success: no issues found in 174 source files`).
+- **mypy:** clean (`Success: no issues found in 177 source files`).
 
 ---
 
@@ -92,8 +92,9 @@ company-registry.yaml (127 agents, 18 departments)
 - Engineering: migrated to **uv** package manager (2026-08-06), ruff exception-handling rules applied, runtime/generated artifacts untracked, DevBootstrap provisioning added (new, uncommitted).
 
 ### Gap closure (ARCHITECTURE-GAPS.md — 20 gaps)
-- **RESOLVED (16):** GAP-001*, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020.
-- **PARTIAL (2):** GAP-001 (executor still reads/writes `inbox.json` directly instead of routing all I/O through MessageBus — the core seam remains), GAP-005 (memory consolidation TODO still open), GAP-011 (partial).
+- **RESOLVED (16):** GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020. GAP-001 closed 2026-08-07 — executor routes all inbox I/O through `MessageBus` (`loop.py:197,223,247,297,382,424`).
+- **PARTIAL (3):** GAP-005 (memory consolidation scheduler wired into the executor loop; cadence verification pending), GAP-011 (read paths still bypass MessageBus), GAP-018 (structured logging).
+- **OPEN (1):** GAP-019 (agent spec validation).
 
 ---
 
@@ -113,11 +114,10 @@ Source: `.ai-company/state/TECH_DEBT.md` (TD-1…TD-10) + fresh findings.
 | TD-8 | No hash-check on generated files | Generator output drift not detected automatically |
 | TD-9 | Dashboard known-issue backlog | P0: auto-scroll instability (see Known Issues) |
 | TD-10 | No pre-commit enforcement on all paths | Hooks installed locally; not a CI gate |
-| — | GAP-001 partial: executor bypasses MessageBus for direct file I/O | Race risk between dashboard API and executor on `inbox.json` |
-| — | README self-contradicts test counts | Claims "727 passing" and "Run all 1408 tests"; actual = 1492 collected |
+| — | README test counts | Fixed 2026-08-07 — README now cites 1494 tests (was "727 passing" / "Run all 1408 tests") |
 | — | Stale/duplicate artifacts | Root `.opencode/agents/` (134 vs 127), `agent-list.txt` (legacy `spec_*`/`board-*` names), root `orchestrator/` data dir, `.bak` files |
 | — | Data hygiene | `.opencode/inbox.json` contains test/pollution tasks from `marketing-service`; `harness/` ECL is initialized but inactive (INDEX.json `[]`, no active change, no pending evolution) |
-| — | Doc drift | Root `docs/` has only `MISSION_AND_VISION.md` but README/AGENTS.md link to root-level ARCHITECTURE/STATUS/ECL docs that live under `ai-company/docs/`. `docs/DEVELOPMENT.md` (referenced by AGENTS.md) **does not exist**. Several planning docs are stale vs. per-item status flags |
+| — | Doc drift (partially fixed 2026-08-07) | Root README/AGENTS.md links repointed to `ai-company/docs/`; `ai-company/docs/DEVELOPMENT.md` created; gap statuses + test counts reconciled. Remaining: several planning docs still stale vs. per-item status flags |
 | — | In-flight uncommitted work | Modified: `.github/workflows/autonomous.yml`, `daily-check.ps1`; deleted `ai-company/.github/workflows/{autonomous,ci}.yml`; untracked `bootstrap/`, `cli/bootstrap.py`, `test_dev_bootstrap.py` |
 
 ---
@@ -158,10 +158,10 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 
 1. **Commit/park in-flight work** — bootstrap feature (DevBootstrap + CLI + tests), workflow file moves, `daily-check.ps1` change. These are uncommitted and would be lost on any destructive operation.
 2. **Start Sprint 4 (quality & completeness)** — highest-value items: structured logging w/ correlation IDs, agent spec validation CLI, token counting. (Backlog: 48 items/267 pts.)
-3. **Close GAP-001** — route all executor inbox I/O through MessageBus to eliminate the concurrency race (the last CRITICAL-class seam).
-4. **Resolve GAP-005/GAP-011** — memory consolidation TODO; finish the partial gap.
+3. **GAP-001 closed** (2026-08-07) — executor routes all inbox I/O through `MessageBus` (`loop.py:197,223,247,297,382,424`).
+4. **Finish GAP-005/GAP-011** — verify consolidation cadence (scheduler wired in `loop.py:201-202`); move dashboard/mobile read paths through MessageBus.
 5. **Dashboard P0 stability** — auto-scroll/flicker/WebSocket-reconnect issues (see Known Issues).
-6. **Doc reconciliation** — fix root-vs-`ai-company` doc links, create the missing `DEVELOPMENT.md`, dedupe root `.opencode/agents/` + `agent-list.txt`, purge test-polluted `inbox.json`.
+6. **Doc reconciliation wrap-up** — links fixed, `DEVELOPMENT.md` created, gap/test counts corrected. Remaining manual ops: delete `agent-list.txt`, dedupe root `.opencode/agents/` (7 legacy underscore files), purge test-polluted `ai-company/.opencode/inbox.json` (backup first).
 7. **Ops** — configure GEMINI_API_KEY + KIMI_API_KEY as GitHub Actions secrets (pending since 2026-08-13 reminder in `daily-check.ps1`).
 8. **CI hardening** — coverage gate, Dependabot, generated-file hash check, safety scan in CI.
 
@@ -172,14 +172,14 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 | Severity | Issue | Status / Source |
 |----------|-------|-----------------|
 | P0 | Dashboard auto-scroll instability — kanban jumping, table re-render, chart flicker, WebSocket disconnects, silent API failures, reconnect loops | `docs/QA-DASHBOARD-STABILIZATION.md`; root causes identified (10 s polling, chart destroy/recreate, no scroll guards); e2e coverage exists |
-| CRITICAL | Executor bypasses MessageBus — direct `inbox.json` reads/writes in `Executor._get_pending_tasks()` / `_update_task_status()` / `_complete_task()` | GAP-001 (partial) |
+| FIXED | Executor bypassed MessageBus — direct `inbox.json` reads/writes in the executor | GAP-001; resolved 2026-08-07 — all inbox I/O now via `self.bus.*` (`loop.py:197,223,247,297,382,424`) |
 | HIGH | Concurrent dashboard API + executor writes can clobber shared JSON/YAML state | GAP-002 residue; `store/file_store.py` atomic writes exist but not applied everywhere |
 | MED | HITL gate blocks executor thread up to 30 min per approval | README known gap; non-blocking via `concurrent.futures.Future` implemented — verify |
 | MED | WebSocket broadcast functions exist but were not called | README known gap; dashboard WS integration tests added in Sprint 3 — verify |
 | MED | Dashboard CORS/auth posture historically lax | README said "all origins, no auth"; `app.py` now has `X-API-Key` + configurable CORS (GAP-010 resolved) — re-verify live config |
 | FIXED | S3-05 LLM retry provider cycling regression — `provider_idx = attempt % len(provider_chain)` always hit provider 0 on retries | `SPRINT3-DELEGATION-SUMMARY.md`; fixed 2026-07-22 |
 | OPS | GEMINI/KIMI API keys not configured in GitHub Actions | `daily-check.ps1` reminder dated 2026-08-13 |
-| DOC | Root README/AGENTS.md link to docs that don't exist at root; `docs/DEVELOPMENT.md` missing | Fresh finding 2026-08-07 |
+| FIXED | Root README/AGENTS.md linked to missing root-level docs; `docs/DEVELOPMENT.md` missing | Fixed 2026-08-07 — links repointed to `ai-company/docs/`; `ai-company/docs/DEVELOPMENT.md` created |
 | DATA | `inbox.json` polluted with marketing-service test tasks; `memory/` holds run/test data (not status records) | Fresh finding 2026-08-07 |
 
 ---
@@ -241,7 +241,7 @@ docker compose -f docker-compose.staging.yml up --build                       # 
 docker compose -f docker-compose.staging.yml --profile worker up              # + worker
 docker compose -f docker-compose.staging.yml --profile monitoring up          # + Prometheus
 ```
-Staging dashboard: port **9420** (production: **8420**).
+Staging dashboard: host port **8421** → container **8420** (production: **8420**).
 
 ### Safety rules
 - Do not edit secrets, local env files, generated build outputs, or dependency folders.

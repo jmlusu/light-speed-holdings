@@ -1,7 +1,7 @@
 # Architecture Gap Analysis — AI Company Builder
 
-**Author:** Software Architect  
-**Date:** 2026-07-20 (updated)  
+**Author:** Software Architect
+**Date:** 2026-07-20 (updated)
 **Scope:** End-to-end pipeline from task ingestion through execution, memory, and dashboard
 
 ---
@@ -10,7 +10,7 @@
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
 
-**Resolved gaps (as of 2026-07-22, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-005, GAP-011. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+**Resolved gaps (as of 2026-07-22, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-005, GAP-011, GAP-018. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
 
 > **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
@@ -24,25 +24,24 @@ The AI Company Builder has a solid set of individually well-designed components,
 |-------|-------|
 | **Severity** | CRITICAL |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
-| **Files** | `executor/loop.py:124-142`, `orchestrator/message_bus.py` |
-| **Status** | 🟡 PARTIALLY RESOLVED — AgentLoop wired in, but executor still reads inbox.json directly |
+| **Files** | `executor/loop.py:197,223,247,297,382,424`, `orchestrator/message_bus.py` |
+| **Status** | ✅ RESOLVED — `loop.py:197` `bus.get_pending_tasks()`, `:223` `bus.get_task_by_id()`, `:247,:297,:382` `bus.update_task_status()`, `:424` `bus.send_task()`; no direct `inbox.json` I/O remains in the executor. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
-The AgentLoop is now wired into the executor (`loop.py:106-112`) and processes tasks through the multi-turn agentic loop. However, `Executor._get_pending_tasks()` still reads `inbox.json` directly via `json.loads(inbox_path.read_text(...))`. Similarly, `_update_task_status()` and `_complete_task()` write to `inbox.json` directly. The `MessageBus` class is used for `send_task()` in `_create_subtask_from_record()`.
+**Current State:**
+The executor routes all inbox I/O through `MessageBus` methods. `tick()` fetches pending tasks via `self.bus.get_pending_tasks()` (`loop.py:197`), resumes parked tasks via `self.bus.get_task_by_id()` (`loop.py:223`), updates task state with `self.bus.update_task_status()` (`loop.py:247,297,382`), and creates subtasks via `self.bus.send_task()` (`loop.py:424`). No direct `json.loads(inbox_path.read_text(...))` reads or file writes remain in the executor.
 
-**Desired State:**  
+**Desired State:**
 All inbox reads and writes go through `MessageBus` methods. The bus becomes the single source of truth for task state mutations.
 
-**Risk:**  
+**Risk:**
 Two code paths (MessageBus + Executor) writing the same file without coordination creates race conditions. If the dashboard API and executor run concurrently, writes can clobber each other.
 
 **Fix:**
 ```
-1. Add MessageBus.get_pending_tasks() -> list[Task]
-2. Add MessageBus.update_status(task_id, status, result=None)
-3. Remove direct file I/O from Executor._get_pending_tasks,
-   _update_task_status, _complete_task
-4. Make inbox.json writes go through a single write-lock path
+1. ✅ MessageBus.get_pending_tasks() -> list[Task]
+2. ✅ MessageBus.update_task_status(task_id, status, result=None)
+3. ✅ Direct file I/O removed from the executor (loop.py uses self.bus.* only)
+4. ✅ Inbox.json writes go through MessageBus + atomic FileStore (GAP-002)
 ```
 
 **Planned for:** Sprint 2 (S2-01, S2-02, S2-03)
@@ -58,13 +57,13 @@ Two code paths (MessageBus + Executor) writing the same file without coordinatio
 | **Files** | `orchestrator/message_bus.py`, `orchestrator/approval.py`, `dashboard/api.py`, `executor/loop.py` |
 | **Status** | ✅ RESOLVED — `store/file_store.py` provides atomic writes + platform locking (`msvcrt`/`fcntl`); used by MessageBus/approval/escalation. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 Four independent components read/write `inbox.json`: MessageBus, Executor, Dashboard API (POST /tasks), and BriefingGenerator. All use raw `json.load/dump` with no file locking. Same applies to `approvals.yaml` (ApprovalGate + Dashboard API) and `escalation.yaml`.
 
-**Desired State:**  
+**Desired State:**
 A `FileStore` abstraction with atomic writes (write-to-temp + rename) and optional file locking (`fcntl.flock` on Unix, `msvcrt.locking` on Windows).
 
-**Risk:**  
+**Risk:**
 Concurrent writes from executor + dashboard API cause data loss. The JSON array can be truncated mid-write, losing all pending tasks.
 
 **Fix:**
@@ -85,13 +84,13 @@ Concurrent writes from executor + dashboard API cause data loss. The JSON array 
 | **Files** | `orchestrator/tier_rules.py` (418 lines), `executor/tool_runner.py:24,57` |
 | **Status** | ✅ RESOLVED — `tool_runner.py:361` calls `classify_tool_action()`; no hardcoded `DANGEROUS_TOOLS`. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `ToolRunner.DANGEROUS_TOOLS` is a hardcoded set `{"write", "execute", "code_interpreter"}`. The HITL gate is binary: approve or deny. Meanwhile, `tier_rules.py` implements a sophisticated 5-tier classification system with path sensitivity, command analysis, and seniority-based de-escalation — **none of which is used**.
 
-**Desired State:**  
+**Desired State:**
 ToolRunner consults `classify_tool_action()` to determine the approval tier. Tier 0-1 actions auto-approve. Tier 2+ go through HITL with tier-specific timeout and approver count.
 
-**Risk:**  
+**Risk:**
 A "write config/README.md" gets the same approval friction as "write src/main.py". A "rm -rf /" command gets the same treatment as "ls". The security posture is weaker than designed.
 
 **Fix:**
@@ -113,13 +112,13 @@ A "write config/README.md" gets the same approval friction as "write src/main.py
 | **Files** | `executor/hitl_gate.py:54-61` |
 | **Status** | ✅ RESOLVED — `hitl_gate.py:66-95` `request_and_wait()` returns a `concurrent.futures.Future`; executor marks `WAITING_APPROVAL` and skips (`loop.py:228`). *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `HITLGate.request_and_wait()` runs a `while datetime.now() < deadline: time.sleep(self.poll_interval)` loop. This blocks the entire executor thread for up to 30 minutes per approval. Since the executor processes tasks sequentially in `tick()`, a single pending approval freezes all task processing.
 
-**Desired State:**  
+**Desired State:**
 Non-blocking approval flow. The executor marks the task as "awaiting_approval", yields, and resumes when the approval is resolved (via polling or event).
 
-**Risk:**  
+**Risk:**
 A single HITL request freezes the entire executor pipeline. If the executor runs in a loop (`start()`), it can't process any other tasks while waiting.
 
 **Fix:**
@@ -140,24 +139,24 @@ A single HITL request freezes the entire executor pipeline. If the executor runs
 | **Severity** | HIGH |
 | **Sprint** | Sprint 3 (Memory Integration) |
 | **Files** | `memory/engine.py` (182 lines), `executor/loop.py`, `executor/agent_loop.py` |
-| **Status** | 🟡 PARTIALLY RESOLVED — recall + store wired in, consolidation not yet done |
+| **Status** | 🟡 PARTIALLY RESOLVED — recall + store wired in; consolidation scheduler wired into the executor loop (`loop.py:122-127,201-202`); cadence/verification pending |
 
-**Current State:**  
-Memory integration exists at `memory/integration.py` with `init_memory()` and `record_task_outcome()`. The executor calls `init_memory()` in `__init__` (line 100), recalls context before task execution via `_recall_memory_context()` (line 197), and records outcomes on completion/failure (lines 220-261). However, periodic consolidation is not yet wired into the executor loop.
+**Current State:**
+Memory integration exists at `memory/integration.py` with `init_memory()` and `record_task_outcome()`. The executor calls `init_memory()` in `__init__` (line 100), recalls context before task execution via `_recall_memory_context()` (line 197), and records outcomes on completion/failure (lines 220-261). Periodic consolidation is now wired in: `loop.py:122-127` constructs `ConsolidationScheduler` and `loop.py:201-202` calls `on_tick()` each tick (see `memory/consolidation.py`).
 
-**Desired State:**  
+**Desired State:**
 - After task completion: `memory.store("episodic", ...)` with task summary, agent, outcome ✅ Done
 - Before task execution: `memory.recall("semantic", query=task.instruction)` for context ✅ Done
-- Periodic consolidation: `memory.consolidate()` for aggregate insights ❌ Not done
+- Periodic consolidation: `memory.consolidate()` for aggregate insights ✅ Done (scheduler in `loop.py:201-202`; cadence verification pending)
 
-**Risk:**  
+**Risk:**
 The system now has basic institutional memory. Agents can learn from past task outcomes. However, without consolidation, memory grows unbounded and old memories lose relevance.
 
 **Fix:**
 ```
 1. ✅ MemoryIntegration hook in Executor._process_task — DONE
 2. ✅ Memory context assembly — DONE
-3. Periodic consolidation in the executor start() loop — TODO
+3. ✅ Periodic consolidation in the executor loop — DONE (loop.py:201-202 `on_tick()`)
 ```
 
 ---
@@ -171,13 +170,13 @@ The system now has basic institutional memory. Agents can learn from past task o
 | **Files** | `dashboard/ws.py:130-145` |
 | **Status** | ✅ RESOLVED — `dashboard/api.py:111,129,144` invoke `broadcast_kpi_update`/`broadcast_alert`/escalation alerts. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `broadcast_kpi_update()` and `broadcast_alert()` are defined but never called from anywhere in the codebase. The WebSocket endpoint accepts connections and handles ping/pong, but there's no mechanism to push data to connected clients.
 
-**Desired State:**  
+**Desired State:**
 The executor, approval gate, and escalation manager push events to connected dashboard clients when state changes occur.
 
-**Risk:**  
+**Risk:**
 The WebSocket connection is useless. Clients connect but never receive data. Dashboard must poll REST endpoints instead.
 
 **Fix:**
@@ -201,10 +200,10 @@ The WebSocket connection is useless. Clients connect but never receive data. Das
 | **Files** | `orchestrator/scheduler.py` (80 lines), `executor/loop.py` |
 | **Status** | ✅ RESOLVED |
 
-**Current State:**  
+**Current State:**
 The executor's `tick()` method now calls `self.scheduler.create_pending_tasks(self.bus)` at the start of each tick (line 149). Scheduled tasks are injected into the inbox when their `next_run` time arrives.
 
-**Resolution:**  
+**Resolution:**
 ```
 1. ✅ In Executor.__init__: self.scheduler = Scheduler() (line 97)
 2. ✅ At start of tick(): self.scheduler.create_pending_tasks(self.bus) (line 149)
@@ -221,13 +220,13 @@ The executor's `tick()` method now calls `self.scheduler.create_pending_tasks(se
 | **Files** | `orchestrator/escalation.py:125-144` |
 | **Status** | ✅ RESOLVED — `escalation.py:117` restores events on load; `_save_config()` (`:102,140`) persists events to YAML. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `EscalationManager.trigger_escalation()` appends events to `self.events` (in-memory list) but `_save_config()` only persists `self.rules`, not `self.events`. Events are lost on process restart. The dashboard reads events from `escalation.yaml`, but the manager never writes them there.
 
-**Desired State:**  
+**Desired State:**
 Events are persisted to `escalation.yaml` alongside rules. On load, events are restored from the file.
 
-**Risk:**  
+**Risk:**
 All escalation history vanishes on restart. Dashboard shows empty escalations after restart even though they occurred. Postmortem creation loses context.
 
 **Fix:**
@@ -248,13 +247,13 @@ All escalation history vanishes on restart. Dashboard shows empty escalations af
 | **Files** | `llm/cost_tracker.py:104-107` |
 | **Status** | ✅ RESOLVED — `cost_tracker.py:110` calls `_rebuild_accumulators()` (`:294`) which replays `cost_log.jsonl` on init. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `CostTracker._daily_cost` and `_task_costs` are plain dicts initialized empty each time. The JSONL log file persists records, but `check_budget()` reads from the in-memory dicts. After restart, budget enforcement resets to zero.
 
-**Desired State:**  
+**Desired State:**
 On initialization, `CostTracker` replays the JSONL log to rebuild in-memory accumulators. Or: daily/task budgets are computed from the log on each check.
 
-**Risk:**  
+**Risk:**
 Budget enforcement is ineffective across restarts. A user could restart the process to bypass budget limits.
 
 **Fix:**
@@ -275,13 +274,13 @@ Budget enforcement is ineffective across restarts. A user could restart the proc
 | **Files** | `dashboard/app.py:20-27`, `dashboard/api.py` |
 | **Status** | ✅ RESOLVED — `app.py:94` `_check_api_key()` + middleware (`:207`); CORS origins configurable (`:182-184`). Note: open mode when `DASHBOARD_API_KEY` unset — should be fail-closed for network deploys. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `allow_origins=["*"]` with `allow_credentials=True`. No authentication middleware. Anyone on the network can create tasks, approve requests, and view all company data. The dashboard API writes directly to shared files.
 
-**Desired State:**  
+**Desired State:**
 At minimum: restrict CORS to known origins. Add API key or session-based auth for write endpoints. Add rate limiting.
 
-**Risk:**  
+**Risk:**
 In a multi-user or network-exposed deployment, any client can manipulate tasks and approvals. The CEO dashboard becomes an attack surface.
 
 **Fix:**
@@ -303,13 +302,13 @@ In a multi-user or network-exposed deployment, any client can manipulate tasks a
 | **Files** | `dashboard/api.py:62-63, 166, 174-190` |
 | **Status** | 🟡 PARTIAL — task *write* path now uses `get_bus().send_task()` (`api.py:313`). But `mobile_api.py` (`:193,256,404,540,778`) and `dashboard/kpis/*` still read `.opencode/inbox.json` directly (read-only). *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `POST /api/tasks` reads `inbox.json`, appends a task, and writes it back — all outside of MessageBus. `GET /api/tasks` reads the file directly. This creates a second write path alongside MessageBus and Executor.
 
-**Desired State:**  
+**Desired State:**
 All task operations go through MessageBus. Dashboard API uses `bus.get_inbox()`, `bus.send_task()`, etc.
 
-**Risk:**  
+**Risk:**
 Race condition: dashboard creates a task at the same moment executor is updating task status. One write clobbers the other.
 
 **Fix:**
@@ -330,10 +329,10 @@ Race condition: dashboard creates a task at the same moment executor is updating
 | **Files** | `executor/agent_loop.py:277` |
 | **Status** | ✅ RESOLVED |
 
-**Current State:**  
+**Current State:**
 `AgentLoop` now stores `self._current_priority` (set at line 110 from the `run()` method's `priority` parameter) and forwards it to the model router. The `run()` method stores priority at line 134: `self._current_priority = priority`.
 
-**Resolution:**  
+**Resolution:**
 ```
 1. ✅ self._current_priority stored in AgentLoop.__init__ and set in run()
 2. ✅ Forwarded to model router for proper tier resolution
@@ -350,10 +349,10 @@ Race condition: dashboard creates a task at the same moment executor is updating
 | **Files** | `dashboard/kpi_collector.py:90-101`, `dashboard/kpis/` |
 | **Status** | ✅ RESOLVED |
 
-**Current State:**  
+**Current State:**
 `collect_all_kpis()` at `dashboard/kpis/__init__.py` now iterates over `ALL_COLLECTORS` which includes all 7 department collectors: Engineering, HR, Finance, Marketing, Sales, CustomerSuccess, Legal. Each collector follows the `KPICollector` base class pattern.
 
-**Resolution:**  
+**Resolution:**
 ```
 1. ✅ ALL_COLLECTORS list with all 7 department collector classes
 2. ✅ collect_all_kpis() iterates over registered collectors
@@ -369,15 +368,15 @@ Race condition: dashboard creates a task at the same moment executor is updating
 | **Severity** | LOW |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `orchestrator/briefing.py:37` |
-| **Status** | 🔴 OPEN — verified: `briefing.py:40` still calls `self.bus._load_tasks()`. |
+| **Status** | ✅ RESOLVED — `briefing.py:42` uses `get_all_tasks_raw()` (public `MessageBus` API); no private `_load_tasks()` access remains. *(Prose below describes pre-fix state.)* |
 
-**Current State:**  
+**Current State:**
 `self.bus._load_tasks()` accesses a private method of MessageBus. If MessageBus internals change, this breaks silently.
 
-**Desired State:**  
+**Desired State:**
 BriefingGenerator uses `MessageBus.get_inbox()` or a new public `get_all_tasks()` method.
 
-**Risk:**  
+**Risk:**
 Fragile coupling to MessageBus internals. Minor but a code quality issue.
 
 **Fix:**
@@ -397,13 +396,13 @@ Fragile coupling to MessageBus internals. Minor but a code quality issue.
 | **Files** | `llm/client.py:94-114` |
 | **Status** | 🔴 OPEN |
 
-**Current State:**  
+**Current State:**
 The outer loop is `for attempt in range(1, max_retries + 1)` and the inner loop iterates `provider_chain`. On a successful JSON parse, it returns. On invalid JSON, the `break` at line 111 exits the inner loop and the outer loop continues — restarting the provider chain from the beginning. This means retry attempts don't cycle through providers as intended; they always start from provider 0.
 
-**Desired State:**  
+**Desired State:**
 Retries should cycle through providers round-robin, or at minimum try different providers on subsequent attempts.
 
-**Risk:**  
+**Risk:**
 If provider 0 consistently returns invalid JSON, all 5 retries hit the same provider. Fallback to other providers doesn't happen across retries.
 
 **Fix:**
@@ -424,13 +423,13 @@ If provider 0 consistently returns invalid JSON, all 5 retries hit the same prov
 | **Sprint** | Sprint 2 (Security & Gating) |
 | **Files** | `executor/tool_runner.py:124` |
 
-**Current State:**  
+**Current State:**
 `subprocess.run(command, shell=True, ...)` allows shell injection. An LLM could craft a command like `"; rm -rf / #"` that bypasses path-based security checks. The tier_rules have command patterns but aren't integrated (GAP-003).
 
-**Desired State:**  
+**Desired State:**
 Use `subprocess.run(shlex.split(command), shell=False)` or validate the command against an allowlist before execution.
 
-**Risk:**  
+**Risk:**
 Shell injection vulnerability. An adversarial or hallucinating LLM could execute arbitrary commands on the host.
 
 **Fix:**
@@ -451,10 +450,10 @@ Shell injection vulnerability. An adversarial or hallucinating LLM could execute
 | **Files** | `executor/loop.py`, `models/task.py` |
 | **Status** | ✅ RESOLVED |
 
-**Current State:**  
+**Current State:**
 `executor/dead_letter.py` implements `DeadLetterQueue` with `move_task()`, `list_entries()`, `get_task()`, `retry_task()`, and `clear()`. The `detect_stale_tasks()` function scans inbox for `in_progress` tasks older than 30 minutes and moves them to `.opencode/dead_letter.json`. The executor calls `detect_stale_tasks()` at the start of each `tick()` (line 152).
 
-**Resolution:**  
+**Resolution:**
 ```
 1. ✅ DeadLetterQueue class with full CRUD operations
 2. ✅ detect_stale_tasks() scans for stale in_progress tasks
@@ -472,13 +471,13 @@ Shell injection vulnerability. An adversarial or hallucinating LLM could execute
 | **Sprint** | Sprint 4 (Dashboard Completeness) |
 | **Files** | Multiple files |
 
-**Current State:**  
+**Current State:**
 Mixed logging: some modules use `logger.info()` (stdlib logging), some use `print()`, some have no logging at all. No structured (JSON) log format. No correlation IDs linking task → agent → tool calls.
 
-**Desired State:**  
+**Desired State:**
 Structured JSON logging with correlation IDs. Every task lifecycle event (created, started, tool_call, completed, failed) is logged with consistent fields.
 
-**Risk:**  
+**Risk:**
 Difficult to debug production issues. No audit trail for compliance.
 
 **Fix:**
@@ -498,13 +497,13 @@ Difficult to debug production issues. No audit trail for compliance.
 | **Sprint** | Sprint 4 (Dashboard Completeness) |
 | **Files** | `executor/context.py:31-100`, `generator.py` |
 
-**Current State:**  
+**Current State:**
 `parse_agent_spec()` reads `.opencode/agents/{name}.md` with no schema validation. If a generated spec is malformed (missing sections, wrong frontmatter), the parser silently returns an `AgentContext` with empty fields. No validation, no warnings.
 
-**Desired State:**  
+**Desired State:**
 Agent spec parsing includes validation. Malformed specs produce warnings. A `validate` CLI command checks all specs against a schema.
 
-**Risk:**  
+**Risk:**
 Silent degradation: an agent with missing mission/responsibilities runs with generic prompts, producing low-quality output without any indication.
 
 **Fix:**
@@ -526,10 +525,10 @@ Silent degradation: an agent with missing mission/responsibilities runs with gen
 | **Files** | `tests/` directory |
 | **Status** | 🟡 PARTIALLY RESOLVED — integration tests exist for components, not full pipeline |
 
-**Current State:**  
+**Current State:**
 Integration tests exist for individual components: `tests/integration/test_pipeline.py` (memory, graph, scheduler, KPI), `tests/test_audit_integration.py`, `tests/test_memory_integration.py`, `tests/test_scheduler_integration.py`. However, no single test exercises the full happy path: MessageBus → Executor → AgentLoop → ToolRunner → Task completion → Dashboard shows result.
 
-**Desired State:**  
+**Desired State:**
 At least one integration test that exercises the happy path end-to-end with mocked LLM responses.
 
 **Fix:**
@@ -549,7 +548,7 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-002 | CRITICAL | File Store (all shared state) | Sprint 1 | High | ✅ Resolved | `store/file_store.py:71` atomic + `msvcrt`/`fcntl` locking |
 | GAP-003 | HIGH | ToolRunner ↔ Tier Rules | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:361` calls `classify_tool_action()` |
 | GAP-004 | HIGH | HITLGate (blocking) | Sprint 2 | Medium | ✅ Resolved | `hitl_gate.py:72` returns `Future`; no busy-wait gate path |
-| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High | 🟡 Partial | recall/store wired; `consolidate()` cadence not in loop |
+| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High | 🟡 Partial | recall/store wired; consolidation scheduler in loop (`loop.py:122-127,201-202`); cadence verification pending |
 | GAP-006 | HIGH | WebSocket Broadcast | Sprint 1 | Low | ✅ Resolved | `dashboard/api.py:111,129,144` call `broadcast_*` |
 | GAP-007 | HIGH | Scheduler ↔ Executor | Sprint 3 | Medium | ✅ Resolved | `loop.py:149` `scheduler.create_pending_tasks(self.bus)` |
 | GAP-008 | HIGH | Escalation Persistence | Sprint 3 | Low | ✅ Resolved | `escalation.py:117,140` persist+restore events |
@@ -567,9 +566,9 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | ✅ Resolved | `tests/integration/test_full_pipeline.py` (305 lines, 10 tests, all pass) |
 
 **Resolved:** 16 of 20 (GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020)
-**Partial:** 2 (GAP-005, GAP-011)
-**Open:** 2 (GAP-018, GAP-019)
-**Remaining work to reach "done":** finish consolidation (GAP-005), read-path MessageBus (GAP-011), structured logging (GAP-018), and agent spec validation (GAP-019).
+**Partial:** 3 (GAP-005, GAP-011, GAP-018)
+**Open:** 1 (GAP-019)
+**Remaining work to reach "done":** finish consolidation cadence verification (GAP-005), read-path MessageBus (GAP-011), structured logging (GAP-018), and agent spec validation (GAP-019).
 
 ## Recommended Sprint Plan
 
