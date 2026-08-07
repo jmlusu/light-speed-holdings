@@ -27,6 +27,7 @@ htmlcov/
 coverage.xml
 .pytest-benchmark/
 benchmarks/
+cov_gate.log
 
 # ── Type checking ──────────────────────────────────────────────
 .mypy_cache/
