@@ -10,7 +10,7 @@
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
 
-**Resolved gaps (as of 2026-07-22, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-005, GAP-011, GAP-018. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+**Resolved gaps (as of 2026-08-07, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-005, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-011, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-018. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
 
 > **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
@@ -139,7 +139,7 @@ A single HITL request freezes the entire executor pipeline. If the executor runs
 | **Severity** | HIGH |
 | **Sprint** | Sprint 3 (Memory Integration) |
 | **Files** | `memory/engine.py` (182 lines), `executor/loop.py`, `executor/agent_loop.py` |
-| **Status** | 🟡 PARTIALLY RESOLVED — recall + store wired in; consolidation scheduler wired into the executor loop (`loop.py:122-127,201-202`); cadence/verification pending |
+| **Status** | ✅ RESOLVED — recall + store wired; `ConsolidationScheduler` built in the executor (`loop.py:122-127`) and driven every tick (`loop.py:201-202`); cadence + thresholds verified by `tests/unit/test_consolidation.py` (7 tests). |
 
 **Current State:**
 Memory integration exists at `memory/integration.py` with `init_memory()` and `record_task_outcome()`. The executor calls `init_memory()` in `__init__` (line 100), recalls context before task execution via `_recall_memory_context()` (line 197), and records outcomes on completion/failure (lines 220-261). Periodic consolidation is now wired in: `loop.py:122-127` constructs `ConsolidationScheduler` and `loop.py:201-202` calls `on_tick()` each tick (see `memory/consolidation.py`).
@@ -147,7 +147,7 @@ Memory integration exists at `memory/integration.py` with `init_memory()` and `r
 **Desired State:**
 - After task completion: `memory.store("episodic", ...)` with task summary, agent, outcome ✅ Done
 - Before task execution: `memory.recall("semantic", query=task.instruction)` for context ✅ Done
-- Periodic consolidation: `memory.consolidate()` for aggregate insights ✅ Done (scheduler in `loop.py:201-202`; cadence verification pending)
+- Periodic consolidation: `memory.consolidate()` for aggregate insights ✅ Done (scheduler in `loop.py:201-202`; cadence verified by `test_consolidation.py`)
 
 **Risk:**
 The system now has basic institutional memory. Agents can learn from past task outcomes. However, without consolidation, memory grows unbounded and old memories lose relevance.
@@ -300,7 +300,7 @@ In a multi-user or network-exposed deployment, any client can manipulate tasks a
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 1 (Foundation Fixes) |
 | **Files** | `dashboard/api.py:62-63, 166, 174-190` |
-| **Status** | 🟡 PARTIAL — task *write* path now uses `get_bus().send_task()` (`api.py:313`). But `mobile_api.py` (`:193,256,404,540,778`) and `dashboard/kpis/*` still read `.opencode/inbox.json` directly (read-only). *(Prose below describes pre-fix state.)* |
+| **Status** | ✅ RESOLVED — all dashboard/mobile read paths route through `MessageBus`: `mobile_api.py` + `kpis/*` via `get_bus().get_all_tasks_raw()`/`update_task()` (2026-08-07), `monitoring.py` + `data_service.py` via MessageBus with file fallback. *(Prose below describes pre-fix state.)* |
 
 **Current State:**
 `POST /api/tasks` reads `inbox.json`, appends a task, and writes it back — all outside of MessageBus. `GET /api/tasks` reads the file directly. This creates a second write path alongside MessageBus and Executor.
@@ -394,7 +394,7 @@ Fragile coupling to MessageBus internals. Minor but a code quality issue.
 | **Severity** | MEDIUM |
 | **Sprint** | Sprint 2 (Security & Gating) |
 | **Files** | `llm/client.py:94-114` |
-| **Status** | 🔴 OPEN |
+| **Status** | ✅ RESOLVED — `client.py:136` (`execute_task`) and `client.py:207` (`execute_task_stream`) select `provider_idx = attempt % len(provider_chain)`; retries cycle round-robin. Covered by `tests/unit/test_llm.py::test_execute_task_retries_cycle_providers` + `::test_execute_task_round_robin_distribution`. *(Prose below describes pre-fix state.)* |
 
 **Current State:**
 The outer loop is `for attempt in range(1, max_retries + 1)` and the inner loop iterates `provider_chain`. On a successful JSON parse, it returns. On invalid JSON, the `break` at line 111 exits the inner loop and the outer loop continues — restarting the provider chain from the beginning. This means retry attempts don't cycle through providers as intended; they always start from provider 0.
@@ -548,27 +548,27 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-002 | CRITICAL | File Store (all shared state) | Sprint 1 | High | ✅ Resolved | `store/file_store.py:71` atomic + `msvcrt`/`fcntl` locking |
 | GAP-003 | HIGH | ToolRunner ↔ Tier Rules | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:361` calls `classify_tool_action()` |
 | GAP-004 | HIGH | HITLGate (blocking) | Sprint 2 | Medium | ✅ Resolved | `hitl_gate.py:72` returns `Future`; no busy-wait gate path |
-| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High | 🟡 Partial | recall/store wired; consolidation scheduler in loop (`loop.py:122-127,201-202`); cadence verification pending |
+| GAP-005 | HIGH | Memory ↔ Executor | Sprint 3 | High | ✅ Resolved | recall/store wired; `ConsolidationScheduler` in loop (`loop.py:122-127,201-202`); cadence verified (`test_consolidation.py`, 7 tests) |
 | GAP-006 | HIGH | WebSocket Broadcast | Sprint 1 | Low | ✅ Resolved | `dashboard/api.py:111,129,144` call `broadcast_*` |
 | GAP-007 | HIGH | Scheduler ↔ Executor | Sprint 3 | Medium | ✅ Resolved | `loop.py:149` `scheduler.create_pending_tasks(self.bus)` |
 | GAP-008 | HIGH | Escalation Persistence | Sprint 3 | Low | ✅ Resolved | `escalation.py:117,140` persist+restore events |
 | GAP-009 | MEDIUM | CostTracker Persistence | Sprint 2 | Low | ✅ Resolved | `cost_tracker.py:110,294` `_rebuild_accumulators()` |
 | GAP-010 | MEDIUM | Dashboard Auth/CORS | Sprint 2 | Medium | ✅ Resolved | `app.py:94,182,207` API-key middleware + configurable CORS |
-| GAP-011 | MEDIUM | Dashboard API ↔ MessageBus | Sprint 1 | Low | 🟡 Partial | write path fixed (`api.py:313` `get_bus().send_task()`); `mobile_api.py` + `kpis/*` still read `inbox.json` (read-only) |
+| GAP-011 | MEDIUM | Dashboard API ↔ MessageBus | Sprint 1 | Low | ✅ Resolved | write via `get_bus().send_task()` (`api.py:313`); reads via MessageBus in `mobile_api.py`, `kpis/*`, `monitoring.py`, `data_service.py` (2026-08-07) |
 | GAP-012 | MEDIUM | AgentLoop Priority | Sprint 1 | Low | ✅ Resolved | `agent_loop.py` forwards priority to router |
 | GAP-013 | MEDIUM | KPI Collector Wiring | Sprint 4 | Low | ✅ Resolved | `dashboard/kpis/__init__.py` `ALL_COLLECTORS` (7 depts) |
 | GAP-014 | LOW | BriefingGenerator API | Sprint 1 | Trivial | ✅ Resolved | `briefing.py:42` uses `get_all_tasks()` (public); `message_bus.py:136` public API |
-| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | ✅ Resolved | `client.py:133-134` `provider_idx = attempt % len(provider_chain)` round-robin |
+| GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | ✅ Resolved | `client.py:136,207` `provider_idx = attempt % len(provider_chain)` round-robin; cycling tests added |
 | GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:466` `shlex.split()`; no `shell=True` |
 | GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved | `dead_letter.py` + `loop.py:174` `detect_stale_tasks()` |
 | GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | 🟡 Partial | no structured JSON/correlation IDs; 11 `print()` in non-CLI modules |
 | GAP-019 | LOW | Spec Validation | Sprint 4 | Low | 🔴 Open | `context.py:13` `AgentContext` has no `validate()`; no `agents validate` CLI |
 | GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | ✅ Resolved | `tests/integration/test_full_pipeline.py` (305 lines, 10 tests, all pass) |
 
-**Resolved:** 16 of 20 (GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020)
-**Partial:** 3 (GAP-005, GAP-011, GAP-018)
+**Resolved:** 18 of 20 (GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 020)
+**Partial:** 1 (GAP-018)
 **Open:** 1 (GAP-019)
-**Remaining work to reach "done":** finish consolidation cadence verification (GAP-005), read-path MessageBus (GAP-011), structured logging (GAP-018), and agent spec validation (GAP-019).
+**Remaining work to reach "done":** structured logging with correlation IDs (GAP-018) and agent spec validation (GAP-019).
 
 ## Recommended Sprint Plan
 

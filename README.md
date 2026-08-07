@@ -26,18 +26,16 @@ company-registry.yaml → Jinja2 templates → .opencode/agents/*.md + task exec
 | Registry system (19 YAML configs) | Working | Covered |
 | Decision/Workflow/Graph engines | Working | Covered |
 
-**1494 tests passing.** Ruff lint clean. Mypy type-check clean (177 source files).
+**1528 tests passing.** Ruff lint clean. Mypy type-check clean (177 source files).
 
 ### Known Gaps
 
 Current open/partial gaps (see the [gap register](ai-company/docs/ARCHITECTURE-GAPS.md) for evidence and status):
 
-- GAP-005 — memory consolidation: recall/store wired; consolidation scheduler in the executor loop, cadence verification pending (partial)
-- GAP-011 — dashboard/mobile read paths still access `inbox.json` directly (partial)
 - GAP-018 — no structured JSON logging / correlation IDs (partial)
 - GAP-019 — agent spec parsing lacks schema validation (open)
 
-**Resolved:** GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020 (16 of 20).
+**Resolved:** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 020 (18 of 20).
 
 See `ai-company/docs/ARCHITECTURE-GAPS.md` for the full gap analysis.
 
