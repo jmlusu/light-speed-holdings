@@ -10,7 +10,7 @@
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
 
-**Resolved gaps (as of 2026-08-07, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-005, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-011, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-020. **Partial:** GAP-018. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+**Resolved gaps (as of 2026-08-07, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-005, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-011, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-018, GAP-020. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
 
 > **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
@@ -470,6 +470,7 @@ Shell injection vulnerability. An adversarial or hallucinating LLM could execute
 | **Severity** | LOW |
 | **Sprint** | Sprint 4 (Dashboard Completeness) |
 | **Files** | Multiple files |
+| **Status** | ✅ RESOLVED (2026-08-07) — `logging_config.py` provides `setup_logging()` with `JSONFormatter` (consistent fields: ts/level/logger/message/correlation_id + extras) and `HumanFormatter` for terminals; correlation-ID `ContextVar` accessors (`get/set/new_correlation_id`) shared via `utils/logging.py` (single source of truth); `loop.py:292` installs the task ID as correlation ID; daemon (`daemon.py:378`) uses structured JSON file + human console + `CorrelationFilter`; no `print()` remains in non-CLI modules; `tests/unit/test_logging.py` (15 tests). |
 
 **Current State:**
 Mixed logging: some modules use `logger.info()` (stdlib logging), some use `print()`, some have no logging at all. No structured (JSON) log format. No correlation IDs linking task → agent → tool calls.
@@ -482,9 +483,9 @@ Difficult to debug production issues. No audit trail for compliance.
 
 **Fix:**
 ```
-1. Configure structlog or python-json-logger
-2. Add task_id as correlation ID in log context
-3. Ensure all modules use the logger, not print()
+1. ✅ Custom JSONFormatter (equivalent to structlog/python-json-logger) in `logging_config.py`; no new dependency needed
+2. ✅ task_id used as correlation ID in log context (`loop.py:292` `set_correlation_id(task.id)`; JSONFormatter emits `correlation_id`)
+3. ✅ All modules use the logger, not `print()` — grep for `print(` in `src/` returns no matches (incl. docstring examples)
 ```
 
 ---
@@ -561,14 +562,14 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-015 | MEDIUM | LLM Retry Logic | Sprint 2 | Low | ✅ Resolved | `client.py:136,207` `provider_idx = attempt % len(provider_chain)` round-robin; cycling tests added |
 | GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:466` `shlex.split()`; no `shell=True` |
 | GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved | `dead_letter.py` + `loop.py:174` `detect_stale_tasks()` |
-| GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | 🟡 Partial | no structured JSON/correlation IDs; 11 `print()` in non-CLI modules |
+| GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | ✅ Resolved | `logging_config.py` `setup_logging()`/`JSONFormatter`; `utils/logging.py` shared correlation ContextVar; `loop.py:292` task-id correlation; `daemon.py:378` structured; `test_logging.py` (15 tests) |
 | GAP-019 | LOW | Spec Validation | Sprint 4 | Low | 🔴 Open | `context.py:13` `AgentContext` has no `validate()`; no `agents validate` CLI |
 | GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | ✅ Resolved | `tests/integration/test_full_pipeline.py` (305 lines, 10 tests, all pass) |
 
-**Resolved:** 18 of 20 (GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 020)
-**Partial:** 1 (GAP-018)
+**Resolved:** 19 of 20 (GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 020)
+**Partial:** 0
 **Open:** 1 (GAP-019)
-**Remaining work to reach "done":** structured logging with correlation IDs (GAP-018) and agent spec validation (GAP-019).
+**Remaining work to reach "done":** agent spec validation (GAP-019).
 
 ## Recommended Sprint Plan
 
@@ -596,6 +597,6 @@ At least one integration test that exercises the happy path end-to-end with mock
 
 ### Sprint 4 — Quality & Completeness (LOW + polish items)
 1. GAP-013: Wire all KPI department collectors
-2. GAP-018: Structured logging with correlation IDs
+2. ~~GAP-018: Structured logging with correlation IDs~~ — ✅ done (2026-08-07)
 3. GAP-019: Agent spec validation
 4. GAP-020: End-to-end integration tests

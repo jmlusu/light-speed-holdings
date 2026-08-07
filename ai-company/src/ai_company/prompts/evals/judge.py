@@ -134,7 +134,7 @@ class LLMJudge:
             task_instruction="Review Q4 strategy",
             agent_output='{"thought": "...", "plan": [...], ...}',
         )
-        print(result.scores.average)  # 1.0 to 5.0
+        logger.info("Score: %s", result.scores.average)  # 1.0 to 5.0
     """
 
     def __init__(

@@ -1,7 +1,9 @@
 """Structured logging with correlation IDs for AI Company Builder.
 
-Provides a ``CorrelationFilter`` that injects a thread-safe correlation ID
-into every log record, plus convenience helpers for setup and propagation.
+Correlation-ID state lives in a single ``ContextVar`` (see
+``ai_company.logging_config``); this module re-exports the accessors so all
+consumers share one source of truth, and adds a ``CorrelationFilter`` plus a
+convenience setup helper.
 
 Usage::
 
@@ -20,47 +22,31 @@ Usage::
 from __future__ import annotations
 
 import logging
-import uuid
-from contextvars import ContextVar
 
-# ---------------------------------------------------------------------------
-# Correlation ID — context-local, thread-safe, async-safe
-# ---------------------------------------------------------------------------
+from ai_company.logging_config import (
+    get_correlation_id,
+    get_logger,
+    new_correlation_id,
+    set_correlation_id,
+    setup_logging,
+)
 
-_correlation_id: ContextVar[str] = ContextVar("correlation_id", default="")
-
-
-def get_correlation_id() -> str:
-    """Return the current correlation ID (auto-generates if empty)."""
-    cid = _correlation_id.get()
-    if not cid:
-        cid = uuid.uuid4().hex[:12]
-        _correlation_id.set(cid)
-    return cid
-
-
-def set_correlation_id(cid: str) -> None:
-    """Set the correlation ID for the current context."""
-    _correlation_id.set(cid)
-
-
-def new_correlation_id() -> str:
-    """Generate and set a new correlation ID. Returns the new ID."""
-    cid = uuid.uuid4().hex[:12]
-    _correlation_id.set(cid)
-    return cid
-
-
-# ---------------------------------------------------------------------------
-# CorrelationFilter — injects correlation_id into every LogRecord
-# ---------------------------------------------------------------------------
+__all__ = [
+    "CorrelationFilter",
+    "get_correlation_id",
+    "get_logger",
+    "new_correlation_id",
+    "set_correlation_id",
+    "setup_correlated_logging",
+]
 
 
 class CorrelationFilter(logging.Filter):
     """Logging filter that attaches ``correlation_id`` to every log record.
 
-    The correlation ID is read from a ``ContextVar``, making it thread-safe
-    and async-safe.  If no ID has been set yet, one is auto-generated.
+    The correlation ID is read from a shared ``ContextVar``, making it
+    thread-safe and async-safe.  If no ID has been set yet, one is
+    auto-generated.
 
     Install this filter on the root ``ai_company`` logger (or any logger)
     so that *all* downstream loggers inherit it::
@@ -79,11 +65,6 @@ class CorrelationFilter(logging.Filter):
         return True
 
 
-# ---------------------------------------------------------------------------
-# Setup helper
-# ---------------------------------------------------------------------------
-
-
 def setup_correlated_logging(
     level: int = logging.INFO,
     json_mode: bool | None = None,
@@ -99,9 +80,6 @@ def setup_correlated_logging(
         json_mode: True for JSON lines, False for human-readable, None for auto.
         log_file: Optional file path for a second JSON log stream.
     """
-    from ai_company.logging_config import setup_logging
-
-    # Delegate to the existing setup which handles formatters and handlers
     setup_logging(level=level, json_mode=json_mode, log_file=log_file)
 
     # Install the CorrelationFilter on the ai_company root logger

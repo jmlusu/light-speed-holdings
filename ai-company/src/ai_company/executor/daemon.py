@@ -30,6 +30,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from ai_company.logging_config import HumanFormatter, JSONFormatter
+from ai_company.utils.logging import CorrelationFilter
+
 logger = logging.getLogger(__name__)
 
 # Default paths
@@ -376,26 +379,30 @@ class ExecutorDaemon:
                 self._sleep(chunk)
 
     def _setup_logging(self) -> None:
-        """Configure file + console logging for daemon mode."""
+        """Configure structured logging for daemon mode (GAP-018).
+
+        File handler writes structured JSON lines; console handler writes
+        human-readable output; a CorrelationFilter injects the correlation
+        ID into every record so daemon logs are traceable per task.
+        """
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
 
         root_logger = logging.getLogger()
         root_logger.setLevel(logging.DEBUG)
 
-        # File handler
+        if not any(isinstance(f, CorrelationFilter) for f in root_logger.filters):
+            root_logger.addFilter(CorrelationFilter())
+
+        # File handler — always structured JSON
         fh = logging.FileHandler(str(self.log_path), encoding="utf-8")
         fh.setLevel(logging.DEBUG)
-        fmt = logging.Formatter(
-            "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-        fh.setFormatter(fmt)
+        fh.setFormatter(JSONFormatter())
         root_logger.addHandler(fh)
 
-        # Console handler (stderr)
+        # Console handler (stderr) — human-readable
         ch = logging.StreamHandler(sys.stderr)
         ch.setLevel(logging.INFO)
-        ch.setFormatter(fmt)
+        ch.setFormatter(HumanFormatter())
         root_logger.addHandler(ch)
 
         logger.info("Daemon logging initialized → %s", self.log_path)
