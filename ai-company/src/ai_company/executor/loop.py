@@ -99,6 +99,7 @@ class Executor:
         self.poll_interval = poll_interval
         self.agents_dir = agents_dir
         self.results_dir = Path(results_dir)
+        self.database = database
 
         # Core components (database enables the SQLite write-through mirror)
         self.bus = MessageBus(

@@ -10,6 +10,7 @@ from typing import Any
 
 import yaml
 
+from ai_company.data.database import Database
 from ai_company.paths import get_project_root
 
 logger = logging.getLogger(__name__)
@@ -21,14 +22,26 @@ class KPICollector(ABC):
     Subclasses set a ``department`` class attribute and implement
     :meth:`collect` to return a dict whose top-level ``"kpis"`` key
     holds the live metric values.
+
+    Args:
+        project_root: Optional project root. ``None`` resolves it via
+            :func:`ai_company.paths.get_project_root`.
+        database: Optional SQLite database. When populated it is the
+            preferred source for tasks / costs / escalations (Sprint 2,
+            Item 2); collectors fall back to the legacy files otherwise.
     """
 
     department: str = ""  # Override in subclass, e.g. "engineering"
 
-    def __init__(self, project_root: Path | None = None) -> None:
+    def __init__(
+        self,
+        project_root: Path | None = None,
+        database: Database | None = None,
+    ) -> None:
         # Resolve the project root deterministically (see ai_company.paths)
         # so collectors read the real operational files regardless of CWD.
         self.root: Path = project_root or get_project_root()
+        self.database: Database | None = database
 
     # ------------------------------------------------------------------
     # Abstract interface
@@ -74,6 +87,77 @@ class KPICollector(ABC):
         except (yaml.YAMLError, OSError) as exc:
             logger.warning("Failed to read YAML %s: %s", path, exc)
             return {}
+
+    # ------------------------------------------------------------------
+    # SQLite-first helpers (Sprint 2, Item 2)
+    #
+    # Each ``*_from_sqlite`` accessor returns ``None`` when the database is
+    # unavailable or empty, signalling the caller to keep using the legacy
+    # file store.  Mirrors ``dashboard.data_service`` read-through behaviour.
+    # ------------------------------------------------------------------
+
+    def _usable_database(self) -> Database | None:
+        """Return a schema-initialised SQLite database, or ``None``."""
+        from ai_company.data import get_database
+
+        db = self.database or get_database()
+        if db is None:
+            return None
+        try:
+            if db.get_schema_version() > 0:
+                return db
+        except Exception:  # noqa: BLE001 - read-through must never raise
+            logger.debug("KPI database not usable; falling back to files", exc_info=True)
+        return None
+
+    def _tasks_from_sqlite(self) -> list[dict[str, Any]] | None:
+        """Return all tasks from SQLite when populated, else ``None``."""
+        db = self._usable_database()
+        if db is None:
+            return None
+        try:
+            from ai_company.data import TaskStore
+
+            store = TaskStore(db)
+            if store.count() > 0:
+                return [task.model_dump() for task in store.get_all_tasks()]
+        except Exception:  # noqa: BLE001 - read-through must never raise
+            logger.debug("SQLite task read failed; using inbox.json", exc_info=True)
+        return None
+
+    def _cost_from_sqlite(self) -> dict[str, Any] | None:
+        """Return spend totals from SQLite when populated, else ``None``."""
+        db = self._usable_database()
+        if db is None:
+            return None
+        try:
+            from ai_company.data import CostAnalytics
+
+            cost = CostAnalytics(db)
+            if cost.total_records() == 0:
+                return None
+            total_spent = cost.total_cost()
+            return {"total_spent": total_spent, "llm_spend": total_spent}
+        except Exception:  # noqa: BLE001 - read-through must never raise
+            logger.debug("SQLite cost read failed; using cost_tracker.json", exc_info=True)
+        return None
+
+    def _escalations_from_sqlite(self) -> list[dict[str, Any]] | None:
+        """Return escalation events from SQLite when populated, else ``None``."""
+        db = self._usable_database()
+        if db is None:
+            return None
+        try:
+            from ai_company.data import EscalationStore
+
+            store = EscalationStore(db)
+            if store.count() == 0:
+                return None
+            events = store.get_pending() + store.get_resolved()
+            return [{**event, "resolved": bool(event.get("resolved", False))} for event in events]
+        except Exception:  # noqa: BLE001 - read-through must never raise
+            logger.debug("SQLite escalation read failed; using escalation.yaml", exc_info=True)
+        return None
 
     def _kpi(
         self,

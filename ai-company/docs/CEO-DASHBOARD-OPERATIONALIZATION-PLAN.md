@@ -115,3 +115,34 @@ Real operational data available today:
       — no behaviour change, full backward compatibility.
 - [x] Unit tests cover all three mirrors plus the `database=None` path; gates
       green (`ruff check src/`, `mypy src/`, `pytest`).
+
+## 8. Definition of Done (Sprint 2, Item 2 — SQLite-first KPI collectors)
+
+- [x] `KPICollector` accepts an optional `database`; when populated, tasks /
+      costs / escalations are read from SQLite (`TaskStore`, `CostAnalytics`,
+      `EscalationStore`) with the legacy files as fallback.
+- [x] Engineering reads tasks + escalations, finance reads costs, and
+      customer-success / sales / marketing / legal read department tasks from
+      SQLite when populated.
+- [x] `collect_all_kpis()` accepts `database=` and resolves the project root
+      via `get_project_root()` (fixes the `parents[3]` bug).
+- [x] Dashboard `/api/kpis/live` and `/api/kpis/collect` pass the shared SQLite
+      database through to the collectors.
+- [x] Without a database (or with an empty one) every collector behaves exactly
+      as before (file-only) — no behaviour change, full backward compatibility.
+- [x] Unit tests cover SQLite-populated vs file-fallback paths; gates green
+      (`ruff check src/`, `mypy src/`, `pytest`).
+
+## 9. Definition of Done (Sprint 2, Item 3 — periodic snapshot scheduler)
+
+- [x] `dashboard/kpis/scheduler.py` provides `run_snapshot()` (collect all KPIs
+      and ingest into SQLite via `KPIPipeline`) and a time-gated
+      `KPISnapshotScheduler` with a configurable interval.
+- [x] The executor daemon runs the scheduler inside its polling loop — cron in
+      the daemon, not only at boot — with `--kpi-snapshot-interval` on
+      `ai-company executor start` (default 300 s; `0` disables).
+- [x] Collection is best-effort and never raises; no snapshot is taken when the
+      database is unavailable.
+- [x] Unit tests cover interval gating, disable, reset, no-database, and
+      store-to-SQLite behaviour; gates green (`ruff check src/`, `mypy src/`,
+      `pytest`).

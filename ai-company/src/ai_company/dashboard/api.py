@@ -305,7 +305,7 @@ def get_live_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
     """
     from ai_company.dashboard.kpis import collect_all_kpis
 
-    result = collect_all_kpis()
+    result = collect_all_kpis(database=get_database())
     background_tasks.add_task(_broadcast_kpis, result)
     return result
 
@@ -1172,7 +1172,7 @@ def collect_and_store_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
     from ai_company.dashboard.analytics import KPIHistoryStore
     from ai_company.dashboard.kpis import collect_all_kpis
 
-    snapshot = collect_all_kpis()
+    snapshot = collect_all_kpis(database=get_database())
 
     # Store in history (file-based)
     store = KPIHistoryStore()
@@ -1181,7 +1181,7 @@ def collect_and_store_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
     # Also ingest into SQLite when the data layer is available (S1.3)
     sqlite_stored = 0
     try:
-        from ai_company.data import KPIPipeline, get_database
+        from ai_company.data import KPIPipeline
 
         db = get_database()
         if db is not None and db.get_schema_version() > 0:

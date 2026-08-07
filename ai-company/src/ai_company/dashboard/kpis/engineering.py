@@ -14,8 +14,12 @@ class EngineeringKPICollector(KPICollector):
     department = "engineering"
 
     def collect(self) -> dict[str, Any]:
-        tasks: list[dict] = self._load_json(".opencode/inbox.json")
-        escalations = self._load_yaml("orchestrator/escalation.yaml")
+        tasks = self._tasks_from_sqlite()
+        if tasks is None:
+            tasks = self._load_json(".opencode/inbox.json")
+        events = self._escalations_from_sqlite()
+        if events is None:
+            events = self._load_yaml("orchestrator/escalation.yaml").get("events", [])
         scheduler = self._load_yaml("orchestrator/scheduler.yaml")
 
         total = len(tasks)
@@ -27,7 +31,6 @@ class EngineeringKPICollector(KPICollector):
         completion_rate = round((completed / total * 100), 1) if total > 0 else 0.0
         failure_rate = round((failed / total * 100), 1) if total > 0 else 0.0
 
-        events: list[dict] = escalations.get("events", [])
         open_escalations = [e for e in events if not e.get("resolved", False)]
         total_escalations = len(events)
         escalation_rate = round((total_escalations / total * 100), 1) if total > 0 else 0.0

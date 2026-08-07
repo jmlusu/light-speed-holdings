@@ -6,6 +6,7 @@ with efficient SQLite queries and adds anomaly detection capabilities.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import math
@@ -48,7 +49,22 @@ class KPIPipeline:
         for dept_id, dept_data in departments.items():
             kpis: dict[str, Any] = dept_data.get("kpis", {})
             for kpi_key, kpi_value in kpis.items():
-                target = kpi_value.get("target")
+                # Skip non-numeric KPIs (e.g. dict breakdowns like
+                # agents_by_department) — matches KPIHistoryStore.store_snapshot.
+                raw_current = kpi_value.get("current", 0)
+                if isinstance(raw_current, dict):
+                    logger.debug("Skipping non-numeric KPI %s.%s (dict)", dept_id, kpi_key)
+                    continue
+                try:
+                    current_value = float(raw_current)
+                except (TypeError, ValueError):
+                    logger.debug("Skipping non-numeric KPI %s.%s", dept_id, kpi_key)
+                    continue
+                raw_target = kpi_value.get("target")
+                target_value: float | None = None
+                if raw_target is not None:
+                    with contextlib.suppress(TypeError, ValueError):
+                        target_value = float(raw_target)
                 self._db.execute(
                     """INSERT INTO kpi_values
                        (timestamp, department, kpi_key, current_value, target_value, unit, status)
@@ -57,8 +73,8 @@ class KPIPipeline:
                         collected_at,
                         dept_id,
                         kpi_key,
-                        float(kpi_value.get("current", 0)),
-                        float(target) if target is not None else None,
+                        current_value,
+                        target_value,
                         kpi_value.get("unit", ""),
                         kpi_value.get("status", "info"),
                     ),
