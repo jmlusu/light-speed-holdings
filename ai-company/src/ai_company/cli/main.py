@@ -29,6 +29,7 @@ def _lazy_init() -> None:
 
 from ai_company.cli.agents import app as agents_app  # noqa: E402
 from ai_company.cli.board import app as board_app  # noqa: E402
+from ai_company.cli.bootstrap import app as bootstrap_app  # noqa: E402
 from ai_company.cli.company import app as company_app  # noqa: E402
 from ai_company.cli.customer_success import app as customer_success_app  # noqa: E402
 from ai_company.cli.dashboard import app as dashboard_app  # noqa: E402
@@ -53,6 +54,7 @@ from ai_company.cli.workflows import app as workflows_app  # noqa: E402
 
 app.add_typer(agents_app, name="agents", help="Manage AI agents")
 app.add_typer(board_app, name="board", help="Manage Board of Directors")
+app.add_typer(bootstrap_app, name="bootstrap", help="Prepare a new developer machine (idempotent)")
 app.add_typer(
     governance_app, name="governance", help="Data governance — ownership, retention, compliance"
 )
