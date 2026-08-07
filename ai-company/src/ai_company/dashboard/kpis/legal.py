@@ -16,7 +16,9 @@ class LegalKPICollector(KPICollector):
     def collect(self) -> dict[str, Any]:
         contracts = self._load_json("orchestrator/legal/contracts.json")
         compliance = self._load_json("orchestrator/legal/compliance_log.json")
-        tasks = self._load_json(".opencode/inbox.json")
+        tasks = self._tasks_from_sqlite()
+        if tasks is None:
+            tasks = self._load_json(".opencode/inbox.json")
 
         # Count legal-related tasks
         legal_tasks = [t for t in tasks if t.get("receiver_id") in ("legal", "clo")]

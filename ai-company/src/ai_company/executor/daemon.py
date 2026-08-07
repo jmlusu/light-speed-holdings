@@ -177,6 +177,8 @@ class ExecutorDaemon:
         pid_path: Path to the PID file.
         log_path: Path to the log file (None = no file logging).
         status_path: Path to the health/status JSON file.
+        kpi_snapshot_interval: Seconds between periodic KPI snapshot
+            collections (Sprint 2, Item 3). ``<= 0`` disables collection.
     """
 
     def __init__(
@@ -186,12 +188,14 @@ class ExecutorDaemon:
         pid_path: Path | None = None,
         log_path: Path | None = None,
         status_path: Path | None = None,
+        kpi_snapshot_interval: float = 300.0,
         *,
         _clock: Callable[[], float] | None = None,
         _sleep: Callable[[float], None] | None = None,
     ) -> None:
         self.executor_factory = executor_factory
         self.poll_interval = poll_interval
+        self.kpi_snapshot_interval = kpi_snapshot_interval
 
         self.pid_file = DaemonPIDFile(pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid"))
         self.status_file = DaemonHealthStatus(status_path or DEFAULT_HEALTH_FILE)
@@ -301,6 +305,8 @@ class ExecutorDaemon:
         executor = self.executor_factory()
         logger.info("Executor created; entering poll loop (interval=%.1fs)", self.poll_interval)
 
+        snapshot_scheduler = self._make_snapshot_scheduler(executor)
+
         while not self._shutdown_event:
             try:
                 count = executor.tick()
@@ -314,8 +320,27 @@ class ExecutorDaemon:
             except Exception:
                 logger.exception("Error during tick")
 
+            if snapshot_scheduler is not None:
+                try:
+                    stored = snapshot_scheduler.run_due()
+                    if stored:
+                        logger.info("KPI snapshot stored %d entries", stored)
+                except Exception:
+                    logger.exception("Error during KPI snapshot collection")
+
             # Sleep in small increments so we can respond to signals quickly
             self._interruptible_sleep(self.poll_interval)
+
+    def _make_snapshot_scheduler(self, executor: Any) -> Any:
+        """Build the periodic KPI snapshot scheduler, or ``None`` if disabled."""
+        if self.kpi_snapshot_interval <= 0:
+            return None
+        from ai_company.dashboard.kpis.scheduler import KPISnapshotScheduler
+
+        return KPISnapshotScheduler(
+            interval_seconds=self.kpi_snapshot_interval,
+            database=getattr(executor, "database", None),
+        )
 
     def _interruptible_sleep(self, duration: float) -> None:
         """Sleep for *duration* seconds, checking the shutdown flag frequently."""

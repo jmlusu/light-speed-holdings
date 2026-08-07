@@ -16,7 +16,9 @@ class SalesKPICollector(KPICollector):
     def collect(self) -> dict[str, Any]:
         pipeline = self._load_json("orchestrator/sales/pipeline.json")
         leads = self._load_json("orchestrator/sales/leads.json")
-        tasks = self._load_json(".opencode/inbox.json")
+        tasks = self._tasks_from_sqlite()
+        if tasks is None:
+            tasks = self._load_json(".opencode/inbox.json")
 
         # Count sales-related tasks
         sales_receivers = {"sales", "business_developer"}

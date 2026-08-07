@@ -15,7 +15,9 @@ class FinanceKPICollector(KPICollector):
 
     def collect(self) -> dict[str, Any]:
         kpi_config = self._load_yaml("company/config/kpis.yaml")
-        cost_data = self._load_json("orchestrator/cost_tracker.json")
+        cost_data = self._cost_from_sqlite()
+        if cost_data is None:
+            cost_data = self._load_json("orchestrator/cost_tracker.json")
         registry = self._load_json("company/agent-registry.json")
 
         finance_config = kpi_config.get("departments", {}).get("finance", {})

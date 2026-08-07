@@ -16,7 +16,9 @@ class MarketingKPICollector(KPICollector):
     def collect(self) -> dict[str, Any]:
         campaigns = self._load_json("orchestrator/marketing/campaigns.json")
         content_log = self._load_json("orchestrator/marketing/content_log.json")
-        tasks = self._load_json(".opencode/inbox.json")
+        tasks = self._tasks_from_sqlite()
+        if tasks is None:
+            tasks = self._load_json(".opencode/inbox.json")
 
         # Count marketing-related tasks (receiver is cmo or marketing specialist)
         marketing_tasks = [

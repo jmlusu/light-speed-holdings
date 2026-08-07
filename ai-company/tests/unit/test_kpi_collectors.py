@@ -165,6 +165,69 @@ def empty_project(tmp_path: Path) -> Path:
     return tmp_path
 
 
+@pytest.fixture()
+def db(tmp_path: Path):
+    """A freshly initialised temporary SQLite database."""
+    from ai_company.data.database import Database
+
+    database = Database(tmp_path / "kpi-collector.db")
+    database.init_schema()
+    yield database
+    database.close()
+
+
+def _seed_sqlite_tasks(db, tmp_path: Path) -> None:
+    """Seed tasks into SQLite with receivers spanning every department."""
+    from ai_company.data import TaskStore
+
+    tasks = [
+        {"id": "db-t1", "sender_id": "ceo", "receiver_id": "cto", "status": "completed"},
+        {"id": "db-t2", "sender_id": "ceo", "receiver_id": "cmo", "status": "completed"},
+        {"id": "db-t3", "sender_id": "ceo", "receiver_id": "support_agent", "status": "pending"},
+        {"id": "db-t4", "sender_id": "ceo", "receiver_id": "sales", "status": "pending"},
+        {"id": "db-t5", "sender_id": "ceo", "receiver_id": "clo", "status": "failed"},
+    ]
+    path = tmp_path / "sqlite-inbox.json"
+    path.write_text(json.dumps(tasks), encoding="utf-8")
+    assert TaskStore(db).import_json(path) == 5
+
+
+def _seed_sqlite_escalations(db) -> None:
+    """Seed escalation events (2 open, 2 resolved) into SQLite."""
+    from ai_company.data import EscalationStore
+
+    store = EscalationStore(db)
+    store.add_event("db-t1", "r1", "ceo", "cto", "timeout", resolved=False)
+    store.add_event("db-t2", "r1", "ceo", "cto", "timeout", resolved=False)
+    store.add_event("db-t3", "r2", "ceo", "cto", "timeout", resolved=True)
+    store.add_event("db-t4", "r2", "ceo", "cto", "timeout", resolved=True)
+
+
+def _seed_sqlite_costs(db) -> None:
+    """Seed cost records totalling $5.00 into SQLite."""
+    from ai_company.data import CostAnalytics
+
+    cost = CostAnalytics(db)
+    cost.record_usage(
+        model="gpt-x",
+        provider="opencode",
+        agent_name="cto",
+        task_id="db-t1",
+        prompt_tokens=100,
+        completion_tokens=50,
+        cost_usd=2.5,
+    )
+    cost.record_usage(
+        model="gpt-x",
+        provider="opencode",
+        agent_name="cmo",
+        task_id="db-t2",
+        prompt_tokens=100,
+        completion_tokens=50,
+        cost_usd=2.5,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Engineering
 # ---------------------------------------------------------------------------
@@ -363,3 +426,74 @@ class TestAllCollectors:
         assert "departments" in snapshot
         for dept, data in snapshot["departments"].items():
             assert "kpis" in data, f"Department {dept} missing kpis"
+
+
+# ---------------------------------------------------------------------------
+# SQLite-first (Sprint 2, Item 2)
+# ---------------------------------------------------------------------------
+
+
+class TestSqliteCollectors:
+    """Collectors prefer SQLite when it is populated, else fall back to files."""
+
+    def test_engineering_reads_tasks_from_sqlite(self, project: Path, db, tmp_path: Path) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+        result = EngineeringKPICollector(project, database=db).collect()
+        kpis = result["kpis"]
+
+        # inbox.json holds 5 tasks — SQLite holds 5 too, but statuses differ
+        # (1 completed / 1 pending / 1 in_progress / 1 failed from the file vs
+        # 2 completed / 2 pending / 1 failed from SQLite).
+        assert kpis["total_tasks"]["current"] == 5
+        assert kpis["completed_tasks"]["current"] == 2
+        assert kpis["pending_tasks"]["current"] == 2
+        assert kpis["in_progress_tasks"]["current"] == 0
+        assert kpis["failed_tasks"]["current"] == 1
+
+    def test_engineering_reads_escalations_from_sqlite(
+        self, project: Path, db, tmp_path: Path
+    ) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+        _seed_sqlite_escalations(db)
+        result = EngineeringKPICollector(project, database=db).collect()
+
+        # escalation.yaml holds 2 events (1 open) — SQLite holds 4 (2 open).
+        assert result["kpis"]["open_escalations"]["current"] == 2
+        assert result["kpis"]["escalation_rate"]["current"] == 80.0  # 4 events / 5 tasks
+
+    def test_finance_reads_costs_from_sqlite(self, project: Path, db) -> None:
+        _seed_sqlite_costs(db)
+        result = FinanceKPICollector(project, database=db).collect()
+        kpis = result["kpis"]
+
+        # No cost_tracker.json in the fixture — spend must come from SQLite.
+        assert kpis["total_spent"]["current"] == pytest.approx(5.0)
+        assert kpis["estimated_llm_spend"]["current"] == pytest.approx(5.0)
+
+    def test_department_tasks_read_from_sqlite(self, project: Path, db, tmp_path: Path) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+
+        cs = CustomerSuccessKPICollector(project, database=db).collect()
+        assert cs["kpis"]["total_cs_tasks"]["current"] == 1
+        assert cs["kpis"]["cs_task_completion"]["current"] == 0.0  # pending task
+
+        marketing = MarketingKPICollector(project, database=db).collect()
+        assert marketing["kpis"]["total_marketing_tasks"]["current"] == 1
+
+        sales = SalesKPICollector(project, database=db).collect()
+        assert sales["kpis"]["total_sales_tasks"]["current"] == 1
+
+        legal = LegalKPICollector(project, database=db).collect()
+        assert legal["kpis"]["total_legal_tasks"]["current"] == 1
+        assert legal["kpis"]["legal_task_completion"]["current"] == 0.0  # failed task
+
+    def test_collect_all_kpis_accepts_database(self, project: Path, db, tmp_path: Path) -> None:
+        _seed_sqlite_tasks(db, tmp_path)
+        snapshot = collect_all_kpis(project, database=db)
+        depts = snapshot["departments"]
+        assert depts["engineering"]["kpis"]["total_tasks"]["current"] == 5
+
+    def test_empty_sqlite_falls_back_to_files(self, project: Path, db) -> None:
+        """A usable but empty database must not change collector output."""
+        result = EngineeringKPICollector(project, database=db).collect()
+        assert result["kpis"]["total_tasks"]["current"] == 5  # from inbox.json
