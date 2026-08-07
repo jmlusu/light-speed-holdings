@@ -74,11 +74,22 @@ function destroyChart(id) {
  *
  * For charts that change structure (e.g., different number of datasets),
  * we still destroy/recreate, but the container prevents layout shift.
+ *
+ * FIX (no-op guard): if the new data is identical to the current chart
+ * data we skip the redraw entirely — poll responses and WS pushes can
+ * deliver the same snapshot back-to-back, and every chart.update() is
+ * wasted layout work that can nudge scroll position.
  */
 function updateOrCreateChart(id, ctx, config) {
   if (chartInstances[id]) {
     // Update existing chart data in-place (no destroy/recreate needed)
     const chart = chartInstances[id];
+    const signature = JSON.stringify(config.data || null);
+    if (chart._dataSignature === signature) {
+      // Nothing changed — skip the redraw to avoid layout churn.
+      return chart;
+    }
+    chart._dataSignature = signature;
     chart.data = config.data;
     // Merge options in case they changed
     Object.assign(chart.options, config.options || {});
@@ -86,8 +97,10 @@ function updateOrCreateChart(id, ctx, config) {
     return chart;
   }
   // First render — create new instance
-  chartInstances[id] = new Chart(ctx, config);
-  return chartInstances[id];
+  const chart = new Chart(ctx, config);
+  chart._dataSignature = JSON.stringify(config.data || null);
+  chartInstances[id] = chart;
+  return chart;
 }
 
 // ═══ DASHBOARD CHARTS ════════════════════════════════════════
