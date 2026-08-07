@@ -287,26 +287,16 @@ function initCostCharts(costSummary, agentCosts, period) {
   // ── Cost Trend Line Chart ──────────────────────────────────
   const trendCtx = document.getElementById('costTrendChart');
   if (trendCtx) {
-    // Generate mock trend data (in production, this would come from history)
-    const labels = [];
-    const data = [];
-    const now = new Date();
-    const points = period === 'daily' ? 24 : period === 'weekly' ? 7 : 30;
-
-    for (let i = points - 1; i >= 0; i--) {
-      const d = new Date(now);
-      if (period === 'daily') {
-        d.setHours(d.getHours() - i);
-        labels.push(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-      } else if (period === 'weekly') {
-        d.setDate(d.getDate() - i);
-        labels.push(d.toLocaleDateString([], { weekday: 'short' }));
-      } else {
-        d.setDate(d.getDate() - i);
-        labels.push(d.toLocaleDateString([], { month: 'short', day: 'numeric' }));
-      }
-      data.push(+(Math.random() * 0.1 + 0.01).toFixed(4));
-    }
+    // Real cost trend from the API (costSummary.costTrend), never mock data.
+    const trend = (costSummary && costSummary.costTrend) || [];
+    const sorted = trend
+      .slice()
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    const labels = sorted.map(p => {
+      const d = new Date(p.timestamp);
+      return d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    });
+    const data = sorted.map(p => p.value);
 
     const config = {
       type: 'line',

@@ -30,6 +30,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from ai_company.logging_config import setup_logging
+from ai_company.paths import get_data_root, get_project_root
 
 # Configure structured logging on import
 setup_logging()
@@ -57,8 +58,9 @@ logger = logging.getLogger(__name__)
 DASHBOARD_PKG = Path(__file__).resolve().parent
 TEMPLATES_DIR = DASHBOARD_PKG / "templates"
 DASHBOARD_STATIC_DIR = DASHBOARD_PKG / "static"
-# Legacy static dir (backward compat)
-LEGACY_STATIC_DIR = Path(__file__).resolve().parents[3] / "static"
+# Legacy static dir (backward compat) — anchored to the project root rather
+# than a fixed ``parents[3]`` so it resolves correctly from any CWD.
+LEGACY_STATIC_DIR = get_project_root() / "static"
 
 # ---------------------------------------------------------------------------
 # Rate limiter (simple in-memory, sliding window per IP)
@@ -280,12 +282,13 @@ def create_app() -> FastAPI:
 
     # ── Explicit StateStore configuration (Option B) ────────────────
     # Bind the dashboard state root from configuration rather than the
-    # import-time cwd. Override via DASHBOARD_DATA_DIR; defaults to ".".
+    # import-time cwd. Defaults to the deterministic project root; override
+    # via DASHBOARD_DATA_DIR.
     from ai_company.dashboard.repository import (  # noqa: E402
         configure_state_store,
     )
 
-    dashboard_data_dir = os.environ.get("DASHBOARD_DATA_DIR", ".")
+    dashboard_data_dir = os.environ.get("DASHBOARD_DATA_DIR") or str(get_data_root())
     configure_state_store(dashboard_data_dir)
 
     # ── Routers ─────────────────────────────────────────────────────
@@ -358,25 +361,21 @@ def create_app() -> FastAPI:
 
     @app.on_event("startup")
     async def _init_database() -> None:  # type: ignore[no-untyped-def]
-        """Initialise the SQLite database and seed an initial KPI snapshot."""
+        """Initialise the SQLite database for the dashboard data root.
+
+        The DB lives at ``<data root>/data/ai_company.db`` — the same root
+        the :class:`StateStore` is bound to — so tests anchored at a temp
+        root get an isolated database and never touch the canonical one.
+        Failures are non-fatal; the dashboard serves file-based data when the
+        DB is unavailable or empty.
+        """
         try:
+            from ai_company.dashboard.repository import get_state_store  # noqa: E402
             from ai_company.data import init_database  # noqa: E402
 
-            db = init_database()
+            db_path = Path(get_state_store().base_dir) / "data" / "ai_company.db"
+            db = init_database(db_path)
             logger.info("SQLite database initialised: %s", db.path)
-
-            # Seed one KPI snapshot so the dashboard has baseline data
-            try:
-                from ai_company.dashboard.kpis import collect_all_kpis  # noqa: E402
-                from ai_company.data import KPIPipeline  # noqa: E402
-
-                pipeline = KPIPipeline(db)
-                snapshot = collect_all_kpis()
-                stored = pipeline.ingest_snapshot(snapshot)
-                logger.info("Initial KPI snapshot ingested (%d entries)", stored)
-            except Exception:  # noqa: BLE001 - non-critical startup hook
-                logger.debug("Initial KPI collection skipped (non-critical)")
-
         except Exception:  # noqa: BLE001 - non-critical startup hook
             logger.debug("Database initialisation skipped (non-critical)")
 

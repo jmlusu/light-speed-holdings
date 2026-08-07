@@ -17,13 +17,16 @@ def _reset_dashboard_state():
     import ai_company.dashboard.api as dash_api
     from ai_company.dashboard.app import app
     from ai_company.dashboard.repository import reset_state_store
+    from ai_company.data import reset_database
 
     reset_state_store()
+    reset_database()
     dash_api._bus = None
     if hasattr(app.state, "limiter"):
         app.state.limiter._hits.clear()
     yield
     reset_state_store()
+    reset_database()
     dash_api._bus = None
     if hasattr(app.state, "limiter"):
         app.state.limiter._hits.clear()

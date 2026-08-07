@@ -14,7 +14,7 @@ repos:
 
   # ── Ruff: lint + format ────────────────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.8
+    rev: v0.15.22
     hooks:
       - id: ruff
         args: ["--fix", "--exit-non-zero-on-fix"]
@@ -23,8 +23,10 @@ repos:
         stages: [pre-commit]
 
   # ── Mypy: type checking ───────────────────────────────────────────
+  # Hooks run from the repo root while the project lives in ai-company/,
+  # so target the config and sources with repo-relative paths.
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
+    rev: v2.3.0
     hooks:
       - id: mypy
         additional_dependencies:
@@ -33,9 +35,8 @@ repos:
           - typer
           - rich
           - fastapi
-        args: ["--ignore-missing-imports", "--no-strict-optional"]
         pass_filenames: false
-        entry: mypy src/
+        entry: mypy --config-file ai-company/pyproject.toml ai-company/src/
         stages: [pre-commit]
 
   # ── Bandit: security linting ───────────────────────────────────────
@@ -43,6 +44,7 @@ repos:
     rev: 1.7.9
     hooks:
       - id: bandit
-        args: ["-c", "pyproject.toml"]
+        pass_filenames: false
+        entry: bandit -c ai-company/pyproject.toml -r ai-company/src/
         additional_dependencies: ["bandit[toml]"]
         stages: [pre-commit]

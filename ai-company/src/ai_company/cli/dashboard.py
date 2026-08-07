@@ -19,11 +19,15 @@ def _open_browser(port: int) -> None:
 
 @app.callback(invoke_without_command=True)
 def dashboard(
+    ctx: typer.Context,
     port: int = typer.Option(8420, help="Port to serve on"),
     host: str = typer.Option("127.0.0.1", help="Host to bind to"),
     no_open: bool = typer.Option(False, "--no-open", help="Don't auto-open browser"),
 ) -> None:
     """Start the CEO dashboard web server."""
+    if ctx.invoked_subcommand is not None:
+        return
+
     import uvicorn
 
     if not no_open:
@@ -37,6 +41,95 @@ def dashboard(
         port=port,
         log_level="info",
     )
+
+
+@app.command("backfill")
+def backfill(
+    db_path: str = typer.Option(
+        "",
+        "--db-path",
+        help="SQLite database path (default: <project root>/data/ai_company.db)",
+    ),
+) -> None:
+    """Import operational telemetry files into the SQLite data layer.
+
+    Idempotent (INSERT OR REPLACE) import of tasks, audit events, LLM cost
+    records, KPI history, and escalations from the project's legacy files into
+    SQLite so the dashboard renders real data. Safe to re-run.
+    """
+
+    from ai_company.data import (
+        AuditStore,
+        CostAnalytics,
+        EscalationStore,
+        KPIPipeline,
+        TaskStore,
+        init_database,
+    )
+    from ai_company.paths import get_database_path, get_project_root
+
+    # Source telemetry files live under the project root (independent of the
+    # data root override, which only relocates the runtime SQLite database).
+    root = get_project_root()
+    db = init_database(db_path or str(get_database_path()))
+
+    typer.echo(f"Backfilling SQLite data layer at {db.path}")
+    typer.echo("=" * 60)
+
+    counts: dict[str, int] = {}
+
+    # Tasks (.opencode/inbox.json)
+    try:
+        counts["tasks"] = TaskStore(db).import_json(root / ".opencode" / "inbox.json")
+    except Exception as exc:  # noqa: BLE001 - report per-source failures
+        typer.echo(f"  [skip] tasks: {exc}")
+    typer.echo(f"  tasks:        {counts.get('tasks', 0)}")
+
+    # Audit events (.opencode/audit.jsonl)
+    try:
+        counts["audit_events"] = AuditStore(db).import_jsonl(root / ".opencode" / "audit.jsonl")
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"  [skip] audit_events: {exc}")
+    typer.echo(f"  audit_events: {counts.get('audit_events', 0)}")
+
+    # LLM cost records (results/cost_log.jsonl)
+    try:
+        counts["cost_records"] = CostAnalytics(db).import_from_jsonl(
+            root / "results" / "cost_log.jsonl"
+        )
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"  [skip] cost_records: {exc}")
+    typer.echo(f"  cost_records: {counts.get('cost_records', 0)}")
+
+    # Escalations (orchestrator/escalation.yaml)
+    try:
+        counts["escalations"] = EscalationStore(db).import_from_yaml(
+            root / "orchestrator" / "escalation.yaml"
+        )
+    except Exception as exc:  # noqa: BLE001
+        typer.echo(f"  [skip] escalations: {exc}")
+    typer.echo(f"  escalations:  {counts.get('escalations', 0)}")
+
+    # KPI history (dashboard/kpi_history/*_history.ndjson)
+    kpi_history_dir = root / "dashboard" / "kpi_history"
+    kpi_total = 0
+    if kpi_history_dir.exists():
+        pipeline = KPIPipeline(db)
+        for ndjson in sorted(kpi_history_dir.glob("*_history.ndjson")):
+            department = ndjson.name.replace("_history.ndjson", "")
+            try:
+                kpi_total += pipeline.import_from_ndjson(department, ndjson)
+            except Exception as exc:  # noqa: BLE001
+                typer.echo(f"  [skip] kpi {department}: {exc}")
+    typer.echo(f"  kpi_entries:  {kpi_total}")
+
+    typer.echo("=" * 60)
+    typer.echo("Backfill complete. Start the dashboard to serve this data.")
+    if db_path:
+        typer.echo(
+            "Note: the running dashboard reads its own configured data root; "
+            "point DASHBOARD_DATA_DIR at the db's parent to use it."
+        )
 
 
 @kpi_app.command("list")

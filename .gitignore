@@ -29,7 +29,9 @@ Thumbs.db
 .opencode/opencode.json
 memory/*.json
 memory/vector_index/
-data/*.db
+data/
+results/
 *.bak
+*.executor-bak
 backup/
 orchestrator/

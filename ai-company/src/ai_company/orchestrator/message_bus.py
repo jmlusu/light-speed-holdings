@@ -20,6 +20,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, List
 
+from ai_company.data import TaskStore, database_is_usable
 from ai_company.models.task import Task
 from ai_company.store.file_store import FileStore
 from ai_company.utils.logging import get_correlation_id
@@ -37,23 +38,35 @@ class MessageBus:
     file locking, eliminating the risk of partial writes from concurrent
     access.
 
+    SQLite write-through (Sprint 2, S2.1): when a usable :class:`Database`
+    is supplied via *database*, every task mutation is also mirrored to the
+    SQLite ``tasks`` table (through :class:`TaskStore`) so the data layer
+    stays live. The mirror is best-effort — a SQLite failure is logged and
+    never breaks the file write. Without *database* the bus behaves exactly
+    as before (file only).
+
     Args:
         storage_path: Path to the inbox JSON file.
         broadcast_callback: Optional synchronous callback invoked after
             task mutations.  Receives ``(task_dict, event_type)`` where
             *event_type* is one of ``"created"``, ``"completed"``,
             ``"failed"``, ``"escalated"``.
+        database: Optional SQLite database to mirror mutations to.
     """
 
     def __init__(
         self,
         storage_path: str = ".opencode/inbox.json",
         broadcast_callback: BroadcastCallback = None,
+        database: Any = None,
     ) -> None:
         self.storage_path = Path(storage_path)
         self._store = FileStore(self.storage_path.parent, backup=True)
         self._inbox_name = self.storage_path.name
         self._broadcast_callback = broadcast_callback
+        self._task_store = None
+        if database_is_usable(database):
+            self._task_store = TaskStore(database)
 
         # Ensure the inbox file exists
         if not self._store.exists(self._inbox_name):
@@ -82,6 +95,26 @@ class MessageBus:
         """
         return self._store.update_json(self._inbox_name, lambda data: updater(data or []))
 
+    def _mirror_task_to_sqlite(self, task_dict: dict[str, Any]) -> None:
+        """Upsert a single task into SQLite (write-through mirror)."""
+        if self._task_store is None:
+            return
+        try:
+            self._task_store.send_task(Task(**task_dict))
+        except Exception:  # noqa: BLE001 - mirror is best-effort
+            logger.debug(
+                "SQLite task mirror failed for %s", task_dict.get("id", "?"), exc_info=True
+            )
+
+    def _mirror_delete_to_sqlite(self, task_id: str) -> None:
+        """Delete a task from SQLite (write-through mirror)."""
+        if self._task_store is None:
+            return
+        try:
+            self._task_store.delete_task(task_id)
+        except Exception:  # noqa: BLE001 - mirror is best-effort
+            logger.debug("SQLite task delete mirror failed for %s", task_id, exc_info=True)
+
     # ── Broadcast helper ─────────────────────────────────────────────
 
     def _emit(self, task_dict: dict, event: str) -> None:
@@ -93,7 +126,7 @@ class MessageBus:
             return
         try:
             self._broadcast_callback(task_dict, event)
-        except Exception:
+        except Exception:  # noqa: BLE001 - broadcasting is best-effort, errors are logged
             logger.debug("Broadcast callback failed for event '%s'", event, exc_info=True)
 
     # ── Core API ─────────────────────────────────────────────────────
@@ -113,6 +146,7 @@ class MessageBus:
             return tasks
 
         self._mutate_tasks(_updater)
+        self._mirror_task_to_sqlite(task_dict)
         logger.info(
             "Task %s sent from [%s] to [%s] (correlation=%s, caller_correlation=%s).",
             task.id,
@@ -205,6 +239,7 @@ class MessageBus:
         updated = self._mutate_tasks(_updater)
         for t in updated:
             if t.get("id") == task_id:
+                self._mirror_task_to_sqlite(t)
                 return Task(**t)
         return None
 
@@ -230,6 +265,7 @@ class MessageBus:
         updated = self._mutate_tasks(_updater)
         for t in updated:
             if t.get("id") == task_id:
+                self._mirror_task_to_sqlite(t)
                 return Task(**t)
         return None
 
@@ -252,6 +288,7 @@ class MessageBus:
 
         self._mutate_tasks(_updater)
         if deleted:
+            self._mirror_delete_to_sqlite(task_id)
             self._emit(deleted.model_dump(), "deleted")
             logger.info("Task %s deleted", task_id)
         return deleted
@@ -293,6 +330,7 @@ class MessageBus:
         updated = self._mutate_tasks(_updater)
         for t in updated:
             if t.get("id") == task_id:
+                self._mirror_task_to_sqlite(t)
                 return Task(**t)
         return None
 

@@ -91,6 +91,11 @@ class StateStore:
         self._base = Path(base_dir)
         self._store = FileStore(self._base, backup=backup)
 
+    @property
+    def base_dir(self) -> Path:
+        """Return the configured base directory (may be relative)."""
+        return self._base
+
     # ── Path validation ──────────────────────────────────────────────
 
     def _resolve(self, rel_path: str | Path) -> tuple[Path, str]:

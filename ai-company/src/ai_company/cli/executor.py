@@ -8,7 +8,7 @@ from __future__ import annotations
 import contextlib
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import typer
 
@@ -23,6 +23,10 @@ def start(
     daemon: bool = typer.Option(False, "--daemon", "-d", help="Run as background daemon"),
     pid_dir: str = typer.Option("logs", help="Directory for PID file (daemon mode)"),
     log_dir: str = typer.Option("logs", help="Directory for log file (daemon mode)"),
+    db_path: Optional[str] = typer.Option(
+        None,
+        help="SQLite database path for write-through (default: <data root>/data/ai_company.db)",
+    ),
 ) -> None:
     """Start the continuous execution loop.
 
@@ -36,6 +40,7 @@ def start(
             registry=registry,
             pid_dir=pid_dir,
             log_dir=log_dir,
+            db_path=db_path,
         )
     else:
         from ai_company.executor.loop import Executor
@@ -44,8 +49,22 @@ def start(
             poll_interval=poll_interval,
             config_path=config,
             registry_path=registry,
+            database=_resolve_database(db_path),
         )
         executor.start()
+
+
+def _resolve_database(db_path: str | None) -> Any:
+    """Initialise and return the SQLite database for write-through.
+
+    ``None`` keeps the legacy file-only behaviour; a real database is
+    returned so MessageBus/CostTracker/audit mirror mutations into it.
+    """
+    if db_path is None:
+        return None
+    from ai_company.data.database import init_database
+
+    return init_database(db_path)
 
 
 def _start_daemon(
@@ -55,6 +74,7 @@ def _start_daemon(
     registry: str,
     pid_dir: str,
     log_dir: str,
+    db_path: str | None,
 ) -> None:
     """Launch executor in daemon mode."""
     from ai_company.executor.daemon import ExecutorDaemon
@@ -70,6 +90,7 @@ def _start_daemon(
             poll_interval=poll_interval,
             config_path=config,
             registry_path=registry,
+            database=_resolve_database(db_path),
         )
 
     daemon = ExecutorDaemon(
@@ -92,6 +113,10 @@ def _start_daemon(
 def tick(
     config: str = typer.Option("company/models.yaml", help="Path to models config"),
     registry: str = typer.Option("company/agent-registry.json", help="Path to agent registry"),
+    db_path: Optional[str] = typer.Option(
+        None,
+        help="SQLite database path for write-through (default: <data root>/data/ai_company.db)",
+    ),
 ) -> None:
     """Process all pending tasks in a single pass."""
     from ai_company.executor.loop import Executor
@@ -99,6 +124,7 @@ def tick(
     executor = Executor(
         config_path=config,
         registry_path=registry,
+        database=_resolve_database(db_path),
     )
     count = executor.tick()
     typer.echo(f"Processed {count} task(s).")
@@ -110,6 +136,10 @@ def run_task(
     task_id: str = typer.Argument(..., help="Task ID to execute"),
     config: str = typer.Option("company/models.yaml", help="Path to models config"),
     registry: str = typer.Option("company/agent-registry.json", help="Path to agent registry"),
+    db_path: Optional[str] = typer.Option(
+        None,
+        help="SQLite database path for write-through (default: <data root>/data/ai_company.db)",
+    ),
 ) -> None:
     """Execute a single task by ID."""
 
@@ -119,6 +149,7 @@ def run_task(
     executor = Executor(
         config_path=config,
         registry_path=registry,
+        database=_resolve_database(db_path),
     )
 
     # Load the specific task

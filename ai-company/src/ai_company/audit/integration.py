@@ -10,11 +10,15 @@ from ai_company.audit.writer import AuditWriter
 _writer: AuditWriter | None = None
 
 
-def init_audit(audit_dir: str = ".opencode/audit") -> AuditWriter:
-    """Initialise the global audit writer. Idempotent — returns existing writer if already set."""
+def init_audit(audit_dir: str = ".opencode/audit", database: Any = None) -> AuditWriter:
+    """Initialise the global audit writer. Idempotent — returns existing writer if already set.
+
+    *database* is passed through to the :class:`AuditWriter` so events are
+    mirrored to SQLite when the data layer is active (Sprint 2, S2.1).
+    """
     global _writer
     if _writer is None:
-        _writer = AuditWriter(audit_dir)
+        _writer = AuditWriter(audit_dir, database=database)
     return _writer
 
 

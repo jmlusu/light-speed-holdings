@@ -407,6 +407,10 @@ class KPIPipeline:
     def import_from_ndjson(self, department: str, ndjson_path: str | Path) -> int:
         """Import KPI history from a legacy ``*_history.ndjson`` file.
 
+        Idempotent: entries already present (matched on timestamp, department,
+        kpi key, and current value) are skipped so re-running the backfill does
+        not duplicate history points.
+
         Returns the number of entries imported.
         """
         path = Path(ndjson_path)
@@ -422,16 +426,21 @@ class KPIPipeline:
                     continue
                 try:
                     data = json.loads(line)
+                    timestamp = data.get("timestamp", "")
+                    current_value = float(data.get("current", 0))
+                    kpi_key = data.get("kpi_key", "")
+                    if self._kpi_point_exists(department, kpi_key, timestamp, current_value):
+                        continue
                     self.ingest_individual(
                         department=department,
-                        kpi_key=data.get("kpi_key", ""),
-                        current_value=float(data.get("current", 0)),
+                        kpi_key=kpi_key,
+                        current_value=current_value,
                         target_value=float(data["target"])
                         if data.get("target") is not None
                         else None,
                         unit=data.get("unit", ""),
                         status=data.get("status", "info"),
-                        timestamp=data.get("timestamp", ""),
+                        timestamp=timestamp,
                     )
                     count += 1
                 except (json.JSONDecodeError, KeyError, ValueError) as exc:
@@ -439,6 +448,23 @@ class KPIPipeline:
 
         logger.info("Imported %d KPI entries for %s from %s", count, department, path)
         return count
+
+    def _kpi_point_exists(
+        self,
+        department: str,
+        kpi_key: str,
+        timestamp: str,
+        current_value: float,
+    ) -> bool:
+        """Return True if an identical KPI data point already exists."""
+        rows = self._db.fetchall(
+            """SELECT 1 FROM kpi_values
+               WHERE department = ? AND kpi_key = ? AND timestamp = ?
+                 AND current_value = ?
+               LIMIT 1""",
+            (department, kpi_key, timestamp, current_value),
+        )
+        return bool(rows)
 
     # ── Stats ─────────────────────────────────────────────────────────
 

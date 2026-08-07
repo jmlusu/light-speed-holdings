@@ -7,10 +7,15 @@ and per-task budget caps.
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
+
+from ai_company.data import CostAnalytics, database_is_usable
+
+logger = logging.getLogger(__name__)
 
 # Approximate costs per 1M tokens (USD) — input and output.
 # Source: public pricing pages as of 2025.  Update as prices change.
@@ -95,6 +100,7 @@ class CostTracker:
         results_dir: str | Path = "results",
         daily_budget_usd: float | None = None,
         task_budget_usd: float | None = None,
+        database: Any = None,
     ) -> None:
         self.results_dir = Path(results_dir)
         self.daily_budget = daily_budget_usd
@@ -104,6 +110,11 @@ class CostTracker:
         self._daily_cost: dict[str, float] = {}  # "YYYY-MM-DD" -> total
         self._task_costs: dict[str, float] = {}  # task_id -> total
         self._records: list[UsageRecord] = []
+
+        # SQLite write-through mirror (Sprint 2, S2.1)
+        self._cost_analytics = None
+        if database_is_usable(database):
+            self._cost_analytics = CostAnalytics(database)
 
         # Rebuild accumulators from existing log
         self._rebuild_accumulators()
@@ -148,6 +159,24 @@ class CostTracker:
 
         # Persist to disk
         self._append_log(record)
+
+        # Mirror to SQLite when the data layer is active (best-effort)
+        if self._cost_analytics is not None:
+            try:
+                self._cost_analytics.record_usage(
+                    model=record.model,
+                    provider=record.provider,
+                    agent_name=record.agent_name,
+                    task_id=record.task_id,
+                    prompt_tokens=record.prompt_tokens,
+                    completion_tokens=record.completion_tokens,
+                    cost_usd=record.cost_usd,
+                    iteration=record.iteration,
+                    metadata=record.metadata,
+                    timestamp=record.timestamp,
+                )
+            except Exception:  # noqa: BLE001 - mirror is best-effort
+                logger.debug("SQLite cost mirror failed", exc_info=True)
 
         return record
 

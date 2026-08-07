@@ -25,6 +25,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Literal
 
+from ai_company.dashboard.repository import get_state_store
 from ai_company.store.file_store import FileStore
 
 logger = logging.getLogger(__name__)
@@ -151,11 +152,15 @@ class KPIHistoryStore:
     ----------
     storage_dir:
         Directory under which department history files are stored.
-        Defaults to ``dashboard/kpi_history`` relative to project root.
+        Defaults to ``<dashboard data root>/dashboard/kpi_history``, where the
+        dashboard data root is the configured :class:`StateStore` base (so
+        tests anchored at a temp root never write into the real project).
     """
 
     def __init__(self, storage_dir: Path | None = None) -> None:
-        self._storage_dir = storage_dir or Path("dashboard/kpi_history")
+        if storage_dir is None:
+            storage_dir = Path(get_state_store().base_dir) / "dashboard" / "kpi_history"
+        self._storage_dir = storage_dir
         self._storage_dir.mkdir(parents=True, exist_ok=True)
         # FileStore provides atomic writes + cross-process file locking so
         # concurrent KPI collectors cannot corrupt the NDJSON history
