@@ -84,7 +84,7 @@ ignore = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--basetemp=.pytest_tmp/pytest"
+addopts = "--basetemp=.pytest_tmp"
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 asyncio_mode = "auto"
