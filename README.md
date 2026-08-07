@@ -26,18 +26,20 @@ company-registry.yaml → Jinja2 templates → .opencode/agents/*.md + task exec
 | Registry system (19 YAML configs) | Working | Covered |
 | Decision/Workflow/Graph engines | Working | Covered |
 
-**727 tests passing.** Ruff lint clean. Mypy type-check clean.
+**1494 tests passing.** Ruff lint clean. Mypy type-check clean (177 source files).
 
 ### Known Gaps
 
-- Executor bypasses MessageBus for direct file I/O
-- No file locking on shared JSON/YAML state
-- Tier rules not integrated into ToolRunner
-- HITL gate blocks executor thread (up to 30 min per approval)
-- WebSocket broadcast functions exist but are not called
-- Dashboard CORS allows all origins (no auth)
+Current open/partial gaps (see the [gap register](ai-company/docs/ARCHITECTURE-GAPS.md) for evidence and status):
 
-See `docs/ARCHITECTURE-GAPS.md` for the full gap analysis.
+- GAP-005 — memory consolidation: recall/store wired; consolidation scheduler in the executor loop, cadence verification pending (partial)
+- GAP-011 — dashboard/mobile read paths still access `inbox.json` directly (partial)
+- GAP-018 — no structured JSON logging / correlation IDs (partial)
+- GAP-019 — agent spec parsing lacks schema validation (open)
+
+**Resolved:** GAP-001, 002, 003, 004, 006, 007, 008, 009, 010, 012, 013, 014, 015, 016, 017, 020 (16 of 20).
+
+See `ai-company/docs/ARCHITECTURE-GAPS.md` for the full gap analysis.
 
 ## Quick Start
 
@@ -103,7 +105,7 @@ ai-company/src/ai_company/
 # Install dev dependencies (creates .venv from uv.lock)
 uv sync --extra dev
 
-# Run all 1408 tests
+# Run the full test suite (1494 tests)
 uv run pytest
 
 # Lint and type check
@@ -122,18 +124,23 @@ uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerato
 
 ## Documentation
 
-- `docs/ARCHITECTURE.md` — System architecture and module hierarchy
-- `docs/ARCHITECTURE-GAPS.md` — 20 identified integration gaps with severity ratings
-- `docs/STATUS.md` — Current project status
-- `docs/INTEGRATION-ARCHITECTURE.md` — Integration seam analysis
-- `docs/SPRINT-1-TRACKER.md` — Sprint 1 task tracker
-- `docs/SPRINT-2-BACKLOG.md` — Sprint 2 prioritized backlog
-- `docs/DEVELOPER-GUIDE.md` — Developer onboarding guide
-- `docs/COMPANY-CONSTITUTION.md` — Principles and decision order
-- `docs/DECISION-FRAMEWORK.md` — Decision engine rules
-- `docs/MODEL-ROUTING-POLICY.md` — Provider catalog and routing rules
-- `docs/RISK-REGISTER.md` — Risk register with mitigations and owners
-- `docs/BOARD-GOVERNANCE.md` — Board charter and voting rules
+All documentation lives in `ai-company/docs/`:
+
+- `ai-company/docs/ARCHITECTURE.md` — System architecture and module hierarchy
+- `ai-company/docs/ARCHITECTURE-GAPS.md` — 20 identified integration gaps with severity ratings
+- `ai-company/docs/STATUS.md` — Current project status
+- `ai-company/docs/DEVELOPMENT.md` — Developer setup and local development guide
+- `ai-company/docs/DEVELOPER-GUIDE.md` — Developer onboarding guide
+- `ai-company/docs/ECL.md` — Change lifecycle and context loading rules
+- `ai-company/docs/DEPLOYMENT-GUIDE.md` — Deployment reference
+- `ai-company/docs/INTEGRATION-ARCHITECTURE.md` — Integration seam analysis
+- `ai-company/docs/SPRINT-1-TRACKER.md` — Sprint 1 task tracker
+- `ai-company/docs/SPRINT-2-BACKLOG.md` — Sprint 2 prioritized backlog
+- `ai-company/docs/COMPANY-CONSTITUTION.md` — Principles and decision order
+- `ai-company/docs/DECISION-FRAMEWORK.md` — Decision engine rules
+- `ai-company/docs/MODEL-ROUTING-POLICY.md` — Provider catalog and routing rules
+- `ai-company/docs/RISK-REGISTER.md` — Risk register with mitigations and owners
+- `ai-company/docs/BOARD-GOVERNANCE.md` — Board charter and voting rules
 
 ## License
 
