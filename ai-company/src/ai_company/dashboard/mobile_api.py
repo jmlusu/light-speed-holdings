@@ -17,6 +17,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
+from ai_company.dashboard.api import get_bus
 from ai_company.dashboard.repository import get_state_store
 
 logger = logging.getLogger(__name__)
@@ -191,7 +192,9 @@ def _save_devices(devices: list[dict]) -> None:
 @router.get("/dashboard", response_model=MobileDashboardSummary)
 def mobile_dashboard(compact: bool = True) -> MobileDashboardSummary:
     """Condensed dashboard summary for mobile clients."""
-    tasks = _load_json(".opencode/inbox.json")
+    # GAP-011: tasks are read through the shared MessageBus, never from the
+    # inbox file directly.
+    tasks = get_bus().get_all_tasks_raw()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
     registry = _load_registry()
@@ -257,7 +260,7 @@ def mobile_tasks(
 ) -> dict[str, Any]:
     """Paginated task list with cursor-based navigation."""
     limit = min(limit, 50)
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = get_bus().get_all_tasks_raw()
 
     # Apply filters
     if status:
@@ -432,11 +435,12 @@ def _delegate_task(task_id: str, delegate_to: str) -> dict[str, Any]:
             "ok": False,
             "error": "No delegate target specified",
         }
-    tasks = _load_json(".opencode/inbox.json")
-    for t in tasks:
-        if t.get("id", "")[:8] == task_id or t.get("id") == task_id:
-            t["receiver_id"] = delegate_to
-            _save_json(".opencode/inbox.json", tasks)
+    # GAP-011: reads AND writes go through the MessageBus so the delegation
+    # cannot clobber a concurrent executor/dashboard update to the inbox.
+    for t in get_bus().get_all_tasks_raw():
+        full_id = t.get("id", "")
+        if full_id[:8] == task_id or full_id == task_id:
+            get_bus().update_task(full_id, {"receiver_id": delegate_to})
             return {
                 "type": "delegate",
                 "target_id": task_id,
@@ -577,7 +581,7 @@ def swipe_approval(req: SwipeDecision) -> dict[str, Any]:
 @router.get("/kpis/compact")
 def compact_kpis() -> dict[str, Any]:
     """Minimal KPI payload for widgets and badges."""
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = get_bus().get_all_tasks_raw()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
 
@@ -823,7 +827,7 @@ def mobile_sync(req: SyncRequest) -> dict[str, Any]:
         processed_actions.append(result)
 
     # Compute dashboard delta
-    tasks = _load_json(".opencode/inbox.json")
+    tasks = get_bus().get_all_tasks_raw()
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     escalations_data = _load_yaml("orchestrator/escalation.yaml")
 

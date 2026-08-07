@@ -415,12 +415,30 @@ def _company_window_tasks(root: Path, days: int) -> tuple[list[dict[str, Any]], 
 
 
 def _load_inbox_tasks(root: Path) -> list[dict[str, Any]]:
-    """Load task dicts from ``.opencode/inbox.json``.
+    """Load task dicts from the shared MessageBus (GAP-011).
 
-    Accepts a top-level JSON list of task dicts (the MessageBus layout) and,
-    defensively, a ``{"tasks": [...]}`` wrapper.  Returns ``[]`` on missing or
-    malformed files so the summary can never raise.
+    Falls back to ``.opencode/inbox.json`` only if the bus is unavailable so
+    the summary can never raise.  Accepts a top-level JSON list of task dicts
+    (the MessageBus layout) and, defensively, a ``{"tasks": [...]}`` wrapper.
     """
+    try:
+        from ai_company.dashboard.api import get_bus
+
+        data = get_bus().get_all_tasks_raw()
+    except Exception:  # noqa: BLE001 - summary must never raise
+        logger.debug("MessageBus unavailable; falling back to inbox file")
+        data = _read_inbox_file(root)
+    if isinstance(data, list):
+        return [task for task in data if isinstance(task, dict)]
+    if isinstance(data, dict):
+        tasks = data.get("tasks")
+        if isinstance(tasks, list):
+            return [task for task in tasks if isinstance(task, dict)]
+    return []
+
+
+def _read_inbox_file(root: Path) -> list[dict[str, Any]]:
+    """Direct-file fallback for task loading (only when the bus is down)."""
     inbox_path = root / ".opencode" / "inbox.json"
     if not inbox_path.is_file():
         logger.debug("Inbox file not found, returning empty: %s", inbox_path)

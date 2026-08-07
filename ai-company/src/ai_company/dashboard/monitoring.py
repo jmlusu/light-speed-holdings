@@ -33,6 +33,12 @@ def _get_store() -> Any:
     return get_state_store()
 
 
+def _get_bus() -> Any:
+    from ai_company.dashboard.api import get_bus
+
+    return get_bus()
+
+
 # ---------------------------------------------------------------------------
 # Metrics store (in-memory counters — reset on process restart)
 # ---------------------------------------------------------------------------
@@ -333,9 +339,9 @@ def _append_derived_metrics(lines: list[str]) -> None:
 
 
 def _append_task_status_breakdown(lines: list[str]) -> None:
-    """Read live inbox and emit per-status gauges."""
+    """Read live task state and emit per-status gauges (via MessageBus)."""
     try:
-        tasks = _get_store().read_json(".opencode/inbox.json", default=[])
+        tasks = _get_bus().get_all_tasks_raw()
         if tasks is None:
             return
         status_counts: dict[str, int] = {}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 import yaml
@@ -20,6 +21,26 @@ from ai_company.dashboard.kpis.sales import SalesKPICollector
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _state_store_at_project_root(tmp_path: Path) -> None:
+    """Point the dashboard StateStore + shared bus at the test tmp root.
+
+    The collectors read tasks through the shared dashboard MessageBus
+    (GAP-011), which is rooted at the StateStore base dir. Binding the
+    store to ``tmp_path`` keeps collector tests isolated from the real
+    project state and mirrors what ``create_app`` does at boot.
+    """
+    import ai_company.dashboard.api as dash_api
+    from ai_company.dashboard.repository import configure_state_store, reset_state_store
+
+    reset_state_store()
+    configure_state_store(tmp_path)
+    dash_api._bus = None
+    yield
+    dash_api._bus = None
+    reset_state_store()
 
 
 @pytest.fixture()
@@ -496,4 +517,90 @@ class TestSqliteCollectors:
     def test_empty_sqlite_falls_back_to_files(self, project: Path, db) -> None:
         """A usable but empty database must not change collector output."""
         result = EngineeringKPICollector(project, database=db).collect()
-        assert result["kpis"]["total_tasks"]["current"] == 5  # from inbox.json
+        assert result["kpis"]["total_tasks"]["current"] == 5  # from the MessageBus
+
+
+# ---------------------------------------------------------------------------
+# GAP-011: collectors read tasks through the MessageBus
+# ---------------------------------------------------------------------------
+
+
+class TestCollectorsReadTasksViaMessageBus:
+    """Collectors must read task state through the shared MessageBus.
+
+    Regression lock for GAP-011: the old fallback opened
+    ``.opencode/inbox.json`` directly; task reads must route through
+    ``get_bus().get_all_tasks_raw()`` so collectors see the same live
+    state as the dashboard API and the executor.
+    """
+
+    def test_engineering_tasks_come_from_message_bus(
+        self,
+        empty_project: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        import ai_company.dashboard.api as dash_api
+
+        fake_tasks = [
+            {
+                "id": "bus-1",
+                "sender_id": "ceo",
+                "receiver_id": "b",
+                "instruction": "via bus",
+                "status": "pending",
+            },
+            {
+                "id": "bus-2",
+                "sender_id": "ceo",
+                "receiver_id": "b",
+                "instruction": "done",
+                "status": "completed",
+            },
+        ]
+        fake_bus = MagicMock()
+        fake_bus.get_all_tasks_raw.return_value = fake_tasks
+        monkeypatch.setattr(dash_api, "get_bus", lambda: fake_bus)
+
+        result = EngineeringKPICollector(empty_project).collect()
+        kpis = result["kpis"]
+
+        assert kpis["total_tasks"]["current"] == 2
+        assert kpis["pending_tasks"]["current"] == 1
+        assert kpis["completed_tasks"]["current"] == 1
+        fake_bus.get_all_tasks_raw.assert_called_once()
+
+    def test_department_collectors_read_tasks_via_message_bus(
+        self,
+        empty_project: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Every task-reading department collector routes through the bus."""
+        import ai_company.dashboard.api as dash_api
+
+        fake_tasks = [
+            {
+                "id": "bus-1",
+                "sender_id": "ceo",
+                "receiver_id": "cmo",
+                "instruction": "campaign",
+                "status": "completed",
+            },
+            {
+                "id": "bus-2",
+                "sender_id": "ceo",
+                "receiver_id": "sales",
+                "instruction": "close deal",
+                "status": "pending",
+            },
+        ]
+        fake_bus = MagicMock()
+        fake_bus.get_all_tasks_raw.return_value = fake_tasks
+        monkeypatch.setattr(dash_api, "get_bus", lambda: fake_bus)
+
+        for collector_cls in ALL_COLLECTORS:
+            result = collector_cls(empty_project).collect()
+            assert "kpis" in result
+
+        # At least one department (engineering/cs/legal/marketing/sales) must
+        # have read its tasks through the bus.
+        fake_bus.get_all_tasks_raw.assert_called()
