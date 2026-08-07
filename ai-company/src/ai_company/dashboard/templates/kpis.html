@@ -13,6 +13,55 @@
   </button>
 </div>
 
+<!-- ═══ COMPANY KPIs vs TARGETS ═══ -->
+<div x-show="companyKPIs.length > 0" class="mb-8">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-semibold text-surface-100">Company KPIs vs Targets</h3>
+      <p class="text-sm text-surface-500 mt-1" x-show="companyKPISummaryText" x-text="companyKPISummaryText"></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <template x-for="kpi in companyKPIs" :key="kpi.id">
+      <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-4">
+        <div class="flex items-start justify-between gap-2 mb-3">
+          <div class="min-w-0">
+            <span class="text-[10px] text-surface-500 uppercase tracking-wider" x-text="kpi.category || kpi.id"></span>
+            <h4 class="text-sm font-semibold text-surface-200 mt-0.5 truncate" x-text="kpi.name"></h4>
+          </div>
+          <span class="inline-flex shrink-0 items-center text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap"
+                :class="companyKPIStatusClass(kpi.status)">
+            <span x-text="(kpi.status || 'info').replace(/_/g, ' ')"></span>
+          </span>
+        </div>
+        <div class="flex items-end justify-between">
+          <div>
+            <div class="text-[10px] text-surface-500 uppercase tracking-wider">Current</div>
+            <div class="text-2xl font-bold text-surface-100 mt-0.5" x-text="formatKPIValue(kpi.current, kpi.unit)"></div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] text-surface-500 uppercase tracking-wider">Target</div>
+            <div class="text-lg font-semibold text-surface-300 mt-0.5" x-text="formatKPIValue(kpi.target, kpi.unit)"></div>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-surface-700/50 flex items-center justify-between gap-2">
+          <span class="text-[10px] text-surface-500" x-text="'gap: ' + formatKPIValue(kpi.gap, kpi.unit)"></span>
+          <span class="text-[10px] font-mono" :class="kpi.computed ? 'text-brand-400' : 'text-surface-600'"
+                x-text="kpi.computed ? 'live' : (kpi.source || 'config')"></span>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <div class="bg-surface-900/80 rounded-xl border border-surface-700/50 p-5 mt-4">
+    <h3 class="text-sm font-semibold text-surface-300 mb-4">Company KPIs — Current vs Target</h3>
+    <div class="chart-container chart-container-md">
+      <canvas id="companyKPIChart"></canvas>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ DEPARTMENT TABS ═══ -->
 <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
   <template x-for="dept in kpiDepartments" :key="dept.id">
@@ -44,26 +93,26 @@
           'text-amber-400': kpi.status === 'below_target',
           'text-red-400': kpi.status === 'above_target',
           'text-blue-400': kpi.status === 'info'
-        }" x-text="kpi.current"></span>
+        }" x-text="kpi.current ?? '—'"></span>
         <span class="text-sm text-surface-500 mb-0.5" x-text="kpi.unit"></span>
       </div>
-      <div x-show="kpi.target !== null" class="mt-2 flex items-center gap-2">
+      <div x-show="kpi.target !== null && kpi.target !== undefined" class="mt-2 flex items-center gap-2">
         <div class="flex-1 h-1.5 bg-surface-800 rounded-full overflow-hidden">
           <div class="h-full rounded-full transition-all duration-500" :class="{
             'bg-emerald-500': kpi.status === 'on_track',
             'bg-amber-500': kpi.status === 'below_target',
             'bg-red-500': kpi.status === 'above_target',
             'bg-blue-500': kpi.status === 'info'
-          }" :style="'width:' + Math.min((kpi.current / (kpi.target || 1)) * 100, 100) + '%'"></div>
+          }" :style="'width:' + Math.min(((kpi.current || 0) / (kpi.target || 1)) * 100, 100) + '%'"></div>
         </div>
-        <span class="text-[10px] text-surface-600 font-mono" x-text="'target: ' + kpi.target"></span>
+        <span class="text-[10px] text-surface-600 font-mono" x-text="'target: ' + (kpi.target ?? '—')"></span>
       </div>
       <span class="inline-block mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full" :class="{
         'bg-emerald-500/10 text-emerald-400': kpi.status === 'on_track',
         'bg-amber-500/10 text-amber-400': kpi.status === 'below_target',
         'bg-red-500/10 text-red-400': kpi.status === 'above_target',
         'bg-blue-500/10 text-blue-400': kpi.status === 'info'
-      }" x-text="kpi.status.replace(/_/g, ' ')"></span>
+      }" x-text="(kpi.status || 'info').replace(/_/g, ' ')"></span>
     </div>
   </template>
 </div>

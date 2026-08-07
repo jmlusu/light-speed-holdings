@@ -57,6 +57,8 @@ function dashboard() {
     kpiDepartments: [],
     allKPIsList: [],
     liveKPIData: null,
+    companyKPIs: [],
+    companyKPISummary: null,
 
     // ── Costs page ───────────────────────────────────────────
     costPeriod: 'daily',
@@ -410,9 +412,10 @@ function dashboard() {
     },
 
     async loadKPIs() {
-      const [depts, summary] = await Promise.all([
+      const [depts, summary, company] = await Promise.all([
         this.fetchJSON('/api/kpis'),
         this.fetchJSON('/api/kpis/summary'),
+        this.fetchJSON('/api/company-kpis'),
       ]);
 
       if (depts) {
@@ -430,15 +433,62 @@ function dashboard() {
 
       if (summary) this.allKPIsList = summary;
 
+      // Company-level KPIs (Sprint 3, item 2) — loaded before chart renders.
+      if (company) {
+        this.companyKPIs = company.kpis || [];
+        this.companyKPISummary = company.summary || null;
+      } else {
+        this.companyKPIs = [];
+        this.companyKPISummary = null;
+      }
+
       // Also load live KPI data
       const live = await this.fetchJSON('/api/kpis/live');
       if (live) this.liveKPIData = live;
+
+      // FIX: /api/kpis returns definitions only (no current/status).
+      // Overlay live values so department KPI cards show real data
+      // instead of "undefined".
+      this.mergeLiveKPIValues();
 
       if (typeof initKPICharts === 'function') {
         requestAnimationFrame(() => {
           initKPICharts(this.kpiDepartments, this.liveKPIData);
         });
       }
+
+      if (typeof initCompanyKPICharts === 'function') {
+        requestAnimationFrame(() => {
+          initCompanyKPICharts(this.companyKPIs);
+        });
+      }
+    },
+
+    /**
+     * FIX: Overlay live telemetry values onto department KPI definitions.
+     * /api/kpis returns definitions only, so cards previously rendered
+     * "undefined" for current/status. The live snapshot
+     * (liveKPIData.departments[deptId].kpis) is keyed by the same ids as
+     * the definitions, each value {current, target, unit, status}.
+     * Defensive: live data may be null or missing departments; only fields
+     * the live payload actually provides are copied.
+     */
+    mergeLiveKPIValues() {
+      const live = this.liveKPIData;
+      if (!live || !live.departments) return;
+
+      this.kpiDepartments.forEach(dept => {
+        const liveDept = live.departments[dept.id];
+        if (!liveDept || !liveDept.kpis) return;
+        (dept.kpis || []).forEach(kpi => {
+          const liveKpi = liveDept.kpis[kpi.id];
+          if (!liveKpi) return;
+          if (liveKpi.current !== undefined) kpi.current = liveKpi.current;
+          if (liveKpi.target !== undefined) kpi.target = liveKpi.target;
+          if (liveKpi.unit !== undefined) kpi.unit = liveKpi.unit;
+          if (liveKpi.status !== undefined) kpi.status = liveKpi.status;
+        });
+      });
     },
 
     async refreshKPIs() {
@@ -662,6 +712,12 @@ function dashboard() {
       return this.kpiDepartments.find(d => d.id === this.activeKPIDept);
     },
 
+    get companyKPISummaryText() {
+      const s = this.companyKPISummary;
+      if (!s) return '';
+      return `${s.total || 0} KPIs · ${s.on_track || 0} on track · ${s.below_target || 0} below target`;
+    },
+
     // ═══ HELPERS ══════════════════════════════════════════════
 
     showToast(type, title, message) {
@@ -717,6 +773,35 @@ function dashboard() {
         Specialist:'bg-brand-500/10 text-brand-400 border-brand-500/20',
         Human:     'bg-amber-500/10 text-amber-400 border-amber-500/20',
       }[type] || 'bg-surface-700/50 text-surface-400 border-surface-600';
+    },
+
+    // Status badge classes for company-level KPI cards. Follows the
+    // existing KPI badge conventions: emerald for on-track, amber for
+    // below-target, gray for informational (fallback).
+    companyKPIStatusClass(status) {
+      return {
+        on_track:     'bg-emerald-500/10 text-emerald-400',
+        below_target: 'bg-amber-500/10 text-amber-400',
+        info:         'bg-surface-700/50 text-surface-400',
+      }[status] || 'bg-surface-700/50 text-surface-400';
+    },
+
+    formatCompactCurrency(value) {
+      if (value === null || value === undefined || value === '') return '—';
+      const abs = Math.abs(value);
+      const sign = value < 0 ? '-' : '';
+      if (abs >= 1e9) return `${sign}$${(value / 1e9).toFixed(1).replace(/\.0$/, '')}B`;
+      if (abs >= 1e6) return `${sign}$${(value / 1e6).toFixed(1).replace(/\.0$/, '')}M`;
+      if (abs >= 1e3) return `${sign}$${(value / 1e3).toFixed(1).replace(/\.0$/, '')}K`;
+      return `${sign}$${Math.round(value)}`;
+    },
+
+    formatKPIValue(value, unit) {
+      if (value === null || value === undefined || value === '') return '—';
+      if (typeof value !== 'number') return value;
+      if (unit === 'usd') return this.formatCompactCurrency(value);
+      if (unit === 'percent') return `${Math.round(value)}%`;
+      return value.toLocaleString();
     },
   };
 }

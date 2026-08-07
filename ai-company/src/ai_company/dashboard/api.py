@@ -1111,10 +1111,17 @@ def kpi_summary() -> list[dict]:
 
 
 @router.get("/company-kpis", tags=["kpis"])
-def list_company_kpis() -> list[dict]:
-    """Return company-level KPIs with targets and current values."""
-    kpi_data = _load_yaml("config/company/kpis.yaml")
-    return kpi_data.get("kpis", {}).get("company", [])
+def list_company_kpis(days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
+    """Return company-level KPIs vs targets from real telemetry.
+
+    SQLite-first, inbox-file fallback (Sprint 3, item 2).  Build Success Rate
+    and Agent Utilization are computed from the task telemetry window; the
+    remaining KPIs report their configured ``current`` values.  Always returns
+    the full summary shape and never raises.
+    """
+    from ai_company.dashboard.data_service import get_company_kpi_summary
+
+    return get_company_kpi_summary(days=days)
 
 
 # ── CEO Dashboard (aggregate view) ─────────────────────────────────
