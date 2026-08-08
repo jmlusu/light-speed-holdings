@@ -221,6 +221,54 @@ class Governance(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Operating guardrails
+# ---------------------------------------------------------------------------
+
+
+class LLMBudget(BaseModel):
+    """LLM operating budget caps for the autonomous executor."""
+
+    currency: str = "USD"
+    daily_budget_usd: float = 2.0
+    task_budget_usd: float = 0.5
+    auto_suspend_on_overspend: bool = True
+    overspend_action: str = "suspend_daily"
+
+
+class TierBudgetOverride(BaseModel):
+    """Per-autonomy-tier budget override (tightens caps at higher tiers)."""
+
+    task_budget_usd: float | None = None
+    daily_budget_usd: float | None = None
+
+
+class TierSeniority(BaseModel):
+    level: str
+    auto_approve_tier: int = 0
+
+
+class HITLGates(BaseModel):
+    require_approval_from_tier: int = 2
+    non_blocking: bool = True
+
+
+class Guardrails(BaseModel):
+    """Operating guardrails: LLM spend caps + autonomy-tier policy.
+
+    Consumed by the autonomous Executor (see tickets #15 / Q4c + Q9a). The
+    autonomy tiers themselves live in ``orchestrator/tier_rules.py`` and the
+    approval/risk matrices; this model binds concrete budget values and HITL
+    behaviour to those tiers so the executor can enforce them at runtime.
+    """
+
+    llm_budgets: LLMBudget = Field(default_factory=LLMBudget)
+    tier_policy_source: str = "orchestrator/tier_rules.py"
+    seniority_levels: list[TierSeniority] = Field(default_factory=list)
+    tier_budget_overrides: dict[str, TierBudgetOverride] = Field(default_factory=dict)
+    hitl_gates: HITLGates = Field(default_factory=HITLGates)
+
+
+# ---------------------------------------------------------------------------
 # Policy
 # ---------------------------------------------------------------------------
 
@@ -591,6 +639,7 @@ class CompanyRegistry(BaseModel):
     strategy: Strategy = Field(default_factory=Strategy)
     culture: Culture = Field(default_factory=Culture)
     governance: Governance = Field(default_factory=Governance)
+    guardrails: Guardrails = Field(default_factory=Guardrails)
     policies: list[Policy] = Field(default_factory=list)
     kpis: list[KPI] = Field(default_factory=list)
     budget: Budget = Field(default_factory=Budget)
