@@ -309,3 +309,151 @@ class TestRateLimiting:
         # Different IP should still be allowed
         allowed, _ = limiter.is_allowed("ip-b")
         assert allowed is True
+
+
+# ── Security headers tests (T018 / ticket #11) ──────────────────────
+
+
+class TestSecurityHeaders:
+    """CSP, HSTS, and framing/type-confusion guards on every response."""
+
+    def test_default_headers_present_on_success(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """A normal 200 response carries the full security header set."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/health")
+        assert resp.status_code == 200
+        assert "content-security-policy" in resp.headers
+        assert resp.headers["content-security-policy"].startswith("default-src 'self'")
+        assert "X-Frame-Options" in resp.headers
+        assert resp.headers["X-Frame-Options"] == "DENY"
+        assert resp.headers["X-Content-Type-Options"] == "nosniff"
+        assert resp.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
+        assert "Permissions-Policy" in resp.headers
+        assert "Strict-Transport-Security" in resp.headers
+        assert "max-age=31536000" in resp.headers["Strict-Transport-Security"]
+
+    def test_headers_present_on_auth_rejection(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Even a 401 short-circuit response must carry the security headers."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.post(
+            "/api/tasks",
+            json={"receiver_id": "agent", "instruction": "do something"},
+        )
+        assert resp.status_code == 401
+        assert "content-security-policy" in resp.headers
+        assert resp.headers["X-Content-Type-Options"] == "nosniff"
+        assert resp.headers["X-Frame-Options"] == "DENY"
+        assert "Strict-Transport-Security" in resp.headers
+
+    def test_csp_overrideable_via_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """DASHBOARD_CSP replaces the default policy."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.setenv(
+            "DASHBOARD_CSP",
+            "default-src 'none'; frame-ancestors 'none'; base-uri 'self'",
+        )
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/health")
+        assert resp.headers["content-security-policy"] == (
+            "default-src 'none'; frame-ancestors 'none'; base-uri 'self'"
+        )
+
+    def test_hsts_disabled_when_max_age_zero(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """DASHBOARD_HSTS_MAX_AGE=0 suppresses the HSTS header."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.setenv("DASHBOARD_HSTS_MAX_AGE", "0")
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/health")
+        assert "Strict-Transport-Security" not in resp.headers
+
+    @staticmethod
+    def _setup_minimal_data(tmp_path: Path) -> None:
+        (tmp_path / "company").mkdir(exist_ok=True)
+        (tmp_path / "company" / "agent-registry.json").write_text("[]", encoding="utf-8")
+        (tmp_path / ".opencode").mkdir(exist_ok=True)
+        (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
+        (tmp_path / "orchestrator").mkdir(exist_ok=True)
+        (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
+        (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+            "rules: []\nevents: []", encoding="utf-8"
+        )
+        (tmp_path / "orchestrator" / "scheduler.yaml").write_text("tasks: []", encoding="utf-8")
+        (tmp_path / "company" / "departments.yaml").write_text("departments: []", encoding="utf-8")
+
+        import shutil
+
+        real_models = Path(__file__).resolve().parents[2] / "company" / "models.yaml"
+        if real_models.exists():
+            shutil.copy2(str(real_models), str(tmp_path / "company" / "models.yaml"))
+
+
+# ── WebSocket origin validation tests (T018 / ticket #11) ────────────
+
+
+class TestWebSocketOrigin:
+    """Cross-site WebSocket hijacking is blocked at the handshake."""
+
+    def test_ws_rejects_cross_site_origin(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """An Origin not matching the host or allowlist must be refused."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        from starlette.websockets import WebSocketDisconnect
+
+        with (
+            pytest.raises(WebSocketDisconnect),
+            client.websocket_connect(
+                "/ws/dashboard", headers={"origin": "https://evil.example.com"}
+            ),
+        ):
+            pass
+
+    def test_ws_accepts_same_origin(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """A same-host Origin (or no Origin) must be accepted."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        with client.websocket_connect(
+            "/ws/dashboard", headers={"origin": "http://testserver"}
+        ) as ws:
+            hello = ws.receive_json()
+            assert hello["type"] == "connected"
+
+    def test_ws_accepts_allowlisted_origin(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """An Origin in the CORS allowlist must be accepted."""
+        monkeypatch.setenv("DASHBOARD_CORS_ORIGINS", "https://dashboard.example.com")
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        with client.websocket_connect(
+            "/ws/dashboard",
+            headers={"origin": "https://dashboard.example.com"},
+        ) as ws:
+            hello = ws.receive_json()
+            assert hello["type"] == "connected"

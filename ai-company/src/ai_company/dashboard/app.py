@@ -11,6 +11,10 @@ Security hardening (GAP-010):
   localhost-only development.
 - Simple in-memory rate limiter protects all endpoints (100 req/min default,
   configurable via ``DASHBOARD_RATE_LIMIT``).
+- Response security headers (T018 / ticket #11): CSP, HSTS,
+  X-Content-Type-Options, X-Frame-Options, Referrer-Policy,
+  Permissions-Policy are applied to every response via middleware.
+  ``security_headers()`` returns the default policy set.
 
 Frontend:
 - Jinja2 templates served from ``src/ai_company/dashboard/templates/``
@@ -37,6 +41,45 @@ from ai_company.paths import get_data_root, get_project_root
 
 # Configure structured logging on import
 setup_logging()
+
+
+def security_headers() -> dict[str, str]:
+    """Return the hardened response-security headers for the dashboard.
+
+    T018 (ticket #11): CSP, HSTS, and clickjacking/type-confusion guards.
+
+    The default CSP is pragmatic for the current CDN-based frontend
+    (Tailwind + Alpine + Chart.js from ``cdn.tailwindcss.com`` and
+    ``cdn.jsdelivr.net``, plus the inline ``tailwind.config`` script in
+    ``base.html``).  It still blocks objects, frames, form-targeting and
+    base-URI attacks, and restricts connect/font/img to first-party or
+    data: sources.  Tighten it by setting ``DASHBOARD_CSP``.
+
+    HSTS max-age is configurable via ``DASHBOARD_HSTS_MAX_AGE``
+    (default 31536000 = 1 year; set ``0`` to disable).
+    """
+    csp = os.environ.get(
+        "DASHBOARD_CSP",
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com "
+        "https://cdn.jsdelivr.net; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "img-src 'self' data:; font-src 'self' data:; "
+        "connect-src 'self' ws: wss:; frame-ancestors 'none'; "
+        "base-uri 'self'; form-action 'self'; object-src 'none'",
+    )
+    hsts_max_age = int(os.environ.get("DASHBOARD_HSTS_MAX_AGE", "31536000"))
+    headers = {
+        "Content-Security-Policy": csp,
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+    }
+    if hsts_max_age > 0:
+        headers["Strict-Transport-Security"] = f"max-age={hsts_max_age}; includeSubDomains"
+    return headers
+
 
 from ai_company.dashboard.api import router  # noqa: E402
 from ai_company.dashboard.ws import router as ws_router  # noqa: E402
@@ -291,6 +334,19 @@ def create_app() -> FastAPI:
                 media_type="application/json",
             )
         return await call_next(request)
+
+    # ── Security headers (T018 / ticket #11) ─────────────────────────────
+    # Registered AFTER the auth + rate-limit middlewares so it runs
+    # outermost: every response — including 401/429 short-circuits —
+    # carries the hardened headers.  CSP/HSTS are env-configurable.
+    app.state.allowed_ws_origins = set(origins)
+
+    @app.middleware("http")
+    async def _security_headers_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
+        response = await call_next(request)
+        for name, value in security_headers().items():
+            response.headers[name] = value
+        return response
 
     # ── Explicit StateStore configuration (Option B) ────────────────
     # Bind the dashboard state root from configuration rather than the

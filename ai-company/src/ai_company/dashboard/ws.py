@@ -7,6 +7,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from typing import Any
+from urllib.parse import urlsplit
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
@@ -98,6 +99,37 @@ manager = ConnectionManager()
 # ── WebSocket endpoint ──────────────────────────────────────────────
 
 
+def _origin_allowed(websocket: WebSocket) -> bool:
+    """Reject cross-site WebSocket handshakes (CSWSH defense).
+
+    A WebSocket request is allowed when it carries no ``Origin`` header
+    (non-browser client, e.g. CLI or the test client), when the origin is
+    same-host as the ``Host`` header, or when the origin appears in the
+    app's CORS allowlist (``app.state.allowed_ws_origins``).
+    """
+    origin = websocket.headers.get("origin")
+    if not origin:
+        return True
+    try:
+        origin_host = urlsplit(origin).hostname
+    except ValueError:
+        return False
+    if not origin_host:
+        return False
+
+    host = websocket.headers.get("host", "")
+    if host:
+        host_name = host.split(":")[0]
+        if origin_host.lower() == host_name.lower():
+            return True
+
+    allowed: set[str] = set()
+    app = getattr(websocket, "app", None)
+    if app is not None:
+        allowed = getattr(app.state, "allowed_ws_origins", set()) or set()
+    return origin in allowed
+
+
 @router.websocket("/ws/dashboard")
 async def dashboard_websocket(websocket: WebSocket) -> None:
     """Single WebSocket endpoint for live dashboard updates.
@@ -108,7 +140,17 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
         server replies with ``{"type": "pong", ...}``.
       - Server also sends WebSocket-level pings via ``websockets`` library
         (handled by FastAPI/Starlette under the hood).
+
+    Security (T018 / ticket #11):
+      - Cross-site WebSocket hijacking is prevented by an origin check
+        before the handshake is accepted: the ``Origin`` header must match
+        the request host (same-origin) or be in the app's CORS allowlist
+        (``app.state.allowed_ws_origins``).  Non-browser clients that send
+        no ``Origin`` header are allowed.
     """
+    if not _origin_allowed(websocket):
+        await websocket.close(code=1008, reason="Origin not allowed")
+        return
     await manager.connect(websocket)
     try:
         # Send an initial hello so the client knows the connection is live
