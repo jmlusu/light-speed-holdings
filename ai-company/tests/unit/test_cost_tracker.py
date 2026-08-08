@@ -124,3 +124,73 @@ class TestRestartPersistence:
         assert len(restarted._records) == 1
         assert restarted._daily_cost["2026-07-20"] == pytest.approx(0.012)
         assert restarted._task_costs["task-x"] == pytest.approx(0.012)
+
+
+class TestGetUsageSummary:
+    """The filtered summary query (ticket #9 / T012) must honour all filters."""
+
+    def _tracker_with_records(self, tmp_path: Path) -> CostTracker:
+        tracker = _make_tracker(tmp_path)
+        tracker.record_usage(
+            model="gpt-4o-mini",
+            provider="openai",
+            agent_name="agent_a",
+            task_id="task-1",
+            prompt_tokens=1_000,
+            completion_tokens=500,
+        )
+        tracker.record_usage(
+            model="gpt-4o-mini",
+            provider="openai",
+            agent_name="agent_b",
+            task_id="task-2",
+            prompt_tokens=2_000,
+            completion_tokens=800,
+        )
+        tracker.record_usage(
+            model="claude-3-5-sonnet-20241022",
+            provider="anthropic",
+            agent_name="agent_a",
+            task_id="task-3",
+            prompt_tokens=3_000,
+            completion_tokens=1_000,
+        )
+        return tracker
+
+    def test_unfiltered_returns_all(self, tmp_path: Path) -> None:
+        tracker = self._tracker_with_records(tmp_path)
+        summary = tracker.get_usage_summary()
+        assert summary["call_count"] == 3
+        assert summary["total_prompt_tokens"] == 6_000
+        assert summary["total_completion_tokens"] == 2_300
+        assert summary["total_tokens"] == 8_300
+        assert len(summary["by_model"]) == 2
+        assert len(summary["by_agent"]) == 2
+
+    def test_filter_by_model(self, tmp_path: Path) -> None:
+        tracker = self._tracker_with_records(tmp_path)
+        summary = tracker.get_usage_summary(model="gpt-4o-mini")
+        assert summary["call_count"] == 2
+        assert set(summary["by_agent"]) == {"agent_a", "agent_b"}
+        assert summary["by_agent"]["agent_a"]["prompt_tokens"] == 1_000
+
+    def test_filter_by_agent(self, tmp_path: Path) -> None:
+        tracker = self._tracker_with_records(tmp_path)
+        summary = tracker.get_usage_summary(agent_name="agent_a")
+        assert summary["call_count"] == 2
+        assert summary["total_prompt_tokens"] == 4_000
+        assert set(summary["by_model"]) == {"gpt-4o-mini", "claude-3-5-sonnet-20241022"}
+
+    def test_filter_by_date_range(self, tmp_path: Path) -> None:
+        tracker = self._tracker_with_records(tmp_path)
+        summary = tracker.get_usage_summary(start_date="9999-01-01")
+        assert summary["call_count"] == 0
+        summary2 = tracker.get_usage_summary(end_date="1970-01-01")
+        assert summary2["call_count"] == 0
+
+    def test_combined_filters(self, tmp_path: Path) -> None:
+        tracker = self._tracker_with_records(tmp_path)
+        summary = tracker.get_usage_summary(model="gpt-4o-mini", agent_name="agent_b")
+        assert summary["call_count"] == 1
+        assert summary["total_prompt_tokens"] == 2_000
+        assert list(summary["by_agent"]) == ["agent_b"]

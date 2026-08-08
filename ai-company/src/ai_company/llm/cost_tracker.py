@@ -337,6 +337,74 @@ class CostTracker:
             "by_model": by_model,
         }
 
+    def get_usage_summary(
+        self,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        model: str | None = None,
+        agent_name: str | None = None,
+    ) -> dict[str, Any]:
+        """Query usage filtered by time period, model, and/or agent.
+
+        All filters are optional; ``None`` means "no filter".  Dates are
+        ISO day prefixes (``"YYYY-MM-DD"`` or ``"YYYY-MM"``); records are
+        matched on their timestamp prefix so day- and month-granularity
+        ranges both work.
+
+        Returns the same summary shape as :meth:`get_summary`, plus a
+        ``by_agent`` breakdown.
+        """
+        total_cost = 0.0
+        total_prompt = 0
+        total_completion = 0
+        call_count = 0
+        by_model: dict[str, dict[str, Any]] = {}
+        by_agent: dict[str, dict[str, Any]] = {}
+
+        for rec in self._records:
+            ts = rec.timestamp[:10]
+            if start_date and ts < start_date:
+                continue
+            if end_date and ts > end_date:
+                continue
+            if model and rec.model != model:
+                continue
+            if agent_name and rec.agent_name != agent_name:
+                continue
+
+            total_cost += rec.cost_usd
+            total_prompt += rec.prompt_tokens
+            total_completion += rec.completion_tokens
+            call_count += 1
+
+            model_entry = by_model.setdefault(
+                rec.model,
+                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+            )
+            model_entry["cost_usd"] += rec.cost_usd
+            model_entry["prompt_tokens"] += rec.prompt_tokens
+            model_entry["completion_tokens"] += rec.completion_tokens
+            model_entry["calls"] += 1
+
+            agent_entry = by_agent.setdefault(
+                rec.agent_name,
+                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+            )
+            agent_entry["cost_usd"] += rec.cost_usd
+            agent_entry["prompt_tokens"] += rec.prompt_tokens
+            agent_entry["completion_tokens"] += rec.completion_tokens
+            agent_entry["calls"] += 1
+
+        return {
+            "total_cost_usd": round(total_cost, 6),
+            "total_prompt_tokens": total_prompt,
+            "total_completion_tokens": total_completion,
+            "total_tokens": total_prompt + total_completion,
+            "call_count": call_count,
+            "by_model": by_model,
+            "by_agent": by_agent,
+        }
+
     # ── Internal helpers ───────────────────────────────────────────
 
     def _calculate_cost(
