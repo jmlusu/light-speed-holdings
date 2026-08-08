@@ -214,6 +214,9 @@ class TestStopDaemon:
             "ai_company.executor.daemon._is_process_alive",
             lambda pid: calls.__setitem__("n", calls["n"] + 1) or calls["n"] == 1,
         )
+        # Force the Windows code path so the real SIGTERM is never sent to a
+        # non-existent PID (which raises ProcessLookupError on Linux CI).
+        monkeypatch.setattr("ai_company.executor.daemon.os.name", "nt")
 
         result = daemon.stop_daemon(timeout=5.0)
 
@@ -288,6 +291,9 @@ class TestStopDaemon:
 
         # Process stays alive forever (simulating a blocked tick).
         monkeypatch.setattr("ai_company.executor.daemon._is_process_alive", lambda pid: True)
+        # SIGTERM delivery is a no-op (process ignores the graceful stop), so
+        # the timeout path is reached on both Windows and Linux CI.
+        monkeypatch.setattr("ai_company.executor.daemon.os.kill", lambda pid, sig: None)
         monkeypatch.setattr(daemon, "_force_terminate", lambda pid: True)
 
         result = daemon.stop_daemon(timeout=0.5)
