@@ -37,12 +37,35 @@ def start(
         None,
         help="SQLite database path for write-through (default: <data root>/data/ai_company.db)",
     ),
+    daily_budget_usd: Optional[float] = typer.Option(
+        None,
+        "--daily-budget-usd",
+        help="Override daily LLM spend cap (USD). Defaults to config/company/guardrails.yaml.",
+    ),
+    task_budget_usd: Optional[float] = typer.Option(
+        None,
+        "--task-budget-usd",
+        help="Override per-task LLM spend cap (USD). Defaults to config/company/guardrails.yaml.",
+    ),
+    auto_suspend: bool = typer.Option(
+        False,
+        "--auto-suspend/--no-auto-suspend",
+        help="Stop processing tasks when the daily budget is exhausted.",
+    ),
+    guardrails_config: str = typer.Option(
+        "config/company/guardrails.yaml",
+        "--guardrails-config",
+        help="Path to operating-guardrails config (default: config/company/guardrails.yaml).",
+    ),
 ) -> None:
     """Start the continuous execution loop.
 
     With --daemon/-d, runs in the background with PID file management,
     signal handling, and file logging.
     """
+    daily_cap, task_cap, do_suspend = _resolve_budgets(
+        daily_budget_usd, task_budget_usd, auto_suspend, guardrails_config
+    )
     if daemon:
         _start_daemon(
             poll_interval=poll_interval,
@@ -53,6 +76,9 @@ def start(
             kpi_snapshot_interval=kpi_snapshot_interval,
             governance_interval=governance_interval,
             db_path=db_path,
+            daily_budget_usd=daily_cap,
+            task_budget_usd=task_cap,
+            auto_suspend=do_suspend,
         )
     else:
         from ai_company.executor.loop import Executor
@@ -62,6 +88,9 @@ def start(
             config_path=config,
             registry_path=registry,
             database=_resolve_database(db_path),
+            daily_budget_usd=daily_cap,
+            task_budget_usd=task_cap,
+            auto_suspend_on_overspend=do_suspend,
         )
         executor.start()
 
@@ -79,6 +108,47 @@ def _resolve_database(db_path: str | None) -> Any:
     return init_database(db_path)
 
 
+def _resolve_budgets(
+    daily_override: float | None,
+    task_override: float | None,
+    suspend_override: bool,
+    guardrails_config: str,
+) -> tuple[float | None, float | None, bool]:
+    """Resolve LLM budget caps + auto-suspend flag.
+
+    CLI flags take precedence; otherwise values are read from
+    ``config/company/guardrails.yaml``.  When that file is absent or lacks a
+    value, the cap stays ``None`` (unlimited) for backward compatibility.
+    """
+    daily = daily_override
+    task = task_override
+    suspend = suspend_override
+
+    if daily is None or task is None or not suspend:
+        try:
+            from ai_company.paths import get_data_root
+
+            cfg_path = Path(guardrails_config)
+            if not cfg_path.is_absolute():
+                cfg_path = get_data_root() / cfg_path
+            import yaml
+
+            with open(cfg_path, encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            budgets = data.get("guardrails", {}).get("llm_budgets", {})
+            if isinstance(budgets, dict):
+                if daily is None:
+                    daily = budgets.get("daily_budget_usd")
+                if task is None:
+                    task = budgets.get("task_budget_usd")
+                if not suspend:
+                    suspend = bool(budgets.get("auto_suspend_on_overspend"))
+        except (FileNotFoundError, OSError):
+            pass
+
+    return daily, task, suspend
+
+
 def _start_daemon(
     *,
     poll_interval: float,
@@ -89,6 +159,9 @@ def _start_daemon(
     kpi_snapshot_interval: float,
     governance_interval: float,
     db_path: str | None,
+    daily_budget_usd: float | None = None,
+    task_budget_usd: float | None = None,
+    auto_suspend: bool = False,
 ) -> None:
     """Launch executor in daemon mode."""
     from ai_company.executor.daemon import ExecutorDaemon
@@ -105,6 +178,9 @@ def _start_daemon(
             config_path=config,
             registry_path=registry,
             database=_resolve_database(db_path),
+            daily_budget_usd=daily_budget_usd,
+            task_budget_usd=task_budget_usd,
+            auto_suspend_on_overspend=auto_suspend,
         )
 
     daemon = ExecutorDaemon(
@@ -133,14 +209,36 @@ def tick(
         None,
         help="SQLite database path for write-through (default: <data root>/data/ai_company.db)",
     ),
+    daily_budget_usd: Optional[float] = typer.Option(
+        None,
+        help="Override daily LLM spend cap (USD). Defaults to config/company/guardrails.yaml.",
+    ),
+    task_budget_usd: Optional[float] = typer.Option(
+        None,
+        help="Override per-task LLM spend cap (USD). Defaults to config/company/guardrails.yaml.",
+    ),
+    auto_suspend: bool = typer.Option(
+        False,
+        help="Stop processing tasks when the daily budget is exhausted.",
+    ),
+    guardrails_config: str = typer.Option(
+        "config/company/guardrails.yaml",
+        help="Path to operating-guardrails config (default: config/company/guardrails.yaml).",
+    ),
 ) -> None:
     """Process all pending tasks in a single pass."""
+    daily_cap, task_cap, do_suspend = _resolve_budgets(
+        daily_budget_usd, task_budget_usd, auto_suspend, guardrails_config
+    )
     from ai_company.executor.loop import Executor
 
     executor = Executor(
         config_path=config,
         registry_path=registry,
         database=_resolve_database(db_path),
+        daily_budget_usd=daily_cap,
+        task_budget_usd=task_cap,
+        auto_suspend_on_overspend=do_suspend,
     )
     count = executor.tick()
     typer.echo(f"Processed {count} task(s).")
@@ -156,9 +254,27 @@ def run_task(
         None,
         help="SQLite database path for write-through (default: <data root>/data/ai_company.db)",
     ),
+    daily_budget_usd: Optional[float] = typer.Option(
+        None,
+        help="Override daily LLM spend cap (USD). Defaults to config/company/guardrails.yaml.",
+    ),
+    task_budget_usd: Optional[float] = typer.Option(
+        None,
+        help="Override per-task LLM spend cap (USD). Defaults to config/company/guardrails.yaml.",
+    ),
+    auto_suspend: bool = typer.Option(
+        False,
+        help="Stop processing tasks when the daily budget is exhausted.",
+    ),
+    guardrails_config: str = typer.Option(
+        "config/company/guardrails.yaml",
+        help="Path to operating-guardrails config (default: config/company/guardrails.yaml).",
+    ),
 ) -> None:
     """Execute a single task by ID."""
-
+    daily_cap, task_cap, do_suspend = _resolve_budgets(
+        daily_budget_usd, task_budget_usd, auto_suspend, guardrails_config
+    )
     from ai_company.executor.loop import Executor
     from ai_company.models.task import Task
 
@@ -166,6 +282,9 @@ def run_task(
         config_path=config,
         registry_path=registry,
         database=_resolve_database(db_path),
+        daily_budget_usd=daily_cap,
+        task_budget_usd=task_cap,
+        auto_suspend_on_overspend=do_suspend,
     )
 
     # Load the specific task

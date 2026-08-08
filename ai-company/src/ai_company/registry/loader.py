@@ -36,6 +36,7 @@ class RegistryLoader:
         "strategy": "company/strategy.yaml",
         "culture": "company/culture.yaml",
         "governance": "company/governance.yaml",
+        "guardrails": "company/guardrails.yaml",
         "policies": "company/policies.yaml",
         "kpis": "company/kpis.yaml",
         "budget": "company/budget.yaml",

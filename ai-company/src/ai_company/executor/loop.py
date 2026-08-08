@@ -95,11 +95,15 @@ class Executor:
         agents_dir: str = ".opencode/agents",
         results_dir: str = "results",
         database: Any = None,
+        daily_budget_usd: float | None = None,
+        task_budget_usd: float | None = None,
+        auto_suspend_on_overspend: bool = False,
     ) -> None:
         self.poll_interval = poll_interval
         self.agents_dir = agents_dir
         self.results_dir = Path(results_dir)
         self.database = database
+        self.auto_suspend_on_overspend = auto_suspend_on_overspend
 
         # Core components (database enables the SQLite write-through mirror)
         self.bus = MessageBus(
@@ -110,8 +114,13 @@ class Executor:
         self.runner = ToolRunner()
         self.hitl = HITLGate(ApprovalGate())
 
-        # Cost tracking
-        self.cost_tracker = CostTracker(results_dir=results_dir, database=database)
+        # Cost tracking (strict caps from config/company/guardrails.yaml)
+        self.cost_tracker = CostTracker(
+            results_dir=results_dir,
+            database=database,
+            daily_budget_usd=daily_budget_usd,
+            task_budget_usd=task_budget_usd,
+        )
 
         # Scheduler for autonomous cycles
         self.scheduler = Scheduler()
@@ -129,13 +138,17 @@ class Executor:
         # Dead-letter queue (GAP-017)
         self.dlq = DeadLetterQueue()
 
-        # Multi-turn agentic loop
+        # Multi-turn agentic loop (strict caps propagated to per-iteration guard)
         self.agent_loop = AgentLoop(
             llm=self.llm,
             runner=self.runner,
             cost_tracker=self.cost_tracker,
             hitl_gate=self.hitl,
-            config=LoopConfig(max_iterations=10),
+            config=LoopConfig(
+                max_iterations=10,
+                daily_budget_usd=daily_budget_usd,
+                task_budget_usd=task_budget_usd,
+            ),
             # GAP-004: do not block the executor thread on HITL — park instead.
             non_blocking_hitl=True,
         )
@@ -192,6 +205,17 @@ class Executor:
 
         # GAP-004 -- resume any parked tasks whose HITL request resolved.
         self._resume_parked_tasks()
+
+        # Guardrail: auto-suspend when the daily LLM budget is exhausted.
+        # The per-task cap is already enforced inside AgentLoop (check_budget);
+        # this guard stops the executor from processing further tasks for the
+        # rest of the day, satisfying the auto-suspend requirement (#15 / Q9a).
+        if self.auto_suspend_on_overspend and self.cost_tracker.daily_budget_exceeded():
+            logger.warning(
+                "Daily LLM budget exhausted ($%s); auto-suspending task processing.",
+                self.cost_tracker.daily_budget,
+            )
+            return 0
 
         # GAP-001 fix: use MessageBus.get_pending_tasks() instead of direct I/O
         pending = self.bus.get_pending_tasks()

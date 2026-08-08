@@ -194,3 +194,23 @@ class TestGetUsageSummary:
         assert summary["call_count"] == 1
         assert summary["total_prompt_tokens"] == 2_000
         assert list(summary["by_agent"]) == ["agent_b"]
+
+
+class TestDailyBudgetExceeded:
+    """Guardrail #15 — daily_budget_exceeded() drives executor auto-suspend."""
+
+    def test_no_budget_is_never_exceeded(self, tmp_path: Path) -> None:
+        tracker = _make_tracker(tmp_path)
+        assert tracker.daily_budget_exceeded() is False
+
+    def test_exceeded_when_today_spend_reaches_cap(self, tmp_path: Path) -> None:
+        tracker = _make_tracker(tmp_path, daily_budget_usd=100.0)
+        today = __import__("datetime").date.today().isoformat()
+        tracker._daily_cost[today] = 100.0
+        assert tracker.daily_budget_exceeded() is True
+
+    def test_not_exceeded_below_cap(self, tmp_path: Path) -> None:
+        tracker = _make_tracker(tmp_path, daily_budget_usd=100.0)
+        today = __import__("datetime").date.today().isoformat()
+        tracker._daily_cost[today] = 50.0
+        assert tracker.daily_budget_exceeded() is False

@@ -249,6 +249,7 @@ _REQUIRED_CONFIG_FILES: list[str] = [
     "config/company/company.yaml",
     "config/company/culture.yaml",
     "config/company/governance.yaml",
+    "config/company/guardrails.yaml",
     "config/company/policies.yaml",
     "config/decision/approval_matrix.yaml",
     "config/decision/risk_matrix.yaml",

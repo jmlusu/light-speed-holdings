@@ -224,6 +224,18 @@ class CostTracker:
 
         return True, "within budget"
 
+    def daily_budget_exceeded(self) -> bool:
+        """Return True if today's accumulated spend has reached the daily cap.
+
+        Used by the executor's auto-suspend guard to halt further task
+        processing once the daily budget is exhausted.
+        """
+        if self.daily_budget is None:
+            return False
+        day_key = date.today().isoformat()
+        current_daily = self._daily_cost.get(day_key, 0.0)
+        return current_daily >= self.daily_budget
+
     def get_daily_summary(self, day: str | None = None) -> dict[str, Any]:
         """Get usage summary for a given day (or today if not specified).
 

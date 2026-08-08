@@ -22,6 +22,7 @@ from ai_company.models import (
     Department,
     Executive,
     Governance,
+    Guardrails,
     Policy,
     RiskMatrixConfig,
     Strategy,
@@ -38,6 +39,7 @@ _COMPANY_FILES = {
     "strategy": "company/strategy.yaml",
     "culture": "company/culture.yaml",
     "governance": "company/governance.yaml",
+    "guardrails": "company/guardrails.yaml",
     "policies": "company/policies.yaml",
     "kpis": "company/kpis.yaml",
     "budget": "company/budget.yaml",
@@ -97,6 +99,7 @@ def load_config(config_dir: Path | str | None = None) -> CompanyRegistry:
     strategy_data = _unwrap(_load_yaml(base / _COMPANY_FILES["strategy"]), "strategy")
     culture_data = _unwrap(_load_yaml(base / _COMPANY_FILES["culture"]), "culture")
     governance_data = _unwrap(_load_yaml(base / _COMPANY_FILES["governance"]), "governance")
+    guardrails_data = _unwrap(_load_yaml(base / _COMPANY_FILES["guardrails"]), "guardrails")
     policies_data = _unwrap(_load_yaml(base / _COMPANY_FILES["policies"]), "policies")
     kpis_data = _unwrap(_load_yaml(base / _COMPANY_FILES["kpis"]), "kpis")
     budget_data = _unwrap(_load_yaml(base / _COMPANY_FILES["budget"]), "budget")
@@ -127,6 +130,7 @@ def load_config(config_dir: Path | str | None = None) -> CompanyRegistry:
         strategy=Strategy(**strategy_data) if strategy_data else Strategy(),
         culture=Culture(**culture_data) if culture_data else Culture(),
         governance=Governance(**governance_data) if governance_data else Governance(),
+        guardrails=Guardrails(**guardrails_data) if guardrails_data else Guardrails(),
         policies=[Policy(**p) for p in policies_data.get("policies", [])],
         kpis=[KPI(**k) for k in kpis_data.get("kpis", [])],
         budget=Budget(**budget_data) if budget_data else Budget(),

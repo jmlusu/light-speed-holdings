@@ -691,6 +691,54 @@ class TestExecutorLoop:
         assert consolidation.tick_count == 1
         assert consolidation.last_consolidated is not None
 
+    def test_auto_suspend_skips_processing_when_budget_exhausted(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Guardrail #15: daily budget exhaustion short-circuits tick()."""
+        from ai_company.executor.loop import Executor
+
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+            daily_budget_usd=0.0,
+            task_budget_usd=0.0,
+            auto_suspend_on_overspend=True,
+        )
+        # Simulate that today's spend already hit the cap.
+        today = __import__("datetime").date.today().isoformat()
+        executor.cost_tracker._daily_cost[today] = 0.01
+
+        # A pending task exists but must NOT be processed.
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        inbox.write_text(
+            json.dumps(
+                [
+                    {
+                        "id": "task-001",
+                        "sender_id": "human-ceo",
+                        "receiver_id": "test-agent",
+                        "instruction": "Should not run",
+                        "status": "pending",
+                        "priority": "medium",
+                    }
+                ]
+            ),
+            encoding="utf-8",
+        )
+
+        mock_run = MagicMock(return_value=_FakeLoopResult(done=True, error=""))
+        executor.agent_loop.run = mock_run
+
+        count = executor.tick()
+        assert count == 0
+        mock_run.assert_not_called()
+
 
 # ── Helpers ─────────────────────────────────────────────────────────
 
