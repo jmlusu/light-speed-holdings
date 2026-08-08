@@ -4,10 +4,11 @@
 
 ## Last Updated
 
-2026-08-07
+2026-08-08
 
 ## Current State
 
+- **Sprint 4 Complete**: Quality & completeness (2026-08-08). Archived as `harness/changes/archive/2026-08-08-sprint-4-quality-completeness`. Commits `d11608f` (auth hardening, key rotation, token counting, CLI polish), `359489d` (platform-independent CLI help + daemon stop tests), `4765f76` (22 new agent skills + real KPI derivation). 1745 tests passing, ruff/mypy clean.
 - **CEO Dashboard Operationalization Plan**: Sprint 3 complete (items 1-3). See `docs/CEO-DASHBOARD-OPERATIONALIZATION-PLAN.md`. Latest work (2026-08-07): data retention / governance engine wired end-to-end — `run_retention()` + `GovernanceScheduler` in `data/governance.py` (batched archive fix, rowid anonymize fix), daemon enforcement via `--governance-interval`, and `GET /api/governance` report endpoint. 1526 tests passing.
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
 - **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
@@ -101,6 +102,7 @@
 
 ## Recent Work
 
+- **2026-08-08**: Sprint 4 COMPLETE — quality & completeness. Commits: `d11608f` (GAP-019 agent spec validation, daemon lifecycle, key rotation, token counting, CLI type hints/docstrings, test suites for CLI/dashboard/escalation, dashboard security hardening), `359489d` (platform-independent CLI help + daemon stop tests), `4765f76` (22 new agent skills + manifest, company KPIs computed from real sources per CEO decision via `scripts/compute_company_kpis.py`, `run_backfill.py` SQLite utility). Deferred to next sprint: T009 OAuth2 client credentials, T012 `ai-company llm usage`. ECL change archived as `harness/changes/archive/2026-08-08-sprint-4-quality-completeness`. Gates: ruff/mypy clean, **1745 tests passing**, CLI help verified. 35 scratch files cleaned from workspace.
 - **2026-08-07**: CEO Dashboard Operationalization Plan — Sprint 3 item 3 shipped (`550b11b`): data retention / governance engine end-to-end — `run_retention()` + `GovernanceScheduler` in `data/governance.py` with batched archive (fixed latent bug: each batch appended then only that batch deleted) and rowid-based anonymize (fixed latent bug: `agent_id` + `content` hashed). `ExecutorDaemon` gains `--governance-interval` enforcement; `GET /api/governance` endpoint returns full report (`available`, `tables`, `owners`, `policies`). 8 real-DB tests (`test_governance_engine.py`). CI green: ruff/mypy/pytest (1526 passing).
 - **2026-08-07**: CEO Dashboard Operationalization Plan — Sprint 3 item 2 shipped (`9a5a244`): `get_company_kpi_summary()` read-through accessor computes company KPIs vs targets from real telemetry — Build Success Rate (KPI-004) and Agent Utilization (KPI-003) computed from the task window (SQLite-first, inbox fallback); ARR/CSAT/eNPS report configured values. `GET /api/company-kpis` returns the full summary shape (`collected_at`, `period_days`, `kpis[]` with `status/gap/computed/source`, `summary`). Frontend gained a "Company KPIs vs Targets" card grid + Current-vs-Target chart, and department KPI cards now merge live telemetry instead of rendering "undefined". 7 new tests (`tests/unit/test_company_kpis.py`). 1501 tests passing.
 - **2026-07-22**: Sprint 3 COMPLETE — all 8 items done. Fixed test_org_chart.py (832 lines rewritten, 56 tests passing). Fixed DataTransformer.registry_to_enhanced() frozen model bug. Created governance CLI (7 commands, 9 tests). Enhanced memory CLI (stats/search/recall). Created WebSocket integration tests (30 tests). Created dashboard API tests (9 tests). Total: 1205 tests passing, 0 ruff errors. v0.3.0 release tagged. **Agent deployment**: All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@`.
@@ -117,9 +119,8 @@
 | Sprint 1 | ✅ COMPLETE | — | Code hardening + audit trail |
 | Sprint 2 | ✅ COMPLETE | 1093 passing | 13 items — all Done |
 | Sprint 3 | ✅ COMPLETE | 1526 passing | 8 items — all Done |
-| Sprint 4 | 🔴 NOT STARTED | — | Quality & completeness |
+| Sprint 4 | ✅ COMPLETE | 1745 passing | Quality & completeness |
 
 ## Remaining Work
 
-- **Sprint 3**: COMPLETE — all 8 items done (S3-01 through S3-08).
-- **Sprint 4 (not started)**: Structured logging with correlation IDs (GAP-018), scheduled cycle daemon mode (S3-06), agent spec validation CLI, CLI type hints/docstrings, OAuth2/key rotation, memory encryption, token counting integration.
+- **Sprint 4**: COMPLETE — quality & completeness. Deferred to next sprint: OAuth2 client credentials (T009), `ai-company llm usage` CLI (T012), structured logging with correlation IDs (GAP-018), scheduled cycle daemon mode (S3-06).

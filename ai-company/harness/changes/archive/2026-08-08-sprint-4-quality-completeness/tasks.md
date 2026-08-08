@@ -39,11 +39,11 @@
 
 ## Validation
 
-- [ ] T019 Run verification gates after each task: `ruff check src/ && mypy src/ && pytest`
-- [ ] T020 Run CLI help checks after each task: `ai-company --help && ai-company executor --help && ai-company governance --help`
-- [x] T021 Final sprint validation: all 1,526+ tests passing, ruff clean, mypy clean, no regressions
+- [x] T019 Run verification gates after each task: `ruff check src/ && mypy src/ && pytest` - verified green 2026-08-08 (1745 passed, 53 deselected)
+- [x] T020 Run CLI help checks after each task: `ai-company --help && ai-company executor --help && ai-company governance --help` - verified green 2026-08-08
+- [x] T021 Final sprint validation: all 1,526+ tests passing, ruff clean, mypy clean, no regressions - confirmed 1745 passing, ruff/mypy clean
 
 ## Deferred Tasks
 
-- T009 OAuth2 client credentials flow - fail-closed, token caching with TTL (P1)
-- T012 `ai-company llm usage` CLI command - usage by model, time period, agent (P1)
+- Deferred: T009 OAuth2 client credentials flow - fail-closed, token caching with TTL (P1)
+- Deferred: T012 `ai-company llm usage` CLI command - usage by model, time period, agent (P1)
