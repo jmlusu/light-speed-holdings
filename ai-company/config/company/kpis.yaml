@@ -1,46 +1,82 @@
+# Company-level KPIs — CEO Dashboard (Sprint 3, item 2)
+# ======================================================
+# CEO DECISION (2026-08-08): "Company KPIs must be COMPUTED FROM REAL SOURCES,
+# not hardcoded dummy values."  This file therefore contains NO dummy currents.
+#
+# How each `current` is produced:
+#   * KPI-003 / KPI-004 — computed at REQUEST TIME by
+#       ai_company.dashboard.data_service.get_company_kpi_summary()
+#     (SQLite-first, then .opencode/inbox.json).  The `current` values below are
+#     the latest snapshots computed by scripts/compute_company_kpis.py from the
+#     stable file sources, used as a real fallback for the raw /api/ceo-dashboard
+#     pass-through and as a documented reference value.
+#   * KPI-001 / KPI-002 / KPI-005 — NO real source exists in the repo yet, so
+#     `current: null` (the UI renders "n/a").  Targets are kept as strategic
+#     goals (see docs/MISSION_AND_VISION.md).  Each entry documents the
+#     `formula`/`source` that would unlock a computed value.
+#
+# Regenerate / verify the snapshots (from the ai-company root):
+#   python scripts/compute_company_kpis.py            # verify only (no writes)
+#   python scripts/compute_company_kpis.py --write    # refresh current/computed_at
+#
 kpis:
   company:
     - id: "KPI-001"
       name: "Annual Recurring Revenue"
       category: "finance"
       target: 10000000
-      current: 2500000
+      current: null              # n/a — no revenue ledger source in repo yet
       unit: "usd"
       frequency: "monthly"
       owner: "cfo"
+      source: null
+      formula: "MRR x 12 from a revenue ledger; requires CFO/financial-analyst input or a revenue data source (none exists yet)."
+      computed_at: null
 
     - id: "KPI-002"
       name: "Customer Satisfaction"
       category: "customer"
       target: 95
-      current: 88
+      current: null              # n/a — orchestrator/cs/surveys.json exists but is empty
       unit: "percent"
       frequency: "quarterly"
       owner: "chief-of-staff"
+      source: "orchestrator/cs/surveys.json (file present, 0 surveys)"
+      formula: "AVG(score) over orchestrator/cs/surveys.json records (customer_success collector already computes this); no survey data yet."
+      computed_at: null
 
     - id: "KPI-003"
       name: "Agent Utilization Rate"
       category: "operations"
       target: 80
-      current: 65
+      current: 33.9  # file-computed snapshot — see computed_at
       unit: "percent"
       frequency: "weekly"
       owner: "coo"
+      source: ".opencode/inbox.json + company-registry.yaml"
+      formula: "distinct active agents (sender_id/receiver_id) in the 30-day task window / registered agents (company-registry.yaml company.agents) x 100"
+      computed_at: "2026-08-08T20:05:16+00:00"
 
     - id: "KPI-004"
       name: "Build Success Rate"
       category: "engineering"
       target: 99.5
-      current: 97.2
+      current: 100.0  # file-computed snapshot — see computed_at
       unit: "percent"
       frequency: "daily"
       owner: "cto"
+      source: ".opencode/inbox.json"
+      formula: "completed / (completed + failed) x 100 over the 30-day task window"
+      computed_at: "2026-08-08T20:05:16+00:00"
 
     - id: "KPI-005"
       name: "Employee Net Promoter Score"
       category: "people"
       target: 75
-      current: 62
+      current: null              # n/a — no people-survey source in repo yet
       unit: "score"
       frequency: "quarterly"
       owner: "chro"
+      source: null
+      formula: "Standard eNPS from a people/HR survey (promoters - detractors)/respondents; no survey source exists yet."
+      computed_at: null
