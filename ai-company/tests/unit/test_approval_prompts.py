@@ -209,6 +209,37 @@ class TestPathEscalation:
         result = classify_tool_action("write", {"path": "CHANGELOG.md"})
         assert result == ApprovalTier.NOTIFY
 
+    def test_write_content_prose_does_not_escalate(self) -> None:
+        """G-0: design-doc prose mentioning security topics is not a path.
+
+        A write body describing ``security/``, ``audit/``, ``legal/`` or
+        ``Vault/K8s`` must not escalate a docs write past Tier 1 (NOTIFY).
+        """
+        result = classify_tool_action(
+            "write",
+            {
+                "path": "docs/api/token-broker-design.md",
+                "content": "security/ audit/ legal/ Vault/K8s hardening plan",
+            },
+        )
+        assert result == ApprovalTier.NOTIFY
+
+    def test_write_content_prose_does_not_drive_path_tier(self) -> None:
+        """G-0: only path-bearing keys are inspected for write/edit tools."""
+        result = classify_tool_action(
+            "write",
+            {"path": "output.txt", "content": "deploy/prod + config/secrets/api_key.txt"},
+        )
+        assert result == ApprovalTier.SINGLE_APPROVER
+
+    def test_execute_inline_path_in_command_still_escalates(self) -> None:
+        """G-0: execute still inspects every string because commands embed paths."""
+        result = classify_tool_action(
+            "execute",
+            {"command": "cat docs/notes.txt config/secrets/api_key.txt"},
+        )
+        assert result == ApprovalTier.CEO_ONLY
+
     def test_edit_to_secrets_escalates_to_ceo(self) -> None:
         result = classify_tool_action("edit", {"filePath": "/secrets/api_key.txt"})
         assert result == ApprovalTier.CEO_ONLY

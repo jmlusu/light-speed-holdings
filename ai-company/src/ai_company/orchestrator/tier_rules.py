@@ -243,13 +243,54 @@ TIER_CONFIG: dict[ApprovalTier, dict[str, Any]] = {
 # ---------------------------------------------------------------------------
 
 
-def _check_sensitive_path(args: dict[str, Any]) -> int:
+# Argument keys that are expected to carry a filesystem path.
+_PATH_KEYS: frozenset[str] = frozenset(
+    {"path", "file_path", "filePath", "filename", "files", "target", "destination", "source"}
+)
+
+# Documentation file suffixes.  A documentation file is a design artifact,
+# not a code/deploy/secret operation — directory-name fragments must not
+# escalate it to Tier 2/3/4.
+_DOC_SUFFIXES: tuple[str, ...] = (".md", ".rst")
+
+# Explicit secret-file indicators that escalate to Tier 4 even for
+# documentation-looking paths.  These are concrete secret-file references
+# (never a design-doc path), so they keep their protection unconditionally.
+SECRET_FILE_PATTERNS: tuple[str, ...] = (
+    "/.env",
+    "/secrets/",
+    "/secret/",
+    "config/secrets.yaml",
+    "config/credentials",
+    "private_key",
+)
+
+
+def _is_documentation_file(candidate_lower: str) -> bool:
+    """True when the candidate is a documentation artifact (markdown/rst or under docs/)."""
+    return candidate_lower.endswith(_DOC_SUFFIXES) or "docs/" in candidate_lower
+
+
+def _check_sensitive_path(args: dict[str, Any], tool: str = "") -> int:
     """Return the target tier classification based on path arguments.
 
     Unlike a pure escalation function, this returns the *appropriate* tier
     for the most sensitive path found. Config-only paths (Tier 1) can
     lower the default write tier (2), while sensitive/production paths
     raise it.
+
+    Documentation artifacts (``.md``/``.rst`` files or paths under ``docs/``)
+    are design deliverables: directory-name fragments such as ``security/``,
+    ``api/`` or ``deploy/`` describe the *topic* of the document, not an
+    operation on code/secrets/production, so they do not escalate.  Explicit
+    secret-file indicators (``.env``, ``/secrets/``, ``config/credentials``,
+    ``private_key``, ...) escalate to Tier 4 unconditionally.
+
+    For ``write``/``edit`` only values under path-bearing keys are inspected —
+    free-form prose (e.g. a write ``content`` body that mentions ``security/``
+    or ``Vault/K8s``) is not treated as a path.  For ``execute``/
+    ``code_interpreter`` every string is inspected because commands and code
+    embed file paths inline (e.g. ``cat config/secrets/api_key.txt``).
 
     Returns:
         - 4 if the path matches a CEO-only pattern
@@ -258,19 +299,56 @@ def _check_sensitive_path(args: dict[str, Any]) -> int:
         - 1 if the path matches a config/Tier-1 pattern (de-escalates write)
         - 0 if no special path pattern is matched
     """
-    # Collect all string arguments that could be file paths.
+    # Collect string arguments that could be file paths.
     candidates: list[str] = []
-    for v in args.values():
-        if isinstance(v, str):
-            candidates.append(v)
-        elif isinstance(v, list):
-            candidates.extend(x for x in v if isinstance(x, str))
-        elif isinstance(v, dict):
-            candidates.extend(x for x in v.values() if isinstance(x, str))
+    if tool in ("execute", "code_interpreter"):
+        # Commands/code embed paths inline — inspect every string value.
+        for v in args.values():
+            if isinstance(v, str):
+                candidates.append(v)
+            elif isinstance(v, list):
+                candidates.extend(x for x in v if isinstance(x, str))
+            elif isinstance(v, dict):
+                candidates.extend(x for x in v.values() if isinstance(x, str))
+    else:
+        # File-writing tools: only values under path-bearing keys are
+        # inspected — content prose is never treated as a path.
+        for key, v in args.items():
+            if key not in _PATH_KEYS:
+                continue
+            if isinstance(v, str):
+                candidates.append(v)
+            elif isinstance(v, list):
+                candidates.extend(x for x in v if isinstance(x, str))
+            elif isinstance(v, dict):
+                candidates.extend(x for x in v.values() if isinstance(x, str))
 
     max_tier = 0
     for candidate in candidates:
         candidate_lower = candidate.lower()
+        is_doc = _is_documentation_file(candidate_lower)
+
+        # Explicit secret-file indicators ALWAYS escalate (Tier 4), even for
+        # documentation-looking paths (e.g. ``private_key.md``, ``docs/.env``).
+        for pattern in SECRET_FILE_PATTERNS:
+            if pattern.lower() in candidate_lower:
+                max_tier = max(max_tier, 4)
+
+        if is_doc:
+            # Documentation artifacts are design deliverables — directory-name
+            # fragments do not escalate them.  The config/doc de-escalation
+            # below still applies so they land at Tier 1 (Notify).
+            if max_tier < 2:
+                for pattern in CONFIG_PATHS:
+                    pattern_lower = pattern.lower()
+                    # Suffix patterns like ".md" match the end of a filename.
+                    if pattern_lower.startswith("."):
+                        if candidate_lower.endswith(pattern_lower):
+                            max_tier = max(max_tier, 1)
+                    # Directory/file patterns like "docs/" match anywhere.
+                    elif pattern_lower in candidate_lower:
+                        max_tier = max(max_tier, 1)
+            continue
 
         # Check sensitive/secret paths (Tier 4).
         for pattern in SENSITIVE_PATHS:
@@ -366,7 +444,7 @@ def classify_tool_action(
     # The path tier can both escalate (for sensitive paths) and de-escalate
     # (for config/doc paths that are inherently low-risk).
     if tool in ("write", "edit", "code_interpreter", "execute"):
-        path_tier = _check_sensitive_path(args)
+        path_tier = _check_sensitive_path(args, tool=tool)
         if path_tier > 0:
             # Path tier fully determines the raw tier for sensitive/production
             # paths (escalate) and for config/doc paths (de-escalate).
