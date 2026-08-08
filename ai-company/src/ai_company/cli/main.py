@@ -42,6 +42,7 @@ from ai_company.cli.governance import app as governance_app  # noqa: E402
 from ai_company.cli.graph import app as graph_app  # noqa: E402
 from ai_company.cli.hr import app as hr_app  # noqa: E402
 from ai_company.cli.legal import app as legal_app  # noqa: E402
+from ai_company.cli.llm import app as llm_app  # noqa: E402
 from ai_company.cli.marketing import app as marketing_app  # noqa: E402
 from ai_company.cli.memory import app as memory_app  # noqa: E402
 from ai_company.cli.models import app as models_app  # noqa: E402
@@ -67,6 +68,7 @@ app.add_typer(marketing_app, name="marketing", help="Marketing operations")
 app.add_typer(sales_app, name="sales", help="Sales operations")
 app.add_typer(customer_success_app, name="customer-success", help="Customer Success operations")
 app.add_typer(legal_app, name="legal", help="Legal operations")
+app.add_typer(llm_app, name="llm", help="LLM usage and cost tracking")
 app.add_typer(hr_app, name="hr", help="Human Resources operations")
 app.add_typer(specialists_app, name="specialists", help="Manage specialist agents")
 app.add_typer(orchestrator_app, name="orchestrator", help="Autonomous coordination")
