@@ -1,15 +1,20 @@
 """Sprint 4 T015 — every CLI command and subcommand renders help without errors.
 
-Walks the full command tree via ``--help`` output (the Typer/rich format uses
-a ``┌─ Commands ─...┐`` box with ``│ name  description`` rows) and verifies
-that every reachable command exits 0 and prints a Usage section.
+Walks the full command tree from the compiled click Group (via
+``typer.main.get_command``) and invokes ``--help`` on every reachable path,
+verifying each exits 0 and prints a Usage section. Walking the compiled tree
+is platform-independent (parsing rich's box-drawing output is not: the box
+characters vary by terminal/OS, which made the earlier implementation fail on
+Linux CI).
 """
 
 from __future__ import annotations
 
 import functools
+from typing import Any
 
 import pytest
+import typer
 from typer.testing import CliRunner
 
 from ai_company.cli.main import app
@@ -17,61 +22,27 @@ from ai_company.cli.main import app
 runner = CliRunner()
 
 
-def _parse_commands(help_text: str) -> list[str]:
-    """Extract command names from a Typer/rich help table.
-
-    The box format produced by this CLI's Typer version is::
-
-        ┌─ Commands ───────────────────────────────────────────────────┐
-        │ sop               View Standard Operating Procedures.        │
-        │ sync-registry     Sync agent-registry.json from YAML         │
-        │                   (source of truth).                         │
-        └──────────────────────────────────────────────────────────────┘
-
-    Continuation rows have 2+ spaces after the box character and are skipped.
-    """
-    cmds: list[str] = []
-    in_commands = False
-    for line in help_text.splitlines():
-        stripped = line.strip()
-        if "Commands" in stripped and stripped.startswith(("┌", "┏")):
-            in_commands = True
-            continue
-        if not in_commands:
-            continue
-        if stripped.startswith(("└", "┗", "╰")):
-            break
-        if stripped.startswith("│"):
-            rest = stripped[1:]
-            # Continuation row: name column is blank -> 2+ leading spaces.
-            if len(rest) - len(rest.lstrip(" ")) > 1:
-                continue
-            name = rest.strip().split(None, 1)[0] if rest.strip() else ""
-            if name and not name.startswith("-"):
-                cmds.append(name)
-    return cmds
-
-
 @functools.lru_cache(maxsize=1)
 def _command_tree() -> tuple[list[list[str]], list[list[str]]]:
-    """BFS the help tree once.
+    """BFS the compiled click command tree once.
 
     Returns ``(leaf_paths, all_paths)`` where each path is e.g.
-    ``["orchestrator", "scheduler", "add"]``.
+    ``["orchestrator", "scheduler", "add"]``. A path is a leaf when the node
+    has no subcommands.
     """
     leaves: list[list[str]] = []
     all_paths: list[list[str]] = []
-    frontier: list[list[str]] = [[]]
+    frontier: list[tuple[list[str], Any]] = [([], None)]
     while frontier:
-        path = frontier.pop()
+        path, node = frontier.pop()
         all_paths.append(path)
-        result = runner.invoke(app, [*path, "--help"])
-        sub = _parse_commands(result.stdout)
-        if not sub:
+        if node is None:
+            node = typer.main.get_command(app)
+        if getattr(node, "commands", None):
+            for name, child in node.commands.items():
+                frontier.append(([*path, name], child))
+        else:
             leaves.append(path)
-            continue
-        for cmd in sub:
-            frontier.append([*path, cmd])
     return leaves, all_paths
 
 
