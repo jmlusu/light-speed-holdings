@@ -1,12 +1,12 @@
 ﻿---
 title: "Sprint 4: Quality & Completeness"
 slug: "sprint-4-quality-completeness"
-status: "in_progress"
-location: "active"
-phase: "implementation"
+status: "completed"
+location: "archive"
+phase: "done"
 intake_status: "complete"
-spec_review: "complete"
-plan_review: "complete"
+spec_review: "approved"
+plan_review: "approved"
 modules:
   - src/ai_company/executor/context.py
   - src/ai_company/cli/agents.py
@@ -21,7 +21,7 @@ modules:
   - src/ai_company/dashboard/
 files: []
 tags: ["sprint-4", "quality", "completeness", "gap-019", "daemon", "oauth2", "token-counting", "type-hints", "tests"]
-validation_status: "pending"
+validation_status: "pass"
 created_at: "2026-08-07"
 updated_at: "2026-08-08"
 ---
@@ -76,8 +76,9 @@ Executing Sprint 4: Quality & Completeness with 8 prioritized tasks across P0, P
 - ✅ `ai-company executor --help` - Works
 - ✅ `ai-company governance --help` - Works
 - ✅ Daemon lifecycle verified end-to-end (start → running → stop → stopped)
+- ✅ 2026-08-08 post-commit re-verification: ruff/mypy clean, pytest 1745 passed, CLI help renders (commit 4765f76)
 
 ## Next Step
 
-- Close Sprint 4 in harness (park/archive ECL change) after commit is reviewed
+- CLOSED: Sprint 4 archived in harness (2026-08-08-sprint-4-quality-completeness) after baseline commit + platform-independent fix commit reviewed
 - Carry T009 (OAuth2) and T012 (`llm usage`) into next sprint as deferred P1 items
