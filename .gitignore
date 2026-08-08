@@ -36,3 +36,5 @@ results/
 *.executor-bak
 backup/
 orchestrator/
+# ...but keep the T017 QA test suite (same-name runtime dir must not swallow it)
+!ai-company/tests/orchestrator/

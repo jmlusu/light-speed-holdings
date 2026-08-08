@@ -37,7 +37,11 @@ def show(
         ..., help="Graph to show (org_chart, decision_graph, workflow_graph, knowledge_graph)"
     ),
 ) -> None:
-    """Show a graph's nodes and edges."""
+    """Show a graph's nodes and edges.
+
+    Args:
+        graph_name: Graph to show (org_chart, decision_graph, workflow_graph, knowledge_graph).
+    """
     from ai_company.graph.engine import GraphEngine
     from ai_company.registry import load_registry
 
@@ -83,7 +87,13 @@ def path(
     start: str = typer.Option(..., help="Start node ID"),
     end: str = typer.Option(..., help="End node ID"),
 ) -> None:
-    """Find a path between two nodes."""
+    """Find a path between two nodes.
+
+    Args:
+        graph_name: Graph name.
+        start: Start node ID.
+        end: End node ID.
+    """
     from ai_company.graph.engine import GraphEngine
     from ai_company.registry import load_registry
 

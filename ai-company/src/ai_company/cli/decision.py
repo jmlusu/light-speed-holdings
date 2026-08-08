@@ -14,7 +14,11 @@ console = Console()
 def evaluate(
     action: str = typer.Argument(..., help="Action to evaluate"),
 ) -> None:
-    """Evaluate whether an action requires approval."""
+    """Evaluate whether an action requires approval.
+
+    Args:
+        action: Action to evaluate.
+    """
     from ai_company.decision.engine import DecisionEngine
     from ai_company.registry import load_registry
 
@@ -68,7 +72,11 @@ def matrix() -> None:
 def tree(
     start: str = typer.Option("root", help="Starting node ID"),
 ) -> None:
-    """Navigate the decision tree."""
+    """Navigate the decision tree.
+
+    Args:
+        start: Starting node ID.
+    """
     from ai_company.registry import load_registry
 
     registry = load_registry()

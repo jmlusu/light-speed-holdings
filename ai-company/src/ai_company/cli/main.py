@@ -86,7 +86,11 @@ app.add_typer(
 def sop(
     sop_id: str = typer.Argument("", help="SOP ID to view (e.g. SOP-INCIDENT-001)"),
 ) -> None:
-    """View Standard Operating Procedures."""
+    """View Standard Operating Procedures.
+
+    Args:
+        sop_id: SOP ID to view (e.g. SOP-INCIDENT-001). Empty lists all SOPs.
+    """
     from pathlib import Path
 
     docs_dir = Path(__file__).parent.parent.parent / "docs"
@@ -129,7 +133,11 @@ def sop(
 def raci(
     raci_id: str = typer.Argument("", help="RACI ID to view (e.g. RACI-HIRING-001)"),
 ) -> None:
-    """View RACI matrices for workflows."""
+    """View RACI matrices for workflows.
+
+    Args:
+        raci_id: RACI ID to view (e.g. RACI-HIRING-001). Empty lists all RACIs.
+    """
     from pathlib import Path
 
     docs_dir = Path(__file__).parent.parent.parent / "docs"
@@ -186,6 +194,11 @@ def sync_registry(
 
     The dashboard, model_router, executor, and other components read from the
     JSON file. This command regenerates it from the authoritative YAML.
+
+    Args:
+        yaml_path: Path to the source-of-truth YAML registry.
+        json_path: Path to the output JSON registry for the dashboard.
+        verify: Verify sync after writing (check for drift).
     """
     from ai_company.registry.sync import sync_registry as do_sync
     from ai_company.registry.sync import verify_sync
@@ -213,6 +226,9 @@ def generate(
 
     First syncs agent-registry.json from the YAML, then generates
     OpenCode agent .md files.
+
+    Args:
+        registry: Path to the agent registry YAML (source of truth).
     """
     from ai_company.generator import AgentGenerator
     from ai_company.registry.sync import sync_registry as do_sync

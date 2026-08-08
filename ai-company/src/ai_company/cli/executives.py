@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import typer
 import yaml
@@ -12,7 +13,7 @@ COMPANY_DIR = Path("company")
 EXECUTIVES_FILE = COMPANY_DIR / "executives.yaml"
 
 
-def _load_executives() -> dict:
+def _load_executives() -> dict[str, Any]:
     """Load executive data from YAML."""
     if not EXECUTIVES_FILE.exists():
         return {"executives": []}
@@ -20,7 +21,7 @@ def _load_executives() -> dict:
         return yaml.safe_load(f) or {"executives": []}
 
 
-def _save_executives(data: dict) -> None:
+def _save_executives(data: dict[str, Any]) -> None:
     """Persist executive data to YAML."""
     COMPANY_DIR.mkdir(exist_ok=True)
     with open(EXECUTIVES_FILE, "w", encoding="utf-8") as f:
@@ -55,7 +56,15 @@ def add(
     reports_to: str = typer.Option(..., help="Who this executive reports to"),
     mission: str = typer.Option("", help="Executive mission statement"),
 ) -> None:
-    """Add a new executive."""
+    """Add a new executive.
+
+    Args:
+        executive_id: Unique executive ID.
+        title: Executive title.
+        department: Department.
+        reports_to: Who this executive reports to.
+        mission: Executive mission statement.
+    """
     data = _load_executives()
     executives = data.get("executives", [])
 
@@ -80,7 +89,11 @@ def add(
 
 @app.command()
 def remove(executive_id: str = typer.Argument(..., help="Executive ID to remove")) -> None:
-    """Remove an executive."""
+    """Remove an executive.
+
+    Args:
+        executive_id: Executive ID to remove.
+    """
     data = _load_executives()
     executives = data.get("executives", [])
     original_len = len(executives)
@@ -116,11 +129,17 @@ def hierarchy() -> None:
 
 
 def _print_hierarchy(
-    executive: dict,
-    all_executives: list[dict],
+    executive: dict[str, Any],
+    all_executives: list[dict[str, Any]],
     indent: int,
 ) -> None:
-    """Recursively print the executive hierarchy tree."""
+    """Recursively print the executive hierarchy tree.
+
+    Args:
+        executive: The executive to print.
+        all_executives: Full executive list used to look up direct reports.
+        indent: Current depth, used to build the tree indentation.
+    """
     prefix = "  " * indent
     typer.echo(f"{prefix}{executive['title']} ({executive['id']})")
 

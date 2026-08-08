@@ -66,10 +66,61 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: uv sync --extra dev --frozen
+      # Default suite = unit + integration. E2E is excluded explicitly with
+      # `-m "not e2e"` (also enforced via addopts in pyproject.toml) so Playwright
+      # tests never share the pytest-asyncio session with async tests (which caused
+      # 52 failed / 53 errored cascade failures). A distinct basetemp isolates this
+      # run from the fixed .pytest_tmp used by local/daemon runs.
       # coverage gate (TD-7): fail if src/ai_company coverage drops below 72%.
       # CLI entry points are excluded via [tool.coverage.run].omit in pyproject.toml.
       - name: Pytest with coverage gate
-        run: uv run pytest -q --cov=src/ai_company --cov-report=term-missing --cov-fail-under=72
+        run: uv run pytest -q -m "not e2e" --basetemp=.pytest_tmp_ci --cov=src/ai_company --cov-report=term-missing --cov-fail-under=72
+
+  # E2E (Playwright) suite — SEPARATE, NON-BLOCKING job.
+  # Runs `pytest -m e2e` against a dashboard started in-job. Deliberately NOT part
+  # of the merge `gate` (see needs: below): e2e requires a live dashboard + browser
+  # and is historically flaky, so it must not block merges on environmental noise.
+  # A red result here is still a real signal — promote it into `gate.needs` once the
+  # suite is stable.
+  e2e:
+    name: E2E (Playwright, non-blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies (incl. e2e extra)
+        run: uv sync --extra dev --extra e2e --frozen
+      - name: Install Playwright browser (chromium)
+        run: uv run playwright install --with-deps chromium
+      - name: Start dashboard and run E2E tests
+        run: |
+          uv run python -m ai_company.cli.main dashboard \
+            --host 127.0.0.1 --port 8421 --no-open > dashboard-e2e.log 2>&1 &
+          DASH_PID=$!
+          # Clean up the dashboard when this step exits.
+          trap 'kill "$DASH_PID" 2>/dev/null || true' EXIT
+          # Wait for the health endpoint (max ~30s).
+          READY=0
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8421/health >/dev/null 2>&1; then
+              echo "Dashboard ready after ${i}s"
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$READY" -ne 1 ]; then
+            echo "::error::Dashboard did not become healthy on :8421"
+            tail -50 dashboard-e2e.log
+            exit 1
+          fi
+          # Distinct basetemp keeps this job isolated (collision-proof by default).
+          uv run pytest -m e2e --tb=short -q --basetemp=.pytest_tmp_e2e \
+            --dashboard-url=http://127.0.0.1:8421
 
   harness:
     name: ECL Harness Lint

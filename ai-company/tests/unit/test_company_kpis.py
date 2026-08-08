@@ -273,9 +273,14 @@ class TestCompanyKpiSummary:
             entry = by_id[kpi_id]
             assert entry["target"] == cfg["target"]
             if not entry["computed"]:
-                # Config-backed KPIs must report the configured current.
+                # Config-backed KPIs must report the configured current, or
+                # fall back to a live value when the config omits one.
                 assert entry["source"] == "config"
-                assert entry["current"] == cfg["current"]
+                cfg_current = cfg.get("current")
+                if cfg_current is not None:
+                    assert entry["current"] == cfg_current
+                else:
+                    assert entry["current"] is None or isinstance(entry["current"], (int, float))
             expected_status, expected_gap = _expect_status_gap(entry["current"], entry["target"])
             assert entry["status"] == expected_status
             assert entry["gap"] == expected_gap

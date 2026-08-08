@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import typer
 import yaml
@@ -12,7 +13,7 @@ app = typer.Typer(help="Human Resources operations")
 HR_DIR = Path("hr")
 
 
-def _load_agents_roster() -> dict:
+def _load_agents_roster() -> dict[str, Any]:
     """Load the HR agent roster from YAML."""
     roster_file = HR_DIR / "roster.yaml"
     if not roster_file.exists():
@@ -21,7 +22,7 @@ def _load_agents_roster() -> dict:
         return yaml.safe_load(f) or {"agents": []}
 
 
-def _save_agents_roster(data: dict) -> None:
+def _save_agents_roster(data: dict[str, Any]) -> None:
     """Persist the HR agent roster to YAML."""
     HR_DIR.mkdir(exist_ok=True)
     roster_file = HR_DIR / "roster.yaml"
@@ -55,7 +56,13 @@ def onboard(
     role: str = typer.Option(..., help="Agent role"),
     department: str = typer.Option(..., help="Department"),
 ) -> None:
-    """Onboard a new agent to the workforce."""
+    """Onboard a new agent to the workforce.
+
+    Args:
+        agent_id: Agent ID to onboard.
+        role: Agent role.
+        department: Department.
+    """
     data = _load_agents_roster()
     agents = data.get("agents", [])
 
@@ -79,7 +86,11 @@ def onboard(
 
 @app.command()
 def deactivate(agent_id: str = typer.Argument(..., help="Agent ID to deactivate")) -> None:
-    """Deactivate an agent from the workforce."""
+    """Deactivate an agent from the workforce.
+
+    Args:
+        agent_id: Agent ID to deactivate.
+    """
     data = _load_agents_roster()
     agents = data.get("agents", [])
 

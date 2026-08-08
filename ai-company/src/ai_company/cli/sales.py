@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import typer
 import yaml
@@ -12,7 +13,7 @@ app = typer.Typer(help="Sales department operations")
 SALES_DIR = Path("sales")
 
 
-def _load_pipeline() -> dict:
+def _load_pipeline() -> dict[str, Any]:
     """Load the sales pipeline from YAML."""
     pipeline_file = SALES_DIR / "pipeline.yaml"
     if not pipeline_file.exists():
@@ -21,7 +22,7 @@ def _load_pipeline() -> dict:
         return yaml.safe_load(f) or {"deals": [], "leads": []}
 
 
-def _save_pipeline(data: dict) -> None:
+def _save_pipeline(data: dict[str, Any]) -> None:
     """Persist the sales pipeline to YAML."""
     SALES_DIR.mkdir(exist_ok=True)
     pipeline_file = SALES_DIR / "pipeline.yaml"
@@ -55,7 +56,13 @@ def add_lead(
     name: str = typer.Option(..., help="Lead name"),
     source: str = typer.Option("website", help="Lead source"),
 ) -> None:
-    """Add a new sales lead."""
+    """Add a new sales lead.
+
+    Args:
+        lead_id: Unique lead ID.
+        name: Lead name.
+        source: Lead source.
+    """
     data = _load_pipeline()
     leads = data.get("leads", [])
 
@@ -103,7 +110,13 @@ def add_deal(
     name: str = typer.Option(..., help="Deal name"),
     value: float = typer.Option(0.0, help="Deal value"),
 ) -> None:
-    """Add a new deal to the pipeline."""
+    """Add a new deal to the pipeline.
+
+    Args:
+        deal_id: Unique deal ID.
+        name: Deal name.
+        value: Deal value.
+    """
     data = _load_pipeline()
     deals = data.get("deals", [])
 

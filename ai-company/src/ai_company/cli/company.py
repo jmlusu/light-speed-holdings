@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import typer
 from rich.console import Console
 from rich.table import Table
+
+if TYPE_CHECKING:
+    from ai_company.models import CompanyRegistry
 
 app = typer.Typer(help="Bootstrap the AI company from config/")
 console = Console()
@@ -20,7 +23,13 @@ def run(
         False, "--dry-run", help="Show what would be created without writing"
     ),
 ) -> None:
-    """Bootstrap the AI company — generate all agents, configs, and directory structure."""
+    """Bootstrap the AI company — generate all agents, configs, and directory structure.
+
+    Args:
+        config_dir: Path to the config/ directory.
+        output_dir: Output directory for generated files.
+        dry_run: Show what would be created without writing.
+    """
     from ai_company.builder import BootstrapEngine
     from ai_company.registry import load_registry
 
@@ -61,8 +70,12 @@ def run(
     _show_results(summary)
 
 
-def _show_plan(registry: Any) -> None:
-    """Show what would be created during bootstrap."""
+def _show_plan(registry: CompanyRegistry) -> None:
+    """Show what would be created during bootstrap.
+
+    Args:
+        registry: The loaded company registry used to size the plan.
+    """
     table = Table(title="Bootstrap Plan")
     table.add_column("Type", style="cyan")
     table.add_column("Count", style="green")
@@ -77,8 +90,12 @@ def _show_plan(registry: Any) -> None:
     console.print(table)
 
 
-def _show_results(summary: dict) -> None:
-    """Show bootstrap results."""
+def _show_results(summary: dict[str, Any]) -> None:
+    """Show bootstrap results.
+
+    Args:
+        summary: The result summary returned by ``BootstrapEngine.bootstrap``.
+    """
     console.print()
     console.print("[bold green]Bootstrap complete![/bold green]")
     console.print()

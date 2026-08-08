@@ -1,5 +1,7 @@
 """Model routing CLI commands."""
 
+from __future__ import annotations
+
 from typing import Optional
 
 import typer
@@ -48,7 +50,13 @@ def resolve(
     priority: str = typer.Option("medium", help="Task priority: low, medium, high, critical"),
     context: Optional[str] = typer.Option(None, help="Context override: escalation, approval"),
 ) -> None:
-    """Resolve which model a specific agent would use."""
+    """Resolve which model a specific agent would use.
+
+    Args:
+        agent: Agent name to resolve.
+        priority: Task priority: low, medium, high, critical.
+        context: Context override: escalation, approval.
+    """
     from ai_company.model_router import ModelRouter
 
     router = ModelRouter()

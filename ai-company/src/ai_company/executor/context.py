@@ -3,11 +3,37 @@
 from __future__ import annotations
 
 import contextlib
+import logging
 import re
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 
 import yaml
+
+logger = logging.getLogger(__name__)
+
+
+class Severity(str, Enum):
+    """Severity levels for agent spec validation issues."""
+
+    ERROR = "ERROR"
+    WARNING = "WARNING"
+
+
+@dataclass(frozen=True)
+class ValidationIssue:
+    """A single issue found while validating an agent spec.
+
+    Attributes:
+        field: The spec field the issue applies to (e.g. ``mission``).
+        severity: ERROR (blocking — CI must fail) or WARNING (advisory).
+        message: Human-readable description of the problem.
+    """
+
+    field: str
+    severity: Severity
+    message: str
 
 
 @dataclass
@@ -27,6 +53,86 @@ class AgentContext:
     description: str = ""
     success_metrics: list[str] = field(default_factory=list)
     operating_principles: list[str] = field(default_factory=list)
+
+    def validate(self) -> list[ValidationIssue]:
+        """Validate the agent context for required fields.
+
+        Checks the critical fields (mission, responsibilities, tools, name,
+        role, type) plus advisory sections, and returns a list of
+        ``ValidationIssue`` objects. Missing mission or responsibilities are
+        ERROR-severity; missing tools/role/name/type and advisory sections are
+        WARNING-severity. Issues are also surfaced through the logging module so
+        malformed specs never degrade silently.
+        """
+        issues: list[ValidationIssue] = []
+
+        # Critical fields — ERROR if missing: an agent without a mission or
+        # responsibilities silently degrades into a generic prompt.
+        if not self.mission or not self.mission.strip():
+            issues.append(
+                ValidationIssue("mission", Severity.ERROR, "Missing required field: mission")
+            )
+        if not self.responsibilities:
+            issues.append(
+                ValidationIssue(
+                    "responsibilities",
+                    Severity.ERROR,
+                    "Missing required field: responsibilities (empty list)",
+                )
+            )
+
+        # Critical fields — WARNING if missing: the spec still works but the
+        # agent loses capability or identity context.
+        if not self.tools:
+            issues.append(
+                ValidationIssue(
+                    "tools",
+                    Severity.WARNING,
+                    "Missing required field: tools (empty list)",
+                )
+            )
+        if not self.name or not self.name.strip():
+            issues.append(ValidationIssue("name", Severity.WARNING, "Missing required field: name"))
+        if not self.role or not self.role.strip():
+            issues.append(ValidationIssue("role", Severity.WARNING, "Missing required field: role"))
+        if not self.type or self.type == "Unknown":
+            issues.append(
+                ValidationIssue("type", Severity.WARNING, "Agent type is missing or Unknown")
+            )
+
+        # Advisory sections — WARNING if missing.
+        if not self.guidelines or not self.guidelines.strip():
+            issues.append(
+                ValidationIssue("guidelines", Severity.WARNING, "Missing operating guidelines")
+            )
+        if not self.success_metrics:
+            issues.append(
+                ValidationIssue("success_metrics", Severity.WARNING, "Missing success metrics")
+            )
+        if not self.operating_principles:
+            issues.append(
+                ValidationIssue(
+                    "operating_principles",
+                    Severity.WARNING,
+                    "Missing operating principles",
+                )
+            )
+        if not self.description or not self.description.strip():
+            issues.append(ValidationIssue("description", Severity.WARNING, "Missing description"))
+        if not self.department:
+            issues.append(ValidationIssue("department", Severity.WARNING, "Missing department"))
+        if not self.reports_to:
+            issues.append(ValidationIssue("reports_to", Severity.WARNING, "Missing reports_to"))
+
+        if issues:
+            logger.warning(
+                "Agent spec validation found %d issue(s) for %s: %s",
+                len(issues),
+                self.name or "<unnamed>",
+                "; ".join(f"{i.severity.value}:{i.field} - {i.message}" for i in issues),
+            )
+
+        return issues
 
 
 # Reverse map of OpenCode v2 permission keys -> internal executor tool names.

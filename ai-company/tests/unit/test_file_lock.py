@@ -23,6 +23,23 @@ def test_basic_acquire_release(tmp_path) -> None:
     assert not (tmp_path / "state.json.lock").exists()
 
 
+def test_acquire_creates_missing_parent_directory(tmp_path) -> None:
+    """Acquiring a lock creates the lock sidecar's parent directory.
+
+    Regression test: without creating the parent directory first, ``os.open``
+    raises ``FileNotFoundError`` (errno 2 / ENOENT), which ``file_lock``
+    wraps in ``FileLockError`` ("Failed to acquire lock: [Errno 2] No such
+    file or directory ..."). The parent must be created on demand.
+    """
+    target = tmp_path / "nested" / "does" / "not" / "exist" / "inbox.json"
+    assert not target.parent.exists()
+    with file_lock(target):
+        assert target.parent.exists()
+        assert (target.parent / "inbox.json.lock").exists()
+    # Lock sidecar removed after context exit.
+    assert not (target.parent / "inbox.json.lock").exists()
+
+
 def test_no_stale_sidecar_left_on_exception(tmp_path) -> None:
     target = tmp_path / "state.json"
     with pytest.raises(ValueError), file_lock(target):

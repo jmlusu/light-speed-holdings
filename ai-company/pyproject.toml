@@ -65,7 +65,7 @@ e2e = [
 line-length = 100
 target-version = "py312"
 extend-exclude = [
-    ".pytest_tmp/",
+    ".pytest_tmp*/",
 ]
 
 [tool.ruff.lint]
@@ -84,13 +84,23 @@ ignore = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--basetemp=.pytest_tmp"
+# Default suite excludes e2e (Playwright) tests. Do NOT remove this gate: it
+# was reverted once and reintroduced the "Future attached to a different loop"
+# event-loop cascade from pytest-asyncio auto mode + pytest-playwright sharing
+# the same session. Run e2e explicitly with: pytest -m e2e
+# No --basetemp here: pytest's built-in per-run unique temp dir prevents the
+# concurrent-run collisions (PermissionError WinError 32 / FileLockError) that
+# the fixed .pytest_tmp basetemp caused.
+addopts = "-m 'not e2e'"
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 asyncio_mode = "auto"
+asyncio_default_test_loop_scope = "function"
 markers = [
     "performance: marks tests as performance benchmarks (deselect with '-m \"not performance\"')",
     "e2e: marks end-to-end tests requiring a running dashboard (deselect with '-m \"not e2e\"')",
+    "timeout: marks tests exercising explicit timeout handling (deselect with '-m \"not timeout\"')",
+    "slow: marks slow-running tests (deselect with '-m \"not slow\"')",
 ]
 
 [tool.coverage.run]

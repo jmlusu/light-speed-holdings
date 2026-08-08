@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import typer
 import yaml
@@ -12,7 +13,7 @@ app = typer.Typer(help="Marketing department operations")
 CAMPAIGNS_DIR = Path("marketing")
 
 
-def _load_campaigns() -> dict:
+def _load_campaigns() -> dict[str, Any]:
     """Load marketing campaigns from YAML."""
     campaigns_file = CAMPAIGNS_DIR / "campaigns.yaml"
     if not campaigns_file.exists():
@@ -21,7 +22,7 @@ def _load_campaigns() -> dict:
         return yaml.safe_load(f) or {"campaigns": []}
 
 
-def _save_campaigns(data: dict) -> None:
+def _save_campaigns(data: dict[str, Any]) -> None:
     """Persist marketing campaigns to YAML."""
     CAMPAIGNS_DIR.mkdir(exist_ok=True)
     campaigns_file = CAMPAIGNS_DIR / "campaigns.yaml"
@@ -55,7 +56,13 @@ def create_campaign(
     name: str = typer.Option(..., help="Campaign name"),
     channel: str = typer.Option("email", help="Marketing channel"),
 ) -> None:
-    """Create a new marketing campaign."""
+    """Create a new marketing campaign.
+
+    Args:
+        campaign_id: Unique campaign ID.
+        name: Campaign name.
+        channel: Marketing channel.
+    """
     data = _load_campaigns()
     campaigns = data.get("campaigns", [])
 
@@ -80,7 +87,11 @@ def create_campaign(
 
 @app.command()
 def launch(campaign_id: str = typer.Argument(..., help="Campaign ID to launch")) -> None:
-    """Launch a marketing campaign."""
+    """Launch a marketing campaign.
+
+    Args:
+        campaign_id: Campaign ID to launch.
+    """
     data = _load_campaigns()
     campaigns = data.get("campaigns", [])
 
@@ -97,7 +108,11 @@ def launch(campaign_id: str = typer.Argument(..., help="Campaign ID to launch"))
 
 @app.command()
 def metrics(campaign_id: str = typer.Argument(..., help="Campaign ID")) -> None:
-    """View campaign metrics."""
+    """View campaign metrics.
+
+    Args:
+        campaign_id: Campaign ID.
+    """
     data = _load_campaigns()
     campaigns = data.get("campaigns", [])
 

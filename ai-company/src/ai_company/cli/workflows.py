@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import typer
 import yaml
@@ -15,7 +16,8 @@ WORKFLOWS_DIR = Path("config/workflows")
 WORKFLOWS_FILE = WORKFLOWS_DIR / "workflows.yaml"
 
 
-def _load_workflows() -> dict:
+def _load_workflows() -> dict[str, Any]:
+    """Load workflow definitions from YAML."""
     if not WORKFLOWS_FILE.exists():
         return {"workflows": []}
     with open(WORKFLOWS_FILE, "r", encoding="utf-8") as f:
@@ -58,7 +60,11 @@ def list() -> None:
 def run(
     workflow_id: str = typer.Argument(..., help="Workflow ID to execute"),
 ) -> None:
-    """Start a workflow execution."""
+    """Start a workflow execution.
+
+    Args:
+        workflow_id: Workflow ID to execute.
+    """
     from ai_company.registry import load_registry
     from ai_company.workflow.engine import WorkflowEngine
 
@@ -86,7 +92,11 @@ def run(
 def status(
     instance_id: str = typer.Argument(..., help="Workflow instance ID"),
 ) -> None:
-    """Show workflow execution status."""
+    """Show workflow execution status.
+
+    Args:
+        instance_id: Workflow instance ID.
+    """
     from ai_company.registry import load_registry
     from ai_company.workflow.engine import WorkflowEngine
 
@@ -112,7 +122,11 @@ def status(
 def advance(
     instance_id: str = typer.Argument(..., help="Workflow instance ID"),
 ) -> None:
-    """Advance a workflow to its next step."""
+    """Advance a workflow to its next step.
+
+    Args:
+        instance_id: Workflow instance ID.
+    """
     from ai_company.registry import load_registry
     from ai_company.workflow.engine import WorkflowEngine
 
@@ -140,7 +154,11 @@ def advance(
 def list_instances(
     workflow_id: str = typer.Option("", help="Filter by workflow ID"),
 ) -> None:
-    """List all workflow instances (running, completed, cancelled)."""
+    """List all workflow instances (running, completed, cancelled).
+
+    Args:
+        workflow_id: Filter by workflow ID.
+    """
     from ai_company.registry import load_registry
     from ai_company.workflow.engine import WorkflowEngine
 
@@ -184,7 +202,12 @@ def complete_step(
     instance_id: str = typer.Argument(..., help="Workflow instance ID"),
     result: str = typer.Option("", help="Result of the completed step"),
 ) -> None:
-    """Complete the current step and advance the workflow."""
+    """Complete the current step and advance the workflow.
+
+    Args:
+        instance_id: Workflow instance ID.
+        result: Result of the completed step.
+    """
     from ai_company.registry import load_registry
     from ai_company.workflow.engine import WorkflowEngine
 

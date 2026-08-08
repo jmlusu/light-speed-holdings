@@ -4,8 +4,11 @@ Security hardening (GAP-010):
 - CORS origins are configurable via ``DASHBOARD_CORS_ORIGINS`` env var
   (comma-separated; defaults to a localhost-only allowlist). The wildcard
   ``*`` is rejected and never used as a default.
-- Write endpoints (POST / DELETE) require an ``X-API-Key`` header when
-  ``DASHBOARD_API_KEY`` env var is set.
+- Auth is fail-closed by default (``DASHBOARD_AUTH_MODE`` defaults to
+  ``api_key``): write endpoints (POST / PUT / PATCH / DELETE) require an
+  ``X-API-Key`` header matching ``DASHBOARD_API_KEY``, and are rejected when
+  no key is configured. Set ``DASHBOARD_AUTH_MODE=open`` only for
+  localhost-only development.
 - Simple in-memory rate limiter protects all endpoints (100 req/min default,
   configurable via ``DASHBOARD_RATE_LIMIT``).
 
@@ -105,15 +108,24 @@ def _get_api_key() -> str:
 def _check_api_key(request: Request) -> bool:
     """Return True if the request is authorised.
 
-    * If ``DASHBOARD_API_KEY`` is not set → all requests pass (open mode).
-    * For safe methods (GET, HEAD, OPTIONS) → always pass.
-    * For mutating methods → require ``X-API-Key`` header matching the secret.
+    Auth is controlled by ``DASHBOARD_AUTH_MODE``:
+
+    * ``api_key`` (default, fail-closed): mutating methods (POST, PUT,
+      PATCH, DELETE) require an ``X-API-Key`` header matching
+      ``DASHBOARD_API_KEY``. If no key is configured the request is
+      rejected (fail-closed), so a misconfigured network deployment never
+      silently exposes write endpoints. Safe methods (GET, HEAD, OPTIONS)
+      always pass.
+    * ``open`` (explicit opt-in for localhost-only dev): all requests
+      pass regardless of configuration.
     """
-    api_key = _get_api_key()
-    if not api_key:
+    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
         return True
     if request.method in ("GET", "HEAD", "OPTIONS"):
         return True
+    api_key = _get_api_key()
+    if not api_key:
+        return False
     return request.headers.get("X-API-Key") == api_key
 
 
