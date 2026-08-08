@@ -14,9 +14,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import typer
+
+if TYPE_CHECKING:
+    from ai_company.data.database import Database
+    from ai_company.data.governance import DataGovernance
 
 app = typer.Typer(help="Data governance — ownership, retention, compliance")
 
@@ -33,8 +37,11 @@ def _resolve_db_path(database_path: str) -> str:
 
 def _init_governance(
     database_path: str,
-) -> tuple[Any, Any]:
+) -> tuple[Database, DataGovernance]:
     """Initialise the Database and DataGovernance instances.
+
+    Args:
+        database_path: Path to the SQLite database file.
 
     Returns:
         Tuple of ``(db, governance)`` instances.
@@ -142,6 +149,10 @@ def report(
 
     Shows table sizes, retention status, ownership mapping, and
     classification distribution across all governed data stores.
+
+    Args:
+        database: Path to the SQLite database file.
+        json_output: Output raw JSON instead of formatted text.
     """
     _, gov = _init_governance(database)
 
@@ -182,6 +193,11 @@ def retention(
 
     By default, this is a dry-run that shows how many records *would* be
     affected by retention policies. Use ``--apply`` to actually enforce them.
+
+    Args:
+        database: Path to the SQLite database file.
+        apply: Actually apply retention policies (archive/purge/anonymize).
+        table: Filter retention status to a specific table.
     """
     db, gov = _init_governance(database)
 
@@ -261,7 +277,11 @@ def compliance(
         help="Path to the SQLite database file",
     ),
 ) -> None:
-    """Run a compliance check and report governance violations."""
+    """Run a compliance check and report governance violations.
+
+    Args:
+        database: Path to the SQLite database file.
+    """
     _, gov = _init_governance(database)
 
     try:
@@ -324,7 +344,12 @@ def owners(
         help="Show the owner for a specific table only",
     ),
 ) -> None:
-    """List registered data owners and their responsibilities."""
+    """List registered data owners and their responsibilities.
+
+    Args:
+        database: Path to the SQLite database file.
+        table: Show the owner for a specific table only.
+    """
     _, gov = _init_governance(database)
 
     if table:
@@ -376,6 +401,12 @@ def audit_trail(
 
     Reads the JSONL audit log and displays the most recent events,
     optionally filtered by type or agent.
+
+    Args:
+        limit: Maximum events to show.
+        event_type: Filter by event type.
+        agent_id: Filter by agent ID.
+        json_output: Output raw JSON.
     """
     from ai_company.audit.reader import AuditReader
 
@@ -433,6 +464,9 @@ def risk_summary(
 
     Parses the risk register markdown and displays a summary of risks
     by severity level with status indicators.
+
+    Args:
+        json_output: Output raw JSON.
     """
     import re
     from pathlib import Path
@@ -526,6 +560,10 @@ def policies(
     """List active retention policies across all governed tables.
 
     Displays per-table retention windows, actions, and classification levels.
+
+    Args:
+        database: Path to the SQLite database file.
+        table: Show policy for a specific table only.
     """
     _, gov = _init_governance(database)
 

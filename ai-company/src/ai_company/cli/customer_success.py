@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import typer
 import yaml
@@ -12,7 +13,7 @@ app = typer.Typer(help="Customer Success operations")
 CS_DIR = Path("customer_success")
 
 
-def _load_tickets() -> dict:
+def _load_tickets() -> dict[str, Any]:
     """Load customer support tickets from YAML."""
     tickets_file = CS_DIR / "tickets.yaml"
     if not tickets_file.exists():
@@ -21,7 +22,7 @@ def _load_tickets() -> dict:
         return yaml.safe_load(f) or {"tickets": []}
 
 
-def _save_tickets(data: dict) -> None:
+def _save_tickets(data: dict[str, Any]) -> None:
     """Persist customer support tickets to YAML."""
     CS_DIR.mkdir(exist_ok=True)
     tickets_file = CS_DIR / "tickets.yaml"
@@ -55,7 +56,13 @@ def create_ticket(
     subject: str = typer.Option(..., help="Ticket subject"),
     priority: str = typer.Option("medium", help="Ticket priority (low, medium, high, critical)"),
 ) -> None:
-    """Create a new support ticket."""
+    """Create a new support ticket.
+
+    Args:
+        ticket_id: Unique ticket ID.
+        subject: Ticket subject.
+        priority: Ticket priority (low, medium, high, critical).
+    """
     data = _load_tickets()
     tickets = data.get("tickets", [])
 
@@ -79,7 +86,11 @@ def create_ticket(
 
 @app.command()
 def resolve(ticket_id: str = typer.Argument(..., help="Ticket ID to resolve")) -> None:
-    """Resolve a support ticket."""
+    """Resolve a support ticket.
+
+    Args:
+        ticket_id: Ticket ID to resolve.
+    """
     data = _load_tickets()
     tickets = data.get("tickets", [])
 

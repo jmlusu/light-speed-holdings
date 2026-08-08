@@ -24,6 +24,7 @@ class AuditEventType(str, Enum):
     ESCALATION = "escalation"
     ERROR = "error"
     DELEGATION = "delegation"
+    API_KEY_ROTATED = "api_key_rotated"
 
 
 class AuditEvent(BaseModel):

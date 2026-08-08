@@ -101,12 +101,13 @@ class TestCORSConfiguration:
 
 
 class TestAPIKeyAuth:
-    """Verify that write endpoints require an API key when configured."""
+    """Verify that write endpoints require an API key in api_key mode."""
 
     def test_read_without_api_key_works(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         """GET requests should always work without an API key."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
@@ -123,6 +124,7 @@ class TestAPIKeyAuth:
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         """POST requests without API key should be rejected when key is set."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
@@ -143,6 +145,7 @@ class TestAPIKeyAuth:
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         """POST requests with correct API key should succeed."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
@@ -163,6 +166,7 @@ class TestAPIKeyAuth:
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         """POST requests with wrong API key should be rejected."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
@@ -179,12 +183,11 @@ class TestAPIKeyAuth:
         )
         assert resp.status_code == 401
 
-    def test_no_api_key_configured_allows_all(
-        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-    ) -> None:
-        """When DASHBOARD_API_KEY is not set, all requests pass (open mode)."""
+    def test_open_mode_allows_all(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+        """DASHBOARD_AUTH_MODE=open explicitly disables auth (localhost dev)."""
         monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
         monkeypatch.chdir(tmp_path)
         self._setup_minimal_data(tmp_path)
 
@@ -197,6 +200,43 @@ class TestAPIKeyAuth:
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 201
+
+    def test_default_mode_is_fail_closed_without_key(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Default auth mode rejects mutating requests when no key is set."""
+        monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.delenv("DASHBOARD_AUTH_MODE", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.post(
+            "/api/tasks",
+            json={"receiver_id": "agent", "instruction": "do something"},
+        )
+        assert resp.status_code == 401
+
+    def test_default_mode_still_allows_safe_methods(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Default auth mode never blocks GET/HEAD/OPTIONS."""
+        monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.delenv("DASHBOARD_AUTH_MODE", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/health")
+        assert resp.status_code == 200
 
     @staticmethod
     def _setup_minimal_data(tmp_path: Path) -> None:

@@ -2,6 +2,8 @@
 Orchestrator management commands for autonomous coordination.
 """
 
+from __future__ import annotations
+
 from typing import Optional
 
 import typer
@@ -122,7 +124,13 @@ def scheduler_add(
     name: str = typer.Option(..., help="Task name"),
     interval: int = typer.Option(60, help="Interval in minutes"),
 ) -> None:
-    """Add a new scheduled task."""
+    """Add a new scheduled task.
+
+    Args:
+        task_id: Unique task ID.
+        name: Task name.
+        interval: Interval in minutes.
+    """
     from ai_company.orchestrator.scheduler import Scheduler
 
     task = Scheduler().add_task(task_id, name, interval_minutes=interval)
@@ -133,7 +141,11 @@ def scheduler_add(
 def scheduler_remove(
     task_id: str = typer.Argument(..., help="Task ID to remove"),
 ) -> None:
-    """Remove a scheduled task."""
+    """Remove a scheduled task.
+
+    Args:
+        task_id: Task ID to remove.
+    """
     from ai_company.orchestrator.scheduler import Scheduler
 
     if Scheduler().remove_task(task_id):
@@ -176,7 +188,16 @@ def escalation_add(
     max_retries: int = typer.Option(3, help="Max retries before escalation"),
     timeout: int = typer.Option(30, help="Timeout in minutes"),
 ) -> None:
-    """Add a new escalation rule."""
+    """Add a new escalation rule.
+
+    Args:
+        rule_id: Unique rule ID.
+        name: Rule name.
+        trigger: Escalation trigger condition.
+        escalate_to: Agent to escalate to.
+        max_retries: Max retries before escalation.
+        timeout: Timeout in minutes.
+    """
     from ai_company.orchestrator.escalation import EscalationManager
 
     EscalationManager().add_rule(rule_id, name, trigger, escalate_to, max_retries, timeout)
@@ -187,7 +208,11 @@ def escalation_add(
 def escalation_remove(
     rule_id: str = typer.Argument(..., help="Rule ID to remove"),
 ) -> None:
-    """Remove an escalation rule."""
+    """Remove an escalation rule.
+
+    Args:
+        rule_id: Rule ID to remove.
+    """
     from ai_company.orchestrator.escalation import EscalationManager
 
     if EscalationManager().remove_rule(rule_id):
@@ -248,7 +273,13 @@ def approval_approve(
     approved_by: str = typer.Option("human-operator", help="Who approved"),
     notes: Optional[str] = typer.Option(None, help="Approval notes"),
 ) -> None:
-    """Approve a pending request."""
+    """Approve a pending request.
+
+    Args:
+        request_id: Request ID to approve.
+        approved_by: Who approved.
+        notes: Approval notes.
+    """
     from ai_company.orchestrator.approval import ApprovalGate
 
     if ApprovalGate().approve(request_id, approved_by, notes):
@@ -264,7 +295,13 @@ def approval_reject(
     rejected_by: str = typer.Option("human-operator", help="Who rejected"),
     notes: Optional[str] = typer.Option(None, help="Rejection notes"),
 ) -> None:
-    """Reject a pending request."""
+    """Reject a pending request.
+
+    Args:
+        request_id: Request ID to reject.
+        rejected_by: Who rejected.
+        notes: Rejection notes.
+    """
     from ai_company.orchestrator.approval import ApprovalGate
 
     if ApprovalGate().reject(request_id, rejected_by, notes):
@@ -303,7 +340,11 @@ def postmortem_list() -> None:
 def postmortem_show(
     incident_id: str = typer.Argument(..., help="Incident ID to display"),
 ) -> None:
-    """Show details of a specific postmortem."""
+    """Show details of a specific postmortem.
+
+    Args:
+        incident_id: Incident ID to display.
+    """
     from ai_company.orchestrator.escalation import PostmortemStore
 
     store = PostmortemStore()
@@ -362,7 +403,15 @@ def postmortem_create(
     affected_agent: str = typer.Option("", help="Agent that caused/was affected"),
     department: str = typer.Option("", help="Department affected"),
 ) -> None:
-    """Create a new postmortem skeleton."""
+    """Create a new postmortem skeleton.
+
+    Args:
+        incident_id: Incident ID (e.g. INC-TASK-001).
+        title: Short incident title.
+        severity: Severity: low, medium, high, critical.
+        affected_agent: Agent that caused/was affected.
+        department: Department affected.
+    """
     from ai_company.orchestrator.escalation import Postmortem, PostmortemStore
 
     store = PostmortemStore()
@@ -390,7 +439,14 @@ def postmortem_update(
     status: Optional[str] = typer.Option(None, help="New status: draft, in-progress, resolved"),
     reviewed_by: Optional[str] = typer.Option(None, help="Reviewer name"),
 ) -> None:
-    """Update an existing postmortem."""
+    """Update an existing postmortem.
+
+    Args:
+        incident_id: Incident ID to update.
+        root_cause: Root cause description.
+        status: New status: draft, in-progress, resolved.
+        reviewed_by: Reviewer name.
+    """
     from ai_company.orchestrator.escalation import PostmortemStore
 
     store = PostmortemStore()
@@ -425,7 +481,11 @@ def postmortem_update(
 def postmortem_render(
     incident_id: str = typer.Argument(..., help="Incident ID to render as markdown"),
 ) -> None:
-    """Render a postmortem to markdown using the Jinja2 template."""
+    """Render a postmortem to markdown using the Jinja2 template.
+
+    Args:
+        incident_id: Incident ID to render as markdown.
+    """
     from pathlib import Path
 
     from jinja2 import Environment, FileSystemLoader

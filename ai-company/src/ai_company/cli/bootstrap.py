@@ -31,7 +31,13 @@ def run(
     ),
     json_output: bool = typer.Option(False, "--json", help="Emit machine-readable JSON summary"),
 ) -> None:
-    """Install deps, create the venv, sync with uv, and verify the toolchain."""
+    """Install deps, create the venv, sync with uv, and verify the toolchain.
+
+    Args:
+        project_root: Project root (auto-detected if omitted).
+        env_file: Environment file relative to project root.
+        json_output: Emit a machine-readable JSON summary.
+    """
     _execute(project_root=project_root, env_file=env_file, json_output=json_output)
 
 

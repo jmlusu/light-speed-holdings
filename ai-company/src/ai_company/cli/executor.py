@@ -213,12 +213,14 @@ def cycle(
 
 
 @app.command()
-def status() -> None:
+def status(
+    log_dir: str = typer.Option("logs", help="Directory for daemon status file"),
+) -> None:
     """Show executor status and pending tasks."""
     from ai_company.executor.daemon import ExecutorDaemon
 
     # Check daemon status first
-    daemon_status = ExecutorDaemon.get_daemon_status()
+    daemon_status = ExecutorDaemon.get_daemon_status(Path(log_dir) / "executor-daemon.json")
     if daemon_status:
         pid = daemon_status.get("pid")
         state = daemon_status.get("state", "unknown")
@@ -266,8 +268,11 @@ def status() -> None:
 
 
 @app.command()
-def stop() -> None:
-    """Stop the executor daemon (sends SIGTERM)."""
+def stop(
+    pid_dir: str = typer.Option("logs", help="Directory for PID file (daemon mode)"),
+    log_dir: str = typer.Option("logs", help="Directory for status file (daemon mode)"),
+) -> None:
+    """Stop the executor daemon (graceful shutdown)."""
     from pathlib import Path
 
     from ai_company.executor.daemon import ExecutorDaemon
@@ -275,7 +280,9 @@ def stop() -> None:
     typer.echo("Stopping executor daemon...")
     daemon = ExecutorDaemon(
         executor_factory=lambda: None,
-        pid_path=Path("logs/executor-daemon.pid"),
+        pid_path=Path(pid_dir) / "executor-daemon.pid",
+        log_path=Path(log_dir) / "executor-daemon.log",
+        status_path=Path(log_dir) / "executor-daemon.json",
     )
     success = daemon.stop_daemon()
     if success:

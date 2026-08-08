@@ -81,7 +81,11 @@ def naming(
         help="Path to the agent registry YAML",
     ),
 ) -> None:
-    """Check that registry IDs follow underscore convention and generated filenames follow hyphen convention."""
+    """Check that registry IDs follow underscore convention and generated filenames follow hyphen convention.
+
+    Args:
+        registry_path: Path to the agent registry YAML.
+    """
     from ai_company.generator import AgentGenerator
 
     gen = AgentGenerator(registry_path=registry_path)
@@ -130,7 +134,12 @@ def references(
         help="Path to the agent registry YAML",
     ),
 ) -> None:
-    """Check that all agent references in config files resolve to generated agent files."""
+    """Check that all agent references in config files resolve to generated agent files.
+
+    Args:
+        config_dir: Path to the config directory.
+        registry_path: Path to the agent registry YAML.
+    """
     from ai_company.generator import AgentGenerator
 
     config_path = Path(config_dir)
@@ -226,7 +235,7 @@ def references(
         typer.echo("All config references resolve correctly.")
 
 
-_REQUIRED_CONFIG_FILES = [
+_REQUIRED_CONFIG_FILES: list[str] = [
     "orchestrator/approvals.yaml",
     "orchestrator/escalation.yaml",
     "orchestrator/scheduler.yaml",
@@ -277,7 +286,11 @@ def config(
         help="Path to the ai-company project root",
     ),
 ) -> None:
-    """Validate all config files: parseability, existence, stale dates."""
+    """Validate all config files: parseability, existence, stale dates.
+
+    Args:
+        project_root: Path to the ai-company project root.
+    """
     root = Path(project_root)
     passed = 0
     failed = 0
@@ -350,7 +363,12 @@ def all(
         help="Path to the config directory",
     ),
 ) -> None:
-    """Run all validation checks: naming conventions + config references."""
+    """Run all validation checks: naming conventions + config references.
+
+    Args:
+        registry_path: Path to the agent registry YAML.
+        config_dir: Path to the config directory.
+    """
     from ai_company.generator import AgentGenerator
 
     typer.echo("Running all validation checks...")

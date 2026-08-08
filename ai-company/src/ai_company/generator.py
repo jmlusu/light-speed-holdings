@@ -12,6 +12,8 @@ from typing import Any
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from ai_company.executor.context import Severity, parse_agent_spec
+
 logger = logging.getLogger(__name__)
 
 # Tool name mapping: registry names → OpenCode v2 permission keys
@@ -201,7 +203,47 @@ class AgentGenerator:
             logger.debug("Wrote: %s (type=%s)", out_file, agent_type)
 
         logger.info("Generation complete: %d agents.", len(generated))
+
+        # Validate generated agents
+        validation_errors = self._validate_generated_agents(generated)
+        if validation_errors:
+            logger.warning("Agent validation found issues:")
+            for err in validation_errors:
+                logger.warning("  %s", err)
+        else:
+            logger.info("All generated agents passed validation.")
+
         return generated
+
+    def _validate_generated_agents(self, generated: list[Path]) -> list[str]:
+        """Validate generated agent files for required spec fields.
+
+        Runs ``AgentContext.validate()`` on every generated spec, logging each
+        WARNING-severity issue at warning level and each ERROR-severity issue at
+        error level ("log loudly"). Returns a list of ERROR-severity messages
+        (empty list means no blocking issues). Generation itself never fails on
+        validation output; callers decide how to surface the errors.
+        """
+        errors: list[str] = []
+        for filepath in generated:
+            agent_name = filepath.stem
+            context = parse_agent_spec(agent_name, str(self.output_dir))
+            issues = context.validate()
+            for issue in issues:
+                if issue.severity is Severity.ERROR:
+                    errors.append(f"{agent_name}: {issue.message}")
+                    logger.error(
+                        "Generated agent '%s' has ERROR-severity spec issue: %s",
+                        agent_name,
+                        issue.message,
+                    )
+                else:
+                    logger.warning(
+                        "Generated agent '%s' has WARNING-severity spec issue: %s",
+                        agent_name,
+                        issue.message,
+                    )
+        return errors
 
     def generate_from_registry(self, registry: Any) -> list[Path]:
         """Generate agent files from a CompanyRegistry model."""
@@ -292,4 +334,14 @@ class AgentGenerator:
             generated.append(out_file)
 
         logger.info("Generated %d agent files from registry.", len(generated))
+
+        # Validate generated agents
+        validation_errors = self._validate_generated_agents(generated)
+        if validation_errors:
+            logger.warning("Agent validation found issues:")
+            for err in validation_errors:
+                logger.warning("  %s", err)
+        else:
+            logger.info("All generated agents passed validation.")
+
         return generated

@@ -12,6 +12,7 @@ from ai_company.llm.circuit_breaker import CircuitBreaker
 from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.providers.base import (
+    ChatResponse,
     LLMProvider,
     LLMProviderError,
     LLMResponseError,
@@ -19,6 +20,13 @@ from ai_company.llm.providers.base import (
 )
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
+from ai_company.llm.token_counter import (
+    TokenUsage,
+    count_prompt_tokens,
+    count_tokens,
+    join_prompt,
+    usage_from_response,
+)
 from ai_company.model_router import ModelRouter
 from ai_company.utils.logging import get_correlation_id
 
@@ -132,6 +140,10 @@ class LLMClient:
         last_error: str = ""
         last_raw: str = ""
 
+        # Assemble the exact prompt text once so heuristic fallback counts
+        # match what was actually sent to the provider.
+        prompt_text = join_prompt(system_prompt, task_instruction)
+
         for attempt in range(max_retries):
             provider_idx = attempt % len(provider_chain)
             provider_id, model = provider_chain[provider_idx]
@@ -143,6 +155,14 @@ class LLMClient:
             if breaker and not breaker.is_available:
                 continue
 
+            # Count prompt tokens before the call (heuristic estimate).
+            logger.debug(
+                "LLM prompt token estimate: agent=%s model=%s prompt_tokens=%d",
+                agent_name,
+                model,
+                count_prompt_tokens(system_prompt, task_instruction, model),
+            )
+
             try:
                 response = provider.chat(
                     system_prompt=system_prompt,
@@ -153,7 +173,12 @@ class LLMClient:
                     breaker.record_success()
                 parsed = self._parse_response(response.content)
                 if parsed is not None:
-                    self._record_usage(response, agent_name, task_id, attempt + 1)
+                    usage = usage_from_response(
+                        response,
+                        prompt_text,
+                        response.model or model,
+                    )
+                    self._record_usage(response, agent_name, task_id, attempt + 1, usage)
                     return parsed
                 last_raw = response.content
                 last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
@@ -176,11 +201,25 @@ class LLMClient:
         context: str | None = None,
         system_prompt: str = "",
         max_retries: int = _MAX_RETRIES,
+        task_id: str = "",
     ) -> Generator[StreamChunk, None, None]:
         """Execute a task via streaming, yielding chunks as they arrive.
 
         Collects the full response text and attempts JSON parsing once the
         stream finishes. Yields all intermediate chunks for real-time output.
+
+        When ``task_id`` is provided, token usage is recorded heuristically
+        (streaming responses do not surface aggregated usage metadata
+        reliably), matching the counts used elsewhere in cost tracking.
+
+        Args:
+            agent_name: Name of the agent executing the task.
+            task_instruction: The task instruction / user message.
+            priority: Task priority for model routing.
+            context: Optional context override for routing.
+            system_prompt: System-level instructions for the model.
+            max_retries: Maximum number of retry attempts.
+            task_id: Task ID for cost tracking. If empty, cost is not recorded.
 
         Raises:
             LLMResponseError: If all retries exhausted without valid JSON.
@@ -229,6 +268,25 @@ class LLMClient:
 
                 parsed = self._parse_response(full_text)
                 if parsed is not None:
+                    if task_id:
+                        # Streaming responses don't surface aggregated usage
+                        # metadata reliably, so count tokens heuristically.
+                        self._record_usage(
+                            ChatResponse(
+                                content=full_text,
+                                model=model,
+                                provider=provider_id,
+                            ),
+                            agent_name,
+                            task_id,
+                            attempt + 1,
+                            usage=TokenUsage(
+                                prompt_tokens=count_prompt_tokens(
+                                    system_prompt, task_instruction, model
+                                ),
+                                completion_tokens=count_tokens(full_text, model),
+                            ),
+                        )
                     return
                 last_raw = full_text
                 last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
@@ -249,38 +307,50 @@ class LLMClient:
         agent_name: str,
         task_id: str,
         iteration: int,
+        usage: TokenUsage | None = None,
     ) -> None:
         """Record token usage to JSONL (CostTracker) and SQLite (CostAnalytics).
 
-        The existing JSONL logging via CostTracker is preserved as-is.
-        When the SQLite database singleton is available, usage is also
-        written to the ``cost_records`` table for dashboard analytics.
+        Prefers provider-reported usage metadata and falls back to heuristic
+        token counts (see ``ai_company.llm.token_counter``). The existing
+        JSONL logging via CostTracker is preserved as-is. When the SQLite
+        database singleton is available, usage is also written to the
+        ``cost_records`` table for dashboard analytics.
 
         Args:
             response: The ChatResponse from the provider.
             agent_name: Name of the agent that made the call.
             task_id: Task ID for cost tracking.
             iteration: Current iteration number.
+            usage: TokenUsage for the call. When omitted, falls back to the
+                response's own token fields.
         """
         if not task_id:
             return
 
+        if usage is None:
+            usage = TokenUsage(
+                prompt_tokens=int(getattr(response, "prompt_tokens", 0) or 0),
+                completion_tokens=int(getattr(response, "completion_tokens", 0) or 0),
+            )
+
         cost_usd = 0.0
 
         # ── 1. JSONL logging (existing CostTracker) ────────────────
-        if self._cost_tracker is not None:
+        cost_tracker = getattr(self, "_cost_tracker", None)
+        if cost_tracker is not None:
             try:
-                record = self._cost_tracker.record_usage(
+                record = cost_tracker.record_usage(
                     model=response.model,
                     provider=response.provider,
                     agent_name=agent_name,
                     task_id=task_id,
-                    prompt_tokens=response.prompt_tokens,
-                    completion_tokens=response.completion_tokens,
+                    prompt_tokens=usage.prompt_tokens,
+                    completion_tokens=usage.completion_tokens,
                     iteration=iteration,
                 )
                 cost_usd = record.cost_usd
-            except Exception:
+            except Exception:  # noqa: BLE001 - cost tracking is best-effort
                 logger.debug(
                     "JSONL cost tracking failed for task %s",
                     task_id,
@@ -290,8 +360,8 @@ class LLMClient:
         # Compute cost if the tracker didn't (or wasn't configured)
         if cost_usd == 0.0:
             cost_usd = round(
-                response.prompt_tokens * _cost_per_token(response.model, "input")
-                + response.completion_tokens * _cost_per_token(response.model, "output"),
+                usage.prompt_tokens * _cost_per_token(response.model, "input")
+                + usage.completion_tokens * _cost_per_token(response.model, "output"),
                 8,
             )
 
@@ -307,12 +377,12 @@ class LLMClient:
                     provider=response.provider,
                     agent_name=agent_name,
                     task_id=task_id,
-                    prompt_tokens=response.prompt_tokens,
-                    completion_tokens=response.completion_tokens,
+                    prompt_tokens=usage.prompt_tokens,
+                    completion_tokens=usage.completion_tokens,
                     cost_usd=cost_usd,
                     iteration=iteration,
                 )
-        except Exception:
+        except Exception:  # noqa: BLE001 - cost analytics is best-effort
             logger.debug(
                 "SQLite cost tracking failed for task %s",
                 task_id,

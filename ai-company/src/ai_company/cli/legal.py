@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import typer
 import yaml
@@ -12,7 +13,7 @@ app = typer.Typer(help="Legal department operations")
 LEGAL_DIR = Path("legal")
 
 
-def _load_contracts() -> dict:
+def _load_contracts() -> dict[str, Any]:
     """Load legal contracts from YAML."""
     contracts_file = LEGAL_DIR / "contracts.yaml"
     if not contracts_file.exists():
@@ -21,7 +22,7 @@ def _load_contracts() -> dict:
         return yaml.safe_load(f) or {"contracts": []}
 
 
-def _save_contracts(data: dict) -> None:
+def _save_contracts(data: dict[str, Any]) -> None:
     """Persist legal contracts to YAML."""
     LEGAL_DIR.mkdir(exist_ok=True)
     contracts_file = LEGAL_DIR / "contracts.yaml"
@@ -55,7 +56,13 @@ def add_contract(
     name: str = typer.Option(..., help="Contract name"),
     party: str = typer.Option(..., help="Contracting party"),
 ) -> None:
-    """Add a new contract."""
+    """Add a new contract.
+
+    Args:
+        contract_id: Unique contract ID.
+        name: Contract name.
+        party: Contracting party.
+    """
     data = _load_contracts()
     contracts = data.get("contracts", [])
 
@@ -79,7 +86,11 @@ def add_contract(
 
 @app.command()
 def approve(contract_id: str = typer.Argument(..., help="Contract ID to approve")) -> None:
-    """Approve a contract."""
+    """Approve a contract.
+
+    Args:
+        contract_id: Contract ID to approve.
+    """
     data = _load_contracts()
     contracts = data.get("contracts", [])
 

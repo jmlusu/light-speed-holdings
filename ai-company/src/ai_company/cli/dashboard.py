@@ -24,7 +24,14 @@ def dashboard(
     host: str = typer.Option("127.0.0.1", help="Host to bind to"),
     no_open: bool = typer.Option(False, "--no-open", help="Don't auto-open browser"),
 ) -> None:
-    """Start the CEO dashboard web server."""
+    """Start the CEO dashboard web server.
+
+    Args:
+        ctx: Typer invocation context (used to detect subcommands).
+        port: Port to serve on.
+        host: Host to bind to.
+        no_open: Don't auto-open the browser.
+    """
     if ctx.invoked_subcommand is not None:
         return
 
@@ -56,6 +63,9 @@ def backfill(
     Idempotent (INSERT OR REPLACE) import of tasks, audit events, LLM cost
     records, KPI history, and escalations from the project's legacy files into
     SQLite so the dashboard renders real data. Safe to re-run.
+
+    Args:
+        db_path: SQLite database path (default: <project root>/data/ai_company.db).
     """
 
     from ai_company.data import (
@@ -168,7 +178,11 @@ def kpi_list() -> None:
 def kpi_show(
     department: str = typer.Argument(..., help="Department ID (e.g. engineering)"),
 ) -> None:
-    """Show KPIs for a specific department."""
+    """Show KPIs for a specific department.
+
+    Args:
+        department: Department ID (e.g. engineering).
+    """
     from pathlib import Path
 
     import yaml

@@ -824,3 +824,192 @@ class TestPostmortemStore:
         assert loaded.prevention_measures == ["Heap dumps"]
         assert loaded.prepared_by == "chief-of-staff"
         assert loaded.reviewed_by == "human-operator"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TestApprovalEscalationFlow (Sprint 4 P2 — item 10.4)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class TestApprovalEscalationFlow:
+    """End-to-end approval → escalation flow wired through the public APIs.
+
+    Chains the real :class:`ApprovalGate`, :class:`HITLGate`,
+    :class:`EscalationManager`, and :class:`PostmortemStore` to cover the full
+    flow from inventory item 10.4: request → approve/reject, timeout → expired,
+    escalation trigger on timeout, rule matching, persistence across reload,
+    and duplicate-approve rejection.  Every behaviour asserted here matches the
+    current source — nothing is invented.
+    """
+
+    def test_approve_happy_path_flow(self, tmp_path: Path) -> None:
+        gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+        gate.request_approval(
+            request_id="flow-1",
+            task_id="task-1",
+            agent_id="agent-a",
+            action="deploy",
+            description="Deploy to production",
+        )
+        assert gate.approve("flow-1", approved_by="human-ceo") is True
+        req = gate.get_request("flow-1")
+        assert req is not None
+        assert req.status == ApprovalStatus.APPROVED
+        assert req.response_by == "human-ceo"
+        assert gate.get_pending_requests() == []
+
+    def test_reject_path_flow(self, tmp_path: Path) -> None:
+        gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+        gate.request_approval(
+            request_id="flow-2",
+            task_id="task-2",
+            agent_id="agent-a",
+            action="deploy",
+            description="Deploy",
+        )
+        assert gate.reject("flow-2", rejected_by="human-cto", notes="Not ready") is True
+        req = gate.get_request("flow-2")
+        assert req is not None
+        assert req.status == ApprovalStatus.REJECTED
+        assert req.response_by == "human-cto"
+        assert req.notes == "Not ready"
+        assert gate.get_pending_requests() == []
+
+    def test_request_timeout_expired(self, tmp_path: Path) -> None:
+        """An expired request is excluded from pending requests.
+
+        The gate stores it as PENDING but filters it out; the HITL gate is the
+        component that reports the timeout (see next test).
+        """
+        gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+        gate.request_approval(
+            request_id="flow-3",
+            task_id="task-3",
+            agent_id="agent-a",
+            action="deploy",
+            description="Deploy",
+            expires_in_minutes=0,
+        )
+        req = gate.get_request("flow-3")
+        assert req is not None
+        assert req.expires_at is not None
+        assert req.expires_at <= datetime.now()
+        assert gate.get_pending_requests() == []
+
+    def test_timeout_detected_by_hitl_gate(self, tmp_path: Path) -> None:
+        """HITLGate.resume_approved returns False once the request expires."""
+        hitl = HITLGate(
+            approval_gate=ApprovalGate(config_path=str(tmp_path / "approvals.yaml")),
+            poll_interval=1,
+            timeout_minutes=60,
+        )
+        request_id = hitl.request_and_park(
+            task_id="task-4",
+            agent_id="agent-a",
+            tool="execute",
+            args={"command": "terraform apply"},
+        )
+        # Backdate the expiry so the request is already expired.
+        req = hitl.gate.get_request(request_id)
+        assert req is not None
+        req.expires_at = datetime.now() - timedelta(minutes=1)
+        hitl.gate._save_config()
+
+        assert hitl.resume_approved(request_id) is False
+
+    def test_escalation_triggers_on_timeout(self, tmp_path: Path) -> None:
+        """A timed-out approval escalates through the matching rule.
+
+        The executor/operator detects the timeout (resume_approved → False)
+        and then triggers the escalation; the manager records an event routed
+        to the rule's ``escalate_to`` target.
+        """
+        gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+        hitl = HITLGate(approval_gate=gate, poll_interval=1, timeout_minutes=60)
+        mgr = EscalationManager(config_path=str(tmp_path / "escalation.yaml"))
+        mgr.add_rule(
+            rule_id="hitl-timeout",
+            name="HITL Timeout",
+            trigger="hitl_timeout",
+            escalate_to="chief-of-staff",
+        )
+
+        request_id = hitl.request_and_park(
+            task_id="task-5",
+            agent_id="agent-a",
+            tool="execute",
+            args={"command": "dangerous-op"},
+        )
+        req = gate.get_request(request_id)
+        assert req is not None
+        req.expires_at = datetime.now() - timedelta(minutes=1)
+        gate._save_config()
+
+        # Timeout detected.
+        assert hitl.resume_approved(request_id) is False
+
+        # Escalation fired for the matching rule.
+        event = mgr.trigger_escalation(
+            task_id="task-5",
+            rule_id="hitl-timeout",
+            from_agent="agent-a",
+            reason="HITL approval timed out",
+        )
+        assert event is not None
+        assert event.to_agent == "chief-of-staff"
+        assert event.resolved is False
+        assert any(e.task_id == "task-5" for e in mgr.get_pending_escalations())
+
+        # The event can seed a postmortem for follow-up.
+        pm_store = PostmortemStore(storage_dir=str(tmp_path / "postmortems"))
+        pm = pm_store.create_from_escalation(event, title="HITL timeout incident")
+        assert pm.incident_id == "INC-task-5"
+        loaded = pm_store.load("INC-task-5")
+        assert loaded is not None
+        assert loaded.prepared_by == "chief-of-staff"
+
+    def test_escalation_rule_matches_by_id(self, tmp_path: Path) -> None:
+        """trigger_escalation routes to the rule named by rule_id."""
+        mgr = EscalationManager(config_path=str(tmp_path / "escalation.yaml"))
+        mgr.add_rule(
+            "timeout-rule", "Timeout", "task_timeout", "chief-of-staff", timeout_minutes=15
+        )
+        mgr.add_rule("cost-rule", "Cost", "cost_exceeded", "finance-lead", timeout_minutes=5)
+
+        event = mgr.trigger_escalation(
+            task_id="t-1", rule_id="timeout-rule", from_agent="a1", reason="timeout"
+        )
+        assert event is not None
+        assert event.to_agent == "chief-of-staff"
+
+        rule = next(r for r in mgr.list_rules() if r.id == "timeout-rule")
+        assert rule.trigger == "task_timeout"
+        assert rule.timeout_minutes == 15
+
+    def test_approval_persists_across_reload(self, tmp_path: Path) -> None:
+        """An approved decision survives a new ApprovalGate over the same file,
+        and a duplicate approve after reload is rejected."""
+        config = str(tmp_path / "approvals.yaml")
+        gate1 = ApprovalGate(config_path=config)
+        gate1.request_approval("flow-7", "task-7", "agent-a", "deploy", "Deploy production release")
+        assert gate1.approve("flow-7", approved_by="human-ceo") is True
+
+        gate2 = ApprovalGate(config_path=config)
+        req = gate2.get_request("flow-7")
+        assert req is not None
+        assert req.status == ApprovalStatus.APPROVED
+        assert req.approved_by_list == ["human-ceo"]
+
+        # Duplicate approve is rejected after reload too.
+        assert gate2.approve("flow-7", approved_by="human-cto") is False
+        assert gate2.get_request("flow-7").status == ApprovalStatus.APPROVED
+
+    def test_duplicate_approve_is_rejected(self, tmp_path: Path) -> None:
+        gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
+        gate.request_approval("flow-8", "task-8", "agent-a", "deploy", "Deploy production release")
+        assert gate.approve("flow-8", approved_by="human-1") is True
+        assert gate.approve("flow-8", approved_by="human-2") is False
+        req = gate.get_request("flow-8")
+        assert req is not None
+        assert req.status == ApprovalStatus.APPROVED
+        assert req.approved_by_list == ["human-1"]

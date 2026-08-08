@@ -21,7 +21,7 @@ env/
 
 # ── Testing & Coverage ────────────────────────────────────────
 .pytest_cache/
-.pytest_tmp/
+.pytest_tmp*/
 .coverage
 htmlcov/
 coverage.xml

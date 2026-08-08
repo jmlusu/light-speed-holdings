@@ -79,6 +79,11 @@ class UsageRecord:
     iteration: int = 1
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def total_tokens(self) -> int:
+        """Prompt + completion tokens for this record."""
+        return self.prompt_tokens + self.completion_tokens
+
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
@@ -294,6 +299,44 @@ class CostTracker:
         """Estimate the cost of a hypothetical LLM call without recording it."""
         return self._calculate_cost(model, prompt_tokens, completion_tokens)
 
+    def get_summary(self) -> dict[str, Any]:
+        """Get cumulative usage summary across all recorded calls.
+
+        Returns:
+            Dict with total_cost_usd, total_prompt_tokens,
+            total_completion_tokens, total_tokens, call_count, and a
+            per-model breakdown.
+        """
+        total_cost = 0.0
+        total_prompt = 0
+        total_completion = 0
+        call_count = 0
+        by_model: dict[str, dict[str, Any]] = {}
+
+        for rec in self._records:
+            total_cost += rec.cost_usd
+            total_prompt += rec.prompt_tokens
+            total_completion += rec.completion_tokens
+            call_count += 1
+
+            model_entry = by_model.setdefault(
+                rec.model,
+                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
+            )
+            model_entry["cost_usd"] += rec.cost_usd
+            model_entry["prompt_tokens"] += rec.prompt_tokens
+            model_entry["completion_tokens"] += rec.completion_tokens
+            model_entry["calls"] += 1
+
+        return {
+            "total_cost_usd": round(total_cost, 6),
+            "total_prompt_tokens": total_prompt,
+            "total_completion_tokens": total_completion,
+            "total_tokens": total_prompt + total_completion,
+            "call_count": call_count,
+            "by_model": by_model,
+        }
+
     # ── Internal helpers ───────────────────────────────────────────
 
     def _calculate_cost(
@@ -346,6 +389,12 @@ class CostTracker:
 
                         self._daily_cost[day] = self._daily_cost.get(day, 0.0) + cost
                         self._task_costs[task_id] = self._task_costs.get(task_id, 0.0) + cost
+
+                        # Backward compatibility: older log records predate
+                        # token fields; default them to 0 instead of dropping
+                        # the record during replay.
+                        rec_dict.setdefault("prompt_tokens", 0)
+                        rec_dict.setdefault("completion_tokens", 0)
 
                         record = UsageRecord(**rec_dict)
                         self._records.append(record)

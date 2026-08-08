@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import contextlib
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+
+if TYPE_CHECKING:
+    from ai_company.memory.engine import MemoryEntry, MemoryStore
 
 app = typer.Typer(help="Manage company memory and knowledge base")
 console = Console()
@@ -26,7 +29,12 @@ def list_entries(
         help="Memory type to list (episodic, semantic, procedural, relational, temporal, aggregate, all)",
     ),
 ) -> None:
-    """List memory entries."""
+    """List memory entries.
+
+    Args:
+        memory_type: Memory type to list (episodic, semantic, procedural,
+            relational, temporal, aggregate, all).
+    """
     from ai_company.memory.engine import MemoryStore
 
     store = MemoryStore()
@@ -66,7 +74,14 @@ def add(
     agent_id: str = typer.Option("", help="Agent that created this memory"),
     tags: str = typer.Option("", help="Comma-separated tags"),
 ) -> None:
-    """Add a new memory entry."""
+    """Add a new memory entry.
+
+    Args:
+        memory_type: Memory type (episodic, semantic, procedural, relational, temporal).
+        content: Memory content.
+        agent_id: Agent that created this memory.
+        tags: Comma-separated tags.
+    """
     from ai_company.memory.engine import MemoryStore
 
     store = MemoryStore()
@@ -93,6 +108,13 @@ def search(
     By default, uses keyword/substring matching.  Pass ``--semantic`` to
     perform embedding-based cosine-similarity search when the vector index
     is available; falls back to keyword search gracefully.
+
+    Args:
+        query: Search query (keyword or semantic).
+        memory_type: Memory type to search.
+        tags: Comma-separated tags to filter by.
+        limit: Max results.
+        semantic: Use semantic (embedding) search instead of keyword matching.
     """
     from ai_company.memory.engine import MemoryStore
 
@@ -110,7 +132,7 @@ def search(
         else ["episodic", "semantic", "procedural", "relational", "temporal"]
     )
 
-    all_results: list = []
+    all_results: list[MemoryEntry] = []
     for mt in types_to_search:
         if semantic and query:
             # Use recall with use_semantic=True (vector search if available)
@@ -159,6 +181,12 @@ def recall(
     Shows the most recent memory entries from the specified type(s),
     ordered by recency.  Useful for quick inspection of what the
     memory store currently holds.
+
+    Args:
+        memory_type: Memory type to recall (episodic, semantic, procedural,
+            relational, temporal, all).
+        limit: Maximum entries to recall.
+        tags: Comma-separated tags to filter by.
     """
     from ai_company.memory.engine import MemoryStore
 
@@ -171,7 +199,7 @@ def recall(
         else ["episodic", "semantic", "procedural", "relational", "temporal"]
     )
 
-    all_entries: list = []
+    all_entries: list[MemoryEntry] = []
     for mt in types_to_recall:
         entries = store.recall(mt, tags=tag_list, limit=limit)
         all_entries.extend(entries)
@@ -200,7 +228,11 @@ def recall(
 def consolidate(
     memory_type: str = typer.Argument(..., help="Memory type to consolidate"),
 ) -> None:
-    """Create an aggregate summary of a memory type."""
+    """Create an aggregate summary of a memory type.
+
+    Args:
+        memory_type: Memory type to consolidate.
+    """
     from ai_company.memory.engine import MemoryStore
 
     store = MemoryStore()
@@ -222,7 +254,12 @@ def consolidate_all(
     max_age_days: int = typer.Option(90, help="Max age in days for episodic memories"),
     max_entries: int = typer.Option(2000, help="Max entries per memory type"),
 ) -> None:
-    """Run full memory consolidation: deduplicate, aggregate, and prune."""
+    """Run full memory consolidation: deduplicate, aggregate, and prune.
+
+    Args:
+        max_age_days: Max age in days for episodic memories.
+        max_entries: Max entries per memory type.
+    """
     from ai_company.memory.engine import MemoryStore
 
     store = MemoryStore()
@@ -256,7 +293,12 @@ def prune(
     max_age_days: int = typer.Option(None, help="Remove entries older than N days"),
     max_entries: int = typer.Option(None, help="Cap each type to N entries"),
 ) -> None:
-    """Prune memory entries by age and/or per-type cap."""
+    """Prune memory entries by age and/or per-type cap.
+
+    Args:
+        max_age_days: Remove entries older than N days.
+        max_entries: Cap each type to N entries.
+    """
     from ai_company.memory.engine import MemoryStore
 
     store = MemoryStore()
@@ -270,11 +312,15 @@ def prune(
 # ── Helpers ────────────────────────────────────────────────────────────
 
 
-def _enable_vector_search(store: Any, base_dir: str = "memory") -> None:
+def _enable_vector_search(store: MemoryStore, base_dir: str = "memory") -> None:
     """Try to enable vector search on the given MemoryStore.
 
     Imports the embedding engine lazily so the CLI stays responsive even
     when ML dependencies are slow to load.
+
+    Args:
+        store: The memory store to enable vector search on.
+        base_dir: Base directory for the embedding cache and vector index.
     """
     from ai_company.memory.engine import MemoryStore as _MS  # noqa: F811
 
