@@ -242,6 +242,20 @@ class AgentLoop:
             )
 
             for i, step_result in enumerate(step_results):
+                # GAP-019: belt-and-braces — never crash the loop if a step
+                # result is not a dict (e.g. a plan that degenerated into
+                # free text mid-run).  Coerce it into an error record so the
+                # model sees feedback and can self-correct.
+                if not isinstance(step_result, dict):
+                    step_result = {
+                        "step": i,
+                        "tool": "unknown",
+                        "status": "error",
+                        "error": (
+                            f"Malformed tool result: expected a dict, "
+                            f"got {type(step_result).__name__}"
+                        ),
+                    }
                 record = ToolCallRecord(
                     step=step_result.get("step", i),
                     tool=step_result.get("tool", "unknown"),
