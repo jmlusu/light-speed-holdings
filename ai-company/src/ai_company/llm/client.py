@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from ai_company.llm.circuit_breaker import CircuitBreaker
 from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
+from ai_company.llm.oauth2 import OAuth2Config, OAuth2TokenManager
 from ai_company.llm.providers.base import (
     ChatResponse,
     LLMProvider,
@@ -27,7 +28,7 @@ from ai_company.llm.token_counter import (
     join_prompt,
     usage_from_response,
 )
-from ai_company.model_router import ModelRouter
+from ai_company.model_router import ModelRouter, ProviderConfig
 from ai_company.utils.logging import get_correlation_id
 
 load_dotenv()
@@ -67,6 +68,8 @@ class LLMClient:
         for pcfg in self.router.list_providers():
             self._circuit_breakers[pcfg.id] = CircuitBreaker()
 
+            oauth2 = self._build_oauth2_manager(pcfg)
+
             if pcfg.id == "ollama":
                 self._providers[pcfg.id] = OllamaProvider(
                     name=pcfg.id,
@@ -83,7 +86,38 @@ class LLMClient:
                     default_model=pcfg.default_model,
                     api_key_env=api_key_env,
                     auth_style=auth_style,
+                    oauth2=oauth2,
                 )
+
+    @staticmethod
+    def _build_oauth2_manager(
+        pcfg: ProviderConfig,
+    ) -> OAuth2TokenManager | None:
+        """Build an OAuth2 token manager from a provider config, if configured.
+
+        Returns None when the provider has no ``oauth2`` block (API-key auth
+        is used instead). Missing required fields (``token_url``) are treated
+        as an unconfigured provider rather than a crash.
+        """
+        oauth2_cfg = getattr(pcfg, "oauth2", None) or {}
+        token_url = oauth2_cfg.get("token_url")
+        if not token_url:
+            return None
+        try:
+            config = OAuth2Config(
+                token_url=token_url,
+                client_id=oauth2_cfg.get("client_id", ""),
+                client_secret=oauth2_cfg.get("client_secret", ""),
+                client_id_env=oauth2_cfg.get("client_id_env", ""),
+                client_secret_env=oauth2_cfg.get("client_secret_env", ""),
+                scope=oauth2_cfg.get("scope"),
+                audience=oauth2_cfg.get("audience"),
+                cache_ttl_seconds=oauth2_cfg.get("cache_ttl_seconds", 3600),
+            )
+            return OAuth2TokenManager.from_config(config)
+        except (TypeError, ValueError):
+            logger.warning("Invalid OAuth2 config for provider %s", pcfg.id)
+            return None
 
     def execute_task(
         self,

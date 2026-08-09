@@ -16,6 +16,21 @@
 # ─── Provider catalog ────────────────────────────────────────────────
 # Each provider entry: id, backend, default_model, api_base.
 # API keys are read from env vars: {ID}_API_KEY (e.g. OPENCODE_API_KEY)
+#
+# OAuth2 client-credentials auth (opt-in): add an `oauth2:` block. Secrets
+# come from env vars via client_id_env / client_secret_env. Without the
+# block the provider falls back to {ID}_API_KEY static bearer auth.
+#
+#   enterprise-llm:
+#     backend: openai_compatible
+#     default_model: enterprise-model
+#     api_base: https://llm.example.com/v1
+#     oauth2:
+#       token_url: https://idp.example.com/oauth/token
+#       client_id_env: ENTERPRISE_LLM_CLIENT_ID
+#       client_secret_env: ENTERPRISE_LLM_CLIENT_SECRET
+#       scope: "llm:inference"
+#       cache_ttl_seconds: 300
 
 providers:
   opencode:
