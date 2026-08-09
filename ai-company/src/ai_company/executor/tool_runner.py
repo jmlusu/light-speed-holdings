@@ -215,7 +215,41 @@ class ToolRunner:
         results: list[dict[str, Any]] = []
         blocking = hitl_gate is not None
 
+        # GAP-019: LLM output is untyped — a malformed plan (a bare string
+        # instead of a list of tool steps) must not crash the loop.  Surface
+        # it as an error result so the model can self-correct on the next
+        # iteration instead of raising ``'str' object has no attribute 'get'``.
+        if not isinstance(plan, list):
+            malformed_plan = {
+                "step": 0,
+                "tool": "plan",
+                "status": "error",
+                "error": (
+                    "Malformed plan: expected a list of tool steps, "
+                    f"got {type(plan).__name__}. Respond with a JSON array of "
+                    '{"tool": ..., "args": {...}} steps.'
+                ),
+            }
+            results.append(malformed_plan)
+            log_tool_call(task_id, agent_id, "plan", {}, malformed_plan)
+            return results
+
         for i, step in enumerate(plan):
+            if not isinstance(step, dict):
+                malformed_step = {
+                    "step": i,
+                    "tool": "plan",
+                    "status": "error",
+                    "error": (
+                        f"Malformed step at index {i}: expected a dict, "
+                        f"got {type(step).__name__}. Respond with a JSON array "
+                        'of {"tool": ..., "args": {...}} steps.'
+                    ),
+                }
+                results.append(malformed_step)
+                log_tool_call(task_id, agent_id, "plan", {}, malformed_step)
+                continue
+
             tool = step.get("tool", "")
             args = step.get("args", {})
 

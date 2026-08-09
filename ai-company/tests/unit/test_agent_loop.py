@@ -433,6 +433,55 @@ class TestToolErrorFeedback:
         assert "denied" in user_prompt.lower()
 
 
+# ── Test: malformed plan does not crash the loop ────────────────────
+
+
+class TestMalformedPlan:
+    """GAP-019: a string plan (not a list) must not crash with
+    ``'str' object has no attribute 'get'`` — it becomes recoverable
+    feedback so the model can self-correct."""
+
+    def test_string_plan_recovers_and_completes(self, tmp_path: Path) -> None:
+        client, mock_provider = _setup_llm_client(tmp_path)
+        runner = ToolRunner(project_root=tmp_path)
+        loop = AgentLoop(llm=client, runner=runner, config=LoopConfig(max_iterations=3))
+
+        # Iteration 1: model degenerates into a string plan
+        resp1 = _make_chat_response(
+            _json_response(
+                thought="I will read the file then summarize it.",
+                plan="read the file then summarize it",
+                done=False,
+            )
+        )
+        # Iteration 2: model self-corrects and completes
+        resp2 = _make_chat_response(
+            _json_response(
+                thought="Understood, I will use a list of steps.",
+                result="Task complete after correcting my plan format.",
+                done=True,
+            )
+        )
+
+        mock_provider.chat.side_effect = [resp1, resp2]
+
+        result = loop.run(agent=_make_agent(), user_prompt="Read data.txt")
+
+        assert result.done is True
+        assert result.iterations == 2
+
+        # The malformed plan surfaced as an error tool result, not a crash
+        assert result.tool_results[0].status == "error"
+        assert "malformed plan" in result.tool_results[0].result.get("error", "").lower()
+
+        # The second LLM call received the correction feedback
+        second_call = mock_provider.chat.call_args_list[1]
+        user_prompt = (
+            second_call[1]["user_prompt"] if "user_prompt" in second_call[1] else second_call[0][1]
+        )
+        assert "Malformed plan" in user_prompt
+
+
 # ── Test: empty plan completes immediately ───────────────────────────
 
 

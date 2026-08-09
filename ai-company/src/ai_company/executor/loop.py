@@ -15,6 +15,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -139,13 +140,19 @@ class Executor:
         self.dlq = DeadLetterQueue()
 
         # Multi-turn agentic loop (strict caps propagated to per-iteration guard)
+        # max_iterations is configurable via AI_COMPANY_MAX_ITERS for local
+        # model runs; defaults to the 10-iteration completion cap.
+        try:
+            max_iterations = int(os.environ.get("AI_COMPANY_MAX_ITERS", "10"))
+        except ValueError:
+            max_iterations = 10
         self.agent_loop = AgentLoop(
             llm=self.llm,
             runner=self.runner,
             cost_tracker=self.cost_tracker,
             hitl_gate=self.hitl,
             config=LoopConfig(
-                max_iterations=10,
+                max_iterations=max_iterations,
                 daily_budget_usd=daily_budget_usd,
                 task_budget_usd=task_budget_usd,
             ),

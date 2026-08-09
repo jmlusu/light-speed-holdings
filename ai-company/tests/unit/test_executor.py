@@ -234,6 +234,25 @@ class TestToolRunner:
         assert results[0]["status"] == "ok"
         assert results[0]["action"] == "delegate"
 
+    def test_string_plan_does_not_crash(self, tmp_path: Path) -> None:
+        """GAP-019 regression: a string plan (not a list) must not crash with
+        ``'str' object has no attribute 'get'`` — it becomes an error result
+        so the model can self-correct."""
+        runner = ToolRunner(project_root=tmp_path)
+        results = runner.run_plan("read the file then write output")  # type: ignore[arg-type]
+        assert len(results) == 1
+        assert results[0]["status"] == "error"
+        assert "malformed plan" in results[0]["error"].lower()
+
+    def test_non_dict_step_does_not_crash(self, tmp_path: Path) -> None:
+        """GAP-019 regression: a list of bare strings as a plan must not crash
+        on ``step.get(...)`` — each becomes an error result."""
+        runner = ToolRunner(project_root=tmp_path)
+        results = runner.run_plan(["read", "write", "list"])  # type: ignore[list-item]
+        assert len(results) == 3
+        assert all(r["status"] == "error" for r in results)
+        assert all("malformed step" in r["error"].lower() for r in results)
+
 
 # ── HITL Gate ───────────────────────────────────────────────────────
 
