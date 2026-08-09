@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import os
 from collections.abc import Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import httpx
 
@@ -20,9 +20,17 @@ from ai_company.llm.providers.base import (
     StreamChunk,
 )
 
+if TYPE_CHECKING:
+    from ai_company.llm.oauth2 import OAuth2TokenManager
+
 
 class OpenAICompatibleProvider(LLMProvider):
-    """Provider for any OpenAI-compatible API (OpenCode, Deepseek, etc.)."""
+    """Provider for any OpenAI-compatible API (OpenCode, Deepseek, etc.).
+
+    Auth is resolved per request: either a static API key (``api_key_env``)
+    or an OAuth2 client-credentials token (``oauth2``). When no auth is
+    configured the provider is unavailable (fail-closed).
+    """
 
     def __init__(
         self,
@@ -32,12 +40,14 @@ class OpenAICompatibleProvider(LLMProvider):
         api_key_env: str = "",
         timeout: float = 120.0,
         auth_style: str = "bearer",  # "bearer" for OpenAI-family, "x-api-key" for Anthropic
+        oauth2: OAuth2TokenManager | None = None,
     ) -> None:
         self.name = name
         self.api_base = api_base.rstrip("/")
         self.default_model = default_model
         self.timeout = timeout
         self.auth_style = auth_style
+        self._oauth2 = oauth2
 
         # Resolve API key from env var
         api_key = ""
@@ -48,23 +58,32 @@ class OpenAICompatibleProvider(LLMProvider):
 
         self._api_key = api_key
         self._client: httpx.Client | None = None
-        if api_key:
+        if api_key or (oauth2 is not None and oauth2.is_configured):
+            headers = {"Content-Type": "application/json"}
             if auth_style == "x-api-key":
-                headers = {
-                    "x-api-key": api_key,
-                    "Content-Type": "application/json",
-                    "anthropic-version": "2023-06-01",
-                }
-            else:
-                headers = {
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                }
+                headers["anthropic-version"] = "2023-06-01"
             self._client = httpx.Client(
                 base_url=self.api_base,
                 headers=headers,
                 timeout=self.timeout,
             )
+
+    def _auth_headers(self) -> dict[str, str]:
+        """Build per-request auth headers from OAuth2 or a static API key.
+
+        Raises:
+            LLMProviderError: If OAuth2 is configured but a token cannot be
+                obtained, or no auth is available at all.
+        """
+        if self._oauth2 is not None:
+            token = self._oauth2.get_access_token()
+            return {"Authorization": f"Bearer {token}"}
+        if self.auth_style == "x-api-key":
+            return {
+                "x-api-key": self._api_key,
+                "anthropic-version": "2023-06-01",
+            }
+        return {"Authorization": f"Bearer {self._api_key}"}
 
     def chat(
         self,
@@ -73,7 +92,7 @@ class OpenAICompatibleProvider(LLMProvider):
         model: str | None = None,
     ) -> ChatResponse:
         if not self._client:
-            raise LLMProviderError(self.name, "No API key configured")
+            raise LLMProviderError(self.name, "No API key or OAuth2 credentials configured")
 
         model = model or self.default_model
 
@@ -100,7 +119,11 @@ class OpenAICompatibleProvider(LLMProvider):
             }
 
         try:
-            resp = self._client.post(endpoint, json=payload)
+            resp = self._client.post(
+                endpoint,
+                json=payload,
+                headers=self._auth_headers(),
+            )
         except httpx.TimeoutException as exc:
             raise LLMProviderError(self.name, f"Request timed out: {exc}") from exc
         except httpx.HTTPError as exc:
@@ -151,7 +174,7 @@ class OpenAICompatibleProvider(LLMProvider):
         model: str | None = None,
     ) -> Generator[StreamChunk, None, None]:
         if not self._client:
-            raise LLMProviderError(self.name, "No API key configured")
+            raise LLMProviderError(self.name, "No API key or OAuth2 credentials configured")
 
         model = model or self.default_model
 
@@ -178,7 +201,12 @@ class OpenAICompatibleProvider(LLMProvider):
             }
 
         try:
-            with self._client.stream("POST", endpoint, json=payload) as resp:
+            with self._client.stream(
+                "POST",
+                endpoint,
+                json=payload,
+                headers=self._auth_headers(),
+            ) as resp:
                 if resp.status_code != 200:
                     raise LLMProviderError(
                         self.name,
@@ -266,4 +294,8 @@ class OpenAICompatibleProvider(LLMProvider):
                     )
 
     def is_available(self) -> bool:
-        return self._client is not None
+        if self._client is None:
+            return False
+        if self._oauth2 is not None:
+            return self._oauth2.is_configured
+        return True

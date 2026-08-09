@@ -125,12 +125,24 @@ class Provider:
 
 @dataclass(frozen=True)
 class ProviderConfig:
-    """Top-level provider configuration (backend, api_base, etc.)."""
+    """Top-level provider configuration (backend, api_base, etc.).
+
+    Attributes:
+        id: Provider identifier (matches the ``providers`` YAML key).
+        backend: Backend implementation name.
+        default_model: Default model identifier.
+        api_base: Base URL for the provider API.
+        oauth2: Optional OAuth2 client-credentials config as a raw dict
+            (keys: ``token_url``, ``client_id``/``client_id_env``,
+            ``client_secret``/``client_secret_env``, ``scope``,
+            ``audience``, ``cache_ttl_seconds``). Empty dict when unset.
+    """
 
     id: str
     backend: str
     default_model: str
     api_base: str = ""
+    oauth2: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -201,6 +213,7 @@ class ModelRouter:
                 backend=pconf.get("backend", pid),
                 default_model=pconf.get("default_model", ""),
                 api_base=pconf.get("api_base", ""),
+                oauth2=pconf.get("oauth2") or {},
             )
 
     def _parse_tiers(self) -> None:
