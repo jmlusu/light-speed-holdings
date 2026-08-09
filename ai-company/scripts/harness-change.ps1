@@ -455,6 +455,10 @@ function Move-Active([string]$TargetBase, [string]$Status, [string]$Reason) {
   }
   Move-Item -LiteralPath $Active -Destination $target
   New-Item -ItemType Directory -Path $Active | Out-Null
+  $gitkeep = Join-Path $Active ".gitkeep"
+  if (-not (Test-Path -LiteralPath $gitkeep)) {
+    New-Item -ItemType File -Path $gitkeep | Out-Null
+  }
   Reindex
   if ($TargetBase -eq $Archive) { Invoke-EvolutionCheck "close" }
   Write-Output "Moved active change to $target"
