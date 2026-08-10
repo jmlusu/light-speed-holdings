@@ -36,7 +36,7 @@ providers:
   opencode:
     backend: openai_compatible
     default_model: big-pickle
-    api_base: https://opencode.ai/api/v1
+    api_base: https://opencode.ai/zen/v1
 
   deepseek:
     backend: openai_compatible
@@ -86,28 +86,28 @@ tiers:
   standard:
     description: "Balanced capability and cost. Default for most agents."
     providers:
+      - provider: opencode
+        model: big-pickle
+      - provider: gemini
+        model: gemini-3.5-flash
       - provider: ollama
         model: llama3.1:8b
       - provider: deepseek
         model: deepseek-chat
-      - provider: gemini
-        model: gemini-3.5-flash
       - provider: kimi
         model: kimi-k2
-      - provider: opencode
-        model: big-pickle
 
   premium:
     description: "Maximum reasoning capability. Use for critical decisions."
     providers:
+      - provider: opencode
+        model: big-pickle
+      - provider: gemini
+        model: gemini-3.1-pro-preview
       - provider: deepseek
         model: deepseek-coder
       - provider: kimi
         model: kimi-k2
-      - provider: gemini
-        model: gemini-3.1-pro-preview
-      - provider: opencode
-        model: big-pickle
 
 # ─── Routing rules ──────────────────────────────────────────────────
 # Maps (agent_type, priority) -> tier.
