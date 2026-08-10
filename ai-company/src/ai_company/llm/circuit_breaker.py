@@ -63,7 +63,18 @@ class CircuitBreaker:
         elif self._state == CircuitState.CLOSED:
             self._failure_count = 0
 
-    def record_failure(self) -> None:
+    def record_failure(self, error_category: str | None = None) -> None:
+        """Record a failed call, opening the circuit after the threshold.
+
+        Args:
+            error_category: Optional category (a ``ProviderErrorCategory``
+                value such as ``"auth"``). Authentication failures are not
+                counted: they indicate a configuration problem that retries
+                will not self-heal, so tripping the breaker on them would
+                blacklist the provider without a recovery path.
+        """
+        if error_category == "auth":
+            return
         self._failure_count += 1
         self._last_failure_time = time.time()
 

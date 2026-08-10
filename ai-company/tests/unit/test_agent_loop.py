@@ -145,6 +145,7 @@ def _setup_llm_client(tmp_path: Path) -> MagicMock:
     client.router.get_tier.return_value = mock_tier
     client.router.resolve_with_fallback.return_value = [mock_route]
     client.get_provider.return_value = mock_provider
+    client.get_breaker.return_value = None
 
     return client, mock_provider
 
@@ -649,6 +650,64 @@ class TestCostTrackingIntegration:
         # Should have stopped early due to budget
         assert result.done is False
         assert "Budget" in result.error or "budget" in result.error.lower()
+
+
+# ── Test: circuit breaker wiring in _call_llm ───────────────────────
+
+
+class TestCircuitBreakerWiring:
+    """The loop must honour and update the provider circuit breakers."""
+
+    def test_open_breaker_skips_provider(self, tmp_path: Path) -> None:
+        from ai_company.llm.circuit_breaker import CircuitBreaker
+
+        client, mock_provider = _setup_llm_client(tmp_path)
+        breaker = CircuitBreaker(failure_threshold=1)
+        breaker.record_failure()
+        assert not breaker.is_available
+        client.get_breaker.return_value = breaker
+
+        runner = ToolRunner(project_root=tmp_path)
+        loop = AgentLoop(llm=client, runner=runner, config=LoopConfig())
+
+        result = loop.run(agent=_make_agent(), user_prompt="Do something")
+        assert mock_provider.chat.call_count == 0
+        assert result.done is False
+        assert "No provider available" in result.error
+
+    def test_success_records_breaker_success(self, tmp_path: Path) -> None:
+        from ai_company.llm.circuit_breaker import CircuitBreaker, CircuitState
+
+        client, mock_provider = _setup_llm_client(tmp_path)
+        breaker = CircuitBreaker(failure_threshold=1)
+        # Force half-open: a success here must transition to CLOSED.
+        breaker._state = CircuitState.HALF_OPEN
+        client.get_breaker.return_value = breaker
+
+        runner = ToolRunner(project_root=tmp_path)
+        loop = AgentLoop(llm=client, runner=runner, config=LoopConfig())
+
+        mock_provider.chat.return_value = _make_chat_response(_json_response())
+        result = loop.run(agent=_make_agent(), user_prompt="Do something")
+        assert result.done is True
+        assert breaker.state == CircuitState.CLOSED
+
+    def test_provider_error_records_failure_category(self, tmp_path: Path) -> None:
+        from ai_company.llm.providers.base import LLMProviderError
+
+        client, mock_provider = _setup_llm_client(tmp_path)
+        breaker = MagicMock()
+        breaker.is_available.return_value = True
+        client.get_breaker.return_value = breaker
+
+        mock_provider.chat.side_effect = LLMProviderError("mock", "rate limited", 429)
+
+        runner = ToolRunner(project_root=tmp_path)
+        loop = AgentLoop(llm=client, runner=runner, config=LoopConfig())
+
+        result = loop.run(agent=_make_agent(), user_prompt="Do something")
+        assert result.done is False
+        breaker.record_failure.assert_called_once_with("rate_limit")
 
 
 # ── Test: LoopConfig defaults ────────────────────────────────────────

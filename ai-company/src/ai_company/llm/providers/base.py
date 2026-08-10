@@ -5,6 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Generator
 from dataclasses import dataclass, field
+from enum import Enum
 
 
 @dataclass(frozen=True)
@@ -118,8 +119,52 @@ class LLMProviderError(Exception):
 
     def __init__(self, provider: str, message: str, status_code: int | None = None):
         self.provider = provider
+        self.message = message
         self.status_code = status_code
         super().__init__(f"[{provider}] {message}")
+
+    @property
+    def category(self) -> ProviderErrorCategory:
+        """Best-effort error classification for retry/breaker decisions."""
+        return classify_provider_error(self.message, self.status_code)
+
+
+class ProviderErrorCategory(str, Enum):
+    """Coarse failure taxonomy shared by circuit breakers and retry logic."""
+
+    RATE_LIMIT = "rate_limit"  # 429 — back off and retry later
+    AUTH = "auth"  # 401/403 — config problem; retries won't self-heal
+    SERVER = "server"  # 5xx — provider-side, worth retrying
+    TIMEOUT = "timeout"  # request timed out (408 / transport)
+    CONNECTION = "connection"  # transport-level connectivity failure
+    CLIENT = "client"  # 4xx client error (other than 401/403/408/429)
+    UNKNOWN = "unknown"  # no status code or recognisable signal
+
+
+def classify_provider_error(message: str, status_code: int | None) -> ProviderErrorCategory:
+    """Classify a provider failure for circuit-breaker/retry logic.
+
+    Status codes take precedence when present (HTTP-backed providers raise
+    with the underlying status). Timeout/connection detection falls back to
+    message keywords for transport-level failures that carry no status code.
+    """
+    if status_code is not None:
+        if status_code == 429:
+            return ProviderErrorCategory.RATE_LIMIT
+        if status_code in (401, 403):
+            return ProviderErrorCategory.AUTH
+        if status_code == 408:
+            return ProviderErrorCategory.TIMEOUT
+        if status_code >= 500:
+            return ProviderErrorCategory.SERVER
+        return ProviderErrorCategory.CLIENT
+
+    lowered = message.lower()
+    if "timed out" in lowered or "timeout" in lowered:
+        return ProviderErrorCategory.TIMEOUT
+    if "connect" in lowered or "connection" in lowered:
+        return ProviderErrorCategory.CONNECTION
+    return ProviderErrorCategory.UNKNOWN
 
 
 class LLMResponseError(Exception):

@@ -218,7 +218,7 @@ class LLMClient:
                 last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
             except LLMProviderError as exc:
                 if breaker:
-                    breaker.record_failure()
+                    breaker.record_failure(exc.category.value)
                 last_error = f"Attempt {attempt + 1}: {exc}"
 
         raise LLMResponseError(
@@ -326,7 +326,7 @@ class LLMClient:
                 last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
             except LLMProviderError as exc:
                 if breaker:
-                    breaker.record_failure()
+                    breaker.record_failure(exc.category.value)
                 last_error = f"Attempt {attempt + 1}: {exc}"
 
         raise LLMResponseError(
@@ -429,6 +429,10 @@ class LLMClient:
 
     def get_provider(self, provider_id: str) -> LLMProvider | None:
         return self._providers.get(provider_id)
+
+    def get_breaker(self, provider_id: str) -> CircuitBreaker | None:
+        """Return the circuit breaker for a provider, if one is configured."""
+        return self._circuit_breakers.get(provider_id)
 
     def list_available_providers(self) -> list[str]:
         return [pid for pid, p in self._providers.items() if p.is_available()]

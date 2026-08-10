@@ -214,3 +214,114 @@ class TestDailyBudgetExceeded:
         today = __import__("datetime").date.today().isoformat()
         tracker._daily_cost[today] = 50.0
         assert tracker.daily_budget_exceeded() is False
+
+
+class TestNegativeTokensClamped:
+    """Negative token counts must be clamped to zero, not recorded as-is."""
+
+    def test_record_usage_clamps_negative_tokens(self, tmp_path: Path) -> None:
+        tracker = _make_tracker(tmp_path)
+        record = tracker.record_usage(
+            model="gpt-4o-mini",
+            provider="openai",
+            agent_name="agent_a",
+            task_id="task-neg",
+            prompt_tokens=-100,
+            completion_tokens=-50,
+        )
+        assert record.prompt_tokens == 0
+        assert record.completion_tokens == 0
+        assert record.cost_usd == 0.0
+        # The accumulators must not be skewed by negative spend.
+        assert tracker.get_task_summary("task-neg")["total_cost_usd"] == 0.0
+
+    def test_calculate_cost_clamps_negative_tokens(self, tmp_path: Path) -> None:
+        tracker = _make_tracker(tmp_path)
+        assert tracker.estimate_cost("gpt-4o-mini", -100, -50) == 0.0
+
+    def test_rebuild_clamps_negative_tokens(self, tmp_path: Path) -> None:
+        results = tmp_path / "results"
+        results.mkdir(parents=True, exist_ok=True)
+        log_path = results / "cost_log.jsonl"
+        bad = {
+            "timestamp": "2026-07-20T12:00:00",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "agent_name": "agent_a",
+            "task_id": "task-neg",
+            "prompt_tokens": -200,
+            "completion_tokens": -100,
+            "cost_usd": 0.0,
+            "iteration": 1,
+            "metadata": {},
+        }
+        with open(log_path, "w", encoding="utf-8") as f:
+            f.write(json.dumps(bad) + "\n")
+
+        restarted = _make_tracker(tmp_path)
+        assert len(restarted._records) == 1
+        assert restarted._records[0].prompt_tokens == 0
+        assert restarted._records[0].completion_tokens == 0
+
+
+class TestRecordsBounded:
+    """The in-memory record list is capped to prevent unbounded growth."""
+
+    def test_record_usage_trims_to_cap(self, tmp_path: Path) -> None:
+        from ai_company.llm.cost_tracker import _MAX_RECORDS, UsageRecord
+
+        tracker = _make_tracker(tmp_path)
+        stub = UsageRecord(
+            timestamp="2026-07-20T12:00:00",
+            model="gpt-4o-mini",
+            provider="openai",
+            agent_name="agent_a",
+            task_id="stub",
+            prompt_tokens=1,
+            completion_tokens=1,
+            cost_usd=0.0,
+        )
+        # Oversized working set (at the cap already); a new record must trim
+        # the oldest entry so the list never exceeds the cap.
+        tracker._records.extend([stub] * _MAX_RECORDS)
+        tracker.record_usage(
+            model="gpt-4o-mini",
+            provider="openai",
+            agent_name="agent_a",
+            task_id="task-cap",
+            prompt_tokens=10,
+            completion_tokens=5,
+        )
+        assert len(tracker._records) == _MAX_RECORDS
+        # The newest record survives the trim.
+        assert tracker._records[-1].task_id == "task-cap"
+
+    def test_rebuild_trims_to_cap(self, tmp_path: Path) -> None:
+        from ai_company.llm.cost_tracker import _MAX_RECORDS
+
+        results = tmp_path / "results"
+        results.mkdir(parents=True, exist_ok=True)
+        log_path = results / "cost_log.jsonl"
+
+        # Write one more line than the cap.
+        with open(log_path, "w", encoding="utf-8") as f:
+            for i in range(_MAX_RECORDS + 5):
+                rec = {
+                    "timestamp": f"2026-07-20T12:{i % 60:02d}:00",
+                    "model": "gpt-4o-mini",
+                    "provider": "openai",
+                    "agent_name": "agent_a",
+                    "task_id": f"task-{i}",
+                    "prompt_tokens": 1,
+                    "completion_tokens": 1,
+                    "cost_usd": 0.0,
+                    "iteration": 1,
+                    "metadata": {},
+                }
+                f.write(json.dumps(rec) + "\n")
+
+        restarted = _make_tracker(tmp_path)
+        assert len(restarted._records) == _MAX_RECORDS
+        # Oldest records dropped, newest kept.
+        assert restarted._records[0].task_id == "task-5"
+        assert restarted._records[-1].task_id == f"task-{_MAX_RECORDS + 4}"
