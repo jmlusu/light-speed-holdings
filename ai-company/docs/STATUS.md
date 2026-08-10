@@ -4,10 +4,11 @@
 
 ## Last Updated
 
-2026-08-09
+2026-08-10
 
 ## Current State
 
+- **Sprint 6 (2026-08-10) Complete**: Audit fixes + runtime hardening. Archived as `harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening`. Registry loading anchored to the package root (`AI_COMPANY_ROOT` override, CWD-independent), lazy CLI sub-app registration, tool-vocabulary canonicalized across all 127 agent cards (`websearch`/`web_search` → `webfetch`, `code_interpreter` → `bash`, `write` → `edit`, `delegate` → `task`), Operating Principles deduplicated into shared `operating-standards.md`. LLM error classification (`ProviderErrorCategory`; circuit breaker ignores `auth`), bounded cost/decision logs, task lease fields + store locking, DLQ re-enqueue delegation, E2E Alpine `$data` migration. Commits `3f587e9`, `f4d2867`, `d076303`, `5f32e6d`. **1805 tests passing**, ruff/mypy clean. See `docs/AUDIT-FIXES-2026-08-10.md`.
 - **Sprint 5 (T009) Complete**: OAuth2 client-credentials auth (2026-08-09). Archived as `harness/changes/archive/2026-08-09-sprint-5-t009-oauth2-client-credentials`. New `src/ai_company/llm/oauth2.py` — `OAuth2TokenManager` (client-credentials grant, in-memory token cache with TTL, fail-closed), wired into `OpenAICompatibleProvider` (per-request bearer token) and `LLMClient` (opt-in `oauth2:` block per provider in `company/models.yaml`). `ProviderConfig` extended. 11 new tests. 1778 tests passing, ruff/mypy clean.
 - **Sprint 4 Complete**: Quality & completeness (2026-08-08). Archived as `harness/changes/archive/2026-08-08-sprint-4-quality-completeness`. Commits `d11608f` (auth hardening, key rotation, token counting, CLI polish), `359489d` (platform-independent CLI help + daemon stop tests), `4765f76` (22 new agent skills + real KPI derivation). 1745 tests passing, ruff/mypy clean.
 - **CEO Dashboard Operationalization Plan**: Sprint 3 complete (items 1-3). See `docs/CEO-DASHBOARD-OPERATIONALIZATION-PLAN.md`. Latest work (2026-08-07): data retention / governance engine wired end-to-end — `run_retention()` + `GovernanceScheduler` in `data/governance.py` (batched archive fix, rowid anonymize fix), daemon enforcement via `--governance-interval`, and `GET /api/governance` report endpoint. 1526 tests passing.
@@ -103,6 +104,7 @@
 
 ## Recent Work
 
+- **2026-08-10**: Sprint 6 COMPLETE — audit fixes + runtime hardening. ECL archived as `harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening`. Four commits: `3f587e9` (registry anchored to package root + lazy CLI + canonical tool vocabulary + shared operating-standards dedup, 145 files), `f4d2867` (LLM `ProviderErrorCategory` classification, circuit breaker ignores `auth`, bounded cost tracker, 9 files), `d076303` (task leases, store locking, DLQ delegation, bounded decision log, SQLite mirror fixes, 16 files), `5f32e6d` (E2E scroll tests migrated to Alpine `$data`). Gates: ruff/mypy clean (181 files), **1805 tests passing** (53 e2e deselected), `AgentGenerator().generate_all()` 127 agents / 0 errors. Documented in `docs/AUDIT-FIXES-2026-08-10.md`.
 - **2026-08-09**: Sprint 5 T009 COMPLETE — OAuth2 client-credentials auth flow. `OAuth2TokenManager` in `src/ai_company/llm/oauth2.py`: client-credentials grant, in-memory token cache with TTL + safety margin, fail-closed on missing credentials or token-fetch failure. Wired into `OpenAICompatibleProvider` (per-request bearer token, `is_available()` honors OAuth2) and `LLMClient._init_providers()` (opt-in per provider via `oauth2:` block in `company/models.yaml`; API-key path unchanged). `ProviderConfig` gained an `oauth2` field. 11 new tests in `tests/unit/test_oauth2.py`. Gates: ruff/mypy clean, 1778 tests passing.
 - **2026-08-08**: Sprint 4 COMPLETE — quality & completeness. Commits: `d11608f` (GAP-019 agent spec validation, daemon lifecycle, key rotation, token counting, CLI type hints/docstrings, test suites for CLI/dashboard/escalation, dashboard security hardening), `359489d` (platform-independent CLI help + daemon stop tests), `4765f76` (22 new agent skills + manifest, company KPIs computed from real sources per CEO decision via `scripts/compute_company_kpis.py`, `run_backfill.py` SQLite utility). T012 `ai-company llm usage` and LLM budget caps/auto-suspend landed shortly after via autonomous commits `169ecf7`/`2aa4ec1`. ECL change archived as `harness/changes/archive/2026-08-08-sprint-4-quality-completeness`. Gates: ruff/mypy clean, **1745 tests passing**, CLI help verified. 35 scratch files cleaned from workspace.
 - **2026-08-07**: CEO Dashboard Operationalization Plan — Sprint 3 item 3 shipped (`550b11b`): data retention / governance engine end-to-end — `run_retention()` + `GovernanceScheduler` in `data/governance.py` with batched archive (fixed latent bug: each batch appended then only that batch deleted) and rowid-based anonymize (fixed latent bug: `agent_id` + `content` hashed). `ExecutorDaemon` gains `--governance-interval` enforcement; `GET /api/governance` endpoint returns full report (`available`, `tables`, `owners`, `policies`). 8 real-DB tests (`test_governance_engine.py`). CI green: ruff/mypy/pytest (1526 passing).
@@ -122,7 +124,12 @@
 | Sprint 2 | ✅ COMPLETE | 1093 passing | 13 items — all Done |
 | Sprint 3 | ✅ COMPLETE | 1526 passing | 8 items — all Done |
 | Sprint 4 | ✅ COMPLETE | 1745 passing | Quality & completeness |
+| Sprint 5 | ✅ COMPLETE | 1778 passing | T009 OAuth2 client-credentials |
+| Sprint 6 | ✅ COMPLETE | 1805 passing | Audit fixes + runtime hardening |
 
 ## Remaining Work
 
-- **Sprint 4**: COMPLETE — quality & completeness. Remaining from deferred items: structured logging with correlation IDs (GAP-018), scheduled cycle daemon mode (S3-06). T009 OAuth2 and T012 `llm usage` are now done.
+- **Sprint 4**: COMPLETE — quality & completeness.
+- **Sprint 5 (T009)**: COMPLETE — OAuth2 client-credentials. T012 `llm usage` also done.
+- **Sprint 6**: COMPLETE — audit fixes + runtime hardening (2026-08-10).
+- **Deferred**: scheduled cycle daemon mode (S3-06); runtime tool-vocabulary sync (`executor/tool_runner.py` — implement `webfetch`/`web_search`, remove `code_interpreter`); code-review follow-ups (`docs/CODE_REVIEW_2026-08-10.md`): dashboard auth fail-closed default, HITL approval expiry sweep, legacy module deprecation (`builder.py`/`registry.py`/`graph.py`), mypy strict mode.
