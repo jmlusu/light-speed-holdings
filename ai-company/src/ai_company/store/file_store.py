@@ -2,9 +2,10 @@
 
 Provides a single abstraction for all file-backed state:
 - Atomic writes via temp-file-then-rename
-- File locking for concurrent access (``msvcrt`` on Windows, ``fcntl`` on POSIX)
+- File locking for concurrent access via cross-platform sidecar locks
 - JSON and YAML read/write with validation
-- Backup creation on every write
+- Backup creation on every write (previous version is preserved before it
+  is overwritten, so the last good version always survives a crash)
 
 Used by MessageBus, Scheduler, ApprovalGate, MemoryStore, and WorkflowEngine.
 """
@@ -12,10 +13,10 @@ Used by MessageBus, Scheduler, ApprovalGate, MemoryStore, and WorkflowEngine.
 from __future__ import annotations
 
 import contextlib
-import io
 import json
 import logging
 import os
+import shutil
 import tempfile
 import time
 from contextlib import contextmanager
@@ -26,43 +27,10 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
-# ── Platform-specific file locking ────────────────────────────────────
-
-if os.name == "nt":
-    import msvcrt  # type: ignore[attr-defined]  # Windows-only module
-
-    def _lock_file(f: io.TextIOWrapper) -> None:
-        """Acquire an exclusive lock on an open file (Windows)."""
-        try:
-            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined]
-        except OSError:
-            # If we can't acquire non-blocking, retry with blocking
-            try:
-                msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)  # type: ignore[attr-defined]
-            except OSError:
-                logger.warning("Could not acquire file lock on %s", f.name)
-
-    def _unlock_file(f: io.TextIOWrapper) -> None:
-        """Release a file lock (Windows)."""
-        with contextlib.suppress(OSError):
-            msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
-else:
-    import fcntl
-
-    def _lock_file(f: io.TextIOWrapper) -> None:
-        """Acquire an exclusive lock on an open file (POSIX)."""
-        try:
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)  # type: ignore[attr-defined]
-        except OSError:
-            logger.warning("Could not acquire file lock on %s", f.name)
-
-    def _unlock_file(f: io.TextIOWrapper) -> None:
-        """Release a file lock (POSIX)."""
-        with contextlib.suppress(OSError):
-            fcntl.flock(f.fileno(), fcntl.LOCK_UN)  # type: ignore[attr-defined]
-
-
-# ── FileStore ─────────────────────────────────────────────────────────
+# Locks and backups share one timeout so readers and writers never fight
+# over an inconsistent wait budget.
+_LOCK_TIMEOUT = 10.0
+_LOCK_STALE_AFTER = 30.0
 
 
 class FileStore:
@@ -70,7 +38,7 @@ class FileStore:
 
     Args:
         base_dir: Root directory for all stored files.
-        backup: Whether to create ``.bak`` copies after every write.
+        backup: Whether to create ``.bak`` copies before every write.
     """
 
     def __init__(self, base_dir: str | Path, backup: bool = True) -> None:
@@ -83,7 +51,10 @@ class FileStore:
     def _atomic_write(self, path: Path, data: str) -> None:
         """Write *data* to *path* atomically via temp-file-then-rename.
 
-        On failure the temp file is cleaned up and the exception re-raised.
+        The previous version is copied to ``.bak`` *before* the rename so a
+        crash at any point leaves either the new file or a recoverable
+        backup of the last good version.  On failure the temp file is
+        cleaned up and the exception re-raised.
         """
         path.parent.mkdir(parents=True, exist_ok=True)
         tmp_fd: int | None = None
@@ -95,6 +66,12 @@ class FileStore:
                 f.flush()
                 os.fsync(f.fileno())
             tmp_fd = None  # Closed by fdopen
+
+            # Snapshot the last-good version BEFORE replacing it so a crash
+            # mid-replace always leaves a recoverable .bak of the old data.
+            if self.backup and path.exists():
+                self._write_backup(path)
+
             # On Windows os.replace can transiently fail with
             # PermissionError if another handle briefly references the
             # target; retry a few times before giving up.
@@ -115,6 +92,11 @@ class FileStore:
                     os.unlink(tmp_path)
                 if last_err:
                     raise last_err from None
+
+            # First write: ensure a .bak exists afterwards too, so the
+            # ".bak always present after a write" invariant holds.
+            if self.backup and not (path.with_suffix(path.suffix + ".bak").exists()):
+                self._write_backup(path)
         except (OSError, PermissionError):
             if tmp_fd is not None:
                 with contextlib.suppress(OSError):
@@ -123,24 +105,75 @@ class FileStore:
                 os.unlink(tmp_path)
             raise
 
-        if self.backup:
-            self._write_backup(path)
-
     def _write_backup(self, path: Path) -> None:
-        """Write a ``.bak`` copy of the file after every successful write."""
+        """Copy the current version of *path* to ``.bak`` with fsync."""
         bak_path = path.with_suffix(path.suffix + ".bak")
         for _ in range(3):
             try:
-                bak_path.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
+                with open(path, "rb") as src, open(bak_path, "wb") as dst:
+                    shutil.copyfileobj(src, dst)
+                    dst.flush()
+                    os.fsync(dst.fileno())
                 return
             except (OSError, PermissionError):
                 time.sleep(0.01)
         logger.warning("Failed to write backup %s", bak_path)
 
+    # ── Corrupt-file handling ─────────────────────────────────────────
+
+    def _read_json_safe(self, full_path: Path) -> Any:
+        """Read and parse a JSON file with corruption recovery.
+
+        Returns ``None`` if the file is missing.  If the file is corrupt it
+        is quarantined to ``<name>.corrupt-<ts>`` and, when available, the
+        last ``.bak`` version is recovered and parsed instead.
+        """
+        if not full_path.exists():
+            return None
+
+        raw = None
+        for _ in range(5):
+            try:
+                raw = full_path.read_text(encoding="utf-8")
+                break
+            except (OSError, PermissionError):
+                time.sleep(0.01)
+        if raw is None:
+            logger.warning("Could not read %s after retries.", full_path)
+            return None
+
+        # Only treat the file as JSON if its first non-whitespace character is
+        # `{` or `[`.  Some callers probe `read_json` before falling back to
+        # `read_yaml` (BaseService._load_data), so a YAML document must be
+        # returned as None WITHOUT being quarantined -- otherwise the probe
+        # would destroy real data.
+        if raw.lstrip()[:1] not in ("{", "["):
+            logger.debug("File %s is not JSON; returning None (no quarantine).", full_path)
+            return None
+
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            quarantine = full_path.with_name(full_path.name + f".corrupt-{int(time.time())}")
+            logger.error(
+                "Corrupt JSON file %s -- quarantining to %s and attempting recovery from .bak.",
+                full_path,
+                quarantine,
+            )
+            with contextlib.suppress(OSError):
+                os.replace(full_path, quarantine)
+            bak_path = full_path.with_suffix(full_path.suffix + ".bak")
+            if bak_path.exists():
+                try:
+                    return json.loads(bak_path.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
+                    logger.error("Recovery backup %s is also corrupt.", bak_path)
+            return None
+
     # ── Lock context manager ────────────────────────────────────────────
 
     @contextmanager
-    def lock(self, rel_path: str | Path, timeout: float = 5.0):
+    def lock(self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT):
         """Context manager for file-level exclusive access.
 
         Uses a ``.lock`` sibling file to serialise access to the resource at
@@ -164,7 +197,7 @@ class FileStore:
             yield
 
     @contextmanager
-    def lock_atomic(self, rel_path: str | Path, timeout: float = 5.0):
+    def lock_atomic(self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT):
         """Context manager that acquires a file lock and yields the full path.
 
         Combines exclusive locking with automatic release. This is useful
@@ -211,14 +244,8 @@ class FileStore:
         # concurrent atomic replace never yields a half-written file.
         from ai_company.store.file_lock import file_lock as fl
 
-        with fl(full_path, timeout=5.0), open(full_path, "r", encoding="utf-8") as f:
-            raw = f.read()
-
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            logger.warning("Corrupt JSON file %s — returning None.", full_path)
-            return None
+        with fl(full_path, timeout=_LOCK_TIMEOUT, stale_after=_LOCK_STALE_AFTER):
+            return self._read_json_safe(full_path)
 
     def write_json(self, rel_path: str | Path, data: Any) -> None:
         """Atomically write *data* as JSON to *rel_path*."""
@@ -237,30 +264,18 @@ class FileStore:
         The read-modify-write is serialised via a cross-platform sidecar
         lock file (GAP-002) so concurrent executor + dashboard access
         cannot corrupt or lose updates.
+
+        If the on-disk file is corrupt it is quarantined and recovered from
+        ``.bak`` before *updater* runs, so a corrupt file is never silently
+        replaced with an empty document.
         """
         from ai_company.store.file_lock import file_lock as fl
 
         full_path = self.base_dir / rel_path
         full_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with fl(full_path, timeout=10.0):
-            # Read. Retry transient OS errors (e.g. the file being
-            # atomically replaced by a concurrent writer) so we never
-            # misread the contents as empty and lose updates.
-            current = None
-            if full_path.exists():
-                raw = None
-                for _ in range(5):
-                    try:
-                        raw = full_path.read_text(encoding="utf-8")
-                        break
-                    except (OSError, PermissionError):
-                        time.sleep(0.01)
-                if raw is not None:
-                    try:
-                        current = json.loads(raw)
-                    except json.JSONDecodeError:
-                        current = None
+        with fl(full_path, timeout=_LOCK_TIMEOUT, stale_after=_LOCK_STALE_AFTER):
+            current = self._read_json_safe(full_path)
 
             # Update
             new_data = updater(current)
@@ -279,24 +294,27 @@ class FileStore:
         if not full_path.exists():
             return None
 
-        with open(full_path, "r", encoding="utf-8") as f:
-            _lock_file(f)
-            try:
-                raw = f.read()
-            finally:
-                _unlock_file(f)
+        from ai_company.store.file_lock import file_lock as fl
+
+        with fl(full_path, timeout=_LOCK_TIMEOUT, stale_after=_LOCK_STALE_AFTER):
+            raw = full_path.read_text(encoding="utf-8")
 
         try:
             return yaml.safe_load(raw)
         except yaml.YAMLError:
-            logger.warning("Corrupt YAML file %s — returning None.", full_path)
+            logger.warning("Corrupt YAML file %s -- returning None.", full_path)
             return None
 
     def write_yaml(self, rel_path: str | Path, data: Any) -> None:
-        """Atomically write *data* as YAML to *rel_path*."""
+        """Atomically write *data* as YAML to *rel_path* (lock-guarded)."""
+        from ai_company.store.file_lock import file_lock as fl
+
         full_path = self.base_dir / rel_path
+        full_path.parent.mkdir(parents=True, exist_ok=True)
         content = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
-        self._atomic_write(full_path, content)
+
+        with fl(full_path, timeout=_LOCK_TIMEOUT, stale_after=_LOCK_STALE_AFTER):
+            self._atomic_write(full_path, content)
 
     # ── Generic helpers ───────────────────────────────────────────────
 

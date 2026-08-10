@@ -59,9 +59,15 @@ def setup_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 # ── Helpers ─────────────────────────────────────────────────────────
 
 
-def _ts(days_ago: float, now: datetime | None = None) -> str:
-    """ISO-8601 UTC timestamp *days_ago* days before *now* (defaults to now)."""
-    base = now or datetime.now(timezone.utc)
+def _ts(days_ago: float, now: datetime | None = None, *, local: bool = False) -> str:
+    """ISO-8601 timestamp *days_ago* days before *now* (defaults to now).
+
+    Defaults to UTC-aware — the convention the audit writer uses. Pass
+    ``local=True`` for naive-local timestamps, matching the message_bus /
+    memory / escalation / cost / kpi writers that back the other governed
+    tables. Retention cutoffs are computed per-table in the same convention.
+    """
+    base = now or (datetime.now() if local else datetime.now(timezone.utc))
     return (base - timedelta(days=days_ago)).isoformat()
 
 
@@ -123,13 +129,13 @@ def _seed_tasks(db: Database, *, old_count: int, new_count: int) -> None:
         db.execute(
             """INSERT INTO tasks (id, sender_id, receiver_id, status, created_at)
                VALUES (?,?,?,?,?)""",
-            (f"task-old-{i}", "alpha", "beta", "completed", _ts(days_ago=30)),
+            (f"task-old-{i}", "alpha", "beta", "completed", _ts(days_ago=30, local=True)),
         )
     for i in range(new_count):
         db.execute(
             """INSERT INTO tasks (id, sender_id, receiver_id, status, created_at)
                VALUES (?,?,?,?,?)""",
-            (f"task-new-{i}", "alpha", "beta", "pending", _ts(days_ago=0.1)),
+            (f"task-new-{i}", "alpha", "beta", "pending", _ts(days_ago=0.1, local=True)),
         )
     db.commit()
 
@@ -151,7 +157,7 @@ def _seed_memory_entries(
                 "working",
                 f"raw-secret-content-{i}",
                 f"agent-{i}",
-                _ts(days_old),
+                _ts(days_old, local=True),
             ),
         )
     for i in range(new_count):
@@ -163,7 +169,7 @@ def _seed_memory_entries(
                 "working",
                 f"fresh-content-{i}",
                 f"fresh-agent-{i}",
-                _ts(days_ago=0.1),
+                _ts(days_ago=0.1, local=True),
             ),
         )
     db.commit()

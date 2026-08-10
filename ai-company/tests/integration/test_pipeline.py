@@ -164,6 +164,23 @@ class TestScheduler:
 class TestKpiCollector:
     """Test KPI collector with empty data."""
 
+    @pytest.fixture(autouse=True)
+    def isolated_sources(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Isolate collectors from the real SQLite singleton and dashboard bus.
+
+        The collectors fall back to SQLite/MessageBus singletons rooted at the
+        live repo, so without this they would observe the real ``inbox.json``
+        (9 tasks) instead of the empty tmp project.  Patching the base-class
+        accessors makes every department collector read only project-scoped
+        files under ``project_base``.
+        """
+        from ai_company.dashboard.kpis import base as kpi_base
+
+        monkeypatch.setattr(kpi_base.KPICollector, "_tasks_from_sqlite", lambda self: None)
+        monkeypatch.setattr(kpi_base.KPICollector, "_tasks_from_bus", lambda self: [])
+        monkeypatch.setattr(kpi_base.KPICollector, "_escalations_from_sqlite", lambda self: None)
+        monkeypatch.setattr(kpi_base.KPICollector, "_cost_from_sqlite", lambda self: None)
+
     def test_collect_engineering_kpis(self, project_base: Path) -> None:
         from ai_company.dashboard.kpi_collector import collect_engineering_kpis
 

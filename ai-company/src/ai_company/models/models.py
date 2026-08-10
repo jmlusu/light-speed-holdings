@@ -512,6 +512,11 @@ class Task(EntityBase):
     parent_task_id: str = ""
     acknowledged_by: str = ""
 
+    # Lease fields — set when the executor claims a pending task and
+    # refreshed on heartbeat so stale-detection never races live work.
+    claimed_by: str = ""
+    lease_expires_at: str = ""
+
 
 # ---------------------------------------------------------------------------
 # Risk

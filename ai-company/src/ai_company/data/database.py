@@ -13,6 +13,7 @@ import contextlib
 import json
 import logging
 import sqlite3
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Schema DDL
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 SCHEMA_SQL = """
 -- Tasks (replaces .opencode/inbox.json)
@@ -157,6 +158,20 @@ CREATE TABLE IF NOT EXISTS schema_meta (
 );
 """
 
+# Ordered migrations keyed by target version.  Migration 1 creates the base
+# schema; future migrations add one entry per version.  Applied via
+# ``PRAGMA user_version`` so an existing database is never silently left on
+# a stale schema.
+MIGRATIONS: dict[int, list[str]] = {
+    1: [SCHEMA_SQL],
+    2: [
+        # Task leases: track which executor claimed a task and until when,
+        # so stale-detection can verify ownership instead of racing live work.
+        "ALTER TABLE tasks ADD COLUMN claimed_by TEXT NOT NULL DEFAULT '';",
+        "ALTER TABLE tasks ADD COLUMN lease_expires_at TEXT NOT NULL DEFAULT '';",
+    ],
+}
+
 
 # ---------------------------------------------------------------------------
 # Database class
@@ -166,6 +181,13 @@ CREATE TABLE IF NOT EXISTS schema_meta (
 class Database:
     """Synchronous SQLite database connection manager.
 
+    Each thread gets its own connection (thread-local), so concurrent
+    daemon-loop, HITL-poll, audit/cost write-through, and dashboard threads
+    never interleave statements on a single shared handle.
+
+    Schema is managed through real, ordered migrations keyed on
+    ``PRAGMA user_version``.
+
     Args:
         db_path: Path to the SQLite database file.  Defaults to
             ``"data/ai_company.db"`` relative to the working directory.
@@ -174,7 +196,10 @@ class Database:
     def __init__(self, db_path: str | Path = "data/ai_company.db") -> None:
         self._db_path = Path(db_path)
         self._db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._conn: sqlite3.Connection | None = None
+        self._local = threading.local()
+        self._conns: set[sqlite3.Connection] = set()
+        self._conn_lock = threading.Lock()
+        self._generation = 0
 
     # ── Connection lifecycle ──────────────────────────────────────────
 
@@ -183,23 +208,36 @@ class Database:
         return self._db_path
 
     def connect(self) -> sqlite3.Connection:
-        """Open (or return existing) connection."""
-        if self._conn is None:
-            self._conn = sqlite3.connect(
+        """Open (or return existing) connection for the current thread."""
+        gen = getattr(self._local, "generation", None)
+        if gen is None or gen != self._generation:
+            conn = sqlite3.connect(
                 str(self._db_path),
                 check_same_thread=False,
             )
-            self._conn.row_factory = sqlite3.Row
-            self._conn.execute("PRAGMA journal_mode=WAL")
-            self._conn.execute("PRAGMA foreign_keys=ON")
-            self._conn.execute("PRAGMA busy_timeout=5000")
-        return self._conn
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA foreign_keys=ON")
+            conn.execute("PRAGMA busy_timeout=5000")
+            self._local.conn = conn
+            self._local.generation = self._generation
+            with self._conn_lock:
+                self._conns.add(conn)
+        return self._local.conn
 
     def close(self) -> None:
-        """Close the connection."""
-        if self._conn is not None:
-            self._conn.close()
-            self._conn = None
+        """Close all connections across all threads.
+
+        Subsequent ``connect()`` calls (from any thread) create fresh
+        connections.
+        """
+        with self._conn_lock:
+            self._generation += 1
+            conns = list(self._conns)
+            self._conns.clear()
+        for conn in conns:
+            with contextlib.suppress(sqlite3.Error):
+                conn.close()
 
     def __enter__(self) -> sqlite3.Connection:
         return self.connect()
@@ -209,23 +247,40 @@ class Database:
 
     # ── Schema management ─────────────────────────────────────────────
 
+    @staticmethod
+    def _get_user_version(conn: sqlite3.Connection) -> int:
+        row = conn.execute("PRAGMA user_version").fetchone()
+        return int(row[0]) if row else 0
+
     def init_schema(self) -> None:
-        """Create all tables and indexes if they don't exist."""
+        """Apply all pending migrations in order (idempotent)."""
         conn = self.connect()
-        conn.executescript(SCHEMA_SQL)
-        conn.execute(
-            "INSERT OR REPLACE INTO schema_meta (key, value) VALUES (?, ?)",
-            ("version", str(SCHEMA_VERSION)),
-        )
-        conn.commit()
-        logger.info("Database schema initialized at %s (v%d)", self._db_path, SCHEMA_VERSION)
+        current = self._get_user_version(conn)
+        for target in range(current + 1, SCHEMA_VERSION + 1):
+            for sql in MIGRATIONS.get(target, []):
+                try:
+                    conn.executescript(sql)
+                except sqlite3.OperationalError as exc:
+                    # Allow re-running idempotently if a statement was
+                    # already applied by an interrupted earlier attempt.
+                    if "duplicate column name" in str(exc).lower():
+                        logger.warning(
+                            "Migration %d statement already applied, skipping: %s",
+                            target,
+                            str(exc)[:100],
+                        )
+                        continue
+                    raise
+            conn.execute(f"PRAGMA user_version = {target}")
+            conn.commit()
+            logger.info("Database migrated to schema v%d at %s", target, self._db_path)
+        if current == 0 and self._get_user_version(conn) == 0:
+            logger.info("No migrations to apply at %s", self._db_path)
 
     def get_schema_version(self) -> int:
         """Return the current schema version, or 0 if uninitialized."""
-        conn = self.connect()
         try:
-            row = conn.execute("SELECT value FROM schema_meta WHERE key = 'version'").fetchone()
-            return int(row["value"]) if row else 0
+            return self._get_user_version(self.connect())
         except sqlite3.OperationalError:
             return 0
 
@@ -327,16 +382,38 @@ def reset_database() -> None:
     _default_db = None
 
 
+# Tables every consumer relies on; used by ``database_is_usable``.
+_REQUIRED_TABLES = frozenset(
+    {
+        "tasks",
+        "audit_events",
+        "memory_entries",
+        "escalation_events",
+        "kpi_values",
+        "cost_records",
+        "schema_meta",
+    }
+)
+
+
 def database_is_usable(db: Database | None) -> bool:
     """Return True if *db* is initialised with a valid schema.
 
     Safe against uninitialised databases and broken connections — callers
     (MessageBus, AuditWriter, CostTracker) use this to decide whether the
-    SQLite write-through mirror should be active.
+    SQLite write-through mirror should be active.  Verifies the schema
+    version *and* that every required table actually exists, so a partially
+    migrated database is never treated as healthy.
     """
     if db is None:
         return False
     try:
-        return db.get_schema_version() > 0
+        if db.get_schema_version() <= 0:
+            return False
+        rows = db.fetchall(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+        )
+        names = {row["name"] for row in rows}
+        return _REQUIRED_TABLES.issubset(names)
     except Exception:  # noqa: BLE001 - usability probe must never raise
         return False

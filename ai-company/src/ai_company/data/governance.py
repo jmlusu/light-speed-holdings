@@ -69,6 +69,13 @@ _ARCHIVE_BATCH_SIZE = 10000
 # Rowids per DELETE ... IN (...) clause when removing an archived batch.
 _ARCHIVE_DELETE_CHUNK_SIZE = 500
 
+# Tables whose writers persist UTC-aware timestamps
+# (``datetime.now(timezone.utc).isoformat()``). Every other governed table is
+# written with naive-local timestamps, so retention cutoffs must be computed
+# in the same convention as the table's writer to keep ISO-string comparisons
+# timezone-independent.
+_UTC_TIMESTAMP_TABLES = {"audit_events"}
+
 
 # ---------------------------------------------------------------------------
 # Policy definitions
@@ -269,7 +276,7 @@ class DataGovernance:
             logger.warning("No timestamp column known for table %s — skipping retention", table)
             return 0
 
-        cutoff = (datetime.now(timezone.utc) - timedelta(days=policy.retention_days)).isoformat()
+        cutoff = self._retention_cutoff(table, policy.retention_days)
 
         # Count affected rows
         count_row = self._db.fetchone(
@@ -309,6 +316,17 @@ class DataGovernance:
         }
         return mapping.get(table)
 
+    def _retention_cutoff(self, table: str, retention_days: int) -> str:
+        """Compute the retention cutoff in the table's timestamp convention.
+
+        Mixing timezone-aware and naive-local ISO strings in a lexicographic
+        comparison silently shifts the effective retention window by the
+        machine's UTC offset. Comparing in the convention each table's writer
+        uses makes retention timezone-independent.
+        """
+        now = datetime.now(timezone.utc) if table in _UTC_TIMESTAMP_TABLES else datetime.now()
+        return (now - timedelta(days=retention_days)).isoformat()
+
     def _archive_records(
         self,
         table: str,
@@ -323,6 +341,8 @@ class DataGovernance:
         deleted, so records beyond the first batch are never lost.
         """
         from pathlib import Path
+
+        from ai_company.utils.file_lock import atomic_write
 
         archive_dir = Path(policy.archive_path)
         archive_dir.mkdir(parents=True, exist_ok=True)
@@ -354,10 +374,10 @@ class DataGovernance:
             ]
             existing.extend(archived_rows)
 
-            archive_file.write_text(
-                json.dumps(existing, indent=2, default=str),
-                encoding="utf-8",
-            )
+            # Persist atomically so a crash mid-write can never corrupt the
+            # archive file (which would lose every previously archived row).
+            with atomic_write(archive_file) as f:
+                json.dump(existing, f, indent=2, default=str)
 
             # Delete ONLY the fetched batch rows (chunked IN clause)
             rowids = [row["_rowid"] for row in rows]
@@ -480,9 +500,7 @@ class DataGovernance:
             # Count records past retention
             past_retention = 0
             if ts_col and row_count > 0:
-                cutoff = (
-                    datetime.now(timezone.utc) - timedelta(days=policy.retention_days)
-                ).isoformat()
+                cutoff = self._retention_cutoff(table, policy.retention_days)
                 past_row = self._db.fetchone(
                     f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_col} < ? AND {ts_col} != ''",
                     (cutoff,),
@@ -530,9 +548,7 @@ class DataGovernance:
             if row_count == 0:
                 continue
 
-            cutoff = (
-                datetime.now(timezone.utc) - timedelta(days=policy.retention_days)
-            ).isoformat()
+            cutoff = self._retention_cutoff(table, policy.retention_days)
             past_row = self._db.fetchone(
                 f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_col} < ? AND {ts_col} != ''",
                 (cutoff,),

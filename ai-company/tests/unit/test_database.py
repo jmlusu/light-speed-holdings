@@ -7,7 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from ai_company.data.database import Database, get_database, init_database
+from ai_company.data.database import (
+    SCHEMA_VERSION,
+    Database,
+    get_database,
+    init_database,
+)
 
 
 @pytest.fixture
@@ -34,13 +39,13 @@ class TestDatabase:
     def test_init_schema_version(self, db: Database) -> None:
         """Schema version is set after init."""
         version = db.get_schema_version()
-        assert version == 1
+        assert version == SCHEMA_VERSION
 
     def test_init_schema_idempotent(self, db: Database) -> None:
         """Running init_schema twice doesn't error."""
         db.init_schema()
         db.init_schema()
-        assert db.get_schema_version() == 1
+        assert db.get_schema_version() == SCHEMA_VERSION
 
     def test_execute_and_fetch(self, db: Database) -> None:
         """Basic execute and fetchall work."""
