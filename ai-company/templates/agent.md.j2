@@ -21,7 +21,7 @@ Type: {{ type }}
 
 Department: {{ department if department else 'N/A' }}
 
-Reports To: {{ reportsTo }}
+{% if reportsTo %}Reports To: {{ reportsTo }}{% endif %}
 
 {% if directReports %}
 Direct Reports: {{ directReports | join(', ') }}

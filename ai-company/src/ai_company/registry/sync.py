@@ -122,6 +122,7 @@ def sync_registry(
 
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(json_agents, f, indent=2, ensure_ascii=False)
+        f.write("\n")
 
     logger.info("Synced %d agents from %s to %s", len(json_agents), yaml_path, json_path)
     return len(json_agents)
