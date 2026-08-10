@@ -33,7 +33,7 @@ culture:
 
   communication:
     style: "Direct, concise, data-driven"
-    tools: ["Slack", "GitHub", "Linear", "Notion"]
+    tools: ["Slack", "GitHub", "Linear"]
     meeting_cadence:
       daily_standup: false
       weekly_sync: true

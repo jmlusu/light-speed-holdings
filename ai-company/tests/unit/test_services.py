@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import threading
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -13,6 +14,7 @@ from ai_company.models import (
     Workflow,
     WorkflowStep,
 )
+from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.services.customer_success import CustomerSuccessService
 from ai_company.services.hr import HRService
 from ai_company.services.legal import LegalService
@@ -20,6 +22,24 @@ from ai_company.services.marketing import MarketingService
 from ai_company.services.sales import SalesService
 from ai_company.store.file_store import FileStore
 from ai_company.workflow.engine import WorkflowEngine
+
+
+def _svc(cls: Any, tmp_path: Path) -> Any:
+    """Build a department service wired to an isolated bus and audit trail.
+
+    The service constructors otherwise let ``MessageBus``/``AuditWriter`` fall
+    back to their CWD-relative defaults, which — with the CWD at the project
+    root during the test run — would write demo tasks/audit events into the
+    LIVE dashboard inbox (high-priority ticket paths in create_ticket/escalate).
+    Passing explicit bus/audit paths keeps every write inside ``tmp_path``.
+    """
+    return cls(
+        data_dir=tmp_path,
+        memory_dir=str(tmp_path / "mem"),
+        bus=MessageBus(storage_path=str(tmp_path / "inbox.json")),
+        audit_path=str(tmp_path / "audit.jsonl"),
+    )
+
 
 # ── FileStore Tests ───────────────────────────────────────────────────
 
@@ -109,7 +129,7 @@ class TestFileStore:
 
 class TestMarketingService:
     def test_create_and_list_campaigns(self, tmp_path: Path) -> None:
-        svc = MarketingService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(MarketingService, tmp_path)
         campaign = svc.create_campaign(
             campaign_id="camp-1",
             name="Product Launch",
@@ -123,19 +143,19 @@ class TestMarketingService:
         assert campaigns[0]["name"] == "Product Launch"
 
     def test_duplicate_campaign_raises(self, tmp_path: Path) -> None:
-        svc = MarketingService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(MarketingService, tmp_path)
         svc.create_campaign(campaign_id="dup", name="First")
         with pytest.raises(ValueError, match="already exists"):
             svc.create_campaign(campaign_id="dup", name="Second")
 
     def test_launch_campaign(self, tmp_path: Path) -> None:
-        svc = MarketingService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(MarketingService, tmp_path)
         svc.create_campaign(campaign_id="c1", name="Test")
         result = svc.launch_campaign("c1")
         assert result["status"] == "active"
 
     def test_update_metrics(self, tmp_path: Path) -> None:
-        svc = MarketingService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(MarketingService, tmp_path)
         svc.create_campaign(campaign_id="c1", name="Test")
         svc.update_metrics("c1", impressions=100, clicks=10, conversions=2)
         metrics = svc.get_campaign_metrics("c1")
@@ -144,7 +164,7 @@ class TestMarketingService:
         assert metrics["conversions"] == 2
 
     def test_summary(self, tmp_path: Path) -> None:
-        svc = MarketingService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(MarketingService, tmp_path)
         svc.create_campaign(campaign_id="c1", name="Test")
         summary = svc.get_summary()
         assert summary["total_campaigns"] == 1
@@ -156,7 +176,7 @@ class TestMarketingService:
 
 class TestSalesService:
     def test_add_and_list_leads(self, tmp_path: Path) -> None:
-        svc = SalesService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(SalesService, tmp_path)
         lead = svc.add_lead(lead_id="l1", name="Acme Corp", source="website")
         assert lead["id"] == "l1"
         assert lead["status"] == "new"
@@ -165,19 +185,19 @@ class TestSalesService:
         assert len(leads) == 1
 
     def test_add_deal(self, tmp_path: Path) -> None:
-        svc = SalesService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(SalesService, tmp_path)
         deal = svc.add_deal(deal_id="d1", name="Enterprise Deal", value=100000)
         assert deal["value"] == 100000
         assert deal["stage"] == "prospecting"
 
     def test_advance_deal(self, tmp_path: Path) -> None:
-        svc = SalesService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(SalesService, tmp_path)
         svc.add_deal(deal_id="d1", name="Deal", value=50000)
         result = svc.advance_deal("d1", "qualification")
         assert result["stage"] == "qualification"
 
     def test_pipeline_summary(self, tmp_path: Path) -> None:
-        svc = SalesService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(SalesService, tmp_path)
         svc.add_lead(lead_id="l1", name="Lead 1")
         svc.add_deal(deal_id="d1", name="Deal 1", value=25000)
         summary = svc.get_pipeline_summary()
@@ -191,7 +211,7 @@ class TestSalesService:
 
 class TestCustomerSuccessService:
     def test_create_and_resolve_ticket(self, tmp_path: Path) -> None:
-        svc = CustomerSuccessService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(CustomerSuccessService, tmp_path)
         ticket = svc.create_ticket(ticket_id="t1", subject="Login issue", priority="high")
         assert ticket["status"] == "open"
 
@@ -200,13 +220,13 @@ class TestCustomerSuccessService:
         assert result["resolution"] == "Password reset"
 
     def test_escalate_ticket(self, tmp_path: Path) -> None:
-        svc = CustomerSuccessService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(CustomerSuccessService, tmp_path)
         svc.create_ticket(ticket_id="t1", subject="Bug")
         result = svc.escalate_ticket("t1", reason="Customer threatening churn")
         assert result["status"] == "escalated"
 
     def test_satisfaction_report(self, tmp_path: Path) -> None:
-        svc = CustomerSuccessService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(CustomerSuccessService, tmp_path)
         svc.create_ticket(ticket_id="t1", subject="A")
         svc.create_ticket(ticket_id="t2", subject="B")
         svc.update_ticket_status("t1", "resolved")
@@ -222,7 +242,7 @@ class TestCustomerSuccessService:
 
 class TestLegalService:
     def test_add_and_approve_contract(self, tmp_path: Path) -> None:
-        svc = LegalService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(LegalService, tmp_path)
         contract = svc.add_contract(
             contract_id="c1",
             name="NDA",
@@ -236,13 +256,13 @@ class TestLegalService:
         assert approved["approved_by"] == "legal-head"
 
     def test_terminate_contract(self, tmp_path: Path) -> None:
-        svc = LegalService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(LegalService, tmp_path)
         svc.add_contract(contract_id="c1", name="SaaS Agreement", party="Vendor")
         result = svc.terminate_contract("c1", reason="Vendor breach")
         assert result["status"] == "terminated"
 
     def test_compliance_check(self, tmp_path: Path) -> None:
-        svc = LegalService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(LegalService, tmp_path)
         svc.add_contract(contract_id="c1", name="A", party="X")
         svc.add_contract(contract_id="c2", name="B", party="Y")
         svc.approve_contract("c1")
@@ -258,7 +278,7 @@ class TestLegalService:
 
 class TestHRService:
     def test_onboard_and_activate(self, tmp_path: Path) -> None:
-        svc = HRService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(HRService, tmp_path)
         agent = svc.onboard(
             agent_id="dev-1",
             role="Backend Engineer",
@@ -270,14 +290,14 @@ class TestHRService:
         assert activated["status"] == "active"
 
     def test_deactivate(self, tmp_path: Path) -> None:
-        svc = HRService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(HRService, tmp_path)
         svc.onboard(agent_id="a1", role="Dev", department="Eng")
         svc.activate("a1")
         result = svc.deactivate("a1", reason="Project completed")
         assert result["status"] == "inactive"
 
     def test_workforce_report(self, tmp_path: Path) -> None:
-        svc = HRService(data_dir=tmp_path, memory_dir=str(tmp_path / "mem"))
+        svc = _svc(HRService, tmp_path)
         svc.onboard(agent_id="a1", role="Dev", department="Eng")
         svc.onboard(agent_id="a2", role="PM", department="Product")
         svc.activate("a1")
