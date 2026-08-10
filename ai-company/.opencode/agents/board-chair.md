@@ -13,7 +13,7 @@ Type: Board Advisor (Advisor)
 
 Department: Board
 
-Reports To: 
+Reports To:
 
 
 
@@ -68,10 +68,6 @@ If a matter requires immediate CEO attention or involves conflict of interest, e
 
 ---
 
-## Operating Principles
+## Shared Standards
 
-- Evidence over opinion
-- Customer first
-- Security by design
-- Automate repetitive work
-- Escalate uncertainty
+Operating Principles are defined once in `../operating-standards.md` and apply to you.

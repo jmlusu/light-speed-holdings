@@ -13,6 +13,11 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
+# Name of the shared standards doc generated next to the agents directory.
+# Agent cards reference this file instead of duplicating the Operating
+# Principles block; parsers fall back to it when a card omits the section.
+SHARED_STANDARDS_FILENAME = "operating-standards.md"
+
 
 class Severity(str, Enum):
     """Severity levels for agent spec validation issues."""
@@ -198,7 +203,39 @@ def parse_agent_spec(agent_name: str, agents_dir: str = ".opencode/agents") -> A
         return AgentContext(name=agent_name, role=agent_name, type="Unknown")
 
     content = path.read_text(encoding="utf-8")
+    shared_standards_path = Path(agents_dir).parent / SHARED_STANDARDS_FILENAME
+    return parse_agent_spec_content(content, agent_name, shared_standards_path)
 
+
+def _load_shared_standards(path: str | Path) -> dict[str, str]:
+    """Load the shared standards doc's sections, if the file exists."""
+    shared_path = Path(path)
+    if not shared_path.exists():
+        return {}
+    try:
+        return _parse_sections(shared_path.read_text(encoding="utf-8"))
+    except OSError:
+        logger.warning("Could not read shared standards doc: %s", shared_path)
+        return {}
+
+
+def parse_agent_spec_content(
+    content: str,
+    agent_name: str,
+    shared_standards_path: str | Path | None = None,
+) -> AgentContext:
+    """Parse an agent spec card from an already-loaded string into an AgentContext.
+
+    This is the in-memory variant of :func:`parse_agent_spec`; callers that
+    already hold the rendered content (e.g. the generator during regeneration)
+    use it to avoid re-reading files from disk. It extracts:
+    - YAML frontmatter → tools, permission, mode
+    - Markdown sections → mission, responsibilities, guidelines, etc.
+
+    When ``shared_standards_path`` is provided, sections the agent card no
+    longer duplicates inline (e.g. Operating Principles, now referenced via a
+    shared doc) are resolved from that file.
+    """
     # Parse YAML frontmatter
     frontmatter: dict = {}
     fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", content, re.DOTALL)
@@ -232,6 +269,17 @@ def parse_agent_spec(agent_name: str, agents_dir: str = ".opencode/agents") -> A
         line = line.strip().lstrip("- ").strip()
         if line:
             operating_principles.append(line)
+
+    # Agent cards now reference the shared standards doc instead of duplicating
+    # the Operating Principles block. Fall back to it when the card omits the
+    # section so validation and prompt building behave as before.
+    if not operating_principles and shared_standards_path is not None:
+        shared = _load_shared_standards(shared_standards_path)
+        raw_op = shared.get("operating principles", "")
+        for line in raw_op.strip().splitlines():
+            line = line.strip().lstrip("- ").strip()
+            if line:
+                operating_principles.append(line)
 
     # Parse identity section for type, department, reports_to
     identity = sections.get("identity", "")

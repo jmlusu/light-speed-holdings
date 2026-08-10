@@ -12,6 +12,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import typer
 from typer.testing import CliRunner
 
 from ai_company.cli.main import app
@@ -127,9 +128,13 @@ class TestSubAppRegistration:
     """Every sub-app is registered and answers ``--help``."""
 
     def test_all_subapps_registered_programmatically(self) -> None:
-        registered = {g.name for g in app.registered_groups}
+        # Sub-apps are registered lazily (imported on first use), so they do not
+        # live in ``app.registered_groups`` anymore. Verify they all resolve in
+        # the compiled command tree instead.
+        command = typer.main.get_command(app)
+        resolved = set(command.commands)
         for name in EXPECTED_SUB_APPS:
-            assert name in registered, f"sub-app '{name}' not registered"
+            assert name in resolved, f"sub-app '{name}' not registered"
 
     @pytest.mark.parametrize("sub_app", EXPECTED_SUB_APPS)
     def test_subapp_help(self, sub_app: str) -> None:
@@ -179,6 +184,9 @@ class TestCommandSmokeTests:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Missing registry produces a clear error instead of a crash."""
+        # Config resolution is CWD-independent (anchored to the project root),
+        # so point AI_COMPANY_ROOT at an empty dir to simulate a missing registry.
+        monkeypatch.setenv("AI_COMPANY_ROOT", str(tmp_path))
         monkeypatch.chdir(tmp_path)
         result = runner.invoke(app, ["agents", "list"])
         assert result.exit_code != 0

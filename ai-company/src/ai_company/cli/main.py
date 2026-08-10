@@ -4,7 +4,12 @@ Main CLI entry point for AI Company Builder.
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from functools import partial
+from typing import Any
+
 import typer
+from typer.core import TyperGroup
 
 
 def _init_logging() -> None:
@@ -14,8 +19,143 @@ def _init_logging() -> None:
     setup_logging()
 
 
+def _load_subapp(module: str, attr: str) -> typer.Typer:
+    """Import a sub-command module lazily and return its Typer app."""
+    import importlib
+
+    return getattr(importlib.import_module(module), attr)
+
+
+# name -> (module, app attribute, help text). Imported lazily on first use so
+# ``ai-company --help`` / ``ai-company status`` never import every subcommand.
+_LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
+    "agents": ("ai_company.cli.agents", "app", "Manage AI agents"),
+    "board": ("ai_company.cli.board", "app", "Manage Board of Directors"),
+    "bootstrap": (
+        "ai_company.cli.bootstrap",
+        "app",
+        "Prepare a new developer machine (idempotent)",
+    ),
+    "governance": (
+        "ai_company.cli.governance",
+        "app",
+        "Data governance — ownership, retention, compliance",
+    ),
+    "workflows": ("ai_company.cli.workflows", "app", "Manage workflows"),
+    "memory": ("ai_company.cli.memory", "app", "Manage company memory"),
+    "executives": ("ai_company.cli.executives", "app", "Manage executives"),
+    "departments": ("ai_company.cli.departments", "app", "Manage departments"),
+    "doctor": ("ai_company.cli.doctor", "app", "Run system diagnostics"),
+    "marketing": ("ai_company.cli.marketing", "app", "Marketing operations"),
+    "sales": ("ai_company.cli.sales", "app", "Sales operations"),
+    "customer-success": ("ai_company.cli.customer_success", "app", "Customer Success operations"),
+    "legal": ("ai_company.cli.legal", "app", "Legal operations"),
+    "llm": ("ai_company.cli.llm", "app", "LLM usage and cost tracking"),
+    "hr": ("ai_company.cli.hr", "app", "Human Resources operations"),
+    "specialists": ("ai_company.cli.specialists", "app", "Manage specialist agents"),
+    "orchestrator": ("ai_company.cli.orchestrator", "app", "Autonomous coordination"),
+    "models": ("ai_company.cli.models", "app", "Model routing policy"),
+    "dashboard": ("ai_company.cli.dashboard", "app", "CEO dashboard"),
+    "executor": ("ai_company.cli.executor", "app", "Autonomous task execution"),
+    "company": ("ai_company.cli.company", "app", "Bootstrap and manage the AI company"),
+    "decision": ("ai_company.cli.decision", "app", "Decision engine — approvals, risk, trees"),
+    "graph": ("ai_company.cli.graph", "app", "Graph engine — org chart, knowledge graphs"),
+    "security": (
+        "ai_company.cli.security",
+        "app",
+        "Security operations — encryption, key rotation",
+    ),
+    "validate": (
+        "ai_company.cli.validate",
+        "app",
+        "Validate naming conventions and config references",
+    ),
+}
+
+
+# Attributes that must reflect the real sub-app. Parse/invoke attributes force
+# the lazy import; help-formatting attributes forward only once the group is
+# already loaded so the root ``--help`` never imports a subcommand.
+_LAZY_FORWARD_ATTRS = frozenset(
+    {
+        "commands",
+        "params",
+        "callback",
+        "invoke_without_command",
+        "no_args_is_help",
+        "_result_callback",
+        "context_settings",
+        "epilog",
+        "short_help",
+        "options_metavar",
+        "hidden",
+        "deprecated",
+        "subcommand_metavar",
+        "suggest_commands",
+        "rich_markup_mode",
+        "rich_help_panel",
+    }
+)
+
+_LAZY_LOAD_ATTRS = frozenset(
+    {
+        "commands",
+        "params",
+        "callback",
+        "invoke_without_command",
+        "no_args_is_help",
+        "_result_callback",
+    }
+)
+
+
+class _LazySubGroup(TyperGroup):
+    """A TyperGroup placeholder that imports its module on first use.
+
+    The real sub-app is only loaded (and compiled) when its options or
+    subcommands are resolved — e.g. when the user runs ``ai-company <sub>
+    ...`` or expands the command tree in tests. Until then, cheap attributes
+    (name/help) are served from the placeholder itself.
+    """
+
+    def __init__(self, *, name: str, help: str | None, loader: Callable[[], typer.Typer]) -> None:
+        self._loader = loader
+        self._real_group: TyperGroup | None = None
+        super().__init__(name=name, commands={}, help=help)
+
+    def _ensure_loaded(self) -> None:
+        real = object.__getattribute__(self, "_real_group")
+        if real is not None:
+            return
+        from typer.main import get_group
+
+        loader = object.__getattribute__(self, "_loader")
+        object.__setattr__(self, "_real_group", get_group(loader()))
+
+    def __getattribute__(self, name: str) -> Any:
+        if name in _LAZY_FORWARD_ATTRS:
+            if name in _LAZY_LOAD_ATTRS:
+                self._ensure_loaded()
+            real = object.__getattribute__(self, "_real_group")
+            if real is not None:
+                return getattr(real, name)
+        return object.__getattribute__(self, name)
+
+
+class _LazyGroup(TyperGroup):
+    """Root group that injects lazy placeholders for every subcommand."""
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        for name, (module, attr, help_text) in _LAZY_SUB_APPS.items():
+            self.add_command(
+                _LazySubGroup(name=name, help=help_text, loader=partial(_load_subapp, module, attr))
+            )
+
+
 app = typer.Typer(
     help="AI Company Builder - Orchestrate AI agent hierarchies",
+    cls=_LazyGroup,
     callback=_init_logging,
     invoke_without_command=True,
 )
@@ -25,63 +165,6 @@ app = typer.Typer(
 def _lazy_init() -> None:
     """Ensure logging is configured before any subcommand runs."""
     _init_logging()
-
-
-from ai_company.cli.agents import app as agents_app  # noqa: E402
-from ai_company.cli.board import app as board_app  # noqa: E402
-from ai_company.cli.bootstrap import app as bootstrap_app  # noqa: E402
-from ai_company.cli.company import app as company_app  # noqa: E402
-from ai_company.cli.customer_success import app as customer_success_app  # noqa: E402
-from ai_company.cli.dashboard import app as dashboard_app  # noqa: E402
-from ai_company.cli.decision import app as decision_app  # noqa: E402
-from ai_company.cli.departments import app as departments_app  # noqa: E402
-from ai_company.cli.doctor import app as doctor_app  # noqa: E402
-from ai_company.cli.executives import app as executives_app  # noqa: E402
-from ai_company.cli.executor import app as executor_app  # noqa: E402
-from ai_company.cli.governance import app as governance_app  # noqa: E402
-from ai_company.cli.graph import app as graph_app  # noqa: E402
-from ai_company.cli.hr import app as hr_app  # noqa: E402
-from ai_company.cli.legal import app as legal_app  # noqa: E402
-from ai_company.cli.llm import app as llm_app  # noqa: E402
-from ai_company.cli.marketing import app as marketing_app  # noqa: E402
-from ai_company.cli.memory import app as memory_app  # noqa: E402
-from ai_company.cli.models import app as models_app  # noqa: E402
-from ai_company.cli.orchestrator import app as orchestrator_app  # noqa: E402
-from ai_company.cli.sales import app as sales_app  # noqa: E402
-from ai_company.cli.security import app as security_app  # noqa: E402
-from ai_company.cli.specialists import app as specialists_app  # noqa: E402
-from ai_company.cli.validate import app as validate_app  # noqa: E402
-from ai_company.cli.workflows import app as workflows_app  # noqa: E402
-
-app.add_typer(agents_app, name="agents", help="Manage AI agents")
-app.add_typer(board_app, name="board", help="Manage Board of Directors")
-app.add_typer(bootstrap_app, name="bootstrap", help="Prepare a new developer machine (idempotent)")
-app.add_typer(
-    governance_app, name="governance", help="Data governance — ownership, retention, compliance"
-)
-app.add_typer(workflows_app, name="workflows", help="Manage workflows")
-app.add_typer(memory_app, name="memory", help="Manage company memory")
-app.add_typer(executives_app, name="executives", help="Manage executives")
-app.add_typer(departments_app, name="departments", help="Manage departments")
-app.add_typer(doctor_app, name="doctor", help="Run system diagnostics")
-app.add_typer(marketing_app, name="marketing", help="Marketing operations")
-app.add_typer(sales_app, name="sales", help="Sales operations")
-app.add_typer(customer_success_app, name="customer-success", help="Customer Success operations")
-app.add_typer(legal_app, name="legal", help="Legal operations")
-app.add_typer(llm_app, name="llm", help="LLM usage and cost tracking")
-app.add_typer(hr_app, name="hr", help="Human Resources operations")
-app.add_typer(specialists_app, name="specialists", help="Manage specialist agents")
-app.add_typer(orchestrator_app, name="orchestrator", help="Autonomous coordination")
-app.add_typer(models_app, name="models", help="Model routing policy")
-app.add_typer(dashboard_app, name="dashboard", help="CEO dashboard")
-app.add_typer(executor_app, name="executor", help="Autonomous task execution")
-app.add_typer(company_app, name="company", help="Bootstrap and manage the AI company")
-app.add_typer(decision_app, name="decision", help="Decision engine — approvals, risk, trees")
-app.add_typer(graph_app, name="graph", help="Graph engine — org chart, knowledge graphs")
-app.add_typer(security_app, name="security", help="Security operations — encryption, key rotation")
-app.add_typer(
-    validate_app, name="validate", help="Validate naming conventions and config references"
-)
 
 
 @app.command()

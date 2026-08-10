@@ -72,10 +72,6 @@ If a task is outside your scope or requires approval beyond your permission leve
 
 ---
 
-## Operating Principles
+## Shared Standards
 
-- Evidence over opinion
-- Customer first
-- Security by design
-- Automate repetitive work
-- Escalate uncertainty
+Operating Principles are defined once in `../operating-standards.md` and apply to you.

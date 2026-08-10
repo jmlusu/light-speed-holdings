@@ -49,8 +49,7 @@
     "tools": [
       "read",
       "write",
-      "execute",
-      "code_interpreter"
+      "execute"
     ],
     "permission": "Execute"
   },
@@ -203,7 +202,7 @@
     "tools": [
       "read",
       "write",
-      "websearch"
+      "web_search"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -234,7 +233,7 @@
     "tools": [
       "read",
       "write",
-      "websearch"
+      "web_search"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -356,8 +355,7 @@
     "tools": [
       "read",
       "write",
-      "execute",
-      "code_interpreter"
+      "execute"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -418,7 +416,7 @@
     "tools": [
       "read",
       "write",
-      "websearch"
+      "web_search"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -602,7 +600,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -1108,7 +1105,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -1306,7 +1302,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -1552,7 +1547,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -1796,7 +1790,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -1826,7 +1819,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2120,7 +2112,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2227,7 +2218,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2386,7 +2376,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2600,7 +2589,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2684,7 +2672,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2823,7 +2810,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2851,7 +2837,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2909,7 +2894,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -2965,7 +2949,7 @@
     "tools": [
       "read",
       "write",
-      "websearch",
+      "web_search",
       "grep",
       "list"
     ],
@@ -2993,7 +2977,7 @@
     "tools": [
       "read",
       "write",
-      "websearch",
+      "web_search",
       "grep",
       "list"
     ],
@@ -3049,7 +3033,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -3077,7 +3060,7 @@
     "tools": [
       "read",
       "write",
-      "websearch",
+      "web_search",
       "grep",
       "list"
     ],
@@ -3105,7 +3088,7 @@
     "tools": [
       "read",
       "write",
-      "websearch",
+      "web_search",
       "grep",
       "list"
     ],
@@ -3133,7 +3116,7 @@
     "tools": [
       "read",
       "write",
-      "websearch",
+      "web_search",
       "grep",
       "list"
     ],
@@ -3243,7 +3226,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
@@ -3272,7 +3254,6 @@
       "read",
       "write",
       "execute",
-      "code_interpreter",
       "grep",
       "list"
     ],
