@@ -11,6 +11,7 @@ import pytest
 from ai_company.executor.dead_letter import (
     DeadLetterQueue,
     detect_stale_tasks,
+    retry_dlq_task,
 )
 
 # ── DeadLetterQueue unit tests ────────────────────────────────────────
@@ -70,6 +71,57 @@ class TestDeadLetterQueue:
         count = dlq.clear()
         assert count == 2
         assert dlq.list_entries() == []
+
+
+# ── Bus-backed DLQ retry ──────────────────────────────────────────────
+
+
+class TestRetryDlqTask:
+    """retry_dlq_task must re-enqueue through the bus (atomic + mirrored)."""
+
+    def test_retry_reenqueues_as_pending(self, tmp_path: Path) -> None:
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+
+        task = {
+            "id": "t-retry",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "retry me",
+            "status": "in_progress",
+            "claimed_by": "worker-1",
+            "lease_expires_at": "2026-01-01T00:00:00",
+            "completed_at": "2026-01-01T00:00:01",
+            "result": "boom",
+        }
+        dlq.move_task(task, "lease expired")
+
+        restored = retry_dlq_task(bus, dlq, "t-retry")
+        assert restored is not None
+        assert restored["status"] == "pending"
+        # Claim/lease/completion state must be cleared so it is claimable again.
+        assert "claimed_by" not in restored
+        assert "lease_expires_at" not in restored
+        assert "completed_at" not in restored
+        assert "result" not in restored
+
+        # Removed from the DLQ and re-injected into the inbox via the bus.
+        assert dlq.get_task("t-retry") is None
+        inbox = bus.get_all_tasks_raw()
+        assert len(inbox) == 1
+        assert inbox[0]["id"] == "t-retry"
+        assert inbox[0]["status"] == "pending"
+
+    def test_retry_not_found_returns_none(self, tmp_path: Path) -> None:
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+
+        assert retry_dlq_task(bus, dlq, "nope") is None
+        assert bus.get_all_tasks_raw() == []
 
 
 # ── Stale task detection ─────────────────────────────────────────────

@@ -38,7 +38,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from ai_company.utils.file_lock import atomic_write
+
 logger = logging.getLogger(__name__)
+
+# In-memory cap for the decision log (the authoritative trail is the JSONL
+# file on disk; the in-memory copy only backs the latest-entry write).
+_MAX_DECISION_LOG = 1000
 
 
 # ---------------------------------------------------------------------------
@@ -205,8 +211,8 @@ class AutonomousDecisionEngine:
         # Recent failure tracking per tool
         self._recent_failures: dict[str, deque[float]] = {}
 
-        # Decision log
-        self._decision_log: list[dict[str, Any]] = []
+        # Decision log (bounded in memory; full trail persists to JSONL)
+        self._decision_log: deque[dict[str, Any]] = deque(maxlen=_MAX_DECISION_LOG)
 
         self._load_history()
 
@@ -483,7 +489,7 @@ class AutonomousDecisionEngine:
                 ),
                 rule_id="autonomous-escalation",
             )
-        except Exception:  # pragma: no cover - defensive
+        except Exception:  # noqa: BLE001 - pragma: no cover - defensive: audit hook must never break retry loop
             logger.debug("audit hook skipped for autonomous escalation", exc_info=True)
 
     def _select_retry_strategy(self, tool: str, seniority: str) -> str:
@@ -537,7 +543,11 @@ class AutonomousDecisionEngine:
     def _save_history(self) -> None:
         history_file = self.history_dir / "success_history.json"
         data = {tool: list(history) for tool, history in self._success_history.items()}
-        history_file.write_text(json.dumps(data), encoding="utf-8")
+        try:
+            with atomic_write(history_file) as f:
+                json.dump(data, f)
+        except OSError:
+            logger.debug("Could not persist success history", exc_info=True)
 
     def _load_history(self) -> None:
         history_file = self.history_dir / "success_history.json"

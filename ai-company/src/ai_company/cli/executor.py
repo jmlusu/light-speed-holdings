@@ -5,7 +5,6 @@ Includes GAP-017 dead-letter queue commands and daemon mode (S3-06).
 
 from __future__ import annotations
 
-import contextlib
 import json
 from pathlib import Path
 from typing import Any, Optional
@@ -444,7 +443,7 @@ def dlq_retry(
     task_id: str = typer.Argument(..., help="Task ID to retry (full or prefix)"),
 ) -> None:
     """Move a task from the DLQ back into the inbox for re-execution."""
-    from ai_company.executor.dead_letter import DeadLetterQueue
+    from ai_company.executor.dead_letter import DeadLetterQueue, retry_dlq_task
     from ai_company.orchestrator.message_bus import MessageBus
 
     dlq = DeadLetterQueue()
@@ -462,24 +461,10 @@ def dlq_retry(
         typer.echo(f"No DLQ entry found matching '{task_id}'.")
         raise typer.Exit(1)
 
-    restored = dlq.retry_task(matched_id)
+    restored = retry_dlq_task(MessageBus(), dlq, matched_id)
     if restored is None:
         typer.echo("Failed to restore task.")
         raise typer.Exit(1)
-
-    # Re-enqueue as pending
-    restored["status"] = "pending"
-    restored.pop("completed_at", None)
-    restored.pop("result", None)
-
-    bus = MessageBus()
-    inbox_path = Path(bus.storage_path)
-    tasks: list[dict] = []
-    if inbox_path.exists():
-        with contextlib.suppress(json.JSONDecodeError, OSError):
-            tasks = json.loads(inbox_path.read_text(encoding="utf-8"))
-    tasks.append(restored)
-    inbox_path.write_text(json.dumps(tasks, indent=2, default=str), encoding="utf-8")
 
     typer.echo(f"Task {matched_id[:8]} restored to inbox as pending.")
 

@@ -14,6 +14,7 @@ Provides a JSON-backed task queue with:
 from __future__ import annotations
 
 import logging
+import time
 import uuid
 from collections import Counter
 from datetime import datetime
@@ -26,6 +27,12 @@ from ai_company.store.file_store import FileStore
 from ai_company.utils.logging import get_correlation_id
 
 logger = logging.getLogger(__name__)
+
+
+def _iso_from_timestamp(ts: float) -> str:
+    """Format a unix timestamp as ISO-8601 (naive local, matching the rest)."""
+    return datetime.fromtimestamp(ts).isoformat()
+
 
 # Type alias for the optional broadcast callback
 BroadcastCallback = Callable[[dict[str, Any], str], None] | None
@@ -115,6 +122,39 @@ class MessageBus:
         except Exception:  # noqa: BLE001 - mirror is best-effort
             logger.debug("SQLite task delete mirror failed for %s", task_id, exc_info=True)
 
+    def reconcile_mirror(self) -> dict[str, int]:
+        """Re-sync the SQLite mirror from the inbox file (source of truth).
+
+        Upserts every inbox task and removes mirror rows whose id no longer
+        exists in the inbox, healing drift caused by fire-and-forget mirror
+        writes that failed silently (or by writers that bypassed the bus).
+
+        Returns counts of ``{"upserted": ..., "removed": ...}``.
+        """
+        if self._task_store is None:
+            return {"upserted": 0, "removed": 0}
+        upserted = removed = 0
+        try:
+            tasks = self._load_tasks()
+            inbox_ids = {t.get("id") for t in tasks if t.get("id")}
+            for t in tasks:
+                try:
+                    self._task_store.send_task(Task(**t))
+                    upserted += 1
+                except Exception:  # noqa: BLE001 - one bad row must not block the rest
+                    logger.warning(
+                        "Mirror reconcile skipped invalid task %s",
+                        t.get("id", "?"),
+                    )
+            for mirrored in self._task_store.get_all_tasks():
+                if mirrored.id not in inbox_ids:
+                    self._task_store.delete_task(mirrored.id)
+                    removed += 1
+            logger.info("Mirror reconciled: %d upserted, %d removed", upserted, removed)
+        except Exception:  # noqa: BLE001 - reconciliation is best-effort
+            logger.error("Mirror reconciliation failed", exc_info=True)
+        return {"upserted": upserted, "removed": removed}
+
     # ── Broadcast helper ─────────────────────────────────────────────
 
     def _emit(self, task_dict: dict, event: str) -> None:
@@ -187,6 +227,73 @@ class MessageBus:
         tasks = self._load_tasks()
         return [Task(**t) for t in tasks if t.get("status") == "pending"]
 
+    # ── Task claim / lease (executor integration) ─────────────────────
+
+    def claim_task(self, task_id: str, worker_id: str, lease_seconds: int = 1800) -> Task | None:
+        """Atomically claim a pending task for *worker_id*.
+
+        Transitions ``pending`` -> ``in_progress`` *only if* the task is
+        still pending, so two executors can never claim and process the
+        same task.  The claim records the owner and a lease expiry used by
+        stale-detection.
+
+        Returns the claimed ``Task``, or ``None`` if the task is missing or
+        already claimed/completed.
+        """
+        now = datetime.now().isoformat()
+        expiry = _iso_from_timestamp(time.time() + lease_seconds)
+        claimed: list[Task] = []
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            for t in tasks:
+                if t.get("id") == task_id:
+                    if t.get("status") != "pending":
+                        break  # CAS failure -- not claimable
+                    t["status"] = "in_progress"
+                    t["updated_at"] = now
+                    t["claimed_by"] = worker_id
+                    t["lease_expires_at"] = expiry
+                    claimed.append(Task(**t))
+                    break
+            return tasks
+
+        self._mutate_tasks(_updater)
+        if claimed:
+            self._mirror_task_to_sqlite(claimed[0].model_dump())
+            logger.info("Task %s claimed by %s (lease %s)", task_id, worker_id, expiry)
+            self._emit(claimed[0].model_dump(), "claimed")
+            return claimed[0]
+        return None
+
+    def heartbeat_task(self, task_id: str, worker_id: str, lease_seconds: int = 1800) -> bool:
+        """Refresh the lease on an in-progress task owned by *worker_id*.
+
+        Returns ``True`` if the heartbeat was accepted (task exists, is
+        ``in_progress``, and is owned by *worker_id*), ``False`` otherwise.
+        """
+        now = datetime.now().isoformat()
+        expiry = _iso_from_timestamp(time.time() + lease_seconds)
+        refreshed = False
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            nonlocal refreshed
+            for t in tasks:
+                if t.get("id") == task_id:
+                    if t.get("status") == "in_progress" and t.get("claimed_by") == worker_id:
+                        t["updated_at"] = now
+                        t["lease_expires_at"] = expiry
+                        refreshed = True
+                    break
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        if refreshed:
+            for t in updated:
+                if t.get("id") == task_id:
+                    self._mirror_task_to_sqlite(t)
+                    break
+        return refreshed
+
     # ── Task status mutation ─────────────────────────────────────────
 
     def update_task_status(
@@ -212,6 +319,7 @@ class MessageBus:
             "escalated": "escalated",
         }
         now = datetime.now().isoformat()
+        emitted: list[tuple[dict, str]] = []
 
         def _updater(tasks: List[dict]) -> List[dict]:
             for i, t in enumerate(tasks):
@@ -225,9 +333,11 @@ class MessageBus:
                         tasks[i]["created_at"] = now
                     if status in ("completed", "failed"):
                         tasks[i]["completed_at"] = now
+                        # Terminal states end the lease.
+                        tasks[i]["claimed_by"] = ""
+                        tasks[i]["lease_expires_at"] = ""
                     task_dict = tasks[i]
-                    event = event_map.get(status, "status_changed")
-                    self._emit(task_dict, event)
+                    emitted.append((task_dict, event_map.get(status, "status_changed")))
                     logger.info(
                         "Task %s status: %s -> %s",
                         task_id,
@@ -237,11 +347,17 @@ class MessageBus:
             return tasks
 
         updated = self._mutate_tasks(_updater)
+        result_task: Task | None = None
         for t in updated:
             if t.get("id") == task_id:
                 self._mirror_task_to_sqlite(t)
-                return Task(**t)
-        return None
+                result_task = Task(**t)
+                break
+        # Emit after the lock is released so a slow/stuck callback never
+        # stalls task mutations.
+        for task_dict, event in emitted:
+            self._emit(task_dict, event)
+        return result_task
 
     # ── Query helpers ────────────────────────────────────────────────
 
@@ -252,22 +368,27 @@ class MessageBus:
         Returns the updated ``Task`` or ``None`` if not found.
         """
         now = datetime.now().isoformat()
+        emitted: list[tuple[dict, str]] = []
 
         def _updater(tasks: List[dict]) -> List[dict]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     tasks[i].update(updates)
                     tasks[i]["updated_at"] = now
-                    self._emit(tasks[i], "updated")
+                    emitted.append((tasks[i], "updated"))
                     logger.info("Task %s updated: %s", task_id, list(updates.keys()))
             return tasks
 
         updated = self._mutate_tasks(_updater)
+        result_task: Task | None = None
         for t in updated:
             if t.get("id") == task_id:
                 self._mirror_task_to_sqlite(t)
-                return Task(**t)
-        return None
+                result_task = Task(**t)
+                break
+        for task_dict, event in emitted:
+            self._emit(task_dict, event)
+        return result_task
 
     def delete_task(self, task_id: str) -> Task | None:
         """Remove a task by id.

@@ -46,8 +46,9 @@ class TaskStore:
                 instruction, status, priority, dependencies, due_date, tags,
                 created_at, updated_at, completed_at, result,
                 requires_approval, approved_by, correlation_id,
-                parent_task_id, acknowledged_by, raw_json)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                parent_task_id, acknowledged_by, claimed_by, lease_expires_at,
+                raw_json)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 task.id,
                 task.name,
@@ -70,6 +71,8 @@ class TaskStore:
                 task.correlation_id,
                 task.parent_task_id,
                 task.acknowledged_by,
+                task.claimed_by,
+                task.lease_expires_at,
                 task.model_dump_json(),
             ),
         )
@@ -196,7 +199,7 @@ class TaskStore:
                       instruction, status, priority, dependencies, due_date, tags,
                       created_at, updated_at, completed_at, result,
                       requires_approval, approved_by, correlation_id,
-                      parent_task_id, acknowledged_by
+                      parent_task_id, acknowledged_by, claimed_by, lease_expires_at
                FROM tasks WHERE id = ?""",
             (task_id,),
         )

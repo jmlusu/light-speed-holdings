@@ -8,14 +8,24 @@ GAP-017 hardening:
 GAP-001 fix:
 - All inbox.json I/O now goes through ``MessageBus`` methods exclusively.
   The executor no longer reads or writes the inbox file directly.
+
+Lease hardening:
+- Tasks are claimed atomically (``claim_task``) so two executors can never
+  run the same task, and a daemon thread refreshes the lease (heartbeat)
+  while a long-running agent loop executes so stale-detection never races
+  live work.
+- HITL parking is persisted to ``.opencode/pending_approvals.json`` so a
+  restart never strands a parked task.
+- Per-task isolation: one task's failure cannot abort the whole tick.
 """
 
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 import os
+import socket
+import threading
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -24,6 +34,7 @@ from typing import Any
 from ai_company.audit.integration import init_audit, log_task_status
 from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.executor.context import (
+    AgentContext,
     build_user_prompt,
     parse_agent_spec,
 )
@@ -41,6 +52,7 @@ from ai_company.models.task import Task, TaskPriority, TaskStatus
 from ai_company.orchestrator.approval import ApprovalGate
 from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.orchestrator.scheduler import Scheduler
+from ai_company.store.file_store import FileStore
 from ai_company.utils.logging import set_correlation_id
 
 logger = logging.getLogger(__name__)
@@ -99,12 +111,20 @@ class Executor:
         daily_budget_usd: float | None = None,
         task_budget_usd: float | None = None,
         auto_suspend_on_overspend: bool = False,
+        worker_id: str | None = None,
+        lease_seconds: int = 1800,
     ) -> None:
         self.poll_interval = poll_interval
         self.agents_dir = agents_dir
         self.results_dir = Path(results_dir)
         self.database = database
         self.auto_suspend_on_overspend = auto_suspend_on_overspend
+
+        # Lease / claim identity: this executor's stable worker id and the
+        # lease it requests when claiming a pending task.  A daemon heartbeat
+        # refreshes the lease while the agent loop runs.
+        self.worker_id = worker_id or f"executor-{socket.gethostname()}-{os.getpid()}"
+        self.lease_seconds = lease_seconds if lease_seconds > 0 else 1800
 
         # Core components (database enables the SQLite write-through mirror)
         self.bus = MessageBus(
@@ -169,7 +189,10 @@ class Executor:
 
         # GAP-004: pending HITL approvals queue (non-blocking).
         # Maps task_id -> HITL request_id for tasks parked in WAITING_APPROVAL.
-        self._pending_approvals: dict[str, str] = {}
+        # Persisted so a restart never strands a parked task.
+        self._pending_store = FileStore(Path(".opencode"), backup=True)
+        self._pending_name = "pending_approvals.json"
+        self._pending_approvals = self._load_pending_approvals()
 
     def start(self) -> None:
         """Start continuous polling loop. Call stop() to halt."""
@@ -224,15 +247,24 @@ class Executor:
             )
             return 0
 
-        # GAP-001 fix: use MessageBus.get_pending_tasks() instead of direct I/O
+        # GAP-001 fix: use MessageBus.get_pending_tasks() instead of direct I/O.
+        # Each task is claimed atomically inside _process_task (pending ->
+        # in_progress + lease); a task already claimed by another worker is
+        # skipped. Per-task isolation guarantees one bad task can never abort
+        # the whole tick.
         pending = self.bus.get_pending_tasks()
+        processed = 0
         for task in pending:
-            self._process_task(task)
+            try:
+                self._process_task(task)
+                processed += 1
+            except Exception:  # noqa: BLE001 - per-task isolation
+                logger.exception("Task %s crashed the executor; isolated.", task.id)
 
         # GAP-005: Run memory consolidation periodically
         self._consolidation_scheduler.on_tick()
 
-        return len(pending)
+        return processed
 
     def _resume_parked_tasks(self) -> int:
         """Resume tasks parked in WAITING_APPROVAL once HITL resolves.
@@ -251,13 +283,17 @@ class Executor:
 
             resumed += 1
             self._pending_approvals.pop(task_id, None)
+            self._persist_pending_approvals()
             task = self.bus.get_task_by_id(task_id)
             if task is None:
                 continue
 
             if decision:
                 logger.info("HITL approved for task %s — resuming.", task_id)
-                # Re-run the task, executing the gated step directly.
+                # Move the parked task back to pending so the atomic claim
+                # can re-acquire ownership, then re-run it executing the
+                # gated step directly (preapproved).
+                self.bus.update_task_status(task.id, TaskStatus.PENDING.value)
                 self._process_task(task, preapproved=True)
             else:
                 logger.info("HITL rejected for task %s — failing.", task_id)
@@ -275,6 +311,7 @@ class Executor:
         so it is not mistaken for an active task.
         """
         self._pending_approvals[task.id] = parked.request_id
+        self._persist_pending_approvals()
         self.bus.update_task_status(task.id, TaskStatus.WAITING_APPROVAL.value)
         log_task_status(
             task.id,
@@ -309,12 +346,64 @@ class Executor:
 
         return _callback
 
+    def _load_pending_approvals(self) -> dict[str, str]:
+        """Load the persisted ``task_id -> HITL request_id`` mapping at startup.
+
+        Lets a restarted executor resume tasks that were parked before the
+        crash once the human decision is recorded.
+        """
+        data = self._pending_store.read_json(self._pending_name)
+        if isinstance(data, dict):
+            return {str(k): str(v) for k, v in data.items()}
+        return {}
+
+    def _persist_pending_approvals(self) -> None:
+        """Atomically persist the pending-approval mapping (best-effort)."""
+        try:
+            self._pending_store.write_json(self._pending_name, dict(self._pending_approvals))
+        except Exception:  # noqa: BLE001 - persistence must not break execution
+            logger.exception("Failed to persist pending approvals")
+
+    def _start_heartbeat(self, task_id: str) -> threading.Event:
+        """Start a daemon thread that refreshes the task lease until stopped.
+
+        The heartbeat fires every ``lease_seconds / 3`` so the lease never
+        expires while a long-running agent loop is still making progress;
+        stale-detection therefore only reclaims genuinely dead tasks.  The
+        returned ``Event`` must be set when processing finishes.
+        """
+        stop = threading.Event()
+        interval = max(self.lease_seconds / 3.0, 1.0)
+
+        def _beat() -> None:
+            while not stop.wait(interval):
+                try:
+                    if not self.bus.heartbeat_task(task_id, self.worker_id, self.lease_seconds):
+                        # Task is no longer in_progress/owned (e.g. it was
+                        # completed or parked mid-run) -- stop beating.
+                        stop.set()
+                except Exception:  # noqa: BLE001 - a heartbeat failure never crashes
+                    logger.debug("Heartbeat failed for task %s", task_id, exc_info=True)
+
+        thread = threading.Thread(
+            target=_beat,
+            name=f"heartbeat-{task_id[:8]}",
+            daemon=True,
+        )
+        thread.start()
+        return stop
+
     def _process_task(self, task: Task, *, preapproved: bool = False) -> None:
         """Execute a single task through the multi-turn agentic loop.
 
         The task ID is installed as the correlation ID so that all log
         entries produced during execution (agent loop, LLM calls, tool
         calls) can be traced back to the originating task (GAP-018).
+
+        The task is claimed atomically (``pending`` -> ``in_progress`` with a
+        lease); if another worker already claimed it, this call is a no-op.
+        A daemon heartbeat refreshes the lease while the loop runs so
+        stale-detection never reclaims live work.
 
         Args:
             preapproved: GAP-004 — when True, any HITL-gated step is executed
@@ -324,88 +413,120 @@ class Executor:
         self.stats.tasks_processed += 1
         logger.info("[%s] Processing: %s...", task.id[:8], task.instruction[:60])
 
-        # 1. Mark in_progress via MessageBus (GAP-001 fix)
-        self.bus.update_task_status(task.id, TaskStatus.IN_PROGRESS.value)
-        log_task_status(task.id, task.receiver_id, "pending", TaskStatus.IN_PROGRESS.value)
-
-        # 2. Recall relevant memory BEFORE execution (best-effort, no network
-        #    required — falls back to keyword search; never blocks the task).
-        try:
-            recall_context(task.instruction, limit=5)
-        except Exception:  # noqa: BLE001 - pragma: no cover - defensive: recall must never break execution
-            logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
-
-        # 3. Load agent spec card
-        agent_ctx = parse_agent_spec(task.receiver_id, self.agents_dir)
-
-        # 3. Build user prompt
-        user_prompt = build_user_prompt(task.instruction, task.priority.value)
-
-        # 4. Run multi-turn agentic loop
-        try:
-            result = self.agent_loop.run(
-                agent=agent_ctx,
-                user_prompt=user_prompt,
-                agent_name=task.receiver_id,
-                task_id=task.id,
-                priority=task.priority.value,
-                preapproved=preapproved,
-            )
-        except Exception as exc:  # noqa: BLE001 - loop must never crash on a task
-            # GAP-004: a HITL-gated step raised HITLParked — park the task and
-            # continue to the next one instead of blocking on human approval.
-            from ai_company.executor.tool_runner import HITLParked
-
-            if isinstance(exc, HITLParked):
-                self._park_task(task, exc)
-                return
-
-            logger.error("Agent loop failed: %s", exc)
-            self._complete_task(task, TaskStatus.FAILED, str(exc))
-            self.stats.tasks_failed += 1
-            record_task_outcome(
-                task_id=task.id,
-                agent_id=task.receiver_id,
-                instruction=task.instruction,
-                status="failed",
-                result_summary=str(exc),
+        # 1. Claim the task atomically (pending -> in_progress + lease).
+        #    Only the winning worker runs it; losers skip.
+        claimed = self.bus.claim_task(task.id, self.worker_id, self.lease_seconds)
+        if claimed is None:
+            logger.debug(
+                "Task %s not claimable (already claimed/completed); skipping.",
+                task.id,
             )
             return
+        task = claimed
+        log_task_status(task.id, task.receiver_id, "pending", TaskStatus.IN_PROGRESS.value)
 
-        # 5. Handle delegated tasks from tool results
-        for record in result.tool_results:
-            if record.tool == "delegate" and record.status == "ok":
-                self._create_subtask_from_record(task, record)
+        # Lease heartbeat: refresh the claim while the loop runs so
+        # stale-detection never races live work.
+        stop_heartbeat = self._start_heartbeat(task.id)
+        try:
+            # 2. Recall relevant memory BEFORE execution (best-effort, no network
+            #    required — falls back to keyword search; never blocks the task).
+            try:
+                recall_context(task.instruction, limit=5)
+            except Exception:  # noqa: BLE001 - pragma: no cover - defensive: recall must never break execution
+                logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
 
-        # 6. Save artifacts
-        self._save_loop_artifacts(task, result)
+            # 3. Load agent spec card (falls back to defaults on failure so a
+            #    malformed spec card can never abort the task).
+            try:
+                agent_ctx = parse_agent_spec(task.receiver_id, self.agents_dir)
+            except Exception:  # noqa: BLE001 - per-task isolation
+                logger.exception(
+                    "Spec parse failed for %s; using defaults.",
+                    task.receiver_id,
+                )
+                agent_ctx = AgentContext(name=task.receiver_id, role="", type="Unknown")
 
-        # 7. Mark completed or failed
-        if result.done and not result.error:
-            self._complete_task(task, TaskStatus.COMPLETED, result.final_response)
-            self.stats.tasks_succeeded += 1
-            record_task_outcome(
-                task_id=task.id,
-                agent_id=task.receiver_id,
-                instruction=task.instruction,
-                status="completed",
-                result_summary=result.final_response,
-                tools_used=[r.tool for r in result.tool_results if r.tool],
-            )
-            logger.info("  COMPLETED: %s", result.final_response[:80])
-        else:
-            error_msg = result.error or "Loop did not complete"
-            self._complete_task(task, TaskStatus.FAILED, error_msg)
-            self.stats.tasks_failed += 1
-            record_task_outcome(
-                task_id=task.id,
-                agent_id=task.receiver_id,
-                instruction=task.instruction,
-                status="failed",
-                result_summary=error_msg,
-                tools_used=[r.tool for r in result.tool_results if r.tool],
-            )
-            logger.error("  FAILED: %s", error_msg[:80])
+            # 3. Build user prompt
+            try:
+                user_prompt = build_user_prompt(task.instruction, task.priority.value)
+            except Exception:  # noqa: BLE001 - per-task isolation
+                user_prompt = task.instruction
+
+            # 4. Run multi-turn agentic loop
+            try:
+                result = self.agent_loop.run(
+                    agent=agent_ctx,
+                    user_prompt=user_prompt,
+                    agent_name=task.receiver_id,
+                    task_id=task.id,
+                    priority=task.priority.value,
+                    preapproved=preapproved,
+                )
+            except HITLParked as exc:
+                # GAP-004: a HITL-gated step raised HITLParked — park the task
+                # and continue to the next one instead of blocking on approval.
+                self._park_task(task, exc)
+                return
+            except Exception as exc:  # noqa: BLE001 - loop must never crash on a task
+                logger.error("Agent loop failed: %s", exc)
+                self._complete_task(task, TaskStatus.FAILED, str(exc))
+                self.stats.tasks_failed += 1
+                record_task_outcome(
+                    task_id=task.id,
+                    agent_id=task.receiver_id,
+                    instruction=task.instruction,
+                    status="failed",
+                    result_summary=str(exc),
+                )
+                return
+
+            # 5. Handle delegated tasks from tool results (isolated so a bad
+            #    record cannot abort the parent task).
+            for record in result.tool_results:
+                if record.tool == "delegate" and record.status == "ok":
+                    try:
+                        self._create_subtask_from_record(task, record)
+                    except Exception:  # noqa: BLE001 - per-task isolation
+                        logger.exception(
+                            "Subtask creation failed for task %s",
+                            task.id,
+                        )
+
+            # 6. Save artifacts (atomic write; failure must not abort the task)
+            try:
+                self._save_loop_artifacts(task, result)
+            except Exception:  # noqa: BLE001 - artifacts are best-effort
+                logger.exception("Artifact save failed for task %s", task.id)
+
+            # 7. Mark completed or failed
+            if result.done and not result.error:
+                self._complete_task(task, TaskStatus.COMPLETED, result.final_response)
+                self.stats.tasks_succeeded += 1
+                record_task_outcome(
+                    task_id=task.id,
+                    agent_id=task.receiver_id,
+                    instruction=task.instruction,
+                    status="completed",
+                    result_summary=result.final_response,
+                    tools_used=[r.tool for r in result.tool_results if r.tool],
+                )
+                logger.info("  COMPLETED: %s", result.final_response[:80])
+            else:
+                error_msg = result.error or "Loop did not complete"
+                self._complete_task(task, TaskStatus.FAILED, error_msg)
+                self.stats.tasks_failed += 1
+                record_task_outcome(
+                    task_id=task.id,
+                    agent_id=task.receiver_id,
+                    instruction=task.instruction,
+                    status="failed",
+                    result_summary=error_msg,
+                    tools_used=[r.tool for r in result.tool_results if r.tool],
+                )
+                logger.error("  FAILED: %s", error_msg[:80])
+        finally:
+            stop_heartbeat.set()
 
     def _complete_task(self, task: Task, status: TaskStatus, result: str) -> None:
         """Mark a task as completed/failed via MessageBus (GAP-001 fix)."""
@@ -418,8 +539,8 @@ class Executor:
         task_dir = self.results_dir / task.id
         task_dir.mkdir(parents=True, exist_ok=True)
 
-        # Save loop result
-        log_path = task_dir / "loop_result.json"
+        # Save loop result (atomic write via FileStore so a crash mid-write
+        # can never leave a truncated loop_result.json behind).
         log_data = {
             "task_id": task.id,
             "agent": task.receiver_id,
@@ -435,7 +556,7 @@ class Executor:
             ],
             "timestamp": datetime.now().isoformat(),
         }
-        log_path.write_text(json.dumps(log_data, indent=2, default=str), encoding="utf-8")
+        FileStore(task_dir, backup=False).write_json("loop_result.json", log_data)
 
     def _create_subtask_from_record(self, parent_task: Task, record: Any) -> None:
         """Create a subtask from a ToolCallRecord with delegate tool."""

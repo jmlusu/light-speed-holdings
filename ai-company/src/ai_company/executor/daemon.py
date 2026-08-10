@@ -20,11 +20,13 @@ Usage:
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import os
 import signal
 import sys
+import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -41,6 +43,43 @@ DEFAULT_LOG_DIR = Path("logs")
 DEFAULT_HEALTH_FILE = Path("logs") / "executor-daemon.json"
 
 
+def _atomic_write_text(path: Path, content: str) -> None:
+    """Atomically write *content* to *path* via temp-file-then-rename.
+
+    A crash mid-write can never leave a truncated file behind.  On Windows
+    ``os.replace`` can transiently fail with ``PermissionError`` while another
+    handle briefly references the target, so it is retried before giving up.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd: int | None = None
+    tmp: str = ""
+    try:
+        fd, tmp = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(content)
+            f.flush()
+            os.fsync(f.fileno())
+        fd = None  # closed by fdopen
+        last_err: Exception | None = None
+        for _ in range(5):
+            try:
+                os.replace(tmp, str(path))
+                tmp = ""
+                break
+            except (OSError, PermissionError) as exc:
+                last_err = exc
+                time.sleep(0.01)
+        if tmp:
+            raise last_err or OSError("Could not atomically replace file")
+    finally:
+        if fd is not None:
+            with contextlib.suppress(OSError):
+                os.close(fd)
+        if tmp:
+            with contextlib.suppress(OSError):
+                os.unlink(tmp)
+
+
 class DaemonPIDFile:
     """Manages a PID file for daemon lifecycle tracking.
 
@@ -52,14 +91,16 @@ class DaemonPIDFile:
         self.pid_path = pid_path
 
     def write(self, pid: int | None = None) -> None:
-        """Write the current (or given) PID to the file.
+        """Write the current (or given) PID to the file atomically.
 
-        Creates parent directories if they don't exist.
+        Creates parent directories if they don't exist.  The write is atomic
+        (temp-file-then-rename) so a crash mid-write can never leave a
+        truncated PID file that :meth:`read` misparses.
         """
         if pid is None:
             pid = os.getpid()
         self.pid_path.parent.mkdir(parents=True, exist_ok=True)
-        self.pid_path.write_text(str(pid), encoding="utf-8")
+        _atomic_write_text(self.pid_path, str(pid))
         logger.debug("PID file written: %s (pid=%d)", self.pid_path, pid)
 
     def read(self) -> int | None:
@@ -172,7 +213,10 @@ class DaemonHealthStatus:
             "updated_at": now_iso,
         }
         self.status_path.parent.mkdir(parents=True, exist_ok=True)
-        self.status_path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
+        _atomic_write_text(
+            self.status_path,
+            json.dumps(data, indent=2, default=str),
+        )
         logger.debug("Health status written: %s", self.status_path)
 
     def read(self) -> dict[str, Any] | None:
