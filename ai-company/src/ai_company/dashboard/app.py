@@ -53,7 +53,10 @@ def security_headers() -> dict[str, str]:
     ``cdn.jsdelivr.net``, plus the inline ``tailwind.config`` script in
     ``base.html``).  It still blocks objects, frames, form-targeting and
     base-URI attacks, and restricts connect/font/img to first-party or
-    data: sources.  Tighten it by setting ``DASHBOARD_CSP``.
+    data: sources.  ``'unsafe-eval'`` is required by Alpine.js v3, which
+    compiles ``x-data``/``x-text`` expressions with ``new Function()``;
+    without it the dashboard's dynamic KPIs, tasks table, and WebSocket
+    indicator never render.  Tighten it by setting ``DASHBOARD_CSP``.
 
     HSTS max-age is configurable via ``DASHBOARD_HSTS_MAX_AGE``
     (default 31536000 = 1 year; set ``0`` to disable).
@@ -61,7 +64,7 @@ def security_headers() -> dict[str, str]:
     csp = os.environ.get(
         "DASHBOARD_CSP",
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com "
         "https://cdn.jsdelivr.net; "
         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
         "img-src 'self' data:; font-src 'self' data:; "
