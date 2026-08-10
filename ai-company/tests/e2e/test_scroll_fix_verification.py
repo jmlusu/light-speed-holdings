@@ -76,8 +76,8 @@ class TestAutoScrollBugFix:
             page.evaluate(f"""
                 () => {{
                     const el = document.querySelector('[x-data]');
-                    if (el && el._x_dataStack) {{
-                        const data = el._x_dataStack[0];
+                    if (el) {{
+                        const data = window.Alpine.$data(el);
                         if (data && data.handleWSMessage) {{
                             data.handleWSMessage({{
                                 type: 'kpi_update',
@@ -143,8 +143,8 @@ class TestAutoScrollBugFix:
             page.evaluate("""
                 () => {
                     const el = document.querySelector('[x-data]');
-                    if (el && el._x_dataStack) {
-                        const data = el._x_dataStack[0];
+                    if (el) {
+                        const data = window.Alpine.$data(el);
                         if (data && data.loadDashboard) {
                             data.loadDashboard();
                         }

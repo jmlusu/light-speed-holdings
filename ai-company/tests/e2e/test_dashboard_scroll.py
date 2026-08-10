@@ -71,9 +71,9 @@ class TestScrollPositionStability:
         # Simulate a KPI update message via the WebSocket handler
         page.evaluate("""
             () => {
-                const app = document.querySelector('[x-data]').__x;
-                if (app && app.$data) {
-                    app.$data.handleWSMessage({
+                const el = document.querySelector('[x-data]');
+                if (el) {
+                    window.Alpine.$data(el).handleWSMessage({
                         type: 'kpi_update',
                         payload: {
                             pending_tasks: 99,
@@ -107,8 +107,8 @@ class TestScrollPositionStability:
         page.evaluate("""
             () => {
                 const el = document.querySelector('[x-data]');
-                if (el && el._x_dataStack) {
-                    const data = el._x_dataStack[0];
+                if (el) {
+                    const data = window.Alpine.$data(el);
                     if (data && data.loadDashboard) {
                         data.loadDashboard();
                     }
