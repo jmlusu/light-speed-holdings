@@ -136,7 +136,7 @@ function Get-IndexEntries {
     $location = $pair[0]
     $base = $pair[1]
     if (-not (Test-Path -LiteralPath $base)) { continue }
-    Get-ChildItem -LiteralPath $base -Directory | ForEach-Object {
+    Get-ChildItem -LiteralPath $base -Directory | Sort-Object -Property Name | ForEach-Object {
       $summary = Join-Path $_.FullName "summary.md"
       if (-not (Test-Path -LiteralPath $summary)) { return }
       $meta = Parse-FrontMatter $summary
