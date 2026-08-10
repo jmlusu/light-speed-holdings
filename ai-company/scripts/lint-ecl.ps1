@@ -84,6 +84,10 @@ $canonical = { param([string]$S)
   return ($S | ConvertFrom-Json | ConvertTo-Json -Depth 8 -Compress)
 }
 if ((& $canonical $actual) -cne (& $canonical $expected)) {
+  Write-Output "--- expected (index-json) ---"
+  Write-Output (& $canonical $expected)
+  Write-Output "--- actual (INDEX.json) ---"
+  Write-Output (& $canonical $actual)
   Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
 }
 
