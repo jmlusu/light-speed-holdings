@@ -4,28 +4,14 @@ Provides shared fixtures consumed by all E2E test modules:
     - dashboard_server: base URL string for the running dashboard
     - dashboard_url: alias for dashboard_server (backward compat)
 
-Registers --dashboard-url and --dashboard-port CLI options via pytest_addoption.
+CLI options (``--dashboard-url``/``--dashboard-port``) are registered in the
+root ``tests/conftest.py`` so they are recognized before option parsing even
+when pytest is invoked without an explicit path (``pytest -m e2e``).
 """
 
 from __future__ import annotations
 
 import pytest
-
-
-def pytest_addoption(parser: pytest.Parser) -> None:
-    """Add custom CLI options for dashboard E2E tests."""
-    parser.addoption(
-        "--dashboard-url",
-        action="store",
-        default="http://localhost:8421",
-        help="Base URL for the dashboard server (default: http://localhost:8421)",
-    )
-    parser.addoption(
-        "--dashboard-port",
-        action="store",
-        default=None,
-        help="Port for dashboard server (auto-detected if not set)",
-    )
 
 
 def pytest_configure(config: pytest.Config) -> None:

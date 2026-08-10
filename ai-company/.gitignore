@@ -76,6 +76,7 @@ docker-compose.override.yml
 
 # ── Backups ───────────────────────────────────────────────────
 backups/
+backup/
 
 # ── Node.js ──────────────────────────────────────────────────
 node_modules/
