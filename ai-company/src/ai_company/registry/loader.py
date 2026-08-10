@@ -6,18 +6,37 @@ Config files provide non-agent configuration (vision, strategy, culture, etc.).
 
 from __future__ import annotations
 
+import copy
+import functools
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 
-def _load_yaml(path: Path) -> dict[str, Any] | list[Any] | None:
-    """Load a single YAML file. Returns None if missing."""
-    if not path.exists():
-        return None
+@functools.lru_cache(maxsize=256)
+def _parse_yaml_cached(path: Path) -> Any:
+    """Parse a YAML file, caching the result keyed by path."""
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def load_yaml_cached(path: Path) -> dict[str, Any] | list[Any] | None:
+    """Load a YAML file, caching the parse by path, returning a deep copy.
+
+    The deep copy protects the cache from callers that mutate the returned
+    structure (e.g. the generator normalizing agent tool lists in place).
+    Returns ``None`` when the file is missing.
+    """
+    try:
+        return copy.deepcopy(_parse_yaml_cached(path))
+    except FileNotFoundError:
+        return None
+
+
+def _load_yaml(path: Path) -> dict[str, Any] | list[Any] | None:
+    """Load a single YAML file. Returns None if missing."""
+    return load_yaml_cached(path)
 
 
 class RegistryLoader:

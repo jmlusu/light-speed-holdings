@@ -6,7 +6,7 @@ permission:
   grep: allow
   list: allow
   read: allow
-  websearch: allow
+  webfetch: allow
 ---
 
 # Growth Hacker
@@ -63,7 +63,7 @@ Growth experiments, acquisition funnels, A/B testing, conversion optimization, r
 
 - `edit`
 
-- `websearch`
+- `webfetch`
 
 - `grep`
 
@@ -98,10 +98,6 @@ If a task requires architectural decisions, cross-team coordination, or access b
 
 ---
 
-## Operating Principles
+## Shared Standards
 
-- Evidence over opinion
-- Customer first
-- Security by design
-- Automate repetitive work
-- Escalate uncertainty
+Operating Principles are defined once in `../operating-standards.md` and apply to you.

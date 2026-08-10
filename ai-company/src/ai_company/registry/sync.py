@@ -12,7 +12,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-import yaml
+from ai_company.registry.loader import load_yaml_cached
 
 logger = logging.getLogger(__name__)
 
@@ -109,10 +109,11 @@ def sync_registry(
     if not yaml_path.exists():
         raise FileNotFoundError(f"YAML registry not found: {yaml_path}")
 
-    with open(yaml_path, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
+    data = load_yaml_cached(yaml_path)
 
     agents = data.get("company", {}).get("agents", []) if isinstance(data, dict) else data
+    if not isinstance(agents, list):
+        agents = []
 
     json_agents = [_agent_yaml_to_json(a) for a in agents]
 
@@ -143,9 +144,10 @@ def verify_sync(
     if not json_path.exists():
         return [f"JSON registry not found: {json_path}"]
 
-    with open(yaml_path, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
+    data = load_yaml_cached(yaml_path)
     yaml_agents = data.get("company", {}).get("agents", []) if isinstance(data, dict) else data
+    if not isinstance(yaml_agents, list):
+        yaml_agents = []
 
     with open(json_path, "r", encoding="utf-8") as f:
         json_agents = json.load(f)

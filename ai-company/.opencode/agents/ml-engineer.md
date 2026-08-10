@@ -65,8 +65,6 @@ ML pipelines, model training, inference optimization, experiment tracking, model
 
 - `bash`
 
-- `bash`
-
 - `grep`
 
 - `list`
@@ -100,10 +98,6 @@ If a task requires architectural decisions, cross-team coordination, or access b
 
 ---
 
-## Operating Principles
+## Shared Standards
 
-- Evidence over opinion
-- Customer first
-- Security by design
-- Automate repetitive work
-- Escalate uncertainty
+Operating Principles are defined once in `../operating-standards.md` and apply to you.

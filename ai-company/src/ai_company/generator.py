@@ -12,18 +12,26 @@ from typing import Any
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
-from ai_company.executor.context import Severity, parse_agent_spec
+from ai_company.executor.context import (
+    SHARED_STANDARDS_FILENAME,
+    Severity,
+    parse_agent_spec_content,
+)
+from ai_company.registry.loader import load_yaml_cached
 
 logger = logging.getLogger(__name__)
 
 # Tool name mapping: registry names → OpenCode v2 permission keys
+# Legacy aliases (code_interpreter, websearch, edit) are kept so older
+# registries still normalize to the same permission keys as their canonical
+# counterparts (execute, web_search, write).
 _TOOL_MAP: dict[str, str] = {
     "execute": "bash",
     "code_interpreter": "bash",
     "edit": "edit",
     "write": "edit",
     "web_search": "webfetch",
-    "websearch": "websearch",
+    "websearch": "webfetch",
     "delegate": "task",
     "question": "question",
     "read": "read",
@@ -68,6 +76,25 @@ class AgentGenerator:
         """Get the appropriate template for an agent type."""
         template_name = _TEMPLATE_MAP.get(agent_type, _TEMPLATE_MAP["default"])
         return self.env.get_template(template_name)
+
+    def _write_shared_standards(self) -> Path:
+        """Write the shared standards doc next to the agents directory.
+
+        Agent cards reference ``../operating-standards.md`` instead of
+        duplicating the Operating Principles block inline. Returns the
+        destination path.
+        """
+        src = self.templates_dir / "agents" / "operating-standards.md"
+        dest = self.output_dir.parent / SHARED_STANDARDS_FILENAME
+        if src.exists():
+            dest.write_text(src.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
+        else:
+            logger.warning(
+                "Shared standards template not found: %s (skipping %s)",
+                src,
+                dest,
+            )
+        return dest
 
     @staticmethod
     def _normalize_tools(tools: list[str]) -> list[str]:
@@ -165,17 +192,20 @@ class AgentGenerator:
 
         return errors
 
-    def load_registry(self) -> dict[str, Any]:
+    def load_registry(self) -> dict[str, Any] | list[Any]:
         if not self.registry_path.exists():
             raise FileNotFoundError(f"Registry not found: {self.registry_path.absolute()}")
-        with open(self.registry_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
+        data = load_yaml_cached(self.registry_path)
+        if data is None:
+            raise ValueError(f"Registry is empty: {self.registry_path}")
+        return data
 
     def generate_all(self, clean: bool = True) -> list[Path]:
         """Run full generation. Returns list of generated file paths."""
         if clean and self.output_dir.exists():
             for existing in self.output_dir.glob("*.md"):
                 existing.unlink()
+        self._write_shared_standards()
         data = self.load_registry()
         if isinstance(data, list):
             agents = data
@@ -187,6 +217,7 @@ class AgentGenerator:
         logger.info("Generating %d agents for %s", len(agents), company_name)
 
         generated: list[Path] = []
+        rendered_specs: list[tuple[str, str]] = []
         for agent in agents:
             agent_type = agent.get("type", "default")
             template = self._get_template(agent_type)
@@ -200,12 +231,15 @@ class AgentGenerator:
             out_file = self.output_dir / f"{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
+            rendered_specs.append((safe_id, rendered))
             logger.debug("Wrote: %s (type=%s)", out_file, agent_type)
 
         logger.info("Generation complete: %d agents.", len(generated))
 
-        # Validate generated agents
-        validation_errors = self._validate_generated_agents(generated)
+        # Validate generated agents against the in-memory rendered content
+        # (avoids re-reading all generated files from disk).
+        shared_standards = self.output_dir.parent / SHARED_STANDARDS_FILENAME
+        validation_errors = self._validate_generated_agents(rendered_specs, shared_standards)
         if validation_errors:
             logger.warning("Agent validation found issues:")
             for err in validation_errors:
@@ -215,19 +249,31 @@ class AgentGenerator:
 
         return generated
 
-    def _validate_generated_agents(self, generated: list[Path]) -> list[str]:
-        """Validate generated agent files for required spec fields.
+    def _validate_generated_agents(
+        self,
+        specs: list[tuple[str, str]],
+        shared_standards_path: Path | None = None,
+    ) -> list[str]:
+        """Validate generated agent specs for required fields.
 
-        Runs ``AgentContext.validate()`` on every generated spec, logging each
-        WARNING-severity issue at warning level and each ERROR-severity issue at
-        error level ("log loudly"). Returns a list of ERROR-severity messages
-        (empty list means no blocking issues). Generation itself never fails on
-        validation output; callers decide how to surface the errors.
+        Each spec is a ``(agent_name, rendered_content)`` pair so validation
+        runs against the in-memory render instead of re-reading the generated
+        files from disk. Runs ``AgentContext.validate()`` on every spec,
+        logging each WARNING-severity issue at warning level and each
+        ERROR-severity issue at error level ("log loudly"). Returns a list of
+        ERROR-severity messages (empty list means no blocking issues).
+        Generation itself never fails on validation output; callers decide how
+        to surface the errors.
+
+        ``shared_standards_path`` points at the shared standards doc written by
+        :meth:`_write_shared_standards`, so cards that reference Operating
+        Principles instead of inlining them still resolve during validation.
         """
         errors: list[str] = []
-        for filepath in generated:
-            agent_name = filepath.stem
-            context = parse_agent_spec(agent_name, str(self.output_dir))
+        for agent_name, content in specs:
+            context = parse_agent_spec_content(
+                content, agent_name, shared_standards_path=shared_standards_path
+            )
             issues = context.validate()
             for issue in issues:
                 if issue.severity is Severity.ERROR:
@@ -248,6 +294,8 @@ class AgentGenerator:
     def generate_from_registry(self, registry: Any) -> list[Path]:
         """Generate agent files from a CompanyRegistry model."""
         generated: list[Path] = []
+        rendered_specs: list[tuple[str, str]] = []
+        self._write_shared_standards()
 
         # Generate executive agents
         for ex in registry.executives:
@@ -271,6 +319,7 @@ class AgentGenerator:
             out_file = self.output_dir / f"{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
+            rendered_specs.append((safe_id, rendered))
 
         # Generate department agents
         for dept in registry.departments:
@@ -290,6 +339,7 @@ class AgentGenerator:
             out_file = self.output_dir / f"dept-{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
+            rendered_specs.append((f"dept-{safe_id}", rendered))
 
         # Generate specialist agents
         for spec in registry.specialists:
@@ -312,6 +362,7 @@ class AgentGenerator:
             out_file = self.output_dir / f"spec-{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
+            rendered_specs.append((f"spec-{safe_id}", rendered))
 
         # Generate board member agents
         for bm in registry.board:
@@ -332,11 +383,13 @@ class AgentGenerator:
             out_file = self.output_dir / f"board-{safe_id}.md"
             out_file.write_text(rendered, encoding="utf-8", newline="\n")
             generated.append(out_file)
+            rendered_specs.append((f"board-{safe_id}", rendered))
 
         logger.info("Generated %d agent files from registry.", len(generated))
 
-        # Validate generated agents
-        validation_errors = self._validate_generated_agents(generated)
+        # Validate generated agents against the in-memory rendered content
+        shared_standards = self.output_dir.parent / SHARED_STANDARDS_FILENAME
+        validation_errors = self._validate_generated_agents(rendered_specs, shared_standards)
         if validation_errors:
             logger.warning("Agent validation found issues:")
             for err in validation_errors:
