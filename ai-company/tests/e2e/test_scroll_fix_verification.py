@@ -127,11 +127,11 @@ class TestAutoScrollBugFix:
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-        # Verify scroll-behavior: smooth is applied
+        # Verify scroll-behavior: auto is applied (FIX #1: smooth caused auto-scroll jumps)
         behavior = page.evaluate("""
             getComputedStyle(document.documentElement).scrollBehavior
         """)
-        assert behavior == "smooth", f"Expected scroll-behavior:smooth, got: {behavior}"
+        assert behavior == "auto", f"Expected scroll-behavior:auto, got: {behavior}"
 
         # Scroll down
         page.evaluate("window.scrollTo(0, 600)")

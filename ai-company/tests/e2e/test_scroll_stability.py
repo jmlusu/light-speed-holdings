@@ -78,7 +78,7 @@ class TestScrollStability:
         page.wait_for_function(
             """() => {
                 const el = document.querySelector('[x-data]');
-                return el && el.__x && el.__x.$data.wsConnected === true;
+                return el && window.Alpine.$data(el).wsConnected === true;
             }""",
             timeout=10000,
         )
@@ -138,8 +138,8 @@ class TestRapidMutationStability:
         # Trigger 10 rapid state mutations via Alpine.js data
         page.evaluate("""
             const el = document.querySelector('[x-data]');
-            if (el && el.__x) {
-                const data = el.__x.$data;
+            if (el) {
+                const data = window.Alpine.$data(el);
                 for (let i = 0; i < 10; i++) {
                     data.kpis.pending_tasks = i;
                     data.kpis.completed_tasks = 100 - i;
@@ -219,8 +219,8 @@ class TestDataLoading:
         page.wait_for_function(
             """() => {
                 const el = document.querySelector('[x-data]');
-                if (!el || !el.__x) return false;
-                const data = el.__x.$data;
+                if (!el) return false;
+                const data = window.Alpine.$data(el);
                 return data.kpis.total_agents > 0 || data.kpis.pending_tasks >= 0;
             }""",
             timeout=5000,
@@ -236,7 +236,7 @@ class TestDataLoading:
         page.wait_for_function(
             """() => {
                 const el = document.querySelector('[x-data]');
-                return el && el.__x && el.__x.$data.wsConnected === true;
+                return el && window.Alpine.$data(el).wsConnected === true;
             }""",
             timeout=5000,
         )
@@ -287,7 +287,7 @@ class TestErrorHandling:
         page.wait_for_function(
             """() => {
                 const el = document.querySelector('[x-data]');
-                return el && el.__x && el.__x.$data.wsConnected === true;
+                return el && window.Alpine.$data(el).wsConnected === true;
             }""",
             timeout=5000,
         )
@@ -302,8 +302,8 @@ class TestErrorHandling:
         # Programmatically trigger a toast
         page.evaluate("""
             const el = document.querySelector('[x-data]');
-            if (el && el.__x) {
-                el.__x.$data.showToast('error', 'Test Error', 'Test message');
+            if (el) {
+                window.Alpine.$data(el).showToast('error', 'Test Error', 'Test message');
             }
         """)
 
