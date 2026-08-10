@@ -73,7 +73,11 @@ if (-not (Test-Path -LiteralPath $IndexPath)) {
 }
 $actual = Get-Content -Encoding UTF8 -Raw -LiteralPath $IndexPath
 $expected = (& $HarnessChange index-json) -join "`n"
-if ($actual.Trim() -ne $expected.Trim()) {
+# ConvertTo-Json emits CRLF on Windows and LF on Linux, and the index file may
+# have been regenerated on either host. Normalize both sides so the comparison
+# is platform-independent before declaring INDEX.json stale.
+$normalize = { param([string]$S) ($S -replace "`r`n", "`n").Trim() }
+if ((& $normalize $actual) -ne (& $normalize $expected)) {
   Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
 }
 

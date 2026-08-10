@@ -3,3 +3,7 @@
 # behind the `newline="\n"` fix in AgentGenerator.write_text().
 /.opencode/agents/*.md            text eol=lf
 /ai-company/.opencode/agents/*.md  text eol=lf
+
+# Harness index must be LF so lint-ecl.ps1's raw-content comparison stays stable
+# regardless of the host OS that runs harness-change.ps1 reindex.
+/ai-company/harness/changes/INDEX.json  text eol=lf
