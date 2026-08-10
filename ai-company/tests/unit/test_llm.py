@@ -33,6 +33,28 @@ def test_provider_error_message():
     assert err.status_code == 504
 
 
+def test_provider_error_category_classification():
+    from ai_company.llm.providers.base import ProviderErrorCategory
+
+    assert LLMProviderError("p", "x", 429).category == ProviderErrorCategory.RATE_LIMIT
+    assert LLMProviderError("p", "x", 401).category == ProviderErrorCategory.AUTH
+    assert LLMProviderError("p", "x", 403).category == ProviderErrorCategory.AUTH
+    assert LLMProviderError("p", "x", 408).category == ProviderErrorCategory.TIMEOUT
+    assert LLMProviderError("p", "x", 503).category == ProviderErrorCategory.SERVER
+    assert LLMProviderError("p", "x", 400).category == ProviderErrorCategory.CLIENT
+    assert LLMProviderError("p", "x").category == ProviderErrorCategory.UNKNOWN
+
+
+def test_provider_error_category_message_fallback():
+    from ai_company.llm.providers.base import ProviderErrorCategory
+
+    assert LLMProviderError("p", "request timed out").category == ProviderErrorCategory.TIMEOUT
+    assert (
+        LLMProviderError("p", "Cannot connect to host").category == ProviderErrorCategory.CONNECTION
+    )
+    assert LLMProviderError("p", "arbitrary message").category == ProviderErrorCategory.UNKNOWN
+
+
 def test_response_error_tracks_attempts():
     err = LLMResponseError("bad json", attempts=5, last_raw="{bad")
     assert err.attempts == 5
@@ -320,6 +342,121 @@ class TestLLMClient:
         # 6 attempts over a 3-provider chain == 2 calls per provider (round-robin)
         for provider in mocks.values():
             assert provider.chat.call_count == 2
+
+    def test_execute_task_breaker_skips_open_provider(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Once the circuit opens, the provider is skipped on later attempts."""
+        from types import SimpleNamespace
+
+        monkeypatch.chdir(tmp_path)
+        _setup_model_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.llm.client import LLMClient
+
+        client = LLMClient(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        )
+
+        failing = MagicMock(spec=LLMProvider)
+        failing.is_available.return_value = True
+        failing.chat.side_effect = LLMProviderError("opencode", "rate limited", status_code=429)
+        client._providers = {
+            "opencode": failing,
+            "deepseek": failing,
+            "ollama": failing,
+        }
+
+        from ai_company.llm.circuit_breaker import CircuitBreaker
+
+        # Trip each provider's breaker after a single failure so the skip
+        # behaviour is observable within a 5-attempt run.
+        client._circuit_breakers = {
+            pid: CircuitBreaker(failure_threshold=1) for pid in client._providers
+        }
+
+        client.router.resolve = MagicMock(
+            return_value=SimpleNamespace(
+                tier="standard", provider="deepseek", model="deepseek-chat"
+            )
+        )
+        client.router.get_tier = MagicMock(
+            return_value=SimpleNamespace(
+                providers=[
+                    SimpleNamespace(provider="opencode", model="big-pickle"),
+                    SimpleNamespace(provider="deepseek", model="deepseek-chat"),
+                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                ]
+            )
+        )
+
+        with pytest.raises(LLMResponseError):
+            client.execute_task("test-agent", "do something", max_retries=5)
+
+        # One failure per provider opens each breaker; the remaining two
+        # attempts skip the providers entirely.
+        assert failing.chat.call_count == 3
+        for pid in client._circuit_breakers:
+            assert not client._circuit_breakers[pid].is_available
+
+    def test_execute_task_auth_failure_does_not_open_breaker(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Auth failures don't count toward the breaker threshold."""
+        from types import SimpleNamespace
+
+        monkeypatch.chdir(tmp_path)
+        _setup_model_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.llm.client import LLMClient
+
+        client = LLMClient(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        )
+
+        failing = MagicMock(spec=LLMProvider)
+        failing.is_available.return_value = True
+        failing.chat.side_effect = LLMProviderError("opencode", "bad key", status_code=401)
+        client._providers = {
+            "opencode": failing,
+            "deepseek": failing,
+            "ollama": failing,
+        }
+
+        from ai_company.llm.circuit_breaker import CircuitBreaker
+
+        # Threshold of 1 — even a single counted failure would open the
+        # breaker, so the auth-exemption path is what keeps it closed.
+        client._circuit_breakers = {
+            pid: CircuitBreaker(failure_threshold=1) for pid in client._providers
+        }
+
+        client.router.resolve = MagicMock(
+            return_value=SimpleNamespace(
+                tier="standard", provider="deepseek", model="deepseek-chat"
+            )
+        )
+        client.router.get_tier = MagicMock(
+            return_value=SimpleNamespace(
+                providers=[
+                    SimpleNamespace(provider="opencode", model="big-pickle"),
+                    SimpleNamespace(provider="deepseek", model="deepseek-chat"),
+                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                ]
+            )
+        )
+
+        with pytest.raises(LLMResponseError):
+            client.execute_task("test-agent", "do something", max_retries=5)
+
+        # Every attempt still reaches the provider; breaker stays closed.
+        assert failing.chat.call_count == 5
+        for pid in client._circuit_breakers:
+            assert client._circuit_breakers[pid].is_available
 
 
 # ── Helpers ─────────────────────────────────────────────────────────

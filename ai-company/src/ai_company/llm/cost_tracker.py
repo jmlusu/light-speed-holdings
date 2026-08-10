@@ -17,6 +17,12 @@ from ai_company.data import CostAnalytics, database_is_usable
 
 logger = logging.getLogger(__name__)
 
+# Cap on in-memory usage records kept for summaries. Historical cost data
+# lives in results/cost_log.jsonl (and the SQLite mirror); the in-memory
+# list is a bounded working set so long-running processes don't grow without
+# bound (same class of issue as _decision_log in autonomous.py).
+_MAX_RECORDS = 10_000
+
 # Approximate costs per 1M tokens (USD) — input and output.
 # Source: public pricing pages as of 2025.  Update as prices change.
 MODEL_COSTS: dict[str, dict[str, float]] = {
@@ -149,8 +155,8 @@ class CostTracker:
             provider=provider,
             agent_name=agent_name,
             task_id=task_id,
-            prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens,
+            prompt_tokens=max(0, int(prompt_tokens)),
+            completion_tokens=max(0, int(completion_tokens)),
             cost_usd=cost,
             iteration=iteration,
             metadata=metadata or {},
@@ -161,6 +167,8 @@ class CostTracker:
         self._daily_cost[day_key] = self._daily_cost.get(day_key, 0.0) + cost
         self._task_costs[task_id] = self._task_costs.get(task_id, 0.0) + cost
         self._records.append(record)
+        if len(self._records) > _MAX_RECORDS:
+            del self._records[: len(self._records) - _MAX_RECORDS]
 
         # Persist to disk
         self._append_log(record)
@@ -426,8 +434,8 @@ class CostTracker:
         completion_tokens: int,
     ) -> float:
         """Calculate the cost in USD for a given token count."""
-        input_cost = prompt_tokens * _cost_per_token(model, "input")
-        output_cost = completion_tokens * _cost_per_token(model, "output")
+        input_cost = max(0, int(prompt_tokens)) * _cost_per_token(model, "input")
+        output_cost = max(0, int(completion_tokens)) * _cost_per_token(model, "output")
         return round(input_cost + output_cost, 8)
 
     def _append_log(self, record: UsageRecord) -> None:
@@ -475,10 +483,15 @@ class CostTracker:
                         # the record during replay.
                         rec_dict.setdefault("prompt_tokens", 0)
                         rec_dict.setdefault("completion_tokens", 0)
+                        rec_dict["prompt_tokens"] = max(0, int(rec_dict["prompt_tokens"]))
+                        rec_dict["completion_tokens"] = max(0, int(rec_dict["completion_tokens"]))
 
                         record = UsageRecord(**rec_dict)
                         self._records.append(record)
                     except (json.JSONDecodeError, KeyError, TypeError, ValueError):
                         continue
+            # Keep the in-memory working set bounded even on huge logs.
+            if len(self._records) > _MAX_RECORDS:
+                del self._records[: len(self._records) - _MAX_RECORDS]
         except OSError:
             pass

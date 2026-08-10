@@ -118,6 +118,7 @@ class AgentLoop:
         self.non_blocking_hitl = non_blocking_hitl
         self._current_priority: str = "medium"
         self._current_task_prompt: str = ""
+        self._current_agent_name: str = ""
 
     def run(
         self,
@@ -144,6 +145,7 @@ class AgentLoop:
         resolved_name = agent_name or agent.name
         self._current_priority = priority
         self._current_task_prompt = user_prompt
+        self._current_agent_name = resolved_name
         system_prompt = build_system_prompt_typed(agent)
         initial_user = build_user_prompt_typed(user_prompt, priority)
 
@@ -324,6 +326,7 @@ class AgentLoop:
         # Build fallback chain: current tier providers + higher tiers
         # (resolve_with_fallback returns the primary route + all fallback tiers)
         fallback_routes = self.llm.router.resolve_with_fallback(
+            agent_name=self._current_agent_name or None,
             priority=self._current_priority,
             task_prompt=self._current_task_prompt,
         )
@@ -342,6 +345,9 @@ class AgentLoop:
             provider = self.llm.get_provider(provider_id)
             if not provider or not provider.is_available():
                 continue
+            breaker = self.llm.get_breaker(provider_id)
+            if breaker and not breaker.is_available:
+                continue
 
             use_model = model or resolved_model
 
@@ -351,8 +357,12 @@ class AgentLoop:
                     user_prompt=user_prompt,
                     model=use_model,
                 )
+                if breaker:
+                    breaker.record_success()
                 return response
             except LLMProviderError as exc:
+                if breaker:
+                    breaker.record_failure(exc.category.value)
                 last_error = exc
                 continue
 
