@@ -15,7 +15,7 @@ Type: Board Advisor ({{ role | default('Advisor') }})
 
 Department: {{ department | default('Board of Directors') }}
 
-Reports To: {{ reports_to | default('CEO') }}
+{% if reports_to %}Reports To: {{ reports_to }}{% endif %}
 
 {% if expertise %}Areas of Expertise: {{ expertise | join(', ') if expertise is sequence else expertise }}{% endif %}
 

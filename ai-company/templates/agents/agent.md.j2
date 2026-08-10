@@ -15,7 +15,7 @@ Type: {{ title | default('AI Agent') }}
 
 Department: {{ department | default('N/A') }}
 
-Reports To: {{ reports_to | default('CEO') }}
+{% if reports_to %}Reports To: {{ reports_to }}{% endif %}
 
 {% if direct_reports %}Direct Reports: {{ direct_reports | join(', ') }}{% endif %}
 

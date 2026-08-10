@@ -11,6 +11,7 @@ Covers:
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 
@@ -20,6 +21,18 @@ from typer.testing import CliRunner
 from ai_company.cli.main import app
 
 runner = CliRunner()
+
+_ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences.
+
+    Rich forces color output when running under CI (``GITHUB_ACTIONS``),
+    splitting option text like ``--host`` across styled spans, so assertions
+    must match against the plain-text rendering.
+    """
+    return _ANSI_ESCAPE.sub("", text)
 
 
 def _run_in_fresh_interpreter(code: str) -> str:
@@ -72,11 +85,12 @@ def test_dashboard_help_lists_real_options_and_subcommands() -> None:
     """``dashboard --help`` renders options owned by the real group."""
     result = runner.invoke(app, ["dashboard", "--help"])
     assert result.exit_code == 0
-    assert "--host" in result.output
-    assert "--port" in result.output
-    assert "--no-open" in result.output
-    assert "backfill" in result.output
-    assert "kpi" in result.output
+    output = _strip_ansi(result.output)
+    assert "--host" in output
+    assert "--port" in output
+    assert "--no-open" in output
+    assert "backfill" in output
+    assert "kpi" in output
 
 
 def test_dashboard_subcommand_dispatch_resolves() -> None:

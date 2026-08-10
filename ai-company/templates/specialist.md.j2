@@ -16,7 +16,7 @@ Type: Specialist
 
 Department: {{ department | default('N/A') }}
 
-Reports To: {{ reports_to | default('CEO') }}
+{% if reports_to %}Reports To: {{ reports_to }}{% endif %}
 
 Seniority: {{ seniority | default('mid') }}
 {% endblock %}

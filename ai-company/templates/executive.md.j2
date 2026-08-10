@@ -16,7 +16,7 @@ Type: Executive ({{ title | default(role | default('Executive')) }})
 
 Department: {{ department | default('Executive Team') }}
 
-Reports To: {{ reports_to | default('Board of Directors') }}
+{% if reports_to %}Reports To: {{ reports_to }}{% endif %}
 
 {% if direct_reports %}Direct Reports: {{ direct_reports | join(', ') }}{% endif %}
 {% endblock %}
