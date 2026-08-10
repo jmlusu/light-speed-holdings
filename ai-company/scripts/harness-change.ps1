@@ -141,7 +141,7 @@ function Get-IndexEntries {
       if (-not (Test-Path -LiteralPath $summary)) { return }
       $meta = Parse-FrontMatter $summary
       $decisions = Get-SectionLines $summary "Decisions" | Where-Object { $_ -notmatch "Pending" }
-      $relativePath = (Resolve-Path -LiteralPath $_.FullName -Relative).TrimStart([char[]]@(".", "\"))
+      $relativePath = (Resolve-Path -LiteralPath $_.FullName -Relative).TrimStart([char[]]@(".", "/", "\"))
       $entries.Add([ordered]@{
         id = $_.Name
         title = $meta["title"]
