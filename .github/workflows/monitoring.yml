@@ -141,9 +141,6 @@ jobs:
 
   # ── Metrics anomaly detection ──────────────────────────────────────
   metrics-check:
-    defaults:
-      run:
-        working-directory: ai-company
     name: Metrics Anomaly Check
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'metrics' || github.event_name == 'schedule' }}
@@ -211,7 +208,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Check for vulnerable dependencies
-        working-directory: ai-company
         run: |
           if uv audit --frozen > audit-report.txt 2>&1; then
             echo "[OK] No known vulnerabilities found"

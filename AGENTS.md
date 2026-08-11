@@ -44,7 +44,6 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 ### Quick Start (New Developers)
 
 ```powershell
-cd ai-company
 .\scripts\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
 .\scripts\dev.ps1 status    # Show project status
 .\scripts\dev.ps1 test      # Run test suite
@@ -54,7 +53,6 @@ cd ai-company
 ### Manual Setup
 
 ```bash
-cd ai-company
 uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
 pre-commit install           # Enable git hooks (ruff, mypy, bandit, etc.)
 ai-company --help            # CLI entry point (uv run ai-company --help if venv not activated)

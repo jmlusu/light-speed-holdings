@@ -147,7 +147,6 @@ def _load_allowlist(config_path: str | Path | None = None) -> frozenset[str]:
         # Look for config relative to project root
         candidates = [
             Path("config/tool_allowlist.yaml"),
-            Path("ai-company/config/tool_allowlist.yaml"),
         ]
         for candidate in candidates:
             if candidate.exists():

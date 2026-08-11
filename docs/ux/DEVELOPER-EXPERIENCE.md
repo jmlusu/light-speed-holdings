@@ -21,8 +21,9 @@
 ### 2.1 First-Time Setup (< 10 minutes)
 
 ```bash
-# 1. Clone and enter project
-cd ai-company
+# 1. Clone the repository
+git clone https://github.com/light-speed-holdings/ai-company.git
+cd light-speed-holdings
 
 # 2. Create the virtual environment and install project + dev deps from uv.lock
 uv sync --extra dev
@@ -140,7 +141,7 @@ All 10 checks passed!
 ### 4.1 Test Structure
 
 ```
-ai-company/tests/
+tests/
 +-- unit/
 |   +-- test_models.py
 |   +-- test_message_bus.py

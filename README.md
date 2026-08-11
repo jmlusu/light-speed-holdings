@@ -11,7 +11,6 @@ Python CLI for creating and orchestrating AI agent hierarchies. One human CEO su
 ```bash
 # Clone and install
 git clone https://github.com/light-speed-holdings/ai-company.git
-cd ai-company
 uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 
 # Bootstrap the company from config (generates 27 agents)
@@ -220,7 +219,7 @@ Override per-agent in `company/models.yaml` under `agent_overrides`.
 ## Project Structure
 
 ```
-ai-company/
+ai-company/                     # Repository root
   src/ai_company/
     cli/                    # 24 Typer CLI subcommands
       main.py               # Entry point - registers all subcommands
@@ -289,7 +288,6 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full details.
 ## Development
 
 ```bash
-cd ai-company
 uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
 
 # Run all checks
@@ -384,7 +382,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and su
 ```bash
 # 1. Fork and clone
 git clone https://github.com/YOUR_USER/ai-company.git
-cd ai-company
 
 # 2. Set up development environment
 uv sync --extra dev

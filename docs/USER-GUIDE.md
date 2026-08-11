@@ -29,7 +29,6 @@ Complete reference for AI Company Builder — the Python CLI tool for creating a
 ### Installation
 
 ```bash
-cd ai-company
 uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 ```
 

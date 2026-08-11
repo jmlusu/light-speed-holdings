@@ -1,17 +1,23 @@
-# Secrets
+# Secrets — never commit
 .env
+.env.*
+!.env.example
+!.env.staging.example
 
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
+*.egg
+.eggs/
 dist/
 build/
-.pytest_tmp*/
 
 # Virtual environments
 .venv/
 venv/
+env/
 
 # Node.js
 node_modules/
@@ -19,10 +25,32 @@ node_modules/
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Testing & coverage
+.pytest_cache/
+.pytest_tmp*/
+.pytest-benchmark/
+.benchmarks/
+.benchmarks-*.json
+.coverage
+htmlcov/
+coverage.xml
+cov_gate.log
+
+# Type checking
+.mypy_cache/
+
+# Linting
+.ruff_cache/
+
+# Hypothesis
+.hypothesis/
 
 # Runtime state / generated artifacts (regenerated from registry + execution)
 .opencode/inbox*.json
@@ -30,17 +58,33 @@ Thumbs.db
 .opencode/audit.jsonl
 .opencode/config.json
 .opencode/dead_letter.json
+.opencode/daily_briefing.md
 .opencode/opencode.json
+.opencode/*.audit-tmp-*
 .opencod/
 .agents/skills-staging/
 workflows/instances/
 memory/*.json
 memory/vector_index/
 data/
+logs/
 results/
+orchestrator/
 *.bak
 *.executor-bak
+
+# Backups
 backup/
-orchestrator/
+backups/
+
+# SQLite databases (WAL locking breaks Git)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.db-journal
+
+# Docker local overrides
+docker-compose.override.yml
+
 # ...but keep the T017 QA test suite (same-name runtime dir must not swallow it)
-!ai-company/tests/orchestrator/
+!tests/orchestrator/

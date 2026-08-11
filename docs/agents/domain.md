@@ -38,7 +38,7 @@ Multi-context repo (presence of `CONTEXT-MAP.md` at the root):
         └── docs/adr/
 ```
 
-This repo is currently **single-context** (no `CONTEXT.md`, no `docs/adr/`, no `CONTEXT-MAP.md` at the root yet) — read the sources named in `AGENTS.md` and the project docs in `ai-company/docs/`.
+This repo is currently **single-context** (no `CONTEXT.md`, no `docs/adr/`, no `CONTEXT-MAP.md` at the root yet) — read the sources named in `AGENTS.md` and the project docs in `docs/`.
 
 ## Use the glossary's vocabulary
 

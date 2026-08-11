@@ -9,10 +9,6 @@ on:
 permissions:
   contents: read
 
-defaults:
-  run:
-    working-directory: ai-company
-
 jobs:
   governance-pass:
     name: Daily Governance Pass

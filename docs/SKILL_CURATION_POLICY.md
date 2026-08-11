@@ -199,4 +199,4 @@ npx skills list --json | jq '.[] | select(.name=="<problem-skill>")'  # Should r
 - [OpenCode Skill Discovery](https://opencode.ai/docs/skills)
 - [Agentskills Specification](https://agentskills.io)
 - [Effective Agent Skills](https://github.com/davidondrej/effective-agent-skills)
-- Project: `AGENTS.md`, `ai-company/docs/ECL.md`
+- Project: `AGENTS.md`, `docs/ECL.md`
