@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 import contextlib
 
 from ai_company.audit.events import AuditEvent
+from ai_company.paths import get_data_root
 
 logger = logging.getLogger(__name__)
 
@@ -38,11 +39,16 @@ class AuditWriter:
 
     def __init__(
         self,
-        path: str | Path = ".opencode/audit.jsonl",
+        path: str | Path | None = None,
         max_bytes: int = DEFAULT_MAX_BYTES,
         keep_files: int = DEFAULT_KEEP_FILES,
         database: Any = None,
     ) -> None:
+        if path is None:
+            # Root-aware default: resolve against the deterministic data root
+            # (DASHBOARD_DATA_DIR / project root) instead of the CWD so audit
+            # events can never be written into an unrelated working directory.
+            path = str(get_data_root() / ".opencode" / "audit.jsonl")
         self._path = Path(path)
         self._path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()

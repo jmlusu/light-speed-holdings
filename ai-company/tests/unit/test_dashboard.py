@@ -22,6 +22,11 @@ def setup_dashboard_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Non
     # Patch working directory to tmp_path
     monkeypatch.chdir(tmp_path)
 
+    # Anchor the deterministic data root to the same tmp_path so any component
+    # that resolves its own data location via DASHBOARD_DATA_DIR / get_data_root()
+    # (MessageBus, AuditWriter, BaseService defaults) stays inside the sandbox.
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
     # Rebind the dashboard StateStore singleton to the isolated workspace so
     # all state I/O is rooted at tmp_path (independent of cwd / import-time
     # singleton). Fixes pre-existing fixture isolation for the module-level
@@ -132,9 +137,9 @@ class TestDashboardKPIs:
         assert data["total_agents"] == 3
         assert "uptime_seconds" in data
 
-    def test_dashboard_tasks_count(self, setup_dashboard_data: None) -> None:
+    def test_dashboard_tasks_count(self, setup_dashboard_data: None, tmp_path: Path) -> None:
         # Add tasks with different statuses using proper fixture factory
-        inbox_path = Path(".opencode/inbox.json")
+        inbox_path = tmp_path / ".opencode/inbox.json"
         tasks = [
             make_task(
                 receiver_id="lead-engineering",
@@ -259,8 +264,8 @@ class TestTasks:
 
 
 class TestApprovals:
-    def test_approve_request(self, setup_dashboard_data: None) -> None:
-        approvals_path = Path("orchestrator/approvals.yaml")
+    def test_approve_request(self, setup_dashboard_data: None, tmp_path: Path) -> None:
+        approvals_path = tmp_path / "orchestrator/approvals.yaml"
         data = {
             "requests": [
                 {
@@ -284,8 +289,8 @@ class TestApprovals:
         assert resp.status_code == 200
         assert len(resp.json()) == 0
 
-    def test_reject_request(self, setup_dashboard_data: None) -> None:
-        approvals_path = Path("orchestrator/approvals.yaml")
+    def test_reject_request(self, setup_dashboard_data: None, tmp_path: Path) -> None:
+        approvals_path = tmp_path / "orchestrator/approvals.yaml"
         data = {
             "requests": [
                 {
@@ -310,10 +315,10 @@ class TestApprovals:
 
 
 class TestEscalations:
-    def test_resolve_escalation(self, setup_dashboard_data: None) -> None:
+    def test_resolve_escalation(self, setup_dashboard_data: None, tmp_path: Path) -> None:
         from tests.fixtures.dashboard_data import make_escalation
 
-        esc_path = Path("orchestrator/escalation.yaml")
+        esc_path = tmp_path / "orchestrator/escalation.yaml"
         data = {
             "events": [
                 make_escalation(

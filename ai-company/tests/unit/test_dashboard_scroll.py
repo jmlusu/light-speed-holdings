@@ -30,6 +30,9 @@ from tests.fixtures.dashboard_data import (
 def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     """Isolated TestClient for scroll behavior testing."""
     monkeypatch.chdir(tmp_path)
+    # Anchor the deterministic data root (DASHBOARD_DATA_DIR) to the same
+    # sandbox so any default-constructed MessageBus / AuditWriter stays local.
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     from ai_company.dashboard import api as dash_api
     from ai_company.dashboard.repository import get_state_store, reset_state_store
 
@@ -147,9 +150,9 @@ class TestPostMutationStability:
 
         assert len(set(pending_counts)) == 1, f"Pending tasks KPI unstable: {pending_counts}"
 
-    def test_approval_mutation_stabilizes(self, client: TestClient) -> None:
+    def test_approval_mutation_stabilizes(self, client: TestClient, tmp_path: Path) -> None:
         """After approving a request, the approval list should stabilize."""
-        approvals_path = Path("orchestrator/approvals.yaml")
+        approvals_path = tmp_path / "orchestrator/approvals.yaml"
         approvals_path.parent.mkdir(exist_ok=True)
         approvals_path.write_text(
             yaml.dump(

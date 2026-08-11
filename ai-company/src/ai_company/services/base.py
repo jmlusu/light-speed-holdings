@@ -77,12 +77,15 @@ class BaseService:
         bus: MessageBus | None = None,
         data_dir: str | Path = ".",
         memory_dir: str = "memory",
-        audit_path: str = ".opencode/audit.jsonl",
+        audit_path: str | Path | None = None,
     ) -> None:
         self.department_id = department_id
         self.bus = bus or MessageBus()
         self._store = FileStore(Path(data_dir) / department_id, backup=True)
         self._memory = get_store() or init_memory(memory_dir)
+        # ``None`` audit_path resolves to the root-aware default
+        # (``<data root>/.opencode/audit.jsonl``) inside AuditWriter, so a
+        # service created without an explicit path never writes to the CWD.
         self._audit = AuditWriter(audit_path)
 
     # ── Audit trail ───────────────────────────────────────────────────
