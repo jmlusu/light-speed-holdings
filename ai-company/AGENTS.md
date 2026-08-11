@@ -18,7 +18,7 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 | Agent Registry | `company-registry.yaml` | Single source of truth for all agents (id, name, tools, permissions) |
 | Generator | `src/ai_company/generator.py` | Reads registry, renders Jinja2 template, writes `.opencode/agents/*.md` |
 | Agent Template | `templates/agents/agent.md.j2` | OpenCode-native format with `mode: subagent` + `permission:` blocks |
-| CLI Entry | `src/ai_company/cli/main.py` | Typer app, 17 subcommands registered here |
+| CLI Entry | `src/ai_company/cli/main.py` | Typer app, 30 subcommands registered here |
 | Task System | `src/ai_company/orchestrator/message_bus.py` | JSON-based task queue at `.opencode/inbox.json` |
 | Domain Models | `src/ai_company/models/models.py` | Pydantic models: Executive, Specialist, Department, Company |
 

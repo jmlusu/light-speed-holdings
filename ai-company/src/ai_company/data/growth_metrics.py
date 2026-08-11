@@ -456,19 +456,19 @@ class GrowthMetrics:
         - Engagement: 25%
         """
         # Adoption score: adoption_pct (0-100)
-        adoption_score = min(adoption.get("adoption_pct", 0), 100)
+        adoption_score = min(float(adoption.get("adoption_pct", 0)), 100)
 
         # Completion score: completion_rate_pct (0-100)
-        completion_score = min(completion.get("completion_rate_pct", 0), 100)
+        completion_score = min(float(completion.get("completion_rate_pct", 0)), 100)
 
         # Cost efficiency score: lower cost_per_task is better
         # Normalize: $0 -> 100, $0.10 -> 0
-        cpt = cost.get("cost_per_task_usd", 0)
+        cpt = float(cost.get("cost_per_task_usd", 0))
         cost_score = max(0, 100 - (cpt * 1000))  # $0.10 = 0, $0 = 100
 
         # Engagement score: combination of activity and recovery
-        activity = engagement.get("activity_rate_pct", 0)
-        recovery = engagement.get("error_recovery_rate_pct", 0)
+        activity = float(engagement.get("activity_rate_pct", 0))
+        recovery = float(engagement.get("error_recovery_rate_pct", 0))
         engagement_score = activity * 0.5 + recovery * 0.5
 
         # Weighted composite

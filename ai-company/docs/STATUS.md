@@ -4,10 +4,12 @@
 
 ## Last Updated
 
-2026-08-10
+2026-08-11
 
 ## Current State
 
+- **Sprint 7 (2026-08-11) In Progress**: Tool vocabulary, HITL expiry, quality hardening, doc reconciliation — active ECL `harness/changes/active` (`sprint-7-tool-vocabulary-hitl-expiry-quality-hardening-doc-reconciliation`). Canonical runtime tool vocabulary = `read`, `edit`, `grep`, `list`, `bash`, `webfetch`, `task` (`code_interpreter` removed; `write`/`execute`/`delegate`/`web_search` retained as backward-compatible aliases). `ApprovalGate` gains a HITL expiry sweep (expired PENDING → `EXPIRED`) wired into the daemon/governance cadence. Baseline before change: 1805/1858 tests, ruff/mypy clean.
+- **Next release**: v0.4.0 (pyproject.toml is the canonical version source; the v0.3.0 tag was lost in the recovery reset and will not be recreated).
 - **Sprint 6 (2026-08-10) Complete**: Audit fixes + runtime hardening. Archived as `harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening`. Registry loading anchored to the package root (`AI_COMPANY_ROOT` override, CWD-independent), lazy CLI sub-app registration, tool-vocabulary canonicalized across all 127 agent cards (`websearch`/`web_search` → `webfetch`, `code_interpreter` → `bash`, `write` → `edit`, `delegate` → `task`), Operating Principles deduplicated into shared `operating-standards.md`. LLM error classification (`ProviderErrorCategory`; circuit breaker ignores `auth`), bounded cost/decision logs, task lease fields + store locking, DLQ re-enqueue delegation, E2E Alpine `$data` migration. Commits `3f587e9`, `f4d2867`, `d076303`, `5f32e6d`. **1805 tests passing**, ruff/mypy clean. See `docs/AUDIT-FIXES-2026-08-10.md`.
 - **Sprint 5 (T009) Complete**: OAuth2 client-credentials auth (2026-08-09). Archived as `harness/changes/archive/2026-08-09-sprint-5-t009-oauth2-client-credentials`. New `src/ai_company/llm/oauth2.py` — `OAuth2TokenManager` (client-credentials grant, in-memory token cache with TTL, fail-closed), wired into `OpenAICompatibleProvider` (per-request bearer token) and `LLMClient` (opt-in `oauth2:` block per provider in `company/models.yaml`). `ProviderConfig` extended. 11 new tests. 1778 tests passing, ruff/mypy clean.
 - **Sprint 4 Complete**: Quality & completeness (2026-08-08). Archived as `harness/changes/archive/2026-08-08-sprint-4-quality-completeness`. Commits `d11608f` (auth hardening, key rotation, token counting, CLI polish), `359489d` (platform-independent CLI help + daemon stop tests), `4765f76` (22 new agent skills + real KPI derivation). 1745 tests passing, ruff/mypy clean.
@@ -36,14 +38,14 @@
 - **KPIs**: `company/config/kpis.yaml` — Department-level KPI definitions for 7 departments (engineering, hr, marketing, sales, customer_success, legal, finance).
 - **KPI Collectors**: `dashboard/kpis/__init__.py` — All 7 department collectors wired and operational.
 - **Analytics**: `dashboard/analytics.py` — History tracking, trend analysis, alert rules, summary rollups.
-- **CLI**: 26 commands registered — company, decision, graph, workflows, memory, agents, board, departments, executives, specialists, orchestrator (with postmortem sub-app), models, dashboard (with kpi sub-app), executor, doctor, marketing, sales, customer-success, legal, hr, generate, status, sop, raci, governance (report/audit-trail/risk-summary/retention/compliance/owners/policies).
+- **CLI**: 30 commands registered (5 root + 25 lazy sub-apps) — root: generate, status, sop, raci, sync-registry; lazy: company, decision, graph, workflows, memory, agents, board, departments, executives, specialists, orchestrator (with postmortem sub-app), models, dashboard (with kpi sub-app), executor, doctor, marketing, sales, customer-success, legal, hr, llm, bootstrap, security, validate, governance (report/audit-trail/risk-summary/retention/compliance/owners/policies).
 - **FileStore**: `src/ai_company/store/file_store.py` exists with atomic writes (temp + rename) and platform-aware locking.
 - **MessageBus**: `get_pending_tasks()` and `update_task_status()` present; executor routes all inbox I/O through it. WebSocket broadcast hooks present.
 - **ToolRunner**: uses `shlex.split()` (no `shell=True`), consults `tier_rules.classify_tool_action()`, and logs via `log_tool_call()` / `log_hitl_decision()`.
 - **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
-- **Tests**: 1526 tests passing (53 skipped, 0 failures) — all green as of 2026-08-07.
+- **Tests**: 1805 tests passing (53 deselected, 0 failures) — all green as of 2026-08-10.
 
 ## Organization Expansion (2026-07-21)
 
@@ -66,9 +68,9 @@
 
 ## Code Quality
 
-- **ruff**: ✅ Clean (0 errors) — as of 2026-08-07.
-- **mypy**: ✅ Clean (0 errors, 177 files) — as of 2026-08-07.
-- **pytest**: ✅ 1501 tests passing (53 skipped) — as of 2026-08-07.
+- **ruff**: ✅ Clean (0 errors) — as of 2026-08-10.
+- **mypy**: ✅ Clean (0 errors, 181 files) — as of 2026-08-10.
+- **pytest**: ✅ 1805 tests passing (53 deselected) — as of 2026-08-10.
 - **Dead code**: Removed 5 one-time bootstrap scripts
 
 ## Documentation
@@ -126,10 +128,11 @@
 | Sprint 4 | ✅ COMPLETE | 1745 passing | Quality & completeness |
 | Sprint 5 | ✅ COMPLETE | 1778 passing | T009 OAuth2 client-credentials |
 | Sprint 6 | ✅ COMPLETE | 1805 passing | Audit fixes + runtime hardening |
+| Sprint 7 | IN PROGRESS | — | Tool vocabulary + HITL expiry + quality hardening |
 
 ## Remaining Work
 
 - **Sprint 4**: COMPLETE — quality & completeness.
 - **Sprint 5 (T009)**: COMPLETE — OAuth2 client-credentials. T012 `llm usage` also done.
 - **Sprint 6**: COMPLETE — audit fixes + runtime hardening (2026-08-10).
-- **Deferred**: scheduled cycle daemon mode (S3-06); runtime tool-vocabulary sync (`executor/tool_runner.py` — implement `webfetch`/`web_search`, remove `code_interpreter`); code-review follow-ups (`docs/CODE_REVIEW_2026-08-10.md`): dashboard auth fail-closed default, HITL approval expiry sweep, legacy module deprecation (`builder.py`/`registry.py`/`graph.py`), mypy strict mode.
+- **Deferred**: scheduled cycle daemon mode (S3-06); code-review follow-ups (`docs/CODE_REVIEW_2026-08-10.md`): dashboard auth fail-closed default, mypy strict mode. Runtime tool-vocabulary sync and the HITL approval expiry sweep are in progress under the active Sprint 7 change. Legacy module deprecation is resolved — `builder.py`/`registry.py`/`graph.py` no longer exist; `builder/`, `registry/`, `graph/` are packages.

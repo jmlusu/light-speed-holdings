@@ -29,7 +29,7 @@ import os
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -322,7 +322,7 @@ def create_app() -> FastAPI:
                     "X-RateLimit-Remaining": "0",
                 },
             )
-        response = await call_next(request)
+        response = cast(Response, await call_next(request))
         response.headers["X-RateLimit-Limit"] = str(rate_limit)
         response.headers["X-RateLimit-Remaining"] = str(remaining)
         return response
@@ -336,7 +336,7 @@ def create_app() -> FastAPI:
                 status_code=401,
                 media_type="application/json",
             )
-        return await call_next(request)
+        return cast(Response, await call_next(request))
 
     # ── Security headers (T018 / ticket #11) ─────────────────────────────
     # Registered AFTER the auth + rate-limit middlewares so it runs
@@ -346,7 +346,7 @@ def create_app() -> FastAPI:
 
     @app.middleware("http")
     async def _security_headers_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
-        response = await call_next(request)
+        response = cast(Response, await call_next(request))
         for name, value in security_headers().items():
             response.headers[name] = value
         return response

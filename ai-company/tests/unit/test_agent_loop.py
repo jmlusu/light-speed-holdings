@@ -325,6 +325,7 @@ class TestMaxIterations:
 
         assert result.iterations == 3
         assert result.done is False
+        assert result.timed_out is True
         assert "Max iterations" in result.error
         assert len(result.tool_results) == 3
 
@@ -344,6 +345,7 @@ class TestMaxIterations:
         result = loop.run(agent=_make_agent(), user_prompt="Do something")
 
         assert result.iterations == 1
+        assert result.timed_out is True
         assert "Max iterations" in result.error
 
 

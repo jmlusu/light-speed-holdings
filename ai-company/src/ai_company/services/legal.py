@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from ai_company.models.task import TaskPriority
 from ai_company.services.base import BaseService
@@ -30,7 +30,7 @@ class LegalService(BaseService):
     def list_contracts(self, status: str = "") -> list[dict[str, Any]]:
         """List all contracts, optionally filtered by status."""
         data = self._load_data("contracts.yaml")
-        contracts = data.get("contracts", [])
+        contracts = cast(list[dict[str, Any]], data.get("contracts", []))
         if status:
             contracts = [c for c in contracts if c.get("status") == status]
         return contracts
@@ -45,7 +45,7 @@ class LegalService(BaseService):
     ) -> dict[str, Any]:
         """Add a new contract and delegate review task."""
         data = self._load_data("contracts.yaml")
-        contracts = data.get("contracts", [])
+        contracts = cast(list[dict[str, Any]], data.get("contracts", []))
 
         for c in contracts:
             if c["id"] == contract_id:
@@ -87,7 +87,7 @@ class LegalService(BaseService):
     def approve_contract(self, contract_id: str, approver: str = "") -> dict[str, Any]:
         """Approve a contract."""
         data = self._load_data("contracts.yaml")
-        contracts = data.get("contracts", [])
+        contracts = cast(list[dict[str, Any]], data.get("contracts", []))
 
         contract = next((c for c in contracts if c["id"] == contract_id), None)
         if not contract:
@@ -116,7 +116,7 @@ class LegalService(BaseService):
     def terminate_contract(self, contract_id: str, reason: str = "") -> dict[str, Any]:
         """Terminate a contract."""
         data = self._load_data("contracts.yaml")
-        contracts = data.get("contracts", [])
+        contracts = cast(list[dict[str, Any]], data.get("contracts", []))
 
         contract = next((c for c in contracts if c["id"] == contract_id), None)
         if not contract:
@@ -141,7 +141,7 @@ class LegalService(BaseService):
     def compliance_check(self) -> dict[str, Any]:
         """Run compliance checks on active contracts."""
         data = self._load_data("contracts.yaml")
-        contracts = data.get("contracts", [])
+        contracts = cast(list[dict[str, Any]], data.get("contracts", []))
 
         active = [c for c in contracts if c.get("status") == "approved"]
         draft = [c for c in contracts if c.get("status") == "draft"]

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from ai_company.models.task import TaskPriority
 from ai_company.services.base import BaseService
@@ -30,7 +30,7 @@ class HRService(BaseService):
     def list_agents(self, status: str = "") -> list[dict[str, Any]]:
         """List all agents in the workforce, optionally filtered by status."""
         data = self._load_data("roster.yaml")
-        agents = data.get("agents", [])
+        agents = cast(list[dict[str, Any]], data.get("agents", []))
         if status:
             agents = [a for a in agents if a.get("status") == status]
         return agents
@@ -48,7 +48,7 @@ class HRService(BaseService):
         Creates the roster entry, then delegates onboarding tasks.
         """
         data = self._load_data("roster.yaml")
-        agents = data.get("agents", [])
+        agents = cast(list[dict[str, Any]], data.get("agents", []))
 
         for agent in agents:
             if agent["id"] == agent_id:
@@ -92,7 +92,7 @@ class HRService(BaseService):
     def activate(self, agent_id: str) -> dict[str, Any]:
         """Activate an agent (complete onboarding or reactivate)."""
         data = self._load_data("roster.yaml")
-        agents = data.get("agents", [])
+        agents = cast(list[dict[str, Any]], data.get("agents", []))
 
         agent = next((a for a in agents if a["id"] == agent_id), None)
         if not agent:
@@ -114,7 +114,7 @@ class HRService(BaseService):
     def deactivate(self, agent_id: str, reason: str = "") -> dict[str, Any]:
         """Deactivate an agent from the workforce."""
         data = self._load_data("roster.yaml")
-        agents = data.get("agents", [])
+        agents = cast(list[dict[str, Any]], data.get("agents", []))
 
         agent = next((a for a in agents if a["id"] == agent_id), None)
         if not agent:
@@ -152,7 +152,7 @@ class HRService(BaseService):
     def get_workforce_report(self) -> dict[str, Any]:
         """Generate workforce statistics report."""
         data = self._load_data("roster.yaml")
-        agents = data.get("agents", [])
+        agents = cast(list[dict[str, Any]], data.get("agents", []))
 
         total = len(agents)
         active = sum(1 for a in agents if a.get("status") == "active")

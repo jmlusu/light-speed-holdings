@@ -2,7 +2,7 @@ import time
 from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, cast
 
 from ai_company.dashboard.models import OrgNode
 
@@ -510,7 +510,7 @@ class OrganizationChart:
         if not subtree:
             return 0
 
-        total = subtree.get("span_of_control", 0)
+        total = cast(int, subtree.get("span_of_control", 0))
         for child in subtree.get("children", []):
             total += self._sum_spans_in_subtree(child)
 

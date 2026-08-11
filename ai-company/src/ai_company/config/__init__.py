@@ -76,17 +76,23 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 def _unwrap(data: dict[str, Any], key: str) -> dict[str, Any]:
     """Unwrap a top-level YAML key if present (e.g. company.yaml has company: {...})."""
-    if key in data and isinstance(data[key], dict):
-        return data[key]
+    if key in data:
+        value = data[key]
+        if isinstance(value, dict):
+            return value
     return data
 
 
 def _unwrap_list(data: dict[str, Any], key: str) -> list[dict[str, Any]]:
     """Unwrap a top-level YAML key that contains a list."""
-    if key in data and isinstance(data[key], list):
-        return data[key]
-    if key in data and isinstance(data[key], dict):
-        return data[key].get(key, [])
+    if key in data:
+        value = data[key]
+        if isinstance(value, list):
+            return value
+        if isinstance(value, dict):
+            nested = value.get(key)
+            if isinstance(nested, list):
+                return nested
     return []
 
 

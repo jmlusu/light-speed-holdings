@@ -14,7 +14,7 @@ repos:
 
   # ── Ruff: lint + format ────────────────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.22
+    rev: v0.16.1
     hooks:
       - id: ruff
         args: ["--fix", "--exit-non-zero-on-fix"]
@@ -35,6 +35,8 @@ repos:
           - typer
           - rich
           - fastapi
+          - cryptography>=42.0
+          - httpx
         pass_filenames: false
         entry: mypy --config-file ai-company/pyproject.toml ai-company/src/
         stages: [pre-commit]

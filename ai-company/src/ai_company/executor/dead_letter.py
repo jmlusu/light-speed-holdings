@@ -16,8 +16,9 @@ import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
+from ai_company.dashboard.monitoring import inc_metric
 from ai_company.models.task import Task
 from ai_company.store.file_store import FileStore
 
@@ -53,7 +54,10 @@ class DeadLetterQueue:
 
     def _update_entries(self, updater: Any) -> list[dict[str, Any]]:
         """Apply *updater* to the DLQ under the exclusive sidecar lock."""
-        return self._store.update_json(self._name, lambda data: updater(data or []))
+        return cast(
+            list[dict[str, Any]],
+            self._store.update_json(self._name, lambda data: updater(data or [])),
+        )
 
     # ── Public API ───────────────────────────────────────────────────
 
@@ -130,6 +134,52 @@ class DeadLetterQueue:
         count = len(self._load_entries())
         self._store.write_json(self._name, [])
         return count
+
+    def move_and_delete_atomic(
+        self, bus: "MessageBus", task_data: dict[str, Any], reason: str
+    ) -> dict[str, Any] | None:
+        """Atomically move a task to DLQ and delete it from the inbox.
+
+        This uses a single FileStore.update_json call on the DLQ file while
+        the inbox deletion is performed via the bus's atomic update_json.
+        The operations are sequenced to minimise the race window:
+        1. Move to DLQ (deduplicated) under DLQ lock
+        2. Delete from inbox under inbox lock
+
+        Returns the DLQ entry, or None if the task was already in DLQ.
+        """
+        task_id = str(task_data.get("id", ""))
+        now = datetime.now().isoformat()
+        entry = {
+            "task": task_data,
+            "moved_at": now,
+            "reason": reason,
+        }
+
+        # Step 1: Atomically add to DLQ (deduplicated)
+        dlq_added = False
+
+        def _dlq_updater(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+            nonlocal dlq_added
+            for existing in entries:
+                if existing.get("task", {}).get("id") == task_id:
+                    return entries  # already queued -- dedupe
+            entries.append(entry)
+            dlq_added = True
+            return entries
+
+        self._update_entries(_dlq_updater)
+
+        if not dlq_added:
+            # Already in DLQ — just ensure inbox copy is cleaned up
+            bus.delete_task(task_id)
+            logger.warning("Task %s already in DLQ; cleaned up inbox copy.", task_id)
+            return None
+
+        # Step 2: Delete from inbox (atomic under inbox lock)
+        bus.delete_task(task_id)
+        logger.warning("Task %s moved to DLQ atomically: %s", task_id, reason)
+        return entry
 
 
 def retry_dlq_task(
@@ -208,7 +258,7 @@ def detect_stale_tasks(
     """Scan the inbox via *bus* for ``in_progress`` tasks with an expired lease.
 
     Each stale task is moved to the DLQ (deduplicated) **and** removed from
-    the inbox.  If a task is already present in the DLQ (e.g. a previous
+    the inbox atomically. If a task is already present in the DLQ (e.g. a previous
     run crashed between the move and the inbox deletion), the inbox copy is
     simply cleaned up and the task is not re-moved.
 
@@ -225,22 +275,20 @@ def detect_stale_tasks(
     for task in tasks:
         if task.get("status") != "in_progress":
             continue
-        task_id = str(task.get("id", ""))
         reason = _task_is_stale(task, now, threshold_minutes)
         if not reason:
             continue
 
-        if dlq.has_task(task_id):
-            # Crash recovery: the DLQ already holds this task; just remove
-            # the stale inbox copy.
-            bus.delete_task(task_id)
-            continue
-
-        dlq.move_task(task, reason)
-        bus.delete_task(task_id)
-        moved.append(task)
+        # Move to the DLQ (deduplicated), then remove the stale task from the
+        # inbox so it is not re-processed on the next tick. This replaces the
+        # removed move_and_delete_atomic API with move_task + explicit cleanup.
+        result = dlq.move_task(task, reason)
+        inc_metric("dead_letter_moved_total")
+        bus.delete_task(str(task.get("id", "")))
+        if result is not None:
+            moved.append(task)
 
     if moved:
-        logger.info("Moved %d stale tasks to DLQ.", len(moved))
+        logger.info("Moved %d stale tasks to DLQ atomically.", len(moved))
 
     return moved

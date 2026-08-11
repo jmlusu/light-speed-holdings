@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from ai_company.models.task import TaskPriority
 from ai_company.services.base import BaseService
@@ -32,7 +32,7 @@ class MarketingService(BaseService):
     def list_campaigns(self) -> list[dict[str, Any]]:
         """List all marketing campaigns."""
         data = self._load_data("campaigns.yaml")
-        return data.get("campaigns", [])
+        return cast(list[dict[str, Any]], data.get("campaigns", []))
 
     def create_campaign(
         self,
@@ -48,7 +48,7 @@ class MarketingService(BaseService):
         task to the marketing specialist agent.
         """
         data = self._load_data("campaigns.yaml")
-        campaigns = data.get("campaigns", [])
+        campaigns = cast(list[dict[str, Any]], data.get("campaigns", []))
 
         # Check for duplicates
         for c in campaigns:
@@ -93,7 +93,7 @@ class MarketingService(BaseService):
     def launch_campaign(self, campaign_id: str) -> dict[str, Any]:
         """Launch a marketing campaign (change status to active)."""
         data = self._load_data("campaigns.yaml")
-        campaigns = data.get("campaigns", [])
+        campaigns = cast(list[dict[str, Any]], data.get("campaigns", []))
 
         campaign = next((c for c in campaigns if c["id"] == campaign_id), None)
         if not campaign:
@@ -125,7 +125,7 @@ class MarketingService(BaseService):
     def pause_campaign(self, campaign_id: str) -> dict[str, Any]:
         """Pause a running campaign."""
         data = self._load_data("campaigns.yaml")
-        campaigns = data.get("campaigns", [])
+        campaigns = cast(list[dict[str, Any]], data.get("campaigns", []))
 
         campaign = next((c for c in campaigns if c["id"] == campaign_id), None)
         if not campaign:
@@ -152,7 +152,7 @@ class MarketingService(BaseService):
     ) -> dict[str, Any]:
         """Update campaign metrics."""
         data = self._load_data("campaigns.yaml")
-        campaigns = data.get("campaigns", [])
+        campaigns = cast(list[dict[str, Any]], data.get("campaigns", []))
 
         campaign = next((c for c in campaigns if c["id"] == campaign_id), None)
         if not campaign:
@@ -170,12 +170,12 @@ class MarketingService(BaseService):
     def get_campaign_metrics(self, campaign_id: str) -> dict[str, Any]:
         """Get metrics for a specific campaign."""
         data = self._load_data("campaigns.yaml")
-        campaigns = data.get("campaigns", [])
+        campaigns = cast(list[dict[str, Any]], data.get("campaigns", []))
 
         campaign = next((c for c in campaigns if c["id"] == campaign_id), None)
         if not campaign:
             raise ValueError(f"Campaign '{campaign_id}' not found")
-        return campaign.get("metrics", {})
+        return cast(dict[str, Any], campaign.get("metrics", {}))
 
     # ── Reporting ─────────────────────────────────────────────────────
 

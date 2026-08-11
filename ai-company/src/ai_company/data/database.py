@@ -15,7 +15,7 @@ import logging
 import sqlite3
 import threading
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 logger = logging.getLogger(__name__)
 
@@ -223,7 +223,8 @@ class Database:
             self._local.generation = self._generation
             with self._conn_lock:
                 self._conns.add(conn)
-        return self._local.conn
+            return conn
+        return cast(sqlite3.Connection, self._local.conn)
 
     def close(self) -> None:
         """Close all connections across all threads.
@@ -339,13 +340,15 @@ class Database:
     def table_count(self, table: str) -> int:
         """Return the number of rows in a table."""
         safe_table = self._validate_table_name(table)
-        row = self.fetchone(f"SELECT COUNT(*) as cnt FROM {safe_table}")
+        # safe_table validated via _validate_table_name() regex allowlist.
+        row = self.fetchone(f"SELECT COUNT(*) as cnt FROM {safe_table}")  # nosec B608
         return row["cnt"] if row else 0
 
     def export_json(self, table: str) -> str:
         """Export a table as a JSON string (useful for backward compat)."""
         safe_table = self._validate_table_name(table)
-        rows = self.fetchall(f"SELECT * FROM {safe_table}")
+        # safe_table validated via _validate_table_name() regex allowlist.
+        rows = self.fetchall(f"SELECT * FROM {safe_table}")  # nosec B608
         # Parse JSON columns back to objects
         for row in rows:
             for key, val in row.items():

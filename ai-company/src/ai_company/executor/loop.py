@@ -32,6 +32,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.audit.integration import init_audit, log_task_status
+from ai_company.dashboard.monitoring import inc_metric
 from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.executor.context import (
     AgentContext,
@@ -131,9 +132,6 @@ class Executor:
             broadcast_callback=self._make_broadcast_callback(),
             database=database,
         )
-        self.llm = LLMClient(config_path=config_path, registry_path=registry_path)
-        self.runner = ToolRunner()
-        self.hitl = HITLGate(ApprovalGate())
 
         # Cost tracking (strict caps from config/company/guardrails.yaml)
         self.cost_tracker = CostTracker(
@@ -142,6 +140,17 @@ class Executor:
             daily_budget_usd=daily_budget_usd,
             task_budget_usd=task_budget_usd,
         )
+
+        # OB5: the LLM client shares the executor's CostTracker so every
+        # usage record flows through the single JSONL + SQLite mirror path
+        # (see CostTracker.record_usage) instead of a second direct write.
+        self.llm = LLMClient(
+            config_path=config_path,
+            registry_path=registry_path,
+            cost_tracker=self.cost_tracker,
+        )
+        self.runner = ToolRunner()
+        self.hitl = HITLGate(ApprovalGate())
 
         # Scheduler for autonomous cycles
         self.scheduler = Scheduler()
@@ -225,6 +234,9 @@ class Executor:
         HITL approval (GAP-004) are resumed if a human decision has been
         recorded; otherwise they are left parked so the loop can continue.
         """
+        # Metric: count executor ticks (OB2)
+        inc_metric("executor_loop_ticks_total")
+
         # Convert due scheduled tasks into inbox tasks
         self.scheduler.create_pending_tasks(self.bus)
 
@@ -499,7 +511,7 @@ class Executor:
             except Exception:  # noqa: BLE001 - artifacts are best-effort
                 logger.exception("Artifact save failed for task %s", task.id)
 
-            # 7. Mark completed or failed
+            # 7. Mark completed, timed out, or failed
             if result.done and not result.error:
                 self._complete_task(task, TaskStatus.COMPLETED, result.final_response)
                 self.stats.tasks_succeeded += 1
@@ -512,6 +524,22 @@ class Executor:
                     tools_used=[r.tool for r in result.tool_results if r.tool],
                 )
                 logger.info("  COMPLETED: %s", result.final_response[:80])
+            elif getattr(result, "timed_out", False):
+                # O7: max-iterations exhaustion is a distinct outcome from a
+                # hard failure — persist TIMEOUT so dashboards/operators can
+                # distinguish the iteration cap being hit from a real error.
+                error_msg = result.error or "Loop did not complete"
+                self._complete_task(task, TaskStatus.TIMEOUT, error_msg)
+                self.stats.tasks_failed += 1
+                record_task_outcome(
+                    task_id=task.id,
+                    agent_id=task.receiver_id,
+                    instruction=task.instruction,
+                    status="timeout",
+                    result_summary=error_msg,
+                    tools_used=[r.tool for r in result.tool_results if r.tool],
+                )
+                logger.error("  TIMEOUT: %s", error_msg[:80])
             else:
                 error_msg = result.error or "Loop did not complete"
                 self._complete_task(task, TaskStatus.FAILED, error_msg)

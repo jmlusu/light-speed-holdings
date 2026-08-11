@@ -198,10 +198,13 @@ class EscalationManager:
         return [e for e in self.events if not e.resolved]
 
     def resolve_escalation(self, task_id: str):
+        resolved_event: Optional[EscalationEvent] = None
         for event in self.events:
             if event.task_id == task_id:
                 event.resolved = True
+                resolved_event = event
         self._save_events()
+        _audit_escalation_resolved(task_id, resolved_event)
 
     def list_rules(self) -> List[EscalationRule]:
         return self.rules
@@ -278,3 +281,33 @@ class PostmortemStore:
         )
         self.save(postmortem)
         return postmortem
+
+
+def _audit_escalation_resolved(task_id: str, event: Optional[EscalationEvent]) -> None:
+    """Best-effort audit hook for a resolved escalation (G3).
+
+    Writes an ``ESCALATION_RESOLVED`` event through the global audit writer
+    when one is initialised. Never raises — resolution stays best-effort.
+    """
+    try:
+        from ai_company.audit.events import AuditEvent, AuditEventType
+        from ai_company.audit.integration import get_writer
+
+        writer = get_writer()
+        if writer is None or event is None:
+            return
+        writer.write(
+            AuditEvent(
+                event_type=AuditEventType.ESCALATION_RESOLVED,
+                task_id=task_id,
+                agent_id=event.to_agent or event.from_agent,
+                args={
+                    "rule_id": event.rule_id,
+                    "from_agent": event.from_agent,
+                    "to_agent": event.to_agent,
+                    "reason": event.reason,
+                },
+            )
+        )
+    except Exception:  # noqa: BLE001 - audit is best-effort
+        logger.debug("audit hook skipped for escalation resolution", exc_info=True)

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+import logging.handlers
 import os
 import uuid
 from contextvars import ContextVar
@@ -180,7 +181,12 @@ def setup_logging(
 
         log_path = Path(log_file)
         log_path.parent.mkdir(parents=True, exist_ok=True)
-        file_handler = logging.FileHandler(log_path, encoding="utf-8")
+        file_handler = logging.handlers.RotatingFileHandler(
+            log_path,
+            maxBytes=10_000_000,
+            backupCount=5,
+            encoding="utf-8",
+        )
         file_handler.setLevel(level)
         file_handler.setFormatter(JSONFormatter())
         root.addHandler(file_handler)

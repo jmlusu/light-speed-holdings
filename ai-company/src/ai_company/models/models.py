@@ -41,6 +41,9 @@ class TaskStatus(str, Enum):
     WAITING_APPROVAL = "waiting_approval"
     COMPLETED = "completed"
     FAILED = "failed"
+    # O7: max-iterations exhaustion — a distinct outcome from FAILED so the
+    # executor can distinguish timeouts from hard failures.
+    TIMEOUT = "timeout"
     ESCALATED = "escalated"
     CANCELLED = "cancelled"
 

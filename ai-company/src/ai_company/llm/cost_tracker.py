@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import asdict, dataclass, field
-from datetime import date, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -149,8 +149,10 @@ class CostTracker:
         """
         cost = self._calculate_cost(model, prompt_tokens, completion_tokens)
 
+        # OB5: timestamps are UTC so the JSONL log and the SQLite mirror
+        # (CostAnalytics also writes UTC) stay consistent.
         record = UsageRecord(
-            timestamp=datetime.now().isoformat(),
+            timestamp=datetime.now(timezone.utc).isoformat(),
             model=model,
             provider=provider,
             agent_name=agent_name,
@@ -162,8 +164,8 @@ class CostTracker:
             metadata=metadata or {},
         )
 
-        # Update accumulators
-        day_key = date.today().isoformat()
+        # Update accumulators (UTC day key matches the timestamp prefix)
+        day_key = datetime.now(timezone.utc).date().isoformat()
         self._daily_cost[day_key] = self._daily_cost.get(day_key, 0.0) + cost
         self._task_costs[task_id] = self._task_costs.get(task_id, 0.0) + cost
         self._records.append(record)
@@ -208,7 +210,7 @@ class CostTracker:
             ``(allowed, reason)`` tuple. ``allowed`` is True if the call
             can proceed.
         """
-        day_key = date.today().isoformat()
+        day_key = datetime.now(timezone.utc).date().isoformat()
 
         # Check daily budget
         if self.daily_budget is not None:
@@ -240,7 +242,7 @@ class CostTracker:
         """
         if self.daily_budget is None:
             return False
-        day_key = date.today().isoformat()
+        day_key = datetime.now(timezone.utc).date().isoformat()
         current_daily = self._daily_cost.get(day_key, 0.0)
         return current_daily >= self.daily_budget
 
@@ -254,7 +256,7 @@ class CostTracker:
             Dict with total_cost_usd, total_prompt_tokens,
             total_completion_tokens, call_count, and per-model breakdown.
         """
-        target_day = day or date.today().isoformat()
+        target_day = day or datetime.now(timezone.utc).date().isoformat()
 
         total_cost = 0.0
         total_prompt = 0

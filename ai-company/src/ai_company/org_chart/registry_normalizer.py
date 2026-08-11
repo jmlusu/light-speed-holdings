@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 import yaml
 from pydantic import BaseModel, Field
@@ -77,7 +77,7 @@ class RegistryNormalizer:
         with open(registry_file, "r") as f:
             data = yaml.safe_load(f)
 
-        return data.get("company", {}).get("agents", [])
+        return cast(List[Dict[str, Any]], data.get("company", {}).get("agents", []))
 
     def extract_department_context(self, registry_data: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Extract department context from registry data."""
@@ -143,7 +143,8 @@ class RegistryNormalizer:
     def _calculate_department_capacity(self, dept_info: Dict[str, Any]) -> int:
         """Calculate department utilization capacity."""
         base_capacity = 70
-        span_factor = min(dept_info["span_of_control"] * 5, 30)
+        span_of_control = dept_info.get("span_of_control", 0)
+        span_factor = min(cast(int, span_of_control) * 5, 30)
         return min(base_capacity + span_factor, 100)
 
     def build_reporting_chains(

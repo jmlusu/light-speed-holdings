@@ -19,7 +19,7 @@ import os
 import threading
 import time
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 import httpx
 
@@ -210,4 +210,4 @@ class OAuth2TokenManager:
         token = data.get("access_token")
         if not token:
             raise OAuth2Error("Token endpoint response missing access_token")
-        return data
+        return cast(dict[str, Any], data)

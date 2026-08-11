@@ -8,7 +8,7 @@ import re
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
@@ -376,7 +376,7 @@ def _file_agent_summary(agent_id: str, days: int = 30) -> dict[str, Any]:
     """File-derived single-agent summary (mirrors ``agent_summary``)."""
     for row in _file_agent_analytics(days)["leaderboard"]:
         if row["agent_id"] == agent_id:
-            return row
+            return cast(dict[str, Any], row)
     return {
         "agent_id": agent_id,
         "period_days": days,
@@ -1061,7 +1061,7 @@ def list_model_tiers() -> list[TierInfo]:
 def list_scheduled() -> list[dict]:
     """List all scheduled and recurring tasks."""
     data = _load_yaml("orchestrator/scheduler.yaml")
-    return data.get("tasks", [])
+    return cast(list[dict], data.get("tasks", []))
 
 
 # ── Department KPIs ────────────────────────────────────────────────
@@ -1076,14 +1076,14 @@ def get_department_kpis(dept_name: str) -> dict:
         raise HTTPException(
             status_code=404, detail=f"Department '{dept_name}' not found in KPI config"
         )
-    return departments[dept_name]
+    return cast(dict, departments[dept_name])
 
 
 @router.get("/kpis")
 def list_all_kpis() -> dict:
     """Return all department KPI definitions."""
     kpi_data = _load_yaml("company/config/kpis.yaml")
-    return kpi_data.get("departments", {})
+    return cast(dict, kpi_data.get("departments", {}))
 
 
 @router.get("/kpis/summary")

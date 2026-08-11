@@ -103,11 +103,17 @@ class TestToolDefaultTiers:
     def test_execute_is_single_approver(self) -> None:
         assert TOOL_DEFAULT_TIERS["execute"] == ApprovalTier.SINGLE_APPROVER
 
-    def test_code_interpreter_is_single_approver(self) -> None:
-        assert TOOL_DEFAULT_TIERS["code_interpreter"] == ApprovalTier.SINGLE_APPROVER
+    def test_bash_is_single_approver(self) -> None:
+        assert TOOL_DEFAULT_TIERS["bash"] == ApprovalTier.SINGLE_APPROVER
+
+    def test_webfetch_is_auto_approve(self) -> None:
+        assert TOOL_DEFAULT_TIERS["webfetch"] == ApprovalTier.AUTO_APPROVE
 
     def test_delegate_is_notify(self) -> None:
         assert TOOL_DEFAULT_TIERS["delegate"] == ApprovalTier.NOTIFY
+
+    def test_task_is_notify(self) -> None:
+        assert TOOL_DEFAULT_TIERS["task"] == ApprovalTier.NOTIFY
 
     def test_edit_is_single_approver(self) -> None:
         assert TOOL_DEFAULT_TIERS["edit"] == ApprovalTier.SINGLE_APPROVER
@@ -144,9 +150,13 @@ class TestClassifyBasic:
         result = classify_tool_action("execute", {"command": "pytest tests/"})
         assert result == ApprovalTier.SINGLE_APPROVER
 
-    def test_code_interpreter_basic(self) -> None:
-        result = classify_tool_action("code_interpreter", {"code": "print('hello')"})
+    def test_bash_basic(self) -> None:
+        result = classify_tool_action("bash", {"command": "pytest tests/"})
         assert result == ApprovalTier.SINGLE_APPROVER
+
+    def test_webfetch_classifies_as_auto(self) -> None:
+        result = classify_tool_action("webfetch", {"url": "https://example.com"})
+        assert result == ApprovalTier.AUTO_APPROVE
 
     def test_delegate_classifies_as_notify(self) -> None:
         result = classify_tool_action("delegate", {"agent_id": "specialist-1"})
@@ -244,9 +254,9 @@ class TestPathEscalation:
         result = classify_tool_action("edit", {"filePath": "/secrets/api_key.txt"})
         assert result == ApprovalTier.CEO_ONLY
 
-    def test_code_interpreter_on_secret_file_escalates(self) -> None:
+    def test_bash_on_secret_file_escalates(self) -> None:
         result = classify_tool_action(
-            "code_interpreter",
+            "bash",
             {"path": "config/secrets/db_password.txt"},
         )
         assert result == ApprovalTier.CEO_ONLY

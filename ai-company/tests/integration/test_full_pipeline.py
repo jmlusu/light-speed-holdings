@@ -80,15 +80,15 @@ class TestFullPipeline:
                 side_effect=Exception("LLM unavailable"),
             ),
         ):
-                task = Task(
-                    id="e2e-fail-001",
-                    sender_id="human-ceo",
-                    receiver_id="test-agent",
-                    instruction="Failing task",
-                    priority=TaskPriority.LOW,
-                )
-                bus.send_task(task)
-                count = executor.tick()
+            task = Task(
+                id="e2e-fail-001",
+                sender_id="human-ceo",
+                receiver_id="test-agent",
+                instruction="Failing task",
+                priority=TaskPriority.LOW,
+            )
+            bus.send_task(task)
+            count = executor.tick()
 
         assert count >= 1
         updated = bus.get_task_by_id("e2e-fail-001")
@@ -266,8 +266,8 @@ class TestFullPipeline:
 
         updated = bus.get_task_by_id("e2e-maxiter-001")
         assert updated is not None
-        # Should be FAILED because loop ran out of iterations
-        assert updated.status == TaskStatus.FAILED
+        # O7: max-iterations exhaustion is a TIMEOUT, distinct from a hard failure
+        assert updated.status == TaskStatus.TIMEOUT
 
     def test_task_status_transitions(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Verify task goes through pending -> in_progress -> completed."""

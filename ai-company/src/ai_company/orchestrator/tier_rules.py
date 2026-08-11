@@ -184,9 +184,13 @@ TOOL_DEFAULT_TIERS: dict[str, ApprovalTier] = {
     "grep": ApprovalTier.AUTO_APPROVE,
     "write": ApprovalTier.SINGLE_APPROVER,
     "execute": ApprovalTier.SINGLE_APPROVER,
-    "code_interpreter": ApprovalTier.SINGLE_APPROVER,
+    "bash": ApprovalTier.SINGLE_APPROVER,
     "delegate": ApprovalTier.NOTIFY,
+    "task": ApprovalTier.NOTIFY,
     "edit": ApprovalTier.SINGLE_APPROVER,
+    "webfetch": ApprovalTier.AUTO_APPROVE,
+    "web_search": ApprovalTier.AUTO_APPROVE,
+    "websearch": ApprovalTier.AUTO_APPROVE,
     "glob": ApprovalTier.AUTO_APPROVE,
     "search": ApprovalTier.AUTO_APPROVE,
     "ping": ApprovalTier.AUTO_APPROVE,
@@ -288,9 +292,9 @@ def _check_sensitive_path(args: dict[str, Any], tool: str = "") -> int:
 
     For ``write``/``edit`` only values under path-bearing keys are inspected —
     free-form prose (e.g. a write ``content`` body that mentions ``security/``
-    or ``Vault/K8s``) is not treated as a path.  For ``execute``/
-    ``code_interpreter`` every string is inspected because commands and code
-    embed file paths inline (e.g. ``cat config/secrets/api_key.txt``).
+    or ``Vault/K8s``) is not treated as a path.  For ``execute``/``bash`` every
+    string is inspected because commands and code embed file paths inline
+    (e.g. ``cat config/secrets/api_key.txt``).
 
     Returns:
         - 4 if the path matches a CEO-only pattern
@@ -301,7 +305,7 @@ def _check_sensitive_path(args: dict[str, Any], tool: str = "") -> int:
     """
     # Collect string arguments that could be file paths.
     candidates: list[str] = []
-    if tool in ("execute", "code_interpreter"):
+    if tool in ("execute", "bash"):
         # Commands/code embed paths inline — inspect every string value.
         for v in args.values():
             if isinstance(v, str):
@@ -440,18 +444,18 @@ def classify_tool_action(
     default_tier = TOOL_DEFAULT_TIERS.get(tool, ApprovalTier.SINGLE_APPROVER)
     raw_tier = int(default_tier)
 
-    # Path-based analysis (applies to write, edit, code_interpreter, execute).
+    # Path-based analysis (applies to write, edit, execute, bash).
     # The path tier can both escalate (for sensitive paths) and de-escalate
     # (for config/doc paths that are inherently low-risk).
-    if tool in ("write", "edit", "code_interpreter", "execute"):
+    if tool in ("write", "edit", "execute", "bash"):
         path_tier = _check_sensitive_path(args, tool=tool)
         if path_tier > 0:
             # Path tier fully determines the raw tier for sensitive/production
             # paths (escalate) and for config/doc paths (de-escalate).
             raw_tier = path_tier
 
-    # Command-based escalation (applies to execute).
-    if tool == "execute" and "command" in args:
+    # Command-based escalation (applies to execute/bash).
+    if tool in ("execute", "bash") and "command" in args:
         cmd = args["command"]
         if isinstance(cmd, str):
             command_tier = _check_command_sensitivity(cmd)

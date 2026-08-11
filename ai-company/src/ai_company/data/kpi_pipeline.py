@@ -129,10 +129,11 @@ class KPIPipeline:
         params.append(limit)
 
         return self._db.fetchall(
+            # {where} is built from literal conditions; values parameterized.
             f"""SELECT * FROM kpi_values
                 WHERE {where}
                 ORDER BY timestamp DESC
-                LIMIT ?""",
+                LIMIT ?""",  # nosec B608
             tuple(params),
         )
 
@@ -211,6 +212,7 @@ class KPIPipeline:
             raise ValueError(f"Unknown period: {period}")
 
         rows = self._db.fetchall(
+            # {where}/{bucket_expr} come from literal whitelisted fragments; values parameterized.
             f"""SELECT
                     kpi_key,
                     {bucket_expr} as period_start,
@@ -222,7 +224,7 @@ class KPIPipeline:
                 FROM kpi_values
                 WHERE {where}
                 GROUP BY kpi_key, period_start
-                ORDER BY kpi_key, period_start""",
+                ORDER BY kpi_key, period_start""",  # nosec B608
             tuple(params),
         )
 

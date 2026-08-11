@@ -25,6 +25,19 @@ class AuditEventType(str, Enum):
     ERROR = "error"
     DELEGATION = "delegation"
     API_KEY_ROTATED = "api_key_rotated"
+    # Governance lifecycle (G3): approvals, policy, board, retention, secrets
+    APPROVAL_REQUESTED = "approval_requested"
+    APPROVAL_RESOLVED = "approval_resolved"
+    POLICY_CHANGE = "policy_change"
+    BOARD_VOTE = "board_vote"
+    BOARD_MEETING = "board_meeting"
+    RETENTION_APPLIED = "retention_applied"
+    RETENTION_VIOLATION = "retention_violation"
+    RISK_REGISTER_UPDATE = "risk_register_update"
+    SECRET_ROTATED = "secret_rotated"
+    CONFIG_CHANGE = "config_change"
+    ESCALATION_RESOLVED = "escalation_resolved"
+    TIER_OVERRIDE = "tier_override"
 
 
 class AuditEvent(BaseModel):

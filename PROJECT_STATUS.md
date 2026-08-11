@@ -1,13 +1,13 @@
 # PROJECT STATUS — Light Speed Holdings / AI Company Builder
 
-> **Last verified:** 2026-08-07
-> **Source of truth:** This file is derived from `ai-company/docs/STATUS.md`, `ai-company/docs/ARCHITECTURE-GAPS.md`, `ai-company/docs/PRODUCT-ROADMAP.md`, and `ai-company/.ai-company/state/`. All counts below were re-verified against the live tree on 2026-08-07.
+> **Last verified:** 2026-08-11
+> **Source of truth:** Derived from `ai-company/docs/STATUS.md`, `ai-company/docs/ARCHITECTURE.md`, `ai-company/docs/ARCHITECTURE-GAPS.md`, `ai-company/docs/AUDIT-FIXES-2026-08-10.md`, `ai-company/docs/CODE_REVIEW_2026-08-10.md`, `ai-company/docs/PRODUCT-ROADMAP.md`, and `ai-company/.ai-company/state/`. All counts re-verified against the live tree on 2026-08-11 (ruff, mypy, pytest, `ai-company --help`, git, file counts).
 
 ---
 
 ## 1. Current Architecture
 
-The project is a **Python 3.12+ CLI tool** (`ai-company`, v0.1.0, packaged with setuptools, environments managed with **uv**) that generates and orchestrates an AI agent hierarchy from YAML configuration.
+The project is a **Python 3.12+ CLI tool** (`ai-company`, `pyproject.toml` version `0.1.0`, packaged with setuptools, environments managed with **uv**) that generates and orchestrates an AI agent hierarchy from YAML configuration. No web server beyond the optional FastAPI dashboard.
 
 ### Core workflow
 
@@ -15,42 +15,40 @@ The project is a **Python 3.12+ CLI tool** (`ai-company`, v0.1.0, packaged with 
 company-registry.yaml (127 agents, 18 departments)
         │
         ▼
-  RegistryLoader → Parser → Resolver → Validator (registry/)
+  RegistryLoader → Parser → Resolver → Validator (registry/) — anchored to package root (AI_COMPANY_ROOT override, CWD-independent)
         │
         ▼
-  CompanyRegistry (Pydantic models, models/models.py)
+  CompanyRegistry (Pydantic models, models/)
         │
         ├──► BootstrapEngine (builder/) → .opencode/agents/*.md via 13 Jinja2 templates
-        │         └──► company/*.yaml (derived configs)
+        │         └──► company/*.yaml (derived configs), company/agent-registry.json
         │
         ├──► Executor (executor/loop.py)
-        │         ├──► MessageBus (orchestrator/message_bus.py) — .opencode/inbox.json
+        │         ├──► MessageBus (orchestrator/message_bus.py) — .opencode/inbox.json via FileStore (atomic + locking)
         │         ├──► AgentLoop (executor/agent_loop.py) — ReAct, multi-turn LLM↔tool
         │         ├──► ToolRunner + HITLGate + tier_rules (5-tier classification)
         │         ├──► DeadLetterQueue, MemoryEngine recall, AuditWriter
-        │         └──► CostTracker + CircuitBreaker (llm/)
+        │         └──► CostTracker (SQLite mirror) + CircuitBreaker (llm/)
         │
-        ├──► DecisionEngine (decision/) — approvals, risk assessment, decision trees
-        ├──► WorkflowEngine (workflow/) — 9 workflows, step tracking, SLA
-        ├──► GraphEngine (graph/) — 4 graph types, BFS pathfinding
-        └──► Dashboard (dashboard/) — FastAPI REST + WebSocket, 7-department KPI collectors
+        ├──► DecisionEngine (decision/), WorkflowEngine (workflow/, 9 workflows), GraphEngine (graph/, 4 graph types)
+        └──► Dashboard (dashboard/) — FastAPI REST + WebSocket, 7-department KPI collectors, governance/retention
 ```
 
-### Module map (`ai-company/src/ai_company/`, 175 `.py` files, 26 subpackages)
+### Module map (`ai-company/src/ai_company/`, **182 `.py` files**, 26+ subpackages)
 
 | Package | Purpose |
 |---------|---------|
-| `cli/` | Typer app — **29 top-level commands** (24 Typer groups + 5 direct: `sop`, `raci`, `sync-registry`, `generate`, `status`) |
-| `executor/` | Agentic loop, tool runner, HITL gates, dead-letter queue, daemon |
-| `llm/` | Multi-provider client (base, ollama, openai-compatible), cost tracker, circuit breaker, JSON parser |
+| `cli/` | Typer app — **30 top-level commands** verified 2026-08-11 (`sop`, `raci`, `sync-registry`, `generate`, `status`, `agents` [incl. `validate`], `board`, `bootstrap`, `governance`, `workflows`, `memory`, `executives`, `departments`, `doctor`, `marketing`, `sales`, `customer-success`, `legal`, `llm`, `hr`, `specialists`, `orchestrator`, `models`, `dashboard`, `executor`, `company`, `decision`, `graph`, `security`, `validate`). Lazy sub-app registration (`_LAZY_SUB_APPS`) |
+| `executor/` | Agentic loop, tool runner, HITL gates, dead-letter queue, daemon, task leases + store locking |
+| `llm/` | Multi-provider client, `providers/` (openai-compatible, ollama), **`oauth2.py`** (`OAuth2TokenManager`), cost tracker, circuit breaker (honors `ProviderErrorCategory`), JSON parser |
 | `orchestrator/` | MessageBus, scheduler, escalation/postmortem, approval, briefing, tier rules, agent protocol |
-| `models/` | ~55 Pydantic domain models + 8 enums |
-| `registry/` | Loader, parser, resolver, validator, sync (19 YAML configs) |
-| `builder/` + `bootstrap/` | BootstrapEngine (full company generation) + **DevBootstrap** (idempotent dev-machine provisioning, new) |
+| `models/` | ~55 Pydantic domain models + enums (split across `task.py`, `company.py`, `board.py`, `executive.py`, `department.py`, `agent.py`, `workflow.py`, etc.) |
+| `registry/` | Loader, parser, resolver, validator, sync (19 YAML configs); package-root anchored |
+| `builder/` + `bootstrap/` | BootstrapEngine (full company generation) + DevBootstrap (idempotent dev-machine provisioning) |
 | `decision/`, `workflow/`, `graph/` | Decision, workflow, and graph engines |
-| `memory/` | 6-type memory store (episodic, semantic, procedural, relational, temporal, aggregate) + consolidation + vector store |
+| `memory/` | 6-type memory store + consolidation + vector store |
 | `audit/` | JSONL audit trail (events, writer, reader, executor integration) |
-| `dashboard/` | FastAPI app, REST API, WebSocket, KPI collectors, analytics, retention, mobile API |
+| `dashboard/` | FastAPI app (fail-closed auth), REST API, WebSocket, KPI collectors, analytics, governance/retention, mobile API |
 | `doctor/` | System diagnostics |
 | `security/` | Secrets scanner, PII detector, memory encryption, key manager, content filter |
 | `ml/` | Embeddings, anomaly detection, performance, predictive scaling, prompt optimizer |
@@ -59,110 +57,137 @@ company-registry.yaml (127 agents, 18 departments)
 | `store/` | Atomic file store + file locking (msvcrt/fcntl) |
 | `org_chart/` | Org chart generation + registry normalizer |
 | `ai/`, `prompts/` | Eval benchmarks, prompt registry, LLM evaluators |
-| `config/`, `utils/` | Config loader, logging/file utilities |
+| `config/`, `utils/` | Config loader, logging/file utilities (structured JSON logging + correlation IDs) |
 
 ### Key runtime facts
 
-- **127 agents** defined in `ai-company/company-registry.yaml`, 127 generated `.md` files in `ai-company/.opencode/agents/` — registry → JSON → generated agents are in sync.
-- Agent naming convention: registry IDs use underscores (`board_chair`), generated files and config references use hyphens (`board-chair`). `ai-company validate` checks config references resolve to generated files.
-- Root `.opencode/agents/` still holds **134 `.md` files** — 127 canonical (duplicates of `ai-company/.opencode/agents/`) + **7 legacy underscore duplicates** (`compliance_officer`, `customer_success_owner`, `data_scientist`, `employee_experience_lead`, `financial_analyst`, `industry_analyst_relations_manager`, `learning_development_lead`) that are byte-identical to their hyphen-named counterparts.
-- Cost tracker persists to SQLite (migrated 2026-07-23).
+- **127 agents** in `ai-company/company-registry.yaml`; **127 generated `.md` files** in `ai-company/.opencode/agents/` **and** root `.opencode/agents/` (the 7 legacy underscore duplicates and root-level surplus files were removed since 2026-08-07 — root now holds exactly 127).
+- Agent naming convention: registry IDs use underscores (`board_chair`); generated files/config references use hyphens (`board-chair`). `ai-company validate` checks config references resolve to generated files.
+- **Canonical tool vocabulary** (2026-08-10): `read` (127 agents), `edit` (120), `grep`/`list` (102), `bash` (77), `webfetch` (17), `task` (1). Legacy aliases (`websearch`/`web_search` → `webfetch`, `code_interpreter` → `bash`, `write` → `edit`, `delegate` → `task`) mapped in `generator.py::_TOOL_MAP`.
+- **Shared operating standards**: `templates/agents/operating-standards.md` → `.opencode/operating-standards.md`; all 127 cards reference it instead of inlining 5 byte-identical principles. `executor/context.py` resolves principles from the shared doc with a backward-compatible fallback.
+- Registry loading is **CWD-independent** (anchored to package root, `AI_COMPANY_ROOT` env override).
+- Cost tracker + task/audit mirrors persist to SQLite.
+- Git: branch `main`; only tag present is `recovery-2026-07-26` (docs reference a `v0.3.0` tag, not present in current repo history).
 
-### Verified quality gates (2026-08-07)
+### Verified quality gates (2026-08-11)
 
-- **pytest:** 1494 tests collected (`tests/` — 78 unit, 13 integration, 4 e2e, 1 performance, 9 root-level).
+- **pytest:** `1805/1858 tests collected` (53 e2e deselected) — no collection errors (`test_security.py`, `test_ml.py` now collect clean; 109 tests between them).
 - **ruff:** clean (`All checks passed`).
-- **mypy:** clean (`Success: no issues found in 177 source files`).
+- **mypy:** clean (`Success: no issues found in 181 source files`).
+- **CLI:** `ai-company --help` renders 30 top-level commands.
 
 ---
 
 ## 2. Completed Work
 
 ### Milestones
-- **Sprint 1 — Complete:** Code hardening + audit trail (Track B/C), file store with atomic writes + locking, tier rules integration.
-- **Sprint 2 — Complete:** 13/13 items done (2026-07-21); executor → MessageBus routing, HITL non-blocking gates, escalation persistence, cost tracker.
-- **Sprint 3 — Complete:** 8/8 items done (2026-07-22); GAP-014/015 closure, E2E pipeline test, 30 WebSocket tests, governance CLI (7 commands), memory CLI, dashboard API tests, org-chart test rewrite (832 lines, 56 tests). **v0.3.0 tagged 2026-07-22.**
-- **Sprint 4 — IN PROGRESS.** Structured logging with correlation IDs (GAP-018) closed 2026-08-07; spec validation CLI, daemon mode, OAuth2/key rotation, token counting still open.
+- **Sprint 1 — Complete:** Code hardening + audit trail (GAP-001/002/006/011/012/014), FileStore atomic writes + locking, tier-rules integration.
+- **Sprint 2 — Complete (2026-07-21):** 13/13 items; executor → MessageBus routing, non-blocking HITL gates, escalation persistence, cost tracker, shell-injection hardening (GAP-003/004/009/010/015/016).
+- **Sprint 3 — Complete (2026-07-22):** 8/8 items; GAP-014/015/017/020 closure, E2E pipeline test, 30 WebSocket tests, governance CLI, memory CLI, org-chart test rewrite (56 tests). **1205 tests**.
+- **Sprint 4 — Complete (2026-08-08):** Quality & completeness. GAP-019 (agent spec validation — `agents validate` CLI + `AgentContext.validate()`) **closed**, daemon lifecycle, key rotation, token counting, CLI type hints/docstrings, dashboard security hardening, 22 new agent skills + manifest, real KPI computation (`scripts/compute_company_kpis.py`), T012 `llm usage` + LLM budget caps/auto-suspend. Commits `d11608f`, `359489d`, `4765f76`. **1745 tests**.
+- **Sprint 5 / T009 — Complete (2026-08-09):** OAuth2 client-credentials — `OAuth2TokenManager` (`llm/oauth2.py`), in-memory token cache with TTL, fail-closed, wired into `OpenAICompatibleProvider` + `LLMClient` (opt-in `oauth2:` block per provider). **1778 tests**.
+- **Sprint 6 — Complete (2026-08-10):** Audit fixes + runtime hardening. Commits `3f587e9` (registry anchored to package root, lazy CLI, canonical tool vocabulary, operating-standards dedup), `f4d2867` (`ProviderErrorCategory`, circuit breaker ignores `auth`, bounded cost tracker), `d076303` (task leases, store locking, DLQ re-enqueue delegation), `5f32e6d` (E2E Alpine `$data` migration). ECL archived at `harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening`. **1805 tests**. See `docs/AUDIT-FIXES-2026-08-10.md`.
+- **Post-Sprint-6 commits (not yet ECL-archived):** `9c6a7d8` (CI lazy-help ANSI-safe + Reports-To drift), `80bd38f` (root-aware MessageBus/AuditWriter/service defaults), `b00acb0` (ML embedding test skip when HF download unavailable).
 
 ### Feature inventory
-- 29-command CLI surface, 7 department KPI collectors (engineering, hr, marketing, sales, customer_success, legal, finance).
-- Governance layer: autonomous GitHub Action (cron every 6 h), postmortem store/template/CLI, SOPs (incident-response, deployment, hr-onboarding, budget-approval), RACI matrices (hiring, escalation, deployment).
-- Agent ecosystem: **53 new roles added 2026-07-21** across all departments (4 phases); all 127 agents deployed and invokable via `@` in OpenCode.
-- Security: memory encryption + HKDF key derivation (salt mixing removed), InvalidTag catch on decrypt, blind `Exception` → specific `ValueError`/`OSError` cleanup, secret scanner, PII detector, content filter.
-- Engineering: migrated to **uv** package manager (2026-08-06), ruff exception-handling rules applied, runtime/generated artifacts untracked, DevBootstrap provisioning added (new, uncommitted).
+- **30-command CLI** surface; lazy imports keep help fast.
+- **Agent ecosystem:** 127 agents / 18 departments (53-role expansion 2026-07-21); all invokable via `@` in OpenCode from workspace-level `.opencode/agents/`.
+- **Governance:** autonomous GitHub Action (cron every 6 h), postmortem store/template/CLI, SOPs (incident-response, deployment, hr-onboarding, budget-approval, cost-management), RACI matrices (hiring, escalation, deployment), 5-tier approval matrix + decision framework.
+- **Dashboard & analytics:** 7-department KPI collectors, company KPIs computed from live telemetry, data retention/governance engine (`run_retention()` + `GovernanceScheduler`, `GET /api/governance`), adaptive polling, coalesced chart redraws, resilient WebSocket.
+- **Security:** dashboard auth **fail-closed by default** (`DASHBOARD_AUTH_MODE` defaults `api_key`; mutating endpoints reject when no key configured), configurable CORS + CSP, memory encryption + HKDF key derivation, secret scanner, PII detector, content filter, OAuth2, key rotation, LLM provider error classification.
+- **Observability:** structured JSON logging with correlation IDs (`logging_config.py`, `utils/logging.py`), zero `print()` in `src/`, JSONL audit trail, SQLite mirrors.
+- **CI/CD:** ruff, mypy, pytest + **72% coverage gate**, `uv audit` dependency check, **generated-files drift check**, Dependabot (weekly, GitHub Actions + pip), bandit, harness lint, quality-gate aggregator job.
+- **Engineering:** uv package manager, pre-commit hooks, DevBootstrap provisioning, ECL change harness.
 
-### Gap closure (ARCHITECTURE-GAPS.md — 20 gaps)
-- **RESOLVED (19):** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 020. GAP-005 closed 2026-08-07 — consolidation cadence verified (`test_consolidation.py`, 7 tests). GAP-011 closed 2026-08-07 — mobile_api/kpis/monitoring/data_service read via MessageBus. GAP-015 closed — retry cycling covered by `test_llm.py`. GAP-018 closed 2026-08-07 — `logging_config.py` JSON formatter + task-id correlation (`loop.py:292`), daemon structured logging, zero `print()` in `src/`, `test_logging.py` (15 tests).
-- **OPEN (1):** GAP-019 (agent spec validation).
+### Gap closure (`ARCHITECTURE-GAPS.md` — 20 gaps)
+- **RESOLVED (20/20):** GAP-001…GAP-020. GAP-019 (agent spec validation) closed in Sprint 4 — `agents validate` CLI exists (`cli/agents.py:78`) and `AgentContext.validate()` runs per spec.
+- ⚠️ `ARCHITECTURE-GAPS.md` summary table still lists GAP-019 as 🔴 Open — **stale; the live CLI has the command** (see Technical Debt → doc drift).
+
+### Code review (2026-08-10) — `docs/CODE_REVIEW_2026-08-10.md`
+- Maturity score **B+ / 8.2** (Architecture 8.5, Code Quality 8.0, Testing 8.0, Security 7.5, DevOps 8.5, Docs 8.5). Project would reach **A- / 9.0** once short-term recommendations are addressed.
+- **Resolved since the review:** dashboard auth fail-closed default (was HIGH) — `app.py:7-10,168`; test collection errors in `test_security.py`/`test_ml.py` (was MEDIUM) — both collect clean (109 tests).
 
 ---
 
 ## 3. Technical Debt
 
-Source: `.ai-company/state/TECH_DEBT.md` (TD-1…TD-10) + fresh findings.
+Source: `ai-company/.ai-company/state/TECH_DEBT.md` (TD-1…TD-10, stale as of 2026-07-16) + fresh findings + code-review follow-ups.
 
-| ID | Debt | Notes |
-|----|------|-------|
-| TD-1 | Ruff `E402` imports in `llm/client.py` | Reported fixed 2026-07-17; re-verify |
-| TD-2 | Legacy root `src/ai_company/` staging area | README says "ignore; has syntax errors"; confusing duplication |
-| TD-3 | Two `.venv` dirs (root + `ai-company/`) | Root `.venv` is used by daily-check.ps1; `ai-company/.venv` is the uv-managed project env |
-| TD-4 | `models.py` is ~607 lines with ~55 classes | Being split per-domain (models/task.py, company.py, etc.); migration partially done |
-| TD-5 | Memory uses direct file I/O | Should route through store/file_store.py |
-| TD-6 | No Dependabot / dependency update automation | `safety` available but not wired to CI |
-| TD-7 | No coverage threshold in CI | pytest-cov installed; not enforced |
-| TD-8 | No hash-check on generated files | Generator output drift not detected automatically |
-| TD-9 | Dashboard known-issue backlog | P0: auto-scroll instability (see Known Issues) |
-| TD-10 | No pre-commit enforcement on all paths | Hooks installed locally; not a CI gate |
-| — | README test counts | Fixed 2026-08-07 — README now cites 1494 tests (was "727 passing" / "Run all 1408 tests") |
-| — | Stale/duplicate artifacts | Root `.opencode/agents/` (134 vs 127), `agent-list.txt` (legacy `spec_*`/`board-*` names), root `orchestrator/` data dir, `.bak` files |
-| — | Data hygiene | `.opencode/inbox.json` contains test/pollution tasks from `marketing-service`; `harness/` ECL is initialized but inactive (INDEX.json `[]`, no active change, no pending evolution) |
-| — | Doc drift (partially fixed 2026-08-07) | Root README/AGENTS.md links repointed to `ai-company/docs/`; `ai-company/docs/DEVELOPMENT.md` created; gap statuses + test counts reconciled. Remaining: several planning docs still stale vs. per-item status flags |
-| — | In-flight uncommitted work | Modified: `.github/workflows/autonomous.yml`, `daily-check.ps1`; deleted `ai-company/.github/workflows/{autonomous,ci}.yml`; untracked `bootstrap/`, `cli/bootstrap.py`, `test_dev_bootstrap.py` |
+| ID | Debt | Status (2026-08-11) |
+|----|------|---------------------|
+| TD-1 | Ruff `E402` imports in `llm/client.py` | ✅ Resolved — ruff clean on full `src/` |
+| TD-2 | Legacy root `src/ai_company/` staging area | ❌ Open — remove; confusing duplication |
+| TD-3 | Two `.venv` dirs (root + `ai-company/`) | ❌ Open — root env used by `daily-check.ps1` |
+| TD-4 | `models.py` single file (~607 lines) | 🔶 Partially split (`models/task.py`, `company.py`, etc.); finish migration |
+| TD-5 | Memory engine uses direct file I/O | ❌ Open — should route through `store/file_store.py` |
+| TD-6 | No Dependabot | ✅ Resolved — `.github/dependabot.yml` (weekly, GitHub Actions + pip) |
+| TD-7 | No coverage threshold in CI | ✅ Resolved — 72% gate in `ci.yml` |
+| TD-8 | No hash-check on generated files | ✅ Resolved — `generated-check` CI job (`git diff --exit-code`) |
+| TD-9 | Dashboard known-issue backlog | 🔶 Mostly resolved (adaptive polling, coalesced redraws, resilient WS); residual polish |
+| TD-10 | No pre-commit enforcement in CI | 🔶 Partial — hooks local only; bandit + ruff + mypy run as CI jobs instead |
+| NEW | **Runtime tool-vocabulary gap** — `executor/tool_runner.py` still includes `code_interpreter`; no `webfetch`/`web_search` runtime tool, while cards advertise `webfetch` | Flagged in AUDIT-FIXES as pre-existing follow-up |
+| NEW | **Legacy module duplication** — `builder.py`, `registry.py`, `graph.py` coexist with packages | Code review finding #2 (HIGH); deprecate or remove |
+| NEW | **HITL approval expiry sweep** — pending approvals never auto-expire | Code review finding #5 (MEDIUM) |
+| NEW | **mypy not strict** — `warn_return_any` off; stubs missing for sentence-transformers/scikit-learn | Code review finding #6 (MEDIUM) |
+| NEW | **Coverage target** 72% < 80% goal (target 85% on executor/LLM/HITL) | Code review recommendation #6 |
+| NEW | **Generator duplication** — `_render_agent()` helper not extracted (`generator.py:248-346`) | Code review finding #7 (LOW) |
+| NEW | **Doc drift** — `ARCHITECTURE-GAPS.md` summary still marks GAP-019 open; README cites "1528 tests passing" and "1494 tests" comment (actual 1805); `.ai-company/state/*` (ROADMAP, TECH_DEBT, NEXT_ACTIONS, CURRENT_SPRINT) stale since 2026-07-16/17 | Reconcile next doc pass |
+| NEW | **Version/release drift** — `pyproject.toml` version `0.1.0`; docs reference `v0.3.0` tag; only git tag present is `recovery-2026-07-26` | Decide canonical versioning; consider re-tag |
+| NEW | **In-flight uncommitted work** — 4 workflow files modified: `astral-sh/setup-uv@v6` → `@v7` (`.github/workflows/{autonomous,ci,monitoring,release}.yml`) | Commit/park |
 
 ---
 
 ## 4. Roadmap
 
-Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.ai-company/state/ROADMAP.md`.
+Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.ai-company/state/ROADMAP.md` (stale) + `docs/CODE_REVIEW_2026-08-10.md` roadmap.
 
 | Phase | Name | Theme | Status |
 |-------|------|-------|--------|
 | 1 | Foundation | Structure, CLI, registry, generator | ✅ Complete |
 | 2 | Core Operations | MessageBus, models, orchestrator, tests | ✅ Complete |
-| 3 | Growth Functions | Marketing, Sales, CS, Legal, HR modules | ✅ Substantially complete (all 5 service modules + KPIs exist) |
-| 4 | Specialist Agents | Financial analyst, DevOps, data scientist, compliance | Mostly complete via 53-role expansion |
-| 5 | Autonomous Coordination | Scheduled cycles, escalation, approval gates, self-healing | Partial — 6 h GitHub Actions cycle exists (autonomous.yml) |
-| 6 | Self-Improving | Learning, feedback loops, agent-led improvement | Planned |
-| — | **Sprint 4** | **Quality & completeness** | 🟡 **IN PROGRESS** (GAP-018 done; spec validation, daemon mode, OAuth2, token counting open) |
+| 3 | Growth Functions | Marketing, Sales, CS, Legal, HR modules | ✅ Substantially complete (all 5 service modules + KPIs) |
+| 4 | Specialist Agents | Financial analyst, DevOps, data scientist, compliance | ✅ Mostly complete via 53-role expansion |
+| 5 | Autonomous Coordination | Scheduled cycles, escalation, approval gates, self-healing | 🔶 Partial — 6 h GitHub Actions cycle + daemon exist; scheduled-cycle daemon mode (S3-06) deferred |
+| 6 | Self-Improving | Learning, feedback loops, agent-led improvement | ⬜ Planned |
+| — | **Sprint 7 (next)** | Code-review follow-ups + tool-vocabulary runtime sync | 🟡 NOT STARTED (proposed scope below) |
 
-### Sprint 4 scope (from `ai-company/docs/CHANGELOG.md` Unreleased + STATUS.md)
-- ~~Structured logging with correlation IDs (GAP-018)~~ — ✅ done 2026-08-07
-- Scheduled cycle daemon mode (S3-06)
-- Agent spec validation CLI
-- CLI type hints/docstrings
-- OAuth2 / key rotation
-- Memory encryption (partially done — `security/memory_encryption.py` exists)
-- Token counting integration
+### Sprint status
+| Sprint | Status | Tests | Notes |
+|--------|--------|-------|-------|
+| 1 | ✅ COMPLETE | — | Code hardening + audit trail |
+| 2 | ✅ COMPLETE | 1093 | 13 items |
+| 3 | ✅ COMPLETE | 1205 | 8 items |
+| 4 | ✅ COMPLETE | 1745 | Quality & completeness (GAP-019) |
+| 5 | ✅ COMPLETE | 1778 | T009 OAuth2 client-credentials |
+| 6 | ✅ COMPLETE | 1805 | Audit fixes + runtime hardening |
 
-### Phase 5/6 backlog (from `.ai-company/state/NEXT_ACTIONS.md`)
-- Performance analytics, adaptive workflows, multi-tenant support, plugin architecture, marketplace.
+### Deferred / open items (from `docs/STATUS.md` Remaining Work)
+- Scheduled-cycle daemon mode (S3-06).
+- Runtime tool-vocabulary sync (`executor/tool_runner.py` — implement `webfetch`/`web_search`, remove `code_interpreter`).
+- Code-review follow-ups (`docs/CODE_REVIEW_2026-08-10.md`): dashboard auth fail-closed default (✅ done), HITL approval expiry sweep, legacy module deprecation, mypy strict mode.
+
+### Code-review recommendations roadmap
+- **Short-term (1-2 sprints):** dashboard auth fail-closed (✅ done); HITL expiration sweep; remove/deprecate legacy modules.
+- **Medium-term (2-4 sprints):** mypy `warn_return_any` + type stubs; coverage 72% → 80% (>85% executor/LLM/HITL); property-based tests (Hypothesis for MessageBus/ApprovalGate/EscalationManager); `_render_agent()` refactor.
+- **Long-term (4+ sprints):** end-to-end stress test (FileStore locking under load); CD pipeline to staging on merge to main; async executor consideration.
 
 ### Backlog
-- `ai-company/docs/BACKLOG.md`: 48 items / 267 pts (MoSCoW), M/S-series items mapped to GAPs.
-- `ai-company/docs/PHASE-4-PLAN.md`, `PHASE-5-PLAN.md`: Phase 5 autonomous coordination planned.
+- `ai-company/docs/BACKLOG.md`: 48 items / 267 pts (MoSCoW), M/S-series mapped to GAPs.
+- `ai-company/docs/PHASE-4-PLAN.md`, `PHASE-5-PLAN.md`: Phase 5 autonomous coordination plans.
+- `ai-company/.ai-company/state/NEXT_ACTIONS.md`: performance analytics, adaptive workflows, multi-tenant, plugin architecture, marketplace (stale — re-groom).
 
 ---
 
 ## 5. Priorities
 
-1. ~~**Commit/park in-flight work**~~ — ✅ done 2026-08-07 (P1 commits `b633a54`…`ccf1650`).
-2. ~~**Start Sprint 4 (quality & completeness)**~~ — in progress; GAP-018 structured logging done (2026-08-07); next: agent spec validation CLI, token counting. (Backlog: 48 items/267 pts.)
-3. ~~**GAP-001 closed**~~ — ✅ done (2026-08-07) — executor routes all inbox I/O through `MessageBus` (`loop.py:197,223,247,297,382,424`).
-4. ~~**Finish GAP-005/GAP-011**~~ — ✅ done (2026-08-07) — consolidation cadence verified (`test_consolidation.py`); dashboard/mobile read paths through MessageBus (`mobile_api.py`, `kpis/*`, `monitoring.py`, `data_service.py`).
-5. ~~**Dashboard P0 stability**~~ — ✅ done (2026-08-07) — adaptive polling, coalesced chart redraws, resilient WebSocket (`ccf1650`).
-6. ~~**Doc reconciliation wrap-up**~~ — ✅ done (2026-08-07) — links fixed, `DEVELOPMENT.md` created, gap/test counts corrected, `agent-list.txt` + 7 legacy underscore agents deleted, test-polluted `inbox.json` purged (backup kept).
-7. ~~**Ops — GEMINI/KIMI GitHub secrets**~~ — ✅ done (2026-08-07) — repo-scoped secrets set; `autonomous.yml` now passes both keys (`6b572ae`).
-8. ~~**CI hardening**~~ — ✅ done (2026-08-07) — coverage gate (72%), uv-audit dependency check, generated-file check, Dependabot (`1f62ba7`).
+1. **Commit/park in-flight CI bump** — `setup-uv` v6→v7 across 4 workflow files (currently uncommitted).
+2. **Runtime tool-vocabulary sync** — align `executor/tool_runner.py` with the canonical card vocabulary (`webfetch`/`web_search`, drop `code_interpreter`).
+3. **HITL approval expiry sweep** — auto-reject/expire pending approvals (code-review #5).
+4. **Deprecate legacy modules** — `builder.py`, `registry.py`, `graph.py` (code-review #2).
+5. **Quality hardening** — mypy strict (`warn_return_any`), coverage 72% → 80%, property-based tests.
+6. **Doc reconciliation** — fix stale `ARCHITECTURE-GAPS.md` (GAP-019), README test counts, `.ai-company/state/*`; decide canonical version/tag story.
+7. **Re-open ECL cycle** — next active change via harness (`lint-ecl.ps1`) covering items 2-6.
+8. **Phase 5/6 backlog** — scheduled-cycle daemon mode, performance analytics, CD pipeline, stress test, async executor (long-term).
 
 ---
 
@@ -170,16 +195,20 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 
 | Severity | Issue | Status / Source |
 |----------|-------|-----------------|
-| P0 | Dashboard auto-scroll instability — kanban jumping, table re-render, chart flicker, WebSocket disconnects, silent API failures, reconnect loops | `docs/QA-DASHBOARD-STABILIZATION.md`; root causes identified (10 s polling, chart destroy/recreate, no scroll guards); e2e coverage exists |
-| FIXED | Executor bypassed MessageBus — direct `inbox.json` reads/writes in the executor | GAP-001; resolved 2026-08-07 — all inbox I/O now via `self.bus.*` (`loop.py:197,223,247,297,382,424`) |
-| HIGH | Concurrent dashboard API + executor writes can clobber shared JSON/YAML state | GAP-002 residue; `store/file_store.py` atomic writes exist but not applied everywhere |
-| MED | HITL gate blocks executor thread up to 30 min per approval | README known gap; non-blocking via `concurrent.futures.Future` implemented — verify |
-| MED | WebSocket broadcast functions exist but were not called | README known gap; dashboard WS integration tests added in Sprint 3 — verify |
-| MED | Dashboard CORS/auth posture historically lax | README said "all origins, no auth"; `app.py` now has `X-API-Key` + configurable CORS (GAP-010 resolved) — re-verify live config |
-| FIXED | S3-05 LLM retry provider cycling regression — `provider_idx = attempt % len(provider_chain)` always hit provider 0 on retries | `SPRINT3-DELEGATION-SUMMARY.md`; fixed 2026-07-22; round-robin cycling locked in by `test_llm.py` (2026-08-07) |
-| FIXED | GEMINI/KIMI API keys not configured in GitHub Actions | Fixed 2026-08-07 — repo-scoped secrets set + wired into `autonomous.yml` |
-| FIXED | Root README/AGENTS.md linked to missing root-level docs; `docs/DEVELOPMENT.md` missing | Fixed 2026-08-07 — links repointed to `ai-company/docs/`; `ai-company/docs/DEVELOPMENT.md` created |
-| FIXED | `inbox.json` polluted with marketing-service test tasks; `memory/` holds run/test data (not status records) | Purged 2026-08-07 (backup at `Temp\opencode\inbox.json.bak`); re-purged after test re-pollution |
+| HIGH | Runtime tool set mismatch — cards advertise `webfetch` but `tool_runner.py` has no matching tool; still exposes `code_interpreter` | `docs/AUDIT-FIXES-2026-08-10.md` (flagged follow-up); not yet fixed |
+| HIGH | Legacy modules (`builder.py`, `registry.py`, `graph.py`) coexist with modern packages | `docs/CODE_REVIEW_2026-08-10.md` finding #2 |
+| MED | HITL approvals can remain pending forever (no expiry sweep) | Code review finding #5 |
+| MED | Mypy not strict; broad `except Exception` in some critical paths at DEBUG level | Code review findings #3/#6 |
+| MED | Concurrent dashboard API + executor writes can clobber shared JSON/YAML state outside the MessageBus path | GAP-002 residue; `store/file_store.py` atomic writes exist but not applied everywhere |
+| LOW | `models.py` still large; memory engine bypasses `file_store.py` | TD-4, TD-5 |
+| LOW | `board-chair` card missing `reports_to` (1 validation warning) | `agents validate` — pre-existing |
+| LOW | Doc drift: GAP-019 marked open in ARCHITECTURE-GAPS.md; README test counts stale (1528/1494 vs 1805); `.ai-company/state/*` stale; version tag drift (`0.1.0` in pyproject, no `v0.3.0` tag) | Verified 2026-08-11 |
+| INFO | 4 workflow files modified but uncommitted (`setup-uv` v6→v7) | `git status` 2026-08-11 |
+| FIXED | Dashboard auto-scroll instability / chart flicker / WS disconnect loops | Resolved 2026-08-07 — adaptive polling, coalesced redraws, resilient WebSocket (`ccf1650`) |
+| FIXED | Executor bypassed MessageBus (direct `inbox.json` I/O) | GAP-001 — all inbox I/O via `self.bus.*` |
+| FIXED | Dashboard auth fail-open default | Resolved — `DASHBOARD_AUTH_MODE` defaults `api_key`; mutating endpoints reject without key |
+| FIXED | S3-05 LLM retry provider cycling (always hit provider 0) | Fixed 2026-07-22; round-robin locked by `test_llm.py` |
+| FIXED | `inbox.json` test pollution from marketing-service | Purged 2026-08-07 |
 
 ---
 
@@ -188,8 +217,8 @@ Source: `ai-company/docs/PRODUCT-ROADMAP.md` (bi-weekly review, owner CPO) + `.a
 ### Project roots
 - **Repo root:** `C:\Users\jmlus\light-speed-holdings` (Windows path — never `/workspace/...`).
 - **Active project:** `ai-company/` (pyproject.toml, uv.lock, `.venv`, src/, tests/).
-- **Planning/docs:** `ai-company/docs/` (STATUS, ARCHITECTURE, ARCHITECTURE-GAPS, PRODUCT-ROADMAP, BACKLOG, CHANGELOG, ECL, SPRINT-*).
-- **Change harness (ECL):** `ai-company/harness/` — currently inactive; active-change files (if any) take precedence over this document.
+- **Planning/docs:** `ai-company/docs/` (STATUS, ARCHITECTURE, ARCHITECTURE-GAPS, PRODUCT-ROADMAP, BACKLOG, AUDIT-FIXES-2026-08-10, CODE_REVIEW-2026-08-10, ECL, SPRINT-*).
+- **Change harness (ECL):** `ai-company/harness/` — currently inactive (Sprint 6 archived 2026-08-10). Active-change files (if any) take precedence over this document.
 
 ### Daily ops
 ```powershell
@@ -199,9 +228,10 @@ cd ai-company
 .\scripts\dev.ps1 test       # test suite
 .\scripts\dev.ps1 lint       # ruff + mypy
 # or
-uv run ai-company --help     # CLI entry point
+uv run ai-company --help     # CLI entry point (30 commands)
 uv run ai-company doctor run # diagnostics
 uv run ai-company agents list
+uv run ai-company agents validate  # spec validation (GAP-019)
 ```
 Root-level `daily-check.ps1` runs `doctor run` + `agents list` and flags pending CI secrets.
 
@@ -210,7 +240,7 @@ Root-level `daily-check.ps1` runs `doctor run` + `agents list` and flags pending
 cd ai-company
 uv sync --extra dev            # install project + dev deps (respects uv.lock)
 pre-commit install             # hooks: ruff, mypy, bandit, yaml, whitespace
-uv run ai-company bootstrap    # or automated DevBootstrap (new)
+uv run ai-company bootstrap    # or automated DevBootstrap
 ```
 
 ### Verification gates (per AGENTS.md)
@@ -224,8 +254,11 @@ uv run ai-company bootstrap    # or automated DevBootstrap (new)
 
 ### CI / automation
 - **`autonomous.yml`** (root): cron every 6 h + `workflow_dispatch` (`both`/`orchestrator-only`/`executor-only`) → orchestrator tick → executor tick → briefing → uploads `ai-company/.opencode/daily_briefing.md` (30-day retention). Secrets: OPENCODE, DEEPSEEK, GEMINI, KIMI, OPENAI, ANTHROPIC API keys.
-- **`ci.yml`** (root): ruff lint, mypy, pytest + quality-gate on push/PR to main. (Old `ai-company/.github/workflows/` copies were deleted; the `monitoring.yml` health-check referenced by the old ci.yml does not exist.)
-- **Pre-commit:** run manually via `pre-commit run --all-files`.
+- **`ci.yml`** (root): jobs `lint`, `typecheck`, `test` (with 72% coverage gate), `harness`, `security` (bandit), `dependencies` (`uv audit`), `generated-check`, `gate`. (Old `ai-company/.github/workflows/` copies deleted.)
+- **`monitoring.yml`** (root): CI health alert issue creation + cycle check.
+- **`release.yml`** (root): release pipeline.
+- **Dependabot:** weekly updates for GitHub Actions + pip (`/ai-company`).
+- **Pre-commit:** `pre-commit run --all-files`.
 
 ### Disaster recovery / backups
 ```powershell
@@ -246,3 +279,4 @@ Staging dashboard: host port **8421** → container **8420** (production: **8420
 - Do not edit secrets, local env files, generated build outputs, or dependency folders.
 - Do not hand-edit `ai-company/harness/changes/INDEX.json` — script-generated only.
 - If an active ECL change exists, park/close it through the harness script before overwriting its context.
+- Generated `.opencode/agents/*.md` files are regenerated from the registry — do not hand-edit (CI `generated-check` will fail on drift).

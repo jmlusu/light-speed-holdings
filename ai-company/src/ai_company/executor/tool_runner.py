@@ -46,6 +46,21 @@ logger = logging.getLogger(__name__)
 # Security audit logger — separate from application logs
 _security_logger = logging.getLogger("ai_company.security.tool_runner")
 
+# Canonical runtime tool vocabulary (matches executor/context.py card parsing).
+# Legacy names (write, execute, delegate, web_search) are accepted as
+# backward-compatible aliases that dispatch to the same handler.
+_CANONICAL_TOOLS: frozenset[str] = frozenset(
+    {"read", "edit", "grep", "list", "bash", "webfetch", "task"}
+)
+
+_TOOL_ALIASES: dict[str, str] = {
+    "write": "edit",
+    "execute": "bash",
+    "delegate": "task",
+    "web_search": "webfetch",
+    "websearch": "webfetch",
+}
+
 
 class SecurityError(Exception):
     """Raised when a tool tries to escape the project sandbox."""
@@ -483,21 +498,21 @@ class ToolRunner:
         return result
 
     def _execute_tool(self, tool: str, args: dict[str, Any]) -> dict[str, Any]:
-        """Dispatch to the appropriate tool handler."""
+        """Dispatch to the appropriate tool handler (legacy aliases included)."""
         match tool:
             case "read":
                 return self._read(args)
-            case "write":
+            case "edit" | "write":
                 return self._write(args)
-            case "execute":
+            case "bash" | "execute":
                 return self._execute(args)
             case "grep":
                 return self._grep(args)
             case "list":
                 return self._list_dir(args)
-            case "code_interpreter":
-                return self._run_python(args)
-            case "delegate":
+            case "webfetch" | "web_search" | "websearch":
+                return self._webfetch(args)
+            case "task" | "delegate":
                 return self._delegate(args)
             case _:
                 return {"error": f"Unknown tool: {tool}"}
@@ -688,28 +703,25 @@ class ToolRunner:
 
         return {"path": str(path.relative_to(self.project_root)), "entries": entries[:100]}
 
-    def _run_python(self, args: dict[str, Any]) -> dict[str, Any]:
-        """Execute a Python code snippet via ``python -c``.
+    def _webfetch(self, args: dict[str, Any]) -> dict[str, Any]:
+        """Fetch a URL and return sanitized text content.
 
-        The ``code`` string is passed as a single argument — never interpreted
-        through a shell.
+        Restricted to ``http``/``https`` with a hard size cap; content is
+        scanned for PII and safety threats before being returned.
         """
-        code = args["code"]
-        result = subprocess.run(
-            ["python", "-c", code],
-            capture_output=True,
-            text=True,
-            timeout=120,
-            cwd=str(self.project_root),
-        )
+        import urllib.request
+
+        url = args.get("url", "")
+        if not isinstance(url, str) or not url.lower().startswith(("http://", "https://")):
+            return {"url": str(url), "error": "Only http:// and https:// URLs are allowed"}
+        try:
+            with urllib.request.urlopen(url, timeout=30) as resp:
+                raw = resp.read(64 * 1024).decode("utf-8", errors="replace")
+        except Exception as exc:  # noqa: BLE001 - fetch failure surfaced as error
+            return {"url": url, "error": f"Fetch failed: {exc}"}
         return {
-            "returncode": result.returncode,
-            "stdout": self._sanitize_output(
-                result.stdout[-2000:] if result.stdout else "", source="code_interpreter"
-            ),
-            "stderr": self._sanitize_output(
-                result.stderr[-2000:] if result.stderr else "", source="code_interpreter:stderr"
-            ),
+            "url": url,
+            "content": self._sanitize_output(raw, source="webfetch"),
         }
 
     def _delegate(self, args: dict[str, Any]) -> dict[str, Any]:
@@ -768,4 +780,4 @@ class ToolRunner:
 
     @staticmethod
     def _all_tools() -> set[str]:
-        return {"read", "write", "execute", "grep", "list", "code_interpreter", "delegate"}
+        return set(_CANONICAL_TOOLS) | set(_TOOL_ALIASES)
