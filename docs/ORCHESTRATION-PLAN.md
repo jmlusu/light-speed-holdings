@@ -465,7 +465,7 @@ Tracked weekly:
 | GAP-014 (BriefingGenerator private method) | OPEN | S3-18 | Sprint 3 |
 | GAP-015 (LLM retry provider cycling) | OPEN | S3-19 | Sprint 3 |
 | GAP-018 (Structured logging) | PARTIAL | S3-08 | Sprint 4 |
-| GAP-019 (Agent spec validation) | OPEN | S3-09 | Sprint 4 |
+| GAP-019 (Agent spec validation) | CLOSED | S3-09 | Sprint 4 |
 | GAP-020 (E2E integration test) | PARTIAL | S3-11 | Sprint 4 |
 
 **After Sprint 4:** All 20 gaps in ARCHITECTURE-GAPS.md should be RESOLVED.

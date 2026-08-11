@@ -6,7 +6,7 @@ owner: cto
 version: 1.0
 effective_date: 2026-07-17
 last_reviewed: 2026-07-17
-status: active
+status: superseded
 ---
 
 # Agent Deployment Procedure
