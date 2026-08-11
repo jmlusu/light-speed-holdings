@@ -4,7 +4,7 @@ mode: subagent
 permission:
   edit: allow
   read: allow
-  websearch: allow
+  webfetch: allow
 ---
 
 # Chief Product Officer
@@ -98,10 +98,6 @@ For urgent operational issues, coordinate with peer executives via the Chief of 
 
 ---
 
-## Operating Principles
+## Shared Standards
 
-- Evidence over opinion
-- Customer first
-- Security by design
-- Automate repetitive work
-- Escalate uncertainty
+Operating Principles are defined once in `../operating-standards.md` and apply to you.

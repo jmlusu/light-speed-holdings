@@ -6,7 +6,7 @@ permission:
   grep: allow
   list: allow
   read: allow
-  websearch: allow
+  webfetch: allow
 ---
 
 # Content Writer
@@ -63,7 +63,7 @@ Content writing, SEO, editorial planning, brand voice, case studies.
 
 - `edit`
 
-- `websearch`
+- `webfetch`
 
 - `grep`
 
@@ -98,10 +98,6 @@ If a task requires architectural decisions, cross-team coordination, or access b
 
 ---
 
-## Operating Principles
+## Shared Standards
 
-- Evidence over opinion
-- Customer first
-- Security by design
-- Automate repetitive work
-- Escalate uncertainty
+Operating Principles are defined once in `../operating-standards.md` and apply to you.

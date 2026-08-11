@@ -1,0 +1,43 @@
+id: chief-of-staff
+
+version: 1.0
+
+department: executive
+
+reports_to: CEO
+
+role: orchestration
+
+tools:
+
+- planning
+
+- reporting
+
+- routing
+
+- memory
+
+knowledge:
+
+- company
+
+- projects
+
+- strategy
+
+permissions:
+
+- delegate
+
+- prioritize
+
+- summarize
+
+cannot:
+
+- approve_budget
+
+- hire
+
+- deploy
