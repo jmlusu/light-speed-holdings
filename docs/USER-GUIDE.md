@@ -67,6 +67,64 @@ ANTHROPIC_API_KEY=your-key
 
 Or configure Ollama for local inference (no API key needed). Model routing is automatic — each agent gets assigned a provider and model based on its cost tier (fast/standard/premium). See [Model Routing Policy](MODEL-ROUTING-POLICY.md) for details.
 
+### OAuth2 Client-Credentials Authentication (Enterprise)
+
+For enterprise LLM providers that require OAuth2, configure a `oauth2:` block in `company/models.yaml`. Secrets are read from environment variables — never hardcoded.
+
+```yaml
+providers:
+  enterprise-llm:
+    backend: openai_compatible
+    default_model: enterprise-model
+    api_base: https://llm.example.com/v1
+    oauth2:
+      token_url: https://idp.example.com/oauth/token
+      client_id_env: ENTERPRISE_LLM_CLIENT_ID
+      client_secret_env: ENTERPRISE_LLM_CLIENT_SECRET
+      scope: "llm:inference"
+      cache_ttl_seconds: 300
+```
+
+Set the environment variables:
+
+```bash
+export ENTERPRISE_LLM_CLIENT_ID="your-client-id"
+export ENTERPRISE_LLM_CLIENT_SECRET="your-client-secret"
+```
+
+**Security notes:**
+- Tokens are cached in memory only (never persisted to disk).
+- A 60-second safety margin is applied before token expiry to avoid stale-token failures.
+- The manager is **fail-closed**: if credentials are missing or the token endpoint fails, the provider is marked unavailable and the router falls through to the next provider.
+- Without an `oauth2:` block, providers fall back to `{ID}_API_KEY` static bearer auth.
+
+### Data Governance
+
+Monitor and enforce data retention, ownership, and compliance across the SQLite task and audit stores:
+
+```bash
+ai-company governance report              # Full governance status report
+ai-company governance retention           # Dry-run: show records past retention
+ai-company governance retention --apply    # Apply retention policies (archive/purge/anonymize)
+ai-company governance compliance          # Check for governance violations
+ai-company governance owners              # List registered data owners
+ai-company governance policies            # List active retention policies
+ai-company governance audit-trail         # Show recent audit events
+ai-company governance risk-summary        # Show risk register summary
+```
+
+Example output (`governance report`):
+
+```
+Data Governance Report
+=====================
+Tables (6):
+  Table              Rows  Class          Owner           Retn  Action     Past
+  tasks              1,245  operational    lead-engineer    90d  archive    12
+  audit_log            892  audit        ciso             365d archive      0
+  ...
+```
+
 ---
 
 ## 2. Agent Hierarchy
@@ -608,7 +666,7 @@ All configuration lives in the `company/` directory.
 
 | File | Purpose |
 |------|---------|
-| `company/agent-registry.json` | Single source of truth for all 27 agents |
+| `company/agent-registry.json` | Synced from `company-registry.yaml` — single source of truth for all 127 agents |
 | `company/models.yaml` | LLM provider configuration (5 providers, 3 tiers) |
 | `company/departments.yaml` | 7 departments with executives and agents |
 | `company/workflows.yaml` | 9 workflow definitions |

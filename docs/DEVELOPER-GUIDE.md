@@ -277,6 +277,144 @@ class MyModel(EntityBase):
 
 ---
 
+## OAuth2 Authentication
+
+OAuth2 client-credentials auth for enterprise LLM providers is implemented in `src/ai_company/llm/oauth2.py`.
+
+### Components
+
+| File | Responsibility |
+|------|---------------|
+| `src/ai_company/llm/oauth2.py` | `OAuth2TokenManager` — fetches, caches, and refreshes tokens |
+| `src/ai_company/llm/oauth2.py` | `OAuth2Config` (frozen dataclass) — token URL, env-var credential refs, TTL |
+| `src/ai_company/llm/oauth2.py` | `OAuth2Error` — subclass of `LLMProviderError` for fail-closed routing |
+| `src/ai_company/llm/providers/openai_compatible.py` | Wired into `OpenAICompatibleProvider` — per-request bearer token |
+| `src/ai_company/llm/client.py` | `LLMClient._init_providers()` — opt-in via `oauth2:` block in `company/models.yaml` |
+
+### Configuration
+
+Providers without an `oauth2:` block use static `{ID}_API_KEY` bearer auth. With the block, credentials are resolved from environment variables at request time.
+
+### Security
+
+- Tokens cached in memory only — never persisted to disk.
+- 60-second safety margin before expiry triggers proactive refresh.
+- Fail-closed: missing credentials or endpoint failure raises `OAuth2Error`, causing the router to skip to the next provider.
+
+### Tests
+
+`tests/unit/test_oauth2.py` (11 tests) covers token caching, refresh timing, fail-closed behavior, and env-var resolution.
+
+---
+
+## ML Module
+
+ML capabilities live in `src/ai_company/ml/` (6 submodules). All use numpy for computation and fall back gracefully when heavyweight dependencies are unavailable.
+
+### Submodules
+
+| File | Class | Purpose |
+|------|-------|---------|
+| `embeddings.py` | `EmbeddingEngine` | Local sentence-transformer embeddings; lazy load, graceful ImportError fallback |
+| `performance.py` | `AgentPerformanceTracker` | Per-agent metrics (success rate, execution time, cost, tokens); simple regression model for time prediction |
+| `complexity.py` | `TaskComplexityScorer` | Heuristic scoring (0.0–1.0) to route tasks to the right LLM tier |
+| `prompt_optimizer.py` | `PromptOptimizer` | Analyze audit logs for prompt patterns, A/B test variants, suggest improvements |
+| `anomaly.py` | `AnomalyDetector` | Statistical anomaly detection (Z-score, IQR) on cost/time/error metrics |
+| `predictive_scaling.py` | `PredictiveScalingEngine` | Forecast task volume and recommend tier adjustments |
+
+### Usage
+
+```python
+from ai_company.ml import EmbeddingEngine, TaskComplexityScorer
+
+engine = EmbeddingEngine()
+embeddings = engine.encode(["task description", "another task"])
+
+scorer = TaskComplexityScorer()
+score = scorer.score("Design a microservice architecture with Kubernetes")  # 0.0–1.0
+```
+
+### Tests
+
+Tests are in `tests/unit/test_ml.py`. The embedding test is skipped when the HuggingFace model cannot be downloaded.
+
+---
+
+## Security Module
+
+Security modules live in `src/ai_company/security/` (6 submodules plus key management).
+
+### Submodules
+
+| File | Class/Function | Purpose |
+|------|---------------|---------|
+| `secrets_scanner.py` | `SecretsScanner` | Scans code for leaked API keys, passwords, private keys, connection strings |
+| `pii_detector.py` | `PIIDetector` | Detects and masks PII (emails, SSN, credit cards, API keys, phone numbers, IPs) |
+| `content_filter.py` | `ContentFilter` | Filters prompt injection, harmful content, code execution attempts, XSS |
+| `keys.py` | `APIKeyManager` | API key rotation with overlap period, fail-closed, audit logging |
+| `encryption_key_manager.py` | `EncryptionKeyManager` | AES-256 key derivation (HKDF-SHA256) from master secret, dual-key rotation |
+| `memory_encryption.py` | encrypt/decrypt/is_encrypted | AES-256-GCM with unique nonces per entry; `ENC:` prefix format |
+| `migrate_memory_encrypt.py` | migration utility | Backfill encryption for existing memory entries |
+
+### Usage
+
+```python
+from ai_company.security import ContentFilter, PIIDetector
+
+filter = ContentFilter()
+result = filter.filter("Sensitive user data: john@example.com")
+
+detector = PIIDetector()
+masked = detector.mask("Contact: ssn 123-45-6789")  # "Contact: ssn XXX-XX-XXXX"
+```
+
+### Security
+
+- Secrets scanner runs as a CLI tool and pre-commit hook.
+- Master secret is read from `MEMORY_ENCRYPTION_KEY` env var (fallback: `JWT_SECRET_KEY`).
+- Raw keys are encrypted with secondary HKDF derivation before disk write.
+
+---
+
+## Structured Logging
+
+Structured JSON logging with correlation IDs is configured in `src/ai_company/logging_config.py` (resolved GAP-018).
+
+### Components
+
+| File | Responsibility |
+|------|---------------|
+| `logging_config.py` | `JSONFormatter`, `HumanFormatter`, `setup_logging()`, `get_logger()` |
+| `utils/logging.py` | Shared `ContextVar` correlation ID (`get_correlation_id`, `set_correlation_id`, `new_correlation_id`) |
+| `executor/loop.py:292` | `set_correlation_id(task.id)` per task execution |
+
+### Configuration
+
+```python
+from ai_company.logging_config import setup_logging, get_logger
+
+# Auto-detects JSON vs human format (JSON in non-TTY/CI, human in terminal)
+setup_logging(level="INFO")
+logger = get_logger(__name__)
+
+# Or force JSON mode
+setup_logging(level="DEBUG", json_mode=True, log_file="logs/app.jsonl")
+```
+
+Environment variables:
+- `AI_COMPANY_LOG_JSON=1/0` — force JSON or human mode.
+- `AI_COMPANY_LOG_LEVEL=DEBUG/INFO/WARNING/ERROR` — level override.
+
+### Output Format
+
+JSON mode emits one JSON object per log line with fields: `ts`, `level`, `logger`, `message`, `correlation_id`, plus any `extra={}` fields attached by the caller.
+
+### Tests
+
+`tests/unit/test_logging.py` (15 tests) covers JSON formatting, human formatting, correlation ID propagation, and env-var configuration.
+
+---
+
 ## Getting Help
 
 - **Architecture docs**: `docs/ARCHITECTURE.md`

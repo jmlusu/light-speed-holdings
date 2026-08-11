@@ -35,6 +35,27 @@ The API currently operates without authentication for local development. For pro
 
 **CORS:** All origins are allowed by default (`*`). Restrict in production via the `allowed_origins` configuration.
 
+### LLM Provider OAuth2
+
+The dashboard's underlying LLM providers can be configured for OAuth2 client-credentials auth. When enabled, the `OpenAICompatibleProvider` obtains a bearer token from the configured token endpoint and refreshes it proactively (60-second safety margin before expiry). The `OAuth2TokenManager` (`src/ai_company/llm/oauth2.py`) caches tokens in-memory only and is fail-closed: missing credentials or token-endpoint failures cause the provider to be marked unavailable and the router falls through to the next provider.
+
+Configuration via `company/models.yaml`:
+
+```yaml
+providers:
+  enterprise-llm:
+    backend: openai_compatible
+    api_base: https://llm.example.com/v1
+    oauth2:
+      token_url: https://idp.example.com/oauth/token
+      client_id_env: ENTERPRISE_LLM_CLIENT_ID
+      client_secret_env: ENTERPRISE_LLM_CLIENT_SECRET
+      scope: "llm:inference"
+      cache_ttl_seconds: 300
+```
+
+Without an `oauth2:` block, providers use `{ID}_API_KEY` static bearer auth.
+
 ---
 
 ## 2. Health Check
