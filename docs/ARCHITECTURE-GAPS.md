@@ -10,7 +10,7 @@
 
 The AI Company Builder has a solid set of individually well-designed components, but the **integration seams between them are incomplete or broken**. The most critical pattern: components that *should* communicate through shared abstractions instead duplicate file I/O, creating race conditions, lost data, and silent failures. Below are 20 identified gaps ranked by severity.
 
-**Resolved gaps (as of 2026-08-07, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-005, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-011, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-018, GAP-020. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
+**Resolved gaps (as of 2026-08-08, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-005, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-011, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-018, GAP-019, GAP-020. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
 
 > **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
@@ -496,7 +496,8 @@ Difficult to debug production issues. No audit trail for compliance.
 |-------|-------|
 | **Severity** | LOW |
 | **Sprint** | Sprint 4 (Dashboard Completeness) |
-| **Files** | `executor/context.py:31-100`, `generator.py` |
+| **Files** | `executor/context.py:31-100`, `generator.py`, `cli/agents.py` |
+| **Status** | ✅ RESOLVED — `AgentContext.validate()` returns ERROR/WARNING `ValidationIssue` list (`context.py:62`); `generator.py:252` `_validate_generated_agents()` runs validation during `generate_all()` and `generate_from_registry()`; `cli/agents.py:78` `validate` command checks all or single agent spec, exits non-zero on ERROR. 12 tests in `test_agent_spec_validation.py` (all pass). *(Prose below describes pre-fix state.)* |
 
 **Current State:**
 `parse_agent_spec()` reads `.opencode/agents/{name}.md` with no schema validation. If a generated spec is malformed (missing sections, wrong frontmatter), the parser silently returns an `AgentContext` with empty fields. No validation, no warnings.
@@ -509,11 +510,10 @@ Silent degradation: an agent with missing mission/responsibilities runs with gen
 
 **Fix:**
 ```
-1. Add AgentContext.validate() method
-2. Log warnings for missing critical fields (mission, responsibilities)
-3. Add "ai-company agents validate" CLI command
-4. Integrate validation into the generator output
-```
+1. ✅ Add AgentContext.validate() method — `context.py:62`, severity-aware (ERROR for missing mission/responsibilities, WARNING for missing tools/role/type/guidelines/etc.)
+2. ✅ Log warnings for missing critical fields — `_validate_generated_agents()` in `generator.py:252` logs each issue (ERROR at error level, WARNING at warning level)
+3. ✅ Add "ai-company agents validate" CLI command — `cli/agents.py:78`, supports `--json`, `--agent`, `--agents-dir`; exits non-zero only on ERROR-severity issues
+4. ✅ Integrate validation into the generator output — called during `generate_all()` (line 242) and `generate_from_registry()` (line 392)
 
 ---
 
@@ -563,13 +563,12 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-016 | MEDIUM | Shell Injection | Sprint 2 | Medium | ✅ Resolved | `tool_runner.py:466` `shlex.split()`; no `shell=True` |
 | GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved | `dead_letter.py` + `loop.py:174` `detect_stale_tasks()` |
 | GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | ✅ Resolved | `logging_config.py` `setup_logging()`/`JSONFormatter`; `utils/logging.py` shared correlation ContextVar; `loop.py:292` task-id correlation; `daemon.py:378` structured; `test_logging.py` (15 tests) |
-| GAP-019 | LOW | Spec Validation | Sprint 4 | Low | 🔴 Open | `context.py:13` `AgentContext` has no `validate()`; no `agents validate` CLI |
-| GAP-020 | LOW | Integration Tests | Sprint 4 | Medium | ✅ Resolved | `tests/integration/test_full_pipeline.py` (305 lines, 10 tests, all pass) |
+| GAP-019 | LOW | Spec Validation | Sprint 4 | Low | ✅ Resolved | `context.py:62` `AgentContext.validate()` + `cli/agents.py:78` `validate` command; integrated into `generator.py:252` `_validate_generated_agents()`; 12 tests in `test_agent_spec_validation.py` |
 
-**Resolved:** 19 of 20 (GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 020)
+**Resolved:** 20 of 20 (GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 019, 020)
 **Partial:** 0
-**Open:** 1 (GAP-019)
-**Remaining work to reach "done":** agent spec validation (GAP-019).
+**Open:** 0
+**Remaining work to reach "done":** none — all 20 gaps resolved.
 
 ## Recommended Sprint Plan
 
@@ -598,5 +597,5 @@ At least one integration test that exercises the happy path end-to-end with mock
 ### Sprint 4 — Quality & Completeness (LOW + polish items)
 1. GAP-013: Wire all KPI department collectors
 2. ~~GAP-018: Structured logging with correlation IDs~~ — ✅ done (2026-08-07)
-3. GAP-019: Agent spec validation
+3. ~~GAP-019: Agent spec validation~~ — ✅ done (2026-08-08)
 4. GAP-020: End-to-end integration tests
