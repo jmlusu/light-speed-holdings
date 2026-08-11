@@ -1,0 +1,51 @@
+repos:
+  # ── General file hygiene ───────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: ["--allow-multiple-documents"]
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: detect-private-key
+
+  # ── Ruff: lint + format ────────────────────────────────────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.1
+    hooks:
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+        stages: [pre-commit]
+      - id: ruff-format
+        stages: [pre-commit]
+
+  # ── Mypy: type checking ───────────────────────────────────────────
+  # Hooks run from the repo root, targeting the root config and sources.
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.3.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-PyYAML
+          - pydantic>=2.8
+          - typer
+          - rich
+          - fastapi
+          - cryptography>=42.0
+          - httpx
+        pass_filenames: false
+        entry: mypy --config-file pyproject.toml src/
+        stages: [pre-commit]
+
+  # ── Bandit: security linting ───────────────────────────────────────
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        pass_filenames: false
+        entry: bandit -c pyproject.toml -r src/
+        additional_dependencies: ["bandit[toml]"]
+        stages: [pre-commit]
