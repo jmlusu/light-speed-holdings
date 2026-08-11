@@ -42,8 +42,18 @@ class TestEmbeddingEngine:
         try:
             from sentence_transformers import SentenceTransformer  # noqa: F401
 
-            # If installed, encode should work
-            result = engine.encode("hello world")
+            # If installed, encode should work. Loading the model downloads it
+            # from HuggingFace on first use, so skip when offline rather than
+            # failing the suite on a runner without network access.
+            try:
+                result = engine.encode("hello world")
+            except OSError as exc:
+                message = str(exc).lower()
+                if "connect" in message or "offline" in message:
+                    pytest.skip(
+                        f"sentence-transformers installed but model download unavailable: {exc}"
+                    )
+                raise
             assert result is not None
         except ImportError:
             with pytest.raises(ImportError, match="sentence-transformers"):
