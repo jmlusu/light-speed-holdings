@@ -24,19 +24,19 @@
 - [P] T007 Mark `docs/sop-deployment.md` frontmatter `status: superseded` (v1 → superseded by v2). Verify: `grep 'status: superseded' docs/sop-deployment.md`
 - [P] T008 Mark `docs/sop-incident-response.md` frontmatter `status: superseded` (v1 → superseded by v2). Verify: `grep 'status: superseded' docs/sop-incident-response.md`
 - [P] T009 Update `docs/ORCHESTRATION-PLAN.md` — fix GAP-019 status from OPEN to CLOSED (line 468). Verify: `grep 'CLOSED' docs/ORCHESTRATION-PLAN.md`
-- [ ] T010 Add OAuth2 documentation to `docs/USER-GUIDE.md` + `docs/DEVELOPER-GUIDE.md` + `docs/API-REFERENCE.md`. Verify: `grep -i oauth2 docs/USER-GUIDE.md`
-- [ ] T011 Add ML module section to `docs/DEVELOPER-GUIDE.md`. Verify: `grep -i "ML module" docs/DEVELOPER-GUIDE.md`
-- [ ] T012 Add Security module section to `docs/DEVELOPER-GUIDE.md`. Verify: `grep -i "Security module" docs/DEVELOPER-GUIDE.md`
-- [ ] T013 Add Data Governance CLI section to `docs/USER-GUIDE.md`. Verify: `grep -i "governance" docs/USER-GUIDE.md`
-- [ ] T014 Add Structured Logging / Correlation IDs section to `docs/DEVELOPER-GUIDE.md` (GAP-018). Verify: `grep -i "correlation" docs/DEVELOPER-GUIDE.md`
+- [x] T010 Add OAuth2 documentation to `docs/USER-GUIDE.md` + `docs/DEVELOPER-GUIDE.md` + `docs/API-REFERENCE.md`. Verify: `grep -i oauth2 docs/USER-GUIDE.md`
+- [x] T011 Add ML module section to `docs/DEVELOPER-GUIDE.md`. Verify: `grep -i "ML module" docs/DEVELOPER-GUIDE.md`
+- [x] T012 Add Security module section to `docs/DEVELOPER-GUIDE.md`. Verify: `grep -i "Security module" docs/DEVELOPER-GUIDE.md`
+- [x] T013 Add Data Governance CLI section to `docs/USER-GUIDE.md`. Verify: `grep -i "governance" docs/USER-GUIDE.md`
+- [x] T014 Add Structured Logging / Correlation IDs section to `docs/DEVELOPER-GUIDE.md` (GAP-018). Verify: `grep -i "correlation" docs/DEVELOPER-GUIDE.md`
 
 ## Validation
 
-- [ ] T015 Run `scripts/lint-ecl.ps1` — verify ECL structure valid.
-- [ ] T016 Run `uv run ruff check src/ tests/` — clean.
-- [ ] T017 Run `uv run mypy src/` — clean.
-- [ ] T018 Run `uv run pytest -q -m "not e2e"` — all pass.
-- [ ] T019 Verify version consistency: `grep 'version = ' pyproject.toml` == `grep 'Version:' docs/API-REFERENCE.md` == `grep '^## \[0.4.0\]' docs/CHANGELOG.md`
+- [x] T015 Run `scripts/lint-ecl.ps1` — verify ECL structure valid.
+- [x] T016 Run `uv run ruff check src/ tests/` — clean.
+- [x] T017 Run `uv run mypy src/` — clean.
+- [x] T018 Run `uv run pytest -q -m "not e2e"` — 1856 passed, 0 failures.
+- [x] T019 Verify version consistency: pyproject.toml == API-REFERENCE.md == CHANGELOG.md == 0.4.0
 
 ## Deferred Tasks
 

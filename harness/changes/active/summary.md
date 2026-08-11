@@ -52,11 +52,11 @@ the 20/20 resolution count.
 
 ## Validation
 
-- lint-ecl.ps1: pass (pending T015)
-- ruff check src/ tests/: clean (pending T016)
-- mypy src/: clean (pending T017)
-- pytest -q -m "not e2e": 1856 passed, 0 failures (pending T018)
-- Version consistency: pyproject.toml == API-REFERENCE.md == CHANGELOG.md == 0.4.0 (pending T019)
+- lint-ecl.ps1: **pass**
+- ruff check src/ tests/: **clean**
+- mypy src/: **clean**
+- pytest -q -m "not e2e": **1856 passed, 0 failures**
+- Version consistency: pyproject.toml == API-REFERENCE.md == CHANGELOG.md == 0.4.0 — **pass**
 
 ## Next Step
 
