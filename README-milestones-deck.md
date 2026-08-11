@@ -22,9 +22,8 @@ This script generates a professional PowerPoint presentation showcasing the majo
 3. The presentation will be created at `docs/milestones-deck.pptx`
 
 #### Manual Execution
-1. Open terminal/command prompt
-2. Navigate to the `ai-company` directory
-3. Run:
+1. Open terminal/command prompt at the repository root
+2. Run:
    ```bash
    npm install
    node scripts/generate-milestones-deck.js
@@ -45,9 +44,8 @@ This script generates a professional PowerPoint presentation showcasing the majo
 3. The presentation will be created at `docs/milestones-deck.pptx`
 
 #### Manual Execution
-1. Open terminal/command prompt
-2. Navigate to the `ai-company` directory
-3. Run:
+1. Open terminal/command prompt at the repository root
+2. Run:
    ```bash
    uv sync --extra dev
    uv run python scripts/generate-milestones-deck.py

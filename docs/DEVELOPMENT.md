@@ -5,20 +5,19 @@
 
 ## 1 Repository Layout
 
-The active project lives in `ai-company/` at the repository root
+The active project lives at the repository root
 (`C:\Users\jmlus\light-speed-holdings` on this machine — never `/workspace/...`).
 
 | Path | Purpose |
 |------|---------|
-| `ai-company/src/ai_company/` | Package source (CLI, executor, orchestrator, memory, dashboard, ...) |
-| `ai-company/tests/` | Unit, integration, e2e, and performance tests |
-| `ai-company/company-registry.yaml` | Single source of truth for agents (127 agents, 18 departments) |
-| `ai-company/templates/` | Jinja2 templates used by the generator |
-| `ai-company/docs/` | Architecture, status, ECL, and planning documents |
-| `ai-company/scripts/` | `dev.ps1`, `backup.ps1`, ECL harness scripts |
-| `ai-company/.opencode/` | Runtime data: `agents/*.md`, `inbox.json`, `dead_letter.json` |
-| `ai-company/harness/` | ECL change tracking (currently inactive) |
-| `.opencode/` (repo root) | Legacy parallel agent area (134 `.md` — 127 canonical + 7 legacy duplicates) |
+| `src/ai_company/` | Package source (CLI, executor, orchestrator, memory, dashboard, ...) |
+| `tests/` | Unit, integration, e2e, and performance tests |
+| `company-registry.yaml` | Single source of truth for agents (127 agents, 18 departments) |
+| `templates/` | Jinja2 templates used by the generator |
+| `docs/` | Architecture, status, ECL, and planning documents |
+| `scripts/` | `dev.ps1`, `backup.ps1`, ECL harness scripts |
+| `.opencode/` | Runtime data: `agents/*.md`, `inbox.json`, `dead_letter.json` |
+| `harness/` | ECL change tracking (currently inactive) |
 
 The core workflow is: `company-registry.yaml → Jinja2 template → .opencode/agents/*.md + company/*.yaml`.
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full module hierarchy and data flow.
@@ -36,7 +35,6 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full module hierarchy and data fl
 PowerShell (recommended on Windows):
 
 ```powershell
-cd ai-company
 .\scripts\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
 .\scripts\dev.ps1 setup     # venv + deps + pre-commit + agent generation
 .\scripts\dev.ps1 test      # Run test suite (with coverage)
@@ -49,7 +47,6 @@ cd ai-company
 Manual setup (bash):
 
 ```bash
-cd ai-company
 uv sync --extra dev            # install project + dev deps (respects uv.lock)
 pre-commit install             # enable git hooks (ruff, mypy, bandit, ...)
 uv run ai-company --help       # CLI entry point
@@ -126,7 +123,6 @@ Rules: only one active change at a time; never hand-edit `harness/changes/INDEX.
 ## 8 Backups
 
 ```powershell
-cd ai-company
 .\scripts\backup.ps1                  # Backup .opencode/, company/, results/
 .\scripts\backup.ps1 -KeepCount 14    # Keep 14 days of backups
 ```

@@ -545,8 +545,7 @@ addSlideHeader(archSlide, "Architecture Overview", "Module Hierarchy & Data Flow
 // Architecture diagram (text-based)
 archSlide.addText([
   { text: "Module Hierarchy", options: { bold: true, fontSize: 14, breakLine: true } },
-  { text: "ai-company/", options: { breakLine: true } },
-  { text: "├── src/ai_company/          # Core package", options: { breakLine: true } },
+  { text: "ai-company/", options: { breakLine: true } },  { text: "├── src/ai_company/          # Core package", options: { breakLine: true } },
   { text: "│   ├── cli/                 # Typer CLI (26 commands)", options: { breakLine: true } },
   { text: "│   ├── models/              # Pydantic models (17+)", options: { breakLine: true } },
   { text: "│   ├── registry/            # 4-module registry system", options: { breakLine: true } },
@@ -625,7 +624,7 @@ nextStepsSlide.addText("AI Company Builder v0.3.0 | Built with Python, FastAPI, 
 });
 
 // Write the file
-pres.writeFile({ fileName: "C:\\Users\\jmlus\\light-speed-holdings\\ai-company\\docs\\milestones-deck.pptx" })
+pres.writeFile({ fileName: "docs/milestones-deck.pptx" })
   .then(() => {
     console.log("✅ Presentation created successfully!");
     console.log("📁 File: docs/milestones-deck.pptx");

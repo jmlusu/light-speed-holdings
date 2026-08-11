@@ -15,10 +15,6 @@ permissions:
   contents: read
   id-token: write  # Required for trusted publishing to PyPI
 
-defaults:
-  run:
-    working-directory: ai-company
-
 jobs:
   # D3: Semver validation - verify git tag matches pyproject.toml version
   version-check:
@@ -64,7 +60,7 @@ jobs:
             exit 1
           fi
 
-  # Build the package (working-directory default: ai-company)
+  # Build the package
   build:
     name: Build Package
     needs: version-check
@@ -83,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: ai-company/dist/
+          path: dist/
           retention-days: 30
 
   # D1: PyPI publishing with trusted publishing (OIDC)
@@ -141,14 +137,14 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./ai-company
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # Create GitHub Release (attaches ai-company/dist artifacts)
+  # Create GitHub Release (attaches dist artifacts)
   github-release:
     name: Create GitHub Release
     needs: [publish-pypi, docker]

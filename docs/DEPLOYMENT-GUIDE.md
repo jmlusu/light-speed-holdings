@@ -31,7 +31,6 @@ Complete deployment reference for AI Company Builder — from local development 
 ```bash
 # Clone the repository
 git clone https://github.com/light-speed-holdings/ai-company.git
-cd ai-company
 
 # Create the virtual environment and install project + dev deps from uv.lock
 uv sync --extra dev

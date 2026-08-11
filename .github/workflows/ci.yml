@@ -18,10 +18,6 @@ concurrency:
 permissions:
   contents: read
 
-defaults:
-  run:
-    working-directory: ai-company
-
 jobs:
   lint:
     name: Lint (ruff)

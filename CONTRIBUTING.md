@@ -3,7 +3,6 @@
 ## Development Setup
 
 ```bash
-cd ai-company
 uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 ```
 

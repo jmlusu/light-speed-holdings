@@ -20,9 +20,6 @@
 git clone <repo-url>
 cd light-speed-holdings
 
-# Navigate to the active project
-cd ai-company
-
 # Create the virtual environment and install project + dev deps from uv.lock
 uv sync --extra dev
 
@@ -276,9 +273,7 @@ class MyModel(EntityBase):
 ## Known Issues
 
 - `tests/unit/test_security.py` has a collection error (missing dependency) — skip with `--ignore`
-- Root `src/ai_company/cli.py` has syntax errors — work in `ai-company/` directory only
-- Two `.venv` directories exist — always use `ai-company/.venv/`
-- Windows environment: use PowerShell scripts in `ai-company/scripts/`
+- Windows environment: use PowerShell scripts in `scripts/`
 
 ---
 

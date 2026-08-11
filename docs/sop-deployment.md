@@ -87,7 +87,7 @@ Ensure no regressions.
 
 **Command:**
 ```bash
-cd ai-company && pytest && ruff check src/ && mypy src/
+pytest && ruff check src/ && mypy src/
 ```
 
 **Expected Result:** All tests pass, no lint errors, no type errors.
