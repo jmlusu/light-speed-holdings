@@ -41,7 +41,7 @@ ai-company company run
 ```
 
 **Output:**
-- 27 agent markdown files in `.opencode/agents/`
+- 127 agent markdown files in `.opencode/agents/`
 - Config files in `.opencode/config/`
 - Directory structure for memory, knowledge, projects
 - Task inbox at `.opencode/inbox.json`
@@ -96,7 +96,7 @@ AI Company Builder uses a corporate hierarchy model where one human CEO supervis
 
 ### Agent Registration
 
-All 27 agents are defined in `company/agent-registry.json`. Each entry contains:
+All 127 agents are defined in `company-registry.yaml` (synced to `company/agent-registry.json`). Each entry contains:
 
 ```json
 {

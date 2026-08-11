@@ -4,10 +4,13 @@ All notable changes to AI Company Builder are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [0.4.0] — 2026-08-11
 
 ### Added
-- Sprint 4 planned items: structured logging, agent spec validation, OAuth2, memory encryption
+- **Sprint 7** (2026-08-11): Tool vocabulary canonicalization (`code_interpreter` removed; legacy aliases `write`/`execute`/`delegate`/`web_search` mapped); HITL approval expiry sweep (`ApprovalGate` EXPIRED transition wired into daemon governance cadence); quality hardening (approval matrix, rotate-secrets script, .dockerignore); documentation audit and reconciliation begun.
+- **Sprint 6** (2026-08-10): Registry anchored to package root (`AI_COMPANY_ROOT` override); lazy CLI sub-app registration; tool-vocabulary canonicalized across all 127 agent cards; shared operating-standards dedup; `ProviderErrorCategory` classification, circuit breaker ignores auth; bounded cost tracker logs; bounded decision log; task lease fields + store locking; DLQ re-enqueue delegation; E2E Alpine `$data` migration.
+- **Sprint 5** (2026-08-09): OAuth2 client-credentials auth flow (`OAuth2TokenManager` with TTL cache, fail-closed); `T012 ai-company llm usage` command; LLM budget caps/auto-suspend.
+- **Sprint 4** (2026-08-08): `AgentContext.validate()` + `agents validate` CLI (GAP-019); structured JSON logging with correlation IDs (GAP-018); key rotation; token counting; dashboard security hardening; 22 new agent skills; real KPI computation; daemon lifecycle.
 - All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@`
 
 ## [0.3.0] - 2026-07-22

@@ -4,7 +4,7 @@ REST API and WebSocket documentation for the AI Company Builder CEO Dashboard.
 
 **Base URL:** `http://localhost:8420`
 **OpenAPI Title:** Light Speed Holdings — CEO Dashboard
-**Version:** 0.1.0
+**Version:** 0.4.0
 
 ---
 
