@@ -11,22 +11,38 @@ from __future__ import annotations
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def _reset_dashboard_state():
-    """Reset module-level dashboard singletons before/after every unit test."""
+def _reset_shared_singletons() -> None:
+    """Reset module-level singletons that hold live file paths.
+
+    This is the single choke point for state pollution: StateStore, the
+    dashboard bus, the SQLite database, the audit writer and the memory store
+    are all rebound lazily on next use, so anything created between tests is
+    guaranteed to point at the (test-controlled) data root rather than a
+    stale CWD-relative path from an earlier test.
+    """
+    import ai_company.audit.integration as audit_mod
     import ai_company.dashboard.api as dash_api
-    from ai_company.dashboard.app import app
+    import ai_company.memory.integration as mem_mod
     from ai_company.dashboard.repository import reset_state_store
     from ai_company.data import reset_database
 
     reset_state_store()
     reset_database()
     dash_api._bus = None
+    audit_mod._writer = None
+    mem_mod._store = None
+    mem_mod._vector_store = None
+
+
+@pytest.fixture(autouse=True)
+def _reset_dashboard_state():
+    """Reset module-level dashboard singletons before/after every unit test."""
+    from ai_company.dashboard.app import app
+
+    _reset_shared_singletons()
     if hasattr(app.state, "limiter"):
         app.state.limiter._hits.clear()
     yield
-    reset_state_store()
-    reset_database()
-    dash_api._bus = None
+    _reset_shared_singletons()
     if hasattr(app.state, "limiter"):
         app.state.limiter._hits.clear()

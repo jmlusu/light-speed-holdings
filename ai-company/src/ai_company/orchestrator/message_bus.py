@@ -23,6 +23,7 @@ from typing import Any, Callable, List
 
 from ai_company.data import TaskStore, database_is_usable
 from ai_company.models.task import Task
+from ai_company.paths import get_data_root
 from ai_company.store.file_store import FileStore
 from ai_company.utils.logging import get_correlation_id
 
@@ -53,7 +54,10 @@ class MessageBus:
     as before (file only).
 
     Args:
-        storage_path: Path to the inbox JSON file.
+        storage_path: Path to the inbox JSON file. Defaults to
+            ``<data root>/.opencode/inbox.json`` (data root resolved via
+            :func:`ai_company.paths.get_data_root`, i.e. ``DASHBOARD_DATA_DIR``
+            or the project root) rather than the process CWD.
         broadcast_callback: Optional synchronous callback invoked after
             task mutations.  Receives ``(task_dict, event_type)`` where
             *event_type* is one of ``"created"``, ``"completed"``,
@@ -63,10 +67,15 @@ class MessageBus:
 
     def __init__(
         self,
-        storage_path: str = ".opencode/inbox.json",
+        storage_path: str | None = None,
         broadcast_callback: BroadcastCallback = None,
         database: Any = None,
     ) -> None:
+        if storage_path is None:
+            # Root-aware default: resolve against the deterministic data root
+            # (AI_COMPANY_ROOT / DASHBOARD_DATA_DIR aware) instead of the CWD so
+            # the bus can never silently write to an unrelated working directory.
+            storage_path = str(get_data_root() / ".opencode" / "inbox.json")
         self.storage_path = Path(storage_path)
         self._store = FileStore(self.storage_path.parent, backup=True)
         self._inbox_name = self.storage_path.name

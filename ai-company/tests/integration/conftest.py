@@ -158,6 +158,10 @@ def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     Returns the tmp_path so tests can address files by relative path.
     """
     monkeypatch.chdir(tmp_path)
+    # Anchor the deterministic data root so any default-constructed MessageBus /
+    # AuditWriter (e.g. the executor's internal bus) resolves to this workspace
+    # rather than the real project ``.opencode`` directory.
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     (tmp_path / ".opencode").mkdir(exist_ok=True)
     (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
     (tmp_path / "orchestrator").mkdir(exist_ok=True)

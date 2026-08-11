@@ -18,6 +18,15 @@ from ai_company.executor.hitl_gate import HITLGate
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.orchestrator.approval import ApprovalGate
 
+
+@pytest.fixture(autouse=True)
+def _anchor_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Anchor DASHBOARD_DATA_DIR so default-constructed MessageBus / AuditWriter
+    (e.g. the executor's internal bus) stay inside the per-test tmp dir instead
+    of the real project ``.opencode`` directory."""
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
+
 # ── Context / Spec Parser ──────────────────────────────────────────
 
 
