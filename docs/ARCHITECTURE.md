@@ -270,4 +270,4 @@ tests/
 └── test_release.py                # Release validation tests
 ```
 
-**Total: 1805 tests collected** (53 deselected)
+**Total: 1856 tests collected** (53 deselected)

@@ -55,7 +55,7 @@ uv run ai-company --help       # CLI entry point
 ## 4 Common Commands
 
 ```bash
-uv run pytest                                  # Full test suite (1805 tests collected, 53 deselected)
+uv run pytest                                  # Full test suite (1856 tests collected, 53 deselected)
 uv run pytest tests/unit/test_models.py        # Single test file
 uv run pytest -k "postmortem"                  # Pattern match
 uv run ruff check src/ tests/                  # Lint
