@@ -1,9 +1,9 @@
 name: Monitoring & Alerts
 
 on:
-  # Check every hour for anomalies
+  # Check every 12 hours for anomalies
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 */12 * * *"
   workflow_dispatch:
     inputs:
       check_type:
@@ -106,7 +106,7 @@ jobs:
         run: |
           echo "Checking autonomous cycle health..."
 
-          # Get last 4 cycle runs (should be one every 6 hours)
+          # Get last 4 cycle runs (should be one every 12 hours)
           CYCLES=$(gh run list --workflow=autonomous.yml --limit=4 --json conclusion,updatedAt,databaseId 2>/dev/null || true)
           CYCLES=${CYCLES:-[]}
 

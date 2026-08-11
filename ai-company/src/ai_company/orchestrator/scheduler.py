@@ -102,8 +102,14 @@ class Scheduler:
                 instruction=template.get("instruction", f"Scheduled: {scheduled.name}"),
                 priority=TaskPriority(template.get("priority", "medium")),
             )
-            bus.send_task(task)
+            # Crash-safety ordering: advance next_run and persist BEFORE
+            # enqueueing the task.  If we sent the task first and the
+            # process crashed before mark_completed(), the same scheduled
+            # task would be re-enqueued on restart and run twice.  With the
+            # schedule persisted first, a crash after send_task() can at
+            # worst delay the next run — it can never duplicate work.
             self.mark_completed(scheduled.id)
+            bus.send_task(task)
             created.append(task.id)
         return created
 

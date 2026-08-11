@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from ai_company.models.task import TaskPriority
 from ai_company.services.base import BaseService
@@ -30,7 +30,7 @@ class SalesService(BaseService):
     def list_leads(self, status: str = "") -> list[dict[str, Any]]:
         """List all leads, optionally filtered by status."""
         data = self._load_data("pipeline.yaml")
-        leads = data.get("leads", [])
+        leads = cast(list[dict[str, Any]], data.get("leads", []))
         if status:
             leads = [ld for ld in leads if ld.get("status") == status]
         return leads
@@ -86,7 +86,7 @@ class SalesService(BaseService):
     def update_lead_status(self, lead_id: str, new_status: str) -> dict[str, Any]:
         """Update lead status (new -> qualified -> meeting -> proposal -> closed)."""
         data = self._load_data("pipeline.yaml")
-        leads = data.get("leads", [])
+        leads = cast(list[dict[str, Any]], data.get("leads", []))
 
         lead = next((ld for ld in leads if ld["id"] == lead_id), None)
         if not lead:
@@ -110,7 +110,7 @@ class SalesService(BaseService):
     def list_deals(self, stage: str = "") -> list[dict[str, Any]]:
         """List all deals, optionally filtered by pipeline stage."""
         data = self._load_data("pipeline.yaml")
-        deals = data.get("deals", [])
+        deals = cast(list[dict[str, Any]], data.get("deals", []))
         if stage:
             deals = [d for d in deals if d.get("stage") == stage]
         return deals
@@ -166,7 +166,7 @@ class SalesService(BaseService):
     def advance_deal(self, deal_id: str, new_stage: str) -> dict[str, Any]:
         """Move a deal to the next pipeline stage."""
         data = self._load_data("pipeline.yaml")
-        deals = data.get("deals", [])
+        deals = cast(list[dict[str, Any]], data.get("deals", []))
 
         deal = next((d for d in deals if d["id"] == deal_id), None)
         if not deal:

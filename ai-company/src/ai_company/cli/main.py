@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import partial
-from typing import Any
+from typing import Any, cast
 
 import typer
 from typer.core import TyperGroup
@@ -23,7 +23,7 @@ def _load_subapp(module: str, attr: str) -> typer.Typer:
     """Import a sub-command module lazily and return its Typer app."""
     import importlib
 
-    return getattr(importlib.import_module(module), attr)
+    return cast(typer.Typer, getattr(importlib.import_module(module), attr))
 
 
 # name -> (module, app attribute, help text). Imported lazily on first use so

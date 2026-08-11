@@ -375,7 +375,7 @@ class DevBootstrap:
         host = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
         try:
             with urllib.request.urlopen(f"{host}/api/tags", timeout=3) as resp:
-                return resp.status == 200
+                return bool(resp.status == 200)
         except Exception:  # noqa: BLE001 - reachability check must not crash
             return False
 

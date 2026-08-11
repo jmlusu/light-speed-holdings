@@ -8,6 +8,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
+from ai_company.dashboard.monitoring import inc_metric, record_llm_cost
 from ai_company.llm.circuit_breaker import CircuitBreaker
 from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
@@ -213,13 +214,31 @@ class LLMClient:
                         response.model or model,
                     )
                     self._record_usage(response, agent_name, task_id, attempt + 1, usage)
+                    inc_metric("llm_requests_total")
                     return parsed
                 last_raw = response.content
                 last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
+                logger.debug(
+                    "LLM attempt failed",
+                    extra={
+                        "attempt": attempt + 1,
+                        "model": model,
+                        "error": last_error,
+                    },
+                )
             except LLMProviderError as exc:
                 if breaker:
                     breaker.record_failure(exc.category.value)
                 last_error = f"Attempt {attempt + 1}: {exc}"
+                logger.debug(
+                    "LLM attempt failed",
+                    extra={
+                        "attempt": attempt + 1,
+                        "model": model,
+                        "error": str(exc),
+                    },
+                )
+                inc_metric("llm_errors_total")
 
         raise LLMResponseError(
             f"Failed to get valid JSON after {max_retries} attempts. Last error: {last_error}",
@@ -321,13 +340,31 @@ class LLMClient:
                                 completion_tokens=count_tokens(full_text, model),
                             ),
                         )
+                    inc_metric("llm_requests_total")
                     return
                 last_raw = full_text
                 last_error = f"Attempt {attempt + 1}: Invalid JSON from {provider_id}/{model}"
+                logger.debug(
+                    "LLM attempt failed",
+                    extra={
+                        "attempt": attempt + 1,
+                        "model": model,
+                        "error": last_error,
+                    },
+                )
             except LLMProviderError as exc:
                 if breaker:
                     breaker.record_failure(exc.category.value)
                 last_error = f"Attempt {attempt + 1}: {exc}"
+                logger.debug(
+                    "LLM attempt failed",
+                    extra={
+                        "attempt": attempt + 1,
+                        "model": model,
+                        "error": str(exc),
+                    },
+                )
+                inc_metric("llm_errors_total")
 
         raise LLMResponseError(
             f"Failed to get valid JSON after {max_retries} attempts. Last error: {last_error}",
@@ -343,13 +380,16 @@ class LLMClient:
         iteration: int,
         usage: TokenUsage | None = None,
     ) -> None:
-        """Record token usage to JSONL (CostTracker) and SQLite (CostAnalytics).
+        """Record token usage to JSONL (CostTracker), SQLite (CostAnalytics),
+        and the dashboard Prometheus counters.
 
         Prefers provider-reported usage metadata and falls back to heuristic
         token counts (see ``ai_company.llm.token_counter``). The existing
         JSONL logging via CostTracker is preserved as-is. When the SQLite
         database singleton is available, usage is also written to the
-        ``cost_records`` table for dashboard analytics.
+        ``cost_records`` table for dashboard analytics — unless a CostTracker
+        is attached, in which case the tracker's own SQLite mirror is the
+        single write path (OB5, no double-write).
 
         Args:
             response: The ChatResponse from the provider.
@@ -399,29 +439,37 @@ class LLMClient:
                 8,
             )
 
-        # ── 2. SQLite recording (CostAnalytics) ───────────────────
-        try:
-            from ai_company.data import CostAnalytics, get_database
+        # Feed the Prometheus cost counters (OB1).
+        record_llm_cost(provider=response.provider, cost_usd=cost_usd)
 
-            db = get_database()
-            if db is not None:
-                analytics = CostAnalytics(db)
-                analytics.record_usage(
-                    model=response.model,
-                    provider=response.provider,
-                    agent_name=agent_name,
-                    task_id=task_id,
-                    prompt_tokens=usage.prompt_tokens,
-                    completion_tokens=usage.completion_tokens,
-                    cost_usd=cost_usd,
-                    iteration=iteration,
+        # ── 2. SQLite recording (CostAnalytics) ───────────────────
+        # OB5: when a CostTracker is attached it already mirrors every
+        # usage record to SQLite (see CostTracker.record_usage), so writing
+        # here too would double-count cost rows. Only fall back to the
+        # direct SQLite write when no tracker is configured.
+        if cost_tracker is None:
+            try:
+                from ai_company.data import CostAnalytics, get_database
+
+                db = get_database()
+                if db is not None:
+                    analytics = CostAnalytics(db)
+                    analytics.record_usage(
+                        model=response.model,
+                        provider=response.provider,
+                        agent_name=agent_name,
+                        task_id=task_id,
+                        prompt_tokens=usage.prompt_tokens,
+                        completion_tokens=usage.completion_tokens,
+                        cost_usd=cost_usd,
+                        iteration=iteration,
+                    )
+            except Exception:  # noqa: BLE001 - cost analytics is best-effort
+                logger.debug(
+                    "SQLite cost tracking failed for task %s",
+                    task_id,
+                    exc_info=True,
                 )
-        except Exception:  # noqa: BLE001 - cost analytics is best-effort
-            logger.debug(
-                "SQLite cost tracking failed for task %s",
-                task_id,
-                exc_info=True,
-            )
 
     def _parse_response(self, content: str) -> dict[str, Any] | None:
         """Try to parse the LLM response as JSON."""

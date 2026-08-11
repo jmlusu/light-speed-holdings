@@ -15,7 +15,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, cast
 
 from ai_company.audit.events import AuditEvent, AuditEventType
 from ai_company.audit.writer import AuditWriter
@@ -173,10 +173,10 @@ class BaseService:
         """Load department data from a YAML/JSON file."""
         data = self._store.read_json(filename)
         if data is not None:
-            return data
+            return cast(dict[str, Any], data)
         data = self._store.read_yaml(filename)
         if data is not None:
-            return data
+            return cast(dict[str, Any], data)
         return {}
 
     def _save_data(self, filename: str, data: dict[str, Any]) -> None:

@@ -15,6 +15,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 
+from ai_company.dashboard.monitoring import inc_metric
 from ai_company.executor.context import AgentContext
 from ai_company.executor.hitl_gate import HITLGate
 from ai_company.executor.prompts import (
@@ -72,6 +73,9 @@ class LoopResult:
     total_cost_usd: float
     done: bool
     error: str = ""
+    # O7: True when the loop stopped because max_iterations was exhausted
+    # without the agent signalling completion (distinct from a failure).
+    timed_out: bool = False
 
     @property
     def total_tokens(self) -> int:
@@ -143,6 +147,7 @@ class AgentLoop:
             ``LoopResult`` with the final response, iteration count, and stats.
         """
         resolved_name = agent_name or agent.name
+        inc_metric("agent_loop_runs_total")
         self._current_priority = priority
         self._current_task_prompt = user_prompt
         self._current_agent_name = resolved_name
@@ -166,8 +171,11 @@ class AgentLoop:
         final_result_text = ""
         last_error = ""
         iterations_completed = 0
+        timed_out = False
 
         for iteration in range(1, self.config.max_iterations + 1):
+            inc_metric("agent_loop_iterations_total")
+
             # ── Budget check ──────────────────────────────────────
             if self.cost_tracker and task_id:
                 allowed, reason = self.cost_tracker.check_budget(task_id)
@@ -283,6 +291,10 @@ class AgentLoop:
 
         # ── Handle max-iterations exhaustion ──────────────────────
         if not done and not last_error:
+            # O7: mark this as a timeout (not a generic failure) so the
+            # executor can persist TaskStatus.TIMEOUT and operators can
+            # distinguish a hit iteration cap from a hard error.
+            timed_out = True
             last_error = (
                 f"Max iterations ({self.config.max_iterations}) reached "
                 "without agent signaling completion."
@@ -303,6 +315,7 @@ class AgentLoop:
             total_cost_usd=round(total_cost_usd, 8),
             done=done,
             error=last_error,
+            timed_out=timed_out,
         )
 
     # ── Internal helpers ───────────────────────────────────────────

@@ -12,7 +12,7 @@ import uuid
 from base64 import b64decode, b64encode
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -74,7 +74,7 @@ def _encode_cursor(data: dict) -> str:
 
 def _decode_cursor(cursor: str) -> dict:
     try:
-        return json.loads(b64decode(cursor.encode()).decode())
+        return cast(dict, json.loads(b64decode(cursor.encode()).decode()))
     except ValueError:
         return {}
 
@@ -179,7 +179,7 @@ DEVICE_STORE = Path("orchestrator/devices.yaml")
 
 def _load_devices() -> list[dict]:
     data = _load_yaml(DEVICE_STORE)
-    return data.get("devices", [])
+    return cast(list[dict], data.get("devices", []))
 
 
 def _save_devices(devices: list[dict]) -> None:

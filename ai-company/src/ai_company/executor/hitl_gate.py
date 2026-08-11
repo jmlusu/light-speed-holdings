@@ -186,6 +186,10 @@ class HITLGate:
         with self._lock:
             if request_id not in self._pending_requests:
                 return None
+        # Reload from disk first so a decision written by another process
+        # (e.g. the daemon's governance sweep marking this request EXPIRED)
+        # is observed instead of acting on stale in-memory state.
+        self.gate.reload()
         req = self.gate.get_request(request_id)
         if req is None:
             return False
@@ -215,6 +219,9 @@ class HITLGate:
             if future.cancelled():
                 return
 
+            # Reload from disk so an external decision (approval/rejection
+            # or the daemon's EXPIRED sweep) is seen instead of stale memory.
+            self.gate.reload()
             req = self.gate.get_request(request_id)
             if req and req.status != ApprovalStatus.PENDING:
                 approved = req.status == ApprovalStatus.APPROVED
@@ -260,6 +267,9 @@ class HITLGate:
             if future is None or future.done():
                 return None
 
+        # Reload from disk so a decision persisted by the daemon (e.g. an
+        # EXPIRED sweep) is observed instead of stale in-memory state.
+        self.gate.reload()
         req = self.gate.get_request(request_id)
         if req is None:
             self._resolve(request_id, False)
@@ -302,15 +312,14 @@ class HITLGate:
 
 def _format_description(tool: str, args: dict[str, Any]) -> str:
     """Format a human-readable description of the tool operation for approval."""
-    if tool == "write":
+    if tool in ("write", "edit"):
         path = args.get("path", "unknown")
         content_len = len(args.get("content", ""))
         return f"Write {content_len} chars to {path}"
-    elif tool == "execute":
+    elif tool in ("execute", "bash"):
         return f"Execute: {args.get('command', 'unknown')}"
-    elif tool == "code_interpreter":
-        code_preview = args.get("code", "")[:200]
-        return f"Run Python code: {code_preview}..."
+    elif tool in ("webfetch", "web_search", "websearch"):
+        return f"Fetch: {args.get('url', 'unknown')}"
     else:
         return f"{tool}: {json.dumps(args, indent=2)}"
 

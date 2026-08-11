@@ -23,6 +23,7 @@ from __future__ import annotations
 import contextlib
 import json
 import logging
+import logging.handlers
 import os
 import signal
 import sys
@@ -30,7 +31,7 @@ import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 from ai_company.logging_config import HumanFormatter, JSONFormatter
 from ai_company.utils.logging import CorrelationFilter
@@ -78,6 +79,21 @@ def _atomic_write_text(path: Path, content: str) -> None:
         if tmp:
             with contextlib.suppress(OSError):
                 os.unlink(tmp)
+
+
+def _sweep_expired_approvals(executor: Any) -> int:
+    """Expire stale pending approval requests (Sprint 7).
+
+    Prefers the executor's live ``ApprovalGate`` so in-memory state stays
+    consistent with the sweep; falls back to a fresh gate over the shared
+    approvals file when the executor has no HITL gate.
+    """
+    from ai_company.orchestrator.approval import ApprovalGate
+
+    gate = getattr(getattr(executor, "hitl", None), "gate", None)
+    if not isinstance(gate, ApprovalGate):
+        gate = ApprovalGate()
+    return gate.sweep_expired()
 
 
 class DaemonPIDFile:
@@ -135,7 +151,7 @@ def _is_process_alive(pid: int) -> bool:
     try:
         import psutil
 
-        return psutil.pid_exists(pid)
+        return bool(psutil.pid_exists(pid))
     except ImportError:
         pass
 
@@ -224,7 +240,10 @@ class DaemonHealthStatus:
         if not self.status_path.exists():
             return None
         try:
-            return json.loads(self.status_path.read_text(encoding="utf-8"))
+            return cast(
+                dict[str, Any],
+                json.loads(self.status_path.read_text(encoding="utf-8")),
+            )
         except (json.JSONDecodeError, OSError):
             return None
 
@@ -463,6 +482,15 @@ class ExecutorDaemon:
                 except Exception:
                     logger.exception("Error during retention enforcement")
 
+                # Sprint 7: expire stale pending approval requests on the same
+                # governance cadence (no new threads/timers).
+                try:
+                    expired = _sweep_expired_approvals(executor)
+                    if expired:
+                        logger.info("Expired %d stale approval request(s)", expired)
+                except Exception:
+                    logger.exception("Error during approval expiry sweep")
+
             # Sleep in small increments so we can respond to signals quickly
             self._interruptible_sleep(self.poll_interval)
 
@@ -516,7 +544,12 @@ class ExecutorDaemon:
             root_logger.addFilter(CorrelationFilter())
 
         # File handler — always structured JSON
-        fh = logging.FileHandler(str(self.log_path), encoding="utf-8")
+        fh = logging.handlers.RotatingFileHandler(
+            str(self.log_path),
+            maxBytes=10_000_000,
+            backupCount=5,
+            encoding="utf-8",
+        )
         fh.setLevel(logging.DEBUG)
         fh.setFormatter(JSONFormatter())
         root_logger.addHandler(fh)

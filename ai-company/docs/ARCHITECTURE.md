@@ -4,7 +4,7 @@
 
 ```
 src/ai_company/
-├── cli/                        # Typer CLI commands (24 subcommands)
+├── cli/                        # Typer CLI commands (30 subcommands)
 │   ├── main.py                 # App entry point, registers all subcommands
 │   ├── company.py              # Bootstrap engine CLI (company run/status)
 │   ├── decision.py             # Decision engine CLI (evaluate/matrix/tree)
@@ -64,7 +64,8 @@ src/ai_company/
 │   ├── loader.py               # YAML file loading (19 config files)
 │   ├── parser.py               # Raw dicts → typed models
 │   ├── resolver.py             # Cross-reference resolution
-│   └── validator.py            # Structural validation
+│   ├── validator.py            # Structural validation
+│   └── sync.py                 # Registry sync (YAML → agent-registry.json)
 ├── config/                     # Config loader
 │   └── __init__.py             # load_config() function
 ├── builder/                    # Bootstrap engine
@@ -77,6 +78,7 @@ src/ai_company/
 │   ├── engine.py               # MemoryStore — 6 types, persistence
 │   └── integration.py          # Executor integration (recall context before tasks)
 ├── graph/                      # Graph engine
+│   ├── __init__.py             # Re-exports Graph, GraphEdge, GraphNode, GraphEngine
 │   └── engine.py               # GraphEngine — 4 graph types, BFS pathfinding
 ├── audit/                      # Audit trail package
 │   ├── __init__.py             # Public API: AuditEvent, AuditWriter, AuditReader
@@ -109,9 +111,6 @@ src/ai_company/
 ├── generator.py                # Agent .md file generation from templates
 ├── model_router.py             # LLM model selection by agent/context
 ├── config.py                   # Config utilities
-├── builder.py                  # Legacy builder (use builder/ package)
-├── registry.py                 # Legacy registry (use registry/ package)
-├── graph.py                    # Legacy graph (use graph/ package)
 └── utils.py                    # Shared utilities (currently empty)
 ```
 
@@ -205,7 +204,7 @@ config/*.yaml (19 files)
 
 | Entry Point | File | Purpose |
 |-------------|------|---------|
-| CLI | `cli/main.py:app` | Typer app, 24 subcommands |
+| CLI | `cli/main.py:app` | Typer app, 30 subcommands |
 | Config Loader | `config/__init__.py:load_config()` | YAML → CompanyRegistry |
 | Registry | `registry/__init__.py:load_registry()` | Load + parse + resolve + validate |
 | Bootstrap | `builder/__init__.py:BootstrapEngine` | Full company generation |
@@ -238,7 +237,7 @@ config/*.yaml (19 files)
 
 ```
 tests/
-├── unit/                          # 27 unit test files
+├── unit/                          # 71 unit test files
 │   ├── test_models.py             # Pydantic model tests
 │   ├── test_executor.py           # Executor + AgentLoop tests
 │   ├── test_agent_loop.py         # AgentLoop unit tests
@@ -260,7 +259,7 @@ tests/
 │   ├── test_doctor.py             # Diagnostics tests
 │   ├── test_dead_letter.py        # Dead-letter queue tests
 │   ├── test_approval_prompts.py   # Approval prompt tests
-│   └── test_security.py           # Security tests (collection error — skip)
+│   └── test_security.py           # Security tests
 ├── integration/                   # Integration tests
 │   └── test_pipeline.py           # Memory, graph, scheduler, KPI integration
 ├── test_audit_integration.py      # Audit integration tests
@@ -271,4 +270,4 @@ tests/
 └── test_release.py                # Release validation tests
 ```
 
-**Total: 962 tests collected** (2 collection errors in test_security.py and test_ml.py — skip with `--ignore`)
+**Total: 1805 tests collected** (53 deselected)

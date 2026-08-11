@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, cast
 
 from ai_company.models.task import TaskPriority
 from ai_company.services.base import BaseService
@@ -30,7 +30,7 @@ class CustomerSuccessService(BaseService):
     def list_tickets(self, status: str = "") -> list[dict[str, Any]]:
         """List all support tickets, optionally filtered by status."""
         data = self._load_data("tickets.yaml")
-        tickets = data.get("tickets", [])
+        tickets = cast(list[dict[str, Any]], data.get("tickets", []))
         if status:
             tickets = [t for t in tickets if t.get("status") == status]
         return tickets
@@ -45,7 +45,7 @@ class CustomerSuccessService(BaseService):
     ) -> dict[str, Any]:
         """Create a new support ticket and delegate initial triage."""
         data = self._load_data("tickets.yaml")
-        tickets = data.get("tickets", [])
+        tickets = cast(list[dict[str, Any]], data.get("tickets", []))
 
         for ticket in tickets:
             if ticket["id"] == ticket_id:
@@ -90,7 +90,7 @@ class CustomerSuccessService(BaseService):
     ) -> dict[str, Any]:
         """Update ticket status (open -> in_progress -> resolved/closed)."""
         data = self._load_data("tickets.yaml")
-        tickets = data.get("tickets", [])
+        tickets = cast(list[dict[str, Any]], data.get("tickets", []))
 
         ticket = next((t for t in tickets if t["id"] == ticket_id), None)
         if not ticket:
@@ -127,7 +127,7 @@ class CustomerSuccessService(BaseService):
     def escalate_ticket(self, ticket_id: str, reason: str = "") -> dict[str, Any]:
         """Escalate a ticket and create a priority task."""
         data = self._load_data("tickets.yaml")
-        tickets = data.get("tickets", [])
+        tickets = cast(list[dict[str, Any]], data.get("tickets", []))
 
         ticket = next((t for t in tickets if t["id"] == ticket_id), None)
         if not ticket:
@@ -163,7 +163,7 @@ class CustomerSuccessService(BaseService):
     def get_satisfaction_report(self) -> dict[str, Any]:
         """Generate customer satisfaction report."""
         data = self._load_data("tickets.yaml")
-        tickets = data.get("tickets", [])
+        tickets = cast(list[dict[str, Any]], data.get("tickets", []))
 
         total = len(tickets)
         open_count = sum(1 for t in tickets if t.get("status") == "open")

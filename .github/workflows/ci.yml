@@ -76,6 +76,56 @@ jobs:
       - name: Pytest with coverage gate
         run: uv run pytest -q -m "not e2e" --basetemp=.pytest_tmp_ci --cov=src/ai_company --cov-report=term-missing --cov-fail-under=72
 
+  # D6: Version synchronization check - pyproject.toml must match CHANGELOG,
+  # and (when a semver tag exists) the latest v* tag. The recovery tag
+  # recovery-2026-07-26 is explicitly ignored because it is not semver.
+  version-check:
+    name: Version Sync Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Get version from pyproject.toml
+        id: pyproject_version
+        run: |
+          VERSION=$(grep '^version = ' pyproject.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Get latest version from CHANGELOG.md
+        id: changelog_version
+        run: |
+          VERSION=$(grep -E '^## \[([0-9]+\.)+[0-9]+\]' .ai-company/state/CHANGELOG.md | head -1 | sed -E 's/## \[([0-9]+\.[0-9]+\.[0-9]+)\].*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Verify pyproject.toml == CHANGELOG
+        run: |
+          PY_VERSION="${{ steps.pyproject_version.outputs.version }}"
+          CHANGELOG_VERSION="${{ steps.changelog_version.outputs.version }}"
+          echo "pyproject.toml version: $PY_VERSION"
+          echo "CHANGELOG version: $CHANGELOG_VERSION"
+          if [[ "$PY_VERSION" != "$CHANGELOG_VERSION" ]]; then
+            echo "::error::Version mismatch: pyproject.toml ($PY_VERSION) != CHANGELOG ($CHANGELOG_VERSION)"
+            exit 1
+          fi
+      - name: Verify pyproject.toml == latest semver git tag (if any)
+        run: |
+          PY_VERSION="${{ steps.pyproject_version.outputs.version }}"
+          # Only consider vX.Y.Z tags; the recovery-* tag is not a release.
+          TAG_VERSION=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1 | sed 's/^v//')
+          if [ -z "$TAG_VERSION" ]; then
+            echo "No semver tag found - skipping tag comparison."
+            exit 0
+          fi
+          echo "pyproject.toml version: $PY_VERSION"
+          echo "Latest semver tag: v$TAG_VERSION"
+          if [[ "$PY_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::Version mismatch: pyproject.toml ($PY_VERSION) != latest tag (v$TAG_VERSION)"
+            exit 1
+          fi
+
   # E2E (Playwright) suite — SEPARATE, NON-BLOCKING job.
   # Runs `pytest -m e2e` against a dashboard started in-job. Deliberately NOT part
   # of the merge `gate` (see needs: below): e2e requires a live dashboard + browser
@@ -181,7 +231,7 @@ jobs:
   gate:
     name: CI Gate
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test, harness, security, dependencies, generated-check]
+    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, version-check]
     steps:
       - uses: actions/checkout@v5
       - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files)."

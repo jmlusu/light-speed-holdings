@@ -5,6 +5,8 @@ from __future__ import annotations
 import time
 from enum import Enum
 
+from ai_company.dashboard.monitoring import inc_metric
+
 
 class CircuitState(Enum):
     CLOSED = "closed"  # Normal operation
@@ -44,6 +46,7 @@ class CircuitBreaker:
         ):
             self._state = CircuitState.HALF_OPEN
             self._success_count = 0
+            inc_metric("circuit_breaker_half_open_total")
         return self._state
 
     @property
@@ -79,6 +82,8 @@ class CircuitBreaker:
         self._last_failure_time = time.time()
 
         if self._state == CircuitState.HALF_OPEN or self._failure_count >= self.failure_threshold:
+            if self._state != CircuitState.OPEN:
+                inc_metric("circuit_breaker_trips_total")
             self._state = CircuitState.OPEN
 
     def reset(self) -> None:

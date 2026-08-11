@@ -7,7 +7,9 @@ an OpenAI-compatible /v1/chat/completions endpoint.
 from __future__ import annotations
 
 import json
+import logging
 import os
+import time
 from collections.abc import Generator
 from typing import TYPE_CHECKING, Any
 
@@ -22,6 +24,8 @@ from ai_company.llm.providers.base import (
 
 if TYPE_CHECKING:
     from ai_company.llm.oauth2 import OAuth2TokenManager
+
+logger = logging.getLogger(__name__)
 
 
 class OpenAICompatibleProvider(LLMProvider):
@@ -118,6 +122,7 @@ class OpenAICompatibleProvider(LLMProvider):
                 "max_tokens": 4096,
             }
 
+        start = time.perf_counter()
         try:
             resp = self._client.post(
                 endpoint,
@@ -137,6 +142,12 @@ class OpenAICompatibleProvider(LLMProvider):
             )
 
         data = resp.json()
+        logger.info(
+            "LLM chat completed in %.1f ms (provider=%s, model=%s)",
+            (time.perf_counter() - start) * 1000,
+            self.name,
+            model,
+        )
 
         if self.auth_style == "x-api-key":
             # Anthropic response format
@@ -200,6 +211,7 @@ class OpenAICompatibleProvider(LLMProvider):
                 "stream": True,
             }
 
+        start = time.perf_counter()
         try:
             with self._client.stream(
                 "POST",
@@ -223,6 +235,12 @@ class OpenAICompatibleProvider(LLMProvider):
             raise LLMProviderError(self.name, f"Request timed out: {exc}") from exc
         except httpx.HTTPError as exc:
             raise LLMProviderError(self.name, f"HTTP error: {exc}") from exc
+        logger.info(
+            "LLM stream completed in %.1f ms (provider=%s, model=%s)",
+            (time.perf_counter() - start) * 1000,
+            self.name,
+            model,
+        )
 
     def _parse_openai_sse(self, resp: httpx.Response) -> Generator[StreamChunk, None, None]:
         """Parse OpenAI-format SSE stream."""

@@ -35,7 +35,7 @@ import statistics
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any, Protocol, cast
 
 logger = logging.getLogger(__name__)
 
@@ -380,7 +380,7 @@ class EvalRunner:
                 system_prompt=system_prompt,
                 max_retries=1,
             )
-            return result.get("result", json.dumps(result))
+            return cast(str, result.get("result", json.dumps(result)))
         except Exception as exc:  # noqa: BLE001 - degrade to empty output
             logger.warning("Output generation failed: %s", exc)
             return ""
@@ -448,7 +448,7 @@ class EvalRunner:
                 data = json.loads(results_file.read_text(encoding="utf-8"))
                 for entry in reversed(data):
                     if entry.get("case_id") == case_id:
-                        return entry.get("score")
+                        return cast(float | None, entry.get("score"))
             except (json.JSONDecodeError, OSError):
                 pass
         return None

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-08T00:00:00.000Z",
+  "updatedAt": "2026-08-11T00:00:00.000Z",
   "entries": [
     "agenttrace-session-audit",
     "api-endpoint-builder",
@@ -31,6 +31,12 @@
     "technical-change-tracker",
     "tmux",
     "tree-ring-memory",
-    "triage"
+    "triage",
+    "ponytail",
+    "ponytail-audit",
+    "ponytail-debt",
+    "ponytail-gain",
+    "ponytail-help",
+    "ponytail-review"
   ]
 }

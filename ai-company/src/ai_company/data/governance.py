@@ -76,6 +76,39 @@ _ARCHIVE_DELETE_CHUNK_SIZE = 500
 # timezone-independent.
 _UTC_TIMESTAMP_TABLES = {"audit_events"}
 
+# Governed tables and their primary timestamp column. Retention SQL
+# interpolates these identifiers directly, so every table name is validated
+# against this fixed allowlist before a query is constructed (G7).
+_TIMESTAMP_COLUMNS: dict[str, str] = {
+    "tasks": "created_at",
+    "audit_events": "timestamp",
+    "memory_entries": "created_at",
+    "escalation_events": "timestamp",
+    "kpi_values": "timestamp",
+    "cost_records": "timestamp",
+}
+
+
+def _validate_table_name(table: str) -> str:
+    """Validate *table* against the governed-table allowlist (G7).
+
+    Retention SQL interpolates table identifiers directly; checking them
+    against :data:`_TIMESTAMP_COLUMNS` prevents SQL injection from
+    caller-supplied policies.
+
+    Args:
+        table: The table name to validate.
+
+    Returns:
+        The validated table name.
+
+    Raises:
+        ValueError: If the table is not a known governed table.
+    """
+    if table not in _TIMESTAMP_COLUMNS:
+        raise ValueError(f"Unknown governed table: {table}")
+    return table
+
 
 # ---------------------------------------------------------------------------
 # Policy definitions
@@ -267,6 +300,7 @@ class DataGovernance:
 
     def _enforce_table_retention(self, table: str, policy: RetentionPolicy) -> int:
         """Enforce retention on a single table. Returns records processed."""
+        _validate_table_name(table)
         if policy.action == RetentionAction.NONE:
             return 0
 
@@ -280,7 +314,8 @@ class DataGovernance:
 
         # Count affected rows
         count_row = self._db.fetchone(
-            f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_column} < ? AND {ts_column} != ''",
+            # Table validated via _validate_table_name(); ts_column from fixed allowlist.
+            f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_column} < ? AND {ts_column} != ''",  # nosec B608
             (cutoff,),
         )
         affected = count_row["cnt"] if count_row else 0
@@ -295,6 +330,8 @@ class DataGovernance:
         elif policy.action == RetentionAction.ANONYMIZE:
             self._anonymize_records(table, ts_column, cutoff)
 
+        _audit_retention_applied(table, policy.action.value, affected, cutoff)
+
         logger.info(
             "Retention policy [%s] %s: %d records processed (cutoff=%s)",
             table,
@@ -306,15 +343,7 @@ class DataGovernance:
 
     def _get_timestamp_column(self, table: str) -> str | None:
         """Return the primary timestamp column name for a table."""
-        mapping = {
-            "tasks": "created_at",
-            "audit_events": "timestamp",
-            "memory_entries": "created_at",
-            "escalation_events": "timestamp",
-            "kpi_values": "timestamp",
-            "cost_records": "timestamp",
-        }
-        return mapping.get(table)
+        return _TIMESTAMP_COLUMNS.get(table)
 
     def _retention_cutoff(self, table: str, retention_days: int) -> str:
         """Compute the retention cutoff in the table's timestamp convention.
@@ -360,7 +389,8 @@ class DataGovernance:
         while True:
             # Fetch one batch (rowid alias needed to delete exactly these rows)
             rows = self._db.fetchall(
-                f"SELECT rowid AS _rowid, * FROM {table} "
+                # Table validated via _validate_table_name(); ts_column from fixed allowlist.
+                f"SELECT rowid AS _rowid, * FROM {table} "  # nosec B608
                 f"WHERE {ts_column} < ? AND {ts_column} != '' "
                 f"LIMIT {_ARCHIVE_BATCH_SIZE}",
                 (cutoff,),
@@ -385,15 +415,17 @@ class DataGovernance:
                 chunk = rowids[start : start + _ARCHIVE_DELETE_CHUNK_SIZE]
                 placeholders = ", ".join("?" for _ in chunk)
                 self._db.execute(
-                    f"DELETE FROM {table} WHERE rowid IN ({placeholders})",
+                    # Table validated via _validate_table_name(); rowids are parameterized.
+                    f"DELETE FROM {table} WHERE rowid IN ({placeholders})",  # nosec B608
                     tuple(chunk),
                 )
             self._db.commit()
 
     def _purge_records(self, table: str, ts_column: str, cutoff: str) -> None:
         """Permanently delete records older than the cutoff."""
+        # Table validated via _validate_table_name(); ts_column from fixed allowlist.
         self._db.execute(
-            f"DELETE FROM {table} WHERE {ts_column} < ? AND {ts_column} != ''",
+            f"DELETE FROM {table} WHERE {ts_column} < ? AND {ts_column} != ''",  # nosec B608
             (cutoff,),
         )
         self._db.commit()
@@ -407,7 +439,8 @@ class DataGovernance:
         import hashlib
 
         rows = self._db.fetchall(
-            f"SELECT rowid AS _rowid, * FROM {table} "
+            # Table validated via _validate_table_name(); ts_column from fixed allowlist.
+            f"SELECT rowid AS _rowid, * FROM {table} "  # nosec B608
             f"WHERE {ts_column} < ? AND {ts_column} != '' LIMIT 1000",
             (cutoff,),
         )
@@ -429,7 +462,8 @@ class DataGovernance:
             values = list(updates.values())
             values.append(row["_rowid"])
             self._db.execute(
-                f"UPDATE {table} SET {set_clause} WHERE rowid = ?",
+                # Table validated via _validate_table_name(); column values are parameterized.
+                f"UPDATE {table} SET {set_clause} WHERE rowid = ?",  # nosec B608
                 tuple(values),
             )
 
@@ -481,6 +515,7 @@ class DataGovernance:
         """
         table_stats: dict[str, dict[str, Any]] = {}
         for table in self._policies:
+            _validate_table_name(table)
             policy = self._policies[table]
             ts_col = self._get_timestamp_column(table)
             row_count = self._db.table_count(table)
@@ -488,11 +523,12 @@ class DataGovernance:
             oldest = None
             newest = None
             if ts_col:
+                # Table validated via _validate_table_name(); ts_col from fixed allowlist.
                 oldest_row = self._db.fetchone(
-                    f"SELECT MIN({ts_col}) as oldest FROM {table} WHERE {ts_col} != ''"
+                    f"SELECT MIN({ts_col}) as oldest FROM {table} WHERE {ts_col} != ''"  # nosec B608
                 )
                 newest_row = self._db.fetchone(
-                    f"SELECT MAX({ts_col}) as newest FROM {table} WHERE {ts_col} != ''"
+                    f"SELECT MAX({ts_col}) as newest FROM {table} WHERE {ts_col} != ''"  # nosec B608
                 )
                 oldest = oldest_row["oldest"] if oldest_row else None
                 newest = newest_row["newest"] if newest_row else None
@@ -501,8 +537,9 @@ class DataGovernance:
             past_retention = 0
             if ts_col and row_count > 0:
                 cutoff = self._retention_cutoff(table, policy.retention_days)
+                # Table validated via _validate_table_name(); ts_col from fixed allowlist.
                 past_row = self._db.fetchone(
-                    f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_col} < ? AND {ts_col} != ''",
+                    f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_col} < ? AND {ts_col} != ''",  # nosec B608
                     (cutoff,),
                 )
                 past_retention = past_row["cnt"] if past_row else 0
@@ -533,6 +570,7 @@ class DataGovernance:
         findings: list[dict[str, Any]] = []
 
         for table, policy in self._policies.items():
+            _validate_table_name(table)
             ts_col = self._get_timestamp_column(table)
             if ts_col is None:
                 findings.append(
@@ -549,8 +587,9 @@ class DataGovernance:
                 continue
 
             cutoff = self._retention_cutoff(table, policy.retention_days)
+            # Table validated via _validate_table_name(); ts_col from fixed allowlist.
             past_row = self._db.fetchone(
-                f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_col} < ? AND {ts_col} != ''",
+                f"SELECT COUNT(*) as cnt FROM {table} WHERE {ts_col} < ? AND {ts_col} != ''",  # nosec B608
                 (cutoff,),
             )
             past_retention = past_row["cnt"] if past_row else 0
@@ -672,6 +711,32 @@ class GovernanceScheduler:
     def reset(self) -> None:
         """Force the next ``run_due`` call to run a retention pass."""
         self._last_run = 0.0
+
+
+def _audit_retention_applied(table: str, action: str, count: int, cutoff: str) -> None:
+    """Best-effort audit hook for a completed retention action (G3).
+
+    Writes a ``RETENTION_APPLIED`` event through the global audit writer
+    when one is initialised. Never raises — retention stays best-effort.
+    """
+    try:
+        from ai_company.audit.events import AuditEvent, AuditEventType
+        from ai_company.audit.integration import get_writer
+
+        writer = get_writer()
+        if writer is None:
+            return
+        writer.write(
+            AuditEvent(
+                event_type=AuditEventType.RETENTION_APPLIED,
+                task_id="",
+                agent_id="governance",
+                tool=f"retention.{action}",
+                metadata={"table": table, "action": action, "records": count, "cutoff": cutoff},
+            )
+        )
+    except Exception:  # noqa: BLE001 - audit is best-effort
+        logger.debug("audit hook skipped for retention action", exc_info=True)
 
 
 __all__ = [

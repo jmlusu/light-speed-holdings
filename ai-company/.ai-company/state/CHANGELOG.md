@@ -4,6 +4,66 @@
 
 ---
 
+## [0.4.0] — 2026-08-11
+
+### Added
+
+#### Deployment & Release Infrastructure
+- **Multi-stage Dockerfile** with builder and runtime stages for smaller production images
+- **Docker Build/Push to GHCR** in release workflow with multi-arch support via Buildx
+- **PyPI Trusted Publishing** via OIDC (no API tokens required) — configured in release workflow
+- **SemVer Validation** in CI and release: verifies `pyproject.toml` version matches git tag and CHANGELOG
+- **Version Sync Check** in CI: ensures pyproject.toml, CHANGELOG, and latest git tag are in sync
+- **GitHub Release Automation** with artifact attachment and auto-generated release notes
+
+#### Docker & Compose Harmonization
+- **Production `docker-compose.yml`** now mirrors `docker-compose.staging.yml` structure:
+  - Named network (`ai-company`) for service discovery
+  - Healthcheck on dashboard service (curl `/health`)
+  - Profiles: `worker`, `monitoring` (production); `staging`, `worker`, `monitoring` (staging)
+  - Prometheus service under `monitoring` profile
+  - Environment variable parity with `${VAR:-}` substitution for all API keys
+  - Port mapping: prod 8420:8420, staging 8421:8420
+- **`.dockerignore`** excluding `.env`, `.git`, caches, logs, results, virtual envs
+
+#### Dashboard Health & Monitoring
+- **Health endpoint** (`/health`) confirmed in monitoring router with deep dependency checks
+- **Readiness endpoint** (`/ready`) for Kubernetes-style probes
+- **Prometheus `/metrics`** endpoint with agent performance, LLM costs, memory, and system metrics
+
+### Changed
+
+#### Dockerfile
+- Refactored from single-stage to **multi-stage** (builder → runtime)
+- Builder stage: installs build deps, runs `uv sync --frozen --no-dev`
+- Runtime stage: copies only `.venv` and required runtime directories (`config/`, `orchestrator/`, `templates/`, `company/`, `docs/`, `.opencode/`, `scripts/`, `src/`)
+- Non-root user (`appuser`) in both stages
+- Healthcheck uses `/health` endpoint
+
+#### CI/CD Workflows
+- New `release.yml`: version-check → build → publish-pypi → docker → github-release
+- New `ci.yml`: lint-and-typecheck, test, version-check, harness-lint jobs
+- Ruff, mypy, bandit, pytest gates on every PR and push
+
+### Fixed
+- Version drift between `pyproject.toml` (0.4.0), CHANGELOG, and git tags
+- Missing healthcheck in production compose
+- Inconsistent environment variables between staging and production compose
+
+---
+
+## [Unreleased]
+
+### Planned
+- Task execution loop
+- HITL gates
+- Briefing generation
+- Scheduler
+- Dashboard completion
+- Performance analytics
+
+---
+
 ## [0.1.0] — 2026-07-17
 
 ### Added
@@ -72,18 +132,6 @@
 - CI pipeline: ruff, mypy, pytest, harness lint
 - ECL change lifecycle
 - AGENTS.md agent operating guide
-
----
-
-## [Unreleased]
-
-### Planned
-- Task execution loop
-- HITL gates
-- Briefing generation
-- Scheduler
-- Dashboard completion
-- Performance analytics
 
 ---
 

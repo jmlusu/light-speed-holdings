@@ -206,8 +206,9 @@ class MemoryStoreDB:
             params.append(agent_id)
 
         where_clause = " AND ".join(conditions)
+        # {where_clause} is built from literal conditions; values parameterized.
         rows = self._db.fetchall(
-            f"SELECT * FROM memory_entries WHERE {where_clause} ORDER BY created_at DESC",
+            f"SELECT * FROM memory_entries WHERE {where_clause} ORDER BY created_at DESC",  # nosec B608
             tuple(params),
         )
 
@@ -227,7 +228,8 @@ class MemoryStoreDB:
             ids = [e.id for e in result]
             placeholders = ",".join(["?"] * len(ids))
             self._db.execute(
-                f"UPDATE memory_entries SET access_count = access_count + 1 WHERE id IN ({placeholders})",
+                # {placeholders} are pure "?" tokens; values parameterized.
+                f"UPDATE memory_entries SET access_count = access_count + 1 WHERE id IN ({placeholders})",  # nosec B608
                 tuple(ids),
             )
             self._db.commit()

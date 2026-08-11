@@ -9,7 +9,7 @@ from __future__ import annotations
 import copy
 import functools
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import yaml
 
@@ -29,7 +29,10 @@ def load_yaml_cached(path: Path) -> dict[str, Any] | list[Any] | None:
     Returns ``None`` when the file is missing.
     """
     try:
-        return copy.deepcopy(_parse_yaml_cached(path))
+        return cast(
+            dict[str, Any] | list[Any] | None,
+            copy.deepcopy(_parse_yaml_cached(path)),
+        )
     except FileNotFoundError:
         return None
 

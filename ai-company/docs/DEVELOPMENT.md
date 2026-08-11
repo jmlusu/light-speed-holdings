@@ -58,12 +58,12 @@ uv run ai-company --help       # CLI entry point
 ## 4 Common Commands
 
 ```bash
-uv run pytest                                  # Full test suite (1494 tests collected, 53 skipped)
+uv run pytest                                  # Full test suite (1805 tests collected, 53 deselected)
 uv run pytest tests/unit/test_models.py        # Single test file
 uv run pytest -k "postmortem"                  # Pattern match
 uv run ruff check src/ tests/                  # Lint
 uv run ruff format src/ tests/                 # Format (check with --check)
-uv run mypy src/ --ignore-missing-imports      # Type check (177 source files)
+uv run mypy src/ --ignore-missing-imports      # Type check (181 source files)
 uv run pre-commit run --all-files              # Run all pre-commit hooks
 
 # Regenerate agent markdown files from the registry

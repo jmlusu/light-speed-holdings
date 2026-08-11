@@ -1,0 +1,69 @@
+# Git
+.git
+.github
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.staging.example
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.venv
+venv
+env
+
+# Virtual environments
+.venv/
+
+# Build artifacts
+dist/
+build/
+*.egg-info
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and results
+logs/
+results/
+*.log
+
+# Data files
+data/*.db
+data/*.db-*
+data/*.sqlite
+
+# Backups
+backups/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Node (if any)
+node_modules/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore

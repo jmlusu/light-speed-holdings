@@ -85,28 +85,28 @@ _DEFAULT_ROLE_PREFIX = (
 TOOL_INSTRUCTIONS: dict[str, str] = {
     "Executive": (
         "As an executive you can:\n"
-        "- Use 'delegate' to assign work to specialists in your department.\n"
+        "- Use 'task' to assign work to specialists in your department.\n"
         "- Use 'read', 'list', 'grep' to review reports and data.\n"
-        "- Use 'write' to produce strategy documents or memos.\n"
-        "- Use 'execute' for approved shell commands.\n\n"
+        "- Use 'edit' to produce strategy documents or memos.\n"
+        "- Use 'bash' for approved shell commands.\n\n"
         "DELEGATION PATTERN:\n"
         "1. Break the task into sub-tasks with clear deliverables.\n"
         "2. For each sub-task, specify: receiver, instruction, expected output.\n"
-        "3. Use 'delegate' tool with 'receiver' (agent name) and 'instruction'.\n\n"
+        "3. Use 'task' tool with 'receiver' (agent name) and 'instruction'.\n\n"
         "ERROR RECOVERY:\n"
         "- Delegate fails? → Verify agent name with 'list', retry with correct name.\n"
         "- Read fails? → Use 'grep' to find the file, then read the correct path."
     ),
     "Specialist": (
         "As a specialist you can:\n"
-        "- Use 'read' to load files, 'write' to create/update files.\n"
-        "- Use 'execute' to run shell commands (tests, builds, scripts).\n"
+        "- Use 'read' to load files, 'edit' to create/update files.\n"
+        "- Use 'bash' to run shell commands (tests, builds, scripts).\n"
         "- Use 'grep' and 'list' to search the codebase.\n"
-        "- Use 'code_interpreter' to run inline Python snippets.\n\n"
+        "- Use 'bash' to run inline Python snippets.\n\n"
         "WORKFLOW:\n"
         "1. Read the relevant files first.\n"
-        "2. Make changes with 'write'.\n"
-        "3. Run tests with 'execute' (e.g., pytest tests/).\n"
+        "2. Make changes with 'edit'.\n"
+        "3. Run tests with 'bash' (e.g., pytest tests/).\n"
         "4. If tests fail, read the error, fix, and re-run.\n\n"
         "ERROR RECOVERY:\n"
         "- File not found? → 'list' the parent directory to find the correct path.\n"
@@ -128,8 +128,8 @@ TOOL_INSTRUCTIONS: dict[str, str] = {
     ),
     "Department": (
         "As a department head you can:\n"
-        "- Use all tools: read, write, execute, grep, list, delegate.\n"
-        "- Use 'delegate' to assign tasks to specialists in your team.\n"
+        "- Use all tools: read, edit, bash, grep, list, task.\n"
+        "- Use 'task' to assign tasks to specialists in your team.\n"
         "- Use 'read' and 'grep' to monitor progress and KPIs.\n\n"
         "COORDINATION PATTERN:\n"
         "1. Assess what needs to be done.\n"
@@ -143,7 +143,7 @@ TOOL_INSTRUCTIONS: dict[str, str] = {
 }
 
 _DEFAULT_TOOL_INSTRUCTIONS = (
-    "You have access to tools: read, write, execute, grep, list, delegate.\n"
+    "You have access to tools: read, edit, grep, list, bash, webfetch, task.\n"
     "Use them to complete your task. Read before writing. Test after writing."
 )
 
@@ -164,7 +164,7 @@ RESPONSE_FORMATS: dict[str, str] = {
         '  "thought": "The task requires code review. I should delegate to lead-backend '
         "who has the expertise. I'll also read the current status to provide context.\",\n"
         '  "plan": [\n'
-        '    {"tool": "delegate", "args": {"receiver": "lead-backend", '
+        '    {"tool": "task", "args": {"receiver": "lead-backend", '
         '"instruction": "Review PR #42 for security issues and code quality"}},\n'
         '    {"tool": "read", "args": {"path": "docs/sprint-status.md"}}\n'
         "  ],\n"
@@ -186,9 +186,9 @@ RESPONSE_FORMATS: dict[str, str] = {
         'file to understand the structure, then add the function, then test.",\n'
         '  "plan": [\n'
         '    {"tool": "read", "args": {"path": "src/main.py"}},\n'
-        '    {"tool": "write", "args": {"path": "src/main.py", '
+        '    {"tool": "edit", "args": {"path": "src/main.py", '
         '"content": "def new_func():\\n    pass"}},\n'
-        '    {"tool": "execute", "args": {"command": "pytest tests/test_main.py"}}\n'
+        '    {"tool": "bash", "args": {"command": "pytest tests/test_main.py"}}\n'
         "  ],\n"
         '  "result": "Added new_func to main.py. Tests will verify correctness.",\n'
         '  "done": false\n'
@@ -226,9 +226,9 @@ RESPONSE_FORMATS: dict[str, str] = {
         '  "thought": "The API feature needs frontend and backend work. I\'ll '
         'delegate to both specialists and track progress.",\n'
         '  "plan": [\n'
-        '    {"tool": "delegate", "args": {"receiver": "lead-backend", '
+        '    {"tool": "task", "args": {"receiver": "lead-backend", '
         '"instruction": "Implement REST API endpoint for /users"}},\n'
-        '    {"tool": "delegate", "args": {"receiver": "lead-frontend", '
+        '    {"tool": "task", "args": {"receiver": "lead-frontend", '
         '"instruction": "Build UI component for user management"}}\n'
         "  ],\n"
         '  "result": "Delegated API feature: backend (lead-backend) and frontend '
@@ -480,9 +480,9 @@ def build_system_prompt_typed(agent: AgentContext) -> str:
             "## Rules",
             "- You MUST respond with valid JSON only. No markdown fences, no prose outside JSON.",
             "- Only use tools from your allowed list.",
-            "- For 'write' tool: include the full file content in the 'content' arg.",
-            "- For 'execute' tool: include the shell command as a string.",
-            "- For 'delegate' tool: include 'receiver' (agent name) and 'instruction'.",
+            "- For 'edit' tool: include the full file content in the 'content' arg.",
+            "- For 'bash' tool: include the shell command as a string.",
+            "- For 'task' tool: include 'receiver' (agent name) and 'instruction'.",
             "- Be precise and concise. Each step should be self-contained.",
             "- If you need to see a file's contents before editing, read it first.",
             '- Set "done": true ONLY when the task is fully complete.',
