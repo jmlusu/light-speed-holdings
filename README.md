@@ -13,7 +13,7 @@ Python CLI for creating and orchestrating AI agent hierarchies. One human CEO su
 git clone https://github.com/light-speed-holdings/ai-company.git
 uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 
-# Bootstrap the company from config (generates 27 agents)
+# Bootstrap the company from config (generates 127 agents)
 uv run ai-company company run
 
 # List all agents
@@ -27,7 +27,7 @@ uv run ai-company dashboard
 
 ```bash
 uv run ai-company company run            # 1. Bootstrap the company
-uv run ai-company agents list            # 2. See all 27 agents
+uv run ai-company agents list            # 2. See all 127 agents
 uv run ai-company orchestrator tick      # 3. Check what needs attention
 uv run ai-company dashboard              # 4. Open the live dashboard
 ```
@@ -38,8 +38,8 @@ uv run ai-company dashboard              # 4. Open the live dashboard
 
 ### Core Capabilities
 
-- **27 AI Agents** across 7 departments with defined reporting chains
-- **24 CLI Commands** covering orchestration, execution, memory, graphs, and more
+- **127 AI Agents** across 18 departments with defined reporting chains
+- **30 CLI Commands** covering orchestration, execution, memory, graphs, and more
 - **5-Tier Approval System** with human-in-the-loop safety gates
 - **Audit Trail** with JSONL writer, query/filter, and executor integration
 - **Memory Engine** with 6 memory types (episodic, semantic, procedural, relational, temporal, aggregate)
@@ -93,7 +93,7 @@ uv run ai-company dashboard              # 4. Open the live dashboard
       specialists  specialists specialists
 ```
 
-1. **Define** agents in `company/agent-registry.json` (27 agents across 7 departments)
+1. **Define** agents in `company-registry.yaml` (127 agents across 18 departments; synced to `company/agent-registry.json`)
 2. **Generate** OpenCode-compatible markdown files via Jinja2 templates
 3. **Orchestrate** tasks through a scheduler, escalation rules, and approval gates
 4. **Execute** tasks autonomously with LLM-based processing and human-in-the-loop safety
@@ -176,31 +176,32 @@ All configuration lives in `company/`:
 
 | File | Purpose |
 |------|---------|
-| `company/agent-registry.json` | Single source of truth for all 27 agents |
-| `company/models.yaml` | LLM provider configuration (5 providers, 3 tiers) |
-| `company/departments.yaml` | 7 departments with executives and agents |
-| `company/workflows.yaml` | 9 workflow definitions |
+| `company-registry.yaml` | Single source of truth for all 127 agents |
+| `company/agent-registry.json` | Generated registry (synced from `company-registry.yaml`) |
+| `company/models.yaml` | LLM provider configuration (7 providers, 3 tiers) |
+| `company/departments.yaml` | 18 departments with executives and agents |
 | `company/config/kpis.yaml` | Department KPI definitions (28 KPIs) |
 
 ### Adding a New Agent
 
-1. Add entry to `company/agent-registry.json`:
+1. Add entry to `company-registry.yaml`:
 
-```json
-{
-  "id": "data-analyst",
-  "name": "Data Analyst",
-  "role": "Data Analyst",
-  "type": "Specialist",
-  "department": "engineering",
-  "reportsTo": "lead-engineer",
-  "tools": ["python", "sql", "pandas"],
-  "permissions": ["read", "analyze"]
-}
+```yaml
+- id: data-analyst
+  name: Data Analyst
+  title: Data Analyst
+  description: Analyzes data and builds reports for clients.
+  type: specialist
+  department: Data
+  reports_to: cdo
+  responsibilities:
+    - Build client-facing analytics deliverables.
+  guidelines: Deliver clean, reproducible analysis.
+  tools: [read, edit, bash]
 ```
 
-2. Regenerate: `ai-company generate`
-3. Verify: `ai-company agents list`
+2. Sync + regenerate: `uv run ai-company sync-registry && uv run ai-company generate`
+3. Verify: `uv run ai-company agents list`
 
 ### Model Routing
 
@@ -208,11 +209,11 @@ Three cost tiers with automatic fallback:
 
 | Tier | Use Case | Providers |
 |------|----------|-----------|
-| `fast` | Simple tasks, drafts | deepseek-chat, ollama/llama3 |
-| `standard` | General work | opencode/big-pickle, gpt-4o-mini |
-| `premium` | Complex reasoning | opencode/big-pickle, claude-sonnet |
+| `fast` | Simple tasks, drafts | opencode/big-pickle, gemini-3.5-flash, ollama/llama3.1 |
+| `standard` | General work | opencode/big-pickle, gemini-3.5-flash, ollama, deepseek-chat, kimi-k2 |
+| `premium` | Complex reasoning | opencode/big-pickle, gemini-3.1-pro, deepseek-coder, kimi-k2 |
 
-Override per-agent in `company/models.yaml` under `agent_overrides`.
+Override per-agent in `company/models.yaml` under `routing`.
 
 ---
 
@@ -221,12 +222,12 @@ Override per-agent in `company/models.yaml` under `agent_overrides`.
 ```
 ai-company/                     # Repository root
   src/ai_company/
-    cli/                    # 24 Typer CLI subcommands
+    cli/                    # 30 Typer CLI commands (5 root + 25 sub-apps)
       main.py               # Entry point - registers all subcommands
       orchestrator.py       # Scheduler, escalation, approval, postmortem
       executor.py           # Autonomous task execution
       dashboard.py          # FastAPI dashboard + KPI views
-    models/                 # 57 Pydantic models (Company, Agent, Task, etc.)
+    models/                 # 64 Pydantic models (Company, Agent, Task, etc.)
     registry/               # YAML config -> typed CompanyRegistry
     orchestrator/           # Scheduler, escalation, approval, briefing
     executor/               # LLM-based execution loop, HITL gates
@@ -241,10 +242,10 @@ ai-company/                     # Repository root
       ws.py                 # WebSocket handler
       models.py             # API response schemas
       kpis/                 # Department KPI collectors
-    builder.py              # Bootstrap engine - generates everything
-  company/                  # Configuration YAMLs
-  templates/                # 14 Jinja2 templates
-  tests/                    # 962 unit tests
+    builder/                # Bootstrap engine - generates everything
+  company/                  # Configuration YAMLs + generated registry
+  templates/                # 12 Jinja2 templates
+  tests/                    # 1856 unit + integration tests
   docs/                     # Architecture, governance, SOPs, user guide
   .github/workflows/        # CI + autonomous scheduling
   pyproject.toml            # Project metadata and dependencies
@@ -257,18 +258,18 @@ ai-company/                     # Repository root
 ```
 +-----------------------------------------------------+
 |                    CLI Layer                         |
-|  Typer app -> 24 subcommands -> domain engines      |
+|  Typer app -> 30 commands -> domain engines         |
 +-----------------------------------------------------+
 |                  Engine Layer                        |
 |  Orchestrator | Executor | Decision | Workflow      |
 |  Memory       | Graph    | Model Router             |
 +-----------------------------------------------------+
 |                  Model Layer                         |
-|  57 Pydantic models -> CompanyRegistry              |
+|  64 Pydantic models -> CompanyRegistry              |
 +-----------------------------------------------------+
 |                Infrastructure                        |
-|  Registry (19 YAMLs) | Templates (14 Jinja2)       |
-|  Task Queue (JSON)    | LLM Providers (5)           |
+|  Registry (19 YAMLs) | Templates (12 Jinja2)       |
+|  Task Queue (JSON)    | LLM Providers (7)           |
 +-----------------------------------------------------+
 |                  Dashboard Layer                     |
 |  FastAPI REST API | WebSocket | KPI Collectors      |
@@ -318,7 +319,7 @@ make clean             # Remove caches and build artifacts
 ### Testing
 
 ```bash
-uv run pytest                                    # All 962 tests
+uv run pytest                                    # All 1856 tests
 uv run pytest tests/unit/test_orchestrator.py    # Single file
 uv run pytest -v                                 # Verbose output
 uv run pytest -k "postmortem"                    # By name pattern

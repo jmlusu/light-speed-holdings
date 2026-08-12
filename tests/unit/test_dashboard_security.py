@@ -7,6 +7,14 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+
+@pytest.fixture(autouse=True)
+def _anchor_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Anchor DASHBOARD_DATA_DIR so create_app() writes to the per-test tmp
+    dir instead of the real project ``.opencode`` directory."""
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
+
 # ── CORS configuration tests ──────────────────────────────────────────
 
 
