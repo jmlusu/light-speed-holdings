@@ -144,10 +144,15 @@ jobs:
         run: uv run playwright install --with-deps chromium
       - name: Start dashboard and run E2E tests
         run: |
+          # Open auth for the test dashboard: since the auth hardening, the
+          # default fail-closed `api_key` mode rejects every request (health
+          # probes and browser page loads alike) unless an X-API-Key is sent,
+          # which Playwright navigation cannot do. `open` is the documented
+          # opt-in for localhost-only dev/test instances.
           # Raise the per-IP rate limit for the test dashboard: the E2E suite
           # drives many rapid browser requests (page loads + KPI/tasks fetches)
           # and would otherwise trip the production 100 req/min guard.
-          DASHBOARD_RATE_LIMIT=10000 uv run python -m ai_company.cli.main dashboard \
+          DASHBOARD_AUTH_MODE=open DASHBOARD_RATE_LIMIT=10000 uv run python -m ai_company.cli.main dashboard \
             --host 127.0.0.1 --port 8421 --no-open > dashboard-e2e.log 2>&1 &
           DASH_PID=$!
           # Clean up the dashboard when this step exits.
