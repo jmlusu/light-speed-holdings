@@ -101,12 +101,12 @@ class TestCORSConfiguration:
 
 
 class TestAPIKeyAuth:
-    """Verify that write endpoints require an API key in api_key mode."""
+    """Verify that ALL endpoints require an API key in api_key mode (fail-closed)."""
 
-    def test_read_without_api_key_works(
+    def test_read_without_api_key_rejected(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
-        """GET requests should always work without an API key."""
+        """GET requests require API key in api_key mode (fail-closed)."""
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
@@ -118,7 +118,8 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.get("/api/dashboard")
-        assert resp.status_code == 200
+        assert resp.status_code == 401
+        assert "API key" in resp.json()["detail"]
 
     def test_write_without_api_key_rejected(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
@@ -162,6 +163,26 @@ class TestAPIKeyAuth:
         )
         assert resp.status_code == 201
 
+    def test_read_with_valid_api_key_accepted(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """GET requests with correct API key should succeed."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get(
+            "/api/dashboard",
+            headers={"X-API-Key": "secret-key-123"},
+        )
+        assert resp.status_code == 200
+
     def test_write_with_wrong_api_key_rejected(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
@@ -204,7 +225,7 @@ class TestAPIKeyAuth:
     def test_default_mode_is_fail_closed_without_key(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
-        """Default auth mode rejects mutating requests when no key is set."""
+        """Default auth mode rejects ALL requests when no key is set."""
         monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.delenv("DASHBOARD_AUTH_MODE", raising=False)
@@ -221,10 +242,10 @@ class TestAPIKeyAuth:
         )
         assert resp.status_code == 401
 
-    def test_default_mode_still_allows_safe_methods(
+    def test_default_mode_rejects_safe_methods_without_key(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
-        """Default auth mode never blocks GET/HEAD/OPTIONS."""
+        """Default auth mode blocks GET/HEAD/OPTIONS when no key is set."""
         monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.delenv("DASHBOARD_AUTH_MODE", raising=False)
@@ -236,7 +257,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.get("/health")
-        assert resp.status_code == 200
+        assert resp.status_code == 401
 
     @staticmethod
     def _setup_minimal_data(tmp_path: Path) -> None:

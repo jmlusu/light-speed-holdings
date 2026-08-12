@@ -524,19 +524,26 @@ Silent degradation: an agent with missing mission/responsibilities runs with gen
 | **Severity** | LOW |
 | **Sprint** | Sprint 4 (Quality & Hardening) |
 | **Files** | `tests/` directory |
-| **Status** | 🟡 PARTIALLY RESOLVED — integration tests exist for components, not full pipeline |
+| **Status** | ✅ Resolved |
 
 **Current State:**
-Integration tests exist for individual components: `tests/integration/test_pipeline.py` (memory, graph, scheduler, KPI), `tests/test_audit_integration.py`, `tests/test_memory_integration.py`, `tests/test_scheduler_integration.py`. However, no single test exercises the full happy path: MessageBus → Executor → AgentLoop → ToolRunner → Task completion → Dashboard shows result.
-
-**Desired State:**
-At least one integration test that exercises the happy path end-to-end with mocked LLM responses.
+Full pipeline integration test exists at `tests/integration/test_full_pipeline.py` with 10 tests covering:
+- Happy path: task submission → executor processing → completion
+- Failure handling: LLM error → FAILED status
+- Multiple tasks processed in one tick
+- Memory stored after completion
+- Consolidation scheduler runs during tick
+- Empty inbox no-op
+- Audit trail recorded on completion
+- Task with tool execution (multi-turn ReAct loop)
+- Max iterations timeout handling
+- Task status transitions (pending → in_progress → completed)
 
 **Fix:**
 ```
 1. ✅ tests/integration/test_pipeline.py — component integration tests
 2. ✅ tests/test_audit_integration.py — audit trail integration
-3. Full pipeline test with mocked LLM — TODO
+3. ✅ tests/integration/test_full_pipeline.py — full pipeline test with mocked LLM
 ```
 
 ---
@@ -564,6 +571,7 @@ At least one integration test that exercises the happy path end-to-end with mock
 | GAP-017 | MEDIUM | Task Timeout/DLQ | Sprint 3 | Medium | ✅ Resolved | `dead_letter.py` + `loop.py:174` `detect_stale_tasks()` |
 | GAP-018 | LOW | Structured Logging | Sprint 4 | Medium | ✅ Resolved | `logging_config.py` `setup_logging()`/`JSONFormatter`; `utils/logging.py` shared correlation ContextVar; `loop.py:292` task-id correlation; `daemon.py:378` structured; `test_logging.py` (15 tests) |
 | GAP-019 | LOW | Spec Validation | Sprint 4 | Low | ✅ Resolved | `context.py:62` `AgentContext.validate()` + `cli/agents.py:78` `validate` command; integrated into `generator.py:252` `_validate_generated_agents()`; 12 tests in `test_agent_spec_validation.py` |
+| GAP-020 | LOW | E2E Integration Tests | Sprint 4 | Medium | ✅ Resolved | `tests/integration/test_full_pipeline.py` (10 tests): happy path, failure, multi-task, memory, consolidation, empty inbox, audit trail, tool execution, max-iter timeout, status transitions |
 
 **Resolved:** 20 of 20 (GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 019, 020)
 **Partial:** 0
@@ -598,4 +606,4 @@ At least one integration test that exercises the happy path end-to-end with mock
 1. GAP-013: Wire all KPI department collectors
 2. ~~GAP-018: Structured logging with correlation IDs~~ — ✅ done (2026-08-07)
 3. ~~GAP-019: Agent spec validation~~ — ✅ done (2026-08-08)
-4. GAP-020: End-to-end integration tests
+4. ~~GAP-020: End-to-end integration tests~~ — ✅ done (2026-08-11)
