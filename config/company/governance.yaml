@@ -36,3 +36,17 @@ governance:
     - action: "spend_over_10k"
       required_approvals: ["cfo"]
       sla_hours: 24
+    - action: "client_onboarding_offer_b"
+      required_approvals: ["clo", "ciso", "data-privacy-officer", "human-ceo", "board-chair"]
+      sla_hours: 168
+      blocked_until: "board_ratified_governance"
+      risk_level: "critical"
+    - action: "client_onboarding_offer_c"
+      required_approvals: ["clo", "cdo", "data-privacy-officer", "human-ceo", "board-chair"]
+      sla_hours: 168
+      blocked_until: "board_ratified_governance"
+      risk_level: "critical"
+    - action: "donor_data_handling"
+      required_approvals: ["ciso", "cdo", "data-privacy-officer", "human-ceo"]
+      sla_hours: 24
+      risk_level: "critical"

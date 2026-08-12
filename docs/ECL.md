@@ -36,7 +36,7 @@ Rules:
 
 ## 4 Stage-Boundary Protocol
 
-Before moving between stages (intake → spec → plan → implement → validate), update `summary.md` front matter fields. The `phase` field tracks current stage.
+Before moving between stages (intake → spec → plan → implement → validate), update `summary.md` front matter fields. The `phase` field tracks current stage. When entering `validate` or `done`, populate `validation_results` with an array of gate outcomes (e.g., `lint-ecl.ps1: PASS`, `ruff check src/: PASS`, `mypy src/: PASS`, `pytest: 1856 passed`).
 
 ## 5 Plan Review Gate
 
@@ -67,6 +67,47 @@ When a task fails, capture the failure as context in the active change's `summar
 ## 9 Auto-Evolve
 
 Every few closed changes, `harness-evolve check` may create `harness/evolution/pending.md`. Treat it as a maintenance reminder. Do not let it block unrelated work. When you start acting on pending evolution, finish with a proposal + `results.tsv` row + `mark-complete`.
+
+### 9.1 Auto-Evolve Proposal Template
+
+When generating `harness/evolution/proposals/YYYY-MM-DD-auto-evolve.md`, use this structure:
+
+```markdown
+---
+title: "Auto-evolve proposal: <eligible archive count> eligible archives (<date range>)"
+date: <YYYY-MM-DD>
+trigger:
+  reason: <close|manual>
+  eligible_count: <N>
+  threshold: <N>
+  window: <N>
+  excludes: ["auto-evolve-harness-", "auto-evolve"]
+---
+
+# Auto-evolve Proposal
+
+## Candidate Archives
+
+| # | Archive ID | Title | Validation | Key Decisions |
+|---|------------|-------|------------|---------------|
+
+## Evidence: Repeated Failures / Verification Gaps / User Corrections / Reusable Constraints
+
+### Verification Gaps
+### User Corrections
+### Reusable Constraints (Rules to Clarify / Keep)
+
+## Scoring & Recommendations
+
+Scoring: archive evidence (0-40), project relevance (0-30), rule clarity impact (0-30). ≥80 = accept.
+
+| # | Candidate Change | Evidence | Relevance | Clarity | Score | Recommendation |
+|---|-----------------|----------|-----------|---------|-------|----------------|
+
+## Accepted Candidates (Score ≥ 80 + Auditor Approval)
+
+## Application Plan
+```
 
 ## 10 Script Reference
 

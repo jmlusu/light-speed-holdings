@@ -70,6 +70,11 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "app",
         "Validate naming conventions and config references",
     ),
+    "client": (
+        "ai_company.cli.client",
+        "app",
+        "Client onboarding and engagement management (Malawi portfolio)",
+    ),
 }
 
 
