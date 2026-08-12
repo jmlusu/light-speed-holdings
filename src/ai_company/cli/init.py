@@ -14,10 +14,16 @@ def init_callback(
     ctx: typer.Context,
     config_dir: str = typer.Option("config", help="Path to config/ directory"),
     registry: str = typer.Option("company-registry.yaml", help="Path to agent registry YAML"),
-    skip_dev_setup: bool = typer.Option(False, "--skip-dev-setup", help="Skip dev machine bootstrap"),
+    skip_dev_setup: bool = typer.Option(
+        False, "--skip-dev-setup", help="Skip dev machine bootstrap"
+    ),
     skip_generate: bool = typer.Option(False, "--skip-generate", help="Skip agent generation"),
-    skip_company_bootstrap: bool = typer.Option(False, "--skip-company-bootstrap", help="Skip company bootstrap from config/"),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would be done without executing"),
+    skip_company_bootstrap: bool = typer.Option(
+        False, "--skip-company-bootstrap", help="Skip company bootstrap from config/"
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Show what would be done without executing"
+    ),
 ) -> None:
     """Initialize the AI Company project from scratch.
 
@@ -93,7 +99,9 @@ def _show_plan(
             console.print(f"  [yellow]Could not load registry: {e}[/yellow]")
         console.print("  • Create directory structure (memory/, knowledge/, projects/, etc.)")
         console.print("  • Generate agent .md files in .opencode/agents/")
-        console.print("  • Generate config YAMLs (company.yaml, org_chart.yaml, workflows.yaml, governance.yaml)")
+        console.print(
+            "  • Generate config YAMLs (company.yaml, org_chart.yaml, workflows.yaml, governance.yaml)"
+        )
         console.print()
 
     console.print("Use [cyan]ai-company init[/cyan] to execute.")
@@ -114,12 +122,15 @@ def _execute_init(
         console.print("[bold blue]=== Phase 1: Dev Machine Bootstrap ===[/bold blue]")
         try:
             from ai_company.bootstrap import DevBootstrap
+
             bootstrap = DevBootstrap()
-            summary = bootstrap.run()
-            if not summary["ok"]:
-                for step in summary["steps"]:
-                    if step["severity"] == "fail":
-                        errors.append(f"Dev bootstrap: {step['message']}")
+            summary: dict[str, object] = bootstrap.run()
+            if not summary.get("ok", False):
+                steps = summary.get("steps")
+                if isinstance(steps, list):
+                    for step in steps:
+                        if isinstance(step, dict) and step.get("severity") == "fail":
+                            errors.append(f"Dev bootstrap: {step.get('message', '')}")
             console.print("[green]OK[/green] Dev machine bootstrap complete")
         except Exception as e:  # noqa: BLE001
             errors.append(f"Dev bootstrap failed: {e}")
@@ -153,11 +164,17 @@ def _execute_init(
 
             reg = load_registry(config_dir)
             engine = BootstrapEngine(config_dir=config_dir)
-            summary = engine.bootstrap(reg)
+            bootstrap_summary: dict[str, object] = engine.bootstrap(reg)
 
-            console.print(f"  Directories created: {len(summary['directories'])}")
-            console.print(f"  Agents generated: {len(summary['agents'])}")
-            console.print(f"  Configs generated: {len(summary['configs'])}")
+            dirs = bootstrap_summary.get("directories")
+            agents = bootstrap_summary.get("agents")
+            configs = bootstrap_summary.get("configs")
+            if isinstance(dirs, list):
+                console.print(f"  Directories created: {len(dirs)}")
+            if isinstance(agents, list):
+                console.print(f"  Agents generated: {len(agents)}")
+            if isinstance(configs, list):
+                console.print(f"  Configs generated: {len(configs)}")
             console.print("[green]OK[/green] Company bootstrap complete")
         except Exception as e:  # noqa: BLE001
             errors.append(f"Company bootstrap failed: {e}")
@@ -177,8 +194,12 @@ def _execute_init(
         console.print("Next steps:")
         console.print("  [cyan]ai-company status[/cyan]          # Show project status")
         console.print("  [cyan]ai-company doctor run[/cyan]      # Run diagnostics")
-        console.print("  [cyan]ai-company generate[/cyan]        # Regenerate agents after registry changes")
-        console.print("  [cyan]ai-company company run[/cyan]     # Re-run company bootstrap after config changes")
+        console.print(
+            "  [cyan]ai-company generate[/cyan]        # Regenerate agents after registry changes"
+        )
+        console.print(
+            "  [cyan]ai-company company run[/cyan]     # Re-run company bootstrap after config changes"
+        )
         console.print("  [cyan]uv run pytest[/cyan]              # Run tests")
         console.print("  [cyan]uv run ruff check src/[/cyan]     # Lint")
 
@@ -194,8 +215,12 @@ def status() -> None:
     # Check dev setup
     venv_exists = Path(".venv").exists()
     uv_lock_exists = Path("uv.lock").exists()
-    console.print(f"  Virtual environment: {'[green]OK[/green]' if venv_exists else '[red]MISSING[/red]'}")
-    console.print(f"  uv.lock:              {'[green]OK[/green]' if uv_lock_exists else '[red]MISSING[/red]'}")
+    console.print(
+        f"  Virtual environment: {'[green]OK[/green]' if venv_exists else '[red]MISSING[/red]'}"
+    )
+    console.print(
+        f"  uv.lock:              {'[green]OK[/green]' if uv_lock_exists else '[red]MISSING[/red]'}"
+    )
 
     # Check generated agents
     agents_dir = Path(".opencode/agents")
@@ -209,7 +234,9 @@ def status() -> None:
 
     # Check registry
     registry_exists = Path("company-registry.yaml").exists()
-    console.print(f"  company-registry.yaml: {'[green]OK[/green]' if registry_exists else '[red]MISSING[/red]'}")
+    console.print(
+        f"  company-registry.yaml: {'[green]OK[/green]' if registry_exists else '[red]MISSING[/red]'}"
+    )
 
     console.print()
     if not (venv_exists and uv_lock_exists):
@@ -217,7 +244,9 @@ def status() -> None:
     elif agent_count == 0:
         console.print("Run [cyan]ai-company init --skip-dev-setup[/cyan] to generate agents.")
     elif config_count == 0:
-        console.print("Run [cyan]ai-company init --skip-dev-setup --skip-generate[/cyan] to bootstrap company.")
+        console.print(
+            "Run [cyan]ai-company init --skip-dev-setup --skip-generate[/cyan] to bootstrap company."
+        )
     else:
         console.print("[green]Fully initialized.[/green]")
 
