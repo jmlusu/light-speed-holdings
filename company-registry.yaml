@@ -2275,6 +2275,81 @@ company:
       tools: [read, write, execute, grep, list]
       model_tier: standard
 
+    # =========================================================================
+    # MALAWI OFFER-SPECIFIC ROLES (added 2026-08-12)
+    # These agents support the Malawi service portfolio; see docs/service-catalog-malawi.md
+    # =========================================================================
+
+    - id: brand_strategist
+      name: Brand Strategist
+      title: Brand Strategist
+      description: Owns brand identity systems, brand guidelines, and visual strategy for client website/branding deliverables (Offer A).
+      type: specialist
+      department: Marketing
+      reports_to: cmo
+      direct_reports: []
+      technical_domain: Brand strategy, visual identity systems, brand guidelines, color theory, typography, logo design systems.
+      responsibilities:
+        - Develop brand identity systems for client websites and campaigns.
+        - Create brand guidelines (colors, fonts, voice) for client deliverables.
+        - Ensure visual consistency across Offer A deliverables (websites, brand kits).
+      guidelines: Brand consistency is enforced. Every brand gets a documented guideline. Brand voice drives all content.
+      tools: [read, write, execute, webfetch, grep, list]
+      model_tier: standard
+
+    - id: conversation_designer
+      name: Conversation Designer
+      title: Conversation Designer
+      description: Designs AI chatbot conversations, flows, and NLU training data for WhatsApp and chat interfaces (Offer B).
+      type: specialist
+      department: Sales
+      reports_to: solutions_engineer
+      direct_reports: []
+      technical_domain: Conversation design, NLU training data, chatbot flows, WhatsApp Business API, intent mapping, user journey scripting.
+      responsibilities:
+        - Design conversational flows for WhatsApp and chat-based customer service bots.
+        - Create NLU training data and intent/entity mappings.
+        - Optimize handoff triggers from AI to human support agents.
+      guidelines: Conversations should feel natural, not like forms. Every handoff is a design decision. Intent coverage must reach 90% before launch.
+      tools: [read, write, execute, grep, list]
+      model_tier: standard
+
+    - id: integration_engineer
+      name: Integration Engineer
+      title: Integration Engineer
+      description: Builds and maintains integrations between client systems (WhatsApp, CRM, payment, NGO data sources) (Offer B, Offer C).
+      type: specialist
+      department: Technology
+      reports_to: lead_backend
+      direct_reports: []
+      technical_domain: API integrations, WhatsApp Business API, payment gateway integration, CRM sync, NGO data source connectors, webhook handling.
+      responsibilities:
+        - Implement WhatsApp Business API integration for Offer B chatbots.
+        - Build connectors for NGO data sources (Kobo, DHIS2, Google Sheets) for Offer C.
+        - Integrate payment gateways (Airtel Money, TNM Mpamba, PayChangu) for local transactions.
+        - Maintain integration health monitoring and alerting.
+      guidelines: Every integration has a fallback. Data sync is idempotent. Integration failures escalate to HITL before client impact.
+      tools: [read, write, execute, grep, list]
+      model_tier: standard
+
+    - id: survey_researcher
+      name: Survey Researcher
+      title: Survey Researcher
+      description: Designs survey instruments, sampling strategies, and field data collection protocols for NGO monitoring and evaluation (Offer C).
+      type: specialist
+      department: Data
+      reports_to: cdo
+      direct_reports: []
+      technical_domain: Survey design, sampling methodology, field data collection, M&E frameworks, KAP surveys, impact evaluation.
+      responsibilities:
+        - Design survey instruments and sampling strategies for NGO clients.
+        - Coordinate field data collection (mobile/OFFLINE-capable tools).
+        - Ensure data quality and validation for donor reporting.
+        - Document M&E frameworks for compliance reporting.
+      guidelines: Survey design drives data quality. Sampling must be reproducible. Field protocols must work OFFLINE first. Every dataset has a methodology note.
+      tools: [read, write, execute, grep, list]
+      model_tier: standard
+
     # Board of Directors agents
     - id: board_chair
       name: Board Chair
