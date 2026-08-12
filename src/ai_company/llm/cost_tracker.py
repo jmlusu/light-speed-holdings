@@ -15,6 +15,14 @@ from typing import Any
 
 from ai_company.data import CostAnalytics, database_is_usable
 
+try:
+    from ai_company.paths import get_project_root
+except ImportError:  # pragma: no cover - fallback when paths module unavailable
+
+    def get_project_root() -> Path:
+        return Path(__file__).resolve().parents[2]
+
+
 logger = logging.getLogger(__name__)
 
 # Cap on in-memory usage records kept for summaries. Historical cost data
@@ -112,10 +120,15 @@ class CostTracker:
         daily_budget_usd: float | None = None,
         task_budget_usd: float | None = None,
         database: Any = None,
+        export_path: str | Path | None = None,
     ) -> None:
         self.results_dir = Path(results_dir)
         self.daily_budget = daily_budget_usd
         self.task_budget = task_budget_usd
+
+        # Aggregated summary export path (defaults to orchestrator/cost_tracker.json
+        # under the project root so the CEO dashboard can read real spend data).
+        self._export_path: Path | None = Path(export_path) if export_path else None
 
         # In-memory accumulators
         self._daily_cost: dict[str, float] = {}  # "YYYY-MM-DD" -> total
@@ -129,6 +142,9 @@ class CostTracker:
 
         # Rebuild accumulators from existing log
         self._rebuild_accumulators()
+
+        # Export aggregated summary so the dashboard reads real data
+        self._export_summary()
 
     # ── Public API ─────────────────────────────────────────────────
 
@@ -192,6 +208,8 @@ class CostTracker:
                 )
             except Exception:  # noqa: BLE001 - mirror is best-effort
                 logger.debug("SQLite cost mirror failed", exc_info=True)
+
+        self._export_summary()
 
         return record
 
@@ -497,3 +515,106 @@ class CostTracker:
                 del self._records[: len(self._records) - _MAX_RECORDS]
         except OSError:
             pass
+
+    # ── Aggregated summary export (orchestrator/cost_tracker.json) ─────
+
+    def _resolve_export_path(self) -> Path | None:
+        """Return the path for the aggregated cost summary file.
+
+        Uses an explicitly-provided ``export_path`` if given, otherwise defaults
+        to ``<project_root>/orchestrator/cost_tracker.json`` so the CEO dashboard
+        can read real spend data without touching raw JSONL.
+        """
+        if self._export_path is not None:
+            return self._export_path
+        try:
+            return get_project_root() / "orchestrator" / "cost_tracker.json"
+        except Exception:  # noqa: BLE001 - best-effort resolution
+            return None
+
+    def _load_total_budget(self) -> float:
+        """Read the corporate annual budget from ``config/company/budget.yaml``.
+
+        Falls back to ``daily_budget_usd * 30`` (monthly estimate) when the
+        budget config is unavailable, and finally to ``0.0``.
+        """
+        try:
+            from ai_company.paths import get_project_root
+
+            budget_path = get_project_root() / "config" / "company" / "budget.yaml"
+            if budget_path.is_file():
+                import yaml
+
+                with open(budget_path, encoding="utf-8") as f:
+                    data = yaml.safe_load(f) or {}
+                return float(data.get("budget", {}).get("total_budget", 0.0) or 0.0)
+        except Exception:  # noqa: BLE001 - non-fatal
+            pass
+        if self.daily_budget is not None:
+            return round(self.daily_budget * 30, 2)
+        return 0.0
+
+    def _export_summary(self) -> None:
+        """Write the aggregated cost summary to ``orchestrator/cost_tracker.json``.
+
+        This file is the single source of truth that the CEO dashboard reads
+        for real (not dummy) cost data.  The export is best-effort: any I/O
+        error is logged at debug level and never crashes the agent.
+        """
+        export_path = self._resolve_export_path()
+        if export_path is None:
+            return
+
+        try:
+            usage = self.get_usage_summary()
+            export_path.parent.mkdir(parents=True, exist_ok=True)
+
+            by_model = {
+                model: {
+                    "cost_usd": entry["cost_usd"],
+                    "prompt_tokens": entry["prompt_tokens"],
+                    "completion_tokens": entry["completion_tokens"],
+                    "calls": entry["calls"],
+                }
+                for model, entry in usage["by_model"].items()
+            }
+
+            by_agent = {
+                agent: {
+                    "cost_usd": entry["cost_usd"],
+                    "prompt_tokens": entry["prompt_tokens"],
+                    "completion_tokens": entry["completion_tokens"],
+                    "calls": entry["calls"],
+                }
+                for agent, entry in usage["by_agent"].items()
+            }
+
+            daily_trend = [
+                {"date": day, "total_cost_usd": round(cost, 6)}
+                for day, cost in sorted(self._daily_cost.items())
+            ]
+
+            summary = {
+                "total_budget": self._load_total_budget(),
+                "total_spent": usage["total_cost_usd"],
+                "llm_spend": usage["total_cost_usd"],
+                "total_prompt_tokens": usage["total_prompt_tokens"],
+                "total_completion_tokens": usage["total_completion_tokens"],
+                "total_tokens": usage["total_tokens"],
+                "call_count": usage["call_count"],
+                "by_model": by_model,
+                "by_agent": by_agent,
+                "daily_trend": daily_trend,
+                "by_agent_model": usage.get("by_model", {}),
+                "last_updated": datetime.now(timezone.utc).isoformat(),
+                "currency": "USD",
+            }
+
+            tmp = export_path.with_suffix(".json.tmp")
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(summary, f, indent=2, default=str)
+            tmp.replace(export_path)
+        except OSError:
+            logger.debug("Cost summary export failed", exc_info=True)
+        except Exception:  # noqa: BLE001 - export is non-fatal
+            logger.debug("Cost summary export error", exc_info=True)
