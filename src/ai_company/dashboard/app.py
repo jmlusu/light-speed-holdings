@@ -156,18 +156,14 @@ def _check_api_key(request: Request) -> bool:
 
     Auth is controlled by ``DASHBOARD_AUTH_MODE``:
 
-    * ``api_key`` (default, fail-closed): mutating methods (POST, PUT,
-      PATCH, DELETE) require an ``X-API-Key`` header matching
-      ``DASHBOARD_API_KEY``. If no key is configured the request is
-      rejected (fail-closed), so a misconfigured network deployment never
-      silently exposes write endpoints. Safe methods (GET, HEAD, OPTIONS)
-      always pass.
+    * ``api_key`` (default, fail-closed): **ALL** methods require an
+      ``X-API-Key`` header matching ``DASHBOARD_API_KEY``. If no key is
+      configured the request is rejected (fail-closed), so a misconfigured
+      network deployment never silently exposes any endpoints.
     * ``open`` (explicit opt-in for localhost-only dev): all requests
       pass regardless of configuration.
     """
     if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
-        return True
-    if request.method in ("GET", "HEAD", "OPTIONS"):
         return True
     api_key = _get_api_key()
     if not api_key:
