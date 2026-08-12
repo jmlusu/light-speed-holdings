@@ -10,8 +10,11 @@
 #   standard — balanced cost/capability
 #   premium  — best reasoning, highest cost
 #
-# Primary providers: OpenCode (Big Pickle) + Deepseek
-# Fallback: Gemini, Kimi (Moonshot), Ollama (local), OpenAI, Anthropic
+# Primary providers: OpenCode (Big Pickle, standard/premium) + Gemini Flash
+# (fast/cheap). Deepseek and Kimi are cheap but have no African payment or
+# registration path, so they are excluded from the routing tiers; OpenAI and
+# Anthropic remain available in the catalog as future options. Ollama runs
+# locally and costs nothing.
 
 # ─── Provider catalog ────────────────────────────────────────────────
 # Each provider entry: id, backend, default_model, api_base.
@@ -76,10 +79,10 @@ tiers:
   fast:
     description: "Low-latency, low-cost. Good for read-only and simple tasks."
     providers:
-      - provider: opencode
-        model: big-pickle
       - provider: gemini
         model: gemini-3.5-flash
+      - provider: opencode
+        model: big-pickle
       - provider: ollama
         model: llama3.1:8b
 
@@ -92,10 +95,6 @@ tiers:
         model: gemini-3.5-flash
       - provider: ollama
         model: llama3.1:8b
-      - provider: deepseek
-        model: deepseek-chat
-      - provider: kimi
-        model: kimi-k2
 
   premium:
     description: "Maximum reasoning capability. Use for critical decisions."
@@ -104,10 +103,8 @@ tiers:
         model: big-pickle
       - provider: gemini
         model: gemini-3.1-pro-preview
-      - provider: deepseek
-        model: deepseek-coder
-      - provider: kimi
-        model: kimi-k2
+      - provider: ollama
+        model: llama3.1:8b
 
 # ─── Routing rules ──────────────────────────────────────────────────
 # Maps (agent_type, priority) -> tier.

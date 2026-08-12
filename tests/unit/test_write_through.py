@@ -26,6 +26,14 @@ from ai_company.models.task import Task
 from ai_company.orchestrator.message_bus import MessageBus
 
 
+@pytest.fixture(autouse=True)
+def _anchor_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Anchor DASHBOARD_DATA_DIR so a default-constructed MessageBus (e.g.
+    the executor's internal bus) stays in the per-test tmp dir instead of
+    the real project ``.opencode`` directory."""
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
+
 @pytest.fixture
 def db(tmp_path: Path):
     database = init_database(tmp_path / "ai_company.db")

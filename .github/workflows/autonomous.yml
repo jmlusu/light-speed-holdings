@@ -15,11 +15,26 @@ on:
           - both
           - orchestrator-only
           - executor-only
+      daemon_minutes:
+        description: "Bounded executor daemon window (minutes)"
+        required: false
+        default: 5
+        type: number
 
 jobs:
   orchestrate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
+    env:
+      # Provider keys: {PROVIDER_ID}_API_KEY naming (see company/models.yaml).
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+      MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
     steps:
       - uses: actions/checkout@v5
 
@@ -34,33 +49,79 @@ jobs:
       - name: Run orchestrator tick
         if: inputs.mode != 'executor-only'
         run: uv run python -m ai_company.cli.main orchestrator tick
-        env:
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
 
-      - name: Run executor tick
+      # The scheduler (orchestrator/scheduler.yaml) is empty, so seed one real
+      # task each run. .opencode/inbox.json is gitignored and the runner
+      # workspace is ephemeral, so seeding is the sanctioned way to give the
+      # workforce something to do inside a CI run.
+      - name: Seed inbox with a real task
         if: inputs.mode != 'orchestrator-only'
-        run: uv run python -m ai_company.cli.main executor tick
-        env:
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+        run: |
+          uv run python - <<'PY'
+          import uuid
+
+          from ai_company.models.task import Task, TaskPriority
+          from ai_company.orchestrator.message_bus import MessageBus
+
+          bus = MessageBus()
+          task = Task(
+              id=str(uuid.uuid4()),
+              name="Malawi service catalog executive summary",
+              sender_id="human-ceo",
+              receiver_id="ceo-advisor",
+              instruction=(
+                  "Answer directly without calling any tools. In 3-4 sentences, "
+                  "summarize the offer tiers in docs/service-catalog-malawi.md "
+                  "and name the single offer you would pitch first to a new SME "
+                  "client in Malawi."
+              ),
+              priority=TaskPriority.LOW,
+          )
+          bus.send_task(task)
+          print(f"Seeded inbox task {task.id} for {task.receiver_id}")
+          PY
+
+      # Run the executor daemon for a bounded window. `executor start` is the
+      # real polling loop: it claims pending tasks from .opencode/inbox.json,
+      # runs AgentLoop (LLM + tools) per task under the guardrail budget caps,
+      # and drains stale/dead tasks. A cron job cannot run forever, so GNU
+      # `timeout` ends the window; SIGINT lets the Executor stop() cleanly.
+      - name: Run executor daemon (bounded poll window)
+        if: inputs.mode != 'orchestrator-only'
+        run: |
+          WINDOW=${{ inputs.daemon_minutes || 5 }}
+          timeout --preserve-status -s INT "$((WINDOW * 60))" \
+            uv run python -m ai_company.cli.main executor start \
+              --poll-interval 10 \
+              --config company/models.yaml \
+              --registry company/agent-registry.json
+          ec=$?
+          # 0 = clean SIGINT stop; 124/130 = wall-clock budget hit. Both are
+          # the normal end of a cron window. Anything else is a real failure.
+          if [ "$ec" -eq 0 ] || [ "$ec" -eq 124 ] || [ "$ec" -eq 130 ]; then
+            echo "Executor daemon window ended (exit=$ec)."
+            exit 0
+          fi
+          echo "::error::Executor daemon failed with exit code $ec"
+          exit "$ec"
+
+      - name: Report run results
+        if: always()
+        run: |
+          echo "=== Task queue ==="
+          uv run python - <<'PY'
+          from ai_company.orchestrator.message_bus import MessageBus
+          tasks = MessageBus().get_all_tasks()
+          print(f"total={len(tasks)}")
+          for t in tasks:
+              print(f"  {t.id[:8]} [{t.status.value}] -> {t.receiver_id}: {t.instruction[:50]}")
+              if t.result:
+                  print(f"      result: {t.result[:120]}")
+          PY
 
       - name: Generate daily briefing
         if: inputs.mode != 'executor-only'
         run: uv run python -m ai_company.cli.main orchestrator briefing
-        env:
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
 
       - name: Upload briefing artifact
         if: inputs.mode != 'executor-only'

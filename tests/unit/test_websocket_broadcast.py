@@ -24,6 +24,14 @@ from ai_company.dashboard.ws import broadcast_task_update, manager
 from ai_company.orchestrator.message_bus import MessageBus
 
 
+@pytest.fixture(autouse=True)
+def _anchor_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Anchor DASHBOARD_DATA_DIR so a default-constructed MessageBus (e.g.
+    the executor's internal bus) stays in the per-test tmp dir instead of
+    the real project ``.opencode`` directory."""
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
+
 @pytest.fixture()
 def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     """TestClient whose shared MessageBus writes to a temp inbox."""
