@@ -91,4 +91,31 @@ if ((& $canonical $actual) -cne (& $canonical $expected)) {
   Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
 }
 
+# Version consistency gate: pyproject.toml is canonical; CHANGELOG.md, API-REFERENCE.md, docs/STATUS.md must match
+$PyProject = Join-Path $Root "pyproject.toml"
+if (Test-Path -LiteralPath $PyProject) {
+  $content = Get-Content -Encoding UTF8 -Raw -LiteralPath $PyProject
+  $versionMatch = [regex]::Match($content, '(?m)^version\s*=\s*"([^"]+)"')
+  if ($versionMatch.Success) {
+    $canonicalVersion = $versionMatch.Groups[1].Value
+    $refs = @(
+      @{Path = (Join-Path $Root "CHANGELOG.md"); Pattern = "(?m)^#+\s*Changelog.*?\n##\s*\[([^\]]+)\]"; Name = "CHANGELOG.md"},
+      @{Path = (Join-Path $Root "docs/API-REFERENCE.md"); Pattern = "(?m)^#+\s*API Reference.*?\nVersion:\s*([^\s\n]+)"; Name = "docs/API-REFERENCE.md"},
+      @{Path = (Join-Path $Root "docs/STATUS.md"); Pattern = "(?m)\*\*Version\*\*\s*\|\s*([^\s\n|]+)"; Name = "docs/STATUS.md"}
+    )
+    foreach ($ref in $refs) {
+      if (Test-Path -LiteralPath $ref.Path) {
+        $refContent = Get-Content -Encoding UTF8 -Raw -LiteralPath $ref.Path
+        $refMatch = [regex]::Match($refContent, $ref.Pattern)
+        if ($refMatch.Success) {
+          $refVersion = $refMatch.Groups[1].Value
+          if ($refVersion -ne $canonicalVersion) {
+            Fail "Version mismatch: pyproject.toml ($canonicalVersion) != $($ref.Name) ($refVersion)"
+          }
+        }
+      }
+    }
+  }
+}
+
 Write-Output "ECL lint passed."
