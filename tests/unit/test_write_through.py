@@ -124,7 +124,11 @@ class TestAuditWriterWriteThrough:
 
 class TestCostTrackerWriteThrough:
     def test_record_usage_mirrors_to_sqlite(self, tmp_path: Path, db) -> None:
-        tracker = CostTracker(results_dir=str(tmp_path / "results"), database=db)
+        tracker = CostTracker(
+            results_dir=str(tmp_path / "results"),
+            database=db,
+            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        )
         record = tracker.record_usage(
             model="gpt-4o-mini",
             provider="test-provider",
@@ -144,7 +148,10 @@ class TestCostTrackerWriteThrough:
         assert len(log_path.read_text(encoding="utf-8").strip().splitlines()) == 1
 
     def test_without_database_writes_file_only(self, tmp_path: Path, db) -> None:
-        tracker = CostTracker(results_dir=str(tmp_path / "results"))
+        tracker = CostTracker(
+            results_dir=str(tmp_path / "results"),
+            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        )
         tracker.record_usage(
             model="gpt-4o-mini",
             provider="test-provider",

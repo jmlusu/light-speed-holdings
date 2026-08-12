@@ -110,7 +110,10 @@ def test_usage_from_response_falls_back_to_heuristic() -> None:
 
 
 def test_cost_tracker_records_real_tokens(tmp_path: Path) -> None:
-    tracker = CostTracker(results_dir=str(tmp_path / "results"))
+    tracker = CostTracker(
+        results_dir=str(tmp_path / "results"),
+        export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+    )
     tracker.record_usage(
         model="gpt-4o-mini",
         provider="openai",
@@ -136,7 +139,10 @@ def test_client_record_usage_persists_real_tokens(tmp_path: Path) -> None:
     """LLMClient._record_usage writes real token counts to CostTracker."""
     from ai_company.llm.client import LLMClient
 
-    tracker = CostTracker(results_dir=str(tmp_path / "results"))
+    tracker = CostTracker(
+        results_dir=str(tmp_path / "results"),
+        export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+    )
     client = LLMClient.__new__(LLMClient)
     client._cost_tracker = tracker
 
@@ -159,7 +165,10 @@ def test_client_record_usage_heuristic_fallback(tmp_path: Path) -> None:
     """Without provider metadata, heuristic counts are recorded."""
     from ai_company.llm.client import LLMClient
 
-    tracker = CostTracker(results_dir=str(tmp_path / "results"))
+    tracker = CostTracker(
+        results_dir=str(tmp_path / "results"),
+        export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+    )
     client = LLMClient.__new__(LLMClient)
     client._cost_tracker = tracker
 
@@ -199,7 +208,10 @@ def test_replay_old_log_without_token_fields(tmp_path: Path) -> None:
     }
     log_path.write_text(json.dumps(old_record) + "\n", encoding="utf-8")
 
-    tracker = CostTracker(results_dir=str(results))
+    tracker = CostTracker(
+        results_dir=str(results),
+        export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+    )
     assert len(tracker._records) == 1
     record = tracker._records[0]
     assert record.task_id == "legacy-task"

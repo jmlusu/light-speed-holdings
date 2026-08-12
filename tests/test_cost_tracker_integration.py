@@ -71,7 +71,9 @@ class TestCostTrackerRecordUsage:
     """Verify CostTracker records and persists usage correctly."""
 
     def test_record_usage_returns_usage_record(self, tmp_path: Path) -> None:
-        tracker = CostTracker(results_dir=tmp_path)
+        tracker = CostTracker(
+            results_dir=tmp_path, export_path=str(tmp_path / "orchestrator" / "cost_tracker.json")
+        )
         record = tracker.record_usage(
             model="gpt-4o",
             provider="openai",
@@ -86,7 +88,9 @@ class TestCostTrackerRecordUsage:
         assert record.cost_usd > 0
 
     def test_record_usage_persists_to_jsonl(self, tmp_path: Path) -> None:
-        tracker = CostTracker(results_dir=tmp_path)
+        tracker = CostTracker(
+            results_dir=tmp_path, export_path=str(tmp_path / "orchestrator" / "cost_tracker.json")
+        )
         tracker.record_usage(
             model="gpt-4o",
             provider="openai",
@@ -105,7 +109,9 @@ class TestCostTrackerRecordUsage:
         assert data["completion_tokens"] == 50
 
     def test_daily_summary(self, tmp_path: Path) -> None:
-        tracker = CostTracker(results_dir=tmp_path)
+        tracker = CostTracker(
+            results_dir=tmp_path, export_path=str(tmp_path / "orchestrator" / "cost_tracker.json")
+        )
         tracker.record_usage(
             model="gpt-4o",
             provider="openai",
@@ -128,7 +134,9 @@ class TestCostTrackerRecordUsage:
         assert summary["total_completion_tokens"] == 150
 
     def test_task_summary(self, tmp_path: Path) -> None:
-        tracker = CostTracker(results_dir=tmp_path)
+        tracker = CostTracker(
+            results_dir=tmp_path, export_path=str(tmp_path / "orchestrator" / "cost_tracker.json")
+        )
         tracker.record_usage(
             model="gpt-4o",
             provider="openai",
@@ -167,7 +175,11 @@ class TestCostTrackerBudget:
     """Verify budget checks work correctly."""
 
     def test_daily_budget_check(self, tmp_path: Path) -> None:
-        tracker = CostTracker(results_dir=tmp_path, daily_budget_usd=0.01)
+        tracker = CostTracker(
+            results_dir=tmp_path,
+            daily_budget_usd=0.01,
+            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        )
         allowed, reason = tracker.check_budget("t1", proposed_cost=0.005)
         assert allowed is True
         tracker.record_usage(
@@ -183,7 +195,11 @@ class TestCostTrackerBudget:
         assert "Daily budget exceeded" in reason
 
     def test_task_budget_check(self, tmp_path: Path) -> None:
-        tracker = CostTracker(results_dir=tmp_path, task_budget_usd=0.01)
+        tracker = CostTracker(
+            results_dir=tmp_path,
+            task_budget_usd=0.01,
+            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        )
         allowed, _ = tracker.check_budget("t1", proposed_cost=0.005)
         assert allowed is True
         tracker.record_usage(
@@ -224,7 +240,9 @@ class TestLLMClientCostIntegration:
         mock_router.list_providers.return_value = []
 
         # Set up cost tracker
-        tracker = CostTracker(results_dir=tmp_path)
+        tracker = CostTracker(
+            results_dir=tmp_path, export_path=str(tmp_path / "orchestrator" / "cost_tracker.json")
+        )
 
         client = LLMClient(cost_tracker=tracker)
 
@@ -270,7 +288,9 @@ class TestLLMClientCostIntegration:
         mock_router.get_tier.return_value = mock_tier
         mock_router.list_providers.return_value = []
 
-        tracker = CostTracker(results_dir=tmp_path)
+        tracker = CostTracker(
+            results_dir=tmp_path, export_path=str(tmp_path / "orchestrator" / "cost_tracker.json")
+        )
         client = LLMClient(cost_tracker=tracker)
 
         mock_provider = MagicMock()

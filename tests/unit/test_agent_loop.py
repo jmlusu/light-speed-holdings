@@ -583,7 +583,10 @@ class TestCostTrackingIntegration:
 
         client, mock_provider = _setup_llm_client(tmp_path)
         runner = ToolRunner(project_root=tmp_path)
-        cost_tracker = CostTracker(results_dir=str(tmp_path / "results"))
+        cost_tracker = CostTracker(
+            results_dir=str(tmp_path / "results"),
+            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        )
         config = LoopConfig(max_iterations=3)
         loop = AgentLoop(
             llm=client,
@@ -628,6 +631,7 @@ class TestCostTrackingIntegration:
         cost_tracker = CostTracker(
             results_dir=str(tmp_path / "results"),
             daily_budget_usd=0.0001,  # Extremely low budget
+            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
         )
         loop = AgentLoop(
             llm=client,

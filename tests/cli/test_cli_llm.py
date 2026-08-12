@@ -22,7 +22,10 @@ def _seed_log(tmp_path: Path, days_ago: int = 0) -> Path:
     import datetime
 
     results = tmp_path / "results"
-    tracker = CostTracker(results_dir=results)
+    tracker = CostTracker(
+        results_dir=results,
+        export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+    )
     stamp = (datetime.date.today() - datetime.timedelta(days=days_ago)).isoformat()
     tracker.record_usage(
         model="gpt-4o-mini",

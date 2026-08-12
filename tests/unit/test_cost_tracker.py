@@ -17,7 +17,11 @@ from ai_company.llm.cost_tracker import CostTracker
 
 def _make_tracker(tmp_path: Path, **kwargs: object) -> CostTracker:
     """Create a CostTracker writing into ``tmp_path/results``."""
-    return CostTracker(results_dir=str(tmp_path / "results"), **kwargs)
+    return CostTracker(
+        results_dir=str(tmp_path / "results"),
+        export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        **kwargs,
+    )
 
 
 class TestRestartPersistence:
@@ -325,3 +329,57 @@ class TestRecordsBounded:
         # Oldest records dropped, newest kept.
         assert restarted._records[0].task_id == "task-5"
         assert restarted._records[-1].task_id == f"task-{_MAX_RECORDS + 4}"
+
+
+class TestExportSummary:
+    """The aggregated summary export to orchestrator/cost_tracker.json."""
+
+    def test_export_summary_file_created(self, tmp_path: Path) -> None:
+        _make_tracker(tmp_path)
+        export_file = tmp_path / "orchestrator" / "cost_tracker.json"
+        assert export_file.exists()
+        data = json.loads(export_file.read_text())
+        assert data["total_spent"] == 0.0
+        assert data["llm_spend"] == 0.0
+        assert data["call_count"] == 0
+
+    def test_export_summary_after_record_usage(self, tmp_path: Path) -> None:
+        tracker = _make_tracker(tmp_path, daily_budget_usd=10.0)
+        tracker.record_usage(
+            model="gpt-4o-mini",
+            provider="openai",
+            agent_name="agent_a",
+            task_id="task-1",
+            prompt_tokens=1000,
+            completion_tokens=500,
+        )
+        export_file = tmp_path / "orchestrator" / "cost_tracker.json"
+        data = json.loads(export_file.read_text())
+        assert data["total_spent"] > 0
+        assert data["llm_spend"] == data["total_spent"]
+        assert data["call_count"] == 1
+        assert "agent_a" in data["by_agent"]
+        assert "gpt-4o-mini" in data["by_model"]
+        assert len(data["daily_trend"]) >= 1
+        assert data["currency"] == "USD"
+
+    def test_export_summary_rebuilt_on_restart(self, tmp_path: Path) -> None:
+        tracker = _make_tracker(tmp_path)
+        tracker.record_usage(
+            model="gpt-4o-mini",
+            provider="openai",
+            agent_name="agent_a",
+            task_id="task-1",
+            prompt_tokens=1000,
+            completion_tokens=500,
+        )
+        first_export = json.loads((tmp_path / "orchestrator" / "cost_tracker.json").read_text())
+
+        # New tracker pointing at same results dir replays the log and re-exports.
+        CostTracker(
+            results_dir=str(tmp_path / "results"),
+            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        )
+        restarted_export = json.loads((tmp_path / "orchestrator" / "cost_tracker.json").read_text())
+        assert restarted_export["call_count"] == first_export["call_count"]
+        assert restarted_export["total_spent"] == pytest.approx(first_export["total_spent"])
