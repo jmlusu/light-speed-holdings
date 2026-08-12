@@ -145,7 +145,7 @@
   </template>
 
   <template x-if="!isLoading && tasks.length === 0">
-    <div class="text-sm text-surface-500 py-8 text-center">
+    <div class="text-sm text-surface-500 py-8 text-center min-h-24 flex items-center justify-center">
       No tasks yet. Assign one from the <a href="/tasks" class="text-brand-400 hover:underline">Tasks</a> page.
     </div>
   </template>
@@ -157,7 +157,7 @@
     more gracefully.
   -->
   <template x-if="!isLoading && tasks.length > 0">
-    <div class="table-wrap">
+    <div class="table-wrap min-h-24">
       <table class="w-full text-sm">
         <thead>
           <tr class="text-left text-xs text-surface-500 border-b border-surface-700/50">

@@ -233,26 +233,14 @@ function dashboard() {
       const saved = this._savedScroll;
       if (!saved) return;
       this._savedScroll = null;
+      this._scrollGuardActive = false;
       this._cancelPendingRestore();
       this._pendingRestoreRaf = requestAnimationFrame(() => {
-        // Wait one more frame: Alpine commits the DOM mutation in a
-        // microtask, but the browser applies layout (and any scroll-anchoring
-        // adjustment, which fires a scroll event) only during rendering —
-        // AFTER the first rAF. A single-frame restore would measure the
-        // pre-layout position, see no drift, and leave the anchoring shift in
-        // place. Restoring on the second frame measures post-layout truth.
-        this._pendingRestoreRaf = requestAnimationFrame(() => {
-          this._pendingRestoreRaf = null;
-          // Keep the scroll guard active until the restore actually runs so
-          // the scroll-anchoring scroll event (which fires during layout,
-          // between the two frames) is not misread as a user scroll that
-          // cancels this restore.
-          this._scrollGuardActive = false;
-          const diff = Math.abs(window.scrollY - saved.y);
-          if (diff > 1) {
-            window.scrollTo(saved.x, saved.y);
-          }
-        });
+        this._pendingRestoreRaf = null;
+        const diff = Math.abs(window.scrollY - saved.y);
+        if (diff > 1) {
+          window.scrollTo(saved.x, saved.y);
+        }
       });
     },
 
