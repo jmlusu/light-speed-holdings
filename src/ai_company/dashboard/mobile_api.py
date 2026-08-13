@@ -14,11 +14,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, cast
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from ai_company.dashboard.api import get_bus
 from ai_company.dashboard.repository import get_state_store
+from ai_company.security.rbac import Role, require_role
 
 logger = logging.getLogger(__name__)
 
@@ -318,7 +319,10 @@ def mobile_tasks(
 
 
 @router.post("/actions/batch")
-def batch_actions(req: BatchRequest) -> dict[str, Any]:
+def batch_actions(
+    req: BatchRequest,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
     """Execute multiple approve/reject/resolve actions in one request."""
     results = []
     succeeded = 0
@@ -454,7 +458,10 @@ def _delegate_task(task_id: str, delegate_to: str) -> dict[str, Any]:
 
 
 @router.post("/actions/quick-approve")
-def quick_approve(req: QuickApproveRequest) -> dict[str, Any]:
+def quick_approve(
+    req: QuickApproveRequest,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
     """One-tap approve all pending approvals."""
     if not req.confirm:
         raise HTTPException(status_code=400, detail="Must set confirm=true to quick-approve")
@@ -530,7 +537,10 @@ def approval_stack(limit: int = 5) -> dict[str, Any]:
 
 
 @router.post("/approvals/swipe")
-def swipe_approval(req: SwipeDecision) -> dict[str, Any]:
+def swipe_approval(
+    req: SwipeDecision,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
     """Process a swipe gesture on an approval request."""
     next_item = None
     remaining = 0
@@ -687,7 +697,10 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
 
 
 @router.post("/notifications/register")
-def register_device(reg: DeviceRegistration) -> dict[str, Any]:
+def register_device(
+    reg: DeviceRegistration,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
     """Register a device for push notifications."""
     devices = _load_devices()
 
@@ -734,7 +747,10 @@ def register_device(reg: DeviceRegistration) -> dict[str, Any]:
 
 
 @router.delete("/notifications/unregister")
-def unregister_device(body: dict[str, Any]) -> dict[str, Any]:
+def unregister_device(
+    body: dict[str, Any],
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
     """Remove a device from push notification delivery."""
     token = body.get("device_token", "")
     if not token:
@@ -749,7 +765,10 @@ def unregister_device(body: dict[str, Any]) -> dict[str, Any]:
 
 
 @router.patch("/notifications/preferences")
-def update_preferences(body: dict[str, Any]) -> dict[str, Any]:
+def update_preferences(
+    body: dict[str, Any],
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
     """Update notification preferences for a device."""
     token = body.get("device_token", "")
     prefs = body.get("preferences", {})
@@ -802,7 +821,10 @@ def notification_status(device_token: str = "", since: str = "") -> dict[str, An
 
 
 @router.post("/sync")
-def mobile_sync(req: SyncRequest) -> dict[str, Any]:
+def mobile_sync(
+    req: SyncRequest,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
     """Sync locally queued actions and fetch updates since last sync."""
     processed_actions = []
 
@@ -868,7 +890,10 @@ def mobile_sync(req: SyncRequest) -> dict[str, Any]:
 
 
 @router.post("/batch")
-def mobile_batch(req: dict[str, Any]) -> dict[str, Any]:
+def mobile_batch(
+    req: dict[str, Any],
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
     """Execute multiple GET requests in a single round trip."""
     requests = req.get("requests", [])[:5]
     results: list[dict[str, Any]] = []

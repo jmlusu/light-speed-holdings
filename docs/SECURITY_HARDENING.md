@@ -46,7 +46,8 @@ Implemented comprehensive security hardening across the AI Company Builder codeb
 
 **Fix (Already Implemented):**
 - CORS origins configurable via `DASHBOARD_CORS_ORIGINS` env var
-- API key validation for write operations via `X-API-Key` header
+- Role-based API key validation for write operations via `X-API-Key` header (`run`/`approve`/`admin`, see [ADR-012](adr/012-dashboard-rbac.md))
+- `open` auth mode restricted to loopback (`is_loopback_host` guard in `app.py` + CLI refusal)
 - Rate limiting (100 req/min default)
 - Health check endpoints remain public
 
@@ -214,7 +215,7 @@ Remaining Medium Issues (Low Risk):
 
 1. **Rotate API Keys:** Immediately rotate the exposed keys in `.env`
 2. **Enable Pre-commit Hook:** Install the secrets scanner as a git pre-commit hook
-3. **Set DASHBOARD_API_KEY:** Configure a strong API key for dashboard write operations
+3. **Set role API keys:** Configure `DASHBOARD_ADMIN_KEY` (or `DASHBOARD_APPROVE_KEY` / `DASHBOARD_RUN_KEY`) with strong keys for dashboard write operations; never expose `open` auth mode beyond loopback
 4. **Configure CORS:** Set `DASHBOARD_CORS_ORIGINS` to specific frontend URLs
 5. **Review Tool Allowlist:** Customize `config/tool_allowlist.yaml` for your environment
 6. **Enable Content Filtering:** Integrate `ContentFilter` in executor outputs

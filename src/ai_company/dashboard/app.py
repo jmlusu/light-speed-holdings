@@ -24,6 +24,7 @@ Frontend:
 
 from __future__ import annotations
 
+import ipaddress
 import logging
 import os
 import time
@@ -146,29 +147,44 @@ class _RateLimiter:
 # ---------------------------------------------------------------------------
 
 
-def _get_api_key() -> str:
-    """Read the API key from the environment (never cached)."""
-    return os.environ.get("DASHBOARD_API_KEY", "")
-
-
 def _check_api_key(request: Request) -> bool:
     """Return True if the request is authorised.
 
     Auth is controlled by ``DASHBOARD_AUTH_MODE``:
 
     * ``api_key`` (default, fail-closed): **ALL** methods require an
-      ``X-API-Key`` header matching ``DASHBOARD_API_KEY``. If no key is
-      configured the request is rejected (fail-closed), so a misconfigured
-      network deployment never silently exposes any endpoints.
+      ``X-API-Key`` header matching any configured role key
+      (``DASHBOARD_ADMIN_KEY`` / ``DASHBOARD_APPROVE_KEY`` /
+      ``DASHBOARD_RUN_KEY``; ``DASHBOARD_API_KEY`` remains a valid admin
+      alias). If no key is configured the request is rejected (fail-closed),
+      so a misconfigured network deployment never silently exposes any
+      endpoints. Role-key checks are enforced per-endpoint by
+      :func:`~ai_company.security.rbac.require_role`.
     * ``open`` (explicit opt-in for localhost-only dev): all requests
-      pass regardless of configuration.
+      pass regardless of configuration. The server refuses to bind open
+      mode to a non-loopback interface (see ``create_app`` / CLI).
     """
     if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
         return True
-    api_key = _get_api_key()
+    api_key = request.headers.get("X-API-Key", "")
     if not api_key:
         return False
-    return request.headers.get("X-API-Key") == api_key
+    from ai_company.security.rbac import role_for_key
+
+    return role_for_key(api_key) is not None
+
+
+def is_loopback_host(host: str) -> bool:
+    """Return True when ``host`` resolves to a loopback interface.
+
+    Accepts ``localhost`` plus any literal loopback address (127.0.0.0/8,
+    ``::1``). Used to enforce the ADR-012 rule that ``DASHBOARD_AUTH_MODE=open``
+    may only bind to a loopback interface.
+    """
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return host.lower() in {"localhost", "localhost.localdomain"}
 
 
 def _tab_context(active_tab: str) -> dict[str, Any]:
@@ -265,6 +281,20 @@ def create_app() -> FastAPI:
             },
         ],
     )
+
+    # ── Auth-mode loopback restriction (ADR-012) ────────────────────────
+    # ``open`` auth mode bypasses the API-key guard entirely, so it must
+    # never bind to a non-loopback interface. The CLI validates its own
+    # ``--host`` argument; this check additionally fails fast for direct
+    # ``uvicorn`` launches where the bind host is supplied via
+    # ``DASHBOARD_HOST``.
+    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
+        bind_host = os.environ.get("DASHBOARD_HOST", "").strip()
+        if bind_host and not is_loopback_host(bind_host):
+            raise RuntimeError(
+                "DASHBOARD_AUTH_MODE=open is only allowed on loopback hosts "
+                f"(127.0.0.1 / ::1); DASHBOARD_HOST='{bind_host}'"
+            )
 
     # ── Jinja2 templates ─────────────────────────────────────────────
     templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
