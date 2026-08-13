@@ -54,6 +54,7 @@ cov_gate.log
 
 # Runtime state / generated artifacts (regenerated from registry + execution)
 .opencode/inbox*.json
+.opencode/pending_approvals.json
 .opencode/audit
 .opencode/audit.jsonl
 .opencode/config.json
