@@ -24,13 +24,13 @@ REST endpoints optimized for mobile clients accessing the AI Company Builder CEO
 
 ## 1. Authentication
 
-Mobile endpoints use the same `X-API-Key` header mechanism as the main dashboard API.
+Mobile endpoints use the same `X-API-Key` header mechanism as the main dashboard API. Keys map to roles (`run`, `approve`, `admin`); see [ADR-012](../adr/012-dashboard-rbac.md). A key with insufficient privilege receives `403`.
 
 For push notification registration, devices also provide a device token.
 
 | Header | Type | Required | Description |
 |--------|------|----------|-------------|
-| `X-API-Key` | string | Conditional | Required when `DASHBOARD_API_KEY` env var is set |
+| `X-API-Key` | string | Conditional | Required when any dashboard role key is configured (`DASHBOARD_RUN_KEY`, `DASHBOARD_APPROVE_KEY`, `DASHBOARD_ADMIN_KEY`, or legacy `DASHBOARD_API_KEY` = admin) |
 | `X-Device-ID` | string | Recommended | Unique device identifier for push routing |
 | `X-App-Version` | string | Optional | Mobile app version for compatibility |
 

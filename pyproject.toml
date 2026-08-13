@@ -84,6 +84,14 @@ ignore = [
     "E501",  # line too long (handled by ruff format)
 ]
 
+[tool.ruff.lint.flake8-bugbear]
+# Standard FastAPI dependency-injection pattern: Depends(...) in argument
+# defaults is idiomatic and should not trip B008.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "ai_company.security.rbac.require_role",
+]
+
 [tool.pytest.ini_options]
 # Default suite excludes e2e (Playwright) tests. Do NOT remove this gate: it
 # was reverted once and reintroduced the "Future attached to a different loop"

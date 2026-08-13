@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
@@ -32,6 +32,7 @@ from ai_company.dashboard.models import (
 )
 from ai_company.dashboard.repository import get_state_store
 from ai_company.data import get_database
+from ai_company.security.rbac import Role, require_role
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["dashboard"])
@@ -833,7 +834,11 @@ def list_tasks_paginated(
 
 
 @router.post("/tasks", response_model=TaskItem, status_code=201, tags=["tasks"])
-def create_task(assign: TaskAssign, background_tasks: BackgroundTasks) -> TaskItem:
+def create_task(
+    assign: TaskAssign,
+    background_tasks: BackgroundTasks,
+    _: Role = Depends(require_role("run")),
+) -> TaskItem:
     """Create a new task and send it through the MessageBus."""
     # Validate: reject trivial instructions
     stripped = assign.instruction.strip()
@@ -883,6 +888,7 @@ def update_task(
     task_id: str,
     update: TaskUpdate,
     background_tasks: BackgroundTasks,
+    _: Role = Depends(require_role("run")),
 ) -> TaskItem:
     """Partially update a task (e.g. drag-and-drop status change).
 
@@ -905,7 +911,11 @@ def update_task(
 
 
 @router.delete("/tasks/{task_id}", tags=["tasks"])
-def delete_task(task_id: str, background_tasks: BackgroundTasks) -> dict[str, str]:
+def delete_task(
+    task_id: str,
+    background_tasks: BackgroundTasks,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, str]:
     """Delete a task by id.
 
     Returns ``{"ok": true, "id": "<task_id>"}`` on success.
@@ -937,7 +947,11 @@ def list_approvals() -> list[ApprovalItem]:
 
 
 @router.post("/approvals/{request_id}/approve", tags=["approvals"])
-def approve_request(request_id: str, body: ApprovalDecision | None = None) -> dict:
+def approve_request(
+    request_id: str,
+    body: ApprovalDecision | None = None,
+    _: Role = Depends(require_role("approve")),
+) -> dict:
     """Approve a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
@@ -956,7 +970,11 @@ def approve_request(request_id: str, body: ApprovalDecision | None = None) -> di
 
 
 @router.post("/approvals/{request_id}/reject", tags=["approvals"])
-def reject_request(request_id: str, body: ApprovalDecision | None = None) -> dict:
+def reject_request(
+    request_id: str,
+    body: ApprovalDecision | None = None,
+    _: Role = Depends(require_role("approve")),
+) -> dict:
     """Reject a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
@@ -986,7 +1004,10 @@ def list_escalations() -> list[EscalationItem]:
 
 
 @router.post("/escalations/{task_id}/resolve", tags=["escalations"])
-def resolve_escalation(task_id: str) -> dict:
+def resolve_escalation(
+    task_id: str,
+    _: Role = Depends(require_role("approve")),
+) -> dict:
     """Resolve an open escalation event and log to the audit trail."""
     data = _load_yaml("orchestrator/escalation.yaml")
     events = data.get("events", [])

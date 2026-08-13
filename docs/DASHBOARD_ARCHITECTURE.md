@@ -376,6 +376,6 @@ The following elements use `contain: layout style` to prevent reflows from casca
 |-------|----------------|-------|
 | **CORS** | FastAPI CORSMiddleware | Allowed origins: `localhost:3000,5173` |
 | **Rate Limiting** | Custom middleware | 100-200 req/min (configurable) |
-| **API Key Auth** | Header-based (`X-API-Key`) | POST/DELETE endpoints only |
+| **API Key Auth (RBAC)** | Header-based (`X-API-Key`) mapping to roles `run`/`approve`/`admin` via `require_role()`; `open` mode restricted to loopback | Write endpoints only (see [ADR-012](adr/012-dashboard-rbac.md)) |
 | **StateStore Allowlist** | Path validation | Only whitelisted directories accessible |
 | **Input Validation** | Pydantic models | All request/response schemas validated |
