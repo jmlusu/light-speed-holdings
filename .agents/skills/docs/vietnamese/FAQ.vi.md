@@ -8,13 +8,13 @@
 
 ### "Skills" (kỹ năng) chính xác là gì?
 
-Skills là các tệp hướng dẫn chuyên biệt dạy cho các trợ lý AI cách xử lý những tác vụ cụ thể. Hãy coi chúng như những mô-đun kiến thức chuyên gia mà AI của bạn có thể tải khi cần.  
+Skills là các tệp hướng dẫn chuyên biệt dạy cho các trợ lý AI cách xử lý những tác vụ cụ thể. Hãy coi chúng như những mô-đun kiến thức chuyên gia mà AI của bạn có thể tải khi cần.
 **Một so sánh đơn giản:** Giống như việc bạn tham khảo ý kiến của các chuyên gia khác nhau (luật sư, bác sĩ, thợ máy), những kỹ năng này giúp AI của bạn trở thành chuyên gia trong các lĩnh vực khác nhau khi bạn cần.
 
 ### Tôi có cần phải cài đặt tất cả hơn 1,936 skills không?
 
 **Không!** Khi bạn cài đặt repository này, tất cả các kỹ năng đều có sẵn, nhưng AI của bạn chỉ tải chúng khi bạn yêu cầu rõ ràng bằng lệnh `@ten-skill`.
-Nó giống như việc sở hữu một thư viện - tất cả sách đều ở đó, nhưng bạn chỉ đọc những cuốn bạn cần thôi.  
+Nó giống như việc sở hữu một thư viện - tất cả sách đều ở đó, nhưng bạn chỉ đọc những cuốn bạn cần thôi.
 **Mẹo:** Sử dụng [Bản mẫu Khởi đầu (Starter Packs)](BUNDLES.vi.md) để chỉ cài đặt những gì phù hợp với vai trò của bạn.
 
 ### Những công cụ AI nào hoạt động với các kỹ năng này?
@@ -55,7 +55,7 @@ Chúng tôi phân loại các kỹ năng để bạn biết mình đang chạy c
 
 ### Những kỹ năng này có thể hack máy tính của tôi không?
 
-**Không.** Kỹ năng là các file văn bản. Tuy nhiên, chúng *hướng dẫn* AI chạy các dòng lệnh. Nếu một skill nói "xóa toàn bộ file", một AI tuân thủ có thể sẽ thử làm việc đó.  
+**Không.** Kỹ năng là các file văn bản. Tuy nhiên, chúng *hướng dẫn* AI chạy các dòng lệnh. Nếu một skill nói "xóa toàn bộ file", một AI tuân thủ có thể sẽ thử làm việc đó.
 _Luôn kiểm tra nhãn rủi ro và xem xét mã nguồn trước khi dùng._
 
 ---
@@ -144,7 +144,7 @@ Sử dụng biểu tượng `@` theo sau là tên skill:
 
 ### Một kỹ năng đưa ra lời khuyên sai hoặc lỗi thời
 
-Hãy [Mở một issue](https://github.com/sickn33/agentic-awesome-skills/issues)!  
+Hãy [Mở một issue](https://github.com/sickn33/agentic-awesome-skills/issues)!
 Vui lòng gửi kèm:
 
 - Skill nào?
@@ -161,7 +161,7 @@ Vui lòng gửi kèm:
 
 - Sửa lỗi đánh máy.
 - Thêm ví dụ.
-- Cải thiện tài liệu hướng dẫn.  
+- Cải thiện tài liệu hướng dẫn.
 Hãy xem [CONTRIBUTING.md](../../CONTRIBUTING.md) để biết hướng dẫn chi tiết.
 
 ### Pull Request (PR) của tôi thất bại khi kiểm tra "Quality Bar". Tại sao?
@@ -169,7 +169,7 @@ Hãy xem [CONTRIBUTING.md](../../CONTRIBUTING.md) để biết hướng dẫn ch
 Quality Bar áp dụng kiểm soát chất lượng tự động. Skill của bạn có thể đang thiếu:
 
 1. Một `description` (mô tả) hợp lệ.
-2. Các ví dụ sử dụng.  
+2. Các ví dụ sử dụng.
 Hãy chạy `npm run validate` cục bộ để kiểm tra trước khi đẩy code lên.
 
 ### Tôi có thể cập nhật các kỹ năng "Official" không?

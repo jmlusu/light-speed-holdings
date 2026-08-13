@@ -65,7 +65,7 @@ See [../../LICENSE](../../LICENSE), [../../LICENSE-CONTENT](../../LICENSE-CONTEN
 
 ### How do these skills avoid overflowing the model context?
 
-Some host tools (for example custom agents built on Jetski/Cortex + Gemini) might be tempted to **concatenate every `SKILL.md` file into a single system prompt**.  
+Some host tools (for example custom agents built on Jetski/Cortex + Gemini) might be tempted to **concatenate every `SKILL.md` file into a single system prompt**.
 This is **not** how this repository is designed to be used, and it will almost certainly overflow the model’s context window if you concatenate the whole repository into one prompt.
 
 Instead, hosts should:

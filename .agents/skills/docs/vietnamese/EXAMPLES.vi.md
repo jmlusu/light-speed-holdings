@@ -1,6 +1,6 @@
 # 🧪 Ví dụ Thực tế ("Sổ tay Nấu ăn Antigravity")
 
-Các kỹ năng (skills) vốn dĩ đã mạnh mẽ khi đứng riêng lẻ, nhưng chúng sẽ trở nên không thể ngăn cản khi được kết hợp lại với nhau.  
+Các kỹ năng (skills) vốn dĩ đã mạnh mẽ khi đứng riêng lẻ, nhưng chúng sẽ trở nên không thể ngăn cản khi được kết hợp lại với nhau.
 Dưới đây là ba tình huống phổ biến và cách giải quyết chúng bằng cách sử dụng repository này.
 
 ## 🥘 Công thức 1: "Kiểm tra Code cũ (Legacy Code Audit)"
