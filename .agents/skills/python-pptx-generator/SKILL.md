@@ -91,13 +91,13 @@ Output: A python-pptx script with executive-friendly slide titles, concise bulle
 
 ## Common Pitfalls
 
-- **Problem:** The generated script uses placeholder text instead of real content  
+- **Problem:** The generated script uses placeholder text instead of real content
   **Solution:** Draft the narrative first, then turn each slide into specific titles and bullets
 
-- **Problem:** The deck uses too many slides for the requested audience  
+- **Problem:** The deck uses too many slides for the requested audience
   **Solution:** Compress the outline to the most important 4 to 8 slides unless the user explicitly wants a longer deck
 
-- **Problem:** The script forgets to save or print a completion message  
+- **Problem:** The script forgets to save or print a completion message
   **Solution:** Always end with `prs.save(...)` and a short success print
 
 ## Related Skills

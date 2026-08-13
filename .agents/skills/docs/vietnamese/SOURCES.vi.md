@@ -1,6 +1,6 @@
 # 📜 Nguồn gốc & Ghi công
 
-Chúng tôi tin tưởng vào việc ghi nhận công sức một cách xứng đáng.  
+Chúng tôi tin tưởng vào việc ghi nhận công sức một cách xứng đáng.
 Nếu bạn nhận ra tác phẩm của mình ở đây mà chưa được ghi công đúng cách, vui lòng mở một Issue (Báo lỗi).
 
 | Kỹ năng / Danh mục          | Nguồn gốc                                              | Giấy phép      | Ghi chú                       |

@@ -25,21 +25,21 @@ Resolve conflicts **on the PR branch** so the PR becomes mergeable, then use "Sq
 
 ### Steps (maintainer resolves conflicts on the contributor’s branch)
 
-1. **Fetch the PR branch**  
+1. **Fetch the PR branch**
    `git fetch origin pull/<PR_NUMBER>/head:pr-<PR_NUMBER>`
-2. **Checkout that branch**  
+2. **Checkout that branch**
    `git checkout pr-<PR_NUMBER>`
-3. **Merge `main` into it**  
-   `git merge origin/main`  
+3. **Merge `main` into it**
+   `git merge origin/main`
    Resolve any conflicts in the working tree. For generated registry files (`CATALOG.md`, `data/*.json`, `skills_index.json`), prefer `main`'s version and remove them from the contributor branch:
    `git checkout --theirs CATALOG.md data/catalog.json skills_index.json`
    If `README.md` conflicts only because of workflow-managed metadata, prefer `main`'s side there too. Keep contributor prose edits when they are real source changes.
-4. **Commit the merge**  
+4. **Commit the merge**
    `git add .` then `git commit -m "chore: merge main to resolve conflicts"` (or leave the default merge message).
-5. **Push to the same branch the PR is from**  
+5. **Push to the same branch the PR is from**
    If the PR is from the contributor’s fork branch (e.g. `sraphaz:feat/uncle-bob-craft`), you need push access to that branch. Options:
    - **Preferred:** Ask the contributor to merge `main` into their branch, fix conflicts, and push; then you use "Squash and merge" on GitHub.
-   - If you have a way to push to their branch (e.g. they gave you permission, or the branch is in this repo), push:  
+   - If you have a way to push to their branch (e.g. they gave you permission, or the branch is in this repo), push:
      `git push origin pr-<PR_NUMBER>:feat/uncle-bob-craft` (replace with the actual branch name from the PR).
 6. **On GitHub:** The PR should now be mergeable. Click **"Squash and merge"**. The PR will show as **Merged**.
 

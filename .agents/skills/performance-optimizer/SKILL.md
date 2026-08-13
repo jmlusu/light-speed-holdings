@@ -134,7 +134,7 @@ app.get('/api/stats', async (req, res) => {
   if (cached && Date.now() - cached.time < 300000) {
     return res.json(cached.data);
   }
-  
+
   const stats = await db.stats.calculate();
   cache.set('stats', { data: stats, time: Date.now() });
   res.json(stats);
@@ -210,8 +210,8 @@ const HeavyComponent = React.lazy(() => import('./HeavyComponent'));
 <img src="photo.jpg" /> <!-- 5MB -->
 
 <!-- Good: Optimized and responsive -->
-<img 
-  src="photo-small.webp" 
+<img
+  src="photo-small.webp"
   srcset="photo-small.webp 400w, photo-large.webp 800w"
   loading="lazy"
   width="400"

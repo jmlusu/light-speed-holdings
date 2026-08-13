@@ -28,7 +28,7 @@
 
 **Agentic Awesome Skills** (Phiên bản 14.0.0) là một thư viện kỹ năng lớn cho AI coding assistants.
 
-Các trợ lý AI (như Claude Code, Cursor, hoặc Gemini) rất thông minh, nhưng chúng thiếu các **công cụ chuyên biệt**. Chúng không biết "Quy trình Triển khai" của công ty bạn hoặc cú pháp cụ thể cho "AWS CloudFormation".  
+Các trợ lý AI (như Claude Code, Cursor, hoặc Gemini) rất thông minh, nhưng chúng thiếu các **công cụ chuyên biệt**. Chúng không biết "Quy trình Triển khai" của công ty bạn hoặc cú pháp cụ thể cho "AWS CloudFormation".
 **Skills** là các tệp markdown nhỏ dạy cho chúng cách thực hiện những tác vụ cụ thể này một cách chính xác trong mọi lần thực thi.
 Repository này cung cấp các kỹ năng thiết yếu để biến trợ lý AI của bạn thành một **đội ngũ chuyên gia số toàn năng**, bao gồm các khả năng chính thức từ **Anthropic**, **OpenAI**, **Google**, **Supabase**, **Apify**, và **Vercel Labs**.
 Cho dù bạn đang sử dụng **Gemini CLI**, **Claude Code**, **Codex CLI**, **Cursor**, **GitHub Copilot**, **Antigravity**, hay **OpenCode**, những kỹ năng này được thiết kế để có thể sử dụng ngay lập tức và tăng cường sức mạnh cho trợ lý AI của bạn.

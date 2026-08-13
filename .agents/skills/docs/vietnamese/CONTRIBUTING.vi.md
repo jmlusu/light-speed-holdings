@@ -1,6 +1,6 @@
 # 🤝 Hướng dẫn Đóng góp
 
-**Cảm ơn bạn đã muốn làm cho repository này trở nên tốt hơn!** Hướng dẫn này sẽ chỉ cho bạn chính xác cách thức đóng góp, ngay cả khi bạn là người mới đối với mã nguồn mở.  
+**Cảm ơn bạn đã muốn làm cho repository này trở nên tốt hơn!** Hướng dẫn này sẽ chỉ cho bạn chính xác cách thức đóng góp, ngay cả khi bạn là người mới đối với mã nguồn mở.
 Chúng tôi duy trì tiêu chuẩn chất lượng tự động cho skill và tài liệu. Vui lòng đọc kỹ **Quality Bar** bên dưới.
 
 ---
@@ -54,7 +54,7 @@ Bạn không cần phải là một chuyên gia! Dưới đây là những cách
 
 #### Bước 1: Chọn Chủ đề cho Kỹ năng của bạn
 
-Hãy tự hỏi: "Tôi ước trợ lý AI của mình hiểu rõ hơn về điều gì?".  
+Hãy tự hỏi: "Tôi ước trợ lý AI của mình hiểu rõ hơn về điều gì?".
 Ví dụ: "Tôi giỏi về Docker, tôi sẽ tạo một kỹ năng về Docker".
 
 #### Bước 2: Tạo Cấu trúc Thư mục
@@ -238,5 +238,5 @@ fix: correct typo in stripe-integration skill
 
 ---
 
-**Cảm ơn bạn đã làm cho dự án này trở nên tốt đẹp hơn cho mọi người!**  
+**Cảm ơn bạn đã làm cho dự án này trở nên tốt đẹp hơn cho mọi người!**
 Mọi sự đóng góp, dù nhỏ đến đâu, đều tạo nên sự khác biệt. Dù bạn sửa một lỗi chính tả, cải thiện một câu văn, hay tạo ra một kỹ năng hoàn toàn mới - bạn đang giúp đỡ hàng ngàn lập trình viên khác!
