@@ -4,6 +4,19 @@ All notable changes to AI Company Builder are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.5.0] — 2026-08-13
+
+### Added
+- **Sprint 9** (2026-08-13): Business architecture & master service catalog; 127-agent positioning (external messaging, strategic brief, agent-facing standards); recurring revenue engine (8 recurring products, conversion framework, enterprise payment terms).
+- **Sprint 8** (2026-08-12): Operationalization — inbox purge, README/env setup, Malawi service catalog portfolio (4 new agents, governance blocking, SOPs, client intake CLI, legal package).
+- **Dashboard RBAC** (ADR-012): role-gated write endpoints, loopback-restricted open mode (`src/ai_company/security/rbac.py`).
+- **ADR-010** (T1 event-bus alignment): report-only MessageBus perf benchmark extended with write latency and sustained throughput; explicit push-bus adapter trigger.
+- **CI hardening**: version-check job de-flaked (unused setup-uv step dropped); dependabot bumps — `checkout@v7`, `setup-python@v7`, `upload-artifact@v7`, `action-gh-release@v3`, `docker/setup-buildx-action@v4`.
+
+### Changed
+- **Storage**: SQLite-first mirror experiment retired (ADR-011 superseded); file-bus + FileStore remain the default.
+- **Docs**: workspace artifacts archived (`docs/archive/2026-08-13-workspace-artifacts/`); planning docs (STATUS, TASK-BOARD, BACKLOG, REMAINING-WORK-INVENTORY) reconciled to current reality.
+
 ## [0.4.0] — 2026-08-11
 
 ### Added

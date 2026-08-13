@@ -2,6 +2,8 @@
 # the host OS that runs the generator. This is a second line of defense
 # behind the `newline="\n"` fix in AgentGenerator.write_text().
 /.opencode/agents/*.md            text eol=lf
+/.opencode/operating-standards.md text eol=lf
+/.opencode/config/*.yaml          text eol=lf
 
 # Harness index must be LF so lint-ecl.ps1's raw-content comparison stays stable
 # regardless of the host OS that runs harness-change.ps1 reindex.

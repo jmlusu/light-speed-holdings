@@ -2,9 +2,18 @@
 
 **Date**: 2026-07-20 (updated)
 **Status**: Post-Sprint 2 Complete
-**Total Source Files**: 91+
-**Test Coverage**: ✅ 962 tests passing
-**Lint Status**: ✅ ruff clean (0 errors), mypy (3 errors)
+
+> **RECONCILIATION NOTICE (2026-08-13):** This inventory is now **historical and superseded**.
+> Every P2 (Sprint 3) and P3 (Sprint 4) item listed below has been **verified COMPLETE in source**
+> as of 2026-08-13 (WebSocket wiring, OpenAPI, rate limiting, memory consolidation/search/retention,
+> scheduled daemon, escalation persistence, structured logging, agent-spec validation, CLI type
+> hints/docstrings, pipeline/CLI/API/escalation test suites, OAuth2/key rotation, memory encryption,
+> token counting). See `docs/STATUS.md`, `docs/ARCHITECTURE-GAPS.md`, and the fully-reconciled
+> `docs/TASK-BOARD.md` for the accurate end state. Live work is tracked on GitHub wayfinder maps #7
+> and #33.
+
+**Test Coverage**: ✅ 962 tests passing (was) — now 1878 passing as of 2026-08-13
+**Lint Status**: ✅ ruff clean (0 errors), mypy clean as of 2026-08-13
 
 ---
 
