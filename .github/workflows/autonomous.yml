@@ -36,7 +36,7 @@ jobs:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: astral-sh/setup-uv@v7
         with:
@@ -125,7 +125,7 @@ jobs:
 
       - name: Upload briefing artifact
         if: inputs.mode != 'executor-only'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: daily-briefing-${{ github.run_id }}
           path: .opencode/daily_briefing.md
