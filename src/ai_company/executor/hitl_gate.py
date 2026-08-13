@@ -177,22 +177,31 @@ class HITLGate:
     def resume_approved(self, request_id: str) -> bool | None:
         """Check a parked request's decision without blocking (GAP-004).
 
+        The decision is read from the persisted approval store (reloaded
+        from disk first), NOT from the in-memory ``_pending_requests`` map,
+        so a request parked by a previous executor process can still be
+        resumed after a restart — the ``_pending_requests`` map is empty in
+        a fresh process and cannot be the source of truth.
+
         Returns:
             ``True`` if approved, ``False`` if rejected or expired,
-            ``None`` if still pending.  Does NOT resolve a future (parked
-            requests have none), it simply reports the current decision
-            so the executor can resume or leave the task parked.
+            ``None`` if still pending or the request id is unknown.  Does
+            NOT resolve a future (parked requests have none); it simply
+            reports the current decision so the executor can resume or
+            leave the task parked.
         """
         with self._lock:
-            if request_id not in self._pending_requests:
-                return None
+            tracked = request_id in self._pending_requests
         # Reload from disk first so a decision written by another process
-        # (e.g. the daemon's governance sweep marking this request EXPIRED)
-        # is observed instead of acting on stale in-memory state.
+        # (e.g. the CLI operator, or the daemon's governance sweep marking
+        # this request EXPIRED) is observed instead of stale in-memory state.
         self.gate.reload()
         req = self.gate.get_request(request_id)
         if req is None:
-            return False
+            # No longer in the store. If we created it this process (the
+            # store was reset/rotated underneath us) treat it as failed;
+            # otherwise the id is unknown so leave the task parked.
+            return False if tracked else None
         if req.status == ApprovalStatus.APPROVED:
             with self._lock:
                 self._pending_requests.pop(request_id, None)
