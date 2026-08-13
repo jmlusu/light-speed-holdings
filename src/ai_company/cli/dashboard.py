@@ -35,6 +35,20 @@ def dashboard(
     if ctx.invoked_subcommand is not None:
         return
 
+    # ADR-012: ``open`` auth mode bypasses the API-key guard, so it may only
+    # bind to a loopback interface.
+    import os
+
+    from ai_company.dashboard.app import is_loopback_host
+
+    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open" and not is_loopback_host(host):
+        typer.echo(
+            "Error: DASHBOARD_AUTH_MODE=open is only allowed on loopback hosts "
+            "(127.0.0.1 / ::1). Refusing to start.",
+            err=True,
+        )
+        raise typer.Exit(1)
+
     import uvicorn
 
     if not no_open:
