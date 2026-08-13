@@ -267,6 +267,26 @@ class ToolRunner:
             tool = step.get("tool", "")
             args = step.get("args", {})
 
+            # GAP-019 (extended): LLM output is untyped — a step whose
+            # ``args`` is a bare string instead of a dict (e.g. the model
+            # emitted a path directly) must not crash tier classification
+            # with ``'str' object has no attribute 'values'``.  Surface it
+            # as an error result so the model can self-correct.
+            if not isinstance(args, dict):
+                malformed_args = {
+                    "step": i,
+                    "tool": tool,
+                    "status": "error",
+                    "error": (
+                        "Malformed step: 'args' must be a JSON object, "
+                        f"got {type(args).__name__}. Respond with "
+                        '{"tool": ..., "args": {...}} steps.'
+                    ),
+                }
+                results.append(malformed_args)
+                log_tool_call(task_id, agent_id, tool, args, malformed_args)
+                continue
+
             if tool not in self._all_tools():
                 error_result = {
                     "step": i,

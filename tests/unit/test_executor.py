@@ -262,6 +262,20 @@ class TestToolRunner:
         assert all(r["status"] == "error" for r in results)
         assert all("malformed step" in r["error"].lower() for r in results)
 
+    def test_non_dict_args_does_not_crash(self, tmp_path: Path) -> None:
+        """GAP-019 regression: a step whose ``args`` is a bare string (instead
+        of a dict) must not crash tier classification with ``'str' object has
+        no attribute 'values'`` — it becomes an error result so the model can
+        self-correct."""
+        runner = ToolRunner(project_root=tmp_path)
+        results = runner.run_plan(
+            [{"tool": "write", "args": "/tmp/output.md"}]  # type: ignore[dict-item]
+        )
+        assert len(results) == 1
+        assert results[0]["status"] == "error"
+        assert "args" in results[0]["error"]
+        assert "JSON object" in results[0]["error"]
+
 
 # ── HITL Gate ───────────────────────────────────────────────────────
 
