@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'health' || github.event_name == 'schedule' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check workflow run health
         run: |
@@ -100,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'cycles' || github.event_name == 'schedule' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check autonomous cycle status
         run: |
@@ -145,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'metrics' || github.event_name == 'schedule' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
@@ -202,7 +202,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.check_type == 'all' || github.event_name == 'schedule' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up uv
         uses: astral-sh/setup-uv@v7
         with:
