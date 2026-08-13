@@ -5,6 +5,14 @@
 **Prioritization:** MoSCoW (Must / Should / Could / Won't)
 **Story Point Scale:** Fibonacci (1, 2, 3, 5, 8, 13) — 1 point = ~1 hour of focused work
 
+> **RECONCILIATION NOTICE (2026-08-13):** This backlog is now **historical and superseded**. All
+> 20 architecture gaps (GAP-001…020) from Phases 1–2 are **resolved and verified** — see
+> `docs/ARCHITECTURE-GAPS.md`. Sprints 1–9 are complete. Phase 3–5 growth/specialist/coordination
+> items were delivered via service modules (marketing, sales, legal, HR, finance, compliance) and
+> the executive/department agent fleet. Remaining work is tracked live on GitHub wayfinder maps
+> #7 (finish-dev / operate) and #33 (mission-control dashboard). Do not groom against this list —
+> use the GitHub maps and `docs/STATUS.md`.
+
 ---
 
 ## 1. Backlog Summary

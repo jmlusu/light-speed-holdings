@@ -4,12 +4,15 @@
 
 ## Last Updated
 
-2026-08-11
+2026-08-13
 
 ## Current State
 
-- **Sprint 7 (2026-08-11) Complete**: Doc reconciliation via active ECL `harness/changes/active` (`sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes`). Tool vocabulary canonicalization, HITL expiry, and quality hardening completed in commit `1b30d8f`. Canonical runtime tool vocabulary = `read`, `edit`, `grep`, `list`, `bash`, `webfetch`, `task` (`code_interpreter` removed; `write`/`execute`/`delegate`/`web_search` retained as backward-compatible aliases). `ApprovalGate` gains a HITL expiry sweep (expired PENDING → `EXPIRED`) wired into the daemon/governance cadence. Doc reconciliation (T002-T014) complete — CHANGELOG 0.4.0 entry, API-REFERENCE version, USER-GUIDE/DEVELOPER-GUIDE counts, STATUS.md GAP/test counts, SOP v1 superseded, ORCHESTRATION-PLAN GAP-019 CLOSED, OAuth2/ML/Security/Governance/Logging docs added. All validation gates pass: lint-ecl ✅, ruff ✅, mypy ✅, pytest 1856 passed ✅, version consistency ✅. Archived as `harness/changes/archive/2026-08-11-sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes`. Baseline before change: 1805/1858 tests, ruff/mypy clean.
-- **Next release**: v0.4.0 (pyproject.toml is the canonical version source; the v0.3.0 tag was lost in the recovery reset and will not be recreated).
+- **v0.5.0 release (2026-08-13, in progress)**: Post-Sprint-9 hardening — dashboard RBAC (ADR-012, `src/ai_company/security/rbac.py`), SQLite-first storage experiment retired (ADR-011 superseded), workspace artifacts archived (issue #10), planning docs reconciled, CI version-check de-flaked. See `Remaining Work` below.
+- **Sprint 9 (2026-08-13) Complete**: Business architecture & master service catalog (Phase 1+2), 127-agent positioning — external messaging, strategic brief, agent-facing standards (Phase 3), recurring revenue engine — 8 recurring products, conversion framework, enterprise payment terms (Phase 4). Commits `9439316`, `77a2d08`, `5998ea9`. Plus ADR-010 (T1 event-bus alignment with report-only MessageBus perf benchmark) and ADR-011 (SQLite-first storage mirror, later retired in `83b08bb`).
+- **Sprint 8 (2026-08-12) Complete**: Operationalization — inbox purge, README/env setup, Malawi service catalog portfolio launch (4 new agents, governance blocking, SOPs, client intake CLI, legal package). Archived as `harness/changes/archive/2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog`. v0.4.0 tagged at `3363a09`.
+- **Sprint 7 (2026-08-11) Complete**: Doc reconciliation via active ECL `harness/changes/active` (`sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes`). Tool vocabulary canonicalization, HITL expiry, and quality hardening completed in commit `1b30d8f`. Canonical runtime tool vocabulary = `read`, `edit`, `grep`, `list`, `bash`, `webfetch`, `task` (`code_interpreter` removed; `write`/`execute`/`delegate`/`web_search` retained as backward-compatible aliases). `ApprovalGate` gains a HITL expiry sweep (expired PENDING → `EXPIRED`) wired into the daemon/governance cadence. Doc reconciliation (T002-T014) complete. All validation gates pass: lint-ecl ✅, ruff ✅, mypy ✅, pytest 1856 passed ✅, version consistency ✅. Archived as `harness/changes/archive/2026-08-11-sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes`. Baseline before change: 1805/1858 tests, ruff/mypy clean.
+- **Next release**: v0.5.0 (pyproject.toml is the canonical version source; the v0.3.0 tag was lost in the recovery reset and will not be recreated).
 - **Sprint 6 (2026-08-10) Complete**: Audit fixes + runtime hardening. Archived as `harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening`. Registry loading anchored to the package root (`AI_COMPANY_ROOT` override, CWD-independent), lazy CLI sub-app registration, tool-vocabulary canonicalized across all 127 agent cards (`websearch`/`web_search` → `webfetch`, `code_interpreter` → `bash`, `write` → `edit`, `delegate` → `task`), Operating Principles deduplicated into shared `operating-standards.md`. LLM error classification (`ProviderErrorCategory`; circuit breaker ignores `auth`), bounded cost/decision logs, task lease fields + store locking, DLQ re-enqueue delegation, E2E Alpine `$data` migration. Commits `3f587e9`, `f4d2867`, `d076303`, `5f32e6d`. **1805 tests passing**, ruff/mypy clean. See `docs/AUDIT-FIXES-2026-08-10.md`.
 - **Sprint 5 (T009) Complete**: OAuth2 client-credentials auth (2026-08-09). Archived as `harness/changes/archive/2026-08-09-sprint-5-t009-oauth2-client-credentials`. New `src/ai_company/llm/oauth2.py` — `OAuth2TokenManager` (client-credentials grant, in-memory token cache with TTL, fail-closed), wired into `OpenAICompatibleProvider` (per-request bearer token) and `LLMClient` (opt-in `oauth2:` block per provider in `company/models.yaml`). `ProviderConfig` extended. 11 new tests. 1778 tests passing, ruff/mypy clean.
 - **Sprint 4 Complete**: Quality & completeness (2026-08-08). Archived as `harness/changes/archive/2026-08-08-sprint-4-quality-completeness`. Commits `d11608f` (auth hardening, key rotation, token counting, CLI polish), `359489d` (platform-independent CLI help + daemon stop tests), `4765f76` (22 new agent skills + real KPI derivation). 1745 tests passing, ruff/mypy clean.
@@ -45,7 +48,7 @@
 - **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
-- **Tests**: 1856 tests passing (53 deselected, 0 failures) — all green as of 2026-08-11.
+- **Tests**: 1878 tests passing (0 failures) — all green as of 2026-08-13.
 
 ## Organization Expansion (2026-07-21)
 
@@ -68,15 +71,17 @@
 
 ## Code Quality
 
-- **ruff**: ✅ Clean (0 errors) — as of 2026-08-10.
-- **mypy**: ✅ Clean (0 errors, 181 files) — as of 2026-08-10.
-- **pytest**: ✅ 1856 tests passing (53 deselected) — as of 2026-08-11.
+- **ruff**: ✅ Clean (0 errors) — as of 2026-08-13.
+- **mypy**: ✅ Clean (0 errors) — as of 2026-08-13.
+- **pytest**: ✅ 1878 tests passing — as of 2026-08-13.
+- **Coverage**: ✅ 78.12% (gate: 72%) — as of 2026-08-13.
 - **Dead code**: Removed 5 one-time bootstrap scripts
 
 ## Documentation
 
 - `docs/ARCHITECTURE.md` — System architecture and module hierarchy (updated 2026-07-20)
 - `docs/ARCHITECTURE-GAPS.md` — 20 identified integration gaps with severity ratings (20 resolved)
+- `docs/adr/010-t1-event-bus-alignment.md`, `docs/adr/011-storage-sqlite-first-mirror.md` (superseded), `docs/adr/012-dashboard-rbac.md` — Architecture Decision Records
 - `docs/INTEGRATION-ARCHITECTURE.md` — Integration seam analysis
 - `docs/STATUS.md` — This file
 - `docs/SPRINT-1-TRACKER.md` — Sprint 1 task tracker (COMPLETE)
@@ -106,6 +111,8 @@
 
 ## Recent Work
 
+- **2026-08-13**: Sprint 9 hardening + hard gates — dashboard RBAC (commit `c6f67e3`, ADR-012: role-gated write endpoints, loopback-restricted open mode), SQLite-first storage experiment retired (`83b08bb`, ADR-011 superseded), CI version-check de-flaked (`ccf1bbf`). Full suite 1878 passed, coverage 78.12%, ruff/mypy clean. Workspace artifacts archived (`docs/archive/2026-08-13-workspace-artifacts/`, issue #10). Planning docs reconciled (TASK-BOARD, BACKLOG, REMAINING-WORK-INVENTORY).
+- **2026-08-12**: Sprint 8 COMPLETE — operationalization: inbox purge, README/env setup, Malawi service catalog portfolio (4 new agents, governance blocking, SOPs, client intake CLI, legal package). Archived ECL `2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog`. v0.4.0 tagged at `3363a09`.
 - **2026-08-10**: Sprint 6 COMPLETE — audit fixes + runtime hardening. ECL archived as `harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening`. Four commits: `3f587e9` (registry anchored to package root + lazy CLI + canonical tool vocabulary + shared operating-standards dedup, 145 files), `f4d2867` (LLM `ProviderErrorCategory` classification, circuit breaker ignores `auth`, bounded cost tracker, 9 files), `d076303` (task leases, store locking, DLQ delegation, bounded decision log, SQLite mirror fixes, 16 files), `5f32e6d` (E2E scroll tests migrated to Alpine `$data`). Gates: ruff/mypy clean (181 files), **1856 tests passing** (53 e2e deselected), `AgentGenerator().generate_all()` 127 agents / 0 errors. Documented in `docs/AUDIT-FIXES-2026-08-10.md`.
 - **2026-08-09**: Sprint 5 T009 COMPLETE — OAuth2 client-credentials auth flow. `OAuth2TokenManager` in `src/ai_company/llm/oauth2.py`: client-credentials grant, in-memory token cache with TTL + safety margin, fail-closed on missing credentials or token-fetch failure. Wired into `OpenAICompatibleProvider` (per-request bearer token, `is_available()` honors OAuth2) and `LLMClient._init_providers()` (opt-in per provider via `oauth2:` block in `company/models.yaml`; API-key path unchanged). `ProviderConfig` gained an `oauth2` field. 11 new tests in `tests/unit/test_oauth2.py`. Gates: ruff/mypy clean, 1778 tests passing.
 - **2026-08-08**: Sprint 4 COMPLETE — quality & completeness. Commits: `d11608f` (GAP-019 agent spec validation, daemon lifecycle, key rotation, token counting, CLI type hints/docstrings, test suites for CLI/dashboard/escalation, dashboard security hardening), `359489d` (platform-independent CLI help + daemon stop tests), `4765f76` (22 new agent skills + manifest, company KPIs computed from real sources per CEO decision via `scripts/compute_company_kpis.py`, `run_backfill.py` SQLite utility). T012 `ai-company llm usage` and LLM budget caps/auto-suspend landed shortly after via autonomous commits `169ecf7`/`2aa4ec1`. ECL change archived as `harness/changes/archive/2026-08-08-sprint-4-quality-completeness`. Gates: ruff/mypy clean, **1745 tests passing**, CLI help verified. 35 scratch files cleaned from workspace.
@@ -142,11 +149,16 @@ Point-in-time audit reports. These are frozen snapshots — refer to `STATUS.md`
 | Sprint 5 | ✅ COMPLETE | 1778 passing | T009 OAuth2 client-credentials |
 | Sprint 6 | ✅ COMPLETE | 1805 passing | Audit fixes + runtime hardening |
 | Sprint 7 | ✅ COMPLETE | 1856 passing | Tool vocabulary + HITL expiry + quality hardening + doc reconciliation |
+| Sprint 8 | ✅ COMPLETE | — | Operationalization: inbox purge, README/env, Malawi service catalog, client intake CLI |
+| Sprint 9 | ✅ COMPLETE | 1878 passing | Business architecture, 127-agent positioning, recurring revenue engine, ADR-010/011 |
 
 ## Remaining Work
 
+- **Hard gates (2026-08-13)**: v0.5.0 release (stale v0.4.0), CI-health zombie #20 closed, RBAC #37 closed, feasibility artifacts #10 archived, dependabot PRs (#2 #3 #4 #5 #21) merged/closed, planning docs reconciled.
+- **Sprint 9**: COMPLETE (2026-08-13) — business architecture, 127-agent positioning, recurring revenue engine.
+- **Sprint 8**: COMPLETE (2026-08-12). Archived.
 - **Sprint 7**: COMPLETE — Tool vocabulary canonicalization + HITL expiry + quality hardening + doc reconciliation (2026-08-11). Archived.
 - **Sprint 4**: COMPLETE — quality & completeness.
 - **Sprint 5 (T009)**: COMPLETE — OAuth2 client-credentials. T012 `llm usage` also done.
 - **Sprint 6**: COMPLETE — audit fixes + runtime hardening (2026-08-10).
-- **Deferred**: scheduled cycle daemon mode (S3-06); code-review follow-ups (`docs/CODE_REVIEW_2026-08-10.md`): dashboard auth fail-closed default, mypy strict mode. Legacy module deprecation is resolved — `builder.py`/`registry.py`/`graph.py` no longer exist; `builder/`, `registry/`, `graph/` are packages.
+- **Deferred**: scheduled cycle daemon mode (S3-06); mypy strict mode. Dashboard auth fail-closed default is superseded — RBAC (ADR-012) now gates write endpoints and loopback-restricts open mode. T1 push-bus adapter trigger is explicit in ADR-010 (two consecutive CI benchmark runs breaching read-p95 >10 ms or 127-agent fan-out >5 s). Legacy module deprecation is resolved — `builder.py`/`registry.py`/`graph.py` no longer exist; `builder/`, `registry/`, `graph/` are packages.

@@ -88,3 +88,68 @@ def test_message_bus_claim_fanout_latency_report_only(
     # Correctness only — no latency gate.
     assert total == AGENTS
     benchmark.extra_info["agents"] = AGENTS
+
+
+def _single_send(bus: MessageBus, n: int) -> None:
+    for i in range(n):
+        bus.send_task(
+            Task(
+                id=f"msg-{i}",
+                sender_id="orchestrator",
+                receiver_id=f"agent-{i}",
+                instruction=f"fan-out task {i}",
+            )
+        )
+
+
+@pytest.mark.performance
+def test_message_bus_write_latency_report_only(tmp_path: Path, benchmark: BenchmarkFixture) -> None:
+    """Write (send_task) latency p95 across 127 enqueues on a fresh inbox.
+
+    ``send_task`` mutates state (append), so each round gets a fresh bus via
+    ``pedantic``'s ``setup``; the benchmark measures the full loop so p95 is
+    per-send latency over the batch.
+    """
+
+    def setup() -> tuple[tuple[MessageBus], dict]:
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        return (bus,), {}
+
+    def enqueue_batch(bus: MessageBus) -> int:
+        _single_send(bus, AGENTS)
+        return len(bus.get_all_tasks())
+
+    total = benchmark.pedantic(enqueue_batch, setup=setup, rounds=1, iterations=1, warmup_rounds=0)
+
+    assert total == AGENTS
+    benchmark.extra_info["agents"] = AGENTS
+    benchmark.extra_info["operation"] = "send_task"
+
+
+@pytest.mark.performance
+def test_message_bus_throughput_report_only(tmp_path: Path, benchmark: BenchmarkFixture) -> None:
+    """Sustained throughput (tasks/sec) under a repeating enqueue+claim cycle.
+
+    Measures the full send->claim round-trip cost per task over a 127-task
+    batch; throughput is reported as tasks/sec in the benchmark's "ops/s"
+    column, so no separate assertion is needed.
+    """
+
+    def setup() -> tuple[tuple[MessageBus], dict]:
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        return (bus,), {}
+
+    def send_and_claim(bus: MessageBus) -> int:
+        _single_send(bus, AGENTS)
+        claimed = 0
+        for task in bus.get_pending_tasks():
+            if bus.claim_task(task.id, task.receiver_id, lease_seconds=1800):
+                claimed += 1
+        return claimed
+
+    total = benchmark.pedantic(send_and_claim, setup=setup, rounds=1, iterations=1, warmup_rounds=0)
+
+    assert total == AGENTS
+    benchmark.extra_info["agents"] = AGENTS
+    benchmark.extra_info["operation"] = "send+claim"
+    benchmark.extra_info["units"] = "tasks/sec"
