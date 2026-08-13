@@ -1,0 +1,2 @@
+﻿timestamp	change_id	old_score	new_score	status	dimension	note	eval_mode
+2026-08-12T10:22:25	2026-08-12-auto-evolve	N/A	N/A	keep	auto-evolve	All 5 candidates applied (C1-C5: validation_results, version consistency, tool vocab, HITL expiry, proposal template fix). Auditor approved all. Gates: lint-ecl PASS, ruff PASS, mypy PASS, pytest 1860 passed.	independent_review

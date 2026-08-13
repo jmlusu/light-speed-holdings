@@ -1,0 +1,55 @@
+name: Governance
+
+on:
+  schedule:
+    - cron: '0 2 * * *'      # Daily governance pass (02:00 UTC)
+    - cron: '0 9 * * 1'      # Weekly risk-register review reminder (Mon 09:00 UTC)
+  workflow_dispatch:          # Allow manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  governance-pass:
+    name: Daily Governance Pass
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: '3.12'
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Apply retention policies
+        run: uv run python -m ai_company.cli.main governance retention --apply
+
+      - name: Run compliance check
+        run: uv run python -m ai_company.cli.main governance compliance
+
+      - name: Show audit trail
+        run: uv run python -m ai_company.cli.main governance audit-trail
+
+  risk-register-review:
+    name: Weekly Risk Register Review Reminder
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check risk register freshness
+        run: |
+          REGISTER="docs/RISK-REGISTER.md"
+          if [ ! -f "$REGISTER" ]; then
+            echo "::warning::Risk register missing at $REGISTER - review due."
+            exit 0
+          fi
+          NOW=$(date +%s)
+          MTIME=$(stat -c %Y "$REGISTER")
+          AGE_DAYS=$(( (NOW - MTIME) / 86400 ))
+          echo "docs/RISK-REGISTER.md last updated $AGE_DAYS days ago."
+          if [ "$AGE_DAYS" -gt 14 ]; then
+            echo "::warning::Risk register is $AGE_DAYS days old (>14). Please review and update docs/RISK-REGISTER.md."
+          else
+            echo "Risk register is fresh (<=14 days). No action needed."
+          fi

@@ -1,0 +1,85 @@
+## Docker Compose — Production Environment
+##
+## Usage:
+##   docker compose up -d
+##
+## Environment: shell env or .env file (API keys injected via ${VAR:-} substitution)
+## Profiles: worker, monitoring
+
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: ai-company-dashboard
+    ports:
+      - "8420:8420"
+    volumes:
+      - ./.opencode:/app/.opencode
+      - ./company:/app/company
+      - ./logs:/app/logs
+    environment:
+      - AI_COMPANY_LOG_JSON=1
+      - DASHBOARD_CORS_ORIGINS=${DASHBOARD_CORS_ORIGINS:-http://localhost,http://localhost:3000,http://127.0.0.1,http://127.0.0.1:3000}
+      - DASHBOARD_RATE_LIMIT=${DASHBOARD_RATE_LIMIT:-200}
+      - AI_COMPANY_ENV=production
+      - OPENCODE_API_KEY=${OPENCODE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - KIMI_API_KEY=${KIMI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8420/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    profiles:
+      - production
+    networks:
+      - ai-company
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: ai-company-worker
+    command: ["python", "-m", "ai_company.cli.main", "orchestrator", "tick"]
+    volumes:
+      - ./.opencode:/app/.opencode
+      - ./company:/app/company
+      - ./logs:/app/logs
+    environment:
+      - AI_COMPANY_LOG_JSON=1
+      - AI_COMPANY_ENV=production
+      - OPENCODE_API_KEY=${OPENCODE_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - KIMI_API_KEY=${KIMI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    restart: unless-stopped
+    profiles:
+      - worker
+    networks:
+      - ai-company
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: ai-company-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.staging.yml:/etc/prometheus/prometheus.yml:ro
+    profiles:
+      - monitoring
+    networks:
+      - ai-company
+
+networks:
+  ai-company:
+    driver: bridge

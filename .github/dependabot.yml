@@ -9,7 +9,7 @@ updates:
 
   # Python dependencies for the ai-company project (uv-managed).
   - package-ecosystem: "pip"
-    directory: "/ai-company"
+    directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5

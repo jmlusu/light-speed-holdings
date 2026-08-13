@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-11T16:41:31.886Z",
+  "updatedAt": "2026-08-11T00:00:00.000Z",
   "entries": [
     "agenttrace-session-audit",
     "api-endpoint-builder",
@@ -9,10 +9,12 @@
     "bug-hunter",
     "codebase-audit-pre-push",
     "diagnosing-bugs",
+    "domain-modeling",
     "docs",
     "ecl-harness-engineer",
     "effective-agent-skills",
     "global-chat-agent-discovery",
+    "grilling",
     "hono",
     "improve-codebase-architecture",
     "jq",
@@ -21,6 +23,7 @@
     "prototype",
     "python-pptx-generator",
     "rayden-code",
+    "research",
     "setup-matt-pocock-skills",
     "skill-check",
     "squirrel",
@@ -28,6 +31,12 @@
     "technical-change-tracker",
     "tmux",
     "tree-ring-memory",
-    "triage"
+    "triage",
+    "ponytail",
+    "ponytail-audit",
+    "ponytail-debt",
+    "ponytail-gain",
+    "ponytail-help",
+    "ponytail-review"
   ]
 }

@@ -1,144 +1,409 @@
 # AI Company Builder
 
-> Orchestrate AI agent hierarchies — one human CEO supervises AI executives, managers, and specialists.
+Python CLI for creating and orchestrating AI agent hierarchies. One human CEO supervises AI executives, managers, and specialists through a defined chain of command.
 
-## What It Does
+**Python 3.12+** | **Typer CLI** | **Pydantic models** | **FastAPI dashboard** | **WebSocket live updates**
 
-AI Company Builder generates and runs a virtual AI company from YAML configuration files. Define your agents in `company-registry.yaml`, and the system generates OpenCode-compatible agent markdown files, then executes tasks through a multi-turn agentic loop (ReAct pattern) with human-in-the-loop gates, audit trails, and cost tracking.
-
-**Core workflow:**
-```
-company-registry.yaml → Jinja2 templates → .opencode/agents/*.md + task execution
-```
-
-## Current Status
-
-| Component | Status | Tests |
-|-----------|--------|-------|
-| CLI (24 subcommands) | Working | Covered |
-| Multi-turn agent loop (ReAct) | Working | Covered |
-| Audit trail (JSONL logging) | Working | Covered |
-| Memory engine (6 types) | Working | Covered |
-| Dead-letter queue | Working | Covered |
-| KPI dashboard (7 departments) | Working | Covered |
-| Dashboard REST API + WebSocket | Working | Covered |
-| Circuit breaker (LLM providers) | Working | Covered |
-| Registry system (19 YAML configs) | Working | Covered |
-| Decision/Workflow/Graph engines | Working | Covered |
-
-**1528 tests passing.** Ruff lint clean. Mypy type-check clean (177 source files).
-
-### Known Gaps
-
-Current open gaps (see the [gap register](ai-company/docs/ARCHITECTURE-GAPS.md) for evidence and status):
-
-- GAP-019 — agent spec parsing lacks schema validation (open)
-
-**Resolved:** GAP-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 015, 016, 017, 018, 020 (19 of 20).
-
-See `ai-company/docs/ARCHITECTURE-GAPS.md` for the full gap analysis.
+---
 
 ## Quick Start
 
 ```bash
-cd ai-company
-uv sync --extra dev
+# Clone and install
+git clone https://github.com/light-speed-holdings/ai-company.git
+uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 
-# Verify
-uv run ai-company --help
-uv run pytest
+# Bootstrap the company from config (generates 127 agents)
+uv run ai-company company run
+
+# List all agents
+uv run ai-company agents list
+
+# Start the CEO dashboard (opens browser at localhost:8420)
+uv run ai-company dashboard
 ```
 
-## Usage
+### 30-Second Demo
 
 ```bash
-# Bootstrap the full company from registry
-ai-company company run
-
-# Start the autonomous executor
-ai-company executor start
-
-# Run system diagnostics
-ai-company doctor run
-
-# View KPIs
-ai-company dashboard kpi list
-
-# Manage agents
-ai-company agents list
-
-# Run a specific workflow
-ai-company workflows run <workflow-id>
-
-# View SOPs and RACI matrices
-ai-company sop
-ai-company raci
+uv run ai-company company run            # 1. Bootstrap the company
+uv run ai-company agents list            # 2. See all 127 agents
+uv run ai-company orchestrator tick      # 3. Check what needs attention
+uv run ai-company dashboard              # 4. Open the live dashboard
 ```
+
+---
+
+## Features
+
+### Core Capabilities
+
+- **127 AI Agents** across 18 departments with defined reporting chains
+- **30 CLI Commands** covering orchestration, execution, memory, graphs, and more
+- **5-Tier Approval System** with human-in-the-loop safety gates
+- **Audit Trail** with JSONL writer, query/filter, and executor integration
+- **Memory Engine** with 6 memory types (episodic, semantic, procedural, relational, temporal, aggregate)
+- **Knowledge Graphs** with BFS pathfinding (org chart, decision, workflow, knowledge)
+- **Workflow Engine** with 9 workflows, step tracking, and SLA monitoring
+- **Data Layer** — `data/` package with task, memory, escalation, audit stores + KPI pipeline + cost analytics
+- **ML Module** — `ml/` package with prompt optimizer, predictive scaling, complexity analyzer, anomaly detection, embeddings
+- **Security Module** — `security/` package with secrets scanner, PII detector, content filter
+- **FileStore** — `store/` package with atomic file I/O and platform-aware locking
+
+### Dashboard and Monitoring
+
+- **FastAPI REST API** with 20+ endpoints
+- **WebSocket Support** for real-time KPI updates and alerts
+- **Department KPIs** -- 28 KPIs across 7 departments
+- **LLM Streaming** with SSE/NDJSON parsing for OpenAI, Anthropic, Ollama
+- **Analytics Layer** — history tracking, trend analysis, alert rules, summary rollups
+
+### Safety and Governance
+
+- **5-Tier Action Classification** (auto-approve, single approval, dual approval, executive approval, CEO approval)
+- **Escalation Rules** with configurable timeouts and retry limits
+- **Postmortem System** for incident tracking, root cause analysis, and prevention
+- **SOPs and RACI Matrices** for operational governance
+- **Model Routing** with 3 cost tiers (fast/standard/premium) and automatic fallback
+- **Circuit Breaker** — LLM provider fail-fast after N errors
+- **Dead-Letter Queue** — stale task detection and retry
+
+### Operations
+
+- **Autonomous Scheduling** via GitHub Actions (every 6 hours)
+- **CI Pipeline** with lint, type check, test, and harness jobs
+- **Release Infrastructure** with release.yml, release.ps1, and CHANGELOG.md
+- **Docker Support** with health checks and volume mounts
+- **Pre-commit Hooks** — ruff, mypy, bandit, trailing whitespace, YAML validation
+
+---
+
+## How It Works
+
+```
+                    human-ceo
+                        |
+                  chief-of-staff
+                +-------+-------+
+             cto      cfo      coo
+              |        |        |
+         +----+----+   |   +---+---+
+      engineering  ... |  operations ...
+         |             |        |
+      specialists  specialists specialists
+```
+
+1. **Define** agents in `company-registry.yaml` (127 agents across 18 departments; synced to `company/agent-registry.json`)
+2. **Generate** OpenCode-compatible markdown files via Jinja2 templates
+3. **Orchestrate** tasks through a scheduler, escalation rules, and approval gates
+4. **Execute** tasks autonomously with LLM-based processing and human-in-the-loop safety
+5. **Learn** from postmortems, memory, and decision records
+
+---
+
+## CLI Command Reference
+
+### Core Commands
+
+| Command | Description |
+|---------|-------------|
+| `ai-company company run` | Bootstrap the full company from config |
+| `ai-company generate` | Regenerate agent files from registry |
+| `ai-company agents list` | List all registered agents |
+| `ai-company status` | Show company status |
+| `ai-company doctor` | Run system diagnostics |
+
+### Orchestrator
+
+| Command | Description |
+|---------|-------------|
+| `ai-company orchestrator tick` | Run one orchestrator cycle |
+| `ai-company orchestrator briefing` | Generate daily executive briefing |
+| `ai-company orchestrator scheduler list` | List scheduled tasks |
+| `ai-company orchestrator escalation pending` | View open escalations |
+| `ai-company orchestrator approval pending` | View pending approvals |
+| `ai-company orchestrator postmortem list` | List incident postmortems |
+
+### Execution and Dashboard
+
+| Command | Description |
+|---------|-------------|
+| `ai-company executor tick` | Run one executor cycle |
+| `ai-company executor start` | Start continuous execution loop |
+| `ai-company dashboard` | Start the CEO dashboard (FastAPI) |
+| `ai-company dashboard kpi list` | View department KPI definitions |
+
+### Intelligence
+
+| Command | Description |
+|---------|-------------|
+| `ai-company decision evaluate` | Evaluate an action through the decision engine |
+| `ai-company decision matrix` | Show the approval matrix |
+| `ai-company decision tree` | Navigate the decision tree |
+| `ai-company graph list` | List knowledge graphs |
+| `ai-company graph show org_chart` | View the organization chart |
+| `ai-company memory list` | List memory entries |
+| `ai-company memory search` | Search memory entries |
+| `ai-company workflows list` | List available workflows |
+
+### Department CLIs
+
+```bash
+ai-company marketing list-campaigns      # Marketing campaigns
+ai-company sales list-leads              # Sales pipeline
+ai-company hr list-agents                # Agent workforce roster
+ai-company legal list-contracts          # Contract management
+ai-company customer-success list-tickets # Support tickets
+ai-company board list                    # Board of Directors
+```
+
+### Governance
+
+```bash
+ai-company sop                           # List Standard Operating Procedures
+ai-company sop SOP-INCIDENT-001          # View a specific SOP
+ai-company raci                          # List RACI matrices
+ai-company raci RACI-HIRING-001          # View a specific RACI
+```
+
+See [docs/USER-GUIDE.md](docs/USER-GUIDE.md) for the complete command reference with examples.
+
+---
+
+## Configuration
+
+All configuration lives in `company/`:
+
+| File | Purpose |
+|------|---------|
+| `company-registry.yaml` | Single source of truth for all 127 agents |
+| `company/agent-registry.json` | Generated registry (synced from `company-registry.yaml`) |
+| `company/models.yaml` | LLM provider configuration (7 providers, 3 tiers) |
+| `company/departments.yaml` | 18 departments with executives and agents |
+| `company/config/kpis.yaml` | Department KPI definitions (28 KPIs) |
+
+### Adding a New Agent
+
+1. Add entry to `company-registry.yaml`:
+
+```yaml
+- id: data-analyst
+  name: Data Analyst
+  title: Data Analyst
+  description: Analyzes data and builds reports for clients.
+  type: specialist
+  department: Data
+  reports_to: cdo
+  responsibilities:
+    - Build client-facing analytics deliverables.
+  guidelines: Deliver clean, reproducible analysis.
+  tools: [read, edit, bash]
+```
+
+2. Sync + regenerate: `uv run ai-company sync-registry && uv run ai-company generate`
+3. Verify: `uv run ai-company agents list`
+
+### Model Routing
+
+Three cost tiers with automatic fallback:
+
+| Tier | Use Case | Providers |
+|------|----------|-----------|
+| `fast` | Simple tasks, drafts | opencode/big-pickle, gemini-3.5-flash, ollama/llama3.1 |
+| `standard` | General work | opencode/big-pickle, gemini-3.5-flash, ollama, deepseek-chat, kimi-k2 |
+| `premium` | Complex reasoning | opencode/big-pickle, gemini-3.1-pro, deepseek-coder, kimi-k2 |
+
+Override per-agent in `company/models.yaml` under `routing`.
+
+---
+
+## Project Structure
+
+```
+ai-company/                     # Repository root
+  src/ai_company/
+    cli/                    # 30 Typer CLI commands (5 root + 25 sub-apps)
+      main.py               # Entry point - registers all subcommands
+      orchestrator.py       # Scheduler, escalation, approval, postmortem
+      executor.py           # Autonomous task execution
+      dashboard.py          # FastAPI dashboard + KPI views
+    models/                 # 64 Pydantic models (Company, Agent, Task, etc.)
+    registry/               # YAML config -> typed CompanyRegistry
+    orchestrator/           # Scheduler, escalation, approval, briefing
+    executor/               # LLM-based execution loop, HITL gates
+    decision/               # Approval matrix, risk assessment, decision trees
+    workflow/               # 9 workflows, step tracking, SLA monitoring
+    memory/                 # 6 memory types with persistence
+    graph/                  # Org chart, decision, workflow, knowledge graphs
+    llm/                    # Multi-provider LLM client
+    model_router.py         # 3-tier cost-aware model selection
+    dashboard/              # FastAPI REST API + WebSocket
+      api.py                # REST endpoints (20+ routes)
+      ws.py                 # WebSocket handler
+      models.py             # API response schemas
+      kpis/                 # Department KPI collectors
+    builder/                # Bootstrap engine - generates everything
+  company/                  # Configuration YAMLs + generated registry
+  templates/                # 12 Jinja2 templates
+  tests/                    # 1856 unit + integration tests
+  docs/                     # Architecture, governance, SOPs, user guide
+  .github/workflows/        # CI + autonomous scheduling
+  pyproject.toml            # Project metadata and dependencies
+```
+
+---
 
 ## Architecture
 
 ```
-ai-company/src/ai_company/
-├── cli/               # 24 Typer CLI subcommands
-├── executor/          # Agentic loop, tool runner, HITL gates, dead-letter queue
-├── llm/               # Multi-provider LLM client, cost tracker, circuit breaker
-├── orchestrator/      # Message bus, approval, scheduler, escalation, briefing
-├── models/            # 17+ Pydantic domain models
-├── registry/          # YAML config loader, parser, resolver, validator
-├── builder/           # BootstrapEngine — full company generation
-├── decision/          # Decision engine — approvals, risk assessment, trees
-├── workflow/          # Workflow engine — step tracking, SLA monitoring
-├── memory/            # 6-type memory store with executor integration
-├── graph/             # 4 graph types with BFS pathfinding
-├── audit/             # JSONL audit trail (events, writer, reader)
-├── dashboard/         # FastAPI REST API, WebSocket, KPI collectors, analytics
-├── doctor/            # System diagnostics
-└── generator.py       # Agent .md file generation from templates
++-----------------------------------------------------+
+|                    CLI Layer                         |
+|  Typer app -> 30 commands -> domain engines         |
++-----------------------------------------------------+
+|                  Engine Layer                        |
+|  Orchestrator | Executor | Decision | Workflow      |
+|  Memory       | Graph    | Model Router             |
++-----------------------------------------------------+
+|                  Model Layer                         |
+|  64 Pydantic models -> CompanyRegistry              |
++-----------------------------------------------------+
+|                Infrastructure                        |
+|  Registry (19 YAMLs) | Templates (12 Jinja2)       |
+|  Task Queue (JSON)    | LLM Providers (7)           |
++-----------------------------------------------------+
+|                  Dashboard Layer                     |
+|  FastAPI REST API | WebSocket | KPI Collectors      |
++-----------------------------------------------------+
 ```
+
+- **Entry point:** `ai_company.cli.main:app` (Typer)
+- **Task queue:** `.opencode/inbox.json` (JSON-backed)
+- **Agent files:** `.opencode/agents/*.md` (OpenCode format)
+- **Dashboard:** FastAPI at `localhost:8420` (auto-opens browser)
+- **Autonomous:** GitHub Actions run orchestrator + executor every 6 hours
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full details.
+
+---
 
 ## Development
 
 ```bash
-# Install dev dependencies (creates .venv from uv.lock)
-uv sync --extra dev
+uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
 
-# Run the full test suite (1494 tests)
-uv run pytest
-
-# Lint and type check
-uv run ruff check src/
-uv run mypy src/
-
-# Regenerate agent files from registry
-uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+# Run all checks
+uv run ruff check src/                # Lint
+uv run ruff format src/               # Format
+uv run mypy src/                      # Type check
+uv run pytest                         # Tests
 ```
 
-## Project Structure
+### Makefile
 
-- `ai-company/` — Active project (pyproject.toml, .venv/, src/, tests/, docs/)
-- `src/ai_company/` — Legacy staging area (ignore; has syntax errors)
-- Root files (`setup_phase6.py`, etc.) — One-time setup scripts, not part of active codebase
+All common tasks are available via Make targets:
+
+```bash
+make help              # Show all available targets
+make install           # uv sync --extra dev
+make test              # Run all tests
+make test-cov          # Run tests with coverage
+make lint              # Lint with ruff
+make format            # Format with ruff
+make typecheck         # Type check with mypy
+make all-checks        # Lint + typecheck + test
+make generate          # Regenerate agents from registry
+make doctor            # Run system diagnostics
+make clean             # Remove caches and build artifacts
+```
+
+### Testing
+
+```bash
+uv run pytest                                    # All 1856 tests
+uv run pytest tests/unit/test_orchestrator.py    # Single file
+uv run pytest -v                                 # Verbose output
+uv run pytest -k "postmortem"                    # By name pattern
+uv run pytest --cov=ai_company                   # With coverage
+```
+
+Tests cover: models, registry, orchestrator (scheduler, escalation, approval, postmortem), executor, dashboard API, memory, graphs, workflows, decision engine, model routing, generation, and audit trail.
+
+---
 
 ## Documentation
 
-All documentation lives in `ai-company/docs/`:
+| Document | Description |
+|----------|-------------|
+| [User Guide](docs/USER-GUIDE.md) | Complete CLI reference, workflows, troubleshooting |
+| [API Reference](docs/API-REFERENCE.md) | REST API endpoints, WebSocket protocol, data models |
+| [Deployment Guide](docs/DEPLOYMENT-GUIDE.md) | Local, Docker, and production deployment |
+| [Architecture](docs/ARCHITECTURE.md) | System architecture and module hierarchy |
+| [Risk Register](docs/RISK-REGISTER.md) | 10 identified risks with mitigations |
+| [Board Governance](docs/BOARD-GOVERNANCE.md) | Board charter, meeting cadence, voting |
+| [Model Routing Policy](docs/MODEL-ROUTING-POLICY.md) | Provider tiers, fallback, cost control |
+| [Incident Response SOP](docs/sop-incident-response.md) | Detection, triage, resolve, learn |
+| [Deployment SOP](docs/sop-deployment.md) | Prepare, validate, generate, deploy |
+| [Hiring RACI](docs/raci-hiring.md) | Responsibility matrix for adding agents |
+| [Constitution](docs/COMPANY-CONSTITUTION.md) | Principles and decision order |
+| [Decision Framework](docs/DECISION-FRAMEWORK.md) | 10-step decision template |
 
-- `ai-company/docs/ARCHITECTURE.md` — System architecture and module hierarchy
-- `ai-company/docs/ARCHITECTURE-GAPS.md` — 20 identified integration gaps with severity ratings
-- `ai-company/docs/STATUS.md` — Current project status
-- `ai-company/docs/DEVELOPMENT.md` — Developer setup and local development guide
-- `ai-company/docs/DEVELOPER-GUIDE.md` — Developer onboarding guide
-- `ai-company/docs/ECL.md` — Change lifecycle and context loading rules
-- `ai-company/docs/DEPLOYMENT-GUIDE.md` — Deployment reference
-- `ai-company/docs/INTEGRATION-ARCHITECTURE.md` — Integration seam analysis
-- `ai-company/docs/SPRINT-1-TRACKER.md` — Sprint 1 task tracker
-- `ai-company/docs/SPRINT-2-BACKLOG.md` — Sprint 2 prioritized backlog
-- `ai-company/docs/COMPANY-CONSTITUTION.md` — Principles and decision order
-- `ai-company/docs/DECISION-FRAMEWORK.md` — Decision engine rules
-- `ai-company/docs/MODEL-ROUTING-POLICY.md` — Provider catalog and routing rules
-- `ai-company/docs/RISK-REGISTER.md` — Risk register with mitigations and owners
-- `ai-company/docs/BOARD-GOVERNANCE.md` — Board charter and voting rules
+---
 
-## License
+## Milestones Presentation
 
-Internal project — Light Speed Holdings.
+A comprehensive PowerPoint presentation showcasing all major milestones is available:
+
+```bash
+# Generate the milestones deck (Node.js)
+npm install
+node scripts/generate-milestones-deck.js
+
+# Or using Python
+uv sync --extra dev
+uv run python scripts/generate-milestones-deck.py
+```
+
+The presentation includes 15 slides covering:
+- Executive summary with key metrics
+- Project timeline visualization
+- All 8 major milestones
+- Quality metrics and architecture overview
+- Remaining work and next steps
+
+See [README-milestones-deck.md](README-milestones-deck.md) for detailed instructions and [MILESTONES-DECK-SETUP.md](MILESTONES-DECK-SETUP.md) for a complete setup summary.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and submission guidelines.
+
+### Quick Contribution Workflow
+
+```bash
+# 1. Fork and clone
+git clone https://github.com/YOUR_USER/ai-company.git
+
+# 2. Set up development environment
+uv sync --extra dev
+
+# 3. Create a feature branch
+git checkout -b feat/my-feature
+
+# 4. Make changes and verify
+uv run ruff check src/
+uv run mypy src/
+uv run pytest
+
+# 5. Commit and push
+git commit -m "feat: add my feature"
+git push origin feat/my-feature
+
+# 6. Open a Pull Request
+```
+
+---
+
+## Author
+
+**Jack Mlusu** -- Light Speed Holdings

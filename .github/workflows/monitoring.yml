@@ -1,9 +1,9 @@
 name: Monitoring & Alerts
 
 on:
-  # Check every hour for anomalies
+  # Check every 12 hours for anomalies
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 */12 * * *"
   workflow_dispatch:
     inputs:
       check_type:
@@ -51,11 +51,41 @@ jobs:
 
           if [ "$FAILED" -gt 2 ]; then
             echo "::error::More than 2 recent CI runs failed ($FAILED/5)"
-            gh issue create \
-              --title "CI health degraded — $FAILED of last 5 runs failed" \
-              --label "bug,monitoring" \
-              --body "Automated monitoring detected CI health degradation. Investigate recent workflow failures." \
-              2>/dev/null || echo "Could not create issue (no permissions)"
+
+            # Root cause fix: gh requires every referenced label to already exist,
+            # and the 'monitoring' label is not present in this repo. Create it up
+            # front (idempotent — gh label create fails harmlessly when the label
+            # already exists), so the 'bug,monitoring' combination works on every
+            # run. Chosen over dropping 'monitoring' so alert issues stay
+            # distinguishable from regular bug reports.
+            gh label create monitoring --color "5319e7" --description "CI health / monitoring alert issues" 2>/dev/null || true
+
+            # This workflow runs hourly — guard against duplicate issue spam by
+            # skipping creation when an open CI-health alert issue already exists.
+            EXISTING=$(gh issue list --search "CI health degraded" --state open --json number --jq 'length' 2>/dev/null || echo 0)
+            EXISTING=${EXISTING:-0}
+
+            if [ "$EXISTING" -eq 0 ]; then
+              # Do NOT swallow errors: capture stderr (2>&1) so a real failure is
+              # visible in the log and reported via ::error::, not hidden behind a
+              # misleading "no permissions" message.
+              ISSUE_URL=$(gh issue create \
+                --title "CI health degraded — $FAILED of last 5 runs failed" \
+                --label "bug,monitoring" \
+                --body "Automated monitoring detected CI health degradation. Investigate recent workflow failures." 2>&1)
+              RC=$?
+              if [ $RC -ne 0 ]; then
+                echo "::error::Failed to create CI health alert issue: $ISSUE_URL"
+                exit 1
+              fi
+              echo "Created alert issue: $ISSUE_URL"
+            else
+              echo "Open CI health alert issue already exists ($EXISTING); skipping duplicate creation"
+            fi
+
+            # Degraded health is the alert condition — fail loudly so the scheduled
+            # run shows red in Actions (intentional; the dedup guard above prevents
+            # issue spam).
             exit 1
           fi
 
@@ -76,11 +106,13 @@ jobs:
         run: |
           echo "Checking autonomous cycle health..."
 
-          # Get last 4 cycle runs (should be one every 6 hours)
+          # Get last 4 cycle runs (should be one every 12 hours)
           CYCLES=$(gh run list --workflow=autonomous.yml --limit=4 --json conclusion,updatedAt,databaseId 2>/dev/null || true)
           CYCLES=${CYCLES:-[]}
 
-          python -c "
+          # Pipe the run data into the parser: without this, sys.stdin.read() below
+          # sees empty input and the check always reports "no runs found".
+          echo "$CYCLES" | python -c "
           import sys, json
           from datetime import datetime, timezone
 
@@ -109,9 +141,6 @@ jobs:
 
   # ── Metrics anomaly detection ──────────────────────────────────────
   metrics-check:
-    defaults:
-      run:
-        working-directory: ai-company
     name: Metrics Anomaly Check
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'metrics' || github.event_name == 'schedule' }}
@@ -175,11 +204,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.12"
       - name: Check for vulnerable dependencies
-        working-directory: ai-company
         run: |
           if uv audit --frozen > audit-report.txt 2>&1; then
             echo "[OK] No known vulnerabilities found"

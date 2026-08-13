@@ -1,0 +1,80 @@
+# Malawi Service Portfolio — Offer Definitions and Governance State
+# Added: 2026-08-12
+# Owner: human_ceo
+# Source of truth: docs/service-catalog-malawi.md
+# Consumed by: config/decision/approval_matrix.yaml, config/company/governance.yaml
+#                src/ai_company/services/client_intake.py
+
+offers:
+  offer_a:
+    name: "Digital Presence (website + branding)"
+    slug: "offer-a"
+    agents: [content-writer, product-designer, frontend-engineer, growth-hacker, brand-strategist]
+    currency: "mixed"  # USD for NGOs, MWK for local SMEs
+    risk_level: "medium"
+    governance_state: "approved"
+    notes: "Low-margin cash cow; good for cash flow & proof of platform"
+
+  offer_b:
+    name: "Business Process Automation / AI Chatbots"
+    slug: "offer-b"
+    agents: [solutions-engineer, backend-engineer, support-agent, conversation-designer, integration-engineer]
+    currency: "mixed"  # USD for NGOs, MWK for SMEs
+    risk_level: "critical"
+    governance_state: "approved"
+    notes: "Strong — NGOs pay USD, SMEs need WhatsApp/chatbot customer service"
+
+  offer_c:
+    name: "Data & Reporting Services"
+    slug: "offer-c"
+    agents: [data-engineer, business-intelligence-engineer, data-scientist, survey-researcher, data-privacy-officer]
+    currency: "USD"
+    risk_level: "critical"
+    governance_state: "approved"
+    notes: "The edge — NGO sector runs on reporting; undercut consulting firms 10x"
+
+  offer_d:
+    name: "Digital Marketing Agency"
+    slug: "offer-d"
+    agents: [cmo, content-writer, market-analyst, ux-research-lead]
+    currency: "MWK"
+    risk_level: "low"
+    governance_state: "approved"
+    notes: "Commodity but reliable revenue"
+
+  offer_e:
+    name: "Platform Licensing (AI Company Builder)"
+    slug: "offer-e"
+    agents: [cpo, growth-product-manager, head-of-developer-relations, technical-documentation-lead, developer-experience-engineer]
+    currency: "USD"
+    risk_level: "high"
+    governance_state: "approved"
+    notes: "2026's hottest category; software already exists"
+
+# Governance policy flags — consumed by the client_intake service to gate onboarding
+governance:
+  # Board ratification status of the 4 required policies
+  client_onboarding_approval:
+    status: "ratified"
+    ratified_date: "2026-08-12"
+    owner: "human-ceo"
+    description: "No client work begins until contract signed, DPA executed, compliance risk assessment complete, CISO security review logged."
+
+  data_handling_protocol:
+    status: "ratified"
+    ratified_date: "2026-08-12"
+    owner: "data-privacy-officer"
+    description: "PII classification, encryption-at-rest, access logging, 30-day deletion, consent for cross-border LLM transfer."
+
+  ethics_review_output:
+    status: "ratified"
+    ratified_date: "2026-08-12"
+    owner: "ai-ethics-board-chair"
+    description: "Tier 3+ client deliverables require AI Ethics Board review before client handoff."
+
+  service_level_liability_cap:
+    status: "ratified"
+    ratified_date: "2026-08-12"
+    blocked_offers: []
+    owner: "clo"
+    description: "ToS Services Annex must override Section 8 disclaimers for paid client work; liability cap at 100% of fees."

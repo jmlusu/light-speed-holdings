@@ -1,0 +1,9 @@
+graph LR
+  APIGW[API Gateway] -->|routes requests| AUTH[Auth Service]
+  APIGW -->|routes requests| USR[User Service]
+  USR -->|queries| PG[(Postgres)]
+  AUTH -->|session store| REDIS[(Redis)]
+  AUTH -->|publishes events| KF{{Kafka}}
+  USR -->|publishes events| KF
+  NOTIF[Notification Service] -->|consumes events| KF
+  NOTIF -->|sends email| SG[SendGrid]

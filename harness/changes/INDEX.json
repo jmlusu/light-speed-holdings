@@ -1,0 +1,227 @@
+﻿[
+    {
+        "id":  "2026-08-08-sprint-4-quality-completeness",
+        "title":  "Sprint 4: Quality \u0026 Completeness",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        ""
+                    ],
+        "files":  [
+
+                  ],
+        "tags":  [
+                     "sprint-4",
+                     "quality",
+                     "completeness",
+                     "gap-019",
+                     "daemon",
+                     "oauth2",
+                     "token-counting",
+                     "type-hints",
+                     "tests"
+                 ],
+        "decisions":  [
+                          "- Delegation strategy confirmed: lead-backend (5 tasks), qa_engineer (3 tasks), lead-frontend (1 task)",
+                          "- Verification gates: `ruff check src/ \u0026\u0026 mypy src/ \u0026\u0026 pytest` + CLI help checks after each change",
+                          "- ECL change tracking active throughout sprint"
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-08-08-sprint-4-quality-completeness",
+        "updated_at":  "2026-08-08"
+    },
+    {
+        "id":  "2026-08-09-sprint-5-t009-oauth2-client-credentials",
+        "title":  "Sprint 5 - T009 OAuth2 client credentials",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "llm"
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     ""
+                 ],
+        "decisions":  [
+                          "- OAuth2 is opt-in per provider via a `oauth2:` block in `company/models.yaml`.",
+                          "- Secrets read from env vars only; token cache held in memory with TTL.",
+                          "- Fail-closed: missing credentials or token-fetch failure makes the provider unavailable and routing falls through."
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-08-09-sprint-5-t009-oauth2-client-credentials",
+        "updated_at":  "2026-08-09"
+    },
+    {
+        "id":  "2026-08-10-audit-fixes-and-runtime-hardening",
+        "title":  "Audit fixes and runtime hardening",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "registry",
+                        "generator",
+                        "llm",
+                        "executor",
+                        "store"
+                    ],
+        "files":  [
+                      "src/ai_company/generator.py",
+                      "src/ai_company/executor/context.py",
+                      "src/ai_company/registry/loader.py",
+                      "src/ai_company/registry/sync.py",
+                      "src/ai_company/registry/__init__.py",
+                      "src/ai_company/cli/main.py",
+                      "src/ai_company/cli/executor.py",
+                      "src/ai_company/llm/providers/base.py",
+                      "src/ai_company/llm/circuit_breaker.py",
+                      "src/ai_company/llm/client.py",
+                      "src/ai_company/llm/cost_tracker.py",
+                      "src/ai_company/executor/agent_loop.py",
+                      "src/ai_company/executor/loop.py",
+                      "src/ai_company/executor/daemon.py",
+                      "src/ai_company/executor/dead_letter.py",
+                      "src/ai_company/executor/autonomous.py",
+                      "src/ai_company/store/file_store.py",
+                      "src/ai_company/store/file_lock.py",
+                      "src/ai_company/orchestrator/message_bus.py",
+                      "src/ai_company/data/database.py",
+                      "src/ai_company/data/governance.py",
+                      "src/ai_company/data/task_store.py",
+                      "src/ai_company/models/models.py",
+                      "templates/base.md.j2",
+                      "templates/executive.md.j2",
+                      "templates/specialist.md.j2",
+                      "templates/board.md.j2",
+                      "templates/agents/agent.md.j2",
+                      "tests/unit/test_cli_commands.py",
+                      "tests/unit/test_cli_lazy.py",
+                      "tests/unit/test_circuit_breaker.py",
+                      "tests/unit/test_llm.py",
+                      "tests/unit/test_cost_tracker.py",
+                      "tests/unit/test_agent_loop.py",
+                      "tests/unit/test_dead_letter.py",
+                      "tests/unit/test_database.py",
+                      "tests/unit/test_governance_engine.py",
+                      "tests/e2e/test_dashboard_scroll.py",
+                      "tests/e2e/test_scroll_fix_verification.py"
+                  ],
+        "tags":  [
+                     "audit",
+                     "hardening",
+                     "circuit-breaker",
+                     "concurrency",
+                     "tool-vocabulary",
+                     "registry",
+                     "templates"
+                 ],
+        "decisions":  [
+                          "- Tool vocabulary reduced to one canonical set per OpenCode v2 permission keys; generated cards are the source of truth.",
+                          "- Only Operating Principles were deduplicated — Success Metrics and Escalation stay type-specific (executive/specialist/board/default) to avoid capability loss.",
+                          "- Provider failures are classified for breaker/retry decisions; `auth` failures never trip the circuit breaker.",
+                          "- In-memory logs are bounded; the authoritative trail persists to JSONL/SQLite on disk.",
+                          "- Known gap (pre-existing, out of scope): `executor/tool_runner.py` still carries `code_interpreter` and has no `web_search` implementation — runtime tools now lag the advertised card permissions. Flagged for follow-up."
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening",
+        "updated_at":  "2026-08-10"
+    },
+    {
+        "id":  "2026-08-11-sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes",
+        "title":  "Sprint 7 - Documentation reconciliation and remaining GAP-019 fixes",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        ""
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     ""
+                 ],
+        "decisions":  [
+                          "- Approved plan (human CEO, 2026-08-11): execute the 13-task list across two",
+                          "parallel tracks (Track A: counts/versions, Track B: SOP supersession + missing",
+                          "docs), then verify with lint-ecl, ruff, mypy, and pytest.",
+                          "- All counts verified against live source before editing: `company-registry.yaml`",
+                          "= 127 agents; `cli/main.py:_LAZY_SUB_APPS` = 25 lazy + 5 root = 30 CLI commands;",
+                          "`pyproject.toml` = version 0.4.0; `pytest --collect-only` = 1856 tests."
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-08-11-sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes",
+        "updated_at":  "2026-08-11"
+    },
+    {
+        "id":  "2026-08-11-sprint-7-tool-vocabulary-hitl-expiry-quality-hardening-doc-reconciliation",
+        "title":  "Sprint 7 - Tool vocabulary, HITL expiry, quality hardening, doc reconciliation",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        ""
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     ""
+                 ],
+        "decisions":  [
+                          "- Approved plan (human CEO, 2026-08-11): execute the 7-item task list via parallel",
+                          "subagents with disjoint file ownership, then integrate and gate locally before push.",
+                          "- Canonical runtime tool vocabulary = `read`, `edit`, `grep`, `list`, `bash`, `webfetch`,",
+                          "`task`; `code_interpreter` is removed; legacy aliases (`write`/`execute`/`delegate`,",
+                          "`web_search`) retained as backward-compatible aliases only.",
+                          "`EXPIRED`; wired into the daemon/governance cadence.",
+                          "- Version story: `pyproject.toml` is the canonical version source; bump to `0.4.0` and tag",
+                          "`v0.4.0` at release (historical `v0.3.0` tag was lost in the recovery reset)."
+                      ],
+        "validation_status":  "unknown",
+        "path":  "harness/changes/archive/2026-08-11-sprint-7-tool-vocabulary-hitl-expiry-quality-hardening-doc-reconciliation",
+        "updated_at":  "2026-08-11"
+    },
+    {
+        "id":  "2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog",
+        "title":  "Sprint 8 operationalization - purge inbox, fix README, env setup, Malawi service catalog",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "orchestrator",
+                        "docs",
+                        "config"
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     "operationalization",
+                     "malawi",
+                     "inbox",
+                     "docs",
+                     "onboarding"
+                 ],
+        "decisions":  [
+                          "- Inbox purge is the sanctioned path: back up `.opencode/inbox.json` to a",
+                          "timestamped file, delete every task through `MessageBus.delete_task()`, then",
+                          "call `reconcile_mirror()` so `data/ai_company.db` task rows heal.",
+                          "- README is rewritten to reflect reality: 127 agents, 30 CLI commands, real",
+                          "current-state quick start; historical changelog entries are left untouched.",
+                          "- `.env` is created from `.env.example` (gitignored) with placeholder keys and",
+                          "a clear TODO comment — real keys stay out of version control.",
+                          "- Service catalog is a new business doc `docs/service-catalog-malawi.md`",
+                          "(offers, MWK + USD pricing, payment rails, delivery model). This is the",
+                          "market-facing definition of what the company sells.",
+                          "- `.env` holds real keys for the active stack (OpenCode `big-pickle`",
+                          "standard/premium, Gemini flash fast/cheap) sourced from local auth config;",
+                          "Deepseek/Kimi are excluded from routing tiers (no African payment/registration",
+                          "path). Hard budget caps ($2.00/day, $0.50/task, auto-suspend) stay in",
+                          "`config/company/guardrails.yaml` and bind via `CostTracker`.",
+                          "- No source code changes in this sprint unless a validation gate fails.",
+                          "Exception: three test files gained the canonical `_anchor_data_root` fixture",
+                          "so the suite can never re-pollute the real inbox."
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog",
+        "updated_at":  "2026-08-12"
+    }
+]
