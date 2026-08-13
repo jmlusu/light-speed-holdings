@@ -673,11 +673,18 @@ class TestHITLGateParking:
         # Resolve.
         result = hitl.resume_approved(rid)
         assert result is True
-        # Calling resume_approved again returns None (no longer tracked).
-        assert hitl.resume_approved(rid) is None
+        # Internal tracking is cleaned up, but resume_approved consults the
+        # persisted store (not the in-memory map), so re-polling still
+        # reports the durable decision.
+        assert hitl.resume_approved(rid) is True
 
-    def test_cancel_removes_pending(self, hitl: HITLGate) -> None:
+    def test_cancel_removes_pending(self, tmp_path: Path) -> None:
         """Cancel resolves a parked request as False and cleans up."""
+        hitl = HITLGate(
+            approval_gate=ApprovalGate(config_path=str(tmp_path / "approvals.yaml")),
+            poll_interval=0.05,
+            timeout_minutes=60,
+        )
         rid = hitl.request_and_park(
             task_id="t1",
             agent_id="a1",
@@ -685,9 +692,10 @@ class TestHITLGateParking:
             args={"path": "x.txt", "content": "data"},
         )
         hitl.cancel(rid)
-        # The request should now resolve as False via resume_approved
-        # (since the underlying gate still has it as pending, but HITL
-        # cleaned up its tracking).
+        assert not hitl.has_pending_requests()
+        # The underlying store still holds the request as PENDING (cancel
+        # only cleans up in-memory tracking), so resume_approved reports
+        # None — the request is neither approved, rejected, nor expired.
         assert hitl.resume_approved(rid) is None
 
 

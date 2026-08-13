@@ -15,7 +15,7 @@ from typing import Any
 from ai_company.executor.hitl_gate import HITLGate
 from ai_company.executor.tool_runner import HITLParked
 from ai_company.models import TaskStatus
-from ai_company.orchestrator.approval import ApprovalStatus
+from ai_company.orchestrator.approval import ApprovalGate, ApprovalStatus
 from ai_company.orchestrator.escalation import EscalationManager
 
 # ---------------------------------------------------------------------------
@@ -524,6 +524,38 @@ class TestHitlGateUnit:
         assert gate.resume_approved(r1) is True
         assert gate.resume_approved(r2) is None  # still pending
         assert gate.resume_approved(r3) is False
+
+    def test_resume_approved_after_restart_with_same_store(self, tmp_path: Path) -> None:
+        """A fresh HITLGate (simulated executor restart) resumes a request
+        parked AND approved by a previous process.
+
+        Regression for the in-memory-only resume bug: ``resume_approved``
+        used to short-circuit on the ``_pending_requests`` map, which is
+        empty in a restarted process, so approved work stayed parked
+        forever even though the decision was persisted on disk.
+        """
+        store = str(tmp_path / "approvals.yaml")
+        first = HITLGate(
+            approval_gate=ApprovalGate(config_path=store),
+            poll_interval=1,
+            timeout_minutes=60,
+        )
+        request_id = first.request_and_park(
+            task_id="task-r",
+            agent_id="agent-r",
+            tool="write",
+            args={"path": "r.py", "content": "x"},
+        )
+        # Simulate the operator approving via the CLI in another process.
+        first.gate.approve(request_id, approved_by="human-ceo")
+
+        restarted = HITLGate(
+            approval_gate=ApprovalGate(config_path=store),
+            poll_interval=1,
+            timeout_minutes=60,
+        )
+        assert not restarted.has_pending_requests()
+        assert restarted.resume_approved(request_id) is True
 
     def test_cancel_removes_pending_request(self) -> None:
         gate = HITLGate(poll_interval=1, timeout_minutes=60)
