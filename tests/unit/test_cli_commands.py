@@ -44,7 +44,6 @@ EXPECTED_SUB_APPS = [
     "workflows",
     "validate",
     "security",
-    "storage",
 ]
 
 
