@@ -9,7 +9,9 @@ from datetime import datetime, timezone
 from typing import Any
 from urllib.parse import urlsplit
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
+
+from ai_company.security.rbac import require_ws_role
 
 logger = logging.getLogger(__name__)
 
@@ -147,9 +149,18 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
         the request host (same-origin) or be in the app's CORS allowlist
         (``app.state.allowed_ws_origins``).  Non-browser clients that send
         no ``Origin`` header are allowed.
+      - Role gate (ADR-012): in ``api_key`` auth mode the handshake must
+        carry ``?api_key=`` resolving to at least the ``run`` role, else
+        the connection is closed with code ``1008``.  In ``open`` mode
+        (loopback-only) the role resolves to ``admin`` and no key is needed.
     """
     if not _origin_allowed(websocket):
         await websocket.close(code=1008, reason="Origin not allowed")
+        return
+    try:
+        require_ws_role("run", websocket.query_params.get("api_key"))
+    except HTTPException:
+        await websocket.close(code=1008, reason="Invalid or insufficient API key")
         return
     await manager.connect(websocket)
     try:

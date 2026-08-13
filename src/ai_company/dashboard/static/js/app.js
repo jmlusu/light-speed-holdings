@@ -317,7 +317,10 @@ function dashboard() {
       }
 
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}/ws/dashboard`;
+      let wsUrl = `${protocol}//${window.location.host}/ws/dashboard`;
+      if (window.DASHBOARD_API_KEY) {
+        wsUrl += `?api_key=${encodeURIComponent(window.DASHBOARD_API_KEY)}`;
+      }
 
       let ws;
       try {
