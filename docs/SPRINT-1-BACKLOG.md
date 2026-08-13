@@ -235,7 +235,7 @@ Both implement the same 3-strategy approach: direct parse, markdown code block e
 
 #### C1c. src/ai_company/audit/writer.py
 - [ ] AuditWriter class:
-  - __init__(self, path: str | Path = ".opencode/audit.jsonl")
+  - __init__(self, path: str | Path | None = None)  # default: canonical `.opencode/audit`
   - write(self, event: AuditEvent) -> None
   - write_batch(self, events: list[AuditEvent]) -> None
   - Thread-safe (file locking or append-only pattern)
@@ -243,7 +243,7 @@ Both implement the same 3-strategy approach: direct parse, markdown code block e
 
 #### C1d. src/ai_company/audit/reader.py
 - [ ] AuditReader class:
-  - __init__(self, path: str | Path = ".opencode/audit.jsonl")
+  - __init__(self, path: str | Path | None = None)  # default: canonical `.opencode/audit`
   - read_all(self) -> list[AuditEvent]
   - read_by_task(self, task_id: str) -> list[AuditEvent]
   - read_by_agent(self, agent_id: str) -> list[AuditEvent]
@@ -326,7 +326,7 @@ A3 (Privacy)                B3 (parse_llm_json)
 |-----------|--------------|
 | Audit package imports cleanly | `python -c "from ai_company.audit import AuditEvent, AuditWriter, AuditReader"` |
 | Round-trip write/read works | `pytest tests/unit/test_audit.py` |
-| JSONL format is correct | `head -1 .opencode/audit.jsonl \| python -m json.tool` |
+| JSONL format is correct | `head -1 .opencode/audit \| python -m json.tool` |
 | Malformed lines are skipped | Test with corrupted JSONL line |
 
 **What could go wrong**:

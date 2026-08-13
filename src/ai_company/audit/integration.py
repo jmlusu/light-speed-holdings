@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from ai_company.audit.events import AuditEvent, AuditEventType
@@ -10,11 +11,15 @@ from ai_company.audit.writer import AuditWriter
 _writer: AuditWriter | None = None
 
 
-def init_audit(audit_dir: str = ".opencode/audit", database: Any = None) -> AuditWriter:
+def init_audit(audit_dir: str | Path | None = None, database: Any = None) -> AuditWriter:
     """Initialise the global audit writer. Idempotent — returns existing writer if already set.
 
-    *database* is passed through to the :class:`AuditWriter` so events are
-    mirrored to SQLite when the data layer is active (Sprint 2, S2.1).
+    When *audit_dir* is ``None`` the canonical audit trail path is used
+    (``ai_company.paths.get_audit_path()``), identical to the AuditWriter
+    default, so the executor writes the same file every other audit entry
+    point reads (ticket #59). *database* is passed through to the
+    :class:`AuditWriter` so events are mirrored to SQLite when the data layer
+    is active (Sprint 2, S2.1).
     """
     global _writer
     if _writer is None:

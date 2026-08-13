@@ -69,9 +69,31 @@ def get_database_path() -> Path:
     return get_data_root() / "data" / "ai_company.db"
 
 
+# Canonical audit trail location, relative to the data root. The audit trail
+# is a single JSONL file (not a directory) named ``audit`` — historically the
+# executor wrote to ``<data root>/.opencode/audit`` while several defaults
+# read ``.opencode/audit.jsonl`` (an empty decoy file, ticket #59). All audit
+# entry points resolve through :func:`get_audit_path` so they cannot drift
+# apart again.
+AUDIT_RELATIVE_PATH = Path(".opencode") / "audit"
+
+
+def get_audit_path() -> Path:
+    """Return the canonical audit trail path.
+
+    The audit trail is one JSONL file at ``<data root>/.opencode/audit``.
+    AuditWriter, AuditReader and ``init_audit`` all resolve to this path by
+    default so event emission and evidence capture always target the same
+    file.
+    """
+    return get_data_root() / AUDIT_RELATIVE_PATH
+
+
 __all__ = [
     "AI_COMPANY_ROOT_ENV",
+    "AUDIT_RELATIVE_PATH",
     "DASHBOARD_DATA_DIR_ENV",
+    "get_audit_path",
     "get_data_root",
     "get_database_path",
     "get_project_root",

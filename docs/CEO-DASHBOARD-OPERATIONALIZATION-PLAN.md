@@ -32,7 +32,7 @@ phases.
 Real operational data available today:
 
 - `.opencode/inbox.json` — 152 demo/seeded tasks
-- `.opencode/audit.jsonl` — ~2.8k audit events (LLM cost data in `metadata.cost`)
+- `.opencode/audit` — ~2.8k audit events (LLM cost data in `metadata.cost`)
 - `orchestrator/approvals.yaml` (54 requests), `orchestrator/escalation.yaml`,
   `orchestrator/scheduler.yaml`
 - `company/agent-registry.json`, `config/company/kpis.yaml`
@@ -58,7 +58,7 @@ Real operational data available today:
 | S1.1 | Deterministic project/data root resolution via a new `ai_company/paths` module; fix `parents[3]` in `kpis/base.py` and `kpis/__init__.py`; make `DASHBOARD_DATA_DIR` default to the project root; fix `KPIHistoryStore` default storage dir; fix `get_bus()` inbox path. Env overrides: `AI_COMPANY_ROOT`, `DASHBOARD_DATA_DIR`. | Backend engineer |
 | S1.2 | Replace client-side fabricated costs: `app.js:loadCosts()` calls `/api/costs/summary`; `charts.js` cost trend uses real history when available. | Frontend engineer |
 | S1.3 | Add `dashboard/data_service.py` — read-through accessor (SQLite-first, file-fallback) for tasks, cost summary, and KPI history; route `api.py` reads through it. | Backend engineer |
-| S1.4 | Add `ai-company dashboard backfill` CLI to import `.opencode/inbox.json`, `.opencode/audit.jsonl`, `results/cost_log.jsonl`, `dashboard/kpi_history/*.ndjson`, and `orchestrator/escalation.yaml` into SQLite (idempotent, `INSERT OR REPLACE`). | Backend engineer |
+| S1.4 | Add `ai-company dashboard backfill` CLI to import `.opencode/inbox.json`, `.opencode/audit`, `results/cost_log.jsonl`, `dashboard/kpi_history/*.ndjson`, and `orchestrator/escalation.yaml` into SQLite (idempotent, `INSERT OR REPLACE`). | Backend engineer |
 | S1.5 | Tests for the new `paths` module, `data_service` read-through behaviour, and the backfill CLI; run `ruff` + `mypy` + `pytest` gates. | QA / Test engineering |
 
 ### Sprint 2 — Live pipelines into SQLite

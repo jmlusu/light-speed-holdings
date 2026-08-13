@@ -52,7 +52,7 @@ Seeded via `MessageBus.send_task` (python one-liner), `sender_id: human-ceo`,
 |---|----------|------------------------------------------|
 | T1 | `technical-documentation-lead` | Read `docs/STATUS.md`; return a 5-bullet summary of current project state and the three biggest risks. Do not modify any files. |
 | T2 | `chief-of-staff` | Read `docs/TASK-BOARD.md` and `.opencode/inbox.json`; report open task count and priority distribution. Do not modify any files. |
-| T3 | `threat-intelligence-analyst` | Analyze `.opencode/audit.jsonl` for error-level entries in the last 7 days; summarize recurring patterns. Do not modify any files. |
+| T3 | `threat-intelligence-analyst` | Analyze `.opencode/audit` for error-level entries in the last 7 days; summarize recurring patterns. Do not modify any files. |
 
 Rationale: read-only analysis tasks avoid `write`/`bash` tools so the
 tier-rules HITL gate (`require_approval_from_tier: 2`) should not park them.
@@ -101,7 +101,7 @@ If a task does park: `uv run ai-company orchestrator approval-approve <request_i
 ## 8. Evidence to capture
 
 `logs/executor-daemon.log`, `logs/executor-daemon.json` (final state),
-`results/*/loop_result.json`, `.opencode/audit.jsonl`, cost export JSONL,
+`results/*/loop_result.json`, `.opencode/audit`, cost export JSONL,
 `.opencode/daily_briefing.md`, dashboard health + WS observations,
 final `executor status` + `dlq-list` output. Summarized into the #16 issue.
 

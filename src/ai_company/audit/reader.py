@@ -7,6 +7,7 @@ import logging
 from pathlib import Path
 
 from ai_company.audit.events import AuditEvent, AuditEventType
+from ai_company.paths import get_audit_path
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,12 @@ class AuditReader:
     that partial corruption does not block the entire read.
     """
 
-    def __init__(self, path: str | Path = ".opencode/audit.jsonl") -> None:
+    def __init__(self, path: str | Path | None = None) -> None:
+        if path is None:
+            # Canonical default: the same file the AuditWriter / init_audit
+            # use (``<data root>/.opencode/audit``) so evidence capture reads
+            # the real trail instead of an empty decoy (ticket #59).
+            path = str(get_audit_path())
         self._path = Path(path)
 
     @property

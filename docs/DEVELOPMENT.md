@@ -113,6 +113,7 @@ Rules: only one active change at a time; never hand-edit `harness/changes/INDEX.
 | `docs/ARCHITECTURE.md` | Module hierarchy, naming conventions, data flow |
 | `docs/ARCHITECTURE-GAPS.md` | 20-gap register with per-gap status and evidence |
 | `docs/STATUS.md` | Current state and recent work |
+| `docs/DEVICE-SETUP.md` | Fresh-machine setup via bootstrap commands |
 | `docs/ECL.md` | Change lifecycle manual |
 | `docs/DEPLOYMENT-GUIDE.md` | Docker, production, CI/CD, security |
 | `docs/DEVELOPER-GUIDE.md` | Additional onboarding notes |

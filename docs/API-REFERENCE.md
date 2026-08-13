@@ -4,7 +4,7 @@ REST API and WebSocket documentation for the AI Company Builder CEO Dashboard.
 
 **Base URL:** `http://localhost:8420`
 **OpenAPI Title:** Light Speed Holdings — CEO Dashboard
-**Version:** 0.5.0
+**Version:** Derived from the installed package metadata (`importlib.metadata.version("ai-company")`). The single source of truth is the `version` field in [`pyproject.toml`](../pyproject.toml) (currently `0.5.0`). Docs never hardcode this value.
 
 ---
 
@@ -31,9 +31,34 @@ REST API and WebSocket documentation for the AI Company Builder CEO Dashboard.
 
 ## 1. Authentication
 
-The API currently operates without authentication for local development. For production deployments, implement authentication middleware (see [Deployment Guide](DEPLOYMENT-GUIDE.md)).
+Authentication follows [ADR-012](adr/012-dashboard-rbac.md) (Dashboard RBAC + loopback-only `open` mode). The dashboard is **fail-closed by default**: `DASHBOARD_AUTH_MODE` defaults to `api_key`, and every request must carry a valid API key.
 
-**CORS:** All origins are allowed by default (`*`). Restrict in production via the `allowed_origins` configuration.
+### API Key Handshake (`api_key` mode)
+
+Send the key on every HTTP request in the `X-API-Key` header. Keys map to roles via environment configuration:
+
+| Role | Privileges | Env var |
+|------|------------|---------|
+| `run` | Task mutations (`POST` / `PATCH` / `DELETE` `/api/tasks`) | `DASHBOARD_RUN_KEY` |
+| `approve` | Approval decisions + escalation resolution (`/api/approvals/*/approve`, `/api/approvals/*/reject`, `/api/escalations/*/resolve`) | `DASHBOARD_APPROVE_KEY` |
+| `admin` | All permissions (implies `approve` and `run`) | `DASHBOARD_ADMIN_KEY` (falls back to legacy `DASHBOARD_API_KEY`) |
+
+- Roles are hierarchical: `admin` > `approve` > `run`.
+- A missing or unknown key is rejected with `401`; an authenticated but under-privileged key is rejected with `403`.
+- Read endpoints require a valid key of any role; write endpoints additionally require the role shown above (enforced by `require_role()` in `src/ai_company/security/rbac.py`).
+- Keys are configured in `.env` / environment variables — never commit them to version control.
+
+### `open` mode (loopback-only development)
+
+`DASHBOARD_AUTH_MODE=open` bypasses the key guard entirely and treats every request as `admin`. It is only permitted on loopback bindings (`localhost`, `127.0.0.0/8`, `::1`): the CLI refuses to start and `create_app()` raises when `open` mode is combined with a non-loopback host.
+
+### WebSocket Authentication
+
+Browsers cannot set custom headers on a WebSocket handshake, so WebSocket clients pass the key as a query parameter: `ws://localhost:8420/ws/dashboard?api_key=<KEY>`. The handshake must resolve to at least the `run` role; invalid or insufficient keys are closed with code `1008`.
+
+### CORS
+
+CORS is restricted to an allowlist — the wildcard `*` is rejected and never used as a default. The default allowlist covers the dashboard's own origin: `http://localhost:8420` in production and `http://localhost:8421` in staging, plus common localhost dev origins. Override with `DASHBOARD_CORS_ORIGINS` (comma-separated list). `allow_credentials` is enabled, so a wildcard cannot be used. The same allowlist gates WebSocket origins (`app.state.allowed_ws_origins`).
 
 ### LLM Provider OAuth2
 
@@ -60,9 +85,11 @@ Without an `oauth2:` block, providers use `{ID}_API_KEY` static bearer auth.
 
 ## 2. Health Check
 
+> **Authoritative section:** this is the single canonical `/health` documentation for the API reference. Other documents that reference the health endpoint ([USER-GUIDE](USER-GUIDE.md), [DEPLOYMENT-GUIDE](DEPLOYMENT-GUIDE.md), [sop/engineering-sop.md](sop/engineering-sop.md)) link to this section rather than re-documenting it.
+
 ### `GET /health`
 
-Returns the health status of the dashboard service.
+Liveness probe for the dashboard service (OpenAPI tag `ops`). Subject to the same authentication as every other dashboard endpoint (see [Authentication](#1-authentication)).
 
 **Response:**
 
@@ -78,6 +105,10 @@ Returns the health status of the dashboard service.
 | Code | Description |
 |------|-------------|
 | 200 | Service is healthy |
+
+### `GET /ready`
+
+Readiness probe: returns `200` with `{"status": "ready"}` when the core data files (company registry, agents directory) are present, otherwise `503` with `{"status": "not ready", "reason": "..."}`.
 
 ---
 
@@ -680,16 +711,19 @@ Returns KPI definitions for a specific department.
 ### Endpoint
 
 ```
-ws://localhost:8420/ws/dashboard
+ws://localhost:8420/ws/dashboard?api_key=<KEY>
 ```
+
+The dashboard WebSocket requires the same API key as the REST API, passed as the `api_key` query parameter (browsers cannot set headers on a WebSocket handshake). The key must resolve to at least the `run` role (see [Authentication](#1-authentication)). The server also validates the `Origin` header against the request host / CORS allowlist; rejected handshakes are closed with code `1008`.
 
 ### Connection Lifecycle
 
-1. Client connects to the WebSocket endpoint
-2. Server sends a `connected` message with timestamp and active client count
-3. Client may send `ping` messages for application-level keepalive
-4. Server broadcasts KPI updates and alerts to all connected clients
-5. Client disconnects gracefully (server cleans up)
+1. Client connects to `ws://localhost:8420/ws/dashboard?api_key=<KEY>`
+2. Server validates the origin and the API key (`run` role minimum)
+3. Server sends a `connected` message with timestamp and active client count
+4. Client may send `ping` messages for application-level keepalive (server replies `pong`) and `subscribe`/`unsubscribe` for topic filtering
+5. Server broadcasts KPI updates, alerts, task events, and escalations to connected clients
+6. Client disconnects gracefully (server cleans up)
 
 ### Message Types
 
@@ -700,10 +734,17 @@ ws://localhost:8420/ws/dashboard
 {"type": "ping"}
 ```
 
-**Subscribe (future feature):**
+**Subscribe (topic filtering):**
 ```json
 {"type": "subscribe", "topics": ["kpis", "alerts"]}
 ```
+The server replies with `{"type": "subscribed", "topics": ["kpis", "alerts"]}`.
+
+**Unsubscribe:**
+```json
+{"type": "unsubscribe", "topics": ["kpis", "alerts"]}
+```
+The server replies with `{"type": "unsubscribed", "topics": [...]}`.
 
 #### Server → Client
 
@@ -764,6 +805,23 @@ ws://localhost:8420/ws/dashboard
 }
 ```
 
+**Task Update:**
+```json
+{
+  "type": "task_update",
+  "event": "created",
+  "timestamp": "2026-07-19T10:30:00+00:00",
+  "payload": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "pending",
+    "receiver_id": "lead-engineer"
+  }
+}
+```
+`event` is one of `created`, `updated`, `completed`, `failed`, `escalated`, `deleted`.
+
+**Department KPI / Escalation broadcasts** follow the same envelope with `type` of `department_kpi` (topic `department:<name>`) or `escalation` (topic `escalations`).
+
 **Pong (response to ping):**
 ```json
 {
@@ -783,7 +841,8 @@ ws://localhost:8420/ws/dashboard
 ### JavaScript Client Example
 
 ```javascript
-const ws = new WebSocket("ws://localhost:8420/ws/dashboard");
+// Key must resolve to at least the "run" role (see Authentication section)
+const ws = new WebSocket("ws://localhost:8420/ws/dashboard?api_key=API_KEY");
 
 ws.onopen = () => {
   console.log("Connected to dashboard");
@@ -821,7 +880,8 @@ import json
 import websockets
 
 async def dashboard_listener():
-    uri = "ws://localhost:8420/ws/dashboard"
+    # Key must resolve to at least the "run" role (see Authentication section)
+    uri = "ws://localhost:8420/ws/dashboard?api_key=API_KEY"
     async with websockets.connect(uri) as ws:
         # Receive connected message
         msg = await ws.recv()
@@ -989,11 +1049,27 @@ All error responses follow a consistent format:
 |------|-------------|
 | 200 | Success |
 | 201 | Resource created |
+| 401 | Invalid or missing API key |
+| 403 | Insufficient role permissions |
 | 404 | Resource not found |
 | 422 | Validation error |
 | 500 | Internal server error |
 
 ### Common Error Scenarios
+
+**Invalid or missing API key:**
+```json
+{
+  "detail": "Invalid or missing API key"
+}
+```
+
+**Insufficient permissions:**
+```json
+{
+  "detail": "Insufficient permissions: requires role 'approve' (got 'run')"
+}
+```
 
 **Agent not found:**
 ```json
@@ -1027,11 +1103,24 @@ All error responses follow a consistent format:
 
 ## 16. Examples
 
+### Authentication for Examples
+
+All examples require a valid dashboard API key. Export one of the role keys first (see [Authentication](#1-authentication)):
+
+```bash
+export X_API_KEY="${DASHBOARD_ADMIN_KEY:-$DASHBOARD_API_KEY}"  # admin — all endpoints
+# or: export X_API_KEY="$DASHBOARD_RUN_KEY"                     # run — task mutations
+# or: export X_API_KEY="$DASHBOARD_APPROVE_KEY"                 # approve — approvals/escalations
+```
+
+Add `-H "X-API-Key: $X_API_KEY"` to every `curl` call; WebSocket clients append `?api_key=$X_API_KEY`.
+
 ### Full Workflow: Create, Approve, Execute
 
 ```bash
-# 1. Create a task
+# 1. Create a task (requires run or admin)
 curl -X POST http://localhost:8420/api/tasks \
+  -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "receiver_id": "cto",
@@ -1039,26 +1128,30 @@ curl -X POST http://localhost:8420/api/tasks \
     "priority": "high"
   }'
 
-# 2. Check for pending approvals
-curl http://localhost:8420/api/approvals
+# 2. Check for pending approvals (requires any valid key)
+curl http://localhost:8420/api/approvals \
+  -H "X-API-Key: $X_API_KEY"
 
-# 3. Approve the request
+# 3. Approve the request (requires approve or admin)
 curl -X POST http://localhost:8420/api/approvals/REQ-001/approve \
+  -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"approved_by": "human-ceo", "notes": "Go ahead"}'
 
-# 4. Check KPIs
-curl http://localhost:8420/api/dashboard
+# 4. Check KPIs (requires any valid key)
+curl http://localhost:8420/api/dashboard \
+  -H "X-API-Key: $X_API_KEY"
 
-# 5. Resolve any escalations
-curl -X POST http://localhost:8420/api/escalations/TASK-001/resolve
+# 5. Resolve any escalations (requires approve or admin)
+curl -X POST http://localhost:8420/api/escalations/TASK-001/resolve \
+  -H "X-API-Key: $X_API_KEY"
 ```
 
 ### Monitoring via WebSocket
 
 ```bash
-# Using websocat (CLI tool)
-websocat ws://localhost:8420/ws/dashboard
+# Using websocat (CLI tool); key must resolve to at least "run"
+websocat "ws://localhost:8420/ws/dashboard?api_key=$X_API_KEY"
 
 # Send a ping
 >{"type": "ping"}
@@ -1069,18 +1162,22 @@ websocat ws://localhost:8420/ws/dashboard
 
 ```bash
 # See which model each agent uses
-curl http://localhost:8420/api/models
+curl http://localhost:8420/api/models \
+  -H "X-API-Key: $X_API_KEY"
 
 # See available tiers
-curl http://localhost:8420/api/models/tiers
+curl http://localhost:8420/api/models/tiers \
+  -H "X-API-Key: $X_API_KEY"
 ```
 
 ### Explore the Org Chart
 
 ```bash
 # Get the full org tree
-curl http://localhost:8420/api/org-chart | python -m json.tool
+curl http://localhost:8420/api/org-chart \
+  -H "X-API-Key: $X_API_KEY" | python -m json.tool
 
 # Get details for a specific agent
-curl http://localhost:8420/api/agents/CTO
+curl http://localhost:8420/api/agents/CTO \
+  -H "X-API-Key: $X_API_KEY"
 ```

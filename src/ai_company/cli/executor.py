@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 import typer
 
@@ -80,31 +80,19 @@ def start(
             auto_suspend=do_suspend,
         )
     else:
+        from ai_company.executor.daemon import resolve_database
         from ai_company.executor.loop import Executor
 
         executor = Executor(
             poll_interval=poll_interval,
             config_path=config,
             registry_path=registry,
-            database=_resolve_database(db_path),
+            database=resolve_database(db_path),
             daily_budget_usd=daily_cap,
             task_budget_usd=task_cap,
             auto_suspend_on_overspend=do_suspend,
         )
         executor.start()
-
-
-def _resolve_database(db_path: str | None) -> Any:
-    """Initialise and return the SQLite database for write-through.
-
-    ``None`` keeps the legacy file-only behaviour; a real database is
-    returned so MessageBus/CostTracker/audit mirror mutations into it.
-    """
-    if db_path is None:
-        return None
-    from ai_company.data.database import init_database
-
-    return init_database(db_path)
 
 
 def _resolve_budgets(
@@ -162,42 +150,37 @@ def _start_daemon(
     task_budget_usd: float | None = None,
     auto_suspend: bool = False,
 ) -> None:
-    """Launch executor in daemon mode."""
-    from ai_company.executor.daemon import ExecutorDaemon
+    """Launch executor in daemon mode as a detached subprocess (GitHub #56).
+
+    The parent spawns ``python -m ai_company.executor.daemon`` in a fresh
+    interpreter with ``DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP`` on
+    Windows (new session on POSIX) and returns as soon as the child has
+    written its PID file — so the daemon survives the shell that launched
+    it, and ``executor stop`` / ``executor status`` can find it.
+    """
+    from ai_company.executor.daemon import launch_detached_daemon
 
     pid_path = Path(pid_dir) / "executor-daemon.pid"
-    log_path = Path(log_dir) / "executor-daemon.log"
-    status_path = Path(log_dir) / "executor-daemon.json"
 
-    def factory() -> object:
-        from ai_company.executor.loop import Executor
-
-        return Executor(
+    try:
+        pid = launch_detached_daemon(
             poll_interval=poll_interval,
-            config_path=config,
-            registry_path=registry,
-            database=_resolve_database(db_path),
+            config=config,
+            registry=registry,
+            pid_dir=pid_dir,
+            log_dir=log_dir,
+            kpi_snapshot_interval=kpi_snapshot_interval,
+            governance_interval=governance_interval,
+            db_path=db_path,
             daily_budget_usd=daily_budget_usd,
             task_budget_usd=task_budget_usd,
-            auto_suspend_on_overspend=auto_suspend,
+            auto_suspend=auto_suspend,
         )
-
-    daemon = ExecutorDaemon(
-        executor_factory=factory,
-        poll_interval=poll_interval,
-        pid_path=pid_path,
-        log_path=log_path,
-        status_path=status_path,
-        kpi_snapshot_interval=kpi_snapshot_interval,
-        governance_interval=governance_interval,
-    )
-
-    typer.echo(f"Starting executor daemon (PID file: {pid_path})")
-    try:
-        daemon.start()
     except RuntimeError as exc:
         typer.echo(f"Daemon error: {exc}", err=True)
         raise typer.Exit(1) from None
+
+    typer.echo(f"Started executor daemon (PID {pid}, PID file: {pid_path})")
 
 
 @app.command()
@@ -229,12 +212,13 @@ def tick(
     daily_cap, task_cap, do_suspend = _resolve_budgets(
         daily_budget_usd, task_budget_usd, auto_suspend, guardrails_config
     )
+    from ai_company.executor.daemon import resolve_database
     from ai_company.executor.loop import Executor
 
     executor = Executor(
         config_path=config,
         registry_path=registry,
-        database=_resolve_database(db_path),
+        database=resolve_database(db_path),
         daily_budget_usd=daily_cap,
         task_budget_usd=task_cap,
         auto_suspend_on_overspend=do_suspend,
@@ -274,13 +258,14 @@ def run_task(
     daily_cap, task_cap, do_suspend = _resolve_budgets(
         daily_budget_usd, task_budget_usd, auto_suspend, guardrails_config
     )
+    from ai_company.executor.daemon import resolve_database
     from ai_company.executor.loop import Executor
     from ai_company.models.task import Task
 
     executor = Executor(
         config_path=config,
         registry_path=registry,
-        database=_resolve_database(db_path),
+        database=resolve_database(db_path),
         daily_budget_usd=daily_cap,
         task_budget_usd=task_cap,
         auto_suspend_on_overspend=do_suspend,
@@ -345,6 +330,10 @@ def status(
         started = daemon_status.get("started_at", "unknown")
         ticks = daemon_status.get("ticks_completed", 0)
         uptime = daemon_status.get("uptime_seconds", 0)
+        # A status file that claims "running" for a dead PID is stale —
+        # report it honestly so nobody trusts a phantom daemon (GitHub #56).
+        if state == "running" and isinstance(pid, int) and not ExecutorDaemon.is_pid_alive(pid):
+            state = "not running (stale)"
         typer.echo("Executor Daemon Status")
         typer.echo("=" * 40)
         typer.echo(f"  State: {state}")
