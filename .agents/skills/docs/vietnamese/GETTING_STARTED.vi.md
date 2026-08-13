@@ -101,10 +101,10 @@ _Kiểm tra [Danh mục Skill (Skill Catalog)](../../CATALOG.md) để xem danh 
 **H: Tôi có cần cài đặt tất cả 1,936+ kỹ năng không?**
 Đ: Bạn tải toàn bộ repo về, nhưng AI của bạn chỉ _đọc_ những kỹ năng bạn yêu cầu (hoặc những kỹ năng có liên quan). Nó rất nhẹ!
 
-**H: Tôi có thể tự tạo kỹ năng cho riêng mình không?**  
+**H: Tôi có thể tự tạo kỹ năng cho riêng mình không?**
 Đ: Có! Sử dụng kỹ năng **@skill-creator** để tự xây dựng.
 
-**H: Nó có miễn phí không?**  
+**H: Nó có miễn phí không?**
 Đ: Có, Giấy phép MIT. Mã nguồn mở mãi mãi.
 
 ---

@@ -11,6 +11,10 @@ repos:
       - id: check-added-large-files
         args: ["--maxkb=500"]
       - id: detect-private-key
+        # full-repo-audit-2026-05-23.md quotes standard AWS example keys and an
+        # ellipsis placeholder inside a security-scan writeup; the key block is
+        # explicitly documented as non-live example material (see issue #72).
+        exclude: ^\.agents/skills/docs/maintainers/full-repo-audit-2026-05-23\.md$
 
   # ── Ruff: lint + format ────────────────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit

@@ -128,7 +128,7 @@ Sau phần frontmatter là nội dung thực tế của skill. Dưới đây là
 
 ```markdown
 ## Tổng quan
- 
+
 Một giải thích ngắn gọn về chức năng của skill và lý do tại sao nó tồn tại.
 Khoảng 2-4 câu là lý tưởng.
 ```
@@ -137,7 +137,7 @@ Khoảng 2-4 câu là lý tưởng.
 
 ```markdown
 ## Khi nào nên sử dụng Skill này
- 
+
 - Sử dụng khi bạn cần [tình huống 1]
 - Sử dụng khi làm việc với [tình huống 2]
 - Sử dụng khi người dùng hỏi về [tình huống 3]
@@ -149,13 +149,13 @@ Khoảng 2-4 câu là lý tưởng.
 
 ```markdown
 ## Cách hoạt động
- 
+
 ### Bước 1: [Hành động]
- 
+
 Hướng dẫn chi tiết...
- 
+
 ### Bước 2: [Hành động]
- 
+
 Hướng dẫn thêm...
 ```
 
@@ -165,15 +165,15 @@ Hướng dẫn thêm...
 
 ```markdown
 ## Ví dụ
- 
+
 ### Ví dụ 1: [Trường hợp sử dụng]
- 
+
 \`\`\`javascript
 // Code ví dụ
 \`\`\`
- 
+
 ### Ví dụ 2: [Trường hợp sử dụng khác]
- 
+
 \`\`\`javascript
 // Thêm code
 \`\`\`
@@ -185,7 +185,7 @@ Hướng dẫn thêm...
 
 ```markdown
 ## Thực hành Tốt nhất
- 
+
 - ✅ Nên làm điều này
 - ✅ Cũng nên làm điều này
 - ❌ Không nên làm điều này
@@ -196,7 +196,7 @@ Hướng dẫn thêm...
 
 ```markdown
 ## Các lỗi thường gặp
- 
+
 - **Vấn đề:** Mô tả lỗi
   **Giải pháp:** Cách khắc phục
 ```
@@ -205,7 +205,7 @@ Hướng dẫn thêm...
 
 ```markdown
 ## Các Skill liên quan
- 
+
 - `@other-skill` - Khi nào nên dùng skill này thay thế
 - `@complementary-skill` - Cách các skill này hoạt động cùng nhau
 ```
@@ -445,9 +445,9 @@ description: "Bạn PHẢI sử dụng skill này trước bất kỳ công vi�
 
 ```markdown
 # Brainstorming Ý tưởng thành Thiết kế
- 
+
 ## Tổng quan
- 
+
 Giúp chuyển đổi ý tưởng thành các thiết kế hoàn chỉnh...
 ```
 
@@ -459,9 +459,9 @@ Giúp chuyển đổi ý tưởng thành các thiết kế hoàn chỉnh...
 
 ```markdown
 ## Quy trình
- 
+
 **Hiểu ý tưởng:**
- 
+
 - Kiểm tra trạng thái dự án hiện tại trước.
 - Đặt câu hỏi từng cái một.
 ```
@@ -480,14 +480,14 @@ Giúp chuyển đổi ý tưởng thành các thiết kế hoàn chỉnh...
 
 ```markdown
 ## Hướng dẫn
- 
+
 Nếu người dùng đang làm việc với React:
- 
+
 - Sử dụng functional components.
 - Ưu tiên hooks hơn class components.
- 
+
 Nếu người dùng đang làm việc với Vue:
- 
+
 - Sử dụng Composition API.
 - Tuân theo các mẫu của Vue 3.
 ```
@@ -496,11 +496,11 @@ Nếu người dùng đang làm việc với Vue:
 
 ```markdown
 ## Cách dùng Cơ bản
- 
+
 [Hướng dẫn đơn giản cho các trường hợp phổ biến]
- 
+
 ## Cách dùng Nâng cao
- 
+
 [Các mẫu phức tạp cho người dùng chuyên sâu]
 ```
 
@@ -508,7 +508,7 @@ Nếu người dùng đang làm việc với Vue:
 
 ```markdown
 ## Các Luồng công việc liên quan
- 
+
 1. Đầu tiên, dùng `@brainstorming` để thiết kế.
 2. Sau đó, dùng `@writing-plans` để lập kế hoạch.
 3. Cuối cùng, dùng `@test-driven-development` để triển khai.
@@ -573,7 +573,7 @@ Cách để biết skill của bạn có tốt hay không:
 
 ```markdown
 ## Hướng dẫn
- 
+
 Làm cho code tốt hơn.
 ```
 
@@ -581,7 +581,7 @@ Làm cho code tốt hơn.
 
 ```markdown
 ## Hướng dẫn
- 
+
 1. Tách các logic lặp lại thành các hàm.
 2. Thêm xử lý lỗi cho các trường hợp biên.
 3. Viết unit tests cho các chức năng cốt lõi.
@@ -591,7 +591,7 @@ Làm cho code tốt hơn.
 
 ```markdown
 ## Hướng dẫn
- 
+
 [5000 từ chứa đầy thuật ngữ kỹ thuật dày đặc]
 ```
 
@@ -602,7 +602,7 @@ Chia nhỏ thành nhiều skill hoặc sử dụng phương pháp tiết lộ l�
 
 ```markdown
 ## Hướng dẫn
- 
+
 [Hướng dẫn mà không có bất kỳ ví dụ code nào]
 ```
 
