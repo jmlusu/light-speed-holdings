@@ -49,14 +49,7 @@ gh issue list --state all --label "wayfinder:map" --json number,title,state
 
 Child issues of the map, each carrying one `wayfinder:<type>` label — `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, or `wayfinder:task`.
 
-Parent-child wiring uses GitHub **sub-issues** (native hierarchy) where the `gh` CLI supports it:
-
-```bash
-gh issue create --title "<ticket title>" --body "<question>" --label "wayfinder:grilling"
-gh api --method POST repos/jmlusu/light-speed-holdings/issues/<map-number>/sub_issues -f sub_issue_id=<ticket-id>
-```
-
-If sub-issues are unavailable, fall back to listing the child ticket references in the map's body.
+**Sub-issues are NOT available on this repo** (verified 2026-08-13: `POST /issues/{n}/sub_issues` returns 404), so parent-child wiring uses the **body-convention fallback**: the map lists its child tickets by name and number in a `## Tickets` section, e.g. `- <Ticket name> (#42) — <type>. Blocked by <Other> (#7).`
 
 ### Blocking
 
