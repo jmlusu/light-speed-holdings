@@ -665,8 +665,12 @@ class ExecutorDaemon:
                 os.kill(pid, signal.SIGTERM)
                 logger.info("Sent SIGTERM to daemon PID %d", pid)
             except ProcessLookupError:
+                # The daemon already exited between the alive-check and the
+                # signal — the stop has effectively succeeded, so clean up
+                # the stale PID/status files and report success.
                 self._mark_stopped(pid)
-                return False
+                logger.info("Daemon PID %d already gone at SIGTERM; stop successful", pid)
+                return True
             except PermissionError:
                 logger.error("No permission to signal PID %d", pid)
                 return False
