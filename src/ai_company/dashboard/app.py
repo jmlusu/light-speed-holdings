@@ -39,6 +39,7 @@ from fastapi.templating import Jinja2Templates
 
 from ai_company.logging_config import setup_logging
 from ai_company.paths import get_data_root, get_project_root
+from ai_company.version import get_version
 
 # Configure structured logging on import
 setup_logging()
@@ -238,7 +239,7 @@ def create_app() -> FastAPI:
             "Provides endpoints for monitoring agents, managing tasks, "
             "approvals, escalations, KPIs, cost tracking, and mobile access."
         ),
-        version="0.2.0",
+        version=get_version(),
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_tags=[
@@ -395,11 +396,6 @@ def create_app() -> FastAPI:
         app.include_router(mobile_router)  # /api/mobile/*
     if _has_monitoring:
         app.include_router(monitoring_router)  # /metrics, /health, /ready
-
-    # ── Health check ───────────────────────────────────────────────
-    @app.get("/health", tags=["ops"])
-    def health_check() -> dict[str, str]:
-        return {"status": "ok", "service": "ceo-dashboard"}
 
     # ── Page routes (Jinja2 templates) ─────────────────────────────
     # These MUST be registered BEFORE the static file mounts.

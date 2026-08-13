@@ -15,7 +15,9 @@ from ai_company.audit.integration import (
     log_task_status,
     log_tool_call,
 )
+from ai_company.audit.reader import AuditReader
 from ai_company.audit.writer import AuditWriter
+from ai_company.paths import AUDIT_RELATIVE_PATH, get_audit_path
 
 
 @pytest.fixture(autouse=True)
@@ -44,6 +46,31 @@ class TestInitAudit:
 
     def test_get_writer_returns_none_before_init(self) -> None:
         assert get_writer() is None
+
+
+# ---------------------------------------------------------------------------
+# Canonical path consistency (ticket #59)
+# ---------------------------------------------------------------------------
+
+
+class TestCanonicalPathDefaults:
+    """All audit entry points must resolve to the same canonical path."""
+
+    def test_defaults_resolve_to_same_canonical_path(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Writer, reader and init_audit defaults all target ``.opencode/audit``."""
+        monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
+        # The canonical trail is the single JSONL file `.opencode/audit` (no
+        # `.jsonl` suffix) — the file the executor actually grows.
+        assert Path(".opencode") / "audit" == AUDIT_RELATIVE_PATH
+        assert get_audit_path().resolve() == (tmp_path / ".opencode" / "audit").resolve()
+
+        expected = get_audit_path().resolve()
+        assert AuditWriter().path.resolve() == expected
+        assert AuditReader().path.resolve() == expected
+        assert init_audit().path.resolve() == expected
 
 
 # ---------------------------------------------------------------------------

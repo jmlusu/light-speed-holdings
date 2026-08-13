@@ -20,6 +20,7 @@ from typing import Any
 from fastapi import APIRouter, Response
 
 from ai_company.dashboard.repository import get_state_store
+from ai_company.version import get_version
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,18 @@ def _get_bus() -> Any:
     from ai_company.dashboard.api import get_bus
 
     return get_bus()
+
+
+def _state_path(rel_path: str | Path) -> Path:
+    """Resolve *rel_path* anchored at the StateStore root (CWD-independent).
+
+    The dashboard state root is bound explicitly at boot (Option B) from
+    ``DASHBOARD_DATA_DIR`` / the deterministic project root, so resolving
+    against :attr:`StateStore.base_dir` — never ``Path(".")`` — keeps health
+    checks correct no matter which directory the server was launched from
+    (ticket #61).
+    """
+    return Path(_get_store().base_dir) / rel_path
 
 
 # ---------------------------------------------------------------------------
@@ -478,19 +491,23 @@ def metrics() -> Response:
 
 @router.get("/health")
 def health_check() -> dict[str, Any]:
-    """Deep health check with dependency, disk, and memory status."""
-    checks: dict[str, str] = {}
+    """Deep health check with dependency, disk, and memory status.
 
-    # Check inbox.json accessibility
-    inbox_path = Path(".opencode/inbox.json")
-    checks["inbox"] = "ok" if inbox_path.exists() else "missing"
+    Every file check is anchored at the configured :class:`StateStore` root
+    (``DASHBOARD_DATA_DIR`` / project root) — never the process CWD — and
+    task counts are read live from the MessageBus (ticket #61 / GAP-011).
+    """
+    checks: dict[str, str] = {}
+    store = _get_store()
+
+    # Check inbox.json accessibility (through the StateStore allowlist)
+    checks["inbox"] = "ok" if store.exists(".opencode/inbox.json") else "missing"
 
     # Check company registry
-    registry_path = Path("company/agent-registry.json")
-    checks["registry"] = "ok" if registry_path.exists() else "missing"
+    checks["registry"] = "ok" if store.exists("company/agent-registry.json") else "missing"
 
-    # Check agents directory
-    agents_dir = Path(".opencode/agents")
+    # Check agents directory (anchored at the StateStore root)
+    agents_dir = _state_path(".opencode/agents")
     if agents_dir.exists():
         agent_count = len(list(agents_dir.glob("*.md")))
         checks["agents"] = f"ok ({agent_count} files)"
@@ -498,8 +515,7 @@ def health_check() -> dict[str, Any]:
         checks["agents"] = "missing"
 
     # Check company config
-    config_path = Path("company/models.yaml")
-    checks["config"] = "ok" if config_path.exists() else "missing"
+    checks["config"] = "ok" if store.exists("company/models.yaml") else "missing"
 
     # LLM provider availability (env vars)
     providers = [
@@ -513,7 +529,7 @@ def health_check() -> dict[str, Any]:
     checks["llm_providers"] = f"{len(active_providers)} configured"
 
     # Audit log
-    audit_path = Path(".opencode/audit.jsonl")
+    audit_path = _state_path(".opencode/audit.jsonl")
     if audit_path.exists():
         try:
             size_kb = audit_path.stat().st_size / 1024
@@ -530,7 +546,7 @@ def health_check() -> dict[str, Any]:
     checks["process_memory"] = _check_process_memory()
 
     # Memory store
-    memory_dir = Path("memory")
+    memory_dir = _state_path("memory")
     if memory_dir.exists():
         try:
             entry_count = sum(1 for _ in memory_dir.rglob("*.json"))
@@ -540,17 +556,13 @@ def health_check() -> dict[str, Any]:
     else:
         checks["memory_store"] = "missing"
 
-    # Dead letter queue
-    dlq_path = Path(".opencode/dead_letter_queue.json")
-    if dlq_path.exists():
-        try:
-            dlq = json.loads(dlq_path.read_text(encoding="utf-8"))
-            pending = (
-                sum(1 for t in dlq if t.get("status") == "pending") if isinstance(dlq, list) else 0
-            )
-            checks["dead_letter_queue"] = f"{pending} pending"
-        except (json.JSONDecodeError, OSError):
-            checks["dead_letter_queue"] = "error reading"
+    # Dead letter queue (through the StateStore allowlist)
+    dlq = store.read_json(".opencode/dead_letter_queue.json", default=[])
+    if isinstance(dlq, list) and dlq:
+        pending = sum(1 for t in dlq if isinstance(t, dict) and t.get("status") == "pending")
+        checks["dead_letter_queue"] = f"{pending} pending"
+    elif dlq:
+        checks["dead_letter_queue"] = "error reading"
     else:
         checks["dead_letter_queue"] = "empty"
 
@@ -561,20 +573,51 @@ def health_check() -> dict[str, Any]:
     return {
         "status": status,
         "service": "ai-company-dashboard",
-        "version": "0.2.0",
+        "version": get_version(),
         "uptime_seconds": round(time.time() - _start_time, 1),
         "checks": checks,
-        "metrics_summary": {
-            "tasks_total": _metrics.get("tasks_total", 0),
-            "llm_cost_usd": round(_metrics.get("llm_cost_usd_total", 0), 4),
-            "success_rate_pct": round(
-                (_metrics.get("tasks_succeeded", 0) / _metrics.get("tasks_total", 0) * 100)
-                if _metrics.get("tasks_total", 0)
-                else 0.0,
-                1,
-            ),
-        },
+        "metrics_summary": _live_task_summary(),
         "timestamp": datetime.now(tz=timezone.utc).isoformat(),
+    }
+
+
+def _live_task_summary() -> dict[str, Any]:
+    """Return a task summary read live from the MessageBus.
+
+    The bus is rooted at the configured :class:`StateStore` directory, so
+    counts reflect the live inbox (not a CWD-relative file) and stay correct
+    when the dashboard is launched from another directory (ticket #61).
+    Falls back to the in-memory process counters if the bus is unavailable.
+    """
+    tasks: Any = None
+    try:
+        tasks = _get_bus().get_all_tasks_raw()
+    except Exception:  # noqa: BLE001 - health checks must never raise
+        logger.debug("Failed to read live tasks for health summary", exc_info=True)
+
+    if not isinstance(tasks, list):
+        # Fall back to the in-memory counters (process-lifetime totals).
+        total = int(_metrics.get("tasks_total", 0))
+        succeeded = int(_metrics.get("tasks_succeeded", 0))
+        rate = (succeeded / total * 100.0) if total > 0 else 0.0
+        return {
+            "tasks_total": total,
+            "tasks_completed": succeeded,
+            "tasks_failed": int(_metrics.get("tasks_failed", 0)),
+            "llm_cost_usd": round(_metrics.get("llm_cost_usd_total", 0), 4),
+            "success_rate_pct": round(rate, 1),
+        }
+
+    total = len(tasks)
+    succeeded = sum(1 for t in tasks if isinstance(t, dict) and t.get("status") == "completed")
+    failed = sum(1 for t in tasks if isinstance(t, dict) and t.get("status") == "failed")
+    rate = (succeeded / total * 100.0) if total > 0 else 0.0
+    return {
+        "tasks_total": total,
+        "tasks_completed": succeeded,
+        "tasks_failed": failed,
+        "llm_cost_usd": round(_metrics.get("llm_cost_usd_total", 0), 4),
+        "success_rate_pct": round(rate, 1),
     }
 
 
@@ -617,18 +660,22 @@ def _check_process_memory() -> str:
 
 @router.get("/ready")
 def readiness_check() -> Response:
-    """Kubernetes-style readiness probe. Returns 503 if core deps are missing."""
+    """Kubernetes-style readiness probe. Returns 503 if core deps are missing.
+
+    Dependency checks are anchored at the configured :class:`StateStore` root
+    so readiness is accurate regardless of the process CWD (ticket #61).
+    """
     checks_ok = True
     reasons: list[str] = []
+    store = _get_store()
 
     # Registry is the only hard requirement
-    registry_path = Path("company/agent-registry.json")
-    if not registry_path.exists():
+    if not store.exists("company/agent-registry.json"):
         checks_ok = False
         reasons.append("registry missing")
 
-    # Agents directory
-    agents_dir = Path(".opencode/agents")
+    # Agents directory (anchored at the StateStore root)
+    agents_dir = _state_path(".opencode/agents")
     if not agents_dir.exists():
         checks_ok = False
         reasons.append("agents directory missing")

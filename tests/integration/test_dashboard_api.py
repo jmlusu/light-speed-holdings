@@ -103,8 +103,8 @@ class TestDashboardAPI:
         assert data["agent_performance"]["total_agents"] == 3
 
     def test_metrics_endpoint_text(self, client: TestClient) -> None:
-        resp = client.get("/api/metrics")
+        resp = client.get("/metrics")
         assert resp.status_code == 200
         body = resp.text
         assert "ai_company_tasks_total" in body
-        assert "ai_company_agents_total" in body
+        assert "ai_company_tasks_by_status" in body

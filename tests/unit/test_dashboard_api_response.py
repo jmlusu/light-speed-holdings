@@ -280,18 +280,18 @@ class TestModelAPIContract:
 
 
 class TestMetricsEndpoint:
-    """Validate Prometheus /api/metrics endpoint."""
+    """Validate the consolidated Prometheus /metrics endpoint (ticket #62)."""
 
     def test_metrics_format(self, client: TestClient) -> None:
-        resp = client.get("/api/metrics")
+        resp = client.get("/metrics")
         assert resp.status_code == 200
         body = resp.text
         assert "ai_company_tasks_total" in body
-        assert "ai_company_agents_total" in body
+        assert "ai_company_tasks_by_status" in body
         assert "ai_company_uptime_seconds" in body
 
     def test_metrics_valid_prometheus_format(self, client: TestClient) -> None:
-        resp = client.get("/api/metrics")
+        resp = client.get("/metrics")
         # The TestClient may return the body with escaped newlines
         text = resp.text.replace("\\n", "\n")
         lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
@@ -332,7 +332,7 @@ class TestAPIResponseTimes:
             ("GET", "/api/scheduler"),
             ("GET", "/api/kpis"),
             ("GET", "/api/kpis/summary"),
-            ("GET", "/api/metrics"),
+            ("GET", "/metrics"),
             ("GET", "/health"),
         ],
     )

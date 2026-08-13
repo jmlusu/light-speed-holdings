@@ -67,7 +67,7 @@ class TestAPIPerformance:
             "/api/kpis",
             "/api/kpis/summary",
             "/api/models",
-            "/api/metrics",
+            "/metrics",
             "/health",
         ],
     )

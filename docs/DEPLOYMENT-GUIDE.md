@@ -555,40 +555,34 @@ jobs:
 
 ### Dashboard Access
 
-- The dashboard API has **no authentication** by default
-- For production, implement authentication middleware:
+The dashboard is **fail-closed by default** (`DASHBOARD_AUTH_MODE` defaults to `api_key`, [ADR-012](adr/012-dashboard-rbac.md)). Every request must present a valid API key in the `X-API-Key` header; write endpoints additionally enforce role-based access:
 
-```python
-from fastapi import Depends, HTTPException, Security
-from fastapi.security import APIKeyHeader
+| Role | Privileges | Env var |
+|------|------------|---------|
+| `run` | Task mutations | `DASHBOARD_RUN_KEY` |
+| `approve` | Approvals + escalations | `DASHBOARD_APPROVE_KEY` |
+| `admin` | All permissions (implies all lower roles) | `DASHBOARD_ADMIN_KEY` (falls back to legacy `DASHBOARD_API_KEY`) |
 
-API_KEY = "your-secret-key"
-api_key_header = APIKeyHeader(name="X-API-Key")
+Roles are hierarchical (`admin` > `approve` > `run`). An unknown key is rejected with `401`; an under-privileged key with `403`. Configure the keys in `.env`:
 
-async def verify_api_key(api_key: str = Security(api_key_header)):
-    if api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="Invalid API key")
-    return api_key
-
-# Add to routes:
-@router.get("/api/dashboard", dependencies=[Depends(verify_api_key)])
-def get_dashboard():
-    ...
+```bash
+DASHBOARD_AUTH_MODE=api_key
+DASHBOARD_RUN_KEY=...
+DASHBOARD_APPROVE_KEY=...
+DASHBOARD_ADMIN_KEY=...
 ```
+
+`DASHBOARD_AUTH_MODE=open` disables key checks for localhost-only development; the server refuses to bind `open` mode to a non-loopback host. WebSocket clients pass the key as `?api_key=...` (see the [API Reference](API-REFERENCE.md#1-authentication)).
 
 ### CORS
 
-The dashboard allows all origins by default (`*`). Restrict in production:
+The dashboard restricts CORS to an allowlist — the wildcard `*` is rejected. The default allowlist covers the dashboard's own origin (`http://localhost:8420`, staging `http://localhost:8421`) plus common localhost dev origins. Override with `DASHBOARD_CORS_ORIGINS` (comma-separated):
 
-```python
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://dashboard.yourcompany.com"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
-)
+```bash
+DASHBOARD_CORS_ORIGINS="https://dashboard.yourcompany.com,http://localhost:8420"
 ```
+
+`allow_credentials` is enabled, so `*` can never be used.
 
 ### File Permissions
 
