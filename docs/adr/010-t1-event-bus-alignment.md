@@ -40,6 +40,13 @@ and ADR-005 remain in force). Concretely:
   demonstrates the file bus cannot hold the target under fan-out — at which
   point an optional adapter behind the `MessageBus` interface is added without
   superseding the file-bus ADRs (they remain the fallback + local default).
+- **Concrete adapter trigger.** A follow-up grilling ticket on the push-bus
+  adapter is opened when **two consecutive CI benchmark runs** report either
+  (a) executor-tick read p95 over **10 ms** on the 127-task inbox, or
+  (b) full 127-agent fan-out claim total over **5 s**. Baseline (2026-08-13,
+  Windows local): read median ~6.1 ms; fan-out total ~4.4 s — inside the
+  threshold, but the fan-out figure is close enough that real growth will trip
+  it without anyone having to judge intent.
 
 ## Consequences
 
@@ -54,6 +61,24 @@ and ADR-005 remain in force). Concretely:
 - **Neutral:** the SQLite write-through mirror already in place (ADR-005) can
   serve some downstream read consumers without a file read, which also lowers
   read latency for dashboard consumers regardless of bus choice.
+
+## Benchmark scope
+
+The report-only suite at `tests/unit/test_message_bus_perf.py` covers the
+latency and throughput surfaces T1 touches:
+
+- **Executor-tick read latency** — `get_pending_tasks` over a 127-task inbox
+  (idempotent read path).
+- **One-shot fan-out claim** — 127 `claim_task` calls across agent channels on
+  a fresh inbox (mutating path, single round).
+- **Write latency** — `send_task` p95 over 127 enqueues (the other half of the
+  sub-10ms claim; added 2026-08-13).
+- **Sustained throughput** — tasks/sec under a repeating enqueue+claim cycle
+  (added 2026-08-13).
+
+All four are `performance`-marked and report-only: they print to the pytest
+summary and CI log but never gate the build. The adapter trigger above reads
+only the read-latency and fan-out-claim numbers.
 
 ## Links
 
