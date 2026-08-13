@@ -70,11 +70,6 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "app",
         "Validate naming conventions and config references",
     ),
-    "storage": (
-        "ai_company.cli.storage",
-        "app",
-        "Storage operations — SQLite-first core, opt-in mirroring",
-    ),
     "client": (
         "ai_company.cli.client",
         "app",
