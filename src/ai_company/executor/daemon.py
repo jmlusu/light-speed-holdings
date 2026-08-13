@@ -20,12 +20,14 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import contextlib
 import json
 import logging
 import logging.handlers
 import os
 import signal
+import subprocess
 import sys
 import tempfile
 import time
@@ -94,6 +96,269 @@ def _sweep_expired_approvals(executor: Any) -> int:
     if not isinstance(gate, ApprovalGate):
         gate = ApprovalGate()
     return gate.sweep_expired()
+
+
+def resolve_database(db_path: str | None) -> Any:
+    """Initialise and return the SQLite database for write-through.
+
+    ``None`` keeps the legacy file-only behaviour; a real database is
+    returned so MessageBus/CostTracker/audit mirror mutations into it.
+    """
+    if db_path is None:
+        return None
+    from ai_company.data.database import init_database
+
+    return init_database(db_path)
+
+
+def build_executor_factory(
+    *,
+    poll_interval: float,
+    config: str,
+    registry: str,
+    db_path: str | None,
+    daily_budget_usd: float | None = None,
+    task_budget_usd: float | None = None,
+    auto_suspend: bool = False,
+) -> Callable[..., Any]:
+    """Return a factory that builds the executor loop instance.
+
+    Deferred construction keeps daemon startup light: the heavy LLM/embedding
+    imports happen only once the poll loop actually begins, not when the
+    detached subprocess boots.
+    """
+
+    def factory() -> Any:
+        from ai_company.executor.loop import Executor
+
+        return Executor(
+            poll_interval=poll_interval,
+            config_path=config,
+            registry_path=registry,
+            database=resolve_database(db_path),
+            daily_budget_usd=daily_budget_usd,
+            task_budget_usd=task_budget_usd,
+            auto_suspend_on_overspend=auto_suspend,
+        )
+
+    return factory
+
+
+def build_daemon_command(
+    *,
+    poll_interval: float,
+    config: str,
+    registry: str,
+    pid_dir: str,
+    log_dir: str,
+    kpi_snapshot_interval: float,
+    governance_interval: float,
+    db_path: str | None,
+    daily_budget_usd: float | None = None,
+    task_budget_usd: float | None = None,
+    auto_suspend: bool = False,
+) -> list[str]:
+    """Build the argv used to spawn the detached daemon subprocess.
+
+    The child runs the daemon module entry point in a *fresh interpreter*
+    (``python -m ai_company.executor.daemon``) so the daemon is a real OS
+    process that survives the shell that launched it (GitHub #56).
+    """
+    cmd = [
+        sys.executable,
+        "-m",
+        "ai_company.executor.daemon",
+        "--poll-interval",
+        str(poll_interval),
+        "--config",
+        config,
+        "--registry",
+        registry,
+        "--pid-dir",
+        pid_dir,
+        "--log-dir",
+        log_dir,
+        "--kpi-snapshot-interval",
+        str(kpi_snapshot_interval),
+        "--governance-interval",
+        str(governance_interval),
+    ]
+    if db_path is not None:
+        cmd += ["--db-path", db_path]
+    if daily_budget_usd is not None:
+        cmd += ["--daily-budget-usd", str(daily_budget_usd)]
+    if task_budget_usd is not None:
+        cmd += ["--task-budget-usd", str(task_budget_usd)]
+    if auto_suspend:
+        cmd.append("--auto-suspend")
+    return cmd
+
+
+def _windows_detach_flags() -> int:
+    """Windows creation flags that detach a child from the parent console.
+
+    ``DETACHED_PROCESS`` gives the child no inherited console, and
+    ``CREATE_NEW_PROCESS_GROUP`` makes it a new process group so it can never
+    receive Ctrl+C sent to the parent's console. Returns 0 on non-Windows
+    platforms, where :func:`launch_detached_daemon` detaches via
+    ``start_new_session`` instead. ``getattr`` keeps the module importable on
+    platforms whose ``subprocess`` lacks the constants.
+    """
+    if os.name != "nt":
+        return 0
+    return getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(
+        subprocess, "DETACHED_PROCESS", 0
+    )
+
+
+def _daemon_start_failure_message(log_path: Path, proc: subprocess.Popen[Any]) -> str:
+    """Compose a diagnosable error when the daemon child dies during startup."""
+    exit_code = proc.poll()
+    tail = ""
+    if log_path.exists():
+        try:
+            lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()
+            tail = "\n".join(lines[-10:])
+        except OSError:
+            tail = ""
+    return (
+        f"Daemon process exited during startup (exit code {exit_code}).\n"
+        f"Recent log output:\n{tail or '(no log output yet)'}"
+    )
+
+
+def launch_detached_daemon(
+    *,
+    poll_interval: float,
+    config: str,
+    registry: str,
+    pid_dir: str,
+    log_dir: str,
+    kpi_snapshot_interval: float,
+    governance_interval: float,
+    db_path: str | None,
+    daily_budget_usd: float | None = None,
+    task_budget_usd: float | None = None,
+    auto_suspend: bool = False,
+    wait_timeout: float = 10.0,
+) -> int:
+    """Spawn the daemon loop as a detached OS process and return its PID.
+
+    The child writes its own PID/status files (its ``start()`` flow); the
+    parent only waits for the PID file to appear (up to *wait_timeout*
+    seconds) so ``executor stop`` / ``executor status`` work immediately
+    after ``start`` returns.
+
+    On Windows the child is spawned with ``CREATE_NEW_PROCESS_GROUP |
+    DETACHED_PROCESS``; on POSIX with ``start_new_session``. stdout/stderr
+    are redirected to the daemon log file so the detached process has a
+    valid output target and no console dependency.
+
+    Raises:
+        RuntimeError: If a daemon is already running, the child cannot be
+            spawned, or the child exits before recording its PID.
+    """
+    pid_path = Path(pid_dir) / "executor-daemon.pid"
+    log_path = Path(log_dir) / "executor-daemon.log"
+
+    if ExecutorDaemon.is_daemon_running(pid_path):
+        existing_pid = pid_path.read_text(encoding="utf-8").strip()
+        raise RuntimeError(
+            f"Daemon already running with PID {existing_pid}. Use 'executor stop' to stop it first."
+        )
+
+    cmd = build_daemon_command(
+        poll_interval=poll_interval,
+        config=config,
+        registry=registry,
+        pid_dir=pid_dir,
+        log_dir=log_dir,
+        kpi_snapshot_interval=kpi_snapshot_interval,
+        governance_interval=governance_interval,
+        db_path=db_path,
+        daily_budget_usd=daily_budget_usd,
+        task_budget_usd=task_budget_usd,
+        auto_suspend=auto_suspend,
+    )
+
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(log_path, "a", encoding="utf-8") as log_handle:
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                stdin=subprocess.DEVNULL,
+                stdout=log_handle,
+                stderr=log_handle,
+                creationflags=_windows_detach_flags(),
+                start_new_session=True,  # POSIX: setsid(); ignored on Windows
+            )
+        except OSError as exc:
+            raise RuntimeError(f"Failed to spawn daemon process: {exc}") from exc
+
+    # Wait for the child to record its PID. If it exits before doing so,
+    # surface the tail of the log so the failure is diagnosable.
+    deadline = time.monotonic() + wait_timeout
+    while time.monotonic() < deadline:
+        if proc.poll() is not None:
+            break
+        try:
+            pid = int(pid_path.read_text(encoding="utf-8").strip())
+        except (OSError, ValueError):
+            pid = None
+        if pid is not None:
+            return pid
+        time.sleep(0.1)
+
+    raise RuntimeError(_daemon_start_failure_message(log_path, proc))
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Daemon loop entry point for the detached subprocess.
+
+    Invoked by ``python -m ai_company.executor.daemon`` (see
+    :func:`launch_detached_daemon`). Runs the executor poll loop in-process
+    with PID/status file management until a stop is requested.
+    """
+    parser = argparse.ArgumentParser(
+        prog="python -m ai_company.executor.daemon",
+        description="AI Company executor daemon loop (detached subprocess).",
+    )
+    parser.add_argument("--poll-interval", type=float, default=5.0)
+    parser.add_argument("--config", default="company/models.yaml")
+    parser.add_argument("--registry", default="company/agent-registry.json")
+    parser.add_argument("--pid-dir", default="logs")
+    parser.add_argument("--log-dir", default="logs")
+    parser.add_argument("--kpi-snapshot-interval", type=float, default=300.0)
+    parser.add_argument("--governance-interval", type=float, default=86400.0)
+    parser.add_argument("--db-path", default=None)
+    parser.add_argument("--daily-budget-usd", type=float, default=None)
+    parser.add_argument("--task-budget-usd", type=float, default=None)
+    parser.add_argument("--auto-suspend", action="store_true")
+    args = parser.parse_args(argv)
+
+    daemon = ExecutorDaemon(
+        executor_factory=build_executor_factory(
+            poll_interval=args.poll_interval,
+            config=args.config,
+            registry=args.registry,
+            db_path=args.db_path,
+            daily_budget_usd=args.daily_budget_usd,
+            task_budget_usd=args.task_budget_usd,
+            auto_suspend=args.auto_suspend,
+        ),
+        poll_interval=args.poll_interval,
+        pid_path=Path(args.pid_dir) / "executor-daemon.pid",
+        log_path=Path(args.log_dir) / "executor-daemon.log",
+        status_path=Path(args.log_dir) / "executor-daemon.json",
+        kpi_snapshot_interval=args.kpi_snapshot_interval,
+        governance_interval=args.governance_interval,
+    )
+    try:
+        daemon.start()
+    except RuntimeError as exc:
+        print(f"Daemon error: {exc}", file=sys.stderr)
+        return 1
+    return 0
 
 
 class DaemonPIDFile:
@@ -430,6 +695,11 @@ class ExecutorDaemon:
         return pid_file.is_running()
 
     @staticmethod
+    def is_pid_alive(pid: int) -> bool:
+        """Return True if the process with the given PID is still alive."""
+        return _is_process_alive(pid)
+
+    @staticmethod
     def get_daemon_status(
         status_path: Path | None = None,
     ) -> dict[str, Any] | None:
@@ -680,3 +950,7 @@ class ExecutorDaemon:
         self.pid_file.remove()
         self._clear_stop_request()
         logger.info("Cleanup complete")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

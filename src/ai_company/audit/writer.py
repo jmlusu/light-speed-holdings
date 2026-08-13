@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 import contextlib
 
 from ai_company.audit.events import AuditEvent
-from ai_company.paths import get_data_root
+from ai_company.paths import get_audit_path
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class AuditWriter:
     renamed into place so readers never see a partial line.
 
     Supports size-based log rotation: when the active log file exceeds
-    ``max_bytes``, it is renamed to ``<base>.1.jsonl`` (shifting older
+    ``max_bytes``, it is renamed to ``<base>.1`` (shifting older
     rotated files up), and a fresh active file is created.
     """
 
@@ -48,7 +48,9 @@ class AuditWriter:
             # Root-aware default: resolve against the deterministic data root
             # (DASHBOARD_DATA_DIR / project root) instead of the CWD so audit
             # events can never be written into an unrelated working directory.
-            path = str(get_data_root() / ".opencode" / "audit.jsonl")
+            # The canonical trail is the single JSONL file
+            # ``<data root>/.opencode/audit`` (ticket #59).
+            path = str(get_audit_path())
         self._path = Path(path)
         self._path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
@@ -117,13 +119,13 @@ class AuditWriter:
     def _rotate(self) -> None:
         """Shift rotated files up and create a fresh active log.
 
-        File naming convention::
+        File naming convention (with the canonical ``.opencode/audit`` path)::
 
-            audit.jsonl       ← active (current)
-            audit.1.jsonl     ← most recent rotation
-            audit.2.jsonl     ← second most recent
+            audit       ← active (current)
+            audit.1     ← most recent rotation
+            audit.2     ← second most recent
             ...
-            audit.N.jsonl     ← oldest (deleted when keep_files exceeded)
+            audit.N     ← oldest (deleted when keep_files exceeded)
         """
         base = self._path.stem  # e.g. "audit"
         parent = self._path.parent

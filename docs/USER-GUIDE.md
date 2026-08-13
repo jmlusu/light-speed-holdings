@@ -594,7 +594,7 @@ Opens `http://localhost:8420` in your browser with the CEO dashboard.
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/health` | GET | Health check |
+| [`/health`](API-REFERENCE.md#2-health-check) | GET | Health check (see authoritative docs) |
 | `/api/dashboard` | GET | KPI summary (tasks, approvals, escalations, agents) |
 | `/api/kpis/live` | GET | Live KPI values from department collectors |
 | `/api/agents` | GET | List all agents |
@@ -617,12 +617,13 @@ Opens `http://localhost:8420` in your browser with the CEO dashboard.
 
 ### WebSocket Protocol
 
-Connect to `ws://localhost:8420/ws/dashboard` for live updates:
+Connect to `ws://localhost:8420/ws/dashboard?api_key=<KEY>` for live updates. The key must resolve to at least the `run` role (see [API Reference — Authentication](API-REFERENCE.md#1-authentication)):
 
 **Client → Server messages:**
 ```json
 {"type": "ping"}
 {"type": "subscribe", "topics": ["kpis", "alerts"]}
+{"type": "unsubscribe", "topics": ["kpis", "alerts"]}
 ```
 
 **Server → Client messages:**
@@ -635,23 +636,27 @@ Connect to `ws://localhost:8420/ws/dashboard` for live updates:
 
 ### Quick Dashboard Access via cURL
 
+Every request needs a valid `X-API-Key` header (fail-closed `api_key` auth mode). Export a role key first, e.g. `export X_API_KEY="${DASHBOARD_ADMIN_KEY:-$DASHBOARD_API_KEY}"`, then:
+
 ```bash
 # Get KPI summary
-curl http://localhost:8420/api/dashboard
+curl http://localhost:8420/api/dashboard -H "X-API-Key: $X_API_KEY"
 
 # List all agents
-curl http://localhost:8420/api/agents
+curl http://localhost:8420/api/agents -H "X-API-Key: $X_API_KEY"
 
 # Get org chart
-curl http://localhost:8420/api/org-chart
+curl http://localhost:8420/api/org-chart -H "X-API-Key: $X_API_KEY"
 
-# Create a task
+# Create a task (requires run or admin)
 curl -X POST http://localhost:8420/api/tasks \
+  -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"receiver_id": "cto", "instruction": "Plan Q3 tech roadmap"}'
 
-# Approve a request
+# Approve a request (requires approve or admin)
 curl -X POST http://localhost:8420/api/approvals/REQ-001/approve \
+  -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"approved_by": "human-ceo", "notes": "Approved"}'
 ```

@@ -3,7 +3,7 @@
 REST endpoints optimized for mobile clients accessing the AI Company Builder CEO Dashboard.
 
 **Base URL:** `http://localhost:8420`
-**Version:** 0.1.0
+**Version:** Derived from the installed package metadata (`importlib.metadata.version("ai-company")`). The single source of truth is the `version` field in [`pyproject.toml`](../../pyproject.toml) (currently `0.5.0`). Docs never hardcode this value.
 
 ---
 

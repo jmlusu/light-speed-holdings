@@ -7,8 +7,13 @@ when embeddings are unavailable.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
+import os
+import tempfile
+import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +27,16 @@ except ImportError:
 from ai_company.memory.engine import MemoryEntry, MemoryStore
 
 logger = logging.getLogger(__name__)
+
+# Serializes index writes so concurrent save_index() calls in the same
+# process cannot interleave temp-file creation or replaces.  A single
+# module-level lock covers every VectorStore instance.
+_WRITE_LOCK = threading.Lock()
+
+# os.replace can transiently fail on Windows with PermissionError when
+# another handle briefly references the target; retry before giving up.
+_REPLACE_RETRIES = 5
+_REPLACE_RETRY_DELAY = 0.01
 
 
 class VectorStore:
@@ -207,14 +222,57 @@ class VectorStore:
         return None
 
     def save_index(self) -> None:
-        """Persist the vector index to disk."""
+        """Persist the vector index to disk.
+
+        The write is atomic: JSON is streamed to a unique temp file in the
+        same directory, flushed and fsynced, then ``os.replace`` swaps it
+        into place.  Readers therefore never observe a partially-written
+        index — they see either the previous complete file or the new one.
+        Writers are serialized by a module-level lock so concurrent saves
+        cannot clobber each other's temp files.
+
+        Serialization matches the historical format (``encoding="utf-8"``,
+        default ``json.dump`` separators, default newline handling) so the
+        on-disk bytes are unchanged; compact JSON emits no literal newlines.
+        """
         index_file = self.index_dir / "vector_index.json"
         data: dict[str, Any] = {}
         for eid, vec in self._index.items():
             data[eid] = vec.tolist() if hasattr(vec, "tolist") else list(vec)
 
-        with open(index_file, "w", encoding="utf-8") as f:
-            json.dump(data, f)
+        with _WRITE_LOCK:
+            tmp_fd: int | None = None
+            tmp_path: str = ""
+            try:
+                # Unique temp file in the same directory so os.replace is
+                # atomic (same volume) and never collides with another writer.
+                tmp_fd, tmp_path = tempfile.mkstemp(dir=str(self.index_dir), suffix=".tmp")
+                with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
+                    json.dump(data, f)
+                    f.flush()
+                    os.fsync(f.fileno())
+                tmp_fd = None  # Closed by fdopen
+
+                last_err: Exception | None = None
+                for _ in range(_REPLACE_RETRIES):
+                    try:
+                        os.replace(tmp_path, index_file)
+                        tmp_path = ""
+                        break
+                    except (OSError, PermissionError) as exc:
+                        last_err = exc
+                        time.sleep(_REPLACE_RETRY_DELAY)
+                if tmp_path and last_err is not None:
+                    raise last_err from None
+            finally:
+                # Always release resources and never leave temp litter behind,
+                # even when json.dump or os.replace fails mid-write.
+                if tmp_fd is not None:
+                    with contextlib.suppress(OSError):
+                        os.close(tmp_fd)
+                if tmp_path:
+                    with contextlib.suppress(OSError):
+                        os.unlink(tmp_path)
 
     def _load_index(self) -> None:
         """Load the vector index from disk."""

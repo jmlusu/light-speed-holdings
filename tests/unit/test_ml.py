@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -213,6 +214,93 @@ class TestVectorStore:
             memory_store=ms, embedding_engine=mock_engine, index_dir=tmp / "idx2"
         )
         assert vs_with_engine.is_vector_capable
+
+
+# ── VectorStore Atomic Write Tests (ticket #60) ───────────────────────
+
+
+class TestVectorStoreAtomicWrite:
+    """Regression tests for atomic vector-index writes.
+
+    The vector index must never appear on disk as a partially-written JSON
+    file: saves go to a temp file that is fsynced and atomically renamed,
+    so a crash or a failed serialization leaves the previous complete
+    index intact.
+    """
+
+    def test_vector_save_load_roundtrip(self):
+        from ai_company.memory.engine import MemoryEntry, MemoryStore
+        from ai_company.memory.vector_store import VectorStore
+
+        mock_engine = MagicMock()
+        mock_engine.encode.return_value = np.random.rand(4).astype(np.float32)
+
+        tmp = _make_tmp_dir()
+        ms = MemoryStore(base_dir=tmp / "memory")
+        vs = VectorStore(memory_store=ms, embedding_engine=mock_engine, index_dir=tmp / "index")
+
+        entry = MemoryEntry(memory_type="semantic", content="round trip")
+        vs.index_entry(entry)
+        vs.save_index()
+
+        index_file = vs.index_dir / "vector_index.json"
+        assert index_file.exists()
+        # On-disk content parses as complete JSON.
+        data = json.loads(index_file.read_text(encoding="utf-8"))
+        assert entry.id in data
+
+        # A fresh store pointed at the same index directory reloads the index.
+        vs2 = VectorStore(memory_store=ms, embedding_engine=mock_engine, index_dir=tmp / "index")
+        assert entry.id in vs2._index
+
+        # No temp-file litter is left behind.
+        assert list(vs.index_dir.glob("*.tmp")) == []
+
+    def test_vector_atomic_write_keeps_old_file_on_failure(self):
+        from ai_company.memory.engine import MemoryEntry, MemoryStore
+        from ai_company.memory.vector_store import VectorStore
+
+        mock_engine = MagicMock()
+        mock_engine.encode.return_value = np.random.rand(4).astype(np.float32)
+
+        tmp = _make_tmp_dir()
+        ms = MemoryStore(base_dir=tmp / "memory")
+        vs = VectorStore(memory_store=ms, embedding_engine=mock_engine, index_dir=tmp / "index")
+
+        entry = MemoryEntry(memory_type="semantic", content="first")
+        vs.index_entry(entry)
+        vs.save_index()
+        index_file = vs.index_dir / "vector_index.json"
+        original_bytes = index_file.read_bytes()
+        assert original_bytes  # sanity: the first save produced a real file
+
+        # Make the next serialization fail midway with garbage so the write
+        # can never complete. The on-disk file must stay the previous
+        # complete JSON rather than a partially-written one.
+        entry2 = MemoryEntry(memory_type="semantic", content="second")
+        vs.index_entry(entry2)
+
+        def _corrupting_dump(data, f, **kwargs):
+            f.write('{"broken": tru')  # partial garbage
+            raise RuntimeError("simulated crash during json.dump")
+
+        with (
+            patch("ai_company.memory.vector_store.json.dump", side_effect=_corrupting_dump),
+            pytest.raises(RuntimeError, match="simulated crash"),
+        ):
+            vs.save_index()
+
+        # The target file is untouched: still the original complete JSON.
+        assert index_file.read_bytes() == original_bytes
+        json.loads(index_file.read_text(encoding="utf-8"))  # parses cleanly
+
+        # No temp-file litter is left behind after the failed write.
+        assert list(vs.index_dir.glob("*.tmp")) == []
+
+        # A subsequent successful save still works and writes valid JSON.
+        vs.save_index()
+        data = json.loads(index_file.read_text(encoding="utf-8"))
+        assert entry2.id in data
 
 
 # ── AgentPerformanceTracker Tests ─────────────────────────────────────
