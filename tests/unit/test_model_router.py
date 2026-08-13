@@ -158,6 +158,34 @@ def test_list_providers(router: ModelRouter) -> None:
     assert ids == {"ollama", "openai", "anthropic"}
 
 
+def test_provider_rate_limit_parsed(tmp_path: Path) -> None:
+    """GAP-038: rate_limit block is surfaced on ProviderConfig."""
+    config = {
+        "providers": {
+            "openai": {
+                "backend": "openai_compatible",
+                "default_model": "gpt-4o-mini",
+                "api_base": "https://api.openai.com/v1",
+                "rate_limit": {"rate": 10, "capacity": 5},
+            },
+            "ollama": {
+                "backend": "ollama",
+                "default_model": "llama3.1:8b",
+                "api_base": "http://localhost:11434",
+            },
+        },
+        "tiers": {},
+    }
+    models_yaml = tmp_path / "models.yaml"
+    models_yaml.write_text(yaml.safe_dump(config), encoding="utf-8")
+
+    router = ModelRouter(config_path=str(models_yaml))
+    by_id = {p.id: p for p in router.list_providers()}
+
+    assert by_id["openai"].rate_limit == {"rate": 10, "capacity": 5}
+    assert by_id["ollama"].rate_limit == {}
+
+
 def test_resolve_all_agents(router: ModelRouter) -> None:
     results = router.resolve_all_agents()
     assert len(results) == 3

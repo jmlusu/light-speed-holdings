@@ -458,6 +458,108 @@ class TestLLMClient:
         for pid in client._circuit_breakers:
             assert client._circuit_breakers[pid].is_available
 
+    def test_execute_task_limiter_skips_limited_provider(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A token-bucket-limited provider is skipped when the bucket is empty."""
+        from types import SimpleNamespace
+
+        monkeypatch.chdir(tmp_path)
+        _setup_model_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.llm.client import LLMClient
+        from ai_company.llm.token_bucket import TokenBucket
+
+        client = LLMClient(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        )
+
+        good_response = json.dumps({"plan": [], "result": "success", "artifacts": []})
+        limited = MagicMock(spec=LLMProvider)
+        limited.is_available.return_value = True
+        limited.chat.return_value = ChatResponse(
+            content="should not be called", model="big-pickle", provider="opencode"
+        )
+        good = MagicMock(spec=LLMProvider)
+        good.is_available.return_value = True
+        good.chat.return_value = ChatResponse(
+            content=good_response, model="deepseek-chat", provider="deepseek"
+        )
+        client._providers = {
+            "opencode": limited,
+            "deepseek": good,
+            "ollama": good,
+        }
+        client._limiters = {
+            "opencode": TokenBucket(rate=0.0, capacity=0),
+        }
+
+        client.router.resolve = MagicMock(
+            return_value=SimpleNamespace(
+                tier="standard", provider="deepseek", model="deepseek-chat"
+            )
+        )
+        client.router.get_tier = MagicMock(
+            return_value=SimpleNamespace(
+                providers=[
+                    SimpleNamespace(provider="opencode", model="big-pickle"),
+                    SimpleNamespace(provider="deepseek", model="deepseek-chat"),
+                ]
+            )
+        )
+
+        result = client.execute_task("test-agent", "do something", max_retries=3)
+
+        # Empty bucket -> opencode never called; deepseek satisfies the task.
+        assert result["result"] == "success"
+        assert limited.chat.call_count == 0
+        assert good.chat.call_count == 1
+
+    def test_execute_task_limiter_refills_between_attempts(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A provider is reachable again after the bucket refills."""
+        from types import SimpleNamespace
+
+        monkeypatch.chdir(tmp_path)
+        _setup_model_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        from ai_company.llm.client import LLMClient
+        from ai_company.llm.token_bucket import TokenBucket
+
+        client = LLMClient(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            limiter_timeout=5.0,
+        )
+
+        good_response = json.dumps({"plan": [], "result": "success", "artifacts": []})
+        provider = MagicMock(spec=LLMProvider)
+        provider.is_available.return_value = True
+        provider.chat.return_value = ChatResponse(
+            content=good_response, model="big-pickle", provider="opencode"
+        )
+        client._providers = {"opencode": provider}
+        client._limiters = {"opencode": TokenBucket(rate=100.0, capacity=1)}
+
+        client.router.resolve = MagicMock(
+            return_value=SimpleNamespace(tier="standard", provider="opencode", model="big-pickle")
+        )
+        client.router.get_tier = MagicMock(
+            return_value=SimpleNamespace(
+                providers=[SimpleNamespace(provider="opencode", model="big-pickle")]
+            )
+        )
+
+        assert (
+            client.execute_task("test-agent", "do something", max_retries=3)["result"] == "success"
+        )
+        # Bucket refilled between the acquire and the call, so it succeeds.
+        assert provider.chat.call_count == 1
+
 
 # ── Helpers ─────────────────────────────────────────────────────────
 

@@ -136,6 +136,9 @@ class ProviderConfig:
             (keys: ``token_url``, ``client_id``/``client_id_env``,
             ``client_secret``/``client_secret_env``, ``scope``,
             ``audience``, ``cache_ttl_seconds``). Empty dict when unset.
+        rate_limit: Optional token-bucket config as a raw dict with
+            ``rate`` (tokens/sec) and ``capacity`` (burst) keys. Empty dict
+            when unset (no client-side limiting applied).
     """
 
     id: str
@@ -143,6 +146,7 @@ class ProviderConfig:
     default_model: str
     api_base: str = ""
     oauth2: dict[str, Any] = field(default_factory=dict)
+    rate_limit: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -214,6 +218,7 @@ class ModelRouter:
                 default_model=pconf.get("default_model", ""),
                 api_base=pconf.get("api_base", ""),
                 oauth2=pconf.get("oauth2") or {},
+                rate_limit=pconf.get("rate_limit") or {},
             )
 
     def _parse_tiers(self) -> None:
