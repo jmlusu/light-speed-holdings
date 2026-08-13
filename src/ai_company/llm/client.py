@@ -22,6 +22,7 @@ from ai_company.llm.providers.base import (
 )
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
+from ai_company.llm.token_bucket import TokenBucket
 from ai_company.llm.token_counter import (
     TokenUsage,
     count_prompt_tokens,
@@ -50,24 +51,41 @@ class LLMClient:
         config_path: Path to the models routing config.
         registry_path: Path to the agent registry for per-agent routing.
         cost_tracker: Optional cost tracker for recording token usage.
+        limiter_timeout: Seconds to wait for a token-bucket slot before an
+            attempt is skipped as rate-limited. Providers without a
+            ``rate_limit`` block in models.yaml are not limited.
     """
+
+    # Class-level default so instances built via ``__new__`` (streaming tests)
+    # remain safe: limiter lookups degrade to "not limited".
+    _limiters: dict[str, TokenBucket] = {}
 
     def __init__(
         self,
         config_path: str = "company/models.yaml",
         registry_path: str = "company/agent-registry.json",
         cost_tracker: CostTracker | None = None,
+        limiter_timeout: float = 30.0,
     ) -> None:
         self.router = ModelRouter(config_path=config_path, registry_path=registry_path)
         self._providers: dict[str, LLMProvider] = {}
         self._circuit_breakers: dict[str, CircuitBreaker] = {}
+        self._limiters: dict[str, TokenBucket] = {}
         self._cost_tracker = cost_tracker
+        self._limiter_timeout = limiter_timeout
         self._init_providers()
 
     def _init_providers(self) -> None:
         """Create provider instances from models.yaml config."""
         for pcfg in self.router.list_providers():
             self._circuit_breakers[pcfg.id] = CircuitBreaker()
+
+            rl = getattr(pcfg, "rate_limit", None) or {}
+            if rl.get("rate") is not None and rl.get("capacity") is not None:
+                self._limiters[pcfg.id] = TokenBucket(
+                    rate=float(rl["rate"]),
+                    capacity=float(rl["capacity"]),
+                )
 
             oauth2 = self._build_oauth2_manager(pcfg)
 
@@ -189,6 +207,19 @@ class LLMClient:
                 continue
             if breaker and not breaker.is_available:
                 continue
+            limiter = self._limiters.get(provider_id)
+            if limiter and not limiter.acquire(timeout=self._limiter_timeout):
+                last_error = f"Attempt {attempt + 1}: {provider_id} rate limit (limiter timeout)"
+                logger.debug(
+                    "LLM attempt skipped",
+                    extra={
+                        "attempt": attempt + 1,
+                        "model": model,
+                        "error": last_error,
+                    },
+                )
+                inc_metric("llm_errors_total")
+                continue
 
             # Count prompt tokens before the call (heuristic estimate).
             logger.debug(
@@ -304,6 +335,19 @@ class LLMClient:
             if not provider or not provider.is_available():
                 continue
             if breaker and not breaker.is_available:
+                continue
+            limiter = self._limiters.get(provider_id)
+            if limiter and not limiter.acquire(timeout=self._limiter_timeout):
+                last_error = f"Attempt {attempt + 1}: {provider_id} rate limit (limiter timeout)"
+                logger.debug(
+                    "LLM attempt skipped",
+                    extra={
+                        "attempt": attempt + 1,
+                        "model": model,
+                        "error": last_error,
+                    },
+                )
+                inc_metric("llm_errors_total")
                 continue
 
             full_text = ""
