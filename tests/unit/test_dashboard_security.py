@@ -463,6 +463,7 @@ class TestWebSocketOrigin:
     def test_ws_accepts_same_origin(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """A same-host Origin (or no Origin) must be accepted."""
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
         from ai_company.dashboard.app import create_app
 
         app = create_app()
@@ -476,6 +477,7 @@ class TestWebSocketOrigin:
     def test_ws_accepts_allowlisted_origin(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """An Origin in the CORS allowlist must be accepted."""
         monkeypatch.setenv("DASHBOARD_CORS_ORIGINS", "https://dashboard.example.com")
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
         from ai_company.dashboard.app import create_app
 
         app = create_app()
@@ -484,5 +486,63 @@ class TestWebSocketOrigin:
             "/ws/dashboard",
             headers={"origin": "https://dashboard.example.com"},
         ) as ws:
+            hello = ws.receive_json()
+            assert hello["type"] == "connected"
+
+
+# ── WebSocket role-gate tests (ADR-012) ──────────────────────────────
+
+
+class TestWebSocketRoleGate:
+    """api_key mode requires a valid ?api_key= (at least ``run``) to connect."""
+
+    RUN_KEY = "test-run-key"
+    ADMIN_KEY = "test-admin-key"
+
+    @pytest.fixture(autouse=True)
+    def _role_keys(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("DASHBOARD_RUN_KEY", self.RUN_KEY)
+        monkeypatch.setenv("DASHBOARD_ADMIN_KEY", self.ADMIN_KEY)
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+
+    def _connect(self, url: str = "/ws/dashboard") -> None:
+        from starlette.websockets import WebSocketDisconnect
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        with (
+            pytest.raises(WebSocketDisconnect),
+            client.websocket_connect(url),
+        ):
+            pass
+
+    def test_ws_rejects_missing_key_in_api_key_mode(self) -> None:
+        """A handshake without ?api_key= must be refused with 1008."""
+        self._connect()
+
+    def test_ws_rejects_unknown_key_in_api_key_mode(self) -> None:
+        """An unknown ?api_key= must be refused with 1008."""
+        self._connect("/ws/dashboard?api_key=not-a-real-key")
+
+    def test_ws_accepts_run_key(self) -> None:
+        """A valid run key must connect and receive the hello message."""
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        with client.websocket_connect(f"/ws/dashboard?api_key={self.RUN_KEY}") as ws:
+            hello = ws.receive_json()
+            assert hello["type"] == "connected"
+
+    def test_ws_accepts_open_mode_without_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """open mode (loopback dev) connects with no key — admin role."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        with client.websocket_connect("/ws/dashboard") as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"

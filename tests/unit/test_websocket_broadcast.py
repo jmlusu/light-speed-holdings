@@ -30,6 +30,7 @@ def _anchor_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     the executor's internal bus) stays in the per-test tmp dir instead of
     the real project ``.opencode`` directory."""
     monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+    monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
 
 
 @pytest.fixture()
