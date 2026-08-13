@@ -30,7 +30,7 @@ from typing import Callable
 
 from fastapi import Header, HTTPException, status
 
-__all__ = ["Role", "role_for_key", "require_role"]
+__all__ = ["Role", "role_for_key", "require_role", "require_ws_role"]
 
 
 class Role(str, Enum):
@@ -117,3 +117,26 @@ def require_role(minimum: str | Role) -> Callable[..., Role]:
         return role
 
     return dependency
+
+
+def require_ws_role(minimum: str | Role, api_key: str | None) -> Role:
+    """Resolve the role for a WebSocket handshake supplied via query param.
+
+    Browsers cannot set custom headers on a WebSocket handshake, so the
+    ``X-API-Key``-based :func:`require_role` cannot be used directly; the key
+    is instead carried as ``?api_key=``.  ``open`` auth mode short-circuits
+    to ``admin`` exactly like :func:`require_role` (loopback-only, ADR-012).
+
+    Raises ``HTTPException`` (401 unknown/missing key, 403 below *minimum*);
+    WebSocket callers should translate that into a close (e.g. code 1008).
+    """
+    min_role = Role(minimum)
+    role = _resolve_role(api_key)
+    if _RANK[role] < _RANK[min_role]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                f"Insufficient permissions: requires role '{min_role.value}' (got '{role.value}')"
+            ),
+        )
+    return role
