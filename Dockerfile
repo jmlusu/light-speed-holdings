@@ -39,7 +39,6 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy runtime application code and data
 COPY --chown=appuser:appuser config/ config/
-COPY --chown=appuser:appuser orchestrator/ orchestrator/
 COPY --chown=appuser:appuser templates/ templates/
 COPY --chown=appuser:appuser company/ company/
 COPY --chown=appuser:appuser docs/ docs/
