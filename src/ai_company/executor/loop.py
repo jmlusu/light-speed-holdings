@@ -283,9 +283,13 @@ class Executor:
 
         Returns the number of tasks resumed (approved or rejected) this tick.
         Approved tasks are re-processed with ``preapproved=True`` so the
-        previously gated step executes without re-requesting approval.
-        Rejected tasks are marked FAILED.  Still-pending requests are left
-        parked — the executor does NOT block waiting for them.
+        previously gated step executes without re-requesting approval —
+        EXCEPT requests flagged ``metacharacter_blocked`` (GAP-016 / #70):
+        the approved command can never pass the executor's shell filter, so
+        the task is failed fast with an explicit message instead of silently
+        retrying until max iterations.  Rejected tasks are marked FAILED.
+        Still-pending requests are left parked — the executor does NOT block
+        waiting for them.
         """
         resumed = 0
         for task_id, request_id in list(self._pending_approvals.items()):
@@ -298,6 +302,28 @@ class Executor:
             self._persist_pending_approvals()
             task = self.bus.get_task_by_id(task_id)
             if task is None:
+                continue
+
+            if decision and self.hitl.is_metacharacter_blocked(request_id):
+                # GAP-016 / ticket #70: the human approved a bash/execute
+                # command containing shell metacharacters that the executor
+                # will ALWAYS reject — even with preapproved=True.  Re-running
+                # the loop would silently retry the same un-runnable command
+                # until max iterations (a generic timeout).  Fail fast with an
+                # explicit message so the operator rewrites and re-dispatches.
+                logger.warning(
+                    "HITL approved an un-runnable command for task %s "
+                    "(shell metacharacters) — failing fast instead of retrying.",
+                    task_id,
+                )
+                self._complete_task(
+                    task,
+                    TaskStatus.FAILED,
+                    "HITL approval cannot be honored: the approved command contains "
+                    "shell metacharacters the executor cannot run (GAP-016). Rewrite "
+                    "the command as separate tool steps and re-dispatch.",
+                )
+                self.stats.tasks_failed += 1
                 continue
 
             if decision:

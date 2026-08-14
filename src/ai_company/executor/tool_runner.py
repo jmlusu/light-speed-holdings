@@ -5,6 +5,9 @@ Security hardening (GAP-016):
 - Only allowlisted command prefixes may execute.
 - ``shell=True`` is never used; shell features (pipes, redirects) are blocked
   and should be expressed as separate tool steps.
+- Metacharacter detection is shared with the HITL gate
+  (``security.command_safety``) so un-runnable commands are flagged at
+  approval time (ticket #70).
 - Allowlist is configurable via YAML file (config/tool_allowlist.yaml).
 - Rejected commands are logged for security auditing.
 - Path sandboxing resolves symlinks to prevent traversal attacks.
@@ -38,6 +41,7 @@ from ai_company.orchestrator.tier_rules import (
     classify_tool_action,
     get_tier_config,
 )
+from ai_company.security.command_safety import find_shell_metacharacters
 from ai_company.security.content_filter import ContentFilter, get_content_filter
 from ai_company.security.pii_detector import PIIDetector, get_pii_detector
 
@@ -570,10 +574,14 @@ class ToolRunner:
         command = args["command"]
 
         # ── Reject shell metacharacters ──────────────────────────────────
-        _SHELL_META = set("|&;><$`\\") - {"/", "-", ".", "_"}
-        if any(ch in command for ch in _SHELL_META):
+        # Shared with the HITL gate (security.command_safety) so an approval
+        # request for an un-runnable command is flagged BEFORE the human sees
+        # it — execution itself remains fail-closed regardless of approval.
+        metacharacters = find_shell_metacharacters(command)
+        if metacharacters:
             _security_logger.warning(
-                "Rejected command with shell metacharacters: %s",
+                "Rejected command with shell metacharacters %s: %s",
+                ", ".join(metacharacters),
                 command[:200],
             )
             return {
