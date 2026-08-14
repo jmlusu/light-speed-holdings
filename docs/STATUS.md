@@ -9,7 +9,7 @@
 ## Current State
 
 - **v0.5.0 release (2026-08-13, shipped)**: Post-Sprint-9 hardening — dashboard RBAC (ADR-012, `src/ai_company/security/rbac.py`), SQLite-first storage experiment retired (ADR-011 superseded), workspace artifacts archived (issue #10), planning docs reconciled, CI version-check de-flaked, dependabot deps merged (#2 #3 #4 #5 #21), release pipeline fixes (Docker COPY of untracked `orchestrator/` removed, PyPI trusted-publisher config pending on pypi.org). Tagged `v0.5.0` (commit `89b20ba`, pushed with main), GitHub release published with wheel+sdist, final main CI green. See `Remaining Work` below.
-- **Sprint 9 (2026-08-13) Complete**: Business architecture & master service catalog (Phase 1+2), 127-agent positioning — external messaging, strategic brief, agent-facing standards (Phase 3), recurring revenue engine — 8 recurring products, conversion framework, enterprise payment terms (Phase 4). Commits `9439316`, `77a2d08`, `5998ea9`. Plus ADR-010 (T1 event-bus alignment with report-only MessageBus perf benchmark) and ADR-011 (SQLite-first storage mirror, later retired in `83b08bb`).
+- **Sprint 9 (2026-08-13) Complete**: Business architecture & master service catalog (Phase 1+2), 131-agent positioning — external messaging, strategic brief, agent-facing standards (Phase 3), recurring revenue engine — 8 recurring products, conversion framework, enterprise payment terms (Phase 4). Commits `9439316`, `77a2d08`, `5998ea9`. Plus ADR-010 (T1 event-bus alignment with report-only MessageBus perf benchmark) and ADR-011 (SQLite-first storage mirror, later retired in `83b08bb`).
 - **Sprint 8 (2026-08-12) Complete**: Operationalization — inbox purge, README/env setup, Malawi service catalog portfolio launch (4 new agents, governance blocking, SOPs, client intake CLI, legal package). Archived as `harness/changes/archive/2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog`. v0.4.0 tagged at `3363a09`.
 - **Sprint 7 (2026-08-11) Complete**: Doc reconciliation via active ECL `harness/changes/active` (`sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes`). Tool vocabulary canonicalization, HITL expiry, and quality hardening completed in commit `1b30d8f`. Canonical runtime tool vocabulary = `read`, `edit`, `grep`, `list`, `bash`, `webfetch`, `task` (`code_interpreter` removed; `write`/`execute`/`delegate`/`web_search` retained as backward-compatible aliases). `ApprovalGate` gains a HITL expiry sweep (expired PENDING → `EXPIRED`) wired into the daemon/governance cadence. Doc reconciliation (T002-T014) complete. All validation gates pass: lint-ecl ✅, ruff ✅, mypy ✅, pytest 1856 passed ✅, version consistency ✅. Archived as `harness/changes/archive/2026-08-11-sprint-7-documentation-reconciliation-and-remaining-gap-019-fixes`. Baseline before change: 1805/1858 tests, ruff/mypy clean.
 - **Next release**: v0.5.1+ (pyproject.toml is the canonical version source; the v0.3.0 tag was lost in the recovery reset and will not be recreated).
@@ -20,7 +20,7 @@
 - **Sprint 1 Complete**: All critical code hardening and audit trail work done.
 - **Sprint 2 Complete**: All 13 Sprint 2 items done and verified — code audit confirmed implementation in source, documentation sync completed 2026-07-21.
 - **Sprint 3 Complete**: All 8 Sprint 3 items done — gap closure (GAP-014, GAP-015), E2E pipeline test, WebSocket tests, governance CLI, memory CLI, dashboard API tests, org chart test rewrite. 1205 tests passing. v0.3.0 release tagged 2026-07-22.
-- **Agent Deployment**: All 127 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@` in terminal.
+- **Agent Deployment**: All 131 agents deployed to workspace-level `.opencode/agents/` — every agent now invokable via `@` in terminal.
 - **Organization Expansion**: 53 new roles added across all departments (2026-07-21) — competitive edge roles identified by CEO Advisor, CAIO, CISO, COO, CPO, CTO, CSO, General, and Human CEO agents.
 - **Models**: 17+ Pydantic models in `src/ai_company/models/models.py` (Company, Executive, Department, Agent, Workflow, Task, Risk, Decision, Postmortem, etc.)
 - **Registry**: 4-module system — `registry/loader.py`, `parser.py`, `resolver.py`, `validator.py` — loads 19 YAML config files into typed `CompanyRegistry`.
@@ -67,7 +67,7 @@
 - Strategy department created with 2 roles under CSO
 - Business Development function created reporting to CEO
 - AI Safety hierarchy established (AI Safety Lead → Red Team, Constitutional AI, Ethics)
-- **All 127 agents deployed** to workspace-level `.opencode/agents/` — fully invokable via `@`
+- **All 131 agents deployed** to workspace-level `.opencode/agents/` — fully invokable via `@`
 
 ## Code Quality
 
@@ -150,12 +150,12 @@ Point-in-time audit reports. These are frozen snapshots — refer to `STATUS.md`
 | Sprint 6 | ✅ COMPLETE | 1805 passing | Audit fixes + runtime hardening |
 | Sprint 7 | ✅ COMPLETE | 1856 passing | Tool vocabulary + HITL expiry + quality hardening + doc reconciliation |
 | Sprint 8 | ✅ COMPLETE | — | Operationalization: inbox purge, README/env, Malawi service catalog, client intake CLI |
-| Sprint 9 | ✅ COMPLETE | 1878 passing | Business architecture, 127-agent positioning, recurring revenue engine, ADR-010/011 |
+| Sprint 9 | ✅ COMPLETE | 1878 passing | Business architecture, 131-agent positioning, recurring revenue engine, ADR-010/011 |
 
 ## Remaining Work
 
 - **Hard gates (2026-08-13)**: v0.5.0 release (stale v0.4.0), CI-health zombie #20 closed, RBAC #37 closed, feasibility artifacts #10 archived, dependabot PRs (#2 #3 #4 #5 #21) merged/closed, planning docs reconciled.
-- **Sprint 9**: COMPLETE (2026-08-13) — business architecture, 127-agent positioning, recurring revenue engine.
+- **Sprint 9**: COMPLETE (2026-08-13) — business architecture, 131-agent positioning, recurring revenue engine.
 - **Sprint 8**: COMPLETE (2026-08-12). Archived.
 - **Sprint 7**: COMPLETE — Tool vocabulary canonicalization + HITL expiry + quality hardening + doc reconciliation (2026-08-11). Archived.
 - **Sprint 4**: COMPLETE — quality & completeness.
