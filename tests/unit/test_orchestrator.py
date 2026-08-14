@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -102,7 +102,7 @@ def test_approval_request_and_reject(gate: ApprovalGate) -> None:
 
 def test_approval_expired_not_pending(gate: ApprovalGate) -> None:
     gate.request_approval("a1", "task-1", "cto", "deploy", "Deploy to prod")
-    gate.requests[0].expires_at = datetime.now() - timedelta(minutes=1)
+    gate.requests[0].expires_at = datetime.now(timezone.utc) - timedelta(minutes=1)  # noqa: F821
     assert gate.get_pending_requests() == []
 
 
