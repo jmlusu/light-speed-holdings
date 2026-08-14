@@ -212,6 +212,8 @@ class TestTasks:
         assert task["receiver_id"] == "lead-engineering"
         assert task["status"] == "pending"
         assert task["priority"] == "medium"
+        # Evidence timestamp must be UTC-aware (issue #55)
+        assert task["created_at"].endswith("+00:00") or task["created_at"].endswith("Z")
 
     def test_list_tasks_after_create(self, setup_dashboard_data: None) -> None:
         client.post(
@@ -288,6 +290,11 @@ class TestApprovals:
         resp = client.get("/api/approvals")
         assert resp.status_code == 200
         assert len(resp.json()) == 0
+
+        # responded_at must be a UTC-aware timestamp (issue #55)
+        saved = yaml.safe_load(approvals_path.read_text(encoding="utf-8"))
+        responded = saved["requests"][0]["responded_at"]
+        assert responded.endswith("+00:00") or responded.endswith("Z")
 
     def test_reject_request(self, setup_dashboard_data: None, tmp_path: Path) -> None:
         approvals_path = tmp_path / "orchestrator/approvals.yaml"

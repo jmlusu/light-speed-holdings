@@ -604,3 +604,31 @@ class TestCollectorsReadTasksViaMessageBus:
         # At least one department (engineering/cs/legal/marketing/sales) must
         # have read its tasks through the bus.
         fake_bus.get_all_tasks_raw.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# KPI snapshot filename (issue #55: UTC-derived evidence timestamp)
+# ---------------------------------------------------------------------------
+
+
+class TestKpiSnapshotFilename:
+    """save_snapshot() must derive the filename from a UTC-aware datetime."""
+
+    def test_snapshot_filename_uses_utc_time(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from datetime import datetime, timezone
+
+        import ai_company.dashboard.kpi_collector as kpi_collector
+
+        fixed = datetime(2026, 8, 14, 9, 30, 15, tzinfo=timezone.utc)
+
+        class _FakeDatetime:
+            @classmethod
+            def now(cls, tz=None):
+                return fixed
+
+        monkeypatch.setattr(kpi_collector, "datetime", _FakeDatetime)
+
+        path = kpi_collector.save_snapshot({"departments": {}}, output_dir=tmp_path / "snaps")
+        assert path.name == "snapshot-20260814-093015.json"

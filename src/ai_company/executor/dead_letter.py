@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
@@ -69,7 +69,7 @@ class DeadLetterQueue:
         duplicate entries.  A ``dead_letter`` wrapper is returned
         containing the original task data plus metadata (moved_at, reason).
         """
-        now = datetime.now().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         entry = {
             "task": task_data,
             "moved_at": now,
@@ -149,7 +149,7 @@ class DeadLetterQueue:
         Returns the DLQ entry, or None if the task was already in DLQ.
         """
         task_id = str(task_data.get("id", ""))
-        now = datetime.now().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         entry = {
             "task": task_data,
             "moved_at": now,
@@ -202,7 +202,7 @@ def retry_dlq_task(
         return None
 
     restored["status"] = "pending"
-    restored["updated_at"] = datetime.now().isoformat()
+    restored["updated_at"] = datetime.now(timezone.utc).isoformat()
     restored.pop("completed_at", None)
     restored.pop("result", None)
     restored.pop("claimed_by", None)
@@ -214,6 +214,18 @@ def retry_dlq_task(
     bus.send_task(Task(**restored))
     logger.info("Task %s re-enqueued as pending after DLQ retry.", resolved_id)
     return restored
+
+
+def _to_utc(dt: datetime) -> datetime:
+    """Normalize a parsed datetime to UTC-aware for safe comparisons.
+
+    Legacy task timestamps (and leases) may be naive local strings; treat
+    them as UTC so they compare cleanly against the UTC ``now`` used by
+    stale detection.
+    """
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt
 
 
 def _task_is_stale(
@@ -231,7 +243,7 @@ def _task_is_stale(
     lease = task.get("lease_expires_at") or ""
     if lease:
         try:
-            lease_ts = datetime.fromisoformat(lease)
+            lease_ts = _to_utc(datetime.fromisoformat(lease))
         except (ValueError, TypeError):
             return "Unparseable lease timestamp"
         if lease_ts > now:
@@ -241,7 +253,7 @@ def _task_is_stale(
     if not ts_str:
         return "No timestamp — assumed stale"
     try:
-        ts = datetime.fromisoformat(ts_str)
+        ts = _to_utc(datetime.fromisoformat(ts_str))
     except (ValueError, TypeError):
         return f"Unparseable timestamp '{ts_str}'"
     if ts >= now - timedelta(minutes=threshold_minutes):
@@ -269,7 +281,7 @@ def detect_stale_tasks(
     except (OSError, json.JSONDecodeError):
         return []
 
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     moved: list[dict[str, Any]] = []
 
     for task in tasks:
