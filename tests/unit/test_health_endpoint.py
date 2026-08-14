@@ -55,7 +55,7 @@ def test_health_is_cwd_independent(tmp_path: Path, monkeypatch) -> None:
     (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
     (tmp_path / ".opencode" / "agents").mkdir(exist_ok=True)
     (tmp_path / ".opencode" / "agents" / "test-agent.md").write_text("# a", encoding="utf-8")
-    (tmp_path / ".opencode" / "audit.jsonl").write_text("", encoding="utf-8")
+    (tmp_path / ".opencode" / "audit").write_text("", encoding="utf-8")
     (tmp_path / "company").mkdir(exist_ok=True)
     (tmp_path / "company" / "agent-registry.json").write_text("[]", encoding="utf-8")
     (tmp_path / "company" / "models.yaml").write_text("models: []", encoding="utf-8")

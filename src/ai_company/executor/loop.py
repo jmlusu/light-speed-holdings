@@ -31,7 +31,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from ai_company.audit.integration import init_audit, log_task_status
+from ai_company.audit.integration import get_writer, init_audit, log_task_status
 from ai_company.dashboard.monitoring import inc_metric
 from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.executor.context import (
@@ -57,6 +57,27 @@ from ai_company.store.file_store import FileStore
 from ai_company.utils.logging import set_correlation_id
 
 logger = logging.getLogger(__name__)
+
+
+def _warn_on_silent_audit(processed: int, events_before: int, writer: Any) -> None:
+    """Emit a warning when a tick did real work but the audit trail did not grow.
+
+    Smoke guard (ticket #71): the canonical trail is append-only by
+    definition — a tick that processes tasks MUST record at least one event
+    (task lifecycle + tool calls). Zero growth means the write path is
+    silently misconfigured (wrong data root, decoy target, disabled writer),
+    which is exactly how the OP-16 proof ended up with a 0-byte trail.
+    """
+    if processed <= 0:
+        return
+    events_after = writer.events_written if writer is not None else 0
+    if events_after > events_before:
+        return
+    logger.warning(
+        "Tick processed %d task(s) but the audit trail recorded 0 new events — "
+        "canonical audit trail may be misconfigured (ticket #71).",
+        processed,
+    )
 
 
 class ExecutorStats:
@@ -237,6 +258,12 @@ class Executor:
         # Metric: count executor ticks (OB2)
         inc_metric("executor_loop_ticks_total")
 
+        # Audit smoke guard (ticket #71): record how many events the shared
+        # writer has appended so we can detect a tick that processes tasks
+        # without growing the canonical trail.
+        audit_writer = get_writer()
+        audit_events_before = audit_writer.events_written if audit_writer is not None else 0
+
         # Convert due scheduled tasks into inbox tasks
         self.scheduler.create_pending_tasks(self.bus)
 
@@ -275,6 +302,10 @@ class Executor:
 
         # GAP-005: Run memory consolidation periodically
         self._consolidation_scheduler.on_tick()
+
+        # Audit smoke guard: warn if this tick did work but recorded nothing
+        # (append-only trail must grow on every processed task).
+        _warn_on_silent_audit(processed, audit_events_before, get_writer())
 
         return processed
 

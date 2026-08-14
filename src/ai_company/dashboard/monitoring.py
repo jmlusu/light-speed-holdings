@@ -373,7 +373,7 @@ def _append_agent_performance(lines: list[str]) -> None:
     """Parse audit log and emit per-agent task success/failure counters."""
     agent_tasks: dict[str, dict[str, int]] = {}
     try:
-        for line in _get_store().iter_jsonl(".opencode/audit.jsonl"):
+        for line in _get_store().iter_jsonl(".opencode/audit"):
             try:
                 if line.get("event_type") != "task_complete":
                     continue
@@ -419,7 +419,7 @@ def _append_llm_model_breakdown(lines: list[str]) -> None:
     """Parse audit log and emit per-model LLM cost and call gauges."""
     model_stats: dict[str, dict[str, float]] = {}
     try:
-        for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
+        for event in _get_store().iter_jsonl(".opencode/audit"):
             try:
                 event_type = event.get("event_type", "")
                 if event_type not in ("tool_call", "tool_result"):
@@ -528,8 +528,8 @@ def health_check() -> dict[str, Any]:
     active_providers = [p for p in providers if os.environ.get(p)]
     checks["llm_providers"] = f"{len(active_providers)} configured"
 
-    # Audit log
-    audit_path = _state_path(".opencode/audit.jsonl")
+    # Audit log (canonical trail: <data root>/.opencode/audit, ticket #59/#71)
+    audit_path = _state_path(".opencode/audit")
     if audit_path.exists():
         try:
             size_kb = audit_path.stat().st_size / 1024

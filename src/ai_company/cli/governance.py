@@ -409,9 +409,12 @@ def audit_trail(
         json_output: Output raw JSON.
     """
     from ai_company.audit.reader import AuditReader
+    from ai_company.paths import get_audit_path
 
-    audit_path = ".opencode/audit.jsonl"
-    reader = AuditReader(audit_path)
+    # Canonical trail: <data root>/.opencode/audit (tickets #59 / #71). The
+    # historical ".opencode/audit.jsonl" was a 0-byte decoy that made this
+    # command report an empty trail while the real file kept growing.
+    reader = AuditReader(get_audit_path())
 
     try:
         if agent_id:
