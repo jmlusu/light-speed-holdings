@@ -1,4 +1,11 @@
 departments:
+  - id: "board"
+    name: "Board"
+    executive: "board-chair"
+    mission: "Provide governance oversight, strategic counsel, and fiduciary stewardship to the CEO and executive team."
+    budget_category: "operations"
+    headcount_target: 7
+
   - id: "ai_research"
     name: "AI Research"
     executive: "caio"

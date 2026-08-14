@@ -12,7 +12,7 @@ The active project lives at the repository root
 |------|---------|
 | `src/ai_company/` | Package source (CLI, executor, orchestrator, memory, dashboard, ...) |
 | `tests/` | Unit, integration, e2e, and performance tests |
-| `company-registry.yaml` | Single source of truth for agents (127 agents, 18 departments) |
+| `company-registry.yaml` | Single source of truth for agents (131 agents, 18 departments) |
 | `templates/` | Jinja2 templates used by the generator |
 | `docs/` | Architecture, status, ECL, and planning documents |
 | `scripts/` | `dev.ps1`, `backup.ps1`, ECL harness scripts |

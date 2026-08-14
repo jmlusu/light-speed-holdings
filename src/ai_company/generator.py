@@ -5,6 +5,7 @@ Supports template selection based on agent type and multi-format output.
 
 from __future__ import annotations
 
+import datetime
 import logging
 from pathlib import Path
 from typing import Any
@@ -236,6 +237,10 @@ class AgentGenerator:
 
         logger.info("Generation complete: %d agents.", len(generated))
 
+        # Keep docs/AGENT-REGISTRY-TABLE.md in sync (CI drift check verifies).
+        table_path = self.generate_agent_table()
+        logger.info("Generated agent registry table: %s", table_path)
+
         # Validate generated agents against the in-memory rendered content
         # (avoids re-reading all generated files from disk).
         shared_standards = self.output_dir.parent / SHARED_STANDARDS_FILENAME
@@ -248,6 +253,124 @@ class AgentGenerator:
             logger.info("All generated agents passed validation.")
 
         return generated
+
+    def _department_order(self) -> list[str]:
+        """Canonical department display order from ``company/departments.yaml``."""
+        order: list[str] = []
+        depts_path = Path("company/departments.yaml")
+        if depts_path.exists():
+            data = load_yaml_cached(depts_path)
+            if isinstance(data, dict):
+                for dept in data.get("departments", []):
+                    name = dept.get("name")
+                    if name:
+                        order.append(name)
+        return order
+
+    @staticmethod
+    def _display_reports_to(reports_to: Any) -> str:
+        """Render the reports-to column value for the registry table."""
+        if not reports_to:
+            return "None"
+        if reports_to == "human_ceo":
+            return "CEO"
+        if reports_to == "board":
+            return "Board"
+        return f"`{str(reports_to).replace('_', '-')}`"
+
+    @staticmethod
+    def _display_direct_reports(direct_reports: Any) -> str:
+        """Render the direct-reports column value for the registry table."""
+        if not direct_reports:
+            return "None"
+        ids = [f"`{str(rid).replace('_', '-')}`" for rid in direct_reports]
+        return ", ".join(ids)
+
+    @staticmethod
+    def _display_responsibilities(responsibilities: Any) -> str:
+        """Render the responsibilities column value for the registry table."""
+        if not responsibilities:
+            return "None"
+        if isinstance(responsibilities, str):
+            return responsibilities
+        parts: list[str] = []
+        for resp in responsibilities:
+            if isinstance(resp, dict):
+                parts.extend(f"{key}: {value}" for key, value in resp.items())
+            else:
+                parts.append(str(resp))
+        return "; ".join(parts)
+
+    def generate_agent_table(self, output_path: str = "docs/AGENT-REGISTRY-TABLE.md") -> Path:
+        """Generate a markdown agent registry table grouped by department.
+
+        Reads the registry (source of truth), groups agents by department in
+        the canonical order from ``company/departments.yaml`` (departments not
+        listed there are appended alphabetically), and renders a per-department
+        table with a global agent numbering. Wired into :meth:`generate_all`
+        so ``docs/AGENT-REGISTRY-TABLE.md`` stays in sync and the CI drift
+        check verifies it. Returns the written path.
+        """
+        dest = Path(output_path)
+        data = self.load_registry()
+        if isinstance(data, list):
+            agents = data
+            company_name = "AI Company"
+        else:
+            agents = data.get("company", {}).get("agents", [])
+            company_name = data.get("company", {}).get("name", "AI Company")
+
+        groups: dict[str, list[dict[str, Any]]] = {}
+        for agent in agents:
+            dept = str(agent.get("department") or "Unassigned")
+            groups.setdefault(dept, []).append(agent)
+
+        order = self._department_order()
+        ordered_depts = [dept for dept in order if dept in groups]
+        ordered_depts += sorted(dept for dept in groups if dept not in order)
+
+        lines = [
+            f"# Agent Registry — {company_name}",
+            "",
+            "> **Source**: `company-registry.yaml`",
+            f"> **Total Agents**: {len(agents)} across {len(groups)} departments",
+            f"> **Generated**: {datetime.date.today().isoformat()}",
+            "",
+            "---",
+            "",
+        ]
+
+        number = 0
+        for dept in ordered_depts:
+            dept_agents = sorted(groups[dept], key=lambda a: str(a.get("id", "")))
+            count = len(dept_agents)
+            label = "agent" if count == 1 else "agents"
+            lines.append(f"## {dept} ({count} {label})")
+            lines.append("")
+            lines.append(
+                "| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |"
+            )
+            lines.append(
+                "|---|----------|-----------|------------|----------------|-----------------|"
+            )
+            for agent in dept_agents:
+                number += 1
+                lines.append(
+                    "| {n} | `{aid}` | {name} | {reports} | {direct} | {resp} |".format(
+                        n=number,
+                        aid=str(agent.get("id", "")).replace("_", "-"),
+                        name=str(agent.get("name", "")),
+                        reports=self._display_reports_to(agent.get("reports_to")),
+                        direct=self._display_direct_reports(agent.get("direct_reports")),
+                        resp=self._display_responsibilities(agent.get("responsibilities")),
+                    )
+                )
+            lines.append("")
+
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8", newline="\n")
+        logger.info("Wrote agent registry table: %s (%d agents)", dest, len(agents))
+        return dest
 
     def _validate_generated_agents(
         self,
