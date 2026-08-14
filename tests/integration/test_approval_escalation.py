@@ -8,7 +8,7 @@ Executor + MessageBus + ApprovalGate with a mocked LLM layer.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -295,10 +295,10 @@ class TestApprovalTimeout:
         tasks = _inbox_tasks(workspace)
         assert tasks[0]["status"] == TaskStatus.WAITING_APPROVAL.value
 
-        # Backdate the approval request so it's already expired.
+        # Backdate the approval request so it's already expired (UTC).
         for req in hitl_gate.gate.requests:
             if req.status == ApprovalStatus.PENDING:
-                req.expires_at = datetime.now() - timedelta(minutes=1)
+                req.expires_at = datetime.now(timezone.utc) - timedelta(minutes=1)
         hitl_gate.gate._save_config()
 
         # Tick 2 — resume_approved sees the expired request → fails the task.
@@ -581,10 +581,10 @@ class TestHitlGateUnit:
             tool="write",
             args={"path": "y.py", "content": ""},
         )
-        # Backdate the expiry so it's already expired.
+        # Backdate the expiry so it's already expired (UTC).
         req = gate.gate.get_request(request_id)
         assert req is not None
-        req.expires_at = datetime.now() - timedelta(minutes=1)
+        req.expires_at = datetime.now(timezone.utc) - timedelta(minutes=1)
         gate.gate._save_config()
 
         result = gate.resume_approved(request_id)
