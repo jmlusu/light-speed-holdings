@@ -79,6 +79,15 @@ def test_health_is_cwd_independent(tmp_path: Path, monkeypatch) -> None:
 
 def test_health_reads_live_task_counts_from_inbox(tmp_path: Path, monkeypatch) -> None:
     """metrics_summary counts must reflect the live inbox (ticket #61)."""
+    # Order-independence: the dashboard MessageBus and StateStore are
+    # process-wide singletons that root at first use. Reset them so this test
+    # always reads its own temp inbox rather than a stale/global root.
+    import ai_company.dashboard.api as dash_api
+    from ai_company.dashboard.repository import reset_state_store
+
+    dash_api._bus = None
+    reset_state_store()
+
     (tmp_path / ".opencode").mkdir(parents=True, exist_ok=True)
     tasks = [
         {"id": "t1", "status": "completed"},

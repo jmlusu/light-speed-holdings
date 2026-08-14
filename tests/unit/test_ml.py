@@ -28,9 +28,29 @@ class TestEmbeddingEngine:
 
         assert EmbeddingEngine is not None
 
-    def test_encode_requires_sentence_transformers(self):
-        """EmbeddingEngine.encode raises ImportError when sentence-transformers is missing."""
+    def test_encode_requires_sentence_transformers(self, monkeypatch):
+        """encode raises a friendly ImportError when sentence-transformers is missing.
+
+        Fully hermetic: the lazy import is forced to fail deterministically
+        regardless of whether sentence-transformers is installed, so the test
+        never triggers a HuggingFace model download and never depends on run
+        order (a previously cached model must not short-circuit the import
+        path — see ``embeddings._get_model``).
+        """
+        import sys
+        from types import ModuleType
+
+        from ai_company.ml import embeddings
         from ai_company.ml.embeddings import EmbeddingEngine
+
+        # Order-independence: clear any cached model global first.
+        monkeypatch.setattr(embeddings, "_model", None)
+        monkeypatch.setattr(embeddings, "_model_name", "")
+
+        # Force `from sentence_transformers import SentenceTransformer` to fail
+        # deterministically (module present but attribute missing).
+        fake_st = ModuleType("sentence_transformers")
+        monkeypatch.setitem(sys.modules, "sentence_transformers", fake_st)
 
         engine = EmbeddingEngine.__new__(EmbeddingEngine)
         engine.model_name = "all-MiniLM-L6-v2"
@@ -38,27 +58,8 @@ class TestEmbeddingEngine:
         engine._dimension = None
         engine._cache = {}
 
-        # _get_model should raise if sentence_transformers not installed
-        # (in test env it may or may not be installed)
-        try:
-            from sentence_transformers import SentenceTransformer  # noqa: F401
-
-            # If installed, encode should work. Loading the model downloads it
-            # from HuggingFace on first use, so skip when offline rather than
-            # failing the suite on a runner without network access.
-            try:
-                result = engine.encode("hello world")
-            except OSError as exc:
-                message = str(exc).lower()
-                if "connect" in message or "offline" in message:
-                    pytest.skip(
-                        f"sentence-transformers installed but model download unavailable: {exc}"
-                    )
-                raise
-            assert result is not None
-        except ImportError:
-            with pytest.raises(ImportError, match="sentence-transformers"):
-                engine.encode("hello world")
+        with pytest.raises(ImportError, match="sentence-transformers"):
+            engine.encode("hello world")
 
     def test_cache_key_deterministic(self):
         from ai_company.ml.embeddings import EmbeddingEngine
