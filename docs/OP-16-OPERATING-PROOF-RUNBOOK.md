@@ -2,7 +2,8 @@
 
 **Issue**: #16 (Run the one-day operating proof)
 **Blocked by**: #15 (configured guardrails) — **status: satisfied** (`config/company/guardrails.yaml`)
-**Status**: PLANNED — awaiting human sign-off before any LLM spend
+**Status**: COMPLETED (PASS) — gate recorded 2026-08-14; see #16 and
+`docs/archive/2026-08-13-op16-proof/`.
 
 ## 1. Objective
 
