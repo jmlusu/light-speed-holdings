@@ -140,3 +140,67 @@ class TestBootstrapToExecution:
         tasks = _inbox_tasks(workspace)
         assert tasks[0]["status"] == "failed"
         assert "loop did not finish" in tasks[0]["result"]
+
+
+class TestAuditTrailSmokeGuard:
+    """Ticket #71: the canonical trail must resolve root-aware and grow.
+
+    Regression for the OP-16 proof: writes landed in a container-local
+    ``/home/light-speed-holdings/.opencode/audit`` while readers looked at
+    the host file, which stayed 0 bytes. With ``DASHBOARD_DATA_DIR`` set by
+    the ``workspace`` fixture, a default-constructed writer MUST target
+    ``<workspace>/.opencode/audit`` and grow on write.
+    """
+
+    def test_default_audit_writer_targets_canonical_path(self, workspace) -> None:
+        import ai_company.audit.integration as audit_mod
+        from ai_company.audit.integration import get_writer, init_audit
+        from ai_company.paths import get_audit_path
+
+        audit_mod._writer = None
+        init_audit()  # no explicit dir -> root-aware canonical default
+        writer = get_writer()
+        assert writer is not None
+        assert str(get_audit_path()) == str(workspace / ".opencode" / "audit")
+        assert writer._path == workspace / ".opencode" / "audit"
+
+    def test_default_audit_writer_records_bounded_tool_call(self, workspace) -> None:
+        import ai_company.audit.integration as audit_mod
+        from ai_company.audit.events import AuditEvent
+        from ai_company.audit.integration import get_writer, init_audit
+        from ai_company.audit.writer import (
+            _TRUNCATION_MARKER,
+            DEFAULT_MAX_STRING_CHARS,
+        )
+
+        audit_mod._writer = None
+        init_audit()  # canonical default: <data root>/.opencode/audit
+        writer = get_writer()
+        assert writer is not None
+        before = writer.events_written
+
+        # ~200 KB of mojibake + binary blob, as produced by grepping a
+        # binary SQLite file — must be bounded before hitting the trail.
+        writer.write_batch(
+            [
+                AuditEvent(
+                    event_type="tool_call",
+                    agent_id="test-agent",
+                    task_id="task-big",
+                    tool="grep",
+                    args={"pattern": "error", "path": "data/ai_company.db"},
+                    result={"matches": [{"line": "y" * 200_000, "blob": b"z" * 4096}]},
+                )
+            ]
+        )
+        assert writer.events_written == before + 1
+
+        trail = workspace / ".opencode" / "audit"
+        assert trail.exists()
+        raw = trail.read_text(encoding="utf-8")
+        assert raw.strip(), "canonical trail must not be empty (ticket #71)"
+        parsed = json.loads(raw.strip().splitlines()[-1])
+        match = parsed["result"]["matches"][0]
+        assert len(match["line"]) == DEFAULT_MAX_STRING_CHARS + len(_TRUNCATION_MARKER)
+        assert match["blob"] == "<audit:bytes len=4096>"
+        assert len(raw.strip().splitlines()[-1]) < 16 * 1024

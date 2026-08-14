@@ -25,6 +25,72 @@ logger = logging.getLogger(__name__)
 DEFAULT_MAX_BYTES = 10 * 1024 * 1024  # 10 MB per file
 DEFAULT_KEEP_FILES = 5  # Keep last N rotated files
 
+# ── Payload bounds (ticket #71) ──────────────────────────────────────
+# tool_call events embed raw tool args/results; grepping a binary file
+# previously stored a ~300 KB mojibake blob in the trail. Bound every
+# string and collection so a single event can never bloat the JSONL file.
+DEFAULT_MAX_STRING_CHARS = 4096
+DEFAULT_MAX_COLLECTION_ITEMS = 200
+_TRUNCATION_MARKER = "... [audit-truncated]"
+
+
+def _sanitize_for_audit(
+    value: Any,
+    *,
+    max_string_chars: int = DEFAULT_MAX_STRING_CHARS,
+    max_collection_items: int = DEFAULT_MAX_COLLECTION_ITEMS,
+) -> Any:
+    """Recursively bound an event payload before it is written to the trail.
+
+    Strings longer than *max_string_chars* are truncated, ``bytes`` values
+    are replaced with a size-only placeholder (never raw binary), and
+    oversized collections are cut down — so a single tool result can never
+    turn the canonical JSONL trail into a multi-MB blob (ticket #71).
+    """
+    if isinstance(value, str):
+        if len(value) <= max_string_chars:
+            return value
+        return value[:max_string_chars] + _TRUNCATION_MARKER
+    if isinstance(value, bytes):
+        return f"<audit:bytes len={len(value)}>"
+    if isinstance(value, dict):
+        sanitized: dict[str, Any] = {}
+        for index, (key, item) in enumerate(value.items()):
+            if index >= max_collection_items:
+                sanitized["..."] = (
+                    f"<audit:truncated {len(value) - max_collection_items} more items>"
+                )
+                break
+            sanitized[str(key)] = _sanitize_for_audit(
+                item,
+                max_string_chars=max_string_chars,
+                max_collection_items=max_collection_items,
+            )
+        return sanitized
+    if isinstance(value, (list, tuple, set)):
+        items = list(value)
+        sanitized_list = [
+            _sanitize_for_audit(
+                item,
+                max_string_chars=max_string_chars,
+                max_collection_items=max_collection_items,
+            )
+            for item in items[:max_collection_items]
+        ]
+        if len(items) > max_collection_items:
+            sanitized_list.append(
+                f"<audit:truncated {len(items) - max_collection_items} more items>"
+            )
+        return sanitized_list
+    if isinstance(value, (int, float, bool)) or value is None:
+        return value
+    # Unknown objects (enums, custom types) — represent as bounded text.
+    return _sanitize_for_audit(
+        repr(value),
+        max_string_chars=max_string_chars,
+        max_collection_items=max_collection_items,
+    )
+
 
 class AuditWriter:
     """Append-only writer that serializes AuditEvents to a JSONL file.
@@ -56,6 +122,9 @@ class AuditWriter:
         self._lock = threading.Lock()
         self._max_bytes = max_bytes
         self._keep_files = keep_files
+        # Number of events appended since construction (ticket #71): lets the
+        # executor smoke-check that a tick which did work also grew the trail.
+        self.events_written = 0
         self._audit_store: AuditStore | None = None
         if database is not None:
             # Lazy import to avoid a circular import at module load
@@ -88,12 +157,18 @@ class AuditWriter:
         if not events:
             return
 
-        lines = [json.dumps(event.model_dump(), ensure_ascii=False) for event in events]
+        # Sanitize BEFORE serialization so a tool result full of binary /
+        # oversized content never reaches the trail (ticket #71).
+        lines = [
+            json.dumps(_sanitize_for_audit(event.model_dump()), ensure_ascii=False)
+            for event in events
+        ]
         payload = "\n".join(lines) + "\n"
 
         with self._lock:
             self._maybe_rotate()
             self._atomic_append(payload)
+            self.events_written += len(events)
 
         if self._audit_store is not None:
             try:

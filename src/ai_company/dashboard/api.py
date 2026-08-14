@@ -89,7 +89,7 @@ def _load_tasks_dicts() -> list[dict[str, Any]]:
 def _per_agent_costs_from_audit() -> list[dict[str, Any]]:
     """Per-agent LLM cost breakdown derived from the audit JSONL (file fallback)."""
     agent_costs: dict[str, dict[str, Any]] = {}
-    for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
+    for event in _get_store().iter_jsonl(".opencode/audit"):
         try:
             meta = event.get("metadata", {})
             cost = float(meta.get("cost", 0))
@@ -277,7 +277,7 @@ def _file_agent_analytics(days: int = 30) -> dict[str, Any]:
     model_usage: dict[tuple[str, str, str], dict[str, Any]] = {}
     error_events_by_agent: dict[tuple[str, str], int] = {}
     severity_dist: dict[str, int] = {}
-    for event in _get_store().iter_jsonl(".opencode/audit.jsonl"):
+    for event in _get_store().iter_jsonl(".opencode/audit"):
         try:
             ts = event.get("timestamp", "")
             if ts and ts < cutoff:

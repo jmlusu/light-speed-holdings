@@ -15,6 +15,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ai_company.paths import get_audit_path
+
 logger = logging.getLogger(__name__)
 
 
@@ -69,10 +71,16 @@ class PromptOptimizer:
 
     def __init__(
         self,
-        audit_log_path: str | Path = ".opencode/audit.jsonl",
+        audit_log_path: str | Path | None = None,
         results_dir: str | Path = "results/prompt_optimization",
     ) -> None:
-        self.audit_log_path = Path(audit_log_path)
+        # Canonical default: <data root>/.opencode/audit (tickets #59 / #71)
+        # so analysis reads the real trail instead of the empty
+        # `.opencode/audit.jsonl` decoy. Resolved at construction so a
+        # runtime data-root override is honoured.
+        self.audit_log_path = (
+            Path(audit_log_path) if audit_log_path is not None else get_audit_path()
+        )
         self.results_dir = Path(results_dir)
         self.results_dir.mkdir(parents=True, exist_ok=True)
 
