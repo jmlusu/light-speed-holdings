@@ -35,7 +35,7 @@ from ai_company.data import get_database
 from ai_company.security.rbac import Role, require_role
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api", tags=["dashboard"])
+router = APIRouter(prefix="/api/v1", tags=["dashboard"])
 
 # Module-level MessageBus instance. All task read/write operations are routed
 # through this bus instead of touching `.opencode/inbox.json` directly (GAP-011).

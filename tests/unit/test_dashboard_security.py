@@ -29,7 +29,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "http://localhost:3000",
                 "Access-Control-Request-Method": "GET",
@@ -46,7 +46,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "http://localhost:3000",
                 "Access-Control-Request-Method": "GET",
@@ -62,7 +62,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://app.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -78,7 +78,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://evil.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -96,7 +96,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://any-origin.com",
                 "Access-Control-Request-Method": "GET",
@@ -125,7 +125,7 @@ class TestAPIKeyAuth:
 
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/dashboard")
+        resp = client.get("/api/v1/dashboard")
         assert resp.status_code == 401
         assert "API key" in resp.json()["detail"]
 
@@ -144,7 +144,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 401
@@ -165,7 +165,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
             headers={"X-API-Key": "secret-key-123"},
         )
@@ -186,7 +186,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.get(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={"X-API-Key": "secret-key-123"},
         )
         assert resp.status_code == 200
@@ -206,7 +206,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
             headers={"X-API-Key": "wrong-key"},
         )
@@ -225,7 +225,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 201
@@ -245,7 +245,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 401
@@ -380,7 +380,7 @@ class TestSecurityHeaders:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 401
@@ -455,7 +455,7 @@ class TestWebSocketOrigin:
         with (
             pytest.raises(WebSocketDisconnect),
             client.websocket_connect(
-                "/ws/dashboard", headers={"origin": "https://evil.example.com"}
+                "/ws/v1/dashboard", headers={"origin": "https://evil.example.com"}
             ),
         ):
             pass
@@ -469,7 +469,7 @@ class TestWebSocketOrigin:
         app = create_app()
         client = TestClient(app)
         with client.websocket_connect(
-            "/ws/dashboard", headers={"origin": "http://testserver"}
+            "/ws/v1/dashboard", headers={"origin": "http://testserver"}
         ) as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"
@@ -483,7 +483,7 @@ class TestWebSocketOrigin:
         app = create_app()
         client = TestClient(app)
         with client.websocket_connect(
-            "/ws/dashboard",
+            "/ws/v1/dashboard",
             headers={"origin": "https://dashboard.example.com"},
         ) as ws:
             hello = ws.receive_json()
@@ -505,7 +505,7 @@ class TestWebSocketRoleGate:
         monkeypatch.setenv("DASHBOARD_ADMIN_KEY", self.ADMIN_KEY)
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
 
-    def _connect(self, url: str = "/ws/dashboard") -> None:
+    def _connect(self, url: str = "/ws/v1/dashboard") -> None:
         from starlette.websockets import WebSocketDisconnect
 
         from ai_company.dashboard.app import create_app
@@ -524,7 +524,7 @@ class TestWebSocketRoleGate:
 
     def test_ws_rejects_unknown_key_in_api_key_mode(self) -> None:
         """An unknown ?api_key= must be refused with 1008."""
-        self._connect("/ws/dashboard?api_key=not-a-real-key")
+        self._connect("/ws/v1/dashboard?api_key=not-a-real-key")
 
     def test_ws_accepts_run_key(self) -> None:
         """A valid run key must connect and receive the hello message."""
@@ -532,7 +532,7 @@ class TestWebSocketRoleGate:
 
         app = create_app()
         client = TestClient(app)
-        with client.websocket_connect(f"/ws/dashboard?api_key={self.RUN_KEY}") as ws:
+        with client.websocket_connect(f"/ws/v1/dashboard?api_key={self.RUN_KEY}") as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"
 
@@ -543,6 +543,6 @@ class TestWebSocketRoleGate:
 
         app = create_app()
         client = TestClient(app)
-        with client.websocket_connect("/ws/dashboard") as ws:
+        with client.websocket_connect("/ws/v1/dashboard") as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"
