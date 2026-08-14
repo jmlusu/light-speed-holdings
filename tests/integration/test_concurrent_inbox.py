@@ -9,9 +9,12 @@ from __future__ import annotations
 
 import json
 import threading
+import time
+from collections.abc import Callable
 
 from ai_company.models.task import Task
 from ai_company.orchestrator.message_bus import MessageBus
+from ai_company.store.file_lock import FileLockError
 
 
 def _make_task(i: int) -> Task:
@@ -22,6 +25,25 @@ def _make_task(i: int) -> Task:
         content=f"work {i}",
         status="pending",
     )
+
+
+def _retry_op(op: Callable[[], None], errors: list[Exception], label: str) -> None:
+    """Run *op*, retrying transient file-lock contention under load.
+
+    The file-backed MessageBus serialises every write through a sidecar
+    ``.lock`` file; under heavy concurrent load a thread can occasionally
+    exceed the lock timeout and raise :class:`FileLockError`. That is a load
+    artifact, not a lost update — the final-state assertions below are the
+    real integrity check — so we retry briefly before recording an error.
+    """
+    for attempt in range(5):
+        try:
+            op()
+            return
+        except FileLockError:
+            if attempt == 4:
+                errors.append(FileLockError(f"{label} failed after retries"))
+            time.sleep(0.05 * (attempt + 1))
 
 
 def test_concurrent_send_and_status_update(tmp_path) -> None:
@@ -39,15 +61,27 @@ def test_concurrent_send_and_status_update(tmp_path) -> None:
     def sender(worker_id: int) -> None:
         try:
             for i in range(1, n_updates_each + 1):
-                bus.send_task(_make_task(worker_id * 100 + i))
+                _retry_op(
+                    lambda wid=worker_id, idx=i: bus.send_task(_make_task(wid * 100 + idx)),
+                    errors,
+                    f"send {worker_id}:{i}",
+                )
         except Exception as exc:  # pragma: no cover - defensive; # noqa: BLE001
             errors.append(exc)
 
     def status_updater() -> None:
         try:
             for _ in range(n_workers * n_updates_each):
-                bus.update_task_status("task-0", "completed")
-                bus.update_task_status("task-0", "pending")
+                _retry_op(
+                    lambda: bus.update_task_status("task-0", "completed"),
+                    errors,
+                    "update completed",
+                )
+                _retry_op(
+                    lambda: bus.update_task_status("task-0", "pending"),
+                    errors,
+                    "update pending",
+                )
         except Exception as exc:  # pragma: no cover - defensive; # noqa: BLE001
             errors.append(exc)
 

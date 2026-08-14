@@ -138,7 +138,7 @@ def compute(root: Path, days: int) -> dict:
     result["supporting"]["window_completed"] = completed
     result["supporting"]["window_failed"] = failed
 
-    # ── Supporting: task throughput from audit.jsonl ───────────────────
+    # ── Supporting: task throughput from canonical audit trail ─────────
     audit_events: list[dict] = []
     audit_path = root / AUDIT_JSONL
     if audit_path.is_file():

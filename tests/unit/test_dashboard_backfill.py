@@ -141,6 +141,12 @@ class TestBackfillCommand:
     def test_backfill_is_idempotent(
         self, project_root: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        # Order-independence: the SQLite Database singleton is process-wide;
+        # reset it so no stale connection/path leaks from an earlier test.
+        from ai_company.data import reset_database
+
+        reset_database()
+
         db_path = tmp_path / "ai_company.db"
         first = _run_backfill(project_root, db_path, monkeypatch)
         assert first.exit_code == 0, first.output
