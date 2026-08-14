@@ -13,7 +13,7 @@ preserving every comment and the KPI entries that have no real source yet
 Stable sources ONLY (the SQLite DB is treated as volatile mid-cleanup):
     .opencode/inbox.json          task telemetry (status, sender/receiver, created_at)
     company-registry.yaml         registered agents (127)
-    .opencode/audit.jsonl         task-created event log (throughput, supporting)
+    .opencode/audit               task-created event log (throughput, supporting)
     company/departments.yaml      declared departments (coverage, supporting)
     orchestrator/cost_tracker.json cost (currently all zeros -> n/a, supporting)
 
@@ -44,7 +44,7 @@ except ImportError:  # pragma: no cover - venv always has pyyaml
 
 KPI_YAML = "config/company/kpis.yaml"
 INBOX_JSON = ".opencode/inbox.json"
-AUDIT_JSONL = ".opencode/audit.jsonl"
+AUDIT_JSONL = ".opencode/audit"
 REGISTRY_YAML = "company-registry.yaml"
 DEPARTMENTS_YAML = "company/departments.yaml"
 COST_TRACKER_JSON = "orchestrator/cost_tracker.json"

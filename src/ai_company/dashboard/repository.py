@@ -51,8 +51,11 @@ _ALLOWED_REL_PATHS: frozenset[str] = frozenset(
         "config/company/kpis.yaml",
         # Cost & analytics
         "orchestrator/cost_tracker.json",
-        # Audit log (read-only usage by dashboard metrics)
-        ".opencode/audit.jsonl",
+        # Audit log (read-only usage by dashboard metrics). Canonical trail
+        # is the single JSONL file `.opencode/audit` (tickets #59 / #71) —
+        # the historical `.opencode/audit.jsonl` decoy is deliberately NOT
+        # allowlisted so nothing silently reads an empty file again.
+        ".opencode/audit",
         # Dead-letter queue (read-only health checks)
         ".opencode/dead_letter_queue.json",
         # KPI snapshot directory — prefix match handled separately

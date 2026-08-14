@@ -45,7 +45,7 @@ def project_root(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
 
-    (root / ".opencode" / "audit.jsonl").write_text(
+    (root / ".opencode" / "audit").write_text(
         json.dumps(
             {
                 "event_id": "evt-1",

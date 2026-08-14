@@ -6,7 +6,7 @@ from ai_company.data import (
     TaskStore,
     init_database,
 )
-from ai_company.paths import get_database_path, get_project_root
+from ai_company.paths import get_audit_path, get_database_path, get_project_root
 
 root = get_project_root()
 db = init_database(str(get_database_path()))
@@ -23,9 +23,9 @@ except Exception as exc:  # noqa: BLE001 - optional source, skip on any error
     print("  [skip] tasks: " + str(exc))
 print("  tasks: " + str(counts.get("tasks", 0)))
 
-# Audit events (.opencode/audit.jsonl)
+# Audit events (<data root>/.opencode/audit — canonical, tickets #59 / #71)
 try:
-    counts["audit_events"] = AuditStore(db).import_jsonl(root / ".opencode" / "audit.jsonl")
+    counts["audit_events"] = AuditStore(db).import_jsonl(str(get_audit_path()))
 except Exception as exc:  # noqa: BLE001 - optional source, skip on any error
     print("  [skip] audit_events: " + str(exc))
 print("  audit_events: " + str(counts.get("audit_events", 0)))

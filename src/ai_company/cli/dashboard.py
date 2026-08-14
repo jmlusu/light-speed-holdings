@@ -90,7 +90,7 @@ def backfill(
         TaskStore,
         init_database,
     )
-    from ai_company.paths import get_database_path, get_project_root
+    from ai_company.paths import get_audit_path, get_database_path, get_project_root
 
     # Source telemetry files live under the project root (independent of the
     # data root override, which only relocates the runtime SQLite database).
@@ -109,9 +109,9 @@ def backfill(
         typer.echo(f"  [skip] tasks: {exc}")
     typer.echo(f"  tasks:        {counts.get('tasks', 0)}")
 
-    # Audit events (.opencode/audit.jsonl)
+    # Audit events (<data root>/.opencode/audit — canonical, tickets #59 / #71)
     try:
-        counts["audit_events"] = AuditStore(db).import_jsonl(root / ".opencode" / "audit.jsonl")
+        counts["audit_events"] = AuditStore(db).import_jsonl(str(get_audit_path()))
     except Exception as exc:  # noqa: BLE001
         typer.echo(f"  [skip] audit_events: {exc}")
     typer.echo(f"  audit_events: {counts.get('audit_events', 0)}")
