@@ -132,7 +132,7 @@ def _origin_allowed(websocket: WebSocket) -> bool:
     return origin in allowed
 
 
-@router.websocket("/ws/dashboard")
+@router.websocket("/ws/v1/dashboard")
 async def dashboard_websocket(websocket: WebSocket) -> None:
     """Single WebSocket endpoint for live dashboard updates.
 

@@ -40,7 +40,7 @@ def patch_rate_limiter() -> Generator[None, None, None]:
     Usage::
 
         with patch_rate_limiter():
-            client.get("/api/dashboard")  # never 429
+            client.get("/api/v1/dashboard")  # never 429
     """
     from ai_company.dashboard.app import _RateLimiter
 

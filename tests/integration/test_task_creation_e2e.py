@@ -197,7 +197,7 @@ class TestTaskCreationAPI:
     def test_post_tasks_creates_task(self, api_client: TestClient) -> None:
         """POST /api/tasks should create a task and return 201."""
         response = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "cto",
                 "instruction": "Review the architecture",
@@ -218,7 +218,7 @@ class TestTaskCreationAPI:
         """POST /api/tasks should persist the task so GET /api/tasks returns it."""
         # Create a task
         create_resp = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "coo",
                 "instruction": "Optimize workflow",
@@ -229,7 +229,7 @@ class TestTaskCreationAPI:
         task_id = create_resp.json()["id"]
 
         # Retrieve all tasks
-        list_resp = api_client.get("/api/tasks")
+        list_resp = api_client.get("/api/v1/tasks")
         assert list_resp.status_code == 200
         tasks = list_resp.json()
 
@@ -242,7 +242,7 @@ class TestTaskCreationAPI:
     def test_post_tasks_returns_all_required_fields(self, api_client: TestClient) -> None:
         """The response should contain all required TaskItem fields."""
         response = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "caio",
                 "instruction": "Evaluate AI strategy",
@@ -259,7 +259,7 @@ class TestTaskCreationAPI:
     def test_post_tasks_defaults(self, api_client: TestClient) -> None:
         """POST /api/tasks should apply correct defaults for optional fields."""
         response = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "cto",
                 "instruction": "Deploy feature",
@@ -274,11 +274,11 @@ class TestTaskCreationAPI:
     def test_post_tasks_generates_uuid(self, api_client: TestClient) -> None:
         """Each created task should have a unique UUID as its id."""
         resp1 = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "cto", "instruction": "Task A"},
         )
         resp2 = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "cto", "instruction": "Task B"},
         )
         assert resp1.status_code == 201
@@ -288,7 +288,7 @@ class TestTaskCreationAPI:
     def test_post_tasks_missing_receiver_returns_422(self, api_client: TestClient) -> None:
         """POST /api/tasks without receiver_id should return 422."""
         response = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "instruction": "Do something",
             },
@@ -298,7 +298,7 @@ class TestTaskCreationAPI:
     def test_post_tasks_missing_instruction_returns_422(self, api_client: TestClient) -> None:
         """POST /api/tasks without instruction should return 422."""
         response = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "cto",
             },
@@ -307,23 +307,23 @@ class TestTaskCreationAPI:
 
     def test_post_tasks_empty_body_returns_422(self, api_client: TestClient) -> None:
         """POST /api/tasks with empty body should return 422."""
-        response = api_client.post("/api/tasks", json={})
+        response = api_client.post("/api/v1/tasks", json={})
         assert response.status_code == 422
 
     def test_get_tasks_filter_by_status(self, api_client: TestClient) -> None:
         """GET /api/tasks?status=pending should filter correctly."""
         # Create two tasks
         api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "cto", "instruction": "Task 1"},
         )
         api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "coo", "instruction": "Task 2"},
         )
 
         # Filter by status
-        resp = api_client.get("/api/tasks?status=pending")
+        resp = api_client.get("/api/v1/tasks?status=pending")
         assert resp.status_code == 200
         tasks = resp.json()
         assert all(t["status"] == "pending" for t in tasks)
@@ -332,15 +332,15 @@ class TestTaskCreationAPI:
     def test_get_tasks_filter_by_agent(self, api_client: TestClient) -> None:
         """GET /api/tasks?agent=cto should filter by receiver_id."""
         api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "cto", "instruction": "For CTO"},
         )
         api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "coo", "instruction": "For COO"},
         )
 
-        resp = api_client.get("/api/tasks?agent=cto")
+        resp = api_client.get("/api/v1/tasks?agent=cto")
         assert resp.status_code == 200
         tasks = resp.json()
         assert len(tasks) == 1
@@ -348,7 +348,7 @@ class TestTaskCreationAPI:
 
     def test_post_tasks_empty_inbox_initially(self, api_client: TestClient) -> None:
         """GET /api/tasks on a clean inbox should return an empty list."""
-        resp = api_client.get("/api/tasks")
+        resp = api_client.get("/api/v1/tasks")
         assert resp.status_code == 200
         assert resp.json() == []
 
@@ -365,7 +365,7 @@ class TestFullPipeline:
         """Create a task, verify it persists, verify fields are complete."""
         # Step 1: Create
         create_resp = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "cto",
                 "instruction": "Implement caching layer",
@@ -377,7 +377,7 @@ class TestFullPipeline:
         created = create_resp.json()
 
         # Step 2: Read back
-        list_resp = api_client.get("/api/tasks")
+        list_resp = api_client.get("/api/v1/tasks")
         assert list_resp.status_code == 200
         all_tasks = list_resp.json()
 
@@ -407,13 +407,13 @@ class TestFullPipeline:
 
         for inst in instructions:
             resp = api_client.post(
-                "/api/tasks",
+                "/api/v1/tasks",
                 json={"receiver_id": "cto", "instruction": inst},
             )
             assert resp.status_code == 201
 
         # Verify all tasks are present
-        list_resp = api_client.get("/api/tasks")
+        list_resp = api_client.get("/api/v1/tasks")
         assert list_resp.status_code == 200
         tasks = list_resp.json()
         assert len(tasks) == len(instructions)
@@ -426,7 +426,7 @@ class TestFullPipeline:
         """Create a task and verify it can be read with correct initial state."""
         # Create
         resp = api_client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "coo",
                 "instruction": "Streamline operations",
@@ -442,7 +442,7 @@ class TestFullPipeline:
         assert task["created_at"] is not None
 
         # Verify it shows up in GET
-        list_resp = api_client.get("/api/tasks")
+        list_resp = api_client.get("/api/v1/tasks")
         assert list_resp.status_code == 200
         found = [t for t in list_resp.json() if t["id"] == task["id"]]
         assert len(found) == 1

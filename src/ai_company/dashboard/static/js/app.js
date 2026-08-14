@@ -317,7 +317,7 @@ function dashboard() {
       }
 
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      let wsUrl = `${protocol}//${window.location.host}/ws/dashboard`;
+      let wsUrl = `${protocol}//${window.location.host}/ws/v1/dashboard`;
       if (window.DASHBOARD_API_KEY) {
         wsUrl += `?api_key=${encodeURIComponent(window.DASHBOARD_API_KEY)}`;
       }
@@ -445,12 +445,12 @@ function dashboard() {
 
             // FIX (dedup): merge only fields that actually changed. Poll
             // responses and WS pushes carry the same KPI snapshot (the
-            // /api/dashboard endpoint broadcasts exactly what it returns),
+            // /api/v1/dashboard endpoint broadcasts exactly what it returns),
             // so without a change check every poll cycle would trigger a
             // redundant second reactive mutation + chart redraw.
             const merged = this._mergeKPIPayload(msg.payload);
 
-            // Live KPI snapshots (from /api/kpis/live) carry a
+            // Live KPI snapshots (from /api/v1/kpis/live) carry a
             // `departments` key rather than task counters. Only apply them
             // on the KPIs page, and only when they actually change.
             if (msg.payload.departments && window.location.pathname === '/kpis') {
@@ -592,7 +592,7 @@ function dashboard() {
         await this.loadAgents();
       } else if (path === '/tasks') {
         await this.loadTasksPage();
-        const agentsData = await this.fetchJSON('/api/agents');
+        const agentsData = await this.fetchJSON('/api/v1/agents');
         if (agentsData) this.agents = agentsData;
       } else if (path === '/kpis') {
         await this.loadKPIs();
@@ -601,8 +601,8 @@ function dashboard() {
       } else if (path === '/escalations') {
         // FIX: Load both in parallel
         const [approvalsData, escalationsData] = await Promise.all([
-          this.fetchJSON('/api/approvals'),
-          this.fetchJSON('/api/escalations'),
+          this.fetchJSON('/api/v1/approvals'),
+          this.fetchJSON('/api/v1/escalations'),
         ]);
         if (approvalsData) this.approvals = approvalsData;
         if (escalationsData) this.escalations = escalationsData;
@@ -611,9 +611,9 @@ function dashboard() {
 
     async loadDashboard() {
       const [kpis, depts, tasks] = await Promise.all([
-        this.fetchJSON('/api/dashboard'),
-        this.fetchJSON('/api/departments'),
-        this.fetchJSON('/api/tasks'),
+        this.fetchJSON('/api/v1/dashboard'),
+        this.fetchJSON('/api/v1/departments'),
+        this.fetchJSON('/api/v1/tasks'),
       ]);
 
       // FIX: Batch all state updates into a single assignment window
@@ -643,12 +643,12 @@ function dashboard() {
     },
 
     async loadAgents() {
-      const data = await this.fetchJSON('/api/agents');
+      const data = await this.fetchJSON('/api/v1/agents');
       if (data) this.agents = data;
     },
 
     async loadTasks() {
-      const data = await this.fetchJSON('/api/tasks');
+      const data = await this.fetchJSON('/api/v1/tasks');
       if (data) this.tasks = data;
     },
 
@@ -664,7 +664,7 @@ function dashboard() {
       if (this.taskFilterAgent) params.set('agent', this.taskFilterAgent);
       if (this.taskFilterStatus) params.set('status', this.taskFilterStatus);
 
-      const data = await this.fetchJSON(`/api/tasks/paginated?${params}`);
+      const data = await this.fetchJSON(`/api/v1/tasks/paginated?${params}`);
       if (data) {
         this.tasks = data.items;
         this.taskTotal = data.total;
@@ -706,20 +706,20 @@ function dashboard() {
     },
 
     async loadApprovals() {
-      const data = await this.fetchJSON('/api/approvals');
+      const data = await this.fetchJSON('/api/v1/approvals');
       if (data) this.approvals = data;
     },
 
     async loadEscalations() {
-      const data = await this.fetchJSON('/api/escalations');
+      const data = await this.fetchJSON('/api/v1/escalations');
       if (data) this.escalations = data;
     },
 
     async loadKPIs() {
       const [depts, summary, company] = await Promise.all([
-        this.fetchJSON('/api/kpis'),
-        this.fetchJSON('/api/kpis/summary'),
-        this.fetchJSON('/api/company-kpis'),
+        this.fetchJSON('/api/v1/kpis'),
+        this.fetchJSON('/api/v1/kpis/summary'),
+        this.fetchJSON('/api/v1/company-kpis'),
       ]);
 
       // FIX: only assign state that actually changed — identical poll
@@ -766,13 +766,13 @@ function dashboard() {
       }
 
       // Also load live KPI data
-      const live = await this.fetchJSON('/api/kpis/live');
+      const live = await this.fetchJSON('/api/v1/kpis/live');
       if (live && JSON.stringify(live) !== JSON.stringify(this.liveKPIData)) {
         this.liveKPIData = live;
         needsKPIChartUpdate = true;
       }
 
-      // FIX: /api/kpis returns definitions only (no current/status).
+      // FIX: /api/v1/kpis returns definitions only (no current/status).
       // Overlay live values so department KPI cards show real data
       // instead of "undefined". Only re-merge when something changed —
       // mutating the same values would still re-render the cards.
@@ -795,7 +795,7 @@ function dashboard() {
 
     /**
      * FIX: Overlay live telemetry values onto department KPI definitions.
-     * /api/kpis returns definitions only, so cards previously rendered
+     * /api/v1/kpis returns definitions only, so cards previously rendered
      * "undefined" for current/status. The live snapshot
      * (liveKPIData.departments[deptId].kpis) is keyed by the same ids as
      * the definitions, each value {current, target, unit, status}.
@@ -829,7 +829,7 @@ function dashboard() {
 
     async loadCosts() {
       // Real cost data from the API — no client-side fabrication.
-      const summary = await this.fetchJSON('/api/costs/summary');
+      const summary = await this.fetchJSON('/api/v1/costs/summary');
       if (!summary) return;
 
       this.costSummary = {
@@ -880,7 +880,7 @@ function dashboard() {
     async assignTask() {
       if (!this.newTask.receiver_id || !this.newTask.instruction) return;
       this.submitting = true;
-      await this.fetchJSON('/api/tasks', {
+      await this.fetchJSON('/api/v1/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(this.newTask),
@@ -899,7 +899,7 @@ function dashboard() {
     },
 
     async approveRequest(id) {
-      await this.fetchJSON(`/api/approvals/${id}/approve`, { method: 'POST' });
+      await this.fetchJSON(`/api/v1/approvals/${id}/approve`, { method: 'POST' });
       this.saveScrollPosition();
       await this.loadApprovals();
       this.restoreScrollPosition();
@@ -907,7 +907,7 @@ function dashboard() {
     },
 
     async rejectRequest(id) {
-      await this.fetchJSON(`/api/approvals/${id}/reject`, { method: 'POST' });
+      await this.fetchJSON(`/api/v1/approvals/${id}/reject`, { method: 'POST' });
       this.saveScrollPosition();
       await this.loadApprovals();
       this.restoreScrollPosition();
@@ -915,7 +915,7 @@ function dashboard() {
     },
 
     async resolveEscalation(taskId) {
-      await this.fetchJSON(`/api/escalations/${taskId}/resolve`, { method: 'POST' });
+      await this.fetchJSON(`/api/v1/escalations/${taskId}/resolve`, { method: 'POST' });
       this.saveScrollPosition();
       await this.loadEscalations();
       this.restoreScrollPosition();
@@ -957,7 +957,7 @@ function dashboard() {
       );
 
       // Persist the status change to the backend
-      const res = await this.fetchJSON(`/api/tasks/${task.id}`, {
+      const res = await this.fetchJSON(`/api/v1/tasks/${task.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -993,7 +993,7 @@ function dashboard() {
       // FIX: Guard scroll across the list mutation / reload.
       this.saveScrollPosition();
 
-      const res = await this.fetchJSON(`/api/tasks/${taskId}`, {
+      const res = await this.fetchJSON(`/api/v1/tasks/${taskId}`, {
         method: 'DELETE',
       });
 
