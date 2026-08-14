@@ -18,7 +18,7 @@ from __future__ import annotations
 import itertools
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -46,13 +46,13 @@ class MemoryEntry:
         agent_id: str = "",
         tags: list[str] | None = None,
     ) -> None:
-        self.id = f"{memory_type}_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
+        self.id = f"{memory_type}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S_%f')}"
         self.memory_type = memory_type
         self.content = content
         self.metadata = metadata or {}
         self.agent_id = agent_id
         self.tags = tags or []
-        self.created_at = datetime.now().isoformat()
+        self.created_at = datetime.now(timezone.utc).isoformat()
         self.access_count = 0
         self.seq = next(_entry_sequence)
 
@@ -405,7 +405,7 @@ class MemoryStore:
             return 0
 
         pruned = 0
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         for mem_type, entries in self._stores.items():
             if not entries:
@@ -419,6 +419,8 @@ class MemoryStore:
                 for entry in survivors:
                     try:
                         created = datetime.fromisoformat(entry.created_at)
+                        if created.tzinfo is None:
+                            created = created.replace(tzinfo=timezone.utc)
                     except ValueError:
                         created = now
                     age_days = (now - created).total_seconds() / 86400.0

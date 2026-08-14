@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -41,6 +41,13 @@ class TestDeadLetterQueue:
         assert entry["reason"] == "stale timeout"
         assert "moved_at" in entry
         assert len(dlq.list_entries()) == 1
+
+    def test_move_task_moved_at_is_utc_aware(self, tmp_path: Path) -> None:
+        """DLQ moved_at must be a UTC-aware ISO timestamp (issue #55)."""
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        entry = dlq.move_task({"id": "t1"}, reason="stale timeout")
+        assert entry["moved_at"].endswith("+00:00") or entry["moved_at"].endswith("Z")
+        assert datetime.fromisoformat(entry["moved_at"]).tzinfo is not None
 
     def test_list_entries_returns_all(self, tmp_path: Path) -> None:
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
@@ -123,6 +130,29 @@ class TestRetryDlqTask:
         assert inbox[0]["id"] == "t-retry"
         assert inbox[0]["status"] == "pending"
 
+    def test_retry_updated_at_is_utc_aware(self, tmp_path: Path) -> None:
+        """The re-enqueued task's updated_at must be UTC-aware (issue #55)."""
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+
+        task = {
+            "id": "t-retry-utc",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "retry me",
+            "status": "in_progress",
+            "claimed_by": "worker-1",
+            "lease_expires_at": "2026-01-01T00:00:00",
+        }
+        dlq.move_task(task, "lease expired")
+
+        restored = retry_dlq_task(bus, dlq, "t-retry-utc")
+        assert restored is not None
+        assert restored["updated_at"].endswith("+00:00") or restored["updated_at"].endswith("Z")
+        assert datetime.fromisoformat(restored["updated_at"]).tzinfo is not None
+
     def test_retry_not_found_returns_none(self, tmp_path: Path) -> None:
         from ai_company.orchestrator.message_bus import MessageBus
 
@@ -175,7 +205,7 @@ class TestStaleDetection:
 
     def test_no_stale_tasks_when_recent(self, tmp_path: Path) -> None:
         """Tasks with recent timestamps should not be detected as stale."""
-        now = datetime.now().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         bus = _FakeBus([self._make_task("t1", created_at=now)])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
@@ -186,7 +216,7 @@ class TestStaleDetection:
 
     def test_stale_task_detected_and_moved(self, tmp_path: Path) -> None:
         """Task older than threshold should be moved to DLQ."""
-        stale_time = (datetime.now() - timedelta(minutes=60)).isoformat()
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
         bus = _FakeBus([self._make_task("t-stale", created_at=stale_time)])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
@@ -204,8 +234,8 @@ class TestStaleDetection:
 
     def test_updated_at_preferred_over_created_at(self, tmp_path: Path) -> None:
         """When updated_at is present, it should be used for staleness check."""
-        recent = datetime.now().isoformat()
-        old = (datetime.now() - timedelta(minutes=60)).isoformat()
+        recent = datetime.now(timezone.utc).isoformat()
+        old = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
         bus = _FakeBus([self._make_task("t-upd", created_at=recent, updated_at=old)])
 
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
@@ -215,7 +245,7 @@ class TestStaleDetection:
 
     def test_pending_tasks_not_moved(self, tmp_path: Path) -> None:
         """Only in_progress tasks should be considered stale."""
-        old = (datetime.now() - timedelta(minutes=60)).isoformat()
+        old = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
         bus = _FakeBus(
             [
                 self._make_task("t-pending", status="pending", created_at=old),
@@ -246,6 +276,18 @@ class TestStaleDetection:
         assert len(moved) == 1
         assert bus.deleted == ["t-bad"]
 
+    def test_legacy_naive_timestamp_treated_as_utc(self, tmp_path: Path) -> None:
+        """A naive legacy timestamp is interpreted as UTC for staleness."""
+        old_naive = (datetime.now(timezone.utc) - timedelta(minutes=60)).strftime(
+            "%Y-%m-%dT%H:%M:%S"
+        )
+        bus = _FakeBus([self._make_task("t-legacy", created_at=old_naive)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert bus.deleted == ["t-legacy"]
+
     def test_empty_inbox_returns_empty(self, tmp_path: Path) -> None:
         dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
         moved = detect_stale_tasks(_FakeBus([]), dlq)
@@ -253,8 +295,8 @@ class TestStaleDetection:
 
     def test_mixed_tasks_partial_move(self, tmp_path: Path) -> None:
         """Only stale in_progress tasks should be moved; others stay."""
-        now = datetime.now().isoformat()
-        old = (datetime.now() - timedelta(minutes=60)).isoformat()
+        now = datetime.now(timezone.utc).isoformat()
+        old = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
         bus = _FakeBus(
             [
                 self._make_task("t-recent", status="in_progress", created_at=now),
@@ -296,7 +338,7 @@ class TestExecutorStaleDetection:
         (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
 
         # Put a stale in_progress task in the inbox
-        stale_time = (datetime.now() - timedelta(minutes=60)).isoformat()
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
         inbox = tmp_path / ".opencode" / "inbox.json"
         tasks = [
             {

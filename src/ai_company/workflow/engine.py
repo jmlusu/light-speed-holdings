@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import contextlib
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -187,7 +187,7 @@ class WorkflowInstance:
         self.context = context
         self.current_step_index = 0
         self.step_results: dict[str, str] = {}
-        self.started_at = datetime.now()
+        self.started_at = datetime.now(timezone.utc)
         self.completed_at: datetime | None = None
         self.status_label = "running"
 
@@ -226,7 +226,7 @@ class WorkflowInstance:
             try:
                 instance.started_at = datetime.fromisoformat(started)
             except (ValueError, TypeError):
-                instance.started_at = datetime.now()
+                instance.started_at = datetime.now(timezone.utc)
         completed = data.get("completed_at")
         if completed:
             with contextlib.suppress(ValueError, TypeError):
@@ -258,7 +258,7 @@ class WorkflowInstance:
 
         if self.current_step_index >= len(self.workflow.steps) - 1:
             self.status_label = "completed"
-            self.completed_at = datetime.now()
+            self.completed_at = datetime.now(timezone.utc)
             return {"message": "Workflow completed", **self.status()}
 
         self.current_step_index += 1
@@ -276,7 +276,7 @@ class WorkflowInstance:
         # Auto-advance if not last step
         if self.current_step_index >= len(self.workflow.steps) - 1:
             self.status_label = "completed"
-            self.completed_at = datetime.now()
+            self.completed_at = datetime.now(timezone.utc)
             return {"message": "Workflow completed", **self.status()}
 
         self.current_step_index += 1
@@ -285,7 +285,7 @@ class WorkflowInstance:
     def cancel(self) -> dict[str, Any]:
         """Cancel the workflow."""
         self.status_label = "cancelled"
-        self.completed_at = datetime.now()
+        self.completed_at = datetime.now(timezone.utc)
         return {"message": "Workflow cancelled", **self.status()}
 
     def to_tasks(self) -> list[Task]:

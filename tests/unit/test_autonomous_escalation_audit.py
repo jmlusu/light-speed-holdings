@@ -7,13 +7,32 @@ ESCALATION audit event when its self-healing retry policy reaches the
 
 from __future__ import annotations
 
+from datetime import datetime
 from unittest.mock import patch
 
-from ai_company.executor.autonomous import AutonomousDecisionEngine
+from ai_company.executor.autonomous import (
+    AutonomousDecision,
+    AutonomousDecisionEngine,
+    ConfidenceScore,
+)
 
 
 def _make_engine(tmp_path) -> AutonomousDecisionEngine:
     return AutonomousDecisionEngine(history_dir=tmp_path / "decisions")
+
+
+def test_decision_timestamp_is_utc_aware():
+    """AutonomousDecision.timestamp must be UTC-aware (issue #55)."""
+    decision = AutonomousDecision(
+        tool="read",
+        args={},
+        autonomous=True,
+        confidence=ConfidenceScore(score=0.9, reasoning="safe read"),
+        tier=0,
+        requires_hitl=False,
+    )
+    assert decision.timestamp.endswith("+00:00") or decision.timestamp.endswith("Z")
+    assert datetime.fromisoformat(decision.timestamp).tzinfo is not None
 
 
 def test_suggest_retry_logs_escalation_event(tmp_path):
