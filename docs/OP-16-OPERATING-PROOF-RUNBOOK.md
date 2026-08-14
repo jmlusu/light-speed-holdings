@@ -105,6 +105,14 @@ If a task does park: `uv run ai-company orchestrator approval-approve <request_i
 `.opencode/daily_briefing.md`, dashboard health + WS observations,
 final `executor status` + `dlq-list` output. Summarized into the #16 issue.
 
+**Timezone note**: all evidence timestamps are UTC — ISO-8601 with an explicit
+`+00:00` offset (e.g. `2026-08-14T09:30:00+00:00`). This includes
+`loop_result.json` `timestamp`, DLQ `moved_at`, workflow `started_at` /
+`completed_at`, memory `created_at`, KPI snapshot filenames, and dashboard
+`created_at` / `responded_at` / `evaluated_at` fields. Audit events, cost
+tracking, daemon state, WebSocket broadcasts, and retention records were
+already UTC.
+
 ## 9. Gate outcome
 
 - **PASS** (all green or minor fix-list): close #16 → plan #17 cadence from what worked.

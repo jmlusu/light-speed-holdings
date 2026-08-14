@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 import pytest
 
 from ai_company.models import (
@@ -10,7 +12,7 @@ from ai_company.models import (
     Workflow,
     WorkflowStep,
 )
-from ai_company.workflow.engine import WorkflowEngine
+from ai_company.workflow.engine import WorkflowEngine, WorkflowInstance
 
 
 @pytest.fixture()
@@ -130,3 +132,38 @@ class TestWorkflowEngine:
         assert engine.get_status("fake_id") is None
         with pytest.raises(ValueError):
             engine.advance("fake_id")
+
+    def test_timestamps_are_utc_aware(self, engine: WorkflowEngine):
+        """started_at / completed_at must round-trip as UTC-aware (issue #55)."""
+        instance_id = engine.start("simple")
+        instance = engine._instances[instance_id]
+        assert instance.started_at.tzinfo is not None
+        assert instance.completed_at is None
+
+        engine.complete_step(instance_id, "done")
+        assert instance.completed_at is not None
+        assert instance.completed_at.tzinfo is not None
+
+        data = instance.to_dict()
+        assert data["started_at"].endswith("+00:00") or data["started_at"].endswith("Z")
+        assert data["completed_at"].endswith("+00:00") or data["completed_at"].endswith("Z")
+        assert datetime.fromisoformat(data["started_at"]).tzinfo is not None
+        assert datetime.fromisoformat(data["completed_at"]).tzinfo is not None
+
+    def test_loads_legacy_naive_timestamps_safely(self, engine: WorkflowEngine):
+        """from_dict must accept both naive and aware persisted timestamps."""
+        instance = WorkflowInstance.from_dict(
+            {
+                "instance_id": "legacy-1",
+                "workflow_id": "simple",
+                "context": {},
+                "current_step_index": 0,
+                "step_results": {},
+                "started_at": "2026-01-01T00:00:00",
+                "completed_at": "2026-01-01T00:00:01",
+                "status": "completed",
+            },
+            engine.get_workflow("simple"),
+        )
+        assert instance.started_at.tzinfo is None  # legacy value preserved
+        assert instance.completed_at is not None

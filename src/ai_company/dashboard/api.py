@@ -6,7 +6,7 @@ import logging
 import math
 import re
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
@@ -540,7 +540,7 @@ def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
     escalation_events = escalations_data.get("events", [])
     scheduled = scheduler_data.get("tasks", [])
 
-    now = datetime.now().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     pending_approvals = [
         r
         for r in approval_requests
@@ -873,7 +873,7 @@ def create_task(
         instruction=assign.instruction,
         status="pending",  # type: ignore[arg-type]
         priority=priority,
-        created_at=datetime.now().isoformat(),
+        created_at=datetime.now(timezone.utc).isoformat(),
     )
     get_bus().send_task(task)
 
@@ -937,13 +937,25 @@ def delete_task(
 def list_approvals() -> list[ApprovalItem]:
     """List all pending approval requests that have not expired."""
     data = _load_yaml("orchestrator/approvals.yaml")
-    now = datetime.now().isoformat()
+    now = datetime.now(timezone.utc)
     requests = data.get("requests", [])
-    return [
-        ApprovalItem(**r)
-        for r in requests
-        if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now)
-    ]
+    result: list[ApprovalItem] = []
+    for r in requests:
+        if r.get("status") != "pending":
+            continue
+        expires = r.get("expires_at")
+        if expires:
+            try:
+                expires_dt = datetime.fromisoformat(expires)
+            except (ValueError, TypeError):
+                expires_dt = None
+            if expires_dt is not None:
+                if expires_dt.tzinfo is None:
+                    expires_dt = expires_dt.replace(tzinfo=timezone.utc)
+                if expires_dt <= now:
+                    continue
+        result.append(ApprovalItem(**r))
+    return result
 
 
 @router.post("/approvals/{request_id}/approve", tags=["approvals"])
@@ -958,7 +970,7 @@ def approve_request(
     for r in requests:
         if r["id"] == request_id and r.get("status") == "pending":
             r["status"] = "approved"
-            r["responded_at"] = datetime.now().isoformat()
+            r["responded_at"] = datetime.now(timezone.utc).isoformat()
             r["response_by"] = body.approved_by if body else "human-ceo"
             if body and body.notes:
                 r["notes"] = body.notes
@@ -981,7 +993,7 @@ def reject_request(
     for r in requests:
         if r["id"] == request_id and r.get("status") == "pending":
             r["status"] = "rejected"
-            r["responded_at"] = datetime.now().isoformat()
+            r["responded_at"] = datetime.now(timezone.utc).isoformat()
             r["response_by"] = body.approved_by if body else "human-ceo"
             if body and body.notes:
                 r["notes"] = body.notes
@@ -1205,7 +1217,7 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
     # Approvals pending
     approvals_data = _load_yaml("orchestrator/approvals.yaml")
     approval_requests = approvals_data.get("requests", [])
-    now_iso = datetime.now().isoformat()
+    now_iso = datetime.now(timezone.utc).isoformat()
     pending_approvals = [
         r
         for r in approval_requests
@@ -1318,7 +1330,7 @@ def get_department_dashboard(
 
     result = {
         "department": dept_name,
-        "collected_at": dept_kpis.get("collected_at", datetime.now().isoformat()),
+        "collected_at": dept_kpis.get("collected_at", datetime.now(timezone.utc).isoformat()),
         "kpis": dept_kpis.get("kpis", {}),
         "agents": dept_agents,
         "task_stats": task_stats,
@@ -1507,7 +1519,7 @@ def get_kpi_alerts() -> dict[str, Any]:
         logger.debug("Failed to store KPI snapshot for history")
 
     return {
-        "evaluated_at": datetime.now().isoformat(),
+        "evaluated_at": datetime.now(timezone.utc).isoformat(),
         "rules_evaluated": len(default_rules),
         "alerts_fired": [
             {

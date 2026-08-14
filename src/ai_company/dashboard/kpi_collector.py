@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -59,7 +59,7 @@ def save_snapshot(snapshots: dict[str, Any], output_dir: Path | None = None) -> 
     out = output_dir or Path("orchestrator/kpi_snapshots")
     out.mkdir(parents=True, exist_ok=True)
 
-    ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     path = out / f"snapshot-{ts}.json"
 
     with open(path, "w", encoding="utf-8") as f:

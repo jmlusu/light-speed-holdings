@@ -27,7 +27,7 @@ import os
 import socket
 import threading
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -639,7 +639,7 @@ class Executor:
                 {"step": r.step, "tool": r.tool, "status": r.status, "iteration": r.iteration}
                 for r in result.tool_results
             ],
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         FileStore(task_dir, backup=False).write_json("loop_result.json", log_data)
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -30,6 +31,22 @@ class TestMemoryEntry:
         assert d["content"] == "Fact: sky is blue"
         assert "id" in d
         assert "created_at" in d
+
+    def test_created_at_is_utc_aware(self):
+        """Memory created_at must be a UTC-aware ISO timestamp (issue #55)."""
+        entry = MemoryEntry("episodic", "Did something")
+        assert entry.created_at.endswith("+00:00") or entry.created_at.endswith("Z")
+        assert datetime.fromisoformat(entry.created_at).tzinfo is not None
+
+    def test_persistence_keeps_utc_aware_created_at(self, tmp_path: Path):
+        """created_at survives a store reload with its UTC offset (issue #55)."""
+        base = tmp_path / "mem"
+        s1 = MemoryStore(base_dir=base)
+        s1.store("temporal", "Timestamped event")
+        s2 = MemoryStore(base_dir=base)
+        created = s2.recall("temporal")[0].created_at
+        assert created.endswith("+00:00") or created.endswith("Z")
+        assert datetime.fromisoformat(created).tzinfo is not None
 
 
 class TestMemoryStore:

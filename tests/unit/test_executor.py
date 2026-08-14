@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -479,6 +480,10 @@ class TestExecutorLoop:
         log = json.loads(log_path.read_text(encoding="utf-8"))
         assert log["task_id"] == "task-001"
         assert log["agent"] == "test-agent"
+
+        # Evidence timestamp must be UTC-aware (issue #55)
+        assert log["timestamp"].endswith("+00:00") or log["timestamp"].endswith("Z")
+        assert datetime.fromisoformat(log["timestamp"]).tzinfo is not None
 
     def test_tick_handles_loop_failure(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
