@@ -10,7 +10,7 @@
 ## 1. Positioning
 
 Light Speed Holdings operates as an **AI-first services studio** in Malawi. One human
-CEO directs a workforce of **127 AI agents** (executives, engineers, designers, writers,
+CEO directs a workforce of **131 AI agents** (executives, engineers, designers, writers,
 analysts, sales, support) to deliver client work through a defined delivery pipeline:
 
 ```
@@ -77,7 +77,7 @@ the USD figure directly with terms (50% upfront, 50% on delivery).
 
 | Deliverable | What you get | Price | Turnaround |
 |-------------|--------------|-------|------------|
-| **E1 — AI Company Builder license** | One-on-one onboarding, your own 127-agent company running on your laptop/VPS | MWK 3,500,000 (≈ $2,000) one-off + MWK 350,000/mo (≈ $200/mo) support | Setup 1–2 weeks |
+| **E1 — AI Company Builder license** | One-on-one onboarding, your own 131-agent company running on your laptop/VPS | MWK 3,500,000 (≈ $2,000) one-off + MWK 350,000/mo (≈ $200/mo) support | Setup 1–2 weeks |
 | **E2 — Agent setup for agencies** | White-label: we stand up agent teams for your agency's clients | Contact for quote | — |
 
 **Target clients:** tech-savvy founders, local agencies, diaspora entrepreneurs.
@@ -110,7 +110,7 @@ the USD figure directly with terms (50% upfront, 50% on delivery).
 
 ---
 
-## 5. Delivery Model (how the 127 agents actually work)
+## 5. Delivery Model (how the 131 agents actually work)
 
 | Step | What happens | Who/What |
 |------|--------------|----------|

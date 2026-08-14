@@ -90,7 +90,7 @@ Chief of Staff                       Executive     operations              human
 CTO                                  Executive     engineering             chief-of-staff
 Lead Engineer                        Specialist    engineering             cto
 
-Total: 127 agents
+Total: 131 agents
 ```
 
 **Rules:**
@@ -154,7 +154,7 @@ Used for health checks and diagnostics:
 │                                             │
 │ Fixed:                                      │
 │   - Created .opencode/ directory            │
-│   - Generated 127 agent files                │
+│   - Generated 131 agent files                │
 │   - Created empty .opencode/inbox.json      │
 └─────────────────────────────────────────────┘
 ```
@@ -361,11 +361,11 @@ $ ai-company company run
 
   Bootstrapping AI Company...
   ✓ Created .opencode/ directory
-  ✓ Generated 127 agent files
+  ✓ Generated 131 agent files
   ✓ Created config files
   ✓ Initialized task inbox
 
-  Done! 127 agents ready.
+  Done! 131 agents ready.
 ```
 
 For continuous operations:

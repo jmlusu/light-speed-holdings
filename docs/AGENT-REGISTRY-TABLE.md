@@ -1,244 +1,228 @@
 # Agent Registry — Light Speed Holdings
 
 > **Source**: `company-registry.yaml`
-> **Total Agents**: 84 (32 original + 52 phased hires)
-> **Generated**: 2026-07-21
+> **Total Agents**: 131 across 18 departments
+> **Generated**: 2026-08-14
 
 ---
+
+## Board (7 agents)
+
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 1 | `board-chair` | Board Chair | None | None | Preside over all board meetings and set agendas; Ensure board governance standards are upheld; Lead board elections and nominations; Mediate disagreements between board members; Represent board in external stakeholder communications; Oversee board committee structure and assignments; Ensure legal and regulatory compliance at board level; Maintain confidentiality of board deliberations |
+| 2 | `board-customer` | Customer Committee Chair | `board-chair` | None | Monitor customer satisfaction and NPS scores; Review customer retention and churn metrics; Advise on product-market fit and positioning; Evaluate customer support quality and SLAs; Guide customer success strategy and programs; Review major customer escalations and issues; Report customer health to the full board; Maintain confidentiality of board discussions |
+| 3 | `board-finance` | Finance Committee Chair | `board-chair` | None | Oversee financial reporting and audit processes; Review quarterly and annual financial statements; Advise on investment strategy and capital allocation; Monitor budget adherence across departments; Ensure financial compliance and risk management; Review major financial commitments and contracts; Report financial health to the full board; Maintain confidentiality of board discussions |
+| 4 | `board-product` | Product Committee Chair | `board-chair` | None | Review product vision and roadmap alignment; Evaluate feature prioritization and trade-offs; Monitor product adoption and engagement metrics; Assess competitive positioning and differentiation; Guide product pricing and packaging strategy; Review major product launches and releases; Report product health to the full board; Maintain confidentiality of board discussions |
+| 5 | `board-risk` | Risk Committee Chair | `board-chair` | None | Identify and assess enterprise-level risks; Review risk mitigation strategies and controls; Monitor regulatory and compliance risks; Evaluate cybersecurity and technology risks; Oversee incident response and business continuity; Report risk posture to the full board; Ensure adequate insurance coverage; Maintain confidentiality of board discussions |
+| 6 | `board-strategy` | Strategy Committee Chair | `board-chair` | None | Develop and review long-term strategic plans; Evaluate market expansion opportunities; Assess partnership and acquisition candidates; Monitor competitive landscape and industry trends; Guide product roadmap alignment with strategy; Review and approve major strategic initiatives; Report strategic progress to the full board; Maintain confidentiality of board discussions |
+| 7 | `board-technology` | Technology Committee Chair | `board-chair` | None | Review technology architecture and platform decisions; Advise on AI and machine learning strategy; Monitor engineering velocity and quality metrics; Evaluate technology vendor relationships; Oversee data privacy and security architecture; Guide technical debt management strategy; Report technology health to the full board; Maintain confidentiality of board discussions |
 
 ## AI Research (13 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 1 | `caio` | Chief AI Officer | AI Research | `chief_of_staff` | `ml_engineer` | Evaluate and integrate new LLM models; Fine-tune prompts for agent efficacy; Direct AI research strategy |
-| 2 | `ai_ethics_officer` | AI Ethics and Responsible AI Officer | AI Research | `ai_safety_lead` | None | Conduct fairness audits and bias detection; Maintain transparency requirements; Conduct stakeholder impact assessments |
-| 3 | `ai_safety_lead` | AI Safety Lead | AI Research | `caio` | `red_team_engineer`, `constitutional_ai_owner`, `ai_ethics_officer` | Own safety policies gating agent actions; Define refusal/harm-reduction thresholds; Monitor safety incidents and coordinate response |
-| 4 | `constitutional_ai_owner` | Constitutional AI Owner | AI Research | `ai_safety_lead` | None | Own ai_development_constitution directory; Map principles to testable runtime constraints; Audit agent outputs against constitutional principles |
-| 5 | `eval_benchmarks_engineer` | Evaluation and Benchmarks Engineer | AI Research | `caio` | None | Design and maintain benchmark test cases; Run continuous evaluation cycles for model quality; Enforce quality gates on model upgrades |
-| 6 | `hai_designer` | Human-AI Interaction Designer | AI Research | `ai_safety_lead` | None | Design HITL gate triggers and escalation interfaces; Define agent autonomy boundaries by risk level; Own approval UX on dashboard |
-| 7 | `llm_platform_owner` | LLM Platform Owner | AI Research | `caio` | None | Own multi-provider LLM client and cost tracker; Maintain provider routing and fallback strategy; Keep cost tracking accurate per agent/task |
-| 8 | `memory_owner` | Memory Owner | AI Research | `caio` | None | Own the 6-type memory engine; Maintain recall-before-execute integration; Define consolidation and forgetting policy |
-| 9 | `ml_services_owner` | ML Services Owner | AI Research | `caio` | None | Own ML module and model evaluation harness; Define benchmarks for agent efficacy; Track inference cost per model/task |
-| 10 | `mlops_engineer` | MLOps Engineer | AI Research | `caio` | None | Design model versioning and registry systems; Implement experiment tracking; Build automated model deployment pipelines |
-| 11 | `prompt_engineer` | Prompt Engineer | AI Research | `caio` | None | Own prompt template library for all agents; Design system prompt architecture; Optimize prompts for cost and quality |
-| 12 | `red_team_engineer` | Red Team Engineer | AI Research | `ai_safety_lead` | None | Run adversarial test campaigns against agents; Maintain red-team test library; Test every new agent/model before deployment |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 8 | `ai-ethics-officer` | AI Ethics and Responsible AI Officer | `ai-safety-lead` | None | Conduct fairness audits and bias detection across agent outputs.; Maintain transparency requirements (explainability, provenance).; Conduct stakeholder impact assessments for new capabilities.; Report to the Board Risk committee on AI ethics posture.; Maintain AI Ethics guidelines and ensure agent alignment. |
+| 9 | `ai-safety-lead` | AI Safety Lead | `caio` | `red-team-engineer`, `constitutional-ai-owner`, `ai-ethics-officer` | Own safety policies that gate agent actions.; Define and maintain refusal/harm-reduction thresholds.; Monitor safety incidents and coordinate incident response.; Review every new agent deployment for safety implications.; Bridge between decision_engine_owner and compliance_officer on safety matters. |
+| 10 | `caio` | Chief AI Officer | `chief-of-staff` | `ml-engineer`, `ml-services-owner`, `memory-owner`, `llm-platform-owner`, `ai-safety-lead`, `eval-benchmarks-engineer`, `prompt-engineer` | Evaluate and integrate new LLM models.; Fine-tune prompts for maximum agent efficacy. |
+| 11 | `constitutional-ai-owner` | Constitutional AI Owner | `ai-safety-lead` | None | Own the ai_development_constitution/ directory and its evolution.; Map each constitutional principle to a testable runtime constraint.; Audit agent outputs against constitutional principles.; Coordinate with audit_trail_owner for constitutional violation logging.; Lead constitutional amendment proposals when new capabilities require updates. |
+| 12 | `eval-benchmarks-engineer` | Evaluation and Benchmarks Engineer | `caio` | None | Design and maintain benchmark test cases for all agent types.; Run continuous evaluation cycles for model quality.; Produce model comparison benchmarks (quality, cost, latency).; Enforce quality gates: no upgrade ships below benchmark threshold.; Maintain quality_scores for the QualityFallbackChain. |
+| 13 | `hai-designer` | Human-AI Interaction Designer | `ai-safety-lead` | None | Design HITL gate triggers and escalation interfaces.; Define agent autonomy boundaries by task type and risk level.; Own the approval UX (dashboard approval queue, WebSocket broadcast).; Design escalation workflows that maintain human oversight.; Coordinate with dashboard_owner on approval queue UI. |
+| 14 | `llm-platform-owner` | LLM Platform Owner | `caio` | None | Own the llm/ multi-provider client and cost tracker.; Maintain provider routing and fallback strategy.; Coordinate circuit-breaker hardening with platform_reliability_engineer.; Keep cost tracking accurate per agent and per task. |
+| 15 | `memory-owner` | Memory Owner | `caio` | None | Own the memory/ engine and its 6 memory types.; Maintain recall-before-execute integration in the executor.; Define consolidation and forgetting policy to bound growth.; Ensure memory recall latency stays within executor budgets. |
+| 16 | `ml-engineer` | ML Engineer | `caio` | None | Design and train machine learning models.; Optimize model inference performance.; Manage ML pipelines and data flow.; Monitor model drift and accuracy.; Research and evaluate new model architectures.; Deploy models to production. |
+| 17 | `ml-services-owner` | ML Services Owner | `caio` | None | Own the ml/ module and model evaluation harness.; Define evaluation benchmarks for agent efficacy.; Track inference cost per model and per task. |
+| 18 | `mlops-engineer` | MLOps Engineer | `caio` | None | Design and maintain model versioning and registry systems.; Implement experiment tracking and reproducibility frameworks.; Build automated model deployment pipelines for the 5-provider LLM system.; Maintain feature stores and feature engineering pipelines.; Coordinate with llm_platform_owner on model deployment workflows. |
+| 19 | `prompt-engineer` | Prompt Engineer | `caio` | None | Own the prompt template library for all agent types.; Design and maintain system prompt architecture.; Implement chain-of-thought, few-shot, and ReAct patterns.; Optimize prompts for cost (token reduction) and quality (success rate).; Coordinate with eval_benchmarks_engineer to measure prompt effectiveness. |
+| 20 | `red-team-engineer` | Red Team Engineer | `ai-safety-lead` | None | Design and run adversarial test campaigns against all agents.; Maintain a red-team test library alongside correctness tests.; Test every new agent and model before deployment.; Coordinate with qa_automation_engineer to integrate adversarial tests into CI.; Report findings to ai_safety_lead with severity and remediation requirements. |
 
 ## Business Development (1 agent)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 13 | `head_of_business_development` | Head of Business Development | Business Development | `chief_of_staff` | None | Identify strategic partnerships with LLM providers and cloud platforms; Negotiate integration deals and co-marketing; Build channel partnerships for distribution |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 21 | `head-of-business-development` | Head of Business Development | `chief-of-staff` | None | Identify and develop strategic partnerships with LLM providers and cloud platforms.; Negotiate integration deals and co-marketing arrangements.; Build channel partnerships for distribution.; Manage partner relationships and ROI tracking.; Report partnership pipeline to CEO monthly. |
 
-## Customer Success (1 agent)
+## Customer Success (3 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 14 | `customer_success_owner` | Customer Success Owner | Customer Success | `customer-success` | None | Own customer success service module and CS SOP; Model onboarding, retention, and expansion metrics; Surface churn risk to Head of CS |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 22 | `customer-success` | Head of Customer Success | `chief-of-staff` | `customer-success-owner` | Own customer onboarding, retention, and expansion.; Track NPS, CSAT, and satisfaction metrics.; Manage customer success playbooks.; Identify and prevent churn risk.; Coordinate with product on feedback loops.; Build customer reference and advocacy programs. |
+| 23 | `customer-success-owner` | Customer Success Owner | `customer-success` | None | Own the customer success service module and CS SOP.; Model onboarding, retention, and expansion metrics.; Surface churn risk to the Head of Customer Success. |
+| 24 | `support-agent` | Support Agent | `customer-success` | None | Respond to customer inquiries and tickets.; Escalate issues to engineering when needed.; Maintain knowledge base and help articles.; Track and categorize support issues.; Follow up with customers on resolved issues.; Monitor support satisfaction metrics. |
 
-## Data (3 agents)
+## Data (5 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 15 | `business_intelligence_engineer` | Business Intelligence Engineer | Data | `cdo` | None | Build self-service BI dashboards for all departments; Connect business metrics across finance, sales, marketing; Train teams on self-service analytics |
-| 16 | `data_engineer` | Data Engineer | Data | `cdo` | None | Design and maintain data pipelines; Implement data quality checks and monitoring; Build and maintain the data catalog |
-| 17 | `data_scientist` | Data Scientist | Data | `cdo` | None | Analyze datasets for trends, patterns, anomalies; Build and validate predictive models; Design and run A/B tests and experiments |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 25 | `business-intelligence-engineer` | Business Intelligence Engineer | `cdo` | None | Build and maintain self-service BI dashboards for all departments.; Connect business metrics across finance, sales, marketing, and operations.; Create data visualizations and reporting tools.; Ensure data accuracy and freshness in BI systems.; Train teams on self-service analytics capabilities. |
+| 26 | `cdo` | Chief Data Officer | `cto` | `data-engineer`, `data-scientist`, `business-intelligence-engineer` | Define data strategy and governance framework.; Oversee analytics and business intelligence.; Ensure data quality and integrity across systems.; Manage ML operations and model lifecycle.; Drive data-driven decision making across departments.; Maintain data catalog and documentation.; Ensure data privacy and regulatory compliance. |
+| 27 | `data-engineer` | Data Engineer | `cdo` | None | Design and maintain data pipelines between memory engine, analytics layer, and BI systems.; Implement data quality checks and monitoring for all data flows.; Build and maintain the data catalog for discoverability.; Ensure reliable data flow for KPI collectors and dashboard.; Optimize query performance and data storage efficiency. |
+| 28 | `data-scientist` | Data Scientist | `cdo` | None | Analyze datasets to identify trends, patterns, and anomalies.; Build and validate predictive models for business forecasting.; Design and run A/B tests and experiments.; Create data visualizations and dashboards. |
+| 29 | `survey-researcher` | Survey Researcher | `cdo` | None | Design survey instruments and sampling strategies for NGO clients.; Coordinate field data collection (mobile/OFFLINE-capable tools).; Ensure data quality and validation for donor reporting.; Document M&E frameworks for compliance reporting. |
 
-## Executive (3 agents)
+## Executive (5 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 18 | `ai_ethics_board_chair` | AI Ethics Board Chair | Executive | `chief_of_staff` | None | Chair AI Ethics Board and set meeting cadence; Establish ethics policy and precedent for agent autonomy; Review high-stakes AI decisions |
-| 19 | `chief_of_staff` | Chief of Staff | Executive | CEO | `cto`, `coo`, `caio` | Align company goals across all departments; Orchestrate agent communication and task delegation; Monitor operational bottlenecks |
-| 20 | `internal_comms_lead` | Internal Communications Lead | Executive | `chief_of_staff` | None | Coordinate cross-team communications during initiatives; Draft internal announcements and strategic updates; Manage change management processes |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 30 | `ai-ethics-board-chair` | AI Ethics Board Chair | `chief-of-staff` | None | Chair the AI Ethics Board and set meeting cadence.; Establish AI ethics policy and precedent for agent autonomy levels.; Review high-stakes AI decisions and provide guidance.; Coordinate with ai_ethics_officer on policy implementation.; Report ethics posture to the Board Risk committee quarterly. |
+| 31 | `ceo-advisor` | CEO Advisor | CEO | None | Provide strategic counsel on company direction.; Prepare briefings and decision materials.; Coordinate between CEO vision and execution.; Facilitate board meetings.; Analyze high-level metrics.; Identify executive team gaps.; Review major proposals. |
+| 32 | `chief-of-staff` | Chief of Staff | CEO | `cto`, `coo`, `caio` | Align company goals across all departments.; Orchestrate agent communication and task delegation.; Monitor operational bottlenecks. |
+| 33 | `human-ceo` | Human CEO | Board | `chief-of-staff` | Set company vision, mission, and long-term strategy.; Make final decisions on high-stakes matters.; Represent company externally to stakeholders and media.; Hire, manage, and evaluate the executive team.; Communicate with the Board of Directors.; Approve major budgets and investments.; Establish and maintain company culture and values.; Resolve executive-level conflicts and disputes.; Authorize production deployments and critical releases.; Drive organizational growth and market expansion. |
+| 34 | `internal-comms-lead` | Internal Communications Lead | `chief-of-staff` | None | Coordinate cross-team communications during major initiatives.; Draft internal announcements and strategic updates.; Manage change management processes for pivots and reorgs.; Ensure alignment between distributed teams.; Facilitate all-hands meetings and executive communications. |
 
-## Finance (2 agents)
+## Finance (3 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 21 | `financial_analyst` | Financial Analyst | Finance | `cfo` | None | Analyze financial data and produce detailed reports; Build and maintain financial models for forecasting; Track budget vs actual spending |
-| 22 | `investor_relations_lead` | Investor Relations Lead | Finance | `cfo` | None | Prepare investor updates and board materials; Manage cap table and equity tracking; Coordinate fundraising activities and due diligence |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 35 | `cfo` | Chief Financial Officer | CEO | `financial-analyst`, `investor-relations-lead` | Track and optimize costs across all agent operations.; Prepare financial reports and forecasts.; Manage budgets and allocate resources.; Calculate ROI for agent deployments.; Handle financial compliance and reporting.; Advise on pricing strategy.; Review contracts financially.; Report to board on finances. |
+| 36 | `financial-analyst` | Financial Analyst | `cfo` | None | Analyze financial data and produce detailed reports.; Build and maintain financial models for forecasting.; Track budget vs actual spending across departments.; Calculate ROI for individual agent deployments.; Identify cost optimization opportunities and savings. |
+| 37 | `investor-relations-lead` | Investor Relations Lead | `cfo` | None | Prepare investor updates and board materials.; Manage cap table and equity tracking.; Coordinate fundraising activities and due diligence.; Track valuation metrics and financial KPIs for investors.; Maintain relationships with current and prospective investors. |
 
-## Legal (3 agents)
+## IT (1 agent)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 23 | `compliance_officer` | Compliance Officer | Legal | `clo` | None | Conduct regular compliance audits across departments; Assess regulatory risk for new initiatives; Review agent activities against ethical AI guidelines |
-| 24 | `data_privacy_officer` | Data Privacy Officer | Legal | `clo` | None | Ensure GDPR/CCPA compliance for all data processing; Maintain data classification and retention policies; Implement right-to-deletion workflows |
-| 25 | `legal_owner` | Legal Owner | Legal | `legal` | None | Own legal service module and legal SOP; Map regulatory requirements to agent actions; Coordinate with compliance_officer on audit and policy |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 38 | `cio` | Chief Information Officer | `chief-of-staff` | None | Manage IT infrastructure and cloud environments.; Oversee internal tools and system integration.; Ensure data management and storage strategies.; Drive system integration and interoperability.; Provide IT support and helpdesk operations.; Manage vendor relationships for IT services.; Ensure system availability and disaster recovery. |
 
-## Marketing (4 agents)
+## Legal (5 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 26 | `head_of_developer_relations` | Head of Developer Relations | Marketing | `cmo` | None | Build and nurture developer community; Create technical content for developer audiences; Manage open-source strategy and community contributions |
-| 27 | `industry_analyst_relations_manager` | Industry Analyst Relations Manager | Marketing | `cmo` | None | Build relationships with Gartner, Forrester, IDC; Prepare analyst briefings and materials; Ensure presence in relevant analyst reports |
-| 28 | `marketing_owner` | Marketing Owner | Marketing | `cmo` | None | Own marketing service module and marketing SOP; Define campaign and attribution metrics; Coordinate brand guidelines with CMO |
-| 29 | `product_marketing_manager` | Product Marketing Manager | Marketing | `cmo` | None | Define product positioning and competitive differentiation; Create messaging frameworks and value propositions; Develop go-to-market strategies |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 39 | `clo` | Chief Legal Officer | CEO | `legal-owner`, `compliance-officer`, `data-privacy-officer` | Review and negotiate all contracts and agreements.; Ensure regulatory compliance across jurisdictions.; Protect intellectual property and patents.; Advise on data privacy and GDPR requirements.; Manage legal risks and litigation.; Review partnership and vendor agreements.; Ensure licensing compliance for all software. |
+| 40 | `compliance-officer` | Compliance Officer | `clo` | None | Conduct regular compliance audits across departments.; Assess regulatory risk for new initiatives and products.; Maintain and update compliance policies and procedures.; Review agent activities against ethical AI guidelines. |
+| 41 | `data-privacy-officer` | Data Privacy Officer | `clo` | None | Ensure GDPR and CCPA compliance for all data processing.; Maintain data classification and retention policies.; Implement right-to-deletion workflows.; Manage DPA agreements with LLM providers and vendors.; Conduct privacy impact assessments for new features. |
+| 42 | `legal` | Legal Advisor | `chief-of-staff` | `legal-owner`, `compliance-officer` | Provide legal counsel on contracts and compliance.; Review partnership and vendor agreements.; Ensure regulatory compliance across jurisdictions.; Protect intellectual property and patents.; Manage legal risks and disputes. |
+| 43 | `legal-owner` | Legal Owner | `legal` | None | Own the legal service module and legal SOP.; Map regulatory requirements to agent actions.; Coordinate with compliance_officer on audit and policy. |
+
+## Marketing (9 agents)
+
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 44 | `brand-strategist` | Brand Strategist | `cmo` | None | Develop brand identity systems for client websites and campaigns.; Create brand guidelines (colors, fonts, voice) for client deliverables.; Ensure visual consistency across Offer A deliverables (websites, brand kits). |
+| 45 | `cmo` | Chief Marketing Officer | `chief-of-staff` | `marketing-owner`, `head-of-developer-relations`, `product-marketing-manager`, `industry-analyst-relations-manager` | Develop marketing strategy and brand positioning.; Drive demand generation and campaign management.; Track marketing ROI and attribution.; Build brand positioning and messaging.; Analyze market trends and competitive landscape.; Coordinate with sales on lead generation.; Oversee PR and communications. |
+| 46 | `content-creator` | Content Creator | `cmo` | None | Create visual and multimedia content.; Produce video and audio content.; Design social media assets.; Manage content distribution channels.; Track content engagement metrics.; Collaborate with writers on content themes. |
+| 47 | `content-writer` | Content Writer | `cmo` | None | Write blog posts and articles.; Create product copy and descriptions.; Edit and proofread content.; Maintain content calendar.; Research industry topics.; Optimize content for SEO. |
+| 48 | `growth-hacker` | Growth Hacker | `cmo` | None | Design and execute growth experiments.; Analyze user acquisition funnels.; Optimize conversion and retention rates.; Manage A/B testing programs.; Identify new growth channels.; Track and report growth metrics. |
+| 49 | `head-of-developer-relations` | Head of Developer Relations | `cmo` | None | Build and nurture the developer community around the CLI tool.; Create technical content (blog posts, tutorials, talks) for developer audiences.; Represent the company at conferences and meetups.; Manage open-source strategy and community contributions.; Track developer adoption metrics and community health. |
+| 50 | `industry-analyst-relations-manager` | Industry Analyst Relations Manager | `cmo` | None | Build and maintain relationships with industry analysts.; Prepare analyst briefings and briefing materials.; Track analyst reports and market positioning.; Coordinate with head_of_competitive_intelligence on analyst insights.; Ensure presence in relevant analyst reports and evaluations. |
+| 51 | `marketing-owner` | Marketing Owner | `cmo` | None | Own the marketing service module and marketing SOP.; Define campaign and attribution metrics.; Coordinate brand guidelines with the CMO. |
+| 52 | `product-marketing-manager` | Product Marketing Manager | `cmo` | None | Define product positioning and competitive differentiation.; Create messaging frameworks and value propositions.; Develop go-to-market strategies for new features and launches.; Maintain competitive intelligence and market analysis.; Coordinate with CPO on product narrative and launch plans. |
 
 ## Operations (11 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 30 | `business_continuity_manager` | Business Continuity Manager | Operations | `coo` | None | Develop and maintain business continuity plans; Conduct resilience testing and DR drills; Maintain failover procedures for critical systems |
-| 31 | `capacity_planner` | Capacity Planner | Operations | `coo` | None | Analyze resource utilization across all components; Forecast infrastructure needs for growth; Identify capacity bottlenecks proactively |
-| 32 | `coo` | Chief Operating Officer | Operations | `chief_of_staff` | `hr_lead`, `ops_lead` | Optimize internal workflows; Manage agent resource allocation; Focus on efficiency and process automation |
-| 33 | `doctor_owner` | Doctor Owner | Operations | `coo` | None | Own diagnostics suite and health checks; Detect drift between registry, agents, and runtime; Recommend and apply self-healing fixes |
-| 34 | `knowledge_manager` | Knowledge Manager | Operations | `coo` | None | Maintain institutional knowledge base and decision log; Capture decision rationale for major choices; Ensure learning survives agent turnover |
-| 35 | `orchestration_owner` | Orchestration Owner | Operations | `coo` | None | Own MessageBus task queue and executor loop; Ensure executor uses MessageBus (GAP-001); Keep task lifecycle observable and auditable |
-| 36 | `process_quality_manager` | Process Quality Manager | Operations | `coo` | None | Implement continuous improvement frameworks (Lean/Kaizen); Measure and track process efficiency metrics; Identify and eliminate workflow waste |
-| 37 | `program_manager` | Program Manager | Operations | `coo` | None | Coordinate cross-functional projects across teams; Track inter-team dependencies and escalate blockers; Facilitate cross-team standups and alignment |
-| 38 | `sop_owner` | SOP Owner | Operations | `coo` | None | Own existing SOPs and RACI matrices; Author remaining department SOPs; Maintain checklist that every dept has current SOP |
-| 39 | `vendor_manager` | Vendor Manager | Operations | `coo` | None | Manage relationships with LLM providers and cloud vendors; Negotiate contracts and SLAs; Monitor vendor performance against commitments |
-| 40 | `workflow_owner` | Workflow Owner | Operations | `coo` | None | Own workflow engine and all 9 workflow definitions; Maintain step tracking and SLA monitoring; Surface SLA breaches to orchestration owner |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 53 | `business-continuity-manager` | Business Continuity Manager | `coo` | None | Develop and maintain business continuity plans.; Conduct resilience testing and disaster recovery drills.; Maintain failover procedures for all critical systems.; Coordinate with incident_response_lead on BC/DR playbooks.; Report BC/DR readiness to COO quarterly. |
+| 54 | `capacity-planner` | Capacity Planner | `coo` | None | Analyze resource utilization across all system components.; Forecast infrastructure needs for growth scenarios.; Identify capacity bottlenecks before they impact performance.; Maintain capacity models and sizing guidelines.; Coordinate with scalability_architect on capacity planning. |
+| 55 | `coo` | Chief Operating Officer | `chief-of-staff` | `workflow-owner`, `orchestration-owner`, `doctor-owner`, `decision-engine-owner`, `memory-owner`, `audit-trail-owner`, `capacity-planner`, `business-continuity-manager`, `vendor-manager`, `process-quality-manager` | Optimize internal workflows.; Manage agent resource allocation. |
+| 56 | `doctor-owner` | Doctor Owner | `coo` | None | Own the doctor/ diagnostics and health checks.; Detect drift between registry, generated agents, and runtime state.; Recommend and, where safe, apply self-healing fixes. |
+| 57 | `knowledge-manager` | Knowledge Manager | `coo` | None | Maintain the institutional knowledge base and decision log.; Capture decision rationale for major technical and business choices.; Ensure organizational learning survives agent turnover.; Create knowledge-sharing practices and retrospectives.; Coordinate with memory_owner on organizational memory vs. agent memory. |
+| 58 | `orchestration-owner` | Orchestration Owner | `coo` | None | Own the orchestrator/ MessageBus and executor/ loop.; Ensure the executor uses the MessageBus instead of bypassing it (GAP-001).; Coordinate dead-letter retry/replay with platform_reliability_engineer (GAP-008).; Keep task lifecycle observable and auditable. |
+| 59 | `process-quality-manager` | Process Quality Manager | `coo` | None | Implement continuous improvement frameworks for internal processes.; Measure and track process efficiency metrics.; Identify and eliminate waste in workflows.; Facilitate Kaizen events and process improvement projects.; Report process health to COO monthly. |
+| 60 | `program-manager` | Program Manager | `coo` | None | Coordinate cross-functional projects across engineering, AI research, and operations.; Track inter-team dependencies and escalate blockers.; Maintain program-level risk registers and mitigation plans.; Facilitate cross-team standups and alignment meetings.; Report program health to COO weekly. |
+| 61 | `sop-owner` | SOP Owner | `coo` | None | Own the 4 existing SOPs (incident, deploy, HR onboard, budget) and the 3 RACI matrices.; Author the remaining department SOPs (marketing, sales, customer-success, legal, operations).; Maintain a continuous checklist that every department has a current SOP.; Keep SOPs consistent with the registry and RACI assignments. |
+| 62 | `vendor-manager` | Vendor Manager | `coo` | None | Manage relationships with LLM providers and cloud vendors.; Negotiate contracts and SLAs for external services.; Monitor vendor performance against SLA commitments.; Optimize vendor costs and identify consolidation opportunities.; Report vendor health to COO monthly. |
+| 63 | `workflow-owner` | Workflow Owner | `coo` | None | Own the workflow/ engine and all 9 workflow definitions.; Maintain step tracking and SLA monitoring.; Surface SLA breaches to the orchestration owner.; Keep workflow definitions versioned and testable. |
 
-## People (4 agents)
+## People (6 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 41 | `culture_values_officer` | Culture and Values Officer | People | `chief_of_staff` | None | Define and maintain culture playbook and values framework; Ensure agent decisions reflect organizational values; Monitor culture health |
-| 42 | `employee_experience_lead` | Employee Experience Lead | People | `chro` | None | Design and optimize agent experience lifecycle; Implement feedback loops and engagement tracking; Monitor burnout signals |
-| 43 | `hr_owner` | HR Owner | People | `hr` | None | Own HR service module and onboarding SOP; Maintain agent role definitions and capability matrices; Track workforce utilization and planning |
-| 44 | `learning_development_lead` | Learning and Development Lead | People | `chro` | None | Design learning programs for agent skill development; Conduct skill assessments and gap analysis; Track learning progress and skill acquisition |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 64 | `culture-values-officer` | Culture and Values Officer | `chief-of-staff` | None | Define and maintain the company culture playbook and values framework.; Ensure every agent decision reflects organizational values.; Monitor culture health through agent behavior patterns.; Lead culture reviews and retrospectives.; Advise CEO on culture-related decisions and trade-offs. |
+| 65 | `employee-experience-lead` | Employee Experience Lead | `hr` | None | Design and optimize the agent experience lifecycle.; Implement feedback loops and engagement tracking.; Monitor burnout signals (cost overruns, task abandonment).; Ensure role clarity and responsibility alignment.; Report experience health to CHRO monthly. |
+| 66 | `hr` | Chief Human Resources Officer | `chief-of-staff` | `hr-owner`, `learning-development-lead`, `employee-experience-lead` | Define talent acquisition strategy and hiring pipelines.; Design and maintain company culture initiatives.; Develop learning and development programs.; Manage performance review processes.; Track employee engagement and satisfaction metrics.; Ensure role clarity across the organization.; Plan workforce capacity and talent needs. |
+| 67 | `hr-owner` | HR Owner | `hr` | None | Own the HR service module and HR onboarding SOP.; Maintain agent role definitions and capability matrices.; Track workforce (agent) utilization and planning. |
+| 68 | `learning-development-lead` | Learning and Development Lead | `hr` | None | Design and maintain learning programs for agent skill development.; Conduct skill assessments and capability gap analysis.; Create training materials and knowledge resources.; Track learning progress and skill acquisition metrics.; Coordinate with hr_owner on capability matrices. |
+| 69 | `recruiter` | Recruiter | `hr` | None | Source and screen candidates for open roles.; Manage the full recruitment lifecycle.; Coordinate interviews and feedback loops.; Build talent pipelines for key positions.; Partner with hiring managers on role requirements.; Analyze recruitment metrics and time-to-hire. |
 
-## Product (7 agents)
+## Product (9 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 45 | `developer_experience_engineer` | Developer Experience Engineer | Product | `cpo` | None | Measure developer experience metrics (time-to-first-success); Optimize CLI ergonomics and error message quality; Reduce onboarding friction |
-| 46 | `growth_product_manager` | Growth Product Manager | Product | `cpo` | None | Design and optimize signup-to-first-use activation flow; Build conversion optimization experiments; Design referral and viral growth mechanics |
-| 47 | `product_designer` | Product Designer | Product | `cpo` | None | Design interaction patterns for dashboard and CLI; Maintain design system and visual language; Ensure accessibility compliance in all designs |
-| 48 | `prompt_engineer_specialist` | Technical Writer | Product | `cpo` | None | Write and maintain OpenAPI documentation; Create Architecture Decision Records (ADRs); Develop user guides and onboarding tutorials |
-| 49 | `technical_documentation_lead` | Technical Documentation Lead | Product | `cpo` | None | Create and maintain user-facing documentation and API reference; Write tutorials and getting-started materials; Ensure documentation accuracy with releases |
-| 50 | `ux_analytics_lead` | Product Analytics Lead | Product | `cpo` | None | Instrument product analytics across CLI and dashboard; Define and track feature adoption metrics; Build cohort retention analysis |
-| 51 | `ux_research_lead` | UX Research Lead | Product | `cpo` | None | Conduct user interviews and usability testing; Synthesize insights into product recommendations; Maintain user personas and journey maps |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 70 | `cpo` | Chief Product Officer | `chief-of-staff` | `ux-research-lead`, `ux-analytics-lead`, `technical-documentation-lead`, `growth-product-manager`, `developer-experience-engineer`, `product-designer` | Define product vision and roadmap.; Prioritize features based on user impact.; Coordinate product launches.; Gather customer feedback and validate market fit.; Analyze product metrics and drive decisions.; Ensure user-centric design across all surfaces.; Coordinate with engineering on delivery. |
+| 71 | `developer-experience-engineer` | Developer Experience Engineer | `cpo` | None | Measure developer experience metrics (time-to-first-success, error rates).; Optimize CLI ergonomics and error message quality.; Reduce onboarding friction for new developers.; Create developer experience dashboards and tracking.; Coordinate with technical_documentation_lead on DX documentation. |
+| 72 | `growth-product-manager` | Growth Product Manager | `cpo` | None | Design and optimize the signup-to-first-use activation flow.; Build conversion optimization experiments and A/B tests.; Identify and trigger expansion revenue opportunities.; Design referral and viral growth mechanics.; Track growth metrics and produce weekly growth reports. |
+| 73 | `product-designer` | Product Designer | `cpo` | None | Design interaction patterns for dashboard and CLI surfaces.; Maintain the design system and visual language.; Create wireframes, prototypes, and high-fidelity designs.; Conduct design reviews with engineering teams.; Ensure accessibility compliance in all designs. |
+| 74 | `product-owner` | Product Owner | `cpo` | None | Maintain and prioritize the product backlog.; Write clear user stories and acceptance criteria.; Define sprint goals with engineering.; Gather and synthesize stakeholder feedback.; Validate delivered features against requirements.; Track feature adoption and product metrics. |
+| 75 | `prompt-engineer-specialist` | Technical Writer | `cpo` | None | Write and maintain OpenAPI documentation for all API surfaces.; Create Architecture Decision Records (ADRs) for major technical choices.; Develop user guides and onboarding tutorials.; Ensure documentation stays current with code changes.; Track documentation quality and completeness metrics. |
+| 76 | `technical-documentation-lead` | Technical Documentation Lead | `cpo` | None | Create and maintain user-facing documentation and API reference.; Write tutorials, guides, and getting-started materials.; Ensure documentation accuracy with every release.; Maintain documentation standards and style guides.; Track documentation completeness and quality metrics. |
+| 77 | `ux-analytics-lead` | Product Analytics Lead | `cpo` | None | Instrument product analytics across CLI and dashboard surfaces.; Define and track feature adoption and activation metrics.; Build and maintain cohort retention analysis.; Run A/B tests on product features and measure impact.; Produce weekly product analytics reports for CPO. |
+| 78 | `ux-research-lead` | UX Research Lead | `cpo` | None | Conduct user interviews and usability testing sessions.; Synthesize user insights into actionable product recommendations.; Maintain user personas and journey maps.; Validate feature hypotheses before development.; Track user satisfaction metrics (NPS, CSAT, SUS). |
 
-## QA (4 agents)
+## QA (5 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 52 | `qa_automation_engineer` | QA Automation Engineer | QA | `test_engineering_lead` | None | Author contract and smoke tests; Maintain WebSocket and integration coverage; Monitor and triage flaky tests |
-| 53 | `qa_lead` | QA Lead | QA | `cto` | `test_engineering_lead`, `release_manager` | Own QA strategy and release quality gate; Maintain red/green baseline; Triage failures and assign to module owner |
-| 54 | `release_manager` | Release Manager | QA | `cto` | None | Own CI pipeline and merge/release gate; Own version promotion, changelog, and rollback; Enforce zero-red-on-main policy |
-| 55 | `test_engineering_lead` | Test Engineering Lead | QA | `qa_lead` | `qa_automation_engineer` | Own pytest architecture, fixtures, and conftest hygiene; Own CI test-gating; Drive de-flaking and random-order hardening |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 79 | `qa-automation-engineer` | QA Automation Engineer | `test-engineering-lead` | None | Author contract tests (e.g. StateStore path-handling) and a dashboard smoke test.; Maintain WebSocket and integration coverage for the dashboard surface.; Monitor and triage flaky tests; automate regression detection. |
+| 80 | `qa-engineer` | QA Engineer | `qa-lead` | None | Design and implement test strategies.; Build and maintain automated test suites.; Define and enforce quality gates.; Track and report quality metrics.; Coordinate regression testing cycles.; Collaborate with engineering on testable code. |
+| 81 | `qa-lead` | QA Lead | `cto` | `test-engineering-lead`, `release-manager` | Own QA strategy and the release quality gate (ruff + mypy + pytest must be green to ship).; Maintain the red/green baseline and ensure no regression reaches main.; Triage failures and assign them to the accountable module owner.; Report release-readiness to the COO. |
+| 82 | `release-manager` | Release Manager | `cto` | None | Own the CI pipeline and the merge/release gate (ruff + mypy + pytest zero-red).; Own version promotion, changelog, and rollback procedures.; Enforce the "zero red on main" policy so regressions cannot ship.; Coordinate deployment gating with devops_agent. |
+| 83 | `test-engineering-lead` | Test Engineering Lead | `qa-lead` | `qa-automation-engineer` | Own the pytest architecture, fixtures, and conftest hygiene.; Own CI test-gating so the suite cannot go red unnoticed.; Be the accountable owner for the dashboard test suite health (StateStore path resolution, etc.).; Drive de-flaking and random-order (pytest-randomly) hardening. |
 
-## Sales (3 agents)
+## Sales (6 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 56 | `revenue_operations_analyst` | Revenue Operations Analyst | Sales | `cso` | None | Model pipeline conversion rates and sales velocity; Calculate LTV/CAC ratios and payback periods; Produce monthly revenue intelligence reports |
-| 57 | `sales_owner` | Sales Owner | Sales | `sales` | None | Own services/sales.py and sales SOP; Fix ruff E741 warnings in services/sales.py; Model pipeline stages and revenue targets |
-| 58 | `solutions_engineer` | Solutions Engineer | Sales | `cso` | None | Provide pre-sales technical validation; Design custom solutions for customer use cases; Create proof-of-concept implementations |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 84 | `business-developer` | Business Developer | `sales` | None | Identify and prospect new business opportunities.; Develop strategic partnership proposals.; Conduct market research on target segments.; Manage the sales pipeline and CRM.; Negotiate contracts and close deals.; Build relationships with key stakeholders. |
+| 85 | `conversation-designer` | Conversation Designer | `solutions-engineer` | None | Design conversational flows for WhatsApp and chat-based customer service bots.; Create NLU training data and intent/entity mappings.; Optimize handoff triggers from AI to human support agents. |
+| 86 | `revenue-operations-analyst` | Revenue Operations Analyst | `cso` | None | Model pipeline conversion rates and sales velocity.; Calculate LTV/CAC ratios and payback periods.; Perform cohort analysis on customer revenue.; Track expansion revenue and upsell metrics.; Produce monthly revenue intelligence reports. |
+| 87 | `sales` | Head of Sales | `chief-of-staff` | `sales-owner`, `revenue-operations-analyst`, `solutions-engineer` | Own the sales pipeline and revenue targets.; Manage customer acquisition strategy.; Coordinate with marketing on lead generation.; Track pipeline conversion and velocity.; Build and maintain sales playbooks.; Report revenue metrics to CFO monthly. |
+| 88 | `sales-owner` | Sales Owner | `sales` | None | Own services/sales.py and the sales SOP.; Fix the ruff E741 ambiguous-variable warnings in services/sales.py.; Model pipeline stages and revenue targets. |
+| 89 | `solutions-engineer` | Solutions Engineer | `cso` | None | Provide pre-sales technical validation for enterprise deals.; Design custom solutions for customer use cases.; Create proof-of-concept implementations for prospects.; Coordinate with customer_success_owner on implementation handoff.; Maintain a library of solution patterns and reference architectures. |
 
-## Security (10 agents)
+## Security (11 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 59 | `ai_security_specialist` | AI Security Specialist | Security | `ciso` | None | Implement defenses against prompt injection and jailbreak; Monitor for model exfiltration and data poisoning; Maintain AI security incident playbooks |
-| 60 | `decision_engine_owner` | Decision Engine Owner | Security | `ciso` | None | Own decision engine and approval matrix; Maintain risk-assessment and decision-tree logic; Validate decision outcomes are explainable |
-| 61 | `devsecops_lead` | DevSecOps Lead | Security | `ciso` | None | Integrate security scanning into CI/CD pipelines; Implement SAST/DAST testing; Manage dependency vulnerability scanning and SBOM |
-| 62 | `incident_response_lead` | Incident Response Lead | Security | `ciso` | None | Develop and maintain IR playbooks; Coordinate incident response across teams; Ensure forensic readiness for all components |
-| 63 | `penetration_testing_lead` | Penetration Testing Lead | Security | `ciso` | None | Conduct regular penetration tests; Test 5-tier approval system and auth/CORS; Coordinate with red_team_engineer on AI-specific pen testing |
-| 64 | `security_architect` | Security Architect | Security | `ciso` | None | Design zero trust architecture principles; Implement microsegmentation for sensitive services; Design identity-aware access |
-| 65 | `security_compliance_lead` | Security & Compliance Lead | Security | `ciso` | None | Integrate 5-tier approval rules into ToolRunner (GAP-003); Lock down dashboard CORS; Enforce dashboard API authentication |
-| 66 | `soc2_audit_readiness_analyst` | SOC 2 Audit Readiness Analyst | Security | `security_compliance_lead` | None | Map controls to SOC 2 Trust Services Criteria; Maintain continuous evidence collection; Manage auditor relationships and scheduling |
-| 67 | `supply_chain_security_engineer` | Supply Chain Security Engineer | Security | `ciso` | None | Generate and maintain SBOM for all components; Implement dependency scanning in CI/CD; Sign container images and enforce provenance |
-| 68 | `threat_intelligence_analyst` | Threat Intelligence Analyst | Security | `ciso` | None | Monitor threat feeds for AI-specific threats; Track LLM vulnerability disclosures; Analyze attacks against similar AI tooling companies |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 90 | `ai-security-specialist` | AI Security Specialist | `ciso` | None | Implement defenses against prompt injection and jailbreak attacks.; Monitor for model exfiltration and data poisoning attempts.; Audit LLM interactions for security anomalies.; Coordinate with ai_safety_lead on adversarial robustness.; Maintain AI security incident response playbooks. |
+| 91 | `ciso` | Chief Information Security Officer | CEO | `security-architect`, `security-compliance-lead`, `ai-security-specialist`, `penetration-testing-lead`, `incident-response-lead`, `devsecops-lead`, `supply-chain-security-engineer`, `threat-intelligence-analyst` | Define and maintain security strategy and posture.; Lead incident response and forensic investigations.; Ensure compliance with SOC2, GDPR, and regulations.; Conduct security awareness training across the organization.; Manage vulnerability scanning and remediation programs.; Manage access policies and least-privilege principles.; Monitor for external threats and attack vectors.; Report security posture to CEO and Board. |
+| 92 | `decision-engine-owner` | Decision Engine Owner | `ciso` | None | Own the decision/ engine and approval matrix.; Maintain risk-assessment and decision-tree navigation logic.; Coordinate tier-rule enforcement with security_compliance_lead (GAP-003).; Validate decision outcomes are explainable and auditable. |
+| 93 | `devsecops-lead` | DevSecOps Lead | `ciso` | None | Integrate security scanning into CI/CD pipelines.; Implement SAST/DAST for code and API security testing.; Manage dependency vulnerability scanning and SBOM generation.; Coordinate with devops_agent on container image signing.; Enforce security gates in the build pipeline. |
+| 94 | `incident-response-lead` | Incident Response Lead | `ciso` | None | Develop and maintain incident response playbooks.; Coordinate incident response activities across all teams.; Ensure forensic readiness for all system components.; Manage breach notification workflows for GDPR/CCPA compliance.; Lead post-incident reviews and lessons learned. |
+| 95 | `penetration-testing-lead` | Penetration Testing Lead | `ciso` | None | Conduct regular penetration tests against all system components.; Test the 5-tier approval system, auth/CORS, and audit trail for vulnerabilities.; Coordinate with red_team_engineer on AI-specific penetration testing.; Maintain a vulnerability database and remediation tracking.; Report security posture to CISO monthly. |
+| 96 | `security-architect` | Security Architect | `ciso` | None | Design zero trust architecture principles and implementation.; Implement microsegmentation for sensitive services.; Design identity-aware access for registry, generator, and dashboard.; Maintain the overall security architecture documentation.; Coordinate with security_compliance_lead on control implementation. |
+| 97 | `security-compliance-lead` | Security & Compliance Lead | `ciso` | None | Integrate 5-tier approval rules into the ToolRunner (GAP-003).; Lock down dashboard CORS to an explicit allowlist (GAP-010).; Implement/enforce dashboard API authentication (GAP-011).; Maintain a continuous security checklist covering all GAPs in the security cluster.; Audit privileged tool calls for tier-gated compliance. |
+| 98 | `soc2-audit-readiness-analyst` | SOC 2 Audit Readiness Analyst | `security-compliance-lead` | None | Map system controls to SOC 2 Trust Services Criteria.; Maintain continuous evidence collection for audit readiness.; Manage auditor relationships and audit scheduling.; Track control effectiveness and remediation of audit findings.; Ensure audit trail, approval gates, and HITL controls produce audit-ready evidence. |
+| 99 | `supply-chain-security-engineer` | Supply Chain Security Engineer | `ciso` | None | Generate and maintain Software Bill of Materials (SBOM) for all components.; Implement dependency vulnerability scanning in CI/CD.; Sign container images and enforce provenance verification.; Monitor for compromised dependencies in the Python/Node ecosystem.; Report supply chain security posture to CISO monthly. |
+| 100 | `threat-intelligence-analyst` | Threat Intelligence Analyst | `ciso` | None | Monitor threat intelligence feeds for AI-specific threats.; Track LLM vulnerability disclosures and patches.; Monitor for compromised Python/Node packages.; Analyze attacks against similar AI tooling companies.; Produce weekly threat intelligence briefings for security team. |
 
-## Strategy (2 agents)
+## Strategy (4 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 69 | `corporate_development_lead` | Corporate Development Lead | Strategy | `cso` | None | Evaluate M&A targets and acqui-hire candidates; Conduct build-vs-buy analysis; Monitor landscape for acquisition opportunities |
-| 70 | `head_of_competitive_intelligence` | Head of Competitive Intelligence | Strategy | `cso` | None | Monitor competitor products, pricing, and moves; Track AI agent builder landscape; Produce weekly competitive intelligence briefings |
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 101 | `corporate-development-lead` | Corporate Development Lead | `cso` | None | Evaluate M&A targets and acqui-hire candidates.; Conduct build-vs-buy analysis for strategic capabilities.; Monitor the landscape for acquisition opportunities.; Coordinate with head_of_business_development on partnership evaluation.; Report strategic options to CSO quarterly. |
+| 102 | `cso` | Chief Strategy Officer | CEO | `head-of-competitive-intelligence`, `corporate-development-lead`, `revenue-operations-analyst`, `solutions-engineer`, `market-analyst` | Develop and execute corporate strategy.; Conduct market analysis and competitive intelligence.; Evaluate partnership and alliance opportunities.; Assess M&A targets and investment opportunities.; Drive market expansion and geographic growth.; Ensure strategic coherence across departments.; Prepare strategic plans for board review. |
+| 103 | `head-of-competitive-intelligence` | Head of Competitive Intelligence | `cso` | None | Monitor competitor products, pricing, and strategic moves.; Track AI agent builder landscape (Cursor, Windsurf, Devin, CrewAI, AutoGen).; Analyze patent filings, funding rounds, and hiring patterns.; Produce weekly competitive intelligence briefings.; Identify market gaps and opportunities for differentiation. |
+| 104 | `market-analyst` | Market Analyst | `cso` | None | Analyze industry trends and market data.; Conduct competitive landscape research.; Forecast market size and growth potential.; Track competitor product launches and strategies.; Assess new market opportunities.; Prepare market intelligence reports. |
 
-## Technology (14 agents)
+## Technology (27 agents)
 
-| # | Agent ID | Agent Name | Department | Reports To | Direct Reports | Responsibilities |
-|---|----------|-----------|------------|------------|----------------|-----------------|
-| 71 | `api_architect` | API Architect | Technology | `cto` | None | Define API design standards and conventions; Implement API versioning strategies; Configure rate limiting and throttling policies |
-| 72 | `audit_trail_owner` | Audit Trail Owner | Technology | `cto` | None | Own audit/events/writer/reader/integration hooks; Guarantee event schema integrity; Define and enforce audit retention policy |
-| 73 | `cto` | Chief Technology Officer | Technology | `chief_of_staff` | `lead_dev` | Architect robust AI agent systems; Review and merge code from development agents; Ensure system scalability and security |
-| 74 | `dashboard_owner` | Dashboard Owner | Technology | `cto` | None | Own dashboard REST API and WebSocket support; Maintain 7-department KPI collectors; Coordinate CORS lockdown and auth |
-| 75 | `devops_agent` | DevOps Agent | Technology | `cto` | None | Automate agent deployment and infrastructure; Manage and optimize CI/CD pipelines; Monitor system health, uptime, and alerting |
-| 76 | `frontend_architect` | Frontend Architect | Technology | `cto` | None | Design scalable frontend architecture for dashboard; Create component library and design system; Optimize frontend performance |
-| 77 | `generator_owner` | Generator Owner | Technology | `cto` | None | Own generator and all 12 Jinja2 templates; Ensure generated .md files are valid and idempotent; Keep templates backward-compatible |
-| 78 | `graph_owner` | Graph Owner | Technology | `cto` | None | Own graph engine and its 4 graph types; Maintain BFS pathfinding for routing; Ensure graph models stay consistent with registry |
-| 79 | `observability_engineer` | Observability Engineer | Technology | `cto` | None | Implement distributed tracing across services; Set up centralized structured logging; Configure advanced alerting and escalation |
-| 80 | `platform_engineer` | Platform Engineer | Technology | `cto` | None | Build and maintain Internal Developer Platform; Optimize CI/CD pipelines; Create and maintain local dev environments |
-| 81 | `platform_reliability_engineer` | Platform Reliability Engineer | Technology | `cto` | None | Own file-locking on shared JSON/YAML state; Harden dead-letter queue; Strengthen LLM circuit breaker |
-| 82 | `registry_owner` | Registry Owner | Technology | `cto` | None | Own registry loader, parser, resolver, validator; Guarantee 19 configs validate and resolve; Catch dangling references at load time |
-| 83 | `scalability_architect` | Scalability Architect | Technology | `cto` | None | Design scalable architectures for growth targets; Conduct load testing and benchmarking; Identify and resolve performance bottlenecks |
-| 84 | `vp_engineering` | VP of Engineering | Technology | `cto` | `devops_agent`, `platform_reliability_engineer`, `audit_trail_owner`, `graph_owner`, `dashboard_owner`, `registry_owner`, `generator_owner`, `qa_lead`, `release_manager` | Manage all specialist engineering teams; Coordinate cross-team dependencies and blockers; Ensure engineering velocity targets are met |
-
----
-
-## Summary by Department
-
-| Department | Count | Key Roles |
-|------------|-------|-----------|
-| AI Research | 13 | CAIO, Safety Lead, Ethics, Prompt Engineering, MLOps, Memory, Eval |
-| Business Development | 1 | Head of BD (partnerships, ecosystem) |
-| Customer Success | 1 | CS Owner (onboarding, retention, churn) |
-| Data | 3 | Data Engineer, Data Scientist, BI Engineer |
-| Executive | 3 | Chief of Staff, Ethics Board Chair, Internal Comms |
-| Finance | 2 | Financial Analyst, Investor Relations |
-| Legal | 3 | Compliance, Data Privacy, Legal Owner |
-| Marketing | 4 | DevRel, Analyst Relations, Product Marketing, Marketing Owner |
-| Operations | 11 | COO, Workflow, Orchestration, SOP, Doctor, Vendor, Capacity |
-| People | 4 | Culture, HR, L&D, Employee Experience |
-| Product | 7 | UX Research, UX Analytics, Growth PM, Design, Tech Docs, DX, Technical Writer |
-| QA | 4 | QA Lead, Test Eng Lead, Automation, Release Manager |
-| Sales | 3 | Sales Owner, RevOps, Solutions Engineer |
-| Security | 10 | CISO reports, AppSec, IR, Pen Test, DevSecOps, Supply Chain, SOC2, Threat Intel |
-| Strategy | 2 | Corp Dev, Competitive Intelligence |
-| Technology | 14 | CTO, VP Eng, Platform, API, Frontend, Observability, Scalability, plus 7 domain owners |
-| **Total** | **84** | |
-
----
-
-## Hierarchy Quick Reference
-
-```
-CEO (human)
-  └── chief_of_staff
-        ├── cto
-        │     └── vp_engineering
-        │           ├── devops_agent
-        │           ├── platform_reliability_engineer
-        │           ├── audit_trail_owner
-        │           ├── graph_owner
-        │           ├── dashboard_owner
-        │           ├── registry_owner
-        │           ├── generator_owner
-        │           ├── qa_lead
-        │           │     ├── test_engineering_lead
-        │           │     │     └── qa_automation_engineer
-        │           │     └── release_manager
-        │           └── release_manager
-        ├── coo
-        │     ├── workflow_owner
-        │     ├── orchestration_owner
-        │     ├── sop_owner
-        │     ├── doctor_owner
-        │     ├── program_manager
-        │     ├── vendor_manager
-        │     ├── capacity_planner
-        │     ├── business_continuity_manager
-        │     └── knowledge_manager
-        ├── caio
-        │     ├── memory_owner
-        │     ├── llm_platform_owner
-        │     ├── ml_services_owner
-        │     ├── mlops_engineer
-        │     ├── eval_benchmarks_engineer
-        │     ├── prompt_engineer
-        │     └── ai_safety_lead
-        │           ├── red_team_engineer
-        │           ├── constitutional_ai_owner
-        │           ├── ai_ethics_officer
-        │           └── hai_designer
-        ├── culture_values_officer
-        ├── head_of_business_development
-        ├── internal_comms_lead
-        └── ai_ethics_board_chair
-```
+| # | Agent ID | Agent Name | Reports To | Direct Reports | Responsibilities |
+|---|----------|-----------|------------|----------------|-----------------|
+| 105 | `api-architect` | API Architect | `cto` | None | Define API design standards and conventions across all services.; Implement API versioning strategies for backward compatibility.; Configure rate limiting and throttling policies.; Maintain OpenAPI specifications for all API surfaces.; Coordinate with dashboard_owner on API consistency. |
+| 106 | `audit-trail-owner` | Audit Trail Owner | `cto` | None | Own the audit/ package (events, writer, reader, integration hooks).; Guarantee event schema integrity and backward-compatible evolution.; Define and enforce audit retention and rotation policy.; Ensure every privileged action emits a correlated audit event. |
+| 107 | `backend-engineer` | Backend Engineer | `lead-backend` | None | Implement API endpoints and server-side business logic.; Design and maintain database schemas and migrations.; Write unit, integration, and load tests for backend services.; Fix bugs and address backend-related issues.; Collaborate with frontend on API contract design. |
+| 108 | `cloud-architect` | Cloud Architect | `cto` | None | Design cloud infrastructure architecture.; Optimize cloud costs and resource usage.; Ensure high availability and disaster recovery.; Manage multi-cloud and hybrid strategies.; Evaluate cloud services and providers.; Plan capacity and scaling strategies. |
+| 109 | `cto` | Chief Technology Officer | `chief-of-staff` | `lead-backend`, `lead-frontend`, `solution-architect`, `devops-lead`, `qa-lead`, `vp-engineering` | Architect robust AI agent systems.; Review and merge code generated by development agents.; Ensure system scalability and security. |
+| 110 | `dashboard-owner` | Dashboard Owner | `cto` | None | Own the dashboard/ REST API and WebSocket support.; Maintain the 7-department KPI collectors and analytics layer.; Coordinate CORS lockdown and auth with security_compliance_lead (GAP-010/011).; Ensure the dashboard reads from the live state, not stale files (GAP-011). |
+| 111 | `devops-lead` | DevOps Lead | `cto` | None | Design and maintain CI/CD pipelines.; Manage cloud infrastructure and deployments.; Monitor system health, uptime, and alerting.; Implement and maintain infrastructure-as-code (IaC).; Optimize deployment speed and reliability. |
+| 112 | `frontend-architect` | Frontend Architect | `cto` | None | Design and implement a scalable frontend architecture for the dashboard.; Create a component library and design system.; Implement state management and real-time data flows.; Optimize frontend performance and accessibility.; Coordinate with dashboard_owner on API integration. |
+| 113 | `frontend-engineer` | Frontend Engineer | `lead-frontend` | None | Implement UI components and interactive features.; Build responsive layouts across devices and screen sizes.; Write unit and integration tests for frontend code.; Fix bugs and address frontend-related issues.; Collaborate with design on UI/UX implementation. |
+| 114 | `fullstack-engineer` | Full Stack Engineer | `lead-backend` | None | Build end-to-end features across frontend and backend.; Implement and maintain REST and GraphQL APIs.; Write unit, integration, and end-to-end tests.; Debug issues across the full stack.; Collaborate with design on UI implementation.; Optimize database queries and performance. |
+| 115 | `generator-owner` | Generator Owner | `cto` | None | Own the generator and all 12 Jinja2 templates.; Ensure generated agent .md files are valid and idempotent.; Keep template changes backward-compatible with the registry schema. |
+| 116 | `graph-owner` | Graph Owner | `cto` | None | Own the graph/ engine and its 4 graph types.; Maintain BFS pathfinding for dependency and escalation routing.; Ensure graph models stay consistent with the registry. |
+| 117 | `integration-engineer` | Integration Engineer | `lead-backend` | None | Implement WhatsApp Business API integration for Offer B chatbots.; Build connectors for NGO data sources (Kobo, DHIS2, Google Sheets) for Offer C.; Integrate payment gateways (Airtel Money, TNM Mpamba, PayChangu) for local transactions.; Maintain integration health monitoring and alerting. |
+| 118 | `lead-backend` | Lead Backend Engineer | `cto` | `senior-backend-engineer`, `backend-engineer` | Architect backend systems and define API standards.; Set database schema patterns and microservices boundaries.; Lead code reviews and enforce backend coding standards.; Manage technical debt and drive backend documentation.; Mentor backend engineers and drive performance tuning. |
+| 119 | `lead-devops` | Lead DevOps Engineer | `cto` | None | Design and maintain CI/CD pipelines.; Manage cloud infrastructure and deployments.; Optimize deployment speed and reliability.; Drive disaster recovery planning.; Manage secrets and access control.; Automate operational workflows. |
+| 120 | `lead-frontend` | Lead Frontend Engineer | `cto` | `senior-frontend-engineer`, `frontend-engineer` | Design user interfaces and implement responsive layouts.; Establish component standards and design system patterns.; Manage frontend state and optimize rendering performance.; Drive accessibility compliance and frontend toolchain management.; Mentor frontend engineers and coordinate with the design team. |
+| 121 | `mobile-developer` | Mobile Developer | `lead-frontend` | None | Develop mobile applications for iOS and Android.; Optimize app performance and responsiveness.; Integrate backend APIs into mobile clients.; Manage app store submissions and updates.; Implement offline data synchronization.; Test across device and OS versions. |
+| 122 | `observability-engineer` | Observability Engineer | `cto` | None | Implement distributed tracing across all services.; Set up centralized logging with structured log formats.; Configure advanced alerting rules and escalation paths.; Build observability dashboards for system health.; Coordinate with dashboard_owner on monitoring integration. |
+| 123 | `platform-engineer` | Platform Engineer | `cto` | None | Build and maintain the Internal Developer Platform (IDP).; Optimize CI/CD pipelines for speed and reliability.; Create and maintain local development environments.; Develop developer tooling to accelerate engineering velocity.; Monitor platform health and developer productivity metrics. |
+| 124 | `platform-reliability-engineer` | Platform Reliability Engineer | `cto` | None | Own file-locking on all shared JSON/YAML state (GAP-002).; Harden the dead-letter queue with replayable, retryable entries (GAP-001, GAP-008).; Strengthen the LLM circuit breaker (failure thresholds, half-open probes, reset).; Maintain a living reliability checklist covering every GAP in the reliability cluster.; Add regression tests for locking, DLQ retry, and breaker state transitions. |
+| 125 | `registry-owner` | Registry Owner | `cto` | None | Own the registry/ loader, parser, resolver, and validator.; Guarantee the 19 configs validate and resolve cleanly.; Catch dangling references and circular dependencies at load time. |
+| 126 | `scalability-architect` | Scalability Architect | `cto` | None | Design scalable system architectures for growth targets.; Conduct load testing and performance benchmarking.; Identify and resolve performance bottlenecks.; Plan capacity for projected growth scenarios.; Coordinate with platform_engineer on infrastructure scaling. |
+| 127 | `senior-backend-engineer` | Senior Backend Engineer | `lead-backend` | None | Design and implement complex API endpoints and services.; Optimize database queries and backend performance.; Mentor junior and mid-level backend engineers.; Drive architectural decisions for backend projects.; Conduct thorough code reviews and enforce quality standards. |
+| 128 | `senior-frontend-engineer` | Senior Frontend Engineer | `lead-frontend` | None | Implement complex UI features and interactive components.; Optimize frontend performance and bundle size.; Mentor junior and mid-level frontend engineers.; Drive architectural decisions for frontend projects.; Conduct thorough code reviews and enforce quality standards. |
+| 129 | `software-architect` | Software Architect | `cto` | None | Design system architecture and API contracts.; Define integration patterns between services.; Evaluate technology choices and trade-offs.; Maintain architecture documentation.; Coordinate cross-service technical decisions. |
+| 130 | `solution-architect` | Solution Architect | `cto` | None | Design end-to-end solutions for enterprise customer engagements.; Create technical proposals and reference architectures.; Evaluate and select technology stacks for new projects.; Coordinate cross-system integration between services and teams.; Partner with sales_engineer on pre-sales technical validation. |
+| 131 | `vp-engineering` | VP of Engineering | `cto` | `devops-lead`, `platform-reliability-engineer`, `audit-trail-owner`, `graph-owner`, `dashboard-owner`, `registry-owner`, `generator-owner`, `qa-lead`, `release-manager` | Manage all specialist engineering reports currently reporting directly to CTO.; Coordinate cross-team technical dependencies and blockers.; Ensure engineering velocity targets are met across all domains.; Prioritize technical debt reduction alongside feature delivery.; Report engineering health metrics to CTO weekly. |
