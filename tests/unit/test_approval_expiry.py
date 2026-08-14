@@ -10,7 +10,7 @@ All file I/O uses the ``tmp_path`` fixture for complete isolation.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -28,7 +28,7 @@ def _backdate_expiry(gate: ApprovalGate, request_id: str, minutes: int = 5) -> N
     """Force a request's expires_at into the past (no persistence)."""
     request = gate.get_request(request_id)
     assert request is not None
-    request.expires_at = datetime.now() - timedelta(minutes=minutes)
+    request.expires_at = datetime.now(timezone.utc) - timedelta(minutes=minutes)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

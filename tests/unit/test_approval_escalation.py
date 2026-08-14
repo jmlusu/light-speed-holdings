@@ -9,7 +9,7 @@ All file I/O uses the ``tmp_path`` fixture for complete isolation.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -228,7 +228,7 @@ class TestApprovalGateBasic:
         assert len(all_reqs) == 2
 
     def test_request_sets_expiry(self, gate: ApprovalGate) -> None:
-        before = datetime.now()
+        before = datetime.now(timezone.utc)
         gate.request_approval(
             request_id="r1",
             task_id="t1",
@@ -242,6 +242,9 @@ class TestApprovalGateBasic:
         assert req.expires_at is not None
         assert req.expires_at > before
         assert req.expires_at <= before + timedelta(minutes=31)
+        # UTC-aware timestamps (ticket #58): stored values carry a tzinfo.
+        assert req.expires_at.tzinfo is not None
+        assert req.requested_at.tzinfo is not None
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -367,8 +370,8 @@ class TestApprovalExpiration:
             description="Deploy",
             expires_in_minutes=60,
         )
-        # Manually backdate the expiry.
-        gate.requests[0].expires_at = datetime.now() - timedelta(minutes=5)
+        # Manually backdate the expiry (UTC).
+        gate.requests[0].expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)
         pending = gate.get_pending_requests()
         assert len(pending) == 0
 
@@ -393,7 +396,7 @@ class TestApprovalExpiration:
             description="Deploy",
             expires_in_minutes=60,
         )
-        gate.requests[0].expires_at = datetime.now() - timedelta(minutes=5)
+        gate.requests[0].expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)
         # Approve should still work at gate level (status is PENDING).
         # The expiration only affects get_pending_requests filtering.
         result = gate.approve("req-1", "human")
@@ -445,7 +448,7 @@ class TestApprovalExpiration:
             description="d2",
             expires_in_minutes=60,
         )
-        gate.requests[1].expires_at = datetime.now() - timedelta(minutes=1)
+        gate.requests[1].expires_at = datetime.now(timezone.utc) - timedelta(minutes=1)
         pending = gate.get_pending_requests()
         assert len(pending) == 1
         assert pending[0].id == "r-active"
@@ -901,7 +904,7 @@ class TestApprovalEscalationFlow:
         req = gate.get_request("flow-3")
         assert req is not None
         assert req.expires_at is not None
-        assert req.expires_at <= datetime.now()
+        assert req.expires_at <= datetime.now(timezone.utc)
         assert gate.get_pending_requests() == []
 
     def test_timeout_detected_by_hitl_gate(self, tmp_path: Path) -> None:
@@ -917,10 +920,10 @@ class TestApprovalEscalationFlow:
             tool="execute",
             args={"command": "terraform apply"},
         )
-        # Backdate the expiry so the request is already expired.
+        # Backdate the expiry so the request is already expired (UTC).
         req = hitl.gate.get_request(request_id)
         assert req is not None
-        req.expires_at = datetime.now() - timedelta(minutes=1)
+        req.expires_at = datetime.now(timezone.utc) - timedelta(minutes=1)
         hitl.gate._save_config()
 
         assert hitl.resume_approved(request_id) is False
@@ -950,7 +953,7 @@ class TestApprovalEscalationFlow:
         )
         req = gate.get_request(request_id)
         assert req is not None
-        req.expires_at = datetime.now() - timedelta(minutes=1)
+        req.expires_at = datetime.now(timezone.utc) - timedelta(minutes=1)
         gate._save_config()
 
         # Timeout detected.
