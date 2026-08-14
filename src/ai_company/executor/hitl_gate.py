@@ -14,6 +14,13 @@ GAP-004 fix:
   whether any pending request has been approved or rejected since the last
   check, resolving the corresponding future without blocking.  This is
   used by the executor's non-blocking tick loop.
+
+GAP-016 / ticket #70 fix:
+- When a bash/execute command contains shell metacharacters, the request is
+  flagged ``metacharacter_blocked`` and its description carries a warning so
+  the human never approves a command the executor can never run.  The resume
+  path uses :meth:`HITLGate.is_metacharacter_blocked` to fail such approved
+  tasks fast instead of silently retrying them.
 """
 
 from __future__ import annotations
@@ -27,8 +34,18 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from ai_company.orchestrator.approval import ApprovalGate, ApprovalStatus
+from ai_company.security.command_safety import find_shell_metacharacters
 
 logger = logging.getLogger(__name__)
+
+# GAP-016 / ticket #70: warning appended to the approval description when the
+# pending bash/execute command contains shell metacharacters. The human sees
+# this in the dashboard approvals list and the CLI approval pending view.
+_METACHARACTER_WARNING = (
+    " [BLOCKED] This command contains shell metacharacters ({meta}) that the "
+    "executor rejects (GAP-016). Approving WILL NOT make it run — the task "
+    "will fail fast. Rewrite the command as separate tool steps and re-dispatch."
+)
 
 # Module-level executor for background polling threads
 _poll_executor = concurrent.futures.ThreadPoolExecutor(
@@ -82,6 +99,18 @@ class HITLGate:
         """
         request_id = f"hitl-{uuid.uuid4().hex[:12]}"
         description = _format_description(tool, args)
+        # GAP-016 / ticket #70: surface un-runnable commands to the human at
+        # approval time instead of approving work the executor can never run.
+        blocked_meta = _command_metacharacters(tool, args)
+        if blocked_meta:
+            description += _METACHARACTER_WARNING.format(meta=", ".join(blocked_meta))
+            logger.warning(
+                "HITL request %s for task %s requests an un-runnable command "
+                "(shell metacharacters: %s) — flagged and warned at approval time",
+                request_id,
+                task_id,
+                ", ".join(blocked_meta),
+            )
 
         self.gate.request_approval(
             request_id=request_id,
@@ -90,6 +119,7 @@ class HITLGate:
             action=f"tool:{tool}",
             description=description,
             expires_in_minutes=self.timeout_minutes,
+            metacharacter_blocked=bool(blocked_meta),
         )
 
         future: concurrent.futures.Future[bool] = concurrent.futures.Future()
@@ -150,6 +180,18 @@ class HITLGate:
         """
         request_id = f"hitl-{uuid.uuid4().hex[:12]}"
         description = _format_description(tool, args)
+        # GAP-016 / ticket #70: surface un-runnable commands to the human at
+        # approval time instead of approving work the executor can never run.
+        blocked_meta = _command_metacharacters(tool, args)
+        if blocked_meta:
+            description += _METACHARACTER_WARNING.format(meta=", ".join(blocked_meta))
+            logger.warning(
+                "HITL request %s parked for task %s with an un-runnable command "
+                "(shell metacharacters: %s) — flagged and warned at approval time",
+                request_id,
+                task_id,
+                ", ".join(blocked_meta),
+            )
 
         self.gate.request_approval(
             request_id=request_id,
@@ -158,6 +200,7 @@ class HITLGate:
             action=f"tool:{tool}",
             description=description,
             expires_in_minutes=self.timeout_minutes,
+            metacharacter_blocked=bool(blocked_meta),
         )
 
         with self._lock:
@@ -215,6 +258,22 @@ class HITLGate:
                 self._pending_requests.pop(request_id, None)
             return False
         return None
+
+    def is_metacharacter_blocked(self, request_id: str) -> bool:
+        """True when the request's tool call can never pass the executor's
+        shell-metacharacter filter (GAP-016 / ticket #70).
+
+        Reads the persisted flag (reloading from disk first, mirroring
+        :meth:`resume_approved`) so a decision written by another process is
+        observed.  Returns ``False`` for unknown requests — an absent flag on
+        legacy records is treated as "not flagged" so old approvals keep
+        their existing resume behaviour.
+        """
+        self.gate.reload()
+        req = self.gate.get_request(request_id)
+        if req is None:
+            return False
+        return bool(req.metacharacter_blocked)
 
     def _poll_request(
         self,
@@ -331,6 +390,22 @@ def _format_description(tool: str, args: dict[str, Any]) -> str:
         return f"Fetch: {args.get('url', 'unknown')}"
     else:
         return f"{tool}: {json.dumps(args, indent=2)}"
+
+
+def _command_metacharacters(tool: str, args: dict[str, Any]) -> list[str]:
+    """Return the shell metacharacters present in a bash/execute command.
+
+    Returns ``[]`` for non-command tools or when no command string is
+    present.  Uses the same detection as ``ToolRunner._execute``
+    (``security.command_safety``) so approval-time flags and execution-time
+    rejection can never disagree.
+    """
+    if tool not in ("execute", "bash"):
+        return []
+    command = args.get("command", "")
+    if not isinstance(command, str):
+        return []
+    return find_shell_metacharacters(command)
 
 
 def _interruptible_sleep(seconds: float, future: concurrent.futures.Future[bool]) -> None:

@@ -40,6 +40,11 @@ class ApprovalRequest(BaseModel):
     response_by: Optional[str] = None
     notes: Optional[str] = None
     expires_at: Optional[datetime] = None
+    # GAP-016 / ticket #70: True when the pending tool call (e.g. a bash
+    # command) contains shell metacharacters that the executor will always
+    # reject — the request carries a warning and the resume path must NOT
+    # silently retry it. Default False keeps legacy records loadable.
+    metacharacter_blocked: bool = False
 
 
 class ApprovalGate:
@@ -76,6 +81,7 @@ class ApprovalGate:
         expires_in_minutes: int = 60,
         tier: int = 2,
         required_approvers: int = 1,
+        metacharacter_blocked: bool = False,
     ) -> ApprovalRequest:
         request = ApprovalRequest(
             id=request_id,
@@ -86,6 +92,7 @@ class ApprovalGate:
             tier=tier,
             required_approvers=required_approvers,
             expires_at=datetime.now() + timedelta(minutes=expires_in_minutes),
+            metacharacter_blocked=metacharacter_blocked,
         )
         self.requests.append(request)
         self._save_config()
