@@ -23,7 +23,7 @@ from ai_company.security.rbac import Role, require_role
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/mobile")
+router = APIRouter(prefix="/api/v1/mobile")
 
 
 # ── Helpers (shared with main api.py) ───────────────────────────────

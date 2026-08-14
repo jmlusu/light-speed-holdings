@@ -62,7 +62,7 @@ class TestDataStability:
 
     def test_kpi_values_stable_across_reads(self, client: TestClient) -> None:
         """KPI values should not change between rapid successive reads."""
-        results = [client.get("/api/dashboard").json() for _ in range(10)]
+        results = [client.get("/api/v1/dashboard").json() for _ in range(10)]
 
         for key in (
             "pending_tasks",
@@ -76,7 +76,7 @@ class TestDataStability:
 
     def test_task_list_stable_across_reads(self, client: TestClient) -> None:
         """Task list should not change between rapid reads."""
-        results = [client.get("/api/tasks").json() for _ in range(5)]
+        results = [client.get("/api/v1/tasks").json() for _ in range(5)]
 
         for i in range(1, len(results)):
             assert len(results[i]) == len(results[0]), (
@@ -85,7 +85,7 @@ class TestDataStability:
 
     def test_agent_list_stable_across_reads(self, client: TestClient) -> None:
         """Agent list should be immutable across reads."""
-        results = [client.get("/api/agents").json() for _ in range(5)]
+        results = [client.get("/api/v1/agents").json() for _ in range(5)]
 
         for i in range(1, len(results)):
             assert len(results[i]) == len(results[0])
@@ -95,7 +95,7 @@ class TestDataStability:
 
     def test_org_chart_stable_across_reads(self, client: TestClient) -> None:
         """Org chart structure should not change between reads."""
-        results = [client.get("/api/org-chart").json() for _ in range(5)]
+        results = [client.get("/api/v1/org-chart").json() for _ in range(5)]
 
         for i in range(1, len(results)):
             assert len(results[i]) == len(results[0])
@@ -118,7 +118,7 @@ class TestPostMutationStability:
         """After creating a task, subsequent reads should be consistent."""
         # Create a task
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "Test stability",
@@ -128,7 +128,7 @@ class TestPostMutationStability:
         # Read multiple times — should all show the same count
         counts = []
         for _ in range(5):
-            tasks = client.get("/api/tasks").json()
+            tasks = client.get("/api/v1/tasks").json()
             counts.append(len(tasks))
 
         assert len(set(counts)) == 1, f"Task count unstable after creation: {counts}"
@@ -136,7 +136,7 @@ class TestPostMutationStability:
     def test_kpi_reflects_new_task_consistently(self, client: TestClient) -> None:
         """After creating a task, KPI pending count should be stable."""
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "KPI stability test",
@@ -145,7 +145,7 @@ class TestPostMutationStability:
 
         pending_counts = []
         for _ in range(5):
-            kpis = client.get("/api/dashboard").json()
+            kpis = client.get("/api/v1/dashboard").json()
             pending_counts.append(kpis["pending_tasks"])
 
         assert len(set(pending_counts)) == 1, f"Pending tasks KPI unstable: {pending_counts}"
@@ -172,14 +172,14 @@ class TestPostMutationStability:
         )
 
         # Approve it
-        resp = client.post("/api/approvals/test-req/approve")
+        resp = client.post("/api/v1/approvals/test-req/approve")
         assert resp.status_code == 200
 
         # Read multiple times — after the mutation, counts should be stable
         # (Skip the first read which may see pre-mutation cache)
         counts = []
         for _ in range(5):
-            approvals = client.get("/api/approvals").json()
+            approvals = client.get("/api/v1/approvals").json()
             counts.append(len(approvals))
 
         # All reads should agree (allow the first to differ from cache)
@@ -199,7 +199,7 @@ class TestFrontendDataContract:
 
     def test_dashboard_kpi_shape_for_alpine(self, client: TestClient) -> None:
         """Dashboard response must match the kpis object in app.js."""
-        data = client.get("/api/dashboard").json()
+        data = client.get("/api/v1/dashboard").json()
 
         # app.js initializes kpis with these keys:
         expected_keys = {
@@ -226,13 +226,13 @@ class TestFrontendDataContract:
     def test_task_shape_for_alpine(self, client: TestClient) -> None:
         """Task response must match what app.js template expects."""
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "Shape test",
             },
         )
-        tasks = client.get("/api/tasks").json()
+        tasks = client.get("/api/v1/tasks").json()
         assert len(tasks) > 0
 
         task = tasks[0]
@@ -247,7 +247,7 @@ class TestFrontendDataContract:
 
     def test_agent_shape_for_alpine(self, client: TestClient) -> None:
         """Agent response must match filteredAgents template."""
-        agents = client.get("/api/agents").json()
+        agents = client.get("/api/v1/agents").json()
         assert len(agents) > 0
 
         agent = agents[0]
@@ -260,7 +260,7 @@ class TestFrontendDataContract:
 
     def test_departments_shape_for_alpine(self, client: TestClient) -> None:
         """Departments response must match chart rendering code."""
-        depts = client.get("/api/departments").json()
+        depts = client.get("/api/v1/departments").json()
         assert isinstance(depts, list)
         for dept in depts:
             assert "name" in dept
@@ -280,7 +280,7 @@ class TestScrollRegression:
         # Simulate 5 rapid poll cycles
         snapshots = []
         for _ in range(5):
-            resp = client.get("/api/dashboard")
+            resp = client.get("/api/v1/dashboard")
             snapshots.append(resp.json())
 
         # All snapshots must be identical (exclude uptime_seconds which changes)
@@ -298,7 +298,7 @@ class TestScrollRegression:
         """Simulate rapid task polling — list must be stable."""
         snapshots = []
         for _ in range(5):
-            resp = client.get("/api/tasks")
+            resp = client.get("/api/v1/tasks")
             snapshots.append(resp.json())
 
         first = json.dumps(snapshots[0], sort_keys=True)
@@ -311,8 +311,8 @@ class TestScrollRegression:
 
     def test_dashboard_and_tasks_kpi_alignment(self, client: TestClient) -> None:
         """KPI counts from /dashboard must match /tasks listing."""
-        dashboard = client.get("/api/dashboard").json()
-        tasks = client.get("/api/tasks").json()
+        dashboard = client.get("/api/v1/dashboard").json()
+        tasks = client.get("/api/v1/tasks").json()
 
         # Count tasks by status
         status_counts = {}
@@ -348,11 +348,11 @@ class TestScrollRegression:
         ALLOWED_NONE_FIELDS = {"model", "tier", "reason"}  # legitimately nullable
 
         endpoints = [
-            "/api/dashboard",
-            "/api/agents",
-            "/api/tasks",
-            "/api/departments",
-            "/api/kpis/summary",
+            "/api/v1/dashboard",
+            "/api/v1/agents",
+            "/api/v1/tasks",
+            "/api/v1/departments",
+            "/api/v1/kpis/summary",
         ]
 
         for endpoint in endpoints:

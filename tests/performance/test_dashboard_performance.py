@@ -59,14 +59,14 @@ class TestAPIPerformance:
     @pytest.mark.parametrize(
         "endpoint",
         [
-            "/api/dashboard",
-            "/api/agents",
-            "/api/tasks",
-            "/api/org-chart",
-            "/api/departments",
-            "/api/kpis",
-            "/api/kpis/summary",
-            "/api/models",
+            "/api/v1/dashboard",
+            "/api/v1/agents",
+            "/api/v1/tasks",
+            "/api/v1/org-chart",
+            "/api/v1/departments",
+            "/api/v1/kpis",
+            "/api/v1/kpis/summary",
+            "/api/v1/models",
             "/metrics",
             "/health",
         ],
@@ -91,7 +91,7 @@ class TestAPIPerformance:
         """Dashboard endpoint should handle 100 sequential requests in < 10s."""
         start = time.perf_counter()
         for _ in range(100):
-            resp = client.get("/api/dashboard")
+            resp = client.get("/api/v1/dashboard")
             assert resp.status_code == 200
         elapsed = time.perf_counter() - start
 
@@ -103,7 +103,7 @@ class TestAPIPerformance:
         results = []
         for i in range(50):
             resp = client.post(
-                "/api/tasks",
+                "/api/v1/tasks",
                 json={
                     "receiver_id": "lead-engineering",
                     "instruction": f"Performance test task {i}",
@@ -122,7 +122,7 @@ class TestAPIPerformance:
         # Create 500 additional tasks (workspace already seeds 50)
         for i in range(500):
             client.post(
-                "/api/tasks",
+                "/api/v1/tasks",
                 json={
                     "receiver_id": "lead-engineering",
                     "instruction": f"Bulk task {i}",
@@ -131,7 +131,7 @@ class TestAPIPerformance:
 
         # Measure dashboard response with large dataset
         start = time.perf_counter()
-        resp = client.get("/api/dashboard")
+        resp = client.get("/api/v1/dashboard")
         elapsed_ms = (time.perf_counter() - start) * 1000
 
         assert resp.status_code == 200
@@ -143,7 +143,7 @@ class TestAPIPerformance:
 
         # Also check task listing (50 seeded + 500 created = 550)
         start = time.perf_counter()
-        resp = client.get("/api/tasks")
+        resp = client.get("/api/v1/tasks")
         elapsed_ms = (time.perf_counter() - start) * 1000
 
         assert resp.status_code == 200
@@ -167,7 +167,7 @@ class TestAPIConsistency:
         times = []
         for _ in range(20):
             start = time.perf_counter()
-            client.get("/api/dashboard")
+            client.get("/api/v1/dashboard")
             times.append((time.perf_counter() - start) * 1000)
 
         avg = mean(times)
@@ -193,7 +193,7 @@ class TestAPIConsistency:
 
         # Make 200 API calls
         for _ in range(200):
-            client.get("/api/dashboard")
+            client.get("/api/v1/dashboard")
 
         # Check memory
         current_mb = proc.memory_info().rss / 1024 / 1024
@@ -215,7 +215,7 @@ class TestDataIntegrity:
 
     def test_dashboard_kpis_are_consistent(self, client: TestClient) -> None:
         """Multiple dashboard reads should return the same KPI values."""
-        results = [client.get("/api/dashboard").json() for _ in range(5)]
+        results = [client.get("/api/v1/dashboard").json() for _ in range(5)]
 
         for key in ("pending_tasks", "total_agents", "completed_tasks"):
             values = [r[key] for r in results]
@@ -223,8 +223,8 @@ class TestDataIntegrity:
 
     def test_task_count_matches_across_endpoints(self, client: TestClient) -> None:
         """Task count from /api/dashboard should match /api/tasks length."""
-        dashboard = client.get("/api/dashboard").json()
-        tasks = client.get("/api/tasks").json()
+        dashboard = client.get("/api/v1/dashboard").json()
+        tasks = client.get("/api/v1/tasks").json()
 
         total_from_dashboard = (
             dashboard["pending_tasks"]
@@ -239,14 +239,14 @@ class TestDataIntegrity:
 
     def test_agent_count_consistency(self, client: TestClient) -> None:
         """Agent count from dashboard should match /api/agents length."""
-        dashboard = client.get("/api/dashboard").json()
-        agents = client.get("/api/agents").json()
+        dashboard = client.get("/api/v1/dashboard").json()
+        agents = client.get("/api/v1/agents").json()
         assert dashboard["total_agents"] == len(agents)
 
     def test_org_chart_agent_count_matches(self, client: TestClient) -> None:
         """Total agents in org chart should match /api/agents count."""
-        agents = client.get("/api/agents").json()
-        org = client.get("/api/org-chart").json()
+        agents = client.get("/api/v1/agents").json()
+        org = client.get("/api/v1/org-chart").json()
 
         def count_nodes(nodes: list) -> int:
             total = 0

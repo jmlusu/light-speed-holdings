@@ -187,7 +187,7 @@ class TestCorsRejectsDisallowedOrigins:
         app = _make_app(monkeypatch, tmp_path, origins="https://app.example.com")
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://app.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -202,7 +202,7 @@ class TestCorsRejectsDisallowedOrigins:
         app = _make_app(monkeypatch, tmp_path)
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://evil.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -227,7 +227,7 @@ class TestAuthenticatedRequests:
         app = _make_app(monkeypatch, tmp_path, rate_limit="10", api_key="secret-key-123")
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "test-agent",
                 "instruction": "Build a widget for the dashboard",
@@ -242,7 +242,7 @@ class TestAuthenticatedRequests:
         app = _make_app(monkeypatch, tmp_path, rate_limit="10", api_key="secret-key-123")
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "test-agent",
                 "instruction": "Build a widget for the dashboard",
@@ -266,7 +266,7 @@ class TestAuthenticatedRequests:
             "receiver_id": "test-agent",
             "instruction": "Build a widget for the dashboard",
         }
-        assert client.post("/api/tasks", json=payload, headers=headers).status_code == 201
-        assert client.post("/api/tasks", json=payload, headers=headers).status_code == 201
-        resp = client.post("/api/tasks", json=payload, headers=headers)
+        assert client.post("/api/v1/tasks", json=payload, headers=headers).status_code == 201
+        assert client.post("/api/v1/tasks", json=payload, headers=headers).status_code == 201
+        resp = client.post("/api/v1/tasks", json=payload, headers=headers)
         assert resp.status_code == 429

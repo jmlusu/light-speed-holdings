@@ -125,7 +125,7 @@ class TestCORSPreflight:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "http://localhost:3000",
                 "Access-Control-Request-Method": "GET",
@@ -137,7 +137,7 @@ class TestCORSPreflight:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://evil.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -153,7 +153,7 @@ class TestCORSPreflight:
         client = TestClient(app)
 
         allowed = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://app.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -162,7 +162,7 @@ class TestCORSPreflight:
         assert allowed.headers.get("access-control-allow-origin") == "https://app.example.com"
 
         rejected = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "http://localhost:3000",
                 "Access-Control-Request-Method": "GET",
@@ -177,7 +177,7 @@ class TestCORSPreflight:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://any-origin.com",
                 "Access-Control-Request-Method": "GET",

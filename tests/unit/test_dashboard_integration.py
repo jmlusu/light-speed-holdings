@@ -161,7 +161,7 @@ class TestTaskBroadcast:
 
     def test_create_task_returns_task(self, setup_data: None) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "Build API"},
         )
         assert resp.status_code == 201
@@ -171,10 +171,10 @@ class TestTaskBroadcast:
 
     def test_create_task_persists(self, setup_data: None) -> None:
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "Build API"},
         )
-        resp = client.get("/api/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         tasks = resp.json()
         assert len(tasks) == 1
@@ -188,7 +188,7 @@ class TestCEODashboard:
     """Tests for the /api/ceo-dashboard endpoint."""
 
     def test_ceo_dashboard_returns_all_sections(self, setup_data: None) -> None:
-        resp = client.get("/api/ceo-dashboard")
+        resp = client.get("/api/v1/ceo-dashboard")
         assert resp.status_code == 200
         data = resp.json()
 
@@ -203,13 +203,13 @@ class TestCEODashboard:
         assert "uptime_seconds" in data
 
     def test_ceo_dashboard_company_health_has_departments(self, setup_data: None) -> None:
-        resp = client.get("/api/ceo-dashboard")
+        resp = client.get("/api/v1/ceo-dashboard")
         data = resp.json()
         health = data["company_health"]
         assert "departments" in health
 
     def test_ceo_dashboard_agent_performance(self, setup_data: None) -> None:
-        resp = client.get("/api/ceo-dashboard")
+        resp = client.get("/api/v1/ceo-dashboard")
         data = resp.json()
         perf = data["agent_performance"]
         assert perf["total_agents"] == 3
@@ -217,7 +217,7 @@ class TestCEODashboard:
         assert "by_department" in perf
 
     def test_ceo_dashboard_cost_tracking(self, setup_data: None) -> None:
-        resp = client.get("/api/ceo-dashboard")
+        resp = client.get("/api/v1/ceo-dashboard")
         data = resp.json()
         cost = data["cost_tracking"]
         assert cost["total_budget"] == 10000
@@ -228,11 +228,11 @@ class TestCEODashboard:
         # Add some tasks
         for status in ["pending", "completed", "failed"]:
             client.post(
-                "/api/tasks",
+                "/api/v1/tasks",
                 json={"receiver_id": "lead-engineering", "instruction": f"Task {status}"},
             )
 
-        resp = client.get("/api/ceo-dashboard")
+        resp = client.get("/api/v1/ceo-dashboard")
         data = resp.json()
         pipeline = data["task_pipeline"]
         assert pipeline["total"] == 3
@@ -246,7 +246,7 @@ class TestDepartmentDashboard:
     """Tests for /api/departments/{dept_name}/dashboard."""
 
     def test_engineering_dashboard(self, setup_data: None) -> None:
-        resp = client.get("/api/departments/engineering/dashboard")
+        resp = client.get("/api/v1/departments/engineering/dashboard")
         assert resp.status_code == 200
         data = resp.json()
         assert data["department"] == "engineering"
@@ -256,22 +256,22 @@ class TestDepartmentDashboard:
         assert "escalations" in data
 
     def test_engineering_dashboard_agents(self, setup_data: None) -> None:
-        resp = client.get("/api/departments/engineering/dashboard")
+        resp = client.get("/api/v1/departments/engineering/dashboard")
         data = resp.json()
         agent_names = [a["name"] for a in data["agents"]]
         assert "lead-engineering" in agent_names
 
     def test_department_not_found(self, setup_data: None) -> None:
-        resp = client.get("/api/departments/nonexistent/dashboard")
+        resp = client.get("/api/v1/departments/nonexistent/dashboard")
         assert resp.status_code == 404
 
     def test_department_dashboard_with_tasks(self, setup_data: None) -> None:
         # Add a task to engineering
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "Build feature"},
         )
-        resp = client.get("/api/departments/engineering/dashboard")
+        resp = client.get("/api/v1/departments/engineering/dashboard")
         data = resp.json()
         assert data["task_stats"]["total"] >= 1
 
@@ -283,7 +283,7 @@ class TestKPIHistory:
     """Tests for /api/kpis/history/{department}."""
 
     def test_history_empty(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/history/engineering")
+        resp = client.get("/api/v1/kpis/history/engineering")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
@@ -291,9 +291,9 @@ class TestKPIHistory:
 
     def test_history_with_stored_data(self, setup_data: None) -> None:
         # Trigger collection + storage
-        client.get("/api/kpis/collect")
+        client.get("/api/v1/kpis/collect")
 
-        resp = client.get("/api/kpis/history/engineering")
+        resp = client.get("/api/v1/kpis/history/engineering")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data) > 0
@@ -302,8 +302,8 @@ class TestKPIHistory:
         assert "current" in data[0]
 
     def test_history_filter_kpi_key(self, setup_data: None) -> None:
-        client.get("/api/kpis/collect")
-        resp = client.get("/api/kpis/history/engineering?kpi_key=total_tasks")
+        client.get("/api/v1/kpis/collect")
+        resp = client.get("/api/v1/kpis/history/engineering?kpi_key=total_tasks")
         assert resp.status_code == 200
         data = resp.json()
         for entry in data:
@@ -317,16 +317,16 @@ class TestKPITrends:
     """Tests for /api/kpis/trends/{department}."""
 
     def test_trends_empty(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/trends/engineering")
+        resp = client.get("/api/v1/kpis/trends/engineering")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
 
     def test_trends_with_two_snapshots(self, setup_data: None) -> None:
-        client.get("/api/kpis/collect")
-        client.get("/api/kpis/collect")
+        client.get("/api/v1/kpis/collect")
+        client.get("/api/v1/kpis/collect")
 
-        resp = client.get("/api/kpis/trends/engineering")
+        resp = client.get("/api/v1/kpis/trends/engineering")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data) > 0
@@ -334,10 +334,10 @@ class TestKPITrends:
         assert data[0]["direction"] in ("up", "down", "flat")
 
     def test_trends_filter_kpi_keys(self, setup_data: None) -> None:
-        client.get("/api/kpis/collect")
-        client.get("/api/kpis/collect")
+        client.get("/api/v1/kpis/collect")
+        client.get("/api/v1/kpis/collect")
 
-        resp = client.get("/api/kpis/trends/engineering?kpi_keys=total_tasks")
+        resp = client.get("/api/v1/kpis/trends/engineering?kpi_keys=total_tasks")
         assert resp.status_code == 200
         data = resp.json()
         for t in data:
@@ -351,7 +351,7 @@ class TestKPIAlerts:
     """Tests for /api/kpis/alerts."""
 
     def test_alerts_returns_structure(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/alerts")
+        resp = client.get("/api/v1/kpis/alerts")
         assert resp.status_code == 200
         data = resp.json()
         assert "evaluated_at" in data
@@ -360,15 +360,15 @@ class TestKPIAlerts:
         assert "alert_count" in data
 
     def test_alerts_default_rules_loaded(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/alerts")
+        resp = client.get("/api/v1/kpis/alerts")
         data = resp.json()
         assert data["rules_evaluated"] >= 5  # At least 5 default rules
 
     def test_alerts_store_snapshot(self, setup_data: None) -> None:
         # First collect + store
-        client.get("/api/kpis/collect")
+        client.get("/api/v1/kpis/collect")
         # Then alerts endpoint should also store
-        resp = client.get("/api/kpis/alerts")
+        resp = client.get("/api/v1/kpis/alerts")
         data = resp.json()
         assert "alert_count" in data
 
@@ -380,7 +380,7 @@ class TestKPICollect:
     """Tests for /api/kpis/collect."""
 
     def test_collect_returns_all_departments(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/collect")
+        resp = client.get("/api/v1/kpis/collect")
         assert resp.status_code == 200
         data = resp.json()
         assert "collected_at" in data
@@ -396,7 +396,7 @@ class TestKPICollect:
         assert "legal" in depts
 
     def test_collect_stores_entries(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/collect")
+        resp = client.get("/api/v1/kpis/collect")
         data = resp.json()
         assert "stored_entries" in data
         assert data["stored_entries"] > 0
@@ -409,14 +409,14 @@ class TestKPISummaryStats:
     """Tests for /api/kpis/summary-stats/{department}."""
 
     def test_summary_stats_empty(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/summary-stats/engineering")
+        resp = client.get("/api/v1/kpis/summary-stats/engineering")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
 
     def test_summary_stats_after_collect(self, setup_data: None) -> None:
-        client.get("/api/kpis/collect")
-        resp = client.get("/api/kpis/summary-stats/engineering")
+        client.get("/api/v1/kpis/collect")
+        resp = client.get("/api/v1/kpis/summary-stats/engineering")
         assert resp.status_code == 200
         data = resp.json()
         if data:
@@ -426,7 +426,7 @@ class TestKPISummaryStats:
             assert "count" in data[0]
 
     def test_summary_stats_invalid_period(self, setup_data: None) -> None:
-        resp = client.get("/api/kpis/summary-stats/engineering?period=yearly")
+        resp = client.get("/api/v1/kpis/summary-stats/engineering?period=yearly")
         assert resp.status_code == 400
 
 

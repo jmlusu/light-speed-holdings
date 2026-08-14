@@ -129,7 +129,7 @@ def setup_dashboard_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Non
 
 class TestDashboardKPIs:
     def test_get_dashboard_returns_kpis(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/dashboard")
+        resp = client.get("/api/v1/dashboard")
         assert resp.status_code == 200
         data = resp.json()
         assert "pending_tasks" in data
@@ -159,7 +159,7 @@ class TestDashboardKPIs:
         ]
         inbox_path.write_text(json.dumps(tasks), encoding="utf-8")
 
-        resp = client.get("/api/dashboard")
+        resp = client.get("/api/v1/dashboard")
         data = resp.json()
         assert data["pending_tasks"] == 1
         assert data["completed_tasks"] == 1
@@ -168,7 +168,7 @@ class TestDashboardKPIs:
 
 class TestAgents:
     def test_list_agents(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         agents = resp.json()
         assert len(agents) == 3
@@ -176,18 +176,18 @@ class TestAgents:
         assert "chief-of-staff" in names
 
     def test_get_agent_by_name(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/agents/chief-of-staff")
+        resp = client.get("/api/v1/agents/chief-of-staff")
         assert resp.status_code == 200
         assert resp.json()["role"] == "Chief of Staff"
 
     def test_get_agent_not_found(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/agents/nonexistent")
+        resp = client.get("/api/v1/agents/nonexistent")
         assert resp.status_code == 404
 
 
 class TestOrgChart:
     def test_org_chart_structure(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/org-chart")
+        resp = client.get("/api/v1/org-chart")
         assert resp.status_code == 200
         chart = resp.json()
         assert len(chart) >= 1
@@ -198,13 +198,13 @@ class TestOrgChart:
 
 class TestTasks:
     def test_list_tasks_empty(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         assert resp.json() == []
 
     def test_create_task(self, setup_dashboard_data: None) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "Build API"},
         )
         assert resp.status_code == 201
@@ -217,26 +217,26 @@ class TestTasks:
 
     def test_list_tasks_after_create(self, setup_dashboard_data: None) -> None:
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "Build API"},
         )
-        resp = client.get("/api/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         assert len(resp.json()) == 1
 
     def test_list_tasks_filter_status(self, setup_dashboard_data: None) -> None:
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "Build API"},
         )
-        resp = client.get("/api/tasks?status=completed")
+        resp = client.get("/api/v1/tasks?status=completed")
         assert resp.status_code == 200
         assert resp.json() == []
 
     def test_reject_trivial_instruction_too_short(self, setup_dashboard_data: None) -> None:
         """POST task with instruction <= 5 chars should return 400."""
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "do x"},
         )
         assert resp.status_code == 400
@@ -248,7 +248,7 @@ class TestTasks:
     def test_reject_trivial_instruction_placeholder(self, setup_dashboard_data: None) -> None:
         """POST task matching the trivial placeholder regex should return 400."""
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "test"},
         )
         assert resp.status_code == 400
@@ -256,7 +256,7 @@ class TestTasks:
     def test_accept_meaningful_instruction(self, setup_dashboard_data: None) -> None:
         """POST task with a meaningful instruction should succeed."""
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "Build the REST API for task management",
@@ -282,12 +282,12 @@ class TestApprovals:
         }
         approvals_path.write_text(yaml.dump(data), encoding="utf-8")
 
-        resp = client.post("/api/approvals/req-1/approve")
+        resp = client.post("/api/v1/approvals/req-1/approve")
         assert resp.status_code == 200
         assert resp.json()["ok"] is True
 
         # Verify it's no longer pending
-        resp = client.get("/api/approvals")
+        resp = client.get("/api/v1/approvals")
         assert resp.status_code == 200
         assert len(resp.json()) == 0
 
@@ -312,12 +312,12 @@ class TestApprovals:
         }
         approvals_path.write_text(yaml.dump(data), encoding="utf-8")
 
-        resp = client.post("/api/approvals/req-2/reject")
+        resp = client.post("/api/v1/approvals/req-2/reject")
         assert resp.status_code == 200
         assert resp.json()["ok"] is True
 
     def test_approve_nonexistent(self, setup_dashboard_data: None) -> None:
-        resp = client.post("/api/approvals/nonexistent/approve")
+        resp = client.post("/api/v1/approvals/nonexistent/approve")
         assert resp.status_code == 404
 
 
@@ -339,18 +339,18 @@ class TestEscalations:
         }
         esc_path.write_text(yaml.dump(data), encoding="utf-8")
 
-        resp = client.post("/api/escalations/esc-1/resolve")
+        resp = client.post("/api/v1/escalations/esc-1/resolve")
         assert resp.status_code == 200
         assert resp.json()["ok"] is True
 
     def test_resolve_nonexistent(self, setup_dashboard_data: None) -> None:
-        resp = client.post("/api/escalations/nonexistent/resolve")
+        resp = client.post("/api/v1/escalations/nonexistent/resolve")
         assert resp.status_code == 404
 
 
 class TestDepartments:
     def test_list_departments(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/departments")
+        resp = client.get("/api/v1/departments")
         assert resp.status_code == 200
         depts = resp.json()
         assert len(depts) == 2
@@ -358,14 +358,14 @@ class TestDepartments:
 
 class TestModels:
     def test_list_model_routes(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/models")
+        resp = client.get("/api/v1/models")
         assert resp.status_code == 200
         routes = resp.json()
         assert len(routes) >= 1
         assert all("agent" in r for r in routes)
 
     def test_list_model_tiers(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/models/tiers")
+        resp = client.get("/api/v1/models/tiers")
         assert resp.status_code == 200
         tiers = resp.json()
         assert len(tiers) == 3
@@ -377,7 +377,7 @@ class TestModels:
 
 class TestScheduler:
     def test_list_scheduled(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/scheduler")
+        resp = client.get("/api/v1/scheduler")
         assert resp.status_code == 200
         assert resp.json() == []
 
@@ -387,7 +387,7 @@ class TestKpiEndpoints:
 
     def test_get_department_kpis(self, setup_dashboard_data: None) -> None:
         """GET /api/departments/{name}/kpis returns KPI definitions."""
-        resp = client.get("/api/departments/engineering/kpis")
+        resp = client.get("/api/v1/departments/engineering/kpis")
         assert resp.status_code == 200
         data = resp.json()
         assert data["name"] == "Engineering"
@@ -402,11 +402,11 @@ class TestKpiEndpoints:
             assert "frequency" in kpi
 
     def test_get_department_kpis_not_found(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/departments/nonexistent/kpis")
+        resp = client.get("/api/v1/departments/nonexistent/kpis")
         assert resp.status_code == 404
 
     def test_list_all_kpis(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/kpis")
+        resp = client.get("/api/v1/kpis")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, dict)
@@ -414,7 +414,7 @@ class TestKpiEndpoints:
         assert len(data["engineering"]["kpis"]) > 0
 
     def test_kpi_summary(self, setup_dashboard_data: None) -> None:
-        resp = client.get("/api/kpis/summary")
+        resp = client.get("/api/v1/kpis/summary")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)

@@ -30,7 +30,7 @@ def client(workspace: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
 
 class TestDashboardAPI:
     def test_list_agents_shape(self, client: TestClient) -> None:
-        resp = client.get("/api/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
@@ -38,16 +38,16 @@ class TestDashboardAPI:
         assert {"name", "role", "type"} <= set(data[0].keys())
 
     def test_get_agent_by_name(self, client: TestClient) -> None:
-        resp = client.get("/api/agents/test-agent")
+        resp = client.get("/api/v1/agents/test-agent")
         assert resp.status_code == 200
         assert resp.json()["name"] == "test-agent"
 
     def test_get_agent_not_found(self, client: TestClient) -> None:
-        resp = client.get("/api/agents/does-not-exist")
+        resp = client.get("/api/v1/agents/does-not-exist")
         assert resp.status_code == 404
 
     def test_org_chart_shape(self, client: TestClient) -> None:
-        resp = client.get("/api/org-chart")
+        resp = client.get("/api/v1/org-chart")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
@@ -57,7 +57,7 @@ class TestDashboardAPI:
 
     def test_create_task_persists(self, client: TestClient, workspace: Path) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "test-agent", "instruction": "Build a widget"},
         )
         assert resp.status_code == 201
@@ -71,18 +71,18 @@ class TestDashboardAPI:
 
     def test_list_tasks_after_create(self, client: TestClient) -> None:
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "test-agent",
                 "instruction": "Deploy the new widget to production",
             },
         )
-        resp = client.get("/api/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         assert len(resp.json()) == 1
 
     def test_dashboard_kpis_shape(self, client: TestClient) -> None:
-        resp = client.get("/api/dashboard")
+        resp = client.get("/api/v1/dashboard")
         assert resp.status_code == 200
         data = resp.json()
         expected = {
@@ -95,7 +95,7 @@ class TestDashboardAPI:
         assert expected <= set(data.keys())
 
     def test_ceo_dashboard_sections(self, client: TestClient) -> None:
-        resp = client.get("/api/ceo-dashboard")
+        resp = client.get("/api/v1/ceo-dashboard")
         assert resp.status_code == 200
         data = resp.json()
         assert "task_pipeline" in data

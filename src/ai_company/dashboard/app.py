@@ -393,7 +393,7 @@ def create_app() -> FastAPI:
     app.include_router(router)
     app.include_router(ws_router)
     if _has_mobile:
-        app.include_router(mobile_router)  # /api/mobile/*
+        app.include_router(mobile_router)  # /api/v1/mobile/*
     if _has_monitoring:
         app.include_router(monitoring_router)  # /metrics, /health, /ready
 
