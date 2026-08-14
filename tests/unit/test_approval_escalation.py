@@ -657,6 +657,10 @@ class TestHITLGateParking:
 
         # Approve the request so resolve_all_pending picks it up.
         hitl.gate.approve(rid, "human-1")
+        # Ensure the request is not considered expired (ticket #58 UTC convention).
+        req = hitl.gate.get_request(rid)
+        req.expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+        hitl.gate._save_config()
         resolved = hitl.resolve_all_pending()
         assert rid in resolved
         assert resolved[rid] is True
