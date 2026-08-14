@@ -79,15 +79,21 @@ If a task does park: `uv run ai-company orchestrator approval-approve <request_i
 
 ## 6. Success criteria (from #16)
 
-- [ ] Daemon lifecycle: start → PID/status file → running → graceful stop.
-- [ ] ≥2 of 3 tasks COMPLETED with `results/{task_id}/loop_result.json` artifacts;
-      no unexpected DLQ entries (`executor dlq-list`).
-- [ ] Cost tracking: usage recorded (cost log), per-task ≤ $0.50, daily ≤ $2.00.
-- [ ] Daily briefing regenerated.
-- [ ] KPI snapshot collected.
-- [ ] Governance retention ran without error.
-- [ ] Dashboard live on 127.0.0.1:8421 with WebSocket task updates.
-- [ ] Memory recall ran before execution; outcomes recorded; consolidation ticked.
+- [x] Daemon lifecycle: start → PID/status file → running → graceful stop.
+      (Verified on the completion run: PID 27624, 10 ticks, `state: stopped`.)
+- [x] ≥2 of 3 tasks COMPLETED with `results/{task_id}/loop_result.json` artifacts;
+      no unexpected DLQ entries. (4/4 completed: canary-001, t1-status-summary,
+      t2-board-audit, t3-audit-analysis; `dead_letter.json` = `[]`.)
+- [x] Cost tracking: usage recorded (cost log), per-task ≤ $0.50, daily ≤ $2.00.
+      (`results/cost_log.jsonl`, 67 entries; t1 $0.0314, canary $0.00143,
+      t2/t3 $0.00 via ollama `llama3.1:8b`.)
+- [x] Daily briefing regenerated. (`.opencode/daily_briefing.md`, deterministic,
+      no LLM spend.)
+- [x] KPI snapshot collected. (DB-backed run: 46 entries, 7 departments.)
+- [x] Governance retention ran without error. (6 tables processed.)
+- [x] Dashboard live on 127.0.0.1:8421 with WebSocket task updates.
+- [x] Memory recall ran before execution; outcomes recorded; consolidation
+      ticked. (Dim-384 model; 4759-vector index recalled at kickoff.)
 
 ## 7. Rollback / abort
 
@@ -130,3 +136,52 @@ already UTC.
 | Budget runaway | Hard $0.50/task + $2/day caps + auto-suspend (config-enforced) |
 | Daemon orphan process | `executor stop` + verify PID gone; fallback `Stop-Process` by PID file |
 | Dashboard port clash | Proof uses 8421 (prod is 8420) |
+
+## 11. Operating cadence (gate #17, ADRs 013 & 014)
+
+**Status**: active — #16 closed PASS (#17 open). Grounded in what the proof ran,
+not theory (runbook §5/§6 evidence above).
+
+### 11.1 Scheduled cycles
+
+| Cycle | Cadence | Mechanism | Budget/SLA | Evidence |
+|-------|---------|-----------|------------|----------|
+| Daily briefing | 1×/day, 08:00 UTC (host clock) | `orchestrator briefing` (deterministic, no LLM) | — | `.opencode/daily_briefing.md` |
+| KPI snapshot | every 300 s (daemon `--kpi-snapshot-interval 300`) | `KPIPipeline` → SQLite | — | `data/ai_company.db`, `dashboard/kpi_history/` |
+| Governance retention | daemon tick + daily sweep | `GovernanceScheduler` | — | audit `governance_ran` events |
+| HITL expiry sweep | per governance cadence (default 60 s) | `ApprovalGate` (`_expired`, UTC-aware) | approval TTL / grace (config) | audit `approval_resolved: expired` |
+| Memory consolidation | on executor tick | `memory/consolidation.py` scheduler | prune TTL | memory `access_count`/`created_at` |
+| Task execution | continuous via daemon tick | `Executor.tick()` | $0.50/task auto-suspend | `results/{id}/loop_result.json`, `inbox.json` |
+
+### 11.2 Human review checkpoint
+
+Daily sync on the dashboard + daily briefing. Review surface: task pipeline,
+KPI summary, cost log, pending approvals. **No auto-approval of T3 actions** —
+the fail-fast metacharacter gate (#70) and dual-sign T3 rule stay default.
+
+### 11.3 Escalation SLAs (from the approval matrix)
+
+T1 auto-approve (tier 0). T2 single-sign, 60-min grace → escalate. T3 dual-sign, 2-h TTL → escalate. T4 board gate. All deadlines compared **UTC-aware** (#55, `d444632`). `executor approval-approve <request_id>` for parked requests.
+
+### 11.4 Budget-tracking rhythm
+
+Per-call: `cost_log.jsonl` (`cost_usd`). Guards: $0.50/task (`AgentLoop.check_budget`), $2.00/day (`CostTracker.daily_budget_exceeded` + `suspend_daily`). Reviewed daily in the briefing.
+
+### 11.5 Dashboard access (ADR-013 / ticket #77)
+
+Non-loopback production browser → `GET /api/v1/bootstrap-token` mints a short-lived
+(`DASHBOARD_SESSION_TTL`, default 3600 s), IP-bound, `approve`-role token; browser holds it
+**in memory only** and re-mints on 401/1008. Page/static/assets + `/api/v1/bootstrap-token`
+are carve-outs from the fail-closed key gate; `/api/v1/*`, `/ws/v1/dashboard`, `/metrics`
+stay key-gated. Restarts invalidate tokens mid-session; clients recover automatically.
+
+### 11.6 API versioning (ADR-014)
+
+Version by URL prefix: main REST `/api/*`→`/api/v1/*`, mobile `/api/mobile/*`→`/api/v1/mobile/*`, WS `/ws/dashboard`→`/ws/v1/dashboard`. **Hard break**, no redirects (all consumers in-repo). Ops probes `/health`,`/ready`,`/metrics` unversioned. OpenAPI `version` = package version (#64); URL major changes only on breaking contract change.
+
+### 11.7 Evidence / cleanup
+
+Evidence lives in `docs/archive/2026-08-13-op16-proof/` (manifest + curated artifacts).
+Post-proof cleanup: purge test tasks from the inbox (restore `[]`), keep `results/*`.
+The autonomous cron (`backlog.json` via `autonomous.yml`) seeds recurring read-only
+tasks into the live inbox — keep the live inbox separate from one-shot proof evidence.
