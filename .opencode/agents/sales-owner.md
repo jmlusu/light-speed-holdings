@@ -34,9 +34,7 @@ Owns the sales service module, pipeline models, and sales SOP.
 ## Responsibilities
 
 
-- Own services/sales.py and the sales SOP.
-
-- Fix the ruff E741 ambiguous-variable warnings in services/sales.py.
+- Own the sales SOP.
 
 - Model pipeline stages and revenue targets.
 

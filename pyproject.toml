@@ -17,7 +17,6 @@ dependencies = [
     "rich",
     "pyyaml",
     "pydantic>=2.8",
-    "networkx",
     "typer",
     "python-dotenv",
     "fastapi",
@@ -27,9 +26,7 @@ dependencies = [
     "cryptography>=42.0",
     # ML dependencies
     "sentence-transformers>=3.0",
-    "scikit-learn>=1.5",
     "numpy>=1.26",
-    "scipy>=1.13",
     # System monitoring / analytics
     "psutil>=5.9",
 ]

@@ -7,7 +7,6 @@ Provides a JSON-backed task queue with:
 - Parent/child task linkage
 - ACK tracking
 - Backup file on every write
-- Query helpers for subtasks, unacknowledged tasks, and status counts
 - Dashboard broadcast hooks for real-time WebSocket updates
 """
 
@@ -202,39 +201,6 @@ class MessageBus:
         except Exception:  # noqa: BLE001 - mirror is best-effort
             logger.debug("SQLite task delete mirror failed for %s", task_id, exc_info=True)
 
-    def reconcile_mirror(self) -> dict[str, int]:
-        """Re-sync the SQLite mirror from the inbox file (source of truth).
-
-        Upserts every inbox task and removes mirror rows whose id no longer
-        exists in the inbox, healing drift caused by fire-and-forget mirror
-        writes that failed silently (or by writers that bypassed the bus).
-
-        Returns counts of ``{"upserted": ..., "removed": ...}``.
-        """
-        if self._task_store is None:
-            return {"upserted": 0, "removed": 0}
-        upserted = removed = 0
-        try:
-            tasks = self._load_tasks()
-            inbox_ids = {t.get("id") for t in tasks if t.get("id")}
-            for t in tasks:
-                try:
-                    self._task_store.send_task(Task(**t))
-                    upserted += 1
-                except Exception:  # noqa: BLE001 - one bad row must not block the rest
-                    logger.warning(
-                        "Mirror reconcile skipped invalid task %s",
-                        t.get("id", "?"),
-                    )
-            for mirrored in self._task_store.get_all_tasks():
-                if mirrored.id not in inbox_ids:
-                    self._task_store.delete_task(mirrored.id)
-                    removed += 1
-            logger.info("Mirror reconciled: %d upserted, %d removed", upserted, removed)
-        except Exception:  # noqa: BLE001 - reconciliation is best-effort
-            logger.error("Mirror reconciliation failed", exc_info=True)
-        return {"upserted": upserted, "removed": removed}
-
     # ── Broadcast helper ─────────────────────────────────────────────
 
     def _emit(self, task_dict: dict, event: str) -> None:
@@ -277,16 +243,6 @@ class MessageBus:
             get_correlation_id(),
         )
         self._emit(task_dict, "created")
-
-    def get_inbox(self, agent_id: str) -> List[Task]:
-        """Return all tasks addressed to *agent_id*."""
-        tasks = self._load_tasks()
-        return [Task(**t) for t in tasks if t.get("receiver_id") == agent_id]
-
-    def get_sent(self, agent_id: str) -> List[Task]:
-        """Return all tasks sent by *agent_id*."""
-        tasks = self._load_tasks()
-        return [Task(**t) for t in tasks if t.get("sender_id") == agent_id]
 
     def get_all_tasks(self) -> List[Task]:
         """Return all tasks in the inbox (public method for integration)."""
@@ -503,20 +459,6 @@ class MessageBus:
                 return Task(**t)
         return None
 
-    def get_subtasks(self, parent_task_id: str) -> List[Task]:
-        """Return all tasks whose ``parent_task_id`` matches."""
-        tasks = self._load_tasks()
-        return [Task(**t) for t in tasks if t.get("parent_task_id") == parent_task_id]
-
-    def get_unacknowledged(self, agent_id: str) -> List[Task]:
-        """Return tasks assigned to *agent_id* that have not been ACKed yet."""
-        tasks = self._load_tasks()
-        return [
-            Task(**t)
-            for t in tasks
-            if t.get("receiver_id") == agent_id and not t.get("acknowledged_by")
-        ]
-
     def acknowledge_task(self, task_id: str, agent_id: str) -> Task | None:
         """Mark a task as acknowledged by *agent_id*.
 
@@ -544,3 +486,4 @@ class MessageBus:
             status = t.get("status", "pending")
             counter[status] += 1
         return dict(counter)
+

@@ -18,7 +18,6 @@ from ai_company.data.database import (
 from ai_company.data.escalation_store import EscalationStore
 from ai_company.data.governance import DataGovernance, GovernanceScheduler
 from ai_company.data.kpi_pipeline import KPIPipeline
-from ai_company.data.memory_store import MemoryStoreDB
 from ai_company.data.task_store import TaskStore
 
 __all__ = [
@@ -29,7 +28,6 @@ __all__ = [
     "database_is_usable",
     "TaskStore",
     "AuditStore",
-    "MemoryStoreDB",
     "EscalationStore",
     "DataGovernance",
     "GovernanceScheduler",
