@@ -109,7 +109,7 @@
       "read",
       "write",
       "execute",
-      "web_search"
+      "webfetch"
     ],
     "permission": "Execute"
   },
@@ -202,7 +202,7 @@
     "tools": [
       "read",
       "write",
-      "web_search"
+      "webfetch"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -233,7 +233,7 @@
     "tools": [
       "read",
       "write",
-      "web_search"
+      "webfetch"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -416,7 +416,7 @@
     "tools": [
       "read",
       "write",
-      "web_search"
+      "webfetch"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -1439,7 +1439,7 @@
       "read",
       "write",
       "execute",
-      "web_search",
+      "webfetch",
       "grep",
       "list"
     ],
