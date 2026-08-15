@@ -201,18 +201,18 @@ The Finance Lead monitors for cost anomalies:
 
 ## 7. Financial Reporting
 
-### 7.1 Daily Cost Summary
+### 7.1 Cost Usage Summary
 
-The `CostTracker.get_daily_summary()` method provides:
+The `CostTracker.get_usage_summary()` method provides:
 
 ```python
-summary = tracker.get_daily_summary()
+summary = tracker.get_usage_summary(agent_name="lead-backend")  # agent filter optional
 # Returns:
 {
-    "date": "2026-07-19",
     "total_cost_usd": 12.45,
     "total_prompt_tokens": 150000,
     "total_completion_tokens": 45000,
+    "total_tokens": 195000,
     "call_count": 87,
     "by_model": {
         "gpt-4o": {"cost_usd": 8.20, "calls": 32},
@@ -222,24 +222,7 @@ summary = tracker.get_daily_summary()
 }
 ```
 
-### 7.2 Task Cost Summary
-
-Per-task cost tracking via `CostTracker.get_task_summary()`:
-
-```python
-summary = tracker.get_task_summary("task-abc123")
-# Returns:
-{
-    "task_id": "task-abc123",
-    "total_cost_usd": 0.045,
-    "total_prompt_tokens": 12000,
-    "total_completion_tokens": 3500,
-    "call_count": 6,
-    "max_iteration": 3
-}
-```
-
-### 7.3 Dashboard KPIs
+### 7.2 Dashboard KPIs
 
 The CEO Dashboard (`src/ai_company/dashboard/`) provides real-time financial visibility:
 
@@ -249,7 +232,7 @@ The CEO Dashboard (`src/ai_company/dashboard/`) provides real-time financial vis
 - **Cost trend**: 7-day and 30-day spend trends
 - **Model distribution**: Breakdown of spend by LLM model
 
-### 7.4 Monthly Financial Report
+### 7.3 Monthly Financial Report
 
 The Finance Lead produces a monthly report containing:
 

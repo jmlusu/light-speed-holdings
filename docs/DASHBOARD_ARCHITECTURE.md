@@ -13,7 +13,7 @@
 │                                                                             │
 │  ┌──────────────────┐    ┌─────────────────┐    ┌──────────────────────┐   │
 │  │   Alpine.js       │◄───│  app.js         │◄───│  WebSocket Client    │   │
-│  │   (Reactive UI)   │    │  (Data Store)   │    │  /ws/dashboard       │   │
+│  │   (Reactive UI)   │    │  (Data Store)   │    │  /ws/v1/dashboard       │   │
 │  └────────┬─────────┘    └───────┬─────────┘    └──────────┬───────────┘   │
 │           │                      │                          │               │
 │           │  x-data bindings     │  fetch() calls           │  onmessage   │
@@ -45,7 +45,7 @@
 │  ┌───────────────────────────────┬────────────────────────────────────────┐  │
 │  │         ROUTERS (api.py)      │         WebSocket (ws.py)             │  │
 │  │                               │                                        │  │
-│  │  Page Routes:                 │  WS /ws/dashboard                     │  │
+│  │  Page Routes:                 │  WS /ws/v1/dashboard                     │  │
 │  │  GET /        → index.html    │    ├── on message:                     │  │
 │  │  GET /agents  → agents.html   │    │   ├── ping → pong                │  │
 │  │  GET /tasks   → tasks.html    │    │   ├── subscribe topics            │  │
@@ -53,22 +53,22 @@
 │  │  GET /costs   → costs.html    │    └── broadcast ←                     │  │
 │  │                               │        ├── kpi_update                 │  │
 │  │  API Routes:                  │        ├── alert                      │  │
-│  │  GET /api/dashboard → KPIs    │        ├── task_update                 │  │
-│  │  GET /api/agents   → List     │        ├── department_kpi              │  │
-│  │  GET /api/tasks    → List     │        └── escalation                  │  │
-│  │  POST /api/tasks   → Create   │                                        │  │
-│  │  GET /api/approvals → List    │                                        │  │
-│  │  POST /api/approvals/{id}/    │                                        │  │
+│  │  GET /api/v1/dashboard → KPIs    │        ├── task_update                 │  │
+│  │  GET /api/v1/agents   → List     │        ├── department_kpi              │  │
+│  │  GET /api/v1/tasks    → List     │        └── escalation                  │  │
+│  │  POST /api/v1/tasks   → Create   │                                        │  │
+│  │  GET /api/v1/approvals → List    │                                        │  │
+│  │  POST /api/v1/approvals/{id}/    │                                        │  │
 │  │       approve                 │                                        │  │
-│  │  POST /api/approvals/{id}/    │                                        │  │
+│  │  POST /api/v1/approvals/{id}/    │                                        │  │
 │  │       reject                  │                                        │  │
-│  │  GET /api/escalations → List  │                                        │  │
-│  │  POST /api/escalations/{id}/  │                                        │  │
+│  │  GET /api/v1/escalations → List  │                                        │  │
+│  │  POST /api/v1/escalations/{id}/  │                                        │  │
 │  │       resolve                 │                                        │  │
-│  │  GET /api/departments → List  │                                        │  │
-│  │  GET /api/org-chart → Tree    │                                        │  │
-│  │  GET /api/kpis/live → Live    │                                        │  │
-│  │  GET /api/ceo-dashboard       │                                        │  │
+│  │  GET /api/v1/departments → List  │                                        │  │
+│  │  GET /api/v1/org-chart → Tree    │                                        │  │
+│  │  GET /api/v1/kpis/live → Live    │                                        │  │
+│  │  GET /api/v1/ceo-dashboard       │                                        │  │
 │  │  GET /metrics → Prometheus    │                                        │  │
 │  └───────────────────────────────┴────────────────────────────────────────┘  │
 │                                                                             │
@@ -105,7 +105,7 @@
 │  │    └── customer_success.py (NPS, churn, retention)                   │  │
 │  │              │                                                        │  │
 │  │              ▼                                                        │  │
-│  │  collect_all_kpis() → /api/kpis/live → WS broadcast_kpi_update()     │  │
+│  │  collect_all_kpis() → /api/v1/kpis/live → WS broadcast_kpi_update()     │  │
 │  │                                                                       │  │
 │  │  Analytics (dashboard/analytics.py)                                   │  │
 │  │    ├── KPIHistoryStore (NDJSON + file locking)                        │  │
@@ -159,14 +159,14 @@ graph TB
     subgraph BROWSER ["🖥️ Browser (Client)"]
         ALPINE["Alpine.js<br/>Reactive UI Layer"]
         APPJS["app.js<br/>Data Store + Polling"]
-        WSCLIENT["WebSocket Client<br/>ws://.../ws/dashboard"]
+        WSCLIENT["WebSocket Client<br/>ws://.../ws/v1/dashboard"]
         CHARTS["charts.js<br/>Chart.js Integration"]
         TEMPLATES["Jinja2 Templates<br/>SSR HTML"]
     end
 
     %% ── Transport ───────────────────────────────────────────
     REST["REST API<br/>fetch() calls"]
-    WSCONN["WebSocket<br/>/ws/dashboard"]
+    WSCONN["WebSocket<br/>/ws/v1/dashboard"]
 
     %% ── Server ──────────────────────────────────────────────
     subgraph SERVER ["⚡ FastAPI Server"]
@@ -274,7 +274,7 @@ sequenceDiagram
 
     Browser->>Alpine: Render Jinja2 template
     Alpine->>AppJS: init() — loadPageData()
-    AppJS->>REST: GET /api/dashboard
+    AppJS->>REST: GET /api/v1/dashboard
     REST->>Store: read_json(inbox.json)
     Store-->>REST: task data
     REST-->>AppJS: KPIs JSON
@@ -288,7 +288,7 @@ sequenceDiagram
     Note over Browser,Executor: === Ongoing Updates ===
 
     loop Every 15 seconds (polling)
-        AppJS->>REST: GET /api/tasks, /api/agents
+        AppJS->>REST: GET /api/v1/tasks, /api/v1/agents
         REST->>Store: read_json / read_yaml
         Store-->>REST: data
         REST-->>AppJS: JSON response
@@ -343,7 +343,7 @@ sequenceDiagram
 - **Scroll preservation**: `saveScrollPosition()` → fetch → `restoreScrollPosition()`
 
 ### WebSocket Push (Primary)
-- **Endpoint**: `/ws/dashboard`
+- **Endpoint**: `/ws/v1/dashboard`
 - **Topics**: `kpi_update`, `task_update`, `alert`, `department_kpi`, `escalation`
 - **Reconnection**: Exponential backoff with jitter (max 30s)
 - **Heartbeat**: Ping/pong every 25s

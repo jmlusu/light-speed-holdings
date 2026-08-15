@@ -192,8 +192,8 @@ The scheduler is integrated into the executor's `tick()` method, but the executo
 Dashboard API endpoints have unit tests but lack comprehensive endpoint coverage. Need to test all REST endpoints including error paths, auth enforcement, and rate limiting behavior.
 
 **Acceptance Criteria:**
-- [ ] Tests for all `GET /api/*` endpoints (happy path + 404)
-- [ ] Tests for `POST /api/tasks` (auth required, validation, bus integration)
+- [ ] Tests for all `GET /api/v1/*` endpoints (happy path + 404)
+- [ ] Tests for `POST /api/v1/tasks` (auth required, validation, bus integration)
 - [ ] Tests for approval endpoints (approve/reject/expiry)
 - [ ] Tests for KPI endpoints (per-department + aggregate)
 - [ ] Tests for rate limiter (429 response after limit)

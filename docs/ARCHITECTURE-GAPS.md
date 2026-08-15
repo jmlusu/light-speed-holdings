@@ -303,7 +303,7 @@ In a multi-user or network-exposed deployment, any client can manipulate tasks a
 | **Status** | ✅ RESOLVED — all dashboard/mobile read paths route through `MessageBus`: `mobile_api.py` + `kpis/*` via `get_bus().get_all_tasks_raw()`/`update_task()` (2026-08-07), `monitoring.py` + `data_service.py` via MessageBus with file fallback. *(Prose below describes pre-fix state.)* |
 
 **Current State:**
-`POST /api/tasks` reads `inbox.json`, appends a task, and writes it back — all outside of MessageBus. `GET /api/tasks` reads the file directly. This creates a second write path alongside MessageBus and Executor.
+`POST /api/v1/tasks` reads `inbox.json`, appends a task, and writes it back — all outside of MessageBus. `GET /api/v1/tasks` reads the file directly. This creates a second write path alongside MessageBus and Executor.
 
 **Desired State:**
 All task operations go through MessageBus. Dashboard API uses `bus.get_inbox()`, `bus.send_task()`, etc.

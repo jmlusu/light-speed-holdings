@@ -149,19 +149,19 @@ class ExecutiveDashboardService:
 # File: src/ai_company/dashboard/api.py (EXTEND existing router)
 
 # Executive Dashboard Endpoints
-@router.get("/api/executive/kpis", response_model=ExecutiveKPISnapshot)
+@router.get("/api/v1/executive/kpis", response_model=ExecutiveKPISnapshot)
 async def get_executive_kpis()
 
-@router.get("/api/executive/org-chart", response_model=OrgChartResponse)
+@router.get("/api/v1/executive/org-chart", response_model=OrgChartResponse)
 async def get_executive_org_chart()
 
-@router.get("/api/executive/ai-status", response_model=AIExecutiveStatus)
+@router.get("/api/v1/executive/ai-status", response_model=AIExecutiveStatus)
 async def get_ai_executive_status()
 
-@router.get("/api/executive/pipeline", response_model=ExecutivePipeline)
+@router.get("/api/v1/executive/pipeline", response_model=ExecutivePipeline)
 async def get_executive_pipeline()
 
-@router.get("/api/executive/activity", response_model=ActivityFeed)
+@router.get("/api/v1/executive/activity", response_model=ActivityFeed)
 async def get_executive_activity(
     limit: int = 50,
     department: Optional[str] = None,
@@ -169,7 +169,7 @@ async def get_executive_activity(
     since: Optional[datetime] = None
 )
 
-@router.get("/api/executive/alerts", response_model=RiskAlertCenter)
+@router.get("/api/v1/executive/alerts", response_model=RiskAlertCenter)
 async def get_executive_alerts()
 
 # WebSocket Topics for Real-time
@@ -315,8 +315,8 @@ async def require_executive_access(request: Request) -> str:
         raise HTTPException(403, "Executive access required")
     return agent_id
 
-# Apply to all /api/executive/* endpoints
-@router.get("/api/executive/kpis", dependencies=[Depends(require_executive_access)])
+# Apply to all /api/v1/executive/* endpoints
+@router.get("/api/v1/executive/kpis", dependencies=[Depends(require_executive_access)])
 ```
 
 ### 5.2 Audit Trail for Executive Dashboard Access

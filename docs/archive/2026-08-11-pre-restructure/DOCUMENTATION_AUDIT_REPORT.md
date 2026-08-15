@@ -68,8 +68,8 @@
 | Claim in Docs | Code Reality | File:Line | Verdict |
 |---------------|--------------|-----------|---------|
 | "CLI: 30 commands registered" | **VERIFIED** — 25 lazy sub-apps + 5 root commands (`sop`, `raci`, `sync-registry`, `generate`, `status`) | `src/ai_company/cli/main.py:31-73` | ✅ Accurate |
-| "`GET /api/governance` report endpoint" | **VERIFIED** — exists at `api.py:1666` | `src/ai_company/dashboard/api.py:1666` | ✅ Accurate |
-| "`GET /api/company-kpis` returns full summary" | **VERIFIED** — exists at `api.py:1113` | `src/ai_company/dashboard/api.py:1113` | ✅ Accurate |
+| "`GET /api/v1/governance` report endpoint" | **VERIFIED** — exists at `api.py:1666` | `src/ai_company/dashboard/api.py:1666` | ✅ Accurate |
+| "`GET /api/v1/company-kpis` returns full summary" | **VERIFIED** — exists at `api.py:1113` | `src/ai_company/dashboard/api.py:1113` | ✅ Accurate |
 | "Retention / governance engine wired end-to-end" | **VERIFIED** — `cli/governance.py` has `retention`, `compliance`, `owners`, `policies`, `audit-trail`, `risk-summary` commands | `src/ai_company/cli/governance.py` | ✅ Accurate |
 | "Data retention / governance engine: `run_retention()` + `GovernanceScheduler` in `data/governance.py`" | **VERIFIED** — `data/governance.py` exists with `DataGovernance` class | `src/ai_company/data/governance.py` | ✅ Accurate |
 | "17+ Pydantic models" | **UNDERCOUNT** — PROJECT_STATUS.md says "~55 Pydantic domain models split across task.py, company.py, board.py..." | `src/ai_company/models/` | ⚠️ Docs say 17+, actual ~55 |

@@ -146,8 +146,8 @@ Phase 1 (Week 1)                    Phase 2 (Week 2)                 Phase 3 (We
 - [ ] `mypy src/` — zero errors
 - [ ] `pytest` — all existing tests pass (785+)
 - [ ] `ai-company dashboard --help` — starts without error
-- [ ] WebSocket `/ws/dashboard` accepts connections and sends events
-- [ ] `POST /api/tasks` without API key returns 401/403
+- [ ] WebSocket `/ws/v1/dashboard` accepts connections and sends events
+- [ ] `POST /api/v1/tasks` without API key returns 401/403
 - [ ] Memory consolidation runs on executor tick
 - [ ] Scheduled tasks inject into inbox at correct times
 

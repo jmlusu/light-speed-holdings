@@ -384,7 +384,7 @@ Agent Detail Modal (overlay):
 
 ## 7. Real-Time Updates
 
-The dashboard uses WebSocket (`/ws/dashboard`) for live updates:
+The dashboard uses WebSocket (`/ws/v1/dashboard`) for live updates:
 
 | Event | Update |
 |-------|--------|

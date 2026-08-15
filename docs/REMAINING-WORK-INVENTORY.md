@@ -7,7 +7,7 @@
 > Every P2 (Sprint 3) and P3 (Sprint 4) item listed below has been **verified COMPLETE in source**
 > as of 2026-08-13 (WebSocket wiring, OpenAPI, rate limiting, memory consolidation/search/retention,
 > scheduled daemon, escalation persistence, structured logging, agent-spec validation, CLI type
-> hints/docstrings, pipeline/CLI/API/escalation test suites, OAuth2/key rotation, memory encryption,
+> hints/docstrings, pipeline/CLI/api/v1/escalation test suites, OAuth2/key rotation, memory encryption,
 > token counting). See `docs/STATUS.md`, `docs/ARCHITECTURE-GAPS.md`, and the fully-reconciled
 > `docs/TASK-BOARD.md` for the accurate end state. Live work is tracked on GitHub wayfinder maps #7
 > and #33.

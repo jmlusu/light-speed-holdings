@@ -11,82 +11,82 @@ This analysis provides a comprehensive technical assessment of the CEO dashboard
 Based on `api.py` (1178 lines total), the dashboard REST API includes the following endpoints:
 
 #### Core Dashboard Endpoints:
-- **GET /api/dashboard** (line 175) - CEO-level KPIs aggregation
+- **GET /api/v1/dashboard** (line 175) - CEO-level KPIs aggregation
   - Returns: `KPIs` model (pending_tasks, in_progress_tasks, completed_tasks, failed_tasks, escalated_tasks, pending_approvals, open_escalations, total_agents, scheduled_tasks, uptime_seconds)
   - Cross-cutting: API key auth, CORS, rate limiting, WebSocket broadcasting
 
-- **GET /api/kpis/live** (line 225) - Live department KPIs
+- **GET /api/v1/kpis/live** (line 225) - Live department KPIs
   - Returns: Department KPI snapshots from all 7 collectors
   - Cross-cutting: Real-time WebSocket broadcasting, background tasks
 
 #### Agent Management:
-- **GET /api/agents** (line 243) - List all agents
+- **GET /api/v1/agents** (line 243) - List all agents
   - Returns: `list[AgentSummary]` with agent details from registry
   - Dependencies: `_load_registry()` → `company/agent-registry.json`
 
-- **GET /api/agents/{name}** (line 249) - Get single agent details
+- **GET /api/v1/agents/{name}** (line 249) - Get single agent details
   - Dependencies: Registry lookup, error handling (404)
 
 #### Organization Chart:
-- **GET /api/org-chart** (line 261) - Hierarchical org chart
+- **GET /api/v1/org-chart** (line 261) - Hierarchical org chart
   - Algorithm: Recursive tree building from registry using `reportsTo` relationships
   - Root: Starts at "human-ceo" or "chief-of-staff"
   - Dependencies: Registry data, hierarchical mapping logic
 
 #### Task Management:
-- **GET /api/tasks** (line 290) - List tasks with filters
+- **GET /api/v1/tasks** (line 290) - List tasks with filters
   - Parameters: `status`, `agent` for filtering
   - Returns: `list[TaskItem]` with task metadata
   - Dependencies: `_read_all_tasks()` → MessageBus inbox
 
-- **POST /api/tasks** (line 304) - Create new task
+- **POST /api/v1/tasks** (line 304) - Create new task
   - Parameters: `TaskAssign` model (receiver_id, instruction, priority, sender_id)
   - Dependencies: MessageBus for task distribution, WebSocket broadcasting
   - Validation: UUID generation, priority validation, status initialization
 
 #### Approval Management:
-- **GET /api/approvals** (line 335) - List pending approvals
+- **GET /api/v1/approvals** (line 335) - List pending approvals
   - Parameters: None (filtering done internally for expiration)
   - Dependencies: `orchestrator/approvals.yaml`, current timestamp validation
 
-- **POST /api/approvals/{request_id}/approve** (line 348) - Approve request
+- **POST /api/v1/approvals/{request_id}/approve** (line 348) - Approve request
   - Parameters: `ApprovalDecision` (approved_by, notes)
   - Dependencies: YAML state update, audit integration logging
 
-- **POST /api/approvals/{request_id}/reject** (line 365) - Reject request
+- **POST /api/v1/approvals/{request_id}/reject** (line 365) - Reject request
   - Same dependencies as approve, different status update
 
 #### Escalation Management:
-- **GET /api/escalations** (line 385) - List unresolved escalations
+- **GET /api/v1/escalations** (line 385) - List unresolved escalations
   - Dependencies: `orchestrator/escalation.yaml`
 
-- **POST /api/escalations/{task_id}/resolve** (line 393) - Resolve escalation
+- **POST /api/v1/escalations/{task_id}/resolve** (line 393) - Resolve escalation
   - Dependencies: State update, audit logging via `log_escalation`
 
 #### Department & Model Management:
-- **GET /api/departments** (line 423) - List departments
+- **GET /api/v1/departments** (line 423) - List departments
   - Dependencies: `company/departments.yaml`
 
-- **GET /api/models** (line 433) - Agent model assignments
+- **GET /api/v1/models** (line 433) - Agent model assignments
   - Dependencies: ModelRouter for dynamic provider selection
 
-- **GET /api/models/tiers** (line 446) - Available model tiers
+- **GET /api/v1/models/tiers** (line 446) - Available model tiers
   - Dependencies: ModelRouter for tier definitions
 
 #### Scheduler & KPI Analytics:
-- **GET /api/scheduler** (line 465) - Scheduled tasks list
+- **GET /api/v1/scheduler** (line 465) - Scheduled tasks list
   - Dependencies: `orchestrator/scheduler.yaml`
 
-- **GET /api/departments/{dept_name}/kpis** (line 475) - Department KPI definitions
+- **GET /api/v1/departments/{dept_name}/kpis** (line 475) - Department KPI definitions
   - Dependencies: `company/config/kpis.yaml`
 
-- **GET /api/kpis**, **GET /api/kpis/summary**, **GET /api/kpis/history/{department}**, etc. - KPI analysis endpoints
-- **GET /api/kpis/alerts** (line 775) - Alert evaluation against KPIs
-- **GET /api/kpis/collect** (line 877) - Manual KPI collection trigger
+- **GET /api/v1/kpis**, **GET /api/v1/kpis/summary**, **GET /api/v1/kpis/history/{department}**, etc. - KPI analysis endpoints
+- **GET /api/v1/kpis/alerts** (line 775) - Alert evaluation against KPIs
+- **GET /api/v1/kpis/collect** (line 877) - Manual KPI collection trigger
 
 #### CEO Dashboard Aggregators:
-- **GET /api/ceo-dashboard** (line 514) - Consolidated executive view
-- **GET /api/departments/{dept_name}/dashboard** (line 607) - Per-department dashboard
+- **GET /api/v1/ceo-dashboard** (line 514) - Consolidated executive view
+- **GET /api/v1/departments/{dept_name}/dashboard** (line 607) - Per-department dashboard
 
 #### Monitoring & Metrics:
 - **GET /metrics** (line 1113) - Prometheus-compatible metrics
@@ -165,7 +165,7 @@ KPI collectors → Analytics Store (dashboard/analytics.py) → WebSocket broadc
   - `active_count` property for monitoring
 
 **Endpoint** (dashboard_websocket, line 101):
-- Single `/ws/dashboard` endpoint (not per-client)
+- Single `/ws/v1/dashboard` endpoint (not per-client)
 - Connection lifecycle: accept → subscribe → handle messages → disconnect
 - Message types: `ping`, `subscribe`, `unsubscribe`, error handling
 - Initial `connected` message with active client count
@@ -238,8 +238,8 @@ def _get_store() -> Any:
 
 The current system already provides Executive KPI consolidation through:
 
-1. **CEO Dashboard Endpoint** (`/api/ceo-dashboard`): Aggregates live KPIs from all departments
-2. **Dashboard Endpoint** (`/api/dashboard`): Provides summary-level operational KPIs
+1. **CEO Dashboard Endpoint** (`/api/v1/ceo-dashboard`): Aggregates live KPIs from all departments
+2. **Dashboard Endpoint** (`/api/v1/dashboard`): Provides summary-level operational KPIs
 3. **KPI Analytics Layer**: Historical trend analysis and executive summaries
 
 **Design Recommendations**:
@@ -296,7 +296,7 @@ From `company-registry.yaml` (lines 1-1041+):
 - `direct_reports` list for child enumeration
 - Multiple agent types: executive, specialist
 
-From `/api/org-chart` endpoint (api.py:261):
+From `/api/v1/org-chart` endpoint (api.py:261):
 - Recursive tree building algorithm (lines 270-284)
 - Uses registry as source of truth
 - Root detection: "human-ceo" or "chief-of-staff"
@@ -371,16 +371,16 @@ interface OrgNode {
 **Current Alert Architecture**:
 
 **Alert Sources**:
-1. **KPI Alerts** (`/api/kpis/alerts` in analytics.py:775):
+1. **KPI Alerts** (`/api/v1/kpis/alerts` in analytics.py:775):
    - Threshold-based evaluation against KPI snapshots
    - Default rules defined in endpoint (7 predefined rules)
    - Severity levels: info, warning, critical
 
-2. **Task Escalations** (`/api/escalations` endpoints):
+2. **Task Escalations** (`/api/v1/escalations` endpoints):
    - Business rule escalations based on priority/threshold
    - Automatic escalation routing via MessageBus
 
-3. **Approval Requests** (`/api/approvals` endpoints):
+3. **Approval Requests** (`/api/v1/approvals` endpoints):
    - Human-in-the-loop approval workflows
    - Escalation to higher tiers when not responded within SLA
 
@@ -647,6 +647,12 @@ Approval Pipeline:
 2. Predictive analytics for resource allocation
 3. Auto-remediation of common operational issues
 4. Advanced dashboard customization for executive roles
+
+> **Deliberate deferral (2026-08-15)**: items 1 and 2 are a documented
+> vision, not a live capability. The `ml/anomaly.py` and
+> `ml/predictive_scaling.py` modules were removed in the over-engineering
+> cleanup as zero-caller dead code (`scikit-learn`/`scipy` deps dropped).
+> Rebuild intentionally when a consumer for the predictions exists.
 
 ## CONCLUSION
 
