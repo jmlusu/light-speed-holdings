@@ -525,6 +525,3 @@ class LLMClient:
     def get_breaker(self, provider_id: str) -> CircuitBreaker | None:
         """Return the circuit breaker for a provider, if one is configured."""
         return self._circuit_breakers.get(provider_id)
-
-    def list_available_providers(self) -> list[str]:
-        return [pid for pid, p in self._providers.items() if p.is_available()]

@@ -237,11 +237,11 @@ class TestNegativeTokensClamped:
         assert record.completion_tokens == 0
         assert record.cost_usd == 0.0
         # The accumulators must not be skewed by negative spend.
-        assert tracker.get_task_summary("task-neg")["total_cost_usd"] == 0.0
+        assert tracker.get_usage_summary(agent_name="agent_a")["total_cost_usd"] == 0.0
 
     def test_calculate_cost_clamps_negative_tokens(self, tmp_path: Path) -> None:
         tracker = _make_tracker(tmp_path)
-        assert tracker.estimate_cost("gpt-4o-mini", -100, -50) == 0.0
+        assert tracker._calculate_cost("gpt-4o-mini", -100, -50) == 0.0
 
     def test_rebuild_clamps_negative_tokens(self, tmp_path: Path) -> None:
         results = tmp_path / "results"

@@ -167,7 +167,7 @@
 | 85 | `conversation-designer` | Conversation Designer | `solutions-engineer` | None | Design conversational flows for WhatsApp and chat-based customer service bots.; Create NLU training data and intent/entity mappings.; Optimize handoff triggers from AI to human support agents. |
 | 86 | `revenue-operations-analyst` | Revenue Operations Analyst | `cso` | None | Model pipeline conversion rates and sales velocity.; Calculate LTV/CAC ratios and payback periods.; Perform cohort analysis on customer revenue.; Track expansion revenue and upsell metrics.; Produce monthly revenue intelligence reports. |
 | 87 | `sales` | Head of Sales | `chief-of-staff` | `sales-owner`, `revenue-operations-analyst`, `solutions-engineer` | Own the sales pipeline and revenue targets.; Manage customer acquisition strategy.; Coordinate with marketing on lead generation.; Track pipeline conversion and velocity.; Build and maintain sales playbooks.; Report revenue metrics to CFO monthly. |
-| 88 | `sales-owner` | Sales Owner | `sales` | None | Own the sales SOP.; Model pipeline stages and revenue targets. |
+| 88 | `sales-owner` | Sales Owner | `sales` | None | Own services/sales.py and the sales SOP.; Fix the ruff E741 ambiguous-variable warnings in services/sales.py.; Model pipeline stages and revenue targets. |
 | 89 | `solutions-engineer` | Solutions Engineer | `cso` | None | Provide pre-sales technical validation for enterprise deals.; Design custom solutions for customer use cases.; Create proof-of-concept implementations for prospects.; Coordinate with customer_success_owner on implementation handoff.; Maintain a library of solution patterns and reference architectures. |
 
 ## Security (11 agents)

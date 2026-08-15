@@ -50,10 +50,6 @@ class CircuitBreaker:
         return self._state
 
     @property
-    def is_closed(self) -> bool:
-        return self.state == CircuitState.CLOSED
-
-    @property
     def is_available(self) -> bool:
         return self.state in (CircuitState.CLOSED, CircuitState.HALF_OPEN)
 
@@ -85,8 +81,3 @@ class CircuitBreaker:
             if self._state != CircuitState.OPEN:
                 inc_metric("circuit_breaker_trips_total")
             self._state = CircuitState.OPEN
-
-    def reset(self) -> None:
-        self._state = CircuitState.CLOSED
-        self._failure_count = 0
-        self._success_count = 0

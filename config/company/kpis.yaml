@@ -49,13 +49,13 @@ kpis:
       name: "Agent Utilization Rate"
       category: "operations"
       target: 80
-      current: 33.9  # file-computed snapshot — see computed_at
+      current: 1.5  # file-computed snapshot — see computed_at
       unit: "percent"
       frequency: "weekly"
       owner: "coo"
       source: ".opencode/inbox.json + company-registry.yaml"
       formula: "distinct active agents (sender_id/receiver_id) in the 30-day task window / registered agents (company-registry.yaml company.agents) x 100"
-      computed_at: "2026-08-08T20:05:16+00:00"
+      computed_at: "2026-08-14T20:54:28+00:00"
 
     - id: "KPI-004"
       name: "Build Success Rate"
@@ -67,7 +67,7 @@ kpis:
       owner: "cto"
       source: ".opencode/inbox.json"
       formula: "completed / (completed + failed) x 100 over the 30-day task window"
-      computed_at: "2026-08-08T20:05:16+00:00"
+      computed_at: "2026-08-14T20:54:28+00:00"
 
     - id: "KPI-005"
       name: "Employee Net Promoter Score"

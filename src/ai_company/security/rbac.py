@@ -26,11 +26,11 @@ from __future__ import annotations
 
 import os
 from enum import Enum
-from typing import Callable
+from typing import Any, Callable
 
-from fastapi import Header, HTTPException, status
+from fastapi import Header, HTTPException, Request, status
 
-__all__ = ["Role", "role_for_key", "require_role", "require_ws_role"]
+__all__ = ["Role", "role_for_key", "require_role", "require_ws_role", "client_ip_for"]
 
 
 class Role(str, Enum):
@@ -72,15 +72,34 @@ def role_for_key(api_key: str) -> Role | None:
     return None
 
 
-def _resolve_role(x_api_key: str | None) -> Role:
+def client_ip_for(request_or_websocket: Any) -> str:
+    """Extract the peer IP from a FastAPI ``Request`` or ``WebSocket``.
+
+    Used to bind session tokens to the client that minted them (ADR-013).
+    Returns ``""`` when the peer address is unknown (e.g. some test harnesses).
+    """
+    client = getattr(request_or_websocket, "client", None)
+    return client.host if client else ""
+
+
+def _resolve_role(x_api_key: str | None, client_ip: str = "") -> Role:
     """Authenticate the request and return its role.
 
     ``open`` auth mode short-circuits to ``admin`` (explicit opt-in for
     localhost dev, enforced to be loopback-only by the server/CLI).
+
+    Role resolution order (ADR-012 / ADR-013):
+    1. Static env keys (``DASHBOARD_*_KEY``) — backward compatible.
+    2. A bootstrap session token (IP-bound, TTL) resolving to ``approve``.
     """
     if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
         return Role.ADMIN
     role = role_for_key(x_api_key or "")
+    if role is None:
+        # ADR-013: a browser session token resolves to its minted role.
+        from ai_company.dashboard.sessions import resolve_session_token
+
+        role = resolve_session_token(x_api_key or "", client_ip)
     if role is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -104,8 +123,9 @@ def require_role(minimum: str | Role) -> Callable[..., Role]:
 
     def dependency(
         x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+        request: Request | None = None,
     ) -> Role:
-        role = _resolve_role(x_api_key)
+        role = _resolve_role(x_api_key, client_ip_for(request))
         if _RANK[role] < _RANK[min_role]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -119,7 +139,7 @@ def require_role(minimum: str | Role) -> Callable[..., Role]:
     return dependency
 
 
-def require_ws_role(minimum: str | Role, api_key: str | None) -> Role:
+def require_ws_role(minimum: str | Role, api_key: str | None, client_ip: str = "") -> Role:
     """Resolve the role for a WebSocket handshake supplied via query param.
 
     Browsers cannot set custom headers on a WebSocket handshake, so the
@@ -131,7 +151,7 @@ def require_ws_role(minimum: str | Role, api_key: str | None) -> Role:
     WebSocket callers should translate that into a close (e.g. code 1008).
     """
     min_role = Role(minimum)
-    role = _resolve_role(api_key)
+    role = _resolve_role(api_key, client_ip)
     if _RANK[role] < _RANK[min_role]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

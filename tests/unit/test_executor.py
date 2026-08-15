@@ -11,11 +11,10 @@ from unittest.mock import MagicMock
 import pytest
 
 from ai_company.executor.context import (
-    build_system_prompt,
-    build_user_prompt,
     parse_agent_spec,
 )
 from ai_company.executor.hitl_gate import HITLGate
+from ai_company.executor.prompts import build_system_prompt_typed, build_user_prompt_typed
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.orchestrator.approval import ApprovalGate
 
@@ -68,17 +67,17 @@ class TestSpecParser:
         (agents_dir / "agent.md").write_text(_AGENT_SPEC_SAMPLE, encoding="utf-8")
 
         ctx = parse_agent_spec("agent", str(agents_dir))
-        prompt = build_system_prompt(ctx)
+        prompt = build_system_prompt_typed(ctx)
 
         assert "Light Speed Holdings" in prompt
-        assert "RESPONSIBILITIES:" in prompt
-        assert "ALLOWED TOOLS:" in prompt
+        assert "## Responsibilities" in prompt
+        assert "## Available Tools" in prompt
         assert '"plan"' in prompt
         assert '"result"' in prompt
-        assert '"artifacts"' in prompt
+        assert '"done"' in prompt
 
     def test_build_user_prompt(self) -> None:
-        prompt = build_user_prompt("Build a REST API", "high")
+        prompt = build_user_prompt_typed("Build a REST API", "high")
         assert "PRIORITY: HIGH" in prompt
         assert "Build a REST API" in prompt
 
@@ -137,7 +136,7 @@ Stay precise.
         assert "execute" in ctx.tools  # bash -> execute
         assert "delegate" in ctx.tools  # task -> delegate
         assert "tools" not in ctx.permission
-        assert "ALLOWED TOOLS:" in build_system_prompt(ctx)
+        assert "## Available Tools" in build_system_prompt_typed(ctx)
 
 
 # ── Tool Runner ─────────────────────────────────────────────────────

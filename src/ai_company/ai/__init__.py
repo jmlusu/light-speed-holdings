@@ -1,1 +1,1 @@
-"""AI capabilities package — evals, embeddings, and intelligent automation."""
+"""AI capabilities package — embeddings and intelligent automation."""

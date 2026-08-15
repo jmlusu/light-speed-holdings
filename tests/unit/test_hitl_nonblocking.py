@@ -320,3 +320,200 @@ def test_executor_continues_past_parked_task(
     updated = {t["id"]: t["status"] for t in json.loads(inbox.read_text(encoding="utf-8"))}
     assert updated["t-park"] == TaskStatus.WAITING_APPROVAL.value
     assert updated["t-normal"] == TaskStatus.COMPLETED.value
+
+
+# ── SSOT healing: resume driven by the inbox, not the derived index ──
+#
+# Ticket #57: the task's lifecycle state is authoritative in the inbox
+# (status == waiting_approval). If the derived `pending_approvals.json`
+# index was lost (crash between park and persist, or the file was cleared),
+# an approved/rejected task must still be healed on the next tick by
+# looking the decision up in the approvals store by task_id.
+
+
+def _orphan_parked_task(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Seed an executor with a task already parked in WAITING_APPROVAL and no
+    ``pending_approvals.json`` index entry for it (the 'lost index' scenario).
+
+    Returns the inbox path so the caller can assert on the healed status.
+    """
+    monkeypatch.chdir(tmp_path)
+    _setup_executor_files(tmp_path)
+    inbox = tmp_path / ".opencode" / "inbox.json"
+    task = {
+        "id": "task-orphan-1",
+        "sender_id": "human-ceo",
+        "receiver_id": "test-agent",
+        "instruction": "Write the secret file",
+        "status": "waiting_approval",
+        "priority": "high",
+    }
+    inbox.write_text(json.dumps([task]), encoding="utf-8")
+    return inbox
+
+
+def test_executor_heals_approved_task_when_index_lost(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """An APPROVED task whose index entry was lost resumes and completes."""
+    inbox = _orphan_parked_task(tmp_path, monkeypatch)
+
+    # Human decided (in another process / before the index was persisted).
+    gate = ApprovalGate(config_path=str(tmp_path / "orchestrator" / "approvals.yaml"))
+    request = gate.request_approval(
+        "req-orphan-1",
+        "task-orphan-1",
+        "test-agent",
+        "tool:write",
+        "Write secrets.yaml",
+    )
+    gate.approve(request.id, approved_by="human-ceo")
+
+    from ai_company.executor.loop import Executor
+
+    executor = Executor(
+        config_path=str(tmp_path / "company" / "models.yaml"),
+        registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        agents_dir=str(tmp_path / ".opencode" / "agents"),
+        results_dir=str(tmp_path / "results"),
+    )
+    assert "task-orphan-1" not in executor._pending_approvals  # index genuinely lost
+
+    from ai_company.executor.agent_loop import LoopResult
+
+    def fake_run(*args: object, **kwargs: object) -> object:
+        assert kwargs["preapproved"] is True
+        return LoopResult(
+            final_response="Secret written.",
+            iterations=1,
+            tool_results=[],
+            total_prompt_tokens=10,
+            total_completion_tokens=5,
+            total_cost_usd=0.0,
+            done=True,
+            error="",
+        )
+
+    executor.agent_loop.run = MagicMock(side_effect=fake_run)
+
+    executor.tick()
+
+    updated = json.loads(inbox.read_text(encoding="utf-8"))
+    assert updated[0]["status"] == TaskStatus.COMPLETED.value
+    assert "task-orphan-1" not in executor._pending_approvals
+
+
+def test_executor_heals_rejected_task_when_index_lost(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A REJECTED task whose index entry was lost fails instead of stranding."""
+    inbox = _orphan_parked_task(tmp_path, monkeypatch)
+
+    gate = ApprovalGate(config_path=str(tmp_path / "orchestrator" / "approvals.yaml"))
+    request = gate.request_approval(
+        "req-orphan-2",
+        "task-orphan-1",
+        "test-agent",
+        "tool:write",
+        "Write secrets.yaml",
+    )
+    gate.reject(request.id, rejected_by="human-ceo", notes="Too risky")
+
+    from ai_company.executor.loop import Executor
+
+    executor = Executor(
+        config_path=str(tmp_path / "company" / "models.yaml"),
+        registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        agents_dir=str(tmp_path / ".opencode" / "agents"),
+        results_dir=str(tmp_path / "results"),
+    )
+    assert "task-orphan-1" not in executor._pending_approvals
+
+    executor.tick()
+
+    updated = json.loads(inbox.read_text(encoding="utf-8"))
+    assert updated[0]["status"] == TaskStatus.FAILED.value
+    assert "denied" in updated[0]["result"].lower()
+
+
+def test_executor_leaves_parked_task_when_request_still_pending(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A parked task with a still-PENDING request stays parked (no decision yet)."""
+    inbox = _orphan_parked_task(tmp_path, monkeypatch)
+
+    gate = ApprovalGate(config_path=str(tmp_path / "orchestrator" / "approvals.yaml"))
+    gate.request_approval(
+        "req-orphan-3",
+        "task-orphan-1",
+        "test-agent",
+        "tool:write",
+        "Write secrets.yaml",
+    )
+
+    from ai_company.executor.loop import Executor
+
+    executor = Executor(
+        config_path=str(tmp_path / "company" / "models.yaml"),
+        registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        agents_dir=str(tmp_path / ".opencode" / "agents"),
+        results_dir=str(tmp_path / "results"),
+    )
+
+    executor.tick()
+
+    updated = json.loads(inbox.read_text(encoding="utf-8"))
+    assert updated[0]["status"] == TaskStatus.WAITING_APPROVAL.value
+
+
+def test_executor_prunes_stale_index_entries(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Derived index entries whose task is no longer parked are pruned.
+
+    A crashed run may leave `pending_approvals.json` pointing at a task that
+    was completed/failed/deleted while the executor was down; those entries
+    must not linger forever pinning a stale request id.
+    """
+    monkeypatch.chdir(tmp_path)
+    _setup_executor_files(tmp_path)
+    inbox = tmp_path / ".opencode" / "inbox.json"
+    inbox.write_text(
+        json.dumps(
+            [
+                {
+                    "id": "task-parked-1",
+                    "sender_id": "h",
+                    "receiver_id": "test-agent",
+                    "instruction": "parked",
+                    "status": "waiting_approval",
+                    "priority": "high",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    from ai_company.executor.loop import Executor
+
+    executor = Executor(
+        config_path=str(tmp_path / "company" / "models.yaml"),
+        registry_path=str(tmp_path / "company" / "agent-registry.json"),
+        agents_dir=str(tmp_path / ".opencode" / "agents"),
+        results_dir=str(tmp_path / "results"),
+    )
+    # Simulate a leftover index: one live parked task, one task that no
+    # longer exists anywhere in the inbox.
+    executor._pending_approvals = {
+        "task-parked-1": "req-stale",
+        "task-gone-1": "req-gone",
+    }
+    executor._persist_pending_approvals()
+
+    executor.tick()
+
+    assert "task-gone-1" not in executor._pending_approvals
+    assert "task-parked-1" in executor._pending_approvals
+    persisted = executor._pending_store.read_json("pending_approvals.json")
+    assert "task-gone-1" not in persisted
+    assert "task-parked-1" in persisted

@@ -161,8 +161,7 @@ class TestFullPipeline:
 
         assert count >= 1
         assert hasattr(executor, "_consolidation_scheduler")
-        stats = executor._consolidation_scheduler.stats()
-        assert stats["tick_count"] >= 1
+        assert executor._consolidation_scheduler.tick_count >= 1
 
     def test_empty_inbox_no_op(self, workspace: Path, executor, bus: MessageBus) -> None:
         """Tick with empty inbox returns 0 and doesn't crash."""

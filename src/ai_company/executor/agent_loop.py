@@ -15,7 +15,6 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 
-from ai_company.dashboard.monitoring import inc_metric
 from ai_company.executor.context import AgentContext
 from ai_company.executor.hitl_gate import HITLGate
 from ai_company.executor.prompts import (
@@ -147,7 +146,6 @@ class AgentLoop:
             ``LoopResult`` with the final response, iteration count, and stats.
         """
         resolved_name = agent_name or agent.name
-        inc_metric("agent_loop_runs_total")
         self._current_priority = priority
         self._current_task_prompt = user_prompt
         self._current_agent_name = resolved_name
@@ -174,8 +172,6 @@ class AgentLoop:
         timed_out = False
 
         for iteration in range(1, self.config.max_iterations + 1):
-            inc_metric("agent_loop_iterations_total")
-
             # ── Budget check ──────────────────────────────────────
             if self.cost_tracker and task_id:
                 allowed, reason = self.cost_tracker.check_budget(task_id)
