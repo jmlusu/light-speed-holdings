@@ -19,7 +19,7 @@ dependencies = [
     "pydantic>=2.8",
     "typer",
     "python-dotenv",
-    "fastapi",
+    "fastapi==0.109.0",
     "uvicorn[standard]",
     "httpx",
     # Security
