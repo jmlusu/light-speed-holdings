@@ -323,7 +323,7 @@ def send_push_notification(
 ### Registration Flow
 
 ```
-Mobile App → POST /api/mobile/notifications/register
+Mobile App → POST /api/v1/mobile/notifications/register
     → Server stores device token + preferences
     → Server returns device_id
     → App stores device_id locally
@@ -644,13 +644,13 @@ self.addEventListener("notificationclick", (event) => {
   if (action === "approve") {
     // Quick approve via API
     event.waitUntil(
-      fetch(`/api/approvals/${event.notification.data.request_id}/approve`, {
+      fetch(`/api/v1/approvals/${event.notification.data.request_id}/approve`, {
         method: "POST",
       }).then(() => clients.openWindow(url))
     );
   } else if (action === "reject") {
     event.waitUntil(
-      fetch(`/api/approvals/${event.notification.data.request_id}/reject`, {
+      fetch(`/api/v1/approvals/${event.notification.data.request_id}/reject`, {
         method: "POST",
       }).then(() => clients.openWindow(url))
     );
@@ -694,7 +694,7 @@ async function initializePushNotifications() {
   });
 
   // Register with server
-  await fetch("/api/mobile/notifications/register", {
+  await fetch("/api/v1/mobile/notifications/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -799,7 +799,7 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_register_and_check_status(async_client: AsyncClient):
     # Register device
-    reg = await async_client.post("/api/mobile/notifications/register", json={
+    reg = await async_client.post("/api/v1/mobile/notifications/register", json={
         "device_token": "test_fcm_token",
         "platform": "android",
         "preferences": {"escalations": True},
@@ -809,7 +809,7 @@ async def test_register_and_check_status(async_client: AsyncClient):
 
     # Check status
     status = await async_client.get(
-        f"/api/mobile/notifications/status?device_token=test_fcm_token"
+        f"/api/v1/mobile/notifications/status?device_token=test_fcm_token"
     )
     assert status.status_code == 200
     assert status.json()["device_token"] == "test_fcm_token"
@@ -817,12 +817,12 @@ async def test_register_and_check_status(async_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_unregister_device(async_client: AsyncClient):
-    await async_client.post("/api/mobile/notifications/register", json={
+    await async_client.post("/api/v1/mobile/notifications/register", json={
         "device_token": "tok_to_remove",
         "platform": "ios",
     })
 
-    result = await async_client.delete("/api/mobile/notifications/unregister", json={
+    result = await async_client.delete("/api/v1/mobile/notifications/unregister", json={
         "device_token": "tok_to_remove",
     })
     assert result.status_code == 200

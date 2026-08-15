@@ -10,7 +10,7 @@ The ModelRouter (`src/ai_company/model_router.py`) selects which LLM provider an
 
 | Provider | Backend | Default Model | API Base | Env Var |
 |----------|---------|---------------|----------|---------|
-| opencode | openai_compatible | big-pickle | https://opencode.ai/api/v1 | OPENCODE_API_KEY |
+| opencode | openai_compatible | big-pickle | https://opencode.ai/api/v1/v1 | OPENCODE_API_KEY |
 | deepseek | openai_compatible | deepseek-chat | https://api.deepseek.com/v1 | DEEPSEEK_API_KEY |
 | ollama | ollama | llama3.1:8b | http://localhost:11434 | (none) |
 | openai | openai_compatible | gpt-4o-mini | https://api.openai.com/v1 | OPENAI_API_KEY |

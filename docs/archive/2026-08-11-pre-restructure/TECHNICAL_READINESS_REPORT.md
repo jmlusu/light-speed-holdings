@@ -140,7 +140,7 @@ Legend: 🔴 DUMMY/STUB (feeds dashboard UI) · 🟡 MIXED/UNVERIFIED · 🟢 RE
 | Stub leakage at read path | `ai-company/orchestrator/approvals.yaml` and `ai-company/config/company/kpis.yaml` contain no `task-00*`, `agent-[a-f]`, `rm -rf`, hardcoded dummy currents | ❌ PENDING |
 | Warehouse populated | `ai-company/data/ai_company.db` tasks=1,039, audit=4,001, cost=27 (verified) | ✅ VERIFIED |
 | KPI history live | `ai-company/dashboard/kpi_history/` ≥ 7 files | ❌ PENDING |
-| Dashboard API real data | `/api/ceo/dashboard` returns computed dept KPIs + real approvals (0 dummy) + real costs | ❌ PENDING |
+| Dashboard API real data | `/api/v1/ceo/dashboard` returns computed dept KPIs + real approvals (0 dummy) + real costs | ❌ PENDING |
 | Demo stream gated | No new demo-originated tasks in inbox after gate; source-tagged | ❌ PENDING |
 | No synthetic leakage | Grep `task-00`, `agent-[a-f]`, `rm -rf`, `$0.00`, `test-agent` in production read paths = 0 | ❌ PENDING (root level clean only) |
 | Quality gates green | `ruff check src/ && mypy src/ && pytest` | ✅ PASS (no src changes yet; re-verify after fixes) |
@@ -153,7 +153,7 @@ Legend: 🔴 DUMMY/STUB (feeds dashboard UI) · 🟡 MIXED/UNVERIFIED · 🟢 RE
 2. Assign Priority 1 items to owning subagents (data-engineer, backend-engineer, financial-analyst, dept owners) per (b).
 3. Assign Priority 2 items (platform-engineer gates demo workflows; qa-lead retires root ad-hoc scripts).
 4. Assign Priority 4 hardening (backend-engineer `get_state_store()`; platform-engineer repo-root duplicate retirement).
-5. After fixes: re-run `collect_all_kpis()` + `GET /api/ceo/dashboard` and verify zero stub leakage; run full quality gates.
+5. After fixes: re-run `collect_all_kpis()` + `GET /api/v1/ceo/dashboard` and verify zero stub leakage; run full quality gates.
 6. Re-verify live: start dashboard (port 8420), open CEO view, confirm real approvals/costs/company KPIs.
 
 ---

@@ -28,7 +28,7 @@ Key decisions:
 - **Server-side** pagination, filtering, sorting (all done server)
 - **Top-level pagination** (one paginator across the entire pipeline, not per-column)
 - **Client-side column slicing** of the paginated result for Kanban rendering
-- **New `GET /api/tasks/paginated`** endpoint (additive, non-breaking)
+- **New `GET /api/v1/tasks/paginated`** endpoint (additive, non-breaking)
 - Dummy data cleanup via a dedicated **CLI subcommand + validation guard**
 
 ---
@@ -46,7 +46,7 @@ Key decisions:
 | **WebSocket updates** | Need to re-fetch on update (or optimistic patch) | Already have full dataset in memory |
 | **Column counts** | Server returns `total_counts` alongside page | Computed client-side for free |
 | **Future scaling** | Handles 10K+ tasks without degradation | Breaks at ~5K tasks |
-| **Backward compat** | New endpoint; old `/api/tasks` preserved | Existing endpoint unchanged |
+| **Backward compat** | New endpoint; old `/api/v1/tasks` preserved | Existing endpoint unchanged |
 
 **Why server-side wins:** The inbox is a flat JSON file read through an atomic `FileStore`. There's no SQL index — so the "query" is a Python list comprehension over ~1600 dicts. At this scale, both approaches take <5ms for the filter/sort step. The differentiator is **payload size and render cost**. Sending 1600 tasks every 15 seconds wastes bandwidth and forces Alpine.js to diff a large array. With server-side pagination, we send 20 tasks and Alpine.js only re-renders 20 DOM nodes.
 
@@ -73,7 +73,7 @@ class PaginatedTasks(BaseModel):
 
 ### 3.2 New Query Parameters
 
-Add to `GET /api/tasks/paginated`:
+Add to `GET /api/v1/tasks/paginated`:
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -205,7 +205,7 @@ def list_tasks_paginated(
 
 ### 3.4 Non-Breaking Backward Compatibility
 
-The existing `GET /api/tasks` endpoint is **preserved unchanged**. Other consumers (KPI collectors, mobile API, cost tracker) that call it will continue to work. The new `GET /api/tasks/paginated` is purely additive.
+The existing `GET /api/v1/tasks` endpoint is **preserved unchanged**. Other consumers (KPI collectors, mobile API, cost tracker) that call it will continue to work. The new `GET /api/v1/tasks/paginated` is purely additive.
 
 ---
 
@@ -236,7 +236,7 @@ taskPagination: {
 
 ### 4.2 New Data Loading Method
 
-Replace the direct `/api/tasks` fetch in `loadPageData` for the `/tasks` path with a paginated fetch:
+Replace the direct `/api/v1/tasks` fetch in `loadPageData` for the `/tasks` path with a paginated fetch:
 
 ```javascript
 async loadTasksPage() {
@@ -259,7 +259,7 @@ async loadTasksPage() {
     params.set('agent', this.taskFilters.agent);
   }
 
-  const data = await this.fetchJSON(`/api/tasks/paginated?${params}`);
+  const data = await this.fetchJSON(`/api/v1/tasks/paginated?${params}`);
   if (data) {
     this.tasks = data.items;
     this.taskPagination = {
@@ -276,7 +276,7 @@ async loadTasksPage() {
 ```javascript
 // In loadPageData():
 } else if (path === '/tasks') {
-  const agentsData = await this.fetchJSON('/api/agents');
+  const agentsData = await this.fetchJSON('/api/v1/agents');
   if (agentsData) this.agents = agentsData;
   await this.loadTasksPage();
 }
@@ -640,7 +640,7 @@ def cleanup_tasks(
 
 ### 5.3 Validation Guard: Prevent Future Dummy Data
 
-Add validation to `POST /api/tasks` in `api.py` to reject trivial tasks at creation time:
+Add validation to `POST /api/v1/tasks` in `api.py` to reject trivial tasks at creation time:
 
 ```python
 import re
@@ -700,7 +700,7 @@ async def _warn_dummy_tasks():
 | File | Change Type | Description |
 |---|---|---|
 | `src/ai_company/dashboard/models.py` | **Modify** | Add `PaginatedTasks` response model |
-| `src/ai_company/dashboard/api.py` | **Modify** | Add `GET /api/tasks/paginated` endpoint, sort helper functions, dummy task validation on `POST /api/tasks` |
+| `src/ai_company/dashboard/api.py` | **Modify** | Add `GET /api/v1/tasks/paginated` endpoint, sort helper functions, dummy task validation on `POST /api/v1/tasks` |
 | `src/ai_company/dashboard/static/js/app.js` | **Modify** | Add pagination state, `loadTasksPage()`, filter/sort methods, `paginationRange()`, update `loadPageData`, update WS handler |
 | `src/ai_company/dashboard/templates/tasks.html` | **Modify** | Add filter bar HTML, pagination controls HTML, update Kanban column badges |
 | `src/ai_company/cli/main.py` | **Modify** | Add `cleanup-tasks` subcommand |
@@ -780,7 +780,7 @@ class TestPaginatedTasks:
         """No matching tasks returns empty items, total=0."""
 
     def test_backward_compatibility(self, client):
-        """GET /api/tasks still works unchanged."""
+        """GET /api/v1/tasks still works unchanged."""
 ```
 
 ### 7.2 Integration Tests: `tests/integration/test_tasks_paginated_api.py`
@@ -799,7 +799,7 @@ class TestPaginatedTasksE2E:
         """Create tasks with different priorities, sort by priority."""
 
     def test_websocket_update_triggers_re_fetch(self, client):
-        """After PATCH /api/tasks/{id}, paginated endpoint reflects change."""
+        """After PATCH /api/v1/tasks/{id}, paginated endpoint reflects change."""
 
     def test_delete_task_updates_total(self, client):
         """After DELETE, total and total_pages decrease correctly."""
@@ -842,16 +842,16 @@ class TestCleanupCommand:
 ```python
 class TestBackwardCompatibility:
     def test_old_tasks_endpoint_unchanged(self, setup_dashboard_data):
-        """GET /api/tasks still returns list[TaskItem] with same shape."""
+        """GET /api/v1/tasks still returns list[TaskItem] with same shape."""
 
     def test_new_paginated_endpoint_coexists(self, setup_dashboard_data):
         """Both endpoints return consistent data for the same task set."""
 
     def test_create_task_validation(self, setup_dashboard_data):
-        """POST /api/tasks rejects trivial instructions (<=5 chars)."""
+        """POST /api/v1/tasks rejects trivial instructions (<=5 chars)."""
 
     def test_create_task_valid_instruction(self, setup_dashboard_data):
-        """POST /api/tasks accepts meaningful instructions."""
+        """POST /api/v1/tasks accepts meaningful instructions."""
 ```
 
 ---
@@ -861,8 +861,8 @@ class TestBackwardCompatibility:
 | Step | Task | Dependencies | Estimated Effort |
 |---|---|---|---|
 | 1 | Add `PaginatedTasks` model to `models.py` | None | 10 min |
-| 2 | Add sort helper functions + `/api/tasks/paginated` endpoint to `api.py` | Step 1 | 45 min |
-| 3 | Add instruction validation to `POST /api/tasks` | Step 2 | 15 min |
+| 2 | Add sort helper functions + `/api/v1/tasks/paginated` endpoint to `api.py` | Step 1 | 45 min |
+| 3 | Add instruction validation to `POST /api/v1/tasks` | Step 2 | 15 min |
 | 4 | Add unit tests for new endpoint (`test_dashboard_pagination.py`) | Steps 1-3 | 45 min |
 | 5 | Add integration tests (`test_tasks_paginated_api.py`) | Steps 1-3 | 30 min |
 | 6 | Update `app.js` with pagination state + methods | Steps 1-3 | 45 min |
@@ -880,7 +880,7 @@ class TestBackwardCompatibility:
 
 ## Appendix A: API Response Examples
 
-### `GET /api/tasks/paginated?page=1&page_size=10&status=pending&sort_by=priority&sort_dir=desc`
+### `GET /api/v1/tasks/paginated?page=1&page_size=10&status=pending&sort_by=priority&sort_dir=desc`
 
 ```json
 {

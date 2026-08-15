@@ -23,16 +23,16 @@ The `dashboard()` component state object holds:
 - `companyKPIs: []` — array of company-level KPI cards.
 - `companyKPISummary: null` — aggregated company metrics.
 - `allKPIsList: []`, `kpiDepartments: []`, `liveKPIData: null`.
-- Methods: `loadDashboard()` (fetches `/api/dashboard` + schedules live WS),
-  `loadKPIs()` (fetches `/api/kpis` + per-dept detail), `loadCompanyKPISummary()`
-  (fetches `/api/company-kpi-summary`), `scheduleKPICharts()` +
+- Methods: `loadDashboard()` (fetches `/api/v1/dashboard` + schedules live WS),
+  `loadKPIs()` (fetches `/api/v1/kpis` + per-dept detail), `loadCompanyKPISummary()`
+  (fetches `/api/v1/company-kpi-summary`), `scheduleKPICharts()` +
   `_mergeKPIPayload()` (coalesces live + poll payloads), `_kpiChartsRaf` /
   `_kpiChartsPending` (frame-coalesced redraw).
 
 ## Data flow
 
-- **REST poll:** `/api/dashboard` → `KPIs`; `/api/kpis/live` → live snapshots;
-  `/api/company-kpi-summary` → summary; `/api/kpis/history/{dept}` → NDJSON
+- **REST poll:** `/api/v1/dashboard` → `KPIs`; `/api/v1/kpis/live` → live snapshots;
+  `/api/v1/company-kpi-summary` → summary; `/api/v1/kpis/history/{dept}` → NDJSON
   history.
 - **WebSocket:** `dashboard/ws.py` broadcasts `kpi_update`, `task_update`,
   `approval_alert`, `escalation_alert`, `alert`; `app.js` reconnects with
@@ -58,7 +58,7 @@ The `dashboard()` component state object holds:
 ## Verdict for #31 (prototype the hero)
 
 All scaffolding exists: state shape (`companyKPIs`, `companyKPISummary`), data
-sources (`/api/company-kpi-summary`, `/api/dashboard`), WS path (`kpi_update`),
+sources (`/api/v1/company-kpi-summary`, `/api/v1/dashboard`), WS path (`kpi_update`),
 charting (`charts.js`), and the insertion slot. The prototype ticket (#31) can
 build the gauge from existing pieces without touching architecture.
 

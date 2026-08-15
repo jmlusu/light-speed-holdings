@@ -1,9 +1,0 @@
-{
-  "pid": 27624,
-  "state": "stopped",
-  "started_at": "2026-08-14T17:55:36.793357+00:00",
-  "last_tick_at": null,
-  "ticks_completed": 10,
-  "uptime_seconds": 51.0,
-  "updated_at": "2026-08-14T17:56:27.827610+00:00"
-}
