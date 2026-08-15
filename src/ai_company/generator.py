@@ -23,12 +23,11 @@ from ai_company.registry.loader import load_yaml_cached
 logger = logging.getLogger(__name__)
 
 # Tool name mapping: registry names → OpenCode v2 permission keys
-# Legacy aliases (code_interpreter, websearch, edit) are kept so older
+# Legacy aliases (websearch, edit) are kept so older
 # registries still normalize to the same permission keys as their canonical
-# counterparts (execute, web_search, write).
+# counterparts (web_search, write).
 _TOOL_MAP: dict[str, str] = {
     "execute": "bash",
-    "code_interpreter": "bash",
     "edit": "edit",
     "write": "edit",
     "web_search": "webfetch",

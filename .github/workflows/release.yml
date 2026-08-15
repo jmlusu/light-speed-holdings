@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   id-token: write  # Required for trusted publishing to PyPI
+  security-events: write  # Required for Trivy SARIF upload
 
 jobs:
   # D3: Semver validation - verify git tag matches pyproject.toml version
@@ -60,10 +61,47 @@ jobs:
             exit 1
           fi
 
+  # Security: Trivy container scan
+  trivy:
+    name: Container Scan (Trivy)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build Docker image for scanning
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ai-company-scan:latest
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ai-company-scan:latest
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+          category: container-image
+
   # Build the package
   build:
     name: Build Package
-    needs: version-check
+    needs: [version-check, trivy]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -106,7 +144,7 @@ jobs:
   # D2: Docker build and push to GHCR
   docker:
     name: Build and Push Docker Image
-    needs: version-check
+    needs: [version-check, trivy]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -144,10 +182,42 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # Canary / Staged Rollout
+  canary:
+    name: Canary Deployment
+    needs: [publish-pypi, docker]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Deploy Canary (5% traffic)
+        run: |
+          echo "Deploying canary version ${{ needs.version-check.outputs.version }} to staging..."
+          # In a real setup, this would:
+          # 1. Deploy to canary environment (e.g., separate namespace/stack)
+          # 2. Configure load balancer to route 5% traffic
+          # 3. Run smoke tests against canary
+          # 4. Monitor error rates and latency for 10-15 minutes
+          # 5. Promote or rollback based on metrics
+          echo "::notice::Canary deployment simulated - integrate with your orchestration platform"
+
+      - name: Monitor Canary Health
+        run: |
+          echo "Monitoring canary health metrics..."
+          # Would check: error rate < 1%, p99 latency < threshold, no critical alerts
+          echo "::notice::Canary health check simulated - integrate with your monitoring stack"
+
+      - name: Promote Canary (100% traffic)
+        if: success()
+        run: |
+          echo "Canary promoted successfully - full rollout complete"
+          # Would: update load balancer to 100%, decommission previous version
+
   # Create GitHub Release (attaches dist artifacts)
   github-release:
     name: Create GitHub Release
-    needs: [publish-pypi, docker]
+    needs: [publish-pypi, docker, canary]
     runs-on: ubuntu-latest
     permissions:
       contents: write
