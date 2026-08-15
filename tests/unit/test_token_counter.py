@@ -127,7 +127,7 @@ def test_cost_tracker_records_real_tokens(tmp_path: Path) -> None:
     assert record.completion_tokens == 500
     assert record.total_tokens == 1500
 
-    summary = tracker.get_summary()
+    summary = tracker.get_usage_summary()
     assert summary["total_prompt_tokens"] == 1000
     assert summary["total_completion_tokens"] == 500
     assert summary["total_tokens"] == 1500

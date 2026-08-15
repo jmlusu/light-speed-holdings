@@ -18,7 +18,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
-from ai_company.dashboard.monitoring import inc_metric
 from ai_company.models.task import Task
 from ai_company.store.file_store import FileStore
 
@@ -295,7 +294,6 @@ def detect_stale_tasks(
         # inbox so it is not re-processed on the next tick. This replaces the
         # removed move_and_delete_atomic API with move_task + explicit cleanup.
         result = dlq.move_task(task, reason)
-        inc_metric("dead_letter_moved_total")
         bus.delete_task(str(task.get("id", "")))
         if result is not None:
             moved.append(task)

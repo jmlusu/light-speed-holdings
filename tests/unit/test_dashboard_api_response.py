@@ -286,7 +286,7 @@ class TestMetricsEndpoint:
         resp = client.get("/metrics")
         assert resp.status_code == 200
         body = resp.text
-        assert "ai_company_tasks_total" in body
+        assert "ai_company_llm_requests_total" in body
         assert "ai_company_tasks_by_status" in body
         assert "ai_company_uptime_seconds" in body
 

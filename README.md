@@ -46,7 +46,7 @@ uv run ai-company dashboard              # 4. Open the live dashboard
 - **Knowledge Graphs** with BFS pathfinding (org chart, decision, workflow, knowledge)
 - **Workflow Engine** with 9 workflows, step tracking, and SLA monitoring
 - **Data Layer** — `data/` package with task, memory, escalation, audit stores + KPI pipeline + cost analytics
-- **ML Module** — `ml/` package with prompt optimizer, predictive scaling, complexity analyzer, anomaly detection, embeddings
+- **ML Module** — `ml/` package with sentence-transformer embeddings (`EmbeddingEngine`)
 - **Security Module** — `security/` package with secrets scanner, PII detector, content filter
 - **FileStore** — `store/` package with atomic file I/O and platform-aware locking
 

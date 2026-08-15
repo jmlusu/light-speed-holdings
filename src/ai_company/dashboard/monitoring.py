@@ -57,14 +57,6 @@ def _state_path(rel_path: str | Path) -> Path:
 # ---------------------------------------------------------------------------
 
 _metrics: dict[str, float] = {
-    # Task metrics
-    "tasks_total": 0,
-    "tasks_succeeded": 0,
-    "tasks_failed": 0,
-    "tasks_escalated": 0,
-    # Cycle metrics
-    "cycle_count": 0,
-    "cycle_failures": 0,
     # LLM metrics
     "llm_requests_total": 0,
     "llm_errors_total": 0,
@@ -73,23 +65,6 @@ _metrics: dict[str, float] = {
     "llm_cost_usd_openai": 0.0,
     "llm_cost_usd_deepseek": 0.0,
     "llm_cost_usd_other": 0.0,
-    # Approval / HITL metrics
-    "approval_requests_total": 0,
-    "approval_auto_approved": 0,
-    "approval_human_approved": 0,
-    "approval_rejected": 0,
-    # Dead letter
-    "dead_letters_total": 0,
-    # API
-    "api_requests_total": 0,
-    # Agent performance
-    "agent_task_success_total": 0,
-    "agent_task_failure_total": 0,
-    "agent_total_tokens_in": 0,
-    "agent_total_tokens_out": 0,
-    # Memory
-    "memory_store_bytes": 0.0,
-    "memory_entries_total": 0,
     # Circuit breaker
     "circuit_breaker_trips_total": 0,
     "circuit_breaker_half_open_total": 0,
@@ -101,16 +76,6 @@ _start_time = time.time()
 def inc_metric(name: str, value: float = 1.0) -> None:
     """Increment a named metric by value."""
     _metrics[name] = _metrics.get(name, 0) + value
-
-
-def set_metric(name: str, value: float) -> None:
-    """Set a named metric to an exact value."""
-    _metrics[name] = value
-
-
-def get_metrics() -> dict[str, float]:
-    """Return a snapshot of all metrics."""
-    return dict(_metrics)
 
 
 def record_llm_cost(provider: str, cost_usd: float) -> None:
@@ -152,54 +117,8 @@ def _render_prometheus_text() -> str:
 
     # ── Counter metrics ─────────────────────────────────────────────
     counter_metrics = {
-        "tasks_total": ("ai_company_tasks_total", "Total tasks processed"),
-        "tasks_succeeded": ("ai_company_tasks_succeeded_total", "Total tasks succeeded"),
-        "tasks_failed": ("ai_company_tasks_failed_total", "Total tasks failed"),
-        "tasks_escalated": ("ai_company_tasks_escalated_total", "Total tasks escalated"),
-        "cycle_count": ("ai_company_cycles_total", "Total autonomous cycles executed"),
-        "cycle_failures": ("ai_company_cycle_failures_total", "Total cycle failures"),
         "llm_requests_total": ("ai_company_llm_requests_total", "Total LLM API requests"),
         "llm_errors_total": ("ai_company_llm_errors_total", "Total LLM API errors"),
-        "approval_requests_total": (
-            "ai_company_approval_requests_total",
-            "Total approval requests",
-        ),
-        "approval_auto_approved": (
-            "ai_company_approval_auto_approved_total",
-            "Total auto-approved requests",
-        ),
-        "approval_human_approved": (
-            "ai_company_approval_human_approved_total",
-            "Total human-approved requests",
-        ),
-        "approval_rejected": (
-            "ai_company_approval_rejected_total",
-            "Total rejected approval requests",
-        ),
-        "dead_letters_total": (
-            "ai_company_dead_letters_total",
-            "Total dead-letter queue entries",
-        ),
-        "api_requests_total": (
-            "ai_company_api_requests_total",
-            "Total dashboard API requests",
-        ),
-        "agent_task_success_total": (
-            "ai_company_agent_task_success_total",
-            "Total agent tasks completed successfully",
-        ),
-        "agent_task_failure_total": (
-            "ai_company_agent_task_failure_total",
-            "Total agent tasks that failed",
-        ),
-        "agent_total_tokens_in": (
-            "ai_company_agent_tokens_in_total",
-            "Total input tokens consumed by agents",
-        ),
-        "agent_total_tokens_out": (
-            "ai_company_agent_tokens_out_total",
-            "Total output tokens produced by agents",
-        ),
         "circuit_breaker_trips_total": (
             "ai_company_circuit_breaker_trips_total",
             "Total circuit breaker trip events",
@@ -243,15 +162,6 @@ def _render_prometheus_text() -> str:
         lines.append(f"# HELP {prom_name} {help_text}")
         lines.append(f"# TYPE {prom_name} gauge")
         lines.append(f"{prom_name} {_metrics.get(metric_key, 0):.6f}")
-
-    # ── Memory store gauge ──────────────────────────────────────────
-    lines.append("# HELP ai_company_memory_store_bytes Size of memory store in bytes")
-    lines.append("# TYPE ai_company_memory_store_bytes gauge")
-    lines.append(f"ai_company_memory_store_bytes {_metrics.get('memory_store_bytes', 0):.0f}")
-
-    lines.append("# HELP ai_company_memory_entries_total Number of entries in memory store")
-    lines.append("# TYPE ai_company_memory_entries_total gauge")
-    lines.append(f"ai_company_memory_entries_total {_metrics.get('memory_entries_total', 0):.0f}")
 
     # ── Derived gauges ──────────────────────────────────────────────
     _append_derived_metrics(lines)
@@ -318,21 +228,21 @@ def _append_process_metrics(lines: list[str]) -> None:
 
 def _append_derived_metrics(lines: list[str]) -> None:
     """Append computed / derived gauges."""
-    # Task success rate
-    total = _metrics.get("tasks_total", 0)
-    succeeded = _metrics.get("tasks_succeeded", 0)
-    rate = (succeeded / total * 100.0) if total > 0 else 0.0
+    # Task success rate (live from the MessageBus, matching _live_task_summary)
+    rate = 0.0
+    try:
+        tasks = _get_bus().get_all_tasks_raw()
+        if isinstance(tasks, list):
+            total = len(tasks)
+            succeeded = sum(
+                1 for t in tasks if isinstance(t, dict) and t.get("status") == "completed"
+            )
+            rate = (succeeded / total * 100.0) if total > 0 else 0.0
+    except Exception:  # noqa: BLE001 - metric collection is best-effort
+        logger.debug("Failed to read live tasks for task success rate")
     lines.append("# HELP ai_company_task_success_rate_pct Task success rate as percentage")
     lines.append("# TYPE ai_company_task_success_rate_pct gauge")
     lines.append(f"ai_company_task_success_rate_pct {rate:.2f}")
-
-    # Cycle success rate
-    cycles = _metrics.get("cycle_count", 0)
-    cycle_fail = _metrics.get("cycle_failures", 0)
-    cycle_rate = ((cycles - cycle_fail) / cycles * 100.0) if cycles > 0 else 0.0
-    lines.append("# HELP ai_company_cycle_success_rate_pct Cycle success rate as percentage")
-    lines.append("# TYPE ai_company_cycle_success_rate_pct gauge")
-    lines.append(f"ai_company_cycle_success_rate_pct {cycle_rate:.2f}")
 
     # LLM error rate
     llm_req = _metrics.get("llm_requests_total", 0)
@@ -596,16 +506,13 @@ def _live_task_summary() -> dict[str, Any]:
         logger.debug("Failed to read live tasks for health summary", exc_info=True)
 
     if not isinstance(tasks, list):
-        # Fall back to the in-memory counters (process-lifetime totals).
-        total = int(_metrics.get("tasks_total", 0))
-        succeeded = int(_metrics.get("tasks_succeeded", 0))
-        rate = (succeeded / total * 100.0) if total > 0 else 0.0
+        # Fall back to the LLM cost counter (task counters no longer exist).
         return {
-            "tasks_total": total,
-            "tasks_completed": succeeded,
-            "tasks_failed": int(_metrics.get("tasks_failed", 0)),
+            "tasks_total": 0,
+            "tasks_completed": 0,
+            "tasks_failed": 0,
             "llm_cost_usd": round(_metrics.get("llm_cost_usd_total", 0), 4),
-            "success_rate_pct": round(rate, 1),
+            "success_rate_pct": 0.0,
         }
 
     total = len(tasks)

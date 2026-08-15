@@ -21,7 +21,6 @@ Lease hardening:
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import os
 import socket
@@ -32,11 +31,9 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.audit.integration import get_writer, init_audit, log_task_status
-from ai_company.dashboard.monitoring import inc_metric
 from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.executor.context import (
     AgentContext,
-    build_user_prompt,
     parse_agent_spec,
 )
 from ai_company.executor.dead_letter import (
@@ -255,9 +252,6 @@ class Executor:
         HITL approval (GAP-004) are resumed if a human decision has been
         recorded; otherwise they are left parked so the loop can continue.
         """
-        # Metric: count executor ticks (OB2)
-        inc_metric("executor_loop_ticks_total")
-
         # Audit smoke guard (ticket #71): record how many events the shared
         # writer has appended so we can detect a tick that processes tasks
         # without growing the canonical trail.
@@ -403,17 +397,9 @@ class Executor:
         dashboard clients.  Uses the dashboard's sync→async bridge so it is a
         no-op when no event loop (CLI) is running.
         """
-        from ai_company.dashboard.ws import broadcast_task_update
+        from ai_company.dashboard.ws import make_message_bus_broadcast_callback
 
-        def _callback(task_dict: dict[str, Any], event: str) -> None:
-            try:
-                loop = asyncio.get_running_loop()
-                loop.create_task(broadcast_task_update(task_dict, event))
-            except RuntimeError:
-                # No running event loop (CLI / executor thread) — skip.
-                logger.debug("No event loop; WS broadcast skipped for '%s'", event)
-
-        return _callback
+        return make_message_bus_broadcast_callback()
 
     def _load_pending_approvals(self) -> dict[str, str]:
         """Load the persisted ``task_id -> HITL request_id`` mapping at startup.
@@ -517,10 +503,10 @@ class Executor:
                 agent_ctx = AgentContext(name=task.receiver_id, role="", type="Unknown")
 
             # 3. Build user prompt
-            try:
-                user_prompt = build_user_prompt(task.instruction, task.priority.value)
-            except Exception:  # noqa: BLE001 - per-task isolation
-                user_prompt = task.instruction
+            # agent_loop.run() re-wraps the instruction with priority framing,
+            # so the raw instruction is passed here (T026: fixes a double-wrap
+            # where the task text was embedded twice).
+            user_prompt = task.instruction
 
             # 4. Run multi-turn agentic loop
             try:

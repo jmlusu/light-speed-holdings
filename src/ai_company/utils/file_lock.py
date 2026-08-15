@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import os
 import tempfile
+import time
 from contextlib import contextmanager, suppress
 from pathlib import Path
 from typing import IO, Any, Generator
@@ -142,10 +143,14 @@ def atomic_write(
     path: Path,
     mode: str = "w",
     encoding: str = "utf-8",
+    retries: int = 5,
 ) -> Generator[IO[Any], None, None]:
     """Write to a temp file, then atomically rename on exit.
 
-    This prevents partial writes from corrupting the target file.
+    This prevents partial writes from corrupting the target file. On
+    Windows ``os.replace`` can transiently fail with ``PermissionError``
+    while another handle briefly references the target, so the rename is
+    retried up to *retries* times before giving up.
     """
     tmp_fd = None
     tmp_path = None
@@ -163,9 +168,19 @@ def atomic_write(
             f.flush()
             os.fsync(f.fileno())
 
-        # Atomic rename
-        os.replace(tmp_path, str(path))
-        tmp_path = None
+        # Atomic rename (retried on Windows transient PermissionError)
+        last_err: Exception | None = None
+        tmp_target = str(tmp_path)
+        for _ in range(max(1, retries)):
+            try:
+                os.replace(tmp_target, str(path))
+                tmp_path = None
+                break
+            except (OSError, PermissionError) as exc:
+                last_err = exc
+                time.sleep(0.01)
+        if tmp_path:
+            raise last_err or OSError("Could not atomically replace file")
 
     finally:
         if tmp_fd is not None:
