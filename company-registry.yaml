@@ -57,7 +57,7 @@ company:
         - Evaluate and integrate new LLM models.
         - Fine-tune prompts for maximum agent efficacy.
       guidelines: Stay updated on the latest AI advancements and apply them practically.
-      tools: [read, write, execute, web_search]
+      tools: [read, write, execute, webfetch]
 
     - id: human_ceo
       name: Human CEO
@@ -120,7 +120,7 @@ company:
         - Ensure user-centric design across all surfaces.
         - Coordinate with engineering on delivery.
       guidelines: Product decisions must be evidence-based. User needs drive the roadmap. Ship incrementally, measure continuously.
-      tools: [read, write, web_search]
+      tools: [read, write, webfetch]
       model_tier: standard
 
     - id: cmo
@@ -140,7 +140,7 @@ company:
         - Coordinate with sales on lead generation.
         - Oversee PR and communications.
       guidelines: Marketing is measurable or it's noise. Every campaign has a hypothesis and success metric. Brand consistency is enforced.
-      tools: [read, write, web_search]
+      tools: [read, write, webfetch]
       model_tier: standard
 
     - id: hr
@@ -261,7 +261,7 @@ company:
         - Ensure strategic coherence across departments.
         - Prepare strategic plans for board review.
       guidelines: Strategy is execution, not just planning. Every initiative has a clear owner and success metric. Competitive intelligence is continuous.
-      tools: [read, write, web_search]
+      tools: [read, write, webfetch]
       model_tier: standard
 
     - id: ceo_advisor
@@ -965,7 +965,7 @@ company:
         - Manage open-source strategy and community contributions.
         - Track developer adoption metrics and community health.
       guidelines: Developers trust developers. Be authentic, technical, and helpful. Content should educate, not sell. Community is built through consistent value delivery.
-      tools: [read, write, execute, web_search, grep, list]
+      tools: [read, write, execute, webfetch, grep, list]
       model_tier: standard
 
     - id: culture_values_officer
