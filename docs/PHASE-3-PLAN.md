@@ -77,12 +77,12 @@ Phase 3 implements growth function CLI commands (marketing, sales, customer succ
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/costs/daily` | GET | Daily cost summary |
-| `/api/costs/by-agent` | GET | Cost breakdown by agent |
-| `/api/costs/by-model` | GET | Cost breakdown by model |
-| `/api/costs/trend` | GET | 7-day and 30-day trends |
-| `/api/budget` | GET | Budget utilization status |
-| `/api/budget` | POST | Update budget limits |
+| `/api/v1/costs/daily` | GET | Daily cost summary |
+| `/api/v1/costs/by-agent` | GET | Cost breakdown by agent |
+| `/api/v1/costs/by-model` | GET | Cost breakdown by model |
+| `/api/v1/costs/trend` | GET | 7-day and 30-day trends |
+| `/api/v1/budget` | GET | Budget utilization status |
+| `/api/v1/budget` | POST | Update budget limits |
 
 ### Dashboard Views
 

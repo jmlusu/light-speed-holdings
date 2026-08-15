@@ -258,9 +258,9 @@ Layer 3: Data Files
   └─ orchestrator/scheduler.yaml (scheduled tasks)
 
 Layer 4: API Inspection
-  └─ curl http://localhost:8420/api/dashboard
-  └─ curl http://localhost:8420/api/agents
-  └─ curl http://localhost:8420/api/tasks
+  └─ curl http://localhost:8420/api/v1/dashboard
+  └─ curl http://localhost:8420/api/v1/agents
+  └─ curl http://localhost:8420/api/v1/tasks
 
 Layer 5: Test Reproduction
   └─ Write a failing test that reproduces the bug
@@ -281,11 +281,11 @@ cat .opencode/inbox.json | python -m json.tool
 cat orchestrator/approvals.yaml
 
 # Test specific API endpoint
-curl http://localhost:8420/api/dashboard | python -m json.tool
+curl http://localhost:8420/api/v1/dashboard | python -m json.tool
 
 # Check WebSocket connection
 # Open browser DevTools → Console:
-# const ws = new WebSocket('ws://localhost:8420/ws/dashboard');
+# const ws = new WebSocket('ws://localhost:8420/ws/v1/dashboard');
 # ws.onmessage = (e) => console.log(JSON.parse(e.data));
 ```
 

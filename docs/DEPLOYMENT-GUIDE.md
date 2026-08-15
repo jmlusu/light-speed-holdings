@@ -378,7 +378,7 @@ server {
     }
 
     # WebSocket support
-    location /ws/dashboard {
+    location /ws/v1/dashboard {
         proxy_pass http://127.0.0.1:8420;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -631,13 +631,13 @@ curl http://localhost:8420/health
 
 | Metric | Source | Alert Threshold |
 |--------|--------|-----------------|
-| Dashboard uptime | `/api/dashboard` | Any downtime |
-| Pending tasks | `/api/dashboard` | > 20 pending |
-| Failed tasks | `/api/dashboard` | > 5 failed |
-| Open escalations | `/api/dashboard` | > 3 open |
-| Pending approvals | `/api/dashboard` | > 5 pending |
+| Dashboard uptime | `/api/v1/dashboard` | Any downtime |
+| Pending tasks | `/api/v1/dashboard` | > 20 pending |
+| Failed tasks | `/api/v1/dashboard` | > 5 failed |
+| Open escalations | `/api/v1/dashboard` | > 3 open |
+| Pending approvals | `/api/v1/dashboard` | > 5 pending |
 | LLM API errors | Logs | > 10 errors/hour |
-| WebSocket connections | `/ws/dashboard` | Connection failures |
+| WebSocket connections | `/ws/v1/dashboard` | Connection failures |
 
 ### Log Monitoring
 

@@ -21,11 +21,11 @@ Copied artifacts (SHA256 prefixes, sizes):
 
 | File | SHA256 (16) | Size |
 |------|-------------|------|
-| `artifacts/canary-001-loop_result.json` | `683ACF2B4827E977` | 283 B |
-| `artifacts/t1-status-summary-loop_result.json` | `EF85B9F06B869445` | 2714 B |
-| `artifacts/t2-board-audit-loop_result.json` | `474DD2EDBB221DA8` | 2613 B |
-| `artifacts/t3-audit-analysis-loop_result.json` | `1D37BC8F5DC5FE80` | 3370 B |
-| `artifacts/cost_log.jsonl` | `864355AB4BF8F1CC` | 18202 B |
+| `results/canary-001-loop_result.json` | `683ACF2B4827E977` | 283 B |
+| `results/t1-status-summary-loop_result.json` | `EF85B9F06B869445` | 2714 B |
+| `results/t2-board-audit-loop_result.json` | `474DD2EDBB221DA8` | 2613 B |
+| `results/t3-audit-analysis-loop_result.json` | `1D37BC8F5DC5FE80` | 3370 B |
+| `results/cost_log.jsonl` | `864355AB4BF8F1CC` | 18202 B |
 | `executor-daemon.json` (final state) | `5DCDB3669295EB31` | 227 B |
 | `daily_briefing.md` | `D87ED6D668224CAC` | 130 B |
 | `dead_letter.json` | `4F53CDA18C2BAA0C` | 2 B (`[]`) |
