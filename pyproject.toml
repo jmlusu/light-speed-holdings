@@ -19,9 +19,9 @@ dependencies = [
     "pydantic>=2.8",
     "typer",
     "python-dotenv",
-    "fastapi==0.109.0",
+    "fastapi",
     "uvicorn[standard]",
-    "httpx",
+    "httpx<0.28.0",
     # Security
     "cryptography>=42.0",
     # ML dependencies
