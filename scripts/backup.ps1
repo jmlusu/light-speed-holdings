@@ -87,7 +87,7 @@ Write-Host "Timestamp:  $timestamp"
 Write-Host "Backup dir: $BackupDir"
 Write-Host "Retention:  $RetentionDays days"
 if ($CloudProvider -ne 'None') {
-    Write-Host "Cloud:      $CloudProvider://$CloudBucket/$CloudPrefix"
+    Write-Host "Cloud:      ${CloudProvider}://${CloudBucket}/${CloudPrefix}"
 }
 Write-Host ""
 
@@ -157,7 +157,7 @@ if (-not $DryRun -and $CloudProvider -ne 'None' -and $archives.Count -gt 0) {
             }
             Write-Host "    -> Uploaded successfully" -ForegroundColor DarkGreen
         } catch {
-            Write-Host "    ERROR uploading $archiveName: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "    ERROR uploading ${archiveName}: $($_.Exception.Message)" -ForegroundColor Red
         }
     }
 }
