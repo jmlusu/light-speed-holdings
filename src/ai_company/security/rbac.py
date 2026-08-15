@@ -28,7 +28,7 @@ import os
 from enum import Enum
 from typing import Callable
 
-from fastapi import Header, HTTPException, Request, status
+from fastapi import Header, HTTPException, status
 
 __all__ = ["Role", "role_for_key", "require_role", "require_ws_role"]
 
@@ -104,10 +104,7 @@ def require_role(minimum: str | Role) -> Callable[..., Role]:
 
     def dependency(
         x_api_key: str | None = Header(default=None, alias="X-API-Key"),
-        request: Request | None = None,
     ) -> Role:
-        # request parameter accepted for FastAPI dependency signature compatibility
-        _ = request
         role = _resolve_role(x_api_key)
         if _RANK[role] < _RANK[min_role]:
             raise HTTPException(
