@@ -141,17 +141,19 @@ class AgentContext:
 
 
 # Reverse map of OpenCode v2 permission keys -> internal executor tool names.
+# Emits only the canonical runtime vocabulary (AGENTS.md section 8):
+# read, edit, grep, list, bash, webfetch, task. ``websearch`` maps to the
+# canonical ``webfetch`` (backward-compatible alias).
 _PERMISSION_TO_TOOLS: dict[str, list[str]] = {
     "read": ["read"],
-    "edit": ["write"],
-    "bash": ["execute", "code_interpreter"],
+    "edit": ["edit"],
+    "bash": ["bash"],
     "grep": ["grep"],
     "list": ["list"],
-    "task": ["delegate"],
-    "webfetch": ["web_search"],
-    "websearch": ["websearch"],
+    "task": ["task"],
+    "webfetch": ["webfetch"],
+    "websearch": ["webfetch"],
     "question": ["question"],
-    "code_interpreter": ["code_interpreter"],
 }
 
 
@@ -335,4 +337,3 @@ def _extract_field(text: str, field_name: str) -> str:
         if line.lower().startswith(field_name.lower() + ":"):
             return line.split(":", 1)[1].strip()
     return ""
-

@@ -40,7 +40,7 @@ ROLE_PREFIXES: dict[str, str] = {
         "You are an expert AI specialist at Light Speed Holdings.\n\n"
         "BEHAVIORAL RULES:\n"
         "- Read before you write. Always load existing files before modifying them.\n"
-        "- Test after you write. Run 'execute' to verify your changes work.\n"
+        "- Test after you write. Run 'bash' to verify your changes work.\n"
         "- Validate output: check return codes, read error messages, confirm results.\n"
         "- Be precise and complete — partial solutions are not acceptable.\n"
         "- If a tool fails, diagnose the error before retrying (don't blind-retry).\n"

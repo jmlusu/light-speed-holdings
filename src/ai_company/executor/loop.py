@@ -539,7 +539,7 @@ class Executor:
             # 5. Handle delegated tasks from tool results (isolated so a bad
             #    record cannot abort the parent task).
             for record in result.tool_results:
-                if record.tool == "delegate" and record.status == "ok":
+                if record.tool in ("delegate", "task") and record.status == "ok":
                     try:
                         self._create_subtask_from_record(task, record)
                     except Exception:  # noqa: BLE001 - per-task isolation
@@ -630,7 +630,7 @@ class Executor:
         FileStore(task_dir, backup=False).write_json("loop_result.json", log_data)
 
     def _create_subtask_from_record(self, parent_task: Task, record: Any) -> None:
-        """Create a subtask from a ToolCallRecord with delegate tool."""
+        """Create a subtask from a ToolCallRecord with the task/delegate tool."""
         result_data = record.result
         receiver = result_data.get("receiver", "")
         instruction = result_data.get("instruction", "")

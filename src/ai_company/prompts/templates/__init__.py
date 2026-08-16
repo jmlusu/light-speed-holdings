@@ -79,7 +79,7 @@ JSON field descriptions:
 FORMAT_COMPACT = """\
 Respond with JSON only:
 {{"thought": "...", "plan": [...], "result": "...", "done": false/true}}
-Tools: read, write, execute, grep, list, delegate, code_interpreter."""
+Tools: read, edit, grep, list, bash, webfetch, task."""
 
 # ---------------------------------------------------------------------------
 # Error handling template — instructions for recovering from tool failures
@@ -100,9 +100,9 @@ When a tool returns an error or is denied:
 5. **Report failures in your result** — never silently skip errors.
 
 Example recovery flow:
-- write → "File not found" → read parent dir → find correct path → write again
-- execute → returncode != 0 → read stderr → fix code → execute again
-- delegate → "denied" → report to supervisor with reason"""
+- edit → "File not found" → read parent dir → find correct path → edit again
+- bash → returncode != 0 → read stderr → fix code → run again
+- task → "denied" → report to supervisor with reason"""
 
 # ---------------------------------------------------------------------------
 # Escalation template — when and how to escalate to humans
@@ -138,19 +138,19 @@ TOOL_USAGE_TEMPLATE = """\
 ## Tool Usage Rules
 
 1. **read** — Load file contents before editing. Args: {{"path": "relative/path"}}
-2. **write** — Create or overwrite files. Args: {{"path": "relative/path", "content": "full file content"}}
-3. **execute** — Run shell commands. Args: {{"command": "command string"}}
+2. **edit** — Create or overwrite files. Args: {{"path": "relative/path", "content": "full file content"}}
+3. **bash** — Run shell commands. Args: {{"command": "command string"}}
    - Only allowed commands (python, pytest, git, ruff, etc.)
    - No shell metacharacters (|, ;, &&) — use separate steps instead.
 4. **grep** — Search files by pattern. Args: {{"pattern": "regex", "path": "dir/"}}
 5. **list** — List directory contents. Args: {{"path": "dir/"}}
-6. **delegate** — Assign subtask. Args: {{"receiver": "agent-name", "instruction": "..."}}
-7. **code_interpreter** — Run inline Python. Args: {{"code": "python code"}}
+6. **task** — Assign subtask. Args: {{"receiver": "agent-name", "instruction": "..."}}
+7. **webfetch** — Fetch a URL. Args: {{"url": "https://..."}}
 
 Critical rules:
-- Always 'read' before 'write' when modifying existing files.
-- Always 'execute' tests after writing code.
-- For 'delegate', be specific about expected output format."""
+- Always 'read' before 'edit' when modifying existing files.
+- Always run tests with 'bash' after writing code.
+- For 'task', be specific about expected output format."""
 
 # ---------------------------------------------------------------------------
 # Briefing template — daily executive briefing prompt

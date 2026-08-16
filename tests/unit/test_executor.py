@@ -82,8 +82,9 @@ class TestSpecParser:
         assert "Build a REST API" in prompt
 
     def test_parse_v2_permission_only(self, tmp_path: Path) -> None:
-        """A v2 spec with only a `permission` block (no `tools`) must still
-        derive the executor's allowed-tool list."""
+        """A v2 spec with only a `permission` block (no `tools`) must derive
+        the executor's allowed-tool list using the canonical runtime tool
+        vocabulary only (issue #87)."""
         spec = """\
 ---
 description: OpenCode v2 style spec, no tools key.
@@ -132,9 +133,11 @@ Stay precise.
         assert ctx.name == "co-agent"
         assert ctx.type == "Specialist"
         assert "read" in ctx.tools
-        assert "write" in ctx.tools  # edit -> write
-        assert "execute" in ctx.tools  # bash -> execute
-        assert "delegate" in ctx.tools  # task -> delegate
+        assert "edit" in ctx.tools
+        assert "bash" in ctx.tools
+        assert "task" in ctx.tools
+        # Legacy / removed names must never leak into the tool list.
+        assert not {"write", "execute", "delegate", "code_interpreter"} & set(ctx.tools)
         assert "tools" not in ctx.permission
         assert "## Available Tools" in build_system_prompt_typed(ctx)
 
@@ -657,6 +660,62 @@ class TestExecutorLoop:
         assert len(updated) == 2
 
         subtask = [t for t in updated if t["id"] != "task-deleg-001"][0]
+        assert subtask["sender_id"] == "test-agent"
+        assert subtask["receiver_id"] == "lead-backend"
+        assert subtask["instruction"] == "Build REST API"
+        assert subtask["status"] == "pending"
+
+    def test_process_task_creates_subtasks_from_canonical_task_records(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A ToolCallRecord using the canonical ``task`` tool (not the legacy
+        ``delegate``) must also create a subtask (issue #87)."""
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+        _create_agent_spec(tmp_path, "lead-backend")
+
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        task = {
+            "id": "task-task-001",
+            "sender_id": "human-ceo",
+            "receiver_id": "test-agent",
+            "instruction": "Build API and frontend",
+            "status": "pending",
+            "priority": "medium",
+        }
+        inbox.write_text(json.dumps([task]), encoding="utf-8")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        task_record = _FakeToolCallRecord(
+            step=1,
+            tool="task",
+            status="ok",
+            result={"receiver": "lead-backend", "instruction": "Build REST API"},
+            iteration=1,
+        )
+        mock_result = _FakeLoopResult(
+            final_response="Delegated to lead-backend.",
+            iterations=1,
+            tool_results=[task_record],
+            done=True,
+        )
+        executor.agent_loop.run = MagicMock(return_value=mock_result)
+
+        executor.tick()
+
+        updated = json.loads(inbox.read_text(encoding="utf-8"))
+        assert len(updated) == 2
+
+        subtask = [t for t in updated if t["id"] != "task-task-001"][0]
         assert subtask["sender_id"] == "test-agent"
         assert subtask["receiver_id"] == "lead-backend"
         assert subtask["instruction"] == "Build REST API"

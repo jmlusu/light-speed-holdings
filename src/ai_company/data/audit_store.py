@@ -179,7 +179,11 @@ class AuditStore:
     # ── Log rotation / archival ───────────────────────────────────────
 
     def archive_before(self, cutoff_date: str, archive_path: str | Path) -> int:
-        """Export events older than *cutoff_date* to a JSON file, then delete them.
+        """Export events on or before *cutoff_date* to a JSON file, then delete them.
+
+        The export and delete use the same inclusive boundary, so an event at
+        exactly ``cutoff_date`` is archived exactly once and never re-exported
+        on a subsequent run.
 
         Returns the number of events archived.
         """
@@ -202,9 +206,9 @@ class AuditStore:
         with open(archive, "w", encoding="utf-8") as f:
             json.dump(combined, f, indent=2, default=str)
 
-        # Delete archived events
+        # Delete archived events (inclusive, matching the export boundary)
         self._db.execute(
-            "DELETE FROM audit_events WHERE timestamp < ?",
+            "DELETE FROM audit_events WHERE timestamp <= ?",
             (cutoff_date,),
         )
         self._db.commit()
