@@ -588,7 +588,7 @@ class ToolRunner:
                 "command": command,
                 "error": (
                     "Shell metacharacters (| & ; > < $ ` \\) are not allowed. "
-                    "Express pipelines as separate 'execute' steps."
+                    "Express pipelines as separate 'bash' steps."
                 ),
             }
 
