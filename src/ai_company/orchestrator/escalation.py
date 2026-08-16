@@ -7,7 +7,7 @@ Security hardening:
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 
@@ -35,7 +35,7 @@ class EscalationEvent(BaseModel):
     from_agent: str
     to_agent: str
     reason: str
-    timestamp: datetime = Field(default_factory=datetime.now)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     resolved: bool = False
 
 
