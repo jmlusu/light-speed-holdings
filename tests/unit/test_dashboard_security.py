@@ -156,6 +156,9 @@ class TestAPIKeyAuth:
         """POST requests with correct API key should succeed."""
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_ADMIN_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_APPROVE_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_RUN_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
         self._setup_minimal_data(tmp_path)
@@ -177,6 +180,9 @@ class TestAPIKeyAuth:
         """GET requests with correct API key should succeed."""
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_ADMIN_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_APPROVE_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_RUN_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
         self._setup_minimal_data(tmp_path)
