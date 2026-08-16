@@ -47,7 +47,7 @@ from ai_company.llm.cost_tracker import CostTracker
 from ai_company.memory.consolidation import ConsolidationConfig, ConsolidationScheduler
 from ai_company.memory.integration import init_memory, recall_context, record_task_outcome
 from ai_company.models.task import Task, TaskPriority, TaskStatus
-from ai_company.orchestrator.approval import ApprovalGate
+from ai_company.orchestrator.approval import ApprovalGate, ApprovalStatus
 from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.orchestrator.scheduler import Scheduler
 from ai_company.store.file_store import FileStore
@@ -315,54 +315,108 @@ class Executor:
         retrying until max iterations.  Rejected tasks are marked FAILED.
         Still-pending requests are left parked — the executor does NOT block
         waiting for them.
+
+        Two sources of parked tasks are reconciled against the SSOT approvals
+        store (ticket #57):
+
+        - **Index-backed**: ``task_id -> request_id`` entries loaded from
+          ``pending_approvals.json``.  Entries whose task no longer exists in
+          the inbox are pruned so they cannot linger pinning a stale request.
+        - **Index-lost (healing)**: an inbox task in ``WAITING_APPROVAL``
+          with no index entry (crash before the index persisted, or a
+          rotated/reset index) is healed by looking up the latest approval
+          decision for its ``task_id`` directly in the approvals store.
         """
         resumed = 0
+        inbox_tasks = self.bus.get_all_tasks()
+        inbox_ids = {t.id for t in inbox_tasks}
+        # Tasks acted on in pass 1 must not be re-healed by pass 2 (they are
+        # popped from the index by the time pass 2 runs, so the index check
+        # alone would let them through).
+        acted_this_tick: set[str] = set()
+
+        # Pass 1 — index-backed entries.
         for task_id, request_id in list(self._pending_approvals.items()):
+            if task_id not in inbox_ids:
+                logger.info(
+                    "Pruning stale pending-approval index entry for task %s "
+                    "(task no longer exists in the inbox).",
+                    task_id,
+                )
+                self._pending_approvals.pop(task_id, None)
+                self._persist_pending_approvals()
+                continue
+
             decision = self.hitl.resume_approved(request_id)
             if decision is None:
                 continue  # still awaiting human decision — stay parked
 
             resumed += 1
+            acted_this_tick.add(task_id)
             self._pending_approvals.pop(task_id, None)
             self._persist_pending_approvals()
             task = self.bus.get_task_by_id(task_id)
             if task is None:
                 continue
 
-            if decision and self.hitl.is_metacharacter_blocked(request_id):
-                # GAP-016 / ticket #70: the human approved a bash/execute
-                # command containing shell metacharacters that the executor
-                # will ALWAYS reject — even with preapproved=True.  Re-running
-                # the loop would silently retry the same un-runnable command
-                # until max iterations (a generic timeout).  Fail fast with an
-                # explicit message so the operator rewrites and re-dispatches.
-                logger.warning(
-                    "HITL approved an un-runnable command for task %s "
-                    "(shell metacharacters) — failing fast instead of retrying.",
-                    task_id,
-                )
-                self._complete_task(
-                    task,
-                    TaskStatus.FAILED,
-                    "HITL approval cannot be honored: the approved command contains "
-                    "shell metacharacters the executor cannot run (GAP-016). Rewrite "
-                    "the command as separate tool steps and re-dispatch.",
-                )
-                self.stats.tasks_failed += 1
-                continue
-
             if decision:
-                logger.info("HITL approved for task %s — resuming.", task_id)
-                # Move the parked task back to pending so the atomic claim
-                # can re-acquire ownership, then re-run it executing the
-                # gated step directly (preapproved).
-                self.bus.update_task_status(task.id, TaskStatus.PENDING.value)
-                self._process_task(task, preapproved=True)
+                self._resume_approved_task(task, request_id)
             else:
                 logger.info("HITL rejected for task %s — failing.", task_id)
                 self._complete_task(task, TaskStatus.FAILED, "Human approval denied")
                 self.stats.tasks_failed += 1
+
+        # Pass 2 — SSOT healing for parked tasks whose index entry was lost.
+        parked_tasks = [
+            t for t in inbox_tasks if t.status == TaskStatus.WAITING_APPROVAL.value
+        ]
+        for task in parked_tasks:
+            if task.id in self._pending_approvals or task.id in acted_this_tick:
+                continue
+            request = self.hitl.gate.get_latest_request_for_task(task.id)
+            if request is None or request.status == ApprovalStatus.PENDING:
+                continue  # no decision recorded yet — stay parked
+
+            resumed += 1
+            if request.status == ApprovalStatus.APPROVED:
+                self._resume_approved_task(task, request.id)
+            else:
+                logger.info(
+                    "HITL %s for task %s — failing (index lost).",
+                    request.status.value,
+                    task.id,
+                )
+                self._complete_task(task, TaskStatus.FAILED, "Human approval denied")
+                self.stats.tasks_failed += 1
         return resumed
+
+    def _resume_approved_task(self, task: Task, request_id: str) -> None:
+        """Re-process a parked task whose HITL request was approved.
+
+        Unless the approved command is flagged ``metacharacter_blocked``
+        (GAP-016 / #70), the task is moved back to ``pending`` so the atomic
+        claim re-acquires ownership, then re-run with ``preapproved=True`` so
+        the previously gated step executes directly.
+        """
+        if self.hitl.is_metacharacter_blocked(request_id):
+            logger.warning(
+                "HITL approved an un-runnable command for task %s "
+                "(shell metacharacters) — failing fast instead of retrying.",
+                task.id,
+            )
+            self._complete_task(
+                task,
+                TaskStatus.FAILED,
+                "HITL approval cannot be honored: the approved command contains "
+                "shell metacharacters the executor cannot run (GAP-016). Rewrite "
+                "the command as separate tool steps and re-dispatch.",
+            )
+            self.stats.tasks_failed += 1
+            return
+
+        logger.info("HITL approved for task %s — resuming.", task.id)
+        self.bus.update_task_status(task.id, TaskStatus.PENDING.value)
+        self._process_task(task, preapproved=True)
 
     def _park_task(self, task: Task, parked: HITLParked) -> None:
         """Park a task in WAITING_APPROVAL and record its HITL request id.

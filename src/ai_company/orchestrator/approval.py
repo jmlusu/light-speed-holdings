@@ -28,6 +28,7 @@ store, not the ledger:
 from __future__ import annotations
 
 import logging
+import threading
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from typing import Any, List, Optional
@@ -116,6 +117,10 @@ class ApprovalGate:
         self._store = FileStore(_path_parent(config_path), backup=True)
         self._config_name = _path_name(config_path)
         self.retain_days = retain_days
+        # Reentrant lock: the HITL gate's poll thread reloads this gate from
+        # disk concurrently with the executor's approve/reject/resume calls,
+        # so every mutation and every reload must be mutually exclusive.
+        self._lock = threading.RLock()
         self.requests: List[ApprovalRequest] = []
         self._load_config()
 
@@ -128,7 +133,15 @@ class ApprovalGate:
         # Load is idempotent: a reload must replace the in-memory state with
         # what is on disk, never append to it (otherwise every reload
         # duplicates every request persisted in the YAML).
-        self.requests = []
+        #
+        # The replacement list is built in a local and assigned atomically at
+        # the end.  Wiping ``self.requests`` first created a window where a
+        # concurrent reload (e.g. the HITL gate's poll thread) observed an
+        # empty request list while the lock-guarded disk read was in flight,
+        # making ``get_request``/``approve`` miss requests that existed on
+        # disk.  Callers hold :attr:`_lock` so mutations and reloads are
+        # serialized.
+        requests: List[ApprovalRequest] = []
         data = self._store.read_yaml(self._config_name)
         if data and isinstance(data, dict):
             stored_version = data.get("version", 0)
@@ -142,7 +155,7 @@ class ApprovalGate:
                 )
             for record in data.get("requests", []):
                 try:
-                    self.requests.append(ApprovalRequest(**record))
+                    requests.append(ApprovalRequest(**record))
                 except Exception:  # noqa: BLE001 - one bad record must not sink the store
                     logger.warning(
                         "Skipping invalid approval record in %s: %s",
@@ -150,6 +163,7 @@ class ApprovalGate:
                         record.get("id", "<no id>"),
                         exc_info=True,
                     )
+        self.requests = requests
 
     def _save_config(self):
         data = {
@@ -164,9 +178,35 @@ class ApprovalGate:
         Call this after external writes (e.g. from another process or the
         dashboard) to ensure the in-memory state reflects the latest YAML.
         """
-        self._load_config()
+        with self._lock:
+            self._load_config()
 
     def request_approval(
+        self,
+        request_id: str,
+        task_id: str,
+        agent_id: str,
+        action: str,
+        description: str,
+        expires_in_minutes: int = 60,
+        tier: int = 2,
+        required_approvers: int = 1,
+        metacharacter_blocked: bool = False,
+    ) -> ApprovalRequest:
+        with self._lock:
+            return self._request_approval_locked(
+                request_id=request_id,
+                task_id=task_id,
+                agent_id=agent_id,
+                action=action,
+                description=description,
+                expires_in_minutes=expires_in_minutes,
+                tier=tier,
+                required_approvers=required_approvers,
+                metacharacter_blocked=metacharacter_blocked,
+            )
+
+    def _request_approval_locked(
         self,
         request_id: str,
         task_id: str,
@@ -207,46 +247,48 @@ class ApprovalGate:
         return request
 
     def approve(self, request_id: str, approved_by: str, notes: Optional[str] = None) -> bool:
-        request = next((r for r in self.requests if r.id == request_id), None)
-        if not request or request.status != ApprovalStatus.PENDING:
-            return False
+        with self._lock:
+            request = next((r for r in self.requests if r.id == request_id), None)
+            if not request or request.status != ApprovalStatus.PENDING:
+                return False
 
-        if approved_by not in request.approved_by_list:
-            request.approved_by_list.append(approved_by)
+            if approved_by not in request.approved_by_list:
+                request.approved_by_list.append(approved_by)
 
-        if len(request.approved_by_list) >= request.required_approvers:
-            request.status = ApprovalStatus.APPROVED
+            if len(request.approved_by_list) >= request.required_approvers:
+                request.status = ApprovalStatus.APPROVED
+                request.responded_at = _now_utc()
+                request.response_by = approved_by
+                request.notes = notes
+
+            self._save_config()
+            if request.status == ApprovalStatus.APPROVED:
+                _audit_approval_event(
+                    AuditEventType.APPROVAL_RESOLVED,
+                    request,
+                    decision="approved",
+                    approved_by=approved_by,
+                )
+            return True
+
+    def reject(self, request_id: str, rejected_by: str, notes: Optional[str] = None) -> bool:
+        with self._lock:
+            request = next((r for r in self.requests if r.id == request_id), None)
+            if not request or request.status != ApprovalStatus.PENDING:
+                return False
+
+            request.status = ApprovalStatus.REJECTED
             request.responded_at = _now_utc()
-            request.response_by = approved_by
+            request.response_by = rejected_by
             request.notes = notes
-
-        self._save_config()
-        if request.status == ApprovalStatus.APPROVED:
+            self._save_config()
             _audit_approval_event(
                 AuditEventType.APPROVAL_RESOLVED,
                 request,
-                decision="approved",
-                approved_by=approved_by,
+                decision="rejected",
+                rejected_by=rejected_by,
             )
-        return True
-
-    def reject(self, request_id: str, rejected_by: str, notes: Optional[str] = None) -> bool:
-        request = next((r for r in self.requests if r.id == request_id), None)
-        if not request or request.status != ApprovalStatus.PENDING:
-            return False
-
-        request.status = ApprovalStatus.REJECTED
-        request.responded_at = _now_utc()
-        request.response_by = rejected_by
-        request.notes = notes
-        self._save_config()
-        _audit_approval_event(
-            AuditEventType.APPROVAL_RESOLVED,
-            request,
-            decision="rejected",
-            rejected_by=rejected_by,
-        )
-        return True
+            return True
 
     def expire(self, request_id: str) -> bool:
         """Expire a single pending request whose deadline has passed.
@@ -255,25 +297,26 @@ class ApprovalGate:
         unless the request exists, is still pending, and is actually past its
         ``expires_at`` deadline.
         """
-        request = next((r for r in self.requests if r.id == request_id), None)
-        if not request or request.status != ApprovalStatus.PENDING:
-            return False
-        if request.expires_at is None:
-            return False
-        expires_utc = _to_utc(request.expires_at)
-        assert expires_utc is not None
-        if expires_utc >= _now_utc():
-            return False
+        with self._lock:
+            request = next((r for r in self.requests if r.id == request_id), None)
+            if not request or request.status != ApprovalStatus.PENDING:
+                return False
+            if request.expires_at is None:
+                return False
+            expires_utc = _to_utc(request.expires_at)
+            assert expires_utc is not None
+            if expires_utc >= _now_utc():
+                return False
 
-        request.status = ApprovalStatus.EXPIRED
-        request.responded_at = _now_utc()
-        self._save_config()
-        _audit_approval_event(
-            AuditEventType.APPROVAL_RESOLVED,
-            request,
-            decision="expired",
-        )
-        return True
+            request.status = ApprovalStatus.EXPIRED
+            request.responded_at = _now_utc()
+            self._save_config()
+            _audit_approval_event(
+                AuditEventType.APPROVAL_RESOLVED,
+                request,
+                decision="expired",
+            )
+            return True
 
     def sweep_expired(self) -> int:
         """Transition every expired pending request to ``EXPIRED`` (Sprint 7).
@@ -288,34 +331,35 @@ class ApprovalGate:
         the next sweep retries.  Each durable expiry is written to the audit
         trail through the same hook the HITL gate uses (GAP-008).
         """
-        now = _now_utc()
-        expired = []
-        for r in self.requests:
-            if r.status != ApprovalStatus.PENDING or r.expires_at is None:
-                continue
-            expires_utc = _to_utc(r.expires_at)
-            assert expires_utc is not None
-            if expires_utc < now:
-                expired.append(r)
-        if not expired:
-            return 0
+        with self._lock:
+            now = _now_utc()
+            expired = []
+            for r in self.requests:
+                if r.status != ApprovalStatus.PENDING or r.expires_at is None:
+                    continue
+                expires_utc = _to_utc(r.expires_at)
+                assert expires_utc is not None
+                if expires_utc < now:
+                    expired.append(r)
+            if not expired:
+                return 0
 
-        originals = {r.id: (r.status, r.responded_at) for r in expired}
-        for request in expired:
-            request.status = ApprovalStatus.EXPIRED
-            request.responded_at = now
-
-        try:
-            self._save_config()
-        except Exception:  # noqa: BLE001 - sweep is best-effort
-            logger.exception("Failed to persist approval expiry sweep; will retry next interval")
+            originals = {r.id: (r.status, r.responded_at) for r in expired}
             for request in expired:
-                request.status, request.responded_at = originals[request.id]
-            return 0
+                request.status = ApprovalStatus.EXPIRED
+                request.responded_at = now
 
-        for request in expired:
-            _audit_approval_expiry(request)
-        return len(expired)
+            try:
+                self._save_config()
+            except Exception:  # noqa: BLE001 - sweep is best-effort
+                logger.exception("Failed to persist approval expiry sweep; will retry next interval")
+                for request in expired:
+                    request.status, request.responded_at = originals[request.id]
+                return 0
+
+            for request in expired:
+                _audit_approval_expiry(request)
+            return len(expired)
 
     def get_pending_requests(self) -> List[ApprovalRequest]:
         now = _now_utc()
@@ -378,41 +422,41 @@ class ApprovalGate:
         :meth:`sweep_expired`: if persistence fails, the in-memory requests
         are restored and the exception logged so the next run retries.
         """
-        protected = protected_request_ids or set()
-        window = retain_days if retain_days is not None else self.retain_days
-        if window <= 0:
-            return 0
-        cutoff = _now_utc() - timedelta(days=window)
-        terminal = {ApprovalStatus.APPROVED, ApprovalStatus.REJECTED, ApprovalStatus.EXPIRED}
-        candidates = []
-        for r in self.requests:
-            if r.status not in terminal or r.responded_at is None or r.id in protected:
-                continue
-            responded_utc = _to_utc(r.responded_at)
-            assert responded_utc is not None
-            if responded_utc < cutoff:
-                candidates.append(r)
-        if not candidates:
-            return 0
+        with self._lock:
+            protected = protected_request_ids or set()
+            window = retain_days if retain_days is not None else self.retain_days
+            if window <= 0:
+                return 0
+            cutoff = _now_utc() - timedelta(days=window)
+            terminal = {ApprovalStatus.APPROVED, ApprovalStatus.REJECTED, ApprovalStatus.EXPIRED}
+            candidates = []
+            for r in self.requests:
+                if r.status not in terminal or r.responded_at is None or r.id in protected:
+                    continue
+                responded_utc = _to_utc(r.responded_at)
+                assert responded_utc is not None
+                if responded_utc < cutoff:
+                    candidates.append(r)
+            if not candidates:
+                return 0
 
-        removed_ids = {r.id for r in candidates}
-        self.requests = [r for r in self.requests if r.id not in removed_ids]
-        try:
-            self._save_config()
-        except Exception:  # noqa: BLE001 - archival is best-effort
-            logger.exception("Failed to persist approval archival; will retry next interval")
-            self.requests = []
-            self._load_config()
-            return 0
+            removed_ids = {r.id for r in candidates}
+            self.requests = [r for r in self.requests if r.id not in removed_ids]
+            try:
+                self._save_config()
+            except Exception:  # noqa: BLE001 - archival is best-effort
+                logger.exception("Failed to persist approval archival; will retry next interval")
+                self._load_config()
+                return 0
 
-        for request in candidates:
-            _audit_approval_event(
-                AuditEventType.RETENTION_APPLIED,
-                request,
-                reason="approval_retention_archive",
-                retained_days=window,
-            )
-        return len(candidates)
+            for request in candidates:
+                _audit_approval_event(
+                    AuditEventType.RETENTION_APPLIED,
+                    request,
+                    reason="approval_retention_archive",
+                    retained_days=window,
+                )
+            return len(candidates)
 
 
 def _path_parent(config_path: str) -> str:
