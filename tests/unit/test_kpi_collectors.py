@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -632,3 +633,61 @@ class TestKpiSnapshotFilename:
 
         path = kpi_collector.save_snapshot({"departments": {}}, output_dir=tmp_path / "snaps")
         assert path.name == "snapshot-20260814-093015.json"
+
+
+# ---------------------------------------------------------------------------
+# GAP-085: collectors must log (not silently swallow) read/parse failures
+# ---------------------------------------------------------------------------
+
+
+class TestCollectorLogging:
+    """Malformed operational files must produce a warning and a KPI result,
+    never a silent pass (issue #85)."""
+
+    def test_operations_logs_warning_on_corrupt_dlq(
+        self, empty_project: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        (empty_project / ".opencode").mkdir()
+        (empty_project / ".opencode" / "dead_letter.json").write_text(
+            "{not valid json", encoding="utf-8"
+        )
+
+        from ai_company.dashboard.kpis.operations import OperationsKPICollector
+
+        with caplog.at_level(logging.WARNING):
+            result = OperationsKPICollector(empty_project).collect()
+
+        assert result["kpis"]["dlq_total_entries"]["current"] == 0
+        assert any("dead_letter" in r.message for r in caplog.records)
+
+    def test_customer_success_logs_warning_on_unparseable_sop_date(
+        self, empty_project: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        sop = empty_project / "docs" / "sop" / "customer-success-sop.md"
+        sop.parent.mkdir(parents=True)
+        # "Feb" matches the regex but is not the full "%B" month name expected
+        # by strptime, so parsing fails and the collector must log a warning.
+        sop.write_text("## Header\n\nLast Updated: Feb 2026\n", encoding="utf-8")
+
+        from ai_company.dashboard.kpis.customer_success import CustomerSuccessKPICollector
+
+        with caplog.at_level(logging.WARNING):
+            result = CustomerSuccessKPICollector(empty_project).collect()
+
+        assert result["kpis"]["sop_current"]["current"] == 0
+        assert any("SOP" in r.message for r in caplog.records)
+
+    def test_legal_logs_warning_on_unparseable_sop_date(
+        self, empty_project: Path, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        sop = empty_project / "docs" / "sop" / "legal-sop.md"
+        sop.parent.mkdir(parents=True)
+        sop.write_text("## Header\n\nLast Updated: Feb 2026\n", encoding="utf-8")
+
+        from ai_company.dashboard.kpis.legal import LegalKPICollector
+
+        with caplog.at_level(logging.WARNING):
+            result = LegalKPICollector(empty_project).collect()
+
+        assert result["kpis"]["sop_current"]["current"] == 0
+        assert any("SOP" in r.message for r in caplog.records)

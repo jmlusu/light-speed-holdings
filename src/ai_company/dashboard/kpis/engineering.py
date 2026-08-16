@@ -2,16 +2,45 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from typing import Any
 
 from ai_company.dashboard.kpis.base import KPICollector
+
+logger = logging.getLogger(__name__)
 
 
 class EngineeringKPICollector(KPICollector):
     """Collects live metrics for the Engineering / Technology department."""
 
     department = "engineering"
+
+    def _check_sop_status(self) -> tuple[bool, float]:
+        """Check if Engineering SOP exists and is current (updated within 90 days)."""
+        sop_path = self.root / "docs" / "sop" / "engineering-sop.md"
+        if not sop_path.exists():
+            return False, 0.0
+        try:
+            import re
+
+            content = sop_path.read_text(encoding="utf-8")
+            match = re.search(r"Last Updated:\s*([A-Za-z]+\s+\d{4})", content)
+            if match:
+                from datetime import datetime as dt
+
+                updated_dt = dt.strptime(match.group(1), "%B %Y")
+                now = datetime.now()
+                days_old = (now - updated_dt).days
+                is_current = days_old <= 90
+                return is_current, round((90 - days_old) / 90 * 100, 1) if is_current else 0.0
+        except (OSError, ValueError, AttributeError) as exc:
+            logger.warning(
+                "Failed to parse Engineering SOP freshness (%s): %s",
+                sop_path,
+                exc,
+            )
+        return False, 0.0
 
     def collect(self) -> dict[str, Any]:
         tasks = self._tasks_from_sqlite()
@@ -37,6 +66,9 @@ class EngineeringKPICollector(KPICollector):
 
         scheduled = scheduler.get("tasks", [])
 
+        # SOP Compliance
+        sop_current, sop_freshness = self._check_sop_status()
+
         return {
             "department": self.department,
             "collected_at": datetime.now().isoformat(),
@@ -56,5 +88,8 @@ class EngineeringKPICollector(KPICollector):
                 ),
                 "total_tasks": self._kpi(total, None, "count"),
                 "scheduled_tasks": self._kpi(len(scheduled), None, "count"),
+                # SOP Compliance
+                "sop_current": self._kpi(1 if sop_current else 0, 1, "bool"),
+                "sop_freshness_pct": self._kpi(sop_freshness, 100, "%"),
             },
         }
