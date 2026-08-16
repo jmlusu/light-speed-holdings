@@ -125,6 +125,10 @@ class ApprovalGate:
         return SCHEMA_VERSION
 
     def _load_config(self):
+        # Load is idempotent: a reload must replace the in-memory state with
+        # what is on disk, never append to it (otherwise every reload
+        # duplicates every request persisted in the YAML).
+        self.requests = []
         data = self._store.read_yaml(self._config_name)
         if data and isinstance(data, dict):
             stored_version = data.get("version", 0)
