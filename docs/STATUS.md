@@ -4,9 +4,13 @@
 
 ## Last Updated
 
-2026-08-13
+2026-08-17
 
 ## Current State
+
+- **Phase B: Async Approval Engine (2026-08-17, shipped)**: Implemented suspend-to-disk for HITL-parked tasks (issue #42, T9 requirement). `SuspendStore` persists agent loop state (conversation history, iteration metadata, cost accumulators) to `.opencode/suspended_states/{task_id}.json` via atomic FileStore writes. `AgentLoop.run()` restores from `SuspendedState` on resume, continuing from the parked iteration instead of re-executing from scratch. `ApprovalNotifier` fires WebSocket broadcasts immediately on park + optional HMAC-signed webhook POST (config: `company/config/webhooks.yaml`). 30-day retention with daemon governance sweep. ADR-017 documented. 28 new tests (17 SuspendStore + 11 ApprovalNotifier), all passing. Gates: ruff/mypy clean, 1743 tests passing (1 pre-existing doc failure). ECL archived as `harness/changes/archive/2026-08-17-phase-b-async-approval-engine-42`.
+
+- **J.A.R.V.I.S. Theme System (2026-08-17, shipped)**: Implemented the Control Plane theme across the entire CEO dashboard. CSS custom property design tokens (`control-plane-theme.css`), self-hosted Rajdhani + JetBrains Mono fonts, `.jarvis-glass` panel treatment, `.chrome-scanline` header texture, status-pulse keyframes, token-derived chart palette via `getComputedStyle`. All 7 content templates + base.html migrated from `surface-*`/`brand-*` to `jarvis-*` tokens. CSP unchanged. `prefers-reduced-motion` respected. ECL archived as `harness/changes/archive/2026-08-17-implement-j-a-r-v-i-s-theme-system-105`. Gates: ruff/mypy clean, 38 dashboard tests passing. Parent issue #105. Blocked by #101 (visual-language decision, CLOSED) and #104 (shell prototype, CLOSED).
 
 - **v0.5.0 release (2026-08-13, shipped)**: Post-Sprint-9 hardening — dashboard RBAC (ADR-012, `src/ai_company/security/rbac.py`), SQLite-first storage experiment retired (ADR-011 superseded), workspace artifacts archived (issue #10), planning docs reconciled, CI version-check de-flaked, dependabot deps merged (#2 #3 #4 #5 #21), release pipeline fixes (Docker COPY of untracked `orchestrator/` removed, PyPI trusted-publisher config pending on pypi.org). Tagged `v0.5.0` (commit `89b20ba`, pushed with main), GitHub release published with wheel+sdist, final main CI green. See `Remaining Work` below.
 - **Sprint 9 (2026-08-13) Complete**: Business architecture & master service catalog (Phase 1+2), 131-agent positioning — external messaging, strategic brief, agent-facing standards (Phase 3), recurring revenue engine — 8 recurring products, conversion framework, enterprise payment terms (Phase 4). Commits `9439316`, `77a2d08`, `5998ea9`. Plus ADR-010 (T1 event-bus alignment with report-only MessageBus perf benchmark) and ADR-011 (SQLite-first storage mirror, later retired in `83b08bb`).
@@ -48,7 +52,7 @@
 - **HITLGate**: non-blocking via `concurrent.futures.Future` (`request_and_wait`).
 - **Dashboard**: `app.py` has `X-API-Key` auth + configurable CORS. `ws.py` has broadcast functions (task/KPI/alert/escalation).
 - **Escalation**: events persisted to YAML via `_save_config()` / `_load_config()`.
-- **Tests**: 1878 tests passing (0 failures) — all green as of 2026-08-13.
+- **Tests**: 1743 tests passing (1 pre-existing doc failure) — as of 2026-08-17.
 
 ## Organization Expansion (2026-07-21)
 
@@ -73,7 +77,7 @@
 
 - **ruff**: ✅ Clean (0 errors) — as of 2026-08-13.
 - **mypy**: ✅ Clean (0 errors) — as of 2026-08-13.
-- **pytest**: ✅ 1878 tests passing — as of 2026-08-13.
+- **pytest**: ✅ 1743 tests passing — as of 2026-08-17.
 - **Coverage**: ✅ 78.12% (gate: 72%) — as of 2026-08-13.
 - **Dead code**: Removed 5 one-time bootstrap scripts
 
@@ -111,6 +115,8 @@
 
 ## Recent Work
 
+- **2026-08-17**: Phase B: Async Approval Engine (#42, T9) — `SuspendStore` persists agent loop state to `.opencode/suspended_states/{task_id}.json` on HITL park; `AgentLoop.run()` restores from `SuspendedState` on resume (conversation history + iteration metadata preserved, no re-execution from scratch). `ApprovalNotifier` fires WebSocket broadcast + optional HMAC-signed webhook POST (config: `company/config/webhooks.yaml`). 30-day retention with daemon sweep. ADR-017. 28 new tests. Gates: ruff/mypy clean, 1743 tests passing. ECL archived as `harness/changes/archive/2026-08-17-phase-b-async-approval-engine-42`. Also parked #40 (OTel tracing) as pending.
+- **2026-08-17**: J.A.R.V.I.S. Theme System COMPLETE — Control Plane theme shipped across CEO dashboard. `control-plane-theme.css` (CSS custom properties, `.jarvis-glass`, `.chrome-scanline`, status-pulse keyframes, `@font-face`), self-hosted Rajdhani + JetBrains Mono woff2 fonts, Tailwind `jarvis.*` tokens, token-derived chart palette via `getComputedStyle`. All 7 content templates + base.html migrated from `surface-*`/`brand-*` to `jarvis-*`. CSP unchanged, `prefers-reduced-motion` respected. ECL archived as `harness/changes/archive/2026-08-17-implement-j-a-r-v-i-s-theme-system-105`. Gates: ruff/mypy clean, 38 dashboard tests passing. Parent issue #105, blocked by #101/#104.
 - **2026-08-13**: Sprint 9 hardening + hard gates — dashboard RBAC (commit `c6f67e3`, ADR-012: role-gated write endpoints, loopback-restricted open mode), SQLite-first storage experiment retired (`83b08bb`, ADR-011 superseded), CI version-check de-flaked (`ccf1bbf`). Full suite 1878 passed, coverage 78.12%, ruff/mypy clean. Workspace artifacts archived (`docs/archive/2026-08-13-workspace-artifacts/`, issue #10). Planning docs reconciled (TASK-BOARD, BACKLOG, REMAINING-WORK-INVENTORY).
 - **2026-08-12**: Sprint 8 COMPLETE — operationalization: inbox purge, README/env setup, Malawi service catalog portfolio (4 new agents, governance blocking, SOPs, client intake CLI, legal package). Archived ECL `2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog`. v0.4.0 tagged at `3363a09`.
 - **2026-08-10**: Sprint 6 COMPLETE — audit fixes + runtime hardening. ECL archived as `harness/changes/archive/2026-08-10-audit-fixes-and-runtime-hardening`. Four commits: `3f587e9` (registry anchored to package root + lazy CLI + canonical tool vocabulary + shared operating-standards dedup, 145 files), `f4d2867` (LLM `ProviderErrorCategory` classification, circuit breaker ignores `auth`, bounded cost tracker, 9 files), `d076303` (task leases, store locking, DLQ delegation, bounded decision log, SQLite mirror fixes, 16 files), `5f32e6d` (E2E scroll tests migrated to Alpine `$data`). Gates: ruff/mypy clean (181 files), **1856 tests passing** (53 e2e deselected), `AgentGenerator().generate_all()` 127 agents / 0 errors. Documented in `docs/AUDIT-FIXES-2026-08-10.md`.

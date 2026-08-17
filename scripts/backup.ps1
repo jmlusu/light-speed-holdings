@@ -28,6 +28,18 @@
 .PARAMETER CloudPrefix
     Prefix/path within the cloud bucket. Default: 'ai-company-backups/'
 
+.PARAMETER CloudRegion
+    Cloud region (e.g., 'us-east-1') for S3. Optional.
+
+.PARAMETER BackupS3
+    Enable S3 backup mode (alias for -CloudProvider S3).
+
+.PARAMETER S3Bucket
+    S3 bucket name (alias for -CloudBucket).
+
+.PARAMETER S3Region
+    S3 region (alias for -CloudRegion).
+
 .PARAMETER DryRun
     Show what would be backed up without actually creating archives.
 
@@ -36,6 +48,7 @@
     .\scripts\backup.ps1 -RetentionDays 7
     .\scripts\backup.ps1 -CloudProvider S3 -CloudBucket my-backups-bucket
     .\scripts\backup.ps1 -CloudProvider GCS -CloudBucket my-gcs-bucket -CloudPrefix backups/
+    .\scripts\backup.ps1 -BackupS3 -S3Bucket my-backups-bucket -S3Region us-east-1
     .\scripts\backup.ps1 -DryRun
 #>
 
@@ -47,11 +60,27 @@ param(
     [string]$CloudProvider = 'None',
     [string]$CloudBucket = '',
     [string]$CloudPrefix = 'ai-company-backups/',
+    [string]$CloudRegion = '',
+    # Alias parameters for S3 (per spec T011)
+    [switch]$BackupS3,
+    [string]$S3Bucket = '',
+    [string]$S3Region = '',
     [switch]$DryRun
 )
 
 $ErrorActionPreference = "Stop"
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+
+# ── Handle alias parameters for S3 (T011) ───────────────────────
+if ($BackupS3) {
+    $CloudProvider = 'S3'
+}
+if ($S3Bucket) {
+    $CloudBucket = $S3Bucket
+}
+if ($S3Region) {
+    $CloudRegion = $S3Region
+}
 
 # ── Validate cloud parameters ───────────────────────────────────
 if ($CloudProvider -ne 'None' -and [string]::IsNullOrWhiteSpace($CloudBucket)) {
@@ -150,7 +179,11 @@ if (-not $DryRun -and $CloudProvider -ne 'None' -and $archives.Count -gt 0) {
         try {
             if ($CloudProvider -eq 'S3') {
                 Write-Host "  Uploading to s3://$CloudBucket/$cloudPath" -ForegroundColor Green
-                aws s3 cp $archivePath "s3://$CloudBucket/$cloudPath" --only-show-errors
+                $awsCmd = "aws s3 cp $archivePath `\"s3://$CloudBucket/$cloudPath`\" --only-show-errors"
+                if ($CloudRegion) {
+                    $awsCmd += " --region $CloudRegion"
+                }
+                Invoke-Expression $awsCmd
             } elseif ($CloudProvider -eq 'GCS') {
                 Write-Host "  Uploading to gs://$CloudBucket/$cloudPath" -ForegroundColor Green
                 gsutil -q cp $archivePath "gs://$CloudBucket/$cloudPath"

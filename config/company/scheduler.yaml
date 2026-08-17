@@ -1,0 +1,59 @@
+# Scheduler configuration for sustained operation.
+#
+# Defines the automated cycles that run during sustained operation.
+# These are consumed by the daemon's scheduler loop and the
+# GovernanceScheduler.
+#
+# Cadence decisions from ticket #17 / map #7 Q8b.
+scheduler:
+  cycles:
+    daily_briefing:
+      enabled: true
+      time_utc: "06:00"
+      description: "Generate daily briefing for CEO review"
+      command: "orchestrator briefing"
+      output: ".opencode/daily_briefing.md"
+    kpi_snapshot:
+      enabled: true
+      interval_minutes: 60
+      description: "Collect KPI metrics for dashboard"
+      command: "dashboard kpi snapshot"
+    governance_retention:
+      enabled: true
+      time_utc: "02:00"
+      description: "Archive resolved approvals, enforce retention policy"
+      command: "governance retention"
+    memory_consolidation:
+      enabled: true
+      time_utc: "03:00"
+      description: "Consolidate memory entries, prune stale context"
+      command: "memory consolidate"
+    escalation_review:
+      enabled: true
+      time_utc: "08:00"
+      description: "Review pending escalations, surface to CEO"
+      command: "orchestrator escalation-review"
+    weekly_cost_report:
+      enabled: true
+      day: "sunday"
+      time_utc: "18:00"
+      description: "Generate weekly cost and performance summary"
+      command: "llm usage --days 7 --json"
+      output: "results/weekly-report-{date}.json"
+
+  # Human review checkpoints
+  human_checkpoints:
+    morning_briefing:
+      time_utc: "06:30"
+      description: "CEO reviews daily briefing, overnight KPIs, pending HITL approvals"
+      includes: ["daily_briefing", "kpi_snapshot", "hitl_approvals"]
+    end_of_day_summary:
+      time_utc: "18:00"
+      description: "CEO reviews tasks completed, costs, escalations resolved"
+      includes: ["task_summary", "cost_summary", "escalation_summary"]
+
+  # Daemon intervals (overridden by CLI flags)
+  daemon:
+    governance_interval_minutes: 1440  # daily (was 60 during proof)
+    kpi_snapshot_interval_minutes: 60  # hourly (was 300s during proof)
+    health_check_interval_minutes: 5

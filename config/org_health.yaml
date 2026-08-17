@@ -1,0 +1,30 @@
+# Org Health — composite score configuration
+#
+# Bands define score → colour mapping for the dashboard.
+# Components define weighted sub-scores that compose the overall health score.
+# Weights MUST sum to 1.0; the calculator validates this at startup.
+
+bands:
+  green:
+    min: 80
+    max: 100
+  amber:
+    min: 50
+    max: 79
+  red:
+    min: 0
+    max: 49
+
+components:
+  - name: task_success_rate
+    weight: 0.30
+    description: "Ratio of completed tasks to total tasks"
+  - name: agent_utilization
+    weight: 0.25
+    description: "Active agents vs registered agents"
+  - name: cost_efficiency
+    weight: 0.25
+    description: "Budget utilization vs spend"
+  - name: error_rate
+    weight: 0.20
+    description: "Error/exception rate across agent operations"

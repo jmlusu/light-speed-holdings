@@ -12,16 +12,17 @@ authors = [
 license = { text = "Proprietary — All Rights Reserved. Apache 2.0 at v1.0." }
 
 dependencies = [
-    "jinja2",
-    "click",
-    "rich",
-    "pyyaml",
-    "jsonschema",
-    "pydantic>=2.8",
-    "typer",
-    "python-dotenv",
-    "fastapi",
-    "uvicorn[standard]",
+      "jinja2",
+      "click",
+      "rich",
+      "pyyaml",
+      "jsonschema",
+      "pydantic>=2.8",
+      "typer",
+      "python-dotenv",
+      "fastapi",
+      "uvicorn[standard]",
+      "aiohttp",
     "httpx<0.28.0",
     # Security
     "cryptography>=42.0",
@@ -30,6 +31,8 @@ dependencies = [
     "numpy>=1.26",
     # System monitoring / analytics
     "psutil>=5.9",
+    # Observability — OTel API (zero-cost NoOp when disabled)
+    "opentelemetry-api>=1.25",
 ]
 
 [project.urls]
@@ -58,6 +61,11 @@ dev = [
 e2e = [
     "playwright>=1.40",
     "pytest-playwright>=0.4",
+]
+
+otel = [
+    "opentelemetry-sdk>=1.25",
+    "opentelemetry-exporter-otlp>=1.25",
 ]
 
 [tool.ruff]

@@ -292,6 +292,44 @@ workflows:
         inputs: ["final_budget"]
         outputs: ["communicated"]
 
+  - id: "agent_onboarding"
+    name: "Agent Onboarding Workflow"
+    description: "HITL-gated agent onboarding from request to activation"
+    trigger: "agent_onboarding_requested"
+    owner: "hr"
+    steps:
+      - id: "submit_request"
+        name: "Submit Onboarding Request"
+        action: "hr.submits_onboarding_request"
+        owner: "hr"
+        inputs: ["agent_id", "role", "department", "tools"]
+        outputs: ["request_id"]
+      - id: "approve"
+        name: "HITL Approval"
+        action: "approval.request"
+        owner: "cto"
+        inputs: ["request_id", "agent_id", "role", "department"]
+        outputs: ["approved", "approved_by"]
+        sla_hours: 48
+      - id: "generating"
+        name: "Generate Agent Files"
+        action: "generator.generates_agent"
+        owner: "generator-owner"
+        inputs: ["request_id", "agent_id", "role", "department", "tools"]
+        outputs: ["agent_files"]
+      - id: "testing"
+        name: "Test Agent"
+        action: "qa-engineer.tests_agent"
+        owner: "qa-engineer"
+        inputs: ["agent_id", "agent_files"]
+        outputs: ["test_results"]
+      - id: "activate"
+        name: "Activate Agent"
+        action: "hr.activates_agent"
+        owner: "hr"
+        inputs: ["agent_id", "test_results"]
+        outputs: ["active"]
+
   - id: "project_launch"
     name: "Project Launch Workflow"
     description: "New project from concept to launch"
