@@ -157,7 +157,7 @@ class ApprovalGate:
         """Return the schema version the store is written as (ticket #58)."""
         return SCHEMA_VERSION
 
-    def _load_config(self):
+    def _load_config(self) -> None:
         # Load is idempotent: a reload must replace the in-memory state with
         # what is on disk, never append to it (otherwise every reload
         # duplicates every request persisted in the YAML).
@@ -193,7 +193,7 @@ class ApprovalGate:
                     )
         self.requests = requests
 
-    def _save_config(self):
+    def _save_config(self) -> None:
         data = {
             "version": SCHEMA_VERSION,
             "requests": [r.model_dump(mode="json") for r in self.requests],

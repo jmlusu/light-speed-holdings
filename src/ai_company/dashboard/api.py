@@ -122,7 +122,7 @@ def _per_agent_costs_from_audit() -> list[dict[str, Any]]:
 
 
 def _registry_agent_stats(
-    tasks: list[dict[str, Any]], registry: list[dict]
+    tasks: list[dict[str, Any]], registry: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
     """Per-agent task stats for every registered agent.
 
@@ -429,7 +429,7 @@ def _save_yaml(path: str, data: Any) -> None:
     _get_store().write_yaml(path, data)
 
 
-def _load_registry() -> list[dict]:
+def _load_registry() -> list[dict[str, Any]]:
     raw = _load_json("company/agent-registry.json") or []
     return [_normalize_agent(a) for a in raw]
 
@@ -507,7 +507,9 @@ async def _broadcast_escalation_alert(event: dict[str, Any]) -> None:
         logger.debug("WebSocket broadcast skipped")
 
 
-def _schedule_broadcast(background_tasks: BackgroundTasks, task_dict: dict, event: str) -> None:
+def _schedule_broadcast(
+    background_tasks: BackgroundTasks, task_dict: dict[str, Any], event: str
+) -> None:
     """Schedule a task-broadcast as a FastAPI background task.
 
     This is the synchronous helper used by MessageBus callbacks.
@@ -1212,7 +1214,7 @@ def approve_request(
     request_id: str,
     body: ApprovalDecision | None = None,
     _: Role = Depends(require_role("approve")),
-) -> dict:
+) -> dict[str, Any]:
     """Approve a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
@@ -1235,7 +1237,7 @@ def reject_request(
     request_id: str,
     body: ApprovalDecision | None = None,
     _: Role = Depends(require_role("approve")),
-) -> dict:
+) -> dict[str, Any]:
     """Reject a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
@@ -1268,7 +1270,7 @@ def list_escalations() -> list[EscalationItem]:
 def resolve_escalation(
     task_id: str,
     _: Role = Depends(require_role("approve")),
-) -> dict:
+) -> dict[str, Any]:
     """Resolve an open escalation event and log to the audit trail."""
     data = _load_yaml("orchestrator/escalation.yaml")
     events = data.get("events", [])
@@ -1340,17 +1342,17 @@ def list_model_tiers() -> list[TierInfo]:
 
 
 @router.get("/scheduler", tags=["scheduler"])
-def list_scheduled() -> list[dict]:
+def list_scheduled() -> list[dict[str, Any]]:
     """List all scheduled and recurring tasks."""
     data = _load_yaml("orchestrator/scheduler.yaml")
-    return cast(list[dict], data.get("tasks", []))
+    return cast(list[dict[str, Any]], data.get("tasks", []))
 
 
 # ── Department KPIs ────────────────────────────────────────────────
 
 
 @router.get("/departments/{dept_name}/kpis", tags=["departments", "kpis"])
-def get_department_kpis(dept_name: str) -> dict:
+def get_department_kpis(dept_name: str) -> dict[str, Any]:
     """Return KPI definitions for a specific department."""
     kpi_data = _load_yaml("company/config/kpis.yaml")
     departments = kpi_data.get("departments", {})
@@ -1358,18 +1360,18 @@ def get_department_kpis(dept_name: str) -> dict:
         raise HTTPException(
             status_code=404, detail=f"Department '{dept_name}' not found in KPI config"
         )
-    return cast(dict, departments[dept_name])
+    return cast(dict[str, Any], departments[dept_name])
 
 
 @router.get("/kpis")
-def list_all_kpis() -> dict:
+def list_all_kpis() -> dict[str, Any]:
     """Return all department KPI definitions."""
     kpi_data = _load_yaml("company/config/kpis.yaml")
-    return cast(dict, kpi_data.get("departments", {}))
+    return cast(dict[str, Any], kpi_data.get("departments", {}))
 
 
 @router.get("/kpis/summary")
-def kpi_summary() -> list[dict]:
+def kpi_summary() -> list[dict[str, Any]]:
     """Return a flat summary of all KPIs across departments."""
     kpi_data = _load_yaml("company/config/kpis.yaml")
     summary = []

@@ -62,7 +62,7 @@ class AlertManager:
     Note: Escalation and notification are not yet implemented.
     """
 
-    def __init__(self, database=None):
+    def __init__(self, database: Any = None) -> None:
         self.database = database
         self._active_alerts: dict[str, QualityAlert] = {}
         self._alert_history: list[QualityAlert] = []

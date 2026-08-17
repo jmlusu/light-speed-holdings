@@ -310,11 +310,13 @@ def build_optimized_system_prompt(
 
     # Available tools (always included)
     if agent.tools:
-        parts.extend([
-            "## Available Tools",
-            ", ".join(agent.tools),
-            "",
-        ])
+        parts.extend(
+            [
+                "## Available Tools",
+                ", ".join(agent.tools),
+                "",
+            ]
+        )
 
     # Tool usage (always included)
     parts.extend(["## Tool Usage", SPECIALIST_TOOL_INSTRUCTIONS, ""])
@@ -344,7 +346,8 @@ def build_optimized_system_prompt(
     if estimated_tokens > token_budget and not include_all_sections:
         logger.warning(
             "System prompt exceeds token budget (%d > %d), consider reducing sections",
-            estimated_tokens, token_budget
+            estimated_tokens,
+            token_budget,
         )
         # Could implement progressive truncation here if needed
 
@@ -364,4 +367,5 @@ def build_optimized_user_prompt(instruction: str, priority: str = "medium") -> s
 def estimate_prompt_tokens(system_prompt: str, user_prompt: str) -> int:
     """Estimate total tokens for a prompt pair."""
     from ai_company.llm.token_counter import count_tokens
+
     return count_tokens(system_prompt) + count_tokens(user_prompt)

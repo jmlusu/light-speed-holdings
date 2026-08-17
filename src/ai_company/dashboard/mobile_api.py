@@ -51,7 +51,7 @@ def _save_yaml(path: str | Path, data: Any) -> None:
     _get_store().write_yaml(path, data)
 
 
-def _load_registry() -> list[dict]:
+def _load_registry() -> list[dict[str, Any]]:
     return _load_json("company/agent-registry.json") or []
 
 
@@ -71,13 +71,13 @@ def _format_short_time(iso_str: str | None) -> str:
         return ""
 
 
-def _encode_cursor(data: dict) -> str:
+def _encode_cursor(data: dict[str, Any]) -> str:
     return b64encode(json.dumps(data, default=str).encode()).decode()
 
 
-def _decode_cursor(cursor: str) -> dict:
+def _decode_cursor(cursor: str) -> dict[str, Any]:
     try:
-        return cast(dict, json.loads(b64decode(cursor.encode()).decode()))
+        return cast(dict[str, Any], json.loads(b64decode(cursor.encode()).decode()))
     except ValueError:
         return {}
 
@@ -180,12 +180,12 @@ class SyncRequest(BaseModel):
 DEVICE_STORE = Path("orchestrator/devices.yaml")
 
 
-def _load_devices() -> list[dict]:
+def _load_devices() -> list[dict[str, Any]]:
     data = _load_yaml(DEVICE_STORE)
-    return cast(list[dict], data.get("devices", []))
+    return cast(list[dict[str, Any]], data.get("devices", []))
 
 
-def _save_devices(devices: list[dict]) -> None:
+def _save_devices(devices: list[dict[str, Any]]) -> None:
     _save_yaml(DEVICE_STORE, {"devices": devices})
 
 

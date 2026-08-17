@@ -23,7 +23,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from ai_company.store.file_store import FileStore
 
@@ -192,7 +192,7 @@ class StateStore:
 
     # ── Read-only JSON parsing helper for audit-style JSONL ──────────
 
-    def iter_jsonl(self, rel_path: str | Path):
+    def iter_jsonl(self, rel_path: str | Path) -> Iterator[dict[str, Any]]:
         """Yield parsed dicts from a JSONL file, skipping bad lines."""
         for line in self.read_lines(rel_path):
             try:

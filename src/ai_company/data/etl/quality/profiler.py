@@ -34,7 +34,7 @@ def profile_records(records: list[dict[str, Any]], sample_size: int = 10000) -> 
         records = random.sample(records, sample_size)
 
     # Collect column stats
-    columns: dict[str, dict] = {}
+    columns: dict[str, dict[str, Any]] = {}
     for record in records:
         for key, value in record.items():
             if key not in columns:

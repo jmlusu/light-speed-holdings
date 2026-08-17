@@ -76,19 +76,21 @@ def test_notify_parked_fires_webhook(notifier: ApprovalNotifier) -> None:
 
 
 def test_notify_parked_ws_broadcast(notifier: ApprovalNotifier) -> None:
-    with patch("ai_company.orchestrator.notifier.urlopen"):
-        with patch("asyncio.get_running_loop") as mock_loop:
-            mock_loop.return_value.create_task = MagicMock()
-            notifier.notify_parked(
-                request_id="hitl-abc",
-                task_id="task-1",
-                agent_id="agent-1",
-                tool="bash",
-                description="test",
-                tier=2,
-            )
-            # WS broadcast should have been attempted
-            mock_loop.return_value.create_task.assert_called()
+    with (
+        patch("ai_company.orchestrator.notifier.urlopen"),
+        patch("asyncio.get_running_loop") as mock_loop,
+    ):
+        mock_loop.return_value.create_task = MagicMock()
+        notifier.notify_parked(
+            request_id="hitl-abc",
+            task_id="task-1",
+            agent_id="agent-1",
+            tool="bash",
+            description="test",
+            tier=2,
+        )
+        # WS broadcast should have been attempted
+        mock_loop.return_value.create_task.assert_called()
 
 
 def test_notify_parked_no_webhooks(empty_notifier: ApprovalNotifier) -> None:
@@ -170,9 +172,7 @@ def test_webhook_signature_header() -> None:
     body = json.dumps(payload).encode("utf-8")
     secret = "my-secret"
 
-    expected_sig = hmac.new(
-        secret.encode("utf-8"), body, hashlib.sha256
-    ).hexdigest()
+    expected_sig = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
 
     with patch("ai_company.orchestrator.notifier.urlopen") as mock_urlopen:
         mock_resp = MagicMock()
@@ -249,10 +249,7 @@ def test_parked_payload_shape(tmp_path: Path) -> None:
     """Verify the webhook payload has all expected fields."""
     config_path = tmp_path / "webhooks.yaml"
     config_path.write_text(
-        "webhooks:\n"
-        "  - url: 'https://example.com/hook'\n"
-        "    secret: ''\n"
-        "    events: ['all']\n"
+        "webhooks:\n  - url: 'https://example.com/hook'\n    secret: ''\n    events: ['all']\n"
     )
     notifier = ApprovalNotifier(config_path=str(config_path))
 

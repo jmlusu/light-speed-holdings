@@ -439,7 +439,7 @@ def _is_process_alive(pid: int) -> bool:
             try:
                 import ctypes
 
-                kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]  # Windows-only module
+                kernel32 = ctypes.windll.kernel32  # Windows-only module
                 handle = kernel32.OpenProcess(
                     0x0400 | 0x0010, False, pid
                 )  # PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE
