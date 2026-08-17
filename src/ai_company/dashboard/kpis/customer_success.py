@@ -42,6 +42,42 @@ class CustomerSuccessKPICollector(KPICollector):
             )
         return False, 0.0
 
+    def _compute_ticket_resolution_time(
+        self, tickets: list[dict[str, Any]]
+    ) -> tuple[float | None, str | None]:
+        """Compute average ticket resolution time in hours from ticket timestamps.
+
+        Returns:
+            Tuple of (avg_resolution_hours, error_message). error_message is None on success.
+        """
+        resolved_tickets = [
+            t
+            for t in tickets
+            if t.get("status") == "resolved" and t.get("created_at") and t.get("resolved_at")
+        ]
+
+        if not resolved_tickets:
+            return None, "No resolved tickets with timestamps available"
+
+        resolution_times = []
+        for ticket in resolved_tickets:
+            try:
+                created = datetime.fromisoformat(ticket["created_at"].replace("Z", "+00:00"))
+                resolved = datetime.fromisoformat(ticket["resolved_at"].replace("Z", "+00:00"))
+                diff_hours = (resolved - created).total_seconds() / 3600
+                if diff_hours >= 0:  # Only count valid positive durations
+                    resolution_times.append(diff_hours)
+            except (ValueError, AttributeError) as exc:
+                logger.warning(
+                    "Failed to parse timestamps for ticket %s: %s", ticket.get("id"), exc
+                )
+
+        if not resolution_times:
+            return None, "No valid timestamp pairs found in resolved tickets"
+
+        avg_resolution = round(sum(resolution_times) / len(resolution_times), 1)
+        return avg_resolution, None
+
     def collect(self) -> dict[str, Any]:
         tickets = self._load_json("orchestrator/cs/tickets.json")
         surveys = self._load_json("orchestrator/cs/surveys.json")
@@ -67,6 +103,16 @@ class CustomerSuccessKPICollector(KPICollector):
         resolved_tickets = sum(1 for t in ticket_list if t.get("status") == "resolved")
         total_tickets = len(ticket_list)
 
+        # Compute ticket resolution time from timestamps
+        avg_resolution_time, resolution_error = self._compute_ticket_resolution_time(ticket_list)
+        if avg_resolution_time is not None:
+            resolution_quality = "real"
+            resolution_error = None
+        else:
+            resolution_quality = "error"
+            # Use default target as fallback but mark as error
+            avg_resolution_time = 0.0
+
         # Survey / satisfaction
         survey_list = surveys if isinstance(surveys, list) else []
         scores = [s.get("score", 0) for s in survey_list if s.get("score")]
@@ -80,10 +126,12 @@ class CustomerSuccessKPICollector(KPICollector):
             "collected_at": datetime.now().isoformat(),
             "kpis": {
                 "ticket_resolution_time": self._kpi(
-                    0,
+                    avg_resolution_time,
                     4,
                     "hours",
-                ),  # Needs timestamp diff to compute; default until time data
+                    data_quality=resolution_quality,
+                    error=resolution_error,
+                ),
                 "open_tickets": self._kpi(open_tickets, 0, "count", higher_is_better=False),
                 "resolved_tickets": self._kpi(resolved_tickets, None, "count"),
                 "total_tickets": self._kpi(total_tickets, None, "count"),
