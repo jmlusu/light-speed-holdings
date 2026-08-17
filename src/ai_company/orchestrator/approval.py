@@ -109,6 +109,9 @@ class ApprovalRequest(BaseModel):
 
 
 class ApprovalGate:
+    _instance: Optional["ApprovalGate"] = None
+    _instance_lock = threading.Lock()
+
     def __init__(
         self,
         config_path: str = "orchestrator/approvals.yaml",
@@ -123,6 +126,29 @@ class ApprovalGate:
         self._lock = threading.RLock()
         self.requests: List[ApprovalRequest] = []
         self._load_config()
+
+    @classmethod
+    def get_instance(cls, config_path: str = "orchestrator/approvals.yaml", retain_days: int = 30) -> "ApprovalGate":
+        """Get the singleton ApprovalGate instance.
+
+        Args:
+            config_path: Path to the approvals YAML file.
+            retain_days: Retention window for resolved requests.
+
+        Returns:
+            The singleton ApprovalGate instance.
+        """
+        if cls._instance is None:
+            with cls._instance_lock:
+                if cls._instance is None:
+                    cls._instance = cls(config_path=config_path, retain_days=retain_days)
+        return cls._instance
+
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Reset the singleton instance (used by tests)."""
+        with cls._instance_lock:
+            cls._instance = None
 
     @property
     def schema_version(self) -> int:
@@ -352,7 +378,9 @@ class ApprovalGate:
             try:
                 self._save_config()
             except Exception:  # noqa: BLE001 - sweep is best-effort
-                logger.exception("Failed to persist approval expiry sweep; will retry next interval")
+                logger.exception(
+                    "Failed to persist approval expiry sweep; will retry next interval"
+                )
                 for request in expired:
                     request.status, request.responded_at = originals[request.id]
                 return 0

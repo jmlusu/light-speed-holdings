@@ -331,6 +331,39 @@ class MessageBus:
                     break
         return refreshed
 
+    def resume_task(self, task_id: str, expected_status: str = "waiting_approval") -> Task | None:
+        """CAS-guarded transition from *expected_status* to ``pending``.
+
+        Returns the updated ``Task`` if the transition succeeded, or
+        ``None`` if the task is missing or not in *expected_status*
+        (another executor already resumed it).  This prevents two
+        concurrent tick loops from both resuming the same parked task
+        (ADR-015 double-resume guard).
+        """
+        now = datetime.now().isoformat()
+        resumed: list[Task] = []
+
+        def _updater(tasks: List[dict]) -> List[dict]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    if t.get("status") != expected_status:
+                        break  # CAS failure — already resumed or moved
+                    tasks[i]["status"] = "pending"
+                    tasks[i]["updated_at"] = now
+                    resumed.append(Task(**tasks[i]))
+                    break
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        if resumed:
+            for t in updated:
+                if t.get("id") == task_id:
+                    self._mirror_task_to_sqlite(t)
+                    self._emit(t, "status_changed")
+                    break
+            logger.info("Task %s resumed (CAS: %s -> pending).", task_id, expected_status)
+        return resumed[0] if resumed else None
+
     # ── Task status mutation ─────────────────────────────────────────
 
     def update_task_status(
@@ -486,4 +519,3 @@ class MessageBus:
             status = t.get("status", "pending")
             counter[status] += 1
         return dict(counter)
-

@@ -18,6 +18,7 @@ from ai_company.executor.context import (
     Severity,
     parse_agent_spec_content,
 )
+from ai_company.registry import load_registry
 from ai_company.registry.loader import load_yaml_cached
 
 logger = logging.getLogger(__name__)
@@ -60,10 +61,12 @@ class AgentGenerator:
         registry_path: str = "company-registry.yaml",
         templates_dir: str = "templates",
         output_dir: str = ".opencode/agents",
+        table_path: str = "docs/AGENT-REGISTRY-TABLE.md",
     ) -> None:
         self.registry_path = Path(registry_path)
         self.templates_dir = Path(templates_dir)
         self.output_dir = Path(output_dir)
+        self.table_path = Path(table_path)
 
         self.env = Environment(
             loader=FileSystemLoader(str(self.templates_dir)),
@@ -193,6 +196,7 @@ class AgentGenerator:
         return errors
 
     def load_registry(self) -> dict[str, Any] | list[Any]:
+        """Load registry from the local YAML file (for backward compatibility with tests)."""
         if not self.registry_path.exists():
             raise FileNotFoundError(f"Registry not found: {self.registry_path.absolute()}")
         data = load_yaml_cached(self.registry_path)
@@ -200,11 +204,28 @@ class AgentGenerator:
             raise ValueError(f"Registry is empty: {self.registry_path}")
         return data
 
-    def generate_all(self, clean: bool = True) -> list[Path]:
-        """Run full generation. Returns list of generated file paths."""
+    def generate_all(self, clean: bool = True, use_full_registry: bool = False) -> list[Path]:
+        """Run full generation. Returns list of generated file paths.
+
+        Args:
+            clean: Whether to clean output directory before generation.
+            use_full_registry: If True, use the full validated registry pipeline (CompanyRegistry model).
+                If False (default), use the local registry YAML file for backward compatibility.
+        """
         if clean and self.output_dir.exists():
             for existing in self.output_dir.glob("*.md"):
                 existing.unlink()
+
+        if use_full_registry:
+            # Load validated registry through the full pipeline (loader -> parser -> resolver -> validator)
+            registry = load_registry()
+            return self.generate_from_registry(registry)
+        else:
+            # Use local registry YAML file (backward compatible)
+            return self._generate_from_local_registry()
+
+    def _generate_from_local_registry(self) -> list[Path]:
+        """Generate from local registry YAML (original behavior)."""
         self._write_shared_standards()
         data = self.load_registry()
         if isinstance(data, list):
@@ -237,7 +258,7 @@ class AgentGenerator:
         logger.info("Generation complete: %d agents.", len(generated))
 
         # Keep docs/AGENT-REGISTRY-TABLE.md in sync (CI drift check verifies).
-        table_path = self.generate_agent_table()
+        table_path = self.generate_agent_table(output_path=str(self.table_path))
         logger.info("Generated agent registry table: %s", table_path)
 
         # Validate generated agents against the in-memory rendered content
@@ -311,14 +332,42 @@ class AgentGenerator:
         check verifies it. Returns the written path.
         """
         dest = Path(output_path)
-        data = self.load_registry()
-        if isinstance(data, list):
-            agents = data
-            company_name = "AI Company"
-        else:
-            agents = data.get("company", {}).get("agents", [])
-            company_name = data.get("company", {}).get("name", "AI Company")
+        registry = load_registry()
+        # Combine all agent types from the validated registry
+        all_agents = []
+        for ex in registry.executives:
+            agent_dict = {
+                "id": ex.id,
+                "name": ex.name or ex.id,
+                "department": ex.department,
+                "reports_to": ex.reports_to,
+                "direct_reports": [],
+                "responsibilities": ex.responsibilities,
+            }
+            all_agents.append(agent_dict)
+        for spec in registry.specialists:
+            agent_dict = {
+                "id": spec.id,
+                "name": spec.name or spec.id,
+                "department": spec.department,
+                "reports_to": spec.reports_to,
+                "direct_reports": [],
+                "responsibilities": spec.responsibilities,
+            }
+            all_agents.append(agent_dict)
+        for bm in registry.board:
+            agent_dict = {
+                "id": bm.id,
+                "name": bm.name or bm.id,
+                "department": "Board",
+                "reports_to": "",
+                "direct_reports": [],
+                "responsibilities": bm.responsibilities,
+            }
+            all_agents.append(agent_dict)
+        company_name = registry.company.name
 
+        agents = all_agents
         groups: dict[str, list[dict[str, Any]]] = {}
         for agent in agents:
             dept = str(agent.get("department") or "Unassigned")

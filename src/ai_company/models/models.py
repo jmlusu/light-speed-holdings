@@ -520,6 +520,14 @@ class Task(EntityBase):
     claimed_by: str = ""
     lease_expires_at: str = ""
 
+    # Retry fields — stale-lease auto-retry budget (ADR-015).
+    # retry_count: how many times this task has been auto-retried after a
+    #   stale lease.  Starts at 0, incremented by the stale detector.
+    # retry_budget: max auto-retries before the task is DLQ'd.  Defaults
+    #   to STALE_RETRY_MAX (3) when missing or 0.
+    retry_count: int = 0
+    retry_budget: int = 0
+
 
 # ---------------------------------------------------------------------------
 # Risk
