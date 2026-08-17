@@ -151,6 +151,8 @@ The `ApprovalGate` runs a periodic sweep (wired into the daemon/governance caden
 
 ## 11 Security — Key Rotation Procedure
 
+See also: [docs/DASHBOARD_KEY_ROTATION.md](docs/DASHBOARD_KEY_ROTATION.md) for detailed dashboard RBAC key rotation procedures.
+
 **When to rotate:**
 - Every 90 days (scheduled)
 - Immediately on suspected compromise
@@ -185,7 +187,7 @@ The `ApprovalGate` runs a periodic sweep (wired into the daemon/governance caden
 **Verification commands:**
 ```bash
 # Local verification
-uv run python -c "from ai_company.security.rbac import verify_keys; verify_keys()"
+uv run python -c "from dotenv import load_dotenv; load_dotenv(); from ai_company.security.rbac import verify_keys; verify_keys()"
 
 # Staging verification
 curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" http://localhost:8421/health

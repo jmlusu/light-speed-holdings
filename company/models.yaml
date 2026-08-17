@@ -14,7 +14,7 @@
 # (fast/cheap). Deepseek and Kimi are cheap but have no African payment or
 # registration path, so they are excluded from the routing tiers; OpenAI and
 # Anthropic remain available in the catalog as future options. Ollama runs
-# locally and costs nothing.
+# locally and costs nothing. llama.cpp runs locally with optimized CPU inference.
 
 # ─── Provider catalog ────────────────────────────────────────────────
 # Each provider entry: id, backend, default_model, api_base.
@@ -61,6 +61,75 @@ providers:
     default_model: llama3.1:8b
     api_base: http://localhost:11434
 
+  llamacpp:
+    backend: llamacpp
+    default_model: llama3.1-8b-32k
+    # Local GGUF models directory (relative to project root)
+    model_dir: "./models"
+    # CPU-optimized defaults for AMD Ryzen 7 PRO 5850U (8C/16T, shared RAM)
+    hardware:
+      n_threads: 8           # Physical cores (not hyperthreads)
+      n_threads_batch: 8
+      n_batch: 512
+      n_ctx: 32768
+      n_gpu_layers: 0        # CPU only (integrated graphics, no VRAM)
+      use_mlock: true        # Prevent swap to disk
+      use_mmap: true         # Fast model loading via mmap
+    # Inference defaults (overridable per-request)
+    inference:
+      temperature: 0.3
+      top_p: 0.9
+      top_k: 40
+      repeat_penalty: 1.1
+      n_predict: 4096
+    # Per-model configuration
+    models:
+      llama3.1-8b-32k:
+        path: "models/llama-3.1-8b-instruct-q4_K_M.gguf"
+        quantization: "q4_K_M"
+        specialization: general
+        context_window: 32768
+        hardware:
+          n_threads: 8
+          n_batch: 512
+          n_ctx: 32768
+      mistral-7b-32k:
+        path: "models/mistral-7b-instruct-v0.3-q4_K_M.gguf"
+        quantization: "q4_K_M"
+        specialization: general_fast
+        context_window: 32768
+        hardware:
+          n_threads: 8
+          n_batch: 512
+          n_ctx: 16384
+      gemma4-12b-32k:
+        path: "models/gemma-2-9b-it-q5_K_M.gguf"
+        quantization: "q5_K_M"
+        specialization: general_quality
+        context_window: 32768
+        hardware:
+          n_threads: 8
+          n_batch: 256
+          n_ctx: 32768
+      qwen2.5-coder-7b-32k:
+        path: "models/qwen2.5-coder-7b-instruct-q4_K_M.gguf"
+        quantization: "q4_K_M"
+        specialization: coding
+        context_window: 32768
+        hardware:
+          n_threads: 8
+          n_batch: 512
+          n_ctx: 32768
+      deepseek-r1-64k:
+        path: "models/deepseek-r1-distill-qwen-7b-q4_K_M.gguf"
+        quantization: "q4_K_M"
+        specialization: reasoning
+        context_window: 65536
+        hardware:
+          n_threads: 8
+          n_batch: 256
+          n_ctx: 32768  # Cap at 32k for speed, use 64k only when needed
+
   openai:
     backend: openai_compatible
     default_model: gpt-4o-mini
@@ -79,32 +148,38 @@ tiers:
   fast:
     description: "Low-latency, low-cost. Good for read-only and simple tasks."
     providers:
+      - provider: llamacpp
+        model: mistral-7b-32k
+      - provider: ollama
+        model: mistral-7b-32k
       - provider: gemini
         model: gemini-3.5-flash
-      - provider: opencode
-        model: big-pickle
-      - provider: ollama
-        model: llama3.1:8b
 
   standard:
     description: "Balanced capability and cost. Default for most agents."
     providers:
+      - provider: llamacpp
+        model: llama3.1-8b-32k
       - provider: opencode
         model: big-pickle
-      - provider: gemini
-        model: gemini-3.5-flash
       - provider: ollama
         model: llama3.1:8b
+      - provider: gemini
+        model: gemini-3.5-flash
 
   premium:
     description: "Maximum reasoning capability. Use for critical decisions."
     providers:
+      - provider: llamacpp
+        model: deepseek-r1-64k
+      - provider: llamacpp
+        model: gemma4-12b-32k
       - provider: opencode
         model: big-pickle
-      - provider: gemini
-        model: gemini-3.1-pro-preview
       - provider: ollama
         model: llama3.1:8b
+      - provider: gemini
+        model: gemini-3.1-pro-preview
 
 # ─── Routing rules ──────────────────────────────────────────────────
 # Maps (agent_type, priority) -> tier.
@@ -151,3 +226,86 @@ routing:
   # Approvals always use premium
   - context: approval
     tier: premium
+
+  # Domain-aware routing (detected from task prompt keywords)
+  - context: domain_code_review
+    tier: premium
+  - context: domain_security
+    tier: premium
+  - context: domain_deployment
+    tier: standard
+  - context: domain_finance
+    tier: standard
+  - context: domain_legal
+    tier: premium
+  - context: domain_data_science
+    tier: premium
+
+# ─── Task-type routing (NEW) ──────────────────────────────────────
+# Maps task type detected from prompt to optimal tier.
+# Task types: read_only, single_file_edit, simple_command, boilerplate,
+#             code_review, debugging, refactor, integration,
+#             architecture, planning, security, performance, general
+
+task_type_routing:
+  read_only: free
+  single_file_edit: free
+  simple_command: free
+  boilerplate: free
+  code_review: standard
+  debugging: standard
+  refactor: standard
+  integration: standard
+  architecture: premium
+  planning: premium
+  security: premium
+  performance: premium
+  general: standard
+
+# ─── Free tier (dynamic) ──────────────────────────────────────────
+# The 'free' tier uses a dynamic catalog of Opencode free models.
+# ModelRouter.fetch_free_model_catalog() fetches from Opencode Zen API
+# and sorts by context window (largest first) for token-limit rotation.
+# Static providers listed below are used when API is unavailable.
+
+free_tier:
+  description: "Zero-cost tier using dynamic Opencode free models + Ollama fallback"
+  # No static providers — dynamic catalog is fetched at runtime
+  # Fallback static models if API unavailable:
+  static_fallback:
+    - provider: opencode
+      model: big-pickle
+    - provider: opencode
+      model: gpt-5-nano
+    - provider: ollama
+      model: llama3.1:8b
+
+# ─── Token-limit rotation ────────────────────────────────────────
+# When a provider returns a token-limit error, rotate through free
+# models by context window size (largest first).
+
+token_limit_rotation:
+  enabled: true
+  max_rotations: 3  # Max rotations before giving up
+  # Error patterns that indicate context window exceeded
+  error_patterns:
+    - "context length"
+    - "max_tokens"
+    - "token limit"
+    - "too many tokens"
+    - "exceeds maximum"
+    - "context window"
+    - "maximum context"
+    - "input too long"
+    - "prompt too long"
+    - "message too long"
+
+# ─── Budget degradation thresholds ────────────────────────────────
+# When daily budget exceeds these thresholds, force cheaper tiers.
+
+budget_degradation:
+  enabled: true
+  warning_threshold: 0.80    # 80% — Log warning, prefer cheaper tier
+  pressure_threshold: 0.90   # 90% — Force fast tier for non-critical tasks
+  critical_threshold: 0.95   # 95% — Force free tier for all non-critical
+  hard_stop_threshold: 1.00  # 100% — Hard stop (executor auto-suspend)

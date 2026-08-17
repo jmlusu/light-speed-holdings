@@ -86,6 +86,11 @@ src/ai_company/
 │   ├── writer.py               # AuditWriter — JSONL append
 │   ├── reader.py               # AuditReader — query/filter by task, agent, type
 │   └── integration.py          # Executor hooks: log_tool_call, log_task_status, log_hitl_decision
+├── telemetry/                  # OpenTelemetry tracing (opt-in via AI_COMPANY_OTEL=1)
+│   ├── __init__.py             # Public API: init_tracing, start_span, bridge, exporters
+│   ├── tracer.py               # Tracer init, NoOp stubs, ConsoleSpanExporter
+│   ├── bridge.py               # Correlation ID ↔ OTel context bridge, subtask_context
+│   └── exporter.py             # ConsoleSpanExporter, InMemorySpanExporter
 ├── dashboard/                  # CEO dashboard
 │   ├── app.py                  # FastAPI app with CORS, middleware
 │   ├── api.py                  # REST endpoints (tasks, KPIs, costs, approvals)
