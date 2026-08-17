@@ -1809,9 +1809,7 @@
       "Design and maintain benchmark test cases for all agent types.",
       "Run continuous evaluation cycles for model quality.",
       "Produce model comparison benchmarks (quality, cost, latency).",
-      {
-        "Enforce quality gates": "no upgrade ships below benchmark threshold."
-      },
+      "Enforce quality gates: no upgrade ships below benchmark threshold.",
       "Maintain quality_scores for the QualityFallbackChain."
     ],
     "guidelines": "Evaluate before promote. Benchmarks are reproducible. Cost per inference is tracked. Quality gates are non-negotiable.",

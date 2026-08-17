@@ -178,6 +178,30 @@ class AuditStore:
 
     # ── Log rotation / archival ───────────────────────────────────────
 
+    def _get_metadata_path(self, archive_path: Path) -> Path:
+        """Get the path to the archive metadata file."""
+        return archive_path.with_suffix(archive_path.suffix + ".meta.json")
+
+    def _read_last_archive_time(self, archive_path: Path) -> str | None:
+        """Read the last archive timestamp from metadata file."""
+        meta_path = self._get_metadata_path(archive_path)
+        if not meta_path.exists():
+            return None
+        try:
+            with open(meta_path, "r", encoding="utf-8") as f:
+                meta: dict[str, Any] = json.load(f)
+            value = meta.get("last_archive_timestamp")
+            return value if isinstance(value, str) else None
+        except (json.JSONDecodeError, OSError):
+            return None
+
+    def _write_last_archive_time(self, archive_path: Path, timestamp: str) -> None:
+        """Write the last archive timestamp to metadata file."""
+        meta_path = self._get_metadata_path(archive_path)
+        meta_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump({"last_archive_timestamp": timestamp}, f)
+
     def archive_before(self, cutoff_date: str, archive_path: str | Path) -> int:
         """Export events on or before *cutoff_date* to a JSON file, then delete them.
 
@@ -185,22 +209,45 @@ class AuditStore:
         exactly ``cutoff_date`` is archived exactly once and never re-exported
         on a subsequent run.
 
-        Returns the number of events archived.
-        """
-        old_events = self.read_date_range("0000-01-01", cutoff_date)
-        if not old_events:
-            return 0
+        Tracks the last archive timestamp to only export new events since the
+        previous run, avoiding re-scanning already-archived events.
 
-        # Export to archive
+        Returns the number of *newly* archived events.
+        """
         archive = Path(archive_path)
         archive.parent.mkdir(parents=True, exist_ok=True)
 
+        # Determine the start timestamp: either the last archive time or the beginning of time
+        last_archive_time = self._read_last_archive_time(archive)
+        start_time = last_archive_time if last_archive_time is not None else "0000-01-01"
+
+        # Read events since last archive up to cutoff_date
+        old_events = self.read_date_range(start_time, cutoff_date)
+        if not old_events:
+            # Still update the metadata to advance the cursor
+            self._write_last_archive_time(archive, cutoff_date)
+            return 0
+
+        # Export to archive
+        # Load existing archive (for cumulative archive file)
         existing: list[dict[str, Any]] = []
+        existing_ids: set[str] = set()
         if archive.exists():
             with open(archive, "r", encoding="utf-8") as f:
                 existing = json.load(f)
+            for entry in existing:
+                if isinstance(entry, dict) and "event_id" in entry:
+                    existing_ids.add(entry["event_id"])
 
-        new_data = [e.model_dump() for e in old_events]
+        # Filter out events already in archive (safety net for edge cases)
+        new_events = [e for e in old_events if e.event_id not in existing_ids]
+        if not new_events:
+            logger.info("No new events to archive (all %d events already in archive)", len(old_events))
+            # Still advance the cursor
+            self._write_last_archive_time(archive, cutoff_date)
+            return 0
+
+        new_data = [e.model_dump() for e in new_events]
         combined = existing + new_data
 
         with open(archive, "w", encoding="utf-8") as f:
@@ -213,13 +260,16 @@ class AuditStore:
         )
         self._db.commit()
 
+        # Update the last archive timestamp
+        self._write_last_archive_time(archive, cutoff_date)
+
         logger.info(
-            "Archived %d audit events (before %s) to %s",
-            len(old_events),
+            "Archived %d new audit events (before %s) to %s",
+            len(new_events),
             cutoff_date,
             archive,
         )
-        return len(old_events)
+        return len(new_events)
 
     # ── Internal helpers ──────────────────────────────────────────────
 
