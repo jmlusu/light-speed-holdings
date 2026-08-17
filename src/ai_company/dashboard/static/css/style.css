@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
    Light Speed Holdings — CEO Dashboard
-   Dark theme, responsive design, scroll-stable
+   J.A.R.V.I.S. theme layer + dark responsive design
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Reset & Base ───────────────────────────────────────────── */
@@ -100,8 +100,8 @@ body.scroll-locked {
 }
 .kpi-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border-color: rgba(100, 116, 139, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 12px var(--jarvis-shadow-glow);
+  border-color: var(--jarvis-border-glow);
 }
 
 /* ── Chart Containers (FIX #3) ─────────────────────────────── */
@@ -155,8 +155,8 @@ body.scroll-locked {
 }
 
 .drag-over {
-  background: rgba(14, 165, 233, 0.05);
-  border-color: rgba(14, 165, 233, 0.3) !important;
+  background: rgba(34, 211, 238, 0.05);
+  border-color: rgba(34, 211, 238, 0.3) !important;
 }
 
 /* ── Chart.js canvas sizing ─────────────────────────────────── */
@@ -191,7 +191,7 @@ canvas {
 }
 
 .kanban-drop-zone.drag-over {
-  background-color: rgba(14, 165, 233, 0.05);
+  background-color: rgba(34, 211, 238, 0.05);
 }
 
 /* ── Kanban columns: scroll isolation ──────────────────────── */
@@ -213,7 +213,7 @@ tbody tr {
 /* ── Focus styles ───────────────────────────────────────────── */
 input:focus, select:focus, textarea:focus, button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.5);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.5);
 }
 
 /* ── Table wrapper: horizontal scroll containment ───────────── */
@@ -284,5 +284,5 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 @media print {
   header, nav, footer, .toast { display: none !important; }
   body { background: white; color: black; }
-  .bg-surface-900\/80 { background: #f8fafc; border-color: #e2e8f0; }
+  .jarvis-glass { background: #f8fafc; border-color: #e2e8f0; }
 }

@@ -4,11 +4,11 @@
 {% block content %}
 <div class="flex items-center justify-between mb-6">
   <div>
-    <h2 class="text-xl font-semibold text-surface-100">Task Pipeline</h2>
-    <p class="text-sm text-surface-500 mt-1">Kanban view of all tasks</p>
+    <h2 class="text-xl font-semibold text-jarvis-text font-display">Task Pipeline</h2>
+    <p class="text-sm text-jarvis-muted mt-1">Kanban view of all tasks</p>
   </div>
   <button @click="showAssignModal = true"
-          class="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-500 transition-colors flex items-center gap-2">
+          class="bg-jarvis-cyan text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-jarvis-cyan/80 transition-colors flex items-center gap-2">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
     Assign Task
   </button>
@@ -18,19 +18,19 @@
 <div class="flex flex-wrap gap-3 mb-6 items-center">
   <!-- Priority Filter -->
   <div class="flex items-center gap-1.5">
-    <span class="text-xs text-surface-500">Priority:</span>
+    <span class="text-xs text-jarvis-muted">Priority:</span>
     <template x-for="p in ['low', 'medium', 'high', 'critical']" :key="p">
       <button @click="taskFilterPriority = taskFilterPriority === p ? '' : p; taskPage = 1; loadTasksPage()"
-              :class="taskFilterPriority === p ? priorityClass(p) + ' ring-1 ring-white/20' : 'bg-surface-800 text-surface-500 border border-surface-700'"
+              :class="taskFilterPriority === p ? priorityClass(p) + ' ring-1 ring-white/20' : 'bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow'"
               class="px-2 py-1 rounded text-[10px] font-medium transition-all" x-text="p"></button>
     </template>
   </div>
 
   <!-- Department Filter -->
   <div class="flex items-center gap-1.5">
-    <span class="text-xs text-surface-500">Dept:</span>
+    <span class="text-xs text-jarvis-muted">Dept:</span>
     <select x-model="taskFilterDepartment" @change="taskPage = 1; loadTasksPage()"
-            class="bg-surface-800 border border-surface-700 rounded px-2 py-1 text-xs text-surface-200">
+            class="bg-jarvis-raised border border-jarvis-border-glow rounded px-2 py-1 text-xs text-jarvis-text">
       <option value="">All</option>
       <template x-for="dept in uniqueDepartments" :key="dept">
         <option :value="dept" x-text="dept"></option>
@@ -40,24 +40,24 @@
 
   <!-- Agent Filter -->
   <div class="flex items-center gap-1.5">
-    <span class="text-xs text-surface-500">Agent:</span>
+    <span class="text-xs text-jarvis-muted">Agent:</span>
     <input x-model="taskFilterAgent" @input.debounce.300ms="taskPage = 1; loadTasksPage()"
            placeholder="Search agent..."
-           class="bg-surface-800 border border-surface-700 rounded px-2 py-1 text-xs text-surface-200 w-32">
+           class="bg-jarvis-raised border border-jarvis-border-glow rounded px-2 py-1 text-xs text-jarvis-text w-32">
   </div>
 
   <!-- Sort -->
   <div class="flex items-center gap-1.5 ml-auto">
-    <span class="text-xs text-surface-500">Sort:</span>
+    <span class="text-xs text-jarvis-muted">Sort:</span>
     <select x-model="taskSortBy" @change="loadTasksPage()"
-            class="bg-surface-800 border border-surface-700 rounded px-2 py-1 text-xs text-surface-200">
+            class="bg-jarvis-raised border border-jarvis-border-glow rounded px-2 py-1 text-xs text-jarvis-text">
       <option value="created_at">Date</option>
       <option value="priority">Priority</option>
       <option value="receiver_id">Agent</option>
       <option value="status">Status</option>
     </select>
     <button @click="taskSortDir = taskSortDir === 'asc' ? 'desc' : 'asc'; loadTasksPage()"
-            class="text-surface-400 hover:text-surface-200 transition-colors">
+            class="text-jarvis-muted hover:text-jarvis-text transition-colors">
       <svg class="w-3.5 h-3.5" :class="taskSortDir === 'asc' ? '' : 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
       </svg>
@@ -67,7 +67,7 @@
   <!-- Clear Filters -->
   <button x-show="taskFilterPriority || taskFilterDepartment || taskFilterAgent"
           @click="clearTaskFilters()"
-          class="text-xs text-brand-400 hover:text-brand-300 transition-colors">Clear</button>
+          class="text-xs text-jarvis-cyan hover:text-jarvis-cyan transition-colors">Clear</button>
 </div>
 
 <!-- ═══ KANBAN BOARD ═══ -->
@@ -78,193 +78,193 @@
 -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 kanban-grid">
   <!-- Pending Column -->
-  <div class="bg-surface-900/60 rounded-xl border border-surface-700/50 p-4 kanban-column">
+  <div class="bg-jarvis-raised/60 rounded-xl border border-jarvis-border-glow/50 p-4 kanban-column">
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-      <h3 class="text-sm font-semibold text-surface-300">Pending</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.pending"></span>
+      <h3 class="text-sm font-semibold text-jarvis-text font-display">Pending</h3>
+      <span class="text-xs text-jarvis-muted ml-auto font-mono" x-text="kanbanCounts.pending"></span>
     </div>
     <div class="space-y-3 min-h-[200px]"
          @dragover.prevent="dragOverColumn($event, 'pending')"
          @drop.prevent="dropTask($event, 'pending')">
       <template x-for="task in kanbanTasks.pending" :key="task.id">
-        <div class="bg-surface-800/80 rounded-lg border border-surface-700/50 p-3 cursor-grab hover:border-surface-600 transition-all"
+        <div class="bg-jarvis-raised/80 rounded-lg border border-jarvis-border-glow/50 p-3 cursor-grab hover:border-jarvis-cyan/20 transition-all"
              draggable="true"
              @dragstart="dragTask($event, task)"
              @dragend="dragEnd()">
           <div class="flex items-start justify-between mb-2">
-            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="text-xs font-mono text-jarvis-muted" x-text="task.id.slice(0, 8)"></span>
             <div class="flex items-center gap-1">
               <span class="px-1.5 py-0.5 rounded text-[10px] font-medium" :class="priorityClass(task.priority)" x-text="task.priority"></span>
               <button @click.stop="deleteTask(task.id)"
-                      class="text-surface-600 hover:text-red-400 transition-colors p-0.5"
+                      class="text-jarvis-muted hover:text-red-400 transition-colors p-0.5"
                       title="Delete task">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
           </div>
-          <p class="text-sm text-surface-200 mb-2 line-clamp-2" x-text="task.instruction"></p>
-          <div class="flex items-center justify-between text-xs text-surface-500">
+          <p class="text-sm text-jarvis-text mb-2 line-clamp-2" x-text="task.instruction"></p>
+          <div class="flex items-center justify-between text-xs text-jarvis-muted">
             <span class="font-mono" x-text="task.receiver_id"></span>
             <span x-text="formatTime(task.created_at)"></span>
           </div>
         </div>
       </template>
-      <div x-show="kanbanTasks.pending.length === 0" class="text-xs text-surface-600 text-center py-8">No pending tasks</div>
+      <div x-show="kanbanTasks.pending.length === 0" class="text-xs text-jarvis-muted text-center py-8">No pending tasks</div>
     </div>
   </div>
 
   <!-- In Progress Column -->
-  <div class="bg-surface-900/60 rounded-xl border border-surface-700/50 p-4 kanban-column">
+  <div class="bg-jarvis-raised/60 rounded-xl border border-jarvis-border-glow/50 p-4 kanban-column">
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-blue-400 animate-pulse"></div>
-      <h3 class="text-sm font-semibold text-surface-300">In Progress</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.in_progress"></span>
+      <h3 class="text-sm font-semibold text-jarvis-text font-display">In Progress</h3>
+      <span class="text-xs text-jarvis-muted ml-auto font-mono" x-text="kanbanCounts.in_progress"></span>
     </div>
     <div class="space-y-3 min-h-[200px]"
          @dragover.prevent="dragOverColumn($event, 'in_progress')"
          @drop.prevent="dropTask($event, 'in_progress')">
       <template x-for="task in kanbanTasks.in_progress" :key="task.id">
-        <div class="bg-surface-800/80 rounded-lg border border-blue-500/20 p-3 cursor-grab hover:border-blue-500/40 transition-all"
+        <div class="bg-jarvis-raised/80 rounded-lg border border-blue-500/20 p-3 cursor-grab hover:border-blue-500/40 transition-all"
              draggable="true"
              @dragstart="dragTask($event, task)"
              @dragend="dragEnd()">
           <div class="flex items-start justify-between mb-2">
-            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="text-xs font-mono text-jarvis-muted" x-text="task.id.slice(0, 8)"></span>
             <div class="flex items-center gap-1">
               <span class="px-1.5 py-0.5 rounded text-[10px] font-medium" :class="priorityClass(task.priority)" x-text="task.priority"></span>
               <button @click.stop="deleteTask(task.id)"
-                      class="text-surface-600 hover:text-red-400 transition-colors p-0.5"
+                      class="text-jarvis-muted hover:text-red-400 transition-colors p-0.5"
                       title="Delete task">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
           </div>
-          <p class="text-sm text-surface-200 mb-2 line-clamp-2" x-text="task.instruction"></p>
-          <div class="flex items-center justify-between text-xs text-surface-500">
+          <p class="text-sm text-jarvis-text mb-2 line-clamp-2" x-text="task.instruction"></p>
+          <div class="flex items-center justify-between text-xs text-jarvis-muted">
             <span class="font-mono" x-text="task.receiver_id"></span>
             <span x-text="formatTime(task.created_at)"></span>
           </div>
         </div>
       </template>
-      <div x-show="kanbanTasks.in_progress.length === 0" class="text-xs text-surface-600 text-center py-8">No tasks in progress</div>
+      <div x-show="kanbanTasks.in_progress.length === 0" class="text-xs text-jarvis-muted text-center py-8">No tasks in progress</div>
     </div>
   </div>
 
   <!-- Completed Column -->
-  <div class="bg-surface-900/60 rounded-xl border border-surface-700/50 p-4 kanban-column">
+  <div class="bg-jarvis-raised/60 rounded-xl border border-jarvis-border-glow/50 p-4 kanban-column">
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
-      <h3 class="text-sm font-semibold text-surface-300">Completed</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.completed"></span>
+      <h3 class="text-sm font-semibold text-jarvis-text font-display">Completed</h3>
+      <span class="text-xs text-jarvis-muted ml-auto font-mono" x-text="kanbanCounts.completed"></span>
     </div>
     <div class="space-y-3 min-h-[200px] max-h-[400px] overflow-y-auto"
          @dragover.prevent="dragOverColumn($event, 'completed')"
          @drop.prevent="dropTask($event, 'completed')">
       <template x-for="task in kanbanTasks.completed" :key="task.id">
-        <div class="bg-surface-800/50 rounded-lg border border-emerald-500/10 p-3 opacity-75">
+        <div class="bg-jarvis-raised/50 rounded-lg border border-emerald-500/10 p-3 opacity-75">
           <div class="flex items-start justify-between mb-2">
-            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="text-xs font-mono text-jarvis-muted" x-text="task.id.slice(0, 8)"></span>
             <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-400">done</span>
           </div>
-          <p class="text-sm text-surface-400 mb-2 line-clamp-2" x-text="task.instruction"></p>
-          <div class="flex items-center justify-between text-xs text-surface-500">
+          <p class="text-sm text-jarvis-muted mb-2 line-clamp-2" x-text="task.instruction"></p>
+          <div class="flex items-center justify-between text-xs text-jarvis-muted">
             <span class="font-mono" x-text="task.receiver_id"></span>
             <span x-text="formatTime(task.completed_at || task.created_at)"></span>
           </div>
         </div>
       </template>
-      <div x-show="kanbanTasks.completed.length === 0" class="text-xs text-surface-600 text-center py-8">No completed tasks</div>
+      <div x-show="kanbanTasks.completed.length === 0" class="text-xs text-jarvis-muted text-center py-8">No completed tasks</div>
     </div>
   </div>
 </div>
 
 <!-- ═══ FAILED / ESCALATED ═══ -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-  <div class="bg-surface-900/60 rounded-xl border border-red-500/20 p-4 kanban-column">
+  <div class="bg-jarvis-raised/60 rounded-xl border border-red-500/20 p-4 kanban-column">
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-red-400"></div>
-      <h3 class="text-sm font-semibold text-surface-300">Failed</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.failed"></span>
+      <h3 class="text-sm font-semibold text-jarvis-text font-display">Failed</h3>
+      <span class="text-xs text-jarvis-muted ml-auto font-mono" x-text="kanbanCounts.failed"></span>
     </div>
     <div class="space-y-2 max-h-[200px] overflow-y-auto">
       <template x-for="task in kanbanTasks.failed" :key="task.id">
-        <div class="bg-red-950/20 rounded-lg border border-red-500/10 p-3">
+        <div class="bg-jarvis-red/5 rounded-lg border border-red-500/10 p-3">
           <div class="flex items-start justify-between mb-1">
-            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="text-xs font-mono text-jarvis-muted" x-text="task.id.slice(0, 8)"></span>
             <div class="flex items-center gap-1">
               <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-400">failed</span>
               <button @click.stop="deleteTask(task.id)"
-                      class="text-surface-600 hover:text-red-400 transition-colors p-0.5"
+                      class="text-jarvis-muted hover:text-red-400 transition-colors p-0.5"
                       title="Delete task">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
           </div>
-          <p class="text-sm text-surface-300 mb-1 line-clamp-2" x-text="task.instruction"></p>
-          <span class="text-xs text-surface-500 font-mono" x-text="task.receiver_id"></span>
+          <p class="text-sm text-jarvis-text mb-1 line-clamp-2" x-text="task.instruction"></p>
+          <span class="text-xs text-jarvis-muted font-mono" x-text="task.receiver_id"></span>
         </div>
       </template>
-      <div x-show="kanbanTasks.failed.length === 0" class="text-xs text-surface-600 text-center py-4">No failed tasks</div>
+      <div x-show="kanbanTasks.failed.length === 0" class="text-xs text-jarvis-muted text-center py-4">No failed tasks</div>
     </div>
   </div>
 
-  <div class="bg-surface-900/60 rounded-xl border border-amber-500/20 p-4 kanban-column">
+  <div class="bg-jarvis-raised/60 rounded-xl border border-amber-500/20 p-4 kanban-column">
     <div class="flex items-center gap-2 mb-4">
       <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-      <h3 class="text-sm font-semibold text-surface-300">Escalated</h3>
-      <span class="text-xs text-surface-500 ml-auto font-mono" x-text="kanbanCounts.escalated"></span>
+      <h3 class="text-sm font-semibold text-jarvis-text font-display">Escalated</h3>
+      <span class="text-xs text-jarvis-muted ml-auto font-mono" x-text="kanbanCounts.escalated"></span>
     </div>
     <div class="space-y-2 max-h-[200px] overflow-y-auto">
       <template x-for="task in kanbanTasks.escalated" :key="task.id">
-        <div class="bg-amber-950/20 rounded-lg border border-amber-500/10 p-3">
+        <div class="bg-jarvis-amber/5 rounded-lg border border-amber-500/10 p-3">
           <div class="flex items-start justify-between mb-1">
-            <span class="text-xs font-mono text-surface-500" x-text="task.id.slice(0, 8)"></span>
+            <span class="text-xs font-mono text-jarvis-muted" x-text="task.id.slice(0, 8)"></span>
             <div class="flex items-center gap-1">
               <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-400">escalated</span>
               <button @click.stop="deleteTask(task.id)"
-                      class="text-surface-600 hover:text-red-400 transition-colors p-0.5"
+                      class="text-jarvis-muted hover:text-red-400 transition-colors p-0.5"
                       title="Delete task">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
           </div>
-          <p class="text-sm text-surface-300 mb-1 line-clamp-2" x-text="task.instruction"></p>
-          <span class="text-xs text-surface-500 font-mono" x-text="task.receiver_id"></span>
+          <p class="text-sm text-jarvis-text mb-1 line-clamp-2" x-text="task.instruction"></p>
+          <span class="text-xs text-jarvis-muted font-mono" x-text="task.receiver_id"></span>
         </div>
       </template>
-      <div x-show="kanbanTasks.escalated.length === 0" class="text-xs text-surface-600 text-center py-4">No escalated tasks</div>
+      <div x-show="kanbanTasks.escalated.length === 0" class="text-xs text-jarvis-muted text-center py-4">No escalated tasks</div>
     </div>
   </div>
 </div>
 
 <!-- ═══ PAGINATION CONTROLS ═══ -->
-<div class="flex items-center justify-between mt-6 pt-4 border-t border-surface-700/50">
+<div class="flex items-center justify-between mt-6 pt-4 border-t border-jarvis-border-glow/50">
   <!-- Page Size -->
   <div class="flex items-center gap-2">
-    <span class="text-xs text-surface-500">Show:</span>
+    <span class="text-xs text-jarvis-muted">Show:</span>
     <template x-for="size in [10, 20, 50, 100]" :key="size">
       <button @click="setTaskPageSize(size)"
-              :class="taskPageSize === size ? 'bg-brand-600 text-white' : 'bg-surface-800 text-surface-400 border border-surface-700'"
-              class="px-2 py-1 rounded text-xs font-medium transition-all" x-text="size"></button>
+              :class="taskPageSize === size ? 'bg-jarvis-cyan text-white' : 'bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow'"
+              class="px-2 py-1 rounded text-xs font-medium font-mono transition-all" x-text="size"></button>
     </template>
   </div>
 
   <!-- Page Info -->
-  <div class="text-xs text-surface-500">
-    <span x-text="taskTotal"></span> tasks · Page <span x-text="taskPage"></span> of <span x-text="taskTotalPages || 1"></span>
+  <div class="text-xs text-jarvis-muted">
+    <span class="font-mono" x-text="taskTotal"></span> tasks · Page <span class="font-mono" x-text="taskPage"></span> of <span class="font-mono" x-text="taskTotalPages || 1"></span>
   </div>
 
   <!-- Page Navigation -->
   <div class="flex items-center gap-1">
     <button @click="goToPage(1)" :disabled="taskPage <= 1"
-            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">First</button>
+            class="px-2 py-1 rounded text-xs bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow disabled:opacity-30 font-mono">First</button>
     <button @click="goToPage(taskPage - 1)" :disabled="taskPage <= 1"
-            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">Prev</button>
+            class="px-2 py-1 rounded text-xs bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow disabled:opacity-30 font-mono">Prev</button>
     <button @click="goToPage(taskPage + 1)" :disabled="taskPage >= taskTotalPages"
-            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">Next</button>
+            class="px-2 py-1 rounded text-xs bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow disabled:opacity-30 font-mono">Next</button>
     <button @click="goToPage(taskTotalPages)" :disabled="taskPage >= taskTotalPages"
-            class="px-2 py-1 rounded text-xs bg-surface-800 text-surface-400 border border-surface-700 disabled:opacity-30">Last</button>
+            class="px-2 py-1 rounded text-xs bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow disabled:opacity-30 font-mono">Last</button>
   </div>
 </div>
 
@@ -275,14 +275,14 @@
      x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
      @click.self="showAssignModal = false">
-  <div class="bg-surface-900 rounded-2xl shadow-2xl border border-surface-700/50 w-full max-w-lg p-6">
-    <h3 class="text-lg font-semibold text-surface-100 mb-4">Assign New Task</h3>
+  <div class="jarvis-glass rounded-2xl shadow-2xl border border-jarvis-border-glow w-full max-w-lg p-6">
+    <h3 class="text-lg font-semibold text-jarvis-text mb-4 font-display">Assign New Task</h3>
     <form @submit.prevent="assignTask()">
       <div class="space-y-4">
         <div>
-          <label class="block text-xs text-surface-500 mb-1.5">Receiver Agent</label>
+          <label class="block text-xs text-jarvis-muted mb-1.5">Receiver Agent</label>
           <select x-model="newTask.receiver_id" required
-                  class="w-full bg-surface-800 border border-surface-700 rounded-lg px-3 py-2 text-sm text-surface-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                  class="w-full bg-jarvis-raised border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text focus:ring-2 focus:ring-jarvis-cyan focus:border-jarvis-cyan">
             <option value="">Select agent...</option>
             <template x-for="a in agents" :key="a.name">
               <option :value="a.name" x-text="a.role + ' (' + a.name + ')'"></option>
@@ -290,16 +290,16 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs text-surface-500 mb-1.5">Instruction</label>
+          <label class="block text-xs text-jarvis-muted mb-1.5">Instruction</label>
           <textarea x-model="newTask.instruction" required rows="3" placeholder="What should this agent do?"
-                    class="w-full bg-surface-800 border border-surface-700 rounded-lg px-3 py-2 text-sm text-surface-200 placeholder-surface-500 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 resize-none"></textarea>
+                    class="w-full bg-jarvis-raised border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text placeholder-jarvis-muted focus:ring-2 focus:ring-jarvis-cyan focus:border-jarvis-cyan resize-none"></textarea>
         </div>
         <div>
-          <label class="block text-xs text-surface-500 mb-1.5">Priority</label>
+          <label class="block text-xs text-jarvis-muted mb-1.5">Priority</label>
           <div class="flex gap-2">
             <template x-for="p in ['low', 'medium', 'high', 'critical']" :key="p">
               <button type="button" @click="newTask.priority = p"
-                      :class="newTask.priority === p ? priorityClass(p) + ' ring-2 ring-offset-2 ring-offset-surface-900' : 'bg-surface-800 text-surface-500 border border-surface-700'"
+                      :class="newTask.priority === p ? priorityClass(p) + ' ring-2 ring-offset-2 ring-offset-surface-900' : 'bg-jarvis-raised text-jarvis-muted border border-jarvis-border-glow'"
                       class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" x-text="p"></button>
             </template>
           </div>
@@ -307,9 +307,9 @@
       </div>
       <div class="flex gap-3 mt-6">
         <button type="button" @click="showAssignModal = false"
-                class="flex-1 bg-surface-800 text-surface-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-surface-700 transition-colors">Cancel</button>
+                class="flex-1 bg-jarvis-raised text-jarvis-text px-4 py-2 rounded-lg text-sm font-medium hover:bg-jarvis-overlay transition-colors">Cancel</button>
         <button type="submit"
-                class="flex-1 bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-500 transition-colors disabled:opacity-50"
+                class="flex-1 bg-jarvis-cyan text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-jarvis-cyan/80 transition-colors disabled:opacity-50"
                 :disabled="submitting">
           <span x-show="!submitting">Assign Task</span>
           <span x-show="submitting">Assigning...</span>

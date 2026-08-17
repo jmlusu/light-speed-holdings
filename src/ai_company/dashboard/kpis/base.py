@@ -107,7 +107,7 @@ class KPICollector(ABC):
             if db.get_schema_version() > 0:
                 return db
         except Exception:  # noqa: BLE001 - read-through must never raise
-            logger.debug("KPI database not usable; falling back to files", exc_info=True)
+            logger.warning("KPI database not usable; falling back to files", exc_info=True)
         return None
 
     def _tasks_from_sqlite(self) -> list[dict[str, Any]] | None:
@@ -122,7 +122,7 @@ class KPICollector(ABC):
             if store.count() > 0:
                 return [task.model_dump() for task in store.get_all_tasks()]
         except Exception:  # noqa: BLE001 - read-through must never raise
-            logger.debug("SQLite task read failed; using MessageBus", exc_info=True)
+            logger.warning("SQLite task read failed; using MessageBus", exc_info=True)
         return None
 
     def _tasks_from_bus(self) -> list[dict[str, Any]]:
@@ -142,7 +142,7 @@ class KPICollector(ABC):
 
             return get_bus().get_all_tasks_raw()
         except Exception:  # noqa: BLE001 - collectors must never raise
-            logger.debug("MessageBus task read failed; using empty task list", exc_info=True)
+            logger.warning("MessageBus task read failed; using empty task list", exc_info=True)
             return []
 
     def _cost_from_sqlite(self) -> dict[str, Any] | None:
@@ -159,7 +159,7 @@ class KPICollector(ABC):
             total_spent = cost.total_cost()
             return {"total_spent": total_spent, "llm_spend": total_spent}
         except Exception:  # noqa: BLE001 - read-through must never raise
-            logger.debug("SQLite cost read failed; using cost_tracker.json", exc_info=True)
+            logger.warning("SQLite cost read failed; using cost_tracker.json", exc_info=True)
         return None
 
     def _escalations_from_sqlite(self) -> list[dict[str, Any]] | None:
@@ -176,27 +176,46 @@ class KPICollector(ABC):
             events = store.get_pending() + store.get_resolved()
             return [{**event, "resolved": bool(event.get("resolved", False))} for event in events]
         except Exception:  # noqa: BLE001 - read-through must never raise
-            logger.debug("SQLite escalation read failed; using escalation.yaml", exc_info=True)
+            logger.warning("SQLite escalation read failed; using escalation.yaml", exc_info=True)
         return None
 
     def _kpi(
         self,
-        current: float | int,
+        current: float | int | None,
         target: float | int | None,
         unit: str,
         *,
         higher_is_better: bool = True,
+        error: str | None = None,
+        data_quality: str = "real",
     ) -> dict[str, Any]:
-        """Build a standard KPI value dict with automatic status inference."""
-        if target is None:
+        """Build a standard KPI value dict with automatic status inference.
+
+        Args:
+            current: The current metric value, or None if unavailable.
+            target: The target value for comparison, or None.
+            unit: Unit of measurement (e.g., "%", "$", "count").
+            higher_is_better: Whether higher values are better (for status).
+            error: Optional error message if data collection failed.
+            data_quality: One of "real" (live data), "fallback" (degraded source),
+                or "error" (collection failed, value is default).
+        """
+        if current is None:
+            status = "no_data"
+        elif target is None:
             status = "info"
         elif higher_is_better:
             status = "on_track" if current >= target else "below_target"
         else:
             status = "on_track" if current <= target else "above_target"
-        return {
+
+        result = {
             "current": current,
             "target": target,
             "unit": unit,
             "status": status,
+            "data_quality": data_quality,
         }
+        if error:
+            result["error"] = error
+        return result
