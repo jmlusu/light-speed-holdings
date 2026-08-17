@@ -52,6 +52,10 @@ function dashboard() {
     apiStatus: { show: false, message: '' },
     _apiErrorKey: '',
 
+    // ── ADR-013: Browser session token ───────────────────────
+    _sessionToken: null,
+    _tokenRefreshTimer: null,
+
     // ── Data ─────────────────────────────────────────────────
     kpis: {
       pending_tasks: 0,
@@ -131,6 +135,9 @@ function dashboard() {
       document.addEventListener('visibilitychange', () => this._onVisibilityChange());
       window.addEventListener('beforeunload', () => this.destroy());
 
+      // ADR-013: Fetch bootstrap session token before any data loading.
+      await this._fetchSessionToken();
+
       this.connectWebSocket();
 
       // FIX: Load data, then reveal UI to prevent layout jump
@@ -156,6 +163,7 @@ function dashboard() {
       clearTimeout(this._wsReconnectTimer);
       clearTimeout(this._wsProbeTimer);
       clearInterval(this._wsKeepaliveTimer);
+      clearTimeout(this._tokenRefreshTimer);
       this._cancelPendingRestore();
       if (this._kpiChartsRaf) cancelAnimationFrame(this._kpiChartsRaf);
       if (this.ws) {
@@ -293,6 +301,35 @@ function dashboard() {
       }
     },
 
+    // ═══ ADR-013: SESSION TOKEN ═════════════════════════════════
+
+    /**
+     * Fetch a short-lived, IP-bound session token from the bootstrap
+     * endpoint (ADR-013). The token is held in memory only — nothing
+     * persists across tabs or restarts. On 401/WS-1008, the client
+     * transparently re-mints via this method.
+     */
+    async _fetchSessionToken() {
+      try {
+        const res = await fetch('/api/v1/bootstrap-token');
+        if (res.ok) {
+          const data = await res.json();
+          this._sessionToken = data.token || null;
+        }
+      } catch (e) {
+        console.warn('[Token] Bootstrap fetch failed:', e);
+      }
+    },
+
+    /**
+     * Re-mint the session token (called on 401 or WS close-1008).
+     * Transparent to the caller — if the re-mint fails, the token
+     * stays stale and the next request will also fail.
+     */
+    async _refreshSessionToken() {
+      await this._fetchSessionToken();
+    },
+
     // ═══ WEBSOCKET ═════════════════════════════════════════════
 
     /**
@@ -318,8 +355,10 @@ function dashboard() {
 
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       let wsUrl = `${protocol}//${window.location.host}/ws/v1/dashboard`;
-      if (window.DASHBOARD_API_KEY) {
-        wsUrl += `?api_key=${encodeURIComponent(window.DASHBOARD_API_KEY)}`;
+      // ADR-013: use the session token (fetched from /api/v1/bootstrap-token)
+      // instead of the never-populated window.DASHBOARD_API_KEY.
+      if (this._sessionToken) {
+        wsUrl += `?api_key=${encodeURIComponent(this._sessionToken)}`;
       }
 
       let ws;
@@ -355,12 +394,17 @@ function dashboard() {
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         console.warn('[WS] Disconnected');
         this.wsConnected = false;
         this._stopKeepalive();
         this._applyPollingCadence();
-        this._scheduleReconnect();
+        // ADR-013: re-mint session token on close-1008 (auth failure)
+        if (event && event.code === 1008) {
+          this._refreshSessionToken().then(() => this._scheduleReconnect());
+        } else {
+          this._scheduleReconnect();
+        }
         // FIX: Fallback to polling — refresh data immediately since WS
         // pushes were the live path. debouncedPoll dedupes, so this never
         // double-fetches with an in-flight poll.
@@ -538,12 +582,23 @@ function dashboard() {
       const timeoutMs = opts.timeout || 15000;
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const res = await fetch(url, { ...opts, signal: controller.signal });
+        // ADR-013: send the session token as X-API-Key on all REST calls.
+        const headers = { ...(opts.headers || {}) };
+        if (this._sessionToken && !headers['X-API-Key']) {
+          headers['X-API-Key'] = this._sessionToken;
+        }
+        const res = await fetch(url, { ...opts, headers, signal: controller.signal });
         if (res.status === 429) {
           this._setApiError('Too many requests — retrying shortly');
           return null;
         }
         if (res.status === 401) {
+          // ADR-013: transparently re-mint token and retry once.
+          if (!opts._retried) {
+            clearTimeout(timer);
+            await this._refreshSessionToken();
+            return this.fetchJSON(url, { ...opts, _retried: true });
+          }
           this._setApiError('Session expired — refresh the page to reconnect');
           return null;
         }

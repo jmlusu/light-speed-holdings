@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+{% block title %}Finance — CEO Dashboard{% endblock %}
+
+{% block content %}
+<div x-data="finance()" x-init="init()">
+
+  <!-- ═══ FINANCE SUMMARY CARDS ═══ -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="kpi-card jarvis-glass rounded-xl p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-8 h-8 rounded-lg bg-jarvis-cyan/10 flex items-center justify-center">
+          <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-xs text-jarvis-muted">Revenue (MWK)</span>
+      </div>
+      <div class="text-3xl font-bold text-jarvis-cyan font-mono">
+        <template x-if="!isLoading"><span x-text="summary.total_revenue_mwk.toLocaleString()">0</span></template>
+        <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
+      </div>
+      <div class="text-[10px] text-jarvis-muted mt-1">total confirmed</div>
+    </div>
+
+    <div class="kpi-card jarvis-glass rounded-xl p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-8 h-8 rounded-lg bg-jarvis-amber/10 flex items-center justify-center">
+          <svg class="w-4 h-4 text-jarvis-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-xs text-jarvis-muted">Revenue (USD)</span>
+      </div>
+      <div class="text-3xl font-bold text-jarvis-amber font-mono">
+        <template x-if="!isLoading"><span x-text="'$' + summary.total_revenue_usd.toLocaleString()">0</span></template>
+        <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
+      </div>
+      <div class="text-[10px] text-jarvis-muted mt-1">converted @ 1800 MWK/USD</div>
+    </div>
+
+    <div class="kpi-card jarvis-glass rounded-xl p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-8 h-8 rounded-lg bg-jarvis-red/10 flex items-center justify-center">
+          <svg class="w-4 h-4 text-jarvis-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+        </div>
+        <span class="text-xs text-jarvis-muted">Costs (USD)</span>
+      </div>
+      <div class="text-3xl font-bold text-jarvis-red font-mono">
+        <template x-if="!isLoading"><span x-text="'$' + summary.total_costs_usd.toLocaleString()">0</span></template>
+        <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
+      </div>
+      <div class="text-[10px] text-jarvis-muted mt-1">delivery + LLM costs</div>
+    </div>
+
+    <div class="kpi-card jarvis-glass rounded-xl p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-8 h-8 rounded-lg bg-jarvis-success/10 flex items-center justify-center">
+          <svg class="w-4 h-4 text-jarvis-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-xs text-jarvis-muted">Margin</span>
+      </div>
+      <div class="text-3xl font-bold font-mono" :class="summary.contribution_margin >= 0 ? 'text-jarvis-success' : 'text-jarvis-red'">
+        <template x-if="!isLoading"><span x-text="summary.margin_percent + '%'">0%</span></template>
+        <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
+      </div>
+      <div class="text-[10px] text-jarvis-muted mt-1">contribution margin</div>
+    </div>
+  </div>
+
+  <!-- ═══ REVENUE LEDGER TABLE ═══ -->
+  <div class="jarvis-glass rounded-xl mb-8">
+    <div class="px-5 py-4 border-b border-jarvis-border-glow/50 flex items-center justify-between">
+      <div>
+        <h3 class="text-sm font-semibold text-jarvis-text font-display">Revenue Ledger</h3>
+        <p class="text-xs text-jarvis-muted" x-text="transactions.length + ' transactions'"></p>
+      </div>
+      <button @click="showPaymentForm = !showPaymentForm"
+              class="px-3 py-1.5 rounded-lg text-xs font-medium bg-jarvis-cyan text-jarvis-base hover:bg-jarvis-cyan/80 transition-colors">
+        + Record Payment
+      </button>
+    </div>
+
+    <!-- Payment Entry Form -->
+    <div x-show="showPaymentForm" x-transition class="px-5 py-4 border-b border-jarvis-border-glow/50 bg-jarvis-raised/30">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Client ID</label>
+          <input type="text" x-model="newPayment.client_id" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Project ID</label>
+          <input type="text" x-model="newPayment.project_id" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Offer ID</label>
+          <input type="text" x-model="newPayment.offer_id" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Service Name</label>
+          <input type="text" x-model="newPayment.service_name" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Amount</label>
+          <input type="number" x-model.number="newPayment.amount" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Currency</label>
+          <select x-model="newPayment.currency" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+            <option value="MWK">MWK</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Payment Method</label>
+          <select x-model="newPayment.payment_method" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+            <option value="Airtel Money">Airtel Money</option>
+            <option value="TNM Mpamba">TNM Mpamba</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="PayChangu">PayChangu</option>
+            <option value="Manual">Manual</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Installment</label>
+          <select x-model="newPayment.installment_type" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+            <option value="upfront">Upfront (50%)</option>
+            <option value="delivery">Delivery (50%)</option>
+            <option value="full">Full Payment</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Reference</label>
+          <input type="text" x-model="newPayment.reference" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full" placeholder="Payment ref #">
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted block mb-1">Linked Task ID</label>
+          <input type="text" x-model="newPayment.linked_task_id" class="bg-jarvis-base border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text w-full">
+        </div>
+        <div class="flex items-end">
+          <button @click="submitPayment()"
+                  class="px-4 py-2 rounded-lg text-sm font-medium bg-jarvis-cyan text-jarvis-base hover:bg-jarvis-cyan/80 transition-colors">
+            Record Payment
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ledger Table -->
+    <div class="table-wrap">
+      <table class="w-full">
+        <thead>
+          <tr class="text-left text-xs text-jarvis-muted bg-jarvis-raised/50 border-b border-jarvis-border-glow/50">
+            <th class="px-5 py-2.5 font-medium">ID</th>
+            <th class="px-5 py-2.5 font-medium">Client</th>
+            <th class="px-5 py-2.5 font-medium">Service</th>
+            <th class="px-5 py-2.5 font-medium">Amount</th>
+            <th class="px-5 py-2.5 font-medium">Method</th>
+            <th class="px-5 py-2.5 font-medium">Status</th>
+            <th class="px-5 py-2.5 font-medium">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="txn in transactions" :key="txn.id">
+            <tr class="border-b border-jarvis-raised/50 hover:bg-jarvis-overlay/30 transition-colors">
+              <td class="px-5 py-2.5 font-mono text-xs text-jarvis-cyan" x-text="txn.id"></td>
+              <td class="px-5 py-2.5 text-jarvis-text" x-text="txn.client_id || '-'"></td>
+              <td class="px-5 py-2.5 text-jarvis-text" x-text="txn.service_name || '-'"></td>
+              <td class="px-5 py-2.5 font-mono text-jarvis-text">
+                <span x-text="txn.currency + ' ' + txn.amount.toLocaleString()"></span>
+              </td>
+              <td class="px-5 py-2.5 text-jarvis-muted" x-text="txn.payment_method"></td>
+              <td class="px-5 py-2.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium"
+                      :class="txn.status === 'confirmed' ? 'bg-jarvis-success/10 text-jarvis-success' : txn.status === 'pending' ? 'bg-jarvis-amber/10 text-jarvis-amber' : 'bg-jarvis-red/10 text-jarvis-red'"
+                      x-text="txn.status"></span>
+              </td>
+              <td class="px-5 py-2.5 font-mono text-xs text-jarvis-muted" x-text="formatTime(txn.timestamp)"></td>
+            </tr>
+          </template>
+          <tr x-show="transactions.length === 0">
+            <td colspan="7" class="px-5 py-8 text-center text-sm text-jarvis-muted">No revenue transactions recorded</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ PROJECT COSTS TABLE ═══ -->
+  <div class="jarvis-glass rounded-xl">
+    <div class="px-5 py-4 border-b border-jarvis-border-glow/50">
+      <h3 class="text-sm font-semibold text-jarvis-text font-display">Project Costs</h3>
+      <p class="text-xs text-jarvis-muted" x-text="costs.length + ' cost entries'"></p>
+    </div>
+    <div class="table-wrap">
+      <table class="w-full">
+        <thead>
+          <tr class="text-left text-xs text-jarvis-muted bg-jarvis-raised/50 border-b border-jarvis-border-glow/50">
+            <th class="px-5 py-2.5 font-medium">ID</th>
+            <th class="px-5 py-2.5 font-medium">Project</th>
+            <th class="px-5 py-2.5 font-medium">Type</th>
+            <th class="px-5 py-2.5 font-medium">Amount (USD)</th>
+            <th class="px-5 py-2.5 font-medium">Agent</th>
+            <th class="px-5 py-2.5 font-medium">Description</th>
+            <th class="px-5 py-2.5 font-medium">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="cost in costs" :key="cost.id">
+            <tr class="border-b border-jarvis-raised/50 hover:bg-jarvis-overlay/30 transition-colors">
+              <td class="px-5 py-2.5 font-mono text-xs text-jarvis-cyan" x-text="cost.id"></td>
+              <td class="px-5 py-2.5 text-jarvis-text" x-text="cost.project_id || '-'"></td>
+              <td class="px-5 py-2.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-jarvis-amber/10 text-jarvis-amber" x-text="cost.cost_type"></span>
+              </td>
+              <td class="px-5 py-2.5 font-mono text-jarvis-text" x-text="'$' + cost.amount_usd.toFixed(2)"></td>
+              <td class="px-5 py-2.5 font-mono text-xs text-jarvis-muted" x-text="cost.agent_id || '-'"></td>
+              <td class="px-5 py-2.5 text-jarvis-muted text-xs" x-text="cost.description || '-'"></td>
+              <td class="px-5 py-2.5 font-mono text-xs text-jarvis-muted" x-text="formatTime(cost.timestamp)"></td>
+            </tr>
+          </template>
+          <tr x-show="costs.length === 0">
+            <td colspan="7" class="px-5 py-8 text-center text-sm text-jarvis-muted">No project costs recorded</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function finance() {
+  return {
+    isLoading: true,
+    summary: {
+      total_revenue_mwk: 0,
+      total_revenue_usd: 0,
+      total_costs_usd: 0,
+      contribution_margin: 0,
+      margin_percent: 0,
+      transaction_count: 0,
+      cost_count: 0,
+    },
+    transactions: [],
+    costs: [],
+    showPaymentForm: false,
+    newPayment: {
+      client_id: '',
+      project_id: '',
+      offer_id: '',
+      service_name: '',
+      amount: 0,
+      currency: 'MWK',
+      payment_method: 'Airtel Money',
+      installment_type: 'upfront',
+      reference: '',
+      linked_task_id: '',
+    },
+
+    async init() {
+      await this.loadData();
+      this.isLoading = false;
+    },
+
+    async loadData() {
+      try {
+        const [summaryRes, txnRes, costRes] = await Promise.all([
+          fetch('/api/v1/revenue/summary'),
+          fetch('/api/v1/revenue'),
+          fetch('/api/v1/project-costs'),
+        ]);
+        if (summaryRes.ok) this.summary = await summaryRes.json();
+        if (txnRes.ok) this.transactions = await txnRes.json();
+        if (costRes.ok) this.costs = await costRes.json();
+      } catch (e) {
+        console.error('Failed to load finance data:', e);
+      }
+    },
+
+    async submitPayment() {
+      try {
+        const res = await fetch('/api/v1/payments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.newPayment),
+        });
+        if (res.ok) {
+          this.showPaymentForm = false;
+          this.newPayment = {
+            client_id: '', project_id: '', offer_id: '', service_name: '',
+            amount: 0, currency: 'MWK', payment_method: 'Airtel Money',
+            installment_type: 'upfront', reference: '', linked_task_id: '',
+          };
+          await this.loadData();
+        }
+      } catch (e) {
+        console.error('Failed to record payment:', e);
+      }
+    },
+
+    formatTime(ts) {
+      if (!ts) return '-';
+      try {
+        return new Date(ts).toLocaleDateString('en-MW', {
+          year: 'numeric', month: 'short', day: 'numeric',
+        });
+      } catch { return ts; }
+    },
+  };
+}
+</script>
+{% endblock %}

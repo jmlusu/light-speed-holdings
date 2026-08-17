@@ -1,0 +1,403 @@
+{% extends "base.html" %}
+{% block title %}Mission Control — CEO Dashboard{% endblock %}
+
+{% block head %}
+<style>
+  .mc-container { display: flex; flex-direction: column; gap: 1rem; }
+  .mc-header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; }
+  .mc-header h1 { font-family: var(--jarvis-font-display); font-size: 1.25rem; color: var(--jarvis-cyan); letter-spacing: 0.08em; text-transform: uppercase; }
+  .mc-header .mc-status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.5rem; }
+  .mc-layout { display: grid; grid-template-columns: 320px 1fr; gap: 1rem; min-height: 60vh; }
+  @media (max-width: 900px) { .mc-layout { grid-template-columns: 1fr; } }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
+
+  /* Instance list (left rail) */
+  .mc-rail { jarvis-glass; border-radius: 0.75rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; max-height: 70vh; overflow-y: auto; }
+  .mc-rail-title { font-family: var(--jarvis-font-display); font-size: 0.8rem; color: var(--jarvis-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+  .mc-instance-card { padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid transparent; cursor: pointer; transition: all 0.15s ease; }
+  .mc-instance-card:hover { background: rgba(34, 211, 238, 0.05); border-color: rgba(34, 211, 238, 0.15); }
+  .mc-instance-card.active { background: rgba(34, 211, 238, 0.08); border-color: rgba(34, 211, 238, 0.3); }
+  .mc-instance-name { font-size: 0.85rem; color: var(--jarvis-text); font-weight: 500; }
+  .mc-instance-meta { font-size: 0.7rem; color: var(--jarvis-muted); margin-top: 0.15rem; display: flex; gap: 0.5rem; align-items: center; }
+  .mc-badge { font-size: 0.6rem; padding: 0.1rem 0.4rem; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .mc-badge-running { background: rgba(34, 211, 238, 0.15); color: #22d3ee; }
+  .mc-badge-completed { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  .mc-badge-cancelled { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+  .mc-empty { text-align: center; color: var(--jarvis-muted); font-size: 0.8rem; padding: 2rem 0; }
+
+  /* Pipeline view (right panel) */
+  .mc-pipeline { jarvis-glass; border-radius: 0.75rem; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+  .mc-pipeline-header { display: flex; align-items: center; justify-content: space-between; }
+  .mc-pipeline-title { font-family: var(--jarvis-font-display); font-size: 1rem; color: var(--jarvis-text); }
+  .mc-pipeline-actions { display: flex; gap: 0.5rem; }
+
+  /* Progress bar */
+  .mc-progress-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 9999px; overflow: hidden; }
+  .mc-progress-fill { height: 100%; background: linear-gradient(90deg, #22d3ee, #06b6d4); border-radius: 9999px; transition: width 0.4s ease; }
+  .mc-progress-text { font-size: 0.7rem; color: var(--jarvis-muted); margin-top: 0.25rem; text-align: right; }
+
+  /* Step pipeline */
+  .mc-steps { display: flex; flex-direction: column; gap: 0; position: relative; }
+  .mc-step { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 0; position: relative; }
+  .mc-step-connector { position: absolute; left: 15px; top: 2.75rem; bottom: 0; width: 2px; background: rgba(255,255,255,0.08); }
+  .mc-step:last-child .mc-step-connector { display: none; }
+  .mc-step-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; font-size: 0.7rem; font-weight: 600; }
+  .mc-step-icon.completed { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 2px solid rgba(52, 211, 153, 0.3); }
+  .mc-step-icon.in_progress { background: rgba(34, 211, 238, 0.15); color: #22d3ee; border: 2px solid rgba(34, 211, 238, 0.4); animation: mc-pulse 2s ease-in-out infinite; }
+  .mc-step-icon.pending { background: rgba(255,255,255,0.04); color: var(--jarvis-muted); border: 2px solid rgba(255,255,255,0.1); }
+  .mc-step-icon.cancelled { background: rgba(248, 113, 113, 0.1); color: #f87171; border: 2px solid rgba(248, 113, 113, 0.2); }
+  .mc-step-content { flex: 1; min-width: 0; }
+  .mc-step-name { font-size: 0.85rem; color: var(--jarvis-text); font-weight: 500; }
+  .mc-step-name.completed-step { color: #34d399; }
+  .mc-step-name.active-step { color: #22d3ee; }
+  .mc-step-name.cancelled-step { color: #f87171; text-decoration: line-through; }
+  .mc-step-meta { font-size: 0.7rem; color: var(--jarvis-muted); margin-top: 0.15rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .mc-step-meta span { display: inline-flex; align-items: center; gap: 0.25rem; }
+  .mc-step-result { font-size: 0.7rem; color: var(--jarvis-cyan); margin-top: 0.25rem; font-style: italic; }
+  .mc-step-sla { font-size: 0.65rem; color: #fbbf24; }
+
+  @keyframes mc-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(34, 211, 238, 0); }
+  }
+
+  /* Detail panel below steps */
+  .mc-detail { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.75rem; }
+  .mc-detail-row { display: flex; gap: 1.5rem; font-size: 0.75rem; color: var(--jarvis-muted); flex-wrap: wrap; }
+  .mc-detail-row dt { font-weight: 500; color: var(--jarvis-text); min-width: 80px; }
+  .mc-detail-row dd { margin: 0; }
+
+  /* Control buttons */
+  .mc-btn { font-family: var(--jarvis-font-display); font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 0.375rem; border: 1px solid; cursor: pointer; transition: all 0.15s ease; text-transform: uppercase; letter-spacing: 0.05em; }
+  .mc-btn-cyan { border-color: rgba(34, 211, 238, 0.3); color: #22d3ee; background: rgba(34, 211, 238, 0.08); }
+  .mc-btn-cyan:hover { background: rgba(34, 211, 238, 0.15); }
+  .mc-btn-green { border-color: rgba(52, 211, 153, 0.3); color: #34d399; background: rgba(52, 211, 153, 0.08); }
+  .mc-btn-green:hover { background: rgba(52, 211, 153, 0.15); }
+  .mc-btn-red { border-color: rgba(248, 113, 113, 0.3); color: #f87171; background: rgba(248, 113, 113, 0.08); }
+  .mc-btn-red:hover { background: rgba(248, 113, 113, 0.15); }
+  .mc-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Start workflow modal */
+  .mc-start-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+  .mc-select { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.375rem; color: var(--jarvis-text); padding: 0.35rem 0.5rem; font-size: 0.8rem; flex: 1; }
+  .mc-select option { background: #0c1420; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- CEO Dashboard Hero Prototype — switchable via ?variant=A|B|D -->
+<div x-data="ceoHeroPrototype()" x-init="init()" @keydown.window="handleKeydown($event)" class="mc-container" style="margin-bottom: 1.5rem;">
+
+  <!-- Variant A: Gauge Hero + KPI Cards -->
+  <template x-if="variant === 'A'">
+    <div class="jarvis-glass rounded-xl p-6 sm:p-8">
+      <!-- Hero Gauge -->
+      <div class="flex flex-col items-center gap-4 mb-6 sm:mb-8">
+        <div class="relative w-48 h-48 sm:w-64 sm:h-64">
+          <canvas id="heroGauge" width="256" height="256"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="font-display text-4xl sm:text-6xl font-bold text-jarvis-text" x-text="formatScore(orgHealth?.score)"></div>
+            <div class="font-display text-xs sm:text-sm uppercase tracking-wider" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band?.toUpperCase()"></div>
+          </div>
+        </div>
+        <div class="text-center">
+          <p class="text-jarvis-muted text-sm">Organizational Health Score</p>
+          <p class="text-xs text-jarvis-muted mt-1" x-text="orgHealth ? 'Updated: ' + new Date(orgHealth.collected_at).toLocaleTimeString() : 'Loading...'"></p>
+        </div>
+      </div>
+
+      <!-- KPI Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" x-show="orgHealth && orgHealth.components">
+        <template x-for="comp in orgHealth.components" :key="comp.name">
+          <div class="jarvis-glass rounded-lg p-4 border border-white/5 hover:border-jarvis-cyan/20 transition-colors">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <p class="font-display text-xs uppercase tracking-wider text-jarvis-muted mb-1" x-text="getComponentLabel(comp.name)"></p>
+                <p class="text-2xl font-bold text-jarvis-text" x-text="formatScore(comp.value)"></p>
+                <p class="text-xs text-jarvis-muted mt-1" x-text="getComponentDescription(comp.name)"></p>
+              </div>
+              <div class="w-2 h-2 rounded-full mt-2 flex-shrink-0" :class="getBandClass(comp.sub_score >= 80 ? 'green' : comp.sub_score >= 50 ? 'amber' : 'red')"></div>
+            </div>
+            <!-- Mini sparkline placeholder -->
+            <div class="mt-3 h-8 bg-white/5 rounded relative overflow-hidden">
+              <canvas class="w-full h-full" :id="'spark-' + comp.name"></canvas>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <!-- Variant B: Horizontal Split -->
+  <template x-if="variant === 'B'">
+    <div class="jarvis-glass rounded-xl p-6 sm:p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+        <!-- Left: Gauge -->
+        <div class="flex flex-col items-center justify-center lg:items-start lg:justify-center p-4 lg:p-0">
+          <div class="relative w-40 h-40 sm:w-48 sm:h-48 mb-4 lg:mb-0">
+            <canvas id="heroGaugeB" width="192" height="192"></canvas>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div class="font-display text-3xl sm:text-4xl font-bold text-jarvis-text" x-text="formatScore(orgHealth?.score)"></div>
+              <div class="font-display text-xs uppercase tracking-wider" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band?.toUpperCase()"></div>
+            </div>
+          </div>
+          <div class="text-center lg:text-left w-full">
+            <p class="text-jarvis-muted text-sm">Org Health</p>
+            <p class="text-xs text-jarvis-muted" x-text="orgHealth ? 'Updated: ' + new Date(orgHealth.collected_at).toLocaleTimeString() : 'Loading...'"></p>
+          </div>
+        </div>
+
+        <!-- Right: KPI Cards 2x2 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" x-show="orgHealth && orgHealth.components">
+          <template x-for="comp in orgHealth.components" :key="comp.name">
+            <div class="jarvis-glass rounded-lg p-4 border border-white/5">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <p class="font-display text-xs uppercase tracking-wider text-jarvis-muted" x-text="getComponentLabel(comp.name)"></p>
+                  <p class="text-xl font-bold text-jarvis-text mt-1" x-text="formatScore(comp.value)"></p>
+                </div>
+                <div class="w-2 h-2 rounded-full mt-3 flex-shrink-0" :class="getBandClass(comp.sub_score >= 80 ? 'green' : comp.sub_score >= 50 ? 'amber' : 'red')"></div>
+              </div>
+              <p class="text-xs text-jarvis-muted" x-text="getComponentDescription(comp.name)"></p>
+              <div class="mt-2 h-6 bg-white/5 rounded relative overflow-hidden">
+                <canvas class="w-full h-full" :id="'spark-b-' + comp.name"></canvas>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Variant D: Drill-down Gauge -->
+  <template x-if="variant === 'D'">
+    <div class="jarvis-glass rounded-xl p-6 sm:p-8">
+      <!-- Main Gauge (clickable) -->
+      <div class="flex flex-col items-center gap-4 mb-6 sm:mb-8" @click="toggleComponent('overview')" style="cursor: pointer;">
+        <div class="relative w-48 h-48 sm:w-64 sm:h-64">
+          <canvas id="heroGaugeD" width="256" height="256"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="font-display text-4xl sm:text-6xl font-bold text-jarvis-text" x-text="formatScore(orgHealth?.score)"></div>
+            <div class="font-display text-xs sm:text-sm uppercase tracking-wider" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band?.toUpperCase()"></div>
+            <div class="text-xs text-jarvis-muted mt-2">Click to expand</div>
+          </div>
+        </div>
+        <div class="text-center">
+          <p class="text-jarvis-muted text-sm">Organizational Health — Click for Breakdown</p>
+        </div>
+      </div>
+
+      <!-- Expanded Component Breakdown -->
+      <div x-show="expandedComponent" class="mt-6 space-y-4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:leave="transition ease-in duration-200" x-transition:leave-end="opacity-0 transform translate-y-4">
+        <template x-if="expandedComponent === 'overview' && orgHealth && orgHealth.components">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <template x-for="comp in orgHealth.components" :key="comp.name">
+              <div class="jarvis-glass rounded-lg p-4 border border-white/5" @click="toggleComponent(comp.name)" style="cursor: pointer;">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <div>
+                    <p class="font-display text-xs uppercase tracking-wider text-jarvis-muted" x-text="getComponentLabel(comp.name)"></p>
+                    <p class="text-2xl font-bold text-jarvis-text mt-1" x-text="formatScore(comp.value)"></p>
+                    <p class="text-xs text-jarvis-muted" x-text="getComponentDescription(comp.name)"></p>
+                  </div>
+                  <div class="w-2 h-2 rounded-full mt-3 flex-shrink-0" :class="getBandClass(comp.sub_score >= 80 ? 'green' : comp.sub_score >= 50 ? 'amber' : 'red')"></div>
+                </div>
+                <div class="h-8 bg-white/5 rounded relative overflow-hidden">
+                  <canvas class="w-full h-full" :id="'spark-d-' + comp.name"></canvas>
+                </div>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <template x-for="comp in orgHealth?.components" :key="comp.name" x-if="expandedComponent === comp.name">
+          <div class="jarvis-glass rounded-lg p-6 border border-jarvis-cyan/30">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <p class="font-display text-lg font-bold text-jarvis-text" x-text="getComponentLabel(comp.name)"></p>
+                <p class="text-jarvis-muted text-sm" x-text="getComponentDescription(comp.name)"></p>
+              </div>
+              <button @click="expandedComponent = null" class="text-jarvis-muted hover:text-jarvis-text">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="text-center p-4 bg-white/5 rounded-lg">
+                <p class="font-display text-3xl font-bold text-jarvis-text" x-text="formatScore(comp.value)"></p>
+                <p class="text-xs text-jarvis-muted">Current Score</p>
+              </div>
+              <div class="text-center p-4 bg-white/5 rounded-lg">
+                <p class="font-display text-3xl font-bold" :class="getBandTextClass(comp.sub_score >= 80 ? 'green' : comp.sub_score >= 50 ? 'amber' : 'red')" x-text="formatScore(comp.sub_score)"></p>
+                <p class="text-xs text-jarvis-muted">Component Score</p>
+              </div>
+              <div class="text-center p-4 bg-white/5 rounded-lg">
+                <p class="font-display text-3xl font-bold text-jarvis-text" x-text="comp.weight * 100 + '%'"></p>
+                <p class="text-xs text-jarvis-muted">Weight in Composite</p>
+              </div>
+            </div>
+            <div class="mt-4 h-16 bg-white/5 rounded relative overflow-hidden">
+              <canvas class="w-full h-full" :id="'spark-detail-' + comp.name"></canvas>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Prompt when collapsed -->
+      <div x-show="!expandedComponent" class="text-center text-jarvis-muted text-sm py-8">
+        Click the gauge above to see component breakdown
+      </div>
+    </div>
+  </template>
+
+  <!-- Prototype Switcher Bar (dev only) -->
+  <div x-show="showSwitcher" x-data="prototypeSwitcher()" x-init="init()" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2 jarvis-glass rounded-full shadow-2xl border border-white/10 animate-slide-up">
+    <button @click="prevVariant()" class="p-2 text-jarvis-muted hover:text-jarvis-text" aria-label="Previous variant">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <span class="font-display text-sm font-medium text-jarvis-text" x-text="variants.find(v => v.key === current)?.name + ' (' + current + ')'"></span>
+    <button @click="nextVariant()" class="p-2 text-jarvis-muted hover:text-jarvis-text" aria-label="Next variant">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<!-- Existing Mission Control Workflow UI (below prototype) -->
+<div x-data="missionControl()" x-init="init()" class="mc-container">
+
+  <!-- Header -->
+  <div class="mc-header">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span class="mc-status-dot" :class="wsConnected ? 'bg-emerald-400' : 'bg-amber-400'"></span>
+      <h1>Mission Control</h1>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; color: var(--jarvis-muted);">
+      <span x-text="instances.length + ' instance(s)'"></span>
+    </div>
+  </div>
+
+  <!-- Start new workflow -->
+  <div class="mc-start-row">
+    <select class="mc-select" x-model="selectedWorkflow">
+      <option value="">Start a workflow...</option>
+      <template x-for="wf in workflows" :key="wf.id">
+        <option :value="wf.id" x-text="wf.name + ' (' + wf.steps + ' steps)'"></option>
+      </template>
+    </select>
+    <button class="mc-btn mc-btn-cyan" @click="startWorkflow()" :disabled="!selectedWorkflow || starting">
+      <span x-show="!starting">Start</span>
+      <span x-show="starting">Starting...</span>
+    </button>
+  </div>
+
+  <!-- Main layout -->
+  <div class="mc-layout">
+
+    <!-- Left rail: instance list -->
+    <div class="mc-rail">
+      <div class="mc-rail-title">Workflow Instances</div>
+      <template x-for="inst in instances" :key="inst.instance_id">
+        <div class="mc-instance-card" :class="selectedInstance === inst.instance_id && 'active'" @click="selectInstance(inst.instance_id)">
+          <div class="mc-instance-name" x-text="inst.workflow_name"></div>
+          <div class="mc-instance-meta">
+            <span class="mc-badge" :class="'mc-badge-' + inst.status" x-text="inst.status"></span>
+            <span x-text="inst.completed_steps + '/' + inst.total_steps + ' steps'"></span>
+            <span x-text="inst.instance_id.split('_').pop()"></span>
+          </div>
+        </div>
+      </template>
+      <div x-show="instances.length === 0" class="mc-empty">No workflow instances running.<br>Start one above.</div>
+    </div>
+
+    <!-- Right panel: pipeline detail -->
+    <div class="mc-pipeline" x-show="selectedInstance">
+      <!-- Pipeline header -->
+      <div class="mc-pipeline-header">
+        <div>
+          <div class="mc-pipeline-title" x-text="detail.workflow_name || ''"></div>
+          <div style="font-size: 0.7rem; color: var(--jarvis-muted); margin-top: 0.15rem;" x-text="detail.instance_id || ''"></div>
+        </div>
+        <div class="mc-pipeline-actions">
+          <button class="mc-btn mc-btn-cyan" @click="advanceStep()" :disabled="detail.status !== 'running'" x-show="detail.status === 'running'">Advance</button>
+          <button class="mc-btn mc-btn-green" @click="completeCurrentStep()" :disabled="detail.status !== 'running'" x-show="detail.status === 'running'">Complete Step</button>
+          <button class="mc-btn mc-btn-red" @click="cancelInstance()" :disabled="detail.status !== 'running'" x-show="detail.status === 'running'">Abort</button>
+          <span class="mc-badge" :class="'mc-badge-' + (detail.status || 'running')" x-text="detail.status || ''"></span>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div>
+        <div class="mc-progress-track">
+          <div class="mc-progress-fill" :style="'width: ' + progressPercent + '%'"></div>
+        </div>
+        <div class="mc-progress-text" x-text="detail.completed_steps + ' of ' + detail.total_steps + ' steps completed'"></div>
+      </div>
+
+      <!-- Step pipeline -->
+      <div class="mc-steps">
+        <template x-for="(step, idx) in detail.steps || []" :key="step.id">
+          <div class="mc-step">
+            <div class="mc-step-connector" x-show="idx < (detail.steps || []).length - 1"></div>
+            <div class="mc-step-icon" :class="step.status">
+              <template x-if="step.status === 'completed'">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              </template>
+              <template x-if="step.status === 'in_progress'">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </template>
+              <template x-if="step.status === 'pending'">
+                <span x-text="idx + 1"></span>
+              </template>
+              <template x-if="step.status === 'cancelled'">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </template>
+            </div>
+            <div class="mc-step-content">
+              <div class="mc-step-name" :class="step.status + '-step'" x-text="step.name"></div>
+              <div class="mc-step-meta">
+                <span x-show="step.owner">
+                  <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                  <span x-text="step.owner"></span>
+                </span>
+                <span x-show="step.action" style="font-family: var(--jarvis-font-mono); font-size: 0.65rem;" x-text="step.action"></span>
+                <span x-show="step.sla_hours || step.sla_minutes || step.sla_days" class="mc-step-sla">
+                  SLA: <span x-text="formatSLA(step)"></span>
+                </span>
+              </div>
+              <div x-show="step.result" class="mc-step-result" x-text="'Result: ' + step.result"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Detail footer -->
+      <div class="mc-detail" x-show="detail.started_at">
+        <dl class="mc-detail-row">
+          <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+            <div><dt>Started</dt><dd x-text="formatTime(detail.started_at)"></dd></div>
+            <div x-show="detail.completed_at"><dt>Completed</dt><dd x-text="formatTime(detail.completed_at)"></dd></div>
+            <div><dt>Workflow</dt><dd x-text="detail.workflow_id"></dd></div>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Empty state when no instance selected -->
+    <div class="mc-pipeline" x-show="!selectedInstance" style="align-items: center; justify-content: center;">
+      <div class="mc-empty" style="padding: 3rem;">
+        <svg class="w-8 h-8 mx-auto mb-2" style="color: var(--jarvis-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div>Select a workflow instance to view its pipeline</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/mission-control.js"></script>
+<script src="/static/js/ceo-hero-prototype.js"></script>
+{% endblock %}

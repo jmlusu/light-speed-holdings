@@ -158,7 +158,8 @@ async def dashboard_websocket(websocket: WebSocket) -> None:
         await websocket.close(code=1008, reason="Origin not allowed")
         return
     try:
-        require_ws_role("run", websocket.query_params.get("api_key"))
+        client_ip = websocket.client.host if websocket.client else "unknown"
+        require_ws_role("run", websocket.query_params.get("api_key"), client_ip)
     except HTTPException:
         await websocket.close(code=1008, reason="Invalid or insufficient API key")
         return
@@ -299,6 +300,56 @@ async def broadcast_escalation(escalation: dict[str, Any]) -> None:
 # ---------------------------------------------------------------------------
 # Sync-to-async bridge for MessageBus callback integration
 # ---------------------------------------------------------------------------
+
+
+async def broadcast_workflow_update(instance_id: str, event: str, payload: dict[str, Any]) -> None:
+    """Push a workflow lifecycle event to subscribed dashboard clients.
+
+    Clients subscribe to the ``"workflows"`` topic to receive these.
+    """
+    await manager.broadcast(
+        {
+            "type": "workflow_update",
+            "topic": "workflows",
+            "event": event,
+            "instance_id": instance_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": payload,
+        }
+    )
+
+
+async def broadcast_onboarding_update(request_id: str, event: str, payload: dict[str, Any]) -> None:
+    """Push an onboarding lifecycle event to subscribed dashboard clients.
+
+    Clients subscribe to the ``"onboarding"`` topic to receive these.
+    Events: requested, approved, rejected, expired, step_completed.
+    """
+    await manager.broadcast(
+        {
+            "type": "onboarding_update",
+            "topic": "onboarding",
+            "event": event,
+            "request_id": request_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": payload,
+        }
+    )
+
+
+async def broadcast_org_health(data: dict[str, Any]) -> None:
+    """Push an org-health score update to all connected dashboard clients.
+
+    Clients subscribe to the ``"org_health"`` topic to receive these.
+    """
+    await manager.broadcast(
+        {
+            "type": "org_health_update",
+            "topic": "org_health",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": data,
+        }
+    )
 
 
 def make_message_bus_broadcast_callback() -> Any:
