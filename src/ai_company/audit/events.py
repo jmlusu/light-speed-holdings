@@ -38,6 +38,7 @@ class AuditEventType(str, Enum):
     CONFIG_CHANGE = "config_change"
     ESCALATION_RESOLVED = "escalation_resolved"
     TIER_OVERRIDE = "tier_override"
+    DATA_QUALITY_ALERT = "data_quality_alert"
 
 
 class AuditEvent(BaseModel):
