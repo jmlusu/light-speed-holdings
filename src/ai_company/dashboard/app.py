@@ -32,6 +32,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, cast
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -40,6 +41,8 @@ from fastapi.templating import Jinja2Templates
 from ai_company.logging_config import setup_logging
 from ai_company.paths import get_data_root, get_project_root
 from ai_company.version import get_version
+
+load_dotenv()
 
 # Configure structured logging on import
 setup_logging()
