@@ -20,6 +20,7 @@ from ai_company.llm.providers.base import (
     LLMResponseError,
     StreamChunk,
 )
+from ai_company.llm.providers.llamacpp import LlamaCppConfig, LlamaCppProvider
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 from ai_company.llm.token_bucket import TokenBucket
@@ -94,6 +95,44 @@ class LLMClient:
                     name=pcfg.id,
                     api_base=pcfg.api_base or "http://localhost:11434",
                     default_model=pcfg.default_model,
+                )
+            elif pcfg.id == "llamacpp":
+                # Get model-specific config from models.yaml
+                model_dir = getattr(pcfg, "model_dir", "./models")
+                model_name = pcfg.default_model
+                models_config = getattr(pcfg, "models", {})
+                model_config = models_config.get(model_name, {})
+                model_path = model_config.get("path", f"{model_dir}/{model_name}.gguf")
+
+                # Hardware config (model-specific overrides provider defaults)
+                hw_config = getattr(pcfg, "hardware", {})
+                model_hw = model_config.get("hardware", {})
+                hw_config = {**hw_config, **model_hw}
+
+                # Inference config
+                inf_config = getattr(pcfg, "inference", {})
+
+                llama_config = LlamaCppConfig(
+                    model_path=model_path,
+                    n_ctx=hw_config.get("n_ctx", 32768),
+                    n_batch=hw_config.get("n_batch", 512),
+                    n_threads=hw_config.get("n_threads", 8),
+                    n_threads_batch=hw_config.get("n_threads_batch", 8),
+                    n_gpu_layers=hw_config.get("n_gpu_layers", 0),
+                    use_mlock=hw_config.get("use_mlock", True),
+                    use_mmap=hw_config.get("use_mmap", True),
+                    temperature=inf_config.get("temperature", 0.3),
+                    top_p=inf_config.get("top_p", 0.9),
+                    top_k=inf_config.get("top_k", 40),
+                    repeat_penalty=inf_config.get("repeat_penalty", 1.1),
+                )
+
+                self._providers[pcfg.id] = LlamaCppProvider(
+                    name=pcfg.id,
+                    model_path=model_path,
+                    config=llama_config,
+                    server_port=8080,  # Could be configurable
+                    use_server=True,
                 )
             else:
                 # Determine auth style based on backend or provider id
@@ -270,6 +309,25 @@ class LLMClient:
                     },
                 )
                 inc_metric("llm_errors_total")
+
+                # Check for token-limit error and try to rotate
+                if self._is_token_limit_error(str(exc)):
+                    logger.info(
+                        "Token limit detected, attempting rotation from %s/%s",
+                        provider_id,
+                        model,
+                    )
+                    # Try to rotate to a different model (sync version)
+                    rotated_route = self.router.rotate_on_token_limit_sync(model, task_instruction)
+                    if rotated_route and rotated_route.model != model:
+                        # Use the rotated model for the next attempt
+                        provider_chain.append((rotated_route.provider, rotated_route.model))
+                        logger.info(
+                            "Rotated to %s/%s (tier: %s)",
+                            rotated_route.provider,
+                            rotated_route.model,
+                            rotated_route.tier,
+                        )
 
         raise LLMResponseError(
             f"Failed to get valid JSON after {max_retries} attempts. Last error: {last_error}",
@@ -518,6 +576,17 @@ class LLMClient:
     def _parse_response(self, content: str) -> dict[str, Any] | None:
         """Try to parse the LLM response as JSON."""
         return parse_llm_json(content)
+
+    def _is_token_limit_error(self, error_msg: str) -> bool:
+        """Check if an error message indicates a token/context limit exceeded.
+
+        Returns True if the error message contains patterns suggesting
+        the context window was exceeded, triggering rotation logic.
+        """
+        from ai_company.model_router import ModelRouter
+
+        lowered = error_msg.lower()
+        return any(pattern in lowered for pattern in ModelRouter.TOKEN_LIMIT_PATTERNS)
 
     def get_provider(self, provider_id: str) -> LLMProvider | None:
         return self._providers.get(provider_id)

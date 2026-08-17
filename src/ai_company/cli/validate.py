@@ -87,11 +87,30 @@ def naming(
         registry_path: Path to the agent registry YAML.
     """
     from ai_company.generator import AgentGenerator
+    from ai_company.registry import load_registry
 
-    gen = AgentGenerator(registry_path=registry_path)
-    data = gen.load_registry()
+    registry = load_registry()
+    # Combine all agent types from the validated registry
+    all_agents = []
+    for ex in registry.executives:
+        all_agents.append({
+            "id": ex.id,
+            "name": ex.name or ex.id,
+        })
+    for spec in registry.specialists:
+        all_agents.append({
+            "id": spec.id,
+            "name": spec.name or spec.id,
+        })
+    for bm in registry.board:
+        all_agents.append({
+            "id": bm.id,
+            "name": bm.name or bm.id,
+        })
+    agents = all_agents
 
-    agents = data if isinstance(data, list) else data.get("company", {}).get("agents", [])
+    # Create generator instance for output_dir access
+    gen = AgentGenerator()
 
     errors: list[str] = []
     for agent in agents:
@@ -392,8 +411,17 @@ def all(
     # 3. Check naming conventions
     typer.echo("\n--- Naming Convention Check ---")
     naming_errors: list[str] = []
-    data = gen.load_registry()
-    agents = data if isinstance(data, list) else data.get("company", {}).get("agents", [])
+    from ai_company.registry import load_registry
+    registry = load_registry()
+    # Combine all agent types from the validated registry
+    all_agents = []
+    for ex in registry.executives:
+        all_agents.append({"id": ex.id, "name": ex.name or ex.id})
+    for spec in registry.specialists:
+        all_agents.append({"id": spec.id, "name": spec.name or spec.id})
+    for bm in registry.board:
+        all_agents.append({"id": bm.id, "name": bm.name or bm.id})
+    agents = all_agents
 
     known_agents: set[str] = {p.stem for p in generated}
 

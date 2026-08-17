@@ -32,7 +32,7 @@ def tick() -> None:
 
     scheduler = Scheduler()
     escalation = EscalationManager()
-    gate = ApprovalGate()
+    gate = ApprovalGate.get_instance()
 
     pending_tasks = scheduler.get_pending_tasks()
     pending_escalations = escalation.get_pending_escalations()
@@ -250,7 +250,7 @@ def approval_pending() -> None:
     """List pending approval requests."""
     from ai_company.orchestrator.approval import ApprovalGate
 
-    pending = ApprovalGate().get_pending_requests()
+    pending = ApprovalGate.get_instance().get_pending_requests()
     if not pending:
         typer.echo("No pending approval requests.")
         return
@@ -282,7 +282,7 @@ def approval_approve(
     """
     from ai_company.orchestrator.approval import ApprovalGate
 
-    if ApprovalGate().approve(request_id, approved_by, notes):
+    if ApprovalGate.get_instance().approve(request_id, approved_by, notes):
         typer.echo(f"Request '{request_id}' approved by {approved_by}.")
     else:
         typer.echo(f"Error: Request '{request_id}' not found or already processed.")
@@ -304,7 +304,7 @@ def approval_reject(
     """
     from ai_company.orchestrator.approval import ApprovalGate
 
-    if ApprovalGate().reject(request_id, rejected_by, notes):
+    if ApprovalGate.get_instance().reject(request_id, rejected_by, notes):
         typer.echo(f"Request '{request_id}' rejected by {rejected_by}.")
     else:
         typer.echo(f"Error: Request '{request_id}' not found or already processed.")
