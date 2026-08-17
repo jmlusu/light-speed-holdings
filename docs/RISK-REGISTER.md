@@ -1,6 +1,6 @@
 # Risk Register — Light Speed Holdings
 
-> Last updated: 2026-07-20
+> Last updated: 2026-08-18
 
 ## Risk Matrix
 

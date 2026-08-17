@@ -1,7 +1,7 @@
 # Dashboard Architecture — Backend Interaction Diagram
 
 > How the CEO Dashboard communicates with the backend.
-> Generated 2026-07-22 from team review.
+> Generated 2026-08-18 from team review.
 
 ---
 

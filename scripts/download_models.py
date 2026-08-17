@@ -67,11 +67,19 @@ def download_model(model: dict, models_dir: Path) -> bool:
 
     print(f"⬇ Downloading {model['name']} ({model['size_gb']} GB) - {model['description']}")
     try:
-        subprocess.run([
-            "huggingface-cli", "download", model["repo"], model["file"],
-            "--local-dir", str(models_dir),
-            "--local-dir-use-symlinks", "False"
-        ], check=True)
+        subprocess.run(
+            [
+                "huggingface-cli",
+                "download",
+                model["repo"],
+                model["file"],
+                "--local-dir",
+                str(models_dir),
+                "--local-dir-use-symlinks",
+                "False",
+            ],
+            check=True,
+        )
         print(f"✓ Downloaded {model['name']}")
         return True
     except subprocess.CalledProcessError as e:

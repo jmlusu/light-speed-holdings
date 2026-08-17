@@ -138,10 +138,12 @@ def _setup_llm_client(tmp_path: Path) -> MagicMock:
     mock_provider.chat.return_value = _make_chat_response(_json_response())
 
     mock_route = MagicMock(provider="mock_provider", model="test-model", tier="standard")
+    mock_complexity_route = MagicMock(provider="mock_provider", model="test-model", tier="standard")
     mock_tier = MagicMock(providers=[MagicMock(provider="mock_provider", model="test-model")])
 
     client = MagicMock()
     client.router.resolve.return_value = mock_route
+    client.router.resolve_with_complexity.return_value = mock_complexity_route
     client.router.get_tier.return_value = mock_tier
     client.router.resolve_with_fallback.return_value = [mock_route]
     client.get_provider.return_value = mock_provider

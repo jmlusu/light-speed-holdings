@@ -5,6 +5,7 @@ Provides:
   memory usage, LLM cost breakdown, and operational counters
 - ``/health`` — Deep health check with dependency, disk, and memory status
 - ``/ready`` — Readiness probe (returns 200 when all deps are up)
+- ``/api/v1/daemon/status`` — Executor daemon lifecycle status
 """
 
 from __future__ import annotations
@@ -563,6 +564,57 @@ def _check_process_memory() -> str:
             return "unavailable"
     except Exception:  # noqa: BLE001 - pragma: no cover - psutil runtime error
         return "unavailable"
+
+
+@router.get("/api/v1/daemon/status")
+def daemon_status() -> dict[str, Any]:
+    """Executor daemon lifecycle status.
+
+    Reads the daemon health file (``logs/executor-daemon.json``) written by
+    :class:`ai_company.executor.daemon.ExecutorDaemon` and returns a
+    structured view of the daemon's current state, uptime, and scheduler
+    cadence timestamps.
+
+    When no daemon has ever been started the endpoint returns ``state:
+    "not_running"`` so callers can distinguish ``stopped`` from ``never
+    started``.
+    """
+    from ai_company.executor.daemon import DaemonHealthStatus, _is_process_alive
+
+    status_path = Path("logs") / "executor-daemon.json"
+    health = DaemonHealthStatus(status_path).read()
+
+    if health is None:
+        return {
+            "state": "not_running",
+            "pid": None,
+            "started_at": None,
+            "uptime_seconds": 0,
+            "ticks_completed": 0,
+            "last_tick_at": None,
+            "is_pid_alive": False,
+            "timestamp": datetime.now(tz=timezone.utc).isoformat(),
+        }
+
+    pid = health.get("pid")
+    is_alive = _is_process_alive(pid) if isinstance(pid, int) else False
+
+    # Detect stale status: status file says "running" but process is dead.
+    state = health.get("state", "unknown")
+    if state == "running" and not is_alive:
+        state = "stale (process dead)"
+
+    return {
+        "state": state,
+        "pid": pid,
+        "started_at": health.get("started_at"),
+        "uptime_seconds": health.get("uptime_seconds", 0),
+        "ticks_completed": health.get("ticks_completed", 0),
+        "last_tick_at": health.get("last_tick_at"),
+        "updated_at": health.get("updated_at"),
+        "is_pid_alive": is_alive,
+        "timestamp": datetime.now(tz=timezone.utc).isoformat(),
+    }
 
 
 @router.get("/ready")

@@ -1,7 +1,7 @@
 # Architecture Gap Analysis — AI Company Builder
 
 **Author:** Software Architect
-**Date:** 2026-07-20 (updated)
+**Date:** 2026-08-18 (updated)
 **Scope:** End-to-end pipeline from task ingestion through execution, memory, and dashboard
 
 ---
@@ -12,7 +12,7 @@ The AI Company Builder has a solid set of individually well-designed components,
 
 **Resolved gaps (as of 2026-08-08, verified in source):** GAP-001, GAP-002, GAP-003, GAP-004, GAP-005, GAP-006, GAP-007, GAP-008, GAP-009, GAP-010, GAP-011, GAP-012, GAP-013, GAP-014, GAP-015, GAP-016, GAP-017, GAP-018, GAP-019, GAP-020. See `STATUS.md` and the Summary Matrix below for per-gap evidence (file:line).
 
-> **NOTE — this register was last audited against code on 2026-07-20.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
+> **NOTE — this register was last audited against code on 2026-08-18.** Earlier narrative sections (GAP-001/002/003/004/006/008/009/010/011/016 "Current State" prose) describe the *pre-fix* condition and are now out of date relative to the verified "Status" flags. Trust the **Status** field + **Summary Matrix**, not the prose, when reconciling work.
 
 ---
 

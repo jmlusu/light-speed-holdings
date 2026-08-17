@@ -93,20 +93,26 @@ def naming(
     # Combine all agent types from the validated registry
     all_agents = []
     for ex in registry.executives:
-        all_agents.append({
-            "id": ex.id,
-            "name": ex.name or ex.id,
-        })
+        all_agents.append(
+            {
+                "id": ex.id,
+                "name": ex.name or ex.id,
+            }
+        )
     for spec in registry.specialists:
-        all_agents.append({
-            "id": spec.id,
-            "name": spec.name or spec.id,
-        })
+        all_agents.append(
+            {
+                "id": spec.id,
+                "name": spec.name or spec.id,
+            }
+        )
     for bm in registry.board:
-        all_agents.append({
-            "id": bm.id,
-            "name": bm.name or bm.id,
-        })
+        all_agents.append(
+            {
+                "id": bm.id,
+                "name": bm.name or bm.id,
+            }
+        )
     agents = all_agents
 
     # Create generator instance for output_dir access
@@ -412,6 +418,7 @@ def all(
     typer.echo("\n--- Naming Convention Check ---")
     naming_errors: list[str] = []
     from ai_company.registry import load_registry
+
     registry = load_registry()
     # Combine all agent types from the validated registry
     all_agents = []

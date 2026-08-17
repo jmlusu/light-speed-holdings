@@ -2,6 +2,120 @@
 {% block title %}KPIs — CEO Dashboard{% endblock %}
 
 {% block content %}
+<!-- Health Monitor Section -->
+<div x-data="healthMonitor()" x-init="init()" class="mb-6">
+  <div class="bg-jarvis-surface border border-jarvis-border rounded-lg p-4">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-jarvis-primary font-display">System Health Monitor</h2>
+        <span x-show="autoRefresh && !loading" class="text-xs text-jarvis-text-muted flex items-center gap-1">
+          <svg class="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          Live
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button @click="toggleAutoRefresh()" class="text-xs text-jarvis-text-muted hover:text-jarvis-text transition-colors">
+          Auto-refresh: <span x-text="autoRefresh ? 'ON' : 'OFF'" :class="autoRefresh ? 'text-emerald-400' : 'text-red-400'"></span>
+        </button>
+        <button @click="loadHealth(); loadTrend(); loadAnomalies()" class="text-jarvis-text-muted hover:text-jarvis-text transition-colors" title="Refresh">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div x-show="loading" class="grid grid-cols-4 gap-4 mb-4">
+      <template x-for="i in 4" :key="i">
+        <div class="bg-jarvis-bg border border-jarvis-border rounded-lg p-3">
+          <div class="skeleton skeleton-text mb-2"></div>
+          <div class="skeleton skeleton-number"></div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Live Metrics Cards -->
+    <div x-show="!loading" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <template x-for="comp in (orgHealth?.components || [])" :key="comp.name">
+        <div class="health-metric-card bg-jarvis-bg border border-jarvis-border rounded-lg p-3 transition-all">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-[10px] text-jarvis-muted uppercase tracking-wider" x-text="formatComponentName(comp.name)"></span>
+            <span :class="getChangeClass(comp)" class="text-[10px] font-medium" x-text="getChangeText(comp)"></span>
+          </div>
+          <div class="flex items-end gap-2">
+            <span class="text-2xl font-bold text-jarvis-text font-mono" x-text="(comp.value ?? 0).toFixed(0) + '%'"></span>
+          </div>
+          <div class="mt-2 h-1 bg-jarvis-raised rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500"
+                 :style="'width:' + Math.min(comp.value ?? 0, 100) + '%'"
+                 :class="{
+                   'bg-emerald-500': comp.value >= 80,
+                   'bg-amber-500': comp.value >= 50 && comp.value < 80,
+                   'bg-red-500': comp.value < 50
+                 }"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Composite Score Display -->
+    <div x-show="!loading && orgHealth" class="flex items-center gap-4 mb-4 p-3 bg-jarvis-bg border border-jarvis-border rounded-lg">
+      <div class="text-center">
+        <div class="text-3xl font-bold font-mono" :style="'color:' + getHealthScoreColor(orgHealth?.score ?? 0)"
+             x-text="(orgHealth?.score ?? 0)"></div>
+        <div class="text-[10px] text-jarvis-muted uppercase tracking-wider">Score</div>
+      </div>
+      <div class="h-8 w-px bg-jarvis-border"></div>
+      <div class="text-center">
+        <div class="text-lg font-semibold uppercase tracking-wider" :class="getHealthBandClass(orgHealth?.band)"
+             x-text="(orgHealth?.band ?? 'unknown')"></div>
+        <div class="text-[10px] text-jarvis-muted uppercase tracking-wider">Band</div>
+      </div>
+    </div>
+
+    <!-- Anomaly Detection -->
+    <div x-show="anomalies.length > 0" class="mb-4">
+      <h3 class="text-sm font-medium text-jarvis-text mb-2 font-display">Anomaly Detection</h3>
+      <div class="space-y-2">
+        <template x-for="(anomaly, idx) in anomalies" :key="anomaly.timestamp + anomaly.component + idx">
+          <div :class="getAnomalyClass(anomaly.severity)" class="anomaly-item flex items-center gap-2 p-2 rounded-lg text-sm">
+            <span x-text="getAnomalyIcon(anomaly.severity)"></span>
+            <span class="flex-1" x-text="anomaly.message"></span>
+            <span class="text-xs opacity-75 shrink-0" x-text="formatTime(anomaly.timestamp)"></span>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Trend Chart -->
+    <div class="bg-jarvis-bg border border-jarvis-border rounded-lg p-3">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-sm text-jarvis-muted font-display">Org Health Trend</span>
+        <div class="flex gap-1">
+          <button @click="trendRange = '6h'; loadTrend()"
+                  :class="trendRange === '6h' ? 'text-jarvis-cyan bg-jarvis-cyan/10' : 'text-jarvis-muted hover:text-jarvis-text'"
+                  class="text-xs px-2 py-1 rounded transition-colors">6h</button>
+          <button @click="trendRange = '24h'; loadTrend()"
+                  :class="trendRange === '24h' ? 'text-jarvis-cyan bg-jarvis-cyan/10' : 'text-jarvis-muted hover:text-jarvis-text'"
+                  class="text-xs px-2 py-1 rounded transition-colors">24h</button>
+          <button @click="trendRange = '7d'; loadTrend()"
+                  :class="trendRange === '7d' ? 'text-jarvis-cyan bg-jarvis-cyan/10' : 'text-jarvis-muted hover:text-jarvis-text'"
+                  class="text-xs px-2 py-1 rounded transition-colors">7d</button>
+        </div>
+      </div>
+      <div class="chart-container" style="height: 140px;">
+        <canvas id="health-trend-chart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DEPARTMENT KPIs HEADER ═══ -->
 <div class="flex items-center justify-between mb-6">
   <div>
     <h2 class="text-xl font-semibold text-jarvis-text font-display">Department KPIs</h2>
@@ -171,5 +285,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/health.js"></script>
 <script src="/static/js/charts.js"></script>
 {% endblock %}

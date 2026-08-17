@@ -9,6 +9,7 @@ computed from the same data sources used by the dashboard KPI collectors
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -71,6 +72,30 @@ class OrgHealthResult:
         return result
 
 
+@dataclass
+class Anomaly:
+    """A detected anomaly in an org-health component score."""
+
+    timestamp: str
+    component: str
+    previous_value: float
+    current_value: float
+    change_pct: float
+    severity: str  # "info" | "warning" | "critical"
+    message: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "timestamp": self.timestamp,
+            "component": self.component,
+            "previous_value": round(self.previous_value, 2),
+            "current_value": round(self.current_value, 2),
+            "change_pct": round(self.change_pct, 1),
+            "severity": self.severity,
+            "message": self.message,
+        }
+
+
 # ── Calculator ──────────────────────────────────────────────────────
 
 
@@ -131,11 +156,81 @@ class OrgHealthCalculator:
         """Return the configured component definitions."""
         return list(self._component_defs)
 
+    def detect_anomalies(
+        self, history: list[dict[str, Any]], threshold: float = 2.0
+    ) -> list[Anomaly]:
+        """Detect anomalies using Z-score on component score deltas.
+
+        Parameters
+        ----------
+        history:
+            List of historical org-health snapshots, each containing a
+            ``components`` list with ``name`` and ``value`` fields.
+        threshold:
+            Z-score threshold above which a value is considered anomalous.
+            Default is 2.0 (roughly 95th percentile).
+
+        Returns
+        -------
+        list[Anomaly]
+            Detected anomalies sorted by severity (critical first).
+        """
+        anomalies: list[Anomaly] = []
+
+        # Group component values by name across history entries
+        by_component: dict[str, list[float]] = {}
+        for entry in history:
+            for comp in entry.get("components", []):
+                name = comp.get("name", "")
+                value = comp.get("value", 0)
+                by_component.setdefault(name, []).append(value)
+
+        # Calculate Z-scores for recent changes
+        for name, values in by_component.items():
+            if len(values) < 3:
+                continue
+
+            # Calculate mean and std of historical values (excluding latest)
+            historical = values[:-1]
+            mean = sum(historical) / len(historical)
+            variance = sum((v - mean) ** 2 for v in historical) / len(historical)
+            std = math.sqrt(variance)
+
+            if std == 0:
+                continue
+
+            # Check latest value against historical distribution
+            latest = values[-1]
+            previous = values[-2]
+            z_score = (latest - mean) / std
+            change_pct = ((latest - previous) / previous * 100) if previous else 0
+
+            if abs(z_score) > threshold:
+                severity = "critical" if abs(z_score) > 3 else "warning"
+                direction = "spike" if latest > previous else "drop"
+                anomalies.append(
+                    Anomaly(
+                        timestamp=datetime.now(timezone.utc).isoformat(),
+                        component=name,
+                        previous_value=previous,
+                        current_value=latest,
+                        change_pct=round(change_pct, 1),
+                        severity=severity,
+                        message=(
+                            f"{name.replace('_', ' ').title()} {direction}: "
+                            f"{previous:.0f}% → {latest:.0f}% ({change_pct:+.1f}%)"
+                        ),
+                    )
+                )
+
+        # Sort: critical first, then warning
+        severity_order = {"critical": 0, "warning": 1, "info": 2}
+        anomalies.sort(key=lambda a: severity_order.get(a.severity, 3))
+        return anomalies
+
     # ── Component scoring ────────────────────────────────────────────
 
-    def _compute_component(
-        self, name: str, database: Database | None
-    ) -> float:
+    def _compute_component(self, name: str, database: Database | None) -> float:
         """Dispatch to the appropriate scoring function for a component."""
         scorers = {
             "task_success_rate": self._score_task_success_rate,
@@ -226,9 +321,7 @@ class OrgHealthCalculator:
             if total == 0:
                 return 50.0  # Default when no data
             error_tasks = sum(
-                1
-                for t in tasks
-                if t.get("status") in ("failed", "error", "cancelled")
+                1 for t in tasks if t.get("status") in ("failed", "error", "cancelled")
             )
             error_rate = (error_tasks / total) * 100
             return max(0.0, 100.0 - error_rate)
@@ -269,8 +362,7 @@ class OrgHealthCalculator:
         total = sum(c.get("weight", 0) for c in self._component_defs)
         if abs(total - 1.0) > 0.01:
             logger.warning(
-                "Org health component weights sum to %.3f, expected 1.0 — "
-                "scores may be inaccurate",
+                "Org health component weights sum to %.3f, expected 1.0 — scores may be inaccurate",
                 total,
             )
 

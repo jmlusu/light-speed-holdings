@@ -379,4 +379,3 @@ class TestMemoryEngineVectorIntegration:
 
         results = ms.recall("semantic", query="Python", use_semantic=True, limit=2)
         assert len(results) > 0
-

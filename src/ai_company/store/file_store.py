@@ -153,7 +153,7 @@ class FileStore:
         Raises:
             FileLockError: If lock cannot be acquired within *timeout*.
         """
-        from ai_company.store.file_lock import file_lock as fl  # type: ignore[import-untyped]
+        from ai_company.store.file_lock import file_lock as fl
 
         full_path = self.base_dir / rel_path
         lock_path = full_path.parent / (full_path.name + ".lock")

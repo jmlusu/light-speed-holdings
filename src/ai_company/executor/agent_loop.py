@@ -206,12 +206,18 @@ class AgentLoop:
 
         # A/B Testing: Check which optimizations to enable for this task
         agent_type = agent.type.strip().lower()
-        use_optimized = self.config.use_optimized_prompts and agent_type == "specialist" and \
-                       should_use_optimized_prompts(resolved_name, task_id)
-        use_history_sum = self.config.enable_history_summarization and \
-                         should_use_history_summarization(resolved_name, task_id)
-        use_tool_sum = self.config.enable_tool_summarization and \
-                      should_use_tool_summarization(resolved_name, task_id)
+        use_optimized = (
+            self.config.use_optimized_prompts
+            and agent_type == "specialist"
+            and should_use_optimized_prompts(resolved_name, task_id)
+        )
+        use_history_sum = (
+            self.config.enable_history_summarization
+            and should_use_history_summarization(resolved_name, task_id)
+        )
+        use_tool_sum = self.config.enable_tool_summarization and should_use_tool_summarization(
+            resolved_name, task_id
+        )
         use_complexity = should_use_complexity_routing(resolved_name, task_id)
 
         # Use optimized prompts for specialists (token-efficient)
@@ -248,7 +254,7 @@ class AgentLoop:
                     "max_full_turns": self.config.max_full_turns,
                     "max_summary_tokens": self.config.max_summary_tokens,
                     "max_total_tokens": self.config.max_history_tokens,
-                }
+                },
             )
             history_manager.add_turn(initial_user)
 
@@ -320,11 +326,12 @@ class AgentLoop:
                 if self.cost_tracker and task_id:
                     # Estimate prompt tokens for this iteration
                     estimated_prompt_tokens = count_prompt_tokens(system_prompt, full_user_prompt)
-                    # Get the model that will be used (from router)
+                    # Get the model that will be used (from router, with budget degradation)
                     route = self.llm.router.resolve(
                         agent_name=self._current_agent_name,
                         priority=self._current_priority,
                         task_prompt=self._current_task_prompt,
+                        cost_tracker=self.cost_tracker,
                     )
                     estimated_cost = self.cost_tracker.estimate_call_cost(
                         model=route.model,
@@ -342,7 +349,11 @@ class AgentLoop:
                     estimated_prompt_tokens = count_prompt_tokens(system_prompt, full_user_prompt)
                     if estimated_prompt_tokens > self.config.max_tokens_per_iteration:
                         last_error = f"Token budget exceeded at iteration {iteration}: {estimated_prompt_tokens} > {self.config.max_tokens_per_iteration}"
-                        logger.warning("Token budget check failed at iteration %d: %d tokens", iteration, estimated_prompt_tokens)
+                        logger.warning(
+                            "Token budget check failed at iteration %d: %d tokens",
+                            iteration,
+                            estimated_prompt_tokens,
+                        )
                         break
 
                 # ── Budget check (legacy, between iterations) ────────────────
@@ -520,7 +531,7 @@ class AgentLoop:
                     )
 
         # Record experiment metrics for A/B testing
-        if task_id and hasattr(self, '_current_experiment_variants'):
+        if task_id and hasattr(self, "_current_experiment_variants"):
             try:
                 metrics = ExperimentMetrics(
                     experiment_name="optimized_prompts",
@@ -571,11 +582,12 @@ class AgentLoop:
         quality-based fallback: if all providers in the current tier fail,
         promotes to the next higher tier (fast → standard → premium).
         """
-        # Get complexity-aware route
+        # Get complexity-aware route (pass cost_tracker for budget degradation)
         route = self.llm.router.resolve_with_complexity(
             agent_name=self._current_agent_name or None,
             priority=self._current_priority,
             task_prompt=self._current_task_prompt,
+            cost_tracker=self.cost_tracker,
         )
 
         # Build fallback chain: current tier providers + higher tiers
@@ -583,6 +595,7 @@ class AgentLoop:
             agent_name=self._current_agent_name or None,
             priority=self._current_priority,
             task_prompt=self._current_task_prompt,
+            cost_tracker=self.cost_tracker,
         )
         provider_chain: list[tuple[str, str]] = []
 
@@ -590,7 +603,9 @@ class AgentLoop:
         primary_tier = route.tier
         for fb_route in fallback_routes:
             # Start from the complexity-adjusted tier
-            if fb_route.tier == primary_tier or TIER_ORDER.index(fb_route.tier) >= TIER_ORDER.index(primary_tier):
+            if fb_route.tier == primary_tier or TIER_ORDER.index(fb_route.tier) >= TIER_ORDER.index(
+                primary_tier
+            ):
                 tier = self.llm.router.get_tier(fb_route.tier)
                 if tier and tier.providers:
                     for p in tier.providers:

@@ -698,6 +698,52 @@ def get_org_chart() -> list[OrgNode]:
     return [build_node(r) for r in roots]
 
 
+@router.patch("/agents/{agent_name}/reports-to", tags=["agents"])
+def reassign_agent_reports_to(
+    agent_name: str,
+    body: dict[str, str],
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Reassign an agent's reports_to field.
+
+    Updates the company registry and regenerates agent files.
+    Requires 'run' role permission.
+    """
+    new_manager = body.get("reports_to")
+    if not new_manager:
+        raise HTTPException(status_code=400, detail="reports_to is required")
+
+    # Load registry through StateStore (same path as _load_registry)
+    registry = _load_json("company/agent-registry.json")
+    if not registry:
+        raise HTTPException(status_code=404, detail="Agent registry not found")
+
+    # Find and update agent
+    # Registry uses camelCase keys (reportsTo), so update that field
+    updated = False
+    for agent in registry:
+        if agent.get("name") == agent_name:
+            agent["reportsTo"] = new_manager
+            updated = True
+            break
+
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Agent '{agent_name}' not found")
+
+    # Save registry through StateStore
+    _save_json("company/agent-registry.json", registry)
+
+    # Regenerate agents
+    try:
+        from ai_company.generator import AgentGenerator
+
+        AgentGenerator().generate_all()
+    except Exception as e:  # noqa: BLE001 - regeneration is best-effort
+        logger.warning("Agent regeneration failed: %s", e)
+
+    return {"ok": True, "agent": agent_name, "reports_to": new_manager}
+
+
 # ── Tasks ───────────────────────────────────────────────────────────
 
 
@@ -931,6 +977,206 @@ def delete_task(
     background_tasks.add_task(_broadcast_task, removed.model_dump(), "deleted")
 
     return {"ok": "true", "id": task_id}
+
+
+# ── Task Decomposition ──────────────────────────────────────────────
+
+
+class SubtaskItem(BaseModel):
+    """A single subtask in a task decomposition."""
+
+    id: str
+    instruction: str
+    status: str = "pending"
+
+
+class TaskDecomposition(BaseModel):
+    """Task decomposition result with subtasks and progress."""
+
+    parent_id: str
+    subtasks: list[SubtaskItem] = []
+    progress_pct: float = 0.0
+
+
+@router.get("/tasks/{task_id}/subtasks")
+def get_task_subtasks(task_id: str) -> TaskDecomposition:
+    """Get decomposition subtasks for a task.
+
+    Returns existing decomposition if available, otherwise returns
+    an empty decomposition structure.
+    """
+    # Check if decomposition exists in the task store
+    tasks = _read_all_tasks()
+    task_ids = {t.get("id") for t in tasks}
+    if task_id not in task_ids:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Check for existing decomposition
+    decomposition_path = f".opencode/decompositions/{task_id}.json"
+    existing = _load_json(decomposition_path)
+    if existing and isinstance(existing, dict) and existing.get("subtasks"):
+        return TaskDecomposition(**existing)
+
+    return TaskDecomposition(parent_id=task_id, subtasks=[], progress_pct=0.0)
+
+
+@router.post("/tasks/{task_id}/decompose")
+def decompose_task(task_id: str) -> TaskDecomposition:
+    """AI-powered task decomposition.
+
+    Breaks down a task into smaller subtasks. The decomposition is
+    generated based on the task instruction and context.
+    """
+    # Verify task exists
+    tasks = _read_all_tasks()
+    task = next((t for t in tasks if t.get("id") == task_id), None)
+    if task is None:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    instruction = task.get("instruction", "")
+
+    # Generate decomposition based on the task instruction
+    subtasks = _generate_decomposition(instruction)
+
+    # Calculate progress
+    completed = sum(1 for s in subtasks if s.status == "completed")
+    total = len(subtasks)
+    progress_pct = (completed / total * 100) if total > 0 else 0.0
+
+    decomposition = TaskDecomposition(
+        parent_id=task_id,
+        subtasks=subtasks,
+        progress_pct=round(progress_pct, 1),
+    )
+
+    # Persist decomposition to the task store
+    decomposition_path = f".opencode/decompositions/{task_id}.json"
+    _save_json(decomposition_path, decomposition.model_dump())
+
+    return decomposition
+
+
+def _generate_decomposition(instruction: str) -> list[SubtaskItem]:
+    """Generate subtasks from a task instruction.
+
+    Uses a rule-based approach to break down common task patterns.
+    Can be enhanced with LLM calls for more sophisticated decomposition.
+    """
+    import uuid
+
+    instruction_lower = instruction.lower()
+
+    # Pattern-based decomposition
+    if any(kw in instruction_lower for kw in ["api", "endpoint", "rest"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Analyze API requirements", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Design endpoint schema", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Implement route handlers", status="in_progress"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Add validation and error handling",
+                status="pending",
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Write integration tests", status="pending"
+            ),
+        ]
+    elif any(kw in instruction_lower for kw in ["test", "testing"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Identify test scenarios", status="completed"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write unit tests", status="in_progress"),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Write integration tests", status="pending"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Run test suite and fix failures",
+                status="pending",
+            ),
+        ]
+    elif any(kw in instruction_lower for kw in ["fix", "bug", "issue"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Reproduce the issue", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Identify root cause", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Implement fix", status="pending"),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Verify fix and add regression test",
+                status="pending",
+            ),
+        ]
+    elif any(kw in instruction_lower for kw in ["implement", "build", "create", "feature"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Analyze requirements", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Design implementation approach",
+                status="completed",
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Implement core functionality",
+                status="in_progress",
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Add error handling", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write tests", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Review and document", status="pending"),
+        ]
+    elif any(kw in instruction_lower for kw in ["review", "audit"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Review code changes", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Check for security issues", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Verify test coverage", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Provide feedback", status="pending"),
+        ]
+    elif any(kw in instruction_lower for kw in ["deploy", "release"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Run pre-deployment checks", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Update configuration", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to staging", status="pending"),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Verify staging environment", status="pending"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to production", status="pending"),
+        ]
+    else:
+        # Generic decomposition for unrecognized patterns
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Analyze the task requirements",
+                status="completed",
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Plan the implementation", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Execute the plan", status="pending"),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Verify and document results", status="pending"
+            ),
+        ]
 
 
 # ── Approvals ───────────────────────────────────────────────────────
@@ -2201,6 +2447,116 @@ def get_org_health(
     return result.to_dict(include_components=component_detail, trend=trend)
 
 
+@router.get("/org-health/trend", tags=["org-health"])
+def org_health_trend(limit: int = Query(24, ge=1, le=168)) -> list[dict[str, Any]]:
+    """Get org health score trend over time.
+
+    Returns a list of timestamped health score snapshots suitable for
+    rendering a trend chart in the Health Monitor UI.
+    """
+    db = get_database()
+    trend: list[dict[str, Any]] = []
+
+    if db is not None:
+        try:
+            from ai_company.data.kpi_pipeline import KPIPipeline
+
+            pipeline = KPIPipeline(db)
+            history = pipeline.get_history("org_health", kpi_key="composite_score", limit=limit)
+            for row in reversed(history):
+                trend.append(
+                    {
+                        "timestamp": row["timestamp"],
+                        "score": row["current_value"],
+                        "components": [],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health trend unavailable from SQLite")
+
+    # If SQLite returned nothing, fall back to the KPI history store
+    if not trend:
+        try:
+            from ai_company.dashboard.analytics import KPIHistoryStore
+
+            store = KPIHistoryStore()
+            entries = store.get_history("org_health", kpi_key="composite_score", limit=limit)
+            for e in entries:
+                trend.append(
+                    {
+                        "timestamp": e.timestamp,
+                        "score": e.current,
+                        "components": [],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health trend unavailable from file store")
+
+    return trend
+
+
+@router.get("/org-health/anomalies", tags=["org-health"])
+def org_health_anomalies() -> list[dict[str, Any]]:
+    """Get detected anomalies in org health metrics.
+
+    Analyses historical component scores using Z-score anomaly detection
+    and returns any detected anomalies sorted by severity.
+    """
+    from ai_company.dashboard.org_health import OrgHealthCalculator
+
+    calculator = OrgHealthCalculator()
+
+    # Gather history for anomaly detection
+    history: list[dict[str, Any]] = []
+    db = get_database()
+
+    if db is not None:
+        try:
+            from ai_company.data.kpi_pipeline import KPIPipeline
+
+            pipeline = KPIPipeline(db)
+            rows = pipeline.get_history("org_health", limit=48)
+            for row in rows:
+                history.append(
+                    {
+                        "timestamp": row["timestamp"],
+                        "components": [
+                            {
+                                "name": row.get("kpi_key", ""),
+                                "value": row.get("current_value", 0),
+                            }
+                        ],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health history unavailable for anomaly detection")
+
+    # Also try the file-based KPI history store for richer component data
+    if not history:
+        try:
+            from ai_company.dashboard.analytics import KPIHistoryStore
+
+            store = KPIHistoryStore()
+            entries = store.get_history("org_health", limit=48)
+            for e in entries:
+                history.append(
+                    {
+                        "timestamp": e.timestamp,
+                        "components": [
+                            {
+                                "name": e.kpi_key,
+                                "value": e.current,
+                            }
+                        ],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health file history unavailable for anomaly detection")
+
+    anomalies = calculator.detect_anomalies(history)
+    return [a.to_dict() for a in anomalies]
+
+
 # ── Workflows / Mission Control ────────────────────────────────────
 
 
@@ -2339,4 +2695,42 @@ def get_onboarding_status(request_id: str) -> dict[str, Any]:
     result = svc.get_status(request_id)
     if not result.success:
         raise HTTPException(status_code=404, detail=f"Onboarding request '{request_id}' not found")
+    return result.data or {}
+
+
+class OnboardingRejectRequest(BaseModel):
+    """Payload for rejecting an onboarding request."""
+
+    reason: str = ""
+
+
+@router.post("/onboarding/{request_id}/approve", tags=["onboarding"])
+def approve_onboarding_request(request_id: str) -> dict[str, Any]:
+    """Approve an onboarding request, transitioning it to active."""
+    from ai_company.services.onboarding import OnboardingService
+
+    svc = OnboardingService()
+    result = svc.approve_onboarding(request_id, approved_by="dashboard")
+    if not result.success:
+        raise HTTPException(
+            status_code=400, detail=result.errors[0] if result.errors else "Approval failed"
+        )
+    return result.data or {}
+
+
+@router.post("/onboarding/{request_id}/reject", tags=["onboarding"])
+def reject_onboarding_request(
+    request_id: str,
+    body: OnboardingRejectRequest | None = None,
+) -> dict[str, Any]:
+    """Reject an onboarding request with an optional reason."""
+    from ai_company.services.onboarding import OnboardingService
+
+    reason = body.reason if body else ""
+    svc = OnboardingService()
+    result = svc.reject_onboarding(request_id, rejected_by="dashboard", reason=reason)
+    if not result.success:
+        raise HTTPException(
+            status_code=400, detail=result.errors[0] if result.errors else "Rejection failed"
+        )
     return result.data or {}

@@ -1,0 +1,79 @@
+requests:
+- request_id: req-001
+  agent_id: data_engineer
+  name: Data Engineer
+  role: Data Engineer
+  department: Data
+  agent_type: specialist
+  reports_to: cto
+  responsibilities:
+  - Build pipelines
+  tools:
+  - read
+  - write
+  - execute
+  guidelines: ''
+  status: archived
+  created_at: '2026-08-17T23:01:15.984002+00:00'
+  updated_at: '2026-08-17T23:01:15.984592+00:00'
+  security_reviewer: ''
+  security_reviewed_at: ''
+  approval_request_id: ''
+  hitl_tier: 2
+  error: ''
+- request_id: onb-54c964f4a68a
+  agent_id: new_bot
+  name: New Bot
+  role: Bot
+  department: Engineering
+  agent_type: specialist
+  reports_to: ''
+  responsibilities: []
+  tools:
+  - read
+  - edit
+  guidelines: ''
+  status: requested
+  created_at: '2026-08-17T22:02:25.438007Z'
+  updated_at: '2026-08-17T22:02:25.438007Z'
+  security_reviewer: ''
+  security_reviewed_at: null
+  approval_request_id: onb-efa1c7f185c5
+  hitl_tier: 3
+  error: ''
+- request_id: onb-e3ddf4539ef1
+  agent_id: bot1
+  name: Bot1
+  role: Bot
+  department: Engineering
+  agent_type: specialist
+  reports_to: ''
+  responsibilities: []
+  tools: []
+  guidelines: ''
+  status: requested
+  created_at: '2026-08-17T22:02:48.803486Z'
+  updated_at: '2026-08-17T22:02:48.803486Z'
+  security_reviewer: ''
+  security_reviewed_at: null
+  approval_request_id: onb-3111c0390e59
+  hitl_tier: 2
+  error: ''
+- request_id: onb-cdb7f6b9d637
+  agent_id: bot2
+  name: Bot2
+  role: Bot
+  department: Engineering
+  agent_type: specialist
+  reports_to: ''
+  responsibilities: []
+  tools: []
+  guidelines: ''
+  status: requested
+  created_at: '2026-08-17T22:02:49.499551Z'
+  updated_at: '2026-08-17T22:02:49.499551Z'
+  security_reviewer: ''
+  security_reviewed_at: null
+  approval_request_id: onb-c532b44506db
+  hitl_tier: 2
+  error: ''
