@@ -105,6 +105,12 @@ class OperationsKPICollector(KPICollector):
             and (now - datetime.fromisoformat(e["moved_at"].replace("Z", "+00:00"))).days < 7
         )
 
+        # Compute DLQ retry rate: percentage of DLQ entries that had retries (retry_count > 0)
+        dlq_retried = sum(1 for e in dlq_entries if (e.get("task", {}).get("retry_count") or 0) > 0)
+        dlq_retry_rate = round((dlq_retried / dlq_count * 100), 1) if dlq_count > 0 else None
+        dlq_retry_quality = "real" if dlq_count > 0 else "error"
+        dlq_retry_error = None if dlq_count > 0 else "No DLQ entries available"
+
         # ── Inbox Health ───────────────────────────────────────────────
         inbox_total = len(inbox_tasks)
         inbox_pending = sum(1 for t in inbox_tasks if t.get("status") == "pending")
@@ -158,7 +164,9 @@ class OperationsKPICollector(KPICollector):
                 # DLQ Health
                 "dlq_total_entries": self._kpi(dlq_count, None, "count"),
                 "dlq_recent_entries": self._kpi(dlq_recent, None, "count"),
-                "dlq_retry_rate": self._kpi(0.0, 80, "%"),  # Would need retry tracking
+                "dlq_retry_rate": self._kpi(
+                    dlq_retry_rate, 80, "%", data_quality=dlq_retry_quality, error=dlq_retry_error
+                ),
                 # Inbox Health
                 "inbox_total_tasks": self._kpi(inbox_total, None, "count"),
                 "inbox_pending_tasks": self._kpi(inbox_pending, None, "count"),
