@@ -75,6 +75,11 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "app",
         "Client onboarding and engagement management (Malawi portfolio)",
     ),
+    "onboarding": (
+        "ai_company.cli.onboarding",
+        "app",
+        "Agent onboarding with HITL approval gate",
+    ),
 }
 
 
