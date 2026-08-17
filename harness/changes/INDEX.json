@@ -1,39 +1,5 @@
 [
   {
-    "id": "2026-08-15-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
-    "title": "Security Hardening: Env Key Sanitization, Dashboard Auth Finalization, Trivy Scanning, S3 Backup, Canary Release",
-    "status": "parked",
-    "location": "parking",
-    "modules": [
-      "bootstrap",
-      "dashboard",
-      "ci-cd",
-      "docker"
-    ],
-    "files": [
-      "["
-    ],
-    "tags": [
-      "security",
-      "ci-cd",
-      "infra",
-      "dashboard",
-      "release"
-    ],
-    "decisions": [
-      "- `.env` remains gitignored; only placeholder values committed to memory",
-      "(`.env.example` is the template). Optional RBAC keys are documented but not",
-      "bootstrap-required.",
-      "- Docker Compose uses `${VAR:-}` so missing keys don't crash the container;",
-      "the dashboard stays fail-closed.",
-      "- Trivy runs only on tagged releases (not every CI push) to avoid CI cost.",
-      "- Canary deployment uses a manual approval gate before full promote."
-    ],
-    "validation_status": "unknown",
-    "path": "harness/changes/parking/2026-08-15-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
-    "updated_at": "2026-08-15"
-  },
-  {
     "id": "2026-08-08-sprint-4-quality-completeness",
     "title": "Sprint 4: Quality & Completeness",
     "status": "completed",
@@ -315,6 +281,119 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-08-15-over-engineering-cleanup-remove-dead-modules-consolidate-duplicated-layers-drop-unused-deps",
     "updated_at": "2026-08-15"
+  },
+  {
+    "id": "2026-08-17-implement-j-a-r-v-i-s-theme-system-105",
+    "title": "Implement J.A.R.V.I.S. theme system (#105)",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- **Palette**: near-black base (`#070b14`), electric cyan primary (`#22d3ee`), cool-gray text (`#e2e8f0`/`#94a3b8`), amber warning, red critical, cyan-green success.",
+      "- **Typography**: Rajdhani (display) + JetBrains Mono (telemetry), self-hosted woff2 — no CSP change required.",
+      "- **Glass treatment**: `.jarvis-glass` utility class (rgba 0.72 opacity + 12px blur + luminous border + glow shadow), applied to all panels/cards.",
+      "- **Scan-line texture**: `.chrome-scanline` pseudo-element restricted to header/nav chrome, respects `prefers-reduced-motion`.",
+      "- **Token migration**: `surface-*`/`brand-*` Tailwind classes replaced with `jarvis-*` equivalents; backward-compat `brand-*`/`surface-*` retained in Tailwind config for incremental migration.",
+      "- **Chart palette**: `charts.js` COLORS object now reads from `getComputedStyle` at init — charts re-palette automatically when tokens change.",
+      "- **Dark-mode only**: `<html class=dark>` kept hardcoded; tokens do not change under light-mode class."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-17-implement-j-a-r-v-i-s-theme-system-105",
+    "updated_at": "2026-08-17"
+  },
+  {
+    "id": "2026-08-17-phase-b-async-approval-engine-42",
+    "title": "Phase B: Async Approval Engine (#42)",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- **ADR-017**: File-based suspend store (not Temporal) — single-machine constraint",
+      "- Conversation history serialized as JSON strings in `.opencode/suspended_states/{task_id}.json`",
+      "- WebSocket broadcast fires immediately on park (sync→async bridge from executor)",
+      "- Optional webhook POST to configurable URL in `company/config/webhooks.yaml`",
+      "- 30-day retention with daemon governance sweep",
+      "- `SuspendedState` model: conversation_history, iterations_completed, tool_results, cost accumulators",
+      "- `AgentLoop.run()` accepts `resumed_state` kwarg for state restoration",
+      "- Agent loop snapshots state before `run_plan()` so HITLParked can capture it"
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-17-phase-b-async-approval-engine-42",
+    "updated_at": "2026-08-17"
+  },
+  {
+    "id": "2026-08-17-phase-b-opentelemetry-tracing-40",
+    "title": "Phase B: OpenTelemetry Tracing (#40)",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- ADR-016: OTel API (not full SDK) as the tracing interface; lightweight in-memory exporter as default",
+      "- Correlation ID ContextVar maps to OTel span trace_id/span_id",
+      "- 100% span coverage on critical path: executor→agent loop→LLM call→tool execution",
+      "- No OTLP exporter in core deps; optional `opentelemetry-exporter-otlp` extra"
+    ],
+    "validation_status": "unknown",
+    "path": "harness/changes/archive/2026-08-17-phase-b-opentelemetry-tracing-40",
+    "updated_at": "2026-08-17"
+  },
+  {
+    "id": "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
+    "title": "Security Hardening: Env Key Sanitization, Dashboard Auth Finalization, Trivy Scanning, S3 Backup, Canary Release",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "bootstrap",
+      "dashboard",
+      "ci-cd",
+      "docker"
+    ],
+    "files": [
+      "["
+    ],
+    "tags": [
+      "security",
+      "ci-cd",
+      "infra",
+      "dashboard",
+      "release"
+    ],
+    "decisions": [
+      "- `.env` remains gitignored; only placeholder values committed to memory",
+      "(`.env.example` is the template). Optional RBAC keys are documented but not",
+      "bootstrap-required.",
+      "- Docker Compose uses `${VAR:-}` so missing keys don't crash the container;",
+      "the dashboard stays fail-closed.",
+      "- Trivy runs only on tagged releases (not every CI push) to avoid CI cost.",
+      "- Canary deployment uses a manual approval gate before full promote."
+    ],
+    "validation_status": "unknown",
+    "path": "harness/changes/archive/2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
+    "updated_at": "2026-08-17"
   }
 ]
 

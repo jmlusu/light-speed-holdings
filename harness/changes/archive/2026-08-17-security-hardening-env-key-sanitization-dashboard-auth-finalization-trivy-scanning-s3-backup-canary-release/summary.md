@@ -1,8 +1,8 @@
-﻿---
+---
 title: "Security Hardening: Env Key Sanitization, Dashboard Auth Finalization, Trivy Scanning, S3 Backup, Canary Release"
 slug: "security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release"
-status: "parked"
-location: "parking"
+status: "completed"
+location: "archive"
 phase: "implement"
 intake_status: "complete"
 spec_review: "approved"
@@ -18,7 +18,7 @@ files: [
 tags: ["security", "ci-cd", "infra", "dashboard", "release"]
 validation_status: "unknown"
 created_at: "2026-08-14"
-updated_at: "2026-08-15"
+updated_at: "2026-08-17"
 ---
 
 # Summary
@@ -52,4 +52,5 @@ Trivy container scanning to the release pipeline, add S3 cloud backup to
 ## Transition Note
 
 - Parked to open the over-engineering cleanup change; resume after it lands.
+
 

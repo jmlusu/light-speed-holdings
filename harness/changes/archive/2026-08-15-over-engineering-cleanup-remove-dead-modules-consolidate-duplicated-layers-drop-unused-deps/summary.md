@@ -168,4 +168,3 @@ open this ticket and resumes afterward.
   scikit-learn/scipy; `torch` → networkx), never imported by project code.
   T029 (`security/keys.py` + `secrets_scanner.py`) is DEFERRED — it stays
   gated on the parked Security Hardening change (see Deferred Tasks).
-

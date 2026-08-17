@@ -43,3 +43,30 @@ guardrails:
     hitl_gates:
       require_approval_from_tier: 2
       non_blocking: true
+  escalation_slas:
+    # SLA enforcement: breached SLAs escalate to the listed contact.
+    security_incident:
+      sla_hours: 0  # immediate
+      escalate_to: ["ciso", "human-ceo"]
+      action: "page"
+    customer_facing:
+      sla_hours: 1
+      escalate_to: ["human-ceo"]
+      action: "escalate"
+    budget_overrun:
+      sla_hours: 0  # immediate
+      escalate_to: ["human-ceo"]
+      action: "auto_suspend_and_notify"
+    hitl_approval_pending:
+      sla_hours: 24
+      escalate_to: ["human-ceo"]
+      action: "escalate"
+    cross_department_conflict:
+      sla_hours: 4
+      escalate_to: ["chief-of-staff"]
+      action: "escalate"
+  weekly_report:
+    enabled: true
+    day: "sunday"
+    time_utc: "18:00"
+    include: ["cost_summary", "task_completion", "escalations", "budget_remaining"]
