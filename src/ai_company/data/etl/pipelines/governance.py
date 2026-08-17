@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
+from typing import Any
 
 from ai_company.data.database import Database
 from ai_company.data.etl.base import LoadResult, Pipeline, PipelineResult
@@ -35,7 +36,7 @@ class GovernancePipeline(Pipeline):
         batch_size: int = 10000,
         quality_check: bool = True,
         dry_run: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> PipelineResult:
         """Run governance enforcement: retention policies, compliance checks.
 
@@ -140,7 +141,7 @@ class DeadLetterProcessingPipeline(Pipeline):
         quality_check: bool = True,
         auto_retry: bool = False,
         max_retries: int = 3,
-        **kwargs,
+        **kwargs: Any,
     ) -> PipelineResult:
         """Process dead letter queue entries.
 
@@ -260,7 +261,7 @@ class InboxPurgePipeline(Pipeline):
         quality_check: bool = True,
         max_age_days: int = 30,
         statuses_to_purge: list[str] | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> PipelineResult:
         """Purge old tasks from the inbox/MessageBus.
 

@@ -6,6 +6,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from ai_company.models.task import Task, TaskStatus
 from ai_company.orchestrator.message_bus import MessageBus
@@ -27,7 +28,7 @@ class BriefingGenerator:
         self.bus = bus or MessageBus(storage_path=inbox_path)
         self.output_path = Path(output_path)
 
-    def _load_registry(self) -> dict[str, dict]:
+    def _load_registry(self) -> dict[str, dict[str, Any]]:
         if not self.registry_path.exists():
             return {}
         with open(self.registry_path, "r", encoding="utf-8") as f:

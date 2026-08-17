@@ -202,12 +202,12 @@ def file_lock(
         # We hold the lock.  Record ownership and start the heartbeat.
         _write_owner_token(fd)
         interval = max(stale_after / 3.0, 0.5)
+        heartbeat_stop = threading.Event()
 
         def _beat() -> None:
             while not heartbeat_stop.wait(interval):
                 _write_owner_token(fd)
 
-        heartbeat_stop = threading.Event()
         heartbeat_thread = threading.Thread(
             target=_beat,
             name=f"file-lock-heartbeat-{lock_path.name}",

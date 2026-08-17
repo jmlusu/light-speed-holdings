@@ -195,7 +195,7 @@ def _append_process_metrics(lines: list[str]) -> None:
         pass
 
     try:
-        import psutil  # type: ignore[import-untyped]
+        import psutil
 
         proc = psutil.Process()
         mem_info = proc.memory_info()
@@ -546,7 +546,7 @@ def _check_disk_space() -> str:
 def _check_process_memory() -> str:
     """Return current process memory usage."""
     try:
-        import psutil  # type: ignore[import-untyped]
+        import psutil
 
         proc = psutil.Process()
         mem_mb = proc.memory_info().rss / (1024**2)

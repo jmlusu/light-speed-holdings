@@ -51,7 +51,11 @@ def _summarize_read(result: dict[str, Any], max_tokens: int, llm: LLMClient | No
 
     # For other files, truncate with indicator
     if char_count > max_tokens * 4:
-        preview = content[:max_tokens * 2] + f"\n... [{line_count} lines, {char_count} chars total] ...\n" + content[-max_tokens * 2:]
+        preview = (
+            content[: max_tokens * 2]
+            + f"\n... [{line_count} lines, {char_count} chars total] ...\n"
+            + content[-max_tokens * 2 :]
+        )
         return f"read({path}) → {preview}"
 
     return f"read({path}) → {content}"
@@ -66,10 +70,18 @@ def _summarize_code_file(path: str, content: str, max_tokens: int) -> str:
     key_lines = []
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if (stripped.startswith(("def ", "class ", "async def ", "function ", "const ", "export "))
-            or stripped.startswith("import ") or stripped.startswith("from ")
-            or (stripped and not stripped.startswith("#") and ":" in stripped and "=" not in stripped)):
-            key_lines.append(f"  L{i+1}: {stripped[:80]}")
+        if (
+            stripped.startswith(("def ", "class ", "async def ", "function ", "const ", "export "))
+            or stripped.startswith("import ")
+            or stripped.startswith("from ")
+            or (
+                stripped
+                and not stripped.startswith("#")
+                and ":" in stripped
+                and "=" not in stripped
+            )
+        ):
+            key_lines.append(f"  L{i + 1}: {stripped[:80]}")
 
     summary = f"read({path}) → {line_count} lines"
     if key_lines:
@@ -79,7 +91,7 @@ def _summarize_code_file(path: str, content: str, max_tokens: int) -> str:
 
     # Truncate if needed
     if count_tokens(summary) > max_tokens:
-        summary = summary[:max_tokens * 4] + "... [truncated]"
+        summary = summary[: max_tokens * 4] + "... [truncated]"
 
     return summary
 
@@ -112,12 +124,12 @@ def _summarize_bash(result: dict[str, Any], max_tokens: int, llm: LLMClient | No
     # Truncate output
     output_parts = []
     if stdout:
-        stdout_short = stdout[:max_tokens * 2]
+        stdout_short = stdout[: max_tokens * 2]
         if len(stdout) > max_tokens * 2:
             stdout_short += f"\n... [{len(stdout)} chars truncated] ..."
         output_parts.append(f"stdout: {stdout_short}")
     if stderr:
-        stderr_short = stderr[:max_tokens * 2]
+        stderr_short = stderr[: max_tokens * 2]
         if len(stderr) > max_tokens * 2:
             stderr_short += f"\n... [{len(stderr)} chars truncated] ..."
         output_parts.append(f"stderr: {stderr_short}")
@@ -180,7 +192,7 @@ def _summarize_webfetch(result: dict[str, Any], max_tokens: int, llm: LLMClient 
         return f"webfetch({url}) → ERROR: {error}"
 
     if len(content) > max_tokens * 4:
-        content = content[:max_tokens * 2] + f"\n... [{len(content)} chars truncated] ..."
+        content = content[: max_tokens * 2] + f"\n... [{len(content)} chars truncated] ..."
 
     return f"webfetch({url}) → {content}"
 
@@ -205,12 +217,15 @@ def _summarize_generic(result: dict[str, Any], max_tokens: int, llm: LLMClient |
         return f"ERROR: {error}"
 
     # Remove internal fields and truncate
-    filtered = {k: v for k, v in result.items() if k not in ("step", "tool", "status", "tier", "tier_label")}
+    filtered = {
+        k: v for k, v in result.items() if k not in ("step", "tool", "status", "tier", "tier_label")
+    }
     import json
+
     text = json.dumps(filtered, default=str)
 
     if count_tokens(text) > max_tokens:
-        text = text[:max_tokens * 4] + "... [truncated]"
+        text = text[: max_tokens * 4] + "... [truncated]"
 
     return text
 
@@ -258,20 +273,24 @@ def build_summarized_feedback(
     parts.append("")
 
     if has_errors or has_denials:
-        parts.extend([
-            "IMPORTANT: One or more tool calls failed or were denied.",
-            "Before your next action, consider:",
-            "1. Can you work around the failure with a different approach?",
-            "2. Is the task still achievable with the remaining tools?",
-            "3. Should you report partial progress and mark done?",
-            "",
-        ])
+        parts.extend(
+            [
+                "IMPORTANT: One or more tool calls failed or were denied.",
+                "Before your next action, consider:",
+                "1. Can you work around the failure with a different approach?",
+                "2. Is the task still achievable with the remaining tools?",
+                "3. Should you report partial progress and mark done?",
+                "",
+            ]
+        )
 
-    parts.extend([
-        "Based on these results, decide your next action.",
-        'If the task is complete, set "done": true and provide your final result.',
-        "Otherwise, respond with your next plan of tool calls.",
-    ])
+    parts.extend(
+        [
+            "Based on these results, decide your next action.",
+            'If the task is complete, set "done": true and provide your final result.',
+            "Otherwise, respond with your next plan of tool calls.",
+        ]
+    )
 
     return "\n".join(parts)
 

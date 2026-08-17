@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -157,7 +158,7 @@ _PERMISSION_TO_TOOLS: dict[str, list[str]] = {
 }
 
 
-def _derive_tools(frontmatter: dict) -> list[str]:
+def _derive_tools(frontmatter: dict[str, Any]) -> list[str]:
     """Build the executor tool list from an agent spec's frontmatter.
 
     OpenCode v2 files express tool access via a ``permission`` block (tool ->
@@ -185,7 +186,7 @@ def _derive_tools(frontmatter: dict) -> list[str]:
     return tools
 
 
-def _derive_permission_str(frontmatter: dict) -> str:
+def _derive_permission_str(frontmatter: dict[str, Any]) -> str:
     permission = frontmatter.get("permission", "")
     if isinstance(permission, dict):
         allowed = sorted(k for k, v in permission.items() if v in ("allow", "ask"))
@@ -239,7 +240,7 @@ def parse_agent_spec_content(
     shared doc) are resolved from that file.
     """
     # Parse YAML frontmatter
-    frontmatter: dict = {}
+    frontmatter: dict[str, Any] = {}
     fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", content, re.DOTALL)
     if fm_match:
         with contextlib.suppress(yaml.YAMLError):

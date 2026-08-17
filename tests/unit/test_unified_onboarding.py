@@ -8,15 +8,14 @@ import pytest
 import yaml
 
 from ai_company.services.onboarding import (
+    _TRANSITIONS,
+    STATE_LABELS,
+    OnboardingRequest,
     OnboardingService,
     OnboardingState,
-    OnboardingRequest,
     _request_to_registry_entry,
     can_transition,
     is_terminal,
-    valid_transitions,
-    STATE_LABELS,
-    _TRANSITIONS,
 )
 
 
@@ -415,7 +414,9 @@ def test_archive(service: OnboardingService) -> None:
     request_id = result.data["request_id"]
 
     # Advance to active
-    for _ in range(5):  # requested -> config_review -> security_review -> generating -> testing -> approval
+    for _ in range(
+        5
+    ):  # requested -> config_review -> security_review -> generating -> testing -> approval
         service.advance_to_next(request_id)
     service.approve_onboarding(request_id, approved_by="ceo")
 
@@ -467,7 +468,9 @@ def test_add_to_registry(service: OnboardingService, sample_registry: Path) -> N
     assert new_agent["department"] == "Data"
 
 
-def test_add_to_registry_validation_failure(service: OnboardingService, sample_registry: Path) -> None:
+def test_add_to_registry_validation_failure(
+    service: OnboardingService, sample_registry: Path
+) -> None:
     req = _make_request(agent_id="cto")
     result = service.add_to_registry(req)
     assert not result.success

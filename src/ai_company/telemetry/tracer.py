@@ -189,7 +189,5 @@ class _NoOpTracer:
     """Minimal stub tracer returned when tracing is disabled."""
 
     @contextmanager
-    def start_as_current_span(
-        self, _name: str, **_kwargs: Any
-    ) -> Iterator[_NoOpSpan]:
+    def start_as_current_span(self, _name: str, **_kwargs: Any) -> Iterator[_NoOpSpan]:
         yield _NoOpSpan()

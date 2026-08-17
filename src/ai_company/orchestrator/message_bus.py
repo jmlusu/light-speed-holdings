@@ -107,7 +107,7 @@ class MessageBus:
 
     # ── Internal persistence helpers ──────────────────────────────────
 
-    def _load_tasks(self) -> List[dict]:
+    def _load_tasks(self) -> List[dict[str, Any]]:
         """Load tasks from the inbox file, quarantining corrupt JSON.
 
         On a JSON decode failure (or a non-list payload) the corrupt file is
@@ -136,7 +136,7 @@ class MessageBus:
                 return self._recover_from_backup(full_path)
             return data
 
-    def _recover_from_backup(self, full_path: Path) -> List[dict]:
+    def _recover_from_backup(self, full_path: Path) -> List[dict[str, Any]]:
         """Quarantine a corrupt inbox file and recover tasks from its .bak.
 
         The corrupt file is atomically renamed to ``<name>.bak-<timestamp>``
@@ -166,10 +166,12 @@ class MessageBus:
             return []
         return bak_data
 
-    def _save_tasks(self, tasks: List[dict]) -> None:
+    def _save_tasks(self, tasks: List[dict[str, Any]]) -> None:
         self._store.write_json(self._inbox_name, tasks)
 
-    def _mutate_tasks(self, updater: Callable[[List[dict]], List[dict]]) -> List[dict]:
+    def _mutate_tasks(
+        self, updater: Callable[[List[dict[str, Any]]], List[dict[str, Any]]]
+    ) -> List[dict[str, Any]]:
         """Apply *updater* to the inbox under an exclusive file lock.
 
         Serialises the read-modify-write cycle so concurrent executor and
@@ -203,7 +205,7 @@ class MessageBus:
 
     # ── Broadcast helper ─────────────────────────────────────────────
 
-    def _emit(self, task_dict: dict, event: str) -> None:
+    def _emit(self, task_dict: dict[str, Any], event: str) -> None:
         """Invoke the broadcast callback if one was configured.
 
         Errors are logged but never raised -- broadcasting is best-effort.
@@ -228,7 +230,7 @@ class MessageBus:
         task_dict = task.model_dump()
         inc_metric("messages_published_total")
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             tasks.append(task_dict)
             return tasks
 
@@ -249,7 +251,7 @@ class MessageBus:
         tasks = self._load_tasks()
         return [Task(**t) for t in tasks]
 
-    def get_all_tasks_raw(self) -> List[dict]:
+    def get_all_tasks_raw(self) -> List[dict[str, Any]]:
         """Return raw task dictionaries from the inbox (public method for backward compatibility)."""
         return self._load_tasks()
 
@@ -281,7 +283,7 @@ class MessageBus:
         expiry = _iso_from_timestamp(time.time() + lease_seconds)
         claimed: list[Task] = []
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for t in tasks:
                 if t.get("id") == task_id:
                     if t.get("status") != "pending":
@@ -312,7 +314,7 @@ class MessageBus:
         expiry = _iso_from_timestamp(time.time() + lease_seconds)
         refreshed = False
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             nonlocal refreshed
             for t in tasks:
                 if t.get("id") == task_id:
@@ -343,7 +345,7 @@ class MessageBus:
         now = datetime.now().isoformat()
         resumed: list[Task] = []
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     if t.get("status") != expected_status:
@@ -389,9 +391,9 @@ class MessageBus:
             "escalated": "escalated",
         }
         now = datetime.now().isoformat()
-        emitted: list[tuple[dict, str]] = []
+        emitted: list[tuple[dict[str, Any], str]] = []
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     old_status = t.get("status", "")
@@ -438,9 +440,9 @@ class MessageBus:
         Returns the updated ``Task`` or ``None`` if not found.
         """
         now = datetime.now().isoformat()
-        emitted: list[tuple[dict, str]] = []
+        emitted: list[tuple[dict[str, Any], str]] = []
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     tasks[i].update(updates)
@@ -467,7 +469,7 @@ class MessageBus:
         """
         deleted: Task | None = None
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             nonlocal deleted
             new_tasks = []
             for t in tasks:
@@ -498,7 +500,7 @@ class MessageBus:
         Returns the updated ``Task`` or ``None`` if not found.
         """
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     tasks[i]["acknowledged_by"] = agent_id

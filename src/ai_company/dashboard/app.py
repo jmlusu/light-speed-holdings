@@ -427,7 +427,7 @@ def create_app() -> FastAPI:
     app.state.limiter = _limiter  # exposed for test isolation (conftest resets between tests)
 
     @app.middleware("http")
-    async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
+    async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:
         client_ip = request.client.host if request.client else "unknown"
         allowed, remaining = _limiter.is_allowed(client_ip)
         if not allowed:
@@ -449,7 +449,7 @@ def create_app() -> FastAPI:
     # ADR-013: page routes, static assets, and the bootstrap endpoint are
     # exempt from the API-key guard (middleware carve-out).
     @app.middleware("http")
-    async def _api_key_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
+    async def _api_key_middleware(request: Request, call_next: Any) -> Response:
         if _is_exempt_from_auth(request.url.path):
             return cast(Response, await call_next(request))
         if not _check_api_key(request):
@@ -467,7 +467,7 @@ def create_app() -> FastAPI:
     app.state.allowed_ws_origins = set(origins)
 
     @app.middleware("http")
-    async def _security_headers_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
+    async def _security_headers_middleware(request: Request, call_next: Any) -> Response:
         response = cast(Response, await call_next(request))
         for name, value in security_headers().items():
             response.headers[name] = value

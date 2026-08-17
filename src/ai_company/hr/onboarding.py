@@ -38,6 +38,7 @@ logger = logging.getLogger(__name__)
 # State machine
 # ---------------------------------------------------------------------------
 
+
 class OnboardingStatus(str, Enum):
     """Lifecycle states for an agent onboarding request.
 
@@ -61,32 +62,44 @@ class OnboardingStatus(str, Enum):
 
 # Valid forward transitions.  Terminal states have no outgoing edges.
 _TRANSITIONS: dict[OnboardingStatus, frozenset[OnboardingStatus]] = {
-    OnboardingStatus.REQUESTED: frozenset({
-        OnboardingStatus.CONFIG_REVIEW,
-        OnboardingStatus.REJECTED,
-    }),
-    OnboardingStatus.CONFIG_REVIEW: frozenset({
-        OnboardingStatus.SECURITY_REVIEW,
-        OnboardingStatus.REJECTED,
-    }),
-    OnboardingStatus.SECURITY_REVIEW: frozenset({
-        OnboardingStatus.GENERATING,
-        OnboardingStatus.REJECTED,
-    }),
-    OnboardingStatus.GENERATING: frozenset({
-        OnboardingStatus.TESTING,
-        OnboardingStatus.FAILED,
-        OnboardingStatus.REJECTED,
-    }),
-    OnboardingStatus.TESTING: frozenset({
-        OnboardingStatus.APPROVAL,
-        OnboardingStatus.FAILED,
-        OnboardingStatus.REJECTED,
-    }),
-    OnboardingStatus.APPROVAL: frozenset({
-        OnboardingStatus.ACTIVE,
-        OnboardingStatus.REJECTED,
-    }),
+    OnboardingStatus.REQUESTED: frozenset(
+        {
+            OnboardingStatus.CONFIG_REVIEW,
+            OnboardingStatus.REJECTED,
+        }
+    ),
+    OnboardingStatus.CONFIG_REVIEW: frozenset(
+        {
+            OnboardingStatus.SECURITY_REVIEW,
+            OnboardingStatus.REJECTED,
+        }
+    ),
+    OnboardingStatus.SECURITY_REVIEW: frozenset(
+        {
+            OnboardingStatus.GENERATING,
+            OnboardingStatus.REJECTED,
+        }
+    ),
+    OnboardingStatus.GENERATING: frozenset(
+        {
+            OnboardingStatus.TESTING,
+            OnboardingStatus.FAILED,
+            OnboardingStatus.REJECTED,
+        }
+    ),
+    OnboardingStatus.TESTING: frozenset(
+        {
+            OnboardingStatus.APPROVAL,
+            OnboardingStatus.FAILED,
+            OnboardingStatus.REJECTED,
+        }
+    ),
+    OnboardingStatus.APPROVAL: frozenset(
+        {
+            OnboardingStatus.ACTIVE,
+            OnboardingStatus.REJECTED,
+        }
+    ),
     OnboardingStatus.ACTIVE: frozenset({OnboardingStatus.ARCHIVED}),
     OnboardingStatus.REJECTED: frozenset(),
     OnboardingStatus.FAILED: frozenset(),
@@ -126,6 +139,7 @@ def is_terminal(state: OnboardingStatus) -> bool:
 # ---------------------------------------------------------------------------
 # Request model
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class OnboardingRequest:
@@ -241,6 +255,7 @@ class OnboardingRequest:
 # Registry helpers
 # ---------------------------------------------------------------------------
 
+
 def _request_to_registry_entry(req: OnboardingRequest) -> dict[str, Any]:
     """Convert an OnboardingRequest to a company-registry.yaml agent entry."""
     entry: dict[str, Any] = {
@@ -276,9 +291,7 @@ class _RequestStore:
         if not data or not isinstance(data, dict):
             return []
         return [
-            OnboardingRequest.from_dict(r)
-            for r in data.get("requests", [])
-            if isinstance(r, dict)
+            OnboardingRequest.from_dict(r) for r in data.get("requests", []) if isinstance(r, dict)
         ]
 
     def save_all(self, requests: list[OnboardingRequest]) -> None:
@@ -308,6 +321,7 @@ class _RequestStore:
 # ---------------------------------------------------------------------------
 # Manager
 # ---------------------------------------------------------------------------
+
 
 class OnboardingManager:
     """Orchestrates the onboarding flow through the registry pipeline.
@@ -392,14 +406,10 @@ class OnboardingManager:
             agents = data.get("company", {}).get("agents", [])
             known_ids = {a.get("id", "") for a in agents if isinstance(a, dict)}
             known_names = {
-                a.get("name", "").lower(): a.get("id", "")
-                for a in agents
-                if isinstance(a, dict)
+                a.get("name", "").lower(): a.get("id", "") for a in agents if isinstance(a, dict)
             }
             if req.reports_to not in known_ids and req.reports_to.lower() not in known_names:
-                errors.append(
-                    f"reports_to '{req.reports_to}' does not match any agent ID or name"
-                )
+                errors.append(f"reports_to '{req.reports_to}' does not match any agent ID or name")
 
         if req.agent_type not in ("executive", "specialist", "board", "default"):
             errors.append(f"Invalid agent_type: '{req.agent_type}'")
@@ -452,9 +462,7 @@ class OnboardingManager:
             existing_ids = self._get_existing_ids(data)
 
             if req.agent_id not in existing_ids and not self.add_to_registry(req):
-                raise RuntimeError(
-                    f"Failed to add agent '{req.agent_id}' to registry"
-                )
+                raise RuntimeError(f"Failed to add agent '{req.agent_id}' to registry")
 
             gen = AgentGenerator(
                 registry_path=str(self.registry_path),
@@ -532,8 +540,7 @@ class OnboardingManager:
             next_state = happy_path[current_idx + 1]
         else:
             raise ValueError(
-                f"Cannot advance from state '{req.status.value}' — "
-                f"no next state in happy path"
+                f"Cannot advance from state '{req.status.value}' — no next state in happy path"
             )
 
         # Special handling: when entering APPROVAL, create HITL approval request
@@ -575,7 +582,9 @@ class OnboardingManager:
                 tier=tier,
             )
             req.approval_request_id = approval.id
-            logger.info("Created HITL approval request %s for onboarding %s", approval.id, req.request_id)
+            logger.info(
+                "Created HITL approval request %s for onboarding %s", approval.id, req.request_id
+            )
         except ValueError as exc:
             logger.error("Failed to create HITL approval for %s: %s", req.request_id, exc)
             req.error = f"HITL approval creation failed: {exc}"
@@ -658,9 +667,7 @@ class OnboardingManager:
         logger.info("Agent '%s' activated", req.agent_id)
         return req
 
-    def reject(
-        self, req: OnboardingRequest, reason: str = ""
-    ) -> OnboardingRequest:
+    def reject(self, req: OnboardingRequest, reason: str = "") -> OnboardingRequest:
         """Reject a request from any non-terminal state."""
         req.transition_to(OnboardingStatus.REJECTED)
         if reason:
@@ -682,9 +689,7 @@ class OnboardingManager:
         self._store.save_one(req)
         return req
 
-    def record_failure(
-        self, req: OnboardingRequest, error: str
-    ) -> OnboardingRequest:
+    def record_failure(self, req: OnboardingRequest, error: str) -> OnboardingRequest:
         """Record a failure during generating or testing."""
         req.error = error
         if req.status in (OnboardingStatus.GENERATING, OnboardingStatus.TESTING):
@@ -702,9 +707,7 @@ class OnboardingManager:
         """Return all requests for a given agent ID."""
         return self._store.get_by_agent_id(agent_id)
 
-    def list_requests(
-        self, status: OnboardingStatus | None = None
-    ) -> list[OnboardingRequest]:
+    def list_requests(self, status: OnboardingStatus | None = None) -> list[OnboardingRequest]:
         """List all requests, optionally filtered by status."""
         requests = self._store.load_all()
         if status is not None:
