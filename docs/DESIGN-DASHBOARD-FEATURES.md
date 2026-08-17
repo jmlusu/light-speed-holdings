@@ -1,8 +1,8 @@
 # Dashboard Feature Design Specifications
 
-> **Version**: v0.5.1 Draft  
-> **Date**: 2026-08-18  
-> **Author**: Product Designer (Dashboard)  
+> **Version**: v0.5.1 Draft
+> **Date**: 2026-08-18
+> **Author**: Product Designer (Dashboard)
 > **Status**: Design decisions — ready for prototype review
 
 ---
@@ -15,7 +15,7 @@ Eight dashboard features designed for the J.A.R.V.I.S. theme, built on the exist
 
 ## Feature #31: CEO Dashboard Hero
 
-**Status**: Prototype exists (`ceo-hero-prototype.js`), needs integration into index.html  
+**Status**: Prototype exists (`ceo-hero-prototype.js`), needs integration into index.html
 **Priority**: **v0.5.1 — CRITICAL** (default landing page)
 
 ### Wireframe Description
@@ -38,7 +38,7 @@ The CEO Hero replaces the current KPI card grid as the top section of `/` (index
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Variant A (Gauge Hero)**: Large radial gauge centered, 4 KPI cards below.  
+**Variant A (Gauge Hero)**: Large radial gauge centered, 4 KPI cards below.
 **Variant D (Drill-down)**: Click gauge → expands to component breakdown with sub-gauges.
 
 ### Data Requirements
@@ -114,7 +114,7 @@ this.loadOrgHealth();
 
 ## Feature #43: Agent Onboarding Studio
 
-**Status**: Backend service + API exist. No frontend tab yet.  
+**Status**: Backend service + API exist. No frontend tab yet.
 **Priority**: **v0.5.1 — HIGH** (new Onboarding tab)
 
 ### Wireframe Description
@@ -246,7 +246,7 @@ function onboardingStudio() {
 
 ## Feature #44: Kanban + Task Decomposition UX
 
-**Status**: Kanban board exists in tasks.html. Drag-and-drop implemented. Missing: task decomposition view.  
+**Status**: Kanban board exists in tasks.html. Drag-and-drop implemented. Missing: task decomposition view.
 **Priority**: **v0.5.1 — MEDIUM** (enhance existing)
 
 ### Wireframe Description
@@ -356,7 +356,7 @@ async closeTaskDetail() {
 
 ## Feature #45: Health and Anomaly Monitor
 
-**Status**: OrgHealth scoring exists. No real-time anomaly view.  
+**Status**: OrgHealth scoring exists. No real-time anomaly view.
 **Priority**: **v0.5.1 — HIGH** (new Health tab or section in KPIs)
 
 ### Wireframe Description
@@ -454,7 +454,7 @@ function healthMonitor() {
 
 ## Feature #46: Revenue Attribution Model
 
-**Status**: Cost tracking exists in `/api/v1/costs`. No revenue attribution.  
+**Status**: Cost tracking exists in `/api/v1/costs`. No revenue attribution.
 **Priority**: **v0.5.2 — DEFERRED** (requires revenue data model)
 
 ### Wireframe Description
@@ -530,7 +530,7 @@ class RevenueSummary(BaseModel):
 
 ## Feature #47: Interactive Org Chart
 
-**Status**: Org chart API exists at `/api/v1/org-chart`. No visual renderer.  
+**Status**: Org chart API exists at `/api/v1/org-chart`. No visual renderer.
 **Priority**: **v0.5.1 — HIGH** (new Org Chart tab or section in Agents)
 
 ### Wireframe Description
@@ -645,7 +645,7 @@ Pure CSS approach (no external libs):
 
 ## Feature #48: Searchable Execution Timeline
 
-**Status**: Audit trail exists in JSONL format. No timeline UI.  
+**Status**: Audit trail exists in JSONL format. No timeline UI.
 **Priority**: **v0.5.2 — DEFERRED** (requires audit query optimization)
 
 ### Wireframe Description
@@ -768,7 +768,7 @@ function executionTimeline() {
 
 ## Feature #50: Command Bar & Voice Scope
 
-**Status**: No existing implementation.  
+**Status**: No existing implementation.
 **Priority**: **v0.5.2 — DEFERRED** (polish feature)
 
 ### Wireframe Description

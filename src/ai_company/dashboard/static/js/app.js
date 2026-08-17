@@ -78,6 +78,14 @@ function dashboard() {
     modelRoutes: [],
     orgChart: [],
 
+    // ── CEO Hero Section ──────────────────────────────────────
+    orgHealth: null,
+    orgHealthLoading: true,
+    heroVariant: 'B',
+    heroExpanded: null,
+    expandedComponent: null,
+    _heroGauges: {},
+
     // ── Task assignment ──────────────────────────────────────
     newTask: { receiver_id: '', instruction: '', priority: 'medium', sender_id: 'human-ceo' },
     submitting: false,
@@ -85,6 +93,12 @@ function dashboard() {
 
     // ── Drag and drop ────────────────────────────────────────
     draggedTask: null,
+
+    // ── Task detail slide-out ────────────────────────────────
+    selectedTask: null,
+    taskDetailOpen: false,
+    taskDecomposition: null,
+    taskDecomposing: false,
 
     // ── KPIs page ────────────────────────────────────────────
     activeKPIDept: '',
@@ -138,11 +152,20 @@ function dashboard() {
       // ADR-013: Fetch bootstrap session token before any data loading.
       await this._fetchSessionToken();
 
+      // Load hero variant preference from localStorage
+      const savedVariant = localStorage.getItem('heroVariant');
+      if (savedVariant && ['A', 'B', 'D'].includes(savedVariant)) {
+        this.heroVariant = savedVariant;
+      }
+
       this.connectWebSocket();
 
       // FIX: Load data, then reveal UI to prevent layout jump
       await this.loadPageData();
       this.isLoading = false;
+
+      // Load org health data for the hero section
+      this.loadOrgHealth();
 
       // FIX: Debounced polling — skip if a poll is already in-flight and
       // queue exactly one trailing poll instead of stacking parallel
@@ -1066,6 +1089,82 @@ function dashboard() {
       this.restoreScrollPosition();
     },
 
+    // ═══ TASK DETAIL SLIDE-OUT ═════════════════════════════════
+
+    async openTaskDetail(task) {
+      this.selectedTask = task;
+      this.taskDetailOpen = true;
+      this.taskDecomposition = null;
+
+      // Fetch decomposition if available
+      try {
+        const res = await this.fetchJSON(`/api/v1/tasks/${task.id}/subtasks`);
+        if (res && res.subtasks) {
+          this.taskDecomposition = res;
+        }
+      } catch (e) {
+        // No decomposition yet — that's fine
+      }
+    },
+
+    async decomposeTask(taskId) {
+      if (!taskId) return;
+      this.taskDecomposing = true;
+      try {
+        const res = await this.fetchJSON(`/api/v1/tasks/${taskId}/decompose`, {
+          method: 'POST',
+        });
+        if (res) {
+          this.taskDecomposition = res;
+          this.showToast('success', 'Task Decomposed', 'Task broken down into subtasks');
+        }
+      } catch (e) {
+        this.showToast('error', 'Decompose Failed', 'Could not decompose task');
+      }
+      this.taskDecomposing = false;
+    },
+
+    closeTaskDetail() {
+      this.taskDetailOpen = false;
+      this.selectedTask = null;
+      this.taskDecomposition = null;
+    },
+
+    getSubtaskStatusClass(status) {
+      const classes = {
+        completed: 'bg-emerald-500/20 text-emerald-400',
+        in_progress: 'bg-blue-500/20 text-blue-400',
+        pending: 'bg-white/[0.06] text-jarvis-muted',
+      };
+      return classes[status] || classes.pending;
+    },
+
+    async reassignTask(taskId) {
+      this.showToast('info', 'Reassign', 'Reassignment feature coming soon');
+    },
+
+    async escalateTask(taskId) {
+      if (!taskId) return;
+      try {
+        const res = await this.fetchJSON(`/api/v1/tasks/${taskId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'escalated' }),
+        });
+        if (res && res.id) {
+          this.showToast('warning', 'Task Escalated', 'Task has been escalated');
+          this.closeTaskDetail();
+          if (window.location.pathname === '/tasks') {
+            this.saveScrollPosition();
+            await this.loadTasksPage();
+            this.restoreScrollPosition();
+          }
+        }
+      } catch (e) {
+        this.showToast('error', 'Escalate Failed', 'Could not escalate task');
+      }
+    },
+
     // ═══ COMPUTED ═════════════════════════════════════════════
 
     get kanbanTasks() {
@@ -1247,6 +1346,180 @@ function dashboard() {
       if (unit === 'usd') return this.formatCompactCurrency(value);
       if (unit === 'percent') return `${Math.round(value)}%`;
       return value.toLocaleString();
+    },
+
+    // ═══ CEO HERO METHODS ══════════════════════════════════════
+
+    async loadOrgHealth() {
+      this.orgHealthLoading = true;
+      try {
+        const res = await this.fetchJSON('/api/v1/org-health');
+        if (res) {
+          this.orgHealth = res;
+          this.$nextTick(() => this.renderHeroGauges());
+        }
+      } catch (e) {
+        console.error('Failed to load org health:', e);
+      } finally {
+        this.orgHealthLoading = false;
+      }
+    },
+
+    setHeroVariant(v) {
+      this.heroVariant = v;
+      this.expandedComponent = null;
+      localStorage.setItem('heroVariant', v);
+      this.$nextTick(() => this.renderHeroGauges());
+    },
+
+    getBandTextClass(band) {
+      return {
+        green: 'text-emerald-400',
+        amber: 'text-amber-400',
+        red: 'text-red-400',
+      }[band] || 'text-slate-400';
+    },
+
+    getComponentLabel(name) {
+      const labels = {
+        task_success_rate: 'Task Success Rate',
+        agent_utilization: 'Agent Utilization',
+        cost_efficiency: 'Cost Efficiency',
+        error_rate: 'Error Rate (Inverted)',
+      };
+      return labels[name] || name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    },
+
+    getComponentDescription(name) {
+      const descs = {
+        task_success_rate: 'Ratio of completed tasks to total tasks (30d)',
+        agent_utilization: 'Active agents vs registered agents (30d)',
+        cost_efficiency: 'Budget utilization vs spend',
+        error_rate: 'Error/exception rate across operations (inverted)',
+      };
+      return descs[name] || '';
+    },
+
+    toggleComponent(comp) {
+      this.expandedComponent = this.expandedComponent === comp ? null : comp;
+      this.$nextTick(() => this.renderHeroGauges());
+    },
+
+    renderHeroGauges() {
+      if (!this.orgHealth || typeof Chart === 'undefined') return;
+
+      // Render the appropriate gauge based on variant
+      if (this.heroVariant === 'A') {
+        this._renderRadialGauge('heroGauge', this.orgHealth.score, this.orgHealth.band, 256);
+      } else if (this.heroVariant === 'B') {
+        this._renderRadialGauge('heroGaugeB', this.orgHealth.score, this.orgHealth.band, 192);
+      } else if (this.heroVariant === 'D') {
+        this._renderRadialGauge('heroGaugeD', this.orgHealth.score, this.orgHealth.band, 256);
+      }
+
+      // Render sparklines for component cards
+      if (this.orgHealth.components) {
+        for (const comp of this.orgHealth.components) {
+          this._renderSparkline('spark-' + comp.name, this._generateTrendData(comp.value));
+          this._renderSparkline('spark-b-' + comp.name, this._generateTrendData(comp.value));
+          if (this.expandedComponent === comp.name) {
+            this._renderSparkline('spark-detail-' + comp.name, this._generateTrendData(comp.value));
+          }
+        }
+      }
+    },
+
+    _renderRadialGauge(canvasId, score, band, size) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const ctx = canvas.getContext('2d');
+      const bandColors = {
+        green: '#34d399',
+        amber: '#fbbf24',
+        red: '#f87171',
+      };
+      const color = bandColors[band] || '#64748b';
+
+      // Destroy existing chart
+      if (this._heroGauges[canvasId]) {
+        this._heroGauges[canvasId].destroy();
+      }
+
+      this._heroGauges[canvasId] = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: [score, 100 - score],
+            backgroundColor: [color, 'rgba(255,255,255,0.06)'],
+            borderWidth: 0,
+            circumference: 180,
+            rotation: 270,
+          }]
+        },
+        options: {
+          responsive: false,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+          },
+          animation: {
+            animateRotate: true,
+            animateScale: true,
+            duration: 1000,
+            easing: 'easeOutQuart',
+          },
+        },
+      });
+    },
+
+    _renderSparkline(canvasId, data) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const ctx = canvas.getContext('2d');
+
+      if (this._heroGauges[canvasId]) {
+        this._heroGauges[canvasId].destroy();
+      }
+
+      this._heroGauges[canvasId] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.map((_, i) => i),
+          datasets: [{
+            data: data,
+            borderColor: '#22d3ee',
+            borderWidth: 2,
+            pointRadius: 0,
+            fill: true,
+            backgroundColor: 'rgba(34, 211, 238, 0.1)',
+            tension: 0.4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: { x: { display: false }, y: { display: false } },
+          elements: { point: { radius: 0 } },
+          animation: { duration: 500 },
+        },
+      });
+    },
+
+    _generateTrendData(currentValue) {
+      // Generate 20 pseudo-random points trending toward currentValue
+      const points = [];
+      let val = currentValue * (0.7 + Math.random() * 0.3);
+      for (let i = 0; i < 20; i++) {
+        val += (currentValue - val) * 0.1 + (Math.random() - 0.5) * 5;
+        val = Math.max(0, Math.min(100, val));
+        points.push(val);
+      }
+      return points;
     },
   };
 }

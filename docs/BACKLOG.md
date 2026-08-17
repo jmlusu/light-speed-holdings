@@ -1,7 +1,7 @@
 # Product Backlog — AI Company Builder
 
 **Author:** Product Owner
-**Date:** 2026-07-20
+**Date:** 2026-08-18
 **Prioritization:** MoSCoW (Must / Should / Could / Won't)
 **Story Point Scale:** Fibonacci (1, 2, 3, 5, 8, 13) — 1 point = ~1 hour of focused work
 

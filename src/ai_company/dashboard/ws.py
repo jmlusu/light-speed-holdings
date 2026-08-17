@@ -352,6 +352,22 @@ async def broadcast_org_health(data: dict[str, Any]) -> None:
     )
 
 
+async def broadcast_daemon_health(data: dict[str, Any]) -> None:
+    """Push executor daemon health status to all connected dashboard clients.
+
+    Clients subscribe to the ``"daemon"`` topic to receive these.  The
+    payload mirrors the ``/api/v1/daemon/status`` response shape.
+    """
+    await manager.broadcast(
+        {
+            "type": "daemon_health",
+            "topic": "daemon",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": data,
+        }
+    )
+
+
 def make_message_bus_broadcast_callback() -> Any:
     """Create a synchronous broadcast callback suitable for MessageBus.
 

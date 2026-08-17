@@ -78,7 +78,7 @@ def start_server(model: dict) -> subprocess.Popen | None:
     """Start a llama-server for a model."""
     llama_server = find_llama_server()
     if not llama_server:
-        print(f"ERROR: llama-server not found in PATH")
+        print("ERROR: llama-server not found in PATH")
         return None
 
     model_path = MODELS_DIR / model["file"]
@@ -88,16 +88,24 @@ def start_server(model: dict) -> subprocess.Popen | None:
 
     cmd = [
         llama_server,
-        "-m", str(model_path),
-        "-c", str(model["ctx"]),
-        "-b", str(model["batch"]),
-        "-t", str(model["threads"]),
-        "-tb", str(model["threads"]),
-        "-ngl", "0",  # CPU only
+        "-m",
+        str(model_path),
+        "-c",
+        str(model["ctx"]),
+        "-b",
+        str(model["batch"]),
+        "-t",
+        str(model["threads"]),
+        "-tb",
+        str(model["threads"]),
+        "-ngl",
+        "0",  # CPU only
         "--mlock",
         "--mmap",
-        "--port", str(model["port"]),
-        "--host", "127.0.0.1",
+        "--port",
+        str(model["port"]),
+        "--host",
+        "127.0.0.1",
     ]
 
     print(f"Starting {model['name']} on port {model['port']}...")
@@ -112,13 +120,14 @@ def start_server(model: dict) -> subprocess.Popen | None:
 def wait_for_server(port: int, timeout: float = 60.0) -> bool:
     """Wait for server to be ready."""
     import httpx
+
     start = time.time()
     while time.time() - start < timeout:
         try:
             resp = httpx.get(f"http://127.0.0.1:{port}/health", timeout=2.0)
             if resp.status_code == 200:
                 return True
-        except Exception:
+        except (httpx.HTTPError, OSError):
             pass
         time.sleep(0.5)
     return False

@@ -52,5 +52,3 @@ Trivy container scanning to the release pipeline, add S3 cloud backup to
 ## Transition Note
 
 - Parked to open the over-engineering cleanup change; resume after it lands.
-
-

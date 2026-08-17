@@ -59,7 +59,8 @@ class TestSpecParser:
         assert ctx.name == "lead-backend"
         assert ctx.type == "Specialist"
         assert ctx.department == "Technology"
-        assert "code_interpreter" in ctx.tools
+        assert "code_interpreter" not in ctx.tools
+        assert "bash" in ctx.tools  # execute maps to bash
 
     def test_build_system_prompt_includes_key_sections(self, tmp_path: Path) -> None:
         agents_dir = tmp_path / ".opencode" / "agents"
@@ -906,11 +907,11 @@ _SPECIALIST_SPEC_SAMPLE = """\
 ---
 name: lead-backend
 description: Manages backend systems, APIs, and server-side agent logic.
-tools: ["read", "write", "execute", "code_interpreter"]
+tools: ["read", "edit", "bash"]
 mode: subagent
 permission:
   read: allow
-  write: allow
+  edit: allow
   bash: allow
 ---
 

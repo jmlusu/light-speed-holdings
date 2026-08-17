@@ -98,6 +98,7 @@ class TestFileStore:
         result = store.read_json("counter.json")
         assert result["count"] == 40
 
+
 # ── Persistent Workflow Engine Tests ─────────────────────────────────
 
 

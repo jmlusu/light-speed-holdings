@@ -342,7 +342,9 @@ class TestMarketingCollector:
         result = MarketingKPICollector(empty_project).collect()
         assert result["department"] == "marketing"
         assert result["kpis"]["campaign_generation_rate"]["current"] == 0
-        assert result["kpis"]["content_quality_score"]["current"] == 0.0
+        # content_quality_score returns None with data_quality="error" when no content data
+        assert result["kpis"]["content_quality_score"]["current"] is None
+        assert result["kpis"]["content_quality_score"]["data_quality"] == "error"
 
     def test_project_with_data(self, project: Path) -> None:
         result = MarketingKPICollector(project).collect()
@@ -397,7 +399,9 @@ class TestLegalCollector:
         result = LegalKPICollector(empty_project).collect()
         assert result["department"] == "legal"
         assert result["kpis"]["total_contracts"]["current"] == 0
-        assert result["kpis"]["compliance_score"]["current"] == 0.0
+        # compliance_score returns None with data_quality="error" when no compliance data
+        assert result["kpis"]["compliance_score"]["current"] is None
+        assert result["kpis"]["compliance_score"]["data_quality"] == "error"
 
     def test_project_with_data(self, project: Path) -> None:
         result = LegalKPICollector(project).collect()

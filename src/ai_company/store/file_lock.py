@@ -204,8 +204,8 @@ def file_lock(
         interval = max(stale_after / 3.0, 0.5)
 
         def _beat() -> None:
-            while not heartbeat_stop.wait(interval):  # type: ignore[union-attr]
-                _write_owner_token(fd)  # type: ignore[arg-type]
+            while not heartbeat_stop.wait(interval):
+                _write_owner_token(fd)
 
         heartbeat_stop = threading.Event()
         heartbeat_thread = threading.Thread(

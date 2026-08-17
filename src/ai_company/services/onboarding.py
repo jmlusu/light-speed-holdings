@@ -39,6 +39,7 @@ logger = logging.getLogger(__name__)
 # State machine
 # ---------------------------------------------------------------------------
 
+
 class OnboardingState(str, Enum):
     """Lifecycle states for an agent onboarding request.
 
@@ -63,35 +64,47 @@ class OnboardingState(str, Enum):
 
 # Valid forward transitions. Terminal states have no outgoing edges.
 _TRANSITIONS: dict[OnboardingState, frozenset[OnboardingState]] = {
-    OnboardingState.REQUESTED: frozenset({
-        OnboardingState.CONFIG_REVIEW,
-        OnboardingState.REJECTED,
-    }),
-    OnboardingState.CONFIG_REVIEW: frozenset({
-        OnboardingState.SECURITY_REVIEW,
-        OnboardingState.REJECTED,
-    }),
-    OnboardingState.SECURITY_REVIEW: frozenset({
-        OnboardingState.GENERATING,
-        OnboardingState.REJECTED,
-    }),
-    OnboardingState.GENERATING: frozenset({
-        OnboardingState.TESTING,
-        OnboardingState.FAILED,
-        OnboardingState.REJECTED,
-    }),
-    OnboardingState.TESTING: frozenset({
-        OnboardingState.APPROVAL,
-        OnboardingState.FAILED,
-        OnboardingState.REJECTED,
-    }),
-    OnboardingState.APPROVAL: frozenset({
-        OnboardingState.ACTIVE,
-        OnboardingState.REJECTED,
-    }),
+    OnboardingState.REQUESTED: frozenset(
+        {
+            OnboardingState.CONFIG_REVIEW,
+            OnboardingState.REJECTED,
+        }
+    ),
+    OnboardingState.CONFIG_REVIEW: frozenset(
+        {
+            OnboardingState.SECURITY_REVIEW,
+            OnboardingState.REJECTED,
+        }
+    ),
+    OnboardingState.SECURITY_REVIEW: frozenset(
+        {
+            OnboardingState.GENERATING,
+            OnboardingState.REJECTED,
+        }
+    ),
+    OnboardingState.GENERATING: frozenset(
+        {
+            OnboardingState.TESTING,
+            OnboardingState.FAILED,
+            OnboardingState.REJECTED,
+        }
+    ),
+    OnboardingState.TESTING: frozenset(
+        {
+            OnboardingState.APPROVAL,
+            OnboardingState.FAILED,
+            OnboardingState.REJECTED,
+        }
+    ),
+    OnboardingState.APPROVAL: frozenset(
+        {
+            OnboardingState.ACTIVE,
+            OnboardingState.REJECTED,
+        }
+    ),
     OnboardingState.ACTIVE: frozenset({OnboardingState.ARCHIVED}),
     OnboardingState.REJECTED: frozenset(),
-    OnboardingState.FAILED: frozenset(),
+    OnboardingState.FAILED: frozenset({OnboardingState.GENERATING}),
     OnboardingState.ARCHIVED: frozenset(),
 }
 
@@ -128,6 +141,7 @@ def is_terminal(state: OnboardingState) -> bool:
 # ---------------------------------------------------------------------------
 # Pydantic models
 # ---------------------------------------------------------------------------
+
 
 class OnboardingRequest(BaseModel):
     """An agent onboarding request tracked through the HITL gate."""
@@ -181,6 +195,7 @@ class OnboardingRequest(BaseModel):
 # Registry helpers
 # ---------------------------------------------------------------------------
 
+
 def _request_to_registry_entry(req: OnboardingRequest) -> dict[str, Any]:
     """Convert an OnboardingRequest to a company-registry.yaml agent entry."""
     entry: dict[str, Any] = {
@@ -202,6 +217,7 @@ def _request_to_registry_entry(req: OnboardingRequest) -> dict[str, Any]:
 # WebSocket broadcast helper
 # ---------------------------------------------------------------------------
 
+
 def _broadcast_onboarding_event(request_id: str, event: str, payload: dict[str, Any]) -> None:
     """Fire-and-forget WS broadcast for onboarding lifecycle events.
 
@@ -222,6 +238,7 @@ def _broadcast_onboarding_event(request_id: str, event: str, payload: dict[str, 
 # ---------------------------------------------------------------------------
 # Service
 # ---------------------------------------------------------------------------
+
 
 class OnboardingService(BaseService):
     """Unified service layer for HITL-gated agent onboarding.
@@ -245,9 +262,7 @@ class OnboardingService(BaseService):
         self._templates_dir = Path(templates_dir)
         self._output_dir = Path(output_dir)
         super().__init__(department_id="hr", data_dir=data_dir, **kwargs)
-        self._onboarding_store = FileStore(
-            Path(data_dir) / "hr", backup=True
-        )
+        self._onboarding_store = FileStore(Path(data_dir) / "hr", backup=True)
 
     # ── Persistence ────────────────────────────────────────────────────
 
@@ -386,7 +401,7 @@ class OnboardingService(BaseService):
                 {"agent_id": req.agent_id, "registry_entry": entry},
                 request_id=req.id,
             )
-        except Exception as exc:
+        except OSError as exc:
             return ServiceResult.fail(
                 f"Failed to add to registry: {exc}",
                 request_id=req.id,
@@ -416,9 +431,7 @@ class OnboardingService(BaseService):
             if req.agent_id not in existing_ids:
                 add_result = self.add_to_registry(req)
                 if not add_result.success:
-                    raise RuntimeError(
-                        f"Failed to add agent '{req.agent_id}' to registry"
-                    )
+                    raise RuntimeError(f"Failed to add agent '{req.agent_id}' to registry")
 
             gen = AgentGenerator(
                 registry_path=str(self._registry_path),
@@ -434,7 +447,7 @@ class OnboardingService(BaseService):
             generated_paths = [str(p) for p in generated]
             return ServiceResult.ok(generated_paths, request_id=req.id)
 
-        except Exception as exc:
+        except (OSError, RuntimeError) as exc:
             logger.error("Generation failed — rolling back registry to %s", backup_path)
             shutil.copy2(backup_path, self._registry_path)
             return ServiceResult.fail(
@@ -647,12 +660,16 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(req.id, "requested", {
-            "agent_id": agent_id,
-            "role": role,
-            "department": department,
-            "tier": tier,
-        })
+        _broadcast_onboarding_event(
+            req.id,
+            "requested",
+            {
+                "agent_id": agent_id,
+                "role": role,
+                "department": department,
+                "tier": tier,
+            },
+        )
 
         return ServiceResult.ok(
             {
@@ -715,11 +732,15 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "approved", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-            "approved_by": approved_by,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "approved",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+                "approved_by": approved_by,
+            },
+        )
 
         return ServiceResult.ok(
             {
@@ -779,12 +800,16 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "rejected", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-            "rejected_by": rejected_by,
-            "reason": reason,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "rejected",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+                "rejected_by": rejected_by,
+                "reason": reason,
+            },
+        )
 
         return ServiceResult.ok(
             {
@@ -826,8 +851,7 @@ class OnboardingService(BaseService):
             next_state = happy_path[current_idx + 1]
         else:
             return ServiceResult.fail(
-                f"Cannot advance from state '{req.state.value}' — "
-                f"no next state in happy path"
+                f"Cannot advance from state '{req.state.value}' — no next state in happy path"
             )
 
         # Special handling: when entering APPROVAL, create HITL approval request
@@ -845,10 +869,14 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "advanced", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "advanced",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+            },
+        )
 
         logger.info("Advanced request %s to %s", request_id, req.state.value)
         return ServiceResult.ok(
@@ -909,12 +937,16 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "security_review", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-            "reviewer": reviewer,
-            "approved": approved,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "security_review",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+                "reviewer": reviewer,
+                "approved": approved,
+            },
+        )
 
         return ServiceResult.ok(
             {
@@ -927,7 +959,9 @@ class OnboardingService(BaseService):
             request_id=request_id,
         )
 
-    def complete_generation(self, request_id: str, result: str = "") -> ServiceResult[dict[str, Any]]:
+    def complete_generation(
+        self, request_id: str, result: str = ""
+    ) -> ServiceResult[dict[str, Any]]:
         """Complete the generation step and advance to TESTING."""
         req = self._get_request(request_id)
         if req is None:
@@ -949,12 +983,16 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "step_completed", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-            "step": "generating",
-            "result": result,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "step_completed",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+                "step": "generating",
+                "result": result,
+            },
+        )
 
         return ServiceResult.ok(
             {
@@ -966,7 +1004,9 @@ class OnboardingService(BaseService):
             request_id=request_id,
         )
 
-    def complete_testing(self, request_id: str, passed: bool = True, result: str = "") -> ServiceResult[dict[str, Any]]:
+    def complete_testing(
+        self, request_id: str, passed: bool = True, result: str = ""
+    ) -> ServiceResult[dict[str, Any]]:
         """Complete the testing step and advance to APPROVAL or FAILED."""
         req = self._get_request(request_id)
         if req is None:
@@ -991,17 +1031,26 @@ class OnboardingService(BaseService):
             action="complete_testing",
             event_type=AuditEventType.DELEGATION,
             entity_id=request_id,
-            result={"step": "testing", "passed": passed, "new_state": req.state.value, "result": result},
+            result={
+                "step": "testing",
+                "passed": passed,
+                "new_state": req.state.value,
+                "result": result,
+            },
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "step_completed", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-            "step": "testing",
-            "passed": passed,
-            "result": result,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "step_completed",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+                "step": "testing",
+                "passed": passed,
+                "result": result,
+            },
+        )
 
         return ServiceResult.ok(
             {
@@ -1021,9 +1070,7 @@ class OnboardingService(BaseService):
             return ServiceResult.fail(f"Onboarding request '{request_id}' not found")
 
         if not can_transition(req.state, OnboardingState.ARCHIVED):
-            return ServiceResult.fail(
-                f"Cannot archive from state '{req.state.value}'"
-            )
+            return ServiceResult.fail(f"Cannot archive from state '{req.state.value}'")
 
         req.transition_to(OnboardingState.ARCHIVED)
         self._save_request(req)
@@ -1036,10 +1083,14 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "archived", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "archived",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+            },
+        )
 
         return ServiceResult.ok(
             {
@@ -1074,10 +1125,14 @@ class OnboardingService(BaseService):
         )
 
         # WS broadcast
-        _broadcast_onboarding_event(request_id, "retry", {
-            "agent_id": req.agent_id,
-            "state": req.state.value,
-        })
+        _broadcast_onboarding_event(
+            request_id,
+            "retry",
+            {
+                "agent_id": req.agent_id,
+                "state": req.state.value,
+            },
+        )
 
         return ServiceResult.ok(
             {

@@ -72,7 +72,7 @@ class HITLGate:
         poll_interval: float = 2.0,
         timeout_minutes: int = 30,
     ) -> None:
-        self.gate = approval_gate or ApprovalGate()
+        self.gate = approval_gate or ApprovalGate.get_instance()
         self.poll_interval = poll_interval
         self.timeout_minutes = timeout_minutes
         self._futures: dict[str, concurrent.futures.Future[bool]] = {}

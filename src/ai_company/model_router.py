@@ -32,15 +32,18 @@ logger = logging.getLogger(__name__)
 # Free model metadata
 # ---------------------------------------------------------------------------
 
+
 @dataclass(frozen=True)
 class FreeModel:
     """Represents a free Opencode model with metadata for rotation."""
+
     id: str
     name: str
     context: int  # context window in tokens; larger = more capable
     provider: str = "opencode"
     model: str = ""
     priority: int = 0  # higher = preferred for rotation (context-weighted)
+
 
 # In-memory cache for free model catalog
 # Structure: {key: (timestamp, models_list)}
@@ -148,52 +151,127 @@ TIER_ORDER: list[str] = ["fast", "standard", "premium"]
 # Keywords indicating simple, well-defined tasks
 SIMPLE_TASK_KEYWORDS: dict[str, list[str]] = {
     "read_only": [
-        "read", "view", "show", "display", "list", "cat", "head", "tail",
-        "grep", "search", "find", "lookup", "get", "fetch",
+        "read",
+        "view",
+        "show",
+        "display",
+        "list",
+        "cat",
+        "head",
+        "tail",
+        "grep",
+        "search",
+        "find",
+        "lookup",
+        "get",
+        "fetch",
     ],
     "single_file_edit": [
-        "fix typo", "add comment", "update comment", "rename variable",
-        "change string", "update constant", "modify config",
+        "fix typo",
+        "add comment",
+        "update comment",
+        "rename variable",
+        "change string",
+        "update constant",
+        "modify config",
     ],
     "simple_command": [
-        "run test", "run pytest", "run lint", "run build", "run script",
-        "execute", "check", "verify", "validate",
+        "run test",
+        "run pytest",
+        "run lint",
+        "run build",
+        "run script",
+        "execute",
+        "check",
+        "verify",
+        "validate",
     ],
     "boilerplate": [
-        "create file", "add file", "new file", "scaffold", "template",
-        "boilerplate", "stub", "placeholder",
+        "create file",
+        "add file",
+        "new file",
+        "scaffold",
+        "template",
+        "boilerplate",
+        "stub",
+        "placeholder",
     ],
 }
 
 # Keywords indicating complex tasks requiring reasoning
 COMPLEX_TASK_KEYWORDS: dict[str, list[str]] = {
     "architecture": [
-        "design", "architect", "structure", "refactor", "restructure",
-        "reorganize", "pattern", "framework", "system design",
+        "design",
+        "architect",
+        "structure",
+        "refactor",
+        "restructure",
+        "reorganize",
+        "pattern",
+        "framework",
+        "system design",
     ],
     "multi_file": [
-        "multiple files", "across files", "several files", "many files",
-        "codebase", "project-wide", "global", "cross-cutting",
+        "multiple files",
+        "across files",
+        "several files",
+        "many files",
+        "codebase",
+        "project-wide",
+        "global",
+        "cross-cutting",
     ],
     "debugging": [
-        "debug", "trace", "root cause", "investigate", "diagnose",
-        "troubleshoot", "why", "analyze failure",
+        "debug",
+        "trace",
+        "root cause",
+        "investigate",
+        "diagnose",
+        "troubleshoot",
+        "why",
+        "analyze failure",
     ],
     "integration": [
-        "integrate", "connect", "wire up", "hook up", "link",
-        "api", "endpoint", "service", "microservice",
+        "integrate",
+        "connect",
+        "wire up",
+        "hook up",
+        "link",
+        "api",
+        "endpoint",
+        "service",
+        "microservice",
     ],
     "security": [
-        "security", "vulnerability", "audit", "compliance", "penetration",
-        "threat model", "risk assessment", "hardening",
+        "security",
+        "vulnerability",
+        "audit",
+        "compliance",
+        "penetration",
+        "threat model",
+        "risk assessment",
+        "hardening",
     ],
     "performance": [
-        "optimize", "performance", "speed up", "latency", "throughput",
-        "bottleneck", "profile", "benchmark",
+        "optimize",
+        "performance",
+        "speed up",
+        "latency",
+        "throughput",
+        "bottleneck",
+        "profile",
+        "benchmark",
     ],
     "planning": [
-        "plan", "strategy", "roadmap", "design doc", "spec", "specification",
-        "requirements", "break down", "decompose",
+        "plan",
+        "strategy",
+        "roadmap",
+        "design doc",
+        "spec",
+        "specification",
+        "requirements",
+        "break down",
+        "decompose",
     ],
 }
 
@@ -208,9 +286,142 @@ TASK_TYPE_COMPLEXITY: dict[str, int] = {
     "task": 40,  # delegation adds complexity
 }
 
+# Task-type detection keywords (maps prompt patterns to task_type keys
+# used in the task_type_routing section of models.yaml).
+TASK_TYPE_KEYWORDS: dict[str, list[str]] = {
+    "read_only": [
+        "read",
+        "show",
+        "display",
+        "list",
+        "cat",
+        "print",
+        "view",
+        "display",
+        "what is",
+        "what are",
+        "how does",
+        "explain",
+    ],
+    "single_file_edit": [
+        "edit",
+        "modify",
+        "update",
+        "change",
+        "fix typo",
+        "rename",
+        "adjust",
+        "tweak",
+    ],
+    "simple_command": [
+        "run",
+        "execute",
+        "build",
+        "test",
+        "install",
+        "compile",
+        "make",
+        "npm",
+        "yarn",
+        "pip",
+        "cargo",
+    ],
+    "boilerplate": [
+        "scaffold",
+        "template",
+        "generate",
+        "create file",
+        "new file",
+        "boilerplate",
+        "init",
+    ],
+    "code_review": [
+        "review",
+        "audit",
+        "check",
+        "lint",
+        "analyze",
+        "code review",
+        "pull request",
+        "pr review",
+    ],
+    "debugging": [
+        "fix",
+        "bug",
+        "error",
+        "debug",
+        "crash",
+        "fail",
+        "traceback",
+        "exception",
+        "broken",
+        "issue",
+    ],
+    "refactor": [
+        "refactor",
+        "reorganize",
+        "clean up",
+        "restructure",
+        "simplify",
+        "optimize",
+        "improve",
+    ],
+    "integration": [
+        "integrate",
+        "connect",
+        "wire",
+        "hook up",
+        "link",
+        "merge",
+        "combine",
+    ],
+    "architecture": [
+        "architecture",
+        "design",
+        "system design",
+        "blueprint",
+        "structure",
+        "layout",
+        "diagram",
+    ],
+    "planning": [
+        "plan",
+        "strategy",
+        "roadmap",
+        "design doc",
+        "spec",
+        "specification",
+        "requirements",
+        "break down",
+        "decompose",
+    ],
+    "security": [
+        "security",
+        "vulnerability",
+        "vulnerabilities",
+        "auth",
+        "permission",
+        "encrypt",
+        "sanitize",
+        "injection",
+        "xss",
+    ],
+    "performance": [
+        "optimize",
+        "performance",
+        "speed up",
+        "latency",
+        "throughput",
+        "bottleneck",
+        "profile",
+        "benchmark",
+    ],
+    "general": [],  # Catch-all, no specific keywords; always matches via fallback
+}
+
 # Complexity thresholds for tier selection
 COMPLEXITY_THRESHOLDS: dict[str, int] = {
-    "fast": 30,      # 0-30 → fast tier
+    "fast": 30,  # 0-30 → fast tier
     "standard": 60,  # 31-60 → standard tier
     "premium": 100,  # 61+ → premium tier
 }
@@ -223,10 +434,11 @@ SPECIAL_TIER_IDS: frozenset[str] = frozenset({"free", "override"})
 @dataclass(frozen=True)
 class ComplexityScore:
     """Task complexity assessment."""
-    score: int          # 0-100
-    tier: str           # recommended tier
+
+    score: int  # 0-100
+    tier: str  # recommended tier
     factors: list[str]  # contributing factors
-    task_type: str      # detected task type
+    task_type: str  # detected task type
 
 
 @dataclass(frozen=True)
@@ -338,17 +550,19 @@ class ModelRouter:
         if (
             cache_key in self._model_cache
             and self._cache_time.get(cache_key)
-            and datetime.now(timezone.utc) - self._cache_time[cache_key] < timedelta(
-                seconds=_CACHE_TTL_SECONDS
-            )
+            and datetime.now(timezone.utc) - self._cache_time[cache_key]
+            < timedelta(seconds=_CACHE_TTL_SECONDS)
         ):
             return self._model_cache[cache_key]
 
         try:
-            async with aiohttp.ClientSession() as session, session.get(
-                "https://opencode.ai/zen/v1/models",
-                timeout=aiohttp.ClientTimeout(total=10),
-            ) as resp:
+            async with (
+                aiohttp.ClientSession() as session,
+                session.get(
+                    "https://opencode.ai/zen/v1/models",
+                    timeout=aiohttp.ClientTimeout(total=10),
+                ) as resp,
+            ):
                 if resp.status == 200:
                     data = await resp.json()
                     models: list[FreeModel] = []
@@ -360,7 +574,7 @@ class ModelRouter:
                         if is_free and usd_cost == 0:
                             ctx = m.get("max_tokens", 0) or m.get("context_length", 0) or 0
                             mid = m.get("id", "")
-                            prov, model = (mid.split("/", 1) if "/" in mid else ("opencode", mid))
+                            prov, model = mid.split("/", 1) if "/" in mid else ("opencode", mid)
                             # Higher priority = larger context window
                             priority = 1000 - ctx if ctx > 0 else 0
                             models.append(
@@ -372,7 +586,7 @@ class ModelRouter:
                                     model=model,
                                     priority=priority,
                                 )
-                        )
+                            )
                     # Sort by context descending, then priority descending
                     models.sort(key=lambda m: (-m.context, -m.priority))
 
@@ -388,10 +602,24 @@ class ModelRouter:
         static_models = [
             FreeModel(id="opencode/big-pickle", name="Big Pickle", context=200000, priority=800),
             FreeModel(id="opencode/gpt-5-nano", name="GPT-5 Nano", context=128000, priority=920),
-            FreeModel(id="opencode/kimi-k2.5-free", name="Kimi K2.5 Free", context=262144, priority=738),
-            FreeModel(id="opencode/qwen3.6-plus-free", name="Qwen 3.6 Plus Free", context=262144, priority=738),
-            FreeModel(id="opencode/minimax-m2.5-free", name="MiniMax M2.5 Free", context=204800, priority=795),
-            FreeModel(id="opencode/glm-4.7-free", name="GLM-4.7 Free", context=200000, priority=800),
+            FreeModel(
+                id="opencode/kimi-k2.5-free", name="Kimi K2.5 Free", context=262144, priority=738
+            ),
+            FreeModel(
+                id="opencode/qwen3.6-plus-free",
+                name="Qwen 3.6 Plus Free",
+                context=262144,
+                priority=738,
+            ),
+            FreeModel(
+                id="opencode/minimax-m2.5-free",
+                name="MiniMax M2.5 Free",
+                context=204800,
+                priority=795,
+            ),
+            FreeModel(
+                id="opencode/glm-4.7-free", name="GLM-4.7 Free", context=200000, priority=800
+            ),
         ]
         self._model_cache[cache_key] = static_models
         self._cache_time[cache_key] = datetime.now(timezone.utc)
@@ -403,9 +631,8 @@ class ModelRouter:
         if (
             cache_key in self._model_cache
             and self._cache_time.get(cache_key)
-            and datetime.now(timezone.utc) - self._cache_time[cache_key] < timedelta(
-                seconds=_CACHE_TTL_SECONDS
-            )
+            and datetime.now(timezone.utc) - self._cache_time[cache_key]
+            < timedelta(seconds=_CACHE_TTL_SECONDS)
         ):
             return self._model_cache[cache_key]
         return None
@@ -761,19 +988,28 @@ class ModelRouter:
 
     @staticmethod
     def detect_task_type(task_prompt: str) -> str:
-        """Detect the primary task type from the prompt."""
+        """Detect the primary task type from the prompt.
+
+        Returns a task_type key (e.g. "read_only", "debugging", "architecture")
+        that maps to the ``task_type_routing`` section of ``models.yaml``.
+        Falls back to ``"general"`` if no strong match.
+        """
         lower = task_prompt.lower()
 
-        # Check for explicit tool mentions
-        for task_type, keywords in SIMPLE_TASK_KEYWORDS.items():
-            if any(kw in lower for kw in keywords):
-                return task_type
+        # Score each task type by keyword matches (skip "general" catch-all)
+        scores: dict[str, int] = {}
+        for task_type, keywords in TASK_TYPE_KEYWORDS.items():
+            if task_type == "general" or not keywords:
+                continue
+            matches = sum(1 for kw in keywords if kw in lower)
+            if matches > 0:
+                scores[task_type] = matches
 
-        for task_type, keywords in COMPLEX_TASK_KEYWORDS.items():
-            if any(kw in lower for kw in keywords):
-                return task_type
+        if not scores:
+            return "general"
 
-        return "general"
+        # Return the task type with the most keyword matches
+        return max(scores, key=scores.get)  # type: ignore[arg-type]
 
     @staticmethod
     def score_complexity(task_prompt: str, agent_type: str | None = None) -> ComplexityScore:
@@ -845,10 +1081,10 @@ class ModelRouter:
         # Factor 5: Agent type modifier
         if agent_type:
             agent_modifiers = {
-                "executive": 10,      # Executives do planning → more complex
-                "board": 15,          # Board does governance → more complex
-                "department": 5,      # Dept heads coordinate → moderate
-                "specialist": 0,      # Specialists execute → base complexity
+                "executive": 10,  # Executives do planning → more complex
+                "board": 15,  # Board does governance → more complex
+                "department": 5,  # Dept heads coordinate → moderate
+                "specialist": 0,  # Specialists execute → base complexity
             }
             mod = agent_modifiers.get(agent_type.lower(), 0)
             if mod:
@@ -889,19 +1125,21 @@ class ModelRouter:
         priority: str = "medium",
         context: Optional[str] = None,
         task_prompt: Optional[str] = None,
+        cost_tracker: Any = None,
     ) -> Route:
         """Resolve model with complexity-aware routing.
 
         This extends the standard resolve() by considering task complexity
         to potentially downgrade/upgrade the tier for cost efficiency.
         """
-        # Get base route
+        # Get base route (passes cost_tracker for budget degradation)
         base_route = self.resolve(
             agent_name=agent_name,
             agent_type=agent_type,
             priority=priority,
             context=context,
             task_prompt=task_prompt,
+            cost_tracker=cost_tracker,
         )
 
         # If per-agent override or explicit context, don't adjust
@@ -914,8 +1152,12 @@ class ModelRouter:
 
             # If complexity suggests a different tier, consider it
             # But only downgrade (never upgrade beyond base) for safety
-            base_tier_idx = TIER_ORDER.index(base_route.tier) if base_route.tier in TIER_ORDER else 1
-            complexity_tier_idx = TIER_ORDER.index(complexity.tier) if complexity.tier in TIER_ORDER else 1
+            base_tier_idx = (
+                TIER_ORDER.index(base_route.tier) if base_route.tier in TIER_ORDER else 1
+            )
+            complexity_tier_idx = (
+                TIER_ORDER.index(complexity.tier) if complexity.tier in TIER_ORDER else 1
+            )
 
             # Use the lower tier (cheaper) if complexity allows
             # But respect priority: high/critical tasks don't downgrade
@@ -997,10 +1239,13 @@ class ModelRouter:
             if agent_type is None:
                 agent_type = agent.get("type")
 
-        # Layer 2: explicit context rules
-        tier_id = self._match_rule(agent_type=agent_type, priority=priority, context=context)
-        if tier_id is not None and (tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS):
-            return tier_id, f"routing rule (context={context})"
+        # Layer 2: explicit context rules (context-only, no agent type matching)
+        if context:
+            for rule in self._routing:
+                if rule.get("context") == context:
+                    tier_id = rule.get("tier")
+                    if tier_id and (tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS):
+                        return tier_id, f"routing rule (context={context})"
 
         # Layer 3: domain-aware detection from task prompt
         if task_prompt:
@@ -1013,18 +1258,32 @@ class ModelRouter:
                         priority=priority,
                         context=domain_ctx,
                     )
-                    if tier_id is not None and (tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS):
+                    if tier_id is not None and (
+                        tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS
+                    ):
                         return (
                             tier_id,
                             f"domain-aware: '{domain}' detected → context '{domain_ctx}'",
                         )
 
-        # Layer 4: agent type + priority rules (no context)
+        # Layer 4: task-type routing (detected from prompt keywords)
+        if task_prompt:
+            task_type = self.detect_task_type(task_prompt)
+            task_type_routing = self._config.get("task_type_routing", {})
+            if task_type in task_type_routing:
+                task_tier = task_type_routing[task_type]
+                if task_tier in self._tiers or task_tier in SPECIAL_TIER_IDS:
+                    return (
+                        task_tier,
+                        f"task-type: '{task_type}' detected from prompt",
+                    )
+
+        # Layer 5: agent type + priority rules (no context)
         tier_id = self._match_rule(agent_type=agent_type, priority=priority, context=None)
         if tier_id is not None and (tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS):
             return tier_id, f"routing rule (agent_type={agent_type}, priority={priority})"
 
-        # Layer 5: fallback
+        # Layer 6: fallback
         return "standard", "fallback to 'standard' tier"
 
     def resolve(
@@ -1078,12 +1337,13 @@ class ModelRouter:
             )
 
         # Apply budget degradation if cost_tracker is provided
-        if cost_tracker is not None:
+        # Skip degradation for override, escalation, and approval contexts
+        # (these are safety-critical and must not be degraded)
+        _safety_contexts = {"escalation", "approval"}
+        if cost_tracker is not None and tier_id != "override" and context not in _safety_contexts:
             pressure = cost_tracker.daily_pressure()
             is_critical = priority == "critical"
-            degraded_tier = self.get_budget_degradation_tier(
-                tier_id, pressure, is_critical
-            )
+            degraded_tier = self.get_budget_degradation_tier(tier_id, pressure, is_critical)
             if degraded_tier != tier_id:
                 reason = (
                     f"{reason} [budget degradation: {tier_id}→{degraded_tier} "
@@ -1187,6 +1447,7 @@ class ModelRouter:
         priority: str = "medium",
         context: Optional[str] = None,
         task_prompt: Optional[str] = None,
+        cost_tracker: Any = None,
     ) -> list[Route]:
         """Resolve the primary route plus fallback chain for quality escalation.
 
@@ -1207,6 +1468,8 @@ class ModelRouter:
             Explicit routing context.
         task_prompt:
             Raw task text for domain detection.
+        cost_tracker:
+            Optional CostTracker instance for budget degradation.
 
         Returns
         -------
@@ -1219,6 +1482,7 @@ class ModelRouter:
             priority=priority,
             context=context,
             task_prompt=task_prompt,
+            cost_tracker=cost_tracker,
         )
         routes: list[Route] = [primary]
 

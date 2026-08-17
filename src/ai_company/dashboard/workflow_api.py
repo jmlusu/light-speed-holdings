@@ -106,9 +106,7 @@ def get_instance_status(instance_id: str) -> dict[str, Any] | None:
     return result
 
 
-def start_workflow(
-    workflow_id: str, context: dict[str, Any] | None = None
-) -> str:
+def start_workflow(workflow_id: str, context: dict[str, Any] | None = None) -> str:
     """Start a new workflow instance; returns the instance ID."""
     engine = get_workflow_engine()
     result: str = engine.start(workflow_id, context=context)
