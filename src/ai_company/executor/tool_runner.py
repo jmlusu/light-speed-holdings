@@ -25,9 +25,11 @@ GAP-003 fix (tier rules integration):
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import shlex
 import subprocess
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
@@ -44,6 +46,15 @@ from ai_company.orchestrator.tier_rules import (
 from ai_company.security.command_safety import find_shell_metacharacters
 from ai_company.security.content_filter import ContentFilter, get_content_filter
 from ai_company.security.pii_detector import PIIDetector, get_pii_detector
+
+try:
+    from ai_company.telemetry import start_span as _start_span
+except ImportError:  # pragma: no cover — OTel optional
+
+    @contextlib.contextmanager  # type: ignore[misc,override]
+    def _start_span(_name: str, **_kwargs: object) -> Iterator[None]:  # type: ignore
+        yield
+
 
 logger = logging.getLogger(__name__)
 
@@ -233,175 +244,185 @@ class ToolRunner:
         results: list[dict[str, Any]] = []
         blocking = hitl_gate is not None
 
-        # GAP-019: LLM output is untyped — a malformed plan (a bare string
-        # instead of a list of tool steps) must not crash the loop.  Surface
-        # it as an error result so the model can self-correct on the next
-        # iteration instead of raising ``'str' object has no attribute 'get'``.
-        if not isinstance(plan, list):
-            malformed_plan = {
-                "step": 0,
-                "tool": "plan",
-                "status": "error",
-                "error": (
-                    "Malformed plan: expected a list of tool steps, "
-                    f"got {type(plan).__name__}. Respond with a JSON array of "
-                    '{"tool": ..., "args": {...}} steps.'
-                ),
-            }
-            results.append(malformed_plan)
-            log_tool_call(task_id, agent_id, "plan", {}, malformed_plan)
-            return results
-
-        for i, step in enumerate(plan):
-            if not isinstance(step, dict):
-                malformed_step = {
-                    "step": i,
+        with _start_span(
+            "tool.execute",
+            attributes={
+                "task_id": task_id,
+                "agent_id": agent_id,
+                "steps": len(plan) if isinstance(plan, list) else 0,
+                "seniority": seniority,
+                "risk_level": risk_level,
+            },
+        ):
+            # GAP-019: LLM output is untyped — a malformed plan (a bare string
+            # instead of a list of tool steps) must not crash the loop.  Surface
+            # it as an error result so the model can self-correct on the next
+            # iteration instead of raising ``'str' object has no attribute 'get'``.
+            if not isinstance(plan, list):
+                malformed_plan = {
+                    "step": 0,
                     "tool": "plan",
                     "status": "error",
                     "error": (
-                        f"Malformed step at index {i}: expected a dict, "
-                        f"got {type(step).__name__}. Respond with a JSON array "
-                        'of {"tool": ..., "args": {...}} steps.'
-                    ),
-                }
-                results.append(malformed_step)
-                log_tool_call(task_id, agent_id, "plan", {}, malformed_step)
-                continue
-
-            tool = step.get("tool", "")
-            args = step.get("args", {})
-
-            # GAP-019 (extended): LLM output is untyped — a step whose
-            # ``args`` is a bare string instead of a dict (e.g. the model
-            # emitted a path directly) must not crash tier classification
-            # with ``'str' object has no attribute 'values'``.  Surface it
-            # as an error result so the model can self-correct.
-            if not isinstance(args, dict):
-                malformed_args = {
-                    "step": i,
-                    "tool": tool,
-                    "status": "error",
-                    "error": (
-                        "Malformed step: 'args' must be a JSON object, "
-                        f"got {type(args).__name__}. Respond with "
+                        "Malformed plan: expected a list of tool steps, "
+                        f"got {type(plan).__name__}. Respond with a JSON array of "
                         '{"tool": ..., "args": {...}} steps.'
                     ),
                 }
-                results.append(malformed_args)
-                log_tool_call(task_id, agent_id, tool, args, malformed_args)
-                continue
+                results.append(malformed_plan)
+                log_tool_call(task_id, agent_id, "plan", {}, malformed_plan)
+                return results
 
-            if tool not in self._all_tools():
-                error_result = {
-                    "step": i,
-                    "tool": tool,
-                    "status": "error",
-                    "error": f"Unknown tool: {tool}",
-                }
-                results.append(error_result)
-                log_tool_call(task_id, agent_id, tool, args, error_result)
-                continue
+            for i, step in enumerate(plan):
+                if not isinstance(step, dict):
+                    malformed_step = {
+                        "step": i,
+                        "tool": "plan",
+                        "status": "error",
+                        "error": (
+                            f"Malformed step at index {i}: expected a dict, "
+                            f"got {type(step).__name__}. Respond with a JSON array "
+                            'of {"tool": ..., "args": {...}} steps.'
+                        ),
+                    }
+                    results.append(malformed_step)
+                    log_tool_call(task_id, agent_id, "plan", {}, malformed_step)
+                    continue
 
-            # ── GAP-003: Tier classification & authorization ─────────
-            tier_info = self.check_tool_authorization(
-                tool_name=tool,
-                args=args,
-                agent_id=agent_id,
-                seniority=seniority,
-                risk_level=risk_level,
-                task_id=task_id,
-            )
-            tier = tier_info["tier"]
-            needs_hitl = tier_info["needs_hitl"]
-            tier_label = tier_info["tier_label"]
+                tool = step.get("tool", "")
+                args = step.get("args", {})
 
-            # ── HITL approval path ───────────────────────────────────
-            if needs_hitl and blocking and not preapproved:
-                assert hitl_gate is not None  # guaranteed by ``blocking``
-                if non_blocking:
-                    # GAP-004: park instead of blocking.  Raise HITLParked so
-                    # the executor can transition the task to WAITING_APPROVAL
-                    # and continue to the next task.  The SAME shared
-                    # ApprovalGate hook (ciso's GAP-003 tier enforcement) is
-                    # used to create the request — no duplicate gate.
+                # GAP-019 (extended): LLM output is untyped — a step whose
+                # ``args`` is a bare string instead of a dict (e.g. the model
+                # emitted a path directly) must not crash tier classification
+                # with ``'str' object has no attribute 'values'``.  Surface it
+                # as an error result so the model can self-correct.
+                if not isinstance(args, dict):
+                    malformed_args = {
+                        "step": i,
+                        "tool": tool,
+                        "status": "error",
+                        "error": (
+                            "Malformed step: 'args' must be a JSON object, "
+                            f"got {type(args).__name__}. Respond with "
+                            '{"tool": ..., "args": {...}} steps.'
+                        ),
+                    }
+                    results.append(malformed_args)
+                    log_tool_call(task_id, agent_id, tool, args, malformed_args)
+                    continue
+
+                if tool not in self._all_tools():
+                    error_result = {
+                        "step": i,
+                        "tool": tool,
+                        "status": "error",
+                        "error": f"Unknown tool: {tool}",
+                    }
+                    results.append(error_result)
+                    log_tool_call(task_id, agent_id, tool, args, error_result)
+                    continue
+
+                # ── GAP-003: Tier classification & authorization ─────────
+                tier_info = self.check_tool_authorization(
+                    tool_name=tool,
+                    args=args,
+                    agent_id=agent_id,
+                    seniority=seniority,
+                    risk_level=risk_level,
+                    task_id=task_id,
+                )
+                tier = tier_info["tier"]
+                needs_hitl = tier_info["needs_hitl"]
+                tier_label = tier_info["tier_label"]
+
+                # ── HITL approval path ───────────────────────────────────
+                if needs_hitl and blocking and not preapproved:
                     assert hitl_gate is not None  # guaranteed by ``blocking``
-                    request_id = hitl_gate.request_and_park(
+                    if non_blocking:
+                        # GAP-004: park instead of blocking.  Raise HITLParked so
+                        # the executor can transition the task to WAITING_APPROVAL
+                        # and continue to the next task.  The SAME shared
+                        # ApprovalGate hook (ciso's GAP-003 tier enforcement) is
+                        # used to create the request — no duplicate gate.
+                        assert hitl_gate is not None  # guaranteed by ``blocking``
+                        request_id = hitl_gate.request_and_park(
+                            task_id=task_id,
+                            agent_id=agent_id,
+                            tool=tool,
+                            args=args,
+                        )
+                        log_hitl_decision(task_id, agent_id, tool, None)
+                        raise HITLParked(
+                            task_id=task_id,
+                            agent_id=agent_id,
+                            tool=tool,
+                            request_id=request_id,
+                            tier=tier,
+                        )
+                    approved = hitl_gate.request_and_wait_sync(
                         task_id=task_id,
                         agent_id=agent_id,
                         tool=tool,
                         args=args,
                     )
-                    log_hitl_decision(task_id, agent_id, tool, None)
-                    raise HITLParked(
-                        task_id=task_id,
-                        agent_id=agent_id,
-                        tool=tool,
-                        request_id=request_id,
-                        tier=tier,
+                    log_hitl_decision(task_id, agent_id, tool, approved)
+                    if not approved:
+                        denied_result = {
+                            "step": i,
+                            "tool": tool,
+                            "status": "denied",
+                            "error": f"Human approval denied (tier: {tier_label})",
+                            "tier": tier,
+                        }
+                        results.append(denied_result)
+                        log_tool_call(task_id, agent_id, tool, args, denied_result)
+                        continue
+
+                elif needs_hitl and not blocking and not preapproved:
+                    # ``blocking`` is False only when no hitl_gate was supplied.
+                    # There is no gate to queue the approval with, so we cannot
+                    # enforce the HITL requirement. The safest behaviour is to
+                    # proceed with execution (the tier classification still records
+                    # that HITL *would* have been required) and surface a warning.
+                    # NOTE: when a gate *is* present this branch is never reached
+                    # (it is handled by the ``needs_hitl and blocking`` path
+                    # above), so the tier-classification security behaviour is
+                    # fully preserved for production callers.
+                    logger.warning(
+                        "Tier %d (%s) requires HITL for %s by %s but no "
+                        "hitl_gate was provided — executing without approval",
+                        int(tier),
+                        tier_label,
+                        tool,
+                        agent_id,
                     )
-                approved = hitl_gate.request_and_wait_sync(
-                    task_id=task_id,
-                    agent_id=agent_id,
-                    tool=tool,
-                    args=args,
-                )
-                log_hitl_decision(task_id, agent_id, tool, approved)
-                if not approved:
-                    denied_result = {
+
+                # ── Execute the tool ──────────────────────────────────────
+                try:
+                    result = self._execute_tool(tool, args)
+                    status = "error" if "error" in result else "ok"
+                    exec_result = {
                         "step": i,
                         "tool": tool,
-                        "status": "denied",
-                        "error": f"Human approval denied (tier: {tier_label})",
+                        "status": status,
                         "tier": tier,
+                        "tier_label": tier_label,
+                        **result,
                     }
-                    results.append(denied_result)
-                    log_tool_call(task_id, agent_id, tool, args, denied_result)
-                    continue
-
-            elif needs_hitl and not blocking and not preapproved:
-                # ``blocking`` is False only when no hitl_gate was supplied.
-                # There is no gate to queue the approval with, so we cannot
-                # enforce the HITL requirement. The safest behaviour is to
-                # proceed with execution (the tier classification still records
-                # that HITL *would* have been required) and surface a warning.
-                # NOTE: when a gate *is* present this branch is never reached
-                # (it is handled by the ``needs_hitl and blocking`` path
-                # above), so the tier-classification security behaviour is
-                # fully preserved for production callers.
-                logger.warning(
-                    "Tier %d (%s) requires HITL for %s by %s but no "
-                    "hitl_gate was provided — executing without approval",
-                    int(tier),
-                    tier_label,
-                    tool,
-                    agent_id,
-                )
-
-            # ── Execute the tool ──────────────────────────────────────
-            try:
-                result = self._execute_tool(tool, args)
-                status = "error" if "error" in result else "ok"
-                exec_result = {
-                    "step": i,
-                    "tool": tool,
-                    "status": status,
-                    "tier": tier,
-                    "tier_label": tier_label,
-                    **result,
-                }
-                results.append(exec_result)
-                log_tool_call(task_id, agent_id, tool, args, exec_result)
-            except Exception as exc:  # noqa: BLE001 - tool failure captured in result
-                exc_result = {
-                    "step": i,
-                    "tool": tool,
-                    "status": "error",
-                    "tier": tier,
-                    "tier_label": tier_label,
-                    "error": str(exc),
-                }
-                results.append(exc_result)
-                log_tool_call(task_id, agent_id, tool, args, exc_result)
+                    results.append(exec_result)
+                    log_tool_call(task_id, agent_id, tool, args, exec_result)
+                except Exception as exc:  # noqa: BLE001 - tool failure captured in result
+                    exc_result = {
+                        "step": i,
+                        "tool": tool,
+                        "status": "error",
+                        "tier": tier,
+                        "tier_label": tier_label,
+                        "error": str(exc),
+                    }
+                    results.append(exc_result)
+                    log_tool_call(task_id, agent_id, tool, args, exc_result)
 
         return results
 
@@ -752,7 +773,7 @@ class ToolRunner:
         }
 
     def _delegate(self, args: dict[str, Any]) -> dict[str, Any]:
-        """Create a subtask in the inbox. Actual processing happens by the loop."""
+        """Return a delegate action dict for the loop to create a subtask in the inbox."""
         return {
             "action": "delegate",
             "receiver": args.get("receiver", ""),

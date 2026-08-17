@@ -1,8 +1,8 @@
 """Embedding engine — local sentence-transformer based text embeddings.
 
 Provides a lightweight interface for computing and comparing text
-embeddings without external API dependencies.  Falls back gracefully
-when sentence-transformers is unavailable.
+embeddings without external API dependencies.  Requires sentence-transformers;
+raises ImportError if unavailable.
 """
 
 from __future__ import annotations
