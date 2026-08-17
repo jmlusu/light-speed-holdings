@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -168,7 +168,7 @@ class WorkflowInstanceItem(BaseModel):
     steps: list[WorkflowStepItem] = Field(default_factory=list)
     started_at: Optional[str] = None
     completed_at: Optional[str] = None
-    context: dict = Field(default_factory=dict)
+    context: dict[str, Any] = Field(default_factory=dict)
 
 
 class WorkflowActionRequest(BaseModel):

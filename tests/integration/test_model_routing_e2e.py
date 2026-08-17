@@ -8,19 +8,16 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
 import yaml
 
 from ai_company.model_router import (
-    ModelRouter,
-    FreeModel,
-    Route,
     TASK_TYPE_KEYWORDS,
+    FreeModel,
+    ModelRouter,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -120,7 +117,12 @@ def full_models_yaml(tmp_path: Path) -> Path:
 @pytest.fixture()
 def registry_json(tmp_path: Path) -> Path:
     agents = [
-        {"name": "cto", "role": "CTO", "type": "Executive", "model": "anthropic/claude-opus-4-20250514"},
+        {
+            "name": "cto",
+            "role": "CTO",
+            "type": "Executive",
+            "model": "anthropic/claude-opus-4-20250514",
+        },
         {"name": "board-finance", "role": "Finance Board Advisor", "type": "Board"},
         {"name": "lead-backend", "role": "Lead Backend Engineer", "type": "Specialist"},
         {"name": "security-auditor", "role": "Security Auditor", "type": "Specialist"},
@@ -324,9 +326,30 @@ class TestTokenLimitRotationIntegration:
         import asyncio
 
         test_models = [
-            FreeModel(id="opencode/s", name="S", context=80000, provider="opencode", model="s", priority=920),
-            FreeModel(id="opencode/m", name="M", context=128000, provider="opencode", model="m", priority=872),
-            FreeModel(id="opencode/l", name="L", context=262144, provider="opencode", model="l", priority=738),
+            FreeModel(
+                id="opencode/s",
+                name="S",
+                context=80000,
+                provider="opencode",
+                model="s",
+                priority=920,
+            ),
+            FreeModel(
+                id="opencode/m",
+                name="M",
+                context=128000,
+                provider="opencode",
+                model="m",
+                priority=872,
+            ),
+            FreeModel(
+                id="opencode/l",
+                name="L",
+                context=262144,
+                provider="opencode",
+                model="l",
+                priority=738,
+            ),
         ]
         router._set_cached_free_models(test_models)
 
@@ -341,7 +364,14 @@ class TestTokenLimitRotationIntegration:
         import asyncio
 
         test_models = [
-            FreeModel(id="opencode/biggest", name="Biggest", context=262144, provider="opencode", model="biggest", priority=738),
+            FreeModel(
+                id="opencode/biggest",
+                name="Biggest",
+                context=262144,
+                provider="opencode",
+                model="biggest",
+                priority=738,
+            ),
         ]
         router._set_cached_free_models(test_models)
 
@@ -429,6 +459,5 @@ class TestTaskTypeKeywordsCoverage:
         task_type_routing = router._config.get("task_type_routing", {})
         for task_type in TASK_TYPE_KEYWORDS:
             assert task_type in task_type_routing, (
-                f"task_type '{task_type}' has detection keywords "
-                f"but no entry in task_type_routing"
+                f"task_type '{task_type}' has detection keywords but no entry in task_type_routing"
             )

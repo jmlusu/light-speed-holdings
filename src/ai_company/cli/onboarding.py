@@ -41,7 +41,9 @@ def request(
     from ai_company.services.onboarding import OnboardingService
 
     tool_list = [t.strip() for t in tools.split(",") if t.strip()] if tools else []
-    resp_list = [r.strip() for r in responsibilities.split(",") if r.strip()] if responsibilities else []
+    resp_list = (
+        [r.strip() for r in responsibilities.split(",") if r.strip()] if responsibilities else []
+    )
 
     svc = OnboardingService()
     result = svc.request_onboarding(

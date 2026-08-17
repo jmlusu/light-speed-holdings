@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ExperimentConfig:
     """Configuration for an A/B experiment."""
+
     name: str
     description: str
     enabled: bool = False
@@ -33,6 +34,7 @@ class ExperimentConfig:
 @dataclass
 class ExperimentMetrics:
     """Metrics collected during an experiment."""
+
     experiment_name: str
     variant: str  # "control" or "treatment"
     task_id: str
@@ -151,9 +153,7 @@ class ABTestingFramework:
 
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
 
-        data = {
-            "experiments": [asdict(exp) for exp in self._experiments.values()]
-        }
+        data = {"experiments": [asdict(exp) for exp in self._experiments.values()]}
 
         try:
             with open(self.config_path, "w", encoding="utf-8") as f:
@@ -197,19 +197,27 @@ class ABTestingFramework:
 
                 # Hash-based assignment
                 import hashlib
+
                 hash_input = f"{experiment_name}:{task_id}".encode()
                 hash_val = int(hashlib.md5(hash_input, usedforsecurity=False).hexdigest(), 16)
-                assignment = "treatment" if (hash_val / (2**128)) < experiment.traffic_split else "control"
+                assignment = (
+                    "treatment" if (hash_val / (2**128)) < experiment.traffic_split else "control"
+                )
                 self._assignment_cache[cache_key] = assignment
                 return assignment == "treatment"
 
         # No task_id - use random assignment
         import random
+
         return random.random() < experiment.traffic_split
 
     def get_variant(self, experiment_name: str, agent_name: str, task_id: str = "") -> str:
         """Get the variant name for logging."""
-        return "treatment" if self.should_use_treatment(experiment_name, agent_name, task_id) else "control"
+        return (
+            "treatment"
+            if self.should_use_treatment(experiment_name, agent_name, task_id)
+            else "control"
+        )
 
     def record_metrics(self, metrics: ExperimentMetrics) -> None:
         """Record experiment metrics."""
@@ -253,6 +261,7 @@ class ABTestingFramework:
             return {"error": "No metrics directory"}
 
         import glob
+
         files = glob.glob(str(metrics_dir / f"{experiment_name}_*.jsonl"))
 
         all_metrics: list[ExperimentMetrics] = []
@@ -284,7 +293,8 @@ class ABTestingFramework:
                 "avg_iterations": sum(m.iterations for m in metrics_list) / len(metrics_list),
                 "avg_duration": sum(m.duration_seconds for m in metrics_list) / len(metrics_list),
                 "success_rate": sum(1 for m in metrics_list if m.success) / len(metrics_list),
-                "completion_rate": sum(1 for m in metrics_list if m.task_completed) / len(metrics_list),
+                "completion_rate": sum(1 for m in metrics_list if m.task_completed)
+                / len(metrics_list),
             }
 
         return {

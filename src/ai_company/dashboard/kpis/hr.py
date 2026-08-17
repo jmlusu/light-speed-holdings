@@ -18,7 +18,7 @@ class HRKPICollector(KPICollector):
         registry_path = self.root / "company" / "agent-registry.json"
         dept_path = self.root / "company" / "departments.yaml"
 
-        registry: list[dict] = self._load_json("company/agent-registry.json")
+        registry: list[dict[str, Any]] = self._load_json("company/agent-registry.json")
         departments_data = self._load_yaml("company/departments.yaml")
 
         # Track data quality

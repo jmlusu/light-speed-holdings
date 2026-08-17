@@ -39,7 +39,7 @@ def _get_model(model_name: str = "all-MiniLM-L6-v2") -> Any:
         return _model
 
     try:
-        from sentence_transformers import SentenceTransformer  # type: ignore[import-not-found]
+        from sentence_transformers import SentenceTransformer
 
         logger.info("Loading embedding model: %s", model_name)
         _model = SentenceTransformer(model_name)

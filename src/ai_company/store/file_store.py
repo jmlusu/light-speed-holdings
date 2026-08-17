@@ -18,6 +18,7 @@ import logging
 import os
 import shutil
 import time
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -139,7 +140,9 @@ class FileStore:
     # ── Lock context manager ────────────────────────────────────────────
 
     @contextmanager
-    def lock(self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT):
+    def lock(
+        self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT
+    ) -> Generator[None, None, None]:
         """Context manager for file-level exclusive access.
 
         Uses a ``.lock`` sibling file to serialise access to the resource at
@@ -163,7 +166,9 @@ class FileStore:
             yield
 
     @contextmanager
-    def lock_atomic(self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT):
+    def lock_atomic(
+        self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT
+    ) -> Generator[Path, None, None]:
         """Context manager that acquires a file lock and yields the full path.
 
         Combines exclusive locking with automatic release. This is useful

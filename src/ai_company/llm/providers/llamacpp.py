@@ -10,6 +10,7 @@ import time
 from collections.abc import Generator
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import httpx
 
@@ -24,6 +25,7 @@ from ai_company.llm.providers.base import (
 @dataclass
 class LlamaCppConfig:
     """Configuration for llama.cpp server."""
+
     model_path: str
     n_ctx: int = 32768
     n_batch: int = 512
@@ -61,7 +63,7 @@ class LlamaCppProvider(LLMProvider):
         self.server_host = server_host
         self.use_server = use_server
         self.startup_timeout = startup_timeout
-        self._server_process: subprocess.Popen | None = None
+        self._server_process: subprocess.Popen[Any] | None = None
         self._server_ready = threading.Event()
         self._client = httpx.Client(
             base_url=f"http://{server_host}:{server_port}",
@@ -79,6 +81,7 @@ class LlamaCppProvider(LLMProvider):
             llama_server = self._find_llama_server()
             if not llama_server:
                 import logging
+
                 logging.getLogger(__name__).warning(
                     "llama-server not found in PATH. Install llama.cpp for optimized CPU inference. "
                     "Falling back to Ollama for local inference."
@@ -88,6 +91,7 @@ class LlamaCppProvider(LLMProvider):
 
             if not self.model_path or not Path(self.model_path).exists():
                 import logging
+
                 logging.getLogger(__name__).warning(
                     "Model file not found: %s. Download GGUF models first.", self.model_path
                 )
@@ -96,17 +100,26 @@ class LlamaCppProvider(LLMProvider):
 
             cmd = [
                 llama_server,
-                "-m", self.model_path,
-                "-c", str(self.config.n_ctx),
-                "-b", str(self.config.n_batch),
-                "-t", str(self.config.n_threads),
-                "-tb", str(self.config.n_threads_batch),
-                "-ngl", str(self.config.n_gpu_layers),
+                "-m",
+                self.model_path,
+                "-c",
+                str(self.config.n_ctx),
+                "-b",
+                str(self.config.n_batch),
+                "-t",
+                str(self.config.n_threads),
+                "-tb",
+                str(self.config.n_threads_batch),
+                "-ngl",
+                str(self.config.n_gpu_layers),
                 "--mlock" if self.config.use_mlock else "--no-mlock",
                 "--mmap" if self.config.use_mmap else "--no-mmap",
-                "--port", str(self.server_port),
-                "--host", self.server_host,
-                "--ctx-size", str(self.config.n_ctx),
+                "--port",
+                str(self.server_port),
+                "--host",
+                self.server_host,
+                "--ctx-size",
+                str(self.config.n_ctx),
             ]
 
             # Add rope scaling if needed
@@ -128,9 +141,18 @@ class LlamaCppProvider(LLMProvider):
         """Find llama-server executable in PATH or common locations."""
         # Check PATH first
         for path in os.environ.get("PATH", "").split(os.pathsep):
-            exe = Path(path) / "llama-server.exe" if os.name == "nt" else Path(path) / "llama-server"
+            exe = (
+                Path(path) / "llama-server.exe" if os.name == "nt" else Path(path) / "llama-server"
+            )
             if exe.exists():
                 return str(exe)
+
+        # Check project bin directory (where we installed llama.cpp)
+        # Navigate from src/ai_company/llm/providers/ up to project root
+        project_root = Path(__file__).parent.parent.parent.parent.parent
+        project_bin = project_root / "bin" / "llama-server.exe"
+        if project_bin.exists():
+            return str(project_bin)
 
         # Check common install locations
         common_paths = [
@@ -148,12 +170,15 @@ class LlamaCppProvider(LLMProvider):
     def _wait_for_server(self) -> None:
         """Wait for llama-server to be ready. Returns False on failure instead of raising."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         start = time.time()
         while time.time() - start < self.startup_timeout:
             try:
-                resp = httpx.get(f"http://{self.server_host}:{self.server_port}/health", timeout=2.0)
+                resp = httpx.get(
+                    f"http://{self.server_host}:{self.server_port}/health", timeout=2.0
+                )
                 if resp.status_code == 200:
                     self._server_ready.set()
                     self._available = True
@@ -183,10 +208,12 @@ class LlamaCppProvider(LLMProvider):
             return True
         if self._available is False:
             return False
-        if not self._server_ready.is_set() or (self._server_process and self._server_process.poll() is not None):
+        if not self._server_ready.is_set() or (
+            self._server_process and self._server_process.poll() is not None
+        ):
             self._server_ready.clear()
             self._start_server()
-            return self._available is not False
+            return self._available is True
         return True
 
     def chat(

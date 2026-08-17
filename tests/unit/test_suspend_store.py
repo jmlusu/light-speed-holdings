@@ -18,8 +18,8 @@ from pathlib import Path
 import pytest
 
 from ai_company.orchestrator.suspend_store import (
-    SuspendStore,
     SuspendedState,
+    SuspendStore,
     _truncate_history,
 )
 

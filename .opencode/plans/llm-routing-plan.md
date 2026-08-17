@@ -37,7 +37,7 @@ class FreeModel:
 # New method on ModelRouter
 async def _fetch_free_model_catalog(self) -> List[FreeModel]:
     """Fetch free models from OpenCode Zen API, sorted by context window descending.
-    
+
     Returns list of FreeModel sorted by context (largest first), ready for rotation.
     Caches result for 1 hour (models rarely change daily).
     Falls back to static list if API unavailable.
@@ -46,7 +46,7 @@ async def _fetch_free_model_catalog(self) -> List[FreeModel]:
     cached = self._get_cached(cache_key)
     if cached:
         return cached
-    
+
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(
@@ -73,13 +73,13 @@ async def _fetch_free_model_catalog(self) -> List[FreeModel]:
                             ))
                     # Sort by context descending, then priority
                     models.sort(key=lambda m: (-m.context, -m.priority))
-                    
+
                     # Cache for 1 hour
                     self._set_cache(cache_key, models, ttl=3600)
                     return models
     except Exception:
         pass  # Fall through to static fallback
-    
+
     # Static fallback list (current free models)
     return [
         FreeModel(id="opencode/big-pickle", name="Big Pickle", context=200000, priority=800),
@@ -169,7 +169,7 @@ TOKEN_LIMIT_PATTERNS = [
 # In resolve_with_complexity or a new method
 def rotate_on_token_limit(self, failed_model: str, task_prompt: str) -> Optional[Route]:
     """Rotate to next free model with larger context window.
-    
+
     1. Get current model's context
     2. Find next free model with larger context from dynamic catalog
     3. If found, return route with that model
@@ -180,7 +180,7 @@ def rotate_on_token_limit(self, failed_model: str, task_prompt: str) -> Optional
     current_model = self._find_model(failed_model)
     if not current_model:
         return None
-    
+
     # Find next model with larger context
     for model in self._free_catalog:
         if model.context > current_model.context and model.id != current_model.id:
@@ -192,7 +192,7 @@ def rotate_on_token_limit(self, failed_model: str, task_prompt: str) -> Optional
                 tier=tier,
                 reason=f"token-limit rotation: {current_model.context}→{model.context} context window"
             )
-    
+
     # No larger free model available → go up a tier
     return self._rotate_to_next_tier("standard")
 ```

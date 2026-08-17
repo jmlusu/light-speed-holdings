@@ -67,8 +67,8 @@ class ConversationHistoryManager:
             return
 
         # Split into old and recent
-        old_turns = self._full_history[:-self.max_full_turns]
-        recent_turns = self._full_history[-self.max_full_turns:]
+        old_turns = self._full_history[: -self.max_full_turns]
+        recent_turns = self._full_history[-self.max_full_turns :]
 
         # Create summary of old turns
         old_text = "\n\n".join(old_turns)
@@ -79,8 +79,7 @@ class ConversationHistoryManager:
         self._full_history = recent_turns
 
         logger.debug(
-            "Summarized %d old turns into %d tokens",
-            len(old_turns), count_tokens(summary)
+            "Summarized %d old turns into %d tokens", len(old_turns), count_tokens(summary)
         )
 
     def _create_summary(self, text: str) -> str:
@@ -117,7 +116,7 @@ class ConversationHistoryManager:
             # Extract result from parsed JSON or use raw
             if isinstance(response, dict) and "result" in response:
                 return str(response["result"])
-            return str(response)[:self.max_summary_tokens]
+            return str(response)[: self.max_summary_tokens]
         except (LLMProviderError, LLMResponseError, KeyError, TypeError) as e:
             logger.warning("LLM summarization failed, using heuristic: %s", e)
             return self._heuristic_summarize(text)
@@ -138,7 +137,9 @@ class ConversationHistoryManager:
             elif any(kw in line_lower for kw in ["error", "failed", "exception", "traceback"]):
                 key_info.append(line.strip()[:200])
             # Tool results
-            elif any(kw in line_lower for kw in ["tool:", "step", "status: ok", "status: error"]) or any(kw in line_lower for kw in ["done", "complete", "finished", "result:"]):
+            elif any(
+                kw in line_lower for kw in ["tool:", "step", "status: ok", "status: error"]
+            ) or any(kw in line_lower for kw in ["done", "complete", "finished", "result:"]):
                 key_info.append(line.strip()[:150])
 
         # Limit summary size
@@ -147,7 +148,7 @@ class ConversationHistoryManager:
 
         # Truncate if still too long
         if count_tokens(summary) > self.max_summary_tokens:
-            summary = summary[:self.max_summary_tokens * 4] + "... [truncated]"
+            summary = summary[: self.max_summary_tokens * 4] + "... [truncated]"
 
         return summary
 

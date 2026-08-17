@@ -516,7 +516,7 @@ class ModelRouter:
         self._providers: dict[str, ProviderConfig] = {}
         self._tiers: dict[str, Tier] = {}
         self._routing: list[dict[str, Any]] = []
-        self._registry: dict[str, dict] = {}
+        self._registry: dict[str, dict[str, Any]] = {}
         self._model_cache: dict[str, list[FreeModel]] = {}
         self._cache_time: dict[str, datetime] = {}
         self._load()

@@ -593,16 +593,14 @@ class TestOrgChart:
         resp = client.get("/api/v1/org-chart")
         data = resp.json()
         # Find lead-marketing in the tree
-        found = False
 
         def find_agent(nodes: list) -> bool:
             for node in nodes:
                 if node["name"] == "lead-marketing":
                     child_names = [c["name"] for c in node.get("children", [])]
                     return "lead-engineering" in child_names
-                if node.get("children"):
-                    if find_agent(node["children"]):
-                        return True
+                if node.get("children") and find_agent(node["children"]):
+                    return True
             return False
 
         assert find_agent(data)

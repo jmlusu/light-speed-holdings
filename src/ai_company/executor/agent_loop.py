@@ -55,7 +55,7 @@ try:
     from ai_company.telemetry import start_span as _start_span
 except ImportError:  # pragma: no cover — OTel optional
 
-    @contextlib.contextmanager  # type: ignore[misc,override]
+    @contextlib.contextmanager
     def _start_span(_name: str, **_kwargs: object) -> Iterator[None]:  # type: ignore
         yield
 

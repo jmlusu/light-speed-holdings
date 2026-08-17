@@ -188,9 +188,7 @@ def test_backup_created_on_generate(manager: OnboardingManager, sample_registry:
     assert len(backups) >= 1
 
 
-def test_generate_produces_agent_file(
-    manager: OnboardingManager, sample_registry: Path
-) -> None:
+def test_generate_produces_agent_file(manager: OnboardingManager, sample_registry: Path) -> None:
     req = _make_request()
     generated = manager.generate(req)
 
@@ -258,19 +256,19 @@ def test_status_values() -> None:
 # State machine tests (Issue #28)
 # ---------------------------------------------------------------------------
 
-from ai_company.hr.onboarding import (
-    STATE_LABELS,
+from ai_company.hr.onboarding import (  # noqa: E402
     _TRANSITIONS,
+    STATE_LABELS,
     _RequestStore,
     can_transition,
     is_terminal,
-    valid_transitions,
 )
 
 
 def _make_store() -> _RequestStore:
     """Create a temporary _RequestStore for testing."""
     import tempfile
+
     return _RequestStore(data_dir=Path(tempfile.mkdtemp()))
 
 
@@ -360,6 +358,7 @@ def test_request_to_dict_roundtrip() -> None:
 # ---------------------------------------------------------------------------
 # Service lifecycle tests (Issue #28)
 # ---------------------------------------------------------------------------
+
 
 def test_create_request_persists() -> None:
     mgr = OnboardingManager(registry_path="/dev/null")
