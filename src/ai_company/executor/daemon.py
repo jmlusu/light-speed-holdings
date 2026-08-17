@@ -560,11 +560,13 @@ class ExecutorDaemon:
         *,
         _clock: Callable[[], float] | None = None,
         _sleep: Callable[[float], None] | None = None,
+        health_broadcast_callback: Callable[[dict[str, Any]], None] | None = None,
     ) -> None:
         self.executor_factory = executor_factory
         self.poll_interval = poll_interval
         self.kpi_snapshot_interval = kpi_snapshot_interval
         self.governance_interval = governance_interval
+        self._health_broadcast = health_broadcast_callback
 
         self.pid_file = DaemonPIDFile(pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid"))
         self.status_file = DaemonHealthStatus(status_path or DEFAULT_HEALTH_FILE)
@@ -738,6 +740,7 @@ class ExecutorDaemon:
                     count,
                 )
                 self._update_status("running")
+                self._broadcast_health()
             except Exception:
                 logger.exception("Error during tick")
 
@@ -881,6 +884,20 @@ class ExecutorDaemon:
             started_at=self._started_at,
             ticks_completed=self._ticks_completed,
         )
+
+    def _broadcast_health(self) -> None:
+        """Push daemon health to WebSocket clients via the registered callback.
+
+        Best-effort: a broadcast failure must never crash the daemon loop.
+        """
+        if self._health_broadcast is None:
+            return
+        try:
+            status = self.status_file.read()
+            if status is not None:
+                self._health_broadcast(status)
+        except Exception:  # noqa: BLE001 - broadcast is best-effort
+            logger.debug("Daemon health broadcast failed", exc_info=True)
 
     def _stop_requested(self) -> bool:
         """Return True if a stop-request sentinel file is present."""

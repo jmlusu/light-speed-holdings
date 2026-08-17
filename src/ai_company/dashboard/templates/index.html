@@ -2,96 +2,129 @@
 {% block title %}Dashboard — CEO Dashboard{% endblock %}
 
 {% block content %}
-<!-- ═══ KPI CARDS ═══ -->
-<!--
-  FIX: Added kpi-grid class for responsive CSS overrides.
-  Added skeleton loading states so the page doesn't jump from
-  empty to populated on first load.
--->
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8 kpi-grid">
-  <div class="kpi-card jarvis-glass rounded-xl p-4">
-    <div class="flex items-center gap-2 mb-2">
-      <div class="w-8 h-8 rounded-lg bg-jarvis-amber/10 flex items-center justify-center">
-        <svg class="w-4 h-4 text-jarvis-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <span class="text-xs text-jarvis-muted">Pending</span>
+<!-- ═══ CEO HERO SECTION ═══ -->
+<div class="hero-section">
+  <div class="hero-header">
+    <h2 class="text-lg font-semibold text-jarvis-primary" style="color: var(--jarvis-cyan);">ORG HEALTH</h2>
+    <div class="hero-variant-toggle">
+      <button @click="setHeroVariant('A')" :class="heroVariant === 'A' ? 'active' : ''">A</button>
+      <button @click="setHeroVariant('B')" :class="heroVariant === 'B' ? 'active' : ''">B</button>
+      <button @click="setHeroVariant('D')" :class="heroVariant === 'D' ? 'active' : ''">D</button>
     </div>
-    <div class="text-3xl font-bold text-jarvis-amber font-mono">
-      <template x-if="!isLoading"><span x-text="kpis.pending_tasks">0</span></template>
-      <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
-    </div>
-    <div class="text-[10px] text-jarvis-muted mt-1">tasks awaiting pickup</div>
   </div>
 
-  <div class="kpi-card jarvis-glass rounded-xl p-4">
-    <div class="flex items-center gap-2 mb-2">
-      <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+  <!-- Loading skeleton -->
+  <template x-if="orgHealthLoading">
+    <div class="hero-loading">
+      <div class="skeleton" style="width: 256px; height: 160px; border-radius: 0.5rem;"></div>
+      <div class="hero-kpi-cards">
+        <div class="skeleton" style="width: 120px; height: 80px;"></div>
+        <div class="skeleton" style="width: 120px; height: 80px;"></div>
+        <div class="skeleton" style="width: 120px; height: 80px;"></div>
+        <div class="skeleton" style="width: 120px; height: 80px;"></div>
       </div>
-      <span class="text-xs text-jarvis-muted">In Progress</span>
     </div>
-    <div class="text-3xl font-bold text-blue-400 font-mono">
-      <template x-if="!isLoading"><span x-text="kpis.in_progress_tasks">0</span></template>
-      <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
-    </div>
-    <div class="text-[10px] text-jarvis-muted mt-1">actively running</div>
-  </div>
+  </template>
 
-  <div class="kpi-card jarvis-glass rounded-xl p-4">
-    <div class="flex items-center gap-2 mb-2">
-      <div class="w-8 h-8 rounded-lg bg-jarvis-success/10 flex items-center justify-center">
-        <svg class="w-4 h-4 text-jarvis-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <span class="text-xs text-jarvis-muted">Completed</span>
+  <!-- Error state -->
+  <template x-if="!orgHealthLoading && !orgHealth">
+    <div class="hero-error text-jarvis-muted text-sm py-4">
+      Unable to load org health data
     </div>
-    <div class="text-3xl font-bold text-jarvis-success font-mono">
-      <template x-if="!isLoading"><span x-text="kpis.completed_tasks">0</span></template>
-      <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
-    </div>
-    <div class="text-[10px] text-jarvis-muted mt-1">successfully done</div>
-  </div>
+  </template>
 
-  <div class="kpi-card jarvis-glass rounded-xl p-4">
-    <div class="flex items-center gap-2 mb-2">
-      <div class="w-8 h-8 rounded-lg bg-jarvis-red/10 flex items-center justify-center">
-        <svg class="w-4 h-4 text-jarvis-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+  <!-- Variant B: Horizontal Split (Default) -->
+  <template x-if="!orgHealthLoading && orgHealth && heroVariant === 'B'">
+    <div class="hero-split">
+      <div class="hero-gauge-container">
+        <canvas id="heroGaugeB" width="192" height="192"></canvas>
+        <div class="hero-gauge-label">
+          <span class="gauge-score" x-text="orgHealth?.score?.toFixed(0) || '--'"></span>
+          <span class="gauge-band" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band || 'unknown'"></span>
+        </div>
       </div>
-      <span class="text-xs text-jarvis-muted">Failed</span>
+      <div class="hero-kpi-cards">
+        <template x-for="comp in orgHealth?.components || []" :key="comp.name">
+          <div class="hero-kpi-card">
+            <div class="kpi-label" x-text="getComponentLabel(comp.name)"></div>
+            <div class="kpi-value" x-text="comp.value.toFixed(0) + '%'"></div>
+            <canvas class="hero-sparkline" :id="'spark-b-' + comp.name" width="120" height="32"></canvas>
+          </div>
+        </template>
+      </div>
     </div>
-    <div class="text-3xl font-bold text-jarvis-red font-mono">
-      <template x-if="!isLoading"><span x-text="kpis.failed_tasks">0</span></template>
-      <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
-    </div>
-    <div class="text-[10px] text-jarvis-muted mt-1">need attention</div>
-  </div>
+  </template>
 
-  <div class="kpi-card jarvis-glass rounded-xl p-4">
-    <div class="flex items-center gap-2 mb-2">
-      <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-        <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+  <!-- Variant A: Gauge Hero (large radial) -->
+  <template x-if="!orgHealthLoading && orgHealth && heroVariant === 'A'">
+    <div class="hero-gauge-large">
+      <div class="hero-gauge-large-container">
+        <canvas id="heroGauge" width="256" height="256"></canvas>
+        <div class="hero-gauge-label hero-gauge-label-large">
+          <span class="gauge-score gauge-score-large" x-text="orgHealth?.score?.toFixed(0) || '--'"></span>
+          <span class="gauge-band" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band || 'unknown'"></span>
+        </div>
       </div>
-      <span class="text-xs text-jarvis-muted">Escalations</span>
+      <div class="hero-kpi-cards hero-kpi-cards-vertical">
+        <template x-for="comp in orgHealth?.components || []" :key="comp.name">
+          <div class="hero-kpi-card">
+            <div class="kpi-label" x-text="getComponentLabel(comp.name)"></div>
+            <div class="kpi-value" x-text="comp.value.toFixed(0) + '%'"></div>
+            <canvas class="hero-sparkline" :id="'spark-' + comp.name" width="120" height="32"></canvas>
+          </div>
+        </template>
+      </div>
     </div>
-    <div class="text-3xl font-bold font-mono" :class="kpis.open_escalations > 0 ? 'text-jarvis-red' : 'text-jarvis-success'">
-      <template x-if="!isLoading"><span x-text="kpis.open_escalations">0</span></template>
-      <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
-    </div>
-    <div class="text-[10px] text-jarvis-muted mt-1">require resolution</div>
-  </div>
+  </template>
 
-  <div class="kpi-card jarvis-glass rounded-xl p-4">
-    <div class="flex items-center gap-2 mb-2">
-      <div class="w-8 h-8 rounded-lg bg-jarvis-cyan/10 flex items-center justify-center">
-        <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+  <!-- Variant D: Drill-down -->
+  <template x-if="!orgHealthLoading && orgHealth && heroVariant === 'D'">
+    <div class="hero-drilldown">
+      <div class="hero-gauge-container">
+        <canvas id="heroGaugeD" width="256" height="256"></canvas>
+        <div class="hero-gauge-label">
+          <span class="gauge-score" x-text="orgHealth?.score?.toFixed(0) || '--'"></span>
+          <span class="gauge-band" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band || 'unknown'"></span>
+        </div>
       </div>
-      <span class="text-xs text-jarvis-muted">Agents</span>
+      <div class="hero-component-list">
+        <template x-for="comp in orgHealth?.components || []" :key="comp.name">
+          <button class="hero-component-item" @click="toggleComponent(comp.name)"
+                  :class="expandedComponent === comp.name ? 'expanded' : ''">
+            <div class="component-header">
+              <span class="component-name" x-text="getComponentLabel(comp.name)"></span>
+              <span class="component-value" x-text="comp.value.toFixed(0) + '%'"></span>
+            </div>
+            <div class="component-bar">
+              <div class="component-bar-fill" :style="`width: ${comp.value}%`"
+                   :class="comp.value >= 80 ? 'bg-emerald-500' : comp.value >= 50 ? 'bg-amber-500' : 'bg-red-500'"></div>
+            </div>
+            <template x-if="expandedComponent === comp.name">
+              <div class="component-detail">
+                <p class="text-xs text-jarvis-muted" x-text="getComponentDescription(comp.name)"></p>
+                <canvas class="hero-sparkline" :id="'spark-detail-' + comp.name" width="200" height="40"></canvas>
+              </div>
+            </template>
+          </button>
+        </template>
+      </div>
     </div>
-    <div class="text-3xl font-bold text-jarvis-cyan font-mono">
-      <template x-if="!isLoading"><span x-text="kpis.total_agents">0</span></template>
-      <template x-if="isLoading"><span class="skeleton skeleton-number">&nbsp;</span></template>
+  </template>
+
+  <!-- Alerts Bar -->
+  <template x-if="!orgHealthLoading && orgHealth">
+    <div class="hero-alerts">
+      <span class="alert-item">
+        <span class="text-amber-400" x-text="kpis.pending_approvals || 0"></span> pending approvals
+      </span>
+      <span class="alert-item">
+        <span class="text-red-400" x-text="kpis.open_escalations || 0"></span> escalations
+      </span>
+      <span class="alert-item">
+        <span class="text-blue-400" x-text="kpis.in_progress_tasks || 0"></span> in-progress
+      </span>
     </div>
-    <div class="text-[10px] text-jarvis-muted mt-1">registered agents</div>
-  </div>
+  </template>
 </div>
 
 <!-- ═══ CHARTS ROW ═══ -->

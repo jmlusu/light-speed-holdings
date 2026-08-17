@@ -267,9 +267,11 @@ def _reset_global_state():
     import ai_company.dashboard.api as dash_api
     import ai_company.memory.integration as mem_mod
     from ai_company.data import reset_database
+    from ai_company.orchestrator.approval import ApprovalGate
 
     audit_mod._writer = None
     mem_mod._store = None
     mem_mod._vector_store = None
     dash_api._bus = None
     reset_database()
+    ApprovalGate.reset_instance()

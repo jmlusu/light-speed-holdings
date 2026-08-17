@@ -66,6 +66,7 @@ _ALLOWED_REL_PATHS: frozenset[str] = frozenset(
 _ALLOWED_PREFIXES: tuple[str, ...] = (
     "orchestrator/kpi_snapshots/",
     "memory/",
+    ".opencode/decompositions/",
 )
 
 

@@ -51,6 +51,3 @@ Adopt OpenTelemetry API for distributed tracing across the task execution pipeli
 ## Next Step
 
 - Execute tasks T001–T008, then validate gates (ruff, mypy, pytest).
-
-
-

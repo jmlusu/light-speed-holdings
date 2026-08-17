@@ -91,4 +91,3 @@ Implemented the J.A.R.V.I.S. Control Plane theme system across the entire CEO da
 - Command bar vocabulary / command execution (map #33 ticket #50)
 - Light-mode support (dark-only per #101 decision)
 - Full unit test suite regression run (dashboard suite verified; full suite was in progress at timeout)
-

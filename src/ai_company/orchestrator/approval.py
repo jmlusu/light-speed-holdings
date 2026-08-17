@@ -128,7 +128,9 @@ class ApprovalGate:
         self._load_config()
 
     @classmethod
-    def get_instance(cls, config_path: str = "orchestrator/approvals.yaml", retain_days: int = 30) -> "ApprovalGate":
+    def get_instance(
+        cls, config_path: str = "orchestrator/approvals.yaml", retain_days: int = 30
+    ) -> "ApprovalGate":
         """Get the singleton ApprovalGate instance.
 
         Args:

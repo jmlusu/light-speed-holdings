@@ -7,6 +7,7 @@ Simulates a complete client engagement through the Control Plane:
 Uses existing REST endpoints only (no new code). Evidence is printed to stdout
 and can be captured for the resolution comment.
 """
+
 from __future__ import annotations
 
 import json
@@ -49,16 +50,19 @@ _log("=" * 60)
 _log("STEP 1: Lead intake (create engagement task)")
 _log("=" * 60)
 
-task = _post("/tasks", {
-    "receiver_id": "chief-of-staff",
-    "sender_id": "sales",
-    "instruction": (
-        "New client lead: Acme Corp (Malawi). Wants a WhatsApp chatbot "
-        "for customer support. Budget: MWK 1,500,000 setup + MWK 100,000/mo. "
-        "Contact: +265 991 234 567. Urgency: normal."
-    ),
-    "priority": "high",
-})
+task = _post(
+    "/tasks",
+    {
+        "receiver_id": "chief-of-staff",
+        "sender_id": "sales",
+        "instruction": (
+            "New client lead: Acme Corp (Malawi). Wants a WhatsApp chatbot "
+            "for customer support. Budget: MWK 1,500,000 setup + MWK 100,000/mo. "
+            "Contact: +265 991 234 567. Urgency: normal."
+        ),
+        "priority": "high",
+    },
+)
 task_id = task.get("id", task.get("task_id", "unknown"))
 _log(f"  Created task: {task_id}")
 _log(f"  Full response: {json.dumps(task, indent=2)}")
@@ -88,27 +92,32 @@ _log("=" * 60)
 _log("STEP 3: Record payment (setup fee)")
 _log("=" * 60)
 
-payment = _post("/payments", {
-    "client_id": "acme-corp-001",
-    "project_id": "proj-acme-chatbot-001",
-    "offer_id": "offer-b1",
-    "service_name": "WhatsApp Chatbot Setup",
-    "currency": "MWK",
-    "amount": 1500000,
-    "payment_method": "bank_transfer",
-    "status": "confirmed",
-    "installment_type": "setup",
-    "exchange_rate": 1800,
-    "reference": "INV-ACME-001",
-    "recorded_by": "sales",
-})
+payment = _post(
+    "/payments",
+    {
+        "client_id": "acme-corp-001",
+        "project_id": "proj-acme-chatbot-001",
+        "offer_id": "offer-b1",
+        "service_name": "WhatsApp Chatbot Setup",
+        "currency": "MWK",
+        "amount": 1500000,
+        "payment_method": "bank_transfer",
+        "status": "confirmed",
+        "installment_type": "setup",
+        "exchange_rate": 1800,
+        "reference": "INV-ACME-001",
+        "recorded_by": "sales",
+    },
+)
 _log(f"  Payment recorded: {json.dumps(payment, indent=2)}")
 
 # Verify in revenue ledger
 revenue = _get("/revenue", {"project_id": "proj-acme-chatbot-001"})
 _log(f"  Revenue ledger entries for project: {len(revenue)}")
 for entry in revenue:
-    _log(f"    - {entry.get('service_name')}: {entry.get('amount')} {entry.get('currency')} ({entry.get('status')})")
+    _log(
+        f"    - {entry.get('service_name')}: {entry.get('amount')} {entry.get('currency')} ({entry.get('status')})"
+    )
 
 
 # ── Step 4: Project tasks (delivery work) ───────────────────────
@@ -119,18 +128,24 @@ _log("=" * 60)
 
 delivery_tasks = []
 agents = [
-    ("conversation_designer", "Design WhatsApp chatbot conversation flows for Acme Corp customer support"),
+    (
+        "conversation_designer",
+        "Design WhatsApp chatbot conversation flows for Acme Corp customer support",
+    ),
     ("integration_engineer", "Set up WhatsApp Business API integration for Acme Corp"),
     ("backend_engineer", "Build backend webhook handler for Acme Corp chatbot"),
 ]
 
 for agent_id, instruction in agents:
-    t = _post("/tasks", {
-        "receiver_id": agent_id,
-        "sender_id": "chief-of-staff",
-        "instruction": f"[proj-acme-chatbot-001] {instruction}",
-        "priority": "high",
-    })
+    t = _post(
+        "/tasks",
+        {
+            "receiver_id": agent_id,
+            "sender_id": "chief-of-staff",
+            "instruction": f"[proj-acme-chatbot-001] {instruction}",
+            "priority": "high",
+        },
+    )
     tid = t.get("id", t.get("task_id", "unknown"))
     delivery_tasks.append((agent_id, tid))
     _log(f"  Created task for {agent_id}: {tid}")
@@ -147,16 +162,19 @@ _log("=" * 60)
 _log("STEP 5: CEO approval (QA review)")
 _log("=" * 60)
 
-approval_task = _post("/tasks", {
-    "receiver_id": "human-ceo",
-    "sender_id": "chief-of-staff",
-    "instruction": (
-        "[proj-acme-chatbot-001] QA review and CEO approval for Acme Corp "
-        "chatbot delivery. All sub-tasks completed. Ready for client review."
-    ),
-    "priority": "high",
-    "requires_approval": True,
-})
+approval_task = _post(
+    "/tasks",
+    {
+        "receiver_id": "human-ceo",
+        "sender_id": "chief-of-staff",
+        "instruction": (
+            "[proj-acme-chatbot-001] QA review and CEO approval for Acme Corp "
+            "chatbot delivery. All sub-tasks completed. Ready for client review."
+        ),
+        "priority": "high",
+        "requires_approval": True,
+    },
+)
 approval_tid = approval_task.get("id", approval_task.get("task_id", "unknown"))
 _log(f"  Created approval task: {approval_tid}")
 
@@ -171,20 +189,23 @@ _log("=" * 60)
 _log("STEP 6: Record monthly subscription payment")
 _log("=" * 60)
 
-monthly_payment = _post("/payments", {
-    "client_id": "acme-corp-001",
-    "project_id": "proj-acme-chatbot-001",
-    "offer_id": "offer-b1",
-    "service_name": "WhatsApp Chatbot Monthly",
-    "currency": "MWK",
-    "amount": 100000,
-    "payment_method": "mobile_money",
-    "status": "confirmed",
-    "installment_type": "monthly",
-    "exchange_rate": 1800,
-    "reference": "INV-ACME-002",
-    "recorded_by": "sales",
-})
+monthly_payment = _post(
+    "/payments",
+    {
+        "client_id": "acme-corp-001",
+        "project_id": "proj-acme-chatbot-001",
+        "offer_id": "offer-b1",
+        "service_name": "WhatsApp Chatbot Monthly",
+        "currency": "MWK",
+        "amount": 100000,
+        "payment_method": "mobile_money",
+        "status": "confirmed",
+        "installment_type": "monthly",
+        "exchange_rate": 1800,
+        "reference": "INV-ACME-002",
+        "recorded_by": "sales",
+    },
+)
 _log(f"  Monthly payment recorded: {json.dumps(monthly_payment, indent=2)}")
 
 
@@ -195,16 +216,43 @@ _log("STEP 7: Record delivery costs")
 _log("=" * 60)
 
 costs = [
-    {"cost_type": "llm_api", "amount_usd": 2.50, "amount_mwk": 4500, "description": "Conversation design (GPT-4 tokens)", "agent_id": "conversation_designer", "model": "gpt-4", "tokens": 15000},
-    {"cost_type": "llm_api", "amount_usd": 1.80, "amount_mwk": 3240, "description": "Integration planning (GPT-4 tokens)", "agent_id": "integration_engineer", "model": "gpt-4", "tokens": 11000},
-    {"cost_type": "llm_api", "amount_usd": 3.20, "amount_mwk": 5760, "description": "Backend implementation (GPT-4 tokens)", "agent_id": "backend_engineer", "model": "gpt-4", "tokens": 20000},
+    {
+        "cost_type": "llm_api",
+        "amount_usd": 2.50,
+        "amount_mwk": 4500,
+        "description": "Conversation design (GPT-4 tokens)",
+        "agent_id": "conversation_designer",
+        "model": "gpt-4",
+        "tokens": 15000,
+    },
+    {
+        "cost_type": "llm_api",
+        "amount_usd": 1.80,
+        "amount_mwk": 3240,
+        "description": "Integration planning (GPT-4 tokens)",
+        "agent_id": "integration_engineer",
+        "model": "gpt-4",
+        "tokens": 11000,
+    },
+    {
+        "cost_type": "llm_api",
+        "amount_usd": 3.20,
+        "amount_mwk": 5760,
+        "description": "Backend implementation (GPT-4 tokens)",
+        "agent_id": "backend_engineer",
+        "model": "gpt-4",
+        "tokens": 20000,
+    },
 ]
 
 for cost in costs:
-    c = _post("/project-costs", {
-        "project_id": "proj-acme-chatbot-001",
-        **cost,
-    })
+    c = _post(
+        "/project-costs",
+        {
+            "project_id": "proj-acme-chatbot-001",
+            **cost,
+        },
+    )
     _log(f"  Cost recorded: {cost['cost_type']} ${cost['amount_usd']:.2f} ({cost['agent_id']})")
 
 total_cost_usd = sum(c["amount_usd"] for c in costs)
@@ -248,13 +296,13 @@ _log("")
 _log("=" * 60)
 _log("ORDER-TO-CASH PROOF — SUMMARY")
 _log("=" * 60)
-_log(f"  Client: Acme Corp (Malawi)")
-_log(f"  Offer: WhatsApp chatbot (Offer B1)")
-_log(f"  Setup fee: MWK 1,500,000")
-_log(f"  Monthly: MWK 100,000")
+_log("  Client: Acme Corp (Malawi)")
+_log("  Offer: WhatsApp chatbot (Offer B1)")
+_log("  Setup fee: MWK 1,500,000")
+_log("  Monthly: MWK 100,000")
 _log(f"  Delivery cost: ${total_cost_usd:.2f}")
 _log(f"  Tasks created: {1 + len(delivery_tasks) + 1}")
-_log(f"  Payments recorded: 2")
+_log("  Payments recorded: 2")
 _log(f"  Cost records: {len(costs)}")
 _log(f"  Revenue entries: {len(revenue)}")
 if summary:

@@ -242,7 +242,9 @@ class AuditStore:
         # Filter out events already in archive (safety net for edge cases)
         new_events = [e for e in old_events if e.event_id not in existing_ids]
         if not new_events:
-            logger.info("No new events to archive (all %d events already in archive)", len(old_events))
+            logger.info(
+                "No new events to archive (all %d events already in archive)", len(old_events)
+            )
             # Still advance the cursor
             self._write_last_archive_time(archive, cutoff_date)
             return 0

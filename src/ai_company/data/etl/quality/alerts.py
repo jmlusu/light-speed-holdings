@@ -9,8 +9,8 @@ import logging
 from datetime import datetime, timezone
 from typing import Any
 
-from ai_company.audit.integration import get_writer
 from ai_company.audit.events import AuditEvent, AuditEventType
+from ai_company.audit.integration import get_writer
 
 logger = logging.getLogger(__name__)
 

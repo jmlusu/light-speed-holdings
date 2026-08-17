@@ -255,16 +255,16 @@ CREATE TABLE IF NOT EXISTS schema_meta (
 # ``PRAGMA user_version`` so an existing database is never silently left on
 # a stale schema.
 MIGRATIONS: dict[int, list[str]] = {
-            1: [SCHEMA_SQL],
-            2: [
-                # Task leases: track which executor claimed a task and until when,
-                # so stale-detection can verify ownership instead of racing live work.
-                "ALTER TABLE tasks ADD COLUMN claimed_by TEXT NOT NULL DEFAULT '';",
-                "ALTER TABLE tasks ADD COLUMN lease_expires_at TEXT NOT NULL DEFAULT '';",
-            ],
-            3: [
-                # Revenue transactions + project costs (ledger for order-to-cash)
-                """
+    1: [SCHEMA_SQL],
+    2: [
+        # Task leases: track which executor claimed a task and until when,
+        # so stale-detection can verify ownership instead of racing live work.
+        "ALTER TABLE tasks ADD COLUMN claimed_by TEXT NOT NULL DEFAULT '';",
+        "ALTER TABLE tasks ADD COLUMN lease_expires_at TEXT NOT NULL DEFAULT '';",
+    ],
+    3: [
+        # Revenue transactions + project costs (ledger for order-to-cash)
+        """
                 CREATE TABLE IF NOT EXISTS revenue_transactions (
                     id                  TEXT PRIMARY KEY,
                     client_id           TEXT NOT NULL DEFAULT '',
@@ -283,12 +283,12 @@ MIGRATIONS: dict[int, list[str]] = {
                     timestamp           TEXT NOT NULL DEFAULT ''
                 );
                 """,
-                "CREATE INDEX IF NOT EXISTS idx_revenue_client ON revenue_transactions(client_id);",
-                "CREATE INDEX IF NOT EXISTS idx_revenue_project ON revenue_transactions(project_id);",
-                "CREATE INDEX IF NOT EXISTS idx_revenue_offer ON revenue_transactions(offer_id);",
-                "CREATE INDEX IF NOT EXISTS idx_revenue_status ON revenue_transactions(status);",
-                "CREATE INDEX IF NOT EXISTS idx_revenue_ts ON revenue_transactions(timestamp);",
-                """
+        "CREATE INDEX IF NOT EXISTS idx_revenue_client ON revenue_transactions(client_id);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_project ON revenue_transactions(project_id);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_offer ON revenue_transactions(offer_id);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_status ON revenue_transactions(status);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_ts ON revenue_transactions(timestamp);",
+        """
                 CREATE TABLE IF NOT EXISTS project_costs (
                     id                  TEXT PRIMARY KEY,
                     project_id          TEXT NOT NULL DEFAULT '',
@@ -302,13 +302,13 @@ MIGRATIONS: dict[int, list[str]] = {
                     timestamp           TEXT NOT NULL DEFAULT ''
                 );
                 """,
-                "CREATE INDEX IF NOT EXISTS idx_pcost_project ON project_costs(project_id);",
-                "CREATE INDEX IF NOT EXISTS idx_pcost_type ON project_costs(cost_type);",
-                "CREATE INDEX IF NOT EXISTS idx_pcost_ts ON project_costs(timestamp);",
-            ],
-            4: [
-                # Cost aggregations table for CostAggregationPipeline
-                """
+        "CREATE INDEX IF NOT EXISTS idx_pcost_project ON project_costs(project_id);",
+        "CREATE INDEX IF NOT EXISTS idx_pcost_type ON project_costs(cost_type);",
+        "CREATE INDEX IF NOT EXISTS idx_pcost_ts ON project_costs(timestamp);",
+    ],
+    4: [
+        # Cost aggregations table for CostAggregationPipeline
+        """
                 CREATE TABLE IF NOT EXISTS cost_aggregations (
                     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
                     period              TEXT NOT NULL,
@@ -324,10 +324,10 @@ MIGRATIONS: dict[int, list[str]] = {
                     UNIQUE(period, period_key)
                 );
                 """,
-                "CREATE INDEX IF NOT EXISTS idx_cost_agg_period ON cost_aggregations(period);",
-                "CREATE INDEX IF NOT EXISTS idx_cost_agg_period_key ON cost_aggregations(period_key);",
-                # Agent performance metrics table for AgentPerformancePipeline
-                """
+        "CREATE INDEX IF NOT EXISTS idx_cost_agg_period ON cost_aggregations(period);",
+        "CREATE INDEX IF NOT EXISTS idx_cost_agg_period_key ON cost_aggregations(period_key);",
+        # Agent performance metrics table for AgentPerformancePipeline
+        """
                 CREATE TABLE IF NOT EXISTS agent_performance_metrics (
                     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
                     agent_id            TEXT NOT NULL,
@@ -353,11 +353,11 @@ MIGRATIONS: dict[int, list[str]] = {
                     UNIQUE(agent_id, period_days, period_start)
                 );
                 """,
-                "CREATE INDEX IF NOT EXISTS idx_agent_perf_agent ON agent_performance_metrics(agent_id);",
-                "CREATE INDEX IF NOT EXISTS idx_agent_perf_period ON agent_performance_metrics(period_start);",
-                "CREATE INDEX IF NOT EXISTS idx_agent_perf_composite ON agent_performance_metrics(agent_id, period_days, period_start);",
-            ],
-        }
+        "CREATE INDEX IF NOT EXISTS idx_agent_perf_agent ON agent_performance_metrics(agent_id);",
+        "CREATE INDEX IF NOT EXISTS idx_agent_perf_period ON agent_performance_metrics(period_start);",
+        "CREATE INDEX IF NOT EXISTS idx_agent_perf_composite ON agent_performance_metrics(agent_id, period_days, period_start);",
+    ],
+}
 
 
 # ---------------------------------------------------------------------------

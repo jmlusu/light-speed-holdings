@@ -28,7 +28,9 @@ def _backdate_expiry(gate: ApprovalGate, request_id: str, minutes: int = 5) -> N
     """Force a request's expires_at into the past (no persistence)."""
     request = gate.get_request(request_id)
     assert request is not None
-    request.expires_at = datetime.now(timezone.utc) - timedelta(minutes=minutes)  # use UTC per ticket #58 convention
+    request.expires_at = datetime.now(timezone.utc) - timedelta(
+        minutes=minutes
+    )  # use UTC per ticket #58 convention
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

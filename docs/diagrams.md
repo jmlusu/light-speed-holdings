@@ -1,7 +1,7 @@
 # Light Speed Holdings — System Diagrams
 
 > Production-quality Mermaid diagrams for the AI Company Builder.
-> Generated 2026-07-21 from codebase analysis.
+> Generated 2026-08-18 from codebase analysis.
 
 ---
 
@@ -296,22 +296,24 @@ graph TB
     %% ── Routing Intelligence ─────────────────────────────────
     subgraph routing_layer ["🔀 Model Routing Intelligence"]
         direction TB
-        ROUTER["🧭 ModelRouter<br/><i>model_router.py<br/>5-layer resolution strategy</i>"]
+        ROUTER["🧭 ModelRouter<br/><i>model_router.py<br/>6-layer resolution strategy</i>"]
 
         subgraph routing_priority ["Routing Resolution Priority"]
             direction TB
             P1["1️⃣ Per-Agent Override<br/><i>registry 'model' field</i>"]
             P2["2️⃣ Explicit Context<br/><i>escalation → premium</i>"]
             P3["3️⃣ Domain Detection<br/><i>finance · legal · security<br/>code_review · deployment · data_science</i>"]
-            P4["4️⃣ Agent Type + Priority<br/><i>Board→fast · Exec/Spec→std/premium</i>"]
-            P5["5️⃣ Fallback → standard tier<br/><i>Default for unmatched agents</i>"]
+            P4["4️⃣ Task-Type Routing<br/><i>read_only→free · debug→standard<br/>arch→premium (from prompt)</i>"]
+            P5["5️⃣ Agent Type + Priority<br/><i>Board→fast · Exec/Spec→std/premium</i>"]
+            P6["6️⃣ Fallback → standard tier<br/><i>Default for unmatched agents</i>"]
         end
 
         ROUTER --> P1
         P1 -.->|"no override"| P2
         P2 -.->|"no context"| P3
         P3 -.->|"no domain"| P4
-        P4 -.->|"no rule"| P5
+        P4 -.->|"no task type"| P5
+        P5 -.->|"no rule"| P6
     end
 
     %% ── Tier System ──────────────────────────────────────────
