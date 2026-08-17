@@ -49,14 +49,14 @@ def _sweep_expired_approvals(executor: Any) -> int:
     """Expire stale pending approval requests (Sprint 7).
 
     Prefers the executor's live ``ApprovalGate`` so in-memory state stays
-    consistent with the sweep; falls back to a fresh gate over the shared
+    consistent with the sweep; falls back to the singleton gate over the shared
     approvals file when the executor has no HITL gate.
     """
     from ai_company.orchestrator.approval import ApprovalGate
 
     gate = getattr(getattr(executor, "hitl", None), "gate", None)
     if not isinstance(gate, ApprovalGate):
-        gate = ApprovalGate()
+        gate = ApprovalGate.get_instance()
     return gate.sweep_expired()
 
 
@@ -77,12 +77,27 @@ def _archive_resolved_approvals(executor: Any) -> int:
 
     gate = getattr(getattr(executor, "hitl", None), "gate", None)
     if not isinstance(gate, ApprovalGate):
-        gate = ApprovalGate()
+        gate = ApprovalGate.get_instance()
     pending_index = getattr(executor, "_pending_approvals", None)
     protected: set[str] = set()
     if pending_index:
         protected = {str(request_id) for request_id in pending_index.values()}
     return gate.archive_resolved(protected_request_ids=protected)
+
+
+def _sweep_suspended_states(executor: Any) -> int:
+    """Remove suspended state files older than the retention window (issue #42).
+
+    Called on the daemon's governance cadence alongside approval expiry and
+    archival.  Uses the executor's ``SuspendStore`` when available; falls
+    back to a fresh store over the default directory.
+    """
+    store = getattr(executor, "_suspend_store", None)
+    if store is None:
+        from ai_company.orchestrator.suspend_store import SuspendStore
+
+        store = SuspendStore()
+    return store.sweep_expired()
 
 
 def resolve_database(db_path: str | None) -> Any:
@@ -760,6 +775,15 @@ class ExecutorDaemon:
                         logger.info("Archived %d resolved approval request(s)", archived)
                 except Exception:
                     logger.exception("Error during approval archival")
+
+                # Issue #42: sweep expired suspended state files on the same
+                # governance cadence so disk usage stays bounded.
+                try:
+                    swept = _sweep_suspended_states(executor)
+                    if swept:
+                        logger.info("Swept %d expired suspended state file(s)", swept)
+                except Exception:
+                    logger.exception("Error during suspended state sweep")
 
             # Sleep in small increments so we can respond to signals quickly
             self._interruptible_sleep(self.poll_interval)

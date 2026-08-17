@@ -252,6 +252,26 @@ class CostTracker:
 
         return True, "within budget"
 
+    def estimate_call_cost(
+        self,
+        model: str,
+        prompt_tokens: int,
+        estimated_completion_tokens: int = 1000,
+    ) -> float:
+        """Estimate the cost of an LLM call before making it.
+
+        Args:
+            model: The model identifier.
+            prompt_tokens: Estimated prompt tokens.
+            estimated_completion_tokens: Estimated completion tokens (default 1000).
+
+        Returns:
+            Estimated cost in USD.
+        """
+        input_cost = max(0, int(prompt_tokens)) * _cost_per_token(model, "input")
+        output_cost = max(0, int(estimated_completion_tokens)) * _cost_per_token(model, "output")
+        return round(input_cost + output_cost, 8)
+
     def daily_budget_exceeded(self) -> bool:
         """Return True if today's accumulated spend has reached the daily cap.
 
@@ -263,6 +283,25 @@ class CostTracker:
         day_key = datetime.now(timezone.utc).date().isoformat()
         current_daily = self._daily_cost.get(day_key, 0.0)
         return current_daily >= self.daily_budget
+
+    def daily_pressure(self) -> float:
+        """Return current daily budget pressure as a ratio (0.0 to 1.0+).
+
+        0.0 = no budget configured or no spend yet.
+        1.0 = budget fully consumed.
+        >1.0 = over budget.
+
+        Used by ModelRouter to trigger budget degradation thresholds:
+          0.80 = warning (prefer cheaper tier)
+          0.90 = force fast tier for non-critical tasks
+          0.95 = force free tier for all non-critical
+          1.00 = hard stop
+        """
+        if self.daily_budget is None or self.daily_budget <= 0:
+            return 0.0
+        day_key = datetime.now(timezone.utc).date().isoformat()
+        current_daily = self._daily_cost.get(day_key, 0.0)
+        return current_daily / self.daily_budget
 
     def get_usage_summary(
         self,
