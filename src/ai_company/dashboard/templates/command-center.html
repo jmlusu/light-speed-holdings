@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% block title %}Command Center — CEO Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/command-center.css">
+{% endblock %}
+
+{% block content %}
+<div x-data="commandCenter()" x-init="init()" class="command-center">
+
+  <!-- ═══ VARIANT A: THE BRIDGE ═══ -->
+  <template x-if="variant === 'A'">
+    <div class="cc-bridge">
+      <div class="cc-bridge-grid">
+        <!-- Left: Executive Briefing -->
+        <div class="cc-panel cc-briefing">
+          <div class="cc-panel-header">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>Executive Briefing</span>
+          </div>
+          <div class="cc-panel-body">
+            <template x-for="item in briefItems" :key="item.id">
+              <div class="cc-brief-item" :class="'cc-priority-' + item.priority">
+                <div class="cc-brief-icon" :class="item.priority === 'high' ? 'text-red-400' : item.priority === 'medium' ? 'text-amber-400' : 'text-jarvis-muted'">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div class="cc-brief-text">
+                  <span class="cc-brief-title" x-text="item.title"></span>
+                  <span class="cc-brief-source" x-text="item.source"></span>
+                </div>
+              </div>
+            </template>
+            <div x-show="briefItems.length === 0" class="cc-empty">All clear</div>
+          </div>
+        </div>
+
+        <!-- Center: Company Core -->
+        <div class="cc-panel cc-core">
+          <div class="cc-panel-header cc-core-header">
+            <span>Company Core</span>
+          </div>
+          <div class="cc-panel-body cc-core-body">
+            <div class="cc-arc-reactor">
+              <div class="cc-reactor-ring cc-ring-outer"></div>
+              <div class="cc-reactor-ring cc-ring-middle"></div>
+              <div class="cc-reactor-ring cc-ring-inner"></div>
+              <div class="cc-reactor-glow"></div>
+              <div class="cc-reactor-label">
+                <span class="cc-reactor-status" :class="companyHealth >= 80 ? 'text-emerald-400' : companyHealth >= 50 ? 'text-amber-400' : 'text-red-400'" x-text="companyHealth + '%'"></span>
+                <span class="cc-reactor-subtitle">System Health</span>
+              </div>
+            </div>
+            <div class="cc-core-metrics">
+              <div class="cc-metric">
+                <span class="cc-metric-value text-jarvis-cyan" x-text="metrics.totalAgents"></span>
+                <span class="cc-metric-label">Agents</span>
+              </div>
+              <div class="cc-metric">
+                <span class="cc-metric-value text-emerald-400" x-text="metrics.activeTasks"></span>
+                <span class="cc-metric-label">Active</span>
+              </div>
+              <div class="cc-metric">
+                <span class="cc-metric-value text-amber-400" x-text="metrics.pendingApprovals"></span>
+                <span class="cc-metric-label">Approvals</span>
+              </div>
+              <div class="cc-metric">
+                <span class="cc-metric-value" :class="metrics.openEscalations > 0 ? 'text-red-400' : 'text-jarvis-muted'" x-text="metrics.openEscalations"></span>
+                <span class="cc-metric-label">Escalations</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: AI Workforce -->
+        <div class="cc-panel cc-workforce">
+          <div class="cc-panel-header">
+            <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>AI Workforce</span>
+          </div>
+          <div class="cc-panel-body">
+            <template x-for="agent in workforce" :key="agent.name">
+              <div class="cc-agent-row">
+                <div class="cc-agent-status" :class="agent.status === 'active' ? 'bg-emerald-400' : agent.status === 'idle' ? 'bg-jarvis-overlay' : 'bg-amber-400'"></div>
+                <div class="cc-agent-info">
+                  <span class="cc-agent-name" x-text="agent.name"></span>
+                  <span class="cc-agent-role" x-text="agent.role"></span>
+                </div>
+                <div class="cc-agent-meta">
+                  <span class="cc-agent-model" x-text="agent.model"></span>
+                </div>
+              </div>
+            </template>
+            <div x-show="workforce.length === 0" class="cc-empty">No agents loaded</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ═══ VARIANT B: THE WAR ROOM (default) ═══ -->
+  <template x-if="variant === 'B'">
+    <div class="cc-warroom">
+      <!-- Top: Company Core Hero -->
+      <div class="cc-panel cc-core-hero">
+        <div class="cc-panel-header cc-core-header">
+          <span>Company Core</span>
+          <span class="cc-header-sub" x-text="'Uptime: ' + formatUptime(metrics.uptimeSeconds)"></span>
+        </div>
+        <div class="cc-panel-body cc-warroom-core">
+          <div class="cc-arc-reactor cc-arc-large">
+            <div class="cc-reactor-ring cc-ring-outer"></div>
+            <div class="cc-reactor-ring cc-ring-middle"></div>
+            <div class="cc-reactor-ring cc-ring-inner"></div>
+            <div class="cc-reactor-glow"></div>
+            <div class="cc-reactor-label">
+              <span class="cc-reactor-status" :class="companyHealth >= 80 ? 'text-emerald-400' : companyHealth >= 50 ? 'text-amber-400' : 'text-red-400'" x-text="companyHealth + '%'"></span>
+              <span class="cc-reactor-subtitle">System Health</span>
+            </div>
+          </div>
+          <div class="cc-warroom-stats">
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-jarvis-cyan" x-text="metrics.totalAgents"></div>
+              <div class="cc-stat-label">Total Agents</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-emerald-400" x-text="metrics.activeTasks"></div>
+              <div class="cc-stat-label">Active Tasks</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-amber-400" x-text="metrics.pendingApprovals"></div>
+              <div class="cc-stat-label">Pending Approvals</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value" :class="metrics.openEscalations > 0 ? 'text-red-400' : 'text-jarvis-muted'" x-text="metrics.openEscalations"></div>
+              <div class="cc-stat-label">Escalations</div>
+            </div>
+            <div class="cc-stat-card">
+              <div class="cc-stat-value text-cyan-400" x-text="metrics.completedTasks"></div>
+              <div class="cc-stat-label">Completed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom row: Briefing + Workforce -->
+      <div class="cc-warroom-bottom">
+        <!-- Left: Executive Briefing -->
+        <div class="cc-panel cc-briefing">
+          <div class="cc-panel-header">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>Executive Briefing</span>
+          </div>
+          <div class="cc-panel-body">
+            <template x-for="item in briefItems" :key="item.id">
+              <div class="cc-brief-item" :class="'cc-priority-' + item.priority">
+                <div class="cc-brief-icon" :class="item.priority === 'high' ? 'text-red-400' : item.priority === 'medium' ? 'text-amber-400' : 'text-jarvis-muted'">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                </div>
+                <div class="cc-brief-text">
+                  <span class="cc-brief-title" x-text="item.title"></span>
+                  <span class="cc-brief-source" x-text="item.source"></span>
+                </div>
+              </div>
+            </template>
+            <div x-show="briefItems.length === 0" class="cc-empty">All clear — nothing requires attention</div>
+          </div>
+        </div>
+
+        <!-- Right: AI Workforce -->
+        <div class="cc-panel cc-workforce">
+          <div class="cc-panel-header">
+            <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>AI Workforce</span>
+            <span class="cc-header-sub" x-text="workforce.length + ' agents'"></span>
+          </div>
+          <div class="cc-panel-body">
+            <template x-for="agent in workforce" :key="agent.name">
+              <div class="cc-agent-row">
+                <div class="cc-agent-status" :class="agent.status === 'active' ? 'bg-emerald-400' : agent.status === 'idle' ? 'bg-jarvis-overlay' : 'bg-amber-400'"></div>
+                <div class="cc-agent-info">
+                  <span class="cc-agent-name" x-text="agent.name"></span>
+                  <span class="cc-agent-role" x-text="agent.role"></span>
+                </div>
+                <div class="cc-agent-meta">
+                  <span class="cc-agent-model" x-text="agent.model"></span>
+                </div>
+              </div>
+            </template>
+            <div x-show="workforce.length === 0" class="cc-empty">No agents loaded</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ═══ VARIANT C: THE COCKPIT ═══ -->
+  <template x-if="variant === 'C'">
+    <div class="cc-cockpit">
+      <div class="cc-cockpit-grid">
+        <!-- Left: Company Core (dominant) -->
+        <div class="cc-panel cc-core cc-core-dominant">
+          <div class="cc-panel-header cc-core-header">
+            <span>Company Core</span>
+          </div>
+          <div class="cc-panel-body cc-cockpit-core">
+            <div class="cc-arc-reactor cc-arc-large">
+              <div class="cc-reactor-ring cc-ring-outer"></div>
+              <div class="cc-reactor-ring cc-ring-middle"></div>
+              <div class="cc-reactor-ring cc-ring-inner"></div>
+              <div class="cc-reactor-glow"></div>
+              <div class="cc-reactor-label">
+                <span class="cc-reactor-status" :class="companyHealth >= 80 ? 'text-emerald-400' : companyHealth >= 50 ? 'text-amber-400' : 'text-red-400'" x-text="companyHealth + '%'"></span>
+                <span class="cc-reactor-subtitle">System Health</span>
+              </div>
+            </div>
+            <div class="cc-cockpit-metrics">
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Agents</span>
+                <span class="cc-metric-value text-jarvis-cyan" x-text="metrics.totalAgents"></span>
+              </div>
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Active</span>
+                <span class="cc-metric-value text-emerald-400" x-text="metrics.activeTasks"></span>
+              </div>
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Approvals</span>
+                <span class="cc-metric-value text-amber-400" x-text="metrics.pendingApprovals"></span>
+              </div>
+              <div class="cc-metric-row">
+                <span class="cc-metric-label">Escalations</span>
+                <span class="cc-metric-value" :class="metrics.openEscalations > 0 ? 'text-red-400' : 'text-jarvis-muted'" x-text="metrics.openEscalations"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: Briefing + Workforce stacked -->
+        <div class="cc-cockpit-right">
+          <div class="cc-panel cc-briefing">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>Executive Briefing</span>
+            </div>
+            <div class="cc-panel-body">
+              <template x-for="item in briefItems" :key="item.id">
+                <div class="cc-brief-item" :class="'cc-priority-' + item.priority">
+                  <div class="cc-brief-icon" :class="item.priority === 'high' ? 'text-red-400' : item.priority === 'medium' ? 'text-amber-400' : 'text-jarvis-muted'">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                  </div>
+                  <div class="cc-brief-text">
+                    <span class="cc-brief-title" x-text="item.title"></span>
+                    <span class="cc-brief-source" x-text="item.source"></span>
+                  </div>
+                </div>
+              </template>
+              <div x-show="briefItems.length === 0" class="cc-empty">All clear</div>
+            </div>
+          </div>
+
+          <div class="cc-panel cc-workforce">
+            <div class="cc-panel-header">
+              <svg class="w-4 h-4 text-jarvis-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span>AI Workforce</span>
+            </div>
+            <div class="cc-panel-body">
+              <template x-for="agent in workforce" :key="agent.name">
+                <div class="cc-agent-row">
+                  <div class="cc-agent-status" :class="agent.status === 'active' ? 'bg-emerald-400' : agent.status === 'idle' ? 'bg-jarvis-overlay' : 'bg-amber-400'"></div>
+                  <div class="cc-agent-info">
+                    <span class="cc-agent-name" x-text="agent.name"></span>
+                    <span class="cc-agent-role" x-text="agent.role"></span>
+                  </div>
+                  <div class="cc-agent-meta">
+                    <span class="cc-agent-model" x-text="agent.model"></span>
+                  </div>
+                </div>
+              </template>
+              <div x-show="workforce.length === 0" class="cc-empty">No agents loaded</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ═══ COMMAND BAR (persistent across all variants) ═══ -->
+  <div class="cc-command-bar" x-show="showCommandBar" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 translate-y-4">
+    <div class="cc-command-inner">
+      <svg class="w-4 h-4 text-jarvis-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input type="text" x-model="commandQuery" @keydown.escape="showCommandBar = false" placeholder="Type a command..." class="cc-command-input" x-ref="commandInput">
+      <kbd class="cc-kbd">esc</kbd>
+    </div>
+  </div>
+
+  <!-- ═══ VARIANT SWITCHER (prototype only) ═══ -->
+  <div class="cc-variant-switcher">
+    <button @click="prevVariant()" class="cc-variant-arrow">&larr;</button>
+    <span class="cc-variant-label" x-text="variant + ' — ' + variantNames[variant]"></span>
+    <button @click="nextVariant()" class="cc-variant-arrow">&rarr;</button>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/command-center.js"></script>
+{% endblock %}

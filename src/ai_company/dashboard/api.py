@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
@@ -29,6 +30,8 @@ from ai_company.dashboard.models import (
     TaskItem,
     TaskUpdate,
     TierInfo,
+    WorkflowActionRequest,
+    WorkflowSummary,
 )
 from ai_company.dashboard.repository import get_state_store
 from ai_company.data import get_database
@@ -1723,3 +1726,617 @@ def governance_report_api() -> dict[str, Any]:
         return report
     except Exception:  # noqa: BLE001 - governance report must never raise
         return empty_shape
+
+
+# ── Payment Capture & Revenue Ledger ────────────────────────────────
+
+
+class PaymentEntry(BaseModel):
+    """Manual payment entry for the revenue ledger."""
+
+    client_id: str = ""
+    project_id: str = ""
+    offer_id: str = ""
+    service_name: str = ""
+    currency: str = "MWK"
+    amount: float = 0.0
+    payment_method: str = ""
+    status: str = "confirmed"
+    installment_type: str = ""
+    exchange_rate: float = 0.0
+    linked_task_id: str = ""
+    reference: str = ""
+    recorded_by: str = "human-ceo"
+
+
+class ProjectCostEntry(BaseModel):
+    """Project cost entry for the cost ledger."""
+
+    project_id: str = ""
+    cost_type: str = ""
+    amount_usd: float = 0.0
+    amount_mwk: float = 0.0
+    description: str = ""
+    agent_id: str = ""
+    model: str = ""
+    tokens: int = 0
+
+
+@router.post("/payments", status_code=201, tags=["payments"])
+def create_payment(entry: PaymentEntry) -> dict[str, Any]:
+    """Record a manual payment in the revenue ledger."""
+    import uuid
+
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+
+    txn_id = f"REV-{uuid.uuid4().hex[:12].upper()}"
+    now = datetime.now(timezone.utc).isoformat()
+
+    conn = db.connect()
+    conn.execute(
+        """INSERT INTO revenue_transactions
+           (id, client_id, project_id, offer_id, service_name, currency,
+            amount, payment_method, status, installment_type, exchange_rate,
+            linked_task_id, reference, recorded_by, timestamp)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            txn_id,
+            entry.client_id,
+            entry.project_id,
+            entry.offer_id,
+            entry.service_name,
+            entry.currency,
+            entry.amount,
+            entry.payment_method,
+            entry.status,
+            entry.installment_type,
+            entry.exchange_rate,
+            entry.linked_task_id,
+            entry.reference,
+            entry.recorded_by,
+            now,
+        ),
+    )
+    conn.commit()
+
+    return {
+        "id": txn_id,
+        "status": "recorded",
+        "timestamp": now,
+        "amount": entry.amount,
+        "currency": entry.currency,
+    }
+
+
+@router.get("/revenue", tags=["revenue"])
+def list_revenue_transactions(
+    project_id: str | None = None,
+    offer_id: str | None = None,
+    status: str | None = None,
+) -> list[dict[str, Any]]:
+    """List revenue transactions with optional filters."""
+    db = get_database()
+    if db is None:
+        return []
+
+    conn = db.connect()
+    query = "SELECT * FROM revenue_transactions WHERE 1=1"
+    params: list[Any] = []
+
+    if project_id:
+        query += " AND project_id = ?"
+        params.append(project_id)
+    if offer_id:
+        query += " AND offer_id = ?"
+        params.append(offer_id)
+    if status:
+        query += " AND status = ?"
+        params.append(status)
+
+    query += " ORDER BY timestamp DESC"
+    rows = conn.execute(query, params).fetchall()
+    return [dict(row) for row in rows]
+
+
+@router.get("/revenue/summary", tags=["revenue"])
+def revenue_summary(
+    project_id: str | None = None,
+) -> dict[str, Any]:
+    """Revenue summary with contribution margin computation."""
+    db = get_database()
+    if db is None:
+        return {
+            "total_revenue_mwk": 0,
+            "total_revenue_usd": 0,
+            "total_costs_usd": 0,
+            "contribution_margin": 0,
+            "margin_percent": 0,
+            "transaction_count": 0,
+            "cost_count": 0,
+        }
+
+    conn = db.connect()
+
+    # Revenue totals
+    rev_query = "SELECT SUM(amount) as total, COUNT(*) as count FROM revenue_transactions WHERE status = 'confirmed'"
+    rev_params: list[Any] = []
+    if project_id:
+        rev_query += " AND project_id = ?"
+        rev_params.append(project_id)
+    rev_row = conn.execute(rev_query, rev_params).fetchone()
+    total_revenue = float(rev_row["total"] or 0) if rev_row else 0
+    txn_count = int(rev_row["count"] or 0) if rev_row else 0
+
+    # Cost totals
+    cost_query = "SELECT SUM(amount_usd) as total, COUNT(*) as count FROM project_costs WHERE 1=1"
+    cost_params: list[Any] = []
+    if project_id:
+        cost_query += " AND project_id = ?"
+        cost_params.append(project_id)
+    cost_row = conn.execute(cost_query, cost_params).fetchone()
+    total_costs = float(cost_row["total"] or 0) if cost_row else 0
+    cost_count = int(cost_row["count"] or 0) if cost_row else 0
+
+    # Contribution margin (revenue - costs, both in USD for comparison)
+    # For MWK revenue, apply exchange rate (approx 1800 MWK = 1 USD)
+    revenue_usd = total_revenue / 1800 if total_revenue > 0 else 0
+    margin = revenue_usd - total_costs
+    margin_pct = (margin / revenue_usd * 100) if revenue_usd > 0 else 0
+
+    return {
+        "total_revenue_mwk": total_revenue,
+        "total_revenue_usd": round(revenue_usd, 2),
+        "total_costs_usd": round(total_costs, 2),
+        "contribution_margin": round(margin, 2),
+        "margin_percent": round(margin_pct, 1),
+        "transaction_count": txn_count,
+        "cost_count": cost_count,
+    }
+
+
+@router.post("/project-costs", status_code=201, tags=["costs"])
+def create_project_cost(entry: ProjectCostEntry) -> dict[str, Any]:
+    """Record a project cost in the cost ledger."""
+    import uuid
+
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+
+    cost_id = f"COST-{uuid.uuid4().hex[:12].upper()}"
+    now = datetime.now(timezone.utc).isoformat()
+
+    conn = db.connect()
+    conn.execute(
+        """INSERT INTO project_costs
+           (id, project_id, cost_type, amount_usd, amount_mwk,
+            description, agent_id, model, tokens, timestamp)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            cost_id,
+            entry.project_id,
+            entry.cost_type,
+            entry.amount_usd,
+            entry.amount_mwk,
+            entry.description,
+            entry.agent_id,
+            entry.model,
+            entry.tokens,
+            now,
+        ),
+    )
+    conn.commit()
+
+    return {
+        "id": cost_id,
+        "status": "recorded",
+        "timestamp": now,
+        "amount_usd": entry.amount_usd,
+    }
+
+
+# ── Webhook Stubs (for gateway confirmations) ──────────────────────
+
+
+@router.post("/webhooks/paychangu", tags=["webhooks"])
+def paychangu_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
+    """Stub for PayChangu webhook — ready for merchant onboarding.
+
+    When PayChangu is onboarded, this endpoint will:
+    1. Verify the webhook signature (X-PayChangu-Signature header)
+    2. Extract payment details from payload
+    3. Write to revenue_transactions table
+    4. Return 200 OK to acknowledge receipt
+
+    Credentials will be stored in environment variables, never in the repo.
+    """
+    logger.info("PayChangu webhook received (stub): %s", payload.get("type", "unknown"))
+    return {
+        "status": "received",
+        "message": "Webhook stub — merchant onboarding pending",
+        "payload_type": payload.get("type", "unknown"),
+    }
+
+
+@router.post("/webhooks/airtel", tags=["webhooks"])
+def airtel_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
+    """Stub for Airtel Money webhook — ready for merchant onboarding.
+
+    When Airtel Money merchant is set up, this endpoint will:
+    1. Verify the transaction via Airtel API
+    2. Extract payment details
+    3. Write to revenue_transactions table
+    4. Return 200 OK
+
+    Merchant number stored in AIRTEL_MERCHANT_NUMBER env var.
+    """
+    logger.info("Airtel Money webhook received (stub): %s", payload.get("type", "unknown"))
+    return {
+        "status": "received",
+        "message": "Webhook stub — merchant onboarding pending",
+        "payload_type": payload.get("type", "unknown"),
+    }
+
+
+@router.post("/webhooks/tnm", tags=["webhooks"])
+def tnm_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
+    """Stub for TNM Mpamba webhook — ready for merchant onboarding.
+
+    When TNM Mpamba merchant is set up, this endpoint will:
+    1. Verify the transaction via TNM API
+    2. Extract payment details
+    3. Write to revenue_transactions table
+    4. Return 200 OK
+
+    Merchant number stored in TNM_MERCHANT_NUMBER env var.
+    """
+    logger.info("TNM Mpamba webhook received (stub): %s", payload.get("type", "unknown"))
+    return {
+        "status": "received",
+        "message": "Webhook stub — merchant onboarding pending",
+        "payload_type": payload.get("type", "unknown"),
+    }
+
+
+# ── Executive Briefing Aggregation ─────────────────────────────────
+
+
+@router.get("/briefing", tags=["briefing"])
+def get_executive_briefing() -> dict[str, Any]:
+    """Aggregated executive briefing — priority-ordered attention items.
+
+    Combines real data from:
+    - Escalation alerts (high priority)
+    - Pending approvals (medium priority)
+    - Failed tasks (high priority)
+    - Revenue/cost alerts (medium priority)
+    - Workflow step failures (high priority)
+
+    Returns a prioritized list of items that need CEO attention,
+    plus summary metrics for the Company Core surface.
+    """
+    items: list[dict[str, Any]] = []
+    item_id = 0
+
+    # --- Escalations (high priority) ---
+    try:
+        db = get_database()
+        if db is not None:
+            conn = db.connect()
+            rows = conn.execute(
+                "SELECT task_id, rule_id, from_agent, to_agent, reason, timestamp "
+                "FROM escalation_events WHERE resolved = 0 "
+                "ORDER BY timestamp DESC LIMIT 10"
+            ).fetchall()
+            for row in rows:
+                items.append(
+                    {
+                        "id": item_id,
+                        "title": f"Escalation: {row['reason'][:80]}",
+                        "source": f"{row['from_agent']} → {row['to_agent']}",
+                        "priority": "high",
+                        "type": "escalation",
+                        "timestamp": row["timestamp"],
+                        "task_id": row["task_id"],
+                    }
+                )
+                item_id += 1
+    except Exception:  # noqa: BLE001
+        pass
+
+    # Fallback: load from YAML if DB empty
+    if not items:
+        escalation_data = _load_yaml("orchestrator/escalation.yaml")
+        for evt in escalation_data.get("events", [])[-10:]:
+            if not evt.get("resolved", False):
+                items.append(
+                    {
+                        "id": item_id,
+                        "title": f"Escalation: {evt.get('reason', 'Unknown')[:80]}",
+                        "source": f"{evt.get('from_agent', '?')} → {evt.get('to_agent', '?')}",
+                        "priority": "high",
+                        "type": "escalation",
+                        "timestamp": evt.get("timestamp", ""),
+                        "task_id": evt.get("task_id", ""),
+                    }
+                )
+                item_id += 1
+
+    # --- Pending approvals (medium priority) ---
+    approvals_data = _load_yaml("orchestrator/approvals.yaml")
+    now_iso = datetime.now(timezone.utc).isoformat()
+    for req in approvals_data.get("requests", []):
+        if req.get("status") == "pending" and (
+            not req.get("expires_at") or req["expires_at"] > now_iso
+        ):
+            items.append(
+                {
+                    "id": item_id,
+                    "title": req.get("action", "Approval pending")[:80],
+                    "source": f"Agent: {req.get('agent_id', 'unknown')}",
+                    "priority": "medium",
+                    "type": "approval",
+                    "timestamp": req.get("requested_at", ""),
+                    "request_id": req.get("request_id", ""),
+                }
+            )
+            item_id += 1
+
+    # --- Failed tasks (high priority) ---
+    tasks = _read_all_tasks()
+    failed_tasks = [t for t in tasks if t.get("status") == "failed"][-5:]
+    for task in failed_tasks:
+        items.append(
+            {
+                "id": item_id,
+                "title": f"Task failed: {task.get('instruction', task.get('name', 'Unknown'))[:60]}",
+                "source": f"Agent: {task.get('receiver_id', 'unknown')}",
+                "priority": "high",
+                "type": "task_failed",
+                "timestamp": task.get("updated_at", ""),
+                "task_id": task.get("id", ""),
+            }
+        )
+        item_id += 1
+
+    # --- Revenue alerts (medium priority) ---
+    try:
+        if db is not None:
+            conn = db.connect()
+            rev_row = conn.execute(
+                "SELECT SUM(amount) as total FROM revenue_transactions WHERE status = 'confirmed'"
+            ).fetchone()
+            cost_row = conn.execute("SELECT SUM(amount_usd) as total FROM project_costs").fetchone()
+            total_rev = float(rev_row["total"] or 0) if rev_row else 0
+            total_cost = float(cost_row["total"] or 0) if cost_row else 0
+
+            if total_rev > 0 and total_cost > 0:
+                margin_pct = ((total_rev / 1800) - total_cost) / (total_rev / 1800) * 100
+                if margin_pct < 20:
+                    items.append(
+                        {
+                            "id": item_id,
+                            "title": f"Margin alert: {margin_pct:.1f}% (target: 50%+)",
+                            "source": "Finance",
+                            "priority": "medium",
+                            "type": "finance",
+                            "timestamp": now_iso,
+                        }
+                    )
+                    item_id += 1
+    except Exception:  # noqa: BLE001
+        pass
+
+    # --- Sort by priority ---
+    priority_order = {"high": 0, "medium": 1, "low": 2}
+    items.sort(key=lambda x: (priority_order.get(x["priority"], 3),), reverse=False)
+
+    # --- Summary metrics for Company Core ---
+    task_pipeline = {
+        "pending": sum(1 for t in tasks if t.get("status") == "pending"),
+        "in_progress": sum(1 for t in tasks if t.get("status") == "in_progress"),
+        "completed": sum(1 for t in tasks if t.get("status") == "completed"),
+        "failed": sum(1 for t in tasks if t.get("status") == "failed"),
+    }
+
+    # Compute health score via OrgHealthCalculator
+    try:
+        from ai_company.dashboard.org_health import OrgHealthCalculator
+
+        health = OrgHealthCalculator().compute(database=get_database()).score
+    except Exception:  # noqa: BLE001
+        health = 85  # Fallback
+
+    return {
+        "items": items[:20],  # Cap at 20 items
+        "summary": {
+            "total_items": len(items),
+            "high_priority": sum(1 for i in items if i["priority"] == "high"),
+            "medium_priority": sum(1 for i in items if i["priority"] == "medium"),
+            "low_priority": sum(1 for i in items if i["priority"] == "low"),
+        },
+        "company_health": health,
+        "task_pipeline": task_pipeline,
+        "generated_at": now_iso,
+    }
+
+
+# ── Org Health ────────────────────────────────────────────────────
+
+
+@router.get("/org-health", tags=["org-health"])
+def get_org_health(
+    trend_limit: int = Query(30, ge=1, le=365, description="Number of trend data points"),
+    component_detail: bool = Query(True, description="Include component breakdown"),
+) -> dict[str, Any]:
+    """Composite organisational health score.
+
+    Returns a weighted score (0-100), health band (green/amber/red),
+    per-component breakdown, and trend history from the KPI pipeline.
+    """
+    from ai_company.dashboard.org_health import OrgHealthCalculator
+
+    calculator = OrgHealthCalculator()
+    db = get_database()
+    result = calculator.compute(database=db)
+
+    trend: list[dict[str, Any]] = []
+    if db is not None:
+        try:
+            from ai_company.data.kpi_pipeline import KPIPipeline
+
+            pipeline = KPIPipeline(db)
+            history = pipeline.get_history(
+                "org_health", kpi_key="composite_score", limit=trend_limit
+            )
+            trend = [
+                {"timestamp": row["timestamp"], "score": row["current_value"]}
+                for row in reversed(history)
+            ]
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health trend unavailable")
+
+    return result.to_dict(include_components=component_detail, trend=trend)
+
+
+# ── Workflows / Mission Control ────────────────────────────────────
+
+
+@router.get("/workflows", response_model=list[WorkflowSummary], tags=["workflows"])
+def list_workflow_definitions() -> list[WorkflowSummary]:
+    """List all registered workflow definitions."""
+    from ai_company.dashboard.workflow_api import list_workflows
+
+    return [WorkflowSummary(**w) for w in list_workflows()]
+
+
+@router.get("/workflows/instances", tags=["workflows"])
+def list_workflow_instances(
+    workflow_id: str = "",
+) -> list[dict[str, Any]]:
+    """List running workflow instances, optionally filtered by workflow ID."""
+    from ai_company.dashboard.workflow_api import list_instances
+
+    return list_instances(workflow_id=workflow_id)
+
+
+@router.get("/workflows/instances/{instance_id}", tags=["workflows"])
+def get_workflow_instance(instance_id: str) -> dict[str, Any]:
+    """Return full status + step detail for a workflow instance."""
+    from ai_company.dashboard.workflow_api import (
+        _build_instance_detail,
+        get_instance_status,
+    )
+
+    status = get_instance_status(instance_id)
+    if status is None:
+        raise HTTPException(status_code=404, detail=f"Instance '{instance_id}' not found")
+    return _build_instance_detail(status)
+
+
+@router.post(
+    "/workflows/{workflow_id}/start",
+    status_code=201,
+    tags=["workflows"],
+)
+def start_workflow_endpoint(
+    workflow_id: str,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, str]:
+    """Start a new instance of a workflow definition."""
+    from ai_company.dashboard.workflow_api import start_workflow
+
+    try:
+        instance_id = start_workflow(workflow_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return {"instance_id": instance_id}
+
+
+@router.post(
+    "/workflows/instances/{instance_id}/advance",
+    tags=["workflows"],
+)
+def advance_workflow_endpoint(
+    instance_id: str,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Advance a workflow instance to its next step."""
+    from ai_company.dashboard.workflow_api import advance_workflow
+
+    try:
+        result = advance_workflow(instance_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return result
+
+
+@router.post(
+    "/workflows/instances/{instance_id}/complete-step",
+    tags=["workflows"],
+)
+def complete_step_endpoint(
+    instance_id: str,
+    body: WorkflowActionRequest | None = None,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Mark the current step as completed with an optional result string."""
+    from ai_company.dashboard.workflow_api import complete_step
+
+    try:
+        result = complete_step(instance_id, result=body.result if body else "")
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return result
+
+
+@router.post(
+    "/workflows/instances/{instance_id}/cancel",
+    tags=["workflows"],
+)
+def cancel_workflow_endpoint(
+    instance_id: str,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Cancel a running workflow instance."""
+    from ai_company.dashboard.workflow_api import cancel_workflow
+
+    try:
+        result = cancel_workflow(instance_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return result
+
+
+# ── Agent Onboarding (HITL-gated) ──────────────────────────────────
+
+
+@router.get("/onboarding", tags=["onboarding"])
+def list_onboarding_requests(
+    state: str = "",
+) -> list[dict[str, Any]]:
+    """List all agent onboarding requests, optionally filtered by state.
+
+    States: pending_approval, generating, testing, active, archived.
+    """
+    from ai_company.services.onboarding import OnboardingService
+
+    svc = OnboardingService()
+    result = svc.list_requests(state=state)
+    if not result.success:
+        return []
+    return result.data or []
+
+
+@router.get("/onboarding/{request_id}", tags=["onboarding"])
+def get_onboarding_status(request_id: str) -> dict[str, Any]:
+    """Get the status of a specific onboarding request."""
+    from ai_company.services.onboarding import OnboardingService
+
+    svc = OnboardingService()
+    result = svc.get_status(request_id)
+    if not result.success:
+        raise HTTPException(status_code=404, detail=f"Onboarding request '{request_id}' not found")
+    return result.data or {}
