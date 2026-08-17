@@ -4,6 +4,32 @@
 
 ---
 
+## [0.5.1] — 2026-08-18
+
+### Added
+
+#### Dashboard
+- **CEO Dashboard Hero** (#31): SVG radial gauge with score display, 3 switchable variants (A/B/D), KPI sparkline cards, alerts bar showing pending approvals/escalations. Integrated into index.html with local storage variant persistence.
+- **Onboarding Studio** (#43): New Onboarding tab with request list grouped by state, approve/reject actions, real-time WebSocket updates, progress bars for active requests.
+- **Task Decomposition** (#44): Click-to-detail slide-out panel on Kanban task cards, AI-powered task decomposition via POST /api/v1/tasks/{id}/decompose, subtask tracking with progress bar.
+- **Health Monitor** (#45): Real-time org health score with component metrics, Z-score anomaly detection, trend charts (6h/24h/7d), anomaly alert panel.
+- **Interactive Org Chart** (#47): Visual tree rendering with CSS flexbox, node selection with detail panel, drag-to-reassign reports_to, zoom controls.
+
+#### Infrastructure
+- **Onboarding Module** (unified): Merged hr/onboarding.py and services/onboarding.py into single module with 7-state flow, BaseService pattern, Pydantic models, WS broadcasting, audit trail, registry integration with rollback, HITL approval (tier 2/3).
+- **Design Specifications**: Comprehensive dashboard feature design document (docs/DESIGN-DASHBOARD-FEATURES.md) covering 8 features with wireframes, data contracts, Alpine.js patterns.
+
+#### Documentation
+- **ADR-017**: Async approval engine architecture (suspend-to-disk for HITL-parked tasks, 30-day retention, webhook push).
+- **Dashboard Key Rotation**: Detailed procedure for RBAC key rotation (docs/DASHBOARD_KEY_ROTATION.md).
+
+### Changed
+- **Version**: 0.5.0 → 0.5.1
+- **Agent Registry**: 131 agents (fixed eval_benchmarks_engineer responsibilities)
+- **Tests**: 1743+ tests passing
+
+---
+
 ## [0.5.0] — 2026-08-13
 
 ### Added
