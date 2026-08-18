@@ -86,7 +86,7 @@ def setup_pagination(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
 class TestDefaultPagination:
     def test_returns_empty_by_default(self, setup_pagination: None) -> None:
-        resp = client.get("/api/tasks/paginated")
+        resp = client.get("/api/v1/tasks/paginated")
         assert resp.status_code == 200
         data = resp.json()
         assert data["items"] == []
@@ -98,7 +98,7 @@ class TestDefaultPagination:
 
     def test_page_size_10(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 25)
-        resp = client.get("/api/tasks/paginated?page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page_size=10")
         data = resp.json()
         assert len(data["items"]) == 10
         assert data["total"] == 25
@@ -106,7 +106,7 @@ class TestDefaultPagination:
 
     def test_page_size_100(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 150)
-        resp = client.get("/api/tasks/paginated?page_size=100")
+        resp = client.get("/api/v1/tasks/paginated?page_size=100")
         data = resp.json()
         assert len(data["items"]) == 100
         assert data["total"] == 150
@@ -114,21 +114,21 @@ class TestDefaultPagination:
 
     def test_invalid_page_size_falls_back_to_20(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 30)
-        resp = client.get("/api/tasks/paginated?page_size=15")
+        resp = client.get("/api/v1/tasks/paginated?page_size=15")
         data = resp.json()
         assert data["page_size"] == 20
         assert len(data["items"]) == 20
 
     def test_page_beyond_total_returns_empty(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 10)
-        resp = client.get("/api/tasks/paginated?page=999")
+        resp = client.get("/api/v1/tasks/paginated?page=999")
         data = resp.json()
         assert data["items"] == []
         assert data["total"] == 10
 
     def test_total_pages_calculation(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 55)
-        resp = client.get("/api/tasks/paginated?page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page_size=10")
         data = resp.json()
         assert data["total_pages"] == 6  # ceil(55/10)
 
@@ -139,40 +139,40 @@ class TestDefaultPagination:
 class TestFiltering:
     def test_filter_by_status_single(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?status=pending")
+        resp = client.get("/api/v1/tasks/paginated?status=pending")
         data = resp.json()
         assert all(t["status"] == "pending" for t in data["items"])
         assert data["counts_by_status"].get("pending", 0) > 0
 
     def test_filter_by_status_multiple(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?status=pending,in_progress")
+        resp = client.get("/api/v1/tasks/paginated?status=pending,in_progress")
         data = resp.json()
         assert all(t["status"] in ("pending", "in_progress") for t in data["items"])
 
     def test_filter_by_priority(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?priority=high,critical")
+        resp = client.get("/api/v1/tasks/paginated?priority=high,critical")
         data = resp.json()
         assert all(t["priority"] in ("high", "critical") for t in data["items"])
 
     def test_filter_by_department(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?department=engineering")
+        resp = client.get("/api/v1/tasks/paginated?department=engineering")
         data = resp.json()
         for t in data["items"]:
             assert t["receiver_id"] == "lead-engineering"
 
     def test_filter_by_agent(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?agent=lead")
+        resp = client.get("/api/v1/tasks/paginated?agent=lead")
         data = resp.json()
         for t in data["items"]:
             assert "lead" in t["receiver_id"].lower() or "lead" in t["sender_id"].lower()
 
     def test_combined_filters(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?status=pending&priority=critical&agent=lead")
+        resp = client.get("/api/v1/tasks/paginated?status=pending&priority=critical&agent=lead")
         data = resp.json()
         for t in data["items"]:
             assert t["status"] == "pending"
@@ -186,21 +186,21 @@ class TestFiltering:
 class TestSorting:
     def test_sort_by_created_at_desc(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 15)
-        resp = client.get("/api/tasks/paginated?sort_by=created_at&sort_dir=desc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=created_at&sort_dir=desc")
         data = resp.json()
         dates = [t["created_at"] for t in data["items"]]
         assert dates == sorted(dates, reverse=True)
 
     def test_sort_by_created_at_asc(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 15)
-        resp = client.get("/api/tasks/paginated?sort_by=created_at&sort_dir=asc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=created_at&sort_dir=asc")
         data = resp.json()
         dates = [t["created_at"] for t in data["items"]]
         assert dates == sorted(dates)
 
     def test_sort_by_priority(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?sort_by=priority&sort_dir=asc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=priority&sort_dir=asc")
         data = resp.json()
         order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
         priorities = [order[t["priority"]] for t in data["items"]]
@@ -208,7 +208,7 @@ class TestSorting:
 
     def test_sort_by_receiver_id(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?sort_by=receiver_id&sort_dir=asc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=receiver_id&sort_dir=asc")
         data = resp.json()
         ids = [t["receiver_id"] for t in data["items"]]
         assert ids == sorted(ids)
@@ -220,13 +220,13 @@ class TestSorting:
 class TestCountsByStatus:
     def test_counts_reflect_filters(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 20)
-        resp = client.get("/api/tasks/paginated?priority=high")
+        resp = client.get("/api/v1/tasks/paginated?priority=high")
         data = resp.json()
         total_from_counts = sum(data["counts_by_status"].values())
         assert total_from_counts == data["total"]
 
     def test_empty_result(self, setup_pagination: None) -> None:
-        resp = client.get("/api/tasks/paginated?status=nonexistent")
+        resp = client.get("/api/v1/tasks/paginated?status=nonexistent")
         data = resp.json()
         assert data["items"] == []
         assert data["total"] == 0
@@ -238,7 +238,7 @@ class TestCountsByStatus:
 class TestBackwardCompatibility:
     def test_old_endpoint_still_works(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 5)
-        resp = client.get("/api/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
@@ -246,8 +246,8 @@ class TestBackwardCompatibility:
 
     def test_both_endpoints_return_consistent_data(self, setup_pagination: None) -> None:
         _seed_tasks(Path("."), 10)
-        old = client.get("/api/tasks").json()
-        new = client.get("/api/tasks/paginated?page_size=100").json()
+        old = client.get("/api/v1/tasks").json()
+        new = client.get("/api/v1/tasks/paginated?page_size=100").json()
         assert len(old) == new["total"]
         old_ids = {t["id"] for t in old}
         new_ids = {t["id"] for t in new["items"]}
@@ -260,7 +260,7 @@ class TestBackwardCompatibility:
 class TestCreateTaskValidation:
     def test_reject_trivial_instruction(self, setup_pagination: None) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "do x"},
         )
         assert resp.status_code == 400
@@ -268,7 +268,7 @@ class TestCreateTaskValidation:
 
     def test_reject_test_pattern(self, setup_pagination: None) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "lead-engineering", "instruction": "test something here"},
         )
         assert resp.status_code == 400
@@ -276,7 +276,7 @@ class TestCreateTaskValidation:
 
     def test_accept_meaningful_instruction(self, setup_pagination: None) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "Build the new API endpoint for task pagination",

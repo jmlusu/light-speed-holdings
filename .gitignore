@@ -53,6 +53,7 @@ cov_gate.log
 .hypothesis/
 
 # Runtime state / generated artifacts (regenerated from registry + execution)
+graphify-out/
 .opencode/inbox*.json
 .opencode/pending_approvals.json
 .opencode/audit

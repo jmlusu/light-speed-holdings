@@ -6,6 +6,8 @@ legacy ``company/agent-registry.json`` file.
 
 from __future__ import annotations
 
+from typing import Any
+
 import typer
 
 from ai_company.executor.context import Severity, parse_agent_spec
@@ -121,7 +123,7 @@ def validate_agents(
             typer.echo(f"No agent spec files found in {agents_dir}")
             raise typer.Exit(1)
 
-    report: list[dict] = []
+    report: list[dict[str, Any]] = []
     errors = 0
     warnings = 0
     valid_count = 0
@@ -192,7 +194,7 @@ def validate_agents(
 
 
 def _print_validation_report(
-    report: list[dict],
+    report: list[dict[str, Any]],
     total: int,
     valid: int,
     invalid: int,

@@ -482,7 +482,7 @@ def risk_summary(
     content = risk_file.read_text(encoding="utf-8")
 
     # Parse risk table rows
-    risks: list[dict] = []
+    risks: list[dict[str, Any]] = []
     for match in re.finditer(
         r"\|\s*(R\d+)\s*\|\s*(\w+)\s*\|\s*(.+?)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*(\w+)\s*\|",
         content,
@@ -520,7 +520,7 @@ def risk_summary(
         return
 
     # Group by level
-    grouped: dict[str, list[dict]] = {}
+    grouped: dict[str, list[dict[str, Any]]] = {}
     for r in risks:
         grouped.setdefault(r["level"], []).append(r)
 

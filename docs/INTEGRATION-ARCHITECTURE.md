@@ -1,7 +1,7 @@
 # Integration Architecture — AI Company Builder
 
 > **Owner**: Chief Information Officer (CIO)
-> **Last Updated**: 2026-07-20
+> **Last Updated**: 2026-08-18
 > **Status**: Sprint 1 Complete — Phase 5 Integration Gap Closure in Progress
 
 This document maps what is **implemented**, what is **partially wired**, and what remains **disconnected**. The goal is to identify the exact integration seams and close them.
@@ -257,7 +257,7 @@ class MessageBus:
 
 ### GAP 8: KPI Collector — Only Engineering Department [LOW RISK]
 
-**Problem**: `kpi_collector.py` only implements `collect_engineering_kpis()`. The KPI config (`company/config/kpis.yaml`) defines KPIs for 7 departments, but only engineering has a collector function. The `/api/kpis/live` endpoint returns only engineering data.
+**Problem**: `kpi_collector.py` only implements `collect_engineering_kpis()`. The KPI config (`company/config/kpis.yaml`) defines KPIs for 7 departments, but only engineering has a collector function. The `/api/v1/kpis/live` endpoint returns only engineering data.
 
 **Risk**: **LOW** — Dashboard shows partial data. Non-blocking for functionality but incomplete for CEO visibility.
 
@@ -338,7 +338,7 @@ flowchart LR
     B -->|append| C[results/cost_log.jsonl]
     B -->|in-memory| D[daily/task accumulators]
     D -->|check| E[budget enforcement]
-    C -->|read| F[Dashboard /api/costs]
+    C -->|read| F[Dashboard /api/v1/costs]
     F -->|display| G[CEO Browser]
 ```
 

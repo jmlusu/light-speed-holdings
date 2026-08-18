@@ -252,6 +252,26 @@ class CostTracker:
 
         return True, "within budget"
 
+    def estimate_call_cost(
+        self,
+        model: str,
+        prompt_tokens: int,
+        estimated_completion_tokens: int = 1000,
+    ) -> float:
+        """Estimate the cost of an LLM call before making it.
+
+        Args:
+            model: The model identifier.
+            prompt_tokens: Estimated prompt tokens.
+            estimated_completion_tokens: Estimated completion tokens (default 1000).
+
+        Returns:
+            Estimated cost in USD.
+        """
+        input_cost = max(0, int(prompt_tokens)) * _cost_per_token(model, "input")
+        output_cost = max(0, int(estimated_completion_tokens)) * _cost_per_token(model, "output")
+        return round(input_cost + output_cost, 8)
+
     def daily_budget_exceeded(self) -> bool:
         """Return True if today's accumulated spend has reached the daily cap.
 
@@ -264,118 +284,24 @@ class CostTracker:
         current_daily = self._daily_cost.get(day_key, 0.0)
         return current_daily >= self.daily_budget
 
-    def get_daily_summary(self, day: str | None = None) -> dict[str, Any]:
-        """Get usage summary for a given day (or today if not specified).
+    def daily_pressure(self) -> float:
+        """Return current daily budget pressure as a ratio (0.0 to 1.0+).
 
-        Args:
-            day: ISO date string (``"YYYY-MM-DD"``). Defaults to today.
+        0.0 = no budget configured or no spend yet.
+        1.0 = budget fully consumed.
+        >1.0 = over budget.
 
-        Returns:
-            Dict with total_cost_usd, total_prompt_tokens,
-            total_completion_tokens, call_count, and per-model breakdown.
+        Used by ModelRouter to trigger budget degradation thresholds:
+          0.80 = warning (prefer cheaper tier)
+          0.90 = force fast tier for non-critical tasks
+          0.95 = force free tier for all non-critical
+          1.00 = hard stop
         """
-        target_day = day or datetime.now(timezone.utc).date().isoformat()
-
-        total_cost = 0.0
-        total_prompt = 0
-        total_completion = 0
-        call_count = 0
-        by_model: dict[str, dict[str, Any]] = {}
-
-        for rec in self._records:
-            if rec.timestamp[:10] != target_day:
-                continue
-
-            total_cost += rec.cost_usd
-            total_prompt += rec.prompt_tokens
-            total_completion += rec.completion_tokens
-            call_count += 1
-
-            model_entry = by_model.setdefault(
-                rec.model,
-                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
-            )
-            model_entry["cost_usd"] += rec.cost_usd
-            model_entry["prompt_tokens"] += rec.prompt_tokens
-            model_entry["completion_tokens"] += rec.completion_tokens
-            model_entry["calls"] += 1
-
-        return {
-            "date": target_day,
-            "total_cost_usd": round(total_cost, 6),
-            "total_prompt_tokens": total_prompt,
-            "total_completion_tokens": total_completion,
-            "call_count": call_count,
-            "by_model": by_model,
-        }
-
-    def get_task_summary(self, task_id: str) -> dict[str, Any]:
-        """Get usage summary for a specific task."""
-        total_cost = 0.0
-        total_prompt = 0
-        total_completion = 0
-        call_count = 0
-        iterations = 0
-
-        for rec in self._records:
-            if rec.task_id != task_id:
-                continue
-            total_cost += rec.cost_usd
-            total_prompt += rec.prompt_tokens
-            total_completion += rec.completion_tokens
-            call_count += 1
-            iterations = max(iterations, rec.iteration)
-
-        return {
-            "task_id": task_id,
-            "total_cost_usd": round(total_cost, 6),
-            "total_prompt_tokens": total_prompt,
-            "total_completion_tokens": total_completion,
-            "call_count": call_count,
-            "max_iteration": iterations,
-        }
-
-    def estimate_cost(self, model: str, prompt_tokens: int, completion_tokens: int) -> float:
-        """Estimate the cost of a hypothetical LLM call without recording it."""
-        return self._calculate_cost(model, prompt_tokens, completion_tokens)
-
-    def get_summary(self) -> dict[str, Any]:
-        """Get cumulative usage summary across all recorded calls.
-
-        Returns:
-            Dict with total_cost_usd, total_prompt_tokens,
-            total_completion_tokens, total_tokens, call_count, and a
-            per-model breakdown.
-        """
-        total_cost = 0.0
-        total_prompt = 0
-        total_completion = 0
-        call_count = 0
-        by_model: dict[str, dict[str, Any]] = {}
-
-        for rec in self._records:
-            total_cost += rec.cost_usd
-            total_prompt += rec.prompt_tokens
-            total_completion += rec.completion_tokens
-            call_count += 1
-
-            model_entry = by_model.setdefault(
-                rec.model,
-                {"cost_usd": 0.0, "prompt_tokens": 0, "completion_tokens": 0, "calls": 0},
-            )
-            model_entry["cost_usd"] += rec.cost_usd
-            model_entry["prompt_tokens"] += rec.prompt_tokens
-            model_entry["completion_tokens"] += rec.completion_tokens
-            model_entry["calls"] += 1
-
-        return {
-            "total_cost_usd": round(total_cost, 6),
-            "total_prompt_tokens": total_prompt,
-            "total_completion_tokens": total_completion,
-            "total_tokens": total_prompt + total_completion,
-            "call_count": call_count,
-            "by_model": by_model,
-        }
+        if self.daily_budget is None or self.daily_budget <= 0:
+            return 0.0
+        day_key = datetime.now(timezone.utc).date().isoformat()
+        current_daily = self._daily_cost.get(day_key, 0.0)
+        return current_daily / self.daily_budget
 
     def get_usage_summary(
         self,

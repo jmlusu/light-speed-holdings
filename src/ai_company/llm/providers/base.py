@@ -9,14 +9,6 @@ from enum import Enum
 
 
 @dataclass(frozen=True)
-class ChatMessage:
-    """A single message in a conversation."""
-
-    role: str  # "system", "user", "assistant"
-    content: str
-
-
-@dataclass(frozen=True)
 class ChatResponse:
     """Structured response from an LLM provider.
 

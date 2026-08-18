@@ -1,11 +1,7 @@
-"""Tests for the KPI analytics module (history, trends, alerts, summary)
-and the KPI data retention module (policy, cleanup, archive).
-"""
+"""Tests for the KPI analytics module (history, trends, alerts, summary)."""
 
 from __future__ import annotations
 
-import gzip
-import json
 import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -19,7 +15,6 @@ from ai_company.dashboard.analytics import (
     compute_summary,
     compute_trends,
 )
-from ai_company.dashboard.retention import RetentionEngine, RetentionPolicy
 
 # ===========================================================================
 # Fixtures
@@ -906,301 +901,15 @@ class TestSummaryStatistics:
 
 
 # ===========================================================================
-# Retention Policy & Cleanup
-# ===========================================================================
-
-
-class TestRetentionPolicy:
-    """Tests for RetentionPolicy validation."""
-
-    def test_default_policy(self) -> None:
-        """Default policy has 90 days with archiving enabled."""
-        policy = RetentionPolicy()
-        assert policy.max_days == 90
-        assert policy.archive_enabled is True
-        assert policy.archive_dir is not None
-
-    def test_custom_policy(self) -> None:
-        """Custom values are set correctly."""
-        policy = RetentionPolicy(
-            max_days=30, archive_enabled=False, archive_dir=Path("/tmp/archive")
-        )
-        assert policy.max_days == 30
-        assert policy.archive_enabled is False
-        assert policy.archive_dir == Path("/tmp/archive")
-
-    def test_invalid_max_days(self) -> None:
-        """max_days must be >= 1."""
-        with pytest.raises(ValueError, match="max_days must be >= 1"):
-            RetentionPolicy(max_days=0)
-
-
-class TestRetentionEngine:
-    """Tests for RetentionEngine — cleanup and archive."""
-
-    def test_cleanup_removes_expired_entries(self, store: KPIHistoryStore) -> None:
-        """Entries older than max_days are removed during cleanup."""
-        # Store an entry timestamped before the retention window
-        old_ts = (datetime.now(timezone.utc) - timedelta(days=100)).isoformat()
-        store.store_snapshot(
-            {
-                "collected_at": old_ts,
-                "departments": {
-                    "engineering": {
-                        "department": "engineering",
-                        "collected_at": old_ts,
-                        "kpis": {
-                            "old_metric": {
-                                "current": 1.0,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        # Store a recent entry
-        recent_ts = datetime.now(timezone.utc).isoformat()
-        store.store_snapshot(
-            {
-                "collected_at": recent_ts,
-                "departments": {
-                    "engineering": {
-                        "department": "engineering",
-                        "collected_at": recent_ts,
-                        "kpis": {
-                            "recent_metric": {
-                                "current": 10.0,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        # Also store entries for a second department to ensure it's not affected
-        store.store_snapshot(
-            {
-                "collected_at": old_ts,
-                "departments": {
-                    "hr": {
-                        "department": "hr",
-                        "collected_at": old_ts,
-                        "kpis": {
-                            "headcount": {
-                                "current": 100,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        policy = RetentionPolicy(max_days=30, archive_enabled=False)
-        engine = RetentionEngine(store, policy)
-        archived, deleted = engine.cleanup()
-
-        assert archived == 0  # archiving is disabled
-        assert deleted == 2  # old engineering entry + hr entry (both expired)
-
-        # Verify only the recent entry remains
-        remaining = store.get_history("engineering")
-        assert len(remaining) == 1
-        assert remaining[0].kpi_key == "recent_metric"
-
-        # HR had only old entries, should be empty
-        assert store.get_history("hr") == []
-
-    def test_cleanup_no_expired_entries(self, store: KPIHistoryStore) -> None:
-        """No removal happens when all entries are within the retention window."""
-        store.store_snapshot(
-            {
-                "collected_at": datetime.now(timezone.utc).isoformat(),
-                "departments": {
-                    "engineering": {
-                        "department": "engineering",
-                        "collected_at": datetime.now(timezone.utc).isoformat(),
-                        "kpis": {
-                            "completion": {
-                                "current": 90.0,
-                                "target": 95,
-                                "unit": "%",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        policy = RetentionPolicy(max_days=90, archive_enabled=False)
-        engine = RetentionEngine(store, policy)
-        archived, deleted = engine.cleanup()
-        assert archived == 0
-        assert deleted == 0
-        assert store.count_entries("engineering") == 1
-
-    def test_archive_creates_compressed_file(
-        self, store: KPIHistoryStore, temp_storage_dir: Path
-    ) -> None:
-        """Archiving writes a gzip-compressed JSON file."""
-        store.store_snapshot(
-            {
-                "collected_at": (datetime.now(timezone.utc) - timedelta(days=100)).isoformat(),
-                "departments": {
-                    "engineering": {
-                        "department": "engineering",
-                        "collected_at": (
-                            datetime.now(timezone.utc) - timedelta(days=100)
-                        ).isoformat(),
-                        "kpis": {
-                            "old_metric": {
-                                "current": 42.0,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        archive_dir = temp_storage_dir / "archive"
-        policy = RetentionPolicy(max_days=30, archive_enabled=True, archive_dir=archive_dir)
-        engine = RetentionEngine(store, policy)
-        archived, deleted = engine.cleanup()
-
-        assert archived == 1
-
-        # Verify the archive file exists
-        archives = list(archive_dir.glob("engineering_archive_*.json.gz"))
-        assert len(archives) == 1
-
-        # Read back to verify content
-        with gzip.open(archives[0], "rt", encoding="utf-8") as fh:
-            records = json.load(fh)
-        assert len(records) == 1
-        assert records[0]["kpi_key"] == "old_metric"
-        assert records[0]["current"] == 42.0
-
-    def test_archive_department(self, store: KPIHistoryStore, temp_storage_dir: Path) -> None:
-        """archive_department archives and removes all entries for a department."""
-        store.store_snapshot(
-            {
-                "collected_at": datetime.now(timezone.utc).isoformat(),
-                "departments": {
-                    "engineering": {
-                        "department": "engineering",
-                        "collected_at": datetime.now(timezone.utc).isoformat(),
-                        "kpis": {
-                            "m1": {
-                                "current": 1.0,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                            "m2": {
-                                "current": 2.0,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        archive_dir = temp_storage_dir / "archive"
-        policy = RetentionPolicy(archive_dir=archive_dir)
-        engine = RetentionEngine(store, policy)
-
-        archived = engine.archive_department("engineering")
-        assert archived == 2
-        assert store.get_history("engineering") == []
-
-    def test_stats(self, store: KPIHistoryStore) -> None:
-        """stats returns correct counts and policy info."""
-        store.store_snapshot(
-            {
-                "collected_at": datetime.now(timezone.utc).isoformat(),
-                "departments": {
-                    "engineering": {
-                        "department": "engineering",
-                        "collected_at": datetime.now(timezone.utc).isoformat(),
-                        "kpis": {
-                            "m1": {
-                                "current": 1.0,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        old_ts = (datetime.now(timezone.utc) - timedelta(days=100)).isoformat()
-        store.store_snapshot(
-            {
-                "collected_at": old_ts,
-                "departments": {
-                    "engineering": {
-                        "department": "engineering",
-                        "collected_at": old_ts,
-                        "kpis": {
-                            "old_m1": {
-                                "current": 99.0,
-                                "target": None,
-                                "unit": "count",
-                                "status": "info",
-                            },
-                        },
-                    },
-                },
-            }
-        )
-
-        engine = RetentionEngine(store, RetentionPolicy(max_days=30, archive_enabled=False))
-        stats = engine.stats()
-
-        assert stats["policy"]["max_days"] == 30
-        assert "engineering" in stats["departments"]
-        assert stats["departments"]["engineering"]["entries"] == 2
-        assert stats["departments"]["engineering"]["expired"] == 1
-        assert stats["total_entries"] == 2
-        assert stats["expired_entries"] == 1
-
-    def test_update_policy(self, store: KPIHistoryStore) -> None:
-        """update_policy replaces the current policy."""
-        engine = RetentionEngine(store, RetentionPolicy(max_days=90))
-        assert engine.policy.max_days == 90
-
-        engine.update_policy(RetentionPolicy(max_days=7))
-        assert engine.policy.max_days == 7
-
-
-# ===========================================================================
 # Integration tests
 # ===========================================================================
 
 
 class TestIntegration:
-    """End-to-end integration tests combining analytics and retention."""
+    """End-to-end integration tests combining analytics features."""
 
     def test_full_pipeline(self, store: KPIHistoryStore) -> None:
-        """Store → trend → alert → cleanup pipeline works end-to-end."""
+        """Store -> trend -> alert -> summary pipeline works end-to-end."""
         # 1. Store two snapshots
         older = {
             "collected_at": (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat(),
@@ -1265,12 +974,5 @@ class TestIntegration:
         assert len(summaries) == 1
         assert summaries[0].mean_value == 82.5
 
-        # 5. Retention cleanup (no expired entries with default policy)
-        policy = RetentionPolicy(max_days=90, archive_enabled=False)
-        retention_engine = RetentionEngine(store, policy)
-        archived, deleted = retention_engine.cleanup()
-        assert archived == 0
-        assert deleted == 0
-
-        # 6. Verify data survives cleanup
+        # 5. Verify both snapshots are retained
         assert store.count_entries("engineering") == 2

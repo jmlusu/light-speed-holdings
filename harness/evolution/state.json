@@ -1,10 +1,10 @@
-﻿{
-    "enabled":  true,
-    "threshold":  5,
-    "window":  10,
-    "last_evolved_archive_count":  6,
-    "last_evolved_change_id":  "2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog",
-    "last_score":  null,
-    "last_run_at":  "2026-08-12T10:22:31",
-    "pending":  false
+{
+  "enabled": true,
+  "threshold": 5,
+  "window": 10,
+  "last_evolved_archive_count": 6,
+  "last_evolved_change_id": "2026-08-12-sprint-8-operationalization-purge-inbox-fix-readme-env-setup-malawi-service-catalog",
+  "last_score": null,
+  "last_run_at": "2026-08-12T10:22:31",
+  "pending": true
 }

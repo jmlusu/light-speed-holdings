@@ -122,29 +122,7 @@ class TestSchedulerInitialization:
 
 
 class TestConsolidationScheduler:
-    """Verify ConsolidationScheduler stats and config wiring."""
-
-    def test_consolidation_scheduler_stats(self, executor, bus: MessageBus) -> None:
-        """Consolidation scheduler stats() returns expected keys."""
-        stats = executor._consolidation_scheduler.stats()
-        assert isinstance(stats, dict)
-
-        expected_keys = {
-            "tick_count",
-            "last_consolidated",
-            "running",
-            "tick_interval",
-            "time_interval_seconds",
-            "entry_threshold",
-        }
-        assert expected_keys.issubset(set(stats.keys())), (
-            f"Missing keys: {expected_keys - set(stats.keys())}"
-        )
-
-        # Initial state
-        assert stats["tick_count"] == 0
-        assert stats["last_consolidated"] is None
-        assert stats["running"] is False
+    """Verify ConsolidationScheduler config wiring and tick tracking."""
 
     def test_consolidation_runs_after_tasks(self, executor, bus: MessageBus) -> None:
         """After processing tasks, the consolidation scheduler has ticked.
@@ -171,23 +149,14 @@ class TestConsolidationScheduler:
 
         assert consolidation.tick_count == 2
 
-        # Stats should reflect the updated tick count
-        stats = consolidation.stats()
-        assert stats["tick_count"] == 2
-
     def test_consolidation_config_defaults(self) -> None:
-        """ConsolidationConfig() has reasonable defaults for tick/time thresholds."""
+        """ConsolidationConfig() has reasonable defaults for tick thresholds."""
         config = ConsolidationConfig()
 
         # Tick-based: run consolidation every 50 executor ticks
         assert isinstance(config.tick_interval, int)
         assert config.tick_interval > 0, "tick_interval should be positive"
         assert config.tick_interval == 50
-
-        # Time-based: run consolidation every hour (3600 seconds)
-        assert isinstance(config.time_interval_seconds, int)
-        assert config.time_interval_seconds > 0, "time_interval_seconds should be positive"
-        assert config.time_interval_seconds == 3600
 
         # Entry threshold for triggering consolidation on memory growth
         assert isinstance(config.entry_threshold, int)
@@ -208,15 +177,12 @@ class TestConsolidationScheduler:
         """ConsolidationScheduler accepts custom ConsolidationConfig values."""
         custom = ConsolidationConfig(
             tick_interval=10,
-            time_interval_seconds=600,
             entry_threshold=100,
         )
         scheduler = ConsolidationScheduler(store=None, config=custom)
 
-        stats = scheduler.stats()
-        assert stats["tick_interval"] == 10
-        assert stats["time_interval_seconds"] == 600
-        assert stats["entry_threshold"] == 100
+        assert scheduler._config.tick_interval == 10
+        assert scheduler._config.entry_threshold == 100
 
     def test_consolidation_scheduler_tracks_last_consolidated(
         self, executor, bus: MessageBus

@@ -612,7 +612,7 @@ class AlertEngine:
                 if kpi_value is None:
                     continue
 
-                current_val = float(kpi_value.get("current", 0))
+                current_val = float(kpi_value.get("current") or 0)
                 operator_fn = _OPERATORS.get(rule.operator)
                 if operator_fn is None:
                     logger.warning("Unknown operator '%s' in rule '%s'", rule.operator, rule.name)

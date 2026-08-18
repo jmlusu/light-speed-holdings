@@ -67,7 +67,7 @@ def get_all_tasks(database: Database | None = None) -> list[dict[str, Any]] | No
         if store.count() > 0:
             return [task.model_dump() for task in store.get_all_tasks()]
     except Exception:  # noqa: BLE001 - fall back on any read failure
-        logger.debug("SQLite task read failed; using inbox file", exc_info=True)
+        logger.warning("SQLite task read failed; using inbox file", exc_info=True)
     return None
 
 
@@ -91,6 +91,7 @@ def get_cost_summary(database: Database | None = None) -> dict[str, Any] | None:
         if cost.total_records() == 0:
             return None
     except Exception:  # noqa: BLE001
+        logger.warning("SQLite cost records check failed; using file fallback", exc_info=True)
         return None
 
     total_spent = cost.total_cost()
@@ -122,7 +123,7 @@ def get_cost_summary(database: Database | None = None) -> dict[str, Any] | None:
             total_tasks = sum(statuses.values())
             completed_tasks = statuses.get("completed", 0)
     except Exception:  # noqa: BLE001 - task counts are best-effort here
-        logger.debug("SQLite task counts unavailable for cost summary", exc_info=True)
+        logger.warning("SQLite task counts unavailable for cost summary", exc_info=True)
 
     return {
         "total_spent": round(total_spent, 6),
@@ -163,6 +164,7 @@ def get_kpi_history(
             return None
         rows = pipeline.get_history(department, kpi_key=kpi_key, limit=limit)
     except Exception:  # noqa: BLE001
+        logger.warning("SQLite KPI history read failed; using file fallback", exc_info=True)
         return None
 
     return [
@@ -207,7 +209,7 @@ def get_agent_performance_report(
     try:
         report = analytics.full_report(days)
     except Exception:  # noqa: BLE001 - read-through must never raise
-        logger.debug("SQLite agent analytics failed; using file fallback", exc_info=True)
+        logger.warning("SQLite agent analytics failed; using file fallback", exc_info=True)
         return None
 
     if (
@@ -241,7 +243,7 @@ def get_agent_performance_summary(
     try:
         summary = analytics.agent_summary(agent_id, days)
     except Exception:  # noqa: BLE001 - read-through must never raise
-        logger.debug("SQLite agent summary failed; using file fallback", exc_info=True)
+        logger.warning("SQLite agent summary failed; using file fallback", exc_info=True)
         return None
 
     if (

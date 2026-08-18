@@ -23,14 +23,14 @@ def start(
     pid_dir: str = typer.Option("logs", help="Directory for PID file (daemon mode)"),
     log_dir: str = typer.Option("logs", help="Directory for log file (daemon mode)"),
     kpi_snapshot_interval: float = typer.Option(
-        300.0,
+        3600.0,
         "--kpi-snapshot-interval",
-        help="Seconds between periodic KPI snapshot collections (daemon mode; 0 disables)",
+        help="Seconds between periodic KPI snapshot collections (daemon mode; 0 disables). Default: 3600 (hourly)",
     ),
     governance_interval: float = typer.Option(
         86400.0,
         "--governance-interval",
-        help="Seconds between periodic retention enforcement (daemon mode; 0 disables)",
+        help="Seconds between periodic retention enforcement (daemon mode; 0 disables). Default: 86400 (daily)",
     ),
     db_path: Optional[str] = typer.Option(
         None,
@@ -423,8 +423,13 @@ def dlq_list() -> None:
         instruction = task.get("instruction", "?")[:50]
         reason = entry.get("reason", "?")[:40]
         moved_at = entry.get("moved_at", "?")[:19]
+        retry_count = task.get("retry_count", 0)
+        retry_budget = task.get("retry_budget", 0)
+        dlq_reason = task.get("dlq_reason", "")
         typer.echo(f"  [{tid}] -> {receiver}: {instruction}")
-        typer.echo(f"    reason: {reason}  (moved: {moved_at})")
+        retry_info = f"  retries: {retry_count}/{retry_budget}" if retry_budget else ""
+        dlq_info = f"  dlq_reason: {dlq_reason}" if dlq_reason else ""
+        typer.echo(f"    reason: {reason}  (moved: {moved_at}){retry_info}{dlq_info}")
 
 
 @app.command()

@@ -1,13 +1,13 @@
 """Memory consolidation scheduler — periodically deduplicates and prunes memory.
 
 GAP-005 fix: wires MemoryStore.consolidate_all() and prune() into a
-configurable periodic scheduler so memory doesn't grow unbounded.
+configurable periodic scheduler so memory doesn't grow unbounded. The
+executor drives the scheduler via ``on_tick()`` from the loop.
 """
 
 from __future__ import annotations
 
 import logging
-import threading
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
@@ -27,24 +27,18 @@ class ConsolidationConfig:
     max_episodic_age_days: int = 90
     # Max entries per memory type (most-accessed wins)
     max_entries_per_type: int = 2000
-    # Time-based interval in seconds (alternative to tick-based)
-    time_interval_seconds: int = 3600
 
 
 class ConsolidationScheduler:
     """Periodically runs memory consolidation and pruning.
 
-    Can operate in two modes:
-    - Tick-based: call ``on_tick()`` from the executor loop; consolidation
-      runs every ``config.tick_interval`` ticks.
-    - Time-based: runs in a background daemon thread at a fixed interval.
+    Call ``on_tick()`` from the executor loop; consolidation runs every
+    ``config.tick_interval`` ticks (or when the entry threshold is crossed).
 
     Example::
 
         scheduler = ConsolidationScheduler(store, config)
-        scheduler.start()  # background thread
-        # ... later ...
-        scheduler.stop()
+        scheduler.on_tick()  # from executor tick()
     """
 
     def __init__(
@@ -56,9 +50,6 @@ class ConsolidationScheduler:
         self._config = config or ConsolidationConfig()
         self._tick_count: int = 0
         self._last_consolidated: datetime | None = None
-        self._running: bool = False
-        self._thread: threading.Thread | None = None
-        self._lock = threading.Lock()
 
     @property
     def last_consolidated(self) -> datetime | None:
@@ -128,48 +119,3 @@ class ConsolidationScheduler:
             summary["error"] = 1
 
         return summary
-
-    def start(self) -> None:
-        """Start time-based consolidation in a background daemon thread."""
-        if self._running:
-            return
-        self._running = True
-        self._thread = threading.Thread(
-            target=self._run_loop,
-            name="memory-consolidation",
-            daemon=True,
-        )
-        self._thread.start()
-        logger.info(
-            "Consolidation scheduler started (interval=%ds)",
-            self._config.time_interval_seconds,
-        )
-
-    def stop(self) -> None:
-        """Stop the background consolidation loop."""
-        self._running = False
-        if self._thread and self._thread.is_alive():
-            self._thread.join(timeout=5.0)
-        logger.info("Consolidation scheduler stopped")
-
-    def _run_loop(self) -> None:
-        """Background loop that runs consolidation at fixed intervals."""
-        import time
-
-        while self._running:
-            time.sleep(self._config.time_interval_seconds)
-            if self._running:
-                self.run_once()
-
-    def stats(self) -> dict[str, Any]:
-        """Return scheduler status for monitoring."""
-        return {
-            "tick_count": self._tick_count,
-            "last_consolidated": (
-                self._last_consolidated.isoformat() if self._last_consolidated else None
-            ),
-            "running": self._running,
-            "tick_interval": self._config.tick_interval,
-            "time_interval_seconds": self._config.time_interval_seconds,
-            "entry_threshold": self._config.entry_threshold,
-        }

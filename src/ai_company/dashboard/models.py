@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -126,3 +126,52 @@ class PaginatedTasks(BaseModel):
     page_size: int
     total_pages: int
     counts_by_status: dict[str, int] = Field(default_factory=dict)
+
+
+class WorkflowSummary(BaseModel):
+    """Workflow definition summary."""
+
+    id: str
+    name: str
+    trigger: str = ""
+    owner: str = ""
+    steps: int = 0
+
+
+class WorkflowStepItem(BaseModel):
+    """Single step inside a workflow instance."""
+
+    id: str
+    name: str
+    action: str = ""
+    owner: str = ""
+    inputs: list[str] = Field(default_factory=list)
+    outputs: list[str] = Field(default_factory=list)
+    status: str = "pending"
+    result: str = ""
+    sla_hours: int = 0
+    sla_minutes: int = 0
+    sla_days: int = 0
+
+
+class WorkflowInstanceItem(BaseModel):
+    """Workflow instance status for API responses."""
+
+    instance_id: str
+    workflow_id: str
+    workflow_name: str
+    status: str = "running"
+    current_step: Optional[str] = None
+    current_step_index: int = 0
+    total_steps: int = 0
+    completed_steps: int = 0
+    steps: list[WorkflowStepItem] = Field(default_factory=list)
+    started_at: Optional[str] = None
+    completed_at: Optional[str] = None
+    context: dict[str, Any] = Field(default_factory=dict)
+
+
+class WorkflowActionRequest(BaseModel):
+    """Request body for workflow step actions."""
+
+    result: str = ""

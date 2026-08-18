@@ -1,0 +1,10 @@
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "org_health", "kpi_key": "composite_score", "current": 58.0, "target": null, "unit": "score", "status": "amber"}
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "org_health", "kpi_key": "component:task_success_rate", "current": 80.0, "target": null, "unit": "score", "status": "info"}
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "org_health", "kpi_key": "component:agent_utilization", "current": 4.580152671755725, "target": null, "unit": "score", "status": "info"}
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "org_health", "kpi_key": "component:cost_efficiency", "current": 50.0, "target": null, "unit": "score", "status": "info"}
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "org_health", "kpi_key": "component:error_rate", "current": 100.0, "target": null, "unit": "score", "status": "info"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "org_health", "kpi_key": "composite_score", "current": 58.0, "target": null, "unit": "score", "status": "amber"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "org_health", "kpi_key": "component:task_success_rate", "current": 80.0, "target": null, "unit": "score", "status": "info"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "org_health", "kpi_key": "component:agent_utilization", "current": 4.580152671755725, "target": null, "unit": "score", "status": "info"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "org_health", "kpi_key": "component:cost_efficiency", "current": 50.0, "target": null, "unit": "score", "status": "info"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "org_health", "kpi_key": "component:error_rate", "current": 100.0, "target": null, "unit": "score", "status": "info"}

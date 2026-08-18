@@ -53,7 +53,7 @@ class ServiceResult(Generic[T]):
         return cls(success=True, data=data, metadata=meta)
 
     @classmethod
-    def fail(cls, *errors: str, **meta: Any) -> ServiceResult:
+    def fail(cls, *errors: str, **meta: Any) -> ServiceResult[Any]:
         """Create a failure result."""
         return cls(success=False, errors=list(errors), metadata=meta)
 

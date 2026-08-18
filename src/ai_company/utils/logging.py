@@ -61,7 +61,7 @@ class CorrelationFilter(logging.Filter):
         Always returns ``True`` — this filter enriches records but never
         suppresses them.
         """
-        record.correlation_id = get_correlation_id()  # type: ignore[attr-defined]
+        record.correlation_id = get_correlation_id()
         return True
 
 

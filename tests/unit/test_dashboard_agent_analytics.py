@@ -221,7 +221,7 @@ def _seed_sqlite(db) -> None:
 
 class TestAgentPerformanceFileFallback:
     def test_returns_full_shape_with_empty_files(self, setup_data: Path) -> None:
-        resp = client.get("/api/agents/performance")
+        resp = client.get("/api/v1/agents/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert data["source"] == "files"
@@ -235,7 +235,7 @@ class TestAgentPerformanceFileFallback:
 
     def test_derives_leaderboard_from_inbox(self, setup_data: Path) -> None:
         _seed_file_tasks(setup_data)
-        resp = client.get("/api/agents/performance")
+        resp = client.get("/api/v1/agents/performance")
         data = resp.json()
         assert data["source"] == "files"
         assert data["total_tasks"] == 3
@@ -266,7 +266,7 @@ class TestAgentPerformanceFileFallback:
             ),
             encoding="utf-8",
         )
-        resp = client.get("/api/agents/performance", params={"days": 30})
+        resp = client.get("/api/v1/agents/performance", params={"days": 30})
         assert resp.status_code == 200
         assert resp.json()["total_tasks"] == 1
         assert resp.json()["leaderboard"] == []
@@ -282,7 +282,7 @@ class TestAgentPerformanceSQLite:
         db = init_database(setup_data / "analytics.db")
         _seed_sqlite(db)
 
-        resp = client.get("/api/agents/performance")
+        resp = client.get("/api/v1/agents/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert data["source"] == "sqlite"
@@ -312,7 +312,7 @@ class TestAgentPerformanceSQLite:
         assert data["error_analysis"]["failed_tasks_by_agent"] == [{"agent_id": "bob", "count": 1}]
 
     def test_empty_database_falls_back_to_files(self, setup_data: Path) -> None:
-        resp = client.get("/api/agents/performance")
+        resp = client.get("/api/v1/agents/performance")
         assert resp.status_code == 200
         assert resp.json()["source"] == "files"
 
@@ -323,7 +323,7 @@ class TestAgentPerformanceSQLite:
 class TestAgentPerformanceDetail:
     def test_file_fallback(self, setup_data: Path) -> None:
         _seed_file_tasks(setup_data)
-        resp = client.get("/api/agents/lead-engineering/performance")
+        resp = client.get("/api/v1/agents/lead-engineering/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert data["source"] == "files"
@@ -332,7 +332,7 @@ class TestAgentPerformanceDetail:
         assert data["tasks_completed"] == 2
 
     def test_file_fallback_zeroed_for_unknown_agent(self, setup_data: Path) -> None:
-        resp = client.get("/api/agents/never-heard-of/performance")
+        resp = client.get("/api/v1/agents/never-heard-of/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert data["source"] == "files"
@@ -345,7 +345,7 @@ class TestAgentPerformanceDetail:
         db = init_database(setup_data / "analytics.db")
         _seed_sqlite(db)
 
-        resp = client.get("/api/agents/bob/performance")
+        resp = client.get("/api/v1/agents/bob/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert data["source"] == "sqlite"
@@ -360,7 +360,7 @@ class TestAgentPerformanceDetail:
         db = init_database(setup_data / "analytics.db")
         _seed_sqlite(db)
 
-        resp = client.get("/api/agents/chief-of-staff/performance")
+        resp = client.get("/api/v1/agents/chief-of-staff/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert data["source"] == "files"

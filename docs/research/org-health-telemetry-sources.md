@@ -15,7 +15,7 @@ score (Req. F5 / F4; maps to wayfinder ticket #23).
 
 ## Live KPIs surfaced today (`dashboard/api.py`)
 
-- `collect_all_kpis()` → `/api/dashboard` / `/api/ceo-dashboard`:
+- `collect_all_kpis()` → `/api/v1/dashboard` / `/api/v1/ceo-dashboard`:
   `KPIs` model = pending_tasks, in_progress, completed, failed, escalated,
   pending_approvals, open_escalations, last_activity, cost_today, etc.
 - `get_company_kpi_summary()` → KPI-003 (agent utilization), KPI-004 (build

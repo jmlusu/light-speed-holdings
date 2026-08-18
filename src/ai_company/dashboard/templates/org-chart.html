@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block content %}
+<div x-data="orgChart()" x-init="init()" class="h-full">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-jarvis-primary">Organization Chart</h1>
+    <div class="flex gap-2">
+      <button @click="fitToView()" class="btn-secondary text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+        </svg>
+        Fit
+      </button>
+      <button @click="resetZoom()" class="btn-secondary text-sm">Reset</button>
+      <span class="text-jarvis-text-muted text-sm self-center" x-text="zoom + '%'"></span>
+    </div>
+  </div>
+
+  <!-- Org Tree Container -->
+  <div class="bg-jarvis-surface border border-jarvis-border rounded-lg overflow-auto"
+       style="height: calc(100vh - 200px);">
+    <div class="org-tree-container p-8" :style="'transform: scale(' + zoom/100 + '); transform-origin: top center;'">
+
+      <!-- Tree Rendering -->
+      <div class="org-tree">
+        <template x-if="tree.length > 0">
+          <div class="org-tree-children justify-center">
+            <template x-for="node in tree" :key="node.name">
+              <div class="org-tree-subtree">
+                <!-- Recursive node template -->
+                <div x-data="{ expanded: true }">
+                  <!-- Node Card -->
+                  <div class="org-tree-node"
+                       :class="selectedNode?.name === node.name ? 'selected' : ''"
+                       @click="selectNode(node)"
+                       draggable="true"
+                       @dragstart="onDragStart($event, node)"
+                       @dragover.prevent="onDragOver($event)"
+                       @drop="onDrop($event, node)">
+
+                    <div class="node-card bg-jarvis-bg border border-jarvis-border rounded-lg p-3 cursor-pointer hover:border-jarvis-primary transition-colors min-w-32">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span :class="getTypeClass(node.type)" class="px-1.5 py-0.5 rounded text-xs">
+                          <span x-text="node.type.substring(0, 3)"></span>
+                        </span>
+                        <span class="text-jarvis-text font-medium text-sm" x-text="node.name"></span>
+                      </div>
+                      <p class="text-xs text-jarvis-text-muted truncate" x-text="node.role"></p>
+                    </div>
+
+                    <!-- Children -->
+                    <div x-show="node.children?.length > 0 && expanded" class="org-tree-children mt-4">
+                      <template x-for="child in node.children" :key="child.name">
+                        <div class="org-tree-subtree">
+                          <div class="org-tree-connector"></div>
+                          <!-- Recursive child rendering (simplified - 3 levels deep) -->
+                          <div class="org-tree-node"
+                               :class="selectedNode?.name === child.name ? 'selected' : ''"
+                               @click="selectNode(child)"
+                               draggable="true"
+                               @dragstart="onDragStart($event, child)"
+                               @drop="onDrop($event, child)">
+                            <div class="node-card bg-jarvis-bg border border-jarvis-border rounded-lg p-3 cursor-pointer hover:border-jarvis-primary transition-colors min-w-32">
+                              <div class="flex items-center gap-2 mb-1">
+                                <span :class="getTypeClass(child.type)" class="px-1.5 py-0.5 rounded text-xs">
+                                  <span x-text="child.type.substring(0, 3)"></span>
+                                </span>
+                                <span class="text-jarvis-text font-medium text-sm" x-text="child.name"></span>
+                              </div>
+                              <p class="text-xs text-jarvis-text-muted truncate" x-text="child.role"></p>
+                            </div>
+
+                            <!-- Level 3 children -->
+                            <div x-show="child.children?.length > 0" class="org-tree-children mt-4">
+                              <template x-for="grandchild in child.children" :key="grandchild.name">
+                                <div class="org-tree-subtree">
+                                  <div class="org-tree-connector"></div>
+                                  <div class="org-tree-node"
+                                       :class="selectedNode?.name === grandchild.name ? 'selected' : ''"
+                                       @click="selectNode(grandchild)">
+                                    <div class="node-card bg-jarvis-bg border border-jarvis-border rounded-lg p-3 cursor-pointer hover:border-jarvis-primary transition-colors min-w-32">
+                                      <div class="flex items-center gap-2 mb-1">
+                                        <span :class="getTypeClass(grandchild.type)" class="px-1.5 py-0.5 rounded text-xs">
+                                          <span x-text="grandchild.type.substring(0, 3)"></span>
+                                        </span>
+                                        <span class="text-jarvis-text font-medium text-sm" x-text="grandchild.name"></span>
+                                      </div>
+                                      <p class="text-xs text-jarvis-text-muted truncate" x-text="grandchild.role"></p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </template>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Detail Panel -->
+  <div x-show="selectedNode" x-transition
+       class="fixed bottom-4 right-4 w-80 bg-jarvis-surface border border-jarvis-border rounded-lg shadow-xl z-40">
+    <div class="p-4">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <h3 class="text-lg font-semibold text-jarvis-text" x-text="selectedNode?.name"></h3>
+          <p class="text-sm text-jarvis-text-muted" x-text="selectedNode?.role"></p>
+        </div>
+        <button @click="selectedNode = null" class="text-jarvis-text-muted hover:text-jarvis-text">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Type</span>
+          <span :class="getTypeClass(selectedNode?.type)" class="px-2 py-0.5 rounded text-xs"
+                x-text="selectedNode?.type"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Department</span>
+          <span class="text-jarvis-text" x-text="selectedNode?.department"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Reports To</span>
+          <span class="text-jarvis-text" x-text="selectedNode?.reports_to || 'None'"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Direct Reports</span>
+          <span class="text-jarvis-text" x-text="selectedNode?.children?.length || 0"></span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-4">
+        <button @click="viewAgentDetails(selectedNode)" class="btn-primary flex-1 text-sm">
+          View Details
+        </button>
+        <button @click="startReassign(selectedNode)" class="btn-secondary flex-1 text-sm">
+          Reassign
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reassign Modal -->
+  <div x-show="showReassignModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-jarvis-surface border border-jarvis-border rounded-lg p-6 w-96">
+      <h3 class="text-lg font-semibold text-jarvis-text mb-4">Reassign Reports To</h3>
+      <p class="text-jarvis-text-muted mb-4">
+        Move <span x-text="reassigningAgent?.name" class="font-medium"></span> to report to:
+      </p>
+      <select x-model="newManager" class="input-jarvis w-full mb-4">
+        <option value="">Select manager...</option>
+        <template x-for="agent in allAgents" :key="agent.name">
+          <option :value="agent.name" x-text="agent.name + ' (' + agent.role + ')'"></option>
+        </template>
+      </select>
+      <div class="flex justify-end gap-2">
+        <button @click="showReassignModal = false" class="btn-secondary">Cancel</button>
+        <button @click="confirmReassign()" class="btn-primary" :disabled="!newManager">Reassign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/org-chart.js"></script>
+{% endblock %}

@@ -1,0 +1,6 @@
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "hr", "kpi_key": "total_agents", "current": 3.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "hr", "kpi_key": "department_coverage", "current": 0.0, "target": 100.0, "unit": "%", "status": "below_target"}
+{"timestamp": "2026-08-17T19:07:07.889021", "department": "hr", "kpi_key": "declared_departments", "current": 18.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "hr", "kpi_key": "total_agents", "current": 3.0, "target": null, "unit": "count", "status": "info"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "hr", "kpi_key": "department_coverage", "current": 0.0, "target": 100.0, "unit": "%", "status": "below_target"}
+{"timestamp": "2026-08-17T19:07:57.045897", "department": "hr", "kpi_key": "declared_departments", "current": 18.0, "target": null, "unit": "count", "status": "info"}

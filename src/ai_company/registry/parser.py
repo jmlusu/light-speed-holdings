@@ -56,7 +56,7 @@ def _unwrap_list(data: dict[str, Any], key: str) -> list[dict[str, Any]]:
     return []
 
 
-def _list_of(data: Any, model_cls: type) -> list:
+def _list_of(data: Any, model_cls: type) -> list[Any]:
     """Parse a list of dicts into model instances, skipping invalid entries."""
     if not isinstance(data, list):
         return []
