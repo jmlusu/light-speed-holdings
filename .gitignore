@@ -68,7 +68,7 @@ graphify-out/
 workflows/instances/
 memory/*.json
 memory/vector_index/
-data/
+/data/
 logs/
 results/
 orchestrator/
@@ -90,3 +90,21 @@ docker-compose.override.yml
 
 # ...but keep the T017 QA test suite (same-name runtime dir must not swallow it)
 !tests/orchestrator/
+
+# llama.cpp binaries and model files
+/bin/
+/models/
+*.gguf
+
+# Temp / debug scripts (not part of test suite)
+fix_*.py
+diagnose_*.ps1
+test_*.py
+test_*.txt
+*_results.txt
+dashboard_test_results.txt
+test_count.txt
+scripts/download_one.py
+scripts/test_all_*.py
+scripts/test_deepseek*.py
+scripts/test_integration.py

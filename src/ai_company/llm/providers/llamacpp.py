@@ -55,6 +55,7 @@ class LlamaCppProvider(LLMProvider):
         server_host: str = "127.0.0.1",
         use_server: bool = True,
         startup_timeout: float = 60.0,
+        api_key: str = "",
     ) -> None:
         self.name = name
         self.model_path = model_path
@@ -63,11 +64,13 @@ class LlamaCppProvider(LLMProvider):
         self.server_host = server_host
         self.use_server = use_server
         self.startup_timeout = startup_timeout
+        self.api_key = api_key
         self._server_process: subprocess.Popen[Any] | None = None
         self._server_ready = threading.Event()
         self._client = httpx.Client(
             base_url=f"http://{server_host}:{server_port}",
             timeout=300.0,
+            headers={"X-API-Key": api_key} if api_key else {},
         )
         self._lock = threading.Lock()
         self._available: bool | None = None  # None = unknown, True/False = checked
@@ -112,21 +115,30 @@ class LlamaCppProvider(LLMProvider):
                 str(self.config.n_threads_batch),
                 "-ngl",
                 str(self.config.n_gpu_layers),
-                "--mlock" if self.config.use_mlock else "--no-mlock",
-                "--mmap" if self.config.use_mmap else "--no-mmap",
                 "--port",
                 str(self.server_port),
                 "--host",
                 self.server_host,
-                "--ctx-size",
-                str(self.config.n_ctx),
             ]
+
+            # Only add load-mode flags if mlock or mmap is enabled
+            load_modes = []
+            if self.config.use_mlock:
+                load_modes.append("mlock")
+            if self.config.use_mmap:
+                load_modes.append("mmap")
+            if load_modes:
+                cmd.extend(["--load-mode", ",".join(load_modes)])
 
             # Add rope scaling if needed
             if self.config.rope_freq_scale != 1.0:
                 cmd.extend(["--rope-freq-scale", str(self.config.rope_freq_scale)])
             if self.config.rope_freq_base != 10000.0:
                 cmd.extend(["--rope-freq-base", str(self.config.rope_freq_base)])
+
+            # Add API key if configured (required by llama-server >= b5500)
+            if self.api_key:
+                cmd.extend(["--api-key", self.api_key])
 
             self._server_process = subprocess.Popen(
                 cmd,
@@ -172,12 +184,15 @@ class LlamaCppProvider(LLMProvider):
         import logging
 
         logger = logging.getLogger(__name__)
+        headers = {"X-API-Key": self.api_key} if self.api_key else {}
 
         start = time.time()
         while time.time() - start < self.startup_timeout:
             try:
                 resp = httpx.get(
-                    f"http://{self.server_host}:{self.server_port}/health", timeout=2.0
+                    f"http://{self.server_host}:{self.server_port}/health",
+                    timeout=2.0,
+                    headers=headers,
                 )
                 if resp.status_code == 200:
                     self._server_ready.set()
@@ -379,7 +394,10 @@ class LlamaCppProvider(LLMProvider):
             return False
 
         try:
-            resp = httpx.get(f"http://{self.server_host}:{self.server_port}/health", timeout=2.0)
+            headers = {"X-API-Key": self.api_key} if self.api_key else {}
+            resp = httpx.get(
+                f"http://{self.server_host}:{self.server_port}/health", timeout=2.0, headers=headers
+            )
             available = resp.status_code == 200
             self._available = available
             return available

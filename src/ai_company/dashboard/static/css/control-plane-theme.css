@@ -2,7 +2,8 @@
    J.A.R.V.I.S. Control Plane Theme
    Design tokens + glass treatment + scan-line + status pulse
    Issue #105 — resolved from #101 visual-language decision
-   ═══════════════════════════════════════════════════════════════ */
+   Extended for Executive Command Center (J.A.R.V.I.S. v2)
+   ════════════════════════════════════════════════════════════════ */
 
 /* ── Design Tokens ────────────────────────────────────────── */
 :root {
@@ -12,12 +13,18 @@
   --jarvis-bg-overlay:  #101a2b;
 
   --jarvis-cyan:        #22d3ee;
+  --jarvis-cyan-dim:    rgba(34, 211, 238, 0.4);
+  --jarvis-cyan-bright: #67e8f9;
   --jarvis-text:        #e2e8f0;
   --jarvis-text-muted:  #94a3b8;
+  --jarvis-text-dim:    #64748b;
 
   --jarvis-amber:       #fbbf24;
+  --jarvis-amber-dim:   rgba(251, 191, 36, 0.4);
   --jarvis-red:         #f87171;
+  --jarvis-red-dim:     rgba(248, 113, 113, 0.4);
   --jarvis-success:     #34d399;
+  --jarvis-success-dim: rgba(52, 211, 153, 0.4);
 
   /* Glass */
   --jarvis-glass-opacity:  0.72;
@@ -28,6 +35,47 @@
   /* Typography */
   --jarvis-font-display: 'Rajdhani', 'Inter', system-ui, sans-serif;
   --jarvis-font-mono:    'JetBrains Mono', ui-monospace, Consolas, monospace;
+
+  /* ── Spatial Depth Layers ───────────────────────────────── */
+  --jarvis-depth-1: 10;   /* Base panels */
+  --jarvis-depth-2: 20;   /* Elevated panels */
+  --jarvis-depth-3: 40;   /* Floating/modal */
+  --jarvis-depth-4: 60;   /* Command bar/tooltips */
+
+  /* ── Holographic Effects ────────────────────────────────── */
+  --jarvis-holo-glow:       rgba(34, 211, 238, 0.08);
+  --jarvis-holo-glow-strong: rgba(34, 211, 238, 0.15);
+  --jarvis-holo-border:     rgba(34, 211, 238, 0.18);
+  --jarvis-holo-border-dim: rgba(34, 211, 238, 0.06);
+  --jarvis-scan-line:       rgba(34, 211, 238, 0.02);
+
+  /* ── Agent State Colors ─────────────────────────────────── */
+  --jarvis-state-online:       var(--jarvis-success);
+  --jarvis-state-thinking:     var(--jarvis-cyan);
+  --jarvis-state-executing:    var(--jarvis-cyan-bright);
+  --jarvis-state-delegating:   var(--jarvis-amber);
+  --jarvis-state-waiting:      var(--jarvis-amber-dim);
+  --jarvis-state-blocked:      var(--jarvis-red);
+  --jarvis-state-escalated:    var(--jarvis-red);
+  --jarvis-state-offline:      var(--jarvis-text-dim);
+
+  /* ── Motion Durations ───────────────────────────────────── */
+  --jarvis-motion-slow:    3s;
+  --jarvis-motion-medium:  1.5s;
+  --jarvis-motion-fast:    800ms;
+  --jarvis-motion-instant: 150ms;
+
+  /* ── Radial Ring Colors (Company Core) ──────────────────── */
+  --jarvis-ring-1: rgba(34, 211, 238, 0.15);  /* Outer - agent utilization */
+  --jarvis-ring-2: rgba(34, 211, 238, 0.25);  /* Middle - model routing */
+  --jarvis-ring-3: rgba(34, 211, 238, 0.4);   /* Inner - task throughput */
+
+  /* ── Tier Badge Colors (5-tier approval) ────────────────── */
+  --jarvis-tier-1: var(--jarvis-success);  /* Auto-resolvable */
+  --jarvis-tier-2: var(--jarvis-cyan);     /* Dept head */
+  --jarvis-tier-3: var(--jarvis-amber);    /* Executive */
+  --jarvis-tier-4: var(--jarvis-amber);    /* CFO/CISO */
+  --jarvis-tier-5: var(--jarvis-red);      /* CEO required */
 }
 
 /* ── Font Face Declarations (self-hosted, CSP-safe) ───────── */
@@ -133,6 +181,491 @@ code, pre, .font-mono {
   animation: jarvis-pulse-red 1.5s ease-in-out infinite;
 }
 
+/* ── Agent State Keyframes ────────────────────────────────── */
+@keyframes jarvis-state-online {
+  0%, 100% { box-shadow: 0 0 4px var(--jarvis-state-online); }
+  50%      { box-shadow: 0 0 10px var(--jarvis-state-online); }
+}
+
+@keyframes jarvis-state-thinking {
+  0%   { box-shadow: 0 0 4px var(--jarvis-state-thinking); transform: rotate(0deg); }
+  25%  { box-shadow: 0 0 8px var(--jarvis-state-thinking); }
+  50%  { box-shadow: 0 0 12px var(--jarvis-state-thinking); }
+  75%  { box-shadow: 0 0 8px var(--jarvis-state-thinking); }
+  100% { box-shadow: 0 0 4px var(--jarvis-state-thinking); transform: rotate(360deg); }
+}
+
+@keyframes jarvis-state-executing {
+  0%, 100% { box-shadow: 0 0 6px var(--jarvis-state-executing); transform: scale(1); }
+  50%      { box-shadow: 0 0 16px var(--jarvis-state-executing); transform: scale(1.02); }
+}
+
+@keyframes jarvis-state-delegating {
+  0%, 100% { box-shadow: 0 0 4px var(--jarvis-state-delegating); }
+  50%      { box-shadow: 0 0 12px var(--jarvis-state-delegating); }
+}
+
+@keyframes jarvis-state-waiting {
+  0%, 100% { box-shadow: 0 0 3px var(--jarvis-state-waiting); opacity: 0.8; }
+  50%      { box-shadow: 0 0 8px var(--jarvis-state-waiting); opacity: 1; }
+}
+
+@keyframes jarvis-state-blocked {
+  0%, 100% { box-shadow: 0 0 4px var(--jarvis-state-blocked); }
+  50%      { box-shadow: 0 0 12px var(--jarvis-state-blocked); }
+}
+
+@keyframes jarvis-state-escalated {
+  0%, 100% { box-shadow: 0 0 6px var(--jarvis-state-escalated); }
+  25%      { box-shadow: 0 0 12px var(--jarvis-state-escalated); }
+  50%      { box-shadow: 0 0 18px var(--jarvis-state-escalated); }
+  75%      { box-shadow: 0 0 12px var(--jarvis-state-escalated); }
+}
+
+@keyframes jarvis-state-offline {
+  0%, 100% { opacity: 0.4; }
+}
+
+/* ── Agent State Utility Classes ──────────────────────────── */
+.jarvis-agent-online {
+  animation: jarvis-state-online 3s ease-in-out infinite;
+  border-color: var(--jarvis-state-online);
+}
+
+.jarvis-agent-thinking {
+  animation: jarvis-state-thinking 2s linear infinite;
+  border-color: var(--jarvis-state-thinking);
+}
+
+.jarvis-agent-executing {
+  animation: jarvis-state-executing 1.5s ease-in-out infinite;
+  border-color: var(--jarvis-state-executing);
+}
+
+.jarvis-agent-delegating {
+  animation: jarvis-state-delegating 2s ease-in-out infinite;
+  border-color: var(--jarvis-state-delegating);
+}
+
+.jarvis-agent-waiting {
+  animation: jarvis-state-waiting 3s ease-in-out infinite;
+  border-color: var(--jarvis-state-waiting);
+}
+
+.jarvis-agent-blocked {
+  animation: jarvis-state-blocked 1s ease-in-out infinite;
+  border-color: var(--jarvis-state-blocked);
+}
+
+.jarvis-agent-escalated {
+  animation: jarvis-state-escalated 0.8s ease-in-out infinite;
+  border-color: var(--jarvis-state-escalated);
+}
+
+.jarvis-agent-offline {
+  animation: jarvis-state-offline 4s ease-in-out infinite;
+  border-color: var(--jarvis-state-offline);
+}
+
+/* ── Agent State Dot Indicators ───────────────────────────── */
+.jarvis-state-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.jarvis-state-dot.online {
+  background-color: var(--jarvis-state-online);
+  box-shadow: 0 0 6px var(--jarvis-state-online);
+}
+
+.jarvis-state-dot.thinking {
+  background-color: var(--jarvis-state-thinking);
+  box-shadow: 0 0 6px var(--jarvis-state-thinking);
+  animation: jarvis-pulse-cyan 1.5s ease-in-out infinite;
+}
+
+.jarvis-state-dot.executing {
+  background-color: var(--jarvis-state-executing);
+  box-shadow: 0 0 8px var(--jarvis-state-executing);
+  animation: jarvis-pulse-cyan 1s ease-in-out infinite;
+}
+
+.jarvis-state-dot.delegating {
+  background-color: var(--jarvis-state-delegating);
+  box-shadow: 0 0 6px var(--jarvis-state-delegating);
+}
+
+.jarvis-state-dot.waiting {
+  background-color: var(--jarvis-state-waiting);
+  box-shadow: 0 0 4px var(--jarvis-state-waiting);
+  animation: jarvis-pulse-amber 2s ease-in-out infinite;
+}
+
+.jarvis-state-dot.blocked {
+  background-color: var(--jarvis-state-blocked);
+  box-shadow: 0 0 6px var(--jarvis-state-blocked);
+}
+
+.jarvis-state-dot.escalated {
+  background-color: var(--jarvis-state-escalated);
+  box-shadow: 0 0 6px var(--jarvis-state-escalated);
+  animation: jarvis-pulse-red 1s ease-in-out infinite;
+}
+
+.jarvis-state-dot.offline {
+  background-color: var(--jarvis-state-offline);
+  opacity: 0.5;
+}
+
+/* ── Holographic Panel Variants ───────────────────────────── */
+.jp-panel-holo {
+  background: linear-gradient(
+    135deg,
+    rgba(7, 11, 20, 0.85) 0%,
+    rgba(7, 11, 20, 0.65) 50%,
+    rgba(7, 11, 20, 0.85) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--jarvis-holo-border);
+  border-radius: 12px;
+  box-shadow:
+    0 0 20px var(--jarvis-holo-glow),
+    inset 0 0 40px rgba(34, 211, 238, 0.02);
+}
+
+.jp-panel-holo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(34, 211, 238, 0.03) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.jp-panel-elevated {
+  background: rgba(12, 20, 32, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--jarvis-holo-border);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 24px var(--jarvis-holo-glow);
+}
+
+/* ── Tier Badge System (5-tier approval) ──────────────────── */
+.jarvis-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.jarvis-tier-1 {
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid var(--jarvis-tier-1);
+  color: var(--jarvis-tier-1);
+}
+
+.jarvis-tier-2 {
+  background: rgba(34, 211, 238, 0.15);
+  border: 1px solid var(--jarvis-tier-2);
+  color: var(--jarvis-tier-2);
+}
+
+.jarvis-tier-3 {
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid var(--jarvis-tier-3);
+  color: var(--jarvis-tier-3);
+}
+
+.jarvis-tier-4 {
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid var(--jarvis-tier-4);
+  color: var(--jarvis-tier-4);
+}
+
+.jarvis-tier-5 {
+  background: rgba(248, 113, 113, 0.15);
+  border: 1px solid var(--jarvis-tier-5);
+  color: var(--jarvis-tier-5);
+  animation: jarvis-pulse-red 2s ease-in-out infinite;
+}
+
+/* ── Connection Line Animations ───────────────────────────── */
+@keyframes jarvis-connection-flow {
+  0%   { stroke-dashoffset: 20; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes jarvis-connection-pulse {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.8; }
+}
+
+.jarvis-connection {
+  stroke: var(--jarvis-cyan-dim);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.jarvis-connection-active {
+  stroke: var(--jarvis-cyan);
+  stroke-width: 2;
+  stroke-dasharray: 10 5;
+  animation: jarvis-connection-flow 1s linear infinite;
+}
+
+.jarvis-connection-data {
+  stroke: var(--jarvis-cyan-bright);
+  stroke-width: 2;
+  stroke-dasharray: 4 8;
+  animation: jarvis-connection-flow 0.5s linear infinite;
+}
+
+/* ── Command Center Layout Grid ───────────────────────────── */
+.jarvis-grid-core {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  min-height: 100vh;
+}
+
+.jarvis-grid-core > .jarvis-panel-header {
+  grid-column: 1 / -1;
+}
+
+.jarvis-grid-core > .jarvis-panel-footer {
+  grid-column: 1 / -1;
+}
+
+/* ── Holographic Divider ──────────────────────────────────── */
+.jarvis-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--jarvis-holo-border) 20%,
+    var(--jarvis-cyan-dim) 50%,
+    var(--jarvis-holo-border) 80%,
+    transparent 100%
+  );
+  margin: 8px 0;
+}
+
+/* ── Pulsing Ring (Company Core) ──────────────────────────── */
+@keyframes jarvis-ring-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50%      { transform: scale(1.02); opacity: 0.7; }
+}
+
+.jarvis-ring {
+  border-radius: 50%;
+  position: absolute;
+  animation: jarvis-ring-pulse var(--jarvis-motion-slow) ease-in-out infinite;
+}
+
+.jarvis-ring-1 {
+  border: 1px solid var(--jarvis-ring-1);
+  animation-delay: 0s;
+}
+
+.jarvis-ring-2 {
+  border: 1px solid var(--jarvis-ring-2);
+  animation-delay: 0.5s;
+}
+
+.jarvis-ring-3 {
+  border: 1px solid var(--jarvis-ring-3);
+  animation-delay: 1s;
+}
+
+/* ── Metric Card ──────────────────────────────────────────── */
+.jarvis-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.jarvis-metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--jarvis-cyan);
+  line-height: 1;
+}
+
+.jarvis-metric-label {
+  font-size: 0.7rem;
+  color: var(--jarvis-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.jarvis-metric-trend {
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.jarvis-metric-trend.up {
+  color: var(--jarvis-success);
+}
+
+.jarvis-metric-trend.down {
+  color: var(--jarvis-red);
+}
+
+.jarvis-metric-trend.neutral {
+  color: var(--jarvis-text-muted);
+}
+
+/* ── Quick Action Button ──────────────────────────────────── */
+.jarvis-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all var(--jarvis-motion-instant) ease;
+}
+
+.jarvis-action-btn.approve {
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid var(--jarvis-success);
+  color: var(--jarvis-success);
+}
+
+.jarvis-action-btn.approve:hover {
+  background: rgba(52, 211, 153, 0.3);
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+}
+
+.jarvis-action-btn.reject {
+  background: rgba(248, 113, 113, 0.15);
+  border: 1px solid var(--jarvis-red);
+  color: var(--jarvis-red);
+}
+
+.jarvis-action-btn.reject:hover {
+  background: rgba(248, 113, 113, 0.3);
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.3);
+}
+
+/* ── Heatmap Cell ─────────────────────────────────────────── */
+.jarvis-heatmap-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  transition: all var(--jarvis-motion-instant) ease;
+  cursor: pointer;
+}
+
+.jarvis-heatmap-cell:hover {
+  transform: scale(1.1);
+  z-index: var(--jarvis-depth-3);
+}
+
+/* ── Activity Stream Item ─────────────────────────────────── */
+.jarvis-activity-item {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  transition: all var(--jarvis-motion-instant) ease;
+}
+
+.jarvis-activity-item:hover {
+  background: rgba(34, 211, 238, 0.05);
+}
+
+.jarvis-activity-item.critical {
+  border-left-color: var(--jarvis-red);
+}
+
+.jarvis-activity-item.warning {
+  border-left-color: var(--jarvis-amber);
+}
+
+.jarvis-activity-item.info {
+  border-left-color: var(--jarvis-cyan);
+}
+
+.jarvis-activity-item.success {
+  border-left-color: var(--jarvis-success);
+}
+
+/* ── Routing Decision Trail ───────────────────────────────── */
+.jarvis-routing-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.75rem;
+}
+
+.jarvis-routing-step.active {
+  color: var(--jarvis-cyan);
+}
+
+.jarvis-routing-step.inactive {
+  color: var(--jarvis-text-dim);
+}
+
+.jarvis-routing-step.match {
+  color: var(--jarvis-success);
+}
+
+.jarvis-routing-step.reject {
+  color: var(--jarvis-red);
+}
+
+/* ── System Health Node ───────────────────────────────────── */
+@keyframes jarvis-health-pulse {
+  0%, 100% { box-shadow: 0 0 4px currentColor; }
+  50%      { box-shadow: 0 0 12px currentColor; }
+}
+
+.jarvis-health-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: jarvis-health-pulse 2s ease-in-out infinite;
+}
+
+.jarvis-health-node.healthy {
+  background: var(--jarvis-success);
+  color: var(--jarvis-success);
+}
+
+.jarvis-health-node.degraded {
+  background: var(--jarvis-amber);
+  color: var(--jarvis-amber);
+  animation-duration: 1s;
+}
+
+.jarvis-health-node.down {
+  background: var(--jarvis-red);
+  color: var(--jarvis-red);
+  animation-duration: 0.5s;
+}
+
 /* ── Reduced Motion (global theme override) ───────────────── */
 @media (prefers-reduced-motion: reduce) {
   .chrome-scanline::after {
@@ -141,7 +674,27 @@ code, pre, .font-mono {
 
   .jarvis-pulse-cyan,
   .jarvis-pulse-amber,
-  .jarvis-pulse-red {
+  .jarvis-pulse-red,
+  .jarvis-agent-online,
+  .jarvis-agent-thinking,
+  .jarvis-agent-executing,
+  .jarvis-agent-delegating,
+  .jarvis-agent-waiting,
+  .jarvis-agent-blocked,
+  .jarvis-agent-escalated,
+  .jarvis-agent-offline,
+  .jarvis-state-dot.thinking,
+  .jarvis-state-dot.executing,
+  .jarvis-state-dot.escalated,
+  .jarvis-ring,
+  .jarvis-connection-active,
+  .jarvis-connection-data,
+  .jarvis-health-node {
     animation: none;
+  }
+
+  .jarvis-connection-active,
+  .jarvis-connection-data {
+    stroke-dasharray: none;
   }
 }

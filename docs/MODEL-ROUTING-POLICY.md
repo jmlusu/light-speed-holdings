@@ -24,7 +24,7 @@ The ModelRouter (`src/ai_company/model_router.py`) selects which LLM provider an
 | free | Zero-cost tier using dynamic Opencode free models + Ollama fallback | Dynamic catalog (see below) |
 | fast | Low-latency, low-cost. Read-only and simple tasks. | llamacpp/mistral-7b-32k -> ollama/mistral-7b-32k -> gemini/3.5-flash |
 | standard | Balanced capability and cost. Default for most agents. | llamacpp/llama3.1-8b-32k -> opencode/big-pickle -> ollama/llama3.1:8b -> gemini/3.5-flash |
-| premium | Maximum reasoning. Critical decisions and approvals. | llamacpp/deepseek-r1-64k -> llamacpp/gemma4-12b-32k -> opencode/big-pickle -> ollama/llama3.1:8b |
+| premium | Maximum reasoning. Critical decisions and approvals. | llamacpp/deepseek-r1-64k -> llamacpp/gemma2-9b-q5 -> opencode/big-pickle -> ollama/llama3.1:8b |
 
 ## Free Tier (Dynamic Catalog)
 
