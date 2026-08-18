@@ -7,20 +7,17 @@ from __future__ import annotations
 
 import hashlib
 import hmac
-import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field, field_validator
-
 
 class ProviderError(Exception):
     """Base exception for mobile money provider errors."""
 
-    def __init__(self, message: str, code: str = "PROVIDER_ERROR", details: Optional[dict] = None):
+    def __init__(self, message: str, code: str = "PROVIDER_ERROR", details: Optional[dict[str, Any]] = None):
         super().__init__(message)
         self.code = code
         self.details = details or {}
@@ -29,7 +26,7 @@ class ProviderError(Exception):
 class InvalidSignatureError(ProviderError):
     """Raised when webhook signature verification fails."""
 
-    def __init__(self, message: str = "Invalid webhook signature", details: Optional[dict] = None):
+    def __init__(self, message: str = "Invalid webhook signature", details: Optional[dict[str, Any]] = None):
         super().__init__(message, "INVALID_SIGNATURE", details)
 
 
@@ -43,14 +40,14 @@ class DuplicateTransactionError(ProviderError):
 class InsufficientFundsError(ProviderError):
     """Raised when the payer has insufficient funds."""
 
-    def __init__(self, message: str = "Insufficient funds", details: Optional[dict] = None):
+    def __init__(self, message: str = "Insufficient funds", details: Optional[dict[str, Any]] = None):
         super().__init__(message, "INSUFFICIENT_FUNDS", details)
 
 
 class TimeoutError(ProviderError):
     """Raised when provider request times out."""
 
-    def __init__(self, message: str = "Provider request timeout", details: Optional[dict] = None):
+    def __init__(self, message: str = "Provider request timeout", details: Optional[dict[str, Any]] = None):
         super().__init__(message, "TIMEOUT", details)
 
 
@@ -66,8 +63,8 @@ class WebhookPayload:
     payer_phone: str
     status: str  # completed, failed, pending
     timestamp: datetime
-    metadata: dict
-    raw_payload: dict
+    metadata: dict[str, Any]
+    raw_payload: dict[str, Any]
 
     @property
     def idempotency_key(self) -> str:
@@ -86,9 +83,9 @@ class AbstractProvider(ABC):
     """
 
     PROVIDER_NAME: str = "base"
-    SUPPORTED_CURRENCIES: tuple = ("MWK", "USD")
+    SUPPORTED_CURRENCIES: tuple[str, ...] = ("MWK", "USD")
 
-    def __init__(self, webhook_secret: str, **kwargs):
+    def __init__(self, webhook_secret: str, **kwargs: Any):
         self.webhook_secret = webhook_secret
         self.config = kwargs
 
@@ -109,7 +106,7 @@ class AbstractProvider(ABC):
         pass
 
     @abstractmethod
-    def parse_webhook(self, payload: dict, headers: dict) -> WebhookPayload:
+    def parse_webhook(self, payload: dict[str, Any], headers: dict[str, Any]) -> WebhookPayload:
         """Parse provider-specific webhook into normalized payload.
 
         Args:

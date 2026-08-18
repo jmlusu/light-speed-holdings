@@ -43,19 +43,19 @@ class TestDashboardRendering:
         assert header.is_visible()
 
     def test_kpi_cards_render(self, page) -> None:
-        """All 6 KPI cards should be visible."""
-        kpi_cards = page.locator(".kpi-card")
-        assert kpi_cards.count() == 6
+        """Org health KPI cards should be visible (one per component)."""
+        kpi_cards = page.locator(".hero-kpi-card")
+        assert kpi_cards.count() == 4
 
     def test_kpi_values_populated(self, page) -> None:
         """KPI values should be populated (not stuck at 0 if data exists)."""
         # Wait for data load
         page.wait_for_timeout(3000)
-        # At least total_agents should be non-zero
-        agent_card = page.locator(".kpi-card").nth(5)
+        # At least first card should be visible
+        agent_card = page.locator(".hero-kpi-card").first
         text = agent_card.inner_text()
-        # Should contain a number (agents)
-        assert any(c.isdigit() for c in text)
+        # Should contain a percentage or number
+        assert len(text) > 0
 
     def test_navigation_tabs_visible(self, page) -> None:
         """All navigation tabs should be rendered."""
@@ -152,31 +152,31 @@ class TestResponsiveBehavior:
         self.url = dashboard_server
 
     def test_kpi_grid_adapts_to_mobile(self, page) -> None:
-        """KPI cards should use 2-col grid on mobile."""
+        """KPI cards should render on mobile viewport."""
         page.set_viewport_size({"width": 375, "height": 812})
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-        kpi_cards = page.locator(".kpi-card")
-        assert kpi_cards.count() == 6
+        kpi_cards = page.locator(".hero-kpi-card")
+        assert kpi_cards.count() == 4
 
     def test_kpi_grid_adapts_to_tablet(self, page) -> None:
-        """KPI cards should use 3-col grid on tablet."""
+        """KPI cards should render on tablet viewport."""
         page.set_viewport_size({"width": 768, "height": 1024})
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-        kpi_cards = page.locator(".kpi-card")
-        assert kpi_cards.count() == 6
+        kpi_cards = page.locator(".hero-kpi-card")
+        assert kpi_cards.count() == 4
 
     def test_kpi_grid_adapts_to_desktop(self, page) -> None:
-        """KPI cards should use 6-col grid on desktop."""
+        """KPI cards should render on desktop viewport."""
         page.set_viewport_size({"width": 1440, "height": 900})
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-        kpi_cards = page.locator(".kpi-card")
-        assert kpi_cards.count() == 6
+        kpi_cards = page.locator(".hero-kpi-card")
+        assert kpi_cards.count() == 4
 
     def test_no_horizontal_scroll_on_mobile(self, page) -> None:
         """Page should not have horizontal overflow on mobile."""

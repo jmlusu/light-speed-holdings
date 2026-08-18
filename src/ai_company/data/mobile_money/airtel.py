@@ -21,10 +21,9 @@ Signature: X-Airtel-Signature header (HMAC-SHA256 of raw body with secret)
 from __future__ import annotations
 
 from datetime import datetime
-from decimal import Decimal
 from typing import Any
 
-from .base import AbstractProvider, WebhookPayload, InvalidSignatureError, ProviderError
+from .base import AbstractProvider, InvalidSignatureError, ProviderError, WebhookPayload
 
 
 class AirtelProvider(AbstractProvider):
@@ -50,7 +49,7 @@ class AirtelProvider(AbstractProvider):
             raise InvalidSignatureError("Invalid Airtel signature")
         return True
 
-    def parse_webhook(self, payload: dict, headers: dict) -> WebhookPayload:
+    def parse_webhook(self, payload: dict[str, Any], headers: dict[str, Any]) -> WebhookPayload:
         """Parse Airtel webhook into normalized payload."""
         transaction = payload.get("transaction", {})
 

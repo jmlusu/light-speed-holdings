@@ -5,12 +5,13 @@ Transform raw operational data into computed KPI values.
 
 from __future__ import annotations
 
+import contextlib
 import logging
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from ai_company.data.etl.base import TransformResult, Transformer
+from ai_company.data.etl.base import Transformer, TransformResult
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +66,8 @@ class KPITimeseriesTransformer(Transformer[dict[str, Any], dict[str, Any]]):
                     raw_target = kpi_value.get("target")
                     target_value: float | None = None
                     if raw_target is not None:
-                        try:
+                        with contextlib.suppress(TypeError, ValueError):
                             target_value = float(raw_target)
-                        except (TypeError, ValueError):
-                            pass
 
                     output.append({
                         "timestamp": collected_at,
@@ -124,6 +123,7 @@ class CompanyKPITransformer(Transformer[dict[str, Any], dict[str, Any]]):
 
         # Load registered agents count from registry
         import yaml
+
         from ai_company.paths import get_project_root
 
         registry_path = get_project_root() / "company-registry.yaml"
