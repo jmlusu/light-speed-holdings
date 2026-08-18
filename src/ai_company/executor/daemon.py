@@ -97,7 +97,7 @@ def _sweep_suspended_states(executor: Any) -> int:
         from ai_company.orchestrator.suspend_store import SuspendStore
 
         store = SuspendStore()
-    return store.sweep_expired()
+    return int(store.sweep_expired())
 
 
 def resolve_database(db_path: str | None) -> Any:
@@ -439,7 +439,7 @@ def _is_process_alive(pid: int) -> bool:
             try:
                 import ctypes
 
-                kernel32 = ctypes.windll.kernel32  # Windows-only module
+                kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined, unused-ignore]  # Windows-only
                 handle = kernel32.OpenProcess(
                     0x0400 | 0x0010, False, pid
                 )  # PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE
