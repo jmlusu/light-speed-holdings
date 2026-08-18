@@ -23,10 +23,9 @@ Signature: X-TNM-Signature header (HMAC-SHA256)
 from __future__ import annotations
 
 from datetime import datetime
-from decimal import Decimal
 from typing import Any
 
-from .base import AbstractProvider, WebhookPayload, InvalidSignatureError, ProviderError
+from .base import AbstractProvider, InvalidSignatureError, ProviderError, WebhookPayload
 
 
 class TNMProvider(AbstractProvider):
@@ -51,7 +50,7 @@ class TNMProvider(AbstractProvider):
             raise InvalidSignatureError("Invalid TNM signature")
         return True
 
-    def parse_webhook(self, payload: dict, headers: dict) -> WebhookPayload:
+    def parse_webhook(self, payload: dict[str, Any], headers: dict[str, Any]) -> WebhookPayload:
         """Parse TNM webhook into normalized payload."""
         transaction = payload.get("transaction", {})
 

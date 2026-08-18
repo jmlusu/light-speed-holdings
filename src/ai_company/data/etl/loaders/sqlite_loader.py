@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.data.database import Database
-from ai_company.data.etl.base import LoadResult, Loader
+from ai_company.data.etl.base import Loader, LoadResult
 
 logger = logging.getLogger(__name__)
 
@@ -162,7 +162,7 @@ class CostRecordLoader(SQLiteUpsertLoader):
                         continue
 
                     # Insert
-                    columns = [c for c in record.keys() if c != "id"]
+                    columns = [c for c in record if c != "id"]
                     placeholders = ", ".join("?" for _ in columns)
                     col_list = ", ".join(columns)
                     sql = f"INSERT INTO {self.table} ({col_list}) VALUES ({placeholders})"

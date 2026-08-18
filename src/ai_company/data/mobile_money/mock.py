@@ -11,10 +11,9 @@ import hmac
 import json
 import time
 from datetime import datetime, timezone
-from decimal import Decimal
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
-from .base import AbstractProvider, WebhookPayload, InvalidSignatureError, ProviderError
+from .base import AbstractProvider, InvalidSignatureError, ProviderError, WebhookPayload
 
 
 class MockProvider(AbstractProvider):
@@ -38,7 +37,7 @@ class MockProvider(AbstractProvider):
         provider_to_simulate: Literal["paychangu", "airtel", "tnm"] = "paychangu",
         scenario: Literal["success", "invalid_signature", "duplicate", "timeout", "insufficient_funds", "invalid_payload"] = "success",
         delay_ms: int = 0,
-        **kwargs,
+        **kwargs: Any,
     ):
         super().__init__(webhook_secret)
         self.provider_to_simulate = provider_to_simulate
@@ -87,12 +86,11 @@ class MockProvider(AbstractProvider):
             return True
 
         # For other scenarios, still verify but may raise later
-        config = self._config
         secret = self.webhook_secret.encode("utf-8")
         expected = hmac.new(secret, payload, hashlib.sha256).hexdigest()
         return hmac.compare_digest(expected, signature_header)
 
-    def parse_webhook(self, payload: dict, headers: dict) -> WebhookPayload:
+    def parse_webhook(self, payload: dict[str, Any], headers: dict[str, Any]) -> WebhookPayload:
         """Parse mock webhook based on configured scenario."""
         config = self._config
         provider_name = self.provider_to_simulate
@@ -144,7 +142,7 @@ class MockProvider(AbstractProvider):
         else:
             raise ProviderError(f"Unknown provider: {provider_name}", "UNKNOWN_PROVIDER")
 
-    def _parse_paychangu(self, payload: dict, config: dict) -> WebhookPayload:
+    def _parse_paychangu(self, payload: dict[str, Any], config: dict[str, Any]) -> WebhookPayload:
         """Parse PayChangu-style mock payload."""
         event = payload.get(config["event_field"], "")
         transaction = payload.get(config["transaction_field"], {})
@@ -183,7 +181,7 @@ class MockProvider(AbstractProvider):
             raw_payload=payload,
         )
 
-    def _parse_airtel(self, payload: dict, config: dict) -> WebhookPayload:
+    def _parse_airtel(self, payload: dict[str, Any], config: dict[str, Any]) -> WebhookPayload:
         """Parse Airtel-style mock payload."""
         transaction = payload.get(config["transaction_field"], {})
 
@@ -221,7 +219,7 @@ class MockProvider(AbstractProvider):
             raw_payload=payload,
         )
 
-    def _parse_tnm(self, payload: dict, config: dict) -> WebhookPayload:
+    def _parse_tnm(self, payload: dict[str, Any], config: dict[str, Any]) -> WebhookPayload:
         """Parse TNM-style mock payload."""
         transaction = payload.get(config["transaction_field"], {})
 
@@ -263,6 +261,6 @@ class MockProvider(AbstractProvider):
         """Reset the seen transactions set (for testing)."""
         self._seen_transactions.clear()
 
-    def set_scenario(self, scenario: str) -> None:
+    def set_scenario(self, scenario: Literal["success", "invalid_signature", "duplicate", "timeout", "insufficient_funds", "invalid_payload"]) -> None:
         """Change the mock scenario."""
         self.scenario = scenario

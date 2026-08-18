@@ -129,11 +129,9 @@ class LLMClient:
 
                 # Get server config from provider config
                 server_config = getattr(pcfg, "server", {}) or {}
+                server_port = server_config.get("port", 8088)
                 server_host = server_config.get("host", "127.0.0.1")
                 api_key = server_config.get("api_key", "local")
-                # Get port for this specific model from port mapping
-                port_map = server_config.get("ports", {})
-                server_port = port_map.get(model_name, 8088)
 
                 self._providers[pcfg.id] = LlamaCppProvider(
                     name=pcfg.id,
