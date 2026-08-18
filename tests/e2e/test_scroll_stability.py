@@ -385,12 +385,16 @@ class TestNavigation:
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(1000)
 
+        # Dismiss command bar if open
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(300)
+
         # Scroll down
         page.evaluate("window.scrollTo(0, 500)")
         page.wait_for_timeout(300)
 
         # Navigate to Tasks tab
-        page.click("a[href='/tasks']")
+        page.click("a[href='/tasks']", force=True)
         page.wait_for_load_state("networkidle")
         page.wait_for_timeout(1000)
 

@@ -76,6 +76,7 @@ providers:
         qwen2.5-coder-7b-32k: 8089
         deepseek-r1-64k: 8090
         mistral-7b-32k: 8091
+        gemma2-9b-q5: 8092
     # CPU-optimized defaults for AMD Ryzen 7 PRO 5850U (8C/16T, shared RAM)
     hardware:
       n_threads: 8           # Physical cores (not hyperthreads)
@@ -130,6 +131,15 @@ providers:
           n_threads: 8
           n_batch: 256
           n_ctx: 32768  # Cap at 32k for speed, use 64k only when needed
+      gemma2-9b-q5:
+        path: "models/gemma-2-9b-it-q5_K_M.gguf"
+        quantization: "q5_K_M"
+        specialization: general_quality
+        context_window: 32768
+        hardware:
+          n_threads: 8
+          n_batch: 256
+          n_ctx: 32768
 
   openai:
     backend: openai_compatible
@@ -161,6 +171,20 @@ tiers:
     providers:
       - provider: llamacpp
         model: llama3.1-8b-32k
+      - provider: opencode
+        model: big-pickle
+      - provider: ollama
+        model: llama3.1:8b
+      - provider: gemini
+        model: gemini-3.5-flash
+
+  standard:
+    description: "Balanced capability for general tasks."
+    providers:
+      - provider: llamacpp
+        model: llama3.1-8b-32k
+      - provider: llamacpp
+        model: gemma2-9b-q5
       - provider: opencode
         model: big-pickle
       - provider: ollama
