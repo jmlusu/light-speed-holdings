@@ -305,17 +305,17 @@ def test_find_free_model(router: ModelRouter) -> None:
 
 
 def test_rotate_on_token_limit_to_larger_model(router: ModelRouter) -> None:
-    """rotate_on_token_limit should rotate to a model with larger context."""
+    """When a larger model exists in the same tier, should rotate to it."""
     from ai_company.model_router import FreeModel
 
     test_models = [
         FreeModel(
             id="opencode/small-model",
             name="Small",
-            context=80000,
+            context=4000,
             provider="opencode",
             model="small-model",
-            priority=920,
+            priority=800,
         ),
         FreeModel(
             id="opencode/large-model",
@@ -330,9 +330,7 @@ def test_rotate_on_token_limit_to_larger_model(router: ModelRouter) -> None:
 
     import asyncio
 
-    route = asyncio.get_event_loop().run_until_complete(
-        router.rotate_on_token_limit("small-model", "test task")
-    )
+    route = asyncio.run(router.rotate_on_token_limit("small-model", "test task"))
     assert route is not None
     assert route.model == "large-model"
     assert route.tier == "standard"  # 200K context = standard tier
@@ -356,9 +354,7 @@ def test_rotate_on_token_limit_no_larger_model(router: ModelRouter) -> None:
 
     import asyncio
 
-    route = asyncio.get_event_loop().run_until_complete(
-        router.rotate_on_token_limit("largest-model", "test task")
-    )
+    route = asyncio.run(router.rotate_on_token_limit("largest-model", "test task"))
     # Should rotate to next tier up (standard → premium)
     assert route is not None
     assert route.tier == "premium"
