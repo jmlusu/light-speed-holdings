@@ -184,7 +184,7 @@ def _append_process_metrics(lines: list[str]) -> None:
     try:
         import resource
 
-        usage = resource.getrusage(resource.RUSAGE_SELF)  # type: ignore[attr-defined]
+        usage = resource.getrusage(resource.RUSAGE_SELF)
         # Max RSS in bytes (Linux: bytes, macOS: bytes)
         rss_bytes = usage.ru_maxrss
         lines.append("# HELP ai_company_process_max_rss_bytes Peak resident set size in bytes")
@@ -556,7 +556,7 @@ def _check_process_memory() -> str:
         try:
             import resource
 
-            usage = resource.getrusage(resource.RUSAGE_SELF)  # type: ignore[attr-defined]
+            usage = resource.getrusage(resource.RUSAGE_SELF)
             # ru_maxrss is in KB on Linux, bytes on macOS
             rss_mb = usage.ru_maxrss / 1024
             return f"{rss_mb:.1f} MB peak RSS"

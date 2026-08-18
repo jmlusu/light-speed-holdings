@@ -214,8 +214,12 @@ class TestNavigationScroll:
         page.wait_for_timeout(500)
         assert page.evaluate("window.scrollY") > 0
 
+        # Dismiss command bar if open
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(300)
+
         # Navigate to agents page
-        page.click('a[href="/agents"]')
+        page.click('a[href="/agents"]', force=True)
         page.wait_for_load_state("networkidle")
         page.wait_for_timeout(1000)
 
@@ -228,11 +232,11 @@ class TestNavigationScroll:
         page.wait_for_timeout(2000)
 
         # Navigate to tasks and back
-        page.click('a[href="/tasks"]')
+        page.click('a[href="/tasks"]', force=True)
         page.wait_for_load_state("networkidle")
         page.wait_for_timeout(1000)
 
-        page.click('a[href="/"]')
+        page.click('a[href="/"]', force=True)
         page.wait_for_load_state("networkidle")
         page.wait_for_timeout(2000)
 

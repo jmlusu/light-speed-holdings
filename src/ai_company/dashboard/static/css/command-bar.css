@@ -6,7 +6,6 @@
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
     z-index: 9998;
-    animation: fade-in 150ms ease-out;
 }
 
 .command-bar-panel {
@@ -20,24 +19,7 @@
     border-radius: 12px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 212, 170, 0.1);
     z-index: 9999;
-    animation: slide-down 200ms ease-out;
     overflow: hidden;
-}
-
-@keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slide-down {
-    from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
 }
 
 .command-bar-header {
