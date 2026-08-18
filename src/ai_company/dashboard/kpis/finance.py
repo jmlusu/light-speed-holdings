@@ -27,25 +27,31 @@ class FinanceKPICollector(KPICollector):
 
         # Budget utilisation from cost tracker if available
         total_budget: float = kpi_defs.get("budget_utilization", {}).get("target", 90)
-        total_spent = 0.0
+        total_spent: float | None = None
         if isinstance(cost_data, dict):
             total_budget = cost_data.get("total_budget", total_budget)
-            total_spent = cost_data.get("total_spent", 0.0)
+            total_spent = cost_data.get("total_spent")
         elif isinstance(cost_data, list) and cost_data:
             # If it's a list of expense records, sum them
             total_spent = sum(item.get("amount", 0) for item in cost_data)
 
         budget_utilization = (
-            round((total_spent / total_budget * 100), 1) if total_budget > 0 else 0.0
+            round((total_spent / total_budget * 100), 1)
+            if total_budget > 0 and total_spent is not None
+            else 0.0
         )
 
         # Estimated monthly LLM spend from cost tracker
-        estimated_llm_spend: float = 0.0
+        estimated_llm_spend: float | None = None
         if isinstance(cost_data, dict):
-            estimated_llm_spend = cost_data.get("llm_spend", 0.0)
+            estimated_llm_spend = cost_data.get("llm_spend")
 
         # Cost per agent
-        cost_per_agent = round(total_spent / total_agents, 2) if total_agents > 0 else 0.0
+        cost_per_agent = (
+            round(total_spent / total_agents, 2)
+            if total_agents > 0 and total_spent is not None
+            else None
+        )
 
         return {
             "department": self.department,

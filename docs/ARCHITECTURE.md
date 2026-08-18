@@ -86,6 +86,11 @@ src/ai_company/
 │   ├── writer.py               # AuditWriter — JSONL append
 │   ├── reader.py               # AuditReader — query/filter by task, agent, type
 │   └── integration.py          # Executor hooks: log_tool_call, log_task_status, log_hitl_decision
+├── telemetry/                  # OpenTelemetry tracing (opt-in via AI_COMPANY_OTEL=1)
+│   ├── __init__.py             # Public API: init_tracing, start_span, bridge, exporters
+│   ├── tracer.py               # Tracer init, NoOp stubs, ConsoleSpanExporter
+│   ├── bridge.py               # Correlation ID ↔ OTel context bridge, subtask_context
+│   └── exporter.py             # ConsoleSpanExporter, InMemorySpanExporter
 ├── dashboard/                  # CEO dashboard
 │   ├── app.py                  # FastAPI app with CORS, middleware
 │   ├── api.py                  # REST endpoints (tasks, KPIs, costs, approvals)
@@ -105,9 +110,8 @@ src/ai_company/
 │       ├── sales.py            # Sales KPIs
 │       └── customer_success.py # Customer Success KPIs
 ├── doctor/                     # System diagnostics
-│   ├── doctor.py               # Diagnostic runner
-│   ├── checks.py               # Individual check functions
-│   └── report.py               # Report generation
+│   ├── __init__.py             # Doctor CLI entry point
+│   └── checks.py               # Individual check functions
 ├── generator.py                # Agent .md file generation from templates
 ├── model_router.py             # LLM model selection by agent/context
 ├── config.py                   # Config utilities
@@ -231,7 +235,8 @@ config/*.yaml (19 files)
 | fastapi | Dashboard REST API |
 | uvicorn | ASGI server for dashboard |
 | httpx | HTTP client for LLM providers |
-| networkx | Graph algorithms (optional) |
+| numpy | Array computation (ML embeddings) |
+| sentence-transformers | Local text embeddings (lazy-loaded) |
 
 ## 6 Test Structure
 

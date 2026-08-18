@@ -68,7 +68,7 @@ Identify which models are consuming the most budget:
 
 **Command:**
 ```bash
-curl http://localhost:8420/api/kpis/live | python -m json.tool
+curl http://localhost:8420/api/v1/kpis/live | python -m json.tool
 ```
 
 **Expected Result:** Cost distribution is reasonable across models. No single model consumes >60% of daily budget without justification.

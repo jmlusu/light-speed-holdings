@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import os
 import tempfile
+import time
 from contextlib import contextmanager, suppress
 from pathlib import Path
 from typing import IO, Any, Generator
@@ -57,7 +58,7 @@ def _windows_lock(
     poll_interval: float,
 ) -> Generator[None, None, None]:
     """Windows file locking using msvcrt."""
-    import msvcrt  # type: ignore[attr-defined]  # Windows-only module
+    import msvcrt  # Windows-only module
     import time
 
     fd = None
@@ -67,7 +68,7 @@ def _windows_lock(
         while True:
             try:
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined]
+                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined, unused-ignore]
                 break
             except OSError as exc:
                 if fd is not None:
@@ -86,7 +87,7 @@ def _windows_lock(
     finally:
         if fd is not None:
             try:
-                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
+                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined, unused-ignore]
             except OSError:
                 pass
             finally:
@@ -110,7 +111,7 @@ def _unix_lock(
         while True:
             try:
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # type: ignore[attr-defined]
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # type: ignore[attr-defined, unused-ignore]
                 break
             except (OSError, IOError) as exc:
                 if fd is not None:
@@ -129,7 +130,7 @@ def _unix_lock(
     finally:
         if fd is not None:
             try:
-                fcntl.flock(fd, fcntl.LOCK_UN)  # type: ignore[attr-defined]
+                fcntl.flock(fd, fcntl.LOCK_UN)  # type: ignore[attr-defined, unused-ignore]
             except (OSError, IOError):
                 pass
             finally:
@@ -142,10 +143,14 @@ def atomic_write(
     path: Path,
     mode: str = "w",
     encoding: str = "utf-8",
+    retries: int = 5,
 ) -> Generator[IO[Any], None, None]:
     """Write to a temp file, then atomically rename on exit.
 
-    This prevents partial writes from corrupting the target file.
+    This prevents partial writes from corrupting the target file. On
+    Windows ``os.replace`` can transiently fail with ``PermissionError``
+    while another handle briefly references the target, so the rename is
+    retried up to *retries* times before giving up.
     """
     tmp_fd = None
     tmp_path = None
@@ -163,9 +168,19 @@ def atomic_write(
             f.flush()
             os.fsync(f.fileno())
 
-        # Atomic rename
-        os.replace(tmp_path, str(path))
-        tmp_path = None
+        # Atomic rename (retried on Windows transient PermissionError)
+        last_err: Exception | None = None
+        tmp_target = str(tmp_path)
+        for _ in range(max(1, retries)):
+            try:
+                os.replace(tmp_target, str(path))
+                tmp_path = None
+                break
+            except (OSError, PermissionError) as exc:
+                last_err = exc
+                time.sleep(0.01)
+        if tmp_path:
+            raise last_err or OSError("Could not atomically replace file")
 
     finally:
         if tmp_fd is not None:

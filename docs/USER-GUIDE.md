@@ -536,7 +536,7 @@ pending → in_progress → completed
 ### Creating Tasks via API
 
 ```bash
-curl -X POST http://localhost:8420/api/tasks \
+curl -X POST http://localhost:8420/api/v1/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "receiver_id": "lead-engineer",
@@ -595,29 +595,29 @@ Opens `http://localhost:8420` in your browser with the CEO dashboard.
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | [`/health`](API-REFERENCE.md#2-health-check) | GET | Health check (see authoritative docs) |
-| `/api/dashboard` | GET | KPI summary (tasks, approvals, escalations, agents) |
-| `/api/kpis/live` | GET | Live KPI values from department collectors |
-| `/api/agents` | GET | List all agents |
-| `/api/agents/{name}` | GET | Get specific agent details |
-| `/api/org-chart` | GET | Organization chart (nested tree) |
-| `/api/tasks` | GET | List tasks (filterable by status, agent) |
-| `/api/tasks` | POST | Create a new task |
-| `/api/approvals` | GET | List pending approval requests |
-| `/api/approvals/{id}/approve` | POST | Approve a request |
-| `/api/approvals/{id}/reject` | POST | Reject a request |
-| `/api/escalations` | GET | List open escalations |
-| `/api/escalations/{id}/resolve` | POST | Resolve an escalation |
-| `/api/departments` | GET | List all departments |
-| `/api/departments/{name}/kpis` | GET | KPIs for a specific department |
-| `/api/kpis` | GET | All department KPI definitions |
-| `/api/kpis/summary` | GET | Flat summary of all KPIs |
-| `/api/models` | GET | Model routing assignments |
-| `/api/models/tiers` | GET | Available model tiers |
-| `/api/scheduler` | GET | List scheduled tasks |
+| `/api/v1/dashboard` | GET | KPI summary (tasks, approvals, escalations, agents) |
+| `/api/v1/kpis/live` | GET | Live KPI values from department collectors |
+| `/api/v1/agents` | GET | List all agents |
+| `/api/v1/agents/{name}` | GET | Get specific agent details |
+| `/api/v1/org-chart` | GET | Organization chart (nested tree) |
+| `/api/v1/tasks` | GET | List tasks (filterable by status, agent) |
+| `/api/v1/tasks` | POST | Create a new task |
+| `/api/v1/approvals` | GET | List pending approval requests |
+| `/api/v1/approvals/{id}/approve` | POST | Approve a request |
+| `/api/v1/approvals/{id}/reject` | POST | Reject a request |
+| `/api/v1/escalations` | GET | List open escalations |
+| `/api/v1/escalations/{id}/resolve` | POST | Resolve an escalation |
+| `/api/v1/departments` | GET | List all departments |
+| `/api/v1/departments/{name}/kpis` | GET | KPIs for a specific department |
+| `/api/v1/kpis` | GET | All department KPI definitions |
+| `/api/v1/kpis/summary` | GET | Flat summary of all KPIs |
+| `/api/v1/models` | GET | Model routing assignments |
+| `/api/v1/models/tiers` | GET | Available model tiers |
+| `/api/v1/scheduler` | GET | List scheduled tasks |
 
 ### WebSocket Protocol
 
-Connect to `ws://localhost:8420/ws/dashboard?api_key=<KEY>` for live updates. The key must resolve to at least the `run` role (see [API Reference — Authentication](API-REFERENCE.md#1-authentication)):
+Connect to `ws://localhost:8420/ws/v1/dashboard?api_key=<KEY>` for live updates. The key must resolve to at least the `run` role (see [API Reference — Authentication](API-REFERENCE.md#1-authentication)):
 
 **Client → Server messages:**
 ```json
@@ -640,22 +640,22 @@ Every request needs a valid `X-API-Key` header (fail-closed `api_key` auth mode)
 
 ```bash
 # Get KPI summary
-curl http://localhost:8420/api/dashboard -H "X-API-Key: $X_API_KEY"
+curl http://localhost:8420/api/v1/dashboard -H "X-API-Key: $X_API_KEY"
 
 # List all agents
-curl http://localhost:8420/api/agents -H "X-API-Key: $X_API_KEY"
+curl http://localhost:8420/api/v1/agents -H "X-API-Key: $X_API_KEY"
 
 # Get org chart
-curl http://localhost:8420/api/org-chart -H "X-API-Key: $X_API_KEY"
+curl http://localhost:8420/api/v1/org-chart -H "X-API-Key: $X_API_KEY"
 
 # Create a task (requires run or admin)
-curl -X POST http://localhost:8420/api/tasks \
+curl -X POST http://localhost:8420/api/v1/tasks \
   -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"receiver_id": "cto", "instruction": "Plan Q3 tech roadmap"}'
 
 # Approve a request (requires approve or admin)
-curl -X POST http://localhost:8420/api/approvals/REQ-001/approve \
+curl -X POST http://localhost:8420/api/v1/approvals/REQ-001/approve \
   -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"approved_by": "human-ceo", "notes": "Approved"}'

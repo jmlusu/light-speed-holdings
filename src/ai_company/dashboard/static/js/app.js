@@ -52,6 +52,10 @@ function dashboard() {
     apiStatus: { show: false, message: '' },
     _apiErrorKey: '',
 
+    // ── ADR-013: Browser session token ───────────────────────
+    _sessionToken: null,
+    _tokenRefreshTimer: null,
+
     // ── Data ─────────────────────────────────────────────────
     kpis: {
       pending_tasks: 0,
@@ -74,6 +78,14 @@ function dashboard() {
     modelRoutes: [],
     orgChart: [],
 
+    // ── CEO Hero Section ──────────────────────────────────────
+    orgHealth: null,
+    orgHealthLoading: true,
+    heroVariant: 'B',
+    heroExpanded: null,
+    expandedComponent: null,
+    _heroGauges: {},
+
     // ── Task assignment ──────────────────────────────────────
     newTask: { receiver_id: '', instruction: '', priority: 'medium', sender_id: 'human-ceo' },
     submitting: false,
@@ -81,6 +93,12 @@ function dashboard() {
 
     // ── Drag and drop ────────────────────────────────────────
     draggedTask: null,
+
+    // ── Task detail slide-out ────────────────────────────────
+    selectedTask: null,
+    taskDetailOpen: false,
+    taskDecomposition: null,
+    taskDecomposing: false,
 
     // ── KPIs page ────────────────────────────────────────────
     activeKPIDept: '',
@@ -131,11 +149,23 @@ function dashboard() {
       document.addEventListener('visibilitychange', () => this._onVisibilityChange());
       window.addEventListener('beforeunload', () => this.destroy());
 
+      // ADR-013: Fetch bootstrap session token before any data loading.
+      await this._fetchSessionToken();
+
+      // Load hero variant preference from localStorage
+      const savedVariant = localStorage.getItem('heroVariant');
+      if (savedVariant && ['A', 'B', 'D'].includes(savedVariant)) {
+        this.heroVariant = savedVariant;
+      }
+
       this.connectWebSocket();
 
       // FIX: Load data, then reveal UI to prevent layout jump
       await this.loadPageData();
       this.isLoading = false;
+
+      // Load org health data for the hero section
+      this.loadOrgHealth();
 
       // FIX: Debounced polling — skip if a poll is already in-flight and
       // queue exactly one trailing poll instead of stacking parallel
@@ -156,6 +186,7 @@ function dashboard() {
       clearTimeout(this._wsReconnectTimer);
       clearTimeout(this._wsProbeTimer);
       clearInterval(this._wsKeepaliveTimer);
+      clearTimeout(this._tokenRefreshTimer);
       this._cancelPendingRestore();
       if (this._kpiChartsRaf) cancelAnimationFrame(this._kpiChartsRaf);
       if (this.ws) {
@@ -293,6 +324,35 @@ function dashboard() {
       }
     },
 
+    // ═══ ADR-013: SESSION TOKEN ═════════════════════════════════
+
+    /**
+     * Fetch a short-lived, IP-bound session token from the bootstrap
+     * endpoint (ADR-013). The token is held in memory only — nothing
+     * persists across tabs or restarts. On 401/WS-1008, the client
+     * transparently re-mints via this method.
+     */
+    async _fetchSessionToken() {
+      try {
+        const res = await fetch('/api/v1/bootstrap-token');
+        if (res.ok) {
+          const data = await res.json();
+          this._sessionToken = data.token || null;
+        }
+      } catch (e) {
+        console.warn('[Token] Bootstrap fetch failed:', e);
+      }
+    },
+
+    /**
+     * Re-mint the session token (called on 401 or WS close-1008).
+     * Transparent to the caller — if the re-mint fails, the token
+     * stays stale and the next request will also fail.
+     */
+    async _refreshSessionToken() {
+      await this._fetchSessionToken();
+    },
+
     // ═══ WEBSOCKET ═════════════════════════════════════════════
 
     /**
@@ -317,9 +377,11 @@ function dashboard() {
       }
 
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      let wsUrl = `${protocol}//${window.location.host}/ws/dashboard`;
-      if (window.DASHBOARD_API_KEY) {
-        wsUrl += `?api_key=${encodeURIComponent(window.DASHBOARD_API_KEY)}`;
+      let wsUrl = `${protocol}//${window.location.host}/ws/v1/dashboard`;
+      // ADR-013: use the session token (fetched from /api/v1/bootstrap-token)
+      // instead of the never-populated window.DASHBOARD_API_KEY.
+      if (this._sessionToken) {
+        wsUrl += `?api_key=${encodeURIComponent(this._sessionToken)}`;
       }
 
       let ws;
@@ -355,12 +417,17 @@ function dashboard() {
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
         console.warn('[WS] Disconnected');
         this.wsConnected = false;
         this._stopKeepalive();
         this._applyPollingCadence();
-        this._scheduleReconnect();
+        // ADR-013: re-mint session token on close-1008 (auth failure)
+        if (event && event.code === 1008) {
+          this._refreshSessionToken().then(() => this._scheduleReconnect());
+        } else {
+          this._scheduleReconnect();
+        }
         // FIX: Fallback to polling — refresh data immediately since WS
         // pushes were the live path. debouncedPoll dedupes, so this never
         // double-fetches with an in-flight poll.
@@ -445,12 +512,12 @@ function dashboard() {
 
             // FIX (dedup): merge only fields that actually changed. Poll
             // responses and WS pushes carry the same KPI snapshot (the
-            // /api/dashboard endpoint broadcasts exactly what it returns),
+            // /api/v1/dashboard endpoint broadcasts exactly what it returns),
             // so without a change check every poll cycle would trigger a
             // redundant second reactive mutation + chart redraw.
             const merged = this._mergeKPIPayload(msg.payload);
 
-            // Live KPI snapshots (from /api/kpis/live) carry a
+            // Live KPI snapshots (from /api/v1/kpis/live) carry a
             // `departments` key rather than task counters. Only apply them
             // on the KPIs page, and only when they actually change.
             if (msg.payload.departments && window.location.pathname === '/kpis') {
@@ -538,12 +605,23 @@ function dashboard() {
       const timeoutMs = opts.timeout || 15000;
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const res = await fetch(url, { ...opts, signal: controller.signal });
+        // ADR-013: send the session token as X-API-Key on all REST calls.
+        const headers = { ...(opts.headers || {}) };
+        if (this._sessionToken && !headers['X-API-Key']) {
+          headers['X-API-Key'] = this._sessionToken;
+        }
+        const res = await fetch(url, { ...opts, headers, signal: controller.signal });
         if (res.status === 429) {
           this._setApiError('Too many requests — retrying shortly');
           return null;
         }
         if (res.status === 401) {
+          // ADR-013: transparently re-mint token and retry once.
+          if (!opts._retried) {
+            clearTimeout(timer);
+            await this._refreshSessionToken();
+            return this.fetchJSON(url, { ...opts, _retried: true });
+          }
           this._setApiError('Session expired — refresh the page to reconnect');
           return null;
         }
@@ -592,7 +670,7 @@ function dashboard() {
         await this.loadAgents();
       } else if (path === '/tasks') {
         await this.loadTasksPage();
-        const agentsData = await this.fetchJSON('/api/agents');
+        const agentsData = await this.fetchJSON('/api/v1/agents');
         if (agentsData) this.agents = agentsData;
       } else if (path === '/kpis') {
         await this.loadKPIs();
@@ -601,8 +679,8 @@ function dashboard() {
       } else if (path === '/escalations') {
         // FIX: Load both in parallel
         const [approvalsData, escalationsData] = await Promise.all([
-          this.fetchJSON('/api/approvals'),
-          this.fetchJSON('/api/escalations'),
+          this.fetchJSON('/api/v1/approvals'),
+          this.fetchJSON('/api/v1/escalations'),
         ]);
         if (approvalsData) this.approvals = approvalsData;
         if (escalationsData) this.escalations = escalationsData;
@@ -611,9 +689,9 @@ function dashboard() {
 
     async loadDashboard() {
       const [kpis, depts, tasks] = await Promise.all([
-        this.fetchJSON('/api/dashboard'),
-        this.fetchJSON('/api/departments'),
-        this.fetchJSON('/api/tasks'),
+        this.fetchJSON('/api/v1/dashboard'),
+        this.fetchJSON('/api/v1/departments'),
+        this.fetchJSON('/api/v1/tasks'),
       ]);
 
       // FIX: Batch all state updates into a single assignment window
@@ -643,12 +721,12 @@ function dashboard() {
     },
 
     async loadAgents() {
-      const data = await this.fetchJSON('/api/agents');
+      const data = await this.fetchJSON('/api/v1/agents');
       if (data) this.agents = data;
     },
 
     async loadTasks() {
-      const data = await this.fetchJSON('/api/tasks');
+      const data = await this.fetchJSON('/api/v1/tasks');
       if (data) this.tasks = data;
     },
 
@@ -664,7 +742,7 @@ function dashboard() {
       if (this.taskFilterAgent) params.set('agent', this.taskFilterAgent);
       if (this.taskFilterStatus) params.set('status', this.taskFilterStatus);
 
-      const data = await this.fetchJSON(`/api/tasks/paginated?${params}`);
+      const data = await this.fetchJSON(`/api/v1/tasks/paginated?${params}`);
       if (data) {
         this.tasks = data.items;
         this.taskTotal = data.total;
@@ -706,20 +784,20 @@ function dashboard() {
     },
 
     async loadApprovals() {
-      const data = await this.fetchJSON('/api/approvals');
+      const data = await this.fetchJSON('/api/v1/approvals');
       if (data) this.approvals = data;
     },
 
     async loadEscalations() {
-      const data = await this.fetchJSON('/api/escalations');
+      const data = await this.fetchJSON('/api/v1/escalations');
       if (data) this.escalations = data;
     },
 
     async loadKPIs() {
       const [depts, summary, company] = await Promise.all([
-        this.fetchJSON('/api/kpis'),
-        this.fetchJSON('/api/kpis/summary'),
-        this.fetchJSON('/api/company-kpis'),
+        this.fetchJSON('/api/v1/kpis'),
+        this.fetchJSON('/api/v1/kpis/summary'),
+        this.fetchJSON('/api/v1/company-kpis'),
       ]);
 
       // FIX: only assign state that actually changed — identical poll
@@ -766,13 +844,13 @@ function dashboard() {
       }
 
       // Also load live KPI data
-      const live = await this.fetchJSON('/api/kpis/live');
+      const live = await this.fetchJSON('/api/v1/kpis/live');
       if (live && JSON.stringify(live) !== JSON.stringify(this.liveKPIData)) {
         this.liveKPIData = live;
         needsKPIChartUpdate = true;
       }
 
-      // FIX: /api/kpis returns definitions only (no current/status).
+      // FIX: /api/v1/kpis returns definitions only (no current/status).
       // Overlay live values so department KPI cards show real data
       // instead of "undefined". Only re-merge when something changed —
       // mutating the same values would still re-render the cards.
@@ -795,7 +873,7 @@ function dashboard() {
 
     /**
      * FIX: Overlay live telemetry values onto department KPI definitions.
-     * /api/kpis returns definitions only, so cards previously rendered
+     * /api/v1/kpis returns definitions only, so cards previously rendered
      * "undefined" for current/status. The live snapshot
      * (liveKPIData.departments[deptId].kpis) is keyed by the same ids as
      * the definitions, each value {current, target, unit, status}.
@@ -829,7 +907,7 @@ function dashboard() {
 
     async loadCosts() {
       // Real cost data from the API — no client-side fabrication.
-      const summary = await this.fetchJSON('/api/costs/summary');
+      const summary = await this.fetchJSON('/api/v1/costs/summary');
       if (!summary) return;
 
       this.costSummary = {
@@ -880,7 +958,7 @@ function dashboard() {
     async assignTask() {
       if (!this.newTask.receiver_id || !this.newTask.instruction) return;
       this.submitting = true;
-      await this.fetchJSON('/api/tasks', {
+      await this.fetchJSON('/api/v1/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(this.newTask),
@@ -899,7 +977,7 @@ function dashboard() {
     },
 
     async approveRequest(id) {
-      await this.fetchJSON(`/api/approvals/${id}/approve`, { method: 'POST' });
+      await this.fetchJSON(`/api/v1/approvals/${id}/approve`, { method: 'POST' });
       this.saveScrollPosition();
       await this.loadApprovals();
       this.restoreScrollPosition();
@@ -907,7 +985,7 @@ function dashboard() {
     },
 
     async rejectRequest(id) {
-      await this.fetchJSON(`/api/approvals/${id}/reject`, { method: 'POST' });
+      await this.fetchJSON(`/api/v1/approvals/${id}/reject`, { method: 'POST' });
       this.saveScrollPosition();
       await this.loadApprovals();
       this.restoreScrollPosition();
@@ -915,7 +993,7 @@ function dashboard() {
     },
 
     async resolveEscalation(taskId) {
-      await this.fetchJSON(`/api/escalations/${taskId}/resolve`, { method: 'POST' });
+      await this.fetchJSON(`/api/v1/escalations/${taskId}/resolve`, { method: 'POST' });
       this.saveScrollPosition();
       await this.loadEscalations();
       this.restoreScrollPosition();
@@ -957,7 +1035,7 @@ function dashboard() {
       );
 
       // Persist the status change to the backend
-      const res = await this.fetchJSON(`/api/tasks/${task.id}`, {
+      const res = await this.fetchJSON(`/api/v1/tasks/${task.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -993,7 +1071,7 @@ function dashboard() {
       // FIX: Guard scroll across the list mutation / reload.
       this.saveScrollPosition();
 
-      const res = await this.fetchJSON(`/api/tasks/${taskId}`, {
+      const res = await this.fetchJSON(`/api/v1/tasks/${taskId}`, {
         method: 'DELETE',
       });
 
@@ -1009,6 +1087,82 @@ function dashboard() {
       }
 
       this.restoreScrollPosition();
+    },
+
+    // ═══ TASK DETAIL SLIDE-OUT ═════════════════════════════════
+
+    async openTaskDetail(task) {
+      this.selectedTask = task;
+      this.taskDetailOpen = true;
+      this.taskDecomposition = null;
+
+      // Fetch decomposition if available
+      try {
+        const res = await this.fetchJSON(`/api/v1/tasks/${task.id}/subtasks`);
+        if (res && res.subtasks) {
+          this.taskDecomposition = res;
+        }
+      } catch (e) {
+        // No decomposition yet — that's fine
+      }
+    },
+
+    async decomposeTask(taskId) {
+      if (!taskId) return;
+      this.taskDecomposing = true;
+      try {
+        const res = await this.fetchJSON(`/api/v1/tasks/${taskId}/decompose`, {
+          method: 'POST',
+        });
+        if (res) {
+          this.taskDecomposition = res;
+          this.showToast('success', 'Task Decomposed', 'Task broken down into subtasks');
+        }
+      } catch (e) {
+        this.showToast('error', 'Decompose Failed', 'Could not decompose task');
+      }
+      this.taskDecomposing = false;
+    },
+
+    closeTaskDetail() {
+      this.taskDetailOpen = false;
+      this.selectedTask = null;
+      this.taskDecomposition = null;
+    },
+
+    getSubtaskStatusClass(status) {
+      const classes = {
+        completed: 'bg-emerald-500/20 text-emerald-400',
+        in_progress: 'bg-blue-500/20 text-blue-400',
+        pending: 'bg-white/[0.06] text-jarvis-muted',
+      };
+      return classes[status] || classes.pending;
+    },
+
+    async reassignTask(taskId) {
+      this.showToast('info', 'Reassign', 'Reassignment feature coming soon');
+    },
+
+    async escalateTask(taskId) {
+      if (!taskId) return;
+      try {
+        const res = await this.fetchJSON(`/api/v1/tasks/${taskId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'escalated' }),
+        });
+        if (res && res.id) {
+          this.showToast('warning', 'Task Escalated', 'Task has been escalated');
+          this.closeTaskDetail();
+          if (window.location.pathname === '/tasks') {
+            this.saveScrollPosition();
+            await this.loadTasksPage();
+            this.restoreScrollPosition();
+          }
+        }
+      } catch (e) {
+        this.showToast('error', 'Escalate Failed', 'Could not escalate task');
+      }
     },
 
     // ═══ COMPUTED ═════════════════════════════════════════════
@@ -1192,6 +1346,180 @@ function dashboard() {
       if (unit === 'usd') return this.formatCompactCurrency(value);
       if (unit === 'percent') return `${Math.round(value)}%`;
       return value.toLocaleString();
+    },
+
+    // ═══ CEO HERO METHODS ══════════════════════════════════════
+
+    async loadOrgHealth() {
+      this.orgHealthLoading = true;
+      try {
+        const res = await this.fetchJSON('/api/v1/org-health');
+        if (res) {
+          this.orgHealth = res;
+          this.$nextTick(() => this.renderHeroGauges());
+        }
+      } catch (e) {
+        console.error('Failed to load org health:', e);
+      } finally {
+        this.orgHealthLoading = false;
+      }
+    },
+
+    setHeroVariant(v) {
+      this.heroVariant = v;
+      this.expandedComponent = null;
+      localStorage.setItem('heroVariant', v);
+      this.$nextTick(() => this.renderHeroGauges());
+    },
+
+    getBandTextClass(band) {
+      return {
+        green: 'text-emerald-400',
+        amber: 'text-amber-400',
+        red: 'text-red-400',
+      }[band] || 'text-slate-400';
+    },
+
+    getComponentLabel(name) {
+      const labels = {
+        task_success_rate: 'Task Success Rate',
+        agent_utilization: 'Agent Utilization',
+        cost_efficiency: 'Cost Efficiency',
+        error_rate: 'Error Rate (Inverted)',
+      };
+      return labels[name] || name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    },
+
+    getComponentDescription(name) {
+      const descs = {
+        task_success_rate: 'Ratio of completed tasks to total tasks (30d)',
+        agent_utilization: 'Active agents vs registered agents (30d)',
+        cost_efficiency: 'Budget utilization vs spend',
+        error_rate: 'Error/exception rate across operations (inverted)',
+      };
+      return descs[name] || '';
+    },
+
+    toggleComponent(comp) {
+      this.expandedComponent = this.expandedComponent === comp ? null : comp;
+      this.$nextTick(() => this.renderHeroGauges());
+    },
+
+    renderHeroGauges() {
+      if (!this.orgHealth || typeof Chart === 'undefined') return;
+
+      // Render the appropriate gauge based on variant
+      if (this.heroVariant === 'A') {
+        this._renderRadialGauge('heroGauge', this.orgHealth.score, this.orgHealth.band, 256);
+      } else if (this.heroVariant === 'B') {
+        this._renderRadialGauge('heroGaugeB', this.orgHealth.score, this.orgHealth.band, 192);
+      } else if (this.heroVariant === 'D') {
+        this._renderRadialGauge('heroGaugeD', this.orgHealth.score, this.orgHealth.band, 256);
+      }
+
+      // Render sparklines for component cards
+      if (this.orgHealth.components) {
+        for (const comp of this.orgHealth.components) {
+          this._renderSparkline('spark-' + comp.name, this._generateTrendData(comp.value));
+          this._renderSparkline('spark-b-' + comp.name, this._generateTrendData(comp.value));
+          if (this.expandedComponent === comp.name) {
+            this._renderSparkline('spark-detail-' + comp.name, this._generateTrendData(comp.value));
+          }
+        }
+      }
+    },
+
+    _renderRadialGauge(canvasId, score, band, size) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const ctx = canvas.getContext('2d');
+      const bandColors = {
+        green: '#34d399',
+        amber: '#fbbf24',
+        red: '#f87171',
+      };
+      const color = bandColors[band] || '#64748b';
+
+      // Destroy existing chart
+      if (this._heroGauges[canvasId]) {
+        this._heroGauges[canvasId].destroy();
+      }
+
+      this._heroGauges[canvasId] = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: [score, 100 - score],
+            backgroundColor: [color, 'rgba(255,255,255,0.06)'],
+            borderWidth: 0,
+            circumference: 180,
+            rotation: 270,
+          }]
+        },
+        options: {
+          responsive: false,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+          },
+          animation: {
+            animateRotate: true,
+            animateScale: true,
+            duration: 1000,
+            easing: 'easeOutQuart',
+          },
+        },
+      });
+    },
+
+    _renderSparkline(canvasId, data) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const ctx = canvas.getContext('2d');
+
+      if (this._heroGauges[canvasId]) {
+        this._heroGauges[canvasId].destroy();
+      }
+
+      this._heroGauges[canvasId] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.map((_, i) => i),
+          datasets: [{
+            data: data,
+            borderColor: '#22d3ee',
+            borderWidth: 2,
+            pointRadius: 0,
+            fill: true,
+            backgroundColor: 'rgba(34, 211, 238, 0.1)',
+            tension: 0.4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: { x: { display: false }, y: { display: false } },
+          elements: { point: { radius: 0 } },
+          animation: { duration: 500 },
+        },
+      });
+    },
+
+    _generateTrendData(currentValue) {
+      // Generate 20 pseudo-random points trending toward currentValue
+      const points = [];
+      let val = currentValue * (0.7 + Math.random() * 0.3);
+      for (let i = 0; i < 20; i++) {
+        val += (currentValue - val) * 0.1 + (Math.random() - 0.5) * 5;
+        val = Math.max(0, Math.min(100, val));
+        points.push(val);
+      }
+      return points;
     },
   };
 }

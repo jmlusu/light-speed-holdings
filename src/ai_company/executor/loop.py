@@ -21,7 +21,6 @@ Lease hardening:
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import os
 import socket
@@ -32,11 +31,9 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.audit.integration import get_writer, init_audit, log_task_status
-from ai_company.dashboard.monitoring import inc_metric
 from ai_company.executor.agent_loop import AgentLoop, LoopConfig
 from ai_company.executor.context import (
     AgentContext,
-    build_user_prompt,
     parse_agent_spec,
 )
 from ai_company.executor.dead_letter import (
@@ -50,11 +47,17 @@ from ai_company.llm.cost_tracker import CostTracker
 from ai_company.memory.consolidation import ConsolidationConfig, ConsolidationScheduler
 from ai_company.memory.integration import init_memory, recall_context, record_task_outcome
 from ai_company.models.task import Task, TaskPriority, TaskStatus
-from ai_company.orchestrator.approval import ApprovalGate
+from ai_company.orchestrator.approval import ApprovalStatus
 from ai_company.orchestrator.message_bus import MessageBus
+from ai_company.orchestrator.notifier import ApprovalNotifier
 from ai_company.orchestrator.scheduler import Scheduler
+from ai_company.orchestrator.suspend_store import SuspendedState, SuspendStore
 from ai_company.store.file_store import FileStore
-from ai_company.utils.logging import set_correlation_id
+from ai_company.telemetry import (
+    detach_task_context,
+    set_correlation_id_from_task,
+    subtask_context,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +174,11 @@ class Executor:
             cost_tracker=self.cost_tracker,
         )
         self.runner = ToolRunner()
-        self.hitl = HITLGate(ApprovalGate())
+        self.hitl = HITLGate()
+
+        # Async approval engine (issue #42): suspend-to-disk + notifications
+        self._suspend_store = SuspendStore()
+        self._notifier = ApprovalNotifier()
 
         # Scheduler for autonomous cycles
         self.scheduler = Scheduler()
@@ -255,9 +262,6 @@ class Executor:
         HITL approval (GAP-004) are resumed if a human decision has been
         recorded; otherwise they are left parked so the loop can continue.
         """
-        # Metric: count executor ticks (OB2)
-        inc_metric("executor_loop_ticks_total")
-
         # Audit smoke guard (ticket #71): record how many events the shared
         # writer has appended so we can detect a tick that processes tasks
         # without growing the canonical trail.
@@ -321,56 +325,172 @@ class Executor:
         retrying until max iterations.  Rejected tasks are marked FAILED.
         Still-pending requests are left parked — the executor does NOT block
         waiting for them.
+
+        Two sources of parked tasks are reconciled against the SSOT approvals
+        store (ticket #57):
+
+        - **Index-backed**: ``task_id -> request_id`` entries loaded from
+          ``pending_approvals.json``.  Entries whose task no longer exists in
+          the inbox are pruned so they cannot linger pinning a stale request.
+        - **Index-lost (healing)**: an inbox task in ``WAITING_APPROVAL``
+          with no index entry (crash before the index persisted, or a
+          rotated/reset index) is healed by looking up the latest approval
+          decision for its ``task_id`` directly in the approvals store.
         """
         resumed = 0
+        inbox_tasks = self.bus.get_all_tasks()
+        inbox_ids = {t.id for t in inbox_tasks}
+        # Tasks acted on in pass 1 must not be re-healed by pass 2 (they are
+        # popped from the index by the time pass 2 runs, so the index check
+        # alone would let them through).
+        acted_this_tick: set[str] = set()
+
+        # Pass 1 — index-backed entries.
         for task_id, request_id in list(self._pending_approvals.items()):
+            if task_id not in inbox_ids:
+                logger.info(
+                    "Pruning stale pending-approval index entry for task %s "
+                    "(task no longer exists in the inbox).",
+                    task_id,
+                )
+                self._pending_approvals.pop(task_id, None)
+                self._persist_pending_approvals()
+                continue
+
             decision = self.hitl.resume_approved(request_id)
             if decision is None:
                 continue  # still awaiting human decision — stay parked
 
             resumed += 1
+            acted_this_tick.add(task_id)
             self._pending_approvals.pop(task_id, None)
             self._persist_pending_approvals()
             task = self.bus.get_task_by_id(task_id)
             if task is None:
                 continue
 
-            if decision and self.hitl.is_metacharacter_blocked(request_id):
-                # GAP-016 / ticket #70: the human approved a bash/execute
-                # command containing shell metacharacters that the executor
-                # will ALWAYS reject — even with preapproved=True.  Re-running
-                # the loop would silently retry the same un-runnable command
-                # until max iterations (a generic timeout).  Fail fast with an
-                # explicit message so the operator rewrites and re-dispatches.
-                logger.warning(
-                    "HITL approved an un-runnable command for task %s "
-                    "(shell metacharacters) — failing fast instead of retrying.",
-                    task_id,
-                )
-                self._complete_task(
-                    task,
-                    TaskStatus.FAILED,
-                    "HITL approval cannot be honored: the approved command contains "
-                    "shell metacharacters the executor cannot run (GAP-016). Rewrite "
-                    "the command as separate tool steps and re-dispatch.",
-                )
-                self.stats.tasks_failed += 1
-                continue
-
             if decision:
-                logger.info("HITL approved for task %s — resuming.", task_id)
-                # Move the parked task back to pending so the atomic claim
-                # can re-acquire ownership, then re-run it executing the
-                # gated step directly (preapproved).
-                self.bus.update_task_status(task.id, TaskStatus.PENDING.value)
-                self._process_task(task, preapproved=True)
+                self._resume_approved_task(task, request_id)
             else:
                 logger.info("HITL rejected for task %s — failing.", task_id)
                 self._complete_task(task, TaskStatus.FAILED, "Human approval denied")
                 self.stats.tasks_failed += 1
+                # Clean up suspended state on rejection (issue #42).
+                self._suspend_store.delete(task_id)
+                try:
+                    self._notifier.notify_resolved(
+                        request_id=request_id,
+                        task_id=task_id,
+                        decision="rejected",
+                    )
+                except Exception:  # noqa: BLE001
+                    logger.debug(
+                        "Resolution notification failed for task %s", task_id, exc_info=True
+                    )
+
+        # Pass 2 — SSOT healing for parked tasks whose index entry was lost.
+        parked_tasks = [t for t in inbox_tasks if t.status == TaskStatus.WAITING_APPROVAL.value]
+        for task in parked_tasks:
+            if task.id in self._pending_approvals or task.id in acted_this_tick:
+                continue
+            request = self.hitl.gate.get_latest_request_for_task(task.id)
+            if request is None or request.status == ApprovalStatus.PENDING:
+                continue  # no decision recorded yet — stay parked
+
+            resumed += 1
+            if request.status == ApprovalStatus.APPROVED:
+                self._resume_approved_task(task, request.id)
+            else:
+                logger.info(
+                    "HITL %s for task %s — failing (index lost).",
+                    request.status.value,
+                    task.id,
+                )
+                self._complete_task(task, TaskStatus.FAILED, "Human approval denied")
+                self.stats.tasks_failed += 1
+                # Clean up suspended state on rejection (issue #42).
+                self._suspend_store.delete(task.id)
+                try:
+                    self._notifier.notify_resolved(
+                        request_id=request.id,
+                        task_id=task.id,
+                        decision=request.status.value,
+                    )
+                except Exception:  # noqa: BLE001
+                    logger.debug(
+                        "Resolution notification failed for task %s", task.id, exc_info=True
+                    )
         return resumed
 
-    def _park_task(self, task: Task, parked: HITLParked) -> None:
+    def _resume_approved_task(self, task: Task, request_id: str) -> None:
+        """Re-process a parked task whose HITL request was approved.
+
+        Unless the approved command is flagged ``metacharacter_blocked``
+        (GAP-016 / #70), the task is moved back to ``pending`` so the atomic
+        claim re-acquires ownership, then re-run with ``preapproved=True`` so
+        the previously gated step executes directly.
+
+        When a suspended state file exists on disk (issue #42), the agent
+        loop restores conversation history and continues from the parked
+        iteration instead of starting over.
+        """
+        if self.hitl.is_metacharacter_blocked(request_id):
+            logger.warning(
+                "HITL approved an un-runnable command for task %s "
+                "(shell metacharacters) — failing fast instead of retrying.",
+                task.id,
+            )
+            self._complete_task(
+                task,
+                TaskStatus.FAILED,
+                "HITL approval cannot be honored: the approved command contains "
+                "shell metacharacters the executor cannot run (GAP-016). Rewrite "
+                "the command as separate tool steps and re-dispatch.",
+            )
+            self.stats.tasks_failed += 1
+            # Clean up suspended state for failed task.
+            self._suspend_store.delete(task.id)
+            return
+
+        # Load suspended state for async resume (issue #42).
+        resumed_state = self._suspend_store.load(task.id)
+
+        logger.info(
+            "HITL approved for task %s — resuming (suspended=%s).",
+            task.id,
+            resumed_state is not None,
+        )
+        resumed = self.bus.resume_task(task.id, "waiting_approval")
+        if resumed is None:
+            logger.warning(
+                "Task %s could not be resumed — another executor already "
+                "claimed it (CAS guard, ADR-015). Skipping.",
+                task.id,
+            )
+            self._suspend_store.delete(task.id)
+            return
+        self._process_task(task, preapproved=True, resumed_state=resumed_state)
+
+        # Clean up suspended state after successful resume.
+        self._suspend_store.delete(task.id)
+
+        # Fire resolution notification (issue #42).
+        try:
+            self._notifier.notify_resolved(
+                request_id=request_id,
+                task_id=task.id,
+                decision="approved",
+            )
+        except Exception:  # noqa: BLE001 - notification must not block
+            logger.debug("Resolution notification failed for task %s", task.id, exc_info=True)
+
+    def _park_task(
+        self,
+        task: Task,
+        parked: HITLParked,
+        *,
+        suspend_state: SuspendedState | None = None,
+    ) -> None:
         """Park a task in WAITING_APPROVAL and record its HITL request id.
 
         The task is transitioned to ``waiting_approval`` so the executor's
@@ -378,7 +498,23 @@ class Executor:
         only returns ``pending`` tasks) and continues with other work.  The
         original ``in_progress`` status is overwritten to ``waiting_approval``
         so it is not mistaken for an active task.
+
+        When *suspend_state* is provided (issue #42), the agent loop state
+        is persisted to disk so the task can resume from where it left off
+        instead of re-executing from scratch.  An approval notification is
+        also fired via WebSocket + optional webhook.
         """
+        # Persist suspended state for async resume (issue #42).
+        if suspend_state is not None:
+            suspend_state.task_id = task.id
+            try:
+                self._suspend_store.save(task.id, suspend_state)
+            except Exception:  # noqa: BLE001 - suspend must not block parking
+                logger.exception(
+                    "Failed to save suspended state for task %s; task will resume from scratch",
+                    task.id,
+                )
+
         self._pending_approvals[task.id] = parked.request_id
         self._persist_pending_approvals()
         self.bus.update_task_status(task.id, TaskStatus.WAITING_APPROVAL.value)
@@ -388,6 +524,21 @@ class Executor:
             TaskStatus.IN_PROGRESS.value,
             TaskStatus.WAITING_APPROVAL.value,
         )
+
+        # Fire approval notification (issue #42): WebSocket broadcast +
+        # optional webhook POST.  Best-effort; never blocks parking.
+        try:
+            self._notifier.notify_parked(
+                request_id=parked.request_id,
+                task_id=task.id,
+                agent_id=task.receiver_id,
+                tool=parked.tool,
+                description=f"Tier {parked.tier} approval needed for {parked.tool}",
+                tier=parked.tier,
+            )
+        except Exception:  # noqa: BLE001 - notification must not block parking
+            logger.debug("Approval notification failed for task %s", task.id, exc_info=True)
+
         logger.info(
             "Task %s parked (WAITING_APPROVAL) for HITL request %s",
             task.id,
@@ -403,17 +554,9 @@ class Executor:
         dashboard clients.  Uses the dashboard's sync→async bridge so it is a
         no-op when no event loop (CLI) is running.
         """
-        from ai_company.dashboard.ws import broadcast_task_update
+        from ai_company.dashboard.ws import make_message_bus_broadcast_callback
 
-        def _callback(task_dict: dict[str, Any], event: str) -> None:
-            try:
-                loop = asyncio.get_running_loop()
-                loop.create_task(broadcast_task_update(task_dict, event))
-            except RuntimeError:
-                # No running event loop (CLI / executor thread) — skip.
-                logger.debug("No event loop; WS broadcast skipped for '%s'", event)
-
-        return _callback
+        return make_message_bus_broadcast_callback()
 
     def _load_pending_approvals(self) -> dict[str, str]:
         """Load the persisted ``task_id -> HITL request_id`` mapping at startup.
@@ -462,7 +605,13 @@ class Executor:
         thread.start()
         return stop
 
-    def _process_task(self, task: Task, *, preapproved: bool = False) -> None:
+    def _process_task(
+        self,
+        task: Task,
+        *,
+        preapproved: bool = False,
+        resumed_state: SuspendedState | None = None,
+    ) -> None:
         """Execute a single task through the multi-turn agentic loop.
 
         The task ID is installed as the correlation ID so that all log
@@ -477,8 +626,12 @@ class Executor:
         Args:
             preapproved: GAP-004 — when True, any HITL-gated step is executed
                 directly because the human already approved the parked request.
+            resumed_state: Optional ``SuspendedState`` from a previous park.
+                When provided the agent loop restores conversation history
+                and continues from the parked iteration (issue #42).
         """
-        set_correlation_id(task.id)
+        # Bridge correlation ID to OTel trace context (T7 / issue #40).
+        set_correlation_id_from_task(task.id)
         self.stats.tasks_processed += 1
         logger.info("[%s] Processing: %s...", task.id[:8], task.instruction[:60])
 
@@ -517,10 +670,10 @@ class Executor:
                 agent_ctx = AgentContext(name=task.receiver_id, role="", type="Unknown")
 
             # 3. Build user prompt
-            try:
-                user_prompt = build_user_prompt(task.instruction, task.priority.value)
-            except Exception:  # noqa: BLE001 - per-task isolation
-                user_prompt = task.instruction
+            # agent_loop.run() re-wraps the instruction with priority framing,
+            # so the raw instruction is passed here (T026: fixes a double-wrap
+            # where the task text was embedded twice).
+            user_prompt = task.instruction
 
             # 4. Run multi-turn agentic loop
             try:
@@ -531,11 +684,14 @@ class Executor:
                     task_id=task.id,
                     priority=task.priority.value,
                     preapproved=preapproved,
+                    resumed_state=resumed_state,
                 )
             except HITLParked as exc:
                 # GAP-004: a HITL-gated step raised HITLParked — park the task
                 # and continue to the next one instead of blocking on approval.
-                self._park_task(task, exc)
+                # Capture the agent loop's state for suspension (issue #42).
+                suspend_state = self.agent_loop._park_state
+                self._park_task(task, exc, suspend_state=suspend_state)
                 return
             except Exception as exc:  # noqa: BLE001 - loop must never crash on a task
                 logger.error("Agent loop failed: %s", exc)
@@ -553,7 +709,7 @@ class Executor:
             # 5. Handle delegated tasks from tool results (isolated so a bad
             #    record cannot abort the parent task).
             for record in result.tool_results:
-                if record.tool == "delegate" and record.status == "ok":
+                if record.tool in ("delegate", "task") and record.status == "ok":
                     try:
                         self._create_subtask_from_record(task, record)
                     except Exception:  # noqa: BLE001 - per-task isolation
@@ -612,6 +768,7 @@ class Executor:
                 logger.error("  FAILED: %s", error_msg[:80])
         finally:
             stop_heartbeat.set()
+            detach_task_context(task.id)
 
     def _complete_task(self, task: Task, status: TaskStatus, result: str) -> None:
         """Mark a task as completed/failed via MessageBus (GAP-001 fix)."""
@@ -644,19 +801,24 @@ class Executor:
         FileStore(task_dir, backup=False).write_json("loop_result.json", log_data)
 
     def _create_subtask_from_record(self, parent_task: Task, record: Any) -> None:
-        """Create a subtask from a ToolCallRecord with delegate tool."""
+        """Create a subtask from a ToolCallRecord with the task/delegate tool."""
         result_data = record.result
         receiver = result_data.get("receiver", "")
         instruction = result_data.get("instruction", "")
         if not receiver or not instruction:
             return
 
-        subtask = Task(
-            id=str(uuid.uuid4()),
-            sender_id=parent_task.receiver_id,
-            receiver_id=receiver,
-            instruction=instruction,
-            priority=TaskPriority.MEDIUM,
-        )
-        self.bus.send_task(subtask)
-        logger.info("  Delegated subtask to %s", receiver)
+        child_task_id = str(uuid.uuid4())
+
+        # Fix parent→child linkage (T7 / issue #40): subtask inherits
+        # the parent's OTel trace context so the trace tree is unbroken.
+        with subtask_context(parent_task.id, child_task_id):
+            subtask = Task(
+                id=child_task_id,
+                sender_id=parent_task.receiver_id,
+                receiver_id=receiver,
+                instruction=instruction,
+                priority=TaskPriority.MEDIUM,
+            )
+            self.bus.send_task(subtask)
+            logger.info("  Delegated subtask to %s", receiver)

@@ -128,7 +128,7 @@ class TestCostTrackerRecordUsage:
             prompt_tokens=200,
             completion_tokens=100,
         )
-        summary = tracker.get_daily_summary()
+        summary = tracker.get_usage_summary()
         assert summary["call_count"] == 2
         assert summary["total_prompt_tokens"] == 300
         assert summary["total_completion_tokens"] == 150
@@ -161,9 +161,11 @@ class TestCostTrackerRecordUsage:
             prompt_tokens=50,
             completion_tokens=25,
         )
-        summary = tracker.get_task_summary("t1")
-        assert summary["call_count"] == 2
-        assert summary["total_prompt_tokens"] == 300
+        summary = tracker.get_usage_summary(agent_name="a")
+        assert summary["call_count"] == 3
+        assert summary["total_prompt_tokens"] == 350
+        assert summary["total_completion_tokens"] == 175
+        assert summary["by_agent"]["a"]["calls"] == 3
 
 
 # ---------------------------------------------------------------------------
@@ -266,7 +268,7 @@ class TestLLMClientCostIntegration:
 
         assert result is not None
         # Verify cost tracker recorded usage
-        summary = tracker.get_task_summary("task-test-001")
+        summary = tracker.get_usage_summary(agent_name="test-agent")
         assert summary["call_count"] == 1
         assert summary["total_prompt_tokens"] == 100
         assert summary["total_completion_tokens"] == 50
@@ -310,7 +312,7 @@ class TestLLMClientCostIntegration:
             task_instruction="do something",
         )
 
-        summary = tracker.get_task_summary("nonexistent")
+        summary = tracker.get_usage_summary(agent_name="test-agent")
         assert summary["call_count"] == 0
 
     @patch("ai_company.llm.client.ModelRouter")

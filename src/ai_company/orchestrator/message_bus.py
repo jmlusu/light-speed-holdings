@@ -7,7 +7,6 @@ Provides a JSON-backed task queue with:
 - Parent/child task linkage
 - ACK tracking
 - Backup file on every write
-- Query helpers for subtasks, unacknowledged tasks, and status counts
 - Dashboard broadcast hooks for real-time WebSocket updates
 """
 
@@ -108,7 +107,7 @@ class MessageBus:
 
     # ── Internal persistence helpers ──────────────────────────────────
 
-    def _load_tasks(self) -> List[dict]:
+    def _load_tasks(self) -> List[dict[str, Any]]:
         """Load tasks from the inbox file, quarantining corrupt JSON.
 
         On a JSON decode failure (or a non-list payload) the corrupt file is
@@ -137,7 +136,7 @@ class MessageBus:
                 return self._recover_from_backup(full_path)
             return data
 
-    def _recover_from_backup(self, full_path: Path) -> List[dict]:
+    def _recover_from_backup(self, full_path: Path) -> List[dict[str, Any]]:
         """Quarantine a corrupt inbox file and recover tasks from its .bak.
 
         The corrupt file is atomically renamed to ``<name>.bak-<timestamp>``
@@ -167,10 +166,12 @@ class MessageBus:
             return []
         return bak_data
 
-    def _save_tasks(self, tasks: List[dict]) -> None:
+    def _save_tasks(self, tasks: List[dict[str, Any]]) -> None:
         self._store.write_json(self._inbox_name, tasks)
 
-    def _mutate_tasks(self, updater: Callable[[List[dict]], List[dict]]) -> List[dict]:
+    def _mutate_tasks(
+        self, updater: Callable[[List[dict[str, Any]]], List[dict[str, Any]]]
+    ) -> List[dict[str, Any]]:
         """Apply *updater* to the inbox under an exclusive file lock.
 
         Serialises the read-modify-write cycle so concurrent executor and
@@ -202,42 +203,9 @@ class MessageBus:
         except Exception:  # noqa: BLE001 - mirror is best-effort
             logger.debug("SQLite task delete mirror failed for %s", task_id, exc_info=True)
 
-    def reconcile_mirror(self) -> dict[str, int]:
-        """Re-sync the SQLite mirror from the inbox file (source of truth).
-
-        Upserts every inbox task and removes mirror rows whose id no longer
-        exists in the inbox, healing drift caused by fire-and-forget mirror
-        writes that failed silently (or by writers that bypassed the bus).
-
-        Returns counts of ``{"upserted": ..., "removed": ...}``.
-        """
-        if self._task_store is None:
-            return {"upserted": 0, "removed": 0}
-        upserted = removed = 0
-        try:
-            tasks = self._load_tasks()
-            inbox_ids = {t.get("id") for t in tasks if t.get("id")}
-            for t in tasks:
-                try:
-                    self._task_store.send_task(Task(**t))
-                    upserted += 1
-                except Exception:  # noqa: BLE001 - one bad row must not block the rest
-                    logger.warning(
-                        "Mirror reconcile skipped invalid task %s",
-                        t.get("id", "?"),
-                    )
-            for mirrored in self._task_store.get_all_tasks():
-                if mirrored.id not in inbox_ids:
-                    self._task_store.delete_task(mirrored.id)
-                    removed += 1
-            logger.info("Mirror reconciled: %d upserted, %d removed", upserted, removed)
-        except Exception:  # noqa: BLE001 - reconciliation is best-effort
-            logger.error("Mirror reconciliation failed", exc_info=True)
-        return {"upserted": upserted, "removed": removed}
-
     # ── Broadcast helper ─────────────────────────────────────────────
 
-    def _emit(self, task_dict: dict, event: str) -> None:
+    def _emit(self, task_dict: dict[str, Any], event: str) -> None:
         """Invoke the broadcast callback if one was configured.
 
         Errors are logged but never raised -- broadcasting is best-effort.
@@ -262,7 +230,7 @@ class MessageBus:
         task_dict = task.model_dump()
         inc_metric("messages_published_total")
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             tasks.append(task_dict)
             return tasks
 
@@ -278,22 +246,12 @@ class MessageBus:
         )
         self._emit(task_dict, "created")
 
-    def get_inbox(self, agent_id: str) -> List[Task]:
-        """Return all tasks addressed to *agent_id*."""
-        tasks = self._load_tasks()
-        return [Task(**t) for t in tasks if t.get("receiver_id") == agent_id]
-
-    def get_sent(self, agent_id: str) -> List[Task]:
-        """Return all tasks sent by *agent_id*."""
-        tasks = self._load_tasks()
-        return [Task(**t) for t in tasks if t.get("sender_id") == agent_id]
-
     def get_all_tasks(self) -> List[Task]:
         """Return all tasks in the inbox (public method for integration)."""
         tasks = self._load_tasks()
         return [Task(**t) for t in tasks]
 
-    def get_all_tasks_raw(self) -> List[dict]:
+    def get_all_tasks_raw(self) -> List[dict[str, Any]]:
         """Return raw task dictionaries from the inbox (public method for backward compatibility)."""
         return self._load_tasks()
 
@@ -325,7 +283,7 @@ class MessageBus:
         expiry = _iso_from_timestamp(time.time() + lease_seconds)
         claimed: list[Task] = []
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for t in tasks:
                 if t.get("id") == task_id:
                     if t.get("status") != "pending":
@@ -356,7 +314,7 @@ class MessageBus:
         expiry = _iso_from_timestamp(time.time() + lease_seconds)
         refreshed = False
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             nonlocal refreshed
             for t in tasks:
                 if t.get("id") == task_id:
@@ -374,6 +332,39 @@ class MessageBus:
                     self._mirror_task_to_sqlite(t)
                     break
         return refreshed
+
+    def resume_task(self, task_id: str, expected_status: str = "waiting_approval") -> Task | None:
+        """CAS-guarded transition from *expected_status* to ``pending``.
+
+        Returns the updated ``Task`` if the transition succeeded, or
+        ``None`` if the task is missing or not in *expected_status*
+        (another executor already resumed it).  This prevents two
+        concurrent tick loops from both resuming the same parked task
+        (ADR-015 double-resume guard).
+        """
+        now = datetime.now().isoformat()
+        resumed: list[Task] = []
+
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    if t.get("status") != expected_status:
+                        break  # CAS failure — already resumed or moved
+                    tasks[i]["status"] = "pending"
+                    tasks[i]["updated_at"] = now
+                    resumed.append(Task(**tasks[i]))
+                    break
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        if resumed:
+            for t in updated:
+                if t.get("id") == task_id:
+                    self._mirror_task_to_sqlite(t)
+                    self._emit(t, "status_changed")
+                    break
+            logger.info("Task %s resumed (CAS: %s -> pending).", task_id, expected_status)
+        return resumed[0] if resumed else None
 
     # ── Task status mutation ─────────────────────────────────────────
 
@@ -400,9 +391,9 @@ class MessageBus:
             "escalated": "escalated",
         }
         now = datetime.now().isoformat()
-        emitted: list[tuple[dict, str]] = []
+        emitted: list[tuple[dict[str, Any], str]] = []
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     old_status = t.get("status", "")
@@ -449,9 +440,9 @@ class MessageBus:
         Returns the updated ``Task`` or ``None`` if not found.
         """
         now = datetime.now().isoformat()
-        emitted: list[tuple[dict, str]] = []
+        emitted: list[tuple[dict[str, Any], str]] = []
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     tasks[i].update(updates)
@@ -478,7 +469,7 @@ class MessageBus:
         """
         deleted: Task | None = None
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             nonlocal deleted
             new_tasks = []
             for t in tasks:
@@ -503,27 +494,13 @@ class MessageBus:
                 return Task(**t)
         return None
 
-    def get_subtasks(self, parent_task_id: str) -> List[Task]:
-        """Return all tasks whose ``parent_task_id`` matches."""
-        tasks = self._load_tasks()
-        return [Task(**t) for t in tasks if t.get("parent_task_id") == parent_task_id]
-
-    def get_unacknowledged(self, agent_id: str) -> List[Task]:
-        """Return tasks assigned to *agent_id* that have not been ACKed yet."""
-        tasks = self._load_tasks()
-        return [
-            Task(**t)
-            for t in tasks
-            if t.get("receiver_id") == agent_id and not t.get("acknowledged_by")
-        ]
-
     def acknowledge_task(self, task_id: str, agent_id: str) -> Task | None:
         """Mark a task as acknowledged by *agent_id*.
 
         Returns the updated ``Task`` or ``None`` if not found.
         """
 
-        def _updater(tasks: List[dict]) -> List[dict]:
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
             for i, t in enumerate(tasks):
                 if t.get("id") == task_id:
                     tasks[i]["acknowledged_by"] = agent_id

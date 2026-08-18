@@ -40,7 +40,7 @@ Owns the test-case library, automated eval suites, quality regression gates, and
 
 - Produce model comparison benchmarks (quality, cost, latency).
 
-- {'Enforce quality gates': 'no upgrade ships below benchmark threshold.'}
+- Enforce quality gates: no upgrade ships below benchmark threshold.
 
 - Maintain quality_scores for the QualityFallbackChain.
 

@@ -395,7 +395,7 @@ class TestCompanyKpiSummary:
 
 class TestCompanyKpisEndpoint:
     def test_api_endpoint_company_kpis(self, setup_data: Path) -> None:
-        resp = client.get("/api/company-kpis")
+        resp = client.get("/api/v1/company-kpis")
         assert resp.status_code == 200
         body = resp.json()
         assert body["period_days"] == 30
@@ -403,9 +403,9 @@ class TestCompanyKpisEndpoint:
         assert body["summary"]["total"] == 5
         assert set(body["kpis"][0]) == set(CONTRACT_KEYS)
 
-        resp90 = client.get("/api/company-kpis", params={"days": 90})
+        resp90 = client.get("/api/v1/company-kpis", params={"days": 90})
         assert resp90.status_code == 200
         assert resp90.json()["period_days"] == 90
 
-        resp_bad = client.get("/api/company-kpis", params={"days": 0})
+        resp_bad = client.get("/api/v1/company-kpis", params={"days": 0})
         assert resp_bad.status_code == 422

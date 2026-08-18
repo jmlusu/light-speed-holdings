@@ -53,7 +53,7 @@ class TestDashboardKPIContract:
     """Validate /api/dashboard response shape and values."""
 
     def test_returns_all_kpi_fields(self, client: TestClient) -> None:
-        resp = client.get("/api/dashboard")
+        resp = client.get("/api/v1/dashboard")
         assert resp.status_code == 200
         data = resp.json()
         required = {
@@ -71,7 +71,7 @@ class TestDashboardKPIContract:
         assert required <= set(data.keys()), f"Missing fields: {required - set(data.keys())}"
 
     def test_kpi_values_are_integers(self, client: TestClient) -> None:
-        data = client.get("/api/dashboard").json()
+        data = client.get("/api/v1/dashboard").json()
         for key in (
             "pending_tasks",
             "in_progress_tasks",
@@ -86,13 +86,13 @@ class TestDashboardKPIContract:
             assert isinstance(data[key], int), f"{key} should be int, got {type(data[key])}"
 
     def test_uptime_is_positive_float(self, client: TestClient) -> None:
-        data = client.get("/api/dashboard").json()
+        data = client.get("/api/v1/dashboard").json()
         assert isinstance(data["uptime_seconds"], float)
         assert data["uptime_seconds"] >= 0
 
     def test_total_agents_matches_registry(self, client: TestClient) -> None:
-        dashboard = client.get("/api/dashboard").json()
-        agents = client.get("/api/agents").json()
+        dashboard = client.get("/api/v1/dashboard").json()
+        agents = client.get("/api/v1/agents").json()
         assert dashboard["total_agents"] == len(agents)
 
 
@@ -100,7 +100,7 @@ class TestAgentAPIContract:
     """Validate /api/agents response shape."""
 
     def test_list_agents_shape(self, client: TestClient) -> None:
-        resp = client.get("/api/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
@@ -111,16 +111,16 @@ class TestAgentAPIContract:
         assert required <= set(agent.keys())
 
     def test_get_agent_by_name(self, client: TestClient) -> None:
-        resp = client.get("/api/agents/chief-of-staff")
+        resp = client.get("/api/v1/agents/chief-of-staff")
         assert resp.status_code == 200
         assert resp.json()["name"] == "chief-of-staff"
 
     def test_agent_not_found_returns_404(self, client: TestClient) -> None:
-        resp = client.get("/api/agents/nonexistent-agent")
+        resp = client.get("/api/v1/agents/nonexistent-agent")
         assert resp.status_code == 404
 
     def test_all_agents_have_required_fields(self, client: TestClient) -> None:
-        agents = client.get("/api/agents").json()
+        agents = client.get("/api/v1/agents").json()
         for agent in agents:
             assert "name" in agent
             assert "role" in agent
@@ -132,13 +132,13 @@ class TestTaskAPIContract:
     """Validate /api/tasks response shape."""
 
     def test_list_tasks_returns_array(self, client: TestClient) -> None:
-        resp = client.get("/api/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         assert isinstance(resp.json(), list)
 
     def test_create_task_returns_201(self, client: TestClient) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "Write tests",
@@ -153,21 +153,21 @@ class TestTaskAPIContract:
     def test_task_filter_by_status(self, client: TestClient) -> None:
         # Create a task
         client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "Test",
             },
         )
         # Filter
-        resp = client.get("/api/tasks?status=pending")
+        resp = client.get("/api/v1/tasks?status=pending")
         assert resp.status_code == 200
         for task in resp.json():
             assert task["status"] == "pending"
 
     def test_task_has_all_fields(self, client: TestClient) -> None:
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "lead-engineering",
                 "instruction": "Build feature",
@@ -182,21 +182,21 @@ class TestOrgChartContract:
     """Validate /api/org-chart response shape."""
 
     def test_org_chart_structure(self, client: TestClient) -> None:
-        resp = client.get("/api/org-chart")
+        resp = client.get("/api/v1/org-chart")
         assert resp.status_code == 200
         chart = resp.json()
         assert isinstance(chart, list)
         assert len(chart) >= 1
 
     def test_org_chart_has_children(self, client: TestClient) -> None:
-        chart = client.get("/api/org-chart").json()
+        chart = client.get("/api/v1/org-chart").json()
         root = chart[0]
         assert "name" in root
         assert "children" in root
         assert isinstance(root["children"], list)
 
     def test_org_chart_node_shape(self, client: TestClient) -> None:
-        chart = client.get("/api/org-chart").json()
+        chart = client.get("/api/v1/org-chart").json()
 
         def validate_node(node: dict) -> None:
             required = {"name", "role", "type", "department", "children"}
@@ -212,14 +212,14 @@ class TestDepartmentAPIContract:
     """Validate /api/departments response shape."""
 
     def test_list_departments(self, client: TestClient) -> None:
-        resp = client.get("/api/departments")
+        resp = client.get("/api/v1/departments")
         assert resp.status_code == 200
         depts = resp.json()
         assert isinstance(depts, list)
         assert len(depts) > 0
 
     def test_department_has_name(self, client: TestClient) -> None:
-        depts = client.get("/api/departments").json()
+        depts = client.get("/api/v1/departments").json()
         for dept in depts:
             assert "name" in dept
 
@@ -228,14 +228,14 @@ class TestKPIEndpointsContract:
     """Validate KPI-related endpoints."""
 
     def test_list_all_kpis(self, client: TestClient) -> None:
-        resp = client.get("/api/kpis")
+        resp = client.get("/api/v1/kpis")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, dict)
         assert len(data) > 0
 
     def test_kpi_summary(self, client: TestClient) -> None:
-        resp = client.get("/api/kpis/summary")
+        resp = client.get("/api/v1/kpis/summary")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list)
@@ -246,14 +246,14 @@ class TestKPIEndpointsContract:
             assert "target" in item
 
     def test_department_kpis(self, client: TestClient) -> None:
-        resp = client.get("/api/departments/engineering/kpis")
+        resp = client.get("/api/v1/departments/engineering/kpis")
         assert resp.status_code == 200
         data = resp.json()
         assert "name" in data
         assert "kpis" in data
 
     def test_department_kpis_not_found(self, client: TestClient) -> None:
-        resp = client.get("/api/departments/nonexistent/kpis")
+        resp = client.get("/api/v1/departments/nonexistent/kpis")
         assert resp.status_code == 404
 
 
@@ -261,7 +261,7 @@ class TestModelAPIContract:
     """Validate /api/models response shape."""
 
     def test_list_model_routes(self, client: TestClient) -> None:
-        resp = client.get("/api/models")
+        resp = client.get("/api/v1/models")
         assert resp.status_code == 200
         routes = resp.json()
         assert isinstance(routes, list)
@@ -269,7 +269,7 @@ class TestModelAPIContract:
             assert "agent" in route
 
     def test_list_model_tiers(self, client: TestClient) -> None:
-        resp = client.get("/api/models/tiers")
+        resp = client.get("/api/v1/models/tiers")
         assert resp.status_code == 200
         tiers = resp.json()
         assert isinstance(tiers, list)
@@ -286,7 +286,7 @@ class TestMetricsEndpoint:
         resp = client.get("/metrics")
         assert resp.status_code == 200
         body = resp.text
-        assert "ai_company_tasks_total" in body
+        assert "ai_company_llm_requests_total" in body
         assert "ai_company_tasks_by_status" in body
         assert "ai_company_uptime_seconds" in body
 
@@ -320,18 +320,18 @@ class TestAPIResponseTimes:
     @pytest.mark.parametrize(
         "method,path",
         [
-            ("GET", "/api/dashboard"),
-            ("GET", "/api/agents"),
-            ("GET", "/api/org-chart"),
-            ("GET", "/api/tasks"),
-            ("GET", "/api/approvals"),
-            ("GET", "/api/escalations"),
-            ("GET", "/api/departments"),
-            ("GET", "/api/models"),
-            ("GET", "/api/models/tiers"),
-            ("GET", "/api/scheduler"),
-            ("GET", "/api/kpis"),
-            ("GET", "/api/kpis/summary"),
+            ("GET", "/api/v1/dashboard"),
+            ("GET", "/api/v1/agents"),
+            ("GET", "/api/v1/org-chart"),
+            ("GET", "/api/v1/tasks"),
+            ("GET", "/api/v1/approvals"),
+            ("GET", "/api/v1/escalations"),
+            ("GET", "/api/v1/departments"),
+            ("GET", "/api/v1/models"),
+            ("GET", "/api/v1/models/tiers"),
+            ("GET", "/api/v1/scheduler"),
+            ("GET", "/api/v1/kpis"),
+            ("GET", "/api/v1/kpis/summary"),
             ("GET", "/metrics"),
             ("GET", "/health"),
         ],
@@ -349,7 +349,7 @@ class TestAPIResponseTimes:
     def test_concurrent_requests_stability(self, client: TestClient) -> None:
         """20 concurrent dashboard requests should all succeed."""
         start = time.perf_counter()
-        results = [client.get("/api/dashboard") for _ in range(20)]
+        results = [client.get("/api/v1/dashboard") for _ in range(20)]
         elapsed_ms = (time.perf_counter() - start) * 1000
 
         for i, resp in enumerate(results):

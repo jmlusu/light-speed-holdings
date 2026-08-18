@@ -39,8 +39,8 @@ Send the key on every HTTP request in the `X-API-Key` header. Keys map to roles 
 
 | Role | Privileges | Env var |
 |------|------------|---------|
-| `run` | Task mutations (`POST` / `PATCH` / `DELETE` `/api/tasks`) | `DASHBOARD_RUN_KEY` |
-| `approve` | Approval decisions + escalation resolution (`/api/approvals/*/approve`, `/api/approvals/*/reject`, `/api/escalations/*/resolve`) | `DASHBOARD_APPROVE_KEY` |
+| `run` | Task mutations (`POST` / `PATCH` / `DELETE` `/api/v1/tasks`) | `DASHBOARD_RUN_KEY` |
+| `approve` | Approval decisions + escalation resolution (`/api/v1/approvals/*/approve`, `/api/v1/approvals/*/reject`, `/api/v1/escalations/*/resolve`) | `DASHBOARD_APPROVE_KEY` |
 | `admin` | All permissions (implies `approve` and `run`) | `DASHBOARD_ADMIN_KEY` (falls back to legacy `DASHBOARD_API_KEY`) |
 
 - Roles are hierarchical: `admin` > `approve` > `run`.
@@ -54,7 +54,7 @@ Send the key on every HTTP request in the `X-API-Key` header. Keys map to roles 
 
 ### WebSocket Authentication
 
-Browsers cannot set custom headers on a WebSocket handshake, so WebSocket clients pass the key as a query parameter: `ws://localhost:8420/ws/dashboard?api_key=<KEY>`. The handshake must resolve to at least the `run` role; invalid or insufficient keys are closed with code `1008`.
+Browsers cannot set custom headers on a WebSocket handshake, so WebSocket clients pass the key as a query parameter: `ws://localhost:8420/ws/v1/dashboard?api_key=<KEY>`. The handshake must resolve to at least the `run` role; invalid or insufficient keys are closed with code `1008`.
 
 ### CORS
 
@@ -114,7 +114,7 @@ Readiness probe: returns `200` with `{"status": "ready"}` when the core data fil
 
 ## 3. Dashboard & KPIs
 
-### `GET /api/dashboard`
+### `GET /api/v1/dashboard`
 
 Returns an aggregated KPI snapshot of the entire company. Includes task counts, pending approvals, open escalations, agent count, and uptime.
 
@@ -139,7 +139,7 @@ Returns an aggregated KPI snapshot of the entire company. Includes task counts, 
 
 ---
 
-### `GET /api/kpis/live`
+### `GET /api/v1/kpis/live`
 
 Returns live KPI values computed from operational data using the department KPI collectors. Provides real-time snapshots for all 7 departments.
 
@@ -185,7 +185,7 @@ Returns live KPI values computed from operational data using the department KPI 
 
 ## 4. Agents
 
-### `GET /api/agents`
+### `GET /api/v1/agents`
 
 Returns a list of all registered agents from the agent registry.
 
@@ -208,7 +208,7 @@ Returns a list of all registered agents from the agent registry.
 
 ---
 
-### `GET /api/agents/{name}`
+### `GET /api/v1/agents/{name}`
 
 Returns details for a specific agent by name.
 
@@ -244,7 +244,7 @@ Returns details for a specific agent by name.
 
 ## 5. Organization Chart
 
-### `GET /api/org-chart`
+### `GET /api/v1/org-chart`
 
 Returns the full organization chart as a nested tree structure, rooted at the Chief of Staff (under the human CEO).
 
@@ -282,7 +282,7 @@ Returns the full organization chart as a nested tree structure, rooted at the Ch
 
 ## 6. Tasks
 
-### `GET /api/tasks`
+### `GET /api/v1/tasks`
 
 Returns a list of all tasks from the task queue. Supports filtering.
 
@@ -313,7 +313,7 @@ Returns a list of all tasks from the task queue. Supports filtering.
 
 ---
 
-### `POST /api/tasks`
+### `POST /api/v1/tasks`
 
 Creates a new task in the task queue.
 
@@ -364,7 +364,7 @@ Creates a new task in the task queue.
 
 ## 7. Approvals
 
-### `GET /api/approvals`
+### `GET /api/v1/approvals`
 
 Returns all pending approval requests that haven't expired.
 
@@ -387,7 +387,7 @@ Returns all pending approval requests that haven't expired.
 
 ---
 
-### `POST /api/approvals/{request_id}/approve`
+### `POST /api/v1/approvals/{request_id}/approve`
 
 Approves a pending approval request.
 
@@ -424,7 +424,7 @@ Approves a pending approval request.
 
 ---
 
-### `POST /api/approvals/{request_id}/reject`
+### `POST /api/v1/approvals/{request_id}/reject`
 
 Rejects a pending approval request.
 
@@ -463,7 +463,7 @@ Rejects a pending approval request.
 
 ## 8. Escalations
 
-### `GET /api/escalations`
+### `GET /api/v1/escalations`
 
 Returns all unresolved escalation events.
 
@@ -515,7 +515,7 @@ Marks an escalation as resolved.
 
 ## 9. Departments
 
-### `GET /api/departments`
+### `GET /api/v1/departments`
 
 Returns all configured departments.
 
@@ -542,7 +542,7 @@ Returns all configured departments.
 
 ## 10. Model Routing
 
-### `GET /api/models`
+### `GET /api/v1/models`
 
 Returns the model routing assignment for every agent.
 
@@ -569,7 +569,7 @@ Returns the model routing assignment for every agent.
 
 ---
 
-### `GET /api/models/tiers`
+### `GET /api/v1/models/tiers`
 
 Returns the available model tiers with their providers.
 
@@ -608,7 +608,7 @@ Returns the available model tiers with their providers.
 
 ## 11. Scheduler
 
-### `GET /api/scheduler`
+### `GET /api/v1/scheduler`
 
 Returns all scheduled recurring tasks.
 
@@ -634,7 +634,7 @@ Returns all scheduled recurring tasks.
 
 ## 12. Department KPIs
 
-### `GET /api/kpis`
+### `GET /api/v1/kpis`
 
 Returns all department KPI definitions.
 
@@ -663,7 +663,7 @@ Returns all department KPI definitions.
 
 ---
 
-### `GET /api/kpis/summary`
+### `GET /api/v1/kpis/summary`
 
 Returns a flat summary of all KPIs across all departments.
 
@@ -685,7 +685,7 @@ Returns a flat summary of all KPIs across all departments.
 
 ---
 
-### `GET /api/departments/{dept_name}/kpis`
+### `GET /api/v1/departments/{dept_name}/kpis`
 
 Returns KPI definitions for a specific department.
 
@@ -711,14 +711,14 @@ Returns KPI definitions for a specific department.
 ### Endpoint
 
 ```
-ws://localhost:8420/ws/dashboard?api_key=<KEY>
+ws://localhost:8420/ws/v1/dashboard?api_key=<KEY>
 ```
 
 The dashboard WebSocket requires the same API key as the REST API, passed as the `api_key` query parameter (browsers cannot set headers on a WebSocket handshake). The key must resolve to at least the `run` role (see [Authentication](#1-authentication)). The server also validates the `Origin` header against the request host / CORS allowlist; rejected handshakes are closed with code `1008`.
 
 ### Connection Lifecycle
 
-1. Client connects to `ws://localhost:8420/ws/dashboard?api_key=<KEY>`
+1. Client connects to `ws://localhost:8420/ws/v1/dashboard?api_key=<KEY>`
 2. Server validates the origin and the API key (`run` role minimum)
 3. Server sends a `connected` message with timestamp and active client count
 4. Client may send `ping` messages for application-level keepalive (server replies `pong`) and `subscribe`/`unsubscribe` for topic filtering
@@ -842,7 +842,7 @@ The server replies with `{"type": "unsubscribed", "topics": [...]}`.
 
 ```javascript
 // Key must resolve to at least the "run" role (see Authentication section)
-const ws = new WebSocket("ws://localhost:8420/ws/dashboard?api_key=API_KEY");
+const ws = new WebSocket("ws://localhost:8420/ws/v1/dashboard?api_key=API_KEY");
 
 ws.onopen = () => {
   console.log("Connected to dashboard");
@@ -881,7 +881,7 @@ import websockets
 
 async def dashboard_listener():
     # Key must resolve to at least the "run" role (see Authentication section)
-    uri = "ws://localhost:8420/ws/dashboard?api_key=API_KEY"
+    uri = "ws://localhost:8420/ws/v1/dashboard?api_key=API_KEY"
     async with websockets.connect(uri) as ws:
         # Receive connected message
         msg = await ws.recv()
@@ -1119,7 +1119,7 @@ Add `-H "X-API-Key: $X_API_KEY"` to every `curl` call; WebSocket clients append 
 
 ```bash
 # 1. Create a task (requires run or admin)
-curl -X POST http://localhost:8420/api/tasks \
+curl -X POST http://localhost:8420/api/v1/tasks \
   -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -1129,21 +1129,21 @@ curl -X POST http://localhost:8420/api/tasks \
   }'
 
 # 2. Check for pending approvals (requires any valid key)
-curl http://localhost:8420/api/approvals \
+curl http://localhost:8420/api/v1/approvals \
   -H "X-API-Key: $X_API_KEY"
 
 # 3. Approve the request (requires approve or admin)
-curl -X POST http://localhost:8420/api/approvals/REQ-001/approve \
+curl -X POST http://localhost:8420/api/v1/approvals/REQ-001/approve \
   -H "X-API-Key: $X_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"approved_by": "human-ceo", "notes": "Go ahead"}'
 
 # 4. Check KPIs (requires any valid key)
-curl http://localhost:8420/api/dashboard \
+curl http://localhost:8420/api/v1/dashboard \
   -H "X-API-Key: $X_API_KEY"
 
 # 5. Resolve any escalations (requires approve or admin)
-curl -X POST http://localhost:8420/api/escalations/TASK-001/resolve \
+curl -X POST http://localhost:8420/api/v1/escalations/TASK-001/resolve \
   -H "X-API-Key: $X_API_KEY"
 ```
 
@@ -1151,7 +1151,7 @@ curl -X POST http://localhost:8420/api/escalations/TASK-001/resolve \
 
 ```bash
 # Using websocat (CLI tool); key must resolve to at least "run"
-websocat "ws://localhost:8420/ws/dashboard?api_key=$X_API_KEY"
+websocat "ws://localhost:8420/ws/v1/dashboard?api_key=$X_API_KEY"
 
 # Send a ping
 >{"type": "ping"}
@@ -1162,11 +1162,11 @@ websocat "ws://localhost:8420/ws/dashboard?api_key=$X_API_KEY"
 
 ```bash
 # See which model each agent uses
-curl http://localhost:8420/api/models \
+curl http://localhost:8420/api/v1/models \
   -H "X-API-Key: $X_API_KEY"
 
 # See available tiers
-curl http://localhost:8420/api/models/tiers \
+curl http://localhost:8420/api/v1/models/tiers \
   -H "X-API-Key: $X_API_KEY"
 ```
 
@@ -1174,10 +1174,10 @@ curl http://localhost:8420/api/models/tiers \
 
 ```bash
 # Get the full org tree
-curl http://localhost:8420/api/org-chart \
+curl http://localhost:8420/api/v1/org-chart \
   -H "X-API-Key: $X_API_KEY" | python -m json.tool
 
 # Get details for a specific agent
-curl http://localhost:8420/api/agents/CTO \
+curl http://localhost:8420/api/v1/agents/CTO \
   -H "X-API-Key: $X_API_KEY"
 ```

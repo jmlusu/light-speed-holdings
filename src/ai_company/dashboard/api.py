@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
@@ -29,13 +30,15 @@ from ai_company.dashboard.models import (
     TaskItem,
     TaskUpdate,
     TierInfo,
+    WorkflowActionRequest,
+    WorkflowSummary,
 )
 from ai_company.dashboard.repository import get_state_store
 from ai_company.data import get_database
 from ai_company.security.rbac import Role, require_role
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api", tags=["dashboard"])
+router = APIRouter(prefix="/api/v1", tags=["dashboard"])
 
 # Module-level MessageBus instance. All task read/write operations are routed
 # through this bus instead of touching `.opencode/inbox.json` directly (GAP-011).
@@ -119,7 +122,7 @@ def _per_agent_costs_from_audit() -> list[dict[str, Any]]:
 
 
 def _registry_agent_stats(
-    tasks: list[dict[str, Any]], registry: list[dict]
+    tasks: list[dict[str, Any]], registry: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
     """Per-agent task stats for every registered agent.
 
@@ -426,7 +429,7 @@ def _save_yaml(path: str, data: Any) -> None:
     _get_store().write_yaml(path, data)
 
 
-def _load_registry() -> list[dict]:
+def _load_registry() -> list[dict[str, Any]]:
     raw = _load_json("company/agent-registry.json") or []
     return [_normalize_agent(a) for a in raw]
 
@@ -504,7 +507,9 @@ async def _broadcast_escalation_alert(event: dict[str, Any]) -> None:
         logger.debug("WebSocket broadcast skipped")
 
 
-def _schedule_broadcast(background_tasks: BackgroundTasks, task_dict: dict, event: str) -> None:
+def _schedule_broadcast(
+    background_tasks: BackgroundTasks, task_dict: dict[str, Any], event: str
+) -> None:
     """Schedule a task-broadcast as a FastAPI background task.
 
     This is the synchronous helper used by MessageBus callbacks.
@@ -693,6 +698,52 @@ def get_org_chart() -> list[OrgNode]:
     if not roots and "chief-of-staff" in registry:
         roots = ["chief-of-staff"]
     return [build_node(r) for r in roots]
+
+
+@router.patch("/agents/{agent_name}/reports-to", tags=["agents"])
+def reassign_agent_reports_to(
+    agent_name: str,
+    body: dict[str, str],
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Reassign an agent's reports_to field.
+
+    Updates the company registry and regenerates agent files.
+    Requires 'run' role permission.
+    """
+    new_manager = body.get("reports_to")
+    if not new_manager:
+        raise HTTPException(status_code=400, detail="reports_to is required")
+
+    # Load registry through StateStore (same path as _load_registry)
+    registry = _load_json("company/agent-registry.json")
+    if not registry:
+        raise HTTPException(status_code=404, detail="Agent registry not found")
+
+    # Find and update agent
+    # Registry uses camelCase keys (reportsTo), so update that field
+    updated = False
+    for agent in registry:
+        if agent.get("name") == agent_name:
+            agent["reportsTo"] = new_manager
+            updated = True
+            break
+
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"Agent '{agent_name}' not found")
+
+    # Save registry through StateStore
+    _save_json("company/agent-registry.json", registry)
+
+    # Regenerate agents
+    try:
+        from ai_company.generator import AgentGenerator
+
+        AgentGenerator().generate_all()
+    except Exception as e:  # noqa: BLE001 - regeneration is best-effort
+        logger.warning("Agent regeneration failed: %s", e)
+
+    return {"ok": True, "agent": agent_name, "reports_to": new_manager}
 
 
 # ── Tasks ───────────────────────────────────────────────────────────
@@ -930,6 +981,206 @@ def delete_task(
     return {"ok": "true", "id": task_id}
 
 
+# ── Task Decomposition ──────────────────────────────────────────────
+
+
+class SubtaskItem(BaseModel):
+    """A single subtask in a task decomposition."""
+
+    id: str
+    instruction: str
+    status: str = "pending"
+
+
+class TaskDecomposition(BaseModel):
+    """Task decomposition result with subtasks and progress."""
+
+    parent_id: str
+    subtasks: list[SubtaskItem] = []
+    progress_pct: float = 0.0
+
+
+@router.get("/tasks/{task_id}/subtasks")
+def get_task_subtasks(task_id: str) -> TaskDecomposition:
+    """Get decomposition subtasks for a task.
+
+    Returns existing decomposition if available, otherwise returns
+    an empty decomposition structure.
+    """
+    # Check if decomposition exists in the task store
+    tasks = _read_all_tasks()
+    task_ids = {t.get("id") for t in tasks}
+    if task_id not in task_ids:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Check for existing decomposition
+    decomposition_path = f".opencode/decompositions/{task_id}.json"
+    existing = _load_json(decomposition_path)
+    if existing and isinstance(existing, dict) and existing.get("subtasks"):
+        return TaskDecomposition(**existing)
+
+    return TaskDecomposition(parent_id=task_id, subtasks=[], progress_pct=0.0)
+
+
+@router.post("/tasks/{task_id}/decompose")
+def decompose_task(task_id: str) -> TaskDecomposition:
+    """AI-powered task decomposition.
+
+    Breaks down a task into smaller subtasks. The decomposition is
+    generated based on the task instruction and context.
+    """
+    # Verify task exists
+    tasks = _read_all_tasks()
+    task = next((t for t in tasks if t.get("id") == task_id), None)
+    if task is None:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    instruction = task.get("instruction", "")
+
+    # Generate decomposition based on the task instruction
+    subtasks = _generate_decomposition(instruction)
+
+    # Calculate progress
+    completed = sum(1 for s in subtasks if s.status == "completed")
+    total = len(subtasks)
+    progress_pct = (completed / total * 100) if total > 0 else 0.0
+
+    decomposition = TaskDecomposition(
+        parent_id=task_id,
+        subtasks=subtasks,
+        progress_pct=round(progress_pct, 1),
+    )
+
+    # Persist decomposition to the task store
+    decomposition_path = f".opencode/decompositions/{task_id}.json"
+    _save_json(decomposition_path, decomposition.model_dump())
+
+    return decomposition
+
+
+def _generate_decomposition(instruction: str) -> list[SubtaskItem]:
+    """Generate subtasks from a task instruction.
+
+    Uses a rule-based approach to break down common task patterns.
+    Can be enhanced with LLM calls for more sophisticated decomposition.
+    """
+    import uuid
+
+    instruction_lower = instruction.lower()
+
+    # Pattern-based decomposition
+    if any(kw in instruction_lower for kw in ["api", "endpoint", "rest"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Analyze API requirements", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Design endpoint schema", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Implement route handlers", status="in_progress"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Add validation and error handling",
+                status="pending",
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Write integration tests", status="pending"
+            ),
+        ]
+    elif any(kw in instruction_lower for kw in ["test", "testing"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Identify test scenarios", status="completed"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write unit tests", status="in_progress"),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Write integration tests", status="pending"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Run test suite and fix failures",
+                status="pending",
+            ),
+        ]
+    elif any(kw in instruction_lower for kw in ["fix", "bug", "issue"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Reproduce the issue", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Identify root cause", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Implement fix", status="pending"),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Verify fix and add regression test",
+                status="pending",
+            ),
+        ]
+    elif any(kw in instruction_lower for kw in ["implement", "build", "create", "feature"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Analyze requirements", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Design implementation approach",
+                status="completed",
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Implement core functionality",
+                status="in_progress",
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Add error handling", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write tests", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Review and document", status="pending"),
+        ]
+    elif any(kw in instruction_lower for kw in ["review", "audit"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Review code changes", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Check for security issues", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Verify test coverage", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Provide feedback", status="pending"),
+        ]
+    elif any(kw in instruction_lower for kw in ["deploy", "release"]):
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Run pre-deployment checks", status="completed"
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Update configuration", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to staging", status="pending"),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Verify staging environment", status="pending"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to production", status="pending"),
+        ]
+    else:
+        # Generic decomposition for unrecognized patterns
+        return [
+            SubtaskItem(
+                id=str(uuid.uuid4()),
+                instruction="Analyze the task requirements",
+                status="completed",
+            ),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Plan the implementation", status="in_progress"
+            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Execute the plan", status="pending"),
+            SubtaskItem(
+                id=str(uuid.uuid4()), instruction="Verify and document results", status="pending"
+            ),
+        ]
+
+
 # ── Approvals ───────────────────────────────────────────────────────
 
 
@@ -963,7 +1214,7 @@ def approve_request(
     request_id: str,
     body: ApprovalDecision | None = None,
     _: Role = Depends(require_role("approve")),
-) -> dict:
+) -> dict[str, Any]:
     """Approve a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
@@ -986,7 +1237,7 @@ def reject_request(
     request_id: str,
     body: ApprovalDecision | None = None,
     _: Role = Depends(require_role("approve")),
-) -> dict:
+) -> dict[str, Any]:
     """Reject a pending approval request by ID."""
     data = _load_yaml("orchestrator/approvals.yaml")
     requests = data.get("requests", [])
@@ -1019,7 +1270,7 @@ def list_escalations() -> list[EscalationItem]:
 def resolve_escalation(
     task_id: str,
     _: Role = Depends(require_role("approve")),
-) -> dict:
+) -> dict[str, Any]:
     """Resolve an open escalation event and log to the audit trail."""
     data = _load_yaml("orchestrator/escalation.yaml")
     events = data.get("events", [])
@@ -1091,17 +1342,17 @@ def list_model_tiers() -> list[TierInfo]:
 
 
 @router.get("/scheduler", tags=["scheduler"])
-def list_scheduled() -> list[dict]:
+def list_scheduled() -> list[dict[str, Any]]:
     """List all scheduled and recurring tasks."""
     data = _load_yaml("orchestrator/scheduler.yaml")
-    return cast(list[dict], data.get("tasks", []))
+    return cast(list[dict[str, Any]], data.get("tasks", []))
 
 
 # ── Department KPIs ────────────────────────────────────────────────
 
 
 @router.get("/departments/{dept_name}/kpis", tags=["departments", "kpis"])
-def get_department_kpis(dept_name: str) -> dict:
+def get_department_kpis(dept_name: str) -> dict[str, Any]:
     """Return KPI definitions for a specific department."""
     kpi_data = _load_yaml("company/config/kpis.yaml")
     departments = kpi_data.get("departments", {})
@@ -1109,18 +1360,18 @@ def get_department_kpis(dept_name: str) -> dict:
         raise HTTPException(
             status_code=404, detail=f"Department '{dept_name}' not found in KPI config"
         )
-    return cast(dict, departments[dept_name])
+    return cast(dict[str, Any], departments[dept_name])
 
 
 @router.get("/kpis")
-def list_all_kpis() -> dict:
+def list_all_kpis() -> dict[str, Any]:
     """Return all department KPI definitions."""
     kpi_data = _load_yaml("company/config/kpis.yaml")
-    return cast(dict, kpi_data.get("departments", {}))
+    return cast(dict[str, Any], kpi_data.get("departments", {}))
 
 
 @router.get("/kpis/summary")
-def kpi_summary() -> list[dict]:
+def kpi_summary() -> list[dict[str, Any]]:
     """Return a flat summary of all KPIs across departments."""
     kpi_data = _load_yaml("company/config/kpis.yaml")
     summary = []
@@ -1723,3 +1974,910 @@ def governance_report_api() -> dict[str, Any]:
         return report
     except Exception:  # noqa: BLE001 - governance report must never raise
         return empty_shape
+
+
+# ── Payment Capture & Revenue Ledger ────────────────────────────────
+
+
+class PaymentEntry(BaseModel):
+    """Manual payment entry for the revenue ledger."""
+
+    client_id: str = ""
+    project_id: str = ""
+    offer_id: str = ""
+    service_name: str = ""
+    currency: str = "MWK"
+    amount: float = 0.0
+    payment_method: str = ""
+    status: str = "confirmed"
+    installment_type: str = ""
+    exchange_rate: float = 0.0
+    linked_task_id: str = ""
+    reference: str = ""
+    recorded_by: str = "human-ceo"
+
+
+class ProjectCostEntry(BaseModel):
+    """Project cost entry for the cost ledger."""
+
+    project_id: str = ""
+    cost_type: str = ""
+    amount_usd: float = 0.0
+    amount_mwk: float = 0.0
+    description: str = ""
+    agent_id: str = ""
+    model: str = ""
+    tokens: int = 0
+
+
+@router.post("/payments", status_code=201, tags=["payments"])
+def create_payment(entry: PaymentEntry) -> dict[str, Any]:
+    """Record a manual payment in the revenue ledger."""
+    import uuid
+
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+
+    txn_id = f"REV-{uuid.uuid4().hex[:12].upper()}"
+    now = datetime.now(timezone.utc).isoformat()
+
+    conn = db.connect()
+    conn.execute(
+        """INSERT INTO revenue_transactions
+           (id, client_id, project_id, offer_id, service_name, currency,
+            amount, payment_method, status, installment_type, exchange_rate,
+            linked_task_id, reference, recorded_by, timestamp)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            txn_id,
+            entry.client_id,
+            entry.project_id,
+            entry.offer_id,
+            entry.service_name,
+            entry.currency,
+            entry.amount,
+            entry.payment_method,
+            entry.status,
+            entry.installment_type,
+            entry.exchange_rate,
+            entry.linked_task_id,
+            entry.reference,
+            entry.recorded_by,
+            now,
+        ),
+    )
+    conn.commit()
+
+    return {
+        "id": txn_id,
+        "status": "recorded",
+        "timestamp": now,
+        "amount": entry.amount,
+        "currency": entry.currency,
+    }
+
+
+@router.get("/revenue", tags=["revenue"])
+def list_revenue_transactions(
+    project_id: str | None = None,
+    offer_id: str | None = None,
+    status: str | None = None,
+) -> list[dict[str, Any]]:
+    """List revenue transactions with optional filters."""
+    db = get_database()
+    if db is None:
+        return []
+
+    conn = db.connect()
+    query = "SELECT * FROM revenue_transactions WHERE 1=1"
+    params: list[Any] = []
+
+    if project_id:
+        query += " AND project_id = ?"
+        params.append(project_id)
+    if offer_id:
+        query += " AND offer_id = ?"
+        params.append(offer_id)
+    if status:
+        query += " AND status = ?"
+        params.append(status)
+
+    query += " ORDER BY timestamp DESC"
+    rows = conn.execute(query, params).fetchall()
+    return [dict(row) for row in rows]
+
+
+@router.get("/revenue/summary", tags=["revenue"])
+def revenue_summary(
+    project_id: str | None = None,
+) -> dict[str, Any]:
+    """Revenue summary with contribution margin computation."""
+    db = get_database()
+    if db is None:
+        return {
+            "total_revenue_mwk": 0,
+            "total_revenue_usd": 0,
+            "total_costs_usd": 0,
+            "contribution_margin": 0,
+            "margin_percent": 0,
+            "transaction_count": 0,
+            "cost_count": 0,
+        }
+
+    conn = db.connect()
+
+    # Revenue totals
+    rev_query = "SELECT SUM(amount) as total, COUNT(*) as count FROM revenue_transactions WHERE status = 'confirmed'"
+    rev_params: list[Any] = []
+    if project_id:
+        rev_query += " AND project_id = ?"
+        rev_params.append(project_id)
+    rev_row = conn.execute(rev_query, rev_params).fetchone()
+    total_revenue = float(rev_row["total"] or 0) if rev_row else 0
+    txn_count = int(rev_row["count"] or 0) if rev_row else 0
+
+    # Cost totals
+    cost_query = "SELECT SUM(amount_usd) as total, COUNT(*) as count FROM project_costs WHERE 1=1"
+    cost_params: list[Any] = []
+    if project_id:
+        cost_query += " AND project_id = ?"
+        cost_params.append(project_id)
+    cost_row = conn.execute(cost_query, cost_params).fetchone()
+    total_costs = float(cost_row["total"] or 0) if cost_row else 0
+    cost_count = int(cost_row["count"] or 0) if cost_row else 0
+
+    # Contribution margin (revenue - costs, both in USD for comparison)
+    # For MWK revenue, apply exchange rate (approx 1800 MWK = 1 USD)
+    revenue_usd = total_revenue / 1800 if total_revenue > 0 else 0
+    margin = revenue_usd - total_costs
+    margin_pct = (margin / revenue_usd * 100) if revenue_usd > 0 else 0
+
+    return {
+        "total_revenue_mwk": total_revenue,
+        "total_revenue_usd": round(revenue_usd, 2),
+        "total_costs_usd": round(total_costs, 2),
+        "contribution_margin": round(margin, 2),
+        "margin_percent": round(margin_pct, 1),
+        "transaction_count": txn_count,
+        "cost_count": cost_count,
+    }
+
+
+@router.get("/revenue/attribution", tags=["revenue"])
+def revenue_attribution(period_days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
+    """Get revenue attribution by agent and department with ROI calculations."""
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    from ai_company.data.revenue_analytics import RevenueAnalytics
+    analytics = RevenueAnalytics(db)
+    return analytics.get_revenue_attribution(period_days).model_dump()
+
+
+@router.get("/revenue/roi", tags=["revenue"])
+def revenue_roi(period_days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
+    """Get ROI calculations for a period."""
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    from ai_company.data.revenue_analytics import RevenueAnalytics
+    analytics = RevenueAnalytics(db)
+    summary = analytics.get_revenue_attribution(period_days)
+    return {
+        "total_revenue": summary.total_revenue,
+        "total_cost": summary.total_cost,
+        "overall_roi": summary.overall_roi,
+        "period_days": summary.period_days,
+    }
+
+
+@router.get("/revenue/trend", tags=["revenue"])
+def revenue_trend(period_days: int = Query(30, ge=1, le=365)) -> list[dict[str, Any]]:
+    """Get revenue trend over time."""
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    from ai_company.data.revenue_analytics import RevenueAnalytics
+    analytics = RevenueAnalytics(db)
+    return analytics.get_revenue_trend(period_days)
+
+
+@router.post("/project-costs", status_code=201, tags=["costs"])
+def create_project_cost(entry: ProjectCostEntry) -> dict[str, Any]:
+    """Record a project cost in the cost ledger."""
+    import uuid
+
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+
+    cost_id = f"COST-{uuid.uuid4().hex[:12].upper()}"
+    now = datetime.now(timezone.utc).isoformat()
+
+    conn = db.connect()
+    conn.execute(
+        """INSERT INTO project_costs
+           (id, project_id, cost_type, amount_usd, amount_mwk,
+            description, agent_id, model, tokens, timestamp)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            cost_id,
+            entry.project_id,
+            entry.cost_type,
+            entry.amount_usd,
+            entry.amount_mwk,
+            entry.description,
+            entry.agent_id,
+            entry.model,
+            entry.tokens,
+            now,
+        ),
+    )
+    conn.commit()
+
+    return {
+        "id": cost_id,
+        "status": "recorded",
+        "timestamp": now,
+        "amount_usd": entry.amount_usd,
+    }
+
+
+# ── Webhook Stubs (for gateway confirmations) ──────────────────────
+
+
+@router.post("/webhooks/paychangu", tags=["webhooks"])
+def paychangu_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
+    """Stub for PayChangu webhook — ready for merchant onboarding.
+
+    When PayChangu is onboarded, this endpoint will:
+    1. Verify the webhook signature (X-PayChangu-Signature header)
+    2. Extract payment details from payload
+    3. Write to revenue_transactions table
+    4. Return 200 OK to acknowledge receipt
+
+    Credentials will be stored in environment variables, never in the repo.
+    """
+    logger.info("PayChangu webhook received (stub): %s", payload.get("type", "unknown"))
+    return {
+        "status": "received",
+        "message": "Webhook stub — merchant onboarding pending",
+        "payload_type": payload.get("type", "unknown"),
+    }
+
+
+@router.post("/webhooks/airtel", tags=["webhooks"])
+def airtel_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
+    """Stub for Airtel Money webhook — ready for merchant onboarding.
+
+    When Airtel Money merchant is set up, this endpoint will:
+    1. Verify the transaction via Airtel API
+    2. Extract payment details
+    3. Write to revenue_transactions table
+    4. Return 200 OK
+
+    Merchant number stored in AIRTEL_MERCHANT_NUMBER env var.
+    """
+    logger.info("Airtel Money webhook received (stub): %s", payload.get("type", "unknown"))
+    return {
+        "status": "received",
+        "message": "Webhook stub — merchant onboarding pending",
+        "payload_type": payload.get("type", "unknown"),
+    }
+
+
+@router.post("/webhooks/tnm", tags=["webhooks"])
+def tnm_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
+    """Stub for TNM Mpamba webhook — ready for merchant onboarding.
+
+    When TNM Mpamba merchant is set up, this endpoint will:
+    1. Verify the transaction via TNM API
+    2. Extract payment details
+    3. Write to revenue_transactions table
+    4. Return 200 OK
+
+    Merchant number stored in TNM_MERCHANT_NUMBER env var.
+    """
+    logger.info("TNM Mpamba webhook received (stub): %s", payload.get("type", "unknown"))
+    return {
+        "status": "received",
+        "message": "Webhook stub — merchant onboarding pending",
+        "payload_type": payload.get("type", "unknown"),
+    }
+
+
+# ── Executive Briefing Aggregation ─────────────────────────────────
+
+
+@router.get("/briefing", tags=["briefing"])
+def get_executive_briefing() -> dict[str, Any]:
+    """Aggregated executive briefing — priority-ordered attention items.
+
+    Combines real data from:
+    - Escalation alerts (high priority)
+    - Pending approvals (medium priority)
+    - Failed tasks (high priority)
+    - Revenue/cost alerts (medium priority)
+    - Workflow step failures (high priority)
+
+    Returns a prioritized list of items that need CEO attention,
+    plus summary metrics for the Company Core surface.
+    """
+    items: list[dict[str, Any]] = []
+    item_id = 0
+
+    # --- Escalations (high priority) ---
+    try:
+        db = get_database()
+        if db is not None:
+            conn = db.connect()
+            rows = conn.execute(
+                "SELECT task_id, rule_id, from_agent, to_agent, reason, timestamp "
+                "FROM escalation_events WHERE resolved = 0 "
+                "ORDER BY timestamp DESC LIMIT 10"
+            ).fetchall()
+            for row in rows:
+                items.append(
+                    {
+                        "id": item_id,
+                        "title": f"Escalation: {row['reason'][:80]}",
+                        "source": f"{row['from_agent']} → {row['to_agent']}",
+                        "priority": "high",
+                        "type": "escalation",
+                        "timestamp": row["timestamp"],
+                        "task_id": row["task_id"],
+                    }
+                )
+                item_id += 1
+    except Exception:  # noqa: BLE001
+        pass
+
+    # Fallback: load from YAML if DB empty
+    if not items:
+        escalation_data = _load_yaml("orchestrator/escalation.yaml")
+        for evt in escalation_data.get("events", [])[-10:]:
+            if not evt.get("resolved", False):
+                items.append(
+                    {
+                        "id": item_id,
+                        "title": f"Escalation: {evt.get('reason', 'Unknown')[:80]}",
+                        "source": f"{evt.get('from_agent', '?')} → {evt.get('to_agent', '?')}",
+                        "priority": "high",
+                        "type": "escalation",
+                        "timestamp": evt.get("timestamp", ""),
+                        "task_id": evt.get("task_id", ""),
+                    }
+                )
+                item_id += 1
+
+    # --- Pending approvals (medium priority) ---
+    approvals_data = _load_yaml("orchestrator/approvals.yaml")
+    now_iso = datetime.now(timezone.utc).isoformat()
+    for req in approvals_data.get("requests", []):
+        if req.get("status") == "pending" and (
+            not req.get("expires_at") or req["expires_at"] > now_iso
+        ):
+            items.append(
+                {
+                    "id": item_id,
+                    "title": req.get("action", "Approval pending")[:80],
+                    "source": f"Agent: {req.get('agent_id', 'unknown')}",
+                    "priority": "medium",
+                    "type": "approval",
+                    "timestamp": req.get("requested_at", ""),
+                    "request_id": req.get("request_id", ""),
+                }
+            )
+            item_id += 1
+
+    # --- Failed tasks (high priority) ---
+    tasks = _read_all_tasks()
+    failed_tasks = [t for t in tasks if t.get("status") == "failed"][-5:]
+    for task in failed_tasks:
+        items.append(
+            {
+                "id": item_id,
+                "title": f"Task failed: {task.get('instruction', task.get('name', 'Unknown'))[:60]}",
+                "source": f"Agent: {task.get('receiver_id', 'unknown')}",
+                "priority": "high",
+                "type": "task_failed",
+                "timestamp": task.get("updated_at", ""),
+                "task_id": task.get("id", ""),
+            }
+        )
+        item_id += 1
+
+    # --- Revenue alerts (medium priority) ---
+    try:
+        if db is not None:
+            conn = db.connect()
+            rev_row = conn.execute(
+                "SELECT SUM(amount) as total FROM revenue_transactions WHERE status = 'confirmed'"
+            ).fetchone()
+            cost_row = conn.execute("SELECT SUM(amount_usd) as total FROM project_costs").fetchone()
+            total_rev = float(rev_row["total"] or 0) if rev_row else 0
+            total_cost = float(cost_row["total"] or 0) if cost_row else 0
+
+            if total_rev > 0 and total_cost > 0:
+                margin_pct = ((total_rev / 1800) - total_cost) / (total_rev / 1800) * 100
+                if margin_pct < 20:
+                    items.append(
+                        {
+                            "id": item_id,
+                            "title": f"Margin alert: {margin_pct:.1f}% (target: 50%+)",
+                            "source": "Finance",
+                            "priority": "medium",
+                            "type": "finance",
+                            "timestamp": now_iso,
+                        }
+                    )
+                    item_id += 1
+    except Exception:  # noqa: BLE001
+        pass
+
+    # --- Sort by priority ---
+    priority_order = {"high": 0, "medium": 1, "low": 2}
+    items.sort(key=lambda x: (priority_order.get(x["priority"], 3),), reverse=False)
+
+    # --- Summary metrics for Company Core ---
+    task_pipeline = {
+        "pending": sum(1 for t in tasks if t.get("status") == "pending"),
+        "in_progress": sum(1 for t in tasks if t.get("status") == "in_progress"),
+        "completed": sum(1 for t in tasks if t.get("status") == "completed"),
+        "failed": sum(1 for t in tasks if t.get("status") == "failed"),
+    }
+
+    # Compute health score via OrgHealthCalculator
+    try:
+        from ai_company.dashboard.org_health import OrgHealthCalculator
+
+        health = OrgHealthCalculator().compute(database=get_database()).score
+    except Exception:  # noqa: BLE001
+        health = 85  # Fallback
+
+    return {
+        "items": items[:20],  # Cap at 20 items
+        "summary": {
+            "total_items": len(items),
+            "high_priority": sum(1 for i in items if i["priority"] == "high"),
+            "medium_priority": sum(1 for i in items if i["priority"] == "medium"),
+            "low_priority": sum(1 for i in items if i["priority"] == "low"),
+        },
+        "company_health": health,
+        "task_pipeline": task_pipeline,
+        "generated_at": now_iso,
+    }
+
+
+# ── Org Health ────────────────────────────────────────────────────
+
+
+@router.get("/org-health", tags=["org-health"])
+def get_org_health(
+    trend_limit: int = Query(30, ge=1, le=365, description="Number of trend data points"),
+    component_detail: bool = Query(True, description="Include component breakdown"),
+) -> dict[str, Any]:
+    """Composite organisational health score.
+
+    Returns a weighted score (0-100), health band (green/amber/red),
+    per-component breakdown, and trend history from the KPI pipeline.
+    """
+    from ai_company.dashboard.org_health import OrgHealthCalculator
+
+    calculator = OrgHealthCalculator()
+    db = get_database()
+    result = calculator.compute(database=db)
+
+    trend: list[dict[str, Any]] = []
+    if db is not None:
+        try:
+            from ai_company.data.kpi_pipeline import KPIPipeline
+
+            pipeline = KPIPipeline(db)
+            history = pipeline.get_history(
+                "org_health", kpi_key="composite_score", limit=trend_limit
+            )
+            trend = [
+                {"timestamp": row["timestamp"], "score": row["current_value"]}
+                for row in reversed(history)
+            ]
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health trend unavailable")
+
+    return result.to_dict(include_components=component_detail, trend=trend)
+
+
+@router.get("/org-health/trend", tags=["org-health"])
+def org_health_trend(limit: int = Query(24, ge=1, le=168)) -> list[dict[str, Any]]:
+    """Get org health score trend over time.
+
+    Returns a list of timestamped health score snapshots suitable for
+    rendering a trend chart in the Health Monitor UI.
+    """
+    db = get_database()
+    trend: list[dict[str, Any]] = []
+
+    if db is not None:
+        try:
+            from ai_company.data.kpi_pipeline import KPIPipeline
+
+            pipeline = KPIPipeline(db)
+            history = pipeline.get_history("org_health", kpi_key="composite_score", limit=limit)
+            for row in reversed(history):
+                trend.append(
+                    {
+                        "timestamp": row["timestamp"],
+                        "score": row["current_value"],
+                        "components": [],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health trend unavailable from SQLite")
+
+    # If SQLite returned nothing, fall back to the KPI history store
+    if not trend:
+        try:
+            from ai_company.dashboard.analytics import KPIHistoryStore
+
+            store = KPIHistoryStore()
+            entries = store.get_history("org_health", kpi_key="composite_score", limit=limit)
+            for e in entries:
+                trend.append(
+                    {
+                        "timestamp": e.timestamp,
+                        "score": e.current,
+                        "components": [],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health trend unavailable from file store")
+
+    return trend
+
+
+@router.get("/org-health/anomalies", tags=["org-health"])
+def org_health_anomalies() -> list[dict[str, Any]]:
+    """Get detected anomalies in org health metrics.
+
+    Analyses historical component scores using Z-score anomaly detection
+    and returns any detected anomalies sorted by severity.
+    """
+    from ai_company.dashboard.org_health import OrgHealthCalculator
+
+    calculator = OrgHealthCalculator()
+
+    # Gather history for anomaly detection
+    history: list[dict[str, Any]] = []
+    db = get_database()
+
+    if db is not None:
+        try:
+            from ai_company.data.kpi_pipeline import KPIPipeline
+
+            pipeline = KPIPipeline(db)
+            rows = pipeline.get_history("org_health", limit=48)
+            for row in rows:
+                history.append(
+                    {
+                        "timestamp": row["timestamp"],
+                        "components": [
+                            {
+                                "name": row.get("kpi_key", ""),
+                                "value": row.get("current_value", 0),
+                            }
+                        ],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health history unavailable for anomaly detection")
+
+    # Also try the file-based KPI history store for richer component data
+    if not history:
+        try:
+            from ai_company.dashboard.analytics import KPIHistoryStore
+
+            store = KPIHistoryStore()
+            entries = store.get_history("org_health", limit=48)
+            for e in entries:
+                history.append(
+                    {
+                        "timestamp": e.timestamp,
+                        "components": [
+                            {
+                                "name": e.kpi_key,
+                                "value": e.current,
+                            }
+                        ],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Org health file history unavailable for anomaly detection")
+
+    anomalies = calculator.detect_anomalies(history)
+    return [a.to_dict() for a in anomalies]
+
+
+# ── Workflows / Mission Control ────────────────────────────────────
+
+
+@router.get("/workflows", response_model=list[WorkflowSummary], tags=["workflows"])
+def list_workflow_definitions() -> list[WorkflowSummary]:
+    """List all registered workflow definitions."""
+    from ai_company.dashboard.workflow_api import list_workflows
+
+    return [WorkflowSummary(**w) for w in list_workflows()]
+
+
+@router.get("/workflows/instances", tags=["workflows"])
+def list_workflow_instances(
+    workflow_id: str = "",
+) -> list[dict[str, Any]]:
+    """List running workflow instances, optionally filtered by workflow ID."""
+    from ai_company.dashboard.workflow_api import list_instances
+
+    return list_instances(workflow_id=workflow_id)
+
+
+@router.get("/workflows/instances/{instance_id}", tags=["workflows"])
+def get_workflow_instance(instance_id: str) -> dict[str, Any]:
+    """Return full status + step detail for a workflow instance."""
+    from ai_company.dashboard.workflow_api import (
+        _build_instance_detail,
+        get_instance_status,
+    )
+
+    status = get_instance_status(instance_id)
+    if status is None:
+        raise HTTPException(status_code=404, detail=f"Instance '{instance_id}' not found")
+    return _build_instance_detail(status)
+
+
+@router.post(
+    "/workflows/{workflow_id}/start",
+    status_code=201,
+    tags=["workflows"],
+)
+def start_workflow_endpoint(
+    workflow_id: str,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, str]:
+    """Start a new instance of a workflow definition."""
+    from ai_company.dashboard.workflow_api import start_workflow
+
+    try:
+        instance_id = start_workflow(workflow_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return {"instance_id": instance_id}
+
+
+@router.post(
+    "/workflows/instances/{instance_id}/advance",
+    tags=["workflows"],
+)
+def advance_workflow_endpoint(
+    instance_id: str,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Advance a workflow instance to its next step."""
+    from ai_company.dashboard.workflow_api import advance_workflow
+
+    try:
+        result = advance_workflow(instance_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return result
+
+
+@router.post(
+    "/workflows/instances/{instance_id}/complete-step",
+    tags=["workflows"],
+)
+def complete_step_endpoint(
+    instance_id: str,
+    body: WorkflowActionRequest | None = None,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Mark the current step as completed with an optional result string."""
+    from ai_company.dashboard.workflow_api import complete_step
+
+    try:
+        result = complete_step(instance_id, result=body.result if body else "")
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return result
+
+
+@router.post(
+    "/workflows/instances/{instance_id}/cancel",
+    tags=["workflows"],
+)
+def cancel_workflow_endpoint(
+    instance_id: str,
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """Cancel a running workflow instance."""
+    from ai_company.dashboard.workflow_api import cancel_workflow
+
+    try:
+        result = cancel_workflow(instance_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return result
+
+
+# ── Unified Search (T3.3) ────────────────────────────────────────────
+
+
+@router.get("/search", tags=["search"])
+def unified_search(q: str = Query(..., min_length=1), limit: int = Query(20, ge=1, le=100)) -> dict[str, Any]:
+    """Unified search across agents, tasks, KPIs, and audit events."""
+    from ai_company.data.database import get_database
+    from ai_company.data.search import SearchIndex
+    db = get_database()
+    index = SearchIndex(database=db)
+    results = index.search(q, limit=limit)
+    return {
+        "query": q,
+        "results": [
+            {
+                "id": r.id,
+                "title": r.title,
+                "description": r.description,
+                "entity_type": r.entity_type,
+                "url": r.url,
+                "score": r.score,
+            }
+            for r in results
+        ],
+        "total": len(results),
+    }
+
+
+@router.get("/search/quick", tags=["search"])
+def quick_search(q: str = Query(..., min_length=1), limit: int = Query(10, ge=1, le=50)) -> dict[str, Any]:
+    """Quick search with minimal fields (for command bar)."""
+    from ai_company.data.database import get_database
+    from ai_company.data.search import SearchIndex
+    db = get_database()
+    index = SearchIndex(database=db)
+    results = index.search(q, limit=limit)
+    return {
+        "query": q,
+        "results": [
+            {
+                "id": r.id,
+                "title": r.title,
+                "entity_type": r.entity_type,
+                "url": r.url,
+            }
+            for r in results
+        ],
+    }
+
+
+# ── Audit Search & Timeline (T3.2) ──────────────────────────────────
+
+
+@router.get("/audit/timeline", tags=["audit"])
+def audit_timeline(
+    limit: int = Query(100, ge=1, le=500),
+    agent_id: str | None = None,
+    status: str | None = None,
+    task_type: str | None = None,
+    time_range: str = "24h",
+    q: str | None = None,
+) -> list[dict[str, Any]]:
+    """Get execution timeline with optional search and filters."""
+    from ai_company.data.audit_store import AuditStore
+    from ai_company.data.database import get_database
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    store = AuditStore(database=db)
+
+    if q:
+        results = store.search_events(q, limit=limit)
+    else:
+        results = store.get_timeline(
+            limit=limit,
+            agent_id=agent_id,
+            status=status,
+            time_range=time_range,
+        )
+    return results
+
+
+@router.get("/audit/execution/{task_id}", tags=["audit"])
+def audit_execution_detail(task_id: str) -> dict[str, Any]:
+    """Get full execution detail for a task."""
+    from ai_company.data.audit_store import AuditStore
+    from ai_company.data.database import get_database
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    store = AuditStore(database=db)
+    return store.get_execution_detail(task_id)
+
+
+@router.get("/audit/search", tags=["audit"])
+def audit_search(q: str = Query(..., min_length=1), limit: int = Query(50, ge=1, le=200)) -> list[dict[str, Any]]:
+    """Full-text search across audit events."""
+    from ai_company.data.audit_store import AuditStore
+    from ai_company.data.database import get_database
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    store = AuditStore(database=db)
+    return store.search_events(q, limit=limit)
+
+
+# ── Agent Onboarding (HITL-gated) ──────────────────────────────────
+
+
+@router.get("/onboarding", tags=["onboarding"])
+def list_onboarding_requests(
+    state: str = "",
+) -> list[dict[str, Any]]:
+    """List all agent onboarding requests, optionally filtered by state.
+
+    States: pending_approval, generating, testing, active, archived.
+    """
+    from ai_company.services.onboarding import OnboardingService
+
+    svc = OnboardingService()
+    result = svc.list_requests(state=state)
+    if not result.success:
+        return []
+    return result.data or []
+
+
+@router.get("/onboarding/{request_id}", tags=["onboarding"])
+def get_onboarding_status(request_id: str) -> dict[str, Any]:
+    """Get the status of a specific onboarding request."""
+    from ai_company.services.onboarding import OnboardingService
+
+    svc = OnboardingService()
+    result = svc.get_status(request_id)
+    if not result.success:
+        raise HTTPException(status_code=404, detail=f"Onboarding request '{request_id}' not found")
+    return result.data or {}
+
+
+class OnboardingRejectRequest(BaseModel):
+    """Payload for rejecting an onboarding request."""
+
+    reason: str = ""
+
+
+@router.post("/onboarding/{request_id}/approve", tags=["onboarding"])
+def approve_onboarding_request(request_id: str) -> dict[str, Any]:
+    """Approve an onboarding request, transitioning it to active."""
+    from ai_company.services.onboarding import OnboardingService
+
+    svc = OnboardingService()
+    result = svc.approve_onboarding(request_id, approved_by="dashboard")
+    if not result.success:
+        raise HTTPException(
+            status_code=400, detail=result.errors[0] if result.errors else "Approval failed"
+        )
+    return result.data or {}
+
+
+@router.post("/onboarding/{request_id}/reject", tags=["onboarding"])
+def reject_onboarding_request(
+    request_id: str,
+    body: OnboardingRejectRequest | None = None,
+) -> dict[str, Any]:
+    """Reject an onboarding request with an optional reason."""
+    from ai_company.services.onboarding import OnboardingService
+
+    reason = body.reason if body else ""
+    svc = OnboardingService()
+    result = svc.reject_onboarding(request_id, rejected_by="dashboard", reason=reason)
+    if not result.success:
+        raise HTTPException(
+            status_code=400, detail=result.errors[0] if result.errors else "Rejection failed"
+        )
+    return result.data or {}

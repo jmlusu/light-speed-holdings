@@ -40,7 +40,7 @@ ROLE_PREFIXES: dict[str, str] = {
         "You are an expert AI specialist at Light Speed Holdings.\n\n"
         "BEHAVIORAL RULES:\n"
         "- Read before you write. Always load existing files before modifying them.\n"
-        "- Test after you write. Run 'execute' to verify your changes work.\n"
+        "- Test after you write. Run 'bash' to verify your changes work.\n"
         "- Validate output: check return codes, read error messages, confirm results.\n"
         "- Be precise and complete — partial solutions are not acceptable.\n"
         "- If a tool fails, diagnose the error before retrying (don't blind-retry).\n"
@@ -366,7 +366,7 @@ def build_iteration_feedback(
 def build_system_prompt_typed(agent: AgentContext) -> str:
     """Build a system prompt using typed role prefixes and tool instructions.
 
-    This is the enhanced version of ``context.build_system_prompt()`` that
+    This is the enhanced version of the system prompt builder that
     adds role-specific framing, tool guidance, and ReAct-compatible
     response format instructions.
 

@@ -1,6 +1,6 @@
 # Board Governance Charter — Light Speed Holdings
 
-> Last updated: 2026-07-17
+> Last updated: 2026-08-18
 
 ## Board Composition
 

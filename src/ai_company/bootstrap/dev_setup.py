@@ -35,6 +35,24 @@ FALLBACK_REQUIRED_ENV_VARS = (
     "DASHBOARD_API_KEY",
 )
 
+# Vars that are auto-discovered from .env.example but are NOT required for
+# a working dev environment. They are optional (have safe defaults in code)
+# and documented in .env.example so they still show up in the template, but
+# the bootstrap should not fail when they are absent or left as placeholders.
+OPTIONAL_ENV_VARS = frozenset(
+    {
+        "DASHBOARD_AUTH_MODE",
+        "DASHBOARD_HOST",
+        "DASHBOARD_CORS_ORIGINS",
+        "DASHBOARD_RATE_LIMIT",
+        "DASHBOARD_RUN_KEY",
+        "DASHBOARD_APPROVE_KEY",
+        "DASHBOARD_ADMIN_KEY",
+        "AI_COMPANY_ROOT",
+        "AI_COMPANY_ENV",
+    }
+)
+
 _PLACEHOLDER_HINTS = ("your_", "changeme", "placeholder", "example", "xxxx")
 
 

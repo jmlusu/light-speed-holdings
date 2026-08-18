@@ -40,7 +40,7 @@ For push notification registration, devices also provide a device token.
 
 Condensed KPI payload designed to minimize data transfer on cellular networks.
 
-### `GET /api/mobile/dashboard`
+### `GET /api/v1/mobile/dashboard`
 
 Returns a compact dashboard summary with only the most critical metrics for mobile viewing.
 
@@ -81,7 +81,7 @@ Returns a compact dashboard summary with only the most critical metrics for mobi
 }
 ```
 
-**Payload Size:** ~1.2 KB typical (vs ~3.5 KB for full `/api/dashboard` + `/api/tasks`)
+**Payload Size:** ~1.2 KB typical (vs ~3.5 KB for full `/api/v1/dashboard` + `/api/v1/tasks`)
 
 **Design Notes:**
 - `recent_tasks` limited to 5 items maximum
@@ -96,7 +96,7 @@ Returns a compact dashboard summary with only the most critical metrics for mobi
 
 Task list endpoint with cursor-based pagination for efficient scrolling on mobile.
 
-### `GET /api/mobile/tasks`
+### `GET /api/v1/mobile/tasks`
 
 Returns a page of tasks with pagination metadata.
 
@@ -151,7 +151,7 @@ Returns a page of tasks with pagination metadata.
 
 Batch action endpoints for mobile users to quickly approve, escalate, or delegate multiple items.
 
-### `POST /api/mobile/actions/batch`
+### `POST /api/v1/mobile/actions/batch`
 
 Execute multiple actions in a single request to minimize network round trips.
 
@@ -205,7 +205,7 @@ Execute multiple actions in a single request to minimize network round trips.
 - Actions are processed sequentially (first-failure semantics optional via `continue_on_error`)
 - Each action result is independent (partial success is possible)
 
-### `POST /api/mobile/actions/quick-approve`
+### `POST /api/v1/mobile/actions/quick-approve`
 
 One-tap approve all pending approvals (dangerous, requires confirmation token).
 
@@ -233,7 +233,7 @@ One-tap approve all pending approvals (dangerous, requires confirmation token).
 
 Register mobile devices for push notifications via FCM (Firebase Cloud Messaging) or APNs (Apple Push Notification service).
 
-### `POST /api/mobile/notifications/register`
+### `POST /api/v1/mobile/notifications/register`
 
 Register a device token for push notifications.
 
@@ -270,7 +270,7 @@ Register a device token for push notifications.
 }
 ```
 
-### `DELETE /api/mobile/notifications/unregister`
+### `DELETE /api/v1/mobile/notifications/unregister`
 
 Remove a device from push notification delivery.
 
@@ -291,7 +291,7 @@ Remove a device from push notification delivery.
 }
 ```
 
-### `PATCH /api/mobile/notifications/preferences`
+### `PATCH /api/v1/mobile/notifications/preferences`
 
 Update notification preferences for a registered device.
 
@@ -318,7 +318,7 @@ Update notification preferences for a registered device.
 }
 ```
 
-### `GET /api/mobile/notifications/status`
+### `GET /api/v1/mobile/notifications/status`
 
 Check notification delivery status for recent notifications.
 
@@ -347,7 +347,7 @@ Check notification delivery status for recent notifications.
 
 Optimized endpoints for the swipe-to-approve/reject UI pattern on mobile.
 
-### `GET /api/mobile/approvals/stack`
+### `GET /api/v1/mobile/approvals/stack`
 
 Returns approval requests in swipe-stack format (one at a time, preloaded).
 
@@ -389,7 +389,7 @@ Returns approval requests in swipe-stack format (one at a time, preloaded).
 }
 ```
 
-### `POST /api/mobile/approvals/swipe`
+### `POST /api/v1/mobile/approvals/swipe`
 
 Process a swipe action (approve or reject with gesture metadata).
 
@@ -441,7 +441,7 @@ Process a swipe action (approve or reject with gesture metadata).
 
 Lightweight KPI endpoint for widget display and background refresh.
 
-### `GET /api/mobile/kpis/compact`
+### `GET /api/v1/mobile/kpis/compact`
 
 Returns only numeric KPI values with no metadata. Ideal for widget/notification badges.
 
@@ -459,7 +459,7 @@ Returns only numeric KPI values with no metadata. Ideal for widget/notification 
 
 **Payload Size:** ~120 bytes
 
-### `GET /api/mobile/kpis/trend`
+### `GET /api/v1/mobile/kpis/trend`
 
 Returns KPI trend data for sparkline charts on mobile.
 
@@ -495,7 +495,7 @@ Returns KPI trend data for sparkline charts on mobile.
 
 Endpoints for syncing data when the mobile app reconnects after being offline.
 
-### `POST /api/mobile/sync`
+### `POST /api/v1/mobile/sync`
 
 Upload locally queued actions and fetch any updates since the last sync.
 
@@ -545,7 +545,7 @@ Upload locally queued actions and fetch any updates since the last sync.
 **Offline Sync Protocol:**
 1. App detects network loss → queues actions locally in IndexedDB
 2. App continues displaying cached data with "offline" indicator
-3. On reconnect, app calls `POST /api/mobile/sync` with:
+3. On reconnect, app calls `POST /api/v1/mobile/sync` with:
    - Timestamp of last successful sync
    - Any locally queued actions
 4. Server processes queued actions and returns:
@@ -579,7 +579,7 @@ Mobile endpoints accept a `fields` query parameter to request only needed fields
 
 **Example:**
 ```
-GET /api/mobile/tasks?fields=id,instruction,status
+GET /api/v1/mobile/tasks?fields=id,instruction,status
 ```
 
 **Response (only requested fields included):**
@@ -622,16 +622,16 @@ If-None-Match: "a1b2c3d4e5f6"
 
 Fetch multiple resources in one request to reduce round trips on high-latency connections.
 
-### `POST /api/mobile/batch`
+### `POST /api/v1/mobile/batch`
 
 **Request Body:**
 
 ```json
 {
   "requests": [
-    { "method": "GET", "path": "/api/mobile/dashboard" },
-    { "method": "GET", "path": "/api/mobile/approvals/stack?limit=3" },
-    { "method": "GET", "path": "/api/mobile/kpis/compact" }
+    { "method": "GET", "path": "/api/v1/mobile/dashboard" },
+    { "method": "GET", "path": "/api/v1/mobile/approvals/stack?limit=3" },
+    { "method": "GET", "path": "/api/v1/mobile/kpis/compact" }
   ]
 }
 ```

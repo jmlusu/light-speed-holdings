@@ -29,9 +29,12 @@ import logging
 import os
 import time
 from collections import defaultdict
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, cast
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -41,8 +44,11 @@ from ai_company.logging_config import setup_logging
 from ai_company.paths import get_data_root, get_project_root
 from ai_company.version import get_version
 
+load_dotenv()
+
 # Configure structured logging on import
 setup_logging()
+logger = logging.getLogger(__name__)
 
 
 def security_headers() -> dict[str, str]:
@@ -161,9 +167,15 @@ def _check_api_key(request: Request) -> bool:
       so a misconfigured network deployment never silently exposes any
       endpoints. Role-key checks are enforced per-endpoint by
       :func:`~ai_company.security.rbac.require_role`.
+
     * ``open`` (explicit opt-in for localhost-only dev): all requests
       pass regardless of configuration. The server refuses to bind open
       mode to a non-loopback interface (see ``create_app`` / CLI).
+
+    ADR-013: when the header does not match a static env key, the value is
+    checked against the in-memory session-token store (browser bootstrap
+    tokens).  Page routes, static assets, and the bootstrap endpoint are
+    exempt from the API-key guard (middleware carve-out).
     """
     if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
         return True
@@ -172,7 +184,40 @@ def _check_api_key(request: Request) -> bool:
         return False
     from ai_company.security.rbac import role_for_key
 
-    return role_for_key(api_key) is not None
+    if role_for_key(api_key) is not None:
+        return True
+    # ADR-013: fall back to session token (IP-bound)
+    client_ip = request.client.host if request.client else "unknown"
+    from ai_company.security.rbac import _resolve_session_token
+
+    return _resolve_session_token(api_key, client_ip) is not None
+
+
+# Paths that are exempt from the API-key guard (ADR-013 middleware carve-out).
+_PAGE_PREFIXES = (
+    "/",
+    "/agents",
+    "/tasks",
+    "/kpis",
+    "/costs",
+    "/escalations",
+    "/command-center",
+    "/mission-control",
+    "/onboarding",
+    "/finance",
+    "/org-chart",
+)
+
+
+def _is_exempt_from_auth(path: str) -> bool:
+    """Return True for paths that bypass the API-key middleware (ADR-013)."""
+    if path == "/api/v1/bootstrap-token":
+        return True
+    if path.startswith("/static") or path.startswith("/legacy"):
+        return True
+    if path == "/docs" or path == "/redoc" or path == "/openapi.json":
+        return True
+    return any(path == prefix or path.startswith(prefix + "/") for prefix in _PAGE_PREFIXES)
 
 
 def is_loopback_host(host: str) -> bool:
@@ -227,12 +272,58 @@ def _tab_context(active_tab: str) -> dict[str, Any]:
             "href": "/escalations",
             "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>',
         },
+        {
+            "id": "command-center",
+            "label": "Command Center",
+            "href": "/command-center",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
+        },
+        {
+            "id": "mission-control",
+            "label": "Mission Control",
+            "href": "/mission-control",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
+        },
+        {
+            "id": "onboarding",
+            "label": "Onboarding",
+            "href": "/onboarding",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>',
+        },
+        {
+            "id": "finance",
+            "label": "Finance",
+            "href": "/finance",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+        },
+        {
+            "id": "org-chart",
+            "label": "Org Chart",
+            "href": "/org-chart",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
+        },
     ]
     return {"tabs": tabs, "active_tab": active_tab}
 
 
+@asynccontextmanager
+async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Lifespan handler for FastAPI dashboard app."""
+    try:
+        from ai_company.dashboard.repository import get_state_store  # noqa: E402
+        from ai_company.data import init_database  # noqa: E402
+
+        db_path = Path(get_state_store().base_dir) / "data" / "ai_company.db"
+        db = init_database(db_path)
+        logger.info("SQLite database initialised: %s", db.path)
+    except Exception:  # noqa: BLE001 - non-critical startup hook
+        logger.debug("Database initialisation skipped (non-critical)")
+    yield
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
+        lifespan=_lifespan,
         title="Light Speed Holdings — CEO Dashboard",
         description=(
             "REST API for the AI Company Builder CEO Dashboard.\n\n"
@@ -336,7 +427,7 @@ def create_app() -> FastAPI:
     app.state.limiter = _limiter  # exposed for test isolation (conftest resets between tests)
 
     @app.middleware("http")
-    async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
+    async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:
         client_ip = request.client.host if request.client else "unknown"
         allowed, remaining = _limiter.is_allowed(client_ip)
         if not allowed:
@@ -355,8 +446,12 @@ def create_app() -> FastAPI:
         return response
 
     # ── API-key guard for write endpoints (GAP-010) ──────────────────────
+    # ADR-013: page routes, static assets, and the bootstrap endpoint are
+    # exempt from the API-key guard (middleware carve-out).
     @app.middleware("http")
-    async def _api_key_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
+    async def _api_key_middleware(request: Request, call_next: Any) -> Response:
+        if _is_exempt_from_auth(request.url.path):
+            return cast(Response, await call_next(request))
         if not _check_api_key(request):
             return Response(
                 content='{"detail":"Invalid or missing API key"}',
@@ -372,7 +467,7 @@ def create_app() -> FastAPI:
     app.state.allowed_ws_origins = set(origins)
 
     @app.middleware("http")
-    async def _security_headers_middleware(request: Request, call_next: Any) -> Response:  # type: ignore[no-untyped-def]
+    async def _security_headers_middleware(request: Request, call_next: Any) -> Response:
         response = cast(Response, await call_next(request))
         for name, value in security_headers().items():
             response.headers[name] = value
@@ -393,9 +488,20 @@ def create_app() -> FastAPI:
     app.include_router(router)
     app.include_router(ws_router)
     if _has_mobile:
-        app.include_router(mobile_router)  # /api/mobile/*
+        app.include_router(mobile_router)  # /api/v1/mobile/*
     if _has_monitoring:
         app.include_router(monitoring_router)  # /metrics, /health, /ready
+
+    # ── ADR-013: Bootstrap token endpoint ──────────────────────────
+    # Unauthenticated: anyone who can reach the port can mint a token.
+    # The network boundary (loopback / VPN / reverse proxy) is the auth.
+    from ai_company.dashboard.sessions import mint_bootstrap_token
+
+    @app.get("/api/v1/bootstrap-token")
+    async def bootstrap_token(request: Request) -> dict[str, str]:
+        client_ip = request.client.host if request.client else "unknown"
+        token = mint_bootstrap_token(client_ip)
+        return {"token": token}
 
     # ── Page routes (Jinja2 templates) ─────────────────────────────
     # These MUST be registered BEFORE the static file mounts.
@@ -430,6 +536,31 @@ def create_app() -> FastAPI:
         ctx = _tab_context("escalations")
         return templates.TemplateResponse(request, "escalations.html", ctx)
 
+    @app.get("/command-center", response_class=Response)
+    async def page_command_center(request: Request) -> Response:
+        ctx = _tab_context("command-center")
+        return templates.TemplateResponse(request, "command-center.html", ctx)
+
+    @app.get("/mission-control", response_class=Response)
+    async def page_mission_control(request: Request) -> Response:
+        ctx = _tab_context("mission-control")
+        return templates.TemplateResponse(request, "mission-control.html", ctx)
+
+    @app.get("/finance", response_class=Response)
+    async def page_finance(request: Request) -> Response:
+        ctx = _tab_context("finance")
+        return templates.TemplateResponse(request, "finance.html", ctx)
+
+    @app.get("/onboarding", response_class=Response)
+    async def page_onboarding(request: Request) -> Response:
+        ctx = _tab_context("onboarding")
+        return templates.TemplateResponse(request, "onboarding.html", ctx)
+
+    @app.get("/org-chart", response_class=Response)
+    async def page_org_chart(request: Request) -> Response:
+        ctx = _tab_context("org-chart")
+        return templates.TemplateResponse(request, "org-chart.html", ctx)
+
     # ── Static files ───────────────────────────────────────────────
     # Dashboard static assets (CSS, JS, images)
     if DASHBOARD_STATIC_DIR.is_dir():
@@ -446,31 +577,6 @@ def create_app() -> FastAPI:
             StaticFiles(directory=str(LEGACY_STATIC_DIR), html=True),
             name="legacy-static",
         )
-
-    # ── Database initialization on startup ────────────────────────
-    # Wire the SQLite database so CostAnalytics and KPIPipeline are
-    # ready before the first request.  Failures are non-fatal — the
-    # dashboard still serves file-based data if the DB isn't available.
-
-    @app.on_event("startup")
-    async def _init_database() -> None:  # type: ignore[no-untyped-def]
-        """Initialise the SQLite database for the dashboard data root.
-
-        The DB lives at ``<data root>/data/ai_company.db`` — the same root
-        the :class:`StateStore` is bound to — so tests anchored at a temp
-        root get an isolated database and never touch the canonical one.
-        Failures are non-fatal; the dashboard serves file-based data when the
-        DB is unavailable or empty.
-        """
-        try:
-            from ai_company.dashboard.repository import get_state_store  # noqa: E402
-            from ai_company.data import init_database  # noqa: E402
-
-            db_path = Path(get_state_store().base_dir) / "data" / "ai_company.db"
-            db = init_database(db_path)
-            logger.info("SQLite database initialised: %s", db.path)
-        except Exception:  # noqa: BLE001 - non-critical startup hook
-            logger.debug("Database initialisation skipped (non-critical)")
 
     return app
 

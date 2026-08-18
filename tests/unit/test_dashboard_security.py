@@ -29,7 +29,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "http://localhost:3000",
                 "Access-Control-Request-Method": "GET",
@@ -46,7 +46,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "http://localhost:3000",
                 "Access-Control-Request-Method": "GET",
@@ -62,7 +62,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://app.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -78,7 +78,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://evil.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -96,7 +96,7 @@ class TestCORSConfiguration:
         app = create_app()
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://any-origin.com",
                 "Access-Control-Request-Method": "GET",
@@ -125,7 +125,7 @@ class TestAPIKeyAuth:
 
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/dashboard")
+        resp = client.get("/api/v1/dashboard")
         assert resp.status_code == 401
         assert "API key" in resp.json()["detail"]
 
@@ -144,7 +144,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 401
@@ -156,6 +156,9 @@ class TestAPIKeyAuth:
         """POST requests with correct API key should succeed."""
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_ADMIN_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_APPROVE_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_RUN_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
         self._setup_minimal_data(tmp_path)
@@ -165,7 +168,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
             headers={"X-API-Key": "secret-key-123"},
         )
@@ -177,6 +180,9 @@ class TestAPIKeyAuth:
         """GET requests with correct API key should succeed."""
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_ADMIN_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_APPROVE_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_RUN_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.chdir(tmp_path)
         self._setup_minimal_data(tmp_path)
@@ -186,7 +192,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.get(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={"X-API-Key": "secret-key-123"},
         )
         assert resp.status_code == 200
@@ -206,7 +212,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
             headers={"X-API-Key": "wrong-key"},
         )
@@ -225,7 +231,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 201
@@ -245,7 +251,7 @@ class TestAPIKeyAuth:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 401
@@ -253,7 +259,7 @@ class TestAPIKeyAuth:
     def test_default_mode_rejects_safe_methods_without_key(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
-        """Default auth mode blocks GET/HEAD/OPTIONS when no key is set."""
+        """Default auth mode blocks GET/HEAD/OPTIONS on API endpoints when no key is set."""
         monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
         monkeypatch.delenv("DASHBOARD_AUTH_MODE", raising=False)
@@ -264,8 +270,216 @@ class TestAPIKeyAuth:
 
         app = create_app()
         client = TestClient(app)
+        # /health is an API endpoint — still blocked without a key
         resp = client.get("/health")
         assert resp.status_code == 401
+
+    @staticmethod
+    def _setup_minimal_data(tmp_path: Path) -> None:
+        (tmp_path / "company").mkdir(exist_ok=True)
+        (tmp_path / "company" / "agent-registry.json").write_text("[]", encoding="utf-8")
+        (tmp_path / ".opencode").mkdir(exist_ok=True)
+        (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
+        (tmp_path / "orchestrator").mkdir(exist_ok=True)
+        (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
+        (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+            "rules: []\nevents: []", encoding="utf-8"
+        )
+        (tmp_path / "orchestrator" / "scheduler.yaml").write_text("tasks: []", encoding="utf-8")
+        (tmp_path / "company" / "departments.yaml").write_text("departments: []", encoding="utf-8")
+
+        import shutil
+
+        real_models = Path(__file__).resolve().parents[2] / "company" / "models.yaml"
+        if real_models.exists():
+            shutil.copy2(str(real_models), str(tmp_path / "company" / "models.yaml"))
+
+
+# ── ADR-013: middleware carve-out + bootstrap token tests ─────────────
+
+
+class TestADRCarveOuts:
+    """ADR-013: page routes, static assets, and bootstrap endpoint bypass the API-key guard."""
+
+    def test_page_routes_accessible_without_key(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Page routes (/, /agents, /tasks, etc.) must load without an API key."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        for path in (
+            "/",
+            "/agents",
+            "/tasks",
+            "/kpis",
+            "/costs",
+            "/escalations",
+            "/command-center",
+        ):
+            resp = client.get(path)
+            assert resp.status_code == 200, f"Expected 200 for {path}, got {resp.status_code}"
+
+    def test_bootstrap_endpoint_accessible_without_key(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """GET /api/v1/bootstrap-token must be callable without an API key."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/api/v1/bootstrap-token")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "token" in data
+        assert len(data["token"]) > 10
+
+    def test_api_endpoints_still_require_key(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """API endpoints (/api/v1/*) must still require an API key."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/api/v1/dashboard")
+        assert resp.status_code == 401
+
+    def test_ops_endpoints_still_require_key(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Ops endpoints (/health, /metrics) must still require an API key."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/health")
+        assert resp.status_code == 401
+
+    @staticmethod
+    def _setup_minimal_data(tmp_path: Path) -> None:
+        (tmp_path / "company").mkdir(exist_ok=True)
+        (tmp_path / "company" / "agent-registry.json").write_text("[]", encoding="utf-8")
+        (tmp_path / ".opencode").mkdir(exist_ok=True)
+        (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
+        (tmp_path / "orchestrator").mkdir(exist_ok=True)
+        (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
+        (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+            "rules: []\nevents: []", encoding="utf-8"
+        )
+        (tmp_path / "orchestrator" / "scheduler.yaml").write_text("tasks: []", encoding="utf-8")
+        (tmp_path / "company" / "departments.yaml").write_text("departments: []", encoding="utf-8")
+
+        import shutil
+
+        real_models = Path(__file__).resolve().parents[2] / "company" / "models.yaml"
+        if real_models.exists():
+            shutil.copy2(str(real_models), str(tmp_path / "company" / "models.yaml"))
+
+
+class TestSessionTokenAuth:
+    """ADR-013: browser session tokens authenticate via X-API-Key."""
+
+    def test_session_token_authenticates_api_request(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A valid session token should authenticate an API request."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        # Mint a token from the bootstrap endpoint
+        resp = client.get("/api/v1/bootstrap-token")
+        token = resp.json()["token"]
+        # Use the token as X-API-Key on an API request
+        resp = client.get("/api/v1/dashboard", headers={"X-API-Key": token})
+        assert resp.status_code == 200
+
+    def test_session_token_authenticates_websocket(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A valid session token should authenticate a WebSocket handshake."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/api/v1/bootstrap-token")
+        token = resp.json()["token"]
+        with client.websocket_connect(f"/ws/v1/dashboard?api_key={token}") as ws:
+            hello = ws.receive_json()
+            assert hello["type"] == "connected"
+
+    def test_invalid_session_token_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """An invalid session token must be rejected."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/api/v1/dashboard", headers={"X-API-Key": "not-a-real-token"})
+        assert resp.status_code == 401
+
+    def test_session_token_ip_bound(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+        """A session token from a different IP must be rejected."""
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        self._setup_minimal_data(tmp_path)
+
+        from ai_company.dashboard.sessions import mint_bootstrap_token, resolve_session_token
+        from ai_company.security.rbac import Role
+
+        # Mint a token bound to one IP
+        token = mint_bootstrap_token("192.168.1.100")
+        # Should resolve from the same IP
+        assert resolve_session_token(token, "192.168.1.100") == Role.APPROVE
+        # Should fail from a different IP
+        assert resolve_session_token(token, "10.0.0.1") is None
 
     @staticmethod
     def _setup_minimal_data(tmp_path: Path) -> None:
@@ -380,7 +594,7 @@ class TestSecurityHeaders:
         app = create_app()
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
         )
         assert resp.status_code == 401
@@ -455,7 +669,7 @@ class TestWebSocketOrigin:
         with (
             pytest.raises(WebSocketDisconnect),
             client.websocket_connect(
-                "/ws/dashboard", headers={"origin": "https://evil.example.com"}
+                "/ws/v1/dashboard", headers={"origin": "https://evil.example.com"}
             ),
         ):
             pass
@@ -469,7 +683,7 @@ class TestWebSocketOrigin:
         app = create_app()
         client = TestClient(app)
         with client.websocket_connect(
-            "/ws/dashboard", headers={"origin": "http://testserver"}
+            "/ws/v1/dashboard", headers={"origin": "http://testserver"}
         ) as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"
@@ -483,7 +697,7 @@ class TestWebSocketOrigin:
         app = create_app()
         client = TestClient(app)
         with client.websocket_connect(
-            "/ws/dashboard",
+            "/ws/v1/dashboard",
             headers={"origin": "https://dashboard.example.com"},
         ) as ws:
             hello = ws.receive_json()
@@ -505,7 +719,7 @@ class TestWebSocketRoleGate:
         monkeypatch.setenv("DASHBOARD_ADMIN_KEY", self.ADMIN_KEY)
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
 
-    def _connect(self, url: str = "/ws/dashboard") -> None:
+    def _connect(self, url: str = "/ws/v1/dashboard") -> None:
         from starlette.websockets import WebSocketDisconnect
 
         from ai_company.dashboard.app import create_app
@@ -524,7 +738,7 @@ class TestWebSocketRoleGate:
 
     def test_ws_rejects_unknown_key_in_api_key_mode(self) -> None:
         """An unknown ?api_key= must be refused with 1008."""
-        self._connect("/ws/dashboard?api_key=not-a-real-key")
+        self._connect("/ws/v1/dashboard?api_key=not-a-real-key")
 
     def test_ws_accepts_run_key(self) -> None:
         """A valid run key must connect and receive the hello message."""
@@ -532,7 +746,7 @@ class TestWebSocketRoleGate:
 
         app = create_app()
         client = TestClient(app)
-        with client.websocket_connect(f"/ws/dashboard?api_key={self.RUN_KEY}") as ws:
+        with client.websocket_connect(f"/ws/v1/dashboard?api_key={self.RUN_KEY}") as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"
 
@@ -543,6 +757,6 @@ class TestWebSocketRoleGate:
 
         app = create_app()
         client = TestClient(app)
-        with client.websocket_connect("/ws/dashboard") as ws:
+        with client.websocket_connect("/ws/v1/dashboard") as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"

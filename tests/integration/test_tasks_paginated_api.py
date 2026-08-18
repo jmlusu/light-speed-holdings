@@ -83,7 +83,7 @@ class TestPagination:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated")
+        resp = client.get("/api/v1/tasks/paginated")
         assert resp.status_code == 200
         data = resp.json()
         assert data["page"] == 1
@@ -99,7 +99,7 @@ class TestPagination:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?page=2&page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page=2&page_size=10")
         assert resp.status_code == 200
         data = resp.json()
         assert data["page"] == 2
@@ -113,7 +113,7 @@ class TestPagination:
         tasks = [_make_task(id="t-1", status="pending")]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated")
+        resp = client.get("/api/v1/tasks/paginated")
         data = resp.json()
         for field in ("total", "page", "page_size", "total_pages", "counts_by_status"):
             assert field in data, f"Missing metadata field: {field}"
@@ -130,7 +130,7 @@ class TestPagination:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page_size=10")
         data = resp.json()
         assert data["total"] == 4
         assert data["counts_by_status"]["pending"] == 2
@@ -144,7 +144,7 @@ class TestPagination:
         tasks = [_make_task(id="t-1", instruction="Only one task for this test")]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?page=100&page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page=100&page_size=10")
         assert resp.status_code == 200
         data = resp.json()
         assert data["items"] == []
@@ -159,11 +159,11 @@ class TestPagination:
         _seed_tasks(workspace, tasks)
 
         # page_size=1 is below minimum (ge=10 in Query), so FastAPI rejects it
-        resp_too_small = client.get("/api/tasks/paginated?page_size=1")
+        resp_too_small = client.get("/api/v1/tasks/paginated?page_size=1")
         assert resp_too_small.status_code == 422
 
         # page_size=200 is above maximum (le=100 in Query), so FastAPI rejects it
-        resp_too_large = client.get("/api/tasks/paginated?page_size=200")
+        resp_too_large = client.get("/api/v1/tasks/paginated?page_size=200")
         assert resp_too_large.status_code == 422
 
     def test_page_size_10_boundary(self, client: TestClient, workspace: Path) -> None:
@@ -171,7 +171,7 @@ class TestPagination:
         tasks = [_make_task(id=f"t-{i}", instruction=f"Boundary task {i}") for i in range(15)]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page_size=10")
         assert resp.status_code == 200
         assert resp.json()["page_size"] == 10
         assert len(resp.json()["items"]) == 10
@@ -181,7 +181,7 @@ class TestPagination:
         tasks = [_make_task(id=f"t-{i}", instruction=f"Fifty-size task {i}") for i in range(30)]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?page_size=50")
+        resp = client.get("/api/v1/tasks/paginated?page_size=50")
         assert resp.status_code == 200
         assert resp.json()["page_size"] == 50
         assert len(resp.json()["items"]) == 30
@@ -191,7 +191,7 @@ class TestPagination:
         tasks = [_make_task(id=f"t-{i}", instruction=f"Hundred-size task {i}") for i in range(100)]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?page_size=100")
+        resp = client.get("/api/v1/tasks/paginated?page_size=100")
         assert resp.status_code == 200
         assert resp.json()["page_size"] == 100
         assert len(resp.json()["items"]) == 100
@@ -200,7 +200,7 @@ class TestPagination:
         """An empty inbox should return empty items with total=0."""
         _seed_tasks(workspace, [])
 
-        resp = client.get("/api/tasks/paginated")
+        resp = client.get("/api/v1/tasks/paginated")
         assert resp.status_code == 200
         data = resp.json()
         assert data["items"] == []
@@ -225,7 +225,7 @@ class TestFiltering:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?status=completed")
+        resp = client.get("/api/v1/tasks/paginated?status=completed")
         data = resp.json()
         assert data["total"] == 1
         assert data["items"][0]["status"] == "completed"
@@ -240,7 +240,7 @@ class TestFiltering:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?priority=high")
+        resp = client.get("/api/v1/tasks/paginated?priority=high")
         data = resp.json()
         assert data["total"] == 2
         assert all(t["priority"] == "high" for t in data["items"])
@@ -254,7 +254,7 @@ class TestFiltering:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?agent=lead-backend")
+        resp = client.get("/api/v1/tasks/paginated?agent=lead-backend")
         data = resp.json()
         # Should match t-1 (receiver) and t-3 (sender)
         assert data["total"] == 2
@@ -268,7 +268,7 @@ class TestFiltering:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?department=Technology")
+        resp = client.get("/api/v1/tasks/paginated?department=Technology")
         data = resp.json()
         assert data["total"] == 1
         assert data["items"][0]["receiver_id"] == "lead-backend"
@@ -300,7 +300,7 @@ class TestFiltering:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?status=pending&priority=high")
+        resp = client.get("/api/v1/tasks/paginated?status=pending&priority=high")
         data = resp.json()
         assert data["total"] == 1
         assert data["items"][0]["id"] == "t-1"
@@ -310,7 +310,7 @@ class TestFiltering:
         tasks = [_make_task(id=f"t-{i}", instruction=f"All tasks test {i}") for i in range(10)]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated")
+        resp = client.get("/api/v1/tasks/paginated")
         assert resp.json()["total"] == 10
 
 
@@ -337,7 +337,7 @@ class TestSorting:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?sort_by=created_at&sort_dir=asc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=created_at&sort_dir=asc")
         data = resp.json()
         ids = [t["id"] for t in data["items"]]
         assert ids == ["t-1", "t-3", "t-2"]
@@ -351,7 +351,7 @@ class TestSorting:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?sort_by=created_at&sort_dir=desc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=created_at&sort_dir=desc")
         data = resp.json()
         ids = [t["id"] for t in data["items"]]
         assert ids == ["t-2", "t-3", "t-1"]
@@ -366,7 +366,7 @@ class TestSorting:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?sort_by=priority&sort_dir=asc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=priority&sort_dir=asc")
         data = resp.json()
         priorities = [t["priority"] for t in data["items"]]
         assert priorities == ["critical", "high", "medium", "low"]
@@ -381,7 +381,7 @@ class TestSorting:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?sort_by=priority&sort_dir=desc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=priority&sort_dir=desc")
         data = resp.json()
         priorities = [t["priority"] for t in data["items"]]
         assert priorities == ["low", "medium", "high", "critical"]
@@ -395,7 +395,7 @@ class TestSorting:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?sort_by=receiver_id&sort_dir=asc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=receiver_id&sort_dir=asc")
         data = resp.json()
         receivers = [t["receiver_id"] for t in data["items"]]
         assert receivers == ["alpha-agent", "middle-agent", "zebra-agent"]
@@ -410,7 +410,7 @@ class TestSorting:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?sort_by=nonexistent_field&sort_dir=asc")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=nonexistent_field&sort_dir=asc")
         data = resp.json()
         ids = [t["id"] for t in data["items"]]
         assert ids == ["t-1", "t-2"]
@@ -423,7 +423,7 @@ class TestSorting:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?sort_by=created_at&sort_dir=invalid")
+        resp = client.get("/api/v1/tasks/paginated?sort_by=created_at&sort_dir=invalid")
         data = resp.json()
         ids = [t["id"] for t in data["items"]]
         # Default is desc, so newest first
@@ -448,7 +448,7 @@ class TestEdgeCases:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?status=pending,completed")
+        resp = client.get("/api/v1/tasks/paginated?status=pending,completed")
         data = resp.json()
         assert data["total"] == 2
         statuses = {t["status"] for t in data["items"]}
@@ -464,7 +464,7 @@ class TestEdgeCases:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?priority=high,critical")
+        resp = client.get("/api/v1/tasks/paginated?priority=high,critical")
         data = resp.json()
         assert data["total"] == 2
         priorities = {t["priority"] for t in data["items"]}
@@ -484,7 +484,7 @@ class TestEdgeCases:
         ]
         _seed_tasks(workspace, tasks)
 
-        resp = client.get("/api/tasks/paginated?status=pending&page=1&page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?status=pending&page=1&page_size=10")
         data = resp.json()
         assert all(t["status"] == "pending" for t in data["items"])
         # 13 pending tasks (indices 0,2,4,...,24) -> 2 pages

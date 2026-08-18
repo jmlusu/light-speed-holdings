@@ -24,7 +24,7 @@ phases.
 | KPI collectors | `kpis/base.py:28` and `kpis/__init__.py:38` resolve the project root with `Path(__file__).resolve().parents[3]`, which lands in the wrong directory (`src/`), so collectors miss the real `ai-company/` operational files. |
 | Server boot | `app.py` defaults `DASHBOARD_DATA_DIR` to `"."` (CWD) — real data only appears when launched from `ai-company/`. |
 | Inbox | `api.py:get_bus()` uses `".opencode/inbox.json"` (CWD-relative). |
-| Costs page | `app.js:loadCosts()` fabricates costs client-side (`completed * $0.025`, `$10` daily budget) instead of calling `/api/costs/summary`. |
+| Costs page | `app.js:loadCosts()` fabricates costs client-side (`completed * $0.025`, `$10` daily budget) instead of calling `/api/v1/costs/summary`. |
 | Cost trend chart | `charts.js:initCostCharts()` generates `Math.random()` mock trend data. |
 | KPI history | `KPIHistoryStore()` defaults its storage dir to `Path("dashboard/kpi_history")` (CWD-relative). |
 | Data layer | SQLite schema v1 (`tasks`, `audit_events`, `cost_records`, `kpi_values`, `escalation_events`, `memory_entries`) exists with all stores (`TaskStore`, `AuditStore`, `CostAnalytics`, `KPIPipeline`, `EscalationStore`), but the dashboard reads almost none of it. |
@@ -56,7 +56,7 @@ Real operational data available today:
 | Task | Description | Owner |
 |------|-------------|-------|
 | S1.1 | Deterministic project/data root resolution via a new `ai_company/paths` module; fix `parents[3]` in `kpis/base.py` and `kpis/__init__.py`; make `DASHBOARD_DATA_DIR` default to the project root; fix `KPIHistoryStore` default storage dir; fix `get_bus()` inbox path. Env overrides: `AI_COMPANY_ROOT`, `DASHBOARD_DATA_DIR`. | Backend engineer |
-| S1.2 | Replace client-side fabricated costs: `app.js:loadCosts()` calls `/api/costs/summary`; `charts.js` cost trend uses real history when available. | Frontend engineer |
+| S1.2 | Replace client-side fabricated costs: `app.js:loadCosts()` calls `/api/v1/costs/summary`; `charts.js` cost trend uses real history when available. | Frontend engineer |
 | S1.3 | Add `dashboard/data_service.py` — read-through accessor (SQLite-first, file-fallback) for tasks, cost summary, and KPI history; route `api.py` reads through it. | Backend engineer |
 | S1.4 | Add `ai-company dashboard backfill` CLI to import `.opencode/inbox.json`, `.opencode/audit`, `results/cost_log.jsonl`, `dashboard/kpi_history/*.ndjson`, and `orchestrator/escalation.yaml` into SQLite (idempotent, `INSERT OR REPLACE`). | Backend engineer |
 | S1.5 | Tests for the new `paths` module, `data_service` read-through behaviour, and the backfill CLI; run `ruff` + `mypy` + `pytest` gates. | QA / Test engineering |
@@ -81,15 +81,15 @@ Real operational data available today:
 - `uv run mypy src/`
 - `uv run pytest`
 - CLI: `ai-company --help` + `ai-company dashboard --help` + `ai-company dashboard backfill --help`
-- Manual smoke: `ai-company dashboard` then confirm `/api/ceo-dashboard`,
-  `/api/costs/summary`, `/api/kpis/live` return non-zero, real values.
+- Manual smoke: `ai-company dashboard` then confirm `/api/v1/ceo-dashboard`,
+  `/api/v1/costs/summary`, `/api/v1/kpis/live` return non-zero, real values.
 
 ## 6. Definition of Done (Sprint 1)
 
 - [x] `ai_company.paths.get_project_root()` returns the `ai-company/` root from
       any CWD, with `AI_COMPANY_ROOT` override honoured.
 - [x] KPI collectors resolve the same root and read real operational files.
-- [x] `/api/costs/summary` values (not client-side) drive the costs page and
+- [x] `/api/v1/costs/summary` values (not client-side) drive the costs page and
       charts; no `Math.random()` trend data.
 - [x] `ai-company dashboard backfill` populates SQLite from existing files and
       is safe to re-run.
@@ -126,7 +126,7 @@ Real operational data available today:
       SQLite when populated.
 - [x] `collect_all_kpis()` accepts `database=` and resolves the project root
       via `get_project_root()` (fixes the `parents[3]` bug).
-- [x] Dashboard `/api/kpis/live` and `/api/kpis/collect` pass the shared SQLite
+- [x] Dashboard `/api/v1/kpis/live` and `/api/v1/kpis/collect` pass the shared SQLite
       database through to the collectors.
 - [x] Without a database (or with an empty one) every collector behaves exactly
       as before (file-only) — no behaviour change, full backward compatibility.
@@ -153,12 +153,12 @@ Real operational data available today:
       `get_agent_performance_summary()` — SQLite-first read-through accessors
       wrapping `AgentPerformanceAnalytics`, returning `None` when empty so
       callers fall back to files.
-- [x] `GET /api/agents/performance` returns `leaderboard`, `model_usage`,
+- [x] `GET /api/v1/agents/performance` returns `leaderboard`, `model_usage`,
       `task_durations`, and `error_analysis` alongside the legacy
       registry-based `agents` list, with a `source` field (`sqlite` | `files`).
-- [x] `GET /api/agents/{name}/performance` returns a single agent's full summary
+- [x] `GET /api/v1/agents/{name}/performance` returns a single agent's full summary
       (tasks, completion/error rates, tool usage, cost, audit events).
-- [x] The `/agents/{name}` route shadowing that made `/api/agents/performance`
+- [x] The `/agents/{name}` route shadowing that made `/api/v1/agents/performance`
       return 404 is fixed — the performance routes register before the dynamic
       `/agents/{name}` route.
 - [x] File-derived fallbacks mirror the `full_report` shape so the endpoints
@@ -176,7 +176,7 @@ Real operational data available today:
       active agents vs the `company-registry.yaml` count; SQLite-first with
       `.opencode/inbox.json` fallback (`source`: `sqlite` | `files` | `config`).
       Never raises — missing config returns an empty summary.
-- [x] `GET /api/company-kpis?days=30` returns the full summary shape
+- [x] `GET /api/v1/company-kpis?days=30` returns the full summary shape
       (`collected_at`, `period_days`, `kpis[]` with `id/name/category/owner/
       frequency/unit/target/current/status/gap/computed/source`, and
       `summary` counts by status) — replaces the previous raw static list;
@@ -211,7 +211,7 @@ Real operational data available today:
       S2.3 KPI snapshot scheduler) and the executor CLI `start` command exposes
       `--governance-interval` (0 disables); `DataGovernance` + `GovernanceScheduler`
       exported from `ai_company.data`.
-- [x] `GET /api/governance` dashboard endpoint returns the full
+- [x] `GET /api/v1/governance` dashboard endpoint returns the full
       `DataGovernance.governance_report()` shape (`available`, `generated_at`,
       `tables`, `owners`, `policies`) — SQLite-first, `available=False` empty
       shape when no database, never raises.
@@ -220,5 +220,5 @@ Real operational data available today:
       removes *exactly* the batch (batch size forced to 2 with 5 old rows →
       all 5 archived, no data loss); anonymize hashes agent_id + content;
       governance report + compliance reflect seeded data; scheduler interval
-      gating / disabled / no-database; `GET /api/governance` endpoint. Gates
+      gating / disabled / no-database; `GET /api/v1/governance` endpoint. Gates
       green (`ruff check src/ tests/`, `mypy src/`, `pytest` — 1526 passing).

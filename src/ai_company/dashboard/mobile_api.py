@@ -18,12 +18,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from ai_company.dashboard.api import get_bus
+from ai_company.dashboard.kpis import collect_all_kpis
 from ai_company.dashboard.repository import get_state_store
+from ai_company.data import get_database
 from ai_company.security.rbac import Role, require_role
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/mobile")
+router = APIRouter(prefix="/api/v1/mobile")
 
 
 # ── Helpers (shared with main api.py) ───────────────────────────────
@@ -49,7 +51,7 @@ def _save_yaml(path: str | Path, data: Any) -> None:
     _get_store().write_yaml(path, data)
 
 
-def _load_registry() -> list[dict]:
+def _load_registry() -> list[dict[str, Any]]:
     return _load_json("company/agent-registry.json") or []
 
 
@@ -69,13 +71,13 @@ def _format_short_time(iso_str: str | None) -> str:
         return ""
 
 
-def _encode_cursor(data: dict) -> str:
+def _encode_cursor(data: dict[str, Any]) -> str:
     return b64encode(json.dumps(data, default=str).encode()).decode()
 
 
-def _decode_cursor(cursor: str) -> dict:
+def _decode_cursor(cursor: str) -> dict[str, Any]:
     try:
-        return cast(dict, json.loads(b64decode(cursor.encode()).decode()))
+        return cast(dict[str, Any], json.loads(b64decode(cursor.encode()).decode()))
     except ValueError:
         return {}
 
@@ -178,12 +180,12 @@ class SyncRequest(BaseModel):
 DEVICE_STORE = Path("orchestrator/devices.yaml")
 
 
-def _load_devices() -> list[dict]:
+def _load_devices() -> list[dict[str, Any]]:
     data = _load_yaml(DEVICE_STORE)
-    return cast(list[dict], data.get("devices", []))
+    return cast(list[dict[str, Any]], data.get("devices", []))
 
 
-def _save_devices(devices: list[dict]) -> None:
+def _save_devices(devices: list[dict[str, Any]]) -> None:
     _save_yaml(DEVICE_STORE, {"devices": devices})
 
 
@@ -625,21 +627,53 @@ def compact_kpis() -> dict[str, Any]:
 
 
 @router.get("/kpis/trend")
-def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
-    """Return trend data points for a KPI metric (for sparkline charts)."""
+def kpi_trend(metric: str = "pending", hours: int = 24, department: str = "") -> dict[str, Any]:
+    """Return trend data points for a KPI metric (for sparkline charts).
+
+    Uses live KPI collectors for current values and falls back to historical
+    snapshots for trend data points.
+    """
     store = _get_store()
-    if not store.list_snapshot_files():
+
+    # Collect live KPIs from actual collectors (not hardcoded)
+    live_snapshot = collect_all_kpis(database=get_database())
+    departments = live_snapshot.get("departments", {})
+
+    # If no department specified, return all departments' current values for the metric
+    if not department:
+        dept_values = {}
+        for dept_name, dept_data in departments.items():
+            dept_kpis = dept_data.get("kpis", {})
+            kpi_data = dept_kpis.get(metric)
+            if isinstance(kpi_data, dict):
+                dept_values[dept_name] = kpi_data.get("current")
+            elif kpi_data is not None:
+                dept_values[dept_name] = kpi_data
+
         return {
             "metric": metric,
             "unit": "count",
             "data_points": [],
-            "current": 0,
-            "min": 0,
-            "max": 0,
+            "current": dept_values,
+            "min": None,
+            "max": None,
             "trend": "stable",
+            "departments": list(departments.keys()),
         }
 
-    # Collect snapshot values
+    # Get current value from live collectors for the specified department
+    dept_data = departments.get(department, {})
+    dept_kpis = dept_data.get("kpis", {})
+    live_kpi = dept_kpis.get(metric)
+    current_value = 0
+    unit = "count"
+    if isinstance(live_kpi, dict):
+        current_value = live_kpi.get("current", 0)
+        unit = live_kpi.get("unit", "count")
+    elif live_kpi is not None:
+        current_value = live_kpi
+
+    # Collect historical data points from snapshots
     data_points = []
     cutoff = datetime.now(timezone.utc).timestamp() - (hours * 3600)
 
@@ -652,11 +686,11 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
             # Parse timestamp
             ts = datetime.strptime(ts_str, "%Y%m%d-%H%M%S")
             if ts.timestamp() >= cutoff:
-                # Extract metric value from engineering KPIs for now
-                eng = snap.get("departments", {}).get("engineering", {}).get("kpis", {})
+                # Extract metric value from specified department
+                snap_dept_kpis = snap.get("departments", {}).get(department, {}).get("kpis", {})
                 value = (
-                    eng.get(metric, {}).get("current", 0)
-                    if isinstance(eng.get(metric), dict)
+                    snap_dept_kpis.get(metric, {}).get("current", 0)
+                    if isinstance(snap_dept_kpis.get(metric), dict)
                     else 0
                 )
                 data_points.append(
@@ -669,8 +703,19 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
             logger.debug("Skipping malformed snapshot %s: %s", snap_file.name, exc)
             continue
 
+    # If no historical data, create a single point with current live value
+    if not data_points:
+        data_points.append(
+            {
+                "ts": datetime.now(timezone.utc).isoformat() + "Z",
+                "v": current_value,
+            }
+        )
+
     values = [dp["v"] for dp in data_points if isinstance(dp["v"], (int, float))]
-    current = values[-1] if values else 0
+    # Ensure current live value is included
+    if current_value not in values:
+        values.append(current_value)
 
     # Simple trend detection
     trend = "stable"
@@ -684,9 +729,9 @@ def kpi_trend(metric: str = "pending", hours: int = 24) -> dict[str, Any]:
 
     return {
         "metric": metric,
-        "unit": "count",
+        "unit": unit,
         "data_points": data_points,
-        "current": current,
+        "current": current_value,
         "min": min(values) if values else 0,
         "max": max(values) if values else 0,
         "trend": trend,
@@ -807,13 +852,13 @@ def notification_status(device_token: str = "", since: str = "") -> dict[str, An
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
 
-    # In production, query notification delivery logs
+    # Notification delivery tracking not yet implemented (see docs/api/PUSH-NOTIFICATIONS.md:416)
+    # Return explicit unavailable status instead of misleading zeros
     return {
         "device_token": device_token,
         "last_delivery": device.get("last_active_at", ""),
-        "notifications_sent_24h": 0,
-        "notifications_delivered_24h": 0,
-        "delivery_rate": 1.0,
+        "delivery_tracking": "unavailable",
+        "reason": "notification_delivery_logs_not_implemented",
     }
 
 

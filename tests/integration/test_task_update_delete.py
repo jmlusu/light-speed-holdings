@@ -42,7 +42,7 @@ class TestPatchTask:
     ) -> dict:
         """Helper to create a task and return the response body."""
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "test-agent",
                 "instruction": instruction,
@@ -57,7 +57,7 @@ class TestPatchTask:
         task = self._create_task(client, "Review PR")
 
         resp = client.patch(
-            f"/api/tasks/{task['id']}",
+            f"/api/v1/tasks/{task['id']}",
             json={"status": "in_progress"},
         )
         assert resp.status_code == 200
@@ -66,7 +66,7 @@ class TestPatchTask:
         assert updated["status"] == "in_progress"
 
         # Verify persistence via GET
-        list_resp = client.get("/api/tasks")
+        list_resp = client.get("/api/v1/tasks")
         found = [t for t in list_resp.json() if t["id"] == task["id"]]
         assert len(found) == 1
         assert found[0]["status"] == "in_progress"
@@ -76,7 +76,7 @@ class TestPatchTask:
         task = self._create_task(client, "Deploy feature")
 
         resp = client.patch(
-            f"/api/tasks/{task['id']}",
+            f"/api/v1/tasks/{task['id']}",
             json={"priority": "critical"},
         )
         assert resp.status_code == 200
@@ -89,7 +89,7 @@ class TestPatchTask:
         task = self._create_task(client, "Multi-field update")
 
         resp = client.patch(
-            f"/api/tasks/{task['id']}",
+            f"/api/v1/tasks/{task['id']}",
             json={"status": "in_progress", "priority": "high"},
         )
         assert resp.status_code == 200
@@ -100,7 +100,7 @@ class TestPatchTask:
     def test_patch_not_found_returns_404(self, client: TestClient) -> None:
         """PATCH on a non-existent task should return 404."""
         resp = client.patch(
-            "/api/tasks/nonexistent-id",
+            "/api/v1/tasks/nonexistent-id",
             json={"status": "completed"},
         )
         assert resp.status_code == 404
@@ -108,7 +108,7 @@ class TestPatchTask:
     def test_patch_empty_body_returns_400(self, client: TestClient) -> None:
         """PATCH with no fields should return 400."""
         task = self._create_task(client)
-        resp = client.patch(f"/api/tasks/{task['id']}", json={})
+        resp = client.patch(f"/api/v1/tasks/{task['id']}", json={})
         assert resp.status_code == 400
 
     def test_patch_completed_sets_completed_at(self, client: TestClient) -> None:
@@ -116,7 +116,7 @@ class TestPatchTask:
         task = self._create_task(client, "Complete me")
 
         resp = client.patch(
-            f"/api/tasks/{task['id']}",
+            f"/api/v1/tasks/{task['id']}",
             json={"status": "completed"},
         )
         assert resp.status_code == 200
@@ -131,7 +131,7 @@ class TestPatchTask:
 
         # Step 1: Drag to in_progress
         resp1 = client.patch(
-            f"/api/tasks/{task['id']}",
+            f"/api/v1/tasks/{task['id']}",
             json={"status": "in_progress"},
         )
         assert resp1.status_code == 200
@@ -139,14 +139,14 @@ class TestPatchTask:
 
         # Step 2: Drag to completed
         resp2 = client.patch(
-            f"/api/tasks/{task['id']}",
+            f"/api/v1/tasks/{task['id']}",
             json={"status": "completed"},
         )
         assert resp2.status_code == 200
         assert resp2.json()["status"] == "completed"
 
         # Verify final state via GET
-        list_resp = client.get("/api/tasks")
+        list_resp = client.get("/api/v1/tasks")
         found = [t for t in list_resp.json() if t["id"] == task["id"]]
         assert found[0]["status"] == "completed"
 
@@ -162,7 +162,7 @@ class TestDeleteTask:
     def _create_task(self, client: TestClient, instruction: str = "To be deleted") -> dict:
         """Helper to create a task and return the response body."""
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "test-agent",
                 "instruction": instruction,
@@ -175,20 +175,20 @@ class TestDeleteTask:
         """DELETE should remove the task from the inbox."""
         task = self._create_task(client, "Delete me")
 
-        resp = client.delete(f"/api/tasks/{task['id']}")
+        resp = client.delete(f"/api/v1/tasks/{task['id']}")
         assert resp.status_code == 200
         data = resp.json()
         assert data["ok"] == "true"
         assert data["id"] == task["id"]
 
         # Verify the task is gone
-        list_resp = client.get("/api/tasks")
+        list_resp = client.get("/api/v1/tasks")
         found = [t for t in list_resp.json() if t["id"] == task["id"]]
         assert len(found) == 0
 
     def test_delete_not_found_returns_404(self, client: TestClient) -> None:
         """DELETE on a non-existent task should return 404."""
-        resp = client.delete("/api/tasks/nonexistent-id")
+        resp = client.delete("/api/v1/tasks/nonexistent-id")
         assert resp.status_code == 404
 
     def test_delete_does_not_affect_other_tasks(self, client: TestClient) -> None:
@@ -196,11 +196,11 @@ class TestDeleteTask:
         task1 = self._create_task(client, "Keep me")
         task2 = self._create_task(client, "Delete me")
 
-        resp = client.delete(f"/api/tasks/{task2['id']}")
+        resp = client.delete(f"/api/v1/tasks/{task2['id']}")
         assert resp.status_code == 200
 
         # task1 should still be there
-        list_resp = client.get("/api/tasks")
+        list_resp = client.get("/api/v1/tasks")
         found = [t for t in list_resp.json() if t["id"] == task1["id"]]
         assert len(found) == 1
         assert found[0]["instruction"] == "Keep me"
@@ -210,7 +210,7 @@ class TestDeleteTask:
         task = self._create_task(client, "Persist delete")
 
         # Delete it
-        client.delete(f"/api/tasks/{task['id']}")
+        client.delete(f"/api/v1/tasks/{task['id']}")
 
         # Read the inbox file directly
         inbox = (workspace / ".opencode" / "inbox.json").read_text(encoding="utf-8")
@@ -221,7 +221,7 @@ class TestDeleteTask:
         """DELETE response should have the correct shape."""
         task = self._create_task(client)
 
-        resp = client.delete(f"/api/tasks/{task['id']}")
+        resp = client.delete(f"/api/v1/tasks/{task['id']}")
         assert resp.status_code == 200
         data = resp.json()
         assert "ok" in data
