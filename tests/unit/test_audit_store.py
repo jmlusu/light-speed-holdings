@@ -239,3 +239,25 @@ class TestAuditStoreArchival:
         archived = store.archive_before("2025-01-01T00:00:00Z", tmp_path / "archive.json")
         assert archived == 0
         assert store.count() == 1
+
+    def test_archive_before_cutoff_event_archived_exactly_once(
+        self, store: AuditStore, tmp_path: Path
+    ) -> None:
+        """An event at exactly the cutoff is archived once and never re-exported
+        on a subsequent run (issue #83: export and delete share one boundary)."""
+        store.write(_make_event(event_id="cutoff", timestamp="2025-01-15T00:00:00Z"))
+        store.write(_make_event(event_id="newer", timestamp="2025-06-01T10:00:00Z"))
+
+        archive_path = tmp_path / "archive" / "audit_archive.json"
+        assert store.archive_before("2025-01-15T00:00:00Z", archive_path) == 1
+        assert store.count() == 1
+        remaining = store.read_all()
+        assert remaining[0].event_id == "newer"
+
+        # A second run with the same cutoff must not re-export the event.
+        assert store.archive_before("2025-01-15T00:00:00Z", archive_path) == 0
+
+        with open(archive_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        assert len(data) == 1
+        assert data[0]["event_id"] == "cutoff"

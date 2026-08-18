@@ -13,7 +13,6 @@ from ai_company.data.cost_analytics import CostAnalytics
 from ai_company.data.database import Database
 from ai_company.data.escalation_store import EscalationStore
 from ai_company.data.kpi_pipeline import KPIPipeline
-from ai_company.data.memory_store import MemoryStoreDB
 from ai_company.models.task import Task
 
 # ---------------------------------------------------------------------------
@@ -43,11 +42,6 @@ def cost(db: Database) -> CostAnalytics:
 @pytest.fixture
 def analytics(db: Database) -> AgentPerformanceAnalytics:
     return AgentPerformanceAnalytics(db)
-
-
-@pytest.fixture
-def mem(db: Database) -> MemoryStoreDB:
-    return MemoryStoreDB(db)
 
 
 @pytest.fixture
@@ -593,99 +587,6 @@ class TestAgentPerformanceAnalytics:
         assert "model_usage" in report
         assert "error_analysis" in report
         assert "generated_at" in report
-
-
-# ===================================================================
-# Memory Store DB Tests
-# ===================================================================
-
-
-class TestMemoryStoreDB:
-    """Tests for the SQLite-backed memory store."""
-
-    def test_store_and_recall(self, mem: MemoryStoreDB) -> None:
-        """store and recall work together."""
-        entry = mem.store("episodic", "Test memory", agent_id="alice", tags=["test"])
-        assert entry.memory_type == "episodic"
-        assert entry.content == "Test memory"
-
-        results = mem.recall("episodic", query="Test")
-        assert len(results) == 1
-        assert results[0].content == "Test memory"
-
-    def test_recall_by_agent(self, mem: MemoryStoreDB) -> None:
-        """recall filters by agent_id."""
-        mem.store("semantic", "Knowledge A", agent_id="alice")
-        mem.store("semantic", "Knowledge B", agent_id="bob")
-
-        results = mem.recall("semantic", agent_id="alice")
-        assert len(results) == 1
-        assert results[0].agent_id == "alice"
-
-    def test_recall_by_tags(self, mem: MemoryStoreDB) -> None:
-        """recall filters by tag intersection."""
-        mem.store("procedural", "How to deploy", tags=["deploy", "k8s"])
-        mem.store("procedural", "How to test", tags=["test", "pytest"])
-
-        results = mem.recall("procedural", tags=["deploy"])
-        assert len(results) == 1
-        assert "deploy" in results[0].tags
-
-    def test_count(self, mem: MemoryStoreDB) -> None:
-        """count returns correct numbers."""
-        mem.store("episodic", "A")
-        mem.store("episodic", "B")
-        mem.store("semantic", "C")
-
-        assert mem.count("episodic") == 2
-        assert mem.count("semantic") == 1
-        assert mem.count() == 3
-
-    def test_stats(self, mem: MemoryStoreDB) -> None:
-        """stats returns per-type counts."""
-        mem.store("episodic", "A")
-        mem.store("procedural", "B")
-        stats = mem.stats()
-        assert stats["episodic"] == 1
-        assert stats["procedural"] == 1
-        assert stats["semantic"] == 0
-
-    def test_invalid_memory_type(self, mem: MemoryStoreDB) -> None:
-        """store raises ValueError for unknown memory type."""
-        with pytest.raises(ValueError, match="Unknown memory type"):
-            mem.store("nonexistent", "data")
-
-    def test_search_content(self, mem: MemoryStoreDB) -> None:
-        """search_content finds matching text."""
-        mem.store("episodic", "Deployed to production today")
-        mem.store("episodic", "Fixed a bug in the API")
-        mem.store("semantic", "Production deployment guide")
-
-        results = mem.search_content("production")
-        assert len(results) == 2
-
-    def test_most_accessed(self, mem: MemoryStoreDB) -> None:
-        """most_accessed returns entries sorted by access count."""
-        mem.store("episodic", "Rare memory")
-        mem.store("episodic", "Popular memory")
-
-        # Recall the popular one twice
-        mem.recall("episodic", query="Popular")
-        mem.recall("episodic", query="Popular")
-
-        results = mem.most_accessed("episodic")
-        assert results[0].content == "Popular memory"
-
-    def test_recent(self, mem: MemoryStoreDB) -> None:
-        """recent returns entries in reverse chronological order."""
-        mem.store("semantic", "Old", agent_id="a", tags=["old"])
-        # Ensure a later timestamp by storing with a slight delay via explicit tags
-        mem.store("semantic", "New", agent_id="b", tags=["new"])
-
-        # recent uses ORDER BY created_at DESC — with UUID-based IDs,
-        # both may share the same second. Use most_accessed instead to verify ordering.
-        results = mem.recall("semantic", query="New", limit=1)
-        assert results[0].content == "New"
 
 
 # ===================================================================

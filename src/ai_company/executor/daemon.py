@@ -21,7 +21,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import contextlib
 import json
 import logging
 import logging.handlers
@@ -29,13 +28,13 @@ import os
 import signal
 import subprocess
 import sys
-import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, cast
 
 from ai_company.logging_config import HumanFormatter, JSONFormatter
+from ai_company.utils.file_lock import atomic_write
 from ai_company.utils.logging import CorrelationFilter
 
 logger = logging.getLogger(__name__)
@@ -46,56 +45,59 @@ DEFAULT_LOG_DIR = Path("logs")
 DEFAULT_HEALTH_FILE = Path("logs") / "executor-daemon.json"
 
 
-def _atomic_write_text(path: Path, content: str) -> None:
-    """Atomically write *content* to *path* via temp-file-then-rename.
-
-    A crash mid-write can never leave a truncated file behind.  On Windows
-    ``os.replace`` can transiently fail with ``PermissionError`` while another
-    handle briefly references the target, so it is retried before giving up.
-    """
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd: int | None = None
-    tmp: str = ""
-    try:
-        fd, tmp = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            f.write(content)
-            f.flush()
-            os.fsync(f.fileno())
-        fd = None  # closed by fdopen
-        last_err: Exception | None = None
-        for _ in range(5):
-            try:
-                os.replace(tmp, str(path))
-                tmp = ""
-                break
-            except (OSError, PermissionError) as exc:
-                last_err = exc
-                time.sleep(0.01)
-        if tmp:
-            raise last_err or OSError("Could not atomically replace file")
-    finally:
-        if fd is not None:
-            with contextlib.suppress(OSError):
-                os.close(fd)
-        if tmp:
-            with contextlib.suppress(OSError):
-                os.unlink(tmp)
-
-
 def _sweep_expired_approvals(executor: Any) -> int:
     """Expire stale pending approval requests (Sprint 7).
 
     Prefers the executor's live ``ApprovalGate`` so in-memory state stays
-    consistent with the sweep; falls back to a fresh gate over the shared
+    consistent with the sweep; falls back to the singleton gate over the shared
     approvals file when the executor has no HITL gate.
     """
     from ai_company.orchestrator.approval import ApprovalGate
 
     gate = getattr(getattr(executor, "hitl", None), "gate", None)
     if not isinstance(gate, ApprovalGate):
-        gate = ApprovalGate()
+        gate = ApprovalGate.get_instance()
     return gate.sweep_expired()
+
+
+def _archive_resolved_approvals(executor: Any) -> int:
+    """Archive resolved approval requests past the retention window (ticket #58).
+
+    The approvals store is a working store, not the ledger: resolved
+    (approved/rejected/expired) requests older than the gate's retention
+    window are dropped from the YAML on the governance cadence, while the
+    append-only audit trail keeps the full history.
+
+    Requests still referenced by the executor's live resume index
+    (``_pending_approvals``, i.e. tasks currently parked in
+    ``WAITING_APPROVAL``) are passed as protected so a parked task can never
+    lose the request that decides its resume.
+    """
+    from ai_company.orchestrator.approval import ApprovalGate
+
+    gate = getattr(getattr(executor, "hitl", None), "gate", None)
+    if not isinstance(gate, ApprovalGate):
+        gate = ApprovalGate.get_instance()
+    pending_index = getattr(executor, "_pending_approvals", None)
+    protected: set[str] = set()
+    if pending_index:
+        protected = {str(request_id) for request_id in pending_index.values()}
+    return gate.archive_resolved(protected_request_ids=protected)
+
+
+def _sweep_suspended_states(executor: Any) -> int:
+    """Remove suspended state files older than the retention window (issue #42).
+
+    Called on the daemon's governance cadence alongside approval expiry and
+    archival.  Uses the executor's ``SuspendStore`` when available; falls
+    back to a fresh store over the default directory.
+    """
+    store = getattr(executor, "_suspend_store", None)
+    if store is None:
+        from ai_company.orchestrator.suspend_store import SuspendStore
+
+        store = SuspendStore()
+    return int(store.sweep_expired())
 
 
 def resolve_database(db_path: str | None) -> Any:
@@ -381,7 +383,8 @@ class DaemonPIDFile:
         if pid is None:
             pid = os.getpid()
         self.pid_path.parent.mkdir(parents=True, exist_ok=True)
-        _atomic_write_text(self.pid_path, str(pid))
+        with atomic_write(self.pid_path) as f:
+            f.write(str(pid))
         logger.debug("PID file written: %s (pid=%d)", self.pid_path, pid)
 
     def read(self) -> int | None:
@@ -436,7 +439,7 @@ def _is_process_alive(pid: int) -> bool:
             try:
                 import ctypes
 
-                kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]  # Windows-only module
+                kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined, unused-ignore]  # Windows-only
                 handle = kernel32.OpenProcess(
                     0x0400 | 0x0010, False, pid
                 )  # PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE
@@ -494,10 +497,8 @@ class DaemonHealthStatus:
             "updated_at": now_iso,
         }
         self.status_path.parent.mkdir(parents=True, exist_ok=True)
-        _atomic_write_text(
-            self.status_path,
-            json.dumps(data, indent=2, default=str),
-        )
+        with atomic_write(self.status_path) as f:
+            f.write(json.dumps(data, indent=2, default=str))
         logger.debug("Health status written: %s", self.status_path)
 
     def read(self) -> dict[str, Any] | None:
@@ -559,11 +560,13 @@ class ExecutorDaemon:
         *,
         _clock: Callable[[], float] | None = None,
         _sleep: Callable[[float], None] | None = None,
+        health_broadcast_callback: Callable[[dict[str, Any]], None] | None = None,
     ) -> None:
         self.executor_factory = executor_factory
         self.poll_interval = poll_interval
         self.kpi_snapshot_interval = kpi_snapshot_interval
         self.governance_interval = governance_interval
+        self._health_broadcast = health_broadcast_callback
 
         self.pid_file = DaemonPIDFile(pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid"))
         self.status_file = DaemonHealthStatus(status_path or DEFAULT_HEALTH_FILE)
@@ -737,6 +740,7 @@ class ExecutorDaemon:
                     count,
                 )
                 self._update_status("running")
+                self._broadcast_health()
             except Exception:
                 logger.exception("Error during tick")
 
@@ -764,6 +768,25 @@ class ExecutorDaemon:
                         logger.info("Expired %d stale approval request(s)", expired)
                 except Exception:
                     logger.exception("Error during approval expiry sweep")
+
+                # Ticket #58: archive resolved approvals past the retention
+                # window on the same cadence so the working store stays
+                # bounded; the audit trail remains the durable ledger.
+                try:
+                    archived = _archive_resolved_approvals(executor)
+                    if archived:
+                        logger.info("Archived %d resolved approval request(s)", archived)
+                except Exception:
+                    logger.exception("Error during approval archival")
+
+                # Issue #42: sweep expired suspended state files on the same
+                # governance cadence so disk usage stays bounded.
+                try:
+                    swept = _sweep_suspended_states(executor)
+                    if swept:
+                        logger.info("Swept %d expired suspended state file(s)", swept)
+                except Exception:
+                    logger.exception("Error during suspended state sweep")
 
             # Sleep in small increments so we can respond to signals quickly
             self._interruptible_sleep(self.poll_interval)
@@ -861,6 +884,20 @@ class ExecutorDaemon:
             started_at=self._started_at,
             ticks_completed=self._ticks_completed,
         )
+
+    def _broadcast_health(self) -> None:
+        """Push daemon health to WebSocket clients via the registered callback.
+
+        Best-effort: a broadcast failure must never crash the daemon loop.
+        """
+        if self._health_broadcast is None:
+            return
+        try:
+            status = self.status_file.read()
+            if status is not None:
+                self._health_broadcast(status)
+        except Exception:  # noqa: BLE001 - broadcast is best-effort
+            logger.debug("Daemon health broadcast failed", exc_info=True)
 
     def _stop_requested(self) -> bool:
         """Return True if a stop-request sentinel file is present."""

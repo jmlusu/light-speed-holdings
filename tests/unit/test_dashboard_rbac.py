@@ -182,21 +182,22 @@ class TestEndpointRBAC:
     ) -> None:
         client = self._api_client(monkeypatch, tmp_path)
         body = {"receiver_id": "agent", "instruction": "do something"}
-        assert client.post("/api/tasks", json=body).status_code == 401
+        assert client.post("/api/v1/tasks", json=body).status_code == 401
         assert (
-            client.post("/api/tasks", json=body, headers={"X-API-Key": "wrong-key"}).status_code
+            client.post("/api/v1/tasks", json=body, headers={"X-API-Key": "wrong-key"}).status_code
             == 401
         )
         assert (
-            client.post("/api/tasks", json=body, headers={"X-API-Key": RUN_KEY}).status_code == 201
+            client.post("/api/v1/tasks", json=body, headers={"X-API-Key": RUN_KEY}).status_code
+            == 201
         )
         # approve/admin outrank run — allowed by the role hierarchy.
         assert (
-            client.post("/api/tasks", json=body, headers={"X-API-Key": APPROVE_KEY}).status_code
+            client.post("/api/v1/tasks", json=body, headers={"X-API-Key": APPROVE_KEY}).status_code
             == 201
         )
         assert (
-            client.post("/api/tasks", json=body, headers={"X-API-Key": ADMIN_KEY}).status_code
+            client.post("/api/v1/tasks", json=body, headers={"X-API-Key": ADMIN_KEY}).status_code
             == 201
         )
 
@@ -205,7 +206,7 @@ class TestEndpointRBAC:
     ) -> None:
         client = self._api_client(monkeypatch, tmp_path)
         created = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something"},
             headers={"X-API-Key": RUN_KEY},
         ).json()
@@ -215,29 +216,29 @@ class TestEndpointRBAC:
         # approve outranks run — allowed by the role hierarchy.
         assert (
             client.patch(
-                f"/api/tasks/{task_id}", json=patch, headers={"X-API-Key": APPROVE_KEY}
+                f"/api/v1/tasks/{task_id}", json=patch, headers={"X-API-Key": APPROVE_KEY}
             ).status_code
             == 200
         )
         assert (
             client.patch(
-                f"/api/tasks/{task_id}", json=patch, headers={"X-API-Key": RUN_KEY}
+                f"/api/v1/tasks/{task_id}", json=patch, headers={"X-API-Key": RUN_KEY}
             ).status_code
             == 200
         )
         assert (
-            client.delete(f"/api/tasks/{task_id}", headers={"X-API-Key": RUN_KEY}).status_code
+            client.delete(f"/api/v1/tasks/{task_id}", headers={"X-API-Key": RUN_KEY}).status_code
             == 200
         )
         # Second task: admin key may also delete.
         created2 = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={"receiver_id": "agent", "instruction": "do something else"},
             headers={"X-API-Key": RUN_KEY},
         ).json()
         assert (
             client.delete(
-                f"/api/tasks/{created2['id']}", headers={"X-API-Key": ADMIN_KEY}
+                f"/api/v1/tasks/{created2['id']}", headers={"X-API-Key": ADMIN_KEY}
             ).status_code
             == 200
         )
@@ -246,8 +247,8 @@ class TestEndpointRBAC:
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         client = self._api_client(monkeypatch, tmp_path)
-        approve_url = "/api/approvals/apr-rbac-1/approve"
-        reject_url = "/api/approvals/apr-rbac-1/reject"
+        approve_url = "/api/v1/approvals/apr-rbac-1/approve"
+        reject_url = "/api/v1/approvals/apr-rbac-1/reject"
 
         assert client.post(approve_url, headers={"X-API-Key": RUN_KEY}).status_code == 403
         assert client.post(approve_url, headers={"X-API-Key": APPROVE_KEY}).status_code == 200
@@ -259,7 +260,7 @@ class TestEndpointRBAC:
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
         client = self._api_client(monkeypatch, tmp_path)
-        url = "/api/escalations/tsk-rbac-1/resolve"
+        url = "/api/v1/escalations/tsk-rbac-1/resolve"
 
         assert client.post(url, headers={"X-API-Key": RUN_KEY}).status_code == 403
         assert client.post(url, headers={"X-API-Key": APPROVE_KEY}).status_code == 200
@@ -272,7 +273,7 @@ class TestEndpointRBAC:
         # Batch actions
         assert (
             client.post(
-                "/api/mobile/actions/batch",
+                "/api/v1/mobile/actions/batch",
                 json={"actions": []},
                 headers={"X-API-Key": RUN_KEY},
             ).status_code
@@ -280,7 +281,7 @@ class TestEndpointRBAC:
         )
         assert (
             client.post(
-                "/api/mobile/actions/batch",
+                "/api/v1/mobile/actions/batch",
                 json={"actions": []},
                 headers={"X-API-Key": APPROVE_KEY},
             ).status_code
@@ -290,7 +291,7 @@ class TestEndpointRBAC:
         # Quick-approve all
         assert (
             client.post(
-                "/api/mobile/actions/quick-approve",
+                "/api/v1/mobile/actions/quick-approve",
                 json={"confirm": True},
                 headers={"X-API-Key": RUN_KEY},
             ).status_code
@@ -298,7 +299,7 @@ class TestEndpointRBAC:
         )
         assert (
             client.post(
-                "/api/mobile/actions/quick-approve",
+                "/api/v1/mobile/actions/quick-approve",
                 json={"confirm": True},
                 headers={"X-API-Key": APPROVE_KEY},
             ).status_code
@@ -309,7 +310,7 @@ class TestEndpointRBAC:
         swipe = {"request_id": "apr-rbac-1", "decision": "skip"}
         assert (
             client.post(
-                "/api/mobile/approvals/swipe",
+                "/api/v1/mobile/approvals/swipe",
                 json=swipe,
                 headers={"X-API-Key": RUN_KEY},
             ).status_code
@@ -317,7 +318,7 @@ class TestEndpointRBAC:
         )
         assert (
             client.post(
-                "/api/mobile/approvals/swipe",
+                "/api/v1/mobile/approvals/swipe",
                 json=swipe,
                 headers={"X-API-Key": APPROVE_KEY},
             ).status_code
@@ -327,7 +328,7 @@ class TestEndpointRBAC:
         # Sync (processes approve/reject/resolve actions)
         assert (
             client.post(
-                "/api/mobile/sync",
+                "/api/v1/mobile/sync",
                 json={"pending_actions": []},
                 headers={"X-API-Key": RUN_KEY},
             ).status_code
@@ -335,7 +336,7 @@ class TestEndpointRBAC:
         )
         assert (
             client.post(
-                "/api/mobile/sync",
+                "/api/v1/mobile/sync",
                 json={"pending_actions": []},
                 headers={"X-API-Key": APPROVE_KEY},
             ).status_code
@@ -350,7 +351,7 @@ class TestEndpointRBAC:
 
         assert (
             client.post(
-                "/api/mobile/notifications/register",
+                "/api/v1/mobile/notifications/register",
                 json=reg,
                 headers={"X-API-Key": "wrong-key"},
             ).status_code
@@ -358,7 +359,7 @@ class TestEndpointRBAC:
         )
         assert (
             client.post(
-                "/api/mobile/notifications/register",
+                "/api/v1/mobile/notifications/register",
                 json=reg,
                 headers={"X-API-Key": RUN_KEY},
             ).status_code
@@ -367,7 +368,7 @@ class TestEndpointRBAC:
         # approve is a higher role — allowed by hierarchy.
         assert (
             client.post(
-                "/api/mobile/notifications/register",
+                "/api/v1/mobile/notifications/register",
                 json=reg,
                 headers={"X-API-Key": APPROVE_KEY},
             ).status_code
@@ -375,7 +376,7 @@ class TestEndpointRBAC:
         )
         assert (
             client.patch(
-                "/api/mobile/notifications/preferences",
+                "/api/v1/mobile/notifications/preferences",
                 json={"device_token": "tok-1", "preferences": {}},
                 headers={"X-API-Key": RUN_KEY},
             ).status_code
@@ -384,7 +385,7 @@ class TestEndpointRBAC:
         assert (
             client.request(
                 "DELETE",
-                "/api/mobile/notifications/unregister",
+                "/api/v1/mobile/notifications/unregister",
                 json=reg,
                 headers={"X-API-Key": RUN_KEY},
             ).status_code
@@ -396,5 +397,5 @@ class TestEndpointRBAC:
     ) -> None:
         client = self._api_client(monkeypatch, tmp_path, mode="open")
         body = {"receiver_id": "agent", "instruction": "do something"}
-        assert client.post("/api/tasks", json=body).status_code == 201
-        assert client.post("/api/approvals/apr-rbac-1/approve").status_code == 200
+        assert client.post("/api/v1/tasks", json=body).status_code == 201
+        assert client.post("/api/v1/approvals/apr-rbac-1/approve").status_code == 200

@@ -309,29 +309,21 @@ Providers without an `oauth2:` block use static `{ID}_API_KEY` bearer auth. With
 
 ## ML Module
 
-ML capabilities live in `src/ai_company/ml/` (6 submodules). All use numpy for computation and fall back gracefully when heavyweight dependencies are unavailable.
+ML capabilities live in `src/ai_company/ml/` (embeddings only). Uses numpy for computation and falls back gracefully when heavyweight dependencies are unavailable.
 
 ### Submodules
 
 | File | Class | Purpose |
 |------|-------|---------|
 | `embeddings.py` | `EmbeddingEngine` | Local sentence-transformer embeddings; lazy load, graceful ImportError fallback |
-| `performance.py` | `AgentPerformanceTracker` | Per-agent metrics (success rate, execution time, cost, tokens); simple regression model for time prediction |
-| `complexity.py` | `TaskComplexityScorer` | Heuristic scoring (0.0–1.0) to route tasks to the right LLM tier |
-| `prompt_optimizer.py` | `PromptOptimizer` | Analyze audit logs for prompt patterns, A/B test variants, suggest improvements |
-| `anomaly.py` | `AnomalyDetector` | Statistical anomaly detection (Z-score, IQR) on cost/time/error metrics |
-| `predictive_scaling.py` | `PredictiveScalingEngine` | Forecast task volume and recommend tier adjustments |
 
 ### Usage
 
 ```python
-from ai_company.ml import EmbeddingEngine, TaskComplexityScorer
+from ai_company.ml import EmbeddingEngine
 
 engine = EmbeddingEngine()
 embeddings = engine.encode(["task description", "another task"])
-
-scorer = TaskComplexityScorer()
-score = scorer.score("Design a microservice architecture with Kubernetes")  # 0.0–1.0
 ```
 
 ### Tests

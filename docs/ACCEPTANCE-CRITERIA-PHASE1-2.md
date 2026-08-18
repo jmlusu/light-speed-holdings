@@ -357,8 +357,8 @@ def test_consolidation_merges_related_memories(memory_engine):
 ### Acceptance Criteria
 
 - [ ] `MessageBus` injected into API router via FastAPI dependency
-- [ ] `POST /api/tasks` calls `bus.send_task()` instead of reading/writing file
-- [ ] `GET /api/tasks` calls `bus.get_inbox()` instead of reading file directly
+- [ ] `POST /api/v1/tasks` calls `bus.send_task()` instead of reading/writing file
+- [ ] `GET /api/v1/tasks` calls `bus.get_inbox()` instead of reading file directly
 - [ ] No direct `inbox.json` reads in `dashboard/api.py` (grep confirms 0)
 - [ ] Unit test: `test_api_task_creation_uses_bus`
 - [ ] `pytest tests/unit/test_dashboard_api.py` passes

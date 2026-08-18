@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Schema DDL
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 5
 
 SCHEMA_SQL = """
 -- Tasks (replaces .opencode/inbox.json)
@@ -151,6 +151,98 @@ CREATE INDEX IF NOT EXISTS idx_cost_task ON cost_records(task_id);
 CREATE INDEX IF NOT EXISTS idx_cost_model ON cost_records(model);
 CREATE INDEX IF NOT EXISTS idx_cost_provider ON cost_records(provider);
 
+-- Cost aggregations (daily/weekly/monthly summaries from CostAggregationPipeline)
+CREATE TABLE IF NOT EXISTS cost_aggregations (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    period              TEXT NOT NULL,          -- 'daily', 'weekly', 'monthly'
+    period_key          TEXT NOT NULL,          -- '2025-06-15', '2025-06-09', '2025-06'
+    period_type         TEXT NOT NULL,          -- 'daily', 'weekly', 'monthly' (redundant with period for querying)
+    total_cost_usd      REAL NOT NULL DEFAULT 0.0,
+    total_prompt_tokens INTEGER NOT NULL DEFAULT 0,
+    total_completion_tokens INTEGER NOT NULL DEFAULT 0,
+    total_calls         INTEGER NOT NULL DEFAULT 0,
+    by_model            TEXT NOT NULL DEFAULT '{}',     -- JSON dict
+    by_agent            TEXT NOT NULL DEFAULT '{}',     -- JSON dict
+    computed_at         TEXT NOT NULL,
+    UNIQUE(period, period_key)
+);
+
+CREATE INDEX IF NOT EXISTS idx_cost_agg_period ON cost_aggregations(period);
+CREATE INDEX IF NOT EXISTS idx_cost_agg_period_key ON cost_aggregations(period_key);
+
+-- Agent performance metrics (from AgentPerformancePipeline)
+CREATE TABLE IF NOT EXISTS agent_performance_metrics (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    agent_id            TEXT NOT NULL,
+    period_days         INTEGER NOT NULL,
+    period_start        TEXT NOT NULL,
+    period_end          TEXT NOT NULL,
+    tasks_sent          INTEGER NOT NULL DEFAULT 0,
+    tasks_received      INTEGER NOT NULL DEFAULT 0,
+    tasks_completed     INTEGER NOT NULL DEFAULT 0,
+    tasks_failed        INTEGER NOT NULL DEFAULT 0,
+    completion_rate_pct REAL NOT NULL DEFAULT 0.0,
+    error_rate_pct      REAL NOT NULL DEFAULT 0.0,
+    sent_by_status      TEXT NOT NULL DEFAULT '{}',     -- JSON dict
+    received_by_status  TEXT NOT NULL DEFAULT '{}',     -- JSON dict
+    audit_events        TEXT NOT NULL DEFAULT '{}',     -- JSON dict
+    tool_usage          TEXT NOT NULL DEFAULT '[]',     -- JSON array
+    total_cost_usd      REAL NOT NULL DEFAULT 0.0,
+    prompt_tokens       INTEGER NOT NULL DEFAULT 0,
+    completion_tokens   INTEGER NOT NULL DEFAULT 0,
+    llm_calls           INTEGER NOT NULL DEFAULT 0,
+    error_events        INTEGER NOT NULL DEFAULT 0,
+    computed_at         TEXT NOT NULL,
+    UNIQUE(agent_id, period_days, period_start)
+);
+
+CREATE INDEX IF NOT EXISTS idx_agent_perf_agent ON agent_performance_metrics(agent_id);
+CREATE INDEX IF NOT EXISTS idx_agent_perf_period ON agent_performance_metrics(period_start);
+CREATE INDEX IF NOT EXISTS idx_agent_perf_composite ON agent_performance_metrics(agent_id, period_days, period_start);
+
+-- Revenue transactions (client billing ledger)
+CREATE TABLE IF NOT EXISTS revenue_transactions (
+    id                  TEXT PRIMARY KEY,
+    client_id           TEXT NOT NULL DEFAULT '',
+    project_id          TEXT NOT NULL DEFAULT '',
+    offer_id            TEXT NOT NULL DEFAULT '',
+    service_name        TEXT NOT NULL DEFAULT '',
+    currency            TEXT NOT NULL DEFAULT 'MWK',
+    amount              REAL NOT NULL DEFAULT 0.0,
+    payment_method      TEXT NOT NULL DEFAULT '',
+    status              TEXT NOT NULL DEFAULT 'pending',
+    installment_type    TEXT NOT NULL DEFAULT '',
+    exchange_rate       REAL NOT NULL DEFAULT 0.0,
+    linked_task_id      TEXT NOT NULL DEFAULT '',
+    reference           TEXT NOT NULL DEFAULT '',
+    recorded_by         TEXT NOT NULL DEFAULT '',
+    timestamp           TEXT NOT NULL DEFAULT ''
+);
+
+CREATE INDEX IF NOT EXISTS idx_revenue_client ON revenue_transactions(client_id);
+CREATE INDEX IF NOT EXISTS idx_revenue_project ON revenue_transactions(project_id);
+CREATE INDEX IF NOT EXISTS idx_revenue_offer ON revenue_transactions(offer_id);
+CREATE INDEX IF NOT EXISTS idx_revenue_status ON revenue_transactions(status);
+CREATE INDEX IF NOT EXISTS idx_revenue_ts ON revenue_transactions(timestamp);
+
+-- Project costs (delivery cost tracking, separate from LLM cost_records)
+CREATE TABLE IF NOT EXISTS project_costs (
+    id                  TEXT PRIMARY KEY,
+    project_id          TEXT NOT NULL DEFAULT '',
+    cost_type           TEXT NOT NULL DEFAULT '',
+    amount_usd          REAL NOT NULL DEFAULT 0.0,
+    amount_mwk          REAL NOT NULL DEFAULT 0.0,
+    description         TEXT NOT NULL DEFAULT '',
+    agent_id            TEXT NOT NULL DEFAULT '',
+    model               TEXT NOT NULL DEFAULT '',
+    tokens              INTEGER NOT NULL DEFAULT 0,
+    timestamp           TEXT NOT NULL DEFAULT ''
+);
+
+CREATE INDEX IF NOT EXISTS idx_pcost_project ON project_costs(project_id);
+CREATE INDEX IF NOT EXISTS idx_pcost_type ON project_costs(cost_type);
+CREATE INDEX IF NOT EXISTS idx_pcost_ts ON project_costs(timestamp);
+
 -- Schema version tracking
 CREATE TABLE IF NOT EXISTS schema_meta (
     key     TEXT PRIMARY KEY,
@@ -169,6 +261,138 @@ MIGRATIONS: dict[int, list[str]] = {
         # so stale-detection can verify ownership instead of racing live work.
         "ALTER TABLE tasks ADD COLUMN claimed_by TEXT NOT NULL DEFAULT '';",
         "ALTER TABLE tasks ADD COLUMN lease_expires_at TEXT NOT NULL DEFAULT '';",
+    ],
+    3: [
+        # Revenue transactions + project costs (ledger for order-to-cash)
+        """
+                CREATE TABLE IF NOT EXISTS revenue_transactions (
+                    id                  TEXT PRIMARY KEY,
+                    client_id           TEXT NOT NULL DEFAULT '',
+                    project_id          TEXT NOT NULL DEFAULT '',
+                    offer_id            TEXT NOT NULL DEFAULT '',
+                    service_name        TEXT NOT NULL DEFAULT '',
+                    currency            TEXT NOT NULL DEFAULT 'MWK',
+                    amount              REAL NOT NULL DEFAULT 0.0,
+                    payment_method      TEXT NOT NULL DEFAULT '',
+                    status              TEXT NOT NULL DEFAULT 'pending',
+                    installment_type    TEXT NOT NULL DEFAULT '',
+                    exchange_rate       REAL NOT NULL DEFAULT 0.0,
+                    linked_task_id      TEXT NOT NULL DEFAULT '',
+                    reference           TEXT NOT NULL DEFAULT '',
+                    recorded_by         TEXT NOT NULL DEFAULT '',
+                    timestamp           TEXT NOT NULL DEFAULT ''
+                );
+                """,
+        "CREATE INDEX IF NOT EXISTS idx_revenue_client ON revenue_transactions(client_id);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_project ON revenue_transactions(project_id);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_offer ON revenue_transactions(offer_id);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_status ON revenue_transactions(status);",
+        "CREATE INDEX IF NOT EXISTS idx_revenue_ts ON revenue_transactions(timestamp);",
+        """
+                CREATE TABLE IF NOT EXISTS project_costs (
+                    id                  TEXT PRIMARY KEY,
+                    project_id          TEXT NOT NULL DEFAULT '',
+                    cost_type           TEXT NOT NULL DEFAULT '',
+                    amount_usd          REAL NOT NULL DEFAULT 0.0,
+                    amount_mwk          REAL NOT NULL DEFAULT 0.0,
+                    description         TEXT NOT NULL DEFAULT '',
+                    agent_id            TEXT NOT NULL DEFAULT '',
+                    model               TEXT NOT NULL DEFAULT '',
+                    tokens              INTEGER NOT NULL DEFAULT 0,
+                    timestamp           TEXT NOT NULL DEFAULT ''
+                );
+                """,
+        "CREATE INDEX IF NOT EXISTS idx_pcost_project ON project_costs(project_id);",
+        "CREATE INDEX IF NOT EXISTS idx_pcost_type ON project_costs(cost_type);",
+        "CREATE INDEX IF NOT EXISTS idx_pcost_ts ON project_costs(timestamp);",
+    ],
+    4: [
+        # Cost aggregations table for CostAggregationPipeline
+        """
+                CREATE TABLE IF NOT EXISTS cost_aggregations (
+                    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+                    period              TEXT NOT NULL,
+                    period_key          TEXT NOT NULL,
+                    period_type         TEXT NOT NULL,
+                    total_cost_usd      REAL NOT NULL DEFAULT 0.0,
+                    total_prompt_tokens INTEGER NOT NULL DEFAULT 0,
+                    total_completion_tokens INTEGER NOT NULL DEFAULT 0,
+                    total_calls         INTEGER NOT NULL DEFAULT 0,
+                    by_model            TEXT NOT NULL DEFAULT '{}',
+                    by_agent            TEXT NOT NULL DEFAULT '{}',
+                    computed_at         TEXT NOT NULL,
+                    UNIQUE(period, period_key)
+                );
+                """,
+        "CREATE INDEX IF NOT EXISTS idx_cost_agg_period ON cost_aggregations(period);",
+        "CREATE INDEX IF NOT EXISTS idx_cost_agg_period_key ON cost_aggregations(period_key);",
+        # Agent performance metrics table for AgentPerformancePipeline
+        """
+                CREATE TABLE IF NOT EXISTS agent_performance_metrics (
+                    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+                    agent_id            TEXT NOT NULL,
+                    period_days         INTEGER NOT NULL,
+                    period_start        TEXT NOT NULL,
+                    period_end          TEXT NOT NULL,
+                    tasks_sent          INTEGER NOT NULL DEFAULT 0,
+                    tasks_received      INTEGER NOT NULL DEFAULT 0,
+                    tasks_completed     INTEGER NOT NULL DEFAULT 0,
+                    tasks_failed        INTEGER NOT NULL DEFAULT 0,
+                    completion_rate_pct REAL NOT NULL DEFAULT 0.0,
+                    error_rate_pct      REAL NOT NULL DEFAULT 0.0,
+                    sent_by_status      TEXT NOT NULL DEFAULT '{}',
+                    received_by_status  TEXT NOT NULL DEFAULT '{}',
+                    audit_events        TEXT NOT NULL DEFAULT '{}',
+                    tool_usage          TEXT NOT NULL DEFAULT '[]',
+                    total_cost_usd      REAL NOT NULL DEFAULT 0.0,
+                    prompt_tokens       INTEGER NOT NULL DEFAULT 0,
+                    completion_tokens   INTEGER NOT NULL DEFAULT 0,
+                    llm_calls           INTEGER NOT NULL DEFAULT 0,
+                    error_events        INTEGER NOT NULL DEFAULT 0,
+                    computed_at         TEXT NOT NULL,
+                    UNIQUE(agent_id, period_days, period_start)
+                );
+                """,
+        "CREATE INDEX IF NOT EXISTS idx_agent_perf_agent ON agent_performance_metrics(agent_id);",
+        "CREATE INDEX IF NOT EXISTS idx_agent_perf_period ON agent_performance_metrics(period_start);",
+        "CREATE INDEX IF NOT EXISTS idx_agent_perf_composite ON agent_performance_metrics(agent_id, period_days, period_start);",
+    ],
+    5: [
+        # FTS5 full-text search for audit_events and tasks
+        # T3.2: SQLite FTS5 optimization for audit query and task search
+        """
+        CREATE VIRTUAL TABLE IF NOT EXISTS audit_events_fts USING fts5(
+            task_id, tool, args, result, metadata,
+            content='audit_events',
+            content_rowid='rowid'
+        );
+
+        CREATE TRIGGER IF NOT EXISTS audit_events_ai AFTER INSERT ON audit_events BEGIN
+            INSERT INTO audit_events_fts(rowid, task_id, tool, args, result, metadata)
+            VALUES (new.rowid, new.task_id, new.tool, new.args, new.result, new.metadata);
+        END;
+
+        CREATE TRIGGER IF NOT EXISTS audit_events_ad AFTER DELETE ON audit_events BEGIN
+            INSERT INTO audit_events_fts(audit_events_fts, rowid, task_id, tool, args, result, metadata)
+            VALUES('delete', old.rowid, old.task_id, old.tool, old.args, old.result, old.metadata);
+        END;
+
+        CREATE TRIGGER IF NOT EXISTS audit_events_au AFTER UPDATE ON audit_events BEGIN
+            INSERT INTO audit_events_fts(audit_events_fts, rowid, task_id, tool, args, result, metadata)
+            VALUES('delete', old.rowid, old.task_id, old.tool, old.args, old.result, old.metadata);
+            INSERT INTO audit_events_fts(rowid, task_id, tool, args, result, metadata)
+            VALUES (new.rowid, new.task_id, new.tool, new.args, new.result, new.metadata);
+        END;
+
+        CREATE VIRTUAL TABLE IF NOT EXISTS tasks_fts USING fts5(
+            instruction, description, name
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_audit_agent_type ON audit_events(agent_id, event_type);
+        CREATE INDEX IF NOT EXISTS idx_audit_task_type ON audit_events(task_id, event_type);
+        CREATE INDEX IF NOT EXISTS idx_audit_ts_type ON audit_events(timestamp, event_type);
+        CREATE INDEX IF NOT EXISTS idx_audit_task_status ON audit_events(task_id, event_type, severity);
+        """,
     ],
 }
 
@@ -395,6 +619,8 @@ _REQUIRED_TABLES = frozenset(
         "kpi_values",
         "cost_records",
         "schema_meta",
+        "cost_aggregations",
+        "agent_performance_metrics",
     }
 )
 

@@ -301,16 +301,16 @@ WS /ws/approvals
 New endpoints added to `dashboard/api.py`:
 
 ```
-GET  /api/approvals                    — list all (with query params)
-GET  /api/approvals/history            — full audit log (paginated)
-GET  /api/approvals/{id}               — single request detail
-POST /api/approvals/{id}/approve       — approve (body: ApprovalDecision)
-POST /api/approvals/{id}/reject        — reject (body: ApprovalDecision with required reason)
-GET  /api/approvals/tiers              — tier definitions
+GET  /api/v1/approvals                    — list all (with query params)
+GET  /api/v1/approvals/history            — full audit log (paginated)
+GET  /api/v1/approvals/{id}               — single request detail
+POST /api/v1/approvals/{id}/approve       — approve (body: ApprovalDecision)
+POST /api/v1/approvals/{id}/reject        — reject (body: ApprovalDecision with required reason)
+GET  /api/v1/approvals/tiers              — tier definitions
 GET  /ws/approvals                     — WebSocket stream
 ```
 
-### Query Parameters for `GET /api/approvals`
+### Query Parameters for `GET /api/v1/approvals`
 
 | Param | Type | Default | Description |
 |-------|------|---------|-------------|

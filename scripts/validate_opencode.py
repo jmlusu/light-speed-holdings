@@ -2,9 +2,12 @@
 
 Checks every .md file in .opencode/agents/ for:
 - Valid YAML frontmatter between --- delimiters
-- Required fields: description, mode, tools
-- tools field has boolean values
-- No forbidden fields: name, permission
+- Required fields: description, mode, permission
+- No forbidden fields: name, tools (legacy format)
+- mode is 'primary' or 'subagent'
+- permission maps to allow/ask/deny values
+- permission keys are in the canonical runtime tool vocabulary
+  (AGENTS.md section 8): read, edit, grep, list, bash, webfetch, task
 """
 
 from __future__ import annotations
@@ -14,10 +17,12 @@ from pathlib import Path
 
 import yaml
 
-FORBIDDEN_FIELDS = {"name", "permission"}
-REQUIRED_FIELDS = {"description", "mode", "tools"}
+FORBIDDEN_FIELDS = {"name", "tools"}
+REQUIRED_FIELDS = {"description", "mode", "permission"}
 VALID_MODES = {"primary", "subagent"}
-EXPECTED_TOOLS = {"write", "edit", "bash", "read", "grep", "list", "webfetch", "websearch"}
+VALID_PERMISSION_VALUES = {"allow", "ask", "deny"}
+# Canonical runtime tool vocabulary (AGENTS.md section 8).
+CANONICAL_TOOLS = {"read", "edit", "grep", "list", "bash", "webfetch", "task"}
 
 
 def parse_frontmatter(content: str) -> tuple[dict | None, str]:
@@ -62,17 +67,23 @@ def validate_agent(filepath: Path) -> list[str]:
     if mode and mode not in VALID_MODES:
         errors.append(f"Invalid mode: {mode!r} (expected {VALID_MODES})")
 
-    # Check tools structure
-    tools = frontmatter.get("tools")
-    if tools is not None:
-        if not isinstance(tools, dict):
-            errors.append(f"tools must be a dict, got {type(tools).__name__}")
+    # Check permission block (OpenCode v2): values allow/ask/deny and keys
+    # restricted to the canonical runtime tool vocabulary.
+    permission = frontmatter.get("permission")
+    if permission is not None:
+        if not isinstance(permission, dict):
+            errors.append(f"permission must be a dict, got {type(permission).__name__}")
         else:
-            # Check for boolean values
-            for key, value in tools.items():
-                if not isinstance(value, bool):
+            for key, value in permission.items():
+                if value not in VALID_PERMISSION_VALUES:
                     errors.append(
-                        f"tools.{key} must be bool, got {type(value).__name__}: {value!r}"
+                        f"permission.{key} must be one of {sorted(VALID_PERMISSION_VALUES)}, "
+                        f"got {value!r}"
+                    )
+                if key not in CANONICAL_TOOLS:
+                    errors.append(
+                        f"permission.{key} is not in the canonical tool vocabulary "
+                        f"{sorted(CANONICAL_TOOLS)}"
                     )
 
     return errors

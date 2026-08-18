@@ -18,7 +18,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
-from ai_company.dashboard.monitoring import inc_metric
 from ai_company.models.task import Task
 from ai_company.store.file_store import FileStore
 
@@ -29,6 +28,9 @@ logger = logging.getLogger(__name__)
 
 # Default fallback threshold for legacy tasks without a lease: 30 minutes
 STALE_THRESHOLD_MINUTES: int = 30
+
+# Default retry budget for stale-lease auto-retry (ADR-015).
+STALE_RETRY_MAX: int = 3
 
 DEFAULT_DLQ_PATH: str = ".opencode/dead_letter.json"
 
@@ -266,15 +268,24 @@ def detect_stale_tasks(
     bus: MessageBus,
     dlq: DeadLetterQueue,
     threshold_minutes: int = STALE_THRESHOLD_MINUTES,
+    retry_max: int = STALE_RETRY_MAX,
 ) -> list[dict[str, Any]]:
     """Scan the inbox via *bus* for ``in_progress`` tasks with an expired lease.
 
-    Each stale task is moved to the DLQ (deduplicated) **and** removed from
-    the inbox atomically. If a task is already present in the DLQ (e.g. a previous
-    run crashed between the move and the inbox deletion), the inbox copy is
-    simply cleaned up and the task is not re-moved.
+    For each stale task the retry budget (ADR-015) is checked:
 
-    Returns the list of moved task dicts.
+    * **budget remaining** — ``retry_count`` is incremented, the task is
+      re-enqueued as ``pending`` via ``bus`` for any executor to re-claim.
+      Log level: INFO.
+    * **budget exhausted** — the task is moved to the DLQ with enriched
+      metadata (``retry_count``, ``retry_budget``, ``dlq_reason``) and
+      deleted from the inbox.  Log level: WARNING.
+
+    Tasks already present in the DLQ (e.g. a previous run crashed between
+    the move and the inbox deletion) have their inbox copy cleaned up
+    without being re-moved.
+
+    Returns the list of acted-on task dicts (retried or DLQ'd).
     """
     try:
         tasks: list[dict[str, Any]] = bus.get_all_tasks_raw()
@@ -282,7 +293,7 @@ def detect_stale_tasks(
         return []
 
     now = datetime.now(timezone.utc)
-    moved: list[dict[str, Any]] = []
+    acted: list[dict[str, Any]] = []
 
     for task in tasks:
         if task.get("status") != "in_progress":
@@ -291,16 +302,43 @@ def detect_stale_tasks(
         if not reason:
             continue
 
-        # Move to the DLQ (deduplicated), then remove the stale task from the
-        # inbox so it is not re-processed on the next tick. This replaces the
-        # removed move_and_delete_atomic API with move_task + explicit cleanup.
-        result = dlq.move_task(task, reason)
-        inc_metric("dead_letter_moved_total")
-        bus.delete_task(str(task.get("id", "")))
-        if result is not None:
-            moved.append(task)
+        task_id = str(task.get("id", ""))
+        retry_count = task.get("retry_count") or 0
+        raw_budget = task.get("retry_budget")
+        retry_budget = raw_budget if raw_budget is not None else retry_max
 
-    if moved:
-        logger.info("Moved %d stale tasks to DLQ atomically.", len(moved))
+        if retry_count < retry_budget:
+            # Auto-retry: increment counter, re-enqueue as pending.
+            task["retry_count"] = retry_count + 1
+            task["retry_budget"] = retry_budget
+            task["status"] = "pending"
+            task["updated_at"] = now.isoformat()
+            task.pop("claimed_by", None)
+            task.pop("lease_expires_at", None)
+            bus.delete_task(task_id)
+            bus.send_task(Task(**task))
+            logger.info(
+                "Task %s stale — auto-retrying (%d/%d).",
+                task_id,
+                task["retry_count"],
+                retry_budget,
+            )
+            acted.append(task)
+        else:
+            # Budget exhausted: move to DLQ with enriched metadata.
+            task["dlq_reason"] = "stale_lease_exhausted"
+            result = dlq.move_task(task, reason)
+            bus.delete_task(task_id)
+            if result is not None:
+                logger.warning(
+                    "Task %s stale — retry budget exhausted (%d/%d), moved to DLQ.",
+                    task_id,
+                    retry_count,
+                    retry_budget,
+                )
+                acted.append(task)
 
-    return moved
+    if acted:
+        logger.info("Acted on %d stale task(s) (retried or DLQ'd).", len(acted))
+
+    return acted

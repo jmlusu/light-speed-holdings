@@ -81,13 +81,13 @@ Four components read/write `inbox.json` concurrently: MessageBus, Executor, Dash
 | **GAP Ref** | GAP-011 |
 
 **Description:**
-`POST /api/tasks` and `GET /api/tasks` in `dashboard/api.py` read/write `inbox.json` directly. Must inject MessageBus as a FastAPI dependency and route all operations through it.
+`POST /api/v1/tasks` and `GET /api/v1/tasks` in `dashboard/api.py` read/write `inbox.json` directly. Must inject MessageBus as a FastAPI dependency and route all operations through it.
 
 **Acceptance Criteria:**
 - [ ] MessageBus injected into API router via FastAPI `Depends()`
-- [ ] `POST /api/tasks` uses `bus.send_task()`
-- [ ] `GET /api/tasks` uses `bus.get_inbox()`
-- [ ] `GET /api/tasks/{id}` reads from MessageBus
+- [ ] `POST /api/v1/tasks` uses `bus.send_task()`
+- [ ] `GET /api/v1/tasks` uses `bus.get_inbox()`
+- [ ] `GET /api/v1/tasks/{id}` reads from MessageBus
 - [ ] No direct `Path.read_text()` for `inbox.json` in api.py
 - [ ] Dashboard security tests updated
 - [ ] All existing tests pass
@@ -379,7 +379,7 @@ S2-13 (Escalation)    — standalone
 | FileStore has atomic writes | Test concurrent write safety |
 | Tier rules integrated | `classify_tool_action()` called in ToolRunner |
 | HITL non-blocking | `AWAITING_APPROVAL` status exists, no `time.sleep()` in HITLGate |
-| Dashboard auth works | `curl -X POST localhost:8000/api/tasks` without API key → 403 |
+| Dashboard auth works | `curl -X POST localhost:8000/api/v1/tasks` without API key → 403 |
 | All 727+ tests pass | `pytest` (no regressions) |
 | Lint + type check clean | `ruff check src/ && mypy src/` |
 | New tests for all changes | `pytest tests/unit/ -v` |

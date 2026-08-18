@@ -91,7 +91,7 @@ class TestScrollStability:
 
         # Trigger a WebSocket message by creating a task via API
         page.evaluate("""
-            fetch('/api/tasks', {
+            fetch('/api/v1/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

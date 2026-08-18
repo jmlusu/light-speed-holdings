@@ -3,11 +3,17 @@
    Chart.js integration for KPIs, costs, and analytics
    ═══════════════════════════════════════════════════════════════ */
 
+// ── CSS Token Reader ────────────────────────────────────────
+const _style = typeof getComputedStyle !== 'undefined'
+  ? getComputedStyle(document.documentElement)
+  : null;
+const _c = (v) => _style ? _style.getPropertyValue(v).trim() : '';
+
 // ── Chart.js Global Defaults ────────────────────────────────
 if (typeof Chart !== 'undefined') {
-  Chart.defaults.color = '#94a3b8';
-  Chart.defaults.borderColor = 'rgba(51, 65, 85, 0.3)';
-  Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+  Chart.defaults.color = _c('--jarvis-text-muted') || '#94a3b8';
+  Chart.defaults.borderColor = 'rgba(34, 211, 238, 0.08)';
+  Chart.defaults.font.family = _c('--jarvis-font-display') || "'Rajdhani', 'Inter', system-ui, sans-serif";
   Chart.defaults.font.size = 12;
   Chart.defaults.plugins.legend.labels.usePointStyle = true;
   Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
@@ -32,16 +38,20 @@ if (typeof Chart !== 'undefined') {
   Chart.defaults.maintainAspectRatio = false;
 }
 
-// ── Color Palette ───────────────────────────────────────────
+// ── Color Palette (token-derived) ─────────────────────────
 const COLORS = {
   amber:   { bg: 'rgba(251, 191, 36, 0.15)', border: '#fbbf24', point: '#fbbf24' },
   blue:    { bg: 'rgba(59, 130, 246, 0.15)', border: '#3b82f6', point: '#3b82f6' },
-  emerald: { bg: 'rgba(16, 185, 129, 0.15)', border: '#10b981', point: '#10b981' },
-  red:     { bg: 'rgba(239, 68, 68, 0.15)', border: '#ef4444', point: '#ef4444' },
+  emerald: { bg: 'rgba(52, 211, 153, 0.15)', border: '#34d399', point: '#34d399' },
+  red:     { bg: 'rgba(248, 113, 113, 0.15)', border: '#f87171', point: '#f87171' },
   purple:  { bg: 'rgba(168, 85, 247, 0.15)', border: '#a855f7', point: '#a855f7' },
-  brand:   { bg: 'rgba(14, 165, 233, 0.15)', border: '#0ea5e9', point: '#0ea5e9' },
+  brand:   { bg: _c('--jarvis-cyan') ? 'rgba(34, 211, 238, 0.15)' : 'rgba(14, 165, 233, 0.15)',
+             border: _c('--jarvis-cyan') || '#0ea5e9',
+             point: _c('--jarvis-cyan') || '#0ea5e9' },
   slate:   { bg: 'rgba(100, 116, 139, 0.15)', border: '#64748b', point: '#64748b' },
-  cyan:    { bg: 'rgba(6, 182, 212, 0.15)', border: '#06b6d4', point: '#06b6d4' },
+  cyan:    { bg: _c('--jarvis-cyan') ? 'rgba(34, 211, 238, 0.15)' : 'rgba(6, 182, 212, 0.15)',
+             border: _c('--jarvis-cyan') || '#06b6d4',
+             point: _c('--jarvis-cyan') || '#06b6d4' },
 };
 
 const CHART_COLORS = Object.values(COLORS);

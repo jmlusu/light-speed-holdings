@@ -82,6 +82,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          fetch-tags: true
       # NOTE: no astral-sh/setup-uv step here. This job only runs git/grep/sed
       # and installs nothing, so setup-uv's post-run cache save would fail with
       # "Cache path does not exist on disk" (enable-cache has nothing to store).

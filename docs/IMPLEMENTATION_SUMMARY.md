@@ -130,7 +130,7 @@ This document summarizes the implementation of the **Organization Chart Componen
 - **Executive Dashboards**: Seamless integration with existing FastAPI endpoints
 - **KPI Collection**: Compatible with department KPI systems
 - **StateStore**: Integration with existing caching infrastructure
-- **Existing API**: Backward compatibility with `/api/org-chart` endpoint
+- **Existing API**: Backward compatibility with `/api/v1/org-chart` endpoint
 
 ## Testing Framework ✅
 

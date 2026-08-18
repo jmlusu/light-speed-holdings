@@ -7,7 +7,7 @@ Security hardening:
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 
@@ -35,7 +35,7 @@ class EscalationEvent(BaseModel):
     from_agent: str
     to_agent: str
     reason: str
-    timestamp: datetime = Field(default_factory=datetime.now)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     resolved: bool = False
 
 
@@ -93,13 +93,13 @@ class EscalationManager:
         self._load_config()
         self._load_events()
 
-    def _load_config(self):
+    def _load_config(self) -> None:
         if self.config_path.exists():
             with file_lock(self.config_path), open(self.config_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f) or {}
                 self.rules = [EscalationRule(**r) for r in data.get("rules", [])]
 
-    def _save_config(self):
+    def _save_config(self) -> None:
         with file_lock(self.config_path):
             data = {"rules": [r.model_dump() for r in self.rules]}
             with atomic_write(self.config_path) as f:
@@ -197,7 +197,7 @@ class EscalationManager:
     def get_pending_escalations(self) -> List[EscalationEvent]:
         return [e for e in self.events if not e.resolved]
 
-    def resolve_escalation(self, task_id: str):
+    def resolve_escalation(self, task_id: str) -> None:
         resolved_event: Optional[EscalationEvent] = None
         for event in self.events:
             if event.task_id == task_id:

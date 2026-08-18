@@ -9,7 +9,7 @@ import time
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -27,7 +27,7 @@ class ScheduledTask(BaseModel):
     last_run: Optional[datetime] = None
     next_run: Optional[datetime] = None
     enabled: bool = True
-    task_template: dict = Field(default_factory=dict)
+    task_template: dict[str, Any] = Field(default_factory=dict)
 
 
 class Scheduler:
@@ -38,12 +38,12 @@ class Scheduler:
         self.tasks: List[ScheduledTask] = []
         self._load_config()
 
-    def _load_config(self):
+    def _load_config(self) -> None:
         data = self._store.read_yaml(self._config_name)
         if data and isinstance(data, dict):
             self.tasks = [ScheduledTask(**t) for t in data.get("tasks", [])]
 
-    def _save_config(self):
+    def _save_config(self) -> None:
         data = {"tasks": [t.model_dump() for t in self.tasks]}
         self._store.write_yaml(self._config_name, data)
 
@@ -52,7 +52,7 @@ class Scheduler:
         task_id: str,
         name: str,
         interval_minutes: Optional[int] = None,
-        task_template: Optional[dict] = None,
+        task_template: Optional[dict[str, Any]] = None,
     ) -> ScheduledTask:
         task = ScheduledTask(
             id=task_id,
@@ -77,7 +77,7 @@ class Scheduler:
         now = datetime.now()
         return [t for t in self.tasks if t.enabled and t.next_run and t.next_run <= now]
 
-    def mark_completed(self, task_id: str):
+    def mark_completed(self, task_id: str) -> None:
         for task in self.tasks:
             if task.id == task_id:
                 task.last_run = datetime.now()

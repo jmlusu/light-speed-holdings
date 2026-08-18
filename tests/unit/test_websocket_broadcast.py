@@ -80,13 +80,13 @@ def test_task_created_event_emits_ws_broadcast(
 
     monkeypatch.setattr(ws_mod, "broadcast_task_update", _spy)
 
-    with client.websocket_connect("/ws/dashboard") as ws:
+    with client.websocket_connect("/ws/v1/dashboard") as ws:
         hello = _recv_with_timeout(ws)
         assert hello["type"] == "connected"
 
         def _post() -> None:
             client.post(
-                "/api/tasks",
+                "/api/v1/tasks",
                 json={
                     "sender_id": "human-ceo",
                     "receiver_id": "lead-backend",

@@ -17,8 +17,8 @@ import json
 import logging
 import os
 import shutil
-import tempfile
 import time
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -48,62 +48,29 @@ class FileStore:
 
     # ── Atomic write ──────────────────────────────────────────────────
 
-    def _atomic_write(self, path: Path, data: str) -> None:
-        """Write *data* to *path* atomically via temp-file-then-rename.
+    def _write_content(self, path: Path, data: str) -> None:
+        """Write *data* to *path* atomically via the shared helper.
 
         The previous version is copied to ``.bak`` *before* the rename so a
         crash at any point leaves either the new file or a recoverable
-        backup of the last good version.  On failure the temp file is
-        cleaned up and the exception re-raised.
+        backup of the last good version.
         """
         path.parent.mkdir(parents=True, exist_ok=True)
-        tmp_fd: int | None = None
-        tmp_path: str = ""
-        try:
-            tmp_fd, tmp_path = tempfile.mkstemp(dir=str(path.parent), suffix=".tmp")
-            with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
-                f.write(data)
-                f.flush()
-                os.fsync(f.fileno())
-            tmp_fd = None  # Closed by fdopen
 
-            # Snapshot the last-good version BEFORE replacing it so a crash
-            # mid-replace always leaves a recoverable .bak of the old data.
-            if self.backup and path.exists():
-                self._write_backup(path)
+        # Snapshot the last-good version BEFORE replacing it so a crash
+        # mid-replace always leaves a recoverable .bak of the old data.
+        if self.backup and path.exists():
+            self._write_backup(path)
 
-            # On Windows os.replace can transiently fail with
-            # PermissionError if another handle briefly references the
-            # target; retry a few times before giving up.
-            last_err: Exception | None = None
-            for _ in range(5):
-                try:
-                    os.replace(tmp_path, str(path))
-                    tmp_path = ""
-                    break
-                except (OSError, PermissionError) as exc:
-                    last_err = exc
-                    time.sleep(0.01)
-            if tmp_path:
-                if tmp_fd is not None:
-                    with contextlib.suppress(OSError):
-                        os.close(tmp_fd)
-                with contextlib.suppress(OSError):
-                    os.unlink(tmp_path)
-                if last_err:
-                    raise last_err from None
+        from ai_company.utils.file_lock import atomic_write
 
-            # First write: ensure a .bak exists afterwards too, so the
-            # ".bak always present after a write" invariant holds.
-            if self.backup and not (path.with_suffix(path.suffix + ".bak").exists()):
-                self._write_backup(path)
-        except (OSError, PermissionError):
-            if tmp_fd is not None:
-                with contextlib.suppress(OSError):
-                    os.close(tmp_fd)
-            with contextlib.suppress(OSError):
-                os.unlink(tmp_path)
-            raise
+        with atomic_write(path) as f:
+            f.write(data)
+
+        # First write: ensure a .bak exists afterwards too, so the
+        # ".bak always present after a write" invariant holds.
+        if self.backup and not (path.with_suffix(path.suffix + ".bak").exists()):
+            self._write_backup(path)
 
     def _write_backup(self, path: Path) -> None:
         """Copy the current version of *path* to ``.bak`` with fsync."""
@@ -173,7 +140,9 @@ class FileStore:
     # ── Lock context manager ────────────────────────────────────────────
 
     @contextmanager
-    def lock(self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT):
+    def lock(
+        self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT
+    ) -> Generator[None, None, None]:
         """Context manager for file-level exclusive access.
 
         Uses a ``.lock`` sibling file to serialise access to the resource at
@@ -187,7 +156,7 @@ class FileStore:
         Raises:
             FileLockError: If lock cannot be acquired within *timeout*.
         """
-        from ai_company.store.file_lock import file_lock as fl  # type: ignore[import-untyped]
+        from ai_company.store.file_lock import file_lock as fl
 
         full_path = self.base_dir / rel_path
         lock_path = full_path.parent / (full_path.name + ".lock")
@@ -197,7 +166,9 @@ class FileStore:
             yield
 
     @contextmanager
-    def lock_atomic(self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT):
+    def lock_atomic(
+        self, rel_path: str | Path, timeout: float = _LOCK_TIMEOUT
+    ) -> Generator[Path, None, None]:
         """Context manager that acquires a file lock and yields the full path.
 
         Combines exclusive locking with automatic release. This is useful
@@ -251,7 +222,7 @@ class FileStore:
         """Atomically write *data* as JSON to *rel_path*."""
         full_path = self.base_dir / rel_path
         content = json.dumps(data, indent=2, default=str)
-        self._atomic_write(full_path, content)
+        self._write_content(full_path, content)
 
     def update_json(
         self,
@@ -282,7 +253,7 @@ class FileStore:
 
             # Write
             content = json.dumps(new_data, indent=2, default=str)
-            self._atomic_write(full_path, content)
+            self._write_content(full_path, content)
 
         return new_data
 
@@ -314,7 +285,7 @@ class FileStore:
         content = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
         with fl(full_path, timeout=_LOCK_TIMEOUT, stale_after=_LOCK_STALE_AFTER):
-            self._atomic_write(full_path, content)
+            self._write_content(full_path, content)
 
     # ── Generic helpers ───────────────────────────────────────────────
 

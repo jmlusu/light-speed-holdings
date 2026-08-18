@@ -15,8 +15,25 @@ class HRKPICollector(KPICollector):
     department = "hr"
 
     def collect(self) -> dict[str, Any]:
-        registry: list[dict] = self._load_json("company/agent-registry.json")
+        registry_path = self.root / "company" / "agent-registry.json"
+        dept_path = self.root / "company" / "departments.yaml"
+
+        registry: list[dict[str, Any]] = self._load_json("company/agent-registry.json")
         departments_data = self._load_yaml("company/departments.yaml")
+
+        # Track data quality
+        registry_missing = not registry_path.exists()
+        dept_missing = not dept_path.exists()
+
+        if registry_missing and dept_missing:
+            quality = "error"
+            error_msg = "Both agent-registry.json and departments.yaml missing"
+        elif registry_missing or dept_missing:
+            quality = "fallback"
+            error_msg = "One or more source files missing"
+        else:
+            quality = "real"
+            error_msg = None
 
         total_agents = len(registry)
 
@@ -41,14 +58,22 @@ class HRKPICollector(KPICollector):
             "department": self.department,
             "collected_at": datetime.now().isoformat(),
             "kpis": {
-                "total_agents": self._kpi(total_agents, None, "count"),
+                "total_agents": self._kpi(
+                    total_agents, None, "count", data_quality=quality, error=error_msg
+                ),
                 "agents_by_department": {
                     "current": agents_by_department,
                     "target": None,
                     "unit": "breakdown",
                     "status": "info",
+                    "data_quality": quality,
+                    "error": error_msg,
                 },
-                "department_coverage": self._kpi(coverage_pct, 100, "%"),
-                "declared_departments": self._kpi(total_declared, None, "count"),
+                "department_coverage": self._kpi(
+                    coverage_pct, 100, "%", data_quality=quality, error=error_msg
+                ),
+                "declared_departments": self._kpi(
+                    total_declared, None, "count", data_quality=quality, error=error_msg
+                ),
             },
         }

@@ -33,23 +33,8 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from ai_company.orchestrator.approval import ApprovalGate, ApprovalRequest, ApprovalStatus
+from ai_company.orchestrator.approval import ApprovalGate, ApprovalStatus
 from ai_company.security.command_safety import find_shell_metacharacters
-
-
-def _expired(request: ApprovalRequest) -> bool:
-    """True when the request's ``expires_at`` deadline has passed (UTC).
-
-    The approvals store writes UTC-aware timestamps (ticket #58); legacy
-    naive values are treated as UTC so comparisons never mix zones.
-    """
-    if not request.expires_at:
-        return False
-    expires = request.expires_at
-    if expires.tzinfo is None:
-        expires = expires.replace(tzinfo=timezone.utc)
-    return expires < datetime.now(timezone.utc)
-
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +72,7 @@ class HITLGate:
         poll_interval: float = 2.0,
         timeout_minutes: int = 30,
     ) -> None:
-        self.gate = approval_gate or ApprovalGate()
+        self.gate = approval_gate or ApprovalGate.get_instance()
         self.poll_interval = poll_interval
         self.timeout_minutes = timeout_minutes
         self._futures: dict[str, concurrent.futures.Future[bool]] = {}
@@ -268,7 +253,7 @@ class HITLGate:
             with self._lock:
                 self._pending_requests.pop(request_id, None)
             return False
-        if _expired(req):
+        if req.expires_at and req.expires_at < datetime.now(timezone.utc):
             with self._lock:
                 self._pending_requests.pop(request_id, None)
             return False
@@ -296,9 +281,12 @@ class HITLGate:
         future: concurrent.futures.Future[bool],
     ) -> None:
         """Background thread: poll gate until resolved or deadline."""
-        deadline = datetime.now() + timedelta(minutes=self.timeout_minutes)
+        # Use UTC for deadline to handle timezone-aware expires_at consistently
+        from datetime import timezone
 
-        while datetime.now() < deadline:
+        deadline = datetime.now(timezone.utc) + timedelta(minutes=self.timeout_minutes)
+
+        while datetime.now(timezone.utc) < deadline:
             if future.cancelled():
                 return
 
@@ -361,9 +349,19 @@ class HITLGate:
         if req.status == ApprovalStatus.APPROVED:
             self._resolve(request_id, True)
             return True
-        elif req.status == ApprovalStatus.REJECTED or _expired(req):
+        elif req.status == ApprovalStatus.REJECTED:
             self._resolve(request_id, False)
             return False
+        elif req.expires_at:
+            # Handle both naive and aware datetimes for comparison
+            now = datetime.now()
+            if req.expires_at.tzinfo is not None:
+                from datetime import timezone
+
+                now = now.replace(tzinfo=timezone.utc)
+            if req.expires_at < now:
+                self._resolve(request_id, False)
+                return False
 
         return None
 

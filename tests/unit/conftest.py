@@ -25,6 +25,7 @@ def _reset_shared_singletons() -> None:
     import ai_company.memory.integration as mem_mod
     from ai_company.dashboard.repository import reset_state_store
     from ai_company.data import reset_database
+    from ai_company.orchestrator.approval import ApprovalGate
 
     reset_state_store()
     reset_database()
@@ -32,6 +33,7 @@ def _reset_shared_singletons() -> None:
     audit_mod._writer = None
     mem_mod._store = None
     mem_mod._vector_store = None
+    ApprovalGate.reset_instance()
 
 
 @pytest.fixture(autouse=True)

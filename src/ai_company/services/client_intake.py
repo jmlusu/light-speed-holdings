@@ -71,16 +71,16 @@ class ClientIntakeService(BaseService):
         self._save_data("clients.yaml", data)
 
     def _check_gate_status(self, client_id: str) -> dict[str, bool]:
-        """Check the status of all 4 governance gates for a client."""
+        """Check the status of all 4 governance gates for a client.
+
+        Reads the same bare gate keys that ``_set_gate`` and the CLI
+        ``client gate`` command write (``contract``, ``dpa``, ``compliance``,
+        ``security``).  This is the single key vocabulary for gate storage.
+        """
         data = self._load_data("governance_gates.yaml")
         gates = cast(dict[str, Any], data.get("gates", {}))
         client_gates = gates.get(client_id, {})
-        return {
-            "contract": client_gates.get("contract_signed", False),
-            "dpa": client_gates.get("dpa_executed", False),
-            "compliance": client_gates.get("compliance_review", False),
-            "security": client_gates.get("security_review", False),
-        }
+        return {gate: bool(client_gates.get(gate, False)) for gate in self.REQUIRED_GATES}
 
     def _set_gate(self, client_id: str, gate: str, passed: bool, reviewer: str = "") -> None:
         """Record a governance gate pass/fail."""

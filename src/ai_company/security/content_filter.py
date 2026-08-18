@@ -59,7 +59,7 @@ class ContentFilter:
     """
 
     # Patterns that indicate prompt injection attempts
-    INJECTION_PATTERNS: list[re.Pattern] = [
+    INJECTION_PATTERNS: list[re.Pattern[str]] = [
         # Direct instruction overrides
         re.compile(
             r"ignore\s+(all\s+)?(previous|prior|above|earlier)\s+instructions?", re.IGNORECASE
@@ -92,7 +92,7 @@ class ContentFilter:
     ]
 
     # Patterns indicating code execution attempts
-    EXECUTION_PATTERNS: list[re.Pattern] = [
+    EXECUTION_PATTERNS: list[re.Pattern[str]] = [
         re.compile(r"```(bash|sh|shell|powershell|cmd)", re.IGNORECASE),
         re.compile(r"eval\s*\(", re.IGNORECASE),
         re.compile(r"exec\s*\(", re.IGNORECASE),
@@ -102,7 +102,7 @@ class ContentFilter:
     ]
 
     # XSS/injection patterns
-    XSS_PATTERNS: list[re.Pattern] = [
+    XSS_PATTERNS: list[re.Pattern[str]] = [
         re.compile(r"<script[^>]*>", re.IGNORECASE),
         re.compile(r"javascript:", re.IGNORECASE),
         re.compile(r"on\w+\s*=", re.IGNORECASE),  # onclick=, onerror=, etc.
@@ -141,8 +141,7 @@ class ContentFilter:
         execution_threats = self._check_execution(content)
         if execution_threats:
             threats.extend(execution_threats)
-            if max_threat.value < ThreatLevel.DANGEROUS.value:
-                max_threat = ThreatLevel.SUSPICIOUS
+            max_threat = ThreatLevel.DANGEROUS
 
         # Check for XSS
         xss_threats = self._check_xss(content)

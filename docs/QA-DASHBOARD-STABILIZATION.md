@@ -57,7 +57,7 @@ ai-company dashboard --no-open
 ```
 10s polling interval fires
   → loadPageData() → loadDashboard()
-    → fetchJSON('/api/dashboard') returns
+    → fetchJSON('/api/v1/dashboard') returns
       → Object.assign(this.kpis, kpis)     ← Alpine.js detects mutation
         → All x-text bindings re-evaluate
           → Template re-renders
@@ -231,7 +231,7 @@ Before any stabilization fix is merged, verify:
 | 6 | `charts.js` `destroyChart()` — removes chart WITHOUT affecting page layout | [ ] |
 | 7 | `charts.js` `updateChartsFromKPIs()` — updates chart data without destroy/recreate | [ ] |
 | 8 | `ws.py` — broadcast does NOT flood clients with duplicate messages | [ ] |
-| 9 | `api.py` — `/api/dashboard` response does NOT include unnecessary data causing large payloads | [ ] |
+| 9 | `api.py` — `/api/v1/dashboard` response does NOT include unnecessary data causing large payloads | [ ] |
 | 10 | `index.html` — KPI cards use `x-text` binding (reactive) NOT full template re-render | [ ] |
 | 11 | `index.html` — Recent Tasks table uses `x-for` with proper `:key` | [ ] |
 | 12 | Alpine.js `x-init` does NOT trigger multiple simultaneous data loads | [ ] |

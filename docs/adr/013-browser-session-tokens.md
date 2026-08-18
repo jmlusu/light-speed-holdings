@@ -35,7 +35,7 @@ proxy) is the authentication layer; the app's key checks become defense-in-depth
 
 ### 1. Bootstrap token endpoint
 
-- `GET /api/bootstrap-token` mints a token scoped to the `approve` role (the
+- `GET /api/v1/bootstrap-token` mints a token scoped to the `approve` role (the
   dashboard UI's approve/reject and escalation-resolve actions require
   `approve`, ADR-012) and bound to the requesting client IP.
 - Tokens live in an in-memory store on the dashboard process (single process; a

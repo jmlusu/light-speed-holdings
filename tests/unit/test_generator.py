@@ -63,6 +63,7 @@ def generator(sample_registry: Path, templates_dir: Path, tmp_path: Path) -> Age
         registry_path=str(sample_registry),
         templates_dir=str(templates_dir),
         output_dir=str(tmp_path / "agents"),
+        table_path=str(tmp_path / "AGENT-REGISTRY-TABLE.md"),
     )
 
 
@@ -139,6 +140,7 @@ def real_generator(tmp_path: Path, templates_dir: Path) -> AgentGenerator:
         registry_path="company-registry.yaml",
         templates_dir=str(templates_dir),
         output_dir=str(tmp_path / "agents"),
+        table_path=str(tmp_path / "AGENT-REGISTRY-TABLE.md"),
     )
 
 
@@ -312,6 +314,7 @@ def test_validate_generated_rejects_old_tools_format(tmp_path: Path, templates_d
         registry_path="company-registry.yaml",
         templates_dir=str(templates_dir),
         output_dir=str(tmp_path / "agents"),
+        table_path=str(tmp_path / "AGENT-REGISTRY-TABLE.md"),
     )
     gen.output_dir.mkdir(parents=True, exist_ok=True)
     bad_file = gen.output_dir / "bad-tools-format.md"
@@ -321,3 +324,30 @@ def test_validate_generated_rejects_old_tools_format(tmp_path: Path, templates_d
     )
     errors = gen.validate_generated()
     assert any("tools" in e["error"] for e in errors), f"Expected tools rejection, got {errors}"
+
+
+def test_generate_all_does_not_write_real_table(tmp_path: Path, templates_dir: Path) -> None:
+    """generate_all() with tmp_path table_path must not touch docs/AGENT-REGISTRY-TABLE.md."""
+    real_table = Path("docs/AGENT-REGISTRY-TABLE.md")
+    assert real_table.exists(), "Real table must exist for test"
+    mtime_before = real_table.stat().st_mtime
+
+    gen = AgentGenerator(
+        registry_path="company-registry.yaml",
+        templates_dir=str(templates_dir),
+        output_dir=str(tmp_path / "agents"),
+        table_path=str(tmp_path / "AGENT-REGISTRY-TABLE.md"),
+    )
+    gen.generate_all()
+
+    mtime_after = real_table.stat().st_mtime
+    assert mtime_after == mtime_before, "generate_all() modified the real table file"
+
+    # Also verify the tmp table was created
+    tmp_table = tmp_path / "AGENT-REGISTRY-TABLE.md"
+    assert tmp_table.exists(), "Temp table should be created"
+    content = tmp_table.read_text(encoding="utf-8")
+    assert "Test Corp" not in content, "Temp table should use real registry, not test data"
+    assert "131 across" in content or "Total Agents" in content, (
+        "Temp table should have correct count"
+    )

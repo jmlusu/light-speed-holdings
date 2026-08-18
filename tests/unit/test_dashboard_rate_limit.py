@@ -62,6 +62,13 @@ def _make_app(
     if api_key:
         monkeypatch.setenv("DASHBOARD_API_KEY", api_key)
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
+        # The role-key env surface may already be populated by a loaded .env
+        # (e.g. llm.client runs load_dotenv at import), which would shadow the
+        # DASHBOARD_API_KEY under test via rbac._configured_keys. Clear it so
+        # this helper's key is authoritative and tests are order-independent.
+        monkeypatch.delenv("DASHBOARD_ADMIN_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_APPROVE_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_RUN_KEY", raising=False)
     else:
         monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
@@ -168,8 +175,12 @@ class TestRateLimitHttp:
         assert client.get("/health").status_code == 429
 
         # Simulate the window elapsing: the middleware reads the same limiter
-        # stored on app.state, so backdating its hits frees the budget.
-        rate_app.state.limiter._hits["testclient"] = [time.time() - 61.0]
+        # stored on app.state, so backdating its hits frees the budget. The
+        # per-request bucket key is implementation-dependent (older Starlette
+        # TestClients pass scope["client"]=None, so the middleware falls back
+        # to "unknown"), so backdate every bucket the limiter actually holds.
+        for key in rate_app.state.limiter._hits:
+            rate_app.state.limiter._hits[key] = [time.time() - 61.0]
         assert client.get("/health").status_code == 200
 
 
@@ -187,7 +198,7 @@ class TestCorsRejectsDisallowedOrigins:
         app = _make_app(monkeypatch, tmp_path, origins="https://app.example.com")
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://app.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -202,7 +213,7 @@ class TestCorsRejectsDisallowedOrigins:
         app = _make_app(monkeypatch, tmp_path)
         client = TestClient(app)
         resp = client.options(
-            "/api/dashboard",
+            "/api/v1/dashboard",
             headers={
                 "Origin": "https://evil.example.com",
                 "Access-Control-Request-Method": "GET",
@@ -227,7 +238,7 @@ class TestAuthenticatedRequests:
         app = _make_app(monkeypatch, tmp_path, rate_limit="10", api_key="secret-key-123")
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "test-agent",
                 "instruction": "Build a widget for the dashboard",
@@ -242,7 +253,7 @@ class TestAuthenticatedRequests:
         app = _make_app(monkeypatch, tmp_path, rate_limit="10", api_key="secret-key-123")
         client = TestClient(app)
         resp = client.post(
-            "/api/tasks",
+            "/api/v1/tasks",
             json={
                 "receiver_id": "test-agent",
                 "instruction": "Build a widget for the dashboard",
@@ -266,7 +277,7 @@ class TestAuthenticatedRequests:
             "receiver_id": "test-agent",
             "instruction": "Build a widget for the dashboard",
         }
-        assert client.post("/api/tasks", json=payload, headers=headers).status_code == 201
-        assert client.post("/api/tasks", json=payload, headers=headers).status_code == 201
-        resp = client.post("/api/tasks", json=payload, headers=headers)
+        assert client.post("/api/v1/tasks", json=payload, headers=headers).status_code == 201
+        assert client.post("/api/v1/tasks", json=payload, headers=headers).status_code == 201
+        resp = client.post("/api/v1/tasks", json=payload, headers=headers)
         assert resp.status_code == 429

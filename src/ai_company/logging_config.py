@@ -137,6 +137,8 @@ def setup_logging(
     level: str | int = "INFO",
     json_mode: bool | None = None,
     log_file: str | None = None,
+    *,
+    otel_enabled: bool | None = None,
 ) -> None:
     """Configure the root logger for the ai_company package.
 
@@ -145,6 +147,8 @@ def setup_logging(
         json_mode: True = JSON lines, False = human-readable, None = auto-detect
                    (JSON when AI_COMPANY_LOG_JSON=1 or stdout is not a TTY).
         log_file: Optional file path for a second JSON log stream.
+        otel_enabled: True = force OTel tracing on, False = force off,
+                      None = auto-detect from ``AI_COMPANY_OTEL`` env var.
     """
     if isinstance(level, str):
         level = getattr(logging, level.upper(), logging.INFO)
@@ -193,6 +197,15 @@ def setup_logging(
 
     # Set the ai_company package logger to the same level
     logging.getLogger("ai_company").setLevel(level)
+
+    # Optionally initialise OTel tracing (opt-in via AI_COMPANY_OTEL env var).
+    if otel_enabled is not False:
+        try:
+            from ai_company.telemetry.tracer import init_tracing
+
+            init_tracing()
+        except ImportError:
+            pass  # opentelemetry not installed; tracing stays disabled
 
 
 def _is_terminal() -> bool:

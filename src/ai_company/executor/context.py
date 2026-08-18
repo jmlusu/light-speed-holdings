@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -141,21 +142,23 @@ class AgentContext:
 
 
 # Reverse map of OpenCode v2 permission keys -> internal executor tool names.
+# Emits only the canonical runtime vocabulary (AGENTS.md section 8):
+# read, edit, grep, list, bash, webfetch, task. ``websearch`` maps to the
+# canonical ``webfetch`` (backward-compatible alias).
 _PERMISSION_TO_TOOLS: dict[str, list[str]] = {
     "read": ["read"],
-    "edit": ["write"],
-    "bash": ["execute", "code_interpreter"],
+    "edit": ["edit"],
+    "bash": ["bash"],
     "grep": ["grep"],
     "list": ["list"],
-    "task": ["delegate"],
-    "webfetch": ["web_search"],
-    "websearch": ["websearch"],
+    "task": ["task"],
+    "webfetch": ["webfetch"],
+    "websearch": ["webfetch"],
     "question": ["question"],
-    "code_interpreter": ["code_interpreter"],
 }
 
 
-def _derive_tools(frontmatter: dict) -> list[str]:
+def _derive_tools(frontmatter: dict[str, Any]) -> list[str]:
     """Build the executor tool list from an agent spec's frontmatter.
 
     OpenCode v2 files express tool access via a ``permission`` block (tool ->
@@ -183,7 +186,7 @@ def _derive_tools(frontmatter: dict) -> list[str]:
     return tools
 
 
-def _derive_permission_str(frontmatter: dict) -> str:
+def _derive_permission_str(frontmatter: dict[str, Any]) -> str:
     permission = frontmatter.get("permission", "")
     if isinstance(permission, dict):
         allowed = sorted(k for k, v in permission.items() if v in ("allow", "ask"))
@@ -237,7 +240,7 @@ def parse_agent_spec_content(
     shared doc) are resolved from that file.
     """
     # Parse YAML frontmatter
-    frontmatter: dict = {}
+    frontmatter: dict[str, Any] = {}
     fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", content, re.DOTALL)
     if fm_match:
         with contextlib.suppress(yaml.YAMLError):
@@ -335,75 +338,3 @@ def _extract_field(text: str, field_name: str) -> str:
         if line.lower().startswith(field_name.lower() + ":"):
             return line.split(":", 1)[1].strip()
     return ""
-
-
-def build_system_prompt(agent: AgentContext) -> str:
-    """Build the system prompt from an agent's parsed context.
-
-    Instructs the LLM to respond with structured JSON containing
-    a plan (tool steps) and result summary.
-    """
-    parts = [
-        f"You are {agent.role}, a {agent.type} agent at Light Speed Holdings.",
-        "",
-    ]
-
-    if agent.mission:
-        parts.extend(["MISSION:", agent.mission, ""])
-
-    if agent.responsibilities:
-        parts.append("RESPONSIBILITIES:")
-        for r in agent.responsibilities:
-            parts.append(f"- {r}")
-        parts.append("")
-
-    if agent.guidelines:
-        parts.extend(["OPERATING GUIDELINES:", agent.guidelines, ""])
-
-    if agent.operating_principles:
-        parts.append("OPERATING PRINCIPLES:")
-        for p in agent.operating_principles:
-            parts.append(f"- {p}")
-        parts.append("")
-
-    if agent.tools:
-        parts.extend(
-            [
-                "ALLOWED TOOLS:",
-                ", ".join(agent.tools),
-                "",
-            ]
-        )
-
-    parts.extend(
-        [
-            "IMPORTANT RULES:",
-            "- You MUST respond with valid JSON only. No markdown, no explanation outside JSON.",
-            "- Only use tools from your allowed list.",
-            "- For 'write' tool: include the full file content in the 'content' arg.",
-            "- For 'execute' tool: include the shell command as a string.",
-            "- Be precise and concise. Each step should be self-contained.",
-            "- If the task requires no tools, return an empty plan array with your result.",
-            "",
-            "RESPONSE FORMAT (JSON only):",
-            "{",
-            '  "plan": [',
-            '    {"tool": "read", "args": {"path": "src/example.py"}},',
-            '    {"tool": "write", "args": {"path": "src/output.py", "content": "..."}},',
-            '    {"tool": "execute", "args": {"command": "pytest tests/"}},',
-            '    {"tool": "grep", "args": {"pattern": "def foo", "path": "src/"}},',
-            '    {"tool": "list", "args": {"path": "src/"}},',
-            '    {"tool": "delegate", "args": {"receiver": "lead-backend", "instruction": "..."}}',
-            "  ],",
-            '  "result": "Summary of what was accomplished.",',
-            '  "artifacts": ["src/output.py"]',
-            "}",
-        ]
-    )
-
-    return "\n".join(parts)
-
-
-def build_user_prompt(instruction: str, priority: str = "medium") -> str:
-    """Build the user prompt from a task instruction and priority."""
-    return f"PRIORITY: {priority.upper()}\n\nTASK: {instruction}"

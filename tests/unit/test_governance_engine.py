@@ -368,7 +368,7 @@ class TestGovernanceApiEndpoint:
         db = init_database(setup_data / "analytics.db")
         _seed_audit_events(db, count=1, days_old=30)
 
-        resp = client.get("/api/governance")
+        resp = client.get("/api/v1/governance")
         assert resp.status_code == 200
         body = resp.json()
         assert body["available"] is True
@@ -381,7 +381,7 @@ class TestGovernanceApiEndpoint:
 
         # No database → available False with the empty shape.
         reset_database()
-        resp = client.get("/api/governance")
+        resp = client.get("/api/v1/governance")
         assert resp.status_code == 200
         body = resp.json()
         assert body["available"] is False
