@@ -127,12 +127,22 @@ class LLMClient:
                     repeat_penalty=inf_config.get("repeat_penalty", 1.1),
                 )
 
+                # Get server config from provider config
+                server_config = getattr(pcfg, "server", {}) or {}
+                server_host = server_config.get("host", "127.0.0.1")
+                api_key = server_config.get("api_key", "local")
+                # Get port for this specific model from port mapping
+                port_map = server_config.get("ports", {})
+                server_port = port_map.get(model_name, 8088)
+
                 self._providers[pcfg.id] = LlamaCppProvider(
                     name=pcfg.id,
                     model_path=model_path,
                     config=llama_config,
-                    server_port=8080,  # Could be configurable
+                    server_port=server_port,
+                    server_host=server_host,
                     use_server=True,
+                    api_key=api_key,
                 )
             else:
                 # Determine auth style based on backend or provider id

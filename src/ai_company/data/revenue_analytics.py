@@ -64,6 +64,7 @@ class RevenueAnalytics:
     def _agent_department(self, agent_name: str) -> str:
         """Look up the department for an agent from the agent registry."""
         from ai_company.registry import load_registry
+
         registry = load_registry()
         # Check specialists
         for agent in registry.specialists:
@@ -111,7 +112,9 @@ class RevenueAnalytics:
 
         # Build attribution list
         attributions: list[RevenueAttribution] = []
-        for agent_id in sorted(set(list(costs.keys()) + list(agent_revenue.keys()) + list(tasks_by_agent.keys()))):
+        for agent_id in sorted(
+            set(list(costs.keys()) + list(agent_revenue.keys()) + list(tasks_by_agent.keys()))
+        ):
             cost = costs.get(agent_id, 0.0)
             revenue = agent_revenue.get(agent_id, 0.0)
             tasks = int(tasks_by_agent.get(agent_id, 0))
@@ -120,15 +123,17 @@ class RevenueAnalytics:
 
             department = self._agent_department(agent_id)
 
-            attributions.append(RevenueAttribution(
-                agent_id=agent_id,
-                department=department,
-                tasks_completed=tasks,
-                revenue_attributed=round(revenue, 2),
-                cost_incurred=round(cost, 6),
-                roi=round(roi, 2),
-                revenue_per_task=round(revenue_per_task, 2),
-            ))
+            attributions.append(
+                RevenueAttribution(
+                    agent_id=agent_id,
+                    department=department,
+                    tasks_completed=tasks,
+                    revenue_attributed=round(revenue, 2),
+                    cost_incurred=round(cost, 6),
+                    roi=round(roi, 2),
+                    revenue_per_task=round(revenue_per_task, 2),
+                )
+            )
 
         # Group by department
         dept_revenue: dict[str, dict[str, float]] = {}
@@ -148,7 +153,9 @@ class RevenueAnalytics:
                 revenue_attributed=round(data["revenue"], 2),
                 cost_incurred=round(data["cost"], 6),
                 roi=round(data["revenue"] / data["cost"], 2) if data["cost"] > 0 else 0.0,
-                revenue_per_task=round(data["revenue"] / data["tasks"], 2) if data["tasks"] > 0 else 0.0,
+                revenue_per_task=round(data["revenue"] / data["tasks"], 2)
+                if data["tasks"] > 0
+                else 0.0,
             )
             for dept, data in sorted(dept_revenue.items())
         ]

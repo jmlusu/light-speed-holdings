@@ -53,12 +53,157 @@
   <!-- Custom styles -->
   <link rel="stylesheet" href="/static/css/control-plane-theme.css">
   <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/command-bar.css">
 
   {% block head %}{% endblock %}
 </head>
 <body class="bg-jarvis-base text-jarvis-text min-h-screen antialiased"
       x-data="dashboard()" x-init="init()"
       :class="{ 'scroll-locked': _scrollLock }">
+
+  <!-- Command Bar -->
+  <div x-data="commandBar()" x-init="init()">
+    <!-- Overlay -->
+    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         class="command-bar-overlay" @click="close()" aria-hidden="true"></div>
+
+    <!-- Panel -->
+    <div x-show="open" x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-5" x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-5"
+         class="command-bar-panel" role="dialog" aria-modal="true" aria-labelledby="command-bar-title" x-ref="panel">
+      
+      <!-- Header -->
+      <div class="command-bar-header">
+        <div class="command-bar-icon">⌘</div>
+        <div class="command-bar-title">
+          <h3 id="command-bar-title">Command Bar</h3>
+          <p>Type a command or search...</p>
+        </div>
+        <span class="command-bar-shortcut">⌘K</span>
+      </div>
+
+      <!-- Search Input -->
+      <div class="command-bar-search">
+        <div class="command-bar-input-wrapper">
+          <svg class="command-bar-input-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="text" 
+                 x-ref="input" 
+                 class="command-bar-input" 
+                 placeholder="Type a command or search..." 
+                 x-model="query" 
+                 @input="debouncedSearch"
+                 @keydown="handleKeydown"
+                 autocomplete="off"
+                 aria-label="Command Bar search"
+                 aria-autocomplete="list"
+                 aria-controls="command-bar-results"
+                 :aria-activedescendant="results[selectedIndex]?.id">
+          <button type="button" 
+                  class="command-bar-voice-btn" 
+                  :class="{ recording: isListening }"
+                  @click="toggleVoice"
+                  x-show="supportsVoice"
+                  :aria-label="isListening ? 'Stop voice input' : 'Start voice input'"
+                  :aria-pressed="isListening"
+                  title="Voice input (not supported in this browser)">
+            <template x-if="!isListening">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h10m-4 0V11a1 1 0 112 0v4m0 0a1 1 0 01-1 1h-5a1 1 0 01-1-1"/>
+              </svg>
+            </template>
+            <template x-if="isListening">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m-2 2l-2-2m2 2l-2 2m-2 2l2-2m2-2l2 2m-2 2l-2 2m2 2l-2-2"/>
+              </svg>
+            </template>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="command-bar-results" id="command-bar-results" role="listbox" aria-label="Search results">
+        <template x-for="section in groupedResults" :key="section.key">
+          <template x-if="section.results.length > 0">
+            <h4 class="command-bar-section-title" x-text="section.label"></h4>
+            <template x-for="(result, index) in section.results" :key="result.id">
+              <div class="command-bar-result" 
+                   :class="{ selected: selectedIndex === $index + section.offset }"
+                   role="option"
+                   :aria-selected="selectedIndex === $index + section.offset"
+                   :id="'result-' + section.key + '-' + index"
+                   @click="selectedIndex = $index + section.offset; execute()"
+                   @mousemove="selectedIndex = $index + section.offset">
+                <div class="command-bar-result-icon" :class="result.entity_type" x-html="getIcon(result.entity_type)"></div>
+                <div class="command-bar-result-content">
+                  <div class="command-bar-result-title" x-html="highlightMatch(result.title, query)"></div>
+                  <template x-if="result.description">
+                    <div class="command-bar-result-description" x-html="highlightMatch(result.description, query)"></div>
+                  </template>
+                </div>
+                <div class="command-bar-result-meta">
+                  <span class="command-bar-result-type" x-text="formatEntityType(result.entity_type)"></span>
+                  <template x-if="result.score !== undefined">
+                    <span class="command-bar-result-score" x-text="Math.round(result.score * 100) + '%'"></span>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </template>
+          <template x-if="section.results.length === 0">
+            <template x-if="section.key !== 'actions'">
+              <!-- Only show empty for non-action sections -->
+            </template>
+          </template>
+        </template>
+        
+        <!-- Empty State -->
+        <template x-if="results.length === 0 && query">
+          <div class="command-bar-empty">
+            <svg class="command-bar-empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p>No results for "<span x-text="query"></span>"</p>
+            <p class="text-xs mt-1 opacity-60">Try a different search term</p>
+          </div>
+        </template>
+      </div>
+
+      <!-- Footer -->
+      <div class="command-bar-footer">
+        <div class="command-bar-hints">
+          <span class="command-bar-hint">
+            <kbd>↑</kbd><kbd>↓</kbd> Navigate
+          </span>
+          <span class="command-bar-hint">
+            <kbd>Enter</kbd> Execute
+          </span>
+          <span class="command-bar-hint">
+            <kbd>Esc</kbd> Close
+          </span>
+          <template x-if="supportsVoice">
+            <span class="command-bar-hint">
+              <kbd>Space</kbd> Voice
+            </template>
+          </span>
+        </div>
+        <template x-if="isListening">
+          <div class="command-bar-voice-indicator">
+            <div class="command-bar-voice-waves">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <span>Listening...</span>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══ TOP BAR ═══ -->
   <!--
@@ -180,6 +325,8 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="/static/js/command-bar-service.js"></script>
+  <script src="/static/js/command-bar.js"></script>
   <script src="/static/js/app.js"></script>
   {% block scripts %}{% endblock %}
 </body>

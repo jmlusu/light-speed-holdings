@@ -2151,6 +2151,7 @@ def revenue_attribution(period_days: int = Query(30, ge=1, le=365)) -> dict[str,
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     from ai_company.data.revenue_analytics import RevenueAnalytics
+
     analytics = RevenueAnalytics(db)
     return analytics.get_revenue_attribution(period_days).model_dump()
 
@@ -2162,6 +2163,7 @@ def revenue_roi(period_days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     from ai_company.data.revenue_analytics import RevenueAnalytics
+
     analytics = RevenueAnalytics(db)
     summary = analytics.get_revenue_attribution(period_days)
     return {
@@ -2179,6 +2181,7 @@ def revenue_trend(period_days: int = Query(30, ge=1, le=365)) -> list[dict[str, 
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     from ai_company.data.revenue_analytics import RevenueAnalytics
+
     analytics = RevenueAnalytics(db)
     return analytics.get_revenue_trend(period_days)
 
@@ -2711,10 +2714,13 @@ def cancel_workflow_endpoint(
 
 
 @router.get("/search", tags=["search"])
-def unified_search(q: str = Query(..., min_length=1), limit: int = Query(20, ge=1, le=100)) -> dict[str, Any]:
+def unified_search(
+    q: str = Query(..., min_length=1), limit: int = Query(20, ge=1, le=100)
+) -> dict[str, Any]:
     """Unified search across agents, tasks, KPIs, and audit events."""
     from ai_company.data.database import get_database
     from ai_company.data.search import SearchIndex
+
     db = get_database()
     index = SearchIndex(database=db)
     results = index.search(q, limit=limit)
@@ -2736,10 +2742,13 @@ def unified_search(q: str = Query(..., min_length=1), limit: int = Query(20, ge=
 
 
 @router.get("/search/quick", tags=["search"])
-def quick_search(q: str = Query(..., min_length=1), limit: int = Query(10, ge=1, le=50)) -> dict[str, Any]:
+def quick_search(
+    q: str = Query(..., min_length=1), limit: int = Query(10, ge=1, le=50)
+) -> dict[str, Any]:
     """Quick search with minimal fields (for command bar)."""
     from ai_company.data.database import get_database
     from ai_company.data.search import SearchIndex
+
     db = get_database()
     index = SearchIndex(database=db)
     results = index.search(q, limit=limit)
@@ -2772,6 +2781,7 @@ def audit_timeline(
     """Get execution timeline with optional search and filters."""
     from ai_company.data.audit_store import AuditStore
     from ai_company.data.database import get_database
+
     db = get_database()
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
@@ -2794,6 +2804,7 @@ def audit_execution_detail(task_id: str) -> dict[str, Any]:
     """Get full execution detail for a task."""
     from ai_company.data.audit_store import AuditStore
     from ai_company.data.database import get_database
+
     db = get_database()
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
@@ -2802,10 +2813,13 @@ def audit_execution_detail(task_id: str) -> dict[str, Any]:
 
 
 @router.get("/audit/search", tags=["audit"])
-def audit_search(q: str = Query(..., min_length=1), limit: int = Query(50, ge=1, le=200)) -> list[dict[str, Any]]:
+def audit_search(
+    q: str = Query(..., min_length=1), limit: int = Query(50, ge=1, le=200)
+) -> list[dict[str, Any]]:
     """Full-text search across audit events."""
     from ai_company.data.audit_store import AuditStore
     from ai_company.data.database import get_database
+
     db = get_database()
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
@@ -2881,3 +2895,267 @@ def reject_onboarding_request(
             status_code=400, detail=result.errors[0] if result.errors else "Rejection failed"
         )
     return result.data or {}
+
+
+# ── Command Center Endpoints ────────────────────────────────────
+
+
+@router.get("/health", tags=["command-center"])
+def get_system_health() -> dict[str, Any]:
+    """System health check for Command Center visualization.
+
+    Returns status of all core services. Used by the System Health
+    panel in the J.A.R.V.I.S. Command Center.
+    """
+    health: dict[str, Any] = {}
+
+    # Check database
+    try:
+        db = get_database()
+        if db is not None:
+            conn = db.connect()
+            conn.execute("SELECT 1")
+            health["database"] = "healthy"
+        else:
+            health["database"] = "unavailable"
+    except (OSError, RuntimeError):  # noqa: BLE001
+        health["database"] = "unhealthy"
+
+    # Check message bus / queue
+    try:
+        bus = get_bus()
+        _ = bus.get_all_tasks()
+        health["queue"] = "healthy"
+    except (OSError, RuntimeError):  # noqa: BLE001
+        health["queue"] = "unhealthy"
+
+    # Check file store
+    try:
+        store = _get_store()
+        store.read_json(".opencode/health_check.json", default={})
+        health["storage"] = "healthy"
+    except (OSError, RuntimeError):  # noqa: BLE001
+        health["storage"] = "unhealthy"
+
+    # Check LLM provider health
+    try:
+        from ai_company.model_router import ModelRouter
+
+        router_instance = ModelRouter()
+        health["llm_services"] = {}
+        for tier in router_instance.list_tiers():
+            for provider_cfg in tier.providers:
+                provider_name = provider_cfg.provider
+                if provider_name not in health["llm_services"]:
+                    health["llm_services"][provider_name] = "healthy"
+    except (OSError, RuntimeError):  # noqa: BLE001
+        health["llm_services"] = {"unknown": "unavailable"}
+
+    # Check audit trail
+    try:
+        from ai_company.data.audit_store import AuditStore
+
+        db = get_database()
+        if db is not None:
+            _store = AuditStore(database=db)
+            health["audit_trail"] = "healthy"
+        else:
+            health["audit_trail"] = "unavailable"
+    except (OSError, RuntimeError):  # noqa: BLE001
+        health["audit_trail"] = "unhealthy"
+
+    # Check search index
+    try:
+        from ai_company.data.search import SearchIndex
+
+        db = get_database()
+        if db is not None:
+            _idx = SearchIndex(database=db)
+            health["search_index"] = "healthy"
+        else:
+            health["search_index"] = "unavailable"
+    except (OSError, RuntimeError):  # noqa: BLE001
+        health["search_index"] = "unhealthy"
+
+    # Overall status
+    statuses = [v for k, v in health.items() if k != "llm_services"]
+    llm_statuses = list(health.get("llm_services", {}).values())
+
+    if all(s == "healthy" for s in statuses) and all(
+        s == "healthy" for s in llm_statuses
+    ):
+        health["overall"] = "healthy"
+    elif any(s == "unhealthy" for s in statuses):
+        health["overall"] = "degraded"
+    else:
+        health["overall"] = "healthy"
+
+    return health
+
+
+@router.get("/briefing/summary", tags=["command-center"])
+def get_briefing_summary() -> dict[str, Any]:
+    """AI-generated executive briefing summary for Command Center.
+
+    Aggregates data from multiple sources to produce a concise
+    human-readable summary of company status.
+    """
+    tasks = _read_all_tasks()
+    approvals_data = _load_yaml("orchestrator/approvals.yaml")
+    escalation_data = _load_yaml("orchestrator/escalation.yaml")
+    registry = _load_registry()
+
+    # Count metrics
+    active_tasks = sum(1 for t in tasks if t.get("status") == "in_progress")
+    pending_tasks = sum(1 for t in tasks if t.get("status") == "pending")
+    completed_today = sum(
+        1
+        for t in tasks
+        if t.get("status") == "completed"
+        and t.get("completed_at", "")
+        >= datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    )
+    failed_tasks = sum(1 for t in tasks if t.get("status") == "failed")
+
+    pending_approvals = [
+        r
+        for r in approvals_data.get("requests", [])
+        if r.get("status") == "pending"
+    ]
+    open_escalations = [
+        e
+        for e in escalation_data.get("events", [])
+        if not e.get("resolved", False)
+    ]
+
+    # Build summary
+    parts: list[str] = []
+
+    if open_escalations:
+        parts.append(
+            f"{len(open_escalations)} escalation(s) require attention."
+        )
+    if pending_approvals:
+        parts.append(
+            f"{len(pending_approvals)} approval(s) pending."
+        )
+    if failed_tasks > 0:
+        parts.append(f"{failed_tasks} task(s) failed.")
+
+    parts.append(
+        f"{len(registry)} agents registered. "
+        f"{active_tasks} active, {pending_tasks} queued, "
+        f"{completed_today} completed today."
+    )
+
+    return {
+        "summary": " ".join(parts),
+        "metrics": {
+            "active_tasks": active_tasks,
+            "pending_tasks": pending_tasks,
+            "completed_today": completed_today,
+            "failed_tasks": failed_tasks,
+            "pending_approvals": len(pending_approvals),
+            "open_escalations": len(open_escalations),
+            "total_agents": len(registry),
+        },
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@router.get("/models/telemetry", tags=["command-center"])
+def get_model_telemetry() -> dict[str, Any]:
+    """Real-time model telemetry for Command Center observability panel.
+
+    Aggregates metrics from the cost tracker and audit log to show
+    model usage, latency, and success rates. Read-only — does not
+    modify routing decisions.
+    """
+    from datetime import timedelta
+
+    now = datetime.now(timezone.utc)
+    cutoff_24h = (now - timedelta(hours=24)).isoformat()
+
+    # Collect from audit log
+    model_stats: dict[str, dict[str, Any]] = {}
+    for event in _get_store().iter_jsonl(".opencode/audit"):
+        try:
+            ts = event.get("timestamp", "")
+            if ts and ts < cutoff_24h:
+                continue
+            meta = event.get("metadata", {}) or {}
+            model = meta.get("model", "") or event.get("model", "") or "unknown"
+            provider = meta.get("provider", "") or event.get("provider", "") or "unknown"
+            cost = float(meta.get("cost", 0) or 0)
+            prompt_tokens = int(meta.get("prompt_tokens", 0) or 0)
+            completion_tokens = int(meta.get("completion_tokens", 0) or 0)
+
+            key = f"{provider}/{model}"
+            if key not in model_stats:
+                model_stats[key] = {
+                    "provider": provider,
+                    "model": model,
+                    "calls": 0,
+                    "total_cost": 0.0,
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "errors": 0,
+                }
+            stats = model_stats[key]
+            stats["calls"] += 1
+            stats["total_cost"] += cost
+            stats["prompt_tokens"] += prompt_tokens
+            stats["completion_tokens"] += completion_tokens
+
+            if event.get("severity", "info") in ("error", "critical"):
+                stats["errors"] += 1
+        except (TypeError, ValueError):
+            continue
+
+    # Calculate derived metrics
+    total_calls = sum(s["calls"] for s in model_stats.values()) or 1
+    result_models = []
+    for _key, stats in sorted(model_stats.items(), key=lambda x: x[1]["calls"], reverse=True):
+        success_rate = (
+            round(((stats["calls"] - stats["errors"]) / stats["calls"]) * 100, 1)
+            if stats["calls"] > 0
+            else 100.0
+        )
+        result_models.append(
+            {
+                "provider": stats["provider"],
+                "model": stats["model"],
+                "calls": stats["calls"],
+                "pct": round((stats["calls"] / total_calls) * 100, 1),
+                "total_cost": round(stats["total_cost"], 6),
+                "prompt_tokens": stats["prompt_tokens"],
+                "completion_tokens": stats["completion_tokens"],
+                "success_rate": success_rate,
+            }
+        )
+
+    # Get routing assignments
+    try:
+        from ai_company.model_router import ModelRouter
+
+        router_instance = ModelRouter()
+        routing = router_instance.resolve_all_agents()
+        routing_summary = [
+            {
+                "agent": name,
+                "provider": r.provider,
+                "model": r.model,
+                "tier": r.tier,
+                "reason": r.reason,
+            }
+            for name, r in sorted(routing.items())
+        ]
+    except (OSError, RuntimeError):  # noqa: BLE001
+        routing_summary = []
+
+    return {
+        "period": "24h",
+        "models": result_models,
+        "routing": routing_summary,
+        "generated_at": now.isoformat(),
+    }

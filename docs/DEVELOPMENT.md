@@ -144,3 +144,50 @@ Staging dashboard: host port **8421** → container **8420** (production: 8420).
 - `.opencode/inbox.json` is the task queue. Test runs may inject synthetic tasks — treat `marketing-service`-style entries as pollution when inspecting the queue.
 - Do not hand-edit generated files in `.opencode/agents/`; regenerate from `company-registry.yaml`.
 - `harness/changes/INDEX.json` is script-generated only.
+
+## 11 Release Process (Trusted Publishing)
+
+This project uses **PyPI trusted publishing** (OIDC) — no API tokens stored in GitHub.
+
+### Prerequisites (one-time setup)
+
+1. **Create a PyPI project** at https://pypi.org/manage/projects/ (if not already)
+2. **Configure trusted publisher** on PyPI:
+   - Owner: your GitHub org/user (e.g., `your-org`)
+   - Repository: `light-speed-holdings`
+   - Workflow name: `Release` (matches `.github/workflows/release.yml`)
+   - Environment: `pypi` (matches `environment: pypi` in workflow)
+3. **Create GitHub Environment** named `pypi`:
+   - Settings → Environments → New environment → `pypi`
+   - No protection rules required (OIDC handles trust)
+
+### Cutting a release
+
+```bash
+# 1. Update version in pyproject.toml
+# 2. Update CHANGELOG.md (add entry under ## [0.x.y])
+# 3. Commit and tag
+git commit -am "chore: release v0.x.y"
+git tag v0.x.y
+git push origin main --tags
+```
+
+The `Release` workflow (`.github/workflows/release.yml`) will:
+1. Validate version matches between tag and `pyproject.toml`
+2. Verify CHANGELOG has an entry for the version
+3. Run Trivy container scan (security)
+4. Build package with `uv build`
+5. **Publish to PyPI via trusted OIDC** (no tokens)
+6. Build and push Docker image to GHCR
+7. Run canary deployment (simulated)
+8. Create GitHub Release with artifacts
+
+### Manual workflow dispatch
+
+You can also trigger a release manually:
+
+```bash
+gh workflow run Release -f version=0.x.y
+```
+
+This skips the git tag requirement but still validates `pyproject.toml` version and CHANGELOG.
