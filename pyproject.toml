@@ -56,6 +56,7 @@ dev = [
     "pre-commit",
     "python-pptx>=0.6.23",
     "hypothesis",
+    "opentelemetry-sdk>=1.25",
 ]
 
 e2e = [
@@ -146,8 +147,7 @@ ai-company = "ai_company.cli.main:app"
 
 [tool.mypy]
 python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
+strict = true
 ignore_missing_imports = true
 exclude = [
     "scripts/",
