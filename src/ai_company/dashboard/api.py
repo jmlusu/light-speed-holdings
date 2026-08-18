@@ -2144,6 +2144,45 @@ def revenue_summary(
     }
 
 
+@router.get("/revenue/attribution", tags=["revenue"])
+def revenue_attribution(period_days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
+    """Get revenue attribution by agent and department with ROI calculations."""
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    from ai_company.data.revenue_analytics import RevenueAnalytics
+    analytics = RevenueAnalytics(db)
+    return analytics.get_revenue_attribution(period_days).model_dump()
+
+
+@router.get("/revenue/roi", tags=["revenue"])
+def revenue_roi(period_days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
+    """Get ROI calculations for a period."""
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    from ai_company.data.revenue_analytics import RevenueAnalytics
+    analytics = RevenueAnalytics(db)
+    summary = analytics.get_revenue_attribution(period_days)
+    return {
+        "total_revenue": summary.total_revenue,
+        "total_cost": summary.total_cost,
+        "overall_roi": summary.overall_roi,
+        "period_days": summary.period_days,
+    }
+
+
+@router.get("/revenue/trend", tags=["revenue"])
+def revenue_trend(period_days: int = Query(30, ge=1, le=365)) -> list[dict[str, Any]]:
+    """Get revenue trend over time."""
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    from ai_company.data.revenue_analytics import RevenueAnalytics
+    analytics = RevenueAnalytics(db)
+    return analytics.get_revenue_trend(period_days)
+
+
 @router.post("/project-costs", status_code=201, tags=["costs"])
 def create_project_cost(entry: ProjectCostEntry) -> dict[str, Any]:
     """Record a project cost in the cost ledger."""
@@ -2666,6 +2705,112 @@ def cancel_workflow_endpoint(
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     return result
+
+
+# ── Unified Search (T3.3) ────────────────────────────────────────────
+
+
+@router.get("/search", tags=["search"])
+def unified_search(q: str = Query(..., min_length=1), limit: int = Query(20, ge=1, le=100)) -> dict[str, Any]:
+    """Unified search across agents, tasks, KPIs, and audit events."""
+    from ai_company.data.database import get_database
+    from ai_company.data.search import SearchIndex
+    db = get_database()
+    index = SearchIndex(database=db)
+    results = index.search(q, limit=limit)
+    return {
+        "query": q,
+        "results": [
+            {
+                "id": r.id,
+                "title": r.title,
+                "description": r.description,
+                "entity_type": r.entity_type,
+                "url": r.url,
+                "score": r.score,
+            }
+            for r in results
+        ],
+        "total": len(results),
+    }
+
+
+@router.get("/search/quick", tags=["search"])
+def quick_search(q: str = Query(..., min_length=1), limit: int = Query(10, ge=1, le=50)) -> dict[str, Any]:
+    """Quick search with minimal fields (for command bar)."""
+    from ai_company.data.database import get_database
+    from ai_company.data.search import SearchIndex
+    db = get_database()
+    index = SearchIndex(database=db)
+    results = index.search(q, limit=limit)
+    return {
+        "query": q,
+        "results": [
+            {
+                "id": r.id,
+                "title": r.title,
+                "entity_type": r.entity_type,
+                "url": r.url,
+            }
+            for r in results
+        ],
+    }
+
+
+# ── Audit Search & Timeline (T3.2) ──────────────────────────────────
+
+
+@router.get("/audit/timeline", tags=["audit"])
+def audit_timeline(
+    limit: int = Query(100, ge=1, le=500),
+    agent_id: str | None = None,
+    status: str | None = None,
+    task_type: str | None = None,
+    time_range: str = "24h",
+    q: str | None = None,
+) -> list[dict[str, Any]]:
+    """Get execution timeline with optional search and filters."""
+    from ai_company.data.audit_store import AuditStore
+    from ai_company.data.database import get_database
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    store = AuditStore(database=db)
+
+    if q:
+        results = store.search_events(q, limit=limit)
+    else:
+        results = store.get_timeline(
+            limit=limit,
+            agent_id=agent_id,
+            status=status,
+            time_range=time_range,
+        )
+    return results
+
+
+@router.get("/audit/execution/{task_id}", tags=["audit"])
+def audit_execution_detail(task_id: str) -> dict[str, Any]:
+    """Get full execution detail for a task."""
+    from ai_company.data.audit_store import AuditStore
+    from ai_company.data.database import get_database
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    store = AuditStore(database=db)
+    return store.get_execution_detail(task_id)
+
+
+@router.get("/audit/search", tags=["audit"])
+def audit_search(q: str = Query(..., min_length=1), limit: int = Query(50, ge=1, le=200)) -> list[dict[str, Any]]:
+    """Full-text search across audit events."""
+    from ai_company.data.audit_store import AuditStore
+    from ai_company.data.database import get_database
+    db = get_database()
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
+    store = AuditStore(database=db)
+    return store.search_events(q, limit=limit)
 
 
 # ── Agent Onboarding (HITL-gated) ──────────────────────────────────

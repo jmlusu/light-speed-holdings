@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Schema DDL
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 SCHEMA_SQL = """
 -- Tasks (replaces .opencode/inbox.json)
@@ -356,6 +356,43 @@ MIGRATIONS: dict[int, list[str]] = {
         "CREATE INDEX IF NOT EXISTS idx_agent_perf_agent ON agent_performance_metrics(agent_id);",
         "CREATE INDEX IF NOT EXISTS idx_agent_perf_period ON agent_performance_metrics(period_start);",
         "CREATE INDEX IF NOT EXISTS idx_agent_perf_composite ON agent_performance_metrics(agent_id, period_days, period_start);",
+    ],
+    5: [
+        # FTS5 full-text search for audit_events and tasks
+        # T3.2: SQLite FTS5 optimization for audit query and task search
+        """
+        CREATE VIRTUAL TABLE IF NOT EXISTS audit_events_fts USING fts5(
+            task_id, tool, args, result, metadata,
+            content='audit_events',
+            content_rowid='rowid'
+        );
+
+        CREATE TRIGGER IF NOT EXISTS audit_events_ai AFTER INSERT ON audit_events BEGIN
+            INSERT INTO audit_events_fts(rowid, task_id, tool, args, result, metadata)
+            VALUES (new.rowid, new.task_id, new.tool, new.args, new.result, new.metadata);
+        END;
+
+        CREATE TRIGGER IF NOT EXISTS audit_events_ad AFTER DELETE ON audit_events BEGIN
+            INSERT INTO audit_events_fts(audit_events_fts, rowid, task_id, tool, args, result, metadata)
+            VALUES('delete', old.rowid, old.task_id, old.tool, old.args, old.result, old.metadata);
+        END;
+
+        CREATE TRIGGER IF NOT EXISTS audit_events_au AFTER UPDATE ON audit_events BEGIN
+            INSERT INTO audit_events_fts(audit_events_fts, rowid, task_id, tool, args, result, metadata)
+            VALUES('delete', old.rowid, old.task_id, old.tool, old.args, old.result, old.metadata);
+            INSERT INTO audit_events_fts(rowid, task_id, tool, args, result, metadata)
+            VALUES (new.rowid, new.task_id, new.tool, new.args, new.result, new.metadata);
+        END;
+
+        CREATE VIRTUAL TABLE IF NOT EXISTS tasks_fts USING fts5(
+            instruction, description, name
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_audit_agent_type ON audit_events(agent_id, event_type);
+        CREATE INDEX IF NOT EXISTS idx_audit_task_type ON audit_events(task_id, event_type);
+        CREATE INDEX IF NOT EXISTS idx_audit_ts_type ON audit_events(timestamp, event_type);
+        CREATE INDEX IF NOT EXISTS idx_audit_task_status ON audit_events(task_id, event_type, severity);
+        """,
     ],
 }
 
