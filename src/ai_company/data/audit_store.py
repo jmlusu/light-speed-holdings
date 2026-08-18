@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import json
 import logging
+import sqlite3
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -116,6 +118,124 @@ class AuditStore:
             (severity,),
         )
         return [self._row_to_event(r) for r in rows]
+
+    # ── FTS5 Search API ──────────────────────────────────────────────────
+
+    def search_events(self, query: str, limit: int = 50) -> list[dict[str, Any]]:
+        """Search audit events using FTS5 full-text search."""
+        if self._db:
+            try:
+                import sqlite3
+                fts_rows = self._db.fetchall(
+                    """SELECT e.* FROM audit_events e
+                       JOIN audit_events_fts f ON f.rowid = e.rowid
+                       WHERE audit_events_fts MATCH ?
+                       ORDER BY e.timestamp DESC
+                       LIMIT ?""",
+                    (query, limit),
+                )
+                return [dict(r) for r in fts_rows]
+            except (sqlite3.OperationalError, AttributeError):
+                # FTS5 not available, fallback to LIKE search
+                pass
+        # Fallback: simple LIKE search on file-based audit
+        all_events = self.read_all()
+        query_lower = query.lower()
+        matching_events: list[AuditEvent] = [
+            e for e in all_events
+            if query_lower in str(e.args).lower()
+            or query_lower in str(e.result).lower()
+            or query_lower in str(e.tool or "").lower()
+        ][:limit]
+        return [e.model_dump() for e in matching_events]
+
+    def get_timeline(self, limit: int = 100, agent_id: str | None = None,
+                     status: str | None = None, task_type: str | None = None,
+                     time_range: str = "24h") -> list[dict[str, Any]]:
+        """Get execution timeline entries with filtering."""
+        # Calculate time range
+        now = datetime.now(timezone.utc)
+        if time_range.endswith("h"):
+            hours = int(time_range[:-1])
+            start = now - timedelta(hours=hours)
+        elif time_range.endswith("d"):
+            days = int(time_range[:-1])
+            start = now - timedelta(days=days)
+        else:
+            start = now - timedelta(hours=24)
+
+        start_str = start.strftime("%Y-%m-%d %H:%M:%S")
+
+        query = "SELECT * FROM audit_events WHERE timestamp >= ?"
+        params = [start_str]
+
+        if agent_id:
+            query += " AND agent_id = ?"
+            params.append(agent_id)
+        if task_type:
+            query += " AND event_type = ?"
+            params.append(task_type)
+
+        query += " ORDER BY timestamp DESC LIMIT ?"
+        params.append(str(limit))
+
+        if self._db:
+            rows = self._db.fetchall(query, tuple(params))
+            return [dict(r) for r in rows]
+        else:
+            all_events = self.read_all()
+            filtered = [e for e in all_events if e.timestamp >= start_str]
+            if agent_id:
+                filtered = [e for e in filtered if e.agent_id == agent_id]
+            if task_type:
+                filtered = [e for e in filtered if e.event_type == task_type]
+            return [e.model_dump() for e in filtered[:limit]]
+
+    def get_execution_detail(self, task_id: str) -> dict[str, Any]:
+        """Get full execution detail for a specific task."""
+        events = self.read_by_task(task_id)
+
+        tool_calls = []
+        llm_calls = []
+        first_event = None
+        last_event = None
+
+        for event in events:
+            if not first_event or event.timestamp < first_event.timestamp:
+                first_event = event
+            if not last_event or event.timestamp > last_event.timestamp:
+                last_event = event
+
+            if event.event_type == "tool_call":
+                tool_calls.append({
+                    "tool": event.tool or "",
+                    "timestamp": event.timestamp,
+                    "args": event.args,
+                })
+            if event.event_type in ("llm_call", "llm_result"):
+                llm_calls.append({
+                    "model": event.args.get("model", ""),
+                    "timestamp": event.timestamp,
+                    "prompt_tokens": event.args.get("prompt_tokens", 0),
+                    "completion_tokens": event.args.get("completion_tokens", 0),
+                })
+
+        duration = 0.0
+        if first_event and last_event:
+            try:
+                t1 = datetime.fromisoformat(first_event.timestamp)
+                t2 = datetime.fromisoformat(last_event.timestamp)
+                duration = (t2 - t1).total_seconds()
+            except (ValueError, TypeError):
+                pass
+
+        return {
+            "task_id": task_id,
+            "duration_seconds": duration,
+            "tool_calls": tool_calls,
+            "llm_calls": llm_calls,
+            "events": [e.model_dump() for e in events],
+        }
 
     def count_by_type(self) -> dict[str, int]:
         """Return a mapping of event_type -> count."""

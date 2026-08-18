@@ -670,3 +670,58 @@ class CompanyRegistry(BaseModel):
     approval_matrix: list[ApprovalEntry] = Field(default_factory=list)
     risk_matrix: RiskMatrixConfig = Field(default_factory=RiskMatrixConfig)
     decision_tree: DecisionTreeConfig = Field(default_factory=DecisionTreeConfig)
+
+
+# ---------------------------------------------------------------------------
+# Revenue Attribution
+# ---------------------------------------------------------------------------
+
+
+class RevenueAttribution(BaseModel):
+    """Revenue and cost attribution for a single agent within a period."""
+
+    agent_id: str
+    department: str
+    tasks_completed: int
+    revenue_attributed: float  # USD (normalized via exchange_rate)
+    cost_incurred: float  # USD (from cost_records + project_costs)
+    roi: float  # revenue / cost
+    revenue_per_task: float
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "agent_id": "financial-analyst",
+                "department": "finance",
+                "tasks_completed": 42,
+                "revenue_attributed": 800.0,
+                "cost_incurred": 120.0,
+                "roi": 6.7,
+                "revenue_per_task": 18.1,
+            }
+        }
+    )
+
+
+class RevenueSummary(BaseModel):
+    """Aggregated revenue summary for a period."""
+
+    total_revenue: float
+    total_cost: float
+    overall_roi: float
+    by_department: list[RevenueAttribution]
+    by_agent: list[RevenueAttribution]
+    period_days: int
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "total_revenue": 1600.0,
+                "total_cost": 240.0,
+                "overall_roi": 6.7,
+                "by_department": [],
+                "by_agent": [],
+                "period_days": 30,
+            }
+        }
+    )
