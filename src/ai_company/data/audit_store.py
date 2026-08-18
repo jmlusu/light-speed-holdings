@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import json
 import logging
-import sqlite3
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -126,6 +125,7 @@ class AuditStore:
         if self._db:
             try:
                 import sqlite3
+
                 fts_rows = self._db.fetchall(
                     """SELECT e.* FROM audit_events e
                        JOIN audit_events_fts f ON f.rowid = e.rowid
@@ -142,16 +142,22 @@ class AuditStore:
         all_events = self.read_all()
         query_lower = query.lower()
         matching_events: list[AuditEvent] = [
-            e for e in all_events
+            e
+            for e in all_events
             if query_lower in str(e.args).lower()
             or query_lower in str(e.result).lower()
             or query_lower in str(e.tool or "").lower()
         ][:limit]
         return [e.model_dump() for e in matching_events]
 
-    def get_timeline(self, limit: int = 100, agent_id: str | None = None,
-                     status: str | None = None, task_type: str | None = None,
-                     time_range: str = "24h") -> list[dict[str, Any]]:
+    def get_timeline(
+        self,
+        limit: int = 100,
+        agent_id: str | None = None,
+        status: str | None = None,
+        task_type: str | None = None,
+        time_range: str = "24h",
+    ) -> list[dict[str, Any]]:
         """Get execution timeline entries with filtering."""
         # Calculate time range
         now = datetime.now(timezone.utc)
@@ -207,18 +213,22 @@ class AuditStore:
                 last_event = event
 
             if event.event_type == "tool_call":
-                tool_calls.append({
-                    "tool": event.tool or "",
-                    "timestamp": event.timestamp,
-                    "args": event.args,
-                })
+                tool_calls.append(
+                    {
+                        "tool": event.tool or "",
+                        "timestamp": event.timestamp,
+                        "args": event.args,
+                    }
+                )
             if event.event_type in ("llm_call", "llm_result"):
-                llm_calls.append({
-                    "model": event.args.get("model", ""),
-                    "timestamp": event.timestamp,
-                    "prompt_tokens": event.args.get("prompt_tokens", 0),
-                    "completion_tokens": event.args.get("completion_tokens", 0),
-                })
+                llm_calls.append(
+                    {
+                        "model": event.args.get("model", ""),
+                        "timestamp": event.timestamp,
+                        "prompt_tokens": event.args.get("prompt_tokens", 0),
+                        "completion_tokens": event.args.get("completion_tokens", 0),
+                    }
+                )
 
         duration = 0.0
         if first_event and last_event:

@@ -8,25 +8,33 @@
 
 ### Added
 
-#### Dashboard
-- **CEO Dashboard Hero** (#31): SVG radial gauge with score display, 3 switchable variants (A/B/D), KPI sparkline cards, alerts bar showing pending approvals/escalations. Integrated into index.html with local storage variant persistence.
-- **Onboarding Studio** (#43): New Onboarding tab with request list grouped by state, approve/reject actions, real-time WebSocket updates, progress bars for active requests.
-- **Task Decomposition** (#44): Click-to-detail slide-out panel on Kanban task cards, AI-powered task decomposition via POST /api/v1/tasks/{id}/decompose, subtask tracking with progress bar.
-- **Health Monitor** (#45): Real-time org health score with component metrics, Z-score anomaly detection, trend charts (6h/24h/7d), anomaly alert panel.
-- **Interactive Org Chart** (#47): Visual tree rendering with CSS flexbox, node selection with detail panel, drag-to-reassign reports_to, zoom controls.
+#### Phase 2: Infrastructure & Quality (Parallel Track)
+- **Daemon Mode** (S3-06/S3-07): Full executor daemon lifecycle — PID management (`~/.ai-company/daemon.pid`), signal handling (SIGTERM/SIGINT/Windows Ctrl+C), health status file (`logs/executor-daemon.json`), cross-platform stop sentinel, CLI `executor start --daemon` / `executor stop` / `executor status` (980 lines in `src/ai_company/executor/daemon.py`).
+- **Background Schedulers**: KPI snapshot scheduler (`dashboard/kpis/scheduler.py`), HITL expiry sweep (`ApprovalGate._sweep_expired_approvals`), governance sweep (`GovernanceScheduler` in `data/governance.py`) — all wired into daemon tick loop.
+- **Dashboard Daemon API**: `GET /api/v1/daemon/status` endpoint reading health file → returns `state`, `pid`, `uptime_seconds`, `is_pid_alive`, `stale` flag.
+- **WebSocket Daemon Broadcast**: `daemon` topic in `dashboard/ws.py`; `ExecutorDaemon._broadcast_health()` fires after each tick for real-time UI.
+- **Daemon Test Suite**: 31 tests across `test_daemon_lifecycle.py`, `test_daemon_detach.py`, `test_scheduler_daemon.py` — all passing.
 
-#### Infrastructure
-- **Onboarding Module** (unified): Merged hr/onboarding.py and services/onboarding.py into single module with 7-state flow, BaseService pattern, Pydantic models, WS broadcasting, audit trail, registry integration with rollback, HITL approval (tier 2/3).
-- **Design Specifications**: Comprehensive dashboard feature design document (docs/DESIGN-DASHBOARD-FEATURES.md) covering 8 features with wireframes, data contracts, Alpine.js patterns.
-
-#### Documentation
-- **ADR-017**: Async approval engine architecture (suspend-to-disk for HITL-parked tasks, 30-day retention, webhook push).
-- **Dashboard Key Rotation**: Detailed procedure for RBAC key rotation (docs/DASHBOARD_KEY_ROTATION.md).
+#### Code Quality
+- **mypy strict mode enabled**: ~90 strict-mode errors fixed across 20+ source files:
+  - Bare `dict` → `dict[str, Any]` in `message_bus.py` (16), `api.py` (13), `mobile_api.py` (7), `kpi_transformer.py` (3), `briefing.py`, `hr.py`, `scheduler.py` (2)
+  - Missing return types (`-> None`) added to `_load_config`/`_save_config`/`_load_events` in `approval.py`, `escalation.py`, `scheduler.py`
+  - Untyped `**kwargs` → `**kwargs: Any` in ETL pipelines (`kpi_snapshot.py`, `governance.py`, `orchestration/scheduler.py`)
+  - 10 unused `type: ignore` comments removed (`logging.py`, `tool_runner.py`, `embeddings.py`, `daemon.py`, `monitoring.py`, `agent_loop.py`, `app.py`)
+  - Generic type args added: `ExtractionResult[Any]`, `TransformResult[Any]`, `ServiceResult[Any]`, `Popen[Any]`
+  - `pyproject.toml` updated: `strict = true` (replaces individual `warn_*` flags)
 
 ### Changed
+
 - **Version**: 0.5.0 → 0.5.1
-- **Agent Registry**: 131 agents (fixed eval_benchmarks_engineer responsibilities)
-- **Tests**: 1743+ tests passing
+- **Agent Registry**: 131 agents
+- **Tests**: 1878 passing (3 pre-existing async failures unrelated to changes)
+- **Code Quality Gates**: ruff ✅, mypy strict ✅ (180 files), pytest ✅
+
+### Fixed
+
+- **mypy strict**: All 90 strict-mode errors resolved — project now type-checks clean with `strict = true`
+- **Release workflow**: Trusted publishing already configured (OIDC, `pypa/gh-action-pypi-publish@release/v1`)
 
 ---
 

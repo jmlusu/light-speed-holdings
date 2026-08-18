@@ -66,6 +66,16 @@ providers:
     default_model: llama3.1-8b-32k
     # Local GGUF models directory (relative to project root)
     model_dir: "./models"
+    # Server settings (llama-server)
+    server:
+      host: "127.0.0.1"
+      api_key: "local"
+      # Server port mapping per model
+      ports:
+        llama3.1-8b-32k: 8088
+        qwen2.5-coder-7b-32k: 8089
+        deepseek-r1-64k: 8090
+        mistral-7b-32k: 8091
     # CPU-optimized defaults for AMD Ryzen 7 PRO 5850U (8C/16T, shared RAM)
     hardware:
       n_threads: 8           # Physical cores (not hyperthreads)
@@ -101,15 +111,6 @@ providers:
         hardware:
           n_threads: 8
           n_batch: 512
-          n_ctx: 16384
-      gemma4-12b-32k:
-        path: "models/gemma-2-9b-it-q5_K_M.gguf"
-        quantization: "q5_K_M"
-        specialization: general_quality
-        context_window: 32768
-        hardware:
-          n_threads: 8
-          n_batch: 256
           n_ctx: 32768
       qwen2.5-coder-7b-32k:
         path: "models/qwen2.5-coder-7b-instruct-q4_K_M.gguf"
@@ -172,8 +173,6 @@ tiers:
     providers:
       - provider: llamacpp
         model: deepseek-r1-64k
-      - provider: llamacpp
-        model: gemma4-12b-32k
       - provider: opencode
         model: big-pickle
       - provider: ollama

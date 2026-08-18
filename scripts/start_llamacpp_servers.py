@@ -19,26 +19,29 @@ PRIORITY_MODELS = [
     {
         "name": "llama3.1-8b-32k",
         "file": "llama-3.1-8b-instruct-q4_K_M.gguf",
-        "port": 8080,
+        "port": 8088,
         "ctx": 32768,
         "threads": 8,
         "batch": 512,
+        "api_key": "local",
     },
     {
         "name": "qwen2.5-coder-7b-32k",
         "file": "qwen2.5-coder-7b-instruct-q4_K_M.gguf",
-        "port": 8081,
+        "port": 8089,
         "ctx": 32768,
         "threads": 8,
         "batch": 512,
+        "api_key": "local",
     },
     {
         "name": "deepseek-r1-64k",
         "file": "deepseek-r1-distill-qwen-7b-q4_K_M.gguf",
-        "port": 8082,
-        "ctx": 32768,  # Cap at 32k for speed
+        "port": 8090,
+        "ctx": 32768,
         "threads": 8,
         "batch": 256,
+        "api_key": "local",
     },
 ]
 
@@ -47,18 +50,11 @@ OPTIONAL_MODELS = [
     {
         "name": "mistral-7b-32k",
         "file": "mistral-7b-instruct-v0.3-q4_K_M.gguf",
-        "port": 8083,
+        "port": 8091,
         "ctx": 16384,
         "threads": 8,
         "batch": 512,
-    },
-    {
-        "name": "gemma4-12b-32k",
-        "file": "gemma-2-9b-it-q5_K_M.gguf",
-        "port": 8084,
-        "ctx": 32768,
-        "threads": 8,
-        "batch": 256,
+        "api_key": "local",
     },
 ]
 
@@ -67,10 +63,17 @@ processes: list[subprocess.Popen] = []
 
 def find_llama_server() -> str | None:
     """Find llama-server executable."""
+    # Check project bin directory first
+    project_bin = Path(__file__).parent.parent / "bin" / "llama-server.exe"
+    if project_bin.exists():
+        return str(project_bin)
+
+    # Check PATH
     for path in os.environ.get("PATH", "").split(os.pathsep):
         exe = Path(path) / ("llama-server.exe" if os.name == "nt" else "llama-server")
         if exe.exists():
             return str(exe)
+
     return None
 
 
@@ -78,12 +81,12 @@ def start_server(model: dict) -> subprocess.Popen | None:
     """Start a llama-server for a model."""
     llama_server = find_llama_server()
     if not llama_server:
-        print("ERROR: llama-server not found in PATH")
+        print("ERROR: llama-server not found. Install llama.cpp first.")
         return None
 
     model_path = MODELS_DIR / model["file"]
     if not model_path.exists():
-        print(f"WARNING: Model not found: {model_path}")
+        print(f"WARNING: Model not found: {model_path} - skipping")
         return None
 
     cmd = [
@@ -100,12 +103,14 @@ def start_server(model: dict) -> subprocess.Popen | None:
         str(model["threads"]),
         "-ngl",
         "0",  # CPU only
-        "--mlock",
-        "--mmap",
+        "--load-mode",
+        "mlock,mmap",
         "--port",
         str(model["port"]),
         "--host",
         "127.0.0.1",
+        "--api-key",
+        model["api_key"],
     ]
 
     print(f"Starting {model['name']} on port {model['port']}...")
@@ -124,12 +129,17 @@ def wait_for_server(port: int, timeout: float = 60.0) -> bool:
     start = time.time()
     while time.time() - start < timeout:
         try:
-            resp = httpx.get(f"http://127.0.0.1:{port}/health", timeout=2.0)
+            resp = httpx.get(
+                f"http://127.0.0.1:{port}/health",
+                timeout=2.0,
+                headers={"X-API-Key": "local"},
+            )
             if resp.status_code == 200:
                 return True
         except (httpx.HTTPError, OSError):
             pass
         time.sleep(0.5)
+
     return False
 
 
@@ -159,11 +169,11 @@ def main():
         if proc:
             processes.append(proc)
             if wait_for_server(model["port"]):
-                print(f"  ✓ {model['name']} ready on port {model['port']}")
+                print(f"  OK {model['name']} ready on port {model['port']}")
             else:
-                print(f"  ✗ {model['name']} failed to start")
+                print(f"  SKIP {model['name']} failed to start")
         else:
-            print(f"  ✗ {model['name']} skipped (model file missing)")
+            print(f"  SKIP {model['name']} skipped (model file missing)")
 
     print()
     print("All priority servers started. Press Ctrl+C to stop.")
@@ -176,7 +186,6 @@ def main():
     try:
         while True:
             time.sleep(10)
-            # Check if any process died
             for i, proc in enumerate(processes):
                 if proc.poll() is not None:
                     print(f"WARNING: {PRIORITY_MODELS[i]['name']} server died, restarting...")
