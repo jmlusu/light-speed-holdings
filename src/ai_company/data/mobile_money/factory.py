@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
-from .base import AbstractProvider
-from .paychangu import PayChanguProvider
 from .airtel import AirtelProvider
-from .tnm import TNMProvider
+from .base import AbstractProvider
 from .mock import MockProvider
+from .paychangu import PayChanguProvider
+from .tnm import TNMProvider
 
 
 class ProviderRegistry:
@@ -37,7 +37,7 @@ class ProviderRegistry:
 def get_provider(
     name: Literal["paychangu", "airtel", "tnm", "mock"],
     webhook_secret: str,
-    **kwargs,
+    **kwargs: Any,
 ) -> AbstractProvider:
     """Create a provider instance by name.
 

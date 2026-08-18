@@ -316,7 +316,11 @@ def create_default_scheduler(database: Database) -> PipelineScheduler:
     )
 
     # Register governance (daily)
-    from ai_company.data.etl.pipelines.governance import GovernancePipeline, DeadLetterProcessingPipeline, InboxPurgePipeline
+    from ai_company.data.etl.pipelines.governance import (
+        DeadLetterProcessingPipeline,
+        GovernancePipeline,
+        InboxPurgePipeline,
+    )
     scheduler.add_pipeline(
         "governance",
         lambda: GovernancePipeline(database),

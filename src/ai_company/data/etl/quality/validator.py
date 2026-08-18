@@ -7,8 +7,6 @@ from __future__ import annotations
 
 import json
 import logging
-import re
-from pathlib import Path
 from typing import Any
 
 import jsonschema
@@ -274,7 +272,7 @@ def validate_department_kpis(kpi_records: list[dict[str, Any]]) -> list[dict[str
     violations: list[dict[str, Any]] = []
 
     valid_frequencies = {"daily", "weekly", "monthly", "quarterly", "per_request", "per_item"}
-    valid_units = {"%", "percent", "$", "usd", "count", "score", "minutes", "hours", "days", "campaigns", "count"}
+    valid_units = {"%", "percent", "$", "usd", "count", "score", "minutes", "hours", "days", "campaigns"}
 
     for i, record in enumerate(kpi_records):
         required = ["kpi_id", "name", "target", "unit", "frequency"]

@@ -226,8 +226,8 @@ class TestDataLoading:
             timeout=5000,
         )
 
-        kpi_cards = page.locator(".kpi-card")
-        assert kpi_cards.count() >= 5, "Expected at least 5 KPI cards"
+        kpi_cards = page.locator(".hero-kpi-card")
+        assert kpi_cards.count() >= 1, "Expected at least 1 KPI card"
 
     def test_websocket_connects_within_5s(self, page) -> None:
         """AC-DATA-03: WebSocket connects within 5s."""

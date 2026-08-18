@@ -27,10 +27,9 @@ Signature header: X-Paychangu-Signature (HMAC-SHA256 of raw body)
 from __future__ import annotations
 
 from datetime import datetime
-from decimal import Decimal
 from typing import Any
 
-from .base import AbstractProvider, WebhookPayload, InvalidSignatureError, ProviderError
+from .base import AbstractProvider, InvalidSignatureError, ProviderError, WebhookPayload
 
 
 class PayChanguProvider(AbstractProvider):
@@ -55,7 +54,7 @@ class PayChanguProvider(AbstractProvider):
             raise InvalidSignatureError("Invalid PayChangu signature")
         return True
 
-    def parse_webhook(self, payload: dict, headers: dict) -> WebhookPayload:
+    def parse_webhook(self, payload: dict[str, Any], headers: dict[str, Any]) -> WebhookPayload:
         """Parse PayChangu webhook into normalized payload."""
         event = payload.get("event", "")
         transaction = payload.get("transaction", {})
