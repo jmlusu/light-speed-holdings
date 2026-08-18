@@ -38,11 +38,7 @@ function navAIOS() {
           }
         }
 
-        // Cmd/Ctrl + K: Command bar (handled by command-bar.js)
-        if (mod && key === 'k') {
-          e.preventDefault();
-          document.dispatchEvent(new CustomEvent('jarvis:command-bar:toggle'));
-        }
+        // Cmd/Ctrl + K: Handled by command-bar.js directly
 
         // Cmd/Ctrl + .: Command center
         if (mod && key === '.') {

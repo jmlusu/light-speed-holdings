@@ -7,7 +7,7 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('commandBar', () => ({
         // State
-        open: false,
+        isOpen: false,
         query: '',
         results: [],
         selectedIndex: 0,
@@ -37,7 +37,7 @@ document.addEventListener('alpine:init', () => {
             document.addEventListener('click', this.handleOutsideClick.bind(this));
 
             // Prevent event propagation on panel
-            this.$watch('open', (open) => {
+            this.$watch('isOpen', (open) => {
                 if (open) {
                     document.body.style.overflow = 'hidden';
                     this.$nextTick(() => {
@@ -59,14 +59,14 @@ document.addEventListener('alpine:init', () => {
                 }
 
                 // Escape to close
-                if (e.key === 'Escape' && this.open) {
+                if (e.key === 'Escape' && this.isOpen) {
                     this.close();
                 }
             });
         },
 
         handleOutsideClick(e) {
-            if (this.open && this.$refs.panel && !this.$refs.panel.contains(e.target) &&
+            if (this.isOpen && this.$refs.panel && !this.$refs.panel.contains(e.target) &&
                 !e.target.closest('[x-ref="trigger"]')) {
                 this.close();
             }
@@ -74,22 +74,22 @@ document.addEventListener('alpine:init', () => {
 
         // Actions
         toggle() {
-            this.open = !this.open;
-            if (!this.open) {
+            this.isOpen = !this.isOpen;
+            if (!this.isOpen) {
                 this.query = '';
                 this.results = [];
                 this.selectedIndex = 0;
             }
         },
 
-        open() {
-            if (!this.open) {
-                this.open = true;
+        openCommandBar() {
+            if (!this.isOpen) {
+                this.isOpen = true;
             }
         },
 
         close() {
-            this.open = false;
+            this.isOpen = false;
             this.query = '';
             this.results = [];
             this.selectedIndex = 0;
