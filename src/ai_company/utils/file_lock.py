@@ -68,7 +68,7 @@ def _windows_lock(
         while True:
             try:
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
+                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined, unused-ignore]
                 break
             except OSError as exc:
                 if fd is not None:
@@ -87,7 +87,7 @@ def _windows_lock(
     finally:
         if fd is not None:
             try:
-                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined, unused-ignore]
             except OSError:
                 pass
             finally:
@@ -111,7 +111,7 @@ def _unix_lock(
         while True:
             try:
                 fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # type: ignore[attr-defined]
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # type: ignore[attr-defined, unused-ignore]
                 break
             except (OSError, IOError) as exc:
                 if fd is not None:
@@ -130,7 +130,7 @@ def _unix_lock(
     finally:
         if fd is not None:
             try:
-                fcntl.flock(fd, fcntl.LOCK_UN)  # type: ignore[attr-defined]
+                fcntl.flock(fd, fcntl.LOCK_UN)  # type: ignore[attr-defined, unused-ignore]
             except (OSError, IOError):
                 pass
             finally:
