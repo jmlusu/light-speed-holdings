@@ -1489,6 +1489,14 @@ function dashboard() {
       }[band] || 'text-slate-400';
     },
 
+    getBandClass(band) {
+      return {
+        green: 'bg-emerald-500',
+        amber: 'bg-amber-500',
+        red: 'bg-red-500',
+      }[band] || 'bg-slate-500';
+    },
+
     getComponentLabel(name) {
       const labels = {
         task_success_rate: 'Task Success Rate',
@@ -1531,6 +1539,8 @@ function dashboard() {
         for (const comp of this.orgHealth.components) {
           this._renderSparkline('spark-' + comp.name, this._generateTrendData(comp.value));
           this._renderSparkline('spark-b-' + comp.name, this._generateTrendData(comp.value));
+          // D variant: overview cards + detail view sparklines
+          this._renderSparkline('spark-d-' + comp.name, this._generateTrendData(comp.value));
           if (this.expandedComponent === comp.name) {
             this._renderSparkline('spark-detail-' + comp.name, this._generateTrendData(comp.value));
           }

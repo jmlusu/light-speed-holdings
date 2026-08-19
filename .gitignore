@@ -100,6 +100,7 @@ docker-compose.override.yml
 fix_*.py
 diagnose_*.ps1
 test_*.py
+!tests/**/*.py
 test_*.txt
 *_results.txt
 dashboard_test_results.txt
