@@ -8,6 +8,7 @@ process restart (GAP-009 / S2-07).
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -209,13 +210,13 @@ class TestDailyBudgetExceeded:
 
     def test_exceeded_when_today_spend_reaches_cap(self, tmp_path: Path) -> None:
         tracker = _make_tracker(tmp_path, daily_budget_usd=100.0)
-        today = __import__("datetime").date.today().isoformat()
+        today = datetime.now(timezone.utc).date().isoformat()
         tracker._daily_cost[today] = 100.0
         assert tracker.daily_budget_exceeded() is True
 
     def test_not_exceeded_below_cap(self, tmp_path: Path) -> None:
         tracker = _make_tracker(tmp_path, daily_budget_usd=100.0)
-        today = __import__("datetime").date.today().isoformat()
+        today = datetime.now(timezone.utc).date().isoformat()
         tracker._daily_cost[today] = 50.0
         assert tracker.daily_budget_exceeded() is False
 
