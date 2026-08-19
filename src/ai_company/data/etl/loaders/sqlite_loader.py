@@ -144,7 +144,16 @@ class CostRecordLoader(SQLiteUpsertLoader):
         errors: list[str] = []
 
         # Natural key for deduplication
-        nat_key_cols = ["timestamp", "model", "provider", "agent_name", "task_id", "cost_usd", "prompt_tokens", "completion_tokens"]
+        nat_key_cols = [
+            "timestamp",
+            "model",
+            "provider",
+            "agent_name",
+            "task_id",
+            "cost_usd",
+            "prompt_tokens",
+            "completion_tokens",
+        ]
 
         for i in range(0, len(records), batch_size):
             batch = records[i : i + batch_size]

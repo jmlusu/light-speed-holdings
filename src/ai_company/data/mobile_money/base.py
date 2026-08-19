@@ -17,7 +17,9 @@ from typing import Any, Optional
 class ProviderError(Exception):
     """Base exception for mobile money provider errors."""
 
-    def __init__(self, message: str, code: str = "PROVIDER_ERROR", details: Optional[dict[str, Any]] = None):
+    def __init__(
+        self, message: str, code: str = "PROVIDER_ERROR", details: Optional[dict[str, Any]] = None
+    ):
         super().__init__(message)
         self.code = code
         self.details = details or {}
@@ -26,7 +28,9 @@ class ProviderError(Exception):
 class InvalidSignatureError(ProviderError):
     """Raised when webhook signature verification fails."""
 
-    def __init__(self, message: str = "Invalid webhook signature", details: Optional[dict[str, Any]] = None):
+    def __init__(
+        self, message: str = "Invalid webhook signature", details: Optional[dict[str, Any]] = None
+    ):
         super().__init__(message, "INVALID_SIGNATURE", details)
 
 
@@ -40,14 +44,18 @@ class DuplicateTransactionError(ProviderError):
 class InsufficientFundsError(ProviderError):
     """Raised when the payer has insufficient funds."""
 
-    def __init__(self, message: str = "Insufficient funds", details: Optional[dict[str, Any]] = None):
+    def __init__(
+        self, message: str = "Insufficient funds", details: Optional[dict[str, Any]] = None
+    ):
         super().__init__(message, "INSUFFICIENT_FUNDS", details)
 
 
 class TimeoutError(ProviderError):
     """Raised when provider request times out."""
 
-    def __init__(self, message: str = "Provider request timeout", details: Optional[dict[str, Any]] = None):
+    def __init__(
+        self, message: str = "Provider request timeout", details: Optional[dict[str, Any]] = None
+    ):
         super().__init__(message, "TIMEOUT", details)
 
 
@@ -128,7 +136,9 @@ class AbstractProvider(ABC):
         """
         return f"{self.PROVIDER_NAME}:{transaction_id}"
 
-    def verify_hmac_sha256(self, payload: bytes, signature: str, secret: Optional[str] = None) -> bool:
+    def verify_hmac_sha256(
+        self, payload: bytes, signature: str, secret: Optional[str] = None
+    ) -> bool:
         """Verify HMAC-SHA256 signature.
 
         Args:
@@ -140,11 +150,7 @@ class AbstractProvider(ABC):
             True if signature matches
         """
         secret = secret or self.webhook_secret
-        expected = hmac.new(
-            secret.encode("utf-8"),
-            payload,
-            hashlib.sha256
-        ).hexdigest()
+        expected = hmac.new(secret.encode("utf-8"), payload, hashlib.sha256).hexdigest()
         return hmac.compare_digest(expected, signature)
 
     def normalize_amount(self, amount: Any, currency: str) -> Decimal:
@@ -170,5 +176,5 @@ class AbstractProvider(ABC):
             raise ProviderError(
                 f"Unsupported currency: {currency}",
                 "UNSUPPORTED_CURRENCY",
-                {"supported": list(self.SUPPORTED_CURRENCIES)}
+                {"supported": list(self.SUPPORTED_CURRENCIES)},
             )

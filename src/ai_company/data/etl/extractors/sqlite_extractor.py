@@ -92,7 +92,9 @@ class SQLiteTableExtractor(Extractor[dict[str, Any]]):
                 errors=[str(exc)],
             )
 
-    def extract_new_since_last_run(self, last_run_ts: str, batch_size: int = 1000) -> ExtractionResult[dict[str, Any]]:
+    def extract_new_since_last_run(
+        self, last_run_ts: str, batch_size: int = 1000
+    ) -> ExtractionResult[dict[str, Any]]:
         """Convenience method for incremental extraction since last pipeline run."""
         return self.extract(since=last_run_ts, limit=batch_size)
 
@@ -117,7 +119,9 @@ class TaskExtractor(SQLiteTableExtractor):
         since: str | None = None,
         limit: int | None = None,
     ) -> ExtractionResult[dict[str, Any]]:
-        return self.extract(since=since, limit=limit, where="receiver_id = ?", params=(receiver_id,))
+        return self.extract(
+            since=since, limit=limit, where="receiver_id = ?", params=(receiver_id,)
+        )
 
     def extract_by_sender(
         self,
@@ -291,10 +295,14 @@ class EscalationEventExtractor(SQLiteTableExtractor):
     def __init__(self, database: Database):
         super().__init__(database, "escalation_events", "timestamp")
 
-    def extract_pending(self, since: str | None = None, limit: int | None = None) -> ExtractionResult[dict[str, Any]]:
+    def extract_pending(
+        self, since: str | None = None, limit: int | None = None
+    ) -> ExtractionResult[dict[str, Any]]:
         return self.extract(since=since, limit=limit, where="resolved = 0")
 
-    def extract_resolved(self, since: str | None = None, limit: int | None = None) -> ExtractionResult[dict[str, Any]]:
+    def extract_resolved(
+        self, since: str | None = None, limit: int | None = None
+    ) -> ExtractionResult[dict[str, Any]]:
         return self.extract(since=since, limit=limit, where="resolved = 1")
 
     def extract_by_target_agent(

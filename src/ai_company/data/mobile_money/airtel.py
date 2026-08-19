@@ -59,9 +59,7 @@ class AirtelProvider(AbstractProvider):
         status = transaction.get("status", "")
         if status != self.STATUS_SUCCESS:
             raise ProviderError(
-                f"Transaction not successful: {status}",
-                "TRANSACTION_FAILED",
-                {"status": status}
+                f"Transaction not successful: {status}", "TRANSACTION_FAILED", {"status": status}
             )
 
         transaction_id = transaction.get("transaction_id", "")

@@ -191,7 +191,9 @@ class NDJSONFileExtractor(FileExtractor):
                         if isinstance(record, dict):
                             records.append(record)
                     except json.JSONDecodeError as exc:
-                        logger.warning("Skipping malformed line %d in %s: %s", line_num, self.full_path, exc)
+                        logger.warning(
+                            "Skipping malformed line %d in %s: %s", line_num, self.full_path, exc
+                        )
 
             # Filter by timestamp
             if since and timestamp_field:
@@ -235,7 +237,13 @@ class DeadLetterExtractor(JSONFileExtractor):
     def __init__(self, project_root: Path | None = None):
         super().__init__("file:dead_letter_json", ".opencode/dead_letter.json", project_root)
 
-    def extract(self, since: str | None = None, limit: int | None = None, timestamp_field: str = "created_at", **kwargs: Any) -> ExtractionResult[dict[str, Any]]:
+    def extract(
+        self,
+        since: str | None = None,
+        limit: int | None = None,
+        timestamp_field: str = "created_at",
+        **kwargs: Any,
+    ) -> ExtractionResult[dict[str, Any]]:
         # DLQ entries may not have timestamps, so skip time filtering
         return super().extract(since=None, limit=limit, timestamp_field="", **kwargs)
 
@@ -246,7 +254,13 @@ class CostTrackerExtractor(JSONFileExtractor):
     def __init__(self, project_root: Path | None = None):
         super().__init__("file:cost_tracker_json", "orchestrator/cost_tracker.json", project_root)
 
-    def extract(self, since: str | None = None, limit: int | None = None, timestamp_field: str = "created_at", **kwargs: Any) -> ExtractionResult[dict[str, Any]]:
+    def extract(
+        self,
+        since: str | None = None,
+        limit: int | None = None,
+        timestamp_field: str = "created_at",
+        **kwargs: Any,
+    ) -> ExtractionResult[dict[str, Any]]:
         # cost_tracker.json is a single object, not an array
         result = super().extract(since=None, limit=None, **kwargs)
         if result.records and isinstance(result.records[0], dict):
@@ -266,7 +280,13 @@ class ApprovalsExtractor(YAMLFileExtractor):
     def __init__(self, project_root: Path | None = None):
         super().__init__("file:approvals_yaml", "orchestrator/approvals.yaml", project_root)
 
-    def extract(self, since: str | None = None, limit: int | None = None, list_key: str | None = None, **kwargs: Any) -> ExtractionResult[dict[str, Any]]:
+    def extract(
+        self,
+        since: str | None = None,
+        limit: int | None = None,
+        list_key: str | None = None,
+        **kwargs: Any,
+    ) -> ExtractionResult[dict[str, Any]]:
         return super().extract(since=since, limit=limit, list_key="requests", **kwargs)
 
 
@@ -276,7 +296,13 @@ class SchedulerExtractor(YAMLFileExtractor):
     def __init__(self, project_root: Path | None = None):
         super().__init__("file:scheduler_yaml", "orchestrator/scheduler.yaml", project_root)
 
-    def extract(self, since: str | None = None, limit: int | None = None, list_key: str | None = None, **kwargs: Any) -> ExtractionResult[dict[str, Any]]:
+    def extract(
+        self,
+        since: str | None = None,
+        limit: int | None = None,
+        list_key: str | None = None,
+        **kwargs: Any,
+    ) -> ExtractionResult[dict[str, Any]]:
         return super().extract(since=since, limit=limit, list_key="tasks", **kwargs)
 
 
@@ -286,7 +312,13 @@ class EscalationYAMLExtractor(YAMLFileExtractor):
     def __init__(self, project_root: Path | None = None):
         super().__init__("file:escalation_yaml", "orchestrator/escalation.yaml", project_root)
 
-    def extract(self, since: str | None = None, limit: int | None = None, list_key: str | None = None, **kwargs: Any) -> ExtractionResult[dict[str, Any]]:
+    def extract(
+        self,
+        since: str | None = None,
+        limit: int | None = None,
+        list_key: str | None = None,
+        **kwargs: Any,
+    ) -> ExtractionResult[dict[str, Any]]:
         return super().extract(since=since, limit=limit, list_key="events", **kwargs)
 
 

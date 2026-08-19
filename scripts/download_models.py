@@ -6,11 +6,10 @@ Models selected for AMD Ryzen 7 PRO 5850U (8C/16T, 32GB RAM, CPU-only):
 - q5_K_M quantization: Better quality for 9B+ models
 """
 
+import os
 import subprocess
 import sys
-import os
 import time
-import shutil
 from pathlib import Path
 from typing import Optional
 
@@ -78,7 +77,7 @@ def get_file_size(path: Path) -> int:
 
 def format_size(bytes_val: int) -> str:
     """Format bytes as human-readable string."""
-    for unit in ['B', 'KB', 'MB', 'GB']:
+    for unit in ["B", "KB", "MB", "GB"]:
         if bytes_val < 1024:
             return f"{bytes_val:.1f} {unit}"
         bytes_val /= 1024
@@ -86,10 +85,7 @@ def format_size(bytes_val: int) -> str:
 
 
 def download_with_retry(
-    model: dict,
-    models_dir: Path,
-    hf_token: Optional[str] = None,
-    cmd: str = "hf"
+    model: dict, models_dir: Path, hf_token: Optional[str] = None, cmd: str = "hf"
 ) -> bool:
     """Download a model with retry logic and exponential backoff."""
     output_path = models_dir / model["name"]
@@ -106,7 +102,9 @@ def download_with_retry(
             print(f"[OK] {model['name']} already exists ({format_size(actual_size)}), skipping")
             return True
         else:
-            print(f"[RESUME] {model['name']} partial ({format_size(actual_size)}/{format_size(expected_size)}), resuming...")
+            print(
+                f"[RESUME] {model['name']} partial ({format_size(actual_size)}/{format_size(expected_size)}), resuming..."
+            )
 
     base_cmd = [
         cmd,
@@ -120,11 +118,13 @@ def download_with_retry(
     timeout = INITIAL_TIMEOUT
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            print(f"  [Attempt {attempt}/{MAX_RETRIES}] Downloading {model['name']} ({model['size_gb']} GB)...")
+            print(
+                f"  [Attempt {attempt}/{MAX_RETRIES}] Downloading {model['name']} ({model['size_gb']} GB)..."
+            )
             print(f"    Command: {' '.join(base_cmd)}")
             print(f"    Timeout: {timeout}s")
 
-            result = subprocess.run(
+            subprocess.run(
                 base_cmd,
                 check=True,
                 env=env,
@@ -142,9 +142,11 @@ def download_with_retry(
                     print(f"    [OK] Downloaded {model['name']} ({format_size(actual_size)})")
                     return True
                 else:
-                    print(f"    [ERROR] File too small: {format_size(actual_size)} (expected ~{format_size(expected_size)})")
+                    print(
+                        f"    [ERROR] File too small: {format_size(actual_size)} (expected ~{format_size(expected_size)})"
+                    )
             else:
-                print(f"    [ERROR] Downloaded file not found")
+                print("    [ERROR] Downloaded file not found")
 
         except subprocess.TimeoutExpired:
             print(f"    [TIMEOUT] Timeout after {timeout}s")
@@ -155,7 +157,7 @@ def download_with_retry(
             return False
 
         if attempt < MAX_RETRIES:
-            wait_time = 2 ** attempt  # 2s, 4s, 8s
+            wait_time = 2**attempt  # 2s, 4s, 8s
             print(f"    Retrying in {wait_time}s...")
             time.sleep(wait_time)
             timeout = min(timeout * 2, MAX_TIMEOUT)  # Exponential backoff
@@ -165,12 +167,12 @@ def download_with_retry(
 
 def download_model(model: dict, models_dir: Path, hf_token: Optional[str] = None) -> bool:
     """Download a single model using hf or huggingface-cli with retries."""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Downloading: {model['name']}")
     print(f"Description: {model['description']}")
     print(f"Size: {model['size_gb']} GB")
     print(f"Repo: {model['repo']}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Try hf first, then huggingface-cli
     for cmd in ["hf", "huggingface-cli"]:
@@ -216,9 +218,9 @@ def main():
         if download_model(model, models_dir, hf_token):
             success += 1
         else:
-            failed.append(model['name'])
+            failed.append(model["name"])
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"SUMMARY: {success}/{len(MODELS)} models downloaded")
     if failed:
         print(f"Failed: {', '.join(failed)}")

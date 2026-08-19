@@ -65,9 +65,7 @@ class PayChanguProvider(AbstractProvider):
         # Only process completed payments
         if event != self.EVENT_COMPLETED:
             raise ProviderError(
-                f"Unhandled event type: {event}",
-                "UNHANDLED_EVENT",
-                {"event": event}
+                f"Unhandled event type: {event}", "UNHANDLED_EVENT", {"event": event}
             )
 
         # Extract fields

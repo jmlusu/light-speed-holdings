@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Light Speed Holdings — CEO Dashboard{% endblock %}</title>
 
+  <!-- PWA (Issue #41) -->
+  <meta name="theme-color" content="#070b14">
+  <link rel="manifest" href="/manifest.json">
+
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -76,7 +80,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-5"
          class="command-bar-panel" role="dialog" aria-modal="true" aria-labelledby="command-bar-title" x-ref="panel">
-      
+
       <!-- Header -->
       <div class="command-bar-header">
         <div class="command-bar-icon">⌘</div>
@@ -93,11 +97,11 @@
           <svg class="command-bar-input-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
-          <input type="text" 
-                 x-ref="input" 
-                 class="command-bar-input" 
-                 placeholder="Type a command or search..." 
-                 x-model="query" 
+          <input type="text"
+                 x-ref="input"
+                 class="command-bar-input"
+                 placeholder="Type a command or search..."
+                 x-model="query"
                  @input="debouncedSearch"
                  @keydown="handleKeydown"
                  autocomplete="off"
@@ -105,8 +109,8 @@
                  aria-autocomplete="list"
                  aria-controls="command-bar-results"
                  :aria-activedescendant="results[selectedIndex]?.id">
-          <button type="button" 
-                  class="command-bar-voice-btn" 
+          <button type="button"
+                  class="command-bar-voice-btn"
                   :class="{ recording: isListening }"
                   @click="toggleVoice"
                   x-show="supportsVoice"
@@ -133,7 +137,7 @@
           <template x-if="section.results.length > 0">
             <h4 class="command-bar-section-title" x-text="section.label"></h4>
             <template x-for="(result, index) in section.results" :key="result.id">
-              <div class="command-bar-result" 
+              <div class="command-bar-result"
                    :class="{ selected: selectedIndex === $index + section.offset }"
                    role="option"
                    :aria-selected="selectedIndex === $index + section.offset"
@@ -162,7 +166,7 @@
             </template>
           </template>
         </template>
-        
+
         <!-- Empty State -->
         <template x-if="results.length === 0 && query">
           <div class="command-bar-empty">
@@ -297,6 +301,38 @@
     </div>
   </div>
 
+  <!-- ═══ ESCALATION NOTIFICATION SURFACE (F6) ═══ -->
+  <!-- Real-time escalation toasts pushed by WS — top-right stack above the generic toast -->
+  <div class="fixed top-16 right-6 z-50 flex flex-col gap-2 pointer-events-none" aria-live="polite" aria-label="Escalation notifications">
+    <template x-for="n in escalationNotifications" :key="n._nid">
+      <div x-show="n.visible" x-transition:enter="transition ease-out duration-300"
+           x-transition:enter-start="opacity-0 translate-x-6" x-transition:enter-end="opacity-100 translate-x-0"
+           x-transition:leave="transition ease-in duration-200"
+           x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 translate-x-6"
+           class="pointer-events-auto jarvis-glass rounded-xl shadow-2xl border border-red-500/30 p-4 max-w-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-semibold text-red-400">Escalation</p>
+            <p class="text-sm text-jarvis-text mt-0.5" x-text="n.reason"></p>
+            <p class="text-xs text-jarvis-muted mt-1 font-mono" x-text="n.from_agent + ' → ' + n.to_agent"></p>
+          </div>
+          <button @click="dismissEscalationNotif(n._nid)" class="text-jarvis-muted hover:text-jarvis-text shrink-0 pointer-events-auto" aria-label="Dismiss">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="flex justify-end gap-2 mt-3">
+          <button @click="resolveEscalation(n.task_id); dismissEscalationNotif(n._nid)"
+                  class="px-3 py-1 rounded-lg text-xs font-medium bg-jarvis-cyan text-white hover:bg-jarvis-cyan/80 transition-colors">Resolve</button>
+          <button @click="dismissEscalationNotif(n._nid)"
+                  class="px-3 py-1 rounded-lg text-xs font-medium text-jarvis-muted hover:text-jarvis-text transition-colors">Dismiss</button>
+        </div>
+      </div>
+    </template>
+  </div>
+
   <!--
     ═══ API STATUS BANNER (FIX: surface silent API failures) ═══
     Small, non-intrusive banner shown when background fetches fail
@@ -324,7 +360,9 @@
     Light Speed Holdings &mdash; AI Company Builder v0.1.0
   </footer>
 
-  <!-- Scripts -->
+  <!-- Scripts (PWA + offline sync load first so globals are available to app.js) -->
+  <script src="/static/js/offline-sync.js"></script>
+  <script src="/static/js/sw-registration.js"></script>
   <script src="/static/js/command-bar-service.js"></script>
   <script src="/static/js/command-bar.js"></script>
   <script src="/static/js/app.js"></script>

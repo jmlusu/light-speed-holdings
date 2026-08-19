@@ -545,11 +545,6 @@ def create_app() -> FastAPI:
         ctx = _tab_context("command-center")
         return templates.TemplateResponse(request, "command-center.html", ctx)
 
-    @app.get("/command-center-v2", response_class=Response)
-    async def page_command_center_v2(request: Request) -> Response:
-        ctx = _tab_context("command-center")
-        return templates.TemplateResponse(request, "command-center-v2.html", ctx)
-
     @app.get("/mission-control", response_class=Response)
     async def page_mission_control(request: Request) -> Response:
         ctx = _tab_context("mission-control")
