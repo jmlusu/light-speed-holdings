@@ -77,36 +77,81 @@
     </div>
   </template>
 
-  <!-- Variant D: Drill-down -->
+  <!-- Variant D: Drill-down Gauge (rich) -->
   <template x-if="!orgHealthLoading && orgHealth && heroVariant === 'D'">
-    <div class="hero-drilldown">
-      <div class="hero-gauge-container">
-        <canvas id="heroGaugeD" width="256" height="256"></canvas>
-        <div class="hero-gauge-label">
-          <span class="gauge-score" x-text="orgHealth?.score?.toFixed(0) || '--'"></span>
-          <span class="gauge-band" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band || 'unknown'"></span>
+    <div class="jarvis-glass rounded-xl p-6 sm:p-8">
+      <!-- Main Gauge (clickable) -->
+      <div class="flex flex-col items-center gap-4 mb-6 sm:mb-8" @click="toggleComponent('overview')" style="cursor: pointer;">
+        <div class="relative w-48 h-48 sm:w-64 sm:h-64">
+          <canvas id="heroGaugeD" width="256" height="256"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="font-display text-4xl sm:text-6xl font-bold text-jarvis-text" x-text="orgHealth?.score?.toFixed(0) || '--'"></div>
+            <div class="font-display text-xs sm:text-sm uppercase tracking-wider" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band?.toUpperCase() || 'unknown'"></div>
+            <div class="text-xs text-jarvis-muted mt-2">Click to expand</div>
+          </div>
+        </div>
+        <div class="text-center">
+          <p class="text-jarvis-muted text-sm">Organizational Health — Click for Breakdown</p>
         </div>
       </div>
-      <div class="hero-component-list">
-        <template x-for="comp in orgHealth?.components || []" :key="comp.name">
-          <button class="hero-component-item" @click="toggleComponent(comp.name)"
-                  :class="expandedComponent === comp.name ? 'expanded' : ''">
-            <div class="component-header">
-              <span class="component-name" x-text="getComponentLabel(comp.name)"></span>
-              <span class="component-value" x-text="comp.value.toFixed(0) + '%'"></span>
-            </div>
-            <div class="component-bar">
-              <div class="component-bar-fill" :style="`width: ${comp.value}%`"
-                   :class="comp.value >= 80 ? 'bg-emerald-500' : comp.value >= 50 ? 'bg-amber-500' : 'bg-red-500'"></div>
-            </div>
-            <template x-if="expandedComponent === comp.name">
-              <div class="component-detail">
-                <p class="text-xs text-jarvis-muted" x-text="getComponentDescription(comp.name)"></p>
-                <canvas class="hero-sparkline" :id="'spark-detail-' + comp.name" width="200" height="40"></canvas>
+
+      <!-- Expanded Component Breakdown -->
+      <div x-show="expandedComponent" class="mt-6 space-y-4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:leave="transition ease-in duration-200" x-transition:leave-end="opacity-0 transform translate-y-4">
+        <template x-if="expandedComponent === 'overview' && orgHealth && orgHealth.components">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <template x-for="comp in orgHealth.components" :key="comp.name">
+              <div class="jarvis-glass rounded-lg p-4 border border-white/5" @click="toggleComponent(comp.name)" style="cursor: pointer;">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <div>
+                    <p class="font-display text-xs uppercase tracking-wider text-jarvis-muted" x-text="getComponentLabel(comp.name)"></p>
+                    <p class="text-2xl font-bold text-jarvis-text mt-1" x-text="comp.value.toFixed(0) + '%'"></p>
+                    <p class="text-xs text-jarvis-muted" x-text="getComponentDescription(comp.name)"></p>
+                  </div>
+                  <div class="w-2 h-2 rounded-full mt-3 flex-shrink-0" :class="getBandClass(comp.sub_score >= 80 ? 'green' : comp.sub_score >= 50 ? 'amber' : 'red')"></div>
+                </div>
+                <div class="h-8 bg-white/5 rounded relative overflow-hidden">
+                  <canvas class="w-full h-full" :id="'spark-d-' + comp.name"></canvas>
+                </div>
               </div>
             </template>
-          </button>
+          </div>
         </template>
+
+        <template x-for="comp in orgHealth?.components || []" :key="'detail-' + comp.name" x-if="expandedComponent === comp.name">
+          <div class="jarvis-glass rounded-lg p-6 border border-jarvis-cyan/30">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <p class="font-display text-lg font-bold text-jarvis-text" x-text="getComponentLabel(comp.name)"></p>
+                <p class="text-jarvis-muted text-sm" x-text="getComponentDescription(comp.name)"></p>
+              </div>
+              <button @click="expandedComponent = null" class="text-jarvis-muted hover:text-jarvis-text">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="text-center p-4 bg-white/5 rounded-lg">
+                <p class="font-display text-3xl font-bold text-jarvis-text" x-text="comp.value.toFixed(0) + '%'"></p>
+                <p class="text-xs text-jarvis-muted">Current Score</p>
+              </div>
+              <div class="text-center p-4 bg-white/5 rounded-lg">
+                <p class="font-display text-3xl font-bold" :class="getBandTextClass(comp.sub_score >= 80 ? 'green' : comp.sub_score >= 50 ? 'amber' : 'red')" x-text="comp.sub_score?.toFixed(0) || '--'"></p>
+                <p class="text-xs text-jarvis-muted">Component Score</p>
+              </div>
+              <div class="text-center p-4 bg-white/5 rounded-lg">
+                <p class="font-display text-3xl font-bold text-jarvis-text" x-text="(comp.weight * 100).toFixed(0) + '%'"></p>
+                <p class="text-xs text-jarvis-muted">Weight in Composite</p>
+              </div>
+            </div>
+            <div class="mt-4 h-16 bg-white/5 rounded relative overflow-hidden">
+              <canvas class="w-full h-full" :id="'spark-detail-' + comp.name"></canvas>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Prompt when collapsed -->
+      <div x-show="!expandedComponent" class="text-center text-jarvis-muted text-sm py-8">
+        Click the gauge above to see component breakdown
       </div>
     </div>
   </template>
