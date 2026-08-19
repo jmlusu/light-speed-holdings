@@ -157,6 +157,53 @@
   </div>
 </div>
 
+<!-- ═══ COST BREAKDOWN (F8) ═══ -->
+<div class="jarvis-glass rounded-xl p-5 mb-6">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-sm font-semibold font-display text-jarvis-text">Cost Breakdown</h3>
+    <span class="text-xs text-jarvis-muted">Last 24h</span>
+  </div>
+  <div class="flex flex-wrap gap-6">
+    <!-- Total cost -->
+    <div class="flex-1 min-w-[140px]">
+      <p class="text-xs text-jarvis-muted mb-1">Total Spent</p>
+      <p class="text-2xl font-semibold font-display text-jarvis-cyan" x-text="'$' + (costSummary.total || 0).toFixed(4)"></p>
+      <p class="text-xs text-jarvis-muted mt-1">
+        <span x-text="'$' + (costSummary.avgPerTask || 0).toFixed(6)"></span> avg / task
+        <span class="ml-1" x-text="'(' + (costSummary.totalTasks || 0) + ' tasks)'"></span>
+      </p>
+    </div>
+
+    <!-- Top 5 agents -->
+    <div class="flex-1 min-w-[200px]">
+      <p class="text-xs text-jarvis-muted mb-2">Top Agents</p>
+      <div class="space-y-1.5">
+        <template x-for="a in agentCosts.slice(0, 5)" :key="a.agent">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-jarvis-muted truncate w-24" x-text="a.agent"></span>
+            <div class="flex-1 h-1.5 bg-jarvis-overlay rounded-full overflow-hidden">
+              <div class="h-full bg-jarvis-cyan rounded-full"
+                   :style="'width:' + (agentCosts.length > 0 ? Math.min(100, (a.totalCost / agentCosts[0].totalCost) * 100) : 0) + '%'"></div>
+            </div>
+            <span class="text-xs font-mono text-jarvis-text w-16 text-right" x-text="'$' + a.totalCost.toFixed(4)"></span>
+          </div>
+        </template>
+        <template x-if="agentCosts.length === 0">
+          <p class="text-xs text-jarvis-muted italic">No cost data</p>
+        </template>
+      </div>
+    </div>
+
+    <!-- Cost trend sparkline -->
+    <div class="w-48">
+      <p class="text-xs text-jarvis-muted mb-2">Cost Trend</p>
+      <div class="chart-container" style="height:64px">
+        <canvas id="costTrendMini"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ RECENT TASKS TABLE ═══ -->
 <div class="jarvis-glass rounded-xl p-5">
   <div class="flex items-center justify-between mb-4">

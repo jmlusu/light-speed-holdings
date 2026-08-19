@@ -337,7 +337,8 @@
   padding: 8px 12px;
   border-radius: 6px;
   margin-bottom: 4px;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .cc-agent-row:hover {
@@ -490,4 +491,370 @@
 
 .cc-panel-body::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.5);
+}
+
+/* ── Agent Status Dot (state-driven) ──────────────────────── */
+.cc-agent-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cc-agent-status.state-online {
+  background: var(--jarvis-state-online);
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.4);
+}
+
+.cc-agent-status.state-thinking {
+  background: var(--jarvis-state-thinking);
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.5);
+  animation: dot-thinking-pulse 1.8s ease-in-out infinite;
+}
+
+.cc-agent-status.state-executing {
+  background: var(--jarvis-state-executing);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+  animation: dot-executing-pulse 1.2s ease-in-out infinite;
+}
+
+.cc-agent-status.state-delegating {
+  background: var(--jarvis-state-delegating);
+  box-shadow: 0 0 6px rgba(129, 140, 248, 0.4);
+  animation: dot-thinking-pulse 2s ease-in-out infinite;
+}
+
+.cc-agent-status.state-waiting {
+  background: var(--jarvis-state-waiting);
+  box-shadow: 0 0 4px rgba(251, 191, 36, 0.3);
+}
+
+.cc-agent-status.state-blocked {
+  background: var(--jarvis-state-blocked);
+  box-shadow: 0 0 6px rgba(248, 113, 113, 0.4);
+  animation: dot-blocked-pulse 1s ease-in-out infinite;
+}
+
+.cc-agent-status.state-escalated {
+  background: var(--jarvis-state-escalated);
+  box-shadow: 0 0 10px rgba(251, 146, 60, 0.5);
+  animation: dot-blocked-pulse 1.2s ease-in-out infinite;
+}
+
+.cc-agent-status.state-offline {
+  background: var(--jarvis-state-offline);
+  box-shadow: none;
+}
+
+@keyframes dot-thinking-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50%      { transform: scale(1.3); opacity: 1; }
+}
+
+@keyframes dot-executing-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 4px rgba(34, 211, 238, 0.3); }
+  50%      { transform: scale(1.4); box-shadow: 0 0 10px rgba(34, 211, 238, 0.6); }
+}
+
+@keyframes dot-blocked-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%      { transform: scale(1.2); opacity: 1; }
+}
+
+/* ── Agent Model Tag ──────────────────────────────────────── */
+.cc-agent-model {
+  font-size: 10px;
+  font-family: var(--jarvis-font-mono);
+  color: var(--jarvis-text-muted);
+  background: rgba(12, 20, 32, 0.6);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ── Model Telemetry Panel ────────────────────────────────── */
+.cc-telemetry {
+  margin-top: 12px;
+}
+
+.cc-telemetry-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  background: rgba(12, 20, 32, 0.3);
+  border: 1px solid rgba(34, 211, 238, 0.04);
+}
+
+.cc-telemetry-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--jarvis-text);
+  min-width: 100px;
+}
+
+.cc-telemetry-bar-wrap {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(7, 11, 20, 0.6);
+  overflow: hidden;
+}
+
+.cc-telemetry-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.cc-telemetry-stats {
+  display: flex;
+  gap: 8px;
+  min-width: 120px;
+  justify-content: flex-end;
+}
+
+.cc-telemetry-stat {
+  font-size: 10px;
+  font-family: var(--jarvis-font-mono);
+  color: var(--jarvis-text-muted);
+  white-space: nowrap;
+}
+
+.cc-telemetry-stat span {
+  color: var(--jarvis-text);
+  font-weight: 600;
+}
+
+/* ── Activity Stream ──────────────────────────────────────── */
+.cc-activity-stream {
+  margin-top: 12px;
+}
+
+.cc-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  border-left: 2px solid transparent;
+  animation: cc-activity-in 0.3s ease-out;
+}
+
+.cc-activity-item.cc-activity-task {
+  border-left-color: var(--jarvis-state-executing);
+}
+
+.cc-activity-item.cc-activity-alert {
+  border-left-color: var(--jarvis-state-blocked);
+}
+
+.cc-activity-item.cc-activity-escalation {
+  border-left-color: var(--jarvis-state-escalated);
+}
+
+.cc-activity-item.cc-activity-info {
+  border-left-color: var(--jarvis-state-thinking);
+}
+
+.cc-activity-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.cc-activity-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--jarvis-text-muted);
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+.cc-activity-text strong {
+  color: var(--jarvis-text);
+  font-weight: 500;
+}
+
+.cc-activity-text span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cc-activity-time {
+  font-size: 10px;
+  font-family: var(--jarvis-font-mono);
+  color: var(--jarvis-text-muted);
+  flex-shrink: 0;
+  opacity: 0.6;
+  white-space: nowrap;
+  padding-top: 1px;
+}
+
+@keyframes cc-activity-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Company Core SVG Overlay ─────────────────────────────── */
+.cc-core-svg-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.cc-core-svg-overlay svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Ring outlines drawn in SVG */
+.cc-svg-ring {
+  fill: none;
+  stroke-width: 1;
+}
+
+.cc-svg-ring-outer  { stroke: rgba(34, 211, 238, 0.12); }
+.cc-svg-ring-middle { stroke: rgba(34, 211, 238, 0.18); }
+.cc-svg-ring-inner  { stroke: rgba(34, 211, 238, 0.25); }
+
+/* Connection lines from agent nodes to center */
+.cc-svg-connection {
+  fill: none;
+  stroke: rgba(34, 211, 238, 0.15);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.cc-svg-connection-active {
+  stroke: rgba(34, 211, 238, 0.35);
+  stroke-dasharray: 6 4;
+}
+
+/* Data packets — animated dots moving along connection lines */
+.cc-svg-packet {
+  fill: var(--jarvis-cyan);
+  filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.6));
+}
+
+.cc-svg-packet-amber {
+  fill: var(--jarvis-amber);
+  filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.6));
+}
+
+.cc-svg-packet-red {
+  fill: #f87171;
+  filter: drop-shadow(0 0 3px rgba(248, 113, 113, 0.6));
+}
+
+/* Agent node circles on the outer ring */
+.cc-svg-agent-node {
+  fill: rgba(7, 11, 20, 0.8);
+  stroke: rgba(34, 211, 238, 0.3);
+  stroke-width: 1;
+}
+
+.cc-svg-agent-node-active {
+  stroke: rgba(34, 211, 238, 0.7);
+  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.3));
+}
+
+/* Agent node inner dot */
+.cc-svg-agent-dot {
+  fill: rgba(34, 211, 238, 0.5);
+}
+
+.cc-svg-agent-dot-active {
+  fill: var(--jarvis-cyan);
+}
+
+/* Central hub glow */
+.cc-svg-center-glow {
+  fill: rgba(34, 211, 238, 0.08);
+  filter: blur(2px);
+}
+
+/* Data packet animations along radial paths */
+@keyframes cc-packet-inward {
+  from { r: 2; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  to   { r: 2; opacity: 0; }
+}
+
+@keyframes cc-pulse-ring {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.8; }
+}
+
+@keyframes cc-pulse-glow {
+  0%, 100% { r: 8; opacity: 0.08; }
+  50%      { r: 14; opacity: 0.15; }
+}
+
+.cc-svg-center-pulse {
+  animation: cc-pulse-glow 3s ease-in-out infinite;
+}
+
+.cc-svg-ring-pulse {
+  animation: cc-pulse-ring 4s ease-in-out infinite;
+}
+
+/* Reduced motion for SVG */
+@media (prefers-reduced-motion: reduce) {
+  .cc-svg-connection-active,
+  .cc-svg-packet,
+  .cc-svg-packet-amber,
+  .cc-svg-packet-red,
+  .cc-svg-center-pulse,
+  .cc-svg-ring-pulse {
+    animation: none;
+  }
+}
+
+/* ── Keyboard Shortcut Hints ──────────────────────────────── */
+.cc-kbd-hints {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 90;
+  display: flex;
+  gap: 6px;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.cc-kbd-hints:hover {
+  opacity: 0.8;
+}
+
+/* ── Reduced Motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .cc-agent-status.state-thinking,
+  .cc-agent-status.state-executing,
+  .cc-agent-status.state-delegating,
+  .cc-agent-status.state-blocked,
+  .cc-agent-status.state-escalated {
+    animation: none;
+  }
+
+  .cc-activity-item {
+    animation: none;
+  }
+
+  .cc-telemetry-bar-fill,
+  .cc-agent-status {
+    transition: none;
+  }
 }

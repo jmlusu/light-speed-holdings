@@ -69,6 +69,7 @@ class SearchIndex:
         """Search agents via the registry."""
         try:
             from ai_company.registry import load_registry
+
             registry = load_registry()
             company = registry
         except (ImportError, AttributeError, ValueError):
@@ -94,14 +95,16 @@ class SearchIndex:
                 score = 0.4
 
             if score > 0:
-                results.append(SearchResult(
-                    id=name,
-                    title=name,
-                    description=f"{role} in {dept_name}",
-                    entity_type="agent",
-                    url=f"/agents?agent={name}",
-                    score=score,
-                ))
+                results.append(
+                    SearchResult(
+                        id=name,
+                        title=name,
+                        description=f"{role} in {dept_name}",
+                        entity_type="agent",
+                        url=f"/agents?agent={name}",
+                        score=score,
+                    )
+                )
 
         # Search executives
         for exec_ in company.executives:
@@ -120,14 +123,16 @@ class SearchIndex:
                 score = 0.4
 
             if score > 0:
-                results.append(SearchResult(
-                    id=name,
-                    title=name,
-                    description=f"{role} in {dept_name}",
-                    entity_type="agent",
-                    url=f"/agents?agent={name}",
-                    score=score,
-                ))
+                results.append(
+                    SearchResult(
+                        id=name,
+                        title=name,
+                        description=f"{role} in {dept_name}",
+                        entity_type="agent",
+                        url=f"/agents?agent={name}",
+                        score=score,
+                    )
+                )
 
         return results
 
@@ -138,6 +143,7 @@ class SearchIndex:
         db = self._db
         try:
             import sqlite3
+
             rows = db.fetchall(
                 """SELECT t.id, t.name, t.instruction, t.status, t.agent_id
                    FROM tasks t
@@ -160,14 +166,16 @@ class SearchIndex:
 
         results: list[SearchResult] = []
         for row in rows:
-            results.append(SearchResult(
-                id=row["id"],
-                title=row["name"] or row["instruction"][:50],
-                description=f"Status: {row.get('status', 'unknown')} | Agent: {row.get('agent_id', 'unassigned')}",
-                entity_type="task",
-                url=f"/tasks?task={row['id']}",
-                score=0.5,  # FTS rank not easily convertible
-            ))
+            results.append(
+                SearchResult(
+                    id=row["id"],
+                    title=row["name"] or row["instruction"][:50],
+                    description=f"Status: {row.get('status', 'unknown')} | Agent: {row.get('agent_id', 'unassigned')}",
+                    entity_type="task",
+                    url=f"/tasks?task={row['id']}",
+                    score=0.5,  # FTS rank not easily convertible
+                )
+            )
 
         return results
 
@@ -178,6 +186,7 @@ class SearchIndex:
         db = self._db
         try:
             import sqlite3
+
             rows = db.fetchall(
                 """SELECT e.event_id, e.event_type, e.agent_id, e.task_id, e.timestamp
                    FROM audit_events e
@@ -192,14 +201,16 @@ class SearchIndex:
 
         results: list[SearchResult] = []
         for row in rows:
-            results.append(SearchResult(
-                id=row["event_id"],
-                title=f"{row['event_type']} by {row.get('agent_id', 'unknown')}",
-                description=f"Task: {row.get('task_id', 'none')} | {row.get('timestamp', '')}",
-                entity_type="audit",
-                url=f"/audit?event={row['event_id']}",
-                score=0.3,
-            ))
+            results.append(
+                SearchResult(
+                    id=row["event_id"],
+                    title=f"{row['event_type']} by {row.get('agent_id', 'unknown')}",
+                    description=f"Task: {row.get('task_id', 'none')} | {row.get('timestamp', '')}",
+                    entity_type="audit",
+                    url=f"/audit?event={row['event_id']}",
+                    score=0.3,
+                )
+            )
 
         return results
 
@@ -208,6 +219,7 @@ class SearchIndex:
         # Load from KPI config
         try:
             import yaml
+
             kpi_path = Path("config/company/kpis.yaml")
             if kpi_path.exists():
                 with open(kpi_path) as f:
@@ -223,14 +235,16 @@ class SearchIndex:
                         unit = str(kpi_def.get("unit", "")).lower()
 
                         if query_lower in name or query_lower in desc or query_lower in unit:
-                            results.append(SearchResult(
-                                id=f"{dept_name}.{kpi_name}",
-                                title=f"{dept_name} - {kpi_name}",
-                                description=str(kpi_def.get("description", ""))[:100],
-                                entity_type="kpi",
-                                url=f"/kpis?dept={dept_name}",
-                                score=0.4,
-                            ))
+                            results.append(
+                                SearchResult(
+                                    id=f"{dept_name}.{kpi_name}",
+                                    title=f"{dept_name} - {kpi_name}",
+                                    description=str(kpi_def.get("description", ""))[:100],
+                                    entity_type="kpi",
+                                    url=f"/kpis?dept={dept_name}",
+                                    score=0.4,
+                                )
+                            )
 
                 return results
         except (ImportError, yaml.YAMLError, OSError):

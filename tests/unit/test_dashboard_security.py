@@ -270,8 +270,8 @@ class TestAPIKeyAuth:
 
         app = create_app()
         client = TestClient(app)
-        # /health is an API endpoint — still blocked without a key
-        resp = client.get("/health")
+        # /health is exempted from auth (CI liveness probe); /metrics is not
+        resp = client.get("/metrics")
         assert resp.status_code == 401
 
     @staticmethod
@@ -367,7 +367,7 @@ class TestADRCarveOuts:
     def test_ops_endpoints_still_require_key(
         self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ) -> None:
-        """Ops endpoints (/health, /metrics) must still require an API key."""
+        """Ops endpoints (/metrics) must still require an API key (/health is exempted for CI liveness)."""
         monkeypatch.setenv("DASHBOARD_AUTH_MODE", "api_key")
         monkeypatch.setenv("DASHBOARD_API_KEY", "secret-key-123")
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
@@ -378,7 +378,7 @@ class TestADRCarveOuts:
 
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/health")
+        resp = client.get("/metrics")
         assert resp.status_code == 401
 
     @staticmethod
