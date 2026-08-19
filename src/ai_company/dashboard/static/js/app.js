@@ -56,6 +56,12 @@ function dashboard() {
     _sessionToken: null,
     _tokenRefreshTimer: null,
 
+    // ── PWA / Offline sync (Issue #41) ──────────────────────
+    swInstallable: false,
+    swUpdateAvailable: false,
+    offlineQueueCount: 0,
+    syncStatus: '',
+
     // ── Data ─────────────────────────────────────────────────
     kpis: {
       pending_tasks: 0,
@@ -115,6 +121,15 @@ function dashboard() {
     costAlerts: [],
     agentCosts: [],
 
+    // ── Approval edit (F3) ───────────────────────────────────
+    editingApproval: null,   // id of approval being edited, or null
+    editRisk: '',            // draft risk level
+    editCost: '',            // draft cost estimate
+
+    // ── Escalation notifications (F6) ────────────────────────
+    escalationNotifications: [],  // real-time toast list from WS
+    _escNotifId: 0,
+
     // ── Task pagination ──────────────────────────────────────
     taskPage: 1,
     taskPageSize: 20,
@@ -148,6 +163,17 @@ function dashboard() {
       // FIX: Pause polling + timers when the tab is hidden, resume on return.
       document.addEventListener('visibilitychange', () => this._onVisibilityChange());
       window.addEventListener('beforeunload', () => this.destroy());
+
+      // PWA (Issue #41): listen for SW lifecycle and offline-sync events.
+      window.addEventListener('sw-installable', (e) => { this.swInstallable = e.detail; });
+      window.addEventListener('sw-update-available', () => { this.swUpdateAvailable = true; });
+      window.addEventListener('sw-sync-complete', () => { this._refreshOfflineQueueCount(); });
+      window.addEventListener('offline-sync-toast', (e) => {
+        const d = e.detail || {};
+        this.showToast(d.type || 'info', d.title || 'Sync', d.message || '');
+      });
+      window.addEventListener('online', () => { this._refreshOfflineQueueCount(); });
+      window.addEventListener('offline', () => { this._refreshOfflineQueueCount(); });
 
       // ADR-013: Fetch bootstrap session token before any data loading.
       await this._fetchSessionToken();
@@ -546,6 +572,17 @@ function dashboard() {
           }
           break;
 
+        case 'escalation':
+          if (msg.payload) {
+            // F6: push a dedicated non-blocking notification
+            this._pushEscalationNotif(msg.payload);
+            // Also refresh the escalation list so the table stays in sync
+            if (window.location.pathname === '/escalations') {
+              this.loadEscalations();
+            }
+          }
+          break;
+
         case 'task_update':
           if (msg.payload) {
             // FIX: Save scroll before any task-list mutation so the
@@ -661,6 +698,30 @@ function dashboard() {
       this.apiStatus = { show: false, message: '' };
     },
 
+    // ── PWA / Offline sync helpers (Issue #41) ─────────────
+
+    async _refreshOfflineQueueCount() {
+      if (window.jarvisOfflineSync) {
+        try {
+          const actions = await window.jarvisOfflineSync.getQueuedActions();
+          this.offlineQueueCount = actions.length;
+          this.syncStatus = navigator.onLine ? 'online' : 'offline';
+        } catch (_e) {
+          // IndexedDB may not be available.
+        }
+      }
+    },
+
+    async installPWA() {
+      if (window.jarvisInstall) {
+        const outcome = await window.jarvisInstall();
+        if (outcome === 'accepted') {
+          this.showToast('success', 'Installed', 'J.A.R.V.I.S. added to home screen.');
+        }
+        this.swInstallable = false;
+      }
+    },
+
     async loadPageData() {
       const path = window.location.pathname;
 
@@ -688,10 +749,11 @@ function dashboard() {
     },
 
     async loadDashboard() {
-      const [kpis, depts, tasks] = await Promise.all([
+      const [kpis, depts, tasks, costs] = await Promise.all([
         this.fetchJSON('/api/v1/dashboard'),
         this.fetchJSON('/api/v1/departments'),
         this.fetchJSON('/api/v1/tasks'),
+        this.fetchJSON('/api/v1/costs/summary'),  // F8: cost widget
       ]);
 
       // FIX: Batch all state updates into a single assignment window
@@ -990,6 +1052,53 @@ function dashboard() {
       await this.loadApprovals();
       this.restoreScrollPosition();
       this.showToast('info', 'Rejected', 'Request has been rejected');
+    },
+
+    async saveApprovalEdit(id) {
+      const body = {};
+      if (this.editRisk !== '') body.risk_level = this.editRisk || null;
+      if (this.editCost !== '') body.cost_estimate = this.editCost !== '' ? Number(this.editCost) : null;
+      await this.fetchJSON(`/api/v1/approvals/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      this.editingApproval = null;
+      await this.loadApprovals();
+      this.showToast('success', 'Updated', 'Approval details saved');
+    },
+
+    // ═══ ESCALATION NOTIFICATIONS (F6) ══════════════════════════
+
+    _pushEscalationNotif(payload) {
+      const nid = ++this._escNotifId;
+      const notif = {
+        _nid: nid,
+        task_id: payload.task_id || '',
+        from_agent: payload.from_agent || '',
+        to_agent: payload.to_agent || '',
+        reason: payload.reason || payload.rule_id || 'Escalation triggered',
+        visible: true,
+      };
+      // Prepend so newest appear at top
+      this.escalationNotifications.unshift(notif);
+      // Keep max 5 visible at once
+      if (this.escalationNotifications.length > 5) {
+        this.escalationNotifications = this.escalationNotifications.slice(0, 5);
+      }
+      // Auto-dismiss after 30s
+      setTimeout(() => this.dismissEscalationNotif(nid), 30000);
+    },
+
+    dismissEscalationNotif(nid) {
+      const idx = this.escalationNotifications.findIndex(n => n._nid === nid);
+      if (idx !== -1) {
+        this.escalationNotifications[idx].visible = false;
+        // Remove from array after transition
+        setTimeout(() => {
+          this.escalationNotifications = this.escalationNotifications.filter(n => n._nid !== nid);
+        }, 250);
+      }
     },
 
     async resolveEscalation(taskId) {

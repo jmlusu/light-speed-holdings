@@ -106,7 +106,9 @@ class Extractor(Generic[T], ABC):
         self.database = database
 
     @abstractmethod
-    def extract(self, since: str | None = None, limit: int | None = None, **kwargs: Any) -> ExtractionResult[T]:
+    def extract(
+        self, since: str | None = None, limit: int | None = None, **kwargs: Any
+    ) -> ExtractionResult[T]:
         """Extract records from source.
 
         Args:
@@ -230,7 +232,9 @@ class Pipeline(ABC):
                         metadata={
                             "pipeline": self.name,
                             "started_at": result.started_at,
-                            "extraction_source": self.extractor.source_name if self.extractor else "none",
+                            "extraction_source": self.extractor.source_name
+                            if self.extractor
+                            else "none",
                             "load_target": self.loader.target_name if self.loader else "none",
                         },
                     )
@@ -257,7 +261,9 @@ class Pipeline(ABC):
                             "completed_at": result.completed_at,
                             "success": result.success,
                             "extracted": result.extraction.record_count if result.extraction else 0,
-                            "transformed": result.transformation.output_count if result.transformation else 0,
+                            "transformed": result.transformation.output_count
+                            if result.transformation
+                            else 0,
                             "loaded": result.load.loaded_count if result.load else 0,
                             "failed": result.load.failed_count if result.load else 0,
                             "quality_passed": result.quality_check_passed,

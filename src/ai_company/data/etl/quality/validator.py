@@ -102,14 +102,19 @@ def validate_records(records: list[dict[str, Any]], table: str) -> list[dict[str
             try:
                 jsonschema.validate(record, schema)
             except jsonschema.ValidationError as exc:
-                violations.append({
-                    "severity": "critical",
-                    "rule_id": "schema_validation",
-                    "message": f"Schema validation failed: {exc.message}",
-                    "record_index": i,
-                    "record_id": record.get("id") or record.get("event_id") or record.get("kpi_key") or f"index_{i}",
-                    "field": ".".join(str(p) for p in exc.path),
-                })
+                violations.append(
+                    {
+                        "severity": "critical",
+                        "rule_id": "schema_validation",
+                        "message": f"Schema validation failed: {exc.message}",
+                        "record_index": i,
+                        "record_id": record.get("id")
+                        or record.get("event_id")
+                        or record.get("kpi_key")
+                        or f"index_{i}",
+                        "field": ".".join(str(p) for p in exc.path),
+                    }
+                )
 
     # Quality rules validation
     rules = _load_quality_rules()
@@ -122,7 +127,9 @@ def validate_records(records: list[dict[str, Any]], table: str) -> list[dict[str
     return violations
 
 
-def _apply_quality_rule(records: list[dict[str, Any]], rule: dict[str, Any]) -> list[dict[str, Any]]:
+def _apply_quality_rule(
+    records: list[dict[str, Any]], rule: dict[str, Any]
+) -> list[dict[str, Any]]:
     """Apply a single quality rule to records.
 
     This is a simplified rule engine that handles common rule types.
@@ -138,14 +145,16 @@ def _apply_quality_rule(records: list[dict[str, Any]], rule: dict[str, Any]) -> 
         for i, record in enumerate(records):
             missing = [f for f in required if f not in record or record[f] in (None, "", [])]
             if missing:
-                violations.append({
-                    "severity": severity,
-                    "rule_id": rule_id,
-                    "message": f"Missing required fields: {missing}",
-                    "record_index": i,
-                    "record_id": record.get("id") or f"index_{i}",
-                    "field": missing[0],
-                })
+                violations.append(
+                    {
+                        "severity": severity,
+                        "rule_id": rule_id,
+                        "message": f"Missing required fields: {missing}",
+                        "record_index": i,
+                        "record_id": record.get("id") or f"index_{i}",
+                        "field": missing[0],
+                    }
+                )
 
     # Rule type: enum validation
     if "valid_values" in rule and "field" in rule:
@@ -159,14 +168,16 @@ def _apply_quality_rule(records: list[dict[str, Any]], rule: dict[str, Any]) -> 
             for i, record in enumerate(records):
                 value = record.get(field)
                 if value is not None and value not in valid:
-                    violations.append({
-                        "severity": severity,
-                        "rule_id": rule_id,
-                        "message": f"Invalid value for {field}: {value} (valid: {valid})",
-                        "record_index": i,
-                        "record_id": record.get("id") or f"index_{i}",
-                        "field": field,
-                    })
+                    violations.append(
+                        {
+                            "severity": severity,
+                            "rule_id": rule_id,
+                            "message": f"Invalid value for {field}: {value} (valid: {valid})",
+                            "record_index": i,
+                            "record_id": record.get("id") or f"index_{i}",
+                            "field": field,
+                        }
+                    )
 
     # Rule type: non_negative
     if rule.get("check") == "non_negative" and "field" in rule:
@@ -176,14 +187,16 @@ def _apply_quality_rule(records: list[dict[str, Any]], rule: dict[str, Any]) -> 
             if value is not None:
                 try:
                     if float(value) < 0:
-                        violations.append({
-                            "severity": severity,
-                            "rule_id": rule_id,
-                            "message": f"Negative value for {field}: {value}",
-                            "record_index": i,
-                            "record_id": record.get("id") or f"index_{i}",
-                            "field": field,
-                        })
+                        violations.append(
+                            {
+                                "severity": severity,
+                                "rule_id": rule_id,
+                                "message": f"Negative value for {field}: {value}",
+                                "record_index": i,
+                                "record_id": record.get("id") or f"index_{i}",
+                                "field": field,
+                            }
+                        )
                 except (ValueError, TypeError):
                     pass
 
@@ -193,14 +206,16 @@ def _apply_quality_rule(records: list[dict[str, Any]], rule: dict[str, Any]) -> 
         for i, record in enumerate(records):
             value = record.get(field)
             if value is None or value == "":
-                violations.append({
-                    "severity": severity,
-                    "rule_id": rule_id,
-                    "message": f"Empty value for required field: {field}",
-                    "record_index": i,
-                    "record_id": record.get("id") or f"index_{i}",
-                    "field": field,
-                })
+                violations.append(
+                    {
+                        "severity": severity,
+                        "rule_id": rule_id,
+                        "message": f"Empty value for required field: {field}",
+                        "record_index": i,
+                        "record_id": record.get("id") or f"index_{i}",
+                        "field": field,
+                    }
+                )
 
     return violations
 
@@ -211,16 +226,28 @@ def validate_company_kpis(kpi_records: list[dict[str, Any]]) -> list[dict[str, A
 
     for i, record in enumerate(kpi_records):
         # Required fields
-        required = ["kpi_id", "name", "current", "target", "unit", "frequency", "owner", "formula", "computed_at"]
+        required = [
+            "kpi_id",
+            "name",
+            "current",
+            "target",
+            "unit",
+            "frequency",
+            "owner",
+            "formula",
+            "computed_at",
+        ]
         missing = [f for f in required if f not in record]
         if missing:
-            violations.append({
-                "severity": "critical",
-                "rule_id": "company_kpi_required_fields",
-                "message": f"Missing required fields: {missing}",
-                "record_index": i,
-                "record_id": record.get("kpi_id", f"index_{i}"),
-            })
+            violations.append(
+                {
+                    "severity": "critical",
+                    "rule_id": "company_kpi_required_fields",
+                    "message": f"Missing required fields: {missing}",
+                    "record_index": i,
+                    "record_id": record.get("kpi_id", f"index_{i}"),
+                }
+            )
 
         # Current should be numeric or null
         current = record.get("current")
@@ -228,14 +255,16 @@ def validate_company_kpis(kpi_records: list[dict[str, Any]]) -> list[dict[str, A
             try:
                 float(current)
             except (ValueError, TypeError):
-                violations.append({
-                    "severity": "high",
-                    "rule_id": "company_kpi_numeric_current",
-                    "message": f"Current value must be numeric: {current}",
-                    "record_index": i,
-                    "record_id": record.get("kpi_id", f"index_{i}"),
-                    "field": "current",
-                })
+                violations.append(
+                    {
+                        "severity": "high",
+                        "rule_id": "company_kpi_numeric_current",
+                        "message": f"Current value must be numeric: {current}",
+                        "record_index": i,
+                        "record_id": record.get("kpi_id", f"index_{i}"),
+                        "field": "current",
+                    }
+                )
 
         # Target should be numeric
         target = record.get("target")
@@ -243,26 +272,30 @@ def validate_company_kpis(kpi_records: list[dict[str, Any]]) -> list[dict[str, A
             try:
                 float(target)
             except (ValueError, TypeError):
-                violations.append({
-                    "severity": "high",
-                    "rule_id": "company_kpi_numeric_target",
-                    "message": f"Target value must be numeric: {target}",
-                    "record_index": i,
-                    "record_id": record.get("kpi_id", f"index_{i}"),
-                    "field": "target",
-                })
+                violations.append(
+                    {
+                        "severity": "high",
+                        "rule_id": "company_kpi_numeric_target",
+                        "message": f"Target value must be numeric: {target}",
+                        "record_index": i,
+                        "record_id": record.get("kpi_id", f"index_{i}"),
+                        "field": "target",
+                    }
+                )
 
         # Formula should be descriptive
         formula = record.get("formula", "")
         if len(formula) < 10:
-            violations.append({
-                "severity": "medium",
-                "rule_id": "company_kpi_formula_descriptive",
-                "message": f"Formula too short, should describe computation: {formula}",
-                "record_index": i,
-                "record_id": record.get("kpi_id", f"index_{i}"),
-                "field": "formula",
-            })
+            violations.append(
+                {
+                    "severity": "medium",
+                    "rule_id": "company_kpi_formula_descriptive",
+                    "message": f"Formula too short, should describe computation: {formula}",
+                    "record_index": i,
+                    "record_id": record.get("kpi_id", f"index_{i}"),
+                    "field": "formula",
+                }
+            )
 
     return violations
 
@@ -272,41 +305,58 @@ def validate_department_kpis(kpi_records: list[dict[str, Any]]) -> list[dict[str
     violations: list[dict[str, Any]] = []
 
     valid_frequencies = {"daily", "weekly", "monthly", "quarterly", "per_request", "per_item"}
-    valid_units = {"%", "percent", "$", "usd", "count", "score", "minutes", "hours", "days", "campaigns"}
+    valid_units = {
+        "%",
+        "percent",
+        "$",
+        "usd",
+        "count",
+        "score",
+        "minutes",
+        "hours",
+        "days",
+        "campaigns",
+    }
 
     for i, record in enumerate(kpi_records):
         required = ["kpi_id", "name", "target", "unit", "frequency"]
         missing = [f for f in required if f not in record or record[f] is None]
         if missing:
-            violations.append({
-                "severity": "high",
-                "rule_id": "dept_kpi_required_fields",
-                "message": f"Missing required fields: {missing}",
-                "record_index": i,
-                "record_id": record.get("kpi_id", f"index_{i}"),
-            })
+            violations.append(
+                {
+                    "severity": "high",
+                    "rule_id": "dept_kpi_required_fields",
+                    "message": f"Missing required fields: {missing}",
+                    "record_index": i,
+                    "record_id": record.get("kpi_id", f"index_{i}"),
+                }
+            )
 
         freq = record.get("frequency")
         if freq and freq not in valid_frequencies:
-            violations.append({
-                "severity": "medium",
-                "rule_id": "dept_kpi_valid_frequency",
-                "message": f"Invalid frequency: {freq} (valid: {valid_frequencies})",
-                "record_index": i,
-                "record_id": record.get("kpi_id", f"index_{i}"),
-                "field": "frequency",
-            })
+            violations.append(
+                {
+                    "severity": "medium",
+                    "rule_id": "dept_kpi_valid_frequency",
+                    "message": f"Invalid frequency: {freq} (valid: {valid_frequencies})",
+                    "record_index": i,
+                    "record_id": record.get("kpi_id", f"index_{i}"),
+                    "field": "frequency",
+                }
+            )
 
         unit = record.get("unit")
         if unit and unit not in valid_units:
-            violations.append({
-                "severity": "low",
-                "rule_id": "dept_kpi_valid_unit",
-                "message": f"Unusual unit: {unit} (expected one of {valid_units})",
-                "record_index": i,
-                "record_id": record.get("kpi_id", f"index_{i}"),
-                "field": "unit",
-            })
+            violations.append(
+                {
+                    "severity": "low",
+                    "rule_id": "dept_kpi_valid_unit",
+                    "message": f"Unusual unit: {unit} (expected one of {valid_units})",
+                    "record_index": i,
+                    "record_id": record.get("kpi_id", f"index_{i}"),
+                    "field": "unit",
+                }
+            )
 
     return violations
 

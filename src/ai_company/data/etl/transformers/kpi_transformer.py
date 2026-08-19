@@ -22,7 +22,9 @@ class KPITimeseriesTransformer(Transformer[dict[str, Any], dict[str, Any]]):
     def __init__(self) -> None:
         super().__init__("kpi_timeseries")
 
-    def transform(self, records: list[dict[str, Any]], **kwargs: Any) -> TransformResult[dict[str, Any]]:
+    def transform(
+        self, records: list[dict[str, Any]], **kwargs: Any
+    ) -> TransformResult[dict[str, Any]]:
         """Transform a KPI snapshot (from collect_all_kpis) into kpi_values records.
 
         Input: collect_all_kpis() output with structure:
@@ -69,15 +71,17 @@ class KPITimeseriesTransformer(Transformer[dict[str, Any], dict[str, Any]]):
                         with contextlib.suppress(TypeError, ValueError):
                             target_value = float(raw_target)
 
-                    output.append({
-                        "timestamp": collected_at,
-                        "department": dept_id,
-                        "kpi_key": kpi_key,
-                        "current_value": current_value,
-                        "target_value": target_value,
-                        "unit": kpi_value.get("unit", ""),
-                        "status": kpi_value.get("status", "info"),
-                    })
+                    output.append(
+                        {
+                            "timestamp": collected_at,
+                            "department": dept_id,
+                            "kpi_key": kpi_key,
+                            "current_value": current_value,
+                            "target_value": target_value,
+                            "unit": kpi_value.get("unit", ""),
+                            "status": kpi_value.get("status", "info"),
+                        }
+                    )
 
         return TransformResult(
             records=output,
@@ -94,7 +98,9 @@ class CompanyKPITransformer(Transformer[dict[str, Any], dict[str, Any]]):
     def __init__(self) -> None:
         super().__init__("company_kpi")
 
-    def transform(self, records: list[dict[str, Any]], **kwargs: Any) -> TransformResult[dict[str, Any]]:
+    def transform(
+        self, records: list[dict[str, Any]], **kwargs: Any
+    ) -> TransformResult[dict[str, Any]]:
         """Compute company-level KPIs from task telemetry.
 
         Expects records to contain task data from inbox.json or tasks table.
@@ -133,13 +139,17 @@ class CompanyKPITransformer(Transformer[dict[str, Any], dict[str, Any]]):
                 registry = yaml.safe_load(f) or {}
             registered_count = len(registry.get("company", {}).get("agents", []))
 
-        utilization = round(len(active_agents) / registered_count * 100, 1) if registered_count > 0 else 0
+        utilization = (
+            round(len(active_agents) / registered_count * 100, 1) if registered_count > 0 else 0
+        )
 
         # Compute KPI-004: Build Success Rate
         # = completed / (completed + failed) * 100 over 30-day window
         completed = sum(1 for t in window_tasks if t.get("status") == "completed")
         failed = sum(1 for t in window_tasks if t.get("status") == "failed")
-        build_success = round(completed / (completed + failed) * 100, 1) if (completed + failed) > 0 else 0
+        build_success = (
+            round(completed / (completed + failed) * 100, 1) if (completed + failed) > 0 else 0
+        )
 
         now_iso = datetime.now(timezone.utc).isoformat()
 
@@ -185,7 +195,9 @@ class DepartmentKPITransformer(Transformer[dict[str, Any], dict[str, Any]]):
     def __init__(self) -> None:
         super().__init__("department_kpi")
 
-    def transform(self, records: list[dict[str, Any]], **kwargs: Any) -> TransformResult[dict[str, Any]]:
+    def transform(
+        self, records: list[dict[str, Any]], **kwargs: Any
+    ) -> TransformResult[dict[str, Any]]:
         """Transform task/audit/cost records into department KPIs.
 
         This is a lightweight version that mirrors the KPI collectors
@@ -203,7 +215,9 @@ class CostAggregationTransformer(Transformer[dict[str, Any], dict[str, Any]]):
         super().__init__(f"cost_{period}_aggregation")
         self.period = period
 
-    def transform(self, records: list[dict[str, Any]], **kwargs: Any) -> TransformResult[dict[str, Any]]:
+    def transform(
+        self, records: list[dict[str, Any]], **kwargs: Any
+    ) -> TransformResult[dict[str, Any]]:
         """Aggregate cost records by time period.
 
         Input: Raw cost_records from SQLite
@@ -246,7 +260,9 @@ class CostAggregationTransformer(Transformer[dict[str, Any], dict[str, Any]]):
             total_calls = len(period_records)
 
             # By model
-            by_model: dict[str, dict[str, Any]] = defaultdict(lambda: {"cost": 0.0, "prompt": 0, "completion": 0, "calls": 0})
+            by_model: dict[str, dict[str, Any]] = defaultdict(
+                lambda: {"cost": 0.0, "prompt": 0, "completion": 0, "calls": 0}
+            )
             for r in period_records:
                 model = r.get("model", "unknown")
                 by_model[model]["cost"] += r.get("cost_usd", 0)
@@ -261,18 +277,31 @@ class CostAggregationTransformer(Transformer[dict[str, Any], dict[str, Any]]):
                 by_agent[agent]["cost"] += r.get("cost_usd", 0)
                 by_agent[agent]["calls"] += 1
 
-            output.append({
-                "period": self.period,
-                "period_key": period_key,
-                "period_type": self.period,
-                "total_cost_usd": round(total_cost, 6),
-                "total_prompt_tokens": total_prompt,
-                "total_completion_tokens": total_completion,
-                "total_calls": total_calls,
-                "by_model": {m: {"cost_usd": round(v["cost"], 6), "prompt_tokens": v["prompt"], "completion_tokens": v["completion"], "calls": v["calls"]} for m, v in by_model.items()},
-                "by_agent": {a: {"cost_usd": round(v["cost"], 6), "calls": v["calls"]} for a, v in by_agent.items()},
-                "computed_at": datetime.now(timezone.utc).isoformat(),
-            })
+            output.append(
+                {
+                    "period": self.period,
+                    "period_key": period_key,
+                    "period_type": self.period,
+                    "total_cost_usd": round(total_cost, 6),
+                    "total_prompt_tokens": total_prompt,
+                    "total_completion_tokens": total_completion,
+                    "total_calls": total_calls,
+                    "by_model": {
+                        m: {
+                            "cost_usd": round(v["cost"], 6),
+                            "prompt_tokens": v["prompt"],
+                            "completion_tokens": v["completion"],
+                            "calls": v["calls"],
+                        }
+                        for m, v in by_model.items()
+                    },
+                    "by_agent": {
+                        a: {"cost_usd": round(v["cost"], 6), "calls": v["calls"]}
+                        for a, v in by_agent.items()
+                    },
+                    "computed_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
 
         return TransformResult(
             records=output,
@@ -290,7 +319,9 @@ class AgentPerformanceTransformer(Transformer[dict[str, Any], dict[str, Any]]):
         super().__init__("agent_performance")
         self.days = days
 
-    def transform(self, records: list[dict[str, Any]], **kwargs: Any) -> TransformResult[dict[str, Any]]:
+    def transform(
+        self, records: list[dict[str, Any]], **kwargs: Any
+    ) -> TransformResult[dict[str, Any]]:
         """Compute per-agent performance from tasks and audit events.
 
         Expects records to be a dict with 'tasks' and 'audit_events' keys,
@@ -327,8 +358,17 @@ class AgentPerformanceTransformer(Transformer[dict[str, Any], dict[str, Any]]):
                 continue
 
             # Task metrics
-            tasks_sent = [t for t in tasks if t.get("sender_id") == agent_id and t.get("created_at", "") >= cutoff]
-            tasks_received = [t for t in tasks if (t.get("receiver_id") == agent_id or t.get("assignee") == agent_id) and t.get("created_at", "") >= cutoff]
+            tasks_sent = [
+                t
+                for t in tasks
+                if t.get("sender_id") == agent_id and t.get("created_at", "") >= cutoff
+            ]
+            tasks_received = [
+                t
+                for t in tasks
+                if (t.get("receiver_id") == agent_id or t.get("assignee") == agent_id)
+                and t.get("created_at", "") >= cutoff
+            ]
 
             sent_counts = Counter(t.get("status", "pending") for t in tasks_sent)
             recv_counts = Counter(t.get("status", "pending") for t in tasks_received)
@@ -339,11 +379,17 @@ class AgentPerformanceTransformer(Transformer[dict[str, Any], dict[str, Any]]):
             failed_recv = recv_counts.get("failed", 0)
             total_finished = completed_recv + failed_recv
 
-            completion_rate = round(completed_recv / total_finished * 100, 2) if total_finished > 0 else 0
+            completion_rate = (
+                round(completed_recv / total_finished * 100, 2) if total_finished > 0 else 0
+            )
             error_rate = round(failed_recv / total_finished * 100, 2) if total_finished > 0 else 0
 
             # Audit events
-            agent_audit = [e for e in audit_events if e.get("agent_id") == agent_id and e.get("timestamp", "") >= cutoff]
+            agent_audit = [
+                e
+                for e in audit_events
+                if e.get("agent_id") == agent_id and e.get("timestamp", "") >= cutoff
+            ]
             event_counts = Counter(e.get("event_type", "") for e in agent_audit)
             tool_counts = Counter(e.get("tool", "") for e in agent_audit if e.get("tool"))
 
@@ -356,6 +402,7 @@ class AgentPerformanceTransformer(Transformer[dict[str, Any], dict[str, Any]]):
                 meta = e.get("metadata", {})
                 if isinstance(meta, str):
                     import json
+
                     try:
                         meta = json.loads(meta)
                     except json.JSONDecodeError:
@@ -367,34 +414,40 @@ class AgentPerformanceTransformer(Transformer[dict[str, Any], dict[str, Any]]):
                     llm_calls += 1
 
             # Error events
-            error_events = sum(1 for e in agent_audit if e.get("event_type") == "error" or e.get("severity") in ("error", "critical"))
+            error_events = sum(
+                1
+                for e in agent_audit
+                if e.get("event_type") == "error" or e.get("severity") in ("error", "critical")
+            )
 
             now_iso = datetime.now(timezone.utc).isoformat()
             period_start = (datetime.now(timezone.utc) - timedelta(days=self.days)).isoformat()
             period_end = now_iso
 
-            output.append({
-                "agent_id": agent_id,
-                "period_days": self.days,
-                "period_start": period_start,
-                "period_end": period_end,
-                "tasks_sent": total_sent,
-                "tasks_received": total_recv,
-                "tasks_completed": completed_recv,
-                "tasks_failed": failed_recv,
-                "completion_rate_pct": completion_rate,
-                "error_rate_pct": error_rate,
-                "sent_by_status": dict(sent_counts),
-                "received_by_status": dict(recv_counts),
-                "audit_events": dict(event_counts),
-                "tool_usage": [{"tool": t, "calls": c} for t, c in tool_counts.most_common()],
-                "total_cost_usd": round(total_cost, 6),
-                "prompt_tokens": prompt_tokens,
-                "completion_tokens": completion_tokens,
-                "llm_calls": llm_calls,
-                "error_events": error_events,
-                "computed_at": now_iso,
-            })
+            output.append(
+                {
+                    "agent_id": agent_id,
+                    "period_days": self.days,
+                    "period_start": period_start,
+                    "period_end": period_end,
+                    "tasks_sent": total_sent,
+                    "tasks_received": total_recv,
+                    "tasks_completed": completed_recv,
+                    "tasks_failed": failed_recv,
+                    "completion_rate_pct": completion_rate,
+                    "error_rate_pct": error_rate,
+                    "sent_by_status": dict(sent_counts),
+                    "received_by_status": dict(recv_counts),
+                    "audit_events": dict(event_counts),
+                    "tool_usage": [{"tool": t, "calls": c} for t, c in tool_counts.most_common()],
+                    "total_cost_usd": round(total_cost, 6),
+                    "prompt_tokens": prompt_tokens,
+                    "completion_tokens": completion_tokens,
+                    "llm_calls": llm_calls,
+                    "error_events": error_events,
+                    "computed_at": now_iso,
+                }
+            )
 
         return TransformResult(
             records=output,

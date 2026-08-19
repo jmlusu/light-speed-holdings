@@ -158,7 +158,9 @@ class PipelineScheduler:
                 name: {
                     "enabled": s.enabled,
                     "interval_seconds": s.interval_seconds,
-                    "last_run": datetime.fromtimestamp(s.last_run, tz=timezone.utc).isoformat() if s.last_run > 0 else None,
+                    "last_run": datetime.fromtimestamp(s.last_run, tz=timezone.utc).isoformat()
+                    if s.last_run > 0
+                    else None,
                     "run_count": s.run_count,
                     "error_count": s.error_count,
                     "last_success": s.last_result.success if s.last_result else None,
@@ -215,20 +217,24 @@ class PipelineMonitor:
                     0,
                 )
                 if interval > 0 and now - last_run_ts > interval * 2:
-                    alerts.append({
-                        "severity": "warning",
-                        "pipeline": name,
-                        "message": f"Pipeline overdue: last run {last_run}, interval {interval}s",
-                    })
+                    alerts.append(
+                        {
+                            "severity": "warning",
+                            "pipeline": name,
+                            "message": f"Pipeline overdue: last run {last_run}, interval {interval}s",
+                        }
+                    )
 
             if info["error_count"] > 0 and info["run_count"] > 0:
                 error_rate = info["error_count"] / info["run_count"]
                 if error_rate > 0.5:
-                    alerts.append({
-                        "severity": "critical",
-                        "pipeline": name,
-                        "message": f"High error rate: {error_rate:.1%} ({info['error_count']}/{info['run_count']})",
-                    })
+                    alerts.append(
+                        {
+                            "severity": "critical",
+                            "pipeline": name,
+                            "message": f"High error rate: {error_rate:.1%} ({info['error_count']}/{info['run_count']})",
+                        }
+                    )
 
         return {
             "checked_at": datetime.now(timezone.utc).isoformat(),
@@ -252,7 +258,9 @@ class PipelineMonitor:
             metrics["pipeline_runs_total"][name] = info["run_count"]
             metrics["pipeline_errors_total"][name] = info["error_count"]
             if info["last_run"]:
-                last_run_ts = datetime.fromisoformat(info["last_run"].replace("Z", "+00:00")).timestamp()
+                last_run_ts = datetime.fromisoformat(
+                    info["last_run"].replace("Z", "+00:00")
+                ).timestamp()
                 metrics["pipeline_last_run_seconds_ago"][name] = now - last_run_ts
             else:
                 metrics["pipeline_last_run_seconds_ago"][name] = -1
@@ -268,6 +276,7 @@ def create_default_scheduler(database: Database) -> PipelineScheduler:
 
     # Register KPI snapshot pipeline (every 5 minutes)
     from ai_company.data.etl.pipelines.kpi_snapshot import KPISnapshotPipeline
+
     scheduler.add_pipeline(
         "kpi_snapshot",
         lambda: KPISnapshotPipeline(database),
@@ -277,6 +286,7 @@ def create_default_scheduler(database: Database) -> PipelineScheduler:
 
     # Register company KPI pipeline (every hour)
     from ai_company.data.etl.pipelines.kpi_snapshot import CompanyKPIPipeline
+
     scheduler.add_pipeline(
         "company_kpi",
         lambda: CompanyKPIPipeline(database),
@@ -287,6 +297,7 @@ def create_default_scheduler(database: Database) -> PipelineScheduler:
 
     # Register cost aggregations
     from ai_company.data.etl.pipelines.kpi_snapshot import CostAggregationPipeline
+
     scheduler.add_pipeline(
         "cost_daily",
         lambda: CostAggregationPipeline(database, period="daily"),
@@ -308,6 +319,7 @@ def create_default_scheduler(database: Database) -> PipelineScheduler:
 
     # Register agent performance (every 15 minutes)
     from ai_company.data.etl.pipelines.kpi_snapshot import AgentPerformancePipeline
+
     scheduler.add_pipeline(
         "agent_performance",
         lambda: AgentPerformancePipeline(database, days=30),
@@ -321,6 +333,7 @@ def create_default_scheduler(database: Database) -> PipelineScheduler:
         GovernancePipeline,
         InboxPurgePipeline,
     )
+
     scheduler.add_pipeline(
         "governance",
         lambda: GovernancePipeline(database),

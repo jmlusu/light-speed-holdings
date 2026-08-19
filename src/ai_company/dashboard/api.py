@@ -20,10 +20,12 @@ from ai_company.dashboard.models import (
     AgentSummary,
     ApprovalDecision,
     ApprovalItem,
+    ApprovalUpdate,
     DepartmentInfo,
     EscalationItem,
     KPIs,
     ModelRouteItem,
+    ModelTelemetryItem,
     OrgNode,
     PaginatedTasks,
     TaskAssign,
@@ -1255,6 +1257,33 @@ def reject_request(
     )
 
 
+@router.patch("/approvals/{request_id}", tags=["approvals"])
+def update_approval(
+    request_id: str,
+    body: ApprovalUpdate,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
+    """Partially update a pending approval request (e.g. set risk level or cost estimate).
+
+    Only fields present in the request body are updated.  Returns the
+    updated request dict on success.
+    """
+    updates = body.model_dump(exclude_none=True)
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    data = _load_yaml("orchestrator/approvals.yaml")
+    requests = data.get("requests", [])
+    for r in requests:
+        if r["id"] == request_id and r.get("status") == "pending":
+            r.update(updates)
+            _save_yaml("orchestrator/approvals.yaml", data)
+            return {"ok": True, "id": request_id, "updated": updates}
+    raise HTTPException(
+        status_code=404, detail=f"Request '{request_id}' not found or already processed"
+    )
+
+
 # ── Escalations ─────────────────────────────────────────────────────
 
 
@@ -1336,6 +1365,61 @@ def list_model_tiers() -> list[TierInfo]:
         )
         for t in router_instance.list_tiers()
     ]
+
+
+@router.get("/models/telemetry", response_model=list[ModelTelemetryItem], tags=["models"])
+def get_model_telemetry() -> list[ModelTelemetryItem]:
+    """Per-model telemetry summary derived from audit log entries.
+
+    Aggregates ``tool_call`` / ``tool_result`` events from the JSONL audit
+    trail into per-model request counts, success rates, average latency, and
+    cost.  Returns an empty list when no audit data is available.
+    """
+    import json as _json
+
+    model_stats: dict[str, dict[str, float]] = {}
+    model_success: dict[str, dict[str, int]] = {}
+    model_latency: dict[str, list[float]] = {}
+
+    try:
+        for event in _get_store().iter_jsonl(".opencode/audit"):
+            try:
+                event_type = event.get("event_type", "")
+                if event_type not in ("tool_call", "tool_result"):
+                    continue
+                meta = event.get("metadata", {})
+                model = meta.get("model", "unknown")
+                if model not in model_stats:
+                    model_stats[model] = {"calls": 0, "cost": 0.0}
+                    model_success[model] = {"success": 0, "total": 0}
+                    model_latency[model] = []
+                model_stats[model]["calls"] += 1
+                model_stats[model]["cost"] += float(meta.get("cost", 0))
+                model_success[model]["total"] += 1
+                if event_type == "tool_result" and not meta.get("error"):
+                    model_success[model]["success"] += 1
+                latency = meta.get("latency_ms")
+                if latency is not None:
+                    model_latency[model].append(float(latency))
+            except (_json.JSONDecodeError, TypeError):
+                continue
+    except OSError:
+        return []
+
+    result: list[ModelTelemetryItem] = []
+    for model_name, stats in sorted(model_stats.items()):
+        s = model_success.get(model_name, {"success": 0, "total": 0})
+        latencies = model_latency.get(model_name, [])
+        result.append(
+            ModelTelemetryItem(
+                model_id=model_name,
+                request_count=int(stats["calls"]),
+                success_rate=round(s["success"] / s["total"], 3) if s["total"] else 0.0,
+                avg_latency_ms=round(sum(latencies) / len(latencies), 1) if latencies else 0.0,
+                total_cost_usd=round(stats["cost"], 6),
+            )
+        )
+    return result
 
 
 # ── Scheduler ───────────────────────────────────────────────────────
@@ -2895,267 +2979,3 @@ def reject_onboarding_request(
             status_code=400, detail=result.errors[0] if result.errors else "Rejection failed"
         )
     return result.data or {}
-
-
-# ── Command Center Endpoints ────────────────────────────────────
-
-
-@router.get("/health", tags=["command-center"])
-def get_system_health() -> dict[str, Any]:
-    """System health check for Command Center visualization.
-
-    Returns status of all core services. Used by the System Health
-    panel in the J.A.R.V.I.S. Command Center.
-    """
-    health: dict[str, Any] = {}
-
-    # Check database
-    try:
-        db = get_database()
-        if db is not None:
-            conn = db.connect()
-            conn.execute("SELECT 1")
-            health["database"] = "healthy"
-        else:
-            health["database"] = "unavailable"
-    except (OSError, RuntimeError):  # noqa: BLE001
-        health["database"] = "unhealthy"
-
-    # Check message bus / queue
-    try:
-        bus = get_bus()
-        _ = bus.get_all_tasks()
-        health["queue"] = "healthy"
-    except (OSError, RuntimeError):  # noqa: BLE001
-        health["queue"] = "unhealthy"
-
-    # Check file store
-    try:
-        store = _get_store()
-        store.read_json(".opencode/health_check.json", default={})
-        health["storage"] = "healthy"
-    except (OSError, RuntimeError):  # noqa: BLE001
-        health["storage"] = "unhealthy"
-
-    # Check LLM provider health
-    try:
-        from ai_company.model_router import ModelRouter
-
-        router_instance = ModelRouter()
-        health["llm_services"] = {}
-        for tier in router_instance.list_tiers():
-            for provider_cfg in tier.providers:
-                provider_name = provider_cfg.provider
-                if provider_name not in health["llm_services"]:
-                    health["llm_services"][provider_name] = "healthy"
-    except (OSError, RuntimeError):  # noqa: BLE001
-        health["llm_services"] = {"unknown": "unavailable"}
-
-    # Check audit trail
-    try:
-        from ai_company.data.audit_store import AuditStore
-
-        db = get_database()
-        if db is not None:
-            _store = AuditStore(database=db)
-            health["audit_trail"] = "healthy"
-        else:
-            health["audit_trail"] = "unavailable"
-    except (OSError, RuntimeError):  # noqa: BLE001
-        health["audit_trail"] = "unhealthy"
-
-    # Check search index
-    try:
-        from ai_company.data.search import SearchIndex
-
-        db = get_database()
-        if db is not None:
-            _idx = SearchIndex(database=db)
-            health["search_index"] = "healthy"
-        else:
-            health["search_index"] = "unavailable"
-    except (OSError, RuntimeError):  # noqa: BLE001
-        health["search_index"] = "unhealthy"
-
-    # Overall status
-    statuses = [v for k, v in health.items() if k != "llm_services"]
-    llm_statuses = list(health.get("llm_services", {}).values())
-
-    if all(s == "healthy" for s in statuses) and all(
-        s == "healthy" for s in llm_statuses
-    ):
-        health["overall"] = "healthy"
-    elif any(s == "unhealthy" for s in statuses):
-        health["overall"] = "degraded"
-    else:
-        health["overall"] = "healthy"
-
-    return health
-
-
-@router.get("/briefing/summary", tags=["command-center"])
-def get_briefing_summary() -> dict[str, Any]:
-    """AI-generated executive briefing summary for Command Center.
-
-    Aggregates data from multiple sources to produce a concise
-    human-readable summary of company status.
-    """
-    tasks = _read_all_tasks()
-    approvals_data = _load_yaml("orchestrator/approvals.yaml")
-    escalation_data = _load_yaml("orchestrator/escalation.yaml")
-    registry = _load_registry()
-
-    # Count metrics
-    active_tasks = sum(1 for t in tasks if t.get("status") == "in_progress")
-    pending_tasks = sum(1 for t in tasks if t.get("status") == "pending")
-    completed_today = sum(
-        1
-        for t in tasks
-        if t.get("status") == "completed"
-        and t.get("completed_at", "")
-        >= datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    )
-    failed_tasks = sum(1 for t in tasks if t.get("status") == "failed")
-
-    pending_approvals = [
-        r
-        for r in approvals_data.get("requests", [])
-        if r.get("status") == "pending"
-    ]
-    open_escalations = [
-        e
-        for e in escalation_data.get("events", [])
-        if not e.get("resolved", False)
-    ]
-
-    # Build summary
-    parts: list[str] = []
-
-    if open_escalations:
-        parts.append(
-            f"{len(open_escalations)} escalation(s) require attention."
-        )
-    if pending_approvals:
-        parts.append(
-            f"{len(pending_approvals)} approval(s) pending."
-        )
-    if failed_tasks > 0:
-        parts.append(f"{failed_tasks} task(s) failed.")
-
-    parts.append(
-        f"{len(registry)} agents registered. "
-        f"{active_tasks} active, {pending_tasks} queued, "
-        f"{completed_today} completed today."
-    )
-
-    return {
-        "summary": " ".join(parts),
-        "metrics": {
-            "active_tasks": active_tasks,
-            "pending_tasks": pending_tasks,
-            "completed_today": completed_today,
-            "failed_tasks": failed_tasks,
-            "pending_approvals": len(pending_approvals),
-            "open_escalations": len(open_escalations),
-            "total_agents": len(registry),
-        },
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-    }
-
-
-@router.get("/models/telemetry", tags=["command-center"])
-def get_model_telemetry() -> dict[str, Any]:
-    """Real-time model telemetry for Command Center observability panel.
-
-    Aggregates metrics from the cost tracker and audit log to show
-    model usage, latency, and success rates. Read-only — does not
-    modify routing decisions.
-    """
-    from datetime import timedelta
-
-    now = datetime.now(timezone.utc)
-    cutoff_24h = (now - timedelta(hours=24)).isoformat()
-
-    # Collect from audit log
-    model_stats: dict[str, dict[str, Any]] = {}
-    for event in _get_store().iter_jsonl(".opencode/audit"):
-        try:
-            ts = event.get("timestamp", "")
-            if ts and ts < cutoff_24h:
-                continue
-            meta = event.get("metadata", {}) or {}
-            model = meta.get("model", "") or event.get("model", "") or "unknown"
-            provider = meta.get("provider", "") or event.get("provider", "") or "unknown"
-            cost = float(meta.get("cost", 0) or 0)
-            prompt_tokens = int(meta.get("prompt_tokens", 0) or 0)
-            completion_tokens = int(meta.get("completion_tokens", 0) or 0)
-
-            key = f"{provider}/{model}"
-            if key not in model_stats:
-                model_stats[key] = {
-                    "provider": provider,
-                    "model": model,
-                    "calls": 0,
-                    "total_cost": 0.0,
-                    "prompt_tokens": 0,
-                    "completion_tokens": 0,
-                    "errors": 0,
-                }
-            stats = model_stats[key]
-            stats["calls"] += 1
-            stats["total_cost"] += cost
-            stats["prompt_tokens"] += prompt_tokens
-            stats["completion_tokens"] += completion_tokens
-
-            if event.get("severity", "info") in ("error", "critical"):
-                stats["errors"] += 1
-        except (TypeError, ValueError):
-            continue
-
-    # Calculate derived metrics
-    total_calls = sum(s["calls"] for s in model_stats.values()) or 1
-    result_models = []
-    for _key, stats in sorted(model_stats.items(), key=lambda x: x[1]["calls"], reverse=True):
-        success_rate = (
-            round(((stats["calls"] - stats["errors"]) / stats["calls"]) * 100, 1)
-            if stats["calls"] > 0
-            else 100.0
-        )
-        result_models.append(
-            {
-                "provider": stats["provider"],
-                "model": stats["model"],
-                "calls": stats["calls"],
-                "pct": round((stats["calls"] / total_calls) * 100, 1),
-                "total_cost": round(stats["total_cost"], 6),
-                "prompt_tokens": stats["prompt_tokens"],
-                "completion_tokens": stats["completion_tokens"],
-                "success_rate": success_rate,
-            }
-        )
-
-    # Get routing assignments
-    try:
-        from ai_company.model_router import ModelRouter
-
-        router_instance = ModelRouter()
-        routing = router_instance.resolve_all_agents()
-        routing_summary = [
-            {
-                "agent": name,
-                "provider": r.provider,
-                "model": r.model,
-                "tier": r.tier,
-                "reason": r.reason,
-            }
-            for name, r in sorted(routing.items())
-        ]
-    except (OSError, RuntimeError):  # noqa: BLE001
-        routing_summary = []
-
-    return {
-        "period": "24h",
-        "models": result_models,
-        "routing": routing_summary,
-        "generated_at": now.isoformat(),
-    }
