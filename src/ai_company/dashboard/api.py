@@ -20,10 +20,12 @@ from ai_company.dashboard.models import (
     AgentSummary,
     ApprovalDecision,
     ApprovalItem,
+    ApprovalUpdate,
     DepartmentInfo,
     EscalationItem,
     KPIs,
     ModelRouteItem,
+    ModelTelemetryItem,
     OrgNode,
     PaginatedTasks,
     TaskAssign,
@@ -1255,6 +1257,33 @@ def reject_request(
     )
 
 
+@router.patch("/approvals/{request_id}", tags=["approvals"])
+def update_approval(
+    request_id: str,
+    body: ApprovalUpdate,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
+    """Partially update a pending approval request (e.g. set risk level or cost estimate).
+
+    Only fields present in the request body are updated.  Returns the
+    updated request dict on success.
+    """
+    updates = body.model_dump(exclude_none=True)
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    data = _load_yaml("orchestrator/approvals.yaml")
+    requests = data.get("requests", [])
+    for r in requests:
+        if r["id"] == request_id and r.get("status") == "pending":
+            r.update(updates)
+            _save_yaml("orchestrator/approvals.yaml", data)
+            return {"ok": True, "id": request_id, "updated": updates}
+    raise HTTPException(
+        status_code=404, detail=f"Request '{request_id}' not found or already processed"
+    )
+
+
 # ── Escalations ─────────────────────────────────────────────────────
 
 
@@ -1336,6 +1365,61 @@ def list_model_tiers() -> list[TierInfo]:
         )
         for t in router_instance.list_tiers()
     ]
+
+
+@router.get("/models/telemetry", response_model=list[ModelTelemetryItem], tags=["models"])
+def get_model_telemetry() -> list[ModelTelemetryItem]:
+    """Per-model telemetry summary derived from audit log entries.
+
+    Aggregates ``tool_call`` / ``tool_result`` events from the JSONL audit
+    trail into per-model request counts, success rates, average latency, and
+    cost.  Returns an empty list when no audit data is available.
+    """
+    import json as _json
+
+    model_stats: dict[str, dict[str, float]] = {}
+    model_success: dict[str, dict[str, int]] = {}
+    model_latency: dict[str, list[float]] = {}
+
+    try:
+        for event in _get_store().iter_jsonl(".opencode/audit"):
+            try:
+                event_type = event.get("event_type", "")
+                if event_type not in ("tool_call", "tool_result"):
+                    continue
+                meta = event.get("metadata", {})
+                model = meta.get("model", "unknown")
+                if model not in model_stats:
+                    model_stats[model] = {"calls": 0, "cost": 0.0}
+                    model_success[model] = {"success": 0, "total": 0}
+                    model_latency[model] = []
+                model_stats[model]["calls"] += 1
+                model_stats[model]["cost"] += float(meta.get("cost", 0))
+                model_success[model]["total"] += 1
+                if event_type == "tool_result" and not meta.get("error"):
+                    model_success[model]["success"] += 1
+                latency = meta.get("latency_ms")
+                if latency is not None:
+                    model_latency[model].append(float(latency))
+            except (_json.JSONDecodeError, TypeError):
+                continue
+    except OSError:
+        return []
+
+    result: list[ModelTelemetryItem] = []
+    for model_name, stats in sorted(model_stats.items()):
+        s = model_success.get(model_name, {"success": 0, "total": 0})
+        latencies = model_latency.get(model_name, [])
+        result.append(
+            ModelTelemetryItem(
+                model_id=model_name,
+                request_count=int(stats["calls"]),
+                success_rate=round(s["success"] / s["total"], 3) if s["total"] else 0.0,
+                avg_latency_ms=round(sum(latencies) / len(latencies), 1) if latencies else 0.0,
+                total_cost_usd=round(stats["cost"], 6),
+            )
+        )
+    return result
 
 
 # ── Scheduler ───────────────────────────────────────────────────────
@@ -2151,6 +2235,7 @@ def revenue_attribution(period_days: int = Query(30, ge=1, le=365)) -> dict[str,
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     from ai_company.data.revenue_analytics import RevenueAnalytics
+
     analytics = RevenueAnalytics(db)
     return analytics.get_revenue_attribution(period_days).model_dump()
 
@@ -2162,6 +2247,7 @@ def revenue_roi(period_days: int = Query(30, ge=1, le=365)) -> dict[str, Any]:
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     from ai_company.data.revenue_analytics import RevenueAnalytics
+
     analytics = RevenueAnalytics(db)
     summary = analytics.get_revenue_attribution(period_days)
     return {
@@ -2179,6 +2265,7 @@ def revenue_trend(period_days: int = Query(30, ge=1, le=365)) -> list[dict[str, 
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     from ai_company.data.revenue_analytics import RevenueAnalytics
+
     analytics = RevenueAnalytics(db)
     return analytics.get_revenue_trend(period_days)
 
@@ -2711,10 +2798,13 @@ def cancel_workflow_endpoint(
 
 
 @router.get("/search", tags=["search"])
-def unified_search(q: str = Query(..., min_length=1), limit: int = Query(20, ge=1, le=100)) -> dict[str, Any]:
+def unified_search(
+    q: str = Query(..., min_length=1), limit: int = Query(20, ge=1, le=100)
+) -> dict[str, Any]:
     """Unified search across agents, tasks, KPIs, and audit events."""
     from ai_company.data.database import get_database
     from ai_company.data.search import SearchIndex
+
     db = get_database()
     index = SearchIndex(database=db)
     results = index.search(q, limit=limit)
@@ -2736,10 +2826,13 @@ def unified_search(q: str = Query(..., min_length=1), limit: int = Query(20, ge=
 
 
 @router.get("/search/quick", tags=["search"])
-def quick_search(q: str = Query(..., min_length=1), limit: int = Query(10, ge=1, le=50)) -> dict[str, Any]:
+def quick_search(
+    q: str = Query(..., min_length=1), limit: int = Query(10, ge=1, le=50)
+) -> dict[str, Any]:
     """Quick search with minimal fields (for command bar)."""
     from ai_company.data.database import get_database
     from ai_company.data.search import SearchIndex
+
     db = get_database()
     index = SearchIndex(database=db)
     results = index.search(q, limit=limit)
@@ -2772,6 +2865,7 @@ def audit_timeline(
     """Get execution timeline with optional search and filters."""
     from ai_company.data.audit_store import AuditStore
     from ai_company.data.database import get_database
+
     db = get_database()
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
@@ -2794,6 +2888,7 @@ def audit_execution_detail(task_id: str) -> dict[str, Any]:
     """Get full execution detail for a task."""
     from ai_company.data.audit_store import AuditStore
     from ai_company.data.database import get_database
+
     db = get_database()
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
@@ -2802,10 +2897,13 @@ def audit_execution_detail(task_id: str) -> dict[str, Any]:
 
 
 @router.get("/audit/search", tags=["audit"])
-def audit_search(q: str = Query(..., min_length=1), limit: int = Query(50, ge=1, le=200)) -> list[dict[str, Any]]:
+def audit_search(
+    q: str = Query(..., min_length=1), limit: int = Query(50, ge=1, le=200)
+) -> list[dict[str, Any]]:
     """Full-text search across audit events."""
     from ai_company.data.audit_store import AuditStore
     from ai_company.data.database import get_database
+
     db = get_database()
     if db is None:
         raise HTTPException(status_code=503, detail="Database not available")

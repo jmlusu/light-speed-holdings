@@ -217,6 +217,10 @@ def _is_exempt_from_auth(path: str) -> bool:
         return True
     if path == "/docs" or path == "/redoc" or path == "/openapi.json":
         return True
+    if path == "/health":
+        # Health check must be universally accessible for monitoring/alerting,
+        # regardless of auth mode (GAP-011 / ADR-012).
+        return True
     return any(path == prefix or path.startswith(prefix + "/") for prefix in _PAGE_PREFIXES)
 
 
