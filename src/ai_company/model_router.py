@@ -473,6 +473,11 @@ class ProviderConfig:
     api_base: str = ""
     oauth2: dict[str, Any] = field(default_factory=dict)
     rate_limit: dict[str, Any] = field(default_factory=dict)
+    server: dict[str, Any] = field(default_factory=dict)
+    hardware: dict[str, Any] = field(default_factory=dict)
+    inference: dict[str, Any] = field(default_factory=dict)
+    models: dict[str, Any] = field(default_factory=dict)
+    model_dir: str = "./models"
 
 
 @dataclass(frozen=True)
@@ -922,6 +927,11 @@ class ModelRouter:
                 api_base=pconf.get("api_base", ""),
                 oauth2=pconf.get("oauth2") or {},
                 rate_limit=pconf.get("rate_limit") or {},
+                server=pconf.get("server") or {},
+                hardware=pconf.get("hardware") or {},
+                inference=pconf.get("inference") or {},
+                models=pconf.get("models") or {},
+                model_dir=pconf.get("model_dir", "./models"),
             )
 
     def _parse_tiers(self) -> None:
@@ -1228,6 +1238,15 @@ class ModelRouter:
 
         Returns a ``(tier_id, reason)`` tuple.
         """
+        # Layer 0: Explicit context rules take precedence over per-agent override
+        # for high-priority contexts (escalation, approval)
+        if context:
+            for rule in self._routing:
+                if rule.get("context") == context:
+                    tier_id = rule.get("tier")
+                    if tier_id and (tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS):
+                        return tier_id, f"routing rule (context={context})"
+
         # Layer 1: per-agent override (returns "override" tier ID)
         if agent_name and agent_name in self._registry:
             agent = self._registry[agent_name]
@@ -1239,15 +1258,7 @@ class ModelRouter:
             if agent_type is None:
                 agent_type = agent.get("type")
 
-        # Layer 2: explicit context rules (context-only, no agent type matching)
-        if context:
-            for rule in self._routing:
-                if rule.get("context") == context:
-                    tier_id = rule.get("tier")
-                    if tier_id and (tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS):
-                        return tier_id, f"routing rule (context={context})"
-
-        # Layer 3: domain-aware detection from task prompt
+        # Layer 2: domain-aware detection from task prompt
         if task_prompt:
             domain = self.detect_domain(task_prompt)
             if domain:
@@ -1266,7 +1277,7 @@ class ModelRouter:
                             f"domain-aware: '{domain}' detected → context '{domain_ctx}'",
                         )
 
-        # Layer 4: task-type routing (detected from prompt keywords)
+        # Layer 3: task-type routing (detected from prompt keywords)
         if task_prompt:
             task_type = self.detect_task_type(task_prompt)
             task_type_routing = self._config.get("task_type_routing", {})
@@ -1278,12 +1289,12 @@ class ModelRouter:
                         f"task-type: '{task_type}' detected from prompt",
                     )
 
-        # Layer 5: agent type + priority rules (no context)
+        # Layer 4: agent type + priority rules (no context)
         tier_id = self._match_rule(agent_type=agent_type, priority=priority, context=None)
         if tier_id is not None and (tier_id in self._tiers or tier_id in SPECIAL_TIER_IDS):
             return tier_id, f"routing rule (agent_type={agent_type}, priority={priority})"
 
-        # Layer 6: fallback
+        # Layer 5: fallback
         return "standard", "fallback to 'standard' tier"
 
     def resolve(

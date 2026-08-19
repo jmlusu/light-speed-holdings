@@ -28,6 +28,21 @@
   /* Typography */
   --jarvis-font-display: 'Rajdhani', 'Inter', system-ui, sans-serif;
   --jarvis-font-mono:    'JetBrains Mono', ui-monospace, Consolas, monospace;
+
+  /* Agent state colors */
+  --jarvis-state-online:       #34d399;
+  --jarvis-state-thinking:     #a78bfa;
+  --jarvis-state-executing:    #22d3ee;
+  --jarvis-state-delegating:   #818cf8;
+  --jarvis-state-waiting:      #fbbf24;
+  --jarvis-state-blocked:      #f87171;
+  --jarvis-state-escalated:    #fb923c;
+  --jarvis-state-offline:      #475569;
+
+  /* Motion */
+  --jarvis-motion-duration:    0.3s;
+  --jarvis-motion-easing:      cubic-bezier(0.4, 0, 0.2, 1);
+  --jarvis-pulse-speed:        2s;
 }
 
 /* ── Font Face Declarations (self-hosted, CSP-safe) ───────── */
@@ -133,6 +148,129 @@ code, pre, .font-mono {
   animation: jarvis-pulse-red 1.5s ease-in-out infinite;
 }
 
+/* ── Agent State Classes ──────────────────────────────────── */
+.jarvis-state {
+  transition: border-color var(--jarvis-motion-duration) var(--jarvis-motion-easing),
+              box-shadow var(--jarvis-motion-duration) var(--jarvis-motion-easing);
+}
+
+.jarvis-state-online {
+  border-color: var(--jarvis-state-online);
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.15);
+}
+
+.jarvis-state-thinking {
+  border-color: var(--jarvis-state-thinking);
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.2);
+  animation: jarvis-state-thinking-pulse var(--jarvis-pulse-speed) ease-in-out infinite;
+}
+
+.jarvis-state-executing {
+  border-color: var(--jarvis-state-executing);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.25);
+  animation: jarvis-state-executing-pulse var(--jarvis-pulse-speed) ease-in-out infinite;
+}
+
+.jarvis-state-delegating {
+  border-color: var(--jarvis-state-delegating);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.2);
+  animation: jarvis-state-delegating-pulse var(--jarvis-pulse-speed) ease-in-out infinite;
+}
+
+.jarvis-state-waiting {
+  border-color: var(--jarvis-state-waiting);
+  box-shadow: 0 0 6px rgba(251, 191, 36, 0.15);
+}
+
+.jarvis-state-blocked {
+  border-color: var(--jarvis-state-blocked);
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
+  animation: jarvis-state-blocked-pulse 1s ease-in-out infinite;
+}
+
+.jarvis-state-escalated {
+  border-color: var(--jarvis-state-escalated);
+  box-shadow: 0 0 12px rgba(251, 146, 60, 0.3);
+  animation: jarvis-state-escalated-pulse 1.2s ease-in-out infinite;
+}
+
+.jarvis-state-offline {
+  border-color: var(--jarvis-state-offline);
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* ── Agent State Keyframes ────────────────────────────────── */
+@keyframes jarvis-state-thinking-pulse {
+  0%, 100% { border-color: rgba(167, 139, 250, 0.4); }
+  50%      { border-color: rgba(167, 139, 250, 0.8); }
+}
+
+@keyframes jarvis-state-executing-pulse {
+  0%, 100% { border-color: rgba(34, 211, 238, 0.4); box-shadow: 0 0 8px rgba(34, 211, 238, 0.1); }
+  50%      { border-color: rgba(34, 211, 238, 0.9); box-shadow: 0 0 16px rgba(34, 211, 238, 0.3); }
+}
+
+@keyframes jarvis-state-delegating-pulse {
+  0%, 100% { border-color: rgba(129, 140, 248, 0.4); }
+  50%      { border-color: rgba(129, 140, 248, 0.8); }
+}
+
+@keyframes jarvis-state-blocked-pulse {
+  0%, 100% { border-color: rgba(248, 113, 113, 0.4); }
+  50%      { border-color: rgba(248, 113, 113, 1); }
+}
+
+@keyframes jarvis-state-escalated-pulse {
+  0%, 100% { border-color: rgba(251, 146, 60, 0.4); box-shadow: 0 0 8px rgba(251, 146, 60, 0.1); }
+  50%      { border-color: rgba(251, 146, 60, 1); box-shadow: 0 0 20px rgba(251, 146, 60, 0.35); }
+}
+
+/* ── SVG Connection Lines ─────────────────────────────────── */
+.jarvis-connection-line {
+  stroke: var(--jarvis-border-glow);
+  stroke-width: 1;
+  fill: none;
+  stroke-dasharray: 6 4;
+}
+
+.jarvis-connection-line.jarvis-data-packet {
+  animation: jarvis-data-flow 1.8s linear infinite;
+}
+
+@keyframes jarvis-data-flow {
+  to { stroke-dashoffset: -20; }
+}
+
+/* ── Tier Badge Colors ────────────────────────────────────── */
+.jarvis-tier-1 { border-left: 3px solid var(--jarvis-text-muted); }
+.jarvis-tier-2 { border-left: 3px solid var(--jarvis-state-executing); }
+.jarvis-tier-3 { border-left: 3px solid var(--jarvis-state-thinking); }
+.jarvis-tier-4 { border-left: 3px solid var(--jarvis-state-waiting); }
+.jarvis-tier-5 {
+  border-left: 3px solid var(--jarvis-amber);
+  animation: jarvis-tier5-pulse 2s ease-in-out infinite;
+}
+
+@keyframes jarvis-tier5-pulse {
+  0%, 100% { box-shadow: inset 0 0 4px rgba(251, 191, 36, 0.1); }
+  50%      { box-shadow: inset 0 0 12px rgba(251, 191, 36, 0.25); }
+}
+
+/* ── Model Telemetry Bar ──────────────────────────────────── */
+.jarvis-telemetry-bar {
+  display: flex;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(7, 11, 20, 0.6);
+}
+
+.jarvis-telemetry-segment {
+  height: 100%;
+  transition: width var(--jarvis-motion-duration) var(--jarvis-motion-easing);
+}
+
 /* ── Reduced Motion (global theme override) ───────────────── */
 @media (prefers-reduced-motion: reduce) {
   .chrome-scanline::after {
@@ -141,7 +279,21 @@ code, pre, .font-mono {
 
   .jarvis-pulse-cyan,
   .jarvis-pulse-amber,
-  .jarvis-pulse-red {
+  .jarvis-pulse-red,
+  .jarvis-state-thinking,
+  .jarvis-state-executing,
+  .jarvis-state-delegating,
+  .jarvis-state-blocked,
+  .jarvis-state-escalated,
+  .jarvis-tier-5 {
+    animation: none;
+  }
+
+  .jarvis-connection-line {
+    stroke-dasharray: none;
+  }
+
+  .jarvis-connection-line.jarvis-data-packet {
     animation: none;
   }
 }

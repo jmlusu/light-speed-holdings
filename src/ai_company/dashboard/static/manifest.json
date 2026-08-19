@@ -1,0 +1,26 @@
+{
+  "name": "J.A.R.V.I.S. Control Plane",
+  "short_name": "J.A.R.V.I.S.",
+  "description": "AI Company Builder — CEO Dashboard",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#070b14",
+  "background_color": "#070b14",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/static/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

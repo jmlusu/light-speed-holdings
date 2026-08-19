@@ -1,5 +1,4 @@
 approval_matrix:
-  # Existing entries
   - action: "deploy_to_production"
     risk_level: "high"
     required_approvals: ["cto", "ciso"]
@@ -36,173 +35,76 @@ approval_matrix:
     sla_hours: 4
     auto_approve: false
 
-  - action: "policy_change"
+  - action: "spend_over_10k"
     risk_level: "medium"
-    required_approvals: ["coo", "clo"]
-    sla_hours: 48
-    auto_approve: false
-
-  - action: "new_vendor"
-    risk_level: "low"
-    required_approvals: ["coo"]
-    sla_hours: 72
-    auto_approve: true
-
-  - action: "code_merge"
-    risk_level: "low"
-    required_approvals: ["peer_review"]
-    sla_hours: 4
-    auto_approve: true
-
-  - action: "agent_deployment"
-    risk_level: "medium"
-    required_approvals: ["cto"]
-    sla_hours: 8
-    auto_approve: false
-
-  # G1: New critical actions
-  # Agent lifecycle
-  - action: "agent_creation"
-    risk_level: "high"
-    required_approvals: ["cto", "ciso"]
+    required_approvals: ["cfo"]
     sla_hours: 24
     auto_approve: false
 
-  - action: "agent_deletion"
+  - action: "spend_over_100k"
+    risk_level: "high"
+    required_approvals: ["cfo", "human-ceo"]
+    sla_hours: 48
+    auto_approve: false
+
+  - action: "data_access_request"
+    risk_level: "medium"
+    required_approvals: ["cdo", "ciso"]
+    sla_hours: 24
+    auto_approve: false
+
+  - action: "security_exception"
+    risk_level: "critical"
+    required_approvals: ["ciso"]
+    sla_hours: 4
+    auto_approve: false
+
+  - action: "spend_over_10k"
+    risk_level: "medium"
+    required_approvals: ["cfo"]
+    sla_hours: 24
+    auto_approve: false
+
+  - action: "spend_over_100k"
+    risk_level: "high"
+    required_approvals: ["cfo", "human-ceo"]
+    sla_hours: 48
+    auto_approve: false
+
+  - action: "data_access_request"
+    risk_level: "medium"
+    required_approvals: ["cdo", "ciso"]
+    sla_hours: 24
+    auto_approve: false
+
+  - action: "security_exception"
+    risk_level: "critical"
+    required_approvals: ["ciso"]
+    sla_hours: 4
+    auto_approve: false
+
+  - action: "client_onboarding_offer_a"
+    risk_level: "medium"
+    required_approvals: ["clo", "human-ceo"]
+    sla_hours: 48
+    auto_approve: false
+
+  - action: "local_model_deletion"
     risk_level: "critical"
     required_approvals: ["cto", "human-ceo"]
     sla_hours: 4
     auto_approve: false
 
-  - action: "agent_modification"
+  - action: "local_model_download"
     risk_level: "high"
     required_approvals: ["cto"]
     sla_hours: 24
     auto_approve: false
 
-  # Model changes
-  - action: "model_provider_change"
-    risk_level: "high"
-    required_approvals: ["cto", "ciso"]
-    sla_hours: 24
-    auto_approve: false
-
-  - action: "model_tier_override"
-    risk_level: "high"
-    required_approvals: ["cto"]
-    sla_hours: 4
-    auto_approve: false
-
-  # Data operations
-  - action: "data_export"
-    risk_level: "high"
-    required_approvals: ["cdo", "ciso"]
-    sla_hours: 24
-    auto_approve: false
-
-  - action: "data_deletion"
-    risk_level: "critical"
-    required_approvals: ["cdo", "human-ceo"]
-    sla_hours: 4
-    auto_approve: false
-
-  - action: "pii_access"
-    risk_level: "high"
-    required_approvals: ["cdo", "clo"]
-    sla_hours: 24
-    auto_approve: false
-
-  - action: "backup_restore"
+  - action: "local_model_modification"
     risk_level: "high"
     required_approvals: ["cto"]
     sla_hours: 24
-    auto_approve: false
-
-  # Security
-  - action: "security_scan"
-    risk_level: "medium"
-    required_approvals: ["ciso"]
-    sla_hours: 24
-    auto_approve: true
-
-  - action: "vulnerability_disclosure"
-    risk_level: "critical"
-    required_approvals: ["ciso", "human-ceo"]
-    sla_hours: 2
-    auto_approve: false
-
-  - action: "incident_response_activation"
-    risk_level: "critical"
-    required_approvals: ["ciso"]
-    sla_hours: 1
-    auto_approve: true
-
-  # Board
-  - action: "board_meeting"
-    risk_level: "medium"
-    required_approvals: ["board-chair"]
-    sla_hours: 168
-    auto_approve: false
-
-  - action: "board_vote"
-    risk_level: "high"
-    required_approvals: ["board-chair", "human-ceo"]
-    sla_hours: 24
-    auto_approve: false
-
-  - action: "committee_formation"
-    risk_level: "high"
-    required_approvals: ["board-chair", "human-ceo"]
-    sla_hours: 168
-    auto_approve: false
-
-  # Compliance
-  - action: "gdpr_request"
-    risk_level: "high"
-    required_approvals: ["clo", "cdo"]
-    sla_hours: 72
-    auto_approve: false
-
-  - action: "audit_initiation"
-    risk_level: "high"
-    required_approvals: ["clo"]
-    sla_hours: 24
-    auto_approve: false
-
-  - action: "policy_violation_review"
-    risk_level: "high"
-    required_approvals: ["clo", "ciso"]
-    sla_hours: 24
-    auto_approve: false
-
-  # Financial
-  - action: "budget_reallocation"
-    risk_level: "high"
-    required_approvals: ["cfo", "human-ceo"]
-    sla_hours: 24
-    auto_approve: false
-
-  - action: "contract_signing"
-    risk_level: "high"
-    required_approvals: ["clo", "human-ceo"]
-    sla_hours: 168
-    auto_approve: false
-
-  - action: "vendor_payment_over_threshold"
-    risk_level: "high"
-    required_approvals: ["cfo"]
-    sla_hours: 24
-    auto_approve: false
-
-  # G4: Malawi client-facing service governance (added 2026-08-12)
-  # Client onboarding for each offer is gated by risk tier.
-  # Offers B (BPA/chatbots - WhatsApp data) and C (data/donor reporting)
-  # are BLOCKED until board-ratified governance policies are in place.
-  # See docs/service-catalog-malawi.md and config/company/malawi_offers.yaml
-  - action: "client_onboarding_offer_a"
-    risk_level: "medium"
-    required_approvals: ["clo", "human-ceo"]
-    sla_hours: 48
     auto_approve: false
 
   - action: "client_onboarding_offer_b"
