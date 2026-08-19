@@ -6,11 +6,6 @@
 <div class="hero-section">
   <div class="hero-header">
     <h2 class="text-lg font-semibold text-jarvis-primary" style="color: var(--jarvis-cyan);">ORG HEALTH</h2>
-    <div class="hero-variant-toggle">
-      <button @click="setHeroVariant('A')" :class="heroVariant === 'A' ? 'active' : ''">A</button>
-      <button @click="setHeroVariant('B')" :class="heroVariant === 'B' ? 'active' : ''">B</button>
-      <button @click="setHeroVariant('D')" :class="heroVariant === 'D' ? 'active' : ''">D</button>
-    </div>
   </div>
 
   <!-- Loading skeleton -->
@@ -33,52 +28,8 @@
     </div>
   </template>
 
-  <!-- Variant B: Horizontal Split (Default) -->
-  <template x-if="!orgHealthLoading && orgHealth && heroVariant === 'B'">
-    <div class="hero-split">
-      <div class="hero-gauge-container">
-        <canvas id="heroGaugeB" width="192" height="192"></canvas>
-        <div class="hero-gauge-label">
-          <span class="gauge-score" x-text="orgHealth?.score?.toFixed(0) || '--'"></span>
-          <span class="gauge-band" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band || 'unknown'"></span>
-        </div>
-      </div>
-      <div class="hero-kpi-cards">
-        <template x-for="comp in orgHealth?.components || []" :key="comp.name">
-          <div class="hero-kpi-card">
-            <div class="kpi-label" x-text="getComponentLabel(comp.name)"></div>
-            <div class="kpi-value" x-text="comp.value.toFixed(0) + '%'"></div>
-            <canvas class="hero-sparkline" :id="'spark-b-' + comp.name" width="120" height="32"></canvas>
-          </div>
-        </template>
-      </div>
-    </div>
-  </template>
-
-  <!-- Variant A: Gauge Hero (large radial) -->
-  <template x-if="!orgHealthLoading && orgHealth && heroVariant === 'A'">
-    <div class="hero-gauge-large">
-      <div class="hero-gauge-large-container">
-        <canvas id="heroGauge" width="256" height="256"></canvas>
-        <div class="hero-gauge-label hero-gauge-label-large">
-          <span class="gauge-score gauge-score-large" x-text="orgHealth?.score?.toFixed(0) || '--'"></span>
-          <span class="gauge-band" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band || 'unknown'"></span>
-        </div>
-      </div>
-      <div class="hero-kpi-cards hero-kpi-cards-vertical">
-        <template x-for="comp in orgHealth?.components || []" :key="comp.name">
-          <div class="hero-kpi-card">
-            <div class="kpi-label" x-text="getComponentLabel(comp.name)"></div>
-            <div class="kpi-value" x-text="comp.value.toFixed(0) + '%'"></div>
-            <canvas class="hero-sparkline" :id="'spark-' + comp.name" width="120" height="32"></canvas>
-          </div>
-        </template>
-      </div>
-    </div>
-  </template>
-
-  <!-- Variant D: Drill-down Gauge (rich) -->
-  <template x-if="!orgHealthLoading && orgHealth && heroVariant === 'D'">
+  <!-- Org Health Gauge -->
+  <template x-if="!orgHealthLoading && orgHealth">
     <div class="jarvis-glass rounded-xl p-6 sm:p-8">
       <!-- Main Gauge (clickable) -->
       <div class="flex flex-col items-center gap-4 mb-6 sm:mb-8" @click="toggleComponent('overview')" style="cursor: pointer;">
@@ -87,11 +38,11 @@
           <div class="absolute inset-0 flex flex-col items-center justify-center">
             <div class="font-display text-4xl sm:text-6xl font-bold text-jarvis-text" x-text="orgHealth?.score?.toFixed(0) || '--'"></div>
             <div class="font-display text-xs sm:text-sm uppercase tracking-wider" :class="getBandTextClass(orgHealth?.band)" x-text="orgHealth?.band?.toUpperCase() || 'unknown'"></div>
-            <div class="text-xs text-jarvis-muted mt-2">Click to expand</div>
           </div>
         </div>
         <div class="text-center">
-          <p class="text-jarvis-muted text-sm">Organizational Health — Click for Breakdown</p>
+          <p class="text-jarvis-muted text-sm" x-show="!expandedComponent">Organizational Health — Click gauge for breakdown</p>
+          <p class="text-jarvis-muted text-sm" x-show="expandedComponent">Organizational Health</p>
         </div>
       </div>
 
@@ -147,11 +98,6 @@
             </div>
           </div>
         </template>
-      </div>
-
-      <!-- Prompt when collapsed -->
-      <div x-show="!expandedComponent" class="text-center text-jarvis-muted text-sm py-8">
-        Click the gauge above to see component breakdown
       </div>
     </div>
   </template>

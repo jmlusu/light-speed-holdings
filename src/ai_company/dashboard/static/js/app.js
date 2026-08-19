@@ -87,8 +87,6 @@ function dashboard() {
     // ── CEO Hero Section ──────────────────────────────────────
     orgHealth: null,
     orgHealthLoading: true,
-    heroVariant: 'B',
-    heroExpanded: null,
     expandedComponent: null,
     _heroGauges: {},
 
@@ -177,12 +175,6 @@ function dashboard() {
 
       // ADR-013: Fetch bootstrap session token before any data loading.
       await this._fetchSessionToken();
-
-      // Load hero variant preference from localStorage
-      const savedVariant = localStorage.getItem('heroVariant');
-      if (savedVariant && ['A', 'B', 'D'].includes(savedVariant)) {
-        this.heroVariant = savedVariant;
-      }
 
       this.connectWebSocket();
 
@@ -1474,13 +1466,6 @@ function dashboard() {
       }
     },
 
-    setHeroVariant(v) {
-      this.heroVariant = v;
-      this.expandedComponent = null;
-      localStorage.setItem('heroVariant', v);
-      this.$nextTick(() => this.renderHeroGauges());
-    },
-
     getBandTextClass(band) {
       return {
         green: 'text-emerald-400',
@@ -1525,21 +1510,12 @@ function dashboard() {
     renderHeroGauges() {
       if (!this.orgHealth || typeof Chart === 'undefined') return;
 
-      // Render the appropriate gauge based on variant
-      if (this.heroVariant === 'A') {
-        this._renderRadialGauge('heroGauge', this.orgHealth.score, this.orgHealth.band, 256);
-      } else if (this.heroVariant === 'B') {
-        this._renderRadialGauge('heroGaugeB', this.orgHealth.score, this.orgHealth.band, 192);
-      } else if (this.heroVariant === 'D') {
-        this._renderRadialGauge('heroGaugeD', this.orgHealth.score, this.orgHealth.band, 256);
-      }
+      // Render the radial gauge (D variant — the only variant)
+      this._renderRadialGauge('heroGaugeD', this.orgHealth.score, this.orgHealth.band, 256);
 
-      // Render sparklines for component cards
+      // Render sparklines for component cards (visible when overview is expanded)
       if (this.orgHealth.components) {
         for (const comp of this.orgHealth.components) {
-          this._renderSparkline('spark-' + comp.name, this._generateTrendData(comp.value));
-          this._renderSparkline('spark-b-' + comp.name, this._generateTrendData(comp.value));
-          // D variant: overview cards + detail view sparklines
           this._renderSparkline('spark-d-' + comp.name, this._generateTrendData(comp.value));
           if (this.expandedComponent === comp.name) {
             this._renderSparkline('spark-detail-' + comp.name, this._generateTrendData(comp.value));
