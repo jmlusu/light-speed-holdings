@@ -42,20 +42,15 @@ class TestDashboardRendering:
         header = page.locator("header")
         assert header.is_visible()
 
-    def test_kpi_cards_render(self, page) -> None:
-        """Org health KPI cards should be visible (one per component)."""
-        kpi_cards = page.locator(".hero-kpi-card")
-        assert kpi_cards.count() == 4
+    def test_hero_section_renders(self, page) -> None:
+        """Org health hero section with gauge should be visible."""
+        hero = page.locator(".hero-section")
+        assert hero.is_visible()
 
-    def test_kpi_values_populated(self, page) -> None:
-        """KPI values should be populated (not stuck at 0 if data exists)."""
-        # Wait for data load
-        page.wait_for_timeout(3000)
-        # At least first card should be visible
-        agent_card = page.locator(".hero-kpi-card").first
-        text = agent_card.inner_text()
-        # Should contain a percentage or number
-        assert len(text) > 0
+    def test_hero_gauge_renders(self, page) -> None:
+        """Org health gauge canvas should be present."""
+        gauge = page.locator("#heroGaugeD")
+        assert gauge.count() >= 1
 
     def test_navigation_tabs_visible(self, page) -> None:
         """All navigation tabs should be rendered."""
@@ -151,32 +146,32 @@ class TestResponsiveBehavior:
     def _setup(self, page, dashboard_server: str) -> None:
         self.url = dashboard_server
 
-    def test_kpi_grid_adapts_to_mobile(self, page) -> None:
-        """KPI cards should render on mobile viewport."""
+    def test_hero_renders_on_mobile(self, page) -> None:
+        """Hero section should render on mobile viewport."""
         page.set_viewport_size({"width": 375, "height": 812})
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-        kpi_cards = page.locator(".hero-kpi-card")
-        assert kpi_cards.count() == 4
+        hero = page.locator(".hero-section")
+        assert hero.is_visible()
 
-    def test_kpi_grid_adapts_to_tablet(self, page) -> None:
-        """KPI cards should render on tablet viewport."""
+    def test_hero_renders_on_tablet(self, page) -> None:
+        """Hero section should render on tablet viewport."""
         page.set_viewport_size({"width": 768, "height": 1024})
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-        kpi_cards = page.locator(".hero-kpi-card")
-        assert kpi_cards.count() == 4
+        hero = page.locator(".hero-section")
+        assert hero.is_visible()
 
-    def test_kpi_grid_adapts_to_desktop(self, page) -> None:
-        """KPI cards should render on desktop viewport."""
+    def test_hero_renders_on_desktop(self, page) -> None:
+        """Hero section should render on desktop viewport."""
         page.set_viewport_size({"width": 1440, "height": 900})
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(2000)
 
-        kpi_cards = page.locator(".hero-kpi-card")
-        assert kpi_cards.count() == 4
+        hero = page.locator(".hero-section")
+        assert hero.is_visible()
 
     def test_no_horizontal_scroll_on_mobile(self, page) -> None:
         """Page should not have horizontal overflow on mobile."""

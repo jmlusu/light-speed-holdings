@@ -382,7 +382,7 @@ class AgentGenerator:
             "",
             "> **Source**: `company-registry.yaml`",
             f"> **Total Agents**: {len(agents)} across {len(groups)} departments",
-            f"> **Generated**: {datetime.date.today().isoformat()}",
+            f"> **Generated**: {datetime.datetime.now(datetime.timezone.utc).date().isoformat()}",
             "",
             "---",
             "",
