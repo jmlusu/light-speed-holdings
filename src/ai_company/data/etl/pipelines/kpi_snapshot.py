@@ -100,15 +100,24 @@ class KPISnapshotPipeline(Pipeline):
                 if any(v["severity"] == "critical" for v in violations):
                     result.quality_check_passed = False
                     result.errors.append("Quality check failed: critical violations")
-                    logger.warning("KPI snapshot quality check failed: %d critical violations", sum(1 for v in violations if v["severity"] == "critical"))
+                    logger.warning(
+                        "KPI snapshot quality check failed: %d critical violations",
+                        sum(1 for v in violations if v["severity"] == "critical"),
+                    )
 
             # Load: Store in SQLite
-            if result.quality_check_passed or not any(v["severity"] == "critical" for v in result.quality_violations):
+            if result.quality_check_passed or not any(
+                v["severity"] == "critical" for v in result.quality_violations
+            ):
                 logger.info("Loading %d KPI records into SQLite...", len(transformation.records))
                 assert self.loader is not None, "loader must be set for KPISnapshotPipeline"
                 load_result = self.loader.load(transformation.records)
                 result.load = load_result
-                logger.info("KPI snapshot loaded: %d records, %d failed", load_result.loaded_count, load_result.failed_count)
+                logger.info(
+                    "KPI snapshot loaded: %d records, %d failed",
+                    load_result.loaded_count,
+                    load_result.failed_count,
+                )
 
                 if load_result.errors:
                     result.errors.extend([f"load: {e}" for e in load_result.errors])
@@ -121,9 +130,12 @@ class KPISnapshotPipeline(Pipeline):
         self._audit_pipeline_complete(result)
         return result
 
-    def _make_extraction_result(self, records: list[dict[str, Any]]) -> ExtractionResult[dict[str, Any]]:
+    def _make_extraction_result(
+        self, records: list[dict[str, Any]]
+    ) -> ExtractionResult[dict[str, Any]]:
         """Create extraction result for the snapshot."""
         from ai_company.data.etl.base import ExtractionResult
+
         return ExtractionResult(
             records=records,
             source="kpi_collectors",
@@ -182,6 +194,7 @@ class CompanyKPIPipeline(Pipeline):
             # Determine window
             if since is None:
                 from datetime import timedelta
+
                 since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
             # Extract: Get tasks from SQLite (or fallback to file)
@@ -317,6 +330,7 @@ class CostAggregationPipeline(Pipeline):
             # Default to last 30 days if no since provided
             if since is None:
                 from datetime import timedelta
+
                 since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
             # Extract
@@ -341,19 +355,30 @@ class CostAggregationPipeline(Pipeline):
             if quality_check and transformation.records:
                 from ai_company.data.etl.quality.validator import validate_records
 
-                violations = validate_records(transformation.records, f"cost_{self.period}_aggregation")
+                violations = validate_records(
+                    transformation.records, f"cost_{self.period}_aggregation"
+                )
                 result.quality_violations = violations
                 if any(v["severity"] == "critical" for v in violations):
                     result.quality_check_passed = False
                     result.errors.append("Quality check failed: critical violations")
 
             # Load: Store aggregated results in SQLite
-            if result.quality_check_passed or not any(v["severity"] == "critical" for v in result.quality_violations):
-                logger.info("Loading %d cost aggregation records into SQLite...", len(transformation.records))
+            if result.quality_check_passed or not any(
+                v["severity"] == "critical" for v in result.quality_violations
+            ):
+                logger.info(
+                    "Loading %d cost aggregation records into SQLite...",
+                    len(transformation.records),
+                )
                 assert self.loader is not None, "loader must be set"
                 load_result = self.loader.load(transformation.records)
                 result.load = load_result
-                logger.info("Cost aggregation loaded: %d records, %d failed", load_result.loaded_count, load_result.failed_count)
+                logger.info(
+                    "Cost aggregation loaded: %d records, %d failed",
+                    load_result.loaded_count,
+                    load_result.failed_count,
+                )
 
                 if load_result.errors:
                     result.errors.extend([f"load: {e}" for e in load_result.errors])
@@ -408,6 +433,7 @@ class AgentPerformancePipeline(Pipeline):
         try:
             if since is None:
                 from datetime import timedelta
+
                 since = (datetime.now(timezone.utc) - timedelta(days=self.days)).isoformat()
 
             # Extract tasks
@@ -454,12 +480,21 @@ class AgentPerformancePipeline(Pipeline):
                     result.errors.append("Quality check failed: critical violations")
 
             # Load: Store agent performance metrics in SQLite
-            if result.quality_check_passed or not any(v["severity"] == "critical" for v in result.quality_violations):
-                logger.info("Loading %d agent performance records into SQLite...", len(transformation.records))
+            if result.quality_check_passed or not any(
+                v["severity"] == "critical" for v in result.quality_violations
+            ):
+                logger.info(
+                    "Loading %d agent performance records into SQLite...",
+                    len(transformation.records),
+                )
                 assert self.loader is not None, "loader must be set"
                 load_result = self.loader.load(transformation.records)
                 result.load = load_result
-                logger.info("Agent performance loaded: %d records, %d failed", load_result.loaded_count, load_result.failed_count)
+                logger.info(
+                    "Agent performance loaded: %d records, %d failed",
+                    load_result.loaded_count,
+                    load_result.failed_count,
+                )
 
                 if load_result.errors:
                     result.errors.extend([f"load: {e}" for e in load_result.errors])

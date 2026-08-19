@@ -162,6 +162,14 @@ exclude = [
     "tests/",
 ]
 
+[[tool.mypy.overrides]]
+module = "ai_company.dashboard.monitoring"
+disable_error_code = ["unused-ignore"]
+
+[[tool.mypy.overrides]]
+module = "ai_company.telemetry.tracer"
+disable_error_code = ["unused-ignore"]
+
 [tool.bandit]
 exclude_dirs = ["tests"]
 # Rules intentionally disabled for this codebase (with rationale):

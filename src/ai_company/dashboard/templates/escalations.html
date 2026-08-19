@@ -38,9 +38,50 @@
             <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-purple-500/10 text-purple-400">pending</span>
           </div>
           <p class="text-sm text-jarvis-muted mb-4" x-text="req.description"></p>
+          <!-- Risk level & cost estimate display -->
+          <div class="flex flex-wrap gap-3 mb-4 text-xs">
+            <span class="px-2 py-0.5 rounded-full font-medium"
+                  :class="req.risk_level === 'high' ? 'bg-red-500/10 text-red-400' : req.risk_level === 'medium' ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'"
+                  x-text="'Risk: ' + (req.risk_level || 'unset')"></span>
+            <span class="px-2 py-0.5 rounded-full font-medium bg-jarvis-cyan/10 text-jarvis-cyan"
+                  x-text="'Est. $' + (req.cost_estimate != null ? Number(req.cost_estimate).toFixed(4) : '—')"></span>
+          </div>
+          <!-- Inline edit form (F3) -->
+          <div x-show="editingApproval === req.id" x-collapse class="mb-4">
+            <div class="jarvis-glass rounded-lg p-4 border border-jarvis-cyan/20 space-y-3">
+              <div class="flex items-center gap-3">
+                <label class="text-xs text-jarvis-muted w-16 shrink-0">Risk</label>
+                <select x-model="editRisk"
+                        class="flex-1 bg-jarvis-base border border-white/[0.08] rounded-lg px-2 py-1 text-xs text-jarvis-text focus:border-jarvis-cyan focus:outline-none">
+                  <option value="">unset</option>
+                  <option value="low">low</option>
+                  <option value="medium">medium</option>
+                  <option value="high">high</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-3">
+                <label class="text-xs text-jarvis-muted w-16 shrink-0">Cost</label>
+                <input type="number" step="0.0001" min="0" x-model="editCost"
+                       class="flex-1 bg-jarvis-base border border-white/[0.08] rounded-lg px-2 py-1 text-xs text-jarvis-text focus:border-jarvis-cyan focus:outline-none"
+                       placeholder="0.0000">
+              </div>
+              <div class="flex justify-end gap-2">
+                <button @click="editingApproval = null"
+                        class="px-3 py-1 rounded-lg text-xs font-medium text-jarvis-muted hover:text-jarvis-text transition-colors">Cancel</button>
+                <button @click="saveApprovalEdit(req.id)"
+                        class="px-3 py-1 rounded-lg text-xs font-medium bg-jarvis-cyan text-white hover:bg-jarvis-cyan/80 transition-colors">Save</button>
+              </div>
+            </div>
+          </div>
           <div class="flex items-center justify-between">
             <span class="text-xs text-jarvis-muted font-mono" x-text="formatTime(req.requested_at)"></span>
             <div class="flex gap-2">
+              <button @click="editingApproval = req.id; editRisk = req.risk_level || ''; editCost = req.cost_estimate ?? ''"
+                      class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-jarvis-cyan/10 text-jarvis-cyan hover:bg-jarvis-cyan/20 transition-colors flex items-center gap-1"
+                      title="Edit risk & cost">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Edit
+              </button>
               <button @click="approveRequest(req.id)"
                       class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white hover:bg-emerald-500 transition-colors flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>

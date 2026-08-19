@@ -430,4 +430,44 @@ function initCostCharts(costSummary, agentCosts, period) {
     };
     updateOrCreateChart('costAgent', agentCtx, config);
   }
+
+  // ── F8: Mini cost trend sparkline on the main dashboard ──────
+  const miniCtx = document.getElementById('costTrendMini');
+  if (miniCtx) {
+    const trend = (costSummary && costSummary.costTrend) || [];
+    const sorted = trend
+      .slice()
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    const labels = sorted.map(p => {
+      const d = new Date(p.timestamp);
+      return d.toLocaleString([], { hour: '2-digit', minute: '2-digit' });
+    });
+    const data = sorted.map(p => p.value);
+
+    const config = {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: COLORS.brand.border,
+          backgroundColor: 'transparent',
+          fill: false,
+          tension: 0.4,
+          pointRadius: 0,
+          borderWidth: 1.5,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false, beginAtZero: true },
+        },
+      },
+    };
+    updateOrCreateChart('costTrendMini', miniCtx, config);
+  }
 }

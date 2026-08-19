@@ -60,9 +60,7 @@ class TNMProvider(AbstractProvider):
         status = transaction.get("status", "")
         if status != self.STATUS_COMPLETED:
             raise ProviderError(
-                f"Transaction not completed: {status}",
-                "TRANSACTION_FAILED",
-                {"status": status}
+                f"Transaction not completed: {status}", "TRANSACTION_FAILED", {"status": status}
             )
 
         transaction_id = transaction.get("trans_id", "")

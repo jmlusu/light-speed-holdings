@@ -109,7 +109,7 @@ document.addEventListener('alpine:init', () => {
 
         get groupedResults() {
             if (this.results.length === 0) return [];
-            
+
             const sections = [
                 { key: 'actions', label: 'Quick Actions', filter: r => r.entity_type === 'action' },
                 { key: 'agents', label: 'Agents', filter: r => r.entity_type === 'agent' },

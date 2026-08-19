@@ -71,11 +71,23 @@ class ApprovalItem(BaseModel):
     status: str = "pending"
     requested_at: Optional[str] = None
     expires_at: Optional[str] = None
+    risk_level: Optional[str] = None
+    cost_estimate: Optional[float] = None
 
 
 class ApprovalDecision(BaseModel):
     approved_by: str = "human-ceo"
     notes: Optional[str] = None
+
+
+class ApprovalUpdate(BaseModel):
+    """Partial update body for PATCH /api/v1/approvals/{request_id}.
+
+    All fields are optional — only supplied fields are applied.
+    """
+
+    risk_level: Optional[str] = None
+    cost_estimate: Optional[float] = None
 
 
 class EscalationItem(BaseModel):
@@ -101,6 +113,16 @@ class ModelRouteItem(BaseModel):
     model: str
     tier: str
     reason: str = ""
+
+
+class ModelTelemetryItem(BaseModel):
+    """Per-model telemetry summary for the command center."""
+
+    model_id: str
+    request_count: int = 0
+    success_rate: float = 0.0
+    avg_latency_ms: float = 0.0
+    total_cost_usd: float = 0.0
 
 
 class TierInfo(BaseModel):

@@ -35,7 +35,14 @@ class MockProvider(AbstractProvider):
         self,
         webhook_secret: str = "test_secret",
         provider_to_simulate: Literal["paychangu", "airtel", "tnm"] = "paychangu",
-        scenario: Literal["success", "invalid_signature", "duplicate", "timeout", "insufficient_funds", "invalid_payload"] = "success",
+        scenario: Literal[
+            "success",
+            "invalid_signature",
+            "duplicate",
+            "timeout",
+            "insufficient_funds",
+            "invalid_payload",
+        ] = "success",
         delay_ms: int = 0,
         **kwargs: Any,
     ):
@@ -70,7 +77,9 @@ class MockProvider(AbstractProvider):
                 "id_field": "trans_id",
             },
         }
-        self._config = self._provider_configs.get(provider_to_simulate, self._provider_configs["paychangu"])
+        self._config = self._provider_configs.get(
+            provider_to_simulate, self._provider_configs["paychangu"]
+        )
 
     def verify_signature(self, payload: bytes, signature_header: str) -> bool:
         """Verify mock signature based on scenario."""
@@ -99,7 +108,7 @@ class MockProvider(AbstractProvider):
         if self.scenario == "invalid_signature":
             config = self._config
             signature_header = headers.get(config["signature_header"], "")
-            payload_bytes = json.dumps(payload, separators=(',', ':')).encode('utf-8')
+            payload_bytes = json.dumps(payload, separators=(",", ":")).encode("utf-8")
             self.verify_signature(payload_bytes, signature_header)
 
         # Simulate delay
@@ -112,7 +121,9 @@ class MockProvider(AbstractProvider):
             raise ProviderError("Mock timeout [TIMEOUT]", "TIMEOUT")
 
         if self.scenario == "insufficient_funds":
-            raise ProviderError("Insufficient funds [INSUFFICIENT_FUNDS]", "INSUFFICIENT_FUNDS", {"balance": 100})
+            raise ProviderError(
+                "Insufficient funds [INSUFFICIENT_FUNDS]", "INSUFFICIENT_FUNDS", {"balance": 100}
+            )
 
         if self.scenario == "duplicate":
             # Check if we've seen this transaction
@@ -120,17 +131,22 @@ class MockProvider(AbstractProvider):
             txn_data = payload.get(config["transaction_field"], {})
             txn_id = txn_data.get(txn_field, "")
             if not txn_id:
-                raise ProviderError("Missing transaction ID for duplicate check [MALFORMED_PAYLOAD]", "MALFORMED_PAYLOAD")
+                raise ProviderError(
+                    "Missing transaction ID for duplicate check [MALFORMED_PAYLOAD]",
+                    "MALFORMED_PAYLOAD",
+                )
             if txn_id in self._seen_transactions:
                 raise ProviderError(
                     f"Duplicate transaction: {txn_id} [DUPLICATE_TRANSACTION]",
                     "DUPLICATE_TRANSACTION",
-                    {"transaction_id": txn_id}
+                    {"transaction_id": txn_id},
                 )
             self._seen_transactions.add(txn_id)
 
         if self.scenario == "invalid_payload":
-            raise ProviderError("Invalid payload structure [MALFORMED_PAYLOAD]", "MALFORMED_PAYLOAD")
+            raise ProviderError(
+                "Invalid payload structure [MALFORMED_PAYLOAD]", "MALFORMED_PAYLOAD"
+            )
 
         # Parse based on provider
         if provider_name == "paychangu":
@@ -164,7 +180,11 @@ class MockProvider(AbstractProvider):
 
         timestamp_str = transaction.get("completed_at") or transaction.get("created_at")
         try:
-            timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00")) if timestamp_str else datetime.now(timezone.utc)
+            timestamp = (
+                datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+                if timestamp_str
+                else datetime.now(timezone.utc)
+            )
         except (ValueError, TypeError):
             timestamp = datetime.now(timezone.utc)
 
@@ -201,7 +221,11 @@ class MockProvider(AbstractProvider):
 
         timestamp_str = transaction.get("timestamp")
         try:
-            timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00")) if timestamp_str else datetime.now(timezone.utc)
+            timestamp = (
+                datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+                if timestamp_str
+                else datetime.now(timezone.utc)
+            )
         except (ValueError, TypeError):
             timestamp = datetime.now(timezone.utc)
 
@@ -239,7 +263,11 @@ class MockProvider(AbstractProvider):
 
         timestamp_str = transaction.get("timestamp")
         try:
-            timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00")) if timestamp_str else datetime.now(timezone.utc)
+            timestamp = (
+                datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+                if timestamp_str
+                else datetime.now(timezone.utc)
+            )
         except (ValueError, TypeError):
             timestamp = datetime.now(timezone.utc)
 
@@ -261,6 +289,16 @@ class MockProvider(AbstractProvider):
         """Reset the seen transactions set (for testing)."""
         self._seen_transactions.clear()
 
-    def set_scenario(self, scenario: Literal["success", "invalid_signature", "duplicate", "timeout", "insufficient_funds", "invalid_payload"]) -> None:
+    def set_scenario(
+        self,
+        scenario: Literal[
+            "success",
+            "invalid_signature",
+            "duplicate",
+            "timeout",
+            "insufficient_funds",
+            "invalid_payload",
+        ],
+    ) -> None:
         """Change the mock scenario."""
         self.scenario = scenario
