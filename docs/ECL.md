@@ -38,9 +38,19 @@ Rules:
 
 Before moving between stages (intake → spec → plan → implement → validate), update `summary.md` front matter fields. The `phase` field tracks current stage. When entering `validate` or `done`, populate `validation_results` with an array of gate outcomes (e.g., `lint-ecl.ps1: PASS`, `ruff check src/: PASS`, `mypy src/: PASS`, `pytest: 1856 passed`).
 
+Archive gates:
+
+- `validation_status` must be `pass` (not `unknown` or `fail`) before archiving. Changes without validation evidence must remain active or be parked.
+- `phase` must be `validate` or `implement` before archiving. Changes archived at `phase: "plan"` indicate implementation was skipped.
+- Run the full test suite (not just a scoped subset) as part of archive validation. Scoped-only runs leave regression gaps.
+- When a change is parked, its test failures should not be counted as baseline by other changes. Tag parked failures (e.g., `parked:<change-id>`) to keep baselines isolated.
+- If `pyproject.toml` is in the changeset, `uv.lock` must also be updated in the same commit. Lockfile atomicity prevents `--frozen` workflow breakage.
+
 ## 5 Plan Review Gate
 
 Before implementation starts, require an approved plan review. Record it as `plan_review: "approved"` in `summary.md` front matter. This gate prevents raw requirements from moving directly into coding.
+
+If the plan references an ADR (Architecture Decision Record), verify the ADR file exists in `docs/adr/` before marking `plan_review` as approved. ADRs must be recorded before or alongside implementation, not after.
 
 ## 6 Context Loading Order
 
