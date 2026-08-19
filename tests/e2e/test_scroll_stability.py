@@ -211,11 +211,11 @@ class TestDataLoading:
     def _setup(self, page, dashboard_url: str) -> None:
         self.url = dashboard_url
 
-    def test_kpi_cards_populate(self, page) -> None:
-        """AC-DATA-01: KPI cards show values within 2s."""
+    def test_hero_section_populates(self, page) -> None:
+        """AC-DATA-01: Hero section shows gauge within 2s."""
         page.goto(self.url, wait_until="networkidle")
 
-        # Wait for KPI values to populate
+        # Wait for data to populate
         page.wait_for_function(
             """() => {
                 const el = document.querySelector('[x-data]');
@@ -226,8 +226,8 @@ class TestDataLoading:
             timeout=5000,
         )
 
-        kpi_cards = page.locator(".hero-kpi-card")
-        assert kpi_cards.count() >= 1, "Expected at least 1 KPI card"
+        gauge = page.locator("#heroGaugeD")
+        assert gauge.count() >= 1, "Expected gauge to be present"
 
     def test_websocket_connects_within_5s(self, page) -> None:
         """AC-DATA-03: WebSocket connects within 5s."""
