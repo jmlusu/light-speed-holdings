@@ -104,7 +104,7 @@ def start_server(model: dict) -> subprocess.Popen | None:
         "-ngl",
         "0",  # CPU only
         "--load-mode",
-        "mlock,mmap",
+        "mmap+mlock",
         "--port",
         str(model["port"]),
         "--host",
