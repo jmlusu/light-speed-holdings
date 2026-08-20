@@ -56,10 +56,19 @@
 
   navigator.serviceWorker.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SYNC_COMPLETE') {
-      // Dispatch to Alpine.js stores for UI feedback.
       window.dispatchEvent(
         new CustomEvent('sw-sync-complete', { detail: event.data.results })
       );
+    }
+    // #136: Conflict detection during sync replay.
+    if (event.data && event.data.type === 'SYNC_CONFLICT') {
+      const conflict = event.data.conflict;
+      // Store in IndexedDB for the conflict modal to pick up.
+      if (window.jarvisOfflineSync) {
+        window.jarvisOfflineSync.storeConflict(conflict);
+      }
+      // Notify Alpine.js to open the conflict modal.
+      window.dispatchEvent(new CustomEvent('sw-sync-conflict', { detail: conflict }));
     }
   });
 

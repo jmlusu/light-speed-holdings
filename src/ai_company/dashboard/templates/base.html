@@ -269,6 +269,19 @@
       </a>
       {% endfor %}
     </div>
+    <!-- #135: Offline queue badge -->
+    <div class="flex items-center gap-2 ml-auto">
+      <button x-show="offlineQueueCount > 0" @click="showOfflineQueue = !showOfflineQueue; if (showOfflineQueue) _refreshOfflineQueueActions()"
+              class="relative flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-medium
+                     bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors cursor-pointer"
+              x-transition>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span x-text="offlineQueueCount"></span>
+        <span class="hidden sm:inline">queued</span>
+      </button>
+      <!-- Offline indicator dot -->
+      <span x-show="syncStatus === 'offline'" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" title="Offline"></span>
+    </div>
   </nav>
 
   <!-- ═══ MAIN CONTENT ═══ -->
@@ -352,6 +365,137 @@
       <button @click="dismissApiError()" class="text-slate-500 hover:text-slate-300 ml-1 shrink-0" aria-label="Dismiss">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
+    </div>
+  </div>
+
+  <!-- ═══ OFFLINE STATUS BANNER (#135) ═══ -->
+  <div x-show="syncStatus === 'offline'" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 -translate-y-2"
+       class="fixed top-0 left-0 right-0 z-50 bg-amber-500/90 text-black text-center py-1.5 px-4 text-xs font-medium">
+    <span class="inline-flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m-2.829-2.829a5 5 0 000-7.07m-4.243 2.122a1.5 1.5 0 112.121 2.121 1.5 1.5 0 01-2.121-2.121z"/></svg>
+      You are offline. Changes will sync when reconnected.
+      <span x-show="offlineQueueCount > 0" x-text="'(' + offlineQueueCount + ' queued)'"></span>
+    </span>
+  </div>
+
+  <!-- ═══ OFFLINE QUEUE PANEL (#135) ═══ -->
+  <div x-show="showOfflineQueue" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       class="fixed inset-0 z-50 flex justify-end" @click.self="showOfflineQueue = false">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/40" @click="showOfflineQueue = false"></div>
+    <!-- Panel -->
+    <div class="relative w-full max-w-md jarvis-glass border-l border-white/[0.06] shadow-2xl flex flex-col"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 border-b border-white/[0.06]">
+        <h3 class="text-sm font-semibold text-jarvis-text flex items-center gap-2">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Offline Queue
+          <span x-text="'(' + offlineQueueActions.length + ')'" class="text-xs text-jarvis-muted"></span>
+        </h3>
+        <div class="flex items-center gap-2">
+          <button x-show="offlineQueueActions.length > 0" @click="clearOfflineQueue()"
+                  class="text-xs text-red-400 hover:text-red-300 transition-colors">Clear all</button>
+          <button @click="showOfflineQueue = false" class="text-jarvis-muted hover:text-jarvis-text transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <!-- Queue list -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-2">
+        <template x-for="action in offlineQueueActions" :key="action.id">
+          <div class="rounded-lg bg-white/[0.03] border border-white/[0.06] p-3">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <p class="text-xs font-medium text-jarvis-text" x-text="action.description || (action.method + ' ' + action.url)"></p>
+                <p class="text-[10px] text-jarvis-muted mt-1 font-mono truncate" x-text="action.url"></p>
+                <p class="text-[10px] text-jarvis-muted mt-0.5" x-text="'Queued ' + new Date(action.timestamp).toLocaleString()"></p>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button @click="retryOfflineAction(action.id)" class="p-1 rounded text-amber-400 hover:bg-amber-400/10 transition-colors" title="Retry">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
+                <button @click="deleteOfflineAction(action.id)" class="p-1 rounded text-red-400 hover:bg-red-400/10 transition-colors" title="Remove">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!-- Empty state -->
+        <div x-show="offlineQueueActions.length === 0" class="text-center py-8">
+          <svg class="w-8 h-8 mx-auto text-jarvis-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p class="text-xs text-jarvis-muted">No queued actions</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONFLICT RESOLUTION MODAL (#136) ═══ -->
+  <div x-show="showConflictModal" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       class="fixed inset-0 z-[60] flex items-center justify-center p-4" @click.self="resolveConflictAction('dismiss')">
+    <div class="absolute inset-0 bg-black/60" @click="resolveConflictAction('dismiss')"></div>
+    <div class="relative w-full max-w-2xl jarvis-glass rounded-xl shadow-2xl border border-red-500/20"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="scale-95 opacity-0" x-transition:enter-end="scale-100 opacity-100">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 border-b border-white/[0.06]">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-jarvis-text">Sync Conflict</h3>
+            <p class="text-[10px] text-jarvis-muted" x-text="activeConflict?.action?.url || ''"></p>
+          </div>
+        </div>
+        <button @click="resolveConflictAction('dismiss')" class="text-jarvis-muted hover:text-jarvis-text transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <!-- Diff view -->
+      <div class="p-4 grid grid-cols-2 gap-4 max-h-80 overflow-y-auto">
+        <div>
+          <h4 class="text-[10px] font-semibold text-amber-400 uppercase tracking-wider mb-2">Your queued change</h4>
+          <pre class="text-[11px] text-slate-300 bg-white/[0.03] rounded-lg p-3 overflow-x-auto font-mono whitespace-pre-wrap break-all"
+               x-text="activeConflict?.action?.body ? formatConflictBody(activeConflict.action.body) : 'No data'"></pre>
+        </div>
+        <div>
+          <h4 class="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider mb-2">Current server state</h4>
+          <pre class="text-[11px] text-slate-300 bg-white/[0.03] rounded-lg p-3 overflow-x-auto font-mono whitespace-pre-wrap break-all"
+               x-text="activeConflict?.serverState ? JSON.stringify(activeConflict.serverState, null, 2) : 'No data'"></pre>
+        </div>
+      </div>
+      <!-- Resolution buttons -->
+      <div class="flex items-center justify-end gap-2 p-4 border-t border-white/[0.06]">
+        <button @click="resolveConflictAction('dismiss')"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium text-jarvis-muted hover:text-jarvis-text hover:bg-white/[0.03] transition-colors">
+          Dismiss
+        </button>
+        <button @click="resolveConflictAction('keep-server')"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-colors">
+          Keep Server State
+        </button>
+        <button @click="resolveConflictAction('override')"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors">
+          Override with Queue
+        </button>
+      </div>
     </div>
   </div>
 

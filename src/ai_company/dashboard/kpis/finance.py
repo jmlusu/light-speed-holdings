@@ -19,6 +19,7 @@ class FinanceKPICollector(KPICollector):
         if cost_data is None:
             cost_data = self._load_json("orchestrator/cost_tracker.json")
         registry = self._load_json("company/agent-registry.json")
+        revenue_data = self._revenue_from_sqlite()
 
         finance_config = kpi_config.get("departments", {}).get("finance", {})
         kpi_defs = {k["id"]: k for k in finance_config.get("kpis", [])}
@@ -53,6 +54,18 @@ class FinanceKPICollector(KPICollector):
             else None
         )
 
+        # Revenue metrics from RevenueAnalytics
+        total_revenue: float | None = None
+        overall_roi: float | None = None
+        revenue_per_task: float | None = None
+        if isinstance(revenue_data, dict):
+            total_revenue = revenue_data.get("total_revenue")
+            overall_roi = revenue_data.get("overall_roi")
+            revenue_attr = revenue_data.get("by_department", [])
+            total_tasks = sum(d.get("tasks", 0) for d in revenue_attr)
+            if total_tasks > 0 and total_revenue is not None:
+                revenue_per_task = round(total_revenue / total_tasks, 2)
+
         return {
             "department": self.department,
             "collected_at": datetime.now().isoformat(),
@@ -67,5 +80,8 @@ class FinanceKPICollector(KPICollector):
                 "total_spent": self._kpi(total_spent, None, "$"),
                 "cost_per_agent": self._kpi(cost_per_agent, 50, "$/month"),
                 "active_agents": self._kpi(total_agents, None, "count"),
+                "total_revenue": self._kpi(total_revenue, None, "$"),
+                "overall_roi": self._kpi(overall_roi, 1.0, "ratio"),
+                "revenue_per_task": self._kpi(revenue_per_task, None, "$/task"),
             },
         }
