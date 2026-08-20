@@ -162,6 +162,36 @@ class KPICollector(ABC):
             logger.warning("SQLite cost read failed; using cost_tracker.json", exc_info=True)
         return None
 
+    def _revenue_from_sqlite(self) -> dict[str, Any] | None:
+        """Return revenue summary from SQLite when populated, else ``None``."""
+        db = self._usable_database()
+        if db is None:
+            return None
+        try:
+            from ai_company.data.revenue_analytics import RevenueAnalytics
+
+            analytics = RevenueAnalytics(db)
+            summary = analytics.get_revenue_attribution(period_days=30)
+            return {
+                "total_revenue": summary.total_revenue,
+                "total_cost": summary.total_cost,
+                "overall_roi": summary.overall_roi,
+                "period_days": summary.period_days,
+                "by_department": [
+                    {
+                        "department": a.department,
+                        "revenue": a.revenue_attributed,
+                        "cost": a.cost_incurred,
+                        "roi": a.roi,
+                        "tasks": a.tasks_completed,
+                    }
+                    for a in summary.by_department
+                ],
+            }
+        except Exception:  # noqa: BLE001 - read-through must never raise
+            logger.warning("SQLite revenue read failed; using fallback", exc_info=True)
+        return None
+
     def _escalations_from_sqlite(self) -> list[dict[str, Any]] | None:
         """Return escalation events from SQLite when populated, else ``None``."""
         db = self._usable_database()

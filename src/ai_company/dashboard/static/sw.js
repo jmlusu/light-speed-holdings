@@ -119,6 +119,7 @@ self.addEventListener('sync', (event) => {
 /**
  * Replay all queued offline actions from IndexedDB.
  * Each entry has: { id, url, method, headers, body, timestamp }
+ * Handles 409 conflicts by storing them for user resolution (#136).
  */
 async function replayQueuedActions() {
   const db = await openQueueDB();
@@ -136,13 +137,31 @@ async function replayQueuedActions() {
       });
       if (res.ok) {
         store.delete(action.id);
-        results.push({ id: action.id, status: 'replayed' });
+        results.push({ id: action.id, url: action.url, status: 'replayed' });
+      } else if (res.status === 409) {
+        // Conflict — store details for user resolution, remove from queue.
+        let serverState = null;
+        try { serverState = await res.json(); } catch (_e) { /* ignore */ }
+        store.delete(action.id);
+        // Notify clients about the conflict (they handle IndexedDB storage).
+        const clients = await self.clients.matchAll();
+        for (const client of clients) {
+          client.postMessage({
+            type: 'SYNC_CONFLICT',
+            conflict: {
+              action: { id: action.id, url: action.url, method: action.method, body: action.body, timestamp: action.timestamp },
+              serverState,
+              http: 409,
+            },
+          });
+        }
+        results.push({ id: action.id, url: action.url, status: 'conflict' });
       } else {
-        results.push({ id: action.id, status: 'failed', http: res.status });
+        results.push({ id: action.id, url: action.url, status: 'failed', http: res.status });
       }
     } catch (_e) {
       // Still offline — leave in queue for next sync attempt.
-      results.push({ id: action.id, status: 'pending' });
+      results.push({ id: action.id, url: action.url, status: 'pending' });
     }
   }
 

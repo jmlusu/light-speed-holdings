@@ -56,11 +56,16 @@ function dashboard() {
     _sessionToken: null,
     _tokenRefreshTimer: null,
 
-    // ── PWA / Offline sync (Issue #41) ──────────────────────
+    // ── PWA / Offline sync (Issue #41 + #135) ──────────────
     swInstallable: false,
     swUpdateAvailable: false,
     offlineQueueCount: 0,
+    offlineQueueActions: [],
+    showOfflineQueue: false,
     syncStatus: '',
+    // #136: Conflict resolution
+    showConflictModal: false,
+    activeConflict: null,
 
     // ── Data ─────────────────────────────────────────────────
     kpis: {
@@ -172,6 +177,24 @@ function dashboard() {
       });
       window.addEventListener('online', () => { this._refreshOfflineQueueCount(); });
       window.addEventListener('offline', () => { this._refreshOfflineQueueCount(); });
+
+      // #135: Optimistic UI — refresh queue panel when actions are queued/removed.
+      window.addEventListener('offline-action-queued', () => { this._refreshOfflineQueueCount(); this._refreshOfflineQueueActions(); });
+      window.addEventListener('offline-action-removed', () => { this._refreshOfflineQueueCount(); this._refreshOfflineQueueActions(); });
+      window.addEventListener('offline-action-retried', () => { this._refreshOfflineQueueCount(); this._refreshOfflineQueueActions(); });
+      window.addEventListener('offline-conflict-detected', (e) => {
+        this.showToast('error', 'Conflict', e.detail?.message || 'A sync conflict was detected.');
+      });
+      // #136: Conflict modal — listen for SYNC_CONFLICT from SW via SW registration.
+      window.addEventListener('sw-sync-conflict', (e) => {
+        this.activeConflict = e.detail;
+        this.showConflictModal = true;
+      });
+      // #136: Also listen for conflicts stored by sw-registration.js.
+      window.addEventListener('offline-conflict-stored', (e) => {
+        this.activeConflict = e.detail;
+        this.showConflictModal = true;
+      });
 
       // ADR-013: Fetch bootstrap session token before any data loading.
       await this._fetchSessionToken();
@@ -690,17 +713,96 @@ function dashboard() {
       this.apiStatus = { show: false, message: '' };
     },
 
-    // ── PWA / Offline sync helpers (Issue #41) ─────────────
+    // ── PWA / Offline sync helpers (Issue #41 + #135) ──────
 
     async _refreshOfflineQueueCount() {
       if (window.jarvisOfflineSync) {
         try {
-          const actions = await window.jarvisOfflineSync.getQueuedActions();
-          this.offlineQueueCount = actions.length;
+          const count = await window.jarvisOfflineSync.getQueueCount();
+          this.offlineQueueCount = count;
           this.syncStatus = navigator.onLine ? 'online' : 'offline';
         } catch (_e) {
           // IndexedDB may not be available.
         }
+      }
+    },
+
+    async _refreshOfflineQueueActions() {
+      if (window.jarvisOfflineSync) {
+        try {
+          this.offlineQueueActions = await window.jarvisOfflineSync.getQueuedActions();
+        } catch (_e) {
+          this.offlineQueueActions = [];
+        }
+      }
+    },
+
+    async retryOfflineAction(id) {
+      if (window.jarvisOfflineSync) {
+        await window.jarvisOfflineSync.retryAction(id);
+        this.showToast('info', 'Retried', 'Action re-queued for sync.');
+      }
+    },
+
+    async deleteOfflineAction(id) {
+      if (window.jarvisOfflineSync) {
+        await window.jarvisOfflineSync.removeAction(id);
+        this.showToast('info', 'Removed', 'Action removed from queue.');
+      }
+    },
+
+    async clearOfflineQueue() {
+      if (window.jarvisOfflineSync) {
+        await window.jarvisOfflineSync.clearQueue();
+        this.offlineQueueActions = [];
+        this.offlineQueueCount = 0;
+        this.showToast('success', 'Cleared', 'Offline queue cleared.');
+      }
+    },
+
+    // ── Conflict resolution (#136) ─────────────────────
+
+    /**
+     * Resolve the current conflict.
+     * @param {'dismiss'|'keep-server'|'override'} action
+     */
+    async resolveConflictAction(action) {
+      if (!this.activeConflict) return;
+      const conflict = this.activeConflict;
+
+      if (action === 'override') {
+        // Re-queue the original action so it replays on next sync.
+        if (window.jarvisOfflineSync) {
+          await window.jarvisOfflineSync.queueAction({
+            url: conflict.action.url,
+            method: conflict.action.method,
+            body: conflict.action.body,
+            headers: { 'Content-Type': 'application/json' },
+            description: 'Override conflict: ' + (conflict.action.url || ''),
+          });
+        }
+        this.showToast('info', 'Re-queued', 'Your change will retry on next sync.');
+      } else if (action === 'keep-server') {
+        this.showToast('success', 'Kept', 'Server state kept. Your queued change discarded.');
+      }
+      // Remove the conflict from IndexedDB.
+      if (window.jarvisOfflineSync && conflict.action?.id) {
+        await window.jarvisOfflineSync.resolveConflict(conflict.action.id);
+      }
+      this.showConflictModal = false;
+      this.activeConflict = null;
+      this._refreshOfflineQueueCount();
+    },
+
+    /**
+     * Format a conflict body for display (pretty-print if JSON).
+     */
+    formatConflictBody(body) {
+      if (!body) return '';
+      try {
+        return JSON.stringify(JSON.parse(body), null, 2);
+      } catch (_e) {
+        return body;
       }
     },
 

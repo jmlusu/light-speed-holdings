@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
@@ -2212,8 +2212,11 @@ def revenue_summary(
     cost_count = int(cost_row["count"] or 0) if cost_row else 0
 
     # Contribution margin (revenue - costs, both in USD for comparison)
-    # For MWK revenue, apply exchange rate (approx 1800 MWK = 1 USD)
-    revenue_usd = total_revenue / 1800 if total_revenue > 0 else 0
+    from ai_company.data.fx_rate import get_fx_service
+
+    fx = get_fx_service()
+    mwk_to_usd_rate = fx.get_rate("MWK", "USD")
+    revenue_usd = total_revenue / mwk_to_usd_rate if total_revenue > 0 else 0
     margin = revenue_usd - total_costs
     margin_pct = (margin / revenue_usd * 100) if revenue_usd > 0 else 0
 
@@ -2311,67 +2314,182 @@ def create_project_cost(entry: ProjectCostEntry) -> dict[str, Any]:
     }
 
 
-# ── Webhook Stubs (for gateway confirmations) ──────────────────────
+# ── Webhooks (gateway confirmations) ───────────────────────────────
+
+
+def _process_webhook(
+    provider_name: str,
+    raw_body: bytes,
+    headers: dict[str, Any],
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """Shared webhook processing logic for all mobile money providers.
+
+    1. Create provider with secret from env
+    2. Verify signature
+    3. Parse into WebhookPayload
+    4. Insert into revenue_transactions (with idempotency)
+    5. Return ack
+    """
+    import os
+
+    from ai_company.data.mobile_money import (
+        DuplicateTransactionError,
+        InvalidSignatureError,
+        get_provider,
+    )
+
+    secret_env = f"{provider_name.upper()}_WEBHOOK_SECRET"
+    webhook_secret = os.environ.get(secret_env, "")
+
+    if not webhook_secret:
+        logger.warning("%s webhook secret not configured (env %s)", provider_name, secret_env)
+        return {"status": "error", "message": "Provider not configured"}
+
+    provider = get_provider(provider_name, webhook_secret)  # type: ignore[arg-type]
+
+    # Step 1: Verify signature
+    sig_header_name = {
+        "paychangu": "x-paychangu-signature",
+        "airtel": "x-airtel-signature",
+        "tnm": "x-tnm-signature",
+    }.get(provider_name, "")
+
+    signature = headers.get(sig_header_name, "")
+    try:
+        provider.verify_signature(raw_body, signature)
+    except InvalidSignatureError:
+        logger.warning("%s webhook signature verification failed", provider_name)
+        return {"status": "error", "message": "Invalid signature"}
+
+    # Step 2: Parse payload
+    parsed = provider.parse_webhook(payload, headers)
+
+    # Step 3: Insert into revenue_transactions
+    db = get_database()
+    if db is None:
+        logger.error("Database not available for %s webhook", provider_name)
+        return {"status": "error", "message": "Database unavailable"}
+
+    txn_id = f"REV-{provider_name[:3].upper()}-{parsed.transaction_id[:12]}"
+    now = datetime.now(timezone.utc).isoformat()
+    idempotency_key = parsed.idempotency_key
+
+    conn = db.connect()
+    # Check for duplicate
+    existing = conn.execute(
+        "SELECT id FROM revenue_transactions WHERE reference = ?",
+        (idempotency_key,),
+    ).fetchone()
+    if existing:
+        raise DuplicateTransactionError(
+            f"Duplicate transaction: {idempotency_key}",
+            transaction_id=parsed.transaction_id,
+        )
+
+    conn.execute(
+        """INSERT INTO revenue_transactions
+           (id, client_id, project_id, offer_id, service_name, currency,
+            amount, payment_method, status, installment_type, exchange_rate,
+            linked_task_id, reference, recorded_by, timestamp)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            txn_id,
+            "",  # client_id — resolved later from customer_reference
+            "",  # project_id — resolved later
+            "",  # offer_id — resolved later
+            f"mobile_money_{provider_name}",
+            parsed.currency,
+            float(parsed.amount),
+            f"{provider_name}_mobile_money",
+            parsed.status,
+            "",  # installment_type
+            1800.0 if parsed.currency == "MWK" else 1.0,  # default exchange_rate
+            "",  # linked_task_id
+            idempotency_key,
+            f"webhook_{provider_name}",
+            now,
+        ),
+    )
+    conn.commit()
+
+    logger.info(
+        "Revenue transaction recorded: %s (%s %s) via %s",
+        txn_id,
+        parsed.amount,
+        parsed.currency,
+        provider_name,
+    )
+    return {
+        "status": "received",
+        "transaction_id": txn_id,
+        "provider": provider_name,
+        "amount": float(parsed.amount),
+        "currency": parsed.currency,
+    }
 
 
 @router.post("/webhooks/paychangu", tags=["webhooks"])
-def paychangu_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
-    """Stub for PayChangu webhook — ready for merchant onboarding.
+async def paychangu_webhook(request: Request) -> dict[str, Any]:
+    """PayChangu webhook handler.
 
-    When PayChangu is onboarded, this endpoint will:
-    1. Verify the webhook signature (X-PayChangu-Signature header)
-    2. Extract payment details from payload
-    3. Write to revenue_transactions table
-    4. Return 200 OK to acknowledge receipt
-
-    Credentials will be stored in environment variables, never in the repo.
+    Verifies X-PayChangu-Signature, parses payload, records revenue transaction.
     """
-    logger.info("PayChangu webhook received (stub): %s", payload.get("type", "unknown"))
-    return {
-        "status": "received",
-        "message": "Webhook stub — merchant onboarding pending",
-        "payload_type": payload.get("type", "unknown"),
-    }
+    from ai_company.data.mobile_money import DuplicateTransactionError
+
+    raw_body = await request.body()
+    payload = await request.json()
+    headers = dict(request.headers)
+    try:
+        return _process_webhook("paychangu", raw_body, headers, payload)
+    except DuplicateTransactionError as e:
+        return {
+            "status": "duplicate",
+            "message": str(e),
+            "transaction_id": e.details.get("transaction_id", ""),
+        }
 
 
 @router.post("/webhooks/airtel", tags=["webhooks"])
-def airtel_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
-    """Stub for Airtel Money webhook — ready for merchant onboarding.
+async def airtel_webhook(request: Request) -> dict[str, Any]:
+    """Airtel Money webhook handler.
 
-    When Airtel Money merchant is set up, this endpoint will:
-    1. Verify the transaction via Airtel API
-    2. Extract payment details
-    3. Write to revenue_transactions table
-    4. Return 200 OK
-
-    Merchant number stored in AIRTEL_MERCHANT_NUMBER env var.
+    Verifies X-Airtel-Signature, parses payload, records revenue transaction.
     """
-    logger.info("Airtel Money webhook received (stub): %s", payload.get("type", "unknown"))
-    return {
-        "status": "received",
-        "message": "Webhook stub — merchant onboarding pending",
-        "payload_type": payload.get("type", "unknown"),
-    }
+    from ai_company.data.mobile_money import DuplicateTransactionError
+
+    raw_body = await request.body()
+    payload = await request.json()
+    headers = dict(request.headers)
+    try:
+        return _process_webhook("airtel", raw_body, headers, payload)
+    except DuplicateTransactionError as e:
+        return {
+            "status": "duplicate",
+            "message": str(e),
+            "transaction_id": e.details.get("transaction_id", ""),
+        }
 
 
 @router.post("/webhooks/tnm", tags=["webhooks"])
-def tnm_webhook_stub(payload: dict[str, Any]) -> dict[str, Any]:
-    """Stub for TNM Mpamba webhook — ready for merchant onboarding.
+async def tnm_webhook(request: Request) -> dict[str, Any]:
+    """TNM Mpamba webhook handler.
 
-    When TNM Mpamba merchant is set up, this endpoint will:
-    1. Verify the transaction via TNM API
-    2. Extract payment details
-    3. Write to revenue_transactions table
-    4. Return 200 OK
-
-    Merchant number stored in TNM_MERCHANT_NUMBER env var.
+    Verifies X-TNM-Signature, parses payload, records revenue transaction.
     """
-    logger.info("TNM Mpamba webhook received (stub): %s", payload.get("type", "unknown"))
-    return {
-        "status": "received",
-        "message": "Webhook stub — merchant onboarding pending",
-        "payload_type": payload.get("type", "unknown"),
-    }
+    from ai_company.data.mobile_money import DuplicateTransactionError
+
+    raw_body = await request.body()
+    payload = await request.json()
+    headers = dict(request.headers)
+    try:
+        return _process_webhook("tnm", raw_body, headers, payload)
+    except DuplicateTransactionError as e:
+        return {
+            "status": "duplicate",
+            "message": str(e),
+            "transaction_id": e.details.get("transaction_id", ""),
+        }
 
 
 # ── Executive Briefing Aggregation ─────────────────────────────────
