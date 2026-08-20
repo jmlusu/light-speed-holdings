@@ -225,7 +225,17 @@ jobs:
         run: uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
       - name: Verify no drift
         run: |
-          git diff --exit-code || { echo "::error::Generated agent files drifted from the committed state. Run 'uv run python -c \"from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()\"' and commit the regenerated output."; exit 1; }
+          # Exclude the generated-date line in AGENT-REGISTRY-TABLE.md (changes daily)
+          git diff --exit-code -- . ':!docs/AGENT-REGISTRY-TABLE.md' || { echo "::error::Generated agent files drifted from the committed state. Run 'uv run python -c \"from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()\"' and commit the regenerated output."; exit 1; }
+          # Also check that AGENT-REGISTRY-TABLE.md only differs by the date line
+          if ! git diff --exit-code docs/AGENT-REGISTRY-TABLE.md; then
+            DIFF_LINES=$(git diff docs/AGENT-REGISTRY-TABLE.md | grep '^[+-]' | grep -v '^[+-][+-][+-]' | grep -v 'Generated' | wc -l)
+            if [ "$DIFF_LINES" -gt 0 ]; then
+              echo "::error::AGENT-REGISTRY-TABLE.md has non-date drift. Regenerate and commit."
+              git diff docs/AGENT-REGISTRY-TABLE.md
+              exit 1
+            fi
+          fi
           echo "Generated agents are in sync with the registry."
 
   # All required checks must succeed for the gate to pass.
