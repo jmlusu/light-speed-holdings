@@ -56,6 +56,7 @@ class LlamaCppProvider(LLMProvider):
         use_server: bool = True,
         startup_timeout: float = 60.0,
         api_key: str = "",
+        model_ports: dict[str, int] | None = None,
     ) -> None:
         self.name = name
         self.model_path = model_path
@@ -65,6 +66,7 @@ class LlamaCppProvider(LLMProvider):
         self.use_server = use_server
         self.startup_timeout = startup_timeout
         self.api_key = api_key
+        self.model_ports = model_ports or {}
         self._server_process: subprocess.Popen[Any] | None = None
         self._server_ready = threading.Event()
         self._client = httpx.Client(
@@ -72,8 +74,23 @@ class LlamaCppProvider(LLMProvider):
             timeout=300.0,
             headers={"X-API-Key": api_key} if api_key else {},
         )
+        self._clients: dict[str, httpx.Client] = {}
         self._lock = threading.Lock()
         self._available: bool | None = None  # None = unknown, True/False = checked
+
+    def _get_client(self, model: str | None = None) -> httpx.Client:
+        """Return the httpx client for the correct model port."""
+        if not model or model not in self.model_ports:
+            return self._client
+        port = self.model_ports[model]
+        cache_key = f"{self.server_host}:{port}"
+        if cache_key not in self._clients:
+            self._clients[cache_key] = httpx.Client(
+                base_url=f"http://{self.server_host}:{port}",
+                timeout=300.0,
+                headers={"X-API-Key": self.api_key} if self.api_key else {},
+            )
+        return self._clients[cache_key]
 
     def _start_server(self) -> None:
         """Start llama-server in background. Logs warnings on failure instead of raising."""
@@ -217,12 +234,32 @@ class LlamaCppProvider(LLMProvider):
         )
         self._available = False
 
+    @staticmethod
+    def _probe_health(host: str, port: int, api_key: str = "") -> bool:
+        """Quick health check to detect an externally-started server."""
+        headers = {"X-API-Key": api_key} if api_key else {}
+        try:
+            resp = httpx.get(f"http://{host}:{port}/health", timeout=3.0, headers=headers)
+            return resp.status_code == 200
+        except (httpx.ConnectError, httpx.TimeoutException, OSError):
+            return False
+
     def _ensure_server(self) -> bool:
         """Ensure server is running, restart if needed. Returns False if unavailable."""
         if not self.use_server:
             return True
         if self._available is False:
             return False
+        # If we haven't checked yet, probe configured ports first (servers may
+        # already be running externally via start_llamacpp_servers.py).
+        if self._available is None:
+            if self._probe_any_port():
+                self._server_ready.set()
+                self._available = True
+                return True
+            # Not running — try to auto-start
+            self._start_server()
+            return self._available is True
         if not self._server_ready.is_set() or (
             self._server_process and self._server_process.poll() is not None
         ):
@@ -230,6 +267,15 @@ class LlamaCppProvider(LLMProvider):
             self._start_server()
             return self._available is True
         return True
+
+    def _probe_any_port(self) -> bool:
+        """Probe the default port and all model_ports to detect externally-started servers."""
+        if self._probe_health(self.server_host, self.server_port, self.api_key):
+            return True
+        for port in self.model_ports.values():
+            if self._probe_health(self.server_host, port, self.api_key):
+                return True
+        return False
 
     def chat(
         self,
@@ -260,12 +306,14 @@ class LlamaCppProvider(LLMProvider):
             payload["seed"] = self.config.seed
 
         try:
-            resp = self._client.post("/v1/chat/completions", json=payload)
+            client = self._get_client(model)
+            resp = client.post("/v1/chat/completions", json=payload)
         except httpx.ConnectError as exc:
             self._server_ready.clear()
+            port = self.model_ports.get(model or "", self.server_port)
             raise LLMProviderError(
                 self.name,
-                f"Cannot connect to llama-server at {self.server_host}:{self.server_port}.",
+                f"Cannot connect to llama-server at {self.server_host}:{port}.",
             ) from exc
         except httpx.TimeoutException as exc:
             raise LLMProviderError(self.name, f"Request timed out: {exc}") from exc
@@ -322,7 +370,8 @@ class LlamaCppProvider(LLMProvider):
             payload["seed"] = self.config.seed
 
         try:
-            with self._client.stream("POST", "/v1/chat/completions", json=payload) as resp:
+            client = self._get_client(model)
+            with client.stream("POST", "/v1/chat/completions", json=payload) as resp:
                 if resp.status_code != 200:
                     body = resp.read().decode("utf-8", errors="replace")
                     raise LLMProviderError(
@@ -368,9 +417,10 @@ class LlamaCppProvider(LLMProvider):
 
         except httpx.ConnectError as exc:
             self._server_ready.clear()
+            port = self.model_ports.get(model or "", self.server_port)
             raise LLMProviderError(
                 self.name,
-                f"Cannot connect to llama-server at {self.server_host}:{self.server_port}.",
+                f"Cannot connect to llama-server at {self.server_host}:{port}.",
             ) from exc
         except httpx.TimeoutException as exc:
             raise LLMProviderError(self.name, f"Request timed out: {exc}") from exc
@@ -387,23 +437,23 @@ class LlamaCppProvider(LLMProvider):
             self._available = exists
             return exists
 
-        if not self._server_ready.is_set():
-            return False
-
+        # If the server process died, mark unavailable
         if self._server_process and self._server_process.poll() is not None:
-            return False
-
-        try:
-            headers = {"X-API-Key": self.api_key} if self.api_key else {}
-            resp = httpx.get(
-                f"http://{self.server_host}:{self.server_port}/health", timeout=2.0, headers=headers
-            )
-            available = resp.status_code == 200
-            self._available = available
-            return available
-        except (httpx.ConnectError, httpx.TimeoutException, OSError):
             self._available = False
             return False
+
+        # If already confirmed and server_ready, trust the cache
+        if self._available is True and self._server_ready.is_set():
+            return True
+
+        # Probe configured ports to detect externally-started servers
+        if self._probe_any_port():
+            self._server_ready.set()
+            self._available = True
+            return True
+
+        self._available = False
+        return False
 
     def shutdown(self) -> None:
         """Stop the llama-server process."""
