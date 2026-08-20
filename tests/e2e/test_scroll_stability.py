@@ -360,14 +360,14 @@ class TestResponsiveDesign:
         page.goto(self.url, wait_until="networkidle")
         page.wait_for_timeout(1000)
 
-        grid = page.locator(".grid").first
-        assert grid.is_visible(), "KPI grid should be visible on desktop"
+        grid = page.locator("main .grid.gap-6").first
+        assert grid.is_visible(), "Charts grid should be visible on desktop"
 
         # Mobile: should still show grid
         page.set_viewport_size({"width": 320, "height": 568})
         page.wait_for_timeout(1000)
 
-        assert grid.is_visible(), "KPI grid should be visible on mobile"
+        assert grid.is_visible(), "Charts grid should be visible on mobile"
 
 
 # ═══ Navigation ═══════════════════════════════════════════════════════
