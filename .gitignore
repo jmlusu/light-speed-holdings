@@ -109,3 +109,9 @@ scripts/download_one.py
 scripts/test_all_*.py
 scripts/test_deepseek*.py
 scripts/test_integration.py
+
+# Business documents (not part of the codebase)
+CHICHEWA_AI_INITIATIVE_EXECUTIVE_PRESENTATION.md
+chichewa_ai_initiative.pptx
+create_chichewa_slides.py
+project-plan-digital-health-consultant.md

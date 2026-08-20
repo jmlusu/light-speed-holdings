@@ -118,6 +118,13 @@ departments:
     budget_category: "operations"
     headcount_target: 3
 
+  - id: "consulting"
+    name: "Consulting"
+    executive: "consulting_lead"
+    mission: "Deliver AI-native consulting engagements, mapping workflows and identifying transformation opportunities for clients."
+    budget_category: "growth"
+    headcount_target: 4
+
   - id: "technology"
     name: "Technology"
     executive: "cto"

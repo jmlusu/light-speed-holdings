@@ -80,6 +80,11 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "app",
         "Agent onboarding with HITL approval gate",
     ),
+    "consulting": (
+        "ai_company.cli.consulting",
+        "app",
+        "Foaster-style AI consulting engagements",
+    ),
 }
 
 

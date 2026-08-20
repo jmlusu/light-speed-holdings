@@ -372,3 +372,67 @@ workflows:
         owner: "devops-lead"
         inputs: ["tested"]
         outputs: ["deployed"]
+
+  - id: "foaster_engagement"
+    name: "Foaster AI Consulting Engagement"
+    description: "AI-native consulting engagement: employee interviews -> workflow mapping -> opportunity identification -> transformation roadmap"
+    trigger: "client_engagement_started"
+    owner: "consulting_lead"
+    steps:
+      - id: "onboarding"
+        name: "Client Onboarding"
+        action: "consulting_lead.onboards_client"
+        owner: "consulting_lead"
+        inputs: ["client_id", "scope", "departments"]
+        outputs: ["engagement_id", "interview_plan"]
+        sla_hours: 24
+      - id: "deploy_interviews"
+        name: "Deploy Interview Agents"
+        action: "interview_agent.deploys"
+        owner: "interview_agent"
+        inputs: ["engagement_id", "interview_plan", "employee_list"]
+        outputs: ["interview_results"]
+        sla_hours: 48
+      - id: "synthesize_data"
+        name: "Synthesize Interview Data"
+        action: "workflow_mapper.synthesizes"
+        owner: "workflow_mapper"
+        inputs: ["engagement_id", "interview_results"]
+        outputs: ["workflow_maps", "pain_points"]
+        sla_hours: 24
+      - id: "identify_opportunities"
+        name: "Identify AI Opportunities"
+        action: "opportunity_identifier.identifies"
+        owner: "opportunity_identifier"
+        inputs: ["engagement_id", "workflow_maps", "pain_points"]
+        outputs: ["opportunities", "roi_estimates"]
+        sla_hours: 24
+      - id: "draft_roadmap"
+        name: "Draft Transformation Roadmap"
+        action: "opportunity_identifier.drafts_roadmap"
+        owner: "opportunity_identifier"
+        inputs: ["engagement_id", "opportunities", "roi_estimates"]
+        outputs: ["roadmap_draft"]
+        sla_hours: 48
+      - id: "expert_review"
+        name: "Expert Human Review"
+        action: "consulting_lead.reviews"
+        owner: "consulting_lead"
+        inputs: ["engagement_id", "roadmap_draft"]
+        outputs: ["roadmap_approved", "feedback"]
+        sla_hours: 24
+        hitl_required: true
+      - id: "client_presentation"
+        name: "Present to Client"
+        action: "consulting_lead.presents"
+        owner: "consulting_lead"
+        inputs: ["engagement_id", "roadmap_approved"]
+        outputs: ["client_feedback", "engagement_complete"]
+        sla_hours: 24
+      - id: "knowledge_feedback"
+        name: "Feed Learnings to Knowledge Base"
+        action: "consulting_lead.feeds_knowledge"
+        owner: "consulting_lead"
+        inputs: ["engagement_id", "client_feedback", "feedback"]
+        outputs: ["knowledge_updated"]
+        sla_hours: 12
