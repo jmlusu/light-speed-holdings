@@ -21,7 +21,7 @@ from ai_company.registry.loader import load_yaml_cached
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-EXPECTED_AGENT_COUNT = 131
+EXPECTED_AGENT_COUNT = 135
 
 # Current-facing docs that must reference the live agent count.
 CURRENT_DOCS = [
