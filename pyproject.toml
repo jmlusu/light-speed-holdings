@@ -23,7 +23,7 @@ dependencies = [
       "fastapi",
       "uvicorn[standard]",
       "aiohttp",
-    "httpx<0.28.0",
+    "httpx<0.29.0",
     # Security
     "cryptography>=42.0",
     # ML dependencies
