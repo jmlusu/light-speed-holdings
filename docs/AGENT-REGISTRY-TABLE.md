@@ -2,7 +2,7 @@
 
 > **Source**: `company-registry.yaml`
 > **Total Agents**: 135 across 19 departments
-> **Generated**: 2026-08-20
+> **Generated**: 2026-08-22
 
 ---
 
