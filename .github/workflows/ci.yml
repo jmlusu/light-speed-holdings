@@ -225,8 +225,10 @@ jobs:
         run: uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
       - name: Verify no drift
         run: |
-          # Exclude the generated-date line in AGENT-REGISTRY-TABLE.md (changes daily)
-          git diff --exit-code -- . ':!docs/AGENT-REGISTRY-TABLE.md' || { echo "::error::Generated agent files drifted from the committed state. Run 'uv run python -c \"from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()\"' and commit the regenerated output."; exit 1; }
+          # Exclude the generated-date line in AGENT-REGISTRY-TABLE.md (changes daily).
+          # Exclude uv.lock: `uv run` legitimately re-locks it when pyproject.toml
+          # changes (e.g. dependabot bumps); that diff is not agent-file drift.
+          git diff --exit-code -- . ':!docs/AGENT-REGISTRY-TABLE.md' ':!uv.lock' || { echo "::error::Generated agent files drifted from the committed state. Run 'uv run python -c \"from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()\"' and commit the regenerated output."; exit 1; }
           # Also check that AGENT-REGISTRY-TABLE.md only differs by the date line
           if ! git diff --exit-code docs/AGENT-REGISTRY-TABLE.md; then
             DIFF_LINES=$(git diff docs/AGENT-REGISTRY-TABLE.md | grep '^[+-]' | grep -v '^[+-][+-][+-]' | grep -v 'Generated' | wc -l)

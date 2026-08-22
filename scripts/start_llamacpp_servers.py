@@ -58,7 +58,7 @@ OPTIONAL_MODELS = [
     },
 ]
 
-processes: list[subprocess.Popen] = []
+processes: list[tuple[dict, subprocess.Popen]] = []
 
 
 def find_llama_server() -> str | None:
@@ -77,6 +77,32 @@ def find_llama_server() -> str | None:
     return None
 
 
+def build_server_cmd(model: dict, llama_server_path: str) -> list[str]:
+    """Build the llama-server command line for a model."""
+    return [
+        llama_server_path,
+        "-m",
+        str(MODELS_DIR / model["file"]),
+        "-c",
+        str(model["ctx"]),
+        "-b",
+        str(model["batch"]),
+        "-t",
+        str(model["threads"]),
+        "-tb",
+        str(model["threads"]),
+        "-ngl",
+        "0",  # CPU only
+        "--mlock",
+        "--port",
+        str(model["port"]),
+        "--host",
+        "127.0.0.1",
+        "--api-key",
+        model["api_key"],
+    ]
+
+
 def start_server(model: dict) -> subprocess.Popen | None:
     """Start a llama-server for a model."""
     llama_server = find_llama_server()
@@ -89,29 +115,7 @@ def start_server(model: dict) -> subprocess.Popen | None:
         print(f"WARNING: Model not found: {model_path} - skipping")
         return None
 
-    cmd = [
-        llama_server,
-        "-m",
-        str(model_path),
-        "-c",
-        str(model["ctx"]),
-        "-b",
-        str(model["batch"]),
-        "-t",
-        str(model["threads"]),
-        "-tb",
-        str(model["threads"]),
-        "-ngl",
-        "0",  # CPU only
-        "--load-mode",
-        "mmap+mlock",
-        "--port",
-        str(model["port"]),
-        "--host",
-        "127.0.0.1",
-        "--api-key",
-        model["api_key"],
-    ]
+    cmd = build_server_cmd(model, llama_server)
 
     print(f"Starting {model['name']} on port {model['port']}...")
     proc = subprocess.Popen(
@@ -145,10 +149,10 @@ def wait_for_server(port: int, timeout: float = 60.0) -> bool:
 
 def signal_handler(sig, frame):
     print("\nShutting down servers...")
-    for proc in processes:
+    for _, proc in processes:
         if proc.poll() is None:
             proc.terminate()
-    for proc in processes:
+    for _, proc in processes:
         try:
             proc.wait(timeout=5)
         except subprocess.TimeoutExpired:
@@ -167,7 +171,7 @@ def main():
     for model in PRIORITY_MODELS:
         proc = start_server(model)
         if proc:
-            processes.append(proc)
+            processes.append((model, proc))
             if wait_for_server(model["port"]):
                 print(f"  OK {model['name']} ready on port {model['port']}")
             else:
@@ -186,13 +190,13 @@ def main():
     try:
         while True:
             time.sleep(10)
-            for i, proc in enumerate(processes):
+            for i, (model, proc) in enumerate(processes):
                 if proc.poll() is not None:
-                    print(f"WARNING: {PRIORITY_MODELS[i]['name']} server died, restarting...")
-                    new_proc = start_server(PRIORITY_MODELS[i])
+                    print(f"WARNING: {model['name']} server died, restarting...")
+                    new_proc = start_server(model)
                     if new_proc:
-                        processes[i] = new_proc
-                        wait_for_server(PRIORITY_MODELS[i]["port"])
+                        processes[i] = (model, new_proc)
+                        wait_for_server(model["port"])
     except KeyboardInterrupt:
         signal_handler(signal.SIGINT, None)
 
