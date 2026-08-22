@@ -38,19 +38,34 @@ jobs:
         run: |
           echo "Checking recent CI run status..."
 
-          # Get last 5 CI runs
-          RUNS=$(gh run list --workflow=ci.yml --limit=5 --json conclusion,updatedAt,headBranch 2>/dev/null || true)
+          # Judge only the default branch: PR runs (e.g. Dependabot) and other
+          # branches must not pollute the main-branch CI health signal.
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
+          RUNS=$(gh run list --workflow=ci.yml --branch "$DEFAULT_BRANCH" --limit=15 --json conclusion,updatedAt 2>/dev/null || true)
           RUNS=${RUNS:-[]}
-          FAILED=$(echo "$RUNS" | python -c "
+
+          # Count consecutive failures walking back from the newest run until
+          # the first success. A raw count over the last N runs keeps old,
+          # already-fixed failures ringing the alarm whenever no new pushes
+          # land; the streak instead clears as soon as one green run lands.
+          FAILED_STREAK=$(echo "$RUNS" | python -c "
           import sys, json
           data = sys.stdin.read().strip()
           runs = json.loads(data) if data else []
-          failed = [r for r in runs if r.get('conclusion') == 'failure']
-          print(len(failed))
+          streak = 0
+          for r in runs:
+              conclusion = r.get('conclusion')
+              if conclusion == 'failure':
+                  streak += 1
+              elif conclusion == 'success':
+                  break
+              # cancelled/skipped conclusions are neutral: neither fail nor reset
+          print(streak)
           ")
 
-          if [ "$FAILED" -gt 2 ]; then
-            echo "::error::More than 2 recent CI runs failed ($FAILED/5)"
+          if [ "$FAILED_STREAK" -gt 2 ]; then
+            echo "::error::$FAILED_STREAK consecutive CI runs failed on $DEFAULT_BRANCH"
 
             # Root cause fix: gh requires every referenced label to already exist,
             # and the 'monitoring' label is not present in this repo. Create it up
@@ -60,8 +75,9 @@ jobs:
             # distinguishable from regular bug reports.
             gh label create monitoring --color "5319e7" --description "CI health / monitoring alert issues" 2>/dev/null || true
 
-            # This workflow runs hourly — guard against duplicate issue spam by
-            # skipping creation when an open CI-health alert issue already exists.
+            # This workflow runs every 12 hours — guard against duplicate issue
+            # spam by skipping creation when an open CI-health alert issue
+            # already exists.
             EXISTING=$(gh issue list --search "CI health degraded" --state open --json number --jq 'length' 2>/dev/null || echo 0)
             EXISTING=${EXISTING:-0}
 
@@ -70,7 +86,7 @@ jobs:
               # visible in the log and reported via ::error::, not hidden behind a
               # misleading "no permissions" message.
               ISSUE_URL=$(gh issue create \
-                --title "CI health degraded — $FAILED of last 5 runs failed" \
+                --title "CI health degraded — $FAILED_STREAK consecutive runs failed on $DEFAULT_BRANCH" \
                 --label "bug,monitoring" \
                 --body "Automated monitoring detected CI health degradation. Investigate recent workflow failures." 2>&1)
               RC=$?
@@ -89,7 +105,7 @@ jobs:
             exit 1
           fi
 
-          echo "[OK] CI health acceptable ($FAILED recent failures)"
+          echo "[OK] CI health acceptable ($FAILED_STREAK consecutive failures on $DEFAULT_BRANCH)"
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
