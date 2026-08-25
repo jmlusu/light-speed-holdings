@@ -566,6 +566,19 @@ def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
         total_agents=len(registry),
         scheduled_tasks=len(scheduled),
         uptime_seconds=time.time() - _START_TIME,
+        computed_at=datetime.now(timezone.utc).isoformat(),
+        source={
+            "tasks": "orchestrator/inbox.json",
+            "agents": "company-registry.yaml",
+            "approvals": "orchestrator/approvals.yaml",
+            "escalations": "orchestrator/escalation.yaml",
+            "scheduler": "orchestrator/scheduler.yaml",
+        },
+        data_quality={
+            "completeness": "all_fields",
+            "task_source": "message_bus",
+            "agent_source": "registry",
+        },
     )
 
     # Broadcast KPI snapshot to WebSocket clients
@@ -1505,81 +1518,161 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
     - Cost tracking
     - Task pipeline status
     - Escalation alerts
+
+    Each section is independently wrapped so that a failure in one section
+    does not prevent the rest from being returned.
     """
     from ai_company.dashboard.kpis import collect_all_kpis
 
-    # Live KPIs from all departments
-    kpi_snapshot = collect_all_kpis()
-    departments = kpi_snapshot.get("departments", {})
-
-    # Task pipeline
-    tasks = _read_all_tasks()
-    task_summary = {
-        "pending": sum(1 for t in tasks if t.get("status") == "pending"),
-        "in_progress": sum(1 for t in tasks if t.get("status") == "in_progress"),
-        "completed": sum(1 for t in tasks if t.get("status") == "completed"),
-        "failed": sum(1 for t in tasks if t.get("status") == "failed"),
-        "escalated": sum(1 for t in tasks if t.get("status") == "escalated"),
-        "total": len(tasks),
-    }
-
-    # Agent performance
-    registry = _load_registry()
-    agent_summary: dict[str, Any] = {
-        "total_agents": len(registry),
-        "by_type": {},
-        "by_department": {},
-    }
-    for agent in registry:
-        atype = agent.get("type", "unknown")
-        dept = agent.get("department", "unassigned")
-        agent_summary["by_type"][atype] = agent_summary["by_type"].get(atype, 0) + 1
-        agent_summary["by_department"][dept] = agent_summary["by_department"].get(dept, 0) + 1
-
-    # Cost tracking
-    cost_data = _load_json("orchestrator/cost_tracker.json")
-    cost_summary: dict[str, Any] = {"total_budget": 0, "total_spent": 0, "llm_spend": 0}
-    if isinstance(cost_data, dict):
-        cost_summary["total_budget"] = cost_data.get("total_budget", 0)
-        cost_summary["total_spent"] = cost_data.get("total_spent", 0)
-        cost_summary["llm_spend"] = cost_data.get("llm_spend", 0)
-
-    # Escalation alerts
-    escalation_data = _load_yaml("orchestrator/escalation.yaml")
-    escalation_events = escalation_data.get("events", [])
-    open_escalations = [e for e in escalation_events if not e.get("resolved", False)]
-
-    # Approvals pending
-    approvals_data = _load_yaml("orchestrator/approvals.yaml")
-    approval_requests = approvals_data.get("requests", [])
+    sections: dict[str, Any] = {}
+    errors: list[dict[str, str]] = []
     now_iso = datetime.now(timezone.utc).isoformat()
-    pending_approvals = [
-        r
-        for r in approval_requests
-        if r.get("status") == "pending" and (not r.get("expires_at") or r["expires_at"] > now_iso)
-    ]
 
-    # Scheduled tasks
-    scheduler_data = _load_yaml("orchestrator/scheduler.yaml")
-    scheduled = scheduler_data.get("tasks", [])
+    # Section: Live KPIs from all departments
+    try:
+        kpi_snapshot = collect_all_kpis()
+        departments = kpi_snapshot.get("departments", {})
+        sections["collected_at"] = kpi_snapshot.get("collected_at", now_iso)
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: KPI snapshot failed")
+        departments = {}
+        sections["collected_at"] = now_iso
+        errors.append({"section": "kpi_snapshot", "error": "KPI collection failed"})
 
-    # Company-level KPIs
-    company_kpi_data = _load_yaml("config/company/kpis.yaml")
-    company_kpis = company_kpi_data.get("kpis", {}).get("company", [])
+    # Section: Task pipeline
+    try:
+        tasks = _read_all_tasks()
+        sections["task_pipeline"] = {
+            "pending": sum(1 for t in tasks if t.get("status") == "pending"),
+            "in_progress": sum(1 for t in tasks if t.get("status") == "in_progress"),
+            "completed": sum(1 for t in tasks if t.get("status") == "completed"),
+            "failed": sum(1 for t in tasks if t.get("status") == "failed"),
+            "escalated": sum(1 for t in tasks if t.get("status") == "escalated"),
+            "total": len(tasks),
+        }
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Task pipeline failed")
+        sections["task_pipeline"] = {
+            "pending": 0,
+            "in_progress": 0,
+            "completed": 0,
+            "failed": 0,
+            "escalated": 0,
+            "total": 0,
+        }
+        errors.append({"section": "task_pipeline", "error": "Task data unavailable"})
+
+    # Section: Agent performance
+    try:
+        registry = _load_registry()
+        agent_summary: dict[str, Any] = {
+            "total_agents": len(registry),
+            "by_type": {},
+            "by_department": {},
+        }
+        for agent in registry:
+            atype = agent.get("type", "unknown")
+            dept = agent.get("department", "unassigned")
+            agent_summary["by_type"][atype] = agent_summary["by_type"].get(atype, 0) + 1
+            agent_summary["by_department"][dept] = agent_summary["by_department"].get(dept, 0) + 1
+        sections["agent_performance"] = agent_summary
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Agent performance failed")
+        sections["agent_performance"] = {"total_agents": 0, "by_type": {}, "by_department": {}}
+        errors.append({"section": "agent_performance", "error": "Agent data unavailable"})
+
+    # Section: Cost tracking
+    try:
+        cost_data = _load_json("orchestrator/cost_tracker.json")
+        cost_summary: dict[str, Any] = {"total_budget": 0, "total_spent": 0, "llm_spend": 0}
+        if isinstance(cost_data, dict):
+            cost_summary["total_budget"] = cost_data.get("total_budget", 0)
+            cost_summary["total_spent"] = cost_data.get("total_spent", 0)
+            cost_summary["llm_spend"] = cost_data.get("llm_spend", 0)
+        sections["cost_tracking"] = cost_summary
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Cost tracking failed")
+        sections["cost_tracking"] = {"total_budget": 0, "total_spent": 0, "llm_spend": 0}
+        errors.append({"section": "cost_tracking", "error": "Cost data unavailable"})
+
+    # Section: Escalation alerts
+    try:
+        escalation_data = _load_yaml("orchestrator/escalation.yaml")
+        escalation_events = escalation_data.get("events", [])
+        sections["escalation_alerts"] = [
+            e for e in escalation_events if not e.get("resolved", False)
+        ]
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Escalations failed")
+        sections["escalation_alerts"] = []
+        errors.append({"section": "escalation_alerts", "error": "Escalation data unavailable"})
+
+    # Section: Approvals pending
+    try:
+        approvals_data = _load_yaml("orchestrator/approvals.yaml")
+        approval_requests = approvals_data.get("requests", [])
+        pending_approvals = [
+            r
+            for r in approval_requests
+            if r.get("status") == "pending"
+            and (not r.get("expires_at") or r["expires_at"] > now_iso)
+        ]
+        sections["pending_approvals"] = pending_approvals
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Approvals failed")
+        sections["pending_approvals"] = []
+        errors.append({"section": "pending_approvals", "error": "Approval data unavailable"})
+
+    # Section: Scheduled tasks
+    try:
+        scheduler_data = _load_yaml("orchestrator/scheduler.yaml")
+        sections["scheduled_tasks"] = scheduler_data.get("tasks", [])
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Scheduler failed")
+        sections["scheduled_tasks"] = []
+        errors.append({"section": "scheduled_tasks", "error": "Scheduler data unavailable"})
+
+    # Section: Company-level KPIs
+    try:
+        company_kpi_data = _load_yaml("config/company/kpis.yaml")
+        company_kpis = company_kpi_data.get("kpis", {}).get("company", [])
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Company KPIs failed")
+        company_kpis = []
+        errors.append({"section": "company_kpis", "error": "Company KPI config unavailable"})
 
     result = {
-        "collected_at": kpi_snapshot["collected_at"],
+        "collected_at": sections.get("collected_at", now_iso),
+        "computed_at": now_iso,
+        "data_quality": {
+            "kpi_source": "live_collectors",
+            "task_source": "message_bus",
+            "agent_source": "registry",
+            "cost_source": "cost_tracker",
+            "completeness": "partial" if errors else "full",
+            "notes": "; ".join(e["error"] for e in errors) if errors else "All sections loaded",
+        },
+        "source": {
+            "kpi_snapshot": "ai_company.dashboard.kpis.collect_all_kpis",
+            "tasks": "orchestrator/inbox.json",
+            "agents": "company-registry.yaml",
+            "costs": "orchestrator/cost_tracker.json",
+            "escalations": "orchestrator/escalation.yaml",
+            "approvals": "orchestrator/approvals.yaml",
+            "scheduler": "orchestrator/scheduler.yaml",
+        },
         "company_health": {
             "departments": {dept: data.get("kpis", {}) for dept, data in departments.items()},
             "company_kpis": company_kpis,
         },
-        "agent_performance": agent_summary,
-        "cost_tracking": cost_summary,
-        "task_pipeline": task_summary,
-        "escalation_alerts": open_escalations,
-        "pending_approvals": pending_approvals,
-        "scheduled_tasks": scheduled,
+        "agent_performance": sections.get("agent_performance", {}),
+        "cost_tracking": sections.get("cost_tracking", {}),
+        "task_pipeline": sections.get("task_pipeline", {}),
+        "escalation_alerts": sections.get("escalation_alerts", []),
+        "pending_approvals": sections.get("pending_approvals", []),
+        "scheduled_tasks": sections.get("scheduled_tasks", []),
         "uptime_seconds": time.time() - _START_TIME,
+        "section_errors": errors,
     }
 
     # Broadcast to WebSocket
@@ -2639,7 +2732,7 @@ def get_executive_briefing() -> dict[str, Any]:
 
         health = OrgHealthCalculator().compute(database=get_database()).score
     except Exception:  # noqa: BLE001
-        health = 85  # Fallback
+        health = None  # No data available — don't fabricate a score
 
     return {
         "items": items[:20],  # Cap at 20 items

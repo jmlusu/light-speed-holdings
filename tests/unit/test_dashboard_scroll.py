@@ -213,13 +213,17 @@ class TestFrontendDataContract:
             "total_agents",
             "scheduled_tasks",
             "uptime_seconds",
+            "computed_at",
+            "source",
+            "data_quality",
         }
         assert expected_keys == set(data.keys()), (
             f"Mismatch: expected {expected_keys}, got {set(data.keys())}"
         )
 
         # All values must be JSON-serializable (no None for int fields)
-        for key in expected_keys - {"uptime_seconds"}:
+        int_fields = expected_keys - {"uptime_seconds", "computed_at", "source", "data_quality"}
+        for key in int_fields:
             assert data[key] is not None, f"{key} is None"
             assert isinstance(data[key], int), f"{key} should be int"
 
@@ -283,12 +287,14 @@ class TestScrollRegression:
             resp = client.get("/api/v1/dashboard")
             snapshots.append(resp.json())
 
-        # All snapshots must be identical (exclude uptime_seconds which changes)
+        # All snapshots must be identical (exclude volatile fields)
         first = snapshots[0].copy()
         first.pop("uptime_seconds", None)
+        first.pop("computed_at", None)
         for i, snap in enumerate(snapshots[1:], 1):
             current = snap.copy()
             current.pop("uptime_seconds", None)
+            current.pop("computed_at", None)
             assert current == first, (
                 f"Poll cycle {i} returned different data than cycle 0. "
                 f"This would cause DOM thrashing and scroll jumps."

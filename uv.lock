@@ -73,7 +73,7 @@ requires-dist = [
     { name = "click" },
     { name = "cryptography", specifier = ">=42.0" },
     { name = "fastapi" },
-    { name = "httpx", specifier = "<0.28.0" },
+    { name = "httpx", specifier = "<0.29.0" },
     { name = "hypothesis", marker = "extra == 'dev'" },
     { name = "jinja2" },
     { name = "jsonschema" },

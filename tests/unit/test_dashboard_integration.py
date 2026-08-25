@@ -646,14 +646,16 @@ class TestCEOHero:
         assert 0 <= data["score"] <= 100
 
     def test_org_health_components_have_values(self, setup_data: None) -> None:
-        """Each component has a name and numeric value."""
+        """Each component has a name and a value (numeric or None when no data)."""
         resp = client.get("/api/v1/org-health")
         data = resp.json()
         for comp in data["components"]:
             assert "name" in comp
             assert "value" in comp
-            assert isinstance(comp["value"], (int, float))
-            assert 0 <= comp["value"] <= 100
+            # Value is either a numeric score (0-100) or None (no data available)
+            if comp["value"] is not None:
+                assert isinstance(comp["value"], (int, float))
+                assert 0 <= comp["value"] <= 100
 
     def test_org_health_with_trend_limit(self, setup_data: None) -> None:
         """Trend limit parameter is respected."""

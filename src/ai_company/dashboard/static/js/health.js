@@ -157,7 +157,7 @@ function healthMonitor() {
     },
 
     getChangeClass(comp) {
-      if (!comp) return 'text-jarvis-muted';
+      if (!comp || comp.value === null) return 'text-jarvis-muted';
       // Determine color based on value ranges
       if (comp.value >= 80) return 'text-emerald-400';
       if (comp.value >= 50) return 'text-amber-400';
@@ -165,7 +165,7 @@ function healthMonitor() {
     },
 
     getChangeText(comp) {
-      if (!comp) return '';
+      if (!comp || comp.value === null) return 'No data';
       if (comp.value >= 80) return 'Healthy';
       if (comp.value >= 50) return 'Fair';
       return 'At Risk';

@@ -810,12 +810,15 @@ class ModelRouter:
 
         next_idx = current_idx + 1
         if next_idx >= len(TIER_ORDER):
-            # Already at premium; return with warning
+            # Already at premium; fall back to OmniRoute (auto model)
+            logger.warning(
+                "Token-limit rotation: already at premium tier, falling back to OmniRoute (auto model)",
+            )
             return Route(
-                provider="ollama",
-                model="llama3.1:8b",
+                provider="omniroute",
+                model="auto",
                 tier=current_tier,
-                reason="already at premium tier; no larger tier available",
+                reason="already at premium tier; using OmniRoute fallback (auto model)",
             )
 
         next_tier = TIER_ORDER[next_idx]
@@ -1368,11 +1371,16 @@ class ModelRouter:
 
         tier = self._tiers.get(tier_id)
         if tier is None or not tier.providers:
+            # Last-resort fallback: route to OmniRoute meta-provider
+            logger.warning(
+                "Tier '%s' has no providers — falling back to OmniRoute (auto model)",
+                tier_id,
+            )
             return Route(
-                provider="ollama",
-                model="llama3.1:8b",
+                provider="omniroute",
+                model="auto",
                 tier=tier_id,
-                reason=f"{reason}; tier '{tier_id}' has no providers, using hardcoded fallback",
+                reason=f"{reason}; tier '{tier_id}' has no providers, using OmniRoute fallback",
             )
 
         first = tier.providers[0]
@@ -1512,6 +1520,17 @@ class ModelRouter:
                 )
                 seen.add(fallback_tier.id)
             fallback_tier = self.get_fallback_tier(fallback_tier.id)
+
+        # Last-resort: always append OmniRoute meta-provider as final fallback
+        if "omniroute" not in seen:
+            routes.append(
+                Route(
+                    provider="omniroute",
+                    model="auto",
+                    tier=primary.tier,
+                    reason="last-resort fallback: OmniRoute meta-provider (auto model)",
+                )
+            )
 
         return routes
 

@@ -57,8 +57,16 @@ MODEL_COSTS: dict[str, dict[str, float]] = {
     # Ollama / local models — effectively free
     "llama3.1:8b": {"input": 0.0, "output": 0.0},
     "llama3.1:70b": {"input": 0.0, "output": 0.0},
+    "llama3.1-8b-32k": {"input": 0.0, "output": 0.0},
     "codellama:13b": {"input": 0.0, "output": 0.0},
     "qwen2.5-coder:14b": {"input": 0.0, "output": 0.0},
+    "qwen2.5-coder:7b": {"input": 0.0, "output": 0.0},
+    "qwen2.5-coder-7b-32k": {"input": 0.0, "output": 0.0},
+    "mistral:7b": {"input": 0.0, "output": 0.0},
+    "mistral-7b-32k": {"input": 0.0, "output": 0.0},
+    "deepseek-r1-64k": {"input": 0.0, "output": 0.0},
+    "gemma4-12b": {"input": 0.0, "output": 0.0},
+    "gemma4-12b-32k": {"input": 0.0, "output": 0.0},
     # Catch-all for unknown models
     "_default": {"input": 1.00, "output": 3.00},
 }

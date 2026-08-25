@@ -13,6 +13,7 @@ from ai_company.llm.circuit_breaker import CircuitBreaker
 from ai_company.llm.cost_tracker import CostTracker, _cost_per_token
 from ai_company.llm.json_parser import parse_llm_json
 from ai_company.llm.oauth2 import OAuth2Config, OAuth2TokenManager
+from ai_company.llm.prompt_compressor import PromptCompressor
 from ai_company.llm.providers.base import (
     ChatResponse,
     LLMProvider,
@@ -23,6 +24,7 @@ from ai_company.llm.providers.base import (
 from ai_company.llm.providers.llamacpp import LlamaCppConfig, LlamaCppProvider
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
+from ai_company.llm.response_cache import ResponseCache
 from ai_company.llm.token_bucket import TokenBucket
 from ai_company.llm.token_counter import (
     TokenUsage,
@@ -67,6 +69,8 @@ class LLMClient:
         registry_path: str = "company/agent-registry.json",
         cost_tracker: CostTracker | None = None,
         limiter_timeout: float = 30.0,
+        response_cache: ResponseCache | None = None,
+        prompt_compressor: PromptCompressor | None = None,
     ) -> None:
         self.router = ModelRouter(config_path=config_path, registry_path=registry_path)
         self._providers: dict[str, LLMProvider] = {}
@@ -74,6 +78,8 @@ class LLMClient:
         self._limiters: dict[str, TokenBucket] = {}
         self._cost_tracker = cost_tracker
         self._limiter_timeout = limiter_timeout
+        self._response_cache = response_cache
+        self._prompt_compressor = prompt_compressor
         self._init_providers()
 
     def _init_providers(self) -> None:
@@ -156,6 +162,31 @@ class LLMClient:
                     auth_style=auth_style,
                     oauth2=oauth2,
                 )
+
+        self._log_omniroute_status()
+
+    @staticmethod
+    def _log_omniroute_status(_unused: Any | None = None) -> None:
+        """Log OmniRoute gateway connectivity at startup."""
+        import os
+
+        omniroute_key = os.environ.get("OMNIROUTE_API_KEY", "")
+        omniroute_url = os.environ.get("OMNIROUTE_API_BASE", "http://localhost:20128")
+
+        if not omniroute_key:
+            logger.info("OmniRoute: not configured (OMNIROUTE_API_KEY not set)")
+            return
+
+        try:
+            import httpx
+
+            resp = httpx.get(f"{omniroute_url}/health", timeout=3.0)
+            if resp.status_code == 200:
+                logger.info("OmniRoute: reachable at %s", omniroute_url)
+            else:
+                logger.warning("OmniRoute: HTTP %d at %s", resp.status_code, omniroute_url)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("OmniRoute: unreachable at %s (%s)", omniroute_url, exc)
 
     @staticmethod
     def _build_oauth2_manager(
@@ -242,9 +273,42 @@ class LLMClient:
         last_error: str = ""
         last_raw: str = ""
 
+        # Optional prompt compression to reduce token count.
+        if self._prompt_compressor is not None:
+            system_prompt, task_instruction, compression = self._prompt_compressor.compress(
+                system_prompt, task_instruction
+            )
+            logger.debug(
+                "Prompt compressed: %d → %d tokens (%.0f%% reduction)",
+                compression.original_tokens_est,
+                compression.compressed_tokens_est,
+                compression.reduction_ratio * 100,
+            )
+
         # Assemble the exact prompt text once so heuristic fallback counts
         # match what was actually sent to the provider.
         prompt_text = join_prompt(system_prompt, task_instruction)
+
+        # Optional response cache check — only for deterministic queries
+        # (temperature=0). Creative/non-deterministic outputs must not be cached.
+        if self._response_cache is not None:
+            cached = self._response_cache.get(
+                system_prompt=system_prompt,
+                user_prompt=task_instruction,
+                model=route.model,
+                temperature=0.0,
+            )
+            if cached is not None:
+                logger.info(
+                    "Cache hit: agent=%s model=%s tokens_saved=%d cost_saved=$%.6f",
+                    agent_name,
+                    route.model,
+                    cached.tokens_saved,
+                    cached.cost_saved,
+                )
+                parsed = self._parse_response(cached.content)
+                if parsed is not None:
+                    return parsed
 
         for attempt in range(max_retries):
             provider_idx = attempt % len(provider_chain)
@@ -294,6 +358,21 @@ class LLMClient:
                         response.model or model,
                     )
                     self._record_usage(response, agent_name, task_id, attempt + 1, usage)
+                    # Cache successful responses for deterministic queries.
+                    if self._response_cache is not None:
+                        self._response_cache.set(
+                            system_prompt=system_prompt,
+                            user_prompt=task_instruction,
+                            model=model,
+                            temperature=0.0,
+                            response_content=response.content,
+                            tokens_used=usage.total_tokens,
+                            cost_usd=getattr(
+                                self._cost_tracker,
+                                "_calculate_cost",
+                                lambda m, p, c: 0.0,
+                            )(model, usage.prompt_tokens, usage.completion_tokens),
+                        )
                     inc_metric("llm_requests_total")
                     return parsed
                 last_raw = response.content
@@ -393,6 +472,18 @@ class LLMClient:
 
         last_error: str = ""
         last_raw: str = ""
+
+        # Optional prompt compression to reduce token count.
+        if self._prompt_compressor is not None:
+            system_prompt, task_instruction, compression = self._prompt_compressor.compress(
+                system_prompt, task_instruction
+            )
+            logger.debug(
+                "Prompt compressed: %d → %d tokens (%.0f%% reduction)",
+                compression.original_tokens_est,
+                compression.compressed_tokens_est,
+                compression.reduction_ratio * 100,
+            )
 
         for attempt in range(max_retries):
             provider_idx = attempt % len(provider_chain)
