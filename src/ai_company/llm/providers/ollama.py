@@ -22,7 +22,7 @@ class OllamaProvider(LLMProvider):
         self,
         name: str = "ollama",
         api_base: str = "http://localhost:11434",
-        default_model: str = "llama3.1:8b",
+        default_model: str = "llama3.1-8b-32k",
         timeout: float = 300.0,
     ) -> None:
         self.name = name

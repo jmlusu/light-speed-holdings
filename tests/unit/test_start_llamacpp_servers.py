@@ -39,12 +39,11 @@ def _cmd() -> list[str]:
     return _load_module().build_server_cmd(MODEL, "llama-server")
 
 
-def test_cmd_pins_memory_with_mlock() -> None:
-    assert "--mlock" in _cmd()
-
-
-def test_cmd_has_no_load_mode_flag() -> None:
-    assert "--load-mode" not in _cmd()
+def test_cmd_pins_memory_with_load_mode_mlock() -> None:
+    cmd = _cmd()
+    assert "--load-mode" in cmd
+    idx = cmd.index("--load-mode")
+    assert cmd[idx + 1] == "mlock"
 
 
 def test_cmd_starts_with_server_path() -> None:
@@ -72,7 +71,7 @@ def test_cmd_network_and_auth_arguments() -> None:
 
 def test_cmd_flag_ordering_preserved() -> None:
     cmd = _cmd()
-    assert cmd.index("-ngl") < cmd.index("--mlock") < cmd.index("--port")
+    assert cmd.index("-ngl") < cmd.index("--load-mode") < cmd.index("--port")
 
 
 def test_process_registry_tracks_model_pairs() -> None:

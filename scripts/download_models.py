@@ -56,6 +56,9 @@ INITIAL_TIMEOUT = 600  # 10 minutes
 MAX_TIMEOUT = 3600  # 1 hour
 
 
+MIN_SIZE_BYTES = 1_000_000_000  # 1 GB — anything smaller is definitely not a valid GGUF
+
+
 def check_huggingface_cli() -> bool:
     """Check if hf or huggingface-cli is available."""
     for cmd in ["hf", "huggingface-cli"]:
@@ -94,17 +97,18 @@ def download_with_retry(
     env = os.environ.copy()
     if hf_token:
         env["HF_TOKEN"] = hf_token
+    # Isolate HF cache to avoid polluting models/ with .cache artifacts
+    env["HF_HOME"] = str(models_dir / ".hf_cache")
 
-    # Check if already downloaded completely
+    # Idempotent: skip if a valid GGUF already exists at the target path
     if output_path.exists():
         actual_size = get_file_size(output_path)
         if actual_size >= expected_size * 0.95:  # Allow 5% variance
             print(f"[OK] {model['name']} already exists ({format_size(actual_size)}), skipping")
             return True
-        else:
-            print(
-                f"[RESUME] {model['name']} partial ({format_size(actual_size)}/{format_size(expected_size)}), resuming..."
-            )
+        print(
+            f"[RESUME] {model['name']} partial ({format_size(actual_size)}/{format_size(expected_size)}), resuming..."
+        )
 
     base_cmd = [
         cmd,
@@ -219,6 +223,22 @@ def main():
             success += 1
         else:
             failed.append(model["name"])
+
+    # Clean up isolated HF cache (models already live at root of models/)
+    hf_cache = models_dir / ".hf_cache"
+    if hf_cache.exists():
+        import shutil
+
+        shutil.rmtree(hf_cache, ignore_errors=True)
+        print(f"\nCleaned up temporary HF cache: {hf_cache}")
+
+    # Clean up any stale .cache directory left by old download attempts
+    stale_cache = models_dir / ".cache"
+    if stale_cache.exists():
+        import shutil
+
+        shutil.rmtree(stale_cache, ignore_errors=True)
+        print(f"Cleaned up stale cache: {stale_cache}")
 
     print(f"\n{'=' * 60}")
     print(f"SUMMARY: {success}/{len(MODELS)} models downloaded")

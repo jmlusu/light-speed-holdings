@@ -1,5 +1,65 @@
 {
   "$schema": "https://opencode.ai/config.schema.json",
   "model": "opencode/claude-sonnet-4.5",
-  "smallModel": "opencode/gpt-5.1-codex"
+  "smallModel": "opencode/gpt-5.1-codex",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      },
+      "models": {
+        "llama3.1-8b-32k:latest": {
+          "name": "Llama 3.1 8B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "qwen2.5-coder-7b-32k:latest": {
+          "name": "Qwen 2.5 Coder 7B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "deepseek-r1-64k:latest": {
+          "name": "DeepSeek R1 64K (Local)",
+          "limit": { "context": 8192, "output": 16384 }
+        },
+        "gemma4-12b-32k:latest": {
+          "name": "Gemma 4 12B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "mistral-7b-32k:latest": {
+          "name": "Mistral 7B 32K (Local)",
+          "limit": { "context": 32768, "output": 8192 }
+        }
+      }
+    },
+    "llamacpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:8088/v1"
+      },
+      "models": {
+        "llama3.1-8b-32k": {
+          "name": "Llama 3.1 8B (llama.cpp)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "qwen2.5-coder-7b-32k": {
+          "name": "Qwen 2.5 Coder 7B (llama.cpp)",
+          "limit": { "context": 32768, "output": 8192 }
+        },
+        "deepseek-r1-64k": {
+          "name": "DeepSeek R1 64K (llama.cpp)",
+          "limit": { "context": 8192, "output": 16384 }
+        },
+        "gemma2-9b-q5": {
+          "name": "Gemma 2 9B Q5 (llama.cpp)",
+          "limit": { "context": 8192, "output": 8192 }
+        },
+        "mistral-7b-32k": {
+          "name": "Mistral 7B (llama.cpp)",
+          "limit": { "context": 16384, "output": 8192 }
+        }
+      }
+    }
+  }
 }

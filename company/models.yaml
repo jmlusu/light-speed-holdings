@@ -58,24 +58,15 @@ providers:
 
   ollama:
     backend: ollama
-    default_model: llama3.1:8b
+    default_model: llama3.1-8b-32k
     api_base: http://localhost:11434
     # Per-model configuration (Ollama manages downloads and storage)
     models:
-      llama3.1:8b:
-        specialization: general
-        context_window: 8192
       llama3.1-8b-32k:
         specialization: general
         context_window: 32768
-      mistral:7b:
-        specialization: general_fast
-        context_window: 8192
       mistral-7b-32k:
         specialization: general_fast
-        context_window: 32768
-      qwen2.5-coder:7b:
-        specialization: coding
         context_window: 32768
       qwen2.5-coder-7b-32k:
         specialization: coding
@@ -83,9 +74,6 @@ providers:
       deepseek-r1-64k:
         specialization: reasoning
         context_window: 65536
-      gemma4-12b:
-        specialization: general_quality
-        context_window: 8192
       gemma4-12b-32k:
         specialization: general_quality
         context_window: 32768
@@ -197,8 +185,6 @@ tiers:
         model: mistral-7b-32k
       - provider: ollama
         model: mistral-7b-32k
-      - provider: ollama
-        model: mistral:7b
       - provider: gemini
         model: gemini-3.5-flash
       - provider: omniroute
@@ -337,7 +323,7 @@ free_tier:
     - provider: opencode
       model: gpt-5-nano
     - provider: ollama
-      model: llama3.1:8b
+      model: llama3.1-8b-32k
     - provider: omniroute
       model: auto
 

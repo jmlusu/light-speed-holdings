@@ -7,7 +7,7 @@
 #   - config/company/budget.yaml            (annual corporate budget, FY2026)
 #
 # The concrete values below were chosen conservatively: the production stack
-# routes primarily to ollama/llama3.1:8b (effectively $0/call), so these caps
+# routes primarily to ollama/llama3.1-8b-32k (effectively $0/call), so these caps
 # act as protective ceilings that never trip on local models but hard-stop a
 # runaway paid-provider session. They are consumed by the Executor via
 # CostTracker.check_budget() and the auto-suspend guard in Executor.tick().

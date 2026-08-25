@@ -198,7 +198,7 @@ tiers:
       - provider: anthropic
         model: claude-3-5-haiku-20241022
       - provider: ollama
-        model: llama3.1:8b
+        model: llama3.1-8b-32k
 ```
 
 **Provider health monitoring:**

@@ -964,7 +964,7 @@ def _setup_model_files(tmp_path: Path) -> None:
             },
             "ollama": {
                 "backend": "ollama",
-                "default_model": "llama3.1:8b",
+                "default_model": "llama3.1-8b-32k",
                 "api_base": "http://localhost:11434",
             },
         },
