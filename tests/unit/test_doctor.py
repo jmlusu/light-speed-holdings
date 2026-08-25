@@ -289,7 +289,7 @@ class TestCheckLLMProviders:
 class TestRunAllChecks:
     def test_returns_all_checks(self):
         results = run_all_checks()
-        assert len(results) >= 14  # 6 original + 8 new
+        assert len(results) >= 15  # 6 original + 9 new
 
     def test_all_are_check_result(self):
         results = run_all_checks()
@@ -318,6 +318,7 @@ class TestRunAllChecks:
             "Memory Engine",
             "Disk Space",
             "Cost Tracker",
+            "OmniRoute Gateway",
             "LLM Providers",
         }
         assert expected.issubset(names), f"Missing: {expected - names}"

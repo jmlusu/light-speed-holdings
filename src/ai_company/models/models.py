@@ -530,6 +530,63 @@ class Task(EntityBase):
 
 
 # ---------------------------------------------------------------------------
+# TaskResult — structured execution output
+# ---------------------------------------------------------------------------
+
+
+class TaskEventType(str, Enum):
+    """Lifecycle events emitted during task execution."""
+
+    QUEUED = "queued"
+    CLAIMED = "claimed"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    TIMEOUT = "timeout"
+    CANCELLED = "cancelled"
+    ESCALATED = "escalated"
+    RETRYING = "retrying"
+
+
+class TaskResult(BaseModel):
+    """Structured result of a single task execution attempt.
+
+    Populated by the TaskExecutor after each run.  Consumers (briefing
+    generator, dashboard, cost analytics) read this instead of the legacy
+    ``Task.result`` string.
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+    task_id: str
+    status: TaskStatus = TaskStatus.PENDING
+    output: str = ""
+    errors: list[str] = Field(default_factory=list)
+    duration_seconds: float = 0.0
+    tokens_used: int = 0
+    cost_usd: float = 0.0
+    provider: str = ""
+    model: str = ""
+    attempt: int = 1
+    created_at: str = ""
+
+    def mark_success(self, output: str, duration: float, **kwargs: Any) -> None:
+        """Mark this result as successful."""
+        self.status = TaskStatus.COMPLETED
+        self.output = output
+        self.duration_seconds = duration
+        for k, v in kwargs.items():
+            if hasattr(self, k):
+                setattr(self, k, v)
+
+    def mark_failure(self, error: str, duration: float) -> None:
+        """Mark this result as failed with an error message."""
+        self.status = TaskStatus.FAILED
+        self.errors.append(error)
+        self.duration_seconds = duration
+
+
+# ---------------------------------------------------------------------------
 # Risk
 # ---------------------------------------------------------------------------
 

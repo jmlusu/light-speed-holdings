@@ -34,15 +34,15 @@ class ComponentScore:
 
     name: str
     weight: float
-    value: float  # 0-100
-    sub_score: float  # same as value; kept for API shape compatibility
+    value: float | None  # 0-100, or None when no data is available
+    sub_score: float | None  # same as value; kept for API shape compatibility
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "name": self.name,
-            "value": round(self.value, 2),
+            "value": round(self.value, 2) if self.value is not None else None,
             "weight": self.weight,
-            "sub_score": round(self.sub_score, 2),
+            "sub_score": round(self.sub_score, 2) if self.sub_score is not None else None,
         }
 
 
@@ -127,6 +127,8 @@ class OrgHealthCalculator:
         -------
         OrgHealthResult
             Composite score, band, and per-component breakdown.
+            Components with no data have ``value=None`` and are excluded
+            from the composite (the score reflects only available data).
         """
         components: list[ComponentScore] = []
         for comp_def in self._component_defs:
@@ -137,7 +139,13 @@ class OrgHealthCalculator:
                 ComponentScore(name=name, weight=weight, value=value, sub_score=value)
             )
 
-        composite = sum(c.weight * c.value for c in components)
+        # Only include components with real data in the composite
+        scored = [(c, c.value) for c in components if c.value is not None]
+        if scored:
+            total_weight = sum(c.weight for c, _ in scored)
+            composite = sum(c.weight * v for c, v in scored) / total_weight * 100
+        else:
+            composite = 0.0
         score = max(0, min(100, round(composite)))
         band = self._score_to_band(score)
 
@@ -230,8 +238,12 @@ class OrgHealthCalculator:
 
     # ── Component scoring ────────────────────────────────────────────
 
-    def _compute_component(self, name: str, database: Database | None) -> float:
-        """Dispatch to the appropriate scoring function for a component."""
+    def _compute_component(self, name: str, database: Database | None) -> float | None:
+        """Dispatch to the appropriate scoring function for a component.
+
+        Returns ``None`` when no data is available for the component instead
+        of a fabricated default, so callers can surface "No data" to the UI.
+        """
         scorers = {
             "task_success_rate": self._score_task_success_rate,
             "agent_utilization": self._score_agent_utilization,
@@ -240,28 +252,36 @@ class OrgHealthCalculator:
         }
         scorer = scorers.get(name)
         if scorer is None:
-            logger.warning("Unknown org-health component: %s, defaulting to 50", name)
-            return 50.0
+            logger.warning("Unknown org-health component: %s — no data available", name)
+            return None
         try:
             return scorer(database)
         except Exception:  # noqa: BLE001
             logger.exception("Failed to score component %s", name)
-            return 50.0
+            return None
 
-    def _score_task_success_rate(self, database: Database | None) -> float:
-        """Ratio of completed tasks to total tasks (0-100)."""
+    def _score_task_success_rate(self, database: Database | None) -> float | None:
+        """Ratio of completed tasks to total tasks (0-100).
+
+        Returns ``None`` when no tasks exist in the 30-day window so callers
+        can distinguish "no data" from "zero success rate".
+        """
         from ai_company.dashboard.data_service import _company_window_tasks
 
         root = self._root
         tasks, _ = _company_window_tasks(root, days=30)
         total = len(tasks)
         if total == 0:
-            return 50.0  # Default when no data
+            return None
         completed = sum(1 for t in tasks if t.get("status") == "completed")
         return (completed / total) * 100
 
-    def _score_agent_utilization(self, database: Database | None) -> float:
-        """Active agents vs registered agents (0-100)."""
+    def _score_agent_utilization(self, database: Database | None) -> float | None:
+        """Active agents vs registered agents (0-100).
+
+        Returns ``None`` when no agents are registered so callers can
+        distinguish "no data" from "zero utilization".
+        """
         from ai_company.dashboard.data_service import (
             _company_window_tasks,
             _count_registered_agents,
@@ -270,7 +290,7 @@ class OrgHealthCalculator:
         root = self._root
         total_registered = _count_registered_agents(root)
         if total_registered == 0:
-            return 50.0
+            return None
 
         tasks, _ = _company_window_tasks(root, days=30)
         active_agents = {
@@ -283,34 +303,40 @@ class OrgHealthCalculator:
             return 0.0
         return min(100.0, (len(active_agents) / total_registered) * 100)
 
-    def _score_cost_efficiency(self, database: Database | None) -> float:
+    def _score_cost_efficiency(self, database: Database | None) -> float | None:
         """Budget utilization vs spend (0-100).
 
         Uses the cost summary from the data service.  If total budget is
         known, returns the ratio of remaining budget (inverted: lower
         spend = higher efficiency, but capped at 100).
+
+        Returns ``None`` when no cost data or budget is available so callers
+        can distinguish "no data" from "zero efficiency".
         """
         try:
             from ai_company.dashboard.data_service import get_cost_summary
 
             summary = get_cost_summary(database=database)
             if summary is None:
-                return 50.0
+                return None
             total_spent = float(summary.get("total_spent", 0) or 0)
             budget = float(summary.get("budget", 0) or 0)
             if budget <= 0:
-                return 50.0
+                return None
             # Efficiency = 100 - (spent/budget * 100), clamped
             utilization = (total_spent / budget) * 100
             return max(0.0, min(100.0, 100.0 - utilization + 50.0))
         except Exception:  # noqa: BLE001
-            return 50.0
+            return None
 
-    def _score_error_rate(self, database: Database | None) -> float:
+    def _score_error_rate(self, database: Database | None) -> float | None:
         """Error/exception rate across agent operations (0-100, inverted).
 
         Lower error rate = higher score. Reads from task statuses in the
         message bus / audit trail. Returns 100 - (error_rate * 100).
+
+        Returns ``None`` when no tasks exist in the window so callers can
+        distinguish "no data" from "zero error rate".
         """
         try:
             from ai_company.dashboard.data_service import _company_window_tasks
@@ -319,14 +345,14 @@ class OrgHealthCalculator:
             tasks, _ = _company_window_tasks(root, days=30)
             total = len(tasks)
             if total == 0:
-                return 50.0  # Default when no data
+                return None
             error_tasks = sum(
                 1 for t in tasks if t.get("status") in ("failed", "error", "cancelled")
             )
             error_rate = (error_tasks / total) * 100
             return max(0.0, 100.0 - error_rate)
         except Exception:  # noqa: BLE001
-            return 50.0
+            return None
 
     # ── Band mapping ─────────────────────────────────────────────────
 

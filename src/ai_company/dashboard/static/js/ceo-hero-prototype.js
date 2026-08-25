@@ -132,7 +132,7 @@ function ceoHeroPrototype() {
     },
 
     /* Gauge rendering */
-    renderAllGauges() {
+    async renderAllGauges() {
       if (!this.orgHealth) return;
 
       // Main hero gauge
@@ -143,10 +143,14 @@ function ceoHeroPrototype() {
       // Component sparklines
       if (this.orgHealth.components) {
         for (const comp of this.orgHealth.components) {
-          this.renderSparkline('spark-' + comp.name, this.generateTrendData(comp.value));
-          this.renderSparkline('spark-b-' + comp.name, this.generateTrendData(comp.value));
-          this.renderSparkline('spark-d-' + comp.name, this.generateTrendData(comp.value));
-          this.renderSparkline('spark-detail-' + comp.name, this.generateTrendData(comp.value));
+          if (comp.value !== null) {
+            const trendData = await this.fetchComponentTrend(comp.name);
+            const trend = trendData || this.generateTrendData(comp.value);
+            this.renderSparkline('spark-' + comp.name, trend);
+            this.renderSparkline('spark-b-' + comp.name, trend);
+            this.renderSparkline('spark-d-' + comp.name, trend);
+            this.renderSparkline('spark-detail-' + comp.name, trend);
+          }
         }
       }
     },
@@ -234,6 +238,8 @@ function ceoHeroPrototype() {
 
     generateTrendData(currentValue) {
       // Generate 20 pseudo-random points trending toward currentValue
+      // NOTE: This is a fallback only. Prefer fetching real history from
+      // /api/v1/org-health/trend for live sparklines.
       const points = [];
       let val = currentValue * (0.7 + Math.random() * 0.3);
       for (let i = 0; i < 20; i++) {
@@ -242,6 +248,21 @@ function ceoHeroPrototype() {
         points.push(val);
       }
       return points;
+    },
+
+    async fetchComponentTrend(compName) {
+      try {
+        const resp = await fetch('/api/v1/org-health/trend?limit=20');
+        if (!resp.ok) return null;
+        const data = await resp.json();
+        if (!data || !Array.isArray(data) || data.length === 0) return null;
+        const values = data
+          .map(entry => entry.components?.find(c => c.name === compName)?.value)
+          .filter(v => v !== null && v !== undefined && !isNaN(v));
+        return values.length >= 3 ? values.slice(-20) : null;
+      } catch {
+        return null;
+      }
     },
   };
 }

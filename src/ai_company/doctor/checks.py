@@ -266,6 +266,63 @@ def check_cost_tracker() -> CheckResult:
         )
 
 
+def check_omniroute_health() -> CheckResult:
+    """Check if the OmniRoute meta-provider gateway is reachable."""
+    import os
+
+    omniroute_url = os.environ.get("OMNIROUTE_API_BASE", "http://localhost:20128")
+    api_key = os.environ.get("OMNIROUTE_API_KEY", "")
+
+    details: dict[str, Any] = {"url": omniroute_url, "api_key_set": bool(api_key)}
+
+    if not api_key:
+        return CheckResult(
+            name="OmniRoute Gateway",
+            passed=True,
+            message="OMNIROUTE_API_KEY not set — skipped (no key configured)",
+            severity="info",
+            details=details,
+        )
+
+    try:
+        import httpx
+
+        resp = httpx.get(f"{omniroute_url}/health", timeout=3.0)
+        if resp.status_code == 200:
+            body = (
+                resp.json()
+                if resp.headers.get("content-type", "").startswith("application/json")
+                else {}
+            )
+            provider_count = body.get("providers", body.get("provider_count", "?"))
+            details["status_code"] = resp.status_code
+            details["provider_count"] = provider_count
+            return CheckResult(
+                name="OmniRoute Gateway",
+                passed=True,
+                message=f"Running — {provider_count} providers available",
+                severity="ok",
+                details=details,
+            )
+        details["status_code"] = resp.status_code
+        return CheckResult(
+            name="OmniRoute Gateway",
+            passed=False,
+            message=f"HTTP {resp.status_code}",
+            severity="warning",
+            details=details,
+        )
+    except Exception as e:  # noqa: BLE001 - doctor must report, not crash
+        details["error"] = str(e)
+        return CheckResult(
+            name="OmniRoute Gateway",
+            passed=False,
+            message=f"Unreachable — {e}",
+            severity="warning",
+            details=details,
+        )
+
+
 def check_llm_providers() -> CheckResult:
     """Check if configured LLM providers are reachable."""
     import os
@@ -338,6 +395,7 @@ ALL_CHECKS = [
     check_memory_engine,
     check_disk_space,
     check_cost_tracker,
+    check_omniroute_health,
     check_llm_providers,
 ]
 

@@ -15,7 +15,9 @@ from ai_company.models.models import (
     Executive,
     Seniority,
     Task,
+    TaskEventType,
     TaskPriority,
+    TaskResult,
     TaskStatus,
     Workflow,
     WorkflowStep,
@@ -179,3 +181,119 @@ class TestCompanyRegistry:
         )
         assert r.company.name == "Acme"
         assert len(r.executives) == 1
+
+
+# ---------------------------------------------------------------------------
+# TaskEventType
+# ---------------------------------------------------------------------------
+
+
+class TestTaskEventType:
+    def test_all_events_defined(self):
+        expected = {
+            "queued",
+            "claimed",
+            "running",
+            "completed",
+            "failed",
+            "timeout",
+            "cancelled",
+            "escalated",
+            "retrying",
+        }
+        assert {e.value for e in TaskEventType} == expected
+
+    def test_event_is_string_serializable(self):
+        assert TaskEventType.QUEUED == "queued"
+        assert str(TaskEventType.RUNNING) == "TaskEventType.RUNNING"
+
+
+# ---------------------------------------------------------------------------
+# TaskResult
+# ---------------------------------------------------------------------------
+
+
+class TestTaskResult:
+    def test_create_minimal(self):
+        r = TaskResult(task_id="t1")
+        assert r.task_id == "t1"
+        assert r.status == TaskStatus.PENDING
+        assert r.output == ""
+        assert r.errors == []
+        assert r.duration_seconds == 0.0
+        assert r.tokens_used == 0
+        assert r.cost_usd == 0.0
+        assert r.attempt == 1
+
+    def test_create_full(self):
+        r = TaskResult(
+            task_id="t2",
+            status=TaskStatus.COMPLETED,
+            output="Done",
+            errors=[],
+            duration_seconds=1.5,
+            tokens_used=500,
+            cost_usd=0.001,
+            provider="gemini",
+            model="gemini-2.5-flash",
+            attempt=2,
+            created_at="2026-08-20T12:00:00Z",
+        )
+        assert r.status == TaskStatus.COMPLETED
+        assert r.output == "Done"
+        assert r.provider == "gemini"
+        assert r.attempt == 2
+
+    def test_mark_success(self):
+        r = TaskResult(task_id="t3")
+        r.mark_success(
+            output="Result text",
+            duration=2.0,
+            provider="openai",
+            model="gpt-4o",
+            tokens_used=1000,
+            cost_usd=0.005,
+        )
+        assert r.status == TaskStatus.COMPLETED
+        assert r.output == "Result text"
+        assert r.duration_seconds == 2.0
+        assert r.provider == "openai"
+        assert r.model == "gpt-4o"
+        assert r.tokens_used == 1000
+        assert r.cost_usd == 0.005
+
+    def test_mark_failure(self):
+        r = TaskResult(task_id="t4")
+        r.mark_failure("Timeout after 30s", duration=30.0)
+        assert r.status == TaskStatus.FAILED
+        assert r.errors == ["Timeout after 30s"]
+        assert r.duration_seconds == 30.0
+
+    def test_mark_failure_accumulates_errors(self):
+        r = TaskResult(task_id="t5")
+        r.mark_failure("First error", duration=1.0)
+        r.mark_failure("Second error", duration=2.0)
+        assert len(r.errors) == 2
+        assert r.errors[0] == "First error"
+        assert r.errors[1] == "Second error"
+        assert r.duration_seconds == 2.0
+
+    def test_extra_fields_ignored(self):
+        r = TaskResult(task_id="t6", unknown_field="value")
+        assert r.task_id == "t6"
+        assert not hasattr(r, "unknown_field")
+
+    def test_serialization_roundtrip(self):
+        r = TaskResult(
+            task_id="t7",
+            status=TaskStatus.COMPLETED,
+            output="Hello",
+            duration_seconds=0.5,
+            provider="gemini",
+            model="gemini-2.5-flash",
+        )
+        data = r.model_dump()
+        r2 = TaskResult.model_validate(data)
+        assert r2.task_id == r.task_id
+        assert r2.status == r.status
+        assert r2.output == r.output

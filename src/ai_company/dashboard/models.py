@@ -18,6 +18,9 @@ class KPIs(BaseModel):
     total_agents: int = 0
     scheduled_tasks: int = 0
     uptime_seconds: float = 0
+    computed_at: Optional[str] = None
+    source: dict[str, str] = Field(default_factory=dict)
+    data_quality: dict[str, str] = Field(default_factory=dict)
 
 
 class AgentSummary(BaseModel):

@@ -75,8 +75,10 @@ class TestOrgHealthCalculator:
         )
         calc = OrgHealthCalculator(project_root=tmp_path)
         result = calc.compute()
-        expected = round(0.6 * 50.0 + 0.4 * 50.0)
-        assert result.score == expected
+        # Unknown components now return None; score is 0 when no data available
+        assert result.score == 0
+        assert result.band == "red"
+        assert all(c.value is None for c in result.components)
 
     def test_result_to_dict_shape(self, tmp_path: Path) -> None:
         result = OrgHealthResult(
@@ -101,7 +103,8 @@ class TestOrgHealthCalculator:
         d = result.to_dict(include_components=False)
         assert "components" not in d
 
-    def test_unknown_component_defaults_to_50(self, tmp_path: Path) -> None:
+    def test_unknown_component_defaults_to_none(self, tmp_path: Path) -> None:
+        """Unknown components now return None (no data) instead of a fabricated 50."""
         config = tmp_path / "config" / "org_health.yaml"
         config.parent.mkdir(parents=True, exist_ok=True)
         config.write_text(
@@ -114,7 +117,9 @@ class TestOrgHealthCalculator:
         )
         calc = OrgHealthCalculator(project_root=tmp_path)
         result = calc.compute()
-        assert result.score == 50
+        assert result.score == 0
+        assert result.components[0].value is None
+        assert result.components[0].name == "nonexistent"
 
 
 # ── Unit: OrgHealthKPICollector ────────────────────────────────────
