@@ -319,7 +319,7 @@ graph TB
     %% ── Tier System ──────────────────────────────────────────
     subgraph tier_system ["📊 Cost/Capability Tier System"]
         direction LR
-        TIER_FAST["⚡ FAST<br/><i>OpenCode big-pickle<br/>+ Ollama llama3.1:8b</i><br/>Low latency · Low cost"]
+        TIER_FAST["⚡ FAST<br/><i>OpenCode big-pickle<br/>+ Ollama llama3.1-8b-32k</i><br/>Low latency · Low cost"]
         TIER_STD["⚖️ STANDARD<br/><i>DeepSeek deepseek-chat<br/>+ OpenCode big-pickle</i><br/>Balanced capability"]
         TIER_PREM["💎 PREMIUM<br/><i>DeepSeek deepseek-coder<br/>+ OpenCode big-pickle</i><br/>Max reasoning"]
 
@@ -341,7 +341,7 @@ graph TB
             ANTHROPIC_PROV["🟣 Anthropic<br/><i>claude-sonnet-4<br/>x-api-key auth</i>"]
         end
 
-        OLLAMA_PROV["🏠 Ollama (Local)<br/><i>llama3.1:8b<br/>localhost:11434</i>"]
+        OLLAMA_PROV["🏠 Ollama (Local)<br/><i>llama3.1-8b-32k<br/>localhost:11434</i>"]
 
         BASE --> compatible_providers
         BASE --> OLLAMA_PROV

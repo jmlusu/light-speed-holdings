@@ -50,10 +50,19 @@ OPTIONAL_MODELS = [
     {
         "name": "mistral-7b-32k",
         "file": "mistral-7b-instruct-v0.3-q4_K_M.gguf",
-        "port": 8091,
-        "ctx": 16384,
+        "port": 8092,
+        "ctx": 32768,
         "threads": 8,
         "batch": 512,
+        "api_key": "local",
+    },
+    {
+        "name": "gemma2-9b-q5",
+        "file": "gemma-2-9b-it-q5_K_M.gguf",
+        "port": 8091,
+        "ctx": 8192,
+        "threads": 8,
+        "batch": 256,
         "api_key": "local",
     },
 ]
@@ -93,7 +102,8 @@ def build_server_cmd(model: dict, llama_server_path: str) -> list[str]:
         str(model["threads"]),
         "-ngl",
         "0",  # CPU only
-        "--mlock",
+        "--load-mode",
+        "mlock",
         "--port",
         str(model["port"]),
         "--host",

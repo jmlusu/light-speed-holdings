@@ -180,7 +180,7 @@ SQLite database `data/ai_company.db` (created at boot by `app.py:458-477` at
 | Table | Rows | Notes |
 |-------|------|-------|
 | `tasks` | 7 | all `completed`; receivers are `test-receiver`/`test_receiver`/`technical-documentation-lead` → **TEST** |
-| `cost_records` | 83 | models `gemini-3.5-flash` ($0.07) + `llama3.1:8b` ($0.00), 2026-08-07→08-13 → **REAL** |
+| `cost_records` | 83 | models `gemini-3.5-flash` ($0.07) + `llama3.1-8b-32k` ($0.00), 2026-08-07→08-13 → **REAL** |
 | `escalation_events` | 0 | → **EMPTY** |
 | `kpi_values` | 230 | 5 snapshots (latest 2026-08-14T19:56); many `current 0` (e.g. legal `compliance_score` 0/100) → **REAL but zero-valued** |
 | `audit_events` | 2227 | → **REAL** |

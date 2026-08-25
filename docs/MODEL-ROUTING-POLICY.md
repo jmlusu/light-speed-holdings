@@ -13,7 +13,7 @@ The ModelRouter (`src/ai_company/model_router.py`) selects which LLM provider an
 | opencode | openai_compatible | big-pickle | https://opencode.ai/zen/v1 | OPENCODE_API_KEY |
 | deepseek | openai_compatible | deepseek-chat | https://api.deepseek.com/v1 | DEEPSEEK_API_KEY |
 | gemini | openai_compatible | gemini-3.5-flash | https://generativelanguage.googleapis.com/v1beta/openai | GEMINI_API_KEY |
-| ollama | ollama | llama3.1:8b | http://localhost:11434 | (none) |
+| ollama | ollama | llama3.1-8b-32k | http://localhost:11434 | (none) |
 | openai | openai_compatible | gpt-4o-mini | https://api.openai.com/v1 | OPENAI_API_KEY |
 | anthropic | openai_compatible | claude-sonnet-4-20250514 | https://api.anthropic.com | ANTHROPIC_API_KEY |
 
@@ -23,8 +23,8 @@ The ModelRouter (`src/ai_company/model_router.py`) selects which LLM provider an
 |------|-------------|---------------------------|
 | free | Zero-cost tier using dynamic Opencode free models + Ollama fallback | Dynamic catalog (see below) |
 | fast | Low-latency, low-cost. Read-only and simple tasks. | llamacpp/mistral-7b-32k -> ollama/mistral-7b-32k -> gemini/3.5-flash |
-| standard | Balanced capability and cost. Default for most agents. | llamacpp/llama3.1-8b-32k -> opencode/big-pickle -> ollama/llama3.1:8b -> gemini/3.5-flash |
-| premium | Maximum reasoning. Critical decisions and approvals. | llamacpp/deepseek-r1-64k -> llamacpp/gemma2-9b-q5 -> opencode/big-pickle -> ollama/llama3.1:8b |
+| standard | Balanced capability and cost. Default for most agents. | llamacpp/llama3.1-8b-32k -> opencode/big-pickle -> ollama/llama3.1-8b-32k -> gemini/3.5-flash |
+| premium | Maximum reasoning. Critical decisions and approvals. | llamacpp/deepseek-r1-64k -> llamacpp/gemma2-9b-q5 -> opencode/big-pickle -> ollama/llama3.1-8b-32k |
 
 ## Free Tier (Dynamic Catalog)
 

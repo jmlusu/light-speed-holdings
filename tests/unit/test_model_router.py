@@ -17,7 +17,7 @@ def models_yaml(tmp_path: Path) -> Path:
         "providers": {
             "ollama": {
                 "backend": "ollama",
-                "default_model": "llama3.1:8b",
+                "default_model": "llama3.1-8b-32k",
                 "api_base": "http://localhost:11434",
             },
             "openai": {
@@ -35,7 +35,7 @@ def models_yaml(tmp_path: Path) -> Path:
             "fast": {
                 "description": "Cheap and fast",
                 "providers": [
-                    {"provider": "ollama", "model": "llama3.1:8b"},
+                    {"provider": "ollama", "model": "llama3.1-8b-32k"},
                     {"provider": "openai", "model": "gpt-4o-mini"},
                 ],
             },
@@ -99,7 +99,7 @@ def test_board_routes_to_fast_tier(router: ModelRouter) -> None:
     route = router.resolve(agent_name="board-finance")
     assert route.tier == "fast"
     assert route.provider == "ollama"
-    assert route.model == "llama3.1:8b"
+    assert route.model == "llama3.1-8b-32k"
 
 
 def test_specialist_routes_to_standard_tier(router: ModelRouter) -> None:
@@ -170,7 +170,7 @@ def test_provider_rate_limit_parsed(tmp_path: Path) -> None:
             },
             "ollama": {
                 "backend": "ollama",
-                "default_model": "llama3.1:8b",
+                "default_model": "llama3.1-8b-32k",
                 "api_base": "http://localhost:11434",
             },
         },
@@ -237,7 +237,7 @@ def test_free_tier_falls_back_to_static(router: ModelRouter) -> None:
         "providers": {
             "ollama": {
                 "backend": "ollama",
-                "default_model": "llama3.1:8b",
+                "default_model": "llama3.1-8b-32k",
                 "api_base": "http://localhost:11434",
             },
             "opencode": {
@@ -251,7 +251,7 @@ def test_free_tier_falls_back_to_static(router: ModelRouter) -> None:
         "free_tier": {
             "static_fallback": [
                 {"provider": "opencode", "model": "big-pickle"},
-                {"provider": "ollama", "model": "llama3.1:8b"},
+                {"provider": "ollama", "model": "llama3.1-8b-32k"},
             ],
         },
     }

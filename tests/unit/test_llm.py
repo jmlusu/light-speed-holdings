@@ -284,7 +284,7 @@ class TestLLMClient:
                 providers=[
                     SimpleNamespace(provider="opencode", model="big-pickle"),
                     SimpleNamespace(provider="deepseek", model="deepseek-chat"),
-                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                    SimpleNamespace(provider="ollama", model="llama3.1-8b-32k"),
                 ]
             )
         )
@@ -331,7 +331,7 @@ class TestLLMClient:
                 providers=[
                     SimpleNamespace(provider="opencode", model="big-pickle"),
                     SimpleNamespace(provider="deepseek", model="deepseek-chat"),
-                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                    SimpleNamespace(provider="ollama", model="llama3.1-8b-32k"),
                 ]
             )
         )
@@ -387,7 +387,7 @@ class TestLLMClient:
                 providers=[
                     SimpleNamespace(provider="opencode", model="big-pickle"),
                     SimpleNamespace(provider="deepseek", model="deepseek-chat"),
-                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                    SimpleNamespace(provider="ollama", model="llama3.1-8b-32k"),
                 ]
             )
         )
@@ -445,7 +445,7 @@ class TestLLMClient:
                 providers=[
                     SimpleNamespace(provider="opencode", model="big-pickle"),
                     SimpleNamespace(provider="deepseek", model="deepseek-chat"),
-                    SimpleNamespace(provider="ollama", model="llama3.1:8b"),
+                    SimpleNamespace(provider="ollama", model="llama3.1-8b-32k"),
                 ]
             )
         )
@@ -582,7 +582,7 @@ def _setup_model_files(tmp_path: Path) -> None:
             },
             "ollama": {
                 "backend": "ollama",
-                "default_model": "llama3.1:8b",
+                "default_model": "llama3.1-8b-32k",
                 "api_base": "http://localhost:11434",
             },
         },

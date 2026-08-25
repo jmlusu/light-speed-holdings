@@ -44,7 +44,7 @@ def _setup_omniroute_model_files(tmp_path: Path) -> None:
             },
             "ollama": {
                 "backend": "ollama",
-                "default_model": "llama3.1:8b",
+                "default_model": "llama3.1-8b-32k",
                 "api_base": "http://localhost:11434",
             },
             "omniroute": {
@@ -57,7 +57,7 @@ def _setup_omniroute_model_files(tmp_path: Path) -> None:
             "fast": {
                 "description": "Cheap and fast",
                 "providers": [
-                    {"provider": "ollama", "model": "llama3.1:8b"},
+                    {"provider": "ollama", "model": "llama3.1-8b-32k"},
                     {"provider": "gemini", "model": "gemini-3.5-flash"},
                     {"provider": "omniroute", "model": "auto"},
                 ],
@@ -66,7 +66,7 @@ def _setup_omniroute_model_files(tmp_path: Path) -> None:
                 "description": "Balanced",
                 "providers": [
                     {"provider": "opencode", "model": "big-pickle"},
-                    {"provider": "ollama", "model": "llama3.1:8b"},
+                    {"provider": "ollama", "model": "llama3.1-8b-32k"},
                     {"provider": "omniroute", "model": "auto"},
                 ],
             },
@@ -241,7 +241,7 @@ class TestNormalResolutionNotOmniRoute:
 
         assert route.tier == "fast"
         assert route.provider == "ollama"
-        assert route.model == "llama3.1:8b"
+        assert route.model == "llama3.1-8b-32k"
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -687,17 +687,17 @@ class TestLLMClientGracefulDegradation:
         ollama_provider = MagicMock(spec=LLMProvider)
         ollama_provider.is_available.return_value = True
         ollama_provider.chat.return_value = ChatResponse(
-            content=good_response, model="llama3.1:8b", provider="ollama"
+            content=good_response, model="llama3.1-8b-32k", provider="ollama"
         )
         client._providers = {"ollama": ollama_provider}
 
         # Router returns ollama route (not OmniRoute)
         client.router.resolve = MagicMock(
-            return_value=SimpleNamespace(tier="fast", provider="ollama", model="llama3.1:8b")
+            return_value=SimpleNamespace(tier="fast", provider="ollama", model="llama3.1-8b-32k")
         )
         client.router.get_tier = MagicMock(
             return_value=SimpleNamespace(
-                providers=[SimpleNamespace(provider="ollama", model="llama3.1:8b")]
+                providers=[SimpleNamespace(provider="ollama", model="llama3.1-8b-32k")]
             )
         )
 
