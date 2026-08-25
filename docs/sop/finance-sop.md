@@ -116,7 +116,7 @@ tracker = CostTracker(
 | claude-3-5-sonnet | $3.00 | $15.00 |
 | claude-3-5-haiku | $0.80 | $4.00 |
 | deepseek-chat | $0.14 | $0.28 |
-| ollama/llama3.1:8b | $0.00 | $0.00 |
+| ollama/llama3.1-8b-32k | $0.00 | $0.00 |
 
 ### 5.3 Budget Enforcement
 
@@ -174,7 +174,7 @@ The `ModelRouter` (`src/ai_company/model_router.py`) optimizes costs by routing 
 
 | Tier | Models | Cost Profile | Use Case |
 |------|--------|-------------|----------|
-| `budget` | Ollama (llama3.1:8b, codellama:13b) | Free | Simple tasks, drafts, low-priority |
+| `budget` | Ollama (llama3.1-8b-32k, codellama:13b) | Free | Simple tasks, drafts, low-priority |
 | `standard` | GPT-4o-mini, Claude 3.5 Haiku | Low | General tasks, code review, analysis |
 | `premium` | GPT-4o, Claude 3.5 Sonnet | Medium | Complex reasoning, architecture, critical decisions |
 | `override` | Per-agent specified | Varies | Specialized needs |
@@ -217,7 +217,7 @@ summary = tracker.get_usage_summary(agent_name="lead-backend")  # agent filter o
     "by_model": {
         "gpt-4o": {"cost_usd": 8.20, "calls": 32},
         "gpt-4o-mini": {"cost_usd": 3.10, "calls": 45},
-        "llama3.1:8b": {"cost_usd": 0.0, "calls": 10}
+        "llama3.1-8b-32k": {"cost_usd": 0.0, "calls": 10}
     }
 }
 ```

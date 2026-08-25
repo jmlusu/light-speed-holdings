@@ -253,7 +253,7 @@ def test_ollama_streaming_yields_chunks():
     provider = OllamaProvider(
         name="ollama",
         api_base="http://localhost:11434",
-        default_model="llama3.1:8b",
+        default_model="llama3.1-8b-32k",
     )
     mock_client = MagicMock(spec=httpx.Client)
     provider._client = mock_client
@@ -280,7 +280,7 @@ def test_ollama_streaming_connection_error():
     provider = OllamaProvider(
         name="ollama",
         api_base="http://localhost:11434",
-        default_model="llama3.1:8b",
+        default_model="llama3.1-8b-32k",
     )
     mock_client = MagicMock(spec=httpx.Client)
     provider._client = mock_client

@@ -826,7 +826,7 @@ class ModelRouter:
         if tier is None or not tier.providers:
             return Route(
                 provider="ollama",
-                model="llama3.1:8b",
+                model="llama3.1-8b-32k",
                 tier=next_tier,
                 reason=f"tier '{next_tier}' has no providers",
             )
@@ -1426,7 +1426,7 @@ class ModelRouter:
         # Last resort: hardcoded fallback
         return Route(
             provider="ollama",
-            model="llama3.1:8b",
+            model="llama3.1-8b-32k",
             tier="free",
             reason=f"{reason} (no free models available, using ollama fallback)",
         )

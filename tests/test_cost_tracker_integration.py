@@ -234,7 +234,7 @@ class TestLLMClientCostIntegration:
         mock_route = MagicMock()
         mock_route.tier = "fast"
         mock_route.provider = "ollama"
-        mock_route.model = "llama3.1:8b"
+        mock_route.model = "llama3.1-8b-32k"
         mock_router.resolve.return_value = mock_route
         mock_tier = MagicMock()
         mock_tier.providers = []
@@ -253,7 +253,7 @@ class TestLLMClientCostIntegration:
         mock_provider.is_available.return_value = True
         mock_provider.chat.return_value = ChatResponse(
             content='{"result": "done", "done": true}',
-            model="llama3.1:8b",
+            model="llama3.1-8b-32k",
             provider="ollama",
             prompt_tokens=100,
             completion_tokens=50,
@@ -283,7 +283,7 @@ class TestLLMClientCostIntegration:
         mock_route = MagicMock()
         mock_route.tier = "fast"
         mock_route.provider = "ollama"
-        mock_route.model = "llama3.1:8b"
+        mock_route.model = "llama3.1-8b-32k"
         mock_router.resolve.return_value = mock_route
         mock_tier = MagicMock()
         mock_tier.providers = []
@@ -299,7 +299,7 @@ class TestLLMClientCostIntegration:
         mock_provider.is_available.return_value = True
         mock_provider.chat.return_value = ChatResponse(
             content='{"result": "done", "done": true}',
-            model="llama3.1:8b",
+            model="llama3.1-8b-32k",
             provider="ollama",
             prompt_tokens=100,
             completion_tokens=50,
@@ -323,7 +323,7 @@ class TestLLMClientCostIntegration:
         mock_route = MagicMock()
         mock_route.tier = "fast"
         mock_route.provider = "ollama"
-        mock_route.model = "llama3.1:8b"
+        mock_route.model = "llama3.1-8b-32k"
         mock_router.resolve.return_value = mock_route
         mock_tier = MagicMock()
         mock_tier.providers = []
@@ -337,7 +337,7 @@ class TestLLMClientCostIntegration:
         mock_provider.is_available.return_value = True
         mock_provider.chat.return_value = ChatResponse(
             content='{"result": "done", "done": true}',
-            model="llama3.1:8b",
+            model="llama3.1-8b-32k",
             provider="ollama",
             prompt_tokens=100,
             completion_tokens=50,

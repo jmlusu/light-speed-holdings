@@ -51,7 +51,7 @@ Phase 3 transforms AI Company Builder from a capable multi-provider LLM orchestr
 |----------|--------|--------------|-----------|
 | **OpenCode** | big-pickle | Medium | Versatile, good reasoning |
 | **Deepseek** | deepseek-chat, deepseek-coder | Low | Excellent cost/performance ratio |
-| **Ollama** | llama3.1:8b, llama3.1:70b | Free | Local, no API costs, privacy |
+| **Ollama** | llama3.1-8b-32k, llama3.1:70b | Free | Local, no API costs, privacy |
 | **OpenAI** | gpt-4o, gpt-4o-mini | High | Strong general capabilities |
 | **Anthropic** | claude-sonnet-4-20250514 | High | Superior reasoning, safety |
 
@@ -243,7 +243,7 @@ class CostCalculator:
 
         # Cost tiers (approximate)
         cost_tiers = [
-            ("llama3.1:8b", 0.0),
+            ("llama3.1-8b-32k", 0.0),
             ("deepseek-chat", 0.001),
             ("gpt-4o-mini", 0.002),
             ("gpt-4o", 0.01),
@@ -263,7 +263,7 @@ class CostCalculator:
             if test_cost <= budget_remaining:
                 return model
 
-        return "llama3.1:8b"  # Ultimate fallback (free)
+        return "llama3.1-8b-32k"  # Ultimate fallback (free)
 ```
 
 **Integration with ModelRouter:**
@@ -361,7 +361,7 @@ Always show your reasoning process. Cite specific examples when possible."""
             "gpt-4o": "Use clear section headers. Be explicit about output format.",
             "claude-sonnet-4-20250514": "Be precise and direct. Use examples to clarify ambiguous requirements.",
             "deepseek-chat": "Keep instructions concise. Use bullet points for complex requirements.",
-            "llama3.1:8b": "Use simple, direct language. Provide concrete examples.",
+            "llama3.1-8b-32k": "Use simple, direct language. Provide concrete examples.",
         }
 
         optimization = optimizations.get(model, "")
@@ -493,7 +493,7 @@ class ModelRouterV2(ModelRouter):
         # Fallback to free tier
         return Route(
             provider="ollama",
-            model="llama3.1:8b",
+            model="llama3.1-8b-32k",
             tier="free",
             reason="Budget exhausted, using free tier",
         )
@@ -532,7 +532,7 @@ class QualityFallbackChain:
             "deepseek-chat": 0.85,
             "deepseek-coder": 0.88,
             "big-pickle": 0.87,
-            "llama3.1:8b": 0.72,
+            "llama3.1-8b-32k": 0.72,
             "llama3.1:70b": 0.82,
         }
 
@@ -559,7 +559,7 @@ class QualityFallbackChain:
     def _get_cost(self, model: str) -> float:
         """Get relative cost for sorting."""
         costs = {
-            "llama3.1:8b": 0,
+            "llama3.1-8b-32k": 0,
             "llama3.1:70b": 0,
             "deepseek-chat": 1,
             "deepseek-coder": 2,
