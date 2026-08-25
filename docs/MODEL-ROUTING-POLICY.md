@@ -132,6 +132,8 @@ budget_degradation:
 - Per-agent overrides in the registry take highest priority (e.g., CTO locked to anthropic/claude-opus)
 - Token-limit errors trigger automatic rotation (no manual intervention)
 - Budget pressure triggers automatic degradation (preserves critical task capability)
+- **Prompt compression** reduces token count by ~30% before API calls (rules-based, no external dependency)
+- **Response caching** avoids redundant API calls for deterministic queries (temperature=0, 1-hour TTL)
 
 ## Fallback Behavior
 
@@ -147,3 +149,34 @@ When the primary provider in a tier is unavailable:
 - **models.yaml**: `company/models.yaml` — defines providers, tiers, routing rules, task-type routing, free tier, token-limit rotation, budget degradation
 - **agent-registry.json**: `company/agent-registry.json` — per-agent model overrides
 - **opencode.json**: `.opencode/opencode.json` — registers providers for the OpenCode runtime
+
+## Token-Saving Modules
+
+### ResponseCache (`src/ai_company/llm/response_cache.py`)
+
+File-based LLM response cache to avoid redundant API calls.
+
+| Property | Value |
+|----------|-------|
+| Key | SHA-256 of (system_prompt + user_prompt + model + temperature) |
+| TTL | 1 hour (configurable) |
+| Max size | 100 MB (configurable, LRU eviction) |
+| Scope | Only deterministic queries (temperature=0) |
+
+**Integration:** Optional pre-flight check in `LLMClient.execute_task()`. Disabled by default — pass `response_cache=ResponseCache()` to enable.
+
+### PromptCompressor (`src/ai_company/llm/prompt_compressor.py`)
+
+Rules-based prompt compressor targeting ~30% token reduction before API calls.
+
+| Technique | Description |
+|-----------|-------------|
+| Filler removal | Strips verbose phrases ("Please note that", "It is important to note that", etc.) |
+| Instruction dedup | Removes duplicate lines appearing more than once |
+| Whitespace normalization | Collapses excessive newlines and spaces |
+
+**Integration:** Optional pre-flight step in `LLMClient`. Disabled by default — pass `prompt_compressor=PromptCompressor()` to enable.
+
+### Budget Replay on Restart (`CostTracker._rebuild_accumulators()`)
+
+Replays `results/cost_log.jsonl` on `CostTracker.__init__()` to rebuild daily and per-task budget accumulators. Budget enforcement survives process restarts.

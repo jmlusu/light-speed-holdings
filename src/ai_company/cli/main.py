@@ -345,10 +345,33 @@ def generate(
 @app.command()
 def status() -> None:
     """Show current company status."""
+    import os
+
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
     typer.echo("AI Company Builder Status")
     typer.echo("========================")
     typer.echo("Company: Light Speed Holdings")
     typer.echo("Status: Active")
+
+    # OmniRoute meta-provider health
+    omniroute_key = os.environ.get("OMNIROUTE_API_KEY", "")
+    omniroute_url = os.environ.get("OMNIROUTE_API_BASE", "http://localhost:20128")
+    if omniroute_key:
+        try:
+            import httpx
+
+            resp = httpx.get(f"{omniroute_url}/health", timeout=3.0)
+            if resp.status_code == 200:
+                typer.echo(f"OmniRoute:     Running ({omniroute_url})")
+            else:
+                typer.echo(f"OmniRoute:     Error (HTTP {resp.status_code})")
+        except Exception:  # noqa: BLE001
+            typer.echo(f"OmniRoute:     Unreachable ({omniroute_url})")
+    else:
+        typer.echo("OmniRoute:     Not configured (OMNIROUTE_API_KEY not set)")
 
 
 if __name__ == "__main__":

@@ -342,6 +342,11 @@ def test_execute_task_stream_yields_chunks_and_parses():
         client.router = mock_router
         client._providers = {"test-provider": provider}
         client._circuit_breakers = {}
+        client._limiters = {}
+        client._cost_tracker = None
+        client._limiter_timeout = 30.0
+        client._response_cache = None
+        client._prompt_compressor = None
 
         chunks = list(client.execute_task_stream("agent1", "do something"))
         assert len(chunks) >= 1
@@ -382,6 +387,11 @@ def test_execute_task_stream_empty_response_raises():
         client.router = mock_router
         client._providers = {"test-provider": provider}
         client._circuit_breakers = {}
+        client._limiters = {}
+        client._cost_tracker = None
+        client._limiter_timeout = 30.0
+        client._response_cache = None
+        client._prompt_compressor = None
 
         from ai_company.llm.providers.base import LLMResponseError
 

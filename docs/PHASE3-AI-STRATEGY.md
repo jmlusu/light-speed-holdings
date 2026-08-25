@@ -1095,52 +1095,31 @@ def resolve_with_health_awareness(
 
 ### 5.1 Immediate Optimizations (Phase 3.1)
 
-| Optimization | Expected Savings | Implementation Effort |
-|--------------|------------------|----------------------|
-| **Pre-request cost validation** | 10-15% | Low |
-| **Context-aware model routing** | 15-25% | Medium |
-| **Prompt compression** | 5-10% | Low |
-| **Response caching** | 20-30% | Medium |
+| Optimization | Expected Savings | Implementation Effort | Status |
+|--------------|------------------|----------------------|--------|
+| **Pre-request cost validation** | 10-15% | Low | Planned |
+| **Context-aware model routing** | 15-25% | Medium | Planned |
+| **Prompt compression** | 5-10% | Low | **Implemented** — `src/ai_company/llm/prompt_compressor.py` |
+| **Response caching** | 20-30% | Medium | **Implemented** — `src/ai_company/llm/response_cache.py` |
 
 ### 5.2 Cost Optimization Strategies
 
-**5.2.1 Prompt Compression**
+**5.2.1 Prompt Compression** — *Implemented*
 
 ```python
+# src/ai_company/llm/prompt_compressor.py
 class PromptCompressor:
-    """Compresses prompts to reduce token count."""
+    """Compresses prompts to reduce token count via rules-based techniques.
 
-    def __init__(self):
-        self._stopwords = self._load_stopwords()
-
-    def compress(
-        self,
-        system_prompt: str,
-        user_prompt: str,
-        target_reduction: float = 0.3,  # 30% reduction
-    ) -> tuple[str, str]:
-        """Compress prompts while preserving meaning."""
-        original_tokens = self._count_tokens(system_prompt + user_prompt)
-        target_tokens = int(original_tokens * (1 - target_reduction))
-
-        # Apply compression techniques
-        compressed_system = self._compress_system(system_prompt)
-        compressed_user = self._compress_user(user_prompt)
-
-        # Verify reduction
-        new_tokens = self._count_tokens(compressed_system + compressed_user)
-        if new_tokens > target_tokens:
-            # Apply more aggressive compression
-            compressed_system = self._aggressive_compress(compressed_system)
-            compressed_user = self._aggressive_compress(compressed_user)
-
-        return compressed_system, compressed_user
-
-    def _compress_system(self, prompt: str) -> str:
-        """Compress system prompt."""
-        # Remove redundant instructions
-        # Consolidate similar points
-        # Use abbreviations for common phrases
+    Applies filler-phrase removal, instruction deduplication, and
+    whitespace normalization targeting ~30% token reduction. No external
+    tokenizer dependency. Wired into LLMClient as an optional pre-flight
+    step before API calls.
+    """
+    def __init__(self, target_reduction: float = 0.30): ...
+    def compress(self, system_prompt: str, user_prompt: str)
+        -> tuple[str, str, CompressionResult]: ...
+```
         # Keep essential constraints
 
         return prompt  # Placeholder for actual implementation
@@ -1154,80 +1133,24 @@ class PromptCompressor:
         return prompt  # Placeholder for actual implementation
 ```
 
-**5.2.2 Response Caching**
+**5.2.2 Response Caching** — *Implemented*
 
 ```python
+# src/ai_company/llm/response_cache.py
 class ResponseCache:
-    """Caches LLM responses for repeated queries."""
+    """File-based cache for LLM responses.
 
-    def __init__(
-        self,
-        cache_dir: str = ".cache/llm",
-        ttl_seconds: int = 3600,  # 1 hour
-        max_size_mb: int = 100,
-    ):
-        self._cache_dir = Path(cache_dir)
-        self._ttl = ttl_seconds
-        self._max_size = max_size_mb * 1024 * 1024
-
-    def get(
-        self,
-        system_prompt: str,
-        user_prompt: str,
-        model: str,
-        temperature: float,
-    ) -> CachedResponse | None:
-        """Get cached response if available."""
-        cache_key = self._generate_key(
-            system_prompt, user_prompt, model, temperature
-        )
-
-        cache_path = self._cache_dir / f"{cache_key}.json"
-        if not cache_path.exists():
-            return None
-
-        # Check TTL
-        age = time.time() - cache_path.stat().st_mtime
-        if age > self._ttl:
-            cache_path.unlink()
-            return None
-
-        # Load cached response
-        with open(cache_path) as f:
-            data = json.load(f)
-
-        return CachedResponse(
-            content=data["content"],
-            tokens_saved=data["tokens"],
-            cost_saved=data["cost"],
-        )
-
-    def set(
-        self,
-        system_prompt: str,
-        user_prompt: str,
-        model: str,
-        temperature: float,
-        response: ChatResponse,
-    ) -> None:
-        """Cache a response."""
-        cache_key = self._generate_key(
-            system_prompt, user_prompt, model, temperature
-        )
-
-        cache_path = self._cache_dir / f"{cache_key}.json"
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(cache_path, "w") as f:
-            json.dump({
-                "content": response.content,
-                "tokens": response.usage.get("prompt_tokens", 0),
-                "cost": self._estimate_cost(model, response.usage),
-                "timestamp": time.time(),
-            }, f)
-
-        # Enforce cache size limit
-        self._enforce_size_limit()
+    Keys by (system_prompt, user_prompt, model, temperature). Only caches
+    deterministic queries (temperature=0) — creative/non-deterministic
+    outputs are never cached. Auto-evicts oldest entries when cache exceeds
+    max_size_mb. Wired into LLMClient as a pre-flight check.
+    """
+    def __init__(self, cache_dir=".cache/llm", ttl_seconds=3600, max_size_mb=100): ...
+    def get(self, system_prompt, user_prompt, model, temperature)
+        -> CachedResponse | None: ...
+    def set(self, system_prompt, user_prompt, model, temperature,
+            response_content, tokens_used=0, cost_usd=0.0) -> None: ...
+    def clear(self) -> int: ...
 ```
 
 ### 5.3 Cost Monitoring Dashboard

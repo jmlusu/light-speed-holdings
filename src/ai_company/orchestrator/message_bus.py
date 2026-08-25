@@ -25,7 +25,7 @@ from typing import Any, Callable, List, cast
 
 from ai_company.dashboard.monitoring import inc_metric
 from ai_company.data import TaskStore, database_is_usable
-from ai_company.models.task import Task
+from ai_company.models.task import Task, TaskEventType, TaskResult, TaskStatus
 from ai_company.paths import get_data_root
 from ai_company.store.file_store import FileStore
 from ai_company.utils.logging import get_correlation_id
@@ -521,3 +521,109 @@ class MessageBus:
             status = t.get("status", "pending")
             counter[status] += 1
         return dict(counter)
+
+    # ── Event log (persistent lifecycle history) ─────────────────────
+
+    def log_event(
+        self,
+        task_id: str,
+        event_type: TaskEventType,
+        detail: str = "",
+        result: TaskResult | None = None,
+    ) -> None:
+        """Append a lifecycle event to the task's ``_events`` list.
+
+        The event is persisted in the inbox JSON alongside the task so
+        consumers (briefing generator, dashboard) can reconstruct the
+        full execution history.  Best-effort — errors are logged, not raised.
+        """
+        entry: dict[str, Any] = {
+            "event": event_type.value,
+            "timestamp": datetime.now().isoformat(),
+        }
+        if detail:
+            entry["detail"] = detail
+        if result is not None:
+            entry["result"] = result.model_dump()
+
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
+            for t in tasks:
+                if t.get("id") == task_id:
+                    events = t.setdefault("_events", [])
+                    events.append(entry)
+                    break
+            return tasks
+
+        try:
+            self._mutate_tasks(_updater)
+            logger.debug("Event logged for task %s: %s", task_id, event_type.value)
+        except Exception:  # noqa: BLE001
+            logger.debug("Event log failed for task %s", task_id, exc_info=True)
+
+    def get_events(self, task_id: str) -> list[dict[str, Any]]:
+        """Return the event history for a task."""
+        tasks = self._load_tasks()
+        for t in tasks:
+            if t.get("id") == task_id:
+                raw = t.get("_events", [])
+                return cast(list[dict[str, Any]], raw)
+        return []
+
+    # ── Retry support ────────────────────────────────────────────────
+
+    def retry_task(self, task_id: str, reason: str = "") -> Task | None:
+        """Requeue a failed or timed-out task for retry.
+
+        Increments ``retry_count``, checks against ``retry_budget``, and
+        transitions the task back to ``pending``.  Returns the updated
+        ``Task`` if retried, or ``None`` if the task is missing,
+        not retryable, or the budget is exhausted.
+
+        When the budget is exhausted the task is left in ``failed``
+        status and an ``escalated`` event is logged.
+        """
+        task = self.get_task_by_id(task_id)
+        if task is None:
+            return None
+        if task.status not in (TaskStatus.FAILED, TaskStatus.TIMEOUT):
+            return None
+
+        budget = task.retry_budget or 3  # default from ADR-015
+        if task.retry_count >= budget:
+            self.log_event(
+                task_id,
+                TaskEventType.ESCALATED,
+                detail=reason or "Retry budget exhausted",
+            )
+            self.update_task_status(task_id, "escalated")
+            return None
+
+        now = datetime.now().isoformat()
+
+        def _updater(tasks: List[dict[str, Any]]) -> List[dict[str, Any]]:
+            for i, t in enumerate(tasks):
+                if t.get("id") == task_id:
+                    tasks[i]["status"] = "pending"
+                    tasks[i]["retry_count"] = t.get("retry_count", 0) + 1
+                    tasks[i]["updated_at"] = now
+                    tasks[i]["claimed_by"] = ""
+                    tasks[i]["lease_expires_at"] = ""
+                    break
+            return tasks
+
+        updated = self._mutate_tasks(_updater)
+        retried: Task | None = None
+        for t in updated:
+            if t.get("id") == task_id:
+                self._mirror_task_to_sqlite(t)
+                retried = Task(**t)
+                break
+        if retried:
+            self.log_event(
+                task_id,
+                TaskEventType.RETRYING,
+                detail=reason or f"Retry {retried.retry_count}/{budget}",
+            )
+            self._emit(retried.model_dump(), "retrying")
+            logger.info("Task %s retried (%d/%d)", task_id, retried.retry_count, budget)
+        return retried

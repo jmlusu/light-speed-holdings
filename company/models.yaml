@@ -60,6 +60,35 @@ providers:
     backend: ollama
     default_model: llama3.1:8b
     api_base: http://localhost:11434
+    # Per-model configuration (Ollama manages downloads and storage)
+    models:
+      llama3.1:8b:
+        specialization: general
+        context_window: 8192
+      llama3.1-8b-32k:
+        specialization: general
+        context_window: 32768
+      mistral:7b:
+        specialization: general_fast
+        context_window: 8192
+      mistral-7b-32k:
+        specialization: general_fast
+        context_window: 32768
+      qwen2.5-coder:7b:
+        specialization: coding
+        context_window: 32768
+      qwen2.5-coder-7b-32k:
+        specialization: coding
+        context_window: 32768
+      deepseek-r1-64k:
+        specialization: reasoning
+        context_window: 65536
+      gemma4-12b:
+        specialization: general_quality
+        context_window: 8192
+      gemma4-12b-32k:
+        specialization: general_quality
+        context_window: 32768
 
   llamacpp:
     backend: llamacpp
@@ -141,6 +170,11 @@ providers:
           n_batch: 256
           n_ctx: 8192
 
+  omniroute:
+    backend: openai_compatible
+    default_model: auto
+    api_base: http://localhost:20128/v1
+
   openai:
     backend: openai_compatible
     default_model: gpt-4o-mini
@@ -163,8 +197,12 @@ tiers:
         model: mistral-7b-32k
       - provider: ollama
         model: mistral-7b-32k
+      - provider: ollama
+        model: mistral:7b
       - provider: gemini
         model: gemini-3.5-flash
+      - provider: omniroute
+        model: auto
 
   standard:
     description: "Balanced capability for general tasks."
@@ -176,9 +214,15 @@ tiers:
       - provider: opencode
         model: big-pickle
       - provider: ollama
-        model: llama3.1:8b
+        model: qwen2.5-coder-7b-32k
+      - provider: ollama
+        model: llama3.1-8b-32k
+      - provider: ollama
+        model: gemma4-12b-32k
       - provider: gemini
         model: gemini-3.5-flash
+      - provider: omniroute
+        model: auto
 
   premium:
     description: "Maximum reasoning capability. Use for critical decisions."
@@ -188,9 +232,13 @@ tiers:
       - provider: opencode
         model: big-pickle
       - provider: ollama
-        model: llama3.1:8b
+        model: deepseek-r1-64k
+      - provider: ollama
+        model: gemma4-12b-32k
       - provider: gemini
         model: gemini-3.1-pro-preview
+      - provider: omniroute
+        model: auto
 
 # ─── Routing rules ──────────────────────────────────────────────────
 # Maps (agent_type, priority) -> tier.
@@ -259,10 +307,10 @@ routing:
 #             architecture, planning, security, performance, general
 
 task_type_routing:
-  read_only: free
-  single_file_edit: free
-  simple_command: free
-  boilerplate: free
+  read_only: fast
+  single_file_edit: fast
+  simple_command: fast
+  boilerplate: fast
   code_review: standard
   debugging: standard
   refactor: standard
@@ -290,6 +338,8 @@ free_tier:
       model: gpt-5-nano
     - provider: ollama
       model: llama3.1:8b
+    - provider: omniroute
+      model: auto
 
 # ─── Token-limit rotation ────────────────────────────────────────
 # When a provider returns a token-limit error, rotate through free
