@@ -4,9 +4,11 @@
 
 ## Last Updated
 
-2026-08-20
+2026-08-26
 
 ## Current State
+
+- **Dependency remediation + monitoring streak fix (2026-08-25, shipped)**: Monitoring Dashboard Health Check now judges default-branch failure streaks instead of a last-5 window (`554aee2`), eliminating false stale-run alerts; issue #137 closed. `uv.lock` refreshed fastapi 0.109.0→0.141.1 and starlette 0.35.1→1.6.0 (`86a12e9`) clearing all 15 advisories; `uv audit --frozen` exit 0 and Dependency Health logs `[OK] No known vulnerabilities found`. Dependabot PR #155 (httpx `<0.29.0`) squash-merged as `44b3d85`. Gates: ruff/mypy clean, 1969 tests passing, CI runs `32565696546`/`32907261730` green, monitoring run `32652708435` green. Follow-up: httpx2 migration tracked in issue #156 (httpx is unmaintained upstream; 4 src files + 2 test files use it directly). ECL archived as `harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix`.
 
 - **Phase B: Async Approval Engine (2026-08-17, shipped)**: Implemented suspend-to-disk for HITL-parked tasks (issue #42, T9 requirement). `SuspendStore` persists agent loop state (conversation history, iteration metadata, cost accumulators) to `.opencode/suspended_states/{task_id}.json` via atomic FileStore writes. `AgentLoop.run()` restores from `SuspendedState` on resume, continuing from the parked iteration instead of re-executing from scratch. `ApprovalNotifier` fires WebSocket broadcasts immediately on park + optional HMAC-signed webhook POST (config: `company/config/webhooks.yaml`). 30-day retention with daemon governance sweep. ADR-017 documented. 28 new tests (17 SuspendStore + 11 ApprovalNotifier), all passing. Gates: ruff/mypy clean, 1743 tests passing (1 pre-existing doc failure). ECL archived as `harness/changes/archive/2026-08-17-phase-b-async-approval-engine-42`.
 
@@ -120,6 +122,7 @@
 
 ## Recent Work
 
+- **2026-08-26**: Retroactive ECL record created for the dependency remediation + monitoring streak fix workstream; archived as `harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix`. httpx2 migration follow-up filed as issue #156. PR #155 (httpx `<0.29.0`) squash-merged as `44b3d85`; lock's httpx 0.27.2 satisfies it.
 - **2026-08-20**: PR #128 merged (E2E + integration tests for command center). 4 E2E tests (Playwright: page load, SVG overlay, API endpoints, responsive viewports) + 12 integration tests (health×4, briefing×4, models/telemetry×4). `.gitignore` fixed with `!tests/**/*.py` negation. CI already has Playwright E2E job — new tests auto-discovered via `pytest.mark.e2e`. All gates green: ruff ✅, mypy ✅, 12 integration tests passing.
 - **2026-08-19**: PR #127 merged (J.A.R.V.I.S. Control Plane visual theme). 9241 additions across 5 files: `control-plane-theme.css` rewritten with agent state tokens (`--jarvis-state-*`), `command-center.css` (860 lines) with SVG overlay classes, `command-center.js` (Alpine.js controller, ~247 lines), `command-center.html` (3 visual variants with SVG overlays), 3 new read-only API endpoints (`/health`, `/api/v1/briefing`, `/api/v1/models/telemetry`). 3 obsolete files deleted. Gates: ruff/mypy clean, 38 dashboard tests passing.
 - **2026-08-17**: Phase B: Async Approval Engine (#42, T9) — `SuspendStore` persists agent loop state to `.opencode/suspended_states/{task_id}.json` on HITL park; `AgentLoop.run()` restores from `SuspendedState` on resume (conversation history + iteration metadata preserved, no re-execution from scratch). `ApprovalNotifier` fires WebSocket broadcast + optional HMAC-signed webhook POST (config: `company/config/webhooks.yaml`). 30-day retention with daemon sweep. ADR-017. 28 new tests. Gates: ruff/mypy clean, 1743 tests passing. ECL archived as `harness/changes/archive/2026-08-17-phase-b-async-approval-engine-42`. Also parked #40 (OTel tracing) as pending.
@@ -167,6 +170,7 @@ Point-in-time audit reports. These are frozen snapshots — refer to `STATUS.md`
 
 ## Remaining Work
 
+- **httpx2 migration (issue #156, opened 2026-08-26)**: httpx is unmaintained upstream; starlette ≥1.2 deprecates its TestClient fallback to httpx and the next starlette major removes it. Replace httpx with httpx2 in `llm/providers/{llamacpp,ollama,openai_compatible}.py`, `oauth2.py`, 2 test files; drop the `<0.29.0` pin. Cheap (~30-60 min), no flag day needed.
 - **Hard gates (2026-08-13)**: v0.5.0 release (stale v0.4.0), CI-health zombie #20 closed, RBAC #37 closed, feasibility artifacts #10 archived, dependabot PRs (#2 #3 #4 #5 #21) merged/closed, planning docs reconciled.
 - **Sprint 9**: COMPLETE (2026-08-13) — business architecture, 131-agent positioning, recurring revenue engine.
 - **Sprint 8**: COMPLETE (2026-08-12). Archived.

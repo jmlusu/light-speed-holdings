@@ -396,5 +396,36 @@
         "validation_status":  "unknown",
         "path":  "harness/changes/archive/2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
         "updated_at":  "2026-08-17"
+    },
+    {
+        "id":  "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+        "title":  "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        "ci-cd",
+                        "dependencies",
+                        "monitoring"
+                    ],
+        "files":  [
+                      "["
+                  ],
+        "tags":  [
+                     "dependencies",
+                     "security",
+                     "ci-cd",
+                     "monitoring",
+                     "retroactive"
+                 ],
+        "decisions":  [
+                          "- **Lockfile-only upgrade**: `uv lock --upgrade-package fastapi --upgrade-package starlette` instead of a full `uv lock --upgrade`, keeping blast radius minimal and avoiding unrelated version churn.",
+                          "- **No pin added for fastapi/starlette**: constraints were already satisfiable; staleness was the root cause, not under-constraining.",
+                          "- **PR #155 merged rather than closed-as-superseded**: GitHub reported CLEAN/MERGEABLE and all checks green once uv.lock was excluded from the Generated Files Drift Check (`392c347`); merging installs nothing new today and stops Dependabot churn.",
+                          "- **Concurrent session\u0027s 22 dirty working-tree files left untouched**: verified zero overlap with this change\u0027s changeset; ownership belongs to the parallel session (task-event system, OmniRoute routing, doctor checks, dashboard org-health).",
+                          "- **httpx2 migration deferred to a tracked follow-up issue** (not bundled here): httpx is unmaintained upstream; starlette ≥1.2 emits a deprecation warning for its TestClient fallback path."
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+        "updated_at":  "2026-08-26"
     }
 ]
