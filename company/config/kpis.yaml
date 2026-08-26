@@ -144,6 +144,24 @@ departments:
         target: 200
         frequency: quarterly
         description: Return on investment per department
+      - id: total_revenue
+        name: Total Revenue
+        unit: "$"
+        target: 10000
+        frequency: monthly
+        description: Total revenue for current period
+      - id: revenue_margin
+        name: Revenue Margin
+        unit: "%"
+        target: 50
+        frequency: monthly
+        description: Revenue minus cost as percentage of revenue
+      - id: revenue_per_task
+        name: Revenue per Task
+        unit: "$/task"
+        target: 100
+        frequency: monthly
+        description: Average revenue generated per completed task
 
   devops:
     name: DevOps

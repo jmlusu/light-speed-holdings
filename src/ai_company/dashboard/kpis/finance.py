@@ -56,11 +56,16 @@ class FinanceKPICollector(KPICollector):
 
         # Revenue metrics from RevenueAnalytics
         total_revenue: float | None = None
+        total_cost_rev: float | None = None
+        revenue_margin: float | None = None
         overall_roi: float | None = None
         revenue_per_task: float | None = None
         if isinstance(revenue_data, dict):
             total_revenue = revenue_data.get("total_revenue")
+            total_cost_rev = revenue_data.get("total_cost")
             overall_roi = revenue_data.get("overall_roi")
+            if total_revenue and total_cost_rev and total_revenue > 0:
+                revenue_margin = round((total_revenue - total_cost_rev) / total_revenue * 100, 1)
             revenue_attr = revenue_data.get("by_department", [])
             total_tasks = sum(d.get("tasks", 0) for d in revenue_attr)
             if total_tasks > 0 and total_revenue is not None:
@@ -81,6 +86,7 @@ class FinanceKPICollector(KPICollector):
                 "cost_per_agent": self._kpi(cost_per_agent, 50, "$/month"),
                 "active_agents": self._kpi(total_agents, None, "count"),
                 "total_revenue": self._kpi(total_revenue, None, "$"),
+                "revenue_margin": self._kpi(revenue_margin, 50, "%"),
                 "overall_roi": self._kpi(overall_roi, 1.0, "ratio"),
                 "revenue_per_task": self._kpi(revenue_per_task, None, "$/task"),
             },
