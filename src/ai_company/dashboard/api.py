@@ -2221,9 +2221,14 @@ def data_quality_report() -> dict[str, Any]:
         return empty_shape
     try:
         gov = DataGovernance(db)
-        # TODO: implement data_gap_audit() on DataGovernance and return real report
-        del gov
-        return empty_shape
+        report = gov.data_gap_audit()
+        report["available_sources"] = report.pop("available", 0)
+        report["completeness_pct"] = (
+            (report["total_sources"] - len(report["gaps"])) / report["total_sources"] * 100
+            if report["total_sources"]
+            else 0.0
+        )
+        return report
     except Exception:  # noqa: BLE001 - data quality report must never raise
         return empty_shape
 

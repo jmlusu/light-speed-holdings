@@ -25,6 +25,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
 from ai_company.data.database import Database
@@ -641,6 +642,131 @@ class DataGovernance:
                     )
 
         return findings
+
+    # ── Data gap audit ────────────────────────────────────────────────
+
+    def data_gap_audit(self) -> dict[str, Any]:
+        """Audit all expected data sources for availability and gaps.
+
+        Checks database tables for row counts and config files for
+        readability.  Returns a structured report identifying which
+        data sources are available, empty, missing, or unreadable.
+
+        Returns:
+            Dict with keys: ``generated_at``, ``total_sources``,
+            ``available``, ``gaps``, ``sources``.
+        """
+        _SOURCES: list[dict[str, Any]] = [
+            {
+                "source_id": "tasks",
+                "name": "Tasks",
+                "required_for": "Task management",
+                "severity": "high",
+                "_kind": "table",
+            },
+            {
+                "source_id": "cost_analytics",
+                "name": "Cost Analytics",
+                "required_for": "Cost tracking",
+                "severity": "high",
+                "_kind": "table",
+            },
+            {
+                "source_id": "revenue_analytics",
+                "name": "Revenue Analytics",
+                "required_for": "Revenue tracking",
+                "severity": "medium",
+                "_kind": "table",
+            },
+            {
+                "source_id": "kpi_history",
+                "name": "KPI History",
+                "required_for": "KPI trends",
+                "severity": "medium",
+                "_kind": "table",
+            },
+            {
+                "source_id": "audit_log",
+                "name": "Audit Log",
+                "required_for": "Audit trail",
+                "severity": "medium",
+                "_kind": "table",
+            },
+            {
+                "source_id": "org_health",
+                "name": "Org Health Config",
+                "required_for": "Org health config",
+                "severity": "low",
+                "_kind": "file",
+                "_path": "org_health.yaml",
+            },
+            {
+                "source_id": "company_registry",
+                "name": "Agent Registry",
+                "required_for": "Agent registry",
+                "severity": "low",
+                "_kind": "file",
+                "_path": "company-registry.yaml",
+            },
+        ]
+
+        sources: list[dict[str, str]] = []
+        gaps: list[dict[str, str]] = []
+
+        for src in _SOURCES:
+            status = self._check_source(src)
+            entry = {
+                "source_id": src["source_id"],
+                "name": src["name"],
+                "required_for": src["required_for"],
+                "status": status,
+            }
+            sources.append(entry)
+            if status != "available":
+                gaps.append({"source_id": src["source_id"], "severity": src["severity"]})
+
+        return {
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "total_sources": len(sources),
+            "available": sum(1 for s in sources if s["status"] == "available"),
+            "gaps": gaps,
+            "sources": sources,
+        }
+
+    def _check_source(self, src: dict[str, Any]) -> str:
+        """Return the status string for a single data source.
+
+        Never raises — all exceptions are caught and mapped to a status.
+        """
+        try:
+            if src["_kind"] == "table":
+                return self._check_table_source(src["source_id"])
+            if src["_kind"] == "file":
+                return self._check_file_source(src["_path"])
+        except Exception:  # noqa: BLE001 — audit must never raise
+            logger.debug("data_gap_audit: source %s raised, marking missing", src["source_id"])
+        return "missing"
+
+    def _check_table_source(self, table_name: str) -> str:
+        """Check a database table: 'available' if rows exist, 'empty' otherwise."""
+        row = self._db.fetchone(f"SELECT COUNT(*) as cnt FROM {table_name}")  # nosec B608
+        count = row["cnt"] if row else 0
+        return "available" if count > 0 else "empty"
+
+    def _check_file_source(self, rel_path: str) -> str:
+        """Check a config file relative to the project workspace root.
+
+        Returns 'available', 'missing', or 'unreadable'.
+        """
+        project_root = Path(__file__).resolve().parents[3]  # src/ai_company/data/ → repo root
+        file_path = project_root / rel_path
+        if not file_path.exists():
+            return "missing"
+        try:
+            file_path.read_text(encoding="utf-8")
+            return "available"
+        except (OSError, PermissionError, UnicodeDecodeError):
+            return "unreadable"
 
 
 # ---------------------------------------------------------------------------
