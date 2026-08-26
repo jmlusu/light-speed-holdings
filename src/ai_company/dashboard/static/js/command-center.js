@@ -10,6 +10,9 @@ function commandCenter() {
     variantNames: { A: 'The Bridge', B: 'The War Room', C: 'The Cockpit' },
     variants: ['A', 'B', 'C'],
 
+    // ── Panel navigation ─────────────────────────────────────
+    activePanel: 'overview',
+
     // ── Command bar ──────────────────────────────────────────
     showCommandBar: true,
     commandQuery: '',
@@ -278,6 +281,126 @@ function commandCenter() {
       if (model.success_rate >= 0.95) return 'bg-emerald-400';
       if (model.success_rate >= 0.8) return 'bg-amber-400';
       return 'bg-red-400';
+    },
+  };
+}
+
+function timelinePanel() {
+  return {
+    query: '',
+    filters: {
+      agent_id: '',
+      event_type: '',
+      task_id: '',
+      tool: '',
+      severity: '',
+      from: '',
+      to: '',
+    },
+    events: [],
+    totalCount: 0,
+    cursor: '',
+    loading: false,
+    queryMs: 0,
+    selectedEvent: null,
+    showDetail: false,
+    stats: null,
+    _pollTimer: null,
+
+    async init() {
+      await this.fetchTimeline();
+      this.fetchStats();
+      this._pollTimer = setInterval(() => this.fetchTimeline(), 10000);
+    },
+
+    destroy() {
+      if (this._pollTimer) clearInterval(this._pollTimer);
+    },
+
+    async fetchTimeline() {
+      this.loading = true;
+      const params = new URLSearchParams();
+      if (this.query) params.set('q', this.query);
+      Object.entries(this.filters).forEach(([k, v]) => {
+        if (v) params.set(k, v);
+      });
+      params.set('limit', '50');
+      if (this.cursor) params.set('cursor', this.cursor);
+
+      try {
+        const res = await fetch(`/api/v1/timeline/search?${params}`);
+        const data = await res.json();
+        this.events = data.events || [];
+        this.totalCount = data.total_count || 0;
+        this.cursor = data.cursor || '';
+        this.queryMs = data.query_ms || 0;
+      } catch (e) {
+        console.error('Timeline fetch failed:', e);
+      }
+      this.loading = false;
+    },
+
+    async loadMore() {
+      if (!this.cursor) return;
+      const params = new URLSearchParams();
+      if (this.query) params.set('q', this.query);
+      Object.entries(this.filters).forEach(([k, v]) => {
+        if (v) params.set(k, v);
+      });
+      params.set('limit', '50');
+      params.set('cursor', this.cursor);
+      try {
+        const res = await fetch(`/api/v1/timeline/search?${params}`);
+        const data = await res.json();
+        this.events.push(...(data.events || []));
+        this.cursor = data.cursor || '';
+      } catch (e) {
+        console.error('Timeline loadMore failed:', e);
+      }
+    },
+
+    async fetchStats() {
+      try {
+        const res = await fetch('/api/v1/timeline/stats');
+        this.stats = await res.json();
+      } catch (e) {
+        console.error('Timeline stats failed:', e);
+      }
+    },
+
+    selectEvent(event) {
+      this.selectedEvent = event;
+      this.showDetail = true;
+    },
+
+    clearFilters() {
+      this.query = '';
+      Object.keys(this.filters).forEach(k => this.filters[k] = '');
+      this.cursor = '';
+      this.fetchTimeline();
+    },
+
+    formatTime(ts) {
+      if (!ts) return '';
+      try {
+        const d = new Date(ts);
+        return d.toLocaleTimeString();
+      } catch { return ts; }
+    },
+
+    severityDot(severity) {
+      const colors = {
+        info: 'bg-blue-400',
+        warning: 'bg-yellow-400',
+        error: 'bg-red-400',
+        critical: 'bg-red-600',
+      };
+      return colors[severity] || 'bg-gray-400';
+    },
+
+    truncate(str, len) {
+      if (!str) return '';
+      return str.length > len ? str.substring(0, len) + '...' : str;
     },
   };
 }

@@ -2998,6 +2998,134 @@ def org_health_anomalies() -> list[dict[str, Any]]:
     return [a.to_dict() for a in anomalies]
 
 
+# ── Timeline (Searchable Execution Timeline) ──────────────────────
+
+
+@router.get("/timeline/search", tags=["timeline"])
+def search_timeline(
+    q: str = Query("", description="FTS5 search query"),
+    agent_id: str = Query(""),
+    event_type: str = Query(""),
+    task_id: str = Query(""),
+    tool: str = Query(""),
+    severity: str = Query(""),
+    from_time: str = Query("", alias="from"),
+    to: str = Query(""),
+    limit: int = Query(50, ge=1, le=200),
+    cursor: str = Query(""),
+) -> dict[str, Any]:
+    """Search audit events with FTS5 + structured filters."""
+    db = get_database()
+    start = time.time()
+    if db is not None:
+        from ai_company.data.audit_store import AuditStore
+
+        store = AuditStore(db)
+        events, total = store.search_with_filters(
+            query=q,
+            agent_id=agent_id,
+            event_type=event_type,
+            task_id=task_id,
+            tool=tool,
+            severity=severity,
+            from_time=from_time,
+            to_time=to,
+            limit=limit,
+            cursor=cursor,
+        )
+    else:
+        events, total = [], 0
+
+    next_cursor = events[-1]["event_id"] if events and len(events) == limit else ""
+    return {
+        "events": events,
+        "total_count": total,
+        "cursor": next_cursor,
+        "query_ms": round((time.time() - start) * 1000, 1),
+    }
+
+
+@router.get("/timeline", tags=["timeline"])
+def get_timeline(
+    agent_id: str = Query(""),
+    event_type: str = Query(""),
+    from_time: str = Query("", alias="from"),
+    to: str = Query(""),
+    limit: int = Query(50, ge=1, le=200),
+    cursor: str = Query(""),
+) -> dict[str, Any]:
+    """Get execution timeline in reverse-chronological order."""
+    return search_timeline(
+        q="",
+        agent_id=agent_id,
+        event_type=event_type,
+        task_id="",
+        tool="",
+        severity="",
+        from_time=from_time,
+        to=to,
+        limit=limit,
+        cursor=cursor,
+    )
+
+
+@router.get("/timeline/task/{task_id}", tags=["timeline"])
+def get_task_trace(task_id: str) -> dict[str, Any]:
+    """Get all events for a specific task in chronological order."""
+    db = get_database()
+    if db is not None:
+        from ai_company.data.audit_store import AuditStore
+
+        store = AuditStore(db)
+        return {"events": store.get_task_trace(task_id)}
+    return {"events": []}
+
+
+@router.get("/timeline/agent/{agent_id}", tags=["timeline"])
+def get_agent_timeline(
+    agent_id: str,
+    event_type: str = Query(""),
+    from_time: str = Query("", alias="from"),
+    to: str = Query(""),
+    limit: int = Query(50, ge=1, le=200),
+) -> dict[str, Any]:
+    """Get recent events for a specific agent."""
+    db = get_database()
+    if db is not None:
+        from ai_company.data.audit_store import AuditStore
+
+        store = AuditStore(db)
+        events = store.get_agent_activity(
+            agent_id=agent_id,
+            event_type=event_type,
+            from_time=from_time,
+            to_time=to,
+            limit=limit,
+        )
+        return {"events": events}
+    return {"events": []}
+
+
+@router.get("/timeline/stats", tags=["timeline"])
+def get_timeline_stats(
+    from_time: str = Query("", alias="from"),
+    to: str = Query(""),
+) -> dict[str, Any]:
+    """Get aggregated counts by event_type, agent, and severity."""
+    db = get_database()
+    if db is not None:
+        from ai_company.data.audit_store import AuditStore
+
+        store = AuditStore(db)
+        return store.get_timeline_stats(from_time=from_time, to_time=to)
+    return {
+        "by_event_type": {},
+        "by_agent": {},
+        "by_severity": {},
+        "time_range": {"from": from_time, "to": to},
+    }
+
+
 # ── Workflows / Mission Control ────────────────────────────────────
 
 
