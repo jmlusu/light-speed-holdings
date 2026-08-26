@@ -247,6 +247,218 @@ class AuditStore:
             "events": [e.model_dump() for e in events],
         }
 
+    # ── Searchable Execution Timeline ───────────────────────────────
+
+    def search_with_filters(
+        self,
+        query: str = "",
+        agent_id: str = "",
+        event_type: str = "",
+        task_id: str = "",
+        tool: str = "",
+        severity: str = "",
+        from_time: str = "",
+        to_time: str = "",
+        limit: int = 50,
+        cursor: str = "",
+    ) -> tuple[list[dict[str, Any]], int]:
+        """Search audit events with combined FTS5 + SQL filters.
+
+        Returns (events, total_count) where events are dicts and total_count
+        is the total matching rows (before limit).
+        """
+        import sqlite3
+
+        filters: list[str] = []
+        params: list[Any] = []
+
+        # Build base query
+        if query:
+            base = (
+                "SELECT e.* FROM audit_events e "
+                "JOIN audit_events_fts f ON f.rowid = e.rowid "
+                "WHERE audit_events_fts MATCH ?"
+            )
+            params.append(query)
+        else:
+            base = "SELECT e.* FROM audit_events e WHERE 1=1"
+
+        if agent_id:
+            filters.append("e.agent_id = ?")
+            params.append(agent_id)
+        if event_type:
+            filters.append("e.event_type = ?")
+            params.append(event_type)
+        if task_id:
+            filters.append("e.task_id = ?")
+            params.append(task_id)
+        if tool:
+            filters.append("e.tool = ?")
+            params.append(tool)
+        if severity:
+            filters.append("e.severity = ?")
+            params.append(severity)
+        if from_time:
+            filters.append("e.timestamp >= ?")
+            params.append(from_time)
+        if to_time:
+            filters.append("e.timestamp <= ?")
+            params.append(to_time)
+        if cursor:
+            filters.append("e.timestamp <= (SELECT timestamp FROM audit_events WHERE event_id = ?)")
+            params.append(cursor)
+
+        where = " AND ".join(filters)
+        count_sql = f"SELECT COUNT(*) as cnt FROM ({base})" + (f" WHERE {where}" if where else "")
+        data_sql = f"{base}" + (f" AND {where}" if where else "") + " ORDER BY e.timestamp DESC"
+
+        try:
+            count_row = self._db.fetchone(count_sql, tuple(params))
+            total = count_row["cnt"] if count_row else 0
+
+            data_params = list(params) + [limit]
+            rows = self._db.fetchall(data_sql + " LIMIT ?", tuple(data_params))
+            return [dict(r) for r in rows], total
+        except (sqlite3.OperationalError, AttributeError):
+            # FTS5 not available — fallback to plain query
+            fallback = "SELECT * FROM audit_events WHERE 1=1"
+            fallback_filters: list[str] = []
+            fallback_params: list[Any] = []
+            if agent_id:
+                fallback_filters.append("agent_id = ?")
+                fallback_params.append(agent_id)
+            if event_type:
+                fallback_filters.append("event_type = ?")
+                fallback_params.append(event_type)
+            if task_id:
+                fallback_filters.append("task_id = ?")
+                fallback_params.append(task_id)
+            if tool:
+                fallback_filters.append("tool = ?")
+                fallback_params.append(tool)
+            if severity:
+                fallback_filters.append("severity = ?")
+                fallback_params.append(severity)
+            if from_time:
+                fallback_filters.append("timestamp >= ?")
+                fallback_params.append(from_time)
+            if to_time:
+                fallback_filters.append("timestamp <= ?")
+                fallback_params.append(to_time)
+            if cursor:
+                fallback_filters.append(
+                    "timestamp <= (SELECT timestamp FROM audit_events WHERE event_id = ?)"
+                )
+                fallback_params.append(cursor)
+
+            if fallback_filters:
+                fallback += " AND " + " AND ".join(fallback_filters)
+
+            count_row = self._db.fetchone(
+                f"SELECT COUNT(*) as cnt FROM ({fallback})", tuple(fallback_params)
+            )
+            total = count_row["cnt"] if count_row else 0
+
+            fallback_params_with_limit = list(fallback_params) + [limit]
+            rows = self._db.fetchall(
+                fallback + " ORDER BY timestamp DESC LIMIT ?",
+                tuple(fallback_params_with_limit),
+            )
+            return [dict(r) for r in rows], total
+
+    def get_task_trace(self, task_id: str) -> list[dict[str, Any]]:
+        """Return all events for a task in chronological order."""
+        rows = self._db.fetchall(
+            "SELECT * FROM audit_events WHERE task_id = ? ORDER BY timestamp ASC",
+            (task_id,),
+        )
+        return [dict(r) for r in rows]
+
+    def get_agent_activity(
+        self,
+        agent_id: str,
+        event_type: str = "",
+        from_time: str = "",
+        to_time: str = "",
+        limit: int = 50,
+    ) -> list[dict[str, Any]]:
+        """Return recent events for a specific agent."""
+        sql = "SELECT * FROM audit_events WHERE agent_id = ?"
+        params: list[Any] = [agent_id]
+        if event_type:
+            sql += " AND event_type = ?"
+            params.append(event_type)
+        if from_time:
+            sql += " AND timestamp >= ?"
+            params.append(from_time)
+        if to_time:
+            sql += " AND timestamp <= ?"
+            params.append(to_time)
+        sql += " ORDER BY timestamp DESC LIMIT ?"
+        params.append(str(limit))
+        rows = self._db.fetchall(sql, tuple(params))
+        return [dict(r) for r in rows]
+
+    def get_timeline_stats(
+        self,
+        from_time: str = "",
+        to_time: str = "",
+    ) -> dict[str, Any]:
+        """Return aggregated counts by event_type, agent, and severity."""
+        time_filter = ""
+        params: list[Any] = []
+        if from_time or to_time:
+            conditions = []
+            if from_time:
+                conditions.append("timestamp >= ?")
+                params.append(from_time)
+            if to_time:
+                conditions.append("timestamp <= ?")
+                params.append(to_time)
+            time_filter = " WHERE " + " AND ".join(conditions)
+
+        param_tuple = tuple(params)
+        by_type = self._db.fetchall(
+            f"SELECT event_type, COUNT(*) as cnt FROM audit_events{time_filter} GROUP BY event_type",
+            param_tuple,
+        )
+        by_agent = self._db.fetchall(
+            f"SELECT agent_id, COUNT(*) as cnt FROM audit_events{time_filter} GROUP BY agent_id",
+            param_tuple,
+        )
+        by_severity = self._db.fetchall(
+            f"SELECT severity, COUNT(*) as cnt FROM audit_events{time_filter} GROUP BY severity",
+            param_tuple,
+        )
+        return {
+            "by_event_type": {r["event_type"]: r["cnt"] for r in by_type},
+            "by_agent": {r["agent_id"]: r["cnt"] for r in by_agent},
+            "by_severity": {r["severity"]: r["cnt"] for r in by_severity},
+            "time_range": {"from": from_time or "", "to": to_time or ""},
+        }
+
+    def compact_events(self, older_than_days: int = 7) -> int:
+        """Compact warm-tier events: strip args/result to summaries."""
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=older_than_days)).isoformat()
+        rows = self._db.fetchall(
+            "SELECT rowid FROM audit_events WHERE timestamp < ? AND length(args) > 200",
+            (cutoff,),
+        )
+        if not rows:
+            return 0
+        count = 0
+        for row in rows:
+            self._db.execute(
+                "UPDATE audit_events SET "
+                "args = json_object('summary', substr(args, 1, 200)), "
+                "result = json_object('summary', substr(result, 1, 200)) "
+                "WHERE rowid = ?",
+                (row["rowid"],),
+            )
+            count += 1
+        self._db.commit()
+        return count
+
     def count_by_type(self) -> dict[str, int]:
         """Return a mapping of event_type -> count."""
         rows = self._db.fetchall(
