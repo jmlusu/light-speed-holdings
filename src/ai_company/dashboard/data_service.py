@@ -351,6 +351,18 @@ def get_company_kpi_summary(
             status = "info"
             gap = None
 
+        # Determine data_quality
+        if computed:
+            data_quality = "real"
+        elif current is None:
+            data_quality = "no_data"
+        elif target is not None:
+            data_quality = "config"
+        else:
+            data_quality = "config"
+
+        data_gap = "No data source available" if current is None else ""
+
         kpis.append(
             {
                 "id": kpi_id,
@@ -365,12 +377,23 @@ def get_company_kpi_summary(
                 "gap": gap,
                 "computed": computed,
                 "source": source,
+                "data_quality": data_quality,
+                "data_gap": data_gap,
+                "computed_at": collected_at,
             }
         )
 
-    summary = {"total": len(kpis), "on_track": 0, "below_target": 0, "info": 0}
+    summary: dict[str, int] = {
+        "total": len(kpis),
+        "on_track": 0,
+        "below_target": 0,
+        "info": 0,
+        "no_data": 0,
+    }
     for kpi in kpis:
         summary[kpi["status"]] += 1
+        if kpi["data_quality"] == "no_data":
+            summary["no_data"] += 1
 
     return {
         "collected_at": collected_at,

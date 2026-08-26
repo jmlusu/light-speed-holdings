@@ -68,6 +68,7 @@ class OrgHealthResult:
         }
         if include_components:
             result["components"] = [c.to_dict() for c in self.components]
+        result["missing_components"] = [c.name for c in self.components if c.value is None]
         result["trend"] = trend or []
         return result
 
