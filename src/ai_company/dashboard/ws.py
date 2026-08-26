@@ -368,6 +368,18 @@ async def broadcast_daemon_health(data: dict[str, Any]) -> None:
     )
 
 
+async def broadcast_timeline_event(event: dict[str, Any]) -> None:
+    """Push new audit events to timeline subscribers."""
+    await manager.broadcast(
+        {
+            "type": "timeline_event",
+            "topic": "timeline",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "data": event,
+        }
+    )
+
+
 def make_message_bus_broadcast_callback() -> Any:
     """Create a synchronous broadcast callback suitable for MessageBus.
 
