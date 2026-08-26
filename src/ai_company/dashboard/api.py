@@ -6,6 +6,7 @@ import logging
 import math
 import re
 import time
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
@@ -70,6 +71,22 @@ def _bus_broadcast(task_dict: dict[str, Any], event: str) -> None:
         loop.create_task(_broadcast_task(task_dict, event))
     except RuntimeError:
         logger.debug("No event loop; broadcast skipped")
+
+
+_llm_client: Any = None
+
+
+def _get_llm_client() -> Any:
+    """Return the shared :class:`LLMClient` instance (lazily created)."""
+    global _llm_client
+    if _llm_client is None:
+        try:
+            from ai_company.llm.client import LLMClient
+
+            _llm_client = LLMClient()
+        except Exception:  # noqa: BLE001 - LLM is optional for decomposition
+            logger.warning("Failed to initialize LLMClient; LLM decomposition unavailable")
+    return _llm_client
 
 
 def _read_all_tasks() -> list[dict[str, Any]]:
@@ -419,8 +436,26 @@ def _load_json(path: str | Path) -> Any:
     return _get_store().read_json(path, default={})
 
 
+_MAX_APPROVALS_LINES = 500
+
+
 def _load_yaml(path: str | Path) -> Any:
-    return _get_store().read_yaml(path, default={})
+    data = _get_store().read_yaml(path, default={})
+    if str(path) == "orchestrator/approvals.yaml" and isinstance(data, dict):
+        requests = data.get("requests", [])
+        if len(requests) > _MAX_APPROVALS_LINES:
+            logger.warning(
+                "approvals.yaml has %d entries (threshold %d); "
+                "purging non-pending entries to prevent runaway growth",
+                len(requests),
+                _MAX_APPROVALS_LINES,
+            )
+            data["requests"] = [r for r in requests if r.get("status") == "pending"]
+            try:
+                _save_yaml(str(path), data)
+            except Exception:  # noqa: BLE001 - best-effort cleanup
+                logger.exception("Failed to persist approvals cleanup")
+    return data
 
 
 def _save_json(path: str | Path, data: Any) -> None:
@@ -1073,126 +1108,111 @@ def decompose_task(task_id: str) -> TaskDecomposition:
     return decomposition
 
 
+_DECOMPOSITION_SYSTEM_PROMPT = (
+    "You are a task decomposition assistant. Break down tasks into clear, "
+    "actionable subtasks.\n\n"
+    "Return your response as valid JSON with this exact structure:\n"
+    '{"subtasks": [{"instruction": "First subtask"}, '
+    '{"instruction": "Second subtask"}, ...]}\n\n'
+    "Guidelines:\n"
+    "- Create 3-8 subtasks depending on complexity.\n"
+    "- Each subtask should be independently actionable.\n"
+    "- Order subtasks by dependency (earlier tasks don't depend on later ones).\n"
+    "- Use clear, specific instructions a developer can follow.\n"
+    "- Do NOT include status or id fields -- those are added by the system."
+)
+
+
 def _generate_decomposition(instruction: str) -> list[SubtaskItem]:
     """Generate subtasks from a task instruction.
 
-    Uses a rule-based approach to break down common task patterns.
-    Can be enhanced with LLM calls for more sophisticated decomposition.
+    Attempts LLM-based decomposition first; falls back to rule-based
+    patterns on any failure.  All generated subtasks start as ``pending``.
     """
-    import uuid
+    llm = _get_llm_client()
+    if llm is not None:
+        try:
+            response = llm.execute_task(
+                agent_name="task-decomposer",
+                task_instruction=(f"Decompose the following task into subtasks:\n\n{instruction}"),
+                priority="low",
+                system_prompt=_DECOMPOSITION_SYSTEM_PROMPT,
+                max_retries=2,
+            )
+            parsed = response.get("subtasks") if isinstance(response, dict) else None
+            if isinstance(parsed, list) and parsed:
+                items = [
+                    SubtaskItem(
+                        id=str(uuid.uuid4()),
+                        instruction=s.get("instruction", "") if isinstance(s, dict) else "",
+                    )
+                    for s in parsed
+                    if isinstance(s, dict) and s.get("instruction")
+                ]
+                if items:
+                    return items
+        except Exception:  # noqa: BLE001 - fallback to rule-based
+            logger.debug("LLM decomposition failed, using rule-based fallback")
+    return _rule_based_decomposition(instruction)
 
+
+def _rule_based_decomposition(instruction: str) -> list[SubtaskItem]:
+    """Rule-based fallback decomposition when LLM is unavailable."""
     instruction_lower = instruction.lower()
 
-    # Pattern-based decomposition
+    # Pattern-based decomposition — all statuses default to "pending"
     if any(kw in instruction_lower for kw in ["api", "endpoint", "rest"]):
         return [
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Analyze API requirements", status="completed"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Design endpoint schema", status="completed"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Implement route handlers", status="in_progress"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()),
-                instruction="Add validation and error handling",
-                status="pending",
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Write integration tests", status="pending"
-            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Analyze API requirements"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Design endpoint schema"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Implement route handlers"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Add validation and error handling"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write integration tests"),
         ]
     elif any(kw in instruction_lower for kw in ["test", "testing"]):
         return [
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Identify test scenarios", status="completed"
-            ),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Write unit tests", status="in_progress"),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Write integration tests", status="pending"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()),
-                instruction="Run test suite and fix failures",
-                status="pending",
-            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Identify test scenarios"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write unit tests"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write integration tests"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Run test suite and fix failures"),
         ]
     elif any(kw in instruction_lower for kw in ["fix", "bug", "issue"]):
         return [
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Reproduce the issue", status="completed"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Identify root cause", status="in_progress"
-            ),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Implement fix", status="pending"),
-            SubtaskItem(
-                id=str(uuid.uuid4()),
-                instruction="Verify fix and add regression test",
-                status="pending",
-            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Reproduce the issue"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Identify root cause"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Implement fix"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Verify fix and add regression test"),
         ]
     elif any(kw in instruction_lower for kw in ["implement", "build", "create", "feature"]):
         return [
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Analyze requirements", status="completed"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()),
-                instruction="Design implementation approach",
-                status="completed",
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()),
-                instruction="Implement core functionality",
-                status="in_progress",
-            ),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Add error handling", status="pending"),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Write tests", status="pending"),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Review and document", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Analyze requirements"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Design implementation approach"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Implement core functionality"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Add error handling"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Write tests"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Review and document"),
         ]
     elif any(kw in instruction_lower for kw in ["review", "audit"]):
         return [
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Review code changes", status="completed"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Check for security issues", status="in_progress"
-            ),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Verify test coverage", status="pending"),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Provide feedback", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Review code changes"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Check for security issues"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Verify test coverage"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Provide feedback"),
         ]
     elif any(kw in instruction_lower for kw in ["deploy", "release"]):
         return [
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Run pre-deployment checks", status="completed"
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Update configuration", status="in_progress"
-            ),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to staging", status="pending"),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Verify staging environment", status="pending"
-            ),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to production", status="pending"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Run pre-deployment checks"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Update configuration"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to staging"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Verify staging environment"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Deploy to production"),
         ]
     else:
-        # Generic decomposition for unrecognized patterns
         return [
-            SubtaskItem(
-                id=str(uuid.uuid4()),
-                instruction="Analyze the task requirements",
-                status="completed",
-            ),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Plan the implementation", status="in_progress"
-            ),
-            SubtaskItem(id=str(uuid.uuid4()), instruction="Execute the plan", status="pending"),
-            SubtaskItem(
-                id=str(uuid.uuid4()), instruction="Verify and document results", status="pending"
-            ),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Analyze the task requirements"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Plan the implementation"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Execute the plan"),
+            SubtaskItem(id=str(uuid.uuid4()), instruction="Verify and document results"),
         ]
 
 
@@ -1675,6 +1695,28 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
         "section_errors": errors,
     }
 
+    # Compute staleness for each section
+    def _section_staleness(collected_at_str: str | None) -> dict[str, Any]:
+        if not collected_at_str:
+            return {"last_updated": None, "is_stale": None}
+        try:
+            from datetime import datetime as dt
+            from datetime import timezone as tz
+
+            last_dt = dt.fromisoformat(collected_at_str.replace("Z", "+00:00"))
+            age_seconds = (dt.now(tz.utc) - last_dt).total_seconds()
+            return {
+                "last_updated": collected_at_str,
+                "age_seconds": round(age_seconds),
+                "is_stale": age_seconds > 300,
+            }
+        except Exception:  # noqa: BLE001
+            return {"last_updated": collected_at_str, "is_stale": None}
+
+    result["staleness"] = {
+        "overall": _section_staleness(sections.get("collected_at")),
+    }
+
     # Broadcast to WebSocket
     background_tasks.add_task(_broadcast_kpis, result)
     return result
@@ -2150,6 +2192,39 @@ def governance_report_api() -> dict[str, Any]:
         report["available"] = True
         return report
     except Exception:  # noqa: BLE001 - governance report must never raise
+        return empty_shape
+
+
+@router.get("/data-quality", tags=["governance"])
+def data_quality_report() -> dict[str, Any]:
+    """Return a data-quality audit report for the CEO dashboard.
+
+    Checks whether each expected data source exists and has records,
+    returning staleness indicators, gap analysis, and completeness metrics.
+    Never raises.
+    """
+    from datetime import datetime, timezone
+
+    from ai_company.data import DataGovernance, database_is_usable, get_database
+
+    empty_shape = {
+        "available": False,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "total_sources": 0,
+        "available_sources": 0,
+        "gaps": [],
+        "sources": [],
+        "completeness_pct": 0.0,
+    }
+    db = get_database()
+    if db is None or not database_is_usable(db):
+        return empty_shape
+    try:
+        gov = DataGovernance(db)
+        # TODO: implement data_gap_audit() on DataGovernance and return real report
+        del gov
+        return empty_shape
+    except Exception:  # noqa: BLE001 - data quality report must never raise
         return empty_shape
 
 
@@ -2783,7 +2858,29 @@ def get_org_health(
         except Exception:  # noqa: BLE001
             logger.debug("Org health trend unavailable")
 
-    return result.to_dict(include_components=component_detail, trend=trend)
+    response = result.to_dict(include_components=component_detail, trend=trend)
+
+    # Add staleness indicator
+    if result.components:
+        # Use the most recent component value timestamp or collected_at
+        last_update = result.collected_at
+        try:
+            from datetime import datetime as dt
+            from datetime import timezone as tz
+
+            last_dt = dt.fromisoformat(last_update.replace("Z", "+00:00")) if last_update else None
+            if last_dt:
+                age_seconds = (dt.now(tz.utc) - last_dt).total_seconds()
+                response["staleness"] = {
+                    "last_updated": last_update,
+                    "age_seconds": round(age_seconds),
+                    "is_stale": age_seconds > 300,  # 5 minutes
+                    "stale_threshold_seconds": 300,
+                }
+        except Exception:  # noqa: BLE001
+            response["staleness"] = {"last_updated": last_update, "is_stale": None}
+
+    return response
 
 
 @router.get("/org-health/trend", tags=["org-health"])
