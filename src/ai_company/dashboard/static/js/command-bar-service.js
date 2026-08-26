@@ -17,12 +17,14 @@ class CommandBarService {
             { id: 'agent-pause', label: 'Pause Agent', icon: 'pause', action: () => this.dispatch('command-bar:pause-agent'), category: 'agent', minRole: 'admin' },
             { id: 'agent-resume', label: 'Resume Agent', icon: 'play', action: () => this.dispatch('command-bar:resume-agent'), category: 'agent', minRole: 'admin' },
             { id: 'agent-status', label: 'Agent Status', icon: 'activity', action: () => this.dispatch('command-bar:agent-status'), category: 'agent', minRole: 'run' },
+            { id: 'agent-list', label: 'Agent Fleet', icon: 'users', url: '/agents', category: 'agent', minRole: 'run' },
             // Memory
             { id: 'memory-search', label: 'Search Memory', icon: 'search', action: () => this.dispatch('command-bar:memory-search'), category: 'memory', minRole: 'run' },
             { id: 'memory-recent', label: 'Recent Memory', icon: 'clock', action: () => this.dispatch('command-bar:memory-recent'), category: 'memory', minRole: 'run' },
             // Ops
             { id: 'ops-state', label: 'System State', icon: 'server', url: '/ops', category: 'ops', minRole: 'admin' },
             { id: 'ops-health', label: 'Health Check', icon: 'heart', action: () => this.dispatch('command-bar:health-check'), category: 'ops', minRole: 'admin' },
+            { id: 'ops-deploy', label: 'Deploy', icon: 'upload', action: () => this.dispatch('command-bar:deploy'), category: 'ops', minRole: 'admin' },
             // Navigation
             { id: 'tasks', label: 'Tasks', icon: 'list', url: '/tasks', category: 'nav', minRole: 'run' },
             { id: 'kpis', label: 'KPIs Dashboard', icon: 'chart-bar', url: '/kpis', category: 'nav', minRole: 'run' },
