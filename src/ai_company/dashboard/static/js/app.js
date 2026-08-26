@@ -1618,9 +1618,9 @@ function dashboard() {
       // Render sparklines for component cards (visible when overview is expanded)
       if (this.orgHealth.components) {
         for (const comp of this.orgHealth.components) {
-          this._renderSparkline('spark-d-' + comp.name, this._generateTrendData(comp.value));
+          this._renderSparkline('spark-d-' + comp.name, null);
           if (this.expandedComponent === comp.name) {
-            this._renderSparkline('spark-detail-' + comp.name, this._generateTrendData(comp.value));
+            this._renderSparkline('spark-detail-' + comp.name, null);
           }
         }
       }
@@ -1674,7 +1674,29 @@ function dashboard() {
 
     _renderSparkline(canvasId, data) {
       const canvas = document.getElementById(canvasId);
-      if (!canvas || typeof Chart === 'undefined') return;
+      if (!canvas) return;
+
+      if (!data || data.length === 0) {
+        canvas.style.display = 'none';
+        const parent = canvas.parentNode;
+        if (parent && !parent.querySelector('.sparkline-placeholder')) {
+          const placeholder = document.createElement('span');
+          placeholder.className = 'sparkline-placeholder text-xs text-slate-500 italic flex items-center justify-center h-full w-full';
+          placeholder.textContent = 'No history';
+          parent.appendChild(placeholder);
+        }
+        return;
+      }
+
+      if (typeof Chart === 'undefined') return;
+
+      // Remove any existing placeholder
+      const parent = canvas.parentNode;
+      if (parent) {
+        const existing = parent.querySelector('.sparkline-placeholder');
+        if (existing) existing.remove();
+      }
+      canvas.style.display = '';
 
       const ctx = canvas.getContext('2d');
 
@@ -1705,18 +1727,6 @@ function dashboard() {
           animation: { duration: 500 },
         },
       });
-    },
-
-    _generateTrendData(currentValue) {
-      // Generate 20 pseudo-random points trending toward currentValue
-      const points = [];
-      let val = currentValue * (0.7 + Math.random() * 0.3);
-      for (let i = 0; i < 20; i++) {
-        val += (currentValue - val) * 0.1 + (Math.random() - 0.5) * 5;
-        val = Math.max(0, Math.min(100, val));
-        points.push(val);
-      }
-      return points;
     },
   };
 }

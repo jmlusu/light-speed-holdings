@@ -140,16 +140,14 @@ function ceoHeroPrototype() {
       this.renderRadialGauge('heroGaugeB', this.orgHealth.score, this.orgHealth.band, 192);
       this.renderRadialGauge('heroGaugeD', this.orgHealth.score, this.orgHealth.band, 256);
 
-      // Component sparklines
+      // Component sparklines — real trend data not yet available from the API
       if (this.orgHealth.components) {
         for (const comp of this.orgHealth.components) {
           if (comp.value !== null) {
-            const trendData = await this.fetchComponentTrend(comp.name);
-            const trend = trendData || this.generateTrendData(comp.value);
-            this.renderSparkline('spark-' + comp.name, trend);
-            this.renderSparkline('spark-b-' + comp.name, trend);
-            this.renderSparkline('spark-d-' + comp.name, trend);
-            this.renderSparkline('spark-detail-' + comp.name, trend);
+            this.renderSparkline('spark-' + comp.name, null);
+            this.renderSparkline('spark-b-' + comp.name, null);
+            this.renderSparkline('spark-d-' + comp.name, null);
+            this.renderSparkline('spark-detail-' + comp.name, null);
           }
         }
       }
@@ -203,7 +201,29 @@ function ceoHeroPrototype() {
 
     renderSparkline(canvasId, data) {
       const canvas = document.getElementById(canvasId);
-      if (!canvas || typeof Chart === 'undefined') return;
+      if (!canvas) return;
+
+      if (!data || data.length === 0) {
+        canvas.style.display = 'none';
+        const parent = canvas.parentNode;
+        if (parent && !parent.querySelector('.sparkline-placeholder')) {
+          const placeholder = document.createElement('span');
+          placeholder.className = 'sparkline-placeholder text-xs text-slate-500 italic flex items-center justify-center h-full w-full';
+          placeholder.textContent = 'No history';
+          parent.appendChild(placeholder);
+        }
+        return;
+      }
+
+      if (typeof Chart === 'undefined') return;
+
+      // Remove any existing placeholder
+      const parent = canvas.parentNode;
+      if (parent) {
+        const existing = parent.querySelector('.sparkline-placeholder');
+        if (existing) existing.remove();
+      }
+      canvas.style.display = '';
 
       const ctx = canvas.getContext('2d');
 
@@ -234,35 +254,6 @@ function ceoHeroPrototype() {
           animation: { duration: 500 },
         },
       });
-    },
-
-    generateTrendData(currentValue) {
-      // Generate 20 pseudo-random points trending toward currentValue
-      // NOTE: This is a fallback only. Prefer fetching real history from
-      // /api/v1/org-health/trend for live sparklines.
-      const points = [];
-      let val = currentValue * (0.7 + Math.random() * 0.3);
-      for (let i = 0; i < 20; i++) {
-        val += (currentValue - val) * 0.1 + (Math.random() - 0.5) * 5;
-        val = Math.max(0, Math.min(100, val));
-        points.push(val);
-      }
-      return points;
-    },
-
-    async fetchComponentTrend(compName) {
-      try {
-        const resp = await fetch('/api/v1/org-health/trend?limit=20');
-        if (!resp.ok) return null;
-        const data = await resp.json();
-        if (!data || !Array.isArray(data) || data.length === 0) return null;
-        const values = data
-          .map(entry => entry.components?.find(c => c.name === compName)?.value)
-          .filter(v => v !== null && v !== undefined && !isNaN(v));
-        return values.length >= 3 ? values.slice(-20) : null;
-      } catch {
-        return null;
-      }
     },
   };
 }
