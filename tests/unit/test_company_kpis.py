@@ -10,7 +10,8 @@ value.
 
 Every KPI entry must expose exactly the contract keys: ``id``, ``name``,
 ``category``, ``owner``, ``frequency``, ``unit``, ``target``, ``current``,
-``status``, ``gap``, ``computed``, ``source``.
+``status``, ``gap``, ``computed``, ``source``, ``data_quality``,
+``data_gap``, ``computed_at``.
 
 Note on ``test_get_company_kpi_summary_defaults_to_real_repo``: the real repo
 root holds live telemetry (the shipped ``.opencode/inbox.json``), so the
@@ -55,6 +56,9 @@ CONTRACT_KEYS = (
     "gap",
     "computed",
     "source",
+    "data_quality",
+    "data_gap",
+    "computed_at",
 )
 
 REAL_KPI_IDS = ("KPI-001", "KPI-002", "KPI-003", "KPI-004", "KPI-005")
