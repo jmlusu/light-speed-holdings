@@ -438,7 +438,7 @@ def feed_knowledge(
 
     if engagement.get("expert_feedback"):
         _store_engagement_learning(
-            memory_type="feedback",
+            memory_type="semantic",
             content=f"Expert feedback on roadmap for engagement '{engagement_id}': "
             f"{engagement['expert_feedback']}",
             engagement_id=engagement_id,
