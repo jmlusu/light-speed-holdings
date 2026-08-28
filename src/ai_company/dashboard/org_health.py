@@ -10,15 +10,21 @@ from __future__ import annotations
 
 import logging
 import math
+import threading
+import time
+from concurrent.futures import Future
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import yaml
 
 from ai_company.data.database import Database
 from ai_company.paths import get_project_root
+from ai_company.reliability.breaker import ComponentBreaker
+from ai_company.reliability.config import get_hardening_value, load_hardening_config
+from ai_company.reliability.timeout import Bulkhead
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +111,13 @@ class OrgHealthCalculator:
 
     Configuration is loaded once at init time from ``config/org_health.yaml``.
     Call :meth:`compute` with an optional database to get a fresh score.
+
+    Since wayfinder ticket #170 the scoring pass is hardened: each component
+    scorer runs in a bulkhead worker with a hard timeout and a per-component
+    circuit breaker. A slow/failing scorer degrades fail-open to its last
+    known-good value (or ``None`` on cold start) so it can never block the
+    dashboard thread. Repeated :meth:`compute` calls within the dedup window
+    return the last result. Thresholds come from ``company/config/hardening.yaml``.
     """
 
     def __init__(self, project_root: Path | None = None) -> None:
@@ -113,6 +126,14 @@ class OrgHealthCalculator:
         self._bands: dict[str, dict[str, int]] = self._config.get("bands", {})
         self._component_defs: list[dict[str, Any]] = self._config.get("components", [])
         self._validate_weights()
+
+        self._hardening = load_hardening_config(self._root)
+        self._compute_lock = threading.Lock()
+        self._last_compute: OrgHealthResult | None = None
+        self._last_compute_at = 0.0
+        self._breakers: dict[str, ComponentBreaker] = {}
+        self._last_good: dict[str, float] = {}
+        self._task_window_cache: tuple[list[dict[str, Any]], str] | None = None
 
     # ── Public API ───────────────────────────────────────────────────
 
@@ -131,31 +152,75 @@ class OrgHealthCalculator:
             Components with no data have ``value=None`` and are excluded
             from the composite (the score reflects only available data).
         """
-        components: list[ComponentScore] = []
-        for comp_def in self._component_defs:
-            name = comp_def["name"]
-            weight = comp_def["weight"]
-            value = self._compute_component(name, database)
-            components.append(
-                ComponentScore(name=name, weight=weight, value=value, sub_score=value)
-            )
-
-        # Only include components with real data in the composite
-        scored = [(c, c.value) for c in components if c.value is not None]
-        if scored:
-            total_weight = sum(c.weight for c, _ in scored)
-            composite = sum(c.weight * v for c, v in scored) / total_weight * 100
-        else:
-            composite = 0.0
-        score = max(0, min(100, round(composite)))
-        band = self._score_to_band(score)
-
-        return OrgHealthResult(
-            score=score,
-            band=band,
-            components=components,
-            collected_at=datetime.now(timezone.utc).isoformat(),
+        call_timeout_s = float(
+            get_hardening_value(self._hardening, "org_health.call_timeout_s", 3.0)
         )
+        compute_timeout_s = float(
+            get_hardening_value(self._hardening, "org_health.compute_timeout_s", 15.0)
+        )
+        dedup_s = float(get_hardening_value(self._hardening, "org_health.dedup_window_s", 5.0))
+        pool_size = max(
+            1,
+            min(
+                int(get_hardening_value(self._hardening, "org_health.worker_pool_size", 4)),
+                len(self._component_defs),
+            ),
+        )
+
+        with self._compute_lock:
+            now = time.monotonic()
+            if self._last_compute is not None and now - self._last_compute_at < dedup_s:
+                return self._last_compute
+
+            self._task_window_cache = None
+            deadline = time.monotonic() + max(0.0, compute_timeout_s)
+            components: list[ComponentScore] = []
+            bulkhead = Bulkhead(max_workers=pool_size)
+            try:
+                submittable = {
+                    comp_def["name"]: self._get_breaker(comp_def["name"]).is_available
+                    for comp_def in self._component_defs
+                }
+                futures: dict[str, Future[float | None]] = {
+                    name: bulkhead.submit(self._score_component, name, database)
+                    for name, available in submittable.items()
+                    if available
+                }
+                for comp_def in self._component_defs:
+                    name = comp_def["name"]
+                    weight = comp_def["weight"]
+                    if name in futures:
+                        value = self._scored_component(
+                            name, futures[name], deadline, call_timeout_s
+                        )
+                    else:
+                        # Breaker open — never queued: fail open without a call.
+                        value = self._fail_open(name)
+                    components.append(
+                        ComponentScore(name=name, weight=weight, value=value, sub_score=value)
+                    )
+            finally:
+                bulkhead.shutdown(wait=False)
+
+            # Only include components with real data in the composite
+            scored = [(c, c.value) for c in components if c.value is not None]
+            if scored:
+                total_weight = sum(c.weight for c, _ in scored)
+                composite = sum(c.weight * v for c, v in scored) / total_weight
+            else:
+                composite = 0.0
+            score = max(0, min(100, round(composite)))
+            band = self._score_to_band(score)
+
+            result = OrgHealthResult(
+                score=score,
+                band=band,
+                components=components,
+                collected_at=datetime.now(timezone.utc).isoformat(),
+            )
+            self._last_compute = result
+            self._last_compute_at = time.monotonic()
+            return result
 
     def get_bands(self) -> dict[str, dict[str, int]]:
         """Return the configured band thresholds."""
@@ -239,27 +304,134 @@ class OrgHealthCalculator:
 
     # ── Component scoring ────────────────────────────────────────────
 
-    def _compute_component(self, name: str, database: Database | None) -> float | None:
-        """Dispatch to the appropriate scoring function for a component.
-
-        Returns ``None`` when no data is available for the component instead
-        of a fabricated default, so callers can surface "No data" to the UI.
-        """
-        scorers = {
+    def _scorers(self) -> dict[str, Callable[[Database | None], float | None]]:
+        """Map configured component names to their scoring functions."""
+        return {
             "task_success_rate": self._score_task_success_rate,
             "agent_utilization": self._score_agent_utilization,
             "cost_efficiency": self._score_cost_efficiency,
             "error_rate": self._score_error_rate,
         }
-        scorer = scorers.get(name)
+
+    def _score_component(self, name: str, database: Database | None) -> float | None:
+        """Dispatch to the scorer for *name*, letting failures propagate.
+
+        Deliberately exception-transparent: hardening (breaker + timeout +
+        fail-open) is applied by :meth:`_scored_component`, so real scorer
+        failures trip the per-component breaker instead of being swallowed
+        as a plain ``None``.
+        """
+        scorer = self._scorers().get(name)
         if scorer is None:
             logger.warning("Unknown org-health component: %s — no data available", name)
             return None
+        return scorer(database)
+
+    def _scored_component(
+        self,
+        name: str,
+        future: Future[float | None],
+        deadline: float,
+        call_timeout_s: float,
+    ) -> float | None:
+        """Apply breaker + timeout hardening to an in-flight scorer future.
+
+        Returns:
+            The scorer's value on success, or the last known-good value /
+            ``None`` (fail-open) on timeout, failure, or an open circuit.
+        """
+        breaker = self._get_breaker(name)
+        if not breaker.is_available:
+            logger.warning(
+                "Org health breaker for %s is open — using cached/None (fail-open)",
+                name,
+            )
+            return self._fail_open(name)
+
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            breaker.record_failure()
+            logger.warning(
+                "Org health compute deadline exceeded for %s — using cached/None (fail-open)",
+                name,
+            )
+            return self._fail_open(name)
+
         try:
-            return scorer(database)
-        except Exception:  # noqa: BLE001
-            logger.exception("Failed to score component %s", name)
-            return None
+            value = future.result(timeout=min(call_timeout_s, remaining))
+        except TimeoutError:
+            breaker.record_failure()
+            logger.warning(
+                "Org health component %s timed out after %.1fs — using cached/None (fail-open)",
+                name,
+                min(call_timeout_s, remaining),
+            )
+            return self._fail_open(name)
+        except Exception:  # noqa: BLE001 - breaker records and degrades
+            breaker.record_failure()
+            logger.exception("Org health component %s raised — using cached/None (fail-open)", name)
+            return self._fail_open(name)
+
+        breaker.record_success()
+        if value is not None:
+            self._last_good[name] = value
+        return value
+
+    def _get_breaker(self, name: str) -> ComponentBreaker:
+        """Return the per-component breaker, building it from config on first use."""
+        breaker = self._breakers.get(name)
+        if breaker is None:
+            breaker = ComponentBreaker(
+                name=name,
+                failure_threshold=int(
+                    get_hardening_value(
+                        self._hardening,
+                        "org_health.breaker.failure_threshold",
+                        3,
+                    )
+                ),
+                recovery_timeout_s=float(
+                    get_hardening_value(
+                        self._hardening,
+                        "org_health.breaker.recovery_timeout_s",
+                        60.0,
+                    )
+                ),
+                success_threshold=int(
+                    get_hardening_value(
+                        self._hardening,
+                        "org_health.breaker.success_threshold",
+                        1,
+                    )
+                ),
+            )
+            self._breakers[name] = breaker
+        return breaker
+
+    def _fail_open(self, name: str) -> float | None:
+        """Last known-good score for *name*, or ``None`` on cold start.
+
+        Fail-open: a degraded scorer keeps serving its most recent healthy
+        value so the composite reflects stale-but-true data rather than a
+        fabricated number. With no history yet, ``None`` keeps the existing
+        "no data this component" semantics (excluded from the composite).
+        """
+        cached = self._last_good.get(name)
+        return cached if cached is not None else None
+
+    def _window_tasks(self) -> tuple[list[dict[str, Any]], str]:
+        """Fetch the 30-day task window once per compute.
+
+        The three task-based scorers all read the same inbox window; sharing
+        one fetch per compute avoids redundant whole-file reads and keeps the
+        read count bounded when a component is slow (called under the compute
+        lock, so it is thread-safe).
+        """
+        if self._task_window_cache is None:
+            from ai_company.dashboard.data_service import _company_window_tasks
+
+            self._task_window_cache = _company_window_tasks(self._root, days=30)
+        return self._task_window_cache
 
     def _score_task_success_rate(self, database: Database | None) -> float | None:
         """Ratio of completed tasks to total tasks (0-100).
@@ -267,10 +439,7 @@ class OrgHealthCalculator:
         Returns ``None`` when no tasks exist in the 30-day window so callers
         can distinguish "no data" from "zero success rate".
         """
-        from ai_company.dashboard.data_service import _company_window_tasks
-
-        root = self._root
-        tasks, _ = _company_window_tasks(root, days=30)
+        tasks, _ = self._window_tasks()
         total = len(tasks)
         if total == 0:
             return None
@@ -283,17 +452,14 @@ class OrgHealthCalculator:
         Returns ``None`` when no agents are registered so callers can
         distinguish "no data" from "zero utilization".
         """
-        from ai_company.dashboard.data_service import (
-            _company_window_tasks,
-            _count_registered_agents,
-        )
+        from ai_company.dashboard.data_service import _count_registered_agents
 
         root = self._root
         total_registered = _count_registered_agents(root)
         if total_registered == 0:
             return None
 
-        tasks, _ = _company_window_tasks(root, days=30)
+        tasks, _ = self._window_tasks()
         active_agents = {
             agent
             for task in tasks
@@ -312,23 +478,22 @@ class OrgHealthCalculator:
         spend = higher efficiency, but capped at 100).
 
         Returns ``None`` when no cost data or budget is available so callers
-        can distinguish "no data" from "zero efficiency".
+        can distinguish "no data" from "zero efficiency". Exceptions propagate
+        to the hardening layer (breaker + fail-open) rather than being
+        swallowed here.
         """
-        try:
-            from ai_company.dashboard.data_service import get_cost_summary
+        from ai_company.dashboard.data_service import get_cost_summary
 
-            summary = get_cost_summary(database=database)
-            if summary is None:
-                return None
-            total_spent = float(summary.get("total_spent", 0) or 0)
-            budget = float(summary.get("budget", 0) or 0)
-            if budget <= 0:
-                return None
-            # Efficiency = 100 - (spent/budget * 100), clamped
-            utilization = (total_spent / budget) * 100
-            return max(0.0, min(100.0, 100.0 - utilization + 50.0))
-        except Exception:  # noqa: BLE001
+        summary = get_cost_summary(database=database)
+        if summary is None:
             return None
+        total_spent = float(summary.get("total_spent", 0) or 0)
+        budget = float(summary.get("budget", 0) or 0)
+        if budget <= 0:
+            return None
+        # Efficiency = 100 - (spent/budget * 100), clamped
+        utilization = (total_spent / budget) * 100
+        return max(0.0, min(100.0, 100.0 - utilization + 50.0))
 
     def _score_error_rate(self, database: Database | None) -> float | None:
         """Error/exception rate across agent operations (0-100, inverted).
@@ -337,23 +502,17 @@ class OrgHealthCalculator:
         message bus / audit trail. Returns 100 - (error_rate * 100).
 
         Returns ``None`` when no tasks exist in the window so callers can
-        distinguish "no data" from "zero error rate".
+        distinguish "no data" from "zero error rate". Exceptions propagate to
+        the hardening layer (breaker + fail-open) rather than being swallowed
+        here.
         """
-        try:
-            from ai_company.dashboard.data_service import _company_window_tasks
-
-            root = self._root
-            tasks, _ = _company_window_tasks(root, days=30)
-            total = len(tasks)
-            if total == 0:
-                return None
-            error_tasks = sum(
-                1 for t in tasks if t.get("status") in ("failed", "error", "cancelled")
-            )
-            error_rate = (error_tasks / total) * 100
-            return max(0.0, 100.0 - error_rate)
-        except Exception:  # noqa: BLE001
+        tasks, _ = self._window_tasks()
+        total = len(tasks)
+        if total == 0:
             return None
+        error_tasks = sum(1 for t in tasks if t.get("status") in ("failed", "error", "cancelled"))
+        error_rate = (error_tasks / total) * 100
+        return max(0.0, 100.0 - error_rate)
 
     # ── Band mapping ─────────────────────────────────────────────────
 
