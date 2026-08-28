@@ -8,6 +8,7 @@ import asyncio
 import json
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -734,6 +735,69 @@ class TestOnboardingStudio:
 # ── Task Decomposition ─────────────────────────────────────────────
 
 
+class _StubDecomposerLLM:
+    """Deterministic, offline stand-in for ``LLMClient.execute_task``.
+
+    Returns a fixed decomposition whose subtask instructions echo the
+    governing keyword in the task instruction. Mirrors the JSON contract
+    from ``_DECOMPOSITION_SYSTEM_PROMPT``: subtasks carry only an
+    ``instruction``; the dashboard assigns ``id`` and ``status``.
+    """
+
+    def execute_task(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
+        raw = kwargs.get("task_instruction") or " ".join(
+            arg for arg in args if isinstance(arg, str)
+        )
+        instruction = raw.lower()
+
+        if "test" in instruction:
+            subtasks = [
+                "Define test strategy and coverage targets",
+                "Write unit tests for the module",
+                "Add integration tests for the module",
+                "Run the full test suite and record results",
+            ]
+        elif any(k in instruction for k in ("fix", "bug", "reproduce", "root cause")):
+            subtasks = [
+                "Reproduce the bug with a minimal case",
+                "Diagnose the root cause",
+                "Implement the fix",
+                "Verify the fix with regression tests",
+            ]
+        elif any(k in instruction for k in ("api", "endpoint", "route")):
+            subtasks = [
+                "Design the REST API endpoint contract",
+                "Implement the API endpoint handler",
+                "Add request/response validation and error handling",
+                "Document and smoke-test the endpoint",
+            ]
+        else:
+            subtasks = [
+                "Clarify requirements and define acceptance criteria",
+                "Design the solution approach",
+                "Implement the change",
+                "Review and test the result",
+            ]
+        return {"subtasks": [{"instruction": s} for s in subtasks]}
+
+
+@pytest.fixture()
+def _stub_llm_decomposer() -> Any:
+    """Replace the dashboard's real LLM client with a deterministic stub.
+
+    Without this, decomposition tests hit the network via
+    ``dashboard.api._get_llm_client`` and depend on live model output
+    (and 3x retry timeouts when offline). The stub keeps the
+    LLM-parse -> persist -> progress flow covered deterministically.
+    """
+    with patch(
+        "ai_company.dashboard.api._get_llm_client",
+        return_value=_StubDecomposerLLM(),
+    ):
+        yield
+
+
+@pytest.mark.usefixtures("_stub_llm_decomposer")
 class TestTaskDecomposition:
     """Tests for task decomposition endpoints (Kanban Decomposition feature #44)."""
 
