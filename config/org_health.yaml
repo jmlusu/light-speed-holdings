@@ -3,6 +3,52 @@
 # Bands define score → colour mapping for the dashboard.
 # Components define weighted sub-scores that compose the overall health score.
 # Weights MUST sum to 1.0; the calculator validates this at startup.
+#
+# ── Composite Formula ──────────────────────────────────────────────
+#
+#   composite = (SUM(weight_i * score_i) / SUM(weights with data)) * 100
+#   score     = clamp(round(composite), 0, 100)
+#
+# Where:
+#   composite  — the final 0-100 health score displayed on the dashboard
+#   weight_i   — the configured weight for component i (sums to 1.0)
+#   score_i    — the component's normalised score (0-100)
+#   available weights — only components with non-None data contribute;
+#                       missing components are excluded from both numerator
+#                       and denominator so the score reflects only known data
+#
+# ── Component Definitions ──────────────────────────────────────────
+#
+#   task_success_rate:
+#     Formula: (completed_tasks / total_tasks) * 100
+#     Window:  30-day rolling (configurable via _company_window_tasks)
+#     Scale:   0-100 (100 = all tasks completed)
+#     Weight:  0.30 (30% of composite)
+#
+#   agent_utilization:
+#     Formula: (active_agents / registered_agents) * 100, capped at 100
+#     Window:  30-day rolling (agents active in any task within window)
+#     Scale:   0-100 (100 = all registered agents are active)
+#     Weight:  0.25 (25% of composite)
+#
+#   cost_efficiency:
+#     Formula: 100 - (total_spent / budget * 100) + 50, clamped [0, 100]
+#     Source:   get_cost_summary() from data service
+#     Scale:   0-100 (100 = no spend or low spend relative to budget)
+#     Weight:  0.25 (25% of composite)
+#     NOTE:    The +50 offset means 50% spend = 100 score, 100% spend = 50 score
+#
+#   error_rate (inverted):
+#     Formula: 100 - (error_tasks / total_tasks * 100)
+#     Window:  30-day rolling (failed + error + cancelled statuses)
+#     Scale:   0-100 (100 = zero errors)
+#     Weight:  0.20 (20% of composite)
+#
+# ── Band Thresholds ────────────────────────────────────────────────
+#
+#   GREEN:  80-100  (healthy)
+#   AMBER:  50-79   (warning)
+#   RED:    0-49    (critical)
 
 bands:
   green:
@@ -18,13 +64,13 @@ bands:
 components:
   - name: task_success_rate
     weight: 0.30
-    description: "Ratio of completed tasks to total tasks"
+    description: "Ratio of completed tasks to total tasks (30d)"
   - name: agent_utilization
     weight: 0.25
-    description: "Active agents vs registered agents"
+    description: "Active agents vs registered agents (30d)"
   - name: cost_efficiency
     weight: 0.25
-    description: "Budget utilization vs spend"
+    description: "Budget utilization vs spend (inverted: lower spend = higher score)"
   - name: error_rate
     weight: 0.20
-    description: "Error/exception rate across agent operations"
+    description: "Error/exception rate across agent operations (inverted: lower errors = higher score)"

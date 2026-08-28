@@ -4,6 +4,31 @@ Loads band/weight configuration from ``config/org_health.yaml`` and computes
 a weighted composite score from live operational data.  Component scores are
 computed from the same data sources used by the dashboard KPI collectors
 (tasks, KPIs, agents, costs, builds).
+
+Composite Formula
+-----------------
+::
+
+    composite = (SUM(weight_i * score_i) / SUM(weights with data)) * 100
+    score     = clamp(round(composite), 0, 100)
+
+Where:
+- **composite** is the final 0-100 health score.
+- **weight_i** is the configured weight for component *i* (weights sum to 1.0).
+- **score_i** is the component's normalised score (0-100).
+- **available weights** means only components with non-None data contribute;
+  missing components are excluded from both numerator and denominator.
+
+Components (from ``config/org_health.yaml``):
+- ``task_success_rate`` (0.30): ``(completed / total) * 100`` over 30d window.
+- ``agent_utilization`` (0.25): ``(active / registered) * 100``, capped at 100.
+- ``cost_efficiency`` (0.25): ``100 - (spent/budget * 100) + 50``, clamped [0,100].
+- ``error_rate`` (0.20): ``100 - (errors / total * 100)`` (inverted: fewer errors = higher score).
+
+Bands:
+- GREEN: 80-100 (healthy)
+- AMBER: 50-79 (warning)
+- RED: 0-49 (critical)
 """
 
 from __future__ import annotations
@@ -36,7 +61,23 @@ _DEFAULT_CONFIG = "config/org_health.yaml"
 
 @dataclass
 class ComponentScore:
-    """A single component within the composite org-health score."""
+    """A single component within the composite org-health score.
+
+    Three values are exposed to the dashboard UI:
+
+    - **value** (Current Score): The normalised score (0-100) computed by the
+      component's scorer function.  Displayed as ``"82%"`` on the dashboard.
+    - **sub_score** (Component Score): Identical to *value* — kept as a
+      separate field for API shape compatibility with earlier designs.
+      Displayed as ``"82"`` (no ``%`` suffix) and coloured by band.
+    - **weight** (Weight in Composite): The configured weight from
+      ``config/org_health.yaml`` (e.g. 0.30).  Displayed as ``"30%"``
+      on the dashboard.  Used in the composite formula:
+      ``composite = SUM(weight_i * score_i) / SUM(available weights) * 100``.
+
+    When no data is available for a component, ``value`` and ``sub_score``
+    are both ``None`` and the component is excluded from the composite.
+    """
 
     name: str
     weight: float
