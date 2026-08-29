@@ -1,0 +1,268 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const tiers = [
+  {
+    name: "Self-serve",
+    tagline: "For teams evaluating on their own machine",
+    audience: "Free, open source",
+    price: "$0",
+    priceNote: "pay only inference",
+    cta: { label: "Copy install", href: "#install", variant: "outline" },
+    features: [
+      "Full 135-agent generator from your registry",
+      "5-tier approvals + audit JSONL",
+      "6 memory types, 4 graphs, BFS pathfinding",
+      "Live dashboard on :8420",
+      "9 workflows + SLA monitoring",
+      "Per-task cost tracking in cost_log.jsonl",
+    ],
+    note: "No signup. No gatekeeping. The CLI is the proof.",
+  },
+  {
+    name: "Managed Platform",
+    tagline: "For teams scaling — we run the daemon",
+    audience: "Popular choice",
+    price: "Scoped",
+    priceNote: "by registry size & keys",
+    cta: { label: "Book deployment", href: "/contact", variant: "solid" },
+    features: [
+      "We operate the daemon + governance sweeps",
+      "KPI snapshots on your dashboard",
+      "HITL approval expiry managed for you",
+      "Retention & file-locking handled",
+      "You ship via inbox.json — we keep it alive",
+      "Ollama vs API key routing optimized",
+    ],
+    note: "Scoped to registry size & provider keys. Your CFO audits the log.",
+    featured: true,
+  },
+  {
+    name: "Enterprise",
+    tagline: "For teams embedding in their stack",
+    audience: "Forward-deployed",
+    price: "Custom",
+    priceNote: "FDEs + private infra",
+    cta: { label: "Talk to founders", href: "/contact", variant: "outline" },
+    features: [
+      "Forward-deployed engineers in your stack",
+      "ERP / CRM integration",
+      "Custom RAG on your data",
+      "VPC / private LLM deployment",
+      "SSO + role-gated access",
+      "SOPs built to your governance",
+    ],
+    note: "Models, keys, and co-location scoped per engagement.",
+  },
+];
+
+const faqs = [
+  {
+    q: "What exactly is 'pay only inference'?",
+    a: "The CLI and all 135 agents are free. You pay only for the LLM tokens each task consumes. Every task writes its cost to cost_log.jsonl so you can audit the exact spend — no fixed seat license, no surprise overage.",
+  },
+  {
+    q: "How does the cost tracking work?",
+    a: "The platform writes a per-task line to cost_log.jsonl on every run, and you can cap budgets per namespace. The dashboard surfaces spend vs. budget in real time. No '3-5× cheaper' hand-waving — your CFO reads the log.",
+  },
+  {
+    q: "Ollama vs API keys — which do I use?",
+    a: "Self-serve works with either. Ollama keeps everything on your machine for $0 inference; API keys (OpenCode, Gemini, DeepSeek, Kimi, etc.) let agents use hosted models. Managed Platform routes automatically to keep cost+latency balanced.",
+  },
+  {
+    q: "How is Managed Platform priced?",
+    a: "Scoped to your registry size and provider keys. We confirm a fixed operating envelope after a short Assessment so the number is concrete — not a vague multiplier.",
+  },
+  {
+    q: "Is there a free assessment?",
+    a: "The 10-day Assessment is a paid engagement that packages as a scoped engagement (see Solutions). We map 1,200+ processes, surface 3-7 leverage points, and hand you 9 workflow DAGs — then you keep the generator.",
+  },
+];
+---
+
+<BaseLayout
+  title="Pricing — Free self-serve · Managed · Enterprise"
+  description="Transparent tiers + a live inference calculator — pay only what your agents actually consume. No fixed seats, no 3-5× hand-waving."
+>
+  <section class="bg-[var(--ls-cream)] py-16 md:py-20">
+    <div class="ls-inner max-w-[960px]">
+      <div class="text-[0.78rem] uppercase tracking-[0.12em] text-[var(--ls-ink-muted)]">Pricing</div>
+      <h1 class="mt-3 font-semibold tracking-[-0.03em] text-[clamp(2.1rem,5vw,3.1rem)] leading-[1.08]">
+        Pay for the tokens you use.<br />
+        <span class="font-[var(--ls-font-serif)] italic font-normal">Not for seats you don't.</span>
+      </h1>
+      <p class="mt-4 text-[var(--ls-text-secondary)] max-w-[62ch]">The CLI and all 135 agents are free. Every task's inference cost is written to <code class="font-mono text-[0.82rem]">cost_log.jsonl</code> and surfaced on the dashboard — you audit the log, not our claims.</p>
+    </div>
+  </section>
+
+  <!-- TIER CARDS -->
+  <section class="ls-shell pb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {tiers.map((tier) => (
+        <div class={`relative rounded-[20px] border p-6 flex flex-col ${tier.featured ? "border-[var(--ls-ink)] bg-white shadow-[var(--ls-shadow-card)]" : "border-[var(--ls-card-border)] bg-white"}`}>
+          {tier.featured && (
+            <div class="absolute -top-3 left-6 rounded-full bg-[var(--ls-ink)] text-white px-3 py-1 text-[0.68rem] uppercase tracking-wide font-medium">Popular choice</div>
+          )}
+          <div class="text-[0.72rem] uppercase tracking-[0.12em] text-[var(--ls-ink-muted)]">{tier.audience}</div>
+          <div class="mt-1 font-semibold text-[1.25rem]">{tier.name}</div>
+          <div class="text-[0.86rem] text-[var(--ls-text-secondary)] mt-1">{tier.tagline}</div>
+
+          <div class="mt-5 flex items-baseline gap-2">
+            <span class="font-semibold tracking-[-0.02em] text-[clamp(1.8rem,4vw,2.4rem)]">{tier.price}</span>
+            <span class="text-[0.82rem] text-[var(--ls-ink-muted)]">{tier.priceNote}</span>
+          </div>
+
+          <ul class="mt-5 space-y-2.5 text-[0.9rem] text-[var(--ls-text-secondary)]">
+            {tier.features.map((f) => (
+              <li class="flex gap-2.5">
+                <span class="mt-0.5 text-[var(--ls-accent)] font-mono" aria-hidden="true">✓</span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p class="mt-5 text-[0.78rem] text-[var(--ls-ink-muted)]">{tier.note}</p>
+
+          <div class="mt-auto pt-6">
+            {tier.cta.variant === "solid" ? (
+              <a href={tier.cta.href} class="inline-flex w-full justify-center rounded-full bg-[var(--ls-ink)] text-white px-5 py-3 font-medium hover:opacity-90 transition" data-track="click_pricing_book_managed">{tier.cta.label}</a>
+            ) : (
+              <a href={tier.cta.href} class="inline-flex w-full justify-center rounded-full border border-[var(--ls-ink)] px-5 py-3 font-medium hover:bg-[var(--ls-ink)] hover:text-white transition">{tier.cta.label}</a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- INSTALL CLIP for self-serve -->
+    <div id="install" class="mt-8 rounded-[16px] bg-[var(--ls-ink)] text-white p-5 font-mono text-[0.84rem] flex items-center justify-between gap-3">
+      <code class="truncate">uv sync && ai-company company run</code>
+      <button id="pricing-copy" class="shrink-0 rounded-full bg-white text-[var(--ls-ink)] px-4 py-2 font-semibold text-[0.78rem]" data-track="click_pricing_copy">Copy</button>
+    </div>
+  </section>
+
+  <!-- INFERENCE CALCULATOR -->
+  <section class="bg-[var(--ls-sage)] py-12 md:py-16">
+    <div class="ls-shell max-w-[900px]">
+      <div class="text-[0.78rem] uppercase tracking-[0.12em] text-[var(--ls-ink-muted)]">Inference calculator</div>
+      <h2 class="mt-2 font-semibold tracking-[-0.02em] text-[clamp(1.7rem,4vw,2.4rem)]">Estimate your real agent cost</h2>
+      <p class="mt-2 text-[var(--ls-text-secondary)] max-w-[62ch]">Based on the same per-task tracking the platform writes to <code class="font-mono text-[0.82rem]">cost_log.jsonl</code>:</p>
+
+      <div class="mt-6 rounded-[16px] border border-[var(--ls-card-border)] bg-white p-6">
+        <div class="grid gap-5 md:grid-cols-2">
+          <label class="text-[0.86rem] font-medium">
+            Tasks per day
+            <input id="calc-tasks" type="number" min="1" max="100000" value="500" class="mt-1.5 w-full rounded-[10px] border border-[var(--ls-warm)] px-3 py-2.5 focus:border-[var(--ls-ink)] focus:outline-none" />
+          </label>
+          <label class="text-[0.86rem] font-medium">
+            Approx tokens per task
+            <input id="calc-tokens" type="number" min="1" max="10000000" value="4000" class="mt-1.5 w-full rounded-[10px] border border-[var(--ls-warm)] px-3 py-2.5 focus:border-[var(--ls-ink)] focus:outline-none" />
+          </label>
+        </div>
+
+        <div class="mt-5">
+          <div class="text-[0.86rem] font-medium">Provider</div>
+          <div class="mt-2 grid grid-cols-3 gap-3">
+            <button type="button" class="calc-provider rounded-full border border-[var(--ls-ink)] bg-[var(--ls-ink)] text-white px-4 py-2 text-[0.82rem] font-medium" data-rate="0.000004" data-label="Ollama (local)">Ollama · $0</button>
+            <button type="button" class="calc-provider rounded-full border border-[var(--ls-card-border)] px-4 py-2 text-[0.82rem] font-medium" data-rate="0.000008" data-label="Hosted LC">Hosted LC</button>
+            <button type="button" class="calc-provider rounded-full border border-[var(--ls-card-border)] px-4 py-2 text-[0.82rem] font-medium" data-rate="0.00003" data-label="Frontier">Frontier</button>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-end justify-between gap-4 rounded-[12px] bg-[var(--ls-pearl)] border border-[var(--ls-divider)] p-5">
+          <div>
+            <div class="text-[0.72rem] uppercase tracking-wide text-[var(--ls-ink-muted)]">Estimated cost</div>
+            <div class="mt-1 font-semibold tracking-[-0.02em] text-[clamp(1.6rem,4vw,2.2rem)]"><span id="calc-cost">$0.00</span><span class="text-[0.9rem] text-[var(--ls-ink-muted)] font-normal"> / day</span></div>
+            <div class="text-[0.8rem] text-[var(--ls-ink-muted)]" id="calc-meta">Ollama (local)</div>
+          </div>
+          <div class="text-[0.78rem] text-[var(--ls-ink-muted)] max-w-[30ch]">No seat license. This is the full marginal cost of running the org.</div>
+        </div>
+
+        <p class="mt-4 text-[0.72rem] text-[var(--ls-ink-muted)]">Rates are illustrative midpoints you can update in <code class="font-mono">company/config/kpis.yaml</code> — the platform tracks actuals in cost_log.jsonl.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANSPARENCY -->
+  <section class="bg-white py-12 md:py-16">
+    <div class="ls-shell max-w-[900px]">
+      <div class="text-[0.78rem] uppercase tracking-[0.12em] text-[var(--ls-ink-muted)]">Transparency by default</div>
+      <h2 class="mt-2 font-semibold tracking-[-0.02em] text-[clamp(1.6rem,4vw,2.2rem)]">Your CFO audits the log, not our claims</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-4 text-[0.9rem] text-[var(--ls-text-secondary)]">
+        <div class="rounded-[12px] border border-[var(--ls-card-border)] p-5">
+          <div class="flex items-center gap-2"><span class="text-[var(--ls-accent)] font-mono">✓</span><span class="font-semibold text-[var(--ls-ink)]">Per-task cost</span></div>
+          <p class="mt-2">Every run writes a line to <code class="font-mono text-[0.78rem]">cost_log.jsonl</code>.</p>
+        </div>
+        <div class="rounded-[12px] border border-[var(--ls-card-border)] p-5">
+          <div class="flex items-center gap-2"><span class="text-[var(--ls-accent)] font-mono">✓</span><span class="font-semibold text-[var(--ls-ink)]">Budget caps</span></div>
+          <p class="mt-2">Namespace budgets fail closed — no runaway spend.</p>
+        </div>
+        <div class="rounded-[12px] border border-[var(--ls-card-border)] p-5">
+          <div class="flex items-center gap-2"><span class="text-[var(--ls-accent)] font-mono">✓</span><span class="font-semibold text-[var(--ls-ink)]">Live dashboard</span></div>
+          <p class="mt-2">Spend vs. budget visible on <code class="font-mono text-[0.78rem]">:8420</code> in real time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-[var(--ls-pearl)] py-12 md:py-16">
+    <div class="ls-shell max-w-[860px]">
+      <h2 class="text-center font-semibold tracking-[-0.02em] text-[clamp(1.7rem,4vw,2.3rem)]">Pricing FAQ</h2>
+      <div class="mt-8 space-y-2">
+        {faqs.map((f) => (
+          <details class="group bg-white rounded-[14px] border border-[var(--ls-card-border)] p-4" data-track="pricing_faq_click">
+            <summary class="list-none flex items-center justify-between gap-4 cursor-pointer font-medium">{f.q}<span class="shrink-0 w-7 h-7 grid place-items-center rounded-full border border-[var(--ls-warm)] group-open:rotate-45 transition">+</span></summary>
+            <p class="mt-3 text-[0.92rem] text-[var(--ls-text-secondary)]">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-[var(--ls-cream)] border-t border-[var(--ls-divider)] py-14 md:py-16">
+    <div class="ls-shell max-w-[640px] text-center">
+      <h2 class="font-semibold tracking-[-0.02em] text-[clamp(1.8rem,4vw,2.4rem)]">Start free — upgrade to managed when you're ready.</h2>
+      <p class="mt-3 text-[var(--ls-text-secondary)]">Copy the command and run 135 agents today. Book deployment only when you want us operating it.</p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <a href="/contact" class="inline-flex rounded-full bg-[var(--ls-ink)] text-white px-6 py-3 text-[0.92rem] font-medium hover:opacity-90 transition" data-track="click_pricing_book">Book deployment →</a>
+        <a href="/solutions" class="inline-flex rounded-full border border-[var(--ls-ink)] px-6 py-3 text-[0.92rem] font-medium hover:bg-[var(--ls-ink)] hover:text-white transition">Compare solutions</a>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    const cmd = "uv sync && ai-company company run";
+    document.getElementById('pricing-copy')?.addEventListener('click', (e) => {
+      navigator.clipboard?.writeText(cmd);
+      const b = e.currentTarget; const t = b.textContent; b.textContent='Copied!'; setTimeout(()=>b.textContent=t,1200);
+    });
+
+    // Inference calculator
+    const tasksEl = document.getElementById('calc-tasks');
+    const tokensEl = document.getElementById('calc-tokens');
+    const costEl = document.getElementById('calc-cost');
+    const metaEl = document.getElementById('calc-meta');
+    const providers = Array.from(document.querySelectorAll('.calc-provider'));
+    let rate = 0.000004, label = 'Ollama (local)';
+
+    const update = () => {
+      const tasks = Math.max(0, Number(tasksEl.value) || 0);
+      const tokens = Math.max(0, Number(tokensEl.value) || 0);
+      const daily = (tasks * tokens * rate) / 1000;
+      costEl.textContent = daily >= 1 ? `$${daily.toFixed(0)}` : `$${daily.toFixed(2)}`;
+      metaEl.textContent = label;
+    };
+
+    providers.forEach((p) => p.addEventListener('click', () => {
+      rate = Number(p.dataset.rate); label = p.dataset.label;
+      providers.forEach((x) => { x.classList.remove('bg-[var(--ls-ink)]','text-white','border-[var(--ls-ink)]'); x.classList.add('border-[var(--ls-card-border)]'); });
+      p.classList.remove('border-[var(--ls-card-border)]'); p.classList.add('bg-[var(--ls-ink)]','text-white','border-[var(--ls-ink)]');
+      update();
+    }));
+    tasksEl.addEventListener('input', update);
+    tokensEl.addEventListener('input', update);
+    update();
+  </script>
+</BaseLayout>

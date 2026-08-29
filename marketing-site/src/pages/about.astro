@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="About — LightSpeed Holdings" description="We built LightSpeed to make AI companies operable — not just demoable. 135 agents, governed, auditable.">
+  <section class="bg-[var(--ls-cream)] py-16 md:py-20">
+    <div class="ls-inner max-w-[880px]">
+      <h1 class="font-semibold tracking-[-0.02em] text-[clamp(1.9rem,4vw,2.6rem)]">About — LightSpeed Holdings</h1>
+      <p class="mt-3 text-[var(--ls-text-secondary)] max-w-[60ch]">We built LightSpeed to make AI companies operable — not just demoable. 135 agents, governed, auditable.</p>
+      <p class="mt-4 text-[0.88rem] text-[var(--ls-ink-muted)] font-mono">about · Foaster-parity placeholder — expand in T5 / slice 2.</p>
+      <div class="mt-6 flex gap-3">
+        <a href="/" class="inline-flex rounded-full bg-[var(--ls-ink)] text-white px-5 py-3 text-[0.9rem] font-medium">Back to home →</a>
+        <a href="/contact" class="inline-flex rounded-full border border-[var(--ls-ink)] px-5 py-3 text-[0.9rem] font-medium">Book deployment</a>
+      </div>
+    </div>
+  </section>
+  <section class="ls-shell max-w-[880px] py-10">
+    <div class="rounded-[16px] border border-[var(--ls-card-border)] bg-white p-6">
+      <h2 class="font-semibold">What ships here</h2>
+      <ul class="mt-3 space-y-2 text-[0.92rem] text-[var(--ls-text-secondary)] list-disc pl-5">
+        <li>Mirrored IA from Foaster: hero + method + proof + deliverables, re-skinned for LightSpeed.</li>
+        <li>Content lives in <code class="font-mono text-[0.82rem]">src/content/*.mdx</code> + <code class="font-mono text-[0.82rem]">public/product-meta.json</code> (135 agents).</li>
+        <li>Free-hosted static — no SSR, no DB for MVP (Formspree/Cal embed).</li>
+      </ul>
+      <p class="mt-4 text-[0.88rem] text-[var(--ls-ink-muted)]">This stub passes <code>sitemap.xml</code> + <code>robots.txt</code> checks. Full copy lands in T5 IA + T4 prototype.</p>
+    </div>
+  </section>
+</BaseLayout>
