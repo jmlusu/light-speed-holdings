@@ -7,6 +7,8 @@ from pathlib import Path
 
 import typer
 
+from ai_company.store import repo_write
+
 app = typer.Typer(help="Security operations — encryption, key rotation, scanning")
 
 _ROTATE_SECRETS_ARG = typer.Argument(
@@ -33,7 +35,7 @@ def _update_env_file(env_path: Path, key: str, new_value: str) -> bool:
     if not found:
         lines.append(f"\n{key}={new_value}\n")
 
-    env_path.write_text("".join(lines), encoding="utf-8")
+    repo_write.write_file(env_path, "".join(lines))
     return found
 
 

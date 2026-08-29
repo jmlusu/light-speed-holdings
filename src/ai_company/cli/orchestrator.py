@@ -8,6 +8,8 @@ from typing import Optional
 
 import typer
 
+from ai_company.store import repo_write
+
 app = typer.Typer(help="Autonomous coordination management")
 scheduler_app = typer.Typer(help="Manage scheduled tasks")
 escalation_app = typer.Typer(help="Manage escalation rules")
@@ -543,5 +545,5 @@ def postmortem_render(
 
     out_path = Path(f"docs/postmortems/{incident_id}.md")
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(rendered, encoding="utf-8")
+    repo_write.write_file(out_path, rendered)
     typer.echo(f"Rendered to {out_path}")

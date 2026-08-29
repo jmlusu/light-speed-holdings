@@ -268,13 +268,20 @@ class MessageBus:
 
     # ── Task claim / lease (executor integration) ─────────────────────
 
-    def claim_task(self, task_id: str, worker_id: str, lease_seconds: int = 1800) -> Task | None:
+    def claim_task(
+        self,
+        task_id: str,
+        worker_id: str,
+        lease_seconds: int = 1800,
+        claimed_files: list[str] | None = None,
+        session_id: str = "",
+    ) -> Task | None:
         """Atomically claim a pending task for *worker_id*.
 
         Transitions ``pending`` -> ``in_progress`` *only if* the task is
-        still pending, so two executors can never claim and process the
-        same task.  The claim records the owner and a lease expiry used by
-        stale-detection.
+        still pending, so two executors can never claim and process
+        the same task.  The claim records the owner, the files the
+        worker may touch, and a session id for lease ownership.
 
         Returns the claimed ``Task``, or ``None`` if the task is missing or
         already claimed/completed.
@@ -292,6 +299,11 @@ class MessageBus:
                     t["updated_at"] = now
                     t["claimed_by"] = worker_id
                     t["lease_expires_at"] = expiry
+                    # Store claimed files and session id for lease hardening
+                    if claimed_files is not None:
+                        t["claimed_files"] = claimed_files
+                    if session_id:
+                        t["session_id"] = session_id
                     claimed.append(Task(**t))
                     break
             return tasks
@@ -299,7 +311,14 @@ class MessageBus:
         self._mutate_tasks(_updater)
         if claimed:
             self._mirror_task_to_sqlite(claimed[0].model_dump())
-            logger.info("Task %s claimed by %s (lease %s)", task_id, worker_id, expiry)
+            logger.info(
+                "Task %s claimed by %s (lease %s, files=%s, session=%s)",
+                task_id,
+                worker_id,
+                expiry,
+                claimed_files,
+                session_id,
+            )
             self._emit(claimed[0].model_dump(), "claimed")
             return claimed[0]
         return None
