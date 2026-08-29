@@ -129,7 +129,7 @@ Returns an aggregated KPI snapshot of the entire company. Includes task counts, 
   "escalated_tasks": 1,
   "pending_approvals": 3,
   "open_escalations": 1,
-  "total_agents": 27,
+  "total_agents": 135,
   "scheduled_tasks": 9,
   "uptime_seconds": 3600.5
 }
@@ -165,7 +165,7 @@ Returns live KPI values computed from operational data using the department KPI 
     "cost_per_agent": 120
   },
   "hr": {
-    "active_agents": 27,
+    "active_agents": 135,
     "onboarding_queue": 2
   },
   "customer_success": {
@@ -770,7 +770,7 @@ The server replies with `{"type": "unsubscribed", "topics": [...]}`.
     "escalated_tasks": 1,
     "pending_approvals": 3,
     "open_escalations": 1,
-    "total_agents": 27,
+    "total_agents": 135,
     "scheduled_tasks": 9,
     "uptime_seconds": 3600.5
   }

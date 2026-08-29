@@ -348,6 +348,6 @@ def test_generate_all_does_not_write_real_table(tmp_path: Path, templates_dir: P
     assert tmp_table.exists(), "Temp table should be created"
     content = tmp_table.read_text(encoding="utf-8")
     assert "Test Corp" not in content, "Temp table should use real registry, not test data"
-    assert "131 across" in content or "Total Agents" in content, (
+    assert "135 across" in content or "Total Agents" in content, (
         "Temp table should have correct count"
     )
