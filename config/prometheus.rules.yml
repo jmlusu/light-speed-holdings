@@ -1,0 +1,62 @@
+# Prometheus alert rules — AI Company Builder staging (wayfinder #171)
+#
+# Fired against metrics exposed by the dashboard /metrics endpoint on the
+# ``ai-company-dashboard`` job.  Rules reference the org-health awareness
+# families (component scoring duration/failures, breaker trips, band
+# transitions) and the page-load latency families added by wayfinder #171.
+
+groups:
+  - name: org_health
+    rules:
+      - alert: OrgHealthBandCritical
+        # band gauge emits 1 for the current band only
+        expr: ai_company_org_health_band{band="red"} == 1
+        for: 5m
+        labels:
+          severity: critical
+          job: ai-company-dashboard
+        annotations:
+          summary: "Org-health band is red (score in critical zone)"
+          description: "Composite org-health score has been in the red band for more than 5 minutes."
+
+      - alert: OrgHealthComponentDown
+        expr: ai_company_org_health_component_up == 0
+        for: 15m
+        labels:
+          severity: warning
+          job: ai-company-dashboard
+        annotations:
+          summary: "Org-health component {{ $labels.component }} is not scoring"
+          description: "Component {{ $labels.component }} has been failing-open (last scoring failed) for more than 15 minutes."
+
+      - alert: OrgHealthScoringFailuresRate
+        expr: sum(rate(ai_company_org_health_component_scoring_failures_total[10m])) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          job: ai-company-dashboard
+        annotations:
+          summary: "Org-health component scoring failures sustained"
+          description: "More than 0.1 scoring failures/second averaged over 10 minutes; check component circuit breakers."
+
+      - alert: OrgHealthBreakerTrips
+        expr: increase(ai_company_org_health_component_breaker_trips_total[10m]) > 3
+        for: 5m
+        labels:
+          severity: warning
+          job: ai-company-dashboard
+        annotations:
+          summary: "Org-health circuit breaker {{ $labels.component }} tripped repeatedly"
+          description: "Breaker trips for {{ $labels.component }} exceed 3 in the last 10 minutes."
+
+      - alert: DashboardPageLoadSlow
+        expr: >-
+          sum by (route) (rate(ai_company_dashboard_page_load_duration_sum_seconds[5m]))
+          / sum by (route) (rate(ai_company_dashboard_page_load_count_total[5m])) > 2
+        for: 10m
+        labels:
+          severity: warning
+          job: ai-company-dashboard
+        annotations:
+          summary: "Dashboard page {{ $labels.route }} is slow"
+          description: "Average page-load for {{ $labels.route }} exceeds 2 seconds over a 5-minute window."

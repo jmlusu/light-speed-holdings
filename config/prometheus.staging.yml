@@ -13,6 +13,9 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
+rule_files:
+  - "/etc/prometheus/prometheus.rules.yml"
+
 scrape_configs:
   # Scrape the AI Company dashboard /metrics endpoint
   - job_name: "ai-company-dashboard"

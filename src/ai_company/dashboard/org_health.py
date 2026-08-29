@@ -45,6 +45,11 @@ from typing import Any, Callable
 
 import yaml
 
+from ai_company.dashboard.monitoring import (
+    record_org_band_transition,
+    record_org_breaker_trip,
+    record_org_scoring,
+)
 from ai_company.data.database import Database
 from ai_company.paths import get_project_root
 from ai_company.reliability.breaker import ComponentBreaker
@@ -252,6 +257,7 @@ class OrgHealthCalculator:
                 composite = 0.0
             score = max(0, min(100, round(composite)))
             band = self._score_to_band(score)
+            record_org_band_transition(band)
 
             result = OrgHealthResult(
                 score=score,
@@ -380,18 +386,26 @@ class OrgHealthCalculator:
         Returns:
             The scorer's value on success, or the last known-good value /
             ``None`` (fail-open) on timeout, failure, or an open circuit.
+
+        Every scoring pass is recorded to the Prometheus metric store
+        (wayfinder #171): duration + success/failure per component, with the
+        circuit breaker trip counted exactly when it opens.
         """
         breaker = self._get_breaker(name)
+        started = time.monotonic()
         if not breaker.is_available:
             logger.warning(
                 "Org health breaker for %s is open — using cached/None (fail-open)",
                 name,
             )
+            record_org_scoring(name, time.monotonic() - started, ok=False)
             return self._fail_open(name)
 
         remaining = deadline - time.monotonic()
         if remaining <= 0:
             breaker.record_failure()
+            self._record_trip(name, breaker)
+            record_org_scoring(name, time.monotonic() - started, ok=False)
             logger.warning(
                 "Org health compute deadline exceeded for %s — using cached/None (fail-open)",
                 name,
@@ -402,6 +416,8 @@ class OrgHealthCalculator:
             value = future.result(timeout=min(call_timeout_s, remaining))
         except TimeoutError:
             breaker.record_failure()
+            self._record_trip(name, breaker)
+            record_org_scoring(name, time.monotonic() - started, ok=False)
             logger.warning(
                 "Org health component %s timed out after %.1fs — using cached/None (fail-open)",
                 name,
@@ -410,13 +426,22 @@ class OrgHealthCalculator:
             return self._fail_open(name)
         except Exception:  # noqa: BLE001 - breaker records and degrades
             breaker.record_failure()
+            self._record_trip(name, breaker)
+            record_org_scoring(name, time.monotonic() - started, ok=False)
             logger.exception("Org health component %s raised — using cached/None (fail-open)", name)
             return self._fail_open(name)
 
         breaker.record_success()
+        record_org_scoring(name, time.monotonic() - started, ok=True)
         if value is not None:
             self._last_good[name] = value
         return value
+
+    @staticmethod
+    def _record_trip(name: str, breaker: ComponentBreaker) -> None:
+        """Record a breaker trip when *breaker* just opened on a failure."""
+        if not breaker.is_available:
+            record_org_breaker_trip(name)
 
     def _get_breaker(self, name: str) -> ComponentBreaker:
         """Return the per-component breaker, building it from config on first use."""

@@ -477,6 +477,22 @@ def create_app() -> FastAPI:
             response.headers[name] = value
         return response
 
+    # ── Page-load latency metrics (wayfinder #171) ──────────────────
+    # Registered outermost so the timing includes auth, rate-limit, and
+    # security-header handling.  Only HTML page responses are recorded.
+    @app.middleware("http")
+    async def _page_load_latency_middleware(request: Request, call_next: Any) -> Response:
+        if request.method != "GET":
+            return cast(Response, await call_next(request))
+        from ai_company.dashboard.monitoring import record_page_load
+
+        started = time.perf_counter()
+        response = cast(Response, await call_next(request))
+        media_type = response.headers.get("content-type", "")
+        if media_type.startswith("text/html"):
+            record_page_load(request.url.path, time.perf_counter() - started)
+        return response
+
     # ── Explicit StateStore configuration (Option B) ────────────────
     # Bind the dashboard state root from configuration rather than the
     # import-time cwd. Defaults to the deterministic project root; override
