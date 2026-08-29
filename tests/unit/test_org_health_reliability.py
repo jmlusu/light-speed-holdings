@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+import ai_company.dashboard.monitoring as monitoring_module
 from ai_company.dashboard.org_health import OrgHealthCalculator
 
 
@@ -181,3 +182,29 @@ def test_unknown_component_still_returns_none(tmp_path: Path) -> None:
     result = calc.compute()
     assert result.score == 0
     assert result.components[0].value is None
+
+
+def test_successful_compute_records_scoring_metrics(tmp_path: Path) -> None:
+    _write_org_config(tmp_path)
+    _write_hardening(tmp_path)
+    calc = StubCalculator(tmp_path)
+    count_before = monitoring_module._org_component_stats.get("a", {}).get("count", 0.0)
+    calc.compute()
+    stats = monitoring_module._org_component_stats["a"]
+    assert stats["count"] >= count_before + 1.0
+    assert stats["up"] == 1.0
+    assert monitoring_module._org_last_band == "green"
+
+
+def test_failing_compute_records_failure_and_breaker_trip(tmp_path: Path) -> None:
+    _write_org_config(tmp_path)
+    _write_hardening(tmp_path, threshold=1)
+    calc = StubCalculator(tmp_path, fail=True)
+    failures_before = monitoring_module._org_component_stats.get("a", {}).get("failures", 0.0)
+    trips_before = monitoring_module._org_component_stats.get("a", {}).get("trips", 0.0)
+    result = calc.compute()
+    assert result.components[0].value is None
+    stats = monitoring_module._org_component_stats["a"]
+    assert stats["failures"] >= failures_before + 1.0
+    assert stats["trips"] >= trips_before + 1.0
+    assert stats["up"] == 0.0
