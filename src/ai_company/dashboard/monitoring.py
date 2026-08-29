@@ -73,6 +73,23 @@ _metrics: dict[str, float] = {
 
 _start_time = time.time()
 
+# ---------------------------------------------------------------------------
+# Org-health + dashboard page-load metric stores (wayfinder #171)
+#
+# Keyed by component / route so the hand-rolled text renderer can emit
+# label-parametrised families without a third-party metrics client.  All
+# values are floats so they render uniformly.  Reset on process restart —
+# same lifecycle as the flat ``_metrics`` counters above.
+# ---------------------------------------------------------------------------
+
+# component -> {count, duration_sum, duration_last, failures, trips, up}
+_org_component_stats: dict[str, dict[str, float]] = {}
+# (previous_band, current_band) -> transition count
+_org_band_transitions: dict[tuple[str, str], int] = {}
+_org_last_band: str | None = None
+# route -> {count, duration_sum, duration_last}
+_page_load_stats: dict[str, dict[str, float]] = {}
+
 
 def inc_metric(name: str, value: float = 1.0) -> None:
     """Increment a named metric by value."""
@@ -91,6 +108,71 @@ def record_llm_cost(provider: str, cost_usd: float) -> None:
         inc_metric("llm_cost_usd_deepseek", cost_usd)
     else:
         inc_metric("llm_cost_usd_other", cost_usd)
+
+
+def record_org_scoring(component: str, duration_s: float, ok: bool) -> None:
+    """Record one org-health component scoring pass (wayfinder #171)."""
+    stats = _org_component_stats.setdefault(
+        component,
+        {
+            "count": 0.0,
+            "duration_sum": 0.0,
+            "duration_last": 0.0,
+            "failures": 0.0,
+            "trips": 0.0,
+            "up": 0.0,
+        },
+    )
+    stats["count"] += 1.0
+    stats["duration_sum"] += max(0.0, duration_s)
+    stats["duration_last"] = max(0.0, duration_s)
+    if ok:
+        stats["up"] = 1.0
+    else:
+        stats["failures"] += 1.0
+        stats["up"] = 0.0
+
+
+def record_org_breaker_trip(component: str) -> None:
+    """Count an org-health component circuit breaker trip (wayfinder #171)."""
+    stats = _org_component_stats.setdefault(
+        component,
+        {
+            "count": 0.0,
+            "duration_sum": 0.0,
+            "duration_last": 0.0,
+            "failures": 0.0,
+            "trips": 0.0,
+            "up": 0.0,
+        },
+    )
+    stats["trips"] += 1.0
+
+
+def record_org_band_transition(band: str) -> None:
+    """Record the current org-health band, counting only real transitions.
+
+    The previous band is tracked process-wide (via the global
+    ``_org_last_band``), so transitions are counted even though orchestrator
+    instances are short-lived.  The first band ever recorded does not count
+    as a transition.
+    """
+    global _org_last_band
+    if _org_last_band is not None and _org_last_band != band:
+        key = (_org_last_band, band)
+        _org_band_transitions[key] = _org_band_transitions.get(key, 0) + 1
+    _org_last_band = band
+
+
+def record_page_load(route: str, duration_s: float) -> None:
+    """Record a dashboard HTML page-load latency sample (wayfinder #171)."""
+    stats = _page_load_stats.setdefault(
+        route,
+        {"count": 0.0, "duration_sum": 0.0, "duration_last": 0.0},
+    )
+    stats["count"] += 1.0
+    stats["duration_sum"] += max(0.0, duration_s)
+    stats["duration_last"] = max(0.0, duration_s)
 
 
 # ---------------------------------------------------------------------------
@@ -175,6 +257,10 @@ def _render_prometheus_text() -> str:
 
     # ── LLM cost breakdown by model (from audit log) ────────────────
     _append_llm_model_breakdown(lines)
+
+    # ── Org-health awareness metrics (wayfinder #171) ───────────────
+    _append_org_health_metrics(lines)
+    _append_page_load_metrics(lines)
 
     return "\n".join(lines) + "\n"
 
@@ -383,6 +469,112 @@ def _append_llm_model_breakdown(lines: list[str]) -> None:
                 f'ai_company_llm_model_tokens_out_total{{model="{model}"}} '
                 f"{int(stats['tokens_out'])}"
             )
+
+
+def _append_org_health_metrics(lines: list[str]) -> None:
+    """Append org-health component scoring and band metrics (wayfinder #171)."""
+    if _org_component_stats:
+        component_families = [
+            (
+                "ai_company_org_health_component_scoring_count_total",
+                "Org-health component scoring passes",
+                "counter",
+            ),
+            (
+                "ai_company_org_health_component_scoring_duration_sum_seconds",
+                "Total org-health component scoring time in seconds",
+                "counter",
+            ),
+            (
+                "ai_company_org_health_component_scoring_failures_total",
+                "Org-health component scoring failures (fail-open)",
+                "counter",
+            ),
+            (
+                "ai_company_org_health_component_breaker_trips_total",
+                "Org-health component circuit breaker trips",
+                "counter",
+            ),
+            (
+                "ai_company_org_health_component_scoring_duration_last_seconds",
+                "Duration of the last org-health component scoring pass",
+                "gauge",
+            ),
+            (
+                "ai_company_org_health_component_up",
+                "Whether the last org-health component scoring pass succeeded",
+                "gauge",
+            ),
+        ]
+        for prom_name, help_text, metric_type in component_families:
+            lines.append(f"# HELP {prom_name} {help_text}")
+            lines.append(f"# TYPE {prom_name} {metric_type}")
+        for component, stats in sorted(_org_component_stats.items()):
+            label = f'component="{component}"'
+            lines.append(
+                f"ai_company_org_health_component_scoring_count_total{{{label}}} "
+                f"{stats['count']:.0f}"
+            )
+            lines.append(
+                f"ai_company_org_health_component_scoring_duration_sum_seconds{{{label}}} "
+                f"{stats['duration_sum']:.6f}"
+            )
+            lines.append(
+                f"ai_company_org_health_component_scoring_failures_total{{{label}}} "
+                f"{stats['failures']:.0f}"
+            )
+            lines.append(
+                f"ai_company_org_health_component_breaker_trips_total{{{label}}} "
+                f"{stats['trips']:.0f}"
+            )
+            lines.append(
+                f"ai_company_org_health_component_scoring_duration_last_seconds{{{label}}} "
+                f"{stats['duration_last']:.6f}"
+            )
+            lines.append(f"ai_company_org_health_component_up{{{label}}} {stats['up']:.0f}")
+
+    if _org_last_band is not None:
+        lines.append("# HELP ai_company_org_health_band Current org-health band")
+        lines.append("# TYPE ai_company_org_health_band gauge")
+        lines.append(f'ai_company_org_health_band{{band="{_org_last_band}"}} 1')
+
+    if _org_band_transitions:
+        lines.append(
+            "# HELP ai_company_org_health_band_transitions_total Org-health band transitions"
+        )
+        lines.append("# TYPE ai_company_org_health_band_transitions_total counter")
+        for (previous, current), count in sorted(_org_band_transitions.items()):
+            lines.append(
+                f'ai_company_org_health_band_transitions_total{{previous="{previous}",'
+                f'destination="{current}"}} {count}'
+            )
+
+
+def _append_page_load_metrics(lines: list[str]) -> None:
+    """Append dashboard page-load latency metrics (wayfinder #171)."""
+    if not _page_load_stats:
+        return
+    lines.append("# HELP ai_company_dashboard_page_load_count_total Dashboard HTML page requests")
+    lines.append("# TYPE ai_company_dashboard_page_load_count_total counter")
+    lines.append(
+        "# HELP ai_company_dashboard_page_load_duration_sum_seconds Total dashboard page-load time"
+    )
+    lines.append("# TYPE ai_company_dashboard_page_load_duration_sum_seconds counter")
+    lines.append(
+        "# HELP ai_company_dashboard_page_load_duration_last_seconds Last dashboard page-load time"
+    )
+    lines.append("# TYPE ai_company_dashboard_page_load_duration_last_seconds gauge")
+    for route, stats in sorted(_page_load_stats.items()):
+        label = f'route="{route}"'
+        lines.append(f"ai_company_dashboard_page_load_count_total{{{label}}} {stats['count']:.0f}")
+        lines.append(
+            f"ai_company_dashboard_page_load_duration_sum_seconds{{{label}}} "
+            f"{stats['duration_sum']:.6f}"
+        )
+        lines.append(
+            f"ai_company_dashboard_page_load_duration_last_seconds{{{label}}} "
+            f"{stats['duration_last']:.6f}"
+        )
 
 
 # ---------------------------------------------------------------------------
