@@ -115,3 +115,7 @@ CHICHEWA_AI_INITIATIVE_EXECUTIVE_PRESENTATION.md
 chichewa_ai_initiative.pptx
 create_chichewa_slides.py
 project-plan-digital-health-consultant.md
+
+# Runtime agent state (generated during execution)
+.opencode/decompositions/
+.opencode/suspended_states/
