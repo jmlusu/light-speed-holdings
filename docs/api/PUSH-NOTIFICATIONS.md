@@ -216,7 +216,7 @@ All notification types follow this base structure:
 {
   "notification": {
     "title": "Daily Summary — July 20, 2026",
-    "body": "12 completed, 2 failed, 3 pending approvals, 1 escalation. 27 agents active."
+    "body": "12 completed, 2 failed, 3 pending approvals, 1 escalation. 135 agents active."
   },
   "data": {
     "type": "daily_summary",
@@ -225,7 +225,7 @@ All notification types follow this base structure:
     "failed": 2,
     "pending_approvals": 3,
     "open_escalations": 1,
-    "active_agents": 27,
+    "active_agents": 135,
     "action_url": "/dashboard"
   }
 }

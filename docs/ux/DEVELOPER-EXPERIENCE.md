@@ -42,7 +42,7 @@ uv run ai-company dashboard
 ```
 
 **Expected result:**
-- 131 agent files generated in `.opencode/agents/`
+- 135 agent files generated in `.opencode/agents/`
 - Dashboard opens at http://localhost:8420
 - All tests pass
 - `ai-company doctor run` shows all green
@@ -52,7 +52,7 @@ uv run ai-company dashboard
 | Step | Command | Expected Output |
 |------|---------|-----------------|
 | Install deps | `uv sync --extra dev` | No errors |
-| Bootstrap | `uv run ai-company company run` | "131 agents ready" |
+| Bootstrap | `uv run ai-company company run` | "135 agents ready" |
 | Health check | `uv run ai-company doctor run` | All PASS |
 | Lint | `uv run ruff check src/` | No errors |
 | Type check | `uv run mypy src/` | No errors |
@@ -119,7 +119,7 @@ System Health
 ┌────────────────────────┬──────┬──────────────────────────────────┐
 │ Check                  │Status│ Message                          │
 ├────────────────────────┼──────┼──────────────────────────────────┤
-│ Registry exists        │ PASS │ Found 131 agents                  │
+│ Registry exists        │ PASS │ Found 135 agents                  │
 │ Registry valid JSON    │ PASS │ Valid JSON                       │
 │ All agents have IDs    │ PASS │ All agents have unique IDs       │
 │ ReportsTo chain valid  │ PASS │ No circular references           │

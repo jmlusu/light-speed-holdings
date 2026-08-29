@@ -276,7 +276,7 @@ System Health
 +--------------------------+------+----------------------------------+
 | Check                    |Status| Message                          |
 +--------------------------+------+----------------------------------+
-| Registry exists          | PASS | Found 131 agents                  |
+| Registry exists          | PASS | Found 135 agents                  |
 ```
 
 ### 7.2 Plain Text Mode
