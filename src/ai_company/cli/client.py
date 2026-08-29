@@ -14,6 +14,7 @@ from typing import Any
 import typer
 import yaml
 
+from ai_company.data import get_database
 from ai_company.models.task import TaskPriority
 from ai_company.services.client_intake import ClientIntakeService, GovernanceGateError
 
@@ -150,7 +151,7 @@ def check_gates(
     client_id: str = typer.Option(..., "--client-id", "-c", help="Client ID"),
 ) -> None:
     """Check all governance gates for a client."""
-    service = ClientIntakeService()
+    service = ClientIntakeService(database=get_database())
     result = service.check_governance_gates(client_id)
 
     if result.success:
@@ -201,7 +202,21 @@ def create_engagement(
     }
     task_priority = priority_map.get(priority.lower(), TaskPriority.MEDIUM)
 
-    service = ClientIntakeService()
+    # Guard: refuse demo/test engagements. The probe mirrors the instruction
+    # built by ClientIntakeService.create_engagement so detection stays in
+    # lock-step with the refined markers (proj-acme-chatbot etc.).
+    from ai_company.data.task_store import TaskStore
+
+    probe_instruction = (
+        f"Execute client engagement for {client_id} under {offer}.\n"
+        f"Description: {description}\n"
+        f"Lead agent: {lead_agent or 'chief_of_staff'}\n"
+    )
+    if TaskStore.is_test_task({"id": "", "instruction": probe_instruction}):
+        typer.echo("Error: Cannot create test/demo client engagements.")
+        raise typer.Exit(1)
+
+    service = ClientIntakeService(database=get_database())
 
     try:
         result = service.create_engagement(
@@ -235,7 +250,7 @@ def create_engagement(
 @app.command("engagements")
 def list_engagements() -> None:
     """List all pending client engagements from the inbox."""
-    service = ClientIntakeService()
+    service = ClientIntakeService(database=get_database())
     result = service.list_engagements()
 
     if not result.success or not result.data:
@@ -257,7 +272,7 @@ def list_engagements() -> None:
 @app.command("offers")
 def list_offers() -> None:
     """List all Malawi offers and their governance status."""
-    service = ClientIntakeService()
+    service = ClientIntakeService(database=get_database())
     offers = service._offers.get("offers", {})
 
     typer.echo("")
