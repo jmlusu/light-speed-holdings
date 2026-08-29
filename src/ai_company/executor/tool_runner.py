@@ -46,6 +46,7 @@ from ai_company.orchestrator.tier_rules import (
 from ai_company.security.command_safety import find_shell_metacharacters
 from ai_company.security.content_filter import ContentFilter, get_content_filter
 from ai_company.security.pii_detector import PIIDetector, get_pii_detector
+from ai_company.store import repo_write
 
 try:
     from ai_company.telemetry import start_span as _start_span
@@ -218,6 +219,7 @@ class ToolRunner:
         hitl_gate: HITLGate | None = None,
         task_id: str = "",
         agent_id: str = "",
+        session_id: str = "",
         seniority: str = "",
         risk_level: str = "",
         *,
@@ -382,25 +384,37 @@ class ToolRunner:
                 elif needs_hitl and not blocking and not preapproved:
                     # ``blocking`` is False only when no hitl_gate was supplied.
                     # There is no gate to queue the approval with, so we cannot
-                    # enforce the HITL requirement. The safest behaviour is to
-                    # proceed with execution (the tier classification still records
-                    # that HITL *would* have been required) and surface a warning.
-                    # NOTE: when a gate *is* present this branch is never reached
+                    # enforce the HITL requirement. Fail CLOSED: park the step so
+                    # the executor can transition the task to WAITING_APPROVAL
+                    # instead of executing a tier-gated action without approval.
+                    # When a gate *is* present this branch is never reached
                     # (it is handled by the ``needs_hitl and blocking`` path
-                    # above), so the tier-classification security behaviour is
-                    # fully preserved for production callers.
+                    # above), which is the intended production path.
                     logger.warning(
                         "Tier %d (%s) requires HITL for %s by %s but no "
-                        "hitl_gate was provided — executing without approval",
+                        "hitl_gate was provided — parking without approval (fail-closed)",
                         int(tier),
                         tier_label,
                         tool,
                         agent_id,
                     )
+                    raise HITLParked(
+                        task_id=task_id,
+                        agent_id=agent_id,
+                        tool=tool,
+                        request_id=f"no_gate_tier_{tier}_{tool}",
+                        tier=tier,
+                    )
 
                 # ── Execute the tool ──────────────────────────────────────
                 try:
-                    result = self._execute_tool(tool, args)
+                    result = self._execute_tool(
+                        tool,
+                        args,
+                        task_id=task_id,
+                        agent_id=agent_id,
+                        session_id=session_id,
+                    )
                     status = "error" if "error" in result else "ok"
                     exec_result = {
                         "step": i,
@@ -541,15 +555,33 @@ class ToolRunner:
 
         return result
 
-    def _execute_tool(self, tool: str, args: dict[str, Any]) -> dict[str, Any]:
+    def _execute_tool(
+        self,
+        tool: str,
+        args: dict[str, Any],
+        *,
+        task_id: str = "",
+        agent_id: str = "",
+        session_id: str = "",
+    ) -> dict[str, Any]:
         """Dispatch to the appropriate tool handler (legacy aliases included)."""
         match tool:
             case "read":
-                return self._read(args)
+                return self._read(args, task_id=task_id, agent_id=agent_id, session_id=session_id)
             case "edit" | "write":
-                return self._write(args)
+                return self._write(
+                    args,
+                    task_id=task_id,
+                    agent_id=agent_id,
+                    session_id=session_id,
+                )
             case "bash" | "execute":
-                return self._execute(args)
+                return self._execute(
+                    args,
+                    task_id=task_id,
+                    agent_id=agent_id,
+                    session_id=session_id,
+                )
             case "grep":
                 return self._grep(args)
             case "list":
@@ -561,23 +593,87 @@ class ToolRunner:
             case _:
                 return {"error": f"Unknown tool: {tool}"}
 
-    def _read(self, args: dict[str, Any]) -> dict[str, Any]:
+    def _read(
+        self,
+        args: dict[str, Any],
+        *,
+        task_id: str = "",
+        agent_id: str = "",
+        session_id: str = "",
+    ) -> dict[str, Any]:
         path = self._safe_path(args["path"])
         if not path.exists():
             return {"error": f"File not found: {args['path']}"}
         content = path.read_text(encoding="utf-8", errors="replace")
         # Scan file content for PII and safety threats
         content = self._sanitize_output(content, source=str(path.relative_to(self.project_root)))
-        return {"path": str(path.relative_to(self.project_root)), "content": content}
+        return {
+            "path": str(path.relative_to(self.project_root)),
+            "content": content,
+            "sha256": repo_write.sha256_digest(path),
+        }
 
-    def _write(self, args: dict[str, Any]) -> dict[str, Any]:
+    def _write(
+        self,
+        args: dict[str, Any],
+        *,
+        task_id: str = "",
+        agent_id: str = "",
+        session_id: str = "",
+    ) -> dict[str, Any]:
         path = self._safe_path(args["path"])
         path.parent.mkdir(parents=True, exist_ok=True)
         content = args.get("content", "")
-        path.write_text(content, encoding="utf-8")
-        return {"path": str(path.relative_to(self.project_root)), "bytes": len(content.encode())}
+        # P0: optimistic concurrency — if the caller provides the digest it
+        # read (via the ''sha256'' field on a prior ''read''), refuse the write
+        # when the on-disk content changed underneath it (409 Conflict).
+        expected_digest = args.get("sha256") or None
+        try:
+            result = repo_write.write_file(
+                path,
+                content,
+                expected_digest=expected_digest,
+                owner=session_id or task_id or agent_id,
+            )
+        except repo_write.RepoWriteConflict as exc:
+            return {
+                "path": str(path.relative_to(self.project_root)),
+                "status": "error",
+                "conflict": True,
+                "error": (
+                    f"409 Conflict: {exc.expected[:12]} != {exc.actual[:12]}. "
+                    "The file changed since it was read; re-read it and retry."
+                ),
+                "before_hash": exc.expected,
+                "after_hash": exc.actual,
+            }
+        if result["owner_conflict"]:
+            return {
+                "path": str(path.relative_to(self.project_root)),
+                "status": "error",
+                "owner_conflict": True,
+                "error": (
+                    "The file is claimed by another active session/task and cannot be overwritten."
+                ),
+                "before_hash": result["before_hash"],
+                "after_hash": result["after_hash"],
+            }
+        return {
+            "path": str(path.relative_to(self.project_root)),
+            "bytes": len(content.encode()),
+            "sha256": result["after_hash"],
+            "before_hash": result["before_hash"],
+            "changed": result["before_hash"] != result["after_hash"],
+        }
 
-    def _execute(self, args: dict[str, Any]) -> dict[str, Any]:
+    def _execute(
+        self,
+        args: dict[str, Any],
+        *,
+        task_id: str = "",
+        agent_id: str = "",
+        session_id: str = "",
+    ) -> dict[str, Any]:
         """Execute a shell command safely (GAP-016 fix).
 
         * Commands are tokenized with ``shlex.split()`` — ``shell=True`` is
@@ -589,6 +685,10 @@ class ToolRunner:
           are executed via ``cmd /c`` for compatibility, but only after the
           allowlist check passes and with tokenized arguments.
         * Rejected commands are logged for security auditing.
+
+        ``task_id``/``agent_id``/``session_id`` are accepted for call-site
+        identity context; the ``bash`` tool is audit-only for the P0
+        concurrency work (no lock/CAS on its file effects, per decision Q3).
         """
         import platform
 

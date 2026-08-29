@@ -20,6 +20,7 @@ from ai_company.executor.context import (
 )
 from ai_company.registry import load_registry
 from ai_company.registry.loader import load_yaml_cached
+from ai_company.store import repo_write
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +91,7 @@ class AgentGenerator:
         src = self.templates_dir / "agents" / "operating-standards.md"
         dest = self.output_dir.parent / SHARED_STANDARDS_FILENAME
         if src.exists():
-            dest.write_text(src.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
+            repo_write.write_file(dest, src.read_text(encoding="utf-8"))
         else:
             logger.warning(
                 "Shared standards template not found: %s (skipping %s)",
@@ -250,7 +251,7 @@ class AgentGenerator:
             rendered = template.render(company=company_name, **agent)
             safe_id = agent["id"].replace("_", "-")
             out_file = self.output_dir / f"{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8", newline="\n")
+            repo_write.write_file(out_file, rendered)
             generated.append(out_file)
             rendered_specs.append((safe_id, rendered))
             logger.debug("Wrote: %s (type=%s)", out_file, agent_type)
@@ -416,7 +417,7 @@ class AgentGenerator:
             lines.append("")
 
         dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8", newline="\n")
+        repo_write.write_file(dest, "\n".join(lines).rstrip() + "\n")
         logger.info("Wrote agent registry table: %s (%d agents)", dest, len(agents))
         return dest
 
@@ -488,7 +489,7 @@ class AgentGenerator:
             )
             safe_id = ex.id.replace("_", "-")
             out_file = self.output_dir / f"{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8", newline="\n")
+            repo_write.write_file(out_file, rendered)
             generated.append(out_file)
             rendered_specs.append((safe_id, rendered))
 
@@ -508,7 +509,7 @@ class AgentGenerator:
             )
             safe_id = dept.id.replace("_", "-")
             out_file = self.output_dir / f"dept-{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8", newline="\n")
+            repo_write.write_file(out_file, rendered)
             generated.append(out_file)
             rendered_specs.append((f"dept-{safe_id}", rendered))
 
@@ -531,7 +532,7 @@ class AgentGenerator:
             )
             safe_id = spec.id.replace("_", "-")
             out_file = self.output_dir / f"spec-{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8", newline="\n")
+            repo_write.write_file(out_file, rendered)
             generated.append(out_file)
             rendered_specs.append((f"spec-{safe_id}", rendered))
 
@@ -552,7 +553,7 @@ class AgentGenerator:
             )
             safe_id = bm.id.replace("_", "-")
             out_file = self.output_dir / f"board-{safe_id}.md"
-            out_file.write_text(rendered, encoding="utf-8", newline="\n")
+            repo_write.write_file(out_file, rendered)
             generated.append(out_file)
             rendered_specs.append((f"board-{safe_id}", rendered))
 

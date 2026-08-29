@@ -527,6 +527,9 @@ class Task(EntityBase):
     #   to STALE_RETRY_MAX (3) when missing or 0.
     retry_count: int = 0
     retry_budget: int = 0
+    # Lease hardening
+    claimed_files: list[str] = Field(default_factory=list)
+    session_id: str = ""
 
 
 # ---------------------------------------------------------------------------

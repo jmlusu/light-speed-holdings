@@ -41,7 +41,7 @@ class AuditStore:
             return
 
         self._db.executemany(
-            """INSERT OR REPLACE INTO audit_events
+            """INSERT OR IGNORE INTO audit_events
                (event_id, timestamp, event_type, agent_id, task_id,
                 tool, args, result, metadata, severity)
                VALUES (?,?,?,?,?,?,?,?,?,?)""",
