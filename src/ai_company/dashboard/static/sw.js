@@ -4,7 +4,7 @@
    Issue #41 — Wire offline-first PWA into served dashboard.
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'jarvis-v1';
+const CACHE_VERSION = 'jarvis-v2';
 const CACHE_STATIC = `${CACHE_VERSION}-static`;
 const CACHE_API    = `${CACHE_VERSION}-api`;
 const CACHE_HTML   = `${CACHE_VERSION}-html`;

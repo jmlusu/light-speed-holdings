@@ -117,6 +117,9 @@ function dashboard() {
     companyKPIs: [],
     companyKPISummary: null,
 
+    // ── Drill-down panel ──────────────────────────────────────
+    drillDown: null,  // { type, title, data, loading }
+
     // ── Costs page ───────────────────────────────────────────
     costPeriod: 'daily',
     costSummary: { total: 0, avgPerTask: 0, totalTasks: 0 },
@@ -184,6 +187,14 @@ function dashboard() {
       window.addEventListener('offline-action-retried', () => { this._refreshOfflineQueueCount(); this._refreshOfflineQueueActions(); });
       window.addEventListener('offline-conflict-detected', (e) => {
         this.showToast('error', 'Conflict', e.detail?.message || 'A sync conflict was detected.');
+      });
+
+      // Drill-down event listeners
+      window.addEventListener('drilldown:task-status', (e) => {
+        this.openTaskStatusDrillDown(e.detail.status);
+      });
+      window.addEventListener('drilldown:department', (e) => {
+        this.openDepartmentDrillDown(e.detail.name);
       });
       // #136: Conflict modal — listen for SYNC_CONFLICT from SW via SW registration.
       window.addEventListener('sw-sync-conflict', (e) => {
@@ -867,6 +878,42 @@ function dashboard() {
       }
       if (tasks && JSON.stringify(tasks) !== JSON.stringify(this.tasks)) {
         this.tasks = tasks;
+      }
+
+      // FIX (Bug 1): the /api/v1/costs/summary payload was fetched but never
+      // assigned, so Cost Breakdown on the home page rendered $0.0000.
+      // Mirror loadCosts() normalization/mapping so both pages stay identical.
+      if (costs) {
+        this.costSummary = {
+          total: costs.total_spent ?? 0,
+          avgPerTask: costs.avg_cost_per_task ?? 0,
+          totalTasks: costs.total_tasks ?? 0,
+          costTrend: costs.cost_trend ?? [],
+        };
+        this.budgetPct = costs.budget_utilization ?? 0;
+        this.agentCosts = (costs.per_agent_costs ?? []).map(a => ({
+          agent: a.agent,
+          tasks: a.calls,
+          totalCost: a.total_cost,
+          avgCost: a.avg_cost_per_call ?? (a.calls > 0 ? a.total_cost / a.calls : 0),
+          model: null,
+        }));
+        this.costAlerts = [];
+        if (this.budgetPct > 90) {
+          this.costAlerts.push({
+            id: 'budget-critical',
+            severity: 'critical',
+            message: `Budget usage at ${this.budgetPct.toFixed(1)}% — approaching limit`,
+            timestamp: new Date().toISOString(),
+          });
+        } else if (this.budgetPct > 70) {
+          this.costAlerts.push({
+            id: 'budget-warning',
+            severity: 'warning',
+            message: `Budget usage at ${this.budgetPct.toFixed(1)}% — monitor closely`,
+            timestamp: new Date().toISOString(),
+          });
+        }
       }
 
       // FIX: Defer chart updates to next animation frame, coalescing any
@@ -1727,6 +1774,145 @@ function dashboard() {
           animation: { duration: 500 },
         },
       });
+    },
+
+    // ═══ DRILL-DOWN METHODS ════════════════════════════════════
+
+    closeDrillDown() {
+      this.drillDown = null;
+    },
+
+    async openTaskStatusDrillDown(status) {
+      this.drillDown = { type: 'task-status', title: `${status.charAt(0).toUpperCase() + status.slice(1)} Tasks`, data: [], loading: true };
+      try {
+        const tasks = await this.fetchJSON('/api/v1/tasks');
+        this.drillDown.data = (tasks || []).filter(t => t.status === status).slice(0, 50);
+      } catch (e) {
+        console.warn('Failed to load task drill-down:', e);
+        this.drillDown.data = [];
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openDepartmentDrillDown(deptName) {
+      this.drillDown = { type: 'department', title: deptName, data: null, loading: true };
+      try {
+        const data = await this.fetchJSON(`/api/v1/departments/${encodeURIComponent(deptName)}/kpis`);
+        this.drillDown.data = data;
+      } catch (e) {
+        console.warn('Failed to load department drill-down:', e);
+        this.drillDown.data = null;
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openCostDrillDown() {
+      this.drillDown = { type: 'cost', title: 'Cost Breakdown', data: null, loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/costs/summary');
+        this.drillDown.data = data;
+      } catch (e) {
+        console.warn('Failed to load cost drill-down:', e);
+        this.drillDown.data = null;
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openCompanyKPIDrillDown(kpi) {
+      this.drillDown = { type: 'company-kpi', title: kpi.name, data: kpi, loading: false };
+    },
+
+    async openDeptKPIDrillDown(dept, kpiKey, kpiData) {
+      this.drillDown = { type: 'dept-kpi', title: `${dept} — ${kpiKey.replace(/_/g, ' ')}`, data: { ...kpiData, department: dept, kpiKey }, history: [], loading: true };
+      try {
+        const history = await this.fetchJSON(`/api/v1/kpis/history/${encodeURIComponent(dept)}?kpi_key=${kpiKey}&limit=20`);
+        this.drillDown.history = history || [];
+      } catch (e) {
+        console.warn('Failed to load KPI history:', e);
+        this.drillDown.history = [];
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    // ═══ NEW DRILL-DOWN METHODS ═══════════════════════════════════
+
+    openTaskDrillDown(task) {
+      // Reuse the existing task detail slide-out
+      this.openTaskDetail(task);
+    },
+
+    async openApprovalsDrillDown() {
+      this.drillDown = { type: 'approvals', title: 'Pending Approvals', data: [], loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/approvals');
+        this.drillDown.data = (data || []).filter(a => a.status === 'pending').slice(0, 50);
+      } catch (e) {
+        console.warn('Failed to load approvals drill-down:', e);
+        this.drillDown.data = [];
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openEscalationsDrillDown() {
+      this.drillDown = { type: 'escalations', title: 'Open Escalations', data: [], loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/escalations');
+        this.drillDown.data = (data || []).filter(e => !e.resolved).slice(0, 50);
+      } catch (e) {
+        console.warn('Failed to load escalations drill-down:', e);
+        this.drillDown.data = [];
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openInProgressDrillDown() {
+      this.drillDown = { type: 'task-status', title: 'In Progress Tasks', data: [], loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/tasks');
+        this.drillDown.data = (data || []).filter(t => t.status === 'in_progress').slice(0, 50);
+      } catch (e) {
+        console.warn('Failed to load in-progress drill-down:', e);
+        this.drillDown.data = [];
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openTopAgentsDrillDown() {
+      this.drillDown = { type: 'top-agents', title: 'Top Agents by Cost', data: this.agentCosts, loading: false };
+    },
+
+    async openAgentCostDrillDown(agentName) {
+      this.drillDown = { type: 'agent-cost', title: `Cost Details: ${agentName}`, data: null, loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/costs/summary');
+        const agentData = (data.per_agent_costs || []).find(a => a.agent === agentName);
+        this.drillDown.data = agentData || { agent: agentName, totalCost: 0, calls: 0, avgCost: 0 };
+      } catch (e) {
+        console.warn('Failed to load agent cost drill-down:', e);
+        this.drillDown.data = { agent: agentName, totalCost: 0, calls: 0, avgCost: 0 };
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openCostTrendDrillDown() {
+      this.drillDown = { type: 'cost-trend', title: 'Cost Trend Details', data: null, loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/costs/summary');
+        this.drillDown.data = data;
+      } catch (e) {
+        console.warn('Failed to load cost trend drill-down:', e);
+        this.drillDown.data = { cost_trend: [], total_spent: 0 };
+      } finally {
+        this.drillDown.loading = false;
+      }
     },
   };
 }
