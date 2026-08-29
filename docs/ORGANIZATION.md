@@ -2,28 +2,27 @@
 
 ## Structure
 
-Light Speed Holdings is organized as a hierarchical AI company with one human CEO and 27 AI agents across 7 departments.
+Light Speed Holdings is organized as a hierarchical AI company with one human CEO and 134 AI agents across 19 departments (135 registry entries in `company-registry.yaml`, including the human CEO).
 
 ```
-                    human-ceo
+                     human-ceo
                         │
                   chief-of-staff
-                ┌───────┼───────┐
-             cto      cfo      coo
-              │        │        │
-         ┌────┴────┐   │   ┌───┴───┐
-      eng    data  │   │  ops   biz
-         │         │   │    │      │
-     specialists   │   │  specialists
-                   │   │
-              marketing  sales
-              legal  customer-success
+        ┌───────┬───────┼────────┬────────┐
+        │       │       │        │        │
+       cto    coo      caio     cmo      cpo
+        │       │       │        │        │
+     (Tech)  (Ops)   (AI R&D)  (Mktg)  (Product)
+        │
+     consulting-lead   customer-success   hr   sales   cio   legal
 ```
+
+Full org chart and per-department breakdown: `company/org-chart.md` and `docs/AGENT-REGISTRY-TABLE.md`.
 
 ## Roles
 
 ### Human CEO
-The sole human in the hierarchy. Provides strategic direction, final approval authority, and oversight. All irreversible decisions ultimately flow here.
+The sole human in the hierarchy. Provides strategic direction, final approval authority, and oversight. All irreversible decisions ultimately flow here. Oversight body: the Board of Directors (7 board agents).
 
 ### Chief of Staff
 Operational coordinator. Manages the daily flow of work across departments, generates executive briefings, and handles escalations that cross department boundaries. Acts with the CEO's authority on operational matters.
@@ -32,10 +31,16 @@ Operational coordinator. Manages the daily flow of work across departments, gene
 Owns engineering, data, and infrastructure. Responsible for technical architecture, security, deployment, and the agent execution system.
 
 ### CFO (Chief Financial Officer)
-Owns finance, legal, and compliance. Responsible for budget allocation, cost tracking (including LLM token spend), and regulatory adherence.
+Owns finance. Responsible for budget allocation, cost tracking (including LLM token spend), and financial forecasting.
 
 ### COO (Chief Operating Officer)
-Owns operations, marketing, sales, and customer success. Responsible for business process execution, customer-facing operations, and revenue-generating activities.
+Owns operations. Responsible for business process execution, workflows, and internal processes.
+
+### CAIO (Chief AI Officer)
+Owns AI research, model selection, and prompt engineering strategy.
+
+### Executive Cabinet
+The full executive layer (19 executives across 14 operating departments plus the Executive office): CEO, Chief of Staff, CEO Advisor, CTO, CFO, COO, CAIO, CMO, CPO, CSO, CISO, CDO, CIO, CLO, HR, Sales, Customer Success, Consulting, and the Legal Advisor. See `company-registry.yaml` for `reports_to` chains.
 
 ### Department Heads
 Each department has an executive owner and one or more specialist agents. Department heads make decisions within their domain and escalate cross-department issues to the Chief of Staff.
@@ -45,15 +50,29 @@ Task-level executors. Each specialist has defined tools, permissions, and a narr
 
 ## Departments
 
-| Department | Executive | Specialists | Focus |
-|-----------|-----------|-------------|-------|
-| Engineering | cto | lead-backend, lead-frontend, lead-devops | Building and maintaining systems |
-| Data | cto | data-analyst | Data processing and analytics |
-| Operations | coo | operations-manager | Business process execution |
-| Marketing | coo | marketing-strategist, content-creator | Demand generation and brand |
-| Sales | coo | sales-lead | Revenue generation |
-| Legal | cfo | legal-advisor | Contracts, compliance, risk |
-| Customer Success | coo | cs-lead | Customer retention and support |
+| Department | Executive | Example Specialists | Focus |
+|-----------|-----------|---------------------|-------|
+| Technology (27) | `cto` | `lead-backend`, `lead-frontend`, `devops-lead`, `software-architect` | Building and maintaining systems |
+| AI Research (13) | `caio` | `ml-engineer`, `prompt-engineer`, `red-team-engineer`, `mlops-engineer` | Model strategy and research |
+| Operations (11) | `coo` | `workflow-owner`, `orchestration-owner`, `capacity-planner`, `vendor-manager` | Business process execution |
+| Security (11) | `ciso` | `security-architect`, `penetration-testing-lead`, `soc2-audit-readiness-analyst` | Security and hardening |
+| Product (9) | `cpo` | `product-owner`, `product-designer`, `ux-research-lead` | Product vision and delivery |
+| Marketing (9) | `cmo` | `content-creator`, `brand-strategist`, `growth-hacker` | Demand generation and brand |
+| Board (7) | `board-chair` | `board-strategy`, `board-finance`, `board-technology` | Governance oversight |
+| People (6) | `hr` | `hr-owner`, `recruiter`, `learning-development-lead` | Workforce and culture |
+| Sales (6) | `sales` | `sales-owner`, `solutions-engineer`, `business-developer` | Revenue generation |
+| Executive (5) | `human-ceo`, `chief-of-staff`, `ceo-advisor` | `internal-comms-lead`, `ai-ethics-board-chair` | CEO and coordination |
+| Data (5) | `cdo` | `data-engineer`, `business-intelligence-engineer`, `data-scientist` | Data processing and analytics |
+| Legal (5) | `clo`, `legal` | `legal-owner`, `data-privacy-officer`, `compliance-officer` | Contracts, compliance, risk |
+| QA (5) | `qa-lead` (reports to `cto`) | `qa-engineer`, `test-engineering-lead`, `release-manager` | Quality assurance |
+| Strategy (4) | `cso` | `market-analyst`, `head-of-competitive-intelligence` | Corporate strategy |
+| Consulting (4) | `consulting-lead` | `opportunity-identifier`, `workflow-mapper`, `interview-agent` | Client consulting |
+| Finance (3) | `cfo` | `financial-analyst`, `investor-relations-lead` | Financials and fundraising |
+| Customer Success (3) | `customer-success` | `support-agent`, `customer-success-owner` | Customer retention and support |
+| IT (1) | `cio` | — | IT infrastructure |
+| Business Development (1) | `head-of-business-development` (reports to `chief-of-staff`) | — | Partnerships and growth |
+
+Counts in parentheses are live registry headcounts; `docs/AGENT-REGISTRY-TABLE.md` is the generator-maintained reference that stays in sync.
 
 ## Decision Authority
 

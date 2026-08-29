@@ -360,7 +360,7 @@ class ExecutiveDashboardAccessEvent(BaseModel):
 
 ### Phase 1 (Week 1) - MVP Validation
 - [ ] Executive KPI endpoint returns <500ms p95
-- [ ] Org Chart renders full 27-agent hierarchy correctly
+- [ ] Org Chart renders full 135-agent hierarchy correctly
 - [ ] Alert Center shows all active escalations + approvals
 - [ ] All endpoints require executive authentication
 - [ ] Dashboard loads in <2s on cold start
