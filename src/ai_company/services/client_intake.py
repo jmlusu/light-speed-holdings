@@ -263,6 +263,7 @@ class ClientIntakeService(BaseService):
                 "lead_agent": lead_agent,
                 "gates_verified": list(self.REQUIRED_GATES),
             },
+            task_id=task_id,
         )
 
         self.record_event(

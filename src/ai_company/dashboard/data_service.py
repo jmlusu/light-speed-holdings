@@ -125,6 +125,21 @@ def get_cost_summary(database: Database | None = None) -> dict[str, Any] | None:
     except Exception:  # noqa: BLE001 - task counts are best-effort here
         logger.warning("SQLite task counts unavailable for cost summary", exc_info=True)
 
+    # Load budget from cost_tracker.json
+    budget = 0.0
+    try:
+        from ai_company.paths import get_project_root
+
+        cost_tracker_path = get_project_root() / "orchestrator" / "cost_tracker.json"
+        if cost_tracker_path.exists():
+            import json
+
+            with open(cost_tracker_path) as f:
+                cost_tracker = json.load(f)
+            budget = float(cost_tracker.get("total_budget", 0) or 0)
+    except Exception:  # noqa: BLE001
+        pass
+
     return {
         "total_spent": round(total_spent, 6),
         "llm_spend": round(total_spent, 6),
@@ -133,6 +148,7 @@ def get_cost_summary(database: Database | None = None) -> dict[str, Any] | None:
         "completed_tasks": completed_tasks,
         "per_agent_costs": per_agent_costs,
         "cost_trend": cost_trend,
+        "budget": budget,
     }
 
 

@@ -89,18 +89,27 @@ def _get_llm_client() -> Any:
     return _llm_client
 
 
-def _read_all_tasks() -> list[dict[str, Any]]:
+def _read_all_tasks(*, include_test: bool = False) -> list[dict[str, Any]]:
     """Return all tasks as plain dicts — SQLite-first, inbox-file fallback.
 
     The file fallback reads through :func:`get_bus` so writes and reads stay
     on the same bus (tests override ``_bus`` to an isolated inbox).
+
+    By default, filters out demo/test tasks (Acme Corp ``proj-acme-chatbot``
+    tasks, ``Test `` instructions, ``test-``/``verify-`` ids). Pass
+    ``include_test=True`` to include them.
     """
     from ai_company.dashboard.data_service import get_all_tasks
+    from ai_company.data.task_store import TaskStore
 
     tasks = get_all_tasks()
-    if tasks is not None:
-        return tasks
-    return [task.model_dump() for task in get_bus().get_all_tasks()]
+    if tasks is None:
+        tasks = [task.model_dump() for task in get_bus().get_all_tasks()]
+
+    if not include_test:
+        tasks = [t for t in tasks if not TaskStore.is_test_task(t)]
+
+    return tasks
 
 
 def _load_tasks_dicts() -> list[dict[str, Any]]:
@@ -816,9 +825,15 @@ _TEST_PREFIX_RE = re.compile(r"^test\s", re.IGNORECASE)
 def list_tasks(
     status: str = "",
     agent: str = "",
+    include_test: bool = Query(False, description="Include demo/test tasks in results"),
 ) -> list[TaskItem]:
-    """List all tasks with optional filters for status and agent."""
-    tasks = _read_all_tasks()
+    """List all tasks with optional filters for status and agent.
+
+    By default demo/test tasks (``proj-acme-chatbot``, ``Test `` instructions,
+    ``test-``/``verify-`` ids) are filtered out. Pass ``include_test=true`` to
+    include them for diagnostics.
+    """
+    tasks = _read_all_tasks(include_test=include_test)
     if status:
         tasks = [t for t in tasks if t.get("status") == status]
     if agent:
@@ -834,6 +849,7 @@ def list_tasks_paginated(
     priority: str = "",
     department: str = "",
     agent: str = "",
+    include_test: bool = Query(False, description="Include demo/test tasks in results"),
     sort_by: str = "created_at",
     sort_dir: str = "desc",
 ) -> PaginatedTasks:
@@ -842,12 +858,15 @@ def list_tasks_paginated(
     Returns a page of tasks plus metadata (total, counts, total_pages).
     The ``counts_by_status`` field always reflects the filtered (but
     un-paginated) result set so Kanban column headers stay accurate.
+
+    Demo/test tasks are filtered out by default; pass ``include_test=true``
+    to include them for diagnostics.
     """
     # Page size must be one of the allowed values
     if page_size not in (10, 20, 50, 100):
         page_size = 20
 
-    tasks = _read_all_tasks()
+    tasks = _read_all_tasks(include_test=include_test)
 
     # ── Filter: status (comma-separated) ──
     if status:
@@ -1363,9 +1382,26 @@ def resolve_escalation(
 
 @router.get("/departments", response_model=list[DepartmentInfo], tags=["departments"])
 def list_departments() -> list[DepartmentInfo]:
-    """List all registered departments."""
+    """List all registered departments with agent counts."""
     data = _load_yaml("company/departments.yaml")
-    return [DepartmentInfo(**d) for d in data.get("departments", [])]
+    registry = _load_registry()
+
+    # Build agent count map: department_name -> agent_count
+    dept_agent_counts: dict[str, int] = {}
+    for agent in registry:
+        dept = (agent.get("department") or "").lower()
+        if dept:
+            dept_agent_counts[dept] = dept_agent_counts.get(dept, 0) + 1
+
+    departments = []
+    for d in data.get("departments", []):
+        dept_name = d.get("name", "")
+        dept_id = d.get("id", "").lower()
+        count = dept_agent_counts.get(dept_name.lower(), 0) or dept_agent_counts.get(dept_id, 0)
+        d["total_agents"] = count
+        departments.append(DepartmentInfo(**d))
+
+    return departments
 
 
 # ── Models ──────────────────────────────────────────────────────────
@@ -2156,6 +2192,7 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
         "completed_tasks": completed,
         "per_agent_costs": per_agent,
         "cost_trend": trend_data,
+        "budget": total_budget,
     }
 
     # Broadcast to WebSocket
@@ -2936,6 +2973,65 @@ def org_health_trend(limit: int = Query(24, ge=1, le=168)) -> list[dict[str, Any
     return trend
 
 
+@router.get("/org-health/components/trend", tags=["org-health"])
+def org_health_component_trend(
+    component: str = Query(..., description="Component name (e.g. task_success_rate)"),
+    limit: int = Query(30, ge=1, le=365, description="Number of data points"),
+) -> list[dict[str, Any]]:
+    """Get historical trend data for a single org-health component.
+
+    Returns timestamped score values suitable for rendering a sparkline chart.
+    The component key is stored as ``component:{name}`` in the KPI pipeline
+    by ``OrgHealthKPICollector``.
+
+    Parameters
+    ----------
+    component:
+        Component name, e.g. ``task_success_rate``, ``agent_utilization``,
+        ``cost_efficiency``, or ``error_rate``.
+    limit:
+        Max number of historical entries to return.
+    """
+    kpi_key = f"component:{component}"
+    entries: list[dict[str, Any]] = []
+
+    db = get_database()
+    if db is not None:
+        try:
+            from ai_company.data.kpi_pipeline import KPIPipeline
+
+            pipeline = KPIPipeline(db)
+            rows = pipeline.get_history("org_health", kpi_key=kpi_key, limit=limit)
+            for row in reversed(rows):
+                entries.append(
+                    {
+                        "timestamp": row["timestamp"],
+                        "score": row["current_value"],
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Component trend unavailable from SQLite for %s", component)
+
+    # Fall back to the file-based KPI history store
+    if not entries:
+        try:
+            from ai_company.dashboard.analytics import KPIHistoryStore
+
+            store = KPIHistoryStore()
+            history = store.get_history("org_health", kpi_key=kpi_key, limit=limit)
+            for e in history:
+                entries.append(
+                    {
+                        "timestamp": e.timestamp,
+                        "score": e.current,
+                    }
+                )
+        except Exception:  # noqa: BLE001
+            logger.debug("Component trend unavailable from file store for %s", component)
+
+    return entries
+
+
 @router.get("/org-health/anomalies", tags=["org-health"])
 def org_health_anomalies() -> list[dict[str, Any]]:
     """Get detected anomalies in org health metrics.
@@ -3363,9 +3459,10 @@ def list_onboarding_requests(
 
     States: pending_approval, generating, testing, active, archived.
     """
+    from ai_company.data import get_database
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.list_requests(state=state)
     if not result.success:
         return []
@@ -3375,9 +3472,10 @@ def list_onboarding_requests(
 @router.get("/onboarding/{request_id}", tags=["onboarding"])
 def get_onboarding_status(request_id: str) -> dict[str, Any]:
     """Get the status of a specific onboarding request."""
+    from ai_company.data import get_database
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.get_status(request_id)
     if not result.success:
         raise HTTPException(status_code=404, detail=f"Onboarding request '{request_id}' not found")
@@ -3393,9 +3491,10 @@ class OnboardingRejectRequest(BaseModel):
 @router.post("/onboarding/{request_id}/approve", tags=["onboarding"])
 def approve_onboarding_request(request_id: str) -> dict[str, Any]:
     """Approve an onboarding request, transitioning it to active."""
+    from ai_company.data import get_database
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.approve_onboarding(request_id, approved_by="dashboard")
     if not result.success:
         raise HTTPException(
@@ -3410,10 +3509,11 @@ def reject_onboarding_request(
     body: OnboardingRejectRequest | None = None,
 ) -> dict[str, Any]:
     """Reject an onboarding request with an optional reason."""
+    from ai_company.data import get_database
     from ai_company.services.onboarding import OnboardingService
 
     reason = body.reason if body else ""
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.reject_onboarding(request_id, rejected_by="dashboard", reason=reason)
     if not result.success:
         raise HTTPException(

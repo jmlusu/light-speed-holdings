@@ -478,9 +478,33 @@ class Database:
         return int(row[0]) if row else 0
 
     def init_schema(self) -> None:
-        """Apply all pending migrations in order (idempotent)."""
+        """Apply all pending migrations in order (idempotent).
+
+        Handles the case where ``PRAGMA user_version`` was bumped without
+        actually applying the corresponding SQL (e.g. migration 4 skipped).
+        When required tables are missing despite a non-zero version, we
+        reset the version to 0 and re-apply every migration so the
+        database ends up in a consistent state.
+        """
         conn = self.connect()
         current = self._get_user_version(conn)
+
+        # Guard: if the version claims schema is applied but required tables
+        # are missing, reset so we re-run from scratch.
+        if current > 0:
+            rows = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+            ).fetchall()
+            names = {row["name"] for row in rows}
+            if not _REQUIRED_TABLES.issubset(names):
+                logger.warning(
+                    "Required tables missing despite schema v%d — re-applying all migrations",
+                    current,
+                )
+                conn.execute("PRAGMA user_version = 0")
+                conn.commit()
+                current = 0
+
         for target in range(current + 1, SCHEMA_VERSION + 1):
             for sql in MIGRATIONS.get(target, []):
                 try:

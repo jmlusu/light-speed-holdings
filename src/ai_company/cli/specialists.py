@@ -145,6 +145,14 @@ def assign_task(
         receiver_id=specialist_id,
         instruction=instruction,
     )
+
+    # Guard: reject test tasks in production
+    from ai_company.data.task_store import TaskStore
+
+    if TaskStore.is_test_task(task.model_dump()):
+        typer.echo("Error: Cannot create test/demo tasks in production.")
+        raise typer.Exit(1)
+
     bus.send_task(task)
     typer.echo(f"Task '{task_id}' assigned to '{specialist_id}'.")
 
