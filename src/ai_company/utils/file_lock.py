@@ -2,11 +2,15 @@
 
 Provides atomic file operations with proper locking to prevent race conditions
 when multiple processes access shared state files (JSON, YAML).
+
+The locking implementation (``file_lock`` and ``FileLockError``) is delegated
+to :mod:`ai_company.store.file_lock`, the canonical robust cross-process
+sidecar lock.  This module keeps :func:`atomic_write` locally and re-exports
+the canonical lock so existing importers keep working unchanged.
 """
 
 from __future__ import annotations
 
-import logging
 import os
 import tempfile
 import time
@@ -14,128 +18,41 @@ from contextlib import contextmanager, suppress
 from pathlib import Path
 from typing import IO, Any, Generator
 
-logger = logging.getLogger(__name__)
+from ai_company.store.file_lock import FileLockError
+from ai_company.store.file_lock import file_lock as _store_file_lock
 
-
-class FileLockError(Exception):
-    """Raised when a file lock cannot be acquired."""
+__all__ = ["FileLockError", "atomic_write", "file_lock"]
 
 
 @contextmanager
 def file_lock(
-    path: Path,
+    path: str | Path,
     timeout: float = 10.0,
     poll_interval: float = 0.1,
+    stale_after: float = 30.0,
 ) -> Generator[None, None, None]:
     """Context manager that provides an exclusive file lock.
 
-    Uses platform-specific locking:
-    - Windows: msvcrt.locking()
-    - Unix: fcntl.flock()
+    Thin wrapper delegating to the canonical implementation in
+    :mod:`ai_company.store.file_lock` (cross-process sidecar lock).
 
     Args:
-        path: Path to the file to lock (creates .lock sibling).
+        path: Path to the file to lock (creates a ``.lock`` sibling).
         timeout: Maximum seconds to wait for the lock.
         poll_interval: Seconds between lock acquisition attempts.
+        stale_after: Seconds after which an un-refreshed lock is treated as
+            orphaned and broken.
 
     Raises:
         FileLockError: If the lock cannot be acquired within timeout.
     """
-    import platform
-
-    lock_path = Path(str(path) + ".lock")
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-
-    if platform.system() == "Windows":
-        yield from _windows_lock(lock_path, timeout, poll_interval)
-    else:
-        yield from _unix_lock(lock_path, timeout, poll_interval)
-
-
-def _windows_lock(
-    lock_path: Path,
-    timeout: float,
-    poll_interval: float,
-) -> Generator[None, None, None]:
-    """Windows file locking using msvcrt."""
-    import msvcrt  # Windows-only module
-    import time
-
-    fd = None
-    start_time = time.monotonic()
-
-    try:
-        while True:
-            try:
-                fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)  # type: ignore[attr-defined, unused-ignore]
-                break
-            except OSError as exc:
-                if fd is not None:
-                    os.close(fd)
-                    fd = None
-                elapsed = time.monotonic() - start_time
-                if elapsed >= timeout:
-                    raise FileLockError(
-                        f"Could not acquire lock on {lock_path} within {timeout}s"
-                    ) from exc
-                time.sleep(poll_interval)
-
-        logger.debug("Acquired file lock: %s", lock_path)
+    with _store_file_lock(
+        path,
+        timeout=timeout,
+        poll_interval=poll_interval,
+        stale_after=stale_after,
+    ):
         yield
-
-    finally:
-        if fd is not None:
-            try:
-                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined, unused-ignore]
-            except OSError:
-                pass
-            finally:
-                os.close(fd)
-        logger.debug("Released file lock: %s", lock_path)
-
-
-def _unix_lock(
-    lock_path: Path,
-    timeout: float,
-    poll_interval: float,
-) -> Generator[None, None, None]:
-    """Unix file locking using fcntl."""
-    import fcntl
-    import time
-
-    fd = None
-    start_time = time.monotonic()
-
-    try:
-        while True:
-            try:
-                fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR)
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # type: ignore[attr-defined, unused-ignore]
-                break
-            except (OSError, IOError) as exc:
-                if fd is not None:
-                    os.close(fd)
-                    fd = None
-                elapsed = time.monotonic() - start_time
-                if elapsed >= timeout:
-                    raise FileLockError(
-                        f"Could not acquire lock on {lock_path} within {timeout}s"
-                    ) from exc
-                time.sleep(poll_interval)
-
-        logger.debug("Acquired file lock: %s", lock_path)
-        yield
-
-    finally:
-        if fd is not None:
-            try:
-                fcntl.flock(fd, fcntl.LOCK_UN)  # type: ignore[attr-defined, unused-ignore]
-            except (OSError, IOError):
-                pass
-            finally:
-                os.close(fd)
-        logger.debug("Released file lock: %s", lock_path)
 
 
 @contextmanager
