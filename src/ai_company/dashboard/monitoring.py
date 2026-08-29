@@ -372,7 +372,7 @@ def _append_agent_performance(lines: list[str]) -> None:
     try:
         for line in _get_store().iter_jsonl(".opencode/audit"):
             try:
-                if line.get("event_type") != "task_complete":
+                if line.get("event_type") != "task_completed":
                     continue
                 agent_id = line.get("agent_id", "unknown")
                 success = line.get("metadata", {}).get("success", True)

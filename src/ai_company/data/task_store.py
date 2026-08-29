@@ -22,6 +22,26 @@ from ai_company.models.task import Task
 
 logger = logging.getLogger(__name__)
 
+# ── Demo/test detection predicates ──────────────────────────────────
+# These MUST stay in lock-step with TaskStore.is_test_task(). The refined
+# contract is case-sensitive on demonstrable markers only:
+#   - ``proj-acme-chatbot`` substring in id or instruction
+#   - instruction starting with ``Test `` (capital T, trailing space)
+#   - id starting with ``test-`` or ``verify-`` (lowercase)
+# ``GLOB`` matches case-sensitively in SQLite and ``instr`` is a
+# case-sensitive substring test — unlike ``LIKE``, which is
+# case-insensitive and would over-delete a real task like
+# ``test the new API endpoint`` (lowercase t) that the contract treats
+# as genuine work.
+_ACME_DEMO_PREDICATE = (
+    "(instr(instruction, 'proj-acme-chatbot') > 0 OR instr(id, 'proj-acme-chatbot') > 0)"
+)
+_TEST_INSTRUCTION_PREDICATE = "instruction GLOB 'Test *'"
+_TEST_ID_PREDICATE = "(id GLOB 'test-*' OR id GLOB 'verify-*')"
+_TEST_TASK_WHERE = (
+    f"({_ACME_DEMO_PREDICATE} OR {_TEST_INSTRUCTION_PREDICATE} OR {_TEST_ID_PREDICATE})"
+)
+
 
 class TaskStore:
     """SQLite-backed task queue with the same interface as MessageBus.
@@ -260,3 +280,92 @@ class TaskStore:
 
         logger.info("Exported %d tasks to %s", len(data), path)
         return path
+
+    # ── Cleanup helpers ───────────────────────────────────────────────
+
+    def test_task_breakdown(self) -> dict[str, int]:
+        """Count tasks matching each demo/test class.
+
+        Returns a dict with per-class counts before any deletion:
+
+        - ``acme_demo``: id or instruction contains ``proj-acme-chatbot``
+        - ``test_instruction``: instruction starts with ``Test ``
+        - ``test_id``: id starts with ``test-`` or ``verify-``
+        - ``total``: distinct rows matching any class (what
+          :meth:`cleanup_test_tasks` will remove)
+
+        Classes may overlap — a task matching two markers contributes to
+        both per-class counts but only once to ``total``.
+        """
+        row = self._db.fetchone(
+            f"""SELECT
+                COALESCE(SUM({_ACME_DEMO_PREDICATE}), 0) AS acme_demo,
+                COALESCE(SUM({_TEST_INSTRUCTION_PREDICATE}), 0) AS test_instruction,
+                COALESCE(SUM({_TEST_ID_PREDICATE}), 0) AS test_id,
+                COUNT(*) AS total
+                FROM tasks WHERE {_TEST_TASK_WHERE}"""
+        )
+        if row is None:
+            return {"acme_demo": 0, "test_instruction": 0, "test_id": 0, "total": 0}
+        return {
+            "acme_demo": int(row["acme_demo"] or 0),
+            "test_instruction": int(row["test_instruction"] or 0),
+            "test_id": int(row["test_id"] or 0),
+            "total": int(row["total"] or 0),
+        }
+
+    def cleanup_test_tasks(self) -> int:
+        """Remove tasks matching demo/test patterns.
+
+        Deletes tasks where:
+        - instruction or id references the Acme Corp demo project
+          (``proj-acme-chatbot``)
+        - instruction starts with 'Test ' (dummy instruction)
+        - id starts with 'test-' or 'verify-' (dummy task IDs)
+
+        Tasks routed to real agents whose name starts with 'test' (e.g.
+        ``test-agent``) are NOT deleted — routing alone is not a demo marker.
+
+        Returns the number of tasks deleted.
+        """
+        cursor = self._db.execute(f"DELETE FROM tasks WHERE {_TEST_TASK_WHERE}")
+        deleted = cursor.rowcount
+        self._db.commit()
+        if deleted > 0:
+            logger.info("Cleaned up %d test/demo tasks from database.", deleted)
+        return deleted
+
+    def purge_all_tasks(self) -> int:
+        """Remove all tasks from the store.
+
+        Returns the number of tasks deleted.
+        """
+        cursor = self._db.execute("DELETE FROM tasks")
+        deleted = cursor.rowcount
+        self._db.commit()
+        if deleted > 0:
+            logger.info("Purged all %d tasks from database.", deleted)
+        return deleted
+
+    @staticmethod
+    def is_test_task(task_dict: dict[str, Any]) -> bool:
+        """Check if a task dict represents a demo/test task.
+
+        A task is considered demo/test data only when it matches a clear
+        dummy/demo marker:
+        - instruction or id references the Acme Corp demo project
+          (``proj-acme-chatbot``)
+        - instruction starts with ``Test `` (dummy instruction)
+        - id starts with ``test-`` or ``verify-`` (dummy task ids)
+
+        Routing to an agent whose name starts with ``test`` (e.g. the real
+        ``test-agent``) is legitimate and does NOT mark a task as demo/test.
+        """
+        instruction: str = task_dict.get("instruction", "")
+        task_id: str = task_dict.get("id", "")
+
+        if "proj-acme-chatbot" in instruction or "proj-acme-chatbot" in task_id:
+            return True
+        if instruction.startswith("Test "):
+            return True
+        return task_id.startswith(("test-", "verify-"))

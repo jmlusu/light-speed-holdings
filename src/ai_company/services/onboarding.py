@@ -29,6 +29,7 @@ from typing import Any, cast
 from pydantic import BaseModel, Field
 
 from ai_company.audit.events import AuditEventType
+from ai_company.models.task import TaskPriority
 from ai_company.services.base import BaseService, ServiceResult
 from ai_company.store.file_store import FileStore
 
@@ -671,6 +672,15 @@ class OnboardingService(BaseService):
             },
         )
 
+        # Create a task for the executor to process this onboarding request
+        self.create_task(
+            receiver_id="chief_of_staff",
+            instruction=f"Onboarding request for agent '{agent_id}' as {role} in {department}. "
+            f"Tier: {tier}. Please review and process.",
+            priority=TaskPriority.HIGH if tier >= 3 else TaskPriority.MEDIUM,
+            sender_id="hr-service",
+        )
+
         return ServiceResult.ok(
             {
                 "request_id": req.id,
@@ -740,6 +750,15 @@ class OnboardingService(BaseService):
                 "state": req.state.value,
                 "approved_by": approved_by,
             },
+        )
+
+        # Create a task for the agent to be activated
+        self.create_task(
+            receiver_id=req.agent_id,
+            instruction=f"Onboarding approved. Agent '{req.agent_id}' is now active. "
+            f"Please complete any final setup steps.",
+            priority=TaskPriority.HIGH,
+            sender_id="hr-service",
         )
 
         return ServiceResult.ok(
@@ -876,6 +895,23 @@ class OnboardingService(BaseService):
                 "agent_id": req.agent_id,
                 "state": req.state.value,
             },
+        )
+
+        # Create a task for the next step in the onboarding workflow
+        receiver = "chief_of_staff"
+        if req.state == OnboardingState.GENERATING:
+            receiver = "cto"
+        elif req.state == OnboardingState.TESTING:
+            receiver = "qa-lead"
+        elif req.state == OnboardingState.APPROVAL:
+            receiver = "human-ceo"
+
+        self.create_task(
+            receiver_id=receiver,
+            instruction=f"Onboarding for agent '{req.agent_id}' advanced to {req.state.value}. "
+            f"Please process the next step.",
+            priority=TaskPriority.MEDIUM,
+            sender_id="hr-service",
         )
 
         logger.info("Advanced request %s to %s", request_id, req.state.value)
