@@ -19,6 +19,7 @@ from typing import Any, Generic, TypeVar, cast
 
 from ai_company.audit.events import AuditEvent, AuditEventType
 from ai_company.audit.writer import AuditWriter
+from ai_company.data.database import Database
 from ai_company.memory.integration import get_store, init_memory
 from ai_company.models.task import Task, TaskPriority
 from ai_company.orchestrator.message_bus import MessageBus
@@ -69,6 +70,7 @@ class BaseService:
         data_dir: Directory for department-specific data files.
         memory_dir: Directory for the memory store.
         audit_path: Path to the JSONL audit log file.
+        database: Optional SQLite database for task persistence.
     """
 
     def __init__(
@@ -78,9 +80,10 @@ class BaseService:
         data_dir: str | Path = ".",
         memory_dir: str = "memory",
         audit_path: str | Path | None = None,
+        database: Database | None = None,
     ) -> None:
         self.department_id = department_id
-        self.bus = bus or MessageBus()
+        self.bus = bus or MessageBus(database=database)
         self._store = FileStore(Path(data_dir) / department_id, backup=True)
         self._memory = get_store() or init_memory(memory_dir)
         # ``None`` audit_path resolves to the root-aware default
@@ -97,6 +100,7 @@ class BaseService:
         entity_id: str = "",
         result: dict[str, Any] | None = None,
         severity: str = "info",
+        task_id: str = "",
     ) -> None:
         """Write an audit event for this department action."""
         event = AuditEvent(
@@ -106,6 +110,7 @@ class BaseService:
             args={"entity_id": entity_id, "department": self.department_id},
             result=result or {},
             severity=severity,
+            task_id=task_id,
         )
         self._audit.write(event)
 
@@ -130,6 +135,18 @@ class BaseService:
             instruction=instruction,
             priority=priority,
         )
+        # Guard: refuse demo/test tasks matching the refined markers
+        # (proj-acme-chatbot, 'Test ' instruction prefix, test-/verify- ids).
+        # Routing to an agent whose id merely starts with 'test' is NOT a
+        # marker — the real ``test-agent`` can legitimately receive work.
+        from ai_company.data.task_store import TaskStore
+
+        if TaskStore.is_test_task(task.model_dump()):
+            logger.warning("Refusing to create test/demo task (receiver=%s)", receiver_id)
+            raise ValueError(
+                "Refusing to create test/demo task: instruction matches demo "
+                f"marker (receiver={receiver_id!r})"
+            )
         self.bus.send_task(task)
         logger.info(
             "[%s] Created task %s -> %s: %s",
@@ -143,6 +160,7 @@ class BaseService:
             action="create_task",
             event_type=AuditEventType.TASK_CREATED,
             result={"task_id": task.id, "receiver": receiver_id},
+            task_id=task.id,
         )
         return task
 

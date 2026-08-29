@@ -5,6 +5,7 @@ Uses FileStore for atomic persistence of scheduled task configs.
 
 from __future__ import annotations
 
+import logging
 import time
 import uuid
 from datetime import datetime, timedelta
@@ -17,6 +18,8 @@ from ai_company.store.file_store import FileStore
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
+
+logger = logging.getLogger(__name__)
 
 
 class ScheduledTask(BaseModel):
@@ -102,6 +105,12 @@ class Scheduler:
                 instruction=template.get("instruction", f"Scheduled: {scheduled.name}"),
                 priority=TaskPriority(template.get("priority", "medium")),
             )
+            # Guard: reject test tasks in production
+            from ai_company.data.task_store import TaskStore
+
+            if TaskStore.is_test_task(task.model_dump()):
+                logger.warning("Skipping test task %s (receiver=%s)", task.id, task.receiver_id)
+                continue
             # Crash-safety ordering: advance next_run and persist BEFORE
             # enqueueing the task.  If we sent the task first and the
             # process crashed before mark_completed(), the same scheduled
