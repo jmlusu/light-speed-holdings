@@ -1,0 +1,3 @@
+# Cloudflare Pages / Netlify compatible
+# Single-page fallback handled by Astro static 404 — no SPA redirect needed for MPA
+# Keep pretty URLs without html
