@@ -126,7 +126,7 @@ shared `MessageBus` backed by `.opencode/inbox.json` (`api.py:46-58`, `api.py:54
 | GET | `/kpis/summary-stats/{department}` (`api.py:1582`) | `analytics.compute_summary` over history store | REAL |
 | GET | `/company-kpis` (`api.py:1146`) | `data_service.get_company_kpi_summary` (`data_service.py:263`): KPI-003/KPI-004 computed from live task window, others from config | REAL (2) + CONFIG-ONLY (3) |
 | GET | `/ceo-dashboard` (`api.py:1163`) | aggregates `collect_all_kpis`, tasks, registry, cost tracker, escalations, approvals, scheduler | MIXED (see §5) |
-| GET | `/agents` (`api.py:595`) | `company/agent-registry.json` | REAL (131 agents) |
+| GET | `/agents` (`api.py:595`) | `company/agent-registry.json` | REAL (135 agents) |
 | GET | `/agents/performance` (`api.py:601`) | SQLite-first `data_service.get_agent_performance_report`, file fallback | REAL |
 | GET | `/agents/{name}/performance` (`api.py:643`) | SQLite-first, file fallback | REAL |
 | GET | `/agents/{name}` (`api.py:660`) | registry | REAL |
@@ -201,7 +201,7 @@ Operational files (all exist unless noted):
 - `orchestrator/sales/pipeline.json`, `orchestrator/sales/leads.json` — **absent** → sales
   collector yields zeros (`kpis/sales.py:17-18`).
 - `orchestrator/cs/surveys.json` — documented as present-but-empty (`config/company/kpis.yaml:44`).
-- `company/agent-registry.json` — **131 agents** (real company org: human-ceo, chief-of-staff,
+- `company/agent-registry.json` — **135 agents** (real company org: human-ceo, chief-of-staff,
   cto, coo, etc.) → **REAL**.
 - `company/config/kpis.yaml` — department KPI definitions/targets (engineering, hr, marketing,
   sales, finance, customer_success, legal) → **CONFIG-ONLY**.
@@ -291,7 +291,7 @@ Collector read path (`kpis/base.py`): SQLite-first (`_tasks_from_sqlite`, `_cost
     is dominated by fixture/expired records; visual work should not assume clean data.
 14. **Most surfaces show empty or test data today.** Escalations, scheduler, sales, memory,
     surveys and several dept KPIs render zeros; the only rich live surfaces are audit events,
-    cost records, approvals, and the 131-agent registry. A re-skin can't fix data gaps.
+    cost records, approvals, and the 135-agent registry. A re-skin can't fix data gaps.
 
 ## 9. UNKNOWN — could not determine
 
