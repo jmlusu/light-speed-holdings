@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import typer
 
+from ai_company.data import get_database
+
 app = typer.Typer(help="Agent onboarding with HITL approval gate")
 
 
@@ -45,7 +47,7 @@ def request(
         [r.strip() for r in responsibilities.split(",") if r.strip()] if responsibilities else []
     )
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.request_onboarding(
         agent_id=agent_id,
         role=role,
@@ -88,7 +90,7 @@ def approve(
     """
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.approve_onboarding(request_id, approved_by=by, notes=notes)
 
     if not result.success or result.data is None:
@@ -113,7 +115,7 @@ def reject(
     """
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.reject_onboarding(request_id, rejected_by=by, reason=reason)
 
     if not result.success or result.data is None:
@@ -134,7 +136,7 @@ def status(
     """Show the current status of an onboarding request."""
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.get_status(request_id)
 
     if not result.success or result.data is None:
@@ -171,7 +173,7 @@ def list_requests(
     """List all onboarding requests."""
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.list_requests(state=state)
 
     if not result.success or result.data is None:
@@ -204,7 +206,7 @@ def advance(
     """
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.advance_to_next(request_id)
 
     if not result.success or result.data is None:
@@ -229,7 +231,7 @@ def security_review(
     """
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.security_review(request_id, reviewer=reviewer, approved=approved, reason=reason)
 
     if not result.success or result.data is None:
@@ -251,7 +253,7 @@ def complete_generation(
     """Complete the generation step and advance to testing."""
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     res = svc.complete_generation(request_id, result=result)
 
     if not res.success or res.data is None:
@@ -273,7 +275,7 @@ def complete_testing(
     """Complete the testing step and advance to approval or failed."""
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     res = svc.complete_testing(request_id, passed=passed, result=result)
 
     if not res.success or res.data is None:
@@ -294,7 +296,7 @@ def archive(
     """Archive an onboarding request."""
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.archive(request_id)
 
     if not result.success or result.data is None:
@@ -314,7 +316,7 @@ def retry(
     """Retry a failed onboarding request by transitioning back to generating."""
     from ai_company.services.onboarding import OnboardingService
 
-    svc = OnboardingService()
+    svc = OnboardingService(database=get_database())
     result = svc.retry_from_failure(request_id)
 
     if not result.success or result.data is None:

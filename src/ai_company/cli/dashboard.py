@@ -156,6 +156,47 @@ def backfill(
         )
 
 
+@app.command("cleanup")
+def cleanup(
+    purge_all: bool = typer.Option(
+        False, "--purge-all", help="Delete ALL tasks (not just test/demo)"
+    ),
+    db_path: str = typer.Option("", "--db-path", help="SQLite database path"),
+) -> None:
+    """Remove test and demo tasks from the database.
+
+    By default, removes tasks matching the refined demo/test markers
+    (``proj-acme-chatbot`` in id/instruction, ``Test `` instruction prefix,
+    ``test-``/``verify-`` id prefixes) and prints per-class counts. Agents
+    whose id merely starts with ``test`` (e.g. the real ``test-agent``) are
+    NOT a marker. Use --purge-all to remove everything.
+    """
+    from ai_company.data import TaskStore, init_database
+    from ai_company.paths import get_database_path
+
+    db = init_database(db_path or str(get_database_path()))
+    store = TaskStore(db)
+
+    before = store.count()
+
+    if purge_all:
+        deleted = store.purge_all_tasks()
+        typer.echo(f"Purged all {deleted} tasks from database.")
+    else:
+        counts = store.test_task_breakdown()
+        deleted = store.cleanup_test_tasks()
+        typer.echo(f"Removed {deleted} test/demo tasks:")
+        typer.echo(f"  acme_demo        (proj-acme-chatbot): {counts['acme_demo']}")
+        typer.echo(f"  test_instruction ('Test ' prefix):     {counts['test_instruction']}")
+        typer.echo(f"  test_id          (test-/verify- ids):   {counts['test_id']}")
+
+    after = store.count()
+    typer.echo(f"Tasks: {before} -> {after}")
+
+    if after == 0:
+        typer.echo("\nDatabase is clean. Only real organizational tasks will appear.")
+
+
 @kpi_app.command("list")
 def kpi_list() -> None:
     """List all departments with KPIs."""
