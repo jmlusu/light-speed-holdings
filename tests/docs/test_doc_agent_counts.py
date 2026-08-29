@@ -9,6 +9,9 @@ Scope rules:
   at that point in time (see ``HISTORICAL_ALLOWLIST``).
 - Excludes ADR-010's 127-agent fan-out load benchmark constant (a capacity
   parameter, not a workforce count claim).
+- The org chart's per-department headings (e.g. ``## Technology (27 agents)``)
+  legitimately repeat each department's headcount and are checked structurally
+  against the registry rather than blanket-swept.
 """
 
 from __future__ import annotations
@@ -22,6 +25,8 @@ from ai_company.registry.loader import load_yaml_cached
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 EXPECTED_AGENT_COUNT = 135
+EXPECTED_DEPARTMENT_COUNT = 19
+EXPECTED_TYPES = {"executive", "specialist", "board"}
 
 # Current-facing docs that must reference the live agent count.
 CURRENT_DOCS = [
@@ -31,19 +36,44 @@ CURRENT_DOCS = [
     "docs/DEVELOPMENT.md",
     "docs/USER-GUIDE.md",
     "docs/STATUS.md",
+    "docs/ORGANIZATION.md",
+    "docs/DEVICE-SETUP.md",
+    "docs/DEEP-DIVE-WEBUILD-AI.md",
+    "docs/CEO_DASHBOARD_ARCHITECTURE_ANALYSIS.md",
+    "docs/IMPLEMENTATION_SUMMARY.md",
+    "docs/CEO-DIRECTIVE-BLUEPRINT-ADOPTION.md",
+    "docs/EXECUTIVE_DASHBOARD_V1_STRATEGIC_PLAN.md",
+    "docs/API-REFERENCE.md",
+    "docs/api/PUSH-NOTIFICATIONS.md",
     "docs/service-catalog-malawi.md",
     "docs/SPRINT9-PHASE1-CORE-ARCHITECTURE.md",
     "docs/ux/CLI-DESIGN.md",
     "docs/ux/DEVELOPER-EXPERIENCE.md",
     "docs/ux/ACCESSIBILITY.md",
+    "docs/legal/msa-template.md",
+    "static/brand/templates/generate-pitch-deck.py",
+    "static/brand/templates/generate-board-meeting.py",
+    "static/brand/templates/one-pager.html",
+    "static/brand/templates/investor-update-email.html",
+    "marketing-site/src/layouts/BaseLayout.astro",
+    "marketing-site/src/pages/index.astro",
+    "marketing-site/src/pages/agents.astro",
 ]
 
-# Historical changelog/log lines that legitimately record the 127-agent era,
-# plus ADR-010's 127-agent load benchmark constant. Keyed by relative path.
+# Historical changelog/log lines that legitimately record earlier agent-era
+# counts (127, 131, or the pre-expansion 27 across 7 departments), plus
+# ADR-010's 127-agent load benchmark constant. Keyed by relative path.
 HISTORICAL_ALLOWLIST: dict[str, tuple[str, ...]] = {
     "CHANGELOG.md": (
         "all 127 agent cards",
         "All 127 agents deployed",
+        "27 agents across 7 departments",
+        "27 pre-built agent roles across 7 departments",
+        "131 agents",
+    ),
+    ".ai-company/state/CHANGELOG.md": (
+        "131 agents",
+        "all 131 agent cards",
     ),
     "docs/STATUS.md": (
         "across all 127 agent cards",
@@ -53,20 +83,40 @@ HISTORICAL_ALLOWLIST: dict[str, tuple[str, ...]] = {
     ),
 }
 
-STALE_COUNT_RE = re.compile(r"\b127\b\s*(?:AI\s+)?agents?\b|\b127-agent\b")
+STALE_COUNT_RE = re.compile(
+    r"\b(?:27|127|131)\b\+?\s*(?:pre-built\s+)?(?:AI\s+)?agents?\b"
+    r"|\b(?:27|127)\s*-\s*agent\b"
+    r"|\b84\s+agent definitions?\b"
+)
 
 
-def _live_agent_count() -> int:
+def _live_agents() -> list[dict]:
     data = load_yaml_cached(REPO_ROOT / "company-registry.yaml")
-    return len(data["company"]["agents"])
+    return data["company"]["agents"]
+
+
+def _live_department_counts() -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for agent in _live_agents():
+        counts[agent["department"]] = counts.get(agent["department"], 0) + 1
+    return counts
 
 
 def test_registry_agent_count() -> None:
-    assert _live_agent_count() == EXPECTED_AGENT_COUNT
+    assert len(_live_agents()) == EXPECTED_AGENT_COUNT
+
+
+def test_registry_department_count() -> None:
+    assert len(_live_department_counts()) == EXPECTED_DEPARTMENT_COUNT
+
+
+def test_registry_agents_have_valid_types() -> None:
+    unknown = [agent["id"] for agent in _live_agents() if agent.get("type") not in EXPECTED_TYPES]
+    assert not unknown, f"Agents with missing/invalid type: {unknown}"
 
 
 def test_generated_artifacts_match_registry_count() -> None:
-    count = _live_agent_count()
+    count = len(_live_agents())
     agent_files = list((REPO_ROOT / ".opencode" / "agents").glob("*.md"))
     assert len(agent_files) == count
     with (REPO_ROOT / "company" / "agent-registry.json").open(encoding="utf-8") as fh:
@@ -78,9 +128,24 @@ def test_generated_artifacts_match_registry_count() -> None:
 
 
 def test_registry_table_header_matches_count() -> None:
-    count = _live_agent_count()
+    count = len(_live_agents())
     header = (REPO_ROOT / "docs" / "AGENT-REGISTRY-TABLE.md").read_text(encoding="utf-8")
     assert f"> **Total Agents**: {count} across" in header
+
+
+def test_org_chart_reflects_registry() -> None:
+    count = len(_live_agents())
+    org_chart = (REPO_ROOT / "company" / "org-chart.md").read_text(encoding="utf-8")
+    sections = re.findall(r"^## (.+?) \((\d+) agents?\)$", org_chart, re.M)
+    org_counts = {name: int(n) for name, n in sections}
+    assert org_counts == _live_department_counts()
+    assert sum(org_counts.values()) == count
+
+
+def test_department_count_claims_in_living_docs() -> None:
+    for rel in ("README.md", "docs/DEVELOPMENT.md", "docs/ORGANIZATION.md"):
+        text = (REPO_ROOT / rel).read_text(encoding="utf-8")
+        assert "19 departments" in text, f"{rel} does not claim 19 departments"
 
 
 def test_current_docs_have_no_stale_agent_count() -> None:
@@ -95,6 +160,6 @@ def test_current_docs_have_no_stale_agent_count() -> None:
             if any(fragment in line for fragment in allow):
                 continue
             violations.append(f"{rel}:{lineno}: {line.strip()}")
-    assert not violations, "Stale '127 agent' references in current-facing docs:\n" + "\n".join(
+    assert not violations, "Stale agent-count references in current-facing docs:\n" + "\n".join(
         violations
     )

@@ -60,7 +60,7 @@ uv run ai-company generate
 ```
 
 Syncs `company-registry.yaml` → `company/agent-registry.json` and renders the
-127 agent files to `.opencode/agents/*.md`.
+135 agent files to `.opencode/agents/*.md`.
 
 ## 6. Company bootstrap (Phase 5)
 

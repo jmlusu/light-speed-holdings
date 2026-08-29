@@ -291,7 +291,7 @@ The current system already provides Executive KPI consolidation through:
 **Current Implementation Analysis**:
 
 From `company-registry.yaml` (lines 1-1041+):
-- 84 agent definitions with hierarchical relationships
+- 135 agent definitions with hierarchical relationships
 - `reportsTo` field for parent-child relationships
 - `direct_reports` list for child enumeration
 - Multiple agent types: executive, specialist

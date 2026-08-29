@@ -149,7 +149,7 @@ The Blueprint shapes how we show up in the market. **Consistency is the strategy
 
 | Pillar | Message | Proof Points | Channels |
 |--------|---------|--------------|----------|
-| **"AI Companies That Run Themselves — Governed by Humans"** | We don't sell agents; we sell self-governing AI organizations with human oversight at every critical decision. | 27-agent hierarchy, 5-tier HITL, Constitution decision order | Website hero, pitch decks, keynote |
+| **"AI Companies That Run Themselves — Governed by Humans"** | We don't sell agents; we sell self-governing AI organizations with human oversight at every critical decision. | 135-agent hierarchy, 5-tier HITL, Constitution decision order | Website hero, pitch decks, keynote |
 | **"Offline-First. Sovereign by Design."** | Your data, your models, your jurisdiction. We deploy where you operate — not where we want you to. | Zero-Cloud Boundary, Malawi DPA 2017 compliance, local LLM support | Technical blog, security whitepaper, partner convos |
 | **"10x the Consulting Model"** | We deliver NGO reporting, chatbot automation, data services at 1/10th the cost of traditional firms — with audit trails. | Offer B/C pricing, governance gates, SLA-backed delivery | Case studies, ROI calculators, NGO partner testimonials |
 | **"Platform Licensing: The AI Company Builder in Your Hands"** | The same engine that runs us runs you. White-label, self-hosted, extensible. | Offer E, Phase 3–5 roadmap, developer experience | DevRel content, OSS components, hackathons |

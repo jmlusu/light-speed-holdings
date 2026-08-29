@@ -23,7 +23,7 @@ This document summarizes the implementation of the **Organization Chart Componen
 - Tree statistics tracking
 
 **Technical Validation:**
-- Integration with existing `company-registry.yaml` (27+ agents across 7 departments)
+- Integration with existing `company-registry.yaml` (135 agents across 19 departments)
 - Compatibility with existing department schemas from `dashboard/models.py`
 - Validation against data integrity rules
 - Support for enterprise-scale organizations (1000+ agents)

@@ -145,7 +145,7 @@ LIGHT SPEED HOLDINGS
 
 ---
 
-## 6. 131-Agent Positioning
+## 6. 135-Agent Positioning
 
 ### External Message
 
@@ -157,7 +157,7 @@ LIGHT SPEED HOLDINGS
 
 | Aspect | Internal (Workforce) | External (Customer Facing) |
 |--------|---------------------|---------------------------|
-| **Agent count** | 131 agents as production advantage | Not marketed as product feature |
+| **Agent count** | 135 agents as production advantage | Not marketed as product feature |
 | **Positioning** | "We operate an AI-native delivery organization" | "We build and operate AI-native companies" |
 | **Offering** | Systems and outcomes are the product | Customers purchase outcomes, systems, automation, IP |
 | **SKU structure** | Internal operating system | Five flagship packages + tiers |
@@ -165,7 +165,7 @@ LIGHT SPEED HOLDINGS
 
 ### Key Principle
 
-> **The 131 agents should not be marketed as 131 separate products.** They constitute Light Speed's internal production workforce, while customers purchase outcomes, systems, automation and IP.
+> **The 135 agents should not be marketed as 135 separate products.** They constitute Light Speed's internal production workforce, while customers purchase outcomes, systems, automation and IP.
 
 ---
 
@@ -191,7 +191,7 @@ LIGHT SPEED HOLDINGS
 - ✅ Five flagship packages defined with prices and TATs
 - ✅ Customer journey flywheel documented and approved
 - ✅ USD/MWK pricing policy with FX protection framework
-- ✅ 131 agents positioned as internal workforce, not 131 products
+- ✅ 135 agents positioned as internal workforce, not 135 products
 - ✅ 5+ recurring revenue products with starting prices
 - ✅ All contract terms documented and validated
 - ✅ Payment policy matrix finalized (mobile money, bank, SaaS gateways)
