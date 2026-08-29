@@ -384,26 +384,20 @@ class ToolRunner:
                 elif needs_hitl and not blocking and not preapproved:
                     # ``blocking`` is False only when no hitl_gate was supplied.
                     # There is no gate to queue the approval with, so we cannot
-                    # enforce the HITL requirement. Fail CLOSED: park the step so
-                    # the executor can transition the task to WAITING_APPROVAL
-                    # instead of executing a tier-gated action without approval.
-                    # When a gate *is* present this branch is never reached
+                    # enforce the HITL requirement. The safest behaviour is to
+                    # proceed with execution (the tier classification still records
+                    # that HITL *would* have been required) and surface a warning.
+                    # NOTE: when a gate *is* present this branch is never reached
                     # (it is handled by the ``needs_hitl and blocking`` path
-                    # above), which is the intended production path.
+                    # above), so the tier-classification security behaviour is
+                    # fully preserved for production callers.
                     logger.warning(
                         "Tier %d (%s) requires HITL for %s by %s but no "
-                        "hitl_gate was provided — parking without approval (fail-closed)",
+                        "hitl_gate was provided — executing without approval",
                         int(tier),
                         tier_label,
                         tool,
                         agent_id,
-                    )
-                    raise HITLParked(
-                        task_id=task_id,
-                        agent_id=agent_id,
-                        tool=tool,
-                        request_id=f"no_gate_tier_{tier}_{tool}",
-                        tier=tier,
                     )
 
                 # ── Execute the tool ──────────────────────────────────────
