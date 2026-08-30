@@ -425,5 +425,43 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
     "updated_at": "2026-08-26"
+  },
+  {
+    "id": "2026-08-30-cleanup-dummy-tasks",
+    "title": "Remove Dummy Tasks & Wire Real Organizational Data",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- Demo/test detection must key on demonstrable markers only:",
+      "`proj-acme-chatbot` in instruction/id, instruction starting with `Test `,",
+      "and task ids starting with `test-`/`verify-`.",
+      "- Routing a task to the real `test-agent` receiver is legitimate and must NOT",
+      "mark it as dummy. The earlier over-broad receiver-name heuristic was removed",
+      "because it false-positived on the real `test-agent` and broke the test suite.",
+      "- SQL cleanup predicates use case-sensitive `instr()`/`GLOB` (not `LIKE`) so",
+      "real lowercase `test ...` instructions are never deleted at the DB level.",
+      "- `GET /api/v1/tasks` and `/api/v1/tasks/paginated` accept an `include_test`",
+      "query param (default `false`); `_read_all_tasks(include_test=...)` is the",
+      "single read filter (SQLite-first, inbox-file fallback).",
+      "- `scripts/restore_acme_tasks.py` and `scripts/backfill_decompositions.py`",
+      "both BELONG to this feature and are kept with fixes: all restore tasks carry",
+      "the `proj-acme-chatbot` marker (one previously lacked it and would survive",
+      "cleanup); backfill now uses the guaranteed DB path and skips demo/test",
+      "subtasks.",
+      "- `monitoring.py` `event_type != \"task_completed\"` alignment is correct:",
+      "`AuditEventType.TASK_COMPLETED` is the canonical `\"task_completed\"`."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-30-cleanup-dummy-tasks",
+    "updated_at": "2026-08-30"
   }
 ]

@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
@@ -65,10 +65,28 @@ def get_bus() -> MessageBus:
 
 
 def _bus_broadcast(task_dict: dict[str, Any], event: str) -> None:
-    """MessageBus broadcast callback — fire-and-forget to WebSocket clients."""
+    """MessageBus broadcast callback — fire-and-forget to WebSocket clients.
+
+    Normalizes the payload to the TaskItem shape so the frontend
+    ``JSON.stringify`` comparison with API responses stays consistent.
+    """
+    # Normalize to TaskItem fields only — prevents shape mismatch with
+    # API response and avoids spurious poll overwrites.
+    _TASKITEM_KEYS = {
+        "id",
+        "sender_id",
+        "receiver_id",
+        "instruction",
+        "status",
+        "priority",
+        "created_at",
+        "completed_at",
+        "result",
+    }
+    normalized = {k: v for k, v in task_dict.items() if k in _TASKITEM_KEYS}
     try:
         loop = __import__("asyncio").get_running_loop()
-        loop.create_task(_broadcast_task(task_dict, event))
+        loop.create_task(_broadcast_task(normalized, event))
     except RuntimeError:
         logger.debug("No event loop; broadcast skipped")
 
@@ -109,7 +127,18 @@ def _read_all_tasks(*, include_test: bool = False) -> list[dict[str, Any]]:
     if not include_test:
         tasks = [t for t in tasks if not TaskStore.is_test_task(t)]
 
-    return tasks
+    # Deduplicate by task ID — prevents visual duplicates when the
+    # inbox.json fallback or a race condition produces multiple rows
+    # with the same ID.
+    seen: set[str] = set()
+    deduped: list[dict[str, Any]] = []
+    for t in tasks:
+        tid = t.get("id", "")
+        if tid and tid in seen:
+            continue
+        seen.add(tid)
+        deduped.append(t)
+    return deduped
 
 
 def _load_tasks_dicts() -> list[dict[str, Any]]:
@@ -638,12 +667,86 @@ def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
     return kpis
 
 
+@router.get("/backlog", response_model=dict[str, Any], tags=["dashboard"])
+def get_backlog(
+    _: Any = Depends(require_role(Role.RUN)),
+) -> dict[str, Any]:
+    """Return a queue / backlog observability snapshot (C3).
+
+    Depth, status spread, oldest pending age, stale-pending count, and
+    dead-letter depth for the task inbox.  All reads go through the
+    :class:`MessageBus`, so this honours the app's locking guarantees.
+    """
+    from ai_company.dashboard.backlog import backlog_summary
+
+    return backlog_summary()
+
+
+# ── Reports / outcomes viewer (C4, on top of C5 ReportStore) ───────
+
+
+@router.get("/reports", tags=["dashboard"])
+def list_reports(
+    limit: int = Query(200, ge=1, le=1000),
+    agent: str = "",
+    include_cost: bool = Query(False, description="Include cost_log.jsonl shards"),
+) -> dict[str, Any]:
+    """List agent-produced reports, newest-first (C4 Reports page).
+
+    Backed by :class:`ReportStore`.  By default excludes the flat
+    ``cost_log.jsonl`` shard (cost records, not reports); pass
+    ``include_cost=true`` to include it.
+    """
+    from ai_company.store.report_store import ReportStore
+
+    store = ReportStore()
+    reports = store.latest(limit + 200)  # over-fetch, then filter cost below
+
+    def _keep(rep: Any) -> bool:
+        return not (rep.bundle in (".", "") and not include_cost and "cost_log" in rep.path)
+
+    kept = [r for r in reports if _keep(r)]
+    if agent:
+        kept = [r for r in kept if agent in r.agent]
+    kept = kept[:limit]
+    return {
+        "total": len(kept),
+        "reports": [r.to_dict() for r in kept],
+    }
+
+
+@router.get("/reports/content", tags=["dashboard"])
+def get_report_content(
+    path: str = Query(..., description="Relative report file path under results/"),
+) -> dict[str, Any]:
+    """Return the raw content of a single report file (read-only).
+
+    The path is resolved against the reports root and confined to it, so
+    traversal outside the results directory is refused (404).
+    """
+    from ai_company.store.report_store import ReportStore, _read_documents
+
+    store = ReportStore()
+    root = store.root.resolve()
+    target = (root / path).resolve()
+    try:
+        target.relative_to(root)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Path escapes the reports root") from None
+    if not target.is_file() or target.suffix not in (".json", ".jsonl"):
+        raise HTTPException(status_code=404, detail=f"Report not found: {path}")
+    try:
+        docs = _read_documents(target)
+    except (OSError, ValueError):
+        raise HTTPException(status_code=404, detail=f"Report unreadable: {path}") from None
+    return {"path": path, "documents": docs}
+
+
 @router.get("/kpis/live", tags=["kpis"])
 def get_live_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
     """Return live KPI values computed from operational data.
-
-    Uses the KPI collectors to produce real-time snapshots for all
-    7 departments (engineering, HR, finance, marketing, sales, CS, legal).
+    Uses the KPI collectors to produce real-time snapshots for all 7
+    departments (engineering, HR, finance, marketing, sales, CS, legal).
     Broadcasts the result to WebSocket clients.
     """
     from ai_company.dashboard.kpis import collect_all_kpis
@@ -770,9 +873,29 @@ def reassign_agent_reports_to(
     Updates the company registry and regenerates agent files.
     Requires 'run' role permission.
     """
+    if not agent_name or len(agent_name) > 200:
+        raise HTTPException(status_code=400, detail="Invalid agent_name")
+    if any(ch in agent_name for ch in "\r\n\t"):
+        raise HTTPException(
+            status_code=400, detail="agent_name must not contain control characters"
+        )
+
     new_manager = body.get("reports_to")
     if not new_manager:
         raise HTTPException(status_code=400, detail="reports_to is required")
+    if not isinstance(new_manager, str):
+        raise HTTPException(status_code=400, detail="reports_to must be a string")
+    if any(ch in new_manager for ch in "\r\n\t"):
+        raise HTTPException(
+            status_code=400, detail="reports_to must not contain control characters"
+        )
+
+    stripped_manager = new_manager.strip()
+    if not stripped_manager:
+        raise HTTPException(status_code=400, detail="reports_to must not be empty")
+    if len(stripped_manager) > 200:
+        raise HTTPException(status_code=400, detail="reports_to is too long")
+    new_manager = stripped_manager
 
     # Load registry through StateStore (same path as _load_registry)
     registry = _load_json("company/agent-registry.json")
@@ -997,7 +1120,10 @@ def create_task(
     )
     get_bus().send_task(task)
 
-    # Broadcast task creation to WebSocket clients
+    # MessageBus._emit() broadcasts via _bus_broadcast in async contexts
+    # (executor/daemon), but in sync API threads there is no running event
+    # loop so _bus_broadcast silently skips.  Use FastAPI BackgroundTasks
+    # as the primary broadcast mechanism for HTTP-triggered mutations.
     background_tasks.add_task(_broadcast_task, task.model_dump(), "created")
 
     return TaskItem(**task.model_dump())
@@ -1024,7 +1150,7 @@ def update_task(
     if updated is None:
         raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
 
-    # Broadcast the updated task to WebSocket clients
+    # Broadcast via BackgroundTasks (see create_task comment for why).
     background_tasks.add_task(_broadcast_task, updated.model_dump(), "updated")
 
     return TaskItem(**updated.model_dump())
@@ -1044,10 +1170,94 @@ def delete_task(
     if removed is None:
         raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
 
-    # Broadcast the deletion to WebSocket clients
+    # Broadcast via BackgroundTasks (see create_task comment for why).
     background_tasks.add_task(_broadcast_task, removed.model_dump(), "deleted")
 
     return {"ok": "true", "id": task_id}
+
+
+# ── Task Flow / lifecycle (C4) ─────────────────────────────────────
+
+
+@router.get("/tasks/{task_id}/flow", tags=["tasks"])
+def get_task_flow(task_id: str) -> dict[str, Any]:
+    """Return the full lifecycle arc of a single task (C4 Task Flow).
+
+    Combines the task's own fields with the audit-trail events that reference
+    the task id into a chronological timeline, so the dashboard can show "the
+    path a task took" from creation to its current state.  Read-only.
+    """
+    tasks = _read_all_tasks(include_test=True)
+    task = next((t for t in tasks if t.get("id") == task_id), None)
+    if task is None:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Order-of-operations timeline events from the audit trail.
+    events: list[dict[str, Any]] = []
+    for event in _get_store().iter_jsonl(".opencode/audit"):
+        if not isinstance(event, dict):
+            continue
+        meta_raw = event.get("metadata")
+        meta = meta_raw if isinstance(meta_raw, dict) else {}
+        refs = {
+            event.get("task_id"),
+            event.get("task", ""),
+            meta.get("task_id"),
+            meta.get("task"),
+        }
+        if task_id not in {r for r in refs if isinstance(r, str)}:
+            continue
+        ts = event.get("timestamp") or meta.get("timestamp")
+        summary = event.get("summary")
+        if isinstance(summary, (list, dict)):
+            summary = ""
+        events.append(
+            {
+                "type": event.get("event_type") or event.get("type") or "event",
+                "timestamp": ts,
+                "agent": meta.get("agent_id") or event.get("agent_id") or "",
+                "summary": summary if isinstance(summary, str) else "",
+            }
+        )
+    # De-duplicate by (type, timestamp, agent) so rotated/duplicated tails don't
+    # bloat the timeline, then sort chronologically (missing ts last).
+    seen_events: set[tuple[str, str, str]] = set()
+    unique: list[dict[str, Any]] = []
+    for ev in events:
+        dedup_key = (ev["type"], str(ev["timestamp"]), str(ev["agent"]))
+        if dedup_key in seen_events:
+            continue
+        seen_events.add(dedup_key)
+        unique.append(ev)
+
+    def _event_key(ev: dict[str, Any]) -> tuple[int, str]:
+        ts = ev["timestamp"]
+        if not isinstance(ts, str):
+            return (1, "")
+        return (0, ts)
+
+    unique.sort(key=_event_key)
+
+    # A second-pass status timeline derived from the task's own timestamps so
+    # the flow still renders meaningfully when the audit trail is sparse.
+    status_events: list[dict[str, Any]] = []
+    for field, label in (
+        ("created_at", "created"),
+        ("updated_at", "updated"),
+    ):
+        val = task.get(field)
+        if isinstance(val, str):
+            status_events.append(
+                {"type": label, "timestamp": val, "agent": task.get("sender_id", ""), "summary": ""}
+            )
+
+    return {
+        "task_id": task_id,
+        "task": task,
+        "timeline": unique,
+        "status_events": status_events,
+        "current_status": task.get("status"),
+    }
 
 
 # ── Task Decomposition ──────────────────────────────────────────────
@@ -2281,14 +2491,42 @@ class PaymentEntry(BaseModel):
     offer_id: str = ""
     service_name: str = ""
     currency: str = "MWK"
-    amount: float = 0.0
+    amount: float = Field(0.0, ge=0.0)
     payment_method: str = ""
     status: str = "confirmed"
     installment_type: str = ""
-    exchange_rate: float = 0.0
+    exchange_rate: float = Field(0.0, ge=0.0)
     linked_task_id: str = ""
     reference: str = ""
     recorded_by: str = "human-ceo"
+
+    @field_validator("currency")
+    @classmethod
+    def _validate_currency(cls, value: str) -> str:
+        v = (value or "").strip().upper()
+        if len(v) != 3 or not v.isalpha():
+            raise ValueError(
+                f"Invalid currency '{value}'. Must be a 3-letter ISO code (e.g. MWK, USD)."
+            )
+        return v
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, value: str) -> str:
+        v = (value or "").lower()
+        if v not in {"pending", "confirmed", "failed", "refunded", "cancelled"}:
+            raise ValueError(
+                f"Invalid status '{value}'. Must be one of: "
+                "pending, confirmed, failed, refunded, cancelled"
+            )
+        return v
+
+    @field_validator("client_id", "project_id", "offer_id", "reference", "recorded_by")
+    @classmethod
+    def _validate_no_control(cls, value: str) -> str:
+        if value and any(ch in value for ch in "\r\n\t"):
+            raise ValueError("field must not contain control characters")
+        return value
 
 
 class ProjectCostEntry(BaseModel):
@@ -2296,16 +2534,26 @@ class ProjectCostEntry(BaseModel):
 
     project_id: str = ""
     cost_type: str = ""
-    amount_usd: float = 0.0
-    amount_mwk: float = 0.0
+    amount_usd: float = Field(0.0, ge=0.0)
+    amount_mwk: float = Field(0.0, ge=0.0)
     description: str = ""
     agent_id: str = ""
     model: str = ""
-    tokens: int = 0
+    tokens: int = Field(0, ge=0)
+
+    @field_validator("project_id", "agent_id", "cost_type", "model")
+    @classmethod
+    def _validate_no_control(cls, value: str) -> str:
+        if value and any(ch in value for ch in "\r\n\t"):
+            raise ValueError("field must not contain control characters")
+        return value
 
 
 @router.post("/payments", status_code=201, tags=["payments"])
-def create_payment(entry: PaymentEntry) -> dict[str, Any]:
+def create_payment(
+    entry: PaymentEntry,
+    _: None = Depends(require_role(Role.ADMIN)),
+) -> dict[str, Any]:
     """Record a manual payment in the revenue ledger."""
     import uuid
 
@@ -2484,7 +2732,10 @@ def revenue_trend(period_days: int = Query(30, ge=1, le=365)) -> list[dict[str, 
 
 
 @router.post("/project-costs", status_code=201, tags=["costs"])
-def create_project_cost(entry: ProjectCostEntry) -> dict[str, Any]:
+def create_project_cost(
+    entry: ProjectCostEntry,
+    _: None = Depends(require_role(Role.ADMIN)),
+) -> dict[str, Any]:
     """Record a project cost in the cost ledger."""
     import uuid
 
@@ -3485,11 +3736,14 @@ def get_onboarding_status(request_id: str) -> dict[str, Any]:
 class OnboardingRejectRequest(BaseModel):
     """Payload for rejecting an onboarding request."""
 
-    reason: str = ""
+    reason: str = Field("", max_length=2000)
 
 
 @router.post("/onboarding/{request_id}/approve", tags=["onboarding"])
-def approve_onboarding_request(request_id: str) -> dict[str, Any]:
+def approve_onboarding_request(
+    request_id: str,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
     """Approve an onboarding request, transitioning it to active."""
     from ai_company.data import get_database
     from ai_company.services.onboarding import OnboardingService
@@ -3507,6 +3761,7 @@ def approve_onboarding_request(request_id: str) -> dict[str, Any]:
 def reject_onboarding_request(
     request_id: str,
     body: OnboardingRejectRequest | None = None,
+    _: Role = Depends(require_role("approve")),
 ) -> dict[str, Any]:
     """Reject an onboarding request with an optional reason."""
     from ai_company.data import get_database

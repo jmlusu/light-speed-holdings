@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -24,6 +25,19 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_BYTES = 10 * 1024 * 1024  # 10 MB per file
 DEFAULT_KEEP_FILES = 5  # Keep last N rotated files
+
+# ── Tamper-evident chain (C1) ────────────────────────────────────────
+# Every written line carries two integrity fields injected at write time:
+#
+#   "__seq"        monotonic sequence number across the whole trail
+#   "__prev_hash"  SHA-256 of the *previous line's raw bytes* (with its
+#                  trailing newline), forming a hash chain
+#
+# The first line in a fresh trail references a zero hash.  The reader model
+# ignores these keys (``extra="ignore"``), so existing consumers are
+# unaffected; a verifier (``audit/integrity.py``) reconstructs the chain to
+# detect insertions, deletions, and modifications within the retained window.
+_ZERO_HASH = "0" * 64
 
 # ── Payload bounds (ticket #71) ──────────────────────────────────────
 # tool_call events embed raw tool args/results; grepping a binary file
@@ -150,20 +164,17 @@ class AuditWriter:
     def write_batch(self, events: list[AuditEvent]) -> None:
         """Append multiple events in a single atomic write.
 
+        Each line is chained with ``__seq`` / ``__prev_hash`` integrity
+        fields computed from the trail's current on-disk tail — computed
+        *inside* the cross-process lock so distinct writer instances (in
+        separate processes) keep the chain consistent.
+
         When a SQLite database was supplied at construction, the events are
         also mirrored to the ``audit_events`` table (best-effort) so the data
         layer stays live (Sprint 2, S2.1).
         """
         if not events:
             return
-
-        # Sanitize BEFORE serialization so a tool result full of binary /
-        # oversized content never reaches the trail (ticket #71).
-        lines = [
-            json.dumps(_sanitize_for_audit(event.model_dump()), ensure_ascii=False)
-            for event in events
-        ]
-        payload = "\n".join(lines) + "\n"
 
         # Cross-process safe append: the read-modify-write (rotation + atomic
         # append) is guarded by a sidecar lock so two *processes* (executor,
@@ -179,6 +190,7 @@ class AuditWriter:
             try:
                 with _fl(lock_path, timeout=5.0, stale_after=30.0):
                     self._maybe_rotate()
+                    payload = self._encode_events_chained(events)
                     self._atomic_append(payload)
             except FileLockError:
                 logger.error(
@@ -195,6 +207,68 @@ class AuditWriter:
                 self._audit_store.write_batch(events)
             except Exception:  # noqa: BLE001 - mirror is best-effort
                 logger.debug("SQLite audit mirror failed", exc_info=True)
+
+    # ------------------------------------------------------------------
+    # Tamper-evident serialization
+    # ------------------------------------------------------------------
+
+    def _encode_events_chained(self, events: list[AuditEvent]) -> str:
+        """Serialize *events* as chained JSONL lines.
+
+        The chain state (sequence + previous line hash) is derived from the
+        current on-disk tail so it is correct even when another process
+        appended since this writer was constructed.
+        """
+        seq, last_hash = self._disk_chain_state()
+        lines: list[str] = []
+        for event in events:
+            seq += 1
+            data = _sanitize_for_audit(event.model_dump())
+            data["__seq"] = seq
+            data["__prev_hash"] = last_hash or _ZERO_HASH
+            raw = json.dumps(data, ensure_ascii=False) + "\n"
+            last_hash = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+            lines.append(raw)
+        return "".join(lines)
+
+    def _disk_chain_state(self) -> tuple[int, str | None]:
+        """Return ``(last_seq, hash_of_last_line_bytes)`` from disk.
+
+        Reads the tail of the newest available file (the active file, or the
+        most recent rotation if the active file is empty).  Falls back to
+        ``(0, None)`` for an empty or absent trail.
+        """
+        source = self._pick_source_file()
+        if source is None:
+            return 0, None
+        try:
+            lines = source.read_bytes().splitlines(keepends=True)
+        except OSError as exc:
+            logger.warning("Could not read audit tail for chaining: %s", exc)
+            return 0, None
+        if not lines:
+            return 0, None
+        raw = lines[-1]
+        try:
+            seq = int(json.loads(raw.strip()).get("__seq", 0))
+        except (json.JSONDecodeError, ValueError, TypeError):
+            seq = 0
+        return seq, hashlib.sha256(raw).hexdigest()
+
+    def _pick_source_file(self) -> Path | None:
+        """Return the file whose tail continues the chain.
+
+        The active file wins when it has content; otherwise fall back to the
+        newest rotated file (the just-rotated one) so a fresh writer right
+        after rotation chains off the retained backlog instead of starting
+        the sequence anew.
+        """
+        if self._path.exists() and self._path.stat().st_size > 0:
+            return self._path
+        rotated = self.list_rotated_files()
+        if rotated:
+            return rotated[0]
+        return None
 
     # ------------------------------------------------------------------
     # Log rotation

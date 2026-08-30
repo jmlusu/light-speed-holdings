@@ -42,6 +42,7 @@ Thumbs.db
 htmlcov/
 coverage.xml
 cov_gate.log
+pytest-run*.log
 
 # Type checking
 .mypy_cache/

@@ -197,6 +197,54 @@ def cleanup(
         typer.echo("\nDatabase is clean. Only real organizational tasks will appear.")
 
 
+@app.command("queue")
+def queue(
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit the snapshot as JSON (scripting friendly)"
+    ),
+) -> None:
+    """Show task backlog / queue observability snapshot (read-only, C3).
+
+    Print queue depth, per-status spread, oldest pending age, stale-pending
+    count, and dead-letter depth for the task inbox.  Does not mutate the
+    queue.
+    """
+    import json as _json
+
+    from ai_company.dashboard.backlog import backlog_summary
+
+    summary = backlog_summary()
+    if json_output:
+        typer.echo(_json.dumps(summary, indent=2, default=str))
+        return
+
+    def _fmt_age(age_s: float | None) -> str:
+        if age_s is None:
+            return "—"
+        if age_s < 60:
+            return f"{int(age_s)}s"
+        if age_s < 3600:
+            return f"{int(age_s // 60)}m {int(age_s % 60)}s"
+        return f"{int(age_s // 3600)}h {int((age_s % 3600) // 60)}m"
+
+    by_status = summary["by_status"]
+    typer.echo("Task Backlog / Queue")
+    typer.echo("=" * 60)
+    typer.echo(f"Total tasks:        {summary['total']}")
+    if by_status:
+        for status in sorted(by_status):
+            typer.echo(f"  {status:<16} {by_status[status]}")
+    else:
+        typer.echo("  (empty queue)")
+    typer.echo("-" * 60)
+    typer.echo(f"Oldest pending age: {_fmt_age(summary['oldest_pending_age_s'])}")
+    typer.echo(
+        f"Stale pending (>{summary['stale_threshold_s']:.0f}s): {summary['stale_pending_count']}"
+    )
+    typer.echo(f"Dead-letter queue:  {summary['dead_letter_count']}")
+    typer.echo(f"Inbox:              {summary['inbox_path']}")
+
+
 @kpi_app.command("list")
 def kpi_list() -> None:
     """List all departments with KPIs."""

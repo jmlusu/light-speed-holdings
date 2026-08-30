@@ -32,9 +32,9 @@ jobs:
         working-directory: marketing-site
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "22.x"
           cache: npm
           cache-dependency-path: marketing-site/package-lock.json
       - name: Install

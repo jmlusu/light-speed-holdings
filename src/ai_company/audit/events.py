@@ -43,6 +43,9 @@ class AuditEventType(str, Enum):
     ETL_PIPELINE_COMPLETE = "etl_pipeline_complete"
     SESSION_START = "session_start"
     SESSION_END = "session_end"
+    # Security events (D.1)
+    AUTH_FAILED = "auth_failed"
+    RATE_LIMIT_EXCEEDED = "rate_limit_exceeded"
 
 
 class AuditEvent(BaseModel):
