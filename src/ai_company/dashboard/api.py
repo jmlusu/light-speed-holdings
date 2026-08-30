@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
@@ -65,10 +65,28 @@ def get_bus() -> MessageBus:
 
 
 def _bus_broadcast(task_dict: dict[str, Any], event: str) -> None:
-    """MessageBus broadcast callback — fire-and-forget to WebSocket clients."""
+    """MessageBus broadcast callback — fire-and-forget to WebSocket clients.
+
+    Normalizes the payload to the TaskItem shape so the frontend
+    ``JSON.stringify`` comparison with API responses stays consistent.
+    """
+    # Normalize to TaskItem fields only — prevents shape mismatch with
+    # API response and avoids spurious poll overwrites.
+    _TASKITEM_KEYS = {
+        "id",
+        "sender_id",
+        "receiver_id",
+        "instruction",
+        "status",
+        "priority",
+        "created_at",
+        "completed_at",
+        "result",
+    }
+    normalized = {k: v for k, v in task_dict.items() if k in _TASKITEM_KEYS}
     try:
         loop = __import__("asyncio").get_running_loop()
-        loop.create_task(_broadcast_task(task_dict, event))
+        loop.create_task(_broadcast_task(normalized, event))
     except RuntimeError:
         logger.debug("No event loop; broadcast skipped")
 
@@ -109,7 +127,18 @@ def _read_all_tasks(*, include_test: bool = False) -> list[dict[str, Any]]:
     if not include_test:
         tasks = [t for t in tasks if not TaskStore.is_test_task(t)]
 
-    return tasks
+    # Deduplicate by task ID — prevents visual duplicates when the
+    # inbox.json fallback or a race condition produces multiple rows
+    # with the same ID.
+    seen: set[str] = set()
+    deduped: list[dict[str, Any]] = []
+    for t in tasks:
+        tid = t.get("id", "")
+        if tid and tid in seen:
+            continue
+        seen.add(tid)
+        deduped.append(t)
+    return deduped
 
 
 def _load_tasks_dicts() -> list[dict[str, Any]]:
@@ -770,9 +799,29 @@ def reassign_agent_reports_to(
     Updates the company registry and regenerates agent files.
     Requires 'run' role permission.
     """
+    if not agent_name or len(agent_name) > 200:
+        raise HTTPException(status_code=400, detail="Invalid agent_name")
+    if any(ch in agent_name for ch in "\r\n\t"):
+        raise HTTPException(
+            status_code=400, detail="agent_name must not contain control characters"
+        )
+
     new_manager = body.get("reports_to")
     if not new_manager:
         raise HTTPException(status_code=400, detail="reports_to is required")
+    if not isinstance(new_manager, str):
+        raise HTTPException(status_code=400, detail="reports_to must be a string")
+    if any(ch in new_manager for ch in "\r\n\t"):
+        raise HTTPException(
+            status_code=400, detail="reports_to must not contain control characters"
+        )
+
+    stripped_manager = new_manager.strip()
+    if not stripped_manager:
+        raise HTTPException(status_code=400, detail="reports_to must not be empty")
+    if len(stripped_manager) > 200:
+        raise HTTPException(status_code=400, detail="reports_to is too long")
+    new_manager = stripped_manager
 
     # Load registry through StateStore (same path as _load_registry)
     registry = _load_json("company/agent-registry.json")
@@ -956,7 +1005,6 @@ def list_tasks_paginated(
 @router.post("/tasks", response_model=TaskItem, status_code=201, tags=["tasks"])
 def create_task(
     assign: TaskAssign,
-    background_tasks: BackgroundTasks,
     _: Role = Depends(require_role("run")),
 ) -> TaskItem:
     """Create a new task and send it through the MessageBus."""
@@ -995,10 +1043,8 @@ def create_task(
         priority=priority,
         created_at=datetime.now(timezone.utc).isoformat(),
     )
+    # MessageBus.send_task() already broadcasts via _emit() → _bus_broadcast()
     get_bus().send_task(task)
-
-    # Broadcast task creation to WebSocket clients
-    background_tasks.add_task(_broadcast_task, task.model_dump(), "created")
 
     return TaskItem(**task.model_dump())
 
@@ -1007,7 +1053,6 @@ def create_task(
 def update_task(
     task_id: str,
     update: TaskUpdate,
-    background_tasks: BackgroundTasks,
     _: Role = Depends(require_role("run")),
 ) -> TaskItem:
     """Partially update a task (e.g. drag-and-drop status change).
@@ -1020,12 +1065,10 @@ def update_task(
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update")
 
+    # MessageBus.update_task() already broadcasts via _emit() → _bus_broadcast()
     updated = get_bus().update_task(task_id, updates)
     if updated is None:
         raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
-
-    # Broadcast the updated task to WebSocket clients
-    background_tasks.add_task(_broadcast_task, updated.model_dump(), "updated")
 
     return TaskItem(**updated.model_dump())
 
@@ -1033,19 +1076,16 @@ def update_task(
 @router.delete("/tasks/{task_id}", tags=["tasks"])
 def delete_task(
     task_id: str,
-    background_tasks: BackgroundTasks,
     _: Role = Depends(require_role("run")),
 ) -> dict[str, str]:
     """Delete a task by id.
 
     Returns ``{"ok": true, "id": "<task_id>"}`` on success.
     """
+    # MessageBus.delete_task() already broadcasts via _emit() → _bus_broadcast()
     removed = get_bus().delete_task(task_id)
     if removed is None:
         raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
-
-    # Broadcast the deletion to WebSocket clients
-    background_tasks.add_task(_broadcast_task, removed.model_dump(), "deleted")
 
     return {"ok": "true", "id": task_id}
 
@@ -2281,14 +2321,42 @@ class PaymentEntry(BaseModel):
     offer_id: str = ""
     service_name: str = ""
     currency: str = "MWK"
-    amount: float = 0.0
+    amount: float = Field(0.0, ge=0.0)
     payment_method: str = ""
     status: str = "confirmed"
     installment_type: str = ""
-    exchange_rate: float = 0.0
+    exchange_rate: float = Field(0.0, ge=0.0)
     linked_task_id: str = ""
     reference: str = ""
     recorded_by: str = "human-ceo"
+
+    @field_validator("currency")
+    @classmethod
+    def _validate_currency(cls, value: str) -> str:
+        v = (value or "").strip().upper()
+        if len(v) != 3 or not v.isalpha():
+            raise ValueError(
+                f"Invalid currency '{value}'. Must be a 3-letter ISO code (e.g. MWK, USD)."
+            )
+        return v
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, value: str) -> str:
+        v = (value or "").lower()
+        if v not in {"pending", "confirmed", "failed", "refunded", "cancelled"}:
+            raise ValueError(
+                f"Invalid status '{value}'. Must be one of: "
+                "pending, confirmed, failed, refunded, cancelled"
+            )
+        return v
+
+    @field_validator("client_id", "project_id", "offer_id", "reference", "recorded_by")
+    @classmethod
+    def _validate_no_control(cls, value: str) -> str:
+        if value and any(ch in value for ch in "\r\n\t"):
+            raise ValueError("field must not contain control characters")
+        return value
 
 
 class ProjectCostEntry(BaseModel):
@@ -2296,16 +2364,26 @@ class ProjectCostEntry(BaseModel):
 
     project_id: str = ""
     cost_type: str = ""
-    amount_usd: float = 0.0
-    amount_mwk: float = 0.0
+    amount_usd: float = Field(0.0, ge=0.0)
+    amount_mwk: float = Field(0.0, ge=0.0)
     description: str = ""
     agent_id: str = ""
     model: str = ""
-    tokens: int = 0
+    tokens: int = Field(0, ge=0)
+
+    @field_validator("project_id", "agent_id", "cost_type", "model")
+    @classmethod
+    def _validate_no_control(cls, value: str) -> str:
+        if value and any(ch in value for ch in "\r\n\t"):
+            raise ValueError("field must not contain control characters")
+        return value
 
 
 @router.post("/payments", status_code=201, tags=["payments"])
-def create_payment(entry: PaymentEntry) -> dict[str, Any]:
+def create_payment(
+    entry: PaymentEntry,
+    _: None = Depends(require_role(Role.RUN)),
+) -> dict[str, Any]:
     """Record a manual payment in the revenue ledger."""
     import uuid
 
@@ -2484,7 +2562,10 @@ def revenue_trend(period_days: int = Query(30, ge=1, le=365)) -> list[dict[str, 
 
 
 @router.post("/project-costs", status_code=201, tags=["costs"])
-def create_project_cost(entry: ProjectCostEntry) -> dict[str, Any]:
+def create_project_cost(
+    entry: ProjectCostEntry,
+    _: None = Depends(require_role(Role.RUN)),
+) -> dict[str, Any]:
     """Record a project cost in the cost ledger."""
     import uuid
 
@@ -3485,11 +3566,14 @@ def get_onboarding_status(request_id: str) -> dict[str, Any]:
 class OnboardingRejectRequest(BaseModel):
     """Payload for rejecting an onboarding request."""
 
-    reason: str = ""
+    reason: str = Field("", max_length=2000)
 
 
 @router.post("/onboarding/{request_id}/approve", tags=["onboarding"])
-def approve_onboarding_request(request_id: str) -> dict[str, Any]:
+def approve_onboarding_request(
+    request_id: str,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
     """Approve an onboarding request, transitioning it to active."""
     from ai_company.data import get_database
     from ai_company.services.onboarding import OnboardingService
@@ -3507,6 +3591,7 @@ def approve_onboarding_request(request_id: str) -> dict[str, Any]:
 def reject_onboarding_request(
     request_id: str,
     body: OnboardingRejectRequest | None = None,
+    _: Role = Depends(require_role("approve")),
 ) -> dict[str, Any]:
     """Reject an onboarding request with an optional reason."""
     from ai_company.data import get_database
