@@ -502,7 +502,26 @@ function Resume-Change([string]$Id) {
       updated_at = (Get-DateText)
     }
   }
-  Move-Item -LiteralPath $source -Destination $Active
+  # Move the contents into the existing active/ dir (destination exists, so
+  # moving the folder itself would nest active/<id>/ and break 'status').
+  # Move-Item -LiteralPath does not expand wildcards, so enumerate children.
+  $children = Get-ChildItem -LiteralPath $source -Force
+  foreach ($child in $children) {
+    $dest = Join-Path $Active $child.Name
+    if (Test-Path -LiteralPath $dest) {
+      Write-Warning "Resume: keeping active dir's '$($child.Name)', skipping parked copy."
+      continue
+    }
+    Move-Item -LiteralPath $child.FullName -Destination $Active
+  }
+  # Remove the now-empty source dir; if anything was skipped it stays for review.
+  $remaining = Get-ChildItem -LiteralPath $source -Force
+  if ($remaining) {
+    Write-Warning "Resume: '$source' still has entries and was left in place."
+  }
+  else {
+    Remove-Item -LiteralPath $source -Force
+  }
   Reindex
   Write-Output "Resumed $Id into active. Run validate before continuing."
 }
