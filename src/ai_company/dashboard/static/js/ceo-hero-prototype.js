@@ -18,6 +18,7 @@ function ceoHeroPrototype() {
     error: null,
     expandedComponent: null,
     showSwitcher: false,
+    componentTrends: {},
     _gauges: {},
 
     /* Variant definitions */
@@ -47,9 +48,10 @@ function ceoHeroPrototype() {
     async loadOrgHealth() {
       this.loading = true;
       try {
-        const res = await fetch('/api/v1/kpis/org-health');
+        const res = await fetch('/api/v1/org-health');
         if (!res.ok) throw new Error('Failed to load org health');
         this.orgHealth = await res.json();
+        await this.loadComponentTrends();
       } catch (e) {
         this.error = e.message;
         console.error('Failed to load org health:', e);
@@ -57,6 +59,26 @@ function ceoHeroPrototype() {
         this.loading = false;
         this.$nextTick(() => this.renderAllGauges());
       }
+    },
+
+    async loadComponentTrends() {
+      if (!this.orgHealth || !this.orgHealth.components) return;
+      const promises = this.orgHealth.components.map(async (comp) => {
+        try {
+          const res = await fetch(
+            `/api/v1/org-health/components/trend?component=${comp.name}&limit=30`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.length > 0) {
+              this.componentTrends[comp.name] = data.map((d) => d.score);
+            }
+          }
+        } catch (e) {
+          console.warn(`Failed to load trend for ${comp.name}:`, e);
+        }
+      });
+      await Promise.allSettled(promises);
     },
 
     setVariant(key) {
@@ -140,14 +162,15 @@ function ceoHeroPrototype() {
       this.renderRadialGauge('heroGaugeB', this.orgHealth.score, this.orgHealth.band, 192);
       this.renderRadialGauge('heroGaugeD', this.orgHealth.score, this.orgHealth.band, 256);
 
-      // Component sparklines — real trend data not yet available from the API
+      // Component sparklines with real trend data
       if (this.orgHealth.components) {
         for (const comp of this.orgHealth.components) {
           if (comp.value !== null) {
-            this.renderSparkline('spark-' + comp.name, null);
-            this.renderSparkline('spark-b-' + comp.name, null);
-            this.renderSparkline('spark-d-' + comp.name, null);
-            this.renderSparkline('spark-detail-' + comp.name, null);
+            const trendData = this.componentTrends[comp.name] || null;
+            this.renderSparkline('spark-' + comp.name, trendData);
+            this.renderSparkline('spark-b-' + comp.name, trendData);
+            this.renderSparkline('spark-d-' + comp.name, trendData);
+            this.renderSparkline('spark-detail-' + comp.name, trendData);
           }
         }
       }

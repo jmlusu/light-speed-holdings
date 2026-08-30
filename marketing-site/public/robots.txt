@@ -1,0 +1,5 @@
+# Fallback — Astro sitemap integration generates /sitemap-index.xml at build and overwrites if needed
+User-agent: *
+Allow: /
+Disallow: /api/
+Sitemap: https://lightspeedholdings.com/sitemap-index.xml

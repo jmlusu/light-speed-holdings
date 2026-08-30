@@ -119,6 +119,7 @@ function updateChartsFromKPIs(kpis, departments) {
   // ── Task Status Doughnut ───────────────────────────────────
   const taskCtx = document.getElementById('taskStatusChart');
   if (taskCtx) {
+    const taskStatuses = ['pending', 'in_progress', 'completed', 'failed', 'escalated'];
     const config = {
       type: 'doughnut',
       data: {
@@ -146,13 +147,35 @@ function updateChartsFromKPIs(kpis, departments) {
             COLORS.purple.border,
           ],
           borderWidth: 2,
-          hoverOffset: 8,
+          hoverOffset: 12,
         }],
       },
       options: {
         cutout: '65%',
         plugins: {
           legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                const value = ctx.parsed;
+                const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+                return ` ${ctx.label}: ${value} task${value !== 1 ? 's' : ''} (${pct}%)`;
+              }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleFont: { size: 12 },
+            bodyFont: { size: 11 },
+            padding: 8,
+            cornerRadius: 6,
+          },
+        },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const status = taskStatuses[idx];
+            window.dispatchEvent(new CustomEvent('drilldown:task-status', { detail: { status } }));
+          }
         },
       },
     };
@@ -179,10 +202,30 @@ function updateChartsFromKPIs(kpis, departments) {
         indexAxis: 'y',
         plugins: {
           legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                const value = ctx.parsed.x;
+                return ` ${ctx.label}: ${value} agent${value !== 1 ? 's' : ''}`;
+              }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleFont: { size: 12 },
+            bodyFont: { size: 11 },
+            padding: 8,
+            cornerRadius: 6,
+          },
         },
         scales: {
           x: { grid: { display: false }, ticks: { stepSize: 1 } },
           y: { grid: { display: false } },
+        },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const deptName = departments[idx]?.name || departments[idx];
+            window.dispatchEvent(new CustomEvent('drilldown:department', { detail: { name: deptName } }));
+          }
         },
       },
     };

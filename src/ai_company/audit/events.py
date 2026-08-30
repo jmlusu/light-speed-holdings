@@ -41,6 +41,8 @@ class AuditEventType(str, Enum):
     DATA_QUALITY_ALERT = "data_quality_alert"
     ETL_PIPELINE_START = "etl_pipeline_start"
     ETL_PIPELINE_COMPLETE = "etl_pipeline_complete"
+    SESSION_START = "session_start"
+    SESSION_END = "session_end"
 
 
 class AuditEvent(BaseModel):
@@ -70,6 +72,10 @@ class AuditEvent(BaseModel):
     task_id: str = Field(
         default="",
         description="ID of the associated task, if any.",
+    )
+    session_id: str = Field(
+        default="",
+        description="Root task id of the delegation lineage (P0 concurrency).",
     )
     tool: str | None = Field(
         default=None,
