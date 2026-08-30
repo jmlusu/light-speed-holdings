@@ -1,53 +1,89 @@
-# Spec: Remove Dummy Tasks & Wire Real Organizational Data
+﻿# Spec
 
-## Context
+## Intake Review
 
-The CEO Dashboard "Recent Tasks" widget shows dummy/test data (7 seeded test
-tasks) and demo data (10 Acme Corp `proj-acme-chatbot` tasks). None of it
-reflects real organizational activity. The dashboard must show only real task
-data.
+- Intake type: Structured Change
+- Input shape: mixed (requirement-first draft + CEO plan/sign-off)
+- Questions asked this round: 0 (resolved in prior session — see Resolved Clarifications)
 
-## Goals
+## Goal And Evidence
 
-1. Delete dummy/demo tasks from the primary SQLite store (`data/ai_company.db`).
-2. Add a `ai-company dashboard cleanup` CLI command that removes demo/test
-   tasks and reports the count removed.
-3. Filter demo/test tasks out of the dashboard API at read time by default,
-   with an `include_test=True` override for introspection.
-4. Guard task creation points (CLI intake, specialists assignment, scheduler,
-   onboarding) so demo/test data cannot be re-seeded in normal operation.
+- Real problem or user request: The CEO dashboard hardening plan (A1–A5 +
+  C1–C5) had two remaining items. Agents persist run output under
+  `results/<name>/loop_result.json` and `results/cost_log.jsonl`, but there is
+  no single queryable abstraction over them (inconsistent timestamps, no
+  head/tail query, no "open the actual report" path), and there is no way to
+  follow a single task's full lifecycle from the dashboard.
+- Current behavior: Reports are read by hand-walking the filesystem; the
+  dashboard shows live snapshots but cannot open an agent-produced report or
+  trace a task through its audit events.
+- Source of evidence: Live `results/` data (1787 indexed report records), the
+  CEO dashboard hardening plan, and the prior session's implementation + tests.
 
-## Detection Contract (authoritative)
+## User Scenarios And Success
 
-A task is demo/test data if and only if it matches one of these demonstrable
-markers:
-
-- task id contains `proj-acme-chatbot` (Acme Corp demo tasks), OR
-- instruction contains `proj-acme-chatbot`, OR
-- instruction starts with `Test ` (capital T, trailing space), OR
-- task id starts with `test-` or `verify-` (lowercase).
-
-Deliberately NOT a marker: the task receiver/agent name. Routing a task to the
-real `test-agent` receiver is legitimate production behavior and must not mark
-the task as dummy. The earlier over-broad receiver-name heuristic was removed
-because it false-positived on the real `test-agent` and broke the integration
-test suite.
+- Primary user/system scenario 1: A user selects a task ID on a "Task Flow"
+  page and sees its lifecycle timeline (created → claimed → in-progress →
+  completed/failed/escalated/dead-letter) with timestamps and the audit events
+  that touch it.
+- Scenario 2: A user opens a "Reports" page and browses agent-produced reports
+  newest-first, filters them, and opens/reads a report's content — backed by a
+  queryable `ReportStore`.
+- Success criteria: Both views are read-only, list real data, expose correct
+  new/old ordering across mixed timestamp formats, and never crash on missing
+  or malformed data.
+- Acceptance criteria:
+  - A1: `ReportStore(root)` lists all report folders/shards under `root`.
+  - A2: `latest(n)` / `oldest(n)` return the correct records/order even when
+    timestamps mix naive-UTC and `Z`-suffixed forms (epoch handled too).
+  - A3: a report with a missing/unparseable timestamp never crashes a query —
+    it is pushed to a sane end and documented.
+  - A4: a missing root is an empty store (no exception at construction).
+  - A5: `ruff check src/`, `mypy src/`, and the targeted store/dashboard
+    suites pass with no regression.
+  - B1: `GET /api/v1/tasks/{task_id}/flow` returns the task snapshot plus the
+    chronological lifecycle timeline (404 for unknown task).
+  - B2: `GET /api/v1/reports` lists real `results/*` reports newest-first with
+    `limit`/`agent` filters and excludes root `cost_log.jsonl` by default;
+    `GET /api/v1/reports/content` returns a report's documents (404 on
+    path-traversal escape).
+  - B3: `/task-flow` and `/reports` pages render and expose the views.
 
 ## Non-Goals
 
-- Do not block or alter real tasks routed to agents whose id starts with
-  `test`.
-- Do not change inbox.json fallback write behavior.
-- Do not perform destructive cleanup automatically on startup or on a
-  schedule; cleanup is an explicit operator command.
+- No editing/mutation of tasks or reports from these views (strictly read-only).
+- No new persistence format; no migration of existing `results/` files.
+- No schema enforcement on report contents (free-form JSON stays free-form).
+- No dashboard UI beyond the two approved pages; no dead-letter UI changes.
 
-## Acceptance Criteria
+## Constraints
 
-- A1: `ai-company dashboard cleanup` removes all 7 test tasks and 10 Acme demo
-  tasks and prints per-class counts.
-- A2: `GET /api/v1/tasks` (default filter) shows neither test nor demo tasks;
-  `?include_test=true` Restores them for diagnostics.
-- A3: Scheduler, specialists assignment, client intake, and onboarding refuse
-  to create tasks matching the detection contract.
-- A4: `ruff check src/`, `mypy src/` (strict), and the unit test suite all
-  pass; no regression in the real `test-agent` routing integration tests.
+- Reuse existing `store/` patterns where sensible; this is a read-heavy layer
+  that must not force writes into the guarded-write path.
+- Path-served report content must be confined to the reports root (SECURITY).
+- Use the canonical ECL/harness workflow; do not commit (per the whole
+  hardening effort until the user says otherwise).
+
+## Assumptions
+
+- The CEO-approved recommended interpretation of the codenames is correct
+  (see Resolved Clarifications).
+- The `results/` root resolves to the dashboard store base dir (`.` →
+  `./results`), matching real data.
+- `x-show`/Alpine is the existing front-end convention (no Vue `v-if`).
+
+## Open Questions
+
+- None blocking. (Full-suite pytest run is a verification task, not a design
+  question.)
+
+## Resolved Clarifications
+
+- C4 Q1 (is "Path-of-RPG" a task-lifecycle traceability view?): **A — Yes**
+  (task journey timeline with audit-trace overlay).
+- C4 Q2 (is "FLORA" a reports/outcomes viewer?): **A — Yes** (Reports page
+  built on C5 `ReportStore`).
+- C4 Q3 (dashboard UI scope): **B — both** a "Task Flow" page and a "Reports"
+  page.
+- C4 Q4 (ordering): **C5-first** — build `ReportStore` then layer C4 on it.
+- C5 scope: confirmed as written (read-only queryable `ReportStore`).

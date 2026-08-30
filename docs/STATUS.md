@@ -4,9 +4,11 @@
 
 ## Last Updated
 
-2026-08-26
+2026-08-30
 
 ## Current State
+
+- **COMPLETE: Remove Dummy Tasks & Wire Real Organizational Data (2026-08-30, archived)**: ECL change `cleanup-dummy-tasks` closed `completed` and archived at `harness/changes/archive/2026-08-30-cleanup-dummy-tasks`. Final full-suite gate green (**2223 passed, 67 deselected, exit 0**, 14m14s, tree unchanged during run) on top of earlier scoped gates (ruff 0 errors, mypy strict, 204-test targeted regression, T003 CLI sandbox proof 20->3 / 17 removed, live-store no-op). Side-effect files restored. Feature code already merged to main in `ddff39a` (+`bcd6d68`, `cbfb70a`); ECL close completed with **no git commit** (operator instruction). The harness `resume` nesting bug (which originally parked-and-resumed this change into `active/<id>/` and cost this session its evidence) is now **fixed in `scripts/harness-change.ps1`** (moves children into `active/` instead of nesting the folder) and verified with a throwaway park/resume cycle. Concurrent AI session (Codex/OpenCode) editing shared dashboard files is a known coexistence hazard for future closes.
 
 - **Dependency remediation + monitoring streak fix (2026-08-25, shipped)**: Monitoring Dashboard Health Check now judges default-branch failure streaks instead of a last-5 window (`554aee2`), eliminating false stale-run alerts; issue #137 closed. `uv.lock` refreshed fastapi 0.109.0→0.141.1 and starlette 0.35.1→1.6.0 (`86a12e9`) clearing all 15 advisories; `uv audit --frozen` exit 0 and Dependency Health logs `[OK] No known vulnerabilities found`. Dependabot PR #155 (httpx `<0.29.0`) squash-merged as `44b3d85`. Gates: ruff/mypy clean, 1969 tests passing, CI runs `32565696546`/`32907261730` green, monitoring run `32652708435` green. Follow-up: httpx2 migration tracked in issue #156 (httpx is unmaintained upstream; 4 src files + 2 test files use it directly). ECL archived as `harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix`.
 
@@ -121,6 +123,9 @@
 - `docs/COMMAND-CENTER-API.md` — Command center read-only API reference (new endpoints added in PR #127)
 
 ## Recent Work
+
+- **2026-08-30**: Fixed `scripts/harness-change.ps1` `resume` bug — it moved a parked change into `active/<id>/` (nested), which left the harness blind to the active change; now moves contents flat into `active/`. Verified end-to-end with a throwaway park/resume cycle (files land at `active/summary.md` directly, subdirs like `reviews/` preserved, `.gitkeep` retained, source dir removed). No commit made.
+- **2026-08-30**: ECL `cleanup-dummy-tasks` (Remove Dummy Tasks & Wire Real Organizational Data) closed `completed`, archived as `harness/changes/archive/2026-08-30-cleanup-dummy-tasks`. Final full-suite gate 2223 passed (exit 0); ruff/mypy strict clean; T003 evidence recorded. Closed with no git commit per operator instruction. Full lifecycle: parked→resumed→closed across two sessions; the `resume`-layout harness bug fixed and documented above.
 
 - **2026-08-26**: Retroactive ECL record created for the dependency remediation + monitoring streak fix workstream; archived as `harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix`. httpx2 migration follow-up filed as issue #156. PR #155 (httpx `<0.29.0`) squash-merged as `44b3d85`; lock's httpx 0.27.2 satisfies it.
 - **2026-08-20**: PR #128 merged (E2E + integration tests for command center). 4 E2E tests (Playwright: page load, SVG overlay, API endpoints, responsive viewports) + 12 integration tests (health×4, briefing×4, models/telemetry×4). `.gitignore` fixed with `!tests/**/*.py` negation. CI already has Playwright E2E job — new tests auto-discovered via `pytest.mark.e2e`. All gates green: ruff ✅, mypy ✅, 12 integration tests passing.

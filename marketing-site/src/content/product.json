@@ -1,12 +1,11 @@
 {
-  "generatedAt": "2026-08-28T00:08:45.567Z",
+  "generatedAt": "2026-08-30T01:08:19.427Z",
   "company": "Light Speed Holdings",
   "agents": {
     "total": 135,
     "byType": {
       "executive": 19,
-      "undefined": 3,
-      "specialist": 106,
+      "specialist": 109,
       "board": 7
     },
     "byDept": {

@@ -494,6 +494,9 @@ class TestBaseServiceGuard:
             def send_task(self, task: Task) -> None:
                 sent.append(task)
 
+            def get_pending_tasks(self) -> list[Task]:
+                return []
+
         svc = BaseService(
             "test-dept",
             bus=_FakeBus(),  # type: ignore[arg-type]

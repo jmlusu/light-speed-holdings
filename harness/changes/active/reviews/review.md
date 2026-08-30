@@ -1,15 +1,25 @@
-# Plan Review
+﻿# Review
 
-- Status: approved
-- Date: 2026-08-28
-- Reviewer: Registry / Harness (ECL)
+## Intake Review
 
-## Plan Review Notes
+- Status: pending
+- Notes:
 
-- Detection contract narrowed to demonstrable markers (id/instruction content,
-  `Test ` prefix, `test-`/`verify-` prefixes). Receiver-name heuristic
-  explicitly rejected after it false-positived on the real `test-agent`
-  receiver during integration testing.
-- Cleanup is operator-initiated (CLI) rather than automatic; satisfies the
-  non-destructive-cleanup constraint.
-- Explicit `include_test` override retained for diagnostic introspection.
+## Spec Review
+
+- Status: pending
+- Open high-impact clarifications:
+- WHAT/HOW separation:
+
+## Plan Review
+
+- Status: pending
+- Spec gaps found from planning:
+
+## Code Review
+
+- Status: pending
+
+## Validation Review
+
+- Status: pending

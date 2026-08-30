@@ -69,6 +69,9 @@ _metrics: dict[str, float] = {
     # Circuit breaker
     "circuit_breaker_trips_total": 0,
     "circuit_breaker_half_open_total": 0,
+    # Security metrics (D.3)
+    "auth_failures_total": 0,
+    "rate_limit_hits_total": 0,
 }
 
 _start_time = time.time()
@@ -209,6 +212,15 @@ def _render_prometheus_text() -> str:
         "circuit_breaker_half_open_total": (
             "ai_company_circuit_breaker_half_open_total",
             "Total circuit breaker half-open transitions",
+        ),
+        # Security metrics (D.3)
+        "auth_failures_total": (
+            "ai_company_auth_failures_total",
+            "Total authentication failures",
+        ),
+        "rate_limit_hits_total": (
+            "ai_company_rate_limit_hits_total",
+            "Total rate limit exceeded events",
         ),
     }
 
