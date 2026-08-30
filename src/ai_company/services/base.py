@@ -126,8 +126,30 @@ class BaseService:
         """Create a task in the inbox via MessageBus.
 
         Returns the created Task for tracking.
+
+        If a pending task with the same instruction and receiver already
+        exists, the existing task is returned instead of creating a
+        duplicate (idempotency guard).
         """
         sender = sender_id or f"{self.department_id}-service"
+
+        # Idempotency: check for an existing pending task with the same
+        # instruction and receiver to prevent duplicates from concurrent
+        # calls or retries.
+        for existing in self.bus.get_pending_tasks():
+            if (
+                existing.receiver_id == receiver_id
+                and existing.sender_id == sender
+                and existing.instruction == instruction
+            ):
+                logger.info(
+                    "[%s] Idempotent hit — returning existing task %s -> %s",
+                    self.department_id,
+                    existing.id[:8],
+                    receiver_id,
+                )
+                return existing
+
         task = Task(
             id=str(uuid.uuid4()),
             sender_id=sender,
