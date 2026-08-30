@@ -634,7 +634,14 @@ function dashboard() {
                   this.tasks.push(updatedTask);
                 }
               }
-              this.tasks = [...this.tasks];
+              // Deduplicate by ID — prevents visual duplicates from
+              // double WS broadcasts or race conditions with polling.
+              const seen = new Set();
+              this.tasks = this.tasks.filter(t => {
+                if (seen.has(t.id)) return false;
+                seen.add(t.id);
+                return true;
+              });
               this.restoreScrollPosition();
             }
           }
