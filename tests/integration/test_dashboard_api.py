@@ -108,3 +108,105 @@ class TestDashboardAPI:
         body = resp.text
         assert "ai_company_llm_requests_total" in body
         assert "ai_company_tasks_by_status" in body
+
+    def test_backlog_endpoint_shape(self, client: TestClient) -> None:
+        resp = client.get("/api/v1/backlog")
+        assert resp.status_code == 200
+        data = resp.json()
+        expected = {
+            "total",
+            "by_status",
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "oldest_pending_age_s",
+            "stale_pending_count",
+            "dead_letter_count",
+            "inbox_path",
+        }
+        assert expected <= set(data.keys())
+
+    def test_backlog_page_route(self, client: TestClient) -> None:
+        resp = client.get("/backlog")
+        assert resp.status_code == 200
+        assert "Task Backlog" in resp.text
+
+    # ── C4: Reports page / API ─────────────────────────────────
+    def _write_report(self, workspace: Path, rel: str, doc: dict) -> None:
+        p = workspace / "results" / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(__import__("json").dumps(doc), encoding="utf-8")
+
+    def test_reports_page_route(self, client: TestClient) -> None:
+        resp = client.get("/reports")
+        assert resp.status_code == 200
+        assert "Agent Reports" in resp.text
+
+    def test_reports_api_lists_bundle(self, client: TestClient, workspace: Path) -> None:
+        self._write_report(
+            workspace,
+            "demo/loop_result.json",
+            {"name": "demo-run", "timestamp": "2026-08-14T10:00:00Z", "done": True},
+        )
+        resp = client.get("/api/v1/reports")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["total"] == 1
+        rep = data["reports"][0]
+        assert rep["name"] == "demo-run"
+        assert rep["bundle"] == "demo"
+        assert rep["done"] is True
+
+    def test_reports_api_excludes_cost_shard_by_default(
+        self, client: TestClient, workspace: Path
+    ) -> None:
+        self._write_report(
+            workspace,
+            "cost_log.jsonl",
+            {"total_cost": 12.3, "timestamp": "2026-08-14T10:00:00Z"},
+        )
+        resp = client.get("/api/v1/reports")
+        assert resp.json()["total"] == 0
+        resp_cost = client.get("/api/v1/reports?include_cost=true")
+        assert resp_cost.json()["total"] == 1
+
+    def test_report_content_endpoint(self, client: TestClient, workspace: Path) -> None:
+        self._write_report(
+            workspace,
+            "demo/loop_result.json",
+            {"name": "demo-run", "detail": "payload"},
+        )
+        resp = client.get("/api/v1/reports/content?path=demo/loop_result.json")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["documents"][0]["detail"] == "payload"
+
+    def test_report_content_rejects_traversal(self, client: TestClient, workspace: Path) -> None:
+        resp = client.get("/api/v1/reports/content?path=../inbox.json")
+        assert resp.status_code == 404
+
+    # ── C4: Task Flow page / API ───────────────────────────────
+    def test_task_flow_page_route(self, client: TestClient) -> None:
+        resp = client.get("/task-flow")
+        assert resp.status_code == 200
+        assert "Task Flow" in resp.text
+
+    def test_task_flow_endpoint_shape(self, client: TestClient) -> None:
+        created = client.post(
+            "/api/v1/tasks",
+            json={"receiver_id": "test-agent", "instruction": "Trace this task"},
+        ).json()
+        tid = created["id"]
+        resp = client.get(f"/api/v1/tasks/{tid}/flow")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["task_id"] == tid
+        assert data["task"]["id"] == tid
+        assert data["current_status"] == "pending"
+        assert "timeline" in data
+        assert "status_events" in data
+
+    def test_task_flow_not_found(self, client: TestClient) -> None:
+        resp = client.get("/api/v1/tasks/does-not-exist/flow")
+        assert resp.status_code == 404

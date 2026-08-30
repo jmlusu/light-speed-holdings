@@ -2245,3 +2245,1818 @@ requests:
   notes: null
   expires_at: '2026-08-29T22:36:27.406959Z'
   metacharacter_blocked: false
+- id: hitl-bce0ac96daf2
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:35:35.863925Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T08:35:35.863925Z'
+  metacharacter_blocked: false
+- id: hitl-d6fa1f2ef99b
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:35:36.356867Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T08:35:36.356867Z'
+  metacharacter_blocked: false
+- id: hitl-08e0a06c471b
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-08-30T07:35:37.283825Z'
+  responded_at: '2026-08-30T07:35:37.459148Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T08:35:37.283825Z'
+  metacharacter_blocked: false
+- id: hitl-78da8f34bac9
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T07:35:38.254160Z'
+  responded_at: '2026-08-30T07:35:38.448919Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T08:35:38.254160Z'
+  metacharacter_blocked: false
+- id: hitl-ed59865f2bdf
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T07:35:39.203230Z'
+  responded_at: '2026-08-30T07:35:40.010940Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T08:35:39.203230Z'
+  metacharacter_blocked: false
+- id: hitl-66827c2792ee
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:35:39.486351Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T08:35:39.486351Z'
+  metacharacter_blocked: false
+- id: hitl-c60e4bb37c8e
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T07:35:39.696313Z'
+  responded_at: '2026-08-30T07:35:40.216489Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T08:35:39.696313Z'
+  metacharacter_blocked: false
+- id: hitl-402b88968acf
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:35:41.605423Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T08:35:41.605423Z'
+  metacharacter_blocked: false
+- id: hitl-da15bedc0b6f
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:35:42.596869Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T07:34:42.810332Z'
+  metacharacter_blocked: false
+- id: onb-ef41fabcdd52
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding approval: a1 as R in D
+
+    Type: specialist
+
+    Reports to: none
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:45:36.976336Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:45:36.976336Z'
+  metacharacter_blocked: false
+- id: onb-e779bfc754d2
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding approval: a1 as R in D
+
+    Type: specialist
+
+    Reports to: none
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:13.040196Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:13.040196Z'
+  metacharacter_blocked: false
+- id: onb-8db2ad49d04b
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: read, edit
+
+    Tier: 3'
+  tier: 3
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:23.965339Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:23.965339Z'
+  metacharacter_blocked: false
+- id: onb-2658ac08096c
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:28.067797Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:28.067797Z'
+  metacharacter_blocked: false
+- id: onb-211a77cb0f67
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:32.330727Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:32.330727Z'
+  metacharacter_blocked: false
+- id: onb-010211dd9f9e
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot2 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:32.681348Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:32.681348Z'
+  metacharacter_blocked: false
+- id: onb-487a89d51d06
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:36.919826Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:36.919826Z'
+  metacharacter_blocked: false
+- id: onb-6dafa62fc472
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:41.616100Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:41.616100Z'
+  metacharacter_blocked: false
+- id: onb-99ccd20fddbc
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:49.411571Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:49.411571Z'
+  metacharacter_blocked: false
+- id: onb-127414fbad29
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:53.711519Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:53.711519Z'
+  metacharacter_blocked: false
+- id: onb-3ce3c3820517
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:58.441593Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:58.441593Z'
+  metacharacter_blocked: false
+- id: onb-5fd0ed509170
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: read, edit
+
+    Tier: 3'
+  tier: 3
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:46:59.519878Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:46:59.519878Z'
+  metacharacter_blocked: false
+- id: onb-cd1b738dfa9a
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:03.163634Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:03.163634Z'
+  metacharacter_blocked: false
+- id: onb-ff961a823280
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:03.865622Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:03.865622Z'
+  metacharacter_blocked: false
+- id: onb-af78c1fcf6c8
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T07:47:07.966567Z'
+  responded_at: '2026-08-30T07:47:08.747717Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T07:47:07.966567Z'
+  metacharacter_blocked: false
+- id: onb-a951a805dc52
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:13.443221Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:13.443221Z'
+  metacharacter_blocked: false
+- id: onb-5fd650f16da0
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:17.325554Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:17.325554Z'
+  metacharacter_blocked: false
+- id: onb-1db50300116a
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:25.207547Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:25.207547Z'
+  metacharacter_blocked: false
+- id: onb-e41e153d62c1
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:29.909975Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:29.909975Z'
+  metacharacter_blocked: false
+- id: onb-a500a79d9007
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:34.562954Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:34.562954Z'
+  metacharacter_blocked: false
+- id: onb-0f5368f5ec9d
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T07:47:35.938276Z'
+  responded_at: '2026-08-30T07:47:36.747076Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T07:47:35.938276Z'
+  metacharacter_blocked: false
+- id: onb-3d22ab5894ad
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T07:47:39.119730Z'
+  responded_at: '2026-08-30T07:47:39.512123Z'
+  response_by: ceo
+  notes: Not needed
+  expires_at: '2026-09-01T07:47:39.119730Z'
+  metacharacter_blocked: false
+- id: onb-23c41ec20796
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:41.170948Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:41.170948Z'
+  metacharacter_blocked: false
+- id: onb-e3d1bc9ae9f8
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T07:47:43.705207Z'
+  responded_at: '2026-08-30T07:47:44.494998Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T07:47:43.705207Z'
+  metacharacter_blocked: false
+- id: onb-425f4e8c2810
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:47:48.749258Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:47:48.749258Z'
+  metacharacter_blocked: false
+- id: onb-45335d8d039b
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T07:48:12.629891Z'
+  responded_at: '2026-08-30T07:48:13.511873Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T07:48:12.629891Z'
+  metacharacter_blocked: false
+- id: onb-cfdc4065d417
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T07:48:18.422760Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T07:48:18.422760Z'
+  metacharacter_blocked: false
+- id: hitl-f019dff23237
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:00:34.088690Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:00:34.088690Z'
+  metacharacter_blocked: false
+- id: hitl-378627825944
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:00:34.387436Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:00:34.387436Z'
+  metacharacter_blocked: false
+- id: hitl-7f7c15e40713
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-08-30T15:00:34.936290Z'
+  responded_at: '2026-08-30T15:00:35.050394Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T16:00:34.936290Z'
+  metacharacter_blocked: false
+- id: hitl-ac403ad31fe9
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T15:00:35.532827Z'
+  responded_at: '2026-08-30T15:00:35.724964Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T16:00:35.532827Z'
+  metacharacter_blocked: false
+- id: hitl-f7a16c81c210
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T15:00:36.207885Z'
+  responded_at: '2026-08-30T15:00:36.579899Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T16:00:36.207885Z'
+  metacharacter_blocked: false
+- id: hitl-302ddc64d9fe
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:00:36.315523Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:00:36.315523Z'
+  metacharacter_blocked: false
+- id: hitl-2957ba2ce3fe
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T15:00:36.441696Z'
+  responded_at: '2026-08-30T15:00:36.713508Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T16:00:36.441696Z'
+  metacharacter_blocked: false
+- id: hitl-a1a942763273
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:00:37.671308Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:00:37.671308Z'
+  metacharacter_blocked: false
+- id: hitl-e04f01de7a4c
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:00:38.214279Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T14:59:38.334636Z'
+  metacharacter_blocked: false
+- id: onb-75d28c359b49
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding approval: a1 as R in D
+
+    Type: specialist
+
+    Reports to: none
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:01.195779Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:01.195779Z'
+  metacharacter_blocked: false
+- id: onb-8067cd5d9924
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: read, edit
+
+    Tier: 3'
+  tier: 3
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:30.594922Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:30.594922Z'
+  metacharacter_blocked: false
+- id: onb-9c90ba00b6ce
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:32.625732Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:32.625732Z'
+  metacharacter_blocked: false
+- id: onb-e8a32d2e0c03
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:34.669599Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:34.669599Z'
+  metacharacter_blocked: false
+- id: onb-25e5180ef325
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot2 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:34.864224Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:34.864224Z'
+  metacharacter_blocked: false
+- id: onb-16387ef08ce4
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:37.227086Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:37.227086Z'
+  metacharacter_blocked: false
+- id: onb-4bd27d4151db
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:39.290943Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:39.290943Z'
+  metacharacter_blocked: false
+- id: onb-24b93581d6b2
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:42.971853Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:42.971853Z'
+  metacharacter_blocked: false
+- id: onb-203dd1dbec90
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:45.113990Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:45.113990Z'
+  metacharacter_blocked: false
+- id: onb-f7b7064fc3e4
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:47.334333Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:47.334333Z'
+  metacharacter_blocked: false
+- id: onb-c9195e20583f
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T15:07:49.607785Z'
+  responded_at: '2026-08-30T15:07:50.069434Z'
+  response_by: ceo
+  notes: Not needed
+  expires_at: '2026-09-01T15:07:49.607785Z'
+  metacharacter_blocked: false
+- id: onb-e5b5d57cb09e
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T15:07:52.182717Z'
+  responded_at: '2026-08-30T15:07:52.613554Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T15:07:52.182717Z'
+  metacharacter_blocked: false
+- id: onb-9af6799c5cfa
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:07:54.708680Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:07:54.708680Z'
+  metacharacter_blocked: false
+- id: onb-241d1d138f0b
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T15:08:05.120199Z'
+  responded_at: '2026-08-30T15:08:05.551445Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T15:08:05.120199Z'
+  metacharacter_blocked: false
+- id: onb-d2501761ee51
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:08:07.648789Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:08:07.648789Z'
+  metacharacter_blocked: false
+- id: hitl-daaf3b7a8ae0
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:46:18.105887Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:46:18.105887Z'
+  metacharacter_blocked: false
+- id: hitl-01b7ab12aabd
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:46:18.935783Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:46:18.935783Z'
+  metacharacter_blocked: false
+- id: hitl-37ffc6fb7000
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-08-30T15:46:19.960123Z'
+  responded_at: '2026-08-30T15:46:20.224607Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T16:46:19.960123Z'
+  metacharacter_blocked: false
+- id: hitl-64c5a84ed121
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T15:46:21.385967Z'
+  responded_at: '2026-08-30T15:46:21.644172Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T16:46:21.385967Z'
+  metacharacter_blocked: false
+- id: hitl-32f08051315f
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T15:46:22.803839Z'
+  responded_at: '2026-08-30T15:46:23.744624Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T16:46:22.803839Z'
+  metacharacter_blocked: false
+- id: hitl-d24c27cb13cd
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:46:23.081092Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:46:23.081092Z'
+  metacharacter_blocked: false
+- id: hitl-e48d725fb548
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T15:46:23.460805Z'
+  responded_at: '2026-08-30T15:46:24.050633Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T16:46:23.460805Z'
+  metacharacter_blocked: false
+- id: hitl-c6ba3646df84
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:46:26.143178Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:46:26.141864Z'
+  metacharacter_blocked: false
+- id: hitl-60d7d6a7160e
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:46:27.210492Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T15:45:27.477577Z'
+  metacharacter_blocked: false
+- id: onb-917d67ecc2f4
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding approval: a1 as R in D
+
+    Type: specialist
+
+    Reports to: none
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:56:04.705594Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:56:04.705594Z'
+  metacharacter_blocked: false
+- id: onb-8675433c404d
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: read, edit
+
+    Tier: 3'
+  tier: 3
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:56:52.510423Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:56:52.510423Z'
+  metacharacter_blocked: false
+- id: onb-524ee33def83
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: new_bot as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:56:57.281306Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:56:57.281306Z'
+  metacharacter_blocked: false
+- id: onb-cd859b9eb4d2
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:01.882329Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:01.882329Z'
+  metacharacter_blocked: false
+- id: onb-3d694b590a52
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot2 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:02.733663Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:02.733663Z'
+  metacharacter_blocked: false
+- id: onb-b6d71287008e
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:07.066993Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:07.066993Z'
+  metacharacter_blocked: false
+- id: onb-cdfcfec8115b
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:11.425053Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:11.425053Z'
+  metacharacter_blocked: false
+- id: onb-33e18e654b7b
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:19.145247Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:19.145247Z'
+  metacharacter_blocked: false
+- id: onb-0626779ab9f4
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:23.545665Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:23.545665Z'
+  metacharacter_blocked: false
+- id: onb-943f1633a14b
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:28.376770Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:28.376770Z'
+  metacharacter_blocked: false
+- id: onb-09a19e473170
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T15:57:33.022055Z'
+  responded_at: '2026-08-30T15:57:33.458778Z'
+  response_by: ceo
+  notes: Not needed
+  expires_at: '2026-09-01T15:57:33.022055Z'
+  metacharacter_blocked: false
+- id: onb-24c175df3332
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T15:57:37.881158Z'
+  responded_at: '2026-08-30T15:57:38.786621Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T15:57:37.881158Z'
+  metacharacter_blocked: false
+- id: onb-3f7f6e506fb9
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:57:43.470941Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:57:43.470941Z'
+  metacharacter_blocked: false
+- id: onb-a2969a32e024
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T15:58:05.655524Z'
+  responded_at: '2026-08-30T15:58:06.536994Z'
+  response_by: ceo
+  notes: ''
+  expires_at: '2026-09-01T15:58:05.655524Z'
+  metacharacter_blocked: false
+- id: onb-8a89f102d01f
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding: bot1 as Bot in Engineering
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T15:58:11.322660Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T15:58:11.322660Z'
+  metacharacter_blocked: false
+- id: hitl-b31e3a7d5d94
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T16:59:20.144200Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T17:59:20.144200Z'
+  metacharacter_blocked: false
+- id: hitl-19a09ce15c2e
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T16:59:21.852762Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T17:59:21.852762Z'
+  metacharacter_blocked: false
+- id: hitl-39ed8ef685f4
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-08-30T16:59:24.459919Z'
+  responded_at: '2026-08-30T16:59:25.105906Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T17:59:24.459919Z'
+  metacharacter_blocked: false
+- id: hitl-937ba955f46a
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T16:59:27.881124Z'
+  responded_at: '2026-08-30T16:59:28.526464Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T17:59:27.881124Z'
+  metacharacter_blocked: false
+- id: hitl-da7b44226502
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T16:59:31.338774Z'
+  responded_at: '2026-08-30T16:59:33.255171Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T17:59:31.338774Z'
+  metacharacter_blocked: false
+- id: hitl-58395b04f1dc
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T16:59:31.964800Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T17:59:31.964800Z'
+  metacharacter_blocked: false
+- id: hitl-ffe01f2875a6
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T16:59:32.598723Z'
+  responded_at: '2026-08-30T16:59:33.904460Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T17:59:32.598723Z'
+  metacharacter_blocked: false
+- id: hitl-878e5db79cfc
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T16:59:38.855675Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T17:59:38.855675Z'
+  metacharacter_blocked: false
+- id: hitl-a0829b614165
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T16:59:41.666370Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T16:58:42.321292Z'
+  metacharacter_blocked: false
+- id: hitl-3d0013944a12
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T17:09:44.986860Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T18:09:44.986860Z'
+  metacharacter_blocked: false
+- id: hitl-77d50a625d37
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T17:09:46.757886Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T18:09:46.757886Z'
+  metacharacter_blocked: false
+- id: hitl-1887635e3bb0
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-08-30T17:09:49.569234Z'
+  responded_at: '2026-08-30T17:09:50.307146Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T18:09:49.569234Z'
+  metacharacter_blocked: false
+- id: hitl-af149260981d
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T17:09:53.000879Z'
+  responded_at: '2026-08-30T17:09:54.074107Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-08-30T18:09:53.000879Z'
+  metacharacter_blocked: false
+- id: hitl-85678529d380
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-08-30T17:09:57.851301Z'
+  responded_at: '2026-08-30T17:10:00.630217Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T18:09:57.851301Z'
+  metacharacter_blocked: false
+- id: hitl-f2268682ecd0
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T17:09:58.766669Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T18:09:58.766669Z'
+  metacharacter_blocked: false
+- id: hitl-f40799b4bcf6
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-08-30T17:09:59.598260Z'
+  responded_at: '2026-08-30T17:10:01.303838Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-08-30T18:09:59.598260Z'
+  metacharacter_blocked: false
+- id: hitl-10fe292c7f72
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T17:10:07.469442Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T18:10:07.469442Z'
+  metacharacter_blocked: false
+- id: hitl-d5e6ce821ef3
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T17:10:11.222590Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-08-30T17:09:12.307947Z'
+  metacharacter_blocked: false
+- id: onb-2f3c785ffefd
+  task_id: ''
+  agent_id: hr
+  action: agent_onboarding
+  description: 'Agent onboarding approval: a1 as R in D
+
+    Type: specialist
+
+    Reports to: none
+
+    Tools: none specified
+
+    Tier: 2'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-08-30T17:23:45.183383Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-01T17:23:45.183383Z'
+  metacharacter_blocked: false

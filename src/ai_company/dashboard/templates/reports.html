@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Reports — CEO Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-semibold font-display text-jarvis-text">Agent Reports</h2>
+      <p class="text-sm text-jarvis-muted mt-1" x-text="reports ? reports.length + ' reports' : 'Loading reports…'"></p>
+    </div>
+    <button @click="loadReports()" class="text-jarvis-muted hover:text-jarvis-text transition-colors p-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+    </button>
+  </div>
+
+  <div x-show="!reports" class="jarvis-glass rounded-xl p-8 text-center">
+    <p class="text-sm text-jarvis-muted">Loading reports…</p>
+  </div>
+
+  <div x-show="reports && reports.length === 0" class="jarvis-glass rounded-xl p-8 text-center">
+    <p class="text-sm text-jarvis-muted">No reports found. Agent outputs will appear here.</p>
+  </div>
+
+  <div x-show="reports.length > 0" class="jarvis-glass rounded-xl p-5">
+    <h3 class="text-sm font-semibold text-jarvis-text mb-4">Newest first</h3>
+    <div class="space-y-2">
+      <template x-for="rep in reports" :key="rep.key">
+        <button @click="openReport(rep.path)"
+                class="w-full text-left jarvis-glass rounded-lg p-4 hover:border-jarvis-cyan/30 transition-all">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-jarvis-text truncate" x-text="rep.name || rep.bundle"></p>
+              <p class="text-xs text-jarvis-muted font-mono mt-0.5 truncate" x-text="rep.path"></p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span x-show="rep.agent" class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-jarvis-cyan/10 text-jarvis-cyan font-mono" x-text="rep.agent"></span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-medium"
+                    :class="rep.done === true ? 'bg-emerald-500/10 text-emerald-400' : rep.done === false ? 'bg-red-500/10 text-red-400' : 'bg-white/[0.06] text-jarvis-muted'"
+                    x-text="rep.done === null ? (rep.error ? 'error' : '—') : (rep.done ? 'done' : 'failed')"></span>
+            </div>
+          </div>
+          <div class="mt-2 flex items-center justify-between">
+            <span class="text-xs text-jarvis-muted font-mono" x-text="formatTime(rep.timestamp)"></span>
+            <span class="text-xs text-jarvis-muted" x-text="rep.bundle"></span>
+          </div>
+        </button>
+      </template>
+    </div>
+  </div>
+
+  <!-- Report content drawer -->
+  <div x-show="reportOpen" class="fixed inset-0 z-50 flex justify-end">
+    <div class="absolute inset-0 bg-black/60" @click="reportOpen = false"></div>
+    <div class="relative w-full max-w-3xl h-full bg-jarvis-base border-l border-white/[0.08] p-6 overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold text-jarvis-text font-mono" x-text="reportPath"></h3>
+        <button @click="reportOpen = false" class="text-jarvis-muted hover:text-jarvis-text transition-colors p-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <pre class="text-xs text-jarvis-text whitespace-pre-wrap break-words bg-jarvis-base/50 border border-white/[0.06] rounded-lg p-4 font-mono"
+           x-text="reportContent"></pre>
+    </div>
+  </div>
+</div>
+{% endblock %}

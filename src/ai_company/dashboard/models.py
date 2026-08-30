@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class KPIs(BaseModel):
@@ -47,10 +47,30 @@ class TaskItem(BaseModel):
 
 
 class TaskAssign(BaseModel):
-    receiver_id: str
-    instruction: str
+    receiver_id: str = Field(..., min_length=1, max_length=200)
+    instruction: str = Field(..., min_length=1, max_length=20000)
     priority: str = "medium"
     sender_id: str = "human-ceo"
+
+    @field_validator("priority")
+    @classmethod
+    def _validate_priority(cls, value: str) -> str:
+        priority = (value or "").lower()
+        if priority not in {"low", "medium", "high", "critical"}:
+            raise ValueError(
+                f"Invalid priority '{value}'. Must be one of: low, medium, high, critical"
+            )
+        return priority
+
+    @field_validator("receiver_id", "sender_id")
+    @classmethod
+    def _validate_agent_id(cls, value: str) -> str:
+        if any(ch in value for ch in "\r\n\t"):
+            raise ValueError("agent id must not contain control characters")
+        v = (value or "").strip()
+        if not v:
+            raise ValueError("agent id must not be empty")
+        return v
 
 
 class TaskUpdate(BaseModel):
@@ -63,6 +83,50 @@ class TaskUpdate(BaseModel):
     priority: Optional[str] = None
     instruction: Optional[str] = None
     receiver_id: Optional[str] = None
+
+    @field_validator("priority")
+    @classmethod
+    def _validate_priority(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        priority = value.lower()
+        if priority not in {"low", "medium", "high", "critical"}:
+            raise ValueError(
+                f"Invalid priority '{value}'. Must be one of: low, medium, high, critical"
+            )
+        return priority
+
+    @field_validator("status")
+    @classmethod
+    def _validate_status(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        status = value.lower()
+        if status not in {
+            "pending",
+            "in_progress",
+            "completed",
+            "failed",
+            "escalated",
+            "cancelled",
+        }:
+            raise ValueError(
+                f"Invalid status '{value}'. Must be one of: "
+                "pending, in_progress, completed, failed, escalated, cancelled"
+            )
+        return status
+
+    @field_validator("receiver_id")
+    @classmethod
+    def _validate_receiver_id(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        v = (value or "").strip()
+        if not v:
+            raise ValueError("receiver_id must not be empty")
+        if any(ch in v for ch in "\r\n\t"):
+            raise ValueError("receiver_id must not contain control characters")
+        return v
 
 
 class ApprovalItem(BaseModel):
@@ -82,6 +146,16 @@ class ApprovalDecision(BaseModel):
     approved_by: str = "human-ceo"
     notes: Optional[str] = None
 
+    @field_validator("approved_by")
+    @classmethod
+    def _validate_approved_by(cls, value: str) -> str:
+        v = (value or "").strip()
+        if not v:
+            raise ValueError("approved_by must not be empty")
+        if any(ch in v for ch in "\r\n\t"):
+            raise ValueError("approved_by must not contain control characters")
+        return v
+
 
 class ApprovalUpdate(BaseModel):
     """Partial update body for PATCH /api/v1/approvals/{request_id}.
@@ -90,7 +164,19 @@ class ApprovalUpdate(BaseModel):
     """
 
     risk_level: Optional[str] = None
-    cost_estimate: Optional[float] = None
+    cost_estimate: Optional[float] = Field(None, ge=0.0)
+
+    @field_validator("risk_level")
+    @classmethod
+    def _validate_risk_level(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        risk = (value or "").lower()
+        if risk not in {"low", "medium", "high", "critical"}:
+            raise ValueError(
+                f"Invalid risk_level '{value}'. Must be one of: low, medium, high, critical"
+            )
+        return risk
 
 
 class EscalationItem(BaseModel):
