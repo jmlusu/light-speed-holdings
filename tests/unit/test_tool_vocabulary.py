@@ -42,7 +42,7 @@ class TestToolVocabulary:
         dispatched: list[str] = []
 
         def handler(tool: str):
-            def fn(args: dict) -> dict[str, object]:
+            def fn(args: dict, **_kwargs: object) -> dict[str, object]:
                 dispatched.append(tool)
                 return {"ok": True}
 

@@ -198,6 +198,16 @@ curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" https://api.example.com/health
 
 ## Agent skills
 
+### Dispatch guardrails (subagents vs. skills) — READ BEFORE DELEGATING
+
+`task`'s `subagent_type` and `skill`'s `name` are **separate namespaces** with separate
+allowed values. Passing a skill name (e.g. `ecl-harness-engineer`) as a `subagent_type`
+is rejected by the runtime. Never derive a `subagent_type` from a `.agents/skills/` path
+or a skill title. Validate against the system-prompt agent roster before calling `task`;
+if a name isn't a known `subagent_type`, pick a valid roster entry or do the work
+directly — and say honestly which you did. Full rules and the cross-reference table:
+`docs/agents/subagents-vs-skills.md`.
+
 ### Issue tracker
 
 GitHub issues, via the `gh` CLI. External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.

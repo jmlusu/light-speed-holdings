@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Developer onboarding and environment management script for AI Company Builder.
 
@@ -61,7 +61,7 @@ function Ensure-Uv {
     Write-Step "Installing uv (package manager)"
     Write-Warn "uv not found — installing via the official installer"
     try {
-        irm https://astral.sh/uv/install.ps1 | iex
+        irm "https://astral.sh/uv/install.ps1" | iex
         $env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH"
     } catch {
         Write-Warn "Official installer failed — falling back to pip: pip install uv"
@@ -148,7 +148,7 @@ function Invoke-Setup {
 function Invoke-Test {
     Write-Step "Running test suite"
     Push-Location $ProjectRoot
-    uv run pytest --tb=short -q --cov=ai_company --cov-report=term-missing
+    uv run --no-sync pytest --tb=short -q --cov=ai_company --cov-report=term-missing
     $exitCode = $LASTEXITCODE
     Pop-Location
     if ($exitCode -ne 0) {
@@ -160,7 +160,7 @@ function Invoke-Test {
 
 function Invoke-Lint {
     Write-Step "Running Ruff linter"
-    uv run ruff check src/ tests/
+    uv run --no-sync ruff check src/ tests/
     if ($LASTEXITCODE -ne 0) {
         Write-Fail "Lint errors found"
         exit 1
@@ -168,7 +168,7 @@ function Invoke-Lint {
     Write-Ok "Lint clean"
 
     Write-Step "Running Ruff format check"
-    uv run ruff format --check src/ tests/
+    uv run --no-sync ruff format --check src/ tests/
     if ($LASTEXITCODE -ne 0) {
         Write-Warn "Format issues found — run: uv run ruff format src/ tests/"
     } else {
@@ -176,7 +176,7 @@ function Invoke-Lint {
     }
 
     Write-Step "Running Mypy type check"
-    uv run mypy src/ --ignore-missing-imports
+    uv run --no-sync mypy src/ --ignore-missing-imports
     if ($LASTEXITCODE -ne 0) {
         Write-Warn "Type errors found (non-blocking)"
     } else {
@@ -211,7 +211,7 @@ function Invoke-Status {
     }
 
     # Dependencies installed?
-    $check = uv run python -c "import ai_company" 2>&1
+    $check = uv run --no-sync python -c "import ai_company" 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  Package:         installed (editable)" -ForegroundColor Green
     } else {
@@ -275,7 +275,7 @@ function Invoke-Clean {
 function Invoke-Generate {
     Write-Step "Regenerating agents from company-registry.yaml"
     Push-Location $ProjectRoot
-    uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+    uv run --no-sync python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
     if ($LASTEXITCODE -eq 0) {
         Write-Ok "Agents regenerated successfully"
     } else {

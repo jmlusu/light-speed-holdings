@@ -1,0 +1,228 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const { title, description, canonical, ogImage = "/og-default.png" } = Astro.props;
+const site = Astro.site?.toString().replace(/\/$/, "") ?? "https://lightspeedholdings.com";
+const canonicalUrl = canonical ?? `${site}${Astro.url.pathname}`;
+const ogUrl = `${site}${Astro.url.pathname}`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Geist + Inter + Instrument Serif via Google Fonts — swap to self-host later if needed -->
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- OG / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:image" content={`${site}${ogImage}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${site}${ogImage}`} />
+    <meta name="theme-color" content="#f6f1ec" />
+
+    <!-- JSON-LD Organization -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "LightSpeed Holdings",
+      "url": site,
+      "logo": `${site}/favicon.svg`,
+      "sameAs": ["https://github.com/jmlusu/light-speed-holdings"],
+      "description": description
+    })} />
+
+    <!-- Minimal preconnect/perf -->
+    <meta name="color-scheme" content="light" />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- NAV — fixed blur, Foaster parity + a11y -->
+    <header id="site-header" class="fixed top-0 inset-x-0 z-50 h-[72px] flex items-center bg-[rgba(246,241,236,0.92)] backdrop-blur-[12px] border-b border-transparent transition-colors">
+      <nav class="ls-shell w-full flex items-center justify-between gap-6" aria-label="Main">
+        <a href="/" class="font-[var(--ls-font-serif)] text-[1.35rem] tracking-[-0.03em] font-normal" style="transform: scaleX(0.96); transform-origin: left;" aria-label="LightSpeed Holdings — home">
+          LightSpeed<span class="font-semibold"> Holdings</span>
+        </a>
+
+        <!-- Desktop nav -->
+        <div class="hidden md:flex items-center gap-9 text-[0.92rem] font-medium">
+          <div class="relative group">
+            <button class="inline-flex items-center gap-1.5 focus-visible:outline-none" aria-haspopup="true" aria-expanded="false">
+              Platform <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+            <div class="absolute left-0 top-[calc(100%+14px)] min-w-[380px] hidden group-hover:block group-focus-within:block bg-white/95 backdrop-blur-[20px] rounded-[12px] border border-[rgba(0,0,0,.06)] shadow-[var(--ls-shadow-dropdown)] p-2">
+              <a href="/platform" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)]"><div class="font-semibold text-[0.95rem]">Platform</div><div class="text-[0.82rem] text-[var(--ls-ink-muted)]">Define → Generate → Orchestrate → Execute → Learn</div></a>
+              <a href="/agents" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)]"><div class="font-semibold text-[0.95rem]">135 Agents</div><div class="text-[0.82rem] text-[var(--ls-ink-muted)]">19 departments, filtered directory</div></a>
+              <a href="/how-it-works" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)]"><div class="font-semibold text-[0.95rem]">How it works</div><div class="text-[0.82rem] text-[var(--ls-ink-muted)]">4-phase method with time boxes</div></a>
+            </div>
+          </div>
+
+          <a href="/features" class="hover:text-[var(--ls-accent)]">Features</a>
+          <a href="/solutions" class="hover:text-[var(--ls-accent)]">Solutions</a>
+          <a href="/changelog" class="hover:text-[var(--ls-accent)]">Changelog</a>
+          <div class="relative group">
+            <button class="inline-flex items-center gap-1.5" aria-haspopup="true">Resources <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+            <div class="absolute left-0 top-[calc(100%+14px)] min-w-[240px] hidden group-hover:block group-focus-within:block bg-white/95 backdrop-blur-[20px] rounded-[12px] border border-[rgba(0,0,0,.06)] shadow-[var(--ls-shadow-dropdown)] p-2">
+              <a href="/docs" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)] text-[0.9rem]">Docs</a>
+              <a href="/research" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)] text-[0.9rem]">Research</a>
+              <a href="https://github.com/jmlusu/light-speed-holdings" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)] text-[0.9rem]">GitHub ↗</a>
+            </div>
+          </div>
+          <a href="/about" class="hover:text-[var(--ls-accent)]">About</a>
+        </div>
+
+        <div class="hidden md:flex items-center gap-3">
+          <a href="https://github.com/jmlusu/light-speed-holdings" class="hidden lg:inline text-[0.85rem] text-[var(--ls-ink-muted)] hover:text-[var(--ls-ink)]">★ GitHub</a>
+          <a href="/contact" class="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[var(--ls-ink)] text-white text-[0.9rem] font-medium hover:opacity-85 transition" data-track="click_nav_book_call">Book deployment</a>
+        </div>
+
+        <!-- Mobile burger -->
+        <button id="nav-burger" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-full border border-[var(--ls-warm)]" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="burger-icon" aria-hidden="true">
+            <span class="block w-[18px] h-[2px] bg-[var(--ls-ink)] my-1 transition"></span>
+            <span class="block w-[18px] h-[2px] bg-[var(--ls-ink)] my-1 transition"></span>
+            <span class="block w-[18px] h-[2px] bg-[var(--ls-ink)] my-1 transition"></span>
+          </span>
+        </button>
+      </nav>
+
+      <!-- Mobile overlay -->
+      <div id="mobile-menu" class="hidden md:hidden fixed left-0 right-0 top-[72px] bottom-0 bg-white border-t border-[var(--ls-warm)] overflow-auto p-6">
+        <div class="flex flex-col gap-4 text-[1rem] font-medium">
+          <a href="/platform">Platform</a>
+          <a href="/features">Features</a>
+          <a href="/solutions">Solutions</a>
+          <a href="/how-it-works">How it works</a>
+          <a href="/changelog">Changelog</a>
+          <a href="/about">About</a>
+          <a href="https://github.com/jmlusu/light-speed-holdings">GitHub</a>
+          <a href="/contact" class="mt-2 inline-flex justify-center rounded-full bg-[var(--ls-ink)] text-white py-3" data-track="click_mobile_book">Book deployment</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="pt-[72px]">
+      <slot />
+    </main>
+
+    <!-- Footer minimal + sitemap -->
+    <footer class="border-t border-[var(--ls-divider)] bg-white mt-16">
+      <div class="ls-shell py-10 flex flex-col md:flex-row gap-10 justify-between">
+        <div>
+          <div class="font-[var(--ls-font-serif)] text-[1.15rem]">LightSpeed Holdings</div>
+          <p class="text-[0.88rem] text-[var(--ls-ink-muted)] mt-2 max-w-[36ch]">The operating system for AI-powered companies — 135 agents, 19 departments, 30+ commands.</p>
+          <div class="mt-4 flex gap-3 text-[0.85rem] text-[var(--ls-ink-muted)]">
+            <a href="https://github.com/jmlusu/light-speed-holdings" class="hover:text-[var(--ls-ink)]">GitHub</a>
+            <span aria-hidden="true">·</span>
+            <a href="/privacy" class="hover:text-[var(--ls-ink)]">Privacy</a>
+            <span aria-hidden="true">·</span>
+            <a href="/docs" class="hover:text-[var(--ls-ink)]">Docs</a>
+          </div>
+          <p class="text-[0.78rem] text-[var(--ls-ink-muted)] mt-3">© <span id="footer-year"></span> LightSpeed Holdings. Built on free hosting.</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-8 text-[0.88rem]">
+          <div>
+            <div class="font-semibold mb-3">Product</div>
+            <ul class="space-y-2 text-[var(--ls-ink-muted)]">
+              <li><a href="/platform" class="hover:text-[var(--ls-ink)]">Platform</a></li>
+              <li><a href="/agents" class="hover:text-[var(--ls-ink)]">Agents</a></li>
+              <li><a href="/features" class="hover:text-[var(--ls-ink)]">Features</a></li>
+              <li><a href="/how-it-works" class="hover:text-[var(--ls-ink)]">How it works</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="font-semibold mb-3">Resources</div>
+            <ul class="space-y-2 text-[var(--ls-ink-muted)]">
+              <li><a href="/docs" class="hover:text-[var(--ls-ink)]">Docs</a></li>
+              <li><a href="/changelog" class="hover:text-[var(--ls-ink)]">Changelog</a></li>
+              <li><a href="/research" class="hover:text-[var(--ls-ink)]">Research</a></li>
+              <li><a href="/solutions" class="hover:text-[var(--ls-ink)]">Solutions</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="font-semibold mb-3">Company</div>
+            <ul class="space-y-2 text-[var(--ls-ink-muted)]">
+              <li><a href="/about" class="hover:text-[var(--ls-ink)]">About</a></li>
+              <li><a href="/case-study" class="hover:text-[var(--ls-ink)]">Case study</a></li>
+              <li><a href="/contact" class="hover:text-[var(--ls-ink)]">Contact</a></li>
+              <li><a href="/privacy" class="hover:text-[var(--ls-ink)]">Privacy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script is:inline>
+      // Nav scrolled border + burger + footer year — vanilla, Foaster-ported (no framework)
+      const header = document.getElementById('site-header');
+      const onScroll = () => {
+        if (window.scrollY > 20) header.classList.add('!border-[var(--ls-warm)]','bg-white/95');
+        else header.classList.remove('!border-[var(--ls-warm)]','bg-white/95');
+      };
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+      const burger = document.getElementById('nav-burger');
+      const menu = document.getElementById('mobile-menu');
+      if (burger && menu) {
+        burger.addEventListener('click', () => {
+          const open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menu.classList.toggle('hidden', open);
+          document.body.style.overflow = open ? '' : 'hidden';
+        });
+        menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+          burger.setAttribute('aria-expanded','false'); menu.classList.add('hidden'); document.body.style.overflow='';
+        }));
+      }
+      const year = document.getElementById('footer-year');
+      if (year) year.textContent = String(new Date().getFullYear());
+
+      // Minimal fade-in observer (Foaster port)
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }});
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+      // data-track delegation (GA4/Plausible stub)
+      document.addEventListener('click', (e) => {
+        const t = e.target.closest('[data-track]');
+        if (t) {
+          const name = t.getAttribute('data-track');
+          if (window.gtag) window.gtag('event', name, { page_path: location.pathname });
+          if (window.plausible) window.plausible(name);
+          console.debug('[track]', name);
+        }
+      });
+    </script>
+
+    <script is:inline>
+      // Minimal analytics stub — replace with Plausible/GA4 via env
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+    </script>
+  </body>
+</html>

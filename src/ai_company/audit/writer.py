@@ -165,9 +165,29 @@ class AuditWriter:
         ]
         payload = "\n".join(lines) + "\n"
 
+        # Cross-process safe append: the read-modify-write (rotation + atomic
+        # append) is guarded by a sidecar lock so two *processes* (executor,
+        # dashboard, worker) never both read-then-replace and silently drop
+        # each other's events. The in-process threading lock serialises
+        # threads sharing one writer instance; the file lock serialises
+        # across process boundaries.
         with self._lock:
-            self._maybe_rotate()
-            self._atomic_append(payload)
+            from ai_company.store.file_lock import FileLockError
+            from ai_company.store.file_lock import file_lock as _fl
+
+            lock_path = self._path
+            try:
+                with _fl(lock_path, timeout=5.0, stale_after=30.0):
+                    self._maybe_rotate()
+                    self._atomic_append(payload)
+            except FileLockError:
+                logger.error(
+                    "Could not acquire audit lock within 5.0s for %s; dropping %d "
+                    "audit event(s) to avoid corrupting the trail.",
+                    self._path,
+                    len(events),
+                )
+                return
             self.events_written += len(events)
 
         if self._audit_store is not None:
