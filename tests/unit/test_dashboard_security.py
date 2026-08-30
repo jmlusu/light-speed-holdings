@@ -760,3 +760,549 @@ class TestWebSocketRoleGate:
         with client.websocket_connect("/ws/v1/dashboard") as ws:
             hello = ws.receive_json()
             assert hello["type"] == "connected"
+
+
+# ── Input validation & sanitization tests ─────────────────────────────
+
+
+class TestInputValidation:
+    """Verify POST/PATCH/DELETE endpoints enforce input validation (GAP-hardening)."""
+
+    def _client(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
+        monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "company").mkdir(exist_ok=True)
+        (tmp_path / "company" / "agent-registry.json").write_text("[]", encoding="utf-8")
+        (tmp_path / ".opencode").mkdir(exist_ok=True)
+        (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
+        (tmp_path / "orchestrator").mkdir(exist_ok=True)
+        (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
+        (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+            "rules: []\nevents: []", encoding="utf-8"
+        )
+        from ai_company.dashboard.app import create_app
+
+        return TestClient(create_app())
+
+    def test_task_invalid_priority_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A non-enum priority on POST /tasks must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/tasks",
+            json={"receiver_id": "agent", "instruction": "do something", "priority": "urgent"},
+        )
+        assert resp.status_code == 422
+
+    def test_task_control_char_in_receiver_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A receiver_id containing control characters must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/tasks",
+            json={"receiver_id": "agent\r\n", "instruction": "do something"},
+        )
+        assert resp.status_code == 422
+
+    def test_task_empty_receiver_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """An empty receiver_id on POST /tasks must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/tasks",
+            json={"receiver_id": "   ", "instruction": "do something"},
+        )
+        assert resp.status_code == 422
+
+    def test_task_overlong_instruction_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """An instruction exceeding the max length must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/tasks",
+            json={"receiver_id": "agent", "instruction": "x" * 20001},
+        )
+        assert resp.status_code == 422
+
+    def test_task_update_invalid_status_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A non-enum status on PATCH /tasks/{id} must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.patch(
+            "/api/v1/tasks/some-id",
+            json={"status": "nonsense"},
+        )
+        assert resp.status_code == 422
+
+    def test_reassign_reports_to_control_char_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """reports_to with control characters must be rejected with 400."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.patch(
+            "/api/v1/agents/chief-of-staff/reports-to",
+            json={"reports_to": "human-ceo\r\n"},
+        )
+        assert resp.status_code == 400
+
+    def test_payment_negative_amount_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A negative payment amount must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/payments",
+            json={"amount": -100, "currency": "MWK"},
+        )
+        assert resp.status_code == 422
+
+    def test_payment_invalid_currency_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A malformed currency code must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/payments",
+            json={"amount": 100, "currency": "MW"},
+        )
+        assert resp.status_code == 422
+
+    def test_project_cost_negative_tokens_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A negative token count on POST /project-costs must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/project-costs",
+            json={"tokens": -5},
+        )
+        assert resp.status_code == 422
+
+    def test_approval_update_invalid_risk_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A non-enum risk_level on PATCH /approvals/{id} must be rejected with 422."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.patch(
+            "/api/v1/approvals/some-id",
+            json={"risk_level": "catastrophic"},
+        )
+        assert resp.status_code == 422
+
+    def test_valid_task_create_accepted(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A well-formed task still creates successfully in open mode."""
+        client = self._client(monkeypatch, tmp_path)
+        resp = client.post(
+            "/api/v1/tasks",
+            json={"receiver_id": "agent", "instruction": "write a detailed report"},
+        )
+        assert resp.status_code == 201
+
+
+# ── WebSocket hardening tests ──────────────────────────────────────────
+
+
+class TestWebSocketHardening:
+    """Verify WS connection cap, topic allowlist, message-size and rate limits."""
+
+    def _client(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
+        monkeypatch.delenv("DASHBOARD_API_KEY", raising=False)
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "company").mkdir(exist_ok=True)
+        (tmp_path / "company" / "agent-registry.json").write_text("[]", encoding="utf-8")
+        (tmp_path / ".opencode").mkdir(exist_ok=True)
+        (tmp_path / ".opencode" / "inbox.json").write_text("[]", encoding="utf-8")
+        (tmp_path / "orchestrator").mkdir(exist_ok=True)
+        (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
+        (tmp_path / "orchestrator" / "escalation.yaml").write_text(
+            "rules: []\nevents: []", encoding="utf-8"
+        )
+        from ai_company.dashboard.app import create_app
+
+        return TestClient(create_app())
+
+    def test_subscribe_rejects_unknown_topic(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Unknown topics are filtered out of the subscribe response."""
+        client = self._client(monkeypatch, tmp_path)
+        with client.websocket_connect("/ws/v1/dashboard") as ws:
+            hello = ws.receive_json()
+            assert hello["type"] == "connected"
+            ws.send_json({"type": "subscribe", "topics": ["kpis", "secret-channel"]})
+            resp = ws.receive_json()
+            assert resp["type"] == "subscribed"
+            assert resp["topics"] == ["kpis"]
+            assert "secret-channel" in resp["invalid"]
+
+    def test_subscribe_non_list_topics_rejected(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A non-list topics field must return an error, not crash."""
+        client = self._client(monkeypatch, tmp_path)
+        with client.websocket_connect("/ws/v1/dashboard") as ws:
+            ws.receive_json()
+            ws.send_json({"type": "subscribe", "topics": "kpis"})
+            resp = ws.receive_json()
+            assert resp["type"] == "error"
+
+    def test_oversized_message_closes_connection(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Messages over the byte cap must close the connection with 1009."""
+        monkeypatch.setenv("DASHBOARD_WS_MAX_MESSAGE_BYTES", "64")
+        client = self._client(monkeypatch, tmp_path)
+        with client.websocket_connect("/ws/v1/dashboard") as ws:
+            ws.receive_json()
+            ws.send_json({"type": "ping", "padding": "x" * 200})
+            err = ws.receive_json()
+            assert err["type"] == "error"
+
+    def test_rate_limit_closes_connection(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """Exceeding the inbound rate limit must close with 1008."""
+        monkeypatch.setenv("DASHBOARD_WS_RATE_LIMIT_MESSAGES", "2")
+        monkeypatch.setenv("DASHBOARD_WS_RATE_LIMIT_WINDOW_S", "10")
+        from starlette.websockets import WebSocketDisconnect
+
+        client = self._client(monkeypatch, tmp_path)
+        with client.websocket_connect("/ws/v1/dashboard") as ws:
+            ws.receive_json()
+            ws.send_json({"type": "ping"})
+            assert ws.receive_json()["type"] == "pong"
+            ws.send_json({"type": "ping"})
+            assert ws.receive_json()["type"] == "pong"
+            # Third message within the window trips the 2-msg limit.
+            ws.send_json({"type": "ping"})
+            err = ws.receive_json()
+            assert err["type"] == "error"
+            with pytest.raises(WebSocketDisconnect):
+                ws.receive_json()
+
+    def test_pong_heartbeat_reply_acknowledged_silently(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A client pong (reply to a server heartbeat probe) gets no error frame."""
+        client = self._client(monkeypatch, tmp_path)
+        with client.websocket_connect("/ws/v1/dashboard") as ws:
+            ws.receive_json()  # connected hello
+            ws.send_json({"type": "pong"})
+            # The next legitimate exchange must not be shadowed by an error
+            # reply to the pong.
+            ws.send_json({"type": "ping"})
+            assert ws.receive_json()["type"] == "pong"
+
+    def test_connection_cap_rejects_excess(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ) -> None:
+        """A connection beyond the cap must be refused with 1013."""
+        monkeypatch.setenv("DASHBOARD_MAX_WS_CLIENTS", "1")
+        from starlette.websockets import WebSocketDisconnect
+
+        client = self._client(monkeypatch, tmp_path)
+        with (
+            client.websocket_connect("/ws/v1/dashboard") as ws,
+            pytest.raises(WebSocketDisconnect) as exc_info,
+        ):
+            ws.receive_json()
+            with client.websocket_connect("/ws/v1/dashboard"):
+                pass
+        assert exc_info.value.code == 1013
+
+
+# ── WebSocket liveness sweep tests (C2) ───────────────────────────────
+
+
+class _FakeWS:
+    """Minimal WebSocket double for exercising the ConnectionManager."""
+
+    def __init__(self) -> None:
+        self.accepted = False
+        self.closed_code: int | None = None
+        self.closed_reason: str | None = None
+        self.sent_text: list[str] = []
+
+    async def accept(self) -> None:
+        self.accepted = True
+
+    async def close(self, code: int = 1000, reason: str | None = None) -> None:
+        self.closed_code = code
+        self.closed_reason = reason
+
+    async def send_text(self, payload: str) -> None:
+        self.sent_text.append(payload)
+
+    async def send_json(self, payload: dict) -> None:
+        pass
+
+
+class _FailingSendWS(_FakeWS):
+    """WebSocket double whose probe sends always fail (dead client)."""
+
+    async def send_text(self, payload: str) -> None:
+        raise RuntimeError("Simulated send failure")
+
+
+class TestWebSocketLiveness:
+    """Verify idle connections are reaped and health is observable (C2)."""
+
+    async def test_idle_connections_are_reaped(self) -> None:
+        import time as _time
+
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            # Simulate a connection that has been silent far beyond the limit.
+            manager._last_seen[id(ws)] = _time.monotonic() - 3600
+            assert manager.active_count == 1
+
+            reaped = await manager._idle_sweep_once()
+            assert reaped == [ws]
+            assert ws.closed_code == 1008
+            assert ws.closed_reason == "Idle timeout"
+            assert manager.active_count == 0
+        finally:
+            manager._stop_sweeper()
+
+    async def test_recent_activity_prevents_reap(self) -> None:
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            reaped = await manager._idle_sweep_once()
+            assert reaped == []
+            assert manager.active_count == 1
+            assert ws.closed_code is None
+        finally:
+            await manager.disconnect(ws)
+            manager._stop_sweeper()
+
+    async def test_inbound_message_touches_last_seen(self) -> None:
+        import time as _time
+
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            manager._last_seen[id(ws)] = _time.monotonic() - 3600
+            assert manager._check_rate_limit(id(ws)) is True  # any inbound message
+            reaped = await manager._idle_sweep_once()
+            assert reaped == []
+            assert manager.active_count == 1
+        finally:
+            await manager.disconnect(ws)
+            manager._stop_sweeper()
+
+    async def test_zero_timeout_disables_sweep(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        import time as _time
+
+        monkeypatch.setenv("DASHBOARD_WS_IDLE_TIMEOUT_S", "0")
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            manager._last_seen[id(ws)] = _time.monotonic() - 3600
+            reaped = await manager._idle_sweep_once()
+            assert reaped == []
+            assert manager.active_count == 1
+            assert ws.closed_code is None
+        finally:
+            await manager.disconnect(ws)
+            manager._stop_sweeper()
+
+    async def test_stats_reports_connection_health(self) -> None:
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws1, ws2 = _FakeWS(), _FakeWS()
+            assert await manager.connect(ws1)
+            assert await manager.connect(ws2)
+            await manager.subscribe(ws1, ["kpis", "alerts"])
+            await manager.subscribe(ws2, ["kpis"])
+
+            stats = manager.stats()
+            assert stats["active_clients"] == 2
+            assert stats["connection_cap"] >= 2
+            assert stats["idle_timeout_s"] == 600
+            assert stats["subscribed_topics"] == {"kpis": 2, "alerts": 1}
+            assert stats["sweeps_run"] >= 0
+        finally:
+            await manager.disconnect(ws1)
+            await manager.disconnect(ws2)
+            manager._stop_sweeper()
+
+
+# ── WebSocket server heartbeat probe tests (C2) ─────────────────────────
+
+
+class TestWebSocketHeartbeat:
+    """Verify the server-initiated heartbeat probe and its reap deadline."""
+
+    async def test_probe_sent_after_silence(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        import json
+        import time as _time
+
+        monkeypatch.setenv("DASHBOARD_WS_HEARTBEAT_INTERVAL_S", "30")
+        monkeypatch.setenv("DASHBOARD_WS_PONG_TIMEOUT_S", "30")
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            now = _time.monotonic()
+            manager._last_seen[id(ws)] = now - 31
+
+            reaped = await manager._idle_sweep_once(now=now)
+
+            assert reaped == []
+            assert manager.active_count == 1
+            assert ws.closed_code is None
+            assert len(ws.sent_text) == 1
+            probe = json.loads(ws.sent_text[0])
+            assert probe["type"] == "ping"
+            assert probe["source"] == "server"
+            assert id(ws) in manager._probe_sent_at
+            assert manager._probes_sent == 1
+        finally:
+            await manager.disconnect(ws)
+            manager._stop_sweeper()
+
+    async def test_missed_pong_reaps(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        import time as _time
+
+        monkeypatch.setenv("DASHBOARD_WS_HEARTBEAT_INTERVAL_S", "30")
+        monkeypatch.setenv("DASHBOARD_WS_PONG_TIMEOUT_S", "30")
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            now = _time.monotonic()
+            manager._last_seen[id(ws)] = now - 31
+            # First pass probes; second pass (past the pong deadline) reaps.
+            await manager._idle_sweep_once(now=now)
+            assert manager.active_count == 1
+
+            reaped = await manager._idle_sweep_once(now=now + 31)
+
+            assert reaped == [ws]
+            assert ws.closed_code == 1008
+            assert ws.closed_reason == "No heartbeat response"
+            assert manager.active_count == 0
+        finally:
+            manager._stop_sweeper()
+
+    async def test_inbound_activity_clears_probe(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        import time as _time
+
+        monkeypatch.setenv("DASHBOARD_WS_HEARTBEAT_INTERVAL_S", "30")
+        monkeypatch.setenv("DASHBOARD_WS_PONG_TIMEOUT_S", "30")
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            now = _time.monotonic()
+            manager._last_seen[id(ws)] = now - 31
+            await manager._idle_sweep_once(now=now)
+            assert id(ws) in manager._probe_sent_at
+
+            # Any inbound message (a pong reply) clears the pending probe.
+            assert manager._check_rate_limit(id(ws)) is True
+            assert id(ws) not in manager._probe_sent_at
+
+            reaped = await manager._idle_sweep_once(now=now + 31)
+            assert reaped == []
+            assert ws.closed_code is None
+            assert manager.active_count == 1
+        finally:
+            await manager.disconnect(ws)
+            manager._stop_sweeper()
+
+    async def test_probe_disabled_when_interval_zero(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        import time as _time
+
+        monkeypatch.setenv("DASHBOARD_WS_HEARTBEAT_INTERVAL_S", "0")
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            now = _time.monotonic()
+            manager._last_seen[id(ws)] = now - 31
+
+            reaped = await manager._idle_sweep_once(now=now)
+
+            assert reaped == []
+            assert len(ws.sent_text) == 0
+            assert ws.closed_code is None
+            assert manager.active_count == 1
+        finally:
+            await manager.disconnect(ws)
+            manager._stop_sweeper()
+
+    async def test_probe_send_failure_prunes_immediately(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import time as _time
+
+        monkeypatch.setenv("DASHBOARD_WS_HEARTBEAT_INTERVAL_S", "30")
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FailingSendWS()
+            assert await manager.connect(ws) is True
+            now = _time.monotonic()
+            manager._last_seen[id(ws)] = now - 31
+
+            reaped = await manager._idle_sweep_once(now=now)
+
+            assert reaped == [ws]
+            assert ws.closed_code == 1008
+            assert ws.closed_reason == "Heartbeat send failed"
+            assert manager.active_count == 0
+        finally:
+            manager._stop_sweeper()
+
+    async def test_stats_include_heartbeat(self) -> None:
+        from ai_company.dashboard.ws import ConnectionManager
+
+        manager = ConnectionManager()
+        try:
+            ws = _FakeWS()
+            assert await manager.connect(ws) is True
+            stats = manager.stats()
+            assert stats["heartbeat_interval_s"] == 300
+            assert stats["pong_timeout_s"] == 120
+            assert stats["probes_sent"] == 0
+            assert stats["probes_outstanding"] == 0
+        finally:
+            await manager.disconnect(ws)
+            manager._stop_sweeper()
