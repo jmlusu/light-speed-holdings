@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
+from typing import Any
 
 from ai_company.audit.events import AuditEvent, AuditEventType
 from ai_company.paths import get_audit_path
@@ -60,6 +61,16 @@ class AuditReader:
     def read_since(self, since: str) -> list[AuditEvent]:
         """Return events whose timestamp is >= *since* (ISO 8601 string)."""
         return [e for e in self._read_lines() if e.timestamp >= since]
+
+    def verify(self) -> dict[str, Any]:
+        """Verify the trail's tamper-evident hash chain (C1).
+
+        Delegates to :func:`ai_company.audit.integrity.verify_audit_chain`
+        across the active file and retained rotated files.
+        """
+        from ai_company.audit.integrity import verify_audit_chain
+
+        return verify_audit_chain(self._path)
 
     # ------------------------------------------------------------------
     # Internal helpers
