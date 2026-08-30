@@ -105,13 +105,13 @@
   <!-- Alerts Bar -->
   <template x-if="!orgHealthLoading && orgHealth">
     <div class="hero-alerts">
-      <span class="alert-item">
+      <span class="alert-item" @click="openApprovalsDrillDown()" style="cursor: pointer;" title="View pending approvals">
         <span class="text-amber-400" x-text="kpis.pending_approvals || 0"></span> pending approvals
       </span>
-      <span class="alert-item">
+      <span class="alert-item" @click="openEscalationsDrillDown()" style="cursor: pointer;" title="View open escalations">
         <span class="text-red-400" x-text="kpis.open_escalations || 0"></span> escalations
       </span>
-      <span class="alert-item">
+      <span class="alert-item" @click="openInProgressDrillDown()" style="cursor: pointer;" title="View in-progress tasks">
         <span class="text-blue-400" x-text="kpis.in_progress_tasks || 0"></span> in-progress
       </span>
     </div>
@@ -152,7 +152,7 @@
 <div class="jarvis-glass rounded-xl p-5 mb-6">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-sm font-semibold font-display text-jarvis-text">Cost Breakdown</h3>
-    <span class="text-xs text-jarvis-muted">Last 24h</span>
+    <button @click="openCostDrillDown()" class="text-xs text-jarvis-cyan hover:text-jarvis-cyan/80 transition-colors">Details &rarr;</button>
   </div>
   <div class="flex flex-wrap gap-6">
     <!-- Total cost -->
@@ -167,10 +167,13 @@
 
     <!-- Top 5 agents -->
     <div class="flex-1 min-w-[200px]">
-      <p class="text-xs text-jarvis-muted mb-2">Top Agents</p>
+      <p class="text-xs text-jarvis-muted mb-2 flex items-center gap-2">
+        Top Agents
+        <button @click="openTopAgentsDrillDown()" class="text-jarvis-cyan hover:text-jarvis-cyan/80 transition-colors text-[10px]" title="View all agents">view all &rarr;</button>
+      </p>
       <div class="space-y-1.5">
         <template x-for="a in agentCosts.slice(0, 5)" :key="a.agent">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 cursor-pointer hover:bg-jarvis-overlay/30 rounded px-1 -mx-1 transition-colors" @click="openAgentCostDrillDown(a.agent)" :title="'View cost details for ' + a.agent">
             <span class="text-xs font-mono text-jarvis-muted truncate w-24" x-text="a.agent"></span>
             <div class="flex-1 h-1.5 bg-jarvis-overlay rounded-full overflow-hidden">
               <div class="h-full bg-jarvis-cyan rounded-full"
@@ -187,13 +190,424 @@
 
     <!-- Cost trend sparkline -->
     <div class="w-48">
-      <p class="text-xs text-jarvis-muted mb-2">Cost Trend</p>
-      <div class="chart-container" style="height:64px">
+      <p class="text-xs text-jarvis-muted mb-2 flex items-center gap-2">
+        Cost Trend
+        <button @click="openCostTrendDrillDown()" class="text-jarvis-cyan hover:text-jarvis-cyan/80 transition-colors text-[10px]" title="View cost trend details">details &rarr;</button>
+      </p>
+      <div class="chart-container" style="height:64px; cursor: pointer;" @click="openCostTrendDrillDown()">
         <canvas id="costTrendMini"></canvas>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ═══ DRILL-DOWN PANEL ═══ -->
+<template x-if="drillDown">
+  <div class="jarvis-glass rounded-xl p-5 mb-6 border border-jarvis-cyan/30" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform translate-y-2" x-transition:leave="transition ease-in duration-150" x-transition:leave-end="opacity-0 transform translate-y-2">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold font-display text-jarvis-text" x-text="drillDown.title"></h3>
+      <button @click="closeDrillDown()" class="text-jarvis-muted hover:text-jarvis-text">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <template x-if="drillDown.loading">
+      <div class="space-y-2">
+        <div class="skeleton skeleton-row"></div>
+        <div class="skeleton skeleton-row"></div>
+        <div class="skeleton skeleton-row"></div>
+      </div>
+    </template>
+
+    <!-- Task Status Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'task-status'">
+      <div>
+        <p class="text-xs text-jarvis-muted mb-3" x-text="drillDown.data.length + ' tasks found'"></p>
+        <template x-if="drillDown.data.length === 0">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No tasks with this status</p>
+        </template>
+        <template x-if="drillDown.data.length > 0">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-xs text-jarvis-muted border-b border-white/[0.06]">
+                  <th class="pb-2 font-medium">Receiver</th>
+                  <th class="pb-2 font-medium">Instruction</th>
+                  <th class="pb-2 font-medium">Priority</th>
+                  <th class="pb-2 font-medium">Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="t in drillDown.data" :key="t.id">
+                  <tr class="border-b border-white/[0.06]/30 hover:bg-jarvis-overlay/30">
+                    <td class="py-2 font-mono text-xs text-jarvis-muted" x-text="t.receiver_id"></td>
+                    <td class="py-2 max-w-xs truncate text-jarvis-text" x-text="t.instruction"></td>
+                    <td class="py-2">
+                      <span class="px-2 py-0.5 rounded-full text-xs font-medium" :class="priorityClass(t.priority)" x-text="t.priority"></span>
+                    </td>
+                    <td class="py-2 text-xs text-jarvis-muted font-mono" x-text="formatTime(t.created_at)"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Department Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'department'">
+      <div>
+        <template x-if="!drillDown.data">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No data available for this department</p>
+        </template>
+        <template x-if="drillDown.data">
+          <div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <template x-for="(kpi, key) in (drillDown.data.kpis || {})" :key="key">
+                <div class="bg-white/5 rounded-lg p-3">
+                  <p class="text-[10px] text-jarvis-muted uppercase tracking-wider" x-text="key.replace(/_/g, ' ')"></p>
+                  <p class="text-lg font-bold font-mono mt-1" :class="{
+                    'text-emerald-400': kpi.status === 'on_track',
+                    'text-amber-400': kpi.status === 'below_target',
+                    'text-red-400': kpi.status === 'above_target',
+                    'text-blue-400': kpi.status === 'info'
+                  }" x-text="kpi.current ?? '—'"></p>
+                  <p class="text-[10px] text-jarvis-muted" x-text="kpi.unit"></p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Cost Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'cost'">
+      <div>
+        <template x-if="!drillDown.data">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No cost data available</p>
+        </template>
+        <template x-if="drillDown.data">
+          <div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Total Budget</p>
+                <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="'$' + (drillDown.data.total_budget || 0).toFixed(2)"></p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Total Spent</p>
+                <p class="text-lg font-bold font-mono text-jarvis-cyan mt-1" x-text="'$' + (drillDown.data.total_spent || 0).toFixed(4)"></p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Budget Utilization</p>
+                <p class="text-lg font-bold font-mono mt-1" :class="drillDown.data.budget_utilization > 90 ? 'text-red-400' : 'text-emerald-400'" x-text="(drillDown.data.budget_utilization || 0).toFixed(1) + '%'"></p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Avg Cost/Task</p>
+                <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="'$' + (drillDown.data.avg_cost_per_task || 0).toFixed(6)"></p>
+              </div>
+            </div>
+            <div class="mt-3">
+              <p class="text-xs text-jarvis-muted mb-2 font-medium">Per-Agent Costs</p>
+              <div class="space-y-1.5">
+                <template x-for="a in (drillDown.data.per_agent_costs || []).slice(0, 10)" :key="a.agent">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono text-jarvis-muted truncate w-32" x-text="a.agent"></span>
+                    <div class="flex-1 h-1.5 bg-jarvis-overlay rounded-full overflow-hidden">
+                      <div class="h-full bg-jarvis-cyan rounded-full" :style="'width:' + Math.min(100, (a.totalCost / ((drillDown.data.per_agent_costs || [])[0]?.totalCost || 1)) * 100) + '%'"></div>
+                    </div>
+                    <span class="text-xs font-mono text-jarvis-text w-20 text-right" x-text="'$' + a.totalCost.toFixed(4)"></span>
+                  </div>
+                </template>
+                <template x-if="(drillDown.data.per_agent_costs || []).length === 0">
+                  <p class="text-xs text-jarvis-muted italic">No per-agent cost data</p>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Company KPI Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'company-kpi'">
+      <div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Current</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="formatKPIValue(drillDown.data.current, drillDown.data.unit)"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Target</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="formatKPIValue(drillDown.data.target, drillDown.data.unit)"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Gap</p>
+            <p class="text-lg font-bold font-mono mt-1" :class="drillDown.data.status === 'on_track' ? 'text-emerald-400' : 'text-amber-400'" x-text="formatKPIValue(drillDown.data.gap, drillDown.data.unit)"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Category</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.category || '—'"></p>
+          </div>
+        </div>
+        <div class="bg-white/5 rounded-lg p-3 mb-3">
+          <p class="text-[10px] text-jarvis-muted uppercase tracking-wider mb-1">Formula</p>
+          <p class="text-xs text-jarvis-text" x-text="drillDown.data.formula || 'No formula defined'"></p>
+        </div>
+        <div class="bg-white/5 rounded-lg p-3">
+          <p class="text-[10px] text-jarvis-muted uppercase tracking-wider mb-1">Data Source</p>
+          <p class="text-xs text-jarvis-text" x-text="drillDown.data.source || 'No source defined'"></p>
+        </div>
+      </div>
+    </template>
+
+    <!-- Department KPI Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'dept-kpi'">
+      <div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Current</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.current ?? '—'"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Target</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.target ?? '—'"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Status</p>
+            <p class="text-lg font-bold font-mono mt-1" :class="{
+              'text-emerald-400': drillDown.data.status === 'on_track',
+              'text-amber-400': drillDown.data.status === 'below_target',
+              'text-red-400': drillDown.data.status === 'above_target',
+              'text-blue-400': drillDown.data.status === 'info'
+            }" x-text="(drillDown.data.status || 'info').replace(/_/g, ' ')"></p>
+          </div>
+          <div class="bg-white/5 rounded-lg p-3">
+            <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Unit</p>
+            <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.unit || '—'"></p>
+          </div>
+        </div>
+        <template x-if="drillDown.history && drillDown.history.length > 0">
+          <div>
+            <p class="text-xs text-jarvis-muted mb-2 font-medium">History (last <span x-text="drillDown.history.length"></span> snapshots)</p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-left text-xs text-jarvis-muted border-b border-white/[0.06]">
+                    <th class="pb-2 font-medium">Timestamp</th>
+                    <th class="pb-2 font-medium">Value</th>
+                    <th class="pb-2 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(entry, idx) in drillDown.history" :key="idx">
+                    <tr class="border-b border-white/[0.06]/30">
+                      <td class="py-1.5 text-xs text-jarvis-muted font-mono" x-text="entry.timestamp"></td>
+                      <td class="py-1.5 text-xs font-mono text-jarvis-text" x-text="entry.current ?? '—'"></td>
+                      <td class="py-1.5">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-medium" :class="{
+                          'bg-emerald-500/10 text-emerald-400': entry.status === 'on_track',
+                          'bg-amber-500/10 text-amber-400': entry.status === 'below_target',
+                          'bg-red-500/10 text-red-400': entry.status === 'above_target',
+                          'bg-blue-500/10 text-blue-400': entry.status === 'info'
+                        }" x-text="(entry.status || 'info').replace(/_/g, ' ')"></span>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </template>
+        <template x-if="!drillDown.history || drillDown.history.length === 0">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No history data available yet</p>
+        </template>
+      </div>
+    </template>
+
+    <!-- Approvals Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'approvals'">
+      <div>
+        <template x-if="drillDown.data.length === 0">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No pending approvals</p>
+        </template>
+        <template x-if="drillDown.data.length > 0">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-xs text-jarvis-muted border-b border-white/[0.06]">
+                  <th class="pb-2 font-medium">ID</th>
+                  <th class="pb-2 font-medium">Requester</th>
+                  <th class="pb-2 font-medium">Type</th>
+                  <th class="pb-2 font-medium">Risk</th>
+                  <th class="pb-2 font-medium">Cost</th>
+                  <th class="pb-2 font-medium">Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="a in drillDown.data" :key="a.id">
+                  <tr class="border-b border-white/[0.06]/30 hover:bg-jarvis-overlay/30">
+                    <td class="py-2 font-mono text-xs text-jarvis-muted" x-text="a.id"></td>
+                    <td class="py-2 text-xs text-jarvis-text" x-text="a.requester_id || '—'"></td>
+                    <td class="py-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-500/10 text-blue-400" x-text="a.type || '—'"></span></td>
+                    <td class="py-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-medium" :class="a.risk_level === 'high' ? 'bg-red-500/10 text-red-400' : a.risk_level === 'medium' ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'" x-text="a.risk_level || 'low'"></span></td>
+                    <td class="py-2 text-right font-mono text-xs text-jarvis-text" x-text="a.cost_estimate ? '$' + a.cost_estimate.toFixed(2) : '—'"></td>
+                    <td class="py-2 text-xs text-jarvis-muted font-mono" x-text="formatTime(a.created_at)"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Escalations Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'escalations'">
+      <div>
+        <template x-if="drillDown.data.length === 0">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No open escalations</p>
+        </template>
+        <template x-if="drillDown.data.length > 0">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-xs text-jarvis-muted border-b border-white/[0.06]">
+                  <th class="pb-2 font-medium">Task ID</th>
+                  <th class="pb-2 font-medium">From</th>
+                  <th class="pb-2 font-medium">To</th>
+                  <th class="pb-2 font-medium">Reason</th>
+                  <th class="pb-2 font-medium">Rule</th>
+                  <th class="pb-2 font-medium">Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="e in drillDown.data" :key="e.id">
+                  <tr class="border-b border-white/[0.06]/30 hover:bg-jarvis-overlay/30">
+                    <td class="py-2 font-mono text-xs text-jarvis-muted" x-text="e.task_id"></td>
+                    <td class="py-2 text-xs font-mono text-jarvis-text" x-text="e.from_agent"></td>
+                    <td class="py-2 text-xs font-mono text-jarvis-text" x-text="e.to_agent"></td>
+                    <td class="py-2 text-xs text-jarvis-text truncate max-w-xs" x-text="e.reason || e.rule_id"></td>
+                    <td class="py-2 text-xs text-jarvis-muted font-mono" x-text="e.rule_id || '—'"></td>
+                    <td class="py-2 text-xs text-jarvis-muted font-mono" x-text="formatTime(e.timestamp)"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Top Agents Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'top-agents'">
+      <div>
+        <template x-if="!drillDown.data || drillDown.data.length === 0">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No agent cost data</p>
+        </template>
+        <template x-if="drillDown.data && drillDown.data.length > 0">
+          <div class="space-y-1.5">
+            <template x-for="a in drillDown.data" :key="a.agent">
+              <div class="flex items-center gap-3 p-2 rounded-lg bg-white/[0.03]">
+                <span class="text-xs font-mono text-jarvis-muted truncate w-32" x-text="a.agent"></span>
+                <div class="flex-1 h-2 bg-jarvis-overlay rounded-full overflow-hidden">
+                  <div class="h-full bg-jarvis-cyan rounded-full" :style="'width:' + (drillDown.data.length > 0 ? Math.min(100, ((a.totalCost || a.total_cost || 0) / (drillDown.data[0]?.totalCost || drillDown.data[0]?.total_cost || 1)) * 100) : 0) + '%'"></div>
+                </div>
+                <span class="text-xs font-mono text-jarvis-text w-20 text-right" x-text="'$' + (a.totalCost || a.total_cost || 0).toFixed(4)"></span>
+                <span class="text-xs text-jarvis-muted w-16 text-right" x-text="a.tasks || a.calls || 0 + ' calls'"></span>
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Agent Cost Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'agent-cost'">
+      <div>
+        <template x-if="!drillDown.data">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No data</p>
+        </template>
+        <template x-if="drillDown.data">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="bg-white/5 rounded-lg p-3">
+              <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Total Cost</p>
+              <p class="text-lg font-bold font-mono text-jarvis-cyan mt-1" x-text="'$' + (drillDown.data.totalCost || drillDown.data.total_cost || 0).toFixed(4)"></p>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3">
+              <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Calls</p>
+              <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.tasks || drillDown.data.calls || 0"></p>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3">
+              <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Avg Cost</p>
+              <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="'$' + (drillDown.data.avgCost || drillDown.data.avg_cost_per_call || drillDown.data.avg_cost || 0).toFixed(6)"></p>
+            </div>
+            <div class="bg-white/5 rounded-lg p-3">
+              <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Agent</p>
+              <p class="text-sm font-bold font-mono text-jarvis-text mt-1 truncate" x-text="drillDown.data.agent || '—'"></p>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Cost Trend Drill-Down -->
+    <template x-if="!drillDown.loading && drillDown.type === 'cost-trend'">
+      <div>
+        <template x-if="!drillDown.data">
+          <p class="text-sm text-jarvis-muted italic py-4 text-center">No cost trend data</p>
+        </template>
+        <template x-if="drillDown.data">
+          <div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Total Spent</p>
+                <p class="text-lg font-bold font-mono text-jarvis-cyan mt-1" x-text="'$' + (drillDown.data.total_spent || 0).toFixed(4)"></p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Avg/Task</p>
+                <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="'$' + (drillDown.data.avg_cost_per_task || 0).toFixed(6)"></p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Total Tasks</p>
+                <p class="text-lg font-bold font-mono text-jarvis-text mt-1" x-text="drillDown.data.total_tasks || 0"></p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-3">
+                <p class="text-[10px] text-jarvis-muted uppercase tracking-wider">Budget %</p>
+                <p class="text-lg font-bold font-mono mt-1" :class="drillDown.data.budget_utilization > 90 ? 'text-red-400' : 'text-emerald-400'" x-text="(drillDown.data.budget_utilization || 0).toFixed(1) + '%'"></p>
+              </div>
+            </div>
+            <template x-if="drillDown.data.cost_trend && drillDown.data.cost_trend.length > 0">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-xs text-jarvis-muted border-b border-white/[0.06]">
+                      <th class="pb-2 font-medium">Timestamp</th>
+                      <th class="pb-2 font-medium">Cost ($)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="(entry, idx) in drillDown.data.cost_trend.slice(-20)" :key="idx">
+                      <tr class="border-b border-white/[0.06]/30">
+                        <td class="py-1.5 text-xs text-jarvis-muted font-mono" x-text="entry.timestamp"></td>
+                        <td class="py-1.5 text-xs font-mono text-jarvis-text" x-text="(entry.value || 0).toFixed(6)"></td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </template>
+            <template x-if="!drillDown.data.cost_trend || drillDown.data.cost_trend.length === 0">
+              <p class="text-sm text-jarvis-muted italic py-4 text-center">No trend history available</p>
+            </template>
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+</template>
 
 <!-- ═══ RECENT TASKS TABLE ═══ -->
 <div class="jarvis-glass rounded-xl p-5">
@@ -241,7 +655,7 @@
         </thead>
         <tbody>
           <template x-for="t in tasks.slice(0, 10)" :key="t.id">
-            <tr class="border-b border-white/[0.06]/30 hover:bg-jarvis-overlay/30 transition-colors">
+            <tr class="border-b border-white/[0.06]/30 hover:bg-jarvis-overlay/30 transition-colors cursor-pointer" @click="openTaskDrillDown(t)">
               <td class="py-2.5 font-mono text-xs text-jarvis-muted" x-text="t.receiver_id"></td>
               <td class="py-2.5 max-w-xs truncate text-jarvis-text" x-text="t.instruction"></td>
               <td class="py-2.5">
@@ -258,6 +672,147 @@
     </div>
   </template>
 </div>
+
+<!-- ═══ TASK DETAIL SLIDE-OUT PANEL (Bug 4: drill-down from Recent Tasks) ═══ -->
+<div x-show="taskDetailOpen" x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+     class="fixed right-0 top-0 h-full w-96 bg-jarvis-surface border-l border-jarvis-border shadow-xl z-40 overflow-y-auto task-detail-panel"
+     style="background: rgba(7, 11, 20, 0.95); backdrop-filter: blur(12px);"
+     @click.stop>
+
+  <!-- Header -->
+  <div class="flex justify-between items-center p-4 border-b border-white/[0.06]">
+    <h3 class="text-lg font-semibold text-jarvis-text font-display">Task Details</h3>
+    <button @click="closeTaskDetail()" class="text-jarvis-muted hover:text-jarvis-text transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Task Info -->
+  <div class="p-4 border-b border-white/[0.06]" x-show="selectedTask">
+    <div class="space-y-3">
+      <div>
+        <label class="text-xs text-jarvis-muted uppercase tracking-wider">Task ID</label>
+        <p class="text-jarvis-text font-mono text-sm" x-text="selectedTask?.id"></p>
+      </div>
+      <div>
+        <label class="text-xs text-jarvis-muted uppercase tracking-wider">Instruction</label>
+        <p class="text-jarvis-text" x-text="selectedTask?.instruction"></p>
+      </div>
+      <div x-show="selectedTask?.description">
+        <label class="text-xs text-jarvis-muted uppercase tracking-wider">Description</label>
+        <p class="text-jarvis-text text-sm" x-text="selectedTask?.description"></p>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-jarvis-muted uppercase tracking-wider">Status</label>
+          <span :class="statusClass(selectedTask?.status)" class="px-2 py-1 rounded text-xs block mt-1"
+                x-text="selectedTask?.status"></span>
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted uppercase tracking-wider">Priority</label>
+          <span :class="priorityClass(selectedTask?.priority)" class="px-2 py-1 rounded text-xs block mt-1"
+                x-text="selectedTask?.priority"></span>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs text-jarvis-muted uppercase tracking-wider">Assigned To</label>
+        <p class="text-jarvis-text font-mono text-sm" x-text="selectedTask?.receiver_id || 'Unassigned'"></p>
+      </div>
+      <div>
+        <label class="text-xs text-jarvis-muted uppercase tracking-wider">Department</label>
+        <p class="text-jarvis-text font-mono text-sm" x-text="selectedTask?.department || '—'"></p>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-jarvis-muted uppercase tracking-wider">Created</label>
+          <p class="text-jarvis-text text-sm" x-text="formatTime(selectedTask?.created_at)"></p>
+        </div>
+        <div>
+          <label class="text-xs text-jarvis-muted uppercase tracking-wider">Updated</label>
+          <p class="text-jarvis-text text-sm" x-text="formatTime(selectedTask?.updated_at) || '—'"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decomposition Section -->
+  <div class="p-4 border-b border-white/[0.06]">
+    <div class="flex justify-between items-center mb-3">
+      <h4 class="text-sm font-medium text-jarvis-text font-display">Decomposition</h4>
+      <button @click="decomposeTask(selectedTask?.id)"
+              :disabled="taskDecomposing"
+              class="bg-jarvis-cyan text-white px-3 py-1 rounded text-xs font-medium hover:bg-jarvis-cyan/80 transition-colors disabled:opacity-50 flex items-center gap-1">
+        <span x-show="!taskDecomposing">Decompose</span>
+        <span x-show="taskDecomposing" class="flex items-center gap-1">
+          <svg class="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          Processing...
+        </span>
+      </button>
+    </div>
+
+    <!-- Subtask List -->
+    <div x-show="taskDecomposition" class="space-y-2">
+      <!-- Progress Bar -->
+      <div class="flex items-center gap-2 mb-3">
+        <div class="flex-1 bg-white/[0.06] rounded-full h-2">
+          <div class="bg-jarvis-cyan h-2 rounded-full transition-all duration-500"
+               :style="'width: ' + (taskDecomposition?.progress_pct || 0) + '%'"></div>
+        </div>
+        <span class="text-xs text-jarvis-muted font-mono"
+              x-text="(taskDecomposition?.progress_pct || 0).toFixed(0) + '%'"></span>
+      </div>
+
+      <template x-for="(subtask, idx) in (taskDecomposition?.subtasks || [])" :key="subtask.id">
+        <div class="flex items-start gap-2 p-2 bg-white/[0.03] rounded border border-white/[0.06]">
+          <span class="text-jarvis-muted text-sm font-mono" x-text="idx + 1 + '.'"></span>
+          <div class="flex-1">
+            <p class="text-sm text-jarvis-text" x-text="subtask.instruction"></p>
+          </div>
+          <span :class="getSubtaskStatusClass(subtask.status)" class="px-1.5 py-0.5 rounded text-xs whitespace-nowrap">
+            <span x-show="subtask.status === 'completed'">&#10003;</span>
+            <span x-show="subtask.status === 'in_progress'">&#9673;</span>
+            <span x-show="subtask.status === 'pending'">&#9675;</span>
+          </span>
+        </div>
+      </template>
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="!taskDecomposition && !taskDecomposing" class="text-center py-4 text-jarvis-muted text-sm">
+      Click "Decompose" to break this task into subtasks
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="p-4">
+    <div class="flex gap-2">
+      <button @click="reassignTask(selectedTask?.id)"
+              class="flex-1 bg-white/[0.06] text-jarvis-text px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/[0.1] transition-colors border border-white/[0.06]">
+        Reassign
+      </button>
+      <button @click="escalateTask(selectedTask?.id)"
+              class="flex-1 bg-amber-500/10 text-amber-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-500/20 transition-colors border border-amber-500/20">
+        Escalate
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div x-show="taskDetailOpen" @click="closeTaskDetail()"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+     class="fixed inset-0 bg-black bg-opacity-50 z-30"></div>
 {% endblock %}
 
 {% block scripts %}
