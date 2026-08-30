@@ -647,6 +647,14 @@ function dashboard() {
           }
           break;
 
+        case 'ping':
+          // Server-initiated heartbeat probe (ws.py) — reply so the server
+          // can clear its pending probe.
+          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify({ type: 'pong' }));
+          }
+          break;
+
         case 'pong':
           // Keepalive response
           break;
