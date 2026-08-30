@@ -1005,6 +1005,7 @@ def list_tasks_paginated(
 @router.post("/tasks", response_model=TaskItem, status_code=201, tags=["tasks"])
 def create_task(
     assign: TaskAssign,
+    background_tasks: BackgroundTasks,
     _: Role = Depends(require_role("run")),
 ) -> TaskItem:
     """Create a new task and send it through the MessageBus."""
@@ -1043,8 +1044,13 @@ def create_task(
         priority=priority,
         created_at=datetime.now(timezone.utc).isoformat(),
     )
-    # MessageBus.send_task() already broadcasts via _emit() → _bus_broadcast()
     get_bus().send_task(task)
+
+    # MessageBus._emit() broadcasts via _bus_broadcast in async contexts
+    # (executor/daemon), but in sync API threads there is no running event
+    # loop so _bus_broadcast silently skips.  Use FastAPI BackgroundTasks
+    # as the primary broadcast mechanism for HTTP-triggered mutations.
+    background_tasks.add_task(_broadcast_task, task.model_dump(), "created")
 
     return TaskItem(**task.model_dump())
 
@@ -1053,6 +1059,7 @@ def create_task(
 def update_task(
     task_id: str,
     update: TaskUpdate,
+    background_tasks: BackgroundTasks,
     _: Role = Depends(require_role("run")),
 ) -> TaskItem:
     """Partially update a task (e.g. drag-and-drop status change).
@@ -1065,10 +1072,12 @@ def update_task(
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update")
 
-    # MessageBus.update_task() already broadcasts via _emit() → _bus_broadcast()
     updated = get_bus().update_task(task_id, updates)
     if updated is None:
         raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Broadcast via BackgroundTasks (see create_task comment for why).
+    background_tasks.add_task(_broadcast_task, updated.model_dump(), "updated")
 
     return TaskItem(**updated.model_dump())
 
@@ -1076,16 +1085,19 @@ def update_task(
 @router.delete("/tasks/{task_id}", tags=["tasks"])
 def delete_task(
     task_id: str,
+    background_tasks: BackgroundTasks,
     _: Role = Depends(require_role("run")),
 ) -> dict[str, str]:
     """Delete a task by id.
 
     Returns ``{"ok": true, "id": "<task_id>"}`` on success.
     """
-    # MessageBus.delete_task() already broadcasts via _emit() → _bus_broadcast()
     removed = get_bus().delete_task(task_id)
     if removed is None:
         raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Broadcast via BackgroundTasks (see create_task comment for why).
+    background_tasks.add_task(_broadcast_task, removed.model_dump(), "deleted")
 
     return {"ok": "true", "id": task_id}
 
