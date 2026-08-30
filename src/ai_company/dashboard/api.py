@@ -667,12 +667,86 @@ def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
     return kpis
 
 
+@router.get("/backlog", response_model=dict[str, Any], tags=["dashboard"])
+def get_backlog(
+    _: Any = Depends(require_role(Role.RUN)),
+) -> dict[str, Any]:
+    """Return a queue / backlog observability snapshot (C3).
+
+    Depth, status spread, oldest pending age, stale-pending count, and
+    dead-letter depth for the task inbox.  All reads go through the
+    :class:`MessageBus`, so this honours the app's locking guarantees.
+    """
+    from ai_company.dashboard.backlog import backlog_summary
+
+    return backlog_summary()
+
+
+# ── Reports / outcomes viewer (C4, on top of C5 ReportStore) ───────
+
+
+@router.get("/reports", tags=["dashboard"])
+def list_reports(
+    limit: int = Query(200, ge=1, le=1000),
+    agent: str = "",
+    include_cost: bool = Query(False, description="Include cost_log.jsonl shards"),
+) -> dict[str, Any]:
+    """List agent-produced reports, newest-first (C4 Reports page).
+
+    Backed by :class:`ReportStore`.  By default excludes the flat
+    ``cost_log.jsonl`` shard (cost records, not reports); pass
+    ``include_cost=true`` to include it.
+    """
+    from ai_company.store.report_store import ReportStore
+
+    store = ReportStore()
+    reports = store.latest(limit + 200)  # over-fetch, then filter cost below
+
+    def _keep(rep: Any) -> bool:
+        return not (rep.bundle in (".", "") and not include_cost and "cost_log" in rep.path)
+
+    kept = [r for r in reports if _keep(r)]
+    if agent:
+        kept = [r for r in kept if agent in r.agent]
+    kept = kept[:limit]
+    return {
+        "total": len(kept),
+        "reports": [r.to_dict() for r in kept],
+    }
+
+
+@router.get("/reports/content", tags=["dashboard"])
+def get_report_content(
+    path: str = Query(..., description="Relative report file path under results/"),
+) -> dict[str, Any]:
+    """Return the raw content of a single report file (read-only).
+
+    The path is resolved against the reports root and confined to it, so
+    traversal outside the results directory is refused (404).
+    """
+    from ai_company.store.report_store import ReportStore, _read_documents
+
+    store = ReportStore()
+    root = store.root.resolve()
+    target = (root / path).resolve()
+    try:
+        target.relative_to(root)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Path escapes the reports root") from None
+    if not target.is_file() or target.suffix not in (".json", ".jsonl"):
+        raise HTTPException(status_code=404, detail=f"Report not found: {path}")
+    try:
+        docs = _read_documents(target)
+    except (OSError, ValueError):
+        raise HTTPException(status_code=404, detail=f"Report unreadable: {path}") from None
+    return {"path": path, "documents": docs}
+
+
 @router.get("/kpis/live", tags=["kpis"])
 def get_live_kpis(background_tasks: BackgroundTasks) -> dict[str, Any]:
     """Return live KPI values computed from operational data.
-
-    Uses the KPI collectors to produce real-time snapshots for all
-    7 departments (engineering, HR, finance, marketing, sales, CS, legal).
+    Uses the KPI collectors to produce real-time snapshots for all 7
+    departments (engineering, HR, finance, marketing, sales, CS, legal).
     Broadcasts the result to WebSocket clients.
     """
     from ai_company.dashboard.kpis import collect_all_kpis
@@ -1100,6 +1174,90 @@ def delete_task(
     background_tasks.add_task(_broadcast_task, removed.model_dump(), "deleted")
 
     return {"ok": "true", "id": task_id}
+
+
+# ── Task Flow / lifecycle (C4) ─────────────────────────────────────
+
+
+@router.get("/tasks/{task_id}/flow", tags=["tasks"])
+def get_task_flow(task_id: str) -> dict[str, Any]:
+    """Return the full lifecycle arc of a single task (C4 Task Flow).
+
+    Combines the task's own fields with the audit-trail events that reference
+    the task id into a chronological timeline, so the dashboard can show "the
+    path a task took" from creation to its current state.  Read-only.
+    """
+    tasks = _read_all_tasks(include_test=True)
+    task = next((t for t in tasks if t.get("id") == task_id), None)
+    if task is None:
+        raise HTTPException(status_code=404, detail=f"Task '{task_id}' not found")
+
+    # Order-of-operations timeline events from the audit trail.
+    events: list[dict[str, Any]] = []
+    for event in _get_store().iter_jsonl(".opencode/audit"):
+        if not isinstance(event, dict):
+            continue
+        meta_raw = event.get("metadata")
+        meta = meta_raw if isinstance(meta_raw, dict) else {}
+        refs = {
+            event.get("task_id"),
+            event.get("task", ""),
+            meta.get("task_id"),
+            meta.get("task"),
+        }
+        if task_id not in {r for r in refs if isinstance(r, str)}:
+            continue
+        ts = event.get("timestamp") or meta.get("timestamp")
+        summary = event.get("summary")
+        if isinstance(summary, (list, dict)):
+            summary = ""
+        events.append(
+            {
+                "type": event.get("event_type") or event.get("type") or "event",
+                "timestamp": ts,
+                "agent": meta.get("agent_id") or event.get("agent_id") or "",
+                "summary": summary if isinstance(summary, str) else "",
+            }
+        )
+    # De-duplicate by (type, timestamp, agent) so rotated/duplicated tails don't
+    # bloat the timeline, then sort chronologically (missing ts last).
+    seen_events: set[tuple[str, str, str]] = set()
+    unique: list[dict[str, Any]] = []
+    for ev in events:
+        dedup_key = (ev["type"], str(ev["timestamp"]), str(ev["agent"]))
+        if dedup_key in seen_events:
+            continue
+        seen_events.add(dedup_key)
+        unique.append(ev)
+
+    def _event_key(ev: dict[str, Any]) -> tuple[int, str]:
+        ts = ev["timestamp"]
+        if not isinstance(ts, str):
+            return (1, "")
+        return (0, ts)
+
+    unique.sort(key=_event_key)
+
+    # A second-pass status timeline derived from the task's own timestamps so
+    # the flow still renders meaningfully when the audit trail is sparse.
+    status_events: list[dict[str, Any]] = []
+    for field, label in (
+        ("created_at", "created"),
+        ("updated_at", "updated"),
+    ):
+        val = task.get(field)
+        if isinstance(val, str):
+            status_events.append(
+                {"type": label, "timestamp": val, "agent": task.get("sender_id", ""), "summary": ""}
+            )
+
+    return {
+        "task_id": task_id,
+        "task": task,
+        "timeline": unique,
+        "status_events": status_events,
+        "current_status": task.get("status"),
+    }
 
 
 # ── Task Decomposition ──────────────────────────────────────────────
@@ -2394,7 +2552,7 @@ class ProjectCostEntry(BaseModel):
 @router.post("/payments", status_code=201, tags=["payments"])
 def create_payment(
     entry: PaymentEntry,
-    _: None = Depends(require_role(Role.RUN)),
+    _: None = Depends(require_role(Role.ADMIN)),
 ) -> dict[str, Any]:
     """Record a manual payment in the revenue ledger."""
     import uuid
@@ -2576,7 +2734,7 @@ def revenue_trend(period_days: int = Query(30, ge=1, le=365)) -> list[dict[str, 
 @router.post("/project-costs", status_code=201, tags=["costs"])
 def create_project_cost(
     entry: ProjectCostEntry,
-    _: None = Depends(require_role(Role.RUN)),
+    _: None = Depends(require_role(Role.ADMIN)),
 ) -> dict[str, Any]:
     """Record a project cost in the cost ledger."""
     import uuid

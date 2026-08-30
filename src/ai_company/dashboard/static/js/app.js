@@ -88,6 +88,16 @@ function dashboard() {
     tiers: [],
     modelRoutes: [],
     orgChart: [],
+    backlog: null,
+
+    // ── Reports & Task Flow (C4) ─────────────────────────────
+    reports: null,
+    reportOpen: false,
+    reportPath: '',
+    reportContent: '',
+    flowTaskId: '',
+    flow: null,
+    flowError: '',
 
     // ── CEO Hero Section ──────────────────────────────────────
     orgHealth: null,
@@ -865,6 +875,69 @@ function dashboard() {
         ]);
         if (approvalsData) this.approvals = approvalsData;
         if (escalationsData) this.escalations = escalationsData;
+      } else if (path === '/backlog') {
+        await this.loadBacklog();
+      } else if (path === '/reports') {
+        await this.loadReports();
+      }
+    },
+
+    // ═══ BACKLOG / QUEUE OBSERVABILITY (C3) ═══════════════
+
+    /**
+     * Load the task backlog summary and surface it on the Backlog page.
+     * Succeeds silently if the endpoint is unavailable (read-only view).
+     */
+    async loadBacklog() {
+      const data = await this.fetchJSON('/api/v1/backlog');
+      if (data) this.backlog = data;
+    },
+
+    _fmtAge(s) {
+      if (!s && s !== 0) return '—';
+      const sec = Math.max(0, Math.round(s));
+      if (sec < 60) return `${sec}s`;
+      if (sec < 3600) return `${Math.floor(sec / 60)}m ${sec % 60}s`;
+      return `${Math.floor(sec / 3600)}h ${Math.floor((sec % 3600) / 60)}m`;
+    },
+
+    // ═══ REPORTS & TASK FLOW (C4) ═══════════════════════════
+
+    /**
+     * Load the newest agent-produced reports for the Reports page.
+     */
+    async loadReports() {
+      const data = await this.fetchJSON('/api/v1/reports?limit=200');
+      if (data) this.reports = data.reports || [];
+    },
+
+    /**
+     * Open a single report's raw content in the side drawer.
+     */
+    async openReport(path) {
+      this.reportOpen = true;
+      this.reportContent = 'Loading…';
+      this.reportPath = path;
+      const data = await this.fetchJSON(`/api/v1/reports/content?path=${encodeURIComponent(path)}`);
+      if (data) {
+        this.reportContent = JSON.stringify(data.documents, null, 2);
+      } else {
+        this.reportContent = 'Could not load report.';
+      }
+    },
+
+    /**
+     * Trace a single task's lifecycle timeline.
+     */
+    async loadTaskFlow(taskId) {
+      if (!taskId) return;
+      this.flowError = '';
+      this.flow = null;
+      const data = await this.fetchJSON(`/api/v1/tasks/${encodeURIComponent(taskId)}/flow`);
+      if (data) {
+        this.flow = data;
+      } else {
+        this.flowError = `Task "${taskId}" not found.`;
       }
     },
 
