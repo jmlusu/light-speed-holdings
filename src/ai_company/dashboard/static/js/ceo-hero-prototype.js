@@ -135,12 +135,16 @@ function ceoHeroPrototype() {
 
     getComponentLabel(name) {
       const labels = {
-        task_success_rate: 'Task Success Rate',
-        agent_utilization: 'Agent Utilization',
-        cost_efficiency: 'Cost Efficiency',
-        error_rate: 'Error Rate (Inverted)',
+        task_success_rate: 'Task Success',
+        agent_utilization: 'Agent Util.',
+        cost_efficiency: 'Cost Eff.',
+        error_rate: 'Error Rate',
+        task_throughput: 'Throughput',
+        escalation_rate: 'Escalation',
+        security_posture: 'Security',
+        strategic_alignment: 'Strategic',
       };
-      return labels[name] || name;
+      return labels[name] || name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     },
 
     getComponentDescription(name) {
@@ -149,6 +153,10 @@ function ceoHeroPrototype() {
         agent_utilization: 'Active agents vs registered agents (30d)',
         cost_efficiency: 'Budget utilization vs spend',
         error_rate: 'Error/exception rate across operations (inverted)',
+        task_throughput: 'Tasks completed per day normalized to target',
+        escalation_rate: 'Escalation rate across tasks (inverted)',
+        security_posture: 'Audit trail health and compliance indicators',
+        strategic_alignment: 'Tasks mapped to active goals and departments',
       };
       return descs[name] || '';
     },

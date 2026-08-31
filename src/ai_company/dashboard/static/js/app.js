@@ -146,6 +146,12 @@ function dashboard() {
     escalationNotifications: [],  // real-time toast list from WS
     _escNotifId: 0,
 
+    // ── Alert Center ─────────────────────────────────────────
+    alerts: [],              // persisted fired alerts pointing /api/v1/alerts
+    alertStatusFilter: 'active',  // 'all' | 'active' | 'acknowledged' | 'snoozed' | 'cleared'
+    alertsLoading: false,
+    alertedIds: new Set(),   // ids already prepended live via WS (dedupe)
+
     // ── Task pagination ──────────────────────────────────────
     taskPage: 1,
     taskPageSize: 20,
@@ -400,6 +406,8 @@ function dashboard() {
         if (res.ok) {
           const data = await res.json();
           this._sessionToken = data.token || null;
+          // Expose to nested Alpine components (org-chart, health, etc.)
+          window.__dashboardSessionToken = this._sessionToken;
         }
       } catch (e) {
         console.warn('[Token] Bootstrap fetch failed:', e);
@@ -599,11 +607,13 @@ function dashboard() {
 
         case 'alert':
           if (msg.payload) {
+            // CEO Alert Center: prepend fired alerts live + toast notification.
+            this._prependLiveAlert(msg.payload);
             const cat = msg.payload.category || 'info';
             this.showToast(
               cat === 'escalation' ? 'warning' : 'info',
               cat.charAt(0).toUpperCase() + cat.slice(1),
-              msg.payload.reason || msg.payload.action || 'New alert received'
+              msg.payload.reason || msg.payload.action || msg.payload.message || 'New alert received'
             );
           }
           break;
@@ -857,6 +867,7 @@ function dashboard() {
 
       if (path === '/' || path === '') {
         await this.loadDashboard();
+        this.loadAlertCenter();
       } else if (path === '/agents') {
         await this.loadAgents();
       } else if (path === '/tasks') {
@@ -1082,6 +1093,67 @@ function dashboard() {
     async loadEscalations() {
       const data = await this.fetchJSON('/api/v1/escalations');
       if (data) this.escalations = data;
+    },
+
+    // ═══ ALERT CENTER ════════════════════════════════════════
+    async loadAlertCenter() {
+      this.alertsLoading = true;
+      try {
+        const qs = this.alertStatusFilter && this.alertStatusFilter !== 'all'
+          ? `?status=${encodeURIComponent(this.alertStatusFilter)}`
+          : '';
+        const data = await this.fetchJSON(`/api/v1/alerts${qs}`);
+        if (data && Array.isArray(data.alerts)) {
+          this.alerts = data.alerts;
+          data.alerts.forEach(a => { if (a.id) this.alertedIds.add(a.id); });
+        }
+      } finally {
+        this.alertsLoading = false;
+      }
+    },
+
+    async _alertAction(id, action) {
+      const data = await this.fetchJSON(`/api/v1/alerts/${encodeURIComponent(id)}/${action}`, {
+        method: 'POST',
+      });
+      if (data) this.loadAlertCenter();
+      return data;
+    },
+
+    ackAlert(id) { return this._alertAction(id, 'ack'); },
+    snoozeAlert(id, hours = 4) {
+      return this.fetchJSON(`/api/v1/alerts/${encodeURIComponent(id)}/snooze?until_hours=${hours}`, {
+        method: 'POST',
+      }).then(() => this.loadAlertCenter());
+    },
+    clearAlert(id) { return this._alertAction(id, 'clear'); },
+    async clearAllAlerts() {
+      const data = await this.fetchJSON('/api/v1/alerts/clear-all', { method: 'POST' });
+      if (data) this.loadAlertCenter();
+      return data;
+    },
+
+    _alertSeverityClass(sev) {
+      const s = (sev || 'info').toLowerCase();
+      if (s === 'critical') return 'bg-red-500/20 text-red-300 border border-red-500/30';
+      if (s === 'warning') return 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      return 'bg-sky-500/20 text-sky-300 border border-sky-500/30';
+    },
+    _alertStatusClass(stat) {
+      const s = (stat || 'active').toLowerCase();
+      if (s === 'acknowledged') return 'text-emerald-300';
+      if (s === 'snoozed') return 'text-amber-300';
+      if (s === 'cleared') return 'text-slate-400 line-through';
+      return 'text-red-300';
+    },
+
+    // Prepend a newly-fired alert from the WS "alert" message (deduped).
+    _prependLiveAlert(alert) {
+      if (!alert || !alert.id || this.alertedIds.has(alert.id)) return;
+      this.alertedIds.add(alert.id);
+      if (this.alertStatusFilter === 'all' || alert.status === this.alertStatusFilter) {
+        this.alerts = [alert, ...this.alerts];
+      }
     },
 
     async loadKPIs() {
@@ -1721,10 +1793,14 @@ function dashboard() {
 
     getComponentLabel(name) {
       const labels = {
-        task_success_rate: 'Task Success Rate',
-        agent_utilization: 'Agent Utilization',
-        cost_efficiency: 'Cost Efficiency',
-        error_rate: 'Error Rate (Inverted)',
+        task_success_rate: 'Task Success',
+        agent_utilization: 'Agent Util.',
+        cost_efficiency: 'Cost Eff.',
+        error_rate: 'Error Rate',
+        task_throughput: 'Throughput',
+        escalation_rate: 'Escalation',
+        security_posture: 'Security',
+        strategic_alignment: 'Strategic',
       };
       return labels[name] || name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     },
@@ -1735,6 +1811,10 @@ function dashboard() {
         agent_utilization: 'Active agents vs registered agents (30d)',
         cost_efficiency: 'Budget utilization vs spend',
         error_rate: 'Error/exception rate across operations (inverted)',
+        task_throughput: 'Tasks completed per day normalized to target',
+        escalation_rate: 'Escalation rate across tasks (inverted)',
+        security_posture: 'Audit trail health and compliance indicators',
+        strategic_alignment: 'Tasks mapped to active goals and departments',
       };
       return descs[name] || '';
     },

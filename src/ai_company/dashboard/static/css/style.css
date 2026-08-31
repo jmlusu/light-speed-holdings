@@ -305,13 +305,15 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 
 /* ── Org Tree Layout ────────────────────────────────────────── */
 .org-tree-container {
-  min-height: 100%;
+  position: relative;
 }
 
 .org-tree {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2rem 1rem;
+  min-width: max-content;
 }
 
 .org-tree-children {
@@ -457,5 +459,30 @@ input:focus, select:focus, textarea:focus, button:focus-visible {
 @media (max-width: 480px) {
   .hero-section {
     padding: 1rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Org Health Metric Cards
+   ═══════════════════════════════════════════════════════════════ */
+
+.metric-card {
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.metric-card:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .metric-card .text-xl,
+  .metric-card .text-2xl {
+    font-size: 1.125rem;
   }
 }

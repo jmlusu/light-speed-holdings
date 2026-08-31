@@ -20,10 +20,14 @@ Where:
   missing components are excluded from both numerator and denominator.
 
 Components (from ``config/org_health.yaml``):
-- ``task_success_rate`` (0.30): ``(completed / total) * 100`` over 30d window.
-- ``agent_utilization`` (0.25): ``(active / registered) * 100``, capped at 100.
-- ``cost_efficiency`` (0.25): ``100 - (spent/budget * 100) + 50``, clamped [0,100].
-- ``error_rate`` (0.20): ``100 - (errors / total * 100)`` (inverted: fewer errors = higher score).
+- ``task_success_rate`` (0.25): ``(completed / total) * 100`` over 30d window.
+- ``agent_utilization`` (0.20): ``(active / registered) * 100``, capped at 100.
+- ``cost_efficiency`` (0.15): ``100 - (spent/budget * 100) + 50``, clamped [0,100].
+- ``error_rate`` (0.15): ``100 - (errors / total * 100)`` (inverted: fewer errors = higher score).
+- ``task_throughput`` (0.10): ``(tasks_per_day / target) * 100``, capped at 100.
+- ``escalation_rate`` (0.05): ``100 - (escalated / total * 100)`` (inverted).
+- ``security_posture`` (0.05): Audit trail health + compliance indicators composite.
+- ``strategic_alignment`` (0.05): ``% tasks mapped to active goals/departments``.
 
 Bands:
 - GREEN: 80-100 (healthy)
@@ -358,6 +362,10 @@ class OrgHealthCalculator:
             "agent_utilization": self._score_agent_utilization,
             "cost_efficiency": self._score_cost_efficiency,
             "error_rate": self._score_error_rate,
+            "task_throughput": self._score_task_throughput,
+            "escalation_rate": self._score_escalation_rate,
+            "security_posture": self._score_security_posture,
+            "strategic_alignment": self._score_strategic_alignment,
         }
 
     def _score_component(self, name: str, database: Database | None) -> float | None:
@@ -580,6 +588,136 @@ class OrgHealthCalculator:
         error_rate = (error_tasks / total) * 100
         return max(0.0, 100.0 - error_rate)
 
+    def _score_task_throughput(self, database: Database | None) -> float | None:
+        """Tasks completed per day, normalized to 0-100 vs target (30d).
+
+        Target defaults to 10 tasks/day. Score = (actual_per_day / target) * 100,
+        capped at 100. Returns ``None`` when no tasks exist in the window.
+        """
+        tasks, _ = self._window_tasks()
+        total = len(tasks)
+        if total == 0:
+            return None
+        completed = sum(1 for t in tasks if t.get("status") == "completed")
+        # Compute days from the oldest task timestamp to now
+        timestamps = []
+        for t in tasks:
+            ts = t.get("created_at", "")
+            if ts:
+                try:
+                    timestamps.append(datetime.fromisoformat(ts))
+                except (ValueError, TypeError):
+                    continue
+        if not timestamps:
+            return None
+        oldest = min(timestamps)
+        now = datetime.now(timezone.utc)
+        days = max(1, (now - oldest).days)
+        tasks_per_day = completed / days
+        target_per_day = 10.0
+        return min(100.0, (tasks_per_day / target_per_day) * 100)
+
+    def _score_escalation_rate(self, database: Database | None) -> float | None:
+        """Escalation rate across tasks (0-100, inverted).
+
+        Lower escalation rate = higher score. Returns
+        ``100 - (escalated / total * 100)``. Returns ``None`` when no tasks
+        exist in the window.
+        """
+        tasks, _ = self._window_tasks()
+        total = len(tasks)
+        if total == 0:
+            return None
+        escalated = sum(1 for t in tasks if t.get("status") == "escalated")
+        escalation_rate = (escalated / total) * 100
+        return max(0.0, 100.0 - escalation_rate)
+
+    def _score_security_posture(self, database: Database | None) -> float | None:
+        """Audit trail health and compliance indicators (0-100).
+
+        Composite of:
+        - Audit trail completeness (events exist in recent window): 40%
+        - No critical/error severity events: 30%
+        - Compliance-related tasks completed: 30%
+
+        Returns ``None`` when no audit data is available.
+        """
+        from ai_company.dashboard.repository import get_state_store
+
+        store = get_state_store()
+
+        audit_events = []
+        for event in store.iter_jsonl(".opencode/audit"):
+            if isinstance(event, dict):
+                audit_events.append(event)
+
+        if not audit_events:
+            return None
+
+        # Factor 1: Audit trail completeness (events exist) — 40%
+        completeness_score = min(100.0, len(audit_events) / 10.0 * 100)
+
+        # Factor 2: No critical/error severity events — 30%
+        severity_events = sum(1 for e in audit_events if e.get("severity") in ("error", "critical"))
+        total_events = len(audit_events)
+        severity_score = max(0.0, 100.0 - (severity_events / max(1, total_events) * 100))
+
+        # Factor 3: Compliance tasks completed — 30%
+        tasks, _ = self._window_tasks()
+        compliance_keywords = {"compliance", "audit", "security", "review", "approval"}
+        compliance_tasks = [
+            t
+            for t in tasks
+            if any(kw in (t.get("instruction", "") or "").lower() for kw in compliance_keywords)
+        ]
+        if compliance_tasks:
+            compliance_completed = sum(
+                1 for t in compliance_tasks if t.get("status") == "completed"
+            )
+            compliance_score = (compliance_completed / len(compliance_tasks)) * 100
+        else:
+            compliance_score = 80.0  # Neutral default when no compliance tasks exist
+
+        return (completeness_score * 0.4) + (severity_score * 0.3) + (compliance_score * 0.3)
+
+    def _score_strategic_alignment(self, database: Database | None) -> float | None:
+        """Percentage of tasks mapped to active goals and departments (0-100).
+
+        Uses department coverage as a heuristic: tasks assigned to agents
+        with a valid department count as "aligned". Returns the ratio of
+        aligned tasks to total tasks. Returns ``None`` when no tasks exist.
+        """
+        tasks, _ = self._window_tasks()
+        total = len(tasks)
+        if total == 0:
+            return None
+
+        # Load registry to get department mapping
+        try:
+            from ai_company.dashboard.repository import get_state_store
+
+            store = get_state_store()
+            registry = store.read_json("company/agent-registry.json", default=[])
+        except Exception:  # noqa: BLE001
+            registry = []
+
+        agent_departments: dict[str, str] = {}
+        for agent in registry:
+            name = agent.get("name", "")
+            dept = agent.get("department", "")
+            if name and dept:
+                agent_departments[name] = dept
+
+        # Count tasks assigned to agents with known departments
+        aligned = 0
+        for t in tasks:
+            receiver = t.get("receiver_id", "")
+            sender = t.get("sender_id", "")
+            if receiver in agent_departments or sender in agent_departments:
+                aligned += 1
+
+        return (aligned / total) * 100
+
     # ── Band mapping ─────────────────────────────────────────────────
 
     def _score_to_band(self, score: int) -> str:
@@ -628,9 +766,13 @@ class OrgHealthCalculator:
                 "red": {"min": 0, "max": 49},
             },
             "components": [
-                {"name": "task_success_rate", "weight": 0.30},
-                {"name": "agent_utilization", "weight": 0.25},
-                {"name": "cost_efficiency", "weight": 0.25},
-                {"name": "error_rate", "weight": 0.20},
+                {"name": "task_success_rate", "weight": 0.25},
+                {"name": "agent_utilization", "weight": 0.20},
+                {"name": "cost_efficiency", "weight": 0.15},
+                {"name": "error_rate", "weight": 0.15},
+                {"name": "task_throughput", "weight": 0.10},
+                {"name": "escalation_rate", "weight": 0.05},
+                {"name": "security_posture", "weight": 0.05},
+                {"name": "strategic_alignment", "weight": 0.05},
             ],
         }
