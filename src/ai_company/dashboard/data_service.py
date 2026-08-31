@@ -71,6 +71,33 @@ def get_all_tasks(database: Database | None = None) -> list[dict[str, Any]] | No
     return None
 
 
+def get_all_tasks_fallback(database: Database | None = None) -> list[dict[str, Any]]:
+    """Return all tasks as plain dicts — SQLite-first, MessageBus fallback.
+
+    This is the single SQLite-first read-through for task data across the
+    dashboard.  It prefers the SQLite data layer when it holds tasks,
+    otherwise reads through the shared MessageBus (the single source of
+    truth for task state).  Bus tasks are returned as raw dicts, filtered to
+    ``dict`` entries, so every read-through (API endpoints, KPI collectors,
+    company window summaries) stays on one code path instead of drifting
+    into three divergent chains.  Never raises: returns ``[]`` when nothing
+    is recoverable.
+    """
+    sqlite_tasks = get_all_tasks(database)
+    if sqlite_tasks is not None:
+        return sqlite_tasks
+    try:
+        from ai_company.dashboard.api import get_bus
+
+        data = get_bus().get_all_tasks_raw()
+    except Exception:  # noqa: BLE001 - read-through must never raise
+        logger.debug("MessageBus unavailable while reading tasks", exc_info=True)
+        return []
+    if isinstance(data, list):
+        return [t for t in data if isinstance(t, dict)]
+    return []
+
+
 # ---------------------------------------------------------------------------
 # Costs
 # ---------------------------------------------------------------------------
@@ -551,6 +578,310 @@ def _count_registered_agents(root: Path) -> int:
     return len(agent_ids)
 
 
+def get_executive_scorecard(
+    days: int = 30,
+    project_root: Path | None = None,
+) -> dict[str, Any]:
+    """Return a unified executive health scorecard from live telemetry.
+
+    Reads ``kpis.executive`` from ``config/company/kpis.yaml`` and computes each
+    executive KPI's ``current`` value from the live task window (SQLite-first,
+    then the shared MessageBus).  For every KPI it reports:
+
+    - ``status`` — ``on_track`` / ``attention`` / ``critical`` relative to the
+      configured ``target`` (honouring ``higher_is_better``).
+    - ``trend`` — ``up`` / ``stable`` / ``down`` from :func:`ai_company.
+      dashboard.analytics.compute_period_comparison` versus the prior window.
+    - ``source`` — ``real_telemetry`` when computed, else ``configured``.
+    - an overall ``health_score`` (0-100) weighted by each KPI's ``weight``.
+
+    Never raises: missing config or empty telemetry returns a safe empty
+    scorecard rather than an error, so the CEO dashboard degrades gracefully.
+    """
+    from ai_company.dashboard.analytics import compute_period_comparison
+
+    root = project_root or get_project_root()
+    collected_at = datetime.now(timezone.utc).isoformat()
+    empty = {
+        "collected_at": collected_at,
+        "period_days": days,
+        "health_score": None,
+        "executive_kpis": [],
+        "departments": [],
+        "summary": {"total": 0, "on_track": 0, "attention": 0, "critical": 0, "info": 0},
+    }
+
+    exec_config = _load_executive_config(root)
+    if not exec_config:
+        return empty
+
+    current_tasks, _ = _company_window_tasks(root, days)
+    prior_tasks, _ = _company_window_tasks_prior(root, days)
+    window_source = "sqlite" if current_tasks else "files"
+
+    kpis: list[dict[str, Any]] = []
+    weights: list[tuple[float, float]] = []  # (attainment 0..1, weight)
+
+    for kpi in exec_config:
+        kpi_id = kpi.get("id", "")
+        target = kpi.get("target")
+        weight = float(kpi.get("weight", 0) or 0)
+        higher_is_better = bool(kpi.get("higher_is_better", True))
+
+        current = _compute_executive_kpi(kpi_id, current_tasks, root, days)
+        previous = _compute_executive_kpi(kpi_id, prior_tasks, root, days)
+
+        status, attainment = _executive_status(current, target, higher_is_better)
+        if attainment is not None:
+            weights.append((attainment, weight))
+
+        pct_change = compute_period_comparison(current, previous)
+        trend = "up" if (pct_change or 0) > 0 else ("down" if (pct_change or 0) < 0 else "stable")
+        if previous is None:
+            trend = "stable"
+
+        kpis.append(
+            {
+                "id": kpi_id,
+                "name": kpi.get("name", kpi_id),
+                "category": kpi.get("category", ""),
+                "owner": kpi.get("owner", ""),
+                "unit": kpi.get("unit", ""),
+                "frequency": kpi.get("frequency", ""),
+                "target": target,
+                "current": current,
+                "status": status,
+                "trend": trend,
+                "trend_pct": pct_change,
+                "source": "real_telemetry" if current is not None else "configured",
+                "higher_is_better": higher_is_better,
+                "computed_at": collected_at,
+            }
+        )
+
+    health_score = None
+    total_weight = sum(w for _, w in weights)
+    if total_weight > 0:
+        health_score = round(sum(a * w for a, w in weights) / total_weight * 100, 1)
+        health_score = max(0.0, min(100.0, health_score))
+
+    summary: dict[str, int] = {"total": 0, "on_track": 0, "attention": 0, "critical": 0, "info": 0}
+    for kpi in kpis:
+        summary[kpi["status"]] += 1
+        summary["total"] += 1
+
+    return {
+        "collected_at": collected_at,
+        "period_days": days,
+        "health_score": health_score,
+        "executive_kpis": kpis,
+        "departments": _department_health_rollup(root),
+        "window_source": window_source,
+        "summary": summary,
+    }
+
+
+def _load_executive_config(root: Path) -> list[dict[str, Any]]:
+    """Load the ``kpis.executive`` block from ``config/company/kpis.yaml``."""
+    config_path = root / "config" / "company" / "kpis.yaml"
+    if not config_path.is_file():
+        return []
+    try:
+        with open(config_path, "r", encoding="utf-8") as fh:
+            config = yaml.safe_load(fh) or {}
+    except (yaml.YAMLError, OSError):
+        return []
+    if not isinstance(config, dict):
+        return []
+    block = config.get("kpis", {}).get("executive", [])
+    if not isinstance(block, list):
+        return []
+    return [kpi for kpi in block if isinstance(kpi, dict)]
+
+
+def _company_window_tasks_prior(root: Path, days: int) -> tuple[list[dict[str, Any]], str]:
+    """Return the task window immediately *before* the current ``days`` window."""
+    now = datetime.now(timezone.utc)
+    current_cutoff = now - timedelta(days=days)
+    prior_cutoff = now - timedelta(days=2 * days)
+
+    sqlite_tasks = get_all_tasks()
+    if sqlite_tasks is not None:
+        raw_tasks = sqlite_tasks
+        source = "sqlite"
+    else:
+        raw_tasks = _load_inbox_tasks(root)
+        source = "files"
+
+    windowed: list[dict[str, Any]] = []
+    for task in raw_tasks:
+        if not isinstance(task, dict):
+            continue
+        created_raw = task.get("created_at", "")
+        if not created_raw:
+            continue
+        try:
+            created = datetime.fromisoformat(str(created_raw))
+        except (ValueError, TypeError):
+            continue
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        if prior_cutoff <= created < current_cutoff:
+            windowed.append(task)
+    return windowed, source
+
+
+def _compute_executive_kpi(
+    kpi_id: str,
+    tasks: list[dict[str, Any]],
+    root: Path,
+    days: int,
+) -> float | None:
+    """Compute the live ``current`` value for one executive KPI id.
+
+    ``None`` when there is no data to compute a real value from — the caller
+    falls back to ``configured`` sourcing.
+    """
+    if kpi_id == "task_throughput":
+        return float(len(tasks))
+    if kpi_id == "agent_utilization":
+        total_registered = _count_registered_agents(root)
+        active_agents = {
+            agent
+            for task in tasks
+            for agent in (task.get("sender_id"), task.get("receiver_id"))
+            if agent
+        }
+        if total_registered > 0 and active_agents:
+            return round(len(active_agents) / total_registered * 100, 1)
+        return None
+    if kpi_id == "build_success_rate":
+        completed = sum(1 for t in tasks if t.get("status") == "completed")
+        failed = sum(1 for t in tasks if t.get("status") == "failed")
+        if completed + failed > 0:
+            return round(completed / (completed + failed) * 100, 1)
+        return None
+    if kpi_id == "cost_efficiency":
+        cost = get_cost_summary()
+        if cost:
+            budget = float(cost.get("budget", 0) or 0)
+            spent = float(cost.get("total_spent", 0) or 0)
+            if budget > 0:
+                return round(max(0.0, min(100.0, (budget - spent) / budget * 100)), 1)
+        return None
+    if kpi_id == "escalation_resolution_time":
+        return _avg_resolution_seconds(tasks, resolved={"resolved", "closed", "completed"})
+    if kpi_id == "approval_turnaround":
+        return _avg_resolution_seconds(
+            tasks,
+            resolved={"approved", "rejected"},
+            lookup=("approved_at", "resolved_at", "updated_at"),
+        )
+    return None
+
+
+def _avg_resolution_seconds(
+    tasks: list[dict[str, Any]],
+    resolved: set[str],
+    lookup: tuple[str, ...] = ("updated_at", "resolved_at"),
+) -> float | None:
+    """Return the mean seconds between task creation and resolution.
+
+    Uses ``created_at`` for the start and the first present field in *lookup*
+    for the end.  Returns ``None`` when no resolved task has both timestamps.
+    """
+    durations: list[float] = []
+    for task in tasks:
+        if task.get("status") not in resolved:
+            continue
+        created_raw = task.get("created_at", "")
+        if not created_raw:
+            continue
+        try:
+            created = datetime.fromisoformat(str(created_raw))
+        except (ValueError, TypeError):
+            continue
+        end_raw = next((task.get(key) for key in lookup if task.get(key)), None)
+        if not end_raw:
+            continue
+        try:
+            end = datetime.fromisoformat(str(end_raw))
+        except (ValueError, TypeError):
+            continue
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        if end.tzinfo is None:
+            end = end.replace(tzinfo=timezone.utc)
+        durations.append((end - created).total_seconds())
+    if not durations:
+        return None
+    return round(sum(durations) / len(durations), 1)
+
+
+def _executive_status(
+    current: float | None,
+    target: float | None,
+    higher_is_better: bool,
+) -> tuple[str, float | None]:
+    """Map a current value to ``status`` and an attainment ratio (0..1).
+
+    Attainment is ``None`` (and status ``info``) when either side is missing.
+    """
+    if current is None or target is None or target == 0:
+        return "info", None
+    ratio = current / target if higher_is_better else target / current
+    if ratio >= 1.0:
+        return "on_track", 1.0
+    if ratio >= 0.7:
+        return "attention", float(ratio)
+    return "critical", float(ratio)
+
+
+def _department_health_rollup(root: Path) -> list[dict[str, Any]]:
+    """Roll up per-department health from the existing company KPI summary."""
+    summary = get_company_kpi_summary(days=30, project_root=root)
+    by_dept: dict[str, dict[str, Any]] = {}
+    for kpi in summary.get("kpis", []):
+        if not isinstance(kpi, dict):
+            continue
+        dept = str(kpi.get("owner", "") or "unassigned")
+        bucket = by_dept.setdefault(
+            dept,
+            {"department": dept, "total": 0, "on_track": 0, "attention": 0, "critical": 0},
+        )
+        bucket["total"] += 1
+        status = kpi.get("status")
+        if status in bucket:
+            bucket[status] += 1
+    return list(by_dept.values())
+
+
+def run_alert_evaluation() -> list[dict[str, Any]]:
+    """Evaluate the default alert rules against the latest KPI snapshot and persist.
+
+    Uses the stateless :class:`AlertEngine` from ``analytics`` plus the durable
+    :class:`AlertStore` so fired alerts are recorded for the CEO Alert Center.
+    Idempotent: ``AlertStore.add`` dedupes identical active/snoozed alerts, so
+    repeated evaluations (manual GET + scheduler) never duplicate rows.
+
+    Returns the newly-persisted alert dicts (for callers that want to broadcast
+    them live).
+    """
+    from ai_company.dashboard.alert_store import AlertStore, default_alert_rules
+    from ai_company.dashboard.analytics import AlertEngine
+    from ai_company.dashboard.kpis import collect_all_kpis
+
+    engine = AlertEngine(rules=default_alert_rules())
+    snapshot = collect_all_kpis()
+    fired = engine.evaluate(snapshot)
+    if not fired:
+        return []
+    store = AlertStore()
+    new_ids = store.add(fired)
+    by_id = {a["id"]: a for a in store.list_alerts(limit=1000)}
+    return [by_id[i] for i in new_ids if i in by_id]
+
+
 __all__ = [
     "get_all_tasks",
     "get_cost_summary",
@@ -558,4 +889,6 @@ __all__ = [
     "get_agent_performance_report",
     "get_agent_performance_summary",
     "get_company_kpi_summary",
+    "get_executive_scorecard",
+    "run_alert_evaluation",
 ]

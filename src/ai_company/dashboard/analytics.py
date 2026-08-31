@@ -19,7 +19,7 @@ import contextlib
 import json
 import logging
 from collections import defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -457,6 +457,63 @@ def compute_trends(
         )
 
     return results
+
+
+# ---------------------------------------------------------------------------
+# Period / moving-average / anomaly helpers (pure functions)
+# ---------------------------------------------------------------------------
+
+
+def compute_period_comparison(current: float | None, previous: float | None) -> float | None:
+    """Return the percentage change from *previous* to *current*.
+
+    ``None`` when the change is undefined (either value missing, or
+    *previous* is zero — a division-by-zero guard).  The comparison is useful
+    as the ``trend`` numerator for an executive KPI: positive means the KPI
+    moved up versus the prior window.
+    """
+    if current is None or previous is None:
+        return None
+    if previous == 0:
+        return None
+    return round((current - previous) / previous * 100.0, 3)
+
+
+def compute_moving_average(series: Sequence[float], window: int = 7) -> list[float | None]:
+    """Return a trailing moving average of *series* over *window* points.
+
+    The first ``window - 1`` slots are ``None`` (insufficient history).  A
+    ``window`` of 1 is the identity.  Empty or window<=0 inputs return an
+    empty/``None``-masked list that preserves input length.
+    """
+    if window <= 0:
+        return [None for _ in series]
+    result: list[float | None] = []
+    for i, _value in enumerate(series):
+        if i + 1 < window:
+            result.append(None)
+        else:
+            window_values = series[i + 1 - window : i + 1]
+            result.append(round(sum(window_values) / window, 4))
+    return result
+
+
+def detect_anomaly(series: Sequence[float], std_devs: float = 2.0) -> list[int]:
+    """Return indices in *series* that are statistical outliers.
+
+    Each point's z-score is computed against the *whole series* mean and
+    standard deviation; a point is flagged when ``|z| > std_devs``.  A series
+    with (near) zero variance is flat, so nothing is flagged.  Series with
+    fewer than 2 points never flag.
+    """
+    if len(series) < 2:
+        return []
+    mean = sum(series) / len(series)
+    variance = sum((v - mean) ** 2 for v in series) / len(series)
+    std = variance**0.5
+    if std == 0:
+        return []
+    return [i for i, v in enumerate(series) if abs(v - mean) / std > std_devs]
 
 
 # ---------------------------------------------------------------------------

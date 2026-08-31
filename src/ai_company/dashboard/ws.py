@@ -584,28 +584,43 @@ async def _receive_bounded(websocket: WebSocket) -> dict[str, Any] | None:
 # ── Public broadcast helpers ────────────────────────────────────────
 
 
+async def _broadcast_event(
+    message_type: str,
+    topic: str,
+    payload: dict[str, Any],
+    *,
+    data_key: str = "payload",
+    extra: dict[str, Any] | None = None,
+) -> None:
+    """Compose and broadcast a typed WebSocket message.
+
+    The common wire shape is ``{"type", "topic", "timestamp", **extra,
+    <data_key>: payload}``.  ``extra`` supplies per-kind fields (e.g.
+    ``event``, ``instance_id``, ``department``) while ``data_key`` selects
+    whether the body lives under ``payload`` or another key (e.g. ``data``
+    for timeline events).  Every broadcast wrapper routes through this one
+    builder + :func:`ConnectionManager.broadcast`, so the timestamp and
+    dispatch logic live in a single place.
+    """
+    message: dict[str, Any] = {
+        "type": message_type,
+        "topic": topic,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    if extra:
+        message.update(extra)
+    message[data_key] = payload
+    await manager.broadcast(message)
+
+
 async def broadcast_kpi_update(data: dict[str, Any]) -> None:
     """Push a KPI update to all connected dashboard clients."""
-    await manager.broadcast(
-        {
-            "type": "kpi_update",
-            "topic": "kpis",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": data,
-        }
-    )
+    await _broadcast_event("kpi_update", "kpis", data)
 
 
 async def broadcast_alert(alert: dict[str, Any]) -> None:
     """Push an alert / notification to all connected clients."""
-    await manager.broadcast(
-        {
-            "type": "alert",
-            "topic": "alerts",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": alert,
-        }
-    )
+    await _broadcast_event("alert", "alerts", alert)
 
 
 async def broadcast_task_update(task: dict[str, Any], event: str = "created") -> None:
@@ -618,40 +633,22 @@ async def broadcast_task_update(task: dict[str, Any], event: str = "created") ->
     event:
         One of ``"created"``, ``"completed"``, ``"failed"``, ``"escalated"``.
     """
-    await manager.broadcast(
-        {
-            "type": "task_update",
-            "topic": "tasks",
-            "event": event,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": task,
-        }
-    )
+    await _broadcast_event("task_update", "tasks", task, extra={"event": event})
 
 
 async def broadcast_department_kpis(department: str, kpis: dict[str, Any]) -> None:
     """Push per-department KPI values to subscribed clients."""
-    await manager.broadcast(
-        {
-            "type": "department_kpi",
-            "topic": f"department:{department}",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "department": department,
-            "payload": kpis,
-        }
+    await _broadcast_event(
+        "department_kpi",
+        f"department:{department}",
+        kpis,
+        extra={"department": department},
     )
 
 
 async def broadcast_escalation(escalation: dict[str, Any]) -> None:
     """Push an escalation event to all connected clients."""
-    await manager.broadcast(
-        {
-            "type": "escalation",
-            "topic": "escalations",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": escalation,
-        }
-    )
+    await _broadcast_event("escalation", "escalations", escalation)
 
 
 # ---------------------------------------------------------------------------
@@ -664,15 +661,11 @@ async def broadcast_workflow_update(instance_id: str, event: str, payload: dict[
 
     Clients subscribe to the ``"workflows"`` topic to receive these.
     """
-    await manager.broadcast(
-        {
-            "type": "workflow_update",
-            "topic": "workflows",
-            "event": event,
-            "instance_id": instance_id,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": payload,
-        }
+    await _broadcast_event(
+        "workflow_update",
+        "workflows",
+        payload,
+        extra={"event": event, "instance_id": instance_id},
     )
 
 
@@ -682,15 +675,11 @@ async def broadcast_onboarding_update(request_id: str, event: str, payload: dict
     Clients subscribe to the ``"onboarding"`` topic to receive these.
     Events: requested, approved, rejected, expired, step_completed.
     """
-    await manager.broadcast(
-        {
-            "type": "onboarding_update",
-            "topic": "onboarding",
-            "event": event,
-            "request_id": request_id,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": payload,
-        }
+    await _broadcast_event(
+        "onboarding_update",
+        "onboarding",
+        payload,
+        extra={"event": event, "request_id": request_id},
     )
 
 
@@ -699,14 +688,7 @@ async def broadcast_org_health(data: dict[str, Any]) -> None:
 
     Clients subscribe to the ``"org_health"`` topic to receive these.
     """
-    await manager.broadcast(
-        {
-            "type": "org_health_update",
-            "topic": "org_health",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": data,
-        }
-    )
+    await _broadcast_event("org_health_update", "org_health", data)
 
 
 async def broadcast_daemon_health(data: dict[str, Any]) -> None:
@@ -715,26 +697,12 @@ async def broadcast_daemon_health(data: dict[str, Any]) -> None:
     Clients subscribe to the ``"daemon"`` topic to receive these.  The
     payload mirrors the ``/api/v1/daemon/status`` response shape.
     """
-    await manager.broadcast(
-        {
-            "type": "daemon_health",
-            "topic": "daemon",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "payload": data,
-        }
-    )
+    await _broadcast_event("daemon_health", "daemon", data)
 
 
 async def broadcast_timeline_event(event: dict[str, Any]) -> None:
     """Push new audit events to timeline subscribers."""
-    await manager.broadcast(
-        {
-            "type": "timeline_event",
-            "topic": "timeline",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "data": event,
-        }
-    )
+    await _broadcast_event("timeline_event", "timeline", event, data_key="data")
 
 
 def make_message_bus_broadcast_callback() -> Any:

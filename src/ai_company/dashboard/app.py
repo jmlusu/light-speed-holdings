@@ -45,6 +45,7 @@ from ai_company.audit.integration import get_writer
 from ai_company.dashboard.monitoring import inc_metric
 from ai_company.logging_config import setup_logging
 from ai_company.paths import get_data_root, get_project_root
+from ai_company.telemetry.tracer import get_tracer, is_tracing_enabled
 from ai_company.version import get_version
 
 load_dotenv()
@@ -179,21 +180,16 @@ def _check_api_key(request: Request) -> bool:
     checked against the in-memory session-token store (browser bootstrap
     tokens).  Page routes, static assets, and the bootstrap endpoint are
     exempt from the API-key guard (middleware carve-out).
+
+    The env-mode check, key lookup, and session-token fallback are delegated
+    to :func:`~ai_company.security.rbac.authenticate` — the single auth
+    primitive shared with the dependency-injection path.
     """
-    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
-        return True
+    from ai_company.security.rbac import authenticate
+
     api_key = request.headers.get("X-API-Key", "")
-    if not api_key:
-        return False
-    from ai_company.security.rbac import role_for_key
-
-    if role_for_key(api_key) is not None:
-        return True
-    # ADR-013: fall back to session token (IP-bound)
     client_ip = request.client.host if request.client else "unknown"
-    from ai_company.security.rbac import _resolve_session_token
-
-    return _resolve_session_token(api_key, client_ip) is not None
+    return authenticate(api_key, client_ip) is not None
 
 
 # Paths that are exempt from the API-key guard (ADR-013 middleware carve-out).
@@ -461,33 +457,72 @@ def create_app() -> FastAPI:
     @app.middleware("http")
     async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:
         client_ip = request.client.host if request.client else "unknown"
-        allowed, remaining = _limiter.is_allowed(client_ip)
-        if not allowed:
-            # D.1/D.3: Log rate-limit exceeded to audit trail + metric
-            inc_metric("rate_limit_hits_total")
-            writer = get_writer()
-            if writer is not None:
-                event = AuditEvent(
-                    event_type=AuditEventType.RATE_LIMIT_EXCEEDED,
-                    agent_id="dashboard",
-                    task_id="",
-                    args={"client_ip": client_ip, "path": request.url.path},
-                    severity="warning",
-                )
-                writer.write(event)
-            return Response(
-                content='{"detail":"Rate limit exceeded"}',
-                status_code=429,
-                media_type="application/json",
-                headers={
-                    "X-RateLimit-Limit": str(rate_limit),
-                    "X-RateLimit-Remaining": "0",
+        # D.2: OpenTelemetry span for rate limit check
+        tracer = get_tracer()
+        if is_tracing_enabled() and tracer:
+            with tracer.start_as_current_span(
+                "dashboard.rate_limit_check",
+                attributes={
+                    "client_ip": client_ip,
+                    "path": request.url.path,
+                    "method": request.method,
                 },
-            )
-        response = cast(Response, await call_next(request))
-        response.headers["X-RateLimit-Limit"] = str(rate_limit)
-        response.headers["X-RateLimit-Remaining"] = str(remaining)
-        return response
+            ):
+                allowed, remaining = _limiter.is_allowed(client_ip)
+                if not allowed:
+                    # D.1/D.3: Log rate-limit exceeded to audit trail + metric
+                    inc_metric("rate_limit_hits_total")
+                    writer = get_writer()
+                    if writer is not None:
+                        event = AuditEvent(
+                            event_type=AuditEventType.RATE_LIMIT_EXCEEDED,
+                            agent_id="dashboard",
+                            task_id="",
+                            args={"client_ip": client_ip, "path": request.url.path},
+                            severity="warning",
+                        )
+                        writer.write(event)
+                    return Response(
+                        content='{"detail":"Rate limit exceeded"}',
+                        status_code=429,
+                        media_type="application/json",
+                        headers={
+                            "X-RateLimit-Limit": str(rate_limit),
+                            "X-RateLimit-Remaining": "0",
+                        },
+                    )
+                response = cast(Response, await call_next(request))
+                response.headers["X-RateLimit-Limit"] = str(rate_limit)
+                response.headers["X-RateLimit-Remaining"] = str(remaining)
+                return response
+        else:
+            # Tracing disabled - fast path
+            allowed, remaining = _limiter.is_allowed(client_ip)
+            if not allowed:
+                inc_metric("rate_limit_hits_total")
+                writer = get_writer()
+                if writer is not None:
+                    event = AuditEvent(
+                        event_type=AuditEventType.RATE_LIMIT_EXCEEDED,
+                        agent_id="dashboard",
+                        task_id="",
+                        args={"client_ip": client_ip, "path": request.url.path},
+                        severity="warning",
+                    )
+                    writer.write(event)
+                return Response(
+                    content='{"detail":"Rate limit exceeded"}',
+                    status_code=429,
+                    media_type="application/json",
+                    headers={
+                        "X-RateLimit-Limit": str(rate_limit),
+                        "X-RateLimit-Remaining": "0",
+                    },
+                )
+            response = cast(Response, await call_next(request))
+            response.headers["X-RateLimit-Limit"] = str(rate_limit)
+            response.headers["X-RateLimit-Remaining"] = str(remaining)
+            return response
 
     # ── API-key guard for write endpoints (GAP-010) ──────────────────────
     # ADR-013: page routes, static assets, and the bootstrap endpoint are
@@ -496,30 +531,66 @@ def create_app() -> FastAPI:
     async def _api_key_middleware(request: Request, call_next: Any) -> Response:
         if _is_exempt_from_auth(request.url.path):
             return cast(Response, await call_next(request))
-        if not _check_api_key(request):
-            # D.1/D.3: Log auth failure to audit trail + metric
-            inc_metric("auth_failures_total")
-            writer = get_writer()
-            if writer is not None:
-                client_ip = request.client.host if request.client else "unknown"
-                event = AuditEvent(
-                    event_type=AuditEventType.AUTH_FAILED,
-                    agent_id="dashboard",
-                    task_id="",
-                    args={
-                        "client_ip": client_ip,
-                        "path": request.url.path,
-                        "has_api_key": bool(request.headers.get("X-API-Key")),
-                    },
-                    severity="warning",
+        # D.2: OpenTelemetry span for auth check
+        tracer = get_tracer()
+        if is_tracing_enabled() and tracer:
+            with tracer.start_as_current_span(
+                "dashboard.auth_check",
+                attributes={
+                    "path": request.url.path,
+                    "method": request.method,
+                    "has_api_key": bool(request.headers.get("X-API-Key")),
+                },
+            ):
+                if not _check_api_key(request):
+                    # D.1/D.3: Log auth failure to audit trail + metric
+                    inc_metric("auth_failures_total")
+                    writer = get_writer()
+                    if writer is not None:
+                        client_ip = request.client.host if request.client else "unknown"
+                        event = AuditEvent(
+                            event_type=AuditEventType.AUTH_FAILED,
+                            agent_id="dashboard",
+                            task_id="",
+                            args={
+                                "client_ip": client_ip,
+                                "path": request.url.path,
+                                "has_api_key": bool(request.headers.get("X-API-Key")),
+                            },
+                            severity="warning",
+                        )
+                        writer.write(event)
+                    return Response(
+                        content='{"detail":"Invalid or missing API key"}',
+                        status_code=401,
+                        media_type="application/json",
+                    )
+                return cast(Response, await call_next(request))
+        else:
+            # Tracing disabled - fast path
+            if not _check_api_key(request):
+                inc_metric("auth_failures_total")
+                writer = get_writer()
+                if writer is not None:
+                    client_ip = request.client.host if request.client else "unknown"
+                    event = AuditEvent(
+                        event_type=AuditEventType.AUTH_FAILED,
+                        agent_id="dashboard",
+                        task_id="",
+                        args={
+                            "client_ip": client_ip,
+                            "path": request.url.path,
+                            "has_api_key": bool(request.headers.get("X-API-Key")),
+                        },
+                        severity="warning",
+                    )
+                    writer.write(event)
+                return Response(
+                    content='{"detail":"Invalid or missing API key"}',
+                    status_code=401,
+                    media_type="application/json",
                 )
-                writer.write(event)
-            return Response(
-                content='{"detail":"Invalid or missing API key"}',
-                status_code=401,
-                media_type="application/json",
-            )
-        return cast(Response, await call_next(request))
+            return cast(Response, await call_next(request))
 
     # ── Security headers (T018 / ticket #11) ─────────────────────────────
     # Registered AFTER the auth + rate-limit middlewares so it runs

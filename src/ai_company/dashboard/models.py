@@ -225,7 +225,10 @@ class OrgNode(BaseModel):
     role: str
     type: str
     department: str = ""
+    reports_to: str = ""
     children: list[OrgNode] = Field(default_factory=list)
+    metrics: dict[str, Any] | None = None
+    risk: dict[str, Any] | None = None
 
 
 class PaginatedTasks(BaseModel):

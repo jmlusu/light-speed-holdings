@@ -80,3 +80,70 @@ kpis:
       source: null
       formula: "Standard eNPS from a people/HR survey (promoters - detractors)/respondents; no survey source exists yet."
       computed_at: null
+
+  # ── Executive health KPIs (2026-08-31) ──────────────────────────────
+  # Operational KPIs the CEO uses to judge real-time business health.
+  # `current` is computed at REQUEST TIME by
+  #   ai_company.dashboard.data_service.get_executive_scorecard()
+  # from live task telemetry (SQLite-first, then .opencode/inbox.json).
+  # `weight` feeds the weighted executive health score (0-100).
+  executive:
+    - id: "task_throughput"
+      name: "Task Throughput"
+      category: "operations"
+      target: 50
+      unit: "tasks"
+      frequency: "daily"
+      owner: "coo"
+      weight: 20
+      higher_is_better: true
+
+    - id: "agent_utilization"
+      name: "Agent Utilization"
+      category: "operations"
+      target: 80
+      unit: "percent"
+      frequency: "weekly"
+      owner: "coo"
+      weight: 15
+      higher_is_better: true
+
+    - id: "cost_efficiency"
+      name: "Cost Efficiency"
+      category: "finance"
+      target: 70
+      unit: "percent"
+      frequency: "monthly"
+      owner: "cfo"
+      weight: 20
+      higher_is_better: true
+
+    - id: "build_success_rate"
+      name: "Build Success Rate"
+      category: "engineering"
+      target: 99.5
+      unit: "percent"
+      frequency: "daily"
+      owner: "cto"
+      weight: 15
+      higher_is_better: true
+
+    - id: "escalation_resolution_time"
+      name: "Escalation Resolution Time"
+      category: "operations"
+      target: 3600
+      unit: "seconds"
+      frequency: "daily"
+      owner: "coo"
+      weight: 15
+      higher_is_better: false
+
+    - id: "approval_turnaround"
+      name: "Approval Turnaround"
+      category: "operations"
+      target: 1800
+      unit: "seconds"
+      frequency: "daily"
+      owner: "chief-of-staff"
+      weight: 15
+      higher_is_better: false

@@ -4,6 +4,17 @@ All notable changes to AI Company Builder are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## Unreleased
+
+### Added
+- **CEO Alert Center**: durable alert persistence — new `AlertStore` (`src/ai_company/dashboard/alert_store.py`, FileStore-backed `alerts.json`, 30-day retention prune, lifecycle `active/acknowledged/snoozed/cleared`, dedupe by rule+dept+kpi+severity, expired-snooze re-activation) + canonical `default_alert_rules()`.
+- **Alert Center API**: `run_alert_evaluation()` in `data_service.py` (evaluates 7 default rules, persists fired alerts idempotently); `GET /api/v1/kpis/alerts` refactored to persist + live-WS broadcast; new `GET /api/v1/alerts` (status/severity filters) and `POST /api/v1/alerts/{id}/ack|/snooze|/clear` + `POST /api/v1/alerts/clear-all`, RBAC-gated (`run` read / `approve` write); KPI scheduler runs `run_alert_pass()` after each snapshot.
+- **Alert Center UI**: `jarvis-glass` feed with severity badges, status filter tabs, per-row Ack/Snooze/Clear, and live prepend via the `alerts` WebSocket topic.
+- **Tests**: `test_alert_store.py` + `test_alert_center_api.py` (17 tests) — store dedupe/lifecycle/retention + API list/ack/snooze/clear contract.
+- **Executive KPI Scorecard** (`data_service.get_executive_scorecard()`): health_score + per-KPI status/trend/source + department rollup wired additively into `GET /api/v1/ceo-dashboard`; 6 configurable executive KPI targets (task_throughput, agent_utilization, cost_efficiency, build_success_rate, escalation_resolution_time, approval_turnaround) in `config/company/kpis.yaml`; trend helpers `compute_period_comparison`/`compute_moving_average`/`detect_anomaly` in `analytics.py`.
+- **Rich Org Chart with Metrics & Risk**: `compute_org_metrics()` + `org_chart_summary()` in `graph/engine.py`; `OrgNode` extended with optional `metrics`/`risk` fields; `GET /api/v1/org-chart?include_metrics=true` returns per-node capacity/activity/trend + succession/bus-factor risk with a 30s TTL cache; `X-Org-Summary` header carries aggregate totals (agents, avg span, avg capacity, at-risk count); frontend renders capacity bars, risk strip, and a full Metrics & Risk detail panel; filter dropdown (All / At risk / Senior / Overloaded).
+- **Tests**: `test_analytics_trends.py` (12), `test_executive_scorecard.py` (12), `test_org_chart_metrics.py` (9) — 33 new tests.
+
 ## [0.5.0] — 2026-08-13
 
 ### Added

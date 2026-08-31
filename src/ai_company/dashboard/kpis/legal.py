@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import datetime
 from typing import Any
 
 from ai_company.dashboard.kpis.base import KPICollector
-
-logger = logging.getLogger(__name__)
 
 
 class LegalKPICollector(KPICollector):
@@ -23,33 +20,7 @@ class LegalKPICollector(KPICollector):
             Tuple of (is_current, freshness_pct, error_message). error_message is None on success.
         """
         sop_path = self.root / "docs" / "sop" / "legal-sop.md"
-        if not sop_path.exists():
-            return False, None, "SOP file not found"
-        try:
-            import re
-
-            content = sop_path.read_text(encoding="utf-8")
-            match = re.search(r"Last Updated:\s*([A-Za-z]+\s+\d{4})", content)
-            if match:
-                from datetime import datetime as dt
-
-                updated_dt = dt.strptime(match.group(1), "%B %Y")
-                now = datetime.now()
-                days_old = (now - updated_dt).days
-                is_current = days_old <= 90
-                return (
-                    is_current,
-                    round((90 - days_old) / 90 * 100, 1) if is_current else None,
-                    None,
-                )
-        except (OSError, ValueError, AttributeError) as exc:
-            logger.warning(
-                "Failed to parse Legal SOP freshness (%s): %s",
-                sop_path,
-                exc,
-            )
-            return False, None, f"Failed to parse SOP date: {exc}"
-        return False, None, "SOP date not found or invalid"
+        return self._sop_freshness(sop_path, "Legal")
 
     def _compute_contract_review_time(
         self, contracts: list[dict[str, Any]]
@@ -59,35 +30,15 @@ class LegalKPICollector(KPICollector):
         Returns:
             Tuple of (avg_review_hours, error_message). error_message is None on success.
         """
-        reviewed_contracts = [
-            c
-            for c in contracts
-            if c.get("status") in ("approved", "rejected")
-            and c.get("created_at")
-            and c.get("reviewed_at")
-        ]
-
-        if not reviewed_contracts:
-            return None, "No reviewed contracts with timestamps available"
-
-        review_times = []
-        for contract in reviewed_contracts:
-            try:
-                created = datetime.fromisoformat(contract["created_at"].replace("Z", "+00:00"))
-                reviewed = datetime.fromisoformat(contract["reviewed_at"].replace("Z", "+00:00"))
-                diff_hours = (reviewed - created).total_seconds() / 3600
-                if diff_hours >= 0:  # Only count valid positive durations
-                    review_times.append(diff_hours)
-            except (ValueError, AttributeError) as exc:
-                logger.warning(
-                    "Failed to parse timestamps for contract %s: %s", contract.get("id"), exc
-                )
-
-        if not review_times:
-            return None, "No valid timestamp pairs found in reviewed contracts"
-
-        avg_review = round(sum(review_times) / len(review_times), 1)
-        return avg_review, None
+        return self._compute_avg_duration(
+            contracts,
+            ["approved", "rejected"],
+            "created_at",
+            "reviewed_at",
+            no_items_msg="No reviewed contracts with timestamps available",
+            no_pairs_msg="No valid timestamp pairs found in reviewed contracts",
+            item_label="contract",
+        )
 
     def collect(self) -> dict[str, Any]:
         contracts = self._load_json("orchestrator/legal/contracts.json")

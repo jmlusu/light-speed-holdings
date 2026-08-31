@@ -88,6 +88,30 @@ class FileStore:
 
     # ── Corrupt-file handling ─────────────────────────────────────────
 
+    def _quarantine_and_recover(self, full_path: Path) -> Any:
+        """Quarantine a corrupt file and parse the last ``.bak`` version.
+
+        The corrupt file is atomically renamed to ``<name>.corrupt-<ts>``
+        so a crash mid-recovery still leaves the original bytes on disk,
+        then the last good ``.bak`` backup is parsed when present.  Returns
+        ``None`` only when nothing is recoverable.
+        """
+        quarantine = full_path.with_name(full_path.name + f".corrupt-{int(time.time())}")
+        logger.error(
+            "Corrupt JSON file %s -- quarantining to %s and attempting recovery from .bak.",
+            full_path,
+            quarantine,
+        )
+        with contextlib.suppress(OSError):
+            os.replace(full_path, quarantine)
+        bak_path = full_path.with_suffix(full_path.suffix + ".bak")
+        if bak_path.exists():
+            try:
+                return json.loads(bak_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                logger.error("Recovery backup %s is also corrupt.", bak_path)
+        return None
+
     def _read_json_safe(self, full_path: Path) -> Any:
         """Read and parse a JSON file with corruption recovery.
 
@@ -121,21 +145,50 @@ class FileStore:
         try:
             return json.loads(raw)
         except json.JSONDecodeError:
-            quarantine = full_path.with_name(full_path.name + f".corrupt-{int(time.time())}")
+            return self._quarantine_and_recover(full_path)
+
+    def _read_json_list_safe(self, full_path: Path) -> list[Any]:
+        """Read a JSON array with strict list semantics and recovery.
+
+        Unlike :meth:`_read_json_safe`, any payload that is not a JSON array
+        (a dict, scalar, or a JSON decode failure) is treated as corrupt: the
+        current file is quarantined and the last ``.bak`` is recovered.
+        Returns ``[]`` only when nothing recoverable is a list.  This is the
+        contract JSON-backed array stores (MessageBus) rely on.
+        """
+        raw = None
+        for _ in range(5):
+            try:
+                raw = full_path.read_text(encoding="utf-8")
+                break
+            except (OSError, PermissionError):
+                time.sleep(0.01)
+        if raw is None:
+            logger.warning("Could not read %s after retries.", full_path)
+            return []
+
+        if raw.lstrip()[:1] not in ("{", "["):
             logger.error(
-                "Corrupt JSON file %s -- quarantining to %s and attempting recovery from .bak.",
+                "Corrupt data at %s (expected a JSON list) -- quarantining and attempting recovery.",
                 full_path,
-                quarantine,
             )
-            with contextlib.suppress(OSError):
-                os.replace(full_path, quarantine)
-            bak_path = full_path.with_suffix(full_path.suffix + ".bak")
-            if bak_path.exists():
-                try:
-                    return json.loads(bak_path.read_text(encoding="utf-8"))
-                except (json.JSONDecodeError, OSError):
-                    logger.error("Recovery backup %s is also corrupt.", bak_path)
-            return None
+            recovered = self._quarantine_and_recover(full_path)
+            return recovered if isinstance(recovered, list) else []
+
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            recovered = self._quarantine_and_recover(full_path)
+            return recovered if isinstance(recovered, list) else []
+
+        if not isinstance(data, list):
+            logger.error(
+                "Corrupt data at %s (expected a JSON list) -- quarantining and attempting recovery.",
+                full_path,
+            )
+            recovered = self._quarantine_and_recover(full_path)
+            return recovered if isinstance(recovered, list) else []
+        return data
 
     # ── Lock context manager ────────────────────────────────────────────
 
@@ -217,6 +270,24 @@ class FileStore:
 
         with fl(full_path, timeout=_LOCK_TIMEOUT, stale_after=_LOCK_STALE_AFTER):
             return self._read_json_safe(full_path)
+
+    def read_json_list(self, rel_path: str | Path) -> list[Any]:
+        """Read a JSON array with strict list semantics and corruption recovery.
+
+        Serialises with writers via the shared sidecar lock and only ever
+        returns a list: any non-list or corrupt payload is quarantined and
+        recovered from ``.bak``, falling back to ``[]`` when nothing is
+        recoverable.  This is the read primitive JSON-backed array stores
+        (MessageBus) use so corruption recovery lives in exactly one module.
+        """
+        from ai_company.store.file_lock import file_lock as fl
+
+        full_path = self.base_dir / rel_path
+        if not full_path.exists():
+            return []
+
+        with fl(full_path, timeout=_LOCK_TIMEOUT, stale_after=_LOCK_STALE_AFTER):
+            return self._read_json_list_safe(full_path)
 
     def write_json(self, rel_path: str | Path, data: Any) -> None:
         """Atomically write *data* as JSON to *rel_path*."""
