@@ -463,5 +463,90 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-08-30-cleanup-dummy-tasks",
     "updated_at": "2026-08-30"
+  },
+  {
+    "id": "2026-08-30-dashboard-hardening-c4-task-flow-and-reports-views-c5-reportstore",
+    "title": "Dashboard Hardening: C4 Task Flow and Reports Views, C5 ReportStore",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- The codenames \"Path-of-RPG\" and \"FLORA\" had no definition anywhere in the",
+      "repo (exhaustive search). The CEO confirmed (chat answers) the recommended",
+      "interpretation: \"Path-of-RPG\" = task-journey lifecycle traceability (Task Flow",
+      "view); \"FLORA\" = reports/outcomes viewer (Reports page) built on C5.",
+      "- C5 was built first, then C4 UI/API consumed it (approved ordering).",
+      "- Reports are strictly read-only; no writes, no persistence-format change, no",
+      "migration of existing `results/`.",
+      "- The flat root `cost_log.jsonl` shard (bundle \".\") is filtered from the default",
+      "`/api/v1/reports` listing because it is cost records, not reports; it remains",
+      "reachable via `include_cost=true`.",
+      "- Report content is served read-only and path-traversal is blocked by resolving",
+      "the requested path and verifying it stays under the reports root (404 on",
+      "escape) — consistent with ADR-013/security posture.",
+      "- Every new/modified file belongs to this change; no pre-existing `store/`",
+      "behaviour was changed."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-30-dashboard-hardening-c4-task-flow-and-reports-views-c5-reportstore",
+    "updated_at": "2026-08-30"
+  },
+  {
+    "id": "2026-08-31-ceo-alert-center",
+    "title": "CEO Alert Center",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      null
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- **Reuse** `AlertEngine`/`AlertRule` from `analytics.py` threshold evaluation (no new rules engine). The 7 default rules in `api.py` stay the source.",
+      "- **Persistence** via `FileStore` JSON list at the dashboard data root (`dashboard/alerts.json`) — matches the existing KPI-history storage convention (SQLite-first mirror is retired).",
+      "- **Lifecycle states**: `active` → `acknowledged` / `snoozed` → `cleared`. `snoozed` carries a `snoozed_until` timestamp; cleared/acknowledged entries older than 30 days are pruned on write (retention).",
+      "- **Dedupe**: a new alert is skipped if an identical `(rule_name, department, kpi_key, severity)` is already `active` or `snoozed`.",
+      "- **Write endpoints** guarded by the existing dashboard RBAC approve/run key pattern (`_check_api_key`).",
+      "- **Frontend**: minimal in-house alert feed section (no new deps) — severity badges, status filter, acknowledge/snooze/clear, real-time via the existing \"alerts\" WS topic."
+    ],
+    "validation_status": "passed",
+    "path": "harness/changes/archive/2026-08-31-ceo-alert-center",
+    "updated_at": "2026-08-31"
+  },
+  {
+    "id": "2026-08-31-executive-kpi-scorecard-rich-org-chart",
+    "title": "Executive KPI Scorecard + Rich Org Chart",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      null
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- Executive health score = weighted average across 7 department health scores (weights in `kpis.yaml`).",
+      "- KPI `source` distinguishes `real_telemetry` vs `configured`.",
+      "- Org chart capacity = `active / (active + queued) * 100`; succession_risk from direct-reports, unique skills, tenure.",
+      "- Org chart metrics read from live MessageBus state (aligns with GAP-011), cached with 30s TTL."
+    ],
+    "validation_status": "passed",
+    "path": "harness/changes/archive/2026-08-31-executive-kpi-scorecard-rich-org-chart",
+    "updated_at": "2026-08-31"
   }
 ]

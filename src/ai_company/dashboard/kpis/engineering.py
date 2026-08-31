@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import datetime
 from typing import Any
 
 from ai_company.dashboard.kpis.base import KPICollector
-
-logger = logging.getLogger(__name__)
 
 
 class EngineeringKPICollector(KPICollector):
@@ -23,33 +20,7 @@ class EngineeringKPICollector(KPICollector):
             Tuple of (is_current, freshness_pct, error_message). error_message is None on success.
         """
         sop_path = self.root / "docs" / "sop" / "engineering-sop.md"
-        if not sop_path.exists():
-            return False, None, "SOP file not found"
-        try:
-            import re
-
-            content = sop_path.read_text(encoding="utf-8")
-            match = re.search(r"Last Updated:\s*([A-Za-z]+\s+\d{4})", content)
-            if match:
-                from datetime import datetime as dt
-
-                updated_dt = dt.strptime(match.group(1), "%B %Y")
-                now = datetime.now()
-                days_old = (now - updated_dt).days
-                is_current = days_old <= 90
-                return (
-                    is_current,
-                    round((90 - days_old) / 90 * 100, 1) if is_current else None,
-                    None,
-                )
-        except (OSError, ValueError, AttributeError) as exc:
-            logger.warning(
-                "Failed to parse Engineering SOP freshness (%s): %s",
-                sop_path,
-                exc,
-            )
-            return False, None, f"Failed to parse SOP date: {exc}"
-        return False, None, "SOP date not found or invalid"
+        return self._sop_freshness(sop_path, "Engineering")
 
     def collect(self) -> dict[str, Any]:
         # Track data sources for quality reporting

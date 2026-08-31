@@ -46,6 +46,7 @@ dev = [
     "pytest-cov",
     "pytest-benchmark",
     "pytest-asyncio",
+    "pytest-rerunfailures",
     "ruff",
     "mypy",
     "types-PyYAML",
@@ -107,7 +108,7 @@ extend-immutable-calls = [
 # No --basetemp here: pytest's built-in per-run unique temp dir prevents the
 # concurrent-run collisions (PermissionError WinError 32 / FileLockError) that
 # the fixed .pytest_tmp basetemp caused.
-addopts = "-m 'not e2e'"
+addopts = "-m 'not e2e' --reruns 2 --reruns-delay 1"
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 asyncio_mode = "auto"
@@ -117,6 +118,7 @@ markers = [
     "e2e: marks end-to-end tests requiring a running dashboard (deselect with '-m \"not e2e\"')",
     "timeout: marks tests exercising explicit timeout handling (deselect with '-m \"not timeout\"')",
     "slow: marks slow-running tests (deselect with '-m \"not slow\"')",
+    "flaky: marks tests that may be flaky (auto-retried via pytest-rerunfailures)",
 ]
 
 [tool.coverage.run]

@@ -1048,7 +1048,7 @@ company/agent-registry.json    (runtime registry, JSON)
 GET /api/v1/org-chart          (recursive OrgNode tree)
         │
         ▼ frontend rendering
-org-chart.html + org-chart.js  (interactive tree with drag-and-drop)
+org-chart.html + org-chart-interactive.js  (interactive tree with drag-and-drop)
 ```
 
 ---
@@ -1104,7 +1104,7 @@ org-chart.html + org-chart.js  (interactive tree with drag-and-drop)
 | Kanban Board | `js/kanban-board.js` | `x-data="kanbanBoard()"` | `/tasks` | 5-column drag-and-drop board (pending → in_progress → review → completed → failed), task decomposition trigger |
 | Mission Control | `js/mission-control.js` | `x-data="missionControl()"` | `/mission-control` | Workflow pipeline visualization, start / advance / complete / cancel workflow instances |
 | Health Monitor | `js/health.js` | `x-data="healthMonitor()"` | `/dashboard` | Org health score gauge, 7-day trend sparkline, anomaly detection highlights |
-| Org Chart | `js/org-chart.js` + `js/org-chart-interactive.js` | `x-data="orgChart()"` | `/org-chart` | Hierarchical tree render, drag-and-drop agent reassignment, live WebSocket updates |
+| Org Chart | `js/org-chart-interactive.js` | `x-data="orgChartInteractive()"` | `/org-chart` | Hierarchical tree render, drag-and-drop agent reassignment, live WebSocket updates |
 | Onboarding Studio v2 | `js/onboarding-studio-v2.js` | `x-data="onboardingStudioV2()"` | `/onboarding` | 5 persona templates, multi-step wizard, live YAML preview, generation endpoint |
 | CEO Hero | `js/ceo-hero-prototype.js` | `x-data="ceoHero()"` | `/dashboard` | 3 switchable display variants: gauge ring, horizontal bar, drill-down card |
 | Offline Sync | `js/offline-sync.js` | N/A (service module) | Global (via `app.js` init) | IndexedDB action queue, background sync registration, conflict detection via timestamps, user-resolution modal |
@@ -1708,8 +1708,7 @@ All `@font-face` rules use `font-display: swap` to prevent FOIT.
 | `kanban-board.js` | Kanban drag-and-drop board for tasks |
 | `mission-control.js` | Workflow pipeline visualization |
 | `health.js` | Org health monitor, anomaly detection |
-| `org-chart.js` | Org chart tree renderer |
-| `org-chart-interactive.js` | Org chart drag-and-drop reassignment + WS |
+| `org-chart-interactive.js` | Org chart tree renderer, drag-and-drop reassignment + WS |
 | `onboarding-studio-v2.js` | Onboarding Studio v2 — personas, wizard, YAML preview |
 | `ceo-hero-prototype.js` | CEO Hero — 3 switchable display variants |
 | `offline-sync.js` | IndexedDB queue, background sync, conflict detection |

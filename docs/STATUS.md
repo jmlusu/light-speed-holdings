@@ -4,9 +4,19 @@
 
 ## Last Updated
 
-2026-08-30
+2026-08-31
 
 ## Current State
+
+- **CEO Alert Center (2026-08-31, shipped)**: ECL change `ceo-alert-center` closed `completed`. Persists fired threshold alerts from the existing `AlertEngine` into a durable store and adds a dashboard Alert Center feed:
+  - *Backend*: new `src/ai_company/dashboard/alert_store.py` — `AlertStore` (FileStore-backed `alerts.json`, 30-day retention prune, lifecycle `active/acknowledged/snoozed/cleared`, dedupe by rule+dept+kpi+severity, expired-snooze re-activation) + canonical `default_alert_rules()`. `run_alert_evaluation()` in `data_service.py` evaluates the 7 default rules against `collect_all_kpis()` and persists fired alerts (idempotent).
+  - *API*: `GET /api/v1/kpis/alerts` refactored to persist + live-WS broadcast new fires; new `GET /api/v1/alerts` (status/severity filters) and `POST /api/v1/alerts/{id}/ack|/snooze|/clear` + `POST /api/v1/alerts/clear-all`, all RBAC-gated (`run` read / `approve` write). KPI scheduler runs `run_alert_pass()` after each snapshot.
+  - *Frontend*: "Alert Center" `jarvis-glass` section — severity badges, status filter tabs, per-row Ack/Snooze/Clear, live prepend via the `alerts` WebSocket topic.
+  - *Tests*: `test_alert_store.py` + `test_alert_center_api.py` (17 tests) green; 115 targeted regression tests (dashboard/KPI/scheduler) green; ruff/mypy clean (204 files). Fixed two AlertStore bugs found by tests (transition writes + status filter mutating reads). No git commit per operator instruction.
+
+- **Executive KPI Scorecard + Rich Org Chart (2026-08-31, shipped)**: ECL change `executive-kpi-scorecard-rich-org-chart` closed `completed`. Two increments shipped:
+  - *Increment 1 — CEO Dashboard Scorecard*: `compute_period_comparison`/`compute_moving_average`/`detect_anomaly` helpers in `analytics.py`; 6 executive KPI targets + weights in `config/company/kpis.yaml`; `get_executive_scorecard()` + department health rollup in `data_service.py`; `executive_scorecard` section wired additively into `GET /api/v1/ceo-dashboard`; 24 new tests in `test_analytics_trends.py` + `test_executive_scorecard.py`. 141 targeted regression tests green.
+  - *Increment 2 — Rich Org Chart with Metrics & Risk*: `compute_org_metrics()` + `org_chart_summary()` in `graph/engine.py`; `OrgNode` extended with optional `metrics`/`risk` fields; `GET /api/v1/org-chart?include_metrics=true` returns per-node capacity/activity/trend + succession/bus-factor risk with a 30s TTL cache; `X-Org-Summary` header carries aggregate totals (agents, avg span, avg capacity, at-risk count); frontend `org-chart-interactive.js` requests `include_metrics`, renders capacity bars + risk strip on node cards + full Metrics & Risk detail panel; filter dropdown (All / At risk / Senior / Overloaded); `test_org_chart_metrics.py` (9 tests). All targeted regression suites green, ruff/mypy clean. Side-effect files restored, no git commit per operator instruction.
 
 - **COMPLETE: Remove Dummy Tasks & Wire Real Organizational Data (2026-08-30, archived)**: ECL change `cleanup-dummy-tasks` closed `completed` and archived at `harness/changes/archive/2026-08-30-cleanup-dummy-tasks`. Final full-suite gate green (**2223 passed, 67 deselected, exit 0**, 14m14s, tree unchanged during run) on top of earlier scoped gates (ruff 0 errors, mypy strict, 204-test targeted regression, T003 CLI sandbox proof 20->3 / 17 removed, live-store no-op). Side-effect files restored. Feature code already merged to main in `ddff39a` (+`bcd6d68`, `cbfb70a`); ECL close completed with **no git commit** (operator instruction). The harness `resume` nesting bug (which originally parked-and-resumed this change into `active/<id>/` and cost this session its evidence) is now **fixed in `scripts/harness-change.ps1`** (moves children into `active/` instead of nesting the folder) and verified with a throwaway park/resume cycle. Concurrent AI session (Codex/OpenCode) editing shared dashboard files is a known coexistence hazard for future closes.
 
