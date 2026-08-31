@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import math
 import re
@@ -11,7 +12,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    HTTPException,
+    Query,
+    Request,
+    Response,
+)
 from pydantic import BaseModel, Field, field_validator
 
 if TYPE_CHECKING:
@@ -110,19 +119,21 @@ def _get_llm_client() -> Any:
 def _read_all_tasks(*, include_test: bool = False) -> list[dict[str, Any]]:
     """Return all tasks as plain dicts — SQLite-first, inbox-file fallback.
 
-    The file fallback reads through :func:`get_bus` so writes and reads stay
-    on the same bus (tests override ``_bus`` to an isolated inbox).
+    The read-through is delegated to
+    :func:`ai_company.dashboard.data_service.get_all_tasks_fallback` so the
+    SQLite-first / MessageBus-fallback priority lives in one code path for
+    the whole dashboard.  Bus tasks are materialised via :class:`Task` to
+    back-fill defaults identically to the legacy behaviour.
 
     By default, filters out demo/test tasks (Acme Corp ``proj-acme-chatbot``
     tasks, ``Test `` instructions, ``test-``/``verify-`` ids). Pass
     ``include_test=True`` to include them.
     """
-    from ai_company.dashboard.data_service import get_all_tasks
+    from ai_company.dashboard.data_service import get_all_tasks_fallback
     from ai_company.data.task_store import TaskStore
+    from ai_company.models.task import Task
 
-    tasks = get_all_tasks()
-    if tasks is None:
-        tasks = [task.model_dump() for task in get_bus().get_all_tasks()]
+    tasks = [task.model_dump() for task in (Task(**t) for t in get_all_tasks_fallback())]
 
     if not include_test:
         tasks = [t for t in tasks if not TaskStore.is_test_task(t)]
@@ -836,29 +847,87 @@ def get_agent(name: str) -> AgentSummary:
 # ── Org Chart ───────────────────────────────────────────────────────
 
 
+_ORG_CHART_CACHE: dict[str, Any] = {"at": 0.0, "payload": None}
+
+
 @router.get("/org-chart", response_model=list[OrgNode], tags=["agents"])
-def get_org_chart() -> list[OrgNode]:
-    """Return the hierarchical org chart rooted at the CEO."""
-    registry = {a["name"]: a for a in _load_registry()}
+def get_org_chart(
+    include_metrics: bool = False,
+    response: Response = None,  # type: ignore[assignment]  # FastAPI injects
+) -> list[OrgNode]:
+    """Return the hierarchical org chart rooted at the CEO.
+
+    When ``include_metrics=true`` every node gains ``metrics`` (capacity %,
+    active/queued/completed tasks, utilization trend) and ``risk``
+    (succession_risk, bus_factor, direct reports, last review) computed from
+    live task state, and an ``X-Org-Summary`` header carries the aggregate
+    (totals, avg span of control, avg capacity).  Metrics are cached 30s to
+    protect large orgs (GAP-011 live-read alignment).
+    """
+    from ai_company.dashboard.data_service import get_all_tasks_fallback
+    from ai_company.graph.engine import compute_org_metrics, org_chart_summary
+
+    agents = _load_registry()
+    registry = {a["name"]: a for a in agents}
     children_map: dict[str, list[str]] = {}
-    for a in _load_registry():
+    for a in agents:
         parent = a.get("reports_to", "")
         children_map.setdefault(parent, []).append(a["name"])
 
-    def build_node(name: str) -> OrgNode:
+    # Resolve a 30s-TTL cache of the computed metrics when requested.
+    metrics: dict[str, dict[str, Any]] = {}
+    now_s = time.time()
+    if include_metrics:
+        if _ORG_CHART_CACHE["payload"] is None or (now_s - _ORG_CHART_CACHE["at"]) > 30:
+            tasks = get_all_tasks_fallback()
+            _ORG_CHART_CACHE["payload"] = compute_org_metrics(agents, tasks)
+            _ORG_CHART_CACHE["at"] = now_s
+        metrics = _ORG_CHART_CACHE["payload"]
+
+    def build_node(name: str, visited: set[str] | None = None) -> OrgNode:
+        if visited is None:
+            visited = set()
+        if name in visited:
+            return OrgNode(
+                name=name, role="CYCLE", type="Error", department="", reports_to="", children=[]
+            )
+        visited.add(name)
         a = registry.get(name, {})
-        kids = [build_node(c) for c in children_map.get(name, [])]
-        return OrgNode(
+        kids = [build_node(c, visited) for c in children_map.get(name, [])]
+        node = OrgNode(
             name=name,
             role=a.get("role", name),
             type=a.get("type", "Unknown"),
             department=a.get("department", ""),
+            reports_to=a.get("reports_to", ""),
             children=kids,
         )
+        if include_metrics:
+            node.metrics = metrics.get(name, {}).get("metrics")
+            node.risk = metrics.get(name, {}).get("risk")
+        return node
 
-    roots = children_map.get("human-ceo", [])
+    # Find root nodes: agents with no manager. Prefer the CEO if one exists,
+    # otherwise fall back to the first agent reporting to a virtual root or
+    # "human-ceo" (the historical placeholder).
+    ceo_candidates = [
+        a["name"]
+        for a in agents
+        if "ceo" in a.get("role", "").lower() and a.get("type", "").lower() == "executive"
+    ]
+    if ceo_candidates:
+        # CEO is the root — their direct reports become the top-level children
+        ceo_name = ceo_candidates[0]
+        roots = [ceo_name]
+    else:
+        # Legacy fallback: look for agents reporting to "human-ceo"
+        roots = children_map.get("human-ceo", [])
     if not roots and "chief-of-staff" in registry:
         roots = ["chief-of-staff"]
+
+    if include_metrics and response is not None:
+        summary = org_chart_summary(agents, metrics)
+        response.headers["X-Org-Summary"] = json.dumps(summary)
     return [build_node(r) for r in roots]
 
 
@@ -901,6 +970,28 @@ def reassign_agent_reports_to(
     registry = _load_json("company/agent-registry.json")
     if not registry:
         raise HTTPException(status_code=404, detail="Agent registry not found")
+
+    # Validate target manager exists (skip self-assignment check for virtual root)
+    agent_names = {a.get("name") for a in registry}
+    if new_manager != "__root__" and new_manager not in agent_names:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Manager '{new_manager}' not found in registry",
+        )
+
+    # Prevent self-assignment
+    if agent_name == new_manager:
+        raise HTTPException(status_code=400, detail="Agent cannot report to itself")
+
+    # Detect cycles: walk up from new_manager via reportsTo; if we reach agent_name, it's a cycle
+    manager_map = {a.get("name"): a.get("reportsTo", "") for a in registry}
+    visited: set[str] = set()
+    cursor = new_manager
+    while cursor and cursor not in visited:
+        if cursor == agent_name:
+            raise HTTPException(status_code=400, detail="Reassignment would create a cycle")
+        visited.add(cursor)
+        cursor = manager_map.get(cursor, "")
 
     # Find and update agent
     # Registry uses camelCase keys (reportsTo), so update that field
@@ -1907,6 +1998,16 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
         company_kpis = []
         errors.append({"section": "company_kpis", "error": "Company KPI config unavailable"})
 
+    # Section: Executive scorecard
+    try:
+        from ai_company.dashboard.data_service import get_executive_scorecard as _get_exec_scorecard
+
+        executive_scorecard = _get_exec_scorecard(days=30)
+    except Exception:  # noqa: BLE001
+        logger.exception("CEO dashboard: Executive scorecard failed")
+        executive_scorecard = {"health_score": None, "executive_kpis": [], "departments": []}
+        errors.append({"section": "executive_scorecard", "error": "Scorecard unavailable"})
+
     result = {
         "collected_at": sections.get("collected_at", now_iso),
         "computed_at": now_iso,
@@ -1930,6 +2031,11 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
         "company_health": {
             "departments": {dept: data.get("kpis", {}) for dept, data in departments.items()},
             "company_kpis": company_kpis,
+        },
+        "executive_scorecard": {
+            "health_score": executive_scorecard.get("health_score"),
+            "executive_kpis": executive_scorecard.get("executive_kpis", []),
+            "departments": executive_scorecard.get("departments", []),
         },
         "agent_performance": sections.get("agent_performance", {}),
         "cost_tracking": sections.get("cost_tracking", {}),
@@ -2153,106 +2259,129 @@ def get_kpi_trends(
 
 
 @router.get("/kpis/alerts")
-def get_kpi_alerts() -> dict[str, Any]:
+def get_kpi_alerts(background_tasks: BackgroundTasks) -> dict[str, Any]:
     """Evaluate default alert rules against the latest KPI snapshot.
 
-    Returns fired alerts and the rules that were evaluated.
+    Fired alerts are persisted to the CEO Alert Center store and newly-fired
+    ones are broadcast live on the ``alerts`` WebSocket topic.  Returns the
+    fired alerts and the number of rules evaluated.
     """
-    from ai_company.dashboard.analytics import AlertEngine, AlertRule, KPIHistoryStore
-    from ai_company.dashboard.kpis import collect_all_kpis
+    from ai_company.dashboard.alert_store import default_alert_rules
+    from ai_company.dashboard.data_service import run_alert_evaluation
+    from ai_company.dashboard.ws import broadcast_alert
 
-    # Default alert rules for common thresholds
-    default_rules = [
-        AlertRule(
-            name="High failure rate",
-            department="*",
-            kpi_key="failure_rate",
-            operator="gt",
-            threshold=10.0,
-            severity="critical",
-        ),
-        AlertRule(
-            name="High failure rate warning",
-            department="*",
-            kpi_key="failure_rate",
-            operator="gt",
-            threshold=5.0,
-            severity="warning",
-        ),
-        AlertRule(
-            name="Low task completion",
-            department="*",
-            kpi_key="task_completion_rate",
-            operator="lt",
-            threshold=80.0,
-            severity="warning",
-        ),
-        AlertRule(
-            name="Open escalations",
-            department="*",
-            kpi_key="open_escalations",
-            operator="gt",
-            threshold=3,
-            severity="warning",
-        ),
-        AlertRule(
-            name="Budget overage",
-            department="finance",
-            kpi_key="budget_utilization",
-            operator="gt",
-            threshold=95.0,
-            severity="critical",
-        ),
-        AlertRule(
-            name="Low customer satisfaction",
-            department="customer_success",
-            kpi_key="customer_satisfaction",
-            operator="lt",
-            threshold=7.0,
-            severity="warning",
-        ),
-        AlertRule(
-            name="Low compliance score",
-            department="legal",
-            kpi_key="compliance_score",
-            operator="lt",
-            threshold=90.0,
-            severity="critical",
-        ),
-    ]
-
-    engine = AlertEngine(rules=default_rules)
-    snapshot = collect_all_kpis()
-    alerts = engine.evaluate(snapshot)
+    rules = default_alert_rules()
+    new_alerts = run_alert_evaluation()
+    for alert in new_alerts:
+        background_tasks.add_task(broadcast_alert, alert)
 
     # Also store snapshot for history
     try:
         from ai_company.dashboard.analytics import KPIHistoryStore
+        from ai_company.dashboard.kpis import collect_all_kpis
 
         store = KPIHistoryStore()
-        store.store_snapshot(snapshot)
+        store.store_snapshot(collect_all_kpis())
     except Exception:  # noqa: BLE001 - history storage is best-effort
         logger.debug("Failed to store KPI snapshot for history")
 
     return {
         "evaluated_at": datetime.now(timezone.utc).isoformat(),
-        "rules_evaluated": len(default_rules),
+        "rules_evaluated": len(rules),
         "alerts_fired": [
             {
-                "rule_name": a.rule_name,
-                "department": a.department,
-                "kpi_key": a.kpi_key,
-                "current_value": a.current_value,
-                "threshold": a.threshold,
-                "operator": a.operator,
-                "severity": a.severity,
-                "fired_at": a.fired_at,
-                "message": a.message,
+                "rule_name": a["rule_name"],
+                "department": a["department"],
+                "kpi_key": a["kpi_key"],
+                "current_value": a["current_value"],
+                "threshold": a["threshold"],
+                "operator": a["operator"],
+                "severity": a["severity"],
+                "fired_at": a["fired_at"],
+                "message": a["message"],
+                "id": a["id"],
+                "status": a["status"],
             }
-            for a in alerts
+            for a in new_alerts
         ],
-        "alert_count": len(alerts),
+        "alert_count": len(new_alerts),
     }
+
+
+@router.get("/alerts", tags=["alerts"])
+def list_alerts(
+    status: str | None = Query(
+        None, description="Filter by status: active|acknowledged|snoozed|cleared"
+    ),
+    severity: str | None = Query(None, description="Filter by severity: info|warning|critical"),
+    limit: int = Query(200, ge=1, le=2000),
+    _: Role = Depends(require_role("run")),
+) -> dict[str, Any]:
+    """List persisted CEO Alert Center alerts, newest-first."""
+    from ai_company.dashboard.alert_store import AlertStore
+
+    store = AlertStore()
+    alerts = store.list_alerts(status=status, severity=severity, limit=limit)
+    return {"alerts": alerts, "count": len(alerts)}
+
+
+@router.post("/alerts/{alert_id}/ack", tags=["alerts"])
+def acknowledge_alert(
+    alert_id: str,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
+    """Acknowledge a fired alert (mark it reviewed)."""
+    from ai_company.dashboard.alert_store import AlertStore
+
+    row = AlertStore().acknowledge(alert_id)
+    if row is None:
+        raise HTTPException(
+            status_code=404, detail=f"Alert {alert_id} not found or already acknowledged"
+        )
+    return {"id": row["id"], "status": row["status"]}
+
+
+@router.post("/alerts/{alert_id}/snooze", tags=["alerts"])
+def snooze_alert(
+    alert_id: str,
+    until_hours: int = Query(4, ge=1, le=720),
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
+    """Snooze an alert for ``until_hours`` (suppresses re-fire for that period)."""
+    from ai_company.dashboard.alert_store import AlertStore
+
+    row = AlertStore().snooze(alert_id, until_hours=until_hours)
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"Alert {alert_id} not found")
+    return {"id": row["id"], "status": row["status"], "snoozed_until": row.get("snoozed_until")}
+
+
+@router.post("/alerts/{alert_id}/clear", tags=["alerts"])
+def clear_alert(
+    alert_id: str,
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
+    """Clear an alert from the active feed."""
+    from ai_company.dashboard.alert_store import AlertStore
+
+    row = AlertStore().clear(alert_id)
+    if row is None:
+        raise HTTPException(
+            status_code=404, detail=f"Alert {alert_id} not found or already cleared"
+        )
+    return {"id": row["id"], "status": row["status"]}
+
+
+@router.post("/alerts/clear-all", tags=["alerts"])
+def clear_all_alerts(
+    severity: str | None = Query(None, description="Clear only a given severity"),
+    _: Role = Depends(require_role("approve")),
+) -> dict[str, Any]:
+    """Clear all alerts (optionally only a given severity)."""
+    from ai_company.dashboard.alert_store import AlertStore
+
+    cleared = AlertStore().clear_all(severity=severity)
+    return {"cleared": cleared}
 
 
 @router.get("/kpis/collect")
@@ -3343,6 +3472,66 @@ def org_health_anomalies() -> list[dict[str, Any]]:
 
     anomalies = calculator.detect_anomalies(history)
     return [a.to_dict() for a in anomalies]
+
+
+@router.get("/org-health/categories", tags=["org-health"])
+def org_health_categories() -> dict[str, Any]:
+    """Group org-health components into dashboard categories.
+
+    Returns a dict keyed by category name, each containing a composite
+    score for that category and the list of component names that belong to it.
+    """
+    from ai_company.dashboard.org_health import OrgHealthCalculator
+
+    calculator = OrgHealthCalculator()
+    db = get_database()
+    result = calculator.compute(database=db)
+
+    # Build a lookup of component name -> score
+    comp_scores: dict[str, float | None] = {}
+    comp_weights: dict[str, float] = {}
+    for comp in result.components:
+        comp_scores[comp.name] = comp.value
+        comp_weights[comp.name] = comp.weight
+
+    # Category definitions: name -> list of component names
+    category_defs: dict[str, list[str]] = {
+        "operational": ["task_success_rate", "task_throughput", "escalation_rate"],
+        "financial": ["cost_efficiency"],
+        "security": ["security_posture"],
+        "strategic": ["strategic_alignment"],
+        "workforce": ["agent_utilization", "error_rate"],
+    }
+
+    categories: dict[str, Any] = {}
+    for cat_name, comp_names in category_defs.items():
+        # Compute weighted average of available components in this category
+        available = [
+            (comp_scores[cn], comp_weights[cn])
+            for cn in comp_names
+            if cn in comp_scores and comp_scores[cn] is not None
+        ]
+        if available:
+            total_weight = sum(w for _, w in available)
+            cat_score = round(sum(v * w for v, w in available) / total_weight, 1)
+        else:
+            cat_score = None
+
+        # Determine band for the category score
+        cat_band = "unknown"
+        if cat_score is not None:
+            for band_name, bounds in calculator.get_bands().items():
+                if bounds.get("min", 0) <= cat_score <= bounds.get("max", 100):
+                    cat_band = band_name
+                    break
+
+        categories[cat_name] = {
+            "score": cat_score,
+            "band": cat_band,
+            "components": comp_names,
+        }
+
+    return categories
 
 
 # ── Timeline (Searchable Execution Timeline) ──────────────────────

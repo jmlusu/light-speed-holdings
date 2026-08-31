@@ -23,26 +23,50 @@
 #     Formula: (completed_tasks / total_tasks) * 100
 #     Window:  30-day rolling (configurable via _company_window_tasks)
 #     Scale:   0-100 (100 = all tasks completed)
-#     Weight:  0.30 (30% of composite)
+#     Weight:  0.25 (25% of composite)
 #
 #   agent_utilization:
 #     Formula: (active_agents / registered_agents) * 100, capped at 100
 #     Window:  30-day rolling (agents active in any task within window)
 #     Scale:   0-100 (100 = all registered agents are active)
-#     Weight:  0.25 (25% of composite)
+#     Weight:  0.20 (20% of composite)
 #
 #   cost_efficiency:
 #     Formula: 100 - (total_spent / budget * 100) + 50, clamped [0, 100]
 #     Source:   get_cost_summary() from data service
 #     Scale:   0-100 (100 = no spend or low spend relative to budget)
-#     Weight:  0.25 (25% of composite)
+#     Weight:  0.15 (15% of composite)
 #     NOTE:    The +50 offset means 50% spend = 100 score, 100% spend = 50 score
 #
 #   error_rate (inverted):
 #     Formula: 100 - (error_tasks / total_tasks * 100)
 #     Window:  30-day rolling (failed + error + cancelled statuses)
 #     Scale:   0-100 (100 = zero errors)
-#     Weight:  0.20 (20% of composite)
+#     Weight:  0.15 (15% of composite)
+#
+#   task_throughput:
+#     Formula: (tasks_completed_per_day / target_per_day) * 100, capped at 100
+#     Window:  30-day rolling
+#     Scale:   0-100 (100 = meeting or exceeding throughput target)
+#     Weight:  0.10 (10% of composite)
+#
+#   escalation_rate (inverted):
+#     Formula: 100 - (escalated_tasks / total_tasks * 100)
+#     Window:  30-day rolling
+#     Scale:   0-100 (100 = zero escalations)
+#     Weight:  0.05 (5% of composite)
+#
+#   security_posture:
+#     Formula: Composite of audit trail health + compliance indicators
+#     Source:   audit JSONL events, compliance task completion
+#     Scale:   0-100 (100 = fully compliant, healthy audit trail)
+#     Weight:  0.05 (5% of composite)
+#
+#   strategic_alignment:
+#     Formula: % of tasks mapped to active goals/departments
+#     Source:   task metadata + department coverage heuristic
+#     Scale:   0-100 (100 = all tasks aligned to goals)
+#     Weight:  0.05 (5% of composite)
 #
 # ── Band Thresholds ────────────────────────────────────────────────
 #
@@ -63,14 +87,26 @@ bands:
 
 components:
   - name: task_success_rate
-    weight: 0.30
+    weight: 0.25
     description: "Ratio of completed tasks to total tasks (30d)"
   - name: agent_utilization
-    weight: 0.25
+    weight: 0.20
     description: "Active agents vs registered agents (30d)"
   - name: cost_efficiency
-    weight: 0.25
+    weight: 0.15
     description: "Budget utilization vs spend (inverted: lower spend = higher score)"
   - name: error_rate
-    weight: 0.20
+    weight: 0.15
     description: "Error/exception rate across agent operations (inverted: lower errors = higher score)"
+  - name: task_throughput
+    weight: 0.10
+    description: "Tasks completed per day normalized to target (30d)"
+  - name: escalation_rate
+    weight: 0.05
+    description: "Escalation rate across tasks (inverted: fewer escalations = higher score)"
+  - name: security_posture
+    weight: 0.05
+    description: "Audit trail health and compliance indicators"
+  - name: strategic_alignment
+    weight: 0.05
+    description: "Percentage of tasks mapped to active goals and departments"
