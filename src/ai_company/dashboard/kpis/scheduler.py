@@ -45,7 +45,23 @@ def run_snapshot(
         stored,
         len(snapshot.get("departments", {})),
     )
+    # Best-effort alert pass on the same cadence (minimal in-house first).
+    run_alert_pass()
     return stored
+
+
+def run_alert_pass() -> int:
+    """Evaluate default alert rules and persist new fires (best-effort).
+
+    Returns the number of newly-persisted alerts.  Never raises.
+    """
+    try:
+        from ai_company.dashboard.data_service import run_alert_evaluation
+
+        return len(run_alert_evaluation())
+    except Exception:  # noqa: BLE001 - alerting is best-effort
+        logger.exception("Alert evaluation failed; will retry next interval")
+        return 0
 
 
 class KPISnapshotScheduler:
@@ -100,4 +116,5 @@ __all__ = [
     "DEFAULT_SNAPSHOT_INTERVAL_SECONDS",
     "KPISnapshotScheduler",
     "run_snapshot",
+    "run_alert_pass",
 ]

@@ -9,6 +9,7 @@ Graph types:
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any
 
 from ai_company.models import CompanyRegistry
@@ -236,3 +237,190 @@ class GraphEngine:
                     queue.append(path + [child.id])
 
         return None
+
+
+def compute_org_metrics(
+    agents: list[dict[str, Any]],
+    tasks: list[dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    """Compute per-agent live metrics + succession risk for an org chart.
+
+    Pure function over plain dicts so it is unit-testable without I/O.  *agents*
+    are registry entries keyed by ``name``; *tasks* are live task dicts from the
+    shared MessageBus (SQLite-first read).  Returns a mapping of ``name`` to
+    ``{"metrics": {...}, "risk": {...}}`` (see :data:`_safe_node_metrics` /
+    :data:`_safe_node_risk`).  Names absent from *tasks* still get a zeroed
+    metrics block so the frontend can always render a capacity bar.
+    """
+    children_map: dict[str, list[str]] = {}
+    for a in agents:
+        parent = a.get("reports_to", "")
+        if parent:
+            children_map.setdefault(parent, []).append(str(a.get("name", "")))
+
+    per_name: dict[str, dict[str, Any]] = {str(a.get("name", "")): a for a in agents}
+
+    by_agent: dict[str, list[dict[str, Any]]] = {name: [] for name in per_name}
+    for task in tasks:
+        if not isinstance(task, dict):
+            continue
+        sender = task.get("sender_id")
+        receiver = task.get("receiver_id")
+        if sender in by_agent:
+            by_agent[sender].append(task)
+        if receiver in by_agent and receiver != sender:
+            by_agent[receiver].append(task)
+
+    result: dict[str, dict[str, Any]] = {}
+    now = datetime.now(timezone.utc)
+    for name, agent in per_name.items():
+        agent_tasks = by_agent.get(name, [])
+        result[name] = {
+            "metrics": _safe_node_metrics(agent_tasks, now),
+            "risk": _safe_node_risk(agent, children_map.get(name, []), per_name),
+        }
+    return result
+
+
+def _safe_node_metrics(tasks: list[dict[str, Any]], now: datetime) -> dict[str, Any]:
+    """Compute capacity/activity for one agent's task list (never raises)."""
+    active = sum(1 for t in tasks if t.get("status") == "in_progress")
+    queued = sum(1 for t in tasks if t.get("status") == "pending")
+    completed = sum(1 for t in tasks if t.get("status") == "completed")
+    capacity = round(active / (active + queued) * 100, 1) if (active + queued) else 0.0
+
+    # Utilization trend: completed count in the last 7 days vs the prior 7.
+    recent_7 = 0
+    prior_7 = 0
+    for t in tasks:
+        if t.get("status") != "completed":
+            continue
+        created = _parse_ts(t.get("created_at"))
+        if created is None:
+            continue
+        age_days = (now - created).total_seconds() / 86400.0
+        if 0 <= age_days <= 7:
+            recent_7 += 1
+        elif 7 < age_days <= 14:
+            prior_7 += 1
+    if recent_7 == prior_7:
+        trend = "stable" if (recent_7 > 0 or prior_7 > 0) else None
+    else:
+        trend = "up" if recent_7 > prior_7 else "down"
+
+    return {
+        "active": active,
+        "queued": queued,
+        "completed": completed,
+        "capacity": capacity,
+        "utilization_trend": trend,
+    }
+
+
+def _safe_node_risk(
+    agent: dict[str, Any],
+    direct_reports: list[str],
+    per_name: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Derive succession/bus-factor risk for one agent (never raises)."""
+    skills = agent.get("skills") or agent.get("skillset") or []
+    if isinstance(skills, str):
+        try:
+            skills = [s.strip() for s in skills.split(",") if s.strip()]
+        except ValueError:  # pragma: no cover - defensive
+            skills = []
+    unique_skills = len({str(s) for s in skills if s}) if isinstance(skills, list) else 0
+
+    tenure_days: float | None = None
+    since = agent.get("since") or agent.get("created_at")
+    started = _parse_ts(since) if since else None
+    if started is not None:
+        tenure_days = (datetime.now(timezone.utc) - started).total_seconds() / 86400.0
+    tenure_label = _tenure_label(tenure_days)
+
+    num_reports = len(direct_reports)
+    risk = "high"
+    if num_reports >= 3 and unique_skills >= 3 and tenure_days is not None and tenure_days >= 365:
+        risk = "low"
+    elif num_reports >= 2 and unique_skills >= 2:
+        risk = "medium"
+
+    return {
+        "succession_risk": risk,
+        "direct_reports": num_reports,
+        "bus_factor": num_reports,
+        "unique_skills": unique_skills,
+        "tenure": tenure_label,
+        "last_review": agent.get("last_review"),
+    }
+
+
+def _tenure_label(tenure_days: float | None) -> str:
+    if tenure_days is None:
+        return "unknown"
+    if tenure_days >= 365:
+        return "senior"
+    if tenure_days >= 90:
+        return "established"
+    return "recent"
+
+
+def _parse_ts(value: Any) -> datetime | None:
+    """Best-effort parse of an ISO-ish timestamp to a tz-aware datetime."""
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(value))
+    except (ValueError, TypeError):
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
+def org_chart_summary(
+    agents: list[dict[str, Any]],
+    metrics: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Summarize an org chart: totals + average span of control.
+
+    ``metrics`` is the output of :func:`compute_org_metrics`.  Agents whose
+    ``reports_to`` matches no one are counted as executives when their type is
+    ``executive``; every agent with a manager counts toward span of control.
+    """
+    total = len(agents)
+    executives = sum(1 for a in agents if str(a.get("type", "")).lower() == "executive")
+    specialists = sum(1 for a in agents if str(a.get("type", "")).lower() == "specialist")
+
+    children_map: dict[str, list[str]] = {}
+    for a in agents:
+        parent = a.get("reports_to", "")
+        if parent:
+            children_map.setdefault(parent, []).append(str(a.get("name", "")))
+
+    spans = [len(children_map.get(str(a.get("name", "")), [])) for a in agents]
+    avg_span = round(sum(spans) / total, 2) if total else 0.0
+
+    avg_capacity = 0.0
+    capacities = [
+        m.get("metrics", {}).get("capacity")
+        for m in metrics.values()
+        if isinstance(m.get("metrics"), dict)
+    ]
+    usable = [c for c in capacities if isinstance(c, (int, float))]
+    if usable:
+        avg_capacity = round(sum(usable) / len(usable), 1)
+
+    at_risk = sum(
+        1
+        for m in metrics.values()
+        if isinstance(m.get("risk"), dict) and m.get("risk", {}).get("succession_risk") == "high"
+    )
+    return {
+        "total_agents": total,
+        "executives": executives,
+        "specialists": specialists,
+        "avg_span_of_control": avg_span,
+        "avg_capacity": avg_capacity,
+        "at_risk_count": at_risk,
+    }

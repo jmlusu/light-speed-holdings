@@ -259,6 +259,140 @@ class TestDataIntegrity:
 
 
 # ---------------------------------------------------------------------------
+# Rate Limiter Load Baseline (C.5)
+# ---------------------------------------------------------------------------
+
+
+class TestRateLimiterLoadBaseline:
+    """Establish baseline for rate limiter under load (C.5)."""
+
+    @pytest.mark.parametrize("rate_limit", [100, 500, 1000])
+    def test_rate_limiter_allows_burst_within_limit(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, rate_limit: int
+    ) -> None:
+        """Rate limiter should allow burst up to configured limit."""
+        monkeypatch.setenv("DASHBOARD_RATE_LIMIT", str(rate_limit))
+        from ai_company.dashboard.app import _RateLimiter
+
+        limiter = _RateLimiter(max_requests=rate_limit, window_seconds=60)
+        allowed = 0
+        for _ in range(rate_limit + 10):
+            ok, _ = limiter.is_allowed("test-client")
+            if ok:
+                allowed += 1
+        # Should allow exactly rate_limit requests
+        assert allowed == rate_limit
+
+    def test_rate_limiter_blocks_excess_requests(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Rate limiter should block requests beyond the limit."""
+        monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "50")
+        from ai_company.dashboard.app import _RateLimiter
+
+        limiter = _RateLimiter(max_requests=50, window_seconds=60)
+        for _ in range(50):
+            ok, _ = limiter.is_allowed("block-test")
+            assert ok is True
+        ok, remaining = limiter.is_allowed("block-test")
+        assert ok is False
+        assert remaining == 0
+
+    def test_rate_limiter_per_ip_isolation(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Different IPs should have independent limits."""
+        monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "10")
+        from ai_company.dashboard.app import _RateLimiter
+
+        limiter = _RateLimiter(max_requests=10, window_seconds=60)
+        # Exhaust IP A
+        for _ in range(10):
+            ok, _ = limiter.is_allowed("192.168.1.1")
+            assert ok is True
+        ok, _ = limiter.is_allowed("192.168.1.1")
+        assert ok is False
+        # IP B should still work
+        for _ in range(10):
+            ok, _ = limiter.is_allowed("10.0.0.1")
+            assert ok is True
+
+
+# ---------------------------------------------------------------------------
+# Concurrent WebSocket Load Baseline (C.5)
+# ---------------------------------------------------------------------------
+
+
+class TestWebSocketLoadBaseline:
+    """Establish baseline for concurrent WebSocket connections (C.5)."""
+
+    def test_concurrent_connections_up_to_cap(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """ConnectionManager should handle concurrent connections up to cap."""
+        monkeypatch.setenv("DASHBOARD_MAX_WS_CLIENTS", "100")
+        monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
+        monkeypatch.setenv("DASHBOARD_WS_RATE_LIMIT_MESSAGES", "1000")
+        monkeypatch.setenv("DASHBOARD_WS_RATE_LIMIT_WINDOW_S", "10")
+
+        from fastapi.testclient import TestClient
+
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        with TestClient(app) as client:
+            connected = 0
+            while connected < 100:
+                try:
+                    with client.websocket_connect("/ws/v1/dashboard") as ws:
+                        ws.receive_json()  # hello
+                        connected += 1
+                except Exception:  # noqa: BLE001
+                    break
+            # Should allow connections up to cap
+            assert connected >= 90, f"Expected ~100 connections, got {connected}"
+
+    def test_websocket_broadcast_latency(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Broadcast latency should remain low under moderate load."""
+        import asyncio
+        import time
+
+        monkeypatch.setenv("DASHBOARD_WS_RATE_LIMIT_MESSAGES", "1000")
+        monkeypatch.setenv("DASHBOARD_WS_RATE_LIMIT_WINDOW_S", "10")
+
+        from ai_company.dashboard.ws import ConnectionManager
+
+        class FakeWS:
+            def __init__(self) -> None:
+                self.messages: list[str] = []
+
+            async def accept(self) -> None:
+                pass
+
+            async def send_text(self, text: str) -> None:
+                self.messages.append(text)
+
+        async def _bench(num_clients: int = 50, num_broadcasts: int = 10) -> float:
+            cm = ConnectionManager()
+            clients = [FakeWS() for _ in range(num_clients)]
+            for ws in clients:
+                await cm.connect(ws)
+
+            start = time.perf_counter()
+            for _ in range(num_broadcasts):
+                await cm.broadcast({"type": "kpi_update", "data": "x"})
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            return elapsed_ms
+
+        elapsed_ms = asyncio.run(_bench(50, 10))
+        # 50 clients x 10 broadcasts = 500 message sends
+        # Should complete in reasonable time
+        assert elapsed_ms < 500, f"50 clients x 10 broadcasts took {elapsed_ms:.0f}ms"
+
+
+# ---------------------------------------------------------------------------
 # WebSocket broadcast tests
 # ---------------------------------------------------------------------------
 

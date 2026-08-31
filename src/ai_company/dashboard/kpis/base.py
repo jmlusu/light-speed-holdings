@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from abc import ABC, abstractmethod
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -111,19 +112,16 @@ class KPICollector(ABC):
         return None
 
     def _tasks_from_sqlite(self) -> list[dict[str, Any]] | None:
-        """Return all tasks from SQLite when populated, else ``None``."""
-        db = self._usable_database()
-        if db is None:
-            return None
-        try:
-            from ai_company.data import TaskStore
+        """Return all tasks from SQLite when populated, else ``None``.
 
-            store = TaskStore(db)
-            if store.count() > 0:
-                return [task.model_dump() for task in store.get_all_tasks()]
-        except Exception:  # noqa: BLE001 - read-through must never raise
-            logger.warning("SQLite task read failed; using MessageBus", exc_info=True)
-        return None
+        Delegates to :func:`ai_company.dashboard.data_service.get_all_tasks`
+        so the whole dashboard shares a single SQLite-first read-through
+        (a missing or empty database yields ``None``, signalling the caller
+        to fall back to the MessageBus).
+        """
+        from ai_company.dashboard.data_service import get_all_tasks
+
+        return get_all_tasks(self.database)
 
     def _tasks_from_bus(self) -> list[dict[str, Any]]:
         """Return all task dicts through the shared dashboard MessageBus.
@@ -249,3 +247,86 @@ class KPICollector(ABC):
         if error:
             result["error"] = error
         return result
+
+    def _sop_freshness(
+        self, sop_path: Path, department: str
+    ) -> tuple[bool, float | None, str | None]:
+        """Check whether an SOP document is current (updated within 90 days).
+
+        Parses a ``Last Updated: <Month Year>`` line and reports freshness as
+        a percentage of the 90-day window remaining.  Shared by department
+        collectors (engineering, legal, customer_success) so the SOP contract
+        lives in exactly one module.
+
+        Returns:
+            ``(is_current, freshness_pct, error)`` where ``freshness_pct`` and
+            ``error`` are ``None`` when unavailable / on success respectively.
+        """
+        import re
+
+        if not sop_path.exists():
+            return False, None, "SOP file not found"
+        try:
+            content = sop_path.read_text(encoding="utf-8")
+            match = re.search(r"Last Updated:\s*([A-Za-z]+\s+\d{4})", content)
+            if match:
+                updated_dt = datetime.strptime(match.group(1), "%B %Y")
+                now = datetime.now()
+                days_old = (now - updated_dt).days
+                is_current = days_old <= 90
+                return (
+                    is_current,
+                    round((90 - days_old) / 90 * 100, 1) if is_current else None,
+                    None,
+                )
+        except (OSError, ValueError, AttributeError) as exc:
+            logger.warning("Failed to parse %s SOP freshness (%s): %s", department, sop_path, exc)
+            return False, None, f"Failed to parse SOP date: {exc}"
+        return False, None, "SOP date not found or invalid"
+
+    def _compute_avg_duration(
+        self,
+        items: list[dict[str, Any]],
+        statuses: list[str],
+        start_key: str,
+        end_key: str,
+        *,
+        no_items_msg: str,
+        no_pairs_msg: str,
+        item_label: str = "item",
+    ) -> tuple[float | None, str | None]:
+        """Compute the average hours between ``start`` and ``end`` timestamps.
+
+        Filters *items* to those whose ``status`` is in *statuses* and which
+        carry both timestamps, then averages the positive durations.  Returns
+        ``(avg_hours, error)`` with ``error`` as ``None`` on success.  Shared
+        by ticket / contract review-time collectors (F3) so the duration logic
+        lives in exactly one module.
+        """
+        filtered = [
+            it
+            for it in items
+            if it.get("status") in statuses and it.get(start_key) and it.get(end_key)
+        ]
+        if not filtered:
+            return None, no_items_msg
+
+        durations: list[float] = []
+        for item in filtered:
+            try:
+                start = datetime.fromisoformat(item[start_key].replace("Z", "+00:00"))
+                end = datetime.fromisoformat(item[end_key].replace("Z", "+00:00"))
+                diff_hours = (end - start).total_seconds() / 3600
+                if diff_hours >= 0:  # Only count valid positive durations
+                    durations.append(diff_hours)
+            except (ValueError, AttributeError) as exc:
+                logger.warning(
+                    "Failed to parse timestamps for %s %s: %s",
+                    item_label,
+                    item.get("id"),
+                    exc,
+                )
+
+        if not durations:
+            return None, no_pairs_msg
+        return round(sum(durations) / len(durations), 1), None

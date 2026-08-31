@@ -3507,9 +3507,9 @@ def org_health_categories() -> dict[str, Any]:
     for cat_name, comp_names in category_defs.items():
         # Compute weighted average of available components in this category
         available = [
-            (comp_scores[cn], comp_weights[cn])
+            (s, comp_weights[cn])
             for cn in comp_names
-            if cn in comp_scores and comp_scores[cn] is not None
+            if cn in comp_scores and (s := comp_scores[cn]) is not None
         ]
         if available:
             total_weight = sum(w for _, w in available)

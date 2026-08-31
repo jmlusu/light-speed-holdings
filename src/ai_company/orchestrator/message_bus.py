@@ -12,10 +12,7 @@ Provides a JSON-backed task queue with:
 
 from __future__ import annotations
 
-import contextlib
-import json
 import logging
-import os
 import time
 import uuid
 from collections import Counter
@@ -36,20 +33,6 @@ logger = logging.getLogger(__name__)
 def _iso_from_timestamp(ts: float) -> str:
     """Format a unix timestamp as ISO-8601 (naive local, matching the rest)."""
     return datetime.fromtimestamp(ts).isoformat()
-
-
-def _read_text_with_retry(path: Path) -> str | None:
-    """Read a text file, retrying transient Windows locking errors.
-
-    Returns the file contents, or ``None`` if the file could not be read
-    after several attempts (e.g. another process holds an open handle).
-    """
-    for _ in range(5):
-        try:
-            return path.read_text(encoding="utf-8")
-        except (OSError, PermissionError):
-            time.sleep(0.01)
-    return None
 
 
 # Type alias for the optional broadcast callback
@@ -108,63 +91,14 @@ class MessageBus:
     # ── Internal persistence helpers ──────────────────────────────────
 
     def _load_tasks(self) -> List[dict[str, Any]]:
-        """Load tasks from the inbox file, quarantining corrupt JSON.
+        """Load tasks from the inbox file via FileStore's strict-list read.
 
-        On a JSON decode failure (or a non-list payload) the corrupt file is
-        renamed to ``inbox.json.bak-<timestamp>`` — never silently dropped —
-        and the last good ``inbox.json.bak`` backup is loaded instead.
-        Returns the recovered tasks, or ``[]`` only when nothing is
-        recoverable.
+        Corruption recovery (quarantine + ``.bak`` fallback) and the
+        read/write lock are delegated entirely to :class:`FileStore`, so the
+        storage seam stays in exactly one module.  Returns ``[]`` only when
+        nothing is recoverable.
         """
-        # Read under the same sidecar lock used by _mutate_tasks so we can
-        # never race a concurrent atomic write, and so quarantine/recovery
-        # is serialised with other bus operations.
-        with self._store.lock_atomic(self._inbox_name) as full_path:
-            raw = _read_text_with_retry(full_path)
-            if raw is None:
-                return []
-            try:
-                data = json.loads(raw)
-            except json.JSONDecodeError:
-                return self._recover_from_backup(full_path)
-            if not isinstance(data, list):
-                logger.error(
-                    "Corrupt inbox data at %s (expected a JSON list) — "
-                    "quarantining and attempting recovery from .bak.",
-                    full_path,
-                )
-                return self._recover_from_backup(full_path)
-            return data
-
-    def _recover_from_backup(self, full_path: Path) -> List[dict[str, Any]]:
-        """Quarantine a corrupt inbox file and recover tasks from its .bak.
-
-        The corrupt file is atomically renamed to ``<name>.bak-<timestamp>``
-        so a crash mid-recovery still leaves the original bytes on disk, then
-        the last good ``.bak`` backup is parsed when present.  Returns ``[]``
-        only when nothing is recoverable.
-        """
-        quarantine = full_path.with_name(full_path.name + f".bak-{int(time.time())}")
-        logger.error(
-            "Corrupt inbox JSON at %s — quarantining to %s and attempting recovery from .bak.",
-            full_path,
-            quarantine,
-        )
-        with contextlib.suppress(OSError):
-            os.replace(full_path, quarantine)
-
-        bak_path = full_path.with_suffix(full_path.suffix + ".bak")
-        if not bak_path.exists():
-            return []
-        try:
-            bak_data = json.loads(bak_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            logger.error("Recovery backup %s is also corrupt.", bak_path)
-            return []
-        if not isinstance(bak_data, list):
-            logger.error("Recovery backup %s is not a JSON list.", bak_path)
-            return []
-        return bak_data
+        return cast(List[dict[str, Any]], self._store.read_json_list(self._inbox_name))
 
     def _save_tasks(self, tasks: List[dict[str, Any]]) -> None:
         self._store.write_json(self._inbox_name, tasks)

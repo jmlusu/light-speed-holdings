@@ -36,7 +36,14 @@ from typing import Callable
 
 from fastapi import Header, HTTPException, Request, status
 
-__all__ = ["Role", "role_for_key", "require_role", "require_ws_role", "verify_keys"]
+__all__ = [
+    "Role",
+    "role_for_key",
+    "authenticate",
+    "require_role",
+    "require_ws_role",
+    "verify_keys",
+]
 
 
 class Role(str, Enum):
@@ -99,6 +106,31 @@ def _resolve_session_token(token: str, client_ip: str) -> Role | None:
         return None
 
 
+def authenticate(x_api_key: str | None, client_ip: str = "unknown") -> Role | None:
+    """Resolve a request's role without raising.
+
+    ``open`` auth mode short-circuits to ``admin`` (explicit opt-in for
+    localhost dev, enforced to be loopback-only by the server/CLI).
+
+    Resolution order (ADR-013):
+    1. Static env keys (``DASHBOARD_*_KEY``)
+    2. In-memory session token (browser bootstrap token, IP-bound)
+
+    Returns the resolved role, or ``None`` when the key/token is unknown.
+    This is the single authentication primitive for the dashboard: the
+    middleware guard (:func:`ai_company.dashboard.app._check_api_key`) and
+    the dependency-injection path (:func:`_resolve_role`) both delegate so
+    the env-mode check, key lookup, and fallback order live in one place.
+    """
+    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
+        return Role.ADMIN
+    api_key = x_api_key or ""
+    role = role_for_key(api_key)
+    if role is None:
+        role = _resolve_session_token(api_key, client_ip)
+    return role
+
+
 def _resolve_role(x_api_key: str | None, client_ip: str = "unknown") -> Role:
     """Authenticate the request and return its role.
 
@@ -108,13 +140,10 @@ def _resolve_role(x_api_key: str | None, client_ip: str = "unknown") -> Role:
     Resolution order (ADR-013):
     1. Static env keys (``DASHBOARD_*_KEY``)
     2. In-memory session token (browser bootstrap token, IP-bound)
+
+    Raises ``HTTPException`` (401) when the request cannot be authenticated.
     """
-    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
-        return Role.ADMIN
-    api_key = x_api_key or ""
-    role = role_for_key(api_key)
-    if role is None:
-        role = _resolve_session_token(api_key, client_ip)
+    role = authenticate(x_api_key, client_ip)
     if role is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
