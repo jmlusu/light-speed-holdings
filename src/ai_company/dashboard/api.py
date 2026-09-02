@@ -1807,14 +1807,72 @@ def list_scheduled() -> list[dict[str, Any]]:
 
 @router.get("/departments/{dept_name}/kpis", tags=["departments", "kpis"])
 def get_department_kpis(dept_name: str) -> dict[str, Any]:
-    """Return KPI definitions for a specific department."""
+    """Return KPI definitions and agent roster for a specific department.
+
+    Accepts either a KPI config key (e.g. ``marketing``) or a display name
+    from departments.yaml (e.g. ``Marketing``).  Falls back to a case-
+    insensitive key match so chart drill-downs work regardless of casing.
+    Always includes the ``agents`` list from the registry so the drill-down
+    panel has useful content even when no KPIs are configured.
+    """
     kpi_data = _load_yaml("company/config/kpis.yaml")
     departments = kpi_data.get("departments", {})
-    if dept_name not in departments:
-        raise HTTPException(
-            status_code=404, detail=f"Department '{dept_name}' not found in KPI config"
-        )
-    return cast(dict[str, Any], departments[dept_name])
+    registry = _load_registry()
+
+    # Resolve the department name to a canonical display name
+    resolved_name: str | None = None
+
+    # 1. Exact key match
+    if dept_name in departments:
+        resolved_name = departments[dept_name].get("name", dept_name)
+
+    # 2. Case-insensitive key match
+    if not resolved_name:
+        lower = dept_name.lower()
+        for key, val in departments.items():
+            if key.lower() == lower:
+                resolved_name = val.get("name", dept_name)
+                break
+
+    # 3. Match by display name / ID from departments.yaml
+    if not resolved_name:
+        dept_yaml = _load_yaml("company/departments.yaml")
+        for d in dept_yaml.get("departments", []):
+            if (
+                d.get("name", "").lower() == dept_name.lower()
+                or d.get("id", "").lower() == dept_name.lower()
+            ):
+                resolved_name = d.get("name", dept_name)
+                break
+
+    if not resolved_name:
+        resolved_name = dept_name
+
+    # Gather agents belonging to this department (case-insensitive match)
+    dept_agents = [
+        {
+            "name": a.get("name", ""),
+            "role": a.get("role", ""),
+            "type": a.get("type", ""),
+        }
+        for a in registry
+        if a.get("department", "").lower() == resolved_name.lower()
+    ]
+
+    # Find KPIs (best-effort key lookup)
+    kpis: list[dict[str, Any]] = []
+    lower = dept_name.lower()
+    for key, val in departments.items():
+        if key.lower() == lower:
+            kpis = val.get("kpis", [])
+            break
+
+    return {
+        "name": resolved_name,
+        "kpis": kpis,
+        "agents": dept_agents,
+        "agent_count": len(dept_agents),
+    }
 
 
 @router.get("/kpis")
@@ -2520,6 +2578,9 @@ def get_cost_summary(background_tasks: BackgroundTasks) -> dict[str, Any]:
         trend_data = [{"timestamp": e.timestamp, "value": e.current} for e in finance_history]
 
     budget_utilization = round((total_spent / total_budget * 100), 1) if total_budget > 0 else 0.0
+
+    registry_names = {a["name"] for a in _load_registry()}
+    per_agent = [e for e in per_agent if e.get("agent") in registry_names]
 
     result = {
         "total_budget": total_budget,

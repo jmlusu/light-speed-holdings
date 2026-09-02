@@ -54,6 +54,16 @@ from ai_company.dashboard.monitoring import (
     record_org_breaker_trip,
     record_org_scoring,
 )
+from ai_company.dashboard.scorers import (
+    score_agent_utilization,
+    score_cost_efficiency,
+    score_error_rate,
+    score_escalation_rate,
+    score_security_posture,
+    score_strategic_alignment,
+    score_task_success_rate,
+    score_task_throughput,
+)
 from ai_company.data.database import Database
 from ai_company.paths import get_project_root
 from ai_company.reliability.breaker import ComponentBreaker
@@ -508,215 +518,43 @@ class OrgHealthCalculator:
         return self._task_window_cache
 
     def _score_task_success_rate(self, database: Database | None) -> float | None:
-        """Ratio of completed tasks to total tasks (0-100).
-
-        Returns ``None`` when no tasks exist in the 30-day window so callers
-        can distinguish "no data" from "zero success rate".
-        """
+        """Ratio of completed tasks to total tasks (0-100)."""
         tasks, _ = self._window_tasks()
-        total = len(tasks)
-        if total == 0:
-            return None
-        completed = sum(1 for t in tasks if t.get("status") == "completed")
-        return (completed / total) * 100
+        return score_task_success_rate(tasks)
 
     def _score_agent_utilization(self, database: Database | None) -> float | None:
-        """Active agents vs registered agents (0-100).
-
-        Returns ``None`` when no agents are registered so callers can
-        distinguish "no data" from "zero utilization".
-        """
-        from ai_company.dashboard.data_service import _count_registered_agents
-
-        root = self._root
-        total_registered = _count_registered_agents(root)
-        if total_registered == 0:
-            return None
-
+        """Active agents vs registered agents (0-100)."""
         tasks, _ = self._window_tasks()
-        active_agents = {
-            agent
-            for task in tasks
-            for agent in (task.get("sender_id"), task.get("receiver_id"))
-            if agent
-        }
-        if not active_agents:
-            return 0.0
-        return min(100.0, (len(active_agents) / total_registered) * 100)
+        return score_agent_utilization(tasks, self._root)
 
     def _score_cost_efficiency(self, database: Database | None) -> float | None:
-        """Budget utilization vs spend (0-100).
-
-        Uses the cost summary from the data service.  If total budget is
-        known, returns the ratio of remaining budget (inverted: lower
-        spend = higher efficiency, but capped at 100).
-
-        Returns ``None`` when no cost data or budget is available so callers
-        can distinguish "no data" from "zero efficiency". Exceptions propagate
-        to the hardening layer (breaker + fail-open) rather than being
-        swallowed here.
-        """
-        from ai_company.dashboard.data_service import get_cost_summary
-
-        summary = get_cost_summary(database=database)
-        if summary is None:
-            return None
-        total_spent = float(summary.get("total_spent", 0) or 0)
-        budget = float(summary.get("budget", 0) or 0)
-        if budget <= 0:
-            return None
-        # Efficiency = 100 - (spent/budget * 100), clamped
-        utilization = (total_spent / budget) * 100
-        return max(0.0, min(100.0, 100.0 - utilization + 50.0))
+        """Budget utilization vs spend (0-100)."""
+        return score_cost_efficiency(database=database)
 
     def _score_error_rate(self, database: Database | None) -> float | None:
-        """Error/exception rate across agent operations (0-100, inverted).
-
-        Lower error rate = higher score. Reads from task statuses in the
-        message bus / audit trail. Returns 100 - (error_rate * 100).
-
-        Returns ``None`` when no tasks exist in the window so callers can
-        distinguish "no data" from "zero error rate". Exceptions propagate to
-        the hardening layer (breaker + fail-open) rather than being swallowed
-        here.
-        """
+        """Error/exception rate across agent operations (0-100, inverted)."""
         tasks, _ = self._window_tasks()
-        total = len(tasks)
-        if total == 0:
-            return None
-        error_tasks = sum(1 for t in tasks if t.get("status") in ("failed", "error", "cancelled"))
-        error_rate = (error_tasks / total) * 100
-        return max(0.0, 100.0 - error_rate)
+        return score_error_rate(tasks)
 
     def _score_task_throughput(self, database: Database | None) -> float | None:
-        """Tasks completed per day, normalized to 0-100 vs target (30d).
-
-        Target defaults to 10 tasks/day. Score = (actual_per_day / target) * 100,
-        capped at 100. Returns ``None`` when no tasks exist in the window.
-        """
+        """Tasks completed per day, normalized to 0-100 vs target (30d)."""
         tasks, _ = self._window_tasks()
-        total = len(tasks)
-        if total == 0:
-            return None
-        completed = sum(1 for t in tasks if t.get("status") == "completed")
-        # Compute days from the oldest task timestamp to now
-        timestamps = []
-        for t in tasks:
-            ts = t.get("created_at", "")
-            if ts:
-                try:
-                    timestamps.append(datetime.fromisoformat(ts))
-                except (ValueError, TypeError):
-                    continue
-        if not timestamps:
-            return None
-        oldest = min(timestamps)
-        now = datetime.now(timezone.utc)
-        days = max(1, (now - oldest).days)
-        tasks_per_day = completed / days
-        target_per_day = 10.0
-        return min(100.0, (tasks_per_day / target_per_day) * 100)
+        return score_task_throughput(tasks, target_per_day=10.0)
 
     def _score_escalation_rate(self, database: Database | None) -> float | None:
-        """Escalation rate across tasks (0-100, inverted).
-
-        Lower escalation rate = higher score. Returns
-        ``100 - (escalated / total * 100)``. Returns ``None`` when no tasks
-        exist in the window.
-        """
+        """Escalation rate across tasks (0-100, inverted)."""
         tasks, _ = self._window_tasks()
-        total = len(tasks)
-        if total == 0:
-            return None
-        escalated = sum(1 for t in tasks if t.get("status") == "escalated")
-        escalation_rate = (escalated / total) * 100
-        return max(0.0, 100.0 - escalation_rate)
+        return score_escalation_rate(tasks)
 
     def _score_security_posture(self, database: Database | None) -> float | None:
-        """Audit trail health and compliance indicators (0-100).
-
-        Composite of:
-        - Audit trail completeness (events exist in recent window): 40%
-        - No critical/error severity events: 30%
-        - Compliance-related tasks completed: 30%
-
-        Returns ``None`` when no audit data is available.
-        """
-        from ai_company.dashboard.repository import get_state_store
-
-        store = get_state_store()
-
-        audit_events = []
-        for event in store.iter_jsonl(".opencode/audit"):
-            if isinstance(event, dict):
-                audit_events.append(event)
-
-        if not audit_events:
-            return None
-
-        # Factor 1: Audit trail completeness (events exist) — 40%
-        completeness_score = min(100.0, len(audit_events) / 10.0 * 100)
-
-        # Factor 2: No critical/error severity events — 30%
-        severity_events = sum(1 for e in audit_events if e.get("severity") in ("error", "critical"))
-        total_events = len(audit_events)
-        severity_score = max(0.0, 100.0 - (severity_events / max(1, total_events) * 100))
-
-        # Factor 3: Compliance tasks completed — 30%
+        """Audit trail health and compliance indicators (0-100)."""
         tasks, _ = self._window_tasks()
-        compliance_keywords = {"compliance", "audit", "security", "review", "approval"}
-        compliance_tasks = [
-            t
-            for t in tasks
-            if any(kw in (t.get("instruction", "") or "").lower() for kw in compliance_keywords)
-        ]
-        if compliance_tasks:
-            compliance_completed = sum(
-                1 for t in compliance_tasks if t.get("status") == "completed"
-            )
-            compliance_score = (compliance_completed / len(compliance_tasks)) * 100
-        else:
-            compliance_score = 80.0  # Neutral default when no compliance tasks exist
-
-        return (completeness_score * 0.4) + (severity_score * 0.3) + (compliance_score * 0.3)
+        return score_security_posture(tasks, self._root)
 
     def _score_strategic_alignment(self, database: Database | None) -> float | None:
-        """Percentage of tasks mapped to active goals and departments (0-100).
-
-        Uses department coverage as a heuristic: tasks assigned to agents
-        with a valid department count as "aligned". Returns the ratio of
-        aligned tasks to total tasks. Returns ``None`` when no tasks exist.
-        """
+        """Percentage of tasks mapped to active goals and departments (0-100)."""
         tasks, _ = self._window_tasks()
-        total = len(tasks)
-        if total == 0:
-            return None
-
-        # Load registry to get department mapping
-        try:
-            from ai_company.dashboard.repository import get_state_store
-
-            store = get_state_store()
-            registry = store.read_json("company/agent-registry.json", default=[])
-        except Exception:  # noqa: BLE001
-            registry = []
-
-        agent_departments: dict[str, str] = {}
-        for agent in registry:
-            name = agent.get("name", "")
-            dept = agent.get("department", "")
-            if name and dept:
-                agent_departments[name] = dept
-
-        # Count tasks assigned to agents with known departments
-        aligned = 0
-        for t in tasks:
-            receiver = t.get("receiver_id", "")
-            sender = t.get("sender_id", "")
-            if receiver in agent_departments or sender in agent_departments:
-                aligned += 1
-
-        return (aligned / total) * 100
+        return score_strategic_alignment(tasks, self._root)
 
     # ── Band mapping ─────────────────────────────────────────────────
 
