@@ -6,9 +6,17 @@
     "department": "Executive",
     "reportsTo": "human-ceo",
     "directReports": [
-      "cto",
-      "coo",
-      "caio"
+      "cpo",
+      "cmo",
+      "hr",
+      "cio",
+      "customer-success",
+      "sales",
+      "culture-values-officer",
+      "head-of-business-development",
+      "internal-comms-lead",
+      "ai-ethics-board-chair",
+      "consulting-lead"
     ],
     "description": "The primary orchestrator and strategic alignment agent for the company.",
     "responsibilities": [
@@ -61,8 +69,6 @@
       "workflow-owner",
       "orchestration-owner",
       "doctor-owner",
-      "decision-engine-owner",
-      "audit-trail-owner",
       "capacity-planner",
       "business-continuity-manager",
       "vendor-manager",
@@ -372,7 +378,6 @@
     "department": "Legal",
     "reportsTo": "human-ceo",
     "directReports": [
-      "legal-owner",
       "compliance-officer",
       "data-privacy-officer",
       "legal"
@@ -1146,8 +1151,7 @@
     "department": "QA",
     "reportsTo": "vp-engineering",
     "directReports": [
-      "test-engineering-lead",
-      "release-manager"
+      "test-engineering-lead"
     ],
     "description": "Owns QA strategy, release quality gates, and the red/green baseline across all packages.",
     "responsibilities": [
