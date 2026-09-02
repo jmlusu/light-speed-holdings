@@ -66,6 +66,7 @@ def service(sample_registry: Path, tmp_path: Path) -> OnboardingService:
         templates_dir=str(Path(__file__).resolve().parents[2] / "templates"),
         output_dir=str(tmp_path / "agents"),
         data_dir=str(tmp_path),
+        approval_config_path=str(tmp_path / "approvals.yaml"),
     )
 
 
