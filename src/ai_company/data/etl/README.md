@@ -47,11 +47,7 @@ Each pipeline follows the pattern:
 
 ```python
 pipeline = KPISnapshotPipeline(database)
-result = pipeline.run(
-    since=last_run_timestamp,
-    batch_size=1000,
-    quality_check=True
-)
+result = pipeline.run(since=last_run_timestamp, batch_size=1000, quality_check=True)
 ```
 
 ## Monitoring
