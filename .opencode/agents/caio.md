@@ -17,7 +17,7 @@ Type: Executive (CAIO)
 
 Department: AI Research
 
-Reports To: chief_of_staff
+Reports To: human_ceo
 
 Direct Reports: ml_engineer, ml_services_owner, memory_owner, llm_platform_owner, ai_safety_lead, eval_benchmarks_engineer, prompt_engineer
 

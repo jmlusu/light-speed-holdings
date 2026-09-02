@@ -17,7 +17,7 @@ Department: Legal
 
 Reports To: human_ceo
 
-Direct Reports: legal_owner, compliance_officer, data_privacy_officer
+Direct Reports: legal_owner, compliance_officer, data_privacy_officer, legal
 
 
 ---
