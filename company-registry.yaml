@@ -29,7 +29,7 @@ company:
     description: Oversees all technological infrastructure and software development.
     type: executive
     department: Technology
-    reports_to: chief_of_staff
+    reports_to: human_ceo
     direct_reports:
     - lead_backend
     - lead_frontend
@@ -50,7 +50,7 @@ company:
     description: Manages day-to-day operations and internal processes.
     type: executive
     department: Operations
-    reports_to: chief_of_staff
+    reports_to: human_ceo
     direct_reports:
     - workflow_owner
     - orchestration_owner
@@ -75,7 +75,7 @@ company:
     description: Directs AI research, model selection, and prompt engineering strategies.
     type: executive
     department: AI Research
-    reports_to: chief_of_staff
+    reports_to: human_ceo
     direct_reports:
     - ml_engineer
     - ml_services_owner
@@ -103,6 +103,14 @@ company:
     reports_to: board
     direct_reports:
     - chief_of_staff
+    - cto
+    - coo
+    - caio
+    - cfo
+    - ciso
+    - clo
+    - cso
+    - ceo_advisor
     responsibilities:
     - Set company vision, mission, and long-term strategy.
     - Make final decisions on high-stakes matters.
@@ -324,6 +332,7 @@ company:
     - legal_owner
     - compliance_officer
     - data_privacy_officer
+    - legal
     responsibilities:
     - Review and negotiate all contracts and agreements.
     - Ensure regulatory compliance across jurisdictions.
@@ -442,7 +451,7 @@ company:
       matters.
     type: executive
     department: Legal
-    reports_to: chief_of_staff
+    reports_to: clo
     direct_reports:
     - legal_owner
     responsibilities:

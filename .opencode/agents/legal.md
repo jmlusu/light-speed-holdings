@@ -15,7 +15,7 @@ Type: Executive (Legal Advisor)
 
 Department: Legal
 
-Reports To: chief_of_staff
+Reports To: clo
 
 Direct Reports: legal_owner
 

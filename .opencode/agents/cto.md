@@ -16,7 +16,7 @@ Type: Executive (CTO)
 
 Department: Technology
 
-Reports To: chief_of_staff
+Reports To: human_ceo
 
 Direct Reports: lead_backend, lead_frontend, solution_architect, vp_engineering
 

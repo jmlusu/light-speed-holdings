@@ -14,7 +14,7 @@
 
 - **AI Ethics and Responsible AI Officer** (`ai-ethics-officer`) - specialist; reports to: `ai-safety-lead`
 - **AI Safety Lead** (`ai-safety-lead`) - specialist; reports to: `caio`
-- **Chief AI Officer** (`caio`) - executive; reports to: `chief-of-staff`
+- **Chief AI Officer** (`caio`) - executive; reports to: CEO
 - **Constitutional AI Owner** (`constitutional-ai-owner`) - specialist; reports to: `ai-safety-lead`
 - **Evaluation and Benchmarks Engineer** (`eval-benchmarks-engineer`) - specialist; reports to: `caio`
 - **Human-AI Interaction Designer** (`hai-designer`) - specialist; reports to: `ai-safety-lead`
@@ -74,7 +74,7 @@
 - **Chief Legal Officer** (`clo`) - executive; reports to: CEO
 - **Compliance Officer** (`compliance-officer`) - specialist; reports to: `clo`
 - **Data Privacy Officer** (`data-privacy-officer`) - specialist; reports to: `clo`
-- **Legal Advisor** (`legal`) - executive; reports to: `chief-of-staff`
+- **Legal Advisor** (`legal`) - executive; reports to: `clo`
 - **Legal Owner** (`legal-owner`) - specialist; reports to: `legal`
 
 ## Marketing (9 agents)
@@ -93,7 +93,7 @@
 
 - **Business Continuity Manager** (`business-continuity-manager`) - specialist; reports to: `coo`
 - **Capacity Planner** (`capacity-planner`) - specialist; reports to: `coo`
-- **Chief Operating Officer** (`coo`) - executive; reports to: `chief-of-staff`
+- **Chief Operating Officer** (`coo`) - executive; reports to: CEO
 - **Doctor Owner** (`doctor-owner`) - specialist; reports to: `coo`
 - **Knowledge Manager** (`knowledge-manager`) - specialist; reports to: `coo`
 - **Orchestration Owner** (`orchestration-owner`) - specialist; reports to: `coo`
@@ -167,7 +167,7 @@
 - **API Architect** (`api-architect`) - specialist; reports to: `cto`
 - **Audit Trail Owner** (`audit-trail-owner`) - specialist; reports to: `cto`
 - **Backend Engineer** (`backend-engineer`) - specialist; reports to: `lead-backend`
-- **Chief Technology Officer** (`cto`) - executive; reports to: `chief-of-staff`
+- **Chief Technology Officer** (`cto`) - executive; reports to: CEO
 - **Cloud Architect** (`cloud-architect`) - specialist; reports to: `cto`
 - **Dashboard Owner** (`dashboard-owner`) - specialist; reports to: `cto`
 - **DevOps Lead** (`devops-lead`) - specialist; reports to: `cto`
