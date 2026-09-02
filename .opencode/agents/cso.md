@@ -18,7 +18,7 @@ Department: Strategy
 
 Reports To: human_ceo
 
-Direct Reports: head_of_competitive_intelligence, corporate_development_lead, revenue_operations_analyst, solutions_engineer, market_analyst
+Direct Reports: head_of_competitive_intelligence, corporate_development_lead, revenue_operations_analyst, market_analyst
 
 
 ---

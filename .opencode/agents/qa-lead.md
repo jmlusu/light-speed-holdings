@@ -18,7 +18,7 @@ Type: Specialist
 
 Department: QA
 
-Reports To: cto
+Reports To: vp_engineering
 
 Seniority: mid
 
@@ -89,7 +89,7 @@ A permanently red suite is a broken window — never ship on red. Gate every mer
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to cto.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to vp_engineering.
 
 
 ---

@@ -18,7 +18,7 @@ Type: Specialist
 
 Department: Technology
 
-Reports To: cto
+Reports To: vp_engineering
 
 Seniority: mid
 
@@ -91,7 +91,7 @@ Zero-downtime deployments are mandatory. Infrastructure as code. Automate everyt
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to cto.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to vp_engineering.
 
 
 ---

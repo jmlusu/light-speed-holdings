@@ -18,7 +18,7 @@ Type: Specialist
 
 Department: Technology
 
-Reports To: cto
+Reports To: vp_engineering
 
 Seniority: mid
 
@@ -89,7 +89,7 @@ Read from live state. Never expose unauthenticated endpoints. Telemetry must be 
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to cto.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to vp_engineering.
 
 
 ---

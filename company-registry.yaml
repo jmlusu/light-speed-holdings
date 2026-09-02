@@ -34,8 +34,6 @@ company:
     - lead_backend
     - lead_frontend
     - solution_architect
-    - devops_lead
-    - qa_lead
     - vp_engineering
     responsibilities:
     - Architect robust AI agent systems.
@@ -58,7 +56,6 @@ company:
     - orchestration_owner
     - doctor_owner
     - decision_engine_owner
-    - memory_owner
     - audit_trail_owner
     - capacity_planner
     - business_continuity_manager
@@ -352,7 +349,6 @@ company:
     - head_of_competitive_intelligence
     - corporate_development_lead
     - revenue_operations_analyst
-    - solutions_engineer
     - market_analyst
     responsibilities:
     - Develop and execute corporate strategy.
@@ -425,8 +421,6 @@ company:
     reports_to: chief_of_staff
     direct_reports:
     - sales_owner
-    - revenue_operations_analyst
-    - solutions_engineer
     responsibilities:
     - Own the sales pipeline and revenue targets.
     - Manage customer acquisition strategy.
@@ -451,7 +445,6 @@ company:
     reports_to: chief_of_staff
     direct_reports:
     - legal_owner
-    - compliance_officer
     responsibilities:
     - Provide legal counsel on contracts and compliance.
     - Review partnership and vendor agreements.
@@ -494,7 +487,7 @@ company:
     description: Manages CI/CD pipelines, cloud infrastructure, and deployment automation.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: CI/CD pipelines, cloud infrastructure, deployment automation,
       infrastructure-as-code.
@@ -565,7 +558,7 @@ company:
       and circuit-breaker robustness across the executor and shared state.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Concurrency safety, fault tolerance, and resilience patterns
       for shared JSON/YAML state and the executor loop.
@@ -617,7 +610,7 @@ company:
       and executor integration hooks.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Event sourcing, immutable audit logs, JSONL append semantics.
     responsibilities:
@@ -711,7 +704,7 @@ company:
     description: Owns the graph engine, its 4 graph types, and BFS pathfinding.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Org charts, decision graphs, workflow graphs, knowledge graphs,
       BFS.
@@ -735,7 +728,7 @@ company:
       and analytics layer.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: FastAPI, WebSocket, KPI collection, trend analytics, alert rules.
     responsibilities:
@@ -808,7 +801,7 @@ company:
       the 19 YAML configs.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: YAML parsing, schema validation, reference resolution, config
       loading.
@@ -832,7 +825,7 @@ company:
       OpenCode agent files.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Templating, agent manifest generation, output schema stability.
     responsibilities:
@@ -1037,7 +1030,7 @@ company:
       across all packages.
     type: specialist
     department: QA
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports:
     - test_engineering_lead
     - release_manager
@@ -1116,7 +1109,7 @@ company:
       the zero-red-on-main policy.
     type: specialist
     department: QA
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: CI/CD pipelines, merge gating, version promotion, rollback,
       change management.
@@ -2249,7 +2242,7 @@ company:
       AI solutions successfully.
     type: specialist
     department: Sales
-    reports_to: cso
+    reports_to: sales
     direct_reports: []
     technical_domain: Pre-sales engineering, solution design, technical validation,
       customer implementation.
