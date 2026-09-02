@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" style="color-scheme: dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +21,9 @@
               base:    'var(--jarvis-bg-base)',
               raised:  'var(--jarvis-bg-raised)',
               overlay: 'var(--jarvis-bg-overlay)',
+              surface: 'var(--jarvis-surface)',
+              bg:      'var(--jarvis-bg-base)',
+              border:  'var(--jarvis-border)',
               cyan:    'var(--jarvis-cyan)',
               text:    'var(--jarvis-text)',
               muted:   'var(--jarvis-text-muted)',
@@ -509,7 +512,7 @@
   <script src="/static/js/sw-registration.js"></script>
   <script src="/static/js/command-bar-service.js"></script>
   <script src="/static/js/command-bar.js"></script>
-  <script src="/static/js/app.js?v=2"></script>
+  <script src="/static/js/app.js?v=4"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

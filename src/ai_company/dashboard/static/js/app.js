@@ -130,6 +130,9 @@ function dashboard() {
     // ── Drill-down panel ──────────────────────────────────────
     drillDown: null,  // { type, title, data, loading }
 
+    // ── Agent detail modal ───────────────────────────────────
+    agentModal: null,  // { data, loading }
+
     // ── Costs page ───────────────────────────────────────────
     costPeriod: 'daily',
     costSummary: { total: 0, avgPerTask: 0, totalTasks: 0 },
@@ -1791,6 +1794,11 @@ function dashboard() {
       }[band] || 'bg-slate-500';
     },
 
+    get selectedComponent() {
+      if (!this.expandedComponent || !this.orgHealth?.components) return null;
+      return this.orgHealth.components.find(c => c.name === this.expandedComponent) || null;
+    },
+
     getComponentLabel(name) {
       const labels = {
         task_success_rate: 'Task Success',
@@ -1950,6 +1958,17 @@ function dashboard() {
       this.drillDown = null;
     },
 
+    async openAgentModal(agentName) {
+      this.agentModal = { data: null, loading: true };
+      try {
+        const data = await this.fetchJSON(`/api/v1/agents/${encodeURIComponent(agentName)}`);
+        this.agentModal = { data, loading: false };
+      } catch (e) {
+        console.warn('Failed to load agent detail:', e);
+        this.agentModal = { data: null, loading: false };
+      }
+    },
+
     async openTaskStatusDrillDown(status) {
       this.drillDown = { type: 'task-status', title: `${status.charAt(0).toUpperCase() + status.slice(1)} Tasks`, data: [], loading: true };
       try {
@@ -2013,43 +2032,16 @@ function dashboard() {
       this.openTaskDetail(task);
     },
 
-    async openApprovalsDrillDown() {
-      this.drillDown = { type: 'approvals', title: 'Pending Approvals', data: [], loading: true };
-      try {
-        const data = await this.fetchJSON('/api/v1/approvals');
-        this.drillDown.data = (data || []).filter(a => a.status === 'pending').slice(0, 50);
-      } catch (e) {
-        console.warn('Failed to load approvals drill-down:', e);
-        this.drillDown.data = [];
-      } finally {
-        this.drillDown.loading = false;
-      }
+    openApprovalsDrillDown() {
+      window.location.href = '/escalations?filter=pending';
     },
 
-    async openEscalationsDrillDown() {
-      this.drillDown = { type: 'escalations', title: 'Open Escalations', data: [], loading: true };
-      try {
-        const data = await this.fetchJSON('/api/v1/escalations');
-        this.drillDown.data = (data || []).filter(e => !e.resolved).slice(0, 50);
-      } catch (e) {
-        console.warn('Failed to load escalations drill-down:', e);
-        this.drillDown.data = [];
-      } finally {
-        this.drillDown.loading = false;
-      }
+    openEscalationsDrillDown() {
+      window.location.href = '/escalations?filter=escalations';
     },
 
-    async openInProgressDrillDown() {
-      this.drillDown = { type: 'task-status', title: 'In Progress Tasks', data: [], loading: true };
-      try {
-        const data = await this.fetchJSON('/api/v1/tasks');
-        this.drillDown.data = (data || []).filter(t => t.status === 'in_progress').slice(0, 50);
-      } catch (e) {
-        console.warn('Failed to load in-progress drill-down:', e);
-        this.drillDown.data = [];
-      } finally {
-        this.drillDown.loading = false;
-      }
+    openInProgressDrillDown() {
+      window.location.href = '/tasks?status=in_progress';
     },
 
     async openTopAgentsDrillDown() {
