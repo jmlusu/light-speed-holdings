@@ -98,6 +98,16 @@ kpis:
       weight: 20
       higher_is_better: true
 
+    - id: "task_success_rate"
+      name: "Task Success Rate"
+      category: "operations"
+      target: 80
+      unit: "percent"
+      frequency: "daily"
+      owner: "coo"
+      weight: 15
+      higher_is_better: true
+
     - id: "agent_utilization"
       name: "Agent Utilization"
       category: "operations"
@@ -138,6 +148,16 @@ kpis:
       weight: 15
       higher_is_better: false
 
+    - id: "escalation_rate"
+      name: "Escalation Rate"
+      category: "operations"
+      target: 95
+      unit: "percent"
+      frequency: "daily"
+      owner: "coo"
+      weight: 5
+      higher_is_better: true
+
     - id: "approval_turnaround"
       name: "Approval Turnaround"
       category: "operations"
@@ -147,3 +167,33 @@ kpis:
       owner: "chief-of-staff"
       weight: 15
       higher_is_better: false
+
+    - id: "error_rate"
+      name: "Error Rate (Inverted)"
+      category: "engineering"
+      target: 90
+      unit: "percent"
+      frequency: "daily"
+      owner: "cto"
+      weight: 10
+      higher_is_better: true
+
+    - id: "security_posture"
+      name: "Security Posture"
+      category: "security"
+      target: 80
+      unit: "percent"
+      frequency: "daily"
+      owner: "ciso"
+      weight: 5
+      higher_is_better: true
+
+    - id: "strategic_alignment"
+      name: "Strategic Alignment"
+      category: "strategy"
+      target: 80
+      unit: "percent"
+      frequency: "weekly"
+      owner: "cso"
+      weight: 5
+      higher_is_better: true

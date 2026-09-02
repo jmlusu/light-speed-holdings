@@ -26,11 +26,16 @@ REAL_ROOT = Path(__file__).resolve().parents[2]
 
 REAL_EXEC_IDS = (
     "task_throughput",
+    "task_success_rate",
     "agent_utilization",
     "cost_efficiency",
     "build_success_rate",
     "escalation_resolution_time",
+    "escalation_rate",
     "approval_turnaround",
+    "error_rate",
+    "security_posture",
+    "strategic_alignment",
 )
 
 EXEC_CONTRACT_KEYS = (
@@ -146,13 +151,13 @@ def _exec_kpi(
 
 
 class TestGetExecutiveScorecard:
-    def test_real_repo_defaults_to_six_kpis(self, setup_data: Path) -> None:
+    def test_real_repo_defaults_to_full_kpi_set(self, setup_data: Path) -> None:
         from ai_company.dashboard.data_service import get_executive_scorecard
 
         data = get_executive_scorecard()
         ids = [kpi["id"] for kpi in data["executive_kpis"]]
         assert ids == list(REAL_EXEC_IDS)
-        assert data["summary"]["total"] == 6
+        assert data["summary"]["total"] == len(REAL_EXEC_IDS)
         for kpi in data["executive_kpis"]:
             assert set(kpi) == set(EXEC_CONTRACT_KEYS)
             assert kpi["trend"] in ("up", "stable", "down")
@@ -277,7 +282,7 @@ class TestCeoDashboardEndpoint:
         assert (
             isinstance(scorecard["health_score"], (float, int)) or scorecard["health_score"] is None
         )
-        assert len(scorecard["executive_kpis"]) == 6
+        assert len(scorecard["executive_kpis"]) == len(REAL_EXEC_IDS)
         for kpi in scorecard["executive_kpis"]:
             assert kpi["status"] in ("on_track", "attention", "critical", "info")
             assert kpi["trend"] in ("up", "stable", "down")
