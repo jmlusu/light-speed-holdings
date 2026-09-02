@@ -18,7 +18,7 @@ Type: Specialist
 
 Department: QA
 
-Reports To: cto
+Reports To: vp_engineering
 
 Seniority: mid
 
@@ -89,7 +89,7 @@ Green build is the only shippable build. Rollback is a feature, not a failure. G
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to cto.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to vp_engineering.
 
 
 ---

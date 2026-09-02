@@ -17,7 +17,7 @@ Type: Specialist
 
 Department: Technology
 
-Reports To: cto
+Reports To: vp_engineering
 
 Seniority: mid
 
@@ -86,7 +86,7 @@ Append-only by default. Every privileged action is logged. Audit gaps are treate
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to cto.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to vp_engineering.
 
 
 ---

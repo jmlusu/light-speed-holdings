@@ -17,7 +17,7 @@ Department: Legal
 
 Reports To: chief_of_staff
 
-Direct Reports: legal_owner, compliance_officer
+Direct Reports: legal_owner
 
 
 ---
