@@ -341,10 +341,12 @@ class OnboardingManager:
         templates_dir: str = "templates",
         output_dir: str = ".opencode/agents",
         data_dir: str | Path = "hr",
+        approval_config_path: str = "orchestrator/approvals.yaml",
     ) -> None:
         self.registry_path = Path(registry_path)
         self.templates_dir = Path(templates_dir)
         self.output_dir = Path(output_dir)
+        self._approval_config_path = approval_config_path
         self._store = _RequestStore(data_dir)
 
     # ── Registry helpers ───────────────────────────────────────────────
@@ -556,7 +558,7 @@ class OnboardingManager:
         """Create an ApprovalGate request for the APPROVAL step (HITL integration)."""
         from ai_company.orchestrator.approval import ApprovalGate
 
-        gate = ApprovalGate.get_instance()
+        gate = ApprovalGate.get_instance(config_path=self._approval_config_path)
 
         # Determine tier based on tools (sensitive tools = tier 3)
         sensitive_tools = frozenset({"bash", "edit", "delete"})
@@ -601,7 +603,7 @@ class OnboardingManager:
 
         from ai_company.orchestrator.approval import ApprovalGate, ApprovalStatus
 
-        gate = ApprovalGate.get_instance()
+        gate = ApprovalGate.get_instance(config_path=self._approval_config_path)
         gate.reload()  # Reload from disk to get latest status
         approval = gate.get_request(req.approval_request_id)
 
