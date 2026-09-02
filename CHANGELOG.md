@@ -4,7 +4,7 @@ All notable changes to AI Company Builder are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
-## Unreleased
+## [0.6.0] — 2026-09-02
 
 ### Added
 - **CEO Alert Center**: durable alert persistence — new `AlertStore` (`src/ai_company/dashboard/alert_store.py`, FileStore-backed `alerts.json`, 30-day retention prune, lifecycle `active/acknowledged/snoozed/cleared`, dedupe by rule+dept+kpi+severity, expired-snooze re-activation) + canonical `default_alert_rules()`.
@@ -14,6 +14,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **Executive KPI Scorecard** (`data_service.get_executive_scorecard()`): health_score + per-KPI status/trend/source + department rollup wired additively into `GET /api/v1/ceo-dashboard`; 6 configurable executive KPI targets (task_throughput, agent_utilization, cost_efficiency, build_success_rate, escalation_resolution_time, approval_turnaround) in `config/company/kpis.yaml`; trend helpers `compute_period_comparison`/`compute_moving_average`/`detect_anomaly` in `analytics.py`.
 - **Rich Org Chart with Metrics & Risk**: `compute_org_metrics()` + `org_chart_summary()` in `graph/engine.py`; `OrgNode` extended with optional `metrics`/`risk` fields; `GET /api/v1/org-chart?include_metrics=true` returns per-node capacity/activity/trend + succession/bus-factor risk with a 30s TTL cache; `X-Org-Summary` header carries aggregate totals (agents, avg span, avg capacity, at-risk count); frontend renders capacity bars, risk strip, and a full Metrics & Risk detail panel; filter dropdown (All / At risk / Senior / Overloaded).
 - **Tests**: `test_analytics_trends.py` (12), `test_executive_scorecard.py` (12), `test_org_chart_metrics.py` (9) — 33 new tests.
+- **Dashboard UI polish**: external Chart.js tooltips (never clipped by `overflow`/`contain` ancestors) with dark `jarvis`-themed styling; inline component detail panel shown on Org Health card selection (score, weight, sparkline) instead of a separate modal; agent detail modal reachable from department drill-down rosters (shows type, department, reports-to, direct reports, description); cost tooltips with per-agent totals and call counts; dark `color-scheme` for native `<select>`/option elements.
+- **Executive KPI expansion** from 6 to 10 targets: added `task_success_rate`, `escalation_rate`, `error_rate`, `security_posture`, `strategic_alignment` to `config/company/kpis.yaml` and the `/api/v1/ceo-dashboard` scorecard.
+
+### Changed
+- **Scoring extraction**: Org Health executive scoring logic moved into `src/ai_company/dashboard/scorers.py` (`score_task_throughput`, `score_escalation_rate`, `score_security_posture`, `score_strategic_alignment`) with the calculation details removed from `org_health.py`/`data_service.py`.
+- **Drill-down navigation**: Approvals / Escalations / In-Progress dashboard drill-downs now navigate to their dedicated pages (`/escalations?filter=…`, `/tasks?status=…`) instead of rendering inline panels.
+
+### Fixed
+- **Onboarding task filtering**: `TaskStore.is_test_task()` now also filters onboarding workflow requests (`Onboarding request for agent…`, `Onboarding for agent…`, `Onboarding approved…`) from dashboard task counts to avoid inbox clutter.
+- **Onboarding test isolation**: `OnboardingManager` and `OnboardingService` accept an `approval_config_path` so unit tests no longer read/write the production `orchestrator/approvals.yaml`; tests use an isolated temp `approvals.yaml`.
 
 ## [0.5.0] — 2026-08-13
 
