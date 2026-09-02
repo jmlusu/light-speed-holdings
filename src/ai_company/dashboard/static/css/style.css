@@ -114,7 +114,59 @@ body.scroll-locked {
 .chart-container {
   position: relative;
   width: 100%;
-  contain: layout style;
+}
+
+.chartjs-tooltip {
+  pointer-events: none;
+  position: absolute;
+  z-index: 50;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--jarvis-font-display, 'Rajdhani', 'Inter', system-ui, sans-serif);
+  font-size: 12px;
+  color: var(--jarvis-text, #e2e8f0);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.chartjs-tooltip .tt-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--jarvis-cyan, #22d3ee);
+}
+
+.chartjs-tooltip .tt-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.chartjs-tooltip .tt-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chartjs-tooltip .tt-label {
+  color: var(--jarvis-text-muted, #94a3b8);
+}
+
+.chartjs-tooltip .tt-value {
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.chartjs-tooltip .tt-pct {
+  color: var(--jarvis-cyan, #22d3ee);
+  font-size: 11px;
+  min-width: 36px;
+  text-align: right;
 }
 
 .chart-container canvas {
@@ -237,6 +289,18 @@ tbody tr {
 input:focus, select:focus, textarea:focus, button:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.5);
+}
+
+/* ── Native <select> dark mode ─────────────────────────────── */
+html {
+  color-scheme: dark;
+}
+select {
+  color-scheme: dark;
+}
+select option {
+  background-color: #0c1420 !important;
+  color: #e2e8f0 !important;
 }
 
 /* ── Table wrapper: horizontal scroll containment ───────────── */
