@@ -30,7 +30,7 @@
     "role": "Chief Technology Officer",
     "type": "Executive",
     "department": "Technology",
-    "reportsTo": "chief-of-staff",
+    "reportsTo": "human-ceo",
     "directReports": [
       "lead-backend",
       "lead-frontend",
@@ -56,7 +56,7 @@
     "role": "Chief Operating Officer",
     "type": "Executive",
     "department": "Operations",
-    "reportsTo": "chief-of-staff",
+    "reportsTo": "human-ceo",
     "directReports": [
       "workflow-owner",
       "orchestration-owner",
@@ -86,7 +86,7 @@
     "role": "Chief AI Officer",
     "type": "Executive",
     "department": "AI Research",
-    "reportsTo": "chief-of-staff",
+    "reportsTo": "human-ceo",
     "directReports": [
       "ml-engineer",
       "ml-services-owner",
@@ -117,7 +117,15 @@
     "department": "Executive",
     "reportsTo": "board",
     "directReports": [
-      "chief-of-staff"
+      "chief-of-staff",
+      "cto",
+      "coo",
+      "caio",
+      "cfo",
+      "ciso",
+      "clo",
+      "cso",
+      "ceo-advisor"
     ],
     "description": "Set company vision, strategy, and culture. Make final decisions on high-stakes matters.",
     "responsibilities": [
@@ -366,7 +374,8 @@
     "directReports": [
       "legal-owner",
       "compliance-officer",
-      "data-privacy-officer"
+      "data-privacy-officer",
+      "legal"
     ],
     "description": "Manages legal affairs, contracts, and compliance.",
     "responsibilities": [
@@ -501,7 +510,7 @@
     "role": "Legal Advisor",
     "type": "Executive",
     "department": "Legal",
-    "reportsTo": "chief-of-staff",
+    "reportsTo": "clo",
     "directReports": [
       "legal-owner"
     ],
