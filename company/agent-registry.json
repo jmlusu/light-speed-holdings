@@ -35,8 +35,6 @@
       "lead-backend",
       "lead-frontend",
       "solution-architect",
-      "devops-lead",
-      "qa-lead",
       "vp-engineering"
     ],
     "description": "Oversees all technological infrastructure and software development.",
@@ -64,7 +62,6 @@
       "orchestration-owner",
       "doctor-owner",
       "decision-engine-owner",
-      "memory-owner",
       "audit-trail-owner",
       "capacity-planner",
       "business-continuity-manager",
@@ -399,7 +396,6 @@
       "head-of-competitive-intelligence",
       "corporate-development-lead",
       "revenue-operations-analyst",
-      "solutions-engineer",
       "market-analyst"
     ],
     "description": "Drives corporate strategy, M&A, and market expansion.",
@@ -480,9 +476,7 @@
     "department": "Sales",
     "reportsTo": "chief-of-staff",
     "directReports": [
-      "sales-owner",
-      "revenue-operations-analyst",
-      "solutions-engineer"
+      "sales-owner"
     ],
     "description": "Owns the sales pipeline, customer acquisition, and revenue targets.",
     "responsibilities": [
@@ -509,8 +503,7 @@
     "department": "Legal",
     "reportsTo": "chief-of-staff",
     "directReports": [
-      "legal-owner",
-      "compliance-officer"
+      "legal-owner"
     ],
     "description": "Provides legal counsel on contracts, compliance, IP, and regulatory matters.",
     "responsibilities": [
@@ -559,7 +552,7 @@
     "role": "DevOps Lead",
     "type": "Specialist",
     "department": "Technology",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Manages CI/CD pipelines, cloud infrastructure, and deployment automation.",
     "responsibilities": [
@@ -635,7 +628,7 @@
     "role": "Platform Reliability Engineer",
     "type": "Specialist",
     "department": "Technology",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Owns concurrency safety, file-locking, dead-letter queue hardening, and circuit-breaker robustness across the executor and shared state.",
     "responsibilities": [
@@ -688,7 +681,7 @@
     "role": "Audit Trail Owner",
     "type": "Specialist",
     "department": "Technology",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Owns the audit trail package, event schema integrity, retention policy, and executor integration hooks.",
     "responsibilities": [
@@ -790,7 +783,7 @@
     "role": "Graph Owner",
     "type": "Specialist",
     "department": "Technology",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Owns the graph engine, its 4 graph types, and BFS pathfinding.",
     "responsibilities": [
@@ -815,7 +808,7 @@
     "role": "Dashboard Owner",
     "type": "Specialist",
     "department": "Technology",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Owns the dashboard REST API, WebSocket broadcast, KPI collectors, and analytics layer.",
     "responsibilities": [
@@ -893,7 +886,7 @@
     "role": "Registry Owner",
     "type": "Specialist",
     "department": "Technology",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Owns the registry loader, parser, resolver, and validator across the 19 YAML configs.",
     "responsibilities": [
@@ -918,7 +911,7 @@
     "role": "Generator Owner",
     "type": "Specialist",
     "department": "Technology",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Owns the agent generator and the 12 Jinja2 templates that produce OpenCode agent files.",
     "responsibilities": [
@@ -1142,7 +1135,7 @@
     "role": "QA Lead",
     "type": "Specialist",
     "department": "QA",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [
       "test-engineering-lead",
       "release-manager"
@@ -1224,7 +1217,7 @@
     "role": "Release Manager",
     "type": "Specialist",
     "department": "QA",
-    "reportsTo": "cto",
+    "reportsTo": "vp-engineering",
     "directReports": [],
     "description": "Owns the CI pipeline (ci.yml), merge/release gating, rollback, and the zero-red-on-main policy.",
     "responsibilities": [
@@ -2386,7 +2379,7 @@
     "role": "Solutions Engineer",
     "type": "Specialist",
     "department": "Sales",
-    "reportsTo": "cso",
+    "reportsTo": "sales",
     "directReports": [],
     "description": "Provides pre-sales technical validation and helps customers implement AI solutions successfully.",
     "responsibilities": [
