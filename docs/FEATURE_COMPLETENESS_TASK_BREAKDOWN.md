@@ -341,16 +341,16 @@ class AlertRule(BaseModel):
 class AlertEngine:
     def evaluate_rules(self, kpi_snapshot: dict) -> list[Alert]:
         """Evaluate all enabled rules against current KPIs."""
-    
+
     def acknowledge(self, alert_id: str, user: str) -> None:
         """User acknowledges alert, stops escalation."""
-    
+
     def resolve(self, alert_id: str, resolution: str) -> None:
         """Alert resolved, close it."""
-    
+
     def get_active_alerts(self) -> list[Alert]:
         """Return all unresolved alerts."""
-    
+
     def get_alert_history(self, hours: int = 24) -> list[Alert]:
         """Return historical alerts."""
 ```
@@ -375,11 +375,11 @@ class AlertEngine:
 class ChannelRouter:
     def route(self, alert: Alert) -> None:
         """Route alert through configured channels based on severity."""
-        
+
         # Always: WebSocket broadcast (immediate)
         if alert.severity in (Severity.WARNING, Severity.CRITICAL):
             broadcast_alert(alert)
-        
+
         # Critical: email to CEO, CTO, COO
         if alert.severity == Severity.CRITICAL:
             self._send_email(
@@ -387,7 +387,7 @@ class ChannelRouter:
                 subject=f"[CRITICAL] {alert.name}",
                 body=self._format_email(alert)
             )
-        
+
         # Critical: webhook (Slack/Teams)
         if alert.severity == Severity.CRITICAL and self._webhook_url:
             self._send_webhook(alert)
@@ -434,15 +434,15 @@ class TierRouter:
         current_tier = alert.current_tier
         if current_tier >= 5:
             return alert  # Already at max
-        
+
         elapsed = datetime.now() - alert.created_at
         sla = self._get_sla_minutes(current_tier)
-        
+
         if elapsed.total_seconds() / 60 > sla:
             alert.current_tier = current_tier + 1
             alert.escalated_at = datetime.now()
             self._notify_tier(alert)
-        
+
         return alert
 ```
 
