@@ -63,6 +63,7 @@ def manager(sample_registry: Path, tmp_path: Path) -> OnboardingManager:
 def _make_manager(tmp_path: Path | None = None) -> OnboardingManager:
     """Create an OnboardingManager isolated from the production approvals.yaml."""
     import tempfile
+
     if tmp_path is None:
         tmp_path = Path(tempfile.mkdtemp())
     return OnboardingManager(
