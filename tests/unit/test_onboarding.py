@@ -56,6 +56,18 @@ def manager(sample_registry: Path, tmp_path: Path) -> OnboardingManager:
         registry_path=str(sample_registry),
         templates_dir=str(Path(__file__).resolve().parents[2] / "templates"),
         output_dir=str(tmp_path / "agents"),
+        approval_config_path=str(tmp_path / "approvals.yaml"),
+    )
+
+
+def _make_manager(tmp_path: Path | None = None) -> OnboardingManager:
+    """Create an OnboardingManager isolated from the production approvals.yaml."""
+    import tempfile
+    if tmp_path is None:
+        tmp_path = Path(tempfile.mkdtemp())
+    return OnboardingManager(
+        registry_path="/dev/null",
+        approval_config_path=str(tmp_path / "approvals.yaml"),
     )
 
 
@@ -229,14 +241,14 @@ def test_generate_rolls_back_on_failure(
 def test_activate_request() -> None:
     req = _make_request()
     req.status = OnboardingStatus.APPROVAL
-    activated = OnboardingManager().activate(req)
+    activated = _make_manager().activate(req)
     assert activated.status == OnboardingStatus.ACTIVE
 
 
 def test_archive_request() -> None:
     req = _make_request()
     req.status = OnboardingStatus.ACTIVE
-    archived = OnboardingManager().archive(req)
+    archived = _make_manager().archive(req)
     assert archived.status == OnboardingStatus.ARCHIVED
 
 
@@ -361,7 +373,7 @@ def test_request_to_dict_roundtrip() -> None:
 
 
 def test_create_request_persists() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(
         agent_id="new_bot",
@@ -377,7 +389,7 @@ def test_create_request_persists() -> None:
 
 
 def test_advance_happy_path() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     for expected in [
@@ -393,7 +405,7 @@ def test_advance_happy_path() -> None:
 
 
 def test_advance_from_active_raises() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     req.status = OnboardingStatus.ACTIVE
@@ -402,7 +414,7 @@ def test_advance_from_active_raises() -> None:
 
 
 def test_security_review_approve() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     req.status = OnboardingStatus.SECURITY_REVIEW
@@ -412,7 +424,7 @@ def test_security_review_approve() -> None:
 
 
 def test_security_review_reject() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     req.status = OnboardingStatus.SECURITY_REVIEW
@@ -422,7 +434,7 @@ def test_security_review_reject() -> None:
 
 
 def test_reject_from_midpoint() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     req.status = OnboardingStatus.TESTING
@@ -432,7 +444,7 @@ def test_reject_from_midpoint() -> None:
 
 
 def test_archive_from_active() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     req.status = OnboardingStatus.ACTIVE
@@ -442,7 +454,7 @@ def test_archive_from_active() -> None:
 
 
 def test_record_failure() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     req = mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     req.status = OnboardingStatus.GENERATING
@@ -452,7 +464,7 @@ def test_record_failure() -> None:
 
 
 def test_list_requests_filter() -> None:
-    mgr = OnboardingManager(registry_path="/dev/null")
+    mgr = _make_manager()
     mgr._store = _make_store()
     mgr.create_request(agent_id="a1", name="A1", role="R", department="D")
     mgr.create_request(agent_id="a2", name="A2", role="R", department="D")
