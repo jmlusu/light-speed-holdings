@@ -16,6 +16,15 @@ from typing import Any
 
 import yaml
 
+from ai_company.dashboard.scorers import (
+    score_agent_utilization,
+    score_cost_efficiency,
+    score_error_rate,
+    score_escalation_rate,
+    score_security_posture,
+    score_strategic_alignment,
+    score_task_success_rate,
+)
 from ai_company.data import (
     AgentPerformanceAnalytics,
     CostAnalytics,
@@ -744,17 +753,12 @@ def _compute_executive_kpi(
     """
     if kpi_id == "task_throughput":
         return float(len(tasks))
+    if kpi_id == "task_success_rate":
+        result = score_task_success_rate(tasks)
+        return round(result, 1) if result is not None else None
     if kpi_id == "agent_utilization":
-        total_registered = _count_registered_agents(root)
-        active_agents = {
-            agent
-            for task in tasks
-            for agent in (task.get("sender_id"), task.get("receiver_id"))
-            if agent
-        }
-        if total_registered > 0 and active_agents:
-            return round(len(active_agents) / total_registered * 100, 1)
-        return None
+        result = score_agent_utilization(tasks, root)
+        return round(result, 1) if result is not None else None
     if kpi_id == "build_success_rate":
         completed = sum(1 for t in tasks if t.get("status") == "completed")
         failed = sum(1 for t in tasks if t.get("status") == "failed")
@@ -762,13 +766,20 @@ def _compute_executive_kpi(
             return round(completed / (completed + failed) * 100, 1)
         return None
     if kpi_id == "cost_efficiency":
-        cost = get_cost_summary()
-        if cost:
-            budget = float(cost.get("budget", 0) or 0)
-            spent = float(cost.get("total_spent", 0) or 0)
-            if budget > 0:
-                return round(max(0.0, min(100.0, (budget - spent) / budget * 100)), 1)
-        return None
+        result = score_cost_efficiency(get_database())
+        return round(result, 1) if result is not None else None
+    if kpi_id == "error_rate":
+        result = score_error_rate(tasks)
+        return round(result, 1) if result is not None else None
+    if kpi_id == "escalation_rate":
+        result = score_escalation_rate(tasks)
+        return round(result, 1) if result is not None else None
+    if kpi_id == "security_posture":
+        result = score_security_posture(tasks, root)
+        return round(result, 1) if result is not None else None
+    if kpi_id == "strategic_alignment":
+        result = score_strategic_alignment(tasks, root)
+        return round(result, 1) if result is not None else None
     if kpi_id == "escalation_resolution_time":
         return _avg_resolution_seconds(tasks, resolved={"resolved", "closed", "completed"})
     if kpi_id == "approval_turnaround":
