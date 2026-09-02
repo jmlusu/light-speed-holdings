@@ -18,7 +18,7 @@ Department: Technology
 
 Reports To: chief_of_staff
 
-Direct Reports: lead_backend, lead_frontend, solution_architect, devops_lead, qa_lead, vp_engineering
+Direct Reports: lead_backend, lead_frontend, solution_architect, vp_engineering
 
 
 ---

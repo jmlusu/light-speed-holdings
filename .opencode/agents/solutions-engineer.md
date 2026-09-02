@@ -18,7 +18,7 @@ Type: Specialist
 
 Department: Sales
 
-Reports To: cso
+Reports To: sales
 
 Seniority: mid
 
@@ -91,7 +91,7 @@ Solutions engineers sell through technical credibility. Every POC should demonst
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to cso.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to sales.
 
 
 ---
