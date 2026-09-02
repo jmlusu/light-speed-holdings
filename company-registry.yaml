@@ -9,9 +9,17 @@ company:
     department: Executive
     reports_to: human_ceo
     direct_reports:
-    - cto
-    - coo
-    - caio
+    - cpo
+    - cmo
+    - hr
+    - cio
+    - customer_success
+    - sales
+    - culture_values_officer
+    - head_of_business_development
+    - internal_comms_lead
+    - ai_ethics_board_chair
+    - consulting_lead
     responsibilities:
     - Align company goals across all departments.
     - Orchestrate agent communication and task delegation.
@@ -55,8 +63,6 @@ company:
     - workflow_owner
     - orchestration_owner
     - doctor_owner
-    - decision_engine_owner
-    - audit_trail_owner
     - capacity_planner
     - business_continuity_manager
     - vendor_manager
@@ -329,7 +335,6 @@ company:
     department: Legal
     reports_to: human_ceo
     direct_reports:
-    - legal_owner
     - compliance_officer
     - data_privacy_officer
     - legal
@@ -1042,7 +1047,6 @@ company:
     reports_to: vp_engineering
     direct_reports:
     - test_engineering_lead
-    - release_manager
     technical_domain: Quality assurance, release gating, test strategy, defect triage.
     responsibilities:
     - Own QA strategy and the release quality gate (ruff + mypy + pytest must be green

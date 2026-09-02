@@ -18,7 +18,7 @@ Department: Operations
 
 Reports To: human_ceo
 
-Direct Reports: workflow_owner, orchestration_owner, doctor_owner, decision_engine_owner, audit_trail_owner, capacity_planner, business_continuity_manager, vendor_manager, process_quality_manager
+Direct Reports: workflow_owner, orchestration_owner, doctor_owner, capacity_planner, business_continuity_manager, vendor_manager, process_quality_manager
 
 
 ---
