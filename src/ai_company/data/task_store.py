@@ -349,7 +349,7 @@ class TaskStore:
 
     @staticmethod
     def is_test_task(task_dict: dict[str, Any]) -> bool:
-        """Check if a task dict represents a demo/test task.
+        """Check if a task dict represents a demo/test or onboarding task.
 
         A task is considered demo/test data only when it matches a clear
         dummy/demo marker:
@@ -358,14 +358,26 @@ class TaskStore:
         - instruction starts with ``Test `` (dummy instruction)
         - id starts with ``test-`` or ``verify-`` (dummy task ids)
 
+        Onboarding workflow tasks are also filtered because they accumulate
+        in the inbox and clutter the dashboard:
+        - instruction starts with ``Onboarding request for agent``
+        - instruction starts with ``Onboarding for agent``
+        - instruction starts with ``Onboarding approved``
+
         Routing to an agent whose name starts with ``test`` (e.g. the real
         ``test-agent``) is legitimate and does NOT mark a task as demo/test.
         """
         instruction: str = task_dict.get("instruction", "")
         task_id: str = task_dict.get("id", "")
 
-        if "proj-acme-chatbot" in instruction or "proj-acme-chatbot" in task_id:
-            return True
-        if instruction.startswith("Test "):
-            return True
-        return task_id.startswith(("test-", "verify-"))
+        acme = "proj-acme-chatbot" in instruction or "proj-acme-chatbot" in task_id
+        dummy_instruction = instruction.startswith("Test ")
+        dummy_id = task_id.startswith(("test-", "verify-"))
+        onboarding = instruction.startswith(
+            (
+                "Onboarding request for agent",
+                "Onboarding for agent",
+                "Onboarding approved",
+            )
+        )
+        return acme or dummy_instruction or dummy_id or onboarding
