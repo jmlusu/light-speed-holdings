@@ -191,3 +191,14 @@
 - **Software Architect** (`software-architect`) - specialist; reports to: `cto`
 - **Solution Architect** (`solution-architect`) - specialist; reports to: `cto`
 - **VP of Engineering** (`vp-engineering`) - specialist; reports to: `cto`
+
+## Pharos (8 agents)
+
+- **Thought Leadership Lead** (`thought-leadership-lead`) - executive; reports to: CEO
+- **Agentic Research Lead** (`agentic-research-lead`) - specialist; reports to: `thought-leadership-lead`
+- **Thought Leadership Author** (`thought-leadership-author`) - specialist; reports to: `thought-leadership-lead`
+- **Agentic Policy Analyst** (`agentic-policy-analyst`) - specialist; reports to: `thought-leadership-lead`
+- **Speaker and Engagement Lead** (`speaker-engagement-lead`) - specialist; reports to: `thought-leadership-lead`
+- **Community and Ecosystem Builder** (`community-ecosystem-builder`) - specialist; reports to: `thought-leadership-lead`
+- **Media and PR Relations** (`media-pr-relations`) - specialist; reports to: `thought-leadership-lead`
+- **Talent and Academy Lead** (`talent-academy-lead`) - specialist; reports to: `thought-leadership-lead`

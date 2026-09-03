@@ -358,8 +358,11 @@ class TaskStore:
         - instruction starts with ``Test `` (dummy instruction)
         - id starts with ``test-`` or ``verify-`` (dummy task ids)
 
-        Onboarding workflow tasks are also filtered because they accumulate
-        in the inbox and clutter the dashboard:
+        Onboarding workflow tasks are filtered from dashboard views because
+        they accumulate in the inbox and clutter the dashboard. However,
+        legitimate onboarding service tasks (sender ``hr-service``) are
+        ALLOWED through so the workflow can create them; the dashboard
+        filtering is handled separately in the API layer.
         - instruction starts with ``Onboarding request for agent``
         - instruction starts with ``Onboarding for agent``
         - instruction starts with ``Onboarding approved``
@@ -369,6 +372,7 @@ class TaskStore:
         """
         instruction: str = task_dict.get("instruction", "")
         task_id: str = task_dict.get("id", "")
+        sender: str = task_dict.get("sender_id", "")
 
         acme = "proj-acme-chatbot" in instruction or "proj-acme-chatbot" in task_id
         dummy_instruction = instruction.startswith("Test ")
@@ -380,4 +384,8 @@ class TaskStore:
                 "Onboarding approved",
             )
         )
+        # Legitimate onboarding service tasks bypass the filter; dashboard
+        # filtering is handled in the API layer.
+        if sender == "hr-service":
+            return False
         return acme or dummy_instruction or dummy_id or onboarding

@@ -37,7 +37,7 @@ class TestHTTPRateLimiting:
         app = create_app()
         client = TestClient(app)
         for _ in range(5):
-            resp = client.get("/health")
+            resp = client.get("/api/v1/agents")
             assert resp.status_code == 200
 
     def test_request_after_limit_returns_429(
@@ -47,8 +47,8 @@ class TestHTTPRateLimiting:
         app = create_app()
         client = TestClient(app)
         for _ in range(3):
-            assert client.get("/health").status_code == 200
-        resp = client.get("/health")
+            assert client.get("/api/v1/agents").status_code == 200
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 429
         assert resp.json() == {"detail": "Rate limit exceeded"}
 
@@ -59,18 +59,18 @@ class TestHTTPRateLimiting:
         app = create_app()
         client = TestClient(app)
 
-        first = client.get("/health")
+        first = client.get("/api/v1/agents")
         assert first.status_code == 200
         assert first.headers["X-RateLimit-Limit"] == "3"
         assert first.headers["X-RateLimit-Remaining"] == "2"
 
-        second = client.get("/health")
+        second = client.get("/api/v1/agents")
         assert second.headers["X-RateLimit-Remaining"] == "1"
 
-        third = client.get("/health")
+        third = client.get("/api/v1/agents")
         assert third.headers["X-RateLimit-Remaining"] == "0"
 
-        blocked = client.get("/health")
+        blocked = client.get("/api/v1/agents")
         assert blocked.status_code == 429
         assert blocked.headers["X-RateLimit-Limit"] == "3"
         assert blocked.headers["X-RateLimit-Remaining"] == "0"
@@ -82,12 +82,12 @@ class TestHTTPRateLimiting:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "1")
         first_app = create_app()
         client_a = TestClient(first_app)
-        assert client_a.get("/health").status_code == 200
-        assert client_a.get("/health").status_code == 429
+        assert client_a.get("/api/v1/agents").status_code == 200
+        assert client_a.get("/api/v1/agents").status_code == 429
 
         second_app = create_app()
         client_b = TestClient(second_app)
-        assert client_b.get("/health").status_code == 200
+        assert client_b.get("/api/v1/agents").status_code == 200
 
 
 # ── Limiter-level isolation and window semantics ───────────────────────

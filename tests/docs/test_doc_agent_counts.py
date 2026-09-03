@@ -24,8 +24,8 @@ from ai_company.registry.loader import load_yaml_cached
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-EXPECTED_AGENT_COUNT = 135
-EXPECTED_DEPARTMENT_COUNT = 19
+EXPECTED_AGENT_COUNT = 143
+EXPECTED_DEPARTMENT_COUNT = 20
 EXPECTED_TYPES = {"executive", "specialist", "board"}
 
 # Current-facing docs that must reference the live agent count.
@@ -138,9 +138,10 @@ def test_org_chart_reflects_registry() -> None:
 
 
 def test_department_count_claims_in_living_docs() -> None:
+    claim = f"{EXPECTED_DEPARTMENT_COUNT} departments"
     for rel in ("README.md", "docs/DEVELOPMENT.md", "docs/ORGANIZATION.md"):
         text = (REPO_ROOT / rel).read_text(encoding="utf-8")
-        assert "19 departments" in text, f"{rel} does not claim 19 departments"
+        assert claim in text, f"{rel} does not claim {claim}"
 
 
 def test_current_docs_have_no_stale_agent_count() -> None:

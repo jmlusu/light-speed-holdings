@@ -109,6 +109,8 @@ function dashboard() {
     newTask: { receiver_id: '', instruction: '', priority: 'medium', sender_id: 'human-ceo' },
     submitting: false,
     showAssignModal: false,
+    taskAgentSearch: '',
+    taskAgentDropdownOpen: false,
 
     // ── Drag and drop ────────────────────────────────────────
     draggedTask: null,
@@ -118,6 +120,10 @@ function dashboard() {
     taskDetailOpen: false,
     taskDecomposition: null,
     taskDecomposing: false,
+
+    // ── Approval detail slide-out ────────────────────────────
+    selectedApproval: null,
+    approvalDetailOpen: false,
 
     // ── KPIs page ────────────────────────────────────────────
     activeKPIDept: '',
@@ -1332,6 +1338,8 @@ function dashboard() {
       this.newTask = { receiver_id: '', instruction: '', priority: 'medium', sender_id: 'human-ceo' };
       this.submitting = false;
       this.showAssignModal = false;
+      this.taskAgentSearch = '';
+      this.taskAgentDropdownOpen = false;
       this.saveScrollPosition();
       if (window.location.pathname === '/tasks') {
         await this.loadTasksPage();
@@ -1370,6 +1378,66 @@ function dashboard() {
       this.editingApproval = null;
       await this.loadApprovals();
       this.showToast('success', 'Updated', 'Approval details saved');
+    },
+
+    // ═══ APPROVAL DETAIL SLIDE-OUT ════════════════════════════
+
+    async openApprovalDetail(req) {
+      this.selectedApproval = null;
+      this.approvalDetailOpen = true;
+      try {
+        const data = await this.fetchJSON(`/api/v1/approvals/${req.id}`);
+        if (data) {
+          this.selectedApproval = data;
+        } else {
+          this.selectedApproval = req;
+        }
+      } catch {
+        this.selectedApproval = req;
+      }
+    },
+
+    closeApprovalDetail() {
+      this.approvalDetailOpen = false;
+      this.selectedApproval = null;
+    },
+
+    tierLabel(tier) {
+      const labels = {
+        0: 'Auto-Approve',
+        1: 'Notify',
+        2: 'Single Approver',
+        3: 'Two-Person Rule',
+        4: 'CEO Only',
+      };
+      return labels[tier] ?? `Tier ${tier}`;
+    },
+
+    tierRationale(req) {
+      const tier = req.tier ?? 2;
+      const action = (req.action || '').toLowerCase();
+      if (tier === 4) return 'Sensitive action requiring CEO-level authorization.';
+      if (tier === 3) return 'Production or high-risk operation requiring two-person approval.';
+      if (tier === 2) {
+        if (action.includes('bash') || action.includes('execute')) return 'Shell execution requires single approver authorization.';
+        if (action.includes('write') || action.includes('edit')) return 'Code modification requires single approver authorization.';
+        return 'Standard tool action requiring single approver authorization.';
+      }
+      if (tier === 1) return 'Low-risk action — notification only, no approval required.';
+      return 'Automatically approved action.';
+    },
+
+    approvalExpiresIn(expiresAt) {
+      if (!expiresAt) return null;
+      const now = Date.now();
+      const exp = new Date(expiresAt).getTime();
+      const diff = exp - now;
+      if (diff <= 0) return 'Expired';
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return `${mins}m remaining`;
+      const hrs = Math.floor(mins / 60);
+      const remMins = mins % 60;
+      return `${hrs}h ${remMins}m remaining`;
     },
 
     // ═══ ESCALATION NOTIFICATIONS (F6) ══════════════════════════
@@ -1608,6 +1676,15 @@ function dashboard() {
         const matchDept = !this.agentDeptFilter || a.department === this.agentDeptFilter;
         return matchSearch && matchDept;
       });
+    },
+
+    get filteredTaskAgents() {
+      const q = this.taskAgentSearch.toLowerCase();
+      if (!q) return this.agents;
+      return this.agents.filter(a =>
+        a.name.toLowerCase().includes(q) ||
+        a.role.toLowerCase().includes(q)
+      );
     },
 
     get uniqueDepartments() {

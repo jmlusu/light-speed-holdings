@@ -401,9 +401,12 @@ class TestKpiEndpoints:
             assert "unit" in kpi
             assert "frequency" in kpi
 
-    def test_get_department_kpis_not_found(self, setup_dashboard_data: None) -> None:
+    def test_get_department_kpis_unknown_falls_back(self, setup_dashboard_data: None) -> None:
         resp = client.get("/api/v1/departments/nonexistent/kpis")
-        assert resp.status_code == 404
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["agents"] == []
+        assert data["kpis"] == []
 
     def test_list_all_kpis(self, setup_dashboard_data: None) -> None:
         resp = client.get("/api/v1/kpis")

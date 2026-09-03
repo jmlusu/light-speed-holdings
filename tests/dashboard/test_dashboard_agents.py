@@ -1,9 +1,9 @@
 """Sprint 4 T018 — CEO dashboard agent endpoint contracts.
 
 Covers:
-- GET /api/v1/dashboard/agents: Registered agent list from registry
-- GET /api/v1/dashboard/agents/{name}: Single agent detail
-- GET /api/v1/dashboard/agents/{name}/performance: Per-agent metrics
+- GET /api/v1/agents: Registered agent list from registry
+- GET /api/v1/agents/{name}: Single agent detail
+- GET /api/v1/agents/{name}/performance: Per-agent metrics
 """
 
 from __future__ import annotations
@@ -13,6 +13,8 @@ from fastapi.testclient import TestClient
 
 from ai_company.dashboard.app import create_app
 
+from .conftest import provision_dashboard_data
+
 
 @pytest.fixture()
 def isolated(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
@@ -21,6 +23,7 @@ def isolated(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     monkeypatch.chdir(tmp_path)
+    provision_dashboard_data(tmp_path)
 
 
 @pytest.fixture()
@@ -30,6 +33,7 @@ def keyed(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     monkeypatch.chdir(tmp_path)
+    provision_dashboard_data(tmp_path)
 
 
 class TestAgentsEndpoint:
@@ -39,7 +43,7 @@ class TestAgentsEndpoint:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Agents should return a list"
@@ -60,7 +64,7 @@ class TestAgentsEndpoint:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Agents should return a list"
@@ -82,13 +86,13 @@ class TestAgentsEndpoint:
         app = create_app()
         client = TestClient(app)
         # List agents first to get a valid name
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         agents = resp.json()
         assert len(agents) > 0, "Should have at least one agent"
         agent_name = agents[0]["name"]
         # Get specific agent
-        resp = client.get(f"/api/v1/dashboard/agents/{agent_name}")
+        resp = client.get(f"/api/v1/agents/{agent_name}")
         assert resp.status_code == 200
         data = resp.json()
         assert data["name"] == agent_name
@@ -97,20 +101,20 @@ class TestAgentsEndpoint:
         assert "department" in data
         assert "role" in data
         assert "type" in data
-        assert "responsibilities" in data or "guidelines" in data
+        assert "reports_to" in data
 
     def test_agent_detail_by_name_keyed(self, keyed: None, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
         # List agents first to get a valid name
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         agents = resp.json()
         assert len(agents) > 0, "Should have at least one agent"
         agent_name = agents[0]["name"]
         # Get specific agent
-        resp = client.get(f"/api/v1/dashboard/agents/{agent_name}")
+        resp = client.get(f"/api/v1/agents/{agent_name}")
         assert resp.status_code == 200
         data = resp.json()
         assert data["name"] == agent_name
@@ -119,7 +123,7 @@ class TestAgentsEndpoint:
         assert "department" in data
         assert "role" in data
         assert "type" in data
-        assert "responsibilities" in data or "guidelines" in data
+        assert "reports_to" in data
 
     def test_agent_performance_endpoint_isolated(
         self, isolated: None, monkeypatch: pytest.MonkeyPatch
@@ -127,7 +131,7 @@ class TestAgentsEndpoint:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/agents/performance")
+        resp = client.get("/api/v1/agents/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert "agents" in data, "Performance endpoint should have agents leaderboard"
@@ -147,7 +151,7 @@ class TestAgentsEndpoint:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/agents/performance")
+        resp = client.get("/api/v1/agents/performance")
         assert resp.status_code == 200
         data = resp.json()
         assert "agents" in data, "Performance endpoint should have agents leaderboard"
@@ -223,7 +227,7 @@ class TestTaskFlowEndpoint:
             json={
                 "sender_id": "flow-test-sender",
                 "receiver_id": "flow-test-receiver",
-                "instruction": "Test task for flow tracking",
+                "instruction": "Review the Q3 report and flag any risks",
             },
         )
         # Task creation may require auth; in isolated mode it may fail
@@ -245,7 +249,7 @@ class TestTaskFlowEndpoint:
             json={
                 "sender_id": "flow-test-sender",
                 "receiver_id": "flow-test-receiver",
-                "instruction": "Test task for flow tracking",
+                "instruction": "Review the Q3 report and flag any risks",
             },
         )
         assert resp.status_code == 201, f"Task creation should succeed, got {resp.status_code}"

@@ -2,7 +2,7 @@
 
 ## Structure
 
-Light Speed Holdings is organized as a hierarchical AI company with one human CEO and 134 AI agents across 19 departments (135 registry entries in `company-registry.yaml`, including the human CEO).
+Light Speed Holdings is organized as a hierarchical AI company with one human CEO and 142 AI agents across 20 departments (143 registry entries in `company-registry.yaml`, including the human CEO).
 
 ```
                      human-ceo

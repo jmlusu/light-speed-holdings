@@ -1564,6 +1564,17 @@ def list_approvals() -> list[ApprovalItem]:
     return result
 
 
+@router.get("/approvals/{request_id}", tags=["approvals"])
+def get_approval_detail(request_id: str) -> dict[str, Any]:
+    """Return the full record for a single approval request by ID."""
+    data = _load_yaml("orchestrator/approvals.yaml")
+    for r in data.get("requests", []):
+        if r.get("id") == request_id:
+            result: dict[str, Any] = r
+            return result
+    raise HTTPException(status_code=404, detail=f"Approval request '{request_id}' not found")
+
+
 @router.post("/approvals/{request_id}/approve", tags=["approvals"])
 def approve_request(
     request_id: str,

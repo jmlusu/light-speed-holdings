@@ -11,14 +11,71 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from pathlib import Path
+from typing import Any, Iterator
 
+import pytest
 from fastapi.testclient import TestClient
 
 from ai_company.dashboard.app import app
 from ai_company.graph.engine import compute_org_metrics, org_chart_summary
 
 client = TestClient(app, raise_server_exceptions=False)
+
+
+@pytest.fixture()
+def isolated_org_chart_store(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
+    """Isolate the StateStore singleton and provision a known registry.
+
+    The dashboard uses a module-level :class:`StateStore` singleton that
+    other test fixtures rebind to a temp dir without restoring it. Because
+    the ``TestOrgChartEndpoint`` client is also module-level, a leaked store
+    leaves the org-chart endpoint reading an empty (now-gone) registry.
+    This self-contained fixture anchors the store to a fresh temp dir with a
+    deterministic registry, then resets the singleton so the module re-points
+    to the real root on the next test.
+    """
+    from ai_company.dashboard.repository import get_state_store, reset_state_store
+
+    # Anchor working dir + env so any component that resolves its own data
+    # root stays inside the sandbox, matching the dashboard test pattern.
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
+    # Rebind the singleton to the isolated workspace.
+    reset_state_store()
+    get_state_store(tmp_path)
+
+    # Provision a minimal known registry: one executive (chief-of-staff)
+    # reporting to the virtual human-ceo root, plus one specialist report.
+    registry = [
+        {
+            "name": "chief-of-staff",
+            "role": "Chief of Staff",
+            "type": "executive",
+            "department": "Executive",
+            "reports_to": "human-ceo",
+            "direct_reports": ["lead-engineering"],
+            "description": "Coordinates all departments",
+        },
+        {
+            "name": "lead-engineering",
+            "role": "Lead Engineer",
+            "type": "specialist",
+            "department": "Engineering",
+            "reports_to": "chief-of-staff",
+            "direct_reports": [],
+            "description": "Leads engineering efforts",
+        },
+    ]
+    company_dir = tmp_path / "company"
+    company_dir.mkdir(parents=True, exist_ok=True)
+    (company_dir / "agent-registry.json").write_text(json.dumps(registry), encoding="utf-8")
+
+    yield
+
+    # Restore the singleton so subsequent tests read the real root.
+    reset_state_store()
 
 
 def _agent(name: str, reports_to: str = "", **extra: Any) -> dict[str, Any]:
@@ -146,23 +203,25 @@ class TestOrgChartSummary:
 
 
 class TestOrgChartEndpoint:
-    def test_default_is_bare_list_no_metrics(self) -> None:
+    def test_default_is_bare_list_no_metrics(self, isolated_org_chart_store: Any) -> None:
         resp = client.get("/api/v1/org-chart")
         assert resp.status_code == 200
         chart = resp.json()
         assert isinstance(chart, list)
         assert "metrics" not in chart[0] or chart[0].get("metrics") is None
 
-    def test_include_metrics_attaches_metrics_and_risk(self) -> None:
+    def test_include_metrics_attaches_metrics_and_risk(self, isolated_org_chart_store: Any) -> None:
         resp = client.get("/api/v1/org-chart", params={"include_metrics": "true"})
         assert resp.status_code == 200
         chart = resp.json()
         assert isinstance(chart, list) and len(chart) >= 1
 
-        fields = set()
+        fields: set[str] = set()
 
-        def visit(node: dict) -> None:
-            fields.add(node.get("name"))
+        def visit(node: dict[str, Any]) -> None:
+            name = node.get("name")
+            assert isinstance(name, str)
+            fields.add(name)
             assert node.get("metrics") is not None
             assert node.get("risk") is not None
             assert "capacity" in node["metrics"]
