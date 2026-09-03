@@ -147,14 +147,14 @@ class TestRateLimitHttp:
     def test_requests_exceeding_limit_return_429(self, rate_app) -> None:
         client = TestClient(rate_app)
         for _ in range(3):
-            assert client.get("/health").status_code == 200
-        resp = client.get("/health")
+            assert client.get("/api/v1/agents").status_code == 200
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 429
         assert resp.json()["detail"] == "Rate limit exceeded"
 
     def test_rate_limit_headers_on_allowed_request(self, rate_app) -> None:
         client = TestClient(rate_app)
-        resp = client.get("/health")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         assert resp.headers["x-ratelimit-limit"] == "3"
         assert resp.headers["x-ratelimit-remaining"] == "2"
@@ -162,8 +162,8 @@ class TestRateLimitHttp:
     def test_429_response_includes_rate_limit_headers(self, rate_app) -> None:
         client = TestClient(rate_app)
         for _ in range(3):
-            client.get("/health")
-        resp = client.get("/health")
+            client.get("/api/v1/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 429
         assert resp.headers["x-ratelimit-limit"] == "3"
         assert resp.headers["x-ratelimit-remaining"] == "0"
@@ -171,8 +171,8 @@ class TestRateLimitHttp:
     def test_rate_limit_resets_after_window(self, rate_app) -> None:
         client = TestClient(rate_app)
         for _ in range(3):
-            assert client.get("/health").status_code == 200
-        assert client.get("/health").status_code == 429
+            assert client.get("/api/v1/agents").status_code == 200
+        assert client.get("/api/v1/agents").status_code == 429
 
         # Simulate the window elapsing: the middleware reads the same limiter
         # stored on app.state, so backdating its hits frees the budget. The
@@ -181,7 +181,7 @@ class TestRateLimitHttp:
         # to "unknown"), so backdate every bucket the limiter actually holds.
         for key in rate_app.state.limiter._hits:
             rate_app.state.limiter._hits[key] = [time.time() - 61.0]
-        assert client.get("/health").status_code == 200
+        assert client.get("/api/v1/agents").status_code == 200
 
 
 # ---------------------------------------------------------------------------

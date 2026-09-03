@@ -124,3 +124,10 @@ departments:
     mission: "Build and maintain software, infrastructure, and technical architecture."
     budget_category: "product_development"
     headcount_target: 25
+
+  - id: "pharos"
+    name: "Pharos"
+    executive: "thought_leadership_lead"
+    mission: "Position the Human CEO as the leading voice on Agentic AI Company Building, Use Cases and Policy across Malawi and the SADC region."
+    budget_category: "growth"
+    headcount_target: 7

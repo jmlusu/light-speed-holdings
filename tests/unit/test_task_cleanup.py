@@ -316,10 +316,10 @@ class TestReadAllTasksFilter:
         import ai_company.dashboard.data_service as data_service
 
         class _FakeBus:
-            def get_all_tasks(self) -> list[Task]:
+            def get_all_tasks_raw(self) -> list[dict[str, str]]:
                 return [
-                    _task("inbox-test-01", "Test leftover row"),
-                    _task("inbox-real-01", "Handle support ticket", receiver="test-agent"),
+                    _task_dict("inbox-test-01", "Test leftover row"),
+                    _task_dict("inbox-real-01", "Handle support ticket", receiver="test-agent"),
                 ]
 
         monkeypatch.setattr(data_service, "get_all_tasks", lambda *a, **k: None)

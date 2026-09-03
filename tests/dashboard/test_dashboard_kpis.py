@@ -2,7 +2,7 @@
 
 Covers:
 - GET /api/v1/dashboard: CEO KPI snapshot shape and data completeness
-- GET /api/v1/dashboard/kpis/live: Live KPIs from 7 department collectors
+- GET /api/v1/kpis/live: Live KPIs from 7 department collectors
 """
 
 from __future__ import annotations
@@ -12,6 +12,8 @@ from fastapi.testclient import TestClient
 
 from ai_company.dashboard.app import create_app
 
+from .conftest import provision_dashboard_data
+
 
 @pytest.fixture()
 def isolated(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
@@ -20,6 +22,7 @@ def isolated(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     monkeypatch.chdir(tmp_path)
+    provision_dashboard_data(tmp_path)
 
 
 class TestDashboardKPIs:
@@ -63,10 +66,12 @@ class TestDashboardKPIs:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/kpis/live")
+        resp = client.get("/api/v1/kpis/live")
         assert resp.status_code == 200
         data = resp.json()
-        # Should have all 7 department KPIs plus org_health
+        # Top-level contract: collected_at timestamp + departments dict keyed by id
+        assert "collected_at" in data
+        assert "departments" in data
         expected_departments = {
             "engineering",
             "hr",
@@ -75,15 +80,16 @@ class TestDashboardKPIs:
             "sales",
             "customer_success",
             "legal",
+            "org_health",
         }
-        assert "org_health" in data, "org_health should be in live KPIs"
-        # Check each department is present
+        # Each department collector output should be nested under departments
         for dept in expected_departments:
-            assert dept in data, f"Department {dept} should be in live KPIs"
-        # Each department should have kpis dict with at least one metric
+            assert dept in data["departments"], f"Department {dept} should be in live KPIs"
+        # Each department entry exposes its kpis dict and its own id
         for dept in expected_departments:
-            assert "kpis" in data[dept], f"{dept} should have kpis dict"
-            assert len(data[dept]["kpis"]) > 0, f"{dept} kpis should not be empty"
+            entry = data["departments"][dept]
+            assert "kpis" in entry, f"{dept} should have kpis dict"
+            assert entry.get("department") == dept, f"{dept} should report its own id"
 
 
 class TestDashboardAgents:
@@ -91,7 +97,7 @@ class TestDashboardAgents:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Agents should return a list"
@@ -108,13 +114,13 @@ class TestDashboardAgents:
         app = create_app()
         client = TestClient(app)
         # List agents first to get a valid name
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         agents = resp.json()
         assert len(agents) > 0
         agent_name = agents[0]["name"]
         # Get specific agent
-        resp = client.get(f"/api/v1/dashboard/agents/{agent_name}")
+        resp = client.get(f"/api/v1/agents/{agent_name}")
         assert resp.status_code == 200
         data = resp.json()
         assert data["name"] == agent_name
@@ -125,7 +131,7 @@ class TestDashboardTasks:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Tasks should return a list"
@@ -141,7 +147,7 @@ class TestDashboardTasks:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks/paginated?page=1&page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page=1&page_size=10")
         assert resp.status_code == 200
         data = resp.json()
         # Validate PaginatedTasks shape

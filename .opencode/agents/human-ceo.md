@@ -18,7 +18,7 @@ Department: Executive
 
 Reports To: board
 
-Direct Reports: chief_of_staff, cto, coo, caio, cfo, ciso, clo, cso, ceo_advisor
+Direct Reports: chief_of_staff, cto, coo, caio, cfo, ciso, clo, cso, ceo_advisor, thought_leadership_lead
 
 
 ---

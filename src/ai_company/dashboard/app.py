@@ -456,6 +456,11 @@ def create_app() -> FastAPI:
 
     @app.middleware("http")
     async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:
+        # Exempt page routes and static assets from rate limiting — same
+        # carve-out as the API-key guard (ADR-013).  Page loads themselves
+        # should never count against the budget; only API calls do.
+        if _is_exempt_from_auth(request.url.path):
+            return cast(Response, await call_next(request))
         client_ip = request.client.host if request.client else "unknown"
         # D.2: OpenTelemetry span for rate limit check
         tracer = get_tracer()

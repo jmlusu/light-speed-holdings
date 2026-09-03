@@ -7,7 +7,7 @@
     <h2 class="text-xl font-semibold text-jarvis-text font-display">Task Pipeline</h2>
     <p class="text-sm text-jarvis-muted mt-1">Kanban view of all tasks</p>
   </div>
-  <button @click="showAssignModal = true"
+  <button @click="showAssignModal = true; taskAgentSearch = ''; taskAgentDropdownOpen = false"
           class="bg-jarvis-cyan text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-jarvis-cyan/80 transition-colors flex items-center gap-2">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
     Assign Task
@@ -406,20 +406,48 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-     @click.self="showAssignModal = false">
+     @click.self="showAssignModal = false; taskAgentSearch = ''; taskAgentDropdownOpen = false">
   <div class="jarvis-glass rounded-2xl shadow-2xl border border-jarvis-border-glow w-full max-w-lg p-6">
     <h3 class="text-lg font-semibold text-jarvis-text mb-4 font-display">Assign New Task</h3>
     <form @submit.prevent="assignTask()">
       <div class="space-y-4">
-        <div>
+        <div class="relative" @click.outside="taskAgentDropdownOpen = false" @keydown.escape.window="taskAgentDropdownOpen = false">
           <label class="block text-xs text-jarvis-muted mb-1.5">Receiver Agent</label>
-          <select x-model="newTask.receiver_id" required
-                  class="w-full bg-jarvis-raised border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-jarvis-text focus:ring-2 focus:ring-jarvis-cyan focus:border-jarvis-cyan">
-            <option value="">Select agent...</option>
-            <template x-for="a in agents" :key="a.name">
-              <option :value="a.name" x-text="a.role + ' (' + a.name + ')'"></option>
-            </template>
-          </select>
+          <input type="hidden" :value="newTask.receiver_id" required>
+          <button type="button" @click="taskAgentDropdownOpen = !taskAgentDropdownOpen"
+                  class="w-full bg-jarvis-raised border border-jarvis-border-glow rounded-lg px-3 py-2 text-sm text-left flex items-center justify-between focus:ring-2 focus:ring-jarvis-cyan focus:border-jarvis-cyan">
+            <span :class="newTask.receiver_id ? 'text-jarvis-text' : 'text-jarvis-muted'"
+                  x-text="newTask.receiver_id ? (agents.find(a => a.name === newTask.receiver_id)?.role || '') + ' (' + newTask.receiver_id + ')' : 'Select agent...'"></span>
+            <svg class="w-4 h-4 text-jarvis-muted shrink-0 ml-2" :class="taskAgentDropdownOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div x-show="taskAgentDropdownOpen" x-cloak
+               x-transition:enter="transition ease-out duration-150"
+               x-transition:enter-start="opacity-0 -translate-y-1"
+               x-transition:enter-end="opacity-100 translate-y-0"
+               x-transition:leave="transition ease-in duration-100"
+               x-transition:leave-start="opacity-100 translate-y-0"
+               x-transition:leave-end="opacity-0 -translate-y-1"
+               class="absolute z-10 w-full mt-1 bg-jarvis-raised border border-jarvis-border-glow rounded-lg shadow-xl overflow-hidden">
+            <div class="p-2 border-b border-white/[0.06]">
+              <div class="relative">
+                <svg class="w-4 h-4 text-jarvis-muted absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input x-model="taskAgentSearch" type="text" placeholder="Search agents..."
+                       @keydown.enter.prevent="if (filteredTaskAgents.length > 0) { newTask.receiver_id = filteredTaskAgents[0].name; taskAgentDropdownOpen = false; taskAgentSearch = ''; }"
+                       class="w-full bg-jarvis-base border border-white/[0.08] rounded-lg pl-8 pr-3 py-1.5 text-sm text-jarvis-text placeholder-jarvis-muted focus:border-jarvis-cyan focus:outline-none">
+              </div>
+            </div>
+            <div class="max-h-48 overflow-y-auto">
+              <template x-for="a in filteredTaskAgents" :key="a.name">
+                <button type="button" @click="newTask.receiver_id = a.name; taskAgentDropdownOpen = false; taskAgentSearch = ''"
+                        class="w-full text-left px-3 py-2 text-sm hover:bg-jarvis-overlay/50 transition-colors flex items-center justify-between"
+                        :class="newTask.receiver_id === a.name ? 'bg-jarvis-cyan/10 text-jarvis-cyan' : 'text-jarvis-text'">
+                  <span x-text="a.role + ' (' + a.name + ')'"></span>
+                  <svg x-show="newTask.receiver_id === a.name" class="w-4 h-4 text-jarvis-cyan shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </button>
+              </template>
+              <div x-show="filteredTaskAgents.length === 0" class="px-3 py-4 text-center text-sm text-jarvis-muted">No agents found</div>
+            </div>
+          </div>
         </div>
         <div>
           <label class="block text-xs text-jarvis-muted mb-1.5">Instruction</label>
@@ -438,7 +466,7 @@
         </div>
       </div>
       <div class="flex gap-3 mt-6">
-        <button type="button" @click="showAssignModal = false"
+        <button type="button" @click="showAssignModal = false; taskAgentSearch = ''; taskAgentDropdownOpen = false"
                 class="flex-1 bg-jarvis-raised text-jarvis-text px-4 py-2 rounded-lg text-sm font-medium hover:bg-jarvis-overlay transition-colors">Cancel</button>
         <button type="submit"
                 class="flex-1 bg-jarvis-cyan text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-jarvis-cyan/80 transition-colors disabled:opacity-50"

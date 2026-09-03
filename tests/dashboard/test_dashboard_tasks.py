@@ -1,8 +1,8 @@
 """Sprint 4 T019 — CEO dashboard task endpoint contracts.
 
 Covers:
-- GET /api/v1/dashboard/tasks: Task listing with filters
-- GET /api/v1/dashboard/tasks/paginated: Paginated task listing
+- GET /api/v1/tasks: Task listing with filters
+- GET /api/v1/tasks/paginated: Paginated task listing
 - POST /api/v1/tasks: Task creation (with API key)
 """
 
@@ -13,6 +13,8 @@ from fastapi.testclient import TestClient
 
 from ai_company.dashboard.app import create_app
 
+from .conftest import provision_dashboard_data
+
 
 @pytest.fixture()
 def isolated(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
@@ -21,6 +23,7 @@ def isolated(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     monkeypatch.chdir(tmp_path)
+    provision_dashboard_data(tmp_path)
 
 
 @pytest.fixture()
@@ -30,6 +33,7 @@ def keyed(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     monkeypatch.chdir(tmp_path)
+    provision_dashboard_data(tmp_path)
 
 
 class TestTasksListing:
@@ -39,7 +43,7 @@ class TestTasksListing:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Tasks should return a list"
@@ -48,7 +52,7 @@ class TestTasksListing:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks")
+        resp = client.get("/api/v1/tasks")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Tasks should return a list"
@@ -59,7 +63,7 @@ class TestTasksListing:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks?status=completed")
+        resp = client.get("/api/v1/tasks?status=completed")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Filtered tasks should return a list"
@@ -75,7 +79,7 @@ class TestTasksListing:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks?status=completed")
+        resp = client.get("/api/v1/tasks?status=completed")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Filtered tasks should return a list"
@@ -92,12 +96,12 @@ class TestTasksListing:
         app = create_app()
         client = TestClient(app)
         # First get an agent name from the agents endpoint
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         agents = resp.json()
         if len(agents) > 0:
             agent_name = agents[0]["name"]
-            resp = client.get(f"/api/v1/dashboard/tasks?agent={agent_name}")
+            resp = client.get(f"/api/v1/tasks?agent={agent_name}")
             assert resp.status_code == 200
             data = resp.json()
             assert isinstance(data, list), "Agent-filtered tasks should return a list"
@@ -109,12 +113,12 @@ class TestTasksListing:
         app = create_app()
         client = TestClient(app)
         # First get an agent name from the agents endpoint
-        resp = client.get("/api/v1/dashboard/agents")
+        resp = client.get("/api/v1/agents")
         assert resp.status_code == 200
         agents = resp.json()
         if len(agents) > 0:
             agent_name = agents[0]["name"]
-            resp = client.get(f"/api/v1/dashboard/tasks?agent={agent_name}")
+            resp = client.get(f"/api/v1/tasks?agent={agent_name}")
             assert resp.status_code == 200
             data = resp.json()
             assert isinstance(data, list), "Agent-filtered tasks should return a list"
@@ -126,7 +130,7 @@ class TestTasksListing:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks?status=completed&agent=nonexistent-agent")
+        resp = client.get("/api/v1/tasks?status=completed&agent=nonexistent-agent")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Should return a list even when empty"
@@ -139,7 +143,7 @@ class TestTasksListing:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks?status=completed&agent=nonexistent-agent")
+        resp = client.get("/api/v1/tasks?status=completed&agent=nonexistent-agent")
         assert resp.status_code == 200
         data = resp.json()
         assert isinstance(data, list), "Should return a list even when empty"
@@ -153,7 +157,7 @@ class TestTasksPaginated:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks/paginated?page=1&page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page=1&page_size=10")
         assert resp.status_code == 200
         data = resp.json()
         # Validate PaginatedTasks shape
@@ -174,7 +178,7 @@ class TestTasksPaginated:
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks/paginated?page=1&page_size=10")
+        resp = client.get("/api/v1/tasks/paginated?page=1&page_size=10")
         assert resp.status_code == 200
         data = resp.json()
         # Validate PaginatedTasks shape
@@ -196,10 +200,10 @@ class TestTasksPaginated:
         app = create_app()
         client = TestClient(app)
         # First page
-        resp1 = client.get("/api/v1/dashboard/tasks/paginated?page=1&page_size=10")
+        resp1 = client.get("/api/v1/tasks/paginated?page=1&page_size=10")
         data1 = resp1.json()
         # Second page
-        resp2 = client.get("/api/v1/dashboard/tasks/paginated?page=2&page_size=10")
+        resp2 = client.get("/api/v1/tasks/paginated?page=2&page_size=10")
         data2 = resp2.json()
         # total should be consistent
         assert data1["total"] == data2["total"], "Total should be consistent across pages"
@@ -216,10 +220,10 @@ class TestTasksPaginated:
         app = create_app()
         client = TestClient(app)
         # First page
-        resp1 = client.get("/api/v1/dashboard/tasks/paginated?page=1&page_size=10")
+        resp1 = client.get("/api/v1/tasks/paginated?page=1&page_size=10")
         data1 = resp1.json()
         # Second page
-        resp2 = client.get("/api/v1/dashboard/tasks/paginated?page=2&page_size=10")
+        resp2 = client.get("/api/v1/tasks/paginated?page=2&page_size=10")
         data2 = resp2.json()
         # total should be consistent
         assert data1["total"] == data2["total"], "Total should be consistent across pages"
@@ -314,7 +318,7 @@ class TestTaskCreation:
             json={
                 "sender_id": "flow-test-sender",
                 "receiver_id": "flow-test-receiver",
-                "instruction": "Test task for flow tracking endpoint",
+                "instruction": "Review the Q3 report and flag any compliance risks",
             },
         )
         assert resp.status_code == 201, f"Task creation should succeed, got {resp.status_code}"
@@ -329,16 +333,16 @@ class TestTaskFilters:
     def test_filter_by_priority_high_keyed(
         self, keyed: None, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Test filtering tasks by priority=high."""
+        """Test filtering tasks by priority=high on the paginated endpoint."""
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks?priority=high")
+        resp = client.get("/api/v1/tasks/paginated?priority=high&page_size=50")
         assert resp.status_code == 200
         data = resp.json()
-        assert isinstance(data, list), "Filtered tasks should return a list"
+        assert "items" in data, "Paginated tasks should return items"
         # All returned tasks should have priority=high
-        for task in data:
+        for task in data["items"]:
             assert task.get("priority") == "high", (
                 f"Expected high priority, got {task.get('priority')}"
             )
@@ -346,26 +350,29 @@ class TestTaskFilters:
     def test_filter_by_priority_medium_keyed(
         self, keyed: None, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Test filtering tasks by priority=medium."""
+        """Test filtering tasks by priority=medium on the paginated endpoint."""
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks?priority=medium")
+        resp = client.get("/api/v1/tasks/paginated?priority=medium&page_size=50")
         assert resp.status_code == 200
         data = resp.json()
-        assert isinstance(data, list), "Filtered tasks should return a list"
+        assert "items" in data, "Paginated tasks should return items"
         # All returned tasks should have priority=medium
-        for task in data:
+        for task in data["items"]:
             assert task.get("priority") == "medium", (
                 f"Expected medium priority, got {task.get('priority')}"
             )
 
     def test_filter_by_department_keyed(self, keyed: None, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Test filtering tasks by department."""
+        """Test filtering tasks by department on the paginated endpoint."""
         monkeypatch.setenv("DASHBOARD_RATE_LIMIT", "100")
         app = create_app()
         client = TestClient(app)
-        resp = client.get("/api/v1/dashboard/tasks?department=engineering")
+        resp = client.get("/api/v1/tasks/paginated?department=engineering&page_size=50")
         assert resp.status_code == 200
         data = resp.json()
-        assert isinstance(data, list), "Department-filtered tasks should return a list"
+        assert "items" in data, "Paginated tasks should return items"
+        # Department filter matches registry agents, so engineering results
+        # are only ever non-empty when an engineering agent has tasks.
+        assert isinstance(data["items"], list)
