@@ -88,7 +88,7 @@ Phase 2 built the operational core: MessageBus, orchestrator (scheduler, escalat
 - **Framework**: FastAPI with WebSocket support
 - **Port**: localhost:8420 (auto-opens browser)
 - **Endpoints**: 20+ REST API routes + WebSocket at `/ws/v1/dashboard`
-- **KPIs**: 28 department KPIs across 7 departments
+- **KPIs**: 28 department KPIs across 20 departments
 - **See**: [API Reference](API-REFERENCE.md)
 
 ### CLI Commands (24 total)

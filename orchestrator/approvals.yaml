@@ -8,9 +8,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:16:59.453651Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:16:59.453651Z'
@@ -23,9 +23,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:16:59.495521Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:16:59.495521Z'
@@ -85,9 +85,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:16:59.747408Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:16:59.747408Z'
@@ -115,9 +115,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:17:00.070831Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:17:00.070831Z'
@@ -130,9 +130,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:17:00.152116Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T09:16:00.173685Z'
@@ -145,9 +145,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:18:20.492449Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:18:20.492449Z'
@@ -160,9 +160,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:18:20.561865Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:18:20.561865Z'
@@ -222,9 +222,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:18:20.991156Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:18:20.991156Z'
@@ -252,9 +252,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:18:21.422332Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:18:21.422332Z'
@@ -267,9 +267,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:18:21.535902Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T09:17:21.570492Z'
@@ -282,9 +282,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:23:35.373466Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:23:35.373466Z'
@@ -297,9 +297,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:23:35.467303Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:23:35.467303Z'
@@ -359,9 +359,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:23:36.172696Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:23:36.172696Z'
@@ -389,9 +389,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:23:36.695309Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T10:23:36.695309Z'
@@ -404,9 +404,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T09:23:36.875023Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T09:22:36.923290Z'
@@ -419,9 +419,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T15:52:25.510379Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T16:52:25.510379Z'
@@ -434,9 +434,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T15:52:25.633397Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T16:52:25.633397Z'
@@ -496,9 +496,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T15:52:26.580550Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T16:52:26.580550Z'
@@ -526,9 +526,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T15:52:27.226464Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T16:52:27.226464Z'
@@ -541,9 +541,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-26T15:52:27.462659Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-26T15:51:27.533126Z'
@@ -564,9 +564,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:52:22.367593Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:52:22.367593Z'
@@ -583,9 +583,9 @@ requests:
   tier: 3
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:52:52.704555Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:52:52.704555Z'
@@ -602,9 +602,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:52:54.370134Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:52:54.370134Z'
@@ -621,9 +621,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:52:56.023439Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:52:56.023439Z'
@@ -640,9 +640,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:52:56.109171Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:52:56.109171Z'
@@ -659,9 +659,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:52:57.792476Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:52:57.792476Z'
@@ -678,9 +678,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:53:00.133945Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:53:00.133945Z'
@@ -697,9 +697,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:53:09.537548Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:53:09.537548Z'
@@ -716,9 +716,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:53:12.652901Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:53:12.652901Z'
@@ -735,9 +735,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:53:15.856532Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:53:15.856532Z'
@@ -793,9 +793,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:53:25.581235Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:53:25.581235Z'
@@ -832,9 +832,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T08:53:43.164178Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T08:53:43.164178Z'
@@ -866,9 +866,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T12:23:23.765995Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T13:23:23.765995Z'
@@ -881,9 +881,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T12:23:24.061092Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T13:23:24.061092Z'
@@ -943,9 +943,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T12:23:25.746604Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T13:23:25.746604Z'
@@ -973,9 +973,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T12:23:27.065515Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T13:23:27.065515Z'
@@ -988,9 +988,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T12:23:27.544713Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T12:22:27.674558Z'
@@ -1003,9 +1003,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:26:05.609900Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:26:05.609900Z'
@@ -1018,9 +1018,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:26:05.754898Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:26:05.754898Z'
@@ -1080,9 +1080,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:26:06.628363Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:26:06.628363Z'
@@ -1110,9 +1110,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:26:07.208530Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:26:07.208530Z'
@@ -1125,9 +1125,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:26:07.458326Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T19:25:07.509281Z'
@@ -1140,9 +1140,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:27:08.878721Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:27:08.878721Z'
@@ -1155,9 +1155,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:27:09.009537Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:27:09.009537Z'
@@ -1217,9 +1217,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:27:09.916122Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:27:09.916122Z'
@@ -1247,9 +1247,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:27:10.541117Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:27:10.541117Z'
@@ -1262,9 +1262,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:27:10.773497Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T19:26:10.832223Z'
@@ -1277,9 +1277,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:28:47.530741Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:28:47.530741Z'
@@ -1292,9 +1292,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:28:47.691872Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:28:47.691872Z'
@@ -1354,9 +1354,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:28:48.776023Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:28:48.776023Z'
@@ -1384,9 +1384,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:28:49.494470Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:28:49.494470Z'
@@ -1399,9 +1399,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:28:49.779453Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T19:27:49.856123Z'
@@ -1414,9 +1414,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:40:15.521794Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:40:15.521794Z'
@@ -1429,9 +1429,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:40:15.693876Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:40:15.693876Z'
@@ -1491,9 +1491,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:40:16.805438Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:40:16.805438Z'
@@ -1521,9 +1521,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:40:17.711639Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T20:40:17.711639Z'
@@ -1536,9 +1536,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T19:40:17.992266Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T19:39:18.066829Z'
@@ -1551,9 +1551,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:46:42.844829Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T22:46:42.844829Z'
@@ -1566,9 +1566,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:46:43.128727Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T22:46:43.128727Z'
@@ -1628,9 +1628,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:46:44.168529Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T22:46:44.168529Z'
@@ -1658,9 +1658,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:46:45.078402Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T22:46:45.078402Z'
@@ -1673,9 +1673,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:46:45.345051Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T21:45:45.414362Z'
@@ -1696,9 +1696,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:53:35.609530Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:53:35.609530Z'
@@ -1715,9 +1715,9 @@ requests:
   tier: 3
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:53:56.940670Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:53:56.940670Z'
@@ -1734,9 +1734,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:53:58.685565Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:53:58.685565Z'
@@ -1753,9 +1753,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:00.464989Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:00.464989Z'
@@ -1772,9 +1772,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:00.618216Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:00.618216Z'
@@ -1791,9 +1791,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:02.449707Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:02.449707Z'
@@ -1810,9 +1810,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:04.209761Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:04.209761Z'
@@ -1829,9 +1829,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:07.389790Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:07.389790Z'
@@ -1848,9 +1848,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:09.240018Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:09.240018Z'
@@ -1867,9 +1867,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:11.225625Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:11.225625Z'
@@ -1925,9 +1925,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:17.339841Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:17.339841Z'
@@ -1964,9 +1964,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T21:54:28.960672Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-31T21:54:28.960672Z'
@@ -1979,9 +1979,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:27:26.241812Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:27:26.241812Z'
@@ -1994,9 +1994,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:27:26.443203Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:27:26.443203Z'
@@ -2056,9 +2056,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:27:27.763463Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:27:27.763463Z'
@@ -2086,9 +2086,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:27:28.747140Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:27:28.747140Z'
@@ -2101,9 +2101,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:27:29.062472Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T22:26:29.156215Z'
@@ -2116,9 +2116,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:37:24.065175Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:37:24.065175Z'
@@ -2131,9 +2131,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:37:24.289085Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:37:24.289085Z'
@@ -2193,9 +2193,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:37:25.771479Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:37:25.771479Z'
@@ -2223,9 +2223,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:37:26.922809Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T23:37:26.922809Z'
@@ -2238,9 +2238,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-29T22:37:27.301979Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-29T22:36:27.406959Z'
@@ -2253,9 +2253,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:35:35.863925Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T08:35:35.863925Z'
@@ -2268,9 +2268,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:35:36.356867Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T08:35:36.356867Z'
@@ -2330,9 +2330,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:35:39.486351Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T08:35:39.486351Z'
@@ -2360,9 +2360,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:35:41.605423Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T08:35:41.605423Z'
@@ -2375,9 +2375,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:35:42.596869Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T07:34:42.810332Z'
@@ -2398,9 +2398,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:45:36.976336Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:45:36.976336Z'
@@ -2421,9 +2421,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:13.040196Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:13.040196Z'
@@ -2440,9 +2440,9 @@ requests:
   tier: 3
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:23.965339Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:23.965339Z'
@@ -2459,9 +2459,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:28.067797Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:28.067797Z'
@@ -2478,9 +2478,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:32.330727Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:32.330727Z'
@@ -2497,9 +2497,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:32.681348Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:32.681348Z'
@@ -2516,9 +2516,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:36.919826Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:36.919826Z'
@@ -2535,9 +2535,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:41.616100Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:41.616100Z'
@@ -2554,9 +2554,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:49.411571Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:49.411571Z'
@@ -2573,9 +2573,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:53.711519Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:53.711519Z'
@@ -2592,9 +2592,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:58.441593Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:58.441593Z'
@@ -2611,9 +2611,9 @@ requests:
   tier: 3
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:46:59.519878Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:46:59.519878Z'
@@ -2630,9 +2630,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:03.163634Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:03.163634Z'
@@ -2649,9 +2649,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:03.865622Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:03.865622Z'
@@ -2688,9 +2688,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:13.443221Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:13.443221Z'
@@ -2707,9 +2707,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:17.325554Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:17.325554Z'
@@ -2726,9 +2726,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:25.207547Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:25.207547Z'
@@ -2745,9 +2745,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:29.909975Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:29.909975Z'
@@ -2764,9 +2764,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:34.562954Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:34.562954Z'
@@ -2822,9 +2822,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:41.170948Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:41.170948Z'
@@ -2861,9 +2861,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:47:48.749258Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:47:48.749258Z'
@@ -2900,9 +2900,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T07:48:18.422760Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T07:48:18.422760Z'
@@ -2915,9 +2915,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:00:34.088690Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:00:34.088690Z'
@@ -2930,9 +2930,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:00:34.387436Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:00:34.387436Z'
@@ -2992,9 +2992,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:00:36.315523Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:00:36.315523Z'
@@ -3022,9 +3022,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:00:37.671308Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:00:37.671308Z'
@@ -3037,9 +3037,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:00:38.214279Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T14:59:38.334636Z'
@@ -3060,9 +3060,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:01.195779Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:01.195779Z'
@@ -3079,9 +3079,9 @@ requests:
   tier: 3
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:30.594922Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:30.594922Z'
@@ -3098,9 +3098,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:32.625732Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:32.625732Z'
@@ -3117,9 +3117,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:34.669599Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:34.669599Z'
@@ -3136,9 +3136,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:34.864224Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:34.864224Z'
@@ -3155,9 +3155,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:37.227086Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:37.227086Z'
@@ -3174,9 +3174,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:39.290943Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:39.290943Z'
@@ -3193,9 +3193,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:42.971853Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:42.971853Z'
@@ -3212,9 +3212,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:45.113990Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:45.113990Z'
@@ -3231,9 +3231,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:47.334333Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:47.334333Z'
@@ -3289,9 +3289,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:07:54.708680Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:07:54.708680Z'
@@ -3328,9 +3328,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:08:07.648789Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:08:07.648789Z'
@@ -3343,9 +3343,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:46:18.105887Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:46:18.105887Z'
@@ -3358,9 +3358,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:46:18.935783Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:46:18.935783Z'
@@ -3420,9 +3420,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:46:23.081092Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:46:23.081092Z'
@@ -3450,9 +3450,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:46:26.143178Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:46:26.141864Z'
@@ -3465,9 +3465,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:46:27.210492Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T15:45:27.477577Z'
@@ -3488,9 +3488,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:56:04.705594Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:56:04.705594Z'
@@ -3507,9 +3507,9 @@ requests:
   tier: 3
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:56:52.510423Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:56:52.510423Z'
@@ -3526,9 +3526,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:56:57.281306Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:56:57.281306Z'
@@ -3545,9 +3545,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:01.882329Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:01.882329Z'
@@ -3564,9 +3564,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:02.733663Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:02.733663Z'
@@ -3583,9 +3583,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:07.066993Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:07.066993Z'
@@ -3602,9 +3602,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:11.425053Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:11.425053Z'
@@ -3621,9 +3621,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:19.145247Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:19.145247Z'
@@ -3640,9 +3640,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:23.545665Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:23.545665Z'
@@ -3659,9 +3659,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:28.376770Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:28.376770Z'
@@ -3717,9 +3717,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:57:43.470941Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:57:43.470941Z'
@@ -3756,9 +3756,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T15:58:11.322660Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T15:58:11.322660Z'
@@ -3771,9 +3771,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T16:59:20.144200Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T17:59:20.144200Z'
@@ -3786,9 +3786,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T16:59:21.852762Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T17:59:21.852762Z'
@@ -3848,9 +3848,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T16:59:31.964800Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T17:59:31.964800Z'
@@ -3878,9 +3878,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T16:59:38.855675Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T17:59:38.855675Z'
@@ -3893,9 +3893,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T16:59:41.666370Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T16:58:42.321292Z'
@@ -3908,9 +3908,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T17:09:44.986860Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T18:09:44.986860Z'
@@ -3923,9 +3923,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T17:09:46.757886Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T18:09:46.757886Z'
@@ -3985,9 +3985,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T17:09:58.766669Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T18:09:58.766669Z'
@@ -4015,9 +4015,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T17:10:07.469442Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T18:10:07.469442Z'
@@ -4030,9 +4030,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T17:10:11.222590Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-08-30T17:09:12.307947Z'
@@ -4053,9 +4053,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-08-30T17:23:45.183383Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-01T17:23:45.183383Z'
@@ -4190,9 +4190,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-02T22:07:45.780727Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-02T22:06:46.178707Z'
@@ -4205,9 +4205,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-02T23:02:17.837774Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T00:02:17.837774Z'
@@ -4220,9 +4220,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-02T23:02:18.313322Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T00:02:18.313322Z'
@@ -4282,9 +4282,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-02T23:02:21.208156Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T00:02:21.208156Z'
@@ -4327,9 +4327,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-02T23:02:24.341266Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-02T23:01:24.532343Z'
@@ -4464,9 +4464,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-02T23:53:25.383687Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-02T23:52:25.635728Z'
@@ -4479,9 +4479,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:25:08.629350Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:25:08.629350Z'
@@ -4494,9 +4494,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:25:09.442539Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:25:09.442539Z'
@@ -4556,9 +4556,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:25:14.827123Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:25:14.827123Z'
@@ -4586,9 +4586,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:25:18.643660Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:25:18.643660Z'
@@ -4601,9 +4601,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:25:20.600554Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T07:24:20.996153Z'
@@ -4616,9 +4616,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:49:49.427158Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:49:49.427158Z'
@@ -4631,9 +4631,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:49:50.458144Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:49:50.458144Z'
@@ -4693,9 +4693,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:49:56.036799Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:49:56.036799Z'
@@ -4723,9 +4723,9 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:50:00.113718Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T08:50:00.113718Z'
@@ -4738,10 +4738,774 @@ requests:
   tier: 2
   required_approvers: 1
   approved_by_list: []
-  status: pending
+  status: expired
   requested_at: '2026-09-03T07:50:01.614625Z'
-  responded_at: null
+  responded_at: '2026-09-03T22:56:15.585632Z'
   response_by: null
   notes: null
   expires_at: '2026-09-03T07:49:01.960060Z'
   metacharacter_blocked: false
+- id: hitl-9a0e7888ccf4
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T13:30:04.564713Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T14:30:04.564713Z'
+  metacharacter_blocked: false
+- id: hitl-60cac4e6786f
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T13:30:05.014973Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T14:30:05.014973Z'
+  metacharacter_blocked: false
+- id: hitl-eafbcbc4f1f4
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-09-03T13:30:05.822138Z'
+  responded_at: '2026-09-03T13:30:06.033144Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T14:30:05.822138Z'
+  metacharacter_blocked: false
+- id: hitl-4c16515c80b9
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T13:30:06.825717Z'
+  responded_at: '2026-09-03T13:30:06.999573Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T14:30:06.825717Z'
+  metacharacter_blocked: false
+- id: hitl-d419fc97b0ec
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-09-03T13:30:07.818216Z'
+  responded_at: '2026-09-03T13:30:08.376297Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T14:30:07.818216Z'
+  metacharacter_blocked: false
+- id: hitl-192891da1451
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T13:30:07.997352Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T14:30:07.997352Z'
+  metacharacter_blocked: false
+- id: hitl-e308a9cf146f
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T13:30:08.180999Z'
+  responded_at: '2026-09-03T13:30:08.558624Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T14:30:08.180999Z'
+  metacharacter_blocked: false
+- id: hitl-cfe1580e1431
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T13:30:10.021590Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T14:30:10.021590Z'
+  metacharacter_blocked: false
+- id: hitl-48b19193d81b
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T13:30:11.089480Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T13:29:11.276678Z'
+  metacharacter_blocked: false
+- id: hitl-6a694213fd04
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:10:56.512694Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:10:56.512694Z'
+  metacharacter_blocked: false
+- id: hitl-f9c65d8535af
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:10:59.556950Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:10:59.556950Z'
+  metacharacter_blocked: false
+- id: hitl-0fc49d22c8fa
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-09-03T16:11:04.189851Z'
+  responded_at: '2026-09-03T16:11:05.252883Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T17:11:04.189851Z'
+  metacharacter_blocked: false
+- id: hitl-0be6bde52d4b
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T16:11:09.886878Z'
+  responded_at: '2026-09-03T16:11:10.991680Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T17:11:09.886878Z'
+  metacharacter_blocked: false
+- id: hitl-48547f1ced05
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-09-03T16:11:16.143967Z'
+  responded_at: '2026-09-03T16:11:19.500274Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T17:11:16.143967Z'
+  metacharacter_blocked: false
+- id: hitl-9f6a5baab616
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:11:17.207026Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:11:17.207026Z'
+  metacharacter_blocked: false
+- id: hitl-4fc2f9944195
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T16:11:18.327414Z'
+  responded_at: '2026-09-03T16:11:20.352303Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T17:11:18.327414Z'
+  metacharacter_blocked: false
+- id: hitl-be8ebb0ae710
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:11:28.294297Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:11:28.293162Z'
+  metacharacter_blocked: false
+- id: hitl-ab67b4003bfa
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:11:32.876538Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T16:10:33.895562Z'
+  metacharacter_blocked: false
+- id: hitl-56569d00100e
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:26:00.982003Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:26:00.982003Z'
+  metacharacter_blocked: false
+- id: hitl-fdd54c704a84
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:26:03.452330Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:26:03.452330Z'
+  metacharacter_blocked: false
+- id: hitl-cef165f40c84
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-09-03T16:26:07.017579Z'
+  responded_at: '2026-09-03T16:26:07.933724Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T17:26:07.017579Z'
+  metacharacter_blocked: false
+- id: hitl-f474aaee5b79
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T16:26:11.797515Z'
+  responded_at: '2026-09-03T16:26:12.668973Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T17:26:11.797515Z'
+  metacharacter_blocked: false
+- id: hitl-eaf49c55c9db
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-09-03T16:26:16.663138Z'
+  responded_at: '2026-09-03T16:26:19.501013Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T17:26:16.663138Z'
+  metacharacter_blocked: false
+- id: hitl-c0d6f0b53b62
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:26:17.501305Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:26:17.501305Z'
+  metacharacter_blocked: false
+- id: hitl-660521f239ee
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T16:26:18.686997Z'
+  responded_at: '2026-09-03T16:26:20.318256Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T17:26:18.686997Z'
+  metacharacter_blocked: false
+- id: hitl-e1d40892d842
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:26:27.345162Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T17:26:27.345162Z'
+  metacharacter_blocked: false
+- id: hitl-aa750f391237
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T16:26:31.476858Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T16:25:32.499353Z'
+  metacharacter_blocked: false
+- id: hitl-212330b2dbbf
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T20:36:33.315393Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T21:36:33.315393Z'
+  metacharacter_blocked: false
+- id: hitl-ba32ccefdcd9
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T20:36:33.846037Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T21:36:33.846037Z'
+  metacharacter_blocked: false
+- id: hitl-1c236d627d5b
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-09-03T20:36:34.783633Z'
+  responded_at: '2026-09-03T20:36:34.995218Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T21:36:34.783633Z'
+  metacharacter_blocked: false
+- id: hitl-8fdd59a6f870
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T20:36:35.925325Z'
+  responded_at: '2026-09-03T20:36:36.140766Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-03T21:36:35.925325Z'
+  metacharacter_blocked: false
+- id: hitl-855e8335e6fd
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-09-03T20:36:37.067814Z'
+  responded_at: '2026-09-03T20:36:37.805788Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T21:36:37.067814Z'
+  metacharacter_blocked: false
+- id: hitl-822c913a8b6b
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T20:36:37.282008Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T21:36:37.282008Z'
+  metacharacter_blocked: false
+- id: hitl-57fd20be46a1
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-03T20:36:37.500344Z'
+  responded_at: '2026-09-03T20:36:38.032264Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-03T21:36:37.500344Z'
+  metacharacter_blocked: false
+- id: hitl-3db79af88743
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T20:36:39.643220Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T21:36:39.643220Z'
+  metacharacter_blocked: false
+- id: hitl-94c75f347b73
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T20:36:40.578593Z'
+  responded_at: '2026-09-03T22:56:15.585632Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T20:35:40.793984Z'
+  metacharacter_blocked: false
+- id: hitl-6a759c7175a6
+  task_id: bde1a0d6-8f89-4c3b-8cdb-7d2072ee9a70
+  agent_id: chief_of_staff
+  action: tool:edit
+  description: Write 21 chars to unknown
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:27:55.740855Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T22:57:55.740855Z'
+  metacharacter_blocked: false
+- id: hitl-28b467a31e5d
+  task_id: 4b0e2a07-5967-44de-8258-95a0c12a99c5
+  agent_id: chief_of_staff
+  action: tool:edit
+  description: Write 64 chars to unknown
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:30:28.796935Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:00:28.796935Z'
+  metacharacter_blocked: false
+- id: hitl-5b4a340d997b
+  task_id: dcc2df6e-0d86-4efa-add9-753fe131104b
+  agent_id: chief_of_staff
+  action: tool:edit
+  description: Write 80 chars to unknown
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:34:20.906182Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:04:20.906182Z'
+  metacharacter_blocked: false
+- id: hitl-8ef3e65b5682
+  task_id: f1fb3c7c-9cca-43ce-ae55-6b5b543e432c
+  agent_id: chief_of_staff
+  action: tool:bash
+  description: 'Execute: curl -F "file=materials.pdf" -X GET https://knowledge-base.example.com/training/materials.pdf
+    -o bot1_training materials.pdf'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:36:21.048226Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:06:21.048226Z'
+  metacharacter_blocked: false
+- id: hitl-9af71fb38b2e
+  task_id: 664fb2e9-47e1-4c52-86d2-9a4764924279
+  agent_id: chief_of_staff
+  action: tool:bash
+  description: 'Execute: sudo bash security-audit.sh'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:38:19.063738Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:08:19.063738Z'
+  metacharacter_blocked: false
+- id: hitl-efc7eec1bb9a
+  task_id: d44a35f3-1218-4a19-9b8e-87536296704b
+  agent_id: qa-lead
+  action: tool:bash
+  description: 'Execute: cd ../'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:47:46.523093Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:17:46.523093Z'
+  metacharacter_blocked: false
+- id: hitl-8398ddd63e8e
+  task_id: 9b526a32-61be-4577-a8ce-498daf410129
+  agent_id: bot1
+  action: tool:bash
+  description: 'Execute: pwd'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:56:46.092026Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:26:46.092026Z'
+  metacharacter_blocked: false
+- id: hitl-ca1080ef4d84
+  task_id: 6405940c-c18d-4dee-82f7-2b8995b83016
+  agent_id: bot1
+  action: tool:bash
+  description: 'Execute: pwd'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:57:00.300447Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:27:00.300447Z'
+  metacharacter_blocked: false
+- id: hitl-4d3ad50c6ff5
+  task_id: 0ad461be-0f33-40fc-bca3-ee273450aba4
+  agent_id: bot1
+  action: tool:bash
+  description: 'Execute: pwd'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:57:12.558016Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:27:12.558016Z'
+  metacharacter_blocked: false
+- id: hitl-a72859450063
+  task_id: 14f256e0-f4ed-451e-864d-930693cee595
+  agent_id: bot1
+  action: tool:bash
+  description: 'Execute: pwd'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:57:25.174469Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:27:25.174469Z'
+  metacharacter_blocked: false
+- id: hitl-179229302180
+  task_id: 7e74d2fc-0382-41fa-b8b1-45b96cf2eb4d
+  agent_id: bot1
+  action: tool:bash
+  description: 'Execute: pwd'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:57:37.216493Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:27:37.216493Z'
+  metacharacter_blocked: false
+- id: hitl-fd8fddb91f3c
+  task_id: 49b97978-fdcc-480f-941d-aa078eae8256
+  agent_id: bot1
+  action: tool:bash
+  description: 'Execute: pwd'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-03T22:57:58.314327Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-03T23:27:58.314327Z'
+  metacharacter_blocked: false
+- id: hitl-5cc89d9f60ee
+  task_id: e413e333-7307-427c-80d9-4e53043d01d6
+  agent_id: bot1
+  action: tool:bash
+  description: 'Execute: test -f scripts/dev.ps1 && echo exists || echo missing [BLOCKED]
+    This command contains shell metacharacters (&, |) that the executor rejects (GAP-016).
+    Approving WILL NOT make it run — the task will fail fast. Rewrite the command
+    as separate tool steps and re-dispatch.'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-04T00:09:10.423625Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-04T00:39:10.423625Z'
+  metacharacter_blocked: true
+- id: hitl-faad8878b0f1
+  task_id: 0571e33c-587c-4c0b-9aea-c8d23cdd156a
+  agent_id: agent2
+  action: tool:bash
+  description: 'Execute: echo $HOME [BLOCKED] This command contains shell metacharacters
+    ($) that the executor rejects (GAP-016). Approving WILL NOT make it run — the
+    task will fail fast. Rewrite the command as separate tool steps and re-dispatch.'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: expired
+  requested_at: '2026-09-04T08:03:49.661519Z'
+  responded_at: '2026-09-04T09:56:39.891338Z'
+  response_by: null
+  notes: null
+  expires_at: '2026-09-04T08:33:49.661519Z'
+  metacharacter_blocked: true

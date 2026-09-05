@@ -64,3 +64,14 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [post-commit]
+
+  # ── Documentation drift validation ─────────────────────────────────
+  - repo: local
+    hooks:
+      - id: validate-drift
+        name: validate-doc-drift
+        entry: pwsh -File scripts/validate-drift.ps1
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]

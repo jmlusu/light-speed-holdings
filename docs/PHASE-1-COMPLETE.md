@@ -30,7 +30,7 @@ ai-company/
 
 ### Agent Registry
 
-- **Source of truth**: `company/agent-registry.json` — 27 agents across 7 departments
+- **Source of truth**: `company/agent-registry.json` — 27 agents across 20 departments
 - **Schema**: Each agent has id, name, role, type, department, reportsTo, tools, permissions
 - **Validation**: Registry loader validates required fields and cross-references
 

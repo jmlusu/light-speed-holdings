@@ -35,6 +35,10 @@ allowed_commands:
   - node
   - npx
 
+  # Media generation (ComfyUI MCP — ADR-018)
+  - comfyui-mcp
+  - comfyui
+
   # Misc safe ops
   - mkdir
   - cp

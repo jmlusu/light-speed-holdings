@@ -114,6 +114,7 @@ scripts/test_integration.py
 # Debug logs / command output (not part of the codebase)
 *.err
 dashboard.log
+dev-server.log
 *_errors.txt
 *_output.txt
 
@@ -129,3 +130,6 @@ project-plan-digital-health-consultant.md
 # Runtime agent state (generated during execution)
 .opencode/decompositions/
 .opencode/suspended_states/
+
+# Stray empty nested git repo (no checked-out content, not a submodule)
+scientific-agent-skills/

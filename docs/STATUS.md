@@ -60,8 +60,8 @@
 - **Circuit Breaker**: `llm/circuit_breaker.py` — LLM provider fail-fast after N errors.
 - **Cost Tracker**: `llm/cost_tracker.py` — JSONL logging, daily/task budgets, per-model pricing.
 - **Postmortem**: `orchestrator/escalation.py` — Postmortem + PostmortemStore models for incident tracking, resolution, and template rendering.
-- **KPIs**: `company/config/kpis.yaml` — Department-level KPI definitions for 7 departments (engineering, hr, marketing, sales, customer_success, legal, finance).
-- **KPI Collectors**: `dashboard/kpis/__init__.py` — All 7 department collectors wired and operational.
+- **KPIs**: `company/config/kpis.yaml` — Department-level KPI definitions for 20 departments (engineering, hr, marketing, sales, customer_success, legal, finance).
+- **KPI Collectors**: `dashboard/kpis/__init__.py` — All 20 department collectors wired and operational.
 - **Analytics**: `dashboard/analytics.py` — History tracking, trend analysis, alert rules, summary rollups.
 - **CLI**: 30 commands registered (5 root + 25 lazy sub-apps) — root: generate, status, sop, raci, sync-registry; lazy: company, decision, graph, workflows, memory, agents, board, departments, executives, specialists, orchestrator (with postmortem sub-app), models, dashboard (with kpi sub-app), executor, doctor, marketing, sales, customer-success, legal, hr, llm, bootstrap, security, validate, governance (report/audit-trail/risk-summary/retention/compliance/owners/policies).
 - **FileStore**: `src/ai_company/store/file_store.py` exists with atomic writes (temp + rename) and platform-aware locking.
@@ -153,7 +153,7 @@
 - **2026-07-21**: Sprint 3 backlog created (docs/SPRINT-3-BACKLOG.md). Code audit reveals ~60% of planned Sprint 3 items already implemented in source. Revised scope: 8 items, 22 hours effort. Sprint 2 finalization — fixed 2 stale rate limiter test assertions (1091→1093 passing), confirmed mypy 0 errors (164 files), marked S2-03/S2-07 as Done in backlog, all CI gates green. Documentation sync — all docs updated to reflect actual project state.
 - **2026-07-20**: Sprint 1 completed. All Track B (code hardening) and Track C (audit trail) items done. Sprint 2 backlog created. All documentation updated to reflect actual state.
 - **2026-07-19**: Phase 5 design specs — 3 approval UX documents covering 5-tier action system, dashboard approval queue with WebSocket, and enhanced CLI commands.
-- **2026-07-17**: Governance layer — autonomous GitHub Action (cron every 6h), postmortem template + store + CLI, incident response + deployment SOPs, RACI template + hiring workflow RACI, department KPI dashboards (7 departments, 28 KPIs), dashboard CLI, postmortem CLI, sop/raci CLI commands, 8 new tests.
+- **2026-07-17**: Governance layer — autonomous GitHub Action (cron every 6h), postmortem template + store + CLI, incident response + deployment SOPs, RACI template + hiring workflow RACI, department KPI dashboards (20 departments, 28 KPIs), dashboard CLI, postmortem CLI, sop/raci CLI commands, 8 new tests.
 - **2026-07-17**: Cleanup pass — fixed E402 ruff warnings in llm/client.py, deleted 5 dead scripts, wired all 5 providers in opencode.json, created 3 governance/policy docs.
 
 ## Historical Audits
