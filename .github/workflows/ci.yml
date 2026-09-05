@@ -240,6 +240,26 @@ jobs:
           fi
           echo "Generated agents are in sync with the registry."
 
+  # Graph builds + health (AST-only, deterministic, no API key). Currently
+  # non-blocking: it is deliberately NOT in `gate.needs` yet. If it stays green
+  # across several merges, promote it into gate.needs to make AST-extraction
+  # regressions block merges.
+  graph:
+    name: Graph Build + Health
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Build graph (code-only)
+        run: uv run graphify extract . --code-only --no-cluster
+      - name: Graph health check
+        run: uv run graphify diagnose
+
   # All required checks must succeed for the gate to pass.
   gate:
     name: CI Gate

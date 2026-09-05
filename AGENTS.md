@@ -54,11 +54,12 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 
 ```bash
 uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
-pre-commit install           # Enable git hooks (ruff, mypy, bandit, etc.)
+pre-commit install --hook-type pre-commit --hook-type post-commit  # Enable git hooks (ruff, mypy, bandit, post-commit graph rebuild)
 ai-company --help            # CLI entry point (uv run ai-company --help if venv not activated)
 uv run ruff check src/       # Lint
 uv run mypy src/             # Type check
 uv run pytest                # Tests
+uv run graphify update .     # Keep the knowledge graph fresh (AST-only, no API cost)
 uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
 ```
 
@@ -101,6 +102,7 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 7 Safety Boundaries
 
@@ -148,6 +150,7 @@ The `ApprovalGate` runs a periodic sweep (wired into the daemon/governance caden
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 11 Security — Key Rotation Procedure
 
@@ -219,3 +222,16 @@ Five canonical roles: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-fo
 ### Domain docs
 
 Single-context repo (no `CONTEXT.md`/`CONTEXT-MAP.md` yet) — read `AGENTS.md`, `docs/`, and past decisions in `docs/adr/`. See `docs/agents/domain.md`.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

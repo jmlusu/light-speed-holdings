@@ -127,7 +127,7 @@ function Invoke-Setup {
     Pop-Location
 
     Write-Step "Installing pre-commit hooks"
-    uv run pre-commit install 2>&1 | Out-Null
+    uv run pre-commit install --hook-type pre-commit --hook-type post-commit 2>&1 | Out-Null
     Write-Ok "Pre-commit hooks installed"
 
     Write-Step "Generating agents from registry"

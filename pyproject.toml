@@ -58,6 +58,7 @@ dev = [
     "python-pptx>=0.6.23",
     "hypothesis",
     "opentelemetry-sdk>=1.25",
+    "graphifyy>=0.9.44",
 ]
 
 e2e = [
