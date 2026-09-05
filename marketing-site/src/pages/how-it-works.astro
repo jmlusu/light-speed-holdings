@@ -19,7 +19,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </div>
       <h2 class="mt-3 font-semibold text-[1.25rem]">Define — Single source of truth</h2>
       <p class="mt-2 text-[var(--ls-text-secondary)]">19 YAML configs (agents, departments, workflows, models). Typed via <code class="font-mono text-[0.82rem]">registry/validator.py</code> → <code class="font-mono text-[0.82rem]">Pydantic models.py</code>. CWD-independent via <code class="font-mono text-[0.82rem]">AI_COMPANY_ROOT</code>.</p>
-      <div class="mt-3 rounded-[10px] bg-[var(--ls-pearl)] border border-[var(--ls-divider)] p-3 font-mono text-[0.78rem] overflow-auto">company:<br/>  name: Light Speed Holdings<br/>  agents: [chief_of_staff, cto, … 135]</div>
+      <div class="mt-3 rounded-[10px] bg-[var(--ls-pearl)] border border-[var(--ls-divider)] p-3 font-mono text-[0.78rem] overflow-auto">company:<br/>  name: Light Speed Holdings<br/>  agents: [chief_of_staff, cto, … 144]</div>
     </div>
 
     <div class="rounded-[16px] bg-white border border-[var(--ls-card-border)] p-6">
@@ -27,7 +27,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <span class="w-8 h-8 rounded-full bg-[var(--ls-accent)] text-white grid place-items-center text-[0.78rem] font-mono">02</span>
         <span class="text-[0.78rem] uppercase tracking-wide text-[var(--ls-ink-muted)]">Generate · 45s · Jinja2</span>
       </div>
-      <h2 class="mt-3 font-semibold text-[1.25rem]">Generate — 135 agents in one command</h2>
+      <h2 class="mt-3 font-semibold text-[1.25rem]">Generate — 144 agents in one command</h2>
       <p class="mt-2 text-[var(--ls-text-secondary)]"><code>python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"</code> → <code>.opencode/agents/*.md</code> (mode: subagent + permission blocks). Deterministic, 12 templates.</p>
       <div class="mt-3 flex gap-2 text-[0.78rem]"><span class="rounded-full border border-[var(--ls-warm)] px-3 py-1">12 Jinja2</span><span class="rounded-full border border-[var(--ls-warm)] px-3 py-1">Pydantic</span><span class="rounded-full border border-[var(--ls-warm)] px-3 py-1">uv run</span></div>
     </div>

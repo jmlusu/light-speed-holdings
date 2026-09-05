@@ -248,11 +248,11 @@ def queue(
 @kpi_app.command("list")
 def kpi_list() -> None:
     """List all departments with KPIs."""
-    from pathlib import Path
-
     import yaml
 
-    kpi_path = Path(__file__).parent.parent.parent / "company" / "config" / "kpis.yaml"
+    from ai_company.paths import get_project_root
+
+    kpi_path = get_project_root() / "company" / "config" / "kpis.yaml"
     if not kpi_path.exists():
         typer.echo("KPI config not found at company/config/kpis.yaml")
         raise typer.Exit(1)
@@ -286,11 +286,11 @@ def kpi_show(
     Args:
         department: Department ID (e.g. engineering).
     """
-    from pathlib import Path
-
     import yaml
 
-    kpi_path = Path(__file__).parent.parent.parent / "company" / "config" / "kpis.yaml"
+    from ai_company.paths import get_project_root
+
+    kpi_path = get_project_root() / "company" / "config" / "kpis.yaml"
     if not kpi_path.exists():
         typer.echo("KPI config not found at company/config/kpis.yaml")
         raise typer.Exit(1)

@@ -257,7 +257,7 @@ class MessageBus:
 
 ### GAP 8: KPI Collector — Only Engineering Department [LOW RISK]
 
-**Problem**: `kpi_collector.py` only implements `collect_engineering_kpis()`. The KPI config (`company/config/kpis.yaml`) defines KPIs for 7 departments, but only engineering has a collector function. The `/api/v1/kpis/live` endpoint returns only engineering data.
+**Problem**: `kpi_collector.py` only implements `collect_engineering_kpis()`. The KPI config (`company/config/kpis.yaml`) defines KPIs for 20 departments, but only engineering has a collector function. The `/api/v1/kpis/live` endpoint returns only engineering data.
 
 **Risk**: **LOW** — Dashboard shows partial data. Non-blocking for functionality but incomplete for CEO visibility.
 

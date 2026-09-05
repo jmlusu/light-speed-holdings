@@ -24,7 +24,7 @@ from ai_company.registry.loader import load_yaml_cached
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-EXPECTED_AGENT_COUNT = 143
+EXPECTED_AGENT_COUNT = 144
 EXPECTED_DEPARTMENT_COUNT = 20
 EXPECTED_TYPES = {"executive", "specialist", "board"}
 
@@ -65,6 +65,7 @@ HISTORICAL_ALLOWLIST: dict[str, tuple[str, ...]] = {
         "27 agents across 7 departments",
         "27 pre-built agent roles across 7 departments",
         "131 agents",
+        "7 departments, 28 KPIs",
     ),
     ".ai-company/state/CHANGELOG.md": (
         "131 agents",
@@ -83,6 +84,8 @@ STALE_COUNT_RE = re.compile(
     r"|\b(?:27|127)\s*-\s*agent\b"
     r"|\b84\s+agent definitions?\b"
 )
+
+STALE_DEPT_RE = re.compile(r"\b7\s+departments?\b")
 
 
 def _live_agents() -> list[dict]:
@@ -158,4 +161,22 @@ def test_current_docs_have_no_stale_agent_count() -> None:
             violations.append(f"{rel}:{lineno}: {line.strip()}")
     assert not violations, "Stale agent-count references in current-facing docs:\n" + "\n".join(
         violations
+    )
+
+
+def test_current_docs_have_no_stale_dept_count() -> None:
+    violations: list[str] = []
+    for rel in CURRENT_DOCS:
+        path = REPO_ROOT / rel
+        if not path.exists():
+            continue
+        allow = HISTORICAL_ALLOWLIST.get(rel, ())
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if not STALE_DEPT_RE.search(line):
+                continue
+            if any(fragment in line for fragment in allow):
+                continue
+            violations.append(f"{rel}:{lineno}: {line.strip()}")
+    assert not violations, (
+        "Stale department-count references in current-facing docs:\n" + "\n".join(violations)
     )

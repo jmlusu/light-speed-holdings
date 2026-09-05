@@ -81,7 +81,7 @@ All configuration lives in `company/`:
 | File | Purpose | Format |
 |------|---------|--------|
 | `agent-registry.json` | Agent definitions (single source of truth) | JSON |
-| `models.yaml` | LLM provider routing | YAML |
+| `models.yaml` | LLM provider routing (9 providers) | YAML |
 | `departments.yaml` | Department structure | YAML |
 | `config/kpis.yaml` | Department KPI definitions | YAML |
 | `workflows.yaml` | Workflow definitions | YAML |
@@ -124,9 +124,9 @@ System Health
 │ All agents have IDs    │ PASS │ All agents have unique IDs       │
 │ ReportsTo chain valid  │ PASS │ No circular references           │
 │ Models config exists   │ PASS │ 3 tiers configured               │
-│ Departments config     │ PASS │ 7 departments defined            │
-│ KPI config exists      │ PASS │ 28 KPIs across 7 departments     │
-│ Templates directory    │ PASS │ 12 Jinja2 templates found        │
+│ Departments config     │ PASS │ 20 departments defined            │
+│ KPI config exists      │ PASS │ 28 KPIs across 20 departments     │
+│ Templates directory    │ PASS │ 9 Jinja2 templates found         │
 │ .opencode/ directory   │ PASS │ Exists                           │
 │ inbox.json exists      │ PASS │ Valid JSON array                 │
 └────────────────────────┴──────┴──────────────────────────────────┘

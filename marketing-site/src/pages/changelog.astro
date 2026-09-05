@@ -1,28 +1,38 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import product from "../content/product.json";
+
+const changelog = product.changelogHead ?? "";
+const generatedAt = product.generatedAt ? new Date(product.generatedAt).toISOString().slice(0,10) : "";
 ---
 
-<BaseLayout title="Changelog — Shipped" description="Every release from v0.3.0 to now — parsed from CHANGELOG.md.">
+<BaseLayout title="Changelog — Shipped" description="Every release from v0.3.0 to now — parsed from CHANGELOG.md. Live via product-meta.json.">
   <section class="bg-[var(--ls-cream)] py-16 md:py-20">
     <div class="ls-inner max-w-[880px]">
       <h1 class="font-semibold tracking-[-0.02em] text-[clamp(1.9rem,4vw,2.6rem)]">Changelog — Shipped</h1>
-      <p class="mt-3 text-[var(--ls-text-secondary)] max-w-[60ch]">Every release from v0.3.0 to now — parsed from CHANGELOG.md.</p>
-      <p class="mt-4 text-[0.88rem] text-[var(--ls-ink-muted)] font-mono">changelog · Foaster-parity placeholder — expand in T5 / slice 2.</p>
+      <p class="mt-3 text-[var(--ls-text-secondary)] max-w-[60ch]">Every release from v0.3.0 to now — live from <code class="font-mono text-[0.82rem]">CHANGELOG.md</code> via <code class="font-mono text-[0.82rem]">public/product-meta.json</code> ({product.agents.total} agents, {Object.keys(product.agents.byDept).length} depts).</p>
+      <p class="mt-2 text-[0.82rem] text-[var(--ls-ink-muted)] font-mono">generated {generatedAt} · product-meta.json · {product.agents.total} agents · {product.agents.byType.executive} exec · {product.agents.byType.specialist} specialist · {product.agents.byType.board} board</p>
       <div class="mt-6 flex gap-3">
         <a href="/" class="inline-flex rounded-full bg-[var(--ls-ink)] text-white px-5 py-3 text-[0.9rem] font-medium">Back to home →</a>
         <a href="/contact" class="inline-flex rounded-full border border-[var(--ls-ink)] px-5 py-3 text-[0.9rem] font-medium">Book deployment</a>
       </div>
     </div>
   </section>
-  <section class="ls-shell max-w-[880px] py-10">
+  <section class="ls-shell max-w-[880px] py-8">
     <div class="rounded-[16px] border border-[var(--ls-card-border)] bg-white p-6">
-      <h2 class="font-semibold">What ships here</h2>
-      <ul class="mt-3 space-y-2 text-[0.92rem] text-[var(--ls-text-secondary)] list-disc pl-5">
-        <li>Mirrored IA from Foaster: hero + method + proof + deliverables, re-skinned for LightSpeed.</li>
-        <li>Content lives in <code class="font-mono text-[0.82rem]">src/content/*.mdx</code> + <code class="font-mono text-[0.82rem]">public/product-meta.json</code> (135 agents).</li>
-        <li>Free-hosted static — no SSR, no DB for MVP (Formspree/Cal embed).</li>
+      <h2 class="font-semibold">Latest — v0.6.0 (2026-09-02)</h2>
+      <ul class="mt-3 space-y-1.5 text-[0.9rem] text-[var(--ls-text-secondary)] list-disc pl-5">
+        <li><strong>CEO Alert Center</strong> — AlertStore (alerts.json, 30-day retention, active/acknowledged/snoozed/cleared), default_alert_rules, GET/POST /api/v1/alerts + WebSocket alerts topic, 17 tests</li>
+        <li><strong>Executive KPI Scorecard</strong> — get_executive_scorecard() + 10 KPI targets + trend helpers (period_comparison, moving_average, detect_anomaly), 20 departments</li>
+        <li><strong>Rich Org Chart with Metrics &amp; Risk</strong> — compute_org_metrics() + org_chart_summary(), X-Org-Summary header, 30s TTL, capacity/risk UI, 33 tests</li>
+        <li><strong>Dashboard polish</strong> — external Chart.js tooltips, inline org-health detail, agent drill-down modal, cost tooltips</li>
       </ul>
-      <p class="mt-4 text-[0.88rem] text-[var(--ls-ink-muted)]">This stub passes <code>sitemap.xml</code> + <code>robots.txt</code> checks. Full copy lands in T5 IA + T4 prototype.</p>
+      <p class="mt-3 text-[0.82rem] text-[var(--ls-ink-muted)]">Full history in <a href="https://github.com/jmlusu/light-speed-holdings/blob/main/CHANGELOG.md" class="underline">CHANGELOG.md</a> — this feed is capped to <code class="font-mono">changelogHead</code> (2k chars) via export script.</p>
+    </div>
+    <div class="mt-6 rounded-[16px] bg-[var(--ls-pearl)] border border-[var(--ls-divider)] p-6">
+      <h3 class="font-semibold text-[0.95rem]">Raw head (product-meta.json → changelogHead)</h3>
+      <pre class="mt-3 p-4 bg-white border border-[var(--ls-card-border)] rounded-[12px] overflow-auto text-[0.78rem] leading-[1.6] whitespace-pre-wrap">{changelog.slice(0, 2000)}</pre>
+      <p class="mt-3 text-[0.78rem] text-[var(--ls-ink-muted)]">Source: <code class="font-mono">scripts/export-product-meta.ts</code> slices CHANGELOG.md head. Re-run <code class="font-mono">npm run export:meta</code> on registry bumps.</p>
     </div>
   </section>
 </BaseLayout>

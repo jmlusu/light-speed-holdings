@@ -115,6 +115,9 @@ class HITLParked(Exception):
 # ---------------------------------------------------------------------------
 _DEFAULT_ALLOWED_COMMANDS: frozenset[str] = frozenset(
     {
+        # Media generation (ComfyUI MCP — ADR-018)
+        "comfyui-mcp",
+        "comfyui",
         # Build / test
         "python",
         "python3",

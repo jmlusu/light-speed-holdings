@@ -141,7 +141,7 @@ Returns an aggregated KPI snapshot of the entire company. Includes task counts, 
 
 ### `GET /api/v1/kpis/live`
 
-Returns live KPI values computed from operational data using the department KPI collectors. Provides real-time snapshots for all 7 departments.
+Returns live KPI values computed from operational data using the department KPI collectors. Provides real-time snapshots for all 20 departments.
 
 **Response:**
 

@@ -60,7 +60,7 @@ The AI Company Builder already possesses **all foundational components** needed 
 
 | Integration Point | File | Status | Notes |
 |------------------|------|--------|-------|
-| KPI Collectors → Executive View | `dashboard/kpis/*.py` | ✅ Ready | 7 departments, unified interface |
+| KPI Collectors → Executive View | `dashboard/kpis/*.py` | ✅ Ready | 20 departments, unified interface |
 | MessageBus → WebSocket Broadcast | `dashboard/ws.py:230` | ✅ Ready | `make_message_bus_broadcast_callback()` |
 | Org Chart Data | `graph/engine.py:85` | ✅ Ready | `build_org_chart()` returns Graph |
 | Analytics Alert Engine | `dashboard/analytics.py` | ✅ Ready | Threshold rules, history, trends |
