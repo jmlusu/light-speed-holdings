@@ -53,3 +53,14 @@ repos:
         entry: bandit -c pyproject.toml -r src/
         additional_dependencies: ["bandit[toml]"]
         stages: [pre-commit]
+
+  # ── Graphify: keep the knowledge graph fresh after every commit ────
+  - repo: local
+    hooks:
+      - id: graphify-rebuild
+        name: rebuild-graphify-graph
+        entry: uv run graphify update .
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [post-commit]
