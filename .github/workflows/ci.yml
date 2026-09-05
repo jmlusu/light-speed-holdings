@@ -258,7 +258,7 @@ jobs:
       - name: Build graph (code-only)
         run: uv run graphify extract . --code-only --no-cluster
       - name: Graph health check
-        run: uv run graphify diagnose
+        run: uv run graphify diagnose multigraph
 
   # All required checks must succeed for the gate to pass.
   gate:
