@@ -27,12 +27,25 @@
 
 | Variant | File | Use For |
 |---------|------|---------|
-| **Full Logo** | `logos/fulllogo/fulllogo.png` | Headers, covers, presentations |
+| **Full Logo (Primary)** | `logos/fulllogo/fulllogo.png` | Headers, covers, presentations |
 | **Full Logo (Transparent)** | `logos/fulllogo/fulllogo_transparent.png` | Dark backgrounds, overlays |
+| **Full Logo (No Buffer)** | `logos/fulllogo/fulllogo_nobuffer.png` | Tight layouts, no padding |
+| **Full Logo (No Buffer, Transparent)** | `logos/fulllogo/fulllogo_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
+| **Full Logo (Legacy)** | `logos/fulllogo/fulllogo_legacy.png` | Previous primary logo |
+| **Full Logo Variant 2** | `logos/fulllogo/Logo2.png` | Alternative layout, presentations |
+| **Full Logo Variant 2 (Transparent)** | `logos/fulllogo/Logo2_transparent.svg` | Dark backgrounds, overlays |
+| **Full Logo Variant 3** | `logos/fulllogo/Logo3.png` | Alternative layout, presentations |
+| **Full Logo Variant 3 (Transparent)** | `logos/fulllogo/Logo3_transparent.svg` | Dark backgrounds, overlays |
 | **Icon Only** | `logos/icononly/icononly.png` | Avatars, favicons, small spaces |
+| **Icon Only (No Buffer)** | `logos/icononly/icononly_nobuffer.png` | Tight layouts |
 | **Icon Only (Transparent)** | `logos/icononly/icononly_transparent.png` | Dark backgrounds |
+| **Icon Only (Transparent, No Buffer)** | `logos/icononly/icononly_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
 | **Text Only** | `logos/textonly/textonly.png` | When icon is already present |
+| **Text Only (No Buffer)** | `logos/textonly/textonly_nobuffer.png` | Tight layouts |
 | **Grayscale** | `logos/grayscale/grayscale.png` | B&W print, legal documents |
+| **Grayscale (No Buffer)** | `logos/grayscale/grayscale_nobuffer.png` | Tight layouts |
+| **Grayscale (Transparent)** | `logos/grayscale/grayscale_transparent.png` | Dark backgrounds |
+| **Grayscale (Transparent, No Buffer)** | `logos/grayscale/grayscale_transparent_nobuffer.png` | Dark backgrounds, tight layouts |
 | **Vector (Print)** | `logos/fulllogo/vector/print.svg` | All print materials |
 | **Vector (Print, Transparent)** | `logos/fulllogo/vector/print_transparent.svg` | Print on colored backgrounds |
 

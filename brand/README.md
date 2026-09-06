@@ -15,16 +15,61 @@ brand/
 ├── README.md                 # This file
 ├── CHANGELOG.md              # Version history of brand asset changes
 ├── logos/                    # All logo variants
-│   ├── full/                 # Full logo (icon + wordmark)
-│   ├── icon/                 # Icon mark only
-│   ├── text/                 # Text wordmark only
+│   ├── fulllogo/             # Full logo (primary brand logo) — now Logo1
+│   │   ├── fulllogo.png      # Primary full logo (Logo1)
+│   │   ├── fulllogo.jpg
+│   │   ├── fulllogo_nobuffer.png
+│   │   ├── fulllogo_nobuffer.jpg
+│   │   ├── fulllogo_transparent.png
+│   │   ├── fulllogo_transparent_nobuffer.png
+│   │   ├── fulllogo_legacy.png        # Previous primary logo
+│   │   ├── fulllogo_legacy.jpg
+│   │   ├── fulllogo_nobuffer_legacy.png
+│   │   ├── fulllogo_nobuffer_legacy.jpg
+│   │   ├── fulllogo_transparent_legacy.png
+│   │   ├── fulllogo_transparent_nobuffer_legacy.png
+│   │   ├── Logo2.png         # Alternative full logo variant 2
+│   │   ├── Logo2.jpg
+│   │   ├── Logo2.svg
+│   │   ├── Logo2_transparent.svg
+│   │   ├── Logo2.pdf
+│   │   ├── Logo2_transparent.pdf
+│   │   ├── Logo2.eps
+│   │   ├── Logo2_transparent.eps
+│   │   ├── Logo3.png         # Alternative full logo variant 3
+│   │   ├── Logo3.jpg
+│   │   ├── Logo3.svg
+│   │   ├── Logo3_transparent.svg
+│   │   ├── Logo3.pdf
+│   │   ├── Logo3_transparent.pdf
+│   │   ├── Logo3.eps
+│   │   └── Logo3_transparent.eps
+│   │   └── vector/           # Print vectors (primary logo)
+│   │       ├── print.svg
+│   │       ├── print_transparent.svg
+│   │       ├── print.eps
+│   │       ├── print_transparent.eps
+│   │       ├── print.pdf
+│   │       └── print_transparent.pdf
+│   ├── icononly/             # Icon mark only
+│   │   ├── icononly.png
+│   │   ├── icononly_nobuffer.png
+│   │   ├── icononly_transparent.png
+│   │   └── icononly_transparent_nobuffer.png
+│   ├── textonly/             # Text wordmark only
+│   │   ├── textonly.png
+│   │   └── textonly_nobuffer.png
 │   ├── grayscale/            # Monochrome variants
+│   │   ├── grayscale.png
+│   │   ├── grayscale_nobuffer.png
+│   │   ├── grayscale_transparent.png
+│   │   └── grayscale_transparent_nobuffer.png
 │   └── print/                # Vector formats (SVG, PDF, EPS)
 ├── print/                    # Physical materials
 │   ├── letterhead/           # Letterhead templates
-│   └── business-cards/       # Business card designs
+│   ├── business-cards/       # Business card designs
+│   └── email-signatures/     # Email signature templates
 ├── digital/                  # Digital assets
-│   ├── email-signatures/     # Email signature templates
 │   ├── social/               # Social media templates
 │   └── favicons/             # Browser/app icons
 ├── tokens/                   # Design tokens
@@ -82,4 +127,4 @@ The CEO Dashboard (`src/ai_company/dashboard/`) uses the J.A.R.V.I.S. theme with
 ---
 
 *For questions, contact: CEO or CMO*
-*Last updated: 2026-08-27*
+*Last updated: 2026-09-06*

@@ -1,11 +1,13 @@
 # CHICHEWA AI INITIATIVE — NEGOTIATION TRACKER
-## Setup Guide: Google Sheets + Apps Script Automation
+## Setup Guide: Google Sheets + Apps Script Automation (Email + Notion)
 
 ---
 
 ## OVERVIEW
 
-This tracker provides a single source of truth for all stakeholder negotiations, deliverables, and gate decisions. It includes 7 sheets plus Apps Script automation for daily standup sync, overdue alerts, weekly reports, and Notion integration.
+This tracker provides a single source of truth for all stakeholder negotiations, deliverables, and gate decisions. It includes 7 sheets plus Apps Script automation for **daily email standups**, **overdue email alerts**, **weekly email reports**, and **Notion two-way sync**.
+
+**No Slack required** — all notifications go to email (`jmlusu@gmail.com`).
 
 ---
 
@@ -89,69 +91,73 @@ For each data tab:
 ### Step 2: Configure Values
 Edit the `getConfig()` function at the top of `Apps_Script.gs`:
 
-**a) Slack Webhook URL:**
+**Only ONE value to update:**
 ```javascript
-const config = getConfig();
-// Replace with your Slack Incoming Webhook:
-// https://api.slack.com/messaging/webhooks → Create App → Add Incoming Webhooks
+NOTION_DATABASE_ID: 'YOUR_DATABASE_ID',  // UPDATE THIS
 ```
 
-**b) Team Slack IDs:**
-Replace `<@U00000000>` placeholders with real Slack user IDs:
-```
-How to find: Slack → Click user → Profile → More → Copy Member ID
-```
+**How to get Notion Database ID:**
+1. Open your Notion database (the one you want to sync to)
+2. Click **Share** → **Copy link**
+3. The URL looks like: `https://www.notion.so/workspace/32charID?v=...`
+4. Copy the 32-character ID (the part after the last `/` and before `?v=`)
+5. Paste it in place of `'YOUR_DATABASE_ID'`
 
-**c) Notion API Key & Database ID** (for `syncToNotion`):
-```
-API Key: https://www.notion.so/my-integrations → Create integration → Copy token
-Database ID: In Notion, open the database → Share → Copy link → extract 32-char ID
-```
+**Already configured:**
+- ✅ Notion API Key: `YOUR_NOTION_API_KEY` (update in Apps_Script.gs)
+- ✅ Report Email: `jmlusu@gmail.com`
+- ✅ Timezone: Africa/Blantyre (CAT)
 
 ### Step 3: Set Up Triggers
 1. In Apps Script editor: select `setupTriggers` from the dropdown
 2. Click **Run** (▶)
-3. **Authorize**: Choose your Google account → Allow (warns about permissions — it needs access to the spreadsheet, Gmail for weekly report, and external URLs for Slack/Notion)
+3. **Authorize**: Choose your Google account → Allow
+   - Needs: Spreadsheet access, Gmail (send email), External URLs (Notion API)
 
 This installs:
 | Trigger | Schedule | Function |
 |---------|----------|----------|
-| Daily Standup | 9:00 AM CAT (7 AM UTC) | `dailyStandup` |
-| Overdue Alert | Every 4 hours | `overdueAlert` |
-| Weekly Report | Monday 10 AM CAT (8 AM UTC) | `weeklySummaryReport` |
+| Daily Standup Email | 9:00 AM CAT daily | `dailyStandup` |
+| Overdue Alert Email | Every 4 hours (Critical/High only) | `overdueAlert` |
+| Weekly Report Email | Monday 10:00 AM CAT | `weeklySummaryReport` |
 | Notion Sync | Every 6 hours | `syncToNotion` |
 
 ### Step 4: Test
 1. **Extensions → Apps Script → Select `dailyStandup` → Run**
-2. Check Slack #chichewa-ai channel for the standup message
-3. **Extensions → Apps Script → Select `overdueAlert` → Run** (test)
-4. If Slack not showing: check **Apps Script → Executions** for errors
+2. Check email `jmlusu@gmail.com` for the standup message
+3. **Extensions → Apps Script → Select `syncToNotion` → Run** (test)
+4. Check Notion database for new pages
+5. If issues: check **Apps Script → Executions** for errors
 
 ---
 
 ## 3. WORKFLOW — DAILY USAGE
 
-### Daily Standup Cadence (9:00 AM CAT / 3:00 AM ET)
+### Daily Standup Cadence (9:00 AM CAT)
 
-1. **Before standup** (automated): Script posts summary to Slack #chichewa-ai
-2. **During standup** (15 min, daily): Review Slack summary
-   - Any :red_circle: or :rotating_light: items → owners explain blockers
+1. **Before standup** (automated): Email arrives at `jmlusu@gmail.com` with summary
+2. **During standup** (15 min, daily): Review email on phone/laptop
+   - Any 🔴 or 🟠 items → owners explain blockers
    - Update Status column in tracker DURING standup (keep it live)
    - Gate countdown → confirm we're on track
 3. **After standup**: Owners update Notes with progress/blockers
 
-### Weekly Review (Monday, 30 min)
+### Overdue Alerts
+- **Critical/High priority only** — emails every 4 hours if overdue
+- Won't spam for Medium/Low priority items
 
-1. Automated weekly summary email arrives from script (to CEO)
+### Weekly Review (Monday, 10:00 AM CAT)
+
+1. Automated weekly summary email arrives
 2. Review Gate 1 readiness %, partner status, risks
-3. Update Blockers column for any :x: items
+3. Update Blockers column for any ❌ items
 4. Check next week's deadlines → proactive outreach
 
 ### Gate Reviews (Day 30 / 60 / 90)
 
-1. **3 days before**: Script flag "Gate approaching"
+1. **3 days before**: Email flags "Gate approaching"
 2. **Gate day**:
-   - Run `Check Gate Readiness` from menu
+   - Run `Check Gate Readiness` from menu (🤖 Negotiation Tracker)
    - CEO/Board decision (Approve/Pivot/Pause)
    - Record decision in `Gate Tracker` tab
    - Unlock next phase deliverables
@@ -192,21 +198,36 @@ This installs:
 
 ---
 
-## 6. TROUBLESHOOTING
+## 6. NOTION DATABASE SETUP
 
-### Slack messages not appearing
-1. Check Webhook URL is correct (full starts with `https://hooks.slack.com/services/...`)
+For Notion sync to work, your target database must have these properties:
+
+| Property Name | Type | Required |
+|---------------|------|----------|
+| **Name** | Title | Yes |
+| **Status** | Status (with options: To-do, In progress, Blocked, Done) | Yes |
+| **Assignee** | People | No |
+| **Due Date** | Date | No |
+| **Priority** | Select (Critical, High, Medium, Low) | Yes |
+| **Source** | Select (OI JDA, ZBS License, MinAg MoU, WB Trust Fund) | Yes |
+| **Notes** | Rich text | No |
+
+If your database has different property names, update the `syncToNotion()` function mappings.
+
+---
+
+## 7. TROUBLESHOOTING
+
+### Emails not arriving
+1. Check spam/junk folder
 2. Check **Apps Script → Executions → View failures**
-3. Test webhook manually with cURL:
-   ```bash
-   curl -X POST -H 'Content-type: application/json' \
-   --data '{"text":"test"}' YOUR_WEBHOOK_URL
-   ```
+3. Verify `REPORT_EMAIL` in `getConfig()` is correct
+4. Test: Run `dailyStandup()` manually and watch Executions log
 
 ### Notion sync failing
-1. Verify API key has access to the database
-2. Check the database has properties named: Name, Status, Assignee, Due Date, Priority, Source, Notes
-3. Adjust property mappings in `syncToNotion()` function
+1. Verify API key has access to the database (Notion Settings → Integrations → your integration → Add to database)
+2. Check the database has properties named exactly: Name, Status, Assignee, Due Date, Priority, Source, Notes
+3. Adjust property mappings in `syncToNotion()` if names differ
 
 ### Triggers canceled
 - Google may disable triggers if script hits daily quota errors
@@ -219,37 +240,7 @@ This installs:
 
 ---
 
-## 7. EXTENSIONS (OPTIONAL)
-
-### Add Google Calendar sync
-In `dailyStandup()`, add:
-```javascript
-CalendarApp.createEvent('Chichewa AI Standup', start, end); // Create if not exists
-```
-
-### Add email digest to Malawi Liaison
-Modify `weeklySummaryReport()` to include:
-```javascript
-MailApp.sendEmail({
-  to: 'malawi@lightspeed.ai',
-  subject: 'Weekly tracker update',
-  body: summary,
-  cc: 'bd@lightspeed.ai'
-});
-```
-
-### Add auto-reminders before calls
-```javascript
-function callReminders() {
-  // Check Stakeholder Overview for calls due in next 48h
-  // Post to Slack with :telephone_receiver: icon
-  // Implement in code below if needed
-}
-```
-
----
-
-## FILE INDEX
+## 8. FILE INDEX
 
 ```
 docs/tracker/
@@ -272,10 +263,11 @@ docs/tracker/
 2. Import 7 CSVs (File → Import → Upload)
 3. Share with team (Editor access)
 4. Extensions → Apps Script → paste `Apps_Script.gs` → save
-5. Configure Slack webhook + team IDs in `getConfig()`
+5. Update `NOTION_DATABASE_ID` in `getConfig()`
 6. Run `setupTriggers()` → authorize
 7. Add conditional formatting + freeze headers
-8. Done ✓
+8. Test: run `dailyStandup()` → check email → check Notion
+9. Done ✓
 
 ---
 

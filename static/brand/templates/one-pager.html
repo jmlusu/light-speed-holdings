@@ -8,10 +8,10 @@
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Inter', Arial, Helvetica, sans-serif; background: #fff; color: #070A40; }
-  .page { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 40px 50px; position: relative; }
+  .page { width: 100%; max-width: 210mm; min-height: 297mm; margin: 0 auto; padding: clamp(20px, 6vw, 40px) clamp(16px, 6vw, 50px); position: relative; }
   .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; border-bottom: 3px solid #070A40; padding-bottom: 16px; }
-  .logo { height: 48px; width: auto; }
-  .contact-info { text-align: right; font-size: 10px; color: #6B7280; line-height: 1.6; }
+  .logo { height: 72px; width: auto; }
+  .contact-info { font-size: 10px; color: #6B7280; line-height: 1.6; }
   .company-name { font-size: 28px; font-weight: 700; color: #070A40; letter-spacing: 1px; margin-bottom: 4px; }
   .tagline { font-size: 14px; color: #070A40; opacity: 0.65; letter-spacing: 2px; margin-bottom: 24px; }
   .section { margin-bottom: 24px; }
@@ -21,10 +21,21 @@
   .metric-card { background: #F2F2F2; border-radius: 8px; padding: 16px; text-align: center; }
   .metric-value { font-size: 28px; font-weight: 700; color: #070A40; }
   .metric-label { font-size: 10px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-  .footer { position: absolute; bottom: 40px; left: 50px; right: 50px; border-top: 2px solid #070A40; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; }
-  .footer-text { font-size: 9px; color: #6B7280; }
-  .footer-tagline { font-size: 11px; color: #070A40; font-weight: 600; letter-spacing: 1px; }
+  @media (max-width: 640px) {
+    .page { padding: clamp(12px, 4vw, 24px); }
+    .header { flex-direction: column; gap: 8px; }
+    .contact-info { text-align: left; }
+    .metrics { grid-template-columns: 1fr; gap: 12px; }
+    .two-col { grid-template-columns: 1fr; gap: 12px; }
+    .footer { position: static; margin-top: 24px; left: auto; right: auto; bottom: auto; padding: 0; flex-direction: column; gap: 8px; align-items: flex-start; }
+    .footer-text { font-size: 9px; color: #6B7280; }
+    .footer-tagline { font-size: 11px; color: #070A40; font-weight: 600; letter-spacing: 1px; }
+  }
+  @media print {
+    .footer { position: absolute; bottom: 40px; left: 50px; right: 50px; }
+  }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .logo { height: 72px; width: auto; }
 </style>
 </head>
 <body>
@@ -32,7 +43,7 @@
   <!-- Header -->
   <div class="header">
     <div>
-      <img src="../logos/fulllogo/fulllogo.png" alt="LightSpeed Holdings" class="logo" />
+      <img src="../logos/fulllogo/fulllogo_transparent.png" alt="LightSpeed Holdings" class="logo" />
     </div>
     <div class="contact-info">
       LightSpeed Holdings Limited<br>
