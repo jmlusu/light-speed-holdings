@@ -1,6 +1,6 @@
 ---
 name: ls-frontend-design
-description: "Builds distinctive, on-brand LightSpeed websites, landing pages, and web apps instead of generic AI-generated pages. Enforces the LightSpeed design system (navy/red/cyan, Arial type scale, 4px grid), visual hierarchy, responsive behavior, and the no-AI-slop checklist. Targets the repo's existing frameworks: Astro (marketing-site/) for fast content sites and Next.js 16 (website/) for app-like properties. QA via Playwright screenshots -> ls-artifact-qa. Trigger on: 'build a website', 'landing page', 'redesign the site', 'frontend', 'make a page for X', '/create-website'."
+description: "Builds distinctive, on-brand LightSpeed websites, landing pages, and web apps instead of generic AI-generated pages. Enforces the LightSpeed design system (navy/red/cyan, Arial type scale, 4px grid), visual hierarchy, responsive behavior, and the no-AI-slop checklist. Targets the repo's existing frameworks: Astro (lightspeed-main-site/) for fast content sites and Next.js 16 (website/) for app-like properties. QA via Playwright screenshots -> ls-artifact-qa. Trigger on: 'build a website', 'landing page', 'redesign the site', 'frontend', 'make a page for X', '/create-website'."
 ---
 
 # LightSpeed Frontend Design
@@ -11,7 +11,7 @@ Build websites and landing pages that look intentional, branded, and human-desig
 
 1. Load `ls-design-system` first — every layout decision flows from brand tokens.
 2. Decide the target repo by project type:
-   - **`marketing-site/`** (Astro 7 + Tailwind 4 + React 19) — content/marketing sites: landing pages, blog, docs, case studies. `npm run dev` (background mode: `astro dev --background`), `npm run build`.
+   - **`lightspeed-main-site/`** (Astro 7 + Tailwind 4 + React 19) — content/marketing sites: landing pages, blog, docs, case studies. `npm run dev` (background mode: `astro dev --background`), `npm run build`.
    - **`website/`** (Next.js 16 + Tailwind 4 + React 19) — app-like properties. ⚠ Read `website/AGENTS.md` first — this Next.js version has breaking changes; consult `node_modules/next/dist/docs/`.
 3. Never hand-write a logo — import from `static/brand/logos/**`. Reference tokens via `brand/tokens/brand-tokens.css`.
 
@@ -58,7 +58,7 @@ Type: Arial stack, sizes from the brand scale (36/32/28/24/18/16/14/13/12). Grid
 
 1. Load `ls-design-system`; pull live token values from `brand/tokens/brand-tokens.json`.
 2. Read the brief from `ls-creative-director` (if present), else clarify artifact/audience/objective.
-3. Choose target repo (marketing-site Astro vs website Next) per project type.
+3. Choose target repo (lightspeed-main-site Astro vs website Next) per project type.
 4. Wireframe section-by-section in the brief/comment, then implement with brand tokens.
 5. Use official logo assets (relative imports into `static/brand/`); wire real links/CTAs.
 6. Build locally (`npm run build` in the target repo) to verify no errors.

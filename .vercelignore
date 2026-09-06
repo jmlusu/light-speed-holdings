@@ -1,0 +1,34 @@
+# Ignore everything by default
+*
+
+# Include only what's needed
+!/company-registry.yaml
+!/vercel.json
+!/lightspeed-main-site
+!/lightspeed-main-site/**
+!/lightspeed-main-site/.gitignore
+!/lightspeed-main-site/.npmrc
+!/lightspeed-main-site/package.json
+!/lightspeed-main-site/package-lock.json
+!/lightspeed-main-site/tsconfig.json
+!/lightspeed-main-site/astro.config.mjs
+!/lightspeed-main-site/tailwind.config.mjs
+!/lightspeed-main-site/public
+!/lightspeed-main-site/public/**
+!/lightspeed-main-site/src
+!/lightspeed-main-site/src/**
+!/lightspeed-main-site/scripts
+!/lightspeed-main-site/scripts/**
+!/lightspeed-main-site/styles
+!/lightspeed-main-site/styles/**
+
+# Ignore dev files within lightspeed-main-site
+/lightspeed-main-site/.astro
+/lightspeed-main-site/node_modules
+/lightspeed-main-site/dist
+/lightspeed-main-site/.vercel
+/lightspeed-main-site/*.log
+/lightspeed-main-site/.DS_Store
+/lightspeed-main-site/.eslintrc*
+/lightspeed-main-site/.prettierrc*
+/lightspeed-main-site/coverage
