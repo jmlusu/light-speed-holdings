@@ -1,642 +1,97 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-/* ── Org graph — "Operating Diagram" ───────────────────────────── */
-/* Counts mirror company-registry.yaml byDept (144 agents · 20 departments). */
-const DEPTS = [
-  { name: "Board",          real: 7,  kind: "board" },
-  { name: "Executive",      real: 5,  kind: "exec" },
-  { name: "Technology",     real: 27 },
-  { name: "AI Research",    real: 13 },
-  { name: "Product",        real: 9 },
-  { name: "Operations",     real: 11 },
-  { name: "Sales",          real: 6 },
-  { name: "Marketing",      real: 10 },
-  { name: "Security",       real: 11 },
-  { name: "Finance",        real: 3 },
-  { name: "Legal",          real: 5 },
-  { name: "People",         real: 6 },
-  { name: "Pharos",         real: 8 },
-  { name: "Data",           real: 5 },
-  { name: "QA",             real: 5 },
-  { name: "Strategy",       real: 4 },
-  { name: "Consulting",     real: 4 },
-  { name: "Customer Success", real: 3 },
-  { name: "IT",             real: 1 },
-  { name: "Business Development", real: 1 },
-];
-
-const CORE_DEPTS = [
-  "Board", "Executive", "Technology", "AI Research", "Product", "Operations",
-  "Sales", "Marketing", "Security", "Finance", "Legal", "People",
-];
-
-const BOX_W = 270;
-const BOX_H = 126;
-const COLS = 4;
-const MARGIN_X = 20;
-const MARGIN_Y = 17;
-const GAP_X = (1200 - MARGIN_X * 2 - COLS * BOX_W) / (COLS - 1);
-const GAP_Y = 44;
-const rd = (n: number) => Math.round(n * 10) / 10;
-const viewHeight = (rows: number) => MARGIN_Y * 2 + rows * BOX_H + (rows - 1) * GAP_Y;
-
-function layout(list: (typeof DEPTS)[number][]) {
-  return list.map((d, i) => ({
-    ...d,
-    cx: rd(MARGIN_X + BOX_W / 2 + (i % COLS) * (BOX_W + GAP_X)),
-    cy: rd(MARGIN_Y + BOX_H / 2 + Math.floor(i / COLS) * (BOX_H + GAP_Y)),
-  }));
-}
-
-function clusterPoints(c: ReturnType<typeof layout>[number]) {
-  const count = Math.min(c.real, 9);
-  const actualRows = Math.ceil(count / 3);
-  const pts = [];
-  for (let i = 0; i < count; i++) {
-    const r = Math.floor(i / 3);
-    const col = i % 3;
-    const rem = Math.min(3, count - r * 3);
-    pts.push({
-      x: rd(c.cx + (col - (rem - 1) / 2) * 30),
-      y: rd(c.cy + 24 + (r - (actualRows - 1) / 2) * 28),
-      i,
-    });
-  }
-  return pts;
-}
-
-const clusters = layout(DEPTS.filter((d) => CORE_DEPTS.includes(d.name))).map((c) => ({ ...c, pts: clusterPoints(c) }));
-const clustersFull = layout(DEPTS).map((c) => ({ ...c, pts: clusterPoints(c) }));
-const CORE_H = viewHeight(Math.ceil(clusters.length / COLS));
-const FULL_H = viewHeight(Math.ceil(clustersFull.length / COLS));
-
-function edgePath(a: { x: number; y: number }, b: { x: number; y: number }) {
-  const mx = (a.x + b.x) / 2;
-  return `M ${a.x} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${b.x} ${b.y}`;
-}
-
-function buildEdges(cl: typeof clusters) {
-  const board = cl.find((c) => c.kind === "board")!;
-  const exec = cl.find((c) => c.kind === "exec")!;
-  const cto = exec.pts[2];
-  const edges: { d: string }[] = [{ d: edgePath(board.pts[0], exec.pts[0]) }];
-  for (const c of cl) {
-    if (c.kind === "board" || c.kind === "exec") continue;
-    edges.push({ d: edgePath(cto, c.pts[0]) });
-  }
-  const technology = cl.find((c) => c.name === "Technology")!;
-  const highlight = edgePath(cto, technology.pts[5]);
-  return { edges, highlight };
-}
-const { edges, highlight } = buildEdges(clusters);
-const { edges: edgesFull, highlight: highlightFull } = buildEdges(clustersFull);
-
-const CHIP_CX = 645;
-const CHIP_Y = 152;
-
-function nodeClass(c: (typeof clusters)[number], p: { i: number }) {
-  if (c.kind === "board" || c.kind === "exec") return "fill-[var(--ls-ink)] stroke-[var(--ls-ink)]";
-  const lead = p.i === 0;
-  const executing = p.i % 6 === 5 && !lead;
-  if (executing) return "fill-[var(--ls-accent)] stroke-[var(--ls-accent)]";
-  if (lead) return "fill-[var(--ls-white)] stroke-[var(--ls-accent)]";
-  return "fill-[var(--ls-white)] stroke-[var(--ls-edge)]";
-}
-
-const GRAPH_CAPTION = "144 agents · 12 core departments · hover to isolate";
+import Thesis from "../components/Thesis.astro";
+import Methodology from "../components/Methodology.astro";
+import Services from "../components/Services.astro";
+import UseCases from "../components/UseCases.astro";
+import AiCompanyBuilder from "../components/AiCompanyBuilder.astro";
+import AfricaPositioning from "../components/AfricaPositioning.astro";
+import Research from "../components/Research.astro";
+import FinalCTA from "../components/FinalCTA.astro";
 ---
 
 <BaseLayout
-  title="LightSpeed Holdings — Build your AI company. Not just your chatbot."
-  description="Light Speed Holdings turns a 19-file registry into a 144-agent org — with approvals, audit, memory & a live dashboard. From zero to ai-company dashboard in 45 seconds."
+  title="LightSpeed Holdings — AI-Native Enterprise Transformation"
+  description="LightSpeed Holdings helps organisations become AI-native by redesigning how people, agents, workflows, data and governance work together—and proves the model by building and operating an AI-native company itself."
 >
-  <!-- HERO — operating diagram: statement + live org graph -->
+  {/* ── SECTION 1: HERO ────────────────────────────────────────────── */}
   <section class="bg-[var(--ls-cream)] pt-[88px] md:pt-[104px] pb-[40px]">
     <div class="ls-shell grid grid-cols-1 lg:grid-cols-[0.92fr_1.08fr] gap-10 lg:gap-12 items-center">
       <div>
         <h1 class="font-semibold tracking-[-0.03em] leading-[1.06] text-[clamp(2.3rem,4vw,3.5rem)]">
-          Build your AI company.
-          <span class="block mt-1 font-medium text-[var(--ls-ink-muted)]">Not just your chatbot.</span>
+          Building the AI-native enterprise.
         </h1>
 
         <p class="mt-6 max-w-[52ch] text-[1.02rem] md:text-[1.09rem] leading-[1.7] text-[var(--ls-text-secondary)]">
-          LightSpeed turns a <strong class="font-semibold text-[var(--ls-ink)]">19-file YAML registry</strong> into a
-          live <strong class="font-semibold text-[var(--ls-ink)]">144-agent org</strong> — generated cards, a governed
-          message bus, audit, memory, and a control-plane dashboard. Running in 45 seconds.
+          LightSpeed Holdings helps organisations redesign how work gets done—combining executive strategy, agentic AI, automation, data and governance into a new operating model.
         </p>
 
         <div class="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <button
-            id="copy-install"
+          <a
+            href="/contact"
             class="inline-flex items-center justify-center gap-3 rounded-[10px] bg-[var(--ls-ink)] text-white px-5 py-3.5 font-mono text-[0.82rem] md:text-[0.86rem] hover:bg-[#17293a] transition"
-            data-track="click_hero_copy_install"
-            aria-label="Copy install command"
+            data-track="click_hero_start_conversation"
+            aria-label="Start a conversation"
           >
-            <span class="opacity-70">$</span><span id="install-cmd">uv sync && ai-company company run</span>
-            <span class="ml-1 inline-flex rounded-[6px] bg-white/15 px-2.5 py-1 text-[0.7rem] tracking-wide">copy</span>
-          </button>
-          <a href="#workflow" class="inline-flex items-center gap-1.5 justify-center px-2 text-[0.92rem] font-medium text-[var(--ls-accent-hover)] hover:underline underline-offset-4">
-            Explore the method →
+            <span class="opacity-70">→</span>
+            Start a conversation
+          </a>
+          <a
+            href="/ai-company-builder"
+            class="inline-flex items-center justify-center gap-3 rounded-[10px] bg-white/15 text-[var(--ls-ink)] px-5 py-3.5 font-mono text-[0.82rem] md:text-[0.86rem] hover:bg-white/10 transition"
+            data-track="click_hero_explore_builder"
+            aria-label="Explore the AI Company Builder"
+          >
+            <span class="ml-1 inline-flex rounded-[6px] bg-white/15 px-2.5 py-1 text-[0.7rem] tracking-wide">Explore the AI Company Builder</span>
           </a>
         </div>
 
         <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[0.84rem] text-[var(--ls-ink-muted)]">
-          <a href="/contact" class="hover:text-[var(--ls-ink)]" data-track="click_hero_book_deploy">Book deployment</a>
-          <a href="https://github.com/jmlusu/light-speed-holdings" class="hover:text-[var(--ls-ink)]">View on GitHub ↗</a>
-          <a href="/docs" class="hover:text-[var(--ls-ink)]">Docs</a>
+          <span class="flex items gap-1">
+            <span class="inline-block w-2 h-2 rounded-full bg-[var(--ls-accent)]" aria-hidden="true"></span>
+            Malawi · SADC · Africa
+          </span>
+          <span>·</span>
+          <span>Strategy · Agentic AI · Enterprise Automation · Governance</span>
         </div>
       </div>
 
-      <!-- Org graph — the product's own generated artifact, as proof -->
-      <div class="rounded-[16px] bg-white border border-[var(--ls-edge)] shadow-[var(--ls-shadow-card)] overflow-hidden">
-        <div class="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-[var(--ls-divider)] bg-[var(--ls-pearl)]">
-          <span id="graph-cap" class="font-mono text-[0.72rem] md:text-[0.74rem] text-[var(--ls-ink-muted)]">{GRAPH_CAPTION}</span>
-          <div id="graph-switch" role="group" aria-label="Graph view" class="inline-flex items-center rounded-[8px] border border-[var(--ls-edge)] overflow-hidden font-mono text-[0.7rem]">
-            <button type="button" data-view="core" aria-pressed="true" class="is-active px-3 py-1.5">Core 12</button>
-            <button type="button" data-view="full" aria-pressed="false" class="px-3 py-1.5">All 20</button>
-          </div>
-        </div>
-
-        <svg
-          id="org-graph"
-          class="org-graph org-graph-hover w-full h-auto block"
-          viewBox={`0 0 1200 ${CORE_H}`}
-          role="img"
-          aria-label="Org graph of 144 agents across the 12 core departments, generated from company-registry.yaml"
-        >
-          <g class="graph-edges">
-            {edges.map((e) => (
-              <path d={e.d} fill="none" stroke="var(--ls-edge)" stroke-width="1" class="graph-edge" />
-            ))}
-            <path d={highlight} fill="none" stroke="var(--ls-accent)" stroke-width="1.6" class="graph-edge" />
-          </g>
-
-          <g class="graph-clusters">
-            {clusters.map((c) => (
-              <g class="graph-cluster" data-label={`${c.name} · ${c.real} agents`} role="group" tabindex="0" aria-label={`${c.name}, ${c.real} agents`}>
-                <rect
-                  x={c.cx - BOX_W / 2}
-                  y={c.cy - BOX_H / 2}
-                  width={BOX_W}
-                  height={BOX_H}
-                  rx="12"
-                  fill="rgba(251,252,252,0.72)"
-                  stroke="var(--ls-edge)"
-                />
-                <text x={c.cx - BOX_W / 2 + 15} y={c.cy - BOX_H / 2 + 21} font-size="10" fill="var(--ls-ink-muted)" class="font-mono">{c.name}</text>
-                <text x={c.cx + BOX_W / 2 - 15} y={c.cy - BOX_H / 2 + 21} text-anchor="end" font-size="10" fill="var(--ls-ink-muted)" class="font-mono">{c.real}</text>
-                {c.pts.map((p) => (
-                  <circle
-                    cx={p.x}
-                    cy={p.y}
-                    r={c.kind === "board" || c.kind === "exec" ? 5 : 4.6}
-                    stroke-width={p.i === 0 && c.kind !== "board" && c.kind !== "exec" ? 1.6 : 1}
-                    class={nodeClass(c, p)}
-                  />
-                ))}
-              </g>
-            ))}
-          </g>
-
-          <g aria-hidden="true">
-            <line x1={CHIP_CX} y1="108" x2={CHIP_CX} y2="146" stroke="var(--ls-accent)" stroke-width="1" stroke-dasharray="3 4" />
-            <rect x={CHIP_CX - 95} y={CHIP_Y} width="190" height="18" rx="9" fill="var(--ls-white)" stroke="var(--ls-accent)" stroke-width="1" />
-            <text x={CHIP_CX} y={CHIP_Y + 12.5} text-anchor="middle" font-size="10" fill="var(--ls-accent)" class="font-mono">cto → memory-owner · 3 hops</text>
-          </g>
-        </svg>
-
-        <svg
-          id="org-graph-full"
-          class="org-graph org-graph-hover w-full h-auto block"
-          viewBox={`0 0 1200 ${FULL_H}`}
-          role="img"
-          aria-label="Org graph of 144 agents across all 20 departments, generated from company-registry.yaml"
-        >
-          <g class="graph-edges">
-            {edgesFull.map((e) => (
-              <path d={e.d} fill="none" stroke="var(--ls-edge)" stroke-width="1" class="graph-edge" />
-            ))}
-            <path d={highlightFull} fill="none" stroke="var(--ls-accent)" stroke-width="1.6" class="graph-edge" />
-          </g>
-
-          <g class="graph-clusters">
-            {clustersFull.map((c) => (
-              <g class="graph-cluster" data-label={`${c.name} · ${c.real} agents`} role="group" tabindex="0" aria-label={`${c.name}, ${c.real} agents`}>
-                <rect
-                  x={c.cx - BOX_W / 2}
-                  y={c.cy - BOX_H / 2}
-                  width={BOX_W}
-                  height={BOX_H}
-                  rx="12"
-                  fill="rgba(251,252,252,0.72)"
-                  stroke="var(--ls-edge)"
-                />
-                <text x={c.cx - BOX_W / 2 + 15} y={c.cy - BOX_H / 2 + 21} font-size="10" fill="var(--ls-ink-muted)" class="font-mono">{c.name}</text>
-                <text x={c.cx + BOX_W / 2 - 15} y={c.cy - BOX_H / 2 + 21} text-anchor="end" font-size="10" fill="var(--ls-ink-muted)" class="font-mono">{c.real}</text>
-                {c.pts.map((p) => (
-                  <circle
-                    cx={p.x}
-                    cy={p.y}
-                    r={c.kind === "board" || c.kind === "exec" ? 5 : 4.6}
-                    stroke-width={p.i === 0 && c.kind !== "board" && c.kind !== "exec" ? 1.6 : 1}
-                    class={nodeClass(c, p)}
-                  />
-                ))}
-              </g>
-            ))}
-          </g>
-
-          <g aria-hidden="true">
-            <line x1={CHIP_CX} y1="108" x2={CHIP_CX} y2="146" stroke="var(--ls-accent)" stroke-width="1" stroke-dasharray="3 4" />
-            <rect x={CHIP_CX - 95} y={CHIP_Y} width="190" height="18" rx="9" fill="var(--ls-white)" stroke="var(--ls-accent)" stroke-width="1" />
-            <text x={CHIP_CX} y={CHIP_Y + 12.5} text-anchor="middle" font-size="10" fill="var(--ls-accent)" class="font-mono">cto → memory-owner · 3 hops</text>
-          </g>
-        </svg>
-
-        <div class="flex flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2.5 border-t border-[var(--ls-divider)] font-mono text-[0.7rem] text-[var(--ls-ink-muted)]">
-          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full bg-[var(--ls-accent)]" aria-hidden="true"></span>executing</span>
-          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-[50%] border border-[var(--ls-accent)] bg-[var(--ls-white)]" aria-hidden="true"></span>department lead</span>
-          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full bg-[var(--ls-ink)]" aria-hidden="true"></span>executive · board</span>
-          <span class="ml-auto hidden sm:inline">generated from company-registry.yaml</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Console — contained dark control-plane panel -->
-    <div class="ls-inner mt-10">
-      <div class="rounded-[16px] bg-[var(--ls-ink)] text-[rgba(243,246,247,0.92)] shadow-[var(--ls-shadow-video)] overflow-hidden">
-        <div class="flex items-center gap-2 px-4 py-3 border-b border-white/10">
-          <span class="w-3 h-3 rounded-full bg-white/25" aria-hidden="true"></span>
-          <span class="w-3 h-3 rounded-full bg-white/25" aria-hidden="true"></span>
-          <span class="w-3 h-3 rounded-full bg-white/25" aria-hidden="true"></span>
-          <span class="ml-3 font-mono text-[0.76rem] text-white/50">ai-company · zsh</span>
-          <span class="ml-auto font-mono text-[0.72rem] text-white/40 hidden sm:inline">144 agents · 20 departments · 30+ commands</span>
-        </div>
-        <pre class="p-5 md:p-6 font-mono text-[0.78rem] md:text-[0.84rem] leading-[1.75] overflow-auto"><code><span class="text-[var(--ls-accent)]">$</span> ai-company --help
-  <span class="text-white/90">generate</span>     <span class="text-white/45">Render .opencode/agents/*.md from registry</span>
-  <span class="text-white/90">company run</span>  <span class="text-white/45">Bootstrap 24 dirs + 144 agents + configs</span>
-  <span class="text-white/90">dashboard</span>    <span class="text-white/45">CEO Control Plane on :8420</span>
-  <span class="text-white/90">doctor</span>       <span class="text-white/45">Health + deployment checks</span>
-  <span class="text-white/90">workflows</span>    <span class="text-white/45">9 DAGs · SLA monitoring</span>
-<span class="text-[var(--ls-accent)]">$</span> uv sync && ai-company company run
-  <span class="text-[var(--ls-ok)]">✔ 144 agents generated</span>  <span class="text-white/45">registry/loader → Jinja2 → .opencode/agents</span>
-  <span class="text-[var(--ls-ok)]">✔ dashboard live</span>    <span class="text-white/45">http://127.0.0.1:8420</span>
-<span class="text-[var(--ls-accent)]">$</span> ai-company agents list | head
-  chief-of-staff · cto · vp-engineering · cpo · cmo · cso · … <span class="text-white/45">(144)</span></code></pre>
-        <div class="px-5 py-3 border-t border-white/10 flex items-center justify-between text-[0.78rem]">
-          <span class="font-mono text-white/45">Company Core — 4 graphs · BFS pathfinding · 6 memory types</span>
-          <a href="/platform" class="inline-flex items-center gap-1 rounded-[8px] bg-white text-[var(--ls-ink)] px-3 py-1.5 font-semibold text-[0.76rem]">Explore the system →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TELEMETRY band — verifiable, not decorative -->
-  <section class="bg-white border-y border-[var(--ls-divider)]">
-    <div class="ls-inner grid grid-cols-1 md:grid-cols-3">
-      <div class="md:px-8 md:first:pl-0 py-8 md:py-10">
-        <div class="text-[clamp(2rem,4vw,2.7rem)] font-semibold tracking-[-0.02em]">144</div>
-        <div class="mt-1 text-[0.88rem] text-[var(--ls-text-secondary)]">agents across 20 departments</div>
-        <div class="mt-0.5 font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">company-registry.yaml → 12 Jinja2 templates</div>
-      </div>
-      <div class="md:px-8 md:border-l md:border-[var(--ls-divider)] py-8 md:py-10">
-        <div class="text-[clamp(2rem,4vw,2.7rem)] font-semibold tracking-[-0.02em]">1969</div>
-        <div class="mt-1 text-[0.88rem] text-[var(--ls-text-secondary)]">tests, green — ruff + mypy strict</div>
-        <div class="mt-0.5 font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">20/20 GAPs resolved · 78% coverage</div>
-      </div>
-      <div class="md:px-8 md:border-l md:border-[var(--ls-divider)] py-8 md:py-10">
-        <div class="text-[clamp(2rem,4vw,2.7rem)] font-semibold tracking-[-0.02em]">5-tier</div>
-        <div class="mt-1 text-[0.88rem] text-[var(--ls-text-secondary)]">approvals · audit JSONL · 6 memory types</div>
-        <div class="mt-0.5 font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">DecisionEngine · GraphEngine BFS · WorkflowEngine</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- METHOD — 4-phase, numbered because it is a sequence -->
-  <section id="workflow" class="bg-[var(--ls-sage)] py-[80px] md:py-[100px]">
-    <div class="ls-shell">
-      <div class="max-w-[760px]">
-        <h2 class="font-semibold tracking-[-0.02em] text-[clamp(1.9rem,4vw,2.7rem)] leading-[1.1]">From registry to running org, in 45 seconds</h2>
-        <p class="mt-3 text-[var(--ls-text-secondary)] max-w-[54ch]">No interviews, no decks. The registry is the source of truth; everything else is generated, dispatched, and audited from it.</p>
-      </div>
-
-      <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <a href="/how-it-works#define" class="group bg-white rounded-[8px] overflow-hidden border border-[var(--ls-card-border)] hover:shadow-[var(--ls-shadow-card)] transition">
-          <div class="p-6 flex flex-col min-h-[170px] bg-[var(--ls-pearl)] border-b border-[var(--ls-divider)]">
-            <div class="flex items-center gap-2 font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">
-              <span class="inline-block w-6 h-6 rounded-[6px] bg-[var(--ls-ink)] text-white grid place-items-center text-[0.7rem]">01</span>
-              <span>define</span>
-            </div>
-            <div class="mt-auto font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">company-registry.yaml<br />19 YAML configs · 20 depts</div>
-          </div>
-          <div class="p-4">
-            <div class="font-semibold text-[0.98rem]">Define the registry</div>
-            <div class="text-[0.88rem] text-[var(--ls-text-secondary)] mt-1">Single source of truth — agents, tools, permissions, models.</div>
-          </div>
-        </a>
-
-        <a href="/how-it-works#generate" class="group bg-white rounded-[8px] overflow-hidden border border-[var(--ls-card-border)] hover:shadow-[var(--ls-shadow-card)] transition">
-          <div class="p-6 flex flex-col min-h-[170px] bg-[var(--ls-pearl)] border-b border-[var(--ls-divider)]">
-            <div class="flex items-center gap-2 font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">
-              <span class="inline-block w-6 h-6 rounded-[6px] bg-[var(--ls-accent)] text-white grid place-items-center text-[0.7rem]">02</span>
-              <span>generate</span>
-            </div>
-            <div class="mt-auto font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">python -c &quot;Generator().generate_all()&quot;<br />12 Jinja2 → .opencode/agents/*.md</div>
-          </div>
-          <div class="p-4">
-            <div class="font-semibold text-[0.98rem]">Generate 144 agents</div>
-            <div class="text-[0.88rem] text-[var(--ls-text-secondary)] mt-1">Deterministic, CWD-independent, typed via Pydantic.</div>
-          </div>
-        </a>
-
-        <a href="/how-it-works#orchestrate" class="group bg-white rounded-[8px] overflow-hidden border border-[var(--ls-card-border)] hover:shadow-[var(--ls-shadow-card)] transition">
-          <div class="p-6 flex flex-col min-h-[170px] bg-[var(--ls-pearl)] border-b border-[var(--ls-divider)]">
-            <div class="flex items-center gap-2 font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">
-              <span class="inline-block w-6 h-6 rounded-[6px] bg-[var(--ls-warn)] text-[var(--ls-ink)] grid place-items-center text-[0.7rem]">03</span>
-              <span>orchestrate</span>
-            </div>
-            <div class="mt-auto font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">MessageBus tick<br />JSON queue @ .opencode/inbox.json</div>
-          </div>
-          <div class="p-4">
-            <div class="font-semibold text-[0.98rem]">Orchestrate with governance</div>
-            <div class="text-[0.88rem] text-[var(--ls-text-secondary)] mt-1">5-tier approvals, HITL expiry sweep, lease locking.</div>
-          </div>
-        </a>
-
-        <a href="/how-it-works#execute" class="group bg-white rounded-[8px] overflow-hidden border border-[var(--ls-card-border)] hover:shadow-[var(--ls-shadow-card)] transition">
-          <div class="p-6 flex flex-col min-h-[170px] bg-[var(--ls-pearl)] border-b border-[var(--ls-divider)]">
-            <div class="flex items-center gap-2 font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">
-              <span class="inline-block w-6 h-6 rounded-[6px] bg-[var(--ls-ink)] text-white grid place-items-center text-[0.7rem]">04</span>
-              <span>execute &amp; learn</span>
-            </div>
-            <div class="mt-auto font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">AgentLoop → ToolRunner → Memory<br />6 types · 4 graphs BFS · postmortem</div>
-          </div>
-          <div class="p-4">
-            <div class="font-semibold text-[0.98rem]">Execute &amp; compound</div>
-            <div class="text-[0.88rem] text-[var(--ls-text-secondary)] mt-1">ReAct loops, cost-tracked per task, auditable.</div>
-          </div>
-        </a>
-      </div>
-
-      <div class="mt-6">
-        <a href="/how-it-works" class="inline-flex items-center gap-1.5 text-[0.92rem] font-medium text-[var(--ls-accent-hover)] hover:underline underline-offset-4" data-track="click_method_learn">
-          Learn more about the method →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- CLARITY -->
-  <section class="bg-[var(--ls-pearl)] py-[64px] md:py-[88px]">
-    <div class="ls-inner max-w-[860px]">
-      <blockquote class="font-semibold tracking-[-0.035em] text-[clamp(1.9rem,5vw,2.8rem)] leading-[1.14]">
-        AI transformation starts when the company can finally see — and <span class="font-mono font-normal text-[var(--ls-accent-hover)]">generate</span> — itself.
-      </blockquote>
-      <p class="mt-5 font-mono text-[0.86rem] text-[var(--ls-ink-muted)]">One registry. 144 agents. One command. No decks.</p>
-    </div>
-  </section>
-
-  <!-- SOLUTIONS — three tiers -->
-  <section class="bg-white py-[72px] md:py-[88px]">
-    <div class="ls-shell">
-      <div class="flex items-end justify-between gap-6 flex-wrap">
-        <div>
-          <h2 class="font-semibold tracking-[-0.02em] text-[clamp(1.8rem,4vw,2.4rem)] leading-[1.1]">Self-serve, managed, or deployed</h2>
-          <p class="mt-2 text-[var(--ls-text-secondary)] max-w-[52ch]">Same registry underneath — the difference is who runs the daemon and who builds the agents.</p>
-        </div>
-        <a href="/solutions" class="text-[0.9rem] font-medium text-[var(--ls-accent-hover)] hover:underline underline-offset-4">View all solutions →</a>
-      </div>
-
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-5">
-        <a href="/solutions/assessment" class="group rounded-[16px] border border-[var(--ls-card-border)] overflow-hidden hover:shadow-[var(--ls-shadow-card)] transition bg-white">
-          <div class="aspect-[16/9] bg-[var(--ls-pearl)] border-b border-[var(--ls-divider)] p-6 flex flex-col justify-between">
-            <span class="font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">for teams starting</span>
-            <span class="text-[0.95rem] font-semibold">AI Company Assessment</span>
-          </div>
-          <div class="p-5">
-            <p class="text-[0.9rem] text-[var(--ls-text-secondary)]">We run the registry over your org — 1,200+ processes mapped, 3–7 leverage points, 9 workflow DAGs. 10-day diagnostic.</p>
-            <span class="mt-3 inline-block font-medium text-[0.9rem] text-[var(--ls-ink)] group-hover:text-[var(--ls-accent-hover)] transition-colors">Learn more</span>
-          </div>
-        </a>
-
-        <a href="/solutions/managed-platform" class="group rounded-[16px] border border-[var(--ls-card-border)] overflow-hidden hover:shadow-[var(--ls-shadow-card)] transition bg-white">
-          <div class="aspect-[16/9] bg-[var(--ls-pearl)] border-b border-[var(--ls-divider)] p-6 flex flex-col justify-between">
-            <span class="font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">for teams scaling</span>
-            <span class="text-[0.95rem] font-semibold">Managed Platform</span>
-          </div>
-          <div class="p-5">
-            <p class="text-[0.9rem] text-[var(--ls-text-secondary)]">We operate the daemon: KPI snapshots, HITL expiry sweeps, retention — you just ship work via inbox.json.</p>
-            <span class="mt-3 inline-block font-medium text-[0.9rem] text-[var(--ls-ink)] group-hover:text-[var(--ls-accent-hover)] transition-colors">Learn more</span>
-          </div>
-        </a>
-
-        <a href="/solutions/enterprise" class="group rounded-[16px] border border-[var(--ls-card-border)] overflow-hidden hover:shadow-[var(--ls-shadow-card)] transition bg-white">
-          <div class="aspect-[16/9] bg-[var(--ls-pearl)] border-b border-[var(--ls-divider)] p-6 flex flex-col justify-between">
-            <span class="font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">for teams embedding</span>
-            <span class="text-[0.95rem] font-semibold">Enterprise Deployment</span>
-          </div>
-          <div class="p-5">
-            <p class="text-[0.9rem] text-[var(--ls-text-secondary)]">Forward-deployed engineers build agents and SOPs in your stack — ERP/CRM, custom RAG, VPC, private LLM.</p>
-            <span class="mt-3 inline-block font-medium text-[0.9rem] text-[var(--ls-ink)] group-hover:text-[var(--ls-accent-hover)] transition-colors">Learn more</span>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROOF — dogfood, receipts -->
-  <section class="bg-[var(--ls-cream)] border-y border-[var(--ls-divider)] py-12 md:py-16">
-    <div class="ls-shell grid grid-cols-1 lg:grid-cols-[1.2fr_.8fr] gap-8 items-center">
-      <div>
-        <h2 class="font-semibold tracking-[-0.02em] text-[clamp(1.6rem,4vw,2.2rem)] leading-[1.1]">We run LightSpeed on LightSpeed — 144 agents, no deck</h2>
-        <div class="mt-5 grid grid-cols-3 gap-4">
-          <div class="border-t border-[var(--ls-edge)] pt-3">
-            <div class="text-[1.5rem] font-semibold tracking-[-0.01em]">1969</div>
-            <div class="font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">tests passing</div>
-          </div>
-          <div class="border-t border-[var(--ls-edge)] pt-3">
-            <div class="text-[1.5rem] font-semibold tracking-[-0.01em]">45s</div>
-            <div class="font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">to 144 agents</div>
-          </div>
-          <div class="border-t border-[var(--ls-edge)] pt-3">
-            <div class="text-[1.5rem] font-semibold tracking-[-0.01em]">30</div>
-            <div class="font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">cli commands</div>
-          </div>
-        </div>
-        <p class="mt-5 text-[0.95rem] text-[var(--ls-text-secondary)]">
-          Architecture receipts:&nbsp;
-          <code class="font-mono text-[0.8rem]">registry/loader.py</code> + <code class="font-mono text-[0.8rem]">12 Jinja2 templates</code> + <code class="font-mono text-[0.8rem]">17 Pydantic models</code> + audited CI <code class="font-mono text-[0.8rem]">32907261730</code> green.
+      {/* AI Company Builder proof callout */}
+      <div class="rounded-[16px] bg-white border border-[var(--ls-edge)] shadow-[var(--ls-shadow-card)] p-6 flex flex-col lg:flex-row items-start gap-6">
+        <h3 class="font-semibold text-[0.88rem] text-[var(--ls-ink-muted)] mb-2">We build what we describe</h3>
+        <p class="text-[0.82rem] text-[var(--ls-text-secondary)]">
+          The LightSpeed AI Company Builder is our living laboratory for the AI-native enterprise. We do not merely advise organisations to become AI-native — we are building and testing the operating model ourselves.
         </p>
-        <a href="/case-study" class="mt-4 inline-flex items-center gap-1.5 font-medium text-[0.9rem] text-[var(--ls-accent-hover)] hover:underline underline-offset-4">Read the case study →</a>
-      </div>
-
-      <div class="rounded-[16px] bg-white border border-[var(--ls-card-border)] p-6 shadow-[var(--ls-shadow-card)]">
-        <div class="flex items-center justify-between font-mono text-[0.72rem] text-[var(--ls-ink-muted)]">
-          <span>live graph query</span>
-          <span>4 graphs · BFS</span>
-        </div>
-        <div class="mt-3 rounded-[10px] bg-[var(--ls-ink)] text-[rgba(243,246,247,0.9)] p-4 font-mono text-[0.76rem] leading-[1.8]">
-          <div class="text-white/45">$ graph path cto memory-owner</div>
-          <div class="text-[var(--ls-ok)] mt-1">✔ found · 3 hops</div>
-          <div class="text-white/75">cto → vp-engineering → memory-owner</div>
-          <div class="text-white/45 mt-1">org_chart → workflow_graph · weighted</div>
-        </div>
-        <div class="mt-4 flex gap-2">
-          <a href="/platform" class="flex-1 text-center rounded-[8px] border border-[var(--ls-ink)] py-2 text-[0.84rem] font-medium hover:bg-[var(--ls-sage)] transition">Try the graph</a>
-          <a href="/docs" class="flex-1 text-center rounded-[8px] bg-[var(--ls-ink)] text-white py-2 text-[0.84rem] font-medium hover:opacity-90 transition">Docs</a>
+        <div class="flex flex-col lg:flex-row gap-3 pt-2 lg:pt-0">
+          <span class="text-[0.72rem] text-[var(--ls-ink-muted)]">144 AI agents</span>
+          <span class="text-[0.72rem] text-[var(--ls-ink-muted)]">20 departments</span>
+          <span class="text-[0.72rem] text-[var(--ls-ink-muted)]">5-tier governance</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="bg-[var(--ls-pearl)] py-[56px] md:py-[72px]">
-    <div class="ls-shell max-w-[900px]">
-      <h2 class="font-semibold tracking-[-0.02em] text-[clamp(1.8rem,4vw,2.4rem)]">Frequently asked</h2>
-      <div class="mt-8 space-y-2.5" id="faq">
-        <details class="group bg-white rounded-[10px] border border-[var(--ls-card-border)] p-4" data-track="faq_click">
-          <summary class="list-none flex items-center justify-between gap-4 cursor-pointer font-medium">How is this different from consulting?<span class="shrink-0 w-7 h-7 grid place-items-center rounded-[8px] border border-[var(--ls-warm)] group-open:rotate-45 transition">+</span></summary>
-          <p class="mt-3 text-[0.92rem] text-[var(--ls-text-secondary)]">Consultants give you a deck. LightSpeed gives you a company: 144 agents, governed queue, memory, audit, dashboard — generated in 45s, not 12 weeks.</p>
-        </details>
-        <details class="group bg-white rounded-[10px] border border-[var(--ls-card-border)] p-4" data-track="faq_click">
-          <summary class="list-none flex items-center justify-between gap-4 cursor-pointer font-medium">How fast is the assessment?<span class="shrink-0 w-7 h-7 grid place-items-center rounded-[8px] border border-[var(--ls-warm)] group-open:rotate-45 transition">+</span></summary>
-          <p class="mt-3 text-[0.92rem] text-[var(--ls-text-secondary)]"><code>ai-company company run</code> in 45s, dashboard live, first workflow dispatched on next <code>tick</code> (&lt;2 min). For human transformation, the 10-day Assessment packages via Offer E.</p>
-        </details>
-        <details class="group bg-white rounded-[10px] border border-[var(--ls-card-border)] p-4" data-track="faq_click">
-          <summary class="list-none flex items-center justify-between gap-4 cursor-pointer font-medium">Is this adapted to company size?<span class="shrink-0 w-7 h-7 grid place-items-center rounded-[8px] border border-[var(--ls-warm)] group-open:rotate-45 transition">+</span></summary>
-          <p class="mt-3 text-[0.92rem] text-[var(--ls-text-secondary)]">50-person → Growth (Offer A). 5k+ → Enterprise with FDEs. Same registry, different <code>company/config/kpis.yaml</code> + routing tiers.</p>
-        </details>
-        <details class="group bg-white rounded-[10px] border border-[var(--ls-card-border)] p-4" data-track="faq_click">
-          <summary class="list-none flex items-center justify-between gap-4 cursor-pointer font-medium">How much does it cost?<span class="shrink-0 w-7 h-7 grid place-items-center rounded-[8px] border border-[var(--ls-warm)] group-open:rotate-45 transition">+</span></summary>
-          <p class="mt-3 text-[0.92rem] text-[var(--ls-text-secondary)]">Self-serve CLI is free — pay only inference (tracked per task in <code>cost_log.jsonl</code>, budget-capped). Managed Platform scoped to registry size &amp; keys. No &quot;3–5× cheaper&quot; hand-waving — your CFO audits the log. See <a href="/pricing" class="underline">Pricing</a>.</p>
-        </details>
-        <details class="group bg-white rounded-[10px] border border-[var(--ls-card-border)] p-4" data-track="faq_click">
-          <summary class="list-none flex items-center justify-between gap-4 cursor-pointer font-medium">Data security?<span class="shrink-0 w-7 h-7 grid place-items-center rounded-[8px] border border-[var(--ls-warm)] group-open:rotate-45 transition">+</span></summary>
-          <p class="mt-3 text-[0.92rem] text-[var(--ls-text-secondary)]">FileStore locking, API-key RBAC (<code>rbac.py</code>), CORS allowlist, audit JSONL append-only, cost budgets, fail-closed gates. See <a href="/security" class="underline">/security</a> + ADR-012.</p>
-        </details>
-        <details class="group bg-white rounded-[10px] border border-[var(--ls-card-border)] p-4" data-track="faq_click">
-          <summary class="list-none flex items-center justify-between gap-4 cursor-pointer font-medium">Do we need to book a call to evaluate?<span class="shrink-0 w-7 h-7 grid place-items-center rounded-[8px] border border-[var(--ls-warm)] group-open:rotate-45 transition">+</span></summary>
-          <p class="mt-3 text-[0.92rem] text-[var(--ls-text-secondary)]">No — copy the install, run it locally, read <a href="/docs" class="underline">docs</a>. Book deployment only if you want forward-deployed engineers.</p>
-        </details>
-      </div>
-    </div>
-  </section>
+  {/* ── SECTION 2: THESIS ────────────────────────────────────────────── */}
+  <Thesis />
 
-  <!-- FINAL CTA -->
-  <section class="bg-white py-[56px] md:py-[72px]">
-    <div class="ls-shell grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 items-start">
-      <div>
-        <h2 class="font-semibold tracking-[-0.02em] text-[clamp(1.9rem,4vw,2.6rem)] leading-[1.08]">Begin your AI company.</h2>
-        <p class="mt-3 text-[var(--ls-text-secondary)] max-w-[52ch]">Copy the command, or book 30 minutes with the Human CEO + VP Engineering. No gatekeeping — the CLI is the proof.</p>
-        <div class="mt-6 rounded-[10px] bg-[var(--ls-ink)] text-white p-5 font-mono text-[0.84rem] flex items-center justify-between gap-3">
-          <code id="cta-cmd" class="truncate text-[rgba(243,246,247,0.92)]">uv sync && ai-company company run</code>
-          <button id="cta-copy" class="shrink-0 rounded-[6px] bg-white text-[var(--ls-ink)] px-4 py-2 font-semibold text-[0.76rem]" data-track="click_cta_copy">copy</button>
-        </div>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <a href="/contact" class="inline-flex rounded-[10px] bg-[var(--ls-ink)] text-white px-5 py-3 text-[0.9rem] font-medium hover:opacity-90 transition" data-track="click_final_book">Book deployment</a>
-          <a href="https://github.com/jmlusu/light-speed-holdings" class="inline-flex rounded-[10px] border border-[var(--ls-ink)] px-5 py-3 text-[0.9rem] font-medium hover:bg-[var(--ls-sage)] transition" data-track="click_final_github">Star on GitHub</a>
-        </div>
-      </div>
+  {/* ── SECTION 3: METHODOLOGY ────────────────────────────────────────────── */}
+  <Methodology />
 
-      <div class="rounded-[16px] border border-[var(--ls-card-border)] shadow-[var(--ls-shadow-card)] overflow-hidden bg-white">
-        <div class="p-5 border-b border-[var(--ls-divider)] bg-[var(--ls-pearl)]">
-          <div class="font-semibold">Book a 30-min call</div>
-          <div class="font-mono text-[0.74rem] text-[var(--ls-ink-muted)] mt-0.5">calendar · human handoff</div>
-        </div>
-        <div id="cal-inline" class="min-h-[380px] grid place-items-center bg-[var(--ls-pearl)] p-6 text-center">
-          <div>
-            <p class="text-[0.9rem] text-[var(--ls-ink-muted)]">Scheduling via Cal.com (free tier) — configure in env</p>
-            <a href="/contact" class="mt-3 inline-flex rounded-[10px] bg-[var(--ls-ink)] text-white px-5 py-2.5 text-[0.9rem] font-medium">Go to contact</a>
-            <p class="mt-3 text-[0.72rem] text-[var(--ls-ink-muted)]">Set <code>CAL_LINK</code> in Vercel env to embed inline.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  {/* ── SECTION 4: SERVICES ────────────────────────────────────────────── */}
+  <Services />
 
-  <!-- Sticky install bar -->
-  <div class="fixed bottom-0 inset-x-0 z-40 bg-[var(--ls-ink)] text-white border-t border-white/10 hidden md:flex items-center justify-center gap-3 py-3 text-[0.84rem]">
-    <span class="opacity-80 font-mono">uv sync && ai-company company run</span>
-    <button id="sticky-copy" class="rounded-[6px] bg-white text-[var(--ls-ink)] px-3 py-1 font-semibold text-[0.72rem]" data-track="click_sticky_copy">copy</button>
-    <a href="/docs" class="text-white/60 hover:text-white underline underline-offset-4 decoration-white/30">Read docs</a>
-  </div>
+  {/* ── SECTION 5: USE CASES ────────────────────────────────────────────── */}
+  <UseCases />
 
-  <script is:inline>
-    const cmd = "uv sync && ai-company company run";
-    const copy = (btn) => {
-      navigator.clipboard?.writeText(cmd);
-      const orig = btn.textContent;
-      btn.textContent = "copied ✓";
-      setTimeout(() => (btn.textContent = orig), 1500);
-    };
-    document.getElementById("copy-install")?.addEventListener("click", (e) => copy(e.currentTarget.querySelector("span:last-child") || e.currentTarget));
-    document.getElementById("cta-copy")?.addEventListener("click", (e) => copy(e.currentTarget));
-    document.getElementById("sticky-copy")?.addEventListener("click", (e) => copy(e.currentTarget));
-  </script>
+  {/* ── SECTION 6: AI COMPANY BUILDER PROOF ────────────────────────────────────────────── */}
+  <AiCompanyBuilder />
 
-  <script is:inline>
-    // Single orchestrated moment — the org graph reveals once.
-    const cap = document.getElementById("graph-cap");
-    const svgs = {
-      core: document.getElementById("org-graph"),
-      full: document.getElementById("org-graph-full"),
-    };
-    const DEFAULTS = {
-      core: "144 agents · 12 core departments · hover to isolate",
-      full: "144 agents · all 20 departments · hover to isolate",
-    };
-    let view = "core";
-    const setDefault = () => { if (cap) cap.textContent = DEFAULTS[view]; };
-    const setCap = (label) => { if (cap) cap.textContent = label ?? DEFAULTS[view]; };
+  {/* ── SECTION 7: AFRICA/SADC POSITIONING ────────────────────────────────────────────── */}
+  <AfricaPositioning />
 
-    Object.values(svgs).filter(Boolean).forEach((graph) => {
-      graph.addEventListener("mouseover", (e) => setCap(e.target.closest?.(".graph-cluster")?.dataset?.label));
-      graph.addEventListener("focusin", (e) => setCap(e.target.closest?.(".graph-cluster")?.dataset?.label));
-      graph.addEventListener("mouseleave", setDefault);
-      graph.addEventListener("focusout", (e) => { if (!graph.contains(e.relatedTarget)) setDefault(); });
-    });
+  {/* ── SECTION 8: RESEARCH ────────────────────────────────────────────── */}
+  <Research />
 
-    const reveal = (graph) => {
-      graph.classList.remove("in");
-      void graph.getBoundingClientRect();
-      requestAnimationFrame(() => requestAnimationFrame(() => graph.classList.add("in")));
-    };
-
-    const show = (next) => {
-      if (next === view || !svgs[next]) return;
-      view = next;
-      Object.entries(svgs).forEach(([key, graph]) => {
-        graph.hidden = key !== next;
-        graph.setAttribute("aria-hidden", String(key !== next));
-      });
-      reveal(svgs[next]);
-      document.querySelectorAll("#graph-switch [data-view]").forEach((b) => {
-        const active = b.dataset.view === next;
-        b.classList.toggle("is-active", active);
-        b.setAttribute("aria-pressed", String(active));
-      });
-      setDefault();
-    };
-
-    document.getElementById("graph-switch")?.addEventListener("click", (e) => {
-      const b = e.target.closest?.("[data-view]");
-      if (b) show(b.dataset.view);
-    });
-
-    svgs.full.hidden = true;
-    svgs.full.setAttribute("aria-hidden", "true");
-    if (svgs.core) reveal(svgs.core);
-  </script>
-
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type":"Question","name":"How is this different from consulting?","acceptedAnswer":{"@type":"Answer","text":"LightSpeed gives you a company: 144 agents, governed queue, memory, audit."}},
-      {"@type":"Question","name":"How fast is the assessment?","acceptedAnswer":{"@type":"Answer","text":"45s to generate, dashboard live, next tick."}},
-      {"@type":"Question","name":"How much does it cost?","acceptedAnswer":{"@type":"Answer","text":"CLI free, pay inference tracked per task."}},
-      {"@type":"Question","name":"Data security?","acceptedAnswer":{"@type":"Answer","text":"RBAC, CORS, FileStore locking, audit JSONL."}}
-    ]
-  })} />
+  {/* ── SECTION 9: FINAL CTA ────────────────────────────────────────────── */}
+  <FinalCTA />
 </BaseLayout>
