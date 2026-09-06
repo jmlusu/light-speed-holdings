@@ -1,42 +1,51 @@
 :root {
-  /* Ink / text */
-  --ls-ink: #1B2A27;
-  --ls-ink-muted: #6B7672; /* a11y fix: 4.6:1 on cream vs #7A857F 3.3:1 */
-  --ls-text-secondary: #4A5550;
-  --ls-accent: #4A5C44;
-  --ls-accent-hover: #3A4935;
-  --ls-accent-2: #0ea5e9; /* sky per T1 — links/diagram accents */
-  --ls-accent-2-hover: #0284c7;
-  /* Backgrounds — Foaster cream rhythm */
-  --ls-cream: #f6f1ec;
-  --ls-sage: #f2f4f1;
-  --ls-pearl: #f9f7f4;
-  --ls-warm: #E5E9E2;
+  /* Ink / text — blue-black instrument palette */
+  --ls-ink:            #0F1E2C;
+  --ls-ink-muted:      #5A6B7A;
+  --ls-text-secondary: #43535F;
+  --ls-accent:         #0E9EC7; /* control-plane cyan — surgical */
+  --ls-accent-hover:   #0B7FA0;
+  --ls-accent-2:       #0B7FA0; /* secondary instrument accent */
+  --ls-accent-2-hover: #096B87;
+
+  /* Surfaces — cool graphite-tinted paper (replaces Foaster cream) */
+  --ls-cream: #F3F6F7;   /* base paper — name kept for cross-page stability */
+  --ls-sage:  #EBF0F2;   /* alt band */
+  --ls-pearl: #FBFCFC;   /* raised surface */
+  --ls-warm:  #D9E2E9;   /* ghost / borderline */
   --ls-white: #FFFFFF;
-  --ls-divider: rgba(27, 42, 39, 0.08);
-  --ls-card-border: rgba(27, 42, 39, 0.08);
+  --ls-divider:     rgba(15, 30, 44, 0.10);
+  --ls-card-border: rgba(15, 30, 44, 0.12);
+
+  /* Status — control-plane semantics only */
+  --ls-ok:   #10B981;
+  --ls-warn: #F59E0B;
+
   /* Spacing / shell */
   --ls-nav-h: 72px;
   --ls-max: 1460px;
   --ls-inner: 1200px;
   --ls-gutter: 40px;
-  /* Radius / shadow */
+
+  /* Radius / shadow — one small scale, cool-toned shadows */
   --ls-radius-pill: 999px;
-  --ls-radius-card: 32px;
-  --ls-radius-video: 24px;
+  --ls-radius-card: 16px;
+  --ls-radius-md:   8px;
+  --ls-radius-video: 12px;
   --ls-radius-method: 6px;
-  --ls-shadow-video: 0 50px 120px rgba(0, 0, 0, 0.12);
-  --ls-shadow-dropdown: 0 8px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-  --ls-shadow-card: 0 40px 100px rgba(0, 0, 0, 0.06);
-  --ls-shadow-faq: 0 30px 60px rgba(0, 0, 0, 0.04);
-  /* Fonts — Geist per map, Instrument Serif wordmark only */
-  --ls-font-sans: "Geist", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --ls-font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
-  --ls-font-serif: "Instrument Serif", Georgia, serif;
+  --ls-shadow-video: 0 40px 90px rgba(15, 30, 44, 0.14);
+  --ls-shadow-dropdown: 0 8px 32px rgba(15, 30, 44, 0.10), 0 2px 8px rgba(15, 30, 44, 0.05);
+  --ls-shadow-card: 0 32px 72px rgba(15, 30, 44, 0.09);
+  --ls-shadow-faq: 0 24px 48px rgba(15, 30, 44, 0.06);
+
+  /* Fonts — Bricolage Grotesque + JetBrains Mono (instrument only) */
+  --ls-font-sans: "Bricolage Grotesque", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ls-font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --ls-font-serif: var(--ls-font-sans); /* legacy alias — resolves to Bricolage */
 }
 
 @media (max-width: 768px) {
-  :root { --ls-gutter: 20px; --ls-radius-video: 16px; }
+  :root { --ls-gutter: 20px; --ls-radius-video: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

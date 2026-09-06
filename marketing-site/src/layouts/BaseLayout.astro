@@ -21,10 +21,7 @@ const ogUrl = `${site}${Astro.url.pathname}`;
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Geist + Inter + Instrument Serif via Google Fonts — swap to self-host later if needed -->
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Self-hosted Bricolage Grotesque + JetBrains Mono via @fontsource (global.css) -->
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -40,7 +37,7 @@ const ogUrl = `${site}${Astro.url.pathname}`;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${site}${ogImage}`} />
-    <meta name="theme-color" content="#f6f1ec" />
+    <meta name="theme-color" content="#f3f6f7" />
 
     <!-- JSON-LD Organization -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -62,10 +59,10 @@ const ogUrl = `${site}${Astro.url.pathname}`;
     <a class="skip-link" href="#main">Skip to content</a>
 
     <!-- NAV — fixed blur, Foaster parity + a11y -->
-    <header id="site-header" class="fixed top-0 inset-x-0 z-50 h-[72px] flex items-center bg-[rgba(246,241,236,0.92)] backdrop-blur-[12px] border-b border-transparent transition-colors">
+    <header id="site-header" class="fixed top-0 inset-x-0 z-50 h-[72px] flex items-center bg-[rgba(243,246,247,0.92)] backdrop-blur-[12px] border-b border-transparent transition-colors">
       <nav class="ls-shell w-full flex items-center justify-between gap-6" aria-label="Main">
-        <a href="/" class="font-[var(--ls-font-serif)] text-[1.35rem] tracking-[-0.03em] font-normal" style="transform: scaleX(0.96); transform-origin: left;" aria-label="LightSpeed Holdings — home">
-          LightSpeed<span class="font-semibold"> Holdings</span>
+        <a href="/" class="flex items-baseline gap-1 text-[1.28rem] font-bold tracking-[-0.02em]" aria-label="LightSpeed Holdings — home">
+          LightSpeed<span class="font-normal text-[var(--ls-ink-muted)]"> Holdings</span>
         </a>
 
         <!-- Desktop nav -->
@@ -74,7 +71,7 @@ const ogUrl = `${site}${Astro.url.pathname}`;
             <button class="inline-flex items-center gap-1.5 focus-visible:outline-none" aria-haspopup="true" aria-expanded="false">
               Platform <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             </button>
-            <div class="absolute left-0 top-[calc(100%+14px)] min-w-[380px] hidden group-hover:block group-focus-within:block bg-white/95 backdrop-blur-[20px] rounded-[12px] border border-[rgba(0,0,0,.06)] shadow-[var(--ls-shadow-dropdown)] p-2">
+            <div class="absolute left-0 top-[calc(100%+14px)] min-w-[380px] hidden group-hover:block group-focus-within:block bg-white/95 backdrop-blur-[20px] rounded-[10px] border border-[var(--ls-card-border)] shadow-[var(--ls-shadow-dropdown)] p-2">
               <a href="/platform" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)]"><div class="font-semibold text-[0.95rem]">Platform</div><div class="text-[0.82rem] text-[var(--ls-ink-muted)]">Define → Generate → Orchestrate → Execute → Learn</div></a>
               <a href="/agents" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)]"><div class="font-semibold text-[0.95rem]">144 Agents</div><div class="text-[0.82rem] text-[var(--ls-ink-muted)]">20 departments, filtered directory</div></a>
               <a href="/how-it-works" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)]"><div class="font-semibold text-[0.95rem]">How it works</div><div class="text-[0.82rem] text-[var(--ls-ink-muted)]">4-phase method with time boxes</div></a>
@@ -86,7 +83,7 @@ const ogUrl = `${site}${Astro.url.pathname}`;
           <a href="/changelog" class="hover:text-[var(--ls-accent)]">Changelog</a>
           <div class="relative group">
             <button class="inline-flex items-center gap-1.5" aria-haspopup="true">Resources <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-            <div class="absolute left-0 top-[calc(100%+14px)] min-w-[240px] hidden group-hover:block group-focus-within:block bg-white/95 backdrop-blur-[20px] rounded-[12px] border border-[rgba(0,0,0,.06)] shadow-[var(--ls-shadow-dropdown)] p-2">
+            <div class="absolute left-0 top-[calc(100%+14px)] min-w-[240px] hidden group-hover:block group-focus-within:block bg-white/95 backdrop-blur-[20px] rounded-[10px] border border-[var(--ls-card-border)] shadow-[var(--ls-shadow-dropdown)] p-2">
               <a href="/docs" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)] text-[0.9rem]">Docs</a>
               <a href="/research" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)] text-[0.9rem]">Research</a>
               <a href="https://github.com/jmlusu/light-speed-holdings" class="block p-3 rounded-[8px] hover:bg-[var(--ls-pearl)] text-[0.9rem]">GitHub ↗</a>
@@ -97,11 +94,11 @@ const ogUrl = `${site}${Astro.url.pathname}`;
 
         <div class="hidden md:flex items-center gap-3">
           <a href="https://github.com/jmlusu/light-speed-holdings" class="hidden lg:inline text-[0.85rem] text-[var(--ls-ink-muted)] hover:text-[var(--ls-ink)]">★ GitHub</a>
-          <a href="/contact" class="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[var(--ls-ink)] text-white text-[0.9rem] font-medium hover:opacity-85 transition" data-track="click_nav_book_call">Book deployment</a>
+          <a href="/contact" class="inline-flex items-center justify-center h-9 px-5 rounded-[10px] bg-[var(--ls-ink)] text-white text-[0.9rem] font-medium hover:opacity-85 transition" data-track="click_nav_book_call">Book deployment</a>
         </div>
 
         <!-- Mobile burger -->
-        <button id="nav-burger" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-full border border-[var(--ls-warm)]" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
+        <button id="nav-burger" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-[10px] border border-[var(--ls-warm)]" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
           <span class="burger-icon" aria-hidden="true">
             <span class="block w-[18px] h-[2px] bg-[var(--ls-ink)] my-1 transition"></span>
             <span class="block w-[18px] h-[2px] bg-[var(--ls-ink)] my-1 transition"></span>
@@ -120,7 +117,7 @@ const ogUrl = `${site}${Astro.url.pathname}`;
           <a href="/changelog">Changelog</a>
           <a href="/about">About</a>
           <a href="https://github.com/jmlusu/light-speed-holdings">GitHub</a>
-          <a href="/contact" class="mt-2 inline-flex justify-center rounded-full bg-[var(--ls-ink)] text-white py-3" data-track="click_mobile_book">Book deployment</a>
+          <a href="/contact" class="mt-2 inline-flex justify-center rounded-[10px] bg-[var(--ls-ink)] text-white py-3" data-track="click_mobile_book">Book deployment</a>
         </div>
       </div>
     </header>
@@ -133,7 +130,7 @@ const ogUrl = `${site}${Astro.url.pathname}`;
     <footer class="border-t border-[var(--ls-divider)] bg-white mt-16">
       <div class="ls-shell py-10 flex flex-col md:flex-row gap-10 justify-between">
         <div>
-          <div class="font-[var(--ls-font-serif)] text-[1.15rem]">LightSpeed Holdings</div>
+          <div class="font-bold text-[1.15rem] tracking-[-0.01em]">LightSpeed Holdings</div>
           <p class="text-[0.88rem] text-[var(--ls-ink-muted)] mt-2 max-w-[36ch]">The operating system for AI-powered companies — 144 agents, 20 departments, 30+ commands.</p>
           <div class="mt-4 flex gap-3 text-[0.85rem] text-[var(--ls-ink-muted)]">
             <a href="https://github.com/jmlusu/light-speed-holdings" class="hover:text-[var(--ls-ink)]">GitHub</a>

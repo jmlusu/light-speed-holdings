@@ -1,9 +1,28 @@
 @import "tailwindcss";
+@import "@fontsource/bricolage-grotesque/400.css";
+@import "@fontsource/bricolage-grotesque/500.css";
+@import "@fontsource/bricolage-grotesque/600.css";
+@import "@fontsource/bricolage-grotesque/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/600.css";
 @import "./tokens.css";
 
-/* Base reset + a11y — Foaster-parity + LightSpeed fixes */
+@theme {
+  --font-sans: "Bricolage Grotesque", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+#graph-switch [data-view] {
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+#graph-switch [data-view].is-active {
+  background-color: var(--ls-ink);
+  color: var(--ls-white);
+}
+
+/* Base reset + a11y */
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 body {
   margin: 0;
   font-family: var(--ls-font-sans);
@@ -21,9 +40,32 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 img, video { max-width: 100%; display: block; }
 ::selection { background: var(--ls-accent); color: white; }
 
-/* Utility shells — matches Foaster 1460/1200 + 40→20 gutters */
+/* Utility shells */
 .ls-shell { max-width: var(--ls-max); margin-inline: auto; padding-inline: var(--ls-gutter); }
 .ls-inner { max-width: var(--ls-inner); margin-inline: auto; padding-inline: var(--ls-gutter); }
+
+/* Instrument caption — sentence-case mono readouts for headings/panels */
+.mono-cap {
+  font-family: var(--ls-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  color: var(--ls-ink-muted);
+}
+.mono-cap code, code.mono { font-family: var(--ls-font-mono); }
+
+/* Single orchestrated reveal for the org graph */
+.org-graph { opacity: 0; transform: translateY(10px); transition: opacity .9s ease, transform .9s ease; }
+.org-graph.in { opacity: 1; transform: none; }
+
+/* Hover isolation — one department at a time */
+.org-graph-hover .graph-cluster { transition: opacity .25s ease; }
+.org-graph-hover:hover .graph-cluster { opacity: 0.28; }
+.org-graph-hover:hover .graph-cluster:hover { opacity: 1; }
+.org-graph-hover:focus-within .graph-cluster { opacity: 0.28; }
+.org-graph-hover:focus-within .graph-cluster:focus-within { opacity: 1; }
+.org-graph-hover:hover .graph-edge { opacity: 0.35; }
+.org-graph-hover:focus-within .graph-edge { opacity: 0.35; }
+.org-graph .graph-cluster:focus-visible { outline: 2px solid var(--ls-accent); outline-offset: 3px; border-radius: 12px; }
 
 /* Smooth fade util for IO */
 .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
