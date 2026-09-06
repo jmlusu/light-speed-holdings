@@ -2,17 +2,17 @@
 
 ## Executive Summary
 
-The Astro build **already works** with Node.js 22/24. No code changes are needed in the `marketing-site` directory for the build to succeed. The build and `astro check` both pass with Node.js v24.18.1 and Astro v7.2.9.
+The Astro build **already works** with Node.js 22/24. No code changes are needed in the `lightspeed-main-site` directory for the build to succeed. The build and `astro check` both pass with Node.js v24.18.1 and Astro v7.2.9.
 
 ## Verification Results
 
 ### 1. Node.js Version Dependencies Check
 
-**`marketing-site/package.json`**:
+**`lightspeed-main-site/package.json`**:
 - `"engines": { "node": ">=22.12.0" }` — Already correctly specifies Node 22+
-- No `engines` field in `marketing-site/tsconfig.json` (extends `astro/tsconfigs/strict`)
+- No `engines` field in `lightspeed-main-site/tsconfig.json` (extends `astro/tsconfigs/strict`)
 
-**`marketing-site/src/` source code**:
+**`lightspeed-main-site/src/` source code**:
 - No Node.js version-specific code found in `.astro`, `.ts`, or `.js` files
 - No `process.env` references that would constrain Node version
 - No `require()` calls in Astro pages (all uses are Astro framework imports)
@@ -42,7 +42,7 @@ No deprecated APIs or configurations found that would block Node 22/24 compatibi
 
 **Astro v7.2.9** is the latest in the v7.x line and is fully compatible with Node.js 22 and 24. Astro v7 requires Node.js >= 18, and has been tested/verified with Node 20+, 22, and 24.
 
-## Code Changes Needed in marketing-site
+## Code Changes Needed in lightspeed-main-site
 
 **None required.** The build succeeds as-is with Node.js 22/24.
 

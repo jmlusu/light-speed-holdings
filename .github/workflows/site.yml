@@ -7,12 +7,12 @@ on:
   push:
     branches: [main]
     paths:
-      - "marketing-site/**"
+      - "lightspeed-main-site/**"
       - ".github/workflows/site.yml"
   pull_request:
     branches: [main]
     paths:
-      - "marketing-site/**"
+      - "lightspeed-main-site/**"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 
@@ -29,14 +29,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: marketing-site
+        working-directory: lightspeed-main-site
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v5
         with:
           node-version: "22.x"
           cache: npm
-          cache-dependency-path: marketing-site/package-lock.json
+          cache-dependency-path: lightspeed-main-site/package-lock.json
       - name: Install
         run: npm ci
       - name: Content lint — product-meta schema + sitemap check
@@ -57,11 +57,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: site-dist
-          path: marketing-site/dist
+          path: lightspeed-main-site/dist
           if-no-files-found: error
 
   # Optional: deploy to GitHub Pages on main (free). Vercel deploys via its own Git integration (recommended per map #157).
-  # Keep this job separate so it never blocks PRs that only touch marketing-site stubs.
+  # Keep this job separate so it never blocks PRs that only touch lightspeed-main-site stubs.
   deploy-pages:
     name: Deploy (GitHub Pages — DR)
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

@@ -1,0 +1,35 @@
+departments:
+  - id: "executive"
+    name: "Executive"
+    executive: "human_ceo"
+    mission: "Set firm vision, strategy, and culture. Orchestrate the organization."
+    budget_category: "operations"
+    headcount_target: 2
+
+  - id: "consulting"
+    name: "Consulting"
+    executive: "consulting_lead"
+    mission: "Deliver discovery and advisory engagements that map workflows and identify transformation opportunities."
+    budget_category: "growth"
+    headcount_target: 4
+
+  - id: "delivery"
+    name: "Delivery"
+    executive: "delivery_lead"
+    mission: "Design and implement client solutions to quality standards and on time."
+    budget_category: "operations"
+    headcount_target: 4
+
+  - id: "sales"
+    name: "Sales"
+    executive: "sales_lead"
+    mission: "Generate revenue through new business acquisition and pipeline management."
+    budget_category: "growth"
+    headcount_target: 3
+
+  - id: "client_success"
+    name: "Client Success"
+    executive: "client_success_lead"
+    mission: "Own client onboarding, support, retention, and expansion."
+    budget_category: "growth"
+    headcount_target: 2
