@@ -32,6 +32,8 @@ jobs:
         working-directory: lightspeed-main-site
     steps:
       - uses: actions/checkout@v7
+        with:
+          sparse-checkout: false
       - uses: actions/setup-node@v5
         with:
           node-version: "22.x"
