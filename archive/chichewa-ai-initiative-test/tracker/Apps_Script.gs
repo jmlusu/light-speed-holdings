@@ -1,22 +1,26 @@
 /**
  * CHICHEWA AI INITIATIVE — NEGOTIATION TRACKER AUTOMATION
- * Google Apps Script for daily standup sync, overdue alerts, and Notion integration
+ * Google Apps Script for daily standup email, overdue alerts, and Notion integration
  *
  * SETUP INSTRUCTIONS:
  * 1. Open Google Sheet → Extensions → Apps Script
  * 2. Paste this code into Code.gs
- * 3. Save → Set trigger (below) → Authorize
- * 4. Configure webhook URL in setConfig() below
+ * 3. Save → Run setupTriggers() → Authorize
+ * 4. Notion API key and email are pre-configured below
  */
 
 // ============================================================
-// CONFIGURATION — UPDATE THESE VALUES
+// CONFIGURATION
 // ============================================================
 
 function getConfig() {
   return {
-    // Slack webhook URL for alerts
-    SLACK_WEBHOOK_URL: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL',
+    // Notion configuration
+    NOTION_API_KEY: 'YOUR_NOTION_API_KEY',  // REPLACE WITH YOUR NOTION INTEGRATION TOKEN
+    NOTION_DATABASE_ID: 'YOUR_DATABASE_ID',  // UPDATE THIS: Open Notion DB → Share → Copy link → extract 32-char ID
+
+    // Email for reports
+    REPORT_EMAIL: 'jmlusu@gmail.com',
 
     // Sheet names (must match your tab names)
     SHEETS: {
@@ -39,62 +43,29 @@ function getConfig() {
       NOTES: 7         // Column H (Notes)
     },
 
-    // Today's standup time (UTC)
-    STANDUP_HOUR: 7,   // 7 AM UTC = 9 AM CAT (Malawi)
+    // Timezone
+    TIMEZONE: 'Africa/Blantyre',  // CAT (UTC+2)
 
     // Critical dates
     GATE_1_DATE: '2026-09-30',
     GATE_2_DATE: '2026-10-30',
-    GATE_3_DATE: '2026-11-29',
-
-    // Team member Slack IDs (for @mentions)
-    TEAM_SLACK_IDS: {
-      'CEO': '<@U00000000>',
-      'CTO': '<@U00000001>',
-      'COO': '<@U00000002',
-      'CLO': '<@U00000003>',
-      'CSO': '<@U00000004>',
-      'BD Lead': '<@U00000005>',
-      'PM': '<@U00000006>',
-      'ML Eng': '<@U00000007>',
-      'CTO/ML': '<@U00000001>',
-      'Malawi Liaison': '<@U00000008>',
-      'CFO': '<@U00000009>'
-    }
+    GATE_3_DATE: '2026-11-29'
   };
 }
 
 // ============================================================
-// DAILY STANDUP — Auto-generate and post to Slack
+// DAILY STANDUP — Email report (runs 9 AM CAT daily)
 // ============================================================
 
 function dailyStandup() {
   const config = getConfig();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const today = new Date();
-  const todayStr = Utilities.formatDate(today, 'UTC', 'yyyy-MM-dd');
+  const todayStr = Utilities.formatDate(today, config.TIMEZONE, 'yyyy-MM-dd');
 
-  let blocks = [];
-
-  // Header
-  blocks.push({
-    type: 'header',
-    text: {
-      type: 'plain_text',
-      text: '📊 Daily Standup — ' + todayStr,
-      emoji: true
-    }
-  });
-
-  blocks.push({
-    type: 'section',
-    text: {
-      type: 'mrkdwn',
-      text: '*Chichewa AI Initiative — Negotiation Tracker*'
-    }
-  });
-
-  blocks.push({ type: 'divider' });
+  let report = '📊 DAILY STANDUP — ' + todayStr + '\n';
+  report += 'Chichewa AI Initiative — Negotiation Tracker\n';
+  report += '================================================\n\n';
 
   // Gate countdown
   const gate1 = new Date(config.GATE_1_DATE);
@@ -102,23 +73,17 @@ function dailyStandup() {
 
   let gateStatus = '';
   if (daysToGate1 > 0) {
-    gateStatus = ':alarm_clock: *Gate 1 (Day 30):* ' + daysToGate1 + ' days remaining — ' + config.GATE_1_DATE;
+    gateStatus = '⏰ Gate 1 (Day 30): ' + daysToGate1 + ' days remaining — ' + config.GATE_1_DATE;
   } else if (daysToGate1 === 0) {
-    gateStatus = ':rotating_light: *GATE 1 TODAY* — GO/NO-GO DECISION REQUIRED';
+    gateStatus = '🚨 GATE 1 TODAY — GO/NO-GO DECISION REQUIRED';
   } else {
-    gateStatus = ':white_check_mark: Gate 1 passed (' + Math.abs(daysToGate1) + ' days ago)';
+    gateStatus = '✅ Gate 1 passed (' + Math.abs(daysToGate1) + ' days ago)';
   }
+  report += gateStatus + '\n\n';
 
-  blocks.push({
-    type: 'section',
-    text: {
-      type: 'mrkdwn',
-      text: gateStatus
-    }
-  });
-
-  // Iterate through partner sheets and find overdue/today items
+  // Iterate through partner sheets
   const sheets = [config.SHEETS.OI, config.SHEETS.ZBS, config.SHEETS.MINAG, config.SHEETS.WB];
+  let hasItems = false;
 
   for (const sheetName of sheets) {
     try {
@@ -138,78 +103,47 @@ function dailyStandup() {
         const priority = data[i][config.COL.PRIORITY] || 'Medium';
 
         if (!dueDateStr || dueDateStr === '') continue;
+        if (status === 'Done' || status === 'Completed') continue;
 
         const dueDate = new Date(dueDateStr);
         const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
 
-        if (status === 'Done' || status === 'Completed') continue;
-
-        const slackId = config.TEAM_SLACK_IDS[owner] || owner;
-
         if (diffDays < 0) {
-          overdue.push({
-            sheet: sheetName,
-            deliverable: deliverable,
-            owner: slackId,
-            daysOverdue: Math.abs(diffDays),
-            priority: priority
-          });
+          overdue.push({ sheet: sheetName, deliverable, owner, daysOverdue: Math.abs(diffDays), priority });
         } else if (diffDays === 0) {
-          dueToday.push({
-            sheet: sheetName,
-            deliverable: deliverable,
-            owner: slackId,
-            priority: priority
-          });
+          dueToday.push({ sheet: sheetName, deliverable, owner, priority });
         } else if (diffDays <= 7) {
-          dueThisWeek.push({
-            sheet: sheetName,
-            deliverable: deliverable,
-            owner: slackId,
-            daysOut: diffDays,
-            priority: priority
-          });
+          dueThisWeek.push({ sheet: sheetName, deliverable, owner, daysOut: diffDays, priority });
         }
       }
 
-      // Add overdue items
       if (overdue.length > 0) {
-        let overdueText = ':rotating_light: *OVERDUE — ' + sheetName + '*\n';
+        hasItems = true;
+        report += '🚨 OVERDUE — ' + sheetName + '\n';
         for (const item of overdue) {
-          const priorityEmoji = item.priority === 'Critical' ? ':red_circle:' :
-                               item.priority === 'High' ? ':large_orange_circle:' : ':large_blue_circle:';
-          overdueText += priorityEmoji + ' ' + item.deliverable + ' (+' + item.daysOverdue + 'd) — ' + item.owner + '\n';
+          const pEmoji = item.priority === 'Critical' ? '🔴 ' : item.priority === 'High' ? '🟠 ' : '🔵 ';
+          report += pEmoji + item.deliverable + ' (+' + item.daysOverdue + 'd) — ' + item.owner + '\n';
         }
-        blocks.push({
-          type: 'section',
-          text: { type: 'mrkdwn', text: overdueText }
-        });
+        report += '\n';
       }
 
-      // Add due today items
       if (dueToday.length > 0) {
-        let todayText = ':calendar: *DUE TODAY — ' + sheetName + '*\n';
+        hasItems = true;
+        report += '📅 DUE TODAY — ' + sheetName + '\n';
         for (const item of dueToday) {
-          const priorityEmoji = item.priority === 'Critical' ? ':red_circle:' :
-                               item.priority === 'High' ? ':large_orange_circle:' : ':large_blue_circle:';
-          todayText += priorityEmoji + ' ' + item.deliverable + ' — ' + item.owner + '\n';
+          const pEmoji = item.priority === 'Critical' ? '🔴 ' : item.priority === 'High' ? '🟠 ' : '🔵 ';
+          report += pEmoji + item.deliverable + ' — ' + item.owner + '\n';
         }
-        blocks.push({
-          type: 'section',
-          text: { type: 'mrkdwn', text: todayText }
-        });
+        report += '\n';
       }
 
-      // Add due this week items (summary only)
       if (dueThisWeek.length > 0) {
-        let weekText = ':page_facing_up: *DUE THIS WEEK — ' + sheetName + ' (' + dueThisWeek.length + ' items)*\n';
+        hasItems = true;
+        report += '📋 DUE THIS WEEK — ' + sheetName + ' (' + dueThisWeek.length + ' items)\n';
         for (const item of dueThisWeek) {
-          weekText += '• ' + item.deliverable + ' (' + item.daysOut + 'd) — ' + item.owner + '\n';
+          report += '  • ' + item.deliverable + ' (' + item.daysOut + 'd) — ' + item.owner + '\n';
         }
-        blocks.push({
-          type: 'section',
-          text: { type: 'mrkdwn', text: weekText }
-        });
+        report += '\n';
       }
 
     } catch (e) {
@@ -217,54 +151,42 @@ function dailyStandup() {
     }
   }
 
-  // Gate readiness summary
-  blocks.push({ type: 'divider' });
-
-  const gateCheck = checkGateReadiness(config, ss);
-  blocks.push({
-    type: 'section',
-    text: {
-      type: 'mrkdwn',
-      text: ':white_check_mark: *GATE 1 READINESS:* ' + gateCheck.readyCount + '/' + gateCheck.totalCount + ' deliverables complete'
-    }
-  });
-
-  // Footer
-  blocks.push({
-    type: 'context',
-    elements: [{
-      type: 'mrkdwn',
-      text: 'Auto-generated by Negotiation Tracker • Updated daily at 9 AM CAT'
-    }]
-  });
-
-  // Post to Slack
-  const payload = { blocks: blocks };
-  const options = {
-    method: 'post',
-    contentType: 'application/json',
-    payload: JSON.stringify(payload)
-  };
-
-  try {
-    UrlFetchApp.fetch(config.SLACK_WEBHOOK_URL, options);
-    Logger.log('Standup posted successfully');
-  } catch (e) {
-    Logger.log('Slack post failed: ' + e.toString());
+  if (!hasItems) {
+    report += '✅ No overdue or due-today items. All on track.\n\n';
   }
 
-  // Also update the tracker sheet with last sync time
-  const tracker = ss.getSheetByName('Gate Tracker');
+  // Gate readiness
+  const gateCheck = checkGateReadiness(config, ss);
+  report += '--- GATE 1 READINESS ---\n';
+  report += gateCheck.readyCount + '/' + gateCheck.totalCount + ' criteria complete\n';
+  for (const detail of gateCheck.details) {
+    report += '  ' + detail.replace(/[:✅❌]/g, '').trim() + '\n';
+  }
+
+  report += '\n---\n';
+  report += 'Auto-generated by Negotiation Tracker • ' + todayStr + ' CAT\n';
+  report += 'View tracker: [Google Sheet Link]\n';
+
+  // Send email
+  MailApp.sendEmail({
+    to: config.REPORT_EMAIL,
+    subject: '[Chichewa AI] Daily Standup — ' + todayStr,
+    body: report
+  });
+
+  // Log last run
+  const tracker = ss.getSheetByName(config.SHEETS.GATES);
   if (tracker) {
-    // Find the "Last Standup" cell or add one
     const lastRow = tracker.getLastRow();
     tracker.getRange(lastRow + 1, 1).setValue('Last Standup');
     tracker.getRange(lastRow + 1, 2).setValue(todayStr);
   }
+
+  Logger.log('Daily standup email sent to ' + config.REPORT_EMAIL);
 }
 
 // ============================================================
-// OVERDUE ALERT — Triggered every 4 hours
+// OVERDUE ALERT — Email every 4 hours if critical items overdue
 // ============================================================
 
 function overdueAlert() {
@@ -294,20 +216,18 @@ function overdueAlert() {
       const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
 
       if (diffDays < 0) {
-        overdueItems.push({
-          sheet: sheetName,
-          deliverable: deliverable,
-          owner: owner,
-          daysOverdue: Math.abs(diffDays),
-          priority: priority
-        });
+        overdueItems.push({ sheet: sheetName, deliverable, owner, daysOverdue: Math.abs(diffDays), priority });
       }
     }
   }
 
   if (overdueItems.length === 0) return;
 
-  // Sort by severity (Critical first, then by days overdue descending)
+  // Only alert on Critical/High priority overdue
+  overdueItems = overdueItems.filter(item => item.priority === 'Critical' || item.priority === 'High');
+  if (overdueItems.length === 0) return;
+
+  // Sort by severity
   overdueItems.sort((a, b) => {
     const priorityOrder = { 'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3 };
     if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
@@ -316,34 +236,24 @@ function overdueAlert() {
     return b.daysOverdue - a.daysOverdue;
   });
 
-  let text = ':rotating_light: *OVERDUE DELIVERABLES — ACTION REQUIRED*\n\n';
+  let text = '🚨 OVERDUE DELIVERABLES — ACTION REQUIRED\n\n';
 
   for (const item of overdueItems) {
-    const priorityEmoji = item.priority === 'Critical' ? ':red_circle:' :
-                         item.priority === 'High' ? ':large_orange_circle:' : ':large_blue_circle:';
-    const slackId = config.TEAM_SLACK_IDS[item.owner] || item.owner;
-    text += priorityEmoji + ' *' + item.sheet + '*: ' + item.deliverable +
-            ' (+' + item.daysOverdue + 'd overdue) — Owner: ' + slackId + '\n';
+    const pEmoji = item.priority === 'Critical' ? '🔴 ' : '🟠 ';
+    text += pEmoji + '*' + item.sheet + '*: ' + item.deliverable +
+            ' (+' + item.daysOverdue + 'd overdue) — Owner: ' + item.owner + '\n';
   }
 
-  text += '\n:x: Escalation: Please update status or blockers in the tracker immediately.';
+  text += '\n⚠️ Please update status or blockers in the tracker immediately.';
 
-  const payload = {
-    blocks: [{
-      type: 'section',
-      text: { type: 'mrkdwn', text: text }
-    }]
-  };
+  // Send email alert
+  MailApp.sendEmail({
+    to: config.REPORT_EMAIL,
+    subject: '🚨 [Chichewa AI] Overdue Alert — ' + overdueItems.length + ' critical items',
+    body: text
+  });
 
-  try {
-    UrlFetchApp.fetch(config.SLACK_WEBHOOK_URL, {
-      method: 'post',
-      contentType: 'application/json',
-      payload: JSON.stringify(payload)
-    });
-  } catch (e) {
-    Logger.log('Overdue alert failed: ' + e.toString());
-  }
+  Logger.log('Overdue alert sent for ' + overdueItems.length + ' items');
 }
 
 // ============================================================
@@ -353,7 +263,6 @@ function overdueAlert() {
 function checkGateReadiness(config, ss) {
   const today = new Date();
 
-  // Gate 1 criteria: OI JDA signed + ZBS NDA signed + MinAg MoU signed
   const gate1Criteria = [
     { sheet: config.SHEETS.OI, match: 'JDA signed (GATE 1)' },
     { sheet: config.SHEETS.ZBS, match: 'Data License Agreement signed (GATE 1)' },
@@ -376,34 +285,32 @@ function checkGateReadiness(config, ss) {
       if (deliverable.includes(criterion.match)) {
         if (status === 'Done' || status === 'Completed') {
           readyCount++;
-          details.push(':white_check_mark: ' + deliverable);
+          details.push('✅ ' + deliverable);
         } else {
-          details.push(':x: ' + deliverable + ' — Status: ' + status);
+          details.push('❌ ' + deliverable + ' — Status: ' + status);
         }
       }
     }
   }
 
-  return { readyCount: readyCount, totalCount: totalCount, details: details };
+  return { readyCount, totalCount, details };
 }
 
 // ============================================================
-// NOTION INTEGRATION — Sync status back to Notion project
+// NOTION INTEGRATION — Sync status to Notion database
 // ============================================================
 
-/**
- * Sync tracker status to Notion database
- * Requires: Notion API key and Database ID
- */
 function syncToNotion() {
   const config = getConfig();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  // Notion configuration (UPDATE THESE)
-  const NOTION_API_KEY = 'secret_YOUR_NOTION_API_KEY';
-  const NOTION_DATABASE_ID = 'YOUR_DATABASE_ID';
+  if (config.NOTION_DATABASE_ID === 'YOUR_DATABASE_ID') {
+    Logger.log('Notion sync skipped: DATABASE_ID not configured');
+    return;
+  }
 
   const sheets = [config.SHEETS.OI, config.SHEETS.ZBS, config.SHEETS.MINAG, config.SHEETS.WB];
+  let synced = 0;
 
   for (const sheetName of sheets) {
     const sheet = ss.getSheetByName(sheetName);
@@ -426,31 +333,16 @@ function syncToNotion() {
       else if (status === 'In Progress') notionStatus = 'In progress';
       else if (status === 'Blocked') notionStatus = 'Blocked';
 
-      // Create Notion page
       const payload = {
-        parent: { database_id: NOTION_DATABASE_ID },
+        parent: { database_id: config.NOTION_DATABASE_ID },
         properties: {
-          'Name': {
-            title: [{ text: { content: deliverable } }]
-          },
-          'Status': {
-            status: { name: notionStatus }
-          },
-          'Assignee': {
-            people: [] // Map owner to Notion user ID
-          },
-          'Due Date': dueDate ? {
-            date: { start: dueDate }
-          } : {},
-          'Priority': {
-            select: { name: priority }
-          },
-          'Source': {
-            select: { name: sheetName }
-          },
-          'Notes': {
-            rich_text: [{ text: { content: notes } }]
-          }
+          'Name': { title: [{ text: { content: deliverable } }] },
+          'Status': { status: { name: notionStatus } },
+          'Assignee': { people: [] },
+          'Due Date': dueDate ? { date: { start: dueDate } } : {},
+          'Priority': { select: { name: priority } },
+          'Source': { select: { name: sheetName } },
+          'Notes': { rich_text: [{ text: { content: notes } }] }
         }
       };
 
@@ -459,37 +351,39 @@ function syncToNotion() {
           method: 'post',
           contentType: 'application/json',
           headers: {
-            'Authorization': 'Bearer ' + NOTION_API_KEY,
+            'Authorization': 'Bearer ' + config.NOTION_API_KEY,
             'Notion-Version': '2022-06-28'
           },
           payload: JSON.stringify(payload)
         });
+        synced++;
       } catch (e) {
         Logger.log('Notion sync failed for ' + deliverable + ': ' + e.toString());
       }
     }
   }
 
-  Logger.log('Notion sync complete');
+  Logger.log('Notion sync complete: ' + synced + ' items');
 }
 
 // ============================================================
-// SUMMARY REPORT — Weekly email to CEO
+// WEEKLY SUMMARY REPORT — Email Monday 10 AM CAT
 // ============================================================
 
 function weeklySummaryReport() {
   const config = getConfig();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const today = new Date();
+  const todayStr = Utilities.formatDate(today, config.TIMEZONE, 'yyyy-MM-dd');
 
   let summary = 'CHICHEWA AI INITIATIVE — WEEKLY NEGOTIATION SUMMARY\n';
-  summary += 'Week of ' + Utilities.formatDate(today, 'UTC', 'yyyy-MM-dd') + '\n\n';
+  summary += 'Week of ' + todayStr + '\n\n';
 
   // Gate status
   const gateCheck = checkGateReadiness(config, ss);
   summary += 'GATE 1 STATUS: ' + gateCheck.readyCount + '/' + gateCheck.totalCount + ' criteria met\n';
   for (const detail of gateCheck.details) {
-    summary += '  ' + detail.replace(/:white_check_mark:|:x:/g, '').trim() + '\n';
+    summary += '  ' + detail.replace(/[✅❌]/g, '').trim() + '\n';
   }
 
   // Partner status
@@ -524,9 +418,9 @@ function weeklySummaryReport() {
   if (riskSheet) {
     const riskData = riskSheet.getDataRange().getValues();
     for (let i = 1; i < riskData.length; i++) {
-      const risk = riskData[i][1]; // Risk/Issue column
-      const severity = riskData[i][3]; // Severity column
-      const status = riskData[i][6]; // Status column
+      const risk = riskData[i][1];
+      const severity = riskData[i][3];
+      const status = riskData[i][6];
 
       if (status === 'Closed' || status === 'Resolved') continue;
 
@@ -536,16 +430,16 @@ function weeklySummaryReport() {
 
   // Send email
   MailApp.sendEmail({
-    to: 'ceo@lightspeed.ai',
-    subject: '[Chichewa AI] Weekly Negotiation Summary — ' + Utilities.formatDate(today, 'UTC', 'yyyy-MM-dd'),
+    to: config.REPORT_EMAIL,
+    subject: '[Chichewa AI] Weekly Negotiation Summary — ' + todayStr,
     body: summary
   });
 
-  Logger.log('Weekly summary sent');
+  Logger.log('Weekly summary sent to ' + config.REPORT_EMAIL);
 }
 
 // ============================================================
-// TRIGGER SETUP — Run this once to install triggers
+// TRIGGER SETUP — Run once to install triggers
 // ============================================================
 
 function setupTriggers() {
@@ -555,20 +449,20 @@ function setupTriggers() {
     ScriptApp.deleteTrigger(trigger);
   }
 
-  // Daily standup at 7 AM UTC (9 AM CAT)
+  // Daily standup at 9 AM CAT (7 AM UTC)
   ScriptApp.newTrigger('dailyStandup')
     .timeBased()
     .everyDays(1)
-    .atHour(config.STANDUP_HOUR)
+    .atHour(7)
     .create();
 
-  // Overdue alert every 4 hours
+  // Overdue alert every 4 hours (only for Critical/High)
   ScriptApp.newTrigger('overdueAlert')
     .timeBased()
     .everyHours(4)
     .create();
 
-  // Weekly summary report (Monday 8 AM UTC = 10 AM CAT)
+  // Weekly summary report (Monday 10 AM CAT = 8 AM UTC)
   ScriptApp.newTrigger('weeklySummaryReport')
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.MONDAY)
@@ -582,31 +476,16 @@ function setupTriggers() {
     .create();
 
   Logger.log('All triggers installed successfully');
-}
-
-// ============================================================
-// UTILITY: Format date for display
-// ============================================================
-
-function formatDate(dateStr) {
-  if (!dateStr || dateStr === '') return 'No date';
-  const date = new Date(dateStr);
-  return Utilities.formatDate(date, 'UTC', 'yyyy-MM-dd');
-}
-
-// ============================================================
-// UTILITY: Get status color for conditional formatting
-// ============================================================
-
-function getStatusColor(status) {
-  switch (status) {
-    case 'Done': return '#00ff00';      // Green
-    case 'In Progress': return '#ffff00'; // Yellow
-    case 'Not Started': return '#ff6666'; // Red
-    case 'Blocked': return '#ff0000';     // Dark Red
-    case 'At Risk': return '#ff9900';     // Orange
-    default: return '#ffffff';            // White
-  }
+  MailApp.sendEmail({
+    to: getConfig().REPORT_EMAIL,
+    subject: '[Chichewa AI] Triggers Installed',
+    body: 'All automated triggers have been set up:\n\n' +
+      '• Daily Standup: 9 AM CAT (email)\n' +
+      '• Overdue Alert: Every 4 hours (email, Critical/High only)\n' +
+      '• Weekly Report: Monday 10 AM CAT (email)\n' +
+      '• Notion Sync: Every 6 hours\n\n' +
+      'Run "Check Gate Readiness" from the menu anytime.'
+  });
 }
 
 // ============================================================
@@ -617,12 +496,12 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
 
   ui.createMenu('🤖 Negotiation Tracker')
-    .addItem('📊 Generate Daily Standup', 'dailyStandup')
-    .addItem('🚨 Run Overdue Alert', 'overdueAlert')
-    .addItem('📈 Generate Weekly Report', 'weeklySummaryReport')
+    .addItem('📊 Generate Daily Standup (Email)', 'dailyStandup')
+    .addItem('🚨 Run Overdue Alert (Email)', 'overdueAlert')
+    .addItem('📈 Generate Weekly Report (Email)', 'weeklySummaryReport')
     .addItem('🔄 Sync to Notion', 'syncToNotion')
     .addSeparator()
-    .addItem('⚙️ Setup Triggers', 'setupTriggers')
+    .addItem('⚙️ Setup/Reset Triggers', 'setupTriggers')
     .addItem('📋 Check Gate Readiness', function() {
       const config = getConfig();
       const ss = SpreadsheetApp.getActiveSpreadsheet();
