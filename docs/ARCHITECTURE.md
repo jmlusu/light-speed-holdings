@@ -4,7 +4,7 @@
 
 ```
 src/ai_company/
-├── cli/                        # Typer CLI commands (30 subcommands)
+├── cli/                        # Typer CLI commands (31 subcommands)
 │   ├── main.py                 # App entry point, registers all subcommands
 │   ├── company.py              # Bootstrap engine CLI (company run/status)
 │   ├── decision.py             # Decision engine CLI (evaluate/matrix/tree)
@@ -109,6 +109,10 @@ src/ai_company/
 │       ├── marketing.py        # Marketing KPIs
 │       ├── sales.py            # Sales KPIs
 │       └── customer_success.py # Customer Success KPIs
+├── archify/                    # Archify diagram generation + rendering
+│   ├── __init__.py             # Public API: generate_specs, deliver, validate, compare
+│   ├── converter.py            # Registry → JSON IR (architecture/workflow/sequence/dataflow)
+│   └── renderer.py             # Node.js CLI wrapper (validate/deliver/compare)
 ├── doctor/                     # System diagnostics
 │   ├── __init__.py             # Doctor CLI entry point
 │   └── checks.py               # Individual check functions
@@ -208,7 +212,7 @@ config/*.yaml (19 files)
 
 | Entry Point | File | Purpose |
 |-------------|------|---------|
-| CLI | `cli/main.py:app` | Typer app, 30 subcommands |
+| CLI | `cli/main.py:app` | Typer app, 31 subcommands |
 | Config Loader | `config/__init__.py:load_config()` | YAML → CompanyRegistry |
 | Registry | `registry/__init__.py:load_registry()` | Load + parse + resolve + validate |
 | Bootstrap | `builder/__init__.py:BootstrapEngine` | Full company generation |
@@ -219,6 +223,7 @@ config/*.yaml (19 files)
 | Workflow | `workflow/engine.py:WorkflowEngine` | Workflow execution engine |
 | Memory | `memory/engine.py:MemoryStore` | 6-type memory persistence |
 | Graph | `graph/engine.py:GraphEngine` | 4-type graph construction |
+| Archify | `archify/converter.py:generate_specs` | Registry → Archify JSON IR diagrams |
 | Audit | `audit/writer.py:AuditWriter` | JSONL audit trail |
 | Dashboard | `dashboard/app.py:app` | FastAPI REST API |
 | KPIs | `dashboard/kpis/__init__.py:collect_all_kpis()` | 7-department KPI collection |

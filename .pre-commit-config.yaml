@@ -10,7 +10,7 @@ repos:
       - id: check-merge-conflict
       - id: check-added-large-files
         args: ["--maxkb=500"]
-        exclude: '^(brand|static/brand)/print/.*\.svg$'
+        exclude: '^(brand|static/brand)/print/.*\.svg$|\.opencode/skills/archify/assets/template\.html$'
       - id: detect-private-key
         # full-repo-audit-2026-05-23.md quotes standard AWS example keys and an
         # ellipsis placeholder inside a security-scan writeup; the key block is

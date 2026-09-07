@@ -1,0 +1,945 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Light Speed Holdings \u2014 Agent Hierarchy",
+    "quality_profile": "standard",
+    "viewBox": [
+      2822,
+      615
+    ]
+  },
+  "components": [
+    {
+      "id": "chief-of-staff",
+      "type": "external",
+      "label": "Chief of Staff",
+      "sublabel": "",
+      "pos": [
+        601.0,
+        320
+      ],
+      "size": [
+        108,
+        60
+      ]
+    },
+    {
+      "id": "cto",
+      "type": "backend",
+      "label": "Chief Technology Officer",
+      "sublabel": "",
+      "pos": [
+        1238.5,
+        320
+      ],
+      "size": [
+        168.0,
+        60
+      ]
+    },
+    {
+      "id": "coo",
+      "type": "messagebus",
+      "label": "Chief Operating Officer",
+      "sublabel": "",
+      "pos": [
+        1414.5,
+        320
+      ],
+      "size": [
+        161.5,
+        60
+      ]
+    },
+    {
+      "id": "caio",
+      "type": "cloud",
+      "label": "Chief AI Officer",
+      "sublabel": "",
+      "pos": [
+        1584.0,
+        320
+      ],
+      "size": [
+        116.0,
+        60
+      ]
+    },
+    {
+      "id": "human-ceo",
+      "type": "external",
+      "label": "Human CEO",
+      "sublabel": "",
+      "pos": [
+        1320.375,
+        205
+      ],
+      "size": [
+        108,
+        60
+      ]
+    },
+    {
+      "id": "cfo",
+      "type": "database",
+      "label": "Chief Financial Officer",
+      "sublabel": "",
+      "pos": [
+        1708.0,
+        320
+      ],
+      "size": [
+        161.5,
+        60
+      ]
+    },
+    {
+      "id": "cpo",
+      "type": "frontend",
+      "label": "Chief Product Officer",
+      "sublabel": "",
+      "pos": [
+        60,
+        435
+      ],
+      "size": [
+        148.5,
+        60
+      ]
+    },
+    {
+      "id": "cmo",
+      "type": "frontend",
+      "label": "Chief Marketing Officer",
+      "sublabel": "",
+      "pos": [
+        216.5,
+        435
+      ],
+      "size": [
+        161.5,
+        60
+      ]
+    },
+    {
+      "id": "hr",
+      "type": "frontend",
+      "label": "Chief Human Resources Officer",
+      "sublabel": "",
+      "pos": [
+        386.0,
+        435
+      ],
+      "size": [
+        200.5,
+        60
+      ]
+    },
+    {
+      "id": "ciso",
+      "type": "security",
+      "label": "Chief Information Security Officer",
+      "sublabel": "",
+      "pos": [
+        1877.5,
+        320
+      ],
+      "size": [
+        233.0,
+        60
+      ]
+    },
+    {
+      "id": "cio",
+      "type": "cloud",
+      "label": "Chief Information Officer",
+      "sublabel": "",
+      "pos": [
+        594.5,
+        435
+      ],
+      "size": [
+        174.5,
+        60
+      ]
+    },
+    {
+      "id": "cdo",
+      "type": "database",
+      "label": "Chief Data Officer",
+      "sublabel": "",
+      "pos": [
+        1258.0,
+        435
+      ],
+      "size": [
+        129.0,
+        60
+      ]
+    },
+    {
+      "id": "clo",
+      "type": "security",
+      "label": "Chief Legal Officer",
+      "sublabel": "",
+      "pos": [
+        2118.5,
+        320
+      ],
+      "size": [
+        135.5,
+        60
+      ]
+    },
+    {
+      "id": "cso",
+      "type": "frontend",
+      "label": "Chief Strategy Officer",
+      "sublabel": "",
+      "pos": [
+        2262.0,
+        320
+      ],
+      "size": [
+        155.0,
+        60
+      ]
+    },
+    {
+      "id": "ceo-advisor",
+      "type": "external",
+      "label": "CEO Advisor",
+      "sublabel": "",
+      "pos": [
+        2425.0,
+        320
+      ],
+      "size": [
+        108,
+        60
+      ]
+    },
+    {
+      "id": "customer-success",
+      "type": "frontend",
+      "label": "Head of Customer Success",
+      "sublabel": "",
+      "pos": [
+        777.0,
+        435
+      ],
+      "size": [
+        168.0,
+        60
+      ]
+    },
+    {
+      "id": "sales",
+      "type": "frontend",
+      "label": "Head of Sales",
+      "sublabel": "",
+      "pos": [
+        953.0,
+        435
+      ],
+      "size": [
+        108,
+        60
+      ]
+    },
+    {
+      "id": "legal",
+      "type": "security",
+      "label": "Legal Advisor",
+      "sublabel": "",
+      "pos": [
+        2132.25,
+        435
+      ],
+      "size": [
+        108,
+        60
+      ]
+    },
+    {
+      "id": "consulting-lead",
+      "type": "backend",
+      "label": "Consulting Engagement Lead",
+      "sublabel": "",
+      "pos": [
+        1069.0,
+        435
+      ],
+      "size": [
+        181.0,
+        60
+      ]
+    },
+    {
+      "id": "thought-leadership-lead",
+      "type": "backend",
+      "label": "Thought Leadership Lead",
+      "sublabel": "",
+      "pos": [
+        2541.0,
+        320
+      ],
+      "size": [
+        161.5,
+        60
+      ]
+    },
+    {
+      "id": "board-chair",
+      "type": "external",
+      "label": "Board Chair",
+      "sublabel": "",
+      "pos": [
+        1320.375,
+        90
+      ],
+      "size": [
+        108,
+        60
+      ]
+    },
+    {
+      "id": "board-finance",
+      "type": "external",
+      "label": "Finance Committee Chair",
+      "sublabel": "",
+      "pos": [
+        60,
+        90
+      ],
+      "size": [
+        161.5,
+        60
+      ]
+    },
+    {
+      "id": "board-risk",
+      "type": "external",
+      "label": "Risk Committee Chair",
+      "sublabel": "",
+      "pos": [
+        229.5,
+        90
+      ],
+      "size": [
+        142.0,
+        60
+      ]
+    },
+    {
+      "id": "board-strategy",
+      "type": "external",
+      "label": "Strategy Committee Chair",
+      "sublabel": "",
+      "pos": [
+        379.5,
+        90
+      ],
+      "size": [
+        168.0,
+        60
+      ]
+    },
+    {
+      "id": "board-technology",
+      "type": "external",
+      "label": "Technology Committee Chair",
+      "sublabel": "",
+      "pos": [
+        555.5,
+        90
+      ],
+      "size": [
+        181.0,
+        60
+      ]
+    },
+    {
+      "id": "board-customer",
+      "type": "external",
+      "label": "Customer Committee Chair",
+      "sublabel": "",
+      "pos": [
+        744.5,
+        90
+      ],
+      "size": [
+        168.0,
+        60
+      ]
+    },
+    {
+      "id": "board-product",
+      "type": "external",
+      "label": "Product Committee Chair",
+      "sublabel": "",
+      "pos": [
+        920.5,
+        90
+      ],
+      "size": [
+        161.5,
+        60
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "conn-human-ceo-to-chief-of-staff",
+      "from": "human-ceo",
+      "to": "chief-of-staff",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          655.0,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-human-ceo-to-cto",
+      "from": "human-ceo",
+      "to": "cto",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          1322.5,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-human-ceo-to-coo",
+      "from": "human-ceo",
+      "to": "coo",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          1495.25,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-human-ceo-to-caio",
+      "from": "human-ceo",
+      "to": "caio",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          1642.0,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-board-chair-to-human-ceo",
+      "from": "board-chair",
+      "to": "human-ceo",
+      "route": "straight",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "conn-human-ceo-to-cfo",
+      "from": "human-ceo",
+      "to": "cfo",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          1788.75,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-chief-of-staff-to-cpo",
+      "from": "chief-of-staff",
+      "to": "cpo",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          655.0,
+          388.0
+        ],
+        [
+          134.25,
+          388.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-chief-of-staff-to-cmo",
+      "from": "chief-of-staff",
+      "to": "cmo",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          655.0,
+          388.0
+        ],
+        [
+          297.25,
+          388.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-chief-of-staff-to-hr",
+      "from": "chief-of-staff",
+      "to": "hr",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          655.0,
+          388.0
+        ],
+        [
+          486.25,
+          388.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-human-ceo-to-ciso",
+      "from": "human-ceo",
+      "to": "ciso",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          1994.0,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-chief-of-staff-to-cio",
+      "from": "chief-of-staff",
+      "to": "cio",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          655.0,
+          388.0
+        ],
+        [
+          681.75,
+          388.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-cto-to-cdo",
+      "from": "cto",
+      "to": "cdo",
+      "route": "straight",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "conn-human-ceo-to-clo",
+      "from": "human-ceo",
+      "to": "clo",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          2186.25,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-human-ceo-to-cso",
+      "from": "human-ceo",
+      "to": "cso",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          2339.5,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-human-ceo-to-ceo-advisor",
+      "from": "human-ceo",
+      "to": "ceo-advisor",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          2479.0,
+          273.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-chief-of-staff-to-customer-success",
+      "from": "chief-of-staff",
+      "to": "customer-success",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          655.0,
+          388.0
+        ],
+        [
+          861.0,
+          388.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-chief-of-staff-to-sales",
+      "from": "chief-of-staff",
+      "to": "sales",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          655.0,
+          388.0
+        ],
+        [
+          1007.0,
+          388.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-clo-to-legal",
+      "from": "clo",
+      "to": "legal",
+      "route": "straight",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "conn-chief-of-staff-to-consulting-lead",
+      "from": "chief-of-staff",
+      "to": "consulting-lead",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          655.0,
+          388.0
+        ],
+        [
+          1159.5,
+          388.0
+        ]
+      ]
+    },
+    {
+      "id": "conn-human-ceo-to-thought-leadership-lead",
+      "from": "human-ceo",
+      "to": "thought-leadership-lead",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          1374.375,
+          273.0
+        ],
+        [
+          2621.75,
+          273.0
+        ]
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "AI Research \u2014 Chief AI Officer",
+      "items": [
+        "Evaluate and integrate new LLM models.",
+        "Fine-tune prompts for maximum agent efficacy.",
+        "execute, read, webfetch, write"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Consulting \u2014 Consulting Engagement Lead",
+      "items": [
+        "Own the consulting engagement lifecycle from onboarding t...",
+        "Coordinate client-facing agents and manage engagement tim...",
+        "delegate, execute, read, write"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Customer Success \u2014 Head of Customer Success",
+      "items": [
+        "Own customer onboarding, retention, and expansion.",
+        "Track NPS, CSAT, and satisfaction metrics.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Data \u2014 Chief Data Officer",
+      "items": [
+        "Define data strategy and governance framework.",
+        "Oversee analytics and business intelligence.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Executive \u2014 Chief of Staff",
+      "items": [
+        "Align company goals across all departments.",
+        "Orchestrate agent communication and task delegation.",
+        "delegate, execute, read, write"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Executive \u2014 Human CEO",
+      "items": [
+        "Set company vision, mission, and long-term strategy.",
+        "Make final decisions on high-stakes matters.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Executive \u2014 CEO Advisor",
+      "items": [
+        "Provide strategic counsel on company direction.",
+        "Prepare briefings and decision materials.",
+        "read, write"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Finance \u2014 Chief Financial Officer",
+      "items": [
+        "Track and optimize costs across all agent operations.",
+        "Prepare financial reports and forecasts.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "IT \u2014 Chief Information Officer",
+      "items": [
+        "Manage IT infrastructure and cloud environments.",
+        "Oversee internal tools and system integration.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Legal \u2014 Chief Legal Officer",
+      "items": [
+        "Review and negotiate all contracts and agreements.",
+        "Ensure regulatory compliance across jurisdictions.",
+        "read, write"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Legal \u2014 Legal Advisor",
+      "items": [
+        "Provide legal counsel on contracts and compliance.",
+        "Review partnership and vendor agreements.",
+        "read, write"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Marketing \u2014 Chief Marketing Officer",
+      "items": [
+        "Develop marketing strategy and brand positioning.",
+        "Drive demand generation and campaign management.",
+        "read, webfetch, write"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Operations \u2014 Chief Operating Officer",
+      "items": [
+        "Optimize internal workflows.",
+        "Manage agent resource allocation.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "People \u2014 Chief Human Resources Officer",
+      "items": [
+        "Define talent acquisition strategy and hiring pipelines.",
+        "Design and maintain company culture initiatives.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Pharos \u2014 Thought Leadership Lead",
+      "items": [
+        "Own the CEO's North Star positioning and the Pharos 90-da...",
+        "Maintain the thought-leadership content calendar and cros...",
+        "grep, list, read, web_search, write"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Product \u2014 Chief Product Officer",
+      "items": [
+        "Define product vision and roadmap.",
+        "Prioritize features based on user impact.",
+        "read, webfetch, write"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Sales \u2014 Head of Sales",
+      "items": [
+        "Own the sales pipeline and revenue targets.",
+        "Manage customer acquisition strategy.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Security \u2014 Chief Information Security Officer",
+      "items": [
+        "Define and maintain security strategy and posture.",
+        "Lead incident response and forensic investigations.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Strategy \u2014 Chief Strategy Officer",
+      "items": [
+        "Develop and execute corporate strategy.",
+        "Conduct market analysis and competitive intelligence.",
+        "read, webfetch, write"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Technology \u2014 Chief Technology Officer",
+      "items": [
+        "Architect robust AI agent systems.",
+        "Review and merge code generated by development agents.",
+        "execute, read, write"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Unassigned \u2014 Board Chair",
+      "items": [
+        "Preside over all board meetings and set agendas",
+        "Ensure board governance standards are upheld"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Unassigned \u2014 Finance Committee Chair",
+      "items": [
+        "Oversee financial reporting and audit processes",
+        "Review quarterly and annual financial statements"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Unassigned \u2014 Risk Committee Chair",
+      "items": [
+        "Identify and assess enterprise-level risks",
+        "Review risk mitigation strategies and controls"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Unassigned \u2014 Strategy Committee Chair",
+      "items": [
+        "Develop and review long-term strategic plans",
+        "Evaluate market expansion opportunities"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Unassigned \u2014 Technology Committee Chair",
+      "items": [
+        "Review technology architecture and platform decisions",
+        "Advise on AI and machine learning strategy"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Unassigned \u2014 Customer Committee Chair",
+      "items": [
+        "Monitor customer satisfaction and NPS scores",
+        "Review customer retention and churn metrics"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Unassigned \u2014 Product Committee Chair",
+      "items": [
+        "Review product vision and roadmap alignment",
+        "Evaluate feature prioritization and trade-offs"
+      ]
+    }
+  ]
+}

@@ -260,11 +260,46 @@ jobs:
       - name: Graph health check
         run: uv run graphify diagnose multigraph
 
+  # Regenerate Archify diagrams from the registry and validate each source at its
+  # authored quality profile. Requires Node.js (>=18) for the Archify renderer.
+  archify-check:
+    name: Archify Diagram Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --extra dev --frozen
+      - name: Regenerate diagrams from registry
+        run: uv run python -c "from ai_company.registry import load_registry; from ai_company.archify.converter import generate_specs; import json, pathlib; out=pathlib.Path('docs/diagrams'); out.mkdir(parents=True, exist_ok=True); [ (out / s.json_name).write_text(json.dumps(s.data, indent=2) + '\n', encoding='utf-8') for s in generate_specs(load_registry()) ];"
+      - name: Verify no drift
+        run: |
+          git diff --exit-code -- docs/diagrams || { echo "::error::Committed Archify diagrams drifted from the registry. Run 'uv run ai-company archify generate' and commit the regenerated output."; exit 1; }
+      - name: Validate all four diagrams
+        run: |
+          uv run python -c "
+          from ai_company.archify import validate
+          cases = [
+            ('architecture', 'docs/diagrams/architecture.json', 'standard'),
+            ('workflow', 'docs/diagrams/hiring.workflow.json', 'showcase'),
+            ('sequence', 'docs/diagrams/hiring.sequence.json', 'showcase'),
+            ('dataflow', 'docs/diagrams/hiring.dataflow.json', 'showcase'),
+          ]
+          for kind, path, quality in cases:
+              print(f'validating {path} @ {quality}')
+              r = validate(kind, path, quality=quality)
+              assert r.get('ok'), f'{path} failed validation: {r}'
+          print('All Archify diagrams validated OK')
+          "
+
   # All required checks must succeed for the gate to pass.
   gate:
     name: CI Gate
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, version-check]
+    needs: [lint, typecheck, test, harness, security, dependencies, generated-check, archify-check, version-check]
     steps:
       - uses: actions/checkout@v7
-      - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files)."
+      - run: echo "All required checks passed (ruff + mypy + pytest + coverage + harness + bandit + uv-audit + generated-files + archify)."

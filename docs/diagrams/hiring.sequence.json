@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Hiring Workflow \u2014 Call Sequence",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      820,
+      760
+    ],
+    "animation": "trace"
+  },
+  "participants": [
+    {
+      "id": "chro",
+      "type": "frontend",
+      "label": "People"
+    },
+    {
+      "id": "department-executive",
+      "type": "backend",
+      "label": "Dept Exec"
+    },
+    {
+      "id": "recruiter",
+      "type": "frontend",
+      "label": "Recruiting"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-create-requisition",
+      "from": "chro",
+      "to": "department-executive",
+      "y": 170,
+      "label": "Create Job Requisition",
+      "variant": "default"
+    },
+    {
+      "id": "msg-approve-requisition",
+      "from": "department-executive",
+      "to": "recruiter",
+      "y": 213,
+      "label": "Approve Requisition",
+      "variant": "security"
+    },
+    {
+      "id": "msg-source-candidates",
+      "from": "recruiter",
+      "to": "chro",
+      "y": 256,
+      "label": "Source Candidates \u2192 Interview Process",
+      "variant": "default"
+    }
+  ]
+}

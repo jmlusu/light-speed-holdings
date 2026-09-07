@@ -1,0 +1,126 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Hiring Workflow \u2014 Workflow",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    {
+      "id": "chro",
+      "label": "chro"
+    },
+    {
+      "id": "department-executive",
+      "label": "department_executive"
+    },
+    {
+      "id": "recruiter",
+      "label": "recruiter"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "create-requisition",
+      "lane": "chro",
+      "col": 0,
+      "type": "backend",
+      "label": "Create Job Requisition",
+      "sublabel": "hr.creates_requisition",
+      "width": 214
+    },
+    {
+      "id": "approve-requisition",
+      "lane": "department-executive",
+      "col": 1,
+      "type": "security",
+      "label": "Approve Requisition",
+      "sublabel": "approval.request",
+      "width": 187
+    },
+    {
+      "id": "source-candidates",
+      "lane": "recruiter",
+      "col": 2,
+      "type": "frontend",
+      "label": "Source Candidates",
+      "sublabel": "recruiter.sources",
+      "width": 169
+    },
+    {
+      "id": "interview",
+      "lane": "recruiter",
+      "col": 3,
+      "type": "frontend",
+      "label": "Interview Process",
+      "sublabel": "recruiter.schedules_interviews",
+      "width": 256
+    },
+    {
+      "id": "make-offer",
+      "lane": "chro",
+      "col": 4,
+      "type": "backend",
+      "label": "Make Offer",
+      "sublabel": "hr.makes_offer",
+      "width": 132
+    },
+    {
+      "id": "onboard",
+      "lane": "chro",
+      "col": 5,
+      "type": "backend",
+      "label": "Onboarding",
+      "sublabel": "hr.onboards",
+      "width": 132
+    }
+  ],
+  "edges": [
+    {
+      "id": "w-create-requisition-to-approve-requisition",
+      "from": "create-requisition",
+      "to": "approve-requisition",
+      "variant": "security"
+    },
+    {
+      "id": "w-approve-requisition-to-source-candidates",
+      "from": "approve-requisition",
+      "to": "source-candidates",
+      "variant": "security"
+    },
+    {
+      "id": "w-source-candidates-to-interview",
+      "from": "source-candidates",
+      "to": "interview"
+    },
+    {
+      "id": "w-interview-to-make-offer",
+      "from": "interview",
+      "to": "make-offer"
+    },
+    {
+      "id": "w-make-offer-to-onboard",
+      "from": "make-offer",
+      "to": "onboard"
+    }
+  ],
+  "mainPath": [
+    "create-requisition",
+    "approve-requisition",
+    "source-candidates",
+    "interview",
+    "make-offer",
+    "onboard"
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Hiring Workflow",
+      "items": [
+        "Trigger: new_headcount_approved",
+        "Owner: chro",
+        "6 steps across 3 owners"
+      ]
+    }
+  ]
+}
