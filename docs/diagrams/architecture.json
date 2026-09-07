@@ -706,7 +706,7 @@
   ],
   "cards": [
     {
-      "dot": "rose",
+      "dot": "emerald",
       "title": "AI Research \u2014 Chief AI Officer",
       "items": [
         "Evaluate and integrate new LLM models.",
@@ -715,7 +715,7 @@
       ]
     },
     {
-      "dot": "orange",
+      "dot": "emerald",
       "title": "Consulting \u2014 Consulting Engagement Lead",
       "items": [
         "Own the consulting engagement lifecycle from onboarding t...",
@@ -724,7 +724,7 @@
       ]
     },
     {
-      "dot": "slate",
+      "dot": "rose",
       "title": "Customer Success \u2014 Head of Customer Success",
       "items": [
         "Own customer onboarding, retention, and expansion.",
@@ -733,7 +733,7 @@
       ]
     },
     {
-      "dot": "rose",
+      "dot": "slate",
       "title": "Data \u2014 Chief Data Officer",
       "items": [
         "Define data strategy and governance framework.",
@@ -742,7 +742,7 @@
       ]
     },
     {
-      "dot": "rose",
+      "dot": "slate",
       "title": "Executive \u2014 Chief of Staff",
       "items": [
         "Align company goals across all departments.",
@@ -751,7 +751,7 @@
       ]
     },
     {
-      "dot": "rose",
+      "dot": "slate",
       "title": "Executive \u2014 Human CEO",
       "items": [
         "Set company vision, mission, and long-term strategy.",
@@ -760,7 +760,7 @@
       ]
     },
     {
-      "dot": "rose",
+      "dot": "slate",
       "title": "Executive \u2014 CEO Advisor",
       "items": [
         "Provide strategic counsel on company direction.",
@@ -778,7 +778,7 @@
       ]
     },
     {
-      "dot": "rose",
+      "dot": "orange",
       "title": "IT \u2014 Chief Information Officer",
       "items": [
         "Manage IT infrastructure and cloud environments.",
@@ -805,7 +805,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "slate",
       "title": "Marketing \u2014 Chief Marketing Officer",
       "items": [
         "Develop marketing strategy and brand positioning.",
@@ -823,7 +823,7 @@
       ]
     },
     {
-      "dot": "orange",
+      "dot": "violet",
       "title": "People \u2014 Chief Human Resources Officer",
       "items": [
         "Define talent acquisition strategy and hiring pipelines.",
@@ -832,7 +832,7 @@
       ]
     },
     {
-      "dot": "amber",
+      "dot": "emerald",
       "title": "Pharos \u2014 Thought Leadership Lead",
       "items": [
         "Own the CEO's North Star positioning and the Pharos 90-da...",
@@ -841,7 +841,7 @@
       ]
     },
     {
-      "dot": "amber",
+      "dot": "orange",
       "title": "Product \u2014 Chief Product Officer",
       "items": [
         "Define product vision and roadmap.",
@@ -850,7 +850,7 @@
       ]
     },
     {
-      "dot": "orange",
+      "dot": "cyan",
       "title": "Sales \u2014 Head of Sales",
       "items": [
         "Own the sales pipeline and revenue targets.",
@@ -859,7 +859,7 @@
       ]
     },
     {
-      "dot": "rose",
+      "dot": "orange",
       "title": "Security \u2014 Chief Information Security Officer",
       "items": [
         "Define and maintain security strategy and posture.",
@@ -877,7 +877,7 @@
       ]
     },
     {
-      "dot": "amber",
+      "dot": "emerald",
       "title": "Technology \u2014 Chief Technology Officer",
       "items": [
         "Architect robust AI agent systems.",
@@ -886,7 +886,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "amber",
       "title": "Unassigned \u2014 Board Chair",
       "items": [
         "Preside over all board meetings and set agendas",
@@ -894,7 +894,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "amber",
       "title": "Unassigned \u2014 Finance Committee Chair",
       "items": [
         "Oversee financial reporting and audit processes",
@@ -902,7 +902,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "amber",
       "title": "Unassigned \u2014 Risk Committee Chair",
       "items": [
         "Identify and assess enterprise-level risks",
@@ -910,7 +910,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "amber",
       "title": "Unassigned \u2014 Strategy Committee Chair",
       "items": [
         "Develop and review long-term strategic plans",
@@ -918,7 +918,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "amber",
       "title": "Unassigned \u2014 Technology Committee Chair",
       "items": [
         "Review technology architecture and platform decisions",
@@ -926,7 +926,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "amber",
       "title": "Unassigned \u2014 Customer Committee Chair",
       "items": [
         "Monitor customer satisfaction and NPS scores",
@@ -934,7 +934,7 @@
       ]
     },
     {
-      "dot": "cyan",
+      "dot": "amber",
       "title": "Unassigned \u2014 Product Committee Chair",
       "items": [
         "Review product vision and roadmap alignment",

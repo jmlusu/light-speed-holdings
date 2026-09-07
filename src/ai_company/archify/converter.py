@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+from zlib import crc32
 
 from ai_company.models import CompanyRegistry
 
@@ -519,7 +520,7 @@ def _dept_dot(department: str) -> str:
     palette = ["cyan", "emerald", "rose", "orange", "violet", "amber", "slate"]
     if not department:
         return palette[0]
-    return palette[abs(hash(department)) % len(palette)]
+    return palette[crc32(department.encode("utf-8")) % len(palette)]
 
 
 def _tool_legend_card() -> dict[str, Any]:
