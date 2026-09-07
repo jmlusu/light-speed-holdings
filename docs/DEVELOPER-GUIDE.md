@@ -212,7 +212,7 @@ refactor: extract parse_llm_json to shared utility
 
 | File | Why It Matters |
 |------|----------------|
-| `src/ai_company/cli/main.py` | CLI entry point — all 30 subcommands registered here (5 root + 25 lazy sub-apps) |
+| `src/ai_company/cli/main.py` | CLI entry point — all 31 subcommands registered here (5 root + 26 lazy sub-apps) |
 | `src/ai_company/executor/loop.py` | Core execution loop — reads inbox, runs AgentLoop, manages lifecycle |
 | `src/ai_company/executor/agent_loop.py` | ReAct pattern — multi-turn LLM↔tool interaction |
 | `src/ai_company/models/models.py` | All 17+ Pydantic domain models |

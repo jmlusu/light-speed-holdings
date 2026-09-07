@@ -60,6 +60,11 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
     "company": ("ai_company.cli.company", "app", "Bootstrap and manage the AI company"),
     "decision": ("ai_company.cli.decision", "app", "Decision engine — approvals, risk, trees"),
     "graph": ("ai_company.cli.graph", "app", "Graph engine — org chart, knowledge graphs"),
+    "archify": (
+        "ai_company.cli.archify",
+        "app",
+        "Archify diagrams — generate, validate, compare, deliver from the registry",
+    ),
     "security": (
         "ai_company.cli.security",
         "app",
