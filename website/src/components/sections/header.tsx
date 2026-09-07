@@ -3,21 +3,25 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useScrolled } from '@/hooks/use-scrolled'
 
 const navLinks = [
-  { label: 'Services', href: '/our-approach' },
+  { label: 'Method', href: '/method' },
+  { label: 'Services', href: '/services' },
   { label: 'Industries', href: '/industries' },
-  { label: 'Insights', href: '/insights' },
-  { label: 'Customers', href: '/customers' },
-  { label: 'Careers', href: '/careers' },
-  { label: 'About', href: '/about-us' },
+  { label: 'Proof', href: '/proof' },
 ]
 
 export const Header = () => {
   const [open, setOpen] = React.useState(false)
+  const isScrolled = useScrolled(100)
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
+    <header
+      className={`sticky top-0 z-50 border-b border-border/60 transition-all duration-300 ${
+        isScrolled ? 'bg-bg/95 backdrop-blur' : 'bg-transparent'
+      }`}
+    >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="text-lg font-bold tracking-tight">
           LightSpeed<span className="text-primary"> Holdings</span>
@@ -28,7 +32,7 @@ export const Header = () => {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm text-muted transition-colors hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -61,14 +65,14 @@ export const Header = () => {
       </nav>
 
       {open && (
-        <div className="border-t border-border/60 bg-background lg:hidden">
+        <div className="border-t border-border/60 bg-bg lg:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6">
             {navLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="text-muted-foreground transition-colors hover:text-foreground"
+                className="text-muted transition-colors hover:text-foreground"
               >
                 {item.label}
               </Link>

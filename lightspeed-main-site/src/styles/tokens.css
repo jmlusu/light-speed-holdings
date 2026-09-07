@@ -16,6 +16,7 @@
   --ls-white: #FFFFFF;
   --ls-divider:     rgba(15, 30, 44, 0.10);
   --ls-card-border: rgba(15, 30, 44, 0.12);
+  --ls-edge:        var(--ls-card-border);
 
   /* Status — control-plane semantics only */
   --ls-ok:   #10B981;
