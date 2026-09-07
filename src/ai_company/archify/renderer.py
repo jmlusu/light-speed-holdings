@@ -72,13 +72,15 @@ def _run_cli(
             f"Archify skill not found at {bin_path}. Run: "
             "npx skills add tt-a1i/archify (or restore .opencode/skills/archify)."
         )
+    from ai_company.paths import get_project_root
+
     cmd = ["node", str(bin_path), *args]
     return subprocess.run(
         cmd,
         capture_output=True,
         text=True,
         timeout=timeout,
-        cwd=str(bin_path.parent.parent),
+        cwd=str(get_project_root()),
     )
 
 
