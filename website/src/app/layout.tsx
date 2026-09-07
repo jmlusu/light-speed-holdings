@@ -1,6 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Sora } from 'next/font/google'
 import { Header } from '@/components/sections/header'
 import { Footer } from '@/components/sections/footer-section'
 
@@ -10,13 +10,20 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+const sora = Sora({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sora',
+  weight: ['400', '600', '700'],
+})
+
 export const metadata: Metadata = {
   title: {
-    default: 'LightSpeed Holdings — AI Native Transformation Consultancy',
+    default: 'LightSpeed Holdings — The AI-Native Company Builder for Southern Africa',
     template: '%s | LightSpeed Holdings',
   },
   description:
-    'Enterprise AI transformation consultancy delivering AI strategy, governance, data, and engineering solutions for global enterprises.',
+    'We architect sovereign, governed AI systems that run offline-first and comply from day one. Agentic AI company building, brand systems, WhatsApp assistants, and NGO M&E — piloted in Malawi, architected for SADC.',
   robots: {
     index: true,
     follow: true,
@@ -29,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-background text-foreground">
+    <html lang="en" className={`${inter.variable} ${sora.variable}`}>
+      <body className="min-h-screen bg-bg text-text">
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>

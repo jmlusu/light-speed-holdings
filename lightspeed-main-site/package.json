@@ -33,6 +33,7 @@
     "esbuild": true
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "tsx": "^4.23.12",
     "yaml": "^2.9.0"
   }
