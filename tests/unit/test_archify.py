@@ -9,10 +9,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from zlib import crc32
 
 import pytest
 
 from ai_company.archify.converter import (
+    _dept_dot,
     build_architecture,
     build_dataflow,
     build_sequence,
@@ -177,3 +179,76 @@ def test_json_serializable(registry: CompanyRegistry, tmp_path: Path) -> None:
         target = tmp_path / spec.json_name
         target.write_text(json.dumps(spec.data), encoding="utf-8")
         assert target.exists()
+
+
+# ---------------------------------------------------------------------------
+# Regression guards for the CI "Validate all four diagrams" gate
+# (cwd fix b220529 + deterministic dept colors 9e7e7b7)
+# ---------------------------------------------------------------------------
+
+
+def test_run_cli_uses_project_root_cwd(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """The Archify CLI must run with the project root as cwd (b220529).
+
+    Regression for the CI ENOENT: relative inputs like
+    ``docs/diagrams/architecture.json`` were resolved under
+    ``.opencode/skills/archify`` because the subprocess cwd was the skill
+    directory rather than the repository root.
+    """
+    from ai_company.archify import renderer as archify_renderer
+    from ai_company.paths import get_project_root
+
+    bin_path = tmp_path / "bin" / "archify.mjs"
+    bin_path.parent.mkdir(parents=True)
+    bin_path.write_text("#!/usr/bin/env node\n", encoding="utf-8")
+
+    captured: dict[str, object] = {}
+
+    class _FakeProc:
+        returncode = 0
+        stdout = "{}"
+        stderr = ""
+
+    class _FakeSubprocess:
+        def run(self, *args: object, **kwargs: object) -> _FakeProc:
+            captured["args"] = args
+            captured["kwargs"] = kwargs
+            return _FakeProc()
+
+    monkeypatch.setattr(archify_renderer, "_node_available", lambda: True)
+    monkeypatch.setattr(archify_renderer, "subprocess", _FakeSubprocess())
+
+    archify_renderer._run_cli(
+        bin_path,
+        [
+            "validate",
+            "architecture",
+            "docs/diagrams/architecture.json",
+            "--quality",
+            "standard",
+            "--json",
+        ],
+    )
+
+    kwargs = captured["kwargs"]
+    assert isinstance(kwargs, dict)
+    assert kwargs.get("cwd") == str(get_project_root())
+
+
+def test_dept_dot_deterministic_across_calls() -> None:
+    """Department card dot colors must be stable (9e7e7b7).
+
+    Uses ``crc32`` instead of ``hash()`` so the output is independent of the
+    per-process ``PYTHONHASHSEED`` randomization that made regenerated diagram
+    JSON drift between CI runs.
+    """
+    palette = ["cyan", "emerald", "rose", "orange", "violet", "amber", "slate"]
+    for dept in ("Engineering", "Finance", "Data", "Office of the CEO", "HR"):
+        first = _dept_dot(dept)
+        assert first == palette[crc32(dept.encode("utf-8")) % len(palette)]
+        for _ in range(10):
+            assert _dept_dot(dept) == first
+
+
+def test_dept_dot_empty_defaults_first_palette_color() -> None:
+    assert _dept_dot("") == "cyan"
