@@ -1,15 +1,15 @@
 """LLM usage and token-counting CLI commands.
 
-Ticket #9 (T012): `ai-company llm usage` reports token usage and cost
+Ticket #9 (T012): ``ai-company llm usage`` reports token usage and cost
 aggregated by model, time period, and agent from the executor's
-`cost_log.jsonl` (written by :class:i_company.llm.cost_tracker.CostTracker).
+``cost_log.jsonl`` (written by :class:`ai_company.llm.cost_tracker.CostTracker`).
 
-Token efficiency module � watches for the three classic waste patterns
+Token efficiency module — watches for the three classic waste patterns
 identified by token-use audit:
 1. Meta-prompts about prompt quality
 2. Over-justifying simple requests
 3. Seeking explanations of obvious outcomes
-"
+"""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ app = typer.Typer(help="LLM usage and cost tracking")
 
 
 def _default_results_dir() -> Path:
-    """Resolve the results dir to `<data root>/results` (root-aware)."""
+    """Resolve the results dir to ``<data root>/results`` (root-aware)."""
     return get_data_root() / "results"
 
 
@@ -39,9 +39,9 @@ def usage(
 ) -> None:
     """Show LLM token usage and cost for the last N days.
 
-    Aggregates the executor's `cost_log.jsonl` by model, agent, and time
-    period.  With no filters it reports the trailing `--days` window;
-    use `--model` / `--agent` to narrow the breakdown.
+    Aggregates the executor's ``cost_log.jsonl`` by model, agent, and time
+    period.  With no filters it reports the trailing ``--days`` window;
+    use ``--model`` / ``--agent`` to narrow the breakdown.
     """
     from ai_company.llm.cost_tracker import CostTracker
 
@@ -69,26 +69,31 @@ def usage(
 
     # -- Waste/efficiency analysis -------------------------------------
     # Rough estimates based on the audit's three waste patterns:
-    #   1. Meta-prompts about prompt quality  ? ~10-15% of prompt tokens
-    #   2. Over-justifying simple requests    ? ~5-10% of prompt tokens
-    #   3. Explaining obvious outcomes        ? ~5-8% of prompt tokens
+    #   1. Meta-prompts about prompt quality  → ~10-15% of prompt tokens
+    #   2. Over-justifying simple requests    → ~5-10% of prompt tokens
+    #   3. Explaining obvious outcomes        → ~5-8% of prompt tokens
     # Combined typical waste: 15-33% of prompt tokens
     # This session's estimate uses the audit's 25% figure as a baseline.
     from ai_company.llm.cost_tracker import _cost_per_token
 
     waste_prompt_estimate = int(summary["total_prompt_tokens"] * 0.25)
-    waste_cost_estimate = waste_prompt_estimate * _cost_per_token(
-        summary.get("by_model", {}).get("default", {}).get("model", "gpt-4o-mini"),
-        "input",
-    ) or 0.0
+    waste_cost_estimate = (
+        waste_prompt_estimate
+        * _cost_per_token(
+            summary.get("by_model", {}).get("default", {}).get("model", "gpt-4o-mini"),
+            "input",
+        )
+        or 0.0
+    )
     productive_prompt = summary["total_prompt_tokens"] - waste_prompt_estimate
     waste_ratio = (
         summary["total_prompt_tokens"] / max(summary["total_tokens"], 1)
-        if summary["total_tokens"] else 0
+        if summary["total_tokens"]
+        else 0
     )
 
     typer.echo(
-        f"LLM Usage � {start} to {end}"
+        f"LLM Usage — {start} to {end}"
         f"{'  (filter: model=%s, agent=%s)' % (model or '*', agent or '*')}"
     )
     typer.echo("=" * 78)
@@ -96,15 +101,19 @@ def usage(
     typer.echo(f"  Prompt tokens:        {summary['total_prompt_tokens']}")
     typer.echo(f"  Completion tokens:    {summary['total_completion_tokens']}")
     typer.echo(f"  Total tokens:         {summary['total_tokens']}")
-    typer.echo(f"  Cost (USD):           ")
+    typer.echo(f"  Cost (USD):           ${summary['total_cost_usd']:.6f}")
     typer.echo("")
     # Efficiency panel
     typer.echo("-" * 78)
     typer.echo("  Token Efficiency")
     typer.echo(f"  Productive prompt tokens:   {productive_prompt}")
-    waste_pct = round(waste_prompt_estimate / summary["total_prompt_tokens"] * 100) if summary["total_prompt_tokens"] else 0
+    waste_pct = (
+        round(waste_prompt_estimate / summary["total_prompt_tokens"] * 100)
+        if summary["total_prompt_tokens"]
+        else 0
+    )
     typer.echo(f"  Estimated waste:            {waste_prompt_estimate} ({waste_pct}% of prompt)")
-    typer.echo(f"  Estimated waste cost:       ")
+    typer.echo(f"  Estimated waste cost:       {waste_cost_estimate:.6f}")
     typer.echo(f"  Waste ratio (prompt/total): {waste_ratio:.1%}")
     typer.echo("")
 
