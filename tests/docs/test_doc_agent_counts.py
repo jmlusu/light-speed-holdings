@@ -50,7 +50,7 @@ CURRENT_DOCS = [
     "docs/ux/DEVELOPER-EXPERIENCE.md",
     "docs/ux/ACCESSIBILITY.md",
     "docs/legal/msa-template.md",
-    # Stream D (branding/lightspeed-main-site) docs land in a dedicated PR; the
+    # Stream D (branding/website) docs land in a dedicated PR; the
     # list above is re-extended there, not before, to keep this gate green
     # against the branch's committed contents only.
 ]

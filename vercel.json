@@ -1,9 +1,6 @@
 {
-  "buildCommand": "cd lightspeed-main-site && npm run build",
-  "outputDirectory": "lightspeed-main-site/dist",
-  "devCommand": "cd lightspeed-main-site && npm run dev",
-  "installCommand": "cd lightspeed-main-site && npm install",
-  "framework": "astro",
+  "framework": "nextjs",
+  "rootDirectory": "website",
   "regions": ["iad1"],
   "headers": [
     {
@@ -44,7 +41,7 @@
       ]
     },
     {
-      "source": "/_astro/(.*)",
+      "source": "/_next/static/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -56,7 +53,7 @@
   "rewrites": [
     {
       "source": "/health",
-      "destination": "/api/health"
+      "destination": "/"
     }
   ]
 }
