@@ -41,7 +41,7 @@ If a request mixes types (common), split it into separate docs or section silos 
 
 ## Repo Doc Conventions (LightSpeed)
 
-- `AGENTS.md` line is the pointer → module/subproject `AGENTS.md` files are the per-area entry points (already in use: `lightspeed-main-site/AGENTS.md`, `website/AGENTS.md`).
+- `AGENTS.md` line is the pointer → module/subproject `AGENTS.md` files are the per-area entry points (already in use: `website/AGENTS.md`, `website/AGENTS.md`).
 - ADRs → `docs/adr/` through `documentation-and-adrs`.
 - Architecture docs → `docs/ARCHITECTURE.md`; change lifecycle → `docs/ECL.md`.
 - Match existing tone: direct, factual, minimal fluff, code-adjacent.
