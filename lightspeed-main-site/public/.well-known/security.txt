@@ -1,5 +1,0 @@
-Contact: mailto:security@lightspeedholdings.com
-Expires: 2027-08-27T00:00:00.000Z
-Acknowledgments: https://lightspeedholdings.com/hall-of-fame
-Preferred-Languages: en
-Canonical: https://lightspeedholdings.com/.well-known/security.txt
