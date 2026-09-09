@@ -283,7 +283,7 @@ Remove unused `framer-motion` dependency.
 
 ## 10. Out of Scope
 
-- Rebuilding `/lightspeed-main-site` (Astro) — untouched.
+- Rebuilding `/website` (Astro) — untouched.
 - Heavy 3D / WebGL visualizations.
 - Fabricating client case studies, logos, testimonials, or metrics.
 

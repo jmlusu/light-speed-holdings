@@ -33,7 +33,7 @@ Frontier at chart time: tickets 1 and 3 (both unblocked, unclaimed).
 ```markdown
 ## Destination
 
-Every page of the marketing site speaks the Operating Diagram visual language — the system `lightspeed-main-site/src/pages/index.astro` established in the 2026-09 landing redesign: Bricolage Grotesque + JetBrains Mono, mono-caps micro-labels, squared containment (16px cards, 10px buttons, 6px method chips), cream/sage/pearl surfaces, contained dark control-plane panels, and one fixed second-level component vocabulary instead of ad-hoc inline classes.
+Every page of the marketing site speaks the Operating Diagram visual language — the system `website/src/pages/index.astro` established in the 2026-09 landing redesign: Bricolage Grotesque + JetBrains Mono, mono-caps micro-labels, squared containment (16px cards, 10px buttons, 6px method chips), cream/sage/pearl surfaces, contained dark control-plane panels, and one fixed second-level component vocabulary instead of ad-hoc inline classes.
 
 "Full redesign per page": the 18 non-landing routes are rebuilt page-by-page onto that grammar, each treated with the same design rigor as the landing, while the landing stays the flagship artifact (untouched except the `--ls-edge` defect repair). Done when (a) the shared lexicon (`.ls-btn`, `.ls-label`, `.ls-chip`, `.ls-card`, `.ls-band`) is the single source of the second-level vocabulary, and (b) every route passes the audit crawl.
 
@@ -42,11 +42,11 @@ Spiritual continuation of map #157 (site built, landing redesigned); this map is
 ## Notes
 
 - **Execution carries in the map** — overrides the "decide, don't do" default: each redesign ticket, once signed off by the human, is implemented the same session. The deliverable is the shipped sweep.
-- **Domain**: `lightspeed-main-site/` (Astro 4 + Tailwind, static). The landing is the authority artifact; interior pages design *against* it, never onto it.
+- **Domain**: `website/` (Astro 4 + Tailwind, static). The landing is the authority artifact; interior pages design *against* it, never onto it.
 - **Rulings already locked by the human**: depth = full redesign per page; the 10 stub pages' bodies are reskin-only (placeholder strings stay frozen); codify the shared classes first, then sweep pages onto them.
 - **Skills per session**: /prototype for each redesign ticket (concrete take to react to), /grilling + /domain-modeling where ambiguity resurfaces, /ls-design-system for brand tokens, /ls-artifact-qa after each applied design.
 - **Tracker**: GitHub issues via `gh`; type labels `wayfinder:<type>`; blocking by body "Blocked by: Name (#n)" (no native sub-issue/dependency ops on this repo — docs/agents/issue-tracker.md).
-- **Verification per ticket**: the audit crawl passes on the built page; `npm run build` green in `lightspeed-main-site/`.
+- **Verification per ticket**: the audit crawl passes on the built page; `npm run build` green in `website/`.
 
 ## Decisions so far
 
@@ -76,7 +76,7 @@ Spiritual continuation of map #157 (site built, landing redesigned); this map is
 
 Nothing to decide — a defect to repair before the audit baseline is honest.
 
-`--ls-edge` is referenced 10 times in `lightspeed-main-site/src/pages/index.astro` (graph-card border, view-switch border, legend top-borders, SVG graph-edge strokes) but defined nowhere in `src/styles/tokens.css` — the only undefined `--ls-*` token on the site. Unresolved `var(--ls-edge)` collapses the border declarations and drops the SVG strokes to near-black, visibly degrading the flagship's org-graph artifact.
+`--ls-edge` is referenced 10 times in `website/src/pages/index.astro` (graph-card border, view-switch border, legend top-borders, SVG graph-edge strokes) but defined nowhere in `src/styles/tokens.css` — the only undefined `--ls-*` token on the site. Unresolved `var(--ls-edge)` collapses the border declarations and drops the SVG strokes to near-black, visibly degrading the flagship's org-graph artifact.
 
 The resolution records: the token added to `tokens.css` (mapped to `--ls-card-border`), and the border/stroke rendering confirmed restored.
 ```
@@ -88,7 +88,7 @@ The resolution records: the token added to `tokens.css` (mapped to `--ls-card-bo
 
 What precise, machine-checkable assertions define "visually consistent with the Operating Diagram" across the site — so every later ticket and the final sweep has a pass/fail gate?
 
-Build `lightspeed-main-site/scripts/audit-visual.mjs` (Playwright crawl of every route at 375/768/1440) asserting per page:
+Build `website/scripts/audit-visual.mjs` (Playwright crawl of every route at 375/768/1440) asserting per page:
 - no unresolved `--ls-*` custom properties
 - no `rounded-full` on buttons / CTAs / badges / pills / chips
 - mono-caps micro-labels (`mono-cap` or `.font-mono` uppercase) where `uppercase tracking-[0.12em]` eyebrows used to be
@@ -107,7 +107,7 @@ Blocked by: Fix the undefined `--ls-edge` (#N).
 
 What exactly is the second-level component vocabulary all 18 pages consume — the shared classes that make "consistent" a single source rather than 200 inline lookalikes?
 
-Prototype the shared set in `lightspeed-main-site/src/styles/` (extend global.css or add components.css) and link the result as an asset: `.ls-btn` (ink solid / outline / text-link, radius 10px), `.ls-label` (mono-caps micro-label rule replacing every `uppercase tracking-[0.12em]` eyebrow), `.ls-chip` (square key/value chips, radius 8px), `.ls-card` (white/pearl surface, `--ls-card-border`, radius 16px), `.ls-band` (cream/sage/pearl/dark section bands), and the method number-badge treatment (6px chips, per the landing's 01–04). Also decide exact button radius/height and hover states, and how labels compose with headings. The human signs off before anything blocks on it.
+Prototype the shared set in `website/src/styles/` (extend global.css or add components.css) and link the result as an asset: `.ls-btn` (ink solid / outline / text-link, radius 10px), `.ls-label` (mono-caps micro-label rule replacing every `uppercase tracking-[0.12em]` eyebrow), `.ls-chip` (square key/value chips, radius 8px), `.ls-card` (white/pearl surface, `--ls-card-border`, radius 16px), `.ls-band` (cream/sage/pearl/dark section bands), and the method number-badge treatment (6px chips, per the landing's 01–04). Also decide exact button radius/height and hover states, and how labels compose with headings. The human signs off before anything blocks on it.
 ```
 
 ### Ticket 4 — "How-It-Works redesign" — `wayfinder:prototype` (HITL)
