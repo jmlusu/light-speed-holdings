@@ -1,34 +1,71 @@
-# Ignore everything by default
-*
+# Vercel deployment - React SPA at repo root
+# Ignore everything not needed for the frontend build
 
-# Include only what's needed
-!/company-registry.yaml
-!/vercel.json
-!/lightspeed-main-site
-!/lightspeed-main-site/**
-!/lightspeed-main-site/.gitignore
-!/lightspeed-main-site/.npmrc
-!/lightspeed-main-site/package.json
-!/lightspeed-main-site/package-lock.json
-!/lightspeed-main-site/tsconfig.json
-!/lightspeed-main-site/astro.config.mjs
-!/lightspeed-main-site/tailwind.config.mjs
-!/lightspeed-main-site/public
-!/lightspeed-main-site/public/**
-!/lightspeed-main-site/src
-!/lightspeed-main-site/src/**
-!/lightspeed-main-site/scripts
-!/lightspeed-main-site/scripts/**
-!/lightspeed-main-site/styles
-!/lightspeed-main-site/styles/**
+# Build-critical files MUST survive:
+#   package.json, package-lock.json, tsconfig.json, vite.config.ts,
+#   index.html, src/, public/, company/agent-registry.json
+#   (src/data/companyData.ts imports company/agent-registry.json at build time)
 
-# Ignore dev files within lightspeed-main-site
-/lightspeed-main-site/.astro
-/lightspeed-main-site/node_modules
-/lightspeed-main-site/dist
-/lightspeed-main-site/.vercel
-/lightspeed-main-site/*.log
-/lightspeed-main-site/.DS_Store
-/lightspeed-main-site/.eslintrc*
-/lightspeed-main-site/.prettierrc*
-/lightspeed-main-site/coverage
+# Python backend
+/src/ai_company/
+*.py
+pyproject.toml
+uv.lock
+.venv/
+
+# Tests
+/tests/
+/test_*.py
+
+# Dev / tooling
+/.opencode/
+/.github/
+/.mypy_cache/
+/.ruff_cache/
+/.pytest_cache/
+/node_modules/
+/dist/
+
+# Brand assets (not needed for build - favicon is in /public)
+/brand/
+/static/
+
+# Docs, harness, configs
+/docs/
+/harness/
+/config/
+/company/
+!/company/agent-registry.json
+/memory/
+/data/
+/models/
+/results/
+/backups/
+/archive/
+/logs/
+/orchestrator/
+/sales/
+/hr/
+/board/
+/workflows/
+/graphify-out/
+/.benchmarks/
+/.hypothesis/
+/.ai-company/
+/.crush/
+/.agents/
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Other root files
+*.md
+*.txt
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!vite.config.ts
+!index.html
