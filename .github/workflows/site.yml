@@ -1,19 +1,18 @@
 name: site
 
-# Marketing site (Next.js) — build + lint gate.
-# Deployment happens via Vercel's Git integration; this job only validates
-# that the site builds cleanly on pushes/PRs that touch it.
+# Marketing site (Astro static) — free-hosted on Vercel / Cloudflare / GH Pages
+# Path-filtered so Python jobs (ruff/mypy/pytest) never trigger pnpm.
 
 on:
   push:
     branches: [main]
     paths:
-      - "website/**"
+      - "lightspeed-main-site/**"
       - ".github/workflows/site.yml"
   pull_request:
     branches: [main]
     paths:
-      - "website/**"
+      - "lightspeed-main-site/**"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 
@@ -26,26 +25,65 @@ permissions:
 
 jobs:
   build:
-    name: Build (Next.js)
+    name: Build (Astro static)
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: website
+        working-directory: lightspeed-main-site
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v5
         with:
           node-version: "22.x"
           cache: npm
-          cache-dependency-path: website/package-lock.json
+          cache-dependency-path: lightspeed-main-site/package-lock.json
       - name: Install
         run: npm ci
-      - name: Lint
-        run: npm run lint
-      - name: Build
+      - name: Content lint — product-meta schema + sitemap check
+        run: npm run export:meta && node -e "const m=require('./public/product-meta.json'); if(!m.agents||m.agents.total<100) throw new Error('product-meta agents low'); console.log('product-meta OK',m.agents.total)"
+      - name: Astro check
+        run: npx astro check
+      - name: Build static
         run: npm run build
       - name: Verify artifacts
         run: |
-          test -d .next || (echo "missing .next" && exit 1)
+          test -f dist/index.html || (echo "missing dist/index.html" && exit 1)
+          test -f dist/sitemap-index.xml || test -f dist/sitemap-0.xml || (echo "missing sitemap" && exit 1)
+          test -f dist/robots.txt || (echo "missing robots.txt" && exit 1)
+          test -f dist/product-meta.json || (echo "missing product-meta.json" && exit 1)
           echo "Artifacts OK"
-          ls -lh .next | head -20
+          ls -lh dist | head -20
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: lightspeed-main-site/dist
+          if-no-files-found: error
+
+  # Optional: deploy to GitHub Pages on main (free). Vercel deploys via its own Git integration (recommended per map #157).
+  # Keep this job separate so it never blocks PRs that only touch lightspeed-main-site stubs.
+  deploy-pages:
+    name: Deploy (GitHub Pages — DR)
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,10 +1,36 @@
-# Generated OpenCode agent files must always be stored as LF, regardless of
-# the host OS that runs the generator. This is a second line of defense
-# behind the `newline="\n"` fix in AgentGenerator.write_text().
-/.opencode/agents/*.md            text eol=lf
-/.opencode/operating-standards.md text eol=lf
-/.opencode/config/*.yaml          text eol=lf
+# Set default behavior for git commands
+* text=auto eol=lf
 
-# Harness index must be LF so lint-ecl.ps1's raw-content comparison stays stable
-# regardless of the host OS that runs harness-change.ps1 reindex.
-/harness/changes/INDEX.json       text eol=lf
+# OpenCode agent definitions, operating standards, and configurations (must be LF)
+/.opencode/agents/*.md text eol=lf
+/.opencode/operating-standards.md text eol=lf
+/.opencode/config/*.yaml text eol=lf
+/.opencode/skills/**/*.md text eol=lf
+/company-registry.yaml text eol=lf
+/AGENTS.md text eol=lf
+
+# Harness index
+/harness/changes/INDEX.json text eol=lf
+
+# Source files & config
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
