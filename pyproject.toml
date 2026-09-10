@@ -1,0 +1,202 @@
+[project]
+name = "ai-company"
+version = "0.6.0"
+description = "AI Company powered by OpenCode"
+readme = "README.md"
+requires-python = ">=3.12"
+
+authors = [
+    { name = "Jack Mlusu" }
+]
+
+license = { text = "Proprietary — All Rights Reserved. Apache 2.0 at v1.0." }
+
+dependencies = [
+      "jinja2",
+      "click",
+      "rich",
+      "pyyaml",
+      "jsonschema",
+      "pydantic>=2.8",
+      "typer",
+      "python-dotenv",
+      "fastapi",
+      "uvicorn[standard]",
+      "aiohttp",
+    "httpx<0.29.0",
+    # Security
+    "cryptography>=42.0",
+    # ML dependencies
+    "sentence-transformers>=3.0",
+    "numpy>=1.26",
+    # System monitoring / analytics
+    "psutil>=5.9",
+    # Observability — OTel API (zero-cost NoOp when disabled)
+    "opentelemetry-api>=1.25",
+]
+
+[project.urls]
+Homepage = "https://github.com/light-speed-holdings/ai-company"
+Repository = "https://github.com/light-speed-holdings/ai-company"
+Issues = "https://github.com/light-speed-holdings/ai-company/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-benchmark",
+    "pytest-asyncio",
+    "pytest-rerunfailures",
+    "ruff",
+    "mypy",
+    "types-PyYAML",
+    "bandit",
+    "safety",
+    "build",
+    "aiosqlite>=0.19",
+    "pre-commit",
+    "python-pptx>=0.6.23",
+    "hypothesis",
+    "opentelemetry-sdk>=1.25",
+    "graphifyy>=0.9.44",
+]
+
+e2e = [
+    "playwright>=1.40",
+    "pytest-playwright>=0.4",
+]
+
+otel = [
+    "opentelemetry-sdk>=1.25",
+    "opentelemetry-exporter-otlp>=1.25",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [
+    ".pytest_tmp*/",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "BLE",   # flake8-blind-except
+    "B",     # flake8-bugbear
+    "SIM",   # flake8-simplify
+    "S112",  # try-except-continue
+]
+ignore = [
+    "E501",  # line too long (handled by ruff format)
+]
+
+[tool.ruff.lint.flake8-bugbear]
+# Standard FastAPI dependency-injection pattern: Depends(...) in argument
+# defaults is idiomatic and should not trip B008.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "ai_company.security.rbac.require_role",
+]
+
+[tool.pytest.ini_options]
+# Default suite excludes e2e (Playwright) tests. Do NOT remove this gate: it
+# was reverted once and reintroduced the "Future attached to a different loop"
+# event-loop cascade from pytest-asyncio auto mode + pytest-playwright sharing
+# the same session. Run e2e explicitly with: pytest -m e2e
+# No --basetemp here: pytest's built-in per-run unique temp dir prevents the
+# concurrent-run collisions (PermissionError WinError 32 / FileLockError) that
+# the fixed .pytest_tmp basetemp caused.
+addopts = "-m 'not e2e' --reruns 2 --reruns-delay 1"
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+asyncio_mode = "auto"
+asyncio_default_test_loop_scope = "function"
+markers = [
+    "performance: marks tests as performance benchmarks (deselect with '-m \"not performance\"')",
+    "e2e: marks end-to-end tests requiring a running dashboard (deselect with '-m \"not e2e\"')",
+    "timeout: marks tests exercising explicit timeout handling (deselect with '-m \"not timeout\"')",
+    "slow: marks slow-running tests (deselect with '-m \"not slow\"')",
+    "flaky: marks tests that may be flaky (auto-retried via pytest-rerunfailures)",
+]
+
+[tool.coverage.run]
+# CI coverage gate (TD-7): omit the thin CLI entry-point layer (Typer command
+# registrations) so the gate measures business logic, not command wrappers.
+# Also omit v0.5.1 stub modules that have 0% coverage (external-API adapters,
+# ETL pipelines, full-text search) — coverage will be added incrementally.
+omit = [
+    "src/ai_company/cli/*",
+    "src/ai_company/data/etl/*",
+    "src/ai_company/data/mobile_money/*",
+    "src/ai_company/data/search.py",
+    "src/ai_company/data/revenue_analytics.py",
+    "src/ai_company/dashboard/workflow_api.py",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.165.3",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ai_company*"]
+
+[project.scripts]
+ai-company = "ai_company.cli.main:app"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+exclude = [
+    "scripts/",
+    "results/",
+    "tests/",
+]
+
+[[tool.mypy.overrides]]
+module = "ai_company.dashboard.monitoring"
+disable_error_code = ["unused-ignore"]
+
+[[tool.mypy.overrides]]
+module = "ai_company.telemetry.tracer"
+disable_error_code = ["unused-ignore"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+# Rules intentionally disabled for this codebase (with rationale):
+#   B101  - assert warnings (tests are excluded anyway)
+#   B110  - best-effort non-fatal try/except/pass handlers
+#   B107  - empty-string default params flagged as passwords (false positive)
+#   B105  - variable named *_api_key inside the secrets scanner itself
+#   B311  - random used for jitter/seeding, never security/crypto
+#   B404  - subprocess imports (CLI executes commands by design)
+#   B603  - subprocess.run with explicit token lists, shell=False
+#   B607  - PATH executables ("python", "git") for a dev CLI
+#   B608  - dynamic SQL with identifiers validated via _validate_table_name
+#   B310  - urllib health checks against localhost / model APIs
+#   B701  - jinja autoescape=False generates Markdown agent files, not HTML
+skips = [
+    "B101",
+    "B110",
+    "B107",
+    "B105",
+    "B311",
+    "B404",
+    "B603",
+    "B607",
+    "B608",
+    "B310",
+    "B701",
+]
