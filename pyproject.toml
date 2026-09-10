@@ -109,7 +109,7 @@ extend-immutable-calls = [
 # No --basetemp here: pytest's built-in per-run unique temp dir prevents the
 # concurrent-run collisions (PermissionError WinError 32 / FileLockError) that
 # the fixed .pytest_tmp basetemp caused.
-addopts = "-m 'not e2e' --reruns 2 --reruns-delay 1"
+addopts = "-m 'not e2e'"
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 asyncio_mode = "auto"
