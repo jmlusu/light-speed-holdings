@@ -1,15 +1,31 @@
 {
-  "name": "ai-company-milestones",
+  "name": "lightspeed-holdings-ceo-dashboard",
   "version": "1.0.0",
-  "description": "Generate milestones deck for AI Company Builder project",
-  "main": "scripts/generate-milestones-deck.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "generate-deck": "node scripts/generate-milestones-deck.js"
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "build": "tsc -b && vite build",
+    "lint": "tsc --noEmit",
+    "preview": "vite preview --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
-    "pptxgenjs": "^3.12.0"
+    "@types/three": "^0.185.4",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.16.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.15.1",
+    "tailwind-merge": "^3.0.2",
+    "three": "^0.186.0"
   },
   "devDependencies": {
-    "playwright": "^1.63.0"
+    "@tailwindcss/vite": "^4.0.9",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.9",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0"
   }
 }
