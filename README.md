@@ -254,80 +254,157 @@ ai-company/                     # Repository root
 
 ---
 
-## Architecture
+## Technical Architecture
+
+The LightSpeed Holdings platform seamlessly combines a high-performance **React 18 + Vite** executive web application with **OpenCode automation standards** and a **Python 3.12+ Typer/FastAPI** backend orchestrator.
 
 ```
-+-----------------------------------------------------+
-|                    CLI Layer                         |
-|  Typer app -> 30 commands -> domain engines         |
-+-----------------------------------------------------+
-|                  Engine Layer                        |
-|  Orchestrator | Executor | Decision | Workflow      |
-|  Memory       | Graph    | Model Router             |
-+-----------------------------------------------------+
-|                  Model Layer                         |
-|  64 Pydantic models -> CompanyRegistry              |
-+-----------------------------------------------------+
-|                Infrastructure                        |
-|  Registry (19 YAMLs) | Templates (9 Jinja2)       |
-|  Task Queue (JSON)    | LLM Providers (7)           |
-+-----------------------------------------------------+
-|                  Dashboard Layer                     |
-|  FastAPI REST API | WebSocket | KPI Collectors      |
-+-----------------------------------------------------+
++-----------------------------------------------------------------------------------+
+|                        PRESENTATION LAYER (React 18 + Vite)                       |
+|  CorporateLanding | MissionControl | AgentRoster | TemplatesArtifacts | Spatial    |
++-----------------------------------------------------------------------------------+
+                                        | REST API & WebSockets
++-----------------------------------------------------------------------------------+
+|                     API & ORCHESTRATION LAYER (FastAPI & CLI)                     |
+|  FastAPI Server (Port 8420) | WebSocket Telemetry | Typer CLI (ai-company)        |
++-----------------------------------------------------------------------------------+
+                                        | OpenCode Engine
++-----------------------------------------------------------------------------------+
+|                    OPENCODE AGENT RUNTIME & GOVERNANCE                            |
+|  .opencode/agents/*.md | company-registry.yaml | Canonical 7-Tool Permission Gate |
++-----------------------------------------------------------------------------------+
+                                        | Storage & Persistence
++-----------------------------------------------------------------------------------+
+|                   DATA, MEMORY & EXECUTION INFRASTRUCTURE                         |
+|  .opencode/inbox.json | JSONL Audit Logs | Memory Engine | Knowledge Graphs      |
++-----------------------------------------------------------------------------------+
 ```
 
-- **Entry point:** `ai_company.cli.main:app` (Typer)
-- **Task queue:** `.opencode/inbox.json` (JSON-backed)
-- **Agent files:** `.opencode/agents/*.md` (OpenCode format)
-- **Dashboard:** FastAPI at `localhost:8420` (auto-opens browser)
-- **Autonomous:** GitHub Actions run orchestrator + executor every 6 hours
+### Integration with OpenCode Automation Standards
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full details.
+1. **OpenCode Agent Cards (`.opencode/agents/*.md`)**:
+   - The React frontend (`src/components/AgentRoster.tsx`, `AgentModal.tsx`) visualizes OpenCode agent specifications generated from `company-registry.yaml` via Jinja2 templates (`templates/agents/agent.md.j2`).
+   - Every agent is defined with OpenCode-native attributes (`mode: subagent`, `description`, `reports_to`, and granular permission blocks).
+
+2. **Canonical 7-Tool Permission Vocabulary**:
+   - Both the Python execution engine (`src/ai_company/executor/`) and the React UI enforce OpenCode's strict 7-tool permission boundaries:
+     `read`, `edit`, `grep`, `list`, `bash`, `webfetch`, `task`.
+   - Legacy tool aliases (`write` -> `edit`, `execute` -> `bash`, `delegate` -> `task`) are transparently normalized by the runtime.
+
+3. **Task Queue & Inbox Synchronization**:
+   - The task management board (`src/components/TaskKanban.tsx`, `TaskModal.tsx`) displays and manages tasks structured according to OpenCode's JSON task schema (`.opencode/inbox.json`).
+   - Tasks progress through deterministic states (`PENDING`, `IN_PROGRESS`, `AWAITING_APPROVAL`, `COMPLETED`, `FAILED`).
+
+4. **Human-in-the-Loop (HITL) Fiduciary Controls**:
+   - The approvals management interface (`src/components/ApprovalsEscalations.tsx`) connects to OpenCode's 5-Tier decision matrix (`ApprovalGate`, `.opencode/pending_approvals.json`).
+   - High-value operations or sensitive data actions require explicit cryptographic human sign-off before executing.
+
+5. **Templates & Deliverables (`src/components/TemplatesArtifacts.tsx`)**:
+   - Displays production-grade OpenCode agent YAML cards, SADC trade compliance frameworks, Policy-as-Code schemas, and DAG execution flows.
+   - Developers and automation tools can ingest these templates directly into OpenCode CLI environments.
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for complete technical specifications.
 
 ---
 
-## Development
+## Development Guide
+
+### Prerequisites
+
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher
+- **Python**: 3.12 or higher
+- **uv**: Fast Python package installer and virtual environment manager (`pip install uv` or `curl -LsSf https://astral.sh/uv/install.sh | sh`)
+
+---
+
+### 1. Web Application Setup (React + Vite)
+
+The web user interface is built with React 18, Vite, and Tailwind CSS.
+
+#### Installation & Startup
 
 ```bash
-uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
+# Install Node dependencies
+npm install
 
-# Run all checks
-uv run ruff check src/                # Lint
-uv run ruff format src/               # Format
-uv run mypy src/                      # Type check
-uv run pytest                         # Tests
+# Start Vite development server (runs on port 3000)
+npm run dev
+
+# Build production static assets (outputs to dist/)
+npm run build
+
+# Run TypeScript type checker
+npm run lint
 ```
 
-### Makefile
+#### Key React Scripts
+| Script | Command | Purpose |
+|--------|---------|---------|
+| `dev` | `vite` | Starts dev server on `http://localhost:3000` |
+| `build` | `tsc && vite build` | Compiles TypeScript and builds production distribution |
+| `lint` | `tsc --noEmit` | Validates TypeScript type safety with zero code generation |
+| `preview` | `vite preview` | Serves production build locally for verification |
 
-All common tasks are available via Make targets:
+---
+
+### 2. Python Backend & Orchestrator Setup
+
+The backend CLI, orchestrator engine, and FastAPI server are powered by Python 3.12.
+
+#### Installation & Quick Start
 
 ```bash
+# Create virtual environment (.venv) and install dependencies
+uv sync --extra dev
+
+# Bootstrap the 144 AI agents from company-registry.yaml
+uv run ai-company company run
+
+# Verify registered agents
+uv run ai-company agents list
+
+# Launch the FastAPI REST & WebSocket server (runs on localhost:8420)
+uv run ai-company dashboard
+```
+
+#### CLI Command Reference
+```bash
+uv run ai-company orchestrator tick     # Run one orchestrator task cycle
+uv run ai-company executor tick         # Run one execution cycle
+uv run ai-company status                # View company health status
+uv run ai-company doctor                # Run system diagnostics
+```
+
+---
+
+### 3. Testing & Code Quality Verification
+
+All source changes must pass linting, type checking, and unit/integration tests before deployment.
+
+#### Python Checks & Tests
+```bash
+uv run ruff check src/                   # Lint Python source code
+uv run ruff format src/                  # Format Python files
+uv run mypy src/                         # Run mypy static type checking
+uv run pytest                            # Run complete test suite (1856+ tests)
+uv run pytest --cov=ai_company          # Run tests with coverage reporting
+```
+
+#### Convenience Makefile Targets
+```bash
 make help              # Show all available targets
-make install           # uv sync --extra dev
-make test              # Run all tests
-make test-cov          # Run tests with coverage
-make lint              # Lint with ruff
+make install           # Run uv sync --extra dev
+make test              # Run pytest suite
+make test-cov          # Run pytest with coverage
+make lint              # Run ruff linter
 make format            # Format with ruff
-make typecheck         # Type check with mypy
-make all-checks        # Lint + typecheck + test
-make generate          # Regenerate agents from registry
+make typecheck         # Run mypy type checker
+make all-checks        # Execute lint + typecheck + pytest
+make generate          # Regenerate agent files from registry
 make doctor            # Run system diagnostics
 make clean             # Remove caches and build artifacts
 ```
-
-### Testing
-
-```bash
-uv run pytest                                    # All 1856 tests
-uv run pytest tests/unit/test_orchestrator.py    # Single file
-uv run pytest -v                                 # Verbose output
-uv run pytest -k "postmortem"                    # By name pattern
-uv run pytest --cov=ai_company                   # With coverage
-```
-
-Tests cover: models, registry, orchestrator (scheduler, escalation, approval, postmortem), executor, dashboard API, memory, graphs, workflows, decision engine, model routing, generation, and audit trail.
 
 ---
 
