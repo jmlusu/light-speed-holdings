@@ -259,6 +259,46 @@ class MemoryStore:
                     return True
         return False
 
+    def supersede(self, entry_id: str) -> bool:
+        """Retire an entry as superseded (ADR-019 conflict policy).
+
+        Superseded entries drop out of ``recall``/``search`` ranking while
+        remaining persisted for audit. Returns True if a matching entry was
+        found.
+        """
+        for entries in self._stores.values():
+            for entry in entries:
+                if entry.id == entry_id:
+                    self.governance.mark_superseded(entry)
+                    self._save(entry.memory_type)
+                    return True
+        return False
+
+    def resolve_conflict(self, old_id: str, new_id: str) -> bool:
+        """Resolve a contradiction between an old and a newer statement.
+
+        The newer statement wins unless the older one is pinned by a curator,
+        in which case both remain active. Returns True when the old entry was
+        superseded.
+        """
+        old = self._find_entry(old_id)
+        new = self._find_entry(new_id)
+        if old is None or new is None:
+            return False
+        decision = self.governance.resolve_conflict(old, new)
+        if decision["winner"] == "new":
+            self.governance.mark_superseded(old)
+            self._save(old.memory_type)
+            return True
+        return False
+
+    def _find_entry(self, entry_id: str) -> MemoryEntry | None:
+        for entries in self._stores.values():
+            for entry in entries:
+                if entry.id == entry_id:
+                    return entry
+        return None
+
     def _exclude_vetoed(self, entries: list[MemoryEntry]) -> list[MemoryEntry]:
         """Drop entries retired by governance (vetoed or superseded)."""
         return [
@@ -467,7 +507,8 @@ class MemoryStore:
         Returns:
             The total number of entries pruned.  Changes are persisted.
         """
-        if max_age_days is None and max_entries_per_type is None:
+        use_governance_ttl = max_age_days is None and max_entries_per_type is None
+        if use_governance_ttl and not self.governance.retention_ttl_days:
             return 0
 
         pruned = 0
@@ -480,8 +521,13 @@ class MemoryStore:
 
             survivors = list(entries)
 
-            # Age-based filtering.
-            if max_age_days is not None:
+            # Age-based filtering. With no explicit window, fall back to the
+            # governance per-type TTL sweep (episodic decays fast, semantic
+            # knowledge is long-lived and retired by supersession instead).
+            ttl_days = max_age_days
+            if ttl_days is None and use_governance_ttl:
+                ttl_days = self.governance.ttl_days_for(mem_type)
+            if ttl_days is not None:
                 kept_by_age: list[MemoryEntry] = []
                 for entry in survivors:
                     if self.governance.is_pinned(entry):
@@ -494,7 +540,7 @@ class MemoryStore:
                     except ValueError:
                         created = now
                     age_days = (now - created).total_seconds() / 86400.0
-                    if age_days > max_age_days:
+                    if age_days > ttl_days:
                         pruned += 1
                         pruned_ids.append(entry.id)
                     else:
