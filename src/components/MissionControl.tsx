@@ -1,11 +1,11 @@
 import React from 'react';
-import { 
-  Compass, 
-  Shield, 
-  BookOpen, 
-  Award, 
-  CheckCircle2, 
-  Palette, 
+import {
+  Compass,
+  Shield,
+  BookOpen,
+  Award,
+  CheckCircle2,
+  Palette,
   FileText,
   ExternalLink,
   Layers
@@ -66,7 +66,7 @@ export const MissionControl: React.FC = () => {
               <span className="text-xs text-slate-400">Est. 2026</span>
             </div>
             <h2 className="text-2xl font-black text-white mt-1.5 tracking-tight font-display">
-              LIGHTSPEED HOLDINGS LIMITED
+LIGHTSPEED HOLDINGS LIMITED
             </h2>
             <p className="text-justify text-sm font-semibold text-[#00bfff] tracking-widest mt-0.5">
               ASPIRE. ACT. ACHIEVE.

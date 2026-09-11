@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Sun, 
-  Moon, 
-  Bell, 
-  Search, 
-  Lock, 
-  Unlock, 
-  Cpu, 
-  Zap, 
-  ShieldCheck, 
-  Server, 
-  Clock, 
-  Video, 
-  Settings, 
-  ChevronDown, 
-  Plus, 
-  RotateCcw, 
+import {
+  Sun,
+  Moon,
+  Bell,
+  Search,
+  Lock,
+  Unlock,
+  Cpu,
+  Zap,
+  ShieldCheck,
+  Server,
+  Clock,
+  Video,
+  Settings,
+  ChevronDown,
+  Plus,
+  RotateCcw,
   ExternalLink,
   ChevronRight,
   Activity,
@@ -26,6 +26,7 @@ import {
   FileCheck,
   Binary
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface SpatialDashboardStageProps {
   theme?: 'light' | 'dark';
@@ -87,19 +88,30 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
 
   // Notifications state
   const [showNotificationToast, setShowNotificationToast] = useState(false);
+  const navigate = useNavigate();
 
   const clusters = [
-    { id: 'governance', name: 'Executive Governance', subtitle: 'Fiduciary Enclave', href: '#hero' },
-    { id: 'engineering', name: 'Autonomous Systems', subtitle: 'Agent Mesh', href: '#workforce' },
-    { id: 'finance', name: 'Capital Architecture', subtitle: 'Settlement Engine', href: '#system' },
-    { id: 'compliance', name: 'Regulatory Watchtower', subtitle: 'Audit Mesh', href: '#capabilities' },
-    { id: 'edge', name: 'Global Edge Compute', subtitle: 'Sovereign Nodes', href: '#insights' }
+    { id: 'governance', name: 'Executive Governance', subtitle: 'Fiduciary Enclave', to: '/' },
+    { id: 'engineering', name: 'Autonomous Systems', subtitle: 'Agent Mesh', to: '/capabilities' },
+    { id: 'finance', name: 'Capital Architecture', subtitle: 'Settlement Engine', to: '/capabilities/offerings' },
+    { id: 'compliance', name: 'Regulatory Watchtower', subtitle: 'Audit Mesh', to: '/capabilities/diagnostic' },
+    { id: 'edge', name: 'Global Edge Compute', subtitle: 'Sovereign Nodes', to: '/insights' }
   ];
 
-  const handleClusterSelect = (clusterId: string, href: string) => {
+  const handleClusterSelect = (clusterId: string, to: string) => {
     setActiveCluster(clusterId);
     if (onNavigateSection) {
-      onNavigateSection(href.replace('#', ''));
+      onNavigateSection(clusterId);
+    } else {
+      navigate(to);
+    }
+  };
+
+  const handleSectionNav = (sectionId: string, to: string) => {
+    if (onNavigateSection) {
+      onNavigateSection(sectionId);
+    } else {
+      navigate(to);
     }
   };
 
@@ -107,17 +119,17 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
 
   return (
     <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 py-6 transition-all duration-300">
-      
+
       {/* 1. TOP FLOATING CONTROL PILL BAR */}
       <div className={`mb-6 p-2 sm:p-2.5 rounded-full flex flex-wrap items-center justify-between gap-3 ${
         isLight ? 'glass-pill-light' : 'glass-pill-dark'
       }`}>
-        
+
         {/* User profile & Sovereign Executive Status */}
         <div className="flex items-center gap-3 pl-2">
           <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden p-0.5 bg-gradient-to-tr from-orange-500 to-amber-400 shadow-sm">
-            <img 
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
               alt="Albert - Executive Director"
               className="w-full h-full object-cover rounded-full"
               referrerPolicy="no-referrer"
@@ -137,12 +149,12 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
         {/* Center Search Capsule */}
         <div className="flex-1 max-w-sm mx-2">
           <div className={`relative flex items-center rounded-full px-3.5 py-1.5 transition-all ${
-            isLight 
-              ? 'bg-white/80 border border-slate-200/80 focus-within:border-orange-400/80 focus-within:bg-white shadow-inner' 
+            isLight
+              ? 'bg-white/80 border border-slate-200/80 focus-within:border-orange-400/80 focus-within:bg-white shadow-inner'
               : 'bg-zinc-850/80 border border-zinc-700/60 focus-within:border-orange-500/80 focus-within:bg-zinc-800 shadow-inner'
           }`}>
             <Search className={`w-3.5 h-3.5 mr-2 ${isLight ? 'text-slate-400' : 'text-zinc-400'}`} />
-            <input 
+            <input
               type="text"
               placeholder="Search agent IDs, tasks, or policy gates..."
               value={searchTerm}
@@ -152,8 +164,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
               }`}
             />
             {searchTerm && (
-              <button 
-                onClick={() => setSearchTerm('')} 
+              <button
+                onClick={() => setSearchTerm('')}
                 className={`text-[10px] px-1.5 py-0.5 rounded-full ${isLight ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'}`}
               >
                 ✕
@@ -166,15 +178,15 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
         <div className="flex items-center gap-2 pr-1">
           {/* Light / Dark Mode Toggle Capsule */}
           <div className={`flex items-center p-1 rounded-full border ${
-            isLight 
-              ? 'bg-black/[0.04] border-black/[0.06]' 
+            isLight
+              ? 'bg-black/[0.04] border-black/[0.06]'
               : 'bg-white/[0.06] border-white/[0.08]'
           }`}>
             <button
               onClick={() => theme !== 'light' && onToggleTheme?.()}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                isLight 
-                  ? 'bg-white text-slate-800 shadow-sm' 
+                isLight
+                  ? 'bg-white text-slate-800 shadow-sm'
                   : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -186,8 +198,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <button
               onClick={() => theme !== 'dark' && onToggleTheme?.()}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                !isLight 
-                  ? 'bg-zinc-800 text-white shadow-sm' 
+                !isLight
+                  ? 'bg-zinc-800 text-white shadow-sm'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
@@ -200,8 +212,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
           <button
             onClick={() => setShowNotificationToast(!showNotificationToast)}
             className={`relative w-9 h-9 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
-              isLight 
-                ? 'bg-white/80 border-slate-200/80 text-slate-700 hover:bg-white shadow-sm' 
+              isLight
+                ? 'bg-white/80 border-slate-200/80 text-slate-700 hover:bg-white shadow-sm'
                 : 'bg-zinc-800/80 border-zinc-700 text-zinc-200 hover:bg-zinc-700'
             }`}
             title="Enterprise Telemetry Alerts"
@@ -225,7 +237,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <div className="flex items-start gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1" />
               <div>
-                <div className="font-semibold font-mono">Autonomous Fleet Mesh 99.8% Consensus</div>
+                <div className="font-semibold font-mono">Autonomous Fleet Mesh Registry-Verified</div>
                 <div className="text-[11px] text-slate-500 dark:text-zinc-400">All 144 agent cards verified against company-registry.yaml schema.</div>
               </div>
             </div>
@@ -242,16 +254,16 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
 
       {/* 2. MAIN SPATIAL GRID LAYOUT (Vertical dock on left + Main Frosted Window) */}
       <div className="flex flex-col lg:flex-row items-start gap-5">
-        
+
         {/* LEFT VERTICAL CAPSULE DOCK */}
         <div className={`hidden lg:flex flex-col items-center gap-4 py-5 px-3 rounded-full shrink-0 transition-all ${
           isLight ? 'glass-pill-light' : 'glass-pill-dark'
         }`}>
-          <button 
-            onClick={() => onNavigateSection?.('hero')}
+          <button
+            onClick={() => handleSectionNav('hero', '/')}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
-              activeCluster === 'governance' 
-                ? 'bg-orange-500 text-white shadow-md shadow-orange-500/40' 
+              activeCluster === 'governance'
+                ? 'bg-orange-500 text-white shadow-md shadow-orange-500/40'
                 : isLight ? 'text-slate-600 hover:bg-black/5' : 'text-zinc-400 hover:bg-white/10'
             }`}
             title="Core Executive Enclave"
@@ -259,8 +271,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <ShieldCheck className="w-4 h-4" />
           </button>
 
-          <button 
-            onClick={() => onNavigateSection?.('capabilities')}
+          <button
+            onClick={() => handleSectionNav('capabilities', '/capabilities')}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
               isLight ? 'text-slate-600 hover:bg-black/5' : 'text-zinc-400 hover:bg-white/10'
             }`}
@@ -269,8 +281,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <Zap className="w-4 h-4" />
           </button>
 
-          <button 
-            onClick={() => onNavigateSection?.('workforce')}
+          <button
+            onClick={() => handleSectionNav('workforce', '/capabilities')}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
               activeCluster === 'engineering'
                 ? 'bg-orange-500 text-white shadow-md shadow-orange-500/40'
@@ -281,7 +293,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <Server className="w-4 h-4" />
           </button>
 
-          <button 
+          <button
             onClick={() => setShowNotificationToast(!showNotificationToast)}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
               isLight ? 'text-slate-600 hover:bg-black/5' : 'text-zinc-400 hover:bg-white/10'
@@ -291,8 +303,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <Bell className="w-4 h-4" />
           </button>
 
-          <button 
-            onClick={() => onNavigateSection?.('system')}
+          <button
+            onClick={() => handleSectionNav('system', '/capabilities/offerings')}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
               isLight ? 'text-slate-600 hover:bg-black/5' : 'text-zinc-400 hover:bg-white/10'
             }`}
@@ -301,8 +313,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <Clock className="w-4 h-4" />
           </button>
 
-          <button 
-            onClick={() => onNavigateSection?.('insights')}
+          <button
+            onClick={() => handleSectionNav('insights', '/insights')}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
               isLight ? 'text-slate-600 hover:bg-black/5' : 'text-zinc-400 hover:bg-white/10'
             }`}
@@ -313,7 +325,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
 
           <div className={`w-5 h-[1px] ${isLight ? 'bg-slate-300/60' : 'bg-zinc-700/60'}`} />
 
-          <button 
+          <button
             onClick={onOpenConsole}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
               isLight ? 'text-slate-600 hover:bg-black/5' : 'text-zinc-400 hover:bg-white/10'
@@ -323,7 +335,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
             <Terminal className="w-4 h-4 text-orange-400" />
           </button>
 
-          <button 
+          <button
             onClick={() => window.scrollBy({ top: 400, behavior: 'smooth' })}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer ${
               isLight ? 'text-slate-400 hover:text-slate-800' : 'text-zinc-500 hover:text-white'
@@ -338,14 +350,14 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
         <div className={`flex-1 w-full rounded-[32px] sm:rounded-[40px] p-4 sm:p-7 relative overflow-hidden transition-all duration-300 ${
           isLight ? 'glass-window-light' : 'glass-window-dark'
         }`}>
-          
+
           {/* Subtle inner warm room ambient highlight */}
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-orange-500/10 filter blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-amber-400/10 filter blur-3xl pointer-events-none" />
 
           {/* GRID OF SOVEREIGN ENTERPRISE AI WIDGETS */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-5 relative z-10">
-            
+
             {/* ROW 1 - LEFT: Epoch Clock & Consensus Heartbeat Widget */}
             <div className={`md:col-span-4 p-5 rounded-3xl relative overflow-hidden transition-all ${
               isLight ? 'glass-card-light' : 'glass-card-dark'
@@ -360,7 +372,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                       {timeStr}
                     </span>
                     <span className="text-xs font-mono font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-sm">
-                      12ms RTT
+                      Registry-Verified
                     </span>
                   </div>
                 </div>
@@ -412,7 +424,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                     />
                     <path
                       className="text-orange-500 transition-all duration-700"
-                      strokeDasharray="99.8, 100"
+                      strokeDasharray="100, 100"
                       strokeWidth="3.4"
                       strokeLinecap="round"
                       stroke="currentColor"
@@ -429,10 +441,10 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
 
                 <div>
                   <div className={`text-2xl font-extrabold font-mono tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    99.8%
+                    144
                   </div>
                   <div className={`text-[11px] font-mono ${isLight ? 'text-slate-500' : 'text-zinc-400'}`}>
-                    Zero-Drift SLA
+                    Registry-Verified
                   </div>
                 </div>
               </div>
@@ -456,7 +468,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                   </span>
                 </div>
                 <span className={`text-xs font-bold font-mono ${isLight ? 'text-slate-700' : 'text-orange-400'}`}>
-                  28.4M / hr
+                  2,373 TESTS
                 </span>
               </div>
 
@@ -476,10 +488,10 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                         {col.tag}
                       </span>
                     )}
-                    <div 
+                    <div
                       className={`w-full max-w-[14px] rounded-full transition-all duration-300 ${
-                        col.active 
-                          ? 'bg-gradient-to-t from-orange-600 to-amber-400 shadow-sm shadow-orange-500/50' 
+                        col.active
+                          ? 'bg-gradient-to-t from-orange-600 to-amber-400 shadow-sm shadow-orange-500/50'
                           : isLight ? 'bg-slate-200 group-hover:bg-slate-300' : 'bg-zinc-700/80 group-hover:bg-zinc-600'
                       }`}
                       style={{ height: col.height }}
@@ -496,7 +508,7 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
 
             {/* ROW 2 - LEFT: 4 Sovereign Subsystem Toggles (Replacing smart home appliances) */}
             <div className="md:col-span-4 grid grid-cols-2 gap-3.5">
-              
+
               {/* Subsystem 1: HITL Governance Sweep */}
               <div className={`p-4 rounded-3xl flex flex-col justify-between transition-all ${
                 isLight ? 'glass-card-light' : 'glass-card-dark'
@@ -519,8 +531,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                 <button
                   onClick={() => setHitlSweepLocked(!hitlSweepLocked)}
                   className={`w-full py-1.5 px-3 rounded-full flex items-center justify-between text-[11px] font-bold transition-all cursor-pointer ${
-                    hitlSweepLocked 
-                      ? 'bg-orange-500 text-white shadow-xs' 
+                    hitlSweepLocked
+                      ? 'bg-orange-500 text-white shadow-xs'
                       : isLight ? 'bg-slate-100 text-slate-700' : 'bg-zinc-800 text-zinc-300'
                   }`}
                 >
@@ -553,8 +565,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                 <button
                   onClick={() => setAirGapSecured(!airGapSecured)}
                   className={`w-full py-1.5 px-3 rounded-full flex items-center justify-between text-[11px] font-bold transition-all cursor-pointer ${
-                    airGapSecured 
-                      ? 'bg-emerald-600 text-white shadow-xs' 
+                    airGapSecured
+                      ? 'bg-emerald-600 text-white shadow-xs'
                       : isLight ? 'bg-slate-100 text-slate-700' : 'bg-zinc-800 text-zinc-300'
                   }`}
                 >
@@ -587,8 +599,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                 <button
                   onClick={() => setConsensusArbiterActive(!consensusArbiterActive)}
                   className={`w-full py-1.5 px-3 rounded-full flex items-center justify-between text-[11px] font-bold transition-all cursor-pointer ${
-                    consensusArbiterActive 
-                      ? 'bg-cyan-600 text-white shadow-xs' 
+                    consensusArbiterActive
+                      ? 'bg-cyan-600 text-white shadow-xs'
                       : isLight ? 'bg-slate-100 text-slate-700' : 'bg-zinc-800 text-zinc-300'
                   }`}
                 >
@@ -621,8 +633,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                 <button
                   onClick={() => setAuditLedgerActive(!auditLedgerActive)}
                   className={`w-full py-1.5 px-3 rounded-full flex items-center justify-between text-[11px] font-bold transition-all cursor-pointer ${
-                    auditLedgerActive 
-                      ? 'bg-amber-500 text-white shadow-xs' 
+                    auditLedgerActive
+                      ? 'bg-amber-500 text-white shadow-xs'
                       : isLight ? 'bg-slate-100 text-slate-700' : 'bg-zinc-800 text-zinc-300'
                   }`}
                 >
@@ -771,8 +783,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
                 <button
                   onClick={() => setGovernorLocked(!governorLocked)}
                   className={`py-1 px-2.5 rounded-full flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
-                    governorLocked 
-                      ? 'bg-orange-500 text-white shadow-xs' 
+                    governorLocked
+                      ? 'bg-orange-500 text-white shadow-xs'
                       : isLight ? 'bg-slate-100 text-slate-700' : 'bg-zinc-700 text-zinc-200'
                   }`}
                 >
@@ -875,11 +887,11 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
               }`}>
                 <div>
                   <div className={`font-mono font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    14.8k Tokens / sec
+                    2,373
                   </div>
                   <div className={`text-[10px] flex items-center gap-1 font-mono ${isLight ? 'text-slate-500' : 'text-zinc-400'}`}>
                     <Zap className="w-2.5 h-2.5 text-orange-400" />
-                    <span>Cluster Load: 68%</span>
+                    <span>Verified Regression Tests</span>
                   </div>
                 </div>
                 <ChevronRight className={`w-4 h-4 ${isLight ? 'text-slate-400' : 'text-zinc-400'}`} />
@@ -895,14 +907,14 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
               {clusters.map((cl) => (
                 <button
                   key={cl.id}
-                  onClick={() => handleClusterSelect(cl.id, cl.href)}
+                  onClick={() => handleClusterSelect(cl.id, cl.to)}
                   className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     activeCluster === cl.id
-                      ? isLight 
-                        ? 'bg-slate-900 text-white shadow-md' 
+                      ? isLight
+                        ? 'bg-slate-900 text-white shadow-md'
                         : 'bg-orange-500 text-white shadow-md shadow-orange-500/40'
-                      : isLight 
-                        ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' 
+                      : isLight
+                        ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                         : 'text-zinc-400 hover:text-white hover:bg-zinc-700/60'
                   }`}
                 >
@@ -931,8 +943,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
         <button
           onClick={onOpenConsole}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer ${
-            isLight 
-              ? 'glass-pill-light text-slate-800 hover:bg-white' 
+            isLight
+              ? 'glass-pill-light text-slate-800 hover:bg-white'
               : 'glass-pill-dark text-white hover:bg-zinc-800'
           }`}
         >
@@ -943,8 +955,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
         <button
           onClick={onOpenTemplates}
           className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
-            isLight 
-              ? 'bg-white/60 text-slate-700 hover:bg-white border border-slate-200/60' 
+            isLight
+              ? 'bg-white/60 text-slate-700 hover:bg-white border border-slate-200/60'
               : 'bg-zinc-800/60 text-zinc-300 hover:bg-zinc-800 border border-zinc-700/60'
           }`}
         >
@@ -955,8 +967,8 @@ export const SpatialDashboardStage: React.FC<SpatialDashboardStageProps> = ({
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className={`w-11 h-11 rounded-full flex items-center justify-center border shadow-md transition-all cursor-pointer ${
-            isLight 
-              ? 'glass-pill-light text-slate-800 hover:bg-white' 
+            isLight
+              ? 'glass-pill-light text-slate-800 hover:bg-white'
               : 'glass-pill-dark text-white hover:bg-zinc-800'
           }`}
           title="Return to Hero"

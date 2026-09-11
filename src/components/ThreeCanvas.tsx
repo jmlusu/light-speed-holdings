@@ -78,6 +78,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
     scene.add(particles);
 
     let scrollProgress = 0;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -96,8 +97,20 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
     window.addEventListener('resize', handleResize);
 
     let animationFrameId: number;
+    let running = !prefersReducedMotion;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        running = false;
+        cancelAnimationFrame(animationFrameId);
+      } else if (!document.hidden && !running && !prefersReducedMotion) {
+        running = true;
+        animate();
+      }
+    };
 
     const animate = () => {
+      if (!running) return;
       animationFrameId = requestAnimationFrame(animate);
 
       // Lerp particles based on scroll
@@ -138,9 +151,17 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
       renderer.render(scene, camera);
     };
 
-    animate();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    if (prefersReducedMotion) {
+      renderer.render(scene, camera);
+    } else {
+      animate();
+    }
 
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      running = false;
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);

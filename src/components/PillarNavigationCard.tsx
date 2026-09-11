@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { AcousticVentGrille } from './TactileHardwareElements';
 
@@ -23,6 +24,7 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
   onSelectPillar
 }) => {
   const isLight = theme === 'light';
+  const navigate = useNavigate();
   return (
     <div className={`p-6 sm:p-7 rounded-3xl max-w-md w-full transition-all duration-300 relative overflow-hidden ${
       isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
@@ -36,14 +38,14 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
       {/* Chassis Header Strip with Micro Acoustic Vent */}
       <div className={`flex items-center justify-between pb-3.5 border-b ${isLight ? 'border-black/10' : 'border-white/10'}`}>
         <div className="flex items-center gap-2 pl-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.9)]" />
+          <div className="w-2.5 h-2.5 rounded-full bg-ls-red shadow-[0_0_8px_rgba(230,57,70,0.9)]" />
           <span className={`font-mono text-xs font-bold tracking-wider ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
             OPERATING MODEL
           </span>
         </div>
         <div className="flex items-center gap-2.5 pr-2">
           <AcousticVentGrille variant="strip" isLight={isLight} />
-          <span className="text-[10px] font-mono text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
+          <span className="text-[10px] font-mono text-ls-cyan bg-ls-cyan/10 px-2 py-0.5 rounded-full border border-ls-cyan/20 font-bold">
             LIVE CORE
           </span>
         </div>
@@ -56,12 +58,11 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
             key={p.num}
             onClick={() => {
               onSelectPillar(p.idx);
-              const el = document.getElementById('capabilities');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
+              navigate(`/capabilities/offerings?offering=${p.idx}`);
             }}
             className={`w-full text-left p-3 rounded-2xl transition-all cursor-pointer group ${
               activePillar === p.idx
-                ? isLight ? 'tactile-btn-active-light border-orange-500/50' : 'tactile-btn-active-dark border-orange-500/50'
+                ? isLight ? 'tactile-btn-active-light border-ls-red/50' : 'tactile-btn-active-dark border-ls-red/50'
                 : isLight
                   ? 'tactile-concave-btn-light'
                   : 'tactile-concave-btn-dark'
@@ -72,10 +73,10 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
                 <span className={`w-2 h-2 rounded-full transition-all ${
                   activePillar === p.idx ? 'tactile-pip-active' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                 }`} />
-                <span className="font-mono font-bold text-orange-500">{p.num}</span>
-                <span className={`font-bold font-display group-hover:text-orange-500 transition-colors ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>{p.title}</span>
+                <span className="font-mono font-bold text-ls-red">{p.num}</span>
+                <span className={`font-bold font-display group-hover:text-ls-red transition-colors ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>{p.title}</span>
               </div>
-              <span className={`text-[10px] font-mono font-semibold ${activePillar === p.idx ? 'text-orange-500' : 'text-zinc-500'}`}>{p.tag}</span>
+              <span className={`text-[10px] font-mono font-semibold ${activePillar === p.idx ? 'text-ls-red' : 'text-zinc-500'}`}>{p.tag}</span>
             </div>
             <p className="text-justify text-xs leading-snug pl-6 text-zinc-500 font-medium">
               {p.desc}
@@ -89,7 +90,7 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
         <span className="font-mono text-[10px] font-semibold text-zinc-500">SADC & International</span>
         <button
           onClick={() => onRequestBriefing()}
-          className="font-mono text-[11px] font-bold text-orange-500 hover:text-orange-400 flex items-center gap-1 cursor-pointer"
+          className="font-mono text-[11px] font-bold text-ls-red hover:text-ls-red flex items-center gap-1 cursor-pointer"
         >
           <span>Partner Briefing</span>
           <ArrowRight className="w-3 h-3" />

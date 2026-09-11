@@ -5,86 +5,131 @@ interface SectorExpertiseSectionProps {
   theme: 'light' | 'dark';
 }
 
-const industriesData: Record<string, {
+type BadgeTone = 'cyan' | 'slate';
+
+interface IndustrySector {
+  /** Short label used on the tab button. */
+  tab: string;
   title: string;
+  /** One-line opportunity framing — never a delivery claim. */
   subtitle: string;
   description: string;
-  citation: string;
-  impact: string[];
-}> = {
-  finance: {
-    title: 'Commercial Banking & Financial Services',
-    subtitle: 'Trade finance automation, liquidity reconciliation, and cross-border settlement.',
-    description: 'Tier-1 commercial lenders and central banks use LightSpeed to automate letter of credit verification, cross-border treasury balancing across SADC corridors, and continuous AML anomaly detection.',
-    citation: 'SADC Regional Banking Architecture Standard',
-    impact: [
-      'Letter of credit reconciliation compressed from 72 hours to 14 minutes.',
-      'Real-time AML/Sanction anomaly detection with 100% audit precision.',
-      'Automated multi-currency treasury balancing across Southern African corridors.'
-    ]
+  useCases: string[];
+  badge: string;
+  badgeTone: BadgeTone;
+  note?: string;
+}
+
+const industriesData: Record<string, IndustrySector> = {
+  agriculture: {
+    tab: 'Agriculture',
+    title: 'Agriculture & Agritech',
+    subtitle: 'Agentic weather, soil, and mobile-money micro-loan risk workflows for smallholder farmers and agri-businesses.',
+    description: 'Weather data, soil analysis, and mobile-money micro-loan risk assessments — agentic AI workflows that help smallholder farmers make better decisions and help agri-businesses manage supply chains. Designed for offline-first environments where connectivity is intermittent.',
+    useCases: [
+      'Agentic weather + soil advisory for smallholder farmers (modelled on Ulangizi-style chatbot patterns)',
+      'Mobile-money micro-loan risk assessment for agricultural cooperatives',
+      'Supply chain monitoring and procurement automation for agri-businesses'
+    ],
+    badge: 'In pilot / Fieldable 2026',
+    badgeTone: 'cyan'
+  },
+  health: {
+    tab: 'Health & M&E',
+    title: 'Public Health & M&E',
+    subtitle: 'Clinic supply-chain monitoring, anomaly-triggered auto-procurement, and donor-ready M&E reporting — designed to move from weeks to hours.',
+    description: 'Monitor clinic supply chains, auto-generate procurement requests on anomaly detection, and produce donor-ready M&E reports from Kobo and DHIS2 data. The pipeline from field collection to boardroom reporting is designed to move from weeks to hours.',
+    useCases: [
+      'Clinic supply chain monitoring with Z-score anomaly detection and auto-procurement',
+      'Donor-ready quarterly and annual M&E reports from Kobo/DHIS2 data',
+      'Interactive program dashboards (mobile-friendly, NGO-grade)',
+      'Citizen-query agents for public health information'
+    ],
+    badge: 'In pilot (composing evidence)',
+    badgeTone: 'cyan',
+    note: 'No confirmed partnership with any named health organization has been signed.'
+  },
+  'financial-inclusion': {
+    tab: 'Financial Inclusion',
+    title: 'Financial Inclusion (VSLA / SACCO / Mobile Money)',
+    subtitle: 'Agentic workflows over mobile-money rails for informal savings groups, micro-finance institutions, and reconciliation.',
+    description: 'Agentic workflows over Airtel Money and TNM Mpamba rails, serving informal savings groups (VSLA/SACCO) and micro-finance institutions. Micro-loan risk assessment for smallholder farmers, automated savings tracking, and mobile-money reconciliation — built for the dual-economy reality of Southern Africa.',
+    useCases: [
+      'Agentic workflows over Airtel Money and TNM Mpamba rails',
+      'Automated savings tracking for VSLA/SACCO groups',
+      'Micro-loan risk assessment for smallholder farmers',
+      'Mobile-money reconciliation and reporting'
+    ],
+    badge: 'In pilot (use case in active development)',
+    badgeTone: 'cyan',
+    note: 'This is a use case that development organizations working in financial inclusion are actively seeking; no signed engagement exists.'
+  },
+  sme: {
+    tab: 'SME & Services',
+    title: 'SME & Services',
+    subtitle: 'A “Company-in-a-Box” lightweight agent set for Malawian SMEs that need full capability without a full team.',
+    description: 'A “Company-in-a-Box” lightweight agent set — Marketing, Sales, Compliance, Finance, HR — for Malawian SMEs that cannot afford a full team but need full capability. From the bar that runs AI-powered inventory and pricing to the lodge that automates bookings and guest communications.',
+    useCases: [
+      'AI-powered inventory, sales, and profitability monitoring (demonstrated in-house at J&S StopOver Bar)',
+      'Booking and guest communication automation for hospitality',
+      'Lightweight agent sets for Marketing, Sales, Compliance, Finance, HR',
+      'WhatsApp-native customer service for SMEs'
+    ],
+    badge: 'Fieldable 2026',
+    badgeTone: 'cyan'
   },
   government: {
-    title: 'Revenue Authorities & Customs Services',
-    subtitle: 'Border intelligence, manifest classification, and tariff enforcement.',
-    description: 'National ministries and customs authorities use our private edge AI to audit cross-border cargo manifests, catch fraudulent tariff classifications, and eliminate physical inspection bottlenecks.',
-    citation: 'National Customs Framework',
-    impact: [
-      '$14.2M in previously undetected import duties recovered in 90 days.',
-      'Cargo clearance throughput increased by 400% across key border posts.',
-      'Data residency guaranteed through on-site inference clusters.'
-    ]
+    tab: 'Government',
+    title: 'Government / Public Sector',
+    subtitle: 'Citizen-query, legislative summarisation, project monitoring, and compliance reporting — auditable and approval-gated.',
+    description: 'Citizen-query agents, legislative summarisation, project monitoring, and compliance reporting — built for the governance-first standards that Malawi’s DPA and SADC’s digital transformation agenda demand. Every action is auditable. Every approval is gated.',
+    useCases: [
+      'Compliance monitoring and regulatory reporting for government agencies',
+      'Contract review and legal document analysis at scale',
+      'Citizen-query agents for public service information',
+      'Legislative summarisation and policy analysis',
+      'HR and personnel management automation'
+    ],
+    badge: 'In active development',
+    badgeTone: 'slate',
+    note: 'Governance framework mapped to Malawi DPA and SADC standards. National AI Strategy consultation submission published.'
   },
-  logistics: {
-    title: 'Supply Chain, Mining & Commodity Logistics',
-    subtitle: 'Predictive corridor dispatch, demurrage reduction, and port coordination.',
-    description: 'Commodity extractors, port operators, and freight networks use LightSpeed to coordinate 400+ unit transport fleets, predict border delays, and cut demurrage costs.',
-    citation: 'Pan-African Mineral Logistics Corridor',
-    impact: [
-      'Demurrage wait times along Dar es Salaam and Beira corridors reduced by 64%.',
-      '4.8M liters of transport fuel saved through predictive routing.',
-      'Automated bills-of-lading ingestion and instant customs pre-clearance.'
-    ]
+  finance: {
+    tab: 'Finance',
+    title: 'Finance / Compliance',
+    subtitle: 'Automated audit reconciliation, KYC assistance, and cross-border trade documentation support for financial institutions.',
+    description: 'Automated audit reconciliation, KYC assistance, and cross-border trade documentation support for banks, cooperatives, and trade organizations — grounded in the 5-tier approval matrix that maps to financial services authorisation levels.',
+    useCases: [
+      'Continuous compliance monitoring and risk analysis',
+      'Audit preparation with immutable audit trails',
+      'Cross-border trade documentation support'
+    ],
+    badge: 'In pilot (sector targeting)',
+    badgeTone: 'cyan'
   },
-  multilateral: {
-    title: 'Development Finance & Multilaterals',
-    subtitle: 'Program monitoring, grant evaluation, and disbursement oversight.',
-    description: 'International development banks and bilateral agencies use our verification systems to audit field milestones and prevent fund diversion on capital deployments.',
-    citation: 'Multilateral Oversight Protocol',
-    impact: [
-      'Continuous satellite and telemetry verification of infrastructure milestones.',
-      'Fund disbursement checks reducing diversion risk to near-zero.',
-      'Automated donor-grade impact reports generated from ground data.'
-    ]
+  'supply-chain': {
+    tab: 'Supply Chain',
+    title: 'Supply Chain / Logistics',
+    subtitle: 'Corridor routing and ledger-auditing agents for corridor traders and logistics companies.',
+    description: 'Corridor routing and ledger-auditing agents for corridor traders and logistics companies along the Nacala and Beira corridors.',
+    useCases: [
+      'Corridor routing and dispatch coordination',
+      'Ledger auditing and reconciliation agents',
+      'Border pre-clearance and documentation automation'
+    ],
+    badge: 'In active development (sector targeting)',
+    badgeTone: 'slate'
   }
 };
 
-const caseStudies = [
-  {
-    sector: 'COMMERCIAL BANKING',
-    client: 'Regional Tier-1 Bank (Southern & Eastern Africa)',
-    problem: 'Manual trade finance reconciliation took 72 hours per letter of credit, creating massive merchant bottlenecks and foreign currency exposure.',
-    intervention: 'Built a 4-agent pipeline (Ingest, Verification, Sanction Sweep, Swift Dispatch) with human approval gates at every step.',
-    outcome: 'Reduced letter of credit issuance time from 72 hours to 14 minutes with 100% compliance audit match.'
-  },
-  {
-    sector: 'NATIONAL REVENUE AUTHORITY',
-    client: 'National Taxation & Customs Service',
-    problem: 'Cross-border cargo manifest discrepancies resulted in millions in uncollected tariffs and multi-day border queues.',
-    intervention: 'Deployed computer vision and manifest cross-examination running local models at border control points.',
-    outcome: 'Recovered $14.2M in previously missed duty within 90 days; border clearance throughput increased by 400%.'
-  },
-  {
-    sector: 'COMMODITY LOGISTICS',
-    client: 'Export Mineral Logistics Fleet (Central & Southern Africa)',
-    problem: 'Fragmented warehouse receipts, volatile corridor delays, and disjointed transport fleets caused massive demurrage penalties at regional ports.',
-    intervention: 'Built an autonomous logistics coordination pipeline with predictive border wait times and automated clearing manifests.',
-    outcome: 'Corridor transit times reduced by 3.8 days; fleet fuel consumption decreased by 18% across 400+ transport units.'
-  }
-];
-
 export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
-  const [selectedIndustry, setSelectedIndustry] = useState<string>('finance');
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('agriculture');
+
+  const badgeClasses = (tone: BadgeTone) =>
+tone === 'slate'
+            ? 'border-slate-400/40 bg-slate-400/10 text-slate-400'
+      : 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan';
 
   return (
     <section id="authority" className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full border-t ${
@@ -92,8 +137,8 @@ export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ 
     }`}>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-2 max-w-2xl">
-          <span className="text-xs font-mono font-bold tracking-widest text-orange-500">
-            PROVEN IN DEMANDING ENVIRONMENTS
+          <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
+            SEVEN VERTICALS // HONESTLY POSITIONED
           </span>
           <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
             isLight ? 'text-slate-900' : 'text-white'
@@ -103,7 +148,7 @@ export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ 
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
             isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
           }`}>
-            Tested in African and international environments where connectivity is limited, data rules are strict, and regulatory scrutiny is non-negotiable.
+            Designed for African environments where connectivity is limited, data rules are strict, and regulatory scrutiny is non-negotiable. Every vertical below is positioned honestly — pilot, fieldable, or in active development.
           </p>
         </div>
 
@@ -111,6 +156,7 @@ export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ 
           isLight ? 'tactile-chassis-light' : 'tactile-chassis-dark'
         }`}>
           {Object.keys(industriesData).map((key) => {
+            const ind = industriesData[key];
             const isSelected = selectedIndustry === key;
             return (
               <button
@@ -118,7 +164,7 @@ export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ 
                 onClick={() => setSelectedIndustry(key)}
                 className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 ${
                   isSelected
-                    ? isLight ? 'tactile-btn-active-light text-slate-900 border-orange-500/50' : 'tactile-btn-active-dark text-white border-orange-500/50'
+                    ? isLight ? 'tactile-btn-active-light text-slate-900 border-ls-red/50' : 'tactile-btn-active-dark text-white border-ls-red/50'
                     : isLight
                       ? 'tactile-btn-inactive-light text-slate-700'
                       : 'tactile-btn-inactive-dark text-zinc-300'
@@ -127,7 +173,7 @@ export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ 
                 <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   isSelected ? 'tactile-pip-active' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                 }`} />
-                <span>{key}</span>
+                <span>{ind.tab}</span>
               </button>
             );
           })}
@@ -138,32 +184,37 @@ export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ 
       {(() => {
         const ind = industriesData[selectedIndustry];
         return (
-          <div className={`p-8 sm:p-10 rounded-3xl border mb-12 ${
+          <div className={`p-8 sm:p-10 rounded-3xl border ${
             isLight ? 'bg-white/95 border-slate-300 shadow-xl text-slate-900' : 'bg-zinc-950/80 border-white/15 shadow-2xl text-zinc-300'
           }`}>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-7 space-y-4">
-                <span className="text-xs font-mono text-orange-500 font-bold">
-                  {ind.citation}
+                <span className={`inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold tracking-widest ${badgeClasses(ind.badgeTone)}`}>
+                  {ind.badge}
                 </span>
                 <h3 className={`text-2xl sm:text-3xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>{ind.title}</h3>
                 <p className={`text-justify text-sm font-semibold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>{ind.subtitle}</p>
                 <p className={`text-justify text-sm leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>{ind.description}</p>
+                {ind.note && (
+                  <p className={`text-justify text-xs leading-relaxed font-mono ${isLight ? 'text-slate-600' : 'text-zinc-500'}`}>
+                    {ind.note}
+                  </p>
+                )}
               </div>
 
               <div className="lg:col-span-5 space-y-3">
                 <span className={`text-xs font-mono font-bold block ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>
-                  Verified Production Impact:
+                  Key Use Cases:
                 </span>
-                {ind.impact.map((imp, iIdx) => (
+                {ind.useCases.map((useCase, uIdx) => (
                   <div
-                    key={iIdx}
+                    key={uIdx}
                     className={`p-3.5 rounded-2xl border text-xs flex items-start gap-2.5 font-medium ${
                       isLight ? 'bg-slate-50 border-slate-300 text-slate-800' : 'border-white/15 bg-white/[0.05] text-zinc-300'
                     }`}
                   >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>{imp}</span>
+                    <CheckCircle2 className="w-4 h-4 text-ls-cyan shrink-0 mt-0.5" />
+                    <span>{useCase}</span>
                   </div>
                 ))}
               </div>
@@ -171,37 +222,6 @@ export const SectorExpertiseSection: React.FC<SectorExpertiseSectionProps> = ({ 
           </div>
         );
       })()}
-
-      {/* Case Studies Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {caseStudies.map((cs, cIdx) => (
-          <div
-            key={cIdx}
-            className={`p-6 rounded-3xl border flex flex-col justify-between space-y-4 ${
-              isLight ? 'bg-slate-50 border-slate-300' : 'bg-zinc-900/70 border-white/15'
-            }`}
-          >
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <span className="text-orange-500 font-bold">{cs.sector}</span>
-                <span className={`font-semibold ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>PRODUCTION</span>
-              </div>
-              <div className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>{cs.client}</div>
-              <p className={`text-justify text-xs leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>
-                <strong className={`font-semibold ${isLight ? 'text-slate-900' : 'text-zinc-200'}`}>Challenge:</strong> {cs.problem}
-              </p>
-              <p className={`text-justify text-xs leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>
-                <strong className={`font-semibold ${isLight ? 'text-slate-900' : 'text-zinc-200'}`}>LIGHTSPEED Solution:</strong> {cs.intervention}
-              </p>
-            </div>
-
-            <div className="pt-3 border-t border-white/10 text-xs font-mono text-emerald-500 font-bold">
-              Outcome: {cs.outcome}
-            </div>
-          </div>
-        ))}
-      </div>
-
     </section>
   );
 };
