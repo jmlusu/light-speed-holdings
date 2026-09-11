@@ -34,6 +34,9 @@ Objective: go from "unstructured expert" to "documented practitioner with a publ
 
 ## Phase 1 — Visibility & Credibility (Months 2–6)
 
+- Publish the flagship thesis: **"The Four Reservations — Trust-by-Engineering"**
+  (the region's four objections to AI — bandwidth, data protection, tech debt,
+  skepticism — framed as engineering problems Lightspeed has answered).
 - Submit formal commentary into the National AI Strategy consultation.
 - Publish an op-ed responding to the "fragmented digital strategy" critique.
 - Publish the first quantified use case (J&S StopOver Bar).
@@ -62,6 +65,7 @@ Objective: go from "unstructured expert" to "documented practitioner with a publ
 | Month | Milestone |
 |-------|-----------|
 | 3 | First white paper; first speaking engagement; Lighthouse pilot started |
+| 4 | "The Four Reservations — Trust-by-Engineering" thesis published; demo script live |
 | 6 | Pilot live and demonstrable; first CEO Roundtable on Agentic AI Governance |
 | 12 | Policy paper in response to a government consultation; strategic partnership (KEPSA-style) |
 | 18 | Lightspeed Academy launched; 2–3 commercial success stories |

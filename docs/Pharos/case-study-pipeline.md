@@ -58,6 +58,24 @@ controls mapped to regulatory requirements.
 - **Supply Chain / Logistics:** corridor routing and ledger-auditing agents
   (Nacala, Beira corridors).
 
+## Reservations-Evidence Map
+
+Each reservation should be backed by a live or piloted proof artifact; the
+evidence below is routed from the case study pipeline to the answer doctrine
+(`docs/RESERVATIONS-STRATEGY.md`, operating skill
+`.agents/skills/reservations-playbook/`):
+
+| Reservation | Evidence artifact | Proof posture |
+|-------------|------------------|---------------|
+| 1. Low-bandwidth / resource-constrained | Offline-first architecture, PWA offline action queue, local Ollama fallback, WhatsApp-native flows | Proven in-house (architecture) |
+| 2. Data protection | Sovereign in-country processing, G1–G4 governance gates, DPA 2017/2024 + GDPR | Proven in-house (governance posture); Off C consent workflow *in active development* |
+| 3. Technology debt | 90-day pilot integration seams (no rip-and-replace), own-debt ledger, cost transparency | Proven in-house (own practice); integration seams *fieldable in 2026* |
+| 4. Skepticism | 5-tier HITL, immutable audit trails, risk matrix, red-team + eval gates | Proven in-house (self-governance) |
+
+Every new case study should, where possible, address at least one of the four
+reservations explicitly — this makes the pipeline a rolling credibility engine
+for the Trust-by-Engineering thesis.
+
 ## Case Study Format
 
 1. Problem / baseline (with a number)

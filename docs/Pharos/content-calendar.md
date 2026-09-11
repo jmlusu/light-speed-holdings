@@ -21,6 +21,7 @@ serious, citable body of work. Owned and orchestrated by Promos agents.
 4. AI Agents in Government
 5. The Governance of Autonomous AI Systems
 6. The Economics of AI Employees
+7. The Four Reservations — Trust-by-Engineering (flagship thesis)
 
 ## Quarterly
 
@@ -54,7 +55,7 @@ to blur into the noise.
 
 | Year | Publications |
 |------|--------------|
-| 2026 | What Is an AI-Native Company? · From Chatbots to Agentic Organizations · The Agentic AI Opportunity for Malawi |
+| 2026 | What Is an AI-Native Company? · From Chatbots to Agentic Organizations · The Agentic AI Opportunity for Malawi · **The Four Reservations — Trust-by-Engineering** |
 | 2027 | The Malawi Agentic AI Use Case Map · Governing Autonomous AI Agents · The AI-Augmented CEO · The Future Organizational Chart |
 | 2028 | The SADC Agentic AI Readiness Index · The Economics of AI Employees · Building Africa's AI-Native Enterprises |
 
