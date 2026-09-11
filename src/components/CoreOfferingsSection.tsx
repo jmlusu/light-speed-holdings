@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Network } from 'lucide-react';
 import { OfferingDetailCard } from './OfferingDetailCard';
 import { SynergyMatrix } from './SynergyMatrix';
@@ -34,7 +35,7 @@ const coreCapabilities: CoreCapability[] = [
     eyebrow: 'CORE OFFERING 01 // EXECUTIVE ARCHITECTURE',
     tagline: 'Executable Business Rules & Capital Allocation',
     desc: 'We work with Chairpersons, CEOs, and Executive Committees across SADC to turn strategy into executable business rules. You get machine-readable policies, budget controls, and approval workflows instead of 200-page slide decks that gather dust.',
-    metrics: '40-60% Faster Administrative Cycles',
+    metrics: '5-Tier HITL Approval Gates',
     inputContract: 'Board Mandates, Statutory Frameworks, Capital Budgets, Operating Model',
     outputContract: 'Executable Policy Rules, Token Budgets, Approval Gate Definitions',
     upstreamSource: 'Live performance data and model drift feedback from Offering 04 (Execution)',
@@ -54,12 +55,12 @@ const coreCapabilities: CoreCapability[] = [
     eyebrow: 'CORE OFFERING 02 // DATA SYSTEMS',
     tagline: 'Private Knowledge Graphs & Semantic Search',
     desc: 'We convert scattered enterprise data, regulatory filings, shipping manifests, and legacy databases into a private, searchable knowledge graph. Your data stays inside your perimeter with zero leakage to external cloud services.',
-    metrics: 'Sub-200ms Data Retrieval & Verification',
+    metrics: 'Registry-Verified Data Retrieval & Lineage',
     inputContract: 'Unstructured Documents, ERP Databases, Mainframes, Regulatory Filings',
     outputContract: 'Private Enterprise Knowledge Graph, Semantic Search, Verified Data Lineage',
     upstreamSource: 'Governed by data boundary policies defined in Offering 01 (Strategy)',
     downstreamTarget: 'Supplies verified, air-gapped contextual data to Offering 03 (Autonomous Systems)',
-    governance: '100% On-Site Data / Air-Gapped On-Premise',
+    governance: 'On-Site Data / Air-Gapped On-Premise',
     deliverables: [
       'Private Knowledge Graph Systems',
       'Document Ingestion & Classification Engines',
@@ -94,7 +95,7 @@ const coreCapabilities: CoreCapability[] = [
     eyebrow: 'CORE OFFERING 04 // CORE INTEGRATION',
     tagline: 'Legacy System Integration & Instant Settlement',
     desc: 'We connect your existing banking cores, customs systems, and supply chain software to fast API event streams. Every transaction requires human approval before it writes to the core system. Every write is logged to an unchangeable audit trail.',
-    metrics: 'Sub-Second API Execution & Real-time Settlement',
+    metrics: '5-Tier Human Approval Gates & Registry-Verified Audit Trails',
     inputContract: 'Validated agent payloads from Offering 03 and Human Approval tokens',
     outputContract: 'Live Core Settlement, Customs EDI Filings, Immutable Audit Trails',
     upstreamSource: 'Receives transaction payloads from Offering 03; enforces human approval gates',
@@ -123,7 +124,7 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
       isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
     }`}>
       <div className="max-w-3xl mb-12 space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-500 font-mono text-[11px] tracking-widest">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
           <Network className="w-3.5 h-3.5" />
           <span>INTEGRATED ARCHITECTURE</span>
         </div>
@@ -150,8 +151,8 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
             className={`p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer relative overflow-hidden group ${
               activePillar === idx
                 ? isLight
-                  ? 'tactile-btn-active-light text-slate-900 border-orange-500/50 shadow-md'
-                  : 'tactile-btn-active-dark text-white border-orange-500/50 shadow-lg'
+                  ? 'tactile-btn-active-light text-slate-900 border-ls-red/50 shadow-md'
+                  : 'tactile-btn-active-dark text-white border-ls-red/50 shadow-lg'
                 : isLight
                   ? 'tactile-btn-inactive-light text-slate-700'
                   : 'tactile-btn-inactive-dark text-zinc-300'
@@ -164,14 +165,14 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
                 }`} />
                 <span className={`text-[10px] font-mono tracking-widest font-bold px-2 py-0.5 rounded-md ${
                   activePillar === idx
-                    ? 'bg-orange-500/20 text-orange-500'
+                    ? 'bg-ls-red/20 text-ls-red'
                     : 'bg-black/5 text-zinc-500'
                 }`}>
                   OFFERING 0{idx + 1}
                 </span>
               </div>
               <span className={`text-[10px] font-mono font-medium ${
-                activePillar === idx ? 'text-orange-500 font-bold' : 'text-zinc-500'
+                activePillar === idx ? 'text-ls-red font-bold' : 'text-zinc-500'
               }`}>
                 {idx === 0 ? 'GOVERN' : idx === 1 ? 'SYNTHESIZE' : idx === 2 ? 'ORCHESTRATE' : 'SETTLE'}
               </span>
@@ -211,7 +212,7 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
           <span className={`text-xs font-mono font-bold tracking-wider ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
             Disconnected Point-Tools vs. Connected Suite
           </span>
-          <span className="text-[10px] font-mono text-orange-500 font-bold">
+          <span className="text-[10px] font-mono text-ls-red font-bold">
             Zero Cloud SaaS Leakage
           </span>
         </div>
@@ -222,29 +223,29 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
               <tr className={`border-b ${isLight ? 'border-slate-300 bg-slate-100/80 text-slate-800' : 'border-white/10 bg-zinc-900/50 text-zinc-300'}`}>
                 <th className="p-3 font-mono font-bold">Offering Layer</th>
                 <th className="p-3 font-mono font-bold text-rose-500">Fragmented Point Solution</th>
-                <th className="p-3 font-mono font-bold text-emerald-500">Lightspeed Connected Architecture</th>
+                <th className="p-3 font-mono font-bold text-ls-cyan">Lightspeed Connected Architecture</th>
               </tr>
             </thead>
             <tbody className={`divide-y ${isLight ? 'divide-slate-200 text-slate-700' : 'divide-white/10 text-zinc-300'}`}>
               <tr>
-                <td className="p-3 font-bold font-mono text-orange-500">01. Strategy</td>
+                <td className="p-3 font-bold font-mono text-ls-red">01. Strategy</td>
                 <td className="p-3">Static PowerPoint slide decks, 9-month review cycles, zero computable rules.</td>
-                <td className="p-3 font-medium text-emerald-600 dark:text-emerald-400">Executable policy rules, dynamic budgets, live board models.</td>
+                <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">Executable policy rules, dynamic budgets, live board models.</td>
               </tr>
               <tr>
-                <td className="p-3 font-bold font-mono text-orange-500">02. Intelligence</td>
+                <td className="p-3 font-bold font-mono text-ls-red">02. Intelligence</td>
                 <td className="p-3">Siloed data lakes, public LLM APIs risking trade secrets and residency.</td>
-                <td className="p-3 font-medium text-emerald-600 dark:text-emerald-400">100% on-site knowledge graphs with verified data lineage.</td>
+                <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">On-site knowledge graphs with verified data lineage.</td>
               </tr>
               <tr>
-                <td className="p-3 font-bold font-mono text-orange-500">03. Autonomous Systems</td>
+                <td className="p-3 font-bold font-mono text-ls-red">03. Autonomous Systems</td>
                 <td className="p-3">Unbounded chatbots prone to hallucinations and tool abuse.</td>
-                <td className="p-3 font-medium text-emerald-600 dark:text-emerald-400">Structured agent fleets bound to 7 canonical tools and strict workflows.</td>
+                <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">Structured agent fleets bound to 7 canonical tools and strict workflows.</td>
               </tr>
               <tr>
-                <td className="p-3 font-bold font-mono text-orange-500">04. Execution & Governance</td>
-                <td className="p-3">Manual data re-entry, 72-hour paper settlement, post-facto audit trails.</td>
-                <td className="p-3 font-medium text-emerald-600 dark:text-emerald-400">Direct core API event rails, human approval gates, immutable audit logs.</td>
+                <td className="p-3 font-bold font-mono text-ls-red">04. Execution & Governance</td>
+                <td className="p-3">Manual data re-entry, paper-based settlement, post-facto audit trails.</td>
+                <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">Direct core API event rails, human approval gates, immutable audit logs.</td>
               </tr>
             </tbody>
           </table>

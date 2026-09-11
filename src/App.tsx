@@ -1,12 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { ThreeCanvas } from './components/ThreeCanvas';
-import { FloatingNav } from './components/FloatingNav';
-import { CorporateLanding } from './components/CorporateLanding';
-import { ExecutiveBriefingModal } from './components/ExecutiveBriefingModal';
-import { AgentModal } from './components/AgentModal';
+import React, { useState, Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { SiteLayout } from './components/SiteLayout';
 
-import { agentsList } from './data/companyData';
 import { Agent } from './types';
+
+// Code-split each route so non-home pages load on demand (kills the 1MB bundle).
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const AboutPage = React.lazy(() => import('./pages/AboutPage'));
+const CapabilitiesPage = React.lazy(() => import('./pages/CapabilitiesPage'));
+const OfferingsPage = React.lazy(() => import('./pages/OfferingsPage'));
+const DiagnosticPage = React.lazy(() => import('./pages/DiagnosticPage'));
+const IndustriesPage = React.lazy(() => import('./pages/IndustriesPage'));
+const EvidencePage = React.lazy(() => import('./pages/EvidencePage'));
+const InsightsPage = React.lazy(() => import('./pages/InsightsPage'));
+const EngagementPage = React.lazy(() => import('./pages/EngagementPage'));
+const ContactPage = React.lazy(() => import('./pages/ContactPage'));
+
+const RouteFallback: React.FC = () => (
+  <div
+    role="status"
+    aria-label="Loading page"
+    className="flex min-h-[50vh] items-center justify-center"
+  >
+    <div className="h-8 w-8 animate-spin rounded-full border-2 border-ls-red border-t-transparent" />
+  </div>
+);
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -31,45 +49,129 @@ export const App: React.FC = () => {
     setIsBriefingModalOpen(true);
   };
 
+  const handleDispatchTask = (agent: Agent) => {
+    setSelectedAgent(null);
+    handleRequestBriefing(`Inquiry regarding specialist agent capability: ${agent.name} (${agent.role})`);
+  };
+
   return (
     <div className={`min-h-screen relative font-sans transition-colors duration-500 overflow-x-hidden ${
-      theme === 'light' 
-        ? 'spatial-ambient-light text-slate-800' 
+      theme === 'light'
+        ? 'spatial-ambient-light text-slate-800'
         : 'spatial-ambient-dark text-zinc-100'
     }`}>
-      <ThreeCanvas theme={theme} />
-
-      <FloatingNav
-        onRequestBriefing={handleRequestBriefing}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-
-      <CorporateLanding
-        onRequestBriefing={handleRequestBriefing}
-        onSelectAgentForModal={setSelectedAgent}
-        agentsList={agentsList}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-
-      <ExecutiveBriefingModal
-        isOpen={isBriefingModalOpen}
-        onClose={() => setIsBriefingModalOpen(false)}
-        prefillSummary={briefingSummary}
-        theme={theme}
-      />
-
-      {selectedAgent && (
-        <AgentModal
-          agent={selectedAgent}
-          onClose={() => setSelectedAgent(null)}
-          onDispatchTask={() => {
-            setSelectedAgent(null);
-            handleRequestBriefing(`Inquiry regarding specialist agent capability: ${selectedAgent.name} (${selectedAgent.role})`);
-          }}
-        />
-      )}
+      <Routes>
+        <Route
+          element={
+            <SiteLayout
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              onRequestBriefing={handleRequestBriefing}
+              isBriefingModalOpen={isBriefingModalOpen}
+              briefingSummary={briefingSummary}
+              onCloseBriefingModal={() => setIsBriefingModalOpen(false)}
+              selectedAgent={selectedAgent}
+              onCloseAgentModal={() => setSelectedAgent(null)}
+              onDispatchTask={handleDispatchTask}
+            />
+          }
+        >
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <HomePage
+                  theme={theme}
+                  onRequestBriefing={handleRequestBriefing}
+                />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <HomePage
+                  theme={theme}
+                  onRequestBriefing={handleRequestBriefing}
+                />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <AboutPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/capabilities"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <CapabilitiesPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/capabilities/offerings"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <OfferingsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/capabilities/diagnostic"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <DiagnosticPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/industries"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <IndustriesPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/evidence"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <EvidencePage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/insights"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <InsightsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/engagement"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <EngagementPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <ContactPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+        </Route>
+      </Routes>
     </div>
   );
 };

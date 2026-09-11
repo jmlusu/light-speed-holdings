@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { PillarNavigationCard } from './PillarNavigationCard';
+import { StatCounter } from './StatCounter';
 
 interface HeroSectionProps {
   theme: 'light' | 'dark';
@@ -26,10 +28,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Eyebrow Badge */}
           <div className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-[11px] font-mono tracking-widest transition-all shadow-xs ${
             isLight
-              ? 'bg-white border-slate-300 text-slate-900 shadow-orange-500/5'
-              : 'bg-zinc-900/90 border-orange-500/40 text-zinc-300 shadow-black/40'
+              ? 'bg-white border-slate-300 text-slate-900 shadow-ls-red/5'
+              : 'bg-ls-navy border-ls-red/40 text-zinc-300 shadow-black/40'
           }`}>
-            <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/80 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80 animate-pulse" />
             <span>MALAWI-ROOTED, SADC-FOCUSED, GLOBAL CAPABILITY</span>
           </div>
 
@@ -37,20 +39,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <h1 className={`text-4xl sm:text-6xl md:text-7xl font-black tracking-tight font-display leading-[1.04] ${
             isLight ? 'text-slate-900' : 'text-white'
           }`}>
-            WE TURN STRATEGY <br />
+            GOVERNED AI, <br />
             <span className={isLight
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-slate-900'
-              : 'text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-amber-200'
+              ? 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-slate-900'
+              : 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-ls-cyan'
             }>
-              INTO WORKING
-            </span> <br />
-            SYSTEMS.
+              BUILT TO RUN.
+            </span>
           </h1>
 
           {/* Divider Accent Line */}
           <div className="flex items-center gap-2">
-            <div className={`w-16 h-[2px] ${isLight ? 'bg-orange-500/80' : 'bg-orange-500'}`} />
-            <div className="w-1.5 h-1.5 rounded-xs bg-orange-400 shadow-sm shadow-orange-400" />
+            <div className={`w-16 h-[2px] ${isLight ? 'bg-ls-red/80' : 'bg-ls-red'}`} />
+            <div className="w-1.5 h-1.5 rounded-xs bg-ls-red shadow-sm shadow-ls-red" />
           </div>
 
           {/* Explicit Regional Proposition Statement */}
@@ -58,12 +59,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <p className={`text-justify max-w-2xl text-base sm:text-lg font-bold leading-relaxed ${
               isLight ? 'text-slate-900' : 'text-zinc-100'
             }`}>
-              From Malawi, <span className="text-orange-500 font-extrabold">LightSpeed</span> builds the AI systems, data pipelines, and executive tools that turn strategy into working technology for organizations everywhere.
+              <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 144 agents, 20 departments, five-tier human approval, every decision auditable.
             </p>
             <p className={`text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
               isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'
             }`}>
-              We combine management consulting, data engineering, AI teams, and governance into a single operating stack. You get real systems, not slide decks.
+              We combine management consulting, data engineering, AI teams, and governance into a single operating stack. The infrastructure is proven in-house before it reaches a client.
             </p>
           </div>
 
@@ -72,8 +73,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className={`p-3.5 rounded-2xl border transition-all ${
               isLight ? 'bg-white border-slate-300 shadow-xs' : 'bg-zinc-900/80 border-slate-800'
             }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-orange-500 mb-1 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-ls-red" />
                 Local Fluency
               </div>
               <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
@@ -84,8 +85,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className={`p-3.5 rounded-2xl border transition-all ${
               isLight ? 'bg-white border-slate-300 shadow-xs' : 'bg-zinc-900/80 border-slate-800'
             }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-orange-500 mb-1 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-ls-red" />
                 Regional SADC
               </div>
               <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
@@ -96,8 +97,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className={`p-3.5 rounded-2xl border transition-all ${
               isLight ? 'bg-white border-slate-300 shadow-xs' : 'bg-zinc-900/80 border-slate-800'
             }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-orange-500 mb-1 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-ls-red" />
                 Global Standards
               </div>
               <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
@@ -108,38 +109,38 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Primary Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <a
-              href="#operating-model"
-              className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-500/30 transition-all cursor-pointer"
+            <Link
+              to="/capabilities"
+              className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer"
             >
               <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
                 <ArrowRight className="w-3 h-3" />
               </div>
               <span>Explore Operating Model</span>
-            </a>
+            </Link>
 
             <button
               onClick={() => onRequestBriefing('SADC Regional Transformation Briefing')}
               className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest border transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isLight
                   ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
-                  : 'bg-orange-500 hover:bg-orange-600 text-white border-orange-500'
+                  : 'bg-ls-red hover:bg-ls-red text-white border-ls-red'
               }`}
             >
               <span>Request Briefing</span>
             </button>
 
-            <a
-              href="#diagnostic"
+            <Link
+              to="/capabilities/diagnostic"
               className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest border backdrop-blur-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isLight
-                  ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-orange-500'
+                  ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-ls-red'
                   : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/15'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+              <Sparkles className="w-3.5 h-3.5 text-ls-red" />
               <span>AI Diagnostic</span>
-            </a>
+            </Link>
           </div>
 
           {/* Metric Strip */}
@@ -147,20 +148,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             isLight ? 'border-slate-200' : 'border-white/15'
           }`}>
             <div>
-              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Computation Cycle</span>
-              <span className="text-sm font-bold font-mono text-orange-500">9 Months to Real-Time</span>
+              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Agent Fleet</span>
+              <span className="text-sm font-bold font-mono text-ls-red">
+                <StatCounter to={144} format="comma" /> Configurations
+              </span>
             </div>
             <div>
-              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Settlement Speed</span>
-              <span className="text-sm font-bold font-mono text-emerald-500">14-Minute Trade Rails</span>
+              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Regression Tests</span>
+              <span className="text-sm font-bold font-mono text-ls-cyan">
+                <StatCounter to={2373} format="comma" /> Passing
+              </span>
             </div>
             <div>
-              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Recovered Duties</span>
-              <span className={`text-sm font-bold font-mono ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>$14.2M in Q1</span>
+              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Operating Departments</span>
+              <span className={`text-sm font-bold font-mono ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+                <StatCounter to={20} /> Live
+              </span>
             </div>
             <div>
               <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Audit Coverage</span>
-              <span className={`text-sm font-bold font-mono ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>100% Auditable</span>
+              <span className={`text-sm font-bold font-mono ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+                <StatCounter to={100} suffix="%" /> Auditable
+              </span>
             </div>
           </div>
 

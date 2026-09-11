@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { 
-  Building2, 
-  Coins, 
-  Globe2, 
-  Zap, 
-  ShieldCheck, 
-  ArrowRight, 
-  Sparkles, 
-  CheckCircle2, 
-  AlertCircle, 
+import {
+  Building2,
+  Coins,
+  Globe2,
+  Zap,
+  ShieldCheck,
+  ArrowRight,
+  Sparkles,
+  CheckCircle2,
+  AlertCircle,
   FileText,
   Clock,
   Layers,
@@ -66,27 +66,27 @@ const SECTOR_PROFILES: SectorProfile[] = [
     pillar4Label: 'Fiduciary Assurance & Regulatory Lineage',
     pillar4Range: ['Post-Facto Quarterly Audits', 'Continuous Cryptographic Audit Trails'],
     complianceFramework: 'Basel IV, SOC2 Type II, PCI-DSS, FATF Travel Rule',
-    keyLatency: '7–11 months core release latency',
-    multiplier: '18x transaction audit velocity',
+    keyLatency: 'multi-month core release latency',
+    multiplier: 'Sector targeting — in active development',
     bottlenecks: (s) => [
       {
         iconType: s.strategy < 3 ? 'alert' : 'check',
-        text: s.strategy < 3 
+        text: s.strategy < 3
           ? 'Credit underwriting and trade finance exception handling suffer from manual reviews, creating '
           : 'Algorithmic risk policies are formalized with strong computable rules, achieving ',
-        highlight: s.strategy < 3 ? '12-day turnaround friction' : 'sub-minute risk adjudication'
+        highlight: s.strategy < 3 ? 'protracted turnaround friction' : 'real-time risk adjudication'
       },
       {
         iconType: s.auto < 3 ? 'alert' : 'check',
         text: s.auto < 3
           ? 'Cross-border AML/KYC document verification is bottlenecked in manual tiers, exposing '
-          : 'Deterministic agent swarms triage 92% of SWIFT/ISO-20022 exceptions, delivering ',
+          : 'Deterministic agent swarms triage SWIFT/ISO-20022 exceptions, delivering ',
         highlight: s.auto < 3 ? 'fiduciary risk & false positive overload' : 'zero-leakage continuous settlement'
       },
       {
         iconType: 'check',
-        text: 'Immediate deployment of air-gapped sovereign intelligence yields ',
-        highlight: '18x verification speedup with zero cloud data exfiltration'
+        text: 'Air-gapped sovereign intelligence deployment is ',
+        highlight: 'in active development, with zero cloud data exfiltration'
       }
     ],
     customRecommendations: {
@@ -118,27 +118,27 @@ const SECTOR_PROFILES: SectorProfile[] = [
     pillar4Label: 'Sovereign Integrity & Anti-Corruption Controls',
     pillar4Range: ['Periodic Manual Inspection', 'Immutable Public Trust Provenance'],
     complianceFramework: 'WCO SAFE Framework, Sovereign Cloud Acts, ISO 27701',
-    keyLatency: '14–18 months regulatory adaptation lag',
-    multiplier: '24x tariff classification throughput',
+    keyLatency: 'multi-quarter regulatory adaptation lag',
+    multiplier: 'Sector targeting — in active development',
     bottlenecks: (s) => [
       {
         iconType: s.data < 3 ? 'alert' : 'check',
         text: s.data < 3
           ? 'Cross-agency data fragmentation between Customs, Inland Revenue, and Central Registries creates '
           : 'Unified sovereign knowledge graph bridges inter-ministerial databases, delivering ',
-        highlight: s.data < 3 ? '$120M+ uncollected revenue leakages' : 'real-time holistic trade oversight'
+        highlight: s.data < 3 ? 'material uncollected revenue leakages' : 'real-time holistic trade oversight'
       },
       {
         iconType: s.auto < 3 ? 'alert' : 'check',
         text: s.auto < 3
           ? 'Border cargo declarations and import manifests undergo physical manual checks, causing '
           : 'Autonomous classification agents pre-screen shipping manifests, enabling ',
-        highlight: s.auto < 3 ? '48-hour port congestion delays' : 'instant green-lane clearance'
+        highlight: s.auto < 3 ? 'prolonged port congestion delays' : 'instant green-lane clearance'
       },
       {
         iconType: 'check',
         text: 'Implementation of Sovereign Open-Source Agent Frameworks delivers ',
-        highlight: '100% data residency guarantee inside national boundaries'
+        highlight: 'data residency guarantee inside national boundaries'
       }
     ],
     customRecommendations: {
@@ -170,22 +170,22 @@ const SECTOR_PROFILES: SectorProfile[] = [
     pillar4Label: 'Chain-of-Custody & Trade Integrity Verification',
     pillar4Range: ['Paper Seals & Visual Check', 'Cryptographic IoT Sensor Provenance'],
     complianceFramework: 'IMO Maritime Cyber Risk, C-TPAT, ISO 28000',
-    keyLatency: '5–8 days corridor paperwork dwell time',
-    multiplier: '14x manifest reconciliation velocity',
+    keyLatency: 'multi-day corridor paperwork dwell time',
+    multiplier: 'Platform use case — in active development',
     bottlenecks: (s) => [
       {
         iconType: s.auto < 3 ? 'alert' : 'check',
         text: s.auto < 3
           ? 'Disparate multi-modal freight forwarders and customs brokers communicate via unstructured PDF emails, driving '
           : 'Autonomous Bill-of-Lading parsing and reconciliation swarms achieve ',
-        highlight: s.auto < 3 ? '8–14% margin decay in detention fees' : 'zero-touch clearance automation'
+        highlight: s.auto < 3 ? 'margin decay in detention fees' : 'zero-touch clearance automation'
       },
       {
         iconType: s.strategy < 3 ? 'alert' : 'check',
         text: s.strategy < 3
           ? 'Route optimization and cold-chain compliance are reactive, triggering '
           : 'Continuous telemetry agents dynamically re-route cargo, securing ',
-        highlight: s.auto < 3 ? 'spoilage risk and demurrage penalties' : '99.8% on-time corridor reliability'
+        highlight: s.auto < 3 ? 'spoilage risk and demurrage penalties' : 'audit-gated corridor monitoring'
       },
       {
         iconType: 'check',
@@ -218,19 +218,19 @@ const SECTOR_PROFILES: SectorProfile[] = [
     pillar2Label: 'SCADA, IoT Sensor & Spatial Knowledge Graph',
     pillar2Range: ['Isolated Historian Databases', 'Deterministic OT/IT Semantic Layer'],
     pillar3Label: 'Autonomous Control Loop & Field Fleet Swarms',
-    pillar3Range: ['100% Control-Room Manual Triage', 'Agentic Closed-Loop Telemetry Swarms'],
+    pillar3Range: ['Manual Control-Room Triage', 'Agentic Closed-Loop Telemetry Swarms'],
     pillar4Label: 'Industrial Safety & Environmental Lineage',
     pillar4Range: ['Periodic Incident Logs', 'Cryptographic Carbon & Safety Provenance'],
     complianceFramework: 'NERC CIP, IEC 62443, ISO 55001, ESG Scope 1-3 Audits',
-    keyLatency: '3–6 weeks predictive maintenance dispatch lag',
-    multiplier: '21x incident response and grid recovery rate',
+    keyLatency: 'multi-week predictive maintenance dispatch lag',
+    multiplier: 'Sector targeting — in active development',
     bottlenecks: (s) => [
       {
         iconType: s.gov < 3 ? 'alert' : 'check',
         text: s.gov < 3
           ? 'Critical SCADA telemetry is isolated in OT air-gaps without secure computable intelligence, leading to '
           : 'Air-gapped sovereign inference bridges OT/IT boundaries with zero exposure, achieving ',
-        highlight: s.gov < 3 ? 'unplanned turbine and substation outages' : 'predictive fault isolation in <500ms'
+        highlight: s.gov < 3 ? 'unplanned turbine and substation outages' : 'predictive fault isolation in real time'
       },
       {
         iconType: s.data < 3 ? 'alert' : 'check',
@@ -283,24 +283,24 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
   const getTier = () => {
     if (percentage < 40) {
-      return { 
-        title: 'Fragmented Legacy Core', 
-        color: isLight ? 'text-amber-600' : 'text-amber-400', 
+      return {
+        title: 'Fragmented Legacy Core',
+        color: isLight ? 'text-ls-cyan' : 'text-ls-cyan',
         reco: activeProfile.customRecommendations.tierLow.title,
         desc: activeProfile.customRecommendations.tierLow.desc
       };
     }
     if (percentage < 75) {
-      return { 
-        title: 'Emerging Automation Silo', 
-        color: isLight ? 'text-orange-600' : 'text-orange-400', 
+      return {
+        title: 'Emerging Automation Silo',
+        color: isLight ? 'text-ls-red' : 'text-ls-red',
         reco: activeProfile.customRecommendations.tierMid.title,
         desc: activeProfile.customRecommendations.tierMid.desc
       };
     }
-    return { 
-      title: 'AI-Native Scaling Candidate', 
-      color: isLight ? 'text-emerald-600' : 'text-emerald-400', 
+    return {
+      title: 'AI-Native Scaling Candidate',
+      color: isLight ? 'text-ls-cyan' : 'text-ls-cyan',
       reco: activeProfile.customRecommendations.tierHigh.title,
       desc: activeProfile.customRecommendations.tierHigh.desc
     };
@@ -321,9 +321,9 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
   return (
     <div className={`p-6 sm:p-10 rounded-3xl border relative overflow-hidden transition-all duration-300 ${
-      isLight 
-        ? 'bg-white/95 border-slate-300 shadow-2xl text-slate-800' 
-        : 'bg-zinc-950/90 border-white/15 shadow-2xl text-zinc-200'
+      isLight
+        ? 'bg-white/95 border-slate-300 shadow-2xl text-slate-800'
+        : 'bg-ls-navy border-white/15 shadow-2xl text-zinc-200'
     }`}>
       {/* Background grain */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-grain" />
@@ -342,14 +342,14 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
           {/* RJ-45 Hardware Port Cavity with active link LED */}
           <div className="w-8 h-6 rounded-md analog-port-cavity flex items-center justify-center p-1">
             <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.9)]" />
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span className="w-1.5 h-1.5 rounded-full bg-ls-cyan animate-pulse shadow-[0_0_6px_rgba(0,191,255,0.9)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-ls-cyan" />
             </div>
           </div>
 
           {/* USB-C Port Cavity */}
           <div className="w-7 h-3 rounded-full analog-port-cavity flex items-center justify-center">
-            <span className="w-3 h-0.5 bg-amber-400/80 rounded-xs" />
+            <span className="w-3 h-0.5 bg-ls-cyan/80 rounded-xs" />
           </div>
 
           {/* 3.5mm Color-Coded Analog Telemetry Jacks */}
@@ -370,11 +370,11 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/60 border border-white/10 text-[10px] font-mono">
             <span className="text-zinc-400">CLK:</span>
-            <span className="text-orange-400 font-bold">144.00 MHz</span>
+            <span className="text-ls-red font-bold">144.00 MHz</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full tactile-pip-active" />
-            <span className={`text-[10px] font-mono font-bold ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}>
+            <span className={`text-[10px] font-mono font-bold ${isLight ? 'text-emerald-700' : 'text-ls-cyan'}`}>
               CALIBRATED
             </span>
           </div>
@@ -383,7 +383,7 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
       {/* Header */}
       <div className="max-w-3xl mb-8 space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 font-mono text-[11px] tracking-widest">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
           <Sparkles className="w-3.5 h-3.5" />
           <span>EXECUTIVE READINESS ASSESSMENT</span>
         </div>
@@ -400,10 +400,10 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
-        
+
         {/* Left Side: Assessment Controls (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          
+
           {/* Step 1: Industry Sector Selector */}
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -412,7 +412,7 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
               }`}>
                 01. Select Institutional Sector
               </label>
-              <span className={`text-[11px] font-mono ${isLight ? 'text-slate-600 font-semibold' : 'text-orange-400'}`}>
+              <span className={`text-[11px] font-mono ${isLight ? 'text-slate-600 font-semibold' : 'text-ls-red'}`}>
                 Active: {activeProfile.defaultFocus}
               </span>
             </div>
@@ -428,15 +428,15 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
                     className={`p-3.5 rounded-2xl text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 relative overflow-hidden ${
                       active
                         ? isLight
-                          ? 'tactile-btn-active-light text-slate-900 border-orange-500/50'
-                          : 'tactile-btn-active-dark text-white border-orange-500/50'
-                        : isLight 
-                          ? 'tactile-btn-inactive-light text-slate-800 border-slate-300' 
+                          ? 'tactile-btn-active-light text-slate-900 border-ls-red/50'
+                          : 'tactile-btn-active-dark text-white border-ls-red/50'
+                        : isLight
+                          ? 'tactile-btn-inactive-light text-slate-800 border-slate-300'
                           : 'tactile-btn-inactive-dark text-zinc-300'
                     }`}
                   >
                     <div className="flex items-center justify-between w-full">
-                      <Icon className={`w-4 h-4 ${active ? 'text-orange-400' : 'text-orange-500'}`} />
+                      <Icon className={`w-4 h-4 ${active ? 'text-ls-red' : 'text-ls-red'}`} />
                       {/* Realistic Hardware LED Indicator Pip */}
                       <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         active ? 'tactile-pip-active' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
@@ -467,7 +467,7 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
             {/* Pillar 1: Strategy Formulation */}
             <div className={`p-4 rounded-2xl border ${
-              isLight ? 'bg-slate-50 border-slate-300' : 'bg-zinc-900/70 border-white/15'
+              isLight ? 'bg-slate-50 border-slate-300' : 'bg-ls-navy border-white/15'
             }`}>
               <div className="flex items-center justify-between text-xs mb-3">
                 <span className={`font-bold ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
@@ -475,10 +475,10 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
                 </span>
                 <div className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${strategyScore > 1 ? 'tactile-pip-active' : 'tactile-pip-inactive-dark'}`} />
-                  <span className="font-mono text-orange-400 font-bold text-[11px]">Level {strategyScore} / 4</span>
+                  <span className="font-mono text-ls-red font-bold text-[11px]">Level {strategyScore} / 4</span>
                 </div>
               </div>
-              
+
               {/* Realistic Hardware Radio Well */}
               <div className={`flex w-full p-1.5 rounded-2xl gap-1.5 ${isLight ? 'tactile-chassis-light' : 'tactile-chassis-dark'}`}>
                 {[1, 2, 3, 4].map((level) => {
@@ -511,7 +511,7 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
             {/* Pillar 2: Private Data & Knowledge Fabric */}
             <div className={`p-4 rounded-2xl border ${
-              isLight ? 'bg-slate-50 border-slate-300' : 'bg-zinc-900/70 border-white/15'
+              isLight ? 'bg-slate-50 border-slate-300' : 'bg-ls-navy border-white/15'
             }`}>
               <div className="flex items-center justify-between text-xs mb-3">
                 <span className={`font-bold ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
@@ -519,10 +519,10 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
                 </span>
                 <div className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${dataScore > 1 ? 'tactile-pip-active' : 'tactile-pip-inactive-dark'}`} />
-                  <span className="font-mono text-orange-400 font-bold text-[11px]">Level {dataScore} / 4</span>
+                  <span className="font-mono text-ls-red font-bold text-[11px]">Level {dataScore} / 4</span>
                 </div>
               </div>
-              
+
               {/* Realistic Hardware Radio Well */}
               <div className={`flex w-full p-1.5 rounded-2xl gap-1.5 ${isLight ? 'tactile-chassis-light' : 'tactile-chassis-dark'}`}>
                 {[1, 2, 3, 4].map((level) => {
@@ -555,7 +555,7 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
             {/* Pillar 3: Multi-Agent Automation */}
             <div className={`p-4 rounded-2xl border ${
-              isLight ? 'bg-slate-50 border-slate-300' : 'bg-zinc-900/70 border-white/15'
+              isLight ? 'bg-slate-50 border-slate-300' : 'bg-ls-navy border-white/15'
             }`}>
               <div className="flex items-center justify-between text-xs mb-3">
                 <span className={`font-bold ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
@@ -563,10 +563,10 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
                 </span>
                 <div className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${automationScore > 1 ? 'tactile-pip-active' : 'tactile-pip-inactive-dark'}`} />
-                  <span className="font-mono text-orange-400 font-bold text-[11px]">Level {automationScore} / 4</span>
+                  <span className="font-mono text-ls-red font-bold text-[11px]">Level {automationScore} / 4</span>
                 </div>
               </div>
-              
+
               {/* Realistic Hardware Radio Well */}
               <div className={`flex w-full p-1.5 rounded-2xl gap-1.5 ${isLight ? 'tactile-chassis-light' : 'tactile-chassis-dark'}`}>
                 {[1, 2, 3, 4].map((level) => {
@@ -599,7 +599,7 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
             {/* Pillar 4: Fiduciary & Governance Controls */}
             <div className={`p-4 rounded-2xl border ${
-              isLight ? 'bg-slate-50 border-slate-300' : 'bg-zinc-900/70 border-white/15'
+              isLight ? 'bg-slate-50 border-slate-300' : 'bg-ls-navy border-white/15'
             }`}>
               <div className="flex items-center justify-between text-xs mb-3">
                 <span className={`font-bold ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
@@ -607,10 +607,10 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
                 </span>
                 <div className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${governanceScore > 1 ? 'tactile-pip-active' : 'tactile-pip-inactive-dark'}`} />
-                  <span className="font-mono text-orange-400 font-bold text-[11px]">Level {governanceScore} / 4</span>
+                  <span className="font-mono text-ls-red font-bold text-[11px]">Level {governanceScore} / 4</span>
                 </div>
               </div>
-              
+
               {/* Realistic Hardware Radio Well */}
               <div className={`flex w-full p-1.5 rounded-2xl gap-1.5 ${isLight ? 'tactile-chassis-light' : 'tactile-chassis-dark'}`}>
                 {[1, 2, 3, 4].map((level) => {
@@ -647,9 +647,9 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
 
         {/* Right Side: Instant Diagnostic Output & Engagement Path (5 cols) */}
         <div className={`lg:col-span-5 p-6 sm:p-7 rounded-3xl border flex flex-col justify-between ${
-          isLight ? 'bg-slate-100/90 border-slate-300' : 'bg-zinc-900/90 border-white/15'
+          isLight ? 'bg-slate-100/90 border-slate-300' : 'bg-ls-navy border-white/15'
         }`}>
-          
+
           <div className="space-y-5">
             <div className="flex items-center justify-between border-b border-white/15 pb-4">
               <span className={`text-xs font-mono tracking-wider font-bold ${
@@ -675,9 +675,9 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full h-2.5 rounded-full bg-zinc-800 overflow-hidden border border-white/10">
-              <div 
-                className="h-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-500"
+            <div className="w-full h-2.5 rounded-full bg-ls-navy overflow-hidden border border-white/10">
+              <div
+                className="h-full bg-gradient-to-r from-ls-red to-ls-cyan transition-all duration-500"
                 style={{ width: `${percentage}%` }}
               />
             </div>
@@ -685,11 +685,11 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
             {/* Sector Compliance & Multiplier Badges */}
             <div className="grid grid-cols-2 gap-2 pt-1 text-[11px] font-mono">
               <div className={`p-2 rounded-xl border flex flex-col ${isLight ? 'bg-white border-slate-300 text-slate-800' : 'bg-black/50 border-white/10 text-zinc-300'}`}>
-                <span className="text-orange-400 font-bold text-[10px]">Compliance Mandate</span>
+                <span className="text-ls-red font-bold text-[10px]">Compliance Mandate</span>
                 <span className="font-semibold line-clamp-1">{activeProfile.complianceFramework}</span>
               </div>
               <div className={`p-2 rounded-xl border flex flex-col ${isLight ? 'bg-white border-slate-300 text-slate-800' : 'bg-black/50 border-white/10 text-zinc-300'}`}>
-                <span className="text-orange-400 font-bold text-[10px]">Impact Multiplier</span>
+                <span className="text-ls-red font-bold text-[10px]">Development Status</span>
                 <span className="font-semibold line-clamp-1">{activeProfile.multiplier}</span>
               </div>
             </div>
@@ -701,14 +701,14 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
               }`}>
                 Sector Failure Modes & Key Bottlenecks:
               </div>
-              
+
               <ul className="space-y-2.5 text-xs">
                 {bottlenecks.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2.5">
                     {item.iconType === 'alert' ? (
-                      <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                      <AlertCircle className="w-4 h-4 text-ls-cyan shrink-0 mt-0.5" />
                     ) : (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-ls-cyan shrink-0 mt-0.5" />
                     )}
                     <span className={isLight ? 'text-slate-800' : 'text-zinc-300'}>
                       {item.text}
@@ -722,8 +722,8 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
             </div>
 
             {/* Recommended Engagement Blueprint */}
-            <div className="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/30">
-              <div className="text-[11px] font-mono tracking-wider text-orange-400 font-bold mb-1">
+            <div className="p-4 rounded-2xl bg-ls-red/10 border border-ls-red/30">
+              <div className="text-[11px] font-mono tracking-wider text-ls-red font-bold mb-1">
                 Customized Industry Roadmap ({activeProfile.name}):
               </div>
               <div className={`text-sm font-bold mb-1 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
@@ -739,7 +739,7 @@ export const TransformationDiagnostic: React.FC<DiagnosticProps> = ({
           <div className="pt-6">
             <button
               onClick={handleBooking}
-              className="w-full py-3.5 px-5 rounded-full font-bold text-xs tracking-widest bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 px-5 rounded-full font-bold text-xs tracking-widest bg-ls-red hover:bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Request {activeProfile.name.split('&')[0].trim()} Diagnostic Briefing</span>
               <ArrowRight className="w-3.5 h-3.5" />

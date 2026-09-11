@@ -13,7 +13,7 @@ export const EngagementSection: React.FC<EngagementSectionProps> = ({ theme, onR
       isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
     }`}>
       <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-        <span className="text-xs font-mono font-bold tracking-widest text-orange-500">
+        <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
           HOW WE ENGAGE
         </span>
         <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
@@ -44,15 +44,15 @@ export const EngagementSection: React.FC<EngagementSectionProps> = ({ theme, onR
             </p>
             <ul className={`space-y-2 text-xs font-medium pt-2 ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Operations Bottleneck & Latency Audit</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Data Residency Blueprint</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Board-Level Investment Case</span>
               </li>
             </ul>
@@ -60,20 +60,20 @@ export const EngagementSection: React.FC<EngagementSectionProps> = ({ theme, onR
 
           <button
             onClick={() => onRequestBriefing('Advisory Architecture Sprint (2 Weeks)')}
-            className="w-full py-3 rounded-full border border-orange-500/50 text-orange-500 hover:bg-orange-500 hover:text-white font-bold text-xs tracking-wider transition-colors cursor-pointer"
+            className="w-full py-3 rounded-full border border-ls-red/50 text-ls-red hover:bg-ls-red hover:text-white font-bold text-xs tracking-wider transition-colors cursor-pointer"
           >
             Initiate Architecture Sprint
           </button>
         </div>
 
         {/* Model 02: Featured Co-Built Pilot */}
-        <div className="p-8 rounded-3xl border-2 border-orange-500 bg-gradient-to-b from-orange-500/10 via-zinc-950 to-zinc-950 flex flex-col justify-between space-y-6 relative shadow-2xl shadow-orange-500/10">
-          <div className="absolute -top-3 left-8 px-3 py-1 rounded-full bg-orange-500 text-white font-mono text-[10px] font-bold tracking-widest">
+        <div className="p-8 rounded-3xl border-2 border-ls-red bg-gradient-to-b from-ls-red/10 via-zinc-950 to-zinc-950 flex flex-col justify-between space-y-6 relative shadow-2xl shadow-ls-red/10">
+          <div className="absolute -top-3 left-8 px-3 py-1 rounded-full bg-ls-red text-white font-mono text-[10px] font-bold tracking-widest">
             MOST COMMON COMMENCEMENT
           </div>
 
           <div className="space-y-4">
-            <span className="text-xs font-mono text-orange-400 font-bold block">
+            <span className="text-xs font-mono text-ls-red font-bold block">
               PHASE 02 // 90 DAYS
             </span>
             <h3 className="text-xl font-bold tracking-tight text-white">Co-Built Pilot</h3>
@@ -82,15 +82,15 @@ export const EngagementSection: React.FC<EngagementSectionProps> = ({ theme, onR
             </p>
             <ul className="space-y-2 text-xs text-zinc-200 font-medium pt-2">
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Production Core API Integration</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Human Approval Gates at Every Step</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Verified ROI Ledgers & SLA Guarantee</span>
               </li>
             </ul>
@@ -98,7 +98,7 @@ export const EngagementSection: React.FC<EngagementSectionProps> = ({ theme, onR
 
           <button
             onClick={() => onRequestBriefing('Co-Engineered Pilot (90 Days)')}
-            className="w-full py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs tracking-widest transition-all cursor-pointer shadow-md shadow-orange-500/25"
+            className="w-full py-3.5 rounded-full bg-ls-red text-white font-bold text-xs tracking-widest transition-all cursor-pointer shadow-md shadow-ls-red/25"
           >
             Request Pilot Consultation
           </button>
@@ -118,15 +118,15 @@ export const EngagementSection: React.FC<EngagementSectionProps> = ({ theme, onR
             </p>
             <ul className={`space-y-2 text-xs font-medium pt-2 ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Autonomous Multi-Agent Fleet</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>Enterprise Air-Gapped Infrastructure</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-ls-red shrink-0" />
                 <span>24/7 Model Monitoring & Security Oversight</span>
               </li>
             </ul>
@@ -134,7 +134,7 @@ export const EngagementSection: React.FC<EngagementSectionProps> = ({ theme, onR
 
           <button
             onClick={() => onRequestBriefing('Enterprise Deployment')}
-            className="w-full py-3 rounded-full border border-orange-500/50 text-orange-500 hover:bg-orange-500 hover:text-white font-bold text-xs tracking-wider transition-colors cursor-pointer"
+            className="w-full py-3 rounded-full border border-ls-red/50 text-ls-red hover:bg-ls-red hover:text-white font-bold text-xs tracking-wider transition-colors cursor-pointer"
           >
             Consult On Enterprise Scope
           </button>

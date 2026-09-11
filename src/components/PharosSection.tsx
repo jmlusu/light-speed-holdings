@@ -69,8 +69,8 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
       {/* Pharos Header */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-14">
         <div className="lg:col-span-8 space-y-4">
-          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-transparent text-amber-500 font-mono text-[11px] tracking-widest shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,1)] animate-pulse" />
+          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-ls-cyan/40 bg-gradient-to-r from-ls-cyan/15 via-ls-red/10 to-transparent text-ls-cyan font-mono text-[11px] tracking-widest shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-ls-cyan shadow-[0_0_8px_rgba(251,191,36,1)] animate-pulse" />
             <span>PHAROS // THE LIGHTHOUSE OF ALEXANDRIA</span>
           </div>
 
@@ -79,8 +79,8 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
           }`}>
             PHAROS <br />
             <span className={isLight
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-orange-600 to-slate-900'
-              : 'text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-amber-100'
+              ? 'text-transparent bg-clip-text bg-gradient-to-r from-ls-cyan via-ls-red to-slate-900'
+              : 'text-transparent bg-clip-text bg-gradient-to-r from-ls-cyan via-ls-red to-amber-100'
             }>
               THOUGHT LEADERSHIP
             </span>
@@ -102,14 +102,14 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
             <div className="pharos-beacon-beam" />
 
             <div className="relative z-10 space-y-3">
-              <div className="flex items-center justify-between border-b border-amber-500/20 pb-2.5">
+              <div className="flex items-center justify-between border-b border-ls-cyan/20 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,1)] animate-ping" />
-                  <span className="font-mono text-xs font-bold tracking-wider text-amber-500">
+                  <span className="w-2.5 h-2.5 rounded-full bg-ls-cyan shadow-[0_0_8px_rgba(0,191,255,1)] animate-ping" />
+                  <span className="font-mono text-xs font-bold tracking-wider text-ls-cyan">
                     PHAROS OPTICAL BEACON
                   </span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-ls-cyan/20 text-ls-cyan border border-ls-cyan/30 font-bold">
                   RADIANT
                 </span>
               </div>
@@ -117,15 +117,15 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
               <div className="space-y-1.5 text-[11px] font-mono">
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Isle Coordinates:</span>
-                  <span className="font-bold text-amber-400">31.2140 N, 29.8850 E</span>
+                  <span className="font-bold text-ls-cyan">31.2140 N, 29.8850 E</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Optical Reach:</span>
-                  <span className="font-bold text-emerald-400">300 Stadia (~55 km)</span>
+                  <span className="font-bold text-ls-cyan">300 Stadia (~55 km)</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Emission Spectrum:</span>
-                  <span className="font-bold text-orange-400">589nm Solar Amber</span>
+                  <span className="font-bold text-ls-red">589nm Solar Amber</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Guiding Purpose:</span>
@@ -144,8 +144,8 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
             key={wIdx}
             className={`p-6 sm:p-7 rounded-3xl flex flex-col justify-between space-y-6 transition-all group relative overflow-hidden ${
               isLight
-                ? 'hardware-chassis-light hover:border-amber-500 text-slate-900'
-                : 'hardware-chassis-dark hover:border-amber-500/60 text-zinc-300'
+                ? 'hardware-chassis-light hover:border-ls-cyan text-slate-900'
+                : 'hardware-chassis-dark hover:border-ls-cyan/60 text-zinc-300'
             }`}
           >
             {/* Corner Hardware Fasteners */}
@@ -153,12 +153,12 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
             <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full hardware-screw" />
 
             {/* Decorative classical top gold accent rule */}
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-amber-500/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-ls-cyan/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <div className="space-y-3.5 pt-1">
               {/* Tome Header & Greek Numeral */}
               <div className="flex items-center justify-between text-[11px] font-mono border-b border-black/10 dark:border-white/10 pb-2.5">
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-500 border border-amber-500/30 font-bold">
+                <span className="px-2.5 py-0.5 rounded-full bg-ls-cyan/15 text-ls-cyan border border-ls-cyan/30 font-bold">
                   {wp.tome}
                 </span>
                 <span className="font-semibold text-zinc-400">{wp.readTime}</span>
@@ -166,19 +166,19 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
 
               {/* Subtitle & Tag */}
               <div className="flex items-center justify-between text-[10px] font-mono">
-                <span className="text-orange-500 font-bold">{wp.tag}</span>
+                <span className="text-ls-red font-bold">{wp.tag}</span>
                 <span className="text-zinc-400">{wp.greekNumeral}</span>
               </div>
 
               {/* Title */}
-              <h3 className={`text-base sm:text-lg font-bold tracking-tight leading-snug group-hover:text-amber-500 transition-colors ${
+              <h3 className={`text-base sm:text-lg font-bold tracking-tight leading-snug group-hover:text-ls-cyan transition-colors ${
                 isLight ? 'text-slate-900' : 'text-zinc-100'
               }`}>
                 {wp.title}
               </h3>
 
               {/* Epigraph / Quote */}
-              <blockquote className="text-xs italic border-l-2 pl-3 py-0.5 border-amber-400 text-zinc-400">
+              <blockquote className="text-xs italic border-l-2 pl-3 py-0.5 border-ls-cyan text-zinc-400">
                 "{wp.epigraph}"
               </blockquote>
 
@@ -197,7 +197,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
               </span>
               <button
                 onClick={() => onRequestBriefing(`Request Pharos Treatise: ${wp.tome} - ${wp.title}`)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-amber-500 hover:text-amber-400 cursor-pointer transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-ls-cyan hover:text-ls-cyan cursor-pointer transition-all ${
                   isLight ? 'tactile-concave-btn-light' : 'tactile-concave-btn-dark'
                 }`}
               >

@@ -21,7 +21,7 @@ const synergyPairs: Record<string, {
     to: '02. Private Intelligence',
     headline: 'Policy-Governed Knowledge Systems',
     mechanism: 'Compliance rules and corporate mandates become data filters. The knowledge graph keeps confidential data within regulatory boundaries and blocks unauthorized access before indexing anything.',
-    compoundImpact: 'Zero unauthorized data leakage across cross-border business units.'
+    compoundImpact: 'Confidential data stays within regulatory boundaries across cross-border business units.'
   },
   'intelligence-systems': {
     title: 'Intelligence and Autonomous Systems',
@@ -29,7 +29,7 @@ const synergyPairs: Record<string, {
     to: '03. Autonomous Systems',
     headline: 'Verified AI Grounding',
     mechanism: 'The knowledge graph feeds verified document citations and entity links directly to AI agents. Every recommendation traces back to an actual source record. No made-up information.',
-    compoundImpact: 'Zero made-up information with sub-200ms retrieval across millions of legacy records.'
+    compoundImpact: 'Every recommendation traces back to a verified source record.'
   },
   'systems-execution': {
     title: 'Autonomous Systems and Execution',
@@ -37,14 +37,14 @@ const synergyPairs: Record<string, {
     to: '04. Execution & Settlement',
     headline: 'Verified Autonomous Settlement',
     mechanism: 'Agent teams break complex transactions into individual API calls. High-value operations route through human approval gates before writing to banking or customs systems.',
-    compoundImpact: 'Reconciliation times compressed from 72 hours to 14 minutes. Every write verified.'
+    compoundImpact: '5-tier human-in-the-loop approval gates on every high-value write. Every write verified.'
   },
   'execution-strategy': {
     title: 'Execution and Strategy (Feedback Loop)',
     from: '04. Execution & Settlement',
     to: '01. Strategy',
     headline: 'Closed-Loop Performance Telemetry',
-    mechanism: 'Live transaction data, revenue recovery, and error rates feed into executive dashboards. Leadership adjusts strategy based on current performance, not quarterly assumptions.',
+    mechanism: 'Live transaction data and error rates feed into executive dashboards. Leadership adjusts strategy based on current performance, not quarterly assumptions.',
     compoundImpact: 'Quarterly strategy cycles replaced by real-time operational adjustment.'
   }
 };
@@ -60,7 +60,7 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
       isLight ? 'bg-slate-50/80 border-slate-300' : 'bg-zinc-950/70 border-white/15'
     }`}>
       <div className="max-w-3xl mb-8 space-y-2">
-        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-500 font-mono text-[10px] tracking-widest">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[10px] tracking-widest">
           <RefreshCw className="w-3 h-3" />
           <span>THE CLOSED-LOOP MULTIPLIER EFFECT</span>
         </div>
@@ -84,14 +84,14 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
             onClick={() => onSelectSynergy(key)}
             className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
               selectedSynergy === key
-                ? 'bg-orange-500 text-white border-orange-400 shadow-md shadow-orange-500/20'
+                ? 'bg-ls-red text-white border-ls-red shadow-md shadow-ls-red/20'
                 : isLight
                   ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
                   : 'bg-zinc-900/80 hover:bg-zinc-900 text-zinc-300 border-white/15'
             }`}
           >
             <div className={`text-[10px] font-mono font-bold mb-1 ${
-              selectedSynergy === key ? 'text-orange-100' : 'text-orange-500'
+              selectedSynergy === key ? 'text-orange-100' : 'text-ls-red'
             }`}>
               {pair.title}
             </div>
@@ -106,18 +106,18 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
         if (!pair) return null;
         return (
           <div className={`p-6 rounded-2xl border transition-all ${
-            isLight ? 'bg-white border-slate-300 shadow-sm' : 'bg-zinc-900/90 border-white/20'
+            isLight ? 'bg-white border-slate-300 shadow-sm' : 'bg-ls-navy border-white/20'
           }`}>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-orange-500/20 mb-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-ls-red/20 mb-4">
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 rounded-lg bg-orange-500 text-white font-mono text-xs font-bold">
+                <span className="px-3 py-1 rounded-lg bg-ls-red text-white font-mono text-xs font-bold">
                   {pair.title}
                 </span>
                 <h4 className={`text-base font-bold font-display ${isLight ? 'text-slate-900' : 'text-white'}`}>
                   {pair.headline}
                 </h4>
               </div>
-              <div className="flex items-center gap-2 text-xs font-mono font-semibold text-emerald-500">
+              <div className="flex items-center gap-2 text-xs font-mono font-semibold text-ls-cyan">
                 <Activity className="w-3.5 h-3.5" />
                 <span>Real-time Integration Protocol</span>
               </div>
@@ -134,9 +134,9 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
               </div>
 
               <div className={`md:col-span-5 p-4 rounded-xl border ${
-                isLight ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950' : 'bg-emerald-950/20 border-emerald-500/30 text-emerald-200'
+                isLight ? 'bg-ls-cyan/70 border-ls-cyan text-emerald-950' : 'bg-emerald-950/20 border-ls-cyan/30 text-ls-cyan'
               }`}>
-                <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 block mb-1">
+                <span className="text-[10px] font-mono font-bold text-ls-cyan dark:text-ls-cyan block mb-1">
                   Compound Institutional Impact
                 </span>
                 <p className="text-justify text-xs font-bold leading-relaxed">

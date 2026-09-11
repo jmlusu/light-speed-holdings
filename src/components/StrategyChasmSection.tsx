@@ -1,4 +1,5 @@
 import React from 'react';
+import { Reveal } from './Reveal';
 
 interface StrategyChasmSectionProps {
   theme: 'light' | 'dark';
@@ -11,7 +12,7 @@ export const StrategyChasmSection: React.FC<StrategyChasmSectionProps> = ({ them
       isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
     }`}>
       <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-        <span className="text-xs font-mono font-bold tracking-widest text-orange-500">
+        <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
           THE STRATEGY-EXECUTION CHASM
         </span>
         <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
@@ -29,12 +30,13 @@ export const StrategyChasmSection: React.FC<StrategyChasmSectionProps> = ({ them
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* Failure Trap 01 */}
+        <Reveal delay={0}>
         <div className={`p-8 rounded-3xl border transition-all flex flex-col justify-between ${
           isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-lg' : 'bg-zinc-950/80 border-white/15 text-zinc-300 shadow-xl'
         }`}>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-mono font-black text-orange-500">01</span>
+              <span className="text-2xl font-mono font-black text-ls-red">01</span>
               <span className="text-[10px] font-mono tracking-widest px-2.5 py-0.5 rounded-full border border-red-500/30 text-red-500 bg-red-500/10 font-bold">
                 THE SLIDE TRAP
               </span>
@@ -49,15 +51,17 @@ export const StrategyChasmSection: React.FC<StrategyChasmSectionProps> = ({ them
             <span className="text-red-500 font-bold">CODE SHIPPED: 0%</span>
           </div>
         </div>
+        </Reveal>
 
         {/* Failure Trap 02 */}
+        <Reveal delay={0.12}>
         <div className={`p-8 rounded-3xl border transition-all flex flex-col justify-between ${
           isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-lg' : 'bg-zinc-950/80 border-white/15 text-zinc-300 shadow-xl'
         }`}>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-mono font-black text-orange-500">02</span>
-              <span className="text-[10px] font-mono tracking-widest px-2.5 py-0.5 rounded-full border border-amber-500/30 text-amber-500 bg-amber-500/10 font-bold">
+              <span className="text-2xl font-mono font-black text-ls-red">02</span>
+              <span className="text-[10px] font-mono tracking-widest px-2.5 py-0.5 rounded-full border border-ls-cyan/30 text-ls-cyan bg-ls-cyan/10 font-bold">
                 THE SILO TAX
               </span>
             </div>
@@ -68,18 +72,20 @@ export const StrategyChasmSection: React.FC<StrategyChasmSectionProps> = ({ them
           </div>
           <div className={`pt-6 border-t text-xs font-mono flex justify-between font-semibold ${isLight ? 'border-slate-200' : 'border-white/10'} text-[var(--ink-primary)]`}>
             <span>TRUTH CONVERGENCE: POOR</span>
-            <span className="text-amber-500 font-bold">RISK: HIGH</span>
+            <span className="text-ls-cyan font-bold">RISK: HIGH</span>
           </div>
         </div>
+        </Reveal>
 
         {/* Failure Trap 03 */}
+        <Reveal delay={0.24}>
         <div className={`p-8 rounded-3xl border transition-all flex flex-col justify-between ${
           isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-lg' : 'bg-zinc-950/80 border-white/15 text-zinc-300 shadow-xl'
         }`}>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-mono font-black text-orange-500">03</span>
-              <span className="text-[10px] font-mono tracking-widest px-2.5 py-0.5 rounded-full border border-amber-500/30 text-amber-500 bg-amber-500/10 font-bold">
+              <span className="text-2xl font-mono font-black text-ls-red">03</span>
+              <span className="text-[10px] font-mono tracking-widest px-2.5 py-0.5 rounded-full border border-ls-cyan/30 text-ls-cyan bg-ls-cyan/10 font-bold">
                 THE TOY PLAYGROUND
               </span>
             </div>
@@ -90,9 +96,10 @@ export const StrategyChasmSection: React.FC<StrategyChasmSectionProps> = ({ them
           </div>
           <div className={`pt-6 border-t text-xs font-mono flex justify-between font-semibold ${isLight ? 'border-slate-200' : 'border-white/10'} text-[var(--ink-primary)]`}>
             <span>BUSINESS IMPACT: 0%</span>
-            <span className="text-orange-500 font-bold">COMPLIANCE: UNVERIFIED</span>
+            <span className="text-ls-red font-bold">COMPLIANCE: UNVERIFIED</span>
           </div>
         </div>
+        </Reveal>
 
       </div>
     </section>

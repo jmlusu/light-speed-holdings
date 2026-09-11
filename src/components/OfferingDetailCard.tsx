@@ -47,7 +47,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
       <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
       {/* Corner Badge */}
-      <div className="absolute top-0 right-0 py-1.5 px-4 rounded-bl-2xl bg-orange-500 text-white text-[10px] font-mono font-bold tracking-wider shadow-md">
+      <div className="absolute top-0 right-0 py-1.5 px-4 rounded-bl-2xl bg-ls-red text-white text-[10px] font-mono font-bold tracking-wider shadow-md">
         {active.governance}
       </div>
 
@@ -56,7 +56,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
         {/* Left Column: Core Description & Contracts */}
         <div className="lg:col-span-7 space-y-6">
           <div>
-            <span className="text-xs font-mono font-bold tracking-wider text-orange-500 block mb-1">
+            <span className="text-xs font-mono font-bold tracking-wider text-ls-red block mb-1">
               {active.eyebrow}
             </span>
             <h3 className={`text-2xl sm:text-3xl font-black tracking-tight font-display ${
@@ -64,7 +64,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             }`}>
               {active.title}
             </h3>
-            <div className={`text-sm font-semibold mt-1 ${isLight ? 'text-slate-800' : 'text-orange-400'}`}>
+            <div className={`text-sm font-semibold mt-1 ${isLight ? 'text-slate-800' : 'text-ls-red'}`}>
               {active.tagline}
             </div>
           </div>
@@ -81,7 +81,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
           }`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <GitMerge className="w-4 h-4 text-orange-500" />
+                <GitMerge className="w-4 h-4 text-ls-red" />
                 <span className={`text-xs font-mono font-bold ${isLight ? 'text-slate-900' : 'text-zinc-200'}`}>
                   Structured Inter-Offering Contracts
                 </span>
@@ -100,7 +100,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
               </div>
 
               <div className={`p-3 rounded-xl border ${isLight ? 'bg-white/90 border-slate-300' : 'bg-zinc-950/80 border-white/10'}`}>
-                <span className={`text-[10px] font-mono font-bold block mb-1 text-emerald-500`}>
+                <span className={`text-[10px] font-mono font-bold block mb-1 text-ls-cyan`}>
                   Output Contract (Generates)
                 </span>
                 <p className={`text-justify font-medium leading-tight ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
@@ -115,13 +115,13 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             }`}>
               {/* Upstream Source Card */}
               <div className={`p-3 rounded-xl border flex flex-col justify-between space-y-1.5 ${
-                isLight ? 'bg-orange-50/70 border-orange-200/80' : 'bg-orange-950/30 border-orange-500/20'
+                isLight ? 'bg-orange-50/70 border-orange-200/80' : 'bg-orange-950/30 border-ls-red/20'
               }`}>
                 <div className="flex items-center gap-1.5">
-                  <span className="p-1 rounded-md bg-orange-500/15 text-orange-500">
+                  <span className="p-1 rounded-md bg-ls-red/15 text-ls-red">
                     <ArrowUpRight className="w-3.5 h-3.5" />
                   </span>
-                  <span className="font-bold font-mono text-[10px] tracking-wider text-orange-500">
+                  <span className="font-bold font-mono text-[10px] tracking-wider text-ls-red">
                     Upstream Source
                   </span>
                 </div>
@@ -134,13 +134,13 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
 
               {/* Downstream Target Card */}
               <div className={`p-3 rounded-xl border flex flex-col justify-between space-y-1.5 ${
-                isLight ? 'bg-emerald-50/70 border-emerald-200/80' : 'bg-emerald-950/30 border-emerald-500/20'
+                isLight ? 'bg-ls-cyan/70 border-ls-cyan/80' : 'bg-emerald-950/30 border-ls-cyan/20'
               }`}>
                 <div className="flex items-center gap-1.5">
-                  <span className="p-1 rounded-md bg-emerald-500/15 text-emerald-500">
+                  <span className="p-1 rounded-md bg-ls-cyan/15 text-ls-cyan">
                     <ArrowDownRight className="w-3.5 h-3.5" />
                   </span>
-                  <span className="font-bold font-mono text-[10px] tracking-wider text-emerald-500">
+                  <span className="font-bold font-mono text-[10px] tracking-wider text-ls-cyan">
                     Downstream Target
                   </span>
                 </div>
@@ -166,7 +166,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
                     isLight ? 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100' : 'border-white/15 bg-white/[0.04] text-zinc-300 hover:bg-white/[0.08]'
                   }`}
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-ls-cyan shrink-0" />
                   <span className="leading-snug">{item}</span>
                 </div>
               ))}
@@ -182,7 +182,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             <span className={`text-xs font-mono block mb-1 font-bold ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
               Verified Institutional Benchmark
             </span>
-            <div className="text-xl sm:text-2xl font-black font-mono text-emerald-500">
+            <div className="text-xl sm:text-2xl font-black font-mono text-ls-cyan">
               {active.metrics}
             </div>
             <div className={`text-xs font-medium mt-2 leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>
@@ -196,7 +196,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
           }`}>
             <div className="flex items-center justify-between text-xs font-mono font-bold">
               <span className={isLight ? 'text-slate-900' : 'text-zinc-200'}>Integrated Suite Position</span>
-              <span className="text-orange-500">Step {activePillar + 1} of {totalPillars}</span>
+              <span className="text-ls-red">Step {activePillar + 1} of {totalPillars}</span>
             </div>
 
             <div className="grid grid-cols-4 gap-1.5">
@@ -206,8 +206,8 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
                   onClick={() => onSelectPillar(cIdx)}
                   className={`h-2.5 rounded-full transition-all ${
                     activePillar === cIdx
-                      ? 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.8)]'
-                      : isLight ? 'bg-slate-300 hover:bg-slate-400' : 'bg-zinc-800 hover:bg-zinc-700'
+                      ? 'bg-ls-red shadow-[0_0_6px_rgba(230,57,70,0.8)]'
+                      : isLight ? 'bg-slate-300 hover:bg-slate-400' : 'bg-ls-navy hover:bg-zinc-700'
                   }`}
                   title={`Switch to Offering 0${cIdx + 1}`}
                 />
@@ -217,7 +217,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             <div className="flex items-center justify-between pt-2">
               <button
                 onClick={() => onSelectPillar((activePillar + totalPillars - 1) % totalPillars)}
-                className={`text-xs font-mono font-semibold hover:text-orange-500 cursor-pointer ${
+                className={`text-xs font-mono font-semibold hover:text-ls-red cursor-pointer ${
                   isLight ? 'text-slate-600' : 'text-zinc-400'
                 }`}
               >
@@ -225,7 +225,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
               </button>
               <button
                 onClick={() => onSelectPillar((activePillar + 1) % totalPillars)}
-                className="text-xs font-mono font-bold text-orange-500 hover:text-orange-400 cursor-pointer flex items-center gap-1"
+                className="text-xs font-mono font-bold text-ls-red hover:text-ls-red cursor-pointer flex items-center gap-1"
               >
                 <span>Next Offering</span>
                 <ArrowRight className="w-3 h-3" />
@@ -233,8 +233,8 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-orange-500/10 border border-orange-500/30 space-y-3 relative overflow-hidden">
-            <div className="text-xs font-mono tracking-wider text-orange-500 font-bold flex items-center gap-1.5">
+          <div className="p-6 rounded-2xl bg-ls-red/10 border border-ls-red/30 space-y-3 relative overflow-hidden">
+            <div className="text-xs font-mono tracking-wider text-ls-red font-bold flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5" />
               <span>Commercial Engagement Protocol</span>
             </div>
@@ -246,7 +246,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             </p>
             <button
               onClick={() => onRequestBriefing(`Inquiry regarding ${active.title}: ${active.tagline}`)}
-              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-md shadow-orange-500/20 active:scale-98"
+              className="w-full py-2.5 px-4 rounded-xl bg-ls-red text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-md shadow-ls-red/20 active:scale-98"
             >
               <span>Engage {active.shortTitle} Practice</span>
               <ArrowRight className="w-3.5 h-3.5" />
