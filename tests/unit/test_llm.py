@@ -17,6 +17,20 @@ from ai_company.llm.providers.base import (
 from ai_company.llm.providers.ollama import OllamaProvider
 from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 
+
+@pytest.fixture(autouse=True)
+def _no_omniroute_ping(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Make LLMClient construction skip the real OmniRoute health ping.
+
+    With ``OMNIROUTE_API_KEY`` set in the environment, ``LLMClient.__init__``
+    calls ``httpx.get`` against the gateway on every construction (~4s TCP
+    timeout). Failing fast keeps tests hermetic.
+    """
+    from tests.unit.conftest import patch_local_only_httpx
+
+    patch_local_only_httpx(monkeypatch)
+
+
 # ── Base types ──────────────────────────────────────────────────────
 
 
@@ -87,13 +101,27 @@ def test_openai_compatible_requires_api_key():
 # ── Ollama Provider ────────────────────────────────────────────────
 
 
-def test_ollama_not_available_when_offline():
+def test_ollama_not_available_when_offline(monkeypatch: pytest.MonkeyPatch):
+    import httpx
+
     provider = OllamaProvider(api_base="http://localhost:19999")
+
+    def _refuse(*args: object, **kwargs: object) -> None:
+        raise httpx.ConnectError("Connection refused")
+
+    monkeypatch.setattr(provider._client, "get", _refuse)
     assert not provider.is_available()
 
 
-def test_ollama_requires_running_server():
+def test_ollama_requires_running_server(monkeypatch: pytest.MonkeyPatch):
+    import httpx
+
     provider = OllamaProvider(api_base="http://localhost:19999")
+
+    def _refuse(*args: object, **kwargs: object) -> None:
+        raise httpx.ConnectError("Connection refused")
+
+    monkeypatch.setattr(provider._client, "post", _refuse)
     with pytest.raises(LLMProviderError, match="Cannot connect"):
         provider.chat("system", "user")
 
@@ -116,66 +144,34 @@ class TestLLMClient:
         assert "deepseek" in client._providers
         assert "ollama" in client._providers
 
-    def test_parse_valid_json(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.chdir(tmp_path)
-        _setup_model_files(tmp_path)
+    def test_parse_valid_json(self):
+        from ai_company.llm.json_parser import parse_llm_json
 
-        from ai_company.llm.client import LLMClient
-
-        client = LLMClient(
-            config_path=str(tmp_path / "company" / "models.yaml"),
-            registry_path=str(tmp_path / "company" / "agent-registry.json"),
-        )
-
-        result = client._parse_response('{"plan": [], "result": "ok", "artifacts": []}')
+        result = parse_llm_json('{"plan": [], "result": "ok", "artifacts": []}')
         assert result is not None
         assert result["result"] == "ok"
 
-    def test_parse_json_in_code_block(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.chdir(tmp_path)
-        _setup_model_files(tmp_path)
-
-        from ai_company.llm.client import LLMClient
-
-        client = LLMClient(
-            config_path=str(tmp_path / "company" / "models.yaml"),
-            registry_path=str(tmp_path / "company" / "agent-registry.json"),
-        )
+    def test_parse_json_in_code_block(self):
+        from ai_company.llm.json_parser import parse_llm_json
 
         raw = 'Here is the plan:\n```json\n{"plan": [{"tool": "read", "args": {"path": "x.py"}}], "result": "done", "artifacts": []}\n```'
-        result = client._parse_response(raw)
+        result = parse_llm_json(raw)
         assert result is not None
         assert len(result["plan"]) == 1
 
-    def test_parse_json_embedded_in_text(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.chdir(tmp_path)
-        _setup_model_files(tmp_path)
-
-        from ai_company.llm.client import LLMClient
-
-        client = LLMClient(
-            config_path=str(tmp_path / "company" / "models.yaml"),
-            registry_path=str(tmp_path / "company" / "agent-registry.json"),
-        )
+    def test_parse_json_embedded_in_text(self):
+        from ai_company.llm.json_parser import parse_llm_json
 
         raw = 'Sure! {"plan": [], "result": "all done", "artifacts": []} hope that helps!'
-        result = client._parse_response(raw)
+        result = parse_llm_json(raw)
         assert result is not None
         assert result["result"] == "all done"
 
-    def test_parse_invalid_returns_none(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.chdir(tmp_path)
-        _setup_model_files(tmp_path)
+    def test_parse_invalid_returns_none(self):
+        from ai_company.llm.json_parser import parse_llm_json
 
-        from ai_company.llm.client import LLMClient
-
-        client = LLMClient(
-            config_path=str(tmp_path / "company" / "models.yaml"),
-            registry_path=str(tmp_path / "company" / "agent-registry.json"),
-        )
-
-        assert client._parse_response("I'm not sure what to do here.") is None
-        assert client._parse_response("```some code```") is None
+        assert parse_llm_json("I'm not sure what to do here.") is None
+        assert parse_llm_json("```some code```") is None
 
     def test_execute_task_retries_on_bad_json(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -474,6 +470,7 @@ class TestLLMClient:
         client = LLMClient(
             config_path=str(tmp_path / "company" / "models.yaml"),
             registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            limiter_timeout=0.0,
         )
 
         good_response = json.dumps({"plan": [], "result": "success", "artifacts": []})

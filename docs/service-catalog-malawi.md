@@ -84,6 +84,32 @@ the USD figure directly with terms (50% upfront, 50% on delivery).
 
 ---
 
+## Trust-by-Engineering — Reservations answered by design
+
+Every offer is built to answer the four reservations decision-makers raise about AI
+in low-bandwidth, resource-constrained environments. The full doctrine and evidence
+map lives in `docs/RESERVATIONS-STRATEGY.md`; here is how each reservation maps to
+the architecture behind these offers:
+
+- **Low-bandwidth / resource-constrained:** Offline-first architecture, local
+  models via Ollama when connectivity or budget demands it, WhatsApp-native flows,
+  and a PWA that queues work offline — no app download required, no cloud
+  dependency forced.
+- **Data protection:** Sovereign in-country processing; every cross-border LLM
+  flow documented in the G1–G4 governance gate; Malawi Data Protection Act
+  2017/2024 + GDPR from day one; client data never used to train models.
+- **Technology debt:** API connectors integrate with existing systems in a 90-day
+  pilot — no rip-and-replace; no vendor lock-in; your data and deliverables stay
+  yours. Agent cost is variable, visible, and optimisable.
+- **Skepticism of AI:** 5-tier human-in-the-loop approvals, immutable audit
+  trails, risk-classified agent tiers, circuit breakers, and honesty badges on
+  every claim. The system earns a CRO's yes before a user's wow.
+
+Each offer's governance section and the `results/reservations-demo-script.md`
+show how these answers surface in a portfolio demonstration.
+
+---
+
 ## 3. Pricing Rules
 
 1. **50% upfront / 50% on delivery** for all one-off projects. Retainers billed monthly in advance.

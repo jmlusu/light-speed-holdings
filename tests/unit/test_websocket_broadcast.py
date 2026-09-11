@@ -31,6 +31,14 @@ def _anchor_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     the real project ``.opencode`` directory."""
     monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
     monkeypatch.setenv("DASHBOARD_AUTH_MODE", "open")
+    from tests.unit.conftest import patch_local_only_httpx
+
+    patch_local_only_httpx(monkeypatch)
+    from ai_company.executor import loop as loop_mod
+    from ai_company.memory.engine import MemoryStore
+
+    isolated = MemoryStore(base_dir=str(tmp_path / "memory"))
+    monkeypatch.setattr(loop_mod, "init_memory", lambda *a, **kw: isolated)
 
 
 @pytest.fixture()

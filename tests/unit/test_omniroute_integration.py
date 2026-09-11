@@ -23,6 +23,19 @@ import pytest
 
 from ai_company.llm.providers.base import ChatResponse, LLMProvider
 
+
+@pytest.fixture(autouse=True)
+def _no_omniroute_ping(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Failing-fast httpx.get keeps LLMClient construction hermetic.
+
+    Tests that verify OmniRoute health/mock responses re-patch ``httpx.get``
+    themselves and override this default.
+    """
+    from tests.unit.conftest import patch_local_only_httpx
+
+    patch_local_only_httpx(monkeypatch)
+
+
 # ── Helpers ──────────────────────────────────────────────────────────
 
 

@@ -159,7 +159,8 @@ class VectorStore:
                     self.index_entry(entry)
                     count += 1
 
-        self.save_index()
+        if count:
+            self.save_index()
         return count
 
     def search(

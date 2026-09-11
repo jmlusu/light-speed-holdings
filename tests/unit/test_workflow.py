@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from pathlib import Path
 
 import pytest
 
@@ -58,8 +59,8 @@ def registry() -> CompanyRegistry:
 
 
 @pytest.fixture()
-def engine(registry: CompanyRegistry) -> WorkflowEngine:
-    return WorkflowEngine(registry)
+def engine(tmp_path: Path, registry: CompanyRegistry) -> WorkflowEngine:
+    return WorkflowEngine(registry, state_dir=tmp_path / "instances")
 
 
 class TestWorkflowEngine:

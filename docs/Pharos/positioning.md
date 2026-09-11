@@ -61,6 +61,32 @@ OR an AI company, OR a live SME. Almost no one stacks all of these:
 3. **An operating AI-native company** (Lightspeed Holdings — 144 agents, 20 departments, 5-tier HITL, audit trails)
 4. **A real, non-tech small business** running agentic tools (J&S StopOver Bar)
 
+## The Four Reservations — Trust-by-Engineering
+
+Thought leaders get quoted for problems they frame, not just solutions they ship.
+The region's institutions are not afraid of the technology — they are afraid of
+ungoverned deployment. That fear takes four named, repeatable forms, and owning
+the answer to all four is the credibility moat:
+
+| # | The Reservation | The answer, engineered in |
+|---|-----------------|---------------------------|
+| 1 | **Low-bandwidth / resource-constrained** — "It won't work on our devices or connections." | Offline-first architecture, local models, WhatsApp-native, PWA offline queues; design for the reality because we operate in it. |
+| 2 | **Data protection** — "Where does our data go?" | Sovereign in-country processing, documented cross-border flows, DPA 2017/2024 + GDPR by default, no client-data training. |
+| 3 | **Technology debt** — "Won't this become a system we maintain forever?" | 90-day pilot integration, no rip-and-replace, no lock-in, visible variable cost, and our own tracked-and-paid-down debt. |
+| 4 | **Skepticism of AI** — "We tried AI before; it failed." | Governance-first: 5-tier HITL, immutable audit trails, risk-classified tiers, circuit breakers, honesty badges. |
+
+Capability depth comes from what the company has actually architected: enterprise
+data systems across Fortune 500 telecom, finance, and healthcare estates,
+regulated public-sector product delivery, and health-program data platforms
+fielded in low-connectivity district settings. Any proposal that answers the four
+reservations from that institutional discipline — phrased as *what we have
+architected*, never as biography — is how the thesis stays credible and honest.
+
+This is the named framework behind the Lighthouse position: **"The Four
+Reservations — Trust-by-Engineering."** Feedback loop: every objection from every
+demo and engagement is logged and routed back into the answer doctrine
+(`docs/RESERVATIONS-STRATEGY.md`, Reservations Council).
+
 ## Positioning Transformation Journey
 
 | Stage | Message |

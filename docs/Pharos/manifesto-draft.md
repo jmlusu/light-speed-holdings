@@ -73,6 +73,38 @@ the architecture itself**:
 This is the governance-first approach the region needs — and it is exactly what a
 company-builder can supply.
 
+## The Four Reservations Are the Real Objections
+
+When the region's risk officers and ministers say no, they are rarely saying no to
+AI. They are raising four specific, legitimate reservations:
+
+1. **Low-bandwidth / resource-constrained** — "It won't work on our devices, our
+   connectivity, or our electricity reality."
+2. **Data protection** — "Where does our data go? Does it leave our country?"
+3. **Technology debt** — "Won't this rip out what we have, or become a system we
+   maintain forever?"
+4. **Skepticism of AI** — "We tried AI before and it failed. Why would this be
+   different, and how do we trust it?"
+
+Each one must be answered by engineering, not by PowerPoint. Our answers are built
+into the system and are by now proven in house:
+
+- **Offline-first architecture** — local inference, WhatsApp-native flows, work
+  that queues and syncs when the signal returns. Bandwidth is a budget we engineer
+  to, because we operate where the constraints are real.
+- **Sovereign by design** — data stays on the customer's infrastructure; every
+  cross-border flow is documented; Data Protection Act 2017/2024 and GDPR are
+  defaults, not retrofits.
+- **Integration, not replacement** — 90-day pilots connect to the legacy stack; no
+  rip-and-replace, no lock-in, no hidden maintenance burden.
+- **Governance as the product** — the five-tier approvals, audit trails, risk
+  tiers and circuit breakers above are the answer to "how do we trust it," and
+  every claim carries its honest status.
+
+Name the reservations, answer them from the architecture, and the conversation
+moves from fear to requirements. That is the discipline behind *The Four
+Reservations — Trust-by-Engineering*.
+
 ## What "Company-Building" Means Here
 
 At Lightspeed Holdings we operate an AI-native enterprise. Today that is 144

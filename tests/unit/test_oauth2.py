@@ -21,6 +21,21 @@ from ai_company.llm.providers.openai_compatible import OpenAICompatibleProvider
 _TOKEN_URL = "https://idp.example.com/oauth/token"
 
 
+@pytest.fixture(autouse=True)
+def _no_omniroute_ping(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Skip the real OmniRoute health ping in LLMClient's constructor.
+
+    The OAuth2 TokenManager tests intentionally use real ``httpx.Client``
+    with a MockTransport, so only the gateway ping is stubbed here.
+    """
+    import httpx
+
+    def _refuse(*args: object, **kwargs: object) -> None:
+        raise httpx.ConnectError("Connection refused")
+
+    monkeypatch.setattr("httpx.get", _refuse)
+
+
 def _token_transport(
     access_token: str = "test-token-abc",
     expires_in: int = 3600,

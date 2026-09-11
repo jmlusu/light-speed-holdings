@@ -34,6 +34,23 @@ def tmp_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     return tmp_path
 
 
+@pytest.fixture(autouse=True)
+def _fast_network_checks(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Make network-dependent checks fail instantly instead of polling ports.
+
+    ``check_llm_providers`` and ``check_omniroute_health`` call ``httpx.get``
+    against local services with a 3s timeout; without a running server each
+    call paid the full TCP wait. Tests that simulate reachable services
+    re-patch ``httpx.get`` themselves and override this default.
+    """
+    import httpx
+
+    def _refuse(*args: object, **kwargs: object) -> None:
+        raise httpx.ConnectError("Connection refused")
+
+    monkeypatch.setattr("httpx.get", _refuse)
+
+
 # ---------------------------------------------------------------------------
 # CheckResult dataclass
 # ---------------------------------------------------------------------------

@@ -80,8 +80,7 @@ Priced in the local currency, paid through the rails Malawians already use — A
 
 *Make the 140-agent platform the product — not just the delivery mechanism.*
 
-- **Low-bandwidth, mobile-first engineering:** Chatbot flows, UI strings, dashboards, and reports are built for real-world operating conditions — low-bandwidth, mobile-first, and grounded in real client work.
-- **Low-bandwidth, mobile-first:** 87% 4G coverage but 33% smartphone adoption — everything we build must run on modest devices and connections.
+- **Low-bandwidth, mobile-first engineering:** Chatbot flows, UI strings, dashboards, and reports are built for real-world operating conditions — low-bandwidth, mobile-first, offline-capable, and grounded in real client work. 87% 4G coverage but 33% smartphone adoption means everything we build must run on modest devices and weak connections. This is a design discipline, not a limitation: bandwidth is a budget, latency is a constraint we engineer to.
 - **Idempotent, tested, documented:** Deterministic generations, automated QA, and the best documented AI-agents platform in the region.
 - **Offer E as product revenue:** Agencies, tech founders, and diaspora entrepreneurs license the same infrastructure we run — the bridge from services to product.
 
@@ -104,6 +103,7 @@ Priced in the local currency, paid through the rails Malawians already use — A
 - **Data Protection Act 2017 compliance** as the default posture, with data-controller responsibilities documented per engagement.
 - **GDPR-level handling for donor and UN data flows**, plus donor-reporting accuracy that inspectors can rely on.
 - **Secure mobile-money rails:** payment integrations are hardened, reconciliated, and auditable.
+- **The Four Reservations, answered by engineering, not promises:** every engagement, pitch, and demo answers the four reservations decision-makers hold — low-bandwidth reality, data protection, technology debt, and skepticism of AI — with honesty-badged engineering evidence (`docs/RESERVATIONS-STRATEGY.md`).
 
 **Key metric:** Zero critical security breaches; legal & compliance checklist 100% complete.
 
@@ -122,6 +122,7 @@ Priced in the local currency, paid through the rails Malawians already use — A
 *Make Malawi a source of agentic-AI answers, not just a market.*
 
 - **Pharos continues its mandate:** position the Human CEO as the leading voice on Agentic AI Company Building, Use Cases, and Policy across Malawi and SADC.
+- **The Four Reservations — Trust-by-Engineering:** the flagship Pharos thesis framing low-bandwidth, data protection, technology debt, and skepticism of AI as engineering problems Lightspeed has answered; published as a manifesto, a portfolio demo script, and a research-backed position paper.
 - **Engagement with Malawi's National AI Strategy and MACRA** — we are agents of its success.
 - **Publication engine:** monthly "Malawi Agentic AI Monitor", research notes, and case studies that make the whole ecosystem smarter.
 
