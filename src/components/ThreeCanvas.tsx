@@ -34,13 +34,10 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Budget particles to viewport width (mobile is already SVG-only via the
-    // isMobile branch above), keeping dense-field fill on wide screens cheap
-    // on small ones. Grid target caps out below 1200 regardless.
-    const particleCount = Math.min(1200, Math.max(400, Math.round(width / 1.4)));
+    const particleCount = 1200;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const targetPositions = new Float32Array(particleCount * 3);
@@ -81,7 +78,6 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
     scene.add(particles);
 
     let scrollProgress = 0;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -100,20 +96,8 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
     window.addEventListener('resize', handleResize);
 
     let animationFrameId: number;
-    let running = !prefersReducedMotion;
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        running = false;
-        cancelAnimationFrame(animationFrameId);
-      } else if (!document.hidden && !running && !prefersReducedMotion) {
-        running = true;
-        animate();
-      }
-    };
 
     const animate = () => {
-      if (!running) return;
       animationFrameId = requestAnimationFrame(animate);
 
       // Lerp particles based on scroll
@@ -154,17 +138,9 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
       renderer.render(scene, camera);
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    if (prefersReducedMotion) {
-      renderer.render(scene, camera);
-    } else {
-      animate();
-    }
+    animate();
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      running = false;
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);

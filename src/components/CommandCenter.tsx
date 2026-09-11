@@ -1,18 +1,18 @@
 import React from 'react';
-import {
-  Activity,
-  Users,
-  Cpu,
-  DollarSign,
-  CheckCircle2,
-  AlertTriangle,
-  Clock,
-  Send,
-  Sparkles,
-  Zap,
-  TrendingUp,
-  ShieldCheck,
-  ArrowUpRight,
+import { 
+  Activity, 
+  Users, 
+  Cpu, 
+  DollarSign, 
+  CheckCircle2, 
+  AlertTriangle, 
+  Clock, 
+  Send, 
+  Sparkles, 
+  Zap, 
+  TrendingUp, 
+  ShieldCheck, 
+  ArrowUpRight, 
   Play,
   RotateCcw
 } from 'lucide-react';
@@ -52,8 +52,8 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
   const completedTasks = tasks.filter(t => t.status === 'completed');
 
   const orgHealthKPI = kpis.find(k => k.id === 'org_health_composite') || {
-    current: 100,
-    target: 100,
+    current: 94.2,
+    target: 90.0,
     status: 'good'
   };
 
@@ -159,33 +159,33 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
               </svg>
               <div className="absolute flex flex-col items-center justify-center text-center">
                 <span className="text-2xl font-black text-white tracking-tight">{orgHealthKPI.current}</span>
-                <span className="text-[10px] text-slate-400 font-medium">PROVEN IN-HOUSE</span>
+                <span className="text-[10px] text-slate-400 font-medium">TARGET 90.0</span>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-1 text-[11px] pt-2 border-t border-[#1a234d] text-slate-300">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Verified Agents:</span>
-              <span className="font-semibold text-emerald-400">144</span>
+              <span className="text-slate-400">Success Rate:</span>
+              <span className="font-semibold text-emerald-400">97.4%</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">HITL Gates:</span>
-              <span className="font-semibold text-[#00bfff]">5-TIER</span>
+              <span className="text-slate-400">Availability:</span>
+              <span className="font-semibold text-[#00bfff]">99.8%</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Regression Tests:</span>
-              <span className="font-semibold text-slate-200">2,373</span>
+              <span className="text-slate-400">Cost Effic.:</span>
+              <span className="font-semibold text-slate-200">91.5%</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-400">Departments:</span>
-              <span className="font-semibold text-amber-400">20</span>
+              <span className="text-slate-400">Escalations:</span>
+              <span className="font-semibold text-amber-400">2.1%</span>
             </div>
           </div>
         </div>
 
         {/* Card 2: Active Agents Fleet */}
-        <div
+        <div 
           onClick={() => onNavigateTab('roster')}
           className="bg-[#0b102f] border border-[#1b2554] hover:border-[#00bfff]/50 rounded-2xl p-5 flex flex-col justify-between shadow-md cursor-pointer transition-all group"
         >
@@ -202,21 +202,21 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
           <div className="space-y-1.5 pt-2 border-t border-[#1a234d] text-xs">
             <div className="flex justify-between text-slate-400">
               <span>Executives & C-Suite:</span>
-              <span className="text-slate-200 font-semibold">20</span>
+              <span className="text-slate-200 font-semibold">18</span>
             </div>
             <div className="flex justify-between text-slate-400">
               <span>Specialists & Engineers:</span>
-              <span className="text-slate-200 font-semibold">117</span>
+              <span className="text-slate-200 font-semibold">112</span>
             </div>
             <div className="flex justify-between text-slate-400">
               <span>Governance & Board:</span>
-              <span className="text-slate-200 font-semibold">7</span>
+              <span className="text-slate-200 font-semibold">14</span>
             </div>
           </div>
         </div>
 
         {/* Card 3: Tasks Pipeline */}
-        <div
+        <div 
           onClick={() => onNavigateTab('kanban')}
           className="bg-[#0b102f] border border-[#1b2554] hover:border-[#00bfff]/50 rounded-2xl p-5 flex flex-col justify-between shadow-md cursor-pointer transition-all group"
         >
@@ -252,32 +252,32 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
         </div>
 
         {/* Card 4: Financial Burn & Model Efficiency */}
-        <div
+        <div 
           onClick={() => onNavigateTab('finance')}
           className="bg-[#0b102f] border border-[#1b2554] hover:border-[#00bfff]/50 rounded-2xl p-5 flex flex-col justify-between shadow-md cursor-pointer transition-all group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300 tracking-wider">Budget & Approval Gates</span>
+            <span className="text-xs font-semibold text-slate-300 tracking-wider">LLM Cost & Budget</span>
             <DollarSign className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
           </div>
           <div className="my-3">
-            <div className="text-3xl font-extrabold text-white tracking-tight">5-TIER</div>
+            <div className="text-3xl font-extrabold text-white tracking-tight">$117.64</div>
             <p className="text-justify text-xs text-slate-400 mt-0.5">
-              Human approval gates before any core-system write
+              Annual Cap: <span className="text-slate-200 font-medium">$15,000,000</span>
             </p>
           </div>
           <div className="space-y-1.5 pt-2 border-t border-[#1a234d] text-xs">
             <div className="flex justify-between text-slate-400">
-              <span>Regression Tests:</span>
-              <span className="text-emerald-400 font-semibold">2,373</span>
+              <span>Avg Cost / Task:</span>
+              <span className="text-emerald-400 font-semibold">$0.038 (Target &lt;$0.05)</span>
             </div>
             <div className="flex justify-between text-slate-400">
-              <span>Verified Agents:</span>
-              <span className="text-slate-200 font-semibold">144</span>
+              <span>Tokens Processed:</span>
+              <span className="text-slate-200 font-semibold">270.4M</span>
             </div>
             <div className="flex justify-between text-slate-400">
-              <span>Departments:</span>
-              <span className="text-[#00bfff] font-semibold">20</span>
+              <span>Model Routing Savings:</span>
+              <span className="text-[#00bfff] font-semibold">22% vs Single Tier</span>
             </div>
           </div>
         </div>
@@ -304,7 +304,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
                 Technology & SADC Governance Deliverables
               </div>
               <p>
-                Agentic Policy Analyst and Thought Leadership Lead finalized Section 4 of the SADC Agentic AI Framework. Lead Backend resolved model tier routing latency and stabilized average task duration.
+                Agentic Policy Analyst and Thought Leadership Lead finalized Section 4 of the SADC Agentic AI Framework. Lead Backend resolved model tier routing latency, cutting average task duration by 14%.
               </p>
             </div>
 
@@ -314,7 +314,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
                 Key Attention Items (2 Pending Approvals)
               </div>
               <p>
-                CAIO submitted a Tier 5 CEO capital allocation request for Chichewa dialect multi-GPU fine-tuning dataset compute. Consulting Lead requested World Bank Open Data Gateway API whitelisting.
+                CAIO submitted a Tier 5 CEO capital allocation request ($14,200) for Chichewa dialect multi-GPU fine-tuning dataset compute. Consulting Lead requested World Bank Open Data Gateway API whitelisting.
               </p>
             </div>
 

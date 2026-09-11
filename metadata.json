@@ -1,8 +1,0 @@
-{
-  "name": "LightSpeed Holdings — Interactive 3D Platform",
-  "description": "LIGHTSPEED helps organizations move from strategy to intelligent execution, combining management consulting, data, AI, automation, and engineering to design and operate AI-native businesses.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
