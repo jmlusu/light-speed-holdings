@@ -34,10 +34,13 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ theme = 'dark' }) => {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     container.appendChild(renderer.domElement);
 
-    const particleCount = 1200;
+    // Budget particles to viewport width (mobile is already SVG-only via the
+    // isMobile branch above), keeping dense-field fill on wide screens cheap
+    // on small ones. Grid target caps out below 1200 regardless.
+    const particleCount = Math.min(1200, Math.max(400, Math.round(width / 1.4)));
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const targetPositions = new Float32Array(particleCount * 3);

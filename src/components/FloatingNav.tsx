@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Shield, Menu, X, Sun, Moon, ArrowRight, ChevronDown } from 'lucide-react';
 import { AcousticVentGrille } from './TactileHardwareElements';
@@ -9,28 +9,48 @@ interface FloatingNavProps {
   onToggleTheme?: () => void;
 }
 
-// Grouped nav: Capabilities exposes the hub + two deep-dive sub-pages so every
-// route is reachable directly from the bar without bloating the top level.
+// Primary site navigation per the Lightspeed sitemap. Solutions and Industries
+// expose their hub + deep-dive sub-pages via dropdowns so every route is
+// reachable directly from the bar without bloating the top level.
 interface SimpleLink { name: string; to: string }
 interface GroupLink { name: string; children: SimpleLink[] }
 type NavEntry = SimpleLink | GroupLink;
 
 const navLinks: NavEntry[] = [
   {
-    name: 'Capabilities',
+    name: 'Solutions',
     children: [
-      { name: 'Overview', to: '/capabilities' },
-      { name: 'Core Offerings', to: '/capabilities/offerings' },
-      { name: 'Diagnostic', to: '/capabilities/diagnostic' },
+      { name: 'Overview', to: '/solutions' },
+      { name: 'Agentic AI', to: '/solutions/agentic-ai' },
+      { name: 'Digital Transformation', to: '/solutions/digital-transformation' },
+      { name: 'Data & Intelligence', to: '/solutions/data-intelligence' },
+      { name: 'Intelligent Automation', to: '/solutions/automation' },
+      { name: 'Strategy & Advisory', to: '/solutions/strategy-advisory' },
+      { name: 'AI Governance & Policy', to: '/technology#governance' },
     ],
   },
-  { name: 'Industries', to: '/industries' },
-  { name: 'Evidence', to: '/evidence' },
-  { name: 'Engagement', to: '/engagement' },
-  { name: 'Authority', to: '/about' },
-  { name: 'Pharos', to: '/insights' },
-  { name: 'Contact', to: '/contact' },
+  {
+    name: 'Industries',
+    children: [
+      { name: 'Overview', to: '/industries' },
+      { name: 'Government', to: '/industries/government' },
+      { name: 'Development & Donor', to: '/industries/development' },
+      { name: 'Financial Services', to: '/industries/financial-services' },
+      { name: 'Healthcare', to: '/industries/healthcare' },
+      { name: 'Agriculture', to: '/industries/agriculture' },
+    ],
+  },
+  { name: 'AI Company Builder', to: '/ai-company-builder' },
+  { name: 'Technology', to: '/technology' },
+  { name: 'Work', to: '/work' },
+  { name: 'Insights', to: '/insights' },
+  { name: 'About', to: '/about' },
 ];
+
+const GROUP_PREFIXES: Record<string, string> = {
+  Solutions: '/solutions',
+  Industries: '/industries',
+};
 
 function isGroup(entry: NavEntry): entry is GroupLink {
   return 'children' in entry;
@@ -51,9 +71,39 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
   onToggleTheme
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const scrolledRef = useRef(false);
+  const progressRef = useRef<HTMLDivElement>(null);
   const isLight = theme === 'light';
   const { pathname } = useLocation();
-  const capabilitiesActive = pathname === '/capabilities' || pathname.startsWith('/capabilities/');
+
+  const groupActive = (entry: NavEntry) => {
+    if (!isGroup(entry)) return false;
+    const prefix = GROUP_PREFIXES[entry.name];
+    return prefix ? pathname === prefix || pathname.startsWith(`${prefix}/`) : false;
+  };
+
+  // Shrink the pill once the page is scrolled and paint a scroll-progress bar
+  // along its bottom edge. Progress updates write straight to the DOM (ref) so
+  // continuous scroll doesn't cause re-renders; only the threshold flip does.
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const pastThreshold = y > 24;
+      if (pastThreshold !== scrolledRef.current) {
+        scrolledRef.current = pastThreshold;
+        setScrolled(pastThreshold);
+      }
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const bar = progressRef.current;
+      if (bar) {
+        bar.style.transform = `scaleX(${max > 0 ? Math.min(Math.max(y / max, 0), 1) : 0})`;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -72,9 +122,18 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
   return (
     <header className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-3 sm:px-4 pointer-events-none">
       <div className="w-full max-w-6xl pointer-events-auto">
-        <div className={`flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 ${
+        <div className={`relative flex items-center justify-between px-4 sm:px-6 rounded-full transition-all duration-300 ${
+          scrolled ? 'py-1.5 sm:py-2 shadow-2xl' : 'py-2 sm:py-2.5'
+        } ${
           isLight ? 'hardware-chassis-light text-slate-800' : 'hardware-chassis-dark text-zinc-100'
         }`}>
+
+          {/* Scroll progress bar */}
+          <div
+            ref={progressRef}
+            aria-hidden="true"
+            className="absolute bottom-0.5 left-2 right-2 h-0.5 origin-left scale-x-0 rounded-full bg-ls-cyan/80"
+          />
 
           {/* Brand Logo */}
           <div className="flex items-center gap-3">
@@ -88,7 +147,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-ls-red shadow-[0_0_6px_rgba(230,57,70,0.9)] animate-pulse" />
                 </span>
                 <span className="text-[9px] font-mono tracking-wider hidden sm:inline font-bold text-[#2D3748]">
-                  MALAWI-ROOTED • GLOBAL CAPABILITY
+                  LIGHTSPEED HOLDINGS LIMITED
                 </span>
               </div>
             </Link>
@@ -99,7 +158,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className={`hidden lg:flex items-center gap-4 text-[11px] font-mono font-bold tracking-wider ${
+          <nav className={`hidden lg:flex items-center gap-2.5 xl:gap-3.5 text-[11px] font-mono font-bold tracking-wider ${
             isLight ? 'text-slate-700' : 'text-zinc-300'
           }`}>
             {navLinks.map((entry) => {
@@ -109,7 +168,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                     key={entry.name}
                     to={entry.to}
                     className={({ isActive }) =>
-                      `relative ${NAV_BASE} ${isActive ? NAV_ACTIVE : NAV_IDLE}`
+                      `relative shrink-0 ${NAV_BASE} ${isActive ? NAV_ACTIVE : NAV_IDLE}`
                     }
                   >
                     {({ isActive }) => (
@@ -125,22 +184,23 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
               }
 
               // Group dropdown: trigger (Link to hub) + hover/focus panel
+              const active = groupActive(entry);
               return (
-                <div key={entry.name} className="relative group">
+                <div key={entry.name} className="relative group shrink-0">
                   <Link
                     to={entry.children[0].to}
                     className={`relative flex items-center gap-1 ${NAV_BASE} ${
-                      capabilitiesActive ? NAV_ACTIVE : NAV_IDLE
+                      active ? NAV_ACTIVE : NAV_IDLE
                     }`}
                   >
                     {entry.name}
                     <ChevronDown className="w-3 h-3 transition-transform group-focus-within:rotate-180" aria-hidden="true" />
-                    {capabilitiesActive && (
+                    {active && (
                       <span aria-hidden="true" className="absolute left-1.5 right-1.5 -bottom-0.5 h-0.5 rounded-full bg-ls-red shadow-[0_0_6px_rgba(230,57,70,0.8)]" />
                     )}
                   </Link>
                   <div className="absolute top-full left-0 pt-2 z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 focus-within:visible focus-within:opacity-100 transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto">
-                    <div className={`min-w-[200px] p-2 rounded-2xl border shadow-2xl ${
+                    <div className={`min-w-[220px] p-2 rounded-2xl border shadow-2xl ${
                       isLight ? 'hardware-chassis-light text-slate-800' : 'hardware-chassis-dark text-zinc-100'
                     }`}>
                       {entry.children.map((child) => (
@@ -182,13 +242,13 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
               </button>
             )}
 
-            <button
-              onClick={() => onRequestBriefing()}
+            <Link
+              to="/contact"
               className="flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs tracking-wider transition-all cursor-pointer shadow-md bg-ls-red hover:bg-ls-red text-white shadow-ls-red/25 border-t border-white/30 active:scale-95"
             >
-              <span>Request Briefing</span>
+              <span>Start a Conversation</span>
               <ArrowRight className="w-3 h-3" />
-            </button>
+            </Link>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -250,16 +310,19 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                 );
               })}
             </div>
-            <button
-              onClick={() => { setMobileMenuOpen(false); onRequestBriefing(); }}
+            <Link
+              to="/contact"
+              onClick={() => setMobileMenuOpen(false)}
               className="w-full py-3 rounded-full font-bold text-xs tracking-widest bg-ls-red text-white flex items-center justify-center gap-2 shadow-md"
             >
-              <span>Request Executive Briefing</span>
+              <span>Start a Conversation</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            </Link>
           </div>
         )}
       </div>
     </header>
   );
 };
+
+export default FloatingNav;

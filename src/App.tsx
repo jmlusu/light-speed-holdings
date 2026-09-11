@@ -1,5 +1,5 @@
 import React, { useState, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { SiteLayout } from './components/SiteLayout';
 
 import { Agent } from './types';
@@ -7,14 +7,17 @@ import { Agent } from './types';
 // Code-split each route so non-home pages load on demand (kills the 1MB bundle).
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
-const CapabilitiesPage = React.lazy(() => import('./pages/CapabilitiesPage'));
-const OfferingsPage = React.lazy(() => import('./pages/OfferingsPage'));
-const DiagnosticPage = React.lazy(() => import('./pages/DiagnosticPage'));
+const SolutionsPage = React.lazy(() => import('./pages/SolutionsPage'));
+const SolutionDetailPage = React.lazy(() => import('./pages/SolutionDetailPage'));
 const IndustriesPage = React.lazy(() => import('./pages/IndustriesPage'));
-const EvidencePage = React.lazy(() => import('./pages/EvidencePage'));
+const IndustryDetailPage = React.lazy(() => import('./pages/IndustryDetailPage'));
+const AiCompanyBuilderPage = React.lazy(() => import('./pages/AiCompanyBuilderPage'));
+const TechnologyPage = React.lazy(() => import('./pages/TechnologyPage'));
+const WorkPage = React.lazy(() => import('./pages/WorkPage'));
 const InsightsPage = React.lazy(() => import('./pages/InsightsPage'));
-const EngagementPage = React.lazy(() => import('./pages/EngagementPage'));
 const ContactPage = React.lazy(() => import('./pages/ContactPage'));
+const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage'));
+const TermsPage = React.lazy(() => import('./pages/TermsPage'));
 
 const RouteFallback: React.FC = () => (
   <div
@@ -76,19 +79,15 @@ export const App: React.FC = () => {
             />
           }
         >
+          {/* Legacy aliases — replaced with the new sitemap destinations */}
+          <Route path="/home" element={<Navigate to="/" replace />} />
+          <Route path="/capabilities/*" element={<Navigate to="/solutions" replace />} />
+          <Route path="/capabilities/diagnostic" element={<Navigate to="/solutions/strategy-advisory" replace />} />
+          <Route path="/evidence" element={<Navigate to="/work" replace />} />
+          <Route path="/engagement" element={<Navigate to="/contact" replace />} />
+
           <Route
             path="/"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <HomePage
-                  theme={theme}
-                  onRequestBriefing={handleRequestBriefing}
-                />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/home"
             element={
               <Suspense fallback={<RouteFallback />}>
                 <HomePage
@@ -107,26 +106,18 @@ export const App: React.FC = () => {
             }
           />
           <Route
-            path="/capabilities"
+            path="/solutions"
             element={
               <Suspense fallback={<RouteFallback />}>
-                <CapabilitiesPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+                <SolutionsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
               </Suspense>
             }
           />
           <Route
-            path="/capabilities/offerings"
+            path="/solutions/:slug"
             element={
               <Suspense fallback={<RouteFallback />}>
-                <OfferingsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/capabilities/diagnostic"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <DiagnosticPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+                <SolutionDetailPage theme={theme} onRequestBriefing={handleRequestBriefing} />
               </Suspense>
             }
           />
@@ -139,10 +130,34 @@ export const App: React.FC = () => {
             }
           />
           <Route
-            path="/evidence"
+            path="/industries/:slug"
             element={
               <Suspense fallback={<RouteFallback />}>
-                <EvidencePage theme={theme} onRequestBriefing={handleRequestBriefing} />
+                <IndustryDetailPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/ai-company-builder"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <AiCompanyBuilderPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/technology"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <TechnologyPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/work"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <WorkPage theme={theme} onRequestBriefing={handleRequestBriefing} />
               </Suspense>
             }
           />
@@ -155,18 +170,26 @@ export const App: React.FC = () => {
             }
           />
           <Route
-            path="/engagement"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <EngagementPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
-          />
-          <Route
             path="/contact"
             element={
               <Suspense fallback={<RouteFallback />}>
                 <ContactPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/legal/privacy"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <PrivacyPage theme={theme} onRequestBriefing={handleRequestBriefing} />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/legal/terms"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <TermsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
               </Suspense>
             }
           />
