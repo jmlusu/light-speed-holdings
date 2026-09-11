@@ -58,7 +58,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <p className={`text-justify max-w-2xl text-base sm:text-lg font-bold leading-relaxed ${
               isLight ? 'text-slate-900' : 'text-zinc-100'
             }`}>
-              From Malawi, <span className="text-orange-500 font-extrabold">LightSpeed</span> builds the AI systems, data pipelines, and executive tools that turn strategy into working technology for organizations across SADC.
+              From Malawi, <span className="text-orange-500 font-extrabold">LightSpeed</span> builds the AI systems, data pipelines, and executive tools that turn strategy into working technology for organizations everywhere.
             </p>
             <p className={`text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
               isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'

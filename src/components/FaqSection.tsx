@@ -16,7 +16,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "What is LightSpeed's core proposition?",
-    a: "From Malawi, we help organizations across SADC turn strategy, data, and AI into working systems. We combine local expertise, regional relevance, and global engineering standards into a single operating stack."
+    a: "From Malawi, we help organizations turn strategy, data, and AI into working systems. We combine local expertise, regional relevance, and global engineering standards into a single operating stack."
   },
   {
     q: "What is structured multi-agent fleet engineering?",

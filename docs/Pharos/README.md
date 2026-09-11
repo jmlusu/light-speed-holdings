@@ -52,7 +52,7 @@ The throughline: **building → evidence → policy**. Every artifact connects a
 ## Operating Principles
 
 1. Lead with working systems and measured results before policy language.
-2. Localize hard: language, power, connectivity, existing ministry data, procurement cycles.
+2. Localize hard: power, connectivity, existing ministry data, procurement cycles.
 3. Document everything publicly in a form others can reuse or critique.
 4. Treat policy work as an extension of product work — governance features are the policy contribution.
 5. Protect the human-in-the-loop core; it is both a technical and political advantage.

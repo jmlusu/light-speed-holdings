@@ -64,7 +64,7 @@ Ad spend is pass-through (client pays provider directly or reimburses).
 
 ## 6. Quality Standards
 
-- Content in both English and Chichewa for local audiences.
+- Content adapted for local audiences.
 - `ux_research_lead` validates audience targeting before campaign launch.
 - `market_analyst` provides weekly performance report.
 

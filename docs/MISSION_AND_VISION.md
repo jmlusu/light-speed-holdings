@@ -6,19 +6,19 @@
 
 ## Mission Statement
 
-**To build AI systems that augment human capability and accelerate organizational performance.**
+**Prove agentic AI works in Malawi by shipping real services — websites, automation, reporting, and marketing — for the organizations that need them most.**
 
-We exist because every organization — from startups to global enterprises — deserves access to intelligent automation that works the way their teams work. We make AI agents accessible, reliable, and powerful enough to transform how organizations operate, so humans can focus on the work that matters most.
+We exist because Malawi's SMEs, NGOs, schools, clinics, and cooperatives are underserved by an industry that prices enterprise-grade work out of reach. One human CEO directs a workforce of 140+ AI agents to deliver world-class output at local cost. Our proof is not a press release; it is a shipped website, a donor report that used to take weeks, a dashboard that replaced forty-page PDFs.
 
 ---
 
 ## Vision Statement
 
-**A world where every organization operates with AI-powered intelligence at every level.**
+**Every organization — from Malawian clinics to global enterprises — operating with intelligent AI agents.**
 
-We envision an economy where AI agents are not novelties or tools tucked away in a single department — they are foundational infrastructure woven into every function, every decision, and every workflow. We are building the platform that makes this possible.
+We are building the proof point that intelligent automation is not a privilege of rich countries. We win trust with real engagements, published case studies, and compliant, secure delivery. We prove it in Malawi first — where the constraints are real — then serve organizations everywhere that need AI at fair cost.
 
-By 2028, we will have deployed 1,000+ AI agent companies, enabling millions of AI-augmented decisions daily and proving that organizations can operate with unprecedented speed, precision, and adaptability.
+**North Star:** *Malawi first. Prove it. Then the world.*
 
 ---
 
@@ -26,200 +26,193 @@ By 2028, we will have deployed 1,000+ AI agent companies, enabling millions of A
 
 ### 1. Innovation Through Iteration
 
-We ship fast, learn faster. Perfection is the enemy of progress; rigorous iteration is the path to breakthrough outcomes. Every release, every customer interaction, every internal process is an opportunity to improve.
+We ship fast, learn faster. Perfection is the enemy of progress; rigorous iteration is the path to breakthrough outcomes.
 
-**How this shows up:** We deploy frequently. We measure outcomes. We celebrate smart experiments — especially the ones that fail informatively.
+**How this shows up:** We deploy weekly, measure outcomes, and treat informative failures — in the market as much as in code — as data.
 
 ### 2. Transparency in All Operations
 
-We operate with radical openness — internally with our teams and externally with our customers. Trust is built through honesty, not spin. When something goes wrong, we say so. When something goes right, we share why.
+We operate with radical openness — internally with our teams and externally with our customers. Trust is built through honesty, not spin.
 
-**How this shows up:** We document decisions. We share metrics openly. We default to transparency and work to earn the right to keep things private, not the other way around.
+**How this shows up:** Published case studies with named metrics. Open unit economics. We say what a deliverable costs to produce, not just what we charge.
 
 ### 3. Security by Design
 
-Security is not a feature — it is a foundation. Every system we build, every agent we deploy, and every API we expose is designed with the assumption that it will be tested by adversaries. We earn customer trust through engineering discipline, not marketing claims.
+Security is not a feature — it is a foundation. Every system, agent, and API is designed assuming adversaries.
 
-**How this shows up:** We threat-model before building. We audit regularly. We use tools like Bandit, pre-commit hooks, and principle-of-least-privilege across all agent permissions. We never cut corners on security to ship faster.
+**How this shows up:** We comply with Malawi's Data Protection Act 2017, apply GDPR-level rigour to donor and development-partner data, threat-model before building, and run Bandit, pre-commit hooks, and least-privilege across all agent permissions.
 
 ### 4. Customer-First Mindset
 
-Our success is measured entirely by the success of our customers. We listen deeply, respond quickly, and build solutions that address real problems — not hypothetical ones. We earn renewals, upsells, and referrals by delivering value, not by locking in contracts.
+Our success is measured entirely by the success of our customers — a clinic that answers patients on WhatsApp, an NGO whose donor report lands on time.
 
-**How this shows up:** We measure NPS and CSAT religiously. We route customer feedback directly to engineering. We staff support with people who can solve problems, not just log tickets.
+**How this shows up:** We quote in MWK for local businesses and USD for international partners, deliver to our clients, and staff support with people who solve problems. Renewals and referrals are our only marketing.
 
 ### 5. Automate Repetitive Work
 
-If a human is doing something a machine could do reliably and repeatedly, we should automate it — and then redeploy that human to work that requires judgment, creativity, and empathy. This is the promise of AI, and it starts with us.
+If a machine can do a task reliably and repeatedly, we automate it — and redeploy that human to judgment, creativity, and empathy.
 
-**How this shows up:** We dogfood our own automation. Our internal workflows use our orchestration engine. We measure hours reclaimed and reinvest them in higher-value work.
+**How this shows up:** Our own delivery pipeline runs on our orchestration engine. We measure hours reclaimed and reinvest them in the client work that grows Malawi's economy.
 
 ### 6. Excellence Without Ego
 
-We hold ourselves to the highest standards and welcome the scrutiny needed to reach them. The best idea wins — regardless of who said it, how senior they are, or how long they've been here. Intellectual honesty and constructive dissent are signs of a healthy team.
+We hold ourselves to the highest standards and welcome scrutiny. The best idea wins regardless of seniority.
 
-**How this shows up:** Code reviews are rigorous and respectful. Post-mortems focus on systems, not blame. We celebrate contributors, not titles.
+**How this shows up:** Rigorous, respectful reviews. Post-mortems that focus on systems, not blame. This matters doubly as we hire our first Malawian team members — respect is the recruiting pitch.
 
 ### 7. Security, Reliability, Trust
 
-Our customers depend on us for mission-critical operations. Downtime is not an option. Data loss is not an option. We build redundancies, we test failure modes, and we invest in reliability as a competitive advantage.
+Our customers depend on us for mission-critical operations. Downtime and data loss are not options.
 
-**How this shows up:** We target 99.99% uptime. We maintain comprehensive runbooks. We conduct disaster recovery drills and chaos engineering exercises regularly.
+**How this shows up:** We target 99.99% platform uptime, run DR drills, and test failure modes. NGO contracts are not the place for "it usually works."
+
+### 8. Local by Default
+
+Priced in the local currency, paid through the rails Malawians already use — Airtel Money, TNM Mpamba, PayChangu.
+
+**How this shows up:** MWK pricing floors for local SMEs. Community embeddedness over imported polish. We are not a foreign outfit parachuting in.
 
 ---
 
 ## Strategic Pillars
 
-### Pillar 1: Product Excellence
+### Pillar 1: Product & Platform Excellence
 
-*Build the most reliable, developer-friendly AI agent orchestration platform on the market.*
+*Make the 140-agent platform the product — not just the delivery mechanism.*
 
-- **Idempotent builds:** Every agent generation, every deployment, every workflow execution is deterministic and repeatable. No surprises.
-- **Comprehensive testing:** Every change is validated through automated tests, linting, type checking, and security scans before it reaches production.
-- **Developer experience:** Our CLI tool should be the best developer experience in the AI infrastructure space. Fast, intuitive, well-documented.
-- **15+ department coverage:** Our agent registry supports the full breadth of enterprise operations — not just engineering.
-- **Memory, decisions, and workflow engines:** We provide the infrastructure layers that make agents truly intelligent: memory persistence, approval workflows, decision-making frameworks, and cross-agent coordination.
+- **Low-bandwidth, mobile-first engineering:** Chatbot flows, UI strings, dashboards, and reports are built for real-world operating conditions — low-bandwidth, mobile-first, and grounded in real client work.
+- **Low-bandwidth, mobile-first:** 87% 4G coverage but 33% smartphone adoption — everything we build must run on modest devices and connections.
+- **Idempotent, tested, documented:** Deterministic generations, automated QA, and the best documented AI-agents platform in the region.
+- **Offer E as product revenue:** Agencies, tech founders, and diaspora entrepreneurs license the same infrastructure we run — the bridge from services to product.
 
-**Key metric:** Developer Net Promoter Score ≥ 70.
+**Key metric:** Offer E licenses closed + client report card of quality failures.
 
-### Pillar 2: Market Expansion
+### Pillar 2: Market Proof (Malawi First)
 
-*Accelerate adoption through enterprise sales, partner channels, and international presence.*
+*Prove the model with delivered, referenceable work — not claims.*
 
-- **Enterprise go-to-market:** Dedicated sales engineering, case studies, and proof-of-concept programs that demonstrate ROI in weeks, not quarters.
-- **Partner ecosystem:** Integrate with the tools enterprises already use — cloud providers, CI/CD platforms, identity providers, and communication tools.
-- **International markets:** Expand beyond North America into European and Asia-Pacific markets with localized support and compliance frameworks.
-- **Community-led growth:** Invest in open-source components, developer education, and a thriving community that drives organic adoption.
-- **Thought leadership:** Publish research, host events, and build a brand that represents the frontier of AI agent technology.
+- **Five offers as one proof engine:** Digital presence → automation → data & donor reporting → marketing → platform licensing. Each tier wins trust for the next.
+- **Lighthouse clients as living proof:** Flagship SME + NGO engagements published as case studies with named outcomes.
+- **Delivery discipline:** ≤ 10-day turnaround on all one-off offers; ≥ 4.5/5 client satisfaction; 30 days support built into every engagement.
 
-**Key metric:** 1,000+ AI agent companies deployed by 2028.
+**Key metric:** 20–25 paid clients and 8 lighthouse clients in the first 12 months.
 
-### Pillar 3: Operational Scale
+### Pillar 3: Trust, Security & Local Compliance
 
-*Build an organization that can execute at the speed of AI.*
+*Enterprise-grade rigour at MWK pricing, because trust is the only moat we can buy.*
 
-- **Automate internally first:** We dogfood our own platform. Every internal process we automate is proof of concept for our customers.
-- **Hire deliberately:** We hire for craft, curiosity, and character. Every team member should make the whole organization smarter.
-- **Infrastructure that scales:** MessageBus, Dashboard, Memory Engine, Decision Engine, Workflow Engine — these are not prototypes. They are production infrastructure designed for 10x growth.
-- **Data-driven decisions:** Every initiative has clear owners, measurable outcomes, and defined review cadences. We measure what matters and act on what we measure.
-- **Operational resilience:** Our systems are designed to handle failure gracefully. We plan for chaos so that our customers experience only calm.
+- **Data Protection Act 2017 compliance** as the default posture, with data-controller responsibilities documented per engagement.
+- **GDPR-level handling for donor and UN data flows**, plus donor-reporting accuracy that inspectors can rely on.
+- **Secure mobile-money rails:** payment integrations are hardened, reconciliated, and auditable.
 
-**Key metric:** Revenue per employee ≥ $300K by 2028.
+**Key metric:** Zero critical security breaches; legal & compliance checklist 100% complete.
 
----
+### Pillar 4: Talent & Ecosystem
 
-## Cultural DNA
+*Growth means building local talent and global capability.*
 
-### How We Make Decisions
+- **Lightspeed Academy:** training and certification for local AI talent — the pipeline for delivery support, sales, and QA roles.
+- **First local hires on a named timeline:** a country operations/delivery lead plus a account lead, with costed plans in the alignment document.
+- **University partnerships (MUBAS, UNIMA and others):** internships, projects, and a talent brand that makes Malawians want to build here.
 
-1. **Start with the customer.** When in doubt, ask: "Does this make things better for the person using our product?"
-2. **Default to data.** Opinions are starting points. Evidence is ending points. We measure, we instrument, we analyze.
-3. **Bias toward action.** A good plan executed today beats a perfect plan executed next quarter. We ship, we learn, we iterate.
-4. **Escalate early, escalate often.** If something feels wrong, say so. The cost of silence is always higher than the cost of conversation.
-5. **Own the outcome.** We don't hand off problems and hope someone else solves them. We take responsibility from inception to resolution.
+**Key metric:** Local talent hired or trained; Academy cohorts graduated.
 
-### How We Treat Each Other
+### Pillar 5: Thought Leadership & Policy
 
-- **Assume positive intent.** Most disagreements stem from different information, not bad motives.
-- **Give direct feedback.** Kindness and honesty are not mutually exclusive. The most respectful thing you can do is tell someone the truth.
-- **Celebrate contributions.** Recognition is not a quarterly event — it happens in real time, in public, and specifically.
-- **Protect psychological safety.** You can challenge any idea, any decision, any process — but you do it with respect and a willingness to engage.
-- **Invest in growth.** We are a learning organization. Every team member has a growth plan, and the company invests in making it real.
+*Make Malawi a source of agentic-AI answers, not just a market.*
 
-### How We Build Products
+- **Pharos continues its mandate:** position the Human CEO as the leading voice on Agentic AI Company Building, Use Cases, and Policy across Malawi and SADC.
+- **Engagement with Malawi's National AI Strategy and MACRA** — we are agents of its success.
+- **Publication engine:** monthly "Malawi Agentic AI Monitor", research notes, and case studies that make the whole ecosystem smarter.
 
-- **Security is non-negotiable.** Every line of code, every API endpoint, every agent permission is designed with security as a first-class concern.
-- **Idempotency over cleverness.** Deterministic systems are reliable systems. We favor boring, proven patterns over flashy, fragile ones.
-- **Documentation is a feature.** If it's not documented, it doesn't exist. We write for the person who will inherit our code six months from now.
-- **Test everything, trust nothing.** Automated testing is not optional. Every change goes through the full validation pipeline — lint, type check, security scan, unit test, integration test.
-- **Ship incrementally.** Small, frequent releases reduce risk and accelerate learning. We never do big-bang deployments.
+**Key metric:** Published research monographs + speaking engagements per quarter.
 
 ---
 
 ## Success Metrics
 
-### Revenue & Growth
-| Metric | Target | Timeline |
-|--------|--------|----------|
-| Annual Recurring Revenue | $100M | 2028 |
-| AI Agent Companies Deployed | 1,000+ | 2028 |
-| Revenue per Employee | ≥ $300K | 2028 |
-| Customer Net Retention | ≥ 120% | Ongoing |
+### The Pivot in One Line
 
-### Product & Engineering
-| Metric | Target | Timeline |
-|--------|--------|----------|
-| Platform Uptime | 99.99% | Ongoing |
-| Developer NPS | ≥ 70 | Ongoing |
-| Deployment Frequency | Daily | Ongoing |
-| Mean Time to Recovery | < 30 minutes | Ongoing |
-| Security Incident Rate | Zero critical breaches | Ongoing |
+| Old (global 2028) | New (Malawi-first) |
+|---|---|
+| $100M ARR | MWK 90–150M (~$50K–$85K) gross revenue by month 12 |
+| 1,000+ AI agent companies deployed | 20–25 paid clients; 8 lighthouse clients; 3 Offer E licenses |
+| International markets (NA/EU/APAC) | Malawi-first proof. Open to global clients. |
+| Revenue/employee ≥ $300K | Cost-to-revenue ≤ 40% by month 6; LLM + infra ≤ 10% of revenue |
 
-### People & Culture
-| Metric | Target | Timeline |
-|--------|--------|----------|
-| Employee Net Promoter Score | ≥ 60 | Ongoing |
-| Voluntary Attrition | < 10% annually | Ongoing |
-| Time to Hire (Critical Roles) | < 30 days | Ongoing |
-| Training Hours per Employee | ≥ 40 hours/year | Ongoing |
+### Malawi-First Targets
 
-### Customer Success
-| Metric | Target | Timeline |
-|--------|--------|----------|
-| Customer Satisfaction (CSAT) | ≥ 4.5/5.0 | Ongoing |
-| Support Response Time (P0) | < 1 hour | Ongoing |
-| Time to Value (New Customers) | < 2 weeks | Ongoing |
-| Customer Advocacy (Referrals) | ≥ 30% of new business | 2026 |
+| Metric | 12-month | 24-month |
+|---|---|---|
+| Gross revenue | MWK 90–150M (~$50K–85K) | MWK 300–500M (~$170K–280K) |
+| Paid clients (delivery capacity) | 20–25 | 60–80 (with 3–5 local staff) |
+| Lighthouse clients (case-studied) | 8 | 25 |
+| Offer E platform licenses | 3 | 15 |
+| NGO / dev-partner / UN engagements | 5 | 15 |
+| Local Malawian staff | 1–2 hired by month 6 | 5–8 |
+| Local talent trained (Academy) | 30 | 100 |
+| CSAT / retargeting | ≥ 4.5/5; ≥ 30% repeat revenue | ≥ 4.8/5; ≥ 50% retainers |
+| Cash position | ≥ 18 months runway | Cash-flow break-even |
+
+### Financial Guardrails
+
+1. **MWK pricing floor MWK 150,000 (~$85)** on every local deliverable; anything cheaper needs CFO sign-off.
+2. **Mobile-money dunning is automatic:** MWK retainers debit on invoice date with a 7-day grace period, then service pauses. USD clients pay net-15 with 50% upfront.
+3. **Zero donor-funding dependency for core revenue.** NGO work is quoted at full commercial rates. Donor grants may fund Academy or community programs — never delivery subsidies that mask unit economics.
+4. **LLM + infra spend ≤ 10% of revenue**, tracked monthly by the CFO.
 
 ---
 
 ## Commitments
 
-### To Our Customers
+### To Malawi & Our Clients
 
-1. **We will build what you need, not what we think you should want.** Your feedback shapes our roadmap. We listen, we learn, and we respond.
-2. **We will protect your data as if it were our own.** Security is not a selling point — it is a prerequisite. We earn your trust through engineering, not promises.
-3. **We will be transparent when things go wrong.** Incidents happen. We will tell you what happened, why it happened, and what we are doing to prevent it from happening again.
-4. **We will deliver value quickly.** Our onboarding process is designed to get you from zero to production in weeks, not months.
-5. **We will never hold you hostage.** Our platform integrates with your existing tools. Your data is yours. Your agents are yours. You stay because we deliver value, not because switching is painful.
+1. **We will prove, not promise.** Every claim in our marketing will trace to a delivered, named engagement — starting in Malawi.
+2. **We meet our clients where they are.** Content, interfaces, and support adapt to the context of every engagement.
+3. **We will pay our way and build local talent.** Local hires, Academy graduates, and a Majority-Malawian delivery team as we grow.
+4. **We will respect Malawi's data and dignity.** Data Protection Act 2017 compliance is not negotiable; community data is treated as sovereignty, not resource.
 
-### To Our Employees
+### To Our Customers (SMEs, NGOs, Government, Cooperatives)
 
-1. **We will provide clarity.** You will always know what the company is trying to achieve, how your work contributes, and what "good" looks like.
-2. **We will invest in your growth.** Every team member has a personal development plan, and the company will invest the time, money, and mentorship to make it real.
-3. **We will maintain psychological safety.** You can challenge any idea, question any decision, and raise any concern without fear of retribution.
-4. **We will compensate fairly.** We benchmark against market data and ensure that our compensation is competitive, equitable, and transparent.
-5. **We will build a company you are proud to work for.** We will operate with integrity, treat people with respect, and build products that matter.
+1. **We build what you need, not what we think you should want.** Your feedback drives the roadmap.
+2. **We will protect your data as if it were our own.**
+3. **We will deliver quickly — weeks, not quarters — and stand behind it with 30 days of support.**
+4. **We will never lock you in.** Your site, your data, your dashboards are yours.
+5. **We will be transparent when things go wrong** — the moment they go wrong.
+
+### To Our Team
+
+1. **Clarity:** you will always know what the company is trying to achieve and what "good" looks like.
+2. **Growth:** a real development plan, Academy seats, and work that makes a visible difference at home.
+3. **Psychological safety:** challenge any idea, question any decision, raise any concern without retribution.
+4. **Fair compensation:** benchmarked to Malawian and regional market reality.
+5. **A company you are proud to tell your family you work for.**
 
 ### To Our Partners & Investors
 
-1. **We will communicate honestly.** Good news and bad news travel at the same speed. We do not sugarcoat reality.
-2. **We will deploy capital efficiently.** Every dollar we spend is measured against its contribution to our mission and our customers.
-3. **We will build for the long term.** We are not optimizing for quarterly exits. We are building infrastructure for the AI-powered economy.
-4. **We will create sustainable competitive advantages.** Our moat is our technology, our team, and our customer relationships — not vendor lock-in or market manipulation.
-5. **We will return value.** We will build a company that generates durable, growing returns for the people who believed in us early.
+1. **We communicate honestly** — good news and bad news travel at the same speed.
+2. **We deploy capital efficiently** — every dollar is measured against the Malawi proof thesis.
+3. **We build for the long term** — we are building the SADC AI-services category, not chasing an exit.
+4. **We return value through durable growth**, not through vendor lock-in or subsidy accounting.
 
-### To the AI Agent Ecosystem
+### To the Agentic AI Ecosystem
 
-1. **We will contribute to the open-source community.** We will share what we learn, build in public, and contribute to the broader AI ecosystem.
-2. **We will raise the bar for AI safety and reliability.** We will publish our practices, share our learnings, and advocate for responsible AI deployment.
-3. **We will educate the market.** We will publish research, host events, and build educational content that helps organizations understand the potential of AI agents.
-4. **We will collaborate, not compete, with the ecosystem.** We partner with AI research institutions, open-source projects, and complementary vendors to advance the entire category.
-5. **We will build with humility.** We are early in the AI agent revolution. We will learn from the community, adapt quickly, and never assume we have all the answers.
+1. **We contribute to open source and open research** grounded in real-world data.
+2. **We raise the bar for responsible AI deployment** — mobile-first, safety-rigorous.
+3. **We educate the market** through the monthly Monitor, research, and public case studies.
+4. **We collaborate with MACRA, universities, and development partners** to make the National AI Strategy real.
+5. **We govern ourselves with humility** — we are early, we will listen, and we will keep proving.
 
 ---
 
 ## Closing
 
-Light Speed Holdings exists at the intersection of possibility and responsibility. We have the opportunity to build infrastructure that transforms how organizations operate — and the obligation to do it with care, rigor, and integrity.
+Light Speed Holdings exists at the intersection of proof and possibility. We have chosen to prove the hardest sentence in commercial AI — that agents can be deployed responsibly, reliably, and at scale — starting inside a market most of the world overlooks.
 
-Our mission is not just to build AI agents. It is to prove that AI can be deployed responsibly, reliably, and at scale — in a way that makes organizations stronger, employees more effective, and customers more successful.
+A Malawian clinic answering patients on WhatsApp. An NGO's donor report landing on time. An agency licensing our platform and building for its own clients. That is where we start. When Malawi runs on intelligent automation that costs local prices, every market like it will follow — and we will be the ones who proved it.
 
-We are building for the long term. We are building with purpose. And we are just getting started.
-
----
-
-*Document Version: 1.0*
-*Effective Date: July 23, 2026*
+*Document Version: 2.0*
+*Effective Date: September 11, 2026*
 *Owner: Office of the CEO, Light Speed Holdings, Inc.*
 *Approved by: human-ceo*
+*Prepared by: Malawi-First Working Group (chief-of-staff, cso, cfo, thought-leadership-lead, market-analyst, board-strategy)*

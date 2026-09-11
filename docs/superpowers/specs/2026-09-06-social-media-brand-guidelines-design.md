@@ -16,7 +16,6 @@
 | **CEO Voice** | First-person insights, policy commentary, speaking highlights, behind-the-scenes |
 | **Company Voice** | Case studies, technical artifacts, deployment proof, team spotlights |
 | **Tagline Integration** | "ASPIRE. ACT. ACHIEVE." as closing sign-off or section headers |
-| **Language** | English primary; Chichewa greetings/phrases for local authenticity (sparingly) |
 | **Formatting** | No emojis. Clean line breaks. Numbered frameworks. Bold key metrics. |
 
 **Voice Principles:**

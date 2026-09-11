@@ -69,7 +69,7 @@ the USD figure directly with terms (50% upfront, 50% on delivery).
 
 | Deliverable | What you get | Starting price | Turnaround |
 |-------------|--------------|----------------|------------|
-| **D1 — Social media management** | Content calendar, 12 posts/month (Chichewa + English), community management | MWK 350,000/mo (≈ $200/mo) | Ongoing |
+| **D1 — Social media management** | Content calendar, 12 posts/month , community management | MWK 350,000/mo (≈ $200/mo) | Ongoing |
 | **D2 — Content pack** | 10 blog articles + 20 social captions | MWK 600,000 (≈ $340) | 5–10 days |
 | **D3 — Google/Facebook ads setup** | Campaign setup, pixel, tracking, 2-week optimization | MWK 700,000 (≈ $400) + ad spend | 3–5 days |
 
@@ -148,7 +148,7 @@ draft and execute; the human owns the outcome.
 |-------|-------|-----------|
 | **Weeks 1–2** | Prove the machine: real API keys, daemon running, dashboard live, 1 portfolio demo built by agents (e.g., a fictional clinic website) | Demo ready to show prospects |
 | **Weeks 3–6** | Land 2 lighthouse clients: 1 local SME (Website or chatbot) + 1 NGO (reporting/analytics). Deliver with agents, under-promise/over-deliver. | 2 paid deliveries + 2 case studies |
-| **Weeks 7–12** | Systematize: standard quote/invoice templates, payment tracker, delivery SOP; package Offer C as the flagship; publish content (English + Chichewa). | Repeatable pipeline + 5 testimonials |
+| **Weeks 7–12** | Systematize: standard quote/invoice templates, payment tracker, delivery SOP; package Offer C as the flagship; publish content. | Repeatable pipeline + 5 testimonials |
 | **Quarter 2** | Productize: package the reporting/dashboard offer as a product for NGOs; explore platform licensing (Offer E). | First recurring revenue contract |
 
 ---

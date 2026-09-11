@@ -1,112 +1,87 @@
 /* LightSpeed Holdings Limited — Brand Design Tokens
-   Source: src/brand/design-decisions.md
+   Source: brand/tokens/brand-tokens.json (canonical)
    Tagline: ASPIRE. ACT. ACHIEVE. */
 
-:root {
-  /* ── Ink Ramp (3 levels) ─────────────────────────────────── */
-  --ink-primary:    #18181B;   /* zinc-900  — primary text on light */
-  --ink-secondary:  #71717A;   /* zinc-500  — secondary/muted text */
-  --ink-tertiary:   #A1A1AA;   /* zinc-400  — placeholder, hint text */
+@theme {
+  /* ── Brand Colors (Tailwind v4 custom palette) ─────────── */
+  --color-ls-navy: #070A40;
+  --color-ls-red: #E63946;
+  --color-ls-cyan: #00BFFF;
+  --color-ls-grey-light: #F2F2F2;
+  --color-ls-white: #FFFFFF;
+  --color-ls-grey-dark: #6B7280;
+  --color-ls-grey-light-text: #9CA3AF;
 
-  /* ── Surface Ramp (dark theme) ───────────────────────────── */
-  --surface-base:   #09090B;   /* zinc-950  — page background */
-  --surface-raised: #18181B;   /* zinc-900  — cards, panels */
-  --surface-well:   #27272A;   /* zinc-800  — inset wells, inputs */
-  --surface-border: #3F3F46;   /* zinc-700  — borders, dividers */
-  --surface-border-subtle: #27272A; /* zinc-800 — subtle dividers */
+  /* ── Fonts ─────────────────────────────────────────────── */
+  --font-display: Arial, sans-serif;
+  --font-body: Arial, sans-serif;
+  --font-caption: Arial, sans-serif;
 
-  /* ── Surface Ramp (light theme) ──────────────────────────── */
-  --surface-light-base:    #FAFAFA; /* zinc-50  — page background */
-  --surface-light-raised:  #FFFFFF; /* white    — cards, panels */
-  --surface-light-well:    #F4F4F5; /* zinc-100 — inset wells */
-  --surface-light-border:  #E4E4E7; /* zinc-200 — borders */
-  --surface-light-border-subtle: #F4F4F5; /* zinc-100 — subtle dividers */
-
-  /* ── Text on dark surfaces ───────────────────────────────── */
-  --on-surface:      #FAFAFA;  /* zinc-50  — primary text on dark */
-  --on-surface-dim:  #A1A1AA;  /* zinc-400 — secondary text on dark */
-  --on-surface-faint:#52525B;  /* zinc-600 — disabled on dark */
-
-  /* ── Text on light surfaces ──────────────────────────────── */
-  --on-surface-light:     #18181B; /* zinc-900 — primary text on light */
-  --on-surface-light-dim: #71717A; /* zinc-500 — secondary on light */
-
-  /* ── Accent: Orange ──────────────────────────────────────── */
-  --accent:        #F97316;    /* orange-500 — primary accent */
-  --accent-hover:  #EA580C;    /* orange-600 — hover state */
-  --accent-dim:    rgba(249, 115, 22, 0.15); /* tinted background */
-  --accent-glow:   rgba(249, 115, 22, 0.4);  /* glow/shadow */
-  --on-accent:     #FFFFFF;    /* white — text on orange */
-
-  /* ── Success ─────────────────────────────────────────────── */
-  --success:       #10B981;    /* emerald-500 */
-  --success-dim:   rgba(16, 185, 129, 0.15);
-
-  /* ── Warning ─────────────────────────────────────────────── */
-  --warning:       #F59E0B;    /* amber-500 */
-  --warning-dim:   rgba(245, 158, 11, 0.15);
-
-  /* ── Error / Danger ──────────────────────────────────────── */
-  --error:         #EF4444;    /* red-500 */
-  --error-dim:     rgba(239, 68, 68, 0.15);
-
-  /* ── Brand (print/logo use only — not for UI chrome) ────── */
-  --brand-navy:    #070A40;
-  --brand-red:     #E63946;
-  --brand-cyan:    #00BFFF;
-
-  /* ── Typography ──────────────────────────────────────────── */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body:    'Inter', system-ui, sans-serif;
-  --font-mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  /* ── Font Weights ────────────────────────────────────────── */
-  --weight-regular:  400;
-  --weight-medium:   500;
-  --weight-semibold: 600;
-  --weight-bold:     700;
-
-  /* ── Type Scale (rem — base 16px) ────────────────────────── */
-  --text-xs:    0.75rem;   /* 12px — captions, labels */
-  --text-sm:    0.875rem;  /* 14px — body small */
-  --text-base:  1rem;      /* 16px — body */
-  --text-lg:    1.125rem;  /* 18px — body large */
-  --text-xl:    1.25rem;   /* 20px — subtitle */
-  --text-2xl:   1.5rem;    /* 24px — heading sm */
-  --text-3xl:   1.875rem;  /* 30px — heading md */
-  --text-4xl:   2.25rem;   /* 36px — heading lg */
-  --text-5xl:   3rem;      /* 48px — display */
-  --text-6xl:   3.75rem;   /* 60px — display xl */
-
-  /* ── Spacing Scale (4px base) ────────────────────────────── */
-  --space-1:  0.25rem;   /*  4px — tight gap, icon padding */
-  --space-2:  0.5rem;    /*  8px — inline gap, small padding */
-  --space-3:  0.75rem;   /* 12px — compact section gap */
-  --space-4:  1rem;      /* 16px — standard padding */
-  --space-5:  1.5rem;    /* 24px — card padding, section gap */
-  --space-6:  2rem;      /* 32px — large section gap */
-  --space-7:  3rem;      /* 48px — major section break */
-  --space-8:  4rem;      /* 64px — hero spacing, page margins */
-
-  /* ── Border Radius (2 values) ────────────────────────────── */
-  --radius-panel:   1rem;       /* 16px — cards, modals, panels */
-  --radius-control: 0.375rem;   /*  6px — buttons, badges, inputs, tags */
+  /* ── Radii ─────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
 }
 
-@theme {
-  --radius-panel: 1rem;
-  --radius-control: 0.375rem;
+:root {
+  /* ── Brand Colors ─────────────────────────────────────── */
+  --ls-navy: #070A40;
+  --ls-red: #E63946;
+  --ls-cyan: #00BFFF;
+  --ls-grey-light: #F2F2F2;
+  --ls-white: #FFFFFF;
+  --ls-grey-dark: #6B7280;
+  --ls-grey-light-text: #9CA3AF;
 
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* ── On-surface text ──────────────────────────────────── */
+  --ls-on-navy: #FFFFFF;
+  --ls-on-red: #FFFFFF;
+  --ls-on-cyan: #070A40;
 
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-5: 1.5rem;
-  --spacing-6: 2rem;
-  --spacing-7: 3rem;
-  --spacing-8: 4rem;
+  /* ── Typography ───────────────────────────────────────── */
+  --ls-font-display: Arial, sans-serif;
+  --ls-font-heading: Arial, sans-serif;
+  --ls-font-body: Arial, sans-serif;
+  --ls-font-caption: Arial, sans-serif;
+  --ls-weight-display: 700;
+  --ls-weight-heading: 700;
+  --ls-weight-body: 400;
+
+  /* ── Type scale (pt) ──────────────────────────────────── */
+  --ls-size-display-xl: 36pt;
+  --ls-size-title-xl: 32pt;
+  --ls-size-title-lg: 28pt;
+  --ls-size-title-md: 24pt;
+  --ls-size-title-sm: 18pt;
+  --ls-size-subtitle: 16pt;
+  --ls-size-body-lg: 16pt;
+  --ls-size-body: 14pt;
+  --ls-size-body-sm: 13pt;
+  --ls-size-caption: 12pt;
+
+  /* ── Spacing (px) ─────────────────────────────────────── */
+  --ls-space-1: 4px;
+  --ls-space-2: 8px;
+  --ls-space-3: 12px;
+  --ls-space-4: 16px;
+  --ls-space-5: 24px;
+  --ls-space-6: 32px;
+  --ls-space-7: 48px;
+  --ls-space-8: 64px;
+  --ls-space-9: 96px;
+
+  /* ── Grid ─────────────────────────────────────────────── */
+  --ls-grid-columns: 12;
+  --ls-gutter: 24px;
+  --ls-margin: 48px;
+
+  /* ── Radius ───────────────────────────────────────────── */
+  --ls-radius-sm: 4px;
+  --ls-radius-md: 8px;
+  --ls-radius-lg: 16px;
+
+  /* ── Layout ───────────────────────────────────────────── */
+  --ls-page-max-width: 1200px;
+  --ls-slide-width: 10in;
+  --ls-slide-height: 7.5in;
 }

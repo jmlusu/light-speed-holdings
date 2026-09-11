@@ -196,7 +196,7 @@ company:
   - id: cmo
     name: Chief Marketing Officer
     title: CMO
-    description: Drives brand awareness, demand generation, and market positioning.
+    description: Drives brand awareness, demand generation, market positioning, and owns the external company website (lightspeedholdings.com).
     type: executive
     department: Marketing
     reports_to: chief_of_staff
@@ -206,6 +206,7 @@ company:
     - product_marketing_manager
     - industry_analyst_relations_manager
     responsibilities:
+    - Own the external company website (https://lightspeedholdings.com) including content, UX, SEO, and conversion optimization.
     - Develop marketing strategy and brand positioning.
     - Drive demand generation and campaign management.
     - Track marketing ROI and attribution.
