@@ -161,7 +161,7 @@ No invented content.
 |-----------|--------------|
 | **Services (7)** | Map to Offer A (websites/branding), Offer B (WhatsApp/mobile assistants + NLU + Airtel/TNM/PayChangu), Offer C (NGO M&E, Kobo/DHIS2, offline-first), + agentic enterprise lines (agentic company building, governed deployment platform) |
 | **Industries (3: fin/energy/retail)** | Agriculture & Agritech, Public Health & M&E, Financial Inclusion (VSLA/SACCO), SME & Services, Government/Public Sector |
-| **Case studies (3 placeholder)** | Chichewa AI / Ministry of Agriculture (piloting), J&S StopOver (live SME proof), VSLA/SACCO + NGO M&E (piloting) |
+| **Case studies (3 placeholder)** | Ministry of Agriculture (piloting), J&S StopOver (live SME proof), VSLA/SACCO + NGO M&E (piloting) |
 | **Insights (3 placeholder)** | Pharos content — "State of Agentic AI in Malawi", SADC framework, H-A-O-M-T-G-V |
 | **Partners (AWS/MS/NVIDIA/OpenAI)** | Real ecosystem — UNDP Malawi, World Bank Malawi, MinAg, MACRA, ICTAM, mHub, COMESA/IDEA, MUBAS/UNIMA |
 | **Footer (London, UK)** | Lilongwe, Malawi; correct contact |

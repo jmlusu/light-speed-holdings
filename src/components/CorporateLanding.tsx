@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  ArrowRight, 
-  CheckCircle2, 
-  Cpu, 
-  Layers, 
-  ShieldCheck, 
-  Workflow, 
-  Zap, 
-  TrendingUp, 
-  Building2, 
-  Landmark, 
-  Globe2, 
-  Sparkles, 
+import {
+  ArrowRight,
+  CheckCircle2,
+  Cpu,
+  Layers,
+  ShieldCheck,
+  Workflow,
+  Zap,
+  TrendingUp,
+  Building2,
+  Landmark,
+  Globe2,
+  Sparkles,
   ChevronRight,
   FileText,
   Clock,
@@ -337,14 +337,14 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
       {/* SECTION 01: HERO — STRATEGY TO INTELLIGENT EXECUTION */}
       <section id="hero" className="relative min-h-[92vh] flex flex-col justify-center pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 w-full">
-          
+
           {/* Left Column: Core Positioning Statement & Vision */}
           <div className="lg:col-span-7 xl:col-span-7 space-y-6 text-left">
-            
+
             {/* Eyebrow Badge */}
             <div className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-[11px] font-mono tracking-widest transition-all shadow-xs ${
-              isLight 
-                ? 'bg-white border-slate-300 text-slate-900 shadow-orange-500/5' 
+              isLight
+                ? 'bg-white border-slate-300 text-slate-900 shadow-orange-500/5'
                 : 'bg-zinc-900/90 border-orange-500/40 text-zinc-300 shadow-black/40'
             }`}>
               <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/80 animate-pulse" />
@@ -356,7 +356,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               isLight ? 'text-slate-900' : 'text-white'
             }`}>
               FROM STRATEGY <br />
-              <span className={isLight 
+              <span className={isLight
                 ? 'text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-slate-900'
                 : 'text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-amber-200'
               }>
@@ -376,7 +376,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               <p className={`text-justify text-justify max-w-2xl text-base sm:text-lg font-bold leading-relaxed ${
                 isLight ? 'text-slate-900' : 'text-zinc-100'
               }`}>
-                From Malawi, <span className="text-orange-500 font-extrabold">LightSpeed</span> helps organizations across SADC turn strategy, data, AI, and technology into practical execution.
+                From Malawi, <span className="text-orange-500 font-extrabold">LightSpeed</span> helps organizations everywhere turn strategy, data, AI, and technology into practical execution.
               </p>
               <p className={`text-justify text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
                 isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'
@@ -395,7 +395,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                   Local Fluency
                 </div>
                 <p className={`text-justify text-justify text-[11px] leading-snug ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
-                  Deep operational mastery of Malawi’s institutions, business realities, infrastructure, and talent environment.
+                  Deep operational mastery of Malawi's institutions, business realities, and infrastructure — proven locally, delivered globally.
                 </p>
               </div>
 
@@ -439,8 +439,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               <button
                 onClick={() => onRequestBriefing('SADC Regional Transformation Briefing')}
                 className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest border transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
-                  isLight 
-                    ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900' 
+                  isLight
+                    ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
                     : 'bg-orange-500 hover:bg-orange-600 text-white border-orange-500'
                 }`}
               >
@@ -450,8 +450,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               <a
                 href="#diagnostic"
                 className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest border backdrop-blur-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
-                  isLight 
-                    ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-orange-500' 
+                  isLight
+                    ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-orange-500'
                     : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/15'
                 }`}
               >
@@ -519,7 +519,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                   { num: '03', title: 'AI-Native Systems', desc: 'Multi-agent orchestration & deterministic DAGs', tag: 'Autonomous', idx: 2 },
                   { num: '04', title: 'Execution', desc: 'Legacy core integration & instant settlement', tag: 'Production', idx: 3 }
                 ].map((p) => (
-                  <button 
+                  <button
                     key={p.num}
                     onClick={() => {
                       setActivePillar(p.idx);
@@ -529,8 +529,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     className={`w-full text-left p-3 rounded-2xl transition-all cursor-pointer group ${
                       activePillar === p.idx
                         ? isLight ? 'tactile-btn-active-light border-orange-500/50' : 'tactile-btn-active-dark border-orange-500/50'
-                        : isLight 
-                          ? 'tactile-concave-btn-light' 
+                        : isLight
+                          ? 'tactile-concave-btn-light'
                           : 'tactile-concave-btn-dark'
                     }`}
                   >
@@ -571,7 +571,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
 
       {/* SECTION 02: THE LIGHTSPEED THESIS — 3D INTERACTIVE OPERATING MODEL (Objective 2 & 3) */}
       <section id="operating-model" className="py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full relative z-10">
-        <InteractiveOperatingModel 
+        <InteractiveOperatingModel
           theme={theme}
           onRequestBriefing={onRequestBriefing}
         />
@@ -608,11 +608,11 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               onClick={() => setActivePillar(idx)}
               className={`p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer relative overflow-hidden group ${
                 activePillar === idx
-                  ? isLight 
-                    ? 'tactile-btn-active-light text-slate-900 border-orange-500/50 shadow-md' 
+                  ? isLight
+                    ? 'tactile-btn-active-light text-slate-900 border-orange-500/50 shadow-md'
                     : 'tactile-btn-active-dark text-white border-orange-500/50 shadow-lg'
-                  : isLight 
-                    ? 'tactile-btn-inactive-light text-slate-700' 
+                  : isLight
+                    ? 'tactile-btn-inactive-light text-slate-700'
                     : 'tactile-btn-inactive-dark text-zinc-300'
               }`}
             >
@@ -622,8 +622,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     activePillar === idx ? 'tactile-pip-active' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                   }`} />
                   <span className={`text-[10px] font-mono tracking-widest font-bold px-2 py-0.5 rounded-md ${
-                    activePillar === idx 
-                      ? 'bg-orange-500/20 text-orange-500' 
+                    activePillar === idx
+                      ? 'bg-orange-500/20 text-orange-500'
                       : 'bg-black/5 text-[#2D3748]'
                   }`}>
                     OFFERING 0{idx + 1}
@@ -637,8 +637,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               </div>
               <span className="text-sm font-bold tracking-wide block font-display leading-tight">{cap.shortTitle}</span>
               <p className={`text-justify text-justify text-[11px] mt-1.5 line-clamp-2 ${
-                activePillar === idx 
-                  ? isLight ? 'text-slate-800 font-medium' : 'text-zinc-200' 
+                activePillar === idx
+                  ? isLight ? 'text-slate-800 font-medium' : 'text-zinc-200'
                   : 'text-[#2D3748]'
               }`}>
                 {cap.tagline}
@@ -666,7 +666,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
+
                 {/* Left Column: Core Description & Contracts */}
                 <div className="lg:col-span-7 space-y-6">
                   <div>
@@ -774,8 +774,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {active.deliverables.map((item, dIdx) => (
-                        <div 
-                          key={dIdx} 
+                        <div
+                          key={dIdx}
                           className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs font-medium transition-colors ${
                             isLight ? 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100' : 'border-white/15 bg-white/[0.04] text-zinc-300 hover:bg-white/[0.08]'
                           }`}
@@ -819,8 +819,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                           key={c.id}
                           onClick={() => setActivePillar(cIdx)}
                           className={`h-2.5 rounded-full transition-all ${
-                            activePillar === cIdx 
-                              ? 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.8)]' 
+                            activePillar === cIdx
+                              ? 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.8)]'
                               : isLight ? 'bg-slate-300 hover:bg-slate-400' : 'bg-zinc-800 hover:bg-zinc-700'
                           }`}
                           title={`Switch to Offering 0${cIdx + 1}: ${c.shortTitle}`}
@@ -903,8 +903,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                 className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                   selectedSynergy === key
                     ? 'bg-orange-500 text-white border-orange-400 shadow-md shadow-orange-500/20'
-                    : isLight 
-                      ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300' 
+                    : isLight
+                      ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
                       : 'bg-zinc-900/80 hover:bg-zinc-900 text-zinc-300 border-white/15'
                 }`}
               >
@@ -1037,7 +1037,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Failure Trap 01 */}
           <div className={`p-8 rounded-3xl border transition-all flex flex-col justify-between ${
             isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-lg' : 'bg-zinc-950/80 border-white/15 text-zinc-300 shadow-xl'
@@ -1140,8 +1140,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                   className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 ${
                     isSelected
                       ? isLight ? 'tactile-btn-active-light text-slate-900 border-orange-500/50' : 'tactile-btn-active-dark text-white border-orange-500/50'
-                      : isLight 
-                        ? 'tactile-btn-inactive-light text-slate-700' 
+                      : isLight
+                        ? 'tactile-btn-inactive-light text-slate-700'
                         : 'tactile-btn-inactive-dark text-zinc-300'
                   }`}
                 >
@@ -1177,8 +1177,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     Verified Production Impact:
                   </span>
                   {ind.impact.map((imp, iIdx) => (
-                    <div 
-                      key={iIdx} 
+                    <div
+                      key={iIdx}
                       className={`p-3.5 rounded-2xl border text-xs flex items-start gap-2.5 font-medium ${
                         isLight ? 'bg-slate-50 border-slate-300 text-slate-800' : 'border-white/15 bg-white/[0.05] text-zinc-300'
                       }`}
@@ -1196,8 +1196,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         {/* Case Studies Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {caseStudies.map((cs, cIdx) => (
-            <div 
-              key={cIdx} 
+            <div
+              key={cIdx}
               className={`p-6 rounded-3xl border flex flex-col justify-between space-y-4 ${
                 isLight ? 'bg-slate-50 border-slate-300' : 'bg-zinc-900/70 border-white/15'
               }`}
@@ -1229,7 +1229,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
       <section id="diagnostic" className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full border-t ${
         isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
       }`}>
-        <TransformationDiagnostic 
+        <TransformationDiagnostic
           theme={theme}
           onRequestBriefing={onRequestBriefing}
         />
@@ -1260,8 +1260,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               isLight ? 'text-slate-900' : 'text-white'
             }`}>
               PHAROS <br />
-              <span className={isLight 
-                ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-orange-600 to-slate-900' 
+              <span className={isLight
+                ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-orange-600 to-slate-900'
                 : 'text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-amber-100'
               }>
                 THOUGHT LEADERSHIP
@@ -1271,7 +1271,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
             <p className={`text-justify text-justify text-sm sm:text-base leading-relaxed max-w-3xl ${
               isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
             }`}>
-              Erected on the limestone bedrock of the island of Pharos in Alexandria, Egypt, the ancient Lighthouse stood as humanity's supreme beacon of guidance—projecting radiant light across treacherous maritime shoals. 
+              Erected on the limestone bedrock of the island of Pharos in Alexandria, Egypt, the ancient Lighthouse stood as humanity's supreme beacon of guidance—projecting radiant light across treacherous maritime shoals.
               In today's turbulent storm of AI hype, SaaS data leakages, and consulting slide paralysis, LIGHTSPEED's <strong className="text-orange-500 font-bold">PHAROS</strong> casts unyielding illumination: providing boards, central banks, and sovereign ministries with definitive mathematical, architectural, and fiduciary clarity.
             </p>
           </div>
@@ -1323,11 +1323,11 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         {/* 4 Pharos Treatises / Tomes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
           {whitepapers.map((wp, wIdx) => (
-            <div 
-              key={wIdx} 
+            <div
+              key={wIdx}
               className={`p-6 sm:p-7 rounded-3xl flex flex-col justify-between space-y-6 transition-all group relative overflow-hidden ${
-                isLight 
-                  ? 'hardware-chassis-light hover:border-amber-500 text-slate-900' 
+                isLight
+                  ? 'hardware-chassis-light hover:border-amber-500 text-slate-900'
                   : 'hardware-chassis-dark hover:border-amber-500/60 text-zinc-300'
               }`}
             >
@@ -1414,7 +1414,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Model 01 */}
           <div className={`p-8 rounded-3xl border flex flex-col justify-between space-y-6 ${
             isLight ? 'bg-white/95 border-slate-300 shadow-md text-slate-900' : 'bg-zinc-950/80 border-white/15 shadow-xl text-zinc-300'
@@ -1560,7 +1560,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
             },
             {
               q: "What is LightSpeed's core proposition?",
-              a: "From Malawi, LightSpeed helps organizations across SADC turn strategy, data, AI, and technology into practical execution. We bridge the gap between abstract strategy formulation and concrete technological execution by combining local operating fluency, regional SADC relevance, and global standards in strategy, engineering, governance, and design quality."
+              a: "From Malawi, LightSpeed helps organizations turn strategy, data, AI, and technology into practical execution. We bridge the gap between abstract strategy formulation and concrete technological execution by combining local operating fluency, regional relevance, and global standards in strategy, engineering, governance, and design quality."
             },
             {
               q: "What is deterministic multi-agent fleet engineering?",
@@ -1602,7 +1602,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
       }`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
+
           <div className="lg:col-span-5 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-500 font-mono text-[11px] tracking-widest font-bold">
               <span>COMMENCE TRANSFORMATION</span>
@@ -1687,8 +1687,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.name}
                         onChange={(e) => setContactFormData({ ...contactFormData, name: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -1704,8 +1704,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.title}
                         onChange={(e) => setContactFormData({ ...contactFormData, title: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -1724,8 +1724,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.organization}
                         onChange={(e) => setContactFormData({ ...contactFormData, organization: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -1741,8 +1741,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.email}
                         onChange={(e) => setContactFormData({ ...contactFormData, email: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -1757,8 +1757,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                       value={contactFormData.scope}
                       onChange={(e) => setContactFormData({ ...contactFormData, scope: e.target.value })}
                       className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                        isLight 
-                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 shadow-inner' 
+                        isLight
+                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 shadow-inner'
                           : 'bg-zinc-900 border-white/20 text-white shadow-inner'
                       }`}
                     >
@@ -1779,8 +1779,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                       value={contactFormData.objective}
                       onChange={(e) => setContactFormData({ ...contactFormData, objective: e.target.value })}
                       className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors resize-none font-medium ${
-                        isLight 
-                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                        isLight
+                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                           : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                       }`}
                     />

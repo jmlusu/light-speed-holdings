@@ -11,7 +11,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
       isLight ? 'border-slate-200 text-slate-700' : 'border-white/15 text-zinc-300'
     }`}>
       <div>
-        © {new Date().getFullYear()} LIGHTSPEED HOLDINGS LIMITED. All rights reserved. AI Transformation for SADC.
+        © {new Date().getFullYear()} LIGHTSPEED HOLDINGS LIMITED. All rights reserved. AI for Organizations Everywhere.
       </div>
       <div className={`flex items-center gap-4 ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
         <a href="#operating-model" className="hover:text-orange-500 font-medium">Model</a>
