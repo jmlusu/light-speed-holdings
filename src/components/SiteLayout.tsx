@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { ThreeCanvas } from './ThreeCanvas';
 import { FloatingNav } from './FloatingNav';
@@ -20,17 +20,27 @@ interface SiteLayoutProps {
 }
 
 const ROUTE_TITLES: Record<string, string> = {
-  '/': 'LIGHTSPEED HOLDINGS — From Strategy to Intelligent Execution',
-  '/home': 'LIGHTSPEED HOLDINGS — From Strategy to Intelligent Execution',
+  '/': 'LIGHTSPEED HOLDINGS — Build the Intelligent Enterprise',
   '/about': 'About | LIGHTSPEED HOLDINGS',
-  '/capabilities': 'Overview | LIGHTSPEED HOLDINGS',
-  '/capabilities/offerings': 'Core Offerings | LIGHTSPEED HOLDINGS',
-  '/capabilities/diagnostic': 'AI Diagnostic | LIGHTSPEED HOLDINGS',
+  '/solutions': 'Solutions | LIGHTSPEED HOLDINGS',
+  '/solutions/agentic-ai': 'Agentic AI | LIGHTSPEED HOLDINGS',
+  '/solutions/digital-transformation': 'Digital Transformation | LIGHTSPEED HOLDINGS',
+  '/solutions/data-intelligence': 'Data & Intelligence | LIGHTSPEED HOLDINGS',
+  '/solutions/automation': 'Intelligent Automation | LIGHTSPEED HOLDINGS',
+  '/solutions/strategy-advisory': 'Strategy & Advisory | LIGHTSPEED HOLDINGS',
   '/industries': 'Industries | LIGHTSPEED HOLDINGS',
-  '/evidence': 'Evidence | LIGHTSPEED HOLDINGS',
+  '/industries/government': 'Government | LIGHTSPEED HOLDINGS',
+  '/industries/development': 'Development & Donor | LIGHTSPEED HOLDINGS',
+  '/industries/financial-services': 'Financial Services | LIGHTSPEED HOLDINGS',
+  '/industries/healthcare': 'Healthcare | LIGHTSPEED HOLDINGS',
+  '/industries/agriculture': 'Agriculture | LIGHTSPEED HOLDINGS',
+  '/ai-company-builder': 'AI Company Builder | LIGHTSPEED HOLDINGS',
+  '/technology': 'Technology | LIGHTSPEED HOLDINGS',
+  '/work': 'Work & Proof | LIGHTSPEED HOLDINGS',
   '/insights': 'Insights | LIGHTSPEED HOLDINGS',
-  '/engagement': 'Engagement | LIGHTSPEED HOLDINGS',
-  '/contact': 'Contact | LIGHTSPEED HOLDINGS',
+  '/contact': 'Start a Conversation | LIGHTSPEED HOLDINGS',
+  '/legal/privacy': 'Privacy Policy | LIGHTSPEED HOLDINGS',
+  '/legal/terms': 'Terms of Service | LIGHTSPEED HOLDINGS',
 };
 
 /**
@@ -51,15 +61,23 @@ export const SiteLayout: React.FC<SiteLayoutProps> = ({
   onDispatchTask,
 }) => {
   const { pathname } = useLocation();
+  // Skip focus management for the pathname we mounted on. Tracked by value
+  // (not a boolean) so React 18 StrictMode's double effect-invocation can't
+  // trip it: both mount passes see the same pathname and return early, while
+  // any real route change reliably moves focus to the main landmark. Leaving
+  // focus on <body> at load also means a keyboard user's first Tab reaches
+  // the skip link (and then the nav) instead of jumping past both.
+  const lastPathnameRef = useRef(pathname);
 
-  // On route change: update the document title, scroll to top, and move
-  // focus to the main landmark for assistive tech. Respect reduced motion.
   useEffect(() => {
     document.title = ROUTE_TITLES[pathname] ?? 'LIGHTSPEED HOLDINGS';
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({ top: 0, left: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
 
+    if (lastPathnameRef.current === pathname) return;
+
+    lastPathnameRef.current = pathname;
     const main = document.getElementById('main-content');
     if (main) {
       main.focus({ preventScroll: true });
@@ -68,6 +86,10 @@ export const SiteLayout: React.FC<SiteLayoutProps> = ({
 
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+
       <ThreeCanvas theme={theme} />
 
       <FloatingNav

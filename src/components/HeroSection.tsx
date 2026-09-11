@@ -39,12 +39,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <h1 className={`text-4xl sm:text-6xl md:text-7xl font-black tracking-tight font-display leading-[1.04] ${
             isLight ? 'text-slate-900' : 'text-white'
           }`}>
-            GOVERNED AI, <br />
+            BUILD THE
+            <br />
             <span className={isLight
               ? 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-slate-900'
               : 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-ls-cyan'
             }>
-              BUILT TO RUN.
+              INTELLIGENT ENTERPRISE.
             </span>
           </h1>
 
@@ -52,6 +53,22 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="flex items-center gap-2">
             <div className={`w-16 h-[2px] ${isLight ? 'bg-ls-red/80' : 'bg-ls-red'}`} />
             <div className="w-1.5 h-1.5 rounded-xs bg-ls-red shadow-sm shadow-ls-red" />
+          </div>
+
+          {/* Strategy → Build → Govern → Scale */}
+          <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] font-bold tracking-widest">
+            {['STRATEGY', 'BUILD', 'GOVERN', 'SCALE'].map((step, i) => (
+              <React.Fragment key={step}>
+                {i > 0 && <span className={`text-ls-red ${isLight ? '' : ''}`} aria-hidden="true">→</span>}
+                <span className={`px-2.5 py-1 rounded-full border ${
+                  i % 2 === 0
+                    ? 'border-ls-red/40 bg-ls-red/10 text-ls-red'
+                    : 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
+                }`}>
+                  {step}
+                </span>
+              </React.Fragment>
+            ))}
           </div>
 
           {/* Explicit Regional Proposition Statement */}
@@ -64,7 +81,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <p className={`text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
               isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'
             }`}>
-              We combine management consulting, data engineering, AI teams, and governance into a single operating stack. The infrastructure is proven in-house before it reaches a client.
+              Strategy — Build — Govern — Scale. We prove the model in Malawi first with shipped work — websites, automation, reporting, and marketing — for the organizations that need them most.
             </p>
           </div>
 
@@ -110,28 +127,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Primary Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
-              to="/capabilities"
+              to="/contact"
               className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer"
             >
               <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
                 <ArrowRight className="w-3 h-3" />
               </div>
-              <span>Explore Operating Model</span>
+              <span>Start a Conversation</span>
             </Link>
 
-            <button
-              onClick={() => onRequestBriefing('SADC Regional Transformation Briefing')}
+            <Link
+              to="/ai-company-builder"
               className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest border transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isLight
                   ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
                   : 'bg-ls-red hover:bg-ls-red text-white border-ls-red'
               }`}
             >
-              <span>Request Briefing</span>
-            </button>
+              <span>Explore AI Company Builder</span>
+            </Link>
 
             <Link
-              to="/capabilities/diagnostic"
+              to="/technology"
               className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest border backdrop-blur-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isLight
                   ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-ls-red'
@@ -139,7 +156,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 text-ls-red" />
-              <span>AI Diagnostic</span>
+              <span>How It Works</span>
             </Link>
           </div>
 

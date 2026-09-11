@@ -701,6 +701,42 @@
 }
 
 /* ==========================================================================
+   Accessibility: Skip link + visible focus
+   Skip link is visually hidden until it receives keyboard focus; the global
+   :focus-visible rule gives every interactive control a high-contrast ring.
+   ========================================================================== */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: #070A40;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 0 0 2px #00BFFF, 0 0 0 4px rgba(7, 10, 64, 0.9);
+  transform: translateY(-200%);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+:where(a, button, [role='button'], input, select, textarea, summary):focus-visible {
+  outline: 2px solid #00BFFF;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
    Accessibility: Reduced Motion Global Kill-Switch
    Users who prefer reduced motion get static content: all CSS animation and
    transition durations collapse to near-zero. JS-driven effects (ThreeCanvas,

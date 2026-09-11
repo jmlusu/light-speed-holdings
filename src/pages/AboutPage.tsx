@@ -1,269 +1,241 @@
 import React from 'react';
-import { Check, Globe2, Network, ShieldCheck } from 'lucide-react';
 import { FaqSection } from '../components/FaqSection';
+import { PageIntro } from '../components/site/PageIntro';
+import { SectionHeading } from '../components/site/SectionHeading';
+import { CtaBand } from '../components/site/CtaBand';
+import { CardShell } from '../components/site/CardShell';
+import { Reveal } from '../components/Reveal';
+import { mission, vision, values, commitments, company } from '../data/siteContent';
 
 interface AboutPageProps {
   theme: 'light' | 'dark';
   onRequestBriefing: (summary?: string) => void;
 }
 
-type EvidenceStatus = 'PROVEN IN-HOUSE' | 'IN PILOT';
-
-interface AuthorityCard {
-  icon: React.ComponentType<{ className?: string }>;
-  eyebrow: string;
-  title: string;
-  status: EvidenceStatus;
-  bullets: string[];
-}
-
-const AUTHORITY_CARDS: AuthorityCard[] = [
-  {
-    icon: Network,
-    eyebrow: 'FLEET ARCHITECTURE',
-    title: 'Structured Agent Fleet',
-    status: 'PROVEN IN-HOUSE',
-    bullets: [
-      '144 agent configurations live in company-registry.yaml.',
-      'Every agent is bound to the canonical 7-tool runtime.',
-      'All approvals pass Title-IX-style governance gates.',
-    ],
-  },
-  {
-    icon: ShieldCheck,
-    eyebrow: 'GOVERNANCE CONTROL',
-    title: 'Regulatory-Grade Governance',
-    status: 'PROVEN IN-HOUSE',
-    bullets: [
-      '5-tier human approval matrix (ApprovalGate) with expiry sweeps.',
-      'Immutable SHA-256 audit trail on every agent action.',
-      'X-API-Key RBAC on the control-plane dashboard.',
-    ],
-  },
-  {
-    icon: Globe2,
-    eyebrow: 'REGIONAL POSITION',
-    title: 'Malawi / SADC Regional Position',
-    status: 'IN PILOT',
-    bullets: [
-      "Targeted at Malawi's National AI Strategy consultation.",
-      'Engaged with the SADC Agentic AI Governance Framework.',
-      'Speaker engagements underway across the region.',
-    ],
-  },
-];
-
-interface Pillar {
-  term: string;
-  sentence: string;
-}
-
-const PILLARS: Pillar[] = [
-  {
-    term: 'SME Operations',
-    sentence: 'Agentic decision support for pricing, inventory, cash reconciliation, and procurement in non-tech businesses running on real constraints.',
-  },
-  {
-    term: 'Health and M&E',
-    sentence: 'Automated monitoring and evaluation, supply-chain anomaly detection, and donor reporting where accuracy is not optional.',
-  },
-  {
-    term: 'Financial Inclusion',
-    sentence: 'Agentic workflows over mobile-money rails and informal savings groups, designed for the infrastructure people actually use.',
-  },
-  {
-    term: 'Public Services',
-    sentence: 'Citizen-query agents, legislative summarization, and project monitoring that meet government accountability standards.',
-  },
-];
-
-const STATUS_STYLES: Record<EvidenceStatus, string> = {
-  'PROVEN IN-HOUSE': 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan',
-  'IN PILOT': 'border-ls-red/40 bg-ls-red/10 text-ls-red',
-};
-
 /**
- * About route: establishes trust before the FAQ by leading with an
- * "Authority & Governance" band of honestly-labeled capability cards.
+ * /about — the firm, told honestly. Leads with the official Mission & Vision,
+ * then Our Story, How We Think (the eight values), commitments, leadership,
+ * and the reasons to choose LightSpeed. Every claim stays traceable.
  */
 export const AboutPage: React.FC<AboutPageProps> = ({ theme }) => {
   const isLight = theme === 'light';
 
   return (
     <>
-      {/* Page Intro */}
-      <header className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-24 pb-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
-          <span>ABOUT THE FIRM</span>
-        </div>
-        <h1 className={`mt-4 text-3xl sm:text-5xl font-black tracking-tight font-display ${
-          isLight ? 'text-slate-900' : 'text-white'
-        }`}>
-          An Agentic AI Company That Ships
-        </h1>
-        <p className={`mt-4 max-w-2xl text-sm sm:text-base leading-relaxed ${
-          isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
-        }`}>
-          Malawi-rooted and SADC-focused, we design, govern, and ship working agentic AI systems with human approval gates and a verifiable audit trail at every step. Our own company runs on the same infrastructure we offer clients — 144 agents across 20 departments, governed, auditable, and held to the same five-tier standards we build for you.
-        </p>
-      </header>
+      <PageIntro
+        theme={theme}
+        eyebrow="ABOUT THE FIRM"
+        title="An Agentic AI Company That Ships"
+        lead="LightSpeed Holdings Limited™ builds and governs agentic AI systems for organizations. One human CEO directs a workforce of 140+ AI agents. We prove the model in Malawi first — websites, automation, reporting, and marketing, shipped for the organizations that need them most."
+      />
 
       {/* Mission & Vision */}
       <section
         aria-labelledby="mission-heading"
-        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-16 sm:py-20 border-t ${
+        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
           isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
         }`}
       >
-        <div className="max-w-3xl mx-auto text-center space-y-3">
-          <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
-            MISSION AND VISION
-          </span>
-          <h2
-            id="mission-heading"
-            className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-              isLight ? 'text-slate-900' : 'text-white'
-            }`}
-          >
-            Where AI Meets Accountability
-          </h2>
-        </div>
+        <SectionHeading
+          theme={theme}
+          eyebrow="MISSION AND VISION"
+          title="Why We Do This"
+        />
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className={`rounded-3xl p-6 sm:p-8 space-y-4 border ${
-            isLight ? 'bg-white/95 border-slate-300 shadow-md text-slate-900' : 'bg-zinc-950/80 border-white/15 shadow-xl text-zinc-300'
-          }`}>
-            <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
-              MISSION
-            </span>
-            <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-              isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
-            }`}>
-              LightSpeed Holdings builds agentic AI systems where software performs meaningful organizational work and humans remain accountable for what matters. We design, govern, and ship operating infrastructure for autonomous AI — not prototypes, not slide decks. Our platform runs 144 agents across 20 departments, governed by five-tier human approval and immutable audit trails, because the only AI worth deploying is AI you can trace.
-            </p>
-          </div>
-
-          <div className={`rounded-3xl p-6 sm:p-8 space-y-4 border ${
-            isLight ? 'bg-white/95 border-slate-300 shadow-md text-slate-900' : 'bg-zinc-950/80 border-white/15 shadow-xl text-zinc-300'
-          }`}>
-            <span className="text-xs font-mono font-bold tracking-widest text-ls-cyan">
-              VISION
-            </span>
-            <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-              isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
-            }`}>
-              Malawi and the SADC region can lead in AI-native institutional design — not by importing solutions built elsewhere, but by building governed, evidence-based systems from the ground up. LightSpeed exists to prove that governance-first, offline-first, sovereign-by-design AI is not a constraint on capability. It is the architecture that earns trust, and trust is what scales.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {PILLARS.map((pillar) => (
-            <article
-              key={pillar.term}
-              className={`rounded-2xl border p-5 sm:p-6 ${
-                isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-zinc-900/60 border-zinc-800 text-zinc-100'
-              }`}
-            >
-              <h3 className="font-display font-bold text-sm sm:text-base tracking-tight">
-                {pillar.term}
-              </h3>
-              <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
-                isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Reveal>
+            <CardShell className={`h-full ${isLight ? 'bg-white/95 border-slate-300 shadow-md text-slate-900' : 'bg-zinc-950/80 border-white/15 shadow-xl text-zinc-100'}`}>
+              <span className="text-xs font-mono font-bold tracking-widest text-ls-red">MISSION</span>
+              <p className={`mt-3 text-sm sm:text-base leading-relaxed font-semibold ${
+                isLight ? 'text-slate-800' : 'text-zinc-100'
               }`}>
-                {pillar.sentence}
+                {mission.statement}
               </p>
-            </article>
-          ))}
+              <p className={`mt-4 text-justify text-xs sm:text-sm leading-relaxed ${
+                isLight ? 'text-slate-600' : 'text-zinc-400'
+              }`}>
+                {mission.why}
+              </p>
+            </CardShell>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <CardShell className={`h-full ${isLight ? 'bg-white/95 border-slate-300 shadow-md text-slate-900' : 'bg-zinc-950/80 border-white/15 shadow-xl text-zinc-100'}`}>
+              <span className="text-xs font-mono font-bold tracking-widest text-ls-cyan">VISION</span>
+              <p className={`mt-3 text-sm sm:text-base leading-relaxed font-semibold ${
+                isLight ? 'text-slate-800' : 'text-zinc-100'
+              }`}>
+                {vision.statement}
+              </p>
+              <p className={`mt-4 text-justify text-xs sm:text-sm leading-relaxed ${
+                isLight ? 'text-slate-600' : 'text-zinc-400'
+              }`}>
+                {vision.why}
+              </p>
+            </CardShell>
+          </Reveal>
         </div>
 
-        <p className={`mt-12 text-center text-sm sm:text-base leading-relaxed ${
-          isLight ? 'text-slate-600 font-medium' : 'text-zinc-400'
+        <p className={`mt-10 text-center text-sm sm:text-base font-mono font-bold tracking-widest ${
+          isLight ? 'text-slate-600' : 'text-zinc-400'
         }`}>
-          The systems are running. The governance is in place.{' '}
-          <span className="font-bold text-ls-cyan">The work continues.</span>
+          <span className="text-ls-red">NORTH STAR // </span>
+          {company.northStar.toUpperCase()}
         </p>
       </section>
 
-      {/* Authority & Governance Band */}
+      {/* Our Story */}
       <section
-        aria-labelledby="authority-heading"
-        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-16 sm:py-20 border-t ${
+        aria-labelledby="story-heading"
+        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
           isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
         }`}
       >
-        <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
-            AUTHORITY &amp; GOVERNANCE
-          </span>
-          <h2
-            id="authority-heading"
-            className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-              isLight ? 'text-slate-900' : 'text-white'
-            }`}
-          >
-            What We Can Prove Today
-          </h2>
-          <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-            isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
-          }`}>
-            Every claim carries its evidence status — proven in-house, or in pilot. We do not blur the two.
+        <SectionHeading
+          theme={theme}
+          eyebrow="OUR STORY"
+          title="Proof, Then Scale"
+          lead="The company is its own first customer. Everything we sell is run in production here first."
+        />
+        <div className={`max-w-3xl mx-auto space-y-4 text-justify text-sm sm:text-base leading-relaxed ${
+          isLight ? 'text-slate-700' : 'text-zinc-300'
+        }`}>
+          <p>
+            Malawi's SMEs, NGOs, schools, clinics, and cooperatives are underserved by an industry that prices enterprise-grade work out of reach. LightSpeed was founded to close that gap — not with a promise, but with a working system.
+          </p>
+          <p>
+            Today that system runs 144 agent configurations across 20 departments, governed by a five-tier human approval matrix and an immutable audit trail. Our first live proof in the real, non-tech economy: J&S StopOver Bar — a genuine Malawi SME running agentic decision support for inventory, sales, shortage detection, cash reconciliation, and procurement.
+          </p>
+          <p>
+            We do not claim to have all the answers. We publish the tests that gate our work, label every claim{' '}
+            <span className="font-bold text-ls-cyan">Proven in-house</span> or{' '}
+            <span className="font-bold text-ls-red">In pilot</span> — and we treat Malawi first as the discipline that makes us credible everywhere else.
           </p>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {AUTHORITY_CARDS.map((card) => {
-            const Icon = card.icon;
-            return (
-              <article
-                key={card.title}
-                className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 ${
-                  isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
-                }`}
-              >
-                {/* Hardware corner screws */}
-                <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" />
-                <div className="absolute top-3 right-3 w-2 h-2 rounded-full hardware-screw" />
-                <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full hardware-screw" />
-                <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
+      {/* How We Think */}
+      <section
+        aria-labelledby="values-heading"
+        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
+          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        }`}
+      >
+        <SectionHeading
+          theme={theme}
+          eyebrow="HOW WE THINK"
+          title="Eight Values, Turned Into Behavior"
+          lead="Values without 'how this shows up' are decoration. Ours map to concrete operating rules."
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {values.map((value, idx) => (
+            <Reveal key={value.num} delay={(idx % 4) * 0.05}>
+              <div className={`rounded-3xl p-6 border h-full ${
+                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+              }`}>
+                <span className="font-mono text-[10px] font-black tracking-widest text-ls-red">
+                  VALUES // {String(value.num).padStart(2, '0')}
+                </span>
+                <h3 className="mt-2 font-display font-bold text-sm sm:text-base tracking-tight">{value.title}</h3>
+                <p className={`mt-2 text-xs leading-relaxed ${
+                  isLight ? 'text-slate-600' : 'text-zinc-400'
+                }`}>
+                  {value.sentence}
+                </p>
+                <p className={`mt-3 pt-3 border-t text-[11px] leading-relaxed ${
+                  isLight ? 'border-slate-200 text-ls-cyan font-semibold' : 'border-white/10 text-ls-cyan font-semibold'
+                }`}>
+                  {value.showsUp}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
 
-                <div className="flex items-start justify-between gap-3">
-                  <span className="font-mono text-[10px] font-bold tracking-widest text-ls-red">
-                    {card.eyebrow}
-                  </span>
-                  <span className={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[9px] font-bold tracking-widest ${STATUS_STYLES[card.status]}`}>
-                    {card.status}
-                  </span>
-                </div>
-
-                <div className="mt-4 flex items-center gap-2.5">
-                  <span aria-hidden="true">
-                    <Icon className="w-5 h-5 text-ls-cyan" />
-                  </span>
-                  <h3 className={`text-xl font-bold tracking-tight font-display ${
-                    isLight ? 'text-slate-900' : 'text-zinc-100'
-                  }`}>
-                    {card.title}
-                  </h3>
-                </div>
-
-                <ul className="mt-4 space-y-2">
-                  {card.bullets.map((bullet) => (
-                    <li key={bullet} className="flex items-start gap-2 text-xs sm:text-sm leading-relaxed">
-                      <Check className="mt-0.5 w-3.5 h-3.5 shrink-0 text-ls-red" aria-hidden="true" />
-                      <span className={isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'}>
-                        {bullet}
-                      </span>
+      {/* Commitments */}
+      <section
+        aria-labelledby="commitments-heading"
+        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
+          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        }`}
+      >
+        <SectionHeading
+          theme={theme}
+          eyebrow="COMMITMENTS"
+          title="What We Promise Whom"
+          lead="Accountability is not a value statement — it is a list of who owes what to whom."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {commitments.map((group, idx) => (
+            <Reveal key={group.audience} delay={(idx % 2) * 0.06}>
+              <div className={`rounded-3xl p-6 sm:p-7 border h-full ${
+                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+              }`}>
+                <h3 className="font-display font-bold text-base sm:text-lg tracking-tight">{group.audience}</h3>
+                <ul className={`mt-4 space-y-3 text-xs sm:text-sm leading-relaxed ${
+                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                }`}>
+                  {group.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5">
+                      <span className="mt-0.5 shrink-0 w-4 h-4 rounded-full bg-ls-red/10 text-ls-red flex items-center justify-center text-[10px] font-black" aria-hidden="true">✓</span>
+                      {item}
                     </li>
                   ))}
                 </ul>
-              </article>
-            );
-          })}
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Leadership */}
+      <section
+        aria-labelledby="leadership-heading"
+        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
+          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        }`}
+      >
+        <SectionHeading
+          theme={theme}
+          eyebrow="LEADERSHIP"
+          title="One Human CEO. A Governed Workforce."
+          lead="The operating model we sell is the operating model we run."
+        />
+        <div className={`max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 border ${
+          isLight ? 'bg-white/95 border-slate-300 shadow-md' : 'bg-zinc-950/80 border-white/15 shadow-xl'
+        }`}>
+          <ul className={`space-y-3 text-sm sm:text-base leading-relaxed ${
+            isLight ? 'text-slate-700' : 'text-zinc-300'
+          }`}>
+            <li className="flex items-start gap-3">
+              <span className="font-mono font-black text-ls-red" aria-hidden="true">01</span>
+              <span>One human CEO sets vision, strategy, and culture, and makes final decisions on high-stakes matters.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="font-mono font-black text-ls-red" aria-hidden="true">02</span>
+              <span>140+ AI agents execute across 20 departments — engineering, legal, governance, policy, creative, and more.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="font-mono font-black text-ls-red" aria-hidden="true">03</span>
+              <span>A standing governance body reviews high-stakes decisions and sets ethics precedent before they are executed.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="font-mono font-black text-ls-red" aria-hidden="true">04</span>
+              <span>Every consequential action passes a five-tier human approval matrix and lands on an immutable audit trail.</span>
+            </li>
+          </ul>
         </div>
       </section>
 
       <FaqSection theme={theme} />
+
+      <CtaBand
+        theme={theme}
+        title="Talk to the Human in the Loop"
+        text="Every conversation starts with a human. Tell us where your organisation is today — we will be honest about whether we can help, and what it takes."
+        ctaLabel="Start a Conversation"
+      />
     </>
   );
 };

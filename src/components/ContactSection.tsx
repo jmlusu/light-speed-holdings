@@ -32,17 +32,17 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
 
         <div className="lg:col-span-5 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest font-bold">
-            <span>COMMENCE TRANSFORMATION</span>
+            <span>START A CONVERSATION</span>
           </div>
           <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
             isLight ? 'text-slate-900' : 'text-white'
           }`}>
-            Request an Executive Briefing
+            Tell Us Where You Are
           </h2>
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
             isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
           }`}>
-            Book a 45-minute confidential call with our Managing Partners. We will assess your current operational bottlenecks and whether on-site AI systems make sense for your organization.
+            We will be honest about whether we can help — and exactly what it takes to start. A human reviews every submission and responds within 12 business hours.
           </p>
 
           <div className={`space-y-4 pt-4 border-t ${isLight ? 'border-slate-200' : 'border-white/15'}`}>
@@ -76,7 +76,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-ls-red shadow-[0_0_8px_rgba(230,57,70,0.9)]" />
                 <span className="font-mono text-xs font-bold tracking-wider">
-                  BRIEFING TRANSMISSION CONSOLE
+                  CONVERSATION CONSOLE
                 </span>
               </div>
               <AcousticVentGrille variant="strip" isLight={isLight} />
@@ -88,10 +88,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className={`text-2xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
-                  Briefing Request Received
+                  Message Received
                 </h3>
                 <p className={`text-justify text-sm max-w-md mx-auto leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                  Thank you. A Senior Partner will review your profile and contact you directly within 12 business hours.
+                  Thank you. A human will review your message and contact you directly within 12 business hours.
                 </p>
                 <button
                   onClick={() => setContactSubmitted(false)}
@@ -104,12 +104,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                      Executive Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
+<label htmlFor="ct-executive-name" className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+  Executive Name *
+</label>
+<input
+  id="ct-executive-name"
+  type="text"
+  required
                       placeholder="e.g. Dr. K. Mlangeni"
                       value={contactFormData.name}
                       onChange={(e) => setContactFormData({ ...contactFormData, name: e.target.value })}
@@ -121,12 +122,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     />
                   </div>
                   <div>
-                    <label className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                      Executive Title *
-                    </label>
-                    <input
-                      type="text"
-                      required
+<label htmlFor="ct-executive-title" className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+  Executive Title *
+</label>
+<input
+  id="ct-executive-title"
+  type="text"
+  required
                       placeholder="e.g. Chief Executive Officer"
                       value={contactFormData.title}
                       onChange={(e) => setContactFormData({ ...contactFormData, title: e.target.value })}
@@ -141,13 +143,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                      Institution / Entity *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Reserve Bank / Standard Bank"
+<label htmlFor="ct-organization" className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+  Institution / Entity *
+</label>
+<input
+  id="ct-organization"
+  type="text"
+  required
+                      placeholder="e.g. Your Organisation"
                       value={contactFormData.organization}
                       onChange={(e) => setContactFormData({ ...contactFormData, organization: e.target.value })}
                       className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-ls-red transition-colors font-medium ${
@@ -158,12 +161,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     />
                   </div>
                   <div>
-                    <label className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                      Official Email *
-                    </label>
-                    <input
-                      type="email"
-                      required
+<label htmlFor="ct-email" className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+  Official Email *
+</label>
+<input
+  id="ct-email"
+  type="email"
+  required
                       placeholder="executive@institution.com"
                       value={contactFormData.email}
                       onChange={(e) => setContactFormData({ ...contactFormData, email: e.target.value })}
@@ -177,10 +181,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                 </div>
 
                 <div>
-                  <label className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                    Target Engagement Model
-                  </label>
-                  <select
+<label htmlFor="ct-scope" className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+  Target Engagement Model
+</label>
+<select
+  id="ct-scope"
                     value={contactFormData.scope}
                     onChange={(e) => setContactFormData({ ...contactFormData, scope: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-ls-red transition-colors font-medium ${
@@ -197,11 +202,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                 </div>
 
                 <div>
-                  <label className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                    Strategic Objectives & Context
-                  </label>
-                  <textarea
-                    rows={3}
+<label htmlFor="ct-objective" className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+  Strategic Objectives & Context
+</label>
+<textarea
+  id="ct-objective"
+  rows={3}
                     placeholder="Describe your current bottlenecks, regulatory constraints, or legacy IT dependencies..."
                     value={contactFormData.objective}
                     onChange={(e) => setContactFormData({ ...contactFormData, objective: e.target.value })}
@@ -218,7 +224,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                     type="submit"
                     className="w-full py-3.5 rounded-xl bg-ls-red text-white font-bold text-xs tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-ls-red/25 active:scale-98"
                   >
-                    <span>Submit Confidential Executive Request</span>
+                    <span>Send — Start the Conversation</span>
                     <Send className="w-3.5 h-3.5" />
                   </button>
                 </div>

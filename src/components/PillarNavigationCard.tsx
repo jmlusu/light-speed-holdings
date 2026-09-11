@@ -11,10 +11,10 @@ interface PillarNavigationCardProps {
 }
 
 const PILLARS = [
-  { num: '01', title: 'Strategy', desc: 'Operating model redesign & capital allocation', tag: 'Executive', idx: 0 },
-  { num: '02', title: 'Intelligence', desc: 'Private data systems & knowledge graphs', tag: 'Data', idx: 1 },
-  { num: '03', title: 'AI-Native Systems', desc: 'Multi-agent orchestration & structured workflows', tag: 'Autonomous', idx: 2 },
-  { num: '04', title: 'Execution', desc: 'Legacy core integration & instant settlement', tag: 'Production', idx: 3 }
+  { num: '01', title: 'Strategy', desc: 'Transformation roadmap & operating model design', tag: 'Executive', idx: 0, to: '/solutions/strategy-advisory' },
+  { num: '02', title: 'Build', desc: 'Shipped agentic systems — agents, workflows, sites', tag: 'Delivery', idx: 1, to: '/solutions/agentic-ai' },
+  { num: '03', title: 'Govern', desc: 'Five-tier approvals, audit trails, regional policy', tag: 'Governance', idx: 2, to: '/technology#governance' },
+  { num: '04', title: 'Scale', desc: 'Licensed AI workforce, 90-day pilot to full-scale', tag: 'Production', idx: 3, to: '/ai-company-builder' }
 ];
 
 export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
@@ -25,6 +25,20 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
 }) => {
   const isLight = theme === 'light';
   const navigate = useNavigate();
+
+  const handleSelect = (item: typeof PILLARS[number]) => {
+    onSelectPillar(item.idx);
+    if (item.to.includes('#')) {
+      const [path, hash] = item.to.split('#');
+      navigate(path);
+      requestAnimationFrame(() => {
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    } else {
+      navigate(item.to);
+    }
+  };
   return (
     <div className={`p-6 sm:p-7 rounded-3xl max-w-md w-full transition-all duration-300 relative overflow-hidden ${
       isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
@@ -56,10 +70,7 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
         {PILLARS.map((p) => (
           <button
             key={p.num}
-            onClick={() => {
-              onSelectPillar(p.idx);
-              navigate(`/capabilities/offerings?offering=${p.idx}`);
-            }}
+            onClick={() => handleSelect(p)}
             className={`w-full text-left p-3 rounded-2xl transition-all cursor-pointer group ${
               activePillar === p.idx
                 ? isLight ? 'tactile-btn-active-light border-ls-red/50' : 'tactile-btn-active-dark border-ls-red/50'
