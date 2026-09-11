@@ -1,0 +1,73 @@
+---
+incident_id: {{ incident_id }}
+date: {{ date }}
+severity: {{ severity }}
+affected_agent: {{ affected_agent }}
+escalation_rule: {{ escalation_rule }}
+status: {{ status }}
+---
+
+# Postmortem: {{ title }}
+
+## Incident Summary
+
+| Field | Value |
+|-------|-------|
+| Incident ID | {{ incident_id }} |
+| Date | {{ date }} |
+| Severity | {{ severity }} |
+| Affected Agent | {{ affected_agent }} |
+| Department | {{ department }} |
+| Escalation Rule | {{ escalation_rule }} |
+| Duration | {{ duration }} |
+| Status | {{ status }} |
+
+## Timeline
+
+{% for event in timeline %}
+- **{{ event.time }}** — {{ event.description }}
+{% endfor %}
+
+## Root Cause Analysis
+
+{{ root_cause }}
+
+## Impact Assessment
+
+| Metric | Before | During | After |
+|--------|--------|--------|-------|
+| Tasks affected | {{ impact.tasks_before }} | {{ impact.tasks_during }} | {{ impact.tasks_after }} |
+| Agents affected | {{ impact.agents_before }} | {{ impact.agents_during }} | {{ impact.agents_after }} |
+| Downtime (minutes) | — | {{ impact.downtime_minutes }} | — |
+
+## Resolution Steps
+
+{% for step in resolution_steps %}
+{{ loop.index }}. {{ step }}
+{% endfor %}
+
+## Action Items
+
+| ID | Action | Owner | Due Date | Status |
+|----|--------|-------|----------|--------|
+{% for item in action_items %}
+| {{ item.id }} | {{ item.action }} | {{ item.owner }} | {{ item.due_date }} | {{ item.status }} |
+{% endfor %}
+
+## Lessons Learned
+
+{% for lesson in lessons %}
+- {{ lesson }}
+{% endfor %}
+
+## Prevention
+
+{% for measure in prevention_measures %}
+- {{ measure }}
+{% endfor %}
+
+---
+
+*Postmortem prepared by: {{ prepared_by }}*
+*Reviewed by: {{ reviewed_by }}*
+*Last updated: {{ last_updated }}*

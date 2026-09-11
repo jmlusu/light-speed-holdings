@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+{% block content %}
+<div x-data="orgChartInteractive()" x-init="init()" class="h-full">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-jarvis-primary">Organization Chart</h1>
+    <div class="flex gap-2">
+      <button @click="zoomIn()" class="btn-secondary text-sm" title="Zoom In">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/>
+        </svg>
+      </button>
+      <button @click="zoomOut()" class="btn-secondary text-sm" title="Zoom Out">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/>
+        </svg>
+      </button>
+      <button @click="fitToView()" class="btn-secondary text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+        </svg>
+        Fit
+      </button>
+      <button @click="resetZoom()" class="btn-secondary text-sm">Reset</button>
+      <span class="text-jarvis-text-muted text-sm self-center" x-text="zoom + '%'"></span>
+    </div>
+  </div>
+
+  <!-- Metrics Summary + Filter Bar -->
+  <div class="flex flex-wrap items-center gap-3 mb-4">
+    <template x-if="orgSummary">
+      <div class="flex flex-wrap gap-2">
+        <span class="org-summary-chip"><b x-text="orgSummary.total_agents"></b> agents</span>
+        <span class="org-summary-chip"><b x-text="orgSummary.avg_span_of_control"></b> avg span</span>
+        <span class="org-summary-chip"><b x-text="orgSummary.avg_capacity"></b>% avg load</span>
+        <span class="org-summary-chip"><b class="text-rose-400" x-text="orgSummary.at_risk_count"></b> at risk</span>
+      </div>
+    </template>
+    <div class="flex items-center gap-2 ml-auto">
+      <label class="text-xs text-jarvis-text-muted" for="risk-filter">Show</label>
+      <select id="risk-filter" x-model="riskFilter" class="bg-jarvis-surface border border-jarvis-border rounded text-sm text-jarvis-text px-2 py-1">
+        <option value="all">All agents</option>
+        <option value="at-risk">At risk</option>
+        <option value="senior">Senior / low risk</option>
+        <option value="busy">Overloaded (&ge;80%)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Org Tree Container -->
+  <div class="bg-jarvis-surface border border-jarvis-border rounded-lg overflow-auto relative"
+       style="height: calc(100vh - 200px);"
+       @mousedown="onPanStart($event)"
+       @mousemove="onPanMove($event)"
+       @mouseup="onPanEnd()"
+       @mouseleave="onPanEnd()"
+       @wheel="onWheelZoom($event)">
+
+    <!-- Loading State -->
+    <div x-show="loading" class="absolute inset-0 flex items-center justify-center z-10">
+      <div class="text-center">
+        <div class="inline-block w-8 h-8 border-2 border-jarvis-primary border-t-transparent rounded-full animate-spin mb-3"></div>
+        <p class="text-jarvis-text-muted text-sm">Loading organization chart...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div x-show="!loading && error" class="absolute inset-0 flex items-center justify-center z-10">
+      <div class="text-center max-w-md">
+        <svg class="w-12 h-12 mx-auto text-red-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <p class="text-red-400 text-sm font-medium mb-1" x-text="error"></p>
+        <button @click="loadOrgChart()" class="btn-secondary text-sm mt-2">Retry</button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="!loading && !error && tree.length === 0" class="absolute inset-0 flex items-center justify-center z-10">
+      <div class="text-center">
+        <svg class="w-12 h-12 mx-auto text-jarvis-text-muted mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <p class="text-jarvis-text-muted text-sm">No agents found in the organization.</p>
+      </div>
+    </div>
+
+    <!-- Org Tree -->
+    <div class="org-tree-container org-tree-bg overflow-auto"
+         style="height: calc(100vh - 200px);"
+         x-show="!loading && !error && tree.length > 0">
+      <div id="org-tree-root" class="org-tree p-8"
+           :style="'zoom:' + (zoom / 100)">
+        <div x-html="renderTree()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Detail Panel -->
+  <div x-show="selectedNode && detailPanelOpen" x-transition
+       class="fixed bottom-4 right-4 w-80 bg-jarvis-surface border border-jarvis-border rounded-lg shadow-xl z-40"
+       @click.outside="closeDetailPanel()">
+    <div class="p-4">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <h3 class="text-lg font-semibold text-jarvis-text" x-text="selectedNode?.name"></h3>
+          <p class="text-sm text-jarvis-text-muted" x-text="selectedNode?.role"></p>
+        </div>
+        <button @click="closeDetailPanel()" class="text-jarvis-text-muted hover:text-jarvis-text">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Type</span>
+          <span :class="getTierBadgeClass(selectedNode?.type)" class="px-2 py-0.5 rounded text-xs"
+                x-text="selectedNode?.type"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Department</span>
+          <span class="text-jarvis-text" x-text="selectedNode?.department || '—'"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Reports To</span>
+          <span class="text-jarvis-text" x-text="selectedNode?.reports_to || 'None (root)'"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Direct Reports</span>
+          <span class="text-jarvis-text" x-text="childCount(selectedNode)"></span>
+        </div>
+        <!-- Live status -->
+        <div class="flex justify-between">
+          <span class="text-jarvis-text-muted">Status</span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full" :class="getStatusDotClass(selectedNode?.name)"></span>
+            <span class="text-jarvis-text text-xs" x-text="getStatusLabel(selectedNode?.name)"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Metrics & Risk -->
+      <template x-if="selectedNode?.metrics">
+        <div class="mt-3 pt-3 border-t border-jarvis-border">
+          <p class="text-xs font-semibold text-jarvis-text-muted mb-2">Live Metrics</p>
+          <div class="space-y-2 text-sm">
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-jarvis-text-muted text-xs">Load (capacity)</span>
+                <span class="text-jarvis-text text-xs" x-text="selectedNode.metrics.capacity + '%'"></span>
+              </div>
+              <div class="h-1.5 w-full rounded bg-jarvis-border overflow-hidden">
+                <div class="h-full rounded" :class="_capacityBarClass(selectedNode.metrics.capacity)"
+                     :style="'width:' + selectedNode.metrics.capacity + '%'"></div>
+              </div>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-jarvis-text-muted text-xs">Active / Queued</span>
+              <span class="text-jarvis-text text-xs font-medium"
+                    x-text="selectedNode.metrics.active + ' / ' + selectedNode.metrics.queued"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-jarvis-text-muted text-xs">Completed</span>
+              <span class="text-jarvis-text text-xs" x-text="selectedNode.metrics.completed"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-jarvis-text-muted text-xs">Trend</span>
+              <span class="text-jarvis-text text-xs capitalize" x-text="selectedNode.metrics.utilization_trend || 'n/a'"></span>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template x-if="selectedNode?.risk">
+        <div class="mt-3 pt-3 border-t border-jarvis-border">
+          <p class="text-xs font-semibold text-jarvis-text-muted mb-2">Succession & Bus-Factor Risk</p>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-jarvis-text-muted text-xs">Risk</span>
+              <span class="text-xs px-2 py-0.5 rounded capitalize font-medium"
+                    :class="_riskBadgeClass(selectedNode?.risk)">
+                <span x-text="selectedNode.risk.succession_risk"></span>
+              </span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-jarvis-text-muted text-xs">Direct reports</span>
+              <span class="text-jarvis-text text-xs" x-text="selectedNode.risk.direct_reports"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-jarvis-text-muted text-xs">Unique skills</span>
+              <span class="text-jarvis-text text-xs" x-text="selectedNode.risk.unique_skills"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-jarvis-text-muted text-xs">Tenure</span>
+              <span class="text-jarvis-text text-xs capitalize" x-text="selectedNode.risk.tenure"></span>
+            </div>
+            <template x-if="selectedNode.risk.last_review">
+              <div class="flex justify-between">
+                <span class="text-jarvis-text-muted text-xs">Last review</span>
+                <span class="text-jarvis-text text-xs" x-text="selectedNode.risk.last_review"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <!-- Activity feed (if any) -->
+      <template x-if="activityFeed[selectedNode?.name]?.length > 0">
+        <div class="mt-3 pt-3 border-t border-jarvis-border">
+          <p class="text-[10px] font-semibold text-jarvis-text-muted uppercase tracking-wider mb-2">Recent Activity</p>
+          <div class="space-y-1.5 max-h-24 overflow-y-auto">
+            <template x-for="(item, idx) in activityFeed[selectedNode?.name]" :key="idx">
+              <div class="flex items-start gap-2 text-xs">
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-medium" :class="eventBadgeClass(item.event)" x-text="item.event"></span>
+                <span class="text-jarvis-text-muted truncate flex-1" x-text="item.detail || '—'"></span>
+                <span class="text-jarvis-text-muted text-[10px] shrink-0" x-text="timeAgo(item.timestamp)"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <div class="flex gap-2 mt-4">
+        <button @click="viewFullDetails(selectedNode?.name)" class="btn-primary flex-1 text-sm">
+          View Details
+        </button>
+        <button @click="startReassign(selectedNode)" class="btn-secondary flex-1 text-sm">
+          Reassign
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reassign Modal -->
+  <div x-show="showReassignModal" x-transition class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-jarvis-surface border border-jarvis-border rounded-lg p-6 w-96">
+      <h3 class="text-lg font-semibold text-jarvis-text mb-4">Reassign Reports To</h3>
+      <p class="text-jarvis-text-muted mb-4">
+        Move <span x-text="reassigningAgent?.name" class="font-medium"></span> to report to:
+      </p>
+      <select x-model="newManager" class="input-jarvis w-full mb-4">
+        <option value="">Select manager...</option>
+        <template x-for="agent in allAgents" :key="agent.name">
+          <option :value="agent.name" x-text="agent.name + ' (' + agent.role + ')'"></option>
+        </template>
+      </select>
+      <div class="flex justify-end gap-2">
+        <button @click="showReassignModal = false" class="btn-secondary">Cancel</button>
+        <button @click="confirmReassign()" class="btn-primary" :disabled="!newManager">Reassign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Recursive tree layout */
+  .org-tree-recursive-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    width: fit-content;
+  }
+  .org-tree-recursive-children {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .org-tree-recursive-subtree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .org-tree-recursive-node.drag-over .node-card {
+    border-color: var(--jarvis-cyan);
+    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.3);
+  }
+  .org-tree-recursive-node[draggable="true"] {
+    cursor: grab;
+  }
+  .org-tree-recursive-node[draggable="true"]:active {
+    cursor: grabbing;
+  }
+  .org-tree-recursive-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--jarvis-surface);
+    border: 1px solid var(--jarvis-border);
+    color: var(--jarvis-text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-top: 0.25rem;
+  }
+  .org-tree-recursive-toggle:hover {
+    background: var(--jarvis-bg-raised, rgba(255,255,255,0.05));
+    color: var(--jarvis-text);
+    border-color: var(--jarvis-cyan);
+  }
+  .org-filter-dim {
+    opacity: 0.35;
+    filter: grayscale(0.6);
+    transition: opacity 0.15s ease;
+  }
+  .org-summary-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.375rem;
+    background: var(--jarvis-surface);
+    border: 1px solid var(--jarvis-border);
+    font-size: 12px;
+    color: var(--jarvis-text-muted);
+  }
+  .org-summary-chip b {
+    color: var(--jarvis-text);
+    font-weight: 600;
+  }
+</style>
+
+<script src="/static/js/org-chart-interactive.js"></script>
+{% endblock %}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="AI Company Builder — Mobile CEO Dashboard">
+
+  <title>CEO Dashboard — Mobile</title>
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/css/mobile.css">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="mobileDashboard()" x-init="init()" x-cloak>
+
+  <!-- Offline Banner -->
+  <div class="offline-banner" :class="{ 'offline-banner--visible': !isOnline }">
+    You are offline — actions will sync when reconnected
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container">
+    <template x-for="toast in toasts" :key="toast.id">
+      <div class="toast" :class="'toast--' + toast.type" x-text="toast.message"></div>
+    </template>
+  </div>
+
+  <!-- Header -->
+  <header class="mobile-header">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="mobile-header__logo">LS</div>
+      <span class="mobile-header__title">CEO Dashboard</span>
+    </div>
+    <div class="mobile-header__status">
+      <div class="status-dot" :class="{ 'status-dot--live': isOnline }"></div>
+      <span x-text="isOnline ? 'Live' : 'Offline'"></span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="mobile-content"
+        @touchstart="onPtrTouchStart($event)"
+        @touchmove="onPtrTouchMove($event)"
+        @touchend="onPtrTouchEnd()">
+
+    <!-- Pull-to-Refresh Indicator -->
+    <div class="ptr-indicator" :class="{ 'ptr-indicator--visible': ptrActive }" :style="ptrIndicatorStyle">
+      <div class="ptr-spinner" :class="{ 'ptr-spinner--spinning': ptrActive }"></div>
+    </div>
+
+    <!-- ═══════════════════════ DASHBOARD TAB ═══════════════════════ -->
+    <div x-show="activeTab === 'dashboard'">
+
+      <!-- Urgent Alerts -->
+      <template x-if="urgent.approval_count > 0">
+        <div class="alert-banner alert-banner--urgent">
+          <div class="alert-banner__count" x-text="urgent.approval_count"></div>
+          <span>Pending approvals need your attention</span>
+        </div>
+      </template>
+      <template x-if="urgent.escalation_count > 0">
+        <div class="alert-banner alert-banner--warning">
+          <div class="alert-banner__count" x-text="urgent.escalation_count"></div>
+          <span>Open escalations require review</span>
+        </div>
+      </template>
+
+      <!-- KPI Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-card__label">Pending</div>
+          <div class="kpi-card__value" x-text="kpis.pending"></div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-card__label">Done</div>
+          <div class="kpi-card__value" x-text="kpis.completed"></div>
+        </div>
+        <div class="kpi-card kpi-card--red">
+          <div class="kpi-card__label">Escalations</div>
+          <div class="kpi-card__value" x-text="kpis.escalations"></div>
+        </div>
+        <div class="kpi-card kpi-card--purple">
+          <div class="kpi-card__label">Approvals</div>
+          <div class="kpi-card__value" x-text="kpis.approvals"></div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button class="swipe-btn swipe-btn--approve"
+                style="flex:1;width:auto;border-radius:12px;height:44px;gap:6px;"
+                @click="activeTab='approvals'; loadTab('approvals')"
+                x-show="kpis.approvals > 0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="font-size:13px;font-weight:600;" x-text="'Review ' + kpis.approvals + ' approvals'"></span>
+        </button>
+        <button class="swipe-btn swipe-btn--reject"
+                style="flex:1;width:auto;border-radius:12px;height:44px;gap:6px;"
+                @click="activeTab='tasks'; loadTab('tasks')"
+                x-show="kpis.pending > 0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+          <span style="font-size:13px;font-weight:600;" x-text="kpis.pending + ' tasks pending'"></span>
+        </button>
+      </div>
+
+      <!-- Recent Tasks -->
+      <div class="section-header">
+        <span class="section-header__title">Recent Tasks</span>
+        <button class="section-header__action" @click="activeTab='tasks'; loadTab('tasks')">View all</button>
+      </div>
+
+      <template x-if="recentTasks.length === 0">
+        <div class="empty-state">
+          <div class="empty-state__icon">📋</div>
+          <div class="empty-state__text">No recent tasks</div>
+        </div>
+      </template>
+
+      <div class="task-list">
+        <template x-for="task in recentTasks" :key="task.id">
+          <div class="task-card">
+            <div class="task-card__header">
+              <span class="task-card__agent" x-text="task.to"></span>
+              <span class="badge" :class="priorityBadgeClass(task.priority)" x-text="formatPriority(task.priority)"></span>
+            </div>
+            <div class="task-card__instruction" x-text="task.instruction"></div>
+            <div class="task-card__meta">
+              <span class="badge" :class="statusBadgeClass(task.status)" x-text="task.status"></span>
+              <span style="color:var(--gray-400);font-size:11px;" x-text="task.created"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════ APPROVALS TAB ═══════════════════════ -->
+    <div x-show="activeTab === 'approvals'">
+
+      <div class="section-header">
+        <span class="section-header__title">Pending Approvals</span>
+        <span style="font-size:13px;color:var(--gray-400);"
+              x-text="approvalStack.total_pending + ' remaining'"></span>
+      </div>
+
+      <!-- Swipe Stack -->
+      <template x-if="hasCurrentApproval">
+        <div>
+          <div class="swipe-stack"
+               @touchstart="onSwipeStart($event)"
+               @touchmove="onSwipeMove($event)"
+               @touchend="onSwipeEnd()">
+
+            <!-- Behind cards (stacked) -->
+            <template x-if="approvalStack.stack.length > 1">
+              <div class="swipe-card swipe-card--behind-2">
+                <div class="swipe-card__agent" x-text="approvalStack.stack[1]?.agent_id"></div>
+                <div class="swipe-card__action" x-text="approvalStack.stack[1]?.action"></div>
+              </div>
+            </template>
+            <template x-if="approvalStack.stack.length > 0">
+              <div class="swipe-card swipe-card--behind-1">
+                <div class="swipe-card__agent" x-text="approvalStack.stack[0]?.agent_id"></div>
+                <div class="swipe-card__action" x-text="approvalStack.stack[0]?.action"></div>
+              </div>
+            </template>
+
+            <!-- Active card -->
+            <div class="swipe-card" :style="getSwipeCardStyle()">
+              <!-- Swipe indicators -->
+              <div class="swipe-indicator swipe-indicator--approve"
+                   :style="'opacity:' + (swipeOffset > 0 ? getSwipeIndicatorOpacity() : 0)">
+                APPROVE
+              </div>
+              <div class="swipe-indicator swipe-indicator--reject"
+                   :style="'opacity:' + (swipeOffset < 0 ? getSwipeIndicatorOpacity() : 0)">
+                REJECT
+              </div>
+
+              <div class="swipe-card__agent" x-text="currentApproval?.agent_id"></div>
+              <div class="swipe-card__action" x-text="currentApproval?.action"></div>
+              <div class="swipe-card__description" x-text="currentApproval?.description"></div>
+              <div class="swipe-card__priority">
+                <span class="badge" :class="priorityBadgeClass(currentApproval?.priority || 'medium')"
+                      x-text="formatPriority(currentApproval?.priority || 'medium')"></span>
+              </div>
+              <div style="font-size:11px;color:var(--gray-400);">
+                Expires: <span x-text="currentApproval?.expires_at ? new Date(currentApproval.expires_at).toLocaleDateString() : 'No expiry'"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="swipe-actions">
+            <button class="swipe-btn swipe-btn--reject" @click="tapReject()" aria-label="Reject">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <button class="swipe-btn swipe-btn--skip" @click="tapSkip()" aria-label="Skip">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="7 17 17 7"/><polyline points="7 7 17 7 17 17"/>
+              </svg>
+            </button>
+            <button class="swipe-btn swipe-btn--approve" @click="tapApprove()" aria-label="Approve">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+          </div>
+
+          <div style="text-align:center;font-size:12px;color:var(--gray-400);margin-top:4px;">
+            Swipe right to approve · Swipe left to reject · Tap buttons for quick actions
+          </div>
+        </div>
+      </template>
+
+      <!-- Empty state -->
+      <template x-if="!hasCurrentApproval">
+        <div class="empty-state">
+          <div class="empty-state__icon">✅</div>
+          <div class="empty-state__text">No pending approvals — all clear!</div>
+        </div>
+      </template>
+    </div>
+
+    <!-- ═══════════════════════ TASKS TAB ═══════════════════════ -->
+    <div x-show="activeTab === 'tasks'">
+
+      <!-- Task Filters -->
+      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;margin-bottom:4px;-webkit-overflow-scrolling:touch;">
+        <template x-for="s in ['all', 'pending', 'in_progress', 'completed', 'failed']" :key="s">
+          <button @click="setTaskFilter(s)"
+                  :class="taskFilter === s ? 'badge--blue' : 'badge--gray'"
+                  class="badge"
+                  style="flex-shrink:0;padding:4px 12px;cursor:pointer;border:none;"
+                  x-text="s === 'all' ? 'All' : s.replace('_', ' ')">
+          </button>
+        </template>
+      </div>
+
+      <!-- Task List -->
+      <div class="task-list">
+        <template x-for="task in tasks" :key="task.id">
+          <div class="task-card">
+            <div class="task-card__header">
+              <span class="task-card__agent" x-text="task.to"></span>
+              <span class="badge" :class="priorityBadgeClass(task.priority)" x-text="formatPriority(task.priority)"></span>
+            </div>
+            <div class="task-card__instruction" x-text="task.instruction"></div>
+            <div class="task-card__meta">
+              <span class="badge" :class="statusBadgeClass(task.status)" x-text="task.status"></span>
+              <span style="color:var(--gray-400);font-size:11px;" x-text="task.id"></span>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Empty -->
+      <template x-if="tasks.length === 0 && !tasksLoading">
+        <div class="empty-state">
+          <div class="empty-state__icon">📋</div>
+          <div class="empty-state__text">No tasks found</div>
+        </div>
+      </template>
+
+      <!-- Loading skeleton -->
+      <template x-if="tasksLoading">
+        <div class="task-list">
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+        </div>
+      </template>
+
+      <!-- Load More -->
+      <template x-if="hasMoreTasks && !tasksLoading && tasks.length > 0">
+        <button @click="loadMoreTasks()"
+                style="display:block;width:100%;margin-top:12px;padding:12px;background:var(--brand-50);color:var(--brand-700);border:1px solid var(--brand-100);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;text-align:center;">
+          Load more tasks
+        </button>
+      </template>
+    </div>
+
+    <!-- ═══════════════════════ AGENTS TAB ═══════════════════════ -->
+    <div x-show="activeTab === 'agents'">
+
+      <div class="section-header">
+        <span class="section-header__title">Agents</span>
+        <span style="font-size:13px;color:var(--gray-400);"
+              x-text="agents.length + ' total'"></span>
+      </div>
+
+      <div class="task-list">
+        <template x-for="agent in agents" :key="agent.name">
+          <div class="task-card">
+            <div class="task-card__header">
+              <span class="task-card__agent" x-text="agent.name"></span>
+              <span class="badge badge--blue" x-text="agent.type"></span>
+            </div>
+            <div class="task-card__instruction" x-text="agent.role"></div>
+            <div class="task-card__meta">
+              <span class="badge badge--gray" x-text="agent.department || 'General'" style="font-size:10px;"></span>
+              <template x-if="agent.model">
+                <span style="font-size:10px;color:var(--amber-600);font-family:monospace;" x-text="agent.model"></span>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <template x-if="agents.length === 0">
+        <div class="empty-state">
+          <div class="empty-state__icon">👥</div>
+          <div class="empty-state__text">No agents loaded</div>
+        </div>
+      </template>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+    <template x-for="tab in tabs" :key="tab.id">
+      <button class="bottom-nav__item"
+              :class="{ 'bottom-nav__item--active': activeTab === tab.id }"
+              @click="loadTab(tab.id)"
+              :aria-label="tab.label"
+              :aria-current="activeTab === tab.id ? 'page' : false">
+
+        <!-- Icons -->
+        <template x-if="tab.icon === 'home'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </template>
+        <template x-if="tab.icon === 'check'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </template>
+        <template x-if="tab.icon === 'list'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </template>
+        <template x-if="tab.icon === 'users'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </template>
+
+        <span x-text="tab.label"></span>
+
+        <!-- Badge for urgent items on Approvals tab -->
+        <template x-if="tab.id === 'approvals' && urgentBadgeCount() > 0">
+          <span class="bottom-nav__badge" x-text="urgentBadgeCount()"></span>
+        </template>
+      </button>
+    </template>
+  </nav>
+
+  <script src="/js/mobile.js"></script>
+</body>
+</html>
