@@ -1,0 +1,548 @@
+"""Tests for GAP-017 — task timeout detection and dead-letter queue."""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import pytest
+
+from ai_company.executor.dead_letter import (
+    DeadLetterQueue,
+    detect_stale_tasks,
+    retry_dlq_task,
+)
+from ai_company.models.task import Task
+
+
+@pytest.fixture(autouse=True)
+def _anchor_data_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Anchor DASHBOARD_DATA_DIR so default-constructed MessageBus / AuditWriter
+    (e.g. the executor's internal bus) stay inside the per-test tmp dir instead
+    of the real project ``.opencode`` directory."""
+    monkeypatch.setenv("DASHBOARD_DATA_DIR", str(tmp_path))
+
+
+# ── DeadLetterQueue unit tests ────────────────────────────────────────
+
+
+class TestDeadLetterQueue:
+    def test_creates_dlq_file(self, tmp_path: Path) -> None:
+        dlq_path = tmp_path / "dlq.json"
+        dlq = DeadLetterQueue(dlq_path=str(dlq_path))
+        assert dlq_path.exists()
+        assert dlq.list_entries() == []
+
+    def test_move_task_adds_entry(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        task = {"id": "t1", "receiver_id": "agent", "instruction": "do stuff"}
+        entry = dlq.move_task(task, reason="stale timeout")
+        assert entry["task"]["id"] == "t1"
+        assert entry["reason"] == "stale timeout"
+        assert "moved_at" in entry
+        assert len(dlq.list_entries()) == 1
+
+    def test_move_task_moved_at_is_utc_aware(self, tmp_path: Path) -> None:
+        """DLQ moved_at must be a UTC-aware ISO timestamp (issue #55)."""
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        entry = dlq.move_task({"id": "t1"}, reason="stale timeout")
+        assert entry["moved_at"].endswith("+00:00") or entry["moved_at"].endswith("Z")
+        assert datetime.fromisoformat(entry["moved_at"]).tzinfo is not None
+
+    def test_list_entries_returns_all(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        dlq.move_task({"id": "t1"}, "reason1")
+        dlq.move_task({"id": "t2"}, "reason2")
+        entries = dlq.list_entries()
+        assert len(entries) == 2
+
+    def test_get_task_by_id(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        dlq.move_task({"id": "t-abc", "instruction": "test"}, "stale")
+        found = dlq.get_task("t-abc")
+        assert found is not None
+        assert found["task"]["instruction"] == "test"
+
+    def test_get_task_not_found(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        assert dlq.get_task("nonexistent") is None
+
+    def test_retry_task_removes_from_dlq(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        dlq.move_task({"id": "t1", "instruction": "retry me"}, "timeout")
+        restored = dlq.retry_task("t1")
+        assert restored is not None
+        assert restored["id"] == "t1"
+        # Should be removed from DLQ
+        assert dlq.get_task("t1") is None
+
+    def test_retry_task_not_found(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        assert dlq.retry_task("nonexistent") is None
+
+    def test_clear_removes_all(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        dlq.move_task({"id": "t1"}, "r1")
+        dlq.move_task({"id": "t2"}, "r2")
+        count = dlq.clear()
+        assert count == 2
+        assert dlq.list_entries() == []
+
+
+# ── Bus-backed DLQ retry ──────────────────────────────────────────────
+
+
+class TestRetryDlqTask:
+    """retry_dlq_task must re-enqueue through the bus (atomic + mirrored)."""
+
+    def test_retry_reenqueues_as_pending(self, tmp_path: Path) -> None:
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+
+        task = {
+            "id": "t-retry",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "retry me",
+            "status": "in_progress",
+            "claimed_by": "worker-1",
+            "lease_expires_at": "2026-01-01T00:00:00",
+            "completed_at": "2026-01-01T00:00:01",
+            "result": "boom",
+        }
+        dlq.move_task(task, "lease expired")
+
+        restored = retry_dlq_task(bus, dlq, "t-retry")
+        assert restored is not None
+        assert restored["status"] == "pending"
+        # Claim/lease/completion state must be cleared so it is claimable again.
+        assert "claimed_by" not in restored
+        assert "lease_expires_at" not in restored
+        assert "completed_at" not in restored
+        assert "result" not in restored
+
+        # Removed from the DLQ and re-injected into the inbox via the bus.
+        assert dlq.get_task("t-retry") is None
+        inbox = bus.get_all_tasks_raw()
+        assert len(inbox) == 1
+        assert inbox[0]["id"] == "t-retry"
+        assert inbox[0]["status"] == "pending"
+
+    def test_retry_updated_at_is_utc_aware(self, tmp_path: Path) -> None:
+        """The re-enqueued task's updated_at must be UTC-aware (issue #55)."""
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+
+        task = {
+            "id": "t-retry-utc",
+            "sender_id": "a",
+            "receiver_id": "b",
+            "instruction": "retry me",
+            "status": "in_progress",
+            "claimed_by": "worker-1",
+            "lease_expires_at": "2026-01-01T00:00:00",
+        }
+        dlq.move_task(task, "lease expired")
+
+        restored = retry_dlq_task(bus, dlq, "t-retry-utc")
+        assert restored is not None
+        assert restored["updated_at"].endswith("+00:00") or restored["updated_at"].endswith("Z")
+        assert datetime.fromisoformat(restored["updated_at"]).tzinfo is not None
+
+    def test_retry_not_found_returns_none(self, tmp_path: Path) -> None:
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+
+        assert retry_dlq_task(bus, dlq, "nope") is None
+        assert bus.get_all_tasks_raw() == []
+
+
+# ── Stale task detection ─────────────────────────────────────────────
+
+
+class _FakeBus:
+    """Minimal MessageBus stub for stale-task detection tests."""
+
+    def __init__(self, tasks: list[dict]) -> None:
+        self._tasks: list[dict] = list(tasks)
+        self.deleted: list[str] = []
+        self.retried: list[Task] = []
+
+    def get_all_tasks_raw(self) -> list[dict]:
+        return list(self._tasks)
+
+    def delete_task(self, task_id: str) -> None:
+        self.deleted.append(task_id)
+        self._tasks = [t for t in self._tasks if str(t.get("id")) != task_id]
+
+    def send_task(self, task: Task) -> None:
+        self.retried.append(task)
+        self._tasks.append(task.model_dump())
+
+    def remaining_tasks(self) -> list[dict]:
+        return list(self._tasks)
+
+
+class TestStaleDetection:
+    def _make_task(
+        self,
+        task_id: str,
+        status: str = "in_progress",
+        created_at: str = "",
+        updated_at: str = "",
+        retry_budget: int = 0,
+        retry_count: int = 0,
+    ) -> dict:
+        return {
+            "id": task_id,
+            "sender_id": "ceo",
+            "receiver_id": "agent",
+            "instruction": f"Task {task_id}",
+            "status": status,
+            "priority": "medium",
+            "created_at": created_at,
+            "updated_at": updated_at,
+            "retry_budget": retry_budget,
+            "retry_count": retry_count,
+        }
+
+    def test_no_stale_tasks_when_recent(self, tmp_path: Path) -> None:
+        """Tasks with recent timestamps should not be detected as stale."""
+        now = datetime.now(timezone.utc).isoformat()
+        bus = _FakeBus([self._make_task("t1", created_at=now)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 0
+        assert dlq.list_entries() == []
+        assert bus.deleted == []
+
+    def test_stale_task_detected_and_moved(self, tmp_path: Path) -> None:
+        """Task older than threshold should be moved to DLQ when budget=0."""
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus([self._make_task("t-stale", created_at=stale_time, retry_budget=0)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert moved[0]["id"] == "t-stale"
+
+        # Task should be removed from inbox via the bus
+        assert bus.deleted == ["t-stale"]
+        assert bus.remaining_tasks() == []
+
+        # Task should be in DLQ
+        entry = dlq.get_task("t-stale")
+        assert entry is not None
+
+    def test_updated_at_preferred_over_created_at(self, tmp_path: Path) -> None:
+        """When updated_at is present, it should be used for staleness check."""
+        recent = datetime.now(timezone.utc).isoformat()
+        old = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus([self._make_task("t-upd", created_at=recent, updated_at=old)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert bus.deleted == ["t-upd"]
+
+    def test_pending_tasks_not_moved(self, tmp_path: Path) -> None:
+        """Only in_progress tasks should be considered stale."""
+        old = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus(
+            [
+                self._make_task("t-pending", status="pending", created_at=old),
+                self._make_task("t-completed", status="completed", created_at=old),
+            ]
+        )
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 0
+        assert bus.deleted == []
+
+    def test_no_timestamp_treated_as_stale(self, tmp_path: Path) -> None:
+        """Task with no timestamps should be treated as stale (budget=0 -> DLQ)."""
+        bus = _FakeBus([self._make_task("t-nots", created_at="", updated_at="", retry_budget=0)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert bus.deleted == ["t-nots"]
+
+    def test_unparseable_timestamp_treated_as_stale(self, tmp_path: Path) -> None:
+        """Task with garbage timestamp should be treated as stale (budget=0 -> DLQ)."""
+        bus = _FakeBus([self._make_task("t-bad", created_at="not-a-date", retry_budget=0)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert bus.deleted == ["t-bad"]
+
+    def test_legacy_naive_timestamp_treated_as_utc(self, tmp_path: Path) -> None:
+        """A naive legacy timestamp is interpreted as UTC for staleness (budget=0 -> DLQ)."""
+        old_naive = (datetime.now(timezone.utc) - timedelta(minutes=60)).strftime(
+            "%Y-%m-%dT%H:%M:%S"
+        )
+        bus = _FakeBus([self._make_task("t-legacy", created_at=old_naive, retry_budget=0)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert bus.deleted == ["t-legacy"]
+
+    def test_empty_inbox_returns_empty(self, tmp_path: Path) -> None:
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(_FakeBus([]), dlq)
+        assert moved == []
+
+    def test_mixed_tasks_partial_move(self, tmp_path: Path) -> None:
+        """Only stale in_progress tasks with budget=0 should be DLQ'd; others stay."""
+        now = datetime.now(timezone.utc).isoformat()
+        old = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus(
+            [
+                self._make_task("t-recent", status="in_progress", created_at=now),
+                self._make_task("t-stale", status="in_progress", created_at=old, retry_budget=0),
+                self._make_task("t-pending-old", status="pending", created_at=old),
+            ]
+        )
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        moved = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+        assert len(moved) == 1
+        assert moved[0]["id"] == "t-stale"
+        assert bus.deleted == ["t-stale"]
+
+        # Two tasks should remain in the inbox
+        remaining = bus.remaining_tasks()
+        assert len(remaining) == 2
+        ids = {t["id"] for t in remaining}
+        assert "t-stale" not in ids
+
+
+# ── ADR-015 auto-retry tests ─────────────────────────────────────────
+
+
+class TestAutoRetry:
+    """Tests for stale-lease auto-retry (ADR-015)."""
+
+    def test_stale_task_auto_retried_when_budget_remaining(self, tmp_path: Path) -> None:
+        """Stale task with retry_count < retry_budget is re-enqueued as pending."""
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus(
+            [self._make_task("t-retry", created_at=stale_time, retry_budget=3, retry_count=0)]
+        )
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        acted = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+
+        assert len(acted) == 1
+        assert acted[0]["id"] == "t-retry"
+        # Task should be re-enqueued, not DLQ'd
+        assert len(bus.retried) == 1
+        assert bus.retried[0].id == "t-retry"
+        assert bus.retried[0].status.value == "pending"
+        assert bus.retried[0].retry_count == 1
+        # Deleted from inbox then re-enqueued
+        assert "t-retry" in bus.deleted
+        assert dlq.list_entries() == []
+
+    def test_stale_task_auto_retry_increments_count(self, tmp_path: Path) -> None:
+        """Each auto-retry increments retry_count."""
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus(
+            [self._make_task("t-inc", created_at=stale_time, retry_budget=3, retry_count=2)]
+        )
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        acted = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+
+        assert len(acted) == 1
+        assert bus.retried[0].retry_count == 3
+
+    def test_stale_task_dlq_when_budget_exhausted(self, tmp_path: Path) -> None:
+        """Stale task with retry_count >= retry_budget goes to DLQ."""
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus(
+            [self._make_task("t-exhaust", created_at=stale_time, retry_budget=3, retry_count=3)]
+        )
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        acted = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+
+        assert len(acted) == 1
+        assert acted[0]["id"] == "t-exhaust"
+        # Should be DLQ'd, not retried
+        assert len(bus.retried) == 0
+        assert "t-exhaust" in bus.deleted
+        entry = dlq.get_task("t-exhaust")
+        assert entry is not None
+        assert entry["task"].get("dlq_reason") == "stale_lease_exhausted"
+        assert entry["task"].get("retry_count") == 3
+        assert entry["task"].get("retry_budget") == 3
+
+    def test_stale_task_default_budget_when_missing(self, tmp_path: Path) -> None:
+        """Task with no retry_budget defaults to STALE_RETRY_MAX (3)."""
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus([self._make_task("t-nodef", created_at=stale_time, retry_budget=0)])
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        acted = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+
+        # budget=0 means exhausted -> DLQ
+        assert len(acted) == 1
+        assert len(bus.retried) == 0
+        entry = dlq.get_task("t-nodef")
+        assert entry is not None
+
+    def test_stale_task_first_failure_retried(self, tmp_path: Path) -> None:
+        """retry_count=0, retry_budget=3 -> first failure is auto-retried."""
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        bus = _FakeBus(
+            [self._make_task("t-first", created_at=stale_time, retry_budget=3, retry_count=0)]
+        )
+
+        dlq = DeadLetterQueue(dlq_path=str(tmp_path / "dlq.json"))
+        acted = detect_stale_tasks(bus, dlq, threshold_minutes=30)
+
+        assert len(acted) == 1
+        assert len(bus.retried) == 1
+        assert bus.retried[0].retry_count == 1
+        assert dlq.list_entries() == []
+
+    def _make_task(
+        self,
+        task_id: str,
+        status: str = "in_progress",
+        created_at: str = "",
+        updated_at: str = "",
+        retry_budget: int = 0,
+        retry_count: int = 0,
+    ) -> dict:
+        return {
+            "id": task_id,
+            "sender_id": "ceo",
+            "receiver_id": "agent",
+            "instruction": f"Task {task_id}",
+            "status": status,
+            "priority": "medium",
+            "created_at": created_at,
+            "updated_at": updated_at,
+            "retry_budget": retry_budget,
+            "retry_count": retry_count,
+        }
+
+
+# ── MessageBus.resume_task CAS tests ─────────────────────────────────
+
+
+class TestResumeTaskCAS:
+    """Tests for the CAS-guarded resume_task() method (ADR-015)."""
+
+    def test_resume_transitions_to_pending(self, tmp_path: Path) -> None:
+        """resume_task() transitions waiting_approval -> pending."""
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        from ai_company.models.task import Task
+
+        task = Task(id="t-resume", sender_id="ceo", receiver_id="agent", instruction="test")
+        task.status = "waiting_approval"
+        bus.send_task(task)
+
+        result = bus.resume_task("t-resume", "waiting_approval")
+        assert result is not None
+        assert result.status.value == "pending"
+
+    def test_resume_returns_none_when_already_resumed(self, tmp_path: Path) -> None:
+        """resume_task() returns None if status is no longer waiting_approval."""
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        from ai_company.models.task import Task
+
+        task = Task(id="t-dup", sender_id="ceo", receiver_id="agent", instruction="test")
+        task.status = "waiting_approval"
+        bus.send_task(task)
+
+        # First resume succeeds
+        result1 = bus.resume_task("t-dup", "waiting_approval")
+        assert result1 is not None
+
+        # Second resume fails (status is now pending, not waiting_approval)
+        result2 = bus.resume_task("t-dup", "waiting_approval")
+        assert result2 is None
+
+    def test_resume_returns_none_for_missing_task(self, tmp_path: Path) -> None:
+        """resume_task() returns None for nonexistent task."""
+        from ai_company.orchestrator.message_bus import MessageBus
+
+        bus = MessageBus(storage_path=str(tmp_path / "inbox.json"))
+        result = bus.resume_task("nonexistent", "waiting_approval")
+        assert result is None
+
+
+# ── Executor loop integration ─────────────────────────────────────────
+
+
+class TestExecutorStaleDetection:
+    """Integration test: verify Executor.tick() triggers stale detection."""
+
+    def test_tick_moves_stale_tasks(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.chdir(tmp_path)
+
+        # Setup required files
+        (tmp_path / "company").mkdir(exist_ok=True)
+        (tmp_path / "company" / "models.yaml").write_text(
+            json.dumps({"providers": {}, "tiers": {}, "routing": []}), encoding="utf-8"
+        )
+        (tmp_path / "company" / "agent-registry.json").write_text("[]", encoding="utf-8")
+        (tmp_path / ".opencode").mkdir(exist_ok=True)
+        (tmp_path / "orchestrator").mkdir(exist_ok=True)
+        (tmp_path / "orchestrator" / "approvals.yaml").write_text("requests: []", encoding="utf-8")
+
+        # Put a stale in_progress task in the inbox
+        stale_time = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        tasks = [
+            {
+                "id": "stale-task-001",
+                "sender_id": "ceo",
+                "receiver_id": "agent",
+                "instruction": "Old task that timed out",
+                "status": "in_progress",
+                "priority": "medium",
+                "created_at": stale_time,
+                "retry_budget": 0,
+            }
+        ]
+        inbox.write_text(json.dumps(tasks), encoding="utf-8")
+
+        from ai_company.executor.loop import Executor
+
+        executor = Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+        count = executor.tick()
+        assert count == 0  # No pending tasks
+
+        # The stale task should have been moved to DLQ
+        dlq_entries = executor.dlq.list_entries()
+        assert len(dlq_entries) == 1
+        assert dlq_entries[0]["task"]["id"] == "stale-task-001"
+
+        # Inbox should be empty now
+        remaining = json.loads(inbox.read_text(encoding="utf-8"))
+        assert len(remaining) == 0
