@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  FileText, 
-  ShieldCheck, 
-  Landmark, 
-  CheckCircle2, 
-  Scale, 
-  AlertTriangle, 
-  Download, 
-  ArrowRight, 
-  Globe2, 
-  Cpu, 
-  Lock, 
-  Key, 
-  FileCheck, 
-  Sparkles, 
-  Building2, 
-  Copy, 
-  Check, 
-  Send, 
+import {
+  FileText,
+  ShieldCheck,
+  Landmark,
+  CheckCircle2,
+  Scale,
+  AlertTriangle,
+  Download,
+  ArrowRight,
+  Globe2,
+  Cpu,
+  Lock,
+  Key,
+  FileCheck,
+  Sparkles,
+  Building2,
+  Copy,
+  Check,
+  Send,
   ExternalLink,
   BookOpen
 } from 'lucide-react';
@@ -78,7 +78,7 @@ export const NationalAiStrategySubmission: React.FC<NationalAiStrategySubmission
   const fullDraftText = `NATIONAL AI STRATEGY & DIGITAL TRANSFORMATION COMMENTS
 Formal Stakeholder Submission Draft
 Channel: Department of E-Government / UNDP Inclusive Digital Transformation Project
-Submitter: Jack Mlusu, Founder & CEO, LightSpeed Holdings (Pharos Policy Track)
+Submitter: Jack Mlusu, Founder & CEO, LIGHTSPEED HOLDINGS LIMITED (Pharos Policy Track)
 Status: DRAFT for validation against live consultation format before filing
 
 EXECUTIVE SUMMARY
@@ -96,13 +96,13 @@ Why: Malawi's Data Protection Act (2024) is in force but not AI-specific. A tier
 
 2. Require Machine-Readable Identity and Audit Trails for Agents
 Mandate that deployed commercial agents carry a cryptographic credential bound to a registered legal entity, and that High/Critical-tier systems write to tamper-evident, append-only audit logs.
-Why: Traceability is the foundation of accountability and the precondition for public trust. LightSpeed Holdings already operates this pattern in production (5-tier approvals, audit trails, RACI matrices) and can share it as a template.
+Why: Traceability is the foundation of accountability and the precondition for public trust. LIGHTSPEED HOLDINGS LIMITED already operates this pattern in production (5-tier approvals, audit trails, RACI matrices) and can share it as a template.
 
 3. Anchor Data Sovereignty and Localized Capability
 Prioritize in-country processing for state, health, and primary financial data; encourage open-weight, locally hosted models and air-gapped inference for low-connectivity resilience; and invest in local skills (multi-agent orchestration, governance, local-language alignment — Chichewa, English).
 
 OFFERED AS A CONTINUING PARTNER:
-LightSpeed Holdings is prepared to:
+LIGHTSPEED HOLDINGS LIMITED is prepared to:
 - Contribute governance controls running in production as a national reference template;
 - Pilot a high-visibility lighthouse use case (e.g. citizen-inquiry or legislative-summary agent) with a non-commercial partner;
 - Support capacity building — training, certification, university partnerships — to build a sovereign agentic-AI talent pipeline.
@@ -204,10 +204,10 @@ The window is open now. Malawi can lead SADC not by consuming AI but by defining
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                isActive 
-                  ? 'bg-orange-500 text-white shadow-md' 
-                  : isLight 
-                    ? 'text-slate-700 hover:bg-white/80' 
+                isActive
+                  ? 'bg-orange-500 text-white shadow-md'
+                  : isLight
+                    ? 'text-slate-700 hover:bg-white/80'
                     : 'text-zinc-400 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -360,8 +360,8 @@ The window is open now. Malawi can lead SADC not by consuming AI but by defining
                           key={t.tier}
                           onClick={() => setActiveTier(t.tier)}
                           className={`transition-colors cursor-pointer ${
-                            isSelected 
-                              ? isLight ? 'bg-orange-50/80 font-semibold' : 'bg-orange-500/10' 
+                            isSelected
+                              ? isLight ? 'bg-orange-50/80 font-semibold' : 'bg-orange-500/10'
                               : isLight ? 'hover:bg-slate-50' : 'hover:bg-white/5'
                           }`}
                         >

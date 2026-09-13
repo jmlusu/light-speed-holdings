@@ -16,7 +16,15 @@
       "head-of-business-development",
       "internal-comms-lead",
       "ai-ethics-board-chair",
-      "consulting-lead"
+      "consulting-lead",
+      "cto",
+      "coo",
+      "caio",
+      "cfo",
+      "ciso",
+      "clo",
+      "cso",
+      "thought-leadership-lead"
     ],
     "description": "The primary orchestrator and strategic alignment agent for the company.",
     "responsibilities": [
@@ -38,7 +46,7 @@
     "role": "Chief Technology Officer",
     "type": "Executive",
     "department": "Technology",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "lead-backend",
       "lead-frontend",
@@ -64,7 +72,7 @@
     "role": "Chief Operating Officer",
     "type": "Executive",
     "department": "Operations",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "workflow-owner",
       "orchestration-owner",
@@ -92,7 +100,7 @@
     "role": "Chief AI Officer",
     "type": "Executive",
     "department": "AI Research",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "ml-engineer",
       "ml-services-owner",
@@ -124,15 +132,7 @@
     "reportsTo": "board",
     "directReports": [
       "chief-of-staff",
-      "cto",
-      "coo",
-      "caio",
-      "cfo",
-      "ciso",
-      "clo",
-      "cso",
-      "ceo-advisor",
-      "thought-leadership-lead"
+      "ceo-advisor"
     ],
     "description": "Set company vision, strategy, and culture. Make final decisions on high-stakes matters.",
     "responsibilities": [
@@ -161,7 +161,7 @@
     "role": "Chief Financial Officer",
     "type": "Executive",
     "department": "Finance",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "financial-analyst",
       "investor-relations-lead"
@@ -286,7 +286,7 @@
     "role": "Chief Information Security Officer",
     "type": "Executive",
     "department": "Security",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "security-architect",
       "security-compliance-lead",
@@ -378,7 +378,7 @@
     "role": "Chief Legal Officer",
     "type": "Executive",
     "department": "Legal",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "compliance-officer",
       "data-privacy-officer",
@@ -407,7 +407,7 @@
     "role": "Chief Strategy Officer",
     "type": "Executive",
     "department": "Strategy",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "head-of-competitive-intelligence",
       "corporate-development-lead",
@@ -3659,7 +3659,7 @@
     "role": "Thought Leadership Lead",
     "type": "Executive",
     "department": "Pharos",
-    "reportsTo": "human-ceo",
+    "reportsTo": "chief-of-staff",
     "directReports": [
       "agentic-research-lead",
       "thought-leadership-author",
