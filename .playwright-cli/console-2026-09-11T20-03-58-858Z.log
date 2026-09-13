@@ -1,0 +1,87 @@
+[     245ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 1493754ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 1506465ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 1516089ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 2135198ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 2165411ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 2244616ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 3332573ms] ReferenceError: useRef is not defined
+    at SiteLayout (http://127.0.0.1:3000/src/components/SiteLayout.tsx?t=1789160368531:51:25)
+    at renderWithHooks (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:11596:26)
+    at mountIndeterminateComponent (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:14974:21)
+    at beginWork (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:15962:22)
+    at HTMLUnknownElement.callCallback2 (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:3680:22)
+    at Object.invokeGuardedCallbackDev (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:3705:24)
+    at invokeGuardedCallback (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:3739:39)
+    at beginWork$1 (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19818:15)
+    at performUnitOfWork (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19251:20)
+    at workLoopSync (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19190:13)
+[ 3332579ms] ReferenceError: useRef is not defined
+    at SiteLayout (http://127.0.0.1:3000/src/components/SiteLayout.tsx?t=1789160368531:51:25)
+    at renderWithHooks (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:11596:26)
+    at mountIndeterminateComponent (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:14974:21)
+    at beginWork (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:15962:22)
+    at HTMLUnknownElement.callCallback2 (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:3680:22)
+    at Object.invokeGuardedCallbackDev (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:3705:24)
+    at invokeGuardedCallback (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:3739:39)
+    at beginWork$1 (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19818:15)
+    at performUnitOfWork (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19251:20)
+    at workLoopSync (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19190:13)
+[ 3332585ms] [ERROR] The above error occurred in the <SiteLayout> component:
+
+    at SiteLayout (http://127.0.0.1:3000/src/components/SiteLayout.tsx?t=1789160368531:39:3)
+    at RenderedRoute (http://127.0.0.1:3000/node_modules/.vite/deps/react-router-dom.js?v=ea2a35fa:6758:26)
+    at Routes (http://127.0.0.1:3000/node_modules/.vite/deps/react-router-dom.js?v=ea2a35fa:7700:3)
+    at div
+    at App (http://127.0.0.1:3000/src/App.tsx?t=1789158521117:65:29)
+    at Router (http://127.0.0.1:3000/node_modules/.vite/deps/react-router-dom.js?v=ea2a35fa:7639:13)
+    at BrowserRouter (http://127.0.0.1:3000/node_modules/.vite/deps/react-router-dom.js?v=ea2a35fa:10955:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:14079
+[ 3332590ms] ReferenceError: useRef is not defined
+    at SiteLayout (http://127.0.0.1:3000/src/components/SiteLayout.tsx?t=1789160368531:51:25)
+    at renderWithHooks (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:11596:26)
+    at mountIndeterminateComponent (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:14974:21)
+    at beginWork (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:15962:22)
+    at beginWork$1 (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19806:22)
+    at performUnitOfWork (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19251:20)
+    at workLoopSync (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19190:13)
+    at renderRootSync (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:19169:15)
+    at recoverFromConcurrentError (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:18786:28)
+    at performSyncWorkOnRoot (http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:18932:28)
+[ 3542806ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 3585634ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 3759420ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=8b02ba73:21608
+[ 6244607ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:3000/@fs/C:/Users/jmlus/light-speed-holdings/src/components/HeroSection.tsx?t=1789163280845:0
+[ 6244607ms] [ERROR] [vite] Failed to reload /@fs/C:\Users\jmlus\light-speed-holdings\src\components\HeroSection.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:3000/@vite/client:881
+[ 6422393ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:3000/@vite/client:963
+[ 6424428ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6427459ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6430505ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6433554ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6436618ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6439666ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6442716ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6445763ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6448809ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6451858ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6454955ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6458057ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6461265ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6464911ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6468408ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6472106ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6477934ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6482851ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6489569ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6495764ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6501268ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6505895ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6510924ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6515395ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6523415ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6530692ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6535323ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3000/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:3000/@vite/client:1034
+[ 6610088ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=a64f115a:21608
+[ 6851006ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=a64f115a:21608

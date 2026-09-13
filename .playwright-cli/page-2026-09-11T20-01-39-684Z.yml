@@ -1,0 +1,49 @@
+- generic [ref=e3]:
+  - banner:
+    - generic [ref=e5]:
+      - link "LightSpeed™ MALAWI-ROOTED • GLOBAL CAPABILITY" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e11]:
+          - generic [ref=e12]: LightSpeed™
+          - generic [ref=e14]: MALAWI-ROOTED • GLOBAL CAPABILITY
+      - navigation [ref=e26]:
+        - link "Capabilities" [ref=e28] [cursor=pointer]:
+          - /url: /capabilities
+        - link "Industries" [ref=e31] [cursor=pointer]:
+          - /url: /industries
+        - link "Evidence" [ref=e32] [cursor=pointer]:
+          - /url: /evidence
+        - link "Engagement" [ref=e33] [cursor=pointer]:
+          - /url: /engagement
+        - link "Authority" [ref=e34] [cursor=pointer]:
+          - /url: /about
+        - link "Pharos" [ref=e35] [cursor=pointer]:
+          - /url: /insights
+        - link "Contact" [ref=e36] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=e37]:
+        - button "Switch to Anodized Light Mode" [ref=e38] [cursor=pointer]
+        - button "Request Briefing" [ref=e45] [cursor=pointer]
+  - main [active] [ref=e49]:
+    - status "Loading page" [ref=e50]
+  - contentinfo [ref=e52]:
+    - generic [ref=e53]: Ac 2026 LIGHTSPEED HOLDINGS LIMITED. All rights reserved. AI for Organizations Everywhere.
+    - generic [ref=e54]:
+      - link "Overview" [ref=e55] [cursor=pointer]:
+        - /url: /capabilities
+      - link "Core Offerings" [ref=e56] [cursor=pointer]:
+        - /url: /capabilities/offerings
+      - link "Diagnostic" [ref=e57] [cursor=pointer]:
+        - /url: /capabilities/diagnostic
+      - link "Industries" [ref=e58] [cursor=pointer]:
+        - /url: /industries
+      - link "Evidence" [ref=e59] [cursor=pointer]:
+        - /url: /evidence
+      - link "Engagement" [ref=e60] [cursor=pointer]:
+        - /url: /engagement
+      - link "About" [ref=e61] [cursor=pointer]:
+        - /url: /about
+      - link "Insights" [ref=e62] [cursor=pointer]:
+        - /url: /insights
+      - link "Contact" [ref=e63] [cursor=pointer]:
+        - /url: /contact

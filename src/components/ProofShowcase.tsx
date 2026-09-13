@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ShieldCheck, 
-  Sparkles, 
-  BookOpen, 
-  Download, 
-  ArrowRight, 
-  ExternalLink, 
-  CheckCircle2, 
-  Building2, 
-  Landmark, 
-  HeartHandshake, 
+import {
+  ShieldCheck,
+  Sparkles,
+  BookOpen,
+  Download,
+  ArrowRight,
+  ExternalLink,
+  CheckCircle2,
+  Building2,
+  Landmark,
+  HeartHandshake,
   Store,
   FileText,
   Clock,
@@ -85,13 +85,13 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
     {
       id: 'in-house-144',
       title: '144-Agent Sovereign Company Orchestration Engine',
-      stakeholder: 'LightSpeed Holdings (Internal Operations)',
+      stakeholder: 'LIGHTSPEED HOLDINGS LIMITED (Internal Operations)',
       tier: 'proven-in-house',
       sector: 'AGENTIC COMPANY BUILDING',
       problem: 'Traditional corporate operations require massive administrative headcount to coordinate multi-department workflows, leading to coordination drag.',
       intervention: 'Built and operating our full 144-agent enterprise hierarchy (from Executive Committee down to Specialists) via YAML registries, OpenCode cards, and DAG task buses.',
       statusSummary: 'Daily internal operations, automated code auditing, design systems, and compliance checks run on this platform.',
-      deliverableState: 'Proven In-House — the operational heartbeat of LightSpeed Holdings.'
+      deliverableState: 'Proven In-House — the operational heartbeat of LIGHTSPEED HOLDINGS LIMITED.'
     }
   ];
 
@@ -105,7 +105,7 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
       desc: 'Authored by Jack Mlusu, Founder & CEO. A unified operational and regulatory standard for SADC digital/ICT ministers, MACRA, CRASA, and central banks.',
       pages: '36 Pages',
       readTime: '16 min read',
-      citation: 'Author: Jack Mlusu, Founder & CEO, LightSpeed Holdings',
+      citation: 'Author: Jack Mlusu, Founder & CEO, LIGHTSPEED HOLDINGS LIMITED',
       anchor: '#sadc-governance-framework'
     },
     {
@@ -159,7 +159,7 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
 
   return (
     <section id="proof" className="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full relative z-10">
-      
+
       {/* Header & Honesty Ladder Anchor */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-2">
@@ -292,17 +292,17 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
       {activeTab === 'publications' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
+
             {/* Left Pharos Visual Beacon Card */}
             <div className="lg:col-span-4 relative rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl">
-              <img 
-                src={pharosBeaconLake} 
-                alt="Pharos Beacon on Lake Malawi" 
+              <img
+                src={pharosBeaconLake}
+                alt="Pharos Beacon on Lake Malawi"
                 referrerPolicy="no-referrer"
                 className="w-full h-80 object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
-              
+
               <div className="absolute bottom-4 left-4 right-4 space-y-2 text-white">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/30 text-amber-200 border border-amber-500/40 font-bold">
                   PHAROS RESEARCH TOWER
