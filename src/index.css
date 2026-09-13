@@ -1,34 +1,85 @@
 @import "tailwindcss";
 
+@theme {
+  --color-tectonic-abyss: #060d16;
+  --color-tectonic-canyon: #091624;
+  --color-tectonic-plate: #0f2231;
+  --color-tectonic-terrace: #163246;
+  --color-tectonic-facet: #244b67;
+  --color-tectonic-facet-light: #38688a;
+  --color-tectonic-mist: #5289ab;
+  --color-gilded-gold: #e5b74c;
+  --color-gilded-gold-bright: #f7d77c;
+  --color-gilded-gold-deep: #c49332;
+  --color-gilded-bronze: #9e711d;
+  --color-gilded-shadow: #5a3e0f;
+}
+
 @layer base {
   :root {
-    --surface-dark-base: #090b10;
-    --surface-dark-card: #141824;
-    --surface-dark-well: #0a0d14;
-    --surface-light-base: #e9edf4;
-    --surface-light-card: #ffffff;
-/* Real-world hardware colors */
-    --analog-silver: #CBD5E1;
-    --analog-silver-light: #E2E8F0;
-    --analog-silver-dark: #94A3B8;
-    --analog-dark: #1E293B;
-    --analog-dark-deep: #0F172A;
-    --analog-orange: #F97316;
-    --analog-green: #10B981;
-    --surface-dark-base: var(--analog-dark-deep);
-    --surface-dark-card: var(--analog-dark);
-    --surface-dark-well: #0B0F19;
+    /* Tectonic Oceanic Petrol Palette (From Attached Color Scheme) */
+    --tectonic-abyss: #060d16;
+    --tectonic-canyon: #091624;
+    --tectonic-plate: #0f2231;
+    --tectonic-terrace: #163246;
+    --tectonic-facet: #244b67;
+    --tectonic-facet-light: #38688a;
+    --tectonic-mist: #5289ab;
+
+    /* Gilded 24K Gold & Burnished Brass Contours */
+    --gilded-gold-bright: #f7d77c;
+    --gilded-gold: #e5b74c;
+    --gilded-gold-deep: #c49332;
+    --gilded-bronze: #9e711d;
+    --gilded-shadow: #5a3e0f;
+    --gilded-glow: rgba(229, 183, 76, 0.45);
+    --gilded-glow-ambient: rgba(247, 215, 124, 0.2);
+
+    /* Real-world hardware & tactile colors aligned with gold-petrol */
+    --analog-silver: #dbe7f0;
+    --analog-silver-light: #edf3f8;
+    --analog-silver-dark: #9bb3c4;
+    --analog-dark: #0f2231;
+    --analog-dark-deep: #060d16;
+    --analog-orange: #e5b74c;
+    --analog-green: #10b981;
+
+    --surface-dark-base: var(--tectonic-abyss);
+    --surface-dark-card: var(--tectonic-plate);
+    --surface-dark-well: var(--tectonic-canyon);
     --surface-light-base: var(--analog-silver);
-    --surface-light-card: var(--analog-silver-light);
+    --surface-light-card: #ffffff;
     --surface-light-well: var(--analog-silver-dark);
-    --accent-orange: var(--analog-orange);
-    --accent-orange-glow: rgba(249, 115, 22, 0.9);
-    --accent-amber: #f59e0b;
-    --accent-green: var(--analog-green);
+
+    --accent-orange: var(--gilded-gold);
+    --accent-orange-glow: var(--gilded-glow);
+    --accent-amber: #f3cb66;
+    --accent-green: #10b981;
   }
 
-  html {
+  html, body, #root {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
     scroll-behavior: smooth;
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+  }
+
+  html.dark, html.dark body {
+    background-color: #060d16;
+    color: #f0f6fa;
+  }
+
+  html:not(.dark), html:not(.dark) body {
+    background-color: #edf3f8;
+    color: #061522;
+  }
+
+  /* Smooth transition helper for background, text, border, and shadows on theme toggle */
+  *, ::before, ::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
   }
 }
 
@@ -41,11 +92,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.35); /* analog-silver-dark */
+  background: rgba(229, 183, 76, 0.35); /* gilded gold accent scrollbar */
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.6);
+  background: rgba(247, 215, 124, 0.7);
 }
 
 /* Spatial Ambient Room Backgrounds */
@@ -55,63 +106,66 @@
 }
 
 .spatial-ambient-dark {
-  background-color: var(--analog-dark-deep);
+  background-color: var(--tectonic-abyss);
   background-image: none;
 }
 
 /* Spatial Frosted Glass Components -> Converted to Analog Metallic Panels */
 .glass-window-light {
-  background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
-  border: 1px solid #FFFFFF;
-  border-right-color: #94A3B8;
-  border-bottom-color: #94A3B8;
+  background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
+  border: 1px solid #ffffff;
+  border-right-color: #9bb3c4;
+  border-bottom-color: #9bb3c4;
   box-shadow: 
-    8px 8px 16px rgba(30, 41, 59, 0.15),
-    -4px -4px 12px rgba(255, 255, 255, 0.8),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+    8px 8px 16px rgba(6, 13, 22, 0.08),
+    -4px -4px 12px rgba(255, 255, 255, 0.9),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.95);
 }
 
 .glass-window-dark {
-  background: linear-gradient(145deg, #334155 0%, #1E293B 100%);
-  border: 1px solid #475569;
-  border-bottom-color: #0F172A;
-  border-right-color: #0F172A;
+  background: linear-gradient(145deg, #163246 0%, #0f2231 100%);
+  border: 1px solid rgba(229, 183, 76, 0.3);
+  border-top-color: rgba(247, 215, 124, 0.55);
+  border-bottom-color: #060d16;
+  border-right-color: #060d16;
   box-shadow: 
-    12px 12px 24px rgba(0, 0, 0, 0.6),
-    inset 1px 1px 1px rgba(148, 163, 184, 0.2);
+    12px 12px 24px rgba(3, 7, 12, 0.75),
+    0 0 16px rgba(229, 183, 76, 0.08),
+    inset 1px 1px 1px rgba(247, 215, 124, 0.2);
 }
 
 .glass-card-light {
-  background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
-  border: 1px solid #FFFFFF;
-  border-bottom-color: #94A3B8;
+  background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
+  border: 1px solid #ffffff;
+  border-bottom-color: #9bb3c4;
   box-shadow: 
-    4px 4px 10px rgba(30, 41, 59, 0.1),
-    -4px -4px 10px rgba(255, 255, 255, 0.8);
+    4px 4px 10px rgba(6, 13, 22, 0.06),
+    -4px -4px 10px rgba(255, 255, 255, 0.9);
 }
 
 .glass-card-dark {
-  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-  border: 1px solid #334155;
-  border-top-color: #475569;
+  background: linear-gradient(135deg, #132737 0%, #0c1c28 100%);
+  border: 1px solid rgba(229, 183, 76, 0.22);
+  border-top-color: rgba(247, 215, 124, 0.45);
   box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 8px 24px rgba(3, 7, 12, 0.65),
+    inset 0 1px 0 rgba(247, 215, 124, 0.15);
 }
 
 .glass-pill-light {
-  background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
-  border: 1px solid #FFFFFF;
-  border-bottom-color: #94A3B8;
+  background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
+  border: 1px solid #ffffff;
+  border-bottom-color: #9bb3c4;
   box-shadow: 
-    4px 4px 8px rgba(30, 41, 59, 0.15),
+    4px 4px 8px rgba(6, 13, 22, 0.08),
     -2px -2px 6px rgba(255, 255, 255, 0.9);
 }
 
 .glass-pill-dark {
-  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-  border: 1px solid #334155;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, #163246 0%, #0f2231 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
+  border-top-color: rgba(247, 215, 124, 0.4);
+  box-shadow: 0 4px 12px rgba(3, 7, 12, 0.6);
 }
 
 /* Organic stone-textured SVG grain filter */
@@ -153,96 +207,304 @@
    REALISTIC HARDWARE / AUDIO-EQUIPMENT TACTILE CONTROLS (Dieter Rams / Teenage Engineering / Studio Console)
    ========================================================================== */
 
+/* ==========================================================================
+   TACTILE INDUSTRIAL TECH & INSTITUTIONAL COMMAND
+   Precision-Milled Machine Chassis, Flight-Deck Panels & Aerospace Telemetry
+   ========================================================================== */
+
+/* Precision-Milled Machine Chassis Panel (Dark Mode: Deep Tectonic Petrol & Gilded Rim) */
+.chassis-milled-dark {
+  background: linear-gradient(165deg, #163246 0%, #0f2231 45%, #060d16 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
+  border-top-color: #f7d77c;
+  border-left-color: rgba(229, 183, 76, 0.4);
+  border-right-color: #060d16;
+  border-bottom-color: #060d16;
+  box-shadow: 
+    0 16px 36px -8px rgba(3, 7, 12, 0.85),
+    0 4px 14px rgba(3, 7, 12, 0.6),
+    0 0 20px rgba(229, 183, 76, 0.08),
+    inset 0 1px 0 rgba(247, 215, 124, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+/* Precision-Milled Machine Chassis Panel (Light Mode: Clean Lab & Executive Briefing) */
+.chassis-milled-light {
+  background: linear-gradient(165deg, #ffffff 0%, #f4f8fb 50%, #edf3f8 100%);
+  border: 1px solid rgba(229, 183, 76, 0.35);
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-right-color: #c2d5e3;
+  border-bottom-color: #9bb3c4;
+  box-shadow: 
+    0 12px 28px -6px rgba(6, 13, 22, 0.08),
+    0 4px 10px rgba(6, 13, 22, 0.04),
+    inset 0 1px 1px #ffffff,
+    inset 0 -1px 2px rgba(155, 179, 196, 0.25);
+  position: relative;
+}
+
+/* Recessed Flight-Deck Sub-Well */
+.flight-deck-well-dark {
+  background: #060d16;
+  border: 1px solid rgba(229, 183, 76, 0.18);
+  border-bottom-color: rgba(247, 215, 124, 0.35);
+  box-shadow: 
+    inset 0 3px 8px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(247, 215, 124, 0.1);
+}
+
+.flight-deck-well-light {
+  background: #dbe7f0;
+  border: 1px solid #9bb3c4;
+  border-bottom-color: #ffffff;
+  box-shadow: 
+    inset 0 3px 6px rgba(6, 13, 22, 0.08),
+    0 1px 0 #ffffff;
+}
+
+/* Hardware Slotted Fastener / Machine Screw (Gilded Brass & Polished Slot) */
+.machine-screw {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f7d77c 0%, #e5b74c 45%, #9e711d 90%);
+  border: 0.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.7);
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.machine-screw::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  right: 20%;
+  height: 1.2px;
+  background: #5a3e0f;
+  box-shadow: 0 0.5px 0 rgba(247, 215, 124, 0.5);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.machine-screw-light {
+  background: radial-gradient(circle at 35% 35%, #f7d77c 0%, #e5b74c 50%, #9e711d 90%);
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2), 0 1px 1px #ffffff;
+}
+.machine-screw-light::after {
+  background: #5a3e0f;
+  box-shadow: 0 0.5px 0 #ffffff;
+}
+
+/* Precision Status LED Light-Pips with Beveled Metal Casings */
+.status-pip-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #163246 0%, #060d16 80%);
+  border: 1px solid rgba(229, 183, 76, 0.4);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 4px rgba(229, 183, 76, 0.2);
+  flex-shrink: 0;
+}
+
+.status-pip-container-light {
+  background: radial-gradient(circle at 40% 40%, #ffffff 0%, #dbe7f0 80%);
+  border: 1px solid rgba(229, 183, 76, 0.5);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15), 0 1px 1px #ffffff;
+}
+
+/* Signal Orange / Amber LED (Radiant 24K Gold Flare) */
+.pip-led-amber {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f7d77c;
+  box-shadow: 
+    0 0 8px #f7d77c,
+    0 0 16px rgba(229, 183, 76, 0.85),
+    inset 0 1px 1px #ffffff;
+  animation: telemetryPulse 2.4s ease-in-out infinite alternate;
+}
+
+/* Telemetry Emerald Green LED (Verified Operational Health / Live Data) */
+.pip-led-emerald {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 
+    0 0 8px #10b981,
+    0 0 14px rgba(16, 185, 129, 0.65),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  animation: telemetryPulse 3.2s ease-in-out infinite alternate;
+}
+
+/* Alert Red / Crimson LED */
+.pip-led-crimson {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 
+    0 0 8px #ef4444,
+    0 0 14px rgba(239, 68, 68, 0.65),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+/* Dim / Standby LED */
+.pip-led-dim {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3f3f46;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+@keyframes telemetryPulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Micro-Perforated Acoustic Ventilation Grille Dot Matrix */
+.acoustic-grille-bg-dark {
+  background-image: radial-gradient(circle, #09090b 45%, #27272a 75%, transparent 80%);
+  background-size: 5px 5px;
+  background-repeat: repeat;
+}
+
+.acoustic-grille-bg-light {
+  background-image: radial-gradient(circle, #94a3b8 40%, #f1f5f9 75%, transparent 80%);
+  background-size: 5px 5px;
+  background-repeat: repeat;
+}
+
+/* Aerospace Telemetry Monospace Tag */
+.telemetry-tag-dark {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid #27272a;
+  color: #a1a1aa;
+}
+
+.telemetry-tag-light {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
 /* Bead-Blasted Anodized Hardware Chassis */
 .hardware-chassis-dark {
-  background: linear-gradient(145deg, #1E293B 0%, #0F172A 100%);
-  border: 1px solid #334155;
-  border-top-color: #475569;
-  border-left-color: #334155;
-  border-right-color: #020617;
-  border-bottom-color: #020617;
+  background: linear-gradient(145deg, #163246 0%, #060d16 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
+  border-top-color: #f7d77c;
+  border-left-color: rgba(229, 183, 76, 0.4);
+  border-right-color: #060d16;
+  border-bottom-color: #060d16;
   box-shadow: 
-    0 16px 32px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 16px 32px rgba(3, 7, 12, 0.75),
+    0 0 16px rgba(229, 183, 76, 0.06),
+    inset 0 1px 0 rgba(247, 215, 124, 0.25);
 }
 
 .hardware-chassis-light {
-  background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
-  border: 1px solid #FFFFFF;
-  border-bottom-color: #94A3B8;
-  border-right-color: #94A3B8;
+  background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
+  border: 1px solid rgba(229, 183, 76, 0.35);
+  border-bottom-color: #9bb3c4;
+  border-right-color: #9bb3c4;
   box-shadow: 
-    12px 12px 24px rgba(30, 41, 59, 0.15),
-    -8px -8px 16px rgba(255, 255, 255, 0.8),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+    12px 12px 24px rgba(6, 13, 22, 0.08),
+    -8px -8px 16px rgba(255, 255, 255, 0.9),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.95);
 }
 
 /* Recessed Inset Well / Bezel */
 .hardware-well-dark {
-  background: #020617;
-  border: 1px solid #000;
-  border-bottom-color: #334155;
+  background: #060d16;
+  border: 1px solid rgba(229, 183, 76, 0.15);
+  border-bottom-color: rgba(247, 215, 124, 0.3);
   box-shadow: 
-    inset 0 4px 8px rgba(0, 0, 0, 0.9),
-    0 1px 0 rgba(255, 255, 255, 0.05);
+    inset 0 4px 8px rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(247, 215, 124, 0.08);
 }
 
 .hardware-well-light {
-  background: #CBD5E1;
-  border: 1px solid #94A3B8;
-  border-bottom-color: #FFFFFF;
-  border-right-color: #FFFFFF;
+  background: #dbe7f0;
+  border: 1px solid #9bb3c4;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
   box-shadow: 
-    inset 4px 4px 8px rgba(30, 41, 59, 0.2),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.5),
+    inset 4px 4px 8px rgba(6, 13, 22, 0.12),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
     0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* Tactile Concave Button (Thumb-Pad Depression) */
 .tactile-concave-btn-dark {
-  background: linear-gradient(to bottom, #334155 0%, #1E293B 100%);
-  border: 1px solid #475569;
-  border-bottom-color: #020617;
+  background: linear-gradient(to bottom, #163246 0%, #0f2231 100%);
+  border: 1px solid rgba(229, 183, 76, 0.3);
+  border-top-color: rgba(247, 215, 124, 0.5);
+  border-bottom-color: #060d16;
   box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.5),
-    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    0 4px 8px rgba(3, 7, 12, 0.6),
+    inset 0 1px 2px rgba(247, 215, 124, 0.2);
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tactile-concave-btn-dark:hover {
-  background: linear-gradient(to bottom, #475569 0%, #334155 100%);
+  background: linear-gradient(to bottom, #1d3e56 0%, #163246 100%);
+  border-color: rgba(229, 183, 76, 0.5);
+  box-shadow: 0 4px 12px rgba(229, 183, 76, 0.2);
   transform: translateY(-1px);
 }
 
 .tactile-concave-btn-dark:active {
-  background: linear-gradient(to bottom, #0F172A 0%, #1E293B 100%);
+  background: linear-gradient(to bottom, #060d16 0%, #0f2231 100%);
+  border-color: #e5b74c;
   box-shadow: 
-    inset 0 4px 8px rgba(0, 0, 0, 0.8),
-    0 1px 0 rgba(255, 255, 255, 0.05);
+    inset 0 4px 8px rgba(0, 0, 0, 0.9),
+    0 0 10px rgba(229, 183, 76, 0.35);
   transform: translateY(1px);
 }
 
 .tactile-concave-btn-light {
-  background: linear-gradient(to bottom, #F8FAFC 0%, #E2E8F0 50%, #CBD5E1 100%);
-  border: 1px solid #94A3B8;
+  background: linear-gradient(to bottom, #ffffff 0%, #edf3f8 50%, #dbe7f0 100%);
+  border: 1px solid #9bb3c4;
   box-shadow: 
-    0 4px 6px rgba(30, 41, 59, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9),
-    inset 0 -1px 2px rgba(148, 163, 184, 0.3);
+    0 4px 6px rgba(6, 13, 22, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px rgba(155, 179, 196, 0.3);
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tactile-concave-btn-light:hover {
-  background: linear-gradient(to bottom, #FFFFFF 0%, #F1F5F9 50%, #E2E8F0 100%);
+  background: linear-gradient(to bottom, #ffffff 0%, #f4f8fb 50%, #edf3f8 100%);
   transform: translateY(-1px);
 }
 
 .tactile-concave-btn-light:active {
-  background: radial-gradient(circle at 50% 55%, #cbd3de 0%, #d8e0ec 65%, #ecf1f8 100%);
-  border-top: 1px solid rgba(140, 155, 180, 0.5);
+  background: radial-gradient(circle at 50% 55%, #dbe7f0 0%, #edf3f8 65%, #ffffff 100%);
+  border-top: 1px solid rgba(155, 179, 196, 0.5);
   border-bottom: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 
-    inset 4px 4px 8px rgba(140, 155, 180, 0.35),
+    inset 4px 4px 8px rgba(155, 179, 196, 0.35),
     inset -2px -2px 5px rgba(255, 255, 255, 0.9),
     0 1px 0 rgba(255, 255, 255, 0.8);
   transform: translateY(1.5px);
@@ -250,162 +512,163 @@
 
 /* Master Precision Rotary Dial (Concentric Chamfers with Slit & Optical Halo) */
 .master-rotary-housing-dark {
-  background: radial-gradient(circle at 35% 35%, #334155 0%, #1E293B 65%, #0F172A 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  background: radial-gradient(circle at 35% 35%, #163246 0%, #0f2231 65%, #060d16 100%);
+  border: 1.5px solid rgba(229, 183, 76, 0.35);
+  border-top-color: #f7d77c;
   box-shadow: 
-    0 14px 28px -4px rgba(0, 0, 0, 0.88),
-    0 4px 10px rgba(0, 0, 0, 0.65),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.9);
+    0 14px 28px -4px rgba(3, 7, 12, 0.9),
+    0 0 18px rgba(229, 183, 76, 0.12),
+    inset 0 1px 2px rgba(247, 215, 124, 0.45),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.95);
 }
 
 .master-rotary-housing-light {
-  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ebf0f7 65%, #ced6e2 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-bottom-color: rgba(160, 175, 200, 0.4);
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #edf3f8 65%, #dbe7f0 100%);
+  border: 1.5px solid rgba(229, 183, 76, 0.45);
+  border-bottom-color: rgba(155, 179, 196, 0.4);
   box-shadow: 
-    8px 10px 22px -3px rgba(155, 172, 198, 0.38),
+    8px 10px 22px -3px rgba(6, 13, 22, 0.1),
     -6px -6px 16px rgba(255, 255, 255, 0.95),
     inset 0 1px 2px rgba(255, 255, 255, 1),
-    inset 0 -2px 4px rgba(150, 165, 190, 0.2);
+    inset 0 -2px 4px rgba(155, 179, 196, 0.2);
 }
 
 /* Precision Perforated Micro-Dot Grilles (Speaker / Ventilation Pattern) */
 .perforated-grille-dark {
-  background-image: radial-gradient(circle, #07090e 40%, #161924 70%, transparent 75%);
+  background-image: radial-gradient(circle, #060d16 40%, #163246 70%, transparent 75%);
   background-size: 6px 6px;
   background-repeat: repeat;
 }
 
 .perforated-grille-light {
-  background-image: radial-gradient(circle, #8a94a5 35%, #e3e8f1 70%, transparent 75%);
+  background-image: radial-gradient(circle, #9bb3c4 35%, #edf3f8 70%, transparent 75%);
   background-size: 6px 6px;
   background-repeat: repeat;
 }
 
 /* Stepped Transport Key Cluster */
 .transport-bar-dark {
-  background: linear-gradient(180deg, #141722 0%, #0e1017 100%);
-  border: 1px solid rgba(0, 0, 0, 0.9);
+  background: linear-gradient(180deg, #163246 0%, #060d16 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
   box-shadow: 
     inset 0 2px 5px rgba(0, 0, 0, 0.95),
-    0 1px 0 rgba(255, 255, 255, 0.08);
+    0 1px 0 rgba(247, 215, 124, 0.15);
 }
 
 .transport-bar-light {
-  background: linear-gradient(180deg, #d8dfea 0%, #ebf0f8 100%);
-  border: 1px solid rgba(160, 175, 200, 0.35);
+  background: linear-gradient(180deg, #dbe7f0 0%, #edf3f8 100%);
+  border: 1px solid rgba(155, 179, 196, 0.35);
   border-bottom-color: rgba(255, 255, 255, 0.9);
   box-shadow: 
-    inset 3px 3px 6px rgba(150, 165, 190, 0.3),
+    inset 3px 3px 6px rgba(155, 179, 196, 0.3),
     inset -2px -2px 4px rgba(255, 255, 255, 0.9),
     0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 /* Inset Debossed Labeling */
 .hardware-debossed-dark {
-  color: #e2e8f0;
-  text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: #dbe7f0;
+  text-shadow: 0 -1px 0 #000000, 0 1px 0 rgba(247, 215, 124, 0.18);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .hardware-debossed-light {
-  color: #0f172a;
-  text-shadow: 0 1px 0 #ffffff, 0 -1px 0 rgba(140, 155, 180, 0.35);
+  color: #061522;
+  text-shadow: 0 1px 0 #ffffff, 0 -1px 0 rgba(155, 179, 196, 0.35);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 /* Recessed Chassis Well for Radio Groups */
 .tactile-chassis-dark {
-  background: #020617;
-  border: 1px solid #000;
-  border-bottom-color: #334155;
+  background: #060d16;
+  border: 1px solid rgba(229, 183, 76, 0.18);
+  border-bottom-color: rgba(247, 215, 124, 0.35);
   box-shadow: 
-    inset 0 4px 8px rgba(0, 0, 0, 0.9),
+    inset 0 4px 8px rgba(0, 0, 0, 0.95),
     inset 0 1px 2px rgba(0, 0, 0, 0.95),
-    0 1px 0 rgba(255, 255, 255, 0.05);
+    0 1px 0 rgba(247, 215, 124, 0.1);
 }
 
 .tactile-chassis-light {
-  background: #CBD5E1;
-  border: 1px solid #94A3B8;
-  border-bottom-color: #FFFFFF;
+  background: #dbe7f0;
+  border: 1px solid #9bb3c4;
+  border-bottom-color: #ffffff;
   box-shadow: 
-    inset 4px 4px 8px rgba(30, 41, 59, 0.2),
-    inset -3px -3px 6px rgba(255, 255, 255, 0.5),
-    0 1px 1px rgba(255, 255, 255, 0.8);
+    inset 4px 4px 8px rgba(6, 13, 22, 0.12),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.6),
+    0 1px 1px rgba(255, 255, 255, 0.9);
 }
 
 /* Realistic Push Button (Raised Inactive) */
 .tactile-btn-inactive-dark {
-  background: linear-gradient(to bottom, #334155 0%, #1E293B 100%);
-  border: 1px solid #475569;
-  border-bottom-color: #020617;
+  background: linear-gradient(to bottom, #163246 0%, #0f2231 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
+  border-bottom-color: #060d16;
   box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.5),
-    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    0 4px 8px rgba(3, 7, 12, 0.6),
+    inset 0 1px 2px rgba(247, 215, 124, 0.2);
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tactile-btn-inactive-dark:hover {
-  background: linear-gradient(to bottom, #475569 0%, #334155 100%);
+  background: linear-gradient(to bottom, #1d3e56 0%, #163246 100%);
+  border-color: rgba(229, 183, 76, 0.45);
   transform: translateY(-1px);
 }
 
 /* Realistic Push Button (Depressed Active) */
 .tactile-btn-active-dark {
-  background: linear-gradient(to bottom, #0F172A 0%, #1E293B 100%);
-  border: 1px solid #000;
-  border-bottom-color: #334155;
+  background: linear-gradient(to bottom, #060d16 0%, #0f2231 100%);
+  border: 1px solid #e5b74c;
   box-shadow: 
-    inset 0 4px 8px rgba(0, 0, 0, 0.8),
-    0 1px 0 rgba(255, 255, 255, 0.05);
+    inset 0 4px 8px rgba(0, 0, 0, 0.9),
+    0 0 10px rgba(229, 183, 76, 0.4);
   transform: translateY(1px);
 }
 
 /* Realistic Push Button Light Inactive */
 .tactile-btn-inactive-light {
-  background: linear-gradient(to bottom, #F8FAFC 0%, #E2E8F0 50%, #CBD5E1 100%);
-  border: 1px solid #94A3B8;
+  background: linear-gradient(to bottom, #ffffff 0%, #edf3f8 50%, #dbe7f0 100%);
+  border: 1px solid #9bb3c4;
   box-shadow: 
-    0 4px 6px rgba(30, 41, 59, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9),
-    inset 0 -1px 2px rgba(148, 163, 184, 0.3);
+    0 4px 6px rgba(6, 13, 22, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px rgba(155, 179, 196, 0.3);
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tactile-btn-inactive-light:hover {
-  background: linear-gradient(to bottom, #FFFFFF 0%, #F1F5F9 50%, #E2E8F0 100%);
+  background: linear-gradient(to bottom, #ffffff 0%, #f4f8fb 50%, #edf3f8 100%);
   transform: translateY(-1px);
 }
 
 /* Realistic Push Button Light Active */
 .tactile-btn-active-light {
-  background: linear-gradient(to bottom, #CBD5E1 0%, #E2E8F0 100%);
-  border: 1px solid #94A3B8;
-  border-top-color: #475569;
+  background: linear-gradient(to bottom, #dbe7f0 0%, #edf3f8 100%);
+  border: 1px solid #e5b74c;
+  border-top-color: #c49332;
   box-shadow: 
-    inset 0 4px 6px rgba(30, 41, 59, 0.3),
-    inset 0 -1px 2px rgba(255, 255, 255, 0.5),
-    0 1px 0 rgba(255, 255, 255, 0.9);
+    inset 0 4px 6px rgba(6, 13, 22, 0.2),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.6),
+    0 0 8px rgba(229, 183, 76, 0.3);
   transform: translateY(1px);
 }
 
 /* Concentric Circular Hardware Radio Button */
 .tactile-circular-housing-dark {
-  background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
-  border: 1px solid #0F172A;
+  background: linear-gradient(135deg, #163246 0%, #0f2231 100%);
+  border: 1px solid rgba(229, 183, 76, 0.3);
   box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.5),
-    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    0 4px 8px rgba(3, 7, 12, 0.6),
+    inset 0 1px 2px rgba(247, 215, 124, 0.2);
 }
 
 .tactile-circular-housing-light {
-  background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
-  border: 1px solid #94A3B8;
+  background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
+  border: 1px solid #9bb3c4;
   box-shadow: 
-    0 4px 6px rgba(30, 41, 59, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+    0 4px 6px rgba(6, 13, 22, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95);
 }
 
 /* Tactile Indicator LED (Orange / Green) */
@@ -698,6 +961,239 @@
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 32px 32px;
 }
+
+/* ==========================================================================
+   NEUMORPHISM & TOPOGRAPHIC 3D TECTONIC DESIGN SYSTEM
+   Light: Soft analog sea-mist silver (#EDF3F8) with limestone plates and warm gold accents
+   Dark: Deep tectonic oceanic petrol (#060D16 - #0F2231) with radiant 24K gilded contours
+   ========================================================================== */
+
+/* Neumorphic Flat Extruded Surface */
+.neu-flat-light {
+  background: #edf3f8;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    7px 7px 15px rgba(6, 13, 22, 0.08),
+    -7px -7px 15px rgba(255, 255, 255, 0.95);
+}
+
+.neu-flat-dark {
+  background: #0f2231;
+  border: 1px solid rgba(229, 183, 76, 0.18);
+  box-shadow: 
+    8px 8px 18px rgba(3, 7, 12, 0.8),
+    -6px -6px 14px rgba(247, 215, 124, 0.04);
+}
+
+/* Neumorphic Convex Extruded Surface (Curved Top-Left Luminous Bevel) */
+.neu-convex-light {
+  background: linear-gradient(145deg, #ffffff 0%, #edf3f8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    9px 9px 18px rgba(6, 13, 22, 0.09),
+    -9px -9px 18px rgba(255, 255, 255, 1);
+}
+
+.neu-convex-dark {
+  background: linear-gradient(145deg, #163246 0%, #091624 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
+  border-top-color: rgba(247, 215, 124, 0.45);
+  box-shadow: 
+    10px 10px 22px rgba(3, 7, 12, 0.85),
+    -6px -6px 14px rgba(247, 215, 124, 0.05);
+}
+
+/* Neumorphic Concave Recessed Surface */
+.neu-concave-light {
+  background: linear-gradient(145deg, #edf3f8 0%, #ffffff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    6px 6px 14px rgba(6, 13, 22, 0.07),
+    -6px -6px 14px rgba(255, 255, 255, 0.9);
+}
+
+.neu-concave-dark {
+  background: linear-gradient(145deg, #091624 0%, #163246 100%);
+  border: 1px solid rgba(229, 183, 76, 0.18);
+  box-shadow: 
+    8px 8px 18px rgba(3, 7, 12, 0.8),
+    -5px -5px 12px rgba(247, 215, 124, 0.03);
+}
+
+/* Neumorphic Inset / Pressed Wells (Hollowed-Out Trays) */
+.neu-inset-light, .neu-well-light, .neu-pressed-light {
+  background: #dbe7f0;
+  border: 1px solid rgba(155, 179, 196, 0.3);
+  box-shadow: 
+    inset 5px 5px 10px rgba(6, 13, 22, 0.1),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.95);
+}
+
+.neu-inset-dark, .neu-well-dark, .neu-pressed-dark {
+  background: #060d16;
+  border: 1px solid rgba(229, 183, 76, 0.15);
+  border-bottom-color: rgba(247, 215, 124, 0.25);
+  box-shadow: 
+    inset 6px 6px 14px rgba(0, 0, 0, 0.95),
+    inset -4px -4px 10px rgba(247, 215, 124, 0.03);
+}
+
+/* Neumorphic Interactive Button (Extruded Default, Depressed on Active) */
+.neu-btn-light {
+  background: linear-gradient(145deg, #ffffff 0%, #edf3f8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    5px 5px 12px rgba(6, 13, 22, 0.08),
+    -5px -5px 12px rgba(255, 255, 255, 0.95);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-btn-light:hover {
+  background: linear-gradient(145deg, #ffffff 0%, #f4f8fb 100%);
+  box-shadow: 
+    7px 7px 15px rgba(6, 13, 22, 0.12),
+    -7px -7px 15px rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+.neu-btn-light:active, .neu-btn-light.active {
+  background: #dbe7f0;
+  box-shadow: 
+    inset 4px 4px 8px rgba(6, 13, 22, 0.12),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  transform: translateY(1px);
+}
+
+.neu-btn-dark {
+  background: linear-gradient(145deg, #163246 0%, #0c1c28 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
+  border-top-color: rgba(247, 215, 124, 0.45);
+  box-shadow: 
+    6px 6px 14px rgba(3, 7, 12, 0.75),
+    -4px -4px 10px rgba(247, 215, 124, 0.03);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-btn-dark:hover {
+  background: linear-gradient(145deg, #1d3e56 0%, #102434 100%);
+  border-color: rgba(229, 183, 76, 0.45);
+  box-shadow: 
+    8px 8px 18px rgba(3, 7, 12, 0.85),
+    0 0 12px rgba(229, 183, 76, 0.15);
+  transform: translateY(-1px);
+}
+
+.neu-btn-dark:active, .neu-btn-dark.active {
+  background: #060d16;
+  border-color: #e5b74c;
+  box-shadow: 
+    inset 5px 5px 10px rgba(0, 0, 0, 0.9),
+    inset 0 0 8px rgba(229, 183, 76, 0.3);
+  transform: translateY(1px);
+}
+
+/* Neumorphic 24K Gilded Radiant Button */
+.neu-btn-amber {
+  background: linear-gradient(145deg, #f7d77c 0%, #e5b74c 50%, #c49332 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    6px 6px 16px rgba(196, 147, 50, 0.45),
+    0 0 16px rgba(229, 183, 76, 0.35),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  color: #060d16;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-btn-amber:hover {
+  background: linear-gradient(145deg, #fae298 0%, #f7d77c 50%, #e5b74c 100%);
+  box-shadow: 
+    8px 8px 20px rgba(196, 147, 50, 0.55),
+    0 0 24px rgba(247, 215, 124, 0.5),
+    inset 0 1px 2px rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+.neu-btn-amber:active {
+  background: #c49332;
+  box-shadow: 
+    inset 4px 4px 8px rgba(90, 62, 15, 0.8),
+    inset -3px -3px 6px rgba(247, 215, 124, 0.5);
+  transform: translateY(1px);
+}
+
+/* Neumorphic Large Card Containers */
+.neu-card-light {
+  background: linear-gradient(160deg, #ffffff 0%, #edf3f8 60%, #dbe7f0 100%);
+  border: 1px solid rgba(229, 183, 76, 0.25);
+  box-shadow: 
+    14px 14px 30px rgba(6, 13, 22, 0.08),
+    -14px -14px 30px rgba(255, 255, 255, 1);
+  border-radius: 1.5rem;
+}
+
+.neu-card-dark {
+  background: linear-gradient(160deg, #163246 0%, #0f2231 60%, #060d16 100%);
+  border: 1px solid rgba(229, 183, 76, 0.22);
+  border-top-color: rgba(247, 215, 124, 0.45);
+  box-shadow: 
+    16px 16px 36px rgba(3, 7, 12, 0.85),
+    0 0 20px rgba(229, 183, 76, 0.06),
+    -10px -10px 24px rgba(247, 215, 124, 0.02);
+  border-radius: 1.5rem;
+}
+
+/* Neumorphic Pills & Status Chips */
+.neu-pill-light {
+  background: #edf3f8;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    3px 3px 7px rgba(6, 13, 22, 0.08),
+    -3px -3px 7px rgba(255, 255, 255, 0.95);
+}
+
+.neu-pill-dark {
+  background: #0f2231;
+  border: 1px solid rgba(229, 183, 76, 0.2);
+  box-shadow: 
+    4px 4px 10px rgba(3, 7, 12, 0.75),
+    -3px -3px 8px rgba(247, 215, 124, 0.025);
+}
+
+/* Neumorphic Debossed Text Shadows */
+.neu-text-deboss-light {
+  color: #163246;
+  text-shadow: 1px 1px 1px #ffffff, -1px -1px 1px rgba(155, 179, 196, 0.4);
+}
+
+.neu-text-deboss-dark {
+  color: #dbe7f0;
+  text-shadow: 1px 1px 2px #000000, -1px -1px 1px rgba(247, 215, 124, 0.1);
+}
+
+/* 3D Topographic Tectonic Utility Classes */
+.tectonic-relief-plate {
+  background: linear-gradient(135deg, #163246 0%, #0f2231 60%, #060d16 100%);
+  border: 1px solid rgba(229, 183, 76, 0.28);
+  border-top-color: #f7d77c;
+  box-shadow: 0 12px 32px rgba(3, 7, 12, 0.8), 0 0 20px rgba(229, 183, 76, 0.08);
+}
+
+.tectonic-fissure-glow {
+  box-shadow: 0 0 25px rgba(229, 183, 76, 0.35), inset 0 0 15px rgba(247, 215, 124, 0.2);
+}
+
+.gilded-gradient-text {
+  background: linear-gradient(135deg, #fae298 0%, #f7d77c 30%, #e5b74c 70%, #c49332 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gilded-contour-rim {
+  border: 1px solid rgba(229, 183, 76, 0.35);
+  border-top: 1px solid #f7d77c;
+}
+
 
 
 

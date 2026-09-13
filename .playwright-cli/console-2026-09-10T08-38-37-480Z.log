@@ -1,3 +1,0 @@
-[     810ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:3000/node_modules/.vite/deps/chunk-NXESFFTV.js?v=0abd4524:21608
-[    1754ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/node_modules/.vite/deps/three.js?v=d2c4eb30:303
-[    1996ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/node_modules/.vite/deps/three.js?v=d2c4eb30:303

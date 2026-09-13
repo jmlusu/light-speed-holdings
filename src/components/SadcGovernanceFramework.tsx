@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import {
-  ShieldCheck,
-  Scale,
-  Landmark,
-  FileText,
-  Lock,
-  CheckCircle2,
-  AlertTriangle,
-  Download,
-  ArrowRight,
-  BookOpen,
-  Globe2,
-  Cpu,
-  Layers,
-  Workflow,
-  Zap,
-  ChevronRight,
-  Building2,
-  Key,
-  Network,
-  Activity,
-  FileCheck,
+import { 
+  ShieldCheck, 
+  Scale, 
+  Landmark, 
+  FileText, 
+  Lock, 
+  CheckCircle2, 
+  AlertTriangle, 
+  Download, 
+  ArrowRight, 
+  BookOpen, 
+  Globe2, 
+  Cpu, 
+  Layers, 
+  Workflow, 
+  Zap, 
+  ChevronRight, 
+  Building2, 
+  Key, 
+  Network, 
+  Activity, 
+  FileCheck, 
   Sparkles,
   ExternalLink,
   Coins,
@@ -43,7 +43,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
   onRequestBriefing
 }) => {
   const isLight = theme === 'light';
-
+  
   const [activeTab, setActiveTab] = useState<'principles' | 'hitl-matrix' | 'standards' | 'blueprints' | 'roadmap' | 'dossier'>('principles');
   const [activeTier, setActiveTier] = useState<number>(3);
   const [downloadedState, setDownloadedState] = useState<boolean>(false);
@@ -204,7 +204,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
   };
 
   return (
-    <section
+    <section 
       id="sadc-governance-framework"
       aria-label="SADC Agentic AI Governance Framework"
       className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full relative z-10 border-t ${
@@ -213,8 +213,8 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
     >
       {/* Policy Briefing Metadata Strip */}
       <div className={`p-4 rounded-2xl border mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 ${
-        isLight
-          ? 'bg-white border-slate-300 shadow-sm'
+        isLight 
+          ? 'bg-white border-slate-300 shadow-sm' 
           : 'bg-zinc-900/90 border-orange-500/30 shadow-xl'
       }`}>
         <div className="flex flex-wrap items-center gap-3">
@@ -223,7 +223,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
             <span>PHAROS POLICY TRACK // EXECUTIVE SUBMISSION</span>
           </div>
           <span className={`text-xs font-mono ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
-            Author: <strong className={isLight ? 'text-slate-900' : 'text-white'}>Jack Mlusu</strong>, Founder & CEO, LIGHTSPEED HOLDINGS LIMITED
+            Author: <strong className={isLight ? 'text-slate-900' : 'text-white'}>Jack Mlusu</strong>, Founder & CEO, LightSpeed Holdings Limited
           </span>
           <span className="text-zinc-500 hidden sm:inline">•</span>
           <span className={`text-xs font-mono ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
@@ -262,7 +262,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
           <Scale className="w-4 h-4" />
           <span>SADC REGIONAL REGULATORY STANDARD // OPERATIONAL BLUEPRINT</span>
         </div>
-
+        
         <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display leading-[1.08] ${
           isLight ? 'text-slate-900' : 'text-white'
         }`}>
@@ -375,7 +375,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
       {activeTab === 'principles' && (
         <div className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
+            
             {/* Principle 1: Agency Control */}
             <div className={`p-6 rounded-3xl border flex flex-col justify-between ${
               isLight ? 'bg-white border-slate-300 shadow-sm' : 'bg-zinc-900/80 border-white/10 shadow-xl'
@@ -761,7 +761,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
                   </strong>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {blueprint.specs.map((spec, sIdx) => (
-                      <div
+                      <div 
                         key={sIdx}
                         className={`p-3.5 rounded-2xl border flex items-start gap-2.5 ${
                           isLight ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-black/40 border-white/5 text-zinc-300'
@@ -811,8 +811,8 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
                 key={pIdx}
                 className={`p-6 rounded-3xl border flex flex-col justify-between ${
                   pIdx === 0
-                    ? isLight
-                      ? 'bg-white border-orange-500 shadow-md ring-1 ring-orange-500/30'
+                    ? isLight 
+                      ? 'bg-white border-orange-500 shadow-md ring-1 ring-orange-500/30' 
                       : 'bg-zinc-900 border-orange-500 shadow-xl ring-1 ring-orange-500/30'
                     : isLight
                       ? 'bg-white border-slate-300'
@@ -825,8 +825,8 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
                       {phase.phase}
                     </span>
                     <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
-                      pIdx === 0
-                        ? 'bg-orange-500/10 border-orange-500/30 text-orange-500 font-bold'
+                      pIdx === 0 
+                        ? 'bg-orange-500/10 border-orange-500/30 text-orange-500 font-bold' 
                         : 'bg-black/10 dark:bg-white/5 border-transparent text-zinc-500'
                     }`}>
                       {phase.timeline}
@@ -902,7 +902,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
                 SADC Agentic AI Governance Framework
               </h3>
               <p className={`text-xs mt-1 font-mono ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
-                Author: Jack Mlusu, Founder & CEO, LIGHTSPEED HOLDINGS LIMITED (Pharos policy track)
+                Author: Jack Mlusu, Founder & CEO, LightSpeed Holdings Limited (Pharos policy track)
               </p>
             </div>
 
@@ -949,7 +949,7 @@ export const SadcGovernanceFramework: React.FC<SadcGovernanceFrameworkProps> = (
 
           <div className="pt-4 border-t border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-4">
             <span className="text-xs font-mono text-zinc-500">
-              Official Submission Dossier • Pharos Policy Track • LIGHTSPEED HOLDINGS LIMITED
+              Official Submission Dossier • Pharos Policy Track • LightSpeed Holdings Limited
             </span>
 
             <button
