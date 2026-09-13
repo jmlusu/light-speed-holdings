@@ -70,7 +70,7 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
               <div className={`text-sm font-black tracking-widest font-mono ${
                 isLight ? 'text-slate-900' : 'text-white'
               }`}>
-                LIGHTSPEED HOLDINGS
+                LightSpeed Holdings
               </div>
               <div className={`text-[11px] font-mono font-medium ${
                 isLight ? 'text-slate-700' : 'text-zinc-400'

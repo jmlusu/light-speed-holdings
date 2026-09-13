@@ -1,192 +1,155 @@
-import React, { useEffect } from 'react';
-import {
-  X,
-  Terminal,
-  Shield,
-  Send,
-  CheckCircle,
-  Layers,
-  GitFork,
-  FileCode,
-  FileText
-} from 'lucide-react';
+import React from 'react';
+import { X, Shield, Cpu, Terminal, CheckCircle2, Award, Zap, ArrowRight, UserCheck } from 'lucide-react';
 import { Agent } from '../types';
 
 interface AgentModalProps {
   agent: Agent | null;
   onClose: () => void;
-  onDispatchTask: (agent: Agent) => void;
+  onDispatchTask?: (agent: Agent) => void;
+  theme?: 'light' | 'dark';
 }
 
-export const AgentModal: React.FC<AgentModalProps> = ({ agent, onClose, onDispatchTask }) => {
-  useEffect(() => {
-    if (agent) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [agent]);
-
+export const AgentModal: React.FC<AgentModalProps> = ({
+  agent,
+  onClose,
+  onDispatchTask,
+  theme = 'dark'
+}) => {
   if (!agent) return null;
+  const isLight = theme === 'light';
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 pt-16 sm:pt-20 overflow-y-auto">
-      <div className="bg-ls-navy border border-white/15 rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden my-auto relative">
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-white/10 bg-ls-navy/80 relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-ls-red flex items-center justify-center font-bold text-sm text-white shadow-md shadow-ls-red/20">
-              {agent.name.substring(0, 2).toUpperCase()}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white font-display">
-                  {agent.role}
-                </h3>
-                <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded tracking-wider ${
-                  agent.type === 'Executive'
-                    ? 'bg-ls-red/20 text-ls-red border border-ls-red/40'
-                    : 'bg-ls-navy text-zinc-300 border border-white/10'
-                }`}>
-                  {agent.type}
-                </span>
-              </div>
-              <p className="text-justify text-xs text-zinc-400 font-mono">
-                @{agent.name} • {agent.department} Department
-              </p>
-            </div>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+      <div 
+        className={`relative w-full max-w-2xl rounded-2xl border p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto ${
+          isLight 
+            ? 'bg-white border-slate-200 text-slate-900 shadow-amber-500/10' 
+            : 'bg-[#0f172a] border-slate-800 text-slate-100 shadow-amber-500/20'
+        }`}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
+            isLight 
+              ? 'bg-slate-100 hover:bg-slate-200 text-slate-600' 
+              : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+          }`}
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-          <button
-            onClick={onClose}
-            type="button"
-            aria-label="Close modal"
-            title="Close modal"
-            className="relative z-50 w-9 h-9 rounded-full bg-ls-navy hover:bg-ls-navy text-zinc-200 hover:text-white flex items-center justify-center transition-all cursor-pointer border border-white/20 shadow-md shrink-0"
-          >
-            <X className="w-4 h-4" />
-          </button>
+        {/* Header */}
+        <div className="flex items-start gap-4 mb-6">
+          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 shrink-0">
+            <Cpu className="w-7 h-7" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full uppercase tracking-wider ${
+                agent.type === 'Executive' 
+                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' 
+                  : agent.type === 'Board'
+                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+              }`}>
+                {agent.type} Agent
+              </span>
+              <span className="text-xs text-slate-500 font-mono">{agent.department}</span>
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight">{agent.name}</h2>
+            <p className="text-amber-500 font-medium text-sm">{agent.role}</p>
+          </div>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-          {/* Description */}
-          <div>
-            <h4 className="text-xs font-mono font-bold tracking-wider text-zinc-400 mb-1">
-              Operational Role & Summary
-            </h4>
-            <p className="text-justify text-xs text-zinc-200 leading-relaxed bg-ls-navy/70 p-3.5 rounded-2xl border border-white/10">
-              {agent.description || 'Specialized AI agent assigned to fulfill organizational goals.'}
-            </p>
-          </div>
+        {/* Description */}
+        <div className={`p-4 rounded-xl border mb-6 text-sm leading-relaxed ${
+          isLight ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-900/60 border-slate-800 text-slate-300'
+        }`}>
+          {agent.description}
+        </div>
 
-          {/* Hierarchy & Reporting */}
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="p-3.5 bg-ls-navy/70 rounded-2xl border border-white/10">
-              <span className="text-[10px] text-zinc-400 block font-mono tracking-wider font-bold">Reports To</span>
-              <span className="font-bold text-white font-mono mt-0.5 block">@{agent.reportsTo}</span>
+        {/* Governance & Permission */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div className={`p-4 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800'}`}>
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-slate-400 mb-1">
+              <Shield className="w-3.5 h-3.5 text-amber-500" />
+              Permission Tier
             </div>
-            <div className="p-3.5 bg-ls-navy/70 rounded-2xl border border-white/10">
-              <span className="text-[10px] text-zinc-400 block font-mono tracking-wider font-bold">Direct Reports</span>
-              <span className="font-bold text-ls-red font-mono mt-0.5 block">
-                {agent.directReports && agent.directReports.length > 0
-                  ? `${agent.directReports.length} agents`
-                  : 'None (Terminal Specialist)'}
-              </span>
-            </div>
+            <div className="font-semibold text-sm">{agent.permission}</div>
           </div>
+          <div className={`p-4 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/40 border-slate-800'}`}>
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-slate-400 mb-1">
+              <UserCheck className="w-3.5 h-3.5 text-emerald-500" />
+              Reports To
+            </div>
+            <div className="font-semibold text-sm">{agent.reportsTo}</div>
+          </div>
+        </div>
 
-          {/* Configured Tools & Permissions */}
-          <div>
-            <h4 className="text-xs font-mono font-bold tracking-wider text-zinc-400 mb-2">
-              Assigned OpenCode Canonical Tools ({agent.tools.length})
-            </h4>
-            <div className="flex flex-wrap gap-1.5">
-              {agent.tools.map((t, idx) => (
-                <span
+        {/* Responsibilities */}
+        {agent.responsibilities && agent.responsibilities.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-500" /> Core Responsibilities
+            </h3>
+            <ul className="space-y-2">
+              {agent.responsibilities.map((resp, idx) => (
+                <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-300">
+                  <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                  <span>{resp}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Tools */}
+        {agent.tools && agent.tools.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-amber-500" /> Authorized Toolset
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {agent.tools.map((tool, idx) => (
+                <span 
                   key={idx}
-                  className="text-xs font-mono px-2.5 py-1 rounded-xl bg-ls-navy text-zinc-200 border border-white/15 flex items-center gap-1.5"
+                  className={`px-3 py-1 rounded-lg text-xs font-mono border ${
+                    isLight 
+                      ? 'bg-slate-100 border-slate-200 text-slate-700' 
+                      : 'bg-slate-800/80 border-slate-700 text-slate-300'
+                  }`}
                 >
-                  <Terminal className="w-3 h-3 text-ls-red" />
-                  {t}
+                  {tool}
                 </span>
               ))}
             </div>
           </div>
+        )}
 
-          {/* Responsibilities */}
-          {agent.responsibilities && agent.responsibilities.length > 0 && (
-            <div>
-              <h4 className="text-xs font-mono font-bold tracking-wider text-zinc-400 mb-2">
-                Core Responsibilities
-              </h4>
-              <ul className="space-y-1.5 text-xs text-zinc-300">
-                {agent.responsibilities.map((resp, idx) => (
-                  <li key={idx} className="flex items-start gap-2 bg-ls-navy/50 p-2.5 rounded-xl border border-white/5">
-                    <CheckCircle className="w-3.5 h-3.5 text-ls-red shrink-0 mt-0.5" />
-                    <span>{resp}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Operational Guidelines */}
-          {agent.guidelines && (
-            <div>
-              <h4 className="text-xs font-mono font-bold tracking-wider text-zinc-400 mb-1">
-                Operational Guidelines & System Directives
-              </h4>
-              <p className="text-justify text-xs text-zinc-300 leading-relaxed bg-ls-navy/70 p-3.5 rounded-2xl border border-white/10">
-                {agent.guidelines}
-              </p>
-            </div>
-          )}
-
-          {/* OpenCode Manifest Format Preview */}
-          <div>
-            <h4 className="text-xs font-mono font-bold tracking-wider text-zinc-400 mb-1 flex items-center gap-1.5">
-              <FileCode className="w-3.5 h-3.5 text-ls-red" />
-              <span>Generated OpenCode Card (.opencode/agents/{agent.name}.md)</span>
-            </h4>
-            <pre className="text-[11px] font-mono text-zinc-200 bg-ls-navy p-3.5 rounded-2xl border border-white/10 overflow-x-auto leading-relaxed shadow-inner">
-{`---
-mode: subagent
-name: ${agent.name}
-description: "${agent.description}"
-permission:
-${agent.tools.map(t => `  ${t}: true`).join('\n')}
----
-# ${agent.role} (@${agent.name})
-Department: ${agent.department}
-Reports To: ${agent.reportsTo}
-`}
-            </pre>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-white/10 bg-ls-navy/80 flex items-center justify-between">
+        {/* Action button */}
+        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-ls-navy hover:bg-zinc-700 text-xs font-semibold text-zinc-300 transition-colors cursor-pointer"
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+            }`}
           >
             Close
           </button>
-
-          <button
-            onClick={() => {
-              onClose();
-              onDispatchTask(agent);
-            }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-ls-red hover:bg-ls-red text-white font-bold text-xs shadow-md shadow-ls-red/20 transition-all cursor-pointer"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Dispatch Task to @{agent.name}</span>
-          </button>
+          {onDispatchTask && (
+            <button
+              onClick={() => {
+                onDispatchTask(agent);
+                onClose();
+              }}
+              className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-medium bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold transition-all shadow-lg shadow-amber-500/20"
+            >
+              <Zap className="w-4 h-4" />
+              Dispatch Task to {agent.name}
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </div>

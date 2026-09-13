@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import {
-  ShieldCheck,
-  Sparkles,
-  BookOpen,
-  Download,
-  ArrowRight,
-  ExternalLink,
-  CheckCircle2,
-  Building2,
-  Landmark,
-  HeartHandshake,
+import { 
+  ShieldCheck, 
+  Sparkles, 
+  BookOpen, 
+  Download, 
+  ArrowRight, 
+  ExternalLink, 
+  CheckCircle2, 
+  Building2, 
+  Landmark, 
+  HeartHandshake, 
   Store,
   FileText,
   Clock,
@@ -22,7 +22,6 @@ import {
 } from 'lucide-react';
 import { StatusBadge, HonestyTier } from './ui/StatusBadge';
 import { AcousticVentGrille } from './TactileHardwareElements';
-import pharosBeaconLake from '../assets/images/pharos_beacon_lake_1789078282970.jpg';
 
 interface ProofShowcaseProps {
   theme?: 'light' | 'dark';
@@ -85,13 +84,13 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
     {
       id: 'in-house-144',
       title: '144-Agent Sovereign Company Orchestration Engine',
-      stakeholder: 'LIGHTSPEED HOLDINGS LIMITED (Internal Operations)',
+      stakeholder: 'LightSpeed Holdings Limited (Internal Operations)',
       tier: 'proven-in-house',
       sector: 'AGENTIC COMPANY BUILDING',
       problem: 'Traditional corporate operations require massive administrative headcount to coordinate multi-department workflows, leading to coordination drag.',
       intervention: 'Built and operating our full 144-agent enterprise hierarchy (from Executive Committee down to Specialists) via YAML registries, OpenCode cards, and DAG task buses.',
       statusSummary: 'Daily internal operations, automated code auditing, design systems, and compliance checks run on this platform.',
-      deliverableState: 'Proven In-House — the operational heartbeat of LIGHTSPEED HOLDINGS LIMITED.'
+      deliverableState: 'Proven In-House — the operational heartbeat of LightSpeed Holdings Limited.'
     }
   ];
 
@@ -105,7 +104,7 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
       desc: 'Authored by Jack Mlusu, Founder & CEO. A unified operational and regulatory standard for SADC digital/ICT ministers, MACRA, CRASA, and central banks.',
       pages: '36 Pages',
       readTime: '16 min read',
-      citation: 'Author: Jack Mlusu, Founder & CEO, LIGHTSPEED HOLDINGS LIMITED',
+      citation: 'Author: Jack Mlusu, Founder & CEO, LightSpeed Holdings Limited',
       anchor: '#sadc-governance-framework'
     },
     {
@@ -116,7 +115,7 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
       desc: 'Our flagship monthly research document examining how Southern Africa is bypassing legacy ERP bloat for autonomous, sovereign agent architectures.',
       pages: '28 Pages',
       readTime: '14 min read',
-      citation: 'LightSpeed Sovereign Research Group'
+      citation: 'LightSpeed Holdings Limited Sovereign Research Group'
     },
     {
       id: 'haomtgv-paper',
@@ -159,7 +158,7 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
 
   return (
     <section id="proof" className="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full relative z-10">
-
+      
       {/* Header & Honesty Ladder Anchor */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-2">
@@ -292,27 +291,32 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
       {activeTab === 'publications' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-
+            
             {/* Left Pharos Visual Beacon Card */}
-            <div className="lg:col-span-4 relative rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl">
-              <img
-                src={pharosBeaconLake}
-                alt="Pharos Beacon on Lake Malawi"
-                referrerPolicy="no-referrer"
-                className="w-full h-80 object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
-
-              <div className="absolute bottom-4 left-4 right-4 space-y-2 text-white">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/30 text-amber-200 border border-amber-500/40 font-bold">
-                  PHAROS RESEARCH TOWER
-                </span>
+            <div className="lg:col-span-4 relative rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl p-6 bg-gradient-to-br from-[#121624] via-[#090b14] to-[#040508] flex flex-col justify-between min-h-[320px]">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">
+                    PHAROS RESEARCH TOWER
+                  </span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+                </div>
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <BookOpen className="w-7 h-7" />
+                </div>
+              </div>
+              
+              <div className="space-y-2 text-white mt-6">
                 <h4 className="text-lg font-bold font-display leading-snug">
                   Illuminating Sovereign AI Policy for SADC
                 </h4>
                 <p className="text-xs text-zinc-300 leading-snug">
                   Authored in Lilongwe, providing mathematical rigor and policy translation for boards navigating AI transformation.
                 </p>
+                <div className="pt-2 flex items-center gap-2 text-[10px] font-mono text-amber-400">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>FIDUCIARY GRADE AUDIT DOCUMENT</span>
+                </div>
               </div>
             </div>
 

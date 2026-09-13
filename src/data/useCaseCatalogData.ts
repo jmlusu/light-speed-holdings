@@ -8,7 +8,7 @@ import {
 } from '../types';
 
 export const CATALOG_POSITIONING = {
-  company: "LightSpeed Holdings Limited™",
+  company: "LightSpeed Holdings Limited",
   location: "Lilongwe, Malawi",
   positioningLine: "The AI-native company builder for Southern Africa.",
   tagline: "ASPIRE. ACT. ACHIEVE.",
@@ -471,11 +471,11 @@ export const CATALOG_PROOF_POINTS: CatalogProofPoint[] = [
   },
   {
     id: "proof-meta",
-    title: "LightSpeed Holdings — The Meta Case Study",
+    title: "LightSpeed Holdings Limited — The Meta Case Study",
     category: "Meta Case Study",
     honestyBadge: "Proven in-house",
     badgeType: "proven",
-    description: "LightSpeed Holdings is its own first customer. The company runs on the same 144-agent, 20-department orchestration platform offered to clients. CEO directs strategy; 143 AI agents handle operations.",
+    description: "LightSpeed Holdings Limited is its own first customer. The company runs on the same 144-agent, 20-department orchestration platform offered to clients. CEO directs strategy; 143 AI agents handle operations.",
     whatItMonitorsOrProves: "Proves 5-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls operate daily in production.",
     whyItMatters: "Not a prototype or slide deck — an operating company that builds and relies on the exact software it licenses."
   },

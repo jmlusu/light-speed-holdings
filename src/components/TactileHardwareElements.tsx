@@ -153,47 +153,114 @@ interface AcousticVentGrilleProps {
   isLight?: boolean;
 }
 
-export const AcousticVentGrille: React.FC<AcousticVentGrilleProps> = ({
-  cols = 16,
-  rows = 2,
-  variant = 'strip',
+export const AcousticVentGrille: React.FC<AcousticVentGrilleProps> = () => {
+  return null;
+};
+
+interface StatusLedPipProps {
+  status?: 'emerald' | 'amber' | 'crimson' | 'dim' | 'off';
+  label?: string;
+  isLight?: boolean;
+  pulse?: boolean;
+}
+
+export const StatusLedPip: React.FC<StatusLedPipProps> = ({
+  status = 'emerald',
+  label,
   isLight = false,
 }) => {
-  if (variant === 'cluster') {
-    // 7-dot microphone / speaker rosette cluster
-    return (
-      <div className="inline-grid grid-cols-3 gap-1 p-1 rounded-md opacity-70">
-        <div className="w-1.5 h-1.5" />
-        <div className="w-1.5 h-1.5 rounded-full tactile-grille-dot" />
-        <div className="w-1.5 h-1.5" />
-        <div className="w-1.5 h-1.5 rounded-full tactile-grille-dot" />
-        <div className="w-1.5 h-1.5 rounded-full tactile-grille-dot" />
-        <div className="w-1.5 h-1.5 rounded-full tactile-grille-dot" />
-        <div className="w-1.5 h-1.5" />
-        <div className="w-1.5 h-1.5 rounded-full tactile-grille-dot" />
-        <div className="w-1.5 h-1.5" />
-      </div>
-    );
-  }
-
   return (
-    <div className={`inline-flex flex-col gap-1 px-2.5 py-1.5 rounded-full ${
-      isLight ? 'hardware-well-light' : 'hardware-well-dark'
-    }`}>
-      {Array.from({ length: rows }).map((_, rIdx) => (
-        <div key={rIdx} className="flex items-center gap-1.5">
-          {Array.from({ length: cols }).map((_, cIdx) => (
-            <div
-              key={cIdx}
-              className={`w-1 h-1 rounded-full ${
-                isLight 
-                  ? 'bg-slate-500/40 shadow-inner' 
-                  : 'bg-black shadow-[inset_0_1px_1px_rgba(0,0,0,1),0_0.5px_0.5px_rgba(255,255,255,0.1)]'
-              }`}
-            />
-          ))}
+    <div className="inline-flex items-center gap-2 select-none">
+      <div className={isLight ? 'status-pip-container-light' : 'status-pip-container'}>
+        {status === 'emerald' && <div className="pip-led-emerald" />}
+        {status === 'amber' && <div className="pip-led-amber" />}
+        {status === 'crimson' && <div className="pip-led-crimson" />}
+        {(status === 'dim' || status === 'off') && <div className="pip-led-dim" />}
+      </div>
+      {label && (
+        <span className={`text-[10px] font-mono tracking-wider font-semibold uppercase ${
+          isLight ? 'text-slate-600' : 'text-zinc-400'
+        }`}>
+          {label}
+        </span>
+      )}
+    </div>
+  );
+};
+
+export const MachineScrewHead: React.FC<{ isLight?: boolean; className?: string }> = ({
+  isLight = false,
+  className = '',
+}) => {
+  return (
+    <div 
+      className={`${isLight ? 'machine-screw-light' : 'machine-screw'} ${className}`} 
+      aria-hidden="true" 
+    />
+  );
+};
+
+interface ChassisPanelProps {
+  children: React.ReactNode;
+  title?: string;
+  telemetryTag?: string;
+  statusLed?: 'emerald' | 'amber' | 'crimson' | 'dim';
+  statusLabel?: string;
+  isLight?: boolean;
+  className?: string;
+}
+
+export const ChassisPanel: React.FC<ChassisPanelProps> = ({
+  children,
+  title,
+  telemetryTag,
+  statusLed,
+  statusLabel,
+  isLight = false,
+  className = '',
+}) => {
+  return (
+    <div className={`rounded-2xl p-6 relative overflow-hidden transition-colors ${
+      isLight ? 'chassis-milled-light text-slate-900' : 'chassis-milled-dark text-zinc-100'
+    } ${className}`}>
+      {/* Corner Fastener Screws */}
+      <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
+      <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
+      <MachineScrewHead isLight={isLight} className="absolute bottom-3 left-3" />
+      <MachineScrewHead isLight={isLight} className="absolute bottom-3 right-3" />
+
+      {/* Header bar if title or telemetry exists */}
+      {(title || telemetryTag || statusLed) && (
+        <div className={`flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b px-2 ${
+          isLight ? 'border-slate-200' : 'border-zinc-800'
+        }`}>
+          <div className="flex items-center gap-3">
+            {statusLed && (
+              <StatusLedPip status={statusLed} label={statusLabel} isLight={isLight} />
+            )}
+            {title && (
+              <span className={`text-xs font-mono font-bold tracking-wider uppercase ${
+                isLight ? 'text-slate-900' : 'text-zinc-100'
+              }`}>
+                {title}
+              </span>
+            )}
+          </div>
+
+          {telemetryTag && (
+            <span className={`px-2 py-0.5 rounded font-mono text-[9px] tracking-wider uppercase ${
+              isLight ? 'telemetry-tag-light' : 'telemetry-tag-dark'
+            }`}>
+              {telemetryTag}
+            </span>
+          )}
         </div>
-      ))}
+      )}
+
+      {/* Main Content Area */}
+      <div className="relative z-10">
+        {children}
+      </div>
     </div>
   );
 };

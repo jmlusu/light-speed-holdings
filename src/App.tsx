@@ -1,200 +1,174 @@
-import React, { useState, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { SiteLayout } from './components/SiteLayout';
-
-import { Agent } from './types';
-
-// Code-split each route so non-home pages load on demand (kills the 1MB bundle).
-const HomePage = React.lazy(() => import('./pages/HomePage'));
-const AboutPage = React.lazy(() => import('./pages/AboutPage'));
-const SolutionsPage = React.lazy(() => import('./pages/SolutionsPage'));
-const SolutionDetailPage = React.lazy(() => import('./pages/SolutionDetailPage'));
-const IndustriesPage = React.lazy(() => import('./pages/IndustriesPage'));
-const IndustryDetailPage = React.lazy(() => import('./pages/IndustryDetailPage'));
-const AiCompanyBuilderPage = React.lazy(() => import('./pages/AiCompanyBuilderPage'));
-const TechnologyPage = React.lazy(() => import('./pages/TechnologyPage'));
-const WorkPage = React.lazy(() => import('./pages/WorkPage'));
-const InsightsPage = React.lazy(() => import('./pages/InsightsPage'));
-const ContactPage = React.lazy(() => import('./pages/ContactPage'));
-const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage'));
-const TermsPage = React.lazy(() => import('./pages/TermsPage'));
-
-const RouteFallback: React.FC = () => (
-  <div
-    role="status"
-    aria-label="Loading page"
-    className="flex min-h-[50vh] items-center justify-center"
-  >
-    <div className="h-8 w-8 animate-spin rounded-full border-2 border-ls-red border-t-transparent" />
-  </div>
-);
+import React, { useState, useEffect } from 'react';
+import { Header } from './components/Header';
+import { HomeSection } from './components/HomeSection';
+import { SolutionsSection } from './components/SolutionsSection';
+import { IndustriesSection } from './components/IndustriesSection';
+import { AiCompanyBuilderSection } from './components/AiCompanyBuilderSection';
+import { TechnologySection } from './components/TechnologySection';
+import { WorkSection } from './components/WorkSection';
+import { PharosSection } from './components/InsightsResearchSection';
+import { AiReadinessAssessment } from './components/AiReadinessAssessment';
+import { AboutSection } from './components/AboutSection';
+import { LegalSection } from './components/LegalSection';
+import { ScrollToTopButton } from './components/ScrollToTopButton';
+import { Footer } from './components/Footer';
+import { ContactModal } from './components/ContactModal';
 
 export const App: React.FC = () => {
+  const [currentRoute, setCurrentRoute] = useState<string>('home');
+  const [routeParam, setRouteParam] = useState<string | undefined>(undefined);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('ls_theme');
-    return (saved === 'dark' || saved === 'light') ? saved : 'dark';
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lightspeed_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+    }
+    return 'dark';
   });
+  const [isContactOpen, setIsContactOpen] = useState<boolean>(false);
+  const [contactIntent, setContactIntent] = useState<string>('Start a Conversation');
+  const [contactSummary, setContactSummary] = useState<string>('');
 
+  // Persist theme and update root html class and body background
+  useEffect(() => {
+    localStorage.setItem('lightspeed_theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.backgroundColor = '#060d16';
+      document.body.style.backgroundColor = '#060d16';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.backgroundColor = '#edf3f8';
+      document.body.style.backgroundColor = '#edf3f8';
+    }
+  }, [theme]);
+
+  // Handle navigation
+  const handleNavigate = (route: string, param?: string) => {
+    setCurrentRoute(route);
+    setRouteParam(param);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Open contact modal with prefilled context
+  const handleOpenContactModal = (intent?: string, summary?: string) => {
+    if (intent) setContactIntent(intent);
+    if (summary) setContactSummary(summary);
+    setIsContactOpen(true);
+  };
+
+  // Theme toggle
   const toggleTheme = () => {
-    setTheme(prev => {
-      const next = prev === 'light' ? 'dark' : 'light';
-      localStorage.setItem('ls_theme', next);
-      return next;
-    });
-  };
-
-  const [isBriefingModalOpen, setIsBriefingModalOpen] = useState(false);
-  const [briefingSummary, setBriefingSummary] = useState('');
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
-
-  const handleRequestBriefing = (summary?: string) => {
-    setBriefingSummary(summary || '');
-    setIsBriefingModalOpen(true);
-  };
-
-  const handleDispatchTask = (agent: Agent) => {
-    setSelectedAgent(null);
-    handleRequestBriefing(`Inquiry regarding specialist agent capability: ${agent.name} (${agent.role})`);
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   return (
-    <div className={`min-h-screen relative font-sans transition-colors duration-500 overflow-x-hidden ${
-      theme === 'light'
-        ? 'spatial-ambient-light text-slate-800'
-        : 'spatial-ambient-dark text-zinc-100'
+    <div className={`min-h-screen w-full max-w-full overflow-x-hidden font-sans transition-colors duration-500 ease-in-out ${
+      theme === 'dark' ? 'bg-[#060d16] text-[#f0f6fa]' : 'bg-[#edf3f8] text-[#061522]'
     }`}>
-      <Routes>
-        <Route
-          element={
-            <SiteLayout
-              theme={theme}
-              onToggleTheme={toggleTheme}
-              onRequestBriefing={handleRequestBriefing}
-              isBriefingModalOpen={isBriefingModalOpen}
-              briefingSummary={briefingSummary}
-              onCloseBriefingModal={() => setIsBriefingModalOpen(false)}
-              selectedAgent={selectedAgent}
-              onCloseAgentModal={() => setSelectedAgent(null)}
-              onDispatchTask={handleDispatchTask}
-            />
-          }
-        >
-          {/* Legacy aliases — replaced with the new sitemap destinations */}
-          <Route path="/home" element={<Navigate to="/" replace />} />
-          <Route path="/capabilities/*" element={<Navigate to="/solutions" replace />} />
-          <Route path="/capabilities/diagnostic" element={<Navigate to="/solutions/strategy-advisory" replace />} />
-          <Route path="/evidence" element={<Navigate to="/work" replace />} />
-          <Route path="/engagement" element={<Navigate to="/contact" replace />} />
+      
+      {/* Navigation Header */}
+      <Header
+        currentRoute={currentRoute}
+        onNavigate={handleNavigate}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onOpenContactModal={() => handleOpenContactModal('Start a Conversation')}
+      />
 
-          <Route
-            path="/"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <HomePage
-                  theme={theme}
-                  onRequestBriefing={handleRequestBriefing}
-                />
-              </Suspense>
-            }
+      {/* Main Page Route View */}
+      <main className="pt-2 sm:pt-4 pb-12">
+        {currentRoute === 'home' && (
+          <HomeSection
+            onNavigate={handleNavigate}
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/about"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <AboutPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'solutions' && (
+          <SolutionsSection
+            initialSubSection={routeParam}
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/solutions"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <SolutionsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'industries' && (
+          <IndustriesSection
+            initialIndustry={routeParam}
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/solutions/:slug"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <SolutionDetailPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'ai-company-builder' && (
+          <AiCompanyBuilderSection
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/industries"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <IndustriesPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'technology' && (
+          <TechnologySection
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/industries/:slug"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <IndustryDetailPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'work' && (
+          <WorkSection
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/ai-company-builder"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <AiCompanyBuilderPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {(currentRoute === 'pharos' || currentRoute === 'insights' || currentRoute === 'research') && (
+          <PharosSection
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/technology"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <TechnologyPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'resources' && (
+          <AiReadinessAssessment
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/work"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <WorkPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'about' && (
+          <AboutSection
+            onOpenContactModal={handleOpenContactModal}
+            theme={theme}
           />
-          <Route
-            path="/insights"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <InsightsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
+        )}
+
+        {currentRoute === 'legal' && (
+          <LegalSection
+            theme={theme}
           />
-          <Route
-            path="/contact"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <ContactPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/legal/privacy"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <PrivacyPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/legal/terms"
-            element={
-              <Suspense fallback={<RouteFallback />}>
-                <TermsPage theme={theme} onRequestBriefing={handleRequestBriefing} />
-              </Suspense>
-            }
-          />
-        </Route>
-      </Routes>
+        )}
+      </main>
+
+      {/* Global Footer */}
+      <Footer
+        onNavigate={handleNavigate}
+        onOpenContactModal={handleOpenContactModal}
+        theme={theme}
+      />
+
+      {/* Contact Modal */}
+      <ContactModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+        prefilledIntent={contactIntent}
+        prefilledSummary={contactSummary}
+        theme={theme}
+      />
+
+      {/* Global Architectural Return to Top Floating Control */}
+      <ScrollToTopButton theme={theme} />
+
     </div>
   );
 };

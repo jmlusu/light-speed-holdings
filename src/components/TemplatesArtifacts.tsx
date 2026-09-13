@@ -17,8 +17,12 @@ import {
   Maximize2,
   X,
   Copy,
-  Check
+  Check,
+  Landmark,
+  Compass,
+  Briefcase
 } from 'lucide-react';
+import { GovernanceDocumentViewerModal } from './GovernanceDocumentViewerModal';
 
 interface TemplatesArtifactsProps {
   onRequestBriefing: (summary?: string) => void;
@@ -313,6 +317,13 @@ export const TemplatesArtifacts: React.FC<TemplatesArtifactsProps> = ({
   const [selectedArtifact, setSelectedArtifact] = useState<ArtifactTemplate | null>(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [rotaryAngle, setRotaryAngle] = useState(0);
+  const [isGovDocOpen, setIsGovDocOpen] = useState(false);
+  const [govDocId, setGovDocId] = useState('doc-constitution');
+
+  const openGovDoc = (id: string) => {
+    setGovDocId(id);
+    setIsGovDocOpen(true);
+  };
 
   useEffect(() => {
     if (selectedArtifact) {
@@ -372,11 +383,11 @@ export const TemplatesArtifacts: React.FC<TemplatesArtifactsProps> = ({
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full tactile-pip-active" />
             <span className={`text-xs font-mono font-bold tracking-wider ${isLight ? 'text-slate-900' : 'text-orange-400'}`}>
-              The Purpose of LightSpeed Templates & Specifications
+              The Purpose of LightSpeed Holdings Limited Templates & Specifications
             </span>
           </div>
           <p className={`text-justify text-justify text-sm leading-relaxed ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
-            In enterprise AI transformation, theoretical slides produce 0% ROI. The <strong>LightSpeed Sovereign Artifact Library</strong> is our verified repository of computable blueprints, deterministic policy schemas, air-gapped hardware topologies, and governance protocols. Every template is an actionable, production-ready deliverable engineered to de-risk executive decision-making and ensure verifiable compliance across your organization’s infrastructure.
+            In enterprise AI transformation, theoretical slides produce 0% ROI. The <strong>LightSpeed Holdings Limited Sovereign Artifact Library</strong> is our verified repository of computable blueprints, deterministic policy schemas, air-gapped hardware topologies, and governance protocols. Every template is an actionable, production-ready deliverable engineered to de-risk executive decision-making and ensure verifiable compliance across your organization’s infrastructure.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-white/10 text-[11px] font-mono">
             <div className="flex flex-col">
@@ -396,6 +407,92 @@ export const TemplatesArtifacts: React.FC<TemplatesArtifactsProps> = ({
               <span className={isLight ? 'text-slate-700 font-semibold' : 'text-zinc-300'}>Cryptographic Lineage</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* INSTITUTIONAL GOVERNANCE DOCUMENTS BANNER & QUICK LAUNCHER */}
+      <div className={`mb-12 p-6 sm:p-8 rounded-3xl border relative overflow-hidden transition-all ${
+        isLight ? 'bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100 border-amber-300 shadow-xl' : 'bg-gradient-to-r from-zinc-950 via-amber-950/30 to-zinc-950 border-amber-500/40 shadow-2xl'
+      }`}>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+          <div className="space-y-3 max-w-3xl">
+            <div className="flex items-center gap-2.5">
+              <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest bg-amber-500 text-slate-950 shadow-sm">
+                OFFICIAL INSTITUTIONAL GOVERNANCE SUITE
+              </span>
+              <span className={`text-xs font-mono ${isLight ? 'text-slate-600' : 'text-amber-300'}`}>
+                AUTHORITATIVE REPOSITORY // 6 CORE SPECIFICATIONS
+              </span>
+            </div>
+
+            <h2 className={`text-xl sm:text-2xl lg:text-3xl font-extrabold font-display leading-tight ${
+              isLight ? 'text-slate-900' : 'text-zinc-100'
+            }`}>
+              AI Constitution, Decision Framework &amp; Operating Runbooks
+            </h2>
+
+            <p className={`text-xs sm:text-sm leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+              Inspect the exact foundational governance documents operating inside LightSpeed Holdings: the 10 Constitutional Principles, the 10-Step Decision Protocol, OP-16 Operating Proof Runbook, Trust-by-Engineering Strategy, Malawi Service Catalog, and Skill Curation Policy.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-2 pt-2">
+              <button
+                onClick={() => openGovDoc('doc-constitution')}
+                className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-mono text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Landmark className="w-3.5 h-3.5" />
+                <span>AI Constitution</span>
+              </button>
+
+              <button
+                onClick={() => openGovDoc('doc-decision-framework')}
+                className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-mono text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Compass className="w-3.5 h-3.5" />
+                <span>Decision Framework</span>
+              </button>
+
+              <button
+                onClick={() => openGovDoc('doc-op16-runbook')}
+                className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-mono text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Terminal className="w-3.5 h-3.5" />
+                <span>OP-16 Runbook</span>
+              </button>
+
+              <button
+                onClick={() => openGovDoc('doc-reservations-strategy')}
+                className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-mono text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Four Reservations</span>
+              </button>
+
+              <button
+                onClick={() => openGovDoc('doc-service-catalog')}
+                className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-mono text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Briefcase className="w-3.5 h-3.5" />
+                <span>Malawi Service Catalog</span>
+              </button>
+
+              <button
+                onClick={() => openGovDoc('doc-skill-policy')}
+                className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-mono text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Cpu className="w-3.5 h-3.5" />
+                <span>Skill Policy</span>
+              </button>
+            </div>
+          </div>
+
+          <button
+            onClick={() => openGovDoc('doc-constitution')}
+            className="px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black font-mono text-xs uppercase tracking-wider transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shrink-0"
+          >
+            <FileCheck className="w-4 h-4" />
+            <span>Open Governance Repository</span>
+          </button>
         </div>
       </div>
 
@@ -646,6 +743,15 @@ export const TemplatesArtifacts: React.FC<TemplatesArtifactsProps> = ({
           </div>
         </div>
       )}
+
+      {/* Governance Document Viewer Modal */}
+      <GovernanceDocumentViewerModal
+        isOpen={isGovDocOpen}
+        onClose={() => setIsGovDocOpen(false)}
+        initialDocId={govDocId}
+        onOpenContactModal={(intent) => onRequestBriefing(intent)}
+        theme={theme}
+      />
 
     </section>
   );

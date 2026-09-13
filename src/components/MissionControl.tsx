@@ -66,7 +66,7 @@ export const MissionControl: React.FC = () => {
               <span className="text-xs text-slate-400">Est. 2026</span>
             </div>
             <h2 className="text-2xl font-black text-white mt-1.5 tracking-tight font-display">
-              LIGHTSPEED HOLDINGS LIMITED
+              LightSpeed Holdings Limited
             </h2>
             <p className="text-justify text-sm font-semibold text-[#00bfff] tracking-widest mt-0.5">
               ASPIRE. ACT. ACHIEVE.
@@ -150,7 +150,7 @@ export const MissionControl: React.FC = () => {
 
             <div className="flex justify-between text-slate-400">
               <span>Legal Entity:</span>
-              <span className="font-semibold text-white">LIGHTSPEED HOLDINGS LIMITED</span>
+              <span className="font-semibold text-white">LightSpeed Holdings Limited</span>
             </div>
             <div className="flex justify-between text-slate-400">
               <span>Headquarters:</span>

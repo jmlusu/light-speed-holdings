@@ -173,7 +173,7 @@ const USE_CASES = [
     sector: 'Commercial Banking',
     headline: 'Collapse letter-of-credit verification from 72 hours to 14 minutes',
     challenge: 'Cross-border shipping manifests and bill-of-lading documents required manual forensic cross-checking across 8 regulatory jurisdictions in Southern Africa.',
-    solution: 'LIGHTSPEED deployed a sovereign multi-agent verification pipeline that ingests multimodal manifests, verifies customs tariffs, validates AML sanctions, and executes SWIFT settlements automatically.'
+    solution: 'LightSpeed deployed a sovereign multi-agent verification pipeline that ingests multimodal manifests, verifies customs tariffs, validates AML sanctions, and executes SWIFT settlements automatically.'
   },
   {
     id: 'customs',
@@ -311,7 +311,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
       ctx.font = '800 24px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('LIGHTSPEED', 256, 190);
+      ctx.fillText('LightSpeed', 256, 190);
 
       ctx.fillStyle = '#ffffff';
       ctx.font = '900 48px "Plus Jakarta Sans", sans-serif';
@@ -648,7 +648,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
           <div className="space-y-3 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-400 font-mono text-[11px] tracking-widest shadow-sm">
               <span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)] animate-pulse" />
-              <span>THE LIGHTSPEED THESIS IN ACTION</span>
+              <span>THE LightSpeed THESIS IN ACTION</span>
             </div>
 
             <h3 className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight font-display leading-[1.05] ${
@@ -667,11 +667,11 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
               isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
             }`}>
               Traditional enterprises lose 6 to 18 months in the friction between boardroom formulation and operational delivery. 
-              LIGHTSPEED's operating thesis replaces static slide decks and siloed handoffs with a <strong>continuous, computable closed loop</strong>—compiling fiduciary intent directly into bounded multi-agent DAGs, sovereign data fabrics, and verifiable settlements in real time.
+              LightSpeed's operating thesis replaces static slide decks and siloed handoffs with a <strong>continuous, computable closed loop</strong>—compiling fiduciary intent directly into bounded multi-agent DAGs, sovereign data fabrics, and verifiable settlements in real time.
             </p>
           </div>
 
-          {/* Operating Model Comparison Toggle: Traditional vs LIGHTSPEED (Tactile Hardware Toggle Switch) */}
+          {/* Operating Model Comparison Toggle: Traditional vs LightSpeed (Tactile Hardware Toggle Switch) */}
           <div className="shrink-0 space-y-2">
             <div className="text-[11px] font-mono tracking-wider text-zinc-400 font-bold flex items-center justify-between">
               <span>Operating Paradigm</span>
@@ -695,7 +695,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                 <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   modelMode === 'lightspeed' ? 'tactile-pip-active shadow-[0_0_8px_rgba(249,115,22,1)]' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                 }`} />
-                <span className="whitespace-nowrap">LIGHTSPEED AI-Native</span>
+                <span className="whitespace-nowrap">LightSpeed AI-Native</span>
               </button>
               <button
                 onClick={() => setModelMode('traditional')}
@@ -1060,7 +1060,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
               {/* Side-by-Side Comparison Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
-                {/* LIGHTSPEED AI-Native Card */}
+                {/* LightSpeed AI-Native Card */}
                 <div className={`p-4 rounded-2xl border transition-all ${
                   modelMode === 'lightspeed'
                     ? isLight 
@@ -1073,7 +1073,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                   <div className="flex items-center justify-between mb-2">
                     <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-wider text-orange-500">
                       <Zap className="w-3.5 h-3.5" />
-                      LIGHTSPEED Closed Loop
+                      LightSpeed Closed Loop
                     </span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">
                       PROVABLE
