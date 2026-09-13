@@ -1,18 +1,18 @@
 import React from 'react';
-import { 
-  Activity, 
-  Users, 
-  Cpu, 
-  DollarSign, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Clock, 
-  Send, 
-  Sparkles, 
-  Zap, 
-  TrendingUp, 
-  ShieldCheck, 
-  ArrowUpRight, 
+import {
+  Activity,
+  Users,
+  Cpu,
+  DollarSign,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
+  Send,
+  Sparkles,
+  Zap,
+  TrendingUp,
+  ShieldCheck,
+  ArrowUpRight,
   Play,
   RotateCcw
 } from 'lucide-react';
@@ -87,7 +87,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
             <span className="text-xs text-slate-400">Cadence: 6-Hour Ticks</span>
           </div>
           <h2 className="text-xl font-bold text-white mt-1.5 tracking-tight font-display">
-            Executive Command Console • LightSpeed Holdings
+            Executive Command Console • LIGHTSPEED HOLDINGS LIMITED
           </h2>
           <p className="text-justify text-xs text-slate-300 max-w-2xl mt-0.5">
             144 registered AI agents actively fulfilling operational, engineering, and market expansion mandates under constitutional human-in-the-loop oversight.
@@ -185,7 +185,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
         </div>
 
         {/* Card 2: Active Agents Fleet */}
-        <div 
+        <div
           onClick={() => onNavigateTab('roster')}
           className="bg-[#0b102f] border border-[#1b2554] hover:border-[#00bfff]/50 rounded-2xl p-5 flex flex-col justify-between shadow-md cursor-pointer transition-all group"
         >
@@ -216,7 +216,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
         </div>
 
         {/* Card 3: Tasks Pipeline */}
-        <div 
+        <div
           onClick={() => onNavigateTab('kanban')}
           className="bg-[#0b102f] border border-[#1b2554] hover:border-[#00bfff]/50 rounded-2xl p-5 flex flex-col justify-between shadow-md cursor-pointer transition-all group"
         >
@@ -252,7 +252,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
         </div>
 
         {/* Card 4: Financial Burn & Model Efficiency */}
-        <div 
+        <div
           onClick={() => onNavigateTab('finance')}
           className="bg-[#0b102f] border border-[#1b2554] hover:border-[#00bfff]/50 rounded-2xl p-5 flex flex-col justify-between shadow-md cursor-pointer transition-all group"
         >

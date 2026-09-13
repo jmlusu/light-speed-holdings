@@ -8,6 +8,7 @@ import { CtaBand } from '../components/site/CtaBand';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
 import { StatCounter } from '../components/StatCounter';
+import { UseCaseCatalogSection } from '../components/UseCaseCatalogSection';
 import { solutions, industries, technologyPillars, insightTeasers, company } from '../data/siteContent';
 
 interface HomePageProps {
@@ -145,7 +146,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       </section>
 
       {/* Solutions */}
-      <section aria-labelledby="solutions-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+      <section id="solutions" aria-labelledby="solutions-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <SectionHeading
           theme={theme}
           eyebrow="SOLUTIONS"
@@ -190,7 +191,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       </section>
 
       {/* Technology */}
-      <section aria-labelledby="technology-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+      <section id="technology" aria-labelledby="technology-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <SectionHeading
           theme={theme}
           eyebrow="TECHNOLOGY"
@@ -220,7 +221,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       </section>
 
       {/* Industries */}
-      <section aria-labelledby="industries-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+      <section id="industries" aria-labelledby="industries-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <SectionHeading
           theme={theme}
           eyebrow="INDUSTRIES"
@@ -248,6 +249,9 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           </Link>
         </div>
       </section>
+
+      {/* Use Case Catalog — 50 offerable scenarios, honestly tagged */}
+      <UseCaseCatalogSection theme={theme} onRequestBriefing={onRequestBriefing} />
 
       {/* Proof Band: verified operating metrics + work */}
       <Reveal delay={0.05}>
@@ -307,7 +311,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       </Reveal>
 
       {/* Insights */}
-      <section aria-labelledby="insights-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+      <section id="insights" aria-labelledby="insights-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <SectionHeading
           theme={theme}
           eyebrow="INSIGHTS"
@@ -338,7 +342,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       </section>
 
       {/* About band */}
-      <section aria-labelledby="about-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+      <section id="about" aria-labelledby="about-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <div className={`rounded-3xl p-8 sm:p-10 flex flex-col lg:flex-row lg:items-center gap-6 border ${
           isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
         }`}>
@@ -361,7 +365,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         </div>
       </section>
 
-      <CtaBand theme={theme} />
+      <CtaBand theme={theme} id="contact" />
     </div>
   );
 };

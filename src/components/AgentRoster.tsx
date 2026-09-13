@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Terminal, 
-  Shield, 
-  Briefcase, 
-  ExternalLink, 
+import {
+  Users,
+  Search,
+  Filter,
+  Terminal,
+  Shield,
+  Briefcase,
+  ExternalLink,
   Send,
   Layers,
   ChevronRight
@@ -41,13 +41,13 @@ export const AgentRoster: React.FC<AgentRosterProps> = ({
         agent.role.toLowerCase().includes(search.toLowerCase()) ||
         agent.description.toLowerCase().includes(search.toLowerCase());
 
-      const matchesDept = deptFilter === 'all' || 
+      const matchesDept = deptFilter === 'all' ||
         agent.department.toLowerCase() === deptFilter.toLowerCase();
 
-      const matchesType = typeFilter === 'all' || 
+      const matchesType = typeFilter === 'all' ||
         agent.type.toLowerCase() === typeFilter.toLowerCase();
 
-      const matchesTool = toolFilter === 'all' || 
+      const matchesTool = toolFilter === 'all' ||
         agent.tools.includes(toolFilter);
 
       return matchesSearch && matchesDept && matchesType && matchesTool;
@@ -147,7 +147,7 @@ export const AgentRoster: React.FC<AgentRosterProps> = ({
               {/* Header: Name, Department badge, Type */}
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <h3 
+                  <h3
                     onClick={() => onSelectAgent(agent)}
                     className="font-bold text-sm text-white group-hover:text-[#00bfff] transition-colors cursor-pointer"
                   >
@@ -164,7 +164,7 @@ export const AgentRoster: React.FC<AgentRosterProps> = ({
                 </div>
 
                 <span className={`text-[9px] font-bold px-2 py-0.5 rounded tracking-wider ${
-                  agent.type === 'Executive' 
+                  agent.type === 'Executive'
                     ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
                     : agent.type === 'Board'
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'

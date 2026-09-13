@@ -19,7 +19,7 @@ Department: Executive
 
 Reports To: human_ceo
 
-Direct Reports: cpo, cmo, hr, cio, customer_success, sales, culture_values_officer, head_of_business_development, internal_comms_lead, ai_ethics_board_chair, consulting_lead
+Direct Reports: cpo, cmo, hr, cio, customer_success, sales, culture_values_officer, head_of_business_development, internal_comms_lead, ai_ethics_board_chair, consulting_lead, cto, coo, caio, cfo, ciso, clo, cso, thought_leadership_lead
 
 
 ---

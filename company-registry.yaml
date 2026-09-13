@@ -20,6 +20,14 @@ company:
     - internal_comms_lead
     - ai_ethics_board_chair
     - consulting_lead
+    - cto
+    - coo
+    - caio
+    - cfo
+    - ciso
+    - clo
+    - cso
+    - thought_leadership_lead
     responsibilities:
     - Align company goals across all departments.
     - Orchestrate agent communication and task delegation.
@@ -37,7 +45,7 @@ company:
     description: Oversees all technological infrastructure and software development.
     type: executive
     department: Technology
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - lead_backend
     - lead_frontend
@@ -58,7 +66,7 @@ company:
     description: Manages day-to-day operations and internal processes.
     type: executive
     department: Operations
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - workflow_owner
     - orchestration_owner
@@ -81,7 +89,7 @@ company:
     description: Directs AI research, model selection, and prompt engineering strategies.
     type: executive
     department: AI Research
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - ml_engineer
     - ml_services_owner
@@ -109,15 +117,7 @@ company:
     reports_to: board
     direct_reports:
     - chief_of_staff
-    - cto
-    - coo
-    - caio
-    - cfo
-    - ciso
-    - clo
-    - cso
     - ceo_advisor
-    - thought_leadership_lead
     responsibilities:
     - Set company vision, mission, and long-term strategy.
     - Make final decisions on high-stakes matters.
@@ -143,7 +143,7 @@ company:
       agent operations.
     type: executive
     department: Finance
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - financial_analyst
     - investor_relations_lead
@@ -254,7 +254,7 @@ company:
     description: Protects company assets, data, and systems from security threats.
     type: executive
     department: Security
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - security_architect
     - security_compliance_lead
@@ -335,7 +335,7 @@ company:
     description: Manages legal affairs, contracts, and compliance.
     type: executive
     department: Legal
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - compliance_officer
     - data_privacy_officer
@@ -360,7 +360,7 @@ company:
     description: Drives corporate strategy, M&A, and market expansion.
     type: executive
     department: Strategy
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - head_of_competitive_intelligence
     - corporate_development_lead
@@ -3469,7 +3469,7 @@ company:
       Malawi and the SADC region.
     type: executive
     department: Pharos
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - agentic_research_lead
     - thought_leadership_author

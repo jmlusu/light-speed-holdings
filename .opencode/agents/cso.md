@@ -16,7 +16,7 @@ Type: Executive (Chief Strategy Officer)
 
 Department: Strategy
 
-Reports To: human_ceo
+Reports To: chief_of_staff
 
 Direct Reports: head_of_competitive_intelligence, corporate_development_lead, revenue_operations_analyst, market_analyst
 

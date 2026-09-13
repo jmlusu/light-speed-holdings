@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <p className={`text-justify max-w-2xl text-base sm:text-lg font-bold leading-relaxed ${
               isLight ? 'text-slate-900' : 'text-zinc-100'
             }`}>
-              <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 144 agents, 20 departments, five-tier human approval, every decision auditable.
+              <span className="text-ls-red font-extrabold">LIGHTSPEED HOLDINGS LIMITED™</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 144 agents, 20 departments, five-tier human approval, every decision auditable.
             </p>
             <p className={`text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
               isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'

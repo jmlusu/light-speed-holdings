@@ -715,12 +715,22 @@ export interface WorkCard {
   badge: string;
   text: string;
   featured?: boolean;
+  /** Optional link to a full case-study page. */
+  to?: string;
 }
 
 export const workCaseStudies: WorkCard[] = [
   {
+    id: 'PC-06',
+    title: 'Social Media Automation OS — First External Client Build',
+    badge: 'Fieldable — implementation complete, client handover pending.',
+    featured: true,
+    to: '/work/social-media-automation-os',
+    text: 'We took a client\u2019s scaffolded social-media automation OS and built the full application layer: an AI-native content pipeline with human approval gates, eight platform adapters with a dry-run safety default, an admin dashboard, analytics, and complete documentation. 110+ automated tests and every engineering gate green. Client identity withheld by agreement.',
+  },
+  {
     id: 'PC-01',
-    title: 'J&S StopOver Bar — SME AI Transformation',
+    title: 'J&amp;S StopOver Bar — SME AI Transformation',
     badge: 'Proven in-house — live proof, not a paid client.',
     featured: true,
     text: 'A real, non-tech SME in Malawi running agentic decision support: inventory, sales, shortage detection, cash reconciliation, procurement triggers, and profitability tracking. The world\u2019s smallest AI-native bar — a genuinely African SME AI transformation case, built in-house and documented openly.',
@@ -778,6 +788,83 @@ export const workPolicy: WorkCard[] = [
   },
 ];
 
+/* ── External client build — case study detail ────────────── */
+export interface CaseStudyDeliveredItem {
+  title: string;
+  desc: string;
+}
+
+export interface CaseStudyRecord {
+  slug: string;
+  eyebrow: string;
+  title: string;
+  lead: string;
+  honesty: HonestyLabel;
+  baseline: string[];
+  delivered: CaseStudyDeliveredItem[];
+  outcomes: { value: string; label: string }[];
+  delivery: string[];
+  notes: string[];
+  cta: { label: string; to: string };
+}
+
+export const externalBuildCaseStudy: CaseStudyRecord = {
+  slug: 'social-media-automation-os',
+  eyebrow: 'PROOF // CASE STUDY',
+  title: 'Social Media Automation OS — First External Client Build',
+  lead:
+    'The first fully external build in our portfolio: we took a client\u2019s scaffolded, self-hosted, free-tier Social Media Automation Operating System and delivered the complete application layer \u2014 an AI-native content pipeline (CREATE \u2192 APPROVE \u2192 PUBLISH \u2192 ANALYZE) with human approval gates, eight platform adapters, an admin dashboard, analytics, and documentation. Every engineering gate is green.',
+  honesty: { label: 'Fieldable — implementation complete; client handover pending', tone: 'fieldable' },
+  baseline: [
+    'The client scaffolding supplied the core domain package, database schema, configuration system, and an 18-prompt library \u2014 but zero application layer.',
+    'No API, worker, platform adapters, tests, scripts, or infrastructure existed at intake; entry files referenced by the run scripts did not exist, so typecheck and tests would not run.',
+  ],
+  delivered: [
+    {
+      title: 'API + Worker Pipeline',
+      desc: 'A Fastify API and event-driven worker running the full content pipeline \u2014 router, strategist, writer, editor, QA, human approval, publish, analyze \u2014 with retries, idempotency, and a dead-letter queue.',
+    },
+    {
+      title: 'Eight Platform Adapters',
+      desc: 'LinkedIn, Meta (Instagram/Facebook), Threads, YouTube, Buffer, and X on a single adapter contract with credential envelopes. Every slot also has a mock/dry-run adapter.',
+    },
+    {
+      title: 'Dashboard + Human Approval',
+      desc: 'A minimal admin dashboard served by the API with human approval gates and constant-time basic auth \u2014 every publish is human-signed.',
+    },
+    {
+      title: 'Analytics Layer',
+      desc: 'Metrics collectors, learning tables, and a Python analytics pipeline that turns operating history into board-ready reports.',
+    },
+    {
+      title: 'Testing, DevOps & Infra',
+      desc: 'Unit, integration, e2e, chaos, and Python suites; bootstrap, health-check, and config-consistency scripts; docker-compose for Postgres, Ollama, MinIO, and n8n.',
+    },
+    {
+      title: 'Documentation',
+      desc: 'Client README plus architecture, developer, API, and operations runbooks \u2014 handover-ready.',
+    },
+  ],
+  outcomes: [
+    { value: '110/110', label: 'Contract tests green (96 unit + 14 integration/e2e)' },
+    { value: '0', label: 'Typecheck errors under strict mode' },
+    { value: 'PASS', label: 'Config / schema / prompt consistency \u2014 zero drift' },
+    { value: 'OK', label: 'Health across API, local DB, and Ollama' },
+  ],
+  delivery: [
+    'Delivery was organised as a five-wave plan with a gate after every wave: blueprint \u2192 foundations \u2192 endpoints & pipeline \u2192 adapters & AI \u2192 quality, security & documentation.',
+    'Eighteen specialist LightSpeed roles worked the build \u2014 solution architecture, backend engineering, adapters, data, QA, security, and documentation \u2014 on a fixed script contract. LightSpeed is the delivery partner; the client owns the repository.',
+    'Offline-first by design: the entire pipeline runs on deterministic local engines with zero network \u2014 repeatable tests and data sovereignty as the default posture.',
+  ],
+  notes: [
+    'Implementation is complete; the client handover (baseline commit and release pipeline) is the client\u2019s call.',
+    'Client identity withheld by agreement. No client secrets, credentials, or live data appear in this case study.',
+    'All platform publishing defaults to dry-run. The OS will not post content without the client\u2019s own credentials and explicit human approval.',
+    'No fabricated metrics \u2014 every figure here comes from the client repo\u2019s own test and audit runs.',
+  ],
+  cta: { label: 'Explore Our Services', to: '/solutions' },
+};
+
 export const honestyPolicy: string[] = [
   'We publish the tests that gate our own work.',
   'Claims are labeled Proven in-house vs. In pilot — we do not blur them.',
@@ -809,6 +896,7 @@ export default {
   scenarios,
   workCaseStudies,
   workPolicy,
+  externalBuildCaseStudy,
   honestyPolicy,
   insightTeasers,
 };
