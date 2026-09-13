@@ -538,9 +538,18 @@
       "id": "conn-chief-of-staff-to-ciso",
       "from": "chief-of-staff",
       "to": "ciso",
-      "route": "straight",
       "fromSide": "bottom",
-      "toSide": "top"
+      "toSide": "top",
+      "via": [
+        [
+          1326.125,
+          388.0
+        ],
+        [
+          1350.0,
+          388.0
+        ]
+      ]
     },
     {
       "id": "conn-chief-of-staff-to-cio",
