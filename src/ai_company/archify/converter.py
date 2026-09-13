@@ -469,9 +469,11 @@ def _route_connections(components: list[dict[str, Any]], connections: list[dict[
         parent_cx = px + pw / 2.0
         child_cx = cx + cw / 2.0
         dx = child_cx - parent_cx
-        if abs(dx) < 24.0:
-            # Child near-centered under its parent: with true tree centering
-            # dx->0, so the renderer can draw a clean straight vertical line.
+        if abs(dx) < 0.5:
+            # Child centered under its parent (dx -> 0): the renderer can draw
+            # a clean straight vertical line. Archify's clean-flow check treats
+            # any non-zero dx as a diagonal, so only a true center alignment
+            # may skip the orthogonal elbow route.
             conn.pop("via", None)
             conn["route"] = "straight"
             conn["fromSide"] = "bottom"
