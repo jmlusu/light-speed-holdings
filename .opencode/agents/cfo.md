@@ -16,7 +16,7 @@ Type: Executive (CFO)
 
 Department: Finance
 
-Reports To: human_ceo
+Reports To: chief_of_staff
 
 Direct Reports: financial_analyst, investor_relations_lead
 

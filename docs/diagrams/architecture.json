@@ -5,8 +5,8 @@
     "title": "Light Speed Holdings \u2014 Agent Hierarchy",
     "quality_profile": "standard",
     "viewBox": [
-      2822,
-      615
+      2828,
+      730
     ]
   },
   "components": [
@@ -16,7 +16,7 @@
       "label": "Chief of Staff",
       "sublabel": "",
       "pos": [
-        601.0,
+        1272.125,
         320
       ],
       "size": [
@@ -30,8 +30,8 @@
       "label": "Chief Technology Officer",
       "sublabel": "",
       "pos": [
-        1238.5,
-        320
+        60.0,
+        435
       ],
       "size": [
         168.0,
@@ -44,8 +44,8 @@
       "label": "Chief Operating Officer",
       "sublabel": "",
       "pos": [
-        1414.5,
-        320
+        236.0,
+        435
       ],
       "size": [
         161.5,
@@ -58,8 +58,8 @@
       "label": "Chief AI Officer",
       "sublabel": "",
       "pos": [
-        1584.0,
-        320
+        405.5,
+        435
       ],
       "size": [
         116.0,
@@ -72,7 +72,7 @@
       "label": "Human CEO",
       "sublabel": "",
       "pos": [
-        1320.375,
+        1330.125,
         205
       ],
       "size": [
@@ -86,8 +86,8 @@
       "label": "Chief Financial Officer",
       "sublabel": "",
       "pos": [
-        1708.0,
-        320
+        529.5,
+        435
       ],
       "size": [
         161.5,
@@ -100,7 +100,7 @@
       "label": "Chief Product Officer",
       "sublabel": "",
       "pos": [
-        60,
+        699.0,
         435
       ],
       "size": [
@@ -114,7 +114,7 @@
       "label": "Chief Marketing Officer",
       "sublabel": "",
       "pos": [
-        216.5,
+        855.5,
         435
       ],
       "size": [
@@ -128,7 +128,7 @@
       "label": "Chief Human Resources Officer",
       "sublabel": "",
       "pos": [
-        386.0,
+        1025.0,
         435
       ],
       "size": [
@@ -142,8 +142,8 @@
       "label": "Chief Information Security Officer",
       "sublabel": "",
       "pos": [
-        1877.5,
-        320
+        1233.5,
+        435
       ],
       "size": [
         233.0,
@@ -156,7 +156,7 @@
       "label": "Chief Information Officer",
       "sublabel": "",
       "pos": [
-        594.5,
+        1474.5,
         435
       ],
       "size": [
@@ -170,8 +170,8 @@
       "label": "Chief Data Officer",
       "sublabel": "",
       "pos": [
-        1258.0,
-        435
+        79.5,
+        550
       ],
       "size": [
         129.0,
@@ -184,8 +184,8 @@
       "label": "Chief Legal Officer",
       "sublabel": "",
       "pos": [
-        2118.5,
-        320
+        1657.0,
+        435
       ],
       "size": [
         135.5,
@@ -198,8 +198,8 @@
       "label": "Chief Strategy Officer",
       "sublabel": "",
       "pos": [
-        2262.0,
-        320
+        1800.5,
+        435
       ],
       "size": [
         155.0,
@@ -212,7 +212,7 @@
       "label": "CEO Advisor",
       "sublabel": "",
       "pos": [
-        2425.0,
+        2600.25,
         320
       ],
       "size": [
@@ -226,7 +226,7 @@
       "label": "Head of Customer Success",
       "sublabel": "",
       "pos": [
-        777.0,
+        1963.5,
         435
       ],
       "size": [
@@ -240,7 +240,7 @@
       "label": "Head of Sales",
       "sublabel": "",
       "pos": [
-        953.0,
+        2139.5,
         435
       ],
       "size": [
@@ -254,8 +254,8 @@
       "label": "Legal Advisor",
       "sublabel": "",
       "pos": [
-        2132.25,
-        435
+        1670.75,
+        550
       ],
       "size": [
         108,
@@ -268,7 +268,7 @@
       "label": "Consulting Engagement Lead",
       "sublabel": "",
       "pos": [
-        1069.0,
+        2255.5,
         435
       ],
       "size": [
@@ -282,8 +282,8 @@
       "label": "Thought Leadership Lead",
       "sublabel": "",
       "pos": [
-        2541.0,
-        320
+        2444.5,
+        435
       ],
       "size": [
         161.5,
@@ -296,7 +296,7 @@
       "label": "Board Chair",
       "sublabel": "",
       "pos": [
-        1320.375,
+        1330.125,
         90
       ],
       "size": [
@@ -310,7 +310,7 @@
       "label": "Finance Committee Chair",
       "sublabel": "",
       "pos": [
-        60,
+        60.0,
         90
       ],
       "size": [
@@ -398,63 +398,63 @@
       "toSide": "top",
       "via": [
         [
-          1374.375,
+          1384.125,
           273.0
         ],
         [
-          655.0,
+          1326.125,
           273.0
         ]
       ]
     },
     {
-      "id": "conn-human-ceo-to-cto",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-cto",
+      "from": "chief-of-staff",
       "to": "cto",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
         [
-          1374.375,
-          273.0
+          1326.125,
+          388.0
         ],
         [
-          1322.5,
-          273.0
+          144.0,
+          388.0
         ]
       ]
     },
     {
-      "id": "conn-human-ceo-to-coo",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-coo",
+      "from": "chief-of-staff",
       "to": "coo",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
         [
-          1374.375,
-          273.0
+          1326.125,
+          388.0
         ],
         [
-          1495.25,
-          273.0
+          316.75,
+          388.0
         ]
       ]
     },
     {
-      "id": "conn-human-ceo-to-caio",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-caio",
+      "from": "chief-of-staff",
       "to": "caio",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
         [
-          1374.375,
-          273.0
+          1326.125,
+          388.0
         ],
         [
-          1642.0,
-          273.0
+          463.5,
+          388.0
         ]
       ]
     },
@@ -467,19 +467,19 @@
       "toSide": "top"
     },
     {
-      "id": "conn-human-ceo-to-cfo",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-cfo",
+      "from": "chief-of-staff",
       "to": "cfo",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
         [
-          1374.375,
-          273.0
+          1326.125,
+          388.0
         ],
         [
-          1788.75,
-          273.0
+          610.25,
+          388.0
         ]
       ]
     },
@@ -491,11 +491,11 @@
       "toSide": "top",
       "via": [
         [
-          655.0,
+          1326.125,
           388.0
         ],
         [
-          134.25,
+          773.25,
           388.0
         ]
       ]
@@ -508,11 +508,11 @@
       "toSide": "top",
       "via": [
         [
-          655.0,
+          1326.125,
           388.0
         ],
         [
-          297.25,
+          936.25,
           388.0
         ]
       ]
@@ -525,31 +525,22 @@
       "toSide": "top",
       "via": [
         [
-          655.0,
+          1326.125,
           388.0
         ],
         [
-          486.25,
+          1125.25,
           388.0
         ]
       ]
     },
     {
-      "id": "conn-human-ceo-to-ciso",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-ciso",
+      "from": "chief-of-staff",
       "to": "ciso",
+      "route": "straight",
       "fromSide": "bottom",
-      "toSide": "top",
-      "via": [
-        [
-          1374.375,
-          273.0
-        ],
-        [
-          1994.0,
-          273.0
-        ]
-      ]
+      "toSide": "top"
     },
     {
       "id": "conn-chief-of-staff-to-cio",
@@ -559,11 +550,11 @@
       "toSide": "top",
       "via": [
         [
-          655.0,
+          1326.125,
           388.0
         ],
         [
-          681.75,
+          1561.75,
           388.0
         ]
       ]
@@ -577,36 +568,36 @@
       "toSide": "top"
     },
     {
-      "id": "conn-human-ceo-to-clo",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-clo",
+      "from": "chief-of-staff",
       "to": "clo",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
         [
-          1374.375,
-          273.0
+          1326.125,
+          388.0
         ],
         [
-          2186.25,
-          273.0
+          1724.75,
+          388.0
         ]
       ]
     },
     {
-      "id": "conn-human-ceo-to-cso",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-cso",
+      "from": "chief-of-staff",
       "to": "cso",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
         [
-          1374.375,
-          273.0
+          1326.125,
+          388.0
         ],
         [
-          2339.5,
-          273.0
+          1878.0,
+          388.0
         ]
       ]
     },
@@ -618,11 +609,11 @@
       "toSide": "top",
       "via": [
         [
-          1374.375,
+          1384.125,
           273.0
         ],
         [
-          2479.0,
+          2654.25,
           273.0
         ]
       ]
@@ -635,11 +626,11 @@
       "toSide": "top",
       "via": [
         [
-          655.0,
+          1326.125,
           388.0
         ],
         [
-          861.0,
+          2047.5,
           388.0
         ]
       ]
@@ -652,11 +643,11 @@
       "toSide": "top",
       "via": [
         [
-          655.0,
+          1326.125,
           388.0
         ],
         [
-          1007.0,
+          2193.5,
           388.0
         ]
       ]
@@ -677,29 +668,29 @@
       "toSide": "top",
       "via": [
         [
-          655.0,
+          1326.125,
           388.0
         ],
         [
-          1159.5,
+          2346.0,
           388.0
         ]
       ]
     },
     {
-      "id": "conn-human-ceo-to-thought-leadership-lead",
-      "from": "human-ceo",
+      "id": "conn-chief-of-staff-to-thought-leadership-lead",
+      "from": "chief-of-staff",
       "to": "thought-leadership-lead",
       "fromSide": "bottom",
       "toSide": "top",
       "via": [
         [
-          1374.375,
-          273.0
+          1326.125,
+          388.0
         ],
         [
-          2621.75,
-          273.0
+          2525.25,
+          388.0
         ]
       ]
     }

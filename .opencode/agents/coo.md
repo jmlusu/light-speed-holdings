@@ -16,7 +16,7 @@ Type: Executive (COO)
 
 Department: Operations
 
-Reports To: human_ceo
+Reports To: chief_of_staff
 
 Direct Reports: workflow_owner, orchestration_owner, doctor_owner, capacity_planner, business_continuity_manager, vendor_manager, process_quality_manager
 

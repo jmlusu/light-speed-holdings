@@ -327,6 +327,30 @@ LightSpeed Holdings is its own first customer. The company runs on the same 144-
 
 ---
 
+## Social Media Automation OS — Client Build Engagement
+
+**Honesty badge:** Implementation delivered (all five waves, engineering gates
+green 2026-09-12); client handover and production use pending. Recorded as a
+demonstrable client delivery engagement for the portfolio.
+
+A direct external build: a self-hosted, free-tier, event-driven **Social Media
+Automation Operating System** (CREATE → APPROVE → PUBLISH → ANALYZE) for a
+client who had already designed the domain (database migrations, platform
+configs, prompt libraries, JSON schemas, an `@sma/core` package with
+AI-router/writer/QA agents and deterministic offline fallbacks) but had not
+implemented the application layer. LightSpeed's delivery team is building the
+API, worker, dashboard, platform adapters, tests, scripts, and infrastructure on
+the client's existing scaffold — offline-first, dry-run-by-default, credentials
+env-only, no fabricated publishes.
+
+**What it demonstrates:** FOW-02 (enterprise automation) and FOW-03 (consulting
+delivery backbone) applied to a real client repo — distinct identity maintained,
+client data and stack untouched, delivery governed, honesty-badged.
+
+Full record: `docs/case-studies/social-media-automation-os.md`.
+
+---
+
 ## Pilots in Development
 
 ### Health / M&E — Clinic Supply Chain Monitoring
@@ -467,6 +491,7 @@ Every factual claim in this document traces to one or more authoritative source 
 | **Company Scenarios (FOW-01..08)** | `docs/archive/2026-08-11-pre-restructure/reports/future-of-work-report.md:86-194` (all 8 use cases) | UNVERIFIED projections in source excluded from body copy |
 | **J&S StopOver Bar** | `docs/Pharos/case-study-pipeline.md:7-28` (live proof, non-client) | Not a paid client; live proof |
 | **Meta Case Study** | `docs/Pharos/case-study-pipeline.md:43-46` (143 AI agents + CEO, governance mapped) | Proven in-house |
+| **Social Media Automation OS** | `docs/case-studies/social-media-automation-os.md` (engagement record, team, guardrails); client scaffolding reviewed at intake | MEDIUM risk — engagement in progress, no shipped deployment yet |
 | **Health/M&E Pilot** | `docs/Pharos/case-study-pipeline.md:31-34` (composing evidence) | HIGH risk — no confirmed partnership signed |
 | **VSLA/SACCO Pilot** | `docs/Pharos/case-study-pipeline.md:37-40` (COMESA/IDEA seeking) | HIGH risk — no signed engagement |
 | **Ministry of Agriculture — Farmer Advisory** | `docs/superpowers/specs/2026-09-06-lightspeed-website-design.md:164` (piloting listed) | MEDIUM risk — piloting |

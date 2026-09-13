@@ -86,7 +86,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
               <span className={`text-xs font-black tracking-widest font-sans ${
                 isLight ? 'text-slate-900' : 'text-zinc-100'
               }`}>
-                LightSpeed Holdings™
+                LIGHTSPEED HOLDINGS LIMITED™
               </span>
               <span className={`text-[10px] font-mono tracking-wider font-bold ${
                 isLight ? 'text-slate-500' : 'text-zinc-500'
