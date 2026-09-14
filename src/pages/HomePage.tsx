@@ -6,6 +6,7 @@ import { StrategyChasmSection } from '../components/StrategyChasmSection';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { HonestyBadge } from '../components/site/HonestyBadge';
+import { UseCaseCatalogSection } from '../components/UseCaseCatalogSection';
 import { Reveal } from '../components/Reveal';
 import { StatCounter } from '../components/StatCounter';
 import { solutions, industries, technologyPillars, insightTeasers, company } from '../data/siteContent';
@@ -248,6 +249,9 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           </Link>
         </div>
       </section>
+
+      {/* Use Case Catalog — 50 offerable scenarios, honestly tagged */}
+      <UseCaseCatalogSection theme={theme} onRequestBriefing={onRequestBriefing} />
 
       {/* Proof Band: verified operating metrics + work */}
       <Reveal delay={0.05}>

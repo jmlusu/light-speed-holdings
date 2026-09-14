@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, Sparkles, Menu, X, ArrowUpRight, Globe, Layers, Sun, Moon, ArrowRight, FileCheck } from 'lucide-react';
+import { AcousticVentGrille } from './TactileHardwareElements';
 
 interface FloatingNavProps {
   onRequestBriefing: (summary?: string) => void;
@@ -39,7 +40,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
           <div className={`flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 shadow-xl backdrop-blur-xl ${
             isLight ? 'hardware-chassis-light text-slate-800' : 'hardware-chassis-dark text-zinc-100'
           }`}>
-            
+
             {/* Brand Logo & Editorial Wordmark with Micro Acoustic Rosette */}
             <div className="flex items-center gap-3">
               <a
@@ -103,8 +104,8 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                   type="button"
                   onClick={onToggleTheme}
                   className={`p-2 rounded-full transition-all cursor-pointer flex items-center justify-center ${
-                    isLight 
-                      ? 'tactile-concave-btn-light text-slate-800' 
+                    isLight
+                      ? 'tactile-concave-btn-light text-slate-800'
                       : 'tactile-concave-btn-dark text-amber-400'
                   }`}
                   title={isLight ? 'Switch to Dark Studio Mode' : 'Switch to Anodized Light Mode'}
@@ -150,8 +151,8 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                       handleLinkClick(link.href);
                     }}
                     className={`px-3 py-2 rounded-xl text-xs font-bold tracking-wider transition-colors ${
-                      isLight 
-                        ? 'text-slate-800 hover:bg-orange-50 hover:text-orange-600' 
+                      isLight
+                        ? 'text-slate-800 hover:bg-orange-50 hover:text-orange-600'
                         : 'text-zinc-200 hover:bg-orange-500/10 hover:text-orange-400'
                     }`}
                   >
@@ -175,4 +176,3 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
       </header>
   );
 };
-
