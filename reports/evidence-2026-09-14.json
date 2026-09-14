@@ -1,5 +1,5 @@
 {
-  "run_id": "34892751142",
+  "run_id": "34897279965",
   "date": "2026-09-14",
   "mode": "full",
   "probe_count": 22,
@@ -27,7 +27,7 @@
     {
       "name": "pytest.collect",
       "status": "ok",
-      "detail": " | -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html | 2368/2435 tests collected (67 deselected) in 6.49s"
+      "detail": "tests/unit/test_write_through.py::TestExecutorWiring::test_executor_passes_database_to_components | tests/unit/test_write_through.py::TestExecutorWiring::test_executor_without_database_keeps_file_only |  | =============================== warnings summary =============================== | .venv/lib/python3.12/site-packages/fastapi/testclient.py:1 |   /home/runner/work/light-speed-holdings/light-speed-holdings/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning:"
     },
     {
       "name": "pytest.collect",
@@ -37,7 +37,7 @@
     {
       "name": "drift.manifest",
       "status": "ok",
-      "detail": "  \"timestamp\": \"2026-09-14T20:25:48.9182379+00:00\", |   \"drifts\": [] | }"
+      "detail": "{ |   \"timestamp\": \"2026-09-14T21:11:03.8304138+00:00\", |   \"status\": \"clean\", |   \"checked\": 81, |   \"warnings\": [], |   \"drifts\": [] | }"
     },
     {
       "name": "drift.manifest",
@@ -45,14 +45,14 @@
       "detail": "drifts=0 checked=81"
     },
     {
-      "name": "cards.verify_script",
-      "status": "fail",
-      "detail": "\u001b[31;1mWrite-Error: \u001b[31;1mRegistry entry 'media-pr-relations' is missing a file path.\u001b[0m | \u001b[31;1mWrite-Error: \u001b[31;1mRegistry entry 'talent-academy-lead' is missing a file path.\u001b[0m | \u001b[31;1mWrite-Error: \u001b[31;1mRegistry entry 'media-generation-owner' is missing a file path.\u001b[0m"
+      "name": "cards.generated_drift",
+      "status": "ok",
+      "detail": "no drift after regeneration"
     },
     {
       "name": "tree.departments",
-      "status": "warn",
-      "detail": "config/departments=1 company/departments=0"
+      "status": "ok",
+      "detail": "company=20 config=20 only_company=[] only_config=[]"
     },
     {
       "name": "tree.data_etl",
@@ -76,12 +76,12 @@
     },
     {
       "name": "gitignore.graphify",
-      "status": "warn",
-      "detail": "graphify-out tracked"
+      "status": "ok",
+      "detail": "ignored=True tracked_files=0"
     },
     {
       "name": "gitignore..playwright-cli",
-      "status": "warn",
+      "status": "ok",
       "detail": ".playwright-cli/ present"
     },
     {
@@ -101,24 +101,24 @@
     },
     {
       "name": "ecl.active",
-      "status": "warn",
-      "detail": "active change files=0"
+      "status": "ok",
+      "detail": "active change files=4"
     },
     {
       "name": "graphify.update",
       "status": "ok",
-      "detail": "Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant. | Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction. |   warning: 2 file(s) had syntax errors and may be partially extracted: src/ai_company/dashboard/static/js/command-bar.js (first error at line 1, 16 symbol(s) extracted), src/components/SadcGovernanceFramework.tsx (first error at line 226, 2 symbol(s) extracted)"
+      "detail": "  AST extraction: 1400/1480 uncached files (94%) [4 workers] |   AST extraction: 1480/1480 uncached files (100%) [4 workers] | Graph has 25800 nodes (above 5000 limit). Building aggregated community view... | graph.html written (aggregated: 1627 community nodes, 1694 cross-community edges) | Tip: run with --obsidian for full node-level detail. | [graphify watch] Rebuilt: 25800 nodes, 39148 edges, 1627 communities | [graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-o"
     },
     {
       "name": "graphify.graph",
       "status": "ok",
-      "detail": "nodes=25801 edges=0"
+      "detail": "nodes=25800 edges=0"
     }
   ],
   "severity_totals": {
     "critical": 0,
-    "major": 2,
-    "minor": 3
+    "major": 0,
+    "minor": 0
   },
-  "generated_at": "2026-09-14T20:26:37Z"
+  "generated_at": "2026-09-14T21:11:49Z"
 }

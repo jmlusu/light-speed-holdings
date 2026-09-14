@@ -2,7 +2,7 @@
 
 ## Run
 
-run_id: 34892751142
+run_id: 34897279965
 mode: scan-only (agent pass unavailable or failed)
 probe_count: 22
 
@@ -20,24 +20,24 @@ Deterministic probe summary:
 - [ok] cards.reconcile: registry=144 live=144 bak=0 orphan=[] missing=[]
 - [ok] cards.tools: non-canonical tools: []
 - [ok] ruff.check: All checks passed!
-- [ok] pytest.collect:  | -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html | 2368/2435 tests collected (67 deselected) in 6.49s
+- [ok] pytest.collect: tests/unit/test_write_through.py::TestExecutorWiring::test_executor_passes_database_to_components | tests/unit/test_write_through.py::TestExecutorWiring::test_executor_without_database_keeps_file_only |  | =============================== warnings summary =============================== | .venv/lib/python3.12/site-packages/fastapi/testclient.py:1 |   /home/runner/work/light-speed-holdings/light-speed-holdings/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning:
 - [ok] pytest.collect: tests/unit/test_validate_opencode.py::test_valid_v2_card_has_no_errors
-- [ok] drift.manifest:   "timestamp": "2026-09-14T20:25:48.9182379+00:00", |   "drifts": [] | }
+- [ok] drift.manifest: { |   "timestamp": "2026-09-14T21:11:03.8304138+00:00", |   "status": "clean", |   "checked": 81, |   "warnings": [], |   "drifts": [] | }
 - [ok] drift.manifest: drifts=0 checked=81
-- [fail] cards.verify_script: [31;1mWrite-Error: [31;1mRegistry entry 'media-pr-relations' is missing a file path.[0m | [31;1mWrite-Error: [31;1mRegistry entry 'talent-academy-lead' is missing a file path.[0m | [31;1mWrite-Error: [31;1mRegistry entry 'media-generation-owner' is missing a file path.[0m
-- [warn] tree.departments: config/departments=1 company/departments=0
+- [ok] cards.generated_drift: no drift after regeneration
+- [ok] tree.departments: company=20 config=20 only_company=[] only_config=[]
 - [ok] tree.data_etl: data/etl present
 - [ok] tree.prompts: prompts/*.md=2
 - [ok] gitignore.orchestrator.scheduler.yaml: orchestrator/scheduler.yaml ignored while required by cli/validate.py
 - [ok] gitignore.orchestrator.escalation.yaml: orchestrator/escalation.yaml ignored while required by cli/validate.py
-- [warn] gitignore.graphify: graphify-out tracked
-- [warn] gitignore..playwright-cli: .playwright-cli/ present
+- [ok] gitignore.graphify: ignored=True tracked_files=0
+- [ok] gitignore..playwright-cli: .playwright-cli/ present
 - [ok] gitignore.screenshots: screenshots/ present
 - [ok] gitignore.results: results/ present
 - [ok] ci.registry_gate: ci.yml never validates agent registry
-- [warn] ecl.active: active change files=0
-- [ok] graphify.update: Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant. | Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction. |   warning: 2 file(s) had syntax errors and may be partially extracted: src/ai_company/dashboard/static/js/command-bar.js (first error at line 1, 16 symbol(s) extracted), src/components/SadcGovernanceFramework.tsx (first error at line 226, 2 symbol(s) extracted)
-- [ok] graphify.graph: nodes=25801 edges=0
+- [ok] ecl.active: active change files=4
+- [ok] graphify.update:   AST extraction: 1400/1480 uncached files (94%) [4 workers] |   AST extraction: 1480/1480 uncached files (100%) [4 workers] | Graph has 25800 nodes (above 5000 limit). Building aggregated community view... | graph.html written (aggregated: 1627 community nodes, 1694 cross-community edges) | Tip: run with --obsidian for full node-level detail. | [graphify watch] Rebuilt: 25800 nodes, 39148 edges, 1627 communities | [graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-o
+- [ok] graphify.graph: nodes=25800 edges=0
 
 ## Critical Blockers
 
@@ -55,8 +55,8 @@ Run degraded: see Actions run for probe details.
 mode=scan-only
 verdict=attention
 critical=0
-major=2
-minor=3
+major=0
+minor=0
 orphan=0
 stale=0
 redundant=0
