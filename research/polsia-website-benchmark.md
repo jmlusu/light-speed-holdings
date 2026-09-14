@@ -2,7 +2,7 @@
 
 **Prepared:** 2026-09-11
 **Benchmark target:** https://polsia.com (React SPA; live terminal header, full-slide deck, 29 CSS keyframes)
-**Internal baseline:** `website/index.html` (single static page, vanilla JS + Three.js r128 CDN, no build step)
+**Internal baseline:** repo-root React SPA (Vite + React + Tailwind 4, Three.js, deployed via Vercel)
 **Method:** Six-agent parallel review (brand, frontend architecture, product design, growth, UX research, competitive intelligence) + direct fetch of the SPA shell and its compiled CSS bundle
 
 ---
@@ -109,10 +109,10 @@
 
 | File | Change |
 |------|--------|
-| `website/index.html` | Hero CTA swap, sticky bottom bar, sector proof bar, event banner hook, fleet-log header, live-proof widget |
-| `website/assets/css/style.css` | Reveal classes + `.entered`, hover scale/bevel, banner pulse keyframe, sticky-bar, fleet-log theme (navy/mono), motion media queries |
-| `website/assets/js/main.js` | IntersectionObserver reveals, stat counters, sticky-bar threshold, terminal line rotator (interval + visibility pause), event banner toggle |
-| `website/assets/js/scene3d.js` | Camera Y offset for header, reduced-motion gate, off-screen/tab-hidden pause, DPR/particle caps |
+| `index.html` | Hero CTA swap, sticky bottom bar, sector proof bar, event banner hook, fleet-log header, live-proof widget |
+| `src/index.css` | Reveal classes + `.entered`, hover scale/bevel, banner pulse keyframe, sticky-bar, fleet-log theme (navy/mono), motion media queries |
+| `src/main.tsx` | IntersectionObserver reveals, stat counters, sticky-bar threshold, terminal line rotator (interval + visibility pause), event banner toggle |
+| `src/components/ThreeCanvas.tsx` | Camera Y offset for header, reduced-motion gate, off-screen/tab-hidden pause, DPR/particle caps |
 
 ---
 
@@ -124,4 +124,4 @@ Highest-leverage moves, in order: (P0) scroll-reveals + hero CTA swap + hover po
 
 ---
 
-*Sources: polsia.com SPA shell + compiled CSS bundle (fetched/analyzed 2026-09-11); internal review of `website/`, `brand/tokens/`, `.agents/skills/ls-design-system`, `.agents/skills/ls-frontend-design`, and the orchestrator's MessageBus/org-heartbeat telemetry surface.*
+*Sources: polsia.com SPA shell + compiled CSS bundle (fetched/analyzed 2026-09-11); internal review of the repo-root SPA, `brand/tokens/`, `.agents/skills/ls-design-system`, `.agents/skills/ls-frontend-design`, and the orchestrator's MessageBus/org-heartbeat telemetry surface.*

@@ -179,7 +179,7 @@
    - Ensure type scale sizes align with brand-tokens.json sizes (36/32/28/24/18/16/14/13/12 pt)
 
 3. **Brand Token Integration**
-   - Update `website/src/app/globals.css` to reference `brand/tokens/brand-tokens.json` values
+   - Update `src/index.css` to reference `brand/tokens/brand-tokens.json` values
    - Implement CSS custom properties from brand tokens instead of hardcoded values
 
 4. **Logo Asset Integration**

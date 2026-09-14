@@ -3,7 +3,7 @@
 **Date:** September 8, 2026
 **Auditor:** UX Research Lead
 **Blueprint Reference:** `LIGHTSPEED_Interactive_3D_Website_Planning_Design_Development_Implementation.md`
-**Current Implementation:** Next.js website at `website/src/app/page.tsx`
+**Current Implementation:** React SPA at repo root — `src/pages/HomePage.tsx`
 
 ---
 

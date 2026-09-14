@@ -253,19 +253,15 @@ The website **does not implement the LightSpeed Holdings brand identity**. It us
 
 | File | Changes Needed |
 |------|----------------|
-| `website/src/app/globals.css` | Complete @theme rewrite |
-| `website/src/components/tokens.json` | Align with globals.css |
-| `website/src/app/layout.tsx` | Remove Google Fonts, add Arial, add logo |
-| `website/src/components/sections/hero-section.tsx` | Fix all constellation colors |
-| `website/src/components/ui/button.tsx` | Uses primary/accent tokens (auto-fixed by CSS) |
-| `website/src/components/ui/status-badge.tsx` | Fix `text-sovereign`, use brand tokens |
-| `website/src/components/ui/animated-card.tsx` | Fix `border-primary/20`, define `bg-surface` |
-| `website/src/components/sections/industries-section.tsx` | Fix accent usage |
-| `website/src/components/sections/header.tsx` | Add logo asset, fix color |
-| `website/src/components/sections/footer-section.tsx` | Add logo asset, add tagline, fix color |
-| `website/src/components/sections/ctas-section.tsx` | Stats use `text-primary` (will auto-fix) |
-| `website/src/components/sections/services-section.tsx` | Icon backgrounds use `bg-primary/10` (auto-fix) |
-| `website/src/components/layout/page-shell.tsx` | `bg-background` (auto-fix) |
+| `src/index.css` | Complete @theme rewrite |
+| `brand/tokens/brand-tokens.json` | Align with `src/index.css` (brand token source of truth) |
+| `src/App.tsx` | Remove Google Fonts, add Arial, add logo |
+| `src/components/HeroSection.tsx` | Fix all constellation colors |
+| `src/components/ui/StatusBadge.tsx` | Fix `text-sovereign`, use brand tokens |
+| `src/components/IndustriesSection.tsx` | Fix accent usage |
+| `src/components/Header.tsx` | Add logo asset, fix color |
+| `src/components/Footer.tsx` | Add logo asset, add tagline, fix color |
+| `src/components/SiteLayout.tsx` | `bg-background` (auto-fix) |
 
 ---
 
