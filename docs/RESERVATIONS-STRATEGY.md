@@ -121,7 +121,7 @@ delivered unless it was.
 - 5-tier HITL approvals, immutable JSOL/JSONL audit trails, risk matrix, 25+ gated actions (`docs/client-facing/USE-CASE-CATALOG.md:30-35`).
 - Cold-segment failures explained (governance, not tech) — messaging brief §3.7.
 - Red-team + eval gates (`AGENT-REGISTRY-TABLE.md`: red-team-engineer, eval-benchmarks-engineer, ai-safety-lead, ai-ethics-officer).
-- Honesty ladder enforced site-wide (`docs/superpowers/specs/2026-09-06-lightspeed-website-design.md` §2.4).
+- Honesty ladder enforced site-wide (`src/data/siteContent.ts:7-18`; `docs/client-facing/USE-CASE-CATALOG.md:10-14`).
 
 **Honesty badge:** Proven in-house (we govern our own 144-agent operation before asking clients to trust it).
 
