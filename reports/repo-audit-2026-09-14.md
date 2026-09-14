@@ -2,9 +2,9 @@
 
 ## Run
 
-run_id: 34890797024
+run_id: 34892751142
 mode: scan-only (agent pass unavailable or failed)
-probe_count: 20
+probe_count: 22
 
 ## Verdict
 
@@ -18,10 +18,11 @@ Deterministic probe summary:
 
 - [ok] registry.parse: agents=144
 - [ok] cards.reconcile: registry=144 live=144 bak=0 orphan=[] missing=[]
-- [fail] cards.tools: non-canonical tools: ['software-architect:Design', 'software-architect:Define', 'software-architect:Evaluate', 'software-architect:Maintain', 'software-architect:Coordinate', 'software-architect:`read`', 'software-architect:`edit`', 'software-architect:`bash`']
-- [fail] ruff.check: error: Failed to spawn: `ruff` |   Caused by: No such file or directory (os error 2)
-- [fail] pytest.collect: error: Failed to spawn: `pytest` |   Caused by: No such file or directory (os error 2)
-- [ok] drift.manifest:   "drifts": [], |   "checked": 81 | }
+- [ok] cards.tools: non-canonical tools: []
+- [ok] ruff.check: All checks passed!
+- [ok] pytest.collect:  | -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html | 2368/2435 tests collected (67 deselected) in 6.49s
+- [ok] pytest.collect: tests/unit/test_validate_opencode.py::test_valid_v2_card_has_no_errors
+- [ok] drift.manifest:   "timestamp": "2026-09-14T20:25:48.9182379+00:00", |   "drifts": [] | }
 - [ok] drift.manifest: drifts=0 checked=81
 - [fail] cards.verify_script: [31;1mWrite-Error: [31;1mRegistry entry 'media-pr-relations' is missing a file path.[0m | [31;1mWrite-Error: [31;1mRegistry entry 'talent-academy-lead' is missing a file path.[0m | [31;1mWrite-Error: [31;1mRegistry entry 'media-generation-owner' is missing a file path.[0m
 - [warn] tree.departments: config/departments=1 company/departments=0
@@ -35,7 +36,8 @@ Deterministic probe summary:
 - [ok] gitignore.results: results/ present
 - [ok] ci.registry_gate: ci.yml never validates agent registry
 - [warn] ecl.active: active change files=0
-- [fail] graphify.update: error: Failed to spawn: `graphify` |   Caused by: No such file or directory (os error 2)
+- [ok] graphify.update: Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant. | Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction. |   warning: 2 file(s) had syntax errors and may be partially extracted: src/ai_company/dashboard/static/js/command-bar.js (first error at line 1, 16 symbol(s) extracted), src/components/SadcGovernanceFramework.tsx (first error at line 226, 2 symbol(s) extracted)
+- [ok] graphify.graph: nodes=25801 edges=0
 
 ## Critical Blockers
 
@@ -54,7 +56,7 @@ mode=scan-only
 verdict=attention
 critical=0
 major=2
-minor=7
+minor=3
 orphan=0
 stale=0
 redundant=0
