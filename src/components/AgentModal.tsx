@@ -20,19 +20,19 @@ export const AgentModal: React.FC<AgentModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div 
+      <div
         className={`relative w-full max-w-2xl rounded-2xl border p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto ${
-          isLight 
-            ? 'bg-white border-slate-200 text-slate-900 shadow-amber-500/10' 
-            : 'bg-[#0f172a] border-slate-800 text-slate-100 shadow-amber-500/20'
+          isLight
+            ? 'bg-white border-slate-200 text-slate-900 shadow-amber-500/10'
+            : 'bg-[#070a40] border-slate-800 text-slate-100 shadow-amber-500/20'
         }`}
       >
         {/* Close button */}
         <button
           onClick={onClose}
           className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
-            isLight 
-              ? 'bg-slate-100 hover:bg-slate-200 text-slate-600' 
+            isLight
+              ? 'bg-slate-100 hover:bg-slate-200 text-slate-600'
               : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
           }`}
         >
@@ -47,8 +47,8 @@ export const AgentModal: React.FC<AgentModalProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full uppercase tracking-wider ${
-                agent.type === 'Executive' 
-                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' 
+                agent.type === 'Executive'
+                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
                   : agent.type === 'Board'
                   ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                   : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
@@ -112,11 +112,11 @@ export const AgentModal: React.FC<AgentModalProps> = ({
             </h3>
             <div className="flex flex-wrap gap-2">
               {agent.tools.map((tool, idx) => (
-                <span 
+                <span
                   key={idx}
                   className={`px-3 py-1 rounded-lg text-xs font-mono border ${
-                    isLight 
-                      ? 'bg-slate-100 border-slate-200 text-slate-700' 
+                    isLight
+                      ? 'bg-slate-100 border-slate-200 text-slate-700'
                       : 'bg-slate-800/80 border-slate-700 text-slate-300'
                   }`}
                 >

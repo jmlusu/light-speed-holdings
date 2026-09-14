@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Compass, 
-  Brain, 
-  CheckCircle2, 
-  Cpu, 
-  Workflow, 
-  TrendingUp, 
-  Play, 
-  RotateCcw, 
-  ArrowRight, 
-  Layers, 
-  ShieldCheck, 
-  Zap, 
-  Clock, 
-  Building2, 
-  Coins, 
-  Globe2, 
+import {
+  Compass,
+  Brain,
+  CheckCircle2,
+  Cpu,
+  Workflow,
+  TrendingUp,
+  Play,
+  RotateCcw,
+  ArrowRight,
+  Layers,
+  ShieldCheck,
+  Zap,
+  Clock,
+  Building2,
+  Coins,
+  Globe2,
   Sparkles,
   ChevronRight
 } from 'lucide-react';
@@ -267,7 +267,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
     keyLight.position.set(2, 4, 5);
     scene.add(keyLight);
 
-    const goldPointLight = new THREE.PointLight(0xf59e0b, 3.8, 12);
+    const goldPointLight = new THREE.PointLight(0xe63946, 3.8, 12);
     goldPointLight.position.set(0, 0, 3);
     scene.add(goldPointLight);
 
@@ -282,9 +282,9 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
       // Outer glowing yellow ring
       const gradOuter = ctx.createRadialGradient(256, 256, 180, 256, 256, 250);
-      gradOuter.addColorStop(0, '#f59e0b');
-      gradOuter.addColorStop(0.7, '#fbbf24');
-      gradOuter.addColorStop(1, '#d97706');
+      gradOuter.addColorStop(0, '#e63946');
+      gradOuter.addColorStop(0.7, '#f5838f');
+      gradOuter.addColorStop(1, '#c1121f');
       ctx.fillStyle = gradOuter;
       ctx.beginPath();
       ctx.arc(256, 256, 250, 0, Math.PI * 2);
@@ -300,21 +300,21 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
       const gradInner = ctx.createRadialGradient(210, 210, 20, 256, 256, 210);
       gradInner.addColorStop(0, '#27272a');
       gradInner.addColorStop(0.6, '#18181b');
-      gradInner.addColorStop(1, '#09090b');
+      gradInner.addColorStop(1, '#070a40');
       ctx.fillStyle = gradInner;
       ctx.beginPath();
       ctx.arc(256, 256, 205, 0, Math.PI * 2);
       ctx.fill();
 
       // Center Typography
-      ctx.fillStyle = '#f59e0b';
-      ctx.font = '800 24px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#e63946';
+      ctx.font = '800 24px Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('LightSpeed', 256, 190);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = '900 48px "Plus Jakarta Sans", sans-serif';
+      ctx.font = '900 48px Arial, sans-serif';
       ctx.shadowColor = 'rgba(0,0,0,0.8)';
       ctx.shadowBlur = 10;
       ctx.fillText('OPERATING', 256, 245);
@@ -342,7 +342,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
     // Orbital Ring encircling the Core Hub
     const orbitRingGeo = new THREE.RingGeometry(1.5, 1.52, 96);
     const orbitRingMat = new THREE.MeshBasicMaterial({
-      color: 0xf59e0b,
+      color: 0xe63946,
       transparent: true,
       opacity: 0.35,
       side: THREE.DoubleSide
@@ -433,13 +433,13 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
       // Main Pill Capsule
       const fillGrad = ctx.createLinearGradient(0, 0, 512, 0);
       if (active) {
-        fillGrad.addColorStop(0, '#f59e0b');
-        fillGrad.addColorStop(0.5, '#fbbf24');
-        fillGrad.addColorStop(1, '#d97706');
+        fillGrad.addColorStop(0, '#e63946');
+        fillGrad.addColorStop(0.5, '#f5838f');
+        fillGrad.addColorStop(1, '#c1121f');
       } else {
         fillGrad.addColorStop(0, '#27272a');
         fillGrad.addColorStop(0.7, '#18181b');
-        fillGrad.addColorStop(1, '#09090b');
+        fillGrad.addColorStop(1, '#070a40');
       }
 
       // Outer Bevel Pill Shape
@@ -449,12 +449,12 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
       ctx.fill();
 
       // High-Contrast Border
-      ctx.strokeStyle = active ? '#ffffff' : '#f59e0b';
+      ctx.strokeStyle = active ? '#ffffff' : '#e63946';
       ctx.lineWidth = active ? 6 : 3;
       ctx.stroke();
 
       // Stage Number (01-06)
-      ctx.fillStyle = active ? '#000000' : '#f59e0b';
+      ctx.fillStyle = active ? '#000000' : '#e63946';
       ctx.font = '900 76px "JetBrains Mono", monospace';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
@@ -464,13 +464,13 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
       // Title & Subtitle
       const stage = STAGES[idx];
-      ctx.fillStyle = active ? '#0f172a' : '#ffffff';
-      ctx.font = '900 24px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = active ? '#070a40' : '#ffffff';
+      ctx.font = '900 24px Arial, sans-serif';
       ctx.shadowBlur = 0;
       const titleText = stage.title.length > 20 ? stage.title.substring(0, 18) + '..' : stage.title;
       ctx.fillText(titleText, 145, 68);
 
-      ctx.fillStyle = active ? '#451a03' : '#a1a1aa';
+      ctx.fillStyle = active ? '#4a080c' : '#a1a1aa';
       ctx.font = '700 16px "JetBrains Mono", monospace';
       const subLabels = ['FIDUCIARY', 'SOVEREIGN', 'HITL GATE', 'AGENT DAG', 'SETTLEMENT', 'YIELD AUDIT'];
       ctx.fillText(subLabels[idx] || 'STAGE', 145, 102);
@@ -480,12 +480,12 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
       const discCy = 80;
       const discR = 52;
 
-      ctx.fillStyle = '#09090b';
+      ctx.fillStyle = '#070a40';
       ctx.beginPath();
       ctx.arc(discCx, discCy, discR, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.strokeStyle = active ? '#f59e0b' : '#52525b';
+      ctx.strokeStyle = active ? '#e63946' : '#52525b';
       ctx.lineWidth = 4;
       ctx.stroke();
 
@@ -529,7 +529,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
         new THREE.Vector3(pos.x * 0.65, pos.y * 0.65, 0)
       ]);
       const lineMat = new THREE.LineBasicMaterial({
-        color: idx === 0 ? 0xf59e0b : 0x3f3f46,
+        color: idx === 0 ? 0xe63946 : 0x3f3f46,
         transparent: true,
         opacity: idx === 0 ? 0.9 : 0.4,
         linewidth: 2
@@ -587,7 +587,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
           mesh.position.z = 0.15;
           if (connectingLines[idx]) {
             const lMat = connectingLines[idx].material as THREE.LineBasicMaterial;
-            lMat.color.setHex(0xf59e0b);
+            lMat.color.setHex(0xe63946);
             lMat.opacity = 0.9 + Math.sin(elapsedTime * 4) * 0.1;
           }
         } else {
@@ -647,7 +647,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="space-y-3 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-400 font-mono text-[11px] tracking-widest shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,1)] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(230,57,70,1)] animate-pulse" />
               <span>THE LightSpeed THESIS IN ACTION</span>
             </div>
 
@@ -655,8 +655,8 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
               isLight ? 'text-slate-900' : 'text-white'
             }`}>
               Collapsing Strategy <br />
-              <span className={isLight 
-                ? 'text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-slate-900' 
+              <span className={isLight
+                ? 'text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-slate-900'
                 : 'text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-200'
               }>
                 Into Computable Execution
@@ -666,7 +666,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
             <p className={`text-justify text-sm sm:text-base leading-relaxed ${
               isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
             }`}>
-              Traditional enterprises lose 6 to 18 months in the friction between boardroom formulation and operational delivery. 
+              Traditional enterprises lose 6 to 18 months in the friction between boardroom formulation and operational delivery.
               LightSpeed's operating thesis replaces static slide decks and siloed handoffs with a <strong>continuous, computable closed loop</strong>—compiling fiduciary intent directly into bounded multi-agent DAGs, sovereign data fabrics, and verifiable settlements in real time.
             </p>
           </div>
@@ -684,16 +684,16 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                 onClick={() => setModelMode('lightspeed')}
                 className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-2 relative ${
                   modelMode === 'lightspeed'
-                    ? isLight 
-                      ? 'tactile-btn-active-light text-slate-900 border-orange-500/60 shadow-md' 
+                    ? isLight
+                      ? 'tactile-btn-active-light text-slate-900 border-orange-500/60 shadow-md'
                       : 'tactile-btn-active-dark text-white border-orange-500/60 shadow-md'
-                    : isLight 
-                      ? 'tactile-btn-inactive-light text-slate-600 hover:text-slate-900' 
+                    : isLight
+                      ? 'tactile-btn-inactive-light text-slate-600 hover:text-slate-900'
                       : 'tactile-btn-inactive-dark text-zinc-400 hover:text-white'
                 }`}
               >
                 <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  modelMode === 'lightspeed' ? 'tactile-pip-active shadow-[0_0_8px_rgba(249,115,22,1)]' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
+                  modelMode === 'lightspeed' ? 'tactile-pip-active shadow-[0_0_8px_rgba(230,57,70,1)]' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                 }`} />
                 <span className="whitespace-nowrap">LightSpeed AI-Native</span>
               </button>
@@ -701,16 +701,16 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                 onClick={() => setModelMode('traditional')}
                 className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-2 relative ${
                   modelMode === 'traditional'
-                    ? isLight 
-                      ? 'tactile-btn-active-light text-slate-900 border-amber-500/60 shadow-md' 
+                    ? isLight
+                      ? 'tactile-btn-active-light text-slate-900 border-amber-500/60 shadow-md'
                       : 'tactile-btn-active-dark text-white border-amber-500/60 shadow-md'
-                    : isLight 
-                      ? 'tactile-btn-inactive-light text-slate-600 hover:text-slate-900' 
+                    : isLight
+                      ? 'tactile-btn-inactive-light text-slate-600 hover:text-slate-900'
                       : 'tactile-btn-inactive-dark text-zinc-400 hover:text-white'
                 }`}
               >
                 <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  modelMode === 'traditional' ? 'tactile-pip-active bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,1)]' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
+                  modelMode === 'traditional' ? 'tactile-pip-active bg-amber-400 shadow-[0_0_8px_rgba(245,131,143,1)]' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                 }`} />
                 <span className="whitespace-nowrap">Traditional Consulting</span>
               </button>
@@ -797,11 +797,11 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
       {/* Main Interactive Stage Demonstration Frame */}
       <div className={`p-6 sm:p-8 rounded-3xl border relative overflow-hidden transition-all duration-300 ${
         modelMode === 'traditional'
-          ? isLight 
-            ? 'bg-amber-50/40 border-amber-300/80 shadow-2xl text-slate-900' 
+          ? isLight
+            ? 'bg-amber-50/40 border-amber-300/80 shadow-2xl text-slate-900'
             : 'bg-zinc-950/90 border-amber-500/20 shadow-2xl text-zinc-400'
-          : isLight 
-            ? 'bg-white/95 border-slate-300 shadow-2xl text-slate-900' 
+          : isLight
+            ? 'bg-white/95 border-slate-300 shadow-2xl text-slate-900'
             : 'bg-zinc-950/90 border-white/15 shadow-2xl text-zinc-400'
       }`}>
         {/* Subtle architectural background grid */}
@@ -813,7 +813,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
           {/* Canvas Floating Stage Badge */}
           <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 border border-white/15 backdrop-blur-md text-[11px] font-mono">
-            <span className={`w-2 h-2 rounded-full ${modelMode === 'lightspeed' ? 'tactile-pip-active' : 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.9)]'}`} />
+            <span className={`w-2 h-2 rounded-full ${modelMode === 'lightspeed' ? 'tactile-pip-active' : 'bg-amber-400 shadow-[0_0_6px_rgba(245,131,143,0.9)]'}`} />
             <span className={`font-bold ${modelMode === 'lightspeed' ? 'text-orange-400' : 'text-amber-300'}`}>
               STAGE 0{currentStage.step} / 06
             </span>
@@ -925,11 +925,11 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                   }}
                   className={`group relative py-2 px-2.5 rounded-xl border transition-all duration-300 cursor-pointer flex flex-col items-center text-center overflow-hidden ${
                     isActive
-                      ? isLight 
-                        ? 'bg-gradient-to-b from-orange-50/90 to-amber-100/70 border-orange-500 shadow-md shadow-orange-500/15 scale-[1.02]' 
+                      ? isLight
+                        ? 'bg-gradient-to-b from-orange-50/90 to-amber-100/70 border-orange-500 shadow-md shadow-orange-500/15 scale-[1.02]'
                         : 'bg-gradient-to-b from-orange-950/40 to-zinc-950/90 border-orange-500/80 shadow-lg shadow-orange-500/20 scale-[1.02]'
-                      : isLight 
-                        ? 'bg-white/90 hover:bg-slate-50/90 border-slate-300/80 hover:border-orange-400/50' 
+                      : isLight
+                        ? 'bg-white/90 hover:bg-slate-50/90 border-slate-300/80 hover:border-orange-400/50'
                         : 'bg-zinc-900/50 hover:bg-zinc-900/80 border-white/10 hover:border-white/20'
                   }`}
                 >
@@ -947,18 +947,18 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
                     {/* The Wave Glass Sphere Orb */}
                     <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 relative ${
-                      isActive 
-                        ? 'wave-glass-sphere-active' 
-                        : isLight 
-                          ? 'wave-glass-sphere-inactive-light group-hover:scale-105' 
+                      isActive
+                        ? 'wave-glass-sphere-active'
+                        : isLight
+                          ? 'wave-glass-sphere-inactive-light group-hover:scale-105'
                           : 'wave-glass-sphere-inactive-dark group-hover:scale-105'
                     }`}>
                       {/* Crisp Bold Numeral 1-6 */}
                       <span className={`font-black text-xs sm:text-sm font-mono tracking-tighter ${
-                        isActive 
-                          ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]' 
-                          : isLight 
-                            ? 'text-slate-900' 
+                        isActive
+                          ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]'
+                          : isLight
+                            ? 'text-slate-900'
                             : 'text-zinc-200'
                       }`}>
                         {s.step}
@@ -968,18 +968,18 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
                   {/* Stage Title and Sub-label */}
                   <span className={`text-[11px] font-bold tracking-tight font-display transition-colors leading-tight line-clamp-1 ${
-                    isActive 
-                      ? 'text-orange-500' 
-                      : isLight 
-                        ? 'text-slate-900 group-hover:text-orange-600' 
+                    isActive
+                      ? 'text-orange-500'
+                      : isLight
+                        ? 'text-slate-900 group-hover:text-orange-600'
                         : 'text-zinc-200 group-hover:text-white'
                   }`}>
                     {s.title}
                   </span>
 
                   <span className={`text-[9px] font-mono leading-tight mt-0.5 ${
-                    isActive 
-                      ? isLight ? 'text-slate-800 font-semibold' : 'text-zinc-300' 
+                    isActive
+                      ? isLight ? 'text-slate-800 font-semibold' : 'text-zinc-300'
                       : isLight ? 'text-slate-700' : 'text-zinc-400'
                   }`}>
                     {idx === 0 ? 'Fiduciary' : idx === 1 ? 'Sovereign' : idx === 2 ? 'HITL Gate' : idx === 3 ? 'Agent DAG' : idx === 4 ? 'Settlement' : 'Yield Audit'}
@@ -988,10 +988,10 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                   {/* Status Pip */}
                   <div className="mt-1 flex items-center gap-1">
                     <span className={`w-1.5 h-1.5 rounded-full ${
-                      isActive 
-                        ? 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,1)] animate-pulse' 
-                        : isPassed 
-                          ? 'bg-emerald-500' 
+                      isActive
+                        ? 'bg-orange-500 shadow-[0_0_6px_rgba(230,57,70,1)] animate-pulse'
+                        : isPassed
+                          ? 'bg-emerald-500'
                           : 'bg-zinc-600'
                     }`} />
                     <span className={`text-[8px] font-mono font-bold ${
@@ -1008,7 +1008,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
         {/* BOTTOM ROW: Deep Stage Breakdown & Architectural Blueprint */}
         <div className="space-y-6">
-          
+
           {/* Stage Header Banner */}
           <div className={`p-5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
             isLight ? 'bg-slate-50/90 border-slate-300' : 'bg-zinc-900/60 border-white/10'
@@ -1046,10 +1046,10 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
           {/* Side-by-Side Paradigm Contrast & Architectural Breakdown */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
+
             {/* Left Column: Side-by-Side Operating Realities (7 cols) */}
             <div className="lg:col-span-7 space-y-5">
-              
+
               {/* Core Description */}
               <p className={`text-justify text-sm sm:text-base leading-relaxed ${
                 isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
@@ -1059,15 +1059,15 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
               {/* Side-by-Side Comparison Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
+
                 {/* LightSpeed AI-Native Card */}
                 <div className={`p-4 rounded-2xl border transition-all ${
                   modelMode === 'lightspeed'
-                    ? isLight 
-                      ? 'bg-orange-50/80 border-orange-400/80 shadow-md ring-1 ring-orange-500/20' 
+                    ? isLight
+                      ? 'bg-orange-50/80 border-orange-400/80 shadow-md ring-1 ring-orange-500/20'
                       : 'bg-orange-950/25 border-orange-500/50 shadow-lg shadow-orange-950/30'
-                    : isLight 
-                      ? 'bg-white/60 border-slate-200 opacity-75' 
+                    : isLight
+                      ? 'bg-white/60 border-slate-200 opacity-75'
                       : 'bg-zinc-900/40 border-white/5 opacity-70'
                 }`}>
                   <div className="flex items-center justify-between mb-2">
@@ -1084,7 +1084,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                   }`}>
                     {currentStage.lightspeed}
                   </p>
-                  
+
                   {/* Verified Output Artifacts */}
                   <div className="mt-3 pt-3 border-t border-orange-500/20 space-y-1.5">
                     <span className="text-[10px] font-mono tracking-wider text-orange-500 font-bold block">
@@ -1092,8 +1092,8 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {currentStage.artifacts.map((art, aIdx) => (
-                        <span 
-                          key={aIdx} 
+                        <span
+                          key={aIdx}
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-[11px] font-mono text-emerald-400 font-medium"
                         >
                           <CheckCircle2 className="w-3 h-3 shrink-0" />
@@ -1107,11 +1107,11 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                 {/* Traditional Consulting Card */}
                 <div className={`p-4 rounded-2xl border transition-all ${
                   modelMode === 'traditional'
-                    ? isLight 
-                      ? 'bg-amber-50/90 border-amber-400 shadow-md ring-1 ring-amber-500/20' 
+                    ? isLight
+                      ? 'bg-amber-50/90 border-amber-400 shadow-md ring-1 ring-amber-500/20'
                       : 'bg-amber-950/30 border-amber-500/50 shadow-lg shadow-amber-950/30'
-                    : isLight 
-                      ? 'bg-white/60 border-slate-200 opacity-75' 
+                    : isLight
+                      ? 'bg-white/60 border-slate-200 opacity-75'
                       : 'bg-zinc-900/40 border-white/5 opacity-70'
                 }`}>
                   <div className="flex items-center justify-between mb-2">
@@ -1213,7 +1213,7 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
 
             {/* Right Column: Quantitative Telemetry & Regional Proof (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
-              
+
               {/* Primary KPI Card (Reacts to Model Mode) */}
               <div className={`p-5 rounded-2xl border transition-all ${
                 modelMode === 'lightspeed'
@@ -1222,15 +1222,15 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
               }`}>
                 <div className="flex items-center justify-between text-xs font-mono text-zinc-500 font-semibold mb-1">
                   <span>
-                    {modelMode === 'lightspeed' 
-                      ? currentStage.telemetry.metric.toUpperCase() 
+                    {modelMode === 'lightspeed'
+                      ? currentStage.telemetry.metric.toUpperCase()
                       : currentStage.telemetry.traditionalMetric.toUpperCase()}
                   </span>
                   <span className={`font-bold ${
                     modelMode === 'lightspeed' ? 'text-emerald-400' : 'text-rose-400'
                   }`}>
-                    {modelMode === 'lightspeed' 
-                      ? currentStage.telemetry.delta 
+                    {modelMode === 'lightspeed'
+                      ? currentStage.telemetry.delta
                       : currentStage.telemetry.traditionalDelta}
                   </span>
                 </div>
@@ -1240,14 +1240,14 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                     ? isLight ? 'text-slate-900' : 'text-white'
                     : 'text-amber-500'
                 }`}>
-                  {modelMode === 'lightspeed' 
-                    ? currentStage.telemetry.value 
+                  {modelMode === 'lightspeed'
+                    ? currentStage.telemetry.value
                     : currentStage.telemetry.traditionalValue}
                 </div>
 
                 <div className="text-[11px] text-zinc-500 font-medium">
-                  {modelMode === 'lightspeed' 
-                    ? 'Audited against institutional production benchmarks' 
+                  {modelMode === 'lightspeed'
+                    ? 'Audited against institutional production benchmarks'
                     : 'Traditional consulting industry baseline (Slide decks / Siloed teams)'}
                 </div>
               </div>
@@ -1297,8 +1297,8 @@ export const InteractiveOperatingModel: React.FC<InteractiveOperatingModelProps>
                     </div>
                   </div>
                   <p className={`text-justify text-xs leading-relaxed font-normal ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>
-                    {modelMode === 'lightspeed' 
-                      ? USE_CASES[selectedUseCase].solution 
+                    {modelMode === 'lightspeed'
+                      ? USE_CASES[selectedUseCase].solution
                       : USE_CASES[selectedUseCase].challenge}
                   </p>
                 </div>

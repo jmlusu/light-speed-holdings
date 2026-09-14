@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ChevronDown, 
-  Cpu, 
-  Layers, 
-  Sparkles, 
-  ShieldCheck, 
-  Workflow, 
-  Building2, 
-  Globe2, 
-  Bot, 
-  Database, 
-  Brain, 
-  FileText, 
-  Compass, 
-  Lock, 
-  Landmark, 
-  Handshake, 
-  Menu, 
+import {
+  ChevronDown,
+  Cpu,
+  Layers,
+  Sparkles,
+  ShieldCheck,
+  Workflow,
+  Building2,
+  Globe2,
+  Bot,
+  Database,
+  Brain,
+  FileText,
+  Compass,
+  Lock,
+  Landmark,
+  Handshake,
+  Menu,
   X,
   ArrowRight,
   Sun,
@@ -55,32 +55,32 @@ export const Header: React.FC<HeaderProps> = ({
   const navItemClass = (route: string) => {
     const isActive = currentRoute === route;
     if (isLight) {
-      return isActive 
-        ? 'text-amber-700 font-bold neu-pressed-light shadow-inner' 
+      return isActive
+        ? 'text-amber-700 font-bold neu-pressed-light shadow-inner'
         : 'text-slate-700 hover:text-slate-900 hover:neu-pill-light';
     }
-    return isActive 
-      ? 'text-amber-400 font-bold neu-pressed-dark shadow-inner' 
+    return isActive
+      ? 'text-amber-400 font-bold neu-pressed-dark shadow-inner'
       : 'text-slate-300 hover:text-white hover:neu-pill-dark';
   };
 
   return (
     <header className={`relative w-full z-40 transition-colors ${
-      isLight 
-        ? 'bg-[#edf3f8]/95 border-b border-[#e5b74c]/30 shadow-[0_4px_16px_rgba(6,13,22,0.06)]' 
-        : 'bg-[#060d16]/95 border-b border-[#e5b74c]/25 shadow-[0_6px_20px_rgba(0,0,0,0.7)]'
+      isLight
+        ? 'bg-[#edf3f8]/95 border-b border-[#e63946]/30 shadow-[0_4px_16px_rgba(7,10,64,0.06)]'
+        : 'bg-[#070a40]/95 border-b border-[#e63946]/25 shadow-[0_6px_20px_rgba(0,0,0,0.7)]'
     }`}>
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-13 sm:h-14 gap-2">
-          
+
           {/* Brand Logo */}
-          <button 
+          <button
             onClick={() => handleLinkClick('home')}
             className="flex items-center gap-2 sm:gap-2.5 text-left group focus:outline-none shrink-0 py-0.5 max-w-[70vw] sm:max-w-none"
           >
-            <img 
-              src="/static/brand/logos/icononly/icononly_transparent_nobuffer.png" 
-              alt="LightSpeed Holdings Limited" 
+            <img
+              src="/static/brand/logos/icononly/icononly_transparent_nobuffer.png"
+              alt="LightSpeed Holdings Limited"
               className="h-7 sm:h-8 xl:h-8.5 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform duration-200"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = '/brand/logos/icononly/icononly_transparent_nobuffer.png';
@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Desktop Navigation (Visible on xl+ screens) */}
           <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1 text-xs font-medium shrink-0">
-            
+
             {/* Home Link */}
             <button
               onClick={() => handleLinkClick('home')}
@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             {/* Solutions Dropdown */}
-            <div 
+            <div
               className="relative"
               onMouseEnter={() => setSolutionsOpen(true)}
               onMouseLeave={() => setSolutionsOpen(false)}
@@ -126,13 +126,13 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Mega Menu: Solutions */}
               {solutionsOpen && (
                 <div className={`absolute top-full left-0 w-[560px] max-w-[calc(100vw-2rem)] p-4 mt-1 rounded-2xl border shadow-2xl backdrop-blur-2xl grid grid-cols-2 gap-3 text-left animate-in fade-in slide-in-from-top-2 duration-150 z-50 ${
-                  isLight ? 'bg-[#ffffff] border-[#e5b74c]/30 shadow-slate-300/80 text-slate-800' : 'bg-[#0f2231] border-[#e5b74c]/30 shadow-black/80 text-slate-100'
+                  isLight ? 'bg-[#ffffff] border-[#e63946]/30 shadow-slate-300/80 text-slate-800' : 'bg-[#10165e] border-[#e63946]/30 shadow-black/80 text-slate-100'
                 }`}>
                   <button
                     onClick={() => handleLinkClick('solutions', 'agentic-ai')}
                     className={`p-3 rounded-xl transition-all text-left group border ${
-                      isLight 
-                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300' 
+                      isLight
+                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300'
                         : 'hover:bg-slate-800/80 border-transparent hover:border-amber-500/30'
                     }`}
                   >
@@ -148,8 +148,8 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     onClick={() => handleLinkClick('solutions', 'digital-transformation')}
                     className={`p-3 rounded-xl transition-all text-left group border ${
-                      isLight 
-                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300' 
+                      isLight
+                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300'
                         : 'hover:bg-slate-800/80 border-transparent hover:border-amber-500/30'
                     }`}
                   >
@@ -165,8 +165,8 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     onClick={() => handleLinkClick('solutions', 'data-intelligence')}
                     className={`p-3 rounded-xl transition-all text-left group border ${
-                      isLight 
-                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300' 
+                      isLight
+                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300'
                         : 'hover:bg-slate-800/80 border-transparent hover:border-amber-500/30'
                     }`}
                   >
@@ -182,8 +182,8 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     onClick={() => handleLinkClick('solutions', 'automation')}
                     className={`p-3 rounded-xl transition-all text-left group border ${
-                      isLight 
-                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300' 
+                      isLight
+                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300'
                         : 'hover:bg-slate-800/80 border-transparent hover:border-amber-500/30'
                     }`}
                   >
@@ -199,8 +199,8 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     onClick={() => handleLinkClick('solutions', 'strategy-advisory')}
                     className={`p-3 rounded-xl transition-all text-left group border ${
-                      isLight 
-                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300' 
+                      isLight
+                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300'
                         : 'hover:bg-slate-800/80 border-transparent hover:border-amber-500/30'
                     }`}
                   >
@@ -216,8 +216,8 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     onClick={() => handleLinkClick('solutions', 'ai-policy-governance')}
                     className={`p-3 rounded-xl transition-all text-left group border ${
-                      isLight 
-                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300' 
+                      isLight
+                        ? 'hover:bg-amber-50/80 border-transparent hover:border-amber-300'
                         : 'hover:bg-slate-800/80 border-transparent hover:border-amber-500/30'
                     }`}
                   >
@@ -234,7 +234,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Industries Dropdown */}
-            <div 
+            <div
               className="relative"
               onMouseEnter={() => setIndustriesOpen(true)}
               onMouseLeave={() => setIndustriesOpen(false)}
@@ -250,7 +250,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Mega Menu: Industries */}
               {industriesOpen && (
                 <div className={`absolute top-full left-0 w-[540px] max-w-[calc(100vw-2rem)] p-4 mt-1 rounded-2xl border shadow-2xl backdrop-blur-2xl grid grid-cols-2 gap-2 text-left animate-in fade-in slide-in-from-top-2 duration-150 z-50 ${
-                  isLight ? 'bg-[#ffffff] border-[#e5b74c]/30 shadow-slate-300/80 text-slate-800' : 'bg-[#0f2231] border-[#e5b74c]/30 shadow-black/80 text-slate-100'
+                  isLight ? 'bg-[#ffffff] border-[#e63946]/30 shadow-slate-300/80 text-slate-800' : 'bg-[#10165e] border-[#e63946]/30 shadow-black/80 text-slate-100'
                 }`}>
                   <button onClick={() => handleLinkClick('industries', 'government')} className={`p-2.5 rounded-lg text-left text-xs font-semibold flex items-center gap-2 ${isLight ? 'hover:bg-slate-100 text-slate-800 hover:text-amber-600' : 'hover:bg-slate-800/80 text-slate-200 hover:text-amber-400'}`}>
                     <Landmark className="w-4 h-4 text-amber-500 shrink-0" /> Government & Public Sector
@@ -342,7 +342,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Primary CTA & Theme Toggle */}
           <div className="hidden xl:flex items-center gap-2 shrink-0">
-            
+
             {/* Theme Toggle Button */}
             <button
               onClick={onToggleTheme}

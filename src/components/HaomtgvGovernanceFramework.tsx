@@ -1,24 +1,24 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ShieldCheck, 
-  Cpu, 
-  Workflow, 
-  Database, 
-  Terminal, 
-  Lock, 
-  CheckCircle2, 
-  Users, 
-  Building2, 
-  ArrowRight, 
-  Activity, 
-  AlertTriangle, 
-  Clock, 
-  FileCode, 
-  Key, 
-  Zap, 
-  Layers, 
-  Compass, 
+import {
+  ShieldCheck,
+  Cpu,
+  Workflow,
+  Database,
+  Terminal,
+  Lock,
+  CheckCircle2,
+  Users,
+  Building2,
+  ArrowRight,
+  Activity,
+  AlertTriangle,
+  Clock,
+  FileCode,
+  Key,
+  Zap,
+  Layers,
+  Compass,
   ExternalLink,
   ChevronRight,
   ShieldAlert,
@@ -34,10 +34,10 @@ import {
   X,
   Play
 } from 'lucide-react';
-import { 
-  StatusLedPip, 
-  MachineScrewHead, 
-  AcousticVentGrille 
+import {
+  StatusLedPip,
+  MachineScrewHead,
+  AcousticVentGrille
 } from './TactileHardwareElements';
 import { agentsList, departmentsList } from '../data/companyData';
 import { Agent, Department } from '../types';
@@ -54,11 +54,11 @@ export const HaomtgvGovernanceFramework: React.FC<HaomtgvGovernanceFrameworkProp
   onOpenContactModal
 }) => {
   const isLight = theme === 'light';
-  
+
   // Navigation State
   const [activeTab, setActiveTab] = useState<FrameworkTab>('pillars');
   const [activePillar, setActivePillar] = useState<'H' | 'A' | 'O' | 'M' | 'T' | 'G' | 'V'>('H');
-  
+
   // 144 Agent Hierarchy State
   const [selectedDeptId, setSelectedDeptId] = useState<string>('executive');
   const [agentSearchQuery, setAgentSearchQuery] = useState<string>('');
@@ -176,7 +176,7 @@ class SovereignEnterpriseMemory:
         self.graph = GraphifyStore(path="graphify-out/graph.json")
         self.local_vector_db = ChromaOnSoil(path="/var/lib/sovereign-vault")
         self.cloud_egress_guard = StrictAirGapBarrier(block_external=True)
-    
+
     def recall_context(self, query: str) -> MemoryContext:
         # Zero external API tokens transmitted
         return self.graph.query_ast_subgraph(query)`
@@ -261,44 +261,44 @@ enum PermissionTier {
 
   // Tool Sandbox Definitions
   const canonicalTools = [
-    { 
-      name: 'read', 
+    {
+      name: 'read',
       desc: 'Read file contents within workspace root. Symlink traversal denied.',
       sampleCmd: 'read("company-registry.yaml")',
       output: '20 departments loaded, 144 agents validated against pydantic schema.'
     },
-    { 
-      name: 'edit', 
+    {
+      name: 'edit',
       desc: 'Exact string replacement. Prevents accidental whole-file wipes.',
       sampleCmd: 'edit(target="src/models.py", old="v1.0", new="v2.0")',
       output: 'Exact match verified. Replaced 1 occurrence without modifying surrounding syntax.'
     },
-    { 
-      name: 'grep', 
+    {
+      name: 'grep',
       desc: 'AST-safe regex search. Skips binary assets, node_modules, and virtualenvs.',
       sampleCmd: 'grep(pattern="ApprovalGate", path="src/")',
       output: 'Found 14 occurrences in src/ai_company/security/rbac.py and orchestrator.'
     },
-    { 
-      name: 'list', 
+    {
+      name: 'list',
       desc: 'Directory enumeration with path-traversal sandboxing.',
       sampleCmd: 'list(".opencode/agents/")',
       output: '144 markdown agent cards indexed in local directory.'
     },
-    { 
-      name: 'bash', 
+    {
+      name: 'bash',
       desc: 'Timeout-bounded, non-interactive shell command runner. Dangerous commands blocked.',
       sampleCmd: 'bash("pytest tests/test_governance.py")',
       output: '38 passed in 1.42s. All 5-tier gate evaluations green.'
     },
-    { 
-      name: 'webfetch', 
+    {
+      name: 'webfetch',
       desc: 'HTTP/HTTPS fetcher with domain whitelist. Zero token egress.',
       sampleCmd: 'webfetch("https://rbm.mw/rates")',
       output: 'Fetched RBM official MK/USD fixing rate into memory cache.'
     },
-    { 
-      name: 'task', 
+    {
+      name: 'task',
       desc: 'Subagent DAG spawn runner with bounded recursion depth.',
       sampleCmd: 'task(subagent="thought-leadership-author", prompt="Draft tome section")',
       output: 'Subagent process spawned under task-8921; status updated in .opencode/inbox.json.'
@@ -361,21 +361,21 @@ enum PermissionTier {
 
   // Filtering Agents
   const currentDepartment = departmentsList.find(d => d.id === selectedDeptId) || departmentsList[0];
-  
+
   const filteredAgents = useMemo(() => {
     return agentsList.filter(agent => {
       // Dept match
       const deptMatch = agent.department.toLowerCase().replace(/\s+/g, '_') === currentDepartment.id ||
                         agent.department.toLowerCase() === currentDepartment.name.toLowerCase();
-      
+
       // Search query
-      const queryMatch = !agentSearchQuery || 
+      const queryMatch = !agentSearchQuery ||
         agent.name.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
         agent.role.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
         agent.description.toLowerCase().includes(agentSearchQuery.toLowerCase());
-      
+
       // Tool filter
-      const toolMatch = selectedToolFilter === 'all' || 
+      const toolMatch = selectedToolFilter === 'all' ||
         agent.tools.includes(selectedToolFilter);
 
       return deptMatch && queryMatch && toolMatch;
@@ -386,7 +386,7 @@ enum PermissionTier {
   const departmentCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     departmentsList.forEach(d => {
-      counts[d.id] = agentsList.filter(a => 
+      counts[d.id] = agentsList.filter(a =>
         a.department.toLowerCase().replace(/\s+/g, '_') === d.id ||
         a.department.toLowerCase() === d.name.toLowerCase()
       ).length;
@@ -424,9 +424,9 @@ enum PermissionTier {
 
   return (
     <div id="haomtgv-framework" className={`p-5 sm:p-8 lg:p-10 rounded-3xl border relative overflow-hidden transition-all shadow-2xl ${
-      isLight 
-        ? 'bg-[#edf3f8] border-[#e5b74c]/30 shadow-[0_12px_40px_rgba(6,13,22,0.08)]' 
-        : 'bg-gradient-to-b from-[#091624] via-[#060d16] to-[#040810] border-[#e5b74c]/25 shadow-[0_20px_60px_rgba(0,0,0,0.85)]'
+      isLight
+        ? 'bg-[#edf3f8] border-[#e63946]/30 shadow-[0_12px_40px_rgba(7,10,64,0.08)]'
+        : 'bg-gradient-to-b from-[#0b0f55] via-[#070a40] to-[#040810] border-[#e63946]/25 shadow-[0_20px_60px_rgba(0,0,0,0.85)]'
     }`}>
       {/* Structural Corner Fasteners */}
       <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
@@ -435,15 +435,15 @@ enum PermissionTier {
       <MachineScrewHead isLight={isLight} className="absolute bottom-3 right-3" />
 
       {/* Top Telemetry & Spec Ribbon */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-[#e5b74c]/20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-[#e63946]/20">
         <div className="flex items-center gap-2.5 flex-wrap">
           <StatusLedPip status="emerald" isLight={isLight} />
-          <span className="text-xs font-mono font-extrabold uppercase tracking-wider text-[#e5b74c]">
+          <span className="text-xs font-mono font-extrabold uppercase tracking-wider text-[#e63946]">
             SOVEREIGN GOVERNANCE FRAMEWORK
           </span>
           <span className="text-zinc-500 hidden sm:inline">•</span>
           <span className={`text-[11px] font-mono px-2 py-0.5 rounded ${
-            isLight ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-[#0f2231] text-[#f7d77c] border border-[#e5b74c]/30'
+            isLight ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-[#10165e] text-[#fb7a85] border border-[#e63946]/30'
           }`}>
             SPEC::H-A-O-M-T-G-V
           </span>
@@ -456,7 +456,7 @@ enum PermissionTier {
         <div className="flex items-center gap-2">
           <AcousticVentGrille cols={6} rows={2} isLight={isLight} />
           <span className={`text-[11px] font-mono px-2 py-1 rounded font-bold ${
-            isLight ? 'bg-slate-200 text-slate-800' : 'bg-[#163246] text-emerald-400 border border-emerald-500/30'
+            isLight ? 'bg-slate-200 text-slate-800' : 'bg-[#1a2170] text-emerald-400 border border-emerald-500/30'
           }`}>
             PROVEN IN PRODUCTION
           </span>
@@ -468,25 +468,25 @@ enum PermissionTier {
         <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-extrabold font-display tracking-tight ${
           isLight ? 'text-slate-900' : 'text-slate-100'
         }`}>
-          The <span className="bg-gradient-to-r from-[#e5b74c] via-[#f7d77c] to-[#c49332] bg-clip-text text-transparent">H-A-O-M-T-G-V</span> Agentic Governance Framework
+          The <span className="bg-gradient-to-r from-[#e63946] via-[#fb7a85] to-[#c1121f] bg-clip-text text-transparent">H-A-O-M-T-G-V</span> Agentic Governance Framework
         </h2>
         <p className={`text-sm sm:text-base max-w-4xl leading-relaxed ${
           isLight ? 'text-slate-700' : 'text-slate-300'
         }`}>
-          How LightSpeed orchestrates <strong>144 specialist agents</strong> inside a governed, air-gapped corporate hierarchy. 
-          Built on deterministic Directed Acyclic Graphs (DAGs), cryptographic human approval gates, national soil data residency, 
+          How LightSpeed orchestrates <strong>144 specialist agents</strong> inside a governed, air-gapped corporate hierarchy.
+          Built on deterministic Directed Acyclic Graphs (DAGs), cryptographic human approval gates, national soil data residency,
           and an immutable SHA-256 audit ledger.
         </p>
       </div>
 
       {/* Master View Mode Switcher */}
-      <div className="flex flex-wrap gap-2 mb-8 p-1.5 rounded-2xl border border-[#e5b74c]/25 bg-black/30 backdrop-blur-md">
+      <div className="flex flex-wrap gap-2 mb-8 p-1.5 rounded-2xl border border-[#e63946]/25 bg-black/30 backdrop-blur-md">
         <button
           onClick={() => setActiveTab('pillars')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'pillars'
-              ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-lg shadow-amber-500/20'
-              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#0f2231]'
+              ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-lg shadow-amber-500/20'
+              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#10165e]'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -497,8 +497,8 @@ enum PermissionTier {
           onClick={() => setActiveTab('roster')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'roster'
-              ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-lg shadow-amber-500/20'
-              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#0f2231]'
+              ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-lg shadow-amber-500/20'
+              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#10165e]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -509,8 +509,8 @@ enum PermissionTier {
           onClick={() => setActiveTab('topology')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'topology'
-              ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-lg shadow-amber-500/20'
-              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#0f2231]'
+              ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-lg shadow-amber-500/20'
+              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#10165e]'
           }`}
         >
           <Network className="w-4 h-4" />
@@ -521,8 +521,8 @@ enum PermissionTier {
           onClick={() => setActiveTab('simulator')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'simulator'
-              ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-lg shadow-amber-500/20'
-              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#0f2231]'
+              ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-lg shadow-amber-500/20'
+              : isLight ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-300 hover:bg-[#10165e]'
           }`}
         >
           <ShieldCheck className="w-4 h-4" />
@@ -543,21 +543,21 @@ enum PermissionTier {
                   onClick={() => setActivePillar(p.id as any)}
                   className={`p-3 rounded-2xl border text-left transition-all relative overflow-hidden group ${
                     isSelected
-                      ? 'bg-gradient-to-br from-[#163246] to-[#0f2231] border-[#e5b74c] shadow-lg shadow-amber-500/20'
+                      ? 'bg-gradient-to-br from-[#1a2170] to-[#10165e] border-[#e63946] shadow-lg shadow-amber-500/20'
                       : isLight
                         ? 'bg-white border-slate-300 hover:border-amber-400'
-                        : 'bg-[#091624]/80 border-[#163246] hover:border-[#e5b74c]/50'
+                        : 'bg-[#0b0f55]/80 border-[#1a2170] hover:border-[#e63946]/50'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className={`text-base sm:text-lg font-black font-mono ${
-                      isSelected ? 'text-[#f7d77c]' : 'text-[#e5b74c]'
+                      isSelected ? 'text-[#fb7a85]' : 'text-[#e63946]'
                     }`}>
                       {p.letter}
                     </span>
-                    <StatusLedPip 
-                      status={isSelected ? 'amber' : 'emerald'} 
-                      isLight={isLight} 
+                    <StatusLedPip
+                      status={isSelected ? 'amber' : 'emerald'}
+                      isLight={isLight}
                     />
                   </div>
                   <div className={`text-xs font-bold truncate ${
@@ -584,10 +584,10 @@ enum PermissionTier {
             {/* Left Narrative Column */}
             <div className="lg:col-span-7 space-y-6">
               <div className={`p-6 sm:p-8 rounded-2xl border ${
-                isLight ? 'bg-white border-slate-300 shadow-sm' : 'bg-[#0f2231]/90 border-[#163246] shadow-xl'
+                isLight ? 'bg-white border-slate-300 shadow-sm' : 'bg-[#10165e]/90 border-[#1a2170] shadow-xl'
               }`}>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#e5b74c]/20 text-[#e5b74c] border border-[#e5b74c]/30">
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#e63946]/20 text-[#e63946] border border-[#e63946]/30">
                     PILLAR {currentPillar.letter} // {currentPillar.name.toUpperCase()}
                   </span>
                   <span className="text-xs font-mono text-zinc-400">•</span>
@@ -601,9 +601,9 @@ enum PermissionTier {
                 </h3>
 
                 <p className={`text-xs font-mono mb-4 p-3 rounded-xl border ${
-                  isLight ? 'bg-amber-50/70 border-amber-200 text-amber-900' : 'bg-[#060d16] border-[#e5b74c]/20 text-[#f7d77c]'
+                  isLight ? 'bg-amber-50/70 border-amber-200 text-amber-900' : 'bg-[#070a40] border-[#e63946]/20 text-[#fb7a85]'
                 }`}>
-                  <span className="font-bold text-[#e5b74c]">CORE DIRECTIVE:</span> {currentPillar.coreQuestion}
+                  <span className="font-bold text-[#e63946]">CORE DIRECTIVE:</span> {currentPillar.coreQuestion}
                 </p>
 
                 <p className={`text-sm leading-relaxed mb-6 ${
@@ -612,13 +612,13 @@ enum PermissionTier {
                   {currentPillar.summary}
                 </p>
 
-                <div className="space-y-3 border-t border-[#e5b74c]/20 pt-4">
-                  <h4 className="text-xs font-mono font-bold text-[#e5b74c] uppercase tracking-wider">
+                <div className="space-y-3 border-t border-[#e63946]/20 pt-4">
+                  <h4 className="text-xs font-mono font-bold text-[#e63946] uppercase tracking-wider">
                     OPERATIONAL PRINCIPLES
                   </h4>
                   {currentPillar.principles.map((pr, idx) => (
                     <div key={idx} className="flex items-start gap-3 text-xs">
-                      <CheckCircle2 className="w-4 h-4 text-[#e5b74c] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-[#e63946] shrink-0 mt-0.5" />
                       <span className={isLight ? 'text-slate-800' : 'text-slate-200'}>{pr}</span>
                     </div>
                   ))}
@@ -628,10 +628,10 @@ enum PermissionTier {
               {/* Dynamic Feature Sandbox based on Pillar */}
               {activePillar === 'T' && (
                 <div className={`p-6 rounded-2xl border ${
-                  isLight ? 'bg-white border-slate-300' : 'bg-[#0f2231] border-[#163246]'
+                  isLight ? 'bg-white border-slate-300' : 'bg-[#10165e] border-[#1a2170]'
                 }`}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-mono font-bold text-[#e5b74c] uppercase">
+                    <span className="text-xs font-mono font-bold text-[#e63946] uppercase">
                       INTERACTIVE CANONICAL 7-TOOL RUNNER
                     </span>
                     <span className="text-[10px] font-mono text-emerald-400">Zero Arbitrary Execution</span>
@@ -647,8 +647,8 @@ enum PermissionTier {
                         }}
                         className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all border ${
                           selectedTool === ct.name
-                            ? 'bg-[#e5b74c] text-slate-950 border-[#f7d77c]'
-                            : isLight ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-[#091624] text-slate-300 border-[#163246]'
+                            ? 'bg-[#e63946] text-slate-950 border-[#fb7a85]'
+                            : isLight ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-[#0b0f55] text-slate-300 border-[#1a2170]'
                         }`}
                       >
                         tool::{ct.name}
@@ -659,13 +659,13 @@ enum PermissionTier {
                   {(() => {
                     const activeCt = canonicalTools.find(c => c.name === selectedTool) || canonicalTools[0];
                     return (
-                      <div className="space-y-3 text-xs font-mono p-4 rounded-xl bg-black/40 border border-[#163246]">
-                        <div><span className="text-[#e5b74c] font-bold">Runtime Spec:</span> <span className="text-slate-200">{activeCt.desc}</span></div>
-                        <div><span className="text-zinc-400">Execution Call:</span> <code className="text-[#f7d77c]">{activeCt.sampleCmd}</code></div>
+                      <div className="space-y-3 text-xs font-mono p-4 rounded-xl bg-black/40 border border-[#1a2170]">
+                        <div><span className="text-[#e63946] font-bold">Runtime Spec:</span> <span className="text-slate-200">{activeCt.desc}</span></div>
+                        <div><span className="text-zinc-400">Execution Call:</span> <code className="text-[#fb7a85]">{activeCt.sampleCmd}</code></div>
                         <div className="pt-2 flex items-center justify-between">
                           <button
                             onClick={() => setSimulatedToolOutput(activeCt.output)}
-                            className="px-3 py-1 rounded bg-[#e5b74c] text-slate-950 font-bold uppercase tracking-wider text-[11px] hover:bg-[#f7d77c] transition-colors"
+                            className="px-3 py-1 rounded bg-[#e63946] text-slate-950 font-bold uppercase tracking-wider text-[11px] hover:bg-[#fb7a85] transition-colors"
                           >
                             Execute Sandboxed Probe
                           </button>
@@ -674,7 +674,7 @@ enum PermissionTier {
                           )}
                         </div>
                         {simulatedToolOutput && (
-                          <div className="p-2.5 rounded bg-[#060d16] border border-emerald-500/40 text-emerald-300 text-[11px]">
+                          <div className="p-2.5 rounded bg-[#070a40] border border-emerald-500/40 text-emerald-300 text-[11px]">
                             {simulatedToolOutput}
                           </div>
                         )}
@@ -686,23 +686,23 @@ enum PermissionTier {
 
               {activePillar === 'H' && (
                 <div className={`p-6 rounded-2xl border ${
-                  isLight ? 'bg-white border-slate-300' : 'bg-[#0f2231] border-[#163246]'
+                  isLight ? 'bg-white border-slate-300' : 'bg-[#10165e] border-[#1a2170]'
                 }`}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-mono font-bold text-[#e5b74c] uppercase">
+                    <span className="text-xs font-mono font-bold text-[#e63946] uppercase">
                       RULE 9.1 HITL EXPIRY SWEEP SIMULATOR
                     </span>
                     <span className="text-[10px] font-mono text-zinc-400">Anti-Deadlock Daemon</span>
                   </div>
                   <p className={`text-xs mb-4 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                    In a 144-agent enterprise, a pending human review could indefinitely lock dependent DAG subtasks. 
-                    Rule 9.1 executes a scheduled governance sweep: any PENDING approval exceeding its TTL transitions to <strong>EXPIRED</strong>, 
+                    In a 144-agent enterprise, a pending human review could indefinitely lock dependent DAG subtasks.
+                    Rule 9.1 executes a scheduled governance sweep: any PENDING approval exceeding its TTL transitions to <strong>EXPIRED</strong>,
                     notifying the human executive while releasing locked worker threads.
                   </p>
                   <div className="flex items-center gap-3">
                     <button
                       onClick={triggerExpirySweep}
-                      className="px-4 py-2 rounded-xl bg-[#e5b74c] text-slate-950 font-mono text-xs font-bold uppercase tracking-wider hover:bg-[#f7d77c] transition-colors flex items-center gap-2"
+                      className="px-4 py-2 rounded-xl bg-[#e63946] text-slate-950 font-mono text-xs font-bold uppercase tracking-wider hover:bg-[#fb7a85] transition-colors flex items-center gap-2"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       Trigger Rule 9.1 Expiry Sweep
@@ -725,12 +725,12 @@ enum PermissionTier {
             {/* Right Column: Air-Gapped Code Spec & Boundary Schema */}
             <div className="lg:col-span-5 space-y-6">
               <div className={`p-5 rounded-2xl border font-mono text-xs ${
-                isLight ? 'bg-slate-900 text-slate-100 border-slate-800' : 'bg-[#060d16] text-slate-200 border-[#163246] shadow-xl'
+                isLight ? 'bg-slate-900 text-slate-100 border-slate-800' : 'bg-[#070a40] text-slate-200 border-[#1a2170] shadow-xl'
               }`}>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#163246]">
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#1a2170]">
                   <div className="flex items-center gap-2">
-                    <FileCode className="w-4 h-4 text-[#e5b74c]" />
-                    <span className="text-[#e5b74c] font-bold uppercase tracking-wider">
+                    <FileCode className="w-4 h-4 text-[#e63946]" />
+                    <span className="text-[#e63946] font-bold uppercase tracking-wider">
                       {currentPillar.name.replace(/\s+/g, '_').toLowerCase()}.spec.yaml
                     </span>
                   </div>
@@ -743,40 +743,40 @@ enum PermissionTier {
 
               {/* Sovereign Boundary Matrix */}
               <div className={`p-6 rounded-2xl border ${
-                isLight ? 'bg-white border-slate-300' : 'bg-[#0f2231] border-[#163246]'
+                isLight ? 'bg-white border-slate-300' : 'bg-[#10165e] border-[#1a2170]'
               }`}>
-                <div className="flex items-center gap-2 mb-4 text-xs font-mono text-[#e5b74c] font-bold uppercase">
-                  <ShieldCheck className="w-4 h-4 text-[#e5b74c]" />
+                <div className="flex items-center gap-2 mb-4 text-xs font-mono text-[#e63946] font-bold uppercase">
+                  <ShieldCheck className="w-4 h-4 text-[#e63946]" />
                   <span>SOVEREIGN BOUNDARY MATRIX</span>
                 </div>
 
                 <div className="space-y-2.5 text-xs font-mono">
-                  <div className="p-3 rounded-xl border border-[#163246] bg-black/40 flex items-center justify-between">
+                  <div className="p-3 rounded-xl border border-[#1a2170] bg-black/40 flex items-center justify-between">
                     <span className="text-zinc-300">Apex Authority</span>
-                    <span className="text-[#f7d77c] font-bold">Human CEO // Jack Mlusu</span>
+                    <span className="text-[#fb7a85] font-bold">Human CEO // Jack Mlusu</span>
                   </div>
-                  <div className="p-3 rounded-xl border border-[#163246] bg-black/40 flex items-center justify-between">
+                  <div className="p-3 rounded-xl border border-[#1a2170] bg-black/40 flex items-center justify-between">
                     <span className="text-zinc-300">Total Workforce</span>
-                    <span className="text-[#f7d77c] font-bold">144 Specialist Agents</span>
+                    <span className="text-[#fb7a85] font-bold">144 Specialist Agents</span>
                   </div>
-                  <div className="p-3 rounded-xl border border-[#163246] bg-black/40 flex items-center justify-between">
+                  <div className="p-3 rounded-xl border border-[#1a2170] bg-black/40 flex items-center justify-between">
                     <span className="text-zinc-300">Datacenter Soil</span>
                     <span className="text-emerald-400 font-bold">Lilongwe Server Node</span>
                   </div>
-                  <div className="p-3 rounded-xl border border-[#163246] bg-black/40 flex items-center justify-between">
+                  <div className="p-3 rounded-xl border border-[#1a2170] bg-black/40 flex items-center justify-between">
                     <span className="text-zinc-300">Public Cloud Egress</span>
                     <span className="text-rose-400 font-bold">0.00% (Strict Air-Gap)</span>
                   </div>
-                  <div className="p-3 rounded-xl border border-[#163246] bg-black/40 flex items-center justify-between">
+                  <div className="p-3 rounded-xl border border-[#1a2170] bg-black/40 flex items-center justify-between">
                     <span className="text-zinc-300">Audit Ledger</span>
                     <span className="text-emerald-400 font-bold">SHA-256 Tamper-Evident</span>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#163246]">
+                <div className="mt-6 pt-4 border-t border-[#1a2170]">
                   <button
                     onClick={() => onOpenContactModal?.('H-A-O-M-T-G-V Sovereign Architecture Briefing')}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 font-mono text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 font-mono text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity"
                   >
                     Request Institutional Briefing
                   </button>
@@ -791,7 +791,7 @@ enum PermissionTier {
       {activeTab === 'roster' && (
         <div className="space-y-6 animate-in fade-in duration-300">
           {/* Department Navigator Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl border border-[#e5b74c]/20 bg-black/30">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl border border-[#e63946]/20 bg-black/30">
             <div>
               <h3 className={`text-lg font-bold font-display ${isLight ? 'text-slate-900' : 'text-white'}`}>
                 20 Governed Departments ({totalAgents} Active Specialist Agents)
@@ -810,14 +810,14 @@ enum PermissionTier {
                   placeholder="Search 144 agents..."
                   value={agentSearchQuery}
                   onChange={(e) => setAgentSearchQuery(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 rounded-lg text-xs font-mono bg-[#060d16] border border-[#163246] text-white placeholder-zinc-500 focus:outline-none focus:border-[#e5b74c]"
+                  className="pl-8 pr-3 py-1.5 rounded-lg text-xs font-mono bg-[#070a40] border border-[#1a2170] text-white placeholder-zinc-500 focus:outline-none focus:border-[#e63946]"
                 />
               </div>
 
               <select
                 value={selectedToolFilter}
                 onChange={(e) => setSelectedToolFilter(e.target.value)}
-                className="px-3 py-1.5 rounded-lg text-xs font-mono bg-[#060d16] border border-[#163246] text-white focus:outline-none focus:border-[#e5b74c]"
+                className="px-3 py-1.5 rounded-lg text-xs font-mono bg-[#070a40] border border-[#1a2170] text-white focus:outline-none focus:border-[#e63946]"
               >
                 <option value="all">All Tools</option>
                 <option value="read">Tool: read</option>
@@ -842,16 +842,16 @@ enum PermissionTier {
                   onClick={() => setSelectedDeptId(dept.id)}
                   className={`p-2.5 rounded-xl text-left border transition-all text-xs font-mono ${
                     isSelected
-                      ? 'bg-gradient-to-br from-[#163246] to-[#0f2231] border-[#e5b74c] text-white font-bold'
+                      ? 'bg-gradient-to-br from-[#1a2170] to-[#10165e] border-[#e63946] text-white font-bold'
                       : isLight
                         ? 'bg-white border-slate-300 text-slate-700 hover:border-amber-400'
-                        : 'bg-[#091624]/70 border-[#163246] text-slate-300 hover:border-[#e5b74c]/50'
+                        : 'bg-[#0b0f55]/70 border-[#1a2170] text-slate-300 hover:border-[#e63946]/50'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="truncate">{dept.name}</span>
                     <span className={`text-[10px] px-1.5 py-0.2 rounded ${
-                      isSelected ? 'bg-[#e5b74c] text-slate-950 font-bold' : 'bg-black/40 text-[#f7d77c]'
+                      isSelected ? 'bg-[#e63946] text-slate-950 font-bold' : 'bg-black/40 text-[#fb7a85]'
                     }`}>
                       {count}
                     </span>
@@ -866,11 +866,11 @@ enum PermissionTier {
 
           {/* Department Lead & Mission Banner */}
           <div className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-            isLight ? 'bg-amber-50 border-amber-300 text-slate-800' : 'bg-[#0f2231] border-[#e5b74c]/30 text-slate-200'
+            isLight ? 'bg-amber-50 border-amber-300 text-slate-800' : 'bg-[#10165e] border-[#e63946]/30 text-slate-200'
           }`}>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold text-[#e5b74c] uppercase">
+                <span className="text-xs font-mono font-bold text-[#e63946] uppercase">
                   DEPARTMENT: {currentDepartment.name.toUpperCase()}
                 </span>
                 <span className="text-xs text-zinc-400">•</span>
@@ -879,7 +879,7 @@ enum PermissionTier {
               <p className="text-xs mt-1 leading-snug">{currentDepartment.mission}</p>
             </div>
             <div className="shrink-0 text-xs font-mono">
-              <span className="text-zinc-400">Lead Executive:</span> <code className="text-[#f7d77c] font-bold">@{currentDepartment.executive}</code>
+              <span className="text-zinc-400">Lead Executive:</span> <code className="text-[#fb7a85] font-bold">@{currentDepartment.executive}</code>
             </div>
           </div>
 
@@ -889,18 +889,18 @@ enum PermissionTier {
               <div
                 key={agent.name}
                 className={`p-4 rounded-2xl border transition-all text-xs font-mono flex flex-col justify-between ${
-                  isLight 
-                    ? 'bg-white border-slate-300 shadow-sm' 
-                    : 'bg-[#091624] border-[#163246] hover:border-[#e5b74c]/50'
+                  isLight
+                    ? 'bg-white border-slate-300 shadow-sm'
+                    : 'bg-[#0b0f55] border-[#1a2170] hover:border-[#e63946]/50'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-[#f7d77c] truncate text-sm">
+                    <span className="font-bold text-[#fb7a85] truncate text-sm">
                       @{agent.name}
                     </span>
                     <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
-                      agent.type === 'Executive' 
+                      agent.type === 'Executive'
                         ? 'bg-purple-950 text-purple-300 border border-purple-500/40'
                         : 'bg-emerald-950 text-emerald-300 border border-emerald-500/40'
                     }`}>
@@ -917,7 +917,7 @@ enum PermissionTier {
                   </p>
                 </div>
 
-                <div className="space-y-2 pt-2 border-t border-[#163246]/60">
+                <div className="space-y-2 pt-2 border-t border-[#1a2170]/60">
                   <div className="flex items-center justify-between text-[10px] text-zinc-400">
                     <span>Reports to: <code className="text-amber-400">@{agent.reportsTo}</code></span>
                     <span>Perm: <span className="text-emerald-400 font-bold">{agent.permission}</span></span>
@@ -926,7 +926,7 @@ enum PermissionTier {
                   <div className="flex items-center justify-between pt-1">
                     <div className="flex flex-wrap gap-1">
                       {agent.tools.slice(0, 3).map(t => (
-                        <span key={t} className="text-[9px] px-1.5 py-0.5 rounded bg-black/40 border border-[#163246] text-zinc-300">
+                        <span key={t} className="text-[9px] px-1.5 py-0.5 rounded bg-black/40 border border-[#1a2170] text-zinc-300">
                           {t}
                         </span>
                       ))}
@@ -937,7 +937,7 @@ enum PermissionTier {
 
                     <button
                       onClick={() => setInspectingAgent(agent)}
-                      className="text-[11px] font-bold text-[#e5b74c] hover:text-[#f7d77c] flex items-center gap-1 transition-colors"
+                      className="text-[11px] font-bold text-[#e63946] hover:text-[#fb7a85] flex items-center gap-1 transition-colors"
                     >
                       <Eye className="w-3 h-3" /> Inspect Card
                     </button>
@@ -948,7 +948,7 @@ enum PermissionTier {
           </div>
 
           {filteredAgents.length === 0 && (
-            <div className="p-8 text-center rounded-2xl border border-dashed border-[#163246] text-zinc-400 text-xs font-mono">
+            <div className="p-8 text-center rounded-2xl border border-dashed border-[#1a2170] text-zinc-400 text-xs font-mono">
               No agents found matching your query in this department.
             </div>
           )}
@@ -959,17 +959,17 @@ enum PermissionTier {
       {activeTab === 'topology' && (
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className={`p-6 sm:p-8 rounded-3xl border ${
-            isLight ? 'bg-white border-slate-300' : 'bg-[#0f2231] border-[#163246]'
+            isLight ? 'bg-white border-slate-300' : 'bg-[#10165e] border-[#1a2170]'
           }`}>
             <div className="max-w-3xl mb-6">
-              <span className="text-xs font-mono font-bold text-[#e5b74c] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-mono font-bold text-[#e63946] uppercase tracking-wider block mb-1">
                 HARDWARE-ENFORCED SOVEREIGN ISOLATION
               </span>
               <h3 className={`text-xl sm:text-2xl font-bold font-display ${isLight ? 'text-slate-900' : 'text-white'}`}>
                 The Sovereign Air-Gap Architecture
               </h3>
               <p className={`text-xs sm:text-sm mt-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                All 144 specialist agents execute exclusively within a localized, sovereign compute enclave hosted on 
+                All 144 specialist agents execute exclusively within a localized, sovereign compute enclave hosted on
                 Lilongwe soil. Zero inference tokens, organizational schematics, or banking payloads leave Malawi borders.
               </p>
             </div>
@@ -977,46 +977,46 @@ enum PermissionTier {
             {/* Visual Topology Diagram */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
               {/* Box 1: Ingestion & Apex Gate */}
-              <div className="p-5 rounded-2xl bg-black/40 border border-[#163246] space-y-3">
-                <div className="flex items-center gap-2 text-[#e5b74c] font-bold uppercase text-xs">
+              <div className="p-5 rounded-2xl bg-black/40 border border-[#1a2170] space-y-3">
+                <div className="flex items-center gap-2 text-[#e63946] font-bold uppercase text-xs">
                   <Key className="w-4 h-4" />
                   <span>Layer 1: Human Apex Gate</span>
                 </div>
                 <p className="text-[11px] text-zinc-300">
-                  Constitutional commands originating from Human CEO (Jack Mlusu) and Board. 
+                  Constitutional commands originating from Human CEO (Jack Mlusu) and Board.
                   Encrypted via ed25519 asymmetric key pairs before ingestion into task queue.
                 </p>
-                <div className="p-2.5 rounded-lg bg-[#060d16] border border-[#163246] text-[10px] text-[#f7d77c]">
+                <div className="p-2.5 rounded-lg bg-[#070a40] border border-[#1a2170] text-[10px] text-[#fb7a85]">
                   HITL Gate: Active (Rule 9.1 Sweep Enabled)
                 </div>
               </div>
 
               {/* Box 2: IPC Message Bus & 144 Agents */}
-              <div className="p-5 rounded-2xl bg-[#163246]/40 border border-[#e5b74c]/40 space-y-3 relative overflow-hidden">
-                <div className="flex items-center gap-2 text-[#f7d77c] font-bold uppercase text-xs">
+              <div className="p-5 rounded-2xl bg-[#1a2170]/40 border border-[#e63946]/40 space-y-3 relative overflow-hidden">
+                <div className="flex items-center gap-2 text-[#fb7a85] font-bold uppercase text-xs">
                   <Cpu className="w-4 h-4" />
                   <span>Layer 2: 144 Swarm Runtime</span>
                 </div>
                 <p className="text-[11px] text-slate-200">
-                  Directed Acyclic Graph (DAG) state machine running at .opencode/inbox.json. 
+                  Directed Acyclic Graph (DAG) state machine running at .opencode/inbox.json.
                   Sub-second inter-process communication (&lt;180ms) without public internet calls.
                 </p>
-                <div className="p-2.5 rounded-lg bg-[#060d16] border border-[#163246] text-[10px] text-emerald-400">
+                <div className="p-2.5 rounded-lg bg-[#070a40] border border-[#1a2170] text-[10px] text-emerald-400">
                   Air-Gap Barrier: 100% BLOCKED EGRESS
                 </div>
               </div>
 
               {/* Box 3: Sovereign Memory & Ledger */}
-              <div className="p-5 rounded-2xl bg-black/40 border border-[#163246] space-y-3">
+              <div className="p-5 rounded-2xl bg-black/40 border border-[#1a2170] space-y-3">
                 <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase text-xs">
                   <Database className="w-4 h-4" />
                   <span>Layer 3: AST Memory & Ledger</span>
                 </div>
                 <p className="text-[11px] text-zinc-300">
-                  graphify AST knowledge graph and SHA-256 tamper-evident hash ledger. 
+                  graphify AST knowledge graph and SHA-256 tamper-evident hash ledger.
                   All states recorded immutably on encrypted disk arrays on Malawi soil.
                 </p>
-                <div className="p-2.5 rounded-lg bg-[#060d16] border border-[#163246] text-[10px] text-zinc-400">
+                <div className="p-2.5 rounded-lg bg-[#070a40] border border-[#1a2170] text-[10px] text-zinc-400">
                   Ledger: SHA-256 Tamper-Proof Chain
                 </div>
               </div>
@@ -1032,17 +1032,17 @@ enum PermissionTier {
             {/* Left Controls */}
             <div className="lg:col-span-6 space-y-6">
               <div className={`p-6 sm:p-8 rounded-3xl border ${
-                isLight ? 'bg-white border-slate-300' : 'bg-[#0f2231] border-[#163246]'
+                isLight ? 'bg-white border-slate-300' : 'bg-[#10165e] border-[#1a2170]'
               }`}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-mono font-bold text-[#e5b74c] uppercase">
+                  <span className="text-xs font-mono font-bold text-[#e63946] uppercase">
                     5-TIER APPROVAL GATE SIMULATOR
                   </span>
                   <span className="text-[10px] font-mono text-zinc-400">Interactive Probe</span>
                 </div>
 
                 <p className={`text-xs mb-4 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                  Select a real-world enterprise scenario to observe how the H-A-O-M-T-G-V governance framework evaluates 
+                  Select a real-world enterprise scenario to observe how the H-A-O-M-T-G-V governance framework evaluates
                   risk tiers, checks cryptographic signatures, and prevents unauthorized execution.
                 </p>
 
@@ -1059,13 +1059,13 @@ enum PermissionTier {
                       }}
                       className={`w-full text-left p-3 rounded-xl border text-xs font-mono transition-all ${
                         activeSimTaskIndex === idx
-                          ? 'bg-[#163246] border-[#e5b74c] text-white font-bold'
-                          : isLight ? 'bg-slate-50 border-slate-300 text-slate-700' : 'bg-[#091624] border-[#163246] text-slate-300'
+                          ? 'bg-[#1a2170] border-[#e63946] text-white font-bold'
+                          : isLight ? 'bg-slate-50 border-slate-300 text-slate-700' : 'bg-[#0b0f55] border-[#1a2170] text-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span className="truncate">{task.title}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-black/40 text-[#f7d77c] font-bold">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-black/40 text-[#fb7a85] font-bold">
                           Tier {task.tier}
                         </span>
                       </div>
@@ -1077,18 +1077,18 @@ enum PermissionTier {
                 </div>
 
                 {/* Simulation Control Buttons */}
-                <div className="flex items-center gap-3 pt-4 border-t border-[#163246]">
+                <div className="flex items-center gap-3 pt-4 border-t border-[#1a2170]">
                   <button
                     onClick={runTaskSimulation}
                     disabled={simulatedTaskState === 'routing' || simulatedTaskState === 'evaluating'}
-                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 font-mono text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity disabled:opacity-50"
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 font-mono text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity disabled:opacity-50"
                   >
                     {simulatedTaskState === 'approved' ? 'Re-Run Verification Gate' : 'Simulate 5-Tier Gate Check'}
                   </button>
 
                   <button
                     onClick={triggerExpirySweep}
-                    className="px-3 py-2.5 rounded-xl bg-[#060d16] border border-rose-500/40 text-rose-300 font-mono text-xs font-bold uppercase hover:bg-rose-950/40 transition-colors"
+                    className="px-3 py-2.5 rounded-xl bg-[#070a40] border border-rose-500/40 text-rose-300 font-mono text-xs font-bold uppercase hover:bg-rose-950/40 transition-colors"
                   >
                     Test Rule 9.1 Sweep
                   </button>
@@ -1099,12 +1099,12 @@ enum PermissionTier {
             {/* Right Gate Output Display */}
             <div className="lg:col-span-6 space-y-4">
               <div className={`p-6 rounded-3xl border font-mono text-xs ${
-                isLight ? 'bg-white border-slate-300' : 'bg-[#060d16] border-[#163246]'
+                isLight ? 'bg-white border-slate-300' : 'bg-[#070a40] border-[#1a2170]'
               }`}>
-                <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#163246]">
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1a2170]">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#e5b74c]" />
-                    <span className="text-[#e5b74c] font-bold uppercase">Gate Status Telemetry</span>
+                    <ShieldCheck className="w-4 h-4 text-[#e63946]" />
+                    <span className="text-[#e63946] font-bold uppercase">Gate Status Telemetry</span>
                   </div>
                   <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
                     simulatedTaskState === 'approved' ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' :
@@ -1123,7 +1123,7 @@ enum PermissionTier {
                   </div>
                   <div>
                     <span className="text-zinc-500">REQUIRED TIER:</span>{' '}
-                    <span className="text-[#f7d77c] font-bold">{activeSimTask.tierLabel}</span>
+                    <span className="text-[#fb7a85] font-bold">{activeSimTask.tierLabel}</span>
                   </div>
                   <div>
                     <span className="text-zinc-500">DETAILS:</span>{' '}
@@ -1135,7 +1135,7 @@ enum PermissionTier {
                   </div>
 
                   {/* Verification Pipeline Steps */}
-                  <div className="pt-4 border-t border-[#163246] space-y-2">
+                  <div className="pt-4 border-t border-[#1a2170] space-y-2">
                     <div className="flex items-center justify-between text-[11px]">
                       <span>1. Schema & Pydantic Validation</span>
                       <span className={simulatedTaskState !== 'idle' ? 'text-emerald-400' : 'text-zinc-600'}>
@@ -1203,7 +1203,7 @@ enum PermissionTier {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               className={`w-full max-w-2xl rounded-3xl border p-6 sm:p-8 font-mono text-xs relative max-h-[90vh] overflow-y-auto ${
-                isLight ? 'bg-white text-slate-800 border-slate-300' : 'bg-[#091624] text-slate-200 border-[#e5b74c]/40 shadow-2xl'
+                isLight ? 'bg-white text-slate-800 border-slate-300' : 'bg-[#0b0f55] text-slate-200 border-[#e63946]/40 shadow-2xl'
               }`}
             >
               <button
@@ -1214,14 +1214,14 @@ enum PermissionTier {
               </button>
 
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#e5b74c] text-slate-950">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#e63946] text-slate-950">
                   OPENCODE V2 AGENT SPEC
                 </span>
                 <span className="text-zinc-500">•</span>
                 <span className="text-zinc-400">{inspectingAgent.department}</span>
               </div>
 
-              <h3 className="text-lg font-bold text-[#f7d77c] mb-1">
+              <h3 className="text-lg font-bold text-[#fb7a85] mb-1">
                 @{inspectingAgent.name}
               </h3>
               <p className="text-sm font-semibold mb-4 text-white">
@@ -1229,9 +1229,9 @@ enum PermissionTier {
               </p>
 
               <div className="space-y-4">
-                <div className="p-3 rounded-xl bg-black/40 border border-[#163246] space-y-1.5">
+                <div className="p-3 rounded-xl bg-black/40 border border-[#1a2170] space-y-1.5">
                   <div><span className="text-zinc-400">Mode:</span> <span className="text-emerald-400">subagent</span></div>
-                  <div><span className="text-zinc-400">Permission Tier:</span> <span className="text-[#f7d77c] font-bold">{inspectingAgent.permission}</span></div>
+                  <div><span className="text-zinc-400">Permission Tier:</span> <span className="text-[#fb7a85] font-bold">{inspectingAgent.permission}</span></div>
                   <div><span className="text-zinc-400">Reports To:</span> <code className="text-amber-300">@{inspectingAgent.reportsTo}</code></div>
                   <div>
                     <span className="text-zinc-400">Canonical Tools:</span>{' '}
@@ -1240,7 +1240,7 @@ enum PermissionTier {
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-[#e5b74c] mb-2 uppercase text-[11px]">Primary Responsibilities:</h4>
+                  <h4 className="font-bold text-[#e63946] mb-2 uppercase text-[11px]">Primary Responsibilities:</h4>
                   <ul className="list-disc list-inside space-y-1 text-zinc-300">
                     {inspectingAgent.responsibilities.length > 0 ? (
                       inspectingAgent.responsibilities.map((r, i) => <li key={i}>{r}</li>)
@@ -1252,18 +1252,18 @@ enum PermissionTier {
 
                 {inspectingAgent.guidelines && (
                   <div>
-                    <h4 className="font-bold text-[#e5b74c] mb-2 uppercase text-[11px]">Operating Guidelines:</h4>
-                    <p className="p-3 rounded-xl bg-black/30 border border-[#163246] text-zinc-300 leading-relaxed">
+                    <h4 className="font-bold text-[#e63946] mb-2 uppercase text-[11px]">Operating Guidelines:</h4>
+                    <p className="p-3 rounded-xl bg-black/30 border border-[#1a2170] text-zinc-300 leading-relaxed">
                       {inspectingAgent.guidelines}
                     </p>
                   </div>
                 )}
               </div>
 
-              <div className="mt-6 pt-4 border-t border-[#163246] flex justify-end">
+              <div className="mt-6 pt-4 border-t border-[#1a2170] flex justify-end">
                 <button
                   onClick={() => setInspectingAgent(null)}
-                  className="px-4 py-2 rounded-xl bg-[#e5b74c] text-slate-950 font-bold uppercase tracking-wider text-xs"
+                  className="px-4 py-2 rounded-xl bg-[#e63946] text-slate-950 font-bold uppercase tracking-wider text-xs"
                 >
                   Close Specification
                 </button>
@@ -1275,13 +1275,13 @@ enum PermissionTier {
 
       {/* Summary Footer */}
       <div className={`mt-8 pt-5 border-t flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono ${
-        isLight ? 'border-slate-300 text-slate-600' : 'border-[#163246] text-zinc-400'
+        isLight ? 'border-slate-300 text-slate-600' : 'border-[#1a2170] text-zinc-400'
       }`}>
         <div className="flex items-center gap-2">
           <StatusLedPip status="emerald" isLight={isLight} />
           <span>PROVEN IN-HOUSE: Operating daily across LightSpeed Holdings Limited, Malawi.</span>
         </div>
-        <div className="text-[#e5b74c] font-bold">
+        <div className="text-[#e63946] font-bold">
           Human Purpose → Agents → Orchestration → Memory → Tools → Governance → Value
         </div>
       </div>

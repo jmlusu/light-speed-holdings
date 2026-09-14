@@ -43,7 +43,7 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
       timestamp: '00:00 - 00:15',
       caption: 'Why African institutions must own their foundational models, data sovereignty, and compute infrastructure rather than rent foreign chat wrappers.',
       badge: 'MALAWIAN SOVEREIGNTY',
-      accent: '#f59e0b'
+      accent: '#e63946'
     },
     {
       id: 1,
@@ -52,7 +52,7 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
       timestamp: '00:15 - 00:30',
       caption: 'Ancient African lighthouse engineering reimagined for modern algorithmic governance, steering boards safely through AI adoption.',
       badge: 'PHAROS BEACON',
-      accent: '#d97706'
+      accent: '#c1121f'
     },
     {
       id: 2,
@@ -130,8 +130,8 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
       const sweepAngle = time % (Math.PI * 2);
 
       const grad = ctx.createRadialGradient(originX, originY, 10, originX, originY, width * 0.8);
-      grad.addColorStop(0, isLight ? 'rgba(245, 158, 11, 0.18)' : 'rgba(251, 191, 36, 0.25)');
-      grad.addColorStop(0.5, isLight ? 'rgba(245, 158, 11, 0.04)' : 'rgba(245, 158, 11, 0.08)');
+      grad.addColorStop(0, isLight ? 'rgba(230, 57, 70, 0.18)' : 'rgba(245, 131, 143, 0.25)');
+      grad.addColorStop(0.5, isLight ? 'rgba(230, 57, 70, 0.04)' : 'rgba(230, 57, 70, 0.08)');
       grad.addColorStop(1, 'transparent');
 
       ctx.save();
@@ -168,7 +168,7 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
             const lineAlpha = (1 - dist / 110) * 0.15;
             ctx.strokeStyle = isLight
               ? `rgba(217, 119, 6, ${lineAlpha})`
-              : `rgba(245, 158, 11, ${lineAlpha})`;
+              : `rgba(230, 57, 70, ${lineAlpha})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
@@ -180,7 +180,7 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
         ctx.arc(p1.x, p1.y, p1.size, 0, Math.PI * 2);
         ctx.fillStyle = isLight
           ? `rgba(217, 119, 6, ${currentAlpha})`
-          : `rgba(251, 191, 36, ${currentAlpha})`;
+          : `rgba(245, 131, 143, ${currentAlpha})`;
         ctx.fill();
       }
 
@@ -280,17 +280,17 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
             className="absolute inset-0 transition-opacity duration-1000"
             style={{
               background: activeMode === 'datacenter'
-                ? 'radial-gradient(circle at 50% 40%, #0f172a 0%, #020617 80%)'
+                ? 'radial-gradient(circle at 50% 40%, #070a40 0%, #0b0f55 80%)'
                 : activeMode === 'telemetry'
-                  ? 'radial-gradient(circle at 60% 30%, #172554 0%, #020617 85%)'
-                  : 'radial-gradient(circle at 50% 20%, #291804 0%, #050811 85%)'
+                  ? 'radial-gradient(circle at 60% 30%, #172554 0%, #0b0f55 85%)'
+                  : 'radial-gradient(circle at 50% 20%, #24050a 0%, #050811 85%)'
             }}
           />
           {/* Subtle Cybernetic Grid Mesh */}
           <div
             className="absolute inset-0 opacity-20 pointer-events-none"
             style={{
-              backgroundImage: 'linear-gradient(rgba(245, 158, 11, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 158, 11, 0.2) 1px, transparent 1px)',
+              backgroundImage: 'linear-gradient(rgba(230, 57, 70, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(230, 57, 70, 0.2) 1px, transparent 1px)',
               backgroundSize: '40px 40px'
             }}
           />

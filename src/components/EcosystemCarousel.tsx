@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Pause, 
-  Play, 
-  Building2, 
-  Landmark, 
-  GraduationCap, 
-  Globe, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Pause,
+  Play,
+  Building2,
+  Landmark,
+  GraduationCap,
+  Globe,
   ShieldCheck,
   Sparkles,
   ArrowRight,
@@ -128,8 +128,8 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
   const [itemsPerView, setItemsPerView] = useState<number>(3);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const filteredItems = activeCategory === 'all' 
-    ? ecosystemData 
+  const filteredItems = activeCategory === 'all'
+    ? ecosystemData
     : ecosystemData.filter(item => item.category === activeCategory);
 
   // Responsive items per view
@@ -173,7 +173,7 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
   };
 
   return (
-    <section 
+    <section
       id="ecosystem-dialogue"
       aria-label="Institutional Ecosystem Dialogue and Standards Alignment"
       className={`py-12 border-y relative z-10 transition-colors ${
@@ -181,12 +181,12 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        
+
         {/* Carousel Header & Controls */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest text-orange-500 font-bold">
-              <span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(230,57,70,0.8)] animate-pulse" />
               <span className="uppercase">INSTITUTIONAL ECOSYSTEM DIALOGUE & STANDARDS ALIGNMENT</span>
             </div>
             <h3 className={`text-xl sm:text-2xl font-bold font-display ${isLight ? 'text-slate-900' : 'text-white'}`}>
@@ -199,7 +199,7 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
 
           {/* Right Toolbar: Category Filter & Play/Pause/Nav */}
           <div className="flex flex-wrap items-center gap-2.5">
-            
+
             {/* Category Filter Pills */}
             <div className={`flex items-center p-1 rounded-xl border ${
               isLight ? 'bg-white border-slate-300 shadow-xs' : 'bg-zinc-900/90 border-white/10'
@@ -217,8 +217,8 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer ${
                     activeCategory === cat.key
                       ? 'bg-orange-500 text-white shadow-xs'
-                      : isLight 
-                        ? 'text-slate-600 hover:text-slate-900' 
+                      : isLight
+                        ? 'text-slate-600 hover:text-slate-900'
                         : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -269,7 +269,7 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
         </div>
 
         {/* Carousel Slider Window */}
-        <div 
+        <div
           ref={containerRef}
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
@@ -290,8 +290,8 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
               >
                 <div
                   className={`h-full p-5 rounded-2xl border flex flex-col justify-between transition-all duration-300 relative overflow-hidden group hover:-translate-y-0.5 ${
-                    isLight 
-                      ? 'bg-white border-slate-300 hover:border-orange-500/60 shadow-md text-slate-800' 
+                    isLight
+                      ? 'bg-white border-slate-300 hover:border-orange-500/60 shadow-md text-slate-800'
                       : 'bg-zinc-950/80 border-white/10 hover:border-orange-500/50 shadow-xl text-zinc-200'
                   }`}
                 >
@@ -370,9 +370,9 @@ export const EcosystemCarousel: React.FC<EcosystemCarouselProps> = ({
                 aria-label={`Go to slide ${dotIdx + 1}`}
                 className={`h-1.5 rounded-full transition-all cursor-pointer ${
                   currentIndex === dotIdx
-                    ? 'w-6 bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.8)]'
-                    : isLight 
-                      ? 'w-1.5 bg-slate-300 hover:bg-slate-400' 
+                    ? 'w-6 bg-orange-500 shadow-[0_0_6px_rgba(230,57,70,0.8)]'
+                    : isLight
+                      ? 'w-1.5 bg-slate-300 hover:bg-slate-400'
                       : 'w-1.5 bg-white/20 hover:bg-white/40'
                 }`}
               />

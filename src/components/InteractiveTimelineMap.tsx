@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { 
-  Globe2, 
-  MapPin, 
-  Clock, 
-  CheckCircle2, 
-  ArrowRight, 
-  Sparkles, 
-  Radio, 
-  Server, 
-  ShieldCheck, 
+import {
+  Globe2,
+  MapPin,
+  Clock,
+  CheckCircle2,
+  ArrowRight,
+  Sparkles,
+  Radio,
+  Server,
+  ShieldCheck,
   Zap,
   Activity,
   Compass
 } from 'lucide-react';
-import { 
-  StatusLedPip 
+import {
+  StatusLedPip
 } from './TactileHardwareElements';
 
 interface InteractiveTimelineMapProps {
@@ -242,7 +242,7 @@ export const InteractiveTimelineMap: React.FC<InteractiveTimelineMapProps> = ({
       {activeView === 'map' && (
         <div className="space-y-6 relative z-10 mb-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
+
             {/* Interactive Schematic SADC Map Viewport */}
             <div className={`lg:col-span-7 p-6 rounded-2xl relative aspect-[4/3] flex flex-col justify-between overflow-hidden ${
               isLight ? 'neu-well-light' : 'neu-well-dark'
@@ -253,12 +253,12 @@ export const InteractiveTimelineMap: React.FC<InteractiveTimelineMapProps> = ({
               {/* SADC Region Schematic SVG Canvas */}
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
                 {/* Connecting sovereign trunk lines */}
-                <line x1="58" y1="35" x2="60" y2="44" stroke="#f59e0b" strokeWidth="0.8" strokeDasharray="1,1" />
-                <line x1="58" y1="35" x2="42" y2="38" stroke="#f59e0b" strokeWidth="0.8" strokeDasharray="1,1" />
-                <line x1="58" y1="35" x2="50" y2="52" stroke="#f59e0b" strokeWidth="0.8" strokeDasharray="1,1" />
-                <line x1="50" y1="52" x2="62" y2="72" stroke="#f59e0b" strokeWidth="0.6" strokeDasharray="1,1" />
-                <line x1="50" y1="52" x2="30" y2="68" stroke="#f59e0b" strokeWidth="0.6" strokeDasharray="1,1" />
-                <line x1="30" y1="68" x2="45" y2="76" stroke="#f59e0b" strokeWidth="0.6" strokeDasharray="1,1" />
+                <line x1="58" y1="35" x2="60" y2="44" stroke="#e63946" strokeWidth="0.8" strokeDasharray="1,1" />
+                <line x1="58" y1="35" x2="42" y2="38" stroke="#e63946" strokeWidth="0.8" strokeDasharray="1,1" />
+                <line x1="58" y1="35" x2="50" y2="52" stroke="#e63946" strokeWidth="0.8" strokeDasharray="1,1" />
+                <line x1="50" y1="52" x2="62" y2="72" stroke="#e63946" strokeWidth="0.6" strokeDasharray="1,1" />
+                <line x1="50" y1="52" x2="30" y2="68" stroke="#e63946" strokeWidth="0.6" strokeDasharray="1,1" />
+                <line x1="30" y1="68" x2="45" y2="76" stroke="#e63946" strokeWidth="0.6" strokeDasharray="1,1" />
 
                 {/* Node Markers */}
                 {Object.entries(regionalNodes).map(([key, node]) => {
@@ -266,29 +266,29 @@ export const InteractiveTimelineMap: React.FC<InteractiveTimelineMapProps> = ({
                   return (
                     <g key={key} onClick={() => setSelectedNode(key)} className="cursor-pointer">
                       {isSelected && (
-                        <circle 
-                          cx={node.coords.x} 
-                          cy={node.coords.y} 
-                          r="5" 
-                          fill="none" 
-                          stroke="#f59e0b" 
-                          strokeWidth="0.5" 
+                        <circle
+                          cx={node.coords.x}
+                          cy={node.coords.y}
+                          r="5"
+                          fill="none"
+                          stroke="#e63946"
+                          strokeWidth="0.5"
                           className="animate-ping"
                         />
                       )}
-                      <circle 
-                        cx={node.coords.x} 
-                        cy={node.coords.y} 
-                        r={isSelected ? "3" : "2"} 
-                        fill={isSelected ? "#f59e0b" : (isLight ? "#64748b" : "#94a3b8")}
+                      <circle
+                        cx={node.coords.x}
+                        cy={node.coords.y}
+                        r={isSelected ? "3" : "2"}
+                        fill={isSelected ? "#e63946" : (isLight ? "#64748b" : "#94a3b8")}
                       />
-                      <text 
-                        x={node.coords.x + 3.5} 
-                        y={node.coords.y + 1} 
-                        fontSize="3.2" 
+                      <text
+                        x={node.coords.x + 3.5}
+                        y={node.coords.y + 1}
+                        fontSize="3.2"
                         fontFamily="monospace"
                         fontWeight={isSelected ? "bold" : "normal"}
-                        fill={isSelected ? "#f59e0b" : (isLight ? "#334155" : "#cbd5e1")}
+                        fill={isSelected ? "#e63946" : (isLight ? "#334155" : "#cbd5e1")}
                       >
                         {node.city.split(' ')[0]}
                       </text>

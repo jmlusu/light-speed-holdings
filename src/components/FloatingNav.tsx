@@ -59,7 +59,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                     isLight ? 'text-slate-900' : 'text-zinc-100'
                   }`}>
                     LightSpeed
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_6px_rgba(249,115,22,0.9)] animate-pulse" />
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400 shadow-[0_0_6px_rgba(230,57,70,0.9)] animate-pulse" />
                   </span>
                   <span className={`text-[9px] font-mono tracking-wider hidden sm:inline font-bold ${
                     isLight ? 'text-slate-600' : 'text-zinc-400'

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Globe2, 
-  ShieldCheck, 
-  Cpu, 
-  Layers, 
-  Lock, 
-  Activity, 
-  CheckCircle2, 
-  Sparkles, 
-  Landmark, 
-  Building2, 
-  HeartHandshake, 
+import {
+  Globe2,
+  ShieldCheck,
+  Cpu,
+  Layers,
+  Lock,
+  Activity,
+  CheckCircle2,
+  Sparkles,
+  Landmark,
+  Building2,
+  HeartHandshake,
   Store,
   Terminal,
   ArrowUpRight,
@@ -262,13 +262,13 @@ export const SovereignConstellation: React.FC<SovereignConstellationProps> = ({
 
       {/* Main Interactive Stage */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6 items-center">
-        
+
         {/* Left / Center: Interactive Constellation Visual Stage (7 Cols) */}
         <div className="lg:col-span-7 relative min-h-[420px] sm:min-h-[480px] rounded-2xl border overflow-hidden p-4 flex items-center justify-center bg-black/40 border-white/10 backdrop-blur-md">
-          
+
           {/* Subtle Grid Backdrop */}
-          <div className="absolute inset-0 bg-[radial-gradient(#f97316_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
-          
+          <div className="absolute inset-0 bg-[radial-gradient(#e63946_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
+
           {/* Central Human-In-The-Loop (HITL) Governed Safety Ring */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
             {/* Outer Breathing Ring */}
@@ -285,12 +285,12 @@ export const SovereignConstellation: React.FC<SovereignConstellationProps> = ({
           <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#f97316" stopOpacity="0.6" />
+                <stop offset="0%" stopColor="#e63946" stopOpacity="0.6" />
                 <stop offset="100%" stopColor="#10b981" stopOpacity="0.4" />
               </linearGradient>
               <linearGradient id="pulseGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#f97316" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#e63946" stopOpacity="0.8" />
               </linearGradient>
             </defs>
 
@@ -349,8 +349,8 @@ export const SovereignConstellation: React.FC<SovereignConstellationProps> = ({
               >
                 {/* Visual Node Core Orb */}
                 <div className={`relative rounded-full flex items-center justify-center transition-all duration-300 ${
-                  isCore 
-                    ? 'w-11 h-11 bg-gradient-to-tr from-orange-500 to-amber-400 text-white shadow-[0_0_20px_rgba(249,115,22,0.8)] border-2 border-white ring-4 ring-orange-500/30' 
+                  isCore
+                    ? 'w-11 h-11 bg-gradient-to-tr from-orange-500 to-amber-400 text-white shadow-[0_0_20px_rgba(230,57,70,0.8)] border-2 border-white ring-4 ring-orange-500/30'
                     : isSelected
                       ? 'w-9 h-9 bg-emerald-500 text-white shadow-[0_0_16px_rgba(16,185,129,0.8)] border-2 border-white'
                       : 'w-7 h-7 bg-zinc-900/90 text-zinc-300 border border-white/30 hover:border-orange-400 hover:text-white hover:bg-zinc-800'
@@ -430,12 +430,12 @@ export const SovereignConstellation: React.FC<SovereignConstellationProps> = ({
                   </span>
                 </div>
 
-                <StatusBadge 
+                <StatusBadge
                   tier={
-                    selectedNode.status === 'sovereign-core' 
-                      ? 'proven-in-house' 
-                      : selectedNode.status === 'active-governed' 
-                        ? 'fieldable-2026' 
+                    selectedNode.status === 'sovereign-core'
+                      ? 'proven-in-house'
+                      : selectedNode.status === 'active-governed'
+                        ? 'fieldable-2026'
                         : 'pilot'
                   }
                   size="sm"

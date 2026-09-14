@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  Cell 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell
 } from 'recharts';
-import { 
-  Workflow, 
-  CheckCircle2, 
-  ArrowRight, 
-  Zap, 
-  ShieldCheck, 
-  Layers, 
-  Cpu, 
-  Clock, 
+import {
+  Workflow,
+  CheckCircle2,
+  ArrowRight,
+  Zap,
+  ShieldCheck,
+  Layers,
+  Cpu,
+  Clock,
   Sparkles,
   TrendingDown,
   TrendingUp,
   Activity
 } from 'lucide-react';
-import { 
-  StatusLedPip 
+import {
+  StatusLedPip
 } from './TactileHardwareElements';
 
 interface HelpfulInfographicsProps {
@@ -91,8 +91,8 @@ export const HelpfulInfographics: React.FC<HelpfulInfographicsProps> = ({
 
   const latencyData = [
     { name: 'Offshore US API', latency: 840, settlement: 4320, color: '#ef4444' },
-    { name: 'European Cloud', latency: 420, settlement: 2880, color: '#f97316' },
-    { name: 'Generic SADC Proxy', latency: 180, settlement: 1440, color: '#eab308' },
+    { name: 'European Cloud', latency: 420, settlement: 2880, color: '#e63946' },
+    { name: 'Generic SADC Proxy', latency: 180, settlement: 1440, color: '#e63946' },
     { name: 'LightSpeed Lilongwe Edge', latency: 16, settlement: 0.5, color: '#10b981' }
   ];
 
@@ -321,13 +321,13 @@ export const HelpfulInfographics: React.FC<HelpfulInfographicsProps> = ({
                   <BarChart data={latencyData} layout="vertical" margin={{ left: 20, right: 30, top: 10, bottom: 10 }}>
                     <XAxis type="number" unit="ms" stroke={isLight ? '#64748b' : '#94a3b8'} />
                     <YAxis dataKey="name" type="category" width={140} stroke={isLight ? '#64748b' : '#94a3b8'} tick={{ fontSize: 11 }} />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(val: any) => [`${val} ms`, 'Latency']}
                       contentStyle={{
                         backgroundColor: isLight ? '#ffffff' : '#0f1422',
                         borderColor: isLight ? '#cbd5e1' : '#334155',
                         borderRadius: '0.75rem',
-                        color: isLight ? '#0f172a' : '#f8fafc',
+                        color: isLight ? '#070a40' : '#f8fafc',
                         fontFamily: 'monospace'
                       }}
                     />
@@ -372,7 +372,7 @@ export const HelpfulInfographics: React.FC<HelpfulInfographicsProps> = ({
         <div className="space-y-4 relative z-10 mb-10">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {hitlTiers.map((t) => (
-              <div 
+              <div
                 key={t.tier}
                 className={`p-5 rounded-2xl transition-all flex flex-col justify-between ${
                   isLight ? 'neu-convex-light' : 'neu-convex-dark'

@@ -373,7 +373,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
 
               <div className="space-y-4">
                 {/* Pharos Beacon Optical Station Telemetry Display */}
-                <div className="relative rounded-2xl overflow-hidden border border-amber-500/30 p-5 bg-gradient-to-br from-[#1a1408] via-[#090805] to-[#040403] shadow-inner flex flex-col justify-between min-h-[190px]">
+                <div className="relative rounded-2xl overflow-hidden border border-amber-500/30 p-5 bg-gradient-to-br from-[#1a0507] via-[#160808] to-[#040403] shadow-inner flex flex-col justify-between min-h-[190px]">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />

@@ -33,8 +33,8 @@ export const App: React.FC = () => {
     localStorage.setItem('lightspeed_theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      document.documentElement.style.backgroundColor = '#060d16';
-      document.body.style.backgroundColor = '#060d16';
+      document.documentElement.style.backgroundColor = '#070a40';
+      document.body.style.backgroundColor = '#070a40';
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.style.backgroundColor = '#edf3f8';
@@ -63,9 +63,9 @@ export const App: React.FC = () => {
 
   return (
     <div className={`min-h-screen w-full max-w-full overflow-x-hidden font-sans transition-colors duration-500 ease-in-out ${
-      theme === 'dark' ? 'bg-[#060d16] text-[#f0f6fa]' : 'bg-[#edf3f8] text-[#061522]'
+      theme === 'dark' ? 'bg-[#070a40] text-[#f0f6fa]' : 'bg-[#edf3f8] text-[#070a40]'
     }`}>
-      
+
       {/* Navigation Header */}
       <Header
         currentRoute={currentRoute}

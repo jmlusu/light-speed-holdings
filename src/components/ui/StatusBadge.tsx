@@ -1,10 +1,10 @@
 import React from 'react';
 import { CheckCircle2, Clock, Sparkles, Shield, AlertCircle } from 'lucide-react';
 
-export type HonestyTier = 
-  | 'proven-in-house' 
-  | 'pilot' 
-  | 'fieldable-2026' 
+export type HonestyTier =
+  | 'proven-in-house'
+  | 'pilot'
+  | 'fieldable-2026'
   | 'in-development';
 
 interface StatusBadgeProps {
@@ -38,7 +38,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       defaultLabel: 'PILOT IN PROGRESS',
       icon: Sparkles,
       badgeStyle: 'bg-orange-500/10 text-orange-500 border-orange-500/30',
-      dotStyle: 'bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.7)] animate-pulse',
+      dotStyle: 'bg-orange-500 shadow-[0_0_8px_rgba(230,57,70,0.7)] animate-pulse',
       desc: 'Active stakeholder pilot or ecosystem testing phase'
     },
     'fieldable-2026': {
@@ -52,7 +52,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       defaultLabel: 'IN ACTIVE DEVELOPMENT',
       icon: AlertCircle,
       badgeStyle: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-      dotStyle: 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)]',
+      dotStyle: 'bg-amber-400 shadow-[0_0_8px_rgba(245,131,143,0.7)]',
       desc: 'Core codebase and agent DAGs currently in active development'
     }
   };
@@ -67,7 +67,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   }[size];
 
   return (
-    <span 
+    <span
       className={`inline-flex items-center rounded-full border tracking-wider uppercase transition-all shadow-xs ${config.badgeStyle} ${sizeClasses} ${className}`}
       title={config.desc}
     >

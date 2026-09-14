@@ -50,14 +50,14 @@ export const ScrollToTop: React.FC<ScrollToTopProps> = ({ theme = 'dark' }) => {
       >
         {/* Skeuomorphic Bezel Ring */}
         <div className={`absolute inset-0.5 rounded-[14px] pointer-events-none transition-opacity border ${
-          isLight 
-            ? 'border-slate-300/60 bg-gradient-to-b from-white/40 to-black/5' 
+          isLight
+            ? 'border-slate-300/60 bg-gradient-to-b from-white/40 to-black/5'
             : 'border-white/10 bg-gradient-to-b from-white/10 to-transparent'
         }`} />
 
         {/* Orange LED Accent Indicator */}
         <div className="flex items-center gap-1 mb-0.5 z-10">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.9)] animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(230,57,70,0.9)] animate-pulse" />
         </div>
 
         {/* Tactile Arrow Icon */}

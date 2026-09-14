@@ -70,7 +70,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({ theme, onRequestBr
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-14">
         <div className="lg:col-span-8 space-y-4">
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-ls-cyan/40 bg-gradient-to-r from-ls-cyan/15 via-ls-red/10 to-transparent text-ls-cyan font-mono text-[11px] tracking-widest shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-ls-cyan shadow-[0_0_8px_rgba(251,191,36,1)] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-ls-cyan shadow-[0_0_8px_rgba(245,131,143,1)] animate-pulse" />
             <span>PHAROS // THE LIGHTHOUSE OF ALEXANDRIA</span>
           </div>
 
