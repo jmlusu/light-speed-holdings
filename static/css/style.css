@@ -1,0 +1,30 @@
+/* Minimal custom styles — Tailwind handles the rest */
+
+[x-cloak] { display: none !important; }
+
+/* Smooth tab transitions */
+[x-show] {
+  transition: opacity 0.15s ease-in-out;
+}
+
+/* Org chart indent lines */
+.org-indent {
+  border-left: 2px solid #e5e7eb;
+  margin-left: 12px;
+  padding-left: 12px;
+}
+
+/* KPI card hover */
+.kpi-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.kpi-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }

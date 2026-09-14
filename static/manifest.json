@@ -1,0 +1,27 @@
+{
+  "name": "AI Company Builder — CEO Dashboard",
+  "short_name": "CEO Dashboard",
+  "description": "Mobile CEO dashboard for managing AI agent company",
+  "start_url": "/mobile.html",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#0284c7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "scope": "/",
+  "lang": "en-US"
+}
