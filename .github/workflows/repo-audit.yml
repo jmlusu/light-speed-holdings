@@ -439,7 +439,7 @@ jobs:
             if [ -f "artifacts/repo-audit-$AUDIT_DATE.md" ]; then
               mv "artifacts/repo-audit-$AUDIT_DATE.md" "$REPORT" || true
             fi
-            uv run python - <<'PY' || true
+            python3 - <<'PY'
           import json, os
           from pathlib import Path
           date = os.environ.get("AUDIT_DATE", "")
@@ -547,7 +547,7 @@ jobs:
           CEO_HANDLE="${{ vars.CEO_GITHUB_HANDLE || github.repository_owner }}"
 
           # Parse the machine-readable verdict block
-          python - "$REPORT" <<'PY'
+          python3 - "$REPORT" <<'PY'
           import re, sys
           from pathlib import Path
           report = Path(sys.argv[1])
