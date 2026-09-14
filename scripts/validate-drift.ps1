@@ -34,7 +34,7 @@ if (-not (Test-Path -LiteralPath $ManifestPath)) {
     exit 1
 }
 
-$manifestJson = python -c @"
+$manifestJson = uv run python -c @"
 import yaml, json, sys
 with open(r'$($ManifestPath -replace '\\','\\')') as f:
     data = yaml.safe_load(f)
