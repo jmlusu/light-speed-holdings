@@ -1,8 +1,8 @@
 {
-  "run_id": "34890797024",
+  "run_id": "34892751142",
   "date": "2026-09-14",
   "mode": "full",
-  "probe_count": 20,
+  "probe_count": 22,
   "probes": [
     {
       "name": "registry.parse",
@@ -16,23 +16,28 @@
     },
     {
       "name": "cards.tools",
-      "status": "fail",
-      "detail": "non-canonical tools: ['software-architect:Design', 'software-architect:Define', 'software-architect:Evaluate', 'software-architect:Maintain', 'software-architect:Coordinate', 'software-architect:`read`', 'software-architect:`edit`', 'software-architect:`bash`']"
+      "status": "ok",
+      "detail": "non-canonical tools: []"
     },
     {
       "name": "ruff.check",
-      "status": "fail",
-      "detail": "error: Failed to spawn: `ruff` |   Caused by: No such file or directory (os error 2)"
+      "status": "ok",
+      "detail": "All checks passed!"
     },
     {
       "name": "pytest.collect",
-      "status": "fail",
-      "detail": "error: Failed to spawn: `pytest` |   Caused by: No such file or directory (os error 2)"
+      "status": "ok",
+      "detail": " | -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html | 2368/2435 tests collected (67 deselected) in 6.49s"
+    },
+    {
+      "name": "pytest.collect",
+      "status": "ok",
+      "detail": "tests/unit/test_validate_opencode.py::test_valid_v2_card_has_no_errors"
     },
     {
       "name": "drift.manifest",
       "status": "ok",
-      "detail": "  \"drifts\": [], |   \"checked\": 81 | }"
+      "detail": "  \"timestamp\": \"2026-09-14T20:25:48.9182379+00:00\", |   \"drifts\": [] | }"
     },
     {
       "name": "drift.manifest",
@@ -101,14 +106,19 @@
     },
     {
       "name": "graphify.update",
-      "status": "fail",
-      "detail": "error: Failed to spawn: `graphify` |   Caused by: No such file or directory (os error 2)"
+      "status": "ok",
+      "detail": "Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant. | Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction. |   warning: 2 file(s) had syntax errors and may be partially extracted: src/ai_company/dashboard/static/js/command-bar.js (first error at line 1, 16 symbol(s) extracted), src/components/SadcGovernanceFramework.tsx (first error at line 226, 2 symbol(s) extracted)"
+    },
+    {
+      "name": "graphify.graph",
+      "status": "ok",
+      "detail": "nodes=25801 edges=0"
     }
   ],
   "severity_totals": {
     "critical": 0,
     "major": 2,
-    "minor": 7
+    "minor": 3
   },
-  "generated_at": "2026-09-14T20:06:13Z"
+  "generated_at": "2026-09-14T20:26:37Z"
 }
