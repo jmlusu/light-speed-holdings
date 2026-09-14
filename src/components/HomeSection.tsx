@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  ArrowRight, 
-  ShieldCheck, 
-  Bot, 
-  Database, 
-  Workflow, 
-  Building2, 
-  Globe2, 
-  Cpu, 
-  CheckCircle2, 
-  TrendingUp, 
-  Compass, 
-  ChevronRight, 
-  Layers, 
-  Terminal, 
-  Activity, 
-  Zap, 
-  Radio, 
+import {
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Bot,
+  Database,
+  Workflow,
+  Building2,
+  Globe2,
+  Cpu,
+  CheckCircle2,
+  TrendingUp,
+  Compass,
+  ChevronRight,
+  Layers,
+  Terminal,
+  Activity,
+  Zap,
+  Radio,
   PlayCircle,
   FileText,
   Lock,
@@ -30,8 +30,9 @@ import { HelpfulInfographics } from './HelpfulInfographics';
 import { InteractiveTimelineMap } from './InteractiveTimelineMap';
 import { OurStoryOrigin } from './OurStoryOrigin';
 import { StakeholderEngagementHub } from './StakeholderEngagementHub';
-import { 
-  StatusLedPip 
+import { UseCaseCatalogSection } from './UseCaseCatalogSection';
+import {
+  StatusLedPip
 } from './TactileHardwareElements';
 
 interface HomeSectionProps {
@@ -67,7 +68,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
 
   return (
     <div className="space-y-24 font-sans max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      
+
       {/* =========================================================================
           STORYTELLING QUICK-NAVIGATION CHAPTER RIBBON
           ========================================================================= */}
@@ -87,8 +88,8 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               key={ch.id}
               onClick={() => scrollToChapter(ch.anchor)}
               className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                isLight 
-                  ? 'hover:bg-slate-200 text-slate-700 hover:text-slate-900' 
+                isLight
+                  ? 'hover:bg-slate-200 text-slate-700 hover:text-slate-900'
                   : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'
               }`}
             >
@@ -110,7 +111,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           HERO SECTION: TACTICAL FLIGHT-DECK HEADLINE
           ========================================================================= */}
       <section className="relative text-center overflow-hidden pt-2 pb-6">
-        
+
         {/* Subtle Ambient Vignette / Hardware Backing */}
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[800px] max-w-full h-[360px] rounded-full filter blur-[140px] pointer-events-none -z-10 ${
           isLight ? 'bg-amber-400/10' : 'bg-amber-500/5'
@@ -291,6 +292,12 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           </div>
         </div>
       </section>
+
+      {/* USE CASE CATALOG — 50 offerable scenarios, honestly tagged */}
+      <UseCaseCatalogSection
+        theme={theme}
+        onRequestBriefing={(summary) => onOpenContactModal(summary)}
+      />
 
       {/* STAKEHOLDER CONSULTATION & ENGAGEMENT HUB */}
       <StakeholderEngagementHub
