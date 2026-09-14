@@ -1,0 +1,114 @@
+{
+  "run_id": "34890797024",
+  "date": "2026-09-14",
+  "mode": "full",
+  "probe_count": 20,
+  "probes": [
+    {
+      "name": "registry.parse",
+      "status": "ok",
+      "detail": "agents=144"
+    },
+    {
+      "name": "cards.reconcile",
+      "status": "ok",
+      "detail": "registry=144 live=144 bak=0 orphan=[] missing=[]"
+    },
+    {
+      "name": "cards.tools",
+      "status": "fail",
+      "detail": "non-canonical tools: ['software-architect:Design', 'software-architect:Define', 'software-architect:Evaluate', 'software-architect:Maintain', 'software-architect:Coordinate', 'software-architect:`read`', 'software-architect:`edit`', 'software-architect:`bash`']"
+    },
+    {
+      "name": "ruff.check",
+      "status": "fail",
+      "detail": "error: Failed to spawn: `ruff` |   Caused by: No such file or directory (os error 2)"
+    },
+    {
+      "name": "pytest.collect",
+      "status": "fail",
+      "detail": "error: Failed to spawn: `pytest` |   Caused by: No such file or directory (os error 2)"
+    },
+    {
+      "name": "drift.manifest",
+      "status": "ok",
+      "detail": "  \"drifts\": [], |   \"checked\": 81 | }"
+    },
+    {
+      "name": "drift.manifest",
+      "status": "ok",
+      "detail": "drifts=0 checked=81"
+    },
+    {
+      "name": "cards.verify_script",
+      "status": "fail",
+      "detail": "\u001b[31;1mWrite-Error: \u001b[31;1mRegistry entry 'media-pr-relations' is missing a file path.\u001b[0m | \u001b[31;1mWrite-Error: \u001b[31;1mRegistry entry 'talent-academy-lead' is missing a file path.\u001b[0m | \u001b[31;1mWrite-Error: \u001b[31;1mRegistry entry 'media-generation-owner' is missing a file path.\u001b[0m"
+    },
+    {
+      "name": "tree.departments",
+      "status": "warn",
+      "detail": "config/departments=1 company/departments=0"
+    },
+    {
+      "name": "tree.data_etl",
+      "status": "ok",
+      "detail": "data/etl present"
+    },
+    {
+      "name": "tree.prompts",
+      "status": "ok",
+      "detail": "prompts/*.md=2"
+    },
+    {
+      "name": "gitignore.orchestrator.scheduler.yaml",
+      "status": "ok",
+      "detail": "orchestrator/scheduler.yaml ignored while required by cli/validate.py"
+    },
+    {
+      "name": "gitignore.orchestrator.escalation.yaml",
+      "status": "ok",
+      "detail": "orchestrator/escalation.yaml ignored while required by cli/validate.py"
+    },
+    {
+      "name": "gitignore.graphify",
+      "status": "warn",
+      "detail": "graphify-out tracked"
+    },
+    {
+      "name": "gitignore..playwright-cli",
+      "status": "warn",
+      "detail": ".playwright-cli/ present"
+    },
+    {
+      "name": "gitignore.screenshots",
+      "status": "ok",
+      "detail": "screenshots/ present"
+    },
+    {
+      "name": "gitignore.results",
+      "status": "ok",
+      "detail": "results/ present"
+    },
+    {
+      "name": "ci.registry_gate",
+      "status": "ok",
+      "detail": "ci.yml never validates agent registry"
+    },
+    {
+      "name": "ecl.active",
+      "status": "warn",
+      "detail": "active change files=0"
+    },
+    {
+      "name": "graphify.update",
+      "status": "fail",
+      "detail": "error: Failed to spawn: `graphify` |   Caused by: No such file or directory (os error 2)"
+    }
+  ],
+  "severity_totals": {
+    "critical": 0,
+    "major": 2,
+    "minor": 7
+  },
+  "generated_at": "2026-09-14T20:06:13Z"
+}
