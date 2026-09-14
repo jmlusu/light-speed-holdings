@@ -7,7 +7,6 @@ date: "2026-09-10"
 sources:
   - "results/use-case-fact-pack.md"
   - "results/use-case-messaging-brief.md"
-  - "docs/superpowers/specs/2026-09-06-lightspeed-website-design.md"
 honesty_classification: >
   Nothing in this document has been delivered to paying clients. All offers are
   fieldable in 2026, in pilot, or in active development. Every proof point carries
@@ -479,7 +478,7 @@ Every factual claim in this document traces to one or more authoritative source 
 
 | Section | Primary Sources | Notes |
 |---------|----------------|-------|
-| **Positioning** | `docs/superpowers/specs/2026-09-06-lightspeed-website-design.md:1-34` (positioning, tagline, honesty constraint); `docs/source-of-truth.yaml:35-47` (144 agents canonical); `docs/source-of-truth.yaml:19-33` (20 departments canonical); `docs/AGENT-REGISTRY-TABLE.md:4` | 144 agents / 20 departments = canonical counts |
+| **Positioning** | `src/data/siteContent.ts:21-32` (company identity, tagline, honesty constraint); `docs/source-of-truth.yaml:35-47` (144 agents canonical); `docs/source-of-truth.yaml:19-33` (20 departments canonical); `docs/AGENT-REGISTRY-TABLE.md:4` | 144 agents / 20 departments = canonical counts |
 | **The Method** | `docs/archive/2026-08-11-pre-restructure/reports/future-of-work-report.md:43-80` (HITL, audit trails, memory); `docs/legal/client-onboarding-policy.md:19-25` (G1–G4 gates); `config/decision/risk_matrix.yaml:1-30` (5×5 risk matrix); `config/decision/approval_matrix.yaml:1-270` (25+ risk-gated actions); `docs/CEO-DIRECTIVE-BLUEPRINT-ADOPTION.md:93-100` (governance cadence); `docs/source-of-truth.yaml:87-96` (9 LLM providers) | |
 | **Offer A** | `docs/service-catalog-malawi.md:32-42` (deliverables, pricing, targets); `config/company/malawi_offers.yaml:15-16` (approval status); `docs/legal/client-onboarding-policy.md:35` (governance approval) | Fieldable 2026; governance approved |
 | **Offer B** | `docs/service-catalog-malawi.md:44-53` (deliverables, pricing); `config/company/malawi_offers.yaml:25` (risk assessment); `docs/legal/client-onboarding-policy.md:36` (BLOCKED — WhatsApp data + cross-border LLM) | BLOCKED — do not sell |
@@ -487,21 +486,21 @@ Every factual claim in this document traces to one or more authoritative source 
 | **Offer D** | `docs/service-catalog-malawi.md:68-74` (deliverables, pricing); `config/company/malawi_offers.yaml:43` (low-risk commodity); `docs/legal/client-onboarding-policy.md:38` (minimal PII) | Fieldable 2026; low-risk |
 | **Offer E** | `docs/service-catalog-malawi.md:76-83` (deliverables, pricing); `config/company/malawi_offers.yaml:52` (product ready); `docs/legal/client-onboarding-policy.md:39` (no client data handling) | Fieldable 2026; proven in-house |
 | **Enterprise Line** | `docs/DEEP-DIVE-WEBUILD-AI.md:56-66` (missing modules, effort estimates); `docs/DEEP-DIVE-WEBUILD-AI.md:18-20` (consulting model) | All in active development; modules not built |
-| **Industries (5 verticals)** | `docs/superpowers/specs/2026-09-06-lightspeed-website-design.md:163` (5 verticals); `docs/Pharos/case-study-pipeline.md:49-59` (sector targeting) | Positioning only; no active client deployments |
+| **Industries (5 verticals)** | `USE-CASE-CATALOG.md:200` (5 verticals); `docs/Pharos/case-study-pipeline.md:49-59` (sector targeting) | Positioning only; no active client deployments |
 | **Company Scenarios (FOW-01..08)** | `docs/archive/2026-08-11-pre-restructure/reports/future-of-work-report.md:86-194` (all 8 use cases) | UNVERIFIED projections in source excluded from body copy |
 | **J&S StopOver Bar** | `docs/Pharos/case-study-pipeline.md:7-28` (live proof, non-client) | Not a paid client; live proof |
 | **Meta Case Study** | `docs/Pharos/case-study-pipeline.md:43-46` (143 AI agents + CEO, governance mapped) | Proven in-house |
 | **Social Media Automation OS** | `docs/case-studies/social-media-automation-os.md` (engagement record, team, guardrails); client scaffolding reviewed at intake | MEDIUM risk — engagement in progress, no shipped deployment yet |
 | **Health/M&E Pilot** | `docs/Pharos/case-study-pipeline.md:31-34` (composing evidence) | HIGH risk — no confirmed partnership signed |
 | **VSLA/SACCO Pilot** | `docs/Pharos/case-study-pipeline.md:37-40` (COMESA/IDEA seeking) | HIGH risk — no signed engagement |
-| **Ministry of Agriculture — Farmer Advisory** | `docs/superpowers/specs/2026-09-06-lightspeed-website-design.md:164` (piloting listed) | MEDIUM risk — piloting |
+| **Ministry of Agriculture — Farmer Advisory** | `USE-CASE-CATALOG.md:204-214` (piloting listed) | MEDIUM risk — piloting |
 | **Citizen-Inquiry Lighthouse** | `docs/Pharos/policy-drafts/national-ai-strategy-comments.md:62-63` (proposed) | HIGH risk — proposed, not launched |
 | **Governance as Template** | `docs/Pharos/policy-drafts/national-ai-strategy-comments.md:46-47` (operates in production) | Proven in-house |
 | **Capacity Building** | `docs/Pharos/policy-drafts/national-ai-strategy-comments.md:64-65` (MUBAS/UNIMA) | In active development |
 | **SADC Framework** | `docs/Pharos/policy-drafts/sadc-agentic-ai-governance-framework.md` | In active development |
 | **National AI Strategy** | `docs/Pharos/policy-drafts/national-ai-strategy-comments.md` | Published |
-| **Website IA** | `docs/superpowers/specs/2026-09-06-lightspeed-website-design.md:122-166` (IA, nav, home sequence) | §4.1–4.2 |
+| **Website IA** | `src/App.tsx:17-176` (route map) + `src/data/siteContent.ts` (section content) | Repo-root Vite SPA; IA implemented in-app (§4.1–4.2 conceptual) |
 
 ---
 
-*End of Use Case Catalog. All claims trace to real repository files. UNVERIFIED projections have been excluded. No fabricated metrics, testimonials, or client logos appear in this document. All honesty badges enforce the site spec's honesty ladder. Pricing is to be validated with prospects before publishing.*
+*End of Use Case Catalog. All claims trace to real repository files. UNVERIFIED projections have been excluded. No fabricated metrics, testimonials, or client logos appear in this document. All honesty badges enforce the website's honesty ladder (`src/data/siteContent.ts`). Pricing is to be validated with prospects before publishing.*
