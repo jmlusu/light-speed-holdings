@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import { 
-  AlertTriangle, 
-  CheckCircle2, 
-  XCircle, 
-  ShieldCheck, 
-  Layers, 
-  Lock, 
-  Zap, 
-  Cpu, 
-  Database, 
-  Scale, 
-  ArrowRight, 
+import {
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  ShieldCheck,
+  Layers,
+  Lock,
+  Zap,
+  Cpu,
+  Database,
+  Scale,
+  ArrowRight,
   Sparkles,
   RefreshCw,
   Server
 } from 'lucide-react';
-import { 
-  StatusLedPip 
+import {
+  StatusLedPip
 } from './TactileHardwareElements';
 
 interface CentralProblemSolutionProps {
@@ -182,7 +182,7 @@ export const CentralProblemSolution: React.FC<CentralProblemSolutionProps> = ({
             {comparisonPoints.map((item, idx) => {
               const IconComp = item.icon;
               return (
-                <div 
+                <div
                   key={idx}
                   className={`p-5 sm:p-6 rounded-2xl transition-all ${
                     isLight ? 'neu-convex-light' : 'neu-convex-dark'
@@ -195,11 +195,11 @@ export const CentralProblemSolution: React.FC<CentralProblemSolutionProps> = ({
                       }`}>
                         <IconComp className="w-4 h-4" />
                       </div>
-                      <h4 className={`text-sm sm:text-base font-bold font-display ${
+                      <h3 className={`text-sm sm:text-base font-bold font-display ${
                         isLight ? 'text-slate-900' : 'text-zinc-100'
                       }`}>
                         {item.dimension}
-                      </h4>
+                      </h3>
                     </div>
 
                     <span className={`text-[10px] font-mono px-3 py-1 rounded-full font-bold uppercase ${

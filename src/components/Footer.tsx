@@ -1,9 +1,9 @@
 import React from 'react';
 import { Shield, Sparkles, ArrowUpRight, Globe2, Radio, Terminal } from 'lucide-react';
-import { 
-  StatusLedPip, 
-  MachineScrewHead, 
-  AcousticVentGrille 
+import {
+  StatusLedPip,
+  MachineScrewHead,
+  AcousticVentGrille
 } from './TactileHardwareElements';
 
 interface FooterProps {
@@ -21,24 +21,24 @@ export const Footer: React.FC<FooterProps> = ({
 
   return (
     <footer className={`border-t pt-14 pb-12 px-4 sm:px-6 lg:px-8 font-sans transition-colors relative overflow-hidden ${
-      isLight 
-        ? 'bg-[#f4f5f8] border-slate-300 text-slate-700' 
+      isLight
+        ? 'bg-[#f4f5f8] border-slate-300 text-slate-700'
         : 'bg-[#06080e] border-zinc-800 text-zinc-300'
     }`}>
       <MachineScrewHead isLight={isLight} className="absolute top-3 left-4" />
       <MachineScrewHead isLight={isLight} className="absolute top-3 right-4" />
 
       <div className="max-w-7xl mx-auto space-y-12">
-        
+
         {/* Brand Hardware Header & Command Tagline */}
         <div className={`flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b ${
           isLight ? 'border-slate-300' : 'border-zinc-800'
         }`}>
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <img 
-                src="/static/brand/logos/icononly/icononly_transparent_nobuffer.png" 
-                alt="LightSpeed Holdings Limited" 
+              <img
+                src="/static/brand/logos/icononly/icononly_transparent_nobuffer.png"
+                alt="LightSpeed Holdings Limited"
                 className="h-10 sm:h-12 w-auto object-contain shrink-0"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/brand/logos/icononly/icononly_transparent_nobuffer.png';
@@ -72,12 +72,12 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Multi-Column Sitemap Layout */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-xs">
-          
+
           {/* Solutions */}
           <div className="space-y-3">
             <div className="flex items-center gap-1.5">
               <StatusLedPip status="emerald" isLight={isLight} />
-              <h4 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Solutions</h4>
+              <h2 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Solutions</h2>
             </div>
             <ul className={`space-y-2 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
               <li><button onClick={() => onNavigate('solutions')} className="hover:text-amber-500 transition-colors">Agentic AI Systems</button></li>
@@ -93,7 +93,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-3">
             <div className="flex items-center gap-1.5">
               <StatusLedPip status="emerald" isLight={isLight} />
-              <h4 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Industries</h4>
+              <h2 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Industries</h2>
             </div>
             <ul className={`space-y-2 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
               <li><button onClick={() => onNavigate('industries')} className="hover:text-amber-500 transition-colors">Government & Public</button></li>
@@ -110,7 +110,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-3">
             <div className="flex items-center gap-1.5">
               <StatusLedPip status="emerald" isLight={isLight} />
-              <h4 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Builder Rigs</h4>
+              <h2 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Builder Rigs</h2>
             </div>
             <ul className={`space-y-2 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
               <li><button onClick={() => onNavigate('ai-company-builder')} className="hover:text-amber-500 transition-colors">AI Operating Model</button></li>
@@ -125,7 +125,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-3">
             <div className="flex items-center gap-1.5">
               <StatusLedPip status="emerald" isLight={isLight} />
-              <h4 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Tech & Proof</h4>
+              <h2 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Tech & Proof</h2>
             </div>
             <ul className={`space-y-2 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
               <li><button onClick={() => onNavigate('technology')} className="hover:text-amber-500 transition-colors">Sovereign Architecture</button></li>
@@ -139,7 +139,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-3">
             <div className="flex items-center gap-1.5">
               <StatusLedPip status="emerald" isLight={isLight} />
-              <h4 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Pharos</h4>
+              <h2 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Pharos</h2>
             </div>
             <ul className={`space-y-2 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
               <li><button onClick={() => onNavigate('pharos')} className="hover:text-amber-500 transition-colors">Alexandria Beacon &amp; Lore</button></li>
@@ -153,7 +153,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-3">
             <div className="flex items-center gap-1.5">
               <StatusLedPip status="emerald" isLight={isLight} />
-              <h4 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Governance</h4>
+              <h2 className="font-mono font-bold text-amber-500 uppercase tracking-wider text-[11px]">Governance</h2>
             </div>
             <ul className={`space-y-2 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
               <li><button onClick={() => onNavigate('about')} className="hover:text-amber-500 transition-colors">Institutional Thesis</button></li>

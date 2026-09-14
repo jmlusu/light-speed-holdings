@@ -116,7 +116,7 @@
   border: 1px solid #ffffff;
   border-right-color: #9bb3c4;
   border-bottom-color: #9bb3c4;
-  box-shadow: 
+  box-shadow:
     8px 8px 16px rgba(6, 13, 22, 0.08),
     -4px -4px 12px rgba(255, 255, 255, 0.9),
     inset 1px 1px 2px rgba(255, 255, 255, 0.95);
@@ -128,7 +128,7 @@
   border-top-color: rgba(247, 215, 124, 0.55);
   border-bottom-color: #060d16;
   border-right-color: #060d16;
-  box-shadow: 
+  box-shadow:
     12px 12px 24px rgba(3, 7, 12, 0.75),
     0 0 16px rgba(229, 183, 76, 0.08),
     inset 1px 1px 1px rgba(247, 215, 124, 0.2);
@@ -138,7 +138,7 @@
   background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
   border: 1px solid #ffffff;
   border-bottom-color: #9bb3c4;
-  box-shadow: 
+  box-shadow:
     4px 4px 10px rgba(6, 13, 22, 0.06),
     -4px -4px 10px rgba(255, 255, 255, 0.9);
 }
@@ -147,7 +147,7 @@
   background: linear-gradient(135deg, #132737 0%, #0c1c28 100%);
   border: 1px solid rgba(229, 183, 76, 0.22);
   border-top-color: rgba(247, 215, 124, 0.45);
-  box-shadow: 
+  box-shadow:
     0 8px 24px rgba(3, 7, 12, 0.65),
     inset 0 1px 0 rgba(247, 215, 124, 0.15);
 }
@@ -156,7 +156,7 @@
   background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
   border: 1px solid #ffffff;
   border-bottom-color: #9bb3c4;
-  box-shadow: 
+  box-shadow:
     4px 4px 8px rgba(6, 13, 22, 0.08),
     -2px -2px 6px rgba(255, 255, 255, 0.9);
 }
@@ -220,7 +220,7 @@
   border-left-color: rgba(229, 183, 76, 0.4);
   border-right-color: #060d16;
   border-bottom-color: #060d16;
-  box-shadow: 
+  box-shadow:
     0 16px 36px -8px rgba(3, 7, 12, 0.85),
     0 4px 14px rgba(3, 7, 12, 0.6),
     0 0 20px rgba(229, 183, 76, 0.08),
@@ -237,7 +237,7 @@
   border-left-color: #ffffff;
   border-right-color: #c2d5e3;
   border-bottom-color: #9bb3c4;
-  box-shadow: 
+  box-shadow:
     0 12px 28px -6px rgba(6, 13, 22, 0.08),
     0 4px 10px rgba(6, 13, 22, 0.04),
     inset 0 1px 1px #ffffff,
@@ -250,7 +250,7 @@
   background: #060d16;
   border: 1px solid rgba(229, 183, 76, 0.18);
   border-bottom-color: rgba(247, 215, 124, 0.35);
-  box-shadow: 
+  box-shadow:
     inset 0 3px 8px rgba(0, 0, 0, 0.95),
     0 1px 0 rgba(247, 215, 124, 0.1);
 }
@@ -259,7 +259,7 @@
   background: #dbe7f0;
   border: 1px solid #9bb3c4;
   border-bottom-color: #ffffff;
-  box-shadow: 
+  box-shadow:
     inset 0 3px 6px rgba(6, 13, 22, 0.08),
     0 1px 0 #ffffff;
 }
@@ -324,7 +324,7 @@
   height: 6px;
   border-radius: 50%;
   background: #f7d77c;
-  box-shadow: 
+  box-shadow:
     0 0 8px #f7d77c,
     0 0 16px rgba(229, 183, 76, 0.85),
     inset 0 1px 1px #ffffff;
@@ -337,7 +337,7 @@
   height: 6px;
   border-radius: 50%;
   background: #10b981;
-  box-shadow: 
+  box-shadow:
     0 0 8px #10b981,
     0 0 14px rgba(16, 185, 129, 0.65),
     inset 0 1px 1px rgba(255, 255, 255, 0.8);
@@ -350,7 +350,7 @@
   height: 6px;
   border-radius: 50%;
   background: #ef4444;
-  box-shadow: 
+  box-shadow:
     0 0 8px #ef4444,
     0 0 14px rgba(239, 68, 68, 0.65),
     inset 0 1px 1px rgba(255, 255, 255, 0.8);
@@ -418,7 +418,7 @@
   border-left-color: rgba(229, 183, 76, 0.4);
   border-right-color: #060d16;
   border-bottom-color: #060d16;
-  box-shadow: 
+  box-shadow:
     0 16px 32px rgba(3, 7, 12, 0.75),
     0 0 16px rgba(229, 183, 76, 0.06),
     inset 0 1px 0 rgba(247, 215, 124, 0.25);
@@ -429,7 +429,7 @@
   border: 1px solid rgba(229, 183, 76, 0.35);
   border-bottom-color: #9bb3c4;
   border-right-color: #9bb3c4;
-  box-shadow: 
+  box-shadow:
     12px 12px 24px rgba(6, 13, 22, 0.08),
     -8px -8px 16px rgba(255, 255, 255, 0.9),
     inset 1px 1px 2px rgba(255, 255, 255, 0.95);
@@ -440,7 +440,7 @@
   background: #060d16;
   border: 1px solid rgba(229, 183, 76, 0.15);
   border-bottom-color: rgba(247, 215, 124, 0.3);
-  box-shadow: 
+  box-shadow:
     inset 0 4px 8px rgba(0, 0, 0, 0.95),
     0 1px 0 rgba(247, 215, 124, 0.08);
 }
@@ -450,7 +450,7 @@
   border: 1px solid #9bb3c4;
   border-bottom-color: #ffffff;
   border-right-color: #ffffff;
-  box-shadow: 
+  box-shadow:
     inset 4px 4px 8px rgba(6, 13, 22, 0.12),
     inset -3px -3px 6px rgba(255, 255, 255, 0.6),
     0 1px 0 rgba(255, 255, 255, 0.9);
@@ -462,7 +462,7 @@
   border: 1px solid rgba(229, 183, 76, 0.3);
   border-top-color: rgba(247, 215, 124, 0.5);
   border-bottom-color: #060d16;
-  box-shadow: 
+  box-shadow:
     0 4px 8px rgba(3, 7, 12, 0.6),
     inset 0 1px 2px rgba(247, 215, 124, 0.2);
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
@@ -478,7 +478,7 @@
 .tactile-concave-btn-dark:active {
   background: linear-gradient(to bottom, #060d16 0%, #0f2231 100%);
   border-color: #e5b74c;
-  box-shadow: 
+  box-shadow:
     inset 0 4px 8px rgba(0, 0, 0, 0.9),
     0 0 10px rgba(229, 183, 76, 0.35);
   transform: translateY(1px);
@@ -487,7 +487,7 @@
 .tactile-concave-btn-light {
   background: linear-gradient(to bottom, #ffffff 0%, #edf3f8 50%, #dbe7f0 100%);
   border: 1px solid #9bb3c4;
-  box-shadow: 
+  box-shadow:
     0 4px 6px rgba(6, 13, 22, 0.1),
     inset 0 1px 2px rgba(255, 255, 255, 0.95),
     inset 0 -1px 2px rgba(155, 179, 196, 0.3);
@@ -503,7 +503,7 @@
   background: radial-gradient(circle at 50% 55%, #dbe7f0 0%, #edf3f8 65%, #ffffff 100%);
   border-top: 1px solid rgba(155, 179, 196, 0.5);
   border-bottom: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 
+  box-shadow:
     inset 4px 4px 8px rgba(155, 179, 196, 0.35),
     inset -2px -2px 5px rgba(255, 255, 255, 0.9),
     0 1px 0 rgba(255, 255, 255, 0.8);
@@ -515,7 +515,7 @@
   background: radial-gradient(circle at 35% 35%, #163246 0%, #0f2231 65%, #060d16 100%);
   border: 1.5px solid rgba(229, 183, 76, 0.35);
   border-top-color: #f7d77c;
-  box-shadow: 
+  box-shadow:
     0 14px 28px -4px rgba(3, 7, 12, 0.9),
     0 0 18px rgba(229, 183, 76, 0.12),
     inset 0 1px 2px rgba(247, 215, 124, 0.45),
@@ -526,7 +526,7 @@
   background: radial-gradient(circle at 35% 35%, #ffffff 0%, #edf3f8 65%, #dbe7f0 100%);
   border: 1.5px solid rgba(229, 183, 76, 0.45);
   border-bottom-color: rgba(155, 179, 196, 0.4);
-  box-shadow: 
+  box-shadow:
     8px 10px 22px -3px rgba(6, 13, 22, 0.1),
     -6px -6px 16px rgba(255, 255, 255, 0.95),
     inset 0 1px 2px rgba(255, 255, 255, 1),
@@ -550,7 +550,7 @@
 .transport-bar-dark {
   background: linear-gradient(180deg, #163246 0%, #060d16 100%);
   border: 1px solid rgba(229, 183, 76, 0.25);
-  box-shadow: 
+  box-shadow:
     inset 0 2px 5px rgba(0, 0, 0, 0.95),
     0 1px 0 rgba(247, 215, 124, 0.15);
 }
@@ -559,7 +559,7 @@
   background: linear-gradient(180deg, #dbe7f0 0%, #edf3f8 100%);
   border: 1px solid rgba(155, 179, 196, 0.35);
   border-bottom-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 
+  box-shadow:
     inset 3px 3px 6px rgba(155, 179, 196, 0.3),
     inset -2px -2px 4px rgba(255, 255, 255, 0.9),
     0 1px 0 rgba(255, 255, 255, 0.9);
@@ -583,7 +583,7 @@
   background: #060d16;
   border: 1px solid rgba(229, 183, 76, 0.18);
   border-bottom-color: rgba(247, 215, 124, 0.35);
-  box-shadow: 
+  box-shadow:
     inset 0 4px 8px rgba(0, 0, 0, 0.95),
     inset 0 1px 2px rgba(0, 0, 0, 0.95),
     0 1px 0 rgba(247, 215, 124, 0.1);
@@ -593,7 +593,7 @@
   background: #dbe7f0;
   border: 1px solid #9bb3c4;
   border-bottom-color: #ffffff;
-  box-shadow: 
+  box-shadow:
     inset 4px 4px 8px rgba(6, 13, 22, 0.12),
     inset -3px -3px 6px rgba(255, 255, 255, 0.6),
     0 1px 1px rgba(255, 255, 255, 0.9);
@@ -604,7 +604,7 @@
   background: linear-gradient(to bottom, #163246 0%, #0f2231 100%);
   border: 1px solid rgba(229, 183, 76, 0.25);
   border-bottom-color: #060d16;
-  box-shadow: 
+  box-shadow:
     0 4px 8px rgba(3, 7, 12, 0.6),
     inset 0 1px 2px rgba(247, 215, 124, 0.2);
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
@@ -620,7 +620,7 @@
 .tactile-btn-active-dark {
   background: linear-gradient(to bottom, #060d16 0%, #0f2231 100%);
   border: 1px solid #e5b74c;
-  box-shadow: 
+  box-shadow:
     inset 0 4px 8px rgba(0, 0, 0, 0.9),
     0 0 10px rgba(229, 183, 76, 0.4);
   transform: translateY(1px);
@@ -630,7 +630,7 @@
 .tactile-btn-inactive-light {
   background: linear-gradient(to bottom, #ffffff 0%, #edf3f8 50%, #dbe7f0 100%);
   border: 1px solid #9bb3c4;
-  box-shadow: 
+  box-shadow:
     0 4px 6px rgba(6, 13, 22, 0.1),
     inset 0 1px 2px rgba(255, 255, 255, 0.95),
     inset 0 -1px 2px rgba(155, 179, 196, 0.3);
@@ -647,7 +647,7 @@
   background: linear-gradient(to bottom, #dbe7f0 0%, #edf3f8 100%);
   border: 1px solid #e5b74c;
   border-top-color: #c49332;
-  box-shadow: 
+  box-shadow:
     inset 0 4px 6px rgba(6, 13, 22, 0.2),
     inset 0 -1px 2px rgba(255, 255, 255, 0.6),
     0 0 8px rgba(229, 183, 76, 0.3);
@@ -658,7 +658,7 @@
 .tactile-circular-housing-dark {
   background: linear-gradient(135deg, #163246 0%, #0f2231 100%);
   border: 1px solid rgba(229, 183, 76, 0.3);
-  box-shadow: 
+  box-shadow:
     0 4px 8px rgba(3, 7, 12, 0.6),
     inset 0 1px 2px rgba(247, 215, 124, 0.2);
 }
@@ -666,7 +666,7 @@
 .tactile-circular-housing-light {
   background: linear-gradient(135deg, #ffffff 0%, #edf3f8 100%);
   border: 1px solid #9bb3c4;
-  box-shadow: 
+  box-shadow:
     0 4px 6px rgba(6, 13, 22, 0.1),
     inset 0 1px 2px rgba(255, 255, 255, 0.95);
 }
@@ -674,7 +674,7 @@
 /* Tactile Indicator LED (Orange / Green) */
 .tactile-pip-active {
   background: var(--analog-orange);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.5),
     0 0 8px rgba(249, 115, 22, 0.8),
     0 0 12px rgba(249, 115, 22, 0.4);
@@ -682,7 +682,7 @@
 
 .tactile-pip-active-green {
   background: var(--analog-green);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.5),
     0 0 8px rgba(16, 185, 129, 0.8),
     0 0 12px rgba(16, 185, 129, 0.4);
@@ -714,7 +714,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-top-color: rgba(255, 255, 255, 0.22);
   border-bottom-color: rgba(0, 0, 0, 0.8);
-  box-shadow: 
+  box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.6),
     inset 0 1px 1px rgba(255, 255, 255, 0.15),
     inset 0 -1px 2px rgba(0, 0, 0, 0.8);
@@ -725,7 +725,7 @@
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-top-color: rgba(255, 255, 255, 0.95);
   border-bottom-color: rgba(0, 0, 0, 0.3);
-  box-shadow: 
+  box-shadow:
     0 3px 8px rgba(0, 0, 0, 0.12),
     inset 0 1px 1.5px rgba(255, 255, 255, 0.95),
     inset 0 -1px 2px rgba(0, 0, 0, 0.15);
@@ -735,7 +735,7 @@
 .analog-port-cavity {
   background: radial-gradient(circle at 50% 50%, #0a0b10 0%, #000000 100%);
   border: 1.5px solid #2a2e3d;
-  box-shadow: 
+  box-shadow:
     inset 0 3px 6px rgba(0, 0, 0, 1),
     inset 0 1px 2px rgba(0, 0, 0, 0.9),
     0 1px 1px rgba(255, 255, 255, 0.1);
@@ -754,7 +754,7 @@
     #3b4255 360deg
   );
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
+  box-shadow:
     0 6px 12px rgba(0, 0, 0, 0.8),
     0 2px 4px rgba(0, 0, 0, 0.6),
     inset 0 1px 2px rgba(255, 255, 255, 0.4),
@@ -773,7 +773,7 @@
     #ffffff 360deg
   );
   border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 
+  box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.15),
     0 1px 3px rgba(0, 0, 0, 0.1),
     inset 0 1px 2px rgba(255, 255, 255, 0.9),
@@ -868,7 +868,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1.5px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 
+  box-shadow:
     0 10px 25px -3px rgba(249, 115, 22, 0.6),
     0 0 20px rgba(249, 115, 22, 0.4),
     inset 0 4px 8px rgba(255, 255, 255, 0.9),
@@ -881,7 +881,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 
+  box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.5),
     inset 0 2px 4px rgba(255, 255, 255, 0.3),
     inset 0 -2px 4px rgba(0, 0, 0, 0.6);
@@ -892,7 +892,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1.5px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 
+  box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.08),
     inset 0 2px 4px rgba(255, 255, 255, 0.95),
     inset 0 -2px 4px rgba(0, 0, 0, 0.15);
@@ -956,7 +956,7 @@
 }
 
 .pharos-stone-masonry {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 32px 32px;
@@ -972,7 +972,7 @@
 .neu-flat-light {
   background: #edf3f8;
   border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 
+  box-shadow:
     7px 7px 15px rgba(6, 13, 22, 0.08),
     -7px -7px 15px rgba(255, 255, 255, 0.95);
 }
@@ -980,7 +980,7 @@
 .neu-flat-dark {
   background: #0f2231;
   border: 1px solid rgba(229, 183, 76, 0.18);
-  box-shadow: 
+  box-shadow:
     8px 8px 18px rgba(3, 7, 12, 0.8),
     -6px -6px 14px rgba(247, 215, 124, 0.04);
 }
@@ -989,7 +989,7 @@
 .neu-convex-light {
   background: linear-gradient(145deg, #ffffff 0%, #edf3f8 100%);
   border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 
+  box-shadow:
     9px 9px 18px rgba(6, 13, 22, 0.09),
     -9px -9px 18px rgba(255, 255, 255, 1);
 }
@@ -998,7 +998,7 @@
   background: linear-gradient(145deg, #163246 0%, #091624 100%);
   border: 1px solid rgba(229, 183, 76, 0.25);
   border-top-color: rgba(247, 215, 124, 0.45);
-  box-shadow: 
+  box-shadow:
     10px 10px 22px rgba(3, 7, 12, 0.85),
     -6px -6px 14px rgba(247, 215, 124, 0.05);
 }
@@ -1007,7 +1007,7 @@
 .neu-concave-light {
   background: linear-gradient(145deg, #edf3f8 0%, #ffffff 100%);
   border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 
+  box-shadow:
     6px 6px 14px rgba(6, 13, 22, 0.07),
     -6px -6px 14px rgba(255, 255, 255, 0.9);
 }
@@ -1015,7 +1015,7 @@
 .neu-concave-dark {
   background: linear-gradient(145deg, #091624 0%, #163246 100%);
   border: 1px solid rgba(229, 183, 76, 0.18);
-  box-shadow: 
+  box-shadow:
     8px 8px 18px rgba(3, 7, 12, 0.8),
     -5px -5px 12px rgba(247, 215, 124, 0.03);
 }
@@ -1024,7 +1024,7 @@
 .neu-inset-light, .neu-well-light, .neu-pressed-light {
   background: #dbe7f0;
   border: 1px solid rgba(155, 179, 196, 0.3);
-  box-shadow: 
+  box-shadow:
     inset 5px 5px 10px rgba(6, 13, 22, 0.1),
     inset -5px -5px 10px rgba(255, 255, 255, 0.95);
 }
@@ -1033,7 +1033,7 @@
   background: #060d16;
   border: 1px solid rgba(229, 183, 76, 0.15);
   border-bottom-color: rgba(247, 215, 124, 0.25);
-  box-shadow: 
+  box-shadow:
     inset 6px 6px 14px rgba(0, 0, 0, 0.95),
     inset -4px -4px 10px rgba(247, 215, 124, 0.03);
 }
@@ -1042,7 +1042,7 @@
 .neu-btn-light {
   background: linear-gradient(145deg, #ffffff 0%, #edf3f8 100%);
   border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 
+  box-shadow:
     5px 5px 12px rgba(6, 13, 22, 0.08),
     -5px -5px 12px rgba(255, 255, 255, 0.95);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1050,7 +1050,7 @@
 
 .neu-btn-light:hover {
   background: linear-gradient(145deg, #ffffff 0%, #f4f8fb 100%);
-  box-shadow: 
+  box-shadow:
     7px 7px 15px rgba(6, 13, 22, 0.12),
     -7px -7px 15px rgba(255, 255, 255, 1);
   transform: translateY(-1px);
@@ -1058,7 +1058,7 @@
 
 .neu-btn-light:active, .neu-btn-light.active {
   background: #dbe7f0;
-  box-shadow: 
+  box-shadow:
     inset 4px 4px 8px rgba(6, 13, 22, 0.12),
     inset -4px -4px 8px rgba(255, 255, 255, 0.9);
   transform: translateY(1px);
@@ -1068,7 +1068,7 @@
   background: linear-gradient(145deg, #163246 0%, #0c1c28 100%);
   border: 1px solid rgba(229, 183, 76, 0.25);
   border-top-color: rgba(247, 215, 124, 0.45);
-  box-shadow: 
+  box-shadow:
     6px 6px 14px rgba(3, 7, 12, 0.75),
     -4px -4px 10px rgba(247, 215, 124, 0.03);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1077,7 +1077,7 @@
 .neu-btn-dark:hover {
   background: linear-gradient(145deg, #1d3e56 0%, #102434 100%);
   border-color: rgba(229, 183, 76, 0.45);
-  box-shadow: 
+  box-shadow:
     8px 8px 18px rgba(3, 7, 12, 0.85),
     0 0 12px rgba(229, 183, 76, 0.15);
   transform: translateY(-1px);
@@ -1086,7 +1086,7 @@
 .neu-btn-dark:active, .neu-btn-dark.active {
   background: #060d16;
   border-color: #e5b74c;
-  box-shadow: 
+  box-shadow:
     inset 5px 5px 10px rgba(0, 0, 0, 0.9),
     inset 0 0 8px rgba(229, 183, 76, 0.3);
   transform: translateY(1px);
@@ -1096,7 +1096,7 @@
 .neu-btn-amber {
   background: linear-gradient(145deg, #f7d77c 0%, #e5b74c 50%, #c49332 100%);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 
+  box-shadow:
     6px 6px 16px rgba(196, 147, 50, 0.45),
     0 0 16px rgba(229, 183, 76, 0.35),
     inset 0 1px 2px rgba(255, 255, 255, 0.9);
@@ -1107,7 +1107,7 @@
 
 .neu-btn-amber:hover {
   background: linear-gradient(145deg, #fae298 0%, #f7d77c 50%, #e5b74c 100%);
-  box-shadow: 
+  box-shadow:
     8px 8px 20px rgba(196, 147, 50, 0.55),
     0 0 24px rgba(247, 215, 124, 0.5),
     inset 0 1px 2px rgba(255, 255, 255, 1);
@@ -1116,7 +1116,7 @@
 
 .neu-btn-amber:active {
   background: #c49332;
-  box-shadow: 
+  box-shadow:
     inset 4px 4px 8px rgba(90, 62, 15, 0.8),
     inset -3px -3px 6px rgba(247, 215, 124, 0.5);
   transform: translateY(1px);
@@ -1126,7 +1126,7 @@
 .neu-card-light {
   background: linear-gradient(160deg, #ffffff 0%, #edf3f8 60%, #dbe7f0 100%);
   border: 1px solid rgba(229, 183, 76, 0.25);
-  box-shadow: 
+  box-shadow:
     14px 14px 30px rgba(6, 13, 22, 0.08),
     -14px -14px 30px rgba(255, 255, 255, 1);
   border-radius: 1.5rem;
@@ -1136,7 +1136,7 @@
   background: linear-gradient(160deg, #163246 0%, #0f2231 60%, #060d16 100%);
   border: 1px solid rgba(229, 183, 76, 0.22);
   border-top-color: rgba(247, 215, 124, 0.45);
-  box-shadow: 
+  box-shadow:
     16px 16px 36px rgba(3, 7, 12, 0.85),
     0 0 20px rgba(229, 183, 76, 0.06),
     -10px -10px 24px rgba(247, 215, 124, 0.02);
@@ -1147,7 +1147,7 @@
 .neu-pill-light {
   background: #edf3f8;
   border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 
+  box-shadow:
     3px 3px 7px rgba(6, 13, 22, 0.08),
     -3px -3px 7px rgba(255, 255, 255, 0.95);
 }
@@ -1155,7 +1155,7 @@
 .neu-pill-dark {
   background: #0f2231;
   border: 1px solid rgba(229, 183, 76, 0.2);
-  box-shadow: 
+  box-shadow:
     4px 4px 10px rgba(3, 7, 12, 0.75),
     -3px -3px 8px rgba(247, 215, 124, 0.025);
 }
@@ -1194,6 +1194,8 @@
   border-top: 1px solid #f7d77c;
 }
 
-
-
-
+@media (hover: none) and (pointer: coarse) {
+  button {
+    min-height: 44px;
+  }
+}

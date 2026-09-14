@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  ArrowRight, 
-  CheckCircle2, 
-  Cpu, 
-  Users, 
-  Workflow, 
-  Database, 
-  Brain, 
-  Zap, 
-  ShieldCheck, 
-  TrendingUp, 
+import {
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  Cpu,
+  Users,
+  Workflow,
+  Database,
+  Brain,
+  Zap,
+  ShieldCheck,
+  TrendingUp,
   Layers,
   ArrowDown,
   Terminal,
   Activity
 } from 'lucide-react';
-import { 
-  StatusLedPip, 
-  MachineScrewHead, 
-  AcousticVentGrille, 
-  ChassisPanel 
+import {
+  StatusLedPip,
+  MachineScrewHead,
+  AcousticVentGrille,
+  ChassisPanel
 } from './TactileHardwareElements';
 import { AiCompanyBuilderOsExplorer } from './AiCompanyBuilderOsExplorer';
 import { HaomtgvGovernanceFramework } from './HaomtgvGovernanceFramework';
@@ -40,7 +40,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
   return (
     <section id="ai-company-builder" className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
-      
+
       {/* Category Header Chassis */}
       <div className="text-center max-w-3xl mx-auto mb-14">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider mb-4 border select-none">
@@ -61,7 +61,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
       {/* Strategic Infographic Banner: 144-Agent Governed Swarm Architecture */}
       <div className="relative rounded-3xl overflow-hidden mb-12 border border-zinc-800 shadow-2xl group">
-        <img 
+        <img
           src={aiSwarmInfographic}
           alt="144-Agent Workforce Infographic"
           className="w-full h-[260px] sm:h-[380px] object-cover brightness-[0.75] contrast-[1.1] transition-transform duration-700 group-hover:scale-105"
@@ -72,7 +72,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             <StatusLedPip status="emerald" isLight={isLight} />
             <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest">[ INFOGRAPHIC // SYSTEM ARCHITECTURE ]</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold font-display text-white">Governed 144-Agent Swarm &amp; 20-Department Topology</h3>
+          <h2 className="text-xl sm:text-2xl font-bold font-display text-white">Governed 144-Agent Swarm &amp; 20-Department Topology</h2>
           <p className="text-xs sm:text-sm text-zinc-300 font-mono mt-1">Autonomous execution swarms operating under human CEO executive oversight and 5-tier HITL gates.</p>
         </div>
       </div>
@@ -102,7 +102,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-          
+
           {/* Traditional Company Panel */}
           <div className={`p-6 sm:p-8 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${
             isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
@@ -128,7 +128,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
                   </div>
                 </div>
                 <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-zinc-500" /></div>
-                
+
                 <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-mono ${
                   isLight ? 'bg-white border-slate-300 text-slate-800' : 'bg-zinc-900/80 border-zinc-700/60 text-zinc-300'
                 }`}>
