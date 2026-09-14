@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  FileText, 
-  BookOpen, 
-  Globe2, 
-  Brain, 
-  ArrowRight, 
-  Download, 
+import {
+  FileText,
+  BookOpen,
+  Globe2,
+  Brain,
+  ArrowRight,
+  Download,
   ExternalLink,
   Sparkles,
   Bookmark,
@@ -22,11 +22,11 @@ import {
   Landmark,
   FileCheck
 } from 'lucide-react';
-import { 
-  StatusLedPip, 
-  MachineScrewHead, 
-  AcousticVentGrille, 
-  ChassisPanel 
+import {
+  StatusLedPip,
+  MachineScrewHead,
+  AcousticVentGrille,
+  ChassisPanel
 } from './TactileHardwareElements';
 import pharosBeaconLake from '../assets/images/pharos_beacon_lake_1789078282970.jpg';
 import { AgenticAiManifestoModal } from './AgenticAiManifestoModal';
@@ -150,7 +150,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
 
   return (
     <section id="pharos" className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
-      
+
       {/* Title & Classification */}
       <div className="text-center max-w-4xl mx-auto mb-12">
         <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider mb-5 border select-none transition-colors">
@@ -177,7 +177,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
 
       {/* Strategic Infographic Banner: Pharos Sovereign Beacon */}
       <div className="relative rounded-3xl overflow-hidden mb-12 border border-zinc-800 shadow-2xl group">
-        <img 
+        <img
           src={pharosBeaconLake}
           alt="Pharos Sovereign Optical Beacon"
           className="w-full h-[280px] sm:h-[400px] object-cover brightness-[0.75] contrast-[1.1] transition-transform duration-700 group-hover:scale-105"
@@ -188,7 +188,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
             <StatusLedPip status="amber" isLight={isLight} />
             <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest">[ PHAROS STATION // OPTICAL TELEMETRY ]</span>
           </div>
-          <h3 className="text-xl sm:text-3xl font-bold font-display text-white">Sovereign Beacon &amp; Legal Framework Treatise Repository</h3>
+          <h2 className="text-xl sm:text-3xl font-bold font-display text-white">Sovereign Beacon &amp; Legal Framework Treatise Repository</h2>
           <p className="text-xs sm:text-sm text-zinc-300 font-mono mt-1">Guiding regional enterprise navigation past ephemeral AI hype into verifiable, air-gapped computational permanence.</p>
         </div>
       </div>
@@ -271,7 +271,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
             <Flame className="w-3.5 h-3.5" />
             <span>The Alexandria Thesis</span>
           </button>
-          
+
           <button
             onClick={() => setActiveTab('treatises')}
             className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all whitespace-nowrap ${
@@ -313,10 +313,10 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
       {/* TAB 1: THE ALEXANDRIA THESIS & CORE DOCTRINE */}
       {activeTab === 'doctrine' && (
         <div className="space-y-12">
-          
+
           {/* Hero Lore + Optical Station Telemetry */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            
+
             {/* Philosophical Narrative Card */}
             <div className={`lg:col-span-7 p-8 sm:p-10 rounded-3xl border relative overflow-hidden flex flex-col justify-between ${
               isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
@@ -381,7 +381,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
                     </span>
                     <span className="text-[9px] font-mono text-zinc-400">LAT: 14.004° S, 34.301° E</span>
                   </div>
-                  
+
                   <div className="my-4">
                     <div className="h-1.5 w-full bg-black/60 rounded-full overflow-hidden border border-amber-500/30">
                       <div className="h-full bg-gradient-to-r from-amber-500 to-amber-300 w-4/5 animate-pulse" />
@@ -461,7 +461,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              
+
               {/* Pillar 1 */}
               <div className={`p-6 rounded-3xl border relative overflow-hidden space-y-3 ${
                 isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
@@ -536,7 +536,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
       {activeTab === 'treatises' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {tomes.map((tome, idx) => (
-            <div 
+            <div
               key={idx}
               className={`p-7 sm:p-8 rounded-3xl border relative overflow-hidden flex flex-col justify-between space-y-6 transition-all group ${
                 isLight ? 'chassis-milled-light hover:border-amber-500' : 'chassis-milled-dark hover:border-amber-500/50'
@@ -602,8 +602,8 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
       {activeTab === 'research' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {researchReports.map((rep, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className={`p-8 rounded-3xl border relative overflow-hidden space-y-5 ${
                 isLight ? 'chassis-milled-light border-amber-500/50' : 'chassis-milled-dark border-amber-500/40'
               }`}
@@ -658,8 +658,8 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
       {activeTab === 'dispatches' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {articles.map((art, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className={`p-6 sm:p-7 rounded-3xl border relative overflow-hidden flex flex-col justify-between transition-all ${
                 isLight ? 'chassis-milled-light' : 'chassis-milled-dark hover:border-amber-500/40'
               }`}
@@ -738,7 +738,7 @@ export const PharosSection: React.FC<PharosSectionProps> = ({
       </div>
 
       {/* Manifesto Reader Modal */}
-      <AgenticAiManifestoModal 
+      <AgenticAiManifestoModal
         isOpen={isManifestoOpen}
         onClose={() => setIsManifestoOpen(false)}
         onOpenContactModal={onOpenContactModal}

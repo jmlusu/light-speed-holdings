@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  Compass, 
-  Sparkles, 
-  ArrowRight, 
-  ShieldCheck, 
-  Bot, 
-  Layers, 
-  Cpu, 
-  Globe2, 
-  CheckCircle2, 
-  FileText, 
-  Lock, 
-  Zap, 
+import {
+  Compass,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Bot,
+  Layers,
+  Cpu,
+  Globe2,
+  CheckCircle2,
+  FileText,
+  Lock,
+  Zap,
   Activity,
   Award,
   BookOpen,
@@ -21,8 +21,8 @@ import {
   Eye,
   RotateCw
 } from 'lucide-react';
-import { 
-  StatusLedPip 
+import {
+  StatusLedPip
 } from './TactileHardwareElements';
 
 interface PharosWelcomeJourneyProps {
@@ -185,11 +185,11 @@ export const PharosWelcomeJourney: React.FC<PharosWelcomeJourneyProps> = ({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {industrialRevolutionPillars.map((pillar, idx) => (
-            <div 
+            <div
               key={pillar.era}
               className={`p-3.5 rounded-xl border text-left transition-all ${
-                idx === 3 
-                  ? 'border-amber-500 bg-amber-500/15 shadow-md shadow-amber-500/10' 
+                idx === 3
+                  ? 'border-amber-500 bg-amber-500/15 shadow-md shadow-amber-500/10'
                   : isLight ? 'border-slate-200 bg-white/70' : 'border-zinc-800/80 bg-zinc-900/40'
               }`}
             >
@@ -199,7 +199,7 @@ export const PharosWelcomeJourney: React.FC<PharosWelcomeJourneyProps> = ({
                 </span>
                 {idx === 3 && <StatusLedPip status="amber" isLight={isLight} />}
               </div>
-              <h4 className="text-xs font-bold font-display mb-1">{pillar.era}</h4>
+              <h3 className="text-xs font-bold font-display mb-1">{pillar.era}</h3>
               <p className="text-[11px] font-mono text-amber-500 font-semibold mb-1">{pillar.catalyst}</p>
               <p className="text-[10px] text-zinc-400 leading-snug">{pillar.legacy}</p>
             </div>
@@ -213,12 +213,12 @@ export const PharosWelcomeJourney: React.FC<PharosWelcomeJourneyProps> = ({
           const IconComp = step.icon;
           const isSelected = selectedMilestone === index;
           return (
-            <div 
+            <div
               key={step.step}
               onClick={() => setSelectedMilestone(index)}
               className={`p-6 rounded-2xl transition-all duration-300 flex flex-col justify-between relative group cursor-pointer border ${
-                isSelected 
-                  ? 'border-amber-500 bg-amber-500/10 shadow-2xl scale-[1.01]' 
+                isSelected
+                  ? 'border-amber-500 bg-amber-500/10 shadow-2xl scale-[1.01]'
                   : isLight ? 'neu-convex-light hover:shadow-xl border-transparent' : 'neu-convex-dark hover:shadow-2xl border-transparent'
               }`}
             >
@@ -226,8 +226,8 @@ export const PharosWelcomeJourney: React.FC<PharosWelcomeJourneyProps> = ({
                 <div className="flex items-center justify-between mb-3.5">
                   <div className="flex items-center gap-3">
                     <div className={`p-3 rounded-xl flex items-center justify-center ${
-                      isSelected 
-                        ? 'bg-amber-500 text-slate-950 font-bold' 
+                      isSelected
+                        ? 'bg-amber-500 text-slate-950 font-bold'
                         : isLight ? 'neu-inset-light text-amber-600' : 'neu-inset-dark text-amber-400'
                     }`}>
                       <IconComp className="w-5 h-5" />
@@ -330,4 +330,3 @@ export const PharosWelcomeJourney: React.FC<PharosWelcomeJourneyProps> = ({
     </div>
   );
 };
-

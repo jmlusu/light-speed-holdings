@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Play, 
-  Pause, 
-  Maximize2, 
-  Sparkles, 
-  Radio, 
-  ShieldCheck, 
-  Cpu, 
-  Compass, 
-  Layers, 
-  Server, 
+import {
+  Play,
+  Pause,
+  Maximize2,
+  Sparkles,
+  Radio,
+  ShieldCheck,
+  Cpu,
+  Compass,
+  Layers,
+  Server,
   Terminal,
   Activity,
   ArrowRight
 } from 'lucide-react';
-import { 
-  StatusLedPip 
+import {
+  StatusLedPip
 } from './TactileHardwareElements';
 
 interface HeroVideoFilmProps {
@@ -166,8 +166,8 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
             const lineAlpha = (1 - dist / 110) * 0.15;
-            ctx.strokeStyle = isLight 
-              ? `rgba(217, 119, 6, ${lineAlpha})` 
+            ctx.strokeStyle = isLight
+              ? `rgba(217, 119, 6, ${lineAlpha})`
               : `rgba(245, 158, 11, ${lineAlpha})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
@@ -178,8 +178,8 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
         ctx.beginPath();
         const currentAlpha = p1.alpha * (0.6 + 0.4 * Math.sin(p1.pulse));
         ctx.arc(p1.x, p1.y, p1.size, 0, Math.PI * 2);
-        ctx.fillStyle = isLight 
-          ? `rgba(217, 119, 6, ${currentAlpha})` 
+        ctx.fillStyle = isLight
+          ? `rgba(217, 119, 6, ${currentAlpha})`
           : `rgba(251, 191, 36, ${currentAlpha})`;
         ctx.fill();
       }
@@ -276,7 +276,7 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
       }`}>
         {/* Dynamic Procedural Simulation Backdrop */}
         <div className="absolute inset-0 overflow-hidden">
-          <div 
+          <div
             className="absolute inset-0 transition-opacity duration-1000"
             style={{
               background: activeMode === 'datacenter'
@@ -287,7 +287,7 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
             }}
           />
           {/* Subtle Cybernetic Grid Mesh */}
-          <div 
+          <div
             className="absolute inset-0 opacity-20 pointer-events-none"
             style={{
               backgroundImage: 'linear-gradient(rgba(245, 158, 11, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 158, 11, 0.2) 1px, transparent 1px)',
@@ -301,8 +301,8 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
         <div className="absolute inset-0 bg-amber-500/5 mix-blend-overlay z-0" />
 
         {/* Canvas Neural Particle Stream */}
-        <canvas 
-          ref={canvasRef} 
+        <canvas
+          ref={canvasRef}
           className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-75"
         />
 
@@ -330,16 +330,16 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
           <div className="text-amber-400 font-mono text-xs uppercase font-bold tracking-wider">
             {currentChapterData.title} • {currentChapterData.subtitle}
           </div>
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold font-display text-white tracking-tight leading-tight">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold font-display text-white tracking-tight leading-tight">
             &ldquo;{currentChapterData.caption}&rdquo;
-          </h3>
+          </h2>
         </div>
 
         {/* Bottom Playback & Chapter Progress Bar */}
         <div className="relative z-20 p-4 sm:p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
           {/* Progress bar line */}
           <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mb-3 relative">
-            <div 
+            <div
               className="bg-amber-400 h-full rounded-full transition-all duration-100"
               style={{ width: `${progress}%` }}
             />
@@ -417,7 +417,7 @@ export const HeroVideoFilm: React.FC<HeroVideoFilmProps> = ({
 
               {isSelected && (
                 <div className="w-full bg-amber-500/20 h-1 rounded-full overflow-hidden mt-2">
-                  <div 
+                  <div
                     className="bg-amber-500 h-full rounded-full transition-all duration-100"
                     style={{ width: `${progress}%` }}
                   />
