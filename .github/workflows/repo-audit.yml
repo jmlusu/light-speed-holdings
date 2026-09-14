@@ -51,7 +51,7 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --extra dev
 
       - name: Run deterministic scans and emit evidence
         id: scan
@@ -62,7 +62,6 @@ jobs:
           uv run python - <<'PY'
           import json
           import os
-          import re
           import subprocess
           import time
           from pathlib import Path
@@ -113,11 +112,27 @@ jobs:
               canonical = {"read", "edit", "grep", "list", "bash", "webfetch", "task"}
               aliases = {"write", "execute", "delegate", "web_search", "websearch", "code_interpreter"}
               bad = []
+              no_perm = []
               for card in (root / ".opencode" / "agents").glob("*.md"):
-                  for tool in re.findall(r"^\s*-\s+(\S+)", card.read_text(encoding="utf-8"), re.M):
+                  text = card.read_text(encoding="utf-8")
+                  parts = text.split("---", 2)
+                  if len(parts) < 3:
+                      no_perm.append(card.stem)
+                      continue
+                  try:
+                      meta = yaml.safe_load(parts[1]) or {}
+                  except Exception:  # noqa: BLE001
+                      no_perm.append(card.stem)
+                      continue
+                  perm = meta.get("permission")
+                  if not isinstance(perm, dict):
+                      no_perm.append(card.stem)
+                      continue
+                  for tool in perm:
                       if tool in aliases or tool not in canonical:
                           bad.append(f"{card.stem}:{tool}")
-              rec("cards.tools", "ok" if not bad else "fail", f"non-canonical tools: {bad[:8]}")
+              extra = f"; no-permission cards: {len(no_perm)}" if no_perm else ""
+              rec("cards.tools", "ok" if not bad else "fail", f"non-canonical tools: {bad[:8]}{extra}")
           except Exception as e:  # noqa: BLE001
               rec("cards.tools", "fail", str(e))
 
