@@ -2,7 +2,7 @@
 
 **Prepared:** 2026-09-11
 **Benchmark target:** https://www.bcg.com (2025 "Vicine" redesign, hero/keyvisual pages, /publications, /about)
-**Internal baseline:** `website/index.html` (single static page, vanilla JS + Three.js r128 CDN, no build step)
+**Internal baseline:** repo-root React SPA (Vite + React + Tailwind 4, Three.js, deployed via Vercel)
 **Method:** Three-agent parallel review (frontend, strategy, product design) + direct homepage fetch
 
 ---
@@ -112,10 +112,10 @@
 
 | File | Change |
 |------|--------|
-| `website/index.html` | Fix/add sections + anchors (`#evidence`, `#insights`, `#workforce`), hero proof card, spotlight chips, official logo |
-| `website/assets/css/style.css` | Brand-token palette, reveals, hover, sticky/scrollspy, scroll-snap rail, motion media queries |
-| `website/assets/js/main.js` | IntersectionObserver reveals, counters, scrollspy, mobile nav toggle, reduced-motion gate |
-| `website/assets/js/scene3d.js` | Visibility pause + motion gate, DPR/particle caps |
+| `index.html` | Fix/add sections + anchors (`#evidence`, `#insights`, `#workforce`), hero proof card, spotlight chips, official logo |
+| `src/index.css` | Brand-token palette, reveals, hover, sticky/scrollspy, scroll-snap rail, motion media queries |
+| `src/main.tsx` | IntersectionObserver reveals, counters, scrollspy, mobile nav toggle, reduced-motion gate |
+| `src/components/ThreeCanvas.tsx` | Visibility pause + motion gate, DPR/particle caps |
 
 ---
 
@@ -125,4 +125,4 @@ BCG's trust comes from **structured proof, named voices, dated output, and quant
 
 ---
 
-*Sources: bcg.com homepage + capabilities/publications/about pages (fetched 2026-09-11); internal review of `website/`, `brand/tokens/`, `static/brand/`, `.agents/skills/ls-design-system` and `ls-frontend-design`.*
+*Sources: bcg.com homepage + capabilities/publications/about pages (fetched 2026-09-11); internal review of the repo-root SPA, `brand/tokens/`, `static/brand/`, `.agents/skills/ls-design-system` and `ls-frontend-design`.*
