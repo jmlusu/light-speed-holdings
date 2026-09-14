@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  FileText, 
-  X, 
-  Copy, 
-  Check, 
-  Download, 
-  Send, 
-  ShieldCheck, 
-  Landmark, 
-  Globe2, 
-  Building2, 
-  BookOpen, 
-  Sparkles, 
+import {
+  FileText,
+  X,
+  Copy,
+  Check,
+  Download,
+  Send,
+  ShieldCheck,
+  Landmark,
+  Globe2,
+  Building2,
+  BookOpen,
+  Sparkles,
   ArrowRight,
   Share2,
   CheckCircle2,
@@ -170,7 +170,7 @@ If you are a policymaker, a regulator, a CIO, a development partner, or an Afric
     <AnimatePresence>
       <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans">
         {/* Backdrop */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -179,12 +179,12 @@ If you are a policymaker, a regulator, a CIO, a development partner, or an Afric
         />
 
         {/* Modal Container */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className={`relative w-full max-w-4xl rounded-3xl border shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col ${
-            isLight ? 'bg-slate-50 border-slate-300 text-slate-800' : 'bg-[#0b0f19] border-amber-500/30 text-zinc-100'
+            isLight ? 'bg-slate-50 border-slate-300 text-slate-800' : 'bg-[#070a40] border-amber-500/30 text-zinc-100'
           }`}
         >
           {/* Header */}
@@ -246,7 +246,7 @@ If you are a policymaker, a regulator, a CIO, a development partner, or an Afric
 
           {/* Scrollable Document Content */}
           <div className="p-6 sm:p-8 overflow-y-auto space-y-8 flex-1 leading-relaxed">
-            
+
             {/* Title Hero Block */}
             <div className={`p-6 rounded-2xl border ${
               isLight ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200' : 'bg-gradient-to-br from-amber-950/30 via-zinc-900 to-zinc-950 border-amber-500/30'
@@ -347,7 +347,7 @@ If you are a policymaker, a regulator, a CIO, a development partner, or an Afric
               <p className="text-sm text-zinc-300">
                 When the region's risk officers and ministers say no, they are rarely saying no to AI. They are raising four specific, legitimate reservations:
               </p>
-              
+
               <div className="space-y-2 text-xs">
                 <div className={`p-3.5 rounded-xl border ${isLight ? 'bg-slate-100' : 'bg-zinc-900/80 border-zinc-800'}`}>
                   <span className="text-amber-400 font-bold block">1. Low-Bandwidth / Resource-Constrained</span>
@@ -434,7 +434,7 @@ If you are a policymaker, a regulator, a CIO, a development partner, or an Afric
               <p className="text-xs sm:text-sm text-zinc-300 max-w-2xl mx-auto leading-relaxed">
                 Africa does not have to be a consumer of AI tools built elsewhere. It can be a builder of <strong>AI-native institutions</strong> — enterprises and public bodies designed, governed and operated as human-led, agent-supported organizations aligned to the AU Continental AI Strategy and SADC agenda.
               </p>
-              
+
               <div className="pt-2 flex flex-wrap justify-center gap-3">
                 <button
                   onClick={() => {

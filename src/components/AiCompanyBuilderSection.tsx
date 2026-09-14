@@ -252,13 +252,13 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
       {/* Hardware Control Console Tabs */}
       <div className="mb-14">
-        <div className="flex flex-wrap justify-center gap-2.5 pb-4 border-b border-[#e5b74c]/20">
+        <div className="flex flex-wrap justify-center gap-2.5 pb-4 border-b border-[#e63946]/20">
           <button
             onClick={() => setActiveTab('operating-model')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'operating-model'
-                ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#0f2231] text-slate-300 hover:bg-[#163246] border border-[#163246]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
+                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
             }`}
           >
             <StatusLedPip status={activeTab === 'operating-model' ? 'emerald' : 'off'} isLight={isLight} />
@@ -269,8 +269,8 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             onClick={() => setActiveTab('workforce')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'workforce'
-                ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#0f2231] text-slate-300 hover:bg-[#163246] border border-[#163246]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
+                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
             }`}
           >
             <StatusLedPip status={activeTab === 'workforce' ? 'emerald' : 'off'} isLight={isLight} />
@@ -281,8 +281,8 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             onClick={() => setActiveTab('architecture')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'architecture'
-                ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#0f2231] text-slate-300 hover:bg-[#163246] border border-[#163246]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
+                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
             }`}
           >
             <StatusLedPip status={activeTab === 'architecture' ? 'emerald' : 'off'} isLight={isLight} />
@@ -293,8 +293,8 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             onClick={() => setActiveTab('journey')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'journey'
-                ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#0f2231] text-slate-300 hover:bg-[#163246] border border-[#163246]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
+                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
             }`}
           >
             <StatusLedPip status={activeTab === 'journey' ? 'emerald' : 'off'} isLight={isLight} />
@@ -305,8 +305,8 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             onClick={() => setActiveTab('governance')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'governance'
-                ? 'bg-gradient-to-r from-[#e5b74c] to-[#c49332] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#0f2231] text-slate-300 hover:bg-[#163246] border border-[#163246]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
+                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
             }`}
           >
             <StatusLedPip status={activeTab === 'governance' ? 'emerald' : 'off'} isLight={isLight} />

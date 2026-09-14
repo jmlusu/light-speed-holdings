@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  ArrowRight, 
-  CheckCircle2, 
-  Cpu, 
-  Layers, 
-  ShieldCheck, 
-  Workflow, 
-  Zap, 
-  TrendingUp, 
-  Building2, 
-  Landmark, 
-  Globe2, 
-  Sparkles, 
+import {
+  ArrowRight,
+  CheckCircle2,
+  Cpu,
+  Layers,
+  ShieldCheck,
+  Workflow,
+  Zap,
+  TrendingUp,
+  Building2,
+  Landmark,
+  Globe2,
+  Sparkles,
   ChevronRight,
   ChevronDown,
   ChevronUp,
@@ -427,14 +427,14 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
       {/* SECTION 01: HERO — STRATEGY TO INTELLIGENT EXECUTION */}
       <section id="hero" className="relative min-h-[92vh] flex flex-col justify-center pt-6 sm:pt-10 pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 w-full">
-          
+
           {/* Left Column: Core Positioning Statement & Vision */}
           <div className="lg:col-span-7 xl:col-span-7 space-y-6 text-left">
-            
+
             {/* Eyebrow Badge & Canonical Tagline */}
             <div className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border text-[11px] font-mono tracking-widest transition-all shadow-xs ${
-              isLight 
-                ? 'bg-white border-slate-300 text-slate-900 shadow-orange-500/5' 
+              isLight
+                ? 'bg-white border-slate-300 text-slate-900 shadow-orange-500/5'
                 : 'bg-zinc-900/90 border-orange-500/40 text-zinc-300 shadow-black/40'
             }`}>
               <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/80 animate-pulse" />
@@ -448,7 +448,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               isLight ? 'text-slate-900' : 'text-white'
             }`}>
               THE AI-NATIVE <br />
-              <span className={isLight 
+              <span className={isLight
                 ? 'text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-slate-900'
                 : 'text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-amber-200'
               }>
@@ -487,7 +487,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
 
             {/* 30-60 Second Visually Understandable Regional Advantage Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 max-w-2xl">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-20px' }}
@@ -505,7 +505,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                 </p>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-20px' }}
@@ -523,7 +523,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                 </p>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-20px' }}
@@ -557,8 +557,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               <a
                 href="#method"
                 className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest border transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
-                  isLight 
-                    ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900' 
+                  isLight
+                    ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
                     : 'bg-zinc-900 hover:bg-zinc-800 text-white border-white/20'
                 }`}
               >
@@ -568,8 +568,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               <a
                 href="#diagnostic"
                 className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest border backdrop-blur-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
-                  isLight 
-                    ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-orange-500' 
+                  isLight
+                    ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-orange-500'
                     : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/15'
                 }`}
               >
@@ -603,7 +603,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
           </div>
 
           {/* Right Column: Audio/Hardware-Grade 4-Pillars Architectural Chassis Card */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 20 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: '-20px' }}
@@ -622,7 +622,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               {/* Chassis Header Strip with Micro Acoustic Vent */}
               <div className={`flex items-center justify-between pb-3.5 border-b ${isLight ? 'border-black/10' : 'border-white/10'}`}>
                 <div className="flex items-center gap-2 pl-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.9)]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(230,57,70,0.9)]" />
                   <span className={`font-mono text-xs font-bold tracking-wider ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
                     OPERATING TOPOLOGY
                   </span>
@@ -643,7 +643,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                   { num: '03', title: 'AI-Native Systems', desc: 'Multi-agent orchestration & deterministic DAGs', tag: 'Autonomous', idx: 2 },
                   { num: '04', title: 'Execution', desc: 'Legacy core integration & instant settlement', tag: 'Production', idx: 3 }
                 ].map((p, pIdx) => (
-                  <motion.button 
+                  <motion.button
                     key={p.num}
                     initial={{ opacity: 0, x: -8 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -657,8 +657,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     className={`w-full text-left p-3 rounded-2xl transition-all cursor-pointer group ${
                       activePillar === p.idx
                         ? isLight ? 'tactile-btn-active-light border-orange-500/50' : 'tactile-btn-active-dark border-orange-500/50'
-                        : isLight 
-                          ? 'tactile-concave-btn-light' 
+                        : isLight
+                          ? 'tactile-concave-btn-light'
                           : 'tactile-concave-btn-dark'
                     }`}
                   >
@@ -701,7 +701,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
       <section className={`py-12 px-4 sm:px-8 max-w-7xl mx-auto w-full relative z-10 border-t ${
         isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
       }`}>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-40px' }}
@@ -722,9 +722,9 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               <div className={`relative rounded-2xl overflow-hidden border shadow-2xl ${
                 isLight ? 'border-slate-300' : 'border-white/20'
               }`}>
-                <img 
-                  src={heroSadcAi} 
-                  alt="Modern SADC Corporate AI Command Center" 
+                <img
+                  src={heroSadcAi}
+                  alt="Modern SADC Corporate AI Command Center"
                   referrerPolicy="no-referrer"
                   className="w-full h-72 sm:h-96 object-cover object-center group-hover:scale-102 transition-transform duration-700"
                 />
@@ -796,7 +796,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     highlight: '100% Verifiable'
                   }
                 ].map((item, i) => (
-                  <div 
+                  <div
                     key={i}
                     className={`p-3 rounded-2xl border flex items-start gap-3 ${
                       isLight ? 'bg-white border-slate-200' : 'bg-white/[0.04] border-white/10'
@@ -837,7 +837,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
       </section>
 
       {/* SADC ECOSYSTEM DIALOGUE & STANDARDS ALIGNMENT INTERACTIVE CAROUSEL */}
-      <EcosystemCarousel 
+      <EcosystemCarousel
         theme={theme}
         onRequestBriefing={onRequestBriefing}
       />
@@ -850,32 +850,32 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
 
       {/* SOVEREIGN CONSTELLATION: INTERACTIVE TOPOLOGY & REGIONAL ARCS */}
       <section id="constellation">
-        <SovereignConstellation 
+        <SovereignConstellation
           theme={theme}
           onRequestBriefing={onRequestBriefing}
         />
       </section>
 
       {/* METHOD: THE 144-AGENT SOVEREIGN COMPANY FRAMEWORK (H-A-O-M-T-G-V) */}
-      <MethodFramework 
+      <MethodFramework
         theme={theme}
         onRequestBriefing={onRequestBriefing}
       />
 
       {/* MASTER USE CASE CATALOG (OFFERS A–E, DUAL PRICING, SADC VERTICALS, FOW SCENARIOS, HONESTY BADGES) */}
-      <UseCaseCatalogSection 
+      <UseCaseCatalogSection
         theme={theme}
         onRequestBriefing={onRequestBriefing}
       />
 
       {/* SADC AGENTIC AI GOVERNANCE FRAMEWORK (POLICY BRIEFING & EXECUTIVE SUBMISSION) */}
-      <SadcGovernanceFramework 
+      <SadcGovernanceFramework
         theme={theme}
         onRequestBriefing={onRequestBriefing}
       />
 
       {/* NATIONAL AI STRATEGY & DIGITAL TRANSFORMATION COMMENTS (MALAWI DEPT OF E-GOVT / UNDP SUBMISSION) */}
-      <NationalAiStrategySubmission 
+      <NationalAiStrategySubmission
         theme={theme}
         onRequestBriefing={onRequestBriefing}
       />
@@ -915,11 +915,11 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               onClick={() => setActivePillar(idx)}
               className={`p-3.5 rounded-2xl text-left transition-all duration-200 cursor-pointer relative overflow-hidden group ${
                 activePillar === idx
-                  ? isLight 
-                    ? 'tactile-btn-active-light text-slate-900 border-orange-500/50 shadow-md' 
+                  ? isLight
+                    ? 'tactile-btn-active-light text-slate-900 border-orange-500/50 shadow-md'
                     : 'tactile-btn-active-dark text-white border-orange-500/50 shadow-lg'
-                  : isLight 
-                    ? 'tactile-btn-inactive-light text-slate-700' 
+                  : isLight
+                    ? 'tactile-btn-inactive-light text-slate-700'
                     : 'tactile-btn-inactive-dark text-zinc-300'
               }`}
             >
@@ -929,8 +929,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     activePillar === idx ? 'tactile-pip-active' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                   }`} />
                   <span className={`text-[9px] font-mono tracking-widest font-bold px-1.5 py-0.5 rounded-md ${
-                    activePillar === idx 
-                      ? 'bg-orange-500/20 text-orange-500' 
+                    activePillar === idx
+                      ? 'bg-orange-500/20 text-orange-500'
                       : 'bg-black/5 text-[#2D3748]'
                   }`}>
                     {idx < 3 ? `OFFER ${String.fromCharCode(65 + idx)}` : `ENT 0${idx - 2}`}
@@ -949,7 +949,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         {(() => {
           const active = coreCapabilities[activePillar];
           return (
-            <motion.div 
+            <motion.div
               key={active.id}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -970,7 +970,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2">
-                
+
                 {/* Left Column: Core Description & Contracts */}
                 <div className="lg:col-span-7 space-y-6">
                   <div>
@@ -1081,8 +1081,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {active.deliverables.map((item, dIdx) => (
-                        <div 
-                          key={dIdx} 
+                        <div
+                          key={dIdx}
                           className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs font-medium transition-colors ${
                             isLight ? 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100' : 'border-white/15 bg-white/[0.04] text-zinc-300 hover:bg-white/[0.08]'
                           }`}
@@ -1126,8 +1126,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                           key={c.id}
                           onClick={() => setActivePillar(cIdx)}
                           className={`h-2.5 rounded-full transition-all ${
-                            activePillar === cIdx 
-                              ? 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.8)]' 
+                            activePillar === cIdx
+                              ? 'bg-orange-500 shadow-[0_0_6px_rgba(230,57,70,0.8)]'
                               : isLight ? 'bg-slate-300 hover:bg-slate-400' : 'bg-zinc-800 hover:bg-zinc-700'
                           }`}
                           title={`Switch to: ${c.shortTitle}`}
@@ -1181,7 +1181,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         })()}
 
         {/* INTERACTIVE CONTINUOUS CLOSED-LOOP & SYNERGY MATRIX */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-40px' }}
@@ -1220,8 +1220,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                 className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                   selectedSynergy === key
                     ? 'bg-orange-500 text-white border-orange-400 shadow-md shadow-orange-500/20'
-                    : isLight 
-                      ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300' 
+                    : isLight
+                      ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
                       : 'bg-zinc-900/80 hover:bg-zinc-900 text-zinc-300 border-white/15'
                 }`}
               >
@@ -1240,7 +1240,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
             const pair = synergyPairs[selectedSynergy];
             if (!pair) return null;
             return (
-              <motion.div 
+              <motion.div
                 key={selectedSynergy}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1360,9 +1360,9 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Failure Trap 01 */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-30px' }}
@@ -1390,7 +1390,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
           </motion.div>
 
           {/* Failure Trap 02 */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-30px' }}
@@ -1418,7 +1418,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
           </motion.div>
 
           {/* Failure Trap 03 */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-30px' }}
@@ -1482,8 +1482,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                   className={`px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 ${
                     isSelected
                       ? isLight ? 'tactile-btn-active-light text-slate-900 border-orange-500/50' : 'tactile-btn-active-dark text-white border-orange-500/50'
-                      : isLight 
-                        ? 'tactile-btn-inactive-light text-slate-700' 
+                      : isLight
+                        ? 'tactile-btn-inactive-light text-slate-700'
                         : 'tactile-btn-inactive-dark text-zinc-300'
                   }`}
                 >
@@ -1501,7 +1501,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         {(() => {
           const ind = industriesData[selectedIndustry];
           return (
-            <motion.div 
+            <motion.div
               key={selectedIndustry}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1551,8 +1551,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                       {/* Waveform Telemetry Visual */}
                       <div className="h-10 bg-black/80 rounded-lg p-2 flex items-center gap-1 border border-orange-500/20">
                         {Array.from({ length: 28 }).map((_, i) => (
-                          <div 
-                            key={i} 
+                          <div
+                            key={i}
                             className="flex-1 bg-orange-500/60 rounded-full transition-all duration-300"
                             style={{ height: `${20 + ((i * 17 + 7) % 70)}%` }}
                           />
@@ -1590,8 +1590,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {ind.impact.map((imp, iIdx) => (
-                        <div 
-                          key={iIdx} 
+                        <div
+                          key={iIdx}
                           className={`p-3 rounded-xl border text-xs flex items-start gap-2 font-medium ${
                             isLight ? 'bg-slate-50 border-slate-300 text-slate-800' : 'border-white/15 bg-white/[0.05] text-zinc-300'
                           }`}
@@ -1611,8 +1611,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         {/* Case Studies Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {caseStudies.map((cs, cIdx) => (
-            <motion.div 
-              key={cIdx} 
+            <motion.div
+              key={cIdx}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-20px' }}
@@ -1645,7 +1645,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
       </section>
 
       {/* SECTION: PROOF SHOWCASE (Pilots, Publications, Ecosystem) */}
-      <ProofShowcase 
+      <ProofShowcase
         theme={theme}
         onRequestBriefing={onRequestBriefing}
       />
@@ -1654,7 +1654,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
       <section id="diagnostic" className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full border-t ${
         isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
       }`}>
-        <TransformationDiagnostic 
+        <TransformationDiagnostic
           theme={theme}
           onRequestBriefing={onRequestBriefing}
         />
@@ -1677,7 +1677,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-14">
           <div className="lg:col-span-8 space-y-4">
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-transparent text-amber-500 font-mono text-[11px] tracking-widest shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,1)] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,131,143,1)] animate-pulse" />
               <span>PHAROS // THE LIGHTHOUSE OF ALEXANDRIA</span>
             </div>
 
@@ -1685,8 +1685,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               isLight ? 'text-slate-900' : 'text-white'
             }`}>
               PHAROS <br />
-              <span className={isLight 
-                ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-orange-600 to-slate-900' 
+              <span className={isLight
+                ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-orange-600 to-slate-900'
                 : 'text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-amber-100'
               }>
                 THOUGHT LEADERSHIP
@@ -1696,13 +1696,13 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
             <p className={`text-justify text-justify text-sm sm:text-base leading-relaxed max-w-3xl ${
               isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
             }`}>
-              Erected on the limestone bedrock of the island of Pharos in Alexandria, Egypt, the ancient Lighthouse stood as humanity's supreme beacon of guidance—projecting radiant light across treacherous maritime shoals. 
+              Erected on the limestone bedrock of the island of Pharos in Alexandria, Egypt, the ancient Lighthouse stood as humanity's supreme beacon of guidance—projecting radiant light across treacherous maritime shoals.
               In today's turbulent storm of AI hype, SaaS data leakages, and consulting slide paralysis, LightSpeed's <strong className="text-orange-500 font-bold">PHAROS</strong> casts unyielding illumination: providing boards, central banks, and sovereign ministries with definitive mathematical, architectural, and fiduciary clarity.
             </p>
           </div>
 
           {/* Pharos Beacon Optical Station Telemetry Card */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: '-20px' }}
@@ -1713,7 +1713,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               isLight ? 'bg-white/90 border-slate-300 text-slate-800 shadow-xl' : 'bg-zinc-950/80 border-amber-500/30 text-zinc-300 shadow-2xl'
             }`}>
               {/* Pharos Beacon Optical Telemetry Display */}
-              <div className="relative rounded-2xl overflow-hidden mb-3 border border-amber-500/30 p-4 bg-gradient-to-br from-[#1c1408] via-[#090805] to-[#040403] flex flex-col justify-between min-h-[144px]">
+              <div className="relative rounded-2xl overflow-hidden mb-3 border border-amber-500/30 p-4 bg-gradient-to-br from-[#1c0507] via-[#160808] to-[#040403] flex flex-col justify-between min-h-[144px]">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/40">
                     OPTICAL TRANSMITTER ACTIVE
@@ -1740,7 +1740,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               <div className="relative z-10 space-y-2.5">
                 <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,1)] animate-ping" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(230,57,70,1)] animate-ping" />
                     <span className="font-mono text-xs font-bold tracking-wider text-amber-500">
                       OPTICAL BEACON TELEMETRY
                     </span>
@@ -1772,15 +1772,15 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         {/* 4 Pharos Treatises / Tomes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
           {whitepapers.map((wp, wIdx) => (
-            <motion.div 
-              key={wIdx} 
+            <motion.div
+              key={wIdx}
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.45, delay: wIdx * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className={`p-6 sm:p-7 rounded-3xl flex flex-col justify-between space-y-6 transition-all group relative overflow-hidden ${
-                isLight 
-                  ? 'hardware-chassis-light hover:border-amber-500 text-slate-900' 
+                isLight
+                  ? 'hardware-chassis-light hover:border-amber-500 text-slate-900'
                   : 'hardware-chassis-dark hover:border-amber-500/60 text-zinc-300'
               }`}
             >
@@ -1867,9 +1867,9 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
+
           {/* Model 01 */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
@@ -1911,7 +1911,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
           </motion.div>
 
           {/* Model 02: Featured Co-Engineered Pilot */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
@@ -1955,7 +1955,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
           </motion.div>
 
           {/* Model 03 */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
@@ -2022,7 +2022,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
 
         {/* FAQ Controls: Category Filter Tabs & Live Search */}
         <div className="max-w-4xl mx-auto mb-10 space-y-4">
-          
+
           {/* Live Search Bar with ARIA Labeling */}
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-500 pointer-events-none" />
@@ -2037,8 +2037,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                 setOpenFaqIndex(0); // Reset accordion expand on new search
               }}
               className={`w-full pl-11 pr-4 py-3.5 rounded-2xl border text-xs sm:text-sm font-medium outline-none focus:border-orange-500 transition-all ${
-                isLight 
-                  ? 'bg-white border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner focus:ring-2 focus:ring-orange-500/20' 
+                isLight
+                  ? 'bg-white border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner focus:ring-2 focus:ring-orange-500/20'
                   : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner focus:ring-2 focus:ring-orange-500/30'
               }`}
             />
@@ -2054,8 +2054,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
           </div>
 
           {/* Category Filter Pills (Accessible Tab List) */}
-          <div 
-            role="tablist" 
+          <div
+            role="tablist"
             aria-label="Filter FAQ topics"
             className={`flex flex-wrap items-center gap-2 p-1.5 rounded-2xl ${
               isLight ? 'bg-slate-200/70' : 'bg-zinc-900/80 border border-white/10'
@@ -2168,8 +2168,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
           const filtered = faqItems.filter(item => {
             const matchesCat = faqCategory === 'all' || item.category === faqCategory;
             const query = faqSearchQuery.toLowerCase().trim();
-            const matchesSearch = !query || 
-              item.q.toLowerCase().includes(query) || 
+            const matchesSearch = !query ||
+              item.q.toLowerCase().includes(query) ||
               item.a.toLowerCase().includes(query) ||
               item.categoryLabel.toLowerCase().includes(query) ||
               item.highlights.some(h => h.toLowerCase().includes(query));
@@ -2230,8 +2230,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                       aria-controls={panelId}
                       onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
                       className={`w-full text-left p-5 sm:p-6 flex items-start justify-between gap-4 cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:outline-none transition-colors ${
-                        isOpen 
-                          ? isLight ? 'bg-orange-50/40' : 'bg-orange-950/10' 
+                        isOpen
+                          ? isLight ? 'bg-orange-50/40' : 'bg-orange-950/10'
                           : ''
                       }`}
                     >
@@ -2249,10 +2249,10 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                       </div>
 
                       <div className={`p-2 rounded-xl shrink-0 transition-all ${
-                        isOpen 
-                          ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30' 
-                          : isLight 
-                            ? 'bg-slate-200 text-slate-700' 
+                        isOpen
+                          ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30'
+                          : isLight
+                            ? 'bg-slate-200 text-slate-700'
                             : 'bg-zinc-800 text-zinc-300'
                       }`}>
                         {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -2325,7 +2325,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
         isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
       }`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
+
           <div className="lg:col-span-5 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-500 font-mono text-[11px] tracking-widest font-bold">
               <span>COMMENCE TRANSFORMATION</span>
@@ -2357,7 +2357,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
             </div>
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
@@ -2376,7 +2376,7 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
               {/* Console Header Bar */}
               <div className="flex items-center justify-between pb-3.5 mb-6 border-b border-black/10 dark:border-white/10 px-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.9)]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(230,57,70,0.9)]" />
                   <span className="font-mono text-xs font-bold tracking-wider">
                     BRIEFING TRANSMISSION CONSOLE
                   </span>
@@ -2416,8 +2416,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.name}
                         onChange={(e) => setContactFormData({ ...contactFormData, name: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -2433,8 +2433,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.title}
                         onChange={(e) => setContactFormData({ ...contactFormData, title: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -2453,8 +2453,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.organization}
                         onChange={(e) => setContactFormData({ ...contactFormData, organization: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -2470,8 +2470,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                         value={contactFormData.email}
                         onChange={(e) => setContactFormData({ ...contactFormData, email: e.target.value })}
                         className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                          isLight 
-                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                          isLight
+                            ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                             : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                         }`}
                       />
@@ -2486,8 +2486,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                       value={contactFormData.scope}
                       onChange={(e) => setContactFormData({ ...contactFormData, scope: e.target.value })}
                       className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                        isLight 
-                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 shadow-inner' 
+                        isLight
+                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 shadow-inner'
                           : 'bg-zinc-900 border-white/20 text-white shadow-inner'
                       }`}
                     >
@@ -2508,8 +2508,8 @@ export const CorporateLanding: React.FC<CorporateLandingProps> = ({
                       value={contactFormData.objective}
                       onChange={(e) => setContactFormData({ ...contactFormData, objective: e.target.value })}
                       className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors resize-none font-medium ${
-                        isLight 
-                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner' 
+                        isLight
+                          ? 'bg-slate-100/90 border-slate-300 text-slate-900 placeholder:text-[#2D3748] shadow-inner'
                           : 'bg-zinc-900/90 border-white/20 text-white placeholder:text-[#2D3748] shadow-inner'
                       }`}
                     />

@@ -52,15 +52,15 @@ export const TactileRockerSwitch: React.FC<TactileRockerSwitchProps> = ({
             ? 'bg-gradient-to-b from-white via-slate-100 to-slate-200 border border-white/90 shadow-slate-900/20'
             : 'bg-gradient-to-b from-zinc-200 via-zinc-400 to-zinc-600 border border-white/40 shadow-black/80'
         } ${
-          isOn 
-            ? isSm ? 'translate-x-8' : 'translate-x-10' 
+          isOn
+            ? isSm ? 'translate-x-8' : 'translate-x-10'
             : 'translate-x-0'
         }`}
       >
         {/* Subtle Pill Center Slit / Pip */}
         <div className={`w-0.5 h-3 rounded-full transition-colors ${
-          isOn 
-            ? 'bg-orange-500 shadow-[0_0_4px_rgba(249,115,22,0.9)]' 
+          isOn
+            ? 'bg-orange-500 shadow-[0_0_4px_rgba(230,57,70,0.9)]'
             : isLight ? 'bg-slate-400' : 'bg-zinc-600'
         }`} />
       </div>
@@ -93,24 +93,24 @@ export const TactileRotaryKnob: React.FC<TactileRotaryKnobProps> = ({
   return (
     <div className="flex flex-col items-center select-none">
       {/* Outer Halo Lighting & Housing */}
-      <div 
+      <div
         className={`relative rounded-full flex items-center justify-center transition-all ${
           isLight ? 'master-rotary-housing-light' : 'master-rotary-housing-dark'
         }`}
         style={{ width: size, height: size }}
       >
         {/* Optical Glow Halo Ring */}
-        <div 
+        <div
           className="absolute inset-[-4px] rounded-full pointer-events-none opacity-40 transition-opacity"
           style={{
-            background: isLight 
-              ? `radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 70%)` 
-              : `radial-gradient(circle, rgba(249,115,22,0.35) 0%, transparent 70%)`
+            background: isLight
+              ? `radial-gradient(circle, rgba(230,57,70,0.2) 0%, transparent 70%)`
+              : `radial-gradient(circle, rgba(230,57,70,0.35) 0%, transparent 70%)`
           }}
         />
 
         {/* Rotary Dial Top Face with Conic Brushed Texture */}
-        <div 
+        <div
           className={`w-[82%] h-[82%] rounded-full relative transition-transform duration-200 cursor-pointer flex items-center justify-center ${
             isLight ? 'analog-rotary-dial-light' : 'analog-rotary-dial-dark'
           }`}
@@ -123,12 +123,12 @@ export const TactileRotaryKnob: React.FC<TactileRotaryKnobProps> = ({
           }}
         >
           {/* Vertical Precision Pointer Notch Slit */}
-          <div className="absolute top-1.5 w-1 h-3 rounded-full bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,1)]" />
+          <div className="absolute top-1.5 w-1 h-3 rounded-full bg-orange-500 shadow-[0_0_6px_rgba(230,57,70,1)]" />
 
           {/* Center Concave Bevel */}
           <div className={`w-3.5 h-3.5 rounded-full ${
-            isLight 
-              ? 'bg-gradient-to-b from-slate-300 to-slate-100 shadow-inner' 
+            isLight
+              ? 'bg-gradient-to-b from-slate-300 to-slate-100 shadow-inner'
               : 'bg-gradient-to-b from-zinc-900 to-zinc-800 shadow-inner'
           }`} />
         </div>
@@ -193,9 +193,9 @@ export const MachineScrewHead: React.FC<{ isLight?: boolean; className?: string 
   className = '',
 }) => {
   return (
-    <div 
-      className={`${isLight ? 'machine-screw-light' : 'machine-screw'} ${className}`} 
-      aria-hidden="true" 
+    <div
+      className={`${isLight ? 'machine-screw-light' : 'machine-screw'} ${className}`}
+      aria-hidden="true"
     />
   );
 };

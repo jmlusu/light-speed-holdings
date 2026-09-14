@@ -1,22 +1,22 @@
 import React, { useEffect, useRef, useState, useId } from 'react';
 import * as THREE from 'three';
-import { 
-  TactileRockerSwitch, 
-  TactileRotaryKnob, 
-  AcousticVentGrille, 
-  StatusLedPip, 
-  MachineScrewHead 
+import {
+  TactileRockerSwitch,
+  TactileRotaryKnob,
+  AcousticVentGrille,
+  StatusLedPip,
+  MachineScrewHead
 } from './TactileHardwareElements';
-import { 
-  Activity, 
-  ShieldCheck, 
-  Zap, 
-  RefreshCw, 
-  Compass, 
-  Layers, 
-  Lock, 
-  Radio, 
-  Maximize2 
+import {
+  Activity,
+  ShieldCheck,
+  Zap,
+  RefreshCw,
+  Compass,
+  Layers,
+  Lock,
+  Radio,
+  Maximize2
 } from 'lucide-react';
 
 interface ActiveEngineCoreProps {
@@ -90,7 +90,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
     const ambientLight = new THREE.AmbientLight(0xffffff, isLight ? 1.4 : 1.0);
     scene.add(ambientLight);
 
-    const corePointLight = new THREE.PointLight(isLight ? 0xd97706 : 0xf59e0b, isLight ? 2.2 : 3.0, 450);
+    const corePointLight = new THREE.PointLight(isLight ? 0xc1121f : 0xe63946, isLight ? 2.2 : 3.0, 450);
     corePointLight.position.set(0, 0, 80);
     scene.add(corePointLight);
 
@@ -126,7 +126,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
     const logoHeight = 175;
     const logoWidth = logoHeight * (1280 / 1667); // ~134.4
     const logoDepth = 18;
-    
+
     // Front Face Material & Mesh (Transparent Holographic)
     const logoMatFront = new THREE.MeshBasicMaterial({
       map: logoTexture,
@@ -174,7 +174,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
     // 3D Transparent Hologram Crystal Chassis & Edge Chamfer Frame
     const boxGeo = new THREE.BoxGeometry(logoWidth + 14, logoHeight + 14, logoDepth + 4);
     const boxMat = new THREE.MeshBasicMaterial({
-      color: isLight ? 0xf59e0b : 0xd97706,
+      color: isLight ? 0xe63946 : 0xc1121f,
       transparent: true,
       opacity: 0.06,
       depthWrite: false,
@@ -186,7 +186,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
     // Luminous 3D Edge Wireframe Lines
     const edgesGeo = new THREE.EdgesGeometry(boxGeo);
     const edgesMat = new THREE.LineBasicMaterial({
-      color: isLight ? 0xd97706 : 0xf59e0b,
+      color: isLight ? 0xc1121f : 0xe63946,
       transparent: true,
       opacity: 0.45,
       linewidth: 1.5,
@@ -220,7 +220,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
 
     const nucleusRingGeo1 = new THREE.TorusGeometry(116, 1.6, 16, 64);
     const nucleusRingMat1 = new THREE.MeshBasicMaterial({
-      color: isLight ? 0xd97706 : 0xf59e0b,
+      color: isLight ? 0xc1121f : 0xe63946,
       transparent: true,
       opacity: 0.6,
       wireframe: true,
@@ -269,9 +269,9 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
         positions[i * 3 + 2] = 0;
       }
       ringGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      
+
       const ringMat = new THREE.LineBasicMaterial({
-        color: idx === 1 ? (isLight ? 0xf59e0b : 0xfbbf24) : (isLight ? 0x94a3b8 : 0x52525b),
+        color: idx === 1 ? (isLight ? 0xe63946 : 0xf5838f) : (isLight ? 0x94a3b8 : 0x52525b),
         transparent: true,
         opacity: idx === 1 ? 0.75 : 0.4,
       });
@@ -290,7 +290,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
     const particleAngles = new Float32Array(particleCount);
     const particleColors = new Float32Array(particleCount * 3);
 
-    const amberColor = new THREE.Color(isLight ? 0xd97706 : 0xf59e0b);
+    const amberColor = new THREE.Color(isLight ? 0xc1121f : 0xe63946);
     const emeraldColor = new THREE.Color(isLight ? 0x059669 : 0x10b981);
     const slateColor = new THREE.Color(isLight ? 0x64748b : 0x71717a);
 
@@ -392,7 +392,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
       if (!orbitLock) {
         // Continuous smooth yaw rotation
         logoGroup.rotation.y += 0.005 * speedMultiplier;
-        
+
         // Harmonic floating levitation & subtle banking tilt
         logoGroup.position.y = Math.sin(elapsed * 1.4) * 4.5;
         logoGroup.rotation.z = Math.sin(elapsed * 0.9) * 0.04;
@@ -416,7 +416,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
       for (let i = 0; i < particleCount; i++) {
         particleAngles[i] += particleSpeeds[i] * speedMultiplier;
         const baseR = initialRadii[i] * (0.8 + (swarmFrequency / 100) * 0.4);
-        
+
         // Burst wave effect
         let burstOffset = 0;
         if (burstTimeRef.current > 0) {
@@ -468,7 +468,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
     <div className={`rounded-3xl border relative overflow-hidden transition-all duration-300 select-none ${
       isLight ? 'chassis-milled-light text-slate-900' : 'chassis-milled-dark text-zinc-100'
     } ${className}`}>
-      
+
       {/* 4 Corner Machine Screws */}
       <MachineScrewHead isLight={isLight} className="absolute top-4 left-4 z-20" />
       <MachineScrewHead isLight={isLight} className="absolute top-4 right-4 z-20" />
@@ -480,10 +480,10 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
         isLight ? 'border-slate-200/90 bg-slate-100/60' : 'border-zinc-800/90 bg-zinc-900/60'
       }`}>
         <div className="flex items-center gap-3">
-          <StatusLedPip 
-            status={telemetryBurst ? 'amber' : 'emerald'} 
-            label={telemetryBurst ? 'FLUX BURST ACTIVE' : 'ENGINE CORE: OPERATIONAL'} 
-            isLight={isLight} 
+          <StatusLedPip
+            status={telemetryBurst ? 'amber' : 'emerald'}
+            label={telemetryBurst ? 'FLUX BURST ACTIVE' : 'ENGINE CORE: OPERATIONAL'}
+            isLight={isLight}
           />
           <div className="hidden sm:flex items-center gap-2">
             <span className="text-zinc-500 font-mono text-[10px]">•</span>
@@ -506,7 +506,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
 
       {/* Main 3D Canvas Viewport + Overlay HUD Diagnostics */}
       <div className="relative w-full h-[360px] sm:h-[420px] overflow-hidden cursor-grab active:cursor-grabbing">
-        
+
         {/* Three.js Canvas Container */}
         <div ref={mountRef} className="w-full h-full" />
 
@@ -559,7 +559,7 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
         isLight ? 'border-slate-200 bg-slate-50' : 'border-zinc-800/90 bg-[#0c0d10]'
       }`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
-          
+
           {/* Hardware Control 1: Physical Rocker Switch for Hyper Flux */}
           <div className={`p-4 rounded-xl border flex items-center justify-between gap-4 ${
             isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
@@ -611,8 +611,8 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
               className={`flex-1 py-2 px-2.5 rounded-lg text-[10px] font-mono font-bold tracking-wider uppercase transition-all flex items-center justify-center gap-1.5 ${
                 telemetryBurst
                   ? 'bg-amber-500 text-slate-950 shadow-inner'
-                  : isLight 
-                    ? 'tactile-btn-inactive-light text-slate-800 hover:text-amber-600' 
+                  : isLight
+                    ? 'tactile-btn-inactive-light text-slate-800 hover:text-amber-600'
                     : 'tactile-btn-inactive-dark text-zinc-200 hover:text-amber-400'
               }`}
             >
@@ -625,8 +625,8 @@ export const ActiveEngineCore: React.FC<ActiveEngineCoreProps> = ({
               className={`flex-1 py-2 px-2.5 rounded-lg text-[10px] font-mono font-bold tracking-wider uppercase transition-all flex items-center justify-center gap-1.5 ${
                 orbitLock
                   ? 'bg-emerald-500 text-slate-950 shadow-inner'
-                  : isLight 
-                    ? 'tactile-btn-inactive-light text-slate-800 hover:text-emerald-600' 
+                  : isLight
+                    ? 'tactile-btn-inactive-light text-slate-800 hover:text-emerald-600'
                     : 'tactile-btn-inactive-dark text-zinc-200 hover:text-emerald-400'
               }`}
             >

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ShieldCheck, 
-  Sparkles, 
-  BookOpen, 
-  Download, 
-  ArrowRight, 
-  ExternalLink, 
-  CheckCircle2, 
-  Building2, 
-  Landmark, 
-  HeartHandshake, 
+import {
+  ShieldCheck,
+  Sparkles,
+  BookOpen,
+  Download,
+  ArrowRight,
+  ExternalLink,
+  CheckCircle2,
+  Building2,
+  Landmark,
+  HeartHandshake,
   Store,
   FileText,
   Clock,
@@ -158,12 +158,12 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
 
   return (
     <section id="proof" className="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full relative z-10">
-      
+
       {/* Header & Honesty Ladder Anchor */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.9)] animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(230,57,70,0.9)] animate-pulse" />
             <span className="text-xs font-mono font-bold tracking-widest text-orange-500 uppercase">
               HONESTY LADDER // VERIFIED PROOF & ECOSYSTEM
             </span>
@@ -291,7 +291,7 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
       {activeTab === 'publications' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
+
             {/* Left Pharos Visual Beacon Card */}
             <div className="lg:col-span-4 relative rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl p-6 bg-gradient-to-br from-[#121624] via-[#090b14] to-[#040508] flex flex-col justify-between min-h-[320px]">
               <div className="space-y-3">
@@ -305,7 +305,7 @@ export const ProofShowcase: React.FC<ProofShowcaseProps> = ({
                   <BookOpen className="w-7 h-7" />
                 </div>
               </div>
-              
+
               <div className="space-y-2 text-white mt-6">
                 <h4 className="text-lg font-bold font-display leading-snug">
                   Illuminating Sovereign AI Policy for SADC
