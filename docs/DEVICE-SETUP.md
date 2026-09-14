@@ -78,7 +78,7 @@ uv run ai-company doctor run
 uv run ai-company agents list
 uv run ai-company validate
 uv run pytest                      # full suite (~1856 tests)
-.\scripts\verify-agents.ps1        # registry + agent file consistency
+uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # regen agent cards (git diff must be clean)
 ```
 
 ## 8. Smoke test (optional)
