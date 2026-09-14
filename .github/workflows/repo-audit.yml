@@ -80,7 +80,7 @@ jobs:
               except Exception as e:  # noqa: BLE001
                   rec(name, "fail", f"invocation error: {e}")
                   return None
-              tail = (r.stdout + r.stderr).strip().splitlines()[-3:]
+              tail = (r.stdout + r.stderr).strip().splitlines()[-10:]
               rec(name, "ok" if r.returncode == 0 else "fail", " | ".join(tail)[:500])
               return r
 
@@ -157,19 +157,39 @@ jobs:
               except Exception:  # noqa: BLE001
                   rec("drift.manifest", "fail", "unparsable drift JSON")
 
-          # 7. Agent-verification script (schema staleness probe)
-          sh("cards.verify_script", ["pwsh", "-NoProfile", "-File", "scripts/verify-agents.ps1"], timeout=600)
+          # 7. Generated-drift gate (mirrors ci.yml generated-check): regenerate
+          #    agents from the registry, then require a clean diff.
+          try:
+              gen = subprocess.run(
+                  ["uv", "run", "python", "-c",
+                   "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"],
+                  capture_output=True, text=True, timeout=1200)
+              if gen.returncode != 0:
+                  detail = (gen.stderr or gen.stdout).strip().splitlines()[-3:]
+                  rec("cards.generated_drift", "fail",
+                      " | ".join(detail) if detail else "regeneration failed")
+              else:
+                  diff = subprocess.run(
+                      ["git", "diff", "--stat", "--", ".", ":!docs/AGENT-REGISTRY-TABLE.md", ":!uv.lock"],
+                      capture_output=True, text=True, timeout=120)
+                  drift = (diff.stdout + diff.stderr).strip()
+                  rec("cards.generated_drift", "ok" if not drift else "fail",
+                      drift[:500] or "no drift after regeneration")
+          except Exception as e:  # noqa: BLE001
+              rec("cards.generated_drift", "fail", f"invocation error: {e}")
 
-          # 8. Config tree duplication: config/departments vs company/departments
-          def dir_count(path):
-              try:
-                  return len([p for p in (root / path).glob("*.yaml")])
-              except OSError:
-                  return None
-          config_dep = dir_count("config/departments")
-          company_dep = dir_count("company/departments")
-          rec("tree.departments", "ok" if config_dep == company_dep else "warn",
-              f"config/departments={config_dep} company/departments={company_dep}")
+          # 8. Departments parity: config/ (registry model) vs company/
+          #    (generator + dashboard) must agree on the same department set.
+          try:
+              comp_dep = yaml.safe_load((root / "company" / "departments.yaml").read_text(encoding="utf-8"))
+              cfg_dep = yaml.safe_load((root / "config" / "departments" / "departments.yaml").read_text(encoding="utf-8"))
+              ids_a = [d.get("id") for d in (comp_dep.get("departments") or [])]
+              ids_b = [d.get("id") for d in (cfg_dep.get("departments") or [])]
+              rec("tree.departments", "ok" if ids_a == ids_b else "fail",
+                  f"company={len(ids_a)} config={len(ids_b)} "
+                  f"only_company={sorted(set(ids_a) - set(ids_b))} only_config={sorted(set(ids_b) - set(ids_a))}")
+          except Exception as e:  # noqa: BLE001
+              rec("tree.departments", "fail", f"departments parse error: {e}")
 
           # 9. Dead subsystems / known stale dirs
           rec("tree.data_etl", "warn" if (root / "data" / "etl").exists() else "ok", "data/etl present")
@@ -182,7 +202,11 @@ jobs:
               rec(f"gitignore.{cfg.replace('/', '.')}",
                   "fail" if cfg in gitignore else "ok",
                   f"{cfg} ignored while required by cli/validate.py")
-          rec("gitignore.graphify", "warn" if "graphify-out" in gitignore else "ok", "graphify-out tracked")
+          tracked_graph = subprocess.run(["git", "ls-files", "graphify-out"],
+                                         capture_output=True, text=True, timeout=60).stdout.strip()
+          rec("gitignore.graphify",
+              "warn" if ("graphify-out" not in gitignore or tracked_graph) else "ok",
+              f"ignored={'graphify-out' in gitignore} tracked_files={len(tracked_graph.splitlines())}")
 
           # 11. Unignored runner/build artifacts
           for d in (".playwright-cli", "screenshots", "results"):
@@ -194,9 +218,9 @@ jobs:
           rec("ci.registry_gate", "warn" if ("verify-agents" not in ci and "registry" not in ci) else "ok",
               "ci.yml never validates agent registry")
 
-          # 13. ECL harness state
-          active = len(list((root / "harness" / "changes" / "active").glob("*.md")))
-          rec("ecl.active", "ok" if active > 0 else "warn", f"active change files={active}")
+          # 13. ECL harness state (recursive: change files live in nested dirs)
+          active_files = list((root / "harness" / "changes" / "active").glob("**/*.md"))
+          rec("ecl.active", "ok" if active_files else "warn", f"active change files={len(active_files)}")
 
           # 14. Knowledge graph freshness
           sh("graphify.update", ["uv", "run", "graphify", "update", "."], timeout=900)
@@ -211,7 +235,7 @@ jobs:
           # Severity mapping for the scan-only fallback report
           sev_map = {
               "registry.parse": "critical",
-              "cards.verify_script": "major",
+              "cards.generated_drift": "major",
               "drift.manifest": "major",
               "tree.departments": "major",
               "tree.data_etl": "major",
@@ -220,9 +244,10 @@ jobs:
               "gitignore.orchestrator.escalation.yaml": "critical",
               "ci.registry_gate": "major",
           }
+          info_probes = {"ecl.active"}
           totals = {"critical": 0, "major": 0, "minor": 0}
           for p in probes:
-              if p["status"] == "ok":
+              if p["status"] == "ok" or p["name"] in info_probes:
                   continue
               sev = sev_map.get(p["name"], "minor")
               totals[sev] += 1
