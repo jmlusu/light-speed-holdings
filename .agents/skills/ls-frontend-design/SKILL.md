@@ -10,7 +10,7 @@ Build websites and landing pages that look intentional, branded, and human-desig
 ## Preconditions
 
 1. Load `ls-design-system` first — every layout decision flows from brand tokens.
-2. Build in the repo-root Vite React SPA: `npm run dev` (background mode: `npm run dev`), `npm run build`, `npm run lint`. Deployed via Vercel (`vercel.json` → `dist`).
+2. Build in the repo-root Vite React SPA: `bun run dev`, `bun run build`, `bun run lint`. Deployed via Vercel (`vercel.json` → `dist`).
 3. Never hand-write a logo — import from `static/brand/logos/**`. Reference tokens via `brand/tokens/brand-tokens.css`.
 
 ## The LightSpeed Web Pattern
@@ -59,7 +59,7 @@ Type: Arial stack, sizes from the brand scale (36/32/28/24/18/16/14/13/12). Grid
 3. Choose the target page/component in the repo-root SPA (`src/pages/*.tsx`, `src/components/*.tsx`) per project type.
 4. Wireframe section-by-section in the brief/comment, then implement with brand tokens.
 5. Use official logo assets (relative imports into `static/brand/`); wire real links/CTAs.
-6. Build locally (`npm run build` in the target repo) to verify no errors.
+6. Build locally (`bun run build` in the target repo) to verify no errors.
 7. Screenshot key viewports via Playwright (see `ls-artifact-qa` `visual_check.js`).
 8. Run `ls-artifact-qa` visual + brand + accessibility checks; fix; re-verify; approve.
 

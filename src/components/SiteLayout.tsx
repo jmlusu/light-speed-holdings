@@ -4,20 +4,7 @@ import { ThreeCanvas } from './ThreeCanvas';
 import { FloatingNav } from './FloatingNav';
 import { SiteFooter } from './SiteFooter';
 import { ExecutiveBriefingModal } from './ExecutiveBriefingModal';
-import { AgentModal } from './AgentModal';
-import { Agent } from '../types';
-
-interface SiteLayoutProps {
-  theme: 'light' | 'dark';
-  onToggleTheme: () => void;
-  onRequestBriefing: (summary?: string) => void;
-  isBriefingModalOpen: boolean;
-  briefingSummary: string;
-  onCloseBriefingModal: () => void;
-  selectedAgent: Agent | null;
-  onCloseAgentModal: () => void;
-  onDispatchTask: (agent: Agent) => void;
-}
+import { useSite } from '../site-context';
 
 const ROUTE_TITLES: Record<string, string> = {
   '/': 'LIGHTSPEED HOLDINGS — Build the Intelligent Enterprise',
@@ -37,7 +24,9 @@ const ROUTE_TITLES: Record<string, string> = {
   '/ai-company-builder': 'AI Company Builder | LIGHTSPEED HOLDINGS',
   '/technology': 'Technology | LIGHTSPEED HOLDINGS',
   '/work': 'Work & Proof | LIGHTSPEED HOLDINGS',
-  '/insights': 'Insights | LIGHTSPEED HOLDINGS',
+  '/insights': 'Evidence, Research & the Agentic AI Canon | LIGHTSPEED HOLDINGS',
+  '/offerings': 'Client Service Catalog | LIGHTSPEED HOLDINGS',
+  '/evidence': 'Evidence & Method | LIGHTSPEED HOLDINGS',
   '/contact': 'Start a Conversation | LIGHTSPEED HOLDINGS',
   '/legal/privacy': 'Privacy Policy | LIGHTSPEED HOLDINGS',
   '/legal/terms': 'Terms of Service | LIGHTSPEED HOLDINGS',
@@ -45,28 +34,14 @@ const ROUTE_TITLES: Record<string, string> = {
 
 /**
  * Shared site shell rendered once for every routed page.
- * Owns the ambient canvas, fixed nav, footer, and the always-mounted modals;
- * routed page content flows through <Outlet/>.
- * App.tsx remains the state owner and passes state down via props.
+ * Owns the ambient canvas, fixed nav, footer, and the always-mounted
+ * briefing modal; routed page content flows through <Outlet/>.
+ * App.tsx remains the state owner and provides state via SiteContext.
  */
-export const SiteLayout: React.FC<SiteLayoutProps> = ({
-  theme,
-  onToggleTheme,
-  onRequestBriefing,
-  isBriefingModalOpen,
-  briefingSummary,
-  onCloseBriefingModal,
-  selectedAgent,
-  onCloseAgentModal,
-  onDispatchTask,
-}) => {
+export const SiteLayout: React.FC = () => {
   const { pathname } = useLocation();
-  // Skip focus management for the pathname we mounted on. Tracked by value
-  // (not a boolean) so React 18 StrictMode's double effect-invocation can't
-  // trip it: both mount passes see the same pathname and return early, while
-  // any real route change reliably moves focus to the main landmark. Leaving
-  // focus on <body> at load also means a keyboard user's first Tab reaches
-  // the skip link (and then the nav) instead of jumping past both.
+  const { theme, onToggleTheme, onRequestBriefing, isBriefingOpen, briefingSummary, closeBriefing } = useSite();
+
   const lastPathnameRef = useRef(pathname);
 
   useEffect(() => {
@@ -98,28 +73,18 @@ export const SiteLayout: React.FC<SiteLayoutProps> = ({
         onToggleTheme={onToggleTheme}
       />
 
-      {/* pt-20 clears the fixed FloatingNav; tabIndex keeps focus() valid for a11y */}
       <main id="main-content" tabIndex={-1} className="pt-20 focus:outline-none">
         <Outlet />
       </main>
 
       <SiteFooter theme={theme} />
 
-      {/* Modals stay mounted across route changes */}
       <ExecutiveBriefingModal
-        isOpen={isBriefingModalOpen}
-        onClose={onCloseBriefingModal}
+        isOpen={isBriefingOpen}
+        onClose={closeBriefing}
         prefillSummary={briefingSummary}
         theme={theme}
       />
-
-      {selectedAgent && (
-        <AgentModal
-          agent={selectedAgent}
-          onClose={onCloseAgentModal}
-          onDispatchTask={onDispatchTask}
-        />
-      )}
     </>
   );
 };

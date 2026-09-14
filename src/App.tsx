@@ -1,40 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { Header } from './components/Header';
-import { HomeSection } from './components/HomeSection';
-import { SolutionsSection } from './components/SolutionsSection';
-import { IndustriesSection } from './components/IndustriesSection';
-import { AiCompanyBuilderSection } from './components/AiCompanyBuilderSection';
-import { TechnologySection } from './components/TechnologySection';
-import { WorkSection } from './components/WorkSection';
-import { PharosSection } from './components/InsightsResearchSection';
-import { AiReadinessAssessment } from './components/AiReadinessAssessment';
-import { AboutSection } from './components/AboutSection';
-import { LegalSection } from './components/LegalSection';
-import { ScrollToTopButton } from './components/ScrollToTopButton';
-import { Footer } from './components/Footer';
-import { ContactModal } from './components/ContactModal';
+import React, { useCallback, useEffect, useState } from 'react';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { SiteContext } from './site-context';
+import type { Theme } from './site-context';
+import { SiteLayout } from './components/SiteLayout';
+import { withSite } from './site-context';
+import { HomePage } from './pages/HomePage';
+import { SolutionsPage } from './pages/SolutionsPage';
+import { SolutionDetailPage } from './pages/SolutionDetailPage';
+import { IndustriesPage } from './pages/IndustriesPage';
+import { IndustryDetailPage } from './pages/IndustryDetailPage';
+import { TechnologyPage } from './pages/TechnologyPage';
+import { WorkPage } from './pages/WorkPage';
+import { InsightsPage } from './pages/InsightsPage';
+import { OfferingsPage } from './pages/OfferingsPage';
+import { EvidencePage } from './pages/EvidencePage';
+import { AboutPage } from './pages/AboutPage';
+import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
+import { ContactPage } from './pages/ContactPage';
+import { PrivacyPage } from './pages/PrivacyPage';
+import { TermsPage } from './pages/TermsPage';
+
+const HomePageRoute = withSite(HomePage);
+const SolutionsPageRoute = withSite(SolutionsPage);
+const SolutionDetailPageRoute = withSite(SolutionDetailPage);
+const IndustriesPageRoute = withSite(IndustriesPage);
+const IndustryDetailPageRoute = withSite(IndustryDetailPage);
+const TechnologyPageRoute = withSite(TechnologyPage);
+const WorkPageRoute = withSite(WorkPage);
+const InsightsPageRoute = withSite(InsightsPage);
+const OfferingsPageRoute = withSite(OfferingsPage);
+const EvidencePageRoute = withSite(EvidencePage);
+const AboutPageRoute = withSite(AboutPage);
+const AiCompanyBuilderPageRoute = withSite(AiCompanyBuilderPage);
+const ContactPageRoute = withSite(ContactPage);
+const PrivacyPageRoute = withSite(PrivacyPage);
+const TermsPageRoute = withSite(TermsPage);
 
 export const App: React.FC = () => {
-  const [currentRoute, setCurrentRoute] = useState<string>('home');
-  const [routeParam, setRouteParam] = useState<string | undefined>(undefined);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+  const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('lightspeed_theme');
       if (saved === 'light' || saved === 'dark') return saved;
     }
     return 'dark';
   });
-  const [isContactOpen, setIsContactOpen] = useState<boolean>(false);
-  const [contactIntent, setContactIntent] = useState<string>('Start a Conversation');
-  const [contactSummary, setContactSummary] = useState<string>('');
+  const [isBriefingOpen, setIsBriefingOpen] = useState<boolean>(false);
+  const [briefingSummary, setBriefingSummary] = useState<string>('');
 
-  // Persist theme and update root html class and body background
   useEffect(() => {
     localStorage.setItem('lightspeed_theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      document.documentElement.style.backgroundColor = '#070a40';
-      document.body.style.backgroundColor = '#070a40';
+      document.documentElement.style.backgroundColor = '#060d16';
+      document.body.style.backgroundColor = '#060d16';
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.style.backgroundColor = '#edf3f8';
@@ -42,134 +60,59 @@ export const App: React.FC = () => {
     }
   }, [theme]);
 
-  // Handle navigation
-  const handleNavigate = (route: string, param?: string) => {
-    setCurrentRoute(route);
-    setRouteParam(param);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
 
-  // Open contact modal with prefilled context
-  const handleOpenContactModal = (intent?: string, summary?: string) => {
-    if (intent) setContactIntent(intent);
-    if (summary) setContactSummary(summary);
-    setIsContactOpen(true);
-  };
+  const requestBriefing = useCallback((summary?: string) => {
+    if (summary) setBriefingSummary(summary);
+    setIsBriefingOpen(true);
+  }, []);
 
-  // Theme toggle
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
-  };
+  const closeBriefing = useCallback(() => {
+    setIsBriefingOpen(false);
+  }, []);
+
+  const [router] = useState(() =>
+    createBrowserRouter([
+      {
+        path: '/',
+        element: <SiteLayout />,
+        children: [
+          { index: true, element: <HomePageRoute /> },
+          { path: 'solutions', element: <SolutionsPageRoute /> },
+          { path: 'solutions/:slug', element: <SolutionDetailPageRoute /> },
+          { path: 'industries', element: <IndustriesPageRoute /> },
+          { path: 'industries/:slug', element: <IndustryDetailPageRoute /> },
+          { path: 'technology', element: <TechnologyPageRoute /> },
+          { path: 'work', element: <WorkPageRoute /> },
+          { path: 'insights', element: <InsightsPageRoute /> },
+          { path: 'offerings', element: <OfferingsPageRoute /> },
+          { path: 'evidence', element: <EvidencePageRoute /> },
+          { path: 'about', element: <AboutPageRoute /> },
+          { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
+          { path: 'contact', element: <ContactPageRoute /> },
+          { path: 'legal/privacy', element: <PrivacyPageRoute /> },
+          { path: 'legal/terms', element: <TermsPageRoute /> },
+          { path: '*', element: <Navigate to="/" replace /> },
+        ],
+      },
+    ])
+  );
 
   return (
-    <div className={`min-h-screen w-full max-w-full overflow-x-hidden font-sans transition-colors duration-500 ease-in-out ${
-      theme === 'dark' ? 'bg-[#070a40] text-[#f0f6fa]' : 'bg-[#edf3f8] text-[#070a40]'
-    }`}>
-
-      {/* Navigation Header */}
-      <Header
-        currentRoute={currentRoute}
-        onNavigate={handleNavigate}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onOpenContactModal={() => handleOpenContactModal('Start a Conversation')}
-      />
-
-      {/* Main Page Route View */}
-      <main className="pt-2 sm:pt-4 pb-12">
-        {currentRoute === 'home' && (
-          <HomeSection
-            onNavigate={handleNavigate}
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'solutions' && (
-          <SolutionsSection
-            initialSubSection={routeParam}
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'industries' && (
-          <IndustriesSection
-            initialIndustry={routeParam}
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'ai-company-builder' && (
-          <AiCompanyBuilderSection
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'technology' && (
-          <TechnologySection
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'work' && (
-          <WorkSection
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {(currentRoute === 'pharos' || currentRoute === 'insights' || currentRoute === 'research') && (
-          <PharosSection
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'resources' && (
-          <AiReadinessAssessment
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'about' && (
-          <AboutSection
-            onOpenContactModal={handleOpenContactModal}
-            theme={theme}
-          />
-        )}
-
-        {currentRoute === 'legal' && (
-          <LegalSection
-            theme={theme}
-          />
-        )}
-      </main>
-
-      {/* Global Footer */}
-      <Footer
-        onNavigate={handleNavigate}
-        onOpenContactModal={handleOpenContactModal}
-        theme={theme}
-      />
-
-      {/* Contact Modal */}
-      <ContactModal
-        isOpen={isContactOpen}
-        onClose={() => setIsContactOpen(false)}
-        prefilledIntent={contactIntent}
-        prefilledSummary={contactSummary}
-        theme={theme}
-      />
-
-      {/* Global Architectural Return to Top Floating Control */}
-      <ScrollToTopButton theme={theme} />
-
-    </div>
+    <SiteContext.Provider
+      value={{
+        theme,
+        onToggleTheme: toggleTheme,
+        onRequestBriefing: requestBriefing,
+        isBriefingOpen,
+        briefingSummary,
+        closeBriefing,
+      }}
+    >
+      <RouterProvider router={router} />
+    </SiteContext.Provider>
   );
 };
 
