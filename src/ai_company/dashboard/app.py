@@ -40,8 +40,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from ai_company.audit.events import AuditEvent, AuditEventType
+from ai_company.audit.integration import get_writer
+from ai_company.dashboard.monitoring import inc_metric
 from ai_company.logging_config import setup_logging
 from ai_company.paths import get_data_root, get_project_root
+from ai_company.telemetry.tracer import get_tracer, is_tracing_enabled
 from ai_company.version import get_version
 
 load_dotenv()
@@ -176,21 +180,16 @@ def _check_api_key(request: Request) -> bool:
     checked against the in-memory session-token store (browser bootstrap
     tokens).  Page routes, static assets, and the bootstrap endpoint are
     exempt from the API-key guard (middleware carve-out).
+
+    The env-mode check, key lookup, and session-token fallback are delegated
+    to :func:`~ai_company.security.rbac.authenticate` — the single auth
+    primitive shared with the dependency-injection path.
     """
-    if os.environ.get("DASHBOARD_AUTH_MODE", "api_key") == "open":
-        return True
+    from ai_company.security.rbac import authenticate
+
     api_key = request.headers.get("X-API-Key", "")
-    if not api_key:
-        return False
-    from ai_company.security.rbac import role_for_key
-
-    if role_for_key(api_key) is not None:
-        return True
-    # ADR-013: fall back to session token (IP-bound)
     client_ip = request.client.host if request.client else "unknown"
-    from ai_company.security.rbac import _resolve_session_token
-
-    return _resolve_session_token(api_key, client_ip) is not None
+    return authenticate(api_key, client_ip) is not None
 
 
 # Paths that are exempt from the API-key guard (ADR-013 middleware carve-out).
@@ -277,6 +276,24 @@ def _tab_context(active_tab: str) -> dict[str, Any]:
             "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>',
         },
         {
+            "id": "backlog",
+            "label": "Backlog",
+            "href": "/backlog",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v1a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 7a1 1 0 011-1h14a1 1 0 011 1v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1zm0 7a1 1 0 011-1h7a1 1 0 011 1v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1z"/></svg>',
+        },
+        {
+            "id": "reports",
+            "label": "Reports",
+            "href": "/reports",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+        },
+        {
+            "id": "task-flow",
+            "label": "Task Flow",
+            "href": "/task-flow",
+            "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>',
+        },
+        {
             "id": "command-center",
             "label": "Command Center",
             "href": "/command-center",
@@ -314,14 +331,21 @@ def _tab_context(active_tab: str) -> dict[str, Any]:
 async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Lifespan handler for FastAPI dashboard app."""
     try:
+        from ai_company.audit.integration import init_audit
         from ai_company.dashboard.repository import get_state_store  # noqa: E402
         from ai_company.data import init_database  # noqa: E402
 
-        db_path = Path(get_state_store().base_dir) / "data" / "ai_company.db"
+        store = get_state_store()
+        db_path = Path(store.base_dir) / "data" / "ai_company.db"
         db = init_database(db_path)
         logger.info("SQLite database initialised: %s", db.path)
+        # Initialize audit trail at the canonical path (ticket #59)
+        audit_dir = Path(store.base_dir) / ".opencode" / "audit"
+        audit_dir.parent.mkdir(parents=True, exist_ok=True)
+        init_audit(audit_dir, database=db)
+        logger.info("Audit trail initialised: %s", audit_dir)
     except Exception:  # noqa: BLE001 - non-critical startup hook
-        logger.debug("Database initialisation skipped (non-critical)")
+        logger.debug("Database/audit initialisation skipped (non-critical)")
     yield
 
 
@@ -432,22 +456,78 @@ def create_app() -> FastAPI:
 
     @app.middleware("http")
     async def _rate_limit_middleware(request: Request, call_next: Any) -> Response:
+        # Exempt page routes and static assets from rate limiting — same
+        # carve-out as the API-key guard (ADR-013).  Page loads themselves
+        # should never count against the budget; only API calls do.
+        if _is_exempt_from_auth(request.url.path):
+            return cast(Response, await call_next(request))
         client_ip = request.client.host if request.client else "unknown"
-        allowed, remaining = _limiter.is_allowed(client_ip)
-        if not allowed:
-            return Response(
-                content='{"detail":"Rate limit exceeded"}',
-                status_code=429,
-                media_type="application/json",
-                headers={
-                    "X-RateLimit-Limit": str(rate_limit),
-                    "X-RateLimit-Remaining": "0",
+        # D.2: OpenTelemetry span for rate limit check
+        tracer = get_tracer()
+        if is_tracing_enabled() and tracer:
+            with tracer.start_as_current_span(
+                "dashboard.rate_limit_check",
+                attributes={
+                    "client_ip": client_ip,
+                    "path": request.url.path,
+                    "method": request.method,
                 },
-            )
-        response = cast(Response, await call_next(request))
-        response.headers["X-RateLimit-Limit"] = str(rate_limit)
-        response.headers["X-RateLimit-Remaining"] = str(remaining)
-        return response
+            ):
+                allowed, remaining = _limiter.is_allowed(client_ip)
+                if not allowed:
+                    # D.1/D.3: Log rate-limit exceeded to audit trail + metric
+                    inc_metric("rate_limit_hits_total")
+                    writer = get_writer()
+                    if writer is not None:
+                        event = AuditEvent(
+                            event_type=AuditEventType.RATE_LIMIT_EXCEEDED,
+                            agent_id="dashboard",
+                            task_id="",
+                            args={"client_ip": client_ip, "path": request.url.path},
+                            severity="warning",
+                        )
+                        writer.write(event)
+                    return Response(
+                        content='{"detail":"Rate limit exceeded"}',
+                        status_code=429,
+                        media_type="application/json",
+                        headers={
+                            "X-RateLimit-Limit": str(rate_limit),
+                            "X-RateLimit-Remaining": "0",
+                        },
+                    )
+                response = cast(Response, await call_next(request))
+                response.headers["X-RateLimit-Limit"] = str(rate_limit)
+                response.headers["X-RateLimit-Remaining"] = str(remaining)
+                return response
+        else:
+            # Tracing disabled - fast path
+            allowed, remaining = _limiter.is_allowed(client_ip)
+            if not allowed:
+                inc_metric("rate_limit_hits_total")
+                writer = get_writer()
+                if writer is not None:
+                    event = AuditEvent(
+                        event_type=AuditEventType.RATE_LIMIT_EXCEEDED,
+                        agent_id="dashboard",
+                        task_id="",
+                        args={"client_ip": client_ip, "path": request.url.path},
+                        severity="warning",
+                    )
+                    writer.write(event)
+                return Response(
+                    content='{"detail":"Rate limit exceeded"}',
+                    status_code=429,
+                    media_type="application/json",
+                    headers={
+                        "X-RateLimit-Limit": str(rate_limit),
+                        "X-RateLimit-Remaining": "0",
+                    },
+                )
+            response = cast(Response, await call_next(request))
+            response.headers["X-RateLimit-Limit"] = str(rate_limit)
+            response.headers["X-RateLimit-Remaining"] = str(remaining)
+            return response
 
     # ── API-key guard for write endpoints (GAP-010) ──────────────────────
     # ADR-013: page routes, static assets, and the bootstrap endpoint are
@@ -456,13 +536,66 @@ def create_app() -> FastAPI:
     async def _api_key_middleware(request: Request, call_next: Any) -> Response:
         if _is_exempt_from_auth(request.url.path):
             return cast(Response, await call_next(request))
-        if not _check_api_key(request):
-            return Response(
-                content='{"detail":"Invalid or missing API key"}',
-                status_code=401,
-                media_type="application/json",
-            )
-        return cast(Response, await call_next(request))
+        # D.2: OpenTelemetry span for auth check
+        tracer = get_tracer()
+        if is_tracing_enabled() and tracer:
+            with tracer.start_as_current_span(
+                "dashboard.auth_check",
+                attributes={
+                    "path": request.url.path,
+                    "method": request.method,
+                    "has_api_key": bool(request.headers.get("X-API-Key")),
+                },
+            ):
+                if not _check_api_key(request):
+                    # D.1/D.3: Log auth failure to audit trail + metric
+                    inc_metric("auth_failures_total")
+                    writer = get_writer()
+                    if writer is not None:
+                        client_ip = request.client.host if request.client else "unknown"
+                        event = AuditEvent(
+                            event_type=AuditEventType.AUTH_FAILED,
+                            agent_id="dashboard",
+                            task_id="",
+                            args={
+                                "client_ip": client_ip,
+                                "path": request.url.path,
+                                "has_api_key": bool(request.headers.get("X-API-Key")),
+                            },
+                            severity="warning",
+                        )
+                        writer.write(event)
+                    return Response(
+                        content='{"detail":"Invalid or missing API key"}',
+                        status_code=401,
+                        media_type="application/json",
+                    )
+                return cast(Response, await call_next(request))
+        else:
+            # Tracing disabled - fast path
+            if not _check_api_key(request):
+                inc_metric("auth_failures_total")
+                writer = get_writer()
+                if writer is not None:
+                    client_ip = request.client.host if request.client else "unknown"
+                    event = AuditEvent(
+                        event_type=AuditEventType.AUTH_FAILED,
+                        agent_id="dashboard",
+                        task_id="",
+                        args={
+                            "client_ip": client_ip,
+                            "path": request.url.path,
+                            "has_api_key": bool(request.headers.get("X-API-Key")),
+                        },
+                        severity="warning",
+                    )
+                    writer.write(event)
+                return Response(
+                    content='{"detail":"Invalid or missing API key"}',
+                    status_code=401,
+                    media_type="application/json",
+                )
+            return cast(Response, await call_next(request))
 
     # ── Security headers (T018 / ticket #11) ─────────────────────────────
     # Registered AFTER the auth + rate-limit middlewares so it runs
@@ -545,6 +678,21 @@ def create_app() -> FastAPI:
     async def page_kpis(request: Request) -> Response:
         ctx = _tab_context("kpis")
         return templates.TemplateResponse(request, "kpis.html", ctx)
+
+    @app.get("/backlog", response_class=Response)
+    async def page_backlog(request: Request) -> Response:
+        ctx = _tab_context("backlog")
+        return templates.TemplateResponse(request, "backlog.html", ctx)
+
+    @app.get("/reports", response_class=Response)
+    async def page_reports(request: Request) -> Response:
+        ctx = _tab_context("reports")
+        return templates.TemplateResponse(request, "reports.html", ctx)
+
+    @app.get("/task-flow", response_class=Response)
+    async def page_task_flow(request: Request) -> Response:
+        ctx = _tab_context("task-flow")
+        return templates.TemplateResponse(request, "task-flow.html", ctx)
 
     @app.get("/costs", response_class=Response)
     async def page_costs(request: Request) -> Response:

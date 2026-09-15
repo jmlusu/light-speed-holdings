@@ -21,6 +21,7 @@ Lease hardening:
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import os
 import socket
@@ -45,7 +46,13 @@ from ai_company.executor.tool_runner import HITLParked, ToolRunner
 from ai_company.llm.client import LLMClient
 from ai_company.llm.cost_tracker import CostTracker
 from ai_company.memory.consolidation import ConsolidationConfig, ConsolidationScheduler
-from ai_company.memory.integration import init_memory, recall_context, record_task_outcome
+from ai_company.memory.integration import (
+    extract_post_task_knowledge,
+    init_memory,
+    recall_context,
+    record_task_outcome,
+)
+from ai_company.memory.metrics import LearningMetricsCollector, TaskMetrics
 from ai_company.models.task import Task, TaskPriority, TaskStatus
 from ai_company.orchestrator.approval import ApprovalStatus
 from ai_company.orchestrator.message_bus import MessageBus
@@ -193,6 +200,11 @@ class Executor:
             config=self._consolidation_config,
         )
 
+        # Continuous learning metrics
+        self._metrics_collector = LearningMetricsCollector()
+        self._task_metrics_buffer: list[TaskMetrics] = []
+        self._tick_metrics_count = 0
+
         # Dead-letter queue (GAP-017)
         self.dlq = DeadLetterQueue()
 
@@ -305,7 +317,24 @@ class Executor:
                 logger.exception("Task %s crashed the executor; isolated.", task.id)
 
         # GAP-005: Run memory consolidation periodically
-        self._consolidation_scheduler.on_tick()
+        consolidation_result = self._consolidation_scheduler.on_tick()
+
+        # Continuous-learning metrics: capture consolidation stats + periodic snapshot
+        if consolidation_result:
+            with contextlib.suppress(Exception):
+                self._metrics_collector.record_consolidation(
+                    entries_pruned=int(consolidation_result.get("entries_pruned", 0)),
+                    episodic_digested=int(consolidation_result.get("episodic_digested", 0)),
+                )
+        try:
+            # Snapshot every 25 ticks to keep the trend window fresh without IO spam
+            if self._tick_metrics_count >= 25:
+                self._metrics_collector.compute_snapshot(store=self._memory)
+                self._tick_metrics_count = 0
+            else:
+                self._tick_metrics_count = self._tick_metrics_count + 1
+        except Exception:  # noqa: BLE001 - metrics are best-effort
+            logger.debug("Metrics snapshot failed", exc_info=True)
 
         # Audit smoke guard: warn if this tick did work but recorded nothing
         # (append-only trail must grow on every processed task).
@@ -553,10 +582,29 @@ class Executor:
         wiring this callback the same events are broadcast live to connected
         dashboard clients.  Uses the dashboard's sync→async bridge so it is a
         no-op when no event loop (CLI) is running.
+
+        Also fans out to the LearningCollector for continuous learning.
         """
         from ai_company.dashboard.ws import make_message_bus_broadcast_callback
 
-        return make_message_bus_broadcast_callback()
+        dashboard_cb = make_message_bus_broadcast_callback()
+
+        # Learning collector fan-out (best-effort, never breaks dashboard)
+        try:
+            from ai_company.memory.learning_collector import LearningCollector
+
+            _collector = LearningCollector()
+
+            def _combined_callback(task_dict: dict[str, Any], event: str) -> None:
+                # Dashboard broadcast (original behavior)
+                if dashboard_cb is not None:
+                    dashboard_cb(task_dict, event)
+                # Learning capture (new behavior)
+                _collector.on_task_event(task_dict, event)
+
+            return _combined_callback
+        except Exception:  # noqa: BLE001 - learning is optional, dashboard is primary
+            return dashboard_cb
 
     def _load_pending_approvals(self) -> dict[str, str]:
         """Load the persisted ``task_id -> HITL request_id`` mapping at startup.
@@ -653,8 +701,9 @@ class Executor:
         try:
             # 2. Recall relevant memory BEFORE execution (best-effort, no network
             #    required — falls back to keyword search; never blocks the task).
+            recalled_memories: list[dict[str, Any]] = []
             try:
-                recall_context(task.instruction, limit=5)
+                recalled_memories = recall_context(task.instruction, limit=5)
             except Exception:  # noqa: BLE001 - pragma: no cover - defensive: recall must never break execution
                 logger.debug("Memory recall failed for task %s", task.id, exc_info=True)
 
@@ -685,6 +734,7 @@ class Executor:
                     priority=task.priority.value,
                     preapproved=preapproved,
                     resumed_state=resumed_state,
+                    memories=recalled_memories,
                 )
             except HITLParked as exc:
                 # GAP-004: a HITL-gated step raised HITLParked — park the task
@@ -723,6 +773,20 @@ class Executor:
                 self._save_loop_artifacts(task, result)
             except Exception:  # noqa: BLE001 - artifacts are best-effort
                 logger.exception("Artifact save failed for task %s", task.id)
+
+            # 6b. Extract post-task knowledge (semantic + procedural)
+            #     Heuristic-based, zero LLM cost. Failure must not abort task.
+            try:
+                extract_post_task_knowledge(
+                    task_id=task.id,
+                    agent_id=task.receiver_id,
+                    instruction=task.instruction,
+                    status="completed" if result.done and not result.error else "failed",
+                    result_summary=result.final_response or "",
+                    tool_results=result.tool_results,
+                )
+            except Exception:  # noqa: BLE001 - extraction is best-effort
+                logger.debug("Post-task extraction failed for task %s", task.id, exc_info=True)
 
             # 7. Mark completed, timed out, or failed
             if result.done and not result.error:
@@ -766,6 +830,34 @@ class Executor:
                     tools_used=[r.tool for r in result.tool_results if r.tool],
                 )
                 logger.error("  FAILED: %s", error_msg[:80])
+
+            # 8. Record continuous-learning metrics (best-effort)
+            try:
+                status_str = (
+                    "completed"
+                    if result.done and not result.error
+                    else ("timeout" if getattr(result, "timed_out", False) else "failed")
+                )
+                metrics = TaskMetrics(
+                    task_id=task.id,
+                    agent_id=task.receiver_id,
+                    status=status_str,
+                    iterations=result.iterations,
+                    total_tokens=result.total_tokens,
+                    total_cost_usd=result.total_cost_usd,
+                    memory_recall_count=len(recalled_memories),
+                    memory_avg_similarity=(
+                        sum(m.get("similarity", 0) for m in recalled_memories)
+                        / len(recalled_memories)
+                        if recalled_memories
+                        else 0.0
+                    ),
+                    tool_names=[r.tool for r in result.tool_results if r.tool],
+                )
+                self._metrics_collector.record_task(metrics)
+                self._task_metrics_buffer.append(metrics)
+            except Exception:  # noqa: BLE001 - metrics are best-effort
+                logger.debug("Metrics recording failed for task %s", task.id, exc_info=True)
         finally:
             stop_heartbeat.set()
             detach_task_context(task.id)

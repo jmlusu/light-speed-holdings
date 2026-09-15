@@ -182,6 +182,7 @@ class AgentLoop:
         *,
         preapproved: bool = False,
         resumed_state: Any | None = None,
+        memories: list[dict[str, Any]] | None = None,
     ) -> LoopResult:
         """Execute the full agentic loop for a single task.
 
@@ -195,6 +196,8 @@ class AgentLoop:
             resumed_state: Optional ``SuspendedState`` from a previous park.
                 When provided the loop restores conversation history and
                 continues from the parked iteration instead of starting over.
+            memories: Optional recalled memory entries to inject into the
+                system prompt as relevant past work context.
 
         Returns:
             ``LoopResult`` with the final response, iteration count, and stats.
@@ -226,10 +229,11 @@ class AgentLoop:
                 agent=agent,
                 user_prompt=user_prompt,
                 token_budget=self.config.system_prompt_token_budget,
+                memories=memories,
             )
             initial_user = build_optimized_user_prompt(user_prompt, priority)
         else:
-            system_prompt = build_system_prompt_typed(agent)
+            system_prompt = build_system_prompt_typed(agent, memories=memories)
             initial_user = build_user_prompt_typed(user_prompt, priority)
 
         logger.info(

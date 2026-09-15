@@ -1,4 +1,11 @@
 departments:
+  - id: "board"
+    name: "Board"
+    executive: "human_ceo"
+    mission: "Provide governance oversight, strategic counsel, and fiduciary stewardship to the CEO and executive team."
+    budget_category: "operations"
+    headcount_target: 7
+
   - id: "ai_research"
     name: "AI Research"
     executive: "caio"
@@ -124,3 +131,10 @@ departments:
     mission: "Build and maintain software, infrastructure, and technical architecture."
     budget_category: "product_development"
     headcount_target: 25
+
+  - id: "pharos"
+    name: "Pharos"
+    executive: "thought_leadership_lead"
+    mission: "Position the Human CEO as the leading voice on Agentic AI Company Building, Use Cases and Policy across Malawi and the SADC region."
+    budget_category: "growth"
+    headcount_target: 7

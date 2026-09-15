@@ -21,6 +21,7 @@ from typing import Any
 from fastapi import APIRouter, Response
 
 from ai_company.dashboard.repository import get_state_store
+from ai_company.memory.integration import learning_enabled
 from ai_company.version import get_version
 
 logger = logging.getLogger(__name__)
@@ -69,6 +70,9 @@ _metrics: dict[str, float] = {
     # Circuit breaker
     "circuit_breaker_trips_total": 0,
     "circuit_breaker_half_open_total": 0,
+    # Security metrics (D.3)
+    "auth_failures_total": 0,
+    "rate_limit_hits_total": 0,
 }
 
 _start_time = time.time()
@@ -210,6 +214,15 @@ def _render_prometheus_text() -> str:
             "ai_company_circuit_breaker_half_open_total",
             "Total circuit breaker half-open transitions",
         ),
+        # Security metrics (D.3)
+        "auth_failures_total": (
+            "ai_company_auth_failures_total",
+            "Total authentication failures",
+        ),
+        "rate_limit_hits_total": (
+            "ai_company_rate_limit_hits_total",
+            "Total rate limit exceeded events",
+        ),
     }
 
     for metric_key, (prom_name, help_text) in counter_metrics.items():
@@ -262,7 +275,102 @@ def _render_prometheus_text() -> str:
     _append_org_health_metrics(lines)
     _append_page_load_metrics(lines)
 
+    # ── Continuous-learning pipeline metrics (ticket #232) ──────────
+    _append_learning_metrics(lines)
+
     return "\n".join(lines) + "\n"
+
+
+_LEARNING_TREND_GAUGE = {"improving": 1, "stable": 0, "degrading": -1}
+
+
+def _latest_learning_snapshot() -> dict[str, Any] | None:
+    """Return the most recent learning snapshot from ``memory/metrics.json``.
+
+    Anchored at the StateStore root so the dashboard reports on the live
+    data directory (ticket #61). Returns ``None`` when nothing is persisted.
+    """
+    metrics_file = _state_path("memory/metrics.json")
+    if not metrics_file.exists():
+        return None
+    try:
+        data = json.loads(metrics_file.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    snapshots = data.get("snapshots") if isinstance(data, dict) else None
+    if not isinstance(snapshots, list) or not snapshots:
+        return None
+    latest = snapshots[-1]
+    return latest if isinstance(latest, dict) else None
+
+
+_MEMORY_TYPES = ("episodic", "semantic", "procedural", "relational", "temporal", "aggregate")
+
+
+def _memory_by_type(memory_dir: Path) -> dict[str, int]:
+    """Return entry counts per memory type from the on-disk store.
+
+    Mirrors :meth:`MemoryStore.stats` (ticket #232) but reads the JSON files
+    directory so the health check stays cheap and never mutates state.
+    """
+    by_type: dict[str, int] = {}
+    for mem_type in _MEMORY_TYPES:
+        type_file = memory_dir / f"{mem_type}.json"
+        try:
+            data = json.loads(type_file.read_text(encoding="utf-8"))
+            by_type[mem_type] = len(data) if isinstance(data, list) else 0
+        except (json.JSONDecodeError, OSError, FileNotFoundError):
+            by_type[mem_type] = 0
+    return by_type
+
+
+def _append_learning_metrics(lines: list[str]) -> None:
+    """Emit the learning-pipeline gauge plus snapshot families (ticket #232).
+
+    The ``ai_company_learning_enabled`` gauge is always emitted (0/1), but the
+    snapshot families only appear while the pipeline is enabled AND a snapshot
+    has been persisted — this is the rollback switch for learning reporting.
+    """
+    enabled = learning_enabled()
+    lines.append(
+        "# HELP ai_company_learning_enabled Whether the continuous-learning pipeline is enabled"
+    )
+    lines.append("# TYPE ai_company_learning_enabled gauge")
+    lines.append(f"ai_company_learning_enabled {1 if enabled else 0}")
+    if not enabled:
+        return
+
+    snapshot = _latest_learning_snapshot()
+    if snapshot is None:
+        return
+
+    for prom_name, key, fmt in (
+        ("ai_company_learning_avg_tokens_per_task", "avg_tokens_per_task", ".1f"),
+        ("ai_company_learning_avg_iterations_per_task", "avg_iterations_per_task", ".1f"),
+        ("ai_company_learning_error_rate", "error_rate", ".3f"),
+        ("ai_company_learning_memory_hit_rate", "memory_hit_rate", ".3f"),
+        ("ai_company_learning_memory_avg_similarity", "memory_avg_similarity", ".3f"),
+    ):
+        value = float(snapshot.get(key, 0.0))
+        lines.append(f"# TYPE {prom_name} gauge")
+        lines.append(f"{prom_name} {value:{fmt}}")
+
+    for prom_name, key in (
+        ("ai_company_learning_token_trend", "token_trend"),
+        ("ai_company_learning_iteration_trend", "iteration_trend"),
+        ("ai_company_learning_error_trend", "error_trend"),
+    ):
+        trend = _LEARNING_TREND_GAUGE.get(str(snapshot.get(key, "stable")), 0)
+        lines.append(f"# TYPE {prom_name} gauge")
+        lines.append(f"{prom_name} {trend}")
+
+    for prom_name, key in (
+        ("ai_company_learning_entries_pruned_total", "entries_pruned_total"),
+        ("ai_company_learning_episodic_digested_total", "episodic_digested_total"),
+        ("ai_company_learning_tasks_recorded_total", "total_tasks_recorded"),
+    ):
+        lines.append(f"# TYPE {prom_name} counter")
+        lines.append(f"{prom_name} {int(snapshot.get(key, 0))}")
 
 
 def _append_process_metrics(lines: list[str]) -> None:
@@ -600,7 +708,7 @@ def health_check() -> dict[str, Any]:
     (``DASHBOARD_DATA_DIR`` / project root) — never the process CWD — and
     task counts are read live from the MessageBus (ticket #61 / GAP-011).
     """
-    checks: dict[str, str] = {}
+    checks: dict[str, Any] = {}
     store = _get_store()
 
     # Check inbox.json accessibility (through the StateStore allowlist)
@@ -648,12 +756,23 @@ def health_check() -> dict[str, Any]:
     # Process memory
     checks["process_memory"] = _check_process_memory()
 
-    # Memory store
+    # Memory store (enriched with learning-pipeline health, ticket #232)
     memory_dir = _state_path("memory")
     if memory_dir.exists():
         try:
             entry_count = sum(1 for _ in memory_dir.rglob("*.json"))
-            checks["memory_store"] = f"ok ({entry_count} entries)"
+            snapshot = _latest_learning_snapshot()
+            checks["memory_store"] = {
+                "entry_count": entry_count,
+                "learning_enabled": learning_enabled(),
+                "by_type": _memory_by_type(memory_dir),
+                "last_consolidation": (
+                    snapshot.get("last_consolidation", "never") if snapshot else "never"
+                ),
+                "last_snapshot_timestamp": (
+                    snapshot.get("snapshot_timestamp") if snapshot else None
+                ),
+            }
         except OSError:
             checks["memory_store"] = "error reading"
     else:
@@ -670,7 +789,10 @@ def health_check() -> dict[str, Any]:
         checks["dead_letter_queue"] = "empty"
 
     # Overall status
-    degraded = any(v.startswith("missing") or v.startswith("error") for v in checks.values())
+    degraded = any(
+        isinstance(v, str) and (v.startswith("missing") or v.startswith("error"))
+        for v in checks.values()
+    )
     status = "degraded" if degraded else "ok"
 
     return {

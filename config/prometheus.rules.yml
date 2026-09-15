@@ -60,3 +60,25 @@ groups:
         annotations:
           summary: "Dashboard page {{ $labels.route }} is slow"
           description: "Average page-load for {{ $labels.route }} exceeds 2 seconds over a 5-minute window."
+
+  - name: dashboard_security
+    rules:
+      - alert: DashboardAuthFailureSpike
+        expr: rate(ai_company_auth_failures_total[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          job: ai-company-dashboard
+        annotations:
+          summary: "Dashboard authentication failure spike detected"
+          description: "Authentication failures exceed 0.5/sec over 5 minutes (possible brute-force or credential stuffing)."
+
+      - alert: DashboardRateLimitBreach
+        expr: rate(ai_company_rate_limit_hits_total[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          job: ai-company-dashboard
+        annotations:
+          summary: "Dashboard rate limit breach sustained"
+          description: "Rate limit hits exceed 0.5/sec over 5 minutes; check for abusive clients or misconfiguration."

@@ -1,0 +1,68 @@
+# Vercel deployment - React SPA at repo root
+# Ignore everything not needed for the frontend build
+
+# Build-critical files MUST survive:
+#   package.json, package-lock.json, tsconfig.json, vite.config.ts,
+#   index.html, src/, public/, company/agent-registry.json
+#   (src/data/companyData.ts imports company/agent-registry.json at build time)
+
+# Python backend
+/src/ai_company/
+*.py
+pyproject.toml
+uv.lock
+.venv/
+
+# Tests
+/tests/
+/test_*.py
+
+# Dev / tooling
+/.opencode/
+/.github/
+/.mypy_cache/
+/.ruff_cache/
+/.pytest_cache/
+/node_modules/
+/dist/
+
+# Brand assets (not needed for build - favicon is in /public)
+/brand/
+/static/
+
+# Docs, harness, configs
+/docs/
+/harness/
+/config/
+/memory/
+/data/
+/models/
+/results/
+/backups/
+/archive/
+/logs/
+/orchestrator/
+/sales/
+/hr/
+/board/
+/workflows/
+/graphify-out/
+/.benchmarks/
+/.hypothesis/
+/.ai-company/
+/.crush/
+/.agents/
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Other root files
+*.md
+*.txt
+!package.json
+!package-lock.json
+!tsconfig.json
+!vite.config.ts
+!index.html

@@ -88,6 +88,56 @@ class VectorStore:
         self._index[entry.id] = embedding
         self._entry_cache[entry.id] = entry
 
+    def remove_entry(self, entry_id: str) -> bool:
+        """Remove a memory entry from the vector index.
+
+        Args:
+            entry_id: The ID of the entry to remove.
+
+        Returns:
+            True if the entry was found and removed, False otherwise.
+        """
+        removed = False
+        if entry_id in self._index:
+            del self._index[entry_id]
+            removed = True
+        if entry_id in self._entry_cache:
+            del self._entry_cache[entry_id]
+            removed = True
+        return removed
+
+    def remove_entries(self, entry_ids: list[str]) -> int:
+        """Remove multiple entries from the vector index.
+
+        Args:
+            entry_ids: List of entry IDs to remove.
+
+        Returns:
+            Number of entries actually removed.
+        """
+        count = 0
+        for eid in entry_ids:
+            if self.remove_entry(eid):
+                count += 1
+        return count
+
+    def cleanup_stale_entries(self) -> int:
+        """Remove index entries that no longer exist in the memory store.
+
+        Compares the vector index against the actual memory store entries
+        and removes any orphaned embeddings.
+
+        Returns:
+            Number of orphaned entries removed.
+        """
+        store_ids: set[str] = set()
+        for entries in self.store._stores.values():
+            for entry in entries:
+                store_ids.add(entry.id)
+
+        orphaned = [eid for eid in self._index if eid not in store_ids]
+        return self.remove_entries(orphaned)
+
     def index_all(self, memory_type: str | None = None) -> int:
         """Index all entries from the memory store.
 
@@ -109,7 +159,8 @@ class VectorStore:
                     self.index_entry(entry)
                     count += 1
 
-        self.save_index()
+        if count:
+            self.save_index()
         return count
 
     def search(

@@ -192,7 +192,23 @@ function Show-EvolutionReminder {
 function Assert-NoActive {
   $summary = Join-Path $Active "summary.md"
   if (Test-Path -LiteralPath $summary) {
-    throw "Active change exists. Run 'status', then 'park', 'close', or finish it before starting a new change."
+    # Check if the existing active change is stale (created >24h ago) �
+    # if so, remove it so a new change can be created. Otherwise throw.
+    $meta = Parse-FrontMatter $summary
+    $created = $meta["created_at"]
+    if ($created) {
+      $cutoff = (Get-Date).AddDays(-24)
+      if ([datetime]::Parse($created) -lt $cutoff) {
+        # Stale change from a crashed session � remove it so a new change can be created.
+        Remove-Item -LiteralPath $summary -ErrorAction SilentlyContinue
+      }
+      else {
+        throw "Active change exists. Run 'status', then 'park', 'close', or finish it before starting a new change."
+      }
+    }
+    else {
+      throw "Active change exists. Run 'status', then 'park', 'close', or finish it before starting a new change."
+    }
   }
 }
 
@@ -200,8 +216,14 @@ function New-Change([string]$Title) {
   Ensure-Dirs
   if ([string]::IsNullOrWhiteSpace($Title)) { throw "Missing title." }
   Assert-NoActive
+  # Atomic re-check to close the TOCTOU race: refuse if the summary appeared since Assert-NoActive ran.
+  $summary = Join-Path $Active "summary.md"
+  if (Test-Path -LiteralPath $summary) {
+    throw "Active change already exists. Run 'status', then 'park', 'close', or finish it before starting a new change."
+  }
   $date = Get-DateText
   $slug = ConvertTo-Slug $Title
+  $sessionId = [string][guid]::NewGuid()
   Write-Text (Join-Path $Active "summary.md") @"
 ---
 title: "$Title"
@@ -218,6 +240,9 @@ tags: []
 validation_status: "unknown"
 created_at: "$date"
 updated_at: "$date"
+session_id: "$sessionId"
+owner_agent: "$Env:USERNAME"
+claimed_at: "$date"
 ---
 
 # Summary
@@ -477,7 +502,26 @@ function Resume-Change([string]$Id) {
       updated_at = (Get-DateText)
     }
   }
-  Move-Item -LiteralPath $source -Destination $Active
+  # Move the contents into the existing active/ dir (destination exists, so
+  # moving the folder itself would nest active/<id>/ and break 'status').
+  # Move-Item -LiteralPath does not expand wildcards, so enumerate children.
+  $children = Get-ChildItem -LiteralPath $source -Force
+  foreach ($child in $children) {
+    $dest = Join-Path $Active $child.Name
+    if (Test-Path -LiteralPath $dest) {
+      Write-Warning "Resume: keeping active dir's '$($child.Name)', skipping parked copy."
+      continue
+    }
+    Move-Item -LiteralPath $child.FullName -Destination $Active
+  }
+  # Remove the now-empty source dir; if anything was skipped it stays for review.
+  $remaining = Get-ChildItem -LiteralPath $source -Force
+  if ($remaining) {
+    Write-Warning "Resume: '$source' still has entries and was left in place."
+  }
+  else {
+    Remove-Item -LiteralPath $source -Force
+  }
   Reindex
   Write-Output "Resumed $Id into active. Run validate before continuing."
 }

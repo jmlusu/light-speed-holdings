@@ -1,0 +1,10 @@
+Workstream,Deliverable,Owner,Target Date,Actual Date,Status,Blockers,Notes,Priority
+Legal,Mutual NDA executed,CLO,2026-09-02,,Not Started,,,High
+Legal,JDA term sheet sent to OI,CLO,2026-09-03,,Not Started,,,High
+Technical,Agricultural knowledge base received,ML Eng,2026-09-16,,Not Started,,Includes crop calendars, pest IDs, market data, Ministry bulletins,High
+Technical,WhatsApp Business API access granted,Backend,2026-09-16,,Not Started,,Template approval + opt-in management,High
+Legal,JDA signed (GATE 1),CEO/BD,2026-09-30,,Not Started,,Gate 1 criteria: JDA signed + ZBS NDA + MinAg MoU,Critical
+Technical,50 pilot farmers identified,PM,2026-09-30,,Not Started,,Gender balance, 3 districts, smartphone+feature phone mix,High
+Technical,5 extension officers committed,PM,2026-09-30,,Not Started,,For human-in-loop + RLHF labeling,High
+Technical,Ministry data access facilitated,BD,2026-09-30,,Not Started,,Official bulletins, AIP data, depot stock,Medium
+Product,Pilot design finalized,PM,2026-09-14,,Not Started,,RCT design with WB DIME,Medium

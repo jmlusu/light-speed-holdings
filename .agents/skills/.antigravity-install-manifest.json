@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-11T00:00:00.000Z",
+  "updatedAt": "2026-09-03T00:00:00.000Z",
   "entries": [
     "agenttrace-session-audit",
     "api-endpoint-builder",
@@ -37,6 +37,28 @@
     "ponytail-debt",
     "ponytail-gain",
     "ponytail-help",
-    "ponytail-review"
+    "ponytail-review",
+    "k-dense-paper-lookup",
+    "k-dense-literature-review",
+    "k-dense-citation-management",
+    "k-dense-research-lookup",
+    "k-dense-database-lookup",
+    "k-dense-scientific-writing",
+    "k-dense-peer-review",
+    "k-dense-market-research-reports",
+    "k-dense-statistical-analysis",
+    "k-dense-venue-templates",
+    "k-dense-docx",
+    "k-dense-pdf",
+    "k-dense-pptx",
+    "k-dense-xlsx",
+    "k-dense-markitdown",
+    "k-dense-liteparse",
+    "k-dense-infographics",
+    "k-dense-sci-schematics",
+    "k-dense-sci-slides",
+    "k-dense-mermaid-skill",
+    "k-dense-mckinsey-style",
+    "k-dense-pyzotero"
   ]
 }

@@ -1,0 +1,751 @@
+name: Weekly Repository Audit
+
+on:
+  schedule:
+    # Sunday 06:00 UTC
+    - cron: "0 6 * * 0"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Audit depth: full (scan + agent) or quick (scan only)"
+        required: false
+        default: full
+        type: choice
+        options:
+          - full
+          - quick
+      notify:
+        description: "Notify the Human CEO via GitHub issue"
+        required: false
+        default: true
+        type: boolean
+      agent_budget_minutes:
+        description: "Executor daemon window for the agent phase (minutes)"
+        required: false
+        default: 20
+        type: number
+
+concurrency:
+  group: repo-audit
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+  actions: read
+
+jobs:
+  # ── Phase 1: deterministic scans (zero LLM cost) ───────────────────
+  deterministic-audit:
+    name: Deterministic Scan (Phase 1)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      date: ${{ steps.scan.outputs.date }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Run deterministic scans and emit evidence
+        id: scan
+        run: |
+          export AUDIT_DATE="$(date -u +%F)"
+          echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
+          mkdir -p reports
+          uv run python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import time
+          from pathlib import Path
+
+          date = os.environ["AUDIT_DATE"]
+          run_id = os.environ.get("GITHUB_RUN_ID", "local")
+          root = Path.cwd()
+          probes = []
+
+          def rec(name, status, detail=""):
+              probes.append({"name": name, "status": status, "detail": str(detail)[:500]})
+
+          def sh(name, argv, timeout=600):
+              try:
+                  r = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
+              except Exception as e:  # noqa: BLE001
+                  rec(name, "fail", f"invocation error: {e}")
+                  return None
+              tail = (r.stdout + r.stderr).strip().splitlines()[-10:]
+              rec(name, "ok" if r.returncode == 0 else "fail", " | ".join(tail)[:500])
+              return r
+
+          # 1. Registry parse (company-registry.yaml)
+          try:
+              import yaml
+              reg = yaml.safe_load((root / "company-registry.yaml").read_text(encoding="utf-8"))
+              agents = reg["company"]["agents"]
+              rec("registry.parse", "ok" if agents else "fail", f"agents={len(agents)}")
+          except Exception as e:  # noqa: BLE001
+              agents = []
+              rec("registry.parse", "fail", f"unable to parse company-registry.yaml: {e}")
+
+          # 2. Card reconciliation: registry name <-> .opencode/agents/{name}.md
+          try:
+              jreg = json.loads((root / "company" / "agent-registry.json").read_text(encoding="utf-8"))
+              reg_names = {a.get("name") for a in jreg if a.get("name")}
+              live = {p.stem for p in (root / ".opencode" / "agents").glob("*.md")}
+              baks = list((root / ".opencode" / "agents").glob("*.md.bak"))
+              orphan_cards = sorted(live - reg_names)
+              missing_cards = sorted(reg_names - live)
+              rec("cards.reconcile", "ok" if not orphan_cards and not missing_cards else "fail",
+                  f"registry={len(reg_names)} live={len(live)} bak={len(baks)} orphan={orphan_cards[:5]} missing={missing_cards[:5]}")
+          except Exception as e:  # noqa: BLE001
+              rec("cards.reconcile", "fail", f"reconciliation error: {e}")
+
+          # 3. Canonical tool vocabulary (7 tools only, no legacy aliases)
+          try:
+              canonical = {"read", "edit", "grep", "list", "bash", "webfetch", "task"}
+              aliases = {"write", "execute", "delegate", "web_search", "websearch", "code_interpreter"}
+              bad = []
+              no_perm = []
+              for card in (root / ".opencode" / "agents").glob("*.md"):
+                  text = card.read_text(encoding="utf-8")
+                  parts = text.split("---", 2)
+                  if len(parts) < 3:
+                      no_perm.append(card.stem)
+                      continue
+                  try:
+                      meta = yaml.safe_load(parts[1]) or {}
+                  except Exception:  # noqa: BLE001
+                      no_perm.append(card.stem)
+                      continue
+                  perm = meta.get("permission")
+                  if not isinstance(perm, dict):
+                      no_perm.append(card.stem)
+                      continue
+                  for tool in perm:
+                      if tool in aliases or tool not in canonical:
+                          bad.append(f"{card.stem}:{tool}")
+              extra = f"; no-permission cards: {len(no_perm)}" if no_perm else ""
+              rec("cards.tools", "ok" if not bad else "fail", f"non-canonical tools: {bad[:8]}{extra}")
+          except Exception as e:  # noqa: BLE001
+              rec("cards.tools", "fail", str(e))
+
+          # 4. Lint
+          sh("ruff.check", ["uv", "run", "ruff", "check", "src/"])
+
+          # 5. Tests: collection only (catches import/schema breaks fast)
+          r = sh("pytest.collect", ["uv", "run", "pytest", "--collect-only", "-q"], timeout=900)
+          if r is not None and r.returncode == 0:
+              errs = [ln for ln in r.stdout.splitlines() if "errors" in ln.lower()]
+              rec("pytest.collect", "ok", errs[-1] if errs else "collection clean")
+
+          # 6. Doc drift manifest (docs/source-of-truth.yaml)
+          r = sh("drift.manifest", ["pwsh", "-NoProfile", "-File",
+                                    "scripts/validate-drift.ps1", "-Json"], timeout=600)
+          if r is not None:
+              try:
+                  drift = json.loads(r.stdout.strip())
+                  n = len(drift.get("drifts", []))
+                  rec("drift.manifest", "fail" if drift.get("status") == "drift_detected" else "ok",
+                      f"drifts={n} checked={drift.get('checked')}")
+              except Exception:  # noqa: BLE001
+                  rec("drift.manifest", "fail", "unparsable drift JSON")
+
+          # 7. Generated-drift gate (mirrors ci.yml generated-check): regenerate
+          #    agents from the registry, then require a clean diff.
+          try:
+              gen = subprocess.run(
+                  ["uv", "run", "python", "-c",
+                   "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"],
+                  capture_output=True, text=True, timeout=1200)
+              if gen.returncode != 0:
+                  detail = (gen.stderr or gen.stdout).strip().splitlines()[-3:]
+                  rec("cards.generated_drift", "fail",
+                      " | ".join(detail) if detail else "regeneration failed")
+              else:
+                  diff = subprocess.run(
+                      ["git", "diff", "--stat", "--", ".", ":!docs/AGENT-REGISTRY-TABLE.md", ":!uv.lock"],
+                      capture_output=True, text=True, timeout=120)
+                  drift = (diff.stdout + diff.stderr).strip()
+                  rec("cards.generated_drift", "ok" if not drift else "fail",
+                      drift[:500] or "no drift after regeneration")
+          except Exception as e:  # noqa: BLE001
+              rec("cards.generated_drift", "fail", f"invocation error: {e}")
+
+          # 8. Departments parity: config/ (registry model) vs company/
+          #    (generator + dashboard) must agree on the same department set.
+          try:
+              comp_dep = yaml.safe_load((root / "company" / "departments.yaml").read_text(encoding="utf-8"))
+              cfg_dep = yaml.safe_load((root / "config" / "departments" / "departments.yaml").read_text(encoding="utf-8"))
+              ids_a = [d.get("id") for d in (comp_dep.get("departments") or [])]
+              ids_b = [d.get("id") for d in (cfg_dep.get("departments") or [])]
+              rec("tree.departments", "ok" if ids_a == ids_b else "fail",
+                  f"company={len(ids_a)} config={len(ids_b)} "
+                  f"only_company={sorted(set(ids_a) - set(ids_b))} only_config={sorted(set(ids_b) - set(ids_a))}")
+          except Exception as e:  # noqa: BLE001
+              rec("tree.departments", "fail", f"departments parse error: {e}")
+
+          # 9. Dead subsystems / known stale dirs
+          rec("tree.data_etl", "warn" if (root / "data" / "etl").exists() else "ok", "data/etl present")
+          prompts_files = sorted((root / "prompts").glob("**/*.md"))
+          rec("tree.prompts", "warn" if len(prompts_files) == 1 else "ok", f"prompts/*.md={len(prompts_files)}")
+
+          # 10. Ignored-but-required configs (blocks a fresh clone)
+          gitignore = (root / ".gitignore").read_text(encoding="utf-8") if (root / ".gitignore").exists() else ""
+          for cfg in ("orchestrator/scheduler.yaml", "orchestrator/escalation.yaml"):
+              rec(f"gitignore.{cfg.replace('/', '.')}",
+                  "fail" if cfg in gitignore else "ok",
+                  f"{cfg} ignored while required by cli/validate.py")
+          tracked_graph = subprocess.run(["git", "ls-files", "graphify-out"],
+                                         capture_output=True, text=True, timeout=60).stdout.strip()
+          rec("gitignore.graphify",
+              "warn" if ("graphify-out" not in gitignore or tracked_graph) else "ok",
+              f"ignored={'graphify-out' in gitignore} tracked_files={len(tracked_graph.splitlines())}")
+
+          # 11. Unignored runner/build artifacts
+          for d in (".playwright-cli", "screenshots", "results"):
+              present = (root / d).exists()
+              rec(f"gitignore.{d}", "warn" if present and d not in gitignore else "ok", f"{d}/ present")
+
+          # 12. CI validates the agent registry?
+          ci = (root / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8") if (root / ".github" / "workflows" / "ci.yml").exists() else ""
+          rec("ci.registry_gate", "warn" if ("verify-agents" not in ci and "registry" not in ci) else "ok",
+              "ci.yml never validates agent registry")
+
+          # 13. ECL harness state (recursive: change files live in nested dirs)
+          active_files = list((root / "harness" / "changes" / "active").glob("**/*.md"))
+          rec("ecl.active", "ok" if active_files else "warn", f"active change files={len(active_files)}")
+
+          # 14. Knowledge graph freshness
+          sh("graphify.update", ["uv", "run", "graphify", "update", "."], timeout=900)
+          gj = root / "graphify-out" / "graph.json"
+          if gj.exists():
+              try:
+                  gdata = json.loads(gj.read_text(encoding="utf-8"))
+                  rec("graphify.graph", "ok", f"nodes={len(gdata.get('nodes', []))} edges={len(gdata.get('edges', []))}")
+              except Exception:  # noqa: BLE001
+                  rec("graphify.graph", "warn", f"graph.json size={gj.stat().st_size} bytes")
+
+          # Severity mapping for the scan-only fallback report
+          sev_map = {
+              "registry.parse": "critical",
+              "cards.generated_drift": "major",
+              "drift.manifest": "major",
+              "tree.departments": "major",
+              "tree.data_etl": "major",
+              "tree.prompts": "minor",
+              "gitignore.orchestrator.scheduler.yaml": "critical",
+              "gitignore.orchestrator.escalation.yaml": "critical",
+              "ci.registry_gate": "major",
+          }
+          info_probes = {"ecl.active"}
+          totals = {"critical": 0, "major": 0, "minor": 0}
+          for p in probes:
+              if p["status"] == "ok" or p["name"] in info_probes:
+                  continue
+              sev = sev_map.get(p["name"], "minor")
+              totals[sev] += 1
+
+          evidence = {
+              "run_id": run_id,
+              "date": date,
+              "mode": "full",
+              "probe_count": len(probes),
+              "probes": probes,
+              "severity_totals": totals,
+              "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+          }
+          out = root / "reports" / f"evidence-{date}.json"
+          out.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
+          print(f"probes={len(probes)} totals={totals}")
+          print(f"wrote {out}")
+          PY
+
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: audit-evidence
+          path: reports/evidence-${{ steps.scan.outputs.date }}.json
+          retention-days: 30
+
+  # ── Phase 2: agent deep pass via the executor daemon ───────────────
+  agent-deep-audit:
+    name: Agent Deep Pass (Phase 2)
+    runs-on: ubuntu-latest
+    needs: deterministic-audit
+    if: needs.deterministic-audit.result == 'success' && (github.event_name == 'schedule' || inputs.mode != 'quick')
+    timeout-minutes: 35
+    env:
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+      MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    outputs:
+      date: ${{ steps.stub.outputs.date }}
+      report_ok: ${{ steps.verify.outputs.report_ok }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Download evidence artifact
+        id: download
+        uses: actions/download-artifact@v7
+        with:
+          name: audit-evidence
+
+      - name: Restore deterministic evidence and stub the report
+        id: stub
+        run: |
+          export AUDIT_DATE="$(date -u +%F)"
+          echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
+          mkdir -p reports
+          mv evidence-*.json "reports/evidence-$AUDIT_DATE.json" 2>/dev/null || true
+          ls reports/
+          cat > "reports/repo-audit-$AUDIT_DATE.md" <<EOF
+          # Repository Audit — $AUDIT_DATE (IN PROGRESS)
+
+          ## Run
+
+          run_id: ${{ github.run_id }}
+          mode: full
+
+          ## Verdict
+
+          ## Top Findings
+
+          | # | Severity | Finding | Evidence |
+          |---|----------|---------|----------|
+
+          ## Critical Blockers
+
+          ## Major Findings
+
+          ## Minor Findings
+
+          ## Orphans / Stale / Redundant
+
+          ## Governance Notes
+
+          <!-- AUDIT_VMETA
+          mode=full
+          verdict=attention
+          critical=0
+          major=0
+          minor=0
+          orphan=0
+          stale=0
+          redundant=0
+          hitl_pending=0
+          -->
+          EOF
+          echo "stub written"
+
+      # Seed one real task for the chief-of-staff, then run the executor
+      # daemon for a bounded window (same pattern as autonomous.yml).
+      - name: Seed audit task for chief-of-staff
+        run: |
+          export AUDIT_DATE="$(date -u +%F)"
+          uv run python - <<'PY'
+          import os
+          import uuid
+
+          from ai_company.models.task import Task, TaskPriority
+          from ai_company.orchestrator.message_bus import MessageBus
+
+          date = os.environ["AUDIT_DATE"]
+          bus = MessageBus()
+          task = Task(
+              id=str(uuid.uuid4()),
+              name=f"Weekly repository audit — {date}",
+              sender_id="human-ceo",
+              receiver_id="chief-of-staff",
+              instruction=(
+                  f"Execute the weekly repository audit for {date}. Read the brief "
+                  f"at prompts/repository-audit.md and the deterministic evidence at "
+                  f"reports/evidence-{date}.json. Overwrite reports/repo-audit-{date}.md "
+                  f"with your full report per the brief's contract (sections + AUDIT_VMETA)."
+              ),
+              priority=TaskPriority.HIGH,
+          )
+          bus.send_task(task)
+          print(f"Seeded audit task {task.id} for {task.receiver_id}")
+          PY
+
+      - name: Run executor daemon (bounded poll window)
+        run: |
+          WINDOW=${{ inputs.agent_budget_minutes || 20 }}
+          timeout --preserve-status -s INT "$((WINDOW * 60))" \
+            uv run python -m ai_company.cli.main executor start \
+              --poll-interval 10 \
+              --config company/models.yaml \
+              --registry company/agent-registry.json
+          ec=$?
+          if [ "$ec" -eq 0 ] || [ "$ec" -eq 124 ] || [ "$ec" -eq 130 ]; then
+            echo "Executor daemon window ended (exit=$ec)."
+            exit 0
+          fi
+          echo "::error::Executor daemon failed with exit code $ec"
+          exit "$ec"
+
+      - name: Verify the report contract
+        id: verify
+        run: |
+          export AUDIT_DATE="$(date -u +%F)"
+          REPORT="reports/repo-audit-$AUDIT_DATE.md"
+          report_ok=true
+          if [ ! -f "$REPORT" ]; then
+            echo "::error::Report missing"
+            report_ok=false
+          elif ! grep -q "Repository Audit —" "$REPORT"; then
+            echo "::error::Report missing title header"
+            report_ok=false
+          elif ! grep -q "AUDIT_VMETA" "$REPORT"; then
+            echo "::error::Report missing AUDIT_VMETA block"
+            report_ok=false
+          else
+            SIZE=$(wc -c < "$REPORT")
+            if [ "$SIZE" -lt 500 ]; then
+              echo "::error::Report too small ($SIZE bytes)"
+              report_ok=false
+            fi
+            if grep -q "IN PROGRESS" "$REPORT"; then
+              echo "::error::Report still contains the IN PROGRESS stub"
+              report_ok=false
+            fi
+          fi
+          echo "report_ok=$report_ok" >> "$GITHUB_OUTPUT"
+          echo "report_ok=$report_ok"
+
+      - name: Upload report artifact
+        if: steps.verify.outputs.report_ok == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: audit-report
+          path: reports/repo-audit-${{ steps.stub.outputs.date }}.md
+          retention-days: 30
+
+  # ── Commit report + notify the Human CEO via GitHub issue ──────────
+  commit-and-notify:
+    name: Commit Report & Notify CEO
+    runs-on: ubuntu-latest
+    needs: [deterministic-audit, agent-deep-audit]
+    if: always() && needs.deterministic-audit.result == 'success'
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: artifacts
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Reconcile report (agent pass or scan-only fallback)
+        id: reconcile
+        env:
+          AGENT_REPORT_OK: ${{ needs.agent-deep-audit.outputs.report_ok }}
+        run: |
+          export AUDIT_DATE="$(date -u +%F)"
+          echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
+          mkdir -p reports
+          # Restore evidence (needed for both the fallback and provenance)
+          if [ -f "artifacts/evidence-$AUDIT_DATE.json" ]; then
+            mv "artifacts/evidence-$AUDIT_DATE.json" "reports/evidence-$AUDIT_DATE.json"
+          elif [ -f "reports/evidence-$AUDIT_DATE.json" ]; then
+            : # already present (quick re-run path)
+          fi
+          REPORT="reports/repo-audit-$AUDIT_DATE.md"
+          if [ "$AGENT_REPORT_OK" = "true" ] && [ -f "artifacts/repo-audit-$AUDIT_DATE.md" ]; then
+            mv "artifacts/repo-audit-$AUDIT_DATE.md" "$REPORT"
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          else
+            if [ -f "artifacts/repo-audit-$AUDIT_DATE.md" ]; then
+              mv "artifacts/repo-audit-$AUDIT_DATE.md" "$REPORT" || true
+            fi
+            python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          date = os.environ.get("AUDIT_DATE", "")
+          ev = Path("reports") / f"evidence-{date}.json"
+          totals = {"critical": 0, "major": 0, "minor": 0}
+          n_probes = 0
+          detail = ""
+          if ev.exists():
+              data = json.loads(ev.read_text(encoding="utf-8"))
+              totals = data.get("severity_totals", totals)
+              n_probes = data.get("probe_count", 0)
+              detail = "\n".join(
+                  f"- [{p['status']}] {p['name']}: {p['detail']}"
+                  for p in data.get("probes", [])[:30]
+              )
+          report = Path("reports") / f"repo-audit-{date}.md"
+          lines = [
+              f"# Repository Audit — {date}",
+              "",
+              "## Run",
+              "",
+              f"run_id: {os.environ.get('GITHUB_RUN_ID', 'local')}",
+              "mode: scan-only (agent pass unavailable or failed)",
+              f"probe_count: {n_probes}",
+              "",
+              "## Verdict",
+              "",
+              "The agent deep pass did not produce a valid report. This scan-only",
+              "report is generated from the deterministic evidence phase. Severity",
+              "totals below are provisional and should be validated by a full pass.",
+              "",
+              "## Top Findings",
+              "",
+              "Deterministic probe summary:",
+              "",
+              detail,
+              "",
+              "## Critical Blockers",
+              "",
+              "## Major Findings",
+              "",
+              "## Minor Findings",
+              "",
+              "## Orphans / Stale / Redundant",
+              "",
+              "## Governance Notes",
+              "",
+              "Run degraded: see Actions run for probe details.",
+              "",
+              "<!-- AUDIT_VMETA",
+              "mode=scan-only",
+              "verdict=attention",
+              f"critical={totals['critical']}",
+              f"major={totals['major']}",
+              f"minor={totals['minor']}",
+              "orphan=0",
+              "stale=0",
+              "redundant=0",
+              "hitl_pending=0",
+              "-->",
+          ]
+          report.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          print("fallback report written")
+          PY
+          echo "mode=scan-only" >> "$GITHUB_OUTPUT"
+          fi
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+          ls -la reports/
+
+      - name: Commit the audit artifacts
+        if: steps.reconcile.outputs.report != ''
+        run: |
+          export AUDIT_DATE="$(date -u +%F)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "reports/repo-audit-$AUDIT_DATE.md" "reports/evidence-$AUDIT_DATE.json"
+          if git diff --cached --quiet; then
+            echo "No new audit files to commit (already up to date)."
+          else
+            git commit -m "audit: weekly repository report $AUDIT_DATE"
+            git push -u origin "HEAD:refs/heads/$GITHUB_REF_NAME" || {
+              git pull --rebase --autostash
+              git push -u origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+            }
+          fi
+
+      - name: Notify the Human CEO
+        id: notify
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AGENT_REPORT_OK: ${{ needs.agent-deep-audit.outputs.report_ok }}
+        run: |
+          NOTIFY="${{ inputs.notify != false }}"
+          if [ "$NOTIFY" = "false" ]; then
+            echo "Notify disabled via workflow_dispatch input; skipping CEO issue."
+            exit 0
+          fi
+
+          export AUDIT_DATE="$(date -u +%F)"
+          REPORT="reports/repo-audit-$AUDIT_DATE.md"
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          REPO_LINK="${{ github.server_url }}/${{ github.repository }}/blob/$DEFAULT_BRANCH/reports/repo-audit-$AUDIT_DATE.md"
+          CEO_HANDLE="${{ vars.CEO_GITHUB_HANDLE || github.repository_owner }}"
+
+          # Parse the machine-readable verdict block
+          python3 - "$REPORT" <<'PY'
+          import re, sys
+          from pathlib import Path
+          report = Path(sys.argv[1])
+          text = report.read_text(encoding="utf-8") if report.exists() else ""
+          vals = {"mode": "full", "verdict": "attention", "critical": "0", "major": "0",
+                  "minor": "0", "orphan": "0", "stale": "0", "redundant": "0", "hitl_pending": "0"}
+          m = re.search(r"<!-- AUDIT_VMETA\n(.*?)-->", text, re.S)
+          if m:
+              for line in m.group(1).splitlines():
+                  k, _, v = line.partition("=")
+                  k, v = k.strip(), v.strip()
+                  if k in vals and v:
+                      vals[k] = v
+          with open("vmeta.env", "w") as f:
+              for k, v in vals.items():
+                  f.write(f"VMETA_{k.upper()}={v}\n")
+          # Extract the Top Findings rows for the issue body
+          rows = []
+          if "## Top Findings" in text:
+              chunk = text.split("## Top Findings", 1)[1]
+              chunk = re.split(r"^## ", chunk, flags=re.M)[0]
+              for line in chunk.splitlines():
+                  line = line.strip()
+                  if line.startswith("|") and "| # |" not in line and "|--" not in line:
+                      cells = [c.strip() for c in line.strip("|").split("|")]
+                      if len(cells) >= 3:
+                          rows.append(" | ".join(cells[:4])[:220])
+          with open("topfindings.txt", "w") as f:
+              f.write("\n".join(rows[:5]))
+          PY
+          set -a; source vmeta.env; set +a
+          CRITICAL="${VMETA_CRITICAL:-0}"
+          MAJOR="${VMETA_MAJOR:-0}"
+          MINOR="${VMETA_MINOR:-0}"
+          ORPHAN="${VMETA_ORPHAN:-0}"
+          STALE="${VMETA_STALE:-0}"
+          REDUNDANT="${VMETA_REDUNDANT:-0}"
+          HITL="${VMETA_HITL_PENDING:-0}"
+          VERDICT="${VMETA_VERDICT:-attention}"
+          MODE_VAL="${VMETA_MODE:-full}"
+
+          # Recompute the effective run mode if the agent phase was skipped/failed
+          if [ "$AGENT_REPORT_OK" != "true" ]; then
+            MODE_VAL="scan-only"
+          fi
+
+          N=$((CRITICAL + MAJOR))
+          if [ "$MODE_VAL" = "scan-only" ]; then
+            TITLE="Weekly Repo Audit — $AUDIT_DATE (degraded: scan-only)"
+          elif [ "$N" -gt 0 ]; then
+            TITLE="Weekly Repo Audit — $AUDIT_DATE (risks found: $N)"
+          else
+            TITLE="Weekly Repo Audit — $AUDIT_DATE (healthy)"
+          fi
+
+          # Labels must exist before use (idempotent creation)
+          gh label create human-ceo --color "e63946" --description "Escalated to the Human CEO for review and decision" 2>/dev/null || true
+          gh label create ready-for-human --color "d4c5f9" --description "Awaiting a human decision" 2>/dev/null || true
+
+          # Dedup: close any older open weekly-audit issues before creating this one
+          gh issue list --label human-ceo --search "Weekly Repo Audit in:title" --state open --json number --jq '.[].number' | \
+            while read -r num; do
+              echo "Closing prior audit issue #$num"
+              gh issue close "$num" --reason "completed" >/dev/null || true
+            done
+
+          TOP=$(sed 's/\\/\\\\/g; s/`/\\`/g' topfindings.txt)
+          BODY=$(printf '%s\n' \
+            "Human CEO, the weekly repository audit for **$AUDIT_DATE** is ready." \
+            "" \
+            "| Metric | Value |" \
+            "|--------|-------|" \
+            "| Verdict | **$VERDICT** |" \
+            "| Critical blockers | $CRITICAL |" \
+            "| Major findings | $MAJOR |" \
+            "| Minor findings | $MINOR |" \
+            "| Orphans | $ORPHAN |" \
+            "| Stale | $STALE |" \
+            "| Redundant | $REDUNDANT |" \
+            "| HITL pending | $HITL |" \
+            "| Run mode | $MODE_VAL |" \
+            "| Runner | [run ${{ github.run_id }}]($RUN_URL) |" \
+            "" \
+            "Full report: [$REPORT]($REPO_LINK)" \
+            "" \
+            "## Top findings" \
+            "${TOP:-_(none extracted into the issue)_}" \
+            "" \
+            "## Decision required" \
+            "Reply with one of:" \
+            "- \`/approve\` — accept this week's state" \
+            "- \`/park\` — acknowledge, no action" \
+            "- \`/reject\` — flag a specific finding for immediate triage")
+
+          ISSUE_URL=$(gh issue create \
+            --title "$TITLE" \
+            --assignee "$CEO_HANDLE" \
+            --label "human-ceo,ready-for-human" \
+            --body "$BODY" 2>&1)
+          RC=$?
+          if [ $RC -ne 0 ]; then
+            echo "::error::Failed to create CEO notification issue: $ISSUE_URL"
+            exit 1
+          fi
+          echo "Created CEO notification issue: $ISSUE_URL"
+
+  # ── Hard-failure alert: the audit itself could not run ─────────────
+  notify-failure:
+    name: Audit Failure Alert
+    runs-on: ubuntu-latest
+    needs: [deterministic-audit, agent-deep-audit, commit-and-notify]
+    if: always() && (needs.deterministic-audit.result == 'failure' || needs.agent-deep-audit.result == 'failure' || needs.commit-and-notify.result == 'failure')
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Create failed-run alert issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export AUDIT_DATE="$(date -u +%F)"
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          CEO_HANDLE="${{ vars.CEO_GITHUB_HANDLE || github.repository_owner }}"
+
+          # Skip if a report issue for today already exists (avoid double alert)
+          EXISTING=$(gh issue list --label human-ceo --search "Weekly Repo Audit in:title" --state open --json number --jq 'length' 2>/dev/null || echo 0)
+          EXISTING=${EXISTING:-0}
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "An open audit issue already exists ($EXISTING); skipping failure alert"
+            exit 0
+          fi
+
+          gh label create bug --color "d73a4a" --description "A bug / malfunction" 2>/dev/null || true
+          gh label create monitoring --color "5319e7" --description "CI health / monitoring alert issues" 2>/dev/null || true
+          gh label create human-ceo --color "e63946" --description "Escalated to the Human CEO for review and decision" 2>/dev/null || true
+
+          BODY=$(printf '%s\n' \
+            "Human CEO, the weekly repository audit **could not run** for **$AUDIT_DATE**." \
+            "" \
+            "| Item | Value |" \
+            "|------|-------|" \
+            "| Run | [run ${{ github.run_id }}]($RUN_URL) |" \
+            "| Branch | $DEFAULT_BRANCH |" \
+            "" \
+            "Inspect the Actions run to determine whether this is a transient infrastructure" \
+            "failure or a regression in the audit pipeline. The next scheduled run is the" \
+            "following Sunday 06:00 UTC.")
+
+          ISSUE_URL=$(gh issue create \
+            --title "Weekly Repo Audit FAILED — $AUDIT_DATE" \
+            --assignee "$CEO_HANDLE" \
+            --label "bug,monitoring,human-ceo" \
+            --body "$BODY" 2>&1)
+          RC=$?
+          if [ $RC -ne 0 ]; then
+            echo "::error::Failed to create failure alert issue: $ISSUE_URL"
+            exit 1
+          fi
+          echo "Created failure alert issue: $ISSUE_URL"

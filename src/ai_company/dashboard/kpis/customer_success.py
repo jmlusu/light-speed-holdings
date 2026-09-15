@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import datetime
 from typing import Any
 
 from ai_company.dashboard.kpis.base import KPICollector
-
-logger = logging.getLogger(__name__)
 
 
 class CustomerSuccessKPICollector(KPICollector):
@@ -19,28 +16,8 @@ class CustomerSuccessKPICollector(KPICollector):
     def _check_sop_status(self) -> tuple[bool, float]:
         """Check if Customer Success SOP exists and is current (updated within 90 days)."""
         sop_path = self.root / "docs" / "sop" / "customer-success-sop.md"
-        if not sop_path.exists():
-            return False, 0.0
-        try:
-            import re
-
-            content = sop_path.read_text(encoding="utf-8")
-            match = re.search(r"Last Updated:\s*([A-Za-z]+\s+\d{4})", content)
-            if match:
-                from datetime import datetime as dt
-
-                updated_dt = dt.strptime(match.group(1), "%B %Y")
-                now = datetime.now()
-                days_old = (now - updated_dt).days
-                is_current = days_old <= 90
-                return is_current, round((90 - days_old) / 90 * 100, 1) if is_current else 0.0
-        except (OSError, ValueError, AttributeError) as exc:
-            logger.warning(
-                "Failed to parse Customer Success SOP freshness (%s): %s",
-                sop_path,
-                exc,
-            )
-        return False, 0.0
+        is_current, freshness, _error = self._sop_freshness(sop_path, "Customer Success")
+        return is_current, freshness if freshness is not None else 0.0
 
     def _compute_ticket_resolution_time(
         self, tickets: list[dict[str, Any]]
@@ -50,33 +27,15 @@ class CustomerSuccessKPICollector(KPICollector):
         Returns:
             Tuple of (avg_resolution_hours, error_message). error_message is None on success.
         """
-        resolved_tickets = [
-            t
-            for t in tickets
-            if t.get("status") == "resolved" and t.get("created_at") and t.get("resolved_at")
-        ]
-
-        if not resolved_tickets:
-            return None, "No resolved tickets with timestamps available"
-
-        resolution_times = []
-        for ticket in resolved_tickets:
-            try:
-                created = datetime.fromisoformat(ticket["created_at"].replace("Z", "+00:00"))
-                resolved = datetime.fromisoformat(ticket["resolved_at"].replace("Z", "+00:00"))
-                diff_hours = (resolved - created).total_seconds() / 3600
-                if diff_hours >= 0:  # Only count valid positive durations
-                    resolution_times.append(diff_hours)
-            except (ValueError, AttributeError) as exc:
-                logger.warning(
-                    "Failed to parse timestamps for ticket %s: %s", ticket.get("id"), exc
-                )
-
-        if not resolution_times:
-            return None, "No valid timestamp pairs found in resolved tickets"
-
-        avg_resolution = round(sum(resolution_times) / len(resolution_times), 1)
-        return avg_resolution, None
+        return self._compute_avg_duration(
+            tickets,
+            ["resolved"],
+            "created_at",
+            "resolved_at",
+            no_items_msg="No resolved tickets with timestamps available",
+            no_pairs_msg="No valid timestamp pairs found in resolved tickets",
+            item_label="ticket",
+        )
 
     def collect(self) -> dict[str, Any]:
         tickets = self._load_json("orchestrator/cs/tickets.json")

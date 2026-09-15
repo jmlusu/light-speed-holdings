@@ -328,6 +328,6 @@ if ($failed.Count -gt 0) {
 
 if (-not $DryRun) {
     Write-Host "`nVerify with:" -ForegroundColor Cyan
-    Write-Host "  powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify-agents.ps1"
-    Write-Host "  powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify-agents.ps1 -RunOpenCode"
+    Write-Host "  uv run python -c 'from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()'"
+    Write-Host "  git diff --exit-code   # committed agent cards must match the regenerated output"
 }

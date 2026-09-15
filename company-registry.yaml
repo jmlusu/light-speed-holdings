@@ -9,9 +9,25 @@ company:
     department: Executive
     reports_to: human_ceo
     direct_reports:
+    - cpo
+    - cmo
+    - hr
+    - cio
+    - customer_success
+    - sales
+    - culture_values_officer
+    - head_of_business_development
+    - internal_comms_lead
+    - ai_ethics_board_chair
+    - consulting_lead
     - cto
     - coo
     - caio
+    - cfo
+    - ciso
+    - clo
+    - cso
+    - thought_leadership_lead
     responsibilities:
     - Align company goals across all departments.
     - Orchestrate agent communication and task delegation.
@@ -34,8 +50,6 @@ company:
     - lead_backend
     - lead_frontend
     - solution_architect
-    - devops_lead
-    - qa_lead
     - vp_engineering
     responsibilities:
     - Architect robust AI agent systems.
@@ -57,9 +71,6 @@ company:
     - workflow_owner
     - orchestration_owner
     - doctor_owner
-    - decision_engine_owner
-    - memory_owner
-    - audit_trail_owner
     - capacity_planner
     - business_continuity_manager
     - vendor_manager
@@ -106,6 +117,7 @@ company:
     reports_to: board
     direct_reports:
     - chief_of_staff
+    - ceo_advisor
     responsibilities:
     - Set company vision, mission, and long-term strategy.
     - Make final decisions on high-stakes matters.
@@ -131,7 +143,7 @@ company:
       agent operations.
     type: executive
     department: Finance
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - financial_analyst
     - investor_relations_lead
@@ -184,7 +196,7 @@ company:
   - id: cmo
     name: Chief Marketing Officer
     title: CMO
-    description: Drives brand awareness, demand generation, and market positioning.
+    description: Drives brand awareness, demand generation, market positioning, and owns the external company website (lightspeedholdings.com).
     type: executive
     department: Marketing
     reports_to: chief_of_staff
@@ -194,6 +206,7 @@ company:
     - product_marketing_manager
     - industry_analyst_relations_manager
     responsibilities:
+    - Own the external company website (https://lightspeedholdings.com) including content, UX, SEO, and conversion optimization.
     - Develop marketing strategy and brand positioning.
     - Drive demand generation and campaign management.
     - Track marketing ROI and attribution.
@@ -241,7 +254,7 @@ company:
     description: Protects company assets, data, and systems from security threats.
     type: executive
     department: Security
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - security_architect
     - security_compliance_lead
@@ -322,11 +335,11 @@ company:
     description: Manages legal affairs, contracts, and compliance.
     type: executive
     department: Legal
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
-    - legal_owner
     - compliance_officer
     - data_privacy_officer
+    - legal
     responsibilities:
     - Review and negotiate all contracts and agreements.
     - Ensure regulatory compliance across jurisdictions.
@@ -347,12 +360,11 @@ company:
     description: Drives corporate strategy, M&A, and market expansion.
     type: executive
     department: Strategy
-    reports_to: human_ceo
+    reports_to: chief_of_staff
     direct_reports:
     - head_of_competitive_intelligence
     - corporate_development_lead
     - revenue_operations_analyst
-    - solutions_engineer
     - market_analyst
     responsibilities:
     - Develop and execute corporate strategy.
@@ -425,8 +437,6 @@ company:
     reports_to: chief_of_staff
     direct_reports:
     - sales_owner
-    - revenue_operations_analyst
-    - solutions_engineer
     responsibilities:
     - Own the sales pipeline and revenue targets.
     - Manage customer acquisition strategy.
@@ -448,10 +458,9 @@ company:
       matters.
     type: executive
     department: Legal
-    reports_to: chief_of_staff
+    reports_to: clo
     direct_reports:
     - legal_owner
-    - compliance_officer
     responsibilities:
     - Provide legal counsel on contracts and compliance.
     - Review partnership and vendor agreements.
@@ -469,6 +478,7 @@ company:
     title: Financial Analyst
     description: Performs complex financial analysis including ROI calculations, cost
       modeling, budget forecasting, and variance analysis.
+    type: specialist
     department: Finance
     reports_to: cfo
     direct_reports: []
@@ -493,7 +503,7 @@ company:
     description: Manages CI/CD pipelines, cloud infrastructure, and deployment automation.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: CI/CD pipelines, cloud infrastructure, deployment automation,
       infrastructure-as-code.
@@ -517,6 +527,7 @@ company:
     title: Data Scientist
     description: Performs advanced data analysis, builds predictive models, and derives
       actionable insights from organizational data.
+    type: specialist
     department: Data
     reports_to: cdo
     direct_reports: []
@@ -539,6 +550,7 @@ company:
     title: Compliance Officer
     description: Ensures organizational adherence to policies, regulations, and ethical
       standards. Conducts compliance audits and maintains audit trails.
+    type: specialist
     department: Legal
     reports_to: clo
     direct_reports: []
@@ -562,7 +574,7 @@ company:
       and circuit-breaker robustness across the executor and shared state.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Concurrency safety, fault tolerance, and resilience patterns
       for shared JSON/YAML state and the executor loop.
@@ -614,7 +626,7 @@ company:
       and executor integration hooks.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Event sourcing, immutable audit logs, JSONL append semantics.
     responsibilities:
@@ -708,7 +720,7 @@ company:
     description: Owns the graph engine, its 4 graph types, and BFS pathfinding.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Org charts, decision graphs, workflow graphs, knowledge graphs,
       BFS.
@@ -732,7 +744,7 @@ company:
       and analytics layer.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: FastAPI, WebSocket, KPI collection, trend analytics, alert rules.
     responsibilities:
@@ -805,7 +817,7 @@ company:
       the 19 YAML configs.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: YAML parsing, schema validation, reference resolution, config
       loading.
@@ -829,7 +841,7 @@ company:
       OpenCode agent files.
     type: specialist
     department: Technology
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: Templating, agent manifest generation, output schema stability.
     responsibilities:
@@ -1034,10 +1046,9 @@ company:
       across all packages.
     type: specialist
     department: QA
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports:
     - test_engineering_lead
-    - release_manager
     technical_domain: Quality assurance, release gating, test strategy, defect triage.
     responsibilities:
     - Own QA strategy and the release quality gate (ruff + mypy + pytest must be green
@@ -1113,7 +1124,7 @@ company:
       the zero-red-on-main policy.
     type: specialist
     department: QA
-    reports_to: cto
+    reports_to: vp_engineering
     direct_reports: []
     technical_domain: CI/CD pipelines, merge gating, version promotion, rollback,
       change management.
@@ -2246,7 +2257,7 @@ company:
       AI solutions successfully.
     type: specialist
     department: Sales
-    reports_to: cso
+    reports_to: sales
     direct_reports: []
     technical_domain: Pre-sales engineering, solution design, technical validation,
       customer implementation.
@@ -3448,4 +3459,256 @@ company:
     - Maintain confidentiality of board discussions
     tools:
     - read
+    model_tier: standard
+  - id: thought_leadership_lead
+    name: Thought Leadership Lead
+    title: Pharos Lead
+    description: Heads the Pharos department, turning Lightspeed Holdings' agentic
+      AI engineering into a public intellectual program that positions the Human CEO
+      as the leading voice on Agentic AI Company Building, Use Cases and Policy across
+      Malawi and the SADC region.
+    type: executive
+    department: Pharos
+    reports_to: chief_of_staff
+    direct_reports:
+    - agentic_research_lead
+    - thought_leadership_author
+    - agentic_policy_analyst
+    - speaker_engagement_lead
+    - community_ecosystem_builder
+    - media_pr_relations
+    - talent_academy_lead
+    responsibilities:
+    - Own the CEO's North Star positioning and the Pharos 90-day / 12-month / 24-month roadmap.
+    - Maintain the thought-leadership content calendar and cross-agent orchestration.
+    - Anchor the "Company Builder / Use Cases / Policy" three-pillar narrative.
+    - Operate the Lightspeed Institute and the Agentic AI Executive Lab pipelines.
+    - Coordinate with CMO (product marketing), CMO content team, and CSO on messaging alignment.
+    - Report thought-leadership impact metrics to the Human CEO.
+    guidelines: Lead with the CEO's proven systems, not abstract theory. Every artifact
+      must connect building to evidence to policy. Position the CEO as builder-writer-advocate,
+      never just a commentator.
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: premium
+  - id: agentic_research_lead
+    name: Agentic Research Lead
+    title: Agentic Research Lead
+    description: Conducts primary, authoritative research that converts Lightspeed
+      Holdings' engineering (model router, CEO control plane, agent registry, message
+      bus, policy engine, org health, cost analytics) into citable public artifacts.
+    type: specialist
+    department: Pharos
+    reports_to: thought_leadership_lead
+    direct_reports: []
+    technical_domain: Primary research, evidence synthesis, use-case census, benchmark
+      methodology, source citation.
+    responsibilities:
+    - Produce the "State of Agentic AI in Malawi" and SADC readiness research artifacts.
+    - Maintain a quantified use-case census (J&S StopOver Bar, health/M&E, VSLA/SACCO, finance).
+    - Track AU Continental AI Strategy, SADC digital transformation, and early-mover policy precedent.
+    - Normalize Lightspeed KPIs (task completion rate, cost per workflow, HITL gate coverage) into public benchmarks.
+    - Follow every claim back to a high-trust primary source.
+    guidelines: Intelligence is actionable or it is noise. Cite sources. Quantify or
+      do not publish. Research feeds every other Pharos artifact.
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: standard
+  - id: thought_leadership_author
+    name: Thought Leadership Author
+    title: Thought Leadership Author
+    description: Writes the CEO's long-form intellectual content - white papers, the
+      flagship manifesto, the monthly Malawi Agentic AI Monitor, LinkedIn long-form,
+      and the newsletter - in the CEO's distinct public voice.
+    type: specialist
+    department: Pharos
+    reports_to: thought_leadership_lead
+    direct_reports: []
+    technical_domain: White papers, manifestos, editorial architecture, long-form
+      writing, public voice and narrative.
+    responsibilities:
+    - Draft flagship white papers ("The Sovereign Agentic Enterprise", "What Is an AI-Native Company?").
+    - Write the monthly "Malawi Agentic AI Monitor" and the 10 flagship publications roadmap.
+    - Own the executive LinkedIn / Substack long-form editorial stream.
+    - Draft the Lightspeed AI-Native Enterprise Framework (H-A-O-M-T-G-V) public narrative.
+    - Maintain brand-voice consistency distinct from product content writing.
+    guidelines: Content is a product surface. Every piece has an audience and a goal.
+      The CEO's public voice is builder-advocate; lead with proof, then principle.
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: standard
+  - id: agentic_policy_analyst
+    name: Agentic Policy Analyst
+    title: Agentic Policy Analyst
+    description: Owns the policy and governance track - formal commentary into Malawi's
+      National AI Strategy consultation, the SADC Agentic AI Governance Framework,
+      and regulator briefings for MACRA, SADC and UNDP.
+    type: specialist
+    department: Pharos
+    reports_to: thought_leadership_lead
+    direct_reports: []
+    technical_domain: AI governance and policy, regulatory analysis, Data Protection
+      Act 2024, AU Continental AI Strategy, SADC model law, consultation drafting.
+    responsibilities:
+    - Draft formal consultation comments into the National AI Strategy and Digital Transformation Strategy process.
+    - Author the "SADC Agentic AI Governance Framework" and the "Operationalizing Autonomous Intelligence" policy whitepaper.
+    - Map Lightspeed controls (5-tier approvals, audit trails, RACI) to regulatory and ethical requirements.
+    - Produce the "policy translator" series linking global agentic AI governance to SADC.
+    - Brief MACRA, ICTAM, Department of E-Government, and regional ICT ministries.
+    guidelines: Policy work is an extension of product work - the governance features
+      are the policy contribution. Always ground recommendations in resource-appropriate
+      SADC realities (connectivity, dual economies, data sovereignty).
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: premium
+  - id: speaker_engagement_lead
+    name: Speaker and Engagement Lead
+    title: Speaker and Engagement Lead
+    description: Secures and prepares the CEO's speaking slots, executive roundtables,
+      the Agentic AI Executive Lab workshop, Lighthouse pilot packaging, and institutional
+      briefings at regional forums.
+    type: specialist
+    department: Pharos
+    reports_to: thought_leadership_lead
+    direct_reports: []
+    technical_domain: Speaking program, conference strategy, keynote scripts, roundtable
+      convening, executive workshop design.
+    responsibilities:
+    - Target and secure speaking slots (ICTAM, COMESA/IDEA, IDC CIO Summit, SADC, Smart Africa).
+    - Design and deliver the two-day "Agentic AI Executive Lab" workshop.
+    - Package the high-visibility "Lighthouse" pilot proposal with non-commercial partners.
+    - Create keynote scripts and speaker one-sheets grounded in Lightspeed proof.
+    - Convene the private "CEO Roundtable on Agentic AI Governance".
+    guidelines: Speaking is authority. Every engagement returns a documented case study
+      or relationship. Pitch outcomes (governed deployment), not jargon.
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: standard
+  - id: community_ecosystem_builder
+    name: Community and Ecosystem Builder
+    title: Community and Ecosystem Builder
+    description: Builds the Malawi Agentic AI Forum, the SADC Agentic AI community,
+      the institutional stakeholder map, strategic partnerships, and the localized
+      use-case pipeline around the CEO's thought leadership.
+    type: specialist
+    department: Pharos
+    reports_to: thought_leadership_lead
+    direct_reports: []
+    technical_domain: Community building, ecosystem mapping, stakeholder engagement,
+      partnership development, forum programming.
+    responsibilities:
+    - Build and maintain the SADC Agentic AI institutional stakeholder map (MACRA, UNDP, PPP, ICTAM, MCCCI, universities).
+    - Launch the Malawi Agentic AI Forum and the annual Agentic AI Malawi Summit concept.
+    - Develop strategic partnerships (National AI Workforce model, university Labs, mHub).
+    - Maintain the localized use-case pipeline (agritech, public health, SME, financial inclusion).
+    - Grow a regional practitioner community across Zambia, Zimbabwe, South Africa.
+    guidelines: Do not build reputation alone - build a movement. Relationships precede
+      deals. Every interaction is tracked. Serve the network to lead it.
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: standard
+  - id: media_pr_relations
+    name: Media and PR Relations
+    title: Media and PR Relations
+    description: Manages press and analyst visibility for the CEO and Pharos - op-eds,
+      media source pitches, profile features, and regional tech press relationships.
+    type: specialist
+    department: Pharos
+    reports_to: thought_leadership_lead
+    direct_reports: []
+    technical_domain: Media relations, press releases, op-ed pitching, analyst relations,
+      crisis messaging, source positioning.
+    responsibilities:
+    - Pitch op-eds to The Nation, Daily Times, ITWeb Africa, TechAfrica News, Malawi Voice.
+    - Position the CEO as an available expert source on agentic AI in the region.
+    - Secure profile features (not just quotes) in regional tech publications.
+    - Manage the Pharos press kit, boilerplate, and consistent CEO bio.
+    - Coordinate with industry_analyst_relations_manager on enterprise analyst reports.
+    guidelines: Press is a multiplier. Lead with the CEO's proof stack (Accenture-grade
+      delivery, development-sector M&E, operating AI company, real SME. One coherent
+      narrative, repeated consistently.
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: standard
+  - id: talent_academy_lead
+    name: Talent and Academy Lead
+    title: Talent and Academy Lead
+    description: Runs the Lightspeed Academy and the Agentic AI certification, training,
+      fellowship, and university-partnership programs that build a regional talent
+      pool and knowledge pipeline around the CEO's platform.
+    type: specialist
+    department: Pharos
+    reports_to: thought_leadership_lead
+    direct_reports: []
+    technical_domain: Curriculum design, certification programs, executive training,
+      fellowship and residency programs, university partnerships.
+    responsibilities:
+    - Launch the "Lightspeed Academy" training and certification program for Agentic AI Company Builders.
+    - Design the two-day "Agentic AI Executive Lab" and board/government training curricula.
+    - Run fellowship and residency cohorts (4-6 people) using real Lightspeed deployments.
+    - Partner with universities (MUBAS, UNIMA) on multi-agent and governance modules.
+    - Release open learning and evaluation components that encourage regional reuse.
+    guidelines: A talent pipeline is a moat. Certification builds an ecosystem, not
+      just attendees. Curriculum doubles as thought-leadership intellectual property.
+    tools:
+    - read
+    - write
+    - web_search
+    - grep
+    - list
+    model_tier: standard
+  - id: media_generation_owner
+    name: Media Generation Owner
+    title: Media Generation Owner
+    description: Owns ComfyUI integration, the comfyui-mcp driver, template library,
+      and media generation pipelines for brand, product, and NGO deliverables.
+    type: specialist
+    department: Marketing
+    reports_to: cmo
+    direct_reports: []
+    technical_domain: ComfyUI MCP driver (comfyui-mcp), workflow template library with 581 templates, model variant selection by VRAM and disk, GUI bridge, and comfy_client wrapper.
+    responsibilities:
+    - Own the ComfyUI integration lifecycle including MCP driver versioning, template index, and in-graph Claude nodes.
+    - Maintain the workflow template library as source of truth and the model index with VRAM and disk aware variant selection.
+    - Route generation requests by mode via API (Comfy Cloud and partner nodes, zero local RAM) or local headless with health_check gating.
+    - Serve brand_strategist, content_creator, product_designer, and technical_documentation_lead via task delegation and deliver to output or docs assets.
+    - Guarantee GUI bridge persistence so outputs appear in ComfyUI Workflows sidebar and audit every generation.
+    - Coordinate free-disk and VRAM checks with the bootstrap machine pattern before any multi-GB model download.
+    guidelines: API-first by default to respect RAM constraints. Every model download is HITL-gated and size-checked. Templates are source of truth. Never hand-author graphs when a template exists. Every generation is auditable and replayable. Local mode requires an explicit opt-in and a passing health_check.
+    tools:
+    - read
+    - write
+    - bash
+    - webfetch
+    - grep
+    - list
+    - task
     model_tier: standard

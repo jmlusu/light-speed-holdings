@@ -1,0 +1,25 @@
+company:
+  id: "consulting-firm"
+  name: "Your Consulting Firm"
+  legal_name: "Your Consulting Firm Pty Ltd"
+  founded: "2025-01-01"
+  industry: "IT Services and IT Consulting"
+  headquarters: "Melbourne, Australia"
+  website: "https://example.com"
+  ceo: "human-ceo"
+
+  mission: "Deliver fast, outcome-focused, AI-native consulting through small expert teams augmented by AI."
+  vision: "A world where senior experts guided by AI deliver transformation at a fraction of traditional cost and time."
+
+  values:
+    - "Outcomes over hours"
+    - "Speed and clarity"
+    - "Evidence over assumptions"
+    - "Human judgment for high-stakes work"
+    - "Automate the repeatable"
+
+  structure:
+    type: "partnership"
+    board_of_directors: true
+    executive_team: true
+    departments: true

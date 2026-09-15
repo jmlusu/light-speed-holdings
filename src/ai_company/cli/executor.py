@@ -338,10 +338,14 @@ def status(
         started = daemon_status.get("started_at", "unknown")
         ticks = daemon_status.get("ticks_completed", 0)
         uptime = daemon_status.get("uptime_seconds", 0)
+        last_tick = daemon_status.get("last_tick_at")
+        last_error = daemon_status.get("last_error")
+        shutdown_reason = daemon_status.get("shutdown_reason")
         # A status file that claims "running" for a dead PID is stale —
         # report it honestly so nobody trusts a phantom daemon (GitHub #56).
         if state == "running" and isinstance(pid, int) and not ExecutorDaemon.is_pid_alive(pid):
             state = "not running (stale)"
+            shutdown_reason = shutdown_reason or "process no longer alive"
         typer.echo("Executor Daemon Status")
         typer.echo("=" * 40)
         typer.echo(f"  State: {state}")
@@ -349,6 +353,12 @@ def status(
         typer.echo(f"  Started: {started}")
         typer.echo(f"  Ticks completed: {ticks}")
         typer.echo(f"  Uptime: {uptime:.1f}s")
+        if last_tick:
+            typer.echo(f"  Last tick: {last_tick}")
+        if last_error:
+            typer.echo(f"  Last error: {last_error}")
+        if shutdown_reason:
+            typer.echo(f"  Shutdown reason: {shutdown_reason}")
         typer.echo()
 
     from ai_company.orchestrator.message_bus import MessageBus

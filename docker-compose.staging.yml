@@ -11,7 +11,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: base
+      target: runtime
     container_name: ai-company-dashboard-staging
     ports:
       - "8421:8420"
@@ -52,7 +52,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: base
+      target: runtime
     container_name: ai-company-worker-staging
     command: ["python", "-m", "ai_company.cli.main", "orchestrator", "tick"]
     volumes:

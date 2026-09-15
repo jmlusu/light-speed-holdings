@@ -3,7 +3,8 @@
 
 > **NOTE:** This is a human-readable template. The legal_owner agent produces the final
 > signed PDF from this template for each client. Variables in `{{brackets}}` are replaced
-> per engagement.
+> per engagement. `{{agent_workforce_size}}` default value is **135** (derived from
+> `company-registry.yaml` at signing time — do not hardcode).
 
 ---
 
@@ -28,7 +29,7 @@ Service Provider and Client may be referred to herein individually as a "Party" 
 Service Provider will perform the professional services described in each Statement of Work ("SOW")
 executed hereunder, including but not limited to: digital presence design, business process automation,
 data analytics, donor reporting, and platform licensing. Services are delivered through Service Provider's
-AI agent workforce (127 AI agents) under the direction of a human principal.
+AI agent workforce ({{agent_workforce_size}} AI agents) under the direction of a human principal.
 
 ## 2. TERM
 

@@ -88,6 +88,16 @@ function dashboard() {
     tiers: [],
     modelRoutes: [],
     orgChart: [],
+    backlog: null,
+
+    // ── Reports & Task Flow (C4) ─────────────────────────────
+    reports: null,
+    reportOpen: false,
+    reportPath: '',
+    reportContent: '',
+    flowTaskId: '',
+    flow: null,
+    flowError: '',
 
     // ── CEO Hero Section ──────────────────────────────────────
     orgHealth: null,
@@ -99,6 +109,8 @@ function dashboard() {
     newTask: { receiver_id: '', instruction: '', priority: 'medium', sender_id: 'human-ceo' },
     submitting: false,
     showAssignModal: false,
+    taskAgentSearch: '',
+    taskAgentDropdownOpen: false,
 
     // ── Drag and drop ────────────────────────────────────────
     draggedTask: null,
@@ -109,6 +121,10 @@ function dashboard() {
     taskDecomposition: null,
     taskDecomposing: false,
 
+    // ── Approval detail slide-out ────────────────────────────
+    selectedApproval: null,
+    approvalDetailOpen: false,
+
     // ── KPIs page ────────────────────────────────────────────
     activeKPIDept: '',
     kpiDepartments: [],
@@ -116,6 +132,12 @@ function dashboard() {
     liveKPIData: null,
     companyKPIs: [],
     companyKPISummary: null,
+
+    // ── Drill-down panel ──────────────────────────────────────
+    drillDown: null,  // { type, title, data, loading }
+
+    // ── Agent detail modal ───────────────────────────────────
+    agentModal: null,  // { data, loading }
 
     // ── Costs page ───────────────────────────────────────────
     costPeriod: 'daily',
@@ -132,6 +154,12 @@ function dashboard() {
     // ── Escalation notifications (F6) ────────────────────────
     escalationNotifications: [],  // real-time toast list from WS
     _escNotifId: 0,
+
+    // ── Alert Center ─────────────────────────────────────────
+    alerts: [],              // persisted fired alerts pointing /api/v1/alerts
+    alertStatusFilter: 'active',  // 'all' | 'active' | 'acknowledged' | 'snoozed' | 'cleared'
+    alertsLoading: false,
+    alertedIds: new Set(),   // ids already prepended live via WS (dedupe)
 
     // ── Task pagination ──────────────────────────────────────
     taskPage: 1,
@@ -184,6 +212,14 @@ function dashboard() {
       window.addEventListener('offline-action-retried', () => { this._refreshOfflineQueueCount(); this._refreshOfflineQueueActions(); });
       window.addEventListener('offline-conflict-detected', (e) => {
         this.showToast('error', 'Conflict', e.detail?.message || 'A sync conflict was detected.');
+      });
+
+      // Drill-down event listeners
+      window.addEventListener('drilldown:task-status', (e) => {
+        this.openTaskStatusDrillDown(e.detail.status);
+      });
+      window.addEventListener('drilldown:department', (e) => {
+        this.openDepartmentDrillDown(e.detail.name);
       });
       // #136: Conflict modal — listen for SYNC_CONFLICT from SW via SW registration.
       window.addEventListener('sw-sync-conflict', (e) => {
@@ -379,6 +415,8 @@ function dashboard() {
         if (res.ok) {
           const data = await res.json();
           this._sessionToken = data.token || null;
+          // Expose to nested Alpine components (org-chart, health, etc.)
+          window.__dashboardSessionToken = this._sessionToken;
         }
       } catch (e) {
         console.warn('[Token] Bootstrap fetch failed:', e);
@@ -578,11 +616,13 @@ function dashboard() {
 
         case 'alert':
           if (msg.payload) {
+            // CEO Alert Center: prepend fired alerts live + toast notification.
+            this._prependLiveAlert(msg.payload);
             const cat = msg.payload.category || 'info';
             this.showToast(
               cat === 'escalation' ? 'warning' : 'info',
               cat.charAt(0).toUpperCase() + cat.slice(1),
-              msg.payload.reason || msg.payload.action || 'New alert received'
+              msg.payload.reason || msg.payload.action || msg.payload.message || 'New alert received'
             );
           }
           break;
@@ -623,9 +663,24 @@ function dashboard() {
                   this.tasks.push(updatedTask);
                 }
               }
-              this.tasks = [...this.tasks];
+              // Deduplicate by ID — prevents visual duplicates from
+              // double WS broadcasts or race conditions with polling.
+              const seen = new Set();
+              this.tasks = this.tasks.filter(t => {
+                if (seen.has(t.id)) return false;
+                seen.add(t.id);
+                return true;
+              });
               this.restoreScrollPosition();
             }
+          }
+          break;
+
+        case 'ping':
+          // Server-initiated heartbeat probe (ws.py) — reply so the server
+          // can clear its pending probe.
+          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify({ type: 'pong' }));
           }
           break;
 
@@ -821,6 +876,7 @@ function dashboard() {
 
       if (path === '/' || path === '') {
         await this.loadDashboard();
+        this.loadAlertCenter();
       } else if (path === '/agents') {
         await this.loadAgents();
       } else if (path === '/tasks') {
@@ -839,6 +895,69 @@ function dashboard() {
         ]);
         if (approvalsData) this.approvals = approvalsData;
         if (escalationsData) this.escalations = escalationsData;
+      } else if (path === '/backlog') {
+        await this.loadBacklog();
+      } else if (path === '/reports') {
+        await this.loadReports();
+      }
+    },
+
+    // ═══ BACKLOG / QUEUE OBSERVABILITY (C3) ═══════════════
+
+    /**
+     * Load the task backlog summary and surface it on the Backlog page.
+     * Succeeds silently if the endpoint is unavailable (read-only view).
+     */
+    async loadBacklog() {
+      const data = await this.fetchJSON('/api/v1/backlog');
+      if (data) this.backlog = data;
+    },
+
+    _fmtAge(s) {
+      if (!s && s !== 0) return '—';
+      const sec = Math.max(0, Math.round(s));
+      if (sec < 60) return `${sec}s`;
+      if (sec < 3600) return `${Math.floor(sec / 60)}m ${sec % 60}s`;
+      return `${Math.floor(sec / 3600)}h ${Math.floor((sec % 3600) / 60)}m`;
+    },
+
+    // ═══ REPORTS & TASK FLOW (C4) ═══════════════════════════
+
+    /**
+     * Load the newest agent-produced reports for the Reports page.
+     */
+    async loadReports() {
+      const data = await this.fetchJSON('/api/v1/reports?limit=200');
+      if (data) this.reports = data.reports || [];
+    },
+
+    /**
+     * Open a single report's raw content in the side drawer.
+     */
+    async openReport(path) {
+      this.reportOpen = true;
+      this.reportContent = 'Loading…';
+      this.reportPath = path;
+      const data = await this.fetchJSON(`/api/v1/reports/content?path=${encodeURIComponent(path)}`);
+      if (data) {
+        this.reportContent = JSON.stringify(data.documents, null, 2);
+      } else {
+        this.reportContent = 'Could not load report.';
+      }
+    },
+
+    /**
+     * Trace a single task's lifecycle timeline.
+     */
+    async loadTaskFlow(taskId) {
+      if (!taskId) return;
+      this.flowError = '';
+      this.flow = null;
+      const data = await this.fetchJSON(`/api/v1/tasks/${encodeURIComponent(taskId)}/flow`);
+      if (data) {
+        this.flow = data;
+      } else {
+        this.flowError = `Task "${taskId}" not found.`;
       }
     },
 
@@ -867,6 +986,42 @@ function dashboard() {
       }
       if (tasks && JSON.stringify(tasks) !== JSON.stringify(this.tasks)) {
         this.tasks = tasks;
+      }
+
+      // FIX (Bug 1): the /api/v1/costs/summary payload was fetched but never
+      // assigned, so Cost Breakdown on the home page rendered $0.0000.
+      // Mirror loadCosts() normalization/mapping so both pages stay identical.
+      if (costs) {
+        this.costSummary = {
+          total: costs.total_spent ?? 0,
+          avgPerTask: costs.avg_cost_per_task ?? 0,
+          totalTasks: costs.total_tasks ?? 0,
+          costTrend: costs.cost_trend ?? [],
+        };
+        this.budgetPct = costs.budget_utilization ?? 0;
+        this.agentCosts = (costs.per_agent_costs ?? []).map(a => ({
+          agent: a.agent,
+          tasks: a.calls,
+          totalCost: a.total_cost,
+          avgCost: a.avg_cost_per_call ?? (a.calls > 0 ? a.total_cost / a.calls : 0),
+          model: null,
+        }));
+        this.costAlerts = [];
+        if (this.budgetPct > 90) {
+          this.costAlerts.push({
+            id: 'budget-critical',
+            severity: 'critical',
+            message: `Budget usage at ${this.budgetPct.toFixed(1)}% — approaching limit`,
+            timestamp: new Date().toISOString(),
+          });
+        } else if (this.budgetPct > 70) {
+          this.costAlerts.push({
+            id: 'budget-warning',
+            severity: 'warning',
+            message: `Budget usage at ${this.budgetPct.toFixed(1)}% — monitor closely`,
+            timestamp: new Date().toISOString(),
+          });
+        }
       }
 
       // FIX: Defer chart updates to next animation frame, coalescing any
@@ -947,6 +1102,67 @@ function dashboard() {
     async loadEscalations() {
       const data = await this.fetchJSON('/api/v1/escalations');
       if (data) this.escalations = data;
+    },
+
+    // ═══ ALERT CENTER ════════════════════════════════════════
+    async loadAlertCenter() {
+      this.alertsLoading = true;
+      try {
+        const qs = this.alertStatusFilter && this.alertStatusFilter !== 'all'
+          ? `?status=${encodeURIComponent(this.alertStatusFilter)}`
+          : '';
+        const data = await this.fetchJSON(`/api/v1/alerts${qs}`);
+        if (data && Array.isArray(data.alerts)) {
+          this.alerts = data.alerts;
+          data.alerts.forEach(a => { if (a.id) this.alertedIds.add(a.id); });
+        }
+      } finally {
+        this.alertsLoading = false;
+      }
+    },
+
+    async _alertAction(id, action) {
+      const data = await this.fetchJSON(`/api/v1/alerts/${encodeURIComponent(id)}/${action}`, {
+        method: 'POST',
+      });
+      if (data) this.loadAlertCenter();
+      return data;
+    },
+
+    ackAlert(id) { return this._alertAction(id, 'ack'); },
+    snoozeAlert(id, hours = 4) {
+      return this.fetchJSON(`/api/v1/alerts/${encodeURIComponent(id)}/snooze?until_hours=${hours}`, {
+        method: 'POST',
+      }).then(() => this.loadAlertCenter());
+    },
+    clearAlert(id) { return this._alertAction(id, 'clear'); },
+    async clearAllAlerts() {
+      const data = await this.fetchJSON('/api/v1/alerts/clear-all', { method: 'POST' });
+      if (data) this.loadAlertCenter();
+      return data;
+    },
+
+    _alertSeverityClass(sev) {
+      const s = (sev || 'info').toLowerCase();
+      if (s === 'critical') return 'bg-red-500/20 text-red-300 border border-red-500/30';
+      if (s === 'warning') return 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      return 'bg-sky-500/20 text-sky-300 border border-sky-500/30';
+    },
+    _alertStatusClass(stat) {
+      const s = (stat || 'active').toLowerCase();
+      if (s === 'acknowledged') return 'text-emerald-300';
+      if (s === 'snoozed') return 'text-amber-300';
+      if (s === 'cleared') return 'text-slate-400 line-through';
+      return 'text-red-300';
+    },
+
+    // Prepend a newly-fired alert from the WS "alert" message (deduped).
+    _prependLiveAlert(alert) {
+      if (!alert || !alert.id || this.alertedIds.has(alert.id)) return;
+      this.alertedIds.add(alert.id);
+      if (this.alertStatusFilter === 'all' || alert.status === this.alertStatusFilter) {
+        this.alerts = [alert, ...this.alerts];
+      }
     },
 
     async loadKPIs() {
@@ -1122,6 +1338,8 @@ function dashboard() {
       this.newTask = { receiver_id: '', instruction: '', priority: 'medium', sender_id: 'human-ceo' };
       this.submitting = false;
       this.showAssignModal = false;
+      this.taskAgentSearch = '';
+      this.taskAgentDropdownOpen = false;
       this.saveScrollPosition();
       if (window.location.pathname === '/tasks') {
         await this.loadTasksPage();
@@ -1160,6 +1378,66 @@ function dashboard() {
       this.editingApproval = null;
       await this.loadApprovals();
       this.showToast('success', 'Updated', 'Approval details saved');
+    },
+
+    // ═══ APPROVAL DETAIL SLIDE-OUT ════════════════════════════
+
+    async openApprovalDetail(req) {
+      this.selectedApproval = null;
+      this.approvalDetailOpen = true;
+      try {
+        const data = await this.fetchJSON(`/api/v1/approvals/${req.id}`);
+        if (data) {
+          this.selectedApproval = data;
+        } else {
+          this.selectedApproval = req;
+        }
+      } catch {
+        this.selectedApproval = req;
+      }
+    },
+
+    closeApprovalDetail() {
+      this.approvalDetailOpen = false;
+      this.selectedApproval = null;
+    },
+
+    tierLabel(tier) {
+      const labels = {
+        0: 'Auto-Approve',
+        1: 'Notify',
+        2: 'Single Approver',
+        3: 'Two-Person Rule',
+        4: 'CEO Only',
+      };
+      return labels[tier] ?? `Tier ${tier}`;
+    },
+
+    tierRationale(req) {
+      const tier = req.tier ?? 2;
+      const action = (req.action || '').toLowerCase();
+      if (tier === 4) return 'Sensitive action requiring CEO-level authorization.';
+      if (tier === 3) return 'Production or high-risk operation requiring two-person approval.';
+      if (tier === 2) {
+        if (action.includes('bash') || action.includes('execute')) return 'Shell execution requires single approver authorization.';
+        if (action.includes('write') || action.includes('edit')) return 'Code modification requires single approver authorization.';
+        return 'Standard tool action requiring single approver authorization.';
+      }
+      if (tier === 1) return 'Low-risk action — notification only, no approval required.';
+      return 'Automatically approved action.';
+    },
+
+    approvalExpiresIn(expiresAt) {
+      if (!expiresAt) return null;
+      const now = Date.now();
+      const exp = new Date(expiresAt).getTime();
+      const diff = exp - now;
+      if (diff <= 0) return 'Expired';
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return `${mins}m remaining`;
+      const hrs = Math.floor(mins / 60);
+      const remMins = mins % 60;
+      return `${hrs}h ${remMins}m remaining`;
     },
 
     // ═══ ESCALATION NOTIFICATIONS (F6) ══════════════════════════
@@ -1374,6 +1652,7 @@ function dashboard() {
       return {
         pending: this.tasks.filter(t => t.status === 'pending'),
         in_progress: this.tasks.filter(t => t.status === 'in_progress'),
+        timeout: this.tasks.filter(t => t.status === 'timeout'),
         completed: this.tasks.filter(t => t.status === 'completed'),
         failed: this.tasks.filter(t => t.status === 'failed'),
         escalated: this.tasks.filter(t => t.status === 'escalated'),
@@ -1384,6 +1663,7 @@ function dashboard() {
       return {
         pending: this.taskCountsByStatus.pending || 0,
         in_progress: this.taskCountsByStatus.in_progress || 0,
+        timeout: this.taskCountsByStatus.timeout || 0,
         completed: this.taskCountsByStatus.completed || 0,
         failed: this.taskCountsByStatus.failed || 0,
         escalated: this.taskCountsByStatus.escalated || 0,
@@ -1398,6 +1678,15 @@ function dashboard() {
         const matchDept = !this.agentDeptFilter || a.department === this.agentDeptFilter;
         return matchSearch && matchDept;
       });
+    },
+
+    get filteredTaskAgents() {
+      const q = this.taskAgentSearch.toLowerCase();
+      if (!q) return this.agents;
+      return this.agents.filter(a =>
+        a.name.toLowerCase().includes(q) ||
+        a.role.toLowerCase().includes(q)
+      );
     },
 
     get uniqueDepartments() {
@@ -1584,12 +1873,21 @@ function dashboard() {
       }[band] || 'bg-slate-500';
     },
 
+    get selectedComponent() {
+      if (!this.expandedComponent || !this.orgHealth?.components) return null;
+      return this.orgHealth.components.find(c => c.name === this.expandedComponent) || null;
+    },
+
     getComponentLabel(name) {
       const labels = {
-        task_success_rate: 'Task Success Rate',
-        agent_utilization: 'Agent Utilization',
-        cost_efficiency: 'Cost Efficiency',
-        error_rate: 'Error Rate (Inverted)',
+        task_success_rate: 'Task Success',
+        agent_utilization: 'Agent Util.',
+        cost_efficiency: 'Cost Eff.',
+        error_rate: 'Error Rate',
+        task_throughput: 'Throughput',
+        escalation_rate: 'Escalation',
+        security_posture: 'Security',
+        strategic_alignment: 'Strategic',
       };
       return labels[name] || name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     },
@@ -1600,6 +1898,10 @@ function dashboard() {
         agent_utilization: 'Active agents vs registered agents (30d)',
         cost_efficiency: 'Budget utilization vs spend',
         error_rate: 'Error/exception rate across operations (inverted)',
+        task_throughput: 'Tasks completed per day normalized to target',
+        escalation_rate: 'Escalation rate across tasks (inverted)',
+        security_posture: 'Audit trail health and compliance indicators',
+        strategic_alignment: 'Tasks mapped to active goals and departments',
       };
       return descs[name] || '';
     },
@@ -1727,6 +2029,129 @@ function dashboard() {
           animation: { duration: 500 },
         },
       });
+    },
+
+    // ═══ DRILL-DOWN METHODS ════════════════════════════════════
+
+    closeDrillDown() {
+      this.drillDown = null;
+    },
+
+    async openAgentModal(agentName) {
+      this.agentModal = { data: null, loading: true };
+      try {
+        const data = await this.fetchJSON(`/api/v1/agents/${encodeURIComponent(agentName)}`);
+        this.agentModal = { data, loading: false };
+      } catch (e) {
+        console.warn('Failed to load agent detail:', e);
+        this.agentModal = { data: null, loading: false };
+      }
+    },
+
+    async openTaskStatusDrillDown(status) {
+      this.drillDown = { type: 'task-status', title: `${status.charAt(0).toUpperCase() + status.slice(1)} Tasks`, data: [], loading: true };
+      try {
+        const tasks = await this.fetchJSON('/api/v1/tasks');
+        this.drillDown.data = (tasks || []).filter(t => t.status === status).slice(0, 50);
+      } catch (e) {
+        console.warn('Failed to load task drill-down:', e);
+        this.drillDown.data = [];
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openDepartmentDrillDown(deptName) {
+      this.drillDown = { type: 'department', title: deptName, data: null, loading: true };
+      try {
+        const data = await this.fetchJSON(`/api/v1/departments/${encodeURIComponent(deptName)}/kpis`);
+        this.drillDown.data = data;
+      } catch (e) {
+        console.warn('Failed to load department drill-down:', e);
+        this.drillDown.data = null;
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openCostDrillDown() {
+      this.drillDown = { type: 'cost', title: 'Cost Breakdown', data: null, loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/costs/summary');
+        this.drillDown.data = data;
+      } catch (e) {
+        console.warn('Failed to load cost drill-down:', e);
+        this.drillDown.data = null;
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openCompanyKPIDrillDown(kpi) {
+      this.drillDown = { type: 'company-kpi', title: kpi.name, data: kpi, loading: false };
+    },
+
+    async openDeptKPIDrillDown(dept, kpiKey, kpiData) {
+      this.drillDown = { type: 'dept-kpi', title: `${dept} — ${kpiKey.replace(/_/g, ' ')}`, data: { ...kpiData, department: dept, kpiKey }, history: [], loading: true };
+      try {
+        const history = await this.fetchJSON(`/api/v1/kpis/history/${encodeURIComponent(dept)}?kpi_key=${kpiKey}&limit=20`);
+        this.drillDown.history = history || [];
+      } catch (e) {
+        console.warn('Failed to load KPI history:', e);
+        this.drillDown.history = [];
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    // ═══ NEW DRILL-DOWN METHODS ═══════════════════════════════════
+
+    openTaskDrillDown(task) {
+      // Reuse the existing task detail slide-out
+      this.openTaskDetail(task);
+    },
+
+    openApprovalsDrillDown() {
+      window.location.href = '/escalations?filter=pending';
+    },
+
+    openEscalationsDrillDown() {
+      window.location.href = '/escalations?filter=escalations';
+    },
+
+    openInProgressDrillDown() {
+      window.location.href = '/tasks?status=in_progress';
+    },
+
+    async openTopAgentsDrillDown() {
+      this.drillDown = { type: 'top-agents', title: 'Top Agents by Cost', data: this.agentCosts, loading: false };
+    },
+
+    async openAgentCostDrillDown(agentName) {
+      this.drillDown = { type: 'agent-cost', title: `Cost Details: ${agentName}`, data: null, loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/costs/summary');
+        const agentData = (data.per_agent_costs || []).find(a => a.agent === agentName);
+        this.drillDown.data = agentData || { agent: agentName, totalCost: 0, calls: 0, avgCost: 0 };
+      } catch (e) {
+        console.warn('Failed to load agent cost drill-down:', e);
+        this.drillDown.data = { agent: agentName, totalCost: 0, calls: 0, avgCost: 0 };
+      } finally {
+        this.drillDown.loading = false;
+      }
+    },
+
+    async openCostTrendDrillDown() {
+      this.drillDown = { type: 'cost-trend', title: 'Cost Trend Details', data: null, loading: true };
+      try {
+        const data = await this.fetchJSON('/api/v1/costs/summary');
+        this.drillDown.data = data;
+      } catch (e) {
+        console.warn('Failed to load cost trend drill-down:', e);
+        this.drillDown.data = { cost_trend: [], total_spent: 0 };
+      } finally {
+        this.drillDown.loading = false;
+      }
     },
   };
 }

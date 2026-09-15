@@ -1,0 +1,117 @@
+workflows:
+  - id: "consulting_engagement"
+    name: "Consulting Engagement Workflow"
+    description: "Client onboarding through discovery, roadmap presentation, and knowledge feedback."
+    trigger: "client_engagement_started"
+    owner: "consulting_lead"
+    steps:
+      - id: "onboarding"
+        name: "Client Onboarding"
+        action: "consulting_lead.onboards_client"
+        owner: "consulting_lead"
+        inputs: ["client_id", "scope", "departments"]
+        outputs: ["engagement_id", "interview_plan"]
+        sla_hours: 24
+      - id: "deploy_interviews"
+        name: "Deploy Interview Agents"
+        action: "interview_agent.deploys"
+        owner: "interview_agent"
+        inputs: ["engagement_id", "interview_plan", "employee_list"]
+        outputs: ["interview_results"]
+        sla_hours: 48
+      - id: "synthesize_data"
+        name: "Synthesize Interview Data"
+        action: "workflow_mapper.synthesizes"
+        owner: "workflow_mapper"
+        inputs: ["engagement_id", "interview_results"]
+        outputs: ["workflow_maps"]
+        sla_hours: 24
+      - id: "identify_opportunities"
+        name: "Identify AI Opportunities"
+        action: "opportunity_identifier.identifies"
+        owner: "opportunity_identifier"
+        inputs: ["engagement_id", "workflow_maps"]
+        outputs: ["opportunities", "roi_estimates"]
+        sla_hours: 24
+      - id: "draft_roadmap"
+        name: "Draft Transformation Roadmap"
+        action: "opportunity_identifier.drafts_roadmap"
+        owner: "opportunity_identifier"
+        inputs: ["engagement_id", "opportunities", "roi_estimates"]
+        outputs: ["roadmap_draft"]
+        sla_hours: 48
+      - id: "expert_review"
+        name: "Expert Human Review"
+        action: "consulting_lead.reviews"
+        owner: "consulting_lead"
+        inputs: ["engagement_id", "roadmap_draft"]
+        outputs: ["roadmap_approved"]
+        sla_hours: 24
+      - id: "client_presentation"
+        name: "Present to Client"
+        action: "consulting_lead.presents"
+        owner: "consulting_lead"
+        inputs: ["engagement_id", "roadmap_approved"]
+        outputs: ["client_feedback", "engagement_complete"]
+        sla_hours: 24
+      - id: "knowledge_feedback"
+        name: "Feed Learnings to Knowledge Base"
+        action: "consulting_lead.feeds_knowledge"
+        owner: "consulting_lead"
+        inputs: ["engagement_id", "client_feedback"]
+        outputs: ["knowledge_updated"]
+        sla_hours: 12
+
+  - id: "project_delivery"
+    name: "Project Delivery Workflow"
+    description: "Proposal through implementation, QA, handoff, and support."
+    trigger: "proposal_approved"
+    owner: "delivery_lead"
+    steps:
+      - id: "scope_quote"
+        name: "Scope and Quote"
+        action: "proposal_writer.drafts"
+        owner: "proposal_writer"
+        inputs: ["opportunity", "discovery_outputs"]
+        outputs: ["proposal", "quote"]
+        sla_hours: 24
+      - id: "approve"
+        name: "Client Approval"
+        action: "approval.request"
+        owner: "human_ceo"
+        inputs: ["proposal", "quote"]
+        outputs: ["approved", "contract"]
+        sla_hours: 48
+      - id: "design"
+        name: "Solution Design"
+        action: "solution_architect.designs"
+        owner: "solution_architect"
+        inputs: ["approved", "scope"]
+        outputs: ["design"]
+        sla_hours: 24
+      - id: "implement"
+        name: "Implementation"
+        action: "implementation_engineer.implements"
+        owner: "implementation_engineer"
+        inputs: ["design"]
+        outputs: ["implementation"]
+      - id: "quality_gate"
+        name: "QA Gate"
+        action: "qa_lead.verifies"
+        owner: "qa_lead"
+        inputs: ["implementation", "acceptance_criteria"]
+        outputs: ["verified"]
+        sla_hours: 24
+      - id: "handoff"
+        name: "Client Handoff"
+        action: "delivery_lead.hands_off"
+        owner: "delivery_lead"
+        inputs: ["verified", "implementation"]
+        outputs: ["delivered"]
+        sla_hours: 24
+      - id: "support"
+        name: "Managed Support"
+        action: "support_agent.supports"
+        owner: "client_success_lead"
+        inputs: ["delivered", "client_id"]
+        outputs: ["support_active"]

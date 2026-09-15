@@ -92,25 +92,77 @@ function destroyChart(id) {
  */
 function updateOrCreateChart(id, ctx, config) {
   if (chartInstances[id]) {
-    // Update existing chart data in-place (no destroy/recreate needed)
     const chart = chartInstances[id];
     const signature = JSON.stringify(config.data || null);
     if (chart._dataSignature === signature) {
-      // Nothing changed — skip the redraw to avoid layout churn.
       return chart;
     }
     chart._dataSignature = signature;
     chart.data = config.data;
-    // Merge options in case they changed
-    Object.assign(chart.options, config.options || {});
-    chart.update('none'); // 'none' = no animation on data update
+    // Object.assign doesn't reliably propagate onClick through Chart.js's
+    // options proxy — set it explicitly so drill-down handlers survive polls.
+    if (config.options && config.options.onClick) {
+      chart.options.onClick = config.options.onClick;
+    }
+    chart.update('none');
     return chart;
   }
-  // First render — create new instance
   const chart = new Chart(ctx, config);
   chart._dataSignature = JSON.stringify(config.data || null);
   chartInstances[id] = chart;
   return chart;
+}
+
+// ── External Tooltip Handler ───────────────────────────────
+/**
+ * Shared Chart.js external tooltip renderer.  Creates a floating
+ * `.chartjs-tooltip` div positioned near the cursor so tooltips
+ * are never clipped by `overflow: hidden` or `contain` ancestors.
+ *
+ * @param {object} context  – Chart.js tooltip context
+ * @param {object} opts     – { title?: string, rows: [{color, label, value, pct?}] }
+ */
+function externalTooltip(context, opts) {
+  const { chart, tooltip } = context;
+  let el = chart.canvas.parentNode.querySelector('.chartjs-tooltip');
+
+  if (tooltip.opacity === 0) {
+    if (el) el.style.opacity = '0';
+    return;
+  }
+
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'chartjs-tooltip';
+    chart.canvas.parentNode.appendChild(el);
+  }
+
+  // Build inner HTML
+  let html = '';
+  if (opts && opts.title) {
+    html += `<div class="tt-title">${opts.title}</div>`;
+  }
+  if (opts && opts.rows) {
+    for (const row of opts.rows) {
+      const pctStr = row.pct != null ? `<span class="tt-pct">${row.pct}%</span>` : '';
+      html += `<div class="tt-row">
+        <span class="tt-color" style="background:${row.color}"></span>
+        <span class="tt-label">${row.label}</span>
+        <span class="tt-value">${row.value}</span>
+        ${pctStr}
+      </div>`;
+    }
+  }
+  el.innerHTML = html;
+
+  // Position near cursor
+  const canvasRect = chart.canvas.getBoundingClientRect();
+  const containerRect = chart.canvas.parentNode.getBoundingClientRect();
+  const x = canvasRect.left - containerRect.left + tooltip.caretX + 12;
+  const y = canvasRect.top - containerRect.top + tooltip.caretY - 10;
+  el.style.opacity = '1';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
 }
 
 // ═══ DASHBOARD CHARTS ════════════════════════════════════════
@@ -119,6 +171,7 @@ function updateChartsFromKPIs(kpis, departments) {
   // ── Task Status Doughnut ───────────────────────────────────
   const taskCtx = document.getElementById('taskStatusChart');
   if (taskCtx) {
+    const taskStatuses = ['pending', 'in_progress', 'completed', 'failed', 'escalated'];
     const config = {
       type: 'doughnut',
       data: {
@@ -146,13 +199,43 @@ function updateChartsFromKPIs(kpis, departments) {
             COLORS.purple.border,
           ],
           borderWidth: 2,
-          hoverOffset: 8,
+          hoverOffset: 12,
         }],
       },
       options: {
         cutout: '65%',
         plugins: {
           legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } },
+          tooltip: {
+            enabled: false,
+            external: function(context) {
+              const { tooltip } = context;
+              if (tooltip.opacity === 0) {
+                const el = context.chart.canvas.parentNode.querySelector('.chartjs-tooltip');
+                if (el) el.style.opacity = '0';
+                return;
+              }
+              const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+              const rows = tooltip.dataPoints.map((dp, i) => {
+                const value = dp.parsed;
+                const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+                return {
+                  color: context.chart.data.datasets[0].backgroundColor[dp.dataIndex],
+                  label: dp.label,
+                  value: value + ' task' + (value !== 1 ? 's' : ''),
+                  pct,
+                };
+              });
+              externalTooltip(context, { title: 'Tasks by Status', rows });
+            },
+          },
+        },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const status = taskStatuses[idx];
+            window.dispatchEvent(new CustomEvent('drilldown:task-status', { detail: { status } }));
+          }
         },
       },
     };
@@ -179,10 +262,37 @@ function updateChartsFromKPIs(kpis, departments) {
         indexAxis: 'y',
         plugins: {
           legend: { display: false },
+          tooltip: {
+            enabled: false,
+            external: function(context) {
+              const { tooltip } = context;
+              if (tooltip.opacity === 0) {
+                const el = context.chart.canvas.parentNode.querySelector('.chartjs-tooltip');
+                if (el) el.style.opacity = '0';
+                return;
+              }
+              const rows = tooltip.dataPoints.map(dp => {
+                const value = dp.parsed.x;
+                return {
+                  color: context.chart.data.datasets[0].backgroundColor[dp.dataIndex],
+                  label: dp.label,
+                  value: value + ' agent' + (value !== 1 ? 's' : ''),
+                };
+              });
+              externalTooltip(context, { title: 'Department Load', rows });
+            },
+          },
         },
         scales: {
           x: { grid: { display: false }, ticks: { stepSize: 1 } },
           y: { grid: { display: false } },
+        },
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const deptName = departments[idx]?.name || departments[idx];
+            window.dispatchEvent(new CustomEvent('drilldown:department', { detail: { name: deptName } }));
+          }
         },
       },
     };

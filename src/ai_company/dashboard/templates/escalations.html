@@ -24,7 +24,7 @@
 
     <div class="space-y-3">
       <template x-for="req in approvals" :key="req.id">
-        <div class="jarvis-glass rounded-xl p-5 hover:border-jarvis-cyan/20 transition-all">
+        <div class="jarvis-glass rounded-xl p-5 hover:border-jarvis-cyan/20 transition-all cursor-pointer" @click="openApprovalDetail(req)">
           <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
@@ -47,7 +47,7 @@
                   x-text="'Est. $' + (req.cost_estimate != null ? Number(req.cost_estimate).toFixed(4) : '—')"></span>
           </div>
           <!-- Inline edit form (F3) -->
-          <div x-show="editingApproval === req.id" x-collapse class="mb-4">
+          <div x-show="editingApproval === req.id" x-collapse class="mb-4" @click.stop>
             <div class="jarvis-glass rounded-lg p-4 border border-jarvis-cyan/20 space-y-3">
               <div class="flex items-center gap-3">
                 <label class="text-xs text-jarvis-muted w-16 shrink-0">Risk</label>
@@ -73,7 +73,7 @@
               </div>
             </div>
           </div>
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between" @click.stop>
             <span class="text-xs text-jarvis-muted font-mono" x-text="formatTime(req.requested_at)"></span>
             <div class="flex gap-2">
               <button @click="editingApproval = req.id; editRisk = req.risk_level || ''; editCost = req.cost_estimate ?? ''"
@@ -151,4 +151,168 @@
     </div>
   </div>
 </div>
+
+<!-- ═══ APPROVAL DETAIL SLIDE-OUT PANEL ═══ -->
+<div x-show="approvalDetailOpen" x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+     class="fixed right-0 top-0 h-full w-96 bg-jarvis-surface border-l border-jarvis-border shadow-xl z-40 overflow-y-auto"
+     style="background: rgba(7, 11, 20, 0.95); backdrop-filter: blur(12px);"
+     @click.stop>
+
+  <!-- Header -->
+  <div class="flex justify-between items-center p-4 border-b border-white/[0.06]">
+    <h3 class="text-lg font-semibold text-jarvis-text font-display">Approval Details</h3>
+    <button @click="closeApprovalDetail()" class="text-jarvis-muted hover:text-jarvis-text transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <template x-if="selectedApproval">
+    <div>
+      <!-- Request Info -->
+      <div class="p-4 border-b border-white/[0.06]">
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Request ID</label>
+            <p class="text-jarvis-text font-mono text-sm" x-text="selectedApproval.id"></p>
+          </div>
+          <div>
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Action</label>
+            <p class="text-jarvis-text font-mono text-sm" x-text="selectedApproval.action"></p>
+          </div>
+          <div>
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Requested By</label>
+            <p class="text-jarvis-text font-mono text-sm" x-text="selectedApproval.agent_id"></p>
+          </div>
+          <div>
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Description</label>
+            <p class="text-jarvis-text text-sm" x-text="selectedApproval.description"></p>
+          </div>
+          <div x-show="selectedApproval.task_id">
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Task ID</label>
+            <p class="text-jarvis-text font-mono text-sm" x-text="selectedApproval.task_id"></p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-jarvis-muted uppercase tracking-wider">Status</label>
+              <span class="px-2 py-1 rounded text-xs block mt-1 bg-purple-500/10 text-purple-400"
+                    x-text="selectedApproval.status"></span>
+            </div>
+            <div>
+              <label class="text-xs text-jarvis-muted uppercase tracking-wider">Risk Level</label>
+              <span class="px-2 py-1 rounded text-xs block mt-1"
+                    :class="selectedApproval.risk_level === 'high' ? 'bg-red-500/10 text-red-400' : selectedApproval.risk_level === 'medium' ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'"
+                    x-text="selectedApproval.risk_level || 'unset'"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Classification -->
+      <div class="p-4 border-b border-white/[0.06]">
+        <h4 class="text-sm font-medium text-jarvis-text font-display mb-3">Classification</h4>
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider w-24 shrink-0">Tier</label>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-jarvis-cyan/10 text-jarvis-cyan"
+                  x-text="tierLabel(selectedApproval.tier)"></span>
+          </div>
+          <div>
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Rationale</label>
+            <p class="text-jarvis-text text-xs mt-1" x-text="tierRationale(selectedApproval)"></p>
+          </div>
+          <div x-show="selectedApproval.metacharacter_blocked"
+               class="flex items-start gap-2 p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+            <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+            <div>
+              <p class="text-xs font-medium text-red-400">Metacharacter Blocked</p>
+              <p class="text-[11px] text-red-400/70 mt-0.5">This command contains shell metacharacters and will be rejected by the executor even if approved.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider w-24 shrink-0">Required</label>
+            <span class="text-jarvis-text text-xs" x-text="(selectedApproval.required_approvers || 1) + ' approver(s)'"></span>
+          </div>
+          <div x-show="selectedApproval.approved_by_list && selectedApproval.approved_by_list.length > 0">
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Approved By</label>
+            <p class="text-jarvis-text font-mono text-xs mt-1" x-text="selectedApproval.approved_by_list.join(', ')"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timing -->
+      <div class="p-4 border-b border-white/[0.06]">
+        <h4 class="text-sm font-medium text-jarvis-text font-display mb-3">Timing</h4>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-jarvis-muted uppercase tracking-wider">Requested</label>
+              <p class="text-jarvis-text text-xs mt-1" x-text="formatTime(selectedApproval.requested_at)"></p>
+            </div>
+            <div>
+              <label class="text-xs text-jarvis-muted uppercase tracking-wider">Expires</label>
+              <p class="text-xs mt-1" :class="approvalExpiresIn(selectedApproval.expires_at) === 'Expired' ? 'text-red-400' : 'text-jarvis-text'"
+                 x-text="selectedApproval.expires_at ? formatTime(selectedApproval.expires_at) : '—'"></p>
+            </div>
+          </div>
+          <div x-show="selectedApproval.expires_at" class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full" :class="approvalExpiresIn(selectedApproval.expires_at) === 'Expired' ? 'bg-red-400' : 'bg-emerald-400'"></span>
+            <span class="text-xs" :class="approvalExpiresIn(selectedApproval.expires_at) === 'Expired' ? 'text-red-400' : 'text-jarvis-muted'"
+                  x-text="approvalExpiresIn(selectedApproval.expires_at)"></span>
+          </div>
+          <div x-show="selectedApproval.responded_at">
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Responded</label>
+            <p class="text-jarvis-text text-xs mt-1" x-text="formatTime(selectedApproval.responded_at)"></p>
+          </div>
+          <div x-show="selectedApproval.response_by">
+            <label class="text-xs text-jarvis-muted uppercase tracking-wider">Response By</label>
+            <p class="text-jarvis-text font-mono text-xs mt-1" x-text="selectedApproval.response_by"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div x-show="selectedApproval.notes" class="p-4 border-b border-white/[0.06]">
+        <h4 class="text-sm font-medium text-jarvis-text font-display mb-2">Notes</h4>
+        <p class="text-jarvis-text text-sm" x-text="selectedApproval.notes"></p>
+      </div>
+
+      <!-- Cost -->
+      <div class="p-4 border-b border-white/[0.06]">
+        <h4 class="text-sm font-medium text-jarvis-text font-display mb-3">Cost Estimate</h4>
+        <p class="text-jarvis-text font-mono text-sm" x-text="selectedApproval.cost_estimate != null ? '$' + Number(selectedApproval.cost_estimate).toFixed(4) : '—'"></p>
+      </div>
+
+      <!-- Actions -->
+      <div class="p-4">
+        <div class="flex gap-2">
+          <button @click="approveRequest(selectedApproval.id); closeApprovalDetail()"
+                  class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-emerald-600 text-white hover:bg-emerald-500 transition-colors flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Approve
+          </button>
+          <button @click="rejectRequest(selectedApproval.id); closeApprovalDetail()"
+                  class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            Reject
+          </button>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
+
+<!-- Backdrop -->
+<div x-show="approvalDetailOpen" @click="closeApprovalDetail()"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+     class="fixed inset-0 bg-black/40 z-30" style="pointer-events: auto;"></div>
 {% endblock %}

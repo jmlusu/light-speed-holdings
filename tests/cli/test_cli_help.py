@@ -75,6 +75,7 @@ EXPECTED_TOP_LEVEL = [
     "company",
     "decision",
     "graph",
+    "archify",
     "security",
     "validate",
 ]

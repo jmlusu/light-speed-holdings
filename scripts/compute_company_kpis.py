@@ -12,7 +12,7 @@ preserving every comment and the KPI entries that have no real source yet
 
 Stable sources ONLY (the SQLite DB is treated as volatile mid-cleanup):
     .opencode/inbox.json          task telemetry (status, sender/receiver, created_at)
-    company-registry.yaml         registered agents (127)
+    company-registry.yaml         registered agents (135)
     .opencode/audit               task-created event log (throughput, supporting)
     company/departments.yaml      declared departments (coverage, supporting)
     orchestrator/cost_tracker.json cost (currently all zeros -> n/a, supporting)
@@ -148,7 +148,7 @@ def compute(root: Path, days: int) -> dict:
                     rec = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if isinstance(rec, dict):
+                if isinstance(rec, dict) and rec.get("event_type") == "task_created":
                     audit_events.append(rec)
     created_tss = [
         ts for ts in (_parse_ts(r.get("timestamp", "")) for r in audit_events) if ts is not None
