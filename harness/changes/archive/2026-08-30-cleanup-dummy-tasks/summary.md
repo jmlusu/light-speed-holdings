@@ -1,4 +1,4 @@
----
+﻿---
 title: "Remove Dummy Tasks & Wire Real Organizational Data"
 slug: "cleanup-dummy-tasks"
 status: "completed"
@@ -32,7 +32,11 @@ tags:
   - "demo-data"
 validation_status: "pass"
 created_at: "2026-08-28"
+<<<<<<<< HEAD:harness/changes/archive/2026-09-13-cleanup-dummy-tasks/summary.md
+updated_at: "2026-09-13"
+========
 updated_at: "2026-08-30"
+>>>>>>>> origin/main:harness/changes/archive/2026-08-30-cleanup-dummy-tasks/summary.md
 ---
 
 # Summary

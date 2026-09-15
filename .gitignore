@@ -75,7 +75,7 @@ memory/vector_index/
 /data/
 logs/
 results/
-orchestrator/
+/orchestrator/
 .playwright-cli/
 *.bak
 *.executor-bak

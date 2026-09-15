@@ -65,6 +65,13 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "app",
         "Archify diagrams — generate, validate, compare, deliver from the registry",
     ),
+    "publishing": (
+        "ai_company.cli.publishing",
+        "app",
+        "Publishing rails — LinkedIn / Substack queue",
+    ),
+    "media": ("ai_company.cli.media", "app", "Media operations — local-first transcription"),
+    "mcp": ("ai_company.cli.mcp", "app", "Pharos Content Intelligence MCP server"),
     "security": (
         "ai_company.cli.security",
         "app",

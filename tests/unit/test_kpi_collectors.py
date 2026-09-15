@@ -352,6 +352,51 @@ class TestMarketingCollector:
         # No marketing-specific task receivers in our fixture tasks
         assert result["kpis"]["total_marketing_tasks"]["current"] == 0
 
+    def test_pharos_content_missing_files(self, empty_project: Path) -> None:
+        result = MarketingKPICollector(empty_project).collect()
+        pharos = result["kpis"]
+        # Both content + subscriber files missing → error quality, no fake values
+        assert pharos["posts_published_30d"]["current"] == 0
+        assert pharos["posts_published_30d"]["data_quality"] == "error"
+        assert pharos["drafts_in_pipeline"]["current"] == 0
+        assert pharos["subscribers"]["current"] is None
+        assert pharos["subscribers"]["target"] == 2000
+        assert pharos["subscribers"]["data_quality"] == "error"
+
+    def test_pharos_content_with_data(self, project: Path) -> None:
+        marketing_dir = project / "orchestrator" / "marketing"
+        marketing_dir.mkdir(parents=True, exist_ok=True)
+        content_log = [
+            {"id": "c1", "status": "published", "published_at": "2026-09-10T08:00:00"},
+            {"id": "c2", "status": "published", "published_at": "2026-09-12T08:00:00"},
+            {"id": "c3", "status": "draft"},
+            {"id": "c4", "status": "draft"},
+            {"id": "c5", "status": "published", "published_at": "2025-01-01T08:00:00"},
+        ]
+        (marketing_dir / "content_log.json").write_text(json.dumps(content_log), encoding="utf-8")
+        (marketing_dir / "pharos_subscribers.json").write_text(
+            json.dumps({"subscribers": 150}), encoding="utf-8"
+        )
+        result = MarketingKPICollector(project).collect()
+        pharos = result["kpis"]
+        # Two published in the last 30 days, two drafts, old publish excluded
+        assert pharos["posts_published_30d"]["current"] == 2
+        assert pharos["drafts_in_pipeline"]["current"] == 2
+        assert pharos["subscribers"]["current"] == 150
+        assert pharos["subscribers"]["status"] == "below_target"
+        assert pharos["subscribers"]["data_quality"] == "real"
+
+    def test_pharos_content_partial_data_quality(self, project: Path) -> None:
+        marketing_dir = project / "orchestrator" / "marketing"
+        marketing_dir.mkdir(parents=True, exist_ok=True)
+        (marketing_dir / "content_log.json").write_text(
+            json.dumps([{"id": "c1", "status": "draft"}]), encoding="utf-8"
+        )
+        result = MarketingKPICollector(project).collect()
+        # Subscriber file missing → fallback quality for the pharos block
+        assert result["kpis"]["subscribers"]["data_quality"] == "fallback"
+        assert result["kpis"]["posts_published_30d"]["data_quality"] == "fallback"
+
 
 # ---------------------------------------------------------------------------
 # Sales

@@ -1,0 +1,52 @@
+routines:
+  - id: pharos_agentic_enterprise_brief
+    name: Agentic Enterprise Brief (Mon)
+    receiver_id: content_writer
+    schedule_day: 1
+    time_utc: "04:00"
+    enabled: true
+    prompt_file: templates/pharos/routines/monday-agentic-enterprise-brief.md
+    model: standard
+    budget_tokens: 4000
+
+  - id: pharos_build_log
+    name: Build Log (Wed)
+    receiver_id: content_writer
+    schedule_day: 3
+    time_utc: "04:00"
+    enabled: true
+    prompt_file: templates/pharos/routines/wednesday-build-log.md
+    model: standard
+    budget_tokens: 4000
+
+  - id: pharos_policy_governance_africa
+    name: AI Policy & Governance Africa (Fri)
+    receiver_id: content_writer
+    schedule_day: 5
+    time_utc: "04:00"
+    enabled: true
+    prompt_file: templates/pharos/routines/friday-policy-governance-africa.md
+    model: standard
+    budget_tokens: 4000
+
+  - id: pharos_deep_research_brief
+    name: Deep Research Brief (Mon companion)
+    receiver_id: content_writer
+    schedule_day: 6
+    time_utc: "04:00"
+    enabled: true
+    prompt_file: templates/pharos/routines/deep-research-brief.md
+    model: standard
+    budget_tokens: 8000
+    research_depth: deep
+
+  - id: pharos_sadc_research_scan
+    name: SADC Research Scan (Thu)
+    receiver_id: content_writer
+    schedule_day: 4
+    time_utc: "04:00"
+    enabled: true
+    prompt_file: templates/pharos/routines/sadc-research-scan.md
+    model: standard
+    budget_tokens: 8000
+    research_depth: deep

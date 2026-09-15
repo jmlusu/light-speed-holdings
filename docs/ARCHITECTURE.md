@@ -4,7 +4,7 @@
 
 ```
 src/ai_company/
-├── cli/                        # Typer CLI commands (31 subcommands)
+├── cli/                        # Typer CLI commands (37 subcommands)
 │   ├── main.py                 # App entry point, registers all subcommands
 │   ├── company.py              # Bootstrap engine CLI (company run/status)
 │   ├── decision.py             # Decision engine CLI (evaluate/matrix/tree)
@@ -212,7 +212,7 @@ config/*.yaml (19 files)
 
 | Entry Point | File | Purpose |
 |-------------|------|---------|
-| CLI | `cli/main.py:app` | Typer app, 31 subcommands |
+| CLI | `cli/main.py:app` | Typer app, 37 subcommands |
 | Config Loader | `config/__init__.py:load_config()` | YAML → CompanyRegistry |
 | Registry | `registry/__init__.py:load_registry()` | Load + parse + resolve + validate |
 | Bootstrap | `builder/__init__.py:BootstrapEngine` | Full company generation |
