@@ -20,10 +20,14 @@ Where:
   missing components are excluded from both numerator and denominator.
 
 Components (from ``config/org_health.yaml``):
-- ``task_success_rate`` (0.30): ``(completed / total) * 100`` over 30d window.
-- ``agent_utilization`` (0.25): ``(active / registered) * 100``, capped at 100.
-- ``cost_efficiency`` (0.25): ``100 - (spent/budget * 100) + 50``, clamped [0,100].
-- ``error_rate`` (0.20): ``100 - (errors / total * 100)`` (inverted: fewer errors = higher score).
+- ``task_success_rate`` (0.25): ``(completed / total) * 100`` over 30d window.
+- ``agent_utilization`` (0.20): ``(active / registered) * 100``, capped at 100.
+- ``cost_efficiency`` (0.15): ``100 - (spent/budget * 100) + 50``, clamped [0,100].
+- ``error_rate`` (0.15): ``100 - (errors / total * 100)`` (inverted: fewer errors = higher score).
+- ``task_throughput`` (0.10): ``(tasks_per_day / target) * 100``, capped at 100.
+- ``escalation_rate`` (0.05): ``100 - (escalated / total * 100)`` (inverted).
+- ``security_posture`` (0.05): Audit trail health + compliance indicators composite.
+- ``strategic_alignment`` (0.05): ``% tasks mapped to active goals/departments``.
 
 Bands:
 - GREEN: 80-100 (healthy)
@@ -49,6 +53,16 @@ from ai_company.dashboard.monitoring import (
     record_org_band_transition,
     record_org_breaker_trip,
     record_org_scoring,
+)
+from ai_company.dashboard.scorers import (
+    score_agent_utilization,
+    score_cost_efficiency,
+    score_error_rate,
+    score_escalation_rate,
+    score_security_posture,
+    score_strategic_alignment,
+    score_task_success_rate,
+    score_task_throughput,
 )
 from ai_company.data.database import Database
 from ai_company.paths import get_project_root
@@ -358,6 +372,10 @@ class OrgHealthCalculator:
             "agent_utilization": self._score_agent_utilization,
             "cost_efficiency": self._score_cost_efficiency,
             "error_rate": self._score_error_rate,
+            "task_throughput": self._score_task_throughput,
+            "escalation_rate": self._score_escalation_rate,
+            "security_posture": self._score_security_posture,
+            "strategic_alignment": self._score_strategic_alignment,
         }
 
     def _score_component(self, name: str, database: Database | None) -> float | None:
@@ -500,85 +518,43 @@ class OrgHealthCalculator:
         return self._task_window_cache
 
     def _score_task_success_rate(self, database: Database | None) -> float | None:
-        """Ratio of completed tasks to total tasks (0-100).
-
-        Returns ``None`` when no tasks exist in the 30-day window so callers
-        can distinguish "no data" from "zero success rate".
-        """
+        """Ratio of completed tasks to total tasks (0-100)."""
         tasks, _ = self._window_tasks()
-        total = len(tasks)
-        if total == 0:
-            return None
-        completed = sum(1 for t in tasks if t.get("status") == "completed")
-        return (completed / total) * 100
+        return score_task_success_rate(tasks)
 
     def _score_agent_utilization(self, database: Database | None) -> float | None:
-        """Active agents vs registered agents (0-100).
-
-        Returns ``None`` when no agents are registered so callers can
-        distinguish "no data" from "zero utilization".
-        """
-        from ai_company.dashboard.data_service import _count_registered_agents
-
-        root = self._root
-        total_registered = _count_registered_agents(root)
-        if total_registered == 0:
-            return None
-
+        """Active agents vs registered agents (0-100)."""
         tasks, _ = self._window_tasks()
-        active_agents = {
-            agent
-            for task in tasks
-            for agent in (task.get("sender_id"), task.get("receiver_id"))
-            if agent
-        }
-        if not active_agents:
-            return 0.0
-        return min(100.0, (len(active_agents) / total_registered) * 100)
+        return score_agent_utilization(tasks, self._root)
 
     def _score_cost_efficiency(self, database: Database | None) -> float | None:
-        """Budget utilization vs spend (0-100).
-
-        Uses the cost summary from the data service.  If total budget is
-        known, returns the ratio of remaining budget (inverted: lower
-        spend = higher efficiency, but capped at 100).
-
-        Returns ``None`` when no cost data or budget is available so callers
-        can distinguish "no data" from "zero efficiency". Exceptions propagate
-        to the hardening layer (breaker + fail-open) rather than being
-        swallowed here.
-        """
-        from ai_company.dashboard.data_service import get_cost_summary
-
-        summary = get_cost_summary(database=database)
-        if summary is None:
-            return None
-        total_spent = float(summary.get("total_spent", 0) or 0)
-        budget = float(summary.get("budget", 0) or 0)
-        if budget <= 0:
-            return None
-        # Efficiency = 100 - (spent/budget * 100), clamped
-        utilization = (total_spent / budget) * 100
-        return max(0.0, min(100.0, 100.0 - utilization + 50.0))
+        """Budget utilization vs spend (0-100)."""
+        return score_cost_efficiency(database=database)
 
     def _score_error_rate(self, database: Database | None) -> float | None:
-        """Error/exception rate across agent operations (0-100, inverted).
-
-        Lower error rate = higher score. Reads from task statuses in the
-        message bus / audit trail. Returns 100 - (error_rate * 100).
-
-        Returns ``None`` when no tasks exist in the window so callers can
-        distinguish "no data" from "zero error rate". Exceptions propagate to
-        the hardening layer (breaker + fail-open) rather than being swallowed
-        here.
-        """
+        """Error/exception rate across agent operations (0-100, inverted)."""
         tasks, _ = self._window_tasks()
-        total = len(tasks)
-        if total == 0:
-            return None
-        error_tasks = sum(1 for t in tasks if t.get("status") in ("failed", "error", "cancelled"))
-        error_rate = (error_tasks / total) * 100
-        return max(0.0, 100.0 - error_rate)
+        return score_error_rate(tasks)
+
+    def _score_task_throughput(self, database: Database | None) -> float | None:
+        """Tasks completed per day, normalized to 0-100 vs target (30d)."""
+        tasks, _ = self._window_tasks()
+        return score_task_throughput(tasks, target_per_day=10.0)
+
+    def _score_escalation_rate(self, database: Database | None) -> float | None:
+        """Escalation rate across tasks (0-100, inverted)."""
+        tasks, _ = self._window_tasks()
+        return score_escalation_rate(tasks)
+
+    def _score_security_posture(self, database: Database | None) -> float | None:
+        """Audit trail health and compliance indicators (0-100)."""
+        tasks, _ = self._window_tasks()
+        return score_security_posture(tasks, self._root)
+
+    def _score_strategic_alignment(self, database: Database | None) -> float | None:
+        """Percentage of tasks mapped to active goals and departments (0-100)."""
+        tasks, _ = self._window_tasks()
+        return score_strategic_alignment(tasks, self._root)
 
     # ── Band mapping ─────────────────────────────────────────────────
 
@@ -628,9 +604,13 @@ class OrgHealthCalculator:
                 "red": {"min": 0, "max": 49},
             },
             "components": [
-                {"name": "task_success_rate", "weight": 0.30},
-                {"name": "agent_utilization", "weight": 0.25},
-                {"name": "cost_efficiency", "weight": 0.25},
-                {"name": "error_rate", "weight": 0.20},
+                {"name": "task_success_rate", "weight": 0.25},
+                {"name": "agent_utilization", "weight": 0.20},
+                {"name": "cost_efficiency", "weight": 0.15},
+                {"name": "error_rate", "weight": 0.15},
+                {"name": "task_throughput", "weight": 0.10},
+                {"name": "escalation_rate", "weight": 0.05},
+                {"name": "security_posture", "weight": 0.05},
+                {"name": "strategic_alignment", "weight": 0.05},
             ],
         }

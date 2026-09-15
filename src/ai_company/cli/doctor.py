@@ -12,6 +12,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from ai_company.doctor.checks import run_all_checks
+from ai_company.store import repo_write
 
 console = Console()
 
@@ -75,10 +76,10 @@ def fix() -> None:
         except Exception as e:  # noqa: BLE001 - self-healing must not crash
             fixes.append(f"Agent generation failed: {e}")
 
-    # 4. Ensure inbox.json exists
+    # 4. Ensure inbox.json exists (via the guarded repo-write path)
     inbox_path = opencode_dir / "inbox.json"
     if not inbox_path.exists():
-        inbox_path.write_text("[]", encoding="utf-8")
+        repo_write.write_file(inbox_path, "[]")
         fixes.append("Created empty .opencode/inbox.json")
 
     # 5. Report results

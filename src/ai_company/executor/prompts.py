@@ -75,6 +75,72 @@ _DEFAULT_ROLE_PREFIX = (
 
 
 # ---------------------------------------------------------------------------
+# Memory context injection — recalled past work for continuous learning
+# ---------------------------------------------------------------------------
+
+
+def _inject_memory_context(
+    parts: list[str],
+    memories: list[dict[str, Any]],
+    max_memories: int = 3,
+    max_tokens: int = 500,
+) -> None:
+    """Inject recalled memory entries as a 'Relevant Past Work' section.
+
+    Formats the top-N memory entries (by similarity score) and appends
+    them to the prompt parts list.  Caps total token estimate to stay
+    within budget.
+
+    Args:
+        parts: The accumulating prompt parts list (mutated in place).
+        memories: List of memory dicts from ``recall_context()``.
+            Each dict has keys: ``type``, ``content``, ``agent_id``,
+            ``tags``, ``similarity``.
+        max_memories: Maximum number of memories to include.
+        max_tokens: Approximate token budget for the memory section.
+    """
+    if not memories:
+        return
+
+    # Sort by similarity descending, take top N
+    sorted_memories = sorted(
+        memories,
+        key=lambda m: m.get("similarity", 0),
+        reverse=True,
+    )[:max_memories]
+
+    # Build the section
+    section: list[str] = ["## Relevant Past Work", ""]
+    token_estimate = 0
+
+    for mem in sorted_memories:
+        content = mem.get("content", "").strip()
+        if not content:
+            continue
+        mem_type = mem.get("type", "unknown")
+        similarity = mem.get("similarity", 0)
+        agent = mem.get("agent_id", "unknown")
+
+        # Truncate content to fit token budget (~4 chars per token)
+        max_content_chars = (max_tokens - token_estimate) * 4
+        if max_content_chars <= 0:
+            break
+        if len(content) > max_content_chars:
+            content = content[:max_content_chars] + "..."
+
+        entry_lines = [
+            f"### Previous {mem_type.title()} Memory (similarity: {similarity:.2f}, from: {agent})",
+            content,
+            "",
+        ]
+        section.extend(entry_lines)
+        token_estimate += len(content) // 4 + 20  # rough estimate
+
+    if len(section) > 2:  # More than just the header
+        parts.extend(section)
+
+
+# ---------------------------------------------------------------------------
 # Tool instructions — per-type guidance on how to use tools
 # ---------------------------------------------------------------------------
 # OPTIMIZATION NOTES (v2):
@@ -363,7 +429,10 @@ def build_iteration_feedback(
 # ---------------------------------------------------------------------------
 
 
-def build_system_prompt_typed(agent: AgentContext) -> str:
+def build_system_prompt_typed(
+    agent: AgentContext,
+    memories: list[dict[str, Any]] | None = None,
+) -> str:
     """Build a system prompt using typed role prefixes and tool instructions.
 
     This is the enhanced version of the system prompt builder that
@@ -373,6 +442,10 @@ def build_system_prompt_typed(agent: AgentContext) -> str:
     The prompt tells the LLM to include a ``thought`` field (chain-of-thought
     reasoning), a ``plan`` array of tool calls, a ``result`` summary, and a
     ``done`` boolean — enabling the multi-turn loop in ``AgentLoop``.
+
+    Args:
+        agent: Parsed agent context.
+        memories: Optional recalled memory entries to inject as context.
     """
     # Resolve agent type (normalize common variants)
     agent_type = agent.type.strip()
@@ -417,6 +490,10 @@ def build_system_prompt_typed(agent: AgentContext) -> str:
         for p in agent.operating_principles:
             parts.append(f"- {p}")
         parts.append("")
+
+    # Inject recalled memories as relevant past work context
+    if memories:
+        _inject_memory_context(parts, memories)
 
     # Success metrics
     if agent.success_metrics:

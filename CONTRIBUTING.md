@@ -83,6 +83,58 @@ Use conventional commits:
 - `refactor: restructure code`
 - `chore: maintenance tasks`
 
+## Documentation Drift Prevention
+
+Factual claims in documentation (agent counts, department counts, KPI counts, etc.) are
+validated against source-of-truth files on every commit. If your change affects any
+source-of-truth file, you must update all dependent documentation.
+
+### Source of Truth
+
+| Claim | Source File | Current Value |
+|-------|-------------|---------------|
+| Department count | `company-registry.yaml` | 20 |
+| Agent count | `company-registry.yaml` | 144 |
+| KPI count | `company/config/kpis.yaml` | 25 |
+| Template count | `templates/**/*.j2` | 9 |
+| LLM providers | `company/models.yaml` | 9 |
+
+The canonical manifest is at `docs/source-of-truth.yaml`.
+
+### How It Works
+
+1. **Pre-commit hook** runs `scripts/validate-drift.ps1` on every commit
+2. If drift is detected, the commit is blocked
+3. Fix the stale documentation before committing
+
+### When to Update Docs
+
+If your PR changes:
+- `company/departments.yaml` → update all "X departments" references in docs
+- `company-registry.yaml` → update all "X agents" references in docs
+- `company/config/kpis.yaml` → update KPI count references
+- `templates/` → update template count references
+- `company/models.yaml` → update provider count references
+
+### Ownership
+
+| Area | Owner | Responsibility |
+|------|-------|----------------|
+| `company-registry.yaml` | CEO / Chief of Staff | Canonical agent definitions |
+| `company/departments.yaml` | CEO / Chief of Staff | Canonical department list |
+| `docs/source-of-truth.yaml` | Knowledge Manager | Manifest accuracy |
+| `scripts/validate-drift.ps1` | DevOps Lead | Script maintenance |
+| `tests/docs/test_doc_drift.py` | QA Lead | Test maintenance |
+| Active docs (`docs/*.md`, `README.md`) | Technical Documentation Lead | Content accuracy |
+| Archived docs (`docs/archive/`) | N/A | Historical records — do not update |
+
+### Running Validation Manually
+
+```powershell
+.\scripts\validate-drift.ps1           # PowerShell
+uv run pytest tests/docs/test_doc_drift.py -v  # pytest
+```
+
 ## Reporting Issues
 
 Open an issue with:

@@ -14,7 +14,7 @@
 
 - **AI Ethics and Responsible AI Officer** (`ai-ethics-officer`) - specialist; reports to: `ai-safety-lead`
 - **AI Safety Lead** (`ai-safety-lead`) - specialist; reports to: `caio`
-- **Chief AI Officer** (`caio`) - executive; reports to: `chief-of-staff`
+- **Chief AI Officer** (`caio`) - executive; reports to: CEO
 - **Constitutional AI Owner** (`constitutional-ai-owner`) - specialist; reports to: `ai-safety-lead`
 - **Evaluation and Benchmarks Engineer** (`eval-benchmarks-engineer`) - specialist; reports to: `caio`
 - **Human-AI Interaction Designer** (`hai-designer`) - specialist; reports to: `ai-safety-lead`
@@ -30,10 +30,17 @@
 
 - **Head of Business Development** (`head-of-business-development`) - specialist; reports to: `chief-of-staff`
 
+## Consulting (4 agents)
+
+- **AI Opportunity Identifier** (`opportunity-identifier`) - specialist; reports to: `consulting-lead`
+- **Consulting Engagement Lead** (`consulting-lead`) - executive; reports to: `chief-of-staff`
+- **Employee Interview Agent** (`interview-agent`) - specialist; reports to: `consulting-lead`
+- **Workflow Mapping Agent** (`workflow-mapper`) - specialist; reports to: `consulting-lead`
+
 ## Customer Success (3 agents)
 
-- **Head of Customer Success** (`customer-success`) - executive; reports to: `chief-of-staff`
 - **Customer Success Owner** (`customer-success-owner`) - specialist; reports to: `customer-success`
+- **Head of Customer Success** (`customer-success`) - executive; reports to: `chief-of-staff`
 - **Support Agent** (`support-agent`) - specialist; reports to: `customer-success`
 
 ## Data (5 agents)
@@ -41,7 +48,7 @@
 - **Business Intelligence Engineer** (`business-intelligence-engineer`) - specialist; reports to: `cdo`
 - **Chief Data Officer** (`cdo`) - executive; reports to: `cto`
 - **Data Engineer** (`data-engineer`) - specialist; reports to: `cdo`
-- **Data Scientist** (`data-scientist`) - agent; reports to: `cdo`
+- **Data Scientist** (`data-scientist`) - specialist; reports to: `cdo`
 - **Survey Researcher** (`survey-researcher`) - specialist; reports to: `cdo`
 
 ## Executive (5 agents)
@@ -55,7 +62,7 @@
 ## Finance (3 agents)
 
 - **Chief Financial Officer** (`cfo`) - executive; reports to: CEO
-- **Financial Analyst** (`financial-analyst`) - agent; reports to: `cfo`
+- **Financial Analyst** (`financial-analyst`) - specialist; reports to: `cfo`
 - **Investor Relations Lead** (`investor-relations-lead`) - specialist; reports to: `cfo`
 
 ## IT (1 agent)
@@ -65,12 +72,12 @@
 ## Legal (5 agents)
 
 - **Chief Legal Officer** (`clo`) - executive; reports to: CEO
-- **Compliance Officer** (`compliance-officer`) - agent; reports to: `clo`
+- **Compliance Officer** (`compliance-officer`) - specialist; reports to: `clo`
 - **Data Privacy Officer** (`data-privacy-officer`) - specialist; reports to: `clo`
-- **Legal Advisor** (`legal`) - executive; reports to: `chief-of-staff`
+- **Legal Advisor** (`legal`) - executive; reports to: `clo`
 - **Legal Owner** (`legal-owner`) - specialist; reports to: `legal`
 
-## Marketing (9 agents)
+## Marketing (10 agents)
 
 - **Brand Strategist** (`brand-strategist`) - specialist; reports to: `cmo`
 - **Chief Marketing Officer** (`cmo`) - executive; reports to: `chief-of-staff`
@@ -80,13 +87,14 @@
 - **Head of Developer Relations** (`head-of-developer-relations`) - specialist; reports to: `cmo`
 - **Industry Analyst Relations Manager** (`industry-analyst-relations-manager`) - specialist; reports to: `cmo`
 - **Marketing Owner** (`marketing-owner`) - specialist; reports to: `cmo`
+- **Media Generation Owner** (`media-generation-owner`) - specialist; reports to: `cmo`
 - **Product Marketing Manager** (`product-marketing-manager`) - specialist; reports to: `cmo`
 
 ## Operations (11 agents)
 
 - **Business Continuity Manager** (`business-continuity-manager`) - specialist; reports to: `coo`
 - **Capacity Planner** (`capacity-planner`) - specialist; reports to: `coo`
-- **Chief Operating Officer** (`coo`) - executive; reports to: `chief-of-staff`
+- **Chief Operating Officer** (`coo`) - executive; reports to: CEO
 - **Doctor Owner** (`doctor-owner`) - specialist; reports to: `coo`
 - **Knowledge Manager** (`knowledge-manager`) - specialist; reports to: `coo`
 - **Orchestration Owner** (`orchestration-owner`) - specialist; reports to: `coo`
@@ -98,9 +106,9 @@
 
 ## People (6 agents)
 
+- **Chief Human Resources Officer** (`hr`) - executive; reports to: `chief-of-staff`
 - **Culture and Values Officer** (`culture-values-officer`) - specialist; reports to: `chief-of-staff`
 - **Employee Experience Lead** (`employee-experience-lead`) - specialist; reports to: `hr`
-- **Chief Human Resources Officer** (`hr`) - executive; reports to: `chief-of-staff`
 - **HR Owner** (`hr-owner`) - specialist; reports to: `hr`
 - **Learning and Development Lead** (`learning-development-lead`) - specialist; reports to: `hr`
 - **Recruiter** (`recruiter`) - specialist; reports to: `hr`
@@ -110,11 +118,11 @@
 - **Chief Product Officer** (`cpo`) - executive; reports to: `chief-of-staff`
 - **Developer Experience Engineer** (`developer-experience-engineer`) - specialist; reports to: `cpo`
 - **Growth Product Manager** (`growth-product-manager`) - specialist; reports to: `cpo`
+- **Product Analytics Lead** (`ux-analytics-lead`) - specialist; reports to: `cpo`
 - **Product Designer** (`product-designer`) - specialist; reports to: `cpo`
 - **Product Owner** (`product-owner`) - specialist; reports to: `cpo`
-- **Technical Writer** (`prompt-engineer-specialist`) - specialist; reports to: `cpo`
 - **Technical Documentation Lead** (`technical-documentation-lead`) - specialist; reports to: `cpo`
-- **Product Analytics Lead** (`ux-analytics-lead`) - specialist; reports to: `cpo`
+- **Technical Writer** (`prompt-engineer-specialist`) - specialist; reports to: `cpo`
 - **UX Research Lead** (`ux-research-lead`) - specialist; reports to: `cpo`
 
 ## QA (5 agents)
@@ -129,8 +137,8 @@
 
 - **Business Developer** (`business-developer`) - specialist; reports to: `sales`
 - **Conversation Designer** (`conversation-designer`) - specialist; reports to: `solutions-engineer`
-- **Revenue Operations Analyst** (`revenue-operations-analyst`) - specialist; reports to: `cso`
 - **Head of Sales** (`sales`) - executive; reports to: `chief-of-staff`
+- **Revenue Operations Analyst** (`revenue-operations-analyst`) - specialist; reports to: `cso`
 - **Sales Owner** (`sales-owner`) - specialist; reports to: `sales`
 - **Solutions Engineer** (`solutions-engineer`) - specialist; reports to: `cso`
 
@@ -142,16 +150,16 @@
 - **DevSecOps Lead** (`devsecops-lead`) - specialist; reports to: `ciso`
 - **Incident Response Lead** (`incident-response-lead`) - specialist; reports to: `ciso`
 - **Penetration Testing Lead** (`penetration-testing-lead`) - specialist; reports to: `ciso`
-- **Security Architect** (`security-architect`) - specialist; reports to: `ciso`
 - **Security & Compliance Lead** (`security-compliance-lead`) - specialist; reports to: `ciso`
+- **Security Architect** (`security-architect`) - specialist; reports to: `ciso`
 - **SOC 2 Audit Readiness Analyst** (`soc2-audit-readiness-analyst`) - specialist; reports to: `security-compliance-lead`
 - **Supply Chain Security Engineer** (`supply-chain-security-engineer`) - specialist; reports to: `ciso`
 - **Threat Intelligence Analyst** (`threat-intelligence-analyst`) - specialist; reports to: `ciso`
 
 ## Strategy (4 agents)
 
-- **Corporate Development Lead** (`corporate-development-lead`) - specialist; reports to: `cso`
 - **Chief Strategy Officer** (`cso`) - executive; reports to: CEO
+- **Corporate Development Lead** (`corporate-development-lead`) - specialist; reports to: `cso`
 - **Head of Competitive Intelligence** (`head-of-competitive-intelligence`) - specialist; reports to: `cso`
 - **Market Analyst** (`market-analyst`) - specialist; reports to: `cso`
 
@@ -160,8 +168,8 @@
 - **API Architect** (`api-architect`) - specialist; reports to: `cto`
 - **Audit Trail Owner** (`audit-trail-owner`) - specialist; reports to: `cto`
 - **Backend Engineer** (`backend-engineer`) - specialist; reports to: `lead-backend`
+- **Chief Technology Officer** (`cto`) - executive; reports to: CEO
 - **Cloud Architect** (`cloud-architect`) - specialist; reports to: `cto`
-- **Chief Technology Officer** (`cto`) - executive; reports to: `chief-of-staff`
 - **Dashboard Owner** (`dashboard-owner`) - specialist; reports to: `cto`
 - **DevOps Lead** (`devops-lead`) - specialist; reports to: `cto`
 - **Frontend Architect** (`frontend-architect`) - specialist; reports to: `cto`
@@ -184,3 +192,14 @@
 - **Software Architect** (`software-architect`) - specialist; reports to: `cto`
 - **Solution Architect** (`solution-architect`) - specialist; reports to: `cto`
 - **VP of Engineering** (`vp-engineering`) - specialist; reports to: `cto`
+
+## Pharos (8 agents)
+
+- **Thought Leadership Lead** (`thought-leadership-lead`) - executive; reports to: CEO
+- **Agentic Research Lead** (`agentic-research-lead`) - specialist; reports to: `thought-leadership-lead`
+- **Thought Leadership Author** (`thought-leadership-author`) - specialist; reports to: `thought-leadership-lead`
+- **Agentic Policy Analyst** (`agentic-policy-analyst`) - specialist; reports to: `thought-leadership-lead`
+- **Speaker and Engagement Lead** (`speaker-engagement-lead`) - specialist; reports to: `thought-leadership-lead`
+- **Community and Ecosystem Builder** (`community-ecosystem-builder`) - specialist; reports to: `thought-leadership-lead`
+- **Media and PR Relations** (`media-pr-relations`) - specialist; reports to: `thought-leadership-lead`
+- **Talent and Academy Lead** (`talent-academy-lead`) - specialist; reports to: `thought-leadership-lead`

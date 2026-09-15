@@ -10,7 +10,7 @@
 ## 1. Positioning
 
 Light Speed Holdings operates as an **AI-first services studio** in Malawi. One human
-CEO directs a workforce of **131 AI agents** (executives, engineers, designers, writers,
+CEO directs a workforce of **135 AI agents** (executives, engineers, designers, writers,
 analysts, sales, support) to deliver client work through a defined delivery pipeline:
 
 ```
@@ -69,7 +69,7 @@ the USD figure directly with terms (50% upfront, 50% on delivery).
 
 | Deliverable | What you get | Starting price | Turnaround |
 |-------------|--------------|----------------|------------|
-| **D1 — Social media management** | Content calendar, 12 posts/month (Chichewa + English), community management | MWK 350,000/mo (≈ $200/mo) | Ongoing |
+| **D1 — Social media management** | Content calendar, 12 posts/month , community management | MWK 350,000/mo (≈ $200/mo) | Ongoing |
 | **D2 — Content pack** | 10 blog articles + 20 social captions | MWK 600,000 (≈ $340) | 5–10 days |
 | **D3 — Google/Facebook ads setup** | Campaign setup, pixel, tracking, 2-week optimization | MWK 700,000 (≈ $400) + ad spend | 3–5 days |
 
@@ -77,10 +77,36 @@ the USD figure directly with terms (50% upfront, 50% on delivery).
 
 | Deliverable | What you get | Price | Turnaround |
 |-------------|--------------|-------|------------|
-| **E1 — AI Company Builder license** | One-on-one onboarding, your own 131-agent company running on your laptop/VPS | MWK 3,500,000 (≈ $2,000) one-off + MWK 350,000/mo (≈ $200/mo) support | Setup 1–2 weeks |
+| **E1 — AI Company Builder license** | One-on-one onboarding, your own 135-agent company running on your laptop/VPS | MWK 3,500,000 (≈ $2,000) one-off + MWK 350,000/mo (≈ $200/mo) support | Setup 1–2 weeks |
 | **E2 — Agent setup for agencies** | White-label: we stand up agent teams for your agency's clients | Contact for quote | — |
 
 **Target clients:** tech-savvy founders, local agencies, diaspora entrepreneurs.
+
+---
+
+## Trust-by-Engineering — Reservations answered by design
+
+Every offer is built to answer the four reservations decision-makers raise about AI
+in low-bandwidth, resource-constrained environments. The full doctrine and evidence
+map lives in `docs/RESERVATIONS-STRATEGY.md`; here is how each reservation maps to
+the architecture behind these offers:
+
+- **Low-bandwidth / resource-constrained:** Offline-first architecture, local
+  models via Ollama when connectivity or budget demands it, WhatsApp-native flows,
+  and a PWA that queues work offline — no app download required, no cloud
+  dependency forced.
+- **Data protection:** Sovereign in-country processing; every cross-border LLM
+  flow documented in the G1–G4 governance gate; Malawi Data Protection Act
+  2017/2024 + GDPR from day one; client data never used to train models.
+- **Technology debt:** API connectors integrate with existing systems in a 90-day
+  pilot — no rip-and-replace; no vendor lock-in; your data and deliverables stay
+  yours. Agent cost is variable, visible, and optimisable.
+- **Skepticism of AI:** 5-tier human-in-the-loop approvals, immutable audit
+  trails, risk-classified agent tiers, circuit breakers, and honesty badges on
+  every claim. The system earns a CRO's yes before a user's wow.
+
+Each offer's governance section and the `results/reservations-demo-script.md`
+show how these answers surface in a portfolio demonstration.
 
 ---
 
@@ -110,7 +136,7 @@ the USD figure directly with terms (50% upfront, 50% on delivery).
 
 ---
 
-## 5. Delivery Model (how the 131 agents actually work)
+## 5. Delivery Model (how the 135 agents actually work)
 
 | Step | What happens | Who/What |
 |------|--------------|----------|
@@ -148,7 +174,7 @@ draft and execute; the human owns the outcome.
 |-------|-------|-----------|
 | **Weeks 1–2** | Prove the machine: real API keys, daemon running, dashboard live, 1 portfolio demo built by agents (e.g., a fictional clinic website) | Demo ready to show prospects |
 | **Weeks 3–6** | Land 2 lighthouse clients: 1 local SME (Website or chatbot) + 1 NGO (reporting/analytics). Deliver with agents, under-promise/over-deliver. | 2 paid deliveries + 2 case studies |
-| **Weeks 7–12** | Systematize: standard quote/invoice templates, payment tracker, delivery SOP; package Offer C as the flagship; publish content (English + Chichewa). | Repeatable pipeline + 5 testimonials |
+| **Weeks 7–12** | Systematize: standard quote/invoice templates, payment tracker, delivery SOP; package Offer C as the flagship; publish content. | Repeatable pipeline + 5 testimonials |
 | **Quarter 2** | Productize: package the reporting/dashboard offer as a product for NGOs; explore platform licensing (Offer E). | First recurring revenue contract |
 
 ---

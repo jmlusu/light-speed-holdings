@@ -146,8 +146,13 @@ def test_executor_status_exits_0() -> None:
     assert result.exit_code == 0
 
 
-def test_executor_stop_without_daemon_exits_1() -> None:
-    result = runner.invoke(app, ["executor", "stop"])
+def test_executor_stop_without_daemon_exits_1(tmp_path: Path) -> None:
+    # Default paths would target the repo's real logs/ dir; use tmp_path so
+    # no live daemon is ever touched (CliRunner runs with no isolation).
+    result = runner.invoke(
+        app,
+        ["executor", "stop", "--pid-dir", str(tmp_path), "--log-dir", str(tmp_path)],
+    )
     assert result.exit_code == 1
     assert "No running daemon" in result.stdout
 

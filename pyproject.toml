@@ -1,6 +1,6 @@
 [project]
 name = "ai-company"
-version = "0.5.1"
+version = "0.6.0"
 description = "AI Company powered by OpenCode"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -46,6 +46,7 @@ dev = [
     "pytest-cov",
     "pytest-benchmark",
     "pytest-asyncio",
+    "pytest-rerunfailures",
     "ruff",
     "mypy",
     "types-PyYAML",
@@ -57,6 +58,7 @@ dev = [
     "python-pptx>=0.6.23",
     "hypothesis",
     "opentelemetry-sdk>=1.25",
+    "graphifyy>=0.9.44",
 ]
 
 e2e = [
@@ -121,6 +123,7 @@ markers = [
     "e2e: marks end-to-end tests requiring a running dashboard (deselect with '-m \"not e2e\"')",
     "timeout: marks tests exercising explicit timeout handling (deselect with '-m \"not timeout\"')",
     "slow: marks slow-running tests (deselect with '-m \"not slow\"')",
+    "flaky: marks tests that may be flaky (auto-retried via pytest-rerunfailures)",
 ]
 
 [tool.coverage.run]

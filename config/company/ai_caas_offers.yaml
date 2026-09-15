@@ -1,0 +1,67 @@
+# AI Consulting-as-a-Service (AI-CaaS) Offer Definitions and Governance State
+# Added: 2026-09-06
+# Owner: cfo + sales (co-owned) / cso (strategy)
+# Source of truth: docs/ai-caas-pricing-model.md
+# Reference case study: docs/case-studies/wlo-ai-native-consultancy.md
+# Registry template: company/registry-templates/consulting-firm/
+# Consumed by: sales-owner, growth-product-manager (offers), client_intake (governance gates)
+
+# AI-CaaS is the Light Speed Holdings productization of the We Lead Out (WLO)
+# business model: license the platform to consulting firms, deliver packaged
+# AI-augmented engagements, and manage the back-office on retainer.
+# WLO proved the model works (5.0 client rating, 4-week median first value,
+# ~7-9 people); these offers sell that capability.
+
+offers:
+  offer_f:
+    name: "WLO-in-a-Box — Consulting Firm Starter Kit"
+    slug: "offer-f"
+    agents: [generator-owner, technical-documentation-lead, developer-experience-engineer, head-of-developer-relations, growth-product-manager, legal-owner, product-marketing-manager, customer-success-owner]
+    currency: "USD"
+    risk_level: "high"
+    governance_state: "proposed"
+    notes: "Platform license for consultancies: pre-built consulting-firm registry template, agent cards, discovery-to-delivery workflows, onboarding + training. Tiered license + monthly support."
+
+  offer_g:
+    name: "Ghost Delivery — AI-Augmented Engagements"
+    slug: "offer-g"
+    agents: [consulting-lead, interview-agent, workflow-mapper, opportunity-identifier, solution-architect, frontend-engineer, backend-engineer, qa-lead, cto]
+    currency: "USD"
+    risk_level: "critical"
+    governance_state: "proposed"
+    notes: "LSH runs the agent back-office for a client engagement; outcomes over hours. The 1/3-cost, 1/4-time alternative to body-shop delivery."
+
+  offer_h:
+    name: "Managed AI Consultancy — Retainer"
+    slug: "offer-h"
+    agents: [customer-success-owner, support-agent, solutions-engineer, sales-owner, cfo]
+    currency: "USD"
+    risk_level: "medium"
+    governance_state: "proposed"
+    notes: "Recurring monthly back-office: ongoing delivery support, enhancement cycles, knowledge flywheel. Recurring revenue engine."
+
+# Governance policy flags — consumed by the client_intake service to gate onboarding
+governance:
+  client_onboarding_approval:
+    status: "proposed"
+    ratified_date: ""
+    owner: "human-ceo"
+    description: "No AI-CaaS client work begins until contract signed, DPA executed, compliance risk assessment complete, CISO security review logged."
+
+  data_handling_protocol:
+    status: "proposed"
+    ratified_date: ""
+    owner: "data-privacy-officer"
+    description: "PII classification, encryption-at-rest, access logging, 30-day deletion, consent for cross-border LLM transfer."
+
+  ethics_review_output:
+    status: "proposed"
+    ratified_date: ""
+    owner: "ai-ethics-board-chair"
+    description: "Tier 3+ client deliverables require AI Ethics Board review before client handoff."
+
+  service_level_liability_cap:
+    status: "proposed"
+    ratified_date: ""
+    owner: "clo"
+    description: "ToS Services Annex must override Section 8 disclaimers for paid client work; liability cap at 100% of fees."

@@ -4,6 +4,24 @@
 
 ---
 
+## [0.6.0] — 2026-09-02
+
+### Added
+
+- **Executive Scorecard**: CEO KPI set expanded from 6 to 11 metrics (task throughput, task success rate, agent utilization, cost efficiency, build success rate, escalation resolution time, escalation rate, approval turnaround, error rate, security posture, strategic alignment).
+- **Dashboard UX**: Chart.js external tooltips, agent detail modal with role/reports-to/direct-reports, inline component detail panel on the home dashboard.
+
+### Changed
+
+- **Version**: 0.5.1 → 0.6.0
+- **Reporting Structure**: Executive `reports_to` rewired to human CEO; legal moved under CLO; stale `direct_reports` pruned and reconciled in the agent registry.
+
+### Fixed
+
+- **Dashboard org-chart drift**: `direct_reports` on `chief_of_staff`, `coo`, `clo`, and `qa_lead` cleaned to match authoritative `reports_to` lines (verified via `ai-company sync-registry --verify`).
+
+---
+
 ## [0.5.1] — 2026-08-18
 
 ### Added

@@ -34,14 +34,23 @@ function orgChartInteractive() {
     // ── Collapse state ────────────────────────────────────────
     collapsedNodes: new Set(),
 
+    // ── Drag-and-drop reassignment ────────────────────────────
+    draggedNode: null,
+    showReassignModal: false,
+    reassigningAgent: null,
+    newManager: '',
+
     // ── Real-time state ───────────────────────────────────────
     agentStatuses: {},    // name → { status, lastSeen, activeTasks }
     activityFeed: {},     // name → [{ timestamp, event, detail }]
     activeToolCalls: {},  // name → [{ tool, startedAt, args }]
     memoryState: {},      // name → [{ timestamp, taskContext, result }]
+    orgSummary: null,     // X-Org-Summary → { total_agents, avg_span_of_control, ... }
+    riskFilter: 'all',    // 'all' | 'at-risk' | 'senior' | 'busy'
 
     // ── Loading ───────────────────────────────────────────────
     loading: true,
+    error: null,
 
     // ── WebSocket ─────────────────────────────────────────────
     _ws: null,
@@ -57,29 +66,170 @@ function orgChartInteractive() {
         this.loadAllAgents(),
       ]);
       this.buildAgentMap();
+      this._autoCollapseDeep(2);
       this.connectWebSocket();
+      this._setupEventDelegation();
+      this._autoFitView();
+    },
+
+    _autoCollapseDeep(maxDepth) {
+      const walk = (nodes, depth) => {
+        if (!nodes) return;
+        for (const n of nodes) {
+          if (depth >= maxDepth && n.children && n.children.length > 0) {
+            this.collapsedNodes.add(n.name);
+          }
+          walk(n.children, depth + 1);
+        }
+      };
+      walk(this.tree, 0);
+    },
+
+    _autoFitView() {
+      setTimeout(() => {
+        const root = document.getElementById('org-tree-root');
+        const container = document.querySelector('.org-tree-container');
+        if (!root || !container) return;
+        const treeW = root.scrollWidth;
+        const treeH = root.scrollHeight;
+        const viewW = container.clientWidth;
+        const viewH = container.clientHeight;
+        if (treeW > 0 && viewW > 0) {
+          const scaleX = (viewW - 40) / treeW;
+          const scaleY = (viewH - 40) / treeH;
+          const fit = Math.min(scaleX, scaleY, 1.0);
+          this.zoom = Math.max(25, Math.round(fit * 100));
+        }
+        container.scrollLeft = (root.scrollWidth - container.clientWidth) / 2;
+        container.scrollTop = 0;
+      }, 100);
+    },
+
+    _scrollToRoot() {
+      setTimeout(() => {
+        const container = document.querySelector('.org-tree-container');
+        if (container) {
+          container.scrollLeft = 0;
+          container.scrollTop = 0;
+        }
+      }, 50);
+    },
+
+    _setupEventDelegation() {
+      const container = document.getElementById('org-tree-root');
+      if (!container) return;
+      container.addEventListener('click', (e) => {
+        // Collapse toggle
+        const collapseBtn = e.target.closest('[data-collapse]');
+        if (collapseBtn) {
+          e.stopPropagation();
+          const name = collapseBtn.getAttribute('data-collapse');
+          this.toggleCollapse(name);
+          return;
+        }
+        // Node card click — select
+        const nodeEl = e.target.closest('[data-agent]');
+        if (nodeEl) {
+          const name = nodeEl.getAttribute('data-agent');
+          const node = this.findNode(name);
+          if (node) this.selectNode(node);
+        }
+      });
+      container.addEventListener('dblclick', (e) => {
+        const nodeEl = e.target.closest('[data-agent]');
+        if (nodeEl) {
+          const name = nodeEl.getAttribute('data-agent');
+          this.toggleCollapse(name);
+        }
+      });
+      container.addEventListener('dragstart', (e) => {
+        const nodeEl = e.target.closest('[data-agent]');
+        if (nodeEl) {
+          const name = nodeEl.getAttribute('data-agent');
+          const node = this.findNode(name);
+          if (node) {
+            this.draggedNode = node;
+            e.dataTransfer.effectAllowed = 'move';
+          }
+        }
+      });
+      container.addEventListener('dragover', (e) => e.preventDefault());
+      container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const targetEl = e.target.closest('[data-agent]');
+        if (targetEl && this.draggedNode) {
+          const targetName = targetEl.getAttribute('data-agent');
+          const targetNode = this.findNode(targetName);
+          if (targetNode && this.draggedNode.name !== targetName) {
+            this.reassigningAgent = this.draggedNode;
+            this.newManager = targetName;
+            this.showReassignModal = true;
+          }
+        }
+      });
     },
 
     destroy() {
       this.disconnectWebSocket();
     },
 
+    // ═══ AUTH HELPERS ══════════════════════════════════════════
+
+    /**
+     * Fetch wrapper that includes the ADR-013 session token from the
+     * parent dashboard() Alpine component. On 401, re-mints the token
+     * and retries once.
+     */
+    async _authFetch(url, opts = {}) {
+      const headers = { ...(opts.headers || {}) };
+      const token = window.__dashboardSessionToken;
+      if (token && !headers['X-API-Key']) {
+        headers['X-API-Key'] = token;
+      }
+      let res = await fetch(url, { ...opts, headers });
+      if (res.status === 401 && !opts._retried) {
+        // Re-mint session token and retry once
+        try {
+          const tokRes = await fetch('/api/v1/bootstrap-token');
+          if (tokRes.ok) {
+            const data = await tokRes.json();
+            window.__dashboardSessionToken = data.token || null;
+            headers['X-API-Key'] = window.__dashboardSessionToken;
+            res = await fetch(url, { ...opts, headers, _retried: true });
+          }
+        } catch (_) { /* retry failed */ }
+      }
+      return res;
+    },
+
     // ═══ DATA LOADING ════════════════════════════════════════
 
     async loadOrgChart() {
       this.loading = true;
+      this.error = null;
       try {
-        const res = await fetch('/api/v1/org-chart');
-        if (res.ok) this.tree = await res.json();
+        const res = await this._authFetch('/api/v1/org-chart?include_metrics=true');
+        if (res.ok) {
+          this.tree = await res.json();
+          const summaryHeader = res.headers.get('X-Org-Summary');
+          if (summaryHeader) {
+            try { this.orgSummary = JSON.parse(summaryHeader); } catch (_) { this.orgSummary = null; }
+          }
+          this._autoCollapseDeep(2);
+          this._autoFitView();
+        } else {
+          this.error = `Failed to load org chart: ${res.status} ${res.statusText}`;
+        }
       } catch (e) {
         console.error('[OrgChart] Failed to load tree:', e);
+        this.error = 'Network error loading org chart';
       }
       this.loading = false;
     },
 
     async loadAllAgents() {
       try {
-        const res = await fetch('/api/v1/agents');
+        const res = await this._authFetch('/api/v1/agents');
         if (res.ok) this.allAgents = await res.json();
       } catch (e) {
         console.error('[OrgChart] Failed to load agents:', e);
@@ -102,7 +252,12 @@ function orgChartInteractive() {
      */
     connectWebSocket() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}/ws/v1/dashboard`;
+      let wsUrl = `${protocol}//${window.location.host}/ws/v1/dashboard`;
+      // ADR-013: pass session token for WS auth
+      const token = window.__dashboardSessionToken;
+      if (token) {
+        wsUrl += `?api_key=${encodeURIComponent(token)}`;
+      }
 
       try {
         this._ws = new WebSocket(wsUrl);
@@ -316,7 +471,7 @@ function orgChartInteractive() {
     },
 
     toggleCollapse(name, event) {
-      event.stopPropagation();
+      if (event) event.stopPropagation();
       if (this.collapsedNodes.has(name)) {
         this.collapsedNodes.delete(name);
       } else {
@@ -334,45 +489,48 @@ function orgChartInteractive() {
 
     zoomIn() {
       this.zoom = Math.min(200, this.zoom + 15);
+      this._scrollToRoot();
     },
 
     zoomOut() {
       this.zoom = Math.max(25, this.zoom - 15);
+      this._scrollToRoot();
     },
 
     resetZoom() {
-      this.zoom = 100;
       this.panX = 0;
       this.panY = 0;
+      this._autoFitView();
     },
 
     fitToView() {
-      this.zoom = 100;
       this.panX = 0;
       this.panY = 0;
+      this._autoFitView();
     },
 
     get containerTransform() {
       return `scale(${this.zoom / 100}) translate(${this.panX}px, ${this.panY}px)`;
     },
 
-    // Pan via mouse drag on the container background
+    // Pan via mouse drag — scrolls the container
     onPanStart(event) {
-      // Only pan on middle-click or when holding space (simplified: always allow)
       if (event.button === 1 || event.target.classList.contains('org-tree-bg')) {
         this._isPanning = true;
         this._panStart = { x: event.clientX, y: event.clientY };
-        this._panStartOffset = { x: this.panX, y: this.panY };
+        const c = event.currentTarget;
+        this._panStartScroll = { x: c.scrollLeft, y: c.scrollTop };
         event.preventDefault();
       }
     },
 
     onPanMove(event) {
       if (!this._isPanning) return;
-      const dx = (event.clientX - this._panStart.x) / (this.zoom / 100);
-      const dy = (event.clientY - this._panStart.y) / (this.zoom / 100);
-      this.panX = this._panStartOffset.x + dx;
-      this.panY = this._panStartOffset.y + dy;
+      const c = event.currentTarget;
+      const dx = event.clientX - this._panStart.x;
+      const dy = event.clientY - this._panStart.y;
+      c.scrollLeft = this._panStartScroll.x - dx;
+      c.scrollTop = this._panStartScroll.y - dy;
     },
 
     onPanEnd() {
@@ -406,7 +564,7 @@ function orgChartInteractive() {
     async _loadNodeDetail(name) {
       // Try to load recent tasks for memory state
       try {
-        const res = await fetch(`/api/v1/agents/${encodeURIComponent(name)}/tasks?limit=5`);
+        const res = await this._authFetch(`/api/v1/agents/${encodeURIComponent(name)}/tasks?limit=5`);
         if (res.ok) {
           const tasks = await res.json();
           this.memoryState[name] = (tasks || []).map(t => ({
@@ -422,7 +580,7 @@ function orgChartInteractive() {
 
       // Try to load tool call history
       try {
-        const res = await fetch(`/api/v1/agents/${encodeURIComponent(name)}/tool-calls?limit=5`);
+        const res = await this._authFetch(`/api/v1/agents/${encodeURIComponent(name)}/tool-calls?limit=5`);
         if (res.ok) {
           const calls = await res.json();
           this.activeToolCalls[name] = (calls || []).map(c => ({
@@ -442,7 +600,7 @@ function orgChartInteractive() {
      */
     async pauseAgent(name) {
       try {
-        const res = await fetch(`/api/v1/agents/${encodeURIComponent(name)}`, {
+        const res = await this._authFetch(`/api/v1/agents/${encodeURIComponent(name)}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'paused' }),
@@ -475,6 +633,59 @@ function orgChartInteractive() {
      */
     viewFullDetails(name) {
       window.location.href = `/agents?agent=${encodeURIComponent(name)}`;
+    },
+
+    // ═══ DRAG-AND-DROP REASSIGNMENT ══════════════════════════
+
+    onDragStart(event, node) {
+      this.draggedNode = node;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', node.name);
+    },
+
+    onDragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+    },
+
+    async onDrop(event, targetNode) {
+      event.preventDefault();
+      if (!this.draggedNode || this.draggedNode.name === targetNode.name) return;
+
+      this.reassigningAgent = this.draggedNode;
+      this.newManager = targetNode.name;
+      this.showReassignModal = true;
+    },
+
+    startReassign(agent) {
+      this.reassigningAgent = agent;
+      this.newManager = '';
+      this.showReassignModal = true;
+    },
+
+    async confirmReassign() {
+      if (!this.reassigningAgent || !this.newManager) return;
+
+      try {
+        const res = await this._authFetch(`/api/v1/agents/${this.reassigningAgent.name}/reports-to`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reports_to: this.newManager })
+        });
+
+        if (res.ok) {
+          this.showReassignModal = false;
+          await this.loadOrgChart();
+          this.buildAgentMap();
+          this._showToast('success', 'Reassigned', `${this.reassigningAgent.name} now reports to ${this.newManager}`);
+        } else {
+          const error = await res.json();
+          this._showToast('error', 'Reassign Failed', error.detail || 'Failed to reassign agent');
+        }
+      } catch (e) {
+        console.error('[OrgChart] Reassign error:', e);
+        this._showToast('error', 'Reassign Failed', 'Network error during reassignment');
+      }
     },
 
     // ═══ TOAST NOTIFICATION ══════════════════════════════════
@@ -542,6 +753,163 @@ function orgChartInteractive() {
       if (status === 'running' || status === 'in_progress') return 'text-blue-400 animate-pulse';
       if (status === 'failed' || status === 'error') return 'text-red-400';
       return 'text-slate-400';
+    },
+
+    // ═══ RECURSIVE TREE RENDERING ═════════════════════════════
+
+    /**
+     * Find a node by name in the tree (recursive search).
+     */
+    findNode(name) {
+      function search(nodes) {
+        for (const n of nodes) {
+          if (n.name === name) return n;
+          if (n.children) {
+            const found = search(n.children);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+      return search(this.tree);
+    },
+
+    /**
+     * Build the full org chart as a plain HTML string.
+     * Uses event delegation — no Alpine directives in the output.
+     */
+    renderTree() {
+      if (!this.tree || this.tree.length === 0) return '';
+      return this.tree.map(n => this._renderNode(n, 0)).join('');
+    },
+
+    _badgeClass(type) {
+      const t = (type || '').toLowerCase();
+      if (t === 'executive') return 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      if (t === 'manager' || t === 'board' || t === 'leadership') return 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
+      if (t === 'department') return 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30';
+      return 'bg-slate-500/20 text-slate-300 border border-slate-500/30';
+    },
+
+    _nodeCardClass(name) {
+      const sel = this.selectedNode && this.selectedNode.name === name;
+      return 'node-card bg-jarvis-bg border rounded-lg p-3 transition-colors min-w-[140px] max-w-[200px]'
+        + (sel ? ' border-cyan-400/60 shadow-[0_0_0_2px_rgba(34,211,238,0.3)]' : ' border-jarvis-border');
+    },
+
+    _toggleIcon(name) {
+      return this.collapsedNodes.has(name) ? '+' : '\u2212';
+    },
+
+    _nodeRiskLevel(node) {
+      const risk = node && node.risk;
+      if (!risk || !risk.succession_risk) return null;
+      return risk.succession_risk; // 'high' | 'medium' | 'low'
+    },
+
+    _riskStripClass(node) {
+      const lvl = this._nodeRiskLevel(node);
+      if (lvl === 'high') return 'bg-rose-500/70';
+      if (lvl === 'medium') return 'bg-amber-500/50';
+      if (lvl === 'low') return 'bg-emerald-500/40';
+      return 'bg-jarvis-border';
+    },
+
+    _nodeCapacity(node) {
+      const m = node && node.metrics;
+      const cap = m && typeof m.capacity === 'number' ? m.capacity : null;
+      return cap === null ? null : Math.max(0, Math.min(100, cap));
+    },
+
+    _capacityBarClass(cap) {
+      if (cap === null) return 'bg-jarvis-border';
+      if (cap >= 80) return 'bg-rose-500/80';   // overloaded
+      if (cap >= 50) return 'bg-amber-500/70';  // near capacity
+      return 'bg-emerald-500/60';
+    },
+
+    _riskBadgeClass(risk) {
+      if (!risk) return 'bg-slate-500/20 text-slate-300';
+      const lvl = risk.succession_risk;
+      if (lvl === 'high') return 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
+      if (lvl === 'medium') return 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      if (lvl === 'low') return 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+      return 'bg-slate-500/20 text-slate-300';
+    },
+
+    _matchesRiskFilter(node) {
+      const f = this.riskFilter;
+      if (!f || f === 'all') return true;
+      const lvl = this._nodeRiskLevel(node);
+      const cap = this._nodeCapacity(node);
+      if (f === 'at-risk') return lvl === 'high';
+      if (f === 'senior') return lvl === 'low' && (node.risk && node.risk.tenure === 'senior');
+      if (f === 'busy' || f === 'overloaded') return cap !== null && cap >= 80;
+      return true;
+    },
+
+    _renderNode(node, depth) {
+      const name = node.name;
+      const type = node.type || 'Unknown';
+      const role = node.role || '';
+      const hasKids = node.children && node.children.length > 0;
+      const collapsed = this.collapsedNodes.has(name);
+      const badgeCls = this._badgeClass(type);
+      const en = name.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      const safeRole = role.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cap = this._nodeCapacity(node);
+      const filterDim = !this._matchesRiskFilter(node);
+
+      let html = '<div class="org-tree-recursive-node' + (filterDim ? ' org-filter-dim' : '') + '" draggable="true"'
+        + ' data-agent="' + en + '"'
+        + '>'
+        // Node card
+        + '<div class="' + this._nodeCardClass(name) + '">'
+        + '<div class="flex items-center gap-2 mb-1">'
+        + '<span class="px-1.5 py-0.5 rounded text-xs ' + badgeCls + '">'
+        + '<span>' + type.substring(0, 3) + '</span>'
+        + '</span>'
+        + '<span class="text-jarvis-text font-medium text-sm truncate">' + name + '</span>'
+        + '</div>'
+        + '<p class="text-xs text-jarvis-text-muted truncate">' + safeRole + '</p>'
+        + (cap !== null
+          ? '<div class="mt-1.5">'
+            + '<div class="flex items-center justify-between text-[10px] text-jarvis-text-muted">'
+            + '<span>Load</span><span>' + Math.round(cap) + '%</span>'
+            + '</div>'
+            + '<div class="mt-0.5 h-1 w-full rounded bg-jarvis-border overflow-hidden">'
+            + '<div class="h-full rounded ' + this._capacityBarClass(cap) + '" style="width:' + cap + '%"></div>'
+            + '</div>'
+            + '</div>'
+          : '')
+        + '<div class="mt-1.5 h-0.5 w-full rounded ' + this._riskStripClass(node) + '"></div>'
+        + '</div>';
+
+      if (hasKids) {
+        // Vertical connector from card down
+        html += '<div style="width:1px;height:20px;background:rgba(34,211,238,0.25);margin:0 auto"></div>';
+        if (!collapsed) {
+          // Horizontal bus line + children
+          html += '<div style="position:relative;padding-top:20px">'
+            // Horizontal line spanning all children
+            + '<div style="position:absolute;top:0;left:0;right:0;height:1px;background:rgba(34,211,238,0.25)"></div>'
+            + '<div class="org-tree-recursive-children">'
+            + node.children.map(c => '<div class="org-tree-recursive-subtree">'
+              // Vertical drop from bus to child
+              + '<div style="width:1px;height:20px;background:rgba(34,211,238,0.25);margin:0 auto"></div>'
+              + this._renderNode(c, depth + 1)
+              + '</div>').join('')
+            + '</div>'
+            + '</div>';
+        }
+        // Collapse toggle
+        html += '<button class="org-tree-recursive-toggle" data-collapse="' + en + '">'
+          + '<span>' + this._toggleIcon(name) + '</span>'
+          + '</button>';
+      }
+
+      html += '</div>';
+      return html;
     },
   };
 }

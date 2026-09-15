@@ -18,7 +18,7 @@ Transform AI Company Builder from a manually-coordinated system into an autonomo
 |-----------|--------|--------|
 | Autonomous execution | Scheduled tasks complete without human trigger | 100% of cron jobs fire and complete |
 | Memory integration | Agent loop reads/writes memory on every task | Episodic + semantic memories stored per task |
-| Observability | Dashboard shows live KPIs from all 7 departments | 7/7 department KPIs wired |
+| Observability | Dashboard shows live KPIs from all 20 departments | 20/20 department KPIs wired |
 | Security posture | No shell injection, auth on all write endpoints | 0 shell=True, JWT auth on dashboard |
 | Task reliability | Stale tasks recovered, failed tasks don't block pipeline | Timeout + DLQ operational |
 | Test coverage | Tests for all new functionality | 500+ tests, all passing |
@@ -237,10 +237,10 @@ These are the **foundation** for everything else. No other work should proceed u
 
 | # | Task | Acceptance Criteria | Hours |
 |---|------|---------------------|-------|
-| DE-1 | Wire all 7 department KPI collectors (GAP-013) | `collect_all_kpis()` dynamically discovers all department modules | 2 |
+| DE-1 | Wire all 20 department KPI collectors (GAP-013) | `collect_all_kpis()` dynamically discovers all department modules | 2 |
 | DE-2 | Implement real-time KPI streaming (Item 5.4) | SSE endpoint pushes KPI updates on change; WebSocket fallback | 2 |
 | DE-3 | Design KPI data retention policy | Document: how long KPIs stored, aggregation strategy, archival | 1.5 |
-| DE-4 | Add KPI API endpoint tests | Tests for all 7 department endpoints + aggregate endpoint | 2 |
+| DE-4 | Add KPI API endpoint tests | Tests for all 20 department endpoints + aggregate endpoint | 2 |
 | DE-5 | Design data pipeline for agent performance metrics | Document: task completion rate, avg response time, cost per task | 2 |
 
 **Total:** ~9.5 hours
@@ -251,7 +251,7 @@ These are the **foundation** for everything else. No other work should proceed u
 - DE-4 depends on DE-1 completion
 
 **Exit Criteria:**
-- [ ] All 7 department KPIs appear in dashboard
+- [ ] All 20 department KPIs appear in dashboard
 - [ ] SSE endpoint streams KPI updates in real-time
 - [ ] KPI retention policy document published
 - [ ] KPI API tests pass for all departments
@@ -472,7 +472,7 @@ DE-ENG-3 (shell=True) → DE-ENG-16 (ACK/NACK tests)
 |-----|-----------|-------|
 | D6 | Memory enhancements begin (semantic search, consolidation) | caio |
 | D6 | GAP-007 (scheduler wiring) implementation | DE-ENG |
-| D7 | KPI collector wiring complete (all 7 departments) | data-engineer |
+| D7 | KPI collector wiring complete (all 20 departments) | data-engineer |
 | D7 | GAP-017 (task timeout + DLQ) implementation | DE-ENG |
 | D8 | Scheduler + timeout + DLQ all wired | DE-ENG |
 | D8 | Memory encryption complete | DE-ENG |
@@ -514,7 +514,7 @@ DE-ENG-3 (shell=True) → DE-ENG-16 (ACK/NACK tests)
 |---|-------------|-------------|
 | FR-1 | All scheduled tasks execute autonomously without human trigger | Run scheduler, observe task completion in inbox.json |
 | FR-2 | Agent loop stores episodic and semantic memories on every task | Check memory store after task execution |
-| FR-3 | Dashboard shows live KPIs from all 7 departments | Navigate to dashboard, verify all department panels populated |
+| FR-3 | Dashboard shows live KPIs from all 20 departments | Navigate to dashboard, verify all department panels populated |
 | FR-4 | Dashboard rejects unauthenticated write requests | curl POST without JWT returns 401 |
 | FR-5 | Stale IN_PROGRESS tasks are recovered or moved to DLQ | Create stuck task, run executor, verify recovery |
 | FR-6 | No shell=True anywhere in codebase | `grep -r "shell=True" src/` returns empty |

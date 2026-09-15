@@ -18,7 +18,7 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 | Agent Registry | `company-registry.yaml` | Single source of truth for all agents (id, name, tools, permissions) |
 | Generator | `src/ai_company/generator.py` | Reads registry, renders Jinja2 template, writes `.opencode/agents/*.md` |
 | Agent Template | `templates/agents/agent.md.j2` | OpenCode-native format with `mode: subagent` + `permission:` blocks |
-| CLI Entry | `src/ai_company/cli/main.py` | Typer app, 33 subcommands registered here |
+| CLI Entry | `src/ai_company/cli/main.py` | Typer app, 37 subcommands registered here |
 | Task System | `src/ai_company/orchestrator/message_bus.py` | JSON-based task queue at `.opencode/inbox.json` |
 | Domain Models | `src/ai_company/models/models.py` | Pydantic models: Executive, Specialist, Department, Company |
 
@@ -54,11 +54,12 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 
 ```bash
 uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
-pre-commit install           # Enable git hooks (ruff, mypy, bandit, etc.)
+pre-commit install --hook-type pre-commit --hook-type post-commit  # Enable git hooks (ruff, mypy, bandit, post-commit graph rebuild)
 ai-company --help            # CLI entry point (uv run ai-company --help if venv not activated)
 uv run ruff check src/       # Lint
 uv run mypy src/             # Type check
 uv run pytest                # Tests
+uv run graphify update .     # Keep the knowledge graph fresh (AST-only, no API cost)
 uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
 ```
 
@@ -101,6 +102,7 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 7 Safety Boundaries
 
@@ -148,6 +150,7 @@ The `ApprovalGate` runs a periodic sweep (wired into the daemon/governance caden
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 11 Security — Key Rotation Procedure
 
@@ -198,6 +201,16 @@ curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" https://api.example.com/health
 
 ## Agent skills
 
+### Dispatch guardrails (subagents vs. skills) — READ BEFORE DELEGATING
+
+`task`'s `subagent_type` and `skill`'s `name` are **separate namespaces** with separate
+allowed values. Passing a skill name (e.g. `ecl-harness-engineer`) as a `subagent_type`
+is rejected by the runtime. Never derive a `subagent_type` from a `.agents/skills/` path
+or a skill title. Validate against the system-prompt agent roster before calling `task`;
+if a name isn't a known `subagent_type`, pick a valid roster entry or do the work
+directly — and say honestly which you did. Full rules and the cross-reference table:
+`docs/agents/subagents-vs-skills.md`.
+
 ### Issue tracker
 
 GitHub issues, via the `gh` CLI. External PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
@@ -209,3 +222,32 @@ Five canonical roles: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-fo
 ### Domain docs
 
 Single-context repo (no `CONTEXT.md`/`CONTEXT-MAP.md` yet) — read `AGENTS.md`, `docs/`, and past decisions in `docs/adr/`. See `docs/agents/domain.md`.
+
+### Creative Production Stack (ls-* skills)
+
+Branded creative output routes through a layered skill stack. All `ls-*` skills live in `.agents/skills/`.
+
+**Layers (in order):**
+
+| Layer | Skill(s) | Role |
+|-------|----------|------|
+| Brand base | `ls-design-system` | ALWAYS loaded first by any creative skill; brand tokens live in `brand/tokens/` + `brand/guidelines/` (sourced from `static/brand/`) |
+| Orchestrator | `ls-creative-director` | Brief intake (artifact/audience/objective/narrative/visual language) → routes to one production skill + support skills |
+| Production | `ls-frontend-design`, `ls-presentation-design`, `ls-document-design`, `ls-social-media-design`, `ls-brand-advertising` | Generate the artifact, delegating rendering to existing engines (python-pptx, Vite React SPA at repo-root `src/`, k-dense-*, Playwright) |
+| Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |
+| Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes `scripts/visual_check.js` (Playwright; `npx playwright install chromium` once) |
+
+**Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

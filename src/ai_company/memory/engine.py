@@ -15,13 +15,15 @@ semantic search when a VectorStore is configured via
 
 from __future__ import annotations
 
+import contextlib
 import itertools
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from ai_company.memory.governance import MemoryGovernance
 from ai_company.store.file_store import FileStore
 
 if TYPE_CHECKING:
@@ -78,8 +80,13 @@ class MemoryStore:
     search instead of simple substring matching.
     """
 
-    def __init__(self, base_dir: str | Path = "memory") -> None:
+    def __init__(
+        self,
+        base_dir: str | Path = "memory",
+        governance: MemoryGovernance | None = None,
+    ) -> None:
         self.base_dir = Path(base_dir)
+        self.governance = governance or MemoryGovernance()
         self._store = FileStore(self.base_dir, backup=False)
         self._stores: dict[str, list[MemoryEntry]] = {
             "episodic": [],
@@ -184,9 +191,29 @@ class MemoryStore:
 
         If vector search is enabled, the new entry is automatically indexed.
         If encryption is enabled, content is encrypted before saving.
+
+        Content that violates the constitutional screen (policy governance)
+        is vetoed: a placeholder entry is still returned so callers don't
+        crash, but nothing is persisted.
         """
         if memory_type not in self._stores:
             raise ValueError(f"Unknown memory type: {memory_type}")
+
+        decision = self.governance.capture_decision(content, memory_type)
+        if not decision["allowed"]:
+            logger.warning(
+                "Memory capture vetoed by governance (%s): %r",
+                decision["reason"],
+                content[:120],
+            )
+            silent = MemoryEntry(memory_type=memory_type, content="")
+            silent.metadata["vetoed"] = True
+            silent.metadata["veto_reason"] = decision["reason"]
+            return silent
+        if decision["flagged"]:
+            kwargs.setdefault("metadata", {})
+            kwargs["metadata"].setdefault("flagged", True)
+
         encrypted_content = self._encrypt_content(content)
         entry = MemoryEntry(memory_type=memory_type, content=encrypted_content, **kwargs)
         self._stores[memory_type].append(entry)
@@ -205,6 +232,80 @@ class MemoryStore:
                 pass  # Non-fatal: indexing failure shouldn't break storage
 
         return entry
+
+    def pin(self, entry_id: str) -> bool:
+        """Pin an entry so prune/digest never remove it (curator action).
+
+        ``knowledge_manager`` can call this to preserve important memories
+        across consolidation. Returns True if a matching entry was found.
+        """
+        for entries in self._stores.values():
+            for entry in entries:
+                if entry.id == entry_id:
+                    entry.metadata["status"] = "pinned"
+                    entry.metadata["pinned"] = True
+                    self._save(entry.memory_type)
+                    return True
+        return False
+
+    def unpin(self, entry_id: str) -> bool:
+        """Remove the pinned status from an entry."""
+        for entries in self._stores.values():
+            for entry in entries:
+                if entry.id == entry_id:
+                    entry.metadata.pop("status", None)
+                    entry.metadata.pop("pinned", None)
+                    self._save(entry.memory_type)
+                    return True
+        return False
+
+    def supersede(self, entry_id: str) -> bool:
+        """Retire an entry as superseded (ADR-019 conflict policy).
+
+        Superseded entries drop out of ``recall``/``search`` ranking while
+        remaining persisted for audit. Returns True if a matching entry was
+        found.
+        """
+        for entries in self._stores.values():
+            for entry in entries:
+                if entry.id == entry_id:
+                    self.governance.mark_superseded(entry)
+                    self._save(entry.memory_type)
+                    return True
+        return False
+
+    def resolve_conflict(self, old_id: str, new_id: str) -> bool:
+        """Resolve a contradiction between an old and a newer statement.
+
+        The newer statement wins unless the older one is pinned by a curator,
+        in which case both remain active. Returns True when the old entry was
+        superseded.
+        """
+        old = self._find_entry(old_id)
+        new = self._find_entry(new_id)
+        if old is None or new is None:
+            return False
+        decision = self.governance.resolve_conflict(old, new)
+        if decision["winner"] == "new":
+            self.governance.mark_superseded(old)
+            self._save(old.memory_type)
+            return True
+        return False
+
+    def _find_entry(self, entry_id: str) -> MemoryEntry | None:
+        for entries in self._stores.values():
+            for entry in entries:
+                if entry.id == entry_id:
+                    return entry
+        return None
+
+    def _exclude_vetoed(self, entries: list[MemoryEntry]) -> list[MemoryEntry]:
+        """Drop entries retired by governance (vetoed or superseded)."""
+        return [
+            e
+            for e in entries
+            if not e.metadata.get("vetoed") and e.metadata.get("status") not in ("superseded",)
+        ]
 
     def recall(
         self,
@@ -240,12 +341,13 @@ class MemoryStore:
                 # Decrypt content for vector results
                 for entry in results:
                     entry.content = self._decrypt_content(entry.content)
-                return results
+                return self._exclude_vetoed(results)
             except Exception:  # noqa: BLE001 - vector search is best-effort
                 pass  # Fall through to substring search
 
         # Fallback to substring search
         results = list(self._stores[memory_type])
+        results = self._exclude_vetoed(results)
 
         if query:
             query_lower = query.lower()
@@ -334,6 +436,7 @@ class MemoryStore:
         candidates: list[MemoryEntry] = []
         for mem_type in types:
             candidates.extend(self._stores.get(mem_type, []))
+        candidates = self._exclude_vetoed(candidates)
 
         if not candidates:
             return []
@@ -349,6 +452,7 @@ class MemoryStore:
                 )
                 if raw:
                     results = [entry for entry, _score in raw]
+                    results = self._exclude_vetoed(results)
                     for entry in results:
                         entry.access_count += 1
                     return results[:limit]
@@ -392,6 +496,8 @@ class MemoryStore:
         - Memories older than ``max_age_days`` (by ``created_at``) are removed.
         - Each memory type is trimmed to the most-recently-accessed/created
           ``max_entries_per_type`` entries (ties broken by ``created_at``).
+        - If vector search is enabled, pruned entries are also removed from
+          the vector index to prevent orphaned embeddings.
 
         Args:
             max_age_days: If set, drop entries older than this many days.
@@ -401,10 +507,12 @@ class MemoryStore:
         Returns:
             The total number of entries pruned.  Changes are persisted.
         """
-        if max_age_days is None and max_entries_per_type is None:
+        use_governance_ttl = max_age_days is None and max_entries_per_type is None
+        if use_governance_ttl and not self.governance.retention_ttl_days:
             return 0
 
         pruned = 0
+        pruned_ids: list[str] = []
         now = datetime.now(timezone.utc)
 
         for mem_type, entries in self._stores.items():
@@ -413,10 +521,18 @@ class MemoryStore:
 
             survivors = list(entries)
 
-            # Age-based filtering.
-            if max_age_days is not None:
+            # Age-based filtering. With no explicit window, fall back to the
+            # governance per-type TTL sweep (episodic decays fast, semantic
+            # knowledge is long-lived and retired by supersession instead).
+            ttl_days = max_age_days
+            if ttl_days is None and use_governance_ttl:
+                ttl_days = self.governance.ttl_days_for(mem_type)
+            if ttl_days is not None:
                 kept_by_age: list[MemoryEntry] = []
                 for entry in survivors:
+                    if self.governance.is_pinned(entry):
+                        kept_by_age.append(entry)
+                        continue
                     try:
                         created = datetime.fromisoformat(entry.created_at)
                         if created.tzinfo is None:
@@ -424,26 +540,42 @@ class MemoryStore:
                     except ValueError:
                         created = now
                     age_days = (now - created).total_seconds() / 86400.0
-                    if age_days > max_age_days:
+                    if age_days > ttl_days:
                         pruned += 1
+                        pruned_ids.append(entry.id)
                     else:
                         kept_by_age.append(entry)
                 survivors = kept_by_age
 
             # Per-type cap (most-accessed first, then most-recently-created).
             if max_entries_per_type is not None and len(survivors) > max_entries_per_type:
-                survivors.sort(
-                    key=lambda e: (e.access_count, e.created_at),
-                    reverse=True,
-                )
-                dropped = survivors[max_entries_per_type:]
-                pruned += len(dropped)
-                survivors = survivors[:max_entries_per_type]
+                pinned, unpinned = [], []
+                for entry in survivors:
+                    if self.governance.is_pinned(entry):
+                        pinned.append(entry)
+                    else:
+                        unpinned.append(entry)
+                if len(pinned) < max_entries_per_type:
+                    unpinned.sort(
+                        key=lambda e: (e.access_count, e.created_at),
+                        reverse=True,
+                    )
+                    keep_unpinned = max_entries_per_type - len(pinned)
+                    dropped = unpinned[keep_unpinned:]
+                    pruned += len(dropped)
+                    pruned_ids.extend(e.id for e in dropped)
+                    unpinned = unpinned[:keep_unpinned]
+                survivors = pinned + unpinned
 
             # Only persist if the list actually changed.
             if len(survivors) != len(entries):
                 self._stores[mem_type] = survivors
                 self._save(mem_type)
+
+        # Remove pruned entries from vector index to prevent orphans.
+        if pruned_ids and self._vector_store is not None:
+            with contextlib.suppress(Exception):
+                self._vector_store.remove_entries(pruned_ids)
 
         return pruned
 
@@ -451,9 +583,10 @@ class MemoryStore:
         """Periodic maintenance pass across all memory types.
 
         Performs a safe, idempotent maintenance routine:
-        1. Deduplicates near-identical semantic memories (same normalized
+        1. Digests old episodic memories into semantic/procedural knowledge.
+        2. Deduplicates near-identical semantic memories (same normalized
            content within the ``semantic`` type), keeping the earliest entry.
-        2. Rolls up aggregate statistics by re-running ``consolidate`` on each
+        3. Rolls up aggregate statistics by re-running ``consolidate`` on each
            non-aggregate type whose entry count exceeds the number of existing
            aggregate rollups for that type.
 
@@ -463,21 +596,31 @@ class MemoryStore:
 
         Returns:
             A summary dict with keys:
+              - ``episodic_digested``
               - ``semantic_duplicates_removed``
               - ``aggregates_created``
               - ``types_processed``
         """
         summary = {
+            "episodic_digested": 0,
             "semantic_duplicates_removed": 0,
             "aggregates_created": 0,
             "types_processed": 0,
+            "stale_flagged": 0,
         }
+
+        # 0. Digests old episodic memories via the consolidation window (30d),
+        #    then flags long-unrecalled knowledge for review.
+        digested = self._digest_episodic(max_age_days=30)
+        summary["episodic_digested"] = digested
+        summary["stale_flagged"] = self._flag_stale_entries()
 
         # 1. Deduplicate near-identical semantic memories.
         semantic_entries = self._stores.get("semantic", [])
         if semantic_entries:
             seen: dict[str, MemoryEntry] = {}
             deduped: list[MemoryEntry] = []
+            removed_ids: list[str] = []
             for entry in semantic_entries:
                 key = " ".join(entry.content.lower().split())
                 if key in seen:
@@ -486,8 +629,11 @@ class MemoryStore:
                     if entry.created_at < existing.created_at:
                         # Replace: keep the earlier one, drop the existing.
                         deduped = [e for e in deduped if e is not existing]
+                        removed_ids.append(existing.id)
                         seen[key] = entry
                         deduped.append(entry)
+                    else:
+                        removed_ids.append(entry.id)
                     summary["semantic_duplicates_removed"] += 1
                     continue
                 seen[key] = entry
@@ -495,6 +641,10 @@ class MemoryStore:
             if len(deduped) != len(semantic_entries):
                 self._stores["semantic"] = deduped
                 self._save("semantic")
+                # Clean up vector index for deduped entries.
+                if removed_ids and self._vector_store is not None:
+                    with contextlib.suppress(Exception):
+                        self._vector_store.remove_entries(removed_ids)
 
         # 2. Roll up aggregate stats per non-aggregate type.
         for mem_type in ("episodic", "semantic", "procedural", "relational", "temporal"):
@@ -514,6 +664,126 @@ class MemoryStore:
                 summary["aggregates_created"] += 1
 
         return summary
+
+    def _digest_episodic(self, max_age_days: int = 30) -> int:
+        """Digest old episodic memories into semantic/procedural knowledge.
+
+        Groups old episodic entries by agent_id, extracts tool usage patterns
+        and error patterns, creates semantic knowledge entries and procedural
+        entries, then removes the digested episodic entries.
+
+        Args:
+            max_age_days: Only digest episodic entries older than this.
+
+        Returns:
+            Number of episodic entries digested.
+        """
+        episodic = self._stores.get("episodic", [])
+        if not episodic:
+            return 0
+
+        cutoff = datetime.now(timezone.utc) - timedelta(days=max_age_days)
+        old_entries: list[MemoryEntry] = []
+        for entry in episodic:
+            if self.governance.is_pinned(entry):
+                continue
+            try:
+                created = datetime.fromisoformat(entry.created_at)
+                if created < cutoff:
+                    old_entries.append(entry)
+            except (ValueError, TypeError):
+                continue
+
+        if not old_entries:
+            return 0
+
+        # Group by agent_id
+        by_agent: dict[str, list[MemoryEntry]] = {}
+        for entry in old_entries:
+            agent = entry.agent_id or "unknown"
+            by_agent.setdefault(agent, []).append(entry)
+
+        digested_count = 0
+        for agent, entries in by_agent.items():
+            # Extract tool usage patterns from tags
+            tool_counts: dict[str, int] = {}
+            success_count = 0
+            failure_count = 0
+            for entry in entries:
+                for tag in entry.tags:
+                    if tag in ("completed", "failed", "timeout"):
+                        if tag == "completed":
+                            success_count += 1
+                        else:
+                            failure_count += 1
+                    elif tag not in ("unknown", agent) and not tag.startswith("auto-"):
+                        tool_counts[tag] = tool_counts.get(tag, 0) + 1
+
+            # Create semantic knowledge entry
+            if tool_counts:
+                top_tools = sorted(tool_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+                tools_str = ", ".join(f"{t}({c}x)" for t, c in top_tools)
+                total = success_count + failure_count
+                content = (
+                    f"Agent {agent} historical patterns over {len(entries)} tasks:\n"
+                    f"Success rate: {success_count}/{total} ({success_count * 100 // max(total, 1)}%)\n"
+                    f"Most used tools: {tools_str}"
+                )
+                self.store(
+                    "semantic",
+                    content=content,
+                    agent_id=agent,
+                    tags=["auto-digested", "agent-pattern", agent],
+                )
+
+            # Create procedural entries for repeated failure patterns
+            if failure_count > 2:
+                content = (
+                    f"Agent {agent} has {failure_count} failure(s) in {len(entries)} old tasks. "
+                    f"Success rate: {success_count}/{success_count + failure_count}. "
+                    f"Review failed task artifacts for recurring error patterns."
+                )
+                self.store(
+                    "procedural",
+                    content=content,
+                    agent_id=agent,
+                    tags=["auto-digested", "failure-pattern", agent],
+                )
+
+            digested_count += len(entries)
+
+        # Remove digested episodic entries
+        digested_ids = {e.id for e in old_entries}
+        self._stores["episodic"] = [e for e in episodic if e.id not in digested_ids]
+        self._save("episodic")
+
+        # Clean vector index for removed entries
+        if self._vector_store is not None:
+            with contextlib.suppress(Exception):
+                self._vector_store.remove_entries(list(digested_ids))
+
+        return digested_count
+
+    def _flag_stale_entries(self) -> int:
+        """Mark long-unrecalled semantic/procedural knowledge as stale.
+
+        Uses the governance staleness window: entries never recalled within
+        ``staleness_days`` get ``metadata.status = stale`` so recall and curators
+        can de-prioritise or supersede them. Returns the number newly flagged.
+        """
+        flagged = 0
+        for mem_type in ("semantic", "procedural"):
+            changed = False
+            for entry in self._stores.get(mem_type, []):
+                if entry.metadata.get("status") in ("stale", "superseded", "pinned"):
+                    continue
+                if self.governance.is_stale(entry):
+                    self.governance.mark_stale_flag(entry)
+                    changed = True
+                    flagged += 1
+            if changed:
+                self._save(mem_type)
+        return flagged
 
     def consolidate(self, memory_type: str) -> dict[str, Any]:
         """Create an aggregate summary of a memory type."""

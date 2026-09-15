@@ -42,7 +42,7 @@ uv run ai-company dashboard
 ```
 
 **Expected result:**
-- 131 agent files generated in `.opencode/agents/`
+- 135 agent files generated in `.opencode/agents/`
 - Dashboard opens at http://localhost:8420
 - All tests pass
 - `ai-company doctor run` shows all green
@@ -52,7 +52,7 @@ uv run ai-company dashboard
 | Step | Command | Expected Output |
 |------|---------|-----------------|
 | Install deps | `uv sync --extra dev` | No errors |
-| Bootstrap | `uv run ai-company company run` | "131 agents ready" |
+| Bootstrap | `uv run ai-company company run` | "135 agents ready" |
 | Health check | `uv run ai-company doctor run` | All PASS |
 | Lint | `uv run ruff check src/` | No errors |
 | Type check | `uv run mypy src/` | No errors |
@@ -81,7 +81,7 @@ All configuration lives in `company/`:
 | File | Purpose | Format |
 |------|---------|--------|
 | `agent-registry.json` | Agent definitions (single source of truth) | JSON |
-| `models.yaml` | LLM provider routing | YAML |
+| `models.yaml` | LLM provider routing (9 providers) | YAML |
 | `departments.yaml` | Department structure | YAML |
 | `config/kpis.yaml` | Department KPI definitions | YAML |
 | `workflows.yaml` | Workflow definitions | YAML |
@@ -119,14 +119,14 @@ System Health
 ┌────────────────────────┬──────┬──────────────────────────────────┐
 │ Check                  │Status│ Message                          │
 ├────────────────────────┼──────┼──────────────────────────────────┤
-│ Registry exists        │ PASS │ Found 131 agents                  │
+│ Registry exists        │ PASS │ Found 135 agents                  │
 │ Registry valid JSON    │ PASS │ Valid JSON                       │
 │ All agents have IDs    │ PASS │ All agents have unique IDs       │
 │ ReportsTo chain valid  │ PASS │ No circular references           │
 │ Models config exists   │ PASS │ 3 tiers configured               │
-│ Departments config     │ PASS │ 7 departments defined            │
-│ KPI config exists      │ PASS │ 28 KPIs across 7 departments     │
-│ Templates directory    │ PASS │ 12 Jinja2 templates found        │
+│ Departments config     │ PASS │ 20 departments defined            │
+│ KPI config exists      │ PASS │ 28 KPIs across 20 departments     │
+│ Templates directory    │ PASS │ 9 Jinja2 templates found         │
 │ .opencode/ directory   │ PASS │ Exists                           │
 │ inbox.json exists      │ PASS │ Valid JSON array                 │
 └────────────────────────┴──────┴──────────────────────────────────┘

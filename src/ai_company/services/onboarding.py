@@ -257,11 +257,13 @@ class OnboardingService(BaseService):
         templates_dir: str = "templates",
         output_dir: str = ".opencode/agents",
         data_dir: str | Path = ".",
+        approval_config_path: str = "orchestrator/approvals.yaml",
         **kwargs: Any,
     ) -> None:
         self._registry_path = Path(registry_path)
         self._templates_dir = Path(templates_dir)
         self._output_dir = Path(output_dir)
+        self._approval_config_path = approval_config_path
         super().__init__(department_id="hr", data_dir=data_dir, **kwargs)
         self._onboarding_store = FileStore(Path(data_dir) / "hr", backup=True)
 
@@ -474,7 +476,7 @@ class OnboardingService(BaseService):
         """Create an ApprovalGate request for the APPROVAL step (HITL integration)."""
         from ai_company.orchestrator.approval import ApprovalGate
 
-        gate = ApprovalGate.get_instance()
+        gate = ApprovalGate.get_instance(config_path=self._approval_config_path)
 
         # Determine tier based on tools (sensitive tools = tier 3)
         tier = self._compute_tier(req.tools)
@@ -611,7 +613,7 @@ class OnboardingService(BaseService):
         # Create the HITL approval request via ApprovalGate
         from ai_company.orchestrator.approval import ApprovalGate
 
-        gate = ApprovalGate.get_instance()
+        gate = ApprovalGate.get_instance(config_path=self._approval_config_path)
         tier = self._compute_tier(tools)
         req.hitl_tier = tier
 

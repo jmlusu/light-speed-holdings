@@ -14,7 +14,7 @@ Deep health check with dependency, disk, and memory status. **Exempt from dashbo
   "checks": {
     "inbox": "ok",
     "registry": "ok",
-    "agents": "ok (131 files)",
+    "agents": "ok (135 files)",
     "config": "ok",
     "llm_providers": "2 configured",
     "audit_log": "ok (42.3 KB)",

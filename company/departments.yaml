@@ -120,7 +120,7 @@ departments:
 
   - id: "consulting"
     name: "Consulting"
-    executive: "consulting_lead"
+    executive: "consulting-lead"
     mission: "Deliver AI-native consulting engagements, mapping workflows and identifying transformation opportunities for clients."
     budget_category: "growth"
     headcount_target: 4
@@ -131,3 +131,10 @@ departments:
     mission: "Build and maintain software, infrastructure, and technical architecture."
     budget_category: "product_development"
     headcount_target: 25
+
+  - id: "pharos"
+    name: "Pharos"
+    executive: "thought-leadership-lead"
+    mission: "Position the Human CEO as the leading voice on Agentic AI Company Building, Use Cases and Policy across Malawi and the SADC region."
+    budget_category: "growth"
+    headcount_target: 7

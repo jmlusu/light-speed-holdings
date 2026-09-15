@@ -377,6 +377,52 @@ def check_llm_providers() -> CheckResult:
     )
 
 
+def check_drift_sweep() -> CheckResult:
+    """Check repo-file integrity against the audit ledger (Task 8).
+
+    Compares the on-disk digest of files written through the guarded
+    ``repo_write`` path against the most recent ``after_hash`` in the audit
+    trail. A mismatch indicates a silent overwrite that bypassed the
+    P0-protected write path.
+    """
+    try:
+        from ai_company.doctor import drift_sweep
+
+        report = drift_sweep.run_sweep()
+    except Exception as e:  # noqa: BLE001 - doctor must report, not crash
+        return CheckResult(
+            name="Drift Sweep",
+            passed=False,
+            message=f"Drift sweep failed: {e}",
+            severity="error",
+        )
+
+    mismatches = report["mismatches"]
+    unrecorded = report["unrecorded"]
+    total = report["total_checked"]
+    passed = len(mismatches) == 0
+    if total == 0:
+        severity = "info"
+        message = "No repo files in audit ledger to sweep"
+    elif passed:
+        severity = "ok"
+        message = f"{total} tracked files match audit; {len(unrecorded)} unrecorded write(s)"
+    else:
+        severity = "error"
+        message = (
+            f"{len(mismatches)} drift mismatch(es) in {total} tracked "
+            f"files; {len(unrecorded)} unrecorded write(s)"
+        )
+
+    return CheckResult(
+        name="Drift Sweep",
+        passed=passed,
+        message=message,
+        severity=severity,
+        details=report,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
@@ -397,6 +443,7 @@ ALL_CHECKS = [
     check_cost_tracker,
     check_omniroute_health,
     check_llm_providers,
+    check_drift_sweep,
 ]
 
 

@@ -10,7 +10,7 @@ Phase 3 implements growth function CLI commands (marketing, sales, customer succ
 
 ## Objectives
 
-1. Implement full CLI commands for all 7 departments
+1. Implement full CLI commands for all 20 departments
 2. Add cost management and budget tracking to the dashboard
 3. Implement marketing campaign lifecycle management
 4. Implement sales pipeline management

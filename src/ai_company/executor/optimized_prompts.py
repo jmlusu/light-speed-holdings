@@ -15,8 +15,10 @@ Key optimizations:
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from ai_company.executor.context import AgentContext
+from ai_company.executor.prompts import _inject_memory_context
 
 logger = logging.getLogger(__name__)
 
@@ -215,6 +217,57 @@ def _should_include_examples(task_type: str) -> bool:
     return task_type in ("refactor", "architecture", "debug", "complex")
 
 
+def _build_dynamic_few_shot(memories: list[dict[str, Any]], max_examples: int = 2) -> str | None:
+    """Build few-shot examples from recalled successful task memories.
+
+    Filters for high-similarity completed task memories and formats them
+    as ReAct-style few-shot examples. Falls back to None if no good
+    dynamic examples are available.
+
+    Args:
+        memories: Recalled memory entries from ``recall_context()``.
+        max_examples: Maximum number of few-shot examples to generate.
+
+    Returns:
+        Formatted few-shot section string, or None if no examples found.
+    """
+    if not memories:
+        return None
+
+    # Filter for completed task patterns with decent similarity
+    completed = [
+        m
+        for m in memories
+        if m.get("type") == "semantic"
+        and "completed" in " ".join(m.get("tags", []))
+        and m.get("similarity", 0) >= 0.5
+    ]
+
+    if not completed:
+        return None
+
+    # Sort by similarity, take top N
+    completed.sort(key=lambda m: m.get("similarity", 0), reverse=True)
+    selected = completed[:max_examples]
+
+    examples: list[str] = ["## Dynamic Examples (from similar past tasks)", ""]
+    for i, mem in enumerate(selected, 1):
+        content = mem.get("content", "").strip()
+        if not content:
+            continue
+        # Truncate to ~300 chars for few-shot brevity
+        if len(content) > 300:
+            content = content[:297] + "..."
+        examples.append(f"### Example {i} (similarity: {mem.get('similarity', 0):.2f})")
+        examples.append(content)
+        examples.append("")
+
+    if len(examples) <= 2:  # Only the header, no real examples
+        return None
+
+    return "\n".join(examples)
+
+
 def _detect_task_type(user_prompt: str) -> str:
     """Detect task type from user prompt for conditional section loading."""
     prompt_lower = user_prompt.lower()
@@ -244,6 +297,7 @@ def build_optimized_system_prompt(
     user_prompt: str = "",
     token_budget: int = 6000,
     include_all_sections: bool = False,
+    memories: list[dict[str, Any]] | None = None,
 ) -> str:
     """Build a token-optimized system prompt for a specialist agent.
 
@@ -252,6 +306,7 @@ def build_optimized_system_prompt(
         user_prompt: The task instruction (used for task type detection).
         token_budget: Maximum tokens for the system prompt.
         include_all_sections: If True, include all sections (for A/B testing control).
+        memories: Optional recalled memory entries to inject as context.
 
     Returns:
         Optimized system prompt string.
@@ -301,6 +356,10 @@ def build_optimized_system_prompt(
         parts.append("(See shared standards: ../operating-standards.md)")
         parts.append("")
 
+    # Inject recalled memories as relevant past work context
+    if memories:
+        _inject_memory_context(parts, memories)
+
     # Success metrics (conditional)
     if include_metrics and agent.success_metrics:
         parts.append("## Success Metrics")
@@ -332,9 +391,13 @@ def build_optimized_system_prompt(
     if include_escalation:
         parts.append(ESCALATION_RULES)
 
-    # Few-shot examples (conditional)
+    # Few-shot examples (conditional) — prefer dynamic from memories, fall back to static
     if include_examples:
-        parts.append(FEW_SHOT_EXAMPLES)
+        dynamic_examples = _build_dynamic_few_shot(memories) if memories else None
+        if dynamic_examples:
+            parts.append(dynamic_examples)
+        else:
+            parts.append(FEW_SHOT_EXAMPLES)
 
     # Rules (always included)
     parts.append(SPECIALIST_RULES)

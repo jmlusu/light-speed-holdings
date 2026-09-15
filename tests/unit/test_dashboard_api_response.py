@@ -254,7 +254,10 @@ class TestKPIEndpointsContract:
 
     def test_department_kpis_not_found(self, client: TestClient) -> None:
         resp = client.get("/api/v1/departments/nonexistent/kpis")
-        assert resp.status_code == 404
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["agents"] == []
+        assert data["kpis"] == []
 
 
 class TestModelAPIContract:

@@ -34,7 +34,6 @@ from pathlib import Path
 from typing import Any, Callable, cast
 
 from ai_company.logging_config import HumanFormatter, JSONFormatter
-from ai_company.orchestrator.routine import RoutineStore
 from ai_company.utils.file_lock import atomic_write
 from ai_company.utils.logging import CorrelationFilter
 
@@ -484,8 +483,16 @@ class DaemonHealthStatus:
         started_at: str | None = None,
         last_tick_at: str | None = None,
         ticks_completed: int = 0,
+        shutdown_reason: str | None = None,
+        last_error: str | None = None,
+        last_error_at: str | None = None,
     ) -> None:
-        """Write daemon status to the JSON file."""
+        """Write daemon status to the JSON file.
+
+        ``shutdown_reason``, ``last_error`` and ``last_error_at`` are
+        diagnostic extras that ``executor status`` may surface; they are
+        omitted from the file when ``None`` so a healthy daemon stays clean.
+        """
         now_iso = datetime.now(timezone.utc).isoformat()
         uptime = 0.0
         if started_at:
@@ -504,6 +511,12 @@ class DaemonHealthStatus:
             "uptime_seconds": round(uptime, 1),
             "updated_at": now_iso,
         }
+        if shutdown_reason is not None:
+            data["shutdown_reason"] = shutdown_reason
+        if last_error is not None:
+            data["last_error"] = last_error
+        if last_error_at is not None:
+            data["last_error_at"] = last_error_at
         self.status_path.parent.mkdir(parents=True, exist_ok=True)
         with atomic_write(self.status_path) as f:
             f.write(json.dumps(data, indent=2, default=str))
@@ -586,6 +599,12 @@ class ExecutorDaemon:
         self._shutdown_event = False
         self._started_at: str | None = None
         self._ticks_completed: int = 0
+        self._last_tick_at: str | None = None
+        self._shutdown_reason: str | None = None
+        self._last_error: str | None = None
+        self._last_error_at: str | None = None
+        self._consecutive_failures: int = 0
+        self._last_tick_ok: bool = False
 
         # Injectable for testing
         self._clock = _clock or time.time
@@ -631,6 +650,8 @@ class ExecutorDaemon:
         try:
             self._run_loop()
         except Exception:
+            self._shutdown_reason = "unhandled exception"
+            self._record_error("Unhandled exception in daemon poll loop")
             logger.exception("Executor daemon encountered an unhandled exception")
             raise
         finally:
@@ -665,7 +686,7 @@ class ExecutorDaemon:
 
         if not _is_process_alive(pid):
             # Stale PID file — clean up
-            self._mark_stopped(pid)
+            self._mark_stopped(pid, reason="stale pid (process not running)")
             logger.info("Stale PID file cleaned up (pid=%d)", pid)
             return False
 
@@ -681,7 +702,7 @@ class ExecutorDaemon:
                 # The daemon already exited between the alive-check and the
                 # signal — the stop has effectively succeeded, so clean up
                 # the stale PID/status files and report success.
-                self._mark_stopped(pid)
+                self._mark_stopped(pid, reason="already exited before SIGTERM")
                 logger.info("Daemon PID %d already gone at SIGTERM; stop successful", pid)
                 return True
             except PermissionError:
@@ -702,7 +723,7 @@ class ExecutorDaemon:
         logger.warning("Daemon PID %d did not exit within %.1fs; forcing terminate", pid, timeout)
         if not self._force_terminate(pid):
             return False
-        self._mark_stopped(pid)
+        self._mark_stopped(pid, reason="forced terminate (graceful timeout)")
         return True
 
     @staticmethod
@@ -740,11 +761,20 @@ class ExecutorDaemon:
             # this because TerminateProcess cannot run Python handlers).
             if self._stop_requested():
                 logger.info("Stop requested via sentinel file — shutting down")
+                self._shutdown_reason = "stop sentinel"
                 self._shutdown_event = True
                 break
             try:
                 count = executor.tick()
                 self._ticks_completed += 1
+                self._last_tick_at = datetime.now(timezone.utc).isoformat()
+                if self._consecutive_failures:
+                    logger.warning(
+                        "Tick recovered after %d consecutive failure(s)",
+                        self._consecutive_failures,
+                    )
+                    self._consecutive_failures = 0
+                    self._clear_error()
                 logger.info(
                     "Tick #%d completed — processed %d task(s)",
                     self._ticks_completed,
@@ -752,8 +782,15 @@ class ExecutorDaemon:
                 )
                 self._update_status("running")
                 self._broadcast_health()
-            except Exception:
-                logger.exception("Error during tick")
+            except Exception as exc:
+                self._consecutive_failures += 1
+                self._record_error(str(exc))
+                logger.exception(
+                    "Error during tick (consecutive failure #%d)",
+                    self._consecutive_failures,
+                )
+                self._update_status("running")
+                self._broadcast_health()
 
             if snapshot_scheduler is not None:
                 try:
@@ -763,14 +800,6 @@ class ExecutorDaemon:
                 except Exception:
                     logger.exception("Error during KPI snapshot collection")
 
-            if routine_scheduler is not None:
-                try:
-                    fired = routine_scheduler.run_due()
-                    if fired:
-                        logger.info("Fired %d routine task(s)", fired)
-                except Exception:
-                    logger.exception("Error during routine firing")
-
             if governance_scheduler is not None:
                 try:
                     processed = governance_scheduler.run_due()
@@ -778,6 +807,14 @@ class ExecutorDaemon:
                         logger.info("Retention enforcement processed %d table(s)", len(processed))
                 except Exception:
                     logger.exception("Error during retention enforcement")
+
+            if routine_scheduler is not None:
+                try:
+                    fired = routine_scheduler.run_due()
+                    if fired:
+                        logger.info("Fired %d routine task(s)", fired)
+                except Exception:
+                    logger.exception("Error during routine firing")
 
                 # Sprint 7: expire stale pending approval requests on the same
                 # governance cadence (no new threads/timers).
@@ -836,7 +873,7 @@ class ExecutorDaemon:
         """Build the routine scheduler, or None if disabled."""
         if self.routine_interval is None or self.routine_interval <= 0:
             return None
-        from ai_company.orchestrator.routine import RoutineScheduler
+        from ai_company.orchestrator.routine import RoutineScheduler, RoutineStore
 
         bus = getattr(executor, "bus", None)
         if bus is None:
@@ -857,6 +894,7 @@ class ExecutorDaemon:
         end = self._clock() + duration
         while not self._shutdown_event and self._clock() < end:
             if self._stop_requested():
+                self._shutdown_reason = "stop sentinel"
                 self._shutdown_event = True
                 break
             remaining = end - self._clock()
@@ -903,11 +941,13 @@ class ExecutorDaemon:
 
         def _handle_sigterm(signum: int, frame: Any) -> None:
             logger.info("Received SIGTERM — initiating graceful shutdown")
+            self._shutdown_reason = "SIGTERM"
             self._shutdown_event = True
             self._update_status("stopping")
 
         def _handle_sigint(signum: int, frame: Any) -> None:
             logger.info("Received SIGINT — initiating graceful shutdown")
+            self._shutdown_reason = "SIGINT"
             self._shutdown_event = True
             self._update_status("stopping")
 
@@ -921,8 +961,27 @@ class ExecutorDaemon:
             pid=os.getpid(),
             state=state,
             started_at=self._started_at,
+            last_tick_at=self._last_tick_at,
             ticks_completed=self._ticks_completed,
+            shutdown_reason=self._shutdown_reason,
+            last_error=self._last_error,
+            last_error_at=self._last_error_at,
         )
+
+    def _record_error(self, message: str) -> None:
+        """Record the most recent tick failure for status/diagnostics.
+
+        The last error is persisted on the next :meth:`_update_status` write
+        so ``executor status`` (and the dashboard) can show *why* the daemon
+        is struggling even while it stays alive.
+        """
+        self._last_error = (message or "")[:500]
+        self._last_error_at = datetime.now(timezone.utc).isoformat()
+
+    def _clear_error(self) -> None:
+        """Clear a previously recorded tick failure after successful recovery."""
+        self._last_error = None
+        self._last_error_at = None
 
     def _broadcast_health(self) -> None:
         """Push daemon health to WebSocket clients via the registered callback.
@@ -959,7 +1018,7 @@ class ExecutorDaemon:
             except OSError:
                 logger.debug("Failed to remove stop sentinel %s", self.stop_path)
 
-    def _mark_stopped(self, pid: int) -> None:
+    def _mark_stopped(self, pid: int, reason: str | None = None) -> None:
         """Remove PID file and write a 'stopped' status (stale/forced stop).
 
         Used when the daemon process cannot clean up after itself: stale PID
@@ -975,7 +1034,11 @@ class ExecutorDaemon:
             pid=pid,
             state="stopped",
             started_at=existing.get("started_at") or self._started_at,
+            last_tick_at=existing.get("last_tick_at") or self._last_tick_at,
             ticks_completed=existing.get("ticks_completed") or self._ticks_completed,
+            shutdown_reason=reason or existing.get("shutdown_reason") or "forced/cleanup",
+            last_error=existing.get("last_error") or self._last_error,
+            last_error_at=existing.get("last_error_at") or self._last_error_at,
         )
         logger.info("Marked daemon PID %d as stopped", pid)
 
@@ -1018,18 +1081,26 @@ class ExecutorDaemon:
     def _cleanup(self) -> None:
         """Remove PID file and update status on shutdown."""
         logger.info(
-            "Executor daemon shutting down after %d tick(s)",
+            "Executor daemon shutting down after %d tick(s) (reason=%s)",
             self._ticks_completed,
+            self._shutdown_reason or "not recorded",
         )
         self.status_file.write(
             pid=os.getpid(),
             state="stopped",
             started_at=self._started_at,
+            last_tick_at=self._last_tick_at,
             ticks_completed=self._ticks_completed,
+            shutdown_reason=self._shutdown_reason,
+            last_error=self._last_error,
+            last_error_at=self._last_error_at,
         )
         self.pid_file.remove()
         self._clear_stop_request()
-        logger.info("Cleanup complete")
+        logger.info(
+            "Cleanup complete (reason=%s)",
+            self._shutdown_reason or "not recorded",
+        )
 
 
 if __name__ == "__main__":
