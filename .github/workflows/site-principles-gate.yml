@@ -1,0 +1,55 @@
+name: Site Build + Principles Gate
+
+# Binding gate for the client-facing website (Guiding Principles, CMO mandate v1.0).
+# Runs ONLY when website files change, so pure-Python/product PRs are unaffected.
+# Enforces the automatable subset of Appendix A checks:
+#   check 6 — zero TypeScript/build errors (bun run build = tsc + vite) and
+#             no fake-success form states (scripts/check-site-form-backend.py).
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "index.html"
+      - "vercel.json"
+      - "vite.config.ts"
+      - "tsconfig.json"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/site-principles-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "index.html"
+      - "vercel.json"
+      - "vite.config.ts"
+      - "tsconfig.json"
+      - "package.json"
+      - "bun.lock"
+  workflow_dispatch:
+
+concurrency:
+  group: site-principles-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site-gate:
+    name: Site Build + Principles Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build site (tsc + vite) — Appendix A check 6
+        run: bun run build
+
+      - name: Reject fake-success forms — Appendix A check 6 (§10)
+        run: python3 scripts/check-site-form-backend.py
