@@ -204,3 +204,6 @@ skips = [
     "B310",
     "B701",
 ]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ai_company"]
