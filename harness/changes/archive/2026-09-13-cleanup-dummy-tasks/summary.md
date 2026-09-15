@@ -1,8 +1,8 @@
----
+﻿---
 title: "Remove Dummy Tasks & Wire Real Organizational Data"
 slug: "cleanup-dummy-tasks"
-status: "in_progress"
-location: "active"
+status: "completed"
+location: "archive"
 phase: "implement"
 intake_status: "done"
 spec_review: "done"
@@ -32,7 +32,7 @@ tags:
   - "demo-data"
 validation_status: "pass"
 created_at: "2026-08-28"
-updated_at: "2026-08-29"
+updated_at: "2026-09-13"
 ---
 
 # Summary

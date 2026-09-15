@@ -69,6 +69,10 @@ otel = [
     "opentelemetry-exporter-otlp>=1.25",
 ]
 
+pharos-whisper = [
+    "faster-whisper>=1.0",
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"
