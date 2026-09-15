@@ -9,6 +9,6 @@
     }
   ],
   "functions": {
-    "api/enquiry.ts": { "runtime": "@vercel/node@3", "regions": ["cpt1"] }
+    "api/enquiry.ts": { "regions": ["cpt1"] }
   }
 }
