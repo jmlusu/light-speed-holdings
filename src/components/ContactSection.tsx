@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { ShieldCheck, Clock, Globe2, Send, CheckCircle2 } from 'lucide-react';
+import React, { useCallback, useState } from 'react';
+import { ShieldCheck, Clock, Globe2, Send, CheckCircle2, MessageCircle } from 'lucide-react';
 import { AcousticVentGrille } from './TactileHardwareElements';
+import { useTurnstile } from '../hooks/useTurnstile';
+import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
 
 interface ContactSectionProps {
   theme: 'light' | 'dark';
@@ -9,6 +11,15 @@ interface ContactSectionProps {
 export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
   const isLight = theme === 'light';
   const [contactSubmitted, setContactSubmitted] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [referenceId, setReferenceId] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const { containerRef, siteKey } = useTurnstile(
+    useCallback((token: string) => setTurnstileToken(token), [])
+  );
+  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined;
   const [contactFormData, setContactFormData] = useState({
     name: '',
     title: '',
@@ -19,9 +30,43 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
     timeline: 'Within 30 days'
   });
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setContactSubmitted(true);
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          enquiryPayload(
+            {
+              form: 'contact',
+              name: contactFormData.name,
+              organization: contactFormData.organization,
+              email: contactFormData.email,
+              enquiryType: contactFormData.scope,
+              message: contactFormData.objective
+            },
+            turnstileToken,
+            honeypot
+          )
+        )
+      });
+      if (res.status === 201) {
+        const data = (await res.json()) as { referenceId?: string };
+        setReferenceId(data.referenceId ?? null);
+        setContactSubmitted(true);
+      } else {
+        const data = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
+        setSubmitError(data?.error?.message ?? ENQUIRY_GENERIC_ERROR);
+      }
+    } catch {
+      setSubmitError(ENQUIRY_GENERIC_ERROR);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -52,7 +97,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
             </div>
             <div className={`flex items-center gap-3 text-xs font-medium ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
               <Clock className="w-4 h-4 text-ls-red shrink-0" />
-              <span>Executive response within 12 business hours</span>
+              <span>Executive response within two business days</span>
             </div>
             <div className={`flex items-center gap-3 text-xs font-medium ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
               <Globe2 className="w-4 h-4 text-ls-cyan shrink-0" />
@@ -91,10 +136,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   Message Received
                 </h3>
                 <p className={`text-justify text-sm max-w-md mx-auto leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                  Thank you. A human will review your message and contact you directly within 12 business hours.
+                  Thank you. A human will review your message and contact you directly within two business days.
                 </p>
                 <button
-                  onClick={() => setContactSubmitted(false)}
+                  onClick={() => {
+                    setContactSubmitted(false);
+                    setReferenceId(null);
+                    setSubmitError(null);
+                  }}
                   className="px-6 py-2.5 rounded-xl bg-ls-red text-white font-bold text-xs tracking-wider cursor-pointer shadow-md hover:bg-ls-red transition-all"
                 >
                   Submit Another Inquiry
@@ -102,6 +151,17 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
               </div>
             ) : (
               <form onSubmit={handleContactSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  name="website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute left-[-9999px] w-px h-px opacity-0"
+                />
+                {siteKey ? <div ref={containerRef} className="scale-90 origin-left" /> : null}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
 <label htmlFor="ct-executive-name" className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
@@ -219,14 +279,34 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   />
                 </div>
 
-                <div className="pt-2">
+                {submitError && (
+                  <p role="alert" className="text-sm font-medium text-ls-red">
+                    {submitError}
+                  </p>
+                )}
+                <div className="pt-2 space-y-3">
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl bg-ls-red text-white font-bold text-xs tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-ls-red/25 active:scale-98"
+                    disabled={submitting}
+                    className="w-full py-3.5 rounded-xl bg-ls-red text-white font-bold text-xs tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-ls-red/25 active:scale-98 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <span>Send — Start the Conversation</span>
+                    <span>{submitting ? 'Sending…' : 'Send — Start the Conversation'}</span>
                     <Send className="w-3.5 h-3.5" />
                   </button>
+                  <p className={`text-xs font-medium ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+                    {ENQUIRY_SLA_COPY}
+                  </p>
+                  {whatsappNumber ? (
+                    <a
+                      href={`https://wa.me/${whatsappNumber}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-bold text-ls-cyan inline-flex items-center gap-1.5 hover:underline"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      Prefer WhatsApp? Chat to us.
+                    </a>
+                  ) : null}
                 </div>
               </form>
             )}
