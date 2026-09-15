@@ -7,8 +7,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "api/enquiry.ts": { "runtime": "@vercel/node@3", "regions": ["cpt1"] }
-  }
+  ]
 }
