@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { X, Shield, Send, CheckCircle2, ArrowRight, Building2, User, Mail, Phone, Calendar } from 'lucide-react';
+import React, { useCallback, useState, useEffect } from 'react';
+import { X, Shield, Send, CheckCircle2, ArrowRight, Building2, User, Mail, Phone, Calendar, MessageCircle } from 'lucide-react';
+import { useTurnstile } from '../hooks/useTurnstile';
+import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
 
 interface ExecutiveBriefingModalProps {
   isOpen: boolean;
@@ -15,6 +17,14 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
   theme = 'dark'
 }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const { containerRef, siteKey } = useTurnstile(
+    useCallback((token: string) => setTurnstileToken(token), [])
+  );
+  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined;
   const [formData, setFormData] = useState({
     fullName: '',
     executiveTitle: '',
@@ -39,22 +49,52 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      // Keep feedback visible
-    }, 500);
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          enquiryPayload(
+            {
+              form: 'briefing',
+              name: formData.fullName,
+              organization: formData.organization,
+              email: formData.email,
+              enquiryType: 'Executive boardroom briefing',
+              message: formData.notes || `${formData.scope} — ${formData.timeframe}`,
+              phone: formData.phone
+            },
+            turnstileToken,
+            honeypot
+          )
+        )
+      });
+      if (res.status === 201) {
+        setSubmitted(true);
+      } else {
+        const data = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
+        setSubmitError(data?.error?.message ?? ENQUIRY_GENERIC_ERROR);
+      }
+    } catch {
+      setSubmitError(ENQUIRY_GENERIC_ERROR);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const isLight = theme === 'light';
 
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 bg-black/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
-      <div 
+      <div
         className={`relative w-full max-w-2xl rounded-3xl border shadow-2xl overflow-hidden max-h-[90vh] flex flex-col ${
-          isLight 
-            ? 'bg-white text-slate-900 border-slate-300' 
+          isLight
+            ? 'bg-white text-slate-900 border-slate-300'
             : 'bg-zinc-950 text-zinc-100 border-white/15'
         }`}
       >
@@ -86,8 +126,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
             aria-label="Close modal"
             title="Close modal"
             className={`relative z-50 p-2 rounded-full transition-all cursor-pointer border shrink-0 ${
-              isLight 
-                ? 'hover:bg-slate-200 text-slate-700 hover:text-slate-900 border-slate-300 bg-white shadow-xs' 
+              isLight
+                ? 'hover:bg-slate-200 text-slate-700 hover:text-slate-900 border-slate-300 bg-white shadow-xs'
                 : 'hover:bg-white/20 text-zinc-300 hover:text-white border-white/20 bg-zinc-900/80 shadow-md'
             }`}
           >
@@ -110,12 +150,13 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
               <p className={`text-justify text-sm max-w-md mx-auto leading-relaxed ${
                 isLight ? 'text-slate-800' : 'text-zinc-300'
               }`}>
-                Our Senior Managing Partners have received your confidential inquiry. We will contact you within 12 business hours to schedule an executive diagnostic session.
+                Our Senior Managing Partners have received your confidential inquiry. We will contact you within two business days to schedule an executive diagnostic session.
               </p>
               <div className="pt-4">
                 <button
                   onClick={() => {
                     setSubmitted(false);
+                    setSubmitError(null);
                     onClose();
                   }}
                   className="px-6 py-2.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs tracking-widest cursor-pointer shadow-md shadow-orange-500/25"
@@ -126,6 +167,17 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="absolute left-[-9999px] w-px h-px opacity-0"
+              />
+              {siteKey ? <div ref={containerRef} className="scale-90 origin-left" /> : null}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className={`block text-[11px] font-mono tracking-wider mb-1 font-bold ${
@@ -140,8 +192,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                      isLight 
-                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner' 
+                      isLight
+                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner'
                         : 'border-white/20 bg-zinc-900 text-white placeholder:text-zinc-400 shadow-inner'
                     }`}
                   />
@@ -160,8 +212,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                     value={formData.executiveTitle}
                     onChange={(e) => setFormData({ ...formData, executiveTitle: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                      isLight 
-                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner' 
+                      isLight
+                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner'
                         : 'border-white/20 bg-zinc-900 text-white placeholder:text-zinc-400 shadow-inner'
                     }`}
                   />
@@ -182,8 +234,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                     value={formData.organization}
                     onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                      isLight 
-                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner' 
+                      isLight
+                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner'
                         : 'border-white/20 bg-zinc-900 text-white placeholder:text-zinc-400 shadow-inner'
                     }`}
                   />
@@ -202,8 +254,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                      isLight 
-                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner' 
+                      isLight
+                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner'
                         : 'border-white/20 bg-zinc-900 text-white placeholder:text-zinc-400 shadow-inner'
                     }`}
                   />
@@ -223,8 +275,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                      isLight 
-                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner' 
+                      isLight
+                        ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner'
                         : 'border-white/20 bg-zinc-900 text-white placeholder:text-zinc-400 shadow-inner'
                     }`}
                   />
@@ -240,8 +292,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                     value={formData.scope}
                     onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors font-medium ${
-                      isLight 
-                        ? 'border-slate-300 bg-slate-100 text-slate-900 shadow-inner' 
+                      isLight
+                        ? 'border-slate-300 bg-slate-100 text-slate-900 shadow-inner'
                         : 'border-white/20 bg-zinc-900 text-white shadow-inner'
                     }`}
                   >
@@ -265,24 +317,46 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   className={`w-full px-3.5 py-2.5 rounded-xl border text-xs outline-none focus:border-orange-500 transition-colors resize-none font-medium ${
-                    isLight 
-                      ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner' 
+                    isLight
+                      ? 'border-slate-300 bg-slate-100 text-slate-900 placeholder:text-slate-500 shadow-inner'
                       : 'border-white/20 bg-zinc-900 text-white placeholder:text-zinc-400 shadow-inner'
                   }`}
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-between">
-                <div className={`text-[10px] font-mono font-bold ${
-                  isLight ? 'text-slate-700' : 'text-zinc-400'
-                }`}>
-                  Guaranteed confidentiality • Fiduciary NDA standard
+              {submitError && (
+                <p role="alert" className="text-sm font-medium text-orange-600">
+                  {submitError}
+                </p>
+              )}
+              <div className="pt-2 flex items-center justify-between flex-wrap gap-3">
+                <div className="space-y-1">
+                  <div className={`text-[10px] font-mono font-bold ${
+                    isLight ? 'text-slate-700' : 'text-zinc-400'
+                  }`}>
+                    Guaranteed confidentiality • Fiduciary NDA standard
+                  </div>
+                  <div className={`text-[10px] font-medium ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+                    {ENQUIRY_SLA_COPY}
+                  </div>
+                  {whatsappNumber ? (
+                    <a
+                      href={`https://wa.me/${whatsappNumber}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-bold text-sky-500 inline-flex items-center gap-1 hover:underline"
+                    >
+                      <MessageCircle className="w-3 h-3" />
+                      Prefer WhatsApp? Chat to us.
+                    </a>
+                  ) : null}
                 </div>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs tracking-widest transition-all flex items-center gap-2 cursor-pointer shadow-md shadow-orange-500/20"
+                  disabled={submitting}
+                  className="px-6 py-3 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs tracking-widest transition-all flex items-center gap-2 cursor-pointer shadow-md shadow-orange-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <span>Submit Confidential Request</span>
+                  <span>{submitting ? 'Sending…' : 'Submit Confidential Request'}</span>
                   <Send className="w-3.5 h-3.5" />
                 </button>
               </div>
