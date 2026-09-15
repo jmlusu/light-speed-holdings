@@ -34,6 +34,7 @@ from pathlib import Path
 from typing import Any, Callable, cast
 
 from ai_company.logging_config import HumanFormatter, JSONFormatter
+from ai_company.orchestrator.routine import RoutineStore
 from ai_company.utils.file_lock import atomic_write
 from ai_company.utils.logging import CorrelationFilter
 
@@ -155,6 +156,7 @@ def build_daemon_command(
     log_dir: str,
     kpi_snapshot_interval: float,
     governance_interval: float,
+    routine_interval: float | None = None,
     db_path: str | None,
     daily_budget_usd: float | None = None,
     task_budget_usd: float | None = None,
@@ -187,6 +189,8 @@ def build_daemon_command(
     ]
     if db_path is not None:
         cmd += ["--db-path", db_path]
+    if routine_interval is not None:
+        cmd += ["--routine-interval", str(routine_interval)]
     if daily_budget_usd is not None:
         cmd += ["--daily-budget-usd", str(daily_budget_usd)]
     if task_budget_usd is not None:
@@ -238,6 +242,7 @@ def launch_detached_daemon(
     log_dir: str,
     kpi_snapshot_interval: float,
     governance_interval: float,
+    routine_interval: float | None = None,
     db_path: str | None,
     daily_budget_usd: float | None = None,
     task_budget_usd: float | None = None,
@@ -277,6 +282,7 @@ def launch_detached_daemon(
         log_dir=log_dir,
         kpi_snapshot_interval=kpi_snapshot_interval,
         governance_interval=governance_interval,
+        routine_interval=routine_interval,
         db_path=db_path,
         daily_budget_usd=daily_budget_usd,
         task_budget_usd=task_budget_usd,
@@ -332,6 +338,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--log-dir", default="logs")
     parser.add_argument("--kpi-snapshot-interval", type=float, default=300.0)
     parser.add_argument("--governance-interval", type=float, default=86400.0)
+    parser.add_argument("--routine-interval", type=float, default=None)
     parser.add_argument("--db-path", default=None)
     parser.add_argument("--daily-budget-usd", type=float, default=None)
     parser.add_argument("--task-budget-usd", type=float, default=None)
@@ -354,6 +361,7 @@ def main(argv: list[str] | None = None) -> int:
         status_path=Path(args.log_dir) / "executor-daemon.json",
         kpi_snapshot_interval=args.kpi_snapshot_interval,
         governance_interval=args.governance_interval,
+        routine_interval=args.routine_interval,
     )
     try:
         daemon.start()
@@ -557,6 +565,7 @@ class ExecutorDaemon:
         stop_path: Path | None = None,
         kpi_snapshot_interval: float = 300.0,
         governance_interval: float = 86400.0,
+        routine_interval: float | None = None,
         *,
         _clock: Callable[[], float] | None = None,
         _sleep: Callable[[float], None] | None = None,
@@ -566,6 +575,7 @@ class ExecutorDaemon:
         self.poll_interval = poll_interval
         self.kpi_snapshot_interval = kpi_snapshot_interval
         self.governance_interval = governance_interval
+        self.routine_interval = routine_interval
         self._health_broadcast = health_broadcast_callback
 
         self.pid_file = DaemonPIDFile(pid_path or (DEFAULT_PID_DIR / "executor-daemon.pid"))
@@ -723,6 +733,7 @@ class ExecutorDaemon:
 
         snapshot_scheduler = self._make_snapshot_scheduler(executor)
         governance_scheduler = self._make_governance_scheduler(executor)
+        routine_scheduler = self._make_routine_scheduler(executor)
 
         while not self._shutdown_event:
             # Graceful stop requested via sentinel file (Windows relies on
@@ -751,6 +762,14 @@ class ExecutorDaemon:
                         logger.info("KPI snapshot stored %d entries", stored)
                 except Exception:
                     logger.exception("Error during KPI snapshot collection")
+
+            if routine_scheduler is not None:
+                try:
+                    fired = routine_scheduler.run_due()
+                    if fired:
+                        logger.info("Fired %d routine task(s)", fired)
+                except Exception:
+                    logger.exception("Error during routine firing")
 
             if governance_scheduler is not None:
                 try:
@@ -811,6 +830,26 @@ class ExecutorDaemon:
         return GovernanceScheduler(
             interval_seconds=self.governance_interval,
             database=getattr(executor, "database", None),
+        )
+
+    def _make_routine_scheduler(self, executor: Any) -> Any:
+        """Build the routine scheduler, or None if disabled."""
+        if self.routine_interval is None or self.routine_interval <= 0:
+            return None
+        from ai_company.orchestrator.routine import RoutineScheduler
+
+        bus = getattr(executor, "bus", None)
+        if bus is None:
+            from ai_company.orchestrator.message_bus import MessageBus
+
+            bus = MessageBus()
+        from ai_company.paths import get_project_root
+
+        store = RoutineStore(project_root=get_project_root())
+        return RoutineScheduler(
+            interval_seconds=self.routine_interval,
+            bus=bus,
+            store=store,
         )
 
     def _interruptible_sleep(self, duration: float) -> None:
