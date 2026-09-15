@@ -550,5 +550,75 @@
         "validation_status":  "passed",
         "path":  "harness/changes/archive/2026-08-31-executive-kpi-scorecard-rich-org-chart",
         "updated_at":  "2026-08-31"
+    },
+    {
+        "id":  "2026-09-14-pharos-content-intelligence-p0-routine-engine-and-content-kpis",
+        "title":  "Pharos Content Intelligence P0 - Routine Engine and Content KPIs",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        ""
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     ""
+                 ],
+        "decisions":  [
+                          "- A new `RoutineStore`/`RoutineScheduler` (`orchestrator/routine.py`), not the",
+                          "legacy `Scheduler`/`scheduler.cycles` file (which the Python scheduler does",
+                          "not consume). Firing pattern mirrors `KPISnapshotScheduler` in the daemon loop.",
+                          "- Daily routines persist `next_run` (UTC) in `config/company/routines.yaml`;",
+                          "`mark_run` is persisted BEFORE the bus enqueue (crash-safe, no double-fire).",
+                          "- Provenance rides on Task `tags` (`pharos-routine`, `routine:{id}`,",
+                          "`routine_run:{id}-{UTC date}`) with task id `routine-{id}-{yyyymmdd}` (daily)",
+                          "or `routine-{id}-{yyyymmdd-hhmm}` (interval). The `Task` model drops arbitrary",
+                          "`metadata` dicts (`extra=\"ignore\"`), so plan.md\u0027s `metadata.routine_run_id`",
+                          "framing was reconciled to `tags` in the implementation.",
+                          "- P0 receiver is `content_writer` (valid registry id on this branch); Pharos-",
+                          "specific agents only exist on `research/swot-baseline` and are out of P0 scope.",
+                          "- `pharos_content` KPIs are additive to the marketing collector; existing keys",
+                          "untouched."
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-09-14-pharos-content-intelligence-p0-routine-engine-and-content-kpis",
+        "updated_at":  "2026-09-14"
+    },
+    {
+        "id":  "2026-09-14-pharos-content-intelligence-p1-p2-deep-research-publishing-rails-whisper-mcp",
+        "title":  "Pharos Content Intelligence P1/P2 - Deep-Research, Publishing Rails, Whisper, MCP",
+        "status":  "completed",
+        "location":  "archive",
+        "modules":  [
+                        ""
+                    ],
+        "files":  [
+                      ""
+                  ],
+        "tags":  [
+                     ""
+                 ],
+        "decisions":  [
+                          "- MCP transport: minimal in-house stdio JSON-RPC 2.0 server (no third-party SDK);",
+                          "import-safe, pure handler unit-tested over JSON frames. Documented subset:",
+                          "initialize / tools/list / tools/call / ping; no resources/ or streaming yet.",
+                          "- Whisper: optional `pharos-whisper` extra + lazy faster-whisper import with",
+                          "graceful `unavailable` result; audio stays local; core tests never require it.",
+                          "- Publishing rails: PublishQueue (FileStore-backed, optional message-bus mirror)",
+                          "+ LinkedIn/Substack formatters + publisher adapters with env-gated live POST",
+                          "(default dry-run receipt). No credentials committed.",
+                          "- Deep-research routines: additive `Routine.research_depth` field + 2 new",
+                          "routines/prompts; no scheduler or daemon changes required.",
+                          "- `docs/Pharos` corpus lives in the MAIN tree; MCP resolves it at runtime with",
+                          "main-tree fallback + `PHAROS_DOCS_DIR` override, graceful empty result.",
+                          "- Security: MCP read tools require `run` RBAC role; `publish_queue` requires",
+                          "`approve`/`admin`; outputs pass content-filter + PII masking; every call",
+                          "audit-logged (`AuditWriter` / `tool_call`)."
+                      ],
+        "validation_status":  "pass",
+        "path":  "harness/changes/archive/2026-09-14-pharos-content-intelligence-p1-p2-deep-research-publishing-rails-whisper-mcp",
+        "updated_at":  "2026-09-14"
     }
 ]
+
