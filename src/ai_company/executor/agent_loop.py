@@ -60,6 +60,29 @@ except ImportError:  # pragma: no cover — OTel optional
         yield
 
 
+_OMNIROUTE_HEALTH_TIMEOUT = 3.0
+
+
+def _omniroute_gateway_ok() -> bool:
+    """Fast liveness probe for the OmniRoute gateway (fail-fast).
+
+    OmniRoute registers as "available" whenever ``OMNIROUTE_API_KEY`` is set,
+    but an unreachable gateway would otherwise absorb the full provider httpx
+    timeout (default 120s) before the chain can move on. Returning ``False``
+    lets ``_call_llm`` skip it immediately and surface a clear skip reason.
+    """
+    import os
+
+    import httpx
+
+    url = os.environ.get("OMNIROUTE_API_BASE", "http://localhost:20128")
+    try:
+        resp = httpx.get(f"{url}/health", timeout=_OMNIROUTE_HEALTH_TIMEOUT)
+        return resp.status_code == 200
+    except httpx.HTTPError:
+        return False
+
+
 # ---------------------------------------------------------------------------
 # Configuration & result dataclasses
 # ---------------------------------------------------------------------------
@@ -618,13 +641,22 @@ class AgentLoop:
                     provider_chain.append((fb_route.provider, fb_route.model))
 
         last_error: Exception | None = None
+        skipped: list[str] = []
 
         for provider_id, resolved_model in provider_chain:
             provider = self.llm.get_provider(provider_id)
             if not provider or not provider.is_available():
+                skipped.append(f"{provider_id}=unavailable")
                 continue
             breaker = self.llm.get_breaker(provider_id)
             if breaker and not breaker.is_available:
+                skipped.append(f"{provider_id}=breaker-open")
+                continue
+
+            # Fail fast when the last-resort OmniRoute gateway is down instead
+            # of letting the chat call hang for the provider httpx timeout.
+            if provider_id == "omniroute" and not _omniroute_gateway_ok():
+                skipped.append(f"{provider_id}=gateway-unreachable")
                 continue
 
             use_model = model or resolved_model
@@ -652,12 +684,11 @@ class AgentLoop:
                 if breaker:
                     breaker.record_failure(exc.category.value)
                 last_error = exc
+                skipped.append(f"{provider_id}=error:{exc}")
                 continue
 
-        raise LLMProviderError(
-            "agent_loop",
-            f"No provider available. Last error: {last_error}",
-        )
+        detail = "; ".join(skipped) if skipped else f"Last error: {last_error}"
+        raise LLMProviderError("agent_loop", f"No provider available. Candidates: {detail}")
 
     @staticmethod
     def _parse_agent_response(content: str) -> dict[str, Any] | None:

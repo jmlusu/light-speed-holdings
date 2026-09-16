@@ -296,6 +296,38 @@ class TestToolRunner:
         assert "args" in results[0]["error"]
         assert "JSON object" in results[0]["error"]
 
+    def test_non_dict_args_live_audit_writer_does_not_crash(self, tmp_path: Path) -> None:
+        """Regression: the malformed-args path must not crash with an audit
+        ``ValidationError`` when a *live* AuditWriter is attached (production
+        init_audit). The raw string args are coerced and the tool call is
+        still recorded with ``_raw_value`` preserved."""
+        import ai_company.audit.integration as audit_integration
+        from ai_company.audit.integration import init_audit
+        from ai_company.audit.reader import AuditReader
+
+        audit_path = tmp_path / "audit"
+        audit_integration._writer = None  # type: ignore[attr-defined]
+        init_audit(audit_dir=str(audit_path))
+        try:
+            runner = ToolRunner(project_root=tmp_path)
+            results = runner.run_plan(
+                [{"tool": "write", "args": "/tmp/output.md"}],  # type: ignore[dict-item]
+                task_id="reg-123",
+                agent_id="unit-test",
+            )
+        finally:
+            audit_integration._writer = None  # type: ignore[attr-defined]
+
+        assert len(results) == 1
+        assert results[0]["status"] == "error"
+        assert "JSON object" in results[0]["error"]
+
+        events = AuditReader(path=str(audit_path)).read_all()
+        assert any(e.event_type == "tool_call" for e in events)
+        call = next(e for e in events if e.event_type == "tool_call")
+        assert call.args["_raw_value"] == "'/tmp/output.md'"
+        assert call.args["_field"] == "args"
+
 
 # ── HITL Gate ───────────────────────────────────────────────────────
 
