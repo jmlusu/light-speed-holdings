@@ -19,5 +19,10 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/enquiry.ts": { "regions": ["iad1"] },
+    "api/ping.ts": { "regions": ["iad1"] },
+    "api/ping-nodejs.js": { "regions": ["iad1"] }
+  }
 }
