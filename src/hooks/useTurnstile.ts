@@ -15,7 +15,9 @@ let scriptLoaded = false;
 
 export function useTurnstile(action: string, onToken: (token: string) => void) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+  const siteKey = (__TURNSTILE_SITE_KEY__ || import.meta.env.VITE_TURNSTILE_SITE_KEY) as
+    | string
+    | undefined;
 
   const reset = useCallback(() => {
     window.turnstile?.reset();
