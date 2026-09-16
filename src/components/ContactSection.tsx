@@ -16,7 +16,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
   const [referenceId, setReferenceId] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const { containerRef, siteKey } = useTurnstile(
+  const { containerRef, siteKey, reset } = useTurnstile(
+    'contact',
     useCallback((token: string) => setTurnstileToken(token), [])
   );
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined;
@@ -66,6 +67,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
       setSubmitError(ENQUIRY_GENERIC_ERROR);
     } finally {
       setSubmitting(false);
+      reset();
     }
   };
 

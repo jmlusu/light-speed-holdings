@@ -21,7 +21,8 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const { containerRef, siteKey } = useTurnstile(
+  const { containerRef, siteKey, reset } = useTurnstile(
+    'briefing',
     useCallback((token: string) => setTurnstileToken(token), [])
   );
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined;
@@ -84,6 +85,7 @@ export const ExecutiveBriefingModal: React.FC<ExecutiveBriefingModalProps> = ({
       setSubmitError(ENQUIRY_GENERIC_ERROR);
     } finally {
       setSubmitting(false);
+      reset();
     }
   };
 

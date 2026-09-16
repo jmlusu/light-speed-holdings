@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
@@ -13,9 +13,14 @@ declare global {
 
 let scriptLoaded = false;
 
-export function useTurnstile(onToken: (token: string) => void) {
+export function useTurnstile(action: string, onToken: (token: string) => void) {
   const containerRef = useRef<HTMLDivElement>(null);
   const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+
+  const reset = useCallback(() => {
+    window.turnstile?.reset();
+    onToken('');
+  }, [onToken]);
 
   useEffect(() => {
     if (!siteKey || !containerRef.current) return;
@@ -25,6 +30,7 @@ export function useTurnstile(onToken: (token: string) => void) {
       if (typeof window.turnstile?.render !== 'function') return;
       window.turnstile.render(container, {
         sitekey: siteKey,
+        action,
         callback: (token: string) => onToken(token)
       });
     };
@@ -44,7 +50,7 @@ export function useTurnstile(onToken: (token: string) => void) {
     return () => {
       window.turnstile?.reset();
     };
-  }, [siteKey, onToken]);
+  }, [siteKey, onToken, action]);
 
-  return { containerRef, siteKey };
+  return { containerRef, siteKey, reset };
 }

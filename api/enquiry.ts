@@ -15,6 +15,11 @@ const IDEM_PATH = (key: string) => `audit/idem/${key}.json`;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const WINDOW_MS = 12 * 60 * 60 * 1000;
 const MAX_DELIVERIES_PER_IP = 5;
+const EXPECTED_ACTIONS = new Set(['contact', 'briefing']);
+const ALLOWED_HOSTNAMES = (process.env.TURNSTILE_HOSTNAMES ?? '')
+  .split(',')
+  .map((h) => h.trim())
+  .filter(Boolean);
 
 const deliveries = new Map<string, number[]>();
 
@@ -61,7 +66,11 @@ export default async function handler(req: Request): Promise<Response> {
     if (!fields.turnstileToken) {
       return json({ error: { code: 'verification_required' } }, 403);
     }
-    const verified = await verifyTurnstile(fields.turnstileToken, ip);
+    const action = fields.form ?? '';
+    if (!EXPECTED_ACTIONS.has(action)) {
+      return json({ error: { code: 'verification_failed' } }, 403);
+    }
+    const verified = await verifyTurnstile(fields.turnstileToken, ip, action);
     if (!verified) {
       return json({ error: { code: 'verification_failed' } }, 403);
     }
@@ -172,15 +181,26 @@ function rateLimited(ip: string): boolean {
   return false;
 }
 
-async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
+async function verifyTurnstile(token: string, ip: string, expectedAction: string): Promise<boolean> {
+  if (typeof token !== 'string' || token.length === 0 || token.length > 2048) {
+    return false;
+  }
   try {
     const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ secret: TURNSTILE_SECRET_KEY ?? '', response: token, remoteip: ip })
     });
-    const data = (await response.json()) as { success?: boolean };
-    return data.success === true;
+    if (!response.ok) return false;
+    const data = (await response.json()) as {
+      success?: boolean;
+      action?: string;
+      hostname?: string;
+    };
+    if (data.success !== true) return false;
+    if (data.action !== expectedAction) return false;
+    if (ALLOWED_HOSTNAMES.length > 0 && !ALLOWED_HOSTNAMES.includes(data.hostname ?? '')) return false;
+    return true;
   } catch {
     return false;
   }
