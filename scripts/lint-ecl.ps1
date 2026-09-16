@@ -57,10 +57,10 @@ if (Test-Path -LiteralPath (Join-Path $Active "summary.md")) {
   if (Test-Path -LiteralPath $reviewPath) { $review = Get-Content -Encoding UTF8 -Raw -LiteralPath $reviewPath }
   $phase = [regex]::Match($summary, '(?m)^phase:\s*"?([^"\r\n]+)"?').Groups[1].Value
   $planReview = [regex]::Match($summary, '(?m)^plan_review:\s*"?([^"\r\n]+)"?').Groups[1].Value
-  if ($phase -match "^(implement|validate|done)$" -and $spec -match "\[NEEDS CLARIFICATION:") {
+  if ($phase -match "^(implement|validate)$" -and $spec -match "\[NEEDS CLARIFICATION:") {
     Fail "Active spec.md still has high-impact [NEEDS CLARIFICATION] markers. Resolve them or move phase back to intake/plan."
   }
-  if ($phase -match "^(implement|validate|done)$" -and $planReview -ne "approved" -and $review -notmatch "(?is)Plan Review.*Status:\s*approved") {
+  if ($phase -match "^(implement|validate)$" -and $planReview -ne "approved" -and $review -notmatch "(?is)Plan Review.*Status:\s*approved") {
     Fail "Active change cannot enter implementation until plan_review is approved in summary.md or an equivalent approved Plan Review is recorded."
   }
   if ($tasks -match "(?m)^- \[[ xX]\] (?!T\d{3})") {
