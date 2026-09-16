@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+declare const __TURNSTILE_SITE_KEY__: string;
+
 declare module '*.jpg' {
   const content: string;
   export default content;
