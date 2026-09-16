@@ -36,13 +36,16 @@ Rules:
 
 ## 4 Stage-Boundary Protocol
 
-Before moving between stages (intake → spec → plan → implement → validate), update `summary.md` front matter fields. The `phase` field tracks current stage. When entering `validate` or `done`, populate `validation_results` with an array of gate outcomes (e.g., `lint-ecl.ps1: PASS`, `ruff check src/: PASS`, `mypy src/: PASS`, `pytest: 1856 passed`).
+Before moving between stages (intake → spec → plan → implement → validate), update `summary.md` front matter fields. The `phase` field tracks current stage; valid values are `intake`, `spec`, `plan`, `implement`, `validate`. When entering `validate`, populate `validation_results` with an array of gate outcomes (e.g., `lint-ecl.ps1: PASS`, `ruff check src/: PASS`, `mypy src/: PASS`, `pytest: 1856 passed`).
 
 Archive gates:
 
-- `validation_status` must be `pass` (not `unknown` or `fail`) before archiving. Changes without validation evidence must remain active or be parked.
-- `phase` must be `validate` or `implement` before archiving. Changes archived at `phase: "plan"` indicate implementation was skipped.
-- Run the full test suite (not just a scoped subset) as part of archive validation. Scoped-only runs leave regression gaps.
+- `validation_status` must be exactly `pass` (not `passed`, `unknown`, or `fail`) before archiving. Changes without validation evidence must remain active or be parked.
+- `phase` must be `validate` or `implement` before archiving. `done` is not a valid archive phase; changes archived at `phase: "plan"` indicate implementation was skipped.
+- `spec_review` must be resolved (value `approved` or equivalent recorded in reviews/) before archiving. Leaving `spec_review: "pending"` in an archived change is a gap.
+- The full non-e2e test suite must run to completion and be listed in `validation_results` at archive. Closing with "full suite as the Next Step" is invalid — the full suite is a prerequisite for close, not a follow-up task.
+- Verification hint: when a live dashboard/daemon process or parallel AI sessions share the machine, run the full suite with an isolated `pytest --basetemp=<unique>` path and snapshot `git status` before/after the run to prove no concurrent-writer interference.
+- Archive hygiene: git-restore known side-effect files before archive (`docs/AGENT-REGISTRY-TABLE.md`, `hr/onboarding_requests.yaml`, `orchestrator/approvals.yaml`). Test runs and scaffolding may leave these dirty; they must not be committed as part of a change.
 - When a change is parked, its test failures should not be counted as baseline by other changes. Tag parked failures (e.g., `parked:<change-id>`) to keep baselines isolated.
 - If `pyproject.toml` is in the changeset, `uv.lock` must also be updated in the same commit. Lockfile atomicity prevents `--frozen` workflow breakage.
 
@@ -51,6 +54,8 @@ Archive gates:
 Before implementation starts, require an approved plan review. Record it as `plan_review: "approved"` in `summary.md` front matter. This gate prevents raw requirements from moving directly into coding.
 
 If the plan references an ADR (Architecture Decision Record), verify the ADR file exists in `docs/adr/` before marking `plan_review` as approved. ADRs must be recorded before or alongside implementation, not after.
+
+If the plan or spec contains undefined codenames, abbreviations, or domain terms, define them before plan review. Undefined terms cost a clarification round-trip at implementation time (e.g. "Path-of-RPG" / "FLORA" required CEO clarification mid-implement).
 
 ## 6 Context Loading Order
 
