@@ -1,16 +1,11 @@
-import { get, put } from '@vercel/blob';
-import { createHash } from 'node:crypto';
-
 export const config = {
-  runtime: 'nodejs'
+  runtime: 'edge'
 };
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
 const ENQUIRY_FROM_EMAIL = process.env.ENQUIRY_FROM_EMAIL ?? 'enquiries@lightspeedholdings.com';
 const ENQUIRY_TO_EMAIL = process.env.ENQUIRY_TO_EMAIL;
-const AUDIT_PATH = 'audit/enquiry.jsonl';
-const IDEM_PATH = (key: string) => `audit/idem/${key}.json`;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const WINDOW_MS = 12 * 60 * 60 * 1000;
@@ -32,7 +27,6 @@ interface EnquiryFields {
   message?: string;
   phone?: string;
   turnstileToken?: string;
-  idempotencyKey?: string;
 }
 
 export default async function handler(req: Request): Promise<Response> {
@@ -76,58 +70,17 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
-  if (fields.idempotencyKey) {
-    const existing = await readIdem(fields.idempotencyKey);
-    if (existing) {
-      return json({ error: { code: 'duplicate', referenceId: existing.referenceId } }, 409);
-    }
-  }
-
   if (!RESEND_API_KEY || !ENQUIRY_TO_EMAIL) {
     return json({ error: { code: 'not_configured' } }, 500);
   }
-
-  const referenceId = crypto.randomUUID();
-  const sentAt = new Date().toISOString();
 
   const delivery = await sendEmail(fields);
   if (!delivery.ok) {
     return json({ error: { code: 'provider_unavailable' } }, 502);
   }
 
-  const payloadHash = createHash('sha256')
-    .update(
-      JSON.stringify({
-        form: fields.form ?? '',
-        name: fields.name ?? '',
-        email: fields.email ?? '',
-        organization: fields.organization ?? '',
-        enquiryType: fields.enquiryType ?? '',
-        message: fields.message ?? '',
-        phone: fields.phone ?? ''
-      })
-    )
-    .digest('hex');
-
-  try {
-    await appendLine(
-      AUDIT_PATH,
-      JSON.stringify({
-        referenceId,
-        sentAt,
-        payloadHash,
-        form: fields.form ?? 'contact',
-        providerId: delivery.id ?? null,
-        status: 'sent'
-      })
-    );
-  } catch {
-    return json({ error: { code: 'audit_failed' } }, 502);
-  }
-
-  if (fields.idempotencyKey) {
-    await writeIdem(fields.idempotencyKey, { referenceId, sentAt });
-  }
+  const referenceId = crypto.randomUUID();
+  const sentAt = new Date().toISOString();
 
   return json({ status: 'recorded', referenceId, sentAt }, 201);
 }
@@ -148,8 +101,7 @@ function pickStrings(body: Record<string, unknown>): EnquiryFields {
     'enquiryType',
     'message',
     'phone',
-    'turnstileToken',
-    'idempotencyKey'
+    'turnstileToken'
   ] as const;
   const out: EnquiryFields = {};
   for (const key of keys) {
@@ -253,44 +205,4 @@ function buildEmailHtml(fields: EnquiryFields): string {
     .map(([label, value]) => `<tr><th align="left">${label}</th><td>${value}</td></tr>`)
     .join('');
   return `<table>${body}</table>`;
-}
-
-async function appendLine(path: string, line: string): Promise<void> {
-  let existing = '';
-  try {
-    const blobObject = await get(path, { access: 'private', useCache: false });
-    if (blobObject?.statusCode === 200) {
-      existing = await new Response(blobObject.stream).text();
-    }
-  } catch {
-    // first write
-  }
-  await put(path, `${existing}${line}\n`, {
-    access: 'private',
-    addRandomSuffix: false,
-    allowOverwrite: true
-  });
-}
-
-interface IdemRecord {
-  referenceId: string;
-  sentAt: string;
-}
-
-async function readIdem(key: string): Promise<IdemRecord | null> {
-  try {
-    const blobObject = await get(IDEM_PATH(key), { access: 'private', useCache: false });
-    if (!blobObject || blobObject.statusCode !== 200) return null;
-    return JSON.parse(await new Response(blobObject.stream).text()) as IdemRecord;
-  } catch {
-    return null;
-  }
-}
-
-async function writeIdem(key: string, record: IdemRecord): Promise<void> {
-  await put(IDEM_PATH(key), JSON.stringify(record), {
-    access: 'private',
-    addRandomSuffix: false,
-    allowOverwrite: true
-  });
 }
