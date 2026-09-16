@@ -1,13 +1,18 @@
 import { get, put } from '@vercel/blob';
 import { createHash } from 'node:crypto';
+import nodemailer from 'nodemailer';
 
 export const config = {
   runtime: 'nodejs'
 };
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const SMTP_HOST = process.env.SMTP_HOST;
+const SMTP_PORT = Number(process.env.SMTP_PORT ?? (Number(process.env.SMTP_SECURE) ? 465 : 587));
+const SMTP_SECURE = (process.env.SMTP_SECURE ?? '').toLowerCase() === 'true';
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
 const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
-const ENQUIRY_FROM_EMAIL = process.env.ENQUIRY_FROM_EMAIL ?? 'enquiries@lightspeedholdings.com';
+const ENQUIRY_FROM_EMAIL = process.env.ENQUIRY_FROM_EMAIL ?? SMTP_USER;
 const ENQUIRY_TO_EMAIL = process.env.ENQUIRY_TO_EMAIL;
 const AUDIT_PATH = 'audit/enquiry.jsonl';
 const IDEM_PATH = (key: string) => `audit/idem/${key}.json`;
@@ -74,14 +79,14 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
-  if (!RESEND_API_KEY || !ENQUIRY_TO_EMAIL) {
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !ENQUIRY_TO_EMAIL) {
     return json({ error: { code: 'not_configured' } }, 500);
   }
 
   const referenceId = crypto.randomUUID();
   const sentAt = new Date().toISOString();
 
-  const delivery = await sendEmail(fields);
+  const delivery = await sendEmail(fields, ENQUIRY_FROM_EMAIL ?? '', ENQUIRY_TO_EMAIL ?? '');
   if (!delivery.ok) {
     return json({ error: { code: 'provider_unavailable' } }, 502);
   }
@@ -191,29 +196,26 @@ interface DeliveryResult {
   id?: string;
 }
 
-async function sendEmail(fields: EnquiryFields): Promise<DeliveryResult> {
+async function sendEmail(fields: EnquiryFields, from: string, to: string): Promise<DeliveryResult> {
+  const transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_SECURE,
+    auth: { user: SMTP_USER ?? '', pass: SMTP_PASS ?? '' }
+  });
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY ?? ''}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        from: ENQUIRY_FROM_EMAIL,
-        to: [ENQUIRY_TO_EMAIL ?? ''],
-        replyTo: fields.email ?? '',
-        subject: `Website enquiry (${fields.enquiryType}) — ${fields.organization}`,
-        html: buildEmailHtml(fields)
-      })
+    const info = await transporter.sendMail({
+      from,
+      to,
+      replyTo: fields.email ?? '',
+      subject: `Website enquiry (${fields.enquiryType}) — ${fields.organization}`,
+      html: buildEmailHtml(fields)
     });
-    if (!response.ok) {
-      return { ok: false };
-    }
-    const data = (await response.json()) as { id?: string };
-    return { ok: true, id: data.id };
+    return { ok: true, id: info.messageId };
   } catch {
     return { ok: false };
+  } finally {
+    transporter.close();
   }
 }
 
