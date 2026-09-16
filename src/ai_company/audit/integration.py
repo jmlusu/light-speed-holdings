@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Any
 
 from ai_company.audit.events import AuditEvent, AuditEventType
 from ai_company.audit.writer import AuditWriter
+
+logger = logging.getLogger(__name__)
 
 _writer: AuditWriter | None = None
 
@@ -32,25 +35,50 @@ def get_writer() -> AuditWriter | None:
     return _writer
 
 
+def _coerce_payload(value: Any, field: str) -> dict[str, Any]:
+    """Coerce an ``AuditEvent`` payload field to a dict.
+
+    The LLM output is untyped (GAP-019): a tool step whose ``args`` is a bare
+    string (e.g. ``args: "-"``) must not crash ``AuditEvent`` construction,
+    which would fail the entire task. Non-dict payloads are enveloped so the
+    event is still recorded with the offending value preserved.
+    """
+    if isinstance(value, dict):
+        return value
+    return {"_raw_value": repr(value), "_field": field}
+
+
+def _write_event(event: AuditEvent) -> None:
+    """Append an audit event, best-effort. The audit trail is infrastructure
+    and must never crash the executor loop."""
+    if _writer is None:
+        return
+    try:
+        _writer.write(event)
+    except Exception:  # noqa: BLE001 - audit is best-effort infrastructure
+        logger.error("Failed to record audit event %s", event.event_type, exc_info=True)
+
+
 def log_tool_call(
     task_id: str,
     agent_id: str,
     tool: str,
-    args: dict[str, Any],
-    result: dict[str, Any],
+    args: Any,
+    result: Any,
 ) -> None:
     """Record a TOOL_CALL event after a tool executes."""
     if _writer is None:
         return
-    event = AuditEvent(
-        event_type=AuditEventType.TOOL_CALL,
-        task_id=task_id,
-        agent_id=agent_id,
-        tool=tool,
-        args=args,
-        result=result,
+    _write_event(
+        AuditEvent(
+            event_type=AuditEventType.TOOL_CALL,
+            task_id=task_id,
+            agent_id=agent_id,
+            tool=tool,
+            args=_coerce_payload(args, "args"),
+            result=_coerce_payload(result, "result"),
+        )
     )
-    _writer.write(event)
 
 
 def log_task_status(
@@ -72,13 +100,14 @@ def log_task_status(
     else:
         return
 
-    event = AuditEvent(
-        event_type=event_type,
-        task_id=task_id,
-        agent_id=agent_id,
-        metadata={"old_status": old_status, "new_status": new_status},
+    _write_event(
+        AuditEvent(
+            event_type=event_type,
+            task_id=task_id,
+            agent_id=agent_id,
+            metadata={"old_status": old_status, "new_status": new_status},
+        )
     )
-    _writer.write(event)
 
 
 def log_hitl_decision(
@@ -98,13 +127,14 @@ def log_hitl_decision(
         event_type = AuditEventType.HITL_PARKED
     else:
         event_type = AuditEventType.HITL_APPROVED if approved else AuditEventType.HITL_DENIED
-    event = AuditEvent(
-        event_type=event_type,
-        task_id=task_id,
-        agent_id=agent_id,
-        tool=tool,
+    _write_event(
+        AuditEvent(
+            event_type=event_type,
+            task_id=task_id,
+            agent_id=agent_id,
+            tool=tool,
+        )
     )
-    _writer.write(event)
 
 
 def log_escalation(
@@ -122,16 +152,17 @@ def log_escalation(
     """
     if _writer is None:
         return
-    event = AuditEvent(
-        event_type=AuditEventType.ESCALATION,
-        task_id=task_id,
-        agent_id=to_agent or from_agent,
-        args={
-            "from_agent": from_agent,
-            "to_agent": to_agent,
-            "reason": reason,
-            "rule_id": rule_id,
-        },
-        metadata={"resolved": resolved},
+    _write_event(
+        AuditEvent(
+            event_type=AuditEventType.ESCALATION,
+            task_id=task_id,
+            agent_id=to_agent or from_agent,
+            args={
+                "from_agent": from_agent,
+                "to_agent": to_agent,
+                "reason": reason,
+                "rule_id": rule_id,
+            },
+            metadata={"resolved": resolved},
+        )
     )
-    _writer.write(event)
