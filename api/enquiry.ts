@@ -1,8 +1,7 @@
 import { get, put } from '@vercel/blob';
-import { createHash } from 'node:crypto';
 
 export const config = {
-  runtime: 'nodejs'
+  runtime: 'edge'
 };
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -86,19 +85,17 @@ export default async function handler(req: Request): Promise<Response> {
     return json({ error: { code: 'provider_unavailable' } }, 502);
   }
 
-  const payloadHash = createHash('sha256')
-    .update(
-      JSON.stringify({
-        form: fields.form ?? '',
-        name: fields.name ?? '',
-        email: fields.email ?? '',
-        organization: fields.organization ?? '',
-        enquiryType: fields.enquiryType ?? '',
-        message: fields.message ?? '',
-        phone: fields.phone ?? ''
-      })
-    )
-    .digest('hex');
+  const payloadRaw = JSON.stringify({
+    form: fields.form ?? '',
+    name: fields.name ?? '',
+    email: fields.email ?? '',
+    organization: fields.organization ?? '',
+    enquiryType: fields.enquiryType ?? '',
+    message: fields.message ?? '',
+    phone: fields.phone ?? ''
+  });
+  const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payloadRaw));
+  const payloadHash = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
 
   try {
     await appendLine(
