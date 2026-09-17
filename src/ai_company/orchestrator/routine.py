@@ -306,7 +306,13 @@ class RoutineStore:
                 "Failed to read registry %s — receiver %r accepted", registry, receiver_id
             )
             return True
-        agents = data.get("agents", []) if isinstance(data, dict) else []
+        if isinstance(data, dict):
+            # Canonical schema: agents live under ``company.agents`` (same
+            # accessor as RegistryLoader and sync_registry). The root-level
+            # ``agents`` fallback keeps legacy flat registries working.
+            agents = data.get("company", {}).get("agents", []) or data.get("agents", [])
+        else:
+            agents = data
         known = {a.get("id") for a in agents if isinstance(a, dict)}
         return receiver_id in known
 
