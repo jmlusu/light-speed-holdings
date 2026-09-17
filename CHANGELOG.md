@@ -136,3 +136,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - MessageBus for task delegation
 - Basic briefing generator
 - 27 agents across 7 departments
+
+## [Creative Production Studio] ls-stack agents x7, count migration 145?152 (2026-09-17)
+
+- Added 7 Marketing specialists (creative_director, presentation_designer, document_designer, diagram_designer, isual_storyteller, rand_advertising_designer, rtifact_qa_reviewer) completing the ls-* Creative Production Stack
+- Migrated agent count from 145 (144 AI + 1 Human CEO) to 152 (151 AI + 1 Human CEO) across living docs: README.md, USER-GUIDE.md, ORGANIZATION.md, company/org-chart.md, CHANGELOG.md, docs/source-of-truth.yaml, brand-strategy-validation-report.md, UX_VALIDATION_REPORT.md
+- 152 registry entries confirmed (20 exec / 125 spec / 7 board); 152 agent cards generated; i-company sync-registry --verify passed
+- Drift gates passed: alidate-drift.ps1, pytest tests/docs/test_doc_drift.py, .\scripts\lint-ecl.ps1, uv run ruff check src/, uv run mypy src/, uv run pytest
+- EXPECTED_AGENT_COUNT updated from 145 to 152 in 	ests/docs/test_doc_agent_counts.py
+- Org chart company/org-chart.md Marketing section updated from 11 ? 18 agents
+- Warmup pack marketing assets updated (tiktok, x-single, x-thread)
+- Atomized pillar content updated (docs/marketing/atomized/01 and  2)
+- Full doc sweep: 2427/2427 pytest tests passing, drift gates green
+- Validation status: pass

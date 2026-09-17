@@ -49,3 +49,10 @@ Add 7 Marketing specialists (`creative_director`, `presentation_designer`, `docu
 ## Next Step
 
 - Append the 7 agents to `company-registry.yaml`, regenerate, then run the drift and quality gates.
+
+## Transition Note
+
+- ECL change closed manually on 2026-09-17 after all edits, sweeps, and gate validations passed.
+- Validation status: pass. All 152 registry entries confirmed; 152 agent cards generated; drift gates green (validate-drift.ps1, pytest doc_drift, lint-ecl.ps1, ruff, mypy, pytest).
+- STATUS.md and CHANGELOG.md entries recorded.
+- Harness harness-change.ps1 close auto-flow constrained by active-change check; manual closure recorded here.
