@@ -19,9 +19,9 @@ interface CtaBandProps {
  */
 export const CtaBand: React.FC<CtaBandProps> = ({
   theme,
-  title = 'Start a Conversation',
+  title = 'Book an Executive Briefing',
   text = 'Tell us where your organisation is today — we will be honest about whether we can help, and exactly what it takes to start.',
-  ctaLabel = 'Start a Conversation',
+  ctaLabel = 'Book an Executive Briefing',
   ctaTo = '/contact',
   id,
 }) => {
@@ -31,38 +31,41 @@ export const CtaBand: React.FC<CtaBandProps> = ({
       id={id}
       aria-label="Call to action"
       className={`px-4 sm:px-8 pt-16 sm:pt-20 pb-24 sm:pb-28 max-w-7xl mx-auto w-full border-t ${
-        isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        isLight ? 'border-ls-grey-dark/40' : 'border-ls-white/10'
       }`}
     >
       <Reveal>
         <div
-          className={`relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center ${
-            isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-100'
+          className={`relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center border shadow-xl ${
+            isLight
+              ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy'
+              : 'bg-ls-navy border-ls-white/15 text-ls-white'
           }`}
         >
-          {/* Hardware Hex Corner Fasteners */}
-          <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute top-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-
           <div className="max-w-2xl mx-auto space-y-5">
-            <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
+            <span className="text-xs font-body font-bold tracking-widest text-ls-red uppercase">
               THE NEXT STEP
             </span>
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight font-display">{title}</h2>
             <p className={`text-sm sm:text-base leading-relaxed ${
-              isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+              isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
             }`}>
               {text}
             </p>
-            <Link
-              to={ctaTo}
-              className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:brightness-110"
-            >
-              {ctaLabel}
-              <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-            </Link>
+            <div className="pt-2">
+              <Link
+                to={ctaTo}
+                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {ctaLabel}
+                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+              </Link>
+              <p className={`text-[11px] font-body mt-3 font-medium ${
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+              }`}>
+                We respond to qualified enquiries within two business days.
+              </p>
+            </div>
           </div>
         </div>
       </Reveal>

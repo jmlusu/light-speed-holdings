@@ -302,7 +302,9 @@ class RoutineStore:
 
             data = load_yaml_cached(registry)
         except Exception:  # noqa: BLE001 - validation is best-effort
-            logger.warning("Failed to read registry %s — receiver %r accepted", registry, receiver_id)
+            logger.warning(
+                "Failed to read registry %s — receiver %r accepted", registry, receiver_id
+            )
             return True
         agents = data.get("agents", []) if isinstance(data, dict) else []
         known = {a.get("id") for a in agents if isinstance(a, dict)}

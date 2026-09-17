@@ -77,7 +77,7 @@
 - **Legal Advisor** (`legal`) - executive; reports to: `clo`
 - **Legal Owner** (`legal-owner`) - specialist; reports to: `legal`
 
-## Marketing (10 agents)
+## Marketing (18 agents)
 
 - **Brand Strategist** (`brand-strategist`) - specialist; reports to: `cmo`
 - **Chief Marketing Officer** (`cmo`) - executive; reports to: `chief-of-staff`
@@ -89,6 +89,14 @@
 - **Marketing Owner** (`marketing-owner`) - specialist; reports to: `cmo`
 - **Media Generation Owner** (`media-generation-owner`) - specialist; reports to: `cmo`
 - **Product Marketing Manager** (`product-marketing-manager`) - specialist; reports to: `cmo`
+- **Social Media Manager** (`social-media-manager`) - specialist; reports to: `cmo`
+- **Creative Director** (`creative-director`) - specialist; reports to: `cmo`
+- **Presentation Designer** (`presentation-designer`) - specialist; reports to: `creative-director`
+- **Document Designer** (`document-designer`) - specialist; reports to: `creative-director`
+- **Diagram Designer** (`diagram-designer`) - specialist; reports to: `creative-director`
+- **Visual Storyteller** (`visual-storyteller`) - specialist; reports to: `creative-director`
+- **Brand Advertising Designer** (`brand-advertising-designer`) - specialist; reports to: `creative-director`
+- **Artifact QA Reviewer** (`artifact-qa-reviewer`) - specialist; reports to: `creative-director`
 
 ## Operations (11 agents)
 

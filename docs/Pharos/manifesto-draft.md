@@ -104,7 +104,7 @@ Reservations — Trust-by-Engineering*.
 
 ## What "Company-Building" Means Here
 
-At Lightspeed Holdings we operate an AI-native enterprise. Today that is 144
+At Lightspeed Holdings we operate an AI-native enterprise. Today that is 152
 agents across 20 departments, with defined reporting chains, a five-tier approval
 system, audit trails, RACI matrices, and a board that exercises genuine oversight.
 

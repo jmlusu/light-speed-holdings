@@ -25,7 +25,7 @@ deployed control, a failure mode if omitted, and the institutional checkpoint a
 regulator can apply.
 
 The framework is not theoretical in origin. It is the operating constitution of
-LightSpeed Holdings, a company run by a workforce of 144 agents across 20
+LightSpeed Holdings, a company run by a workforce of 152 agents across 20
 departments under five-tier human-in-the-loop approvals, with immutable audit
 trails. Every control named here is fielded in production.
 
@@ -73,7 +73,7 @@ for each agent-assigned authority? Is sign-off cryptographic and logged?
 has a defined domain, a permission boundary, and a deterministic escalation
 path when work exceeds its scope.
 
-**Instantiation.** Registry-defined personas (144 in the source deployment),
+**Instantiation.** Registry-defined personas (152 in the source deployment),
 compiled mechanically into runtime agent cards; role-bounded subagents;
 RACI-based reporting chains.
 

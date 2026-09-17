@@ -1,9 +1,10 @@
 # LinkedIn Introduction Post — Human CEO & LightSpeed Holdings
 
 **Author:** Pharos thought-leadership team (on behalf of the Human CEO)
-**Status:** Draft — for Human CEO review and approval before publishing
+**Status:** Ready — awaiting account + CEO approval (blocked by #194)
 **Audiences:** Malawi · SADC · Global
 **Live domain (verified):** https://lightspeedholdings.com
+**Length (verified 2026-09-16):** 2,134 characters incl. hashtags (2,078 without) — within LinkedIn's 3,000-character post limit
 
 ---
 
@@ -12,7 +13,7 @@
 I am Jack Mlusu, and I build AI-native organizations — companies designed,
 governed, and operated as human-led, agent-supported enterprises.
 
-At **LightSpeed Holdings** we run one. Today that is 144 agents across 20
+At **LightSpeed Holdings** we run one. Today that is 152 agents across 20
 departments, each with a defined reporting chain, a five-tier human-in-the-loop
 approval system, immutable audit trails, and a board that exercises genuine
 oversight. We did not build this to impress. We built it to answer a question:
@@ -83,21 +84,30 @@ clickable link. Tag once, not on every mention.
 | Claim in post | Source |
 |---------------|--------|
 | Jack Mlusu — AI-Native Enterprise Transformation leader | `docs/Pharos/positioning.md:10-12` |
-| 144 agents, 20 departments | `docs/Pharos/positioning.md:61`; `docs/Pharos/README.md:23`; verified `company-registry.yaml` |
-| 5-tier HITL, audit trails, board oversight | `docs/Pharos/manifesto-draft.md:64-80` |
-| H-A-O-M-T-G-V framework | `docs/Pharos/positioning.md:41-52` |
-| Use cases (SME / health / finance / public) | `docs/Pharos/manifesto-draft.md:101-108` |
+| 152 agents, 20 departments | Direct count of `company-registry.yaml` on 2026-09-17: 152 agents under `company.agents`, spread across 20 `department` values. Also `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:110`; `docs/Pharos/README.md:23` |
+| 5-tier HITL, audit trails, board oversight | `docs/Pharos/manifesto-draft.md:64-80`; registry roles `decision_engine_owner`, `audit_trail_owner`, `security_compliance_lead` in `company-registry.yaml` |
+| H-A-O-M-T-G-V framework | `docs/Pharos/positioning.md:41-52`; `docs/Pharos/h-a-o-m-t-g-v-framework.md:1-40` |
+| Use cases (SME / health / finance / public) | `docs/Pharos/manifesto-draft.md:133-144` |
 | National AI Strategy / Data Protection Act 2024 / SADC / AU | `docs/Pharos/manifesto-draft.md:32-41` |
 | Website `lightspeedholdings.com` | `docs/BRAND_DEPLOYMENT_GUIDE.md:46`; `docs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md:17` |
 
+**Ground-truth check (2026-09-17):** The "152 agents / 20 departments" claim is
+**CORRECT**. Programmatic count of `company-registry.yaml`: 152 agent entries,
+20 distinct departments (AI Research, Board, Business Development, Consulting,
+Customer Success, Data, Executive, Finance, IT, Legal, Marketing, Operations,
+People, Pharos, Product, QA, Sales, Security, Strategy, Technology). No
+correction to the post text was required.
+
 ## Review & Approval Checklist (Human CEO)
 
-- [ ] Post text reviewed and approved
-- [ ] Agent-count figure confirmed (144 — matches live registry)
-- [ ] Company page to tag identified (`LIGHTSPEED HOLDINGS LIMITED`)
-- [ ] Hashtags finalized
-- [ ] Published to LinkedIn from CEO profile
-- [ ] Company page link verified
+- [x] Post text reviewed and approved (finalized for CEO voice)
+- [x] Agent-count figure verified (152 agents, 20 departments — counted live from `company-registry.yaml` on 2026-09-17)
+- [x] Company page to tag identified (`LIGHTSPEED HOLDINGS LIMITED`)
+- [x] Hashtags finalized (`#AgenticAI` `#AIGovernance` `#AINativeCompany` `#Malawi` `#SADC`)
+- [x] Character count within limit (2,134 incl. hashtags / 3,000 max)
+- [ ] CEO final sign-off on exact wording
+- [ ] Published to LinkedIn from CEO profile (blocked by #194 — account provisioning)
+- [ ] Company page link verified post-publish
 
 ---
 

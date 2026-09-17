@@ -46,7 +46,7 @@ Every major React component in `src/components/` must be validated against visua
 | `TemplatesArtifacts.tsx` | Verifies rendering of OpenCode agent YAML cards, Policy-as-Code schemas, SADC compliance blueprints, and template copy/download triggers. |
 | `TactileHardwareElements.tsx` | Tests physical feedback states for `TactileRockerSwitch`, `TactileRotaryKnob`, and `AcousticVentGrille`. |
 | `MissionControl.tsx` & `CommandCenter.tsx` | Tests Real-time system status feeds, active agent metrics, token spend charts, and view switches. |
-| `AgentRoster.tsx` & `AgentModal.tsx` | Verifies filtering 144 agents across 20 departments, searching agent cards, and displaying OpenCode tool permission blocks. |
+| `AgentRoster.tsx` & `AgentModal.tsx` | Verifies filtering 152 agents across 20 departments, searching agent cards, and displaying OpenCode tool permission blocks. |
 | `TaskKanban.tsx` & `TaskModal.tsx` | Validates task column transitions (`PENDING` -> `IN_PROGRESS` -> `COMPLETED`), filtering by priority, and task execution logs. |
 | `ApprovalsEscalations.tsx` | Tests Human-in-the-Loop (HITL) approval request rendering, decision triggers (`APPROVE`, `REJECT`), and cryptographic signature validation. |
 

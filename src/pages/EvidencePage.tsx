@@ -30,7 +30,7 @@ interface Method {
 
 const METRICS: Metric[] = [
   {
-    value: '144',
+    value: '152',
     label: 'Verified Agent Configurations',
     source: 'company-registry.yaml',
   },
@@ -107,7 +107,7 @@ const PROOF_CASES: ProofCardData[] = [
     title: 'Lightspeed Holdings — The Meta Case Study',
     badge: 'Proven in-house.',
     tone: 'cyan',
-    text: 'The company is its own first customer. 144 agents across 20 departments, five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — operating daily. Not a demo; an operating company that builds the tooling it uses.',
+    text: 'The company is its own first customer. 152 agents across 20 departments, five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — operating daily. Not a demo; an operating company that builds the tooling it uses.',
   },
   {
     id: 'PC-02',
@@ -170,14 +170,14 @@ const ProofCard: React.FC<{ card: ProofCardData; isLight: boolean; featured?: bo
 }) => {
   const badgeClasses =
     card.tone === 'slate'
-      ? 'border-slate-400/40 bg-slate-400/10 text-slate-400'
+      ? 'border-ls-grey-light-text/40 bg-ls-grey-dark/10 text-ls-grey-light-text'
       : 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan';
 
   return (
     <div
       className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 flex flex-col ${
         featured ? 'md:col-span-2' : ''
-      } ${isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'}`}
+      } ${isLight ? 'hardware-chassis-light text-ls-navy' : 'hardware-chassis-dark text-ls-grey-light-text'}`}
     >
       {/* Hardware corner screws */}
       <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" />
@@ -186,20 +186,20 @@ const ProofCard: React.FC<{ card: ProofCardData; isLight: boolean; featured?: bo
       <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-widest text-ls-red">
+        <span className="font-body text-[10px] sm:text-[11px] font-bold tracking-widest text-ls-red">
           {card.id}
         </span>
         <span
-          className={`rounded-full border px-2.5 py-1 font-mono text-[9px] sm:text-[10px] font-bold tracking-widest ${badgeClasses}`}
+          className={`rounded-full border px-2.5 py-1 font-body text-[9px] sm:text-[10px] font-bold tracking-widest ${badgeClasses}`}
         >
           {card.badge}
         </span>
       </div>
 
-      <h3 className={`mt-4 text-base sm:text-lg font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
+      <h3 className={`mt-4 text-base sm:text-lg font-black tracking-tight ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
         {card.title}
       </h3>
-      <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-slate-700 font-medium' : 'text-zinc-400'}`}>
+      <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'}`}>
         {card.text}
       </p>
     </div>
@@ -217,17 +217,17 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
     <>
       {/* Page Intro */}
       <header className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-24 pb-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest">
           <Activity className="w-3.5 h-3.5" aria-hidden="true" />
           <span>EVIDENCE &amp; RESULTS</span>
         </div>
         <h1 className={`mt-4 text-3xl sm:text-5xl font-black tracking-tight font-display ${
-          isLight ? 'text-slate-900' : 'text-white'
+          isLight ? 'text-ls-navy' : 'text-ls-white'
         }`}>
           Built in the Open. Measured by Machine.
         </h1>
         <p className={`mt-4 max-w-2xl text-sm sm:text-base leading-relaxed ${
-          isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+          isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
         }`}>
           Every number below traces to a file, a test, or a governance gate that runs in our own
           repository — published, dated, and regenerated on every release.
@@ -247,7 +247,7 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
             <div
               key={metric.label}
               className={`relative overflow-hidden rounded-3xl p-6 text-center ${
-                isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
+                isLight ? 'hardware-chassis-light text-ls-navy' : 'hardware-chassis-dark text-ls-grey-light-text'
               }`}
             >
               <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" />
@@ -255,16 +255,16 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
               <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full hardware-screw" />
               <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
-              <div className={`font-mono text-4xl sm:text-5xl font-black tracking-tight ${
-                isLight ? 'text-slate-900' : 'text-white'
+              <div className={`font-body text-4xl sm:text-5xl font-black tracking-tight ${
+                isLight ? 'text-ls-navy' : 'text-ls-white'
               }`}>
                 {metric.value}
               </div>
-              <div className="mt-3 font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-ls-red">
+              <div className="mt-3 font-body text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-ls-red">
                 {metric.label}
               </div>
-              <div className={`mt-2 font-mono text-[10px] tracking-wide ${
-                isLight ? 'text-slate-500' : 'text-zinc-500'
+              <div className={`mt-2 font-body text-[10px] tracking-wide ${
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
                 {metric.source}
               </div>
@@ -279,26 +279,26 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
         className="px-4 sm:px-8 max-w-7xl mx-auto w-full py-16 sm:py-20"
       >
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
+          <span className="text-xs font-body font-bold tracking-widest text-ls-red">
             METHOD
           </span>
           <h2
             id="evidence-method-heading"
             className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-              isLight ? 'text-slate-900' : 'text-white'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}
           >
             How We Measure
           </h2>
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-            isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+            isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
             Four automated loops keep this page honest between releases.
           </p>
         </div>
 
         <div className={`relative overflow-hidden rounded-3xl p-6 sm:p-10 shadow-2xl ${
-          isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
+          isLight ? 'hardware-chassis-light text-ls-navy' : 'hardware-chassis-dark text-ls-grey-light-text'
         }`}>
           {/* Hardware corner screws */}
           <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" />
@@ -307,10 +307,10 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
           <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
           {/* Console header bar */}
-          <div className="flex items-center justify-between pb-3.5 mb-6 border-b border-black/10 dark:border-white/10 px-1">
+          <div className="flex items-center justify-between pb-3.5 mb-6 border-b border-ls-navy/10 dark:border-ls-white/10 px-1">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-ls-red shadow-[0_0_8px_rgba(230,57,70,0.9)]" />
-              <span className="font-mono text-xs font-bold tracking-wider">
+              <span className="font-body text-xs font-bold tracking-wider">
                 MEASUREMENT CONSOLE // CONTINUOUS
               </span>
             </div>
@@ -326,23 +326,23 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
                   className={`rounded-2xl p-4 sm:p-5 ${isLight ? 'hardware-well-light' : 'hardware-well-dark'}`}
                 >
                   <div className="flex items-start gap-4">
-                    <span className="font-mono text-xs font-bold text-ls-red pt-0.5">{method.step}</span>
+                    <span className="font-body text-xs font-bold text-ls-red pt-0.5">{method.step}</span>
                     <span aria-hidden="true" className="pt-0.5">
                       <Icon className="w-5 h-5 shrink-0 text-ls-cyan" />
                     </span>
                     <div className="flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className={`text-sm sm:text-base font-bold tracking-tight ${
-                          isLight ? 'text-slate-900' : 'text-zinc-100'
+                          isLight ? 'text-ls-navy' : 'text-ls-white'
                         }`}>
                           {method.title}
                         </h3>
-                        <span className="rounded-full border border-ls-cyan/40 bg-ls-cyan/10 px-2 py-0.5 font-mono text-[9px] font-bold tracking-widest text-ls-cyan">
+                        <span className="rounded-full border border-ls-cyan/40 bg-ls-cyan/10 px-2 py-0.5 font-body text-[9px] font-bold tracking-widest text-ls-cyan">
                           PROVEN IN-HOUSE
                         </span>
                       </div>
                       <p className={`mt-1 text-xs sm:text-sm leading-relaxed ${
-                        isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+                        isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
                       }`}>
                         {method.detail}
                       </p>
@@ -359,23 +359,23 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
       <section
         aria-labelledby="evidence-proof-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-16 sm:py-20 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
+          <span className="text-xs font-body font-bold tracking-widest text-ls-red">
             PROOF // HONESTY-BADGED
           </span>
           <h2
             id="evidence-proof-heading"
             className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-              isLight ? 'text-slate-900' : 'text-white'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}
           >
             Proof Cases &amp; Pilots
           </h2>
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-            isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+            isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
             Nothing has been delivered to paying clients yet. Every proof point below carries its honest status.
           </p>
@@ -392,23 +392,23 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
       <section
         aria-labelledby="evidence-policy-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-16 sm:py-20 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-mono font-bold tracking-widest text-ls-red">
+          <span className="text-xs font-body font-bold tracking-widest text-ls-red">
             POLICY // REGIONAL GOVERNANCE
           </span>
           <h2
             id="evidence-policy-heading"
             className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-              isLight ? 'text-slate-900' : 'text-white'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}
           >
             Shaping the Policy That Governs AI
           </h2>
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-            isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+            isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
             LightSpeed does not only build agentic AI — it shapes the policy that governs it across Malawi and SADC.
           </p>
@@ -425,12 +425,12 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
       <section
         aria-labelledby="evidence-honesty-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-16 sm:py-20 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <h2
           id="evidence-honesty-heading"
-          className="mb-6 font-mono text-xs font-bold tracking-widest text-ls-red"
+          className="mb-6 font-body text-xs font-bold tracking-widest text-ls-red"
         >
           HONESTY POLICY
         </h2>
@@ -441,8 +441,8 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
               className={`rounded-2xl p-5 ${isLight ? 'hardware-well-light' : 'hardware-well-dark'}`}
             >
               <CheckCircle2 className="w-4 h-4 text-ls-cyan" aria-hidden="true" />
-              <p className={`mt-3 font-mono text-xs sm:text-sm leading-relaxed ${
-                isLight ? 'text-slate-800' : 'text-ls-cyan'
+              <p className={`mt-3 font-body text-xs sm:text-sm leading-relaxed ${
+                isLight ? 'text-ls-navy' : 'text-ls-cyan'
               }`}>
                 {statement}
               </p>
@@ -463,7 +463,7 @@ export const EvidencePage: React.FC<EvidencePageProps> = ({ theme, onRequestBrie
           <button
             type="button"
             onClick={() => onRequestBriefing('Evidence pack: metrics, test suite, registry')}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-ls-red px-8 py-4 font-bold text-xs tracking-widest text-white shadow-lg shadow-ls-red/25 transition-all hover:bg-ls-red/90 active:scale-98 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-ls-red px-8 py-4 font-bold text-xs tracking-widest text-ls-white shadow-lg shadow-ls-red/25 transition-all hover:bg-ls-red/90 active:scale-98 cursor-pointer"
           >
             <span>Request the Evidence Pack</span>
             <ArrowRight className="w-4 h-4" aria-hidden="true" />

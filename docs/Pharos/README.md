@@ -20,7 +20,7 @@ and the SADC region.
 
 | Pillar | What it means | Lightspeed proof |
 |--------|---------------|------------------|
-| **Company Builder** | The reference case for what an AI-native company looks like | 144-agent architecture, 20 departments, 5-tier HITL approvals, audit trails |
+| **Company Builder** | The reference case for what an AI-native company looks like | 152-agent architecture, 20 departments, 5-tier HITL approvals, audit trails |
 | **Use Cases** | Documented, sector-specific, quantified deployments | J&S StopOver Bar, health/M&E, VSLA/SACCO/finance, Lightspeed as meta-case-study |
 | **Policy** | Global agentic AI governance translated to SADC reality | Data Protection Act 2024 literacy, AU Continental AI Strategy, SADC digital transformation |
 

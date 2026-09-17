@@ -58,6 +58,24 @@ Not every graphic needs all eight beats — but the headline, key stat, and CTA 
 5. QA with `ls-artifact-qa`: hierarchy, contrast, typography, brand, accuracy.
 6. Deliver: the graphic file(s) + the headline + the source trail for the key stat + CTA text.
 
+## Brand Token Enforcement (post-render)
+
+AI-generated renders are NOT guaranteed to use LightSpeed tokens. Every `k-dense-infographics` (or external) render MUST be post-processed before it ships:
+
+1. **Remap to the LS palette.** Recolor the render so every visible color comes from `brand/tokens/brand-tokens.json` — navy #070A40 dominant, cyan #00BFFF secondary, red #E63946 reserved for the key number / CTA, plus greys #6B7280 / #F2F2F2 / #9CA3AF and white #FFFFFF for backgrounds and supporting text.
+2. **Auto-check with the deterministic gate.** Run the palette checker on the remapped render:
+
+   ```
+   uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py <image> --tolerance 3
+   ```
+
+   The checker compares every visible pixel against the exact token palette and reports the percent off-palette (default tolerance 3% for anti-aliasing/gradients). It prints one line — PASS or FAIL — and exits 0 on pass / 1 on fail. A FAIL means the remap left visible off-brand pixels: fix the render and re-check until PASS.
+3. **Then submit to Brand QA.** Only after the checker passes, pass the asset to `ls-artifact-qa`; its Brand QA requires the checker green before APPROVE.
+
+### Carve-out: article-illustrations (Grav)
+
+`article-illustrations` (Grav hand-drawn character IP: white background, black line art, red/orange/blue accents) is an independent, intentional visual style. It is deliberately OUT OF SCOPE for public-brand palette enforcement — do not remap Grav art to LightSpeed tokens and do not run it through the palette checker. All other routes in the Medium Choice table are in scope.
+
 ## QA Gates
 
 - [ ] Headline, key statistic, and CTA present and accurate

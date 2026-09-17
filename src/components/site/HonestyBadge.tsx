@@ -13,7 +13,7 @@ interface HonestyBadgeProps {
  */
 export const HonestyBadge: React.FC<HonestyBadgeProps> = ({ label, className }) => (
   <span
-    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[9px] font-bold tracking-widest ${TONE_STYLES[label.tone]} ${className ?? ''}`}
+    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-body text-[9px] font-bold tracking-widest ${TONE_STYLES[label.tone]} ${className ?? ''}`}
   >
     <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
     {label.label}

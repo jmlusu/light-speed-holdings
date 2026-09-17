@@ -5,6 +5,8 @@ import type { Theme } from './site-context';
 import { SiteLayout } from './components/SiteLayout';
 import { withSite } from './site-context';
 import { HomePage } from './pages/HomePage';
+import { WhatWeDoPage } from './pages/WhatWeDoPage';
+import { ProofPage } from './pages/ProofPage';
 import { SolutionsPage } from './pages/SolutionsPage';
 import { SolutionDetailPage } from './pages/SolutionDetailPage';
 import { IndustriesPage } from './pages/IndustriesPage';
@@ -21,6 +23,8 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 
 const HomePageRoute = withSite(HomePage);
+const WhatWeDoPageRoute = withSite(WhatWeDoPage);
+const ProofPageRoute = withSite(ProofPage);
 const SolutionsPageRoute = withSite(SolutionsPage);
 const SolutionDetailPageRoute = withSite(SolutionDetailPage);
 const IndustriesPageRoute = withSite(IndustriesPage);
@@ -80,15 +84,17 @@ export const App: React.FC = () => {
         element: <SiteLayout />,
         children: [
           { index: true, element: <HomePageRoute /> },
-          { path: 'solutions', element: <SolutionsPageRoute /> },
+          { path: 'what-we-do', element: <WhatWeDoPageRoute /> },
+          { path: 'proof', element: <ProofPageRoute /> },
+          { path: 'solutions', element: <Navigate to="/what-we-do" replace /> },
           { path: 'solutions/:slug', element: <SolutionDetailPageRoute /> },
-          { path: 'industries', element: <IndustriesPageRoute /> },
+          { path: 'industries', element: <Navigate to="/what-we-do" replace /> },
           { path: 'industries/:slug', element: <IndustryDetailPageRoute /> },
+          { path: 'offerings', element: <Navigate to="/what-we-do" replace /> },
+          { path: 'work', element: <Navigate to="/proof" replace /> },
+          { path: 'evidence', element: <Navigate to="/proof" replace /> },
           { path: 'technology', element: <TechnologyPageRoute /> },
-          { path: 'work', element: <WorkPageRoute /> },
           { path: 'insights', element: <InsightsPageRoute /> },
-          { path: 'offerings', element: <OfferingsPageRoute /> },
-          { path: 'evidence', element: <EvidencePageRoute /> },
           { path: 'about', element: <AboutPageRoute /> },
           { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
           { path: 'contact', element: <ContactPageRoute /> },

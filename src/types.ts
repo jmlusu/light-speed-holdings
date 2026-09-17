@@ -100,7 +100,7 @@ export interface AuditEntry {
   category: 'orchestrator' | 'executor' | 'approval' | 'escalation' | 'security';
 }
 
-export type HonestyBadge = 
+export type HonestyBadge =
   | 'Fieldable in 2026'
   | 'In active development'
   | 'In pilot'

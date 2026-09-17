@@ -5,6 +5,24 @@
 
 ---
 
+## PHASE 0 — ONBOARDING (Accounts + Identity, first time only)
+
+Run once per platform until `docs/marketing/digital-asset-register.md` shows `Live`
+for all Tier 1–3 accounts. Owner: `social_media_manager`. Runbook:
+`docs/marketing/digital-identity-setup.md`.
+
+- [ ] Secure `info.lightspeed@gmail.com` (2FA, recovery, unique password, password manager)
+- [ ] Claim username `@lightspeedholdings` on Facebook, Instagram, X, LinkedIn, TikTok, YouTube, Threads
+- [ ] Complete profiles 100%: logos, banners, bios (master-description variants), website, contact
+- [ ] Stand up business ownership: Meta Business Suite, TikTok Business Center, YouTube/Google business, LinkedIn company administration, X Professional Account
+- [ ] Populate the Digital Asset Register for every platform (owner = Company, 2FA = Yes)
+- [ ] Buffer 10–15 first posts + 3–5 short videos before publishing
+
+Completing Phase 0 clears blocker #194 (accounts provisioned). Then resume the
+normal cadence below.
+
+---
+
 ## DAILY (Every Weekday)
 
 ### Morning (7:00 - 9:00 CAT)
@@ -84,7 +102,7 @@
 - [ ] GA4: Social traffic report (week over week)
 - [ ] Identify: Top 3 formats, Top 3 topics, Bottom 3 formats
 - [ ] Adjust: Next week's format mix based on data
-- [ ] Sync: 15 min standup (CMO, Writer, Creator, Marketing)
+- [ ] Sync: 15 min standup (CMO, Writer, Creator, Marketing, Social Media Manager)
 
 ### Friday — Weekly Wrap (45 min)
 - [ ] Full weekly metrics dashboard update
@@ -114,6 +132,7 @@
 - [ ] **AI Citation Audit:** 20 keywords in ChatGPT/Perplexity/Gemini
 - [ ] **Backlink Health:** LynkDog report (new/lost/broken)
 - [ ] **Brand Compliance:** 50 random posts audit
+- [ ] **Digital Identity Health:** username + brand-name consistency across platforms, Digital Asset Register accuracy (owner/2FA/status), domain reservation list current (`docs/marketing/digital-identity-setup.md`)
 - [ ] **Keyword Refresh:** Add 5 new, retire 5 stale
 - [ ] **Competitor Scan:** Top 3 competitors' top posts
 - [ ] **Strategy Adjustment:** Document pivots for next month

@@ -1,4 +1,4 @@
-# H-A-O-M-T-G-V: What Running a 144-Agent Company Taught Us About Governance
+# H-A-O-M-T-G-V: What Running a 152-Agent Company Taught Us About Governance
 
 **By Jack Mlusu, Founder & CEO, LightSpeed Holdings**
 
@@ -22,7 +22,7 @@ organizational work, how do you design a company around it?
 
 At LightSpeed Holdings we did not answer that question on a whiteboard. We
 answer it every day, because we run the experiment. The company is staffed by
-144 agents across 20 departments, each with a documented role, a permission
+152 agents across 20 departments, each with a documented role, a permission
 boundary, and a reporting chain, overseen by human executives and a board that
 exercises real oversight. Every high-impact action is gated behind a five-tier
 human-in-the-loop approval system. Every decision path is written to an
@@ -60,7 +60,7 @@ A single "AI" that can do everything is an empty promise and an audit
 nightmare. So we stopped talking about "the AI" and started talking about a
 roster.
 
-Each of our 144 agents is a discrete persona with an explicit domain scope, a
+Each of our 152 agents is a discrete persona with an explicit domain scope, a
 declared set of tools, and a deterministic escalation path. The roster is
 defined once in `company-registry.yaml`, compiled mechanically into agent cards,
 and treated like an org chart: readable, countable, auditable.
@@ -183,7 +183,7 @@ company.
 ## The proof is the point
 
 We did not build a demo. We built a company, and the framework is how we keep
-it safe enough to run every day. The numbers are the credibility: 144 agents,
+it safe enough to run every day. The numbers are the credibility: 152 agents,
 20 departments, five-tier approvals, seven sandboxed tools, immutable audit
 trails.
 
@@ -215,7 +215,7 @@ help us build the measurement and the governance together.
 - **Primary home:** Substack long-form; LinkedIn republish with the summary in
   the post body.
 - **Hashtags:** `#AgenticAI` `#AIGovernance` `#AINativeCompany` `#Malawi` `#SADC`
-- **Fact checklist:** 144 agents / 20 departments (`docs/Pharos/positioning.md:61`),
+- **Fact checklist:** 152 agents / 20 departments (`docs/Pharos/positioning.md:61`),
   5-tier approvals (`docs/Pharos/manifesto-draft.md:64-80`), 7 canonical tools
   (AGENTS.md §8), SHA-256 audit chains (`h-a-o-m-t-g-v-framework.md` §3-V).
 - **Review gate:** Human CEO approval before any publication; then route through

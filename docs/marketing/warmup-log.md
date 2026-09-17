@@ -7,6 +7,28 @@
 
 ---
 
+## Week 2 Prep (2026-09-16)
+
+Operator execution prep for Week 2 (Sep 13-19) is ready:
+
+- **Runbook:** `docs/marketing/warmup-content-pack/week2-runbook.md` — per-platform
+  operator checklist (asset to post, engagement actions, daily time-box).
+- **Content pack:** `docs/marketing/warmup-content-pack/` — 7 queued, on-brand,
+  fact-verified assets (LinkedIn post, X thread + single, IG caption + story,
+  FB post, TikTok 30s script, YT Short script), each labeled "Queued until
+  accounts exist (#194)".
+
+Nothing can be published until accounts are provisioned (blocked by #194). This
+prep means the operator can execute Week 2 immediately once accounts exist.
+Engagement tables below are unchanged; no log data has been invented.
+
+**Path to clear #194:** account provisioning follows the Phase-0/Phase-1 runbook
+(`docs/marketing/digital-identity-setup.md`, owner: `social_media_manager`). Once
+the Digital Asset Register (`docs/marketing/digital-asset-register.md`) shows
+`Live` for all platforms, warm-up may begin. Protocol itself is unchanged.
+
+---
+
 ## Week 1: Profile Completion & Initial Follows (Sep 6-12)
 
 ### Daily Checklist

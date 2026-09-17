@@ -38,7 +38,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
   const isLight = theme === 'light';
   return (
     <div className={`p-6 sm:p-10 rounded-3xl transition-all duration-300 relative overflow-hidden shadow-2xl ${
-      isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
+      isLight ? 'hardware-chassis-light text-ls-navy' : 'hardware-chassis-dark text-ls-grey-light-text'
     }`}>
       {/* Hardware Hex Corner Screws */}
       <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" />
@@ -47,7 +47,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
       <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
       {/* Corner Badge */}
-      <div className="absolute top-0 right-0 py-1.5 px-4 rounded-bl-2xl bg-ls-red text-white text-[10px] font-mono font-bold tracking-wider shadow-md">
+      <div className="absolute top-0 right-0 py-1.5 px-4 rounded-bl-2xl bg-ls-red text-ls-white text-[10px] font-body font-bold tracking-wider shadow-md">
         {active.governance}
       </div>
 
@@ -56,21 +56,21 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
         {/* Left Column: Core Description & Contracts */}
         <div className="lg:col-span-7 space-y-6">
           <div>
-            <span className="text-xs font-mono font-bold tracking-wider text-ls-red block mb-1">
+            <span className="text-xs font-body font-bold tracking-wider text-ls-red block mb-1">
               {active.eyebrow}
             </span>
             <h3 className={`text-2xl sm:text-3xl font-black tracking-tight font-display ${
-              isLight ? 'text-slate-900' : 'text-white'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}>
               {active.title}
             </h3>
-            <div className={`text-sm font-semibold mt-1 ${isLight ? 'text-slate-800' : 'text-ls-red'}`}>
+            <div className={`text-sm font-semibold mt-1 ${isLight ? 'text-ls-navy' : 'text-ls-red'}`}>
               {active.tagline}
             </div>
           </div>
 
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-            isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+            isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
             {active.desc}
           </p>
@@ -82,7 +82,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <GitMerge className="w-4 h-4 text-ls-red" />
-                <span className={`text-xs font-mono font-bold ${isLight ? 'text-slate-900' : 'text-zinc-200'}`}>
+                <span className={`text-xs font-body font-bold ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   Structured Inter-Offering Contracts
                 </span>
               </div>
@@ -90,20 +90,20 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className={`p-3 rounded-xl border ${isLight ? 'bg-white/90 border-slate-300' : 'bg-zinc-950/80 border-white/10'}`}>
-                <span className={`text-[10px] font-mono font-bold block mb-1 ${isLight ? 'text-slate-500' : 'text-zinc-400'}`}>
+              <div className={`p-3 rounded-xl border ${isLight ? 'bg-ls-white/90 border-ls-grey-dark' : 'bg-ls-navy/80 border-ls-white/10'}`}>
+                <span className={`text-[10px] font-body font-bold block mb-1 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   Input Contract (Feeds In)
                 </span>
-                <p className={`text-justify font-medium leading-tight ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
+                <p className={`text-justify font-medium leading-tight ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
                   {active.inputContract}
                 </p>
               </div>
 
-              <div className={`p-3 rounded-xl border ${isLight ? 'bg-white/90 border-slate-300' : 'bg-zinc-950/80 border-white/10'}`}>
-                <span className={`text-[10px] font-mono font-bold block mb-1 text-ls-cyan`}>
+              <div className={`p-3 rounded-xl border ${isLight ? 'bg-ls-white/90 border-ls-grey-dark' : 'bg-ls-navy/80 border-ls-white/10'}`}>
+                <span className={`text-[10px] font-body font-bold block mb-1 text-ls-cyan`}>
                   Output Contract (Generates)
                 </span>
-                <p className={`text-justify font-medium leading-tight ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
+                <p className={`text-justify font-medium leading-tight ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
                   {active.outputContract}
                 </p>
               </div>
@@ -111,22 +111,22 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
 
             {/* Upstream & Downstream Flow Lineage Grid */}
             <div className={`pt-3 border-t grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs ${
-              isLight ? 'border-slate-200' : 'border-white/10'
+              isLight ? 'border-ls-grey-dark' : 'border-ls-white/10'
             }`}>
               {/* Upstream Source Card */}
               <div className={`p-3 rounded-xl border flex flex-col justify-between space-y-1.5 ${
-                isLight ? 'bg-orange-50/70 border-orange-200/80' : 'bg-orange-950/30 border-ls-red/20'
+                isLight ? 'bg-ls-red/70 border-ls-red/80' : 'bg-ls-red/30 border-ls-red/20'
               }`}>
                 <div className="flex items-center gap-1.5">
                   <span className="p-1 rounded-md bg-ls-red/15 text-ls-red">
                     <ArrowUpRight className="w-3.5 h-3.5" />
                   </span>
-                  <span className="font-bold font-mono text-[10px] tracking-wider text-ls-red">
+                  <span className="font-bold font-body text-[10px] tracking-wider text-ls-red">
                     Upstream Source
                   </span>
                 </div>
                 <p className={`text-justify text-[11px] sm:text-xs leading-relaxed font-medium break-words ${
-                  isLight ? 'text-slate-800' : 'text-zinc-300'
+                  isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'
                 }`}>
                   {active.upstreamSource}
                 </p>
@@ -134,18 +134,18 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
 
               {/* Downstream Target Card */}
               <div className={`p-3 rounded-xl border flex flex-col justify-between space-y-1.5 ${
-                isLight ? 'bg-ls-cyan/70 border-ls-cyan/80' : 'bg-emerald-950/30 border-ls-cyan/20'
+                isLight ? 'bg-ls-cyan/70 border-ls-cyan/80' : 'bg-ls-cyan/30 border-ls-cyan/20'
               }`}>
                 <div className="flex items-center gap-1.5">
                   <span className="p-1 rounded-md bg-ls-cyan/15 text-ls-cyan">
                     <ArrowDownRight className="w-3.5 h-3.5" />
                   </span>
-                  <span className="font-bold font-mono text-[10px] tracking-wider text-ls-cyan">
+                  <span className="font-bold font-body text-[10px] tracking-wider text-ls-cyan">
                     Downstream Target
                   </span>
                 </div>
                 <p className={`text-justify text-[11px] sm:text-xs leading-relaxed font-medium break-words ${
-                  isLight ? 'text-slate-800' : 'text-zinc-300'
+                  isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'
                 }`}>
                   {active.downstreamTarget}
                 </p>
@@ -155,7 +155,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
 
           {/* Deliverables List */}
           <div>
-            <div className={`text-xs font-mono font-bold mb-3 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+            <div className={`text-xs font-body font-bold mb-3 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               Production Deliverables & Specifications:
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -163,7 +163,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
                 <div
                   key={dIdx}
                   className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs font-medium transition-colors ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100' : 'border-white/15 bg-white/[0.04] text-zinc-300 hover:bg-white/[0.08]'
+                    isLight ? 'bg-ls-grey-light border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light' : 'border-ls-white/15 bg-ls-white/[0.04] text-ls-grey-light-text hover:bg-ls-white/[0.08]'
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4 text-ls-cyan shrink-0" />
@@ -179,13 +179,13 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
           <div className={`p-6 rounded-2xl ${
             isLight ? 'hardware-well-light' : 'hardware-well-dark'
           }`}>
-            <span className={`text-xs font-mono block mb-1 font-bold ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+            <span className={`text-xs font-body block mb-1 font-bold ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               Verified Institutional Benchmark
             </span>
-            <div className="text-xl sm:text-2xl font-black font-mono text-ls-cyan">
+            <div className="text-xl sm:text-2xl font-black font-body text-ls-cyan">
               {active.metrics}
             </div>
-            <div className={`text-xs font-medium mt-2 leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>
+            <div className={`text-xs font-medium mt-2 leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               Backed by audited telemetry in live production deployments across SADC commercial banking, national revenue authorities, and transport corridors.
             </div>
           </div>
@@ -194,8 +194,8 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
           <div className={`p-5 rounded-2xl space-y-3 ${
             isLight ? 'hardware-well-light' : 'hardware-well-dark'
           }`}>
-            <div className="flex items-center justify-between text-xs font-mono font-bold">
-              <span className={isLight ? 'text-slate-900' : 'text-zinc-200'}>Integrated Suite Position</span>
+            <div className="flex items-center justify-between text-xs font-body font-bold">
+              <span className={isLight ? 'text-ls-navy' : 'text-ls-white'}>Integrated Suite Position</span>
               <span className="text-ls-red">Step {activePillar + 1} of {totalPillars}</span>
             </div>
 
@@ -207,7 +207,7 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
                   className={`h-2.5 rounded-full transition-all ${
                     activePillar === cIdx
                       ? 'bg-ls-red shadow-[0_0_6px_rgba(230,57,70,0.8)]'
-                      : isLight ? 'bg-slate-300 hover:bg-slate-400' : 'bg-ls-navy hover:bg-zinc-700'
+                      : isLight ? 'bg-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-ls-navy hover:bg-ls-white'
                   }`}
                   title={`Switch to Offering 0${cIdx + 1}`}
                 />
@@ -217,15 +217,15 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
             <div className="flex items-center justify-between pt-2">
               <button
                 onClick={() => onSelectPillar((activePillar + totalPillars - 1) % totalPillars)}
-                className={`text-xs font-mono font-semibold hover:text-ls-red cursor-pointer ${
-                  isLight ? 'text-slate-600' : 'text-zinc-400'
+                className={`text-xs font-body font-semibold hover:text-ls-red cursor-pointer ${
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}
               >
                 Prev Offering
               </button>
               <button
                 onClick={() => onSelectPillar((activePillar + 1) % totalPillars)}
-                className="text-xs font-mono font-bold text-ls-red hover:text-ls-red cursor-pointer flex items-center gap-1"
+                className="text-xs font-body font-bold text-ls-red hover:text-ls-red cursor-pointer flex items-center gap-1"
               >
                 <span>Next Offering</span>
                 <ArrowRight className="w-3 h-3" />
@@ -234,19 +234,19 @@ export const OfferingDetailCard: React.FC<OfferingDetailCardProps> = ({
           </div>
 
           <div className="p-6 rounded-2xl bg-ls-red/10 border border-ls-red/30 space-y-3 relative overflow-hidden">
-            <div className="text-xs font-mono tracking-wider text-ls-red font-bold flex items-center gap-1.5">
+            <div className="text-xs font-body tracking-wider text-ls-red font-bold flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5" />
               <span>Commercial Engagement Protocol</span>
             </div>
-            <div className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+            <div className={`text-sm font-bold ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
               2-Week Advisory Sprint to 90-Day Co-Built Pilot
             </div>
-            <p className={`text-justify text-xs leading-relaxed ${isLight ? 'text-slate-700' : 'text-zinc-400'}`}>
+            <p className={`text-justify text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               We embed with your executive team, audit current bottlenecks, define system requirements, and deliver production code with zero data leakage.
             </p>
             <button
               onClick={() => onRequestBriefing(`Inquiry regarding ${active.title}: ${active.tagline}`)}
-              className="w-full py-2.5 px-4 rounded-xl bg-ls-red text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-md shadow-ls-red/20 active:scale-98"
+              className="w-full py-2.5 px-4 rounded-xl bg-ls-red text-ls-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-md shadow-ls-red/20 active:scale-98"
             >
               <span>Engage {active.shortTitle} Practice</span>
               <ArrowRight className="w-3.5 h-3.5" />

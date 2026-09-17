@@ -2,7 +2,7 @@
 
 ## Structure
 
-Light Speed Holdings is organized as a hierarchical AI company with 144 agents (one human CEO + 143 AI agents) across 20 departments.
+Light Speed Holdings is organized as a hierarchical AI company with 152 agents (one human CEO + 151 AI agents) across 20 departments.
 
 ```
                      human-ceo
@@ -57,7 +57,7 @@ Task-level executors. Each specialist has defined tools, permissions, and a narr
 | Operations (11) | `coo` | `workflow-owner`, `orchestration-owner`, `capacity-planner`, `vendor-manager` | Business process execution |
 | Security (11) | `ciso` | `security-architect`, `penetration-testing-lead`, `soc2-audit-readiness-analyst` | Security and hardening |
 | Product (9) | `cpo` | `product-owner`, `product-designer`, `ux-research-lead` | Product vision and delivery |
-| Marketing (9) | `cmo` | `content-creator`, `brand-strategist`, `growth-hacker` | Demand generation and brand |
+| Marketing (11) | `cmo` | `content-creator`, `brand-strategist`, `growth-hacker`, `social-media-manager` | Demand generation and brand |
 | Board (7) | `board-chair` | `board-strategy`, `board-finance`, `board-technology` | Governance oversight |
 | People (6) | `hr` | `hr-owner`, `recruiter`, `learning-development-lead` | Workforce and culture |
 | Sales (6) | `sales` | `sales-owner`, `solutions-engineer`, `business-developer` | Revenue generation |

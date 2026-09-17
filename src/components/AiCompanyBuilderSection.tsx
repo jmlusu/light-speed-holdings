@@ -43,37 +43,37 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
       {/* Category Header Chassis */}
       <div className="text-center max-w-3xl mx-auto mb-14">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider mb-4 border select-none">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-body font-bold uppercase tracking-wider mb-4 border select-none">
           <StatusLedPip status="amber" isLight={isLight} />
-          <span className={`text-[10px] font-mono tracking-widest ${isLight ? 'text-slate-800' : 'text-zinc-300'}`}>
+          <span className={`text-[10px] font-body tracking-widest ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
             FLAGSHIP OPERATIONAL PILLAR // SYSTEM REF::01
           </span>
         </div>
         <h1 className={`text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-display mb-4 leading-normal sm:leading-tight break-words ${
-          isLight ? 'text-slate-900' : 'text-zinc-100'
+          isLight ? 'text-ls-navy' : 'text-ls-white'
         }`}>
-          The <span className="inline-block pb-1.5 text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600">AI Company Builder</span>
+          The <span className="inline-block pb-1.5 text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-red/40 to-ls-red/85">AI Company Builder</span>
         </h1>
-        <p className={`text-base leading-relaxed ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+        <p className={`text-base leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
           LightSpeed Holdings Limited architects the transition from manual, human-bound processes to high-velocity, autonomous enterprises governed by verifiable agentic operating models and resilient telemetry.
         </p>
       </div>
 
-      {/* Strategic Infographic Banner: 144-Agent Governed Swarm Architecture */}
-      <div className="relative rounded-3xl overflow-hidden mb-12 border border-zinc-800 shadow-2xl group">
+      {/* Strategic Infographic Banner: 152-Agent Governed Swarm Architecture */}
+      <div className="relative rounded-3xl overflow-hidden mb-12 border border-ls-grey-dark shadow-2xl group">
         <img
           src={aiSwarmInfographic}
-          alt="144-Agent Workforce Infographic"
+          alt="152-Agent Workforce Infographic"
           className="w-full h-[260px] sm:h-[380px] object-cover brightness-[0.75] contrast-[1.1] transition-transform duration-700 group-hover:scale-105"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-6 sm:p-8 flex flex-col justify-end">
+        <div className="absolute inset-0 bg-gradient-to-t from-ls-navy via-ls-navy/40 to-transparent p-6 sm:p-8 flex flex-col justify-end">
           <div className="flex items-center gap-2 mb-1">
             <StatusLedPip status="emerald" isLight={isLight} />
-            <span className="text-[10px] font-mono text-amber-400 font-bold uppercase tracking-widest">[ INFOGRAPHIC // SYSTEM ARCHITECTURE ]</span>
+            <span className="text-[10px] font-body text-ls-red/40 font-bold uppercase tracking-widest">[ INFOGRAPHIC // SYSTEM ARCHITECTURE ]</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold font-display text-white">Governed 144-Agent Swarm &amp; 20-Department Topology</h2>
-          <p className="text-xs sm:text-sm text-zinc-300 font-mono mt-1">Autonomous execution swarms operating under human CEO executive oversight and 5-tier HITL gates.</p>
+          <h2 className="text-xl sm:text-2xl font-bold font-display text-ls-white">Governed 152-Agent Swarm &amp; 20-Department Topology</h2>
+          <p className="text-xs sm:text-sm text-ls-grey-light-text font-body mt-1">Autonomous execution swarms operating under human CEO executive oversight and 5-tier HITL gates.</p>
         </div>
       </div>
 
@@ -86,15 +86,15 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         <MachineScrewHead isLight={isLight} className="absolute bottom-3 left-3" />
         <MachineScrewHead isLight={isLight} className="absolute bottom-3 right-3" />
 
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-zinc-800">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-ls-grey-dark">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <StatusLedPip status="emerald" isLight={isLight} />
-              <span className="text-xs font-mono font-bold text-amber-500 uppercase tracking-wider">
+              <span className="text-xs font-body font-bold text-ls-red uppercase tracking-wider">
                 ARCHITECTURAL COMPARISON MATRIX
               </span>
             </div>
-            <h2 className={`text-xl sm:text-2xl font-bold font-display ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+            <h2 className={`text-xl sm:text-2xl font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
               The Paradigm Shift: Traditional vs. AI-Native Enterprise
             </h2>
           </div>
@@ -109,139 +109,139 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
           }`}>
             <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
             <div>
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-zinc-800">
-                <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest font-bold">LEGACY MODEL [ DEPRECATED ]</span>
-                <span className={`px-2.5 py-1 text-[10px] font-mono font-bold rounded ${
-                  isLight ? 'bg-slate-200 text-slate-700' : 'bg-zinc-800 text-zinc-400'
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-ls-grey-dark">
+                <span className="text-xs font-body text-ls-grey-light-text uppercase tracking-widest font-bold">LEGACY MODEL [ DEPRECATED ]</span>
+                <span className={`px-2.5 py-1 text-[10px] font-body font-bold rounded ${
+                  isLight ? 'bg-ls-grey-light text-ls-grey-dark' : 'bg-ls-navy text-ls-grey-light-text'
                 }`}>
                   HUMAN-BOUND CHOPPY FLOW
                 </span>
               </div>
 
               <div className="space-y-3">
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-mono ${
-                  isLight ? 'bg-white border-slate-300 text-slate-800' : 'bg-zinc-900/80 border-zinc-700/60 text-zinc-300'
+                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
+                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
                 }`}>
                   <div className="flex items-center gap-3">
-                    <Users className="w-4 h-4 text-zinc-400" />
+                    <Users className="w-4 h-4 text-ls-grey-light-text" />
                     <span>Human Workforce (Manual coordination)</span>
                   </div>
                 </div>
-                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-zinc-500" /></div>
+                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-ls-grey-light-text" /></div>
 
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-mono ${
-                  isLight ? 'bg-white border-slate-300 text-slate-800' : 'bg-zinc-900/80 border-zinc-700/60 text-zinc-300'
+                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
+                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
                 }`}>
                   <div className="flex items-center gap-3">
-                    <Workflow className="w-4 h-4 text-zinc-400" />
+                    <Workflow className="w-4 h-4 text-ls-grey-light-text" />
                     <span>Siloed Manual Hand-offs</span>
                   </div>
                 </div>
-                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-zinc-500" /></div>
+                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-ls-grey-light-text" /></div>
 
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-mono ${
-                  isLight ? 'bg-white border-slate-300 text-slate-800' : 'bg-zinc-900/80 border-zinc-700/60 text-zinc-300'
+                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
+                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
                 }`}>
                   <div className="flex items-center gap-3">
-                    <Layers className="w-4 h-4 text-zinc-400" />
+                    <Layers className="w-4 h-4 text-ls-grey-light-text" />
                     <span>Static SaaS Silos</span>
                   </div>
                 </div>
-                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-zinc-500" /></div>
+                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-ls-grey-light-text" /></div>
 
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-mono ${
-                  isLight ? 'bg-white border-slate-300 text-slate-800' : 'bg-zinc-900/80 border-zinc-700/60 text-zinc-300'
+                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
+                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
                 }`}>
                   <div className="flex items-center gap-3">
-                    <Database className="w-4 h-4 text-zinc-400" />
+                    <Database className="w-4 h-4 text-ls-grey-light-text" />
                     <span>Fragmented Database Islands</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <p className={`mt-8 pt-4 border-t text-xs text-center font-mono ${
-              isLight ? 'border-slate-200 text-slate-500' : 'border-zinc-800 text-zinc-500'
+            <p className={`mt-8 pt-4 border-t text-xs text-center font-body ${
+              isLight ? 'border-ls-grey-dark text-ls-grey-dark' : 'border-ls-grey-dark text-ls-grey-light-text'
             }`}>
               Bottlenecked by human execution speed & manual coordination latency.
             </p>
           </div>
 
           {/* LightSpeed AI-Native Company Panel */}
-          <div className={`p-6 sm:p-8 rounded-2xl border-2 border-amber-500/50 flex flex-col justify-between relative overflow-hidden shadow-xl shadow-amber-500/10 ${
-            isLight ? 'bg-amber-50/60 border-amber-500/50' : 'bg-gradient-to-b from-[#18181b] to-[#0d0d10] border-amber-500/50'
+          <div className={`p-6 sm:p-8 rounded-2xl border-2 border-ls-red/50 flex flex-col justify-between relative overflow-hidden shadow-xl shadow-ls-red/10 ${
+            isLight ? 'bg-ls-red/60 border-ls-red/50' : 'bg-gradient-to-b from-[rgba(7,10,64,0.92)] to-[rgba(7,10,64,0.95)] border-ls-red/50'
           }`}>
             <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
             <div>
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-amber-500/30">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-ls-red/30">
                 <div className="flex items-center gap-2">
                   <StatusLedPip status="emerald" isLight={isLight} />
-                  <span className="text-xs font-mono text-amber-500 uppercase tracking-widest font-extrabold">SOVEREIGN AI OPERATING MODEL</span>
+                  <span className="text-xs font-body text-ls-red uppercase tracking-widest font-extrabold">SOVEREIGN AI OPERATING MODEL</span>
                 </div>
-                <span className="px-2.5 py-1 text-[10px] font-mono font-bold rounded bg-amber-500 text-slate-950">
+                <span className="px-2.5 py-1 text-[10px] font-body font-bold rounded bg-ls-red text-ls-navy">
                   AUTONOMOUS THROUGHPUT
                 </span>
               </div>
 
               <div className="space-y-2.5">
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono font-semibold ${
-                  isLight ? 'bg-white border-amber-300 text-slate-900' : 'bg-zinc-900/90 border-amber-500/30 text-amber-200'
+                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
+                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
                 }`}>
                   <div className="flex items-center gap-2.5">
-                    <Brain className="w-4 h-4 text-amber-500" />
+                    <Brain className="w-4 h-4 text-ls-red" />
                     <span>Executive Strategic Veto (5-Tier HITL Gate)</span>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
                 </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-amber-500" /></div>
+                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
 
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono font-semibold ${
-                  isLight ? 'bg-white border-amber-300 text-slate-900' : 'bg-zinc-900/90 border-amber-500/30 text-amber-200'
+                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
+                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
                 }`}>
                   <div className="flex items-center gap-2.5">
-                    <Cpu className="w-4 h-4 text-amber-500" />
+                    <Cpu className="w-4 h-4 text-ls-red" />
                     <span>Autonomous AI Operating Core</span>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
                 </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-amber-500" /></div>
+                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
 
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono font-semibold ${
-                  isLight ? 'bg-white border-amber-300 text-slate-900' : 'bg-zinc-900/90 border-amber-500/30 text-amber-200'
+                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
+                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
                 }`}>
                   <div className="flex items-center gap-2.5">
-                    <Users className="w-4 h-4 text-amber-500" />
+                    <Users className="w-4 h-4 text-ls-red" />
                     <span>Agent Workforce Swarms (OpenCode v2)</span>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
                 </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-amber-500" /></div>
+                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
 
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono font-semibold ${
-                  isLight ? 'bg-white border-amber-300 text-slate-900' : 'bg-zinc-900/90 border-amber-500/30 text-amber-200'
+                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
+                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
                 }`}>
                   <div className="flex items-center gap-2.5">
-                    <Workflow className="w-4 h-4 text-amber-500" />
+                    <Workflow className="w-4 h-4 text-ls-red" />
                     <span>Collapsed Real-time Task Buses</span>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
                 </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-amber-500" /></div>
+                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
 
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono font-semibold ${
-                  isLight ? 'bg-white border-amber-300 text-slate-900' : 'bg-zinc-900/90 border-amber-500/30 text-amber-200'
+                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
+                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
                 }`}>
                   <div className="flex items-center gap-2.5">
-                    <Database className="w-4 h-4 text-amber-500" />
+                    <Database className="w-4 h-4 text-ls-red" />
                     <span>Unified Enterprise Semantic Fabric</span>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
                 </div>
               </div>
             </div>
 
-            <p className={`mt-8 pt-4 border-t text-xs text-center font-mono font-bold ${
-              isLight ? 'border-amber-300 text-amber-700' : 'border-amber-500/30 text-amber-400'
+            <p className={`mt-8 pt-4 border-t text-xs text-center font-body font-bold ${
+              isLight ? 'border-ls-red/30 text-ls-red/80' : 'border-ls-red/30 text-ls-red/40'
             }`}>
               10x–100x operational throughput with sub-second verified dispatch.
             </p>
@@ -255,10 +255,10 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         <div className="flex flex-wrap justify-center gap-2.5 pb-4 border-b border-[#e63946]/20">
           <button
             onClick={() => setActiveTab('operating-model')}
-            className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'operating-model'
-                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
+                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
             }`}
           >
             <StatusLedPip status={activeTab === 'operating-model' ? 'emerald' : 'off'} isLight={isLight} />
@@ -267,10 +267,10 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
           <button
             onClick={() => setActiveTab('workforce')}
-            className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'workforce'
-                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
+                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
             }`}
           >
             <StatusLedPip status={activeTab === 'workforce' ? 'emerald' : 'off'} isLight={isLight} />
@@ -279,10 +279,10 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
           <button
             onClick={() => setActiveTab('architecture')}
-            className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'architecture'
-                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
+                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
             }`}
           >
             <StatusLedPip status={activeTab === 'architecture' ? 'emerald' : 'off'} isLight={isLight} />
@@ -291,10 +291,10 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
           <button
             onClick={() => setActiveTab('journey')}
-            className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'journey'
-                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
+                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
             }`}
           >
             <StatusLedPip status={activeTab === 'journey' ? 'emerald' : 'off'} isLight={isLight} />
@@ -303,10 +303,10 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
           <button
             onClick={() => setActiveTab('governance')}
-            className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
               activeTab === 'governance'
-                ? 'bg-gradient-to-r from-[#e63946] to-[#c1121f] text-slate-950 shadow-md shadow-amber-500/20'
-                : isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-[#10165e] text-slate-300 hover:bg-[#1a2170] border border-[#1a2170]'
+                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
+                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
             }`}
           >
             <StatusLedPip status={activeTab === 'governance' ? 'emerald' : 'off'} isLight={isLight} />
@@ -329,15 +329,15 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
                 isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
               }`}>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+                  <div className="p-2 rounded-lg bg-ls-red/10 text-ls-red">
                     <Workflow className="w-5 h-5" />
                   </div>
                   <StatusLedPip status="emerald" isLight={isLight} />
                 </div>
-                <h3 className={`font-bold font-mono text-sm mb-2 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+                <h3 className={`font-bold font-body text-sm mb-2 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   Workflow Collapse
                 </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   Eliminates bureaucratic delays by collapsing fragmented multi-step operations into verified, self-executing agent chains governed by deterministic SLA rules.
                 </p>
               </div>
@@ -346,15 +346,15 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
                 isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
               }`}>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+                  <div className="p-2 rounded-lg bg-ls-red/10 text-ls-red">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <StatusLedPip status="amber" isLight={isLight} />
                 </div>
-                <h3 className={`font-bold font-mono text-sm mb-2 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+                <h3 className={`font-bold font-body text-sm mb-2 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   Human-in-the-Loop Governance
                 </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   5-tier escalation gates ensure high-risk financial, regulatory, or policy operations require human executive review before cryptographic execution.
                 </p>
               </div>
@@ -363,15 +363,15 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
                 isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
               }`}>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+                  <div className="p-2 rounded-lg bg-ls-red/10 text-ls-red">
                     <Database className="w-5 h-5" />
                   </div>
                   <StatusLedPip status="emerald" isLight={isLight} />
                 </div>
-                <h3 className={`font-bold font-mono text-sm mb-2 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+                <h3 className={`font-bold font-body text-sm mb-2 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   Semantic Fabric Integration
                 </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   Connects disparate enterprise ERP systems, relational databases, and regulatory records into an indexed, context-rich knowledge graph.
                 </p>
               </div>
@@ -384,19 +384,19 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
                 isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
               }`}>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-amber-500 uppercase font-bold">ROSTER ARCHITECTURE</span>
+                  <span className="text-xs font-body text-ls-red uppercase font-bold">ROSTER ARCHITECTURE</span>
                   <StatusLedPip status="emerald" isLight={isLight} />
                 </div>
-                <h3 className={`text-base font-bold font-mono ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+                <h3 className={`text-base font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   Domain-Expert Agent Swarms
                 </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   Discarding generic chatbots for custom OpenCode agent cards engineered with explicit permission scopes, canonical tool lists, and isolated execution memory.
                 </p>
-                <ul className={`space-y-2 text-xs font-mono pt-2 ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Regulatory & Compliance Specialists</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Mobile Settlement & FinTech Auditors</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> AgriTech Telemetry & Supply Chain Agents</li>
+                <ul className={`space-y-2 text-xs font-body pt-2 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Regulatory & Compliance Specialists</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Mobile Settlement & FinTech Auditors</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> AgriTech Telemetry & Supply Chain Agents</li>
                 </ul>
               </div>
 
@@ -404,19 +404,19 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
                 isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
               }`}>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-amber-500 uppercase font-bold">DISPATCH PROTOCOL</span>
+                  <span className="text-xs font-body text-ls-red uppercase font-bold">DISPATCH PROTOCOL</span>
                   <StatusLedPip status="emerald" isLight={isLight} />
                 </div>
-                <h3 className={`text-base font-bold font-mono ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+                <h3 className={`text-base font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   Sub-Second Message Bus
                 </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   Agents communicate across structured task queues with strict runtime deadlines, tamper-evident JSON logging, and automatic deadlock recovery.
                 </p>
-                <ul className={`space-y-2 text-xs font-mono pt-2 ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Asynchronous execution queues</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Sub-second latency SLA guarantees</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Cryptographic audit trail logs</li>
+                <ul className={`space-y-2 text-xs font-body pt-2 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Asynchronous execution queues</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Sub-second latency SLA guarantees</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Cryptographic audit trail logs</li>
                 </ul>
               </div>
             </div>
@@ -424,33 +424,33 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
           {activeTab === 'architecture' && (
             <div className="space-y-6">
-              <h3 className={`text-lg font-bold font-mono ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+              <h3 className={`text-lg font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                 Modular AI Product Factory (Institutional Specs)
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className={`p-4 rounded-xl border text-xs ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <h4 className="font-bold font-mono text-amber-500 mb-1">Semantic Layer</h4>
-                  <p className={isLight ? 'text-slate-600' : 'text-zinc-400'}>Context graphs linking enterprise documents and relational schemas.</p>
+                  <h4 className="font-bold font-body text-ls-red mb-1">Semantic Layer</h4>
+                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Context graphs linking enterprise documents and relational schemas.</p>
                 </div>
                 <div className={`p-4 rounded-xl border text-xs ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <h4 className="font-bold font-mono text-amber-500 mb-1">Agent Mesh</h4>
-                  <p className={isLight ? 'text-slate-600' : 'text-zinc-400'}>Inter-agent communication channels with token budget rate-limiters.</p>
+                  <h4 className="font-bold font-body text-ls-red mb-1">Agent Mesh</h4>
+                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Inter-agent communication channels with token budget rate-limiters.</p>
                 </div>
                 <div className={`p-4 rounded-xl border text-xs ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <h4 className="font-bold font-mono text-amber-500 mb-1">Sovereign Gateway</h4>
-                  <p className={isLight ? 'text-slate-600' : 'text-zinc-400'}>Local datacenter proxies ensuring data remains within regional borders.</p>
+                  <h4 className="font-bold font-body text-ls-red mb-1">Sovereign Gateway</h4>
+                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Local datacenter proxies ensuring data remains within regional borders.</p>
                 </div>
                 <div className={`p-4 rounded-xl border text-xs ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <h4 className="font-bold font-mono text-amber-500 mb-1">Human Console</h4>
-                  <p className={isLight ? 'text-slate-600' : 'text-zinc-400'}>Executive dashboard for live approvals and emergency kill-switches.</p>
+                  <h4 className="font-bold font-body text-ls-red mb-1">Human Console</h4>
+                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Executive dashboard for live approvals and emergency kill-switches.</p>
                 </div>
               </div>
             </div>
@@ -458,37 +458,37 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
 
           {activeTab === 'journey' && (
             <div className="space-y-6">
-              <h3 className={`text-lg font-bold font-mono ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+              <h3 className={`text-lg font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                 The 4-Stage Transformation Journey
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className={`p-5 rounded-xl border ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <span className="text-xs font-mono font-bold text-amber-500">[ 01. DISCOVER ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>Process Audit</h4>
-                  <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>Identify friction points in manual operations and map initial data schemas.</p>
+                  <span className="text-xs font-body font-bold text-ls-red">[ 01. DISCOVER ]</span>
+                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Process Audit</h4>
+                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Identify friction points in manual operations and map initial data schemas.</p>
                 </div>
                 <div className={`p-5 rounded-xl border ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <span className="text-xs font-mono font-bold text-amber-500">[ 02. ARCHITECT ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>Roster Design</h4>
-                  <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>Deploy domain sub-agents, enforce tool permissions, and integrate HITL gates.</p>
+                  <span className="text-xs font-body font-bold text-ls-red">[ 02. ARCHITECT ]</span>
+                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Roster Design</h4>
+                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Deploy domain sub-agents, enforce tool permissions, and integrate HITL gates.</p>
                 </div>
                 <div className={`p-5 rounded-xl border ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <span className="text-xs font-mono font-bold text-amber-500">[ 03. PILOT ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>Controlled Run</h4>
-                  <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>Execute under strict supervision to benchmark response quality and latency.</p>
+                  <span className="text-xs font-body font-bold text-ls-red">[ 03. PILOT ]</span>
+                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Controlled Run</h4>
+                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Execute under strict supervision to benchmark response quality and latency.</p>
                 </div>
                 <div className={`p-5 rounded-xl border ${
                   isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
                 }`}>
-                  <span className="text-xs font-mono font-bold text-amber-500">[ 04. SCALE ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>Full Collapse</h4>
-                  <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>Transition routine workflows to autonomous agent swarms at scale.</p>
+                  <span className="text-xs font-body font-bold text-ls-red">[ 04. SCALE ]</span>
+                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Full Collapse</h4>
+                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Transition routine workflows to autonomous agent swarms at scale.</p>
                 </div>
               </div>
             </div>
@@ -510,20 +510,20 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         <div className="text-left">
           <div className="flex items-center gap-2 mb-1">
             <StatusLedPip status="emerald" isLight={isLight} />
-            <span className="text-[10px] font-mono font-bold text-amber-500 uppercase tracking-wider">
+            <span className="text-[10px] font-body font-bold text-ls-red uppercase tracking-wider">
               ENGAGEMENT PROTOCOL
             </span>
           </div>
-          <h3 className={`text-lg font-bold font-display ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+          <h3 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
             Ready to deploy your AI-Native Company?
           </h3>
-          <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-zinc-400'}`}>
+          <p className={`text-xs mt-1 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
             Schedule an executive architecture consultation with LightSpeed Holdings Limited engineers.
           </p>
         </div>
         <button
           onClick={() => onOpenContactModal('Discuss a Transformation')}
-          className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold font-mono text-xs uppercase tracking-wider transition-all shadow-md shadow-amber-500/20 active:scale-95 shrink-0 flex items-center gap-2"
+          className="px-6 py-3 rounded-xl bg-ls-red hover:bg-ls-red/40 text-ls-navy font-extrabold font-body text-xs uppercase tracking-wider transition-all shadow-md shadow-ls-red/20 active:scale-95 shrink-0 flex items-center gap-2"
         >
           <span>Initiate Consultation</span>
           <ArrowRight className="w-4 h-4" />

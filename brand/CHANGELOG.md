@@ -6,6 +6,31 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.1.0] - 2026-09-17
+
+### Changed
+- **Logo color drift fixed** — 18 colour-logo PNGs (fulllogo, icononly, textonly) snapped
+  to the exact brand tokens from `brand/tokens/brand-tokens.json`: red accents now
+  `#E63946` (was `#F23838`), cyan now `#00BFFF` (was `#05C7F2`), and the two-tone grey
+  ramp now uses `#F2F2F2` / `#6B7280` / `#9CA3AF`. All pass
+  `check_brand_palette.py` at 100% on-palette (threshold 3%).
+- **Derived assets regenerated** from corrected logos: 12 social post templates
+  (`static/brand/social/templates/`, QA PASS) and 10 platform assets
+  (`static/brand/social/`). Mirrors re-synced via `scripts/sync-brand.ps1` (158 files).
+- **Grayscale logo set intentionally unchanged** (monochrome by design; the palette gate
+  does not apply).
+
+### Added
+- `scripts/fix-logo-drift.py` — deterministic recolor utility (snap-to-token, alpha-safe)
+  for future logo export auditing; `--dry-run` reports off-palette percentages.
+
+### Note
+- Rendered-images tagline case is **title case** ("Aspire. Act. Achieve."), matching the
+  generators; the uppercase token in `brand-tokens.json` remains the canonical typographic
+  form. This is now the accepted convention.
+
+---
+
 ## [1.0.0] - 2026-08-27
 
 ### Added

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "brand": {
+    "companyName": "LightSpeed Holdings Limited",
+    "legalName": "LIGHTSPEED HOLDINGS LIMITED",
+    "tagline": "ASPIRE. ACT. ACHIEVE.",
+    "trademarkDomain": "LightSpeed Holdings Limited\u2122",
+    "logo": {
+      "symbol": "Lighthouse/shield emblem with signal waves",
+      "clearSpace": "1x height of the 'L' in 'LIGHTSPEED' on all sides",
+      "minimumSizes": {
+        "fullLogoPrint": "30mm wide",
+        "fullLogoScreen": "120px wide",
+        "iconOnlyPrint": "12mm wide",
+        "iconOnlyScreen": "32px wide"
+      }
+    }
+  },
+  "color": {
+    "navy": { "value": "#070A40", "name": "Navy Primary", "usage": "Headlines, logo text, primary brand surfaces" },
+    "red": { "value": "#E63946", "name": "Red Accent", "usage": "Signal waves, accent elements, key highlights, CTAs" },
+    "cyan": { "value": "#00BFFF", "name": "Cyan Accent", "usage": "Shield base, accent elements, links on dark" },
+    "grey-light": { "value": "#F2F2F2", "name": "Light Grey", "usage": "Backgrounds, cards, callouts" },
+    "white": { "value": "#FFFFFF", "name": "White", "usage": "Clean backgrounds, text on navy" },
+    "grey-dark": { "value": "#6B7280", "name": "Dark Grey", "usage": "Secondary text, captions, muted labels" },
+    "grey-light-text": { "value": "#9CA3AF", "name": "Light Text Grey", "usage": "Tertiary text on dark surfaces" },
+    "onNavy": { "value": "#FFFFFF", "usage": "Text on navy surfaces" },
+    "onRed": { "value": "#FFFFFF", "usage": "Text on red accent surfaces" },
+    "onCyan": { "value": "#070A40", "usage": "Text on cyan accent surfaces" }
+  },
+  "typography": {
+    "display": { "family": "Arial", "weight": 700, "usage": "Hero headlines, cover titles, section banners" },
+    "heading": { "family": "Arial", "weight": 700, "usage": "Section titles, slide titles" },
+    "body": { "family": "Arial", "weight": 400, "usage": "Paragraph text, slide body" },
+    "caption": { "family": "Arial", "weight": 400, "usage": "Captions, footnotes, disclaimers" },
+    "sizes": {
+      "displayXl": "36pt",
+      "titleXl": "32pt",
+      "titleLg": "28pt",
+      "titleMd": "24pt",
+      "titleSm": "18pt",
+      "subtitle": "16pt",
+      "bodyLg": "16pt",
+      "body": "14pt",
+      "bodySm": "13pt",
+      "caption": "12pt"
+    }
+  },
+  "spacing": {
+    "scale": [4, 8, 12, 16, 24, 32, 48, 64, 96],
+    "baseUnit": 4
+  },
+  "grid": {
+    "columns": 12,
+    "gutter": "24px",
+    "margin": "48px"
+  },
+  "radius": {
+    "small": "4px",
+    "medium": "8px",
+    "large": "16px"
+  },
+  "layout": {
+    "slide": { "width": "10in", "height": "7.5in", "navyRail": "0.15in" },
+    "webPage": { "maxWidth": "1200px", "navyRail": "4px" }
+  },
+  "dashboard": {
+    "note": "The CEO Dashboard uses the internal J.A.R.V.I.S. theme with the 'LS' placeholder. It is NOT public-facing brand. Do NOT rebrand the dashboard."
+  }
+}

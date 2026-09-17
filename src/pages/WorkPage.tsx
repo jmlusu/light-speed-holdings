@@ -32,7 +32,7 @@ export const WorkPage: React.FC<WorkPageProps> = ({ theme }) => {
         id="case-studies"
         aria-labelledby="case-studies-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <SectionHeading
@@ -45,8 +45,8 @@ export const WorkPage: React.FC<WorkPageProps> = ({ theme }) => {
             <Reveal key={card.id} delay={(idx % 2) * 0.06}>
               <div className={`rounded-3xl p-6 sm:p-8 border h-full flex flex-col ${
                 card.featured
-                  ? (isLight ? 'relative overflow-hidden hardware-chassis-light text-slate-900' : 'relative overflow-hidden hardware-chassis-dark text-zinc-100')
-                  : (isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl')
+                  ? (isLight ? 'relative overflow-hidden hardware-chassis-light text-ls-navy' : 'relative overflow-hidden hardware-chassis-dark text-ls-white')
+                  : (isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl')
               }`}>
                 {card.featured && (
                   <>
@@ -57,23 +57,23 @@ export const WorkPage: React.FC<WorkPageProps> = ({ theme }) => {
                   </>
                 )}
                 <div className="flex items-start justify-between gap-3">
-                  <span className="font-mono text-[10px] font-black tracking-widest text-ls-red">{card.id}</span>
+                  <span className="font-body text-[10px] font-black tracking-widest text-ls-red">{card.id}</span>
                 </div>
                 <h3 className="mt-3 font-display font-bold text-lg sm:text-xl tracking-tight">{card.title}</h3>
                 <p className={`mt-3 text-xs sm:text-sm leading-relaxed ${
-                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {card.text}
                 </p>
                 <div className={`pt-4 border-t mt-auto ${
-                  isLight ? 'border-slate-200' : 'border-white/10'
+                  isLight ? 'border-ls-grey-dark' : 'border-ls-white/10'
                 }`}>
-                  <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[9px] font-bold tracking-widest ${
+                  <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-body text-[9px] font-bold tracking-widest ${
                     card.badge.includes('Proven')
                       ? 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
                       : card.badge.includes('Pilot')
                         ? 'border-ls-red/40 bg-ls-red/10 text-ls-red'
-                        : 'border-amber-400/40 bg-amber-400/10 text-amber-300'
+                        : 'border-ls-red/40 bg-ls-red/10 text-ls-red/30'
                   }`}>
                     <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />
                     {card.badge}
@@ -90,7 +90,7 @@ export const WorkPage: React.FC<WorkPageProps> = ({ theme }) => {
         id="policy"
         aria-labelledby="policy-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <SectionHeading
@@ -103,15 +103,15 @@ export const WorkPage: React.FC<WorkPageProps> = ({ theme }) => {
           {workPolicy.map((card, idx) => (
             <Reveal key={card.id} delay={(idx % 2) * 0.06}>
               <div className={`rounded-3xl p-6 sm:p-7 border h-full ${
-                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
               }`}>
                 <div className="flex items-start justify-between gap-3">
-                  <span className="font-mono text-[10px] font-black tracking-widest text-ls-red">{card.id}</span>
-                  <span className={`font-mono text-[9px] font-bold tracking-widest rounded-full px-2.5 py-0.5 border ${
+                  <span className="font-body text-[10px] font-black tracking-widest text-ls-red">{card.id}</span>
+                  <span className={`font-body text-[9px] font-bold tracking-widest rounded-full px-2.5 py-0.5 border ${
                     card.badge.includes('Published') || card.badge.includes('Proven')
                       ? 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
                       : card.badge.includes('Proposed')
-                        ? 'border-slate-400/40 bg-slate-400/10 text-slate-400'
+                        ? 'border-ls-grey-light-text/40 bg-ls-grey-dark/10 text-ls-grey-light-text'
                         : 'border-ls-red/40 bg-ls-red/10 text-ls-red'
                   }`}>
                     {card.badge}
@@ -119,7 +119,7 @@ export const WorkPage: React.FC<WorkPageProps> = ({ theme }) => {
                 </div>
                 <h3 className="mt-3 font-display font-bold text-base sm:text-lg tracking-tight">{card.title}</h3>
                 <p className={`mt-3 text-xs sm:text-sm leading-relaxed ${
-                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {card.text}
                 </p>

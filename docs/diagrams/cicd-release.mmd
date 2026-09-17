@@ -1,0 +1,20 @@
+flowchart TD
+    classDef main fill:#070A40,stroke:#E63946,color:#fff
+    classDef job fill:#F2F2F2,stroke:#6B7280,color:#070A40
+    classDef acc fill:#00BFFF,stroke:#070A40,color:#070A40
+    classDef tgt fill:#070A40,stroke:#00BFFF,color:#fff
+    classDef stop fill:#E63946,stroke:#070A40,color:#fff
+
+    M[(main)]:::main -->|"git tag v*<br/>or scripts/release.ps1<br/>or workflow_dispatch"| R["Release · release.yml"]:::acc
+    R --> VC{"Semver validation<br/>git tag == pyproject.toml == CHANGELOG"}:::stop
+    VC -->|fail| ABORT["Abort release"]:::stop
+    VC -->|pass| TRIVY["Container scan · Trivy<br/>SARIF → GitHub Security tab"]:::job
+    TRIVY --> B["Build package · uv build"]:::job
+    B --> P["Publish PyPI<br/>OIDC trusted publishing"]:::acc
+    B --> D["Build & push Docker<br/>ghcr.io/... :latest + :tag"]:::acc
+    B --> G["GitHub Release<br/>dist/* attached · release notes"]:::acc
+    D --> CAN["Canary · environment: production<br/>5% traffic → smoke → promote 100%"]:::job
+    P --> CAN
+    CAN --> INFRA[("Production<br/>docker compose · :8420<br/>dashboard + worker + prometheus")]:::tgt
+    D --> STAGE[("Staging · docker compose · :8421<br/>manual / canary verification")]:::tgt
+    D --> OCI[("OCI VM · deploy/oci<br/>Caddy TLS · systemd")]:::tgt

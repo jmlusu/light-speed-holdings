@@ -26,10 +26,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="lg:col-span-7 xl:col-span-7 space-y-6 text-left">
 
           {/* Eyebrow Badge */}
-          <div className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-[11px] font-mono tracking-widest transition-all shadow-xs ${
+          <div className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-[11px] font-body tracking-widest transition-all shadow-xs ${
             isLight
-              ? 'bg-white border-slate-300 text-slate-900 shadow-ls-red/5'
-              : 'bg-ls-navy border-ls-red/40 text-zinc-300 shadow-black/40'
+              ? 'bg-ls-white border-ls-grey-dark text-ls-navy shadow-ls-red/5'
+              : 'bg-ls-navy border-ls-red/40 text-ls-grey-light-text shadow-ls-navy/40'
           }`}>
             <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80 animate-pulse" />
             <span>MALAWI-ROOTED, SADC-FOCUSED, GLOBAL CAPABILITY</span>
@@ -37,12 +37,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Main Headline */}
           <h1 className={`text-4xl sm:text-6xl md:text-7xl font-black tracking-tight font-display leading-[1.04] ${
-            isLight ? 'text-slate-900' : 'text-white'
+            isLight ? 'text-ls-navy' : 'text-ls-white'
           }`}>
             BUILD THE
             <br />
             <span className={isLight
-              ? 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-slate-900'
+              ? 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-ls-navy'
               : 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-ls-cyan'
             }>
               INTELLIGENT ENTERPRISE.
@@ -56,7 +56,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
 
           {/* Strategy → Build → Govern → Scale */}
-          <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] font-bold tracking-widest">
+          <div className="flex flex-wrap items-center gap-2 font-body text-[11px] font-bold tracking-widest">
             {['STRATEGY', 'BUILD', 'GOVERN', 'SCALE'].map((step, i) => (
               <React.Fragment key={step}>
                 {i > 0 && <span className={`text-ls-red ${isLight ? '' : ''}`} aria-hidden="true">→</span>}
@@ -74,12 +74,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Explicit Regional Proposition Statement */}
           <div className="space-y-3">
             <p className={`text-justify max-w-2xl text-base sm:text-lg font-bold leading-relaxed ${
-              isLight ? 'text-slate-900' : 'text-zinc-100'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}>
-              <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 144 agents, 20 departments, five-tier human approval, every decision auditable.
+              <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 152 agents, 20 departments, five-tier human approval, every decision auditable.
             </p>
             <p className={`text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
-              isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'
+              isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'
             }`}>
               Strategy — Build — Govern — Scale. We prove the model in Malawi first with shipped work — websites, automation, reporting, and marketing — for the organizations that need them most.
             </p>
@@ -88,37 +88,37 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* 3 Advantage Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 max-w-2xl">
             <div className={`p-3.5 rounded-2xl border transition-all ${
-              isLight ? 'bg-white border-slate-300 shadow-xs' : 'bg-zinc-900/80 border-slate-800'
+              isLight ? 'bg-ls-white border-ls-grey-dark shadow-xs' : 'bg-ls-navy/80 border-ls-white'
             }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-mono">
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-body">
                 <span className="w-1.5 h-1.5 rounded-full bg-ls-red" />
                 Local Fluency
               </div>
-              <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
+              <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'}`}>
                 We know Malawi's institutions, business realities, infrastructure, and talent pool from the inside.
               </p>
             </div>
 
             <div className={`p-3.5 rounded-2xl border transition-all ${
-              isLight ? 'bg-white border-slate-300 shadow-xs' : 'bg-zinc-900/80 border-slate-800'
+              isLight ? 'bg-ls-white border-ls-grey-dark shadow-xs' : 'bg-ls-navy/80 border-ls-white'
             }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-mono">
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-body">
                 <span className="w-1.5 h-1.5 rounded-full bg-ls-red" />
                 Regional SADC
               </div>
-              <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
+              <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'}`}>
                 Our systems account for SADC corridor dynamics, trade patterns, and national regulatory differences.
               </p>
             </div>
 
             <div className={`p-3.5 rounded-2xl border transition-all ${
-              isLight ? 'bg-white border-slate-300 shadow-xs' : 'bg-zinc-900/80 border-slate-800'
+              isLight ? 'bg-ls-white border-ls-grey-dark shadow-xs' : 'bg-ls-navy/80 border-ls-white'
             }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-mono">
+              <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ls-red mb-1 font-body">
                 <span className="w-1.5 h-1.5 rounded-full bg-ls-red" />
                 Global Standards
               </div>
-              <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
+              <p className={`text-justify text-[11px] leading-snug ${isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'}`}>
                 Our engineering, security, and design quality stand alongside top international firms.
               </p>
             </div>
@@ -128,9 +128,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               to="/contact"
-              className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer"
+              className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer"
             >
-              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
+              <div className="w-5 h-5 rounded-full bg-ls-white/20 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
                 <ArrowRight className="w-3 h-3" />
               </div>
               <span>Start a Conversation</span>
@@ -140,8 +140,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               to="/ai-company-builder"
               className={`px-6 py-3.5 rounded-full font-bold text-xs tracking-widest border transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isLight
-                  ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900'
-                  : 'bg-ls-red hover:bg-ls-red text-white border-ls-red'
+                  ? 'bg-ls-navy hover:bg-ls-navy text-ls-white border-ls-white'
+                  : 'bg-ls-red hover:bg-ls-red text-ls-white border-ls-red'
               }`}
             >
               <span>Explore AI Company Builder</span>
@@ -151,8 +151,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               to="/technology"
               className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest border backdrop-blur-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isLight
-                  ? 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-ls-red'
-                  : 'bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/15'
+                  ? 'bg-ls-white hover:bg-ls-grey-light text-ls-navy border-ls-grey-dark hover:border-ls-red'
+                  : 'bg-ls-navy/80 hover:bg-ls-navy text-ls-grey-light-text hover:text-ls-white border-ls-white/15'
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 text-ls-red" />
@@ -162,29 +162,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Metric Strip */}
           <div className={`pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 border-t max-w-2xl ${
-            isLight ? 'border-slate-200' : 'border-white/15'
+            isLight ? 'border-ls-grey-dark' : 'border-ls-white/15'
           }`}>
             <div>
-              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Agent Fleet</span>
-              <span className="text-sm font-bold font-mono text-ls-red">
-                <StatCounter to={144} format="comma" /> Configurations
+              <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Agent Fleet</span>
+              <span className="text-sm font-bold font-body text-ls-red">
+                <StatCounter to={152} format="comma" /> Configurations
               </span>
             </div>
             <div>
-              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Regression Tests</span>
-              <span className="text-sm font-bold font-mono text-ls-cyan">
+              <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Regression Tests</span>
+              <span className="text-sm font-bold font-body text-ls-cyan">
                 <StatCounter to={2373} format="comma" /> Passing
               </span>
             </div>
             <div>
-              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Operating Departments</span>
-              <span className={`text-sm font-bold font-mono ${isLight ? 'text-slate-900' : 'text-zinc-100'}`}>
+              <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Operating Departments</span>
+              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                 <StatCounter to={20} /> Live
               </span>
             </div>
             <div>
-              <span className={`text-[11px] font-mono font-bold block ${'text-zinc-500'}`}>Audit Coverage</span>
-              <span className={`text-sm font-bold font-mono ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+              <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Audit Coverage</span>
+              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                 <StatCounter to={100} suffix="%" /> Auditable
               </span>
             </div>

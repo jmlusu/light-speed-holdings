@@ -4,6 +4,19 @@ All notable changes to AI Company Builder are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Added
+- **Social Media Manager agent** (`social_media_manager`): new Marketing specialist (reports to CMO) with canonical tool set including `webfetch`; added to `company-registry.yaml` and generated as `.opencode/agents/social-media-manager.md` — registry now **145 agents across 20 departments** (144 AI + 1 human CEO).
+- **Digital identity setup runbook**: `docs/marketing/digital-identity-setup.md` — 5-phase runbook (Phase 0 Security → 1 Claim brand → 2 Business infrastructure → 3 Branding → 4 Content) owning issue #194, with the digital-identity tree, ownership model, account tiers, per-platform guidance, master company description, visual asset package, first-content batch, content engine, reserve list, phase plan, and end state.
+- **Digital asset register**: `docs/marketing/digital-asset-register.md` — per-platform matrix (URL/username/email/owner/2FA/status) for Facebook, Instagram, X, LinkedIn, TikTok, YouTube, Threads; holds no credentials (password manager only).
+- **Process doc enhancements** (additive): `ls-social-media-design/SKILL.md` (digital-identity provisioning precondition), `docs/marketing/daily-cadence-checklist.md` (Phase 0 onboarding, standup attendees, monthly digital-identity health check), `docs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md` (account-provisioning prepend + time estimate), `docs/marketing/warmup-log.md` (Phase 0 sub-steps).
+- **Tests**: `EXPECTED_AGENT_COUNT` bumped to 145; `test_doc_agent_counts.py` + `test_doc_drift.py` green (33 passed / 1 skipped).
+
+### Changed
+- **Agent count reconciled 144 → 145** across living docs: README.md, USER-GUIDE.md, ORGANIZATION.md (Marketing 9 → 11 + `social-media-manager`), DEVELOPMENT.md, `docs/source-of-truth.yaml`, `company/org-chart.md` (Marketing 10 → 11), `docs/AGENT-REGISTRY-TABLE.md`; `company/agent-registry.json` re-synced via `ai-company sync-registry --verify`.
+- **Social media setup plan retired**: `social-media/LIGHTSPEED-SOCIAL-MEDIA-SETUP.md` removed; content preserved in normalized form at `docs/marketing/digital-identity-setup.md`.
+
 ## [0.6.0] — 2026-09-02
 
 ### Added

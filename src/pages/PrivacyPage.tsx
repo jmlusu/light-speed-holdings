@@ -60,12 +60,12 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ theme }) => {
       />
 
       <section className={`px-4 sm:px-8 max-w-3xl mx-auto w-full pt-12 pb-4 ${
-        isLight ? 'text-slate-700' : 'text-zinc-300'
+        isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
       }`}>
         {SECTIONS.map((section) => (
           <div key={section.heading} className="mb-10">
             <h2 className={`font-display font-bold text-lg sm:text-xl tracking-tight ${
-              isLight ? 'text-slate-900' : 'text-zinc-100'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}>
               {section.heading}
             </h2>

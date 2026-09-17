@@ -16,15 +16,23 @@ The single source of truth for creating on-brand LightSpeed Holdings artifacts.
 
 ## Canonical References
 
-| Asset | Path |
-|-------|------|
-| Brand tokens (JSON) | `brand/tokens/brand-tokens.json` |
-| Brand tokens (CSS) | `brand/tokens/brand-tokens.css` |
-| Brand guidelines (this system) | `brand/guidelines/brand-guidelines.md` |
-| Quick reference | `static/brand/BRAND_GUIDELINES.md` |
-| Logo suite | `static/brand/logos/**` |
-| Pre-built templates | `static/brand/templates/**` |
-| Template generators | `static/brand/templates/generate-*.py` |
+**Canonical source of truth is `brand/**` (repo root).** `static/brand/**` and
+`public/brand/**` are runtime mirrors — never hand-edit assets there, and never
+read old versions from them for new work. See `brand/CANONICAL_SOURCES.md`.
+Run `pwsh scripts/sync-brand.ps1` after changing a canonical asset so mirrors
+pick it up.
+
+| Asset | Canonical path | Mirror copy |
+|-------|----------------|-------------|
+| Brand tokens (JSON) | `brand/tokens/brand-tokens.json` | `static/brand/tokens/brand-tokens.json` |
+| Brand tokens (CSS) | `brand/tokens/brand-tokens.css` | `static/brand/tokens/brand-tokens.css` |
+| Brand guidelines (this system) | `brand/guidelines/brand-guidelines.md` | `static/brand/guidelines/brand-guidelines.md` |
+| Quick reference | `brand/CANONICAL_SOURCES.md` | `static/brand/BRAND_GUIDELINES.md` |
+| Logo suite | `brand/logos/**` | `static/brand/logos/**` |
+| Print masters | `brand/print/**` | `static/brand/print/**` |
+| Digital/social covers | `brand/digital/**` | `static/brand/digital/**` |
+| Pre-built templates | `static/brand/templates/**` | mirror-only (no canonical) |
+| Template generators | `static/brand/templates/generate-*.py` | mirror-only (no canonical) |
 
 ## Core Tokens (Memorize These)
 
@@ -57,7 +65,7 @@ The single source of truth for creating on-brand LightSpeed Holdings artifacts.
 
 ## Logo Rules (Never Break)
 
-1. **Never recreate the logo** — always use official files in `static/brand/logos/`.
+1. **Never recreate the logo** — always use official files in `brand/logos/` (canonical; mirrors at `static/brand/logos/`).
 2. Never stretch, rotate, distort, or recolor the logo.
 3. Clear space = 1× "L" height on all sides.
 4. Vector (SVG/PDF/EPS) for print; transparent PNG on dark backgrounds.
@@ -99,7 +107,7 @@ The CEO Dashboard (`src/ai_company/dashboard/`) uses the J.A.R.V.I.S. theme with
 ## On-Brand Confidence Check
 
 - [ ] Colors resolve to `brand-tokens.json` values only
-- [ ] Logo is an official asset (path under `static/brand/logos/`)
+- [ ] Logo is an official asset (path under `brand/logos/`)
 - [ ] Type sizes are on the brand scale
 - [ ] Spacing follows the 4px base scale
 - [ ] Template used where one exists
