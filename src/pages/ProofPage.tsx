@@ -242,22 +242,33 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
           <p className={`mt-1 text-xs sm:text-sm max-w-xl ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
             Collaborations and governance frameworks establishing regional compliance and data residency standards.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            {workPolicy.map((item) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            {workPolicy.map((card) => (
               <div
-                key={item.code}
-                className={`rounded-3xl p-6 border ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy/70 border-ls-white/10'
+                key={card.id}
+                className={`rounded-3xl p-6 sm:p-7 border flex flex-col justify-between ${
+                  isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
                 }`}
               >
-                <span className="font-body text-[10px] font-black text-ls-red uppercase">{item.code}</span>
-                <h4 className="mt-2 font-bold text-base font-display">{item.title}</h4>
-                <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  {item.detail}
-                </p>
-                <div className="mt-4 pt-3 border-t border-inherit flex items-center justify-between text-[11px]">
-                  <span className="font-medium text-ls-cyan">{item.lead}</span>
-                  <span className="font-bold opacity-75">{item.quarter}</span>
+                <div>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="font-body text-[10px] font-black tracking-widest text-ls-red uppercase">{card.id}</span>
+                    <span className={`font-body text-[9px] font-bold tracking-widest rounded-full px-2.5 py-0.5 border ${
+                      card.badge.includes('Published') || card.badge.includes('Proven')
+                        ? 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
+                        : card.badge.includes('Proposed')
+                          ? 'border-ls-grey-light-text/40 bg-ls-grey-dark/10 text-ls-grey-light-text'
+                          : 'border-ls-red/40 bg-ls-red/10 text-ls-red'
+                    }`}>
+                      {card.badge}
+                    </span>
+                  </div>
+                  <h4 className="mt-3 font-display font-bold text-base sm:text-lg tracking-tight">{card.title}</h4>
+                  <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
+                    isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                  }`}>
+                    {card.text}
+                  </p>
                 </div>
               </div>
             ))}

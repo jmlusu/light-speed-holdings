@@ -246,7 +246,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                       <span className="px-2.5 py-1 rounded-md bg-ls-red/10 text-ls-red text-xs font-black font-body">
                         OFFER {family.letter}
                       </span>
-                      <HonestyBadge label={family.honestyBadge} />
+                      <HonestyBadge label={{ label: family.honestyBadge, tone: 'fieldable' }} />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold font-display mt-2">{family.title}</h3>
                     <p className={`text-xs sm:text-sm mt-1 max-w-2xl ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>

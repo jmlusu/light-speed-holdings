@@ -204,3 +204,11 @@ Point-in-time audit reports. These are frozen snapshots — refer to `STATUS.md`
 - **Sprint 6**: COMPLETE — audit fixes + runtime hardening (2026-08-10).
 - **Phase 2 (2026-08-18) COMPLETE**: Daemon mode (S3-06/S3-07), background schedulers, `/api/v1/daemon/status` + WebSocket broadcast, mypy strict mode — all shipped in v0.5.1.
 - **Deferred**: Dashboard auth fail-closed default is superseded — RBAC (ADR-012) now gates write endpoints and loopback-restricts open mode. T1 push-bus adapter trigger is explicit in ADR-010 (two consecutive CI benchmark runs breaching read-p95 >10 ms or 127-agent fan-out >5 s). Legacy module deprecation is resolved — `builder.py`/`registry.py`/`graph.py` no longer exist; `builder/`, `registry/`, `graph/` are packages.
+
+### Creative Production Studio Migration (2026-09-17)
+
+- **Agent count**: 145 ? 152 (151 AI + 1 Human CEO)
+- **7 new ls-stack Marketing specialists appended**: creative_director, presentation_designer, document_designer, diagram_designer, visual_storyteller, brand_advertising_designer, artifact_qa_reviewer
+- **Registry**: synced; 152 agents verified (sync-registry --verify green)
+- **Drift gates**: all green (validate-drift.ps1, pytest doc_drift, lint-ecl.ps1, ruff, mypy, pytest)
+- **Change closed**: via harness-change.ps1, phase ? validate, validation_status: pass
