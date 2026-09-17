@@ -32,7 +32,7 @@ export const IndustryDetailPage: React.FC<IndustryDetailPageProps> = ({ theme })
       >
         <Link
           to="/industries"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all hover:brightness-110"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all hover:brightness-110"
         >
           <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
           Back to Industries
@@ -58,20 +58,20 @@ export const IndustryDetailPage: React.FC<IndustryDetailPageProps> = ({ theme })
       </PageIntro>
 
       <section className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 border-t ${
-        isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
       }`}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {blocks.map((block, idx) => (
             <Reveal key={block.eyebrow} delay={idx * 0.08}>
               <div className={`rounded-3xl p-6 sm:p-7 border h-full ${
-                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
               }`}>
-                <span className="font-mono text-[10px] font-bold tracking-widest text-ls-red">
+                <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">
                   {block.eyebrow}
                 </span>
                 <h2 className="mt-3 font-display font-bold text-lg tracking-tight">{block.title}</h2>
                 <p className={`mt-3 text-xs sm:text-sm leading-relaxed ${
-                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {block.body}
                 </p>
@@ -82,7 +82,7 @@ export const IndustryDetailPage: React.FC<IndustryDetailPageProps> = ({ theme })
       </section>
 
       <section className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 ${
-        isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
       }`}>
         <SectionHeading
           theme={theme}
@@ -91,14 +91,14 @@ export const IndustryDetailPage: React.FC<IndustryDetailPageProps> = ({ theme })
         />
         <div className="max-w-3xl mx-auto">
           <div className={`rounded-3xl p-6 sm:p-8 border ${
-            isLight ? 'bg-white/95 border-slate-300 shadow-md' : 'bg-zinc-950/80 border-white/15 shadow-xl'
+            isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl'
           }`}>
             <ul className={`space-y-3 text-sm leading-relaxed ${
-              isLight ? 'text-slate-700' : 'text-zinc-300'
+              isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
             }`}>
               {record.useCases.map((uc, idx) => (
                 <li key={uc} className="flex items-start gap-3">
-                  <span className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-ls-red/10 text-ls-red flex items-center justify-center font-mono text-[10px] font-black" aria-hidden="true">
+                  <span className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-ls-red/10 text-ls-red flex items-center justify-center font-body text-[10px] font-black" aria-hidden="true">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
                   <span>{uc}</span>
@@ -107,9 +107,9 @@ export const IndustryDetailPage: React.FC<IndustryDetailPageProps> = ({ theme })
             </ul>
             {record.note && (
               <p className={`mt-6 pt-5 border-t text-xs leading-relaxed ${
-                isLight ? 'border-slate-200 text-slate-500' : 'border-white/10 text-zinc-500'
+                isLight ? 'border-ls-grey-dark text-ls-grey-dark' : 'border-ls-white/10 text-ls-grey-light-text'
               }`}>
-                <span className="font-mono font-bold tracking-widest text-ls-red">HONESTY NOTE: </span>
+                <span className="font-body font-bold tracking-widest text-ls-red">HONESTY NOTE: </span>
                 {record.note}
               </p>
             )}
@@ -119,13 +119,13 @@ export const IndustryDetailPage: React.FC<IndustryDetailPageProps> = ({ theme })
 
       <section className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20`}>
         <div className={`rounded-3xl p-6 sm:p-8 border ${
-          isLight ? 'bg-white/95 border-slate-300 shadow-md' : 'bg-zinc-950/80 border-white/15 shadow-xl'
+          isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl'
         }`}>
           <div className="flex flex-col lg:flex-row lg:items-center gap-6">
             <div className="lg:flex-1">
-              <span className="font-mono text-[10px] font-bold tracking-widest text-ls-red">KEEP EXPLORING</span>
+              <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">KEEP EXPLORING</span>
               <h2 className={`mt-2 text-xl sm:text-2xl font-black tracking-tight font-display ${
-                isLight ? 'text-slate-900' : 'text-zinc-100'
+                isLight ? 'text-ls-navy' : 'text-ls-white'
               }`}>
                 Other Industries
               </h2>
@@ -137,8 +137,8 @@ export const IndustryDetailPage: React.FC<IndustryDetailPageProps> = ({ theme })
                   to={`/industries/${ind.slug}`}
                   className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full border font-bold text-[11px] tracking-wider transition-colors cursor-pointer ${
                     isLight
-                      ? 'border-slate-300 text-slate-700 hover:border-ls-red hover:text-ls-red'
-                      : 'border-white/15 text-zinc-200 hover:border-ls-red hover:text-ls-red'
+                      ? 'border-ls-grey-dark text-ls-grey-dark hover:border-ls-red hover:text-ls-red'
+                      : 'border-ls-white/15 text-ls-white hover:border-ls-red hover:text-ls-red'
                   }`}
                 >
                   {ind.nav}

@@ -57,20 +57,20 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
   const isLight = theme === 'light';
   return (
     <div className={`mt-12 p-8 sm:p-10 rounded-3xl border ${
-      isLight ? 'bg-slate-50/80 border-slate-300' : 'bg-zinc-950/70 border-white/15'
+      isLight ? 'bg-ls-grey-light/80 border-ls-grey-dark' : 'bg-ls-navy/70 border-ls-white/15'
     }`}>
       <div className="max-w-3xl mb-8 space-y-2">
-        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[10px] tracking-widest">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[10px] tracking-widest">
           <RefreshCw className="w-3 h-3" />
           <span>THE CLOSED-LOOP MULTIPLIER EFFECT</span>
         </div>
         <h3 className={`text-2xl sm:text-3xl font-black tracking-tight font-display ${
-          isLight ? 'text-slate-900' : 'text-white'
+          isLight ? 'text-ls-navy' : 'text-ls-white'
         }`}>
           How the Four Offerings Interconnect
         </h3>
         <p className={`text-justify text-xs sm:text-sm leading-relaxed ${
-          isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+          isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
         }`}>
           Deploying any single offering creates value. Connecting all four multiplies it. Click any pair below to see the integration protocol:
         </p>
@@ -84,14 +84,14 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
             onClick={() => onSelectSynergy(key)}
             className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
               selectedSynergy === key
-                ? 'bg-ls-red text-white border-ls-red shadow-md shadow-ls-red/20'
+                ? 'bg-ls-red text-ls-white border-ls-red shadow-md shadow-ls-red/20'
                 : isLight
-                  ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
-                  : 'bg-zinc-900/80 hover:bg-zinc-900 text-zinc-300 border-white/15'
+                  ? 'bg-ls-white hover:bg-ls-grey-light text-ls-navy border-ls-grey-dark'
+                  : 'bg-ls-navy/80 hover:bg-ls-navy text-ls-grey-light-text border-ls-white/15'
             }`}
           >
-            <div className={`text-[10px] font-mono font-bold mb-1 ${
-              selectedSynergy === key ? 'text-orange-100' : 'text-ls-red'
+            <div className={`text-[10px] font-body font-bold mb-1 ${
+              selectedSynergy === key ? 'text-ls-red/10' : 'text-ls-red'
             }`}>
               {pair.title}
             </div>
@@ -106,18 +106,18 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
         if (!pair) return null;
         return (
           <div className={`p-6 rounded-2xl border transition-all ${
-            isLight ? 'bg-white border-slate-300 shadow-sm' : 'bg-ls-navy border-white/20'
+            isLight ? 'bg-ls-white border-ls-grey-dark shadow-sm' : 'bg-ls-navy border-ls-white/20'
           }`}>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-ls-red/20 mb-4">
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 rounded-lg bg-ls-red text-white font-mono text-xs font-bold">
+                <span className="px-3 py-1 rounded-lg bg-ls-red text-ls-white font-body text-xs font-bold">
                   {pair.title}
                 </span>
-                <h4 className={`text-base font-bold font-display ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                <h4 className={`text-base font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
                   {pair.headline}
                 </h4>
               </div>
-              <div className="flex items-center gap-2 text-xs font-mono font-semibold text-ls-cyan">
+              <div className="flex items-center gap-2 text-xs font-body font-semibold text-ls-cyan">
                 <Activity className="w-3.5 h-3.5" />
                 <span>Real-time Integration Protocol</span>
               </div>
@@ -125,18 +125,18 @@ export const SynergyMatrix: React.FC<SynergyMatrixProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
               <div className="md:col-span-7 space-y-2">
-                <span className={`text-[11px] font-mono font-bold block ${isLight ? 'text-slate-500' : 'text-zinc-400'}`}>
+                <span className={`text-[11px] font-body font-bold block ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                   Integration Mechanism & Technical Contract
                 </span>
-                <p className={`text-justify text-xs sm:text-sm leading-relaxed ${isLight ? 'text-slate-800 font-medium' : 'text-zinc-300'}`}>
+                <p className={`text-justify text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'}`}>
                   {pair.mechanism}
                 </p>
               </div>
 
               <div className={`md:col-span-5 p-4 rounded-xl border ${
-                isLight ? 'bg-ls-cyan/70 border-ls-cyan text-emerald-950' : 'bg-emerald-950/20 border-ls-cyan/30 text-ls-cyan'
+                isLight ? 'bg-ls-cyan/70 border-ls-cyan text-ls-cyan/30' : 'bg-ls-cyan/20 border-ls-cyan/30 text-ls-cyan'
               }`}>
-                <span className="text-[10px] font-mono font-bold text-ls-cyan dark:text-ls-cyan block mb-1">
+                <span className="text-[10px] font-body font-bold text-ls-cyan dark:text-ls-cyan block mb-1">
                   Compound Institutional Impact
                 </span>
                 <p className="text-justify text-xs font-bold leading-relaxed">

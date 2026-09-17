@@ -42,7 +42,7 @@ risk assessment for smallholder farmers.
 ## 4. Lightspeed Holdings — The Meta Case Study
 
 An AI-native consulting/build shop operating in Malawi, documented openly:
-143 agents, 20 departments, 5-tier HITL approvals, audit trails, RACI, governance
+151 agents, 20 departments, 5-tier HITL approvals, audit trails, RACI, governance
 controls mapped to regulatory requirements.
 
 ## Sector Targeting (SADC priorities)

@@ -75,7 +75,7 @@ const coreCapabilities: CoreCapability[] = [
     eyebrow: 'CORE OFFERING 03 // AGENT ARCHITECTURE',
     tagline: 'Structured Multi-Agent Team Engineering',
     desc: 'We build teams of specialized AI agents, each with strict boundaries: limited tools, set budgets, and full audit trails. Every action is logged, checked, and executed through a structured workflow. No black boxes, no unreviewed outputs.',
-    metrics: '144 Verified Agent Configurations in Production',
+    metrics: '152 Verified Agent Configurations in Production',
     inputContract: 'Policy bounds from Offering 01 and contextual knowledge from Offering 02',
     outputContract: 'Structured Transaction Payloads, Reconciled Ledgers, Exception Alerts',
     upstreamSource: 'Driven by Strategy policies (01) and grounded in Intelligence graphs (02)',
@@ -121,20 +121,20 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
 
   return (
     <section id="capabilities" className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full border-t ${
-      isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+      isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
     }`}>
       <div className="max-w-3xl mb-12 space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest">
           <Network className="w-3.5 h-3.5" />
           <span>INTEGRATED ARCHITECTURE</span>
         </div>
         <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-          isLight ? 'text-slate-900' : 'text-white'
+          isLight ? 'text-ls-navy' : 'text-ls-white'
         }`}>
           Four Connected Core Offerings
         </h2>
         <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-          isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+          isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
         }`}>
           We do not sell standalone tools or chatbots. We build a closed-loop system where strategy compiles into private knowledge graphs, structured AI teams, and audited core execution.
         </p>
@@ -151,11 +151,11 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
             className={`p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer relative overflow-hidden group ${
               activePillar === idx
                 ? isLight
-                  ? 'tactile-btn-active-light text-slate-900 border-ls-red/50 shadow-md'
-                  : 'tactile-btn-active-dark text-white border-ls-red/50 shadow-lg'
+                  ? 'tactile-btn-active-light text-ls-navy border-ls-red/50 shadow-md'
+                  : 'tactile-btn-active-dark text-ls-white border-ls-red/50 shadow-lg'
                 : isLight
-                  ? 'tactile-btn-inactive-light text-slate-700'
-                  : 'tactile-btn-inactive-dark text-zinc-300'
+                  ? 'tactile-btn-inactive-light text-ls-grey-dark'
+                  : 'tactile-btn-inactive-dark text-ls-grey-light-text'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -163,16 +163,16 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
                 <span className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   activePillar === idx ? 'tactile-pip-active' : isLight ? 'tactile-pip-inactive-light' : 'tactile-pip-inactive-dark'
                 }`} />
-                <span className={`text-[10px] font-mono tracking-widest font-bold px-2 py-0.5 rounded-md ${
+                <span className={`text-[10px] font-body tracking-widest font-bold px-2 py-0.5 rounded-md ${
                   activePillar === idx
                     ? 'bg-ls-red/20 text-ls-red'
-                    : 'bg-black/5 text-zinc-500'
+                    : 'bg-ls-navy/5 text-ls-grey-light-text'
                 }`}>
                   OFFERING 0{idx + 1}
                 </span>
               </div>
-              <span className={`text-[10px] font-mono font-medium ${
-                activePillar === idx ? 'text-ls-red font-bold' : 'text-zinc-500'
+              <span className={`text-[10px] font-body font-medium ${
+                activePillar === idx ? 'text-ls-red font-bold' : 'text-ls-grey-light-text'
               }`}>
                 {idx === 0 ? 'GOVERN' : idx === 1 ? 'SYNTHESIZE' : idx === 2 ? 'ORCHESTRATE' : 'SETTLE'}
               </span>
@@ -180,8 +180,8 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
             <span className="text-sm font-bold tracking-wide block font-display leading-tight">{cap.shortTitle}</span>
             <p className={`text-justify text-[11px] mt-1.5 line-clamp-2 ${
               activePillar === idx
-                ? isLight ? 'text-slate-800 font-medium' : 'text-zinc-200'
-                : 'text-zinc-500'
+                ? isLight ? 'text-ls-navy font-medium' : 'text-ls-white'
+                : 'text-ls-grey-light-text'
             }`}>
               {cap.tagline}
             </p>
@@ -207,12 +207,12 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
       />
 
       {/* Comparative Table */}
-      <div className="mt-8 pt-8 border-t border-slate-200 dark:border-white/10">
+      <div className="mt-8 pt-8 border-t border-ls-grey-dark dark:border-ls-white/10">
         <div className="flex items-center justify-between mb-4">
-          <span className={`text-xs font-mono font-bold tracking-wider ${isLight ? 'text-slate-700' : 'text-zinc-300'}`}>
+          <span className={`text-xs font-body font-bold tracking-wider ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
             Disconnected Point-Tools vs. Connected Suite
           </span>
-          <span className="text-[10px] font-mono text-ls-red font-bold">
+          <span className="text-[10px] font-body text-ls-red font-bold">
             Zero Cloud SaaS Leakage
           </span>
         </div>
@@ -220,30 +220,30 @@ export const CoreOfferingsSection: React.FC<CoreOfferingsSectionProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className={`border-b ${isLight ? 'border-slate-300 bg-slate-100/80 text-slate-800' : 'border-white/10 bg-zinc-900/50 text-zinc-300'}`}>
-                <th className="p-3 font-mono font-bold">Offering Layer</th>
-                <th className="p-3 font-mono font-bold text-rose-500">Fragmented Point Solution</th>
-                <th className="p-3 font-mono font-bold text-ls-cyan">Lightspeed Connected Architecture</th>
+              <tr className={`border-b ${isLight ? 'border-ls-grey-dark bg-ls-grey-light/80 text-ls-navy' : 'border-ls-white/10 bg-ls-navy/50 text-ls-grey-light-text'}`}>
+                <th className="p-3 font-body font-bold">Offering Layer</th>
+                <th className="p-3 font-body font-bold text-ls-red">Fragmented Point Solution</th>
+                <th className="p-3 font-body font-bold text-ls-cyan">Lightspeed Connected Architecture</th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isLight ? 'divide-slate-200 text-slate-700' : 'divide-white/10 text-zinc-300'}`}>
+            <tbody className={`divide-y ${isLight ? 'divide-ls-grey-dark text-ls-grey-dark' : 'divide-ls-white/10 text-ls-grey-light-text'}`}>
               <tr>
-                <td className="p-3 font-bold font-mono text-ls-red">01. Strategy</td>
+                <td className="p-3 font-bold font-body text-ls-red">01. Strategy</td>
                 <td className="p-3">Static PowerPoint slide decks, 9-month review cycles, zero computable rules.</td>
                 <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">Executable policy rules, dynamic budgets, live board models.</td>
               </tr>
               <tr>
-                <td className="p-3 font-bold font-mono text-ls-red">02. Intelligence</td>
+                <td className="p-3 font-bold font-body text-ls-red">02. Intelligence</td>
                 <td className="p-3">Siloed data lakes, public LLM APIs risking trade secrets and residency.</td>
                 <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">On-site knowledge graphs with verified data lineage.</td>
               </tr>
               <tr>
-                <td className="p-3 font-bold font-mono text-ls-red">03. Autonomous Systems</td>
+                <td className="p-3 font-bold font-body text-ls-red">03. Autonomous Systems</td>
                 <td className="p-3">Unbounded chatbots prone to hallucinations and tool abuse.</td>
                 <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">Structured agent fleets bound to 7 canonical tools and strict workflows.</td>
               </tr>
               <tr>
-                <td className="p-3 font-bold font-mono text-ls-red">04. Execution & Governance</td>
+                <td className="p-3 font-bold font-body text-ls-red">04. Execution & Governance</td>
                 <td className="p-3">Manual data re-entry, paper-based settlement, post-facto audit trails.</td>
                 <td className="p-3 font-medium text-ls-cyan dark:text-ls-cyan">Direct core API event rails, human approval gates, immutable audit logs.</td>
               </tr>

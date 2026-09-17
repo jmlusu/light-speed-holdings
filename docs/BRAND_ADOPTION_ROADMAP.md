@@ -91,16 +91,22 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 
 | # | Task | Status | Owner | Dependencies |
 |---|------|--------|-------|--------------|
-| 4.1 | Create `brand/` directory at repo root (canonical source of truth) | 🔲 TODO | Engineering | — |
-| 4.2 | Create `brand/guidelines/brand-guidelines.md` (full document) | 🔲 TODO | Brand Strategist | 2.9, 2.10 |
-| 4.3 | Create `brand/tokens/brand-tokens.json` (design tokens) | 🔲 TODO | Product Designer | 2.9 |
-| 4.4 | Import brand assets to `brand/logos/`, `brand/print/`, etc. | 🔲 TODO | Engineering | 4.1 |
-| 4.5 | Create symlink from `static/brand/` → `brand/` (or copy in CI) | 🔲 TODO | DevOps | 4.1, 4.4 |
-| 4.6 | Update Marketing SOP to reference `brand/` paths | 🔲 TODO | CMO | 4.1 |
+| 4.1 | Create `brand/` directory at repo root (canonical source of truth) | ✅ Done | Engineering | — |
+| 4.2 | Create `brand/guidelines/brand-guidelines.md` (full document) | ✅ Done | Brand Strategist | 2.9, 2.10 |
+| 4.3 | Create `brand/tokens/brand-tokens.json` (design tokens) | ✅ Done | Product Designer | 2.9 |
+| 4.4 | Import brand assets to `brand/logos/`, `brand/print/`, etc. | ✅ Done | Engineering | 4.1 |
+| 4.5 | Create symlink from `static/brand/` → `brand/` (or copy in CI) | ✅ Done (copy, #309) | DevOps | 4.1, 4.4 |
+| 4.6 | Update Marketing SOP to reference `brand/` paths | ✅ Done (#309) | CMO | 4.1 |
 | 4.7 | Create press kit ZIP with all brand assets | 🔲 TODO | IR Lead | 4.4 |
 | 4.8 | Upload press kit to website | 🔲 TODO | Engineering | 4.7 |
 | 4.9 | Create CLI ASCII logo from official wordmark | 🔲 TODO | Engineering | — |
 | 4.10 | Add brand headers to key documentation files | 🔲 TODO | Technical Writer | 4.2 |
+
+> **4.5 mechanism (resolved in #309):** Windows + git cannot track symlinks
+> reliably in this repo (pre-existing duplicates in `brand/`, `static/brand/`,
+> `public/brand/` prove it). Mechanism = **copy-on-sync**:
+> `pwsh scripts/sync-brand.ps1` overlays `brand/**` → `static/brand/**` →
+> `public/brand/**`. Canonical-path registry: `brand/CANONICAL_SOURCES.md`.
 
 ### Phase 5: Governance & Verification 📋 PLANNED
 **Duration:** Week 4-5 (September 22 - October 3, 2026)

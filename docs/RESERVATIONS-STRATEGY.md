@@ -123,7 +123,7 @@ delivered unless it was.
 - Red-team + eval gates (`AGENT-REGISTRY-TABLE.md`: red-team-engineer, eval-benchmarks-engineer, ai-safety-lead, ai-ethics-officer).
 - Honesty ladder enforced site-wide (`src/data/siteContent.ts:7-18`; `docs/client-facing/USE-CASE-CATALOG.md:10-14`).
 
-**Honesty badge:** Proven in-house (we govern our own 144-agent operation before asking clients to trust it).
+**Honesty badge:** Proven in-house (we govern our own 152-agent operation before asking clients to trust it).
 
 ## 5. The Reservations Council (team)
 

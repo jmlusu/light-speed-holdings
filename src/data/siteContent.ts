@@ -13,8 +13,8 @@ export interface HonestyLabel {
 export const TONE_STYLES: Record<HonestyTone, string> = {
   proven: 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan',
   pilot: 'border-ls-red/40 bg-ls-red/10 text-ls-red',
-  fieldable: 'border-amber-400/40 bg-amber-400/10 text-amber-300',
-  development: 'border-slate-400/40 bg-slate-400/10 text-slate-400',
+  fieldable: 'border-ls-grey-light-text/40 bg-ls-grey-light-text/10 text-ls-grey-light-text',
+  development: 'border-ls-grey-dark/40 bg-ls-grey-dark/10 text-ls-grey-dark',
 };
 
 /* ── Company identity ─────────────────────────────────────── */
@@ -35,7 +35,7 @@ export const company = {
 export const mission: { statement: string; why: string } = {
   statement:
     'Prove agentic AI works in Malawi by shipping real services — websites, automation, reporting, and marketing — for the organizations that need them most.',
-  why: 'Malawi\u2019s SMEs, NGOs, schools, clinics, and cooperatives are underserved by an industry that prices enterprise-grade work out of reach. One human CEO directs a workforce of 140+ AI agents to deliver world-class output at local cost. Our proof is not a press release; it is a shipped website, a donor report that used to take weeks, a dashboard that replaced forty-page PDFs.',
+  why: 'Malawi\u2019s SMEs, NGOs, schools, clinics, and cooperatives are underserved by an industry that prices enterprise-grade work out of reach. One human CEO directs a workforce of 152 agents to deliver world-class output at local cost. Our proof is not a press release; it is a shipped website, a donor report that used to take weeks, a dashboard that replaced forty-page PDFs.',
 };
 
 export const vision: { statement: string; why: string } = {
@@ -245,7 +245,7 @@ export const solutions: SolutionRecord[] = [
       'We design intelligent systems capable of executing work — AI agents, multi-agent systems, and agentic workflows — governed by human approval at every step.',
     lead:
       'Not chatbots. Intelligent systems that take a brief, work across tools, and return auditable output. LightSpeed designs and operates AI agents, multi-agent architectures, and agentic workflows for organisations that need work done — with a 5-tier human-in-the-loop approval matrix and immutable audit trails on every action.',
-    proof: { label: 'Proven in-house — our own 144-agent operation runs on this platform daily', tone: 'proven' },
+    proof: { label: 'Proven in-house — our own 152-agent operation runs on this platform daily', tone: 'proven' },
     capabilities: [
       { title: 'AI Agents', desc: 'Specialist agents for compliance scanning, data pipelines, contract review, reporting, and customer success — configured per role.' },
       { title: 'Multi-Agent Systems', desc: 'Coordinated agent teams across departments, with escalation paths, RACI matrices, and role-scoped permissions.' },
@@ -287,7 +287,7 @@ export const solutions: SolutionRecord[] = [
       'Strategy, architecture, and delivery that move organisations from manual processes to working digital and AI-native operations.',
     lead:
       'Every business in Malawi deserves a digital front door. LightSpeed builds mobile-first websites, e-commerce stores, brand identities, and modernised operating stacks — with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one. From MWK 150,000 (~$85) for a Google Business listing to a full online store, we design for the way Malawi actually transacts.',
-    proof: { label: 'Fieldable in 2026 — pricing validated against real prospects before publishing', tone: 'fieldable' },
+    proof: { label: 'Fieldable in 2026 — pricing to be validated with real prospects before publishing', tone: 'fieldable' },
     capabilities: [
       { title: 'Digital Strategy', desc: 'A clear map from today\u2019s operation to a digital one, prioritised by business outcome, not technology novelty.' },
       { title: 'Enterprise Architecture', desc: 'The target architecture your transformation builds toward — systems, data, integration, and governance designed together.' },
@@ -591,7 +591,7 @@ export const technologyPillars: TechnologyPillar[] = [
 ];
 
 export const technologyMetrics: { value: string; label: string; source: string }[] = [
-  { value: '144', label: 'Verified Agent Configurations', source: 'company-registry.yaml' },
+  { value: '152', label: 'Verified Agent Configurations', source: 'company-registry.yaml' },
   { value: '2,373', label: 'Automated Regression Tests', source: 'pytest suite' },
   { value: '20', label: 'Departments Modeled', source: 'company-registry.yaml' },
   { value: '5-TIER', label: 'Human Approval Gates', source: 'ApprovalGate matrix' },
@@ -662,7 +662,7 @@ export const scenarios: Scenario[] = [
     id: 'FOW-01',
     title: 'Startup Acceleration (Solo Founder + AI)',
     desc: 'A solo founder operates with the functional coverage of a multi-person team: agents handle CTO, CFO, CMO, and CLO roles, with a CEO dashboard for real-time visibility.',
-    status: 'Proven in-house — LightSpeed itself operates as a 1-human, 144-agent organisation.',
+    status: 'Proven in-house — LightSpeed itself operates as a 1-human, 151-agent organisation.',
   },
   {
     id: 'FOW-02',
@@ -723,13 +723,13 @@ export const workCaseStudies: WorkCard[] = [
     title: 'J&S StopOver Bar — SME AI Transformation',
     badge: 'Proven in-house — live proof, not a paid client.',
     featured: true,
-    text: 'A real, non-tech SME in Malawi running agentic decision support: inventory, sales, shortage detection, cash reconciliation, procurement triggers, and profitability tracking. The world\u2019s smallest AI-native bar — a genuinely African SME AI transformation case, built in-house and documented openly.',
+    text: 'A real, non-tech SME in Malawi running agentic decision support: inventory, sales, shortage detection, cash reconciliation, procurement triggers, and profitability tracking. A genuinely African SME AI transformation case, built in-house and documented openly.',
   },
   {
     id: 'PC-04',
     title: 'LightSpeed Holdings — The Meta Case Study',
     badge: 'Proven in-house.',
-    text: 'The company is its own first customer. 144 agents across 20 departments, five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — operating daily.',
+    text: 'The company is its own first customer. 152 agents across 20 departments, five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — operating daily.',
   },
   {
     id: 'PC-02',
@@ -774,7 +774,7 @@ export const workPolicy: WorkCard[] = [
     id: 'SADC',
     title: 'National AI Strategy + SADC Framework',
     badge: 'Published (NAS) / In active development (SADC).',
-    text: 'The SADC Agentic AI Governance Framework — the region\u2019s first operational governance standard for autonomous agentic AI — authored by the CEO and submitted to member-state ministers and regulators; National AI Strategy consultation published.',
+    text: 'The SADC Agentic AI Governance Framework — a graduated-autonomy governance standard for autonomous agentic AI aimed at member-state ministers and regulators — authored by the CEO as a policy proposal; National AI Strategy consultation published.',
   },
 ];
 

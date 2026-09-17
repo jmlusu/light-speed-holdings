@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  The Malawi Agentic AI Monitor — Email Layout (Issue #1, September 2026)
+  LightSpeed Holdings Limited™  ·  ASPIRE. ACT. ACHIEVE.
+
+  REUSABLE TEMPLATE — HANDOFF NOTES
+  ----------------------------------------------------------------------------
+  1. Brand tokens (from brand/tokens/brand-tokens.json):
+       navy   #070A40  (header band, headings, footer band)
+       red    #E63946  (CTA button, section accent bars)
+       cyan   #00BFFF  (accent rules, links, issue tag)
+       grey   #F2F2F2  (page background), white #FFFFFF (content bg)
+       dark grey #6B7280 secondary text, onNavy/onRed = #FFFFFF, onCyan = #070A40
+  2. Strict email-HTML rules observed:
+       - table-based layout only (no flexbox/grid/div layout)
+       - all styles inline; no <style> block, no JavaScript
+       - web-safe font stack (Arial, Helvetica, sans-serif)
+       - explicit font-size / line-height / color on every text element
+       - bgcolor attribute + inline background-color on colored cells
+       - images: width, height, border="0", display:block, alt, absolute URLs only
+       - no CSS background-image (Outlook); no shorthand padding
+  3. PLACEHOLDERS to replace before send (search for [UPPER_CASE]):
+       [LOGO_URL]          absolute URL to official logo (light bg transparent PNG)
+       [SUBSCRIBE_URL]     subscription landing / signup form
+       [LINKEDIN_URL]      company LinkedIn profile
+       [CONTACT_EMAIL]     contact address for institutions
+       [UNSUBSCRIBE_URL]   unsubscribe link (ESP-provided, e.g. {{{RESEND_UNSUBSCRIBE_URL}}})
+       [MAILING_ADDRESS]   full mailing address (required by CAN-SPAM)
+  4. Set subject + preview text in the ESP (Resend supports preview text via the
+     broadcast/template previewText field) — do not rely on a hidden preheader
+     (display:none is unreliable in Outlook).
+  5. Wordmark: first mention MUST be "LightSpeed Holdings Limited™".
+  6. Before send: run the claim/verification pass per docs/marketing/newsletter/monitor-plan.md
+     and QA the rendered layout via ls-artifact-qa.
+  7. Do NOT commit secrets or real analytics tokens into this file.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>The Malawi Agentic AI Monitor — Issue #1</title>
+</head>
+<body style="margin:0; padding:0; background-color:#F2F2F2;">
+
+  <!-- OUTER WRAPPER -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F2F2F2" style="background-color:#F2F2F2;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+
+        <!-- 600px CONTENT COLUMN -->
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="background-color:#FFFFFF; width:600px; max-width:600px;">
+
+          <!-- ================= HEADER BAND (NAVY) ================= -->
+          <tr>
+            <td bgcolor="#070A40" style="background-color:#070A40; padding:32px 40px 28px 40px;">
+              <!-- LOGO (placeholder absolute URL) -->
+              <img src="[LOGO_URL]" width="180" height="54" alt="LightSpeed Holdings Limited" border="0" style="display:block; width:180px; height:54px; border:0; line-height:54px; font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#FFFFFF;">
+              <!-- COMPANY NAME -->
+              <p style="margin:24px 0 6px 0; font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:24px; font-weight:bold; color:#FFFFFF;">
+                LightSpeed Holdings Limited™
+              </p>
+              <!-- TAGLINE -->
+              <p style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; letter-spacing:2px; color:#9CA3AF;">
+                ASPIRE. ACT. ACHIEVE.
+              </p>
+              <!-- ISSUE TAG (CYAN) -->
+              <p style="margin:20px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:18px; font-weight:bold; color:#00BFFF;">
+                The Malawi Agentic AI Monitor · Issue #1 · September 2026
+              </p>
+            </td>
+          </tr>
+
+          <!-- CYAN ACCENT RULE -->
+          <tr>
+            <td height="4" bgcolor="#00BFFF" style="background-color:#00BFFF; font-size:0; line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- ================= HERO ================= -->
+          <tr>
+            <td style="padding:36px 40px 8px 40px;">
+              <h1 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:26px; line-height:34px; font-weight:bold; color:#070A40;">
+                The State of Agentic AI in Malawi
+              </h1>
+              <p style="margin:16px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                Welcome to the first edition of the Malawi Agentic AI Monitor. This is our
+                monthly, source-checked scan of what is being built, what is being governed,
+                and what is being learned about agentic AI across Malawi and the SADC region.
+                No hype, no vendor gloss: build evidence, policy reality, and practice.
+              </p>
+            </td>
+          </tr>
+
+          <!-- ================= SECTION 1: THIS MONTH ================= -->
+          <tr>
+            <td style="padding:32px 40px 8px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <!-- RED SECTION ACCENT BAR -->
+                  <td width="4" bgcolor="#E63946" style="background-color:#E63946; font-size:0; line-height:0;">&nbsp;</td>
+                  <td style="padding-left:12px;">
+                    <h2 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:26px; font-weight:bold; color:#070A40;">
+                      This Month at LightSpeed: A 152-Agent Company in Warm-Up Launch
+                    </h2>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:16px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                The company registry now defines 152 agents across 20 departments — the
+                architecture behind our 5-tier human-in-the-loop approvals and immutable
+                audit trails. The public launch runs on a 4-week account warm-up protocol
+                (2026-09-06 to 2026-10-03): manual posting only, one consistent device and
+                IP, newsletter signup forms tested end-to-end in Week 4. Inside the
+                building, the Pharos content engine went fully live on September 13–14:
+                Monday Agentic Enterprise Brief, Wednesday Build Log, Friday AI Policy &amp;
+                Governance Africa, plus deep-research and publishing rails.
+              </p>
+              <p style="margin:12px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                We are not describing agentic AI from the outside — the company itself is
+                the demonstration, with humans accountable at every consequential step.
+              </p>
+            </td>
+          </tr>
+
+          <!-- ================= SECTION 2: POLICY & GOVERNANCE ================= -->
+          <tr>
+            <td style="padding:32px 40px 8px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="4" bgcolor="#E63946" style="background-color:#E63946; font-size:0; line-height:0;">&nbsp;</td>
+                  <td style="padding-left:12px;">
+                    <h2 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:26px; font-weight:bold; color:#070A40;">
+                      Policy &amp; Governance: Malawi's AI Bill, MACRA, and SADC
+                    </h2>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:16px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                Malawi has no dedicated AI statute as of mid-2026. AI is governed indirectly
+                through the Data Protection Act 2024 — in force since 3 June 2024 — which
+                designates MACRA as the Data Protection Authority and establishes rights
+                against solely automated decisions. Two tracks are converging: a draft
+                National AI Strategy under validation, and an AI Bill the government expects
+                to table before December 2026. Readiness data is closing the gap too: on
+                22 July 2026, NCST and UNESCO validated Malawi's AI Readiness Assessment,
+                among UNESCO's first regional pilots.
+              </p>
+              <p style="margin:12px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                At SADC level, the Secretariat is developing a Regional AI Strategy and
+                Regulatory Framework, and member states met in Harare in August 2026 for a
+                Regional Workshop on Data Governance in the Digital Age. Our Pharos policy
+                track has prepared an internal draft SADC Agentic AI Governance Framework
+                for regulators such as MACRA and CRASA — proposing graduated autonomy tiers,
+                machine-readable agent credentials, and immutable audit trails.
+              </p>
+              <p style="margin:12px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                The window to shape these rules — with engineering evidence, not just
+                position papers — is now.
+              </p>
+            </td>
+          </tr>
+
+          <!-- ================= SECTION 3: FROM THE BUILD LOG ================= -->
+          <tr>
+            <td style="padding:32px 40px 8px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="4" bgcolor="#E63946" style="background-color:#E63946; font-size:0; line-height:0;">&nbsp;</td>
+                  <td style="padding-left:12px;">
+                    <h2 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:26px; font-weight:bold; color:#070A40;">
+                      From the Build Log: Pharos Content Intelligence
+                    </h2>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:16px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                The build shipped on 2026-09-14: deep-research routines (standard and deep),
+                a FileStore-backed publish queue with LinkedIn and Substack formatters that
+                default to a dry-run receipt before anything goes out, local-first Whisper
+                transcription for low-bandwidth voice capture, and a JSON-RPC MCP server gated
+                by API-key RBAC with PII masking and a full audit log.
+              </p>
+              <p style="margin:12px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                The pattern worth stealing: the discipline we apply to agent actions —
+                permissions, audit, dry-run before execute — now applies to publishing.
+                The Monitor you are reading is produced on that pipeline.
+              </p>
+            </td>
+          </tr>
+
+          <!-- ================= SECTION 4: HOW WE THINK ================= -->
+          <tr>
+            <td style="padding:32px 40px 8px 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="4" bgcolor="#E63946" style="background-color:#E63946; font-size:0; line-height:0;">&nbsp;</td>
+                  <td style="padding-left:12px;">
+                    <h2 style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:18px; line-height:26px; font-weight:bold; color:#070A40;">
+                      How We Think: Humans Stay in the Loop
+                    </h2>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:16px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#333333;">
+                Our framework is H → A → O → M → T → G → V — Human Purpose comes first. The
+                first question is never "what can agents do?" but "what should humans remain
+                accountable for?" Our answer — strategy, ethics, leadership, relationships,
+                final accountability — is engineered in via 5-tier human-in-the-loop
+                approvals and immutable audit trails. Governance-first deployment is how we
+                earn the right to deploy at all, and our regional drafts apply the same
+                logic: highest-risk actions stay decision-support only.
+              </p>
+            </td>
+          </tr>
+
+          <!-- ================= CTA ================= -->
+          <tr>
+            <td align="center" style="padding:36px 40px 40px 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                <tr>
+                  <!-- RED CTA BUTTON (styled <a>, no <button>) -->
+                  <td bgcolor="#E63946" style="background-color:#E63946; border-radius:4px;">
+                    <a href="[SUBSCRIBE_URL]" target="_blank" style="display:inline-block; padding:14px 32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:20px; font-weight:bold; color:#FFFFFF; text-decoration:none;">
+                      Subscribe to the Monitor
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:16px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#6B7280;">
+                Follow the build on <a href="[LINKEDIN_URL]" target="_blank" style="color:#00BFFF; text-decoration:underline;">LinkedIn</a> ·
+                Institutions, contact <a href="mailto:[CONTACT_EMAIL]" style="color:#00BFFF; text-decoration:underline;">[CONTACT_EMAIL]</a>
+              </p>
+            </td>
+          </tr>
+
+          <!-- CYAN ACCENT RULE -->
+          <tr>
+            <td height="4" bgcolor="#00BFFF" style="background-color:#00BFFF; font-size:0; line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- ================= FOOTER (NAVY) ================= -->
+          <tr>
+            <td bgcolor="#070A40" style="background-color:#070A40; padding:28px 40px;">
+              <p style="margin:0 0 12px 0; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; font-weight:bold; color:#FFFFFF;">
+                LightSpeed Holdings Limited™ · ASPIRE. ACT. ACHIEVE.
+              </p>
+              <p style="margin:0 0 12px 0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#9CA3AF;">
+                The Malawi Agentic AI Monitor — Issue #1 · The State of Agentic AI in Malawi · September 2026
+              </p>
+              <p style="margin:0 0 12px 0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#9CA3AF;">
+                [MAILING_ADDRESS]
+              </p>
+              <p style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#9CA3AF;">
+                You are receiving this because you subscribed to the Malawi Agentic AI Monitor.
+                <a href="[UNSUBSCRIBE_URL]" target="_blank" style="color:#00BFFF; text-decoration:underline;">Unsubscribe</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /600px CONTENT COLUMN -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- /OUTER WRAPPER -->
+
+</body>
+</html>

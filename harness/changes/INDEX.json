@@ -1,5 +1,29 @@
 ﻿[
     {
+        "id":  "2026-09-04-doc-drift-prevention",
+        "title":  "Documentation Drift Prevention System",
+        "status":  "active",
+        "location":  "parking",
+        "modules":  [
+                        ""
+                    ],
+        "files":  [
+                      null
+                  ],
+        "tags":  [
+                     ""
+                 ],
+        "decisions":  [
+                          "- Source-of-truth manifest is YAML, not code — readable by humans and agents",
+                          "- Validation runs at three speeds: pre-commit (fast), CI (thorough), weekly (catch-all)",
+                          "- Archived/ADR docs are exempt from drift checks — they record historical state",
+                          "- `company-registry.yaml` and `company/departments.yaml` are the canonical sources"
+                      ],
+        "validation_status":  "pending",
+        "path":  "harness/changes/parking/2026-09-04-doc-drift-prevention",
+        "updated_at":  "2026-09-04"
+    },
+    {
         "id":  "2026-08-08-sprint-4-quality-completeness",
         "title":  "Sprint 4: Quality \u0026 Completeness",
         "status":  "completed",
@@ -621,4 +645,3 @@
         "updated_at":  "2026-09-14"
     }
 ]
-

@@ -29,7 +29,7 @@ interface ProofStat {
 }
 
 const PROOF_STATS: ProofStat[] = [
-  { value: 144, label: 'Verified Agent Configurations', format: 'comma' },
+  { value: 152, label: 'Verified Agent Configurations', format: 'comma' },
   { value: 2373, label: 'Automated Regression Tests', format: 'comma' },
   { value: 20, label: 'Departments Onboarded' },
   { value: 5, label: 'Human Approval Gates', suffix: '-Tier' },
@@ -57,7 +57,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
   const isLight = theme === 'light';
   const [activePillar, setActivePillar] = useState(0);
 
-  const sectionBorder = isLight ? 'border-slate-200/80' : 'border-zinc-800/80';
+  const sectionBorder = isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80';
 
   return (
     <div>
@@ -82,12 +82,12 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           {THESIS_COLUMNS.map((col, idx) => (
             <Reveal key={col.num} delay={idx * 0.08}>
               <div className={`rounded-3xl p-6 sm:p-7 border h-full ${
-                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
               }`}>
-                <span className="font-mono text-2xl font-black text-ls-red">{col.num}</span>
+                <span className="font-body text-2xl font-black text-ls-red">{col.num}</span>
                 <h3 className="mt-2 font-display font-bold text-base sm:text-lg tracking-tight">{col.title}</h3>
                 <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
-                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {col.body}
                 </p>
@@ -95,8 +95,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             </Reveal>
           ))}
         </div>
-        <p className={`mt-8 text-center font-mono text-xs font-bold tracking-widest ${
-          isLight ? 'text-slate-500' : 'text-zinc-500'
+        <p className={`mt-8 text-center font-body text-xs font-bold tracking-widest ${
+          isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
         }`}>
           <span className="text-ls-red">NORTH STAR // </span>
           {company.northStar.toUpperCase()}
@@ -106,25 +106,20 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       {/* What We Build — AI Company Builder spotlight */}
       <section aria-labelledby="spotlight-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <Reveal>
-          <div className={`relative overflow-hidden rounded-3xl p-8 sm:p-10 flex flex-col lg:flex-row lg:items-center gap-8 ${
-            isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-100'
+          <div className={`relative overflow-hidden rounded-3xl p-8 sm:p-10 flex flex-col lg:flex-row lg:items-center gap-8 border shadow-xl ${
+            isLight ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy' : 'bg-ls-navy border-ls-white/15 text-ls-white'
           }`}>
-            <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-            <div className="absolute top-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-            <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-            <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-
             <div className="flex-1 space-y-4">
-              <span className="font-mono text-[10px] font-bold tracking-widest text-ls-red">WHAT WE BUILD // AI COMPANY BUILDER</span>
+              <span className="font-body text-[10px] font-bold tracking-widest text-ls-red uppercase">WHAT WE BUILD // AI COMPANY BUILDER</span>
               <h3 className="text-2xl sm:text-4xl font-black tracking-tight font-display">Your Governed AI Workforce</h3>
               <p className={`text-sm sm:text-base leading-relaxed max-w-xl ${
-                isLight ? 'text-slate-700' : 'text-zinc-300'
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
-                The orchestration engine that runs LightSpeed — 144 agents, 20 departments — licensed to run on your infrastructure. Human direction, audited execution.
+                The orchestration engine that runs LightSpeed — 152 agents, 20 departments — licensed to run on your infrastructure. Human direction, audited execution.
               </p>
               <Link
                 to="/ai-company-builder"
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:brightness-110"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
               >
                 Explore AI Company Builder
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
@@ -132,7 +127,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             </div>
 
             <ul className={`lg:w-80 grid grid-cols-2 lg:grid-cols-1 gap-2.5 text-xs font-bold ${
-              isLight ? 'text-slate-800' : 'text-zinc-200'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}>
               {['Human Leadership', 'Agent Workforce', 'Intelligent Workflows', 'Decision Intelligence'].map((rung) => (
                 <li key={rung} className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl border border-ls-cyan/25 bg-ls-cyan/5">
@@ -157,26 +152,26 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           {solutions.map((sol, idx) => (
             <Reveal key={sol.slug} delay={(idx % 3) * 0.06}>
               <Link to={`/solutions/${sol.slug}`} className={`rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group ${
-                isLight ? 'bg-white/95 border-slate-300 shadow-md hover:shadow-xl hover:-translate-y-0.5' : 'bg-zinc-950/80 border-white/15 shadow-xl hover:shadow-2xl hover:-translate-y-0.5'
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl hover:-translate-y-0.5' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl hover:-translate-y-0.5'
               }`}>
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
-                    <span className="font-mono text-[10px] font-bold tracking-widest text-ls-red">{sol.eyebrow}</span>
+                    <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">{sol.eyebrow}</span>
                     <HonestyBadge label={sol.proof} />
                   </div>
                   <h3 className={`font-display font-bold text-base tracking-tight ${
-                    isLight ? 'text-slate-900' : 'text-zinc-100'
+                    isLight ? 'text-ls-navy' : 'text-ls-white'
                   }`}>
                     {sol.title}
                   </h3>
                   <p className={`text-xs leading-relaxed ${
-                    isLight ? 'text-slate-700' : 'text-zinc-300'
+                    isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                   }`}>
                     {sol.oneLiner}
                   </p>
                 </div>
-                <div className={`pt-4 mt-4 border-t flex items-center justify-between ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
-                  <span className={`text-[10px] font-mono font-bold tracking-widest group-hover:text-ls-red transition-colors ${isLight ? 'text-slate-500' : 'text-zinc-400'}`}>EXPLORE</span>
+                <div className={`pt-4 mt-4 border-t flex items-center justify-between ${isLight ? 'border-ls-grey-dark' : 'border-ls-white/10'}`}>
+                  <span className={`text-[10px] font-body font-bold tracking-widest group-hover:text-ls-red transition-colors ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>EXPLORE</span>
                   <ArrowRight className="w-3.5 h-3.5 text-ls-red" aria-hidden="true" />
                 </div>
               </Link>
@@ -184,8 +179,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           ))}
         </div>
         <div className="mt-8 text-center">
-          <Link to="/solutions" className="font-mono text-xs font-bold tracking-widest text-ls-cyan hover:underline">
-            VIEW ALL SOLUTIONS →
+          <Link to="/what-we-do" className="font-body text-xs font-bold tracking-widest text-ls-cyan hover:underline">
+            VIEW ALL CAPABILITIES &amp; CATALOG →
           </Link>
         </div>
       </section>
@@ -201,11 +196,11 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           {technologyPillars.slice(0, 4).map((pillar, idx) => (
             <Reveal key={pillar.title} delay={(idx % 2) * 0.06}>
               <div className={`rounded-3xl p-6 border h-full ${
-                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
               }`}>
                 <h3 className="font-display font-bold text-sm sm:text-base tracking-tight">{pillar.title}</h3>
                 <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
-                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {pillar.desc}
                 </p>
@@ -214,7 +209,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           ))}
         </div>
         <div className="mt-8 text-center">
-          <Link to="/technology" className="font-mono text-xs font-bold tracking-widest text-ls-cyan hover:underline">
+          <Link to="/technology" className="font-body text-xs font-bold tracking-widest text-ls-cyan hover:underline">
             SEE THE FULL ARCHITECTURE →
           </Link>
         </div>
@@ -234,18 +229,18 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               to={`/industries/${ind.slug}`}
               className={`px-4 py-2.5 rounded-full border font-bold text-[11px] tracking-wider transition-colors cursor-pointer ${
                 isLight
-                  ? 'bg-white/95 border-slate-300 text-slate-700 hover:border-ls-red hover:text-ls-red'
-                  : 'bg-zinc-950/80 border-white/15 text-zinc-200 hover:border-ls-red hover:text-ls-red'
+                  ? 'bg-ls-white/95 border-ls-grey-dark text-ls-grey-dark hover:border-ls-red hover:text-ls-red'
+                  : 'bg-ls-navy/80 border-ls-white/15 text-ls-white hover:border-ls-red hover:text-ls-red'
               }`}
             >
               {ind.nav}
             </Link>
           ))}
           <Link
-            to="/industries"
+            to="/what-we-do"
             className={`px-4 py-2.5 rounded-full border font-bold text-[11px] tracking-wider bg-ls-red/10 border-ls-red/30 text-ls-red transition-colors cursor-pointer hover:brightness-110`}
           >
-            All Industries
+            All Industries &amp; Verticals
           </Link>
         </div>
       </section>
@@ -256,17 +251,12 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       {/* Proof Band: verified operating metrics + work */}
       <Reveal delay={0.05}>
       <section id="proof" aria-label="Verified operating metrics" className="px-4 sm:px-8 pb-4 max-w-7xl mx-auto w-full">
-        <div className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 ${
-          isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
+        <div className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 border shadow-xl ${
+          isLight ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy' : 'bg-ls-navy border-ls-white/15 text-ls-white'
         }`}>
-          <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute top-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-
           <div className="flex flex-col xl:flex-row xl:items-center gap-8 xl:gap-12">
             <div className="flex-1 space-y-6">
-              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest">
                 <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80 animate-pulse" />
                 <span>PROOF // VERIFIED OPERATING METRICS</span>
               </div>
@@ -274,13 +264,13 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
                 {PROOF_STATS.map((stat, sIdx) => (
                   <div key={sIdx} className="min-w-0">
-                    <span className={`block text-xl sm:text-2xl font-black font-mono tracking-tight ${
+                    <span className={`block text-xl sm:text-2xl font-black font-body tracking-tight ${
                       sIdx % 2 === 0 ? 'text-ls-red' : 'text-ls-cyan'
                     }`}>
                       <StatCounter to={stat.value} format={stat.format} suffix={stat.suffix} />
                     </span>
-                    <span className={`block mt-1 text-[10px] font-mono font-bold tracking-widest uppercase ${
-                      isLight ? 'text-slate-500' : 'text-zinc-500'
+                    <span className={`block mt-1 text-[10px] font-body font-bold tracking-widest uppercase ${
+                      isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                     }`}>
                       {stat.label}
                     </span>
@@ -290,19 +280,19 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             </div>
 
             <div className={`shrink-0 w-full xl:w-auto xl:border-l xl:pl-12 flex flex-col items-start gap-3 ${
-              isLight ? 'xl:border-slate-300/70' : 'xl:border-white/10'
+              isLight ? 'xl:border-ls-grey-dark/30' : 'xl:border-ls-white/10'
             }`}>
               <Link
-                to="/work"
-                className="w-full xl:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:brightness-110"
+                to="/proof"
+                className="w-full xl:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
               >
-                See the Work
+                See the Evidence
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </Link>
-              <span className={`text-[10px] font-mono tracking-widest font-bold ${
-                isLight ? 'text-slate-500' : 'text-zinc-500'
+              <span className={`text-[10px] font-body tracking-widest font-bold ${
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
-                SHIPPED ENGAGEMENTS & POLICY
+                SHIPPED ENGAGEMENTS &amp; POLICY
               </span>
             </div>
           </div>
@@ -322,16 +312,16 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           {insightTeasers.map((post, idx) => (
             <Reveal key={post.title} delay={idx * 0.08}>
               <Link to={post.to} className={`rounded-3xl p-6 border transition-all h-full block group ${
-                isLight ? 'bg-white/95 border-slate-300 shadow-md hover:shadow-xl' : 'bg-zinc-950/80 border-white/15 shadow-xl hover:shadow-2xl'
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl'
               }`}>
-                <span className="font-mono text-[10px] font-bold tracking-widest text-ls-cyan">{post.topic}</span>
+                <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">{post.topic}</span>
                 <h3 className={`mt-3 font-display font-bold text-base tracking-tight group-hover:text-ls-red transition-colors ${
-                  isLight ? 'text-slate-900' : 'text-zinc-100'
+                  isLight ? 'text-ls-navy' : 'text-ls-white'
                 }`}>
                   {post.title}
                 </h3>
-                <span className={`mt-4 inline-flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-widest ${
-                  isLight ? 'text-slate-500' : 'text-zinc-400'
+                <span className={`mt-4 inline-flex items-center gap-1.5 text-[11px] font-body font-bold tracking-widest ${
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 } group-hover:text-ls-red`}>
                   READ →
                 </span>
@@ -344,13 +334,13 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
       {/* About band */}
       <section aria-labelledby="about-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <div className={`rounded-3xl p-8 sm:p-10 flex flex-col lg:flex-row lg:items-center gap-6 border ${
-          isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+          isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
         }`}>
           <div className="flex-1 space-y-3">
-            <span className="font-mono text-[10px] font-bold tracking-widest text-ls-red">ABOUT</span>
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">ABOUT</span>
             <h3 className="text-xl sm:text-2xl font-black tracking-tight font-display">One Human CEO. 140+ AI Agents.</h3>
             <p className={`text-sm leading-relaxed ${
-              isLight ? 'text-slate-700' : 'text-zinc-300'
+              isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
             }`}>
               We are the AI-native company we sell — governed, audited, and holding every claim to its evidence. Read the mission, the values, and what we promise whom.
             </p>

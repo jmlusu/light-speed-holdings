@@ -30,14 +30,14 @@ export const TactileRockerSwitch: React.FC<TactileRockerSwitchProps> = ({
       title={`Toggle: ${isOn ? labelRight : labelLeft}`}
     >
       {/* Debossed Labels */}
-      <div className="absolute inset-0 flex items-center justify-between px-2 text-[9px] font-mono font-black pointer-events-none tracking-tighter">
+      <div className="absolute inset-0 flex items-center justify-between px-2 text-[9px] font-body font-black pointer-events-none tracking-tighter">
         <span className={`transition-opacity duration-200 ${
-          !isOn ? (isLight ? 'text-slate-900 font-bold opacity-100' : 'text-zinc-200 font-bold opacity-100') : 'opacity-35 text-zinc-500'
+          !isOn ? (isLight ? 'text-ls-navy font-bold opacity-100' : 'text-ls-white font-bold opacity-100') : 'opacity-35 text-ls-grey-light-text'
         }`}>
           {labelLeft}
         </span>
         <span className={`transition-opacity duration-200 ${
-          isOn ? (isLight ? 'text-orange-600 font-bold opacity-100' : 'text-orange-400 font-bold opacity-100') : 'opacity-35 text-zinc-500'
+          isOn ? (isLight ? 'text-ls-red/85 font-bold opacity-100' : 'text-ls-red/40 font-bold opacity-100') : 'opacity-35 text-ls-grey-light-text'
         }`}>
           {labelRight}
         </span>
@@ -49,8 +49,8 @@ export const TactileRockerSwitch: React.FC<TactileRockerSwitchProps> = ({
           isSm ? 'w-6 h-5' : 'w-8 h-7'
         } ${
           isLight
-            ? 'bg-gradient-to-b from-white via-slate-100 to-slate-200 border border-white/90 shadow-slate-900/20'
-            : 'bg-gradient-to-b from-zinc-200 via-zinc-400 to-zinc-600 border border-white/40 shadow-black/80'
+            ? 'bg-gradient-to-b from-ls-white via-ls-grey-light to-ls-grey-light border border-ls-white/90 shadow-ls-white/20'
+            : 'bg-gradient-to-b from-ls-navy via-ls-navy to-ls-white border border-ls-white/40 shadow-ls-navy/80'
         } ${
           isOn
             ? isSm ? 'translate-x-8' : 'translate-x-10'
@@ -60,8 +60,8 @@ export const TactileRockerSwitch: React.FC<TactileRockerSwitchProps> = ({
         {/* Subtle Pill Center Slit / Pip */}
         <div className={`w-0.5 h-3 rounded-full transition-colors ${
           isOn
-            ? 'bg-orange-500 shadow-[0_0_4px_rgba(230,57,70,0.9)]'
-            : isLight ? 'bg-slate-400' : 'bg-zinc-600'
+            ? 'bg-ls-red shadow-[0_0_4px_rgba(230,57,70,0.9)]'
+            : isLight ? 'bg-ls-grey-dark' : 'bg-ls-white'
         }`} />
       </div>
     </button>
@@ -123,22 +123,22 @@ export const TactileRotaryKnob: React.FC<TactileRotaryKnobProps> = ({
           }}
         >
           {/* Vertical Precision Pointer Notch Slit */}
-          <div className="absolute top-1.5 w-1 h-3 rounded-full bg-orange-500 shadow-[0_0_6px_rgba(230,57,70,1)]" />
+          <div className="absolute top-1.5 w-1 h-3 rounded-full bg-ls-red shadow-[0_0_6px_rgba(230,57,70,1)]" />
 
           {/* Center Concave Bevel */}
           <div className={`w-3.5 h-3.5 rounded-full ${
             isLight
-              ? 'bg-gradient-to-b from-slate-300 to-slate-100 shadow-inner'
-              : 'bg-gradient-to-b from-zinc-900 to-zinc-800 shadow-inner'
+              ? 'bg-gradient-to-b from-ls-grey-dark to-ls-grey-light shadow-inner'
+              : 'bg-gradient-to-b from-ls-navy to-ls-navy shadow-inner'
           }`} />
         </div>
       </div>
 
       {/* Min/Max Ticks & Label */}
       {(minLabel || maxLabel || label) && (
-        <div className="flex items-center justify-between w-full mt-1.5 px-1 text-[8px] font-mono tracking-wider text-zinc-500 font-bold">
+        <div className="flex items-center justify-between w-full mt-1.5 px-1 text-[8px] font-body tracking-wider text-ls-grey-light-text font-bold">
           <span>{minLabel}</span>
-          {label && <span className="text-orange-500 font-bold">{label}</span>}
+          {label && <span className="text-ls-red font-bold">{label}</span>}
           <span>{maxLabel}</span>
         </div>
       )}
@@ -178,8 +178,8 @@ export const StatusLedPip: React.FC<StatusLedPipProps> = ({
         {(status === 'dim' || status === 'off') && <div className="pip-led-dim" />}
       </div>
       {label && (
-        <span className={`text-[10px] font-mono tracking-wider font-semibold uppercase ${
-          isLight ? 'text-slate-600' : 'text-zinc-400'
+        <span className={`text-[10px] font-body tracking-wider font-semibold uppercase ${
+          isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
         }`}>
           {label}
         </span>
@@ -190,7 +190,7 @@ export const StatusLedPip: React.FC<StatusLedPipProps> = ({
 
 export const MachineScrewHead: React.FC<{ isLight?: boolean; className?: string }> = ({
   isLight = false,
-  className = '',
+  className='',
 }) => {
   return (
     <div
@@ -217,11 +217,11 @@ export const ChassisPanel: React.FC<ChassisPanelProps> = ({
   statusLed,
   statusLabel,
   isLight = false,
-  className = '',
+  className='',
 }) => {
   return (
     <div className={`rounded-2xl p-6 relative overflow-hidden transition-colors ${
-      isLight ? 'chassis-milled-light text-slate-900' : 'chassis-milled-dark text-zinc-100'
+      isLight ? 'chassis-milled-light text-ls-navy' : 'chassis-milled-dark text-ls-white'
     } ${className}`}>
       {/* Corner Fastener Screws */}
       <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
@@ -232,15 +232,15 @@ export const ChassisPanel: React.FC<ChassisPanelProps> = ({
       {/* Header bar if title or telemetry exists */}
       {(title || telemetryTag || statusLed) && (
         <div className={`flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b px-2 ${
-          isLight ? 'border-slate-200' : 'border-zinc-800'
+          isLight ? 'border-ls-grey-dark' : 'border-ls-grey-dark'
         }`}>
           <div className="flex items-center gap-3">
             {statusLed && (
               <StatusLedPip status={statusLed} label={statusLabel} isLight={isLight} />
             )}
             {title && (
-              <span className={`text-xs font-mono font-bold tracking-wider uppercase ${
-                isLight ? 'text-slate-900' : 'text-zinc-100'
+              <span className={`text-xs font-body font-bold tracking-wider uppercase ${
+                isLight ? 'text-ls-navy' : 'text-ls-white'
               }`}>
                 {title}
               </span>
@@ -248,7 +248,7 @@ export const ChassisPanel: React.FC<ChassisPanelProps> = ({
           </div>
 
           {telemetryTag && (
-            <span className={`px-2 py-0.5 rounded font-mono text-[9px] tracking-wider uppercase ${
+            <span className={`px-2 py-0.5 rounded font-body text-[9px] tracking-wider uppercase ${
               isLight ? 'telemetry-tag-light' : 'telemetry-tag-dark'
             }`}>
               {telemetryTag}

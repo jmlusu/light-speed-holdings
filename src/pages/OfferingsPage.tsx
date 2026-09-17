@@ -49,8 +49,8 @@ interface EnterpriseRow {
 
 const BADGE_STYLES: Record<BadgeTone, string> = {
   fieldable: 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/30',
-  development: 'bg-slate-400/10 text-slate-400 border-slate-400/30',
-  blocked: 'bg-red-500/10 text-ls-red border-ls-red/30',
+  development: 'bg-ls-grey-dark/10 text-ls-grey-light-text border-ls-grey-light-text/30',
+  blocked: 'bg-ls-red/10 text-ls-red border-ls-red/30',
 };
 
 const serviceFamilies: OfferFamily[] = [
@@ -237,7 +237,7 @@ const serviceFamilies: OfferFamily[] = [
     eyebrow: 'OFFER E // PLATFORM LICENSING',
     title: 'Platform Licensing',
     narrative:
-      'The same 144-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible. For agencies: white-label agent teams for your clients.',
+      'The same 152-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible. For agencies: white-label agent teams for your clients.',
     badges: [{ label: 'FIELDABLE IN 2026 — PROVEN IN-HOUSE', tone: 'fieldable' }],
     rows: [
       {
@@ -305,7 +305,7 @@ const enterpriseLine: EnterpriseRow[] = [
 /* ── Shared render helpers (same file — no new component files) ── */
 
 const renderEyebrow = (label: string, icon: React.ReactNode) => (
-  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
+  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest">
     {icon}
     <span>{label}</span>
   </div>
@@ -316,7 +316,7 @@ const renderBadgePills = (badges: BadgePill[]) => (
     {badges.map((pill) => (
       <span
         key={pill.label}
-        className={`inline-flex items-center px-2.5 py-1 rounded-full border font-mono text-[10px] font-bold tracking-wider ${BADGE_STYLES[pill.tone]}`}
+        className={`inline-flex items-center px-2.5 py-1 rounded-full border font-body text-[10px] font-bold tracking-wider ${BADGE_STYLES[pill.tone]}`}
       >
         {pill.label}
       </span>
@@ -336,28 +336,28 @@ const OffersTable: React.FC<OffersTableProps> = ({ theme, rows }) => {
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse min-w-[640px]">
           <thead>
-            <tr className={`border-b ${isLight ? 'border-slate-300 bg-slate-100/80 text-slate-800' : 'border-white/10 bg-zinc-900/50 text-zinc-300'}`}>
-              <th className="p-3 font-mono font-bold">Deliverable</th>
-              <th className="p-3 font-mono font-bold">Description</th>
-              <th className="p-3 font-mono font-bold whitespace-nowrap">Price (MWK)</th>
-              <th className="p-3 font-mono font-bold whitespace-nowrap">~USD</th>
-              <th className="p-3 font-mono font-bold whitespace-nowrap">Turnaround</th>
+            <tr className={`border-b ${isLight ? 'border-ls-grey-dark bg-ls-grey-light/80 text-ls-navy' : 'border-ls-white/10 bg-ls-navy/50 text-ls-grey-light-text'}`}>
+              <th className="p-3 font-body font-bold">Deliverable</th>
+              <th className="p-3 font-body font-bold">Description</th>
+              <th className="p-3 font-body font-bold whitespace-nowrap">Price (MWK)</th>
+              <th className="p-3 font-body font-bold whitespace-nowrap">~USD</th>
+              <th className="p-3 font-body font-bold whitespace-nowrap">Turnaround</th>
             </tr>
           </thead>
-          <tbody className={`divide-y ${isLight ? 'divide-slate-200 text-slate-700' : 'divide-white/10 text-zinc-300'}`}>
+          <tbody className={`divide-y ${isLight ? 'divide-ls-grey-dark text-ls-grey-dark' : 'divide-ls-white/10 text-ls-grey-light-text'}`}>
             {rows.map((row) => (
-              <tr key={row.id} className={isLight ? 'hover:bg-slate-50' : 'hover:bg-white/[0.02]'}>
-                <td className="p-3 font-bold font-mono whitespace-nowrap">{row.name}</td>
+              <tr key={row.id} className={isLight ? 'hover:bg-ls-grey-light' : 'hover:bg-ls-white/[0.02]'}>
+                <td className="p-3 font-bold font-body whitespace-nowrap">{row.name}</td>
                 <td className="p-3">{row.description}</td>
-                <td className="p-3 font-mono font-bold whitespace-nowrap text-ls-red">{row.priceMWK}</td>
-                <td className="p-3 font-mono whitespace-nowrap">{row.priceUSD}</td>
-                <td className="p-3 font-mono whitespace-nowrap">{row.turnaround}</td>
+                <td className="p-3 font-body font-bold whitespace-nowrap text-ls-red">{row.priceMWK}</td>
+                <td className="p-3 font-body whitespace-nowrap">{row.priceUSD}</td>
+                <td className="p-3 font-body whitespace-nowrap">{row.turnaround}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className={`mt-2 text-right text-[10px] font-mono tracking-wider ${isLight ? 'text-slate-400' : 'text-zinc-500'}`}>
+      <div className={`mt-2 text-right text-[10px] font-body tracking-wider ${isLight ? 'text-ls-grey-light-text' : 'text-ls-grey-light-text'}`}>
         SCROLL HORIZONTALLY ON MOBILE →
       </div>
     </div>
@@ -391,14 +391,14 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
     <>
       {/* Page Intro */}
       <header className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-24 pb-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest">
           <Boxes className="w-3.5 h-3.5" />
           <span>INTEGRATED ARCHITECTURE</span>
         </div>
-        <h1 className={`mt-4 text-3xl sm:text-5xl font-black tracking-tight font-display ${isLight ? 'text-slate-900' : 'text-white'}`}>
+        <h1 className={`mt-4 text-3xl sm:text-5xl font-black tracking-tight font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
           Four Connected Core Offerings
         </h1>
-        <p className={`mt-4 max-w-2xl text-sm sm:text-base leading-relaxed ${isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'}`}>
+        <p className={`mt-4 max-w-2xl text-sm sm:text-base leading-relaxed ${isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'}`}>
           Strategy compiles into private knowledge graphs, structured AI teams, and audited core execution. Explore each offering's contracts, lineage, and deliverables below.
         </p>
       </header>
@@ -407,17 +407,17 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
           NEW SECTION 1 — FIVE CLIENT OFFER FAMILIES (A–E)
           ================================================================ */}
       <section className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full border-t ${
-        isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
       }`}>
         <div className="max-w-3xl mb-12 space-y-3">
           {renderEyebrow('CLIENT SERVICE CATALOG', <Boxes className="w-3.5 h-3.5" />)}
           <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-            isLight ? 'text-slate-900' : 'text-white'
+            isLight ? 'text-ls-navy' : 'text-ls-white'
           }`}>
             Five Offer Families, One Governed Backbone
           </h2>
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-            isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+            isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
             Nothing has been delivered to paying clients yet. Everything below is honest-badged: fieldable in 2026, in active development, or blocked pending governance gates.
           </p>
@@ -428,7 +428,7 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
             <div
               key={offer.code}
               className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 ${
-                isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
+                isLight ? 'hardware-chassis-light text-ls-navy' : 'hardware-chassis-dark text-ls-grey-light-text'
               }`}
             >
               {/* Corner screws */}
@@ -438,20 +438,20 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
               <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <span className="font-mono text-[11px] tracking-widest text-ls-red font-bold">
+                <span className="font-body text-[11px] tracking-widest text-ls-red font-bold">
                   {offer.eyebrow}
                 </span>
                 {renderBadgePills(offer.badges)}
               </div>
 
               <h3 className={`text-xl sm:text-2xl font-black tracking-tight font-display ${
-                isLight ? 'text-slate-900' : 'text-white'
+                isLight ? 'text-ls-navy' : 'text-ls-white'
               }`}>
                 {offer.title}
               </h3>
 
               <p className={`mt-3 max-w-3xl text-sm sm:text-base leading-relaxed ${
-                isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+                isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
               }`}>
                 {offer.narrative}
               </p>
@@ -459,19 +459,19 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
               <OffersTable theme={theme} rows={offer.rows} />
 
               <div className={`mt-4 space-y-1.5 text-xs leading-relaxed ${
-                isLight ? 'text-slate-600' : 'text-zinc-400'
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
                 <p>
-                  <span className="font-mono font-bold text-ls-cyan">TARGET CLIENTS // </span>
+                  <span className="font-body font-bold text-ls-cyan">TARGET CLIENTS // </span>
                   {offer.targetClients}
                 </p>
                 <p>
-                  <span className="font-mono font-bold text-ls-red">GOVERNANCE // </span>
+                  <span className="font-body font-bold text-ls-red">GOVERNANCE // </span>
                   {offer.governanceNote}
                 </p>
                 {offer.pricingNote && (
                   <p>
-                    <span className={`font-mono font-bold ${isLight ? 'text-slate-500' : 'text-zinc-500'}`}>PRICING // </span>
+                    <span className={`font-body font-bold ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>PRICING // </span>
                     {offer.pricingNote}
                   </p>
                 )}
@@ -485,17 +485,17 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
           NEW SECTION 2 — ENTERPRISE TRANSFORMATION LINE
           ================================================================ */}
       <section className={`py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full border-t ${
-        isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
       }`}>
         <div className="max-w-3xl mb-10 space-y-3">
           {renderEyebrow('ENTERPRISE CONSULTANCY', <Building2 className="w-3.5 h-3.5" />)}
           <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
-            isLight ? 'text-slate-900' : 'text-white'
+            isLight ? 'text-ls-navy' : 'text-ls-white'
           }`}>
             The Enterprise Transformation Line
           </h2>
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-            isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+            isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
             For organizations that need more than a productized deliverable. These services are in active development — modules are being built, not yet production-ready — and are included for completeness.
           </p>
@@ -504,29 +504,29 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse min-w-[560px]">
             <thead>
-              <tr className={`border-b ${isLight ? 'border-slate-300 bg-slate-100/80 text-slate-800' : 'border-white/10 bg-zinc-900/50 text-zinc-300'}`}>
-                <th className="p-3 font-mono font-bold">Capability</th>
-                <th className="p-3 font-mono font-bold">Description</th>
-                <th className="p-3 font-mono font-bold">Status</th>
+              <tr className={`border-b ${isLight ? 'border-ls-grey-dark bg-ls-grey-light/80 text-ls-navy' : 'border-ls-white/10 bg-ls-navy/50 text-ls-grey-light-text'}`}>
+                <th className="p-3 font-body font-bold">Capability</th>
+                <th className="p-3 font-body font-bold">Description</th>
+                <th className="p-3 font-body font-bold">Status</th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isLight ? 'divide-slate-200 text-slate-700' : 'divide-white/10 text-zinc-300'}`}>
+            <tbody className={`divide-y ${isLight ? 'divide-ls-grey-dark text-ls-grey-dark' : 'divide-ls-white/10 text-ls-grey-light-text'}`}>
               {enterpriseLine.map((row) => (
-                <tr key={row.capability} className={isLight ? 'hover:bg-slate-50' : 'hover:bg-white/[0.02]'}>
-                  <td className="p-3 font-bold font-mono whitespace-nowrap">{row.capability}</td>
+                <tr key={row.capability} className={isLight ? 'hover:bg-ls-grey-light' : 'hover:bg-ls-white/[0.02]'}>
+                  <td className="p-3 font-bold font-body whitespace-nowrap">{row.capability}</td>
                   <td className="p-3">{row.description}</td>
-                  <td className="p-3 font-mono font-bold whitespace-nowrap text-slate-400">{row.status}</td>
+                  <td className="p-3 font-body font-bold whitespace-nowrap text-ls-grey-light-text">{row.status}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className={`mt-2 text-right text-[10px] font-mono tracking-wider ${isLight ? 'text-slate-400' : 'text-zinc-500'}`}>
+        <div className={`mt-2 text-right text-[10px] font-body tracking-wider ${isLight ? 'text-ls-grey-light-text' : 'text-ls-grey-light-text'}`}>
           SCROLL HORIZONTALLY ON MOBILE →
         </div>
 
-        <p className={`mt-4 text-xs font-mono tracking-wider font-bold ${
-          isLight ? 'text-slate-500' : 'text-slate-400'
+        <p className={`mt-4 text-xs font-body tracking-wider font-bold ${
+          isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
         }`}>
           HONESTY NOTE // Enterprise line: in active development — modules not yet built.
         </p>
@@ -544,10 +544,10 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
           NEW CTA BAND — BOOK A DISCOVERY CALL
           ================================================================ */}
       <section className={`px-4 sm:px-8 py-24 max-w-7xl mx-auto w-full border-t ${
-        isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+        isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
       }`}>
         <div className={`relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center ${
-          isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
+          isLight ? 'hardware-chassis-light text-ls-navy' : 'hardware-chassis-dark text-ls-grey-light-text'
         }`}>
           {/* Corner screws */}
           <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" />
@@ -556,24 +556,24 @@ export const OfferingsPage: React.FC<OfferingsPageProps> = ({ theme, onRequestBr
           <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" />
 
           <div className="max-w-2xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-mono text-[11px] tracking-widest">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest">
               <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80 animate-pulse" />
               <span>COMMENCE TRANSFORMATION</span>
             </div>
             <h2 className={`text-3xl sm:text-4xl font-black tracking-tight font-display ${
-              isLight ? 'text-slate-900' : 'text-white'
+              isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}>
               The Conversation Starts with a Discovery Call
             </h2>
             <p className={`text-justify text-sm sm:text-base leading-relaxed ${
-              isLight ? 'text-slate-700 font-medium' : 'text-zinc-300'
+              isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
             }`}>
               Whether you are an enterprise lead in Lilongwe, an NGO programme manager in Blantyre, a diaspora entrepreneur in Johannesburg, or a policymaker in Lusaka — we will map your challenge to the right offer, the right governance posture, and the right price point, in MWK or USD.
             </p>
             <div className="pt-2">
               <button
                 onClick={() => onRequestBriefing()}
-                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:brightness-110"
+                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:brightness-110"
               >
                 Book a Discovery Call
                 <ArrowRight className="w-4 h-4" />

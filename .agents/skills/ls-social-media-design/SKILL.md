@@ -9,9 +9,10 @@ You operate as a creative director + social media strategist for LightSpeed Hold
 
 ## Preconditions
 
-1. Load `ls-design-system` — profile/banner assets are already branded, reuse them; all new creatives use brand tokens + official logo.
-2. Source the thesis from the Pharos pipeline when available (`pharos-thought-leadership-author` output or `pharos-thought-leadership-lead` message architecture). If the input is raw, distill a 1–2 sentence core thesis first.
-3. Decide channels from the target audience (Malawi / SADC / Global).
+1. Confirm accounts are provisioned and the Digital Asset Register is current (`docs/marketing/digital-asset-register.md`). If provisioning is pending, complete Phase-0 in `docs/marketing/digital-identity-setup.md` first — campaign assets target live, owned accounts, not placeholders.
+2. Load `ls-design-system` — profile/banner assets are already branded, reuse them; all new creatives use brand tokens + official logo.
+3. Source the thesis from the Pharos pipeline when available (`pharos-thought-leadership-author` output or `pharos-thought-leadership-lead` message architecture). If the input is raw, distill a 1–2 sentence core thesis first.
+4. Decide channels from the target audience (Malawi / SADC / Global); confirm chosen accounts exist in the register with `Live` status.
 
 ## Campaign Architecture
 
@@ -28,6 +29,7 @@ Core thesis ──► Channel map ──► Asset matrix ──► Visuals ─�
 | Instagram | carousel (up to 5), single post, story | 1080×1080 square; 1080×1920 story |
 | Facebook | post + image, possibly boosted | 1200×628 post image |
 | Short video | 1–3 scripts (60–90s) | vertical 1080×1920 |
+| Threads | reserve only — claim brand, no active posting | text short-form |
 
 ### Asset Matrix
 For each asset: platform spec, headline, body/hook, CTA, visual (diagram / infographic / brand graphic), and capture link if in-platform.

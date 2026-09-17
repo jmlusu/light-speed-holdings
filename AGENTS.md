@@ -231,7 +231,7 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 
 | Layer | Skill(s) | Role |
 |-------|----------|------|
-| Brand base | `ls-design-system` | ALWAYS loaded first by any creative skill; brand tokens live in `brand/tokens/` + `brand/guidelines/` (sourced from `static/brand/`) |
+| Brand base | `ls-design-system` | ALWAYS loaded first by any creative skill; brand tokens live in `brand/tokens/` + `brand/guidelines/` (canonical root is `brand/**`; `static/brand/` + `public/brand/` are mirrors — see `brand/CANONICAL_SOURCES.md`) |
 | Orchestrator | `ls-creative-director` | Brief intake (artifact/audience/objective/narrative/visual language) → routes to one production skill + support skills |
 | Production | `ls-frontend-design`, `ls-presentation-design`, `ls-document-design`, `ls-social-media-design`, `ls-brand-advertising` | Generate the artifact, delegating rendering to existing engines (python-pptx, Vite React SPA at repo-root `src/`, k-dense-*, Playwright) |
 | Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |

@@ -50,7 +50,7 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
         id="architecture"
         aria-labelledby="architecture-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <SectionHeading
@@ -62,14 +62,14 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
           {technologyPillars.map((pillar, idx) => (
             <Reveal key={pillar.title} delay={(idx % 3) * 0.06}>
               <div className={`rounded-3xl p-6 border h-full ${
-                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
               }`}>
-                <span className="font-mono text-[10px] font-black tracking-widest text-ls-red">
+                <span className="font-body text-[10px] font-black tracking-widest text-ls-red">
                   {String(idx + 1).padStart(2, '0')}
                 </span>
                 <h3 className="mt-2 font-display font-bold text-sm sm:text-base tracking-tight">{pillar.title}</h3>
                 <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
-                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {pillar.desc}
                 </p>
@@ -84,7 +84,7 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
         id="proof"
         aria-labelledby="proof-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <SectionHeading
@@ -94,28 +94,25 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
         />
 
         {/* Metrics */}
-        <div className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 ${
-          isLight ? 'hardware-chassis-light text-slate-900' : 'hardware-chassis-dark text-zinc-300'
+        <div className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 border shadow-lg ${
+          isLight ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy' : 'bg-ls-navy border-ls-white/15 text-ls-white'
         }`}>
-          <div className="absolute top-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute top-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute bottom-3 left-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-          <div className="absolute bottom-3 right-3 w-2 h-2 rounded-full hardware-screw" aria-hidden="true" />
-
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
             {technologyMetrics.map((metric, idx) => (
               <div key={metric.label} className="min-w-0">
-                <span className={`block text-xl sm:text-2xl font-black font-mono tracking-tight ${
+                <span className={`block text-xl sm:text-2xl font-black font-body tracking-tight ${
                   idx % 2 === 0 ? 'text-ls-red' : 'text-ls-cyan'
                 }`}>
                   {metric.value}
                 </span>
-                <span className={`block mt-1 text-[10px] font-mono font-bold tracking-widest uppercase ${
-                  isLight ? 'text-slate-500' : 'text-zinc-500'
+                <span className={`block mt-1 text-[10px] font-body font-bold tracking-widest uppercase ${
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {metric.label}
                 </span>
-                <span className="block text-[10px] font-mono tracking-wider text-zinc-500">
+                <span className={`block text-[10px] font-body tracking-wider ${
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                }`}>
                   {metric.source}
                 </span>
               </div>
@@ -128,12 +125,12 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
           {technologyMethods.map((method, idx) => (
             <Reveal key={method.step} delay={idx * 0.06}>
               <div className={`rounded-2xl p-5 sm:p-6 border h-full ${
-                isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+                isLight ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy shadow-md' : 'bg-ls-navy border-ls-white/15 text-ls-white shadow-xl'
               }`}>
-                <span className="font-mono text-lg font-black text-ls-red">{method.step}</span>
+                <span className="font-body text-lg font-black text-ls-red">{method.step}</span>
                 <h3 className="mt-2 font-display font-bold text-sm tracking-tight">{method.title}</h3>
                 <p className={`mt-2 text-xs leading-relaxed ${
-                  isLight ? 'text-slate-700' : 'text-zinc-300'
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                 }`}>
                   {method.detail}
                 </p>
@@ -142,14 +139,46 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
           ))}
         </div>
 
+        {/* Interactive Lab Showcase */}
+        <div className="mt-8">
+          <Reveal>
+            <div className={`rounded-3xl p-8 sm:p-10 border text-center relative overflow-hidden ${
+              isLight
+                ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy shadow-xl'
+                : 'bg-ls-navy border-ls-white/15 text-ls-white shadow-2xl'
+            }`}>
+              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-red/10 text-ls-red border border-ls-red/30 uppercase">
+                INTERACTIVE LAB
+              </span>
+              <h3 className="mt-3 text-2xl sm:text-3xl font-black font-display tracking-tight">
+                Explore the 152-Agent Architecture in Real Time
+              </h3>
+              <p className={`mt-3 max-w-2xl mx-auto text-xs sm:text-sm leading-relaxed ${
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+              }`}>
+                Dive into our live interactive workforce simulator. Inspect department hierarchies, agent personas, tool permissions, and message queues operating under human CEO governance.
+              </p>
+              <div className="mt-6">
+                <a
+                  href="/ai-company-builder"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all hover:bg-ls-red/90 cursor-pointer"
+                >
+                  <span>Launch Interactive Workforce Lab</span>
+                  <Cpu className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
         {/* Honesty policy */}
         <Reveal>
           <div className={`mt-6 rounded-3xl p-6 sm:p-8 border ${
-            isLight ? 'bg-white/95 border-slate-300 shadow-md' : 'bg-zinc-950/80 border-white/15 shadow-xl'
+            isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl'
           }`}>
-            <span className="font-mono text-[10px] font-bold tracking-widest text-ls-red">HONESTY POLICY</span>
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">HONESTY POLICY</span>
             <ul className={`mt-4 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-3 text-sm leading-relaxed ${
-              isLight ? 'text-slate-700' : 'text-zinc-300'
+              isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
             }`}>
               {honestyPolicy.map((point) => (
                 <li key={point} className="flex items-start gap-2">
@@ -167,7 +196,7 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
         id="governance"
         aria-labelledby="governance-heading"
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 border-t ${
-          isLight ? 'border-slate-200/80' : 'border-zinc-800/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
         }`}
       >
         <SectionHeading
@@ -186,7 +215,7 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
             return (
               <Reveal key={fact.title} delay={(idx % 2) * 0.06}>
                 <div className={`rounded-3xl p-6 sm:p-7 border h-full ${
-                  isLight ? 'bg-white/95 border-slate-300 text-slate-900 shadow-md' : 'bg-zinc-950/80 border-white/15 text-zinc-100 shadow-xl'
+                  isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
                 }`}>
                   <div className="flex items-center gap-3">
                     <span aria-hidden="true" className="inline-flex w-9 h-9 shrink-0 items-center justify-center rounded-xl bg-ls-red/10 text-ls-red">
@@ -195,7 +224,7 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
                     <h3 className="font-display font-bold text-sm sm:text-base tracking-tight">{fact.title}</h3>
                   </div>
                   <p className={`mt-3 text-xs sm:text-sm leading-relaxed ${
-                    isLight ? 'text-slate-700' : 'text-zinc-300'
+                    isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                   }`}>
                     {fact.body}
                   </p>
@@ -206,10 +235,10 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
         </div>
 
         <p className={`mt-8 text-center text-sm leading-relaxed ${
-          isLight ? 'text-slate-600' : 'text-zinc-400'
+          isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
         }`}>
           This governance pattern is also the subject of our regional policy work —{' '}
-          <a href="/work#policy" className="font-bold text-ls-cyan hover:underline">the SADC Agentic AI Governance Framework</a> — so believe it when you see it on the policy track.
+          <a href="/proof#policy" className="font-bold text-ls-cyan hover:underline">the SADC Agentic AI Governance Framework</a> — so believe it when you see it on the policy track.
         </p>
       </section>
 

@@ -20,6 +20,22 @@ guardrails:
     # "suspend_daily"  = stop tick() processing for the rest of the day
     # "suspend_forever" = halt the daemon until manually reset
     overspend_action: "suspend_daily"
+  # Image-generation spend caps (Gemini visuals). Mirrors llm_budgets so the
+  # same overrun path applies: breaches ride escalation_slas.budget_overrun ->
+  # auto_suspend_and_notify -> human-ceo. Values chosen with ~10x headroom over
+  # expected social usage (~40-80 images/mo): the base model runs ~$3/mo and
+  # Nano Banana Pro ~$5-11/mo, so these never trip normally. The per-image
+  # ceiling blocks accidental 4K/Pro spam; batch_required_for_bulk halves cost
+  # for queued generation. Enforced by the media path once wired (Visual engine
+  # approval, ticket #191).
+  media_budgets:
+    currency: "USD"
+    monthly_budget_usd: 50.00
+    daily_budget_usd: 5.00
+    per_image_ceiling_usd: 0.50
+    batch_required_for_bulk: true
+    auto_suspend_on_overspend: true
+    overspend_action: "suspend_daily"
   autonomy_tiers:
     # Tiers are defined in code (orchestrator/tier_rules.py) and surfaced
     # through the approval/risk matrices; this block binds concrete tier
