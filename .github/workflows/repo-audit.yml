@@ -305,7 +305,7 @@ jobs:
 
       - name: Download evidence artifact
         id: download
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: audit-evidence
 
@@ -451,7 +451,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Download artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
           merge-multiple: true
