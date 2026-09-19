@@ -4,6 +4,11 @@
 **Assessor:** Brand Strategist (Marketing Department)
 **Scope:** Brand identity consistency, social media content pipeline, platform readiness, strategy alignment, asset generation, and competitive positioning.
 
+> **Update (2026-09-19):** This assessment is from Sep 11 and several "does not exist" claims below are now stale.
+> - **Social post templates are built.** All 12 specified template types shipped as 17 P1 PNGs (`static/brand/social/templates/`, [#311](https://github.com/jmlusu/light-speed-holdings/issues/311), closed).
+> - **The agent + skill are committed and tracked**, not working-tree-only ([#189](https://github.com/jmlusu/light-speed-holdings/issues/189) reconciled; `social_media_manager` + `ls-social-media-design` committed in `f7dfc8aa`, tracked on `development`/`main`).
+> - **Execution remains the open gap:** the 4-week warm-up window (Sep 6 → Oct 3) elapsed with zero published activity; all register rows remain `Pending (#194)` pending human account signup.
+
 ---
 
 ## 1. Current State Summary
