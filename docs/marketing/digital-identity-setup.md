@@ -1,6 +1,6 @@
 # Digital Identity Setup — LIGHTSPEED HOLDINGS
 
-**Owner:** `social_media_manager` (registry `company-registry.yaml:928`). **Conflict:** [#189](https://github.com/jmlusu/light-speed-holdings/issues/189) decided "no new social-media-manager subagent", yet this agent is present in the working tree only (uncommitted). Ownership unresolved — see ticket.
+**Owner:** `social_media_manager` (registry `company-registry.yaml:928`). **Reconciled (2026-09-19):** [#189](https://github.com/jmlusu/light-speed-holdings/issues/189) was a governance decision record, not a mandate to remove the agent; `social_media_manager` has been committed since `f7dfc8aa` (tracked on `development`/`main`) and is confirmed as the designated owner of this runbook.
 **Phase:** 0 (Security) → 1 (Claim brand) → 2 (Business infrastructure) → 3 (Branding) → 4 (Content)
 **Status:** Active — Phase 0 in progress; account provisioning blocked by [#194](https://github.com/jmlusu/light-speed-holdings/issues/194), cleared by completing the phases below. **Domain control unresolved:** `lightspeedholdings.com` resolves to Afternic marketplace nameservers (for-sale lander, null MX) — confirm ownership before any sending-domain work.
 **Source:** Normalized from `social-media/LIGHTSPEED-SOCIAL-MEDIA-SETUP.md` (folder retired 2026-09-17)
