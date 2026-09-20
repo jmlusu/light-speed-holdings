@@ -1,0 +1,124 @@
+{
+  "run_id": "35505778874",
+  "date": "2026-09-20",
+  "mode": "full",
+  "probe_count": 22,
+  "probes": [
+    {
+      "name": "registry.parse",
+      "status": "ok",
+      "detail": "agents=152"
+    },
+    {
+      "name": "cards.reconcile",
+      "status": "ok",
+      "detail": "registry=152 live=152 bak=0 orphan=[] missing=[]"
+    },
+    {
+      "name": "cards.tools",
+      "status": "ok",
+      "detail": "non-canonical tools: []"
+    },
+    {
+      "name": "ruff.check",
+      "status": "ok",
+      "detail": "All checks passed!"
+    },
+    {
+      "name": "pytest.collect",
+      "status": "ok",
+      "detail": "tests/unit/test_write_through.py::TestExecutorWiring::test_executor_passes_database_to_components | tests/unit/test_write_through.py::TestExecutorWiring::test_executor_without_database_keeps_file_only |  | =============================== warnings summary =============================== | .venv/lib/python3.12/site-packages/fastapi/testclient.py:1 |   /home/runner/work/light-speed-holdings/light-speed-holdings/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning:"
+    },
+    {
+      "name": "pytest.collect",
+      "status": "ok",
+      "detail": "tests/unit/test_validate_opencode.py::test_valid_v2_card_has_no_errors"
+    },
+    {
+      "name": "drift.manifest",
+      "status": "ok",
+      "detail": "{ |   \"status\": \"clean\", |   \"drifts\": [], |   \"warnings\": [], |   \"checked\": 87, |   \"timestamp\": \"2026-09-20T10:42:07.6048665+00:00\" | }"
+    },
+    {
+      "name": "drift.manifest",
+      "status": "ok",
+      "detail": "drifts=0 checked=87"
+    },
+    {
+      "name": "cards.generated_drift",
+      "status": "ok",
+      "detail": "no drift after regeneration"
+    },
+    {
+      "name": "tree.departments",
+      "status": "ok",
+      "detail": "company=20 config=20 only_company=[] only_config=[]"
+    },
+    {
+      "name": "tree.data_etl",
+      "status": "ok",
+      "detail": "data/etl present"
+    },
+    {
+      "name": "tree.prompts",
+      "status": "ok",
+      "detail": "prompts/*.md=2"
+    },
+    {
+      "name": "gitignore.orchestrator.scheduler.yaml",
+      "status": "ok",
+      "detail": "orchestrator/scheduler.yaml ignored while required by cli/validate.py"
+    },
+    {
+      "name": "gitignore.orchestrator.escalation.yaml",
+      "status": "ok",
+      "detail": "orchestrator/escalation.yaml ignored while required by cli/validate.py"
+    },
+    {
+      "name": "gitignore.graphify",
+      "status": "ok",
+      "detail": "ignored=True tracked_files=0"
+    },
+    {
+      "name": "gitignore..playwright-cli",
+      "status": "ok",
+      "detail": ".playwright-cli/ present"
+    },
+    {
+      "name": "gitignore.screenshots",
+      "status": "ok",
+      "detail": "screenshots/ present"
+    },
+    {
+      "name": "gitignore.results",
+      "status": "ok",
+      "detail": "results/ present"
+    },
+    {
+      "name": "ci.registry_gate",
+      "status": "ok",
+      "detail": "ci.yml never validates agent registry"
+    },
+    {
+      "name": "ecl.active",
+      "status": "ok",
+      "detail": "active change files=5"
+    },
+    {
+      "name": "graphify.update",
+      "status": "ok",
+      "detail": "  AST extraction: 1500/1525 uncached files (98%) [4 workers] |   AST extraction: 1525/1525 uncached files (100%) [4 workers] | Graph has 26745 nodes (above 5000 limit). Building aggregated community view... | graph.html written (aggregated: 1697 community nodes, 1720 cross-community edges) | Tip: run with --obsidian for full node-level detail. | [graphify watch] Rebuilt: 26745 nodes, 40475 edges, 1697 communities | [graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-o"
+    },
+    {
+      "name": "graphify.graph",
+      "status": "ok",
+      "detail": "nodes=26745 edges=0"
+    }
+  ],
+  "severity_totals": {
+    "critical": 0,
+    "major": 0,
+    "minor": 0
+  },
+  "generated_at": "2026-09-20T10:42:53Z"
+}
