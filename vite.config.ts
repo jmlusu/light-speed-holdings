@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
 
 /* Dev-only enquiry stub: lets local/demo mailers succeed with HTTP 201 without
    hitting the live worker (128:8787). configureServer runs only in `vite dev`,
@@ -26,6 +27,11 @@ const devEnquiryStub = (): Plugin => ({
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), devEnquiryStub()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   define: {
     __TURNSTILE_SITE_KEY__: JSON.stringify(
       process.env.TURNSTILE_SITE_KEY ?? process.env.VITE_TURNSTILE_SITE_KEY ?? ''

@@ -23,16 +23,21 @@ dependencies = [
       "fastapi",
       "uvicorn[standard]",
       "aiohttp",
-    "httpx<0.29.0",
-    # Security
-    "cryptography>=42.0",
-    # ML dependencies
-    "sentence-transformers>=3.0",
-    "numpy>=1.26",
-    # System monitoring / analytics
-    "psutil>=5.9",
-    # Observability — OTel API (zero-cost NoOp when disabled)
-    "opentelemetry-api>=1.25",
+      "httpx<0.29.0",
+      # Security
+      "cryptography>=42.0",
+      # ML dependencies
+      "sentence-transformers>=3.0",
+      "numpy>=1.26",
+      # System monitoring / analytics
+      "psutil>=5.9",
+      # Observability — OTel API (zero-cost NoOp when disabled)
+      "opentelemetry-api>=1.25",
+      "email-validator>=2.3.0",
+      "apscheduler>=3.11.3",
+      "beautifulsoup4>=4.15.0",
+      "lxml>=6.1.1",
+      "python-docx>=1.2.0",
 ]
 
 [project.urls]
@@ -176,6 +181,18 @@ disable_error_code = ["unused-ignore"]
 [[tool.mypy.overrides]]
 module = "ai_company.telemetry.tracer"
 disable_error_code = ["unused-ignore"]
+
+[[tool.mypy.overrides]]
+module = "ai_company.athena.api.routes"
+disable_error_code = ["no-untyped-def", "no-untyped-call"]
+
+[[tool.mypy.overrides]]
+module = "ai_company.athena.scrapers"
+disable_error_code = ["no-untyped-def", "no-untyped-call"]
+
+[[tool.mypy.overrides]]
+module = "ai_company.athena.scrapers.*"
+disable_error_code = ["no-untyped-def", "no-untyped-call"]
 
 [tool.bandit]
 exclude_dirs = ["tests"]
