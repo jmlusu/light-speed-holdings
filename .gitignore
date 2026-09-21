@@ -119,3 +119,6 @@ dev-server.log
 *_output.txt
 run.json
 dashboard/alerts.json
+
+# Athena runtime data (jobs cache, embeddings)
+company/athena/
