@@ -77,7 +77,7 @@ def tmp_project_root(tmp_path: Path) -> Path:
     (tmp_path / "config" / "company" / "routines.yaml").write_text("")
     # Also create company-registry.yaml so is_known_receiver works
     (tmp_path / "company-registry.yaml").write_text(
-        "agents:\n  - id: content_writer\n  - id: cto\n"
+        "company:\n  agents:\n    - id: content_writer\n    - id: cto\n"
     )
     # Provide a patched project_root to RoutineStore
     import ai_company.orchestrator.routine as routine_mod
@@ -119,6 +119,39 @@ def test_routine_store_get_due_enabled(tmp_project_root: Path) -> None:
     assert len(due) >= 1
 
 
+def test_is_known_receiver_canonical_registry_schema(tmp_path: Path) -> None:
+    """Receivers resolve when agents live under ``company.agents`` (real schema).
+
+    Regression guard for the production bug where ``is_known_receiver`` only
+    read a root-level ``agents`` key, so every real routine was skipped.
+    """
+    (tmp_path / "company-registry.yaml").write_text(
+        "company:\n  agents:\n    - id: content_writer\n    - id: cto\n"
+    )
+    store = RoutineStore(project_root=tmp_path)
+    assert store.is_known_receiver("content_writer") is True
+    assert store.is_known_receiver("cto") is True
+    assert store.is_known_receiver("nonexistent_agent") is False
+
+
+def test_is_known_receiver_legacy_root_agents_schema(tmp_path: Path) -> None:
+    """Root-level ``agents`` registries keep resolving (legacy fallback)."""
+    (tmp_path / "company-registry.yaml").write_text("agents:\n  - id: content_writer\n")
+    store = RoutineStore(project_root=tmp_path)
+    assert store.is_known_receiver("content_writer") is True
+
+
+def test_is_known_receiver_resolves_real_registry() -> None:
+    """The production company-registry.yaml exposes the routine receivers."""
+    from ai_company.paths import get_project_root
+
+    root = get_project_root()
+    store = RoutineStore(project_root=root)
+    for receiver in ("content_writer", "chief_of_staff"):
+        assert store.is_known_receiver(receiver) is True, receiver
+    assert store.is_known_receiver("content-creator") is False
+
+
 # ── RoutineScheduler ─────────────────────────────────────────────────────────
 
 
@@ -139,7 +172,9 @@ def scheduler_fixture(tmp_path: Path) -> RoutineScheduler:
         """
     )
     # Minimal registry for is_known_receiver
-    (tmp_path / "company-registry.yaml").write_text("agents:\n  - id: content_writer\n")
+    (tmp_path / "company-registry.yaml").write_text(
+        "company:\n  agents:\n    - id: content_writer\n"
+    )
     store = RoutineStore(project_root=tmp_path)
     # Seed the default routine so next_run is a past date (makes it immediately due)
     store.routines[0].next_run = "1970-01-01T00:00:00+00:00"
