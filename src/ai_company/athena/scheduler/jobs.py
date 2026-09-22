@@ -343,6 +343,30 @@ def init_scheduler(message_bus: MessageBus) -> AthenaScheduler:
     )
     athena_scheduler.add_default_config(
         ScrapeConfig(
+            query="software engineer",
+            location="Remote",
+            max_results=50,
+            sources=[
+                JobSource.REMOTE_OK,
+                JobSource.WE_WORK_REMOTELY,
+                JobSource.REMOTE_CO,
+            ],
+        )
+    )
+    athena_scheduler.add_default_config(
+        ScrapeConfig(
+            query="data scientist",
+            location="Remote",
+            max_results=50,
+            sources=[
+                JobSource.REMOTE_OK,
+                JobSource.WE_WORK_REMOTELY,
+                JobSource.REMOTE_CO,
+            ],
+        )
+    )
+    athena_scheduler.add_default_config(
+        ScrapeConfig(
             query="remote software engineer",
             location="Remote",
             max_results=100,
