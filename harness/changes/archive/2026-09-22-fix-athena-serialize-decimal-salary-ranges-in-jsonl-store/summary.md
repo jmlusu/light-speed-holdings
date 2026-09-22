@@ -1,8 +1,8 @@
-﻿---
+---
 title: "fix(athena): serialize Decimal salary ranges in JSONL store"
 slug: "fix-athena-serialize-decimal-salary-ranges-in-jsonl-store"
-status: "in_progress"
-location: "active"
+status: "completed"
+location: "archive"
 phase: "validate"
 intake_status: "approved"
 spec_review: "approved"
