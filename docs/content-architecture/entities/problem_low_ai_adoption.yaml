@@ -1,0 +1,12 @@
+# Problem Entity Definition
+
+key: low_ai_adoption
+title: "Limited AI Adoption Capacity"
+description: "Organizations lack the knowledge, skills, and infrastructure to effectively adopt and implement AI solutions"
+industry: african_ai
+severity: high
+related_problems: []
+affected_geographies:
+  - malawi
+  - sADC
+  - africa

@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LightSpeed Content Architecture Metadata Schema",
+  "type": "object",
+  "properties": {
+    "entity": {
+      "type": "string",
+      "description": "The entity type (from ontology.yaml entities)"
+    },
+    "entity_key": {
+      "type": "string",
+      "description": "The unique key for the entity instance"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version, semantic version (e.g., '1.0.0')"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last update"
+    },
+    "change_summary": {
+      "type": "string",
+      "description": "Brief summary of what changed"
+    },
+    "related_entities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Keys of related entities in ontology"
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "Reference to claim ID in evidence ledger"
+      },
+      "maxItems": 10
+    },
+    "validation_status": {
+      "type": "string",
+      "enum": ["pending", "validated", "invalidated", "under_review"],
+      "description": "Current validation status of the entity/relationship"
+    }
+  },
+  "required": ["entity", "entity_key", "version", "last_updated", "validation_status"],
+  "additionalProperties": false
+}

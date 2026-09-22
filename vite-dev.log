@@ -963,3 +963,7 @@ Error: connect ECONNREFUSED 127.0.0.1:8787
   [32m➜[39m  [1mNetwork[22m: [36mhttp://172.30.112.1:[1m3000[22m/[39m
   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.111:[1m3000[22m/[39m
   [32m➜[39m  [1mNetwork[22m: [36mhttp://172.19.48.1:[1m3000[22m/[39m
+[2m8:55:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mscrollcraft/builds/lightspeed/index.html[22m
+[2m8:55:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mwhitepaper/lightspeed-malawi-investor-deck.html[22m
+[2m8:56:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mscrollcraft/builds/lightspeed/index.html[22m
+[2m8:56:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mwhitepaper/lightspeed-malawi-investor-deck.html[22m

@@ -55,7 +55,8 @@ Every agent working on LCA receives:
 ## Current State
 
 - Initial directory structure created
+- Principles established
 - Ontology scaffolding in progress
-- Evidence ledger referenced (65 claims: 18 evidenced / 29 qualified / 18 unqualified from ADR-020)
+- Evidence ledger referenced (65 claims: 18 evidenced / 29 qualified / 18 unqualified)
 - Company registry as base for agent team definitions
-- Existing content model (siteContent.ts) and use case catalog (useCaseCatalogData.ts) available for integration/skip per ADR-020 guidance
+- Existing content model and use case catalog available per ADR-020

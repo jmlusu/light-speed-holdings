@@ -1,0 +1,141 @@
+# LightSpeed Content Architecture Sitemap
+
+# Hierarchical navigation structure derived from the ontology
+
+# Main navigation
+main_navigation:
+  - key: home
+    title: "Home"
+    content_type: page
+    audience: [ceo, board]
+    path: "/"
+
+  - key: about
+    title: "About"
+    content_type: page
+    audience: [ceo, investor, partner]
+    path: "/about"
+
+  - key: capabilities
+    title: "Capabilities"
+    content_type: capability
+    audience: [ceo, cto, investor]
+    path: "/capabilities"
+
+  - key: services
+    title: "Services"
+    content_type: service
+    audience: [ceo, cto, partner]
+    path: "/services"
+
+  - key: insights
+    title: "Insights"
+    content_type: insight
+    audience: [ceo, cto, researcher]
+    path: "/insights"
+
+  - key: use_cases
+    title: "Use Cases"
+    content_type: use_case
+    audience: [ceo, cto, practitioner]
+    path: "/use-cases"
+
+  - key: resources
+    title: "Resources"
+    content_type: engagement_model
+    audience: [ceo, cto, partner]
+    path: "/resources"
+
+  - key: governance
+    title: "Governance"
+    content_type: policy
+    audience: [ceo, legal, compliance]
+    path: "/governance"
+
+# Secondary navigation by industry
+industry_nav:
+  african_ai:
+    title: "African AI"
+    path: "/industries/african-ai"
+    subnavigation:
+      - key: landscape
+        title: "Landscape"
+        content_type: research
+        path: "/industries/african-ai/landscape"
+      - key: challenges
+        title: "Challenges"
+        content_type: problem
+        path: "/industries/african-ai/challenges"
+      - key: opportunities
+        title: "Opportunities"
+        content_type: use_case
+        path: "/industries/african-ai/opportunities"
+
+  digital_transformation:
+    title: "Digital Transformation"
+    path: "/industries/digital-transformation"
+    subnavigation:
+      - key: framework
+        title: "Framework"
+        content_type: framework
+        path: "/industries/digital-transformation/framework"
+      - key: case_studies
+        title: "Case Studies"
+        content_type: case_study
+        path: "/industries/digital-transformation/case-studies"
+
+# Content hubs
+content_hubs:
+  ai_governance:
+    title: "AI Governance"
+    path: "/governance/ai-governance"
+    content_types:
+      - policy
+      - framework
+      - case_study
+      - insight
+      - use_case
+
+  ai_adoption:
+    title: "AI Adoption"
+    path: "/adoption"
+    content_types:
+      - insight
+      - research
+      - use_case
+      - service
+      - engagement_model
+
+# Traversal paths (for AI agents)
+traversal_paths:
+  client_profile:
+    - stage: "client_identifies"
+      entity: "industry"
+      example: "SME in African AI sector"
+    - stage: "business_problem"
+      entity: "problem"
+      example: "limited AI adoption capacity"
+    - stage: "ai_use_cases"
+      entity: "use_case"
+      example: ["predictive_maintenance", "customer_segmentation"]
+    - stage: "capabilities"
+      entity: "capability"
+      example: ["ai_strategy", "model_deployment"]
+    - stage: "services"
+      entity: "service"
+      example: ["ai_opportunity_assessment", "model_governance_framework"]
+    - stage: "evidence"
+      entity: ["insight", "research", "case_study"]
+      example: ["ai_adoption_trends_2024", "openai_capabilities_survey", "deployment_in_manufacturing"]
+    - stage: "engagement_model"
+      entity: "engagement_model"
+      example: "assessment → workshop → implementation"
+    - stage: "outcome"
+      entity: "business_outcome"
+      example: "accelerated_time-to-value"
+
+# Sitemap index
+sitemap_index:
+  lastmod: "2026-09-22"
+  changefreq: "weekly"
+  priority: 1.0

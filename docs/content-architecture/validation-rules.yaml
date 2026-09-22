@@ -1,0 +1,102 @@
+# LightSpeed Content Architecture Validation Rules
+
+# Entity key naming rules
+entity_key_naming:
+  pattern: "^[a-z_][a-z0-9_]*$"
+  error_message: "Entity keys must be lowercase with underscores, no spaces or special characters"
+
+# Required entity fields per type
+required_fields:
+  Organization: [name, tagline, mission, type, industries]
+  Industry: [key, name]
+  Problem: [key, title, description, industry, severity]
+  Business Outcome: [key, title, description, metric, target]
+  Capability: [key, title, description, category, maturity_model_level]
+  Service: [key, title, description, capability, engagement_models, audience, price_tier]
+  AI Use Case: [key, title, description, industry, problem, capability, outcome, maturity, evidence_level]
+  Technology: [key, name, category, maturity]
+  Methodology: [key, title, description, category, associated_capabilities]
+  Framework: [key, title, description, version, category]
+  Insight: [key, title, description, source, evidence_level]
+  Research: [key, title, description, methodology, source, status]
+  Policy: [key, title, description, category, status]
+  Case Study: [key, title, description, industry, problem, capability, outcome, evidence_level]
+  Experience: [key, title, description, format, industry, duration]
+  Demonstration: [key, title, description, format, industry, duration_minutes, technologies]
+  Resource: [key, title, description, type, industry, tags, published_date]
+  Event: [key, title, description, format, industry, start_date, virtual]
+  Engagement Model: [key, title, description, category, duration_weeks, capability, price_tier, proof_required]
+  Audience: [key, name, role]
+  Content Type: [key, name, description, category, variables]
+  Content Variable: [key, type, required, fallback]
+
+# Relationship rules
+relationship_rules:
+  - pattern: "Problem → Capability"
+    requirement: "At least one evidence_level must be specified (anecdotal/qualified/evidenced)"
+  - pattern: "Capability → Service"
+    requirement: "capability field must reference a valid Capability key"
+  - pattern: "AI Use Case → Problem"
+    requirement: "problem field must reference a valid Problem key"
+  - pattern: "AI Use Case → Capability"
+    requirement: "capability field must reference a valid Capability key"
+  - pattern: "AI Use Case → Business Outcome"
+    requirement: "outcome field must reference a valid Business Outcome key"
+  - pattern: "AI Use Case → Technology"
+    requirement: "Each technology must reference a valid Technology key from ontology"
+  - pattern: "Insight → Problem"
+    requirement: "At least one related_problem must be specified or evidence_level must be qualified+"
+  - pattern: "Research → Problem"
+    requirement: "At least one related_problem must be specified"
+  - pattern: "Policy → AI Use Case"
+    requirement: "At least one associated_use_cases must be specified"
+  - pattern: "Case Study → Capability"
+    requirement: "capability field must reference a valid Capability key"
+  - pattern: "Case Study → Problem"
+    requirement: "problem field must reference a valid Problem key"
+  - pattern: "Engagement Model → Capability"
+    requirement: "capability field must reference a valid Capability key"
+  - pattern: "Engagement Model → AI Use Case"
+    requirement: "Each use_case must reference a valid AI Use Case key"
+  - pattern: "Audience → Problem"
+    requirement: "Each problem must reference a valid Problem key from ontology"
+  - pattern: "Audience → Capability"
+    requirement: "Each capability must reference a valid Capability key from ontology"
+
+# Cross-entity consistency rules
+cross_entity_rules:
+  - "An AI Use Case must have evidence_level matching or exceeding the related Problem's severity context"
+  - "A Case Study's evidence_level must be 'qualified' or 'evidenced' to validate a Capability"
+  - "An Engagement Model's proof_required must be true when associated with Case Studies at 'anecdotal' evidence_level"
+  - "A Service's price_tier must be consistent with its Capability's category"
+  - "An Organization's brand_colors must include exactly 3 colors: navy, red accent, and cyan accent"
+
+# Uniqueness constraints
+uniqueness:
+  - "Entity keys must be globally unique across all entity types in ontology.yaml"
+  - "Problem keys must be unique within their parent Industry"
+  - "Capability keys must be unique within their category"
+  - "Service keys must be globally unique"
+  - "AI Use Case keys must be unique within their industry"
+
+# Evidence ledger integration
+evidence_integration:
+  - "All claims about LightSpeed's knowledge/capabilities must reference claim IDs from the evidence ledger (65 claims: 18 evidenced / 29 qualified / 18 unqualified)"
+  - "New entity definitions claiming LightSpeed capability must reference at least one evidenced or qualified claim"
+  - "Unqualified claims must be flagged in terminology issues and require substantiation before entity publication"
+  - "Evidence references in entity metadata must use the format 'claim:<ID>' (e.g., 'claim:019', 'claim:020')"
+
+# Vocabulary control
+vocabulary_control:
+  - "Concept 'AI Company Builder' must have exactly one canonical definition across the ontology"
+  - "No concept may simultaneously be service, blog category, product, methodology, and company division"
+  - "All controlled vocabulary terms must be drawn from glossary.md"
+  - "New term proposals must be reviewed by the Content Architecture Council before adoption"
+
+# Workflow rules
+workflow:
+  - "Ontology changes require Content Architecture Council approval (11 specialized agents + Orchestrator)"
+  - "New entity definitions must be accompanied by at least one entity file in entities/ directory"
+  - "Relationship changes must update both relationships.yaml and affected entity files"
+  - "Taxonomy changes must not violate existing entity constraints or create duplicate definitions"
+  - "Validation rules must pass ruff and mypy before acceptance into the canonical model"

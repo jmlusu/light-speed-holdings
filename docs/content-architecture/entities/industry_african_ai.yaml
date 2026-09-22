@@ -1,0 +1,9 @@
+# Industry Entity Definition
+
+key: african_ai
+name: African AI
+description: "Artificial intelligence initiatives, research, and development across the African continent"
+parent_industry: null
+sibling_industries:
+  - digital_transformation
+  - ai_governance

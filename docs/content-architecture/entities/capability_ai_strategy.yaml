@@ -1,0 +1,12 @@
+# Capability Entity Definition
+
+key: ai_strategy
+title: "AI Strategy"
+description: "Defining the AI vision, roadmap, and priority initiatives aligned to business objectives"
+category: strategic
+maturity_model_level: 3
+related_problems:
+  - low_ai_adoption
+enables:
+  - accelerated_ai_adoption
+implemented_by: []
