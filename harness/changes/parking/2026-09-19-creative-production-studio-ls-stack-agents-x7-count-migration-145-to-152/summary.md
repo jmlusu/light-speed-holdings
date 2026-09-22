@@ -1,8 +1,8 @@
 ﻿---
 title: "Creative Production Studio: ls-stack agents x7, count migration 145 to 152"
 slug: "creative-production-studio-ls-stack-agents-x7-count-migration-145-to-152"
-status: "in_progress"
-location: "active"
+status: "parked"
+location: "parking"
 phase: "validate"
 intake_status: "approved"
 spec_review: "approved"
@@ -23,7 +23,7 @@ files:
 tags: [creative-production-studio, registry, agents, marketing, docs-drift]
 validation_status: "pass"
 created_at: "2026-09-17"
-updated_at: "2026-09-17"
+updated_at: "2026-09-19"
 session_id: "4bee3404-ee12-4f06-bf91-3a72f6b94ec2"
 owner_agent: "jmlus"
 claimed_at: "2026-09-17"

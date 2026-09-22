@@ -21,6 +21,11 @@ import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { AthenaDashboard } from './pages/athena/Dashboard';
+import { JobList } from './pages/athena/JobList';
+import { JobDetail } from './pages/athena/JobDetail';
+import { DocumentEditor } from './pages/athena/DocumentEditor';
+import { AthenaLayout } from './components/athena/AthenaLayout';
 
 const HomePageRoute = withSite(HomePage);
 const WhatWeDoPageRoute = withSite(WhatWeDoPage);
@@ -39,6 +44,11 @@ const AiCompanyBuilderPageRoute = withSite(AiCompanyBuilderPage);
 const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
 const TermsPageRoute = withSite(TermsPage);
+
+const AthenaDashboardRoute = AthenaDashboard;
+const JobListRoute = JobList;
+const JobDetailRoute = JobDetail;
+const DocumentEditorRoute = DocumentEditor;
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>(() => {
@@ -101,6 +111,19 @@ export const App: React.FC = () => {
           { path: 'legal/privacy', element: <PrivacyPageRoute /> },
           { path: 'legal/terms', element: <TermsPageRoute /> },
           { path: '*', element: <Navigate to="/" replace /> },
+        ],
+      },
+      {
+        path: '/athena',
+        element: <AthenaLayout />,
+        children: [
+          { index: true, element: <AthenaDashboardRoute /> },
+          { path: 'jobs', element: <JobListRoute /> },
+          { path: 'jobs/:id', element: <JobDetailRoute /> },
+          { path: 'applications', element: <JobListRoute /> },
+          { path: 'analytics', element: <AthenaDashboardRoute /> },
+          { path: 'settings', element: <AthenaDashboardRoute /> },
+          { path: 'documents', element: <DocumentEditorRoute documentType="resume" /> },
         ],
       },
     ])
