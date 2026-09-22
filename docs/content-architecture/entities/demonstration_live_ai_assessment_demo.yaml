@@ -1,0 +1,15 @@
+# Demonstration Entity Definition
+
+key: live_ai_assessment_demo
+title: "Live AI Assessment Demonstration"
+description: "Interactive live demonstration of AI opportunity assessment process"
+format: interactive
+industry: african_ai
+capability: ai_strategy
+duration_minutes: 60
+technologies:
+  - python
+  - openai_api
+audience:
+  - ceo
+  - cto

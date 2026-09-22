@@ -1,0 +1,12 @@
+# Framework Entity Definition
+
+key: ai_maturity_framework
+title: "AI Maturity Framework"
+description: "A framework for assessing and advancing AI maturity across organizations"
+version: "1.0"
+category: strategic
+associated_capabilities:
+  - ai_strategy
+associated_use_cases:
+  - predictive_maintenance
+visual_template: "2x2_matrix"

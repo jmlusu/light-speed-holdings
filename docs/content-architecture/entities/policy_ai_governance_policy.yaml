@@ -1,0 +1,12 @@
+# Policy Entity Definition
+
+key: ai_governance_policy
+title: "AI Governance Policy"
+description: "Policy framework for responsible AI development and deployment"
+category: ai_governance
+status: approved
+associated_industries:
+  - african_ai
+  - ai_governance
+related_use_cases:
+  - predictive_maintenance

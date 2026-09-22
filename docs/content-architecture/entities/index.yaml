@@ -1,0 +1,24 @@
+# LightSpeed Content Architecture - Entity Index
+
+This file provides a machine-readable index of all entity definitions in the LCA ontology.
+
+## Entity Definitions
+
+- organization - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\organization.yaml
+- industry_african_ai - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\industry_african_ai.yaml
+- problem_low_ai_adoption - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_low_ai_adoption.yaml
+- capability_ai_strategy - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\capability_ai_strategy.yaml
+- service_ai_opportunity_assessment - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\service_ai_opportunity_assessment.yaml
+- use_case_predictive_maintenance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\use_case_predictive_maintenance.yaml
+
+## Index Version
+
+1.0.0
+
+## Last Updated
+
+2026-09-22
+
+## Total Entities
+
+6
