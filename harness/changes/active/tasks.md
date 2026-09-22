@@ -16,8 +16,8 @@
 ## Validation
 
 - [x] T003 Run athena test suite: `uv run pytest tests/unit/test_athena_api.py tests/unit/test_athena_matching.py tests/unit/test_athena_scorer.py tests/unit/test_athena_store.py tests/integration/test_scheduler_verification.py tests/test_scheduler_integration.py` — all pass.
-- [ ] T004 Run `pwsh scripts/lint-ecl.ps1` on ECL files.
-- [ ] T005 Push branch, open PR to `main`, monitor the 10 CI checks.
+- [x] T004 Run `pwsh scripts/lint-ecl.ps1` on ECL files — pass.
+- [x] T005 Push branch, open PR to `main` (#356), monitor CI — all 16 checks green; transient ubuntu perf-test flake re-ran and passed.
 
 ## Deferred Tasks
 

@@ -18,10 +18,10 @@
 
 ## Code Review
 
-- Status: pending
+- Status: approved
 - Notes: `src/ai_company/athena/scheduler/jobs.py` adds two configs restricted to the dedicated remote boards; existing configs untouched; dedup by `source_job_id` prevents duplicate rows.
 
 ## Validation Review
 
-- Status: pending
-- Notes: ruff + mypy clean; 22 athena tests pass; CI checks and `scripts/lint-ecl.ps1` pending.
+- Status: approved
+- Notes: ruff + mypy clean; 22 athena tests pass; `scripts/lint-ecl.ps1` pass; PR #356 all 16 CI checks green (ubuntu perf-test response-time flake re-ran green).
