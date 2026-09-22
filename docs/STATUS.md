@@ -4,9 +4,11 @@
 
 ## Last Updated
 
-2026-09-17
+2026-09-22
 
 ## Current State
+
+- **Add curated remote scrapes to the Malawi job-search track (2026-09-22, shipped)** (PR #356, squash `ffbfb8fd`): `init_scheduler` in `src/ai_company/athena/scheduler/jobs.py` now registers two curated remote `ScrapeConfig`s mirroring the Malawi queries — `software engineer` + `data scientist`, both `location="Remote"`, `max_results=50`, `sources=[REMOTE_OK, WE_WORK_REMOTELY, REMOTE_CO]` — so the 4-hour scrape cycle also captures international remote roles from the remote-only boards. Existing four default configs untouched; `run_scrape_config` dedups by `source_job_id` (re-found remote jobs update rather than duplicate). Scheduler-only: no models, API, or frontend changes. Gates: ruff ✅, mypy ✅ (athena file), athena suite **22 passed** ✅, `lint-ecl` ✅, PR #356 CI **16/16 green** (windows suite + full ubuntu 2454 passed + E2E green; single transient ubuntu perf-test response-time flake `test_dashboard_response_time_consistency` re-ran green). ECL archived as `harness/changes/archive/2026-09-22-add-curated-remote-scrapes-to-the-malawi-job-search-track`.
 
 - **Social Media Manager + Digital Identity build-out (2026-09-17, shipped)**: Added `social_media_manager` specialist to `company-registry.yaml` (Marketing, reports to CMO, canonical tool set incl. `webfetch`) and regenerated all agent cards — **145 agents across 20 departments** (144 AI + 1 human CEO). New docs: `docs/marketing/digital-identity-setup.md` — 5-phase runbook (Phase 0 Security → 1 Claim brand → 2 Business infrastructure → 3 Branding → 4 Content) owning issue #194 — and `docs/marketing/digital-asset-register.md` (platform matrix for FB/IG/X/LinkedIn/TikTok/YouTube/Threads; holds no credentials). Enhanced additively: `ls-social-media-design/SKILL.md`, `daily-cadence-checklist.md`, `docs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md`, `warmup-log.md`. Retired `social-media/` (source normalized into the docs tree). Count migration 144 → 145 across all living docs + `company/agent-registry.json` re-synced (verified). Gates: generator re-run ✅ (145 agents), `sync-registry --verify` ✅, docs drift + count tests ✅ (33 passed / 1 skipped).
 
