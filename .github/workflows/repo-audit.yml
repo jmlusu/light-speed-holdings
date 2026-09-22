@@ -551,6 +551,8 @@ jobs:
 
       - name: Commit the audit artifacts
         if: steps.reconcile.outputs.report != ''
+        env:
+          REPO_AUDIT_DEPLOY_KEY: ${{ secrets.REPO_AUDIT_DEPLOY_KEY }}
         run: |
           export AUDIT_DATE="$(date -u +%F)"
           git config user.name "github-actions[bot]"
@@ -560,6 +562,15 @@ jobs:
             echo "No new audit files to commit (already up to date)."
           else
             git commit -m "audit: weekly repository report $AUDIT_DATE"
+            # Push via the repo-audit write deploy key so the main ruleset
+            # bypass actor (DeployKey) applies; GITHUB_TOKEN cannot bypass.
+            mkdir -p ~/.ssh
+            umask 177
+            printf '%s\n' "$REPO_AUDIT_DEPLOY_KEY" > ~/.ssh/repo-audit_deploy
+            ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null
+            git config core.sshCommand \
+              "ssh -i ~/.ssh/repo-audit_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=no"
+            git remote set-url origin "git@github.com:jmlusu/light-speed-holdings.git"
             git push -u origin "HEAD:refs/heads/$GITHUB_REF_NAME" || {
               git pull --rebase --autostash
               git push -u origin "HEAD:refs/heads/$GITHUB_REF_NAME"
