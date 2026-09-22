@@ -1,0 +1,11 @@
+# Business Outcome Entity Definition
+
+key: accelerated_ai_adoption
+title: "Accelerated AI Adoption"
+description: "Organizations rapidly implement AI solutions and realize productivity gains"
+metric: "time-to-value"
+target: "SMEs in emerging markets"
+related_problems:
+  - low_ai_adoption
+enabled_by:
+  - ai_strategy

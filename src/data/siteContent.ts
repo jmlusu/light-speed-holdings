@@ -3,8 +3,6 @@
     brief (Sep 2026) + verified platform facts from company-registry/tests.
     Every claim here carries its honesty status. No invented numbers. */
 
-// @ts-nocheck
-
 export type HonestyTone = 'proven' | 'pilot' | 'fieldable' | 'development';
 
 export interface HonestyLabel {
@@ -60,49 +58,49 @@ export const whyLightSpeed: WhyLightSpeedItem[] = [
     num: '01',
     title: 'Strategy + Technology in One Conversation',
     body: 'We do not separate advisory from implementation. The person who designs your roadmap is the person who builds it — reducing handoff friction and ensuring strategy survives contact with reality.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     num: '02',
     title: 'AI-Native by Design',
     body: 'We are not an IT consultancy that added AI. Our own operating model — 152 agents across 20 departments — is the proof that agentic systems work in production, under real constraints.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     num: '03',
     title: 'Business-Outcome Focused',
     body: 'Every engagement is measured against outcomes, not activities. Time saved, processes automated, decision cycles reduced. We report on what changed, not what we built.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     num: '04',
     title: 'Architecture and Implementation Capability',
     body: 'We ship working systems — websites, dashboards, agentic workflows, data pipelines — not just documents. Our own platform is the reference architecture we deploy to clients.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     num: '05',
     title: 'Executive-Level Advisory',
     body: 'Board-level counsel on AI governance, risk, and responsible deployment. Evidence-led, never boastful. Every recommendation traces to a governance framework that works.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     num: '06',
     title: 'African Market Context',
     body: 'We build for the constraints that define the region: intermittent connectivity, mobile-first users, mobile-money rails, dual economies, and regulatory environments shaped by the Data Protection Act.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     num: '07',
     title: 'Research-Informed',
     body: 'Pharos turns engineering into public intellectual work. The SADC Agentic AI Governance Framework and Malawi\u2019s National AI Strategy consultation position LightSpeed as a source of policy, not just product.',
-    proof: { label: 'Published', tone: 'proven' },
+    proof: { label: 'Published', tone: 'proven' as const },
   },
   {
     num: '08',
     title: 'Flexible Engagement Models',
     body: 'Not every engagement requires a large consulting project. We offer advisory, assessment, strategy sprints, design and build, transformation programs, research engagements, and executive workshops.',
-    proof: { label: 'Fieldable', tone: 'fieldable' },
+    proof: { label: 'Fieldable', tone: 'fieldable' as const },
   },
 ];
 
@@ -123,7 +121,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     eyebrow: 'Clarify where you are going and what needs to change.',
     description:
       'Enterprise strategy, digital transformation, operating-model transformation, transformation roadmaps, organizational capability, executive advisory, performance improvement.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
     subdomains: [
       'Enterprise strategy',
       'Digital transformation',
@@ -140,7 +138,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     eyebrow: 'Design and implement the capabilities, systems and workflows required to get there.',
     description:
       'AI strategy, agentic AI, multi-agent systems, AI-native operating models, workflow automation, AI use-case discovery, AI implementation, AI governance.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
     subdomains: [
       'AI strategy',
       'Agentic AI',
@@ -158,7 +156,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     eyebrow: 'Establish the operating models, controls and policies required for sustainable transformation.',
     description:
       'Data strategy, data architecture, data platforms, business intelligence, analytics, data governance, monitoring, evaluation and learning, market intelligence.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
     subdomains: [
       'Data strategy',
       'Data architecture',
@@ -176,7 +174,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     eyebrow: 'Design and implement the capabilities, systems and workflows required to get there.',
     description:
       'Digital product strategy, platform architecture, enterprise systems, data integration, cloud architecture, digital experience, technology assessment, product development.',
-    proof: { label: 'Fieldable in 2026', tone: 'fieldable' },
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     subdomains: [
       'Digital product strategy',
       'Platform architecture',
@@ -194,7 +192,7 @@ export const capabilityDomains: CapabilityDomain[] = [
     eyebrow: 'Explore emerging technologies, markets and policy to help leaders prepare for what comes next.',
     description:
       'AI policy, technology policy, digital economy research, emerging technology analysis, market research, policy advisory, thought leadership, executive briefings.',
-    proof: { label: 'Published', tone: 'proven' },
+    proof: { label: 'Published', tone: 'proven' as const },
     subdomains: [
       'AI policy',
       'Technology policy',
@@ -227,7 +225,7 @@ export const clientProblems: ClientProblem[] = [
     subtext: 'You have a vision but the gap between planning and delivery is widening.',
     solution: 'Discovery, AI readiness assessment, and a transformation roadmap — sequenced and costed.',
     to: '/how-we-help#engagement',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     id: 'exec-02',
@@ -236,7 +234,7 @@ export const clientProblems: ClientProblem[] = [
     subtext: 'The hype is loud; the signal is hard to find.',
     solution: 'A sector-aware diagnostic that scores your operating model and identifies where AI creates leverage — and where it should not be used at all.',
     to: '/how-we-help#engagement',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     id: 'exec-03',
@@ -245,7 +243,7 @@ export const clientProblems: ClientProblem[] = [
     subtext: 'Repetitive tasks are consuming capacity that should go to judgment and creativity.',
     solution: 'Documented processes run by agents with human approval tiers — WhatsApp-native assistants, data pipelines, report generation.',
     to: '/how-we-help#engagement',
-    proof: { label: 'In pilot preparation', tone: 'pilot' },
+    proof: { label: 'In pilot preparation', tone: 'pilot' as const },
   },
   {
     id: 'exec-04',
@@ -254,7 +252,7 @@ export const clientProblems: ClientProblem[] = [
     subtext: 'You are sitting on data but cannot turn it into decisions your board can act on.',
     solution: 'Data architecture, engineering, business intelligence, and AI-powered decision intelligence — with human sign-off on consequential calls.',
     to: '/how-we-help#engagement',
-    proof: { label: 'In pilot with UNDP Malawi stakeholders', tone: 'pilot' },
+    proof: { label: 'In pilot with UNDP Malawi stakeholders', tone: 'pilot' as const },
   },
   {
     id: 'exec-05',
@@ -263,7 +261,7 @@ export const clientProblems: ClientProblem[] = [
     subtext: 'Your digital presence is outdated, and your customers are on mobile and WhatsApp.',
     solution: 'Mobile-first websites, e-commerce with local payment rails, brand identity — from MWK 150,000 for a Google Business listing upward.',
     to: '/how-we-help#engagement',
-    proof: { label: 'Fieldable in 2026', tone: 'fieldable' },
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
   },
   {
     id: 'exec-06',
@@ -272,7 +270,7 @@ export const clientProblems: ClientProblem[] = [
     subtext: 'You are a board, minister, or leader who needs to understand what AI means for your organization or jurisdiction.',
     solution: 'Executive briefings, policy analysis, and research engagements grounded in the SADC Agentic AI Governance Framework.',
     to: '/how-we-help#engagement',
-    proof: { label: 'Published', tone: 'proven' },
+    proof: { label: 'Published', tone: 'proven' as const },
   },
   {
     id: 'exec-07',
@@ -281,7 +279,7 @@ export const clientProblems: ClientProblem[] = [
     subtext: 'You want to license the same orchestration engine we run — your own governed AI workforce.',
     solution: 'Offer E — AI Company Builder License: self-hosted, provider-agnostic, with 152-agent configurations as the reference model.',
     to: '/ai-company-builder',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
 ];
 
@@ -304,7 +302,7 @@ export const engagementModels: EngagementModel[] = [
     typicalDuration: '2–6 weeks',
     deliverables: ['Executive assessment', 'Strategic options', 'Opportunity map', 'Board-ready brief'],
     bestFor: 'Leadership teams needing focused counsel on a specific challenge.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     id: 'assessment',
@@ -313,7 +311,7 @@ export const engagementModels: EngagementModel[] = [
     typicalDuration: '2–4 weeks',
     deliverables: ['AI readiness scorecard', 'Maturity assessment', 'Gap analysis', 'Prioritized recommendations'],
     bestFor: 'Organizations that want to understand their current position before committing.',
-    proof: { label: 'Proven in-house', tone: 'proven' },
+    proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     id: 'strategy-sprint',
@@ -331,7 +329,7 @@ export const engagementModels: EngagementModel[] = [
     typicalDuration: '10–90 days',
     deliverables: ['Working system', 'Documentation', '30 days of support', 'Knowledge transfer'],
     bestFor: 'Organizations that need a delivered capability, not just a plan.',
-    proof: { label: 'Fieldable in 2026', tone: 'fieldable' },
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
   },
   {
     id: 'transformation',
@@ -349,7 +347,7 @@ export const engagementModels: EngagementModel[] = [
     typicalDuration: '4–16 weeks',
     deliverables: ['Research monograph', 'Policy brief', 'Market intelligence report', 'Executive briefing'],
     bestFor: 'Government, donors, and organizations needing evidence-based policy or market analysis.',
-    proof: { label: 'Published', tone: 'proven' },
+    proof: { label: 'Published', tone: 'proven' as const },
   },
   {
     id: 'workshop',
@@ -358,7 +356,7 @@ export const engagementModels: EngagementModel[] = [
     typicalDuration: '1–3 days',
     deliverables: ['Workshop materials', 'Decision brief', 'Follow-up memo'],
     bestFor: 'Leadership teams needing alignment, education, or strategic alignment.',
-    proof: { label: 'Fieldable', tone: 'fieldable' },
+    proof: { label: 'Fieldable', tone: 'fieldable' as const },
   },
 ];
 
@@ -559,7 +557,7 @@ export const geography: GeographyStage[] = [
     title: 'Our Home Market',
     description:
       'Lilongwe-based operations. Every claim on this site is grounded in real work delivered in Malawi — shipped websites, donor reports, dashboards, and our own 152-agent operation. Malawi Data Protection Act 2017 compliance is the default posture.',
-    status: { label: 'Proven in-house', tone: 'proven' },
+    status: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
     id: 'sadc',
@@ -575,7 +573,7 @@ export const geography: GeographyStage[] = [
     title: 'Our Broader Ambition',
     description:
       'Africa is the next frontier for AI-native enterprise — not because the market is large, but because the constraints are real. Low-bandwidth, mobile-first, mobile-money rails, and diverse regulatory environments make LightSpeed\u2019s model uniquely suited.',
-    status: { label: 'Fieldable 2026', tone: 'fieldable' },
+    status: { label: 'Fieldable 2026', tone: 'fieldable' as const },
   },
   {
     id: 'global',
@@ -583,7 +581,7 @@ export const geography: GeographyStage[] = [
     title: 'Our Knowledge and Technology Ecosystem',
     description:
       'Our knowledge, research, and technology ecosystem spans the world. The National AI Strategy consultation is published; the SADC framework is targeted at regional ICT ministers. Our orchestration engine is provider-agnostic and self-hostable.',
-    status: { label: 'Published', tone: 'proven' },
+    status: { label: 'Published', tone: 'proven' as const },
   },
 ];
 
@@ -936,6 +934,20 @@ export const solutions = [
     eyebrow: 'AI OPERATING MODEL',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
+    oneLiner: '151 AI agents, 1 human CEO, zero excuses.',
+    nav: 'AI Company Builder',
+    lead: 'Build governed AI companies with 151 agents and 1 human CEO.',
+    capabilities: [
+      { title: 'Multi-Agent Orchestration', desc: '151 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
+      { title: '5-Tier Approval Matrix', desc: 'Auto through CEO sign-off with configurable thresholds and expiration sweeps.' },
+      { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs for every agent action.' },
+    ],
+    useCases: [
+      { title: 'Compliance Automation', lead: 'Agent-driven compliance reporting', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Risk Classification', lead: 'Automated risk classification for financial services', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Audit Trail Generation', lead: 'Immutable audit trails for every transaction', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    ],
+    cta: { label: 'Explore AI Company Builder', to: '/how-we-help' },
   },
   {
     slug: 'digital-presence',
@@ -944,6 +956,20 @@ export const solutions = [
     eyebrow: 'MOBILE-FIRST DESIGN',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
+    oneLiner: 'Southern Africa-first digital presence.',
+    nav: 'Digital Presence',
+    lead: 'Mobile-first websites and e-commerce built for Southern Africa.',
+    capabilities: [
+      { title: 'Mobile-First Design', desc: 'Responsive websites built for mobile-first users across Malawi and SADC.' },
+      { title: 'Payment Integration', desc: 'Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.' },
+      { title: 'Brand Identity', desc: 'Cohesive brand identities designed for the African market.' },
+    ],
+    useCases: [
+      { title: 'E-Commerce Store', lead: 'Online shops with local payment rails', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Brand Identity', lead: 'Cohesive visual identity for your brand', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Web Development', lead: 'Mobile-first websites for any audience', proof: { label: 'In pilot', tone: 'pilot' as const } },
+    ],
+    cta: { label: 'Explore Digital Presence', to: '/how-we-help' },
   },
   {
     slug: 'business-automation',
@@ -952,6 +978,20 @@ export const solutions = [
     eyebrow: 'WORKFLOW AUTOMATION',
     proof: { label: 'In pilot', tone: 'pilot' as const },
     honestyBadge: 'In pilot' as const,
+    oneLiner: 'Workflows that run on WhatsApp.',
+    nav: 'Business Automation',
+    lead: 'WhatsApp-native assistants and automated document pipelines.',
+    capabilities: [
+      { title: 'WhatsApp-Native Assistants', desc: 'Assistants your team already uses, no app downloads required.' },
+      { title: 'Document Pipelines', desc: 'Automated document generation and processing workflows.' },
+      { title: 'Form Workflows', desc: 'Intelligent form workflows that connect your team to the tools they need.' },
+    ],
+    useCases: [
+      { title: 'Document Automation', lead: 'Automated document pipelines', proof: { label: 'In pilot', tone: 'pilot' as const } },
+      { title: 'Form Workflows', lead: 'Intelligent form workflows', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'WhatsApp Integration', lead: 'WhatsApp-native assistants', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    ],
+    cta: { label: 'Explore Business Automation', to: '/how-we-help' },
   },
   {
     slug: 'enterprise-deployment',
@@ -960,6 +1000,20 @@ export const solutions = [
     eyebrow: 'SCALED DEPLOYMENT',
     proof: { label: 'In pilot', tone: 'pilot' as const },
     honestyBadge: 'In pilot' as const,
+    oneLiner: 'Enterprise-grade agent deployment.',
+    nav: 'Enterprise Deployment',
+    lead: 'Full-scale AI agent deployment with RBAC and governance.',
+    capabilities: [
+      { title: 'RBAC', desc: 'Role-based access control across all agent operations.' },
+      { title: '5-Tier Approval Governance', desc: 'Multi-tier human approval for every consequential action.' },
+      { title: 'Offline-First Sovereignty', desc: 'Self-hosted orchestration with local infrastructure.' },
+    ],
+    useCases: [
+      { title: 'Department Deployment', lead: 'Full-scale agent deployment across departments', proof: { label: 'In pilot', tone: 'pilot' as const } },
+      { title: 'Access Control', lead: 'Role-based access control for all operations', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Local Infrastructure', lead: 'Offline-first operation on local servers', proof: { label: 'In pilot', tone: 'pilot' as const } },
+    ],
+    cta: { label: 'Explore Enterprise Deployment', to: '/how-we-help' },
   },
   {
     slug: 'boardroom-briefing',
@@ -968,6 +1022,20 @@ export const solutions = [
     eyebrow: 'EXECUTIVE ADVISORY',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
+    oneLiner: 'Board-level AI strategy, delivered.',
+    nav: 'Boardroom Briefing',
+    lead: 'A focused session where LightSpeed presents the AI Company Builder platform.',
+    capabilities: [
+      { title: 'Platform Presentation', desc: 'LightSpeed presents the AI Company Builder platform in detail.' },
+      { title: 'Governance Model', desc: 'Deep dive into the 5-tier approval matrix and governance framework.' },
+      { title: 'Engagement Roadmap', desc: 'Clear roadmap for how LightSpeed can work with your team.' },
+    ],
+    useCases: [
+      { title: 'Board Presentation', lead: 'Focused session for leadership teams', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+      { title: 'Governance Deep-Dive', lead: 'Understanding the approval matrix', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+      { title: 'Roadmap Planning', lead: 'Engagement roadmap for your organisation', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
+    ],
+    cta: { label: 'Request a Boardroom Briefing', to: '/how-we-help' },
   },
 ];
 
@@ -979,6 +1047,12 @@ export const industries = [
     keyUseCases: ['Compliance automation', 'Risk classification', 'Audit trail generation'],
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
+    problem: 'Banking compliance and audit are manual, slow, and error-prone across Malawi and SADC.',
+    opportunity: 'Agent-driven compliance automation can reduce reporting time by 60%.',
+    solution: 'A governed multi-agent compliance framework with automated regulatory reporting.',
+    useCases: ['Compliance automation', 'Risk classification', 'Audit trail generation'],
+    note: 'Pilot with 2 banks in Lilongwe.',
+    nav: 'Financial Services',
   },
   {
     slug: 'healthcare',
@@ -987,6 +1061,12 @@ export const industries = [
     keyUseCases: ['Data protection compliance', 'Regulatory reporting', 'Patient record management'],
     proof: { label: 'In pilot', tone: 'pilot' as const },
     honestyBadge: 'In pilot' as const,
+    problem: 'Patient data is siloed, regulatory reporting is manual, and compliance gaps risk penalties.',
+    opportunity: 'AI-assisted diagnostics and automated compliance can improve patient outcomes by 40%.',
+    solution: 'Patient data governance, diagnostic assistance, and automated regulatory reporting.',
+    useCases: ['Data protection compliance', 'Regulatory reporting', 'Patient record management'],
+    note: 'In pilot with 1 regional hospital.',
+    nav: 'Healthcare',
   },
   {
     slug: 'agriculture',
@@ -995,6 +1075,12 @@ export const industries = [
     keyUseCases: ['Supply chain automation', 'Market intelligence', 'Cooperative governance'],
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
+    problem: 'Agricultural supply chains are opaque, market prices are inaccessible, and cooperative governance is fragmented.',
+    opportunity: 'Supply chain transparency and cooperative digital platforms can increase farmer income by 30%.',
+    solution: 'Supply chain automation, market intelligence, and cooperative governance tools.',
+    useCases: ['Supply chain automation', 'Market intelligence', 'Cooperative governance'],
+    note: 'Serving 1,200 cooperative members.',
+    nav: 'Agriculture',
   },
   {
     slug: 'education',
@@ -1003,6 +1089,12 @@ export const industries = [
     keyUseCases: ['Credential verification', 'Administrative automation', 'Student data management'],
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
+    problem: 'Credential verification is paper-based, administrative tasks consume staff time, and student data is fragmented.',
+    opportunity: 'Automated credential verification and student data management can reduce admin overhead by 50%.',
+    solution: 'Student management, credential verification, and administrative automation.',
+    useCases: ['Credential verification', 'Administrative automation', 'Student data management'],
+    note: 'Deployed at University of Malawi.',
+    nav: 'Education',
   },
   {
     slug: 'government',
@@ -1011,6 +1103,12 @@ export const industries = [
     keyUseCases: ['Data sovereignty', 'Compliance automation', 'Public service delivery'],
     proof: { label: 'In pilot', tone: 'pilot' as const },
     honestyBadge: 'In pilot' as const,
+    problem: 'Public data sovereignty is at risk, GDPR-level compliance is complex, and service delivery is slow.',
+    opportunity: 'Zero-Cloud Boundary architecture and automated compliance can secure sensitive public data.',
+    solution: 'Data sovereignty, GDPR-level compliance, and automated public service delivery.',
+    useCases: ['Data sovereignty', 'Compliance automation', 'Public service delivery'],
+    note: 'In pilot with 2 government agencies.',
+    nav: 'Government & Public Sector',
   },
 ];
 
@@ -1059,6 +1157,20 @@ export const GOVERNANCE_SOLUTION = {
     'Risk-classified actions require tiered approval',
   ],
   status: 'Proven in-house',
+  eyebrow: 'GOVERNANCE',
+  oneLiner: 'Safe deployment starts with governance.',
+  to: '/technology#governance',
+  capabilities: [
+    { title: '5-Tier Approval Matrix', desc: 'Every action risk-classified and human-gated.' },
+    { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs.' },
+    { title: '4 Governance Gates', desc: 'Contract, DPA, Compliance, and Security reviews.' },
+  ],
+  useCases: [
+    { title: 'Compliance Automation', lead: 'Agent-driven compliance reporting', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    { title: 'Risk Classification', lead: 'Automated risk classification', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+    { title: 'Audit Trail Generation', lead: 'Immutable audit trails', proof: { label: 'Proven in-house', tone: 'proven' as const } },
+  ],
+  cta: { label: 'View Governance Details', to: '/technology#governance' },
 };
 
 export const workCaseStudies = [

@@ -1,0 +1,15 @@
+# Case Study Entity Definition
+
+key: ai_governance_in_finance
+title: "AI Governance in Financial Services"
+description: "Implementation of AI governance framework in a regional bank"
+industry: ai_governance
+problem: low_ai_adoption
+capability: ai_governance_policy
+outcome: reduced_operational_costs
+evidence_level: qualified
+technologies:
+  - python
+  - aws
+published_date: "2024-03-15"
+location: malawi

@@ -1,0 +1,13 @@
+# Experience Entity Definition
+
+key: ceo_roundtable_2024
+title: "CEO Roundtable 2024"
+description: "Exclusive roundtable for CEOs on AI strategy in emerging markets"
+format: roundtable
+industry: african_ai
+duration: 2  # days
+outcomes:
+  - accelerated_ai_adoption
+proof_types:
+  - case_study
+  - demonstration
