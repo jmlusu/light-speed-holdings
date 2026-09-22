@@ -2,8 +2,14 @@
 
 **Protocol:** Manual only, no schedulers, consistent device/IP
 **Target:** 20-50 relevant follows/platform, 1 native post/day, daily engagement
-**Start Date:** 2026-09-06
-**End Date:** 2026-10-03
+**Start Date:** Re-based — Week 1 begins the day after all platforms in the warm-up scope read `Live` in the Digital Asset Register (original date 2026-09-06 predated provisioning)
+**End Date:** Re-computed on the new start (4 weeks)
+
+---
+
+## Re-baseline (2026-09-22)
+
+Per the [#194](https://github.com/jmlusu/light-speed-holdings/issues/194) gate decision, the 4-week warm-up window **re-baselines**: Week 1 starts the calendar day after all platforms in the register's warm-up scope read `Live` (see `docs/marketing/digital-asset-register.md`). The original 2026-09-06 start predated account provisioning, and no daily log table below carries data. Week/week-review dates will be re-stamped from the new start; the protocol, targets, and success criteria are unchanged. Execution steps live in `docs/marketing/provisioning-runbook.md`.
 
 ---
 

@@ -1,0 +1,86 @@
+{
+  "workflow": "customer_triage",
+  "description": "Classify and prioritize customer support requests",
+  "samples": [
+    {
+      "input": {
+        "customer_tier": "enterprise",
+        "subject": "Critical: Production API returning 500 errors",
+        "body": "Our production API has been returning 500 errors for the last 15 minutes. This is affecting all our customers. Need immediate assistance.",
+        "attachments": [],
+        "history": [],
+        "account_context": {"plan": "enterprise", "monthly_api_calls": 5000000, "recent_issues": 0}
+      },
+      "expected": {
+        "category": "technical",
+        "urgency": "critical",
+        "is_known_issue": false,
+        "requires_escalation": true
+      }
+    },
+    {
+      "input": {
+        "customer_tier": "pro",
+        "subject": "Invoice question for March billing",
+        "body": "I noticed a discrepancy in my March invoice. The API calls charge seems higher than expected. Can you clarify?",
+        "attachments": [{"name": "invoice_march.pdf", "type": "pdf"}],
+        "history": [{"ticket_id": "TKT-123", "subject": "February billing question", "resolved": true}],
+        "account_context": {"plan": "pro", "monthly_api_calls": 500000, "recent_issues": 1}
+      },
+      "expected": {
+        "category": "billing",
+        "urgency": "routine",
+        "is_known_issue": false,
+        "requires_escalation": false
+      }
+    },
+    {
+      "input": {
+        "customer_tier": "free",
+        "subject": "Possible security vulnerability in auth flow",
+        "body": "I think I found a way to bypass authentication on your platform. Here's the reproduction steps...",
+        "attachments": [{"name": "vuln_details.txt", "type": "text"}],
+        "history": [],
+        "account_context": {"plan": "free", "monthly_api_calls": 1000, "recent_issues": 0}
+      },
+      "expected": {
+        "category": "security",
+        "urgency": "critical",
+        "is_known_issue": false,
+        "requires_escalation": true
+      }
+    },
+    {
+      "input": {
+        "customer_tier": "enterprise",
+        "subject": "Feature request: Webhook retry policy configuration",
+        "body": "We'd like to configure custom retry policies for webhooks. Currently it's fixed at 3 retries with exponential backoff.",
+        "attachments": [],
+        "history": [],
+        "account_context": {"plan": "enterprise", "monthly_api_calls": 1000000, "recent_issues": 2}
+      },
+      "expected": {
+        "category": "feature",
+        "urgency": "routine",
+        "is_known_issue": false,
+        "requires_escalation": false
+      }
+    },
+    {
+      "input": {
+        "customer_tier": "pro",
+        "subject": "How to configure custom domains?",
+        "body": "I want to set up a custom domain for my API endpoints. The documentation mentions it's possible but I can't find the settings.",
+        "attachments": [],
+        "history": [],
+        "account_context": {"plan": "pro", "monthly_api_calls": 200000, "recent_issues": 0}
+      },
+      "expected": {
+        "category": "general",
+        "urgency": "routine",
+        "is_known_issue": true,
+        "requires_escalation": false
+      }
+    }
+  ]
+}

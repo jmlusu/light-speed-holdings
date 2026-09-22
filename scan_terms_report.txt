@@ -1,0 +1,96 @@
+==============================================================================
+VR docx        VillageReach-USSD-Consultant-Proposal.docx
+  forbidden: (none)
+  allowed[45,000] x1
+  allowed[1,875] x1
+  allowed[2024] x1
+  allowed[54747] x6
+  allowed[9,000] x2
+  allowed[750] x2
+  allowed[Months 1–24] x2
+==============================================================================
+VR pptx        VillageReach-USSD-Consultant-Proposal-Slides.pptx
+  forbidden: (none)
+  allowed[45,000] x1
+  allowed[1,875] x1
+  allowed[2024] x1
+  allowed[54747] x4
+  allowed[9,000] x1
+  allowed[750] x1
+  allowed[Months 1–24] x2
+==============================================================================
+VR md          proposal-deliverables\villagereach-ussd-consultant-proposal.md
+  forbidden: (none)
+  allowed[45,000] x5
+  allowed[1,875] x3
+  allowed[2024] x3
+  allowed[54747] x18
+  allowed[40/20/40] x3
+==============================================================================
+VR gen docx    proposal-deliverables\make_villagereach_proposal_docx.py
+  forbidden: (none)
+  allowed[45,000] x1
+  allowed[1,875] x1
+  allowed[2024] x1
+  allowed[54747] x6
+  allowed[9,000] x2
+  allowed[750] x2
+  allowed[Months 1–24] x2
+==============================================================================
+VR gen pptx    proposal-deliverables\make_villagereach_proposal_pptx.py
+  forbidden: (none)
+  allowed[45,000] x1
+  allowed[1,875] x1
+  allowed[2024] x1
+  allowed[54747] x4
+  allowed[9,000] x1
+  allowed[750] x1
+  allowed[Months 1–24] x2
+==============================================================================
+Solo txt       Jack-Mlusu-Solo-Consultant-Proposal.txt
+  forbidden: (none)
+  allowed[45,000] x1
+  allowed[1,875] x2
+  allowed[2024] x1
+  allowed[54747] x5
+  allowed[9,000] x1
+==============================================================================
+Solo docx      Jack-Mlusu-Solo-Consultant-Proposal.docx
+  forbidden: (none)
+  allowed[45,000] x5
+  allowed[1,875] x3
+  allowed[2024] x2
+  allowed[54747] x15
+  allowed[40/20/40] x1
+MISSING  Solo v1 docx   Jack-Mlusu-Solo-Consultant-Proposal (2).docx
+==============================================================================
+Solo v1b docx  Jack-Mlusu-Solo-Consultant-Proposal_v1.docx
+  forbidden: (none)
+  allowed[45,000] x5
+  allowed[1,875] x3
+  allowed[2024] x2
+  allowed[54747] x15
+  allowed[40/20/40] x1
+==============================================================================
+Solo pptx      Jack-Mlusu-Solo-Consultant-Proposal-Slides.pptx
+  forbidden: (none)
+  allowed[45,000] x1
+  allowed[1,875] x1
+  allowed[2024] x1
+  allowed[54747] x4
+  allowed[9,000] x1
+  allowed[750] x1
+  allowed[Months 1–24] x2
+==============================================================================
+Solo gen docx  proposal-deliverables\make_proposal_docx.py
+  forbidden: (none)
+==============================================================================
+Solo gen pptx  proposal-deliverables\make_proposal_pptx.py
+  forbidden: (none)
+==============================================================================
+USSD gen docx  proposal-deliverables\make_ussd_proposal_docx.py
+  forbidden: (none)
+  allowed[45,000] x4
+  allowed[1,875] x2
+  allowed[2024] x2
+  allowed[54747] x17

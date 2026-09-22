@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LightSpeed Holdings Limited — Company building with AI agents</title>
+<meta name="description" content="A fleet of 152 specialist AI agents, owned by a single holding company and deployed like capital. We build your AI company in-house.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23070A40'/></svg>">
+<link rel="stylesheet" href="scrollcraft.css">
+<style>
+  :root {
+    --sc-canvas:     #08090b;
+    --sc-surface:    #101217;
+    --sc-ink:        #f4f2ef;
+    --sc-ink-soft:   #9a9ba1;
+    --sc-accent:     #E63946;
+    --sc-accent-ink: #070A40;
+    --sc-font-display: Arial, "Helvetica Neue", system-ui, sans-serif;
+    --sc-font-text:    Arial, "Helvetica Neue", system-ui, sans-serif;
+  }
+
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    overflow: clip;
+    background: var(--sc-canvas);
+  }
+  .hero__poster {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .hero__title { font-weight: 700; }
+  .hero__title--light { font-weight: 400; }
+
+  .belief {
+    position: relative;
+    height: 100svh;
+    overflow: clip;
+    background: var(--sc-canvas);
+  }
+  .belief__img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 50% 25%;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(3rem, 6vw, 6rem);
+    align-items: center;
+    padding-block: clamp(6rem, 14vh, 12rem);
+  }
+  @media (max-width: 860px) {
+    .split { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  .count {
+    margin-top: var(--sc-4);
+    padding-left: var(--sc-gutter);
+    border-left: 2px solid var(--sc-accent);
+  }
+  .count__num {
+    font-family: var(--sc-font-display);
+    font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1;
+    margin: 0 0 0.25em;
+  }
+  .count__label {
+    color: var(--sc-ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.8125rem;
+    margin: 0;
+  }
+
+  .sc-copy--margin {
+    inset-inline: auto;
+    left: var(--sc-gutter); right: auto;
+    top: 50%; translate: 0 -50%;
+    max-width: min(36rem, 64vw);
+  }
+  .sc-copy--above-flags { z-index: 90; }
+
+  .cta {
+    display: inline-block;
+    color: var(--sc-accent);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.24em;
+    text-decoration-color: color-mix(in oklab, var(--sc-accent) 45%, transparent);
+    border-radius: 2px;
+  }
+  .cta:focus-visible {
+    outline: 2px solid var(--sc-accent);
+    outline-offset: 4px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cta:hover {
+      text-decoration-color: #00BFFF;
+      translate: 0 -1px;
+    }
+  }
+  .cta:active { scale: 0.97; }
+
+  .flags {
+    position: absolute; inset: 0;
+    z-index: 70;
+    pointer-events: none;
+  }
+  .flag { position: absolute; bottom: 0; width: var(--cloth-w); }
+  .flag__pole {
+    position: absolute; left: 0; bottom: 0;
+    height: var(--pole-h);
+    width: 2px;
+    background: color-mix(in oklab, var(--sc-ink-soft) 55%, transparent);
+  }
+  .flag__cloth {
+    position: absolute; left: 0;
+    bottom: var(--pole-h);
+    width: var(--cloth-w);
+    height: var(--cloth-h);
+    background: var(--color);
+    --fall: calc(var(--pole-h) + var(--cloth-h));
+    transform: translateY(calc((1 - var(--h)) * var(--fall)));
+  }
+  .flag--navy    { left: 2vw;  --pole-h: 22vh; --cloth-h: 12vh; --cloth-w: 20vw; --color: #070A40; }
+  .flag--crimson { left: 16vw; --pole-h: 30vh; --cloth-h: 15vh; --cloth-w: 16vw; --color: #E63946; }
+  .flag--cyan    { left: 30vw; --pole-h: 40vh; --cloth-h: 18vh; --cloth-w: 12vw; --color: #00BFFF; }
+
+  .flags--deep .flag--navy    { --h: clamp(0, calc((var(--sc-p) - 0.10) / 0.30), 1); }
+  .flags--deep .flag--crimson { --h: clamp(0, calc((var(--sc-p) - 0.40) / 0.30), 1); }
+  .flags--deep .flag--cyan    { --h: clamp(0, calc((var(--sc-p) - 0.70) / 0.30), 1); }
+
+  .flags--join .flag--navy,
+  .flags--join .flag--crimson,
+  .flags--join .flag--cyan    { --h: clamp(0, calc((var(--sc-p) - 0.25) / 0.40), 1); }
+
+  #join .flags--join { z-index: 0; }
+
+  .sc-stage__poster--pan {
+    inset: -6%;
+    width: 110%; height: 110%;
+  }
+
+  .close__inner {
+    z-index: 90;
+    position: absolute;
+    left: var(--sc-gutter);
+    top: 50%;
+    translate: 0 -50%;
+    max-width: min(40rem, 64vw);
+  }
+  .close__inner .cta { margin-top: var(--sc-4); }
+
+  .foot {
+    z-index: 90;
+    position: absolute;
+    left: var(--sc-gutter);
+    right: var(--sc-gutter);
+    bottom: clamp(1.5rem, 4vh, 3rem);
+    display: grid;
+    gap: var(--sc-4);
+    max-width: 32rem;
+  }
+  .foot__name { font-weight: 700; margin: 0; }
+  .foot__tagline, .foot__contact, .foot__copy {
+    color: var(--sc-ink-soft);
+    margin: 0;
+    font-size: 0.875rem;
+  }
+  .foot__contact a { color: var(--sc-ink-soft); }
+
+  #join .sc-scrim--band {
+    background: linear-gradient(to top,
+      color-mix(in oklab, var(--sc-canvas) 97%, transparent) 0%,
+      color-mix(in oklab, var(--sc-canvas) 95%, transparent) 20%,
+      color-mix(in oklab, var(--sc-canvas) 66%, transparent) 38%,
+      transparent 58%);
+  }
+  [data-folio="The cost"] .sc-scrim--left {
+    background: linear-gradient(90deg,
+      color-mix(in oklab, var(--sc-canvas) 84%, transparent) 0%,
+      color-mix(in oklab, var(--sc-canvas) 70%, transparent) 48%,
+      color-mix(in oklab, var(--sc-canvas) 36%, transparent) 64%,
+      color-mix(in oklab, var(--sc-canvas) 12%, transparent) 76%,
+      transparent 84%);
+  }
+  .belief .sc-scrim--lead {
+    background: linear-gradient(to top right,
+      color-mix(in oklab, var(--sc-canvas) 96%, transparent) 0%,
+      color-mix(in oklab, var(--sc-canvas) 88%, transparent) 32%,
+      color-mix(in oklab, var(--sc-canvas) 74%, transparent) 50%,
+      color-mix(in oklab, var(--sc-canvas) 40%, transparent) 64%,
+      color-mix(in oklab, var(--sc-canvas) 12%, transparent) 78%,
+      transparent 92%);
+  }
+
+  .sc-folio {
+    position: fixed;
+    right: var(--sc-gutter);
+    bottom: clamp(1rem, 3vh, 2rem);
+    z-index: 200;
+    display: grid;
+    gap: var(--sc-4);
+    justify-items: end;
+    text-align: right;
+    pointer-events: none;
+    transition: opacity var(--sc-d-slow) var(--sc-ease-out), translate var(--sc-d-slow) var(--sc-ease-out);
+  }
+  .sc-folio--off {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+  #sc-folio-num {
+    color: var(--sc-accent);
+    font-family: var(--sc-font-display);
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+  }
+  #sc-folio-title {
+    font-family: var(--sc-font-display);
+    font-size: 1.125rem;
+    line-height: 1.2;
+  }
+  .sc-folio__cta { pointer-events: auto; font-size: 0.875rem; }
+
+  @media (max-width: 860px) {
+    .flag--navy    { left: 4vw;  --pole-h: 14vh; --cloth-h: 8vh; --cloth-w: 34vw; }
+    .flag--crimson { left: 30vw; --pole-h: 19vh; --cloth-h: 10vh; --cloth-w: 30vw; }
+    .flag--cyan    { left: 58vw; --pole-h: 26vh; --cloth-h: 12vh; --cloth-w: 26vw; }
+    .close__inner { max-width: 72vw; }
+    .sc-folio_title { max-width: 60vw; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flag__cloth { transform: translateY(var(--fall)); }
+  }
+</style>
+</head>
+<body>
+<div class="sc-grain" aria-hidden="true"></div>
+
+<main id="top">
+
+<section class="hero" data-sc-act="flow" data-sc-drift="#08090b" data-folio="Recognition">
+  <img class="hero__poster" src="out/01-company.png" alt="">
+  <div class="sc-scrim sc-scrim--lead" aria-hidden="true"></div>
+  <div class="sc-copy sc-copy--lead hero__copy" data-sc-cue="0 0.78 0">
+    <p class="sc-label">ASPIRE. ACT. ACHIEVE.</p>
+    <h1 class="sc-display sc-display--xl hero__title"><span class="hero__title--strong">LightSpeed</span> <span class="hero__title--light">Holdings</span></h1>
+    <p class="sc-lede">We build your AI company in-house: a fleet of specialist agents, run like capital, owned by one holding company.</p>
+    <a class="cta" href="mailto:hello@lightspeedholdings.com">Start a project</a>
+  </div>
+</section>
+
+<section data-sc-act="pin" data-sc-span="2.4" data-sc-drift="#101217" data-folio="The cost">
+  <div data-sc-stage>
+    <img class="sc-stage__poster sc-stage__poster--pan" src="out/01-company.png" alt="" data-sc-parallax="0.8">
+    <div class="sc-scrim sc-scrim--left" aria-hidden="true"></div>
+    <div class="sc-copy sc-copy--margin" data-sc-cue="0 1 0.2 0.45">
+      <p class="sc-body">Building your AI company in-house means recruiting a team, financing their tools, and waiting out the months it takes to work. The cost is real: time, capital, and attention you already owe the business.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sc-section" data-sc-act="flow" data-sc-drift="#0b0c0f" data-folio="The change">
+  <div class="sc-wrap split">
+    <div class="sc-stack" data-sc-in data-sc-stagger="70">
+      <h2 class="sc-display sc-display--lg">One registry, 152 agents.</h2>
+      <p class="sc-body">The registry is the workforce. Each agent holds an exact role, its own tools and permissions, and a running cost we can see per task. Scale means adding a line, not hiring a person.</p>
+      <div class="count">
+        <p class="count__num" data-sc-count="0 152" data-sc-count-at="0.08 0.35">0</p>
+        <p class="count__label">Specialist AI agents in the registry</p>
+      </div>
+    </div>
+    <figure data-sc-reveal="left" data-sc-reveal-at="0.1 0.5">
+      <img src="out/02-agent.png" alt="">
+    </figure>
+  </div>
+</section>
+
+<section data-sc-act="scrub" data-sc-span="3.1" data-sc-dwell="0.3" data-sc-drift="#0e0f13" data-folio="The flags">
+  <div data-sc-stage>
+    <img class="sc-stage__poster" src="out/03-flags.png" alt="">
+    <video data-sc-scrub data-sc-src="out/04.mp4" data-sc-src-mobile="out/04-m.mp4" muted playsinline preload="none" poster="out/03-flags.png"></video>
+    <div class="flags flags--deep" aria-hidden="true">
+      <div class="flag flag--navy"><span class="flag__pole"></span><span class="flag__cloth"></span></div>
+      <div class="flag flag--crimson"><span class="flag__pole"></span><span class="flag__cloth"></span></div>
+      <div class="flag flag--cyan"><span class="flag__pole"></span><span class="flag__cloth"></span></div>
+    </div>
+    <div class="sc-scrim sc-scrim--lead" aria-hidden="true"></div>
+    <div class="sc-copy sc-copy--lead sc-copy--above-flags" data-sc-cue="0.18 0.62 0.3 0.35">
+      <h2 class="sc-display sc-display--lg">We run it like a fleet.</h2>
+      <p class="sc-body">One registry, 152 specialist agents. Each with an exact role, a budget, and the tools to do their job, owned by a single holding company and deployed like capital.</p>
+    </div>
+  </div>
+</section>
+
+<section class="belief" data-sc-act="flow" data-sc-drift="#0a0b0d" data-folio="The founder">
+  <img class="belief__img" src="out/04-desk.png" alt="" data-sc-reveal="up" data-sc-reveal-at="0.15 0.5">
+  <div class="sc-scrim sc-scrim--lead" aria-hidden="true"></div>
+  <div class="sc-copy sc-copy--lead" data-sc-cue="0.15 0.6">
+    <h2 class="sc-display sc-display--lg">The founder stays.</h2>
+    <p class="sc-body">A business still needs one voice that sets direction. The difference is what it takes to stand it up: no hires, no office, no runway spent on payroll. Just the build.</p>
+  </div>
+</section>
+
+<section id="join" data-sc-act="pin" data-sc-span="1.15" data-sc-drift="#08090b" data-folio="Join">
+  <div data-sc-stage class="close">
+    <img class="sc-stage__poster" src="out/03-flags.png" alt="">
+    <div class="flags flags--join" aria-hidden="true">
+      <div class="flag flag--navy"><span class="flag__pole"></span><span class="flag__cloth"></span></div>
+      <div class="flag flag--crimson"><span class="flag__pole"></span><span class="flag__cloth"></span></div>
+      <div class="flag flag--cyan"><span class="flag__pole"></span><span class="flag__cloth"></span></div>
+    </div>
+    <div class="sc-scrim sc-scrim--band" aria-hidden="true"></div>
+    <div class="close__inner">
+      <h2 class="sc-display sc-display--lg" data-sc-cue="0.06 0.55 0.35 0.3">Run it at light speed.</h2>
+      <a class="cta" href="mailto:hello@lightspeedholdings.com" data-sc-cue="0.06" data-sc-rise="0">Start a project</a>
+    </div>
+    <footer class="foot" data-sc-cue="0.14 0.5">
+      <img src="out/logo.png" width="40" height="40" role="img" alt="LightSpeed Holdings logo">
+      <p class="foot__name">LightSpeed Holdings Limited</p>
+      <p class="foot__tagline">Company building with AI agents.</p>
+      <p class="foot__contact"><a href="mailto:hello@lightspeedholdings.com">hello@lightspeedholdings.com</a></p>
+      <p class="foot__copy">© 2026 LightSpeed Holdings Limited</p>
+    </footer>
+  </div>
+</section>
+
+</main>
+
+<aside id="sc-folio" class="sc-folio">
+  <span id="sc-folio-num">I</span>
+  <span id="sc-folio-title">Recognition</span>
+  <a class="cta sc-folio__cta" href="mailto:hello@lightspeedholdings.com">Start a project</a>
+</aside>
+
+<script src="scrollcraft.js"></script>
+<script>
+ScrollCraft.mount(document.body);
+(function () {
+  var sections = [].slice.call(document.querySelectorAll('[data-folio]'));
+  var titles = sections.map(function (s) { return s.getAttribute('data-folio'); });
+  var numerals = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+  var numEl = document.getElementById('sc-folio-num');
+  var titleEl = document.getElementById('sc-folio-title');
+  var folio = document.getElementById('sc-folio');
+  var io1 = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var i = sections.indexOf(entry.target);
+        if (i > -1) {
+          numEl.textContent = numerals[i] || '';
+          titleEl.textContent = titles[i];
+        }
+      }
+    });
+  }, { rootMargin: '-35% 0px -35% 0px' });
+  sections.forEach(function (s) { io1.observe(s); });
+  var io2 = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      folio.classList.toggle('sc-folio--off', entry.isIntersecting);
+    });
+  }, { rootMargin: '-15% 0px -15% 0px' });
+  io2.observe(document.getElementById('join'));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+{
+  "ecosystemsTeam": {
+    "name": "LightSpeed Holdings Ecosystems Team",
+    "description": "Cross-functional team orchestrating all third-party integrations for LightSpeed Holdings Limited: strategic partnerships, client-facing system connectors (Offer B/C), and vendor/contract management.",
+    "version": "1.0.0"
+  },
+  "agents": {
+    "orchestrator": {
+      "id": "head-of-business-development",
+      "name": "Head of Business Development",
+      "role": "Orchestrator of Ecosystems Team",
+      "department": "Business Development",
+      "reportsTo": "chief-of-staff",
+      "responsibilities": [
+        "Own outbound partnerships, ecosystem alliances, and integration deals.",
+        "Own channel strategy for all third-party integrations.",
+        "Qualify integration requests and route to production agents.",
+        "Escalate build-vs-buy decisions to corporate-development-lead."
+      ],
+      "skills": ["negotiation", "partnership-strategy", "deal-framing"],
+      "subagents": [
+        "integration-engineer",
+        "api-architect",
+        "solution-architect",
+        "vendor-manager"
+      ]
+    },
+    "production": {
+      "integration-engineer": {
+        "id": "integration-engineer",
+        "name": "Integration Engineer",
+        "role": "Client System Integration",
+        "department": "Technology",
+        "reportsTo": "lead-backend",
+        "responsibilities": [
+          "Build client-facing connectors: WhatsApp Business API, CRM, payments.",
+          "Build NGO data connectors: Kobo, DHIS2, Google Sheets.",
+          "Enforce idempotent data sync with fallback on every integration.",
+          "Escalate integration failures to HITL before client impact."
+        ],
+        "skills": ["api-integration", "idempotent-sync", "fallback-design", "hitl-escalation"],
+        "tools": ["read", "write", "execute", "grep", "list"]
+      },
+      "api-architect": {
+        "id": "api-architect",
+        "name": "API Architect",
+        "role": "API Standards & Gateway",
+        "department": "Technology",
+        "reportsTo": "cto",
+        "responsibilities": [
+          "Define API design standards, versioning, and rate limiting.",
+          "Configure API gateway for third-party boundaries.",
+          "Own integration contracts and OpenAPI docs."
+        ],
+        "skills": ["openapi", "rest-design", "gateway", "versioning"],
+        "tools": ["read", "write", "execute", "grep", "list"]
+      },
+      "solution-architect": {
+        "id": "solution-architect",
+        "name": "Solution Architect",
+        "role": "Cross-System Architecture",
+        "department": "Technology",
+        "reportsTo": "cto",
+        "responsibilities": [
+          "Design end-to-end solutions spanning internal + third-party systems.",
+          "Own integration patterns and proposal architecture.",
+          "Validate feasibility of vendor/channel integrations."
+        ],
+        "skills": ["system-design", "integration-patterns", "proposal-architecture"],
+        "tools": ["read", "write", "execute", "grep", "list"]
+      },
+      "vendor-manager": {
+        "id": "vendor-manager",
+        "name": "Vendor Manager",
+        "role": "External Provider & Contract Management",
+        "department": "Operations",
+        "reportsTo": "coo",
+        "responsibilities": [
+          "Manage external AI/ML provider + cloud infrastructure contracts.",
+          "Ensure SLA compliance across all vendors.",
+          "Own vendor cost oversight with cfo."
+        ],
+        "skills": ["vendor-evaluation", "sla-negotiation", "cost-oversight"],
+        "tools": ["read", "write", "grep", "list"]
+      }
+    },
+    "support": {
+      "security-compliance-lead": {
+        "id": "security-compliance-lead",
+        "name": "Security & Compliance Lead",
+        "role": "Approval Tier & Auth Enforcement",
+        "department": "Security",
+        "reportsTo": "ciso",
+        "responsibilities": [
+          "Enforce 5-tier approval rules on all privileged integration actions.",
+          "Lock down dashboard CORS to explicit allowlist.",
+          "Maintain continuous security checklist for the integration cluster."
+        ],
+        "skills": ["deny-by-default", "tier-gating", "cors-allowlists"],
+        "tools": ["read", "write", "grep", "list"]
+      },
+      "data-privacy-officer": {
+        "id": "data-privacy-officer",
+        "name": "Data Privacy Officer",
+        "role": "GDPR/CCPA & Data Protection",
+        "department": "Legal",
+        "reportsTo": "clo",
+        "responsibilities": [
+          "Own GDPR/CCPA compliance for all third-party data flows.",
+          "Enforce data classification, retention policies, right-to-deletion.",
+          "Manage DPA agreements with LLM providers and vendors."
+        ],
+        "skills": ["privacy-by-design", "data-minimization", "dpa-management", "retention"],
+        "tools": ["read", "write", "grep", "list"]
+      },
+      "business-continuity-manager": {
+        "id": "business-continuity-manager",
+        "name": "Business Continuity Manager",
+        "role": "BC/DR & Failover",
+        "department": "Operations",
+        "reportsTo": "coo",
+        "responsibilities": [
+          "Develop BC/DR plans for all critical third-party integrations.",
+          "Conduct resilience testing and DR drills.",
+          "Maintain failover procedures; RTOs are commitments."
+        ],
+        "skills": ["rto-commitments", "dr-drills", "failover-design"],
+        "tools": ["read", "write", "execute", "grep", "list"]
+      }
+    }
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Pharos Content Intelligence Architecture",
+    "quality_profile": "showcase",
+    "subtitle": "Governed content-intelligence loop (research → draft → publish → measure) for institutional SADC audience",
+    "repository": {
+      "url": "https://github.com/jmlusu/light-speed-holdings.git",
+      "revision": "4c1175cfec8ccbb88559e64e6ea3bee019bb7ccc"
+    }
+  },
+  "components": [
+    {
+      "id": "routines_yaml",
+      "type": "database",
+      "label": "routines.yaml",
+      "sublabel": "5 routines (Mon–Sat)",
+      "pos": [40, 60],
+      "size": [200, 80],
+      "sources": [{ "path": "config/company/routines.yaml", "line": 1, "label": "config" }]
+    },
+    {
+      "id": "prompt_templates",
+      "type": "database",
+      "label": "Prompt Templates",
+      "sublabel": "templates/pharos/routines/",
+      "pos": [40, 340],
+      "size": [200, 80],
+      "sources": [{ "path": "templates/pharos/routines/monday-agentic-enterprise-brief.md", "label": "template" }]
+    },
+    {
+      "id": "routine_store",
+      "type": "backend",
+      "label": "RoutineStore",
+      "sublabel": "FileStore-backed YAML",
+      "pos": [380, 60],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/orchestrator/routine.py", "line": 185, "label": "RoutineStore" }]
+    },
+    {
+      "id": "routine_scheduler",
+      "type": "backend",
+      "label": "RoutineScheduler",
+      "sublabel": "run_due(900s); mark-before-send",
+      "pos": [720, 60],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/orchestrator/routine.py", "line": 344, "label": "RoutineScheduler" }],
+      "tag": "P0"
+    },
+    {
+      "id": "inbox_json",
+      "type": "messagebus",
+      "label": ".opencode/inbox.json",
+      "sublabel": "Fresh Task per fire",
+      "pos": [1060, 60],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/orchestrator/message_bus.py", "label": "MessageBus" }]
+    },
+    {
+      "id": "agent_loop",
+      "type": "backend",
+      "label": "AgentLoop",
+      "sublabel": "daemon-driven executor",
+      "pos": [380, 340],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/executor/daemon.py", "label": "AgentLoop" }]
+    },
+    {
+      "id": "content_writer",
+      "type": "backend",
+      "label": "content_writer",
+      "sublabel": "Thought-leadership author",
+      "pos": [720, 340],
+      "size": [200, 80],
+      "sources": [{ "path": "docs/agents/pharos-agent-mapping.md", "line": 37, "label": "pharos-thought-leadership-author" }]
+    },
+    {
+      "id": "publish_queue",
+      "type": "database",
+      "label": "PublishQueue",
+      "sublabel": "results/pharos/publish_queue.json",
+      "pos": [1060, 340],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/publishing/queue.py", "label": "PublishQueue" }]
+    },
+    {
+      "id": "substack_publisher",
+      "type": "external",
+      "label": "SubstackPublisher",
+      "sublabel": "Env-gated live HTTP",
+      "pos": [720, 580],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/publishing/publishers.py", "label": "SubstackPublisher" }]
+    },
+    {
+      "id": "linkedin_publisher",
+      "type": "external",
+      "label": "LinkedInPublisher",
+      "sublabel": "Env-gated live HTTP",
+      "pos": [1060, 580],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/publishing/publishers.py", "label": "LinkedInPublisher" }]
+    },
+    {
+      "id": "results_dir",
+      "type": "database",
+      "label": "results/",
+      "sublabel": "Reports + state",
+      "pos": [40, 580],
+      "size": [200, 80]
+    },
+    {
+      "id": "episodic_memory",
+      "type": "database",
+      "label": "Episodic Memory",
+      "sublabel": "routine_run_id provenance",
+      "pos": [380, 580],
+      "size": [200, 80]
+    },
+    {
+      "id": "knowledge_graph",
+      "type": "database",
+      "label": "Knowledge Graph",
+      "sublabel": "4 graph types",
+      "pos": [1060, 820],
+      "size": [200, 80]
+    },
+    {
+      "id": "kg_query",
+      "type": "backend",
+      "label": "knowledge_graph_query",
+      "sublabel": "GraphEngine (4 graphs)",
+      "pos": [720, 820],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/mcp/server.py", "label": "MCP tool" }]
+    },
+    {
+      "id": "mcp_server",
+      "type": "security",
+      "label": "MCP Server",
+      "sublabel": "stdio JSON-RPC; RBAC-gated",
+      "pos": [380, 820],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/mcp/server.py", "label": "mcp/server.py" }],
+      "tag": "P2"
+    },
+    {
+      "id": "rbac",
+      "type": "security",
+      "label": "RBAC",
+      "sublabel": "RUN / APPROVE / ADMIN keys",
+      "pos": [40, 820],
+      "size": [200, 80],
+      "sources": [{ "path": "src/ai_company/security/rbac.py", "label": "rbac.py" }]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "P0 · Scheduler & Message Bus",
+      "wraps": ["routines_yaml", "prompt_templates", "routine_store", "routine_scheduler", "inbox_json"],
+      "pad": 20
+    },
+    {
+      "kind": "region",
+      "label": "P1 · Execution & Publishing",
+      "wraps": ["agent_loop", "content_writer", "publish_queue", "substack_publisher", "linkedin_publisher"],
+      "pad": 20
+    },
+    {
+      "kind": "region",
+      "label": "Storage & Memory",
+      "wraps": ["results_dir", "episodic_memory"],
+      "pad": 20
+    },
+    {
+      "kind": "region",
+      "label": "P2 · MCP Surface & Knowledge",
+      "wraps": ["rbac", "mcp_server", "kg_query", "knowledge_graph"],
+      "pad": 20
+    }
+  ],
+  "connections": [
+    { "id": "c1", "from": "routines_yaml", "to": "routine_store", "label": "loads definitions" },
+    { "id": "c2", "from": "prompt_templates", "to": "routine_store", "label": "read_prompt()" },
+    { "id": "c3", "from": "routine_store", "to": "routine_scheduler", "label": "provides due routines" },
+    { "id": "c4", "from": "routine_scheduler", "to": "inbox_json", "label": "send_task() fresh Task", "variant": "emphasis" },
+    { "id": "c5", "from": "inbox_json", "to": "agent_loop", "label": "consumes", "fromSide": "bottom", "toSide": "top", "via": [[1160, 240], [480, 240]] },
+    { "id": "c6", "from": "agent_loop", "to": "content_writer", "label": "spawns Pharos author" },
+    { "id": "c7", "from": "content_writer", "to": "publish_queue", "label": "enqueues draft" },
+    { "id": "c8", "from": "publish_queue", "to": "linkedin_publisher", "label": "format_linkedin → send", "labelAt": [1160, 444] },
+    { "id": "c9", "from": "publish_queue", "to": "substack_publisher", "label": "format_substack → send" },
+    { "id": "c10", "from": "agent_loop", "to": "results_dir", "label": "writes reports" },
+    { "id": "c11", "from": "agent_loop", "to": "episodic_memory", "label": "stores run provenance", "labelAt": [480, 444] },
+    { "id": "c12", "from": "mcp_server", "to": "kg_query", "label": "exposes" },
+    { "id": "c13", "from": "kg_query", "to": "knowledge_graph", "label": "queries" },
+    { "id": "c14", "from": "rbac", "to": "mcp_server", "label": "authenticates", "variant": "security" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "P0 Foundation — Routine Engine",
+      "items": [
+        "5 routines at 04:00 UTC (Mon–Sat) in routines.yaml",
+        "Daemon-driven RoutineScheduler with 900s interval",
+        "Crash-safe mark-before-send prevents double-fire",
+        "Deterministic routine_run_id enables idempotent re-drives"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "P1 Core Loop — Deep Research + Publish",
+      "items": [
+        "2 deep-research routines (Thu SADC scan, Sat deep brief)",
+        "CEO voice profile via semantic + relational memory",
+        "Buy-side publish rails: LinkedIn + Substack (no platform API churn)",
+        "PublishQueue mirrors to inbox for executor visibility"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "P2 Scale — MCP Surface",
+      "items": [
+        "5 MCP tools: kg_query, memory_recall, research_lookup, pharos_reference, publish_queue",
+        "RBAC: RUN role (read), APPROVE role (write), ADMIN (all)",
+        "Every call audit-logged, PII-guarded, content-filtered",
+        "Mirrors Eden design but sources from LightSpeed stores"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Governance & Risk",
+      "items": [
+        "Never cite Eden corpus as SADC evidence — regional verification pass required",
+        "Per-routine budget_tokens + standard model tier control costs",
+        "Idempotent routine_run_id + DLQ reuse for scheduler reliability",
+        "Eden MCP is optional probe behind feature flag, webfetch fallback"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Reuses Existing Infra",
+      "items": [
+        "Daemon scheduler (same cadence as kpi_snapshot)",
+        "MessageBus (.opencode/inbox.json) for task queue",
+        "MemoryStore (6 types) + GraphEngine (4 graphs)",
+        "RBAC + audit trail from ADR-012/019 patterns",
+        "No new schema, no new top-level CLI, no new vendor"
+      ]
+    }
+  ]
+}

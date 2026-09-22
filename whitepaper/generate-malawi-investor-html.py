@@ -1,0 +1,396 @@
+"""Generate Malawi Investor Deck as HTML."""
+import os
+
+HTML = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LightSpeed Holdings Limited — The Malawi Opportunity</title>
+<style>
+  @page { size: 10in 7.5in landscape; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #F2F2F2; color: #070A40; }
+  .slide { width: 10in; height: 7.5in; background: #fff; position: relative; page-break-after: always; overflow: hidden; display: flex; flex-direction: column; margin: 0 auto 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .slide:last-child { page-break-after: avoid; }
+  .navy-bg { background: #070A40; }
+  .slide-nav { position: absolute; left: 0; top: 0; width: 6px; height: 100%; background: #070A40; }
+  .slide-content { padding: 48px 60px; flex: 1; display: flex; flex-direction: column; }
+  h1 { font-size: 32px; color: #070A40; margin-bottom: 24px; font-weight: 700; }
+  h2 { font-size: 24px; color: #070A40; margin-bottom: 16px; font-weight: 700; }
+  h3 { font-size: 16px; color: #E63946; margin-bottom: 8px; font-weight: 700; }
+  p, li { font-size: 14px; line-height: 1.6; color: #070A40; }
+  ul { list-style: none; padding: 0; }
+  ul li { padding: 4px 0 4px 16px; position: relative; }
+  ul li::before { content: "\2022"; color: #E63946; font-weight: 700; position: absolute; left: 0; }
+  .accent-line { width: 120px; height: 3px; background: #E63946; margin: 0 auto 16px; }
+  .center { text-align: center; }
+  .kpi-row { display: flex; gap: 16px; margin: 16px 0; }
+  .kpi-card { flex: 1; background: #F2F2F2; border-radius: 8px; padding: 20px; text-align: center; }
+  .kpi-value { font-size: 28px; font-weight: 700; color: #070A40; }
+  .kpi-label { font-size: 12px; color: #6B7280; margin-top: 4px; }
+  .offer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  .offer-card { background: #F2F2F2; border-radius: 8px; padding: 20px; }
+  .offer-card h3 { margin-bottom: 4px; }
+  .offer-price { font-size: 13px; color: #070A40; font-weight: 600; margin-bottom: 8px; }
+  .offer-desc { font-size: 12px; color: #6B7280; }
+  .cyan { color: #00BFFF; }
+  .white { color: #ffffff; }
+  .tagline { font-size: 18px; color: #00BFFF; margin-bottom: 12px; }
+  .confidential { font-size: 11px; color: #9CA3AF; margin-top: 12px; }
+  .two-col { display: flex; gap: 32px; }
+  .two-col > div { flex: 1; }
+  .callout { background: #F2F2F2; border-radius: 8px; padding: 16px 20px; margin-top: 16px; text-align: center; font-style: italic; color: #070A40; font-weight: 600; }
+  @media print { body { background: #fff; } .slide { box-shadow: none; margin: 0; } }
+</style>
+</head>
+<body>
+
+<div class="slide navy-bg" style="justify-content: center; align-items: center; text-align: center;">
+  <h1 style="color: #fff; font-size: 36px; margin-bottom: 8px;">LIGHTSPEED HOLDINGS LIMITED&trade;</h1>
+  <p class="tagline center" style="font-size: 20px;">Aspire. Act. Achieve.</p>
+  <div class="accent-line"></div>
+  <h2 style="color: #fff; font-weight: 400; font-size: 22px; margin-bottom: 0;">AI-Native Company Building</h2>
+  <h2 style="color: #00BFFF; font-weight: 400; font-size: 22px; margin-top: 4px;">The Malawi Opportunity</h2>
+  <p class="confidential" style="position: absolute; bottom: 40px; width: 100%;">Investor Presentation &mdash; September 2026 &nbsp;|&nbsp; Confidential</p>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>AGENDA</h1>
+    <div class="two-col" style="margin-top: 12px;">
+      <ul>
+        <li style="font-size: 15px; padding: 6px 0;">1. Why Malawi, Why Now</li>
+        <li style="font-size: 15px; padding: 6px 0;">2. The Problem We Solve</li>
+        <li style="font-size: 15px; padding: 6px 0;">3. Our Solution: AI-Native Companies</li>
+        <li style="font-size: 15px; padding: 6px 0;">4. Market Opportunity: SADC Region</li>
+        <li style="font-size: 15px; padding: 6px 0;">5. Service Offerings &amp; Pricing</li>
+        <li style="font-size: 15px; padding: 6px 0;">6. Technology &amp; Platform</li>
+      </ul>
+      <ul>
+        <li style="font-size: 15px; padding: 6px 0;">7. Traction &amp; Milestones</li>
+        <li style="font-size: 15px; padding: 6px 0;">8. Business Model</li>
+        <li style="font-size: 15px; padding: 6px 0;">9. Team &amp; Governance</li>
+        <li style="font-size: 15px; padding: 6px 0;">10. Financials &amp; Use of Funds</li>
+        <li style="font-size: 15px; padding: 6px 0;">11. The Ask</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>WHY MALAWI, WHY NOW</h1>
+    <ul>
+      <li>20M+ population, growing mobile penetration (50%+)</li>
+      <li>Dual-currency market: MWK for local, USD for NGOs/international</li>
+      <li>Limited IT talent pool &mdash; AI fills the gap</li>
+      <li>Strong NGO/development sector (UN, donors, cooperatives)</li>
+      <li>SADC gateway &mdash; 16-member regional bloc, 300M+ people</li>
+      <li>Government pushing digital transformation agenda</li>
+      <li>Low competition: no AI-native service providers in-market</li>
+    </ul>
+    <div class="callout">
+      &ldquo;Malawi is not a market to skip &mdash; it is a market to prove the model.<br>
+      If AI-native company building works here, it works anywhere.&rdquo;
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>THE PROBLEM</h1>
+    <ul>
+      <li>SMEs can&rsquo;t afford full-time developers or agencies</li>
+      <li>NGOs spend weeks on donor reports that could take days</li>
+      <li>Schools, clinics, hotels have no digital presence</li>
+      <li>Hiring is slow, expensive, and talent is scarce</li>
+      <li>Traditional agencies charge $5K+ for basic websites</li>
+      <li>24/7 customer service is impossible with manual staffing</li>
+    </ul>
+    <div class="callout">
+      &ldquo;The gap: Enterprise-grade digital services at SME prices.<br>
+      LightSpeed fills it with 150+ AI agents, not 150+ employees.&rdquo;
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>OUR SOLUTION</h1>
+    <p style="font-size: 15px; margin-bottom: 16px;">AI-Native Company Building: One human CEO + 150 AI agents = enterprise output at SME cost.</p>
+    <ul>
+      <li>150+ agents across 20 departments &mdash; engineering, design, marketing, sales, legal</li>
+      <li>5-tier approval system &mdash; human-in-the-loop for every high-stakes decision</li>
+      <li>Multi-provider LLM routing &mdash; OpenAI, Anthropic, Gemini with automatic fallback</li>
+      <li>Offline-first architecture &mdash; works on low bandwidth, local Ollama models</li>
+      <li>WhatsApp-native flows &mdash; meet customers where they already are</li>
+      <li>Full audit trail &mdash; every action logged, queryable, compliant</li>
+    </ul>
+    <div class="kpi-row" style="margin-top: auto;">
+      <div class="kpi-card"><div class="kpi-value">150+</div><div class="kpi-label">AI Agents</div></div>
+      <div class="kpi-card"><div class="kpi-value">20</div><div class="kpi-label">Departments</div></div>
+      <div class="kpi-card"><div class="kpi-value">24/7</div><div class="kpi-label">Operations</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>MARKET OPPORTUNITY</h1>
+    <p style="font-size: 14px; margin-bottom: 12px;">SADC Region: 300M+ people, 16 countries, rapidly digitizing.</p>
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-value">$65B</div><div class="kpi-label">TAM &mdash; Global AI Agent Platforms</div></div>
+      <div class="kpi-card"><div class="kpi-value">$2.5B</div><div class="kpi-label">SAM &mdash; Africa &amp; SADC Digital Services</div></div>
+      <div class="kpi-card"><div class="kpi-value">$50M</div><div class="kpi-label">SOM &mdash; Malawi + SADC (Year 3)</div></div>
+    </div>
+    <h3 style="margin-top: 16px;">Target Segments</h3>
+    <ul>
+      <li>Local SMEs &mdash; websites, e-commerce, automation (MWK pricing)</li>
+      <li>NGOs &amp; Donors &mdash; data, analytics, reporting (USD pricing)</li>
+      <li>Schools &amp; Clinics &mdash; digital tools, patient/student systems</li>
+      <li>Hotels &amp; Tourism &mdash; booking systems, Google presence</li>
+      <li>Cooperatives &amp; Agri &mdash; market access, supply chain dashboards</li>
+      <li>Diaspora Entrepreneurs &mdash; AI Company Builder license</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>SERVICE OFFERINGS &amp; PRICING</h1>
+    <div class="offer-grid">
+      <div class="offer-card">
+        <h3>Offer A: Digital Presence</h3>
+        <p class="offer-price">From MWK 150,000 (~$85)</p>
+        <p class="offer-desc">Websites, e-commerce, brand identity, Google Business, social media kit</p>
+      </div>
+      <div class="offer-card">
+        <h3>Offer B: Business Process Automation</h3>
+        <p class="offer-price">From MWK 900,000 (~$500)</p>
+        <p class="offer-desc">WhatsApp chatbots, document generators, survey automation, custom dashboards</p>
+      </div>
+      <div class="offer-card">
+        <h3>Offer C: Data &amp; Donor Reporting</h3>
+        <p class="offer-price">From MWK 700,000 (~$400)</p>
+        <p class="offer-desc">Data cleaning, donor reports, interactive KPI dashboards, survey design</p>
+      </div>
+      <div class="offer-card">
+        <h3>Offer D: Digital Marketing</h3>
+        <p class="offer-price">From MWK 350,000/mo (~$200/mo)</p>
+        <p class="offer-desc">Social media management, content packs, Google/Facebook ad campaigns</p>
+      </div>
+    </div>
+    <p class="center" style="margin-top: 16px; font-weight: 600;">Dual-currency: MWK for local SMEs &nbsp;|&nbsp; USD for NGOs &amp; international clients</p>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>TECHNOLOGY &amp; PLATFORM</h1>
+    <div class="two-col">
+      <div>
+        <h3>Platform Stack</h3>
+        <ul>
+          <li>Python 3.12+ CLI (Typer) &mdash; no web server required</li>
+          <li>FastAPI REST + WebSocket dashboard (port 8420)</li>
+          <li>Registry YAML &rarr; Jinja2 &rarr; OpenCode agent files</li>
+          <li>1800+ automated tests, ruff + mypy + bandit clean</li>
+        </ul>
+      </div>
+      <div>
+        <h3>AI Capabilities</h3>
+        <ul>
+          <li>6-type memory engine (episodic, semantic, procedural, relational, temporal, aggregate)</li>
+          <li>Knowledge graphs with BFS pathfinding</li>
+          <li>Model routing: 3 cost tiers with automatic fallback</li>
+          <li>Circuit breakers, dead-letter queues, SLA monitoring</li>
+        </ul>
+      </div>
+    </div>
+    <h3 style="margin-top: 16px;">Low-Bandwidth Design</h3>
+    <ul>
+      <li>Offline-first: local Ollama models when connectivity drops</li>
+      <li>WhatsApp-native: no app download required</li>
+      <li>PWA that queues work offline</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>TRACTION &amp; MILESTONES</h1>
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-value">150+</div><div class="kpi-label">Agents Deployed</div></div>
+      <div class="kpi-card"><div class="kpi-value">5</div><div class="kpi-label">Service Offers</div></div>
+      <div class="kpi-card"><div class="kpi-value">20+</div><div class="kpi-label">Departments</div></div>
+    </div>
+    <ul style="margin-top: 12px;">
+      <li>Jul 2026 &mdash; Platform bootstrapped; Phase 1-2 core architecture shipped</li>
+      <li>Aug 2026 &mdash; 5 flagship offers priced &amp; governance gates ratified</li>
+      <li>Aug 2026 &mdash; Corporate Blueprint adopted; $500K capital guidance signed</li>
+      <li>Sep 2026 &mdash; Whitepaper published; Open Design integration live</li>
+      <li>Oct 2026 &mdash; Target: 3 pilot clients in Malawi</li>
+    </ul>
+    <h3 style="margin-top: 16px;">Reference Implementation</h3>
+    <ul>
+      <li>We Lead Out (WLO) &mdash; AI-native Salesforce consultancy, 5.0 AppExchange rating</li>
+      <li>20+ projects shipped, 4-week median time to first value</li>
+      <li>Proof that AI-native model wins on speed, cost, and quality</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>BUSINESS MODEL</h1>
+    <div class="two-col">
+      <div>
+        <h3>Revenue Streams</h3>
+        <ul>
+          <li>Client Services &mdash; Project-based delivery (Offers A-D)</li>
+          <li>Managed Services &mdash; Monthly retainers (chatbots, dashboards, marketing)</li>
+          <li>Platform Licensing &mdash; AI Company Builder SaaS ($49&ndash;$299/mo)</li>
+          <li>Enterprise &mdash; Custom deployment, SLAs, dedicated support</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Pricing Strategy</h3>
+        <ul>
+          <li>Local SMEs: MWK pricing via Airtel Money / TNM Mpamba</li>
+          <li>NGOs/International: USD pricing (50% upfront, 50% on delivery)</li>
+          <li>Platform: USD-denominated SaaS for developers &amp; agencies</li>
+        </ul>
+        <h3 style="margin-top: 16px;">Unit Economics</h3>
+        <ul>
+          <li>Target gross margin: 70%+</li>
+          <li>LLM cost: ~15% of revenue at scale</li>
+          <li>CAC payback target: &lt; 6 months</li>
+          <li>Net retention target: 120%+</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>TEAM &amp; GOVERNANCE</h1>
+    <div class="two-col">
+      <div>
+        <h3>Leadership</h3>
+        <ul>
+          <li>Jack Mlusu &mdash; Founder &amp; CEO &mdash; builder-operator; runs a 150-agent AI organization</li>
+          <li>AI Executive Cabinet &mdash; CTO, CFO, CMO, CLO, CSO, COO, CAIO (7 executives)</li>
+        </ul>
+        <h3 style="margin-top: 16px;">Governance</h3>
+        <ul>
+          <li>Board of Directors &mdash; 7 standing committees</li>
+          <li>5-Tier Approval Matrix &mdash; human-in-the-loop for every high-stakes decision</li>
+          <li>Corporate Constitution &mdash; principles, decision order, escalation SLAs</li>
+          <li>Full audit trail &mdash; every agent action logged and queryable</li>
+        </ul>
+      </div>
+      <div>
+        <h3>AI-Augmented Team = 150+ Agents</h3>
+        <ul>
+          <li><strong>Engineering:</strong> backend, frontend, DevOps, QA, security</li>
+          <li><strong>Business:</strong> sales, marketing, customer success, finance</li>
+          <li><strong>Creative:</strong> design, content, presentation, brand</li>
+          <li><strong>Governance:</strong> compliance, legal, ethics, security</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="slide-nav"></div>
+  <div class="slide-content">
+    <h1>FINANCIALS &amp; USE OF FUNDS</h1>
+    <div class="two-col">
+      <div>
+        <h3>Revenue Projections</h3>
+        <ul>
+          <li>Year 1: $120K ARR (monthly target $10K/mo)</li>
+          <li>Year 2: $300K ARR (recurring contracts + SaaS)</li>
+          <li>Year 3: $600K ARR (SaaS + managed workforce + platform licenses)</li>
+        </ul>
+        <h3 style="margin-top: 16px;">Key Assumptions</h3>
+        <ul>
+          <li>10&ndash;15% MoM revenue growth in ramp phase</li>
+          <li>70%+ gross margin; LLM cost ~15% of revenue at scale</li>
+          <li>Dual-currency: MWK for local, USD for international</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Use of Funds ($500K Seed)</h3>
+        <ul>
+          <li>40&ndash;50% &mdash; Talent (sales leads, compliance, DevRel)</li>
+          <li>20&ndash;30% &mdash; Client Pilots (3x Offer A, 1x Offer B, 1x Offer C)</li>
+          <li>15&ndash;25% &mdash; Hardware Lab (on-prem GPU, offline-first proof)</li>
+          <li>10&ndash;15% &mdash; Compliance (Malawi DPA, GDPR, SOC 2 prep)</li>
+          <li>$50K &mdash; Emergency Reserve (CEO-only release)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide navy-bg" style="justify-content: flex-start; padding-top: 60px;">
+  <div class="slide-content" style="align-items: center; text-align: center;">
+    <h1 style="color: #fff;">THE ASK</h1>
+    <div class="accent-line"></div>
+    <p class="cyan" style="font-size: 24px; margin-bottom: 24px;">Raising $500K Seed</p>
+    <div class="two-col" style="width: 100%; max-width: 700px;">
+      <div style="text-align: left;">
+        <h3 class="white">What We Deliver</h3>
+        <ul style="color: #fff;">
+          <li style="color: #fff;">5 paying pilot clients across Offers A&ndash;C</li>
+          <li style="color: #fff;">$120K ARR run-rate</li>
+          <li style="color: #fff;">Phase 5 autonomous mode</li>
+          <li style="color: #fff;">Proof AI-native model works in Africa</li>
+        </ul>
+      </div>
+      <div style="text-align: left;">
+        <h3 class="white">What Investors Get</h3>
+        <ul style="color: #fff;">
+          <li style="color: #fff;">Equity in the first AI-native company builder for SADC</li>
+          <li style="color: #fff;">A proven platform (1800+ tests, production-grade)</li>
+          <li style="color: #fff;">First-mover advantage in a $2.5B Africa market</li>
+          <li style="color: #fff;">A model that scales across 16 SADC countries (300M+ people)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide navy-bg" style="justify-content: center; align-items: center; text-align: center;">
+  <h1 style="color: #fff; font-size: 36px; margin-bottom: 8px;">THANK YOU</h1>
+  <p class="tagline center" style="font-size: 20px;">Aspire. Act. Achieve.</p>
+  <div class="accent-line"></div>
+  <p style="color: #fff; font-size: 14px; margin-top: 16px; line-height: 1.8;">
+    Jack Mlusu, Founder &amp; CEO<br>
+    jmlusu@gmail.com<br>
+    +265 (0) 980 016 004<br>
+    lightspeedholdings.com
+  </p>
+</div>
+
+</body>
+</html>"""
+
+output_path = os.path.join(os.path.dirname(__file__), "lightspeed-malawi-investor-deck.html")
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(HTML)
+print(f"HTML deck saved to: {os.path.abspath(output_path)}")

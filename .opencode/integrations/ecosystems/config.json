@@ -1,0 +1,85 @@
+{
+  "$schema": "https://ecosystems.lightspeedholdings.com/schemas/config.json",
+  "version": "0.9.0",
+  "integration": {
+    "name": "LightSpeed Holdings Limited Ecosystems",
+    "description": "Third-party integration ecosystem for LightSpeed Holdings: Jev/TypeSafe, Open Design, ComfyUI, LLM providers, and client-facing connectors (WhatsApp, CRM, payments, NGO data).",
+    "enabled": true
+  },
+  "connection": {
+    "method": "registry",
+    "registryPath": "company-registry.yaml",
+    "agentOutputDir": ".opencode/agents",
+    "requiresSync": false,
+    "note": "Agents are referenced from the existing company registry; no new agent generation required."
+  },
+  "governance": {
+    "approvalTiers": "5-tier approval rules enforced by security-compliance-lead",
+    "denyByDefault": true,
+    "corsPolicy": "explicit allowlist, never wildcard",
+    "authChecklist": "dashboard API authentication enforced as continuous checklist",
+    "privacy": {
+      "gdprCcpa": true,
+      "dpaAgreements": "annually reviewed, enforced",
+      "dataMinimization": "default",
+      "retention": "enforced, not suggested",
+      "rightToDeletion": true
+    },
+    "continuity": {
+      "rto": "commitments, not aspirations",
+      "failoverPlans": "every critical system",
+      "drDrills": "quarterly"
+    }
+  },
+  "integrationLaws": [
+    "Every integration has a fallback.",
+    "Data sync is idempotent.",
+    "Integration failures escalate to HITL before client impact."
+  ],
+  "catalog": {
+    "jev": {
+      "type": "decision-engine",
+      "owner": "head-of-business-development",
+      "reference": "docs/adr/023-jev-system-one-integration.md",
+      "enabled": true
+    },
+    "open-design": {
+      "type": "creative-production",
+      "owner": "head-of-business-development",
+      "configPath": ".opencode/integrations/open-design/config.json",
+      "enabled": true
+    },
+    "comfyui": {
+      "type": "media-generation",
+      "owner": "media-generation-owner",
+      "enabled": true
+    },
+    "llm-providers": {
+      "type": "model-routing",
+      "owner": "llm-platform-owner",
+      "primary": "big-pickle",
+      "fallback": "gemini-3.5-flash",
+      "dpaManaged": true,
+      "enabled": true
+    },
+    "client-systems": {
+      "type": "offer-bc",
+      "owner": "integration-engineer",
+      "channels": {
+        "whatsapp": "WhatsApp Business API",
+        "crm": "CRM sync",
+        "payments": ["Airtel Money", "TNM Mpamba", "PayChangu"],
+        "ngo-data": ["Kobo", "DHIS2", "Google Sheets"]
+      },
+      "enabled": true
+    }
+  },
+  "models": {
+    "default": "claude-sonnet-4.5",
+    "available": ["claude-sonnet-4.5", "gpt-4o", "gemini-3.5-flash"]
+  },
+  "output": {
+    "baseDir": "output/integrations",
+    "formats": ["markdown", "json", "csv"]
+  }
+}

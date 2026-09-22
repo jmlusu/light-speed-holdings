@@ -14,6 +14,7 @@ from ai_company.executor.context import (
     parse_agent_spec,
 )
 from ai_company.executor.hitl_gate import HITLGate
+from ai_company.executor.loop import Executor
 from ai_company.executor.prompts import build_system_prompt_typed, build_user_prompt_typed
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.orchestrator.approval import ApprovalGate
@@ -892,6 +893,217 @@ class TestExecutorLoop:
         count = executor.tick()
         assert count == 0
         mock_run.assert_not_called()
+
+
+# ── Routine publish enqueue (ADR-020 P1 buy-side rail) ──────────────
+
+
+class TestRoutinePublishEnqueue:
+    """The success-path hook must auto-enqueue Pharos routine artifacts
+    into PublishQueue (default LinkedIn) without ever failing the task.
+
+    The executor helper builds a default ``PublishQueue()`` (results/pharos
+    relative to CWD), so every test monkeypatches the loop module's
+    ``PublishQueue`` symbol to a tmp path-backed queue to keep the test
+    hermetic (no writes into a real results/pharos directory).
+    """
+
+    def _patch_queue(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        from ai_company.executor import loop as loop_mod
+        from ai_company.publishing.queue import PublishQueue
+
+        monkeypatch.setattr(
+            loop_mod,
+            "PublishQueue",
+            lambda: PublishQueue(tmp_path / "results" / "pharos"),
+        )
+
+    def _make_executor(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Executor:
+        monkeypatch.chdir(tmp_path)
+        _setup_executor_files(tmp_path)
+        _create_agent_spec(tmp_path, "test-agent")
+
+        return Executor(
+            config_path=str(tmp_path / "company" / "models.yaml"),
+            registry_path=str(tmp_path / "company" / "agent-registry.json"),
+            agents_dir=str(tmp_path / ".opencode" / "agents"),
+            results_dir=str(tmp_path / "results"),
+        )
+
+    def test_routine_task_enqueues_linkedin_artifact(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from ai_company.models.models import Task
+
+        self._patch_queue(tmp_path, monkeypatch)
+        executor = self._make_executor(tmp_path, monkeypatch)
+
+        task = Task(
+            id="routine-scan-2026-09-22",
+            name="SADC Research Scan",
+            receiver_id="content_writer",
+            tags=["pharos-routine", "routine:scan", "routine_run:scan-2026-09-22"],
+        )
+        result = _FakeLoopResult(final_response="A polished post body.", done=True, error="")
+
+        executor._enqueue_routine_artifact(task, result)
+
+        from ai_company.publishing.queue import PublishQueue
+
+        records = PublishQueue(tmp_path / "results" / "pharos").list(status="queued")
+        assert len(records) == 1
+        record = records[0]
+        assert record.platform == "linkedin"
+        assert record.title == "SADC Research Scan"
+        assert record.body == "A polished post body."
+        assert record.notes == "routine_run:scan-2026-09-22"
+
+    def test_non_routine_task_is_not_enqueued(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from ai_company.models.models import Task
+
+        self._patch_queue(tmp_path, monkeypatch)
+        executor = self._make_executor(tmp_path, monkeypatch)
+
+        task = Task(
+            id="task-999",
+            receiver_id="content_writer",
+            tags=["research:deep"],
+        )
+
+        executor._enqueue_routine_artifact(task, _FakeLoopResult(done=True, error=""))
+
+        from ai_company.publishing.queue import PublishQueue
+
+        assert PublishQueue(tmp_path / "results" / "pharos").list() == []
+
+    def test_empty_final_response_is_skipped(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from ai_company.models.models import Task
+
+        self._patch_queue(tmp_path, monkeypatch)
+        executor = self._make_executor(tmp_path, monkeypatch)
+
+        task = Task(
+            id="routine-scan-2026-09-22",
+            receiver_id="content_writer",
+            tags=["pharos-routine", "routine_run:scan-2026-09-22"],
+        )
+
+        executor._enqueue_routine_artifact(
+            task, _FakeLoopResult(final_response="   ", done=True, error="")
+        )
+
+        from ai_company.publishing.queue import PublishQueue
+
+        assert PublishQueue(tmp_path / "results" / "pharos").list() == []
+
+    def test_duplicate_routine_run_is_not_double_enqueued(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from ai_company.models.models import Task
+
+        self._patch_queue(tmp_path, monkeypatch)
+        executor = self._make_executor(tmp_path, monkeypatch)
+
+        task = Task(
+            id="routine-scan-2026-09-22",
+            receiver_id="content_writer",
+            tags=["pharos-routine", "routine_run:scan-2026-09-22"],
+        )
+        result = _FakeLoopResult(final_response="Post body.", done=True, error="")
+
+        executor._enqueue_routine_artifact(task, result)
+        executor._enqueue_routine_artifact(task, result)
+
+        from ai_company.publishing.queue import PublishQueue
+
+        records = PublishQueue(tmp_path / "results" / "pharos").list()
+        assert len(records) == 1
+
+    def test_routine_task_enqueues_via_tick(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """End-to-end: a completed routine-tagged task goes straight to the
+        publish queue through the normal tick() success path."""
+        self._patch_queue(tmp_path, monkeypatch)
+        executor = self._make_executor(tmp_path, monkeypatch)
+
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        task = {
+            "id": "routine-scan-2026-09-22",
+            "sender_id": "routine-scheduler",
+            "receiver_id": "test-agent",
+            "instruction": "Run the scan",
+            "status": "pending",
+            "priority": "medium",
+            "tags": ["pharos-routine", "routine:scan", "routine_run:scan-2026-09-22"],
+        }
+        inbox.write_text(json.dumps([task]), encoding="utf-8")
+
+        executor.agent_loop.run = MagicMock(
+            return_value=_FakeLoopResult(
+                final_response="Scan post body.", iterations=1, done=True, error=""
+            )
+        )
+
+        count = executor.tick()
+        assert count == 1
+
+        from ai_company.publishing.queue import PublishQueue
+
+        records = PublishQueue(tmp_path / "results" / "pharos").list()
+        assert len(records) == 1
+        assert records[0].platform == "linkedin"
+        assert records[0].body == "Scan post body."
+
+        updated = json.loads(inbox.read_text(encoding="utf-8"))
+        assert updated[0]["status"] == "completed"
+
+    def test_queue_failure_does_not_fail_completed_task(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Best-effort rail: a PublishQueue explosion must not flip the
+        already-completed task into a failure state."""
+        from ai_company.executor import loop as loop_mod
+
+        def _boom(*args, **kwargs):
+            raise RuntimeError("disk full")
+
+        monkeypatch.setattr(loop_mod, "PublishQueue", _boom)
+        executor = self._make_executor(tmp_path, monkeypatch)
+
+        inbox = tmp_path / ".opencode" / "inbox.json"
+        inbox.write_text(
+            json.dumps(
+                [
+                    {
+                        "id": "routine-scan-2026-09-22",
+                        "sender_id": "routine-scheduler",
+                        "receiver_id": "test-agent",
+                        "instruction": "Run the scan",
+                        "status": "pending",
+                        "priority": "medium",
+                        "tags": ["pharos-routine", "routine_run:scan-2026-09-22"],
+                    }
+                ]
+            ),
+            encoding="utf-8",
+        )
+
+        executor.agent_loop.run = MagicMock(
+            return_value=_FakeLoopResult(
+                final_response="Scan post body.", iterations=1, done=True, error=""
+            )
+        )
+
+        count = executor.tick()
+        assert count == 1
+
+        updated = json.loads(inbox.read_text(encoding="utf-8"))
+        assert updated[0]["status"] == "completed"
 
 
 # ── Helpers ─────────────────────────────────────────────────────────
