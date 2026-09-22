@@ -1,0 +1,115 @@
+Light Speed Holdings — USSD Consulting Proposal
+Submitted to: VillageReach
+Project: CHOICE Project — USSD Health Messaging Consultant
+Last updated: 2026-09-18
+
+================================================================================
+ENGAGEMENT OVERVIEW
+================================================================================
+
+Client: Jack Mlusu
+Engagement Period: 24 months
+Total Engagement Value: USD 45,000 (≈$1,875/mo all-in)
+Short Code: 54747 (shared TNM/Airtel, Malawi)
+
+================================================================================
+PROPOSAL SUMMARY
+================================================================================
+
+Light Speed Holdings proposes a complete USSD service lifecycle—menu design,
+development, deployment, and 24-month maintenance—on short code 54747, delivering
+health information to women in Balaka and Lilongwe districts in Chichewa.
+
+Our team combines deep USSD technical expertise with local Malawi knowledge and
+international health program experience. All team members are full-time Light Speed
+Holdings staff—no subcontracting.
+
+Key deliverables:
+• USSD menu design and deployment on short code 54747 (TNM + Airtel networks)
+• User Acceptance Testing with minimum 20 participants from target demographics
+• Data pipeline integration connecting USSD interactions to VillageReach monitoring
+  systems via REST API
+• Monthly uptime and usage reporting with ≥99% availability target
+• Training and handover documentation for VillageReach technical staff
+• 24-month post-launch maintenance and support commitment
+• Completion report at end of engagement summarizing outcomes and recommendations
+
+Technical constraints (USSD protocol):
+• Maximum 182 characters per USSD screen—every word must earn its place
+• Number-driven navigation only (1, 2, 3…); no free-text input on menu screens
+• "99. Main Menu" must appear on every screen for consistent back-navigation
+• Maximum four menu levels deep to prevent user fatigue and drop-off
+• Chichewa-language content requiring culturally appropriate health messaging
+
+Budget structure:
+• 40% ($18,000) at contract signing
+• 20% ($9,000) at go-live on 54747
+• 40% in monthly installments during the 24-month maintenance period
+• Effective rate: ≈$1,875/mo all-in
+
+Compliance:
+• Alignment with Malawi Data Protection Act (2024)
+• GDPR best practices
+• VillageReach internal data governance policies
+
+Data Privacy:
+• USSD data minimization: collect only minimum data required for service delivery;
+  no PII stored on USSD screens unless explicitly authorized
+• All data in transit encrypted via TLS 1.3
+• REST API endpoints secured with OAuth 2.0 token authentication
+• Role-based access control (RBAC) for all system components; principle of least
+  privilege enforced
+• Complete audit trail of all data access and modifications; logs retained for 12
+  months per VillageReach policy
+• USSD interaction logs retained for 24 months (engagement duration) then
+  securely deleted; no permanent storage of user phone numbers
+• Documented incident response plan with 24-hour notification commitment for any
+  data breach affecting VillageReach systems
+
+Short Code 54747:
+• Legitimate shared short code between TNM and Airtel networks in Malawi
+• No regulatory concerns; properly accredited and registered for use
+
+================================================================================
+TERMS & CONDITIONS
+================================================================================
+
+Payment Terms:
+• Currency: USD (MWK equivalent at prevailing rate at time of invoice)
+• Schedule: 40% at signing → 20% at go-live → 40% monthly during maintenance
+• Payment window: Net 30 days from invoice date
+• Invoicing: Monthly with detailed time sheets and completion certificates
+• Late payment: 1.5% monthly interest on overdue balances after 30-day grace period
+
+Intellectual Property:
+• All USSD application code, menu designs, and documentation become VillageReach
+  property upon final payment
+• Light Speed Holdings retains rights to proprietary development frameworks and
+  tools used in delivery
+• Open-source components used under their respective licenses
+
+Confidentiality:
+• All project data, user information, and VillageReach program details treated
+  as strictly confidential
+• Non-disclosure agreement available upon request
+• Team members bound by organizational confidentiality policies
+
+Termination:
+• Either party may terminate with 30 days written notice
+• Upon termination, all completed work and documentation delivered to VillageReach
+• Payment for completed milestones honored regardless of termination
+
+Proposal Validity:
+• This proposal is valid for 30 days from date of submission
+• Pricing and availability subject to confirmation upon contract execution
+
+================================================================================
+CONTACT
+================================================================================
+
+Primary Contact: Jmlus (Consulting Lead)
+Email: info@lightspeedholdings.com
+Web: lightspeedholdings.com
+Malawi · Nairobi · Washington DC
+
+Confidential — Prepared for VillageReach CHOICE Project Evaluation
