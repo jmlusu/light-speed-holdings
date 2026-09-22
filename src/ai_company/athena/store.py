@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from decimal import Decimal
 from pathlib import Path
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 from uuid import UUID
@@ -81,6 +82,8 @@ class AthenaStore(Generic[T]):
             return [self._serialize(v) for v in data]
         if hasattr(data, "value"):  # Enum
             return data.value
+        if isinstance(data, Decimal):
+            return str(data)
         return data
 
     def _deserialize(self, data: Dict[str, Any]) -> Dict[str, Any]:
