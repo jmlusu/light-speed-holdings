@@ -47,3 +47,28 @@ def test_job_store_crud(temp_db):
     # Delete
     assert temp_db.jobs.delete(job_id)
     assert temp_db.get_job(job_id) is None
+
+
+def test_job_store_roundtrip_decimal_salary(temp_db):
+    job_id = uuid4()
+    job = Job(
+        id=job_id,
+        source=JobSource.COMPANY_CAREER,
+        title="Senior AI Engineer",
+        company="Lightspeed Holdings",
+        location="Lilongwe, Malawi (Remote-friendly)",
+        job_type=JobType.FULL_TIME,
+        description="Build agentic AI platforms",
+        application_url="https://lightspeedholdings.com/careers",
+        status=JobStatus.NEW,
+        salary_range={"min": 2500, "max": 5000, "currency": "USD", "period": "monthly"},
+    )
+
+    temp_db.add_job(job)
+
+    fetched = temp_db.get_job(job_id)
+    assert fetched is not None
+    assert fetched.salary_range is not None
+    assert fetched.salary_range.min == 2500
+    assert fetched.salary_range.max == 5000
+    assert fetched.salary_range.currency == "USD"
