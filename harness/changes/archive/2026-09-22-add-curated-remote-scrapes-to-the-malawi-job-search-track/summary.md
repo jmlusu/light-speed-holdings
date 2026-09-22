@@ -1,8 +1,8 @@
----
+﻿---
 title: "Add curated remote scrapes to the Malawi job-search track"
 slug: "add-curated-remote-scrapes-to-the-malawi-job-search-track"
-status: "in_progress"
-location: "active"
+status: "completed"
+location: "archive"
 phase: "validate"
 intake_status: "approved"
 spec_review: "approved"
