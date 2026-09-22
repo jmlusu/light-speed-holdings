@@ -1,0 +1,86 @@
+{
+  "workflow": "policy_compliance",
+  "description": "Verify actions comply with organizational policies",
+  "samples": [
+    {
+      "input": {
+        "action_type": "deploy",
+        "actor": "ops-specialist",
+        "resource": "payment-service",
+        "parameters": {"environment": "production", "version": "v2.1.0", "strategy": "blue-green"},
+        "context": {"environment": "production", "time": "2026-09-19T10:00:00Z", "dependencies": ["auth-service", "notification-service"]},
+        "policies": ["Deployments require approval after 5pm", "Blue-green required for payment services", "Rollback plan documented"]
+      },
+      "expected": {
+        "compliance": "conditional",
+        "risk_level": "high",
+        "requires_approval": true,
+        "policy_conflict": false
+      }
+    },
+    {
+      "input": {
+        "action_type": "data_access",
+        "actor": "coding-specialist",
+        "resource": "customer_pii",
+        "parameters": {"query": "SELECT email, name FROM users WHERE tier='enterprise'", "purpose": "debugging"},
+        "context": {"environment": "production", "time": "2026-09-19T14:00:00Z", "dependencies": []},
+        "policies": ["PII access requires DPO approval", "Production data access logged", "Minimum necessary principle"]
+      },
+      "expected": {
+        "compliance": "non_compliant",
+        "risk_level": "critical",
+        "requires_approval": true,
+        "policy_conflict": false
+      }
+    },
+    {
+      "input": {
+        "action_type": "external_api",
+        "actor": "research-specialist",
+        "resource": "arxiv.org",
+        "parameters": {"endpoint": "/api/query", "params": {"search": "quantum computing"}, "rate_limit": "100/min"},
+        "context": {"environment": "development", "time": "2026-09-19T09:00:00Z", "dependencies": []},
+        "policies": ["External API calls allowed in dev", "Rate limits must be respected", "No PII in external calls"]
+      },
+      "expected": {
+        "compliance": "compliant",
+        "risk_level": "low",
+        "requires_approval": false,
+        "policy_conflict": false
+      }
+    },
+    {
+      "input": {
+        "action_type": "code_change",
+        "actor": "coding-specialist",
+        "resource": "auth-module",
+        "parameters": {"change": "Add MFA support", "files": ["auth/mfa.py", "auth/models.py"], "tests": true},
+        "context": {"environment": "development", "time": "2026-09-19T11:00:00Z", "dependencies": ["user-service"]},
+        "policies": ["Security changes require review", "Tests required for auth changes", "MFA changes need security team sign-off"]
+      },
+      "expected": {
+        "compliance": "conditional",
+        "risk_level": "high",
+        "requires_approval": true,
+        "policy_conflict": false
+      }
+    },
+    {
+      "input": {
+        "action_type": "config_change",
+        "actor": "ops-specialist",
+        "resource": "rate-limiter",
+        "parameters": {"setting": "max_requests_per_minute", "old_value": 1000, "new_value": 10000},
+        "context": {"environment": "staging", "time": "2026-09-19T16:00:00Z", "dependencies": ["api-gateway"]},
+        "policies": ["Rate limit changes require capacity review", "Staging changes need team lead approval", "Config changes must be versioned"]
+      },
+      "expected": {
+        "compliance": "insufficient_info",
+        "risk_level": "medium",
+        "requires_approval": true,
+        "policy_conflict": false
+      }
+    }
+  ]
+}

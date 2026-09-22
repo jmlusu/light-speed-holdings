@@ -58,14 +58,33 @@ const COLUMNS: FooterColumn[] = [
       { name: 'Contact', to: '/contact' },
     ],
   },
-  {
-    heading: 'LEGAL',
-    links: [
-      { name: 'Privacy Policy', to: '/legal/privacy' },
-      { name: 'Terms of Service', to: '/legal/terms' },
-    ],
-  },
-];
+   {
+     heading: 'LEGAL',
+     links: [
+       { name: 'Privacy Policy', to: '/legal/privacy' },
+       { name: 'Terms of Service', to: '/legal/terms' },
+     ],
+   },
+   {
+     heading: 'EXPLORE',
+     links: [
+       { name: 'Why LightSpeed', to: '/why' },
+       { name: 'How We Help', to: '/how-we-help' },
+       { name: 'Process', to: '/process' },
+       { name: 'FAQ', to: '/faq' },
+       { name: 'Resources', to: '/resources' },
+       { name: 'Events', to: '/events' },
+       { name: 'News', to: '/news' },
+       { name: 'Careers', to: '/careers' },
+       { name: 'Geography', to: '/geography' },
+       { name: 'Leadership', to: '/leadership' },
+       { name: 'Partnerships', to: '/partnerships' },
+       { name: 'Deliverables', to: '/deliverables' },
+       { name: 'Outcomes', to: '/outcomes' },
+       { name: 'Trust', to: '/trust' },
+     ],
+   },
+ ];
 
 export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
   const isLight = theme === 'light';

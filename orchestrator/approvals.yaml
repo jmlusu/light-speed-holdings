@@ -7821,3 +7821,140 @@ requests:
   notes: null
   expires_at: '2026-09-16T23:46:17.805532Z'
   metacharacter_blocked: false
+- id: hitl-a11b22b8a7e7
+  task_id: task-001
+  agent_id: agent-a
+  action: tool:execute
+  description: 'Execute: pytest'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-09-22T07:02:48.627717Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-22T08:02:48.627717Z'
+  metacharacter_blocked: false
+- id: hitl-e69cc2a4082d
+  task_id: task-002
+  agent_id: agent-b
+  action: tool:write
+  description: Write 1 chars to src/foo.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-09-22T07:02:49.639054Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-22T08:02:49.639054Z'
+  metacharacter_blocked: false
+- id: hitl-9968a66a6902
+  task_id: task-003
+  agent_id: agent-c
+  action: tool:write
+  description: Write 1 chars to src/bar.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - human-ceo
+  status: approved
+  requested_at: '2026-09-22T07:02:51.435872Z'
+  responded_at: '2026-09-22T07:02:51.770909Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-22T08:02:51.435872Z'
+  metacharacter_blocked: false
+- id: hitl-8a6990e70eb8
+  task_id: task-004
+  agent_id: agent-d
+  action: tool:execute
+  description: 'Execute: rm -rf /'
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-22T07:02:53.406537Z'
+  responded_at: '2026-09-22T07:02:53.753205Z'
+  response_by: human-ceo
+  notes: null
+  expires_at: '2026-09-22T08:02:53.406537Z'
+  metacharacter_blocked: false
+- id: hitl-d57eb3c63e1f
+  task_id: t1
+  agent_id: a
+  action: tool:write
+  description: Write 0 chars to a.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list:
+  - ceo
+  status: approved
+  requested_at: '2026-09-22T07:02:55.507350Z'
+  responded_at: '2026-09-22T07:02:56.565357Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-22T08:02:55.507350Z'
+  metacharacter_blocked: false
+- id: hitl-6cdea91f4653
+  task_id: t2
+  agent_id: b
+  action: tool:write
+  description: Write 0 chars to b.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-09-22T07:02:55.853815Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-22T08:02:55.853815Z'
+  metacharacter_blocked: false
+- id: hitl-5a392f871322
+  task_id: t3
+  agent_id: c
+  action: tool:write
+  description: Write 0 chars to c.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: rejected
+  requested_at: '2026-09-22T07:02:56.218473Z'
+  responded_at: '2026-09-22T07:02:56.930665Z'
+  response_by: ceo
+  notes: null
+  expires_at: '2026-09-22T08:02:56.218473Z'
+  metacharacter_blocked: false
+- id: hitl-23b049a57f8d
+  task_id: task-005
+  agent_id: agent-e
+  action: tool:write
+  description: Write 0 chars to x.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-09-22T07:03:00.033993Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-22T08:03:00.033993Z'
+  metacharacter_blocked: false
+- id: hitl-43d4e831cb72
+  task_id: task-006
+  agent_id: agent-f
+  action: tool:write
+  description: Write 0 chars to y.py
+  tier: 2
+  required_approvers: 1
+  approved_by_list: []
+  status: pending
+  requested_at: '2026-09-22T07:03:01.719206Z'
+  responded_at: null
+  response_by: null
+  notes: null
+  expires_at: '2026-09-22T07:02:02.074468Z'
+  metacharacter_blocked: false

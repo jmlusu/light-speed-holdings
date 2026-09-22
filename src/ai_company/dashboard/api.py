@@ -23,10 +23,6 @@ from fastapi import (
 )
 from pydantic import BaseModel, Field, field_validator
 
-if TYPE_CHECKING:
-    from ai_company.orchestrator.message_bus import MessageBus
-
-from ai_company.athena.api.routes import router as athena_router
 from ai_company.dashboard.models import (
     AgentSummary,
     ApprovalDecision,
@@ -52,7 +48,6 @@ from ai_company.security.rbac import Role, require_role
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["dashboard"])
-router.include_router(athena_router)
 
 # Module-level MessageBus instance. All task read/write operations are routed
 # through this bus instead of touching `.opencode/inbox.json` directly (GAP-011).

@@ -18,14 +18,24 @@ import { OfferingsPage } from './pages/OfferingsPage';
 import { EvidencePage } from './pages/EvidencePage';
 import { AboutPage } from './pages/AboutPage';
 import { AiCompanyBuilderPage } from './pages/AiCompanyBuilderPage';
+import { AskLightSpeed } from './components/AskLightSpeed';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
-import { AthenaDashboard } from './pages/athena/Dashboard';
-import { JobList } from './pages/athena/JobList';
-import { JobDetail } from './pages/athena/JobDetail';
-import { DocumentEditor } from './pages/athena/DocumentEditor';
-import { AthenaLayout } from './components/athena/AthenaLayout';
+import { WhyLightSpeedPage } from './pages/WhyLightSpeedPage';
+import { HowWeHelpPage } from './pages/HowWeHelpPage';
+import { ProcessPage } from './pages/ProcessPage';
+import { GeographyPage } from './pages/GeographyPage';
+import { LeadershipPage } from './pages/LeadershipPage';
+import { FAQPage } from './pages/FAQPage';
+import { ResourcesPage } from './pages/ResourcesPage';
+import { EventsPage } from './pages/EventsPage';
+import { NewsPage } from './pages/NewsPage';
+import { CareersPage } from './pages/CareersPage';
+import { DeliverablesPage } from './pages/DeliverablesPage';
+import { OutcomesPage } from './pages/OutcomesPage';
+import { PartnershipsPage } from './pages/PartnershipsPage';
+import { TrustPage } from './pages/TrustPage';
 
 const HomePageRoute = withSite(HomePage);
 const WhatWeDoPageRoute = withSite(WhatWeDoPage);
@@ -44,11 +54,20 @@ const AiCompanyBuilderPageRoute = withSite(AiCompanyBuilderPage);
 const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
 const TermsPageRoute = withSite(TermsPage);
-
-const AthenaDashboardRoute = AthenaDashboard;
-const JobListRoute = JobList;
-const JobDetailRoute = JobDetail;
-const DocumentEditorRoute = DocumentEditor;
+const WhyLightSpeedPageRoute = withSite(WhyLightSpeedPage);
+const HowWeHelpPageRoute = withSite(HowWeHelpPage);
+const ProcessPageRoute = withSite(ProcessPage);
+const GeographyPageRoute = withSite(GeographyPage);
+const LeadershipPageRoute = withSite(LeadershipPage);
+const FAQPageRoute = withSite(FAQPage);
+const ResourcesPageRoute = withSite(ResourcesPage);
+const EventsPageRoute = withSite(EventsPage);
+const NewsPageRoute = withSite(NewsPage);
+const CareersPageRoute = withSite(CareersPage);
+const DeliverablesPageRoute = withSite(DeliverablesPage);
+const OutcomesPageRoute = withSite(OutcomesPage);
+const PartnershipsPageRoute = withSite(PartnershipsPage);
+const TrustPageRoute = withSite(TrustPage);
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>(() => {
@@ -106,24 +125,27 @@ export const App: React.FC = () => {
           { path: 'technology', element: <TechnologyPageRoute /> },
           { path: 'insights', element: <InsightsPageRoute /> },
           { path: 'about', element: <AboutPageRoute /> },
-          { path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
-          { path: 'contact', element: <ContactPageRoute /> },
-          { path: 'legal/privacy', element: <PrivacyPageRoute /> },
-          { path: 'legal/terms', element: <TermsPageRoute /> },
-          { path: '*', element: <Navigate to="/" replace /> },
-        ],
-      },
-      {
-        path: '/athena',
-        element: <AthenaLayout />,
-        children: [
-          { index: true, element: <AthenaDashboardRoute /> },
-          { path: 'jobs', element: <JobListRoute /> },
-          { path: 'jobs/:id', element: <JobDetailRoute /> },
-          { path: 'applications', element: <JobListRoute /> },
-          { path: 'analytics', element: <AthenaDashboardRoute /> },
-          { path: 'settings', element: <AthenaDashboardRoute /> },
-          { path: 'documents', element: <DocumentEditorRoute documentType="resume" /> },
+{ path: 'ai-company-builder', element: <AiCompanyBuilderPageRoute /> },
+           { path: 'ask', element: <AskLightSpeed /> },
+           { path: 'contact', element: <ContactPageRoute /> },
+           { path: 'legal/privacy', element: <PrivacyPageRoute /> },
+           { path: 'legal/terms', element: <TermsPageRoute /> },
+           { path: 'why', element: <WhyLightSpeedPageRoute /> },
+           { path: 'how-we-help', element: <HowWeHelpPageRoute /> },
+           { path: 'how-we-help/engagement', element: <HowWeHelpPageRoute /> },
+           { path: 'process', element: <ProcessPageRoute /> },
+           { path: 'geography', element: <GeographyPageRoute /> },
+           { path: 'leadership', element: <LeadershipPageRoute /> },
+           { path: 'faq', element: <FAQPageRoute /> },
+           { path: 'resources', element: <ResourcesPageRoute /> },
+           { path: 'events', element: <EventsPageRoute /> },
+           { path: 'news', element: <NewsPageRoute /> },
+           { path: 'careers', element: <CareersPageRoute /> },
+           { path: 'deliverables', element: <DeliverablesPageRoute /> },
+           { path: 'outcomes', element: <OutcomesPageRoute /> },
+           { path: 'partnerships', element: <PartnershipsPageRoute /> },
+           { path: 'trust', element: <TrustPageRoute /> },
+           { path: '*', element: <Navigate to="/" replace /> },
         ],
       },
     ])
