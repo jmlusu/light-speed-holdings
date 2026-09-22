@@ -972,11 +972,46 @@ export const solutions = [
 ];
 
 export const industries = [
-  { slug: 'financial-services', title: 'Financial Services', description: 'Banking, microfinance, and insurance institutions in Malawi and SADC. Agent-driven compliance, risk classification, and audit automation.', keyUseCases: ['Compliance automation', 'Risk classification', 'Audit trail generation'], honestyBadge: 'Fieldable in 2026' as const },
-  { slug: 'healthcare', title: 'Healthcare', description: 'Hospitals, clinics, and public health agencies. Patient data governance, diagnostic assistance, and regulatory compliance across Malawi and SADC.', keyUseCases: ['Data protection compliance', 'Regulatory reporting', 'Patient record management'], honestyBadge: 'In pilot' as const },
-  { slug: 'agriculture', title: 'Agriculture', description: 'Agri-businesses and cooperatives in Malawi and the SADC region. Supply chain automation, market intelligence, and cooperative governance tools.', keyUseCases: ['Supply chain automation', 'Market intelligence', 'Cooperative governance'], honestyBadge: 'Fieldable in 2026' as const },
-  { slug: 'education', title: 'Education', description: 'Schools, universities, and training institutions. Student management, credential verification, and administrative automation.', keyUseCases: ['Credential verification', 'Administrative automation', 'Student data management'], honestyBadge: 'Fieldable in 2026' as const },
-  { slug: 'government', title: 'Government & Public Sector', description: 'Malawi government agencies and SADC institutions. Data sovereignty, GDPR-level compliance, and Zero-Cloud Boundary options for sensitive public data.', keyUseCases: ['Data sovereignty', 'Compliance automation', 'Public service delivery'], honestyBadge: 'In pilot' as const },
+  {
+    slug: 'financial-services',
+    title: 'Financial Services',
+    description: 'Banking, microfinance, and insurance institutions in Malawi and SADC. Agent-driven compliance, risk classification, and audit automation.',
+    keyUseCases: ['Compliance automation', 'Risk classification', 'Audit trail generation'],
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
+    honestyBadge: 'Fieldable in 2026' as const,
+  },
+  {
+    slug: 'healthcare',
+    title: 'Healthcare',
+    description: 'Hospitals, clinics, and public health agencies. Patient data governance, diagnostic assistance, and regulatory compliance across Malawi and SADC.',
+    keyUseCases: ['Data protection compliance', 'Regulatory reporting', 'Patient record management'],
+    proof: { label: 'In pilot', tone: 'pilot' as const },
+    honestyBadge: 'In pilot' as const,
+  },
+  {
+    slug: 'agriculture',
+    title: 'Agriculture',
+    description: 'Agri-businesses and cooperatives in Malawi and the SADC region. Supply chain automation, market intelligence, and cooperative governance tools.',
+    keyUseCases: ['Supply chain automation', 'Market intelligence', 'Cooperative governance'],
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
+    honestyBadge: 'Fieldable in 2026' as const,
+  },
+  {
+    slug: 'education',
+    title: 'Education',
+    description: 'Schools, universities, and training institutions. Student management, credential verification, and administrative automation.',
+    keyUseCases: ['Credential verification', 'Administrative automation', 'Student data management'],
+    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
+    honestyBadge: 'Fieldable in 2026' as const,
+  },
+  {
+    slug: 'government',
+    title: 'Government & Public Sector',
+    description: 'Malawi government agencies and SADC institutions. Data sovereignty, GDPR-level compliance, and Zero-Cloud Boundary options for sensitive public data.',
+    keyUseCases: ['Data sovereignty', 'Compliance automation', 'Public service delivery'],
+    proof: { label: 'In pilot', tone: 'pilot' as const },
+    honestyBadge: 'In pilot' as const,
+  },
 ];
 
 export const technologyPillars = [

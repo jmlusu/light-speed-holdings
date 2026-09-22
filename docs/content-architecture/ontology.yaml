@@ -1,0 +1,359 @@
+# LightSpeed Content Architecture Ontology
+
+## Core Entities
+
+### Organization
+- name: string
+- tagline: string (max 120 chars)
+- mission: string
+- honesty_tones: array[string]  # e.g., ["transparent", "pragmatic", "evidence-based"]
+- brand_colors: array[string]  # e.g., ["#070A40", "#E63946", "#00BFFF"]
+- type: enum["consultancy", "holding", "academy", "foundation"]
+- industries: array[Industry]  # references Industry entity
+- domains: array[Domain]  # references Domain entity
+
+### Person
+- name: string
+- role: enum["ceo", "founder", "cto", "partner", "lead", "advisor", "administrator"]
+- industries: array[Industry]
+- expertise_areas: array[string]
+- is_active: boolean
+
+### Industry
+- key: string  # e.g., "african_ai", "digital_transformation", "ai_governance"
+- name: string
+- description: string
+- parent_industry: Industry (nullable)
+- sibling_industries: array[Industry]
+
+### Geography
+- key: string  # e.g., "malawi", "sADC", "africa", "global"
+- name: string
+- type: enum["country", "region", "subregion", "continent"]
+- relates_to: array[Geography]  # hierarchical relationships
+
+### Problem
+- key: string  # unique identifier, e.g., "low_ai_adoption", "skills_gap"
+- title: string
+- description: string
+- industry: Industry  # which industry this problem belongs to
+- severity: enum["low", "medium", "high", "critical"]
+- related_problems: array[Problem]  # transitive closure
+- affected_geographies: array[Geography]
+
+### Business Outcome
+- key: string  # unique identifier, e.g., "accelerated_ai_adoption", "reduced_operational_costs"
+- title: string
+- description: string
+- metric: string  # e.g., "time-to-value", "cost-reduction-percent"
+- target: string  # e.g., "SMEs in emerging markets"
+- related_problems: array[Problem]
+- enabled_by: array[Capability]
+
+### Capability
+- key: string  # unique identifier, e.g., "ai_strategy", "model_deployment", "risk_compliance"
+- title: string
+- description: string
+- category: enum["technical", "organizational", "strategic", "governance", "training"]
+- maturity_model_level: integer  # 1-5
+- related_problems: array[Problem]
+- enables: array[Business Outcome]
+- implemented_by: array[Service]
+
+### Service
+- key: string  # unique identifier, e.g., "ai_opportunity_assessment", "model_governance_framework"
+- title: string
+- description: string
+- capability: Capability  # which capability this service realizes
+- engagement_models: array[Engagement Model]
+- proof: array[Proof Type]  # case studies, demonstrations, testimonials
+- audience: array[Audience]
+- duration_weeks: integer (nullable)
+- price_tier: enum["entry", "professional", "enterprise", "custom"]
+
+### AI Use Case
+- key: string  # unique identifier, e.g., "predictive_maintenance", "customer_segmentation"
+- title: string
+- description: string
+- industry: Industry
+- problem: Problem  # addresses which problem
+- capability: Capability  # which capability enables this
+- outcome: Business Outcome  # expected result
+- maturity: enum["prototype", "validated", "production", "scaled"]
+- evidence_level: enum["anecdotal", "case_study", "pilot", "production"]
+- technologies: array[Technology]
+
+### Technology
+- key: string  # e.g., "python", "pytorch", "openai_api", "anthropic", "aws", "docker"
+- name: string
+- category: enum["programming_language", "framework", "cloud_platform", "ai_model", "tool", "infrastructure"]
+- maturity: enum["emerging", "mature", "cutting_edge"]
+- related_use_cases: array[AI Use Case]
+
+### Methodology
+- key: string  # unique identifier, e.g., "pharos_method", "lightspeed_ai_assessment"
+- title: string
+- description: string
+- category: enum["assessment", "deployment", "governance", "optimization", "research"]
+- associated_capabilities: array[Capability]
+- associated_use_cases: array[AI Use Case]
+- steps: array[string]  # high-level step descriptions
+
+### Framework
+- key: string  # unique identifier, e.g., "ai_maturity_framework", "governance_framework"
+- title: string
+- description: string
+- version: string
+- category: enum["strategic", "operational", "governance", "technical"]
+- associated_capabilities: array[Capability]
+- associated_use_cases: array[AI Use Case]
+- visual_template: string  # e.g., "2x2_matrix", "waterfall", "circular"
+
+### Insight
+- key: string  # unique identifier, e.g., "ai_adoption_trends_2024", "emerging_risks_ai_governance"
+- title: string
+- description: string
+- source: enum["primary_research", "market_analysis", "internal_data", "partner_data", "academic"]
+- evidence_level: enum["anecdotal", "qualified", "evidenced"]
+- related_problems: array[Problem]
+- related_capabilities: array[Capability]
+- related_use_cases: array[AI Use Case]
+- published_date: date (nullable)
+
+### Research
+- key: string  # unique identifier, e.g., "openai_capabilities_survey", "african_ai_landscape"
+- title: string
+- description: string
+- methodology: string
+- source: enum["primary_research", "market_analysis", "internal_data", "partner_data", "academic"]
+- status: enum["draft", "peer_review", "published", "superseded"]
+- related_problems: array[Problem]
+- related_capabilities: array[Capability]
+- related_use_cases: array[AI Use Case]
+- published_date: date
+- data_sources: array[string]
+
+### Policy
+- key: string  # unique identifier, e.g., "ai_governance_policy", "data_privacy_policy"
+- title: string
+- description: string
+- category: enum["ai_governance", "data_privacy", "ethics", "compliance", "industry_regulations"]
+- status: enum["draft", "approved", "retired"]
+- associated_industries: array[Industry]
+- related_use_cases: array[AI Use Case]
+
+### Case Study
+- key: string  # unique identifier, e.g., "ai_deployment_in_manufacturing", "ai_governance_in_finance"
+- title: string
+- description: string
+- industry: Industry
+- problem: Problem  # addresses which problem
+- capability: Capability  # which capability was applied
+- outcome: Business Outcome  # result achieved
+- evidence_level: enum["anecdotal", "qualified", "evidenced"]
+- technologies: array[Technology]
+- published_date: date
+- location: Geography
+- testimonials: array[Testimonial]  # embedded
+
+### Experience
+- key: string  # unique identifier, e.g., "ceo_roundtable_2024", "agentic_ai_workshop"
+- title: string
+- description: string
+- format: enum["workshop", "roundtable", "conference", "webinar", "training", "retreat"]
+- industry: Industry
+- duration: integer  # hours or days
+- outcomes: array[Business Outcome]
+- proof_types: array[Proof Type]  # case_study, demonstration, testimonial
+
+### Demonstration
+- key: string  # unique identifier, e.g., "live_ai_assessment_demo", "model_governance_demo"
+- title: string
+- description: string
+- format: enum["interactive", "video", "walkthrough", "live"]
+- industry: Industry
+- capability: Capability  # demonstrated capability
+- duration_minutes: integer
+- technologies: array[Technology]
+- audience: array[Audience]
+
+### Resource
+- key: string  # unique identifier, e.g., "white_paper_ai_governance", "executive_brief_ai_adoption"
+- title: string
+- description: string
+- type: enum["white_paper", "executive_brief", "report", "presentation", "video", "event", "case_study_summary"]
+- industry: Industry
+- related_problems: array[Problem]
+- related_capabilities: array[Capability]
+- related_use_cases: array[AI Use Case]
+- content_format: string  # e.g., "pdf", "html", "video", "markdown"
+- published_date: date
+- tags: array[string]
+
+### Event
+- key: string  # unique identifier, e.g., "ai_summit_2024", "governance_workshop_q4"
+- title: string
+- description: string
+- format: enum["conference", "workshop", "roundtable", "webinar", "hybrid"]
+- industry: Industry
+- start_date: date
+- end_date: date (nullable)
+- location: Geography (nullable)
+- virtual: boolean
+- associated_capabilities: array[Capability]
+- associated_use_cases: array[AI Use Case]
+- audience: array[Audience]
+
+### Engagement Model
+- key: string  # unique identifier, e.g., "assessment", "workshop", "implementation", "ongoing_governance"
+- title: string
+- description: string
+- category: enum["assessment", "workshop", "implementation", "ongoing_governance", "advisory"]
+- duration_weeks: integer
+- capability: Capability  # which capability this engages
+- price_tier: enum["entry", "professional", "enterprise", "custom"]
+- associated_use_cases: array[AI Use Case]
+- proof_required: boolean  # whether case studies/demos are expected
+
+### Audience
+- key: string  # unique identifier, e.g., "ceo", "cto", "board", "investor", "partner", "developer", "researcher", "student"
+- name: string
+- role: string  # role in the organization or decision-making process
+- industry: Industry (nullable)
+- seniority: enum["entry", "mid", "senior", "executive", "board"]
+- related_problems: array[Problem]
+- related_capabilities: array[Capability]
+- preferred_engagement: array[Engagement Model]
+- content_types: array[Content Type]
+
+### Content Type
+- key: string  # unique identifier, e.g., "page", "service", "capability", "audience", "problem", "outcome", "insight", "research", "use_case", "framework", "methodology", "glossary_term", "case_study", "demonstration", "testimonial", "white_paper", "executive_brief", "report", "presentation", "video", "event", "engagement_model", "contact_inquiry", "assessment"
+- name: string
+- description: string
+- category: enum["core", "knowledge", "proof", "resources", "conversion"]
+- parent_content_type: Content Type (nullable)
+- variables: array[Content Variable]  # variables that populate this content type
+
+### Content Variable
+- key: string  # variable name, e.g., "{PRODUCT_NAME}", "{INDUSTRY}", "{PROBLEM_KEY}"
+- type: enum["string", "number", "boolean", "entity_key"]
+- required: boolean
+- fallback: string (nullable)
+- description: string
+
+## Relationships (structured)
+
+### Problem → Capability
+- type: "enables"  # capability enables problem solution
+- strength: enum["weak", "moderate", "strong", "critical"]
+- evidence_level: enum["anecdotal", "qualified", "evidenced"]
+
+### Capability → Service
+- type: "realizes"  # service realizes capability
+- cardinality: "one-to-many"  # one capability, many services
+
+### Capability → Business Outcome
+- type: "enables"  # capability enables business outcome
+- strength: enum["weak", "moderate", "strong", "critical"]
+
+### AI Use Case → Problem
+- type: "addresses"  # use case addresses problem
+- evidence_level: enum["anecdotal", "qualified", "evidenced"]
+
+### AI Use Case → Capability
+- type: "requires"  # use case requires capability
+- evidence_level: enum["anecdotal", "qualified", "evidenced"]
+
+### AI Use Case → Business Outcome
+- type: "delivers"  # use case delivers outcome
+- strength: enum["weak", "moderate", "strong", "critical"]
+
+### AI Use Case → Technology
+- type: "uses"  # use case uses technology
+- evidence_level: enum["anecdotal", "qualified", "evidenced"]
+
+### Insight → Problem
+- type: "illuminates"  # insight sheds light on problem
+
+### Insight → Capability
+- type: "informs"  # insight informs capability development
+
+### Insight → AI Use Case
+- type: "triggers"  # insight may trigger AI use case exploration
+
+### Research → Problem
+- type: "investigates"  # research investigates problem
+
+### Research → Capability
+- type: "develops"  # research may develop capability
+
+### Research → AI Use Case
+- type: "generates"  # research may generate AI use case ideas
+
+### Policy → AI Use Case
+- type: "constrains"  # policy constrains AI use case design
+
+### Policy → Industry
+- type: "applies_to"  # policy applies to specific industries
+
+### Case Study → Capability
+- type: "validates"  # case study validates capability
+
+### Case Study → Problem
+- type: "addresses"  # case study addresses problem
+
+### Case Study → Business Outcome
+- type: "delivers"  # case study delivers outcome
+
+### Demonstration → Capability
+- type: "demonstrates"  # demonstration shows capability in action
+
+### Experience → Capability
+- type: "develops"  # experience develops capability
+
+### Experience → Industry
+- type: "applies_to"  # experience applies to industry
+
+### Resource → Problem
+- type: "addresses"  # resource addresses problem
+
+### Resource → Capability
+- type: "supports"  # resource supports capability
+
+### Resource → AI Use Case
+- type: "references"  # resource references use case
+
+### Event → Capability
+- type: "introduces"  # event introduces capability
+
+### Event → Industry
+- type: "applies_to"  # event applies to industry
+
+### Engagement Model → Capability
+- type: "requires"  # engagement model requires capability
+
+### Engagement Model → AI Use Case
+- type: "applies_to"  # engagement model applies to use cases
+
+### Audience → Problem
+- type: "faces"  # audience faces problem
+
+### Audience → Capability
+- type: "seeks"  # audience seeks capability
+
+### Content Type → Content Variable
+- type: "provides"  # content type provides variables
+
+## Traversal Path (for AI agents)
+
+Client profile → Industry → Business problem → AI use cases → Capabilities → Services → Evidence (Insights/Research/Case Studies) → Engagement model → Outcome
+
+Example traversal:
+1. Client identifies as "SME in African AI sector" (Industry: african_ai)
+2. Business problem: "limited AI adoption capacity" (Problem: low_ai_adoption)
+3. AI use cases: "predictive_maintenance", "customer_segmentation" (AI Use Case)
+4. Capabilities enabled: "ai_strategy", "model_deployment" (Capability)
+5. Services offered: "ai_opportunity_assessment", "model_governance_framework" (Service)
+6. Evidence: insights on AI adoption trends, case studies of similar deployments
+7. Engagement model: "assessment → workshop → implementation" (Engagement Model)
+8. Expected outcomes: "accelerated_time-to-value", "reduced_operational_costs" (Business Outcome)

@@ -1,0 +1,66 @@
+# LightSpeed Content Architecture Taxonomy
+
+## Industry Taxonomy (top-level hierarchy)
+- african_ai
+  - digital_transformation (sibling)
+  - ai_governance (sibling)
+
+## Content Category Taxonomy
+- core
+- knowledge
+- proof
+- resources
+- conversion
+
+## Engagement Model Taxonomy
+- assessment
+- workshop
+- implementation
+- ongoing_governance
+- advisory
+
+## Evidence Level Taxonomy
+- anecdotal
+- qualified
+- evidenced
+
+## Maturity Model Levels
+1. Initial
+2. Managed
+3. Defined
+4. Quantitatively Managed
+5. Optimizing
+
+## Problem Severity
+- low
+- medium
+- high
+- critical
+
+## Price Tiers
+- entry
+- professional
+- enterprise
+- custom
+
+## Content Format
+- pdf
+- html
+- video
+- markdown
+- presentation
+- report
+- executive_brief
+- white_paper
+
+## Traversal Direction
+- forward: client_profile → industry → problem → use_case → capability → service → engagement_model → outcome
+- reverse: outcome → engagement_model → service → capability → use_case → problem → industry → client_profile
+
+## Reserved Variable Names (never add to variable lists)
+- FIRST_NAME
+- LAST_NAME
+- EMAIL
+- RESEND_UNSUBSCRIBE_URL
+
+These are automatically available in Resend and will cause validation errors if included in content type variable definitions.
