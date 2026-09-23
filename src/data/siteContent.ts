@@ -1144,6 +1144,59 @@ export const honestyPolicy = [
   'No fabricated metrics, testimonials, or client logos',
 ];
 
+/* ── Trust evidence (operational controls only — no invented seals) ── */
+export interface TrustEvidence {
+  id: string;
+  title: string;
+  description: string;
+  proof: { label: string; tone: 'proven' | 'pilot' | 'fieldable' | 'development' };
+}
+
+export const trustEvidence: TrustEvidence[] = [
+  {
+    id: 'gates',
+    title: '4 Governance Gates',
+    description:
+      'Contract, Data Processing Agreement, Compliance Review, and Security Assessment must clear before client work begins.',
+    proof: { label: 'Proven in-house', tone: 'proven' },
+  },
+  {
+    id: 'approval',
+    title: '5-Tier Approval Matrix',
+    description:
+      'Consequential actions are risk-classified and human-gated. Pending approvals expire on a periodic sweep.',
+    proof: { label: 'Proven in-house', tone: 'proven' },
+  },
+  {
+    id: 'audit',
+    title: 'SHA-256 Audit Trails',
+    description:
+      'Every agent action is recorded on an append-only, SHA-256 sealed trail correlated to what was approved.',
+    proof: { label: 'Proven in-house', tone: 'proven' },
+  },
+  {
+    id: 'rbac',
+    title: 'RBAC + Least Privilege',
+    description:
+      'X-API-Key role-based access (admin / approve / run) on the control plane; role-scoped agent permissions on the canonical 7-tool runtime.',
+    proof: { label: 'Proven in-house', tone: 'proven' },
+  },
+  {
+    id: 'dpa',
+    title: 'Malawi Data Protection Act 2017',
+    description:
+      'Default data posture for engagements; GDPR-level handling for donor and UN data flows; in-region processing by default.',
+    proof: { label: 'Proven in-house', tone: 'proven' },
+  },
+  {
+    id: 'ownership',
+    title: 'Client Data Ownership',
+    description:
+      'Your site, your data, your dashboards are yours. Deliverables remain with the client — no lock-in.',
+    proof: { label: 'Proven in-house', tone: 'proven' },
+  },
+];
+
 export const GOVERNANCE_SOLUTION = {
   title: 'The Governance Solution',
   description: 'LightSpeed Holdings implements a 5-tier human-in-the-loop approval system where no client-facing deliverable ships without human sign-off. The platform enforces 4 mandatory governance gates (Contract, DPA, Compliance, Security) before any engagement begins. Every action is recorded on an immutable audit trail with SHA-256 seals.',
@@ -1239,6 +1292,52 @@ export const workPolicy = [
   },
 ];
 
+export interface SiteRelatedLink {
+  to: string;
+  label: string;
+}
+
+export const relatedLinksByRoute: Record<string, SiteRelatedLink[]> = {
+  '/trust': [
+    { to: '/technology#governance', label: 'Technology' },
+    { to: '/leadership', label: 'Leadership' },
+    { to: '/faq', label: 'FAQ' },
+    { to: '/evidence', label: 'Evidence' },
+  ],
+  '/faq': [
+    { to: '/trust', label: 'Trust' },
+    { to: '/technology#governance', label: 'Technology' },
+    { to: '/leadership', label: 'Leadership' },
+    { to: '/contact', label: 'Contact' },
+  ],
+  '/leadership': [
+    { to: '/trust', label: 'Trust' },
+    { to: '/faq', label: 'FAQ' },
+    { to: '/technology#governance', label: 'Technology' },
+    { to: '/about', label: 'About' },
+  ],
+  '/insights': [
+    { to: '/news', label: 'News' },
+    { to: '/resources', label: 'Resources' },
+    { to: '/events', label: 'Events' },
+  ],
+  '/news': [
+    { to: '/insights', label: 'Insights' },
+    { to: '/resources', label: 'Resources' },
+    { to: '/events', label: 'Events' },
+  ],
+  '/resources': [
+    { to: '/insights', label: 'Insights' },
+    { to: '/news', label: 'News' },
+    { to: '/events', label: 'Events' },
+  ],
+  '/events': [
+    { to: '/news', label: 'News' },
+    { to: '/insights', label: 'Insights' },
+    { to: '/resources', label: 'Resources' },
+  ],
+};
+
 export default {
   company,
   mission,
@@ -1272,4 +1371,5 @@ export default {
   GOVERNANCE_SOLUTION,
   workCaseStudies,
   workPolicy,
+  relatedLinksByRoute,
 };

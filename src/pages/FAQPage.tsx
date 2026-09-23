@@ -4,6 +4,7 @@ import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { Reveal } from '../components/Reveal';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { faqs } from '../data/siteContent';
 
 interface FAQPageProps {
@@ -11,7 +12,7 @@ interface FAQPageProps {
   onRequestBriefing: (summary?: string) => void;
 }
 
-export const FAQPage: React.FC<FAQPageProps> = ({ theme }) => {
+export const FAQPage: React.FC<FAQPageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -92,7 +93,17 @@ export const FAQPage: React.FC<FAQPageProps> = ({ theme }) => {
         })}
       </div>
 
-      <CtaBand theme={theme} />
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/trust', label: 'Trust' },
+          { to: '/technology#governance', label: 'Technology' },
+          { to: '/leadership', label: 'Leadership' },
+          { to: '/contact', label: 'Contact' },
+        ]}
+      />
+
+      <CtaBand theme={theme} onRequestBriefing={onRequestBriefing} />
     </main>
   );
 };

@@ -4,6 +4,7 @@ import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { Reveal } from '../components/Reveal';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { events } from '../data/siteContent';
 
 interface EventsPageProps {
@@ -50,12 +51,15 @@ export const EventsPage: React.FC<EventsPageProps> = ({ theme, onRequestBriefing
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {events.map((event, idx) => (
             <Reveal key={event.id} delay={(idx % 2) * 0.06}>
-              <div
-                className={`rounded-3xl p-6 sm:p-8 border flex flex-col ${
+              <button
+                type="button"
+                onClick={() => onRequestBriefing?.(`Speaking inquiry: ${event.title}`)}
+                className={`w-full text-left rounded-3xl p-6 sm:p-8 border flex flex-col cursor-pointer transition-all hover:scale-[1.01] ${
                   isLight
                     ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md'
                     : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
                 }`}
+                aria-label={`Inquire about speaking: ${event.title}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <span className="font-body text-[10px] font-black tracking-widest text-ls-red">
@@ -85,17 +89,27 @@ export const EventsPage: React.FC<EventsPageProps> = ({ theme, onRequestBriefing
                   </span>
                   <ArrowRight className="w-4 h-4 text-ls-red" aria-hidden="true" />
                 </div>
-              </div>
+              </button>
             </Reveal>
           ))}
         </div>
       </section>
+
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/news', label: 'News' },
+          { to: '/insights', label: 'Insights' },
+          { to: '/resources', label: 'Resources' },
+        ]}
+      />
 
       <CtaBand
         theme={theme}
         title="Want LightSpeed at Your Next Event?"
         text="Whether it is a conference keynote, executive briefing, or private workshop — we bring evidence-led, honest perspectives on agentic AI and AI-native transformation."
         ctaLabel="Request a Speaker"
+        onRequestBriefing={onRequestBriefing}
       />
     </>
   );

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { Reveal } from '../components/Reveal';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { resources } from '../data/siteContent';
 
 interface ResourcesPageProps {
@@ -54,12 +54,15 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({ theme, onRequestBr
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {resources.map((resource, idx) => (
             <Reveal key={resource.id} delay={(idx % 3) * 0.06}>
-              <div
-                className={`rounded-3xl p-6 sm:p-8 border flex flex-col h-full ${
+              <button
+                type="button"
+                onClick={() => onRequestBriefing?.(`Resource request: ${resource.title}`)}
+                className={`w-full text-left rounded-3xl p-6 sm:p-8 border flex flex-col h-full cursor-pointer transition-all hover:scale-[1.01] ${
                   isLight
                     ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md'
                     : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
                 }`}
+                aria-label={`${resource.downloadLabel}: ${resource.title}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <span className="font-body text-[10px] font-black tracking-widest text-ls-red">
@@ -89,17 +92,27 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({ theme, onRequestBr
                   </span>
                   <ArrowRight className="w-4 h-4 text-ls-red" aria-hidden="true" />
                 </div>
-              </div>
+              </button>
             </Reveal>
           ))}
         </div>
       </section>
+
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/insights', label: 'Insights' },
+          { to: '/news', label: 'News' },
+          { to: '/events', label: 'Events' },
+        ]}
+      />
 
       <CtaBand
         theme={theme}
         title="Need the Right Resource for Your Situation?"
         text="Not sure which framework or report matches your needs? We can point you to the right starting point — no obligations, just honest guidance."
         ctaLabel="Request a Briefing"
+        onRequestBriefing={onRequestBriefing}
       />
     </>
   );
