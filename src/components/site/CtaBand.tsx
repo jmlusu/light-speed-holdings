@@ -10,6 +10,7 @@ interface CtaBandProps {
   ctaLabel?: string;
   ctaTo?: string;
   id?: string;
+  onRequestBriefing?: (summary?: string) => void;
 }
 
 /**
@@ -24,6 +25,7 @@ export const CtaBand: React.FC<CtaBandProps> = ({
   ctaLabel = 'Book an Executive Briefing',
   ctaTo = '/contact',
   id,
+  onRequestBriefing,
 }) => {
   const isLight = theme === 'light';
   return (
@@ -53,13 +55,24 @@ export const CtaBand: React.FC<CtaBandProps> = ({
               {text}
             </p>
             <div className="pt-2">
-              <Link
-                to={ctaTo}
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {ctaLabel}
-                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-              </Link>
+              {onRequestBriefing ? (
+                <button
+                  type="button"
+                  onClick={() => onRequestBriefing(ctaLabel)}
+                  className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  {ctaLabel}
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
+              ) : (
+                <Link
+                  to={ctaTo}
+                  className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  {ctaLabel}
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+              )}
               <p className={`text-[11px] font-body mt-3 font-medium ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>

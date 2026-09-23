@@ -4,6 +4,8 @@ import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { Reveal } from '../components/Reveal';
+import { NewsletterSignup } from '../components/NewsletterSignup';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { newsItems } from '../data/siteContent';
 
 interface NewsPageProps {
@@ -93,11 +95,23 @@ export const NewsPage: React.FC<NewsPageProps> = ({ theme, onRequestBriefing }) 
         </div>
       </section>
 
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/insights', label: 'Insights' },
+          { to: '/resources', label: 'Resources' },
+          { to: '/events', label: 'Events' },
+        ]}
+      />
+
+      <NewsletterSignup theme={theme} id="newsletter" />
+
       <CtaBand
         theme={theme}
         title="Stay in the Loop"
         text="Follow LightSpeed for updates on agentic AI governance, AI-native transformation, and our work across Malawi and SADC."
         ctaLabel="Get Updates"
+        onRequestBriefing={onRequestBriefing}
       />
     </>
   );

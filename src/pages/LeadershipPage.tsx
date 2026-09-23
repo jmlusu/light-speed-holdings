@@ -5,7 +5,7 @@ import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { Reveal } from '../components/Reveal';
 import { HonestyBadge } from '../components/site/HonestyBadge';
-import { TONE_STYLES } from '../data/siteContent';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { leadership, advisoryNetwork } from '../data/siteContent';
 
 interface LeadershipPageProps {
@@ -13,7 +13,7 @@ interface LeadershipPageProps {
   onRequestBriefing: (summary?: string) => void;
 }
 
-export const LeadershipPage: React.FC<LeadershipPageProps> = ({ theme }) => {
+export const LeadershipPage: React.FC<LeadershipPageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
 
   return (
@@ -237,11 +237,29 @@ export const LeadershipPage: React.FC<LeadershipPageProps> = ({ theme }) => {
                 </div>
               ))}
             </div>
+            <p
+              className={`mt-6 text-xs leading-relaxed ${
+                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+              }`}
+            >
+              Advisory entries are role titles for the engagement capability — not named
+              individuals until a specific engagement confirms them.
+            </p>
           </div>
         </Reveal>
       </div>
 
-      <CtaBand theme={theme} />
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/trust', label: 'Trust' },
+          { to: '/faq', label: 'FAQ' },
+          { to: '/technology#governance', label: 'Technology' },
+          { to: '/about', label: 'About' },
+        ]}
+      />
+
+      <CtaBand theme={theme} onRequestBriefing={onRequestBriefing} />
     </main>
   );
 };

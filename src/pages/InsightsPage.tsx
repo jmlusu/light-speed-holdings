@@ -1,5 +1,7 @@
 import React from 'react';
 import { PharosSection } from '../components/PharosSection';
+import { NewsletterSignup } from '../components/NewsletterSignup';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 
 interface InsightsPageProps {
   theme: 'light' | 'dark';
@@ -42,6 +44,17 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
       </section>
 
       <PharosSection theme={theme} onRequestBriefing={onRequestBriefing} />
+
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/news', label: 'News' },
+          { to: '/resources', label: 'Resources' },
+          { to: '/events', label: 'Events' },
+        ]}
+      />
+
+      <NewsletterSignup theme={theme} id="newsletter" />
     </>
   );
 };
