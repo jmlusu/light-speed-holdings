@@ -1,0 +1,11 @@
+# Business Outcome Entity Definition
+
+key: enhanced_customer_experience
+title: "Enhanced Customer Experience"
+description: "Improved customer satisfaction through AI personalization and service improvements"
+metric: "NPS-increase"
+target: "SMEs with customer-facing AI"
+related_problems:
+  - low_ai_adoption
+enabled_by:
+  - technology_integration

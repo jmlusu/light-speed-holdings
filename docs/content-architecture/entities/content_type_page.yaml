@@ -1,0 +1,16 @@
+# Content Type Entity Definition - Page
+
+key: page
+name: Page
+description: "A website page (landing, about, service, etc.)"
+category: core
+parent_content_type: null
+variables:
+  - key: "{PAGE_TITLE}"
+    type: string
+    required: true
+    fallback: "LightSpeed Page"
+  - key: "{PAGE_SLUG}"
+    type: string
+    required: true
+    fallback: "page-slug"

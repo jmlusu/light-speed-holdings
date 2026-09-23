@@ -1,0 +1,17 @@
+# Capability Entity Definition
+
+key: data_governance
+title: "Data Governance"
+description: "Managing data assets for AI compliance, quality, and accessibility across the organization"
+category: governance
+maturity_model_level: 3
+related_problems:
+  - data_infrastructure_lack
+enables:
+  - improved_decision_making
+implemented_by:
+  - ai_governance_framework
+evidence_references:
+  - claim:017
+  - claim:019
+  - claim:060

@@ -17,3 +17,6 @@ data_sources:
   - "developer_survey_200 participants"
   - "API usage logs"
   - "industry benchmarks"
+evidence_references:
+  - claim:020
+  - claim:021

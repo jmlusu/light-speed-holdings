@@ -8,7 +8,7 @@ problem: low_ai_adoption
 capability: ai_strategy
 outcome: reduced_operational_costs
 maturity: production
-evidence_level: case_study
+evidence_level: evidenced
 technologies:
   - python
   - pytorch

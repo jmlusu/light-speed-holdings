@@ -1,0 +1,416 @@
+ledger_source: research/site-claims-ledger.md
+id_scheme: positional claim:<NN> by table-row order across sections 1-13 (Data Ledger table and About excluded)
+id_format: claim:\d{3}
+total_claims: 67
+tally_declared: 67
+tally_drift: ledger Tally reconciled to actual classified rows (67); drift closed 2026-09-23
+class_counts:
+  a_fully_evidenced: 18
+  b_qualified_or_resolved: 49
+  of_which_resolved_remediation: 22
+  of_which_contradiction: 0
+claims:
+- id: claim:001
+  row: 1
+  section: 1. Home
+  line: 17
+  class: (a)
+  claim: 'Proof strip: 152 Verified Agent Configurations / 2,373 Automated Regression Tests / 20 Departments Onboarded / 5-Tier (Human Approval Gates)'
+- id: claim:002
+  row: 2
+  section: 1. Home
+  line: 18
+  class: (b) — RESOLVED
+  claim: '"...every decision auditable"'
+- id: claim:003
+  row: 3
+  section: 1. Home
+  line: 19
+  class: (b) — RESOLVED
+  claim: '"One human CEO directs 140+ AI agents"'
+- id: claim:004
+  row: 4
+  section: 1. Home
+  line: 20
+  class: (b)
+  claim: '"10-day turnaround, ≥4.5/5 satisfaction, 30-day support window"'
+- id: claim:005
+  row: 5
+  section: 1. Home
+  line: 21
+  class: (b)
+  claim: '"20-25 paid clients and 8 lighthouse clients in first 12 months"'
+- id: claim:006
+  row: 6
+  section: 1. Home
+  line: 22
+  class: (b)
+  claim: '"We target 99.99% platform uptime"'
+- id: claim:007
+  row: 7
+  section: 3. AI Company Builder
+  line: 32
+  class: (a)
+  claim: '"Governed 152-Agent Swarm & 20-Department Topology" + "5-tier HITL gates"'
+- id: claim:008
+  row: 8
+  section: 3. AI Company Builder
+  line: 33
+  class: (a)
+  claim: FOW-01 "1-human, 151-agent organisation"; FOW-03 "proven in-house daily"
+- id: claim:009
+  row: 9
+  section: 3. AI Company Builder
+  line: 34
+  class: (b) — RESOLVED
+  claim: '"10x-100x operational throughput with sub-second verified dispatch"'
+- id: claim:010
+  row: 10
+  section: 3. AI Company Builder
+  line: 35
+  class: (b) — RESOLVED
+  claim: '"Sub-second latency SLA guarantees"'
+- id: claim:011
+  row: 11
+  section: 3. AI Company Builder
+  line: 36
+  class: (b) — RESOLVED
+  claim: 'Simulated console: "Entire AI Company generated in 1.42s", "2,373 tests passing", "342 Workflow Dispatch & Escalation Channels", "1,280 indexed memory vectors", "152 agents / 20 departments /
+    1 board"'
+- id: claim:012
+  row: 12
+  section: 3. AI Company Builder
+  line: 37
+  class: (b)
+  claim: 90-day pilot → full scale; "2-Week Advisory Sprint to 90-Day Co-Built Pilot"
+- id: claim:013
+  row: 13
+  section: 3. AI Company Builder
+  line: 38
+  class: (b)
+  claim: 'Licensing: MWK 3,500,000 (~$2,000) + $200/mo support'
+- id: claim:014
+  row: 14
+  section: 4. Technology
+  line: 44
+  class: (a)
+  claim: Metrics bundle 144 / 2,373 / 20 / 5-TIER
+- id: claim:015
+  row: 15
+  section: 4. Technology
+  line: 45
+  class: (b)
+  claim: Four-gate CI "ruff + mypy + bandit + 2,373 pytest gates must pass before a change lands"
+- id: claim:016
+  row: 16
+  section: 4. Technology
+  line: 46
+  class: (a)
+  claim: Five-Tier Human Approval Gates
+- id: claim:017
+  row: 17
+  section: 4. Technology
+  line: 47
+  class: (b)
+  claim: SHA-256 chained append-only audit trails
+- id: claim:018
+  row: 18
+  section: 4. Technology
+  line: 48
+  class: (a)
+  claim: RBAC + least privilege
+- id: claim:019
+  row: 19
+  section: 4. Technology
+  line: 49
+  class: (b)
+  claim: Data Protection by Default (Malawi DPA)
+- id: claim:020
+  row: 20
+  section: 4. Technology
+  line: 50
+  class: (b)
+  claim: Four-Gate Onboarding G1-G4; provider-agnostic/Ollama
+- id: claim:021
+  row: 21
+  section: 4. Technology
+  line: 51
+  class: (a)
+  claim: Canonical 7-tool runtime vocabulary
+- id: claim:022
+  row: 22
+  section: 4. Technology
+  line: 52
+  class: (b)
+  claim: Zero-Cloud Boundary deployment option
+- id: claim:023
+  row: 23
+  section: 5. Solutions
+  line: 58
+  class: (a)
+  claim: 'Agentic AI: "152-agent operation runs daily" proof label'
+- id: claim:024
+  row: 24
+  section: 5. Solutions
+  line: 59
+  class: (b) — RESOLVED
+  claim: 'Digital Transformation: "Fieldable in 2026 — ready for client engagement"; pricing "to be validated with prospects" before publishing (reclassified 2026-09-23)'
+- id: claim:025
+  row: 25
+  section: 5. Solutions
+  line: 60
+  class: (b)
+  claim: 'Data & Intelligence: "In pilot with UNDP Malawi stakeholders" (hedge verified 2026-09-23)'
+- id: claim:026
+  row: 26
+  section: 5. Solutions
+  line: 61
+  class: (b)
+  claim: 'Automation: "gated on G1-G4 security review"'
+- id: claim:027
+  row: 27
+  section: 5. Solutions
+  line: 62
+  class: (b)
+  claim: 'Strategy & Advisory: "90-day pilot window"'
+- id: claim:028
+  row: 28
+  section: 5. Solutions
+  line: 63
+  class: (b) — RESOLVED
+  claim: 'Governance: "SADC framework — region''s first operational governance standard — authored by the CEO and submitted to member-state ministers and regulators"'
+- id: claim:029
+  row: 29
+  section: 5. Solutions
+  line: 64
+  class: (b)
+  claim: 'Financial services: "actively sought by COMESA/IDEA" (hedge verified 2026-09-23 useCaseCatalogData.ts:500)'
+- id: claim:030
+  row: 30
+  section: 6. Industries
+  line: 70
+  class: (b)
+  claim: 'Public Sector: "in pilot with UNDP Malawi stakeholders" (hedge verified 2026-09-23)'
+- id: claim:031
+  row: 31
+  section: 6. Industries
+  line: 71
+  class: (a)
+  claim: 'Financial: "No signed engagement exists; no paid client deployments to date."'
+- id: claim:032
+  row: 32
+  section: 6. Industries
+  line: 72
+  class: (a)
+  claim: 'Healthcare: "No confirmed partnership with any named health organisation"'
+- id: claim:033
+  row: 33
+  section: 6. Industries
+  line: 73
+  class: (b)
+  claim: 'Agriculture: "fieldable 2026"'
+- id: claim:034
+  row: 34
+  section: 6. Industries
+  line: 74
+  class: (b) — RESOLVED
+  claim: 'Government: National AI Strategy consultation submission "prepared / drafted for submission" (re-badged from "published" 2026-09-23 siteContent.ts:583/626/852/867, useCaseCatalogData.ts:381, EvidencePage.tsx:162)'
+- id: claim:035
+  row: 35
+  section: 7. Work / Evidence
+  line: 80
+  class: (a)
+  claim: METRICS 144 / 2,373 / 20 / 5-TIER with explicit sources
+- id: claim:036
+  row: 36
+  section: 7. Work / Evidence
+  line: 81
+  class: (b) — RESOLVED
+  claim: PC-01 J&S StopOver Bar "world's smallest AI-native bar"
+- id: claim:037
+  row: 37
+  section: 7. Work / Evidence
+  line: 82
+  class: (a)
+  claim: 'PC-04 Meta-deployment: "152 agents / 20 departments / five-tier... operating daily"'
+- id: claim:038
+  row: 38
+  section: 7. Work / Evidence
+  line: 83
+  class: (a)
+  claim: 'PC-02 Health: "in pilot... no confirmed partnership"'
+- id: claim:039
+  row: 39
+  section: 7. Work / Evidence
+  line: 84
+  class: (a)
+  claim: PC-03 "No signed engagement exists" (VSLA)
+- id: claim:040
+  row: 40
+  section: 7. Work / Evidence
+  line: 85
+  class: (b)
+  claim: PC-05 Partnership with Ministry of Agriculture "in pilot development" (hedge verified 2026-09-23 useCaseCatalogData.ts:321/323, EvidencePage.tsx:128-131)
+- id: claim:041
+  row: 41
+  section: 7. Work / Evidence
+  line: 86
+  class: (a)
+  claim: 'POL-02 Governance pattern in-house: 5-tier, immutable trails, RACI, risk tiers, G1-G4 onboarding'
+- id: claim:042
+  row: 42
+  section: 7. Work / Evidence
+  line: 87
+  class: (b)
+  claim: POL-03 Partnership with MUBAS / UNIMA (hedge verified 2026-09-23 EvidencePage.tsx:153-155, useCaseCatalogData.ts:531-534)
+- id: claim:043
+  row: 43
+  section: 7. Work / Evidence
+  line: 88
+  class: (b) — RESOLVED
+  claim: 'SADC: "region''s first operational governance standard — authored by CEO, submitted to Member State digital ministers and regulators, central banks, regional development banks"'
+- id: claim:044
+  row: 44
+  section: 7. Work / Evidence
+  line: 89
+  class: (b)
+  claim: HONESTY_POLICY "Benchmarks are dated and regenerated on every release"
+- id: claim:045
+  row: 45
+  section: 8. Insights / Pharos
+  line: 95
+  class: (b) — RESOLVED
+  claim: TOME I "12 min read / 1,420 Executive Downloads"
+- id: claim:046
+  row: 46
+  section: 8. Insights / Pharos
+  line: 96
+  class: (b) — RESOLVED
+  claim: TOME II "15 min read / 980 Executive Downloads"
+- id: claim:047
+  row: 47
+  section: 8. Insights / Pharos
+  line: 97
+  class: (b) — RESOLVED
+  claim: TOME III "18 min read / 2,150 Technical Downloads"
+- id: claim:048
+  row: 48
+  section: 8. Insights / Pharos
+  line: 98
+  class: (b) — RESOLVED
+  claim: TOME IV "20 min read / 1,840 Central Bank Downloads"
+- id: claim:049
+  row: 49
+  section: 9. Offerings
+  line: 104
+  class: (b)
+  claim: Offer A1-A4 pricing (MWK/USD, turnaround)
+- id: claim:050
+  row: 50
+  section: 9. Offerings
+  line: 105
+  class: (a)
+  claim: Offer B/C "BLOCKED — DO NOT SELL" + governance notes
+- id: claim:051
+  row: 51
+  section: 9. Offerings
+  line: 106
+  class: (b)
+  claim: Offer E1 "FIELDABLE IN 2026 — PROVEN IN-HOUSE" license
+- id: claim:052
+  row: 52
+  section: 9. Offerings
+  line: 107
+  class: (a)
+  claim: Enterprise line "in active development — modules not yet built"
+- id: claim:053
+  row: 53
+  section: 9. Offerings
+  line: 108
+  class: (b)
+  claim: '"Minimum viable deployment MWK 150,000 (~$85)"'
+- id: claim:054
+  row: 54
+  section: 9. Offerings
+  line: 109
+  class: (b) — RESOLVED
+  claim: '"Verified Institutional Benchmark — audited telemetry in live production deployments across SADC commercial banking, national revenue authorities, and transport corridors"'
+- id: claim:055
+  row: 55
+  section: 9. Offerings
+  line: 110
+  class: (b) — RESOLVED
+  claim: Governance badge "Basel IV / King IV / SADC Regulatory Compliant"
+- id: claim:056
+  row: 56
+  section: 9. Offerings
+  line: 111
+  class: (b) — RESOLVED
+  claim: '"Zero Cloud SaaS Leakage"'
+- id: claim:057
+  row: 57
+  section: 9. Offerings
+  line: 112
+  class: (a)
+  claim: '"144 Verified Agent Configurations in Production"'
+- id: claim:058
+  row: 58
+  section: 9. Offerings
+  line: 113
+  class: (b) — RESOLVED
+  claim: '"deliver production code with zero data leakage"'
+- id: claim:059
+  row: 59
+  section: 9. Offerings
+  line: 114
+  class: (b) — RESOLVED
+  claim: Comparison table "9-month review cycles" (industry generic)
+- id: claim:060
+  row: 60
+  section: 9. Offerings
+  line: 115
+  class: (b)
+  claim: '"All hosted in-region, compliant with Malawi DPA"'
+- id: claim:061
+  row: 61
+  section: 9. Offerings
+  line: 116
+  class: (b)
+  claim: OH B1 hosting "MWK 100,000/mo recurring"
+- id: claim:062
+  row: 62
+  section: 9. Offerings
+  line: 117
+  class: (b) — RESOLVED
+  claim: 'Haomtgv Governance tab rings: "100% Statutory Compliance // Zero Ungoverned State Changes"; "<180ms" routing; "0.00% (Strict Air-Gap)"; "100% BLOCKED EGRESS"; "5 Discrete Risk Tiers // 0% Hallucinated
+    Commits"; "48hr → 14.2s mobile money settlement audit; 25k+ smallholders served"; "Tested across 152 agents running daily"; "PROVEN IN PRODUCTION"'
+- id: claim:063
+  row: 63
+  section: 9. Offerings
+  line: 118
+  class: (b) — RESOLVED
+  claim: '"48hr → 14.2s mobile money settlement audit; 25k+ smallholders served"; "48h → 14.2s Latency Collapse"'
+- id: claim:064
+  row: 64
+  section: 10. Contact / Footer
+  line: 124
+  class: (b) — RESOLVED
+  claim: '"A human reviews every submission and responds within 12 business hours" (+ modal duplicate)'
+- id: claim:065
+  row: 65
+  section: 10. Contact / Footer
+  line: 125
+  class: (b) — RESOLVED
+  claim: '"Offices in Southern Africa and International Advisory Network"'
+- id: claim:066
+  row: 66
+  section: 10. Contact / Footer
+  line: 126
+  class: (b)
+  claim: Engagement scopes "2-Week Sprint / 90-Day Pilot / Enterprise / Boardroom" + "Within 30 days" default
+- id: claim:067
+  row: 67
+  section: 10. Contact / Footer
+  line: 127
+  class: (b)
+  claim: '"Strict non-disclosure agreement standard"'

@@ -1,0 +1,19 @@
+# Audience Entity Definition
+
+key: developer
+name: Developer
+role: technical
+industry: digital_transformation
+seniority: mid
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+  - model_deployment
+preferred_engagement:
+  - workshop
+  - implementation
+content_types:
+  - insight
+  - use_case
+  - report

@@ -7,9 +7,13 @@ capability: ai_strategy
 engagement_models:
   - assessment
   - workshop
-proof: []
+proof:
+  - live_ai_assessment_demo
 audience:
   - ceo
   - cto
 duration_weeks: 4
 price_tier: professional
+evidence_references:
+  - claim:023
+  - claim:027

@@ -5,7 +5,11 @@ title: "Limited AI Adoption Capacity"
 description: "Organizations lack the knowledge, skills, and infrastructure to effectively adopt and implement AI solutions"
 industry: african_ai
 severity: high
-related_problems: []
+related_problems:
+  - skills_gap
+  - data_infrastructure_lack
+  - change_resistance
+  - talent_shortage
 affected_geographies:
   - malawi
   - sADC

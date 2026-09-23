@@ -1,0 +1,11 @@
+# Problem Entity Definition
+
+key: researcher_methodological_rigor
+title: "Researcher Methodological Rigor"
+description: "Challenges in maintaining methodological rigor in AI research and ensuring valid findings"
+industry: ai_governance
+severity: medium
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - global

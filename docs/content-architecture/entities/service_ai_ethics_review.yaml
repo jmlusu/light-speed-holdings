@@ -1,0 +1,16 @@
+# Service Entity Definition
+
+key: ai_ethics_review_service
+title: "AI Ethics Review"
+description: "Ethical review and compliance validation for AI systems and use cases"
+capability: ai_ethics
+engagement_models:
+  - assessment
+proof: []
+audience:
+  - ceo
+  - board
+duration_weeks: 4
+price_tier: professional
+evidence_references:
+  - claim:041

@@ -1,0 +1,16 @@
+# Capability Entity Definition
+
+key: change_management
+title: "Change Management"
+description: "Managing organizational change for AI adoption across culture, process, and people"
+category: organizational
+maturity_model_level: 3
+related_problems:
+  - change_resistance
+enables:
+  - accelerated_ai_adoption
+implemented_by:
+  - change_management_service
+evidence_references:
+  - claim:012
+  - claim:066

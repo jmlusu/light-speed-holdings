@@ -1,0 +1,9 @@
+# Technology Entity Definition
+
+key: aws
+name: Amazon Web Services
+category: cloud_platform
+maturity: mature
+related_use_cases:
+  - predictive_maintenance
+  - customer_segmentation

@@ -1,0 +1,17 @@
+# Service Entity Definition
+
+key: api_integration_service
+title: "API Integration"
+description: "Connecting AI capabilities to existing business systems and API ecosystems"
+capability: technology_integration
+engagement_models:
+  - implementation
+proof: []
+audience:
+  - cto
+  - developer
+duration_weeks: 6
+price_tier: enterprise
+evidence_references:
+  - claim:020
+  - claim:021

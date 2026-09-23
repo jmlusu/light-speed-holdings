@@ -12,3 +12,7 @@ related_capabilities:
 related_use_cases:
   - predictive_maintenance
 published_date: "2024-01-15"
+evidence_references:
+  - claim:031
+  - claim:032
+  - claim:033

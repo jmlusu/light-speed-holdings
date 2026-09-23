@@ -81,7 +81,7 @@ uniqueness:
 
 # Evidence ledger integration
 evidence_integration:
-  - "All claims about LightSpeed's knowledge/capabilities must reference claim IDs from the evidence ledger (65 claims: 18 evidenced / 29 qualified / 18 unqualified)"
+  - "All claims about LightSpeed's knowledge/capabilities must reference claim IDs from the evidence ledger (67 claims: 18 fully evidenced / 49 qualified or remediated-to-RESOLVED, incl. 23 RESOLVED, per research/site-claims-index.yaml)"
   - "New entity definitions claiming LightSpeed capability must reference at least one evidenced or qualified claim"
   - "Unqualified claims must be flagged in terminology issues and require substantiation before entity publication"
   - "Evidence references in entity metadata must use the format 'claim:<ID>' (e.g., 'claim:019', 'claim:020')"

@@ -1,0 +1,22 @@
+# Audience Entity Definition
+
+key: ceo
+name: Chief Executive Officer
+role: executive
+industry: null
+seniority: executive
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+  - ai_governance_policy
+preferred_engagement:
+  - assessment
+  - workshop
+content_types:
+  - page
+  - service
+  - case_study
+  - insight
+  - use_case
+  - engagement_model
