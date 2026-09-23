@@ -118,4 +118,39 @@ if (Test-Path -LiteralPath $PyProject) {
   }
 }
 
+# C1: Archive front-matter gate. Every completed archived change must have
+# validation_status: "pass", phase in {validate, implement}, and spec_review != "pending".
+# Pre-existing archives that honestly retain unresolved validation or spec state
+# (recorded before this gate existed) are allowlisted so the gate fails only on
+# NEW violations. Do not add entries here without evidence that the change is
+# genuinely unresolvable in the current pass.
+$ArchiveExceptions = @(
+  "2026-08-11-sprint-7-tool-vocabulary-hitl-expiry-quality-hardening-doc-reconciliation",
+  "2026-08-17-phase-b-opentelemetry-tracing-40",
+  "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
+  "2026-08-31-ceo-alert-center",
+  "2026-08-31-executive-kpi-scorecard-rich-org-chart"
+)
+$ArchiveRoot = Join-Path $Changes "archive"
+foreach ($dir in (Get-ChildItem -LiteralPath $ArchiveRoot -Directory | Sort-Object Name)) {
+  $sumPath = Join-Path $dir.FullName "summary.md"
+  if (-not (Test-Path -LiteralPath $sumPath)) { continue }
+  $sumText = Get-Content -Encoding UTF8 -Raw -LiteralPath $sumPath
+  $sumStatus = [regex]::Match($sumText, '(?m)^status:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  if ($sumStatus -ne "completed") { continue }
+  if ($ArchiveExceptions -contains $dir.Name) { continue }
+  $valStatus = [regex]::Match($sumText, '(?m)^validation_status:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  $sumPhase = [regex]::Match($sumText, '(?m)^phase:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  $specReview = [regex]::Match($sumText, '(?m)^spec_review:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  if ($valStatus -ne "pass") {
+    Fail "$($dir.Name): validation_status is '$valStatus', expected 'pass'. Remediate with evidence or allowlist honestly."
+  }
+  if ($sumPhase -notin @("validate", "implement")) {
+    Fail "$($dir.Name): phase is '$sumPhase', expected 'validate' or 'implement'."
+  }
+  if ($specReview -eq "pending") {
+    Fail "$($dir.Name): spec_review is 'pending' on a completed archive. Resolve the review before completion."
+  }
+}
+
 Write-Output "ECL lint passed."

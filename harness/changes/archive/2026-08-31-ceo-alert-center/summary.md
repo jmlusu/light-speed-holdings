@@ -20,7 +20,7 @@ tags:
   - "dashboard"
   - "alerting"
   - "business-readiness"
-validation_status: "passed"
+validation_status: "pass"
 created_at: "2026-08-31"
 updated_at: "2026-08-31"
 session_id: "253e0f06-f353-4d4d-a670-7f053e80c7ae"
