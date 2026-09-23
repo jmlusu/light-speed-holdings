@@ -1,0 +1,11 @@
+# Business Outcome Entity Definition
+
+key: improved_decision_making
+title: "Improved Decision Making"
+description: "Better business decisions through AI analytics and data-driven insights"
+metric: "decision-quality-score"
+target: "executive leadership"
+related_problems:
+  - low_ai_adoption
+enabled_by:
+  - data_governance

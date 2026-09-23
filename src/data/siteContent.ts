@@ -580,7 +580,7 @@ export const geography: GeographyStage[] = [
     name: 'Global',
     title: 'Our Knowledge and Technology Ecosystem',
     description:
-      'Our knowledge, research, and technology ecosystem spans the world. The National AI Strategy consultation is published; the SADC framework is targeted at regional ICT ministers. Our orchestration engine is provider-agnostic and self-hostable.',
+      'Our knowledge, research, and technology ecosystem spans the world. A National AI Strategy consultation submission is prepared, targeting regional ICT ministers and the SADC framework; our orchestration engine is provider-agnostic and self-hostable.',
     status: { label: 'Published', tone: 'proven' as const },
   },
 ];
@@ -623,7 +623,7 @@ export const leadership: Leader[] = [
     ],
     education: 'Executive leadership with deep domain expertise in AI-native enterprise building.',
     certifications: [
-      'National AI Strategy consultation submission (published)',
+      'National AI Strategy consultation submission (drafted)',
       'SADC Agentic AI Governance Framework (authored)',
     ],
     organizations: [
@@ -849,7 +849,7 @@ export interface EventItem {
 export const events: EventItem[] = [
   { id: 'evt-01', title: 'Agentic AI in Africa — Executive Briefing', type: 'Executive Briefing', description: 'A focused leadership briefing on what agentic AI means for African organizations and jurisdictions.', date: 'Invite to speak' },
   { id: 'evt-02', title: 'AI Governance Workshop', type: 'Workshop', description: 'Half-day workshop for boards and ministerial audiences on the SADC Agentic AI Governance Framework.', date: 'Invite to speak' },
-  { id: 'evt-03', title: 'Malawi National AI Strategy', type: 'Policy', description: 'Published consultation submission on positioning Malawi as a source of agentic AI answers.', date: 'Published' },
+  { id: 'evt-03', title: 'Malawi National AI Strategy', type: 'Policy', description: 'Drafted consultation submission on positioning Malawi as a source of agentic AI answers.', date: 'Drafted' },
   { id: 'evt-04', title: 'SADC Agentic AI Governance Framework', type: 'Policy', description: 'Policy proposal targeted at regional ICT ministers and regulators. In active development.', date: 'In development' },
 ];
 
@@ -864,7 +864,7 @@ export interface NewsItem {
 
 export const newsItems: NewsItem[] = [
   { id: 'news-01', title: 'SADC Agentic AI Governance Framework in Active Development', type: 'Policy', description: 'The SADC Agentic AI Governance Framework — a graduated-autonomy governance standard for autonomous agentic AI — is targeted at member-state ministers and regulators.', date: 'Sep 2026' },
-  { id: 'news-02', title: 'National AI Strategy Consultation Published', type: 'Research', description: 'The CEO\u2019s policy proposal positioning Malawi as a source of agentic AI answers has been published as part of the National AI Strategy consultation.', date: 'Sep 2026' },
+  { id: 'news-02', title: 'National AI Strategy Consultation Submission Prepared', type: 'Research', description: 'The CEO\u2019s policy proposal positioning Malawi as a source of agentic AI answers has been prepared as a consultation submission for the National AI Strategy.', date: 'Sep 2026' },
   { id: 'news-03', title: 'AI Company Builder License Available', type: 'Product', description: 'Offer E — AI Company Builder License is now available. License the same orchestration engine that runs LightSpeed Holdings: your own governed AI workforce, self-hosted.', date: 'Aug 2026' },
   { id: 'news-04', title: 'UNDP Malawi Pilot Partnership', type: 'Partnership', description: 'In pilot with UNDP Malawi stakeholders on data, analytics, and donor reporting pipeline.', date: 'Aug 2026' },
   { id: 'news-05', title: '152-Agent Operation Live', type: 'Company', description: 'LightSpeed Holdings is now the AI-native company we sell — 152 agents across 20 departments, five-tier HITL approvals, immutable audit trails, operating daily.', date: 'Jul 2026' },

@@ -7,18 +7,78 @@ This file provides a machine-readable index of all entity definitions in the LCA
 - organization - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\organization.yaml
 - industry_african_ai - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\industry_african_ai.yaml
 - problem_low_ai_adoption - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_low_ai_adoption.yaml
+- problem_ceo_strategic_alignment - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_ceo_strategic_alignment.yaml
+- problem_cto_technical_implementation - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_cto_technical_implementation.yaml
+- problem_board_risk_governance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_board_risk_governance.yaml
+- problem_investor_roi_uncertainty - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_investor_roi_uncertainty.yaml
+- problem_developer_technical_debt - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_developer_technical_debt.yaml
+- problem_researcher_methodological_rigor - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_researcher_methodological_rigor.yaml
+- problem_student_foundational_knowledge - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_student_foundational_knowledge.yaml
 - capability_ai_strategy - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\capability_ai_strategy.yaml
 - service_ai_opportunity_assessment - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\service_ai_opportunity_assessment.yaml
 - use_case_predictive_maintenance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\use_case_predictive_maintenance.yaml
+- person_ceo - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\person_ceo.yaml
+- geography_malawi - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\geography_malawi.yaml
+- business_outcome_accelerated_ai_adoption - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\business_outcome_accelerated_ai_adoption.yaml
+- technology_python - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\technology_python.yaml
+- technology_pytorch - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\technology_pytorch.yaml
+- technology_aws - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\technology_aws.yaml
+- technology_openai_api - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\technology_openai_api.yaml
+- technology_anthropic - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\technology_anthropic.yaml
+- technology_docker - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\technology_docker.yaml
+- methodology_pharos_method - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\methodology_pharos_method.yaml
+- framework_ai_maturity_framework - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\framework_ai_maturity_framework.yaml
+- insight_ai_adoption_trends_2024 - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\insight_ai_adoption_trends_2024.yaml
+- research_openai_capabilities_survey - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\research_openai_capabilities_survey.yaml
+- policy_ai_governance_policy - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\policy_ai_governance_policy.yaml
+- case_study_ai_deployment_in_manufacturing - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\ai_deployment_in_manufacturing.yaml
+- demonstration_live_ai_assessment_demo - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\demonstration_live_ai_assessment_demo.yaml
+- resource_white_paper_ai_governance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\resources\resource_white_paper_ai_governance.yaml
+- event_ai_summit_2024 - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\resources\event_ai_summit_2024.yaml
+- engagement_model_assessment - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\engagement_model_assessment.yaml
+- experience_ceo_roundtable_2024 - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\experience_ceo_roundtable_2024.yaml
+- audience_ceo - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_ceo.yaml
+- audience_cto - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_cto.yaml
+- audience_board - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_board.yaml
+- audience_investor - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_investor.yaml
+- audience_partner - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_partner.yaml
+- audience_developer - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_developer.yaml
+- audience_researcher - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_researcher.yaml
+- audience_student - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\audience_student.yaml
+- content_type_page - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\content_type_page.yaml
+- problem_skills_gap - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_skills_gap.yaml
+- problem_data_infrastructure_lack - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_data_infrastructure_lack.yaml
+- problem_change_resistance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_change_resistance.yaml
+- problem_talent_shortage - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\problem_talent_shortage.yaml
+- capability_machine_learning_operations - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\capability_machine_learning_operations.yaml
+- capability_data_governance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\capability_data_governance.yaml
+- capability_ai_ethics - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\capability_ai_ethics.yaml
+- capability_change_management - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\capability_change_management.yaml
+- capability_technology_integration - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\capability_technology_integration.yaml
+- service_model_deployment - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\service_model_deployment.yaml
+- service_ai_governance_framework - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\service_ai_governance_framework.yaml
+- service_ai_ethics_review - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\service_ai_ethics_review.yaml
+- service_change_management - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\service_change_management.yaml
+- service_api_integration - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\service_api_integration.yaml
+- engagement_model_implementation - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\engagement_model_implementation.yaml
+- engagement_model_ongoing_governance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\engagement_model_ongoing_governance.yaml
+- engagement_model_advisory - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\engagement_model_advisory.yaml
+- engagement_model_workshop - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\engagement_model_workshop.yaml
+- business_outcome_reduced_operational_costs - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\business_outcome_reduced_operational_costs.yaml
+- business_outcome_improved_decision_making - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\business_outcome_improved_decision_making.yaml
+- business_outcome_enhanced_customer_experience - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\business_outcome_enhanced_customer_experience.yaml
+- business_outcome_competitive_advantage - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\business_outcome_competitive_advantage.yaml
+- business_outcome_accelerated_time_to_market - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\business_outcome_accelerated_time_to_market.yaml
+- case_study_ai_governance_finance - C:\Users\jmlus\light-speed-holdings\docs\content-architecture\entities\case_study_ai_governance_finance.yaml
 
 ## Index Version
 
-1.0.0
+2.1.0
 
 ## Last Updated
 
-2026-09-22
+2026-09-23
 
 ## Total Entities
 
-6
+66

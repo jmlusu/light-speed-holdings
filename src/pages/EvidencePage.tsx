@@ -159,7 +159,7 @@ const POLICY_ITEMS: ProofCardData[] = [
     title: 'National AI Strategy + SADC Framework',
     badge: 'Published (National AI Strategy) / In active development (SADC Framework).',
     tone: 'slate',
-    text: 'The SADC Agentic AI Governance Framework is the region\'s first operational governance standard for autonomous agentic AI — authored by the CEO and submitted to SADC Member State digital ministers and telecom regulators (MACRA, CRASA), central banks, and regional development banks. The National AI Strategy consultation submission has been published, proposing lighthouse use cases and governance architecture for the Department of E-Government.',
+    text: 'The SADC Agentic AI Governance Framework is the region\'s first operational governance standard for autonomous agentic AI — authored by the CEO and submitted to SADC Member State digital ministers and telecom regulators (MACRA, CRASA), central banks, and regional development banks. A National AI Strategy consultation submission has been drafted, proposing lighthouse use cases and governance architecture for the Department of E-Government.',
   },
 ];
 
