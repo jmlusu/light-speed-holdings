@@ -59,6 +59,7 @@ from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.orchestrator.notifier import ApprovalNotifier
 from ai_company.orchestrator.scheduler import Scheduler
 from ai_company.orchestrator.suspend_store import SuspendedState, SuspendStore
+from ai_company.publishing.queue import PublishQueue
 from ai_company.store.file_store import FileStore
 from ai_company.telemetry import (
     detach_task_context,
@@ -801,6 +802,16 @@ class Executor:
                     tools_used=[r.tool for r in result.tool_results if r.tool],
                 )
                 logger.info("  COMPLETED: %s", result.final_response[:80])
+
+                # 7b. Auto-enqueue Pharos routine artifacts to the publish queue
+                #     (buy-side rail, ADR-020 P1). Best-effort: a queue failure
+                #     must never fail the already-completed task.
+                try:
+                    self._enqueue_routine_artifact(task, result)
+                except Exception:  # noqa: BLE001 - enqueue is best-effort
+                    logger.warning(
+                        "Publish enqueue failed for task %s", task.id, exc_info=True
+                    )
             elif getattr(result, "timed_out", False):
                 # O7: max-iterations exhaustion is a distinct outcome from a
                 # hard failure — persist TIMEOUT so dashboards/operators can
@@ -891,6 +902,48 @@ class Executor:
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         FileStore(task_dir, backup=False).write_json("loop_result.json", log_data)
+
+    def _enqueue_routine_artifact(self, task: Task, result: Any) -> None:
+        """Enqueue a completed Pharos routine artifact to the publish queue.
+
+        Routines fired by the scheduler carry ``pharos-routine`` +
+        ``routine_run:<routine_run_id>`` tags (see orchestrator/routine.py).
+        On success the agent's final response is recorded as a platform-ready
+        publish artifact (default LinkedIn) so the content loop's buy-side
+        rail (ADR-020 P1) is stored for operator review/posting.
+
+        Idempotent: the ``routine_run:<id>`` tag becomes the queue record's
+        ``notes``; a re-run of the same routine fire will not double-enqueue.
+        Empty final responses are skipped. Never raises — callers wrap this
+        in try/except (best-effort).
+        """
+        if "pharos-routine" not in (task.tags or []):
+            return
+
+        body = (result.final_response or "").strip()
+        if not body:
+            logger.info("Routine task %s finished with empty output; skipping enqueue", task.id)
+            return
+
+        routine_run_id = ""
+        for tag in task.tags or []:
+            if tag.startswith("routine_run:"):
+                routine_run_id = tag.split(":", 1)[1]
+                break
+        notes = f"routine_run:{routine_run_id or task.id}"
+
+        queue = PublishQueue()
+        if any(record.notes == notes for record in queue.list()):
+            logger.info("Publish artifact for %s already queued; skipping", notes)
+            return
+
+        record = queue.enqueue(
+            "linkedin",
+            title=task.name or f"Routine {routine_run_id or task.id}",
+            body=body,
+            notes=notes,
+        )
+        logger.info("Enqueued routine artifact %s (platform=linkedin): %r", record.id, record.title)
 
     def _create_subtask_from_record(self, parent_task: Task, record: Any) -> None:
         """Create a subtask from a ToolCallRecord with the task/delegate tool."""

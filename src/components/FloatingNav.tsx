@@ -20,6 +20,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
     { name: 'What We Do', href: '/what-we-do' },
     { name: 'Proof', href: '/proof' },
     { name: 'Technology', href: '/technology' },
+    { name: 'Ask LightSpeed', href: '/ask' },
     { name: 'Insights', href: '/insights' },
     { name: 'About', href: '/about' },
   ];

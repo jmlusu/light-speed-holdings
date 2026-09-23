@@ -1,0 +1,11 @@
+# Geography Entity Definition
+
+key: malawi
+name: Malawi
+type: country
+parent_geography: null
+sibling_geographies:
+  - sADC
+  - africa
+  - global
+relates_to: []

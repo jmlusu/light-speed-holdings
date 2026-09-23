@@ -1,0 +1,71 @@
+{
+  "workflow": "intent_routing",
+  "description": "Classify incoming task to correct specialist agent",
+  "samples": [
+    {
+      "input": {
+        "task": "Research the latest developments in quantum computing error correction and summarize key papers from 2024",
+        "context": {"available_agents": ["research-specialist", "coding-specialist", "creative-specialist", "ops-specialist"]},
+        "history": []
+      },
+      "expected": {
+        "intent": "research",
+        "complexity": "expert",
+        "risk": "low",
+        "requires_human": false
+      }
+    },
+    {
+      "input": {
+        "task": "Refactor the authentication module to use JWT tokens instead of session cookies",
+        "context": {"available_agents": ["research-specialist", "coding-specialist", "creative-specialist", "ops-specialist"]},
+        "history": ["Previous attempt failed due to middleware conflicts"]
+      },
+      "expected": {
+        "intent": "coding",
+        "complexity": "standard",
+        "risk": "medium",
+        "requires_human": false
+      }
+    },
+    {
+      "input": {
+        "task": "Write a blog post announcing our new AI agent platform launch with technical deep-dive",
+        "context": {"available_agents": ["research-specialist", "coding-specialist", "creative-specialist", "ops-specialist"]},
+        "history": []
+      },
+      "expected": {
+        "intent": "creative",
+        "complexity": "standard",
+        "risk": "low",
+        "requires_human": false
+      }
+    },
+    {
+      "input": {
+        "task": "Deploy the new payment service to production with zero-downtime migration",
+        "context": {"available_agents": ["research-specialist", "coding-specialist", "creative-specialist", "ops-specialist"]},
+        "history": ["Staging deployment successful"]
+      },
+      "expected": {
+        "intent": "ops",
+        "complexity": "expert",
+        "risk": "critical",
+        "requires_human": true
+      }
+    },
+    {
+      "input": {
+        "task": "Help me understand why my API calls are returning 401 errors",
+        "context": {"available_agents": ["research-specialist", "coding-specialist", "creative-specialist", "ops-specialist"]},
+        "history": []
+      },
+      "expected": {
+        "intent": "coding",
+        "complexity": "trivial",
+        "risk": "low",
+        "requires_human": false
+      }
+    }
+  ]
+}

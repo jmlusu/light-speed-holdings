@@ -423,6 +423,12 @@ function Validate-Change([string]$Dir) {
   if ($status -eq "completed") {
     $validation = Get-ValidationStatus $summary $meta
     if ($validation -ne "pass") { throw "completed change must have validation_status: pass or a passing Validation section." }
+    if ($phase -notin @("validate", "implement")) {
+      throw "completed change must be in phase validate or implement (got: $phase). Move the change back to validate before closing."
+    }
+    if ($meta["spec_review"] -eq "pending") {
+      throw "completed change must not have spec_review: pending. Resolve the spec review before closing."
+    }
     if ($tasks -match "- \[ \] " -and $tasks -notmatch "## Deferred Tasks\s+(\r?\n)+-\s+(None|Deferred|Explained)") {
       throw "completed change has pending tasks without a Deferred Tasks explanation."
     }

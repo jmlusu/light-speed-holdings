@@ -1,0 +1,14 @@
+# Problem Entity Definition
+
+key: talent_shortage
+title: "AI Talent Shortage"
+description: "Lack of AI-specialized personnel across technical and strategic roles in the local labor market"
+industry: african_ai
+severity: high
+related_problems:
+  - low_ai_adoption
+  - skills_gap
+affected_geographies:
+  - malawi
+  - sADC
+  - africa
