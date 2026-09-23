@@ -52,6 +52,58 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         </p>
       </div>
 
+      {/* Aspire. Act. Achieve. Thesis Banner */}
+      <div className={`rounded-3xl border px-6 sm:px-10 py-8 text-center relative overflow-hidden ${
+        isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
+      }`}>
+        <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
+        <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
+        <p className="text-[11px] font-body font-bold tracking-[0.35em] text-ls-red uppercase mb-3">
+          Our Thesis
+        </p>
+        <p className="text-2xl sm:text-4xl font-black font-display tracking-tight text-ls-cyan">
+          ASPIRE. ACT. ACHIEVE.
+        </p>
+        <p className={`text-xs sm:text-sm mt-3 max-w-xl mx-auto leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+          Ambition without execution is theatre. We aspire with intent, act with governed speed, and measure what we achieve.
+        </p>
+      </div>
+
+      {/* Operating Model: Strategy → Build → Govern → Research */}
+      <div className={`p-6 sm:p-8 rounded-3xl border relative overflow-hidden ${
+        isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
+      }`}>
+        <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
+        <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
+        <div className="flex items-center gap-2 border-b border-ls-grey-dark/80 pb-3 mb-5">
+          <StatusLedPip status="emerald" isLight={isLight} />
+          <h2 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+            Operating Model
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { step: '01', title: 'Strategy', body: 'Clarify ambition, constraints, and the decisions that matter before any build begins.' },
+            { step: '02', title: 'Build', body: 'Design and ship agentic systems, data pipelines, and workflows against a governed backlog.' },
+            { step: '03', title: 'Govern', body: 'Install controls, policy, and human-in-the-loop authority so systems stay accountable.' },
+            { step: '04', title: 'Research', body: 'Feed evidence, benchmarks, and Pharos policy work back into the next strategy cycle.' }
+          ].map((item) => (
+            <div
+              key={item.title}
+              className={`p-5 rounded-2xl border space-y-2 ${isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'}`}
+            >
+              <span className="text-[10px] font-body font-bold tracking-widest text-ls-red">[ {item.step} ]</span>
+              <h3 className={`text-sm font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
+                {item.title}
+              </h3>
+              <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                {item.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Our Story & Thesis Chassis */}
       <div className={`p-8 sm:p-12 rounded-3xl border relative overflow-hidden transition-all ${
         isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
