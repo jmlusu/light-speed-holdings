@@ -3,7 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.0.0",
+    "bun": ">=1.4.0"
+  },
+  "packageManager": "bun@1.4.2",
   "scripts": {
+    "preinstall": "node scripts/check-package-manager.cjs",
     "dev": "vite",
     "build": "tsc --noEmit --pretty false; vite build",
     "lint": "tsc --noEmit --pretty false",
