@@ -58,7 +58,7 @@ export const AiCompanyBuilderOsExplorer: React.FC<AiCompanyBuilderOsExplorerProp
         setCliOutput([
           '$ ' + cmd,
           '[BOOTSTRAP] Loading company.yaml configuration...',
-          '[BOOTSTRAP] Validating Pydantic schemas for 20 Departments & 152 Agents...',
+          '[BOOTSTRAP] Validating Pydantic schemas for 20 Departments & 90 Agents...',
           '[BOOTSTRAP] Generating directory structure: config/, board/, executives/, departments/...',
           '[BOOTSTRAP] Rendering Jinja2 templates for CEO, CoS, COO, CTO, CFO, CISO...',
           '[BOOTSTRAP] Compiling 5-tier Human-in-the-Loop Approval Matrix & 5x5 Risk Matrix...',
@@ -84,7 +84,7 @@ export const AiCompanyBuilderOsExplorer: React.FC<AiCompanyBuilderOsExplorerProp
         setCliOutput([
           '$ ' + cmd,
           '[GRAPH] Building NetworkX Organization & Workflow Graph...',
-          'Nodes: 152 Agents + 20 Departments + 1 Board',
+          'Nodes: 90 Agents + 20 Departments + 1 Board',
           'Edges: 342 Workflow Dispatch & Escalation Channels',
           'Graph density: 0.082 (Modular Cluster Topology)',
           'Exported to graphify-out/graph.json (AST-synchronized)'
@@ -253,7 +253,7 @@ export const AiCompanyBuilderOsExplorer: React.FC<AiCompanyBuilderOsExplorerProp
   location: Lilongwe, Malawi
   governance: 5-Tier Human-in-the-Loop (HITL)
   departments_count: 20
-  agents_count: 152
+  agents_count: 90
   llm_providers: [gemini, opencode, deepseek, ollama, openai]
   compliance: [Malawi_DPA_2017_2024, GDPR]`}
 
@@ -305,7 +305,7 @@ export const AiCompanyBuilderOsExplorer: React.FC<AiCompanyBuilderOsExplorerProp
               </div>
               <div className={`p-4 rounded-xl border ${isLight ? 'bg-ls-grey-light border-ls-grey-dark' : 'bg-ls-navy border-ls-grey-dark'}`}>
                 <div className="font-bold text-ls-red mb-1">AgentModel</div>
-                <div className="text-ls-grey-light-text text-[11px]">152 specialist agents with canonical tool vocabulary & memory isolation.</div>
+                <div className="text-ls-grey-light-text text-[11px]">90 specialist agents with canonical tool vocabulary & memory isolation.</div>
               </div>
             </div>
           </div>

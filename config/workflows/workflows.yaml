@@ -314,13 +314,13 @@ workflows:
       - id: "generating"
         name: "Generate Agent Files"
         action: "generator.generates_agent"
-        owner: "generator-owner"
+        owner: "registry-owner"
         inputs: ["request_id", "agent_id", "role", "department", "tools"]
         outputs: ["agent_files"]
       - id: "testing"
         name: "Test Agent"
-        action: "qa-engineer.tests_agent"
-        owner: "qa-engineer"
+        action: "test-engineering-lead.tests_agent"
+        owner: "test-engineering-lead"
         inputs: ["agent_id", "agent_files"]
         outputs: ["test_results"]
       - id: "activate"
@@ -362,8 +362,8 @@ workflows:
         outputs: ["implementation"]
       - id: "test"
         name: "Testing"
-        action: "qa-engineer.tests"
-        owner: "qa-engineer"
+        action: "test-engineering-lead.tests"
+        owner: "test-engineering-lead"
         inputs: ["implementation"]
         outputs: ["tested"]
       - id: "launch"
@@ -388,29 +388,29 @@ workflows:
         sla_hours: 24
       - id: "deploy_interviews"
         name: "Deploy Interview Agents"
-        action: "interview_agent.deploys"
-        owner: "interview_agent"
+        action: "consulting_lead.deploys"
+        owner: "consulting_lead"
         inputs: ["engagement_id", "interview_plan", "employee_list"]
         outputs: ["interview_results"]
         sla_hours: 48
       - id: "synthesize_data"
         name: "Synthesize Interview Data"
-        action: "workflow_mapper.synthesizes"
-        owner: "workflow_mapper"
+        action: "consulting_lead.synthesizes"
+        owner: "consulting_lead"
         inputs: ["engagement_id", "interview_results"]
         outputs: ["workflow_maps", "pain_points"]
         sla_hours: 24
       - id: "identify_opportunities"
         name: "Identify AI Opportunities"
-        action: "opportunity_identifier.identifies"
-        owner: "opportunity_identifier"
+        action: "consulting_lead.identifies"
+        owner: "consulting_lead"
         inputs: ["engagement_id", "workflow_maps", "pain_points"]
         outputs: ["opportunities", "roi_estimates"]
         sla_hours: 24
       - id: "draft_roadmap"
         name: "Draft Transformation Roadmap"
-        action: "opportunity_identifier.drafts_roadmap"
-        owner: "opportunity_identifier"
+        action: "consulting_lead.drafts_roadmap"
+        owner: "consulting_lead"
         inputs: ["engagement_id", "opportunities", "roi_estimates"]
         outputs: ["roadmap_draft"]
         sla_hours: 48

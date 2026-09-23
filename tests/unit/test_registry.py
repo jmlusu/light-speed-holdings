@@ -314,7 +314,7 @@ class TestRegistrySync:
         count = sync_registry(json_path=json_out)
         errors = verify_sync(json_path=json_out)
         assert errors == [], f"Roundtrip sync drift: {errors}"
-        assert count >= 100, f"Expected >= 100 agents, got {count}"
+        assert count >= 90, f"Expected >= 90 agents, got {count}"
 
     def test_no_agents_lost_in_sync(self, tmp_path: Path):
         """Every YAML agent ID must appear in the JSON output."""

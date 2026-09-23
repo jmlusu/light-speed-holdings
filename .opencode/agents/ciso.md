@@ -18,7 +18,7 @@ Department: Security
 
 Reports To: chief_of_staff
 
-Direct Reports: security_architect, security_compliance_lead, ai_security_specialist, penetration_testing_lead, incident_response_lead, devsecops_lead, supply_chain_security_engineer, threat_intelligence_analyst
+Direct Reports: security_architect, security_compliance_lead, ai_security_specialist, incident_response_lead, devsecops_lead
 
 
 ---

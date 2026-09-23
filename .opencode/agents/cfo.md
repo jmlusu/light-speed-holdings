@@ -18,7 +18,7 @@ Department: Finance
 
 Reports To: chief_of_staff
 
-Direct Reports: financial_analyst, investor_relations_lead
+Direct Reports: financial_analyst
 
 
 ---

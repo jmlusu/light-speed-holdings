@@ -119,12 +119,12 @@ All notification types follow this base structure:
 {
   "notification": {
     "title": "Escalation: Task SLA Timeout",
-    "body": "backend-engineer → lead-engineer: Task exceeded 30-min SLA timeout"
+    "body": "senior-backend-engineer → lead-engineer: Task exceeded 30-min SLA timeout"
   },
   "data": {
     "type": "escalation",
     "task_id": "550e8400",
-    "from_agent": "backend-engineer",
+    "from_agent": "senior-backend-engineer",
     "to_agent": "lead-engineer",
     "reason": "Task exceeded SLA timeout of 30 minutes",
     "action_url": "/approvals?tab=escalations"
@@ -197,12 +197,12 @@ All notification types follow this base structure:
 {
   "notification": {
     "title": "Task Failed",
-    "body": "backend-engineer: Build pipeline failed for main branch"
+    "body": "senior-backend-engineer: Build pipeline failed for main branch"
   },
   "data": {
     "type": "task_failed",
     "task_id": "660f9500",
-    "receiver_id": "backend-engineer",
+    "receiver_id": "senior-backend-engineer",
     "instruction": "Build pipeline for main branch",
     "error": "CI/CD pipeline exited with code 1",
     "action_url": "/tasks?task=660f9500&filter=failed"

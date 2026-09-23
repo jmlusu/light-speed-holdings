@@ -1,6 +1,6 @@
 # LightSpeed Narrative & Positioning Document
 
-*Canonical source of truth for all 152 agents (151 AI + 1 human CEO) across 20 departments. Generated during ECL change "Narrative and Positioning Track - LightSpeed Narrative & Positioning Document" (active, intake phase).*
+*Canonical source of truth for all 90 agents (89 AI + 1 human CEO) across 20 departments. Generated during ECL change "Narrative and Positioning Track - LightSpeed Narrative & Positioning Document" (active, intake phase).*
 
 ---
 
@@ -8,7 +8,7 @@
 
 LightSpeed Holdings is the AI-native company builder for Southern Africa. At the center is Jacob "Jack" Mlusu, an AI-Native Enterprise Transformation leader who helps governments, corporations, and development institutions design, govern, and deploy Agentic AI organizations across Malawi and the SADC region. This is not theory — it is an operating reality.
 
-One human CEO directs a workforce of 151 AI agents across 20 departments. This is the canonical count: 152 agents total (151 AI + 1 human CEO), 20 departments, as verified in `source-of-truth.yaml` and `company-registry.yaml`. The CEO sets vision and makes final decisions on high-stakes matters; the agentic workforce executes. Every major decision needs a clear owner. This structure — a human CEO directing AI agents — is the differentiated proof point that positions LightSpeed not as a services firm but as a living, breathing AI-native enterprise.
+One human CEO directs a workforce of 89 AI agents across 20 departments. This is the canonical count: 90 agents total (89 AI + 1 human CEO), 20 departments, as verified in `source-of-truth.yaml` and `company-registry.yaml`. The CEO sets vision and makes final decisions on high-stakes matters; the agentic workforce executes. Every major decision needs a clear owner. This structure — a human CEO directing AI agents — is the differentiated proof point that positions LightSpeed not as a services firm but as a living, breathing AI-native enterprise.
 
 The intellectual architecture is the H→A→O→M→T→G→V framework: Human → Agents → Orchestration → Memory → Tools → Governance → Value. This seven-layer constitution defines what humans remain accountable for, what work AI agents perform, how agents coordinate via the MessageBus, how the organization learns and retains institutional knowledge, how agents interact with the world through a closed seven-tool sandbox, how control is pre-execution not post-mortem through 5-tier human-in-the-loop gates, and what outcomes are produced and proven through SHA-256 audit chains and KPI collectors. The framework is not a slogan — it is the architecture that has been built, measured, and audited in production.
 
@@ -24,7 +24,7 @@ This is the AI-native company builder for Southern Africa. Proven in Malawi. Des
 
 ## 2. Strategic Thesis
 
-LightSpeed Holdings does not position itself as a technology company that happens to use AI. It is the proof laboratory behind agentic AI ideas—where real services are built, measured, and scaled to inform institutional policy across Malawi and the SADC region. The mandate is explicit: prove agentic AI works in Malawi by shipping real services—clinic automation, revenue operations, donor reporting, and web presence—for the organizations that need them most. One human CEO directs a workforce of 151 AI agents across 20 departments, delivering world-class output at local cost. This is not a pilot; it is a running delivery engine.
+LightSpeed Holdings does not position itself as a technology company that happens to use AI. It is the proof laboratory behind agentic AI ideas—where real services are built, measured, and scaled to inform institutional policy across Malawi and the SADC region. The mandate is explicit: prove agentic AI works in Malawi by shipping real services—clinic automation, revenue operations, donor reporting, and web presence—for the organizations that need them most. One human CEO directs a workforce of 89 AI agents across 20 departments, delivering world-class output at local cost. This is not a pilot; it is a running delivery engine.
 
 The evidence is gathered at every step. Every client engagement produces NPS and CSAT scores, ROI calculations tracked by the CFO, and operational metrics that determine whether a service graduates from proof-of-concept to licensed infrastructure. The Malawi clinic that now answers patients on WhatsApp; the NGO whose donor report lands on time instead of weeks later; the agency that licenses Offer E and builds for its own clients—these are not case studies assembled after the fact. They are shipped artifacts, measured in real time, and published with named metrics. The Four Reservations—low-bandwidth reality, data protection, technology debt, skepticism of AI—are not abstract objections but engineering challenges answered by the architecture Lightspeed has built: offline-first PWA queues, sovereign in-country processing under Malawi's Data Protection Act 2017 and GDPR-level rigour, 90-day pilot integration with visible variable cost, and 5-tier HITL governance with immutable audit trails.
 
@@ -108,13 +108,13 @@ LightSpeed Holdings orchestrates AI-driven growth across Malawi, SADC, and Afric
 
 (b) **Evidence-led over opinion** — AI Company Constitution: Truth over Opinion, Evidence over Assumptions govern all output; every claim traces to a primary source; validation pipelines ensure published work is demonstrably true.
 
-(c) **H-A-O-M-T-G-V framework** — Human → Agents → Orchestration → Memory → Tools → Governance → Value. CEO sets vision; 151 AI agents execute; chief-of-staff MessageBus orchestrates; memory (episodic, semantic, procedural, relational, temporal, aggregate) enforces guardrails; 7-principle constitution KPI across Malawi-SADC-Africa.
+(c) **H-A-O-M-T-G-V framework** — Human → Agents → Orchestration → Memory → Tools → Governance → Value. CEO sets vision; 89 AI agents execute; chief-of-staff MessageBus orchestrates; memory (episodic, semantic, procedural, relational, temporal, aggregate) enforces guardrails; 7-principle constitution KPI across Malawi-SADC-Africa.
 
 (d) **Three intellectual territories from Pharos positioning** — (1) AI Company Building: structuring agent-orchestrated enterprises; (2) Agentic AI Use Cases: practical multi-agent deployments, workflow automation to policy drafting; (3) AI Governance & Policy: evidence-backed regulatory guidance for SADC ministries and central banks.
 
-(e) **Malawi HQ, 152 agents, 20 departments** — Lilongwe headquarters; 152 agents (151 AI + 1 human CEO) across 20 departments; local proximity enables real-time policy feedback loops impossible for remote firms; company/departments.yaml has 19 (missing Pharos) — must be reconciled per source-of-truth.yaml commentary.
+(e) **Malawi HQ, 90 agents, 20 departments** — Lilongwe headquarters; 90 agents (89 AI + 1 human CEO) across 20 departments; local proximity enables real-time policy feedback loops impossible for remote firms; company/departments.yaml has 19 (missing Pharos) — must be reconciled per source-of-truth.yaml commentary.
 
-(f) **152 agents / 20 departments** — company registry lists 152 agents (151 AI + 1 human CEO) across 20 departments; source-of-truth.yaml canonical; company/departments.yaml has 19 missing Pharos — noted in claims section.
+(f) **90 agents / 20 departments** — company registry lists 90 agents (89 AI + 1 human CEO) across 20 departments; source-of-truth.yaml canonical; company/departments.yaml has 19 missing Pharos — noted in claims section.
 
 ---
 
@@ -127,7 +127,7 @@ The following claims are valid and supported by existing assets:
 - The H→A→O→M→T→G→V framework (Human → Agents → Orchestration → Memory → Tools → Governance → Value) exists as the intellectual architecture (per Pharos positioning.md).
 - Three intellectual territories exist: AI Company Building / Agentic AI Use Cases / AI Governance & Policy (per Pharos positioning.md explicit territory list).
 - Malawi-first positioning with SADC/Africa ambition (per MISSION_AND_VISION.md North Star "Malawi first. Prove it. Then the world.").
-- 152 agents (151 AI + 1 human CEO) across 20 departments (per source-of-truth.yaml and company-registry.yaml reconciled count).
+- 90 agents (89 AI + 1 human CEO) across 20 departments (per source-of-truth.yaml and company-registry.yaml reconciled count).
 - Brand palette (navy #070A40, red #E63946, cyan #00BFFF, Arial, 4px grid) and tagline "ASPIRE. ACT. ACHIEVE." (per brand-guidelines.md).
 - "™" on first mention of "LightSpeed Holdings Limited™" (per brand-guidelines.md §70).
 - honesty_classification from USE-CASE-CATALOG.md further constrains all claims to verifiable facts grounded in these assets.
@@ -139,7 +139,7 @@ The following claims are valid and supported by existing assets:
 The following claims are prohibited and would violate the claims governance framework:
 
 - Do **NOT** position LightSpeed as AI Expert / AI Consultant / Generative AI Specialist / AI Engineer (per Pharos positioning.md explicit "NOT to position as" list).
-- Do **NOT** claim "140+ AI agents" without noting the canonical 152 count (reconcile mission/vision text vs registry; mission/vision text says "140+ AI agents" while canonical registry/source-of-truth say 152).
+- Do **NOT** claim "140+ AI agents" without noting the canonical 90 count (reconcile mission/vision text vs registry; mission/vision text says "140+ AI agents" while canonical registry/source-of-truth say 90).
 - Do **NOT** claim "company/departments.yaml has 20 departments" — it has 19 (missing pharos) per source-of-truth.yaml commentary; this discrepancy must be documented, not obscured.
 - Do **NOT** use off-palette colors in any agent-generated artifact (per brand-guidelines.md "Do NOT add new colors without a documented brand decision").
 - Do **NOT** omit the "™" symbol on first mention of "LightSpeed Holdings Limited™" (per brand-guidelines.md trademark rule).
@@ -174,7 +174,7 @@ LightSpeed Holdings serves Malawian clinics and health workers, embodying our mi
 
 (i) Integration with MISSION_AND_VISION (mission/vision/values).
 
-(j) source-of-truth.yaml claims (20 departments, 152 agents); company/departments.yaml has 19 (missing Pharos) — noted in claims section.
+(j) source-of-truth.yaml claims (20 departments, 90 agents); company/departments.yaml has 19 (missing Pharos) — noted in claims section.
 
 ---
 
@@ -186,27 +186,27 @@ The CSO drives corporate strategy through market analysis, competitive intellige
 
 ### 10.2 Build
 
-Agent systems are engineered by the CTO/Technology team; the Agent Generator (12 Jinja2 templates) programmatically produces the 151 AI + 1 human CEO agents documented in `company-registry.yaml`, while the dashboard stack (FastAPI + WebSocket, owned by `dashboard_owner`) provides real-time visibility and control.
+Agent systems are engineered by the CTO/Technology team; the Agent Generator (12 Jinja2 templates) programmatically produces the 89 AI + 1 human CEO agents documented in `company-registry.yaml`, while the dashboard stack (FastAPI + WebSocket, owned by `dashboard_owner`) provides real-time visibility and control.
 
 ### 10.3 Govern
 
-A five-tier approval framework (GAP-003) governs all HITL decisions via the `security_compliance_lead`; dashboard CORS lockdown (GAP-010) and API authentication (GAP-011) enforce strict perimeter controls; compliance, legal (CLO) and AI-safety (lead) layers add regulatory and ethical oversight, and the `decision_engine_owner` operationalises the approval matrix across the 20 departments captured in `source-of-truth.yaml` (20 departments, 152 agents).
+A five-tier approval framework (GAP-003) governs all HITL decisions via the `security_compliance_lead`; dashboard CORS lockdown (GAP-010) and API authentication (GAP-011) enforce strict perimeter controls; compliance, legal (CLO) and AI-safety (lead) layers add regulatory and ethical oversight, and the `decision_engine_owner` operationalises the approval matrix across the 20 departments captured in `source-of-truth.yaml` (20 departments, 90 agents).
 
 ### 10.4 Research
 
-The AI Research department (CAIO) evaluates LLM models, while the prompt engineer, red-team engineer, constitutional-AI owner and eval-benchmarks engineer iteratively improve model quality, safety and alignment, grounding every experiment in the Pharos H-A-O-M-T-G-V framework and the validated `company-registry.yaml` roster.
+The AI Research department (CAIO) evaluates LLM models, while the prompt engineer, red-team engineer, constitutional-AI owner and prompt-engineer iteratively improve model quality, safety and alignment, grounding every experiment in the Pharos H-A-O-M-T-G-V framework and the validated `company-registry.yaml` roster.
 
 ---
 
 ## 11. Malawi → SADC → Africa Ambition
 
-LightSpeed's HQ in Lilongwe, Malawi, serves as the proof-point: agentic AI is shipped into real clinic workflows, farmer-assist services and civic-inquiry lighthouses, generating tangible impact data that validates the "Malawi first. Prove it. Then the world." North Star from `MISSION_AND_VISION.md`. Success here is packaged by the `community-ecosystem-builder` skill, seeding the Malawi Agentic AI Forum and a growing SADC Agentic AI community. The model then radiates outward—knowledge, tooling and talent flow into SADC member states, creating a regional pipeline, before culminating in an Africa-wide rollout that leverages the same agent generation and governance primitives, anchored in the Pharos "Agentic AI-Native Enterprise Transformation for Africa" category and the H-A-O-M-T-G-V framework. This staged expansion respects the 151 AI + 1 human CEO roster (`company-registry.yaml`) and the 20-department, 152-agent source-of-truth (`source-of-truth.yaml`), ensuring scalability from Lilongwe to the continent.
+LightSpeed's HQ in Lilongwe, Malawi, serves as the proof-point: agentic AI is shipped into real clinic workflows, farmer-assist services and civic-inquiry lighthouses, generating tangible impact data that validates the "Malawi first. Prove it. Then the world." North Star from `MISSION_AND_VISION.md`. Success here is packaged by the `community-ecosystem-builder` skill, seeding the Malawi Agentic AI Forum and a growing SADC Agentic AI community. The model then radiates outward—knowledge, tooling and talent flow into SADC member states, creating a regional pipeline, before culminating in an Africa-wide rollout that leverages the same agent generation and governance primitives, anchored in the Pharos "Agentic AI-Native Enterprise Transformation for Africa" category and the H-A-O-M-T-G-V framework. This staged expansion respects the 89 AI + 1 human CEO roster (`company-registry.yaml`) and the 20-department, 90-agent source-of-truth (`source-of-truth.yaml`), ensuring scalability from Lilongwe to the continent.
 
 ---
 
 ## 12. Roster Validation
 
-All eight candidate agents—thought-leadership-lead, thought-leadership-author, brand-strategist, product-marketing-manager, knowledge-manager, cso, cmo, and chief-of-staff—were dispatched and validated against the system-prompt agent roster as valid subagent_types. Each name maps to an agent card in `.opencode/agents/` with `mode: subagent` and exists in `company-registry.yaml`. The thought-leadership-lead and thought-leadership-author cards head the Pharos department; brand-strategist and product-marketing-manager support the CMO's marketing orbit; knowledge-manager operates as the Knowledge Manager specialist; cso and cmo are executive agents in Strategy and Marketing respectively; and chief-of-staff serves as the primary orchestrator. All names use the hyphenated convention consistent with the subagent_type enumeration. No gaps or replacements were required—every candidate validated successfully against the roster.
+All seven candidate agents—thought-leadership-lead, thought-leadership-author, product-marketing-manager, knowledge-manager, cso, cmo, and chief-of-staff—were dispatched and validated against the system-prompt agent roster as valid subagent_types. Each name maps to an agent card in `.opencode/agents/` with `mode: subagent` and exists in `company-registry.yaml`. The thought-leadership-lead and thought-leadership-author cards head the Pharos department; product-marketing-manager supports the CMO's marketing orbit; knowledge-manager operates as the Knowledge Manager specialist; cso and cmo are executive agents in Strategy and Marketing respectively; and chief-of-staff serves as the primary orchestrator. All names use the hyphenated convention consistent with the subagent_type enumeration. No gaps or replacements were required—every candidate validated successfully against the roster.
 
 ---
 
@@ -214,11 +214,11 @@ All eight candidate agents—thought-leadership-lead, thought-leadership-author,
 
 ### 13.1 ECL Change Workflow
 
-Changes originate via `scripts/harness-change.ps1 new`; phase progression follows intake → plan → implement → validate → close. Hand-editing `harness/changes/INDEX.json` is prohibited at all times—it is generated by script only. During the validate phase, `validation_results` are recorded in `summary.md` front matter. Both `lint-ecl.ps1` and `tests/docs/test_doc_drift.py` must pass successfully. `scripts/validate-drift.ps1` performs drift checks against `source-of-truth.yaml` and `company-registry.yaml` to ensure registry consistency (20 departments, 152 agents: 151 AI + 1 human CEO).
+Changes originate via `scripts/harness-change.ps1 new`; phase progression follows intake → plan → implement → validate → close. Hand-editing `harness/changes/INDEX.json` is prohibited at all times—it is generated by script only. During the validate phase, `validation_results` are recorded in `summary.md` front matter. Both `lint-ecl.ps1` and `tests/docs/test_doc_drift.py` must pass successfully. `scripts/validate-drift.ps1` performs drift checks against `source-of-truth.yaml` and `company-registry.yaml` to ensure registry consistency (20 departments, 90 agents: 89 AI + 1 human CEO).
 
 ### 13.2 Canonical Location
 
-The canonical document is located at `docs/NARRATIVE-AND-POSITIONING.md` (recommended for alignment with `company-registry.yaml` 20-department structure and 151 AI + 1 human CEO consistency). Alternative: `docs/Pharos/narrative-and-positioning.md`. Canonical recommended for cross-reference reliability.
+The canonical document is located at `docs/NARRATIVE-AND-POSITIONING.md` (recommended for alignment with `company-registry.yaml` 20-department structure and 89 AI + 1 human CEO consistency). Alternative: `docs/Pharos/narrative-and-positioning.md`. Canonical recommended for cross-reference reliability.
 
 ---
 

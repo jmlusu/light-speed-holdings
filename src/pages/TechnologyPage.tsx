@@ -151,7 +151,7 @@ export const TechnologyPage: React.FC<TechnologyPageProps> = ({ theme }) => {
                 INTERACTIVE LAB
               </span>
               <h3 className="mt-3 text-2xl sm:text-3xl font-black font-display tracking-tight">
-                Explore the 152-Agent Architecture in Real Time
+                Explore the 90-Agent Architecture in Real Time
               </h3>
               <p className={`mt-3 max-w-2xl mx-auto text-xs sm:text-sm leading-relaxed ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'

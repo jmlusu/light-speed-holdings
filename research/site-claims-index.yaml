@@ -15,7 +15,7 @@ claims:
   section: 1. Home
   line: 17
   class: (a)
-  claim: 'Proof strip: 152 Verified Agent Configurations / 2,373 Automated Regression Tests / 20 Departments Onboarded / 5-Tier (Human Approval Gates)'
+  claim: 'Proof strip: 90 Verified Agent Configurations / 2,373 Automated Regression Tests / 20 Departments Onboarded / 5-Tier (Human Approval Gates)'
 - id: claim:002
   row: 2
   section: 1. Home
@@ -51,13 +51,13 @@ claims:
   section: 3. AI Company Builder
   line: 32
   class: (a)
-  claim: '"Governed 152-Agent Swarm & 20-Department Topology" + "5-tier HITL gates"'
+  claim: '"Governed 90-Agent Swarm & 20-Department Topology" + "5-tier HITL gates"'
 - id: claim:008
   row: 8
   section: 3. AI Company Builder
   line: 33
   class: (a)
-  claim: FOW-01 "1-human, 151-agent organisation"; FOW-03 "proven in-house daily"
+  claim: FOW-01 "1-human, 89-agent organisation"; FOW-03 "proven in-house daily"
 - id: claim:009
   row: 9
   section: 3. AI Company Builder
@@ -75,7 +75,7 @@ claims:
   section: 3. AI Company Builder
   line: 36
   class: (b) — RESOLVED
-  claim: 'Simulated console: "Entire AI Company generated in 1.42s", "2,373 tests passing", "342 Workflow Dispatch & Escalation Channels", "1,280 indexed memory vectors", "152 agents / 20 departments /
+  claim: 'Simulated console: "Entire AI Company generated in 1.42s", "2,373 tests passing", "342 Workflow Dispatch & Escalation Channels", "1,280 indexed memory vectors", "90 agents / 20 departments /
     1 board"'
 - id: claim:012
   row: 12
@@ -148,7 +148,7 @@ claims:
   section: 5. Solutions
   line: 58
   class: (a)
-  claim: 'Agentic AI: "152-agent operation runs daily" proof label'
+  claim: 'Agentic AI: "90-agent operation runs daily" proof label'
 - id: claim:024
   row: 24
   section: 5. Solutions
@@ -232,7 +232,7 @@ claims:
   section: 7. Work / Evidence
   line: 82
   class: (a)
-  claim: 'PC-04 Meta-deployment: "152 agents / 20 departments / five-tier... operating daily"'
+  claim: 'PC-04 Meta-deployment: "90 agents / 20 departments / five-tier... operating daily"'
 - id: claim:038
   row: 38
   section: 7. Work / Evidence
@@ -383,7 +383,7 @@ claims:
   line: 117
   class: (b) — RESOLVED
   claim: 'Haomtgv Governance tab rings: "100% Statutory Compliance // Zero Ungoverned State Changes"; "<180ms" routing; "0.00% (Strict Air-Gap)"; "100% BLOCKED EGRESS"; "5 Discrete Risk Tiers // 0% Hallucinated
-    Commits"; "48hr → 14.2s mobile money settlement audit; 25k+ smallholders served"; "Tested across 152 agents running daily"; "PROVEN IN PRODUCTION"'
+    Commits"; "48hr → 14.2s mobile money settlement audit; 25k+ smallholders served"; "Tested across 90 agents running daily"; "PROVEN IN PRODUCTION"'
 - id: claim:063
   row: 63
   section: 9. Offerings

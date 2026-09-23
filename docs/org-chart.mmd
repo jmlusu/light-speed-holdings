@@ -49,11 +49,8 @@ flowchart TD
 
         VPEngineering --> DevOps["devops_agent<br/>DevOps Agent"]
         VPEngineering --> PlatformReliability["platform_reliability_engineer<br/>Platform Reliability Engineer"]
-        VPEngineering --> AuditTrail["audit_trail_owner<br/>Audit Trail Owner"]
-        VPEngineering --> GraphOwner["graph_owner<br/>Graph Owner"]
         VPEngineering --> DashboardOwner["dashboard_owner<br/>Dashboard Owner"]
         VPEngineering --> RegistryOwner["registry_owner<br/>Registry Owner"]
-        VPEngineering --> GeneratorOwner["generator_owner<br/>Generator Owner"]
 
         VPEngineering --> QALead["QA Lead"]
         QALead --> TestEngLead["test_engineering_lead<br/>Test Engineering Lead"]
@@ -99,14 +96,12 @@ flowchart TD
 
     %% ===== DATA DEPARTMENT (CDO) =====
     subgraph Data_Dept ["🔷 Data Department"]
-        CDO --> DataScientist["data_scientist<br/>Data Scientist"]
         CDO --> DataEngineer["🔧 Data Engineer"]
         CDO --> BIEngineer["📊 Business Intelligence Engineer"]
     end
 
     %% ===== LEGAL DEPARTMENT (CLO) =====
     subgraph Legal_Dept ["⬛ Legal Department"]
-        CLO --> ComplianceOfficer["compliance_officer<br/>Compliance Officer"]
         CLO --> LegalOwner["legal_owner<br/>Legal Owner"]
         CLO --> DataPrivacyOfficer["🔒 Data Privacy Officer"]
     end

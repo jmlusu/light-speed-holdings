@@ -41,6 +41,6 @@
 | Claim | Source |
 |-------|--------|
 | 5-tier HITL approval | `docs/Pharos/manifesto-draft.md:64-80`; registry `decision_engine_owner` (approval matrix) |
-| Immutable audit trails / every decision path logged | `docs/Pharos/manifesto-draft.md:66-70`; registry `audit_trail_owner` |
+| Immutable audit trails / every decision path logged | `docs/Pharos/manifesto-draft.md:66-70`; registry `platform_reliability_engineer` |
 | H-A-O-M-T-G-V framework | `docs/Pharos/h-a-o-m-t-g-v-framework.md:16-35` (Human Authorize / Agents Act) |
 | Brand colors and type | `brand/tokens/brand-tokens.json` |

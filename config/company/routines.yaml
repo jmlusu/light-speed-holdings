@@ -1,7 +1,7 @@
 routines:
   - id: pharos_agentic_enterprise_brief
     name: Agentic Enterprise Brief (Mon)
-    receiver_id: content_writer
+    receiver_id: content_creator
     schedule_day: 1
     time_utc: "04:00"
     enabled: true
@@ -11,7 +11,7 @@ routines:
 
   - id: pharos_build_log
     name: Build Log (Wed)
-    receiver_id: content_writer
+    receiver_id: content_creator
     schedule_day: 3
     time_utc: "04:00"
     enabled: true
@@ -21,7 +21,7 @@ routines:
 
   - id: pharos_policy_governance_africa
     name: AI Policy & Governance Africa (Fri)
-    receiver_id: content_writer
+    receiver_id: content_creator
     schedule_day: 5
     time_utc: "04:00"
     enabled: true
@@ -31,7 +31,7 @@ routines:
 
   - id: pharos_deep_research_brief
     name: Deep Research Brief (Mon companion)
-    receiver_id: content_writer
+    receiver_id: content_creator
     schedule_day: 6
     time_utc: "04:00"
     enabled: true
@@ -42,7 +42,7 @@ routines:
 
   - id: pharos_sadc_research_scan
     name: SADC Research Scan (Thu)
-    receiver_id: content_writer
+    receiver_id: content_creator
     schedule_day: 4
     time_utc: "04:00"
     enabled: true

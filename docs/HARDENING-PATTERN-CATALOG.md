@@ -2,7 +2,7 @@
 
 Adjudicated resolution for wayfinder map #167, ticket #168 ("Define the hardening pattern
 catalog (what patterns, where they apply)"), 2026-08-28. Consolidated from
-platform-reliability-engineer, observability-engineer, scalability-architect, and CTO
+platform-reliability-engineer, platform-reliability-engineer, solution-architect, and CTO
 adjudication, corrected against the actual repo tree.
 
 Scope: harden the **CEO Dashboard**, **daemon executor**, **scheduler**, and **message
@@ -107,7 +107,7 @@ already-loaded `config/org_health.yaml`; *ops* alert parameters go in a new
 | `audit.max_log_size_mb` | `100` | rotate (append-only file per rotation); alert — never overwrite |
 | `audit.retention_days` | `30` active, gzip archive, 365 d archive retention | reuse governance archive path (`data/archives/`) |
 
-Sizing rationale (scalability-architect): single laptop runtime, sprint peaks ~30-60
+Sizing rationale (solution-architect): single laptop runtime, sprint peaks ~30-60
 tasks/hr; defaults validated against 10x (~300-600/hr). `200` pending ≈ 2x the 10x
 steady-state + stall room for parked HITL approvals; the inbox is O(N) whole-file rewrite
 per mutation (`MessageBus._mutate_tasks` → `FileStore.update_json`), so 200 keeps rewrites
@@ -161,7 +161,7 @@ inflight 8, scoring concurrency 2) remain fog — need pilot data, revisit at #1
 - **SLO seeds (checklist artifact for #176):** org-health p95 compute < 2s and scoring
   success ≥ 99.9% (30d); dashboard availability ≥ 99.9%; inbox within capacity ≥ 99.5%;
   daemon tick success ≥ 99.5% (7d) and last-tick age ≤ 2× interval; zero sustained open
-  breakers. PromQL snippets live in the observability-engineer's contribution.
+  breakers. PromQL snippets live in the platform-reliability-engineer's contribution.
 
 ## 6. Ticket-specific implementation notes (seams)
 

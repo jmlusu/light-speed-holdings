@@ -149,7 +149,7 @@ evidence. And this is where the region's situation is actually good news.
 they are real.** Two proofs, deliberately chosen because one is an enterprise
 and one is a small business:
 
-1. **The enterprise proof.** The company behind this series runs 152 agents
+1. **The enterprise proof.** The company behind this series runs 90 agents
    across 20 departments under a five-tier human-in-the-loop approval system,
    with immutable audit trails and board oversight. This is not a demo; it is
    the operating enterprise, and the governance layer is exercised daily.

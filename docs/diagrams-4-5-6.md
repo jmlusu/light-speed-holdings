@@ -94,19 +94,9 @@ graph TD
         QA_LEAD["qa_lead<br/><b>QA Lead</b><br/>Span: 2"]
         CDO["cdo<br/><b>CDO</b><br/>Data Strategy<br/>Span: 3"]
         REG_OWNER["registry_owner<br/><b>Registry Owner</b>"]
-        GEN_OWNER["generator_owner<br/><b>Generator Owner</b>"]
         DASH_OWNER["dashboard_owner<br/><b>Dashboard Owner</b>"]
-        GRAPH_OWNER["graph_owner<br/><b>Graph Owner</b>"]
-        AUDIT_OWNER["audit_trail_owner<br/><b>Audit Trail Owner</b>"]
         PLATFORM_REL["platform_reliability_engineer<br/><b>Platform Reliability</b>"]
         PLATFORM_ENG["platform_engineer<br/><b>Platform Engineer</b>"]
-        FE_ARCH["frontend_architect<br/><b>Frontend Architect</b>"]
-        API_ARCH["api_architect<br/><b>API Architect</b>"]
-        OBS_ENG["observability_engineer<br/><b>Observability Engineer</b>"]
-        SCALE_ARCH["scalability_architect<br/><b>Scalability Architect</b>"]
-        SW_ARCH["software_architect<br/><b>Software Architect</b>"]
-        LEAD_DO["lead_devops<br/><b>Lead DevOps</b>"]
-        CLOUD_ARCH["cloud_architect<br/><b>Cloud Architect</b>"]
     end
 
     CTO --> VPENG
@@ -120,52 +110,31 @@ graph TD
     %% ENGINEERING SPECIALISTS
     %% ═══════════════════════════════════════════════════════════════
     SEN_BE["senior_backend_engineer"]
-    BE_ENG["backend_engineer"]
-    FS_ENG["fullstack_engineer"]
     SEN_FE["senior_frontend_engineer"]
-    FE_ENG["frontend_engineer"]
-    MOB_DEV["mobile_developer"]
 
     LEAD_BE --> SEN_BE
-    LEAD_BE --> BE_ENG
-    LEAD_BE --> FS_ENG
     LEAD_FE --> SEN_FE
-    LEAD_FE --> FE_ENG
-    LEAD_FE --> MOB_DEV
 
     VPENG --> DEVOPS
     VPENG --> PLATFORM_REL
-    VPENG --> AUDIT_OWNER
-    VPENG --> GRAPH_OWNER
     VPENG --> DASH_OWNER
     VPENG --> REG_OWNER
-    VPENG --> GEN_OWNER
     VPENG --> QA_LEAD
 
     CTO -.->|"cross-dept delegation"| PLATFORM_ENG
-    CTO -.->|"cross-dept delegation"| FE_ARCH
-    CTO -.->|"cross-dept delegation"| API_ARCH
-    CTO -.->|"cross-dept delegation"| OBS_ENG
-    CTO -.->|"cross-dept delegation"| SCALE_ARCH
-    CTO -.->|"cross-dept delegation"| SW_ARCH
-    CTO -.->|"cross-dept delegation"| LEAD_DO
-    CTO -.->|"cross-dept delegation"| CLOUD_ARCH
 
     QA_LEAD --> TEST_ENG_LEAD["test_engineering_lead<br/><b>Test Engineering Lead</b>"]
     QA_LEAD --> REL_MGR["release_manager<br/><b>Release Manager</b>"]
-    TEST_ENG_LEAD --> QA_AUTO["qa_automation_engineer<br/><b>QA Automation</b>"]
 
     %% ═══════════════════════════════════════════════════════════════
     %% DATA DEPARTMENT — Under CDO (under CTO)
     %% ═══════════════════════════════════════════════════════════════
     subgraph DATA_DEPT ["📊 Data Department"]
         DATA_ENG["data_engineer<br/><b>Data Engineer</b>"]
-        DATA_SCIST["data_scientist<br/><b>Data Scientist</b>"]
         BI_ENG["business_intelligence_engineer<br/><b>BI Engineer</b>"]
     end
 
     CDO --> DATA_ENG
-    CDO --> DATA_SCIST
     CDO --> BI_ENG
 
     %% ═══════════════════════════════════════════════════════════════
@@ -235,8 +204,6 @@ graph TD
         UX_RES["ux_research_lead<br/><b>UX Research</b>"]
         UX_ANAL["ux_analytics_lead<br/><b>Product Analytics</b>"]
         TECH_DOC["technical_documentation_lead<br/><b>Tech Docs</b>"]
-        GPM["growth_product_manager<br/><b>Growth PM</b>"]
-        DEXP["developer_experience_engineer<br/><b>DX Engineer</b>"]
         PROD_DES["product_designer<br/><b>Product Designer</b>"]
         PROD_OWNER["product_owner<br/><b>Product Owner</b>"]
         TECH_WRITER["prompt_engineer_specialist<br/><b>Technical Writer</b>"]
@@ -245,8 +212,6 @@ graph TD
     CPO --> UX_RES
     CPO --> UX_ANAL
     CPO --> TECH_DOC
-    CPO --> GPM
-    CPO --> DEXP
     CPO --> PROD_DES
     CPO --> PROD_OWNER
     CPO --> TECH_WRITER
@@ -259,7 +224,6 @@ graph TD
         HEAD_DR["head_of_developer_relations<br/><b>Head of DevRel</b>"]
         PMM["product_marketing_manager<br/><b>Product Marketing</b>"]
         IARM["industry_analyst_relations_manager<br/><b>Analyst Relations</b>"]
-        CONTENT_WR["content_writer<br/><b>Content Writer</b>"]
         CONTENT_CR["content_creator<br/><b>Content Creator</b>"]
         GH["growth_hacker<br/><b>Growth Hacker</b>"]
     end
@@ -268,7 +232,6 @@ graph TD
     CMO --> HEAD_DR
     CMO --> PMM
     CMO --> IARM
-    CMO --> CONTENT_WR
     CMO --> CONTENT_CR
     CMO --> GH
 
@@ -277,13 +240,11 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     subgraph PEOPLE_DEPT ["👥 People Department"]
         HR_OWNER["hr_owner<br/><b>HR Owner</b>"]
-        LND["learning_development_lead<br/><b>Learning & Dev</b>"]
         EE_LEAD["employee_experience_lead<br/><b>Employee Experience</b>"]
         RECRUITER["recruiter<br/><b>Recruiter</b>"]
     end
 
     CHRO --> HR_OWNER
-    CHRO --> LND
     CHRO --> EE_LEAD
     CHRO --> RECRUITER
 
@@ -294,35 +255,29 @@ graph TD
         SEC_ARCH["security_architect<br/><b>Security Architect</b>"]
         SEC_COMP["security_compliance_lead<br/><b>Security Compliance</b>"]
         AI_SEC["ai_security_specialist<br/><b>AI Security</b>"]
-        PEN_TEST["penetration_testing_lead<br/><b>Pen Testing</b>"]
         IR_LEAD["incident_response_lead<br/><b>Incident Response</b>"]
         DS_LEAD["devsecops_lead<br/><b>DevSecOps</b>"]
         SCSE["supply_chain_security_engineer<br/><b>Supply Chain Sec</b>"]
         THREAT["threat_intelligence_analyst<br/><b>Threat Intel</b>"]
-        SOC2["soc2_audit_readiness_analyst<br/><b>SOC 2 Analyst</b>"]
     end
 
     CISO --> SEC_ARCH
     CISO --> SEC_COMP
     CISO --> AI_SEC
-    CISO --> PEN_TEST
     CISO --> IR_LEAD
     CISO --> DS_LEAD
     CISO --> SCSE
     CISO --> THREAT
-    SEC_COMP --> SOC2
 
     %% ═══════════════════════════════════════════════════════════════
     %% LEGAL — Under CLO
     %% ═══════════════════════════════════════════════════════════════
     subgraph LEGAL_DEPT ["⚖️ Legal Department"]
         LEGAL_OWNER["legal_owner<br/><b>Legal Owner</b>"]
-        COMPLIANCE["compliance_officer<br/><b>Compliance Officer</b>"]
         DPO["data_privacy_officer<br/><b>Data Privacy Officer</b>"]
     end
 
     CLO --> LEGAL_OWNER
-    CLO --> COMPLIANCE
     CLO --> DPO
 
     %% ═══════════════════════════════════════════════════════════════
@@ -330,11 +285,9 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     subgraph FIN_DEPT ["💰 Finance Department"]
         FIN_ANA["financial_analyst<br/><b>Financial Analyst</b>"]
-        IR_LEAD["investor_relations_lead<br/><b>Investor Relations</b>"]
     end
 
     CFO --> FIN_ANA
-    CFO --> IR_LEAD
 
     %% ═══════════════════════════════════════════════════════════════
     %% STRATEGY — Under CSO
@@ -371,17 +324,14 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     subgraph CS_DEPT ["🤝 Customer Success"]
         CS_OWNER["customer_success_owner<br/><b>CS Owner</b>"]
-        SUPPORT["support_agent<br/><b>Support Agent</b>"]
     end
 
     HEAD_CS --> CS_OWNER
-    HEAD_CS --> SUPPORT
 
     %% ═══════════════════════════════════════════════════════════════
     %% LEGAL ADVISOR (parallel to CLO)
     %% ═══════════════════════════════════════════════════════════════
     LEGAL_ADV -.-> LEGAL_OWNER
-    LEGAL_ADV -.-> COMPLIANCE
 
     %% ═══════════════════════════════════════════════════════════════
     %% TASK ROUTING FLOW (right side)
@@ -421,20 +371,20 @@ graph TD
     class CEO premiumModel
     class COS,CTO,COO,CAIO,CFO,CPO,CMO,CHRO,CIO,CISO,CSO,CLO,CEO_ADV,HEAD_CS,HEAD_SALES,LEGAL_ADV,HEAD_BD,CULTURE,ETHICS_CHAIR,INT_COMMS execModel
     class BC,B_FIN,B_TECH,B_RISK,B_STRAT,B_CUST,B_PROD boardModel
-    class VPENG,LEAD_BE,LEAD_FE,SOL_ARCH,DEVOPS,QA_LEAD,CDO,REG_OWNER,GEN_OWNER,DASH_OWNER,GRAPH_OWNER,AUDIT_OWNER,PLATFORM_REL,PLATFORM_ENG,FE_ARCH,API_ARCH,OBS_ENG,SCALE_ARCH,SW_ARCH,LEAD_DO,CLOUD_ARCH specialistModel
+    class VPENG,LEAD_BE,LEAD_FE,SOL_ARCH,DEVOPS,QA_LEAD,CDO,REG_OWNER,DASH_OWNER,PLATFORM_REL,PLATFORM_ENG specialistModel
     class ML_ENG,ML_SERV,MEM_OWNER,LLM_OWNER,MLOPS,AI_SAFETY,EVAL_ENG,PROMPT_ENG,RED_TEAM,CONSTIT,ETHICS,HAI specialistModel
     class WF_OWNER,ORCH_OWNER,DOCTOR,SOP_OWN,PROG_MGR,VENDOR,CAPACITY,BCM,KNOWLEDGE,PROCESS specialistModel
-    class UX_RES,UX_ANAL,TECH_DOC,GPM,DEXP,PROD_DES,PROD_OWNER,TECH_WRITER specialistModel
-    class MKT_OWNER,HEAD_DR,PMM,IARM,CONTENT_WR,CONTENT_CR,GH specialistModel
+    class UX_RES,UX_ANAL,TECH_DOC,PROD_DES,PROD_OWNER,TECH_WRITER specialistModel
+    class MKT_OWNER,HEAD_DR,PMM,IARM,CONTENT_CR,GH specialistModel
     class HR_OWNER,LND,EE_LEAD,RECRUITER specialistModel
-    class SEC_ARCH,SEC_COMP,AI_SEC,PEN_TEST,IR_LEAD,DS_LEAD,SCSE,THREAT,SOC2 specialistModel
-    class LEGAL_OWNER,COMPLIANCE,DPO specialistModel
+    class SEC_ARCH,SEC_COMP,AI_SEC,IR_LEAD,DS_LEAD,SCSE,THREAT,SOC2 specialistModel
+    class LEGAL_OWNER,DPO specialistModel
     class FIN_ANA,IR_LEAD specialistModel
     class COMP_INT,CORP_DEV,REV_OPS,SOL_ENG,MKT_ANA specialistModel
     class SALES_OWNER,BIZ_DEV specialistModel
-    class CS_OWNER,SUPPORT specialistModel
-    class SEN_BE,BE_ENG,FS_ENG,SEN_FE,FE_ENG,MOB_DEV specialistModel
-    class DATA_ENG,DATA_SCIST,BI_ENG specialistModel
+    class CS_OWNER specialistModel
+    class SEN_BE,SEN_FE specialistModel
+    class DATA_ENG,BI_ENG specialistModel
     class TEST_ENG_LEAD,REL_MGR,QA_AUTO specialistModel
     class T1,T2,T3,T4,T5,T6 taskFlow
 ```

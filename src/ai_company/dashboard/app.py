@@ -72,7 +72,21 @@ def security_headers() -> dict[str, str]:
 
     HSTS max-age is configurable via ``DASHBOARD_HSTS_MAX_AGE``
     (default 31536000 = 1 year; set ``0`` to disable).
+
+    ADR-024 dual-environment parity: when ``AISTUDIO_PREVIEW=true`` the
+    dashboard is embedded in an iframe on ``*.aistudio.google`` /
+    ``*.google.com``, so ``frame-ancestors`` is relaxed to those prefixes and
+    the ``X-Frame-Options: DENY`` fallback header is dropped (a DENY there
+    would still block framing even when CSP permits it).  Everywhere else the
+    strict ``'none'`` + DENY clickjacking posture is kept.  ``DASHBOARD_CSP``
+    still overrides the whole policy when set.
     """
+    cloud_preview = os.environ.get("AISTUDIO_PREVIEW", "").lower() == "true"
+    frame_ancestors = (
+        "frame-ancestors https://*.google.com https://*.aistudio.google; "
+        if cloud_preview
+        else "frame-ancestors 'none'; "
+    )
     csp = os.environ.get(
         "DASHBOARD_CSP",
         "default-src 'self'; "
@@ -80,17 +94,18 @@ def security_headers() -> dict[str, str]:
         "https://cdn.jsdelivr.net; "
         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
         "img-src 'self' data:; font-src 'self' data:; "
-        "connect-src 'self' ws: wss:; frame-ancestors 'none'; "
+        f"connect-src 'self' ws: wss:; {frame_ancestors}"
         "base-uri 'self'; form-action 'self'; object-src 'none'",
     )
     hsts_max_age = int(os.environ.get("DASHBOARD_HSTS_MAX_AGE", "31536000"))
     headers = {
         "Content-Security-Policy": csp,
         "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
     }
+    if not cloud_preview:
+        headers["X-Frame-Options"] = "DENY"
     if hsts_max_age > 0:
         headers["Strict-Transport-Security"] = f"max-age={hsts_max_age}; includeSubDomains"
     return headers

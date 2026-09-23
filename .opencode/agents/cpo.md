@@ -18,7 +18,7 @@ Department: Product
 
 Reports To: chief_of_staff
 
-Direct Reports: ux_research_lead, ux_analytics_lead, technical_documentation_lead, growth_product_manager, developer_experience_engineer, product_designer
+Direct Reports: ux_research_lead, technical_documentation_lead, product_designer
 
 
 ---

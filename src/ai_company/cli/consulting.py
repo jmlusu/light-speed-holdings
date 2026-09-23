@@ -194,7 +194,7 @@ def deploy_interviews(
 
     typer.echo(f"Interview agents deployed for engagement '{engagement_id}'.")
     typer.echo(f"  Employees to interview: {len(employee_list)}")
-    typer.echo("  Interview agents: interview_agent")
+    typer.echo("  Interview agents: consulting_lead")
     typer.echo("")
     typer.echo("Next steps:")
     typer.echo(
@@ -231,7 +231,7 @@ def synthesize(
     _save_engagements_file(data)
 
     typer.echo(f"Interview data synthesis started for engagement '{engagement_id}'.")
-    typer.echo("  Agent: workflow_mapper")
+    typer.echo("  Agent: consulting_lead")
     typer.echo("")
     typer.echo("Next steps:")
     typer.echo(
@@ -267,7 +267,7 @@ def identify(
     _save_engagements_file(data)
 
     typer.echo(f"AI opportunity identification started for engagement '{engagement_id}'.")
-    typer.echo("  Agent: opportunity_identifier")
+    typer.echo("  Agent: consulting_lead")
     typer.echo("")
     typer.echo("Next steps:")
     typer.echo(f"  1. Draft roadmap: ai-company consulting draft --engagement {engagement_id}")
@@ -299,7 +299,7 @@ def draft(
     _save_engagements_file(data)
 
     typer.echo(f"Transformation roadmap drafting started for engagement '{engagement_id}'.")
-    typer.echo("  Agent: opportunity_identifier")
+    typer.echo("  Agent: consulting_lead")
     typer.echo("")
     typer.echo("Next steps:")
     typer.echo(f"  1. Submit for review: ai-company consulting review --engagement {engagement_id}")

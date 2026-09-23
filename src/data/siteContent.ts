@@ -36,7 +36,7 @@ export const company = {
 export const mission: { statement: string; why: string } = {
   statement:
     'Prove agentic AI works in Malawi by shipping real services — websites, automation, reporting, and marketing — for the organizations that need them most.',
-  why: 'Malawi\u2019s SMEs, NGOs, schools, clinics, and cooperatives are underserved by an industry that prices enterprise-grade work out of reach. One human CEO directs a workforce of 152 agents to deliver world-class output at local cost. Our proof is not a press release; it is a shipped website, a donor report that used to take weeks, a dashboard that replaced forty-page PDFs.',
+  why: 'Malawi\u2019s SMEs, NGOs, schools, clinics, and cooperatives are underserved by an industry that prices enterprise-grade work out of reach. One human CEO directs a workforce of 90 agents to deliver world-class output at local cost. Our proof is not a press release; it is a shipped website, a donor report that used to take weeks, a dashboard that replaced forty-page PDFs.',
 };
 
 export const vision: { statement: string; why: string } = {
@@ -63,7 +63,7 @@ export const whyLightSpeed: WhyLightSpeedItem[] = [
   {
     num: '02',
     title: 'AI-Native by Design',
-    body: 'We are not an IT consultancy that added AI. Our own operating model — 152 agents across 20 departments — is the proof that agentic systems work in production, under real constraints.',
+    body: 'We are not an IT consultancy that added AI. Our own operating model — 90 agents across 20 departments — is the proof that agentic systems work in production, under real constraints.',
     proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
@@ -277,7 +277,7 @@ export const clientProblems: ClientProblem[] = [
     trigger: 'You\u2019re building a new AI-enabled business',
     heading: 'AI Company Builder',
     subtext: 'You want to license the same orchestration engine we run — your own governed AI workforce.',
-    solution: 'Offer E — AI Company Builder License: self-hosted, provider-agnostic, with 152-agent configurations as the reference model.',
+    solution: 'Offer E — AI Company Builder License: self-hosted, provider-agnostic, with 90-agent configurations as the reference model.',
     to: '/ai-company-builder',
     proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
@@ -556,7 +556,7 @@ export const geography: GeographyStage[] = [
     name: 'Malawi',
     title: 'Our Home Market',
     description:
-      'Lilongwe-based operations. Every claim on this site is grounded in real work delivered in Malawi — shipped websites, donor reports, dashboards, and our own 152-agent operation. Malawi Data Protection Act 2017 compliance is the default posture.',
+      'Lilongwe-based operations. Every claim on this site is grounded in real work delivered in Malawi — shipped websites, donor reports, dashboards, and our own 90-agent operation. Malawi Data Protection Act 2017 compliance is the default posture.',
     status: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
@@ -763,7 +763,7 @@ export const faqs: FaqItem[] = [
   {
     id: 'what',
     question: 'What does LightSpeed Holdings do?',
-    answer: 'LightSpeed Holdings helps organisations design, build, and govern AI-native businesses. We work across strategy, technology, and AI — from executive advisory to shipped working systems. Our own 152-agent operation is the proof that the model works.',
+    answer: 'LightSpeed Holdings helps organisations design, build, and govern AI-native businesses. We work across strategy, technology, and AI — from executive advisory to shipped working systems. Our own 90-agent operation is the proof that the model works.',
   },
   {
     id: 'who',
@@ -867,7 +867,7 @@ export const newsItems: NewsItem[] = [
   { id: 'news-02', title: 'National AI Strategy Consultation Submission Prepared', type: 'Research', description: 'The CEO\u2019s policy proposal positioning Malawi as a source of agentic AI answers has been prepared as a consultation submission for the National AI Strategy.', date: 'Sep 2026' },
   { id: 'news-03', title: 'AI Company Builder License Available', type: 'Product', description: 'Offer E — AI Company Builder License is now available. License the same orchestration engine that runs LightSpeed Holdings: your own governed AI workforce, self-hosted.', date: 'Aug 2026' },
   { id: 'news-04', title: 'UNDP Malawi Pilot Partnership', type: 'Partnership', description: 'In pilot with UNDP Malawi stakeholders on data, analytics, and donor reporting pipeline.', date: 'Aug 2026' },
-  { id: 'news-05', title: '152-Agent Operation Live', type: 'Company', description: 'LightSpeed Holdings is now the AI-native company we sell — 152 agents across 20 departments, five-tier HITL approvals, immutable audit trails, operating daily.', date: 'Jul 2026' },
+  { id: 'news-05', title: '90-Agent Operation Live', type: 'Company', description: 'LightSpeed Holdings is now the AI-native company we sell — 90 agents across 20 departments, five-tier HITL approvals, immutable audit trails, operating daily.', date: 'Jul 2026' },
 ];
 
 /* ── Careers ──────────────────────────────────────────── */
@@ -930,15 +930,15 @@ export const solutions = [
   {
     slug: 'ai-company-builder',
     title: 'AI Company Builder',
-    description: 'Build governed AI companies with 151 agents and 1 human CEO. A 5-tier approval matrix, immutable audit trails, and 4 governance gates ensure every action is accountable.',
+    description: 'Build governed AI companies with 89 agents and 1 human CEO. A 5-tier approval matrix, immutable audit trails, and 4 governance gates ensure every action is accountable.',
     eyebrow: 'AI OPERATING MODEL',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
-    oneLiner: '151 AI agents, 1 human CEO, zero excuses.',
+    oneLiner: '89 AI agents, 1 human CEO, zero excuses.',
     nav: 'AI Company Builder',
-    lead: 'Build governed AI companies with 151 agents and 1 human CEO.',
+    lead: 'Build governed AI companies with 89 agents and 1 human CEO.',
     capabilities: [
-      { title: 'Multi-Agent Orchestration', desc: '151 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
+      { title: 'Multi-Agent Orchestration', desc: '89 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
       { title: '5-Tier Approval Matrix', desc: 'Auto through CEO sign-off with configurable thresholds and expiration sweeps.' },
       { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs for every agent action.' },
     ],
@@ -1113,7 +1113,7 @@ export const industries = [
 ];
 
 export const technologyPillars = [
-  { title: 'Governed Multi-Agent Orchestration', desc: '151 AI agents across 20 departments, each with explicit role definitions, tool permissions, and approval thresholds. No agent acts without a human-defined boundary.', icon: 'Shield', status: 'Proven in-house' as const },
+  { title: 'Governed Multi-Agent Orchestration', desc: '89 AI agents across 20 departments, each with explicit role definitions, tool permissions, and approval thresholds. No agent acts without a human-defined boundary.', icon: 'Shield', status: 'Proven in-house' as const },
   { title: '5-Tier Approval Matrix', desc: 'Every consequential action is risk-classified and routed through a human approval gate. Tier 1 (Auto) through Tier 5 (CEO) with configurable thresholds and expiration sweeps.', icon: 'Fingerprint', status: 'Proven in-house' as const },
   { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs. Every agent action generates a receipt that is correlated, queryable, and never overwritten.', icon: 'Lock', status: 'Proven in-house' as const },
   { title: 'Offline-First Sovereignty', desc: 'Self-hosted orchestration with optional free local models via Ollama. Malawi Data Protection Act 2017 as the default posture, GDPR-level handling for donor data.', icon: 'Database', status: 'In pilot' as const },
@@ -1121,7 +1121,7 @@ export const technologyPillars = [
 ];
 
 export const technologyMetrics = [
-  { label: 'Active Agents', value: '152', suffix: '', context: '151 AI agents + 1 human CEO', source: 'company-registry' },
+  { label: 'Active Agents', value: '90', suffix: '', context: '89 AI agents + 1 human CEO', source: 'company-registry' },
   { label: 'Departments', value: '20', suffix: '', context: 'Fully populated with executive leadership', source: 'company-registry' },
   { label: 'Approval Tiers', value: '5', suffix: '', context: 'Auto through CEO sign-off', source: 'company-registry' },
   { label: 'Regression Tests', value: '2,373', suffix: '', context: 'Passing gate before any platform change', source: 'test-suite' },
@@ -1136,7 +1136,7 @@ export const technologyMethods = [
 ];
 
 export const honestyPolicy = [
-  'Proven in-house — verified in our own 152-agent operation',
+  'Proven in-house — verified in our own 90-agent operation',
   'In pilot — demonstrated in controlled settings',
   'Fieldable in 2026 — ready for client engagement',
   'In active development — still being built',

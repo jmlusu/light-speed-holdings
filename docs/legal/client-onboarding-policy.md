@@ -21,7 +21,7 @@ No client-facing deliverable may be produced, and no task may be created in `.op
 |------|-------|-----------------|-------------------|
 | G1: Signed Contract | `legal_owner` | MSA signed by both parties | `legal/clients/<client_id>/contract.signed` |
 | G2: Data Processing Agreement | `data_privacy_officer` | DPA executed, data classification recorded | `legal/clients/<client_id>/dpa.yaml` |
-| G3: Compliance Risk Assessment | `compliance_officer` | Risk assessment logged, GDPR/Act 2017 checked | `legal/clients/<client_id>/risk-assessment.md` |
+| G3: Compliance Risk Assessment | `security_compliance_lead` | Risk assessment logged, GDPR/Act 2017 checked | `legal/clients/<client_id>/risk-assessment.md` |
 | G4: Security Review | `ciso` | Security review logged, threat model recorded | `legal/clients/<client_id>/security-review.md` |
 
 The `ApprovalGate` (orchestrator/approval.py) enforces G1–G4 as a composite pre-condition. Tasks tagged `client_work` with `requires_approval=True` will remain in `PENDING` with status `BLOCKED_GATES` until all four gates are satisfied.
@@ -44,7 +44,7 @@ Offers B and C remain **BLOCKED** until `service_level_liability_cap.status` tra
 
 All client data is classified at onboarding (Gate G2):
 
-- **PII**: Personal identifiers, contact info, donor lists. Must trigger encryption-at-rest, access logging via `audit_trail_owner`, and 30-day post-delivery deletion unless client signs extended retention.
+- **PII**: Personal identifiers, contact info, donor lists. Must trigger encryption-at-rest, access logging via `platform_reliability_engineer`, and 30-day post-delivery deletion unless client signs extended retention.
 - **Non-PII**: Aggregated reports, anonymized KPIs. Standard retention applies.
 - **Donor data** (Offer C only): Treated as **Tier-1 sensitive** — requires explicit consent for cross-border transfer to LLM provider APIs. Client must sign a waiver acknowledging AI processing.
 

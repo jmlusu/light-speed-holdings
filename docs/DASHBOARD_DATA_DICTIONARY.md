@@ -715,7 +715,7 @@ All collectors inherit from `KPICollector` (`src/ai_company/dashboard/kpis/base.
 | `active_campaigns` | — | count | yes | Campaigns with `status == "active"` |
 | `content_quality_score` | 8 | score | yes | Average `quality_score` from `content_log.json` |
 | `marketing_task_completion` | 90 | `%` | yes | Completed marketing tasks / total marketing tasks × 100 |
-| `total_marketing_tasks` | — | count | — | Tasks routed to `cmo`, `content_creator`, `content_writer`, `growth_hacker` |
+| `total_marketing_tasks` | — | count | — | Tasks routed to `cmo`, `content_creator`, `growth_hacker` |
 | `content_pieces_produced` | — | count | yes | Total entries in `content_log.json` |
 
 #### Sales KPIs
@@ -1015,25 +1015,25 @@ The company is organized into departments with executive agents at the top and s
 
 | Department | Executive | Reports To | Specialist Roles |
 |------------|-----------|------------|------------------|
-| Engineering | cto | human_ceo | lead-backend, lead-frontend, lead-devops, senior-backend-engineer, senior-frontend-engineer, frontend-architect, frontend-engineer, backend-engineer, qa-engineer, qa-automation-engineer, ml-engineer, devops-lead, devsecops-lead, security-architect, platform-engineer, platform-reliability-engineer, test-engineering-lead, release-manager |
+| Engineering | cto | human_ceo | lead-backend, lead-frontend, lead-devops, senior-backend-engineer, senior-frontend-engineer, frontend-architect, ml-engineer, devops-lead, devsecops-lead, security-architect, platform-engineer, platform-reliability-engineer, test-engineering-lead, release-manager |
 | Finance | cfo | human_ceo | financial-analyst, revenue-operations-analyst |
-| HR | hr | coo | recruiter, employee-experience-lead, learning-development-lead |
-| Marketing | cmo | human_ceo | content-writer, content-creator, brand-strategist, product-marketing-manager, growth-hacker, growth-product-manager, marketing-owner |
+| HR | hr | coo | recruiter, employee-experience-lead, culture-values-officer |
+| Marketing | cmo | human_ceo | content-creator, product-marketing-manager, growth-hacker, marketing-owner |
 | Sales | cso | human_ceo | business-developer, sales-owner |
-| Customer Success | customer-success-owner | coo | customer-success, support-agent |
-| Legal | clo | human_ceo | compliance-officer, legal-owner |
-| Operations | coo | human_ceo | sop-owner, business-continuity-manager, process-quality-manager, capacity-planner, workflow-owner |
-| AI/ML | caio | human_ceo | prompt-engineer, ml-services-owner, llm-platform-owner, eval-benchmarks-engineer |
-| Data | cdo | human_ceo | data-engineer, data-scientist, business-intelligence-engineer |
-| Security | ciso | cto | security-architect, ai-security-specialist, red-team-engineer, penetration-testing-lead, incident-response-lead, soc2-audit-readiness-analyst, supply-chain-security-engineer |
-| Product | cpo | human_ceo | product-owner, product-designer, ux-research-lead, ux-analytics-lead, developer-experience-engineer |
+| Customer Success | customer-success-owner | coo | customer-success |
+| Legal | clo | human_ceo | data-privacy-officer, legal-owner |
+| Operations | coo | human_ceo | sop-owner, business-continuity-manager, process-quality-manager, workflow-owner |
+| AI/ML | caio | human_ceo | prompt-engineer, ml-services-owner, llm-platform-owner |
+| Data | cdo | human_ceo | data-engineer, business-intelligence-engineer |
+| Security | ciso | cto | security-architect, ai-security-specialist, red-team-engineer, incident-response-lead, supply-chain-security-engineer |
+| Product | cpo | human_ceo | product-owner, product-designer, ux-research-lead |
 | Dashboard | dashboard-owner | cto | *(single owner, no direct specialists)* |
 | Program | program-manager | human_ceo | corporate-development-lead, consulting-lead |
 | Industry Relations | industry-analyst-relations-manager | cmo | *(single owner, no direct specialists)* |
 
 **Key structural notes:**
 - **Board-level agents** (board-chair, board-customer, board-finance, board-product, board-risk, board-strategy, board-technology) sit outside the departmental hierarchy and report directly to the board.
-- **Cross-cutting roles** like `ai-ethics-officer`, `ai-safety-lead`, `audit-trail-owner`, `constitutional-ai-owner`, `cultural-values-officer`, `decision-engine-owner`, `hai-designer`, `incident-response-lead`, and `threat-intelligence-analyst` span departments.
+- **Cross-cutting roles** like `ai-ethics-board-chair`, `ai-safety-lead`, `constitutional-ai-owner`, `culture-values-officer`, `decision-engine-owner`, `incident-response-lead`, and `threat-intelligence-analyst` span departments.
 - **Security agents** report through the CISO, who reports to the CTO: Security → CTO → CEO.
 
 ### 12.2 Org Chart Data Flow
@@ -1062,7 +1062,7 @@ org-chart.html + org-chart-interactive.js  (interactive tree with drag-and-drop)
 | KPIs (per department) | Each dept's KPI collector | `kpis/{dept}.py` | 300s (`KPISnapshotScheduler`) |
 | Company-wide KPIs | cfo | `company_kpis.py` | 300s |
 | Cost Tracking | cfo | `cost_tracker.json` → SQLite | Real-time |
-| Approvals Queue | compliance-officer | `approvals.yaml` (via `ApprovalGate`) | Real-time |
+| Approvals Queue | security-compliance-lead | `approvals.yaml` (via `ApprovalGate`) | Real-time |
 | Escalations Queue | orchestration-owner | `escalation.yaml` | Real-time |
 | Org Health Score | dashboard-owner | `org_health.py` | 60s auto-refresh |
 | Workflows | workflow-owner | `workflows.yaml` → `WorkflowEngine` | Real-time |
@@ -1074,7 +1074,7 @@ org-chart.html + org-chart-interactive.js  (interactive tree with drag-and-drop)
 **RACI interpretation for dashboard data:**
 - **Responsible** (R): The data owner agent listed above — accountable for the data being correct and timely.
 - **Accountable** (A): The executive overseeing that department (e.g., CTO for engineering metrics, CFO for financial metrics).
-- **Consulted** (C): Cross-cutting roles like `data-scientist` and `business-intelligence-engineer` are consulted when KPIs need redefinition.
+- **Consulted** (C): Cross-cutting roles like `business-intelligence-engineer` are consulted when KPIs need redefinition.
 - **Informed** (I): dashboard-owner receives all data for rendering; the CEO and board-level agents are informed consumers.
 
 ---

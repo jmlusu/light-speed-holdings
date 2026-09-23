@@ -7,11 +7,11 @@ Source of truth: CMO Guiding Principles v1.0 · ADR-020 (ratified) · Wayfinder 
 
 | # | Ticket | Priority / Order | Owner (body) | Status | Blocked by |
 |---|--------|------------------|--------------|--------|------------|
-| #302 | P1 — Dispose unqualified claims (18 (c)-class rows + severe contradictions) | P1 (1) | content-writer | OPEN (`ready-for-agent`) | — first wave |
-| #303 | P2 — Token + motif confinement (gray sweep, motif removal, mono confinement) | P2 (2) | frontend-architect (+brand-strategist design authority) | OPEN (`ready-for-agent`) | — first wave |
+| #302 | P1 — Dispose unqualified claims (18 (c)-class rows + severe contradictions) | P1 (1) | content-creator | OPEN (`ready-for-agent`) | — first wave |
+| #303 | P2 — Token + motif confinement (gray sweep, motif removal, mono confinement) | P2 (2) | frontend-architect (+product-marketing-manager design authority) | OPEN (`ready-for-agent`) | — first wave |
 | #304 | Gate — ACK registry sign-off sweep (15 roles PENDING → ACKNOWLEDGED) | Gate (0) | vp-engineering (chief-of-staff accountable) | **CLOSED** 2026-09-23 via #360 squash → main @ 8f2e73d7 (15/15 ACK + 6/6 required checks) | — gate met |
 | #305 | P3 — Nav/IA restructure (5-item CTA-led nav, route consolidation, §8 labels) | P3 (3) | lead-frontend (+product-designer IA) | OPEN (`ready-for-agent`) | #303, #304 |
-| #306 | P5 — A11y + consistency + Pharos Insights IA | P5 (5) | product-designer (+frontend-engineer, content-writer) | OPEN (`ready-for-agent`) | #302, #303, #304 |
+| #306 | P5 — A11y + consistency + Pharos Insights IA | P5 (5) | product-designer (+senior-frontend-engineer, content-creator) | OPEN (`ready-for-agent`) | #302, #303, #304 |
 | #307 | P4 — Analytics (Plausible primary / Umami fallback + event schema) | P4 (4) | ux-analytics-lead (+frontend-architect) | OPEN (`ready-for-agent`) | #305, #304 |
 | #308 | P3 — Homepage outcome-led restructure | P3 (3; prototype unblocked) | product-designer → lead-frontend (impl) | OPEN (`ready-for-agent`) | #255, #303, #305, #307, #304 |
 

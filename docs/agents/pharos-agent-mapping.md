@@ -6,14 +6,12 @@ Use these valid roster agents to delegate Pharos work:
 
 | Pharos Agent (OpenCode) | Valid `subagent_type` | Best For |
 |-------------------------|----------------------|----------|
-| `thought-leadership-lead` | `content-writer` | Strategy, narrative architecture, content calendar |
+| `thought-leadership-lead` | `content-creator` | Strategy, narrative architecture, content calendar |
 | `agentic-research-lead` | `general` | Research, evidence synthesis, fact gathering |
-| `thought-leadership-author` | `content-writer` | Long-form writing, manifestos, LinkedIn posts, white papers |
+| `thought-leadership-author` | `content-creator` | Long-form writing, manifestos, LinkedIn posts, white papers |
 | `agentic-policy-analyst` | `general` | Policy analysis, regulatory mapping, consultation drafting |
 | `speaker-engagement-lead` | `general` | Speaking programs, workshop design, keynote scripts |
-| `community-ecosystem-builder` | `general` | Community building, stakeholder maps, partnerships |
-| `media-pr-relations` | `content-writer` | Press materials, op-eds, media pitches, brand consistency |
-| `talent-academy-lead` | `general` | Academy design, certification, university partnerships |
+| `community-ecosystem-builder` | `general` | Community building, stakeholder maps, partnerships, press, academy programs |
 
 ## Delegation Pattern
 

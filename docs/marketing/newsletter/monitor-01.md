@@ -24,33 +24,33 @@
 
 ## Subject Lines (choose one)
 
-1. **The Malawi Agentic AI Monitor #1: 152 agents, a national AI bill, and the case for governed autonomy**
+1. **The Malawi Agentic AI Monitor #1: 90 agents, a national AI bill, and the case for governed autonomy**
 2. **Agentic AI in Malawi, September 2026 — the build, the bill, the practice**
-3. **Malawi's agentic AI moment: an AI Bill before December, a 152-agent proving ground**
+3. **Malawi's agentic AI moment: an AI Bill before December, a 90-agent proving ground**
 
 ## Preview Text (choose one)
 
 1. **This month: a national AI Bill heading to Parliament, SADC's regional framework, and why humans stay in the loop.**
-2. **Inside the LightSpeed proof lab: a 152-agent company, a warm-up launch, and a publishing pipeline that verifies its own sources.**
+2. **Inside the LightSpeed proof lab: a 90-agent company, a warm-up launch, and a publishing pipeline that verifies its own sources.**
 3. **What should humans remain accountable for? Our answer, engineered in.**
 
 ---
 
 ## CEO Note
 
-Welcome to the first edition of the Malawi Agentic AI Monitor. I am Jack Mlusu, founder of LightSpeed Holdings Limited™, an AI-native enterprise built to prove that agentic AI can perform meaningful organizational work in Malawi and across Southern Africa. This Monitor is our light in the Pharos tradition — a monthly, source-checked scan of what is being built, what is being governed, and what is being learned about agentic AI in our region. No hype, no vendor gloss: build evidence, policy reality, and practice. This issue opens with a 152-agent company in warm-up launch, a national AI Bill heading to Parliament, the regional governance picture, and the engineering we shipped this month.
+Welcome to the first edition of the Malawi Agentic AI Monitor. I am Jack Mlusu, founder of LightSpeed Holdings Limited™, an AI-native enterprise built to prove that agentic AI can perform meaningful organizational work in Malawi and across Southern Africa. This Monitor is our light in the Pharos tradition — a monthly, source-checked scan of what is being built, what is being governed, and what is being learned about agentic AI in our region. No hype, no vendor gloss: build evidence, policy reality, and practice. This issue opens with a 90-agent company in warm-up launch, a national AI Bill heading to Parliament, the regional governance picture, and the engineering we shipped this month.
 
 ---
 
-## 1. This Month at LightSpeed: A 152-Agent Company in Warm-Up Launch
+## 1. This Month at LightSpeed: A 90-Agent Company in Warm-Up Launch
 
-September is a milestone month for the proof lab. The company registry (`company-registry.yaml`, verified 2026-09-17) now defines **152 agents across 20 departments** — executives, department leads, specialists, and board-level agents — the exact architecture cited in our positioning: 152 agents, 20 departments, 5-tier human-in-the-loop approvals, and immutable audit trails (`docs/Pharos/positioning.md`).
+September is a milestone month for the proof lab. The company registry (`company-registry.yaml`, verified 2026-09-23) now defines **90 agents across 20 departments** — executives, department leads, specialists, and board-level agents — the exact architecture cited in our positioning: 90 agents, 20 departments, 5-tier human-in-the-loop approvals, and immutable audit trails (`docs/Pharos/positioning.md`).
 
 The public launch is running on a deliberate 4-week account warm-up protocol that began 2026-09-06 and runs to 2026-10-03: manual posting only, no schedulers, one consistent device and IP, with engagement built daily per platform (`docs/marketing/warmup-log.md`). Week 4 of the protocol includes end-to-end testing of newsletter signup forms — the direct on-ramp for this Monitor.
 
 Inside the building, September 13–14 saw the Pharos content engine go fully live: a routine engine firing three weekly briefs (Monday Agentic Enterprise Brief, Wednesday Build Log, Friday AI Policy & Governance Africa) plus deep-research and publishing rails (`docs/STATUS.md`, 2026-09-13 and 2026-09-14). This Monitor is the monthly flagship that those weekly routines feed.
 
-**Why it matters:** we are not describing agentic AI from the outside. The company itself is the demonstration — 152 agents doing real organizational work, with humans accountable at every consequential step.
+**Why it matters:** we are not describing agentic AI from the outside. The company itself is the demonstration — 90 agents doing real organizational work, with humans accountable at every consequential step.
 
 ---
 
@@ -113,9 +113,9 @@ Every factual claim in this issue maps to a repo file or a cited public source. 
 
 | # | Claim | Source |
 |---|-------|--------|
-| 1 | 152 agents defined in the registry | `company-registry.yaml` (counted 2026-09-17: 152 `- id:` entries) |
+| 1 | 90 agents defined in the registry | `company-registry.yaml` (counted 2026-09-23: 90 `- id:` entries) |
 | 2 | 20 departments defined | `company-registry.yaml` (counted 2026-09-16: 20 unique `department:` values) |
-| 3 | Positioning cites 152 agents / 20 departments / 5-tier HITL / audit trails | `docs/Pharos/positioning.md` (Proof Stack) |
+| 3 | Positioning cites 90 agents / 20 departments / 5-tier HITL / audit trails | `docs/Pharos/positioning.md` (Proof Stack) |
 | 4 | Warm-up launch 2026-09-06 to 2026-10-03, manual-only protocol | `docs/marketing/warmup-log.md` |
 | 5 | Week 4 includes newsletter signup form testing | `docs/marketing/warmup-log.md` (Week 4 checklist) |
 | 6 | Pharos routine engine live 2026-09-13 (Mon/Wed/Fri briefs) | `docs/STATUS.md` (2026-09-13 entry); `templates/pharos/routines/*.md` |

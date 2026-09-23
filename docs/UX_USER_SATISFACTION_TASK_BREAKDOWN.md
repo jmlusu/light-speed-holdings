@@ -21,7 +21,7 @@ Transform the CEO Dashboard from "buggy and unstable" (user-reported) into a pol
 ## Phase 1: Critical Fixes (Week 1-2) - "Stop the Bleeding"
 
 ### Task UX-001: Fix Scroll Position Preservation (DASH-001)
-**Owner**: `frontend-engineer` | **Skill**: `bug-hunter` | **Effort**: 2 days
+**Owner**: `senior-frontend-engineer` | **Skill**: `bug-hunter` | **Effort**: 2 days
 
 **Root Cause**: Alpine.js reactivity triggers full DOM re-render on data updates (`app.js:946-1014`)
 
@@ -53,7 +53,7 @@ restoreScrollPosition() {
 ---
 
 ### Task UX-002: Add Loading State Management (DASH-003)
-**Owner**: `frontend-engineer` | **Skill**: `bug-hunter` | **Effort**: 2 days
+**Owner**: `senior-frontend-engineer` | **Skill**: `bug-hunter` | **Effort**: 2 days
 
 **Current State**: `isLoading: true` only on initial load (`app.js:18`)
 
@@ -89,7 +89,7 @@ loading: {
 ---
 
 ### Task UX-003: Implement Error Feedback UI (DASH-004)
-**Owner**: `frontend-engineer` | **Skill**: `bug-hunter` | **Effort**: 2 days
+**Owner**: `senior-frontend-engineer` | **Skill**: `bug-hunter` | **Effort**: 2 days
 
 **Current State**: `fetchJSON()` catches errors but only logs to console and sets `apiStatus` banner (`app.js:693-739`)
 
@@ -131,7 +131,7 @@ loading: {
 ## Phase 2: Polish & Delight (Week 3-4) - "Make it Feel Good"
 
 ### Task UX-005: Fix Toast Notification Spam (DASH-005)
-**Owner**: `frontend-engineer` | **Effort**: 1 day
+**Owner**: `senior-frontend-engineer` | **Effort**: 1 day
 
 **Current State**: Single toast, no queue (`app.js:14-15`)
 
@@ -144,7 +144,7 @@ loading: {
 ---
 
 ### Task UX-006: Pause Polling During Drag Operations (DASH-006)
-**Owner**: `frontend-engineer` | **Effort**: 1 day
+**Owner**: `senior-frontend-engineer` | **Effort**: 1 day
 
 **Root Cause**: Auto-refresh (15s) triggers re-render during Kanban drag
 
@@ -164,7 +164,7 @@ onDragEnd() {
 ---
 
 ### Task UX-007: Eliminate Chart Flicker (DASH-007)
-**Owner**: `frontend-engineer` | **Skill**: `performance-optimizer` | **Effort**: 2 days
+**Owner**: `senior-frontend-engineer` | **Skill**: `performance-optimizer` | **Effort**: 2 days
 
 **Current State**: Charts redraw on every KPI update (`app.js:1009-1013` schedules `scheduleKPICharts()`)
 
@@ -177,7 +177,7 @@ onDragEnd() {
 ---
 
 ### Task UX-008: Add Manual Refresh Per Section (DASH-008)
-**Owner**: `frontend-engineer` | **Effort**: 1 day
+**Owner**: `senior-frontend-engineer` | **Effort**: 1 day
 
 **UI**: Refresh icon button in each section header
 **Behavior**: Calls section-specific load function (e.g., `loadDashboard()`, `loadTasksPage()`, `loadAgents()`)
@@ -188,21 +188,21 @@ onDragEnd() {
 ## Phase 3: Advanced UX (Week 5-6) - "Executive Grade"
 
 ### Task UX-009: Keyboard Shortcuts & Command Palette
-**Owner**: `frontend-engineer` | **Effort**: 2 days
+**Owner**: `senior-frontend-engineer` | **Effort**: 2 days
 - `Cmd+K` → Command palette (search tasks, agents, navigate)
 - `Cmd+R` → Refresh current section
 - `Esc` → Close modals/dropdowns
 - Arrow keys for Kanban navigation
 
 ### Task UX-010: Responsive Design & Mobile Usability
-**Owner**: `frontend-engineer` | **Effort**: 3 days
+**Owner**: `senior-frontend-engineer` | **Effort**: 3 days
 - Dashboard usable on tablet (horizontal scroll for tables)
 - Touch-friendly Kanban drag
 - Collapsible sidebar on mobile
 - Test viewports: 375px, 768px, 1024px, 1440px
 
 ### Task UX-011: Accessibility (WCAG 2.1 AA)
-**Owner**: `frontend-engineer` | **Effort**: 2 days
+**Owner**: `senior-frontend-engineer` | **Effort**: 2 days
 - Semantic HTML landmarks
 - ARIA labels for interactive elements
 - Focus management for modals
@@ -210,7 +210,7 @@ onDragEnd() {
 - Screen reader announcements for live updates
 
 ### Task UX-012: User Feedback Collection
-**Owner**: `ux-research-lead` + `frontend-engineer` | **Effort**: 2 days
+**Owner**: `ux-research-lead` + `senior-frontend-engineer` | **Effort**: 2 days
 - Implement feedback modal (see `dashboard-known-issues.md:298-380`)
 - `/api/feedback` endpoint (see `dashboard-known-issues.md:384-414`)
 - Auto-collect context: URL, WS status, recent errors, timestamp

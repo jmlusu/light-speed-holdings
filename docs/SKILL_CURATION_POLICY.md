@@ -1,9 +1,10 @@
 # Skill Curation Policy
 
-**Version:** 1.0
-**Date:** 2026-08-07
+**Version:** 1.1
+**Date:** 2026-09-23
 **Owner:** Chief of Staff
 **Status:** Active
+**CISO of record:** Jack Mlusu (Human CEO)
 
 ---
 
@@ -55,6 +56,7 @@ This document defines the policy for adding, vetting, and managing skills in the
 - [ ] No prompt injection in `references/` ("ignore previous instructions", etc.)
 - [ ] No network calls in `scripts/` without explicit user consent
 - [ ] No file writes outside project sandbox
+- [ ] **Third-party transmission scan** (see § Skill Third-Party Transmission Ban): no skill may send local code, docs, screenshots, memory/narratives, or prompts to an external host unless the vendor is on `docs/APPROVED-VENDORS.md` and the use is within the 90-day exception window (or dual sign-off is recorded)
 - [ ] Run `skill-check` skill for structural validation
 
 ### 5. Dependency Check
@@ -176,6 +178,58 @@ npx skills list --json | jq '.[] | select(.name=="<problem-skill>")'  # Should r
 
 ---
 
+## Skill Third-Party Transmission Ban
+
+**Version:** 1.0 · **Effective:** 2026-09-23 · **CISO of record:** Jack Mlusu (Human CEO)
+
+### Rule
+
+No skill (project `.agents/skills/`, project `.opencode/skills/`, or global `~/.agents/skills/` / `~/.opencode/skills/`) may transmit LightSpeed local data to a third-party host — including source code, diffs, docs, screenshots, prompts, session transcripts, memory/narratives, PDFs, or API keys — unless **all** of the following are true:
+
+1. The destination vendor is listed on [`docs/APPROVED-VENDORS.md`](APPROVED-VENDORS.md).
+2. The transmission is documented in that vendor row (what is sent, to whom, auth mechanism).
+3. The use is within the **90-day default exception window** from the approval date, **or** a dual sign-off (CEO + CISO) re-authorizes it.
+
+**CISO of record = Jack Mlusu / Human CEO.** Sole authority for Tier A (local-data) exceptions. Dual sign-off means the CEO records the exception in `APPROVED-VENDORS.md` under their own authority (CEO acknowledges CISO role).
+
+### Pre-install checklist (every new skill)
+
+- [ ] Grep skill tree for outbound hosts (`https://`, `fetch(`, `axios`, `requests.post`, `webhook`, `cdn`, API base URLs)
+- [ ] Classify: **Tier A** (sends local data) vs **Tier B** (public web / research only) vs **local-only**
+- [ ] Tier A → reject unless vendor is on APPROVED-VENDORS with active window
+- [ ] Record decision (approve / reject / exception) in APPROVED-VENDORS or skill manifest
+
+### Runtime stop (agents)
+
+If a skill attempts transmission of local data to a non-allow-listed host during a session:
+
+1. **STOP** the skill immediately.
+2. Do not retry, do not "fix" the payload to succeed.
+3. Report the skill name + destination host + payload class to the CEO (CISO).
+4. Treat as a policy violation incident under §9.2.
+
+### Exceptions
+
+- Default window: **90 days** from `approved_at` on APPROVED-VENDORS.
+- Renewal: CEO/CISO re-approval recorded before expiry; no silent rollover.
+- Retired vendors stay on the historical list with status `RETIRED` — never re-enable without a new approval entry.
+
+### Monthly audit
+
+Registry Owner runs a monthly scan of all skill roots for new outbound hosts not on APPROVED-VENDORS. Findings go to CEO (CISO) within 5 business days.
+
+### Retired 2026-09-23 (skills deleted)
+
+| Skill family | Destinations (historical) | Status |
+|--------------|---------------------------|--------|
+| `claude-mem-*` (20) | cmem.ai, api.telegram.org, NotebookLM/Workers | **RETIRED — deleted** local `~/.claude-mem` + plugin cache |
+| `scroll-craft` | kie.ai / kieai.redpandaai.co | **RETIRED — deleted** + `scrollcraft/` workspace |
+| `greploop`, `greploop-apps` | Greptile | **RETIRED — deleted** (global) |
+
+Git backup before purge: `a179b62e`.
+
+---
+
 ## Prohibited Actions
 
 - ❌ Editing `AGENTS.md` to "register" skills (unnecessary, misleading)
@@ -183,6 +237,9 @@ npx skills list --json | jq '.[] | select(.name=="<problem-skill>")'  # Should r
 - ❌ Adding skills with GPL/viral licenses
 - ❌ Installing from unverified sources (<100 stars, no recent commits)
 - ❌ Skipping security audit of `scripts/` and `references/`
+- ❌ Installing or keeping skills that transmit local data to hosts not on `docs/APPROVED-VENDORS.md` (see § Skill Third-Party Transmission Ban)
+- ❌ Reinstalling retired families: `claude-mem-*`, `scroll-craft`, `greploop` / `greploop-apps`
+- ❌ Sending secrets or `.env` contents to any third-party skill endpoint
 
 ---
 
@@ -191,6 +248,7 @@ npx skills list --json | jq '.[] | select(.name=="<problem-skill>")'  # Should r
 | Date | Version | Change | Author |
 |------|---------|--------|--------|
 | 2026-08-07 | 1.0 | Initial policy; added 10 Addy Tier-1 skills + meta-skill | Chief of Staff |
+| 2026-09-23 | 1.1 | Added Third-Party Transmission Ban; CISO = Jack Mlusu; 90-day exceptions; retired claude-mem / scroll-craft / greploop | Chief of Staff / CEO |
 
 ---
 

@@ -6,7 +6,7 @@ and inbox.json task creation. Integrates with the MessageBus for task delegation
 Governance Model (POL-CL-001):
   - G1: Signed contract (legal_owner)
   - G2: Data Processing Agreement + data classification (data_privacy_officer)
-  - G3: Compliance risk assessment (compliance_officer)
+  - G3: Compliance risk assessment (security_compliance_lead)
   - G4: Security review (ciso)
 
 Offers B and C are BLOCKED until board-ratified governance policies are active.

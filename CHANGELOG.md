@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **Tests**: `EXPECTED_AGENT_COUNT` bumped to 145; `test_doc_agent_counts.py` + `test_doc_drift.py` green (33 passed / 1 skipped).
 
 ### Changed
+- **Agent count folded 152 → 90** (62 cuts; 89 AI + 1 Human CEO) across edge files: `docs/STATUS.md`, `TESTING.md`, brand template generators; registry-verified count now 90.
 - **Agent count reconciled 144 → 145** across living docs: README.md, USER-GUIDE.md, ORGANIZATION.md (Marketing 9 → 11 + `social-media-manager`), DEVELOPMENT.md, `docs/source-of-truth.yaml`, `company/org-chart.md` (Marketing 10 → 11), `docs/AGENT-REGISTRY-TABLE.md`; `company/agent-registry.json` re-synced via `ai-company sync-registry --verify`.
 - **Social media setup plan retired**: `social-media/LIGHTSPEED-SOCIAL-MEDIA-SETUP.md` removed; content preserved in normalized form at `docs/marketing/digital-identity-setup.md`.
 

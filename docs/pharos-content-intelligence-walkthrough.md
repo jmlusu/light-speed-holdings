@@ -17,7 +17,7 @@ was verified live by manually firing `pharos_sadc_research_scan` end-to-end on
 ├─ src/ai_company/orchestrator/routine.py ── RoutineStore + RoutineScheduler
 │     · time-gated run_due() · crash-safe mark-before-send · idempotent routine_run_id
 ├─ src/ai_company/orchestrator/message_bus.py ── .opencode/inbox.json task queue
-│     · each fire enqueues a FRESH Task (receiver content_writer by default)
+│     · each fire enqueues a FRESH Task (receiver content_creator by default)
 ├─ executor loop (src/ai_company/executor/daemon.py) ── consumes the task
 │     · AgentLoop runs the Pharos agent, stores episodic memory + graph upsert
 │     · writes reports to results/ and can email the result
@@ -43,7 +43,7 @@ Definitions live in `config/company/routines.yaml`; prompts live under
 | `pharos_policy_governance_africa` | Fri | standard | AI policy & governance Africa |
 | `pharos_deep_research_brief` | Sat | **deep** | deep-research weekly brief |
 
-All five default to `enabled: true`, receiver `content_writer`, model tier
+All five default to `enabled: true`, receiver `content_creator`, model tier
 `standard` (with optional per-routine `budget_tokens`).
 
 Two schedule modes are supported by `Routine` (`routine.py`):
@@ -83,7 +83,7 @@ Verified live (see section 7). One task landed in `.opencode/inbox.json`:
 
 ```
 id:          routine-pharos_sadc_research_scan-2026-09-17
-receiver:    content_writer
+receiver:    content_creator
 sender:      routine-scheduler
 tags:        ['pharos-routine',
               'routine:pharos_sadc_research_scan',
@@ -125,7 +125,7 @@ platforms `KNOWN_PLATFORMS = {linkedin, substack}`:
 - `enqueue(platform, title, body, *, bus=...)` validates the platform, persists
   the record, then — when a `bus` is passed — **mirrors** the intent to the
   agent inbox as a `pharos-publish` task (`sender_id="publish-queue"`,
-  `receiver_id="content_writer"`, tags `['pharos-publish', 'publish:<platform>']`)
+  `receiver_id="content_creator"`, tags `['pharos-publish', 'publish:<platform>']`)
   so the publish step is visible to and executable by the executor loop.
 - The MCP `publish_queue` tool gates this behind the `approve` role and reads
   its queue dir from `PHAROS_PUBLISH_DIR` (default `results/pharos`).

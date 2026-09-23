@@ -20,7 +20,7 @@ and the SADC region.
 
 | Pillar | What it means | Lightspeed proof |
 |--------|---------------|------------------|
-| **Company Builder** | The reference case for what an AI-native company looks like | 152-agent architecture, 20 departments, 5-tier HITL approvals, audit trails |
+| **Company Builder** | The reference case for what an AI-native company looks like | 90-agent architecture, 20 departments, 5-tier HITL approvals, audit trails |
 | **Use Cases** | Documented, sector-specific, quantified deployments | J&S StopOver Bar, health/M&E, VSLA/SACCO/finance, Lightspeed as meta-case-study |
 | **Policy** | Global agentic AI governance translated to SADC reality | Data Protection Act 2024 literacy, AU Continental AI Strategy, SADC digital transformation |
 
@@ -35,9 +35,7 @@ The throughline: **building → evidence → policy**. Every artifact connects a
 | `thought-leadership-author` | White papers, manifesto, Malawi Agentic AI Monitor, long-form |
 | `agentic-policy-analyst` | National/SADC policy submissions, governance framework, regulator briefings |
 | `speaker-engagement-lead` | Speaking slots, roundtables, Executive Lab, Lighthouse pilot |
-| `community-ecosystem-builder` | Malawi Agentic AI Forum, stakeholder map, partnerships, regional community |
-| `media-pr-relations` | Op-eds, press source positioning, profile features |
-| `talent-academy-lead` | Lightspeed Academy, certification, fellowships, university partnerships |
+| `community-ecosystem-builder` | Malawi Agentic AI Forum, stakeholder map, partnerships, regional community; press, op-eds, Academy/certification programs |
 
 ## Contents
 

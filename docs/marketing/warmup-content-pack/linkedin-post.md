@@ -1,18 +1,18 @@
-# LinkedIn Post — "How we keep 152 agents accountable" (Company page)
+# LinkedIn Post — "How we keep 90 agents accountable" (Company page)
 
 **Status:** Queued until accounts exist (#194)
 **Platform:** LinkedIn — LightSpeed Holdings Limited™ company page (also usable from CEO profile)
 **Format test (Week 2):** Text-only + framework (text > link posts for reach)
 **Voice:** Builder register, no emojis, evidence-led. `™` on first mention.
-**Facts source:** `company-registry.yaml` (agent/department count, verified 2026-09-17); `docs/Pharos/h-a-o-m-t-g-v-framework.md`; `docs/Pharos/manifesto-draft.md`
+**Facts source:** `company-registry.yaml` (agent/department count, verified 2026-09-23); `docs/Pharos/h-a-o-m-t-g-v-framework.md`; `docs/Pharos/manifesto-draft.md`
 
 ---
 
 ## Post text (1,806 chars incl. hashtags — within LinkedIn 3,000 limit)
 
-How we keep 152 agents accountable
+How we keep 90 agents accountable
 
-LightSpeed Holdings Limited™ runs an AI-native enterprise: 152 agents across 20
+LightSpeed Holdings Limited™ runs an AI-native enterprise: 90 agents across 20
 departments. Every department has a defined reporting chain, a five-tier
 human-in-the-loop approval system, and immutable audit trails. A board exercises
 genuine oversight.
@@ -57,10 +57,10 @@ https://lightspeedholdings.com
 
 | Claim | Source |
 |-------|--------|
-| 152 agents, 20 departments | `company-registry.yaml` (152 agent entries, 20 departments — counted 2026-09-17) |
+| 90 agents, 20 departments | `company-registry.yaml` (90 agent entries, 20 departments — counted 2026-09-23) |
 | Defined reporting chain per department | `company-registry.yaml` (`reports_to` on every agent) |
 | 5-tier HITL approvals | `docs/Pharos/manifesto-draft.md:64-80`; registry `decision_engine_owner` |
-| Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `audit_trail_owner` |
+| Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `platform_reliability_engineer` |
 | Board oversight | `company-registry.yaml` (`human_ceo` reports_to `board`; Board dept. agents); `docs/Pharos/manifesto-draft.md:110` |
 | H-A-O-M-T-G-V framework | `docs/Pharos/positioning.md:41-52`; `docs/Pharos/h-a-o-m-t-g-v-framework.md` |
 | Built in Malawi for constrained environments | `docs/Pharos/positioning.md:73` (offline-first, WhatsApp-native); `docs/Pharos/manifesto-draft.md:32-41` |

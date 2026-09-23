@@ -59,7 +59,7 @@ export const HaomtgvGovernanceFramework: React.FC<HaomtgvGovernanceFrameworkProp
   const [activeTab, setActiveTab] = useState<FrameworkTab>('pillars');
   const [activePillar, setActivePillar] = useState<'H' | 'A' | 'O' | 'M' | 'T' | 'G' | 'V'>('H');
 
-  // 152 Agent Hierarchy State
+  // 90 Agent Hierarchy State
   const [selectedDeptId, setSelectedDeptId] = useState<string>('executive');
   const [agentSearchQuery, setAgentSearchQuery] = useState<string>('');
   const [selectedToolFilter, setSelectedToolFilter] = useState<string>('all');
@@ -108,16 +108,16 @@ interface HumanExecutiveGate {
       id: 'A',
       letter: 'A',
       name: 'Agentic Workforce',
-      headline: '152 Specialized Sub-Agents Across 20 Governed Departments',
+      headline: '90 Specialized Sub-Agents Across 20 Governed Departments',
       coreQuestion: 'What organizational labor can specialized AI agents autonomously perform?',
-      summary: '152 discrete, role-bounded agent personas defined strictly in company-registry.yaml. Every agent has an explicit domain scope, tool permission boundary, and deterministic escalation pathway.',
+      summary: '90 discrete, role-bounded agent personas defined strictly in company-registry.yaml. Every agent has an explicit domain scope, tool permission boundary, and deterministic escalation pathway.',
       principles: [
         'Single Source of Truth: company-registry.yaml defines every agent ID, name, tools, and permissions.',
         'Jinja2 Templating: Generated into OpenCode v2 markdown cards (.opencode/agents/*.md) with mode: subagent.',
         'Strict Role Bounding: Subagents cannot mutate their own prompt or access tools outside their whitelist.',
         'Hierarchical Escalation: Specialists report to Department Leads; Leads report to Executive Swarm.'
       ],
-      metrics: '152 Active Specialists // 20 Governed Departments',
+      metrics: '90 Active Specialists // 20 Governed Departments',
       codeSnippet: `name: thought-leadership-author
 version: 2.4.0
 mode: subagent
@@ -135,7 +135,7 @@ system_prompt: |
       letter: 'O',
       name: 'Orchestration',
       headline: 'Deterministic Workflow DAGs & Asynchronous Inbox',
-      coreQuestion: 'How do 152 agents coordinate without race conditions, collisions, or chaos?',
+      coreQuestion: 'How do 90 agents coordinate without race conditions, collisions, or chaos?',
       summary: 'Task coordination operates via a deterministic JSON queue at .opencode/inbox.json. Directed Acyclic Graphs (DAGs) break complex strategic briefs into sub-tasks with sub-second message routing.',
       principles: [
         'Message Bus Integrity: File-based asynchronous task queue preventing network state loss.',
@@ -187,7 +187,7 @@ class SovereignEnterpriseMemory:
       name: 'Tools & Actions',
       headline: 'The Canonical 7-Tool Sandboxing Whitelist',
       coreQuestion: 'How do agents execute tangible actions safely in real environments?',
-      summary: 'Strict rejection of arbitrary shell or unconstrained code execution. All 152 agents operate exclusively through 7 canonical sandboxed runtime wrappers validated against permission blocks.',
+      summary: 'Strict rejection of arbitrary shell or unconstrained code execution. All 90 agents operate exclusively through 7 canonical sandboxed runtime wrappers validated against permission blocks.',
       principles: [
         'The Canonical 7: read, edit, grep, list, bash, webfetch, and task.',
         'Legacy Alias Normalization: Backward-compatible normalization (write → edit, execute → bash, delegate → task).',
@@ -240,7 +240,7 @@ enum PermissionTier {
       principles: [
         'Tamper-Evident Hash Chain: Every step references the previous SHA-256 block hash.',
         'Pydantic Domain Safety: Strict type validation before any database state transition.',
-        'Proven In-House: Tested across 152 agents running daily operations at LightSpeed Holdings.',
+        'Proven In-House: Tested across 90 agents running daily operations at LightSpeed Holdings.',
         'Field-Validated Impact: 48hr → 14.2s mobile money settlement audit; 25k+ smallholders served.'
       ],
       metrics: 'SHA-256 Hash Chaining // 48h → 14.2s Latency Collapse',
@@ -265,7 +265,7 @@ enum PermissionTier {
       name: 'read',
       desc: 'Read file contents within workspace root. Symlink traversal denied.',
       sampleCmd: 'read("company-registry.yaml")',
-      output: '20 departments loaded, 152 agents validated against pydantic schema.'
+      output: '20 departments loaded, 90 agents validated against pydantic schema.'
     },
     {
       name: 'edit',
@@ -283,7 +283,7 @@ enum PermissionTier {
       name: 'list',
       desc: 'Directory enumeration with path-traversal sandboxing.',
       sampleCmd: 'list(".opencode/agents/")',
-      output: '152 markdown agent cards indexed in local directory.'
+      output: '90 markdown agent cards indexed in local directory.'
     },
     {
       name: 'bash',
@@ -449,7 +449,7 @@ enum PermissionTier {
           </span>
           <span className="text-ls-grey-light-text hidden sm:inline">•</span>
           <span className="text-[11px] font-body text-ls-grey-light-text">
-            152 AGENTS // 20 DEPARTMENTS // ZERO AIR-GAP COMPROMISE
+            90 AGENTS // 20 DEPARTMENTS // ZERO AIR-GAP COMPROMISE
           </span>
         </div>
 
@@ -473,7 +473,7 @@ enum PermissionTier {
         <p className={`text-sm sm:text-base max-w-4xl leading-relaxed ${
           isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
         }`}>
-          How LightSpeed orchestrates <strong>152 specialist agents</strong> inside a governed, air-gapped corporate hierarchy.
+          How LightSpeed orchestrates <strong>90 specialist agents</strong> inside a governed, air-gapped corporate hierarchy.
           Built on deterministic Directed Acyclic Graphs (DAGs), cryptographic human approval gates, national soil data residency,
           and an immutable SHA-256 audit ledger.
         </p>
@@ -502,7 +502,7 @@ enum PermissionTier {
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>II. 152-Agent Hierarchy Explorer ({totalAgents})</span>
+          <span>II. 90-Agent Hierarchy Explorer ({totalAgents})</span>
         </button>
 
         <button
@@ -567,7 +567,7 @@ enum PermissionTier {
                   </div>
                   <div className="text-[10px] font-body text-ls-grey-light-text truncate mt-0.5">
                     {p.id === 'H' && 'Apex Sovereign'}
-                    {p.id === 'A' && '152 Agents'}
+                    {p.id === 'A' && '90 Agents'}
                     {p.id === 'O' && 'DAG Message Bus'}
                     {p.id === 'M' && 'AST Memory'}
                     {p.id === 'T' && '7 Canonical Tools'}
@@ -695,7 +695,7 @@ enum PermissionTier {
                     <span className="text-[10px] font-body text-ls-grey-light-text">Anti-Deadlock Daemon</span>
                   </div>
                   <p className={`text-xs mb-4 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                    In a 152-agent enterprise, a pending human review could indefinitely lock dependent DAG subtasks.
+                    In a 90-agent enterprise, a pending human review could indefinitely lock dependent DAG subtasks.
                     Rule 9.1 executes a scheduled governance sweep: any PENDING approval exceeding its TTL transitions to <strong>EXPIRED</strong>,
                     notifying the human executive while releasing locked worker threads.
                   </p>
@@ -757,7 +757,7 @@ enum PermissionTier {
                   </div>
                   <div className="p-3 rounded-xl border border-[rgba(7,10,64,0.85)] bg-ls-navy/40 flex items-center justify-between">
                     <span className="text-ls-grey-light-text">Total Workforce</span>
-                    <span className="text-[rgba(230,57,70,0.65)] font-bold">152 Specialist Agents</span>
+                    <span className="text-[rgba(230,57,70,0.65)] font-bold">90 Specialist Agents</span>
                   </div>
                   <div className="p-3 rounded-xl border border-[rgba(7,10,64,0.85)] bg-ls-navy/40 flex items-center justify-between">
                     <span className="text-ls-grey-light-text">Datacenter Soil</span>
@@ -787,7 +787,7 @@ enum PermissionTier {
         </div>
       )}
 
-      {/* TAB 2: 152-AGENT HIERARCHY EXPLORER */}
+      {/* TAB 2: 90-AGENT HIERARCHY EXPLORER */}
       {activeTab === 'roster' && (
         <div className="space-y-6 animate-in fade-in duration-300">
           {/* Department Navigator Header */}
@@ -807,7 +807,7 @@ enum PermissionTier {
                 <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-ls-grey-light-text" />
                 <input
                   type="text"
-                  placeholder="Search 152 agents..."
+                  placeholder="Search 90 agents..."
                   value={agentSearchQuery}
                   onChange={(e) => setAgentSearchQuery(e.target.value)}
                   className="pl-8 pr-3 py-1.5 rounded-lg text-xs font-body bg-[#070a40] border border-[rgba(7,10,64,0.85)] text-ls-white placeholder-ls-grey-light-text focus:outline-none focus:border-[#e63946]"
@@ -969,7 +969,7 @@ enum PermissionTier {
                 The Sovereign Air-Gap Architecture
               </h3>
               <p className={`text-xs sm:text-sm mt-2 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                All 152 specialist agents execute exclusively within a localized, sovereign compute enclave hosted on
+                All 90 specialist agents execute exclusively within a localized, sovereign compute enclave hosted on
                 Lilongwe soil. Zero inference tokens, organizational schematics, or banking payloads leave Malawi borders.
               </p>
             </div>
@@ -991,11 +991,11 @@ enum PermissionTier {
                 </div>
               </div>
 
-              {/* Box 2: IPC Message Bus & 152 Agents */}
+              {/* Box 2: IPC Message Bus & 90 Agents */}
               <div className="p-5 rounded-2xl bg-[rgba(7,10,64,0.85)]/40 border border-[#e63946]/40 space-y-3 relative overflow-hidden">
                 <div className="flex items-center gap-2 text-[rgba(230,57,70,0.65)] font-bold uppercase text-xs">
                   <Cpu className="w-4 h-4" />
-                  <span>Layer 2: 152 Swarm Runtime</span>
+                  <span>Layer 2: 90 Swarm Runtime</span>
                 </div>
                 <p className="text-[11px] text-ls-white">
                   Directed Acyclic Graph (DAG) state machine running at .opencode/inbox.json.

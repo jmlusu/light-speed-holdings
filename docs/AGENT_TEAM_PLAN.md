@@ -16,10 +16,10 @@
 | Change | Reason |
 |--------|--------|
 | **+ `security-architect`** (specialist, reports to `ciso`) | New hire per user directive. Owns the auth boundary (the F7 auth primitive from the architecture review) and hardens dashboard RBAC/CORS. |
-| **+ `security-compliance-lead`** exists already | Confirmed present in registry (`dashboard-owner`, `platform-reliability-engineer`, `observability-engineer`, `dashboard-owner`, `qa-lead`, `frontend-engineer` all verified). |
-| Slight role emphasis shift | `frontend-engineer` + `dashboard-owner` absorb the run-of-play on UX ("user satisfaction") and executive KPI work; `observability-engineer` + `dashboard-owner` absorb in-house alerting channels. |
+| **+ `security-compliance-lead`** exists already | Confirmed present in registry (`dashboard-owner`, `platform-reliability-engineer`, `qa-lead`, `senior-frontend-engineer` all verified). |
+| Slight role emphasis shift | `senior-frontend-engineer` + `dashboard-owner` absorb the run-of-play on UX ("user satisfaction") and executive KPI work; `platform-reliability-engineer` + `dashboard-owner` absorb in-house alerting channels. |
 
-No removals. The 135-agent registry stands; we are adding one specialist and re-weighting ownership, not shrinking scope.
+No removals in this plan. The registry was later trimmed 152 → 90 (2026-09-23); owners below fold to their post-trim keepers.
 
 ---
 
@@ -28,29 +28,29 @@ No removals. The 135-agent registry stands; we are adding one specialist and re-
 ### Goal A — Developer velocity
 | Effort | Owner | Key sub-agents |
 |--------|-------|----------------|
-| Reduce generator/test friction | `developer-experience-engineer` | `platform-engineer`, `qa-lead` |
+| Reduce generator/test friction | `platform-engineer` | `platform-engineer`, `qa-lead` |
 | Tighten CI/CD + release gates | `release-manager` | `devops-lead`, `test-engineering-lead` |
-| Dashboards for internal monitoring | `dashboard-owner`, `observability-engineer` | `business-intelligence-engineer` |
+| Dashboards for internal monitoring | `dashboard-owner`, `platform-reliability-engineer` | `business-intelligence-engineer` |
 
 ### Goal B — System reliability
 | Effort | Owner | Key sub-agents |
 |--------|-------|----------------|
 | Executor/store hardening | `platform-reliability-engineer` | `orchestration-owner`, `store` owners |
-| Alerting (in-house) | `observability-engineer` | `dashboard-owner`, `frontend-engineer` |
-| Architecture consolidation (F6, F1) | `software-architect` | `backend-engineer` |
+| Alerting (in-house) | `platform-reliability-engineer` | `dashboard-owner`, `senior-frontend-engineer` |
+| Architecture consolidation (F6, F1) | `solution-architect` | `senior-backend-engineer` |
 
 ### Goal C — User experience (user satisfaction) — **top priority**
 | Effort | Owner | Key sub-agents |
 |--------|-------|----------------|
-| UX fix sprint (UX-001..012, DASH-001..008) | `frontend-engineer` | `dashboard-owner`, `ux-research-lead` |
+| UX fix sprint (UX-001..012, DASH-001..008) | `senior-frontend-engineer` | `dashboard-owner`, `ux-research-lead` |
 | UX verification & acceptance | `ux-research-lead` | `product-designer` |
 
 ### Goal D — Business readiness (feature completeness)
 | Effort | Owner | Key sub-agents |
 |--------|-------|----------------|
 | Executive KPI scorecard (FK-001..) | `dashboard-owner` | `business-intelligence-engineer` |
-| Rich org chart + metrics | `graph-owner` | `frontend-engineer` |
-| In-house alerting (FK-010..) | `dashboard-owner` | `observability-engineer`, `orchestration-owner` |
+| Rich org chart + metrics | `dashboard-owner` | `senior-frontend-engineer` |
+| In-house alerting (FK-010..) | `dashboard-owner` | `platform-reliability-engineer`, `orchestration-owner` |
 | Security hardening of all of it | `security-architect` | `security-compliance-lead` |
 
 ---
@@ -62,16 +62,16 @@ A lean delivery squad drawn from the registry to execute the plan fast. Keeps sp
 | Role | Agent | Primary lanes |
 |------|-------|---------------|
 | **Lead / PM** | `product-owner` | Backlog, sprint gates |
-| **UX sprint lead** | `frontend-engineer` | UX-001..012, DASH-001..008 |
+| **UX sprint lead** | `senior-frontend-engineer` | UX-001..012, DASH-001..008 |
 | **Dashboard backend** | `dashboard-owner` | KPI scorecard, API, alerting engine |
-| **Org chart** | `graph-owner` | Org chart + graph metrics |
+| **Org chart** | `dashboard-owner` | Org chart + graph metrics |
 | **KPI/targets** | `business-intelligence-engineer` | `kpis.yaml`, weights, trends |
-| **Reliability** | `observability-engineer` | In-house alert channels, WS |
+| **Reliability** | `platform-reliability-engineer` | In-house alert channels, WS |
 | **Security (new)** | `security-architect` | Auth primitive (F7), RBAC/CORS, alert endpoint auth |
 | **Quality** | `qa-lead` | Test gates, E2E, red/green baseline |
 | **UX sign-off** | `ux-research-lead` | User-satisfaction acceptance |
 
-Escalation path up to `software-architect` (architecture) and `security-architect` (anything touching the auth boundary), reviewed by `lead-frontend` / `lead-backend` / `lead-devops` as one senior peer-review panel.
+Escalation path up to `solution-architect` (architecture) and `security-architect` (anything touching the auth boundary), reviewed by `lead-frontend` / `lead-backend` / `devops-lead` as one senior peer-review panel.
 
 ---
 
@@ -79,12 +79,12 @@ Escalation path up to `software-architect` (architecture) and `security-architec
 
 | Week | Theme | Primary change | Squad focus |
 |------|-------|----------------|-------------|
-| 1 | UX critical fixes | proposal → **Active**: `ux-critical-fixes` | frontend-engineer + ux-research-lead |
+| 1 | UX critical fixes | proposal → **Active**: `ux-critical-fixes` | senior-frontend-engineer + ux-research-lead |
 | 2 | UX done, QA gate | close `ux-critical-fixes` | qa-lead + regression |
 | 3 | Executive KPI scorecard | **Active**: `executive-kpi-scorecard` (phase A: scorecard + kpis.yaml) | dashboard-owner + BI engineer |
-| 4 | Executive KPI (phase B: org chart) | continue `executive-kpi-scorecard` | graph-owner |
-| 5 | In-house alerting (engine+rules) | **Active**: `in-house-alerting` | dashboard-owner + observability |
-| 6 | In-house alerting (channels+escalation) | continue `in-house-alerting` | observability + orchestration |
+| 4 | Executive KPI (phase B: org chart) | continue `executive-kpi-scorecard` | dashboard-owner |
+| 5 | In-house alerting (engine+rules) | **Active**: `in-house-alerting` | platform-reliability-engineer + dashboard-owner |
+| 6 | In-house alerting (channels+escalation) | continue `in-house-alerting` | platform-reliability-engineer + orchestration-owner |
 | 7 | Security hardening + consolidation | follow-up `security-hardening` / arch tasks | security-architect |
 | 8 | Wrap / acceptance / release | close all, ship | product-owner + qa-lead |
 

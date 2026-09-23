@@ -25,12 +25,12 @@ Applies to all client engagements tagged `offer-d` in `.opencode/inbox.json`.
 |------|-------|----------------|
 | Engagement Lead | human_ceo | Final approval |
 | Marketing Strategy | cmo | Campaign strategy, positioning |
-| Content | content_writer, content_creator | Copy, visuals, captions |
+| Content | content_creator | Copy, visuals, captions |
 | Growth | growth_hacker | Funnel optimization, conversion |
 | Analytics | market_analyst | Campaign performance, insights |
 | UX Research | ux_research_lead | Audience research, feedback |
-| QA | qa_engineer | Link checks, content review |
-| Support | support_agent | Client communication |
+| QA | test_engineering_lead | Link checks, content review |
+| Support | customer_success_owner | Client communication |
 
 ## 4. Delivery Pipeline
 
@@ -41,13 +41,13 @@ Applies to all client engagements tagged `offer-d` in `.opencode/inbox.json`.
 ### Step-by-step
 
 1. **Client Brief** — `client` CLI sub-app creates client record + SOW.
-2. **Scope & Quote** — `cmo` drafts campaign brief; `content_writer` outlines content plan.
+2. **Scope & Quote** — `cmo` drafts campaign brief; `content_creator` outlines content plan.
 3. **Intake Task** — `human_ceo` creates inbox.json task tagged `offer-d`, `client-<id>`,
    `requires_approval=True`.
-4. **Build** — `content_writer` creates 12 posts/month + captions; `content_creator` designs
+4. **Build** — `content_creator` creates 12 posts/month + captions and designs
    visual assets; `growth_hacker` sets up campaign tracking.
 5. **Review** — `human_ceo` reviews content for brand fit + accuracy.
-6. **QA** — `qa_engineer` verifies links, image alt text, caption grammar.
+6. **QA** — `test_engineering_lead` verifies links, image alt text, caption grammar.
 7. **Deliver** — Client receives content calendar + assets + ad account access.
    `growth_hacker` monitors performance and provides monthly reports.
 
@@ -72,4 +72,4 @@ Ad spend is pass-through (client pays provider directly or reimburses).
 
 - Ongoing retainer model for D1 (social media management).
 - `growth_hacker` optimizes campaigns based on weekly performance data.
-- `content_writer` maintains content calendar continuity.
+- `content_creator` maintains content calendar continuity.

@@ -69,7 +69,7 @@ The specs are thorough and the profile/banner generator works for 4 platforms. B
 **`ls-artifact-qa` skill:** Present and referenced as mandatory last gate. Includes Playwright probe script for screenshots, overflow, alt-text, and empty-heading checks.
 
 **Agent roster for social execution:**
-- `content_writer` (Marketing, reports to CMO) — blog posts, articles, content calendar, SEO
+- `content_creator` (Marketing, reports to CMO) — blog posts, articles, content calendar, SEO
 - `content_creator` (Marketing, reports to CMO) — visual content, video, social media assets, distribution
 - `thought_leadership_lead` (Pharos, reports to CEO) — CEO positioning, content calendar, cross-agent orchestration
 - `thought_leadership_author` (Pharos) — LinkedIn long-form, white papers, Malawi Agentic AI Monitor
@@ -134,7 +134,7 @@ The infographic pipeline exists (k-dense-infographics → ls-visual-storytelling
 
 **Strengths identified from the codebase:**
 
-1. **Unique positioning:** "AI-Native Enterprise" — a company that *runs* on its own AI agent architecture (152 agents, 20 departments), not an AI tool vendor. This is a concrete, verifiable differentiator.
+1. **Unique positioning:** "AI-Native Enterprise" — a company that *runs* on its own AI agent architecture (90 agents, 20 departments), not an AI tool vendor. This is a concrete, verifiable differentiator.
 2. **Regional first-mover:** Malawi / SADC focus with active policy engagement (National AI Strategy consultation, Data Protection Act 2024, AU Continental AI Strategy). The Pharos department is building institutional relationships (MACRA, UNDP, ICTAM, MUBAS, UNIMA).
 3. **Evidence-led voice:** The builder-advocate tone ("We built this. Here's the architecture. Here's the cost. Here's what broke.") is distinctive in a space dominated by AI hype.
 4. **Documented use cases:** J&S StopOver Bar (SME operations), health/M&E, VSLA/SACCO financial inclusion, public services — all grounded in real deployments.

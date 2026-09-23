@@ -19,7 +19,7 @@ Department: AI Research
 
 Reports To: chief_of_staff
 
-Direct Reports: ml_engineer, ml_services_owner, memory_owner, llm_platform_owner, ai_safety_lead, eval_benchmarks_engineer, prompt_engineer
+Direct Reports: ml_engineer, memory_owner, llm_platform_owner, ai_safety_lead, prompt_engineer
 
 
 ---

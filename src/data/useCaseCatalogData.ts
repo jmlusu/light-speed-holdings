@@ -12,13 +12,13 @@ export const CATALOG_POSITIONING = {
   location: "Lilongwe, Malawi",
   positioningLine: "The AI-native company builder for Southern Africa.",
   tagline: "ASPIRE. ACT. ACHIEVE.",
-  platformDetails: "Governed 152-agent, 20-department orchestration platform (151 AI agents + 1 human CEO)",
+  platformDetails: "Governed 90-agent, 20-department orchestration platform (89 AI agents + 1 human CEO)",
   honestyClassification: "Nothing in this document has been delivered to paying clients. All offers are fieldable in 2026, in pilot, or in active development. Every proof point carries an explicit honesty-ladder badge. No fabricated metrics, testimonials, or client logos appear anywhere in this document."
 };
 
 export const CATALOG_METHOD = {
   title: "The AI Company Builder Platform",
-  summary: "Governed multi-agent orchestration engine where 151 AI agents and 1 human CEO operate across 20 departments.",
+  summary: "Governed multi-agent orchestration engine where 89 AI agents and 1 human CEO operate across 20 departments.",
   pipeline: "Brief → Inbox Task → Assigned Agent(s) → Human Review → Deliverable",
   governancePillars: [
     {
@@ -244,7 +244,7 @@ export const OFFER_FAMILIES: CatalogOfferFamily[] = [
     letter: 'E',
     title: 'Platform Licensing',
     tagline: 'Run your own governed AI workforce self-hosted on your infrastructure.',
-    description: 'The same 152-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible.',
+    description: 'The same 90-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible.',
     honestyBadge: 'Fieldable in 2026',
     targetClients: ['Tech-Savvy Founders', 'Local Tech Agencies', 'Diaspora Entrepreneurs', 'Software Developers'],
     governanceNote: 'No client data handling; product license only. No G1–G4 blocking.',
@@ -475,7 +475,7 @@ export const CATALOG_PROOF_POINTS: CatalogProofPoint[] = [
     category: "Meta Case Study",
     honestyBadge: "Proven in-house",
     badgeType: "proven",
-    description: "LightSpeed Holdings Limited is its own first customer. The company runs on the same 152-agent, 20-department orchestration platform offered to clients. CEO directs strategy; 151 AI agents handle operations.",
+    description: "LightSpeed Holdings Limited is its own first customer. The company runs on the same 90-agent, 20-department orchestration platform offered to clients. CEO directs strategy; 89 AI agents handle operations.",
     whatItMonitorsOrProves: "Proves 5-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls operate daily in production.",
     whyItMatters: "Not a prototype or slide deck — an operating company that builds and relies on the exact software it licenses."
   },

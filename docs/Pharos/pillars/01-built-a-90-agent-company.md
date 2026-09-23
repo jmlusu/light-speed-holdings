@@ -1,11 +1,11 @@
 ---
-title: "We Built a 152-Agent Company. The Hardest Part Was the Governance, Not the AI."
+title: "We Built a 90-Agent Company. The Hardest Part Was the Governance, Not the AI."
 status: Draft — awaiting CEO approval
 word_count: 1674 (body)
 pillar: Company Builder
 claims_ledger:
-  - claim: "152 agents across 20 departments"
-    source: "company-registry.yaml (direct count 2026-09-17); docs/Pharos/positioning.md:61; docs/Pharos/manifesto-draft.md:107-109; docs/Pharos/README.md:23"
+  - claim: "90 agents across 20 departments"
+    source: "company-registry.yaml (direct count 2026-09-23); docs/Pharos/positioning.md:61; docs/Pharos/manifesto-draft.md:107-109; docs/Pharos/README.md:23"
   - claim: "5-tier HITL approval system, immutable audit trails, RACI matrices, board oversight"
     source: "docs/Pharos/manifesto-draft.md:107-109; docs/APPROVAL-UX-SPEC.md:9-12, 16-22"
   - claim: "H-A-O-M-T-G-V framework: Human, Agents, Orchestration, Memory, Tools, Governance, Value"
@@ -19,11 +19,11 @@ claims_ledger:
 atomization:
   - "1 LinkedIn long-form post — the memoir condensed to ~1,300 words, proof-led, CTA to subscribe"
   - "1 X thread — 8 posts: stat → registry → departments → governance → timeouts → SME proof → window → CTA"
-  - "5 Instagram carousel slides — (1) 152 agents / 20 depts stat, (2) what 'digital workforce' means, (3) the 5-tier gate, (4) J&S StopOver proof, (5) CTA to the Monitor"
+  - "5 Instagram carousel slides — (1) 90 agents / 20 depts stat, (2) what 'digital workforce' means, (3) the 5-tier gate, (4) J&S StopOver proof, (5) CTA to the Monitor"
   - "1 YouTube script (4-6 min) — walking the company-registry and one approval queued view; boardroom voiceover"
 ---
 
-# We Built a 152-Agent Company. The Hardest Part Was the Governance, Not the AI.
+# We Built a 90-Agent Company. The Hardest Part Was the Governance, Not the AI.
 
 *First-person account by the Human CEO — pillar 01 of the Pharos Company Builder series.*
 
@@ -31,10 +31,10 @@ atomization:
 
 ## The key number
 
-We run a company where 151 AI agents work across 20 departments, under a
+We run a company where 89 AI agents work across 20 departments, under a
 five-tier human-in-the-loop approval system, with immutable audit trails, RACI
 matrices, and a board that exercises genuine oversight. Verified by direct
-count of the company registry on 17 September 2026.
+count of the company registry on 23 September 2026.
 
 That number was never the point. The point is what it took to make it safe.
 
@@ -68,7 +68,7 @@ Each layer is a design question, not a slogan:
 - **Human — what should humans remain accountable for?** Strategy, ethics,
   leadership, relationships, and final accountability. Not keystrokes.
 - **Agents — what work can software perform?** Research, analysis, monitoring,
-  reporting, customer interaction, finance, knowledge work. Today: 152 agents,
+  reporting, customer interaction, finance, knowledge work. Today: 90 agents,
   each a discrete persona with an explicit domain scope and a permission
   boundary, defined in one source-of-truth registry.
 - **Orchestration — how do agents coordinate?** Model routing, task graphs,
@@ -82,8 +82,8 @@ Each layer is a design question, not a slogan:
 - **Value — what comes out the other side?** Revenue, cost reduction,
   productivity, service delivery, social impact — measured, not assumed.
 
-The agents came quickly. A registry, a generator, a template, and one hundred
-and fifty-two personas exist in minutes once you design the schema. What took
+The agents came quickly. A registry, a generator, a template, and ninety
+personas exist in minutes once you design the schema. What took
 the discipline was the Governance layer, and I want to be honest about why.
 
 ## The honest failure mode
@@ -160,7 +160,7 @@ the difference between a demo and a deployment.
 
 Credibility in this region comes from deployment, not commentary. Two proofs:
 
-**The company itself.** 152 agents, 20 departments, five-tier approvals, audit
+**The company itself.** 90 agents, 20 departments, five-tier approvals, audit
 trails, RACI matrices, a board that reviews real decisions. This is not a
 laboratory toy; it is the operating enterprise, and the governance layer is
 exercised daily.
@@ -218,9 +218,9 @@ published monthly in the Malawi Agentic AI Monitor.
 
 | Channel | Form | Leader line |
 |---------|------|-------------|
-| LinkedIn long-form | ~1,300-word extract | "We run 152 agents across 20 departments. The agents were the easy part." |
+| LinkedIn long-form | ~1,300-word extract | "We run 90 agents across 20 departments. The agents were the easy part." |
 | X thread | 8 posts | 1) stat → 2) registry → 3) departments → 4) governance → 5) timeouts → 6) J&S proof → 7) window → 8) CTA |
-| Instagram carousel | 5 slides | 1) 152/20 stat, 2) digital workforce, 3) 5-tier gate visual, 4) J&S StopOver, 5) "Read the Monitor" CTA |
+| Instagram carousel | 5 slides | 1) 90/20 stat, 2) digital workforce, 3) 5-tier gate visual, 4) J&S StopOver, 5) "Read the Monitor" CTA |
 | YouTube script | 4–6 min | Registry walkthrough + one approval queue view; boardroom voice, no hype |
 
 *Draft by the Pharos thought-leadership team on behalf of the Human CEO. All

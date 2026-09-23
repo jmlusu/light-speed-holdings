@@ -10,10 +10,10 @@ LightSpeed Holdings orchestrates AI-driven growth across Malawi SADC and Africa.
 
 (b) Evidence-led over opinion-AI Company Constitution Truth over Opinion Evidence over Assumptions govern all output every claim traces to a primary source validation pipelines ensure published work demonstrably true
 
-(c) H-A-O-M-T-G-V framework-Human Agents Orchestration Memory Tools Governance Value CEO sets vision 151 AI agents execute chief-of-staff MessageBus orchestrate memory episodic semantic procedural knowledge tools enforce guardrails governance 7-principle constitution KPI across Malawi-SADC-Africa
+(c) H-A-O-M-T-G-V framework-Human Agents Orchestration Memory Tools Governance Value CEO sets vision 89 AI agents execute chief-of-staff MessageBus orchestrate memory episodic semantic procedural knowledge tools enforce guardrails governance 7-principle constitution KPI across Malawi-SADC-Africa
 
 (d) Three intellectual territories from Pharos positioning-(1) AI Company Building structuring agent-orchestrated enterprises (2) Agentic AI Use Cases practical multi-agent deployments workflow automation to policy drafting (3) AI Governance Policy evidence-backed regulatory guidance SADC ministries central banks
 
-(e) Malawi HQ Lilongwe-152 agents (151 AI + 1 human CEO) across 20 departments local proximity enables real-time policy feedback loops impossible for remote firms
+(e) Malawi HQ Lilongwe-90 agents (89 AI + 1 human CEO) across 20 departments local proximity enables real-time policy feedback loops impossible for remote firms
 
-(f) 152 agents 20 departments-company registry lists 152 agents (151 AI + 1 human CEO) across 20 departments source-of-truth.yaml canonical company/departments.yaml has 19 missing Pharos must be reconciled
+(f) 90 agents 20 departments-company registry lists 90 agents (89 AI + 1 human CEO) across 20 departments source-of-truth.yaml canonical company/departments.yaml has 19 missing Pharos must be reconciled

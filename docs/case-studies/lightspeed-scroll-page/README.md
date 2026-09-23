@@ -1,7 +1,7 @@
 # Case Study — LightSpeed Holdings Scroll Page (In-House Brand Build)
 
 **Document ID:** CASE-LSP-001
-**Author:** creative-director / frontend-engineer synthesis (scroll-craft skill)
+**Author:** creative-director / frontend-engineer synthesis (scroll-craft skill — retired)
 **Owner:** cmo
 **Classification:** Internal / Sales Enablement — LightSpeed's own brandsite flagship page
 **Date:** 2026-09-22
@@ -9,6 +9,9 @@
 delivered. Final gates green on 2026-09-22 (four device/motion combos, 30 frames
 settled each, `failed: []`, 0 console errors; focus check PASS in normal and
 reduced-motion; contrast worst 15.97:1 headline / 4.45:1 CTA).
+**Note (2026-09-23):** The `scroll-craft` skill was **retired and deleted** under the
+Third-Party Transmission Ban (`docs/SKILL_CURATION_POLICY.md` §9.2 / `docs/APPROVED-VENDORS.md`).
+This case study remains a historical record; live rebuild via the skill is not available.
 
 **Honesty badge:** Proven in-house. This is LightSpeed's own brand page built on
 its own creative stack — not a client deliverable, and not shipped to any live

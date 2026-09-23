@@ -631,6 +631,44 @@ class TestSecurityHeaders:
         resp = client.get("/health")
         assert "Strict-Transport-Security" not in resp.headers
 
+    def test_ai_studio_preview_relaxes_framing(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """AISTUDIO_PREVIEW=true allows google iframe ancestors and drops XFO.
+
+        ADR-024: AI Studio embeds the dashboard in an iframe on
+        ``*.aistudio.google`` / ``*.google.com``.  The CSP frame-ancestors
+        directive is relaxed to those prefixes and the X-Frame-Options: DENY
+        fallback is removed (a DENY there would block framing even when CSP
+        permits it).  It must be a *prefix* allowlist, not an open wildcard.
+        """
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.delenv("DASHBOARD_CSP", raising=False)
+        monkeypatch.delenv("AISTUDIO_PREVIEW", raising=False)
+        monkeypatch.setenv("AISTUDIO_PREVIEW", "true")
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/health")
+        csp = resp.headers["content-security-policy"]
+        assert "frame-ancestors https://*.google.com https://*.aistudio.google" in csp
+        assert "frame-ancestors 'none'" not in csp
+        assert "X-Frame-Options" not in resp.headers
+
+    def test_ai_studio_preview_default_off(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Without AISTUDIO_PREVIEW the strict framing posture is kept."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        monkeypatch.delenv("DASHBOARD_CSP", raising=False)
+        monkeypatch.delenv("AISTUDIO_PREVIEW", raising=False)
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        resp = client.get("/health")
+        csp = resp.headers["content-security-policy"]
+        assert "frame-ancestors 'none'" in csp
+        assert "frame-ancestors https://*.google.com" not in csp
+        assert resp.headers["X-Frame-Options"] == "DENY"
+
     @staticmethod
     def _setup_minimal_data(tmp_path: Path) -> None:
         (tmp_path / "company").mkdir(exist_ok=True)

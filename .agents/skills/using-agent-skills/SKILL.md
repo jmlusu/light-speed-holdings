@@ -112,6 +112,12 @@ Every skill includes a verification step. A task is not complete until verificat
 
 Per-skill verification is the local check. The project-wide bar that applies to *every* change, regardless of which skill is active, is the Definition of Done: tests pass, no regressions, behavior verified at runtime, docs updated. See `references/definition-of-done.md`. It complements each task's acceptance criteria rather than replacing them.
 
+### 7. Respect the Third-Party Transmission Ban
+
+Skills must not send LightSpeed local data (code, diffs, docs, screenshots, prompts, session/memory payloads, PDFs, secrets) to third-party hosts unless the vendor is allow-listed in `docs/APPROVED-VENDORS.md` within its **90-day** exception window (or re-signed by CEO/CISO). **CISO of record: Jack Mlusu (Human CEO).**
+
+Before installing or enabling a skill: grep it for outbound hosts / POST uploads; reject anything outside the allow-list. Do **not** reinstall retired families: `claude-mem-*`, `scroll-craft`, `greploop`/`greploop-apps`. On unexpected transmission: stop the skill, do not retry, report skill + host + payload class to the CEO. Full rule: `docs/SKILL_CURATION_POLICY.md` § Skill Third-Party Transmission Ban · `AGENTS.md` §9.2.
+
 ## Failure Modes to Avoid
 
 These are the subtle errors that look like productivity but create problems:

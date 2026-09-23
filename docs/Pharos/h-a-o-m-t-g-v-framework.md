@@ -53,7 +53,7 @@ PowerPoint. Proof without design is a tool you cannot teach.
 | Letter | Design question | Governance proof (what we actually run) |
 |--------|-----------------|-----------------------------------------|
 | H | What do humans remain accountable for? | 5-tier cryptographic approval gates; executive committee and board keep absolute authority; no high-impact action without human sign-off |
-| A | What work can agents perform? | 152 role-bounded personas defined in `company-registry.yaml`, each with explicit domain scope and permission boundary |
+| A | What work can agents perform? | 90 role-bounded personas defined in `company-registry.yaml`, each with explicit domain scope and permission boundary |
 | O | How do agents coordinate and how is the org structured? | Message bus at `.opencode/inbox.json`, task graphs, department topologies encoded as computable policy schemas |
 | M | How does the organization run models and learn? | Sovereign, on-soil model runtimes (Big Pickle, Gemini, DeepSeek fallbacks) with zero telemetry leakage; six-type enterprise memory |
 | T | How do agents interact with the world? | Canonical 7-tool sandbox; ToolRunner rejects anything outside `read` · `edit` · `grep` · `list` · `bash` · `webfetch` · `task` |
@@ -97,7 +97,7 @@ has an explicit domain scope, a declared tool permission set, and a
 deterministic escalation path. The roster is the org chart of the machine side
 of the house — readable, auditable, and reproducible.
 
-**The proof.** 152 personas in `company-registry.yaml`, compiled by a Jinja2
+**The proof.** 90 personas in `company-registry.yaml`, compiled by a Jinja2
 generator into OpenCode agent cards (`.opencode/agents/*.md`) with strict
 subagent sandboxing. 20 departments, defined reporting chains, RACI matrices.
 
@@ -244,7 +244,7 @@ they are what converts the framework from a diagram into an operating system.
 | A | `company-registry.yaml`; `templates/agents/agent.md.j2`; `.opencode/agents/*.md` |
 | O | `src/ai_company/orchestrator/message_bus.py`; `.opencode/inbox.json`; `orchestration-owner` |
 | M | `llm-platform-owner` (model router, cost tracker); `memory-owner` (six-type memory store) |
-| T | AGENTS.md §8 canonical tool table; `ToolRunner` validation; `generator-owner` |
+| T | AGENTS.md §8 canonical tool table; `ToolRunner` validation; `registry-owner` |
 | G | Policy engine; `decision-engine-owner`; circuit breakers; `ApprovalGate` HITL sweep |
 | V | Audit-trail package (`audit-trail-owner`); dashboard KPI collectors (`dashboard-owner`); drift evaluation |
 
@@ -284,6 +284,6 @@ valid for their specific claims:
 - LinkedIn intro: `docs/Pharos/linkedin-intro-post.md:23-25`
 
 If a later draft of this document contradicts a source above, this document
-wins and the source should be updated. Figures quoted (152 agents, 20
+wins and the source should be updated. Figures quoted (90 agents, 20
 departments, 5-tier gates, 7 tools, SHA-256) are verified against
 `company-registry.yaml` and the agent roster at generation time.
