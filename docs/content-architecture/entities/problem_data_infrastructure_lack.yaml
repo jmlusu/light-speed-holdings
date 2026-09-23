@@ -1,0 +1,13 @@
+# Problem Entity Definition
+
+key: data_infrastructure_lack
+title: "Data Infrastructure Gap"
+description: "Inadequate data collection, storage, and processing infrastructure to support AI initiatives"
+industry: african_ai
+severity: high
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - malawi
+  - sADC
+  - africa

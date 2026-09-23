@@ -1,0 +1,21 @@
+# Organization Entity Definition
+
+key: organization_lightspeed
+name: LightSpeed Holdings
+tagline: "AI Company Building for the Developing World"
+mission: "To build and scale AI companies that solve meaningful problems in emerging markets"
+honesty_tones:
+  - transparent
+  - pragmatic
+  - evidence-based
+brand_colors:
+  - "#070A40"  # Navy
+  - "#E63946"  # Red accent
+  - "#00BFFF"  # Cyan accent
+type: holding
+industries:
+  - african_ai
+  - digital_transformation
+  - ai_governance
+domains:
+  - lightspeedholdings.com

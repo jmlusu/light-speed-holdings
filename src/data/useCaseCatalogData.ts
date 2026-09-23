@@ -378,7 +378,7 @@ export const CATALOG_INDUSTRIES: CatalogIndustryVertical[] = [
       "HR and personnel management automation"
     ],
     honestyBadge: "In active development",
-    honestyNote: "In active development. Governance framework mapped to Malawi DPA & SADC standards. National AI Strategy consultation draft published.",
+    honestyNote: "In active development. Governance framework mapped to Malawi DPA & SADC standards. National AI Strategy consultation submission prepared.",
     iconName: "Landmark"
   }
 ];

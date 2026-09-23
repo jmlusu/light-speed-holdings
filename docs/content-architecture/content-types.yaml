@@ -1,0 +1,270 @@
+# LightSpeed Content Architecture Content Types
+
+# Core content types
+- key: page
+  name: Page
+  description: "A website page (landing, about, service, etc.)"
+  category: core
+  parent_content_type: null
+  variables:
+    - key: "{PAGE_TITLE}"
+      type: string
+      required: true
+    - key: "{PAGE_SLUG}"
+      type: string
+      required: true
+
+- key: service
+  name: Service
+  description: "A service offering provided by LightSpeed"
+  category: core
+  parent_content_type: null
+  variables:
+    - key: "{SERVICE_TITLE}"
+      type: string
+      required: true
+    - key: "{SERVICE_KEY}"
+      type: string
+      required: true
+
+- key: capability
+  name: Capability
+  description: "A capability LightSpeed provides or enables"
+  category: core
+  parent_content_type: null
+  variables:
+    - key: "{CAPABILITY_KEY}"
+      type: string
+      required: true
+
+- key: audience
+  name: Audience
+  description: "A target audience segment"
+  category: core
+  parent_content_type: null
+  variables:
+    - key: "{AUDIENCE_KEY}"
+      type: string
+      required: true
+
+- key: problem
+  name: Problem
+  description: "A business problem LightSpeed helps solve"
+  category: core
+  parent_content_type: null
+  variables:
+    - key: "{PROBLEM_KEY}"
+      type: string
+      required: true
+
+- key: outcome
+  name: Business Outcome
+  description: "A business outcome LightSpeed helps achieve"
+  category: core
+  parent_content_type: null
+  variables:
+    - key: "{OUTCOME_KEY}"
+      type: string
+      required: true
+
+# Knowledge content types
+- key: insight
+  name: Insight
+  description: "A data-backed insight about AI, governance, or market trends"
+  category: knowledge
+  parent_content_type: null
+  variables:
+    - key: "{INSIGHT_KEY}"
+      type: string
+      required: true
+    - key: "{INSIGHT_TITLE}"
+      type: string
+      required: true
+
+- key: research
+  name: Research
+  description: "A research study or survey"
+  category: knowledge
+  parent_content_type: null
+  variables:
+    - key: "{RESEARCH_KEY}"
+      type: string
+      required: true
+    - key: "{RESEARCH_TITLE}"
+      type: string
+      required: true
+
+- key: use_case
+  name: AI Use Case
+  description: "A practical AI application example"
+  category: knowledge
+  parent_content_type: null
+  variables:
+    - key: "{USE_CASE_KEY}"
+      type: string
+      required: true
+    - key: "{USE_CASE_TITLE}"
+      type: string
+      required: true
+
+- key: framework
+  name: Framework
+  description: "A conceptual or methodological framework"
+  category: knowledge
+  parent_content_type: null
+  variables:
+    - key: "{FRAMEWORK_KEY}"
+      type: string
+      required: true
+
+- key: methodology
+  name: Methodology
+  description: "A step-by-step methodology"
+  category: knowledge
+  parent_content_type: null
+  variables:
+    - key: "{METHODOLOGY_KEY}"
+      type: string
+      required: true
+
+- key: glossary_term
+  name: Glossary Term
+  description: "A defined term in the LightSpeed ontology"
+  category: knowledge
+  parent_content_type: null
+  variables:
+    - key: "{TERM_KEY}"
+      type: string
+      required: true
+
+# Proof content types
+- key: case_study
+  name: Case Study
+  description: "A validated implementation story"
+  category: proof
+  parent_content_type: null
+  variables:
+    - key: "{CASE_STUDY_KEY}"
+      type: string
+      required: true
+    - key: "{CASE_STUDY_TITLE}"
+      type: string
+      required: true
+
+- key: demonstration
+  name: Demonstration
+  description: "An interactive or video demonstration"
+  category: proof
+  parent_content_type: null
+  variables:
+    - key: "{DEMO_KEY}"
+      type: string
+      required: true
+
+- key: testimonial
+  name: Testimonial
+  description: "A client testimonial or endorsement"
+  category: proof
+  parent_content_type: null
+  variables:
+    - key: "{TESTIMONIAL_KEY}"
+      type: string
+      required: true
+
+# Resources content types
+- key: white_paper
+  name: White Paper
+  description: "An in-depth authoritative report"
+  category: resources
+  parent_content_type: null
+  variables:
+    - key: "{WHITE_PAPER_TITLE}"
+      type: string
+      required: true
+
+- key: executive_brief
+  name: Executive Brief
+  description: "A concise executive-level summary"
+  category: resources
+  parent_content_type: null
+  variables:
+    - key: "{BRIEF_TITLE}"
+      type: string
+      required: true
+
+- key: report
+  name: Report
+  description: "A data or analysis report"
+  category: resources
+  parent_content_type: null
+  variables:
+    - key: "{REPORT_TITLE}"
+      type: string
+      required: true
+
+- key: presentation
+  name: Presentation
+  description: "A slide deck or presentation"
+  category: resources
+  parent_content_type: null
+  variables:
+    - key: "{PRESENTATION_TITLE}"
+      type: string
+      required: true
+
+- key: video
+  name: Video
+  description: "A video asset"
+  category: resources
+  parent_content_type: null
+  variables:
+    - key: "{VIDEO_TITLE}"
+      type: string
+      required: true
+
+- key: event
+  name: Event
+  description: "An organized event or summit"
+  category: resources
+  parent_content_type: null
+  variables:
+    - key: "{EVENT_TITLE}"
+      type: string
+      required: true
+
+- key: engagement_model
+  name: Engagement Model
+  description: "A structured engagement approach"
+  category: resources
+  parent_content_type: null
+  variables:
+    - key: "{ENGAGEMENT_KEY}"
+      type: string
+      required: true
+
+# Conversion content types
+- key: contact_inquiry
+  name: Contact/Inquiry
+  description: "A contact form or inquiry submission"
+  category: conversion
+  parent_content_type: null
+  variables:
+    - key: "{CONTACT_NAME}"
+      type: string
+      required: true
+    - key: "{CONTACT_EMAIL}"
+      type: string
+      required: true
+    - key: "{CONTACT_COMPANY}"
+      type: string
+      required: true
+
+- key: assessment
+  name: Assessment
+  description: "A quick business or AI assessment"
+  category: conversion
+  parent_content_type: null
+  variables:
+    - key: "{ASSESSMENT_TYPE}"
+      type: string
+      required: true

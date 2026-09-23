@@ -140,12 +140,6 @@ markers = [
 # and manual runbook flows, not unit tests — coverage will be added incrementally.
 omit = [
     "src/ai_company/cli/*",
-    "src/ai_company/athena/automation/browser.py",
-    "src/ai_company/athena/automation/form_filler.py",
-    "src/ai_company/athena/automation/submitter.py",
-    "src/ai_company/athena/documents/generator.py",
-    "src/ai_company/athena/documents/humanizer.py",
-    "src/ai_company/athena/documents/parser.py",
     "src/ai_company/data/etl/*",
     "src/ai_company/data/mobile_money/*",
     "src/ai_company/data/search.py",
@@ -189,18 +183,6 @@ disable_error_code = ["unused-ignore"]
 [[tool.mypy.overrides]]
 module = "ai_company.telemetry.tracer"
 disable_error_code = ["unused-ignore"]
-
-[[tool.mypy.overrides]]
-module = "ai_company.athena.api.routes"
-disable_error_code = ["no-untyped-def", "no-untyped-call"]
-
-[[tool.mypy.overrides]]
-module = "ai_company.athena.scrapers"
-disable_error_code = ["no-untyped-def", "no-untyped-call"]
-
-[[tool.mypy.overrides]]
-module = "ai_company.athena.scrapers.*"
-disable_error_code = ["no-untyped-def", "no-untyped-call"]
 
 [tool.bandit]
 exclude_dirs = ["tests"]

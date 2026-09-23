@@ -1,0 +1,122 @@
+# Ecosystems Integration - Agent Configuration
+# This file defines how the Ecosystems Team agents interact with third-party
+# integrations. Agents are referenced from company-registry.yaml (no new agents).
+
+integrations:
+  ecosystems:
+    version: "0.9.0"
+    catalogPath: ".opencode/integrations/ecosystems/config.json"
+    orchestrator: "head-of-business-development"
+    requiresRegistrySync: false
+    note: "All ecosystem agents already exist in the company registry; this package only wires them together."
+
+  jev:
+    reference: "docs/adr/023-jev-system-one-integration.md"
+    owner: "head-of-business-development"
+    purpose: "Decision engine for high-stakes internal decisions"
+
+  open-design:
+    reference: ".opencode/integrations/open-design/config.json"
+    owner: "head-of-business-development"
+    purpose: "Creative production for brand artifacts"
+
+  comfyui:
+    reference: "docs/adr/018-comfyui-media-generation.md"
+    owner: "media-generation-owner"
+    purpose: "Media generation for brand, product, and NGO deliverables"
+
+  llm:
+    providerRouter: "llm-platform-owner"
+    primary: "big-pickle"
+    fallback: "gemini-3.5-flash"
+    dpaManaged: true
+    purpose: "Multi-provider model routing with cost tracking and circuit breaker"
+
+  client-systems:
+    owner: "integration-engineer"
+    fallback: "solution-architect"
+    integrationLaws:
+      - "Every integration has a fallback."
+      - "Data sync is idempotent."
+      - "Integration failures escalate to HITL before client impact."
+    channels:
+      whatsapp:
+        api: "WhatsApp Business API"
+        requirements: ["Template approval", "opt-in management"]
+      crm:
+        purpose: "Client relationship data sync"
+      payments:
+        gateways: ["Airtel Money", "TNM Mpamba", "PayChangu"]
+      ngo-data:
+        sources: ["Kobo", "DHIS2", "Google Sheets"]
+
+# Agent-specific Ecosystems configurations
+
+agents:
+  head-of-business-development:
+    role: "Ecosystem Orchestrator"
+    ecosystemMode: "orchestrate"
+    skills: ["negotiation", "partnership-strategy", "deal-framing"]
+    responsibilities:
+      - "Qualify integration requests (partner / client-facing / vendor)."
+      - "Route to production agents via the routing table."
+      - "Coordinate partnerships, alliances, and channel strategy."
+
+  corporate-development-lead:
+    role: "Strategy Advisor"
+    ecosystemMode: "advise"
+    responsibilities:
+      - "Evaluate build-vs-buy and M&A/acqui-hire decisions."
+      - "Coordinate with head-of-business-development on strategic integration deals."
+
+  integration-engineer:
+    role: "Client System Integrator"
+    ecosystemMode: "build"
+    skills: ["api-integration", "idempotent-sync", "fallback-design"]
+    responsibilities:
+      - "Stand up WhatsApp Business API and CRM sync."
+      - "Wire payment gateways (Airtel Money, TNM Mpamba, PayChangu)."
+      - "Connect NGO data sources (Kobo, DHIS2, Google Sheets)."
+      - "Apply integration laws: fallback, idempotency, HITL escalation."
+
+  api-architect:
+    role: "API Standards Owner"
+    ecosystemMode: "govern"
+    responsibilities:
+      - "Define API design standards, versioning, and rate limiting."
+      - "Configure gateway and integration contracts."
+
+  solution-architect:
+    role: "Cross-System Designer"
+    ecosystemMode: "design"
+    responsibilities:
+      - "Design end-to-end solutions spanning internal + third-party systems."
+      - "Validate feasibility before implementation."
+
+  vendor-manager:
+    role: "Vendor Contract Manager"
+    ecosystemMode: "manage"
+    responsibilities:
+      - "Manage external AI/ML + cloud provider contracts."
+      - "Ensure SLA compliance and cost oversight."
+
+  security-compliance-lead:
+    role: "Approval & Auth Gate"
+    ecosystemMode: "gate"
+    responsibilities:
+      - "Enforce 5-tier approval rules on privileged integration actions."
+      - "Maintain CORS allowlist and dashboard auth checklist."
+
+  data-privacy-officer:
+    role: "Privacy Gate"
+    ecosystemMode: "gate"
+    responsibilities:
+      - "Ensure GDPR/CCPA compliance across all data flows."
+      - "Manage DPAs and enforce retention/right-to-deletion."
+
+  business-continuity-manager:
+    role: "Continuity Gate"
+    ecosystemMode: "gate"
+    responsibilities:
+      - "Maintain failover procedures and BC/DR plans."
+      - "Conduct DR drills; RTOs are commitments."

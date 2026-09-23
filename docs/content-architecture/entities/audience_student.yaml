@@ -1,0 +1,18 @@
+# Audience Entity Definition
+
+key: student
+name: Student
+role: learner
+industry: null
+seniority: entry
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+preferred_engagement:
+  - assessment
+  - workshop
+content_types:
+  - page
+  - insight
+  - case_study

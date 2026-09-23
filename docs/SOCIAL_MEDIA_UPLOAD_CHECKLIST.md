@@ -38,7 +38,7 @@ Then proceed with the per-platform uploads below.
 - [ ] Log in at https://twitter.com/settings/profile
 - [ ] **Profile photo:** Change photo → Upload `twitter-profile.png` (400×400) → crop to circle
 - [ ] **Header:** Change header → Upload `twitter-header.png` (1500×500)
-- [ ] **Display name:** LightSpeed Holdings
+- [ ] **Display name:** LIGHTSPEED HOLDINGS
 - [ ] **Bio:** "Aspire. Act. Achieve." + short company line
 - [ ] **Website:** https://lightspeedholdings.com
 - [ ] Click **Save** — verify both images render
@@ -56,4 +56,4 @@ Then proceed with the per-platform uploads below.
 
 ---
 
-*Owner: CEO + CMO. Done when all boxes are checked.*
+*Owner: `social_media_manager`. Done when all boxes are checked.*

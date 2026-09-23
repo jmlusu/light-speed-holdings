@@ -1,0 +1,21 @@
+# Audience Entity Definition
+
+key: cto
+name: Chief Technology Officer
+role: executive
+industry: digital_transformation
+seniority: executive
+related_problems:
+  - low_ai_adoption
+related_capabilities:
+  - ai_strategy
+  - model_deployment
+preferred_engagement:
+  - workshop
+  - implementation
+content_types:
+  - service
+  - case_study
+  - insight
+  - use_case
+  - engagement_model

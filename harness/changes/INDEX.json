@@ -52,6 +52,32 @@
     "updated_at": "2026-09-19"
   },
   {
+    "id": "2026-09-22-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "title": "Narrative and Positioning Track - LightSpeed Narrative & Positioning Document",
+    "status": "parked",
+    "location": "parking",
+    "modules": [],
+    "files": [],
+    "tags": [],
+    "decisions": [],
+    "validation_status": "unknown",
+    "path": "harness/changes/parking/2026-09-22-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "updated_at": "2026-09-22"
+  },
+  {
+    "id": "2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "title": "Narrative and Positioning Track - LightSpeed Narrative & Positioning Document",
+    "status": "parked",
+    "location": "parking",
+    "modules": [],
+    "files": [],
+    "tags": [],
+    "decisions": [],
+    "validation_status": "passed",
+    "path": "harness/changes/parking/2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "updated_at": "2026-09-23"
+  },
+  {
     "id": "2026-08-08-sprint-4-quality-completeness",
     "title": "Sprint 4: Quality & Completeness",
     "status": "completed",
@@ -573,7 +599,7 @@
       "- **Write endpoints** guarded by the existing dashboard RBAC approve/run key pattern (`_check_api_key`).",
       "- **Frontend**: minimal in-house alert feed section (no new deps) — severity badges, status filter, acknowledge/snooze/clear, real-time via the existing \"alerts\" WS topic."
     ],
-    "validation_status": "passed",
+    "validation_status": "pass",
     "path": "harness/changes/archive/2026-08-31-ceo-alert-center",
     "updated_at": "2026-08-31"
   },
@@ -597,7 +623,7 @@
       "- Org chart capacity = `active / (active + queued) * 100`; succession_risk from direct-reports, unique skills, tenure.",
       "- Org chart metrics read from live MessageBus state (aligns with GAP-011), cached with 30s TTL."
     ],
-    "validation_status": "passed",
+    "validation_status": "pass",
     "path": "harness/changes/archive/2026-08-31-executive-kpi-scorecard-rich-org-chart",
     "updated_at": "2026-08-31"
   },
@@ -753,5 +779,76 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
     "updated_at": "2026-09-22"
+  },
+  {
+    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "site-frontend",
+      "enquiry-api"
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "site",
+      "conversion",
+      "content",
+      "phase-1"
+    ],
+    "decisions": [
+      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
+      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
+      "- No LLM; no new backend email provider; brand tokens unchanged."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "updated_at": "2026-09-23"
+  },
+  {
+    "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
+    "title": "Client Site Phase 3 - Trust Evidence and Related Content",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "site-frontend"
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "site",
+      "trust",
+      "content",
+      "phase-3"
+    ],
+    "decisions": [
+      "- Reuse existing proven claims only (governance gates, HITL matrix, audit trails, DPA posture) — no invented certifications or third-party seals.",
+      "- Shared `RelatedLinks` component replaces ad-hoc related strips on News/Insights and is extended to Trust, FAQ, Leadership, Resources, Events.",
+      "- Wire Trust/FAQ/Leadership `CtaBand` to `onRequestBriefing` (props already present on Trust; FAQ/Leadership currently discard the prop)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
+    "updated_at": "2026-09-23"
+  },
+  {
+    "id": "2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "title": "Narrative and Positioning Track - LightSpeed Narrative & Positioning Document",
+    "status": "completed",
+    "location": "archive",
+    "modules": [],
+    "files": [],
+    "tags": [],
+    "decisions": [
+      "- Canonical agent count is 152 (151 AI + 1 human CEO); registry table header aligned to that figure.",
+      "- Conflicts from stash pop resolved to Updated upstream (newer) side; stashed 144-agent snapshot discarded.",
+      "- Parked clarifications closed with no action: three unmapped LCA role titles have zero repo occurrences; Content Architecture Council stays registry-only (no generated agent cards).",
+      "- No LLM integration for Ask LightSpeed in this change (rule-based discovery retained)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "updated_at": "2026-09-23"
   }
 ]

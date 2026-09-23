@@ -1,7 +1,9 @@
 name: Site Build + Principles Gate
 
 # Binding gate for the client-facing website (Guiding Principles, CMO mandate v1.0).
-# Runs ONLY when website files change, so pure-Python/product PRs are unaffected.
+# PR trigger has NO path filter so the required check always reports (ruleset
+# "main zero-red gate" requires this context on every PR to main).
+# Non-site PRs still get a fast green run (build is ~15s).
 # Enforces the automatable subset of Appendix A checks:
 #   check 6 — zero TypeScript/build errors (bun run build = tsc + vite) and
 #             no fake-success form states (scripts/check-site-form-backend.py).
@@ -9,15 +11,6 @@ name: Site Build + Principles Gate
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "src/**"
-      - "index.html"
-      - "vercel.json"
-      - "vite.config.ts"
-      - "tsconfig.json"
-      - "package.json"
-      - "bun.lock"
-      - ".github/workflows/site-principles-gate.yml"
   push:
     branches: [main]
     paths:
@@ -28,6 +21,7 @@ on:
       - "tsconfig.json"
       - "package.json"
       - "bun.lock"
+      - ".github/workflows/site-principles-gate.yml"
   workflow_dispatch:
 
 concurrency:

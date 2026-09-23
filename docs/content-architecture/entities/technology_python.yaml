@@ -1,0 +1,8 @@
+# Technology Entity Definition
+
+key: python
+name: Python
+category: programming_language
+maturity: mature
+related_use_cases:
+  - predictive_maintenance

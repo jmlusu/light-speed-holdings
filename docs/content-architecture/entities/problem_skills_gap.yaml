@@ -1,0 +1,13 @@
+# Problem Entity Definition
+
+key: skills_gap
+title: "AI Skills Gap"
+description: "Insufficient AI talent and skills within organizations to plan, build, and run AI initiatives"
+industry: african_ai
+severity: high
+related_problems:
+  - low_ai_adoption
+affected_geographies:
+  - malawi
+  - sADC
+  - africa
