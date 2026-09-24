@@ -58,6 +58,17 @@ repos:
         additional_dependencies: ["bandit[toml]"]
         stages: [pre-commit]
 
+  # ── Capture bug-fix records for organizational memory ────
+  - repo: local
+    hooks:
+      - id: capture-fix
+        name: capture bug-fix record
+        entry: pwsh -File scripts/capture-fix.ps1
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [post-commit]
+
   # ── Graphify: keep the knowledge graph fresh after every commit ────
   - repo: local
     hooks:
