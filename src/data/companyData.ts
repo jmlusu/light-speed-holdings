@@ -1,42 +1,36 @@
-import rawAgents from '../../company/agent-registry.json';
-import { Agent, Department, TaskItem, ApprovalRequest, EscalationItem, KPIDefinition, ModelTierConfig, AuditEntry } from '../types';
+import rawRegistry from './generated/agent-registry.public.json';
+import { Agent, Department, TaskItem, ApprovalRequest, EscalationItem, KPIDefinition, ModelTierConfig, AuditEntry, PublicAgent, PublicAgentRegistry, PublicTool } from '../types';
 
-export const agentsList: Agent[] = (rawAgents as any[]).map(a => ({
-  name: a.name || a.id,
-  role: a.role || a.title || a.name,
-  type: (a.type as any) || 'Specialist',
-  department: a.department || 'Operations',
-  reportsTo: a.reportsTo || a.reports_to || 'chief-of-staff',
-  directReports: a.directReports || a.direct_reports || [],
-  description: a.description || '',
-  responsibilities: a.responsibilities || [],
-  guidelines: a.guidelines || '',
-  tools: a.tools || ['read', 'edit', 'bash'],
-  permission: a.permission || 'Execute'
+const registry = rawRegistry as PublicAgentRegistry;
+
+function toAgent(a: PublicAgent): Agent {
+  const typeMap = {
+    executive: 'Executive' as const,
+    specialist: 'Specialist' as const,
+    board: 'Board' as const,
+  };
+  return {
+    name: a.id,
+    role: a.title || a.name,
+    type: typeMap[a.type] ?? 'Specialist',
+    department: a.department || 'Operations',
+    reportsTo: a.reports_to || 'chief-of-staff',
+    description: a.mission || '',
+    responsibilities: a.responsibilities || [],
+    tools: (a.tools || ['read', 'edit', 'bash']) as PublicTool[],
+  };
+}
+
+export const agentsList: Agent[] = registry.agents.map(toAgent);
+
+export const departmentsList: Department[] = registry.departments.map(d => ({
+  id: d.id,
+  name: d.name,
+  executive: d.executive,
+  mission: d.mission,
+  budget_category: d.budget_category,
+  headcount_target: d.headcount_target,
 }));
-
-export const departmentsList: Department[] = [
-  { id: 'board', name: 'Board', executive: 'board-chair', mission: 'Provide governance oversight, strategic counsel, and fiduciary stewardship to the CEO and executive team.', budget_category: 'operations', headcount_target: 7 },
-  { id: 'ai_research', name: 'AI Research', executive: 'caio', mission: 'Advance AI research, model selection, and prompt engineering strategies.', budget_category: 'product_development', headcount_target: 10 },
-  { id: 'business_development', name: 'Business Development', executive: 'cso', mission: 'Identify partnerships, ecosystem alliances, and channel strategy.', budget_category: 'growth', headcount_target: 3 },
-  { id: 'customer_success', name: 'Customer Success', executive: 'customer-success', mission: 'Own customer onboarding, retention, expansion, and satisfaction metrics.', budget_category: 'growth', headcount_target: 5 },
-  { id: 'data', name: 'Data', executive: 'cdo', mission: 'Manage data strategy, analytics, pipelines, and data governance.', budget_category: 'product_development', headcount_target: 5 },
-  { id: 'executive', name: 'Executive', executive: 'human-ceo', mission: 'Set company vision, strategy, and culture. Orchestrate the organization.', budget_category: 'operations', headcount_target: 3 },
-  { id: 'finance', name: 'Finance', executive: 'cfo', mission: 'Manage financial planning, budgeting, and fiscal health.', budget_category: 'operations', headcount_target: 3 },
-  { id: 'it', name: 'IT', executive: 'cio', mission: 'Manage IT infrastructure and internal tools.', budget_category: 'infrastructure', headcount_target: 4 },
-  { id: 'legal', name: 'Legal', executive: 'clo', mission: 'Manage legal affairs, contracts, compliance, and regulatory matters.', budget_category: 'operations', headcount_target: 3 },
-  { id: 'marketing', name: 'Marketing', executive: 'cmo', mission: 'Drive brand awareness, demand generation, and market positioning.', budget_category: 'growth', headcount_target: 8 },
-  { id: 'operations', name: 'Operations', executive: 'coo', mission: 'Optimize internal processes, workflows, and operational efficiency.', budget_category: 'operations', headcount_target: 8 },
-  { id: 'people', name: 'People', executive: 'hr', mission: 'Attract, develop, and retain top talent. Maintain culture and values.', budget_category: 'people', headcount_target: 5 },
-  { id: 'product', name: 'Product', executive: 'cpo', mission: 'Drive product vision, strategy, discovery, and design.', budget_category: 'product_development', headcount_target: 5 },
-  { id: 'qa', name: 'QA', executive: 'qa-lead', mission: 'Ensure software quality through testing strategies, automation, and quality gates.', budget_category: 'product_development', headcount_target: 4 },
-  { id: 'sales', name: 'Sales', executive: 'sales', mission: 'Generate revenue through new business acquisition and pipeline management.', budget_category: 'growth', headcount_target: 10 },
-  { id: 'security', name: 'Security', executive: 'ciso', mission: 'Protect company assets, data, and systems from security threats.', budget_category: 'infrastructure', headcount_target: 5 },
-  { id: 'strategy', name: 'Strategy', executive: 'cso', mission: 'Drive corporate strategy, M&A, competitive intelligence, and market expansion.', budget_category: 'operations', headcount_target: 3 },
-  { id: 'consulting', name: 'Consulting', executive: 'consulting-lead', mission: 'Deliver AI-native consulting engagements, mapping workflows and identifying transformation opportunities.', budget_category: 'growth', headcount_target: 4 },
-  { id: 'technology', name: 'Technology', executive: 'cto', mission: 'Build and maintain software, infrastructure, and technical architecture.', budget_category: 'product_development', headcount_target: 25 },
-  { id: 'pharos', name: 'Pharos', executive: 'thought-leadership-lead', mission: 'Position the Human CEO as the leading voice on Agentic AI Company Building and Policy across SADC region.', budget_category: 'growth', headcount_target: 7 }
-];
 
 export const initialTasks: TaskItem[] = [
   {

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from ai_company.registry.loader import load_yaml_cached
+from ai_company.registry.public_transform import normalize_tools
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ def _agent_yaml_to_json(agent: dict[str, Any]) -> dict[str, Any]:
 
     The YAML uses snake_case keys; the legacy JSON uses camelCase.
     The JSON also adds a 'permission' field derived from the agent type.
+    Tools are normalized to the canonical 7-vocabulary on the way out.
     """
     # Build the JSON agent object
     json_agent: dict[str, Any] = {
@@ -34,7 +36,7 @@ def _agent_yaml_to_json(agent: dict[str, Any]) -> dict[str, Any]:
         "description": agent.get("description", ""),
         "responsibilities": agent.get("responsibilities", []),
         "guidelines": agent.get("guidelines", ""),
-        "tools": agent.get("tools", []),
+        "tools": normalize_tools(agent.get("tools")),
         "permission": _derive_permission(agent.get("type", "default")),
     }
 

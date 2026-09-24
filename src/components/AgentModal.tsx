@@ -69,14 +69,14 @@ export const AgentModal: React.FC<AgentModalProps> = ({
           {agent.description}
         </div>
 
-        {/* Governance & Permission */}
+        {/* Governance */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div className={`p-4 rounded-xl border ${isLight ? 'bg-ls-grey-light border-ls-grey-dark' : 'bg-ls-navy/40 border-ls-white'}`}>
             <div className="flex items-center gap-2 text-xs font-body uppercase tracking-wider text-ls-grey-light-text mb-1">
               <Shield className="w-3.5 h-3.5 text-ls-red" />
-              Permission Tier
+              Agent Type
             </div>
-            <div className="font-semibold text-sm">{agent.permission}</div>
+            <div className="font-semibold text-sm">{agent.type}</div>
           </div>
           <div className={`p-4 rounded-xl border ${isLight ? 'bg-ls-grey-light border-ls-grey-dark' : 'bg-ls-navy/40 border-ls-white'}`}>
             <div className="flex items-center gap-2 text-xs font-body uppercase tracking-wider text-ls-grey-light-text mb-1">

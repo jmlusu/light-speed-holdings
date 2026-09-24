@@ -376,7 +376,7 @@ enum PermissionTier {
 
       // Tool filter
       const toolMatch = selectedToolFilter === 'all' ||
-        agent.tools.includes(selectedToolFilter);
+        (agent.tools as string[]).includes(selectedToolFilter);
 
       return deptMatch && queryMatch && toolMatch;
     });
@@ -920,7 +920,7 @@ enum PermissionTier {
                 <div className="space-y-2 pt-2 border-t border-[rgba(7,10,64,0.85)]/60">
                   <div className="flex items-center justify-between text-[10px] text-ls-grey-light-text">
                     <span>Reports to: <code className="text-ls-red/40">@{agent.reportsTo}</code></span>
-                    <span>Perm: <span className="text-ls-cyan/80 font-bold">{agent.permission}</span></span>
+                    <span>Type: <span className="text-ls-cyan/80 font-bold">{agent.type}</span></span>
                   </div>
 
                   <div className="flex items-center justify-between pt-1">
@@ -1231,7 +1231,7 @@ enum PermissionTier {
               <div className="space-y-4">
                 <div className="p-3 rounded-xl bg-ls-navy/40 border border-[rgba(7,10,64,0.85)] space-y-1.5">
                   <div><span className="text-ls-grey-light-text">Mode:</span> <span className="text-ls-cyan/80">subagent</span></div>
-                  <div><span className="text-ls-grey-light-text">Permission Tier:</span> <span className="text-[rgba(230,57,70,0.65)] font-bold">{inspectingAgent.permission}</span></div>
+                  <div><span className="text-ls-grey-light-text">Type:</span> <span className="text-[rgba(230,57,70,0.65)] font-bold">{inspectingAgent.type}</span></div>
                   <div><span className="text-ls-grey-light-text">Reports To:</span> <code className="text-ls-red/30">@{inspectingAgent.reportsTo}</code></div>
                   <div>
                     <span className="text-ls-grey-light-text">Canonical Tools:</span>{' '}
@@ -1250,14 +1250,7 @@ enum PermissionTier {
                   </ul>
                 </div>
 
-                {inspectingAgent.guidelines && (
-                  <div>
-                    <h4 className="font-bold text-[#e63946] mb-2 uppercase text-[11px]">Operating Guidelines:</h4>
-                    <p className="p-3 rounded-xl bg-ls-navy/30 border border-[rgba(7,10,64,0.85)] text-ls-grey-light-text leading-relaxed">
-                      {inspectingAgent.guidelines}
-                    </p>
-                  </div>
-                )}
+
               </div>
 
               <div className="mt-6 pt-4 border-t border-[rgba(7,10,64,0.85)] flex justify-end">

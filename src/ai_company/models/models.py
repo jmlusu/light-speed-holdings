@@ -334,6 +334,10 @@ class BoardMember(EntityBase):
     type: str = "independent"
     expertise: list[str] = Field(default_factory=list)
     responsibilities: list[str] = Field(default_factory=list)
+    decision_rights: list[str] = Field(default_factory=list)
+    approval_level: str = ""
+    escalation_path: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
     term_start: str = ""
     term_end: str = ""
 
@@ -377,6 +381,9 @@ class Executive(EntityBase):
     mission: str = ""
     responsibilities: list[str] = Field(default_factory=list)
     decision_rights: list[str] = Field(default_factory=list)
+    approval_level: str = ""
+    escalation_path: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
     tools: list[str] = Field(default_factory=list)
 
 
@@ -403,6 +410,10 @@ class Agent(EntityBase):
     mission: str = ""
     type: AgentType = AgentType.AI
     responsibilities: list[str] = Field(default_factory=list)
+    decision_rights: list[str] = Field(default_factory=list)
+    approval_level: str = ""
+    escalation_path: list[str] = Field(default_factory=list)
+    kpis: list[str] = Field(default_factory=list)
     tools: list[str] = Field(default_factory=list)
     seniority: Seniority = Seniority.MID
 

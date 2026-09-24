@@ -35,9 +35,9 @@
     "guidelines": "Maintain high-level strategic oversight. Do not execute low-level tasks; delegate them to the appropriate executive.",
     "tools": [
       "read",
-      "write",
-      "execute",
-      "delegate"
+      "edit",
+      "bash",
+      "task"
     ],
     "permission": "Execute"
   },
@@ -62,8 +62,8 @@
     "guidelines": "Prioritize clean, maintainable, and well-tested code.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute"
   },
@@ -87,8 +87,8 @@
     "guidelines": "Focus on efficiency and process automation.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute"
   },
@@ -113,8 +113,8 @@
     "guidelines": "Stay updated on the latest AI advancements and apply them practically.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "webfetch"
     ],
     "permission": "Execute"
@@ -145,8 +145,8 @@
     "guidelines": "Lead with vision. Delegate execution. Every major decision needs a clear owner.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "premium"
@@ -174,8 +174,8 @@
     "guidelines": "Financial discipline is non-negotiable. Every dollar must be traceable. Cost is a first-class metric.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -204,7 +204,7 @@
     "guidelines": "Product decisions must be evidence-based. User needs drive the roadmap. Ship incrementally, measure continuously.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "webfetch"
     ],
     "permission": "Execute",
@@ -235,7 +235,7 @@
     "guidelines": "Marketing is measurable or it's noise. Every campaign has a hypothesis and success metric. Brand consistency is enforced.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "webfetch"
     ],
     "permission": "Execute",
@@ -263,8 +263,8 @@
     "guidelines": "People are the product. Culture scales intentionally. Role clarity prevents conflict. Invest in growth before you need it.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -296,8 +296,8 @@
     "guidelines": "Security is everyone's job. Deny by default. Assume breach. Every finding gets a severity rating and remediation timeline.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -322,8 +322,8 @@
     "guidelines": "IT infrastructure is the foundation. Availability is a feature. Automate operational work. Document everything.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -351,8 +351,8 @@
     "guidelines": "Data quality is non-negotiable. Every pipeline has error handling. Data-driven decisions require data instrumentation first.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -380,7 +380,7 @@
     "guidelines": "Compliance by construction. Regulatory gaps block release. Every clause is traceable. Legal review is proactive, not reactive.",
     "tools": [
       "read",
-      "write"
+      "edit"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -407,7 +407,7 @@
     "guidelines": "Strategy is execution, not just planning. Every initiative has a clear owner and success metric. Competitive intelligence is continuous.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "webfetch"
     ],
     "permission": "Execute",
@@ -433,7 +433,7 @@
     "guidelines": "Be the CEO's truth-teller. Prepare thoroughly. Facilitate, do not decide. Every brief is fact-based.",
     "tools": [
       "read",
-      "write"
+      "edit"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -459,8 +459,8 @@
     "guidelines": "Customer signal is first-class. Escalate churn risk early. Onboarding must be measurable. Retention is cheaper than acquisition.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -486,8 +486,8 @@
     "guidelines": "Pipeline state is explicit. Forecasts are traceable. Revenue is the output; pipeline is the input. No silent data loss on stage transitions.",
     "tools": [
       "read",
-      "write",
-      "execute"
+      "edit",
+      "bash"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -510,8 +510,8 @@
     "guidelines": "Maintain strict financial discipline. All figures must be traceable to source data. Flag anomalies immediately.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -536,8 +536,8 @@
     "guidelines": "Zero-downtime deployments are mandatory. Infrastructure as code. Automate everything.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -563,8 +563,8 @@
     "guidelines": "Zero data-loss on shared state. Every shared mutation must be lock-guarded. DLQ entries must be replayable. Breakers must fail safe.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -590,7 +590,7 @@
     "guidelines": "Deny-by-default. CORS must be an explicit allowlist, never wildcard. Every privileged tool call must pass tier gating.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -615,8 +615,8 @@
     "guidelines": "Recall before act. Memory must be queryable and attributable. Forgetting is a feature, not a failure.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -641,7 +641,7 @@
     "guidelines": "Decisions must be explainable. Higher risk requires higher tier. No silent approvals.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -666,8 +666,8 @@
     "guidelines": "Every workflow step is observable. SLA breaches escalate automatically. Idempotency is mandatory.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -692,8 +692,8 @@
     "guidelines": "Read from live state. Never expose unauthenticated endpoints. Telemetry must be real-time.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -718,8 +718,8 @@
     "guidelines": "Cost is a first-class metric. Fail safe on provider errors. Route by tier and budget.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -744,8 +744,8 @@
     "guidelines": "One queue of truth. No direct file I/O around the bus. Failed tasks must be replayable.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -769,8 +769,8 @@
     "guidelines": "Invalid config fails fast. Every reference resolves. Validation is non-negotiable.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -794,8 +794,8 @@
     "guidelines": "Diagnose before prescribing. Health checks must be runnable in CI. Never mask a real failure.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -819,8 +819,8 @@
     "guidelines": "Pipeline state is explicit. Forecasts are traceable. No silent data loss on stage transitions.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -839,13 +839,13 @@
     "responsibilities": [
       "Own the marketing service module and marketing SOP.",
       "Define campaign and attribution metrics.",
-      "Coordinate brand guidelines with the CMO."
+      "Coordinate brand standards with the CMO."
     ],
     "guidelines": "Measure everything. Attribution must be defensible. Brand consistency is enforced.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -873,7 +873,7 @@
     "guidelines": "Company owns the accounts, not an individual. The register is the single source of truth. 2FA everywhere. Name and handle consistency is enforced.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list",
       "webfetch"
@@ -898,8 +898,8 @@
     "guidelines": "Customer signal is first-class. Escalate churn risk early. Onboarding must be measurable.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -923,7 +923,7 @@
     "guidelines": "Compliance by construction. Regulatory gaps block release. Every clause is traceable.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -947,8 +947,8 @@
     "guidelines": "Roles are explicit. Onboarding is repeatable. Utilization drives hiring (agent) decisions.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -973,7 +973,7 @@
     "guidelines": "Every department ships with an SOP. Docs rot; review on a schedule. RACI must match reality.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1000,8 +1000,8 @@
     "guidelines": "A permanently red suite is a broken window — never ship on red. Gate every merge on green.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1026,8 +1026,8 @@
     "guidelines": "Tests are a product. Fixtures must be deterministic and isolated. Flaky tests are bugs.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1052,8 +1052,8 @@
     "guidelines": "Green build is the only shippable build. Rollback is a feature, not a failure. Gate every merge.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1086,8 +1086,8 @@
     "guidelines": "Span of control is sacred. Every specialist should have a clear escalation path. Unblock before adding work.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1113,8 +1113,8 @@
     "guidelines": "Data quality is non-negotiable. Every pipeline must have error handling and alerting. Document every transformation.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1142,8 +1142,8 @@
     "guidelines": "Safety is a prerequisite, not an afterthought. Every new capability requires a safety review before deployment. No exceptions.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1169,7 +1169,7 @@
     "guidelines": "Every product decision should be informed by user evidence. No feature ships without at least one user validation. Research is continuous, not one-off.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1195,7 +1195,7 @@
     "guidelines": "Documentation is a product surface. Every CLI command and API endpoint needs docs. Version docs with code. Never ship undocumented features.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1221,8 +1221,8 @@
     "guidelines": "Developers trust developers. Be authentic, technical, and helpful. Content should educate, not sell. Community is built through consistent value delivery.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "webfetch",
       "grep",
       "list"
@@ -1249,7 +1249,7 @@
     "guidelines": "Values don't scale accidentally. Every decision is a culture decision. Culture is what you do, not what you say. Protect the culture fiercely.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1275,8 +1275,8 @@
     "guidelines": "Think like an attacker. Every agent is a potential target. Adversarial testing is a safety function, not a QA function. Document every finding.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1302,8 +1302,8 @@
     "guidelines": "The platform exists to accelerate developers. Measure developer experience. Automate everything developers do more than twice. Platform changes require rollback plans.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1329,8 +1329,8 @@
     "guidelines": "Position against alternatives, not in isolation. Every launch needs a narrative. Pricing reflects value, not cost. Competitive intelligence is continuous.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -1356,8 +1356,8 @@
     "guidelines": "Partnerships are multi-win or no-win. Every partnership needs clear mutual value. Distribute through partners, not just direct. Track partnership ROI rigorously.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -1383,8 +1383,8 @@
     "guidelines": "AI security is a distinct discipline from traditional security. Every LLM interaction is a potential attack surface. Defense-in-depth is mandatory.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1410,8 +1410,8 @@
     "guidelines": "Every incident is a learning opportunity. Response speed matters, but accuracy matters more. Document everything during an incident. Practice playbooks before you need them.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1437,8 +1437,8 @@
     "guidelines": "Security is not a gate at the end; it's a continuous practice. Automate security checks. Fail the build on critical vulnerabilities. Security debt is technical debt.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1464,8 +1464,8 @@
     "guidelines": "Prompts are code. Version them, test them, optimize them. Every token costs money. Quality and cost are both first-class metrics.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1491,7 +1491,7 @@
     "guidelines": "Privacy by design, not by retrofit. Data minimization is the default. Retention policies are enforced, not suggested. Every DPA is reviewed annually.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1517,7 +1517,7 @@
     "guidelines": "Zero trust is a design philosophy, not a product. Deny by default. Least privilege is the baseline. Security architecture evolves with the system.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1543,7 +1543,7 @@
     "guidelines": "Design is how it works, not just how it looks. Design systems ensure consistency. Accessibility is a requirement, not a nice-to-have. Design for edge cases.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1569,7 +1569,7 @@
     "guidelines": "Every vendor is a dependency. SLAs are monitored, not trusted. Contracts are reviewed annually. Vendor risk is company risk.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1595,8 +1595,8 @@
     "guidelines": "Solutions engineers sell through technical credibility. Every POC should demonstrate clear value. Technical debt in sales = implementation debt later.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1622,7 +1622,7 @@
     "guidelines": "Communication failures compound in autonomous organizations. Consistency matters. Over-communicate during change. Every message should have a clear audience and action.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1648,8 +1648,8 @@
     "guidelines": "BI is for everyone, not just analysts. Data should be self-service. Visualizations should tell a story. Fresh data is trustworthy data. Every dashboard needs a data owner.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1675,7 +1675,7 @@
     "guidelines": "Ethics boards are proactive governance, not reactive cleanup. Precedent matters — every decision sets a standard. Independence from product pressure is essential.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1703,8 +1703,8 @@
     "guidelines": "API contracts are immutable once shipped. Backend code must be tested, documented, and observable. Code review is mandatory for every merge. Technical debt is tracked and prioritized.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1732,8 +1732,8 @@
     "guidelines": "Accessibility is not optional. Component APIs should be simple and composable. Performance budgets are enforced. Design tokens drive consistency.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1759,8 +1759,8 @@
     "guidelines": "Solutions must be scalable, maintainable, and documented. Every design decision needs a trade-off analysis. Reference architectures are living documents. Customer-facing solutions must be production-ready from day one.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1786,8 +1786,8 @@
     "guidelines": "Ship pixel-perfect, accessible, and performant UI. Mentor through code review, not just instructions. Performance budgets are enforced. Component contracts are well-defined.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1813,8 +1813,8 @@
     "guidelines": "APIs must be documented, tested, and versioned. Performance is a feature, not an afterthought. Mentor through code review, not just instructions. Every design decision needs a trade-off analysis.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -1841,7 +1841,7 @@
     "guidelines": "Backlog is the single source of truth. User stories are INVEST. Every feature has success metrics defined upfront.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1868,8 +1868,8 @@
     "guidelines": "Growth is systematic, not ad-hoc. Every experiment has a hypothesis and success metric. Compound growth comes from small, consistent wins.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -1896,8 +1896,8 @@
     "guidelines": "Intelligence is actionable or it's noise. Monitor continuously, not reactively. Share insights broadly. Data drives recommendations.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -1924,7 +1924,7 @@
     "guidelines": "Every candidate deserves a positive experience. Hire for potential, not just skills. Diversity is a competitive advantage. Speed matters, but quality matters more.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1951,7 +1951,7 @@
     "guidelines": "Content is a product surface. Measure engagement, not just output. Every piece has a distribution plan. Brand consistency is enforced.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "grep",
       "list"
     ],
@@ -1978,8 +1978,8 @@
     "guidelines": "Evaluate before promote. Experiments are tracked, not ad-hoc. Deployment is automated and rollback-capable. Model lineage is documented.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -2004,8 +2004,8 @@
     "guidelines": "Every integration has a fallback. Data sync is idempotent. Integration failures escalate to HITL before client impact.",
     "tools": [
       "read",
-      "write",
-      "execute",
+      "edit",
+      "bash",
       "grep",
       "list"
     ],
@@ -2031,9 +2031,9 @@
     "guidelines": "Every engagement is a knowledge asset. Document patterns that work. Client outcomes are the only metric that matters. Two-week delivery cadence is non-negotiable.",
     "tools": [
       "read",
-      "write",
-      "execute",
-      "delegate"
+      "edit",
+      "bash",
+      "task"
     ],
     "permission": "Execute",
     "model_tier": "standard"
@@ -2238,8 +2238,8 @@
     "guidelines": "Lead with the CEO's proven systems, not abstract theory. Every artifact must connect building to evidence to policy. Position the CEO as builder-writer-advocate, never just a commentator.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -2264,8 +2264,8 @@
     "guidelines": "Intelligence is actionable or it is noise. Cite sources. Quantify or do not publish. Research feeds every other Pharos artifact.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -2291,8 +2291,8 @@
     "guidelines": "Content is a product surface. Every piece has an audience and a goal. The CEO's public voice is builder-advocate; lead with proof, then principle.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -2318,8 +2318,8 @@
     "guidelines": "Policy work is an extension of product work - the governance features are the policy contribution. Always ground recommendations in resource-appropriate SADC realities (connectivity, dual economies, data sovereignty).",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -2345,8 +2345,8 @@
     "guidelines": "Speaking is authority. Every engagement returns a documented case study or relationship. Pitch outcomes (governed deployment), not jargon.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -2372,8 +2372,8 @@
     "guidelines": "Do not build reputation alone - build a movement. Relationships precede deals. Every interaction is tracked. Serve the network to lead it.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list"
     ],
@@ -2400,7 +2400,7 @@
     "guidelines": "API-first by default to respect RAM constraints. Every model download is HITL-gated and size-checked. Templates are source of truth. Never hand-author graphs when a template exists. Every generation is auditable and replayable. Local mode requires an explicit opt-in and a passing health_check.",
     "tools": [
       "read",
-      "write",
+      "edit",
       "bash",
       "webfetch",
       "grep",
@@ -2429,8 +2429,8 @@
     "guidelines": "Every creative task starts at ls-creative-director (or loads the design system directly) and ends at artifact QA. Reuse existing rendering engines rather than rebuilding them. Never invent brand colors or fonts; brand tokens are the single source of truth.",
     "tools": [
       "read",
-      "write",
-      "web_search",
+      "edit",
+      "webfetch",
       "grep",
       "list",
       "task"

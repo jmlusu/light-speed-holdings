@@ -30,12 +30,12 @@ describe('agentsList', () => {
       expect(agent.description).toBeDefined();
       expect(Array.isArray(agent.responsibilities)).toBe(true);
       expect(Array.isArray(agent.tools)).toBe(true);
-      expect(agent.permission).toBeTruthy();
+      expect(agent.type).toBeTruthy();
     });
   });
 
   it('every agent should have a valid type', () => {
-    const validTypes = ['Executive', 'Specialist', 'Manager', 'Board'];
+    const validTypes = ['Executive', 'Specialist', 'Board'];
     agentsList.forEach((agent) => {
       expect(validTypes).toContain(agent.type);
     });
