@@ -17,4 +17,3 @@ flowchart TD
     P --> CAN
     CAN --> INFRA[("Production<br/>docker compose · :8420<br/>dashboard + worker + prometheus")]:::tgt
     D --> STAGE[("Staging · docker compose · :8421<br/>manual / canary verification")]:::tgt
-    D --> OCI[("OCI VM · deploy/oci<br/>Caddy TLS · systemd")]:::tgt

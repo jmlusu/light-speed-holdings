@@ -68,7 +68,7 @@ flowchart TD
 
 ## 2. Release pipeline
 
-Releases are tag-driven: publish `semver` tag → version-sync checks (pyproject == CHANGELOG == tag) → Trivy container scan (SARIF to GitHub Security) → build with `uv build` → publish wheel/sdist to PyPI via OIDC trusted publishing, push Docker image to GHCR (`:latest` + `:tag`) → GitHub Release with `dist/*` → simulated canary rollout in the `production` environment (5% traffic, smoke, promote to 100%, verified via monitoring). Package consumers + Docker images feed production (`:8420`), staging (`:8421`), and the `deploy/oci` VM (Caddy TLS, systemd).
+Releases are tag-driven: publish `semver` tag → version-sync checks (pyproject == CHANGELOG == tag) → Trivy container scan (SARIF to GitHub Security) → build with `uv build` → publish wheel/sdist to PyPI via OIDC trusted publishing, push Docker image to GHCR (`:latest` + `:tag`) → GitHub Release with `dist/*` → simulated canary rollout in the `production` environment (5% traffic, smoke, promote to 100%, verified via monitoring). Package consumers + Docker images feed production (`:8420`) and staging (`:8421`).
 
 ```mermaid
 flowchart TD
@@ -90,7 +90,6 @@ flowchart TD
     P --> CAN
     CAN --> INFRA[("Production<br/>docker compose · :8420<br/>dashboard + worker + prometheus")]:::tgt
     D --> STAGE[("Staging · docker compose · :8421<br/>manual / canary verification")]:::tgt
-    D --> OCI[("OCI VM · deploy/oci<br/>Caddy TLS · systemd")]:::tgt
 ```
 
 ## 3. Scheduled & automation workflows
