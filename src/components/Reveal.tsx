@@ -13,7 +13,7 @@ export const Reveal: React.FC<RevealProps> = ({ delay = 0, className, children }
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out will-change-transform ${
+      className={`transition-all duration-700 [transition-timing-function:cubic-bezier(0.25,1,0.5,1)] will-change-transform ${
         inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       } ${className ?? ''}`}
       style={delay > 0 ? { transitionDelay: `${delay}s` } : undefined}

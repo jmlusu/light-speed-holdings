@@ -556,3 +556,190 @@
     min-height: 44px;
   }
 }
+
+/* Part 1 — Ripple feedback (transform/opacity only; global * transition is bg/border/color) */
+.ripple-on {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ripple-on::after {
+  content: "";
+  position: absolute;
+  inset: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 191, 255, 0.45) 0%, rgba(0, 191, 255, 0) 70%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.55s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 0;
+}
+
+.ripple-on:hover::after {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.ripple-on:active::after {
+  transform: translate(-50%, -50%) scale(1.15);
+  opacity: 0.85;
+}
+
+.ripple-on > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scale-safe ripple for elements that already use hover:scale (CtaBand) */
+.ripple-on-scale::after {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+/* Part 1 — Hero ambient mist (CSS gradients only, option A) */
+.hero-mist {
+  position: absolute;
+  inset: -10% -5% 0 -5%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-mist-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+  animation: mistDrift 28s ease-in-out infinite alternate;
+}
+
+.hero-mist-light .hero-mist-blob-1 {
+  width: 42%;
+  height: 38%;
+  top: 8%;
+  left: 5%;
+  background: radial-gradient(circle, rgba(0, 191, 255, 0.14) 0%, transparent 70%);
+}
+
+.hero-mist-light .hero-mist-blob-2 {
+  width: 36%;
+  height: 34%;
+  top: 35%;
+  right: 8%;
+  background: radial-gradient(circle, rgba(7, 10, 64, 0.1) 0%, transparent 70%);
+  animation-delay: -8s;
+}
+
+.hero-mist-light .hero-mist-blob-3 {
+  width: 28%;
+  height: 30%;
+  bottom: 12%;
+  left: 30%;
+  background: radial-gradient(circle, rgba(230, 57, 70, 0.08) 0%, transparent 70%);
+  animation-delay: -14s;
+}
+
+.hero-mist-light .hero-mist-blob-4,
+.hero-mist-light .hero-mist-blob-5,
+.hero-mist-light .hero-mist-blob-6 {
+  display: none;
+}
+
+.hero-mist-dark .hero-mist-blob-1 {
+  width: 44%;
+  height: 40%;
+  top: 6%;
+  left: 4%;
+  background: radial-gradient(circle, rgba(0, 191, 255, 0.16) 0%, transparent 70%);
+}
+
+.hero-mist-dark .hero-mist-blob-2 {
+  width: 38%;
+  height: 36%;
+  top: 30%;
+  right: 6%;
+  background: radial-gradient(circle, rgba(230, 57, 70, 0.12) 0%, transparent 70%);
+  animation-delay: -7s;
+}
+
+.hero-mist-dark .hero-mist-blob-3 {
+  width: 32%;
+  height: 32%;
+  bottom: 10%;
+  left: 28%;
+  background: radial-gradient(circle, rgba(0, 191, 255, 0.1) 0%, transparent 70%);
+  animation-delay: -13s;
+}
+
+.hero-mist-dark .hero-mist-blob-4 {
+  width: 24%;
+  height: 26%;
+  top: 55%;
+  left: 12%;
+  background: radial-gradient(circle, rgba(7, 10, 64, 0.55) 0%, transparent 70%);
+  animation-delay: -4s;
+}
+
+.hero-mist-dark .hero-mist-blob-5 {
+  width: 22%;
+  height: 24%;
+  top: 18%;
+  left: 48%;
+  background: radial-gradient(circle, rgba(0, 191, 255, 0.08) 0%, transparent 70%);
+  animation-delay: -19s;
+}
+
+.hero-mist-dark .hero-mist-blob-6 {
+  width: 30%;
+  height: 28%;
+  bottom: 18%;
+  right: 14%;
+  background: radial-gradient(circle, rgba(230, 57, 70, 0.07) 0%, transparent 70%);
+  animation-delay: -11s;
+}
+
+@keyframes mistDrift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, -4%) scale(1.06);
+  }
+  100% {
+    transform: translate(-3%, 3%) scale(1.02);
+  }
+}
+
+/* Part 1 — Reduced motion gate */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  #root {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-mist {
+    display: none !important;
+  }
+
+  .ripple-on::after {
+    display: none !important;
+  }
+
+  .will-change-transform {
+    will-change: auto !important;
+  }
+}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { PillarNavigationCard } from './PillarNavigationCard';
 import { StatCounter } from './StatCounter';
+import { HeroMist } from './effects/HeroMist';
 
 interface HeroSectionProps {
   theme: 'light' | 'dark';
@@ -20,6 +21,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const isLight = theme === 'light';
   return (
     <section id="hero" className="relative min-h-[92vh] flex flex-col justify-center pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+      <HeroMist theme={theme} />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 w-full">
 
         {/* Left Column: Core Positioning Statement & Vision */}

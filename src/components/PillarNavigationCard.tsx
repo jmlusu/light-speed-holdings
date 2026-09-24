@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { AcousticVentGrille } from './TactileHardwareElements';
+import { smoothScrollToElement } from '../hooks/useSmoothScroll';
 
 interface PillarNavigationCardProps {
   theme: 'light' | 'dark';
@@ -33,7 +34,7 @@ export const PillarNavigationCard: React.FC<PillarNavigationCardProps> = ({
       navigate(path);
       requestAnimationFrame(() => {
         const el = document.getElementById(hash);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (el) smoothScrollToElement(el);
       });
     } else {
       navigate(item.to);

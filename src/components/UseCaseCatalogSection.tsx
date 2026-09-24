@@ -150,7 +150,7 @@ export const UseCaseCatalogSection: React.FC<UseCaseCatalogSectionProps> = ({
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => onRequestBriefing?.('Use Case Catalog & Pricing Engagement')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-body font-bold bg-gradient-to-r from-ls-red to-ls-red hover:from-ls-red/85 hover:to-ls-red/85 text-ls-white shadow-lg shadow-ls-red/20 transition-all cursor-pointer"
+              className="ripple-on inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-body font-bold bg-gradient-to-r from-ls-red to-ls-red hover:from-ls-red/85 hover:to-ls-red/85 text-ls-white shadow-lg shadow-ls-red/20 transition-all cursor-pointer"
             >
               <span>Book Discovery Call</span>
               <ArrowRight className="w-4 h-4" />
@@ -196,7 +196,7 @@ export const UseCaseCatalogSection: React.FC<UseCaseCatalogSectionProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-body font-bold transition-all cursor-pointer ${
+                  className={`ripple-on flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-body font-bold transition-all cursor-pointer ${
                     isActive
                       ? 'bg-ls-red text-ls-white shadow-md'
                       : isLight
@@ -237,7 +237,7 @@ export const UseCaseCatalogSection: React.FC<UseCaseCatalogSectionProps> = ({
                 <button
                   key={letter}
                   onClick={() => setSelectedOfferLetter(letter)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                  className={`ripple-on px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                     selectedOfferLetter === letter
                       ? 'bg-ls-red/20 text-ls-red/40 border border-ls-red/40'
                       : 'text-ls-grey-light-text hover:text-ls-white hover:bg-ls-white/5'
@@ -305,7 +305,7 @@ export const UseCaseCatalogSection: React.FC<UseCaseCatalogSectionProps> = ({
                     </div>
                     <button
                       onClick={() => onRequestBriefing?.(`Inquiry regarding Offer ${family.letter}: ${family.title}`)}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-body font-bold bg-ls-red/15 text-ls-red/40 hover:bg-ls-red hover:text-ls-white transition-all cursor-pointer border border-ls-red/30"
+                      className="ripple-on inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-body font-bold bg-ls-red/15 text-ls-red/40 hover:bg-ls-red hover:text-ls-white transition-all cursor-pointer border border-ls-red/30"
                     >
                       <span>Inquire Offer {family.letter}</span>
                       <ArrowRight className="w-3.5 h-3.5" />

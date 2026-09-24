@@ -75,7 +75,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
               <Link
                 key={link.name}
                 to={link.href}
-                className={`transition-colors cursor-pointer py-1 px-2 rounded-md hover:text-ls-red ${
+                className={`ripple-on transition-colors cursor-pointer py-1 px-2 rounded-md hover:text-ls-red ${
                   isLight ? 'text-ls-navy/80 hover:bg-ls-navy/5' : 'text-ls-white/80 hover:bg-ls-white/5'
                 }`}
               >
@@ -106,7 +106,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
             {/* Executive Conversion Action: Singular Primary CTA */}
             <button
               onClick={() => onRequestBriefing('Book an Executive Briefing')}
-              className="flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold text-xs tracking-wider transition-all cursor-pointer shadow-md bg-ls-red hover:bg-ls-red/90 text-ls-white shadow-ls-red/25 border-t border-ls-white/20 active:scale-95"
+              className="ripple-on flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold text-xs tracking-wider transition-all cursor-pointer shadow-md bg-ls-red hover:bg-ls-red/90 text-ls-white shadow-ls-red/25 border-t border-ls-white/20 active:scale-95"
             >
               <span>Book an Executive Briefing</span>
               <ArrowRight className="w-3.5 h-3.5 text-ls-white" />
@@ -144,7 +144,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                   key={link.name}
                   to={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-colors ${
+                  className={`ripple-on px-3 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-colors ${
                     isLight
                       ? 'text-ls-navy hover:bg-ls-navy/5 hover:text-ls-red'
                       : 'text-ls-white hover:bg-ls-white/5 hover:text-ls-red'
@@ -159,7 +159,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
                 setMobileMenuOpen(false);
                 onRequestBriefing('Book an Executive Briefing');
               }}
-              className="w-full py-3 rounded-full font-bold text-xs tracking-widest bg-ls-red text-ls-white flex items-center justify-center gap-2 shadow-md hover:bg-ls-red/90 transition-all"
+              className="ripple-on w-full py-3 rounded-full font-bold text-xs tracking-widest bg-ls-red text-ls-white flex items-center justify-center gap-2 shadow-md hover:bg-ls-red/90 transition-all"
             >
               <span>Book an Executive Briefing</span>
               <ArrowRight className="w-3.5 h-3.5" />
