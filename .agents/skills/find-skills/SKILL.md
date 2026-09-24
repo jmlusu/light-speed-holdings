@@ -70,6 +70,7 @@ For example:
 1. **Install count** — Prefer skills with 1K+ installs. Be cautious with anything under 100.
 2. **Source reputation** — Official sources (`vercel-labs`, `anthropics`, `microsoft`) are more trustworthy than unknown authors.
 3. **GitHub stars** — Check the source repository. A skill from a repo with <100 stars should be treated with skepticism.
+4. **Third-party transmission (mandatory)** — Grep the skill for outbound hosts / POST uploads. If it would send local code, docs, screenshots, prompts, or memory to a third-party host, it must be on `docs/APPROVED-VENDORS.md` within a 90-day exception window or be rejected. Do **not** install retired families: `claude-mem-*`, `scroll-craft`, `greploop`/`greploop-apps`. Full rule: `docs/SKILL_CURATION_POLICY.md` § Skill Third-Party Transmission Ban.
 
 ### Step 5: Present Options to the User
 

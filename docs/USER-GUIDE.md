@@ -41,7 +41,7 @@ ai-company company run
 ```
 
 **Output:**
-- 152 agent markdown files in `.opencode/agents/`
+- 90 agent markdown files in `.opencode/agents/`
 - Config files in `.opencode/config/`
 - Directory structure for memory, knowledge, projects
 - Task inbox at `.opencode/inbox.json`
@@ -154,7 +154,7 @@ AI Company Builder uses a corporate hierarchy model where one human CEO supervis
 
 ### Agent Registration
 
-All 152 agents are defined in `company-registry.yaml` (synced to `company/agent-registry.json`). Each entry contains:
+All 90 agents are defined in `company-registry.yaml` (synced to `company/agent-registry.json`). Each entry contains:
 
 ```json
 {
@@ -671,7 +671,7 @@ All configuration lives in the `company/` directory.
 
 | File | Purpose |
 |------|---------|
-| `company/agent-registry.json` | Synced from `company-registry.yaml` — single source of truth for all 152 agents |
+| `company/agent-registry.json` | Synced from `company-registry.yaml` — single source of truth for all 90 agents |
 | `company/models.yaml` | LLM provider configuration (9 providers, 3 tiers) |
 | `company/departments.yaml` | 20 departments with executives and agents |
 | `company/workflows.yaml` | 9 workflow definitions |
@@ -725,7 +725,7 @@ tiers:
 agent_overrides:
   lead-engineer: premium
   cto: premium
-  content-writer: standard
+  content-creator: standard
 ```
 
 ### Department Configuration
@@ -738,13 +738,13 @@ departments:
     executive: cto
     agents:
       - lead-engineer
-      - backend-engineer
-      - frontend-engineer
+      - senior-backend-engineer
+      - senior-frontend-engineer
   - name: marketing
     executive: cmo
     agents:
-      - content-writer
-      - growth-marketer
+      - content-creator
+      - growth-hacker
   # ... more departments
 ```
 

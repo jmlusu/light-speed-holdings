@@ -21,7 +21,7 @@ What does your approval system do when nobody answers?
 
 If the answer is anything other than "it escalates to a more senior human and never auto-approves," you have governance-shaped risk.
 
-LightSpeed Holdings Limited™ runs 152 agents across 20 departments. A company that lets agents act without gates is not a company — it is an ungoverned process running at harness scale. The resolution is not zero risk or total control. It is a five-tier system where human friction grows with risk.
+LightSpeed Holdings Limited™ runs 90 agents across 20 departments. A company that lets agents act without gates is not a company — it is an ungoverned process running at harness scale. The resolution is not zero risk or total control. It is a five-tier system where human friction grows with risk.
 
 Tier 0 — Auto. Reading, listing, searching, recalling. No gate. Most agent work lives here; it appears in the task log.
 
@@ -37,7 +37,7 @@ The rule that governs all of it: a timeout is never final and never permissive. 
 
 What a regulator can take today: ask for the tier table. Test the timeout rule. Audit the audit trail. Require two-person rules for irreversible actions.
 
-The cost of the queue is the price of the permission. It is the discipline that makes a 152-agent company deployable outside a laboratory.
+The cost of the queue is the price of the permission. It is the discipline that makes a 90-agent company deployable outside a laboratory.
 
 Everything else goes out monthly through the Malawi Agentic AI Monitor.
 
@@ -70,7 +70,7 @@ The LinkedIn carousel companion uses the same five-slide square set as the Insta
 **Characters:** 254 chars (within X 280 limit)
 
 ```text
-Friction scales with risk. A 152-agent company cannot ask a human for permission on every action — the humans would drown. But a company that lets agents act without gates is not a company; it is an ungoverned process running at harness scale. #AgenticAI
+Friction scales with risk. A 90-agent company cannot ask a human for permission on every action — the humans would drown. But a company that lets agents act without gates is not a company; it is an ungoverned process running at harness scale. #AgenticAI
 ```
 
 ### Post 2 (tier table)
@@ -194,7 +194,7 @@ Every claim above is verbatim-consistent with the source pillar body and ledger:
 
 | Claim | Source |
 |-------|--------|
-| 152 agents across 20 departments | `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `company-registry.yaml` (direct count 2026-09-17) |
+| 90 agents across 20 departments | `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `company-registry.yaml` (direct count 2026-09-17) |
 | Five tiers: Auto / Notify / Single Approve / Dual Approve / CEO Only | `docs/APPROVAL-UX-SPEC.md:16-22` |
 | Friction scales with risk; no silent failures; auditability by default; timeout is never final | `docs/APPROVAL-UX-SPEC.md:9-12` |
 | Tier 2: any operator, 60 min escalate to Tier 3 approver; Tier 3: any 2 operators, 30 min escalate to CEO; Tier 4: CEO only, 24 hr to board notification | `docs/APPROVAL-UX-SPEC.md:20-22` |

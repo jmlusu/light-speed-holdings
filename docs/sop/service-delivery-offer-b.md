@@ -29,10 +29,10 @@ Applies to all client engagements tagged `offer-b` in `.opencode/inbox.json`.
 |------|-------|----------------|
 | Engagement Lead | human_ceo | Final approval, data handling sign-off |
 | Solution Design | solutions_engineer | Architecture, WhatsApp API setup |
-| Conversation Design | conversation_designer | Bot flows, NLU training data |
-| Backend Integration | backend_engineer | API endpoints, database |
+| Conversation Design | solutions_engineer | Bot flows, NLU training data |
+| Backend Integration | senior_backend_engineer | API endpoints, database |
 | Integration | integration_engineer | WhatsApp Business API, CRM, payment gateways |
-| Support | support_agent | Client training, handoff, 30-day support |
+| Support | customer_success_owner | Client training, handoff, 30-day support |
 | Data Protection | data_privacy_officer | Data handling protocol enforcement |
 | Security Review | ciso | WhatsApp API security, data isolation |
 
@@ -51,13 +51,13 @@ Applies to all client engagements tagged `offer-b` in `.opencode/inbox.json`.
 3. **Consent & DPA** — Client signs GDPR/donor addendum. Cross-border LLM transfer consent obtained.
 4. **Intake Task** — `human_ceo` creates inbox.json task tagged `offer-b`, `client-<id>`,
    `data_level=<classified>`, `requires_approval=True`.
-5. **Build** — `integration_engineer` sets up WhatsApp Business API; `conversation_designer`
-   designs flows; `backend_engineer` builds webhook endpoints.
+5. **Build** — `integration_engineer` sets up WhatsApp Business API; `solutions_engineer`
+   designs flows; `senior_backend_engineer` builds webhook endpoints.
 6. **Review** — `human_ceo` reviews bot flows + security posture.
-7. **QA** — `qa_engineer` tests: WhatsApp message flow, handoff trigger, analytics dashboard,
+7. **QA** — `test_engineering_lead` tests: WhatsApp message flow, handoff trigger, analytics dashboard,
    data isolation between clients.
 8. **Deliver** — Client receives bot credentials + training docs + 30-day support window.
-9. **Handoff** — `support_agent` provides client training. `data_privacy_officer` schedules
+9. **Handoff** — `customer_success_owner` provides client training. `data_privacy_officer` schedules
    30-day data deletion unless extended retention signed.
 
 ## 5. Pricing & Payment
@@ -90,6 +90,6 @@ Applies to all client engagements tagged `offer-b` in `.opencode/inbox.json`.
 
 ## 8. Post-Delivery
 
-- 30-day support window. `support_agent` handles questions.
-- `audit_trail_owner` logs all data access during engagement.
-- Postmortem: `data_privacy_officer` confirms data deletion; `support_agent` logs feedback.
+- 30-day support window. `customer_success_owner` handles questions.
+- `platform_reliability_engineer` logs all data access during engagement.
+- Postmortem: `data_privacy_officer` confirms data deletion; `customer_success_owner` logs feedback.

@@ -11,7 +11,7 @@
 ## Post text (≤280 chars)
 
 An AI-native organization is a governance question before it is a technology
-question. 152 agents, 20 departments, five-tier human approval, immutable audit
+question. 90 agents, 20 departments, five-tier human approval, immutable audit
 trails. If institutions set the rules, builders must show what accountability
 looks like. https://lightspeedholdings.com
 
@@ -32,7 +32,7 @@ looks like. https://lightspeedholdings.com
 
 | Claim | Source |
 |-------|--------|
-| 152 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
+| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
 | 5-tier HITL | `docs/Pharos/manifesto-draft.md:64-80` |
 | Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `audit_trail_owner` |
 | Website | `docs/BRAND_DEPLOYMENT_GUIDE.md:46` |

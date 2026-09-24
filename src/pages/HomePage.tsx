@@ -120,7 +120,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               <p className={`text-sm sm:text-base leading-relaxed max-w-xl ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
-                The orchestration engine that runs LightSpeed — 152 agents, 20 departments — licensed to run on your infrastructure. Human direction, audited execution.
+                The orchestration engine that runs LightSpeed — 90 agents, 20 departments — licensed to run on your infrastructure. Human direction, audited execution.
               </p>
               <Link
                 to="/ai-company-builder"

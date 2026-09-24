@@ -18,7 +18,7 @@ Department: People
 
 Reports To: chief_of_staff
 
-Direct Reports: hr_owner, learning_development_lead, employee_experience_lead
+Direct Reports: hr_owner
 
 
 ---

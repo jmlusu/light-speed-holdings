@@ -49,7 +49,7 @@
 | 2 | Scoping & proposal | {{lead_agent}} | 1–2 days |
 | 3 | Build (agent execution) | Specialist agents | {{build_duration}} |
 | 4 | Human review gate | human_ceo | 1 day |
-| 5 | QA & delivery | qa_lead + support_agent | 1 day |
+| 5 | QA & delivery | qa_lead + customer-success-owner | 1 day |
 
 **Total estimated turnaround:** {{total_turnaround}} days
 

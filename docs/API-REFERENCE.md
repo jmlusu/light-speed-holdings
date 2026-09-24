@@ -474,7 +474,7 @@ Returns all unresolved escalation events.
   {
     "task_id": "550e8400-e29b-41d4-a716-446655440000",
     "rule_id": "timeout-rule",
-    "from_agent": "backend-engineer",
+    "from_agent": "senior-backend-engineer",
     "to_agent": "lead-engineer",
     "reason": "Task exceeded SLA timeout of 30 minutes",
     "timestamp": "2026-07-19T10:30:00",
@@ -526,13 +526,13 @@ Returns all configured departments.
   {
     "name": "engineering",
     "executive": "cto",
-    "agents": ["lead-engineer", "backend-engineer", "frontend-engineer"],
+    "agents": ["lead-engineer", "senior-backend-engineer", "senior-frontend-engineer"],
     "total_agents": 3
   },
   {
     "name": "marketing",
     "executive": "cmo",
-    "agents": ["content-writer", "growth-marketer"],
+    "agents": ["content-creator", "growth-hacker"],
     "total_agents": 2
   }
 ]
@@ -800,7 +800,7 @@ The server replies with `{"type": "unsubscribed", "topics": [...]}`.
     "category": "escalation",
     "task_id": "550e8400-e29b-41d4-a716-446655440000",
     "reason": "Task exceeded SLA timeout",
-    "agent_id": "backend-engineer"
+    "agent_id": "senior-backend-engineer"
   }
 }
 ```

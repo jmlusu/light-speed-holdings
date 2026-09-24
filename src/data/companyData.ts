@@ -227,7 +227,7 @@ export const initialKPIs: KPIDefinition[] = [
     target: 99.0,
     unit: '%',
     status: 'good',
-    description: 'Uptime and responsiveness across 152 registered agent cards.',
+    description: 'Uptime and responsiveness across 90 registered agent cards.',
     trend: 'stable',
     history: [
       { timestamp: 'Sep 03', value: 99.7 },

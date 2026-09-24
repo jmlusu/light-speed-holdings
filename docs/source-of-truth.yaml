@@ -35,10 +35,10 @@ claims:
   agent_count:
     source: company-registry.yaml
     extractor: "count 'id:' entries under 'company.agents:'"
-    # Canonical: 152 agents (151 AI + 1 human CEO)
+    # Canonical: 90 agents (89 AI + 1 human CEO)
     # docs/STATUS.md is excluded: its dated changelog entries reference earlier
-    # roster sizes (127/135/...), which would false-positive the blanket pattern.
-    current_value: 152
+    # roster sizes (127/135/152/...), which would false-positive the blanket pattern.
+    current_value: 90
     pattern: "\\d+ agents?"
     docs:
       - README.md

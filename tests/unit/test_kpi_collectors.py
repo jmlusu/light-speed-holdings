@@ -205,7 +205,12 @@ def _seed_sqlite_tasks(db, tmp_path: Path) -> None:
     tasks = [
         {"id": "db-t1", "sender_id": "ceo", "receiver_id": "cto", "status": "completed"},
         {"id": "db-t2", "sender_id": "ceo", "receiver_id": "cmo", "status": "completed"},
-        {"id": "db-t3", "sender_id": "ceo", "receiver_id": "support_agent", "status": "pending"},
+        {
+            "id": "db-t3",
+            "sender_id": "ceo",
+            "receiver_id": "customer_success_owner",
+            "status": "pending",
+        },
         {"id": "db-t4", "sender_id": "ceo", "receiver_id": "sales", "status": "pending"},
         {"id": "db-t5", "sender_id": "ceo", "receiver_id": "clo", "status": "failed"},
     ]

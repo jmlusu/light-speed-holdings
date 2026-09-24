@@ -24,7 +24,7 @@ from ai_company.registry.loader import load_yaml_cached
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-EXPECTED_AGENT_COUNT = 152
+EXPECTED_AGENT_COUNT = 90
 EXPECTED_DEPARTMENT_COUNT = 20
 EXPECTED_TYPES = {"executive", "specialist", "board"}
 

@@ -78,6 +78,40 @@
     "updated_at": "2026-09-23"
   },
   {
+    "id": "2026-09-24-ai-venture-studio-web-experience-brand-psychology",
+    "title": "AI Venture Studio Web Experience — Brand Psychology (Part 1)",
+    "status": "parked",
+    "location": "parking",
+    "modules": [
+      "src/App.tsx",
+      "src/index.css",
+      "src/brand/brand-tokens.css",
+      "brand/tokens"
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "web",
+      "brand",
+      "venture-studio",
+      "dual-mode",
+      "parked-intake"
+    ],
+    "decisions": [
+      "- Parked without creating an active ECL (active slot held by architecture v2.0 change).",
+      "- **Open (blocks implementation):**",
+      "1. Palette — adopt Morning Mist `#F7F8F9` / Slate `#121518` (requires amending **ADR-020**, which currently voids alternate palettes) vs keep navy `#070A40` / red `#E63946` / cyan `#00BFFF` and ship Part 1 effects only.",
+      "2. Scope — Part 1 UI only vs also a page for Parts 2–5.",
+      "3. Surface — restyle existing home/site chrome vs new route (e.g. `/venture-studio`).",
+      "- If palette is adopted: define accent tokens (doc is thin on accents), sync `brand/tokens` + mirrors via `scripts/sync-brand.ps1`, sweep hardcoded hexes in `App.tsx` / `index.css` / components / `ThreeCanvas` fog.",
+      "- Effects separable from palette: ripple hover, ambient mist (tune existing particles), scroll easing `cubic-bezier(0.25, 1, 0.5, 1)`, reduced-motion respect."
+    ],
+    "validation_status": "unknown",
+    "path": "harness/changes/parking/2026-09-24-ai-venture-studio-web-experience-brand-psychology",
+    "updated_at": "2026-09-24"
+  },
+  {
     "id": "2026-08-08-sprint-4-quality-completeness",
     "title": "Sprint 4: Quality & Completeness",
     "status": "completed",

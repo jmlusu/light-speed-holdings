@@ -104,6 +104,8 @@ Show the user a draft of:
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md`, `docs/agents/domain.md`
 
+Always include a one-line pointer to the **Skill Third-Party Transmission Ban** when writing the `## Agent skills` block: skills must not transmit local data to third-party hosts unless allow-listed in `docs/APPROVED-VENDORS.md` (90-day window; CISO of record: Jack Mlusu / Human CEO). Full rule: `docs/SKILL_CURATION_POLICY.md`.
+
 Let them edit before writing.
 
 ### 4. Write

@@ -17,7 +17,7 @@ Type: Specialist
 
 Department: Legal
 
-Reports To: legal
+Reports To: clo
 
 Seniority: mid
 
@@ -103,7 +103,7 @@ This company learns. Every task contributes to a shared memory system that makes
 ## Escalation
 
 
-If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to legal.
+If a task requires architectural decisions, cross-team coordination, or access beyond your permissions, escalate to clo.
 
 
 ---

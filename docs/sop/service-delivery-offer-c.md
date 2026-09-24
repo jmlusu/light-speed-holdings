@@ -32,8 +32,8 @@ Applies to all client engagements tagged `offer-c` in `.opencode/inbox.json`.
 | Data Strategy | cdo | Overall data handling, compliance |
 | Data Engineering | data_engineer | Pipeline construction, ETL, validation |
 | BI Engineering | business_intelligence_engineer | Dashboard design, visualization |
-| Data Science | data_scientist | Analysis, modeling, insights |
-| Survey Research | survey_researcher | Survey design, sampling, field collection |
+| Data Science | business_intelligence_engineer | Analysis, modeling, insights |
+| Survey Research | business_intelligence_engineer | Survey design, sampling, field collection |
 | Data Protection | data_privacy_officer | GDPR/Act 2017 compliance, retention |
 | Ethics Review | ai_ethics_board_chair | Accuracy review of donor reports (Tier 3+) |
 | Security | ciso | Data isolation, encryption-at-rest |
@@ -50,7 +50,7 @@ Applies to all client engagements tagged `offer-c` in `.opencode/inbox.json`.
 
 1. **Client Brief** — `client` CLI sub-app creates client record + SOW.
 2. **Data Assessment** — `data_privacy_officer` classifies all data as PII/Non-PII/sensitive.
-   `survey_researcher` assesses survey methodology requirements.
+   `business_intelligence_engineer` assesses survey methodology requirements.
 3. **Consent & DPA** — Client signs GDPR/donor addendum. Cross-border LLM transfer consent
    obtained for any analysis routed to external providers.
 4. **Ethics Review** — `ai_ethics_board_chair` reviews the proposed deliverable type.
@@ -58,7 +58,7 @@ Applies to all client engagements tagged `offer-c` in `.opencode/inbox.json`.
 5. **Intake Task** — `human_ceo` creates inbox.json task tagged `offer-c`, `client-<id>`,
    `data_level=<classified>`, `risk_level=critical`, `requires_approval=True`.
 6. **Build** — `data_engineer` constructs pipelines; `business_intelligence_engineer` builds
-   dashboards; `data_scientist` performs analysis; `survey_researcher` manages field collection.
+   dashboards and performs analysis; `business_intelligence_engineer` manages field collection.
 7. **Accuracy Review** — `human_ceo` + `qa_lead` verify all figures against source data.
    For donor reports: `ai_ethics_board_chair` confirms no hallucinated figures.
 8. **QA** — `qa_lead` runs: data accuracy checks, dashboard responsiveness, report formatting.
@@ -98,5 +98,5 @@ This is the key differentiator. Consulting firms charge $50K+ for NGO reporting.
 
 - 30-day support window + data correction window (free corrections within 30 days).
 - `data_privacy_officer` enforces raw data deletion after 30 days (unless extended retention signed).
-- `support_agent` logs feedback; `data_scientist` archives anonymized insights to semantic memory.
+- `customer_success_owner` logs feedback; `business_intelligence_engineer` archives anonymized insights to semantic memory.
 - Postmortem: `cdo` reviews data quality; `human_ceo` validates client satisfaction.

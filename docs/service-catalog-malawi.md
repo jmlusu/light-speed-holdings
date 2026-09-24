@@ -143,11 +143,11 @@ show how these answers surface in a portfolio demonstration.
 | 1. Brief | Client request captured as a task in `.opencode/inbox.json` | human-ceo |
 | 2. Scope & quote | Proposal drafted, sent for client approval | solutions-engineer / sales |
 | 3. Kickoff | Task assigned to the right agent(s) via dashboard or CLI | human-ceo / chief-of-staff |
-| 4. Build | Agents produce the deliverable in the repo (site, report, dashboard, content) | content-writer, frontend-engineer, data-engineer, etc. |
+| 4. Build | Agents produce the deliverable in the repo (site, report, dashboard, content) | content-creator, senior-frontend-engineer, data-engineer, etc. |
 | 5. Review | human-ceo reviews against the brief; revisions loop | human-ceo |
-| 6. QA | Automated checks + manual review before handoff | qa-engineer |
+| 6. QA | Automated checks + manual review before handoff | test-engineering-lead |
 | 7. Deliver | Client package (files/links + invoice) sent | human-ceo |
-| 8. Support | 30 days included support; postmortem + case study recorded | support-agent, cto |
+| 8. Support | 30 days included support; postmortem + case study recorded | customer-success-owner, cto |
 
 **Rule:** no client-facing deliverable goes out without human-ceo review. Agents
 draft and execute; the human owns the outcome.

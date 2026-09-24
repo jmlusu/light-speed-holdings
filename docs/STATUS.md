@@ -213,6 +213,6 @@ Point-in-time audit reports. These are frozen snapshots — refer to `STATUS.md`
 
 - **Agent count**: 145 ? 152 (151 AI + 1 Human CEO)
 - **7 new ls-stack Marketing specialists appended**: creative_director, presentation_designer, document_designer, diagram_designer, visual_storyteller, brand_advertising_designer, artifact_qa_reviewer
-- **Registry**: synced; 152 agents verified (sync-registry --verify green)
+- **Registry**: synced; 90 agents verified (sync-registry --verify green)
 - **Drift gates**: all green (validate-drift.ps1, pytest doc_drift, lint-ecl.ps1, ruff, mypy, pytest)
 - **Change closed**: via harness-change.ps1, phase ? validate, validation_status: pass

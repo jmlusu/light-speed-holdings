@@ -31,9 +31,9 @@ As specified in the applicable SOW: {{purpose_description}}
 ### 2.4 Data Processing Activities
 | Activity | Description | Subprocessor | Lawful Basis |
 |----------|-------------|-------------|--------------|
-| Data collection | Surveys, forms, chatbot interactions | survey_researcher agent | Contractual |
+| Data collection | Surveys, forms, chatbot interactions | ux-research-lead agent | Contractual |
 | Data cleaning | Validation, deduplication | data_engineer agent | Contractual |
-| Analysis | Dashboards, reports, insights | data_scientist agent | Legitimate interest |
+| Analysis | Dashboards, reports, insights | business_intelligence_engineer agent | Legitimate interest |
 | LLM processing | Data passed to LLM provider APIs for analysis | OpenAI/DeepSeek API | Contractual / Legitimate interest |
 | Storage | Results persisted in client delivery folder | FileStore (encrypted) | Contractual |
 
@@ -52,7 +52,7 @@ to minimize exposure. Client may request data not be sent to premium providers.
 
 1. **Encryption at rest:** All client data encrypted via `ciso` security architecture.
 2. **Access control:** RBAC enforced by `security_compliance_lead`; least-privilege.
-3. **Audit logging:** All data access logged via `audit_trail_owner` (GAP-008 compliant).
+3. **Audit logging:** All data access logged via `platform_reliability_engineer` (GAP-008 compliant).
 4. **Agent isolation:** Each client engagement uses a separate agent hierarchy;
    cross-client data isolation enforced by `MessageBus` task routing.
 
@@ -71,8 +71,8 @@ Processor will, upon Client's written instruction, assist Client in fulfilling:
 | Raw donor data | 30 days post-delivery | data_privacy_officer |
 | Cleaned datasets | 30 days post-delivery | data_engineer |
 | Aggregated dashboards | 30 days post-delivery | business_intelligence_engineer |
-| Survey responses | 30 days post-delivery | survey_researcher |
-| Audit logs | 1 year (audit trail policy) | audit_trail_owner |
+| Survey responses | 30 days post-delivery | business_intelligence_engineer |
+| Audit logs | 1 year (audit trail policy) | platform_reliability_engineer |
 
 Extended retention requires explicit written agreement and a separate storage SOW.
 

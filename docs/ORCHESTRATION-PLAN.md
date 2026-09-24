@@ -32,10 +32,10 @@ Sprint 1 (code hardening + audit trail) and Sprint 2 (security + integration) ar
 | **S3-08** | Structured logging with correlation IDs | lead-backend | 3.0 | P3 | None | `src/ai_company/**` (cross-cutting) |
 | **S3-09** | Agent spec validation CLI | lead-backend | 2.0 | P3 | None | `executor/context.py`, `cli/agents.py` |
 | **S3-10** | CLI type hints/docstrings | lead-backend | 2.5 | P3 | None | `cli/*.py` (24 files) |
-| **S3-11** | Full pipeline integration test (mocked LLM) | qa_engineer | 3.0 | P3 | S3-01, S3-04 (need stable executor + dashboard) | `tests/integration/` |
-| **S3-12** | CLI command test suite | qa_engineer | 2.5 | P3 | S3-10 (CLI must be stable) | `tests/unit/test_cli_*.py` |
-| **S3-13** | API endpoint test suite | qa_engineer | 2.5 | P3 | S3-01, S3-03 (API must be stable) | `tests/unit/test_dashboard_*.py` |
-| **S3-14** | Approval escalation tests | qa_engineer | 2.0 | P3 | None | `tests/unit/test_approval*.py` |
+| **S3-11** | Full pipeline integration test (mocked LLM) | test_engineering_lead | 3.0 | P3 | S3-01, S3-04 (need stable executor + dashboard) | `tests/integration/` |
+| **S3-12** | CLI command test suite | test_engineering_lead | 2.5 | P3 | S3-10 (CLI must be stable) | `tests/unit/test_cli_*.py` |
+| **S3-13** | API endpoint test suite | test_engineering_lead | 2.5 | P3 | S3-01, S3-03 (API must be stable) | `tests/unit/test_dashboard_*.py` |
+| **S3-14** | Approval escalation tests | test_engineering_lead | 2.0 | P3 | None | `tests/unit/test_approval*.py` |
 | **S3-15** | OAuth2 or API key rotation | security_engineer | 3.0 | P3 | S3-03 (rate limiting first) | `dashboard/app.py`, `orchestrator/approval.py` |
 | **S3-16** | Memory encryption for sensitive data | security_engineer | 2.0 | P3 | S3-04 (memory must be stable) | `memory/engine.py`, `store/file_store.py` |
 | **S3-17** | Token counting integration | lead-backend | 1.5 | P3 | None | `llm/cost_tracker.py`, `executor/agent_loop.py` |
@@ -51,9 +51,9 @@ Sprint 1 (code hardening + audit trail) and Sprint 2 (security + integration) ar
 |-------|-----------------|----------------|-------------|
 | lead-backend | 24h | S3-04, S3-05, S3-06, S3-07, S3-08, S3-09, S3-10, S3-17, S3-18, S3-19 | 18.0h (75%) |
 | lead-frontend | 11h | S3-01, S3-02, S3-03 | 6.0h (55%) |
-| qa_engineer | 10h | S3-11, S3-12, S3-13, S3-14 | 10.0h (100%) |
+| test_engineering_lead | 10h | S3-11, S3-12, S3-13, S3-14 | 10.0h (100%) |
 | security_engineer | 6h | S3-15, S3-16 | 5.0h (83%) |
-| content_writer | 1.5h | (No new tasks — all SOPs complete) | 0% |
+| content_creator | 1.5h | (No new tasks — all SOPs complete) | 0% |
 
 > **Capacity buffer:** 12.5h across all agents for unexpected complexity, bug fixes, or rework.
 
@@ -138,7 +138,7 @@ Phase 1 (Week 1)                    Phase 2 (Week 2)                 Phase 3 (We
 | S3-05 | Memory search enhancement | lead-backend | 3-4 | 2.5 | Keyword + vector search works |
 | S3-06 | Memory retention TTL | lead-backend | 4 | 1.5 | Old memories auto-pruned |
 | S3-07 | Scheduled cycle daemon | lead-backend | 5-6 | 3.0 | Cron-like task scheduling |
-| S3-14 | Approval escalation tests | qa_engineer | 2-3 | 2.0 | 10+ approval test cases |
+| S3-14 | Approval escalation tests | test_engineering_lead | 2-3 | 2.0 | 10+ approval test cases |
 | | **Sprint 3 Total** | | | **17.0** | |
 
 **Sprint 3 Quality Gate (end of Week 2):**
@@ -169,12 +169,12 @@ Phase 1 (Week 1)                    Phase 2 (Week 2)                 Phase 3 (We
 | S3-08 | Structured logging with correlation IDs | lead-backend | 1-3 | 3.0 | JSON logs with task_id correlation |
 | S3-09 | Agent spec validation CLI | lead-backend | 4 | 2.0 | `ai-company agents validate` works |
 | S3-10 | CLI type hints/docstrings | lead-backend | 5-7 | 2.5 | `mypy` clean on all cli/*.py |
-| S3-12 | CLI command test suite | qa_engineer | 4-6 | 2.5 | All 24 CLI commands tested |
-| S3-13 | API endpoint test suite | qa_engineer | 7-9 | 2.5 | All dashboard endpoints tested |
+| S3-12 | CLI command test suite | test_engineering_lead | 4-6 | 2.5 | All 24 CLI commands tested |
+| S3-13 | API endpoint test suite | test_engineering_lead | 7-9 | 2.5 | All dashboard endpoints tested |
 | S3-17 | Token counting integration | lead-backend | 8 | 1.5 | Tokens tracked per LLM call |
 | S3-15 | OAuth2/key rotation | security_engineer | 3-5 | 3.0 | API keys rotatable |
 | S3-16 | Memory encryption | security_engineer | 6-7 | 2.0 | Sensitive memory encrypted at rest |
-| S3-11 | Full pipeline integration test | qa_engineer | 10-12 | 3.0 | E2E happy path with mocked LLM |
+| S3-11 | Full pipeline integration test | test_engineering_lead | 10-12 | 3.0 | E2E happy path with mocked LLM |
 | | **Sprint 4 Total** | | | **22.0** | |
 
 **Sprint 4 Quality Gate (end of Week 3):**
@@ -201,7 +201,7 @@ Phase 1 (Week 1)                    Phase 2 (Week 2)                 Phase 3 (We
 
 | Activity | Owner | Hours | Gate |
 |----------|-------|-------|------|
-| Regression testing from Sprint 3-4 | qa_engineer | 2.0 | All tests green |
+| Regression testing from Sprint 3-4 | test_engineering_lead | 2.0 | All tests green |
 | Documentation update (STATUS.md, ARCHITECTURE.md) | lead-backend | 1.0 | Docs reflect actual state |
 | Performance profiling of executor loop | lead-backend | 1.0 | < 100ms per tick |
 | Final ruff/mypy/pytest pass | ALL | 0.5 | Zero errors |
@@ -231,7 +231,7 @@ Phase 1 (Week 1)                    Phase 2 (Week 2)                 Phase 3 (We
 | Blocker | Impact | Contingency |
 |---------|--------|-------------|
 | lead-backend blocked on memory consolidation | Delays S3-04, S3-05, S3-06, S3-16 | Parallel path: lead-backend works on S3-08, S3-09, S3-10 (independent tasks) while memory stabilizes |
-| qa_engineer tests fail | Delays S3-11 through S3-14 | Isolate failures, file bugs, continue non-blocked tests |
+| test_engineering_lead tests fail | Delays S3-11 through S3-14 | Isolate failures, file bugs, continue non-blocked tests |
 | WebSocket integration incomplete | Blocks S3-02, S3-13 | S3-01 is highest frontend priority — escalate if >2 days |
 | security_engineer can't start (API unstable) | Delays S3-15, S3-16 | Move security tasks to Sprint 5, use Sprint 4 buffer |
 
@@ -277,11 +277,11 @@ If only 50% of remaining work can be completed (~20h), prioritize these tasks fo
 
 | Handoff | From | To | Trigger | Deliverable |
 |---------|------|----|---------|-------------|
-| H1 | lead-backend | qa_engineer | S3-04 complete | Memory consolidation working + unit tests |
-| H2 | lead-frontend | qa_engineer | S3-01 + S3-03 complete | WebSocket + rate limiting working + tests |
+| H1 | lead-backend | test_engineering_lead | S3-04 complete | Memory consolidation working + unit tests |
+| H2 | lead-frontend | test_engineering_lead | S3-01 + S3-03 complete | WebSocket + rate limiting working + tests |
 | H3 | lead-backend | security_engineer | S3-05 + S3-06 complete | Memory engine stable for encryption |
 | H4 | lead-frontend | lead-backend | S3-03 complete | API stable for OAuth2 integration |
-| H5 | lead-backend + qa_engineer | ALL | Sprint 3 gate | All P2 features merged + tests pass |
+| H5 | lead-backend + test_engineering_lead | ALL | Sprint 3 gate | All P2 features merged + tests pass |
 | H6 | ALL | ALL | Sprint 4 gate | All P3 features merged + E2E test passes |
 
 ### 5.3 Merge Review Checklist
@@ -320,7 +320,7 @@ During Sprint 3, up to 4 agents can work simultaneously:
 ```
 Track 1 (lead-frontend):  S3-01 → S3-03 → S3-02
 Track 2 (lead-backend):   S3-18, S3-19 → S3-04 → S3-05 → S3-06 → S3-07
-Track 3 (qa_engineer):    S3-14 (can start early, independent)
+Track 3 (test_engineering_lead):    S3-14 (can start early, independent)
 Track 4 (lead-backend):   S3-08, S3-09, S3-10 (independent, parallel with Track 2)
 ```
 
@@ -329,7 +329,7 @@ During Sprint 4:
 ```
 Track 1 (lead-frontend):  [idle or Sprint 5 prep]
 Track 2 (lead-backend):   S3-08 → S3-09 → S3-10 → S3-17
-Track 3 (qa_engineer):    S3-11, S3-12, S3-13 (sequential, each ~2.5h)
+Track 3 (test_engineering_lead):    S3-11, S3-12, S3-13 (sequential, each ~2.5h)
 Track 4 (security_engineer): S3-15 → S3-16
 ```
 
@@ -339,7 +339,7 @@ Track 4 (security_engineer): S3-15 → S3-16
 **Sprint 4 Critical Path:** S3-08 (3h) → S3-10 (2.5h) → S3-12 (2.5h) = 8h
 **Overall Critical Path:** S3-01 → S3-02 → [Sprint 4 starts] → S3-08 → S3-10 → S3-12 → S3-11 = ~16h
 
-**Bottleneck:** qa_engineer is 100% utilized in Sprint 4. If Sprint 3 QA work (S3-14) takes longer than 2h, Sprint 4 QA tasks slip.
+**Bottleneck:** test_engineering_lead is 100% utilized in Sprint 4. If Sprint 3 QA work (S3-14) takes longer than 2h, Sprint 4 QA tasks slip.
 
 ---
 

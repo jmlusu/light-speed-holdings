@@ -39,7 +39,7 @@ class TestApprovalLifecycle:
         req = gate.request_approval(
             request_id="REQ-1",
             task_id="TASK-1",
-            agent_id="qa_engineer",
+            agent_id="test_engineering_lead",
             action="deploy",
             description="Deploy to production",
         )
@@ -48,7 +48,7 @@ class TestApprovalLifecycle:
         assert [r.id for r in gate.get_pending_requests()] == ["REQ-1"]
 
     def test_approve_resolves_request(self, gate: ApprovalGate) -> None:
-        gate.request_approval("REQ-1", "TASK-1", "qa_engineer", "deploy", "Deploy")
+        gate.request_approval("REQ-1", "TASK-1", "test_engineering_lead", "deploy", "Deploy")
         assert gate.approve("REQ-1", "human-operator") is True
         req = gate.get_request("REQ-1")
         assert req is not None
@@ -58,7 +58,7 @@ class TestApprovalLifecycle:
         assert gate.get_pending_requests() == []
 
     def test_reject_denies_request(self, gate: ApprovalGate) -> None:
-        gate.request_approval("REQ-1", "TASK-1", "qa_engineer", "deploy", "Deploy")
+        gate.request_approval("REQ-1", "TASK-1", "test_engineering_lead", "deploy", "Deploy")
         assert gate.reject("REQ-1", "human-operator") is True
         req = gate.get_request("REQ-1")
         assert req is not None
@@ -66,7 +66,7 @@ class TestApprovalLifecycle:
         assert gate.get_pending_requests() == []
 
     def test_second_action_on_processed_request_fails(self, gate: ApprovalGate) -> None:
-        gate.request_approval("REQ-1", "TASK-1", "qa_engineer", "deploy", "Deploy")
+        gate.request_approval("REQ-1", "TASK-1", "test_engineering_lead", "deploy", "Deploy")
         assert gate.reject("REQ-1", "human-operator") is True
         assert gate.approve("REQ-1", "human-operator") is False
         assert gate.reject("REQ-1", "human-operator") is False
@@ -80,7 +80,7 @@ class TestApprovalLifecycle:
         gate.request_approval(
             "REQ-1",
             "TASK-1",
-            "qa_engineer",
+            "test_engineering_lead",
             "deploy",
             "Deploy",
             required_approvers=2,
@@ -95,7 +95,7 @@ class TestApprovalLifecycle:
     def test_requests_persist_across_gate_instances(self, tmp_path: Path) -> None:
         config_path = tmp_path / "approvals.yaml"
         gate1 = ApprovalGate(config_path=str(config_path))
-        gate1.request_approval("REQ-1", "TASK-1", "qa_engineer", "deploy", "Deploy")
+        gate1.request_approval("REQ-1", "TASK-1", "test_engineering_lead", "deploy", "Deploy")
         gate2 = ApprovalGate(config_path=str(config_path))
         req = gate2.get_request("REQ-1")
         assert req is not None
@@ -111,7 +111,7 @@ class TestExpiryAndTimeout:
         gate.request_approval(
             "REQ-1",
             "TASK-1",
-            "qa_engineer",
+            "test_engineering_lead",
             "deploy",
             "Deploy",
             expires_in_minutes=-1,
@@ -129,7 +129,7 @@ class TestExpiryAndTimeout:
         gate.request_approval(
             "REQ-1",
             "TASK-1",
-            "qa_engineer",
+            "test_engineering_lead",
             "deploy",
             "Deploy",
             expires_in_minutes=-1,
@@ -142,7 +142,7 @@ class TestExpiryAndTimeout:
         gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
         hitl = HITLGate(approval_gate=gate, timeout_minutes=0)
         request_id = hitl.request_and_park(
-            "TASK-1", "qa_engineer", "write", {"path": "x.txt", "content": "y"}
+            "TASK-1", "test_engineering_lead", "write", {"path": "x.txt", "content": "y"}
         )
         time.sleep(0.01)  # ensure expires_at has fallen into the past
         assert hitl.resume_approved(request_id) is False
@@ -151,7 +151,7 @@ class TestExpiryAndTimeout:
         gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
         hitl = HITLGate(approval_gate=gate, timeout_minutes=30)
         request_id = hitl.request_and_park(
-            "TASK-1", "qa_engineer", "write", {"path": "x.txt", "content": "y"}
+            "TASK-1", "test_engineering_lead", "write", {"path": "x.txt", "content": "y"}
         )
         assert hitl.resume_approved(request_id) is None  # still pending
         assert gate.approve(request_id, "human-operator") is True
@@ -161,7 +161,7 @@ class TestExpiryAndTimeout:
         gate = ApprovalGate(config_path=str(tmp_path / "approvals.yaml"))
         hitl = HITLGate(approval_gate=gate, timeout_minutes=30)
         request_id = hitl.request_and_park(
-            "TASK-1", "qa_engineer", "execute", {"command": "rm -rf /tmp/x"}
+            "TASK-1", "test_engineering_lead", "execute", {"command": "rm -rf /tmp/x"}
         )
         assert gate.reject(request_id, "human-operator") is True
         assert hitl.resume_approved(request_id) is False

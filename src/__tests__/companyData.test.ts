@@ -17,8 +17,8 @@ describe('agentsList', () => {
     expect(agentsList.length).toBeGreaterThan(0);
   });
 
-  it('should have 152 agents', () => {
-    expect(agentsList.length).toBe(152);
+  it('should have 90 agents', () => {
+    expect(agentsList.length).toBe(90);
   });
 
   it('every agent should have required fields', () => {

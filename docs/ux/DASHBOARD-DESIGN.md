@@ -247,15 +247,15 @@ CEO Dashboard
 |  |  chief-of-staff                                              | |
 |  |  |-- cto                                                     | |
 |  |  |   |-- lead-engineer                                       | |
-|  |  |   |   |-- backend-engineer                                | |
-|  |  |   |   |-- frontend-engineer                               | |
+|  |  |   |   |-- senior-backend-engineer                     | |
+|  |  |   |   |-- senior-frontend-engineer                    | |
 |  |  |   |-- lead-data-scientist                                 | |
 |  |  |-- cfo                                                     | |
 |  |  |   |-- financial-analyst                                   | |
 |  |  |-- coo                                                     | |
 |  |  |   |-- operations-manager                                  | |
 |  |  |-- cmo                                                     | |
-|  |  |   |-- content-writer                                      | |
+|  |  |   |-- content-creator                                      | |
 |  |  |   |-- growth-marketer                                     | |
 |  |  |-- chro                                                    | |
 |  |  |   |-- hr-coordinator                                      | |
@@ -274,8 +274,8 @@ Agent Detail Modal (overlay):
 |  Type:       Specialist                 |
 |  Department: engineering                |
 |  Reports To: cto                        |
-|  Direct Reports: backend-engineer,      |
-|                  frontend-engineer       |
+  |  Direct Reports: senior-backend-engineer,
+  |                  senior-frontend-engineer
 |  Model Override: (none — using tier)    |
 |                                          |
 |  Description:                           |
@@ -306,7 +306,7 @@ Agent Detail Modal (overlay):
 |  |---------|----------|--------------|-----------------|-----|---| |
 |  | a3f2c1  | human-ceo| lead-engineer| Review PR #42   |high |pen| |
 |  | b7d4e2  | cto      | cfo          | Budget report   |med  |pro| |
-|  | c1a8f3  | cmo      | content-writer| Draft blog     |low  |com| |
+|  | c1a8f3  | cmo      | content-creator| Draft blog     |low  |com| |
 |  +--------------------------------------------------------------+ |
 +------------------------------------------------------------------+
 ```
@@ -364,8 +364,8 @@ Agent Detail Modal (overlay):
 |  |----------------|----------|-------------|----------|---------| |
 |  | cto            | opencode | big-pickle  | PREMIUM  | exec    | |
 |  | lead-engineer  | opencode | big-pickle  | PREMIUM  | override| |
-|  | content-writer | deepseek | deepseek-chat| STANDARD | default | |
-|  | backend-engineer| opencode| big-pickle  | STANDARD | default | |
+|  | content-creator | deepseek | deepseek-chat| STANDARD | default | |
+  |  | senior-backend-engineer| opencode| big-pickle  | STANDARD | default | |
 |  +--------------------------------------------------------------+ |
 +------------------------------------------------------------------+
 ```

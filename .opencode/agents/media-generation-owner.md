@@ -42,7 +42,7 @@ Owns ComfyUI integration, the comfyui-mcp driver, template library, and media ge
 
 - Route generation requests by mode via API (Comfy Cloud and partner nodes, zero local RAM) or local headless with health_check gating.
 
-- Serve brand_strategist, content_creator, product_designer, and technical_documentation_lead via task delegation and deliver to output or docs assets.
+- Serve product_marketing_manager, content_creator, product_designer, and technical_documentation_lead via task delegation and deliver to output or docs assets.
 
 - Guarantee GUI bridge persistence so outputs appear in ComfyUI Workflows sidebar and audit every generation.
 

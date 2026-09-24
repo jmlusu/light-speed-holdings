@@ -25,7 +25,7 @@ deployed control, a failure mode if omitted, and the institutional checkpoint a
 regulator can apply.
 
 The framework is not theoretical in origin. It is the operating constitution of
-LightSpeed Holdings, a company run by a workforce of 152 agents across 20
+LightSpeed Holdings, a company run by a workforce of 90 agents across 20
 departments under five-tier human-in-the-loop approvals, with immutable audit
 trails. Every control named here is fielded in production.
 

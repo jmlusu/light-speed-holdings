@@ -22,12 +22,12 @@ Applies to all client engagements tagged `offer-a` in `.opencode/inbox.json`.
 | Role | Agent | Responsibility |
 |------|-------|----------------|
 | Engagement Lead | human_ceo | Final approval gate, client sign-off |
-| Brand Strategy | brand_strategist | Brand identity, color systems, fonts |
-| Content | content_writer | Copywriting, SEO content, blog posts |
+| Brand Strategy | product_marketing_manager | Brand identity, color systems, fonts |
+| Content | content_creator | Copywriting, SEO content, blog posts |
 | Product Design | product_designer | UI/UX wireframes, visual design |
-| Frontend | frontend_engineer | HTML/CSS/JS implementation, hosting setup |
+| Frontend | senior_frontend_engineer | HTML/CSS/JS implementation, hosting setup |
 | Growth | growth_hacker | Post-launch growth setup, analytics |
-| QA | qa_engineer | Automated checks + manual review |
+| QA | test_engineering_lead | Automated checks + manual review |
 
 ## 4. Delivery Pipeline
 
@@ -38,12 +38,12 @@ Applies to all client engagements tagged `offer-a` in `.opencode/inbox.json`.
 ### Step-by-step
 
 1. **Client Brief** — `client` CLI sub-app creates a client record + SOW. Gates G1–G4 checked (see client-onboarding-policy.md).
-2. **Scope & Quote** — `product_designer` drafts wireframes; `content_writer` drafts copy outline; `human_ceo` approves scope and sends quotation.
+2. **Scope & Quote** — `product_designer` drafts wireframes; `content_creator` drafts copy outline; `human_ceo` approves scope and sends quotation.
 3. **Intake Task** — `human_ceo` creates inbox.json task tagged `offer-a`, `client-<id>`, `requires_approval=True`.
-4. **Build** — `product_designer` and `frontend_engineer` build the site; `content_writer` fills content; `brand_strategist` creates brand kit.
+4. **Build** — `product_designer` and `senior_frontend_engineer` build the site; `content_creator` fills content; `product_marketing_manager` creates brand kit.
 5. **Review** — `human_ceo` performs final review gate against the SOW checklist.
-6. **QA** — `qa_engineer` runs automated checks (link validation, mobile responsiveness, form tests).
-7. **Deliver** — Final files + 30-day support window opened. `support_agent` handles post-delivery questions.
+6. **QA** — `test_engineering_lead` runs automated checks (link validation, mobile responsiveness, form tests).
+7. **Deliver** — Final files + 30-day support window opened. `customer_success_owner` handles post-delivery questions.
 
 ## 5. Pricing & Payment
 
@@ -57,10 +57,10 @@ Applies to all client engagements tagged `offer-a` in `.opencode/inbox.json`.
 
 - All websites: mobile-first, ≤10-day turnaround, contact form + WhatsApp button, hosting setup.
 - All brand kits: color system + fonts + social media kit + letterhead.
-- `qa_engineer` verifies: links work, mobile responsive, forms submit, analytics installed.
+- `test_engineering_lead` verifies: links work, mobile responsive, forms submit, analytics installed.
 
 ## 7. Post-Delivery
 
-- 30-day support window included. `support_agent` handles questions.
+- 30-day support window included. `customer_success_owner` handles questions.
 - `content_creator` and `growth_hacker` provide optional retainers for ongoing content/social management.
-- Postmortem recorded: `support_agent` logs client feedback to episodic memory.
+- Postmortem recorded: `customer_success_owner` logs client feedback to episodic memory.
