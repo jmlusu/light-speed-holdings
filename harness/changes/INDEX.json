@@ -1047,5 +1047,71 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-24-v2-implementation-p2-public-registry-transform",
     "updated_at": "2026-09-24"
+  },
+  {
+    "id": "2026-09-25-ls-mem-implementation",
+    "title": "LS-MEM Implementation",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "lsmem",
+      "memory",
+      "implementation",
+      "sqlite",
+      "fts5",
+      "gateway",
+      "audit",
+      "security"
+    ],
+    "decisions": [
+      "1. Retrospective ECL records created rather than silently skipping the",
+      "process gap (reviewer blocker 7).",
+      "2. Soft-delete semantics: `forget` sets `status=ARCHIVED` (row retrievable by",
+      "ID for restore; excluded from search) — `get` exits 0 showing ARCHIVED.",
+      "3. Gateway all-pass behavior: `allowed=False, requires_human_approval=True`",
+      "(human approval is always the top gate).",
+      "4. Known gaps recorded as follow-ups, not silently dropped (see Handoff)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-25-ls-mem-implementation",
+    "updated_at": "2026-09-25"
+  },
+  {
+    "id": "2026-09-25-ls-mem-phase-3-data-model",
+    "title": "LS-MEM Phase 3 Data Model",
+    "status": "completed",
+    "location": "archive",
+    "modules": [],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "lsmem",
+      "memory",
+      "data-model",
+      "schema",
+      "sqlite",
+      "fts5"
+    ],
+    "decisions": [
+      "1. Versioned schema with forward-only migrations (no silent DDL drift).",
+      "2. All 13 memory types modeled in one core table with a `type` constraint",
+      "rather than per-type tables.",
+      "3. Record field set preserves every concept from handoff §8's example JSON",
+      "(provenance, `verified_by`, `approved_for_external_use`, etc.) while",
+      "adding storage columns justified by the threat model (classification,",
+      "redaction state, soft-delete columns).",
+      "4. Schema document is the contract implemented by the Phase \"Implementation\"",
+      "change (`src/ai_company/lsmem/engine.py` schema DDL)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-25-ls-mem-phase-3-data-model",
+    "updated_at": "2026-09-25"
   }
 ]

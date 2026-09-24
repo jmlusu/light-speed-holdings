@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["external_access"],
+  "properties": {
+    "external_access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "approved_providers", "approved_domains", "approved_operations", "data_classes_allowed"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "approved_providers": { "type": "array", "items": { "type": "string" } },
+        "approved_domains": { "type": "array", "items": { "type": "string" } },
+        "approved_operations": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["embedding", "inference", "retrieval", "storage", "notification"] }
+        },
+        "data_classes_allowed": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["public", "internal", "confidential", "restricted"],
+          "properties": {
+            "public": { "type": "boolean" },
+            "internal": { "type": "boolean" },
+            "confidential": { "type": "boolean" },
+            "restricted": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  }
+}

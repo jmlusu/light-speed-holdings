@@ -15,7 +15,10 @@ repos:
         # full-repo-audit-2026-05-23.md quotes standard AWS example keys and an
         # ellipsis placeholder inside a security-scan writeup; the key block is
         # explicitly documented as non-live example material (see issue #72).
-        exclude: ^\.agents/skills/docs/maintainers/full-repo-audit-2026-05-23\.md$
+        # lsmem redaction files intentionally embed PEM markers: redaction.py
+        # holds the detection regexes and test_redaction.py holds synthetic
+        # fixture keys the scanner must redact. No live key material.
+        exclude: ^(\.agents/skills/docs/maintainers/full-repo-audit-2026-05-23\.md|tests/memory/test_redaction\.py|src/ai_company/lsmem/redaction\.py)$
 
   # ── Ruff: lint + format ────────────────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit
