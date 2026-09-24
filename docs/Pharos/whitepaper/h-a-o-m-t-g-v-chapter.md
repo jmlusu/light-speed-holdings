@@ -73,7 +73,7 @@ for each agent-assigned authority? Is sign-off cryptographic and logged?
 has a defined domain, a permission boundary, and a deterministic escalation
 path when work exceeds its scope.
 
-**Instantiation.** Registry-defined personas (90 in the source deployment),
+**Instantiation.** Registry-defined personas (152 in the source deployment),
 compiled mechanically into runtime agent cards; role-bounded subagents;
 RACI-based reporting chains.
 

@@ -194,7 +194,7 @@ Every claim above is verbatim-consistent with the source pillar body and ledger:
 
 | Claim | Source |
 |-------|--------|
-| 90 agents across 20 departments | `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `company-registry.yaml` (direct count 2026-09-23) |
+| 90 agents across 20 departments | `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `company-registry.yaml` (direct count 2026-09-17) |
 | Five tiers: Auto / Notify / Single Approve / Dual Approve / CEO Only | `docs/APPROVAL-UX-SPEC.md:16-22` |
 | Friction scales with risk; no silent failures; auditability by default; timeout is never final | `docs/APPROVAL-UX-SPEC.md:9-12` |
 | Tier 2: any operator, 60 min escalate to Tier 3 approver; Tier 3: any 2 operators, 30 min escalate to CEO; Tier 4: CEO only, 24 hr to board notification | `docs/APPROVAL-UX-SPEC.md:20-22` |

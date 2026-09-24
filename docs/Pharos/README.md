@@ -35,7 +35,9 @@ The throughline: **building → evidence → policy**. Every artifact connects a
 | `thought-leadership-author` | White papers, manifesto, Malawi Agentic AI Monitor, long-form |
 | `agentic-policy-analyst` | National/SADC policy submissions, governance framework, regulator briefings |
 | `speaker-engagement-lead` | Speaking slots, roundtables, Executive Lab, Lighthouse pilot |
-| `community-ecosystem-builder` | Malawi Agentic AI Forum, stakeholder map, partnerships, regional community; press, op-eds, Academy/certification programs |
+| `community-ecosystem-builder` | Malawi Agentic AI Forum, stakeholder map, partnerships, regional community |
+| `media-pr-relations` | Op-eds, press source positioning, profile features |
+| `talent-academy-lead` | Lightspeed Academy, certification, fellowships, university partnerships |
 
 ## Contents
 

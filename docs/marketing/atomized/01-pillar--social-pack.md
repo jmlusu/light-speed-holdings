@@ -19,7 +19,7 @@
 ```text
 We built a 90-agent company. The hardest part was the governance, not the AI.
 
-LightSpeed Holdings Limited™ runs 89 AI agents across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails, RACI matrices, and a board that exercises genuine oversight. Verified by direct count of the company registry on 2026-09-23.
+LightSpeed Holdings Limited™ runs 89 AI agents across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails, RACI matrices, and a board that exercises genuine oversight. Verified by direct count of the company registry on 17 September 2026.
 
 That number was never the point. The point is what it took to make it safe.
 
@@ -70,7 +70,7 @@ The LinkedIn carousel companion uses the same five-slide square set as the Insta
 **Characters:** 263 chars (within X 280 limit)
 
 ```text
-We run a company where 89 AI agents work across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails and a board that exercises genuine oversight. Verified by direct count of the registry, 2026-09-23. #AgenticAI
+We run a company where 89 AI agents work across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails and a board that exercises genuine oversight. Verified by direct count of the registry, 17 September 2026. #AgenticAI
 ```
 
 ### Post 2 (registry — the easy part)
@@ -114,10 +114,10 @@ https://lightspeedholdings.com
 **Template:** `static/brand/social/templates/stat-card.png` — slots: `number`, `label`, `context`, `source`, `tagline`
 
 ```text
-number: 90
+number: 152
 label: agents across 20 departments
-context: One operating company — verified by direct count of the registry, 2026-09-23.
-source: company-registry.yaml (2026-09-23)
+context: One operating company — verified by direct count of the registry, 17 September 2026.
+source: company-registry.yaml (2026-09-17)
 tagline: ASPIRE. ACT. ACHIEVE.
 ```
 
@@ -194,7 +194,7 @@ Every claim above is verbatim-consistent with the source pillar body and ledger:
 
 | Claim | Source |
 |-------|--------|
-| 90 agents across 20 departments | `company-registry.yaml` (direct count 2026-09-23); `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `docs/Pharos/README.md:23` |
+| 90 agents across 20 departments | `company-registry.yaml` (direct count 2026-09-17); `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `docs/Pharos/README.md:23` |
 | 5-tier HITL approval system, immutable audit trails, RACI matrices, board oversight | `docs/Pharos/manifesto-draft.md:107-109`; `docs/APPROVAL-UX-SPEC.md:9-12, 16-22` |
 | H-A-O-M-T-G-V framework: Human, Agents, Orchestration, Memory, Tools, Governance, Value | `docs/Pharos/positioning.md:41-52` |
 | J&S StopOver Bar — real, non-tech SME running agentic decision support | `docs/Pharos/case-study-pipeline.md:7-12` |

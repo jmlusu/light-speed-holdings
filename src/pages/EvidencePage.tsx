@@ -30,7 +30,7 @@ interface Method {
 
 const METRICS: Metric[] = [
   {
-    value: '90',
+    value: '152',
     label: 'Verified Agent Configurations',
     source: 'company-registry.yaml',
   },

@@ -35,7 +35,7 @@ Legend: ✅ done · 🟡 partial · ❌ gap · 🔵 not started
 | B.3 Circuit breaker threshold tuning (failure counts, half-open) | ✅ | `src/ai_company/llm/circuit_breaker.py`: OPEN/HALF_OPEN/CLOSED, `failure_threshold`, `recovery_timeout`, `success_threshold`, `_maybe_half_open` probe. Tests: `test_circuit_breaker.py`. | Half-open probe present |
 | B.4 Graceful degradation when LLM providers unavailable | 🟡 | `llm/client.py` + provider routing + circuit breaker; no explicit "degradation" marker found. | Failover/breaker exist; explicit degraded-mode strategy not documented |
 | B.5 WebSocket connection pooling / backpressure | 🟡 | `dashboard/ws.py`: `_max_ws_clients` 200-ish cap → close 1013 "Too many connections"; bounded receive 65536 → 1009; rate limit → 1008; idle sweep + half-open probe → 1008. Tests: `test_dashboard_ws.py` (15). | Robust connection cap/backpressure; no true "pooling" (single manager) |
-| B.6 Audit event schema integrity & BWC evolution | ✅ | `src/ai_company/audit/` (`events.py`, `integrity.py`, `reader.py`, `writer.py`, `schema` checks); C1 hash-chain tamper-evidence (`__prev_hash`/`__seq`). Tests: integrity + audit payload guard. | Aligns repo "C1" + platform-reliability-engineer |
+| B.6 Audit event schema integrity & BWC evolution | ✅ | `src/ai_company/audit/` (`events.py`, `integrity.py`, `reader.py`, `writer.py`, `schema` checks); C1 hash-chain tamper-evidence (`__prev_hash`/`__seq`). Tests: integrity + audit payload guard. | Aligns repo "C1" + audit-trail-owner |
 
 **Track B residual risk: B.4 explicit degradation strategy, B.2 retryable-field classification, B.5 pooling phrasing — all mostly covered by implementation but worth an explicit doc/commit.**
 
@@ -83,7 +83,7 @@ Legend: ✅ done · 🟡 partial · ❌ gap · 🔵 not started
 ## Standing gaps to close before Phase-4 sign-off
 
 1. **A.5** — adversarial/red-team suite (prompt injection, injection via task instructions, role escalation, auth bypass).
-2. **D.1** — security event logging: emit audit events on failed auth and rate-limit hits (platform-reliability-engineer + observability-owner).
+2. **D.1** — security event logging: emit audit events on failed auth and rate-limit hits (audit-trail-owner + observability-owner).
 3. **D.3** — dashboard security-posture metrics (auth-failure counters, rate-limit-hit counters).
 4. **D.4** — Prometheus alert rules for 401 spikes and rate-limit breaches (extend `config/prometheus.rules.yml`).
 5. **C.6** — flaky-test monitoring + de-flaking pass.

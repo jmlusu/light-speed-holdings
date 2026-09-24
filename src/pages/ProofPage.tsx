@@ -18,7 +18,7 @@ interface Metric {
 }
 
 const PLATFORM_METRICS: Metric[] = [
-  { value: '90', label: 'Verified Agent Configurations', source: 'company-registry.yaml' },
+  { value: '152', label: 'Verified Agent Configurations', source: 'company-registry.yaml' },
   { value: '2,373', label: 'Automated Regression Tests', source: 'pytest test suite' },
   { value: '20', label: 'Departments Modeled', source: 'company-registry.yaml' },
   { value: '5-Tier', label: 'Human Approval Gates', source: 'ApprovalGate matrix' },

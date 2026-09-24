@@ -305,7 +305,7 @@ export const AiCompanyBuilderOsExplorer: React.FC<AiCompanyBuilderOsExplorerProp
               </div>
               <div className={`p-4 rounded-xl border ${isLight ? 'bg-ls-grey-light border-ls-grey-dark' : 'bg-ls-navy border-ls-grey-dark'}`}>
                 <div className="font-bold text-ls-red mb-1">AgentModel</div>
-                <div className="text-ls-grey-light-text text-[11px]">90 specialist agents with canonical tool vocabulary & memory isolation.</div>
+                <div className="text-ls-grey-light-text text-[11px]">152 specialist agents with canonical tool vocabulary & memory isolation.</div>
               </div>
             </div>
           </div>

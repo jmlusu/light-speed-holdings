@@ -29,7 +29,7 @@ PHAROS_TRAILING_COMMA_RESPONSE = """To perform the SADC Research Scan, I'll star
     {"tool": "webfetch", "args": {"url": "https://example.com/stakeholder-URL"}},
     {"tool": "read", "args": {"args": ["result-of-webfetch"]}},
     {"tool": "edit", "args": {"file": "docs/Pharos/sadc-research-scan.md", "content": "Initial scan content"}},
-    {"tool": "task", "args": {"receiver": "content_creator", "instruction": "Compile scan note with markdown format"}},
+    {"tool": "task", "args": {"receiver": "content_writer", "instruction": "Compile scan note with markdown format"}},
   ],
   "result": "Stakeholder map read completed. Next, initiating webfetch for the first URL.",
   "done": false

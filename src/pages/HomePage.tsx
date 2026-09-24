@@ -29,7 +29,7 @@ interface ProofStat {
 }
 
 const PROOF_STATS: ProofStat[] = [
-  { value: 90, label: 'Verified Agent Configurations', format: 'comma' },
+  { value: 152, label: 'Verified Agent Configurations', format: 'comma' },
   { value: 2373, label: 'Automated Regression Tests', format: 'comma' },
   { value: 20, label: 'Departments Onboarded' },
   { value: 5, label: 'Human Approval Gates', suffix: '-Tier' },

@@ -39,7 +39,7 @@ https://lightspeedholdings.com
 
 | Claim | Source |
 |-------|--------|
-| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-23) |
+| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
 | Human approves every high-risk move (5-tier HITL) | `docs/Pharos/manifesto-draft.md:64-80` |
 | Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80` |
 | Tagline ASPIRE. ACT. ACHIEVE. | `brand/tokens/brand-tokens.json` |

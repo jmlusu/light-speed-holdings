@@ -24,13 +24,6 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 
-# Lockfiles & package-manager config: never overwrite the local copy on merge
-# (AI Studio syncs may rewrite them; ADR-024 keeps bun.lock authoritative).
-bun.lock merge=ours_lockfile
-uv.lock merge=ours_lockfile
-package-lock.json merge=ours_lockfile
-.npmrc merge=ours_lockfile
-
 # Binary files
 *.png binary
 *.jpg binary

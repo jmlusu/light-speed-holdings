@@ -54,7 +54,7 @@ Based on the Phase 3–5 Product Roadmap and Malawi Service Portfolio, I rank th
 
 ### 2.2 Immediate Actions (Week 1–2)
 
-1. **Activate Platform Licensing Sales Lead** — Assign to `head-of-developer-relations` + `growth-hacker` with CFO pricing authority.
+1. **Activate Platform Licensing Sales Lead** — Assign to `head-of-developer-relations` + `growth-product-manager` with CFO pricing authority.
 2. **Ratify `service_level_liability_cap`** — CLO to finalize ToS Services Annex override; Board Chair to countersign. Target: **August 25, 2026**.
 3. **Unblock Offer B Security Review** — CISO to complete threat model for WhatsApp data flows; Data Privacy Officer to draft cross-border LLM consent waiver. Target: **September 5, 2026**.
 4. **Freeze non-revenue hiring** — All Phase 4 specialist agents proceed per roadmap; no new human roles without CEO sign-off.

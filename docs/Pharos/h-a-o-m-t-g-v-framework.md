@@ -244,7 +244,7 @@ they are what converts the framework from a diagram into an operating system.
 | A | `company-registry.yaml`; `templates/agents/agent.md.j2`; `.opencode/agents/*.md` |
 | O | `src/ai_company/orchestrator/message_bus.py`; `.opencode/inbox.json`; `orchestration-owner` |
 | M | `llm-platform-owner` (model router, cost tracker); `memory-owner` (six-type memory store) |
-| T | AGENTS.md §8 canonical tool table; `ToolRunner` validation; `registry-owner` |
+| T | AGENTS.md §8 canonical tool table; `ToolRunner` validation; `generator-owner` |
 | G | Policy engine; `decision-engine-owner`; circuit breakers; `ApprovalGate` HITL sweep |
 | V | Audit-trail package (`audit-trail-owner`); dashboard KPI collectors (`dashboard-owner`); drift evaluation |
 

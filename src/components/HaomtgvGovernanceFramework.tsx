@@ -59,7 +59,7 @@ export const HaomtgvGovernanceFramework: React.FC<HaomtgvGovernanceFrameworkProp
   const [activeTab, setActiveTab] = useState<FrameworkTab>('pillars');
   const [activePillar, setActivePillar] = useState<'H' | 'A' | 'O' | 'M' | 'T' | 'G' | 'V'>('H');
 
-  // 90 Agent Hierarchy State
+  // 152 Agent Hierarchy State
   const [selectedDeptId, setSelectedDeptId] = useState<string>('executive');
   const [agentSearchQuery, setAgentSearchQuery] = useState<string>('');
   const [selectedToolFilter, setSelectedToolFilter] = useState<string>('all');
@@ -108,16 +108,16 @@ interface HumanExecutiveGate {
       id: 'A',
       letter: 'A',
       name: 'Agentic Workforce',
-      headline: '90 Specialized Sub-Agents Across 20 Governed Departments',
+      headline: '152 Specialized Sub-Agents Across 20 Governed Departments',
       coreQuestion: 'What organizational labor can specialized AI agents autonomously perform?',
-      summary: '90 discrete, role-bounded agent personas defined strictly in company-registry.yaml. Every agent has an explicit domain scope, tool permission boundary, and deterministic escalation pathway.',
+      summary: '152 discrete, role-bounded agent personas defined strictly in company-registry.yaml. Every agent has an explicit domain scope, tool permission boundary, and deterministic escalation pathway.',
       principles: [
         'Single Source of Truth: company-registry.yaml defines every agent ID, name, tools, and permissions.',
         'Jinja2 Templating: Generated into OpenCode v2 markdown cards (.opencode/agents/*.md) with mode: subagent.',
         'Strict Role Bounding: Subagents cannot mutate their own prompt or access tools outside their whitelist.',
         'Hierarchical Escalation: Specialists report to Department Leads; Leads report to Executive Swarm.'
       ],
-      metrics: '90 Active Specialists // 20 Governed Departments',
+      metrics: '152 Active Specialists // 20 Governed Departments',
       codeSnippet: `name: thought-leadership-author
 version: 2.4.0
 mode: subagent
@@ -283,7 +283,7 @@ enum PermissionTier {
       name: 'list',
       desc: 'Directory enumeration with path-traversal sandboxing.',
       sampleCmd: 'list(".opencode/agents/")',
-      output: '90 markdown agent cards indexed in local directory.'
+      output: '152 markdown agent cards indexed in local directory.'
     },
     {
       name: 'bash',
@@ -473,7 +473,7 @@ enum PermissionTier {
         <p className={`text-sm sm:text-base max-w-4xl leading-relaxed ${
           isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
         }`}>
-          How LightSpeed orchestrates <strong>90 specialist agents</strong> inside a governed, air-gapped corporate hierarchy.
+          How LightSpeed orchestrates <strong>152 specialist agents</strong> inside a governed, air-gapped corporate hierarchy.
           Built on deterministic Directed Acyclic Graphs (DAGs), cryptographic human approval gates, national soil data residency,
           and an immutable SHA-256 audit ledger.
         </p>
@@ -757,7 +757,7 @@ enum PermissionTier {
                   </div>
                   <div className="p-3 rounded-xl border border-[rgba(7,10,64,0.85)] bg-ls-navy/40 flex items-center justify-between">
                     <span className="text-ls-grey-light-text">Total Workforce</span>
-                    <span className="text-[rgba(230,57,70,0.65)] font-bold">90 Specialist Agents</span>
+                    <span className="text-[rgba(230,57,70,0.65)] font-bold">152 Specialist Agents</span>
                   </div>
                   <div className="p-3 rounded-xl border border-[rgba(7,10,64,0.85)] bg-ls-navy/40 flex items-center justify-between">
                     <span className="text-ls-grey-light-text">Datacenter Soil</span>
@@ -969,7 +969,7 @@ enum PermissionTier {
                 The Sovereign Air-Gap Architecture
               </h3>
               <p className={`text-xs sm:text-sm mt-2 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                All 90 specialist agents execute exclusively within a localized, sovereign compute enclave hosted on
+                All 152 specialist agents execute exclusively within a localized, sovereign compute enclave hosted on
                 Lilongwe soil. Zero inference tokens, organizational schematics, or banking payloads leave Malawi borders.
               </p>
             </div>
@@ -995,7 +995,7 @@ enum PermissionTier {
               <div className="p-5 rounded-2xl bg-[rgba(7,10,64,0.85)]/40 border border-[#e63946]/40 space-y-3 relative overflow-hidden">
                 <div className="flex items-center gap-2 text-[rgba(230,57,70,0.65)] font-bold uppercase text-xs">
                   <Cpu className="w-4 h-4" />
-                  <span>Layer 2: 90 Swarm Runtime</span>
+                  <span>Layer 2: 152 Swarm Runtime</span>
                 </div>
                 <p className="text-[11px] text-ls-white">
                   Directed Acyclic Graph (DAG) state machine running at .opencode/inbox.json.

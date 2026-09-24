@@ -280,7 +280,7 @@ Citizen-query agents, legislative summarisation, project monitoring, and complia
 
 The following eight scenarios describe how the AI Company Builder platform can be deployed. These are platform use cases, not client deliverables — they illustrate the breadth of the orchestration framework and support the Method and Industries pages.
 
-**FOW-01 — Startup Acceleration (Solo Founder + AI).** A solo founder operates with the functional coverage of a multi-person team: agents handle CTO, CFO, CMO, and CLO roles, with a CEO dashboard for real-time visibility. The founder sets vision; agents execute operations, legal, finance, marketing, and sales. Proven in-house — LightSpeed itself operates as a 1-human, 89-agent organisation.
+**FOW-01 — Startup Acceleration (Solo Founder + AI).** A solo founder operates with the functional coverage of a multi-person team: agents handle CTO, CFO, CMO, and CLO roles, with a CEO dashboard for real-time visibility. The founder sets vision; agents execute operations, legal, finance, marketing, and sales. Proven in-house — LightSpeed itself operates as a 1-human, 151-agent organisation.
 
 **FOW-02 — Enterprise Automation (Augment Existing Teams).** Existing teams gain specialist AI agents for compliance scanning, data pipelines, and contract review — without the 6-month hiring cycle. The system adapts to an organization's structure via YAML configuration. In active development; enterprise deployment model designed for SADC regulatory environments.
 
@@ -364,9 +364,6 @@ deterministic Playwright lab runs (desktop + mobile 375×812, normal +
 reduced-motion): 30 frames each, all settled, `failed: []`, 0 console errors;
 worst-frame contrast 15.97:1 headline / 4.45:1 CTA; focus check PASS in both
 modes. The fingerprint registry proves it distinct from any prior build.
-
-*Skill status (2026-09-23): the `scroll-craft` skill was retired under the
-third-party transmission ban; this row remains as a proven in-house case study.*
 
 **What it demonstrates:** The creative stack end-to-end (design-system →
 production → QA), machine-verifiable evidence rather than prose claims, and the

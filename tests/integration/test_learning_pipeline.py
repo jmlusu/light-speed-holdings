@@ -57,7 +57,7 @@ class TestFullLifecycle:
         """Episodic memory recorded by record_task_outcome is recallable."""
         record_task_outcome(
             task_id="task-1",
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             instruction="Fix the login bug in auth module",
             status="completed",
             result_summary="Fixed auth bug by adding null check in login.py:42",
@@ -70,10 +70,10 @@ class TestFullLifecycle:
     def test_record_then_recall_semantic(self, memory_store: MemoryStore) -> None:
         """Semantic knowledge recorded by record_knowledge is recallable."""
         record_knowledge(
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             topic="auth-pattern",
             content="Pattern: auth bugs are usually caused by missing null checks in middleware. Always add defensive guards before accessing user session objects.",
-            tags=["auth", "senior-backend-engineer"],
+            tags=["auth", "backend-engineer"],
         )
         results = recall_context("auth middleware null check", limit=5)
         assert len(results) >= 1
@@ -82,10 +82,10 @@ class TestFullLifecycle:
     def test_record_then_recall_procedural(self, memory_store: MemoryStore) -> None:
         """Procedural memory recorded by record_procedure is recallable."""
         record_procedure(
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             procedure="When bash pytest fails with ImportError: check if PYTHONPATH includes the src/ directory. Fix: export PYTHONPATH=src:$PYTHONPATH before running.",
             context="error-recovery:bash",
-            tags=["error-recovery", "bash", "senior-backend-engineer"],
+            tags=["error-recovery", "bash", "backend-engineer"],
         )
         results = recall_context("pytest ImportError PYTHONPATH", limit=5)
         assert len(results) >= 1
@@ -108,7 +108,7 @@ class TestFullLifecycle:
         # Store episodic first (simulates what executor does)
         record_task_outcome(
             task_id="task-extract-1",
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             instruction="Fix auth bug",
             status="completed",
             result_summary="Fixed the bug by editing auth.py",
@@ -118,7 +118,7 @@ class TestFullLifecycle:
         # Now extract
         extract_post_task_knowledge(
             task_id="task-extract-1",
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             instruction="Fix auth bug",
             status="completed",
             result_summary="Fixed the bug by editing auth.py",
@@ -126,7 +126,7 @@ class TestFullLifecycle:
         )
 
         # Verify semantic knowledge was created
-        semantic_results = recall_context("senior-backend-engineer task-pattern", limit=10)
+        semantic_results = recall_context("backend-engineer task-pattern", limit=10)
         assert any("solved" in r.get("content", "") for r in semantic_results)
 
     def test_extraction_creates_procedure_on_failure(self, memory_store: MemoryStore) -> None:
@@ -142,7 +142,7 @@ class TestFullLifecycle:
 
         extract_post_task_knowledge(
             task_id="task-fail-1",
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             instruction="Run tests",
             status="failed",
             result_summary="pytest command not found",
@@ -150,7 +150,7 @@ class TestFullLifecycle:
         )
 
         # Verify procedural entry was created
-        results = recall_context("senior-backend-engineer error-recovery bash", limit=10)
+        results = recall_context("backend-engineer error-recovery bash", limit=10)
         assert any("procedural" in r["type"] for r in results)
 
     def test_extraction_creates_timeout_procedure(self, memory_store: MemoryStore) -> None:
@@ -163,14 +163,14 @@ class TestFullLifecycle:
 
         extract_post_task_knowledge(
             task_id="task-timeout-1",
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             instruction="Complex refactor of auth module",
             status="timeout",
             result_summary="Loop did not complete",
             tool_results=tools,
         )
 
-        results = recall_context("senior-backend-engineer timeout", limit=10)
+        results = recall_context("backend-engineer timeout", limit=10)
         assert any("timeout" in " ".join(r.get("tags", [])) for r in results)
 
 
@@ -184,7 +184,7 @@ class TestPromptInjection:
             {
                 "type": "semantic",
                 "content": "Pattern: auth bugs need null checks",
-                "agent_id": "senior-backend-engineer",
+                "agent_id": "backend-engineer",
                 "tags": ["auth"],
                 "similarity": 0.85,
             }
@@ -232,7 +232,7 @@ class TestPromptInjection:
             {
                 "type": "semantic",
                 "content": "Previously: auth bugs always need null checks in middleware",
-                "agent_id": "senior-backend-engineer",
+                "agent_id": "backend-engineer",
                 "tags": ["auth"],
                 "similarity": 0.9,
             }
@@ -247,15 +247,15 @@ class TestPromptInjection:
             {
                 "type": "semantic",
                 "content": "Agent solved: fix auth bug using read, edit, bash. Outcome: fixed.",
-                "agent_id": "senior-backend-engineer",
-                "tags": ["completed", "senior-backend-engineer"],
+                "agent_id": "backend-engineer",
+                "tags": ["completed", "backend-engineer"],
                 "similarity": 0.85,
             },
             {
                 "type": "semantic",
                 "content": "Agent solved: add tests using read, edit, pytest. Outcome: tests pass.",
-                "agent_id": "test-engineering-lead",
-                "tags": ["completed", "test-engineering-lead"],
+                "agent_id": "qa-engineer",
+                "tags": ["completed", "qa-engineer"],
                 "similarity": 0.75,
             },
         ]
@@ -304,8 +304,8 @@ class TestPromptInjection:
             {
                 "type": "semantic",
                 "content": "Agent solved: fix auth bug by reading auth.py, editing the null check, running tests",
-                "agent_id": "senior-backend-engineer",
-                "tags": ["completed", "senior-backend-engineer"],
+                "agent_id": "backend-engineer",
+                "tags": ["completed", "backend-engineer"],
                 "similarity": 0.85,
             }
         ]
@@ -327,8 +327,8 @@ class TestConsolidationDigest:
             entry = memory_store.store(
                 "episodic",
                 content=f"Task {i}: old task with tool read, edit. Status: completed.",
-                agent_id="senior-backend-engineer",
-                tags=["completed", "senior-backend-engineer", "read", "edit"],
+                agent_id="backend-engineer",
+                tags=["completed", "backend-engineer", "read", "edit"],
             )
             # Backdate the created_at
             from datetime import datetime, timedelta, timezone
@@ -360,7 +360,7 @@ class TestMetrics:
         """Task metrics are recorded and persisted."""
         metrics = TaskMetrics(
             task_id="task-1",
-            agent_id="senior-backend-engineer",
+            agent_id="backend-engineer",
             status="completed",
             iterations=3,
             total_tokens=1500,

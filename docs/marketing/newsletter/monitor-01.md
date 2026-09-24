@@ -44,7 +44,7 @@ Welcome to the first edition of the Malawi Agentic AI Monitor. I am Jack Mlusu, 
 
 ## 1. This Month at LightSpeed: A 90-Agent Company in Warm-Up Launch
 
-September is a milestone month for the proof lab. The company registry (`company-registry.yaml`, verified 2026-09-23) now defines **90 agents across 20 departments** — executives, department leads, specialists, and board-level agents — the exact architecture cited in our positioning: 90 agents, 20 departments, 5-tier human-in-the-loop approvals, and immutable audit trails (`docs/Pharos/positioning.md`).
+September is a milestone month for the proof lab. The company registry (`company-registry.yaml`, verified 2026-09-17) now defines **90 agents across 20 departments** — executives, department leads, specialists, and board-level agents — the exact architecture cited in our positioning: 90 agents, 20 departments, 5-tier human-in-the-loop approvals, and immutable audit trails (`docs/Pharos/positioning.md`).
 
 The public launch is running on a deliberate 4-week account warm-up protocol that began 2026-09-06 and runs to 2026-10-03: manual posting only, no schedulers, one consistent device and IP, with engagement built daily per platform (`docs/marketing/warmup-log.md`). Week 4 of the protocol includes end-to-end testing of newsletter signup forms — the direct on-ramp for this Monitor.
 
@@ -113,7 +113,7 @@ Every factual claim in this issue maps to a repo file or a cited public source. 
 
 | # | Claim | Source |
 |---|-------|--------|
-| 1 | 90 agents defined in the registry | `company-registry.yaml` (counted 2026-09-23: 90 `- id:` entries) |
+| 1 | 90 agents defined in the registry | `company-registry.yaml` (counted 2026-09-17: 152 `- id:` entries) |
 | 2 | 20 departments defined | `company-registry.yaml` (counted 2026-09-16: 20 unique `department:` values) |
 | 3 | Positioning cites 90 agents / 20 departments / 5-tier HITL / audit trails | `docs/Pharos/positioning.md` (Proof Stack) |
 | 4 | Warm-up launch 2026-09-06 to 2026-10-03, manual-only protocol | `docs/marketing/warmup-log.md` |

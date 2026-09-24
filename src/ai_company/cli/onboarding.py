@@ -26,7 +26,7 @@ app = typer.Typer(help="Agent onboarding with HITL approval gate")
 @app.command()
 def request(
     agent_id: str = typer.Option(..., help="Unique agent identifier"),
-    role: str = typer.Option(..., help="Agent role (e.g. senior-backend-engineer)"),
+    role: str = typer.Option(..., help="Agent role (e.g. backend-engineer)"),
     department: str = typer.Option(..., help="Department"),
     name: str = typer.Option("", help="Human-readable agent name (defaults to agent_id)"),
     tools: str = typer.Option("", help="Comma-separated tool permissions"),

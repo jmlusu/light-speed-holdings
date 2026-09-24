@@ -32,7 +32,7 @@ looks like. https://lightspeedholdings.com
 
 | Claim | Source |
 |-------|--------|
-| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-23) |
+| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
 | 5-tier HITL | `docs/Pharos/manifesto-draft.md:64-80` |
-| Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `platform_reliability_engineer` |
+| Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `audit_trail_owner` |
 | Website | `docs/BRAND_DEPLOYMENT_GUIDE.md:46` |

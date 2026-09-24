@@ -47,6 +47,7 @@ class CustomerSuccessKPICollector(KPICollector):
         # Count CS-related tasks
         cs_receivers = {
             "customer-success",
+            "support_agent",
             "customer_success_owner",
             "customer_success",
         }

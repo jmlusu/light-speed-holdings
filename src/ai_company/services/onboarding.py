@@ -577,7 +577,7 @@ class OnboardingService(BaseService):
 
         Args:
             agent_id: The new agent's unique identifier.
-            role: Agent role (e.g. 'senior-backend-engineer').
+            role: Agent role (e.g. 'backend-engineer').
             department: Department the agent belongs to.
             name: Human-readable agent name (defaults to agent_id with underscores replaced).
             tools: List of tool permissions the agent needs.

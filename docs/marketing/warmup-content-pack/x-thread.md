@@ -60,7 +60,7 @@ https://lightspeedholdings.com
 
 | Claim | Source |
 |-------|--------|
-| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-23) |
+| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
 | 5-tier HITL, audit trails | `docs/Pharos/manifesto-draft.md:64-80` |
 | H-A-O-M-T-G-V framework | `docs/Pharos/positioning.md:41-52` |
 | SME / health / finance / public use cases | `docs/Pharos/manifesto-draft.md:133-144`; `docs/Pharos/positioning.md:62` (J&S StopOver Bar) |

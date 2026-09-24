@@ -4,7 +4,7 @@
 # Source of truth: docs/ai-caas-pricing-model.md
 # Reference case study: docs/case-studies/wlo-ai-native-consultancy.md
 # Registry template: company/registry-templates/consulting-firm/
-# Consumed by: sales-owner, growth-hacker (offers), client_intake (governance gates)
+# Consumed by: sales-owner, growth-product-manager (offers), client_intake (governance gates)
 
 # AI-CaaS is the Light Speed Holdings productization of the We Lead Out (WLO)
 # business model: license the platform to consulting firms, deliver packaged
@@ -16,7 +16,7 @@ offers:
   offer_f:
     name: "WLO-in-a-Box — Consulting Firm Starter Kit"
     slug: "offer-f"
-    agents: [registry-owner, technical-documentation-lead, platform-engineer, head-of-developer-relations, growth-hacker, legal-owner, product-marketing-manager, customer-success-owner]
+    agents: [generator-owner, technical-documentation-lead, developer-experience-engineer, head-of-developer-relations, growth-product-manager, legal-owner, product-marketing-manager, customer-success-owner]
     currency: "USD"
     risk_level: "high"
     governance_state: "proposed"
@@ -25,7 +25,7 @@ offers:
   offer_g:
     name: "Ghost Delivery — AI-Augmented Engagements"
     slug: "offer-g"
-    agents: [consulting-lead, consulting-lead, consulting-lead, consulting-lead, solution-architect, senior-frontend-engineer, senior-backend-engineer, test-engineering-lead, cto]
+    agents: [consulting-lead, interview-agent, workflow-mapper, opportunity-identifier, solution-architect, frontend-engineer, backend-engineer, qa-lead, cto]
     currency: "USD"
     risk_level: "critical"
     governance_state: "proposed"
@@ -34,7 +34,7 @@ offers:
   offer_h:
     name: "Managed AI Consultancy — Retainer"
     slug: "offer-h"
-    agents: [customer-success-owner, customer-success-owner, solutions-engineer, sales-owner, cfo]
+    agents: [customer-success-owner, support-agent, solutions-engineer, sales-owner, cfo]
     currency: "USD"
     risk_level: "medium"
     governance_state: "proposed"

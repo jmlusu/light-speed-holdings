@@ -427,9 +427,9 @@ DEFAULT_SLOTS: dict[str, dict[str, str]] = {
         "tagline": "ASPIRE. ACT. ACHIEVE.",
     },
     "stat-card": {
-        "number": "90",
+        "number": "152",
         "label": "AI agents operating inside one company",
-        "context": "LightSpeed Holdings runs 90 agents across 20 departments with 5-tier human-in-the-loop governance and immutable audit trails.",
+        "context": "LightSpeed Holdings runs 152 agents across 20 departments with 5-tier human-in-the-loop governance and immutable audit trails.",
         "source": "LightSpeed Holdings Limited\u2122 \u2014 production operating system",
         "tagline": "ASPIRE. ACT. ACHIEVE.",
     },

@@ -139,7 +139,7 @@ The following claims are valid and supported by existing assets:
 The following claims are prohibited and would violate the claims governance framework:
 
 - Do **NOT** position LightSpeed as AI Expert / AI Consultant / Generative AI Specialist / AI Engineer (per Pharos positioning.md explicit "NOT to position as" list).
-- Do **NOT** claim "140+ AI agents" without noting the canonical 90 count (reconcile mission/vision text vs registry; mission/vision text says "140+ AI agents" while canonical registry/source-of-truth say 90).
+- Do **NOT** claim "140+ AI agents" without noting the canonical 90 count (reconcile mission/vision text vs registry; mission/vision text says "140+ AI agents" while canonical registry/source-of-truth say 152).
 - Do **NOT** claim "company/departments.yaml has 20 departments" — it has 19 (missing pharos) per source-of-truth.yaml commentary; this discrepancy must be documented, not obscured.
 - Do **NOT** use off-palette colors in any agent-generated artifact (per brand-guidelines.md "Do NOT add new colors without a documented brand decision").
 - Do **NOT** omit the "™" symbol on first mention of "LightSpeed Holdings Limited™" (per brand-guidelines.md trademark rule).
@@ -194,7 +194,7 @@ A five-tier approval framework (GAP-003) governs all HITL decisions via the `sec
 
 ### 10.4 Research
 
-The AI Research department (CAIO) evaluates LLM models, while the prompt engineer, red-team engineer, constitutional-AI owner and prompt-engineer iteratively improve model quality, safety and alignment, grounding every experiment in the Pharos H-A-O-M-T-G-V framework and the validated `company-registry.yaml` roster.
+The AI Research department (CAIO) evaluates LLM models, while the prompt engineer, red-team engineer, constitutional-AI owner and eval-benchmarks engineer iteratively improve model quality, safety and alignment, grounding every experiment in the Pharos H-A-O-M-T-G-V framework and the validated `company-registry.yaml` roster.
 
 ---
 
@@ -206,7 +206,7 @@ LightSpeed's HQ in Lilongwe, Malawi, serves as the proof-point: agentic AI is sh
 
 ## 12. Roster Validation
 
-All seven candidate agents—thought-leadership-lead, thought-leadership-author, product-marketing-manager, knowledge-manager, cso, cmo, and chief-of-staff—were dispatched and validated against the system-prompt agent roster as valid subagent_types. Each name maps to an agent card in `.opencode/agents/` with `mode: subagent` and exists in `company-registry.yaml`. The thought-leadership-lead and thought-leadership-author cards head the Pharos department; product-marketing-manager supports the CMO's marketing orbit; knowledge-manager operates as the Knowledge Manager specialist; cso and cmo are executive agents in Strategy and Marketing respectively; and chief-of-staff serves as the primary orchestrator. All names use the hyphenated convention consistent with the subagent_type enumeration. No gaps or replacements were required—every candidate validated successfully against the roster.
+All eight candidate agents—thought-leadership-lead, thought-leadership-author, brand-strategist, product-marketing-manager, knowledge-manager, cso, cmo, and chief-of-staff—were dispatched and validated against the system-prompt agent roster as valid subagent_types. Each name maps to an agent card in `.opencode/agents/` with `mode: subagent` and exists in `company-registry.yaml`. The thought-leadership-lead and thought-leadership-author cards head the Pharos department; brand-strategist and product-marketing-manager support the CMO's marketing orbit; knowledge-manager operates as the Knowledge Manager specialist; cso and cmo are executive agents in Strategy and Marketing respectively; and chief-of-staff serves as the primary orchestrator. All names use the hyphenated convention consistent with the subagent_type enumeration. No gaps or replacements were required—every candidate validated successfully against the roster.
 
 ---
 

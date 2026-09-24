@@ -120,7 +120,7 @@ delivered unless it was.
 **Evidence:**
 - 5-tier HITL approvals, immutable JSOL/JSONL audit trails, risk matrix, 25+ gated actions (`docs/client-facing/USE-CASE-CATALOG.md:30-35`).
 - Cold-segment failures explained (governance, not tech) — messaging brief §3.7.
-- Red-team + eval gates (`AGENT-REGISTRY-TABLE.md`: red-team-engineer, prompt-engineer, ai-safety-lead, ai-ethics-board-chair).
+- Red-team + eval gates (`AGENT-REGISTRY-TABLE.md`: red-team-engineer, eval-benchmarks-engineer, ai-safety-lead, ai-ethics-officer).
 - Honesty ladder enforced site-wide (`src/data/siteContent.ts:7-18`; `docs/client-facing/USE-CASE-CATALOG.md:10-14`).
 
 **Honesty badge:** Proven in-house (we govern our own 90-agent operation before asking clients to trust it).
@@ -136,10 +136,10 @@ voice, but the engineering truth behind it.
 | `cso` | Strategy owner — owns the doctrine, dept alignment |
 | `board-strategy` | Gate — devil's advocate, final stress-test |
 | `chief-of-staff` | Orchestrator — cadence, integration, ECL discipline |
-| `llm-platform-owner`, `platform-reliability-engineer`, `lead-frontend` | 1. Low-bandwidth — offline-first, local routing, quotas, mobile/field reality |
-| `data-privacy-officer`, `ciso` | 2. Data protection — sovereignty, DPA/GDPR, G1–G4, consent |
-| `vp-engineering`, `solution-architect` | 3. Technology debt — legacy integration, own-debt discipline |
-| `ai-safety-lead`, `red-team-engineer`, `prompt-engineer` | 4. Skepticism — HITL, safety, red-team, eval gates |
+| `llm-platform-owner`, `capacity-planner`, `platform-reliability-engineer`, `mobile-developer` | 1. Low-bandwidth — offline-first, local routing, quotas, mobile/field reality |
+| `data-privacy-officer`, `ciso`, `compliance-officer` | 2. Data protection — sovereignty, DPA/GDPR, G1–G4, consent |
+| `vp-engineering`, `software-architect`, `solution-architect` | 3. Technology debt — legacy integration, own-debt discipline |
+| `ai-ethics-officer`, `ai-safety-lead`, `red-team-engineer`, `eval-benchmarks-engineer` | 4. Skepticism — HITL, safety, red-team, eval gates |
 | `thought-leadership-lead`, `agentic-research-lead`, `thought-leadership-author` | Pharos — thesis, manifesto, citable research |
 | `solutions-engineer`, `consulting-lead`, `sales-owner` | Client-facing — demo script, objection transcripts, enablement |
 

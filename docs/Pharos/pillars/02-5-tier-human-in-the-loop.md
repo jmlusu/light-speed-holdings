@@ -5,7 +5,7 @@ word_count: 1965 (body)
 pillar: Governance
 claims_ledger:
   - claim: "90 agents across 20 departments"
-    source: "docs/Pharos/positioning.md:61; docs/Pharos/manifesto-draft.md:107-109; company-registry.yaml (direct count 2026-09-23)"
+    source: "docs/Pharos/positioning.md:61; docs/Pharos/manifesto-draft.md:107-109; company-registry.yaml (direct count 2026-09-17)"
   - claim: "Five tiers: Auto / Notify / Single Approve / Dual Approve / CEO Only"
     source: "docs/APPROVAL-UX-SPEC.md:16-22"
   - claim: "Friction scales with risk; no silent failures; auditability by default; timeout is never final"

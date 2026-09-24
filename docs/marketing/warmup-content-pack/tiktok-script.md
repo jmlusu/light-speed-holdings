@@ -38,9 +38,9 @@
 
 | Claim | Source |
 |-------|--------|
-| 90 agents | `company-registry.yaml` (counted 2026-09-23) |
+| 90 agents | `company-registry.yaml` (counted 2026-09-17) |
 | Human approves every high-risk move (5-tier HITL) | `docs/Pharos/manifesto-draft.md:64-80` |
-| Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `platform_reliability_engineer` |
+| Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `audit_trail_owner` |
 | Seven-layer H-A-O-M-T-G-V | `docs/Pharos/h-a-o-m-t-g-v-framework.md:16-35` |
 | 20 departments | `company-registry.yaml` (counted 2026-09-16) |
 | Tagline ASPIRE. ACT. ACHIEVE. | `brand/tokens/brand-tokens.json` |

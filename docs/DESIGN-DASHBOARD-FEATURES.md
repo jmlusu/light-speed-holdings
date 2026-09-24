@@ -145,7 +145,7 @@ New navigation tab "Onboarding" between "Approvals" and "Command Center". Shows 
 │                                                                     │
 │  ┌─ Generating (1) ────────────────────────────────────────────┐  │
 │  │ ┌─────────────────────────────────────────────────────────┐  │  │
-│  │ │ 🟡 content-creator                 marketing  Tier 1     │  │  │
+│  │ │ 🟡 content-writer                 marketing  Tier 1     │  │  │
 │  │ │    Step 2/4: Generating agent card                     │  │  │
 │  │ │    [████████░░░░░░░░░░] 50%                            │  │  │
 │  │ └─────────────────────────────────────────────────────────┘  │  │
@@ -484,7 +484,7 @@ New "Finance" tab (exists) enhanced with revenue attribution. Shows revenue per 
 │  │                                                             │   │
 │  │  financial-analyst     $120 cost   $800 revenue   ROI 6.7x │   │
 │  │  senior-developer      $450 cost   $1,200 revenue ROI 2.7x │   │
-│  │  content-creator        $80 cost    $300 revenue   ROI 3.8x │   │
+│  │  content-writer        $80 cost    $300 revenue   ROI 3.8x │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -673,7 +673,7 @@ Timeline view of all agent executions with search and filter. Drill-down into ex
 │  │            │  Error: Connection timeout                    │   │
 │  │            │  [View Details] [Retry]                       │   │
 │  │                                                             │   │
-│  │  10:30:01 ─●── content-creator ─── completed ── 2.1s       │   │
+│  │  10:30:01 ─●── content-writer ─── completed ── 2.1s       │   │
 │  │            │  Task: Generate blog post                     │   │
 │  │            │  Cost: $0.03  Tokens: 890                     │   │
 │  │                                                             │   │

@@ -941,7 +941,7 @@ class TestRoutinePublishEnqueue:
         task = Task(
             id="routine-scan-2026-09-22",
             name="SADC Research Scan",
-            receiver_id="content_creator",
+            receiver_id="content_writer",
             tags=["pharos-routine", "routine:scan", "routine_run:scan-2026-09-22"],
         )
         result = _FakeLoopResult(final_response="A polished post body.", done=True, error="")
@@ -968,7 +968,7 @@ class TestRoutinePublishEnqueue:
 
         task = Task(
             id="task-999",
-            receiver_id="content_creator",
+            receiver_id="content_writer",
             tags=["research:deep"],
         )
 
@@ -988,7 +988,7 @@ class TestRoutinePublishEnqueue:
 
         task = Task(
             id="routine-scan-2026-09-22",
-            receiver_id="content_creator",
+            receiver_id="content_writer",
             tags=["pharos-routine", "routine_run:scan-2026-09-22"],
         )
 
@@ -1010,7 +1010,7 @@ class TestRoutinePublishEnqueue:
 
         task = Task(
             id="routine-scan-2026-09-22",
-            receiver_id="content_creator",
+            receiver_id="content_writer",
             tags=["pharos-routine", "routine_run:scan-2026-09-22"],
         )
         result = _FakeLoopResult(final_response="Post body.", done=True, error="")

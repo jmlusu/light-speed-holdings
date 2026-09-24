@@ -69,7 +69,7 @@ The specs are thorough and the profile/banner generator works for 4 platforms. B
 **`ls-artifact-qa` skill:** Present and referenced as mandatory last gate. Includes Playwright probe script for screenshots, overflow, alt-text, and empty-heading checks.
 
 **Agent roster for social execution:**
-- `content_creator` (Marketing, reports to CMO) — blog posts, articles, content calendar, SEO
+- `content_writer` (Marketing, reports to CMO) — blog posts, articles, content calendar, SEO
 - `content_creator` (Marketing, reports to CMO) — visual content, video, social media assets, distribution
 - `thought_leadership_lead` (Pharos, reports to CEO) — CEO positioning, content calendar, cross-agent orchestration
 - `thought_leadership_author` (Pharos) — LinkedIn long-form, white papers, Malawi Agentic AI Monitor

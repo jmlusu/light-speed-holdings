@@ -72,7 +72,7 @@ Vote: Governance or Memory." (poll sticker — education test, drives replies)
 | Claim | Source |
 |-------|--------|
 | H-A-O-M-T-G-V seven layers | `docs/Pharos/h-a-o-m-t-g-v-framework.md:16-35` |
-| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-23) |
+| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
 | 5-tier HITL, audit trails | `docs/Pharos/manifesto-draft.md:64-80` |
 | Malawi / constrained environments | `docs/Pharos/positioning.md:73` |
 | Website | `docs/BRAND_DEPLOYMENT_GUIDE.md:46` |

@@ -72,7 +72,7 @@ The Malawi-First Working Group is drawn from existing roster agents; each member
 | `community-ecosystem-builder` | Malawi stakeholder/partner map feeding BD and policy lanes | `pharos-community-ecosystem` |
 | `agentic-policy-analyst` | MACRA / National AI Strategy alignment | `pharos-policy-analyst` |
 | `internal-comms-lead` | Cascade the new mission/vision to all 20 departments | `documentation-and-adrs`, `ls-documentation-engineering` |
-| `cmo` / `product-marketing-manager` | Brand and messaging rollout of the v2.0 identity | `ls-design-system`, `ls-brand-advertising`, `ls-social-media-design` |
+| `cmo` / `brand-strategist` | Brand and messaging rollout of the v2.0 identity | `ls-design-system`, `ls-brand-advertising`, `ls-social-media-design` |
 | `chief-of-staff` | Orchestrator — integrates outputs, keeps cadence | `planning-and-task-breakdown`, `executing-plans` |
 
 **How to rerun this team:** invoke the agents above by their `@name` in any session; each reads `docs/MISSION_AND_VISION.md`, this document, and `docs/service-catalog-malawi.md` as the shared context. This document is the source of truth for the pivot; active ECL changes override only where they touch these files.

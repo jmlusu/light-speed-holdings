@@ -61,7 +61,6 @@ class LegalKPICollector(KPICollector):
                 "clo",
                 "legal_advisor",
                 "legal_owner",
-                "security_compliance_lead",
                 "compliance_officer",
                 "data_privacy_officer",
             )
