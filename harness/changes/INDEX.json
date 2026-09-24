@@ -979,5 +979,36 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-24-lightspeed-ai-company-builder-web-experience-architecture-v2-0",
     "updated_at": "2026-09-24"
+  },
+  {
+    "id": "2026-09-24-ls-mem-phase-2-architecture",
+    "title": "LS-MEM Phase 2 — Architecture",
+    "status": "completed",
+    "location": "archive",
+    "modules": [],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "lsmem",
+      "memory",
+      "architecture",
+      "security",
+      "sqlite",
+      "fts5"
+    ],
+    "decisions": [
+      "1. Dual skill paths `.agents/skills/ls-memory/` AND `.opencode/skills/ls-memory/`, content-identical (hash-checked).",
+      "2. Discovery authority is `.agents/skills/` per `docs/SKILL_CURATION_POLICY.md`.",
+      "3. New SQLite+FTS5 engine + one-way import bridge FROM JSON `MemoryStore` (ADR-025). JSON store not replaced Phases 2–4.",
+      "4. Network deny-by-default; no HTTP/HTTPS/DNS egress without explicit approval gateway.",
+      "5. Restricted classification never written in plaintext; uncertain → BLOCK.",
+      "6. Redaction token `[REDACTED_SECRET]` canonical (legacy `[REDACTED]` accepted as alias).",
+      "7. Ollama is optional after deterministic FTS5 works; never cloud embedding fallback.",
+      "8. Storage root `.lightspeed/memory/` — gitignored (sidecars too)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-24-ls-mem-phase-2-architecture",
+    "updated_at": "2026-09-24"
   }
 ]
