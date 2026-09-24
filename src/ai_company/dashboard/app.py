@@ -27,6 +27,7 @@ from __future__ import annotations
 import ipaddress
 import logging
 import os
+import re
 import time
 from collections import defaultdict
 from collections.abc import AsyncIterator
@@ -72,6 +73,14 @@ def security_headers() -> dict[str, str]:
 
     HSTS max-age is configurable via ``DASHBOARD_HSTS_MAX_AGE``
     (default 31536000 = 1 year; set ``0`` to disable).
+
+    ADR-024: when ``AISTUDIO_PREVIEW`` is truthy (true/1/yes) the dashboard
+    renders inside AI Studio's iframe, so ``frame-ancestors`` is relaxed to a
+    prefix allowlist (``https://*.google.com https://*.aistudio.google``) and
+    ``X-Frame-Options: DENY`` is omitted (a DENY would block framing even when
+    CSP permits it).  Any other value keeps the strict local posture.
+    ``DASHBOARD_CSP``, when set, still supplies the base policy — preview mode
+    only rewrites/appends its ``frame-ancestors`` directive.
     """
     csp = os.environ.get(
         "DASHBOARD_CSP",
@@ -83,14 +92,22 @@ def security_headers() -> dict[str, str]:
         "connect-src 'self' ws: wss:; frame-ancestors 'none'; "
         "base-uri 'self'; form-action 'self'; object-src 'none'",
     )
+    preview = os.environ.get("AISTUDIO_PREVIEW", "").strip().lower() in {"true", "1", "yes"}
+    if preview:
+        _allow = "frame-ancestors https://*.google.com https://*.aistudio.google"
+        if re.search(r"frame-ancestors\s+[^;]+", csp):
+            csp = re.sub(r"frame-ancestors\s+[^;]+", _allow, csp, count=1)
+        else:
+            csp = f"{csp.rstrip('; ')}; {_allow}"
     hsts_max_age = int(os.environ.get("DASHBOARD_HSTS_MAX_AGE", "31536000"))
     headers = {
         "Content-Security-Policy": csp,
         "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
     }
+    if not preview:
+        headers["X-Frame-Options"] = "DENY"
     if hsts_max_age > 0:
         headers["Strict-Transport-Security"] = f"max-age={hsts_max_age}; includeSubDomains"
     return headers
