@@ -55,9 +55,13 @@ Drives brand awareness, demand generation, market positioning, and owns the exte
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Own the external company website (https://lightspeedholdings.com) including content, UX, SEO, and conversion optimization
+
+- Decides and owns: Develop marketing strategy and brand positioning
+
+- Decides and owns: Drive demand generation and campaign management
+
+- Decides and owns: Track marketing ROI and attribution
 
 
 ---

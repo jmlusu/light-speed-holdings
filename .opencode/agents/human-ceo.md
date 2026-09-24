@@ -59,9 +59,13 @@ Set company vision, strategy, and culture. Make final decisions on high-stakes m
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Set company vision, mission, and long-term strategy
+
+- Decides and owns: Make final decisions on high-stakes matters
+
+- Decides and owns: Represent company externally to stakeholders and media
+
+- Decides and owns: Hire, manage, and evaluate the executive team
 
 
 ---

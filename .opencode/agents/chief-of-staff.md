@@ -46,9 +46,11 @@ The primary orchestrator and strategic alignment agent for the company.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Align company goals across all departments
+
+- Decides and owns: Orchestrate agent communication and task delegation
+
+- Decides and owns: Monitor operational bottlenecks
 
 
 ---

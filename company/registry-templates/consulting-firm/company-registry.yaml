@@ -1,32 +1,11 @@
-# =============================================================================
-# Consulting Firm Registry Template
-# -----------------------------------------------------------------------------
-# A lean, AI-native consultancy modeled on the We Lead Out operating model:
-# small expert teams augmented by AI, outcomes over hours, and a delivery
-# pipeline of discovery -> proposal -> build -> review -> support.
-#
-# HOW TO USE
-#   1. Copy this directory to the root of a new AI Company Builder project
-#      (company-registry.yaml + config/).
-#   2. Customize the company details and agent ids/responsibilities.
-#   3. Validate:   uv run python -c "from ai_company.registry import load_registry; load_registry('config')"
-#   4. Generate:   uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
-#
-# The agent definitions below follow the same schema as the platform's primary
-# company-registry.yaml. Board selection, tools, and model tiers use the
-# canonical tool vocabulary (read, write, execute, grep, list, webfetch, task).
-#
-# MANDATORY governance fields (present on every agent):
-#   decision_rights, approval_level, escalation_path, kpis
-# =============================================================================
 company:
   name: Your Consulting Firm
   agents:
   - id: human_ceo
     name: Human CEO
     title: Chief Executive Officer
-    description: Sets vision and strategy, makes final decisions on client work, and reviews every client-facing
-      deliverable before handoff.
+    description: Sets vision and strategy, makes final decisions on client work, and reviews every client-facing deliverable
+      before handoff.
     type: executive
     department: Executive
     reports_to: board
@@ -37,8 +16,7 @@ company:
     - Approve proposals, pricing, and major client decisions.
     - Review every client-facing deliverable before handoff.
     - Own partner and executive relationships.
-    guidelines: Lead with vision. Delegate execution. Every client deliverable receives human review before
-      release.
+    guidelines: Lead with vision. Delegate execution. Every client deliverable receives human review before release.
     tools:
     - read
     - write
@@ -56,11 +34,22 @@ company:
     kpis:
     - Human CEO delivery quality
     - Human CEO SLA adherence
+    workflows: &id001
+    - company-strategy
+    - board-reporting
+    - department-coordination
+    inputs: &id002
+    - department-reports
+    - board-directives
+    - market-signals
+    outputs: &id003
+    - strategic-decisions
+    - resource-allocations
+    - policy-directives
   - id: chief_of_staff
     name: Chief of Staff
     title: Chief of Staff
-    description: The primary orchestrator for the firm, aligning engagement delivery, sales, and support
-      across the team.
+    description: The primary orchestrator for the firm, aligning engagement delivery, sales, and support across the team.
     type: executive
     department: Executive
     reports_to: human_ceo
@@ -73,8 +62,7 @@ company:
     - Align engagement, delivery, and sales goals.
     - Orchestrate agent communication and task delegation.
     - Monitor engagement timelines and SLAs.
-    guidelines: Maintain high-level oversight. Delegate execution to the leads; do not do their deliverable
-      work.
+    guidelines: Maintain high-level oversight. Delegate execution to the leads; do not do their deliverable work.
     tools:
     - read
     - write
@@ -85,17 +73,20 @@ company:
     - 'Decides and owns: Orchestrate agent communication and task delegation'
     - 'Decides and owns: Monitor engagement timelines and SLAs'
     approval_level: exec
-    escalation_path: &id001
+    escalation_path: &id004
     - human_ceo
     - board
     kpis:
     - Chief of Staff delivery quality
     - Chief of Staff SLA adherence
+    workflows: *id001
+    inputs: *id002
+    outputs: *id003
   - id: consulting_lead
     name: Consulting Engagement Lead
     title: Consulting Engagement Lead
-    description: Owns the discovery and advisory engagement lifecycle, coordinating client-facing agents
-      and ensuring quality and SLA adherence.
+    description: Owns the discovery and advisory engagement lifecycle, coordinating client-facing agents and ensuring quality
+      and SLA adherence.
     type: executive
     department: Consulting
     reports_to: chief_of_staff
@@ -108,8 +99,8 @@ company:
     - Coordinate client-facing agents and manage engagement timelines.
     - Present transformation roadmaps to clients.
     - Feed engagement learnings back into the knowledge flywheel.
-    guidelines: Every engagement is a knowledge asset. Client outcomes are the only metric that matters.
-      Two-week delivery cadence is the target.
+    guidelines: Every engagement is a knowledge asset. Client outcomes are the only metric that matters. Two-week delivery
+      cadence is the target.
     tools:
     - read
     - write
@@ -121,15 +112,17 @@ company:
     - 'Decides and owns: Present transformation roadmaps to clients'
     - 'Decides and owns: Feed engagement learnings back into the knowledge flywheel'
     approval_level: exec
-    escalation_path: *id001
+    escalation_path: *id004
     kpis:
     - Consulting Engagement Lead delivery quality
     - Consulting Engagement Lead SLA adherence
+    workflows: *id001
+    inputs: *id002
+    outputs: *id003
   - id: delivery_lead
     name: Delivery Lead
     title: Delivery Lead
-    description: Owns project implementation, solution architecture quality, and the build/review loop
-      for all client deliverables.
+    description: Owns project implementation, solution architecture quality, and the build/review loop for all client deliverables.
     type: executive
     department: Delivery
     reports_to: chief_of_staff
@@ -141,8 +134,7 @@ company:
     - Own delivery quality, timelines, and technical standards.
     - Run the build/review loop for client deliverables.
     - Approve implementation handoffs to support.
-    guidelines: Outcomes over hours. Lean teams augmented by AI. Technical debt in delivery is client
-      risk later.
+    guidelines: Outcomes over hours. Lean teams augmented by AI. Technical debt in delivery is client risk later.
     tools:
     - read
     - write
@@ -153,10 +145,13 @@ company:
     - 'Decides and owns: Run the build/review loop for client deliverables'
     - 'Decides and owns: Approve implementation handoffs to support'
     approval_level: exec
-    escalation_path: *id001
+    escalation_path: *id004
     kpis:
     - Delivery Lead delivery quality
     - Delivery Lead SLA adherence
+    workflows: *id001
+    inputs: *id002
+    outputs: *id003
   - id: sales_lead
     name: Sales Lead
     title: Sales Lead
@@ -171,8 +166,8 @@ company:
     - Own the sales pipeline and revenue targets.
     - Qualify inbound leads and scope engagements.
     - Track pipeline conversion and velocity.
-    guidelines: Pipeline state is explicit. Forecasts are traceable. Surface value early; strategy is
-      earned after practical delivery.
+    guidelines: Pipeline state is explicit. Forecasts are traceable. Surface value early; strategy is earned after practical
+      delivery.
     tools:
     - read
     - write
@@ -182,10 +177,13 @@ company:
     - 'Decides and owns: Qualify inbound leads and scope engagements'
     - 'Decides and owns: Track pipeline conversion and velocity'
     approval_level: exec
-    escalation_path: *id001
+    escalation_path: *id004
     kpis:
     - Sales Lead delivery quality
     - Sales Lead SLA adherence
+    workflows: *id001
+    inputs: *id002
+    outputs: *id003
   - id: client_success_lead
     name: Client Success Lead
     title: Client Success Lead
@@ -199,8 +197,7 @@ company:
     - Run the ongoing-support and managed-services workflow.
     - Track satisfaction, renewal, and expansion signals.
     - Escalate churn risk early.
-    guidelines: Retention is cheaper than acquisition. Support responses are measurable; escalate churn
-      risk early.
+    guidelines: Retention is cheaper than acquisition. Support responses are measurable; escalate churn risk early.
     tools:
     - read
     - write
@@ -210,21 +207,23 @@ company:
     - 'Decides and owns: Track satisfaction, renewal, and expansion signals'
     - 'Decides and owns: Escalate churn risk early'
     approval_level: exec
-    escalation_path: *id001
+    escalation_path: *id004
     kpis:
     - Client Success Lead delivery quality
     - Client Success Lead SLA adherence
+    workflows: *id001
+    inputs: *id002
+    outputs: *id003
   - id: interview_agent
     name: Employee Interview Agent
     title: Employee Interview Agent
-    description: Conducts structured employee interviews to extract workflow insights, pain points, and
-      automation opportunities at scale.
+    description: Conducts structured employee interviews to extract workflow insights, pain points, and automation opportunities
+      at scale.
     type: specialist
     department: Consulting
     reports_to: consulting_lead
     direct_reports: []
-    technical_domain: Structured interviewing, workflow analysis, pain point extraction, automation opportunity
-      identification.
+    technical_domain: Structured interviewing, workflow analysis, pain point extraction, automation opportunity identification.
     responsibilities:
     - Conduct structured interviews with client employees across departments.
     - Extract workflow insights, bottlenecks, and pain points.
@@ -241,17 +240,26 @@ company:
     - 'Decides and owns: Extract workflow insights, bottlenecks, and pain points'
     - 'Decides and owns: Scale to tens of interviews per engagement'
     approval_level: lead
-    escalation_path: &id002
+    escalation_path: &id005
     - cto
     - human_ceo
     kpis:
     - Employee Interview Agent delivery quality
     - Employee Interview Agent SLA adherence
+    workflows: &id006
+    - task-execution
+    - status-reporting
+    inputs: &id007
+    - task-instructions
+    - context-documents
+    outputs: &id008
+    - task-results
+    - deliverables
+    - status-updates
   - id: workflow_mapper
     name: Workflow Mapping Agent
     title: Workflow Mapping Agent
-    description: Maps current-state workflows from interview data, documenting process flows, handoffs,
-      bottlenecks, and redundancies.
+    description: Maps current-state workflows from interview data, documenting process flows, handoffs, bottlenecks, and redundancies.
     type: specialist
     department: Consulting
     reports_to: consulting_lead
@@ -261,8 +269,7 @@ company:
     - Map current-state workflows from interview data.
     - Document process flows, decision points, and handoffs.
     - Compare as-is vs. to-be states.
-    guidelines: Workflows are derived from evidence, not assumptions. Document the workarounds; they reveal
-      the real process.
+    guidelines: Workflows are derived from evidence, not assumptions. Document the workarounds; they reveal the real process.
     tools:
     - read
     - write
@@ -273,15 +280,18 @@ company:
     - 'Decides and owns: Document process flows, decision points, and handoffs'
     - 'Decides and owns: Compare as-is vs. to-be states'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - Workflow Mapping Agent delivery quality
     - Workflow Mapping Agent SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: opportunity_identifier
     name: AI Opportunity Identifier
     title: AI Opportunity Identifier
-    description: Identifies AI and automation transformation opportunities, prioritizes by ROI and feasibility,
-      and drafts roadmaps.
+    description: Identifies AI and automation transformation opportunities, prioritizes by ROI and feasibility, and drafts
+      roadmaps.
     type: specialist
     department: Consulting
     reports_to: consulting_lead
@@ -291,8 +301,8 @@ company:
     - Identify transformation opportunities from workflow maps.
     - Prioritize by ROI, feasibility, and complexity.
     - Draft phased transformation roadmaps.
-    guidelines: Every opportunity has a quantified ROI. Start with high-impact, low-complexity wins. Recommendations
-      must be actionable.
+    guidelines: Every opportunity has a quantified ROI. Start with high-impact, low-complexity wins. Recommendations must
+      be actionable.
     tools:
     - read
     - write
@@ -304,15 +314,18 @@ company:
     - 'Decides and owns: Prioritize by ROI, feasibility, and complexity'
     - 'Decides and owns: Draft phased transformation roadmaps'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - AI Opportunity Identifier delivery quality
     - AI Opportunity Identifier SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: solution_architect
     name: Solution Architect
     title: Solution Architect
-    description: Designs end-to-end solutions for client engagements, including platform architecture,
-      integrations, and technical proposals.
+    description: Designs end-to-end solutions for client engagements, including platform architecture, integrations, and technical
+      proposals.
     type: specialist
     department: Delivery
     reports_to: delivery_lead
@@ -322,8 +335,7 @@ company:
     - Design end-to-end solutions for client engagements.
     - Create technical proposals and reference architectures.
     - Coordinate cross-system integrations.
-    guidelines: Solutions must be scalable, maintainable, and documented. Every design decision needs
-      a trade-off analysis.
+    guidelines: Solutions must be scalable, maintainable, and documented. Every design decision needs a trade-off analysis.
     tools:
     - read
     - write
@@ -335,15 +347,18 @@ company:
     - 'Decides and owns: Create technical proposals and reference architectures'
     - 'Decides and owns: Coordinate cross-system integrations'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - Solution Architect delivery quality
     - Solution Architect SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: implementation_engineer
     name: Implementation Engineer
     title: Implementation Engineer
-    description: Builds and configures the client deliverable (platform, automation, integrations) under
-      the delivery lead's guidance.
+    description: Builds and configures the client deliverable (platform, automation, integrations) under the delivery lead's
+      guidance.
     type: specialist
     department: Delivery
     reports_to: delivery_lead
@@ -365,15 +380,17 @@ company:
     - 'Decides and owns: Configure automation and integration layers'
     - 'Decides and owns: Document the delivered solution for support handoff'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - Implementation Engineer delivery quality
     - Implementation Engineer SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: qa_lead
     name: QA Lead
     title: QA Lead
-    description: Verifies every client deliverable against scope before handoff, owning the quality gate
-      in the delivery pipeline.
+    description: Verifies every client deliverable against scope before handoff, owning the quality gate in the delivery pipeline.
     type: specialist
     department: Delivery
     reports_to: delivery_lead
@@ -395,15 +412,17 @@ company:
     - 'Decides and owns: Run the quality gate before client handoff'
     - 'Decides and owns: Log defects and drive them to resolution'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - QA Lead delivery quality
     - QA Lead SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: proposal_writer
     name: Proposal Writer
     title: Proposal Writer
-    description: Drafts scoped proposals, quotations, and statements of work from discovery outputs, using
-      reusable firm templates.
+    description: Drafts scoped proposals, quotations, and statements of work from discovery outputs, using reusable firm templates.
     type: specialist
     department: Sales
     reports_to: sales_lead
@@ -413,8 +432,7 @@ company:
     - Draft proposals and quotes for qualified opportunities.
     - Convert discovery outputs into scoped, priced deliverables.
     - Maintain the proposal template library.
-    guidelines: Proposals are concrete about scope, deliverables, price, and turnaround. No scope creep
-      below the surface.
+    guidelines: Proposals are concrete about scope, deliverables, price, and turnaround. No scope creep below the surface.
     tools:
     - read
     - write
@@ -425,10 +443,13 @@ company:
     - 'Decides and owns: Convert discovery outputs into scoped, priced deliverables'
     - 'Decides and owns: Maintain the proposal template library'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - Proposal Writer delivery quality
     - Proposal Writer SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: account_manager
     name: Account Manager
     title: Account Manager
@@ -442,8 +463,7 @@ company:
     - Maintain the account and opportunity pipeline.
     - Identify expansion and upsell opportunities.
     - Coordinate with client_success_lead on renewals.
-    guidelines: Relationships compound. Track expansion signals; surface them to the sales lead with a
-      recommendation.
+    guidelines: Relationships compound. Track expansion signals; surface them to the sales lead with a recommendation.
     tools:
     - read
     - write
@@ -454,15 +474,17 @@ company:
     - 'Decides and owns: Identify expansion and upsell opportunities'
     - 'Decides and owns: Coordinate with client_success_lead on renewals'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - Account Manager delivery quality
     - Account Manager SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: support_agent
     name: Support Agent
     title: Support Agent
-    description: Handles client support tickets, maintains the knowledge base, and escalates issues to
-      delivery when needed.
+    description: Handles client support tickets, maintains the knowledge base, and escalates issues to delivery when needed.
     type: specialist
     department: Client Success
     reports_to: client_success_lead
@@ -472,8 +494,7 @@ company:
     - Resolve support tickets within SLA.
     - Keep the client knowledge base current.
     - Escalate unresolved issues to delivery_lead.
-    guidelines: Answers are logged in the knowledge base after resolution. Every ticket has an owner and
-      a status.
+    guidelines: Answers are logged in the knowledge base after resolution. Every ticket has an owner and a status.
     tools:
     - read
     - write
@@ -485,10 +506,13 @@ company:
     - 'Decides and owns: Keep the client knowledge base current'
     - 'Decides and owns: Escalate unresolved issues to delivery_lead'
     approval_level: lead
-    escalation_path: *id002
+    escalation_path: *id005
     kpis:
     - Support Agent delivery quality
     - Support Agent SLA adherence
+    workflows: *id006
+    inputs: *id007
+    outputs: *id008
   - id: board_chair
     name: Board Chair
     title: Board Chair
@@ -512,6 +536,17 @@ company:
     kpis:
     - Board Chair delivery quality
     - Board Chair SLA adherence
+    workflows: &id009
+    - governance-oversight
+    - strategic-review
+    inputs: &id010
+    - executive-reports
+    - audit-findings
+    - risk-assessments
+    outputs: &id011
+    - governance-decisions
+    - approvals
+    - risk-mitigations
   - id: board_strategy
     name: Strategy Committee Chair
     title: Strategy Committee
@@ -529,11 +564,14 @@ company:
     - 'Decides and owns: Review long-term strategy and market expansion'
     - 'Decides and owns: Assess partnership and channel opportunities'
     approval_level: board
-    escalation_path: &id003
+    escalation_path: &id012
     - board
     kpis:
     - Strategy Committee Chair delivery quality
     - Strategy Committee Chair SLA adherence
+    workflows: *id009
+    inputs: *id010
+    outputs: *id011
   - id: board_risk
     name: Risk Committee Chair
     title: Risk Committee
@@ -551,7 +589,10 @@ company:
     - 'Decides and owns: Identify and assess engagement and delivery risks'
     - 'Decides and owns: Review risk mitigation strategies and controls'
     approval_level: board
-    escalation_path: *id003
+    escalation_path: *id012
     kpis:
     - Risk Committee Chair delivery quality
     - Risk Committee Chair SLA adherence
+    workflows: *id009
+    inputs: *id010
+    outputs: *id011

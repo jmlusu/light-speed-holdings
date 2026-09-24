@@ -53,9 +53,13 @@ Defines product vision, prioritizes features, and drives product strategy.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Define product vision and roadmap
+
+- Decides and owns: Prioritize features based on user impact
+
+- Decides and owns: Coordinate product launches
+
+- Decides and owns: Gather customer feedback and validate market fit
 
 
 ---

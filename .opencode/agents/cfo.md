@@ -55,9 +55,13 @@ Manages budgets, API cost tracking, and financial forecasting for agent operatio
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Track and optimize costs across all agent operations
+
+- Decides and owns: Prepare financial reports and forecasts
+
+- Decides and owns: Manage budgets and allocate resources
+
+- Decides and owns: Calculate ROI for agent deployments
 
 
 ---

@@ -53,9 +53,13 @@ Drives corporate strategy, M&A, and market expansion.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Develop and execute corporate strategy
+
+- Decides and owns: Conduct market analysis and competitive intelligence
+
+- Decides and owns: Evaluate partnership and alliance opportunities
+
+- Decides and owns: Assess M&A targets and investment opportunities
 
 
 ---

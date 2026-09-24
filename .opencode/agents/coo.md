@@ -43,9 +43,9 @@ Manages day-to-day operations and internal processes.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Optimize internal workflows
+
+- Decides and owns: Manage agent resource allocation
 
 
 ---
