@@ -53,9 +53,13 @@ Manages agent onboarding, role definitions, workforce planning, and culture.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Define talent acquisition strategy and hiring pipelines
+
+- Decides and owns: Design and maintain company culture initiatives
+
+- Decides and owns: Develop learning and development programs
+
+- Decides and owns: Manage performance review processes
 
 
 ---

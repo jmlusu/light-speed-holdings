@@ -53,9 +53,13 @@ Manages data strategy, analytics, and data governance.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Define data strategy and governance framework
+
+- Decides and owns: Oversee analytics and business intelligence
+
+- Decides and owns: Ensure data quality and integrity across systems
+
+- Decides and owns: Manage ML operations and model lifecycle
 
 
 ---

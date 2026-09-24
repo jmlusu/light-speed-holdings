@@ -25,16 +25,24 @@ class RegistryValidator:
         return errors
 
     def _check_governance_fields(self, r: CompanyRegistry) -> list[str]:
-        """Fail-fast: every agent must carry the 4 MANDATORY governance fields.
+        """Fail-fast: every agent must carry the 7 MANDATORY governance fields.
 
-        Fields: decision_rights, approval_level, escalation_path, kpis.
-        AI_WORKFORCE_90 §5.1. Empty or missing values are errors.
+        Fields: decision_rights, approval_level, escalation_path, kpis,
+        workflows, inputs, outputs. AI_WORKFORCE_90 §5.1.
+        Empty or missing values are errors.
         """
         errors: list[str] = []
         approval_levels = {"self", "lead", "exec", "ceo", "board"}
 
         def _check(agent_id: str, obj: object) -> None:
-            for field in ("decision_rights", "escalation_path", "kpis"):
+            for field in (
+                "decision_rights",
+                "escalation_path",
+                "kpis",
+                "workflows",
+                "inputs",
+                "outputs",
+            ):
                 val = getattr(obj, field, None)
                 if val is None or val == "" or val == []:
                     errors.append(f"Agent '{agent_id}' missing MANDATORY field '{field}'")

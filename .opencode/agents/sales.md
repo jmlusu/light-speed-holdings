@@ -51,9 +51,13 @@ Owns the sales pipeline, customer acquisition, and revenue targets.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Own the sales pipeline and revenue targets
+
+- Decides and owns: Manage customer acquisition strategy
+
+- Decides and owns: Coordinate with marketing on lead generation
+
+- Decides and owns: Track pipeline conversion and velocity
 
 
 ---

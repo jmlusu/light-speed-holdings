@@ -52,9 +52,13 @@ Provides strategic counsel directly to the human CEO. Serves as a bridge between
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Provide strategic counsel on company direction
+
+- Decides and owns: Prepare briefings and decision materials
+
+- Decides and owns: Coordinate between CEO vision and execution
+
+- Decides and owns: Facilitate board meetings
 
 
 ---

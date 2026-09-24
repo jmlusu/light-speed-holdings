@@ -33,13 +33,19 @@ def _gov(
     decision_rights: list[str] | None = None,
     escalation_path: list[str] | None = None,
     kpis: list[str] | None = None,
+    workflows: list[str] | None = None,
+    inputs: list[str] | None = None,
+    outputs: list[str] | None = None,
 ) -> dict:
-    """Minimal MANDATORY governance fields for fixtures."""
+    """Minimal MANDATORY governance fields for fixtures (7 fields per AI_WORKFORCE_90 §5.1)."""
     return {
         "decision_rights": decision_rights or ["Decides and owns: test decision"],
         "approval_level": approval_level,
         "escalation_path": escalation_path or ["cto", "human_ceo"],
         "kpis": kpis or ["Test KPI"],
+        "workflows": workflows or ["test-workflow"],
+        "inputs": inputs or ["test-input"],
+        "outputs": outputs or ["test-output"],
     }
 
 
@@ -63,6 +69,9 @@ def sample_raw() -> dict:
                     "decision_rights": ["Board fiduciary oversight"],
                     "escalation_path": ["board"],
                     "kpis": ["Board action completion"],
+                    "workflows": ["governance-oversight"],
+                    "inputs": ["executive-reports"],
+                    "outputs": ["governance-decisions"],
                 }
             ]
         },

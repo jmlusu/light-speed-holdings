@@ -51,9 +51,13 @@ Owns customer onboarding, retention, expansion, and satisfaction metrics.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Own customer onboarding, retention, and expansion
+
+- Decides and owns: Track NPS, CSAT, and satisfaction metrics
+
+- Decides and owns: Manage customer success playbooks
+
+- Decides and owns: Identify and prevent churn risk
 
 
 ---
