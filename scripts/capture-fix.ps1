@@ -40,12 +40,12 @@ if ($isIssueBacked) {
     $body = (gh issue view $Issue --json body --jq '.body' 2>&1) -join ""
     $state = (gh issue view $Issue --json state --jq '.state' 2>&1) -join ""
     $md = @"
-# `${title}
+# ${title}
 
 **ID:** BUG-${Issue}
 **Date:** ${date}
 **Resolved:** ${state}
-**Commit:** `${sha}
+**Commit:** ${sha}
 **Issue:** #${Issue}
 
 ## Original Issue Body
@@ -79,7 +79,7 @@ To be filled
 **ID:** BUG-${Issue}
 **Date:** ${date}
 **Resolved:** unresolved
-**Commit:** `${sha}
+**Commit:** ${sha}
 **Issue:** (none - conventional-commit fix: without an issue reference)
 
 ## Original Issue Body
@@ -108,7 +108,7 @@ To be filled
 
 ## Link an Issue
 
-If this is a tracked bug, add `Closes #N` to a future commit or
+If this is a tracked bug, add Closes #N to a future commit or
 file an issue and link it so the record becomes issue-backed.
 "@
 }
