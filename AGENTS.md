@@ -190,7 +190,7 @@ See also: [docs/DASHBOARD_KEY_ROTATION.md](docs/DASHBOARD_KEY_ROTATION.md) for d
 **LLM Provider keys:**
 - `OPENCODE_API_KEY` — primary (Big Pickle)
 - `GEMINI_API_KEY` — fallback (gemini-3.5-flash)
-- Optional: `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`
+- Optional: `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `MIMO_API_KEY`
 
 **Verification commands:**
 ```bash

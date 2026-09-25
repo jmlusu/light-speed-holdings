@@ -36,6 +36,7 @@ services:
       - KIMI_API_KEY=${KIMI_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - MIMO_API_KEY=${MIMO_API_KEY:-}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8420/health"]
@@ -69,6 +70,7 @@ services:
       - KIMI_API_KEY=${KIMI_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - MIMO_API_KEY=${MIMO_API_KEY:-}
     restart: unless-stopped
     profiles:
       - staging
