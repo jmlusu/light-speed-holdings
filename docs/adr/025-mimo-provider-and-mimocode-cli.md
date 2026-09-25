@@ -210,6 +210,12 @@ toggles stay available for isolated runs instead.
   proving project config is parsed and schema-validated.
 - `git check-ignore -v` confirms `.mimocode/mimocode.jsonc` is visible and
   `.mimocode/session.json`, `.mimocode/.gitignore`, `/mimocode.json` are ignored.
+- Track B wiring probe (custom `@ai-sdk/openai-compatible` provider, `apiKey:
+  "{env:MIMO_API_KEY}"`): with a dummy value in the environment `mimo debug config`
+  reports `model: custom/mimo-v2.5` and the resolved key, and `mimo run --pure`
+  selects `> build · mimo-v2.5` failing only at `Invalid API Key`; with the variable
+  unset the key resolves to `""`, the config still parses, and the run fails the same
+  way — correct end-to-end up to authentication.
 
 ## References
 
@@ -232,8 +238,10 @@ toggles stay available for isolated runs instead.
 2. Add unit coverage: `mimo` present in `company/models.yaml`, both `MODEL_COSTS`
    entries, tier chains end with `mimo`, `MIMO_API_KEY` present in `.env.example`, and
    `provider_count` stays in sync — **done**, `tests/unit/test_mimo_provider.py`.
-3. **Decide track B's credential path** (CEO): either Xiaomi account sign-in
-   (`mimo auth login`) or issuing `MIMO_API_KEY` for the paid API. Only then wire
-   `{env:MIMO_API_KEY}` into `.mimocode/mimocode.jsonc` as a custom provider and verify
-   with `mimo debug config` + a real `mimo run`.
+3. **Track B credential path decided** (CEO, 2026-09-25): issue `MIMO_API_KEY`
+   for the paid API rather than `mimo auth login`. `.mimocode/mimocode.jsonc` now
+   declares a custom `@ai-sdk/openai-compatible` provider
+   (`baseURL: https://api.xiaomimimo.com/v1`, `apiKey: "{env:MIMO_API_KEY}"`,
+   default model `custom/mimo-v2.5`), verified up to authentication with a dummy
+   key. **Remaining: issue the real key, then confirm an end-to-end `mimo run`.**
 4. Schedule the 2026-12-24 vendor-window renewal or retirement.
