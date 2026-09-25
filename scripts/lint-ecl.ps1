@@ -81,7 +81,9 @@ $canonical = { param([string]$S)
   $S = $S -replace "`r`n", "`n"
   $S = $S.Trim()
   if (-not $S) { return "" }
-  return ($S | ConvertFrom-Json | ConvertTo-Json -Depth 8 -Compress)
+  $obj = $S | ConvertFrom-Json
+  if ($obj -is [System.Array]) { $obj = $obj | Sort-Object id }
+  return ($obj | ConvertTo-Json -Depth 8 -Compress)
 }
 if ((& $canonical $actual) -cne (& $canonical $expected)) {
   Write-Output "--- expected (index-json) ---"
