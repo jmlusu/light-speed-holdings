@@ -3,7 +3,7 @@
 **Status:** Accepted
 **Date:** 2026-09-24
 **ECL:** LightSpeed AI Company Builder + Web Experience Architecture v2.0
-**Cross-refs:** [AGENT_CONSOLIDATION_152_TO_90.md](../../AGENT_CONSOLIDATION_152_TO_90.md), [AI_WORKFORCE_90.md](../../AI_WORKFORCE_90.md)
+**Cross-refs:** [AGENT_CONSOLIDATION_152_TO_90.md](../../AGENT_CONSOLIDATION_152_TO_90.md), [AI_WORKFORCE_90.md](../../AI_WORKFORCE_90.md), [ADR-025 (LS-MEM SQLite Engine Coexistence)](../../adr/025-lsmem-sqlite-engine-coexistence.md) (separate series — always cite the path with ADR-025)
 
 ## Context
 
@@ -11,12 +11,12 @@ The roster grew organically to 152 agent IDs across 20 departments. Many IDs wer
 
 Commit `e2bdb0c7` already applied the trim: 62 removed, 90 retained, 0 added. This ADR ratifies the trim as the canonical org boundary and records the classification methodology so future trims/expansions reuse it.
 
-**Historical numbering quirk:** `docs/adr/` contains two ADR-020 files (`020-pharos-content-intelligence.md` and `020-client-facing-site-guiding-principles.md`). Legacy files are not renamed; new ADRs continue from 025 under `docs/architecture/adr/`. ADR-011 does not exist (gap recorded in summary).
+**Historical numbering quirk:** `docs/adr/` contains two ADR-020 files (`020-pharos-content-intelligence.md` and `020-client-facing-site-guiding-principles.md`). Legacy files are not renamed; new ADRs continue from 025 under `docs/architecture/adr/`. ADR-011 does not exist (gap recorded in summary). A second file, `docs/adr/025-lsmem-sqlite-engine-coexistence.md`, also carries number 025 in the legacy series — cite ADR-025 with its path.
 
 ## Decision
 
 1. **Canonical roster = 90 agents** (89 AI + 1 human CEO), 20 departments, matching `docs/source-of-truth.yaml` drift gates. Registry triple-count: `company-registry.yaml` 90 = `.opencode/agents/*.md` 90 = `company/agent-registry.json` 90.
-2. **152 is historical only.** Pre-trim roster lives in `harness/changes/active/ref/agents_152.txt`; post-trim in `agents_90.txt`. Prose that still says 145/152 must be footnoted as historical or updated — never asserted as current.
+2. **152 is historical only.** Pre-trim roster lives in `harness/changes/active/ref/agents_152.txt`; post-trim in `agents_90.txt`. Prose that still says stale counts (e.g. 145/152) must be footnoted as historical or updated — never asserted as current.
 3. **Every removed ID carries exactly one classification class** (ordered rules): RETIRE (1) → MERGE (49) → REASSIGN (10) → REDEFINE (2) → CREATE NEW (0). Retained IDs are RETAIN (90). Totals: 62 removed + 90 retained = 152.
 4. **Full migration matrix is the record of truth** for where each capability landed (`AGENT_CONSOLIDATION_152_TO_90.md` §4), including decision-rights transfer and residual risks R1–R10.
 5. **Future roster changes re-run the same methodology** (or a successor ADR amending it). Silent reintroduction of removed IDs is forbidden; required capabilities re-enter via CREATE NEW with Architecture Lead approval.

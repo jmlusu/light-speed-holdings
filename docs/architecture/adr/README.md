@@ -28,6 +28,7 @@
 2. **Duplicate legacy 020:** `docs/adr/` contains both `020-pharos-content-intelligence.md` and `020-client-facing-site-guiding-principles.md`. Legacy files are **not renamed** (referenced by other docs). Collision is recorded once in ADR-025; do not reuse 020 in this series.
 3. **Missing numbers:** `docs/adr/` has gaps (006–009, 011, 021). Gaps are historical; this index does not renumber legacy files.
 4. **Path split:** Operational/runtime ADRs remain under `docs/adr/`. Architecture v2 decisions live here under `docs/architecture/adr/` per BRIEF_LOCK. Cross-link with relative paths (`../../` from this directory to `docs/architecture/*.md`, `../../../adr/` to legacy if needed).
+5. **Retired duplicate (2026-09-26):** `026-agent-consolidation-152-to-90.md` duplicated ADR-025's content under a number already held by `026-single-owner-architecture.md`. Its content deltas were merged into [025](025-agent-consolidation-152-to-90.md) and the duplicate was deleted. The v2 series stays at 11 ADRs (025–035).
 
 ## Related architecture package
 
