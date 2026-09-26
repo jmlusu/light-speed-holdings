@@ -2,11 +2,28 @@ import React from 'react';
 import { PharosSection } from '../components/PharosSection';
 import { NewsletterSignup } from '../components/NewsletterSignup';
 import { RelatedLinks } from '../components/site/RelatedLinks';
+import { SectionHeading } from '../components/site/SectionHeading';
+import { Reveal } from '../components/Reveal';
 
 interface InsightsPageProps {
   theme: 'light' | 'dark';
   onRequestBriefing: (summary?: string) => void;
 }
+
+const INSIGHT_CATEGORIES = [
+  'Agentic AI',
+  'AI Company Building',
+  'AI governance',
+  'AI policy',
+  'Data architecture',
+  'Digital transformation',
+  'African AI',
+  'Malawi technology',
+  'SADC technology',
+  'Market intelligence',
+  'Operating models',
+  'AI implementation',
+];
 
 export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
@@ -43,14 +60,40 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
         </div>
       </section>
 
+      {/* §13 content categories */}
+      <section className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-10 pb-2" aria-label="Insight categories">
+        <SectionHeading
+          theme={theme}
+          eyebrow="TOPICS"
+          title="What We Write About"
+          lead="Short posts and deeper reports across the full agentic AI canon — from operating models to SADC policy."
+        />
+        <Reveal>
+          <ul className="flex flex-wrap gap-2.5">
+            {INSIGHT_CATEGORIES.map((cat) => (
+              <li
+                key={cat}
+                className={`px-3.5 py-1.5 rounded-full border font-body text-[11px] font-bold tracking-wider ${
+                  isLight
+                    ? 'border-ls-grey-dark/40 bg-ls-white text-ls-navy'
+                    : 'border-ls-white/15 bg-ls-navy/80 text-ls-white'
+                }`}
+              >
+                {cat}
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </section>
+
       <PharosSection theme={theme} onRequestBriefing={onRequestBriefing} />
 
       <RelatedLinks
         theme={theme}
         links={[
-          { to: '/news', label: 'News' },
-          { to: '/resources', label: 'Resources' },
-          { to: '/events', label: 'Events' },
+          { to: '/proof', label: 'Proof' },
+          { to: '/what-we-do', label: 'What We Do' },
+          { to: '/sectors', label: 'Sectors' },
         ]}
       />
 

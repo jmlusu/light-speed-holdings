@@ -11,12 +11,6 @@ import {
   Award,
   Lock
 } from 'lucide-react';
-import {
-  StatusLedPip,
-  MachineScrewHead,
-  AcousticVentGrille,
-  ChassisPanel
-} from './TactileHardwareElements';
 
 interface AboutSectionProps {
   onOpenContactModal: (intent?: string) => void;
@@ -35,7 +29,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-body font-bold uppercase tracking-wider mb-4 border select-none">
-          <StatusLedPip status="emerald" isLight={isLight} />
+          <span className="w-2 h-2 rounded-full bg-ls-emerald" />
           <span className={`text-[10px] font-body tracking-widest ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
             INSTITUTIONAL CHARTER // SOVEREIGN MISSION
           </span>
@@ -56,8 +50,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       <div className={`rounded-3xl border px-6 sm:px-10 py-8 text-center relative overflow-hidden ${
         isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
       }`}>
-        <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
+
         <p className="text-[11px] font-body font-bold tracking-[0.35em] text-ls-red uppercase mb-3">
           Our Thesis
         </p>
@@ -73,10 +66,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       <div className={`p-6 sm:p-8 rounded-3xl border relative overflow-hidden ${
         isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
       }`}>
-        <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
+
         <div className="flex items-center gap-2 border-b border-ls-grey-dark/80 pb-3 mb-5">
-          <StatusLedPip status="emerald" isLight={isLight} />
+          <span className="w-2 h-2 rounded-full bg-ls-emerald" />
           <h2 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
             Operating Model
           </h2>
@@ -108,18 +100,17 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       <div className={`p-8 sm:p-12 rounded-3xl border relative overflow-hidden transition-all ${
         isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
       }`}>
-        <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
-        <MachineScrewHead isLight={isLight} className="absolute bottom-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute bottom-3 right-3" />
+
+
+
 
         <div className="max-w-3xl mx-auto space-y-6 text-sm leading-relaxed">
           <div className="flex items-center justify-between border-b border-ls-grey-dark/80 pb-4">
             <div className="flex items-center gap-2">
-              <StatusLedPip status="emerald" isLight={isLight} />
+              <span className="w-2 h-2 rounded-full bg-ls-emerald" />
               <span className="font-body text-ls-red font-extrabold text-xs uppercase tracking-wider">FOUNDING THESIS & SOVEREIGN MANDATE</span>
             </div>
-            <AcousticVentGrille cols={4} rows={2} isLight={isLight} />
+            <div className="w-16 h-4" />
           </div>
 
           <h2 className={`text-2xl font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
@@ -140,14 +131,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className={`p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all ${
           isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
         }`}>
-          <MachineScrewHead isLight={isLight} className="absolute top-2.5 left-2.5" />
-          <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
+
 
           <div className="p-3 rounded-2xl bg-ls-red/10 text-ls-red border border-ls-red/30 w-fit">
             <Target className="w-5 h-5" />
           </div>
           <div className="flex items-center gap-2">
-            <StatusLedPip status="emerald" isLight={isLight} />
+            <span className="w-2 h-2 rounded-full bg-ls-emerald" />
             <h3 className={`text-base font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Institutional Mission</h3>
           </div>
           <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
@@ -158,14 +148,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className={`p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all ${
           isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
         }`}>
-          <MachineScrewHead isLight={isLight} className="absolute top-2.5 left-2.5" />
-          <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
+
 
           <div className="p-3 rounded-2xl bg-ls-red/10 text-ls-red border border-ls-red/30 w-fit">
             <Compass className="w-5 h-5" />
           </div>
           <div className="flex items-center gap-2">
-            <StatusLedPip status="emerald" isLight={isLight} />
+            <span className="w-2 h-2 rounded-full bg-ls-emerald" />
             <h3 className={`text-base font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Strategic Vision</h3>
           </div>
           <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
@@ -176,14 +165,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className={`p-6 sm:p-7 rounded-3xl border relative overflow-hidden space-y-3.5 transition-all ${
           isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
         }`}>
-          <MachineScrewHead isLight={isLight} className="absolute top-2.5 left-2.5" />
-          <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
+
 
           <div className="p-3 rounded-2xl bg-ls-red/10 text-ls-red border border-ls-red/30 w-fit">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div className="flex items-center gap-2">
-            <StatusLedPip status="emerald" isLight={isLight} />
+            <span className="w-2 h-2 rounded-full bg-ls-emerald" />
             <h3 className={`text-base font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Why LightSpeed</h3>
           </div>
           <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
@@ -197,14 +185,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       <div className={`p-8 sm:p-10 rounded-3xl border relative overflow-hidden space-y-6 transition-all ${
         isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
       }`}>
-        <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
-        <MachineScrewHead isLight={isLight} className="absolute bottom-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute bottom-3 right-3" />
+
+
+
 
         <div className="flex items-center justify-between border-b border-ls-grey-dark pb-3">
           <div className="flex items-center gap-2">
-            <StatusLedPip status="emerald" isLight={isLight} />
+            <span className="w-2 h-2 rounded-full bg-ls-emerald" />
             <h2 className={`text-xl font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
               Executive Command & Fiduciary Authority
             </h2>
@@ -222,7 +209,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Jack Mlusu</h3>
-                <StatusLedPip status="emerald" isLight={isLight} />
+                <span className="w-2 h-2 rounded-full bg-ls-emerald" />
               </div>
               <span className="text-xs font-body text-ls-red font-extrabold uppercase tracking-wider">Founder & Chief Executive Officer</span>
             </div>

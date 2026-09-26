@@ -10,7 +10,7 @@ export const AiCompanyBuilderPage: React.FC<AiCompanyBuilderPageProps> = ({ them
   return (
     <AiCompanyBuilderSection
       theme={theme}
-      onOpenContactModal={(intent) => onRequestBriefing(intent)}
+      onRequestBriefing={onRequestBriefing}
     />
   );
 };

@@ -28,7 +28,7 @@ export const company = {
   heroHeadline: 'Build the intelligent enterprise.',
   heroSubline:
     'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems — in Malawi, across SADC, and beyond.',
-  valueCycle: ['Strategy', 'Build', 'Govern', 'Scale'] as const,
+  valueCycle: ['Strategy', 'Build', 'Govern', 'Research & Policy'] as const,
   thesis: 'Aspire. Act. Achieve.',
 };
 
@@ -224,7 +224,7 @@ export const clientProblems: ClientProblem[] = [
     heading: 'Strategy & Transformation',
     subtext: 'You have a vision but the gap between planning and delivery is widening.',
     solution: 'Discovery, AI readiness assessment, and a transformation roadmap — sequenced and costed.',
-    to: '/how-we-help#engagement',
+    to: '/what-we-do',
     proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
@@ -233,7 +233,7 @@ export const clientProblems: ClientProblem[] = [
     heading: 'AI Opportunity Assessment',
     subtext: 'The hype is loud; the signal is hard to find.',
     solution: 'A sector-aware diagnostic that scores your operating model and identifies where AI creates leverage — and where it should not be used at all.',
-    to: '/how-we-help#engagement',
+    to: '/what-we-do',
     proof: { label: 'Proven in-house', tone: 'proven' as const },
   },
   {
@@ -242,7 +242,7 @@ export const clientProblems: ClientProblem[] = [
     heading: 'Workflow & Agentic Automation',
     subtext: 'Repetitive tasks are consuming capacity that should go to judgment and creativity.',
     solution: 'Documented processes run by agents with human approval tiers — WhatsApp-native assistants, data pipelines, report generation.',
-    to: '/how-we-help#engagement',
+    to: '/what-we-do',
     proof: { label: 'In pilot preparation', tone: 'pilot' as const },
   },
   {
@@ -251,7 +251,7 @@ export const clientProblems: ClientProblem[] = [
     heading: 'Data & Intelligence',
     subtext: 'You are sitting on data but cannot turn it into decisions your board can act on.',
     solution: 'Data architecture, engineering, business intelligence, and AI-powered decision intelligence — with human sign-off on consequential calls.',
-    to: '/how-we-help#engagement',
+    to: '/what-we-do',
     proof: { label: 'In pilot with UNDP Malawi stakeholders', tone: 'pilot' as const },
   },
   {
@@ -260,7 +260,7 @@ export const clientProblems: ClientProblem[] = [
     heading: 'Digital Transformation',
     subtext: 'Your digital presence is outdated, and your customers are on mobile and WhatsApp.',
     solution: 'Mobile-first websites, e-commerce with local payment rails, brand identity — from MWK 150,000 for a Google Business listing upward.',
-    to: '/how-we-help#engagement',
+    to: '/what-we-do',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
   },
   {
@@ -269,7 +269,7 @@ export const clientProblems: ClientProblem[] = [
     heading: 'Research & Executive Advisory',
     subtext: 'You are a board, minister, or leader who needs to understand what AI means for your organization or jurisdiction.',
     solution: 'Executive briefings, policy analysis, and research engagements grounded in the SADC Agentic AI Governance Framework.',
-    to: '/how-we-help#engagement',
+    to: '/what-we-do',
     proof: { label: 'Published', tone: 'proven' as const },
   },
   {
@@ -913,15 +913,15 @@ export const insightCategories: { name: string; items: { title: string; topic: s
   {
     name: 'Research & Policy',
     items: [
-      { title: 'SADC Agentic AI Governance Framework', topic: 'GOVERNANCE', to: '/technology#governance' },
-      { title: 'Malawi National AI Strategy Consultation', topic: 'POLICY', to: '/technology' },
+      { title: 'SADC Agentic AI Governance Framework', topic: 'GOVERNANCE', to: '/ai-company-builder' },
+      { title: 'Malawi National AI Strategy Consultation', topic: 'POLICY', to: '/ai-company-builder' },
     ],
   },
   {
     name: 'Executive Briefings',
     items: [
-      { title: 'Invite LightSpeed to Speak', topic: 'EVENTS', to: '/events' },
-      { title: 'Board-Level AI Advisory', topic: 'ADVISORY', to: '/how-we-help' },
+      { title: 'Invite LightSpeed to Speak', topic: 'EVENTS', to: '/insights' },
+      { title: 'Board-Level AI Advisory', topic: 'ADVISORY', to: '/what-we-do' },
     ],
   },
 ];
@@ -930,15 +930,15 @@ export const solutions = [
   {
     slug: 'ai-company-builder',
     title: 'AI Company Builder',
-    description: 'Build governed AI companies with 89 agents and 1 human CEO. A 5-tier approval matrix, immutable audit trails, and 4 governance gates ensure every action is accountable.',
-    eyebrow: 'AI OPERATING MODEL',
-    proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
-    honestyBadge: 'Fieldable in 2026' as const,
-    oneLiner: '89 AI agents, 1 human CEO, zero excuses.',
-    nav: 'AI Company Builder',
-    lead: 'Build governed AI companies with 89 agents and 1 human CEO.',
+description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-tier approval matrix, immutable audit trails, and 4 governance gates ensure every action is accountable.',
+     eyebrow: 'AI OPERATING MODEL',
+     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
+     honestyBadge: 'Fieldable in 2026' as const,
+     oneLiner: '90 AI agents, 1 human CEO, zero excuses.',
+     nav: 'AI Company Builder',
+     lead: 'Build governed AI companies with 90 agents and 1 human CEO.',
     capabilities: [
-      { title: 'Multi-Agent Orchestration', desc: '89 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
+      { title: 'Multi-Agent Orchestration', desc: '90 agents, 20 departments, each with explicit role definitions and approval thresholds.' },
       { title: '5-Tier Approval Matrix', desc: 'Auto through CEO sign-off with configurable thresholds and expiration sweeps.' },
       { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs for every agent action.' },
     ],
@@ -947,7 +947,18 @@ export const solutions = [
       { title: 'Risk Classification', lead: 'Automated risk classification for financial services', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
       { title: 'Audit Trail Generation', lead: 'Immutable audit trails for every transaction', proof: { label: 'Proven in-house', tone: 'proven' as const } },
     ],
-    cta: { label: 'Explore AI Company Builder', to: '/how-we-help' },
+    spec: {
+      problem:
+        'AI agents get deployed without approval controls, audit trails, or anyone accountable for what they do.',
+      audience: 'Leadership teams deploying AI across departments who need governance before scale.',
+      changes:
+        'Every agent action passes a 5-tier approval gate and lands in an immutable audit log.',
+      builds:
+        'A 90-agent operating model: multi-agent orchestration, approval matrix, SHA-256 audit trails.',
+      evidence:
+        'Audit trails proven in-house; compliance automation and risk classification fieldable in 2026.',
+    },
+    cta: { label: 'Explore AI Company Builder', to: '/what-we-do' },
   },
   {
     slug: 'digital-presence',
@@ -969,7 +980,17 @@ export const solutions = [
       { title: 'Brand Identity', lead: 'Cohesive visual identity for your brand', proof: { label: 'Proven in-house', tone: 'proven' as const } },
       { title: 'Web Development', lead: 'Mobile-first websites for any audience', proof: { label: 'In pilot', tone: 'pilot' as const } },
     ],
-    cta: { label: 'Explore Digital Presence', to: '/how-we-help' },
+    spec: {
+      problem:
+        'Selling online in Southern Africa requires mobile-first sites and mobile-money checkout — not foreign-card-only stores.',
+      audience: 'Malawian and SADC SMEs, retailers, and brands serving mobile-first customers.',
+      changes:
+        'Customers browse and pay with Airtel Money, TNM Mpamba, or PayChangu from day one.',
+      builds: 'Mobile-first websites, e-commerce stores, and cohesive brand identities.',
+      evidence:
+        'Brand identity proven in-house; web development in pilot; e-commerce fieldable in 2026.',
+    },
+    cta: { label: 'Explore Digital Presence', to: '/what-we-do' },
   },
   {
     slug: 'business-automation',
@@ -991,7 +1012,18 @@ export const solutions = [
       { title: 'Form Workflows', lead: 'Intelligent form workflows', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
       { title: 'WhatsApp Integration', lead: 'WhatsApp-native assistants', proof: { label: 'Proven in-house', tone: 'proven' as const } },
     ],
-    cta: { label: 'Explore Business Automation', to: '/how-we-help' },
+    spec: {
+      problem:
+        'Document, form, and team workflows still run manually, outside the tools people already use.',
+      audience:
+        'Operations teams in NGOs, SMEs, and public institutions that already live in WhatsApp.',
+      changes:
+        'Assistants, documents, and forms move through WhatsApp-native workflows — no app downloads.',
+      builds: 'WhatsApp-native assistants, automated document pipelines, and intelligent form workflows.',
+      evidence:
+        'WhatsApp integration proven in-house; document automation in pilot; form workflows fieldable in 2026.',
+    },
+    cta: { label: 'Explore Business Automation', to: '/what-we-do' },
   },
   {
     slug: 'enterprise-deployment',
@@ -1013,7 +1045,17 @@ export const solutions = [
       { title: 'Access Control', lead: 'Role-based access control for all operations', proof: { label: 'Proven in-house', tone: 'proven' as const } },
       { title: 'Local Infrastructure', lead: 'Offline-first operation on local servers', proof: { label: 'In pilot', tone: 'pilot' as const } },
     ],
-    cta: { label: 'Explore Enterprise Deployment', to: '/how-we-help' },
+    spec: {
+      problem:
+        'Department-by-department AI adoption without access control, approval governance, or sovereignty over where data lives.',
+      audience: 'Enterprises and public institutions deploying agents across multiple departments.',
+      changes:
+        'Every deployment runs behind RBAC, 5-tier approvals, and offline-first local infrastructure.',
+      builds: 'Full-scale agent deployment with access control, governance, and self-hosted orchestration.',
+      evidence:
+        'Access control proven in-house; department deployment and local infrastructure in pilot.',
+    },
+    cta: { label: 'Explore Enterprise Deployment', to: '/what-we-do' },
   },
   {
     slug: 'boardroom-briefing',
@@ -1035,7 +1077,16 @@ export const solutions = [
       { title: 'Governance Deep-Dive', lead: 'Understanding the approval matrix', proof: { label: 'Proven in-house', tone: 'proven' as const } },
       { title: 'Roadmap Planning', lead: 'Engagement roadmap for your organisation', proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
     ],
-    cta: { label: 'Request a Boardroom Briefing', to: '/how-we-help' },
+    spec: {
+      problem:
+        'Boards and leadership teams need a clear, honest view of the AI Company Builder platform and its governance model.',
+      audience: 'Boards, executive teams, and leadership committees.',
+      changes: 'Leaders leave aligned on governance, scope, and a concrete engagement roadmap.',
+      builds: 'A focused session: platform presentation, governance deep-dive, and engagement roadmap.',
+      evidence:
+        'Governance deep-dive proven in-house; sessions and roadmap planning fieldable in 2026.',
+    },
+    cta: { label: 'Request a Boardroom Briefing', to: '/what-we-do' },
   },
 ];
 
@@ -1113,7 +1164,7 @@ export const industries = [
 ];
 
 export const technologyPillars = [
-  { title: 'Governed Multi-Agent Orchestration', desc: '89 AI agents across 20 departments, each with explicit role definitions, tool permissions, and approval thresholds. No agent acts without a human-defined boundary.', icon: 'Shield', status: 'Proven in-house' as const },
+  { title: 'Governed Multi-Agent Orchestration', desc: '90 AI agents across 20 departments, each with explicit role definitions, tool permissions, and approval thresholds. No agent acts without a human-defined boundary.', icon: 'Shield', status: 'Proven in-house' as const },
   { title: '5-Tier Approval Matrix', desc: 'Every consequential action is risk-classified and routed through a human approval gate. Tier 1 (Auto) through Tier 5 (CEO) with configurable thresholds and expiration sweeps.', icon: 'Fingerprint', status: 'Proven in-house' as const },
   { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs. Every agent action generates a receipt that is correlated, queryable, and never overwritten.', icon: 'Lock', status: 'Proven in-house' as const },
   { title: 'Offline-First Sovereignty', desc: 'Self-hosted orchestration with optional free local models via Ollama. Malawi Data Protection Act 2017 as the default posture, GDPR-level handling for donor data.', icon: 'Database', status: 'In pilot' as const },
@@ -1121,10 +1172,10 @@ export const technologyPillars = [
 ];
 
 export const technologyMetrics = [
-  { label: 'Active Agents', value: '90', suffix: '', context: '89 AI agents + 1 human CEO', source: 'company-registry' },
+  { label: 'Active Agents', value: '90', suffix: '', context: '90 AI agents + 1 human CEO', source: 'company-registry' },
   { label: 'Departments', value: '20', suffix: '', context: 'Fully populated with executive leadership', source: 'company-registry' },
   { label: 'Approval Tiers', value: '5', suffix: '', context: 'Auto through CEO sign-off', source: 'company-registry' },
-  { label: 'Regression Tests', value: '2,373', suffix: '', context: 'Passing gate before any platform change', source: 'test-suite' },
+  { label: 'Regression Tests', value: '2,557', suffix: '', context: 'Passing gate before any platform change', source: 'test-suite' },
   { label: 'LLM Providers', value: '9', suffix: '', context: 'Including free local Ollama models', source: 'platform-config' },
 ];
 
@@ -1212,7 +1263,7 @@ export const GOVERNANCE_SOLUTION = {
   status: 'Proven in-house',
   eyebrow: 'GOVERNANCE',
   oneLiner: 'Safe deployment starts with governance.',
-  to: '/technology#governance',
+  to: '/ai-company-builder',
   capabilities: [
     { title: '5-Tier Approval Matrix', desc: 'Every action risk-classified and human-gated.' },
     { title: 'Immutable Audit Trails', desc: 'SHA-256 sealed, append-only JSONL event logs.' },
@@ -1223,7 +1274,17 @@ export const GOVERNANCE_SOLUTION = {
     { title: 'Risk Classification', lead: 'Automated risk classification', proof: { label: 'Proven in-house', tone: 'proven' as const } },
     { title: 'Audit Trail Generation', lead: 'Immutable audit trails', proof: { label: 'Proven in-house', tone: 'proven' as const } },
   ],
-  cta: { label: 'View Governance Details', to: '/technology#governance' },
+  spec: {
+    problem:
+      'Client-facing work can ship without human sign-off, compliance gates, or an audit trail.',
+    audience:
+      'Every LightSpeed engagement — and any organisation deploying agents under our governance model.',
+    changes:
+      'Four mandatory gates (Contract, DPA, Compliance, Security) run before work starts; every action is SHA-256 sealed.',
+    builds: '5-tier approval matrix, immutable audit trails, and expiry sweeps for pending approvals.',
+    evidence: 'Compliance automation, risk classification, and audit trails all proven in-house.',
+  },
+  cta: { label: 'View Governance Details', to: '/ai-company-builder' },
 };
 
 export const workCaseStudies = [
@@ -1298,43 +1359,40 @@ export interface SiteRelatedLink {
 }
 
 export const relatedLinksByRoute: Record<string, SiteRelatedLink[]> = {
-  '/trust': [
-    { to: '/technology#governance', label: 'Technology' },
-    { to: '/leadership', label: 'Leadership' },
-    { to: '/faq', label: 'FAQ' },
-    { to: '/evidence', label: 'Evidence' },
+  '/what-we-do': [
+    { to: '/ai-company-builder', label: 'AI Company Builder' },
+    { to: '/solutions', label: 'Solutions' },
+    { to: '/proof', label: 'Proof' },
   ],
-  '/faq': [
-    { to: '/trust', label: 'Trust' },
-    { to: '/technology#governance', label: 'Technology' },
-    { to: '/leadership', label: 'Leadership' },
+  '/ai-company-builder': [
+    { to: '/what-we-do', label: 'What We Do' },
+    { to: '/solutions', label: 'Solutions' },
+    { to: '/sectors', label: 'Sectors' },
+  ],
+  '/solutions': [
+    { to: '/ai-company-builder', label: 'AI Company Builder' },
+    { to: '/sectors', label: 'Sectors' },
+    { to: '/proof', label: 'Proof' },
+  ],
+  '/sectors': [
+    { to: '/solutions', label: 'Solutions' },
+    { to: '/proof', label: 'Proof' },
+    { to: '/insights', label: 'Insights' },
+  ],
+  '/proof': [
+    { to: '/insights', label: 'Insights' },
+    { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
   ],
-  '/leadership': [
-    { to: '/trust', label: 'Trust' },
-    { to: '/faq', label: 'FAQ' },
-    { to: '/technology#governance', label: 'Technology' },
-    { to: '/about', label: 'About' },
-  ],
   '/insights': [
-    { to: '/news', label: 'News' },
-    { to: '/resources', label: 'Resources' },
-    { to: '/events', label: 'Events' },
+    { to: '/proof', label: 'Proof' },
+    { to: '/about', label: 'About' },
+    { to: '/contact', label: 'Contact' },
   ],
-  '/news': [
-    { to: '/insights', label: 'Insights' },
-    { to: '/resources', label: 'Resources' },
-    { to: '/events', label: 'Events' },
-  ],
-  '/resources': [
-    { to: '/insights', label: 'Insights' },
-    { to: '/news', label: 'News' },
-    { to: '/events', label: 'Events' },
-  ],
-  '/events': [
-    { to: '/news', label: 'News' },
-    { to: '/insights', label: 'Insights' },
-    { to: '/resources', label: 'Resources' },
+  '/about': [
+    { to: '/proof', label: 'Proof' },
+    { to: '/what-we-do', label: 'What We Do' },
+    { to: '/contact', label: 'Contact' },
   ],
 };
 

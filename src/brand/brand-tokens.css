@@ -7,7 +7,8 @@
   --color-ls-navy: #070A40;
   --color-ls-red: #E63946;
   --color-ls-cyan: #00BFFF;
-  --color-ls-grey-light: #F2F2F2;
+  --color-ls-mist: #F7F8F9;
+  --color-ls-slate: #121518;
   --color-ls-white: #FFFFFF;
   --color-ls-grey-dark: #6B7280;
   --color-ls-grey-light-text: #9CA3AF;
@@ -24,11 +25,25 @@
 }
 
 :root {
+  /* ── Light Mode (Morning Mist / Alabaster) ─────────── */
+  --ls-bg-light: #F7F8F9;
+  --ls-surface-light: #FFFFFF;
+  --ls-text-light: #121518;
+  --ls-text-secondary-light: #6B7280;
+  --ls-border-light: #E5E7EB;
+
+  /* ── Dark Mode (Slate / Deep Mineral) ─────────── */
+  --ls-bg-dark: #121518;
+  --ls-surface-dark: #1A1D21;
+  --ls-text-dark: #F7F8F9;
+  --ls-text-secondary-dark: #9CA3AF;
+  --ls-border-dark: #2A2D31;
+
   /* ── Brand Colors ─────────────────────────────────────── */
   --ls-navy: #070A40;
   --ls-red: #E63946;
   --ls-cyan: #00BFFF;
-  --ls-grey-light: #F2F2F2;
+  --ls-grey-light: #F7F8F9;
   --ls-white: #FFFFFF;
   --ls-grey-dark: #6B7280;
   --ls-grey-light-text: #9CA3AF;
@@ -79,6 +94,12 @@
   --ls-radius-sm: 4px;
   --ls-radius-md: 8px;
   --ls-radius-lg: 16px;
+
+  /* ── Motion ───────────────────────────────────────────── */
+  --transition-slow: 500ms ease;
+  --transition-medium: 300ms ease;
+  --transition-fast: 150ms ease;
+  --ease-spatial: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Layout ───────────────────────────────────────────── */
   --ls-page-max-width: 1200px;

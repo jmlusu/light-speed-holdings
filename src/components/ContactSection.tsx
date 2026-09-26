@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { ShieldCheck, Clock, Globe2, Send, CheckCircle2, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
-import { AcousticVentGrille } from './TactileHardwareElements';
 import { useTurnstile } from '../hooks/useTurnstile';
 import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
 
@@ -172,7 +171,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                   CONVERSATION CONSOLE
                 </span>
               </div>
-              <AcousticVentGrille variant="strip" isLight={isLight} />
             </div>
 
             {contactSubmitted ? (

@@ -18,8 +18,8 @@ interface Metric {
 }
 
 const PLATFORM_METRICS: Metric[] = [
-  { value: '152', label: 'Verified Agent Configurations', source: 'company-registry.yaml' },
-  { value: '2,373', label: 'Automated Regression Tests', source: 'pytest test suite' },
+  { value: '90', label: 'Canonical AI Agents', source: 'company-registry.yaml' },
+  { value: '2,557', label: 'Automated Regression Tests', source: 'pytest test suite' },
   { value: '20', label: 'Departments Modeled', source: 'company-registry.yaml' },
   { value: '5-Tier', label: 'Human Approval Gates', source: 'ApprovalGate matrix' },
 ];
@@ -138,7 +138,7 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
             </span>
             <h4 className="mt-3 text-base font-bold font-display">Proven In-House</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Running in our daily operations, validated against 2,373 automated tests, and generating verified audit receipts.
+              Running in our daily operations, validated against 2,557 automated tests, and generating verified audit receipts.
             </p>
           </div>
           <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
@@ -293,7 +293,7 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
             <GitBranch className="w-6 h-6 text-ls-red mb-3" />
             <h4 className="font-bold text-base font-display">1. Code &amp; Test Suite Review</h4>
             <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Technical teams can inspect our CI pipelines, ruff/mypy/bandit linting reports, and the 2,373 automated regression tests.
+              Technical teams can inspect our CI pipelines, ruff/mypy/bandit linting reports, and the 2,557 automated regression tests.
             </p>
           </div>
           <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
