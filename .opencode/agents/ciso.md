@@ -55,9 +55,13 @@ Protects company assets, data, and systems from security threats.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Define and maintain security strategy and posture
+
+- Decides and owns: Lead incident response and forensic investigations
+
+- Decides and owns: Ensure compliance with SOC2, GDPR, and regulations
+
+- Decides and owns: Conduct security awareness training across the organization
 
 
 ---

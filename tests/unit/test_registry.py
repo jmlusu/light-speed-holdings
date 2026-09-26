@@ -27,6 +27,28 @@ def loader(config_dir: Path) -> RegistryLoader:
     return RegistryLoader(config_dir)
 
 
+def _gov(
+    *,
+    approval_level: str = "lead",
+    decision_rights: list[str] | None = None,
+    escalation_path: list[str] | None = None,
+    kpis: list[str] | None = None,
+    workflows: list[str] | None = None,
+    inputs: list[str] | None = None,
+    outputs: list[str] | None = None,
+) -> dict:
+    """Minimal MANDATORY governance fields for fixtures (7 fields per AI_WORKFORCE_90 §5.1)."""
+    return {
+        "decision_rights": decision_rights or ["Decides and owns: test decision"],
+        "approval_level": approval_level,
+        "escalation_path": escalation_path or ["cto", "human_ceo"],
+        "kpis": kpis or ["Test KPI"],
+        "workflows": workflows or ["test-workflow"],
+        "inputs": inputs or ["test-input"],
+        "outputs": outputs or ["test-output"],
+    }
+
+
 @pytest.fixture
 def sample_raw() -> dict:
     return {
@@ -38,18 +60,38 @@ def sample_raw() -> dict:
         "policies": {"policies": []},
         "kpis": {"kpis": []},
         "budget": {"fiscal_year": 2024, "total_budget": 500000, "currency": "USD"},
-        "board": {"members": [{"id": "dir-1", "name": "Alice"}]},
+        "board": {
+            "members": [
+                {
+                    "id": "dir-1",
+                    "name": "Alice",
+                    "approval_level": "board",
+                    "decision_rights": ["Board fiduciary oversight"],
+                    "escalation_path": ["board"],
+                    "kpis": ["Board action completion"],
+                    "workflows": ["governance-oversight"],
+                    "inputs": ["executive-reports"],
+                    "outputs": ["governance-decisions"],
+                }
+            ]
+        },
         "committees": {"committees": []},
         "board_meetings": {"meetings": []},
         "voting": {},
         "executives": {
             "executives": [
-                {"id": "ceo", "name": "CEO", "title": "Chief Executive Officer"},
+                {
+                    "id": "ceo",
+                    "name": "CEO",
+                    "title": "Chief Executive Officer",
+                    **_gov(approval_level="ceo", escalation_path=["board"]),
+                },
                 {
                     "id": "cto",
                     "name": "CTO",
                     "title": "Chief Technology Officer",
                     "reports_to": "ceo",
+                    **_gov(approval_level="exec"),
                 },
             ]
         },
@@ -60,7 +102,13 @@ def sample_raw() -> dict:
         },
         "specialists": {
             "specialists": [
-                {"id": "dev-1", "name": "Dev", "department": "engineering", "reports_to": "cto"},
+                {
+                    "id": "dev-1",
+                    "name": "Dev",
+                    "department": "engineering",
+                    "reports_to": "cto",
+                    **_gov(),
+                },
             ]
         },
         "workflows": {"workflows": []},
@@ -285,6 +333,100 @@ class TestRegistryValidator:
         validator = RegistryValidator()
         errors = validator.validate(registry)
         assert any("budget" in e.lower() for e in errors)
+
+
+class TestGovernanceMandatoryFields:
+    """Fail-fast: 4 MANDATORY fields on every agent (AI_WORKFORCE_90 §5.1)."""
+
+    def test_missing_fields_on_executive_return_errors(self):
+        parser = RegistryParser()
+        registry = parser.parse(
+            {
+                "company": {"id": "x", "name": "X"},
+                "executives": {"executives": [{"id": "e1", "name": "E1"}]},
+                "departments": {"departments": [{"id": "d1", "executive": "e1"}]},
+                "specialists": {
+                    "specialists": [{"id": "s1", "name": "S1", "department": "d1", **_gov()}]
+                },
+                "board": {"members": [{"id": "b1", **_gov(approval_level="board")}]},
+                "budget": {"total_budget": 100},
+            }
+        )
+        errors = RegistryValidator().validate(registry)
+        for field in ("decision_rights", "approval_level", "escalation_path", "kpis"):
+            assert any("e1" in e and field in e for e in errors), f"missing {field}"
+
+    def test_empty_lists_return_errors(self):
+        parser = RegistryParser()
+        registry = parser.parse(
+            {
+                "company": {"id": "x", "name": "X"},
+                "executives": {
+                    "executives": [
+                        {
+                            "id": "e1",
+                            "name": "E1",
+                            "decision_rights": [],
+                            "approval_level": "exec",
+                            "escalation_path": [],
+                            "kpis": [],
+                        }
+                    ]
+                },
+                "departments": {"departments": [{"id": "d1", "executive": "e1"}]},
+                "specialists": {
+                    "specialists": [{"id": "s1", "name": "S1", "department": "d1", **_gov()}]
+                },
+                "board": {"members": [{"id": "b1", **_gov(approval_level="board")}]},
+                "budget": {"total_budget": 100},
+            }
+        )
+        errors = RegistryValidator().validate(registry)
+        assert any("e1" in e and "decision_rights" in e for e in errors)
+        assert any("e1" in e and "escalation_path" in e for e in errors)
+        assert any("e1" in e and "kpis" in e for e in errors)
+
+    def test_invalid_approval_level_returns_error(self):
+        parser = RegistryParser()
+        registry = parser.parse(
+            {
+                "company": {"id": "x", "name": "X"},
+                "executives": {
+                    "executives": [
+                        {
+                            "id": "e1",
+                            "name": "E1",
+                            "decision_rights": ["r"],
+                            "approval_level": "godmode",
+                            "escalation_path": ["board"],
+                            "kpis": ["k"],
+                        }
+                    ]
+                },
+                "departments": {"departments": [{"id": "d1", "executive": "e1"}]},
+                "specialists": {
+                    "specialists": [{"id": "s1", "name": "S1", "department": "d1", **_gov()}]
+                },
+                "board": {"members": [{"id": "b1", **_gov(approval_level="board")}]},
+                "budget": {"total_budget": 100},
+            }
+        )
+        errors = RegistryValidator().validate(registry)
+        assert any("approval_level" in e and "godmode" in e for e in errors)
+
+    def test_all_fields_present_on_all_agents_pass_governance(self, sample_raw: dict):
+        registry = RegistryParser().parse(sample_raw)
+        errors = RegistryValidator()._check_governance_fields(registry)
+        assert errors == []
+
+    def test_real_registry_passes_governance_check(self):
+        from ai_company.registry import load_registry
+
+        registry = load_registry()
+        errors = RegistryValidator()._check_governance_fields(registry)
+        assert errors == [], errors
+        total = len(registry.executives) + len(registry.specialists) + len(registry.board)
+        assert total == 90
 
 
 # ---------------------------------------------------------------------------

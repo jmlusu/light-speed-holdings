@@ -15,7 +15,10 @@ repos:
         # full-repo-audit-2026-05-23.md quotes standard AWS example keys and an
         # ellipsis placeholder inside a security-scan writeup; the key block is
         # explicitly documented as non-live example material (see issue #72).
-        exclude: ^\.agents/skills/docs/maintainers/full-repo-audit-2026-05-23\.md$
+        # lsmem redaction files intentionally embed PEM markers: redaction.py
+        # holds the detection regexes and test_redaction.py holds synthetic
+        # fixture keys the scanner must redact. No live key material.
+        exclude: ^(\.agents/skills/docs/maintainers/full-repo-audit-2026-05-23\.md|tests/memory/test_redaction\.py|src/ai_company/lsmem/redaction\.py)$
 
   # ── Ruff: lint + format ────────────────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -54,6 +57,17 @@ repos:
         entry: bandit -c pyproject.toml -r src/
         additional_dependencies: ["bandit[toml]"]
         stages: [pre-commit]
+
+  # ── Capture bug-fix records for organizational memory ────
+  - repo: local
+    hooks:
+      - id: capture-fix
+        name: capture bug-fix record
+        entry: pwsh -File scripts/capture-fix.ps1
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [post-commit]
 
   # ── Graphify: keep the knowledge graph fresh after every commit ────
   - repo: local

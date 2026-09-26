@@ -136,13 +136,13 @@ function Get-IndexEntries {
     $location = $pair[0]
     $base = $pair[1]
     if (-not (Test-Path -LiteralPath $base)) { continue }
-    Get-ChildItem -LiteralPath $base -Directory | Sort-Object -Property Name | ForEach-Object {
+  Get-ChildItem -LiteralPath $base -Directory | Sort-Object -Property Name | ForEach-Object {
       $summary = Join-Path $_.FullName "summary.md"
       if (-not (Test-Path -LiteralPath $summary)) { return }
       $meta = Parse-FrontMatter $summary
       $decisions = Get-SectionLines $summary "Decisions" | Where-Object { $_ -notmatch "Pending" }
       $relativePath = (Resolve-Path -LiteralPath $_.FullName -Relative).TrimStart([char[]]@(".", "/", "\"))
-      $entries.Add([ordered]@{
+      $entry = [ordered]@{
         id = $_.Name
         title = $meta["title"]
         status = $meta["status"]
@@ -154,10 +154,11 @@ function Get-IndexEntries {
         validation_status = Get-ValidationStatus $summary $meta
         path = ($relativePath -replace "\\", "/")
         updated_at = $meta["updated_at"]
-      })
+      }
+      $entries.Add($entry)
     }
   }
-  return $entries.ToArray()
+  return $entries | Sort-Object id
 }
 
 function Get-IndexJson {

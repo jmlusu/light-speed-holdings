@@ -1,65 +1,55 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import { PillarNavigationCard } from './PillarNavigationCard';
-import { StatCounter } from './StatCounter';
+import { HeroMist } from './effects/HeroMist';
 
 interface HeroSectionProps {
   theme: 'light' | 'dark';
   onRequestBriefing: (summary?: string) => void;
-  activePillar: number;
-  onSelectPillar: (idx: number) => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   theme,
   onRequestBriefing,
-  activePillar,
-  onSelectPillar
 }) => {
   const isLight = theme === 'light';
   return (
     <section id="hero" className="relative min-h-[92vh] flex flex-col justify-center pt-28 pb-16 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+      <HeroMist theme={theme} />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10 w-full">
 
-        {/* Left Column: Core Positioning Statement & Vision */}
         <div className="lg:col-span-7 xl:col-span-7 space-y-6 text-left">
-
-          {/* Eyebrow Badge */}
           <div className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-[11px] font-body tracking-widest transition-all shadow-xs ${
             isLight
               ? 'bg-ls-white border-ls-grey-dark text-ls-navy shadow-ls-red/5'
               : 'bg-ls-navy border-ls-red/40 text-ls-grey-light-text shadow-ls-navy/40'
           }`}>
-            <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80" />
             <span>MALAWI-ROOTED, SADC-FOCUSED, GLOBAL CAPABILITY</span>
           </div>
 
-          {/* Main Headline */}
           <h1 className={`text-4xl sm:text-6xl md:text-7xl font-black tracking-tight font-display leading-[1.04] ${
             isLight ? 'text-ls-navy' : 'text-ls-white'
           }`}>
-            BUILD THE
+            THE
             <br />
             <span className={isLight
               ? 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-ls-navy'
               : 'text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-cyan to-ls-cyan'
             }>
-              INTELLIGENT ENTERPRISE.
+              AI-NATIVE COMPANY BUILDER.
             </span>
           </h1>
 
-          {/* Divider Accent Line */}
           <div className="flex items-center gap-2">
             <div className={`w-16 h-[2px] ${isLight ? 'bg-ls-red/80' : 'bg-ls-red'}`} />
             <div className="w-1.5 h-1.5 rounded-xs bg-ls-red shadow-sm shadow-ls-red" />
           </div>
 
-          {/* Strategy → Build → Govern → Scale */}
           <div className="flex flex-wrap items-center gap-2 font-body text-[11px] font-bold tracking-widest">
-            {['STRATEGY', 'BUILD', 'GOVERN', 'SCALE'].map((step, i) => (
+            {['STRATEGY', 'BUILD', 'GOVERN', 'RESEARCH & POLICY'].map((step, i) => (
               <React.Fragment key={step}>
-                {i > 0 && <span className={`text-ls-red ${isLight ? '' : ''}`} aria-hidden="true">→</span>}
+                {i > 0 && <span className="text-ls-red" aria-hidden="true">→</span>}
                 <span className={`px-2.5 py-1 rounded-full border ${
                   i % 2 === 0
                     ? 'border-ls-red/40 bg-ls-red/10 text-ls-red'
@@ -71,7 +61,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             ))}
           </div>
 
-          {/* Explicit Regional Proposition Statement */}
           <div className="space-y-3">
             <p className={`text-justify max-w-2xl text-base sm:text-lg font-bold leading-relaxed ${
               isLight ? 'text-ls-navy' : 'text-ls-white'
@@ -81,11 +70,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <p className={`text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
               isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'
             }`}>
-              Strategy — Build — Govern — Scale. We prove the model in Malawi first with shipped work — websites, automation, reporting, and marketing — for the organizations that need them most.
+              Strategy — Build — Govern — Research & Policy. We prove the model in Malawi first with shipped work — websites, automation, reporting, and marketing — for the organizations that need them most.
             </p>
           </div>
 
-          {/* 3 Advantage Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 max-w-2xl">
             <div className={`p-3.5 rounded-2xl border transition-all ${
               isLight ? 'bg-ls-white border-ls-grey-dark shadow-xs' : 'bg-ls-navy/80 border-ls-white'
@@ -124,7 +112,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
 
-          {/* Primary Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               to="/contact"
@@ -148,7 +135,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </Link>
 
             <Link
-              to="/technology"
+              to="/what-we-do"
               className={`px-5 py-3.5 rounded-full font-bold text-xs tracking-widest border backdrop-blur-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 isLight
                   ? 'bg-ls-white hover:bg-ls-grey-light text-ls-navy border-ls-grey-dark hover:border-ls-red'
@@ -160,48 +147,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </Link>
           </div>
 
-          {/* Metric Strip */}
           <div className={`pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 border-t max-w-2xl ${
             isLight ? 'border-ls-grey-dark' : 'border-ls-white/15'
           }`}>
             <div>
               <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Agent Fleet</span>
-              <span className="text-sm font-bold font-body text-ls-red">
-                <StatCounter to={90} format="comma" /> Configurations
-              </span>
+              <span className="text-sm font-bold font-body text-ls-red">90 Configurations</span>
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Regression Tests</span>
-              <span className="text-sm font-bold font-body text-ls-cyan">
-                <StatCounter to={2373} format="comma" /> Passing
-              </span>
+              <span className="text-sm font-bold font-body text-ls-cyan">2,557 Passing</span>
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Operating Departments</span>
-              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                <StatCounter to={20} /> Live
-              </span>
+              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>20 Live</span>
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Audit Coverage</span>
-              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                <StatCounter to={100} suffix="%" /> Auditable
-              </span>
+              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>100% Auditable</span>
             </div>
           </div>
-
         </div>
-
-        {/* Right Column: Audio/Hardware-Grade 4-Pillars Architectural Chassis Card */}
-        <div className="lg:col-span-5 xl:col-span-5 flex justify-end">
-          <PillarNavigationCard
-            theme={theme}
-            onRequestBriefing={onRequestBriefing}
-            activePillar={activePillar}
-            onSelectPillar={onSelectPillar}
-          />
-        </div>
-
       </div>
     </section>
   );

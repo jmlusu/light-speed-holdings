@@ -1,0 +1,48 @@
+# LS-MEM Configuration
+# Location: .lightspeed/memory/config.yaml (workspace) or ~/.lightspeed/memory/config.yaml (global)
+
+schema_version: 1
+engine: "sqlite+fts5"
+
+storage:
+  workspace_path: ".lightspeed/memory"
+  global_path: "~/.lightspeed/memory"
+
+fts:
+  tokenizer: "unicode61"
+  remove_diacritics: true
+  tokenchars: "_"
+  stopwords: ["the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by"]
+
+injection:
+  max_memories: 15
+  max_tokens: 2000
+  min_value_score: 2
+  exclude_superseded: true
+  exclude_vetoed: true
+
+audit:
+  retention_days_crud: 90
+  retention_days_gateway: 365
+
+gateway:
+  external_access:
+    enabled: false
+    approved_providers: []
+    approved_domains: []
+    approved_operations: []
+    data_classes_allowed:
+      public: false
+      internal: false
+      confidential: false
+      restricted: false
+
+ollama:
+  endpoint: "http://127.0.0.1:11434"
+  model: "nomic-embed-text"
+  timeout_seconds: 30
+  enabled: false  # Optional, after FTS5 works
+
+bridge:
+  json_store_path: "memory"  # Relative to workspace root
+  dry_run: true

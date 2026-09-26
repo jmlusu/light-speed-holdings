@@ -9,5 +9,10 @@ meetings:
 customers:
 
 lessons:
+  - id: BUG-27
+    title: White-screen on /jobs when API returns 200 without a jobs key
+    date: 2026-09-25
+    file: knowledge/technology/bug-fixes/BUG-27.md
+    pattern: unchecked response.jobs access; always normalise API responses at the boundary
 
 weekly:

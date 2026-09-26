@@ -7,14 +7,14 @@ import { CtaBand } from '../components/site/CtaBand';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
 import { OFFER_FAMILIES } from '../data/useCaseCatalogData';
-import { solutions, industries, GOVERNANCE_SOLUTION } from '../data/siteContent';
+import { solutions, GOVERNANCE_SOLUTION } from '../data/siteContent';
 
 interface WhatWeDoPageProps {
   theme: 'light' | 'dark';
   onRequestBriefing?: (summary?: string) => void;
 }
 
-type CatalogTab = 'packages' | 'solutions' | 'industries';
+type CatalogTab = 'packages' | 'solutions';
 
 export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
@@ -27,7 +27,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         theme={theme}
         eyebrow="WHAT WE DO"
         title="Enterprise AI Systems Built for Real Constraints"
-        lead="LightSpeed Holdings delivers modular AI services and custom agent architectures for organizations in Malawi, across SADC, and beyond. One human CEO directs 89 specialized AI agents to deliver world-class software, automation, and reporting at accessible regional pricing."
+        lead="LightSpeed Holdings delivers modular AI services and custom agent architectures for organizations in Malawi, across SADC, and beyond. One human CEO directs 90 specialized AI agents to deliver world-class software, automation, and reporting at accessible regional pricing."
       >
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
@@ -214,19 +214,6 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
             >
               Solutions (6 Domains)
             </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'industries'}
-              onClick={() => setActiveTab('industries')}
-              className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bold tracking-wider transition-all cursor-pointer ${
-                activeTab === 'industries'
-                  ? 'bg-ls-red text-ls-white shadow-md'
-                  : isLight ? 'text-ls-navy hover:text-ls-red' : 'text-ls-white hover:text-ls-red'
-              }`}
-            >
-              Industry Verticals
-            </button>
           </div>
         </div>
 
@@ -315,10 +302,10 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                 </div>
                 <div className="pt-5 mt-5 border-t border-inherit flex items-center justify-between">
                   <Link
-                    to={`/solutions/${sol.slug}`}
+                    to="/contact"
                     className="text-xs font-bold tracking-wider text-ls-red flex items-center gap-1 hover:underline"
                   >
-                    View Domain Details <ArrowRight className="w-3.5 h-3.5" />
+                    Discuss This Domain <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>
@@ -354,41 +341,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
           </div>
         )}
 
-        {/* Tab 3: Industry Verticals */}
-        {activeTab === 'industries' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-300">
-            {industries.map((ind) => (
-              <div
-                key={ind.slug}
-                className={`rounded-3xl p-6 sm:p-7 border flex flex-col justify-between ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
-                }`}
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="font-body text-[10px] font-bold tracking-widest text-ls-red uppercase">
-                      VERTICAL
-                    </span>
-                    <HonestyBadge label={ind.proof} />
-                  </div>
-                  <h3 className="mt-3 text-xl font-bold font-display">{ind.title}</h3>
-                  <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                    {ind.problem}
-                  </p>
-                </div>
-                <div className="pt-5 mt-5 border-t border-inherit flex items-center justify-between">
-                  <Link
-                    to={`/industries/${ind.slug}`}
-                    className="text-xs font-bold tracking-wider text-ls-red flex items-center gap-1 hover:underline"
-                  >
-                    Explore Vertical <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+        </section>
 
       {/* 5. ENGAGEMENT PATH: G1–G4 GATES */}
       <section

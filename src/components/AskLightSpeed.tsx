@@ -166,13 +166,31 @@ export const AskLightSpeed: React.FC = () => {
             <div>
               <h3 className="font-display font-black text-base">Ask LightSpeed</h3>
               <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                AI Discovery Layer • Honest by design
+                Public knowledge boundary • Honest by design
               </p>
             </div>
             <div className="ml-auto flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-ls-cyan animate-pulse" />
               <span className="text-xs font-medium text-ls-cyan">Online</span>
             </div>
+          </div>
+
+          {/* §14 public-safe knowledge boundary notice */}
+          <div
+            className={`px-6 py-2.5 border-b flex items-start gap-2 text-[11px] leading-relaxed ${
+              isLight
+                ? 'border-ls-grey-dark/15 bg-ls-cyan/5 text-ls-grey-dark'
+                : 'border-ls-white/10 bg-ls-cyan/5 text-ls-grey-light-text'
+            }`}
+            role="note"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 shrink-0 mt-0.5 text-ls-cyan" aria-hidden="true" />
+            <span>
+              <strong className="text-ls-cyan">Public knowledge only.</strong> This assistant answers from
+              LightSpeed&rsquo;s published site content. It cannot access secrets, credentials, private prompts,
+              internal agent instructions, client information, financial data, infrastructure details, or
+              unpublished strategy — public layer in, public layer out.
+            </span>
           </div>
 
           {/* Messages */}

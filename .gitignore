@@ -88,6 +88,13 @@ data/*.db-shm
 data/*.db-wal
 data/*.db-journal
 
+# LS-MEM local memory store (never commit)
+.lightspeed/memory/
+.lightspeed/memory.db
+.lightspeed/memory.db-shm
+.lightspeed/memory.db-wal
+.lightspeed/memory.db-journal
+
 # ==========================================
 # Whitelisted OpenCode Agent Specifications & Metadata
 # ==========================================

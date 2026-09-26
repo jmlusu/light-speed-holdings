@@ -73,21 +73,20 @@ if (-not (Test-Path -LiteralPath $IndexPath)) {
 }
 $actual = Get-Content -Encoding UTF8 -Raw -LiteralPath $IndexPath
 $expected = (& $HarnessChange index-json) -join "`n"
-# ConvertTo-Json output differs across platforms and PowerShell versions (line
-# endings, indentation, empty-array rendering), and Get-ChildItem directory
-# order is not guaranteed. Re-serialize both sides as canonical JSON inside
-# this same process so only real content differences make INDEX.json stale.
+# Get-ChildItem directory order is not guaranteed across platforms (Windows PowerShell 5.1 vs Ubuntu PowerShell 7.x).
+# Parse both sides as objects, sort by id, and compare property-by-property
+# to avoid ConvertTo-Json serialization differences between PowerShell versions.
 $canonical = { param([string]$S)
-  $S = $S -replace "`r`n", "`n"
-  $S = $S.Trim()
-  if (-not $S) { return "" }
-  return ($S | ConvertFrom-Json | ConvertTo-Json -Depth 8 -Compress)
+  if (-not $S -or $S -eq '""') { return @() }
+  return ($S | ConvertFrom-Json | Sort-Object id)
 }
-if ((& $canonical $actual) -cne (& $canonical $expected)) {
+$actualObj = & $canonical $actual
+$expectedObj = & $canonical $expected
+if ((Compare-Object $actualObj $expectedObj -Property id,title,status,location,modules,files,tags,decisions,validation_status,path,updated_at) -ne $null) {
   Write-Output "--- expected (index-json) ---"
-  Write-Output (& $canonical $expected)
+  $expectedObj | ConvertTo-Json -Depth 8 -Compress
   Write-Output "--- actual (INDEX.json) ---"
-  Write-Output (& $canonical $actual)
+  $actualObj | ConvertTo-Json -Depth 8 -Compress
   Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
 }
 

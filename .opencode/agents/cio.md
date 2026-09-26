@@ -53,9 +53,13 @@ Manages IT infrastructure and internal tools.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Manage IT infrastructure and cloud environments
+
+- Decides and owns: Oversee internal tools and system integration
+
+- Decides and owns: Ensure data management and storage strategies
+
+- Decides and owns: Drive system integration and interoperability
 
 
 ---

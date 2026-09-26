@@ -21,6 +21,45 @@ class RegistryValidator:
         errors.extend(self._check_board(r))
         errors.extend(self._check_workflows(r))
         errors.extend(self._check_budget(r))
+        errors.extend(self._check_governance_fields(r))
+        return errors
+
+    def _check_governance_fields(self, r: CompanyRegistry) -> list[str]:
+        """Fail-fast: every agent must carry the 7 MANDATORY governance fields.
+
+        Fields: decision_rights, approval_level, escalation_path, kpis,
+        workflows, inputs, outputs. AI_WORKFORCE_90 §5.1.
+        Empty or missing values are errors.
+        """
+        errors: list[str] = []
+        approval_levels = {"self", "lead", "exec", "ceo", "board"}
+
+        def _check(agent_id: str, obj: object) -> None:
+            for field in (
+                "decision_rights",
+                "escalation_path",
+                "kpis",
+                "workflows",
+                "inputs",
+                "outputs",
+            ):
+                val = getattr(obj, field, None)
+                if val is None or val == "" or val == []:
+                    errors.append(f"Agent '{agent_id}' missing MANDATORY field '{field}'")
+            level = getattr(obj, "approval_level", "")
+            if not level:
+                errors.append(f"Agent '{agent_id}' missing MANDATORY field 'approval_level'")
+            elif level not in approval_levels:
+                errors.append(
+                    f"Agent '{agent_id}' approval_level '{level}' not in {sorted(approval_levels)}"
+                )
+
+        for ex in r.executives:
+            _check(ex.id, ex)
+        for spec in r.specialists:
+            _check(spec.id, spec)
+        for bm in r.board:
+            _check(bm.id, bm)
         return errors
 
     def _check_company(self, r: CompanyRegistry) -> list[str]:

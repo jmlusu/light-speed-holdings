@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_type", "timestamp", "actor", "correlation_id", "payload_hash", "prev_hash"],
+  "properties": {
+    "event_id": { "type": "string", "format": "uuid" },
+    "event_type": {
+      "type": "string",
+      "enum": ["memory_create", "memory_update", "memory_delete", "memory_search", "gateway_request", "gateway_approved", "gateway_denied", "export", "import", "rebuild", "session_inject"]
+    },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "actor": { "type": "string" },
+    "correlation_id": { "type": "string", "format": "uuid" },
+    "details": { "type": "object" },
+    "payload_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "prev_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}

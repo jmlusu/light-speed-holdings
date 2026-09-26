@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+"""memory-audit — Query audit log (OpenCode skill tool wrapper)."""
+
+import subprocess
+import sys
+
+
+def main():
+    cmd = ["ai-company", "memory", "audit"] + sys.argv[1:]
+    try:
+        result = subprocess.run(cmd, check=True)
+        sys.exit(result.returncode)
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.returncode)
+    except FileNotFoundError:
+        print(
+            "Error: 'ai-company' command not found. Ensure LightSpeed CLI is installed.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

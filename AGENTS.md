@@ -38,6 +38,7 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 4. If no active change exists and `harness/evolution/pending.md` exists, read it before `docs/STATUS.md`.
 5. If no active change exists and no pending evolution exists, read [Status](docs/STATUS.md).
 6. Read the relevant source files for the task.
+7. Run `uv run graphify query "<task>"` to surface prior bug fixes and decisions relevant to the task; the knowledge graph is indexed on every commit by the post-commit `capture-fix` + `graphify-rebuild` hooks.
 
 ## 5 Development Commands
 

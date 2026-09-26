@@ -52,9 +52,13 @@ Manages legal affairs, contracts, and compliance.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Review and negotiate all contracts and agreements
+
+- Decides and owns: Ensure regulatory compliance across jurisdictions
+
+- Decides and owns: Protect intellectual property and patents
+
+- Decides and owns: Advise on data privacy and GDPR requirements
 
 
 ---

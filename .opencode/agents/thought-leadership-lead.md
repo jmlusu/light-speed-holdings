@@ -53,9 +53,13 @@ Heads the Pharos department, turning Lightspeed Holdings' agentic AI engineering
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Own the CEO's North Star positioning and the Pharos 90-day / 12-month / 24-month roadmap
+
+- Decides and owns: Maintain the thought-leadership content calendar and cross-agent orchestration
+
+- Decides and owns: Anchor the "Company Builder / Use Cases / Policy" three-pillar narrative
+
+- Decides and owns: Operate the Lightspeed Institute and the Agentic AI Executive Lab pipelines
 
 
 ---

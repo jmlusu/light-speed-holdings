@@ -44,9 +44,9 @@ Directs AI research, model selection, and prompt engineering strategies.
 ## Decision Rights
 
 
-- Approve department-level decisions within budget
-- Delegate tasks to specialist agents
-- Escalate strategic decisions to CEO/Board
+- Decides and owns: Evaluate and integrate new LLM models
+
+- Decides and owns: Fine-tune prompts for maximum agent efficacy
 
 
 ---

@@ -1,535 +1,160 @@
-import React, { useState } from 'react';
-import {
-  Sparkles,
-  ArrowRight,
-  CheckCircle2,
-  Cpu,
-  Users,
-  Workflow,
-  Database,
-  Brain,
-  Zap,
-  ShieldCheck,
-  TrendingUp,
-  Layers,
-  ArrowDown,
-  Terminal,
-  Activity
-} from 'lucide-react';
-import {
-  StatusLedPip,
-  MachineScrewHead,
-  AcousticVentGrille,
-  ChassisPanel
-} from './TactileHardwareElements';
-import { AiCompanyBuilderOsExplorer } from './AiCompanyBuilderOsExplorer';
-import { HaomtgvGovernanceFramework } from './HaomtgvGovernanceFramework';
-import aiSwarmInfographic from '../assets/images/ai_builder_swarm_infographic_1789274121556.jpg';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { SectionHeading } from './site/SectionHeading';
+import { HonestyBadge } from './site/HonestyBadge';
+import { Reveal } from './Reveal';
+import { CtaBand } from './site/CtaBand';
+import { company } from '../data/siteContent';
 
 interface AiCompanyBuilderSectionProps {
-  onOpenContactModal: (intent?: string) => void;
-  theme?: 'light' | 'dark';
+  theme: 'light' | 'dark';
+  onRequestBriefing?: (summary?: string) => void;
 }
 
-export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = ({
-  onOpenContactModal,
-  theme = 'dark'
-}) => {
+const JOURNEY_STEPS = [
+  { num: '01', title: 'Opportunity', desc: 'Identify where AI creates leverage — diagnose the gap between current state and AI-native potential.' },
+  { num: '02', title: 'Strategy', desc: 'Define the operating model, governance framework, and measurable outcomes for transformation.' },
+  { num: '03', title: 'Architecture', desc: 'Design the modular agent topology, data pipelines, and integration points for your stack.' },
+  { num: '04', title: 'Agents', desc: 'Configure role-scoped agents from the 90-agent registry — each with explicit permissions and approval thresholds.' },
+  { num: '05', title: 'Workflows', desc: 'Orchestrate agent coordination with human-in-the-loop gates — automated where safe, gated where consequential.' },
+  { num: '06', title: 'Deployment', desc: 'Ship working systems with immutable audit trails, circuit breakers, and 30 days of included support.' },
+  { num: '07', title: 'Governance', desc: 'Establish the five-tier approval matrix, risk classification, and expiry sweeps that make autonomy safe.' },
+  { num: '08', title: 'Measurement', desc: 'Track outcomes, cost, and quality — every metric traces to a canonical source, never invented.' },
+  { num: '09', title: 'Continuous Improvement', desc: 'Scale what works, retire what does not — the system learns, adapts, and improves under human oversight.' },
+];
+
+const PRINCIPLES = [
+  { title: 'Human-led', desc: 'Every decision has a clear owner. AI augments judgment; it does not replace it.' },
+  { title: 'AI-native', desc: 'Systems designed as agentic operating layers from day one — not AI bolted onto legacy software.' },
+  { title: 'Agentic', desc: '90 specialized agents coordinate across 20 departments, each with explicit role definitions.' },
+  { title: 'Governed', desc: 'Five-tier human approval, immutable audit trails, and regional compliance are the architecture.' },
+  { title: 'Data-informed', desc: 'Every claim carries its honesty status. We never blur proven vs. planned.' },
+  { title: 'Modular', desc: 'Role-scoped agents configured in a registry — each component can be replaced independently.' },
+  { title: 'Measurable', desc: 'Time saved, processes automated, decision cycles reduced. We report on what changed.' },
+  { title: 'Progressive', desc: 'Start with a pilot, scale to production — with honest-status gates at every phase.' },
+  { title: 'Secure', desc: 'Least-privilege permissions, Bandit + pre-commit gates, SHA-256 audit trails.' },
+  { title: 'Practical adoption', desc: 'Designed for real constraints — mobile-first, local payment rails, intermittent connectivity.' },
+];
+
+export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
-  const [activeTab, setActiveTab] = useState<'operating-model' | 'workforce' | 'architecture' | 'journey' | 'governance'>('operating-model');
 
   return (
-    <section id="ai-company-builder" className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto font-sans">
-
-      {/* Category Header Chassis */}
-      <div className="text-center max-w-3xl mx-auto mb-14">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-body font-bold uppercase tracking-wider mb-4 border select-none">
-          <StatusLedPip status="amber" isLight={isLight} />
-          <span className={`text-[10px] font-body tracking-widest ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
-            FLAGSHIP OPERATIONAL PILLAR // SYSTEM REF::01
-          </span>
-        </div>
-        <h1 className={`text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-display mb-4 leading-normal sm:leading-tight break-words ${
-          isLight ? 'text-ls-navy' : 'text-ls-white'
-        }`}>
-          The <span className="inline-block pb-1.5 text-transparent bg-clip-text bg-gradient-to-r from-ls-red via-ls-red/40 to-ls-red/85">AI Company Builder</span>
-        </h1>
-        <p className={`text-base leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-          LightSpeed Holdings Limited architects the transition from manual, human-bound processes to high-velocity, autonomous enterprises governed by verifiable agentic operating models and resilient telemetry.
-        </p>
-      </div>
-
-      {/* Strategic Infographic Banner: 90-Agent Governed Swarm Architecture */}
-      <div className="relative rounded-3xl overflow-hidden mb-12 border border-ls-grey-dark shadow-2xl group">
-        <img
-          src={aiSwarmInfographic}
-          alt="90-Agent Workforce Infographic"
-          className="w-full h-[260px] sm:h-[380px] object-cover brightness-[0.75] contrast-[1.1] transition-transform duration-700 group-hover:scale-105"
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ls-navy via-ls-navy/40 to-transparent p-6 sm:p-8 flex flex-col justify-end">
-          <div className="flex items-center gap-2 mb-1">
-            <StatusLedPip status="emerald" isLight={isLight} />
-            <span className="text-[10px] font-body text-ls-red/40 font-bold uppercase tracking-widest">[ INFOGRAPHIC // SYSTEM ARCHITECTURE ]</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold font-display text-ls-white">Governed 90-Agent Swarm &amp; 20-Department Topology</h2>
-          <p className="text-xs sm:text-sm text-ls-grey-light-text font-body mt-1">Autonomous execution swarms operating under human CEO executive oversight and 5-tier HITL gates.</p>
-        </div>
-      </div>
-
-      {/* Signature Model Comparison Visualizer: Traditional vs LightSpeed AI-Native */}
-      <div className={`mb-16 p-6 sm:p-10 rounded-3xl border relative overflow-hidden transition-colors ${
-        isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
-      }`}>
-        <MachineScrewHead isLight={isLight} className="absolute top-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute top-3 right-3" />
-        <MachineScrewHead isLight={isLight} className="absolute bottom-3 left-3" />
-        <MachineScrewHead isLight={isLight} className="absolute bottom-3 right-3" />
-
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-ls-grey-dark">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <StatusLedPip status="emerald" isLight={isLight} />
-              <span className="text-xs font-body font-bold text-ls-red uppercase tracking-wider">
-                ARCHITECTURAL COMPARISON MATRIX
-              </span>
-            </div>
-            <h2 className={`text-xl sm:text-2xl font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-              The Paradigm Shift: Traditional vs. AI-Native Enterprise
-            </h2>
-          </div>
-          <AcousticVentGrille cols={5} rows={2} isLight={isLight} />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-
-          {/* Traditional Company Panel */}
-          <div className={`p-6 sm:p-8 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${
-            isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-          }`}>
-            <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
-            <div>
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-ls-grey-dark">
-                <span className="text-xs font-body text-ls-grey-light-text uppercase tracking-widest font-bold">LEGACY MODEL [ DEPRECATED ]</span>
-                <span className={`px-2.5 py-1 text-[10px] font-body font-bold rounded ${
-                  isLight ? 'bg-ls-grey-light text-ls-grey-dark' : 'bg-ls-navy text-ls-grey-light-text'
-                }`}>
-                  HUMAN-BOUND CHOPPY FLOW
-                </span>
-              </div>
-
-              <div className="space-y-3">
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
-                }`}>
-                  <div className="flex items-center gap-3">
-                    <Users className="w-4 h-4 text-ls-grey-light-text" />
-                    <span>Human Workforce (Manual coordination)</span>
-                  </div>
-                </div>
-                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-ls-grey-light-text" /></div>
-
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
-                }`}>
-                  <div className="flex items-center gap-3">
-                    <Workflow className="w-4 h-4 text-ls-grey-light-text" />
-                    <span>Siloed Manual Hand-offs</span>
-                  </div>
-                </div>
-                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-ls-grey-light-text" /></div>
-
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
-                }`}>
-                  <div className="flex items-center gap-3">
-                    <Layers className="w-4 h-4 text-ls-grey-light-text" />
-                    <span>Static SaaS Silos</span>
-                  </div>
-                </div>
-                <div className="flex justify-center"><ArrowDown className="w-4 h-4 text-ls-grey-light-text" /></div>
-
-                <div className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-body ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark text-ls-navy' : 'bg-ls-navy/80 border-ls-grey-dark/60 text-ls-grey-light-text'
-                }`}>
-                  <div className="flex items-center gap-3">
-                    <Database className="w-4 h-4 text-ls-grey-light-text" />
-                    <span>Fragmented Database Islands</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <p className={`mt-8 pt-4 border-t text-xs text-center font-body ${
-              isLight ? 'border-ls-grey-dark text-ls-grey-dark' : 'border-ls-grey-dark text-ls-grey-light-text'
-            }`}>
-              Bottlenecked by human execution speed & manual coordination latency.
-            </p>
-          </div>
-
-          {/* LightSpeed AI-Native Company Panel */}
-          <div className={`p-6 sm:p-8 rounded-2xl border-2 border-ls-red/50 flex flex-col justify-between relative overflow-hidden shadow-xl shadow-ls-red/10 ${
-            isLight ? 'bg-ls-red/60 border-ls-red/50' : 'bg-gradient-to-b from-[rgba(7,10,64,0.92)] to-[rgba(7,10,64,0.95)] border-ls-red/50'
-          }`}>
-            <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
-            <div>
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-ls-red/30">
-                <div className="flex items-center gap-2">
-                  <StatusLedPip status="emerald" isLight={isLight} />
-                  <span className="text-xs font-body text-ls-red uppercase tracking-widest font-extrabold">SOVEREIGN AI OPERATING MODEL</span>
-                </div>
-                <span className="px-2.5 py-1 text-[10px] font-body font-bold rounded bg-ls-red text-ls-navy">
-                  AUTONOMOUS THROUGHPUT
-                </span>
-              </div>
-
-              <div className="space-y-2.5">
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
-                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
-                }`}>
-                  <div className="flex items-center gap-2.5">
-                    <Brain className="w-4 h-4 text-ls-red" />
-                    <span>Executive Strategic Veto (5-Tier HITL Gate)</span>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
-                </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
-
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
-                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
-                }`}>
-                  <div className="flex items-center gap-2.5">
-                    <Cpu className="w-4 h-4 text-ls-red" />
-                    <span>Autonomous AI Operating Core</span>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
-                </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
-
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
-                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
-                }`}>
-                  <div className="flex items-center gap-2.5">
-                    <Users className="w-4 h-4 text-ls-red" />
-                    <span>Agent Workforce Swarms (OpenCode v2)</span>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
-                </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
-
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
-                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
-                }`}>
-                  <div className="flex items-center gap-2.5">
-                    <Workflow className="w-4 h-4 text-ls-red" />
-                    <span>Collapsed Real-time Task Buses</span>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
-                </div>
-                <div className="flex justify-center"><ArrowDown className="w-3.5 h-3.5 text-ls-red" /></div>
-
-                <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-body font-semibold ${
-                  isLight ? 'bg-ls-white border-ls-red/30 text-ls-navy' : 'bg-ls-navy/90 border-ls-red/30 text-ls-red/20'
-                }`}>
-                  <div className="flex items-center gap-2.5">
-                    <Database className="w-4 h-4 text-ls-red" />
-                    <span>Unified Enterprise Semantic Fabric</span>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-ls-cyan" />
-                </div>
-              </div>
-            </div>
-
-            <p className={`mt-8 pt-4 border-t text-xs text-center font-body font-bold ${
-              isLight ? 'border-ls-red/30 text-ls-red/80' : 'border-ls-red/30 text-ls-red/40'
-            }`}>
-              10x–100x operational throughput with sub-second verified dispatch.
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Hardware Control Console Tabs */}
-      <div className="mb-14">
-        <div className="flex flex-wrap justify-center gap-2.5 pb-4 border-b border-[#e63946]/20">
-          <button
-            onClick={() => setActiveTab('operating-model')}
-            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
-              activeTab === 'operating-model'
-                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
-                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
-            }`}
-          >
-            <StatusLedPip status={activeTab === 'operating-model' ? 'emerald' : 'off'} isLight={isLight} />
-            <span>AI Operating Model</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('workforce')}
-            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
-              activeTab === 'workforce'
-                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
-                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
-            }`}
-          >
-            <StatusLedPip status={activeTab === 'workforce' ? 'emerald' : 'off'} isLight={isLight} />
-            <span>Agent Workforce</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('architecture')}
-            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
-              activeTab === 'architecture'
-                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
-                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
-            }`}
-          >
-            <StatusLedPip status={activeTab === 'architecture' ? 'emerald' : 'off'} isLight={isLight} />
-            <span>Product Factory</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('journey')}
-            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
-              activeTab === 'journey'
-                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
-                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
-            }`}
-          >
-            <StatusLedPip status={activeTab === 'journey' ? 'emerald' : 'off'} isLight={isLight} />
-            <span>Transformation Journey</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('governance')}
-            className={`px-4 py-2 rounded-xl text-xs font-body font-bold uppercase transition-all flex items-center gap-2 ${
-              activeTab === 'governance'
-                ? 'bg-gradient-to-r from-[#e63946] to-[rgba(230,57,70,0.85)] text-ls-navy shadow-md shadow-ls-red/20'
-                : isLight ? 'bg-ls-grey-light text-ls-grey-dark hover:bg-ls-grey-dark' : 'bg-[rgba(7,10,64,0.9)] text-ls-grey-light-text hover:bg-[rgba(7,10,64,0.85)] border border-[rgba(7,10,64,0.85)]'
-            }`}
-          >
-            <StatusLedPip status={activeTab === 'governance' ? 'emerald' : 'off'} isLight={isLight} />
-            <span>H-A-O-M-T-G-V Framework</span>
-          </button>
-        </div>
-
-        {/* Tab Content Chassis */}
-        <div className={`mt-6 p-6 sm:p-8 rounded-2xl border transition-colors ${
-          isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
-        }`}>
-          {activeTab === 'governance' && (
-            <div className="space-y-4">
-              <HaomtgvGovernanceFramework theme={theme} onOpenContactModal={onOpenContactModal} />
-            </div>
-          )}
-          {activeTab === 'operating-model' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className={`p-5 rounded-xl border ${
-                isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-              }`}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="p-2 rounded-lg bg-ls-red/10 text-ls-red">
-                    <Workflow className="w-5 h-5" />
-                  </div>
-                  <StatusLedPip status="emerald" isLight={isLight} />
-                </div>
-                <h3 className={`font-bold font-body text-sm mb-2 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  Workflow Collapse
-                </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  Eliminates bureaucratic delays by collapsing fragmented multi-step operations into verified, self-executing agent chains governed by deterministic SLA rules.
-                </p>
-              </div>
-
-              <div className={`p-5 rounded-xl border ${
-                isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-              }`}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="p-2 rounded-lg bg-ls-red/10 text-ls-red">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <StatusLedPip status="amber" isLight={isLight} />
-                </div>
-                <h3 className={`font-bold font-body text-sm mb-2 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  Human-in-the-Loop Governance
-                </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  5-tier escalation gates ensure high-risk financial, regulatory, or policy operations require human executive review before cryptographic execution.
-                </p>
-              </div>
-
-              <div className={`p-5 rounded-xl border ${
-                isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-              }`}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="p-2 rounded-lg bg-ls-red/10 text-ls-red">
-                    <Database className="w-5 h-5" />
-                  </div>
-                  <StatusLedPip status="emerald" isLight={isLight} />
-                </div>
-                <h3 className={`font-bold font-body text-sm mb-2 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  Semantic Fabric Integration
-                </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  Connects disparate enterprise ERP systems, relational databases, and regulatory records into an indexed, context-rich knowledge graph.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'workforce' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className={`p-6 rounded-xl border space-y-3 ${
-                isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-body text-ls-red uppercase font-bold">ROSTER ARCHITECTURE</span>
-                  <StatusLedPip status="emerald" isLight={isLight} />
-                </div>
-                <h3 className={`text-base font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  Domain-Expert Agent Swarms
-                </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  Discarding generic chatbots for custom OpenCode agent cards engineered with explicit permission scopes, canonical tool lists, and isolated execution memory.
-                </p>
-                <ul className={`space-y-2 text-xs font-body pt-2 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Regulatory & Compliance Specialists</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Mobile Settlement & FinTech Auditors</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> AgriTech Telemetry & Supply Chain Agents</li>
-                </ul>
-              </div>
-
-              <div className={`p-6 rounded-xl border space-y-3 ${
-                isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-body text-ls-red uppercase font-bold">DISPATCH PROTOCOL</span>
-                  <StatusLedPip status="emerald" isLight={isLight} />
-                </div>
-                <h3 className={`text-base font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                  Sub-Second Message Bus
-                </h3>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  Agents communicate across structured task queues with strict runtime deadlines, tamper-evident JSON logging, and automatic deadlock recovery.
-                </p>
-                <ul className={`space-y-2 text-xs font-body pt-2 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Asynchronous execution queues</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Sub-second latency SLA guarantees</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-ls-cyan" /> Cryptographic audit trail logs</li>
-                </ul>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'architecture' && (
-            <div className="space-y-6">
-              <h3 className={`text-lg font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                Modular AI Product Factory (Institutional Specs)
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className={`p-4 rounded-xl border text-xs ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <h4 className="font-bold font-body text-ls-red mb-1">Semantic Layer</h4>
-                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Context graphs linking enterprise documents and relational schemas.</p>
-                </div>
-                <div className={`p-4 rounded-xl border text-xs ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <h4 className="font-bold font-body text-ls-red mb-1">Agent Mesh</h4>
-                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Inter-agent communication channels with token budget rate-limiters.</p>
-                </div>
-                <div className={`p-4 rounded-xl border text-xs ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <h4 className="font-bold font-body text-ls-red mb-1">Sovereign Gateway</h4>
-                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Local datacenter proxies ensuring data remains within regional borders.</p>
-                </div>
-                <div className={`p-4 rounded-xl border text-xs ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <h4 className="font-bold font-body text-ls-red mb-1">Human Console</h4>
-                  <p className={isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}>Executive dashboard for live approvals and emergency kill-switches.</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'journey' && (
-            <div className="space-y-6">
-              <h3 className={`text-lg font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-                The 4-Stage Transformation Journey
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className={`p-5 rounded-xl border ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <span className="text-xs font-body font-bold text-ls-red">[ 01. DISCOVER ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Process Audit</h4>
-                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Identify friction points in manual operations and map initial data schemas.</p>
-                </div>
-                <div className={`p-5 rounded-xl border ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <span className="text-xs font-body font-bold text-ls-red">[ 02. ARCHITECT ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Roster Design</h4>
-                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Deploy domain sub-agents, enforce tool permissions, and integrate HITL gates.</p>
-                </div>
-                <div className={`p-5 rounded-xl border ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <span className="text-xs font-body font-bold text-ls-red">[ 03. PILOT ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Controlled Run</h4>
-                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Execute under strict supervision to benchmark response quality and latency.</p>
-                </div>
-                <div className={`p-5 rounded-xl border ${
-                  isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-                }`}>
-                  <span className="text-xs font-body font-bold text-ls-red">[ 04. SCALE ]</span>
-                  <h4 className={`font-bold text-sm my-1 ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Full Collapse</h4>
-                  <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Transition routine workflows to autonomous agent swarms at scale.</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* AI Enterprise Operating System Architecture & IaC Explorer */}
-      <AiCompanyBuilderOsExplorer
+    <div>
+      <SectionHeading
         theme={theme}
-        onOpenContactModal={onOpenContactModal}
+        eyebrow="AI COMPANY BUILDER"
+        title="Build Governed AI Companies"
+        lead="LightSpeed helps organisations move from Opportunity to Continuous Improvement — a coordinated journey across strategy, architecture, agents, workflows, deployment, and governance. Every step carries its honesty status."
       />
 
-      {/* Action CTA Chassis */}
-      <div className={`p-6 sm:p-8 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-6 transition-colors relative overflow-hidden ${
-        isLight ? 'chassis-milled-light' : 'chassis-milled-dark'
-      }`}>
-        <MachineScrewHead isLight={isLight} className="absolute top-2.5 right-2.5" />
-        <div className="text-left">
-          <div className="flex items-center gap-2 mb-1">
-            <StatusLedPip status="emerald" isLight={isLight} />
-            <span className="text-[10px] font-body font-bold text-ls-red uppercase tracking-wider">
-              ENGAGEMENT PROTOCOL
-            </span>
-          </div>
-          <h3 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>
-            Ready to deploy your AI-Native Company?
-          </h3>
-          <p className={`text-xs mt-1 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-            Schedule an executive architecture consultation with LightSpeed Holdings Limited engineers.
-          </p>
+      {/* The Journey */}
+      <section aria-labelledby="journey-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'}`}>
+        <SectionHeading
+          theme={theme}
+          eyebrow="THE JOURNEY"
+          title="Opportunity to Continuous Improvement"
+          lead="From initial diagnosis to scaled deployment and beyond — nine connected phases ensure every step is governed, measured, and progressive."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {JOURNEY_STEPS.map((step, idx) => (
+            <Reveal key={step.title} delay={(idx % 3) * 0.06}>
+              <div className={`rounded-3xl p-6 border h-full ${
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
+              }`}>
+                <span className="font-body text-2xl font-black text-ls-red">{step.num}</span>
+                <h3 className="mt-2 font-display font-bold text-base tracking-tight">{step.title}</h3>
+                <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                  {step.desc}
+                </p>
+              </div>
+            </Reveal>
+          ))}
         </div>
-        <button
-          onClick={() => onOpenContactModal('Discuss a Transformation')}
-          className="px-6 py-3 rounded-xl bg-ls-red hover:bg-ls-red/40 text-ls-navy font-extrabold font-body text-xs uppercase tracking-wider transition-all shadow-md shadow-ls-red/20 active:scale-95 shrink-0 flex items-center gap-2"
-        >
-          <span>Initiate Consultation</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
+      </section>
 
-    </section>
+      {/* Core Principles */}
+      <section aria-labelledby="principles-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'}`}>
+        <SectionHeading
+          theme={theme}
+          eyebrow="PRINCIPLES"
+          title="How We Build"
+          lead="Ten principles guide every decision — from agent configuration to governance design."
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {PRINCIPLES.map((principle, idx) => (
+            <Reveal key={principle.title} delay={(idx % 5) * 0.05}>
+              <div className={`rounded-2xl p-5 border ${
+                isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
+              }`}>
+                <h4 className="font-display font-bold text-sm tracking-tight">{principle.title}</h4>
+                <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                  {principle.desc}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* The Operating Model */}
+      <section aria-labelledby="model-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'}`}>
+        <SectionHeading
+          theme={theme}
+          eyebrow="OPERATING MODEL"
+          title="90 Agents, 1 Human CEO"
+          lead="The canonical LightSpeed operating model uses 90 AI agents across 20 departments. Each agent has explicit role definitions, approval thresholds, and five-tier human oversight. High-impact decisions require human sign-off."
+        />
+        <div className={`rounded-3xl p-8 sm:p-10 border shadow-xl ${
+          isLight ? 'bg-ls-white border-ls-grey-dark/30 text-ls-navy' : 'bg-ls-navy border-ls-white/15 text-ls-white'
+        }`}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-4">
+              <h4 className="font-display font-bold text-lg">Human Direction</h4>
+              <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                One human CEO provides strategic direction. Every consequential decision passes through five tiers of human approval — machines execute, humans approve.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h4 className="font-display font-bold text-lg">Agent Workforce</h4>
+              <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                90 specialized agents across strategy, research, product, operations, governance, content, and finance — each configured with explicit permissions and audit trails.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h4 className="font-display font-bold text-lg">Governed Execution</h4>
+              <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                Immutable SHA-256 audit trails, risk-classified agent tiers, expiry sweeps on stale approvals, and circuit breakers on errors — governance is the architecture.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <div className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-8">
+        <div className={`rounded-3xl p-8 sm:p-10 flex flex-col lg:flex-row lg:items-center gap-6 border ${
+          isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
+        }`}>
+          <div className="flex-1 space-y-3">
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">NEXT STEP</span>
+            <h3 className="text-xl sm:text-2xl font-black tracking-tight font-display">Start Your AI Company Builder Journey</h3>
+            <p className={`text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+              Begin with a governed discovery conversation — not a product demo. We will evaluate your readiness honestly and define exactly which phase fits your goals.
+            </p>
+          </div>
+          <Link
+            to="/contact"
+            className="ripple-on inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
+          >
+            Book an Executive Briefing
+            <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
+
+export default AiCompanyBuilderSection;

@@ -38,7 +38,7 @@ Owns the marketing service module and marketing SOP.
 
 - Define campaign and attribution metrics.
 
-- Coordinate brand guidelines with the CMO.
+- Coordinate brand standards with the CMO.
 
 
 ---
