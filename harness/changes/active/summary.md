@@ -81,7 +81,8 @@ failover. CI green on all checks for PR #364.
 
 ## Next Step
 
-- Top up the Xiaomi MiMo account (current blocker for a real generation), add
-  `MIMO_API_KEY` to GitHub Actions secrets before `autonomous.yml` /
-  `repo-audit.yml` exercise it, then human review + merge of PR #364 and close
-  this change via `scripts/harness-change.ps1 close`.
+- Only human review + merge of PR #364 remains (tasks T012), then close this
+  change via `scripts/harness-change.ps1 close`.
+- Done since first draft: `MIMO_API_KEY` added to GitHub Actions secrets
+  (2026-09-26); real `mimo run` generation deferred by CEO — the Xiaomi account
+  has no balance and the wiring is already verified up to upstream auth.

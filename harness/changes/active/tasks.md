@@ -42,15 +42,18 @@
   test-pollution files afterwards — validation: gates green, `git status` clean.
 - [x] T009 Push `feat/mimo-integration` and open PR — validation: PR #364, all
   CI checks pass.
-- [ ] T010 Top up the Xiaomi MiMo account and confirm a real `mimo run` output —
-  validation: `mimo run --pure` returns model text instead of
-  `Insufficient account balance`. Blocked on account credit (CEO).
-- [ ] T011 Add `MIMO_API_KEY` to GitHub Actions secrets — validation:
-  `gh secret list` shows `MIMO_API_KEY`. Blocked on CEO approval to transmit the
-  secret to GitHub.
+- [ ] T010 (deferred, see Deferred Tasks) Top up the Xiaomi MiMo account and
+  confirm a real `mimo run` output — validation: `mimo run --pure` returns model
+  text instead of `Insufficient account balance`.
+- [x] T011 Add `MIMO_API_KEY` to GitHub Actions secrets — validation:
+  `gh secret list` shows `MIMO_API_KEY` (set 2026-09-26 via `gh secret set`,
+  value piped from local `.env`, never echoed).
 - [ ] T012 Human review and merge of PR #364 — validation: branch merged into
   `main`.
 
 ## Deferred Tasks
 
-- None.
+- T010 Real `mimo run` end-to-end generation — deferred by CEO on 2026-09-26:
+  Xiaomi account reports `Insufficient account balance`. Wiring already
+  verified end-to-end up to upstream auth (real key accepted, failure is
+  credit only). Re-open if a paid generation is later required.
