@@ -15,6 +15,9 @@
 # registration path, so they are excluded from the routing tiers; OpenAI and
 # Anthropic remain available in the catalog as future options. Ollama runs
 # locally and costs nothing. llama.cpp runs locally with optimized CPU inference.
+# MiMo (Xiaomi) is an approved vendor and sits at the END of the standard and
+# premium fallback chains, so primary routing behaviour is unchanged until
+# every earlier provider is unreachable.
 
 # ─── Provider catalog ────────────────────────────────────────────────
 # Each provider entry: id, backend, default_model, api_base.
@@ -55,6 +58,11 @@ providers:
     backend: openai_compatible
     default_model: kimi-k2
     api_base: https://api.moonshot.ai/v1
+
+  mimo:
+    backend: openai_compatible
+    default_model: mimo-v2.5
+    api_base: https://api.xiaomimimo.com/v1
 
   ollama:
     backend: ollama
@@ -209,6 +217,8 @@ tiers:
         model: gemini-3.5-flash
       - provider: omniroute
         model: auto
+      - provider: mimo
+        model: mimo-v2.5
 
   premium:
     description: "Maximum reasoning capability. Use for critical decisions."
@@ -225,6 +235,8 @@ tiers:
         model: gemini-3.1-pro-preview
       - provider: omniroute
         model: auto
+      - provider: mimo
+        model: mimo-v2.5-pro
 
 # ─── Routing rules ──────────────────────────────────────────────────
 # Maps (agent_type, priority) -> tier.

@@ -735,6 +735,7 @@ def health_check() -> dict[str, Any]:
         "DEEPSEEK_API_KEY",
         "GEMINI_API_KEY",
         "KIMI_API_KEY",
+        "MIMO_API_KEY",
     ]
     active_providers = [p for p in providers if os.environ.get(p)]
     checks["llm_providers"] = f"{len(active_providers)} configured"

@@ -289,6 +289,7 @@ jobs:
       MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      MIMO_API_KEY: ${{ secrets.MIMO_API_KEY }}
     outputs:
       date: ${{ steps.stub.outputs.date }}
       report_ok: ${{ steps.verify.outputs.report_ok }}

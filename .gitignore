@@ -77,6 +77,14 @@ logs/
 results/
 /orchestrator/
 .playwright-cli/
+
+# ==========================================
+# MiMo Code Runtime State (project config is tracked)
+# ==========================================
+.mimocode/*
+!.mimocode/mimocode.jsonc
+/mimocode.json
+/mimocode.jsonc
 *.bak
 *.executor-bak
 backup/
