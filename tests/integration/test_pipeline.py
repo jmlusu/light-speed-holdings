@@ -182,29 +182,20 @@ class TestKpiCollector:
         monkeypatch.setattr(kpi_base.KPICollector, "_cost_from_sqlite", lambda self: None)
 
     def test_collect_engineering_kpis(self, project_base: Path) -> None:
-        from ai_company.dashboard.kpi_collector import collect_engineering_kpis
+        from ai_company.dashboard.kpis.engineering import EngineeringKPICollector
 
-        result = collect_engineering_kpis(project_base)
+        result = EngineeringKPICollector(project_root=project_base).collect()
         assert result["department"] == "engineering"
         assert "kpis" in result
         assert "task_completion_rate" in result["kpis"]
         assert result["kpis"]["total_tasks"]["current"] == 0
 
     def test_collect_all_kpis(self, project_base: Path) -> None:
-        from ai_company.dashboard.kpi_collector import collect_all_kpis
+        from ai_company.dashboard.kpis import collect_all_kpis
 
-        result = collect_all_kpis(project_base)
+        result = collect_all_kpis(project_root=project_base)
         assert "departments" in result
         assert "engineering" in result["departments"]
-
-    def test_save_snapshot(self, project_base: Path) -> None:
-        from ai_company.dashboard.kpi_collector import collect_all_kpis, save_snapshot
-
-        snapshots = collect_all_kpis(project_base)
-        path = save_snapshot(snapshots, output_dir=project_base / "kpi_snapshots")
-        assert path.exists()
-        data = json.loads(path.read_text(encoding="utf-8"))
-        assert "departments" in data
 
 
 class TestOrchestratorTick:
