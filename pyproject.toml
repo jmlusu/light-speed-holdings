@@ -13,7 +13,6 @@ license = { text = "Proprietary — All Rights Reserved. Apache 2.0 at v1.0." }
 
 dependencies = [
       "jinja2",
-      "click",
       "rich",
       "pyyaml",
       "jsonschema",
@@ -22,7 +21,6 @@ dependencies = [
       "python-dotenv",
       "fastapi",
       "uvicorn[standard]",
-      "aiohttp",
       "httpx<0.29.0",
       # Security
       "cryptography>=42.0",
@@ -33,10 +31,6 @@ dependencies = [
       "psutil>=5.9",
       # Observability — OTel API (zero-cost NoOp when disabled)
       "opentelemetry-api>=1.25",
-      "email-validator>=2.3.0",
-      "apscheduler>=3.11.3",
-      "beautifulsoup4>=4.15.0",
-      "lxml>=6.1.1",
       "python-docx>=1.2.0",
 ]
 
