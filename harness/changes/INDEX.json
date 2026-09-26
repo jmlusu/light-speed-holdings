@@ -236,6 +236,44 @@
     "updated_at": "2026-09-22"
   },
   {
+    "id": "2026-08-30-cleanup-dummy-tasks",
+    "title": "Remove Dummy Tasks & Wire Real Organizational Data",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- Demo/test detection must key on demonstrable markers only:",
+      "`proj-acme-chatbot` in instruction/id, instruction starting with `Test `,",
+      "and task ids starting with `test-`/`verify-`.",
+      "- Routing a task to the real `test-agent` receiver is legitimate and must NOT",
+      "mark it as dummy. The earlier over-broad receiver-name heuristic was removed",
+      "because it false-positived on the real `test-agent` and broke the test suite.",
+      "- SQL cleanup predicates use case-sensitive `instr()`/`GLOB` (not `LIKE`) so",
+      "real lowercase `test ...` instructions are never deleted at the DB level.",
+      "- `GET /api/v1/tasks` and `/api/v1/tasks/paginated` accept an `include_test`",
+      "query param (default `false`); `_read_all_tasks(include_test=...)` is the",
+      "single read filter (SQLite-first, inbox-file fallback).",
+      "- `scripts/restore_acme_tasks.py` and `scripts/backfill_decompositions.py`",
+      "both BELONG to this feature and are kept with fixes: all restore tasks carry",
+      "the `proj-acme-chatbot` marker (one previously lacked it and would survive",
+      "cleanup); backfill now uses the guaranteed DB path and skips demo/test",
+      "subtasks.",
+      "- `monitoring.py` `event_type != \"task_completed\"` alignment is correct:",
+      "`AuditEventType.TASK_COMPLETED` is the canonical `\"task_completed\"`."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-30-cleanup-dummy-tasks",
+    "updated_at": "2026-08-30"
+  },
+  {
     "id": "2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
     "title": "fix(athena): serialize Decimal salary ranges in JSONL store",
     "status": "completed",
@@ -260,33 +298,6 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
     "updated_at": "2026-09-22"
-  },
-  {
-    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
-    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "site-frontend",
-      "enquiry-api"
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      "site",
-      "conversion",
-      "content",
-      "phase-1"
-    ],
-    "decisions": [
-      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
-      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
-      "- No LLM; no new backend email provider; brand tokens unchanged."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
-    "updated_at": "2026-09-23"
   },
   {
     "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
@@ -440,8 +451,8 @@
     "updated_at": "2026-09-24"
   },
   {
-    "id": "2026-08-30-cleanup-dummy-tasks",
-    "title": "Remove Dummy Tasks & Wire Real Organizational Data",
+    "id": "2026-09-25-ls-mem-implementation",
+    "title": "LS-MEM Implementation",
     "status": "completed",
     "location": "archive",
     "modules": [
@@ -451,31 +462,54 @@
       ""
     ],
     "tags": [
-      ""
+      "lsmem",
+      "memory",
+      "implementation",
+      "sqlite",
+      "fts5",
+      "gateway",
+      "audit",
+      "security"
     ],
     "decisions": [
-      "- Demo/test detection must key on demonstrable markers only:",
-      "`proj-acme-chatbot` in instruction/id, instruction starting with `Test `,",
-      "and task ids starting with `test-`/`verify-`.",
-      "- Routing a task to the real `test-agent` receiver is legitimate and must NOT",
-      "mark it as dummy. The earlier over-broad receiver-name heuristic was removed",
-      "because it false-positived on the real `test-agent` and broke the test suite.",
-      "- SQL cleanup predicates use case-sensitive `instr()`/`GLOB` (not `LIKE`) so",
-      "real lowercase `test ...` instructions are never deleted at the DB level.",
-      "- `GET /api/v1/tasks` and `/api/v1/tasks/paginated` accept an `include_test`",
-      "query param (default `false`); `_read_all_tasks(include_test=...)` is the",
-      "single read filter (SQLite-first, inbox-file fallback).",
-      "- `scripts/restore_acme_tasks.py` and `scripts/backfill_decompositions.py`",
-      "both BELONG to this feature and are kept with fixes: all restore tasks carry",
-      "the `proj-acme-chatbot` marker (one previously lacked it and would survive",
-      "cleanup); backfill now uses the guaranteed DB path and skips demo/test",
-      "subtasks.",
-      "- `monitoring.py` `event_type != \"task_completed\"` alignment is correct:",
-      "`AuditEventType.TASK_COMPLETED` is the canonical `\"task_completed\"`."
+      "1. Retrospective ECL records created rather than silently skipping the",
+      "process gap (reviewer blocker 7).",
+      "2. Soft-delete semantics: `forget` sets `status=ARCHIVED` (row retrievable by",
+      "ID for restore; excluded from search) — `get` exits 0 showing ARCHIVED.",
+      "3. Gateway all-pass behavior: `allowed=False, requires_human_approval=True`",
+      "(human approval is always the top gate).",
+      "4. Known gaps recorded as follow-ups, not silently dropped (see Handoff)."
     ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-08-30-cleanup-dummy-tasks",
-    "updated_at": "2026-08-30"
+    "path": "harness/changes/archive/2026-09-25-ls-mem-implementation",
+    "updated_at": "2026-09-25"
+  },
+  {
+    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "site-frontend",
+      "enquiry-api"
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "site",
+      "conversion",
+      "content",
+      "phase-1"
+    ],
+    "decisions": [
+      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
+      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
+      "- No LLM; no new backend email provider; brand tokens unchanged."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "updated_at": "2026-09-23"
   },
   {
     "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
@@ -711,38 +745,34 @@
     "updated_at": "2026-09-24"
   },
   {
-    "id": "2026-09-25-ls-mem-implementation",
-    "title": "LS-MEM Implementation",
-    "status": "completed",
-    "location": "archive",
+    "id": "2026-09-26-immersive-3d-homepage-rebuild-full-webgl-lusion-igloo-class",
+    "title": "Immersive 3D homepage rebuild - full WebGL (lusion/igloo class)",
+    "status": "parked",
+    "location": "parking",
     "modules": [
-      ""
+      "src/three",
+      "src/components/ImmersiveStage.tsx",
+      "src/pages/HomePage.tsx",
+      "src/components/home",
+      "src/data/homeImmersiveCopy.ts"
     ],
-    "files": [
-      ""
-    ],
+    "files": [],
     "tags": [
-      "lsmem",
-      "memory",
-      "implementation",
-      "sqlite",
-      "fts5",
-      "gateway",
-      "audit",
-      "security"
+      "webgl",
+      "three-js",
+      "homepage",
+      "immersive",
+      "adr-036"
     ],
     "decisions": [
-      "1. Retrospective ECL records created rather than silently skipping the",
-      "process gap (reviewer blocker 7).",
-      "2. Soft-delete semantics: `forget` sets `status=ARCHIVED` (row retrievable by",
-      "ID for restore; excluded from search) — `get` exits 0 showing ARCHIVED.",
-      "3. Gateway all-pass behavior: `allowed=False, requires_human_approval=True`",
-      "(human approval is always the top gate).",
-      "4. Known gaps recorded as follow-ups, not silently dropped (see Handoff)."
+      "- CEO scope (2026-09-26): homepage rebuild in place; full WebGL like lusion/igloo.",
+      "- ADR-036 written: `three` authorized (homepage-only, lazy, gated, ≤250 KB gz chunk); no GSAP/Lenis/R3F; React stays 18; #303 superseded only for `/`.",
+      "- Two-layer Lusion architecture: DOM canonical, fixed WebGL stage behind content.",
+      "- Parallel ownership: Agent A `src/three/**` + `ImmersiveStage` + `vite.config.ts`; Agent B `HomePage` + `HeroSection` + `src/components/home/**` + `index.css`; Agent C `src/data/homeImmersiveCopy.ts`; orchestrator owns `package.json`/`bun.lock`."
     ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-25-ls-mem-implementation",
-    "updated_at": "2026-09-25"
+    "validation_status": "unknown",
+    "path": "harness/changes/parking/2026-09-26-immersive-3d-homepage-rebuild-full-webgl-lusion-igloo-class",
+    "updated_at": "2026-09-26"
   },
   {
     "id": "2026-08-08-sprint-4-quality-completeness",
@@ -772,6 +802,29 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-08-08-sprint-4-quality-completeness",
     "updated_at": "2026-08-08"
+  },
+  {
+    "id": "2026-08-09-sprint-5-t009-oauth2-client-credentials",
+    "title": "Sprint 5 - T009 OAuth2 client credentials",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "llm"
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- OAuth2 is opt-in per provider via a `oauth2:` block in `company/models.yaml`.",
+      "- Secrets read from env vars only; token cache held in memory with TTL.",
+      "- Fail-closed: missing credentials or token-fetch failure makes the provider unavailable and routing falls through."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-09-sprint-5-t009-oauth2-client-credentials",
+    "updated_at": "2026-08-09"
   },
   {
     "id": "2026-08-10-audit-fixes-and-runtime-hardening",
@@ -1060,29 +1113,6 @@
     "updated_at": "2026-08-17"
   },
   {
-    "id": "2026-08-09-sprint-5-t009-oauth2-client-credentials",
-    "title": "Sprint 5 - T009 OAuth2 client credentials",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "llm"
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      ""
-    ],
-    "decisions": [
-      "- OAuth2 is opt-in per provider via a `oauth2:` block in `company/models.yaml`.",
-      "- Secrets read from env vars only; token cache held in memory with TTL.",
-      "- Fail-closed: missing credentials or token-fetch failure makes the provider unavailable and routing falls through."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-08-09-sprint-5-t009-oauth2-client-credentials",
-    "updated_at": "2026-08-09"
-  },
-  {
     "id": "2026-09-25-ls-mem-phase-3-data-model",
     "title": "LS-MEM Phase 3 Data Model",
     "status": "completed",
@@ -1113,6 +1143,43 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-25-ls-mem-phase-3-data-model",
     "updated_at": "2026-09-25"
+  },
+  {
+    "id": "2026-09-26-ls-mem-completion",
+    "title": "LS-MEM Completion",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "src/ai_company/cli/main.py",
+      "src/ai_company/lsmem",
+      "docs/LS-MEM-USER-GUIDE.md",
+      "docs/security/LS-MEM-SECURITY-VERIFICATION.md"
+    ],
+    "files": [
+      "src/ai_company/cli/main.py",
+      "src/ai_company/lsmem/audit.py",
+      "src/ai_company/lsmem/cli.py",
+      "tests/unit/test_cli_commands.py",
+      "tests/memory/test_audit_chain_head.py",
+      "tests/memory/test_cli_stdio.py"
+    ],
+    "tags": [
+      "ls-mem",
+      "cli",
+      "audit-chain",
+      "security",
+      "docs"
+    ],
+    "decisions": [
+      "- CEO decision 1 (2026-09-26): LS-MEM takes `ai-company memory`; legacy JSON CLI moves to `ai-company knowledge`.",
+      "- CEO decision 2 (2026-09-26): no `.opencode/tools/` directory; skill scripts are the tool surface (recorded as approved deviation in security report §33).",
+      "- CEO decision 3 (2026-09-26): single conventional commit at close, LS-MEM files only, no push.",
+      "- CEO decision 4 (2026-09-26): no global skill copy at `C:\\Users\\jmlus\\.agents\\skills\\ls-memory`.",
+      "- CEO decision 5 (2026-09-26): ECL lifecycle open + archive (this close).",
+      "- Concurrent-session record hygiene (2026-09-26): homepage session's `active/` plan/summary/review preserved into its parking dir before this change's record was restored; parking status/location front-matter kept at parked/parking."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-26-ls-mem-completion",
+    "updated_at": "2026-09-26"
   }
 ]
-

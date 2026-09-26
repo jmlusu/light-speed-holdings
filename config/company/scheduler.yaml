@@ -27,7 +27,7 @@ scheduler:
       enabled: true
       time_utc: "03:00"
       description: "Consolidate memory entries, prune stale context"
-      command: "memory consolidate"
+      command: "knowledge consolidate"
     escalation_review:
       enabled: true
       time_utc: "08:00"

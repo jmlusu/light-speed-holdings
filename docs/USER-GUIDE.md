@@ -413,30 +413,47 @@ ai-company graph path org_chart --start human-ceo --end lead-engineer
 
 ### Memory Engine
 
-#### `ai-company memory`
+#### `ai-company knowledge`
 
-Manage the 6-type memory store (episodic, semantic, procedural, relational, temporal, aggregate).
+Manage the legacy 6-type JSON knowledge store (episodic, semantic, procedural,
+relational, temporal, aggregate).
 
 ```bash
 # List all memory entries (summary view)
-ai-company memory list
+ai-company knowledge list
 
 # List specific memory type
-ai-company memory list --memory-type episodic
+ai-company knowledge list --memory-type episodic
 
 # Add a memory entry
-ai-company memory add \
+ai-company knowledge add \
   --memory-type semantic \
   --content "The CTO prefers Python over Go for new services" \
   --agent-id human-ceo \
   --tags "preference,tech-stack"
 
 # Search memories
-ai-company memory search --query "python" --limit 10
-ai-company memory search --memory-type episodic --tags "incident"
+ai-company knowledge search "python" --limit 10
+ai-company knowledge search --memory-type episodic --tags "incident"
 
 # Consolidate a memory type into aggregate summary
-ai-company memory consolidate semantic
+ai-company knowledge consolidate semantic
+```
+
+#### LS-MEM memory engine
+
+`ai-company memory` now runs LS-MEM, the local-first memory engine (SQLite + FTS5
+search, classification tiers, tamper-evident audit chain). Quickstart:
+
+```bash
+# Store a memory (--type and --title are required)
+ai-company memory remember "lesson" --type observation --title "Lesson learned" --project my-proj
+
+# Search memories (FTS5), scoped to a project
+ai-company memory search "lesson" --project my-proj
+
+# Engine status and statistics
+ai-company memory status
 ```
 
 ### Workflow Engine
@@ -832,12 +849,12 @@ ai-company graph path org_chart --start human-ceo --end cto  # Find reporting pa
 ### Memory Management
 
 ```bash
-ai-company memory list                                              # Overview
-ai-company memory search --query "architecture" --limit 5           # Search
-ai-company memory add --memory-type semantic \
+ai-company knowledge list                                              # Overview
+ai-company knowledge search "architecture" --limit 5           # Search
+ai-company knowledge add --memory-type semantic \
   --content "Microservices preferred over monolith" \
   --tags "architecture,preference"
-ai-company memory consolidate semantic                              # Consolidate
+ai-company knowledge consolidate semantic                              # Consolidate
 ```
 
 ---
@@ -852,7 +869,7 @@ ai-company memory consolidate semantic                              # Consolidat
 | Tests fail | Run `uv sync --extra dev` to ensure dev deps installed |
 | Agent files not generated | Run `ai-company generate` |
 | `Company directory not found` | Run `ai-company company run` to bootstrap |
-| Memory entries not found | Run `ai-company memory add` to create entries first |
+| Memory entries not found | Run `ai-company knowledge add` to create entries first |
 | Postmortem already exists | Use a different incident ID or delete the existing one |
 | KPI config not found | Ensure `company/config/kpis.yaml` exists |
 | WebSocket connection refused | Ensure dashboard is running: `ai-company dashboard` |
