@@ -75,9 +75,9 @@ if ($Verify) {
                 $rel = $file.FullName.Substring($src.Length)
                 $mirrorFile = Join-Path $dst $rel
                 if (-not (Test-Path -LiteralPath $mirrorFile)) {
-                    $drift += "MISSING: $mirror$rel"
+                    $drift += "MISSING: $dst$rel"
                 } elseif ((Get-FileHashSafe $file.FullName) -ne (Get-FileHashSafe $mirrorFile)) {
-                    $drift += "DRIFT: $mirror$rel"
+                    $drift += "DRIFT: $dst$rel"
                 }
             }
         }
