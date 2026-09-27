@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./brand/brand-tokens.css";
 
+/* Class-based dark mode: the app theme toggles .dark on <html> (App.tsx),
+   so `dark:` utilities must follow the class, not the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: Arial, "Helvetica Neue", Helvetica, sans-serif;
   --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
@@ -92,56 +96,6 @@
 }
 .skip-link:focus {
   top: 0;
-}
-
-/* ── Ambient Mist Effect (CSS-only) ─────────────────────── */
-.ambient-mist {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.ambient-mist-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.12;
-}
-
-/* Light mode mist */
-.ambient-mist-light .ambient-mist-blob-1 {
-  width: 500px; height: 500px;
-  top: -10%; left: -5%;
-  background: rgba(0, 191, 255, 0.4);
-}
-.ambient-mist-light .ambient-mist-blob-2 {
-  width: 400px; height: 400px;
-  top: 30%; right: -5%;
-  background: rgba(7, 10, 64, 0.08);
-}
-.ambient-mist-light .ambient-mist-blob-3 {
-  width: 300px; height: 300px;
-  bottom: -5%; left: 20%;
-  background: rgba(230, 57, 70, 0.06);
-}
-
-/* Dark mode mist */
-.ambient-mist-dark .ambient-mist-blob-1 {
-  width: 600px; height: 600px;
-  top: -15%; left: -10%;
-  background: rgba(0, 191, 255, 0.3);
-}
-.ambient-mist-dark .ambient-mist-blob-2 {
-  width: 500px; height: 500px;
-  top: 25%; right: -10%;
-  background: rgba(230, 57, 70, 0.1);
-}
-.ambient-mist-dark .ambient-mist-blob-3 {
-  width: 400px; height: 400px;
-  bottom: -10%; left: 15%;
-  background: rgba(7, 10, 64, 0.5);
 }
 
 /* ── Focus Visible ──────────────────────────────────────── */

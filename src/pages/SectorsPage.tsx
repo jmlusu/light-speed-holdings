@@ -56,7 +56,7 @@ const SECTORS: Sector[] = [
   {
     name: 'Technology Companies',
     evidence:
-      'The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by 2,557 automated regression tests.',
+      'The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by 2,566 automated regression tests.',
     tier: PROVEN,
   },
   {

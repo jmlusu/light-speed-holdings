@@ -232,3 +232,6 @@ Point-in-time audit reports. These are frozen snapshots — refer to `STATUS.md`
 - **Registry**: synced; 90 agents verified (sync-registry --verify green)
 - **Drift gates**: all green (validate-drift.ps1, pytest doc_drift, lint-ecl.ps1, ruff, mypy, pytest)
 - **Change closed**: via harness-change.ps1, phase ? validate, validation_status: pass
+
+- **2026-09-27**: Three.js strip + 4-auditor read-only audit completed; ADR-037 written; ADR-036 superseded; remediation plan executed; repo tree clean (no three refs).
+

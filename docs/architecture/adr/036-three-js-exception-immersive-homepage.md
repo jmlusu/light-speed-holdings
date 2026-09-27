@@ -1,6 +1,6 @@
 # ADR-036: Three.js Exception for the Immersive Homepage
 
-**Status:** Accepted (CEO-directed)
+**Status:** Superseded by ADR-037 (2026-09-27, user override: Three.js strip)
 **Date:** 2026-09-26
 **ECL:** Immersive 3D homepage rebuild - full WebGL (lusion/igloo class)
 **Cross-refs:** MASTER_SPEC §25, LEGACY_INVENTORY.md, ADR-020 (migrate in place), ADR-034 (dep weight = risk register), compliance ledger #303, `docs/research/immersive-3d-website-research.md`

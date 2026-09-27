@@ -135,7 +135,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Regression Tests</span>
-              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}>2,557 Passing</span>
+              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}>2,566 Passing</span>
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Operating Departments</span>
