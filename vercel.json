@@ -1,16 +1,26 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build",
+  "buildCommand": "bun run build",
   "outputDirectory": "dist",
   "redirects": [
     {
       "source": "/offerings",
-      "destination": "/solutions",
+      "destination": "/what-we-do",
       "permanent": true
     },
     {
       "source": "/work",
-      "destination": "/evidence",
+      "destination": "/proof",
+      "permanent": true
+    },
+    {
+      "source": "/evidence",
+      "destination": "/proof",
+      "permanent": true
+    },
+    {
+      "source": "/industries",
+      "destination": "/what-we-do",
       "permanent": true
     }
   ],
@@ -18,6 +28,16 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
     }
   ],
   "functions": {

@@ -45,5 +45,8 @@ jobs:
       - name: Build site (tsc + vite) — Appendix A check 6
         run: bun run build
 
+      - name: Unit tests (vitest)
+        run: bun run test
+
       - name: Reject fake-success forms — Appendix A check 6 (§10)
         run: python3 scripts/check-site-form-backend.py
