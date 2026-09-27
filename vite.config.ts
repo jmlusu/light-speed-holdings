@@ -15,6 +15,18 @@ export default defineConfig({
       process.env.TURNSTILE_SITE_KEY ?? process.env.VITE_TURNSTILE_SITE_KEY ?? ''
     )
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // ADR-036: three.js must ship as its own lazy chunk, never in the entry bundle.
+        manualChunks(id: string) {
+          const normalized = id.split(path.sep).join('/');
+          if (normalized.includes('node_modules/three')) return 'three';
+          return undefined;
+        },
+      },
+    },
+  },
   server: {
     host: '0.0.0.0',
     port: 3000,

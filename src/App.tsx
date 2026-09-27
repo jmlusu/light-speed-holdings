@@ -45,11 +45,9 @@ export const App: React.FC = () => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
       document.documentElement.style.backgroundColor = '#121518';
-      document.body.style.backgroundColor = '#121518';
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.style.backgroundColor = '#F7F8F9';
-      document.body.style.backgroundColor = '#F7F8F9';
     }
   }, [theme]);
 

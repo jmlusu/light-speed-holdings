@@ -27,13 +27,13 @@
   }
 
   /* Light mode: Morning Mist / Alabaster */
-  html:not(.dark), html:not(.dark) body {
+  html:not(.dark) {
     background-color: #F7F8F9;
     color: #121518;
   }
 
   /* Dark mode: Slate / Deep Mineral */
-  html.dark, html.dark body {
+  html.dark {
     background-color: #121518;
     color: #F7F8F9;
   }
