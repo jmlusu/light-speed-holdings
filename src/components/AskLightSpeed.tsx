@@ -146,6 +146,7 @@ export const AskLightSpeed: React.FC = () => {
         <Reveal>
           <SectionHeading
             theme={theme}
+            level="h1"
             eyebrow="INTERACTIVE DISCOVERY"
             title="Ask LightSpeed"
             lead="Tell us your challenge. Our AI discovery layer maps it to proven capabilities, governance models, and engagement paths — all with explicit honesty badges."
