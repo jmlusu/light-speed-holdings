@@ -2043,7 +2043,7 @@
     "role": "Board Chair",
     "type": "Board",
     "department": "Board",
-    "reportsTo": "",
+    "reportsTo": "board",
     "directReports": [],
     "description": "Presides over all board meetings, sets agendas, and ensures governance standards are upheld.",
     "responsibilities": [
