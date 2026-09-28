@@ -439,14 +439,20 @@ class TestRegistrySync:
     must never drift apart. These tests catch desync regressions."""
 
     def test_yaml_and_json_agent_count_match(self):
-        """The JSON registry must contain exactly as many agents as the YAML."""
-        from ai_company.registry.sync import sync_registry, verify_sync
+        """The checked-in JSON registry must match the YAML (read-only check).
 
-        # First, sync to ensure they match
-        count = sync_registry()
+        Verifies the tracked files are in sync without rewriting them:
+        syncing first would mask real desync and mutate tracked files.
+        """
+        import json
+
+        from ai_company.registry.sync import verify_sync
+
         errors = verify_sync()
-        assert errors == [], f"YAML/JSON desync detected after sync! Errors: {errors}"
-        assert count > 0, "Sync produced zero agents"
+        assert errors == [], f"YAML/JSON desync detected! Errors: {errors}"
+        with open("company/agent-registry.json", encoding="utf-8") as f:
+            count = len(json.load(f))
+        assert count > 0, "Registry JSON contains zero agents"
 
     def test_sync_roundtrip_preserves_all_agents(self, tmp_path: Path):
         """Syncing to a temp JSON and reading it back must match the YAML."""
