@@ -1,11 +1,20 @@
-import React, { useState, useCallback } from 'react';
-import { MessageSquare, Sparkles, ArrowRight, Send, Bot, User, CheckCircle2, ShieldCheck } from 'lucide-react';
+import React, { useState, useCallback, useMemo } from 'react';
+import { MessageSquare, Sparkles, ArrowRight, Send, Bot, User, CheckCircle2, ShieldCheck, Bot as BotIcon } from 'lucide-react';
 import { SectionHeading } from './site/SectionHeading';
 import { CtaBand } from './site/CtaBand';
 import { HonestyBadge } from './site/HonestyBadge';
 import { Reveal } from './Reveal';
 import { useSite } from '../site-context';
 import { solutions } from '../data/siteContent';
+import publicAgentsRaw from '@/data/public-agent-registry.json';
+import type { PublicAgent, AgentType } from '@/data/publicAgentRegistry';
+import type { HonestyTone } from '@/data/siteContent';
+
+const publicAgents: PublicAgent[] = (publicAgentsRaw as any[]).map(a => ({
+  ...a,
+  type: a.type as AgentType,
+  honestyStatus: a.honestyStatus as HonestyTone,
+}));
 
 type Step = 'welcome' | 'problem' | 'context' | 'results' | 'cta';
 
@@ -21,6 +30,7 @@ interface DiscoveryState {
   industry: string;
   timeline: string;
   matchedSolutions: typeof solutions;
+  matchedAgents: PublicAgent[];
 }
 
 const WELCOME_MESSAGE = `Welcome to Ask LightSpeed — the interactive discovery layer for our AI Company Builder platform.
@@ -56,6 +66,7 @@ export const AskLightSpeed: React.FC = () => {
     industry: '',
     timeline: '',
     matchedSolutions: [],
+    matchedAgents: [],
   });
   const [showQuickQuestions, setShowQuickQuestions] = useState(true);
 
@@ -85,16 +96,32 @@ export const AskLightSpeed: React.FC = () => {
         addMessage('assistant', `Great — ${userText}. Now, what is your target timeline?\n`);
       } else {
         setState(prev => ({ ...prev, timeline: userText, step: 'results' }));
-        const matched = matchSolutions(state.problem, userText);
+        const matchedSolutions = matchSolutions(state.problem, userText);
+        const matchedAgents = matchAgents(state.problem, userText);
         addMessage('assistant', `Based on your inputs, here's what I found:\n\n`);
         setTimeout(() => {
-          setState(prev => ({ ...prev, matchedSolutions: matched }));
-          const resultText = buildResultsText(matched, userText);
+          setState(prev => ({ ...prev, matchedSolutions, matchedAgents }));
+          const resultText = buildResultsText(matchedSolutions, userText);
           addMessage('assistant', resultText);
         }, 500);
       }
     }
   }, [inputValue, state, addMessage]);
+
+  const matchAgents = useCallback((problem: string, context: string): PublicAgent[] => {
+    const lowerProblem = problem.toLowerCase();
+    const lowerContext = context.toLowerCase();
+    return publicAgents.filter((agent: PublicAgent) => {
+      const roleMatch = agent.role.toLowerCase().includes(lowerProblem.slice(0, 4)) ||
+        lowerProblem.includes(agent.role.toLowerCase().split(' ').slice(0, 2).join(' '));
+      const descMatch = agent.description.toLowerCase().slice(0, 30).includes(lowerProblem.slice(0, 4));
+      const capabilityMatch = agent.capabilities.some((cap: string) => 
+        lowerProblem.includes(cap.toLowerCase().slice(0, 4)) ||
+        lowerContext.includes(cap.toLowerCase().slice(0, 4))
+      );
+      return roleMatch || descMatch || capabilityMatch;
+    }).slice(0, 5);
+  }, []);
 
   const matchSolutions = useCallback((problem: string, context: string): typeof solutions => {
     const lowerProblem = problem.toLowerCase();
@@ -117,7 +144,7 @@ export const AskLightSpeed: React.FC = () => {
     matched.forEach((s, i) => {
       text += `${i + 1}. **${s.title}** — ${s.description.slice(0, 80)}...\n`;
     });
-    text += `\nWith a ${timeline.toLowerCase()}, we can start with an Executive Boardroom Briefing to align on scope, then move to ${matched[0]?.title || 'deployment'}.\n\nWould you like to start a conversation?`;
+    text += `\nWith a ${timeline.toLowerCase()}, we can start with an Executive Boardroom Briefing to align on scope, then move to ${matched[0]?.title || 'deployment'}.\n\nI also identified specific agents from our 90-agent workforce that would handle this engagement.\n\nWould you like to start a conversation?`;
     return text;
   }, []);
 
@@ -131,6 +158,11 @@ export const AskLightSpeed: React.FC = () => {
 
   const handleResultClick = useCallback((solution: typeof solutions[0]) => {
     addMessage('assistant', `You selected ${solution.title}. This is a ${solution.honestyBadge} capability.`);
+    setState(prev => ({ ...prev, step: 'cta' }));
+  }, [addMessage]);
+
+  const handleAgentClick = useCallback((agent: PublicAgent) => {
+    addMessage('assistant', `You selected ${agent.role}. This agent handles: ${agent.capabilities.slice(0, 3).join(', ')}. This is a Proven in-house agent.`);
     setState(prev => ({ ...prev, step: 'cta' }));
   }, [addMessage]);
 
@@ -254,38 +286,80 @@ export const AskLightSpeed: React.FC = () => {
           )}
 
           {/* Results (step: results) */}
-          {state.step === 'results' && state.matchedSolutions.length > 0 && (
+          {state.step === 'results' && (state.matchedSolutions.length > 0 || state.matchedAgents.length > 0) && (
             <div className={`px-6 py-4 border-t ${
               isLight ? 'border-ls-grey-dark/20' : 'border-ls-white/10'
             }`}>
-              <p className={`text-xs font-body font-medium tracking-wider mb-3 ${
-                isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
-              }`}>
-                Matched capabilities:
-              </p>
-              <div className="space-y-2">
-                {state.matchedSolutions.map((s, i) => (
-                  <button
-                    key={s.slug}
-                    onClick={() => handleResultClick(s)}
-                    className={`w-full text-left px-4 py-3 rounded-xl border transition-all cursor-pointer ${
-                      isLight
-                        ? 'border-ls-grey-dark/20 hover:border-ls-red/50 hover:bg-ls-red/5'
-                        : 'border-ls-white/10 hover:border-ls-red/50 hover:bg-ls-red/5'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="font-display font-bold text-sm">{s.title}</span>
-                        <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                          {s.description.slice(0, 60)}...
-                        </p>
-                      </div>
-                      <HonestyBadge label={{ label: s.honestyBadge, tone: s.honestyBadge.includes('proven') ? 'proven' : s.honestyBadge.includes('pilot') ? 'pilot' : s.honestyBadge.includes('Fieldable') ? 'fieldable' : 'development' }} />
-                    </div>
-                  </button>
-                ))}
-              </div>
+              {state.matchedSolutions.length > 0 && (
+                <>
+                  <p className={`text-xs font-body font-medium tracking-wider mb-3 ${
+                    isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                  }`}>
+                    Matched capabilities:
+                  </p>
+                  <div className="space-y-2 mb-6">
+                    {state.matchedSolutions.map((s, i) => (
+                      <button
+                        key={s.slug}
+                        onClick={() => handleResultClick(s)}
+                        className={`w-full text-left px-4 py-3 rounded-xl border transition-all cursor-pointer ${
+                          isLight
+                            ? 'border-ls-grey-dark/20 hover:border-ls-red/50 hover:bg-ls-red/5'
+                            : 'border-ls-white/10 hover:border-ls-red/50 hover:bg-ls-red/5'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-display font-bold text-sm">{s.title}</span>
+                            <p className={`text-xs ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                              {s.description.slice(0, 60)}...
+                            </p>
+                          </div>
+                          <HonestyBadge label={{ label: s.honestyBadge, tone: s.honestyBadge.includes('proven') ? 'proven' : s.honestyBadge.includes('pilot') ? 'pilot' : s.honestyBadge.includes('Fieldable') ? 'fieldable' : 'development' }} />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {state.matchedAgents.length > 0 && (
+                <>
+                  <p className={`text-xs font-body font-medium tracking-wider mb-3 ${
+                    isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                  }`}>
+                    Recommended agents for this challenge:
+                  </p>
+                  <div className="space-y-2 mb-6">
+                    {state.matchedAgents.map((agent, i) => (
+                      <button
+                        key={agent.name}
+                        onClick={() => handleAgentClick(agent)}
+                        className={`w-full text-left px-4 py-3 rounded-xl border transition-all cursor-pointer ${
+                          isLight
+                            ? 'border-ls-grey-dark/20 hover:border-ls-cyan/50 hover:bg-ls-cyan/5'
+                            : 'border-ls-white/10 hover:border-ls-cyan/50 hover:bg-ls-cyan/5'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <BotIcon className="w-5 h-5 text-ls-cyan" />
+                            <div>
+                              <span className="font-display font-bold text-sm">{agent.role}</span>
+                              <p className={`text-[10px] ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                                {agent.description.slice(0, 50)}...
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <HonestyBadge label={{ label: 'Proven in-house', tone: 'proven' }} />
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
