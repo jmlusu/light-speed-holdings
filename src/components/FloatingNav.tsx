@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Menu, X, Sun, Moon } from 'lucide-react';
+import { PRIMARY_CTA_LABEL } from '../data/ctas';
 
 interface FloatingNavProps {
   onRequestBriefing: (summary?: string) => void;
@@ -91,11 +92,11 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onRequestBriefing('Start a Conversation');
+                onRequestBriefing(PRIMARY_CTA_LABEL);
               }}
               className="ripple-on flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs tracking-wider transition-all cursor-pointer shadow-md bg-ls-red hover:bg-ls-red/90 text-ls-white shadow-ls-red/25 border-t border-ls-white/20 active:scale-95"
             >
-              <span>Start a Conversation</span>
+              <span>{PRIMARY_CTA_LABEL}</span>
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -130,11 +131,11 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onRequestBriefing('Start a Conversation');
+                onRequestBriefing(PRIMARY_CTA_LABEL);
               }}
               className="ripple-on w-full py-3 rounded-full font-bold text-xs tracking-widest bg-ls-red text-ls-white flex items-center justify-center gap-2 shadow-md hover:bg-ls-red/90 transition-all mt-2"
             >
-              <span>Start a Conversation</span>
+              <span>{PRIMARY_CTA_LABEL}</span>
             </button>
           </div>
         )}

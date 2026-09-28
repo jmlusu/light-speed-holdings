@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowRight, Sparkles } from 'lucide-react';
 import { homeImmersiveCopy } from '../data/homeImmersiveCopy';
 import { liveTestCount } from '../data/metrics';
+import { CTAS } from '../data/ctas';
+import { capabilityTitles } from '../data/capabilities';
 import { ScrimPanel } from './home/ScrimPanel';
 
 interface HeroSectionProps {
@@ -10,7 +12,7 @@ interface HeroSectionProps {
   onRequestBriefing: (summary?: string) => void;
 }
 
-const HERO_CHIPS = ['STRATEGY', 'BUILD', 'GOVERN', 'RESEARCH & POLICY'];
+const HERO_CHIPS = [...capabilityTitles];
 
 const HERO_CARDS = [
   {
@@ -96,10 +98,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             </button>
 
             <Link
-              to="/contact"
+              to={CTAS.assessment.to}
               className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest border border-ls-red text-ls-red bg-transparent transition-all cursor-pointer hover:bg-ls-red/10"
             >
-              <span>Start a Conversation</span>
+              <span>{CTAS.assessment.label}</span>
               <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
 
@@ -178,7 +180,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 font-body text-[11px] font-bold tracking-widest">
+            <div className="flex flex-wrap items-center gap-2 font-body text-[11px] font-bold tracking-widest uppercase">
               {HERO_CHIPS.map((step, i) => (
                 <React.Fragment key={step}>
                   {i > 0 && <span className="text-ls-red" aria-hidden="true">→</span>}

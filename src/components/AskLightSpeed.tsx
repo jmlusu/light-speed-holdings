@@ -9,6 +9,7 @@ import { solutions } from '../data/siteContent';
 import publicAgentsRaw from '@/data/public-agent-registry.json';
 import type { PublicAgent, AgentType } from '@/data/publicAgentRegistry';
 import type { HonestyTone } from '@/data/siteContent';
+import { CTAS } from '@/data/ctas';
 
 const publicAgents: PublicAgent[] = (publicAgentsRaw as any[]).map(a => ({
   ...a,
@@ -377,7 +378,7 @@ export const AskLightSpeed: React.FC = () => {
                 onClick={handleStartConversation}
                 className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
               >
-                Start a Conversation
+                {CTAS.primary.label}
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -432,10 +433,8 @@ export const AskLightSpeed: React.FC = () => {
 
         <CtaBand
           theme={theme}
-          title="Or Skip the Chat — Start a Conversation"
+          title={`Or Skip the Chat — ${CTAS.primary.label}`}
           text="If you prefer a human conversation immediately, our team responds within two business days."
-          ctaLabel="Start a Conversation"
-          ctaTo="/contact"
         />
       </div>
     </section>

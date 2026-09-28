@@ -1,3 +1,5 @@
+import { CTAS } from './ctas';
+
 export interface ImmersiveChapter {
   id: string;
   num: string;
@@ -20,7 +22,7 @@ export const homeImmersiveCopy: HomeImmersiveCopy = {
   heroTitleAccent: 'that ships.',
   heroLead:
     'Agentic AI systems built and operated from Malawi for organizations across SADC. 90 agents, 20 departments, five-tier human approval.',
-  heroCta: 'Request an Executive Briefing',
+  heroCta: CTAS.primary.label,
   chapters: [
     { id: 'thesis', num: '01', label: 'Thesis' },
     { id: 'builder', num: '02', label: 'AI Builder' },

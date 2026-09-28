@@ -3,6 +3,8 @@
     brief (Sep 2026) + verified platform facts from company-registry/tests.
     Every claim here carries its honesty status. No invented numbers. */
 
+import { capabilityTitles } from './capabilities';
+
 export type HonestyTone = 'proven' | 'pilot' | 'fieldable' | 'development';
 
 export interface HonestyLabel {
@@ -28,7 +30,7 @@ export const company = {
   heroHeadline: 'Build the intelligent enterprise.',
   heroSubline:
     'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems — in Malawi, across SADC, and beyond.',
-  valueCycle: ['Strategy', 'Build', 'Govern', 'Research & Policy'] as const,
+  valueCycle: capabilityTitles,
   thesis: 'Aspire. Act. Achieve.',
 };
 

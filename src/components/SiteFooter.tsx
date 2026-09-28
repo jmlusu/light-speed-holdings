@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { CTAS } from '../data/ctas';
 
 interface SiteFooterProps {
   theme: 'light' | 'dark';
@@ -34,7 +35,7 @@ const COLUMNS: FooterColumn[] = [
     links: [
       { name: 'Contact', to: '/contact' },
       { name: 'Ask LightSpeed', to: '/ask' },
-      { name: 'Start a Conversation', to: '/contact' },
+      { name: CTAS.primary.label, to: CTAS.primary.to },
     ],
   },
   {

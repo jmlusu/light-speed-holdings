@@ -6,6 +6,7 @@ import { HonestyBadge } from './site/HonestyBadge';
 import { Reveal } from './Reveal';
 import { CtaBand } from './site/CtaBand';
 import { company } from '../data/siteContent';
+import { CTAS } from '../data/ctas';
 
 interface AiCompanyBuilderSectionProps {
   theme: 'light' | 'dark';
@@ -144,11 +145,11 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
               Begin with a governed discovery conversation — not a product demo. We will evaluate your readiness honestly and define exactly which phase fits your goals.
             </p>
           </div>
-<Link
-              to="/contact"
+            <Link
+              to={CTAS.primary.to}
               className="ripple-on inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
             >
-              Start a Conversation
+              {CTAS.primary.label}
               <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
             </Link>
         </div>

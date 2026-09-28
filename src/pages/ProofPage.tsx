@@ -319,8 +319,6 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
         theme={theme}
         title="Schedule an Executive Proof Walkthrough"
         text="Meet with our CEO to inspect the running agent platform, verify our audit logs, and discuss your institution's specific automation requirements."
-        ctaLabel="Start a Conversation"
-        ctaTo="/contact"
       />
     </>
   );

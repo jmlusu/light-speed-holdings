@@ -8,6 +8,7 @@ import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
 import { OFFER_FAMILIES } from '../data/useCaseCatalogData';
 import { solutions, GOVERNANCE_SOLUTION } from '../data/siteContent';
+import { CTAS } from '../data/ctas';
 
 interface WhatWeDoPageProps {
   theme: 'light' | 'dark';
@@ -32,10 +33,10 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            onClick={() => onRequestBriefing?.('Request an AI Readiness Assessment')}
+            onClick={() => onRequestBriefing?.(CTAS.assessment.label)}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
           >
-            Request an AI Readiness Assessment
+            {CTAS.assessment.label}
             <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
           <a
@@ -46,7 +47,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                 : 'border-ls-white/20 text-ls-white hover:bg-ls-white/5'
             }`}
           >
-            View Service Catalog
+            {CTAS.catalog.label}
           </a>
         </div>
       </PageIntro>
@@ -406,10 +407,10 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
       {/* 6. CLEAR CTA */}
       <CtaBand
         theme={theme}
-        title="Request an AI Readiness Assessment"
+        title={CTAS.assessment.label}
         text="Speak with our executive team. We will evaluate your data and workflow readiness honestly — and determine exactly which service tier fits your goals."
-        ctaLabel="Request an AI Readiness Assessment"
-        ctaTo="/contact"
+        ctaLabel={CTAS.assessment.label}
+        ctaTo={CTAS.assessment.to}
       />
     </>
   );

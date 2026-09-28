@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Reveal } from '../Reveal';
+import { CTAS } from '../../data/ctas';
 
 interface CtaBandProps {
   theme: 'light' | 'dark';
@@ -21,10 +22,10 @@ interface CtaBandProps {
  */
 export const CtaBand: React.FC<CtaBandProps> = ({
   theme,
-  title = 'Start a Conversation',
+  title = CTAS.primary.label,
   text = 'Tell us where your organisation is today — we will be honest about whether we can help, and exactly what it takes to start.',
-  ctaLabel = 'Start a Conversation',
-  ctaTo = '/contact',
+  ctaLabel = CTAS.primary.label,
+  ctaTo = CTAS.primary.to,
   id,
   onRequestBriefing,
   ctaLevel = 'primary',
