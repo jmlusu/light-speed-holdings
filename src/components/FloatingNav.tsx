@@ -91,11 +91,11 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onRequestBriefing('Book an Executive Briefing');
+                onRequestBriefing('Start a Conversation');
               }}
               className="ripple-on flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs tracking-wider transition-all cursor-pointer shadow-md bg-ls-red hover:bg-ls-red/90 text-ls-white shadow-ls-red/25 border-t border-ls-white/20 active:scale-95"
             >
-              <span>Book a Briefing</span>
+              <span>Start a Conversation</span>
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -130,11 +130,11 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onRequestBriefing('Book an Executive Briefing');
+                onRequestBriefing('Start a Conversation');
               }}
               className="ripple-on w-full py-3 rounded-full font-bold text-xs tracking-widest bg-ls-red text-ls-white flex items-center justify-center gap-2 shadow-md hover:bg-ls-red/90 transition-all mt-2"
             >
-              <span>Book an Executive Briefing</span>
+              <span>Start a Conversation</span>
             </button>
           </div>
         )}

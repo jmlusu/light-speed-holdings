@@ -2,13 +2,14 @@ import React from 'react';
 import { HeroSection } from '../components/HeroSection';
 import {
   ChapterRail,
-  ThesisSection,
-  BuilderSection,
+  OperatingModelSection,
+  AICompanyBuilderSection,
   WorkforceSection,
+  SolutionsSection,
   SectorsSection,
   ProofSection,
   InsightsSection,
-  AboutBand,
+  AboutSection,
   BriefingSection,
 } from '../components/home';
 
@@ -26,14 +27,25 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
     <ChapterRail theme={theme} />
 
     <div className="relative z-10 lg:pl-16">
+      {/* 1. Orientation + 2. Core Proposition */}
       <HeroSection theme={theme} onRequestBriefing={onRequestBriefing} />
-      <ThesisSection theme={theme} />
-      <BuilderSection theme={theme} />
+      {/* 3. Operating Model: Strategy → Build → Govern → Research & Policy */}
+      <OperatingModelSection theme={theme} />
+      {/* 4. AI Company Builder: Opportunity → Design → Build → Deploy → Govern → Measure */}
+      <AICompanyBuilderSection theme={theme} />
+      {/* 5. 90-Agent Workforce */}
       <WorkforceSection theme={theme} />
+      {/* 6. Solutions: Practical Business Outcomes */}
+      <SolutionsSection theme={theme} />
+      {/* 7. Sectors: Where We Apply It */}
       <SectorsSection theme={theme} />
+      {/* 8. Proof: Verified Operating Metrics */}
       <ProofSection theme={theme} />
+      {/* 9. Insights: Pharos Thought Leadership */}
       <InsightsSection theme={theme} />
-      <AboutBand theme={theme} />
+      {/* 10. About: Mission, Values, What We Promise Whom */}
+      <AboutSection theme={theme} />
+      {/* CTA: Start a Conversation */}
       <BriefingSection theme={theme} />
     </div>
   </div>

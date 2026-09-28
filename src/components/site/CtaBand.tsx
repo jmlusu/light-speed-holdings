@@ -21,9 +21,9 @@ interface CtaBandProps {
  */
 export const CtaBand: React.FC<CtaBandProps> = ({
   theme,
-  title = 'Book an Executive Briefing',
+  title = 'Start a Conversation',
   text = 'Tell us where your organisation is today — we will be honest about whether we can help, and exactly what it takes to start.',
-  ctaLabel = 'Book an Executive Briefing',
+  ctaLabel = 'Start a Conversation',
   ctaTo = '/contact',
   id,
   onRequestBriefing,

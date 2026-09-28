@@ -34,7 +34,7 @@ const COLUMNS: FooterColumn[] = [
     links: [
       { name: 'Contact', to: '/contact' },
       { name: 'Ask LightSpeed', to: '/ask' },
-      { name: 'Book a Briefing', to: '/contact' },
+      { name: 'Start a Conversation', to: '/contact' },
     ],
   },
   {

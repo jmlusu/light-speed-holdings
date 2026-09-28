@@ -358,9 +358,9 @@ export const AskLightSpeed: React.FC = () => {
 
         <CtaBand
           theme={theme}
-          title="Or Skip the Chat — Book Directly"
-          text="If you prefer a human conversation immediately, our Executive Briefing team responds within two business days."
-          ctaLabel="Book an Executive Briefing"
+          title="Or Skip the Chat — Start a Conversation"
+          text="If you prefer a human conversation immediately, our team responds within two business days."
+          ctaLabel="Start a Conversation"
           ctaTo="/contact"
         />
       </div>
