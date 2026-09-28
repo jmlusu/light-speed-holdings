@@ -19,7 +19,7 @@ export const SectorsSection: React.FC<SectorsSectionProps> = ({ theme }) => {
         theme={theme}
         eyebrow="SECTORS"
         title="Where We Apply It"
-        lead="Only claim sector experience where evidence exists. Each area is labeled with its honest status — proven, pilot, fieldable, or emerging."
+        lead="Only claim sector experience where evidence exists. Each area carries one of four evidence tiers: proven experience, current capability, demonstration, or future opportunity."
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {sectors.map((sector, idx) => (

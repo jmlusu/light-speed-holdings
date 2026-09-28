@@ -73,9 +73,7 @@ const SolutionCard: React.FC<{
           {SPEC_QUESTIONS.map(({ key, label }) => (
             <div key={key}>
               <dt
-                className={`font-body text-[9px] font-bold tracking-widest ${
-                  isLight ? 'text-ls-red' : 'text-ls-red'
-                }`}
+                className={`font-body text-[9px] font-bold tracking-widest text-ls-red`}
               >
                 {label}
               </dt>
@@ -143,7 +141,7 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ theme }) => {
       {/* Engagement model strip */}
       <section
         className={`px-4 sm:px-8 max-w-7xl mx-auto w-full py-16 sm:py-20 border-t ${
-          isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80'
+          isLight ? 'border-ls-grey-dark/80' : 'border-ls-white/10'
         }`}
       >
         <SectionHeading

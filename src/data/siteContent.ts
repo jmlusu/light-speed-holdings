@@ -35,6 +35,23 @@ export const company = {
 };
 
 /* ── Insights ─────────────────────────────────────────── */
+/* MASTER_SPEC §13 content categories — one canonical list (§15),
+   consumed by InsightsPage. */
+export const insightCategories: string[] = [
+  'Agentic AI',
+  'AI Company Building',
+  'AI governance',
+  'AI policy',
+  'Data architecture',
+  'Digital transformation',
+  'African AI',
+  'Malawi technology',
+  'SADC technology',
+  'Market intelligence',
+  'Operating models',
+  'AI implementation',
+];
+
 export const insightTeasers: { title: string; topic: string; to: string }[] = [
   { title: 'The SADC AI Opportunity', topic: 'AI IN AFRICA', to: '/insights' },
   { title: 'What Agentic AI Means for African Governments', topic: 'AGENTIC AI', to: '/insights' },
@@ -312,6 +329,7 @@ export const workPolicy = [
 
 export default {
   company,
+  insightCategories,
   insightTeasers,
   solutions,
   GOVERNANCE_SOLUTION,

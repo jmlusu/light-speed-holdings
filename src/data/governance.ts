@@ -118,7 +118,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     id: 'registry.insights',
     state: 'published',
     owner: 'thought-leadership-lead',
-    source: 'src/data/siteContent.ts (insightTeasers)',
+    source: 'src/data/siteContent.ts (insightTeasers, insightCategories)',
     category: 'general',
     lastReviewed: '2026-09-28',
   },

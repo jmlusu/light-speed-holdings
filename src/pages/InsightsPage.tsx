@@ -4,26 +4,12 @@ import { NewsletterSignup } from '../components/NewsletterSignup';
 import { RelatedLinks } from '../components/site/RelatedLinks';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { Reveal } from '../components/Reveal';
+import { insightCategories } from '../data/siteContent';
 
 interface InsightsPageProps {
   theme: 'light' | 'dark';
   onRequestBriefing: (summary?: string) => void;
 }
-
-const INSIGHT_CATEGORIES = [
-  'Agentic AI',
-  'AI Company Building',
-  'AI governance',
-  'AI policy',
-  'Data architecture',
-  'Digital transformation',
-  'African AI',
-  'Malawi technology',
-  'SADC technology',
-  'Market intelligence',
-  'Operating models',
-  'AI implementation',
-];
 
 export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
@@ -70,7 +56,7 @@ export const InsightsPage: React.FC<InsightsPageProps> = ({ theme, onRequestBrie
         />
         <Reveal>
           <ul className="flex flex-wrap gap-2.5">
-            {INSIGHT_CATEGORIES.map((cat) => (
+            {insightCategories.map((cat) => (
               <li
                 key={cat}
                 className={`px-3.5 py-1.5 rounded-full border font-body text-[11px] font-bold tracking-wider ${
