@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Reveal } from '../Reveal';
 import { HomeSection } from './HomeSection';
+import { liveTestCount, metrics } from '../../data/metrics';
 
 interface ProofSectionProps {
   theme: 'light' | 'dark';
 }
 
 const PROOF_STATS = [
-  { value: 90, label: 'Agent Configurations', format: 'comma' },
-  { value: 2557, label: 'Automated Regression Tests', format: 'comma' },
-  { value: 20, label: 'Departments Onboarded' },
+  { value: metrics.agentCount, label: 'Agent Configurations', format: 'comma' },
+  { value: liveTestCount, label: 'Automated Regression Tests', format: 'comma' },
+  { value: metrics.departments, label: 'Departments Onboarded' },
   { value: 5, label: 'Human Approval Gates', suffix: '-Tier' },
 ];
 
@@ -34,7 +35,7 @@ export const ProofSection: React.FC<ProofSectionProps> = ({ theme }) => {
                 {PROOF_STATS.map((stat, sIdx) => (
                   <div key={sIdx} className="min-w-0">
                       <span className="block text-xl sm:text-2xl font-black font-body tracking-tight">
-                        {stat.value}
+                        {stat.format === 'comma' ? stat.value.toLocaleString('en-US') : stat.value}
                         {stat.suffix}
                       </span>
                     <span className={`block mt-1 text-[10px] font-body font-bold tracking-widest uppercase ${

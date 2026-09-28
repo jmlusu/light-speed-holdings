@@ -1,6 +1,5 @@
 import React from 'react';
 import { HeroSection } from '../components/HeroSection';
-import { ImmersiveStage } from '../components/ImmersiveStage';
 import {
   ChapterRail,
   ThesisSection,
@@ -20,14 +19,9 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) => (
   <div className="relative">
-    {/* Contract A: stage mounts first, behind everything. The opaque fixed
-        canvas (alpha: false) would paint above the non-positioned site footer
-        at z-0, so the containment div holds it in a negative stacking context
-        that still sits over the propagated body background. pointer-events
-        stay on the DOM layer. */}
-    <div className="fixed inset-0 z-[-1] pointer-events-none" aria-hidden="true">
-      <ImmersiveStage theme={theme} />
-    </div>
+    {/* MASTER_SPEC §19 static fallback: mist/slate backdrop occupies the same
+        fixed negative-z layer the WebGL stage used to paint. */}
+    <div className="fixed inset-0 z-[-1] pointer-events-none bg-[#F7F8F9] dark:bg-[#121518]" aria-hidden="true" />
 
     <ChapterRail theme={theme} />
 

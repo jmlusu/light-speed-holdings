@@ -5,6 +5,7 @@ import { HonestyBadge } from '../components/site/HonestyBadge';
 import { CtaBand } from '../components/site/CtaBand';
 import { Reveal } from '../components/Reveal';
 import { HonestyLabel } from '../data/siteContent';
+import { liveTestCount } from '../data/metrics';
 
 interface SectorsPageProps {
   theme: 'light' | 'dark';
@@ -56,7 +57,7 @@ const SECTORS: Sector[] = [
   {
     name: 'Technology Companies',
     evidence:
-      'The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by 2,566 automated regression tests.',
+      `The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by ${liveTestCount.toLocaleString('en-US')} automated regression tests.`,
     tier: PROVEN,
   },
   {

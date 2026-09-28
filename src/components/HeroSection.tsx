@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowRight, Sparkles } from 'lucide-react';
 import { homeImmersiveCopy } from '../data/homeImmersiveCopy';
+import { liveTestCount } from '../data/metrics';
 import { ScrimPanel } from './home/ScrimPanel';
 
 interface HeroSectionProps {
@@ -135,7 +136,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Regression Tests</span>
-              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}>2,566 Passing</span>
+              <span className={`text-sm font-bold font-body ${isLight ? 'text-ls-navy' : 'text-ls-cyan'}`}>{liveTestCount.toLocaleString('en-US')} Passing</span>
             </div>
             <div>
               <span className={`text-[11px] font-body font-bold block ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>Operating Departments</span>

@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-27 (rebuilt against current working tree; supersedes the 2026-09-25 map)
 **Purpose:** Map every major `MASTER_SPEC.md` requirement → current implementation status → required action. Companion to `LEGACY_INVENTORY.md` (evidence catalogue) per `REBUILD_DIRECTIVE.md` §2.
-**Baseline:** commit `52b27136`; verification baseline in `LEGACY_INVENTORY.md` §1 (re-verified post-Step-1 at 18:21: tsc ✅ 0 / vitest ✅ 17/17 / build ✅ / pytest 2,566 passed).
+**Baseline:** commit `52b27136`; verification baseline in `LEGACY_INVENTORY.md` §1 (re-verified post-Step-1 at 18:21: tsc ✅ 0 / vitest ✅ 17/17 / build ✅ / pytest 2,566 passed). **Post-repair re-verification (QA Lead):** tsc ✅ 0 / vitest ✅ 17/17 / build ✅ 427.92 kB / legacy 2,557 only at `metrics.ts:33-34` (intentional audit trail) / liveTestCount 2,566 at `metrics.ts:39` / 4 live importers of `data/metrics`.
 
 **Status legend:** ✅ COMPLIANT · 🟡 PARTIAL · ❌ NOT COMPLIANT · ⭕ NOT IMPLEMENTED · 🅰️ DECISION REQUIRED
 **Action legend:** KEEP · MODIFY · REBUILD · REMOVE · ADD
@@ -156,7 +156,7 @@
 | Requirement | Current implementation | Status | Action |
 |---|---|---|---|
 | Natural/architectural metaphors, no neon/glassmorphism-everywhere | Stone/mist/scrim motifs in home sections; textures confined (mostly) | 🟡 | MODIFY — audit `pharos-stone-masonry` + texture layers (§31 cleanup vs approved design) |
-| Light `#F7F8F9`, dark `#121518`, brand navy/red/cyan accents | `brand-tokens.css` exact values; index.css dark vars `#121518` | ✅ | KEEP |
+| Light `#F7F8F9`, dark `#121518`, brand navy/red/cyan accents | `brand-tokens.css` exact values; `index.css:6` `@custom-variant dark` + dark vars `#121518` | ✅ | KEEP |
 | — | `index.html` body `dark:bg-[#070a40]` (navy) conflicts with `#121518` | ❌ | MODIFY — align to `#121518` |
 | Both modes first-class, tuned independently; respect system preference + control | Explicit toggle ✅, per-mode classes throughout; **defaults dark without `prefers-color-scheme`** | 🟡 | MODIFY — read system preference on first visit |
 
@@ -185,7 +185,7 @@
 
 | Requirement | Current implementation | Status | Action |
 |---|---|---|---|
-| Fast despite sophisticated visuals; lazy loading; minimal JS | Route-level code split via router; Three.js removed with Step 1 — single 428 kB JS bundle, no separate three chunk | ✅ | KEEP — no chunk >500 kB warning remains |
+| Fast despite sophisticated visuals; lazy loading; minimal JS | Route-level code split via router; Three.js removed with Step 1 — single 427.92 kB JS bundle (gzip 122.46 kB), no separate three chunk | ✅ | KEEP — no chunk >500 kB warning remains |
 | Heavy tech only where materially improving | Three.js removed with Step 1 (user decision: STRIP, 2026-09-27) — §25 caution now satisfied; §19 static fallback | ✅ | DECIDED 2026-09-27: STRIP — see ADR-037 (supersedes ADR-036) |
 
 ### §26 Technical architecture
@@ -250,7 +250,7 @@
 | Calm Intelligence visible | ✅ | tokens + CSS |
 | Accessibility implemented | 🟡 | Partial; no automated gate |
 | Performance protected | 🟡 | Lazy three.js; chunk warning open |
-| Claims evidence-based | 🟡 | Honesty system good; "100% Auditable" + stale 2,557 to fix |
+| Claims evidence-based | 🟡 | Honesty system good; "100% Auditable" unqualified; stale 2,557 fixed → 2,566 in siteContent.ts (legacyPytestCount: 2557 kept as audit trail) |
 | Content structured and governed | 🟡 | Registries partial; no state model |
 | Responsive | 🟡 | Designed for it; 390px verification not run this session |
 | No unnecessary legacy architecture | 🟡 | Cleanup backlog above |
@@ -266,7 +266,7 @@ Enforced: MASTER_SPEC > brand tokens > approved decisions > tech constraints > e
 | # | Action | Spec refs | Inventory ref |
 |---|---|---|---|
 | 1 | ~~Decide Three.js retain-vs-remove~~ **DECIDED 2026-09-27: STRIP** (user override) — Step 1 executed; ADR still to be written per §31 | §25, §31, §33 | §5.2, §10 |
-| 2 | Canonical `metrics` registry; fix 2,557 → verified value; remove 6 duplicated call-sites | §15, §16 | §7 |
+| 2 | ~~Canonical `metrics` registry; fix 2,557 → verified value; remove 6 duplicated call-sites~~ **DONE** — `metrics.ts` created with liveTestCount=2566, legacyPytestCount=2557 (audit trail); 4 live importers; 6 call-sites now consume from registry | §15, §16 | §7 |
 | 3 | Qualify "100% Auditable"; re-verify case-study/sector evidence | §12, §17 | §7, §14 |
 | 4 | Add homepage Solutions beat (§8 #6) | §8 | §4 |
 | 5 | Registry-drive 90-agent/workforce copy; render agent views from `agent-registry.public.json`; drop `companyData.ts` or rewire | §5, §15, §28 | §6 |
@@ -280,4 +280,4 @@ Enforced: MASTER_SPEC > brand tokens > approved decisions > tech constraints > e
 
 ---
 
-**Status:** Specification map complete against the 2026-09-27 working tree. Updated after Step 1 (Three.js strip) + audit reconciliation; application code modified by Step 1 — see TARGET_ARCHITECTURE §10 roadmap for execution state.
+**Status:** Specification map complete against the 2026-09-27 working tree. Updated after Step 1 (Three.js strip) + audit reconciliation + post-repair re-verification; application code modified by Step 1 and post-repair fixes (5 files) — see TARGET_ARCHITECTURE §10 roadmap for execution state. Root files are canonical; `docs/` copies are historical snapshots.

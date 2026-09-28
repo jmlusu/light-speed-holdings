@@ -69,17 +69,6 @@ repos:
         always_run: true
         stages: [post-commit]
 
-  # ── Graphify: keep the knowledge graph fresh after every commit ────
-  - repo: local
-    hooks:
-      - id: graphify-rebuild
-        name: rebuild-graphify-graph
-        entry: pwsh -NoProfile -File scripts/graphify-bg.ps1
-        language: system
-        pass_filenames: false
-        always_run: true
-        stages: [post-commit]
-
   # ── Documentation drift validation ─────────────────────────────────
   - repo: local
     hooks:

@@ -46,9 +46,11 @@ from ai_company.executor.tool_runner import HITLParked, ToolRunner
 from ai_company.llm.client import LLMClient
 from ai_company.llm.cost_tracker import CostTracker
 from ai_company.memory.consolidation import ConsolidationConfig, ConsolidationScheduler
+from ai_company.memory.engine import MemoryStore
 from ai_company.memory.integration import (
     extract_post_task_knowledge,
     init_memory,
+    learning_enabled,
     recall_context,
     record_task_outcome,
 )
@@ -192,7 +194,10 @@ class Executor:
         self.scheduler = Scheduler()
 
         # Memory
-        self._memory = init_memory()
+        if learning_enabled():
+            self._memory = init_memory()
+        else:
+            self._memory = MemoryStore(base_dir="memory")
 
         # GAP-005: Memory consolidation scheduler
         self._consolidation_config = ConsolidationConfig()
