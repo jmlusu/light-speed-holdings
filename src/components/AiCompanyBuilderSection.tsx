@@ -45,6 +45,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
     <div>
       <SectionHeading
         theme={theme}
+        level="h1"
         eyebrow="AI COMPANY BUILDER"
         title="Build Governed AI Companies"
         lead="LightSpeed helps organisations move from Opportunity to Continuous Improvement — a coordinated journey across strategy, architecture, agents, workflows, deployment, and governance. Every step carries its honesty status."

@@ -62,10 +62,30 @@ Commits `852b956b`, `c3a4b9cc`, `5f7f8942` — all CI green (runs 36407824642, 3
 - **Honesty badge tone mapper** (`5f7f8942`): `siteContent.honestyLabel()` maps every `types.ts` HonestyBadge string to its tone; `WhatWeDoPage` Offer B/C were rendering "In active development" with a `fieldable` tone (hard-coded) — fixed; `AskLightSpeed` case-sensitive heuristic (missed `Proven in-house`, mis-toned `Published`) — replaced; Solutions tab count derived from `solutions.length` instead of hard-coded 6; +2 mapper tests
 - **§22 final legacy search (website scope)**: zero hits for retired CTAs ("Book a Briefing"/"Executive Briefing" — only test guard + `ctas.ts` doc comment), old nav labels, dead routes, old agent counts (89/127/144/152), duplicate metric literals (test counts only in canonical `metrics.ts`)
 
-### Verification (latest, after Phase 5)
+### Phase 6: Browser Verification Sweep + Turnstile Secret Containment (this round)
+
+Sweep tool: `output/playwright/site_sweep.cjs` (Playwright chromium, `reducedMotion: reduce`) — 12 routes × light/dark × desktop 1280×800 + mobile 390×844 = **48 page-loads**, checking console/page errors, horizontal overflow, `img` without `alt`, empty headings, h1 presence, theme class applied, internal link validity, HTTP status; full-page screenshots per page/theme/viewport.
+
+- **Round 1 findings (2 unique issues)**:
+  1. `h1 = 0` on `/ai-company-builder`, `/contact`, `/ask` — first heading on each was an `h2` (`SectionHeading` / `ContactSection`)
+  2. Page error on `/insights`: Turnstile `Invalid input for parameter "sitekey"`
+- **h1 fixes**: `SectionHeading` gained an optional `level: 'h1' | 'h2'` prop (default `h2`); `AiCompanyBuilderSection` (first heading) and `AskLightSpeed` now render `level="h1"`; `ContactSection` headline promoted `h2` → `h1`. Each promoted component is single-use (one page each) — no duplicate-h1 risk.
+- **Turnstile secret containment (security)**: root cause was `.env` carrying **two** `VITE_TURNSTILE_SITE_KEY` lines — line 58 valid key (24 chars), line 67 malformed 156-char blob that embeds the `TURNSTILE_SECRET_KEY` value. `vite.config.ts` read raw env into `define.__TURNSTILE_SITE_KEY__` and `useTurnstile` fell back to `import.meta.env.VITE_TURNSTILE_SITE_KEY`, so the blob (secret included) was baked into `dist/assets/index-BxBezel6.js`.
+  - Verified **0 git-tracked files** contain the secret or blob (`.env` untracked; full `git ls-files` scan = 0 hits) — leak existed only in local build output.
+  - Fix: `vite.config.ts` now uses `loadEnv(mode, ...)` and injects **only** a value matching `/^[0-9a-zA-Z._-]{10,120}$/` (rejects `=`/whitespace/pasted env blocks); `useTurnstile` validates the same pattern and no longer falls back to `import.meta.env` (the fallback was the inlining path).
+  - Rebuilt bundle re-scanned: **secret = 0, blob = 0, `TURNSTILE_SECRET_KEY` name = 0** across all 103 `dist/` files.
+- **Round 2: 48/48 page-loads, 0 findings**; visual review of home/contact/ask/insights (light+dark, desktop+mobile) clean.
+
+### Open items (require owner action — do-not-touch files)
+- **`.env` line 67**: delete the malformed duplicate `VITE_TURNSTILE_SITE_KEY` line (keep line 58). Until then the sitekey is shadowed, the Turnstile widget is intentionally disabled, and the newsletter Subscribe button stays enabled (graceful degradation, `NewsletterSignup.tsx:174`).
+- **Turnstile secret**: rotate the Cloudflare secret if this machine's `dist/` was ever deployed anywhere (Vercel builds from a clean checkout do not read local `.env`, so exposure risk is local-manual-deploy only).
+
+### Verification (latest, after Phase 6)
 - ✅ `npm run lint` (`tsc --noEmit`) — 0 errors
 - ✅ `npm test` (vitest) — 38/38 (17 companyData + 21 governance)
-- ✅ `npm run build` — success (510.69 KB JS / 141.45 KB CSS; known >500 kB Rollup warning from `public-agent-registry.json`, code-splitting candidate)
+- ✅ `npm run build` — success (510.84 KB JS / 141.45 KB CSS; known >500 kB Rollup warning from `public-agent-registry.json`, code-splitting candidate)
+- ✅ **Browser sweep** (`site_sweep.cjs` vs preview :4173) — 48/48 loads, 0 findings; screenshots reviewed
+- ✅ **Bundle secret scan** — Turnstile secret/blob absent from all `dist/` files; 0 tracked files affected
 - ✅ `uv run pytest --collect-only -q` — 2,557 tests (67 e2e deselected)
 - ✅ Zero `@ts-nocheck` in `src/`
 - ✅ Zero dead route references (`/technology`, `/how-we-help`, `/events`, `/leadership`, `/faq`, `/trust`, `/news`, `/resources`, `/evidence`, `/industries`, `/offerings`, `/solutions/:slug`)

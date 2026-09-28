@@ -116,7 +116,7 @@ export const AskLightSpeed: React.FC = () => {
       const roleMatch = agent.role.toLowerCase().includes(lowerProblem.slice(0, 4)) ||
         lowerProblem.includes(agent.role.toLowerCase().split(' ').slice(0, 2).join(' '));
       const descMatch = agent.description.toLowerCase().slice(0, 30).includes(lowerProblem.slice(0, 4));
-      const capabilityMatch = agent.capabilities.some((cap: string) => 
+      const capabilityMatch = agent.capabilities.some((cap: string) =>
         lowerProblem.includes(cap.toLowerCase().slice(0, 4)) ||
         lowerContext.includes(cap.toLowerCase().slice(0, 4))
       );
@@ -179,6 +179,7 @@ export const AskLightSpeed: React.FC = () => {
         <Reveal>
           <SectionHeading
             theme={theme}
+            level="h1"
             eyebrow="INTERACTIVE DISCOVERY"
             title="Ask LightSpeed"
             lead="Tell us your challenge. Our AI discovery layer maps it to proven capabilities, governance models, and engagement paths — all with explicit honesty badges."
