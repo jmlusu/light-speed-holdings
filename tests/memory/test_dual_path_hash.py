@@ -113,8 +113,12 @@ def test_global_skill_optional_but_identical_if_exists():
     )
 
 
-def test_skill_hash_report():
-    """Generate a hash report for CI artifact."""
+def test_skill_hash_report(tmp_path):
+    """Generate a hash report for CI artifact.
+
+    Writes to a pytest temp dir so the run never mutates tracked files;
+    the report is also printed so CI logs capture it.
+    """
     agents_files = get_all_files(AGENTS_SKILL_PATH)
     report = []
 
@@ -129,7 +133,7 @@ def test_skill_hash_report():
         report.append(f"{match} {rel_path}: {agents_hash[:16]}...")
 
     # Write report for CI
-    report_path = Path("tests/memory/dual_path_hash_report.txt")
+    report_path = Path(tmp_path) / "dual_path_hash_report.txt"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text("\n".join(report) + "\n")
 
