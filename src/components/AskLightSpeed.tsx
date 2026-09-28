@@ -5,7 +5,7 @@ import { CtaBand } from './site/CtaBand';
 import { HonestyBadge } from './site/HonestyBadge';
 import { Reveal } from './Reveal';
 import { useSite } from '../site-context';
-import { solutions } from '../data/siteContent';
+import { solutions, honestyLabel } from '../data/siteContent';
 import publicAgentsRaw from '@/data/public-agent-registry.json';
 import type { PublicAgent, AgentType } from '@/data/publicAgentRegistry';
 import type { HonestyTone } from '@/data/siteContent';
@@ -316,7 +316,7 @@ export const AskLightSpeed: React.FC = () => {
                               {s.description.slice(0, 60)}...
                             </p>
                           </div>
-                          <HonestyBadge label={{ label: s.honestyBadge, tone: s.honestyBadge.includes('proven') ? 'proven' : s.honestyBadge.includes('pilot') ? 'pilot' : s.honestyBadge.includes('Fieldable') ? 'fieldable' : 'development' }} />
+                          <HonestyBadge label={honestyLabel(s.honestyBadge)} />
                         </div>
                       </button>
                     ))}

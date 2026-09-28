@@ -9,6 +9,8 @@ import { CTAS, PRIMARY_CTA_LABEL } from '../data/ctas';
 import { leadership } from '../data/leadership';
 import { CAPABILITIES, capabilityTitles } from '../data/capabilities';
 import { faqs } from '../data/faqs';
+import { sectors, SECTOR_TIERS, sectorTierLegend } from '../data/sectors';
+import { insightCategories, honestyLabel } from '../data/siteContent';
 
 describe('content governance (MASTER_SPEC §17)', () => {
   it('CONTENT_CLAIMS is a non-empty registry', () => {
@@ -127,5 +129,54 @@ describe('FAQ registry', () => {
       expect(faq.question.length).toBeGreaterThan(0);
       expect(faq.answer.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('sectors registry (MASTER_SPEC §11)', () => {
+  it('defines the nine §11 sectors with unique ids', () => {
+    expect(sectors).toHaveLength(9);
+    expect(new Set(sectors.map((s) => s.id)).size).toBe(9);
+  });
+
+  it('uses only the four §11 evidence tiers, all present', () => {
+    const tones = new Set(sectors.map((s) => s.status.tone));
+    expect([...tones].sort()).toEqual(['development', 'fieldable', 'pilot', 'proven']);
+    expect(Object.keys(SECTOR_TIERS)).toEqual(['proven', 'current', 'demonstration', 'future']);
+  });
+
+  it('every sector carries evidence text (only claim what we can show)', () => {
+    for (const sector of sectors) {
+      expect(sector.evidence, sector.id).toBeTruthy();
+    }
+  });
+
+  it('tier legend covers all four tiers', () => {
+    expect(sectorTierLegend).toHaveLength(4);
+  });
+});
+
+describe('insight categories (MASTER_SPEC §13)', () => {
+  it('matches the twelve canonical §13 categories', () => {
+    expect(insightCategories).toHaveLength(12);
+    expect(insightCategories).toContain('Agentic AI');
+    expect(insightCategories).toContain('African AI');
+    expect(new Set(insightCategories).size).toBe(12);
+  });
+});
+
+describe('honesty badge label → tone mapper', () => {
+  it('maps every types.ts HonestyBadge string to the right tone', () => {
+    expect(honestyLabel('Fieldable in 2026').tone).toBe('fieldable');
+    expect(honestyLabel('In active development').tone).toBe('development');
+    expect(honestyLabel('In pilot').tone).toBe('pilot');
+    expect(honestyLabel('In pilot (composing evidence)').tone).toBe('pilot');
+    expect(honestyLabel('In pilot (proposed)').tone).toBe('pilot');
+    expect(honestyLabel('Proven in-house').tone).toBe('proven');
+    expect(honestyLabel('Live proof').tone).toBe('proven');
+    expect(honestyLabel('Published').tone).toBe('proven');
+  });
+
+  it('preserves the original label text', () => {
+    expect(honestyLabel('Proven in-house').label).toBe('Proven in-house');
   });
 });

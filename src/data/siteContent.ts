@@ -19,6 +19,19 @@ export const TONE_STYLES: Record<HonestyTone, string> = {
   development: 'border-ls-grey-dark/40 bg-ls-grey-dark/10 text-ls-grey-dark',
 };
 
+/* Canonical badge-label → tone mapper for string honestyBadge fields
+   (types.ts HonestyBadge union). Keeps every badge render honest instead of
+   hard-coding a tone at the call site. */
+export function honestyLabel(label: string): HonestyLabel {
+  const l = label.toLowerCase();
+  if (l.includes('proven') || l.includes('live proof') || l.includes('published')) {
+    return { label, tone: 'proven' };
+  }
+  if (l.includes('pilot')) return { label, tone: 'pilot' };
+  if (l.includes('fieldable')) return { label, tone: 'fieldable' };
+  return { label, tone: 'development' };
+}
+
 /* ── Company identity ─────────────────────────────────── */
 export const company = {
   legalName: 'LightSpeed Holdings Limited',

@@ -7,7 +7,7 @@ import { CtaBand } from '../components/site/CtaBand';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
 import { OFFER_FAMILIES } from '../data/useCaseCatalogData';
-import { solutions, GOVERNANCE_SOLUTION } from '../data/siteContent';
+import { solutions, GOVERNANCE_SOLUTION, honestyLabel } from '../data/siteContent';
 import { CTAS } from '../data/ctas';
 
 interface WhatWeDoPageProps {
@@ -213,7 +213,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                   : isLight ? 'text-ls-navy hover:text-ls-red' : 'text-ls-white hover:text-ls-red'
               }`}
             >
-              Solutions (6 Domains)
+              Solutions ({solutions.length + 1} Domains)
             </button>
           </div>
         </div>
@@ -234,7 +234,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                       <span className="px-2.5 py-1 rounded-md bg-ls-red/10 text-ls-red text-xs font-black font-body">
                         OFFER {family.letter}
                       </span>
-                      <HonestyBadge label={{ label: family.honestyBadge, tone: 'fieldable' }} />
+                      <HonestyBadge label={honestyLabel(family.honestyBadge)} />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold font-display mt-2">{family.title}</h3>
                     <p className={`text-xs sm:text-sm mt-1 max-w-2xl ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
