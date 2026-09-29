@@ -126,11 +126,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest font-bold">
             <span>START A CONVERSATION</span>
           </div>
-          <h2 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
+          <h1 className={`text-3xl sm:text-5xl font-black tracking-tight font-display ${
             isLight ? 'text-ls-navy' : 'text-ls-white'
           }`}>
             Tell Us Where You Are
-          </h2>
+          </h1>
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
             isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
