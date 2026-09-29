@@ -76,8 +76,21 @@ Sweep tool: `output/playwright/site_sweep.cjs` (Playwright chromium, `reducedMot
   - Rebuilt bundle re-scanned: **secret = 0, blob = 0, `TURNSTILE_SECRET_KEY` name = 0** across all 103 `dist/` files.
 - **Round 2: 48/48 page-loads, 0 findings**; visual review of home/contact/ask/insights (light+dark, desktop+mobile) clean.
 
+### Phase 6 addendum: Turnstile widget verification (after owner fixed `.env`)
+
+Diagnostics (`output/playwright/turnstile_probe.cjs`, `turnstile_diag.cjs`) against preview `:4173`:
+
+- **Bundle after rebuild**: valid 24-char sitekey present in exactly 1 file; `TURNSTILE_SECRET_KEY` name, secret value, and malformed blob all absent from all 103 `dist/` files.
+- **Secret validated server-side**: `siteverify` (Cloudflare's own endpoint) with `.env` `TURNSTILE_SECRET_KEY` (line 59) returns `missing-input-response` = **secret accepted**; an invalid secret would return `invalid-input-secret`. Rotation confirmed.
+- **Widget pipeline works**: Cloudflare `api.js` loads, `window.turnstile.render()` executes, official always-pass test sitekey (`1x00000000000000000000AA`) tokenizes instantly (headless and headed) → local network/browser are not the problem.
+- **Real sitekey does NOT tokenize** on `localhost` (no token, no error-callback, both mounts, 15s+) → Cloudflare-side widget config, not site code. Owner checks needed: (a) sitekey on `.env` line 58 still the CURRENT widget key after rotation (a newly created widget has a new sitekey), (b) widget Hostnames allowlist must include `localhost` for local dev.
+- **Newsletter widget un-hidden** (`NewsletterSignup.tsx:164`): was mounted in `className="hidden"` (`display:none`) — a managed Turnstile widget cannot execute there, so `Subscribe` (gated on `siteKey && !token`) would stay disabled forever once the key config is fixed. Now rendered visibly (`scale-90 origin-left`), consistent with `ContactSection` and `ExecutiveBriefingModal`. Pre-existing since file creation (PR #360).
+- **`.env` state at handoff**: lines 57–60 correct (comment, single valid `VITE_TURNSTILE_SITE_KEY`, valid `TURNSTILE_SECRET_KEY`, `TURNSTILE_HOSTNAMES`); a second, messy duplicate `TURNSTILE_SECRET_KEY` line further down (~L67, value has whitespace + trailing junk) still exists — dotenv last-wins means it shadows line 59 for anything reading the file. Owner must delete it; `.env` is do-not-edit for agents.
+- Verified again after the fix: `npm run lint` 0 errors, vitest 38/38, `npm run build` success.
+
 ### Open items (require owner action — do-not-touch files)
-- **`.env` line 67**: delete the malformed duplicate `VITE_TURNSTILE_SITE_KEY` line (keep line 58). Until then the sitekey is shadowed, the Turnstile widget is intentionally disabled, and the newsletter Subscribe button stays enabled (graceful degradation, `NewsletterSignup.tsx:174`).
+- **`.env` duplicate TURNSTILE_SECRET_KEY** (~L67): a second `TURNSTILE_SECRET_KEY` line with whitespace + trailing junk (~109 chars) now exists below line 59. dotenv last-wins means it shadows the valid secret on line 59 for anything reading the file (edge functions, etc.). Delete this line — keep only lines 57–60 as the canonical Turnstile config. This overwrites the earlier instruction to delete “VITE_TURNSTILE_SITE_KEY” line 67 (that duplicate was already removed; the current duplicate is a secret line).
+- **Newsletter widget**: the Turnstile container at `NewsletterSignup.tsx:164` is now rendered visibly (`className="scale-90 origin-left"` per the fix in this session), consistent with `ContactSection` and `ExecutiveBriefingModal`. The prior `className="hidden"` prevented the widget from executing.
 - **Turnstile secret**: rotate the Cloudflare secret if this machine's `dist/` was ever deployed anywhere (Vercel builds from a clean checkout do not read local `.env`, so exposure risk is local-manual-deploy only).
 
 ### Verification (latest, after Phase 6)

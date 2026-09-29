@@ -161,7 +161,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
                 />
               </label>
             </div>
-            <div ref={containerRef} className="hidden" />
+            <div ref={containerRef} className="scale-90 origin-left" />
 
             {submitError && (
               <p role="alert" className="text-xs text-ls-red font-medium">
