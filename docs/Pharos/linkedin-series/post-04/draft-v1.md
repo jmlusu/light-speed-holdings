@@ -48,41 +48,17 @@ Structure without a chain of command is a network, not an organization. Ours cas
 
 An agent that hits an unfamiliar decision does not improvise: the task moves up a tier until a human decides. Approval-gated tasks pause in the queue at their tier and the audit log records who authorized what. The answer to the board's first question, who is in charge, is never "the model": twenty departments and ninety agents do not dilute accountability, they make it more explicit: every task has an owner at exactly one level at a time.
 
-## M: Models Run Sovereign
+## M→T→G→V: The Execution & Governance Stack
 
-The design question is *how do we ensure AI models operate under sovereign data defaults, visible variable cost, and no lock-in?*
+The final four layers turn a working structure into a provable one. Each layer answers a design question and provides a governance proof.
 
-The governance proof is concrete: Data Protection Act 2017/2024 + GDPR by default, no foreign-owned models without in-country safeguards, and model deployments registered like agents with scope, permissions, and an explicit owner. Variable cost is tracked per-model and per-department, visible in the operating budget from week one, so a 90-day pilot lets an institution decide with an invoice in hand rather than a forecast.
+**M — Models Run Sovereign.** How do we ensure AI models operate under sovereign data defaults, visible variable cost, and no lock-in? The governance proof: Data Protection Act 2017/2024 + GDPR by default, no foreign-owned models without in-country safeguards, model deployments registered like agents with scope and an explicit owner. Variable cost tracked per-model and per-department from week one; a 90-day pilot lets an institution decide with an invoice in hand rather than a forecast. Our agent economy is underwritten by eight recurring revenue products (per `config/company/kpis.yaml`), so agents exist to serve work that has a buyer.
 
-Our agent economy is underwritten by eight recurring revenue products (per `config/company/kpis.yaml`), so agents exist to serve work that has a buyer, which disciplines which agents get built. The expensive failure mode is not agent count, it is an agent with no scope that spends tokens, makes commitments, or touches data it should not.
+**T — Tools Stay Sandboxed.** What tools may agents interact with, and how are boundaries enforced? The governance proof: the canonical seven-tool sandbox (read, edit, grep, list, bash, webfetch, task). No tool, no action. Anything outside the approved set is rejected at the Runtime layer, so a tool not on the list cannot be talked into existence or smuggled through a session variable. We know the failure mode first-hand: agents once existed wherever they were convenient and the count was unknowable. Consolidating to a single registry (ADR-032) earned the right to scale, because you cannot govern a population you cannot enumerate.
 
-For a Malawian SME or a SADC parastatal, the lesson inverts the usual advice: do not start by asking how many agents you can afford, start by asking how many you can govern, then buy exactly that many.
+**G — Gates Approve.** Who decides which actions may proceed, and on what basis? The governance proof: the five-tier approval matrix (ADR-017): autonomous → HITL-approved → reviewed → snoozed → cleared. Every agentic action falls into exactly one tier by risk class. Tier 1 (autonomous): routine task execution. Tier 2 (HITL-approved): data access, customer-facing outcomes. Tier 3 (reviewed): policy changes, budget reallocations. Tier 4 (snoozed): high-impact actions deferred. Tier 5 (cleared): treasury movements, external commitments, legal/regulatory consequences. The approval sweep retires stale requests so nothing blocks silently or slips through. For a Malawi or SADC institution, this answers the regulator's core question: who, by name, authorized this action, is it logged?
 
-## T: Tools Stay Sandboxed
-
-The design question is *what tools may agents interact with, and how are boundaries enforced?*
-
-The governance proof is the canonical seven-tool sandbox: read, edit, grep, list, bash, webfetch, task. No tool, no action. Anything outside the approved set is rejected at the Runtime layer, so a tool not on the list cannot be talked into existence, cannot be granted by prompt injection, and cannot be smuggled through a session variable.
-
-We know the failure mode first-hand: in the early days agents existed wherever they were convenient and the count was unknowable. Consolidating to a single registry (recorded in ADR-032) earned the right to scale, because you cannot govern a population you cannot enumerate.
-
-For institutions in our region, the sandbox model converts the AI conversation from trust-me to check-this: buyers, regulators, and boards can audit the structure without understanding the models, which is the point: governance in the architecture, not the prompt.
-
-## G: Gates Approve
-
-The design question is *who decides which actions may proceed, and on what basis?*
-
-The governance proof is the five-tier approval matrix (ADR-017): autonomous → HITL-approved → reviewed → snoozed → cleared. Every agentic action falls into exactly one tier, per its risk class. Tier 1 (autonomous) is routine task execution with no external commitment or treasury movement; Tier 2 (HITL-approved) affects data access and customer-facing outcomes; Tier 3 (reviewed) covers policy changes and budget reallocations; Tier 4 (snoozed) defers high-impact actions for later human decision; Tier 5 (cleared) covers treasury movements, external commitments, and anything with legal or regulatory consequences.
-
-The approval sweep retires stale requests so a forgotten pending item can neither block the system nor slip through it silently, and every agent decision is logged with who authorized what, when, and at which tier. For a Malawi or SADC institution, that answers the regulator's core question: who, by name, authorized this action, and is it logged? The answer is documented, mechanical, and auditable.
-
-## V: Verification Records
-
-The final layer answers *how do we prove value, not just promise it?*
-
-The governance proof is the verification framework: every claim in the system maps to a source of record. Agent utilization maps to KPI-003 logs, approval decisions map to the audit log, revenue tracks to the eight recurring products in `config/company/kpis.yaml`, org metrics map to the computable graph in `graph/engine.py`, and the model registry maps to the company registry entries.
-
-The procurement argument is simple: institutions in our region will be asked to approve AI spending they cannot fully inspect, and an architecture where agents are registry entries, actions are approval-gated, and utilization is a dashboard number converts that conversation from trust-me to check-this. It does not require believing our numbers, only checking our receipts, and we publish them.
+**V — Verification Records.** How do we prove value, not just promise it? The governance proof: the verification framework. Every claim maps to a source of record. Agent utilization → KPI-003 logs. Approval decisions → audit log. Revenue → eight recurring products in `config/company/kpis.yaml`. Org metrics → computable graph in `graph/engine.py`. The procurement argument: an architecture where agents are registry entries, actions are approval-gated, and utilization is a dashboard number converts the conversation from trust-me to check-this. It does not require believing our numbers, only checking our receipts, and we publish them.
 
 ### The Full Framework in Sequence
 
@@ -95,22 +71,16 @@ The sequence is the design discipline: install authorization and scope before yo
 Nothing in this structure requires our headcount or our cloud spend. The transferable parts:
 
 - **One registry before any agents.** Define 8–12 agents with named owners, scopes, and approval tiers before any of them run: cheap to write, expensive to skip.
-
 - **One queue before any agents.** Even a file-backed inbox with leases and a dead-letter path gives durability, audit, and a place for failure to land: days of work, not a platform purchase.
-
 - **Departments as the unit of accountability.** Assign agents to real owners with real KPIs from day one; utilization without an owner is a number, not a management instrument.
-
 - **Make the org chart a query.** Capacity, activity, trend, risk: computed, cached, displayed, which in low-bandwidth settings is also a performance decision.
-
 - **Workflows with SLAs, not tribal memory.** Declare the recurring processes your institution runs, give each step an owner and a clock, and let exceptions surface.
-
 - **Sequence: H → A → O.** Install authorization and scope before you install throughput.
-
 - **Sovereign data defaults (DPA 2017/2024, GDPR-grade handling), offline-capable operation, and visible variable cost** still apply; a 90-day pilot can validate the framework on one department first.
 
-### Coming Up Next
+### What Comes Next
 
-The next post walks four of the seven layers in sequence: Models run sovereign, Tools stay sandboxed, Gates govern, and Verification vouches.
+Post 5 applies the V (Value & Impact) layer to Malawian SMEs: start with 8–12 agents, prove the output, then scale. The agent economy is underwritten by recurring revenue, not a blank cheque. Posts 6–8 then walk T, G, and G (policy) through health & M&E, financial inclusion, and Malawi governance contexts respectively.
 
 **Follow along** if you are designing, governing, or procuring AI systems in Malawi and SADC: we publish the architecture, the metrics, and the failure paths, not just the outcomes.
 
@@ -124,7 +94,7 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
+- [x] No emojis in text
 - [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: full framework)
@@ -132,4 +102,4 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 - [x] CTA aligned: Build / Evidence / Shape
 - [x] Voice matches "builder-writer-advocate" (professional, authoritative, first-person plural for company work)
 - [x] Length within 1,200–1,800 word spec
-- [x] 3–5 H2s (here: 7 H2s + hook + CTA close, within spec)
+- [x] 3–5 H2s (here: 4 H2s + hook + combined M→T→G→V + framework/copy/next, within spec)

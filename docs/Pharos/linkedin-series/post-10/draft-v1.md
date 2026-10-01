@@ -6,7 +6,7 @@
 
 ## Hook
 
-"Let the agent handle it" is not a governance strategy. The single hardest question in an AI-native organization is not how capable the models are: it is which decisions a machine is allowed to make alone, which require a shared call with a human in the loop, and which are forbidden outright regardless of how well the system performs. This post closes the G (Gates Approve) layer with decision rights: the five-tier matrix our own agents operate under (ADR-017), a RACI view of who decides what, and the one-page version a board can read in a single sitting. The design question: what may the agent decide?
+"Let the agent handle it" is not a governance strategy. The single hardest question in an AI-native organization is not how capable the models are: it is which decisions a machine is allowed to make alone, which require a shared call with a human in the loop, and which are forbidden outright regardless of how well the system performs. LightSpeed Holdings™ operates this architecture in production. This post closes the G (Gates Approve) layer with decision rights: the five-tier matrix our own agents operate under (ADR-017), a RACI view of who decides what, and the one-page version a board can read in a single sitting. The design question: what may the agent decide?
 
 ## H - Human Purpose (Review)
 
@@ -119,8 +119,8 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
-- [ ] `™` on first mention of "LightSpeed Holdings" (appears in body, verify placement)
+- [x] No emojis in text
+- [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact (ADR-017 tiers, AGENTS.md §9.1 sweep, seven-tool vocabulary)
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: G - Gates Approve)
 - [x] Malawi/SADC context present (not generic)

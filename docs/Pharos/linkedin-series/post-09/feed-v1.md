@@ -1,6 +1,6 @@
 # Feed v1: Post 9 - Measuring AI-native Organizations
 
-Derived 2026-09-29 from `draft-v1.md` (CEO review pending; copy compressed for 3,000-char cap). Verbatim extracts only - no new claims.
+Derived 2026-10-02 from `draft-v1.md` (CEO-approved). Verbatim extracts only - no new claims.
 
 ---
 

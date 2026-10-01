@@ -6,7 +6,7 @@
 
 ## Hook
 
-The number 90 intimidates. SMEs in Malawi and across SADC ask: "We can't afford 90 agents." The question is wrong. The question should be: "How many agents can we govern?" The answer: start with 8–12, prove the output, then scale. Our agent economy is underwritten by eight recurring revenue products, not a blank cheque. This post is about how value is created, measured, and sustained in an AI-native organization, and what it means for institutions operating under sovereign data constraints.
+The number 90 intimidates. SMEs in Malawi and across SADC ask: "We can't afford 90 agents." The question is wrong. The question should be: "How many agents can we govern?" The answer: start with 8–12, prove the output, then scale. LightSpeed Holdings™ runs an agent economy underwritten by eight recurring revenue products, not a blank cheque. This post is about how value is created, measured, and sustained in an AI-native organization, and what it means for institutions operating under sovereign data constraints.
 
 ## H: Human Purpose (Review)
 
@@ -72,7 +72,7 @@ The sequence is the design discipline. Install authorization and scope before yo
 
 ### What Comes Next
 
-We have now covered all 7 layers: H, A, O, M, T, G, V. The next post walks the remaining framework layers in reverse order, closing the series with lessons from building LightSpeed Holdings™. Post 6 will revisit Tools & Actions with a focus on practical implementations, Post 7 on Governance structures for Malawi and SADC, Post 8 on Measuring AI-native organizations, Post 9 on Decision rights, and Posts 10-11 will close the series.
+Post 6 applies the T (Tools & Actions) layer to health and M&E contexts: bounded tooling, domain-specific restrictions, and what a Malawian health institution can copy. Post 7 introduces the G (Governance) layer through financial inclusion. Post 8 covers AI governance in Malawi specifically: DPA compliance, MACRA, and the four reservations. Post 9 revisits V (Value & Impact) with measurement frameworks. Post 10 closes G with decision rights matrices. Post 11 closes the series with lessons from building LightSpeed Holdings™.
 
 **Follow along** if you are designing, governing, or procuring AI systems in Malawi and SADC. We publish the architecture, the metrics, and the failure paths, not just the outcomes.
 
@@ -86,7 +86,7 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
+- [x] No emojis in text
 - [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: V: Value & Impact)

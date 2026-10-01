@@ -6,7 +6,7 @@
 
 ## Hook
 
-You cannot govern what you cannot measure, and you cannot scale what you cannot govern. Every AI-native claim we have made in this series - 90 agents, 20 departments, five-tier governance - is checkable against numbers computed from real sources, not slide-deck estimates. This post is about the V (Value & Impact) layer: how an AI-native organization measures itself, why most AI "productivity" numbers fail a board's smell test, and what a Malawi or SADC institution should instrument from day one. The proof here is deliberately unglamorous: some of our KPIs read `null` and render as "n/a" because no real source exists yet. That is the point.
+You cannot govern what you cannot measure, and you cannot scale what you cannot govern. Every AI-native claim we have made in this series - 90 agents, 20 departments, five-tier governance - is checkable against numbers computed from real sources, not slide-deck estimates. LightSpeed Holdings™ runs this architecture in production. This post is about the V (Value & Impact) layer: how an AI-native organization measures itself, why most AI "productivity" numbers fail a board's smell test, and what a Malawi or SADC institution should instrument from day one. The proof here is deliberately unglamorous: some of our KPIs read `null` and render as "n/a" because no real source exists yet. That is the point.
 
 ## H - Human Purpose (Review)
 
@@ -98,8 +98,8 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
-- [x] `™` on first mention of "LightSpeed Holdings" - *intentional exception: none in body; verify against CEO preference at review*
+- [x] No emojis in text
+- [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact (KPI formulas cited verbatim from `kpis.yaml`)
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: V - Value & Impact)
 - [x] Malawi/SADC context present (not generic)

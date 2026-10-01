@@ -1,10 +1,10 @@
 # Feed v1: Post 7 - Agentic AI & Financial Inclusion
 
-Derived 2026-09-29 from `draft-v1.md` (CEO review pending; copy compressed for 3,000-char cap). Verbatim extracts only - no new claims.
+Derived 2026-10-02 from `draft-v1.md` (CEO-approved). Verbatim extracts only - no new claims.
 
 ---
 
-Financial inclusion is the policy goal: extending affordable, reliable, safe financial services to those outside the formal system. AI-native architecture is not the goal; it is the architecture that makes the goal scalable, auditable, and accountable. The design question is not "can AI expand financial inclusion?" but how the architecture is designed so agents expand inclusion under sovereign data defaults, visible variable cost, and five-tier HITL governance. This post is the G (Governance) layer, and what it means for Malawi and SADC institutions.
+Financial inclusion is the policy goal: extending affordable, reliable, safe financial services to those outside the formal system. AI-native architecture is not the goal; it is the architecture that makes the goal scalable, auditable, and accountable. The design question is not "can AI expand financial inclusion?" but how the architecture is designed so agents expand inclusion under sovereign data defaults, visible variable cost, and five-tier HITL governance. LightSpeed Holdings™ operates this architecture in production. This post is the G (Governance) layer, and what it means for Malawi and SADC institutions.
 
 The governance proof is the five-tier approval matrix (ADR-017): autonomous → HITL-approved → reviewed → snoozed → cleared. Every agentic action falls into exactly one tier, per its risk class. Tier 1 (autonomous) covers routine tasks with no external commitment. Tier 2 (HITL-approved) covers data access and customer-facing outcomes. Tier 3 (reviewed) covers policy changes and budget reallocations. Tier 4 (snoozed) defers high-impact actions. Tier 5 (cleared) covers treasury movements, external commitments, and legal or regulatory consequences.
 

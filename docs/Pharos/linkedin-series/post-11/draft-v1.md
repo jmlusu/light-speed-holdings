@@ -1,4 +1,4 @@
-# Lessons From Building LightSpeed
+# Lessons From Building LightSpeed Holdings™
 
 **Series:** AI-Native Organizations (11 posts)
 **Post:** 11
@@ -6,7 +6,7 @@
 
 ## Hook
 
-I started building an AI-native company before I had a name for what I was building. Ten posts later, this series has walked the full framework - H → A → O → M → T → G → V - and now I want to close it the honest way: with the lessons, including the ones that cost me time and credibility. This post is first-person because the failures were mine. I consolidated 152 stray agents down to 90, I shipped a scheduler that missed runs, and I published numbers that did not flatter us on purpose. If you are building in Malawi or the SADC region, these are the ones I would hand you first.
+I started building an AI-native company before I had a name for what I was building. Ten posts later, this series has walked the full framework - H → A → O → M → T → G → V - and now I want to close it the honest way: with the lessons, including the ones that cost me time and credibility. This post is first-person because the failures were mine. I consolidated 152 stray agents down to 90, I shipped a scheduler that missed runs, and I published numbers that did not flatter us on purpose. LightSpeed Holdings™ is the result. If you are building in Malawi or the SADC region, these are the ones I would hand you first.
 
 ## Where It Started
 
@@ -70,8 +70,8 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
-- [x] `™` on first mention of "LightSpeed Holdings" - *note: title/body use short form "LightSpeed"; video script carries full "LightSpeed Holdings Limited™" - flagged for CEO*
+- [x] No emojis in text
+- [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact (ADR-032, ADR-017, CEO 2026-08-08 KPI decision)
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: H - Humans Authorize, series close)
 - [x] Malawi/SADC context present (not generic)

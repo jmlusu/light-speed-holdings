@@ -85,7 +85,7 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
+- [x] No emojis in text
 - [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: G - Governance, policy edition)

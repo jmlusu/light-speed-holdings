@@ -6,7 +6,7 @@
 
 ## Hook
 
-AI in health and monitoring & evaluation is not a separate category; it is AI-native architecture applied to two of the most regulation-sensitive domains in our region. The design question is not "can AI improve health outcomes?" but "how is the architecture designed so that agents improve outcomes under sovereign data defaults, visible variable cost, and five-tier HITL governance?" This post is about the practical implementation of the T (Tools & Actions) layer in health and M&E contexts, and what it means for Malawi and SADC institutions.
+AI in health and monitoring & evaluation is not a separate category; it is AI-native architecture applied to two of the most regulation-sensitive domains in our region. The design question is not "can AI improve health outcomes?" but "how is the architecture designed so that agents improve outcomes under sovereign data defaults, visible variable cost, and five-tier HITL governance?" LightSpeed Holdings™ operates this architecture in production. This post is about the practical implementation of the T (Tools & Actions) layer in health and M&E contexts, and what it means for Malawi and SADC institutions.
 
 ## H - Human Purpose (Review)
 
@@ -68,7 +68,7 @@ The sequence is the design discipline: install authorization and scope before yo
 
 ### What Comes Next
 
-Post 6 completes the T layer. The next post walks the G (Governance) layer for financial inclusion contexts in Malawi and SADC, with governance structures, reservations playbooks, and honest engineered answers; Post 8 covers AI governance in Malawi specifically, DPA compliance, regulator engagement; Post 9 revisits the V (Value & Impact) layer with measurement frameworks; Post 10 closes the G layer with decision rights matrices; and Post 11 closes the series with lessons from building LightSpeed Holdings™.
+Post 7 introduces the G (Governance) layer through financial inclusion: creditworthiness scanning, transaction monitoring, and compliance checking under sovereign data defaults. Post 8 covers AI governance in Malawi specifically: DPA 2017/2024 compliance, MACRA engagement, and the four reservations answered with architecture. Post 9 revisits V (Value & Impact) with measurement frameworks. Post 10 closes G with decision rights matrices. Post 11 closes the series with lessons from building LightSpeed Holdings™.
 
 **Follow along** if you are designing, governing, or procuring AI systems in health and M&E in Malawi and SADC: we publish the architecture, the metrics, and the failure paths, not just the outcomes.
 
@@ -82,7 +82,7 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
+- [x] No emojis in text
 - [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: T - Tools & Actions)
