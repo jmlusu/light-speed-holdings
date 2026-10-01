@@ -34,6 +34,7 @@ class AuditLogger:
 
     Features:
     - SHA256 chain (prev_hash = hash of previous record)
+    - Persisted chain head (audit_meta) so tail edits are detectable
     - Configurable retention (90 days CRUD, 365 days gateway)
     - FTS over audit events
     - Chain verification
@@ -107,15 +108,35 @@ class AuditLogger:
                 content='audit_log',
                 content_rowid='rowid'
             );
+
+            CREATE TABLE IF NOT EXISTS audit_meta (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            );
         """)
         self._conn.commit()
 
     def _load_chain_head(self) -> None:
         assert self._conn is not None
-        row = self._conn.execute(
-            "SELECT payload_hash FROM audit_log ORDER BY timestamp DESC LIMIT 1"
-        ).fetchone()
-        self._chain_head = row["payload_hash"] if row else None
+        row = self._conn.execute("SELECT value FROM audit_meta WHERE key = 'chain_head'").fetchone()
+        if row is not None:
+            self._chain_head = row["value"]
+            return
+        self._derive_chain_head()
+        self._conn.commit()
+
+    def _derive_chain_head(self) -> None:
+        """Recompute the chain head from the last row (insertion order) and persist it."""
+        assert self._conn is not None
+        last = self._conn.execute("SELECT * FROM audit_log ORDER BY rowid DESC LIMIT 1").fetchone()
+        self._chain_head = self._compute_event_hash(self._row_to_event(last)) if last else None
+        if self._chain_head is None:
+            self._conn.execute("DELETE FROM audit_meta WHERE key = 'chain_head'")
+        else:
+            self._conn.execute(
+                "INSERT OR REPLACE INTO audit_meta (key, value) VALUES ('chain_head', ?)",
+                (self._chain_head,),
+            )
 
     def _compute_event_hash(self, event: AuditEvent) -> str:
         """Compute SHA256 of canonical event for chain linking."""
@@ -213,6 +234,12 @@ class AuditLogger:
             (fts_rowid, event_type, actor, correlation_id),
         )
 
+        # Persist chain head so the tail is covered by verification
+        self._conn.execute(
+            "INSERT OR REPLACE INTO audit_meta (key, value) VALUES ('chain_head', ?)",
+            (event_hash,),
+        )
+
         self._conn.commit()
         return event
 
@@ -269,14 +296,17 @@ class AuditLogger:
         """
         Verify the audit chain integrity.
 
-        Recomputes hash chain from genesis; returns True if valid.
+        Recomputes the hash chain from genesis in insertion order, then checks
+        the final event hash against the persisted chain head; returns True if
+        valid. A legacy database whose head row is missing is re-derived once
+        before comparison.
         """
         if not self._initialized:
             self.initialize()
 
         assert self._conn is not None
 
-        rows = self._conn.execute("SELECT * FROM audit_log ORDER BY timestamp ASC").fetchall()
+        rows = self._conn.execute("SELECT * FROM audit_log ORDER BY rowid ASC").fetchall()
 
         expected_prev = "sha256:" + "0" * 64
         for row in rows:
@@ -288,7 +318,22 @@ class AuditLogger:
 
             expected_prev = computed_hash
 
-        return True
+        if not rows:
+            return True
+
+        head_row = self._conn.execute(
+            "SELECT value FROM audit_meta WHERE key = 'chain_head'"
+        ).fetchone()
+        if head_row is None:
+            self._load_chain_head()
+            head_row = self._conn.execute(
+                "SELECT value FROM audit_meta WHERE key = 'chain_head'"
+            ).fetchone()
+        if head_row is None:
+            return False
+
+        persisted_head: str = head_row["value"]
+        return persisted_head == expected_prev
 
     def export(self, format: str = "jsonl") -> str:
         """Export full audit chain with hashes."""
@@ -339,7 +384,10 @@ class AuditLogger:
         gateway_cutoff = (now - timedelta(days=self.retention_days_gateway)).isoformat()
 
         # Archive old anchors
-        old_head = self._chain_head
+        head_row = self._conn.execute(
+            "SELECT value FROM audit_meta WHERE key = 'chain_head'"
+        ).fetchone()
+        old_head = head_row["value"] if head_row else self._chain_head
         if old_head:
             self._conn.execute("""
                 CREATE TABLE IF NOT EXISTS audit_anchors (
@@ -370,11 +418,13 @@ class AuditLogger:
             (gateway_cutoff,),
         )
 
-        # Rebuild chain head
-        self._load_chain_head()
+        rows_changed = int(self._conn.execute("SELECT changes()").fetchone()[0])
+
+        # Rebuild chain head from the last remaining row and persist it
+        self._derive_chain_head()
         self._conn.commit()
 
-        return int(self._conn.execute("SELECT changes()").fetchone()[0])
+        return rows_changed
 
     def _row_to_event(self, row: sqlite3.Row) -> AuditEvent:
         return AuditEvent(

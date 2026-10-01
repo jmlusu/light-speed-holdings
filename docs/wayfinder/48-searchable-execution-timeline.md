@@ -3,6 +3,8 @@
 **Issue**: [#48](https://github.com/user/light-speed-holdings/issues/48)
 **Status**: Design
 **Date**: 2026-08-19
+**Owner**: Dashboard Owner
+**Related files**: `src/ai_company/dashboard/api.py`, `src/ai_company/dashboard/ws.py`, `src/ai_company/dashboard/static/js/command-center.js`, `src/ai_company/data/audit_store.py`
 
 ## Goal
 

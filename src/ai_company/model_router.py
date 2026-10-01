@@ -23,7 +23,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-import aiohttp
+import httpx
 import yaml
 
 logger = logging.getLogger(__name__)
@@ -561,15 +561,10 @@ class ModelRouter:
             return self._model_cache[cache_key]
 
         try:
-            async with (
-                aiohttp.ClientSession() as session,
-                session.get(
-                    "https://opencode.ai/zen/v1/models",
-                    timeout=aiohttp.ClientTimeout(total=10),
-                ) as resp,
-            ):
-                if resp.status == 200:
-                    data = await resp.json()
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                resp = await client.get("https://opencode.ai/zen/v1/models")
+                if resp.status_code == 200:
+                    data = resp.json()
                     models: list[FreeModel] = []
                     for m in data.get("data", []):
                         # Only include truly free models
@@ -599,7 +594,7 @@ class ModelRouter:
                     self._model_cache[cache_key] = models
                     self._cache_time[cache_key] = datetime.now(timezone.utc)
                     return models
-        except (aiohttp.ClientError, TimeoutError, OSError) as exc:
+        except (httpx.HTTPError, TimeoutError, OSError, ValueError) as exc:
             logger.debug("Failed to fetch free model catalog: %s", exc)
             pass  # Fall through to static fallback
 

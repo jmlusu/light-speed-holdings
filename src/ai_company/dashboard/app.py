@@ -756,7 +756,7 @@ def create_app() -> FastAPI:
         )
 
     # Legacy static dir (backward compat — serves old SPA if present)
-    if LEGACY_STATIC_DIR.is_dir():
+    if (LEGACY_STATIC_DIR / "index.html").is_file():
         app.mount(
             "/legacy",
             StaticFiles(directory=str(LEGACY_STATIC_DIR), html=True),

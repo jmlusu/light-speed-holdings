@@ -1,5 +1,6 @@
 import React from 'react';
 import { ContactSection } from '../components/ContactSection';
+import { FaqSection } from '../components/site/FaqSection';
 
 interface ContactPageProps {
   theme: 'light' | 'dark';
@@ -8,7 +9,10 @@ interface ContactPageProps {
 
 export const ContactPage: React.FC<ContactPageProps> = ({ theme }) => {
   return (
-    <ContactSection theme={theme} />
+    <>
+      <ContactSection theme={theme} />
+      <FaqSection theme={theme} />
+    </>
   );
 };
 

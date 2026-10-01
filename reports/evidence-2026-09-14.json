@@ -75,11 +75,6 @@
       "detail": "orchestrator/escalation.yaml ignored while required by cli/validate.py"
     },
     {
-      "name": "gitignore.graphify",
-      "status": "ok",
-      "detail": "ignored=True tracked_files=0"
-    },
-    {
       "name": "gitignore..playwright-cli",
       "status": "ok",
       "detail": ".playwright-cli/ present"
@@ -103,16 +98,6 @@
       "name": "ecl.active",
       "status": "ok",
       "detail": "active change files=4"
-    },
-    {
-      "name": "graphify.update",
-      "status": "ok",
-      "detail": "  AST extraction: 1400/1480 uncached files (94%) [4 workers] |   AST extraction: 1480/1480 uncached files (100%) [4 workers] | Graph has 25800 nodes (above 5000 limit). Building aggregated community view... | graph.html written (aggregated: 1627 community nodes, 1694 cross-community edges) | Tip: run with --obsidian for full node-level detail. | [graphify watch] Rebuilt: 25800 nodes, 39148 edges, 1627 communities | [graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-o"
-    },
-    {
-      "name": "graphify.graph",
-      "status": "ok",
-      "detail": "nodes=25800 edges=0"
     }
   ],
   "severity_totals": {

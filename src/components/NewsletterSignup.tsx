@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Send, CheckCircle2, Mail } from 'lucide-react';
 import { useTurnstile } from '../hooks/useTurnstile';
 import { ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
+import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 interface NewsletterSignupProps {
   theme: 'light' | 'dark';
@@ -21,6 +22,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
   const [honeypot, setHoneypot] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: '', email: '' });
+  const startedRef = useRef(false);
   const { containerRef, siteKey, reset } = useTurnstile(
     'contact',
     useCallback((token: string) => setTurnstileToken(token), [])
@@ -29,6 +31,10 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackJourneyEvent({ eventType: 'newsletter_started', journeyStage: 'conversion' });
+    }
     setSubmitting(true);
     setSubmitError(null);
     try {
@@ -52,6 +58,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
       });
       if (res.status === 201) {
         setSubmitted(true);
+        trackJourneyEvent({ eventType: 'newsletter_completed', journeyStage: 'conversion' });
       } else {
         const data = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
         setSubmitError(data?.error?.message ?? ENQUIRY_GENERIC_ERROR);
@@ -89,6 +96,10 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
             <p className={`mt-1 text-sm ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
               We will send evidence-led updates on agentic AI governance and AI-native transformation.
               No noise.
+            </p>
+            <p className={`mt-2 text-xs font-medium ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+              One confirmation step remains: we verify your email address before the first issue goes
+              out — double opt-in, nothing arrives unconfirmed. Unsubscribe anytime.
             </p>
           </div>
         </div>
@@ -161,7 +172,7 @@ export const NewsletterSignup: React.FC<NewsletterSignupProps> = ({ theme, id })
                 />
               </label>
             </div>
-            <div ref={containerRef} className="hidden" />
+            <div ref={containerRef} className="scale-90 origin-left" />
 
             {submitError && (
               <p role="alert" className="text-xs text-ls-red font-medium">

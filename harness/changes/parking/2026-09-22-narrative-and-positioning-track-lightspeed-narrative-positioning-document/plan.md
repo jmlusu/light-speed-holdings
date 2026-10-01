@@ -6,7 +6,7 @@ This change produces the **LightSpeed Narrative & Positioning Document** — a s
 
 ## Technical Approach
 
-1. **Finish recon** (already complete): Last reads confirmed — `COMPANY-CONSTITUTION.md`, `ORGANIZATION.md`, `brand-guidelines.md`, `company-registry.yaml` reviewed. Key assets catalogued: Pharos positioning (3 territories + H→A→O→M→T→G→V), brand palette (navy/red/cyan, Arial, 4px grid), mission/vision/values (Malawi first / Prove it / Then the world), USE-CASE-CATALOG positioning ("The AI-native company builder for Southern Africa" / "ASPIRE. ACT. ACHIEVE."), source-of-truth.yaml (20 departments / 152 agents), company-registry.yaml (151 AI + 1 human CEO). Graphify graph (`graphify-out/graph.json`) already indexed.
+1. **Finish recon** (already complete): Last reads confirmed — `COMPANY-CONSTITUTION.md`, `ORGANIZATION.md`, `brand-guidelines.md`, `company-registry.yaml` reviewed. Key assets catalogued: Pharos positioning (3 territories + H→A→O→M→T→G→V), brand palette (navy/red/cyan, Arial, 4px grid), mission/vision/values (Malawi first / Prove it / Then the world), USE-CASE-CATALOG positioning ("The AI-native company builder for Southern Africa" / "ASPIRE. ACT. ACHIEVE."), source-of-truth.yaml (20 departments / 152 agents), company-registry.yaml (151 AI + 1 human CEO).
 
 2. **Open ECL change** — already done: `harness-change.ps1 new "Narrative and Positioning Track..."` created active change in `intake` phase. `summary.md`, `spec.md`, `plan.md` now populated.
 

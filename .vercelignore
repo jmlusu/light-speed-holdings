@@ -46,7 +46,6 @@ uv.lock
 /hr/
 /board/
 /workflows/
-/graphify-out/
 /.benchmarks/
 /.hypothesis/
 /.ai-company/

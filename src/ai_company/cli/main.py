@@ -42,7 +42,8 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "Data governance — ownership, retention, compliance",
     ),
     "workflows": ("ai_company.cli.workflows", "app", "Manage workflows"),
-    "memory": ("ai_company.cli.memory", "app", "Manage company memory"),
+    "memory": ("ai_company.lsmem.cli", "app", "Manage company memory (LS-MEM)"),
+    "knowledge": ("ai_company.cli.memory", "app", "Manage legacy JSON knowledge store"),
     "executives": ("ai_company.cli.executives", "app", "Manage executives"),
     "departments": ("ai_company.cli.departments", "app", "Manage departments"),
     "doctor": ("ai_company.cli.doctor", "app", "Run system diagnostics"),
@@ -325,6 +326,48 @@ def sync_registry(
                 typer.echo(f"DRIFT: {err}", err=True)
             raise typer.Exit(1)
         typer.echo("Verification passed: YAML and JSON are in sync.")
+
+
+@app.command("transform-public-registry")
+def transform_public_registry_cmd(
+    yaml_path: str = typer.Option(
+        "company-registry.yaml",
+        help="Path to the source-of-truth YAML registry",
+    ),
+    departments_path: str = typer.Option(
+        "company/departments.yaml",
+        help="Path to departments YAML (count gate 20)",
+    ),
+    sink_path: str = typer.Option(
+        "src/data/generated/agent-registry.public.json",
+        help="Public allowlist artifact sink (ADR-028)",
+    ),
+) -> None:
+    """Project company-registry.yaml to the public allowlist artifact.
+
+    Deny-by-default transform per PUBLIC_AGENT_REGISTRY_SCHEMA.md §5.
+    Fails on count drift, denylist hits, PII, or non-canonical tools.
+    """
+    from ai_company.registry.public_transform import (
+        PublicTransformError,
+        transform_public_registry,
+    )
+
+    try:
+        envelope = transform_public_registry(
+            yaml_path=yaml_path,
+            departments_path=departments_path,
+            sink_path=sink_path,
+        )
+    except PublicTransformError as exc:
+        typer.echo(f"PUBLIC TRANSFORM FAILED: {exc}", err=True)
+        raise typer.Exit(1) from exc
+
+    meta = envelope["meta"]
+    typer.echo(
+        f"Wrote {sink_path}: {meta['agents']} agents, "
+        f"{meta['departments']} departments, schema {envelope['schema_version']}"
+    )
 
 
 @app.command()

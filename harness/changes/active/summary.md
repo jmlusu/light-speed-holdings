@@ -1,47 +1,50 @@
 ﻿---
-title: "fix(athena): serialize Decimal salary ranges in JSONL store"
-slug: "fix-athena-serialize-decimal-salary-ranges-in-jsonl-store"
+title: "Customer Journey Conversion Architecture Implementation"
+slug: "customer-journey-conversion-architecture-implementation"
 status: "in_progress"
 location: "active"
-phase: "validate"
+phase: "implement"
 intake_status: "approved"
 spec_review: "approved"
 plan_review: "approved"
-modules: ["athena"]
-files: ["src/ai_company/athena/store.py", "tests/unit/test_athena_store.py"]
-tags: ["fix", "athena", "bugfix", "serialization"]
-validation_status: "pass"
-created_at: "2026-09-22"
-updated_at: "2026-09-22"
-session_id: "035b10f4-82f5-4b0c-9093-84890fb6b542"
+modules: ["src/components", "src/pages", "src/data", "src/hooks", "src/lib"]
+files: []
+tags: ["customer-journey", "frontend", "ux", "conversion", "analytics"]
+validation_status: "unknown"
+created_at: "2026-09-29"
+updated_at: "2026-09-29"
+session_id: "0d4ecacf-7295-4c5d-87c5-6785054a31f2"
 owner_agent: "jmlus"
-claimed_at: "2026-09-22"
-validation_results:
-  - "ruff check src/ai_company/athena/store.py: PASS"
-  - "mypy src/ai_company/athena/store.py: PASS"
-  - "pytest tests/unit/test_athena_store.py: 2 passed"
-  - "pytest tests/unit/test_athena_*.py (full athena suite): 6 passed"
+claimed_at: "2026-09-29"
 ---
 
 # Summary
 
 ## Outcome
 
-Fixed store serialization crash on pydantic `Decimal` fields. `POST /api/v1/athena/jobs` failed with `TypeError: Object of type Decimal is not JSON serializable` at `store.py:68` whenever a job carried a `salary_range` (`SalaryRange.min/max` are `Decimal`). Added a `Decimal` branch to `AthenaStore._serialize` (lossless `str()` round-trip; pydantic re-coerces on load), covering all four stores (jobs/applications/profiles/scrape_jobs). Added regression test `test_job_store_roundtrip_decimal_salary`. Full Athena quick-start then re-ran end-to-end with all endpoints returning 200.
+Implement the Customer Journey & Conversion Architecture (CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE.md) across the LightSpeed Holdings website. All 9 primary routes, progressive disclosure journey stages, contextual cross-linking, Proof throughout, Ask LightSpeed with knowledge boundary, Contact 5-step flow, newsletter journey, and full journey instrumentation — all passing ls-artifact-qa gates.
 
-## Decisions
+## Decisions (Approved by User)
 
-- Serialize `Decimal` as `str(data)` in `_serialize` instead of `float(data)`: lossless round-trip, pydantic coerces `str` -> `Decimal` on load, and no precision loss on currency values.
-- Bug fix exposed only via the Athena quick-start walkthrough (profile -> job -> match -> ATS score -> stats), not by the unit suite - hence the regression test.
+1. **Insights article content + route**: BUILD NOW (not deferred)
+2. **Sector registry**: Create `sector-registry.ts` from 5 sectors in `siteContent.ts`
+3. **Analytics backend**: Server endpoint needed for journey events
+4. **Parallelism**: 5 max concurrent agent sessions
+5. **QA cadence**: Run ls-artifact-qa after EACH phase
 
 ## Validation
 
-- `ruff check src/ai_company/athena/store.py`: PASS
-- `mypy src/ai_company/athena/store.py`: PASS
-- `pytest tests/unit/test_athena_store.py`: 2 passed (CRUD + new Decimal round-trip)
-- Full athena suite: 6 passed
-- Quick-start re-run: all quick-start endpoints 200 (jobs, profiles, seed job with salary 2500-5000, match 92.6 excellent, ATS score 63.3, stats/scheduler endpoints)
+- Phase 0: Brand token audit pass
+- Phase 1-5: ls-artifact-qa after each phase (Visual/Brand/UX/Accessibility/Content)
+- Phase 6: Full regression + accessibility + build validation
+
+## Progress (2026-09-29)
+
+- **Phase 0 done** (Wayfinder #375, closed): `src/data/sector-registry.ts` (5 canonical sectors), `api/journey-events.ts` (edge analytics endpoint), `bun run lint` exit 0.
+- **Wayfinder charted**: map #368; tickets #369 (P1 home), #370 (P2 solutions/sectors), #371 (P3 proof/insights), #372 (P4 contact/newsletter/ask), #373 (P5 instrumentation), #374 (P6 regression, blocked by all).
+- ECL `tasks.md` now carries the real T001–T074 breakdown; `reviews/review.md` intake/spec/plan approved.
 
 ## Next Step
 
-- Commit the fix + regression test + this ECL change via PR -> main (owner-approved).
+- T013: brand token audit (load `ls-design-system`, verify `brand/tokens/brand-tokens.css`).
+- T020–T021: Phase 1 Homepage Journey Architecture (#369), then `ls-artifact-qa` gate.

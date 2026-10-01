@@ -3,7 +3,7 @@
 Covers:
 - ``ai-company --help`` (the main CLI entry).
 - ``--help`` for every registered sub-app.
-- A sample of commands (``memory stats``, ``governance report``, ``agents list``)
+- A sample of commands (``knowledge stats``, ``governance report``, ``agents list``)
   executed against a temp registry / temp data so no real project data is touched.
 """
 
@@ -34,6 +34,7 @@ EXPECTED_SUB_APPS = [
     "governance",
     "graph",
     "hr",
+    "knowledge",
     "legal",
     "marketing",
     "memory",
@@ -157,12 +158,25 @@ class TestCommandSmokeTests:
         assert result.exit_code == 0
         assert "Light Speed Holdings" in result.output
 
-    def test_memory_stats_runs(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-        """``memory stats`` works against an empty temp memory store."""
+    def test_knowledge_stats_runs(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """``knowledge stats`` (legacy JSON store) works against an empty temp store."""
         monkeypatch.chdir(tmp_path)
-        result = runner.invoke(app, ["memory", "stats"])
+        result = runner.invoke(app, ["knowledge", "stats"])
         assert result.exit_code == 0, result.output
         assert "Memory Store Summary" in result.output
+
+    def test_memory_status_lsmem_runs(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Root ``memory status`` reaches the LS-MEM engine in an empty temp workspace.
+
+        Proves the wiring flip: ``memory`` resolves to ``ai_company.lsmem.cli``
+        (not the legacy JSON CLI), and LS-MEM bootstraps its own workspace.
+        """
+        monkeypatch.chdir(tmp_path)
+        result = runner.invoke(app, ["memory", "status"])
+        assert result.exit_code == 0, result.output
+        assert "LS-MEM Engine Status" in result.output
 
     def test_governance_report_runs(self, tmp_path: Path) -> None:
         """``governance report --json`` works against a temp SQLite database."""

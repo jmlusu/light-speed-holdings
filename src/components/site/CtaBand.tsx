@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Reveal } from '../Reveal';
+import { CTAS } from '../../data/ctas';
+import { trackJourneyEvent } from '../../hooks/useJourneyEvents';
 
 interface CtaBandProps {
   theme: 'light' | 'dark';
@@ -21,10 +23,10 @@ interface CtaBandProps {
  */
 export const CtaBand: React.FC<CtaBandProps> = ({
   theme,
-  title = 'Book an Executive Briefing',
+  title = CTAS.primary.label,
   text = 'Tell us where your organisation is today — we will be honest about whether we can help, and exactly what it takes to start.',
-  ctaLabel = 'Book an Executive Briefing',
-  ctaTo = '/contact',
+  ctaLabel = CTAS.primary.label,
+  ctaTo = CTAS.primary.to,
   id,
   onRequestBriefing,
   ctaLevel = 'primary',
@@ -32,12 +34,22 @@ export const CtaBand: React.FC<CtaBandProps> = ({
   const isLight = theme === 'light';
   const ctaClasses = {
     primary:
-      'inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]',
+      'ripple-on ripple-on-scale inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]',
     secondary:
-      'inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase border border-ls-red text-ls-red shadow-lg shadow-ls-red/20 transition-all cursor-pointer hover:bg-ls-red/10 hover:scale-[1.01] active:scale-[0.99]',
+      'ripple-on ripple-on-scale inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase border border-ls-red text-ls-red shadow-lg shadow-ls-red/20 transition-all cursor-pointer hover:bg-ls-red/10 hover:scale-[1.01] active:scale-[0.99]',
     lowFriction:
-      'inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-full font-medium text-xs tracking-wider border border-ls-cyan/30 text-ls-cyan/40 bg-ls-cyan/5 transition-all cursor-pointer hover:bg-ls-cyan/10 hover:scale-[1.01] active:scale-[0.99]',
+      'ripple-on inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-full font-medium text-xs tracking-wider border border-ls-cyan/30 text-ls-cyan/40 bg-ls-cyan/5 transition-all cursor-pointer hover:bg-ls-cyan/10 hover:scale-[1.01] active:scale-[0.99]',
   }[ctaLevel];
+
+  const trackCta = (): void => {
+    trackJourneyEvent({
+      eventType: 'cta_clicked',
+      cta: ctaLabel,
+      journeyStage: 'intent',
+      metadata: onRequestBriefing ? { target: 'briefing' } : { to: ctaTo },
+    });
+  };
+
   return (
     <section
       id={id}
@@ -68,7 +80,10 @@ export const CtaBand: React.FC<CtaBandProps> = ({
               {onRequestBriefing ? (
                 <button
                   type="button"
-                  onClick={() => onRequestBriefing(ctaLabel)}
+                  onClick={() => {
+                    trackCta();
+                    onRequestBriefing(ctaLabel);
+                  }}
                   className={ctaClasses}
                 >
                   {ctaLabel}
@@ -78,6 +93,7 @@ export const CtaBand: React.FC<CtaBandProps> = ({
                 <Link
                   to={ctaTo}
                   className={ctaClasses}
+                  onClick={trackCta}
                 >
                   {ctaLabel}
                   <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

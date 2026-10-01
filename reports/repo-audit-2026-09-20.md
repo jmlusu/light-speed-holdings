@@ -30,14 +30,11 @@ Deterministic probe summary:
 - [ok] tree.prompts: prompts/*.md=2
 - [ok] gitignore.orchestrator.scheduler.yaml: orchestrator/scheduler.yaml ignored while required by cli/validate.py
 - [ok] gitignore.orchestrator.escalation.yaml: orchestrator/escalation.yaml ignored while required by cli/validate.py
-- [ok] gitignore.graphify: ignored=True tracked_files=0
 - [ok] gitignore..playwright-cli: .playwright-cli/ present
 - [ok] gitignore.screenshots: screenshots/ present
 - [ok] gitignore.results: results/ present
 - [ok] ci.registry_gate: ci.yml never validates agent registry
 - [ok] ecl.active: active change files=5
-- [ok] graphify.update:   AST extraction: 1500/1525 uncached files (98%) [4 workers] |   AST extraction: 1525/1525 uncached files (100%) [4 workers] | Graph has 26745 nodes (above 5000 limit). Building aggregated community view... | graph.html written (aggregated: 1697 community nodes, 1720 cross-community edges) | Tip: run with --obsidian for full node-level detail. | [graphify watch] Rebuilt: 26745 nodes, 40475 edges, 1697 communities | [graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-o
-- [ok] graphify.graph: nodes=26745 edges=0
 
 ## Critical Blockers
 
