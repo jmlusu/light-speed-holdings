@@ -12,8 +12,8 @@ interface AboutSectionProps {
 
 const VALUES = [
   {
-    title: 'Malawi First',
-    description: 'We prove the model where constraints are real — infrastructure gaps, talent development, regulatory evolution — then scale.',
+    title: 'AI-Native First',
+    description: 'We build AI-native companies where constraints are real — infrastructure gaps, talent development, regulatory evolution — then scale.',
   },
   {
     title: 'Evidence Over Claims',

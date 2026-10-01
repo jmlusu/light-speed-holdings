@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ArrowRight, ChevronRight, ShieldCheck, GitBranch, FileCheck } from 'lucide-react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
@@ -26,9 +26,7 @@ const PLATFORM_METRICS: Metric[] = [
   { value: '5-Tier', label: 'Human Approval Gates', source: 'ApprovalGate matrix' },
 ];
 
-/* Master spec §14 — the evidence ladder. Labels may only be used where
-   supported by evidence; nothing advances a step without new proof. */
-const EVIDENCE_LADDER = ['Proposed', 'Verified', 'Established', 'Market-leading'];
+
 
 const badgeTone = (badge: string) =>
   badge.includes('Proven') || badge.includes('Published')
@@ -162,86 +160,7 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
         </div>
       </section>
 
-      {/* 2. #honesty — honesty ladder + evidence ladder */}
-      <section id="honesty" className={sectionShell}>
-        <SectionHeading
-          theme={theme}
-          eyebrow="LIGHTSPEED'S APPROACH"
-          title="The 4-Tier Honesty Ladder"
-          lead="We classify every single capability on this website into one of four verified honesty tiers. We never pretend an R&amp;D concept is a battle-tested product."
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-cyan/10 text-ls-cyan border border-ls-cyan/30 uppercase">
-              Proven
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">Proven In-House</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Running in our daily operations, validated against {liveTestCount.toLocaleString('en-US')} automated tests, and generating verified audit receipts.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-red/10 text-ls-red border border-ls-red/30 uppercase">
-              Pilot
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">Active Pilot</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Under active deployment trial with early partner organizations under governed human CEO oversight.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-grey-light/20 text-ls-grey-light-text border border-ls-grey-light/30 uppercase">
-              Fieldable
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">Fieldable in 2026</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Architecturally complete, tested in simulation, and ready for immediate deployment on client infrastructure.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-navy/40 text-ls-grey-dark border border-ls-grey-dark/40 uppercase">
-              Development
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">In Development</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Active engineering track. We describe the architectural intent without making commercial availability claims.
-            </p>
-          </div>
-        </div>
-
-        {/* Evidence ladder strip — master spec §14 */}
-        <div
-          className={`mt-8 rounded-3xl border p-6 sm:p-8 ${
-            isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
-          }`}
-        >
-          <span className="font-body text-xs font-black tracking-widest text-ls-red uppercase">Evidence Ladder</span>
-          <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
-            {EVIDENCE_LADDER.map((step, i) => (
-              <React.Fragment key={step}>
-                <div
-                  className={`flex-1 rounded-2xl border px-4 py-3 ${
-                    isLight ? 'border-ls-grey-dark/25 bg-ls-grey/5' : 'border-ls-white/15 bg-ls-white/5'
-                  }`}
-                >
-                  <span className="font-body text-[10px] font-black tracking-widest text-ls-red uppercase">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <div className="mt-1 text-sm font-bold font-display">{step}</div>
-                </div>
-                {i < EVIDENCE_LADDER.length - 1 && (
-                  <ChevronRight className="w-4 h-4 shrink-0 self-center text-ls-red hidden sm:block" aria-hidden="true" />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-          <p className={`mt-4 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-            Labels are used only where supported by evidence. A claim never advances a step without new, verifiable proof.
-          </p>
-        </div>
-      </section>
-
-      {/* 3. #cases — case studies */}
+      {/* 2. #cases — case studies */}      {/* 3. #cases — case studies */}
       <section id="cases" className={sectionShell}>
         <SectionHeading
           theme={theme}
@@ -280,7 +199,7 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
           theme={theme}
           eyebrow="OUTCOMES"
           title="What the Work Actually Changed"
-          lead="Measured outcomes from the engagements above — each tied to its case study, sector, and honesty tier."
+          lead="Measured outcomes from the engagements above — each tied to its case study and sector."
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           {outcomeCategories.map((card) => (
@@ -390,40 +309,7 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
         </div>
       </section>
 
-      {/* 7. #verify — engagement path */}
-      <section id="verify" className={`${sectionShell} pb-16`}>
-        <SectionHeading
-          theme={theme}
-          eyebrow="HOW TO VERIFY"
-          title="Verify Our Systems Before You Commit"
-          lead="We offer transparent inspection paths for executive teams, technical auditors, and compliance officers."
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <GitBranch className="w-6 h-6 text-ls-red mb-3" />
-            <h4 className="font-bold text-base font-display">1. Code &amp; Test Suite Review</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Technical teams can inspect our CI pipelines, ruff/mypy/bandit linting reports, and the {liveTestCount.toLocaleString('en-US')} automated regression tests.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <ShieldCheck className="w-6 h-6 text-ls-cyan mb-3" />
-            <h4 className="font-bold text-base font-display">2. Governance Walkthrough</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Review the 5-tier Human-in-the-Loop approval gate, immutable SHA-256 audit trails, and data processing agreements.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <FileCheck className="w-6 h-6 text-ls-red mb-3" />
-            <h4 className="font-bold text-base font-display">3. 90-Day Governed Pilot</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Deploy a low-risk, bounded pilot with explicit milestone deliverables, fixed Kwacha/USD pricing, and human CEO sign-off.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CLEAR CTA */}
+      {/* CLEAR CTA */}      {/* CLEAR CTA */}
       <CtaBand
         theme={theme}
         title="Schedule an Executive Proof Walkthrough"

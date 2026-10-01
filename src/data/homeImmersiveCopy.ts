@@ -17,11 +17,11 @@ export interface HomeImmersiveCopy {
 }
 
 export const homeImmersiveCopy: HomeImmersiveCopy = {
-  heroEyebrow: 'LIGHTSPEED HOLDINGS // MALAWI FIRST',
+  heroEyebrow: 'LIGHTSPEED HOLDINGS // AI-NATIVE COMPANY BUILDER',
   heroTitle: 'The AI-native company builder',
   heroTitleAccent: 'that ships.',
   heroLead:
-    'Agentic AI systems built and operated from Malawi for organizations across SADC. 90 agents, 20 departments, five-tier human approval.',
+    'Agentic AI systems built and operated from Malawi. 90 agents, 20 departments, five-tier human approval.',
   heroCta: CTAS.primary.label,
   chapters: [
     { id: 'operating-model', num: '01', label: 'Operating Model' },
