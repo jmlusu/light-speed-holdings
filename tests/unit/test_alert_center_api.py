@@ -19,6 +19,7 @@ from ai_company.dashboard.app import app
 
 
 def _alert(rule_name: str = "High failure rate") -> Alert:
+    from datetime import datetime, timezone
     return Alert(
         rule_name=rule_name,
         department="engineering",
@@ -27,7 +28,7 @@ def _alert(rule_name: str = "High failure rate") -> Alert:
         threshold=10.0,
         operator="gt",
         severity="critical",
-        fired_at="2026-08-31T12:00:00+00:00",
+        fired_at=datetime.now(timezone.utc).isoformat(),
         message=f"[CRITICAL] {rule_name}: engineering.failure_rate = 12.0",
     )
 
