@@ -4844,3 +4844,11 @@ vite.config.ts:1:291: ERROR: Unexpected "<<"
   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3001[22m/[39m
   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.111:[1m3001[22m/[39m
   [32m➜[39m  [1mNetwork[22m: [36mhttp://172.27.224.1:[1m3001[22m/[39m
+Error: The following dependencies are imported but could not be resolved:
+
+  [36mthree[39m [37m[2m(imported by C:/Users/jmlus/light-speed-holdings/src/components/ThreeCanvas.tsx)[22m[39m
+
+Are they installed?
+    at file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:14849:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:47144:28
