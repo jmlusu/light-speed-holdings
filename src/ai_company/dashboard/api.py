@@ -23,6 +23,9 @@ from fastapi import (
 )
 from pydantic import BaseModel, Field, field_validator
 
+if TYPE_CHECKING:
+    from ai_company.orchestrator.message_bus import MessageBus
+
 from ai_company.dashboard.models import (
     AgentSummary,
     ApprovalDecision,
@@ -45,9 +48,6 @@ from ai_company.dashboard.models import (
 from ai_company.dashboard.repository import get_state_store
 from ai_company.data import get_database
 from ai_company.security.rbac import Role, require_role
-
-if TYPE_CHECKING:
-    from ai_company.orchestrator.message_bus import MessageBus
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["dashboard"])

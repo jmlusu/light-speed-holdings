@@ -13,6 +13,7 @@ license = { text = "Proprietary — All Rights Reserved. Apache 2.0 at v1.0." }
 
 dependencies = [
       "jinja2",
+      "click",
       "rich",
       "pyyaml",
       "jsonschema",
@@ -21,17 +22,17 @@ dependencies = [
       "python-dotenv",
       "fastapi",
       "uvicorn[standard]",
-      "httpx<0.29.0",
-      # Security
-      "cryptography>=42.0",
-      # ML dependencies
-      "sentence-transformers>=3.0",
-      "numpy>=1.26",
-      # System monitoring / analytics
-      "psutil>=5.9",
-      # Observability — OTel API (zero-cost NoOp when disabled)
-      "opentelemetry-api>=1.25",
-      "python-docx>=1.2.0",
+      "aiohttp",
+    "httpx<0.29.0",
+    # Security
+    "cryptography>=42.0",
+    # ML dependencies
+    "sentence-transformers>=3.0",
+    "numpy>=1.26",
+    # System monitoring / analytics
+    "psutil>=5.9",
+    # Observability — OTel API (zero-cost NoOp when disabled)
+    "opentelemetry-api>=1.25",
 ]
 
 [project.urls]
@@ -130,8 +131,6 @@ markers = [
 # registrations) so the gate measures business logic, not command wrappers.
 # Also omit v0.5.1 stub modules that have 0% coverage (external-API adapters,
 # ETL pipelines, full-text search) — coverage will be added incrementally.
-# Athena Playwright/PDF automation modules are exercised via the site build
-# and manual runbook flows, not unit tests — coverage will be added incrementally.
 omit = [
     "src/ai_company/cli/*",
     "src/ai_company/data/etl/*",

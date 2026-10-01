@@ -1,41 +1,3 @@
-export type PublicTool = 'read' | 'edit' | 'grep' | 'list' | 'bash' | 'webfetch' | 'task';
-export type PublicAgentType = 'executive' | 'specialist' | 'board';
-
-export interface PublicAgent {
-  id: string;
-  name: string;
-  title: string;
-  type: PublicAgentType;
-  department: string;
-  department_id: string;
-  reports_to: string | null;
-  mission: string;
-  is_human?: boolean;
-  tools?: PublicTool[];
-  kpi_labels?: string[];
-  decision_rights?: string[];
-  responsibilities?: string[];
-  technical_domain?: string;
-}
-
-export interface PublicDepartment {
-  id: string;
-  name: string;
-  executive: string;
-  mission: string;
-  budget_category: string;
-  headcount_target: number;
-}
-
-export interface PublicAgentRegistry {
-  schema_version: string;
-  generated_at: string;
-  source: string;
-  meta: { agents: number; departments: number };
-  agents: PublicAgent[];
-  departments: PublicDepartment[];
-}
-
 export interface Agent {
   name: string;
   role: string;
@@ -45,7 +7,9 @@ export interface Agent {
   directReports?: string[];
   description: string;
   responsibilities: string[];
-  tools: PublicTool[];
+  guidelines?: string;
+  tools: string[];
+  permission: string;
 }
 
 export interface Department {

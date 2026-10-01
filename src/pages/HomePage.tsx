@@ -1,21 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { HeroSection } from '../components/HeroSection';
+import { StrategyChasmSection } from '../components/StrategyChasmSection';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { HonestyBadge } from '../components/site/HonestyBadge';
+import { UseCaseCatalogSection } from '../components/UseCaseCatalogSection';
 import { Reveal } from '../components/Reveal';
-import { solutions, insightTeasers, company } from '../data/siteContent';
+import { StatCounter } from '../components/StatCounter';
+import { solutions, industries, technologyPillars, insightTeasers, company } from '../data/siteContent';
 
 interface HomePageProps {
   theme: 'light' | 'dark';
   onRequestBriefing: (summary?: string) => void;
 }
 
-const PROOF_STATS = [
-  { value: 90, label: 'Agent Configurations', format: 'comma' },
-  { value: 2557, label: 'Automated Regression Tests', format: 'comma' },
+/**
+ * Verified operating metrics — sourced from company-registry (agent configs),
+ * the automated test suite (regression tests), onboarded departments, and the
+ * ApprovalGate governance layer (human approval tiers). No other data claims.
+ */
+interface ProofStat {
+  value: number;
+  label: string;
+  format?: 'plain' | 'comma';
+  suffix?: string;
+}
+
+const PROOF_STATS: ProofStat[] = [
+  { value: 152, label: 'Verified Agent Configurations', format: 'comma' },
+  { value: 2373, label: 'Automated Regression Tests', format: 'comma' },
   { value: 20, label: 'Departments Onboarded' },
   { value: 5, label: 'Human Approval Gates', suffix: '-Tier' },
 ];
@@ -28,7 +43,7 @@ const THESIS_COLUMNS = [
   },
   {
     num: '02',
-    title: 'Ship, Don\u2019t Promise',
+    title: 'Ship, Don’t Promise',
     body: 'Every claim on this site is labeled Proven in-house, In pilot, Fieldable, or In development — and the tests that gate our own work are published. We never blur the two.',
   },
   {
@@ -36,42 +51,26 @@ const THESIS_COLUMNS = [
     title: 'Governed by Design',
     body: 'Five-tier human approval, immutable audit trails, and regional compliance are the architecture of the workforce, not bolt-ons. Trust is what scales.',
   },
-  {
-    num: '04',
-    title: 'Research Informed',
-    body: 'Pharos turns engineering into public intellectual work. The SADC Agentic AI Governance Framework and Malawi\u2019s National AI Strategy consultation position LightSpeed as a source of policy, not just product.',
-  },
-];
-
-const SECTORS = [
-  { title: 'Government & Public Sector', desc: 'Digital services, compliance automation, and data-driven policy for ministries and agencies.', status: { label: 'Proven in-house', tone: 'proven' as const } },
-  { title: 'Development & Donors', desc: 'Donor reporting, M&E pipelines, and compliance workflows for UNDP and development partners.', status: { label: 'In pilot', tone: 'pilot' as const } },
-  { title: 'Financial Services', desc: 'Risk classification, audit trails, and regulatory reporting for banks and microfinance.', status: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
-  { title: 'Health', desc: 'Data pipelines, reporting automation, and decision support for clinics and health systems.', status: { label: 'Concept', tone: 'development' as const } },
-  { title: 'Agriculture & Energy', desc: 'Supply-chain intelligence, climate-data pipelines, and operational dashboards for rural economies.', status: { label: 'Concept', tone: 'development' as const } },
-  { title: 'SMEs & Entrepreneurs', desc: 'Mobile-first digital presence, automation, and AI tooling priced for the local market.', status: { label: 'Fieldable in 2026', tone: 'fieldable' as const } },
-  { title: 'Technology Companies', desc: 'AI-native operating models, agentic workflows, and governance frameworks for tech firms.', status: { label: 'In development', tone: 'development' as const } },
-];
-
-const AGENT_CATEGORIES = [
-  { label: 'Strategy', count: '12', color: 'text-ls-red' },
-  { label: 'Research', count: '14', color: 'text-ls-cyan' },
-  { label: 'Product & Eng', count: '18', color: 'text-ls-gold' },
-  { label: 'Operations', count: '11', color: 'text-ls-green' },
-  { label: 'Governance', count: '16', color: 'text-ls-purple' },
-  { label: 'Content & Comms', count: '9', color: 'text-ls-pink' },
-  { label: 'Finance & Legal', count: '10', color: 'text-ls-teal' },
 ];
 
 export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
+  const [activePillar, setActivePillar] = useState(0);
+
   const sectionBorder = isLight ? 'border-ls-grey-dark/80' : 'border-ls-grey-dark/80';
 
   return (
     <div>
-      <HeroSection theme={theme} onRequestBriefing={onRequestBriefing} />
+      <HeroSection
+        theme={theme}
+        onRequestBriefing={onRequestBriefing}
+        activePillar={activePillar}
+        onSelectPillar={setActivePillar}
+      />
 
-      {/* The Lightspeed Thesis — Strategy → Build → Govern → Research & Policy */}
+      <StrategyChasmSection theme={theme} />
+
+      {/* The Lightspeed Thesis */}
       <section aria-labelledby="thesis-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <SectionHeading
           theme={theme}
@@ -104,7 +103,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         </p>
       </section>
 
-      {/* AI Company Builder spotlight */}
+      {/* What We Build — AI Company Builder spotlight */}
       <section aria-labelledby="spotlight-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <Reveal>
           <div className={`relative overflow-hidden rounded-3xl p-8 sm:p-10 flex flex-col lg:flex-row lg:items-center gap-8 border shadow-xl ${
@@ -116,16 +115,17 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
               <p className={`text-sm sm:text-base leading-relaxed max-w-xl ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>
-                The orchestration engine that runs LightSpeed — 90 agents, 20 departments — licensed to run on your infrastructure. Human direction, audited execution.
+                The orchestration engine that runs LightSpeed — 152 agents, 20 departments — licensed to run on your infrastructure. Human direction, audited execution.
               </p>
               <Link
                 to="/ai-company-builder"
-                className="ripple-on inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
               >
                 Explore AI Company Builder
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </Link>
             </div>
+
             <ul className={`lg:w-80 grid grid-cols-2 lg:grid-cols-1 gap-2.5 text-xs font-bold ${
               isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}>
@@ -151,7 +151,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {solutions.map((sol, idx) => (
             <Reveal key={sol.slug} delay={(idx % 3) * 0.06}>
-              <Link to="/contact" className={`ripple-on rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group ${
+              <Link to={`/solutions/${sol.slug}`} className={`rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group ${
                 isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl hover:-translate-y-0.5' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl hover:-translate-y-0.5'
               }`}>
                 <div className="space-y-3">
@@ -185,72 +185,70 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         </div>
       </section>
 
-      {/* 90-Agent Workforce */}
-      <section aria-labelledby="workforce-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+      {/* Technology */}
+      <section aria-labelledby="technology-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <SectionHeading
           theme={theme}
-          eyebrow="OPERATING MODEL"
-          title="A Coordinated Workforce of 90 Agents"
-          lead="LightSpeed operates through a governed digital workforce — 90 agents across 20 departments, each with explicit role definitions and approval thresholds. Human direction, audited execution."
+          eyebrow="TECHNOLOGY"
+          title="Engineered to Be Trusted"
         />
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
-          {AGENT_CATEGORIES.map((cat, idx) => (
-            <Reveal key={cat.label} delay={idx * 0.04}>
-              <div className={`rounded-2xl p-4 border text-center ${
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {technologyPillars.slice(0, 4).map((pillar, idx) => (
+            <Reveal key={pillar.title} delay={(idx % 2) * 0.06}>
+              <div className={`rounded-3xl p-6 border h-full ${
                 isLight ? 'bg-ls-white/95 border-ls-grey-dark text-ls-navy shadow-md' : 'bg-ls-navy/80 border-ls-white/15 text-ls-white shadow-xl'
               }`}>
-                <span className={`font-body text-2xl sm:text-3xl font-black ${cat.color}`}>{cat.count}</span>
-                <p className="mt-2 text-[10px] font-body font-bold tracking-widest uppercase opacity-70">{cat.label}</p>
+                <h3 className="font-display font-bold text-sm sm:text-base tracking-tight">{pillar.title}</h3>
+                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                }`}>
+                  {pillar.desc}
+                </p>
               </div>
             </Reveal>
           ))}
         </div>
-        <div className="mt-6 text-center">
-          <Link to="/ai-company-builder" className="font-body text-xs font-bold tracking-widest text-ls-cyan hover:underline">
-            EXPLORE THE AGENT ARCHITECTURE →
+        <div className="mt-8 text-center">
+          <Link to="/technology" className="font-body text-xs font-bold tracking-widest text-ls-cyan hover:underline">
+            SEE THE FULL ARCHITECTURE →
           </Link>
         </div>
       </section>
 
-      {/* Sectors */}
-      <section aria-labelledby="sectors-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+      {/* Industries */}
+      <section aria-labelledby="industries-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
         <SectionHeading
           theme={theme}
-          eyebrow="SECTORS"
+          eyebrow="INDUSTRIES"
           title="Where We Apply It"
-          lead="Only claim sector experience where evidence exists. Each area is labeled with its honest status — proven, pilot, fieldable, or emerging."
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {SECTORS.map((sector, idx) => (
-            <Reveal key={sector.title} delay={(idx % 3) * 0.06}>
-              <Link to="/sectors" className={`ripple-on rounded-3xl p-5 border transition-all group ${
-                isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl hover:-translate-y-0.5' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl hover:-translate-y-0.5'
-              }`}>
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <h3 className={`font-display font-bold text-sm sm:text-base tracking-tight group-hover:text-ls-red transition-colors ${
-                    isLight ? 'text-ls-navy' : 'text-ls-white'
-                  }`}>
-                    {sector.title}
-                  </h3>
-                  <HonestyBadge label={sector.status} />
-                </div>
-                <p className={`text-xs leading-relaxed ${
-                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
-                }`}>
-                  {sector.desc}
-                </p>
-              </Link>
-            </Reveal>
+        <div className="flex flex-wrap justify-center gap-2.5">
+          {industries.map((ind) => (
+            <Link
+              key={ind.slug}
+              to={`/industries/${ind.slug}`}
+              className={`px-4 py-2.5 rounded-full border font-bold text-[11px] tracking-wider transition-colors cursor-pointer ${
+                isLight
+                  ? 'bg-ls-white/95 border-ls-grey-dark text-ls-grey-dark hover:border-ls-red hover:text-ls-red'
+                  : 'bg-ls-navy/80 border-ls-white/15 text-ls-white hover:border-ls-red hover:text-ls-red'
+              }`}
+            >
+              {ind.nav}
+            </Link>
           ))}
-        </div>
-        <div className="mt-8 text-center">
-          <Link to="/sectors" className="font-body text-xs font-bold tracking-widest text-ls-cyan hover:underline">
-            EXPLORE ALL SECTORS →
+          <Link
+            to="/what-we-do"
+            className={`px-4 py-2.5 rounded-full border font-bold text-[11px] tracking-wider bg-ls-red/10 border-ls-red/30 text-ls-red transition-colors cursor-pointer hover:brightness-110`}
+          >
+            All Industries &amp; Verticals
           </Link>
         </div>
       </section>
 
-      {/* Proof Band */}
+      {/* Use Case Catalog — 50 offerable scenarios, honestly tagged */}
+      <UseCaseCatalogSection theme={theme} onRequestBriefing={onRequestBriefing} />
+
+      {/* Proof Band: verified operating metrics + work */}
       <Reveal delay={0.05}>
       <section id="proof" aria-label="Verified operating metrics" className="px-4 sm:px-8 pb-4 max-w-7xl mx-auto w-full">
         <div className={`relative overflow-hidden rounded-3xl p-6 sm:p-8 border shadow-xl ${
@@ -259,16 +257,18 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           <div className="flex flex-col xl:flex-row xl:items-center gap-8 xl:gap-12">
             <div className="flex-1 space-y-6">
               <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-ls-red/30 bg-ls-red/10 text-ls-red font-body text-[11px] tracking-widest">
-                <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80" />
+                <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80 animate-pulse" />
                 <span>PROOF // VERIFIED OPERATING METRICS</span>
               </div>
+
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
                 {PROOF_STATS.map((stat, sIdx) => (
                   <div key={sIdx} className="min-w-0">
-                      <span className="block text-xl sm:text-2xl font-black font-body tracking-tight">
-                        {stat.value}
-                        {stat.suffix}
-                      </span>
+                    <span className={`block text-xl sm:text-2xl font-black font-body tracking-tight ${
+                      sIdx % 2 === 0 ? 'text-ls-red' : 'text-ls-cyan'
+                    }`}>
+                      <StatCounter to={stat.value} format={stat.format} suffix={stat.suffix} />
+                    </span>
                     <span className={`block mt-1 text-[10px] font-body font-bold tracking-widest uppercase ${
                       isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                     }`}>
@@ -278,12 +278,13 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
                 ))}
               </div>
             </div>
+
             <div className={`shrink-0 w-full xl:w-auto xl:border-l xl:pl-12 flex flex-col items-start gap-3 ${
               isLight ? 'xl:border-ls-grey-dark/30' : 'xl:border-ls-white/10'
             }`}>
               <Link
                 to="/proof"
-                className="ripple-on w-full xl:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
+                className="w-full xl:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
               >
                 See the Evidence
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
@@ -310,7 +311,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {insightTeasers.map((post, idx) => (
             <Reveal key={post.title} delay={idx * 0.08}>
-              <Link to={post.to} className={`ripple-on rounded-3xl p-6 border transition-all h-full block group ${
+              <Link to={post.to} className={`rounded-3xl p-6 border transition-all h-full block group ${
                 isLight ? 'bg-ls-white/95 border-ls-grey-dark shadow-md hover:shadow-xl' : 'bg-ls-navy/80 border-ls-white/15 shadow-xl hover:shadow-2xl'
               }`}>
                 <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">{post.topic}</span>
@@ -337,7 +338,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
         }`}>
           <div className="flex-1 space-y-3">
             <span className="font-body text-[10px] font-bold tracking-widest text-ls-red">ABOUT</span>
-            <h3 className="text-xl sm:text-2xl font-black tracking-tight font-display">One Human CEO. 90 AI Agents.</h3>
+            <h3 className="text-xl sm:text-2xl font-black tracking-tight font-display">One Human CEO. 140+ AI Agents.</h3>
             <p className={`text-sm leading-relaxed ${
               isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
             }`}>
@@ -346,7 +347,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
           </div>
           <Link
             to="/about"
-            className="ripple-on inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase border border-ls-red/40 bg-ls-red/10 text-ls-red transition-all cursor-pointer hover:brightness-110"
+            className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase border border-ls-red/40 bg-ls-red/10 text-ls-red transition-all cursor-pointer hover:brightness-110"
           >
             About LightSpeed
             <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

@@ -19,7 +19,7 @@ Department: Consulting
 
 Reports To: chief_of_staff
 
-
+Direct Reports: interview_agent, workflow_mapper, opportunity_identifier
 
 
 ---
@@ -50,13 +50,9 @@ Owns the Foaster-style AI consulting engagement lifecycle, coordinating client-f
 ## Decision Rights
 
 
-- Decides and owns: Own the consulting engagement lifecycle from onboarding to delivery
-
-- Decides and owns: Coordinate client-facing agents and manage engagement timelines
-
-- Decides and owns: Ensure quality standards and SLA adherence across all engagements
-
-- Decides and owns: Present transformation roadmaps to clients
+- Approve department-level decisions within budget
+- Delegate tasks to specialist agents
+- Escalate strategic decisions to CEO/Board
 
 
 ---

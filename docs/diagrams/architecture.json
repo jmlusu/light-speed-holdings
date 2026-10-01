@@ -5,7 +5,7 @@
     "title": "Light Speed Holdings \u2014 Agent Hierarchy",
     "quality_profile": "standard",
     "viewBox": [
-      2842,
+      2828,
       730
     ]
   },
@@ -16,7 +16,7 @@
       "label": "Chief of Staff",
       "sublabel": "",
       "pos": [
-        1279.0,
+        1272.125,
         320
       ],
       "size": [
@@ -72,7 +72,7 @@
       "label": "Human CEO",
       "sublabel": "",
       "pos": [
-        1337.0,
+        1330.125,
         205
       ],
       "size": [
@@ -212,7 +212,7 @@
       "label": "CEO Advisor",
       "sublabel": "",
       "pos": [
-        2614.0,
+        2600.25,
         320
       ],
       "size": [
@@ -242,6 +242,20 @@
       "pos": [
         2139.5,
         435
+      ],
+      "size": [
+        108,
+        60
+      ]
+    },
+    {
+      "id": "legal",
+      "type": "security",
+      "label": "Legal Advisor",
+      "sublabel": "",
+      "pos": [
+        1670.75,
+        550
       ],
       "size": [
         108,
@@ -282,7 +296,7 @@
       "label": "Board Chair",
       "sublabel": "",
       "pos": [
-        1337.0,
+        1330.125,
         90
       ],
       "size": [
@@ -384,11 +398,11 @@
       "toSide": "top",
       "via": [
         [
-          1391.0,
+          1384.125,
           273.0
         ],
         [
-          1333.0,
+          1326.125,
           273.0
         ]
       ]
@@ -401,7 +415,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -418,7 +432,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -435,7 +449,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -460,7 +474,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -477,7 +491,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -494,7 +508,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -511,7 +525,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -528,7 +542,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -545,7 +559,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -570,7 +584,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -587,7 +601,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -604,11 +618,11 @@
       "toSide": "top",
       "via": [
         [
-          1391.0,
+          1384.125,
           273.0
         ],
         [
-          2668.0,
+          2654.25,
           273.0
         ]
       ]
@@ -621,7 +635,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -638,7 +652,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -648,6 +662,14 @@
       ]
     },
     {
+      "id": "conn-clo-to-legal",
+      "from": "clo",
+      "to": "legal",
+      "route": "straight",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
       "id": "conn-chief-of-staff-to-consulting-lead",
       "from": "chief-of-staff",
       "to": "consulting-lead",
@@ -655,7 +677,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -672,7 +694,7 @@
       "toSide": "top",
       "via": [
         [
-          1333.0,
+          1326.125,
           388.0
         ],
         [
@@ -770,6 +792,15 @@
       "items": [
         "Review and negotiate all contracts and agreements.",
         "Ensure regulatory compliance across jurisdictions.",
+        "read, write"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Legal \u2014 Legal Advisor",
+      "items": [
+        "Provide legal counsel on contracts and compliance.",
+        "Review partnership and vendor agreements.",
         "read, write"
       ]
     },

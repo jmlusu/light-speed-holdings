@@ -4,6 +4,11 @@
 **Assessor:** Brand Strategist (Marketing Department)
 **Scope:** Brand identity consistency, social media content pipeline, platform readiness, strategy alignment, asset generation, and competitive positioning.
 
+> **Update (2026-09-19):** This assessment is from Sep 11 and several "does not exist" claims below are now stale.
+> - **Social post templates are built.** All 12 specified template types shipped as 17 P1 PNGs (`static/brand/social/templates/`, [#311](https://github.com/jmlusu/light-speed-holdings/issues/311), closed).
+> - **The agent + skill are committed and tracked**, not working-tree-only ([#189](https://github.com/jmlusu/light-speed-holdings/issues/189) reconciled; `social_media_manager` + `ls-social-media-design` committed in `f7dfc8aa`, tracked on `development`/`main`).
+> - **Execution remains the open gap:** the 4-week warm-up window (Sep 6 → Oct 3) elapsed with zero published activity; all register rows remain `Pending (#194)` pending human account signup.
+
 ---
 
 ## 1. Current State Summary
@@ -134,7 +139,7 @@ The infographic pipeline exists (k-dense-infographics → ls-visual-storytelling
 
 **Strengths identified from the codebase:**
 
-1. **Unique positioning:** "AI-Native Enterprise" — a company that *runs* on its own AI agent architecture (90 agents, 20 departments), not an AI tool vendor. This is a concrete, verifiable differentiator.
+1. **Unique positioning:** "AI-Native Enterprise" — a company that *runs* on its own AI agent architecture (152 agents, 20 departments), not an AI tool vendor. This is a concrete, verifiable differentiator.
 2. **Regional first-mover:** Malawi / SADC focus with active policy engagement (National AI Strategy consultation, Data Protection Act 2024, AU Continental AI Strategy). The Pharos department is building institutional relationships (MACRA, UNDP, ICTAM, MUBAS, UNIMA).
 3. **Evidence-led voice:** The builder-advocate tone ("We built this. Here's the architecture. Here's the cost. Here's what broke.") is distinctive in a space dominated by AI hype.
 4. **Documented use cases:** J&S StopOver Bar (SME operations), health/M&E, VSLA/SACCO financial inclusion, public services — all grounded in real deployments.

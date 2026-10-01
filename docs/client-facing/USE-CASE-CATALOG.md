@@ -16,13 +16,13 @@ honesty_classification: >
 
 # Positioning
 
-LightSpeed Holdings Limited™ is an AI-native company builder headquartered in Lilongwe, Malawi. The company operates a governed 90-agent, 20-department orchestration platform — the same system it sells to clients — making it both builder and proof of its own product. The leading positioning line is: **"The AI-native company builder for Southern Africa."** Five offer families (digital presence, business automation, data and analytics, digital marketing, and platform licensing) serve enterprise, government, donor, SME, and diaspora clients across Malawi and the SADC region. The tagline is **"ASPIRE. ACT. ACHIEVE."** Nothing has been delivered to paying clients yet — all offers are fieldable in 2026 or in pilot; every proof point is honesty-badged. This catalog is the master content source for the client-facing website.
+LightSpeed Holdings Limited™ is an AI-native company builder headquartered in Lilongwe, Malawi. The company operates a governed 152-agent, 20-department orchestration platform — the same system it sells to clients — making it both builder and proof of its own product. The leading positioning line is: **"The AI-native company builder for Southern Africa."** Five offer families (digital presence, business automation, data and analytics, digital marketing, and platform licensing) serve enterprise, government, donor, SME, and diaspora clients across Malawi and the SADC region. The tagline is **"ASPIRE. ACT. ACHIEVE."** Nothing has been delivered to paying clients yet — all offers are fieldable in 2026 or in pilot; every proof point is honesty-badged. This catalog is the master content source for the client-facing website.
 
 ---
 
 # The Method
 
-The AI Company Builder is the platform LightSpeed Holdings uses to run itself. It is a governed, multi-agent orchestration engine where 89 AI agents and one human CEO operate across 20 departments — content, compliance, finance, engineering, sales, Pharos thought leadership, and more. Every task follows a delivery pipeline: brief → inbox task → assigned agent(s) → human review → deliverable.
+The AI Company Builder is the platform LightSpeed Holdings uses to run itself. It is a governed, multi-agent orchestration engine where 151 AI agents and one human CEO operate across 20 departments — content, compliance, finance, engineering, sales, Pharos thought leadership, and more. Every task follows a delivery pipeline: brief → inbox task → assigned agent(s) → human review → deliverable.
 
 Governance is not a feature bolted on later. It is the architecture:
 
@@ -160,7 +160,7 @@ Reach Malawian customers where they already are — Facebook, WhatsApp, Google �
 
 ## Offer E — Platform Licensing
 
-The same 90-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible. For agencies: white-label agent teams for your clients.
+The same 152-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible. For agencies: white-label agent teams for your clients.
 
 **Honesty badge:** Fieldable in 2026 — proven in-house (our own company runs on this platform daily), ready for external licensing.
 
@@ -320,7 +320,7 @@ J&S StopOver Bar is a real, non-tech SME in Malawi running agentic decision supp
 
 **Honesty badge:** Proven in-house.
 
-LightSpeed Holdings is its own first customer. The company runs on the same 90-agent, 20-department orchestration platform it offers to clients. Five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — all operating daily. The CEO directs strategy; 89 AI agents handle operations. This is not a demo; it is an operating company that builds the tooling it uses.
+LightSpeed Holdings is its own first customer. The company runs on the same 152-agent, 20-department orchestration platform it offers to clients. Five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — all operating daily. The CEO directs strategy; 151 AI agents handle operations. This is not a demo; it is an operating company that builds the tooling it uses.
 
 **What it proves:** The platform is real, governed, and running in production — on our own operations.
 
@@ -347,29 +347,6 @@ delivery backbone) applied to a real client repo — distinct identity maintaine
 client data and stack untouched, delivery governed, honesty-badged.
 
 Full record: `docs/case-studies/social-media-automation-os.md`.
-
----
-
-## Lightspeed Scroll Page — In-House Brand Build
-
-**Honesty badge:** Proven in-house — shipped, verified, evidence archived. Not a
-client deliverable and not yet serving a live audience; the page is LightSpeed's
-own flagship brand page acting as Offer A (digital presence) demo material.
-
-A full scroll-craft page built on LightSpeed's own creative stack: 6-act
-chaptered-editorial grammar (`flow > pin > flow > scrub > flow > pin`, ~9.8 vh),
-folio-in-the-margin nav, and the raising-flags close over a night horizon —
-navy/crimson/cyan, Arial, verbatim copy, one accent region. Verified by five
-deterministic Playwright lab runs (desktop + mobile 375×812, normal +
-reduced-motion): 30 frames each, all settled, `failed: []`, 0 console errors;
-worst-frame contrast 15.97:1 headline / 4.45:1 CTA; focus check PASS in both
-modes. The fingerprint registry proves it distinct from any prior build.
-
-**What it demonstrates:** The creative stack end-to-end (design-system →
-production → QA), machine-verifiable evidence rather than prose claims, and the
-"proven in-house" honesty rung applied to a tangible portfolio artifact.
-
-Full record + evidence artifacts: `docs/case-studies/lightspeed-scroll-page/`.
 
 ---
 
@@ -501,7 +478,7 @@ Every factual claim in this document traces to one or more authoritative source 
 
 | Section | Primary Sources | Notes |
 |---------|----------------|-------|
-| **Positioning** | `src/data/siteContent.ts:21-32` (company identity, tagline, honesty constraint); `docs/source-of-truth.yaml:35-47` (90 agents canonical); `docs/source-of-truth.yaml:19-33` (20 departments canonical); `docs/AGENT-REGISTRY-TABLE.md:4` | 90 agents / 20 departments = canonical counts |
+| **Positioning** | `src/data/siteContent.ts:21-32` (company identity, tagline, honesty constraint); `docs/source-of-truth.yaml:35-47` (152 agents canonical); `docs/source-of-truth.yaml:19-33` (20 departments canonical); `docs/AGENT-REGISTRY-TABLE.md:4` | 152 agents / 20 departments = canonical counts |
 | **The Method** | `docs/archive/2026-08-11-pre-restructure/reports/future-of-work-report.md:43-80` (HITL, audit trails, memory); `docs/legal/client-onboarding-policy.md:19-25` (G1–G4 gates); `config/decision/risk_matrix.yaml:1-30` (5×5 risk matrix); `config/decision/approval_matrix.yaml:1-270` (25+ risk-gated actions); `docs/CEO-DIRECTIVE-BLUEPRINT-ADOPTION.md:93-100` (governance cadence); `docs/source-of-truth.yaml:87-96` (9 LLM providers) | |
 | **Offer A** | `docs/service-catalog-malawi.md:32-42` (deliverables, pricing, targets); `config/company/malawi_offers.yaml:15-16` (approval status); `docs/legal/client-onboarding-policy.md:35` (governance approval) | Fieldable 2026; governance approved |
 | **Offer B** | `docs/service-catalog-malawi.md:44-53` (deliverables, pricing); `config/company/malawi_offers.yaml:25` (risk assessment); `docs/legal/client-onboarding-policy.md:36` (BLOCKED — WhatsApp data + cross-border LLM) | BLOCKED — do not sell |
@@ -512,9 +489,8 @@ Every factual claim in this document traces to one or more authoritative source 
 | **Industries (5 verticals)** | `USE-CASE-CATALOG.md:200` (5 verticals); `docs/Pharos/case-study-pipeline.md:49-59` (sector targeting) | Positioning only; no active client deployments |
 | **Company Scenarios (FOW-01..08)** | `docs/archive/2026-08-11-pre-restructure/reports/future-of-work-report.md:86-194` (all 8 use cases) | UNVERIFIED projections in source excluded from body copy |
 | **J&S StopOver Bar** | `docs/Pharos/case-study-pipeline.md:7-28` (live proof, non-client) | Not a paid client; live proof |
-| **Meta Case Study** | `docs/Pharos/case-study-pipeline.md:43-46` (89 AI agents + CEO, governance mapped) | Proven in-house |
+| **Meta Case Study** | `docs/Pharos/case-study-pipeline.md:43-46` (151 AI agents + CEO, governance mapped) | Proven in-house |
 | **Social Media Automation OS** | `docs/case-studies/social-media-automation-os.md` (engagement record, team, guardrails); client scaffolding reviewed at intake | MEDIUM risk — engagement in progress, no shipped deployment yet |
-| **Lightspeed Scroll Page** | `docs/case-studies/lightspeed-scroll-page/README.md` (build record, evidence index); `scrollcraft/FINGERPRINTS.md` (registry row) | Proven in-house — shipped, lab-verified, no live audience |
 | **Health/M&E Pilot** | `docs/Pharos/case-study-pipeline.md:31-34` (composing evidence) | HIGH risk — no confirmed partnership signed |
 | **VSLA/SACCO Pilot** | `docs/Pharos/case-study-pipeline.md:37-40` (COMESA/IDEA seeking) | HIGH risk — no signed engagement |
 | **Ministry of Agriculture — Farmer Advisory** | `USE-CASE-CATALOG.md:204-214` (piloting listed) | MEDIUM risk — piloting |

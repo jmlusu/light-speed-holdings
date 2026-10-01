@@ -342,15 +342,11 @@ class OnboardingManager:
         output_dir: str = ".opencode/agents",
         data_dir: str | Path = "hr",
         approval_config_path: str = "orchestrator/approvals.yaml",
-        json_path: str = "company/agent-registry.json",
-        table_path: str = "docs/AGENT-REGISTRY-TABLE.md",
     ) -> None:
         self.registry_path = Path(registry_path)
         self.templates_dir = Path(templates_dir)
         self.output_dir = Path(output_dir)
         self._approval_config_path = approval_config_path
-        self._json_path = json_path
-        self._table_path = table_path
         self._store = _RequestStore(data_dir)
 
     # ── Registry helpers ───────────────────────────────────────────────
@@ -474,15 +470,11 @@ class OnboardingManager:
                 registry_path=str(self.registry_path),
                 templates_dir=str(self.templates_dir),
                 output_dir=str(self.output_dir),
-                table_path=str(self._table_path),
             )
             generated = gen.generate_all()
             logger.info("Generated %d agent files", len(generated))
 
-            sync_registry(
-                yaml_path=str(self.registry_path),
-                json_path=str(self._json_path),
-            )
+            sync_registry(yaml_path=str(self.registry_path))
             logger.info("Synced registry to JSON")
 
             return generated

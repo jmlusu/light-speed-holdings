@@ -20,7 +20,7 @@ Department: Pharos
 
 Reports To: chief_of_staff
 
-Direct Reports: agentic_research_lead, thought_leadership_author, agentic_policy_analyst, speaker_engagement_lead, community_ecosystem_builder
+Direct Reports: agentic_research_lead, thought_leadership_author, agentic_policy_analyst, speaker_engagement_lead, community_ecosystem_builder, media_pr_relations, talent_academy_lead
 
 
 ---
@@ -53,13 +53,9 @@ Heads the Pharos department, turning Lightspeed Holdings' agentic AI engineering
 ## Decision Rights
 
 
-- Decides and owns: Own the CEO's North Star positioning and the Pharos 90-day / 12-month / 24-month roadmap
-
-- Decides and owns: Maintain the thought-leadership content calendar and cross-agent orchestration
-
-- Decides and owns: Anchor the "Company Builder / Use Cases / Policy" three-pillar narrative
-
-- Decides and owns: Operate the Lightspeed Institute and the Agentic AI Executive Lab pipelines
+- Approve department-level decisions within budget
+- Delegate tasks to specialist agents
+- Escalate strategic decisions to CEO/Board
 
 
 ---

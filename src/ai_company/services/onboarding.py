@@ -258,16 +258,12 @@ class OnboardingService(BaseService):
         output_dir: str = ".opencode/agents",
         data_dir: str | Path = ".",
         approval_config_path: str = "orchestrator/approvals.yaml",
-        json_path: str = "company/agent-registry.json",
-        table_path: str = "docs/AGENT-REGISTRY-TABLE.md",
         **kwargs: Any,
     ) -> None:
         self._registry_path = Path(registry_path)
         self._templates_dir = Path(templates_dir)
         self._output_dir = Path(output_dir)
         self._approval_config_path = approval_config_path
-        self._json_path = json_path
-        self._table_path = table_path
         super().__init__(department_id="hr", data_dir=data_dir, **kwargs)
         self._onboarding_store = FileStore(Path(data_dir) / "hr", backup=True)
 
@@ -444,15 +440,11 @@ class OnboardingService(BaseService):
                 registry_path=str(self._registry_path),
                 templates_dir=str(self._templates_dir),
                 output_dir=str(self._output_dir),
-                table_path=str(self._table_path),
             )
             generated = gen.generate_all()
             logger.info("Generated %d agent files", len(generated))
 
-            sync_registry(
-                yaml_path=str(self._registry_path),
-                json_path=str(self._json_path),
-            )
+            sync_registry(yaml_path=str(self._registry_path))
             logger.info("Synced registry to JSON")
 
             generated_paths = [str(p) for p in generated]

@@ -59,7 +59,6 @@ from ai_company.orchestrator.message_bus import MessageBus
 from ai_company.orchestrator.notifier import ApprovalNotifier
 from ai_company.orchestrator.scheduler import Scheduler
 from ai_company.orchestrator.suspend_store import SuspendedState, SuspendStore
-from ai_company.publishing.queue import PublishQueue
 from ai_company.store.file_store import FileStore
 from ai_company.telemetry import (
     detach_task_context,

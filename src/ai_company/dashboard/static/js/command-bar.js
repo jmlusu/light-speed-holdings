@@ -215,4 +215,3 @@ document.addEventListener('alpine:init', () => {
             return text.replace(regex, '<mark class="bg-yellow-500/30">$1</mark>');
         },
     }));
-});

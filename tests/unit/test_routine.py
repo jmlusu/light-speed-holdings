@@ -147,9 +147,9 @@ def test_is_known_receiver_resolves_real_registry() -> None:
 
     root = get_project_root()
     store = RoutineStore(project_root=root)
-    for receiver in ("content_creator", "chief_of_staff"):
+    for receiver in ("content_writer", "chief_of_staff"):
         assert store.is_known_receiver(receiver) is True, receiver
-    assert store.is_known_receiver("content_writer") is False
+    assert store.is_known_receiver("content-creator") is False
 
 
 # ── RoutineScheduler ─────────────────────────────────────────────────────────

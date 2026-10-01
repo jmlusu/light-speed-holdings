@@ -353,7 +353,9 @@ class TestTokenLimitRotationIntegration:
         ]
         router._set_cached_free_models(test_models)
 
-        route = asyncio.run(router.rotate_on_token_limit("s", "test task"))
+        route = asyncio.get_event_loop().run_until_complete(
+            router.rotate_on_token_limit("s", "test task")
+        )
         assert route is not None
         assert route.model == "m"  # Next larger context (128K > 80K)
 
@@ -373,7 +375,9 @@ class TestTokenLimitRotationIntegration:
         ]
         router._set_cached_free_models(test_models)
 
-        route = asyncio.run(router.rotate_on_token_limit("biggest", "test task"))
+        route = asyncio.get_event_loop().run_until_complete(
+            router.rotate_on_token_limit("biggest", "test task")
+        )
         assert route is not None
         # Should escalate from free → standard (next tier up)
         assert route.tier == "premium"  # standard→premium is next in chain

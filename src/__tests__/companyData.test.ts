@@ -17,8 +17,8 @@ describe('agentsList', () => {
     expect(agentsList.length).toBeGreaterThan(0);
   });
 
-  it('should have 90 agents', () => {
-    expect(agentsList.length).toBe(90);
+  it('should have 152 agents', () => {
+    expect(agentsList.length).toBe(152);
   });
 
   it('every agent should have required fields', () => {
@@ -30,12 +30,12 @@ describe('agentsList', () => {
       expect(agent.description).toBeDefined();
       expect(Array.isArray(agent.responsibilities)).toBe(true);
       expect(Array.isArray(agent.tools)).toBe(true);
-      expect(agent.type).toBeTruthy();
+      expect(agent.permission).toBeTruthy();
     });
   });
 
   it('every agent should have a valid type', () => {
-    const validTypes = ['Executive', 'Specialist', 'Board'];
+    const validTypes = ['Executive', 'Specialist', 'Manager', 'Board'];
     agentsList.forEach((agent) => {
       expect(validTypes).toContain(agent.type);
     });
