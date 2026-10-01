@@ -1,6 +1,6 @@
 # Model Routing Policy — Light Speed Holdings
 
-> Last updated: 2026-08-17
+> Last updated: 2026-09-25
 
 ## Overview
 
@@ -16,6 +16,7 @@ The ModelRouter (`src/ai_company/model_router.py`) selects which LLM provider an
 | ollama | ollama | llama3.1-8b-32k | http://localhost:11434 | (none) |
 | openai | openai_compatible | gpt-4o-mini | https://api.openai.com/v1 | OPENAI_API_KEY |
 | anthropic | openai_compatible | claude-sonnet-4-20250514 | https://api.anthropic.com | ANTHROPIC_API_KEY |
+| mimo | openai_compatible | mimo-v2.5 | https://api.xiaomimimo.com/v1 | MIMO_API_KEY |
 
 ## Tiers
 
@@ -23,8 +24,8 @@ The ModelRouter (`src/ai_company/model_router.py`) selects which LLM provider an
 |------|-------------|---------------------------|
 | free | Zero-cost tier using dynamic Opencode free models + Ollama fallback | Dynamic catalog (see below) |
 | fast | Low-latency, low-cost. Read-only and simple tasks. | llamacpp/mistral-7b-32k -> ollama/mistral-7b-32k -> gemini/3.5-flash |
-| standard | Balanced capability and cost. Default for most agents. | llamacpp/llama3.1-8b-32k -> opencode/big-pickle -> ollama/llama3.1-8b-32k -> gemini/3.5-flash |
-| premium | Maximum reasoning. Critical decisions and approvals. | llamacpp/deepseek-r1-64k -> llamacpp/gemma2-9b-q5 -> opencode/big-pickle -> ollama/llama3.1-8b-32k |
+| standard | Balanced capability and cost. Default for most agents. | llamacpp/llama3.1-8b-32k -> opencode/big-pickle -> ollama/llama3.1-8b-32k -> gemini/3.5-flash -> mimo/mimo-v2.5 |
+| premium | Maximum reasoning. Critical decisions and approvals. | llamacpp/deepseek-r1-64k -> llamacpp/gemma2-9b-q5 -> opencode/big-pickle -> ollama/llama3.1-8b-32k -> mimo/mimo-v2.5-pro |
 
 ## Free Tier (Dynamic Catalog)
 

@@ -54,6 +54,9 @@ MODEL_COSTS: dict[str, dict[str, float]] = {
     "deepseek-chat": {"input": 0.14, "output": 0.28},
     "deepseek-coder": {"input": 0.14, "output": 0.28},
     "deepseek-reasoner": {"input": 0.55, "output": 2.19},
+    # MiMo (Xiaomi) models — list price per 1M tokens, cache-miss input
+    "mimo-v2.5-pro": {"input": 0.435, "output": 0.87},
+    "mimo-v2.5": {"input": 0.14, "output": 0.28},
     # Ollama / local models — effectively free
     "llama3.1:70b": {"input": 0.0, "output": 0.0},
     "llama3.1-8b-32k": {"input": 0.0, "output": 0.0},

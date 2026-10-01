@@ -87,8 +87,8 @@ claims:
   provider_count:
     source: company/models.yaml
     extractor: "count provider entries"
-    # Canonical: 9 LLM providers
-    current_value: 9
+    # Canonical: 10 LLM providers
+    current_value: 10
     pattern: "\\d+ providers?"
     docs:
       - README.md

@@ -2,54 +2,56 @@
 
 ## Technical Approach
 
-1. Docs-only authoring under `docs/architecture/` driven by the current-state baseline in `summary.md`.
-2. Parallel workstreams (per brief §33 allocation) — proposed subagent mapping:
-   - Chief-of-staff / solution-architect: primary v2 doc synthesis + Mermaid system diagrams.
-   - Registry-owner: `AGENT_CONSOLIDATION_152_TO_90.md` + `AI_WORKFORCE_90.md` (facts from registry/departments/source-of-truth).
-   - Product-designer + lead-frontend: `WEB_INFORMATION_ARCHITECTURE_V2.md` + `AI_COMPANY_BUILDER_UX.md` + `ROUTE_MIGRATION_V2.md` (from App.tsx inventory + vercel conflicts).
-   - Security-architect: `PUBLIC_INTERNAL_BOUNDARY.md`.
-   - Data-engineer: `PUBLIC_AGENT_REGISTRY_SCHEMA.md` (YAML↔JSON↔TS contract).
-   - Technical-documentation-lead: `EVIDENCE_ARCHITECTURE.md` + `V2_IMPLEMENTATION_ROADMAP.md`.
-   - Solution-architect (Architecture Lead role): primary v2 doc synthesis + Mermaid D1–D12.
-   - Solution-architect / governance: ADRs 025+ under `docs/architecture/adr/` (BRIEF_LOCK path); note historical duplicate 020 in docs/adr/ without rename.
-4. Synthesis last: one pass for cross-links, count consistency, Mermaid validity.
+Track A (config-only): append MiMo models last in `standard`/`premium` in
+`company/models.yaml`, add `MODEL_COSTS` entries, add `MIMO_API_KEY` to the
+monitoring provider list, thread the variable through env templates, compose,
+workflows, and `AGENTS.md`, bump count claims to 10, record the vendor and the
+decision in an ADR. Track B: commit `.mimocode/mimocode.jsonc` as a custom
+`@ai-sdk/openai-compatible` provider keyed on `{env:MIMO_API_KEY}`, ignore all
+other `.mimocode/` runtime state.
 
 ## Impacted Modules And Files
 
-- Create: `docs/architecture/LIGHTSPEED_AI_COMPANY_BUILDER_WEB_ARCHITECTURE_V2.md`
-- Create: `docs/architecture/AGENT_CONSOLIDATION_152_TO_90.md`
-- Create: `docs/architecture/AI_WORKFORCE_90.md`
-- Create: `docs/architecture/PUBLIC_INTERNAL_BOUNDARY.md`
-- Create: `docs/architecture/WEB_INFORMATION_ARCHITECTURE_V2.md`
-- Create: `docs/architecture/PUBLIC_AGENT_REGISTRY_SCHEMA.md`
-- Create: `docs/architecture/ROUTE_MIGRATION_V2.md`
-- Create: `docs/architecture/EVIDENCE_ARCHITECTURE.md`
-- Create: `docs/architecture/AI_COMPANY_BUILDER_UX.md`
-- Create: `docs/architecture/V2_IMPLEMENTATION_ROADMAP.md`
-- Create: ADR files (025+ under agreed path)
-- Update: this ECL folder only (spec/plan/tasks/summary)
-- Read-only inputs: `company-registry.yaml`, `company/departments.yaml`, `company/agent-registry.json`, `docs/source-of-truth.yaml`, `src/App.tsx`, `vercel.json`, `src/data/*`, `docs/adr/*`, `src/ai_company/orchestrator/*`, `src/ai_company/executor/*`
+- `company/models.yaml`, `src/ai_company/llm/cost_tracker.py`,
+  `src/ai_company/dashboard/monitoring.py`
+- `.env.example`, `.env.staging.example`, `docker-compose.yml`,
+  `docker-compose.staging.yml`, `.github/workflows/autonomous.yml`,
+  `.github/workflows/repo-audit.yml`, `AGENTS.md`
+- `docs/source-of-truth.yaml`, `README.md`, `docs/ux/DEVELOPER-EXPERIENCE.md`,
+  `docs/client-facing/USE-CASE-CATALOG.md`, `docs/MODEL-ROUTING-POLICY.md`
+- `docs/APPROVED-VENDORS.md`, `docs/adr/025-mimo-provider-and-mimocode-cli.md`
+- `.mimocode/mimocode.jsonc`, `.gitignore`, `tests/unit/test_mimo_provider.py`
 
 ## Interfaces, Data, Permissions
 
-- No runtime interfaces changed. Public agent registry schema is documentation of an existing/future contract only.
-- No secrets, no generated outputs, no `.env`.
+- Provider contract: `provider: mimo`, `api_base:
+  https://api.xiaomimimo.com/v1`, env var `MIMO_API_KEY`, models
+  `mimo/mimo-v2.5` and `mimo/mimo-v2.5-pro` (SDK routing keys
+  `mimo-v2.5` / `mimo-v2.5-pro`).
+- Pricing per 1M tokens (cache-miss): `mimo-v2.5-pro` 0.435/0.87,
+  `mimo-v2.5` 0.14/0.28.
+- Track B: project config at `.mimocode/mimocode.jsonc`, default
+  `custom/mimo-v2.5`, both models registered, no model cost/limit metadata
+  invented.
 
 ## Spec Gaps Found From Planning
 
-- Full brief text now provided; locked in BRIEF_LOCK.md + Resolved Clarifications.
-- Live deployment comparison (3 URLs) in-scope per §7.4 — execute during baseline appendix.
+- None open. Credential path resolved (env token, not `mimo auth login`).
 
 ## Risks And Mitigations
 
-- Risk: wrong deliverable list if reconstruction differs from brief → Mitigation: confirm brief before final synthesis; filenames are cheap to rename pre-commit.
-- Risk: count drift reintroduced in new docs → Mitigation: cite source-of-truth.yaml (90/20) everywhere; run validate-drift after write.
-- Risk: too much parallel drift between 9 artifacts → Mitigation: primary doc owns thesaurus/section skeleton; artifacts link back with fixed IDs.
+- Routing displacement risk — mitigated by appending MiMo last in each tier.
+- Committed secrets risk — mitigated by `.env` gitignore, empty example values,
+  `detect-private-key` hook, and probes using dummy keys only.
+- Divergent CLI config risk — mitigated by committing the project config and
+  ignoring every other `.mimocode/` artifact.
 
 ## Verification Plan
 
-- File presence: all 10 architecture docs + ADRs.
-- `pwsh scripts/lint-ecl.ps1`
-- `pwsh scripts/validate-drift.ps1` (expect green; no claim changes)
-- Grep new docs for `152 agents` / `145 agents` outside historical/triage context → must be intentional.
-- Mermaid blocks: parse-level sanity (no unclosed fences).
+1. `uv run ruff check src tests/ && uv run mypy src/`
+2. `pwsh scripts/validate-drift.ps1` and `pwsh scripts/lint-ecl.ps1`
+3. `uv run pytest -q -m "not e2e" --cov=src/ai_company --cov-fail-under=72`
+4. Agent regen + archify regenerate (content-identical diff)
+5. `uvx uv-audit`, version sync check
+6. `mimo debug config` + `mimo run --pure` probe (dummy key, then real key)
+7. Push, open PR, watch CI to green

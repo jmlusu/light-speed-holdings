@@ -179,7 +179,7 @@ All configuration lives in `company/`:
 |------|---------|
 | `company-registry.yaml` | Single source of truth for all 90 agents |
 | `company/agent-registry.json` | Generated registry (synced from `company-registry.yaml`) |
-| `company/models.yaml` | LLM provider configuration (9 providers, 3 tiers) |
+| `company/models.yaml` | LLM provider configuration (10 providers, 3 tiers) |
 | `company/departments.yaml` | 20 departments with executives and agents |
 | `company/config/kpis.yaml` | Department KPI definitions (25 KPIs) |
 
