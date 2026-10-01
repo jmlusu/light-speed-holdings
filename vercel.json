@@ -21,6 +21,8 @@
     }
   ],
   "functions": {
-    "api/enquiry.ts": { "regions": ["cpt1"] }
+    "api/enquiry.ts": { "regions": ["iad1"] },
+    "api/ping.ts": { "regions": ["iad1"] },
+    "api/ping-nodejs.js": { "regions": ["iad1"] }
   }
 }
