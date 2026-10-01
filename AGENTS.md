@@ -147,6 +147,14 @@ The `ApprovalGate` runs a periodic sweep (wired into the daemon/governance caden
 
 Skills must not send LightSpeed local data (code, diffs, docs, screenshots, prompts, session/memory payloads, PDFs, secrets) to third-party hosts unless the vendor is allow-listed in [`docs/APPROVED-VENDORS.md`](docs/APPROVED-VENDORS.md) and the exception is inside its **90-day** window (or re-signed by CEO/CISO). **CISO of record: Jack Mlusu (Human CEO).** On unexpected transmission: stop the skill, do not retry, report skill + host + payload class to the CEO. Full rule: [`docs/SKILL_CURATION_POLICY.md`](docs/SKILL_CURATION_POLICY.md) § Skill Third-Party Transmission Ban. Retired 2026-09-23: `claude-mem-*`, `scroll-craft`, `greploop`/`greploop-apps` (skills deleted; local `~/.claude-mem` purged).
 
+### 9.3 Audit Evidence Separation
+
+An agent performing an audit must treat its evidence set as read-only: **never write, move, rename, or delete any file inside the evidence directory it is auditing**, and never write its own audit output there. The auditor's read set and write set must be disjoint for the whole run, so findings stay re-derivable from an untouched evidence set and can be independently re-checked.
+
+- **Evidence directory** — any path consumed as evidence: `reports/evidence/`, `audit/*.jsonl`, `.opencode/audit/*`, `harness/changes/*/reviews/`, downloaded `audit-evidence` CI artifacts.
+- **Where output goes** — a directory outside the evidence set (for the weekly audit: `reports/repo-audit-<AUDIT_DATE>.md`, with evidence at `reports/evidence/<AUDIT_DATE>.json`), or a path outside the repository.
+- **On violation** — discard the run, re-fetch evidence from a fresh clone or CI artifact, re-run, and report the incident alongside the findings.
+
 ## 10 Verification
 
 | Change Type | Minimum Verification |
