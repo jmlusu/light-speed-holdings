@@ -58,7 +58,7 @@ jobs:
         run: |
           export AUDIT_DATE="$(date -u +%F)"
           echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
-          mkdir -p reports
+          mkdir -p reports/evidence
           uv run python - <<'PY'
           import json
           import os
@@ -246,7 +246,7 @@ jobs:
               "severity_totals": totals,
               "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
           }
-          out = root / "reports" / f"evidence-{date}.json"
+          out = root / "reports" / "evidence" / f"{date}.json"
           out.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
           print(f"probes={len(probes)} totals={totals}")
           print(f"wrote {out}")
@@ -256,7 +256,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: audit-evidence
-          path: reports/evidence-${{ steps.scan.outputs.date }}.json
+          path: reports/evidence/${{ steps.scan.outputs.date }}.json
           retention-days: 30
 
   # ── Phase 2: agent deep pass via the executor daemon ───────────────
@@ -299,9 +299,9 @@ jobs:
         run: |
           export AUDIT_DATE="$(date -u +%F)"
           echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
-          mkdir -p reports
-          mv evidence-*.json "reports/evidence-$AUDIT_DATE.json" 2>/dev/null || true
-          ls reports/
+          mkdir -p reports/evidence
+          mv "artifacts/$AUDIT_DATE.json" "reports/evidence/$AUDIT_DATE.json" 2>/dev/null || true
+          ls reports/evidence/
           cat > "reports/repo-audit-$AUDIT_DATE.md" <<EOF
           # Repository Audit — $AUDIT_DATE (IN PROGRESS)
 
@@ -363,7 +363,7 @@ jobs:
               instruction=(
                   f"Execute the weekly repository audit for {date}. Read the brief "
                   f"at prompts/repository-audit.md and the deterministic evidence at "
-                  f"reports/evidence-{date}.json. Overwrite reports/repo-audit-{date}.md "
+                  f"reports/evidence/{date}.json. Overwrite reports/repo-audit-{date}.md "
                   f"with your full report per the brief's contract (sections + AUDIT_VMETA)."
               ),
               priority=TaskPriority.HIGH,
@@ -449,11 +449,11 @@ jobs:
         run: |
           export AUDIT_DATE="$(date -u +%F)"
           echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
-          mkdir -p reports
+          mkdir -p reports/evidence
           # Restore evidence (needed for both the fallback and provenance)
-          if [ -f "artifacts/evidence-$AUDIT_DATE.json" ]; then
-            mv "artifacts/evidence-$AUDIT_DATE.json" "reports/evidence-$AUDIT_DATE.json"
-          elif [ -f "reports/evidence-$AUDIT_DATE.json" ]; then
+          if [ -f "artifacts/$AUDIT_DATE.json" ]; then
+            mv "artifacts/$AUDIT_DATE.json" "reports/evidence/$AUDIT_DATE.json"
+          elif [ -f "reports/evidence/$AUDIT_DATE.json" ]; then
             : # already present (quick re-run path)
           fi
           REPORT="reports/repo-audit-$AUDIT_DATE.md"
@@ -468,7 +468,7 @@ jobs:
           import json, os
           from pathlib import Path
           date = os.environ.get("AUDIT_DATE", "")
-          ev = Path("reports") / f"evidence-{date}.json"
+          ev = Path("reports") / "evidence" / f"{date}.json"
           totals = {"critical": 0, "major": 0, "minor": 0}
           n_probes = 0
           detail = ""
@@ -542,7 +542,7 @@ jobs:
           export AUDIT_DATE="$(date -u +%F)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "reports/repo-audit-$AUDIT_DATE.md" "reports/evidence-$AUDIT_DATE.json"
+          git add "reports/repo-audit-$AUDIT_DATE.md" "reports/evidence/$AUDIT_DATE.json"
           if git diff --cached --quiet; then
             echo "No new audit files to commit (already up to date)."
           else
