@@ -1,0 +1,8 @@
+$ vite preview --port "3015"
+Port 3015 is in use, trying another one...
+Port 3016 is in use, trying another one...
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3017[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.30.112.1:[1m3017[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.111:[1m3017[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.19.48.1:[1m3017[22m/[39m
+error: script "preview" exited with code 255

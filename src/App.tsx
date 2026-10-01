@@ -11,6 +11,7 @@ import { SolutionsPage } from './pages/SolutionsPage';
 import { SectorsPage } from './pages/SectorsPage';
 import { ProofPage } from './pages/ProofPage';
 import { InsightsPage } from './pages/InsightsPage';
+import { InsightArticlePage } from './pages/InsightArticlePage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { AskLightSpeed } from './components/AskLightSpeed';
@@ -24,6 +25,7 @@ const SolutionsPageRoute = withSite(SolutionsPage);
 const SectorsPageRoute = withSite(SectorsPage);
 const ProofPageRoute = withSite(ProofPage);
 const InsightsPageRoute = withSite(InsightsPage);
+const InsightArticlePageRoute = withSite(InsightArticlePage);
 const AboutPageRoute = withSite(AboutPage);
 const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
@@ -77,6 +79,7 @@ export const App: React.FC = () => {
           { path: 'sectors', element: <SectorsPageRoute /> },
           { path: 'proof', element: <ProofPageRoute /> },
           { path: 'insights', element: <InsightsPageRoute /> },
+          { path: 'insights/:slug', element: <InsightArticlePageRoute /> },
           { path: 'about', element: <AboutPageRoute /> },
           { path: 'contact', element: <ContactPageRoute /> },
           { path: 'ask', element: <AskLightSpeed /> },

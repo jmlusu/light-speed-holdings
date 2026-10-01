@@ -4,7 +4,7 @@ import { SectionHeading } from '../site/SectionHeading';
 import { HonestyBadge } from '../site/HonestyBadge';
 import { Reveal } from '../Reveal';
 import { HomeSection } from './HomeSection';
-import { sectors } from '../../data/sectors';
+import { sectors } from '../../data/sector-registry';
 
 interface SectorsSectionProps {
   theme: 'light' | 'dark';

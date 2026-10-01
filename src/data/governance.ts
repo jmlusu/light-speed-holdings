@@ -108,7 +108,7 @@ export const CONTENT_CLAIMS: readonly GovernedClaim[] = [
     id: 'registry.case-studies',
     state: 'published',
     owner: 'cmo',
-    source: 'src/data/siteContent.ts (workCaseStudies, workPolicy)',
+    source: 'src/data/siteContent.ts (proofCaseStudies, proofPolicy)',
     category: 'outcome',
     evidence:
       'CATALOG_POSITIONING.honestyClassification: case studies are fieldable/pilot work, not delivered client outcomes.',

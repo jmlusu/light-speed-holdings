@@ -42,6 +42,12 @@ scheduler:
       output: "results/weekly-report-{date}.json"
 
   # Human review checkpoints
+  linkedin_series_reminder:
+      enabled: true
+      interval_minutes: 2880
+      time_utc: "05:00"
+      description: "Reminder for LinkedIn AI-Native Series — fires every 2 days at 5:00 UTC (7:00 AM CAT)"
+      command: "orchestrator linkedin-reminder"
   human_checkpoints:
     morning_briefing:
       time_utc: "06:30"

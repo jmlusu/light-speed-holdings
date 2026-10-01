@@ -814,9 +814,7 @@ class Executor:
                 try:
                     self._enqueue_routine_artifact(task, result)
                 except Exception:  # noqa: BLE001 - enqueue is best-effort
-                    logger.warning(
-                        "Publish enqueue failed for task %s", task.id, exc_info=True
-                    )
+                    logger.warning("Publish enqueue failed for task %s", task.id, exc_info=True)
             elif getattr(result, "timed_out", False):
                 # O7: max-iterations exhaustion is a distinct outcome from a
                 # hard failure — persist TIMEOUT so dashboards/operators can

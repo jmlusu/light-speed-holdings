@@ -56,7 +56,6 @@ pytest-run*.log
 # ==========================================
 # OpenCode Runtime State & Generated Output
 # ==========================================
-graphify-out/
 .opencode/inbox*.json
 .opencode/pending_approvals.json
 .opencode/audit

@@ -38,7 +38,6 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 4. If no active change exists and `harness/evolution/pending.md` exists, read it before `docs/STATUS.md`.
 5. If no active change exists and no pending evolution exists, read [Status](docs/STATUS.md).
 6. Read the relevant source files for the task.
-7. Run `uv run graphify query "<task>"` to surface prior bug fixes and decisions relevant to the task; the knowledge graph is indexed on every commit by the post-commit `capture-fix` + `graphify-rebuild` hooks.
 
 ## 5 Development Commands
 
@@ -55,12 +54,11 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 
 ```bash
 uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
-pre-commit install --hook-type pre-commit --hook-type post-commit  # Enable git hooks (ruff, mypy, bandit, post-commit graph rebuild)
+pre-commit install --hook-type pre-commit --hook-type post-commit  # Enable git hooks (ruff, mypy, bandit, post-commit capture-fix)
 ai-company --help            # CLI entry point (uv run ai-company --help if venv not activated)
 uv run ruff check src/       # Lint
 uv run mypy src/             # Type check
 uv run pytest                # Tests
-uv run graphify update .     # Keep the knowledge graph fresh (AST-only, no API cost)
 uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
 ```
 
@@ -103,7 +101,6 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
-| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 7 Safety Boundaries
 
@@ -156,7 +153,6 @@ Skills must not send LightSpeed local data (code, diffs, docs, screenshots, prom
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
-| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 11 Security — Key Rotation Procedure
 
@@ -244,16 +240,3 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes `scripts/visual_check.js` (Playwright; `npx playwright install chromium` once) |
 
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
-
-## graphify
-
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
-
-When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
-
-Rules:
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

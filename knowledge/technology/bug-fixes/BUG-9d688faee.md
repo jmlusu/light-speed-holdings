@@ -12,9 +12,9 @@
 
 ## Root Cause (filled by the resolving engineer)
 
-Pre-commit's stash→restore cycle for the hook stages: the synchronous
-`rebuild-graphify-graph` hook (`uv run graphify update .`, ~27 min) blocked
-post-commit before pre-commit could restore its stash; the hook process was
+Pre-commit's stash→restore cycle for the hook stages: a slow synchronous
+post-commit graph-rebuild hook (~27 min run) blocked the post-commit stage
+before pre-commit could restore its stash; the hook process was
 killed (shell timeout) and the restore never ran, silently reverting every
 unstaged tracked edit — including the tracked prune deletions, logo
 overwrites, and sync-brand script rewrite staged during `9dffad9`. The lost
@@ -27,7 +27,7 @@ work was recovered from the pre-commit stash patch
 Re-applied and re-committed the recovered 194-file change set (tracked
 prune deletions + canonical logo overwrites + `sync-brand.ps1` rewrite).
 Root cause of the loss class was fixed separately in `c7609025` by
-backgrounding the graphify rebuild (`scripts/graphify-bg.ps1`) so the hook
+backgrounding that rebuild hook via a backgrounded hook wrapper so the hook
 exits in <1 s and the stash restore always completes.
 
 ## Files Changed

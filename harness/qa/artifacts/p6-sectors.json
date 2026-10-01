@@ -1,0 +1,19 @@
+{
+  "target": "http://localhost:3001/sectors",
+  "checks": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 4576,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 12,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\artifacts\\p6-sectors-390x844.png"
+    }
+  ]
+}

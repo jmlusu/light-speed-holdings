@@ -4,12 +4,21 @@ import { FloatingNav } from './FloatingNav';
 import { SiteFooter } from './SiteFooter';
 import { ExecutiveBriefingModal } from './ExecutiveBriefingModal';
 import { useSite } from '../site-context';
+import { trackJourneyEvent, stageForRoute } from '../hooks/useJourneyEvents';
 
 export const SiteLayout: React.FC = () => {
   const { pathname } = useLocation();
   const { theme, onToggleTheme, onRequestBriefing, isBriefingOpen, briefingSummary, closeBriefing } = useSite();
 
   const lastPathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    trackJourneyEvent({
+      eventType: 'page_view',
+      route: pathname,
+      journeyStage: stageForRoute(pathname),
+    });
+  }, [pathname]);
 
   useEffect(() => {
     document.title = `LIGHTSPEED HOLDINGS | ${pathname === '/' ? 'AI-Native Company Builder' : pathname.replace('/', '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`;

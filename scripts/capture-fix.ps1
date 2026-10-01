@@ -5,9 +5,8 @@ param(
 # Capture a bug-fix record whenever a commit closes a GitHub issue
 # OR uses the conventional `fix:` prefix (conventional commits
 # semantically denote a bug fix). The record lands in
-# knowledge/technology/bug-fixes/ and is automatically indexed by
-# the post-commit graphify hook, so the org knowledge graph stays
-# current without anyone manually writing a known-issues document.
+# knowledge/technology/bug-fixes/ as grep-able organizational memory,
+# so no one has to manually write a known-issues document.
 
 $msg = git log -1 --pretty=%B 2>&1
 $subject = ($msg -split [Environment]::NewLine | Select-Object -First 1)

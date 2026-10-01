@@ -66,9 +66,9 @@ export const insightCategories: string[] = [
 ];
 
 export const insightTeasers: { title: string; topic: string; to: string }[] = [
-  { title: 'The SADC AI Opportunity', topic: 'AI IN AFRICA', to: '/insights' },
-  { title: 'What Agentic AI Means for African Governments', topic: 'AGENTIC AI', to: '/insights' },
-  { title: 'From Digital Transformation to AI-Native Transformation', topic: 'DIGITAL TRANSFORMATION', to: '/insights' },
+  { title: 'The SADC AI Opportunity', topic: 'AI IN AFRICA', to: '/insights/sadc-ai-opportunity' },
+  { title: 'What Agentic AI Means for African Governments', topic: 'AGENTIC AI', to: '/insights/agentic-ai-african-governments' },
+  { title: 'From Digital Transformation to AI-Native Transformation', topic: 'DIGITAL TRANSFORMATION', to: '/insights/digital-to-ai-native-transformation' },
 ];
 
 export const solutions = [
@@ -274,7 +274,7 @@ export const GOVERNANCE_SOLUTION = {
   cta: { label: 'View Governance Details', to: '/ai-company-builder' },
 };
 
-export const workCaseStudies = [
+export const proofCaseStudies = [
   {
     id: 'ws-01',
     title: 'Malawi Central Bank Compliance Automation',
@@ -313,7 +313,7 @@ export const workCaseStudies = [
   },
 ];
 
-export const workPolicy = [
+export const proofPolicy = [
   {
     id: 'wp-01',
     title: 'Data Protection',
@@ -340,13 +340,90 @@ export const workPolicy = [
   },
 ];
 
+/* ── Proof: outcomes + trust (spec §11 Evidence Tiers, §15 Proof Throughout) ──
+   Every claim reuses wording already published on the site or in the claims
+   ledger — nothing invented here. `proof` drives the honesty badge at render. */
+export const outcomeCategories = [
+  {
+    id: 'oc-01',
+    title: 'Compliance & Regulatory Reporting',
+    claim: '40% reduction in compliance reporting time for a regional financial institution.',
+    caseStudyId: 'ws-01',
+    sector: 'financial-services',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'oc-02',
+    title: 'Cooperative & Field Operations',
+    claim: 'WhatsApp-native platform in pilot serving 1,200 cooperative members across Malawi and Mozambique.',
+    caseStudyId: 'ws-02',
+    sector: 'agriculture',
+    proof: 'In pilot',
+  },
+  {
+    id: 'oc-03',
+    title: 'Education & Credential Administration',
+    claim: '3 departments onboarded with 5,000 records processed under GDPR-level protection.',
+    caseStudyId: 'ws-03',
+    sector: 'education',
+    proof: 'In pilot',
+  },
+];
+
+export const trustEvidence = [
+  {
+    id: 'te-01',
+    title: '5-Tier Approval Matrix',
+    description:
+      'Risk-tiered human approval gates govern every agent action — from fully autonomous operations through to decisions requiring named executive sign-off.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-02',
+    title: 'SHA-256 Sealed Audit Trails',
+    description:
+      'Append-only action logs record prompts, tool invocations and outputs. Every engagement action is cryptographically sealed and tamper-evident.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-03',
+    title: 'Four Mandatory Governance Gates',
+    description:
+      'Contract, DPA, Compliance and Security gates run before work starts; stale approvals expire instead of queueing forever.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-04',
+    title: 'RBAC With 90-Day Key Rotation',
+    description:
+      'Dashboard permissions separate admin, approve and run roles; API keys are rotated on a 90-day cycle and on suspected compromise.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-05',
+    title: 'Canonical Registry Numbers',
+    description:
+      'Every platform figure — 90 agents, 20 departments, the regression-test count — is read from company-registry.yaml and the test suite, never from marketing copy.',
+    proof: 'Proven in-house',
+  },
+  {
+    id: 'te-06',
+    title: 'Sovereign, Offline-First Operation',
+    description:
+      'Local-first execution with a Zero-Cloud Boundary option for state, health and financial data — engineered for low-bandwidth environments.',
+    proof: 'Proven in-house',
+  },
+];
+
 export default {
   company,
   insightCategories,
   insightTeasers,
   solutions,
   GOVERNANCE_SOLUTION,
-  workCaseStudies,
-  workPolicy,
+  proofCaseStudies,
+  proofPolicy,
+  outcomeCategories,
+  trustEvidence,
   TONE_STYLES,
 };

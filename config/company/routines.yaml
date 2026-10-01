@@ -50,3 +50,13 @@ routines:
     model: standard
     budget_tokens: 8000
     research_depth: deep
+
+  - id: linkedin_series_reminder
+    name: LinkedIn Series Reminder (every 2 days)
+    receiver_id: thought_leadership_lead
+    interval_minutes: 2880
+    enabled: true
+    prompt_file: templates/pharos/routines/linkedin-series-reminder.md
+    model: standard
+    budget_tokens: 2000
+    research_depth: standard

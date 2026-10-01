@@ -4,10 +4,12 @@ import { Cpu, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
 import { OFFER_FAMILIES } from '../data/useCaseCatalogData';
 import { solutions, GOVERNANCE_SOLUTION, honestyLabel } from '../data/siteContent';
+import { getSectorsBySolution } from '../data/sector-registry';
 import { CTAS } from '../data/ctas';
 
 interface WhatWeDoPageProps {
@@ -300,6 +302,24 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                   <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                     {sol.oneLiner}
                   </p>
+                  {getSectorsBySolution(sol.slug).length > 0 && (
+                    <p className={`mt-3 text-[11px] leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                      <span className="font-body text-[9px] font-bold tracking-widest text-ls-red">
+                        WORKS IN{' '}
+                      </span>
+                      {getSectorsBySolution(sol.slug).map((s, i) => (
+                        <React.Fragment key={s.id}>
+                          {i > 0 && ' · '}
+                          <Link
+                            to={`/sectors#${s.id}`}
+                            className={`font-medium hover:text-ls-red hover:underline ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}
+                          >
+                            {s.title}
+                          </Link>
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  )}
                 </div>
                 <div className="pt-5 mt-5 border-t border-inherit flex items-center justify-between">
                   <Link
@@ -403,6 +423,15 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
           </div>
         </div>
       </section>
+
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/proof', label: 'Proof' },
+          { to: '/solutions', label: 'Solutions' },
+          { to: '/sectors', label: 'Sectors' },
+        ]}
+      />
 
       {/* 6. CLEAR CTA */}
       <CtaBand

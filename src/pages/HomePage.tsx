@@ -11,6 +11,7 @@ import {
   InsightsSection,
   AboutSection,
   BriefingSection,
+  VisitorPathsSection,
 } from '../components/home';
 
 interface HomePageProps {
@@ -29,6 +30,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
     <div className="relative z-10 lg:pl-16">
       {/* 1. Orientation + 2. Core Proposition */}
       <HeroSection theme={theme} onRequestBriefing={onRequestBriefing} />
+      {/* §8 Routing: three major visitor pathways */}
+      <VisitorPathsSection theme={theme} />
       {/* 3. Operating Model: Strategy → Build → Govern → Research & Policy */}
       <OperatingModelSection theme={theme} />
       {/* 4. AI Company Builder: Opportunity → Design → Build → Deploy → Govern → Measure */}

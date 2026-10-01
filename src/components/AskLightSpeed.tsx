@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { MessageSquare, Sparkles, ArrowRight, Send, Bot, User, CheckCircle2, ShieldCheck, Bot as BotIcon } from 'lucide-react';
 import { SectionHeading } from './site/SectionHeading';
 import { CtaBand } from './site/CtaBand';
@@ -8,8 +8,10 @@ import { useSite } from '../site-context';
 import { solutions, honestyLabel } from '../data/siteContent';
 import publicAgentsRaw from '@/data/public-agent-registry.json';
 import type { PublicAgent, AgentType } from '@/data/publicAgentRegistry';
-import type { HonestyTone } from '@/data/siteContent';
+import type { HonestyTone, HonestyLabel } from '@/data/siteContent';
 import { CTAS } from '@/data/ctas';
+import { Link } from 'react-router-dom';
+import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 const publicAgents: PublicAgent[] = (publicAgentsRaw as any[]).map(a => ({
   ...a,
@@ -17,7 +19,20 @@ const publicAgents: PublicAgent[] = (publicAgentsRaw as any[]).map(a => ({
   honestyStatus: a.honestyStatus as HonestyTone,
 }));
 
-type Step = 'welcome' | 'problem' | 'context' | 'results' | 'cta';
+/* §15 knowledge boundary: refuse out-of-scope asks instead of fabricating. */
+const OUT_OF_SCOPE_RE =
+  /password|passphrase|api[ _-]?key|secret|credential|access token|private prompt|system prompt|internal (docs|document|documents|strategy|information|info)|confidential|source code|client (list|data|information)|unpublished|infrastructure details/i;
+
+const BOUNDARY_MESSAGE = `I can't help with that — by design. This assistant answers only from LightSpeed's published site content: solutions, sectors, proof and insights. Requests for secrets, credentials, private prompts, or internal information stay outside the public knowledge boundary.
+
+What I can still do: map your challenge to our published capabilities. For anything else, a human will answer — pick a path below or keep typing.`;
+
+const agentHonestyLabel = (agent: PublicAgent): HonestyLabel => ({
+  label: agent.honestyStatus.charAt(0).toUpperCase() + agent.honestyStatus.slice(1),
+  tone: agent.honestyStatus,
+});
+
+type Step = 'welcome' | 'problem' | 'context' | 'results' | 'cta' | 'boundary';
 
 interface ChatMessage {
   id: string;
@@ -70,6 +85,14 @@ export const AskLightSpeed: React.FC = () => {
     matchedAgents: [],
   });
   const [showQuickQuestions, setShowQuickQuestions] = useState(true);
+  const askTrackedRef = useRef(false);
+  const askCompletedRef = useRef(false);
+
+  const trackAskStarted = useCallback(() => {
+    if (askTrackedRef.current) return;
+    askTrackedRef.current = true;
+    trackJourneyEvent({ eventType: 'ask_started', journeyStage: 'consideration' });
+  }, []);
 
   const addMessage = useCallback((role: 'assistant' | 'user', text: string) => {
     setMessages(prev => [...prev, { id: Date.now().toString(), role, text }]);
@@ -78,36 +101,67 @@ export const AskLightSpeed: React.FC = () => {
   const handleSend = useCallback(() => {
     if (!inputValue.trim()) return;
     const userText = inputValue.trim();
+    trackAskStarted();
     addMessage('user', userText);
     setInputValue('');
 
-    if (state.step === 'welcome' || state.step === 'problem') {
-      const problem = PROBLEM_QUESTIONS.find(q =>
-        userText.toLowerCase().includes(q.toLowerCase().split(' ').slice(0, 3).join(' '))
-      ) || userText;
-      setState(prev => ({ ...prev, step: 'context', problem }));
-      addMessage('assistant', `Thank you. You mentioned: "${problem}"\n\nNow, let me narrow things down a bit:`);
-      setTimeout(() => {
-        addMessage('assistant', `Which sector best describes your organisation?\n`);
-      }, 500);
-    } else if (state.step === 'context') {
+    if (OUT_OF_SCOPE_RE.test(userText)) {
+      setState(prev => ({ ...prev, step: 'boundary' }));
+      addMessage('assistant', BOUNDARY_MESSAGE);
+      return;
+    }
+
+    if (state.step === 'context') {
       const nextField = !state.industry ? 'industry' : !state.timeline ? 'timeline' : 'timeline';
       if (nextField === 'industry') {
         setState(prev => ({ ...prev, industry: userText }));
         addMessage('assistant', `Great — ${userText}. Now, what is your target timeline?\n`);
       } else {
-        setState(prev => ({ ...prev, timeline: userText, step: 'results' }));
+        const timeline = userText;
         const matchedSolutions = matchSolutions(state.problem, userText);
         const matchedAgents = matchAgents(state.problem, userText);
+        setState(prev => ({
+          ...prev,
+          timeline,
+          step: 'results',
+          matchedSolutions,
+          matchedAgents
+        }));
+        if (!askCompletedRef.current) {
+          askCompletedRef.current = true;
+          trackJourneyEvent({
+            eventType: 'ask_completed',
+            journeyStage: 'intent',
+            metadata: { solutionMatches: matchedSolutions.length, agentMatches: matchedAgents.length },
+          });
+        }
         addMessage('assistant', `Based on your inputs, here's what I found:\n\n`);
         setTimeout(() => {
-          setState(prev => ({ ...prev, matchedSolutions, matchedAgents }));
-          const resultText = buildResultsText(matchedSolutions, userText);
+          const resultText = buildResultsText(matchedSolutions, timeline, matchedAgents.length);
           addMessage('assistant', resultText);
         }, 500);
       }
+    } else {
+      /* welcome / problem / results / cta / boundary — start a fresh discovery
+         so typed input is never a dead end (§ No dead ends). */
+      const problem = PROBLEM_QUESTIONS.find(q =>
+        userText.toLowerCase().includes(q.toLowerCase().split(' ').slice(0, 3).join(' '))
+      ) || userText;
+      setState(prev => ({
+        ...prev,
+        step: 'context',
+        problem,
+        industry: '',
+        timeline: '',
+        matchedSolutions: [],
+        matchedAgents: []
+      }));
+      addMessage('assistant', `Thank you. You mentioned: "${problem}"\n\nNow, let me narrow things down a bit:`);
+      setTimeout(() => {
+        addMessage('assistant', `Which sector best describes your organisation?\n`);
+      }, 500);
     }
-  }, [inputValue, state, addMessage]);
+  }, [inputValue, state, addMessage, trackAskStarted]);
 
   const matchAgents = useCallback((problem: string, context: string): PublicAgent[] => {
     const lowerProblem = problem.toLowerCase();
@@ -136,26 +190,33 @@ export const AskLightSpeed: React.FC = () => {
       const titleMatch = s.title.toLowerCase().includes(lowerProblem.slice(0, 4));
       const descMatch = s.description.toLowerCase().slice(0, 30).includes(lowerProblem.slice(0, 4));
       return titleMatch || descMatch;
-    }) : solutions.slice(0, 3);
+    }) : [];
   }, [solutions]);
 
-  const buildResultsText = useCallback((matched: typeof solutions, timeline: string): string => {
-    if (matched.length === 0) return 'Based on your inputs, I recommend our Executive Boardroom Briefing to clarify scope, or our AI Company Builder platform for enterprise deployment.';
+  const buildResultsText = useCallback((matched: typeof solutions, timeline: string, agentCount: number): string => {
+    if (matched.length === 0 && agentCount === 0) {
+      return "I couldn't find a published capability that matches that closely — I'd rather say that than guess. Pick a next step below: start a conversation to scope it, or explore every published solution.";
+    }
     let text = `Based on your inputs, I found ${matched.length} capability match${matched.length > 1 ? 'es' : ''}:\n\n`;
     matched.forEach((s, i) => {
-      text += `${i + 1}. **${s.title}** — ${s.description.slice(0, 80)}...\n`;
+      text += `${i + 1}. ${s.title} — ${s.description.slice(0, 80)}...\n`;
     });
-    text += `\nWith a ${timeline.toLowerCase()}, we can start with an Executive Boardroom Briefing to align on scope, then move to ${matched[0]?.title || 'deployment'}.\n\nI also identified specific agents from our 90-agent workforce that would handle this engagement.\n\nWould you like to start a conversation?`;
+    text += `\nWith a ${timeline.toLowerCase()}, we can start with an Executive Boardroom Briefing to align on scope, then move to ${matched[0]?.title || 'deployment'}.\n`;
+    if (agentCount > 0) {
+      text += `\nI also identified ${agentCount} agent${agentCount > 1 ? 's' : ''} from our 90-agent workforce for this engagement.\n`;
+    }
+    text += `\nWould you like to start a conversation?`;
     return text;
   }, []);
 
   const handleQuickQuestion = useCallback((question: string) => {
+    trackAskStarted();
     addMessage('user', question);
     setState(prev => ({ ...prev, step: 'context', problem: question }));
     setTimeout(() => {
       addMessage('assistant', `Understanding — "${question}"\n\nWhich sector best describes your organisation?\n`);
     }, 500);
-  }, [addMessage]);
+  }, [addMessage, trackAskStarted]);
 
   const handleResultClick = useCallback((solution: typeof solutions[0]) => {
     addMessage('assistant', `You selected ${solution.title}. This is a ${solution.honestyBadge} capability.`);
@@ -163,7 +224,8 @@ export const AskLightSpeed: React.FC = () => {
   }, [addMessage]);
 
   const handleAgentClick = useCallback((agent: PublicAgent) => {
-    addMessage('assistant', `You selected ${agent.role}. This agent handles: ${agent.capabilities.slice(0, 3).join(', ')}. This is a Proven in-house agent.`);
+    const honesty = agentHonestyLabel(agent);
+    addMessage('assistant', `You selected ${agent.role}. This agent handles: ${agent.capabilities.slice(0, 3).join(', ')}. This is a ${honesty.label} in-house agent from our published registry.`);
     setState(prev => ({ ...prev, step: 'cta' }));
   }, [addMessage]);
 
@@ -227,8 +289,13 @@ export const AskLightSpeed: React.FC = () => {
             </span>
           </div>
 
-          {/* Messages */}
-          <div className="px-6 py-6 space-y-4 max-h-[400px] overflow-y-auto">
+          {/* Messages (§ aria-live on assistant turns) */}
+          <div
+            className="px-6 py-6 space-y-4 max-h-[400px] overflow-y-auto"
+            role="log"
+            aria-live="polite"
+            aria-label="Ask LightSpeed conversation"
+          >
             {messages.map((msg) => (
               <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                 <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center ${
@@ -354,7 +421,7 @@ export const AskLightSpeed: React.FC = () => {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <HonestyBadge label={{ label: 'Proven in-house', tone: 'proven' }} />
+                            <HonestyBadge label={agentHonestyLabel(agent)} />
                           </div>
                         </div>
                       </button>
@@ -362,6 +429,53 @@ export const AskLightSpeed: React.FC = () => {
                   </div>
                 </>
               )}
+            </div>
+          )}
+
+          {/* Honest empty state (§78): no published match → say so + next moves */}
+          {state.step === 'results' &&
+            state.matchedSolutions.length === 0 &&
+            state.matchedAgents.length === 0 && (
+            <div className={`px-6 py-6 border-t text-center ${
+              isLight ? 'border-ls-grey-dark/20' : 'border-ls-white/10'
+            }`}>
+              <div className="w-12 h-12 rounded-full bg-ls-red/10 text-ls-red border border-ls-red/30 flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h4 className="font-display font-black text-lg mb-2">No published match</h4>
+              <p className={`text-sm mb-4 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                Nothing in our published content matches that closely — I&apos;d rather say so than guess.
+                Take one of these next steps instead.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={handleStartConversation}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  {CTAS.primary.label}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <Link
+                  to="/solutions"
+                  className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all cursor-pointer ${
+                    isLight
+                      ? 'border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light'
+                      : 'border-ls-white/25 text-ls-white hover:bg-ls-white/5'
+                  }`}
+                >
+                  Explore All Solutions
+                </Link>
+                <Link
+                  to="/proof"
+                  className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all cursor-pointer ${
+                    isLight
+                      ? 'border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light'
+                      : 'border-ls-white/25 text-ls-white hover:bg-ls-white/5'
+                  }`}
+                >
+                  Verify Our Proof
+                </Link>
+              </div>
             </div>
           )}
 
@@ -385,6 +499,49 @@ export const AskLightSpeed: React.FC = () => {
             </div>
           )}
 
+          {/* Boundary step: refused ask → honest escalation (§15, no dead ends) */}
+          {state.step === 'boundary' && (
+            <div className="px-6 py-6 border-t border-ls-cyan/30 bg-ls-cyan/5 text-center">
+              <div className="w-12 h-12 rounded-full bg-ls-cyan/20 text-ls-cyan border border-ls-cyan/40 flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h4 className="font-display font-black text-lg mb-2">Outside the public boundary</h4>
+              <p className={`text-sm mb-4 ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                Ask LightSpeed answers from published content only — secrets, credentials, prompts and
+                internal information stay out. Pick a path below, or keep typing to restart discovery.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={handleStartConversation}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  {CTAS.primary.label}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <Link
+                  to="/solutions"
+                  className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all cursor-pointer ${
+                    isLight
+                      ? 'border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light'
+                      : 'border-ls-white/25 text-ls-white hover:bg-ls-white/5'
+                  }`}
+                >
+                  Explore Solutions
+                </Link>
+                <Link
+                  to="/proof"
+                  className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase border transition-all cursor-pointer ${
+                    isLight
+                      ? 'border-ls-grey-dark text-ls-navy hover:bg-ls-grey-light'
+                      : 'border-ls-white/25 text-ls-white hover:bg-ls-white/5'
+                  }`}
+                >
+                  Verify Our Proof
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* Input */}
           <div className={`px-6 py-4 border-t ${
             isLight ? 'border-ls-grey-dark/20' : 'border-ls-white/10'
@@ -395,7 +552,11 @@ export const AskLightSpeed: React.FC = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder={state.step === 'cta' ? 'Or type to ask something else...' : 'Type your response...'}
+                placeholder={
+                  state.step === 'cta' || state.step === 'boundary'
+                    ? 'Or type to ask something else...'
+                    : 'Type your response...'
+                }
                 className={`flex-1 px-4 py-2.5 rounded-xl border text-sm outline-none focus:border-ls-red transition-colors font-medium ${
                   isLight
                     ? 'bg-ls-grey-light/90 border-ls-grey-dark text-ls-navy placeholder:text-ls-grey-light-text shadow-inner'

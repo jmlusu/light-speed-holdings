@@ -152,7 +152,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
 
           <div className="pt-4">
             <a
-              href="#thesis"
+              href="#operating-model"
               className={`group inline-flex items-center gap-2 font-body text-[11px] font-bold tracking-widest transition-colors hover:text-ls-red ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}

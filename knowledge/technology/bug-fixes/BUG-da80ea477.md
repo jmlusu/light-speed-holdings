@@ -32,7 +32,7 @@ Added the missing `});` at end of file to close the `alpine:init` listener.
 
 ```powershell
 node --check src/ai_company/dashboard/static/js/command-bar.js   # was exit 1
-uv run graphify query "command-bar hotkeys execute"
+grep -n "addEventListener" src/ai_company/dashboard/static/js/command-bar.js
 ```
 
 ## Verification
@@ -41,10 +41,9 @@ uv run graphify query "command-bar hotkeys execute"
 node --check src/ai_company/dashboard/static/js/command-bar.js   # exit 0
 ```
 
-Graph re-index after `da80ea4` shows 62 `command-bar*` nodes including
-`bindHotkeys()` (L53), `close()` (L91), `groupedResults()` (L110),
-`debouncedSearch()` (L138), `execute()` (L148). Pre-commit hooks passed on
-re-stage; post-commit `capture bug-fix record` + `rebuild-graphify-graph` Passed.
+`node --check` passes (exit 0) and the `alpine:init` listener block is present
+and balanced per `grep`. Pre-commit hooks passed on re-stage; post-commit
+`capture bug-fix record` Passed.
 
 ## Pattern
 

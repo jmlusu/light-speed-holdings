@@ -24,8 +24,8 @@ export const homeImmersiveCopy: HomeImmersiveCopy = {
     'Agentic AI systems built and operated from Malawi for organizations across SADC. 90 agents, 20 departments, five-tier human approval.',
   heroCta: CTAS.primary.label,
   chapters: [
-    { id: 'thesis', num: '01', label: 'Thesis' },
-    { id: 'builder', num: '02', label: 'AI Builder' },
+    { id: 'operating-model', num: '01', label: 'Operating Model' },
+    { id: 'ai-company-builder', num: '02', label: 'AI Builder' },
     { id: 'workforce', num: '03', label: 'Workforce' },
     { id: 'sectors', num: '04', label: 'Sectors' },
     { id: 'proof', num: '05', label: 'Proof' },

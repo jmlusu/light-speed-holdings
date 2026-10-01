@@ -21,7 +21,6 @@
 | Existing CLI | `ai-company memory` subcommands (list/add/search/…) | `src/ai_company/cli/memory.py` (455 lines) |
 | Existing security modules | PII/secret pattern detector, content filter, AES memory encryption, RBAC | `src/ai_company/security/{pii_detector,content_filter,memory_encryption,encryption_key_manager,rbac}.py` |
 | Existing FTS5 usage | SQLite FTS5 on audit events + tasks (not on memory) | `src/ai_company/data/database.py`, `audit_store.py`, `search.py` |
-| Knowledge graph | graphify AST graph at `graphify-out/` | post-commit hook |
 | Agent cards | Generated from `company-registry.yaml` → `.opencode/agents/*.md` | generator pipeline |
 | Skills | OpenCode scans `.agents/skills/` at session start (verified in SKILL_CURATION_POLICY) | `.agents/skills/` (107 dirs) |
 | OpenCode project config | `opencode.json` — local Ollama provider on `127.0.0.1:11434`, remote Resend MCP enabled | project root |

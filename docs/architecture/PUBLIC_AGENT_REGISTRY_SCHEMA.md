@@ -251,7 +251,7 @@ Public `tools` may contain **only** these seven names:
 | Consumption | `import registry from './generated/agent-registry.public.json'` inside `src/data/companyData.ts`; typed via `PublicAgentRegistry`. Vite inlines + content-hashes at build → long-cache immutable assets, zero runtime request. |
 | Schema versioning | Semver in `schema_version`. Breaking field removal/renames → major bump; consumers fail type-check. Minor = additive optional fields. |
 | Cache busting | Content hash comes from the bundler (default). If the raw file is also mirrored to `public/`, serve as `agent-registry.<contenthash>.json` or bump `?v=<schema_version>` — but primary path does not need this. |
-| Regeneration cadence | On every registry change commit (post-commit / CI step alongside generator + `graphify update`). Never hand-edit the generated file. |
+| Regeneration cadence | On every registry change commit (post-commit / CI step alongside generator). Never hand-edit the generated file. |
 | SPA staleness | Deploy = new bundle; no client polling. `generated_at` + `meta.counts` rendered in a debug/footer slot for operators to confirm freshness. |
 | Fetch alternative | Only if a non-Vite consumer appears: expose hashed file + `Cache-Control: public, max-age=31536000, immutable`. Still produced by the same transform — never a second codepath. |
 | Rollback | Artifact is generated, not SoT → revert registry commit and regenerate (fully reversible; boundary §7 Q6). |

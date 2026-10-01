@@ -1,6 +1,7 @@
 export { ScrimPanel } from './ScrimPanel';
 export { HomeSection } from './HomeSection';
 export { ChapterRail } from './ChapterRail';
+export { VisitorPathsSection } from './VisitorPathsSection';
 export { OperatingModelSection } from './OperatingModelSection';
 export { AICompanyBuilderSection } from './AICompanyBuilderSection';
 export { WorkforceSection } from './WorkforceSection';
