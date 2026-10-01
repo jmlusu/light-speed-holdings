@@ -1,0 +1,19 @@
+{
+  "target": "http://localhost:3001/legal/privacy",
+  "checks": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 2957,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 11,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\artifacts\\p6-legal-privacy-390x844.png"
+    }
+  ]
+}

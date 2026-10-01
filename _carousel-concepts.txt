@@ -1,0 +1,51 @@
+#Carousel Card 1: Reservations
+**Title:** The Four Objections
+**Visual:** Four panels vertical stack, navy background (#070A40), red accent bar (#E63946) left edge, cyan subsection headers (#00BFFF)
+**Content:**
+- Won't work in low bandwidth → engineered: offline-capable runtimes, messaging-native queues, PWA buffering
+- Where does the data go? → engineered: DPA 2017/2024 + GDPR defaults, in-country by default, auditor-readable registry
+- Technology debt and lock-in → engineered: 90-day pilot, no rip-and-replace, visible variable cost, per-model tracking
+- AI failed before → engineered: five-tier HITL (ADR-017), autonomy earned per action class, not granted at onboarding
+**Brand tokens:** Navy #070A40 background, Red #E63946 accent, Cyan #00BFFF subsection headers, Arial type scale, 4px grid spacing between panels
+**Accessibility:** Contrast ratio ≥ 4.5:1 (navy text on white/cyan panels passes), alt text on descriptive icons
+
+#Carousel Card 2: Answers
+**Title:** Answers, Not Reassurances
+**Visual:** Four panels vertical stack, navy background (#070A40), red accent bar (#E63946) left edge, cyan subsection headers (#00BFFF)
+**Content:**
+- Bandwidth → offline-capable runtimes, messaging-native queues, PWA buffering
+- Data → DPA 2017/2024 + GDPR defaults, in-country by default, registry an auditor can read
+- Debt → 90-day pilot, no rip-and-replace, visible variable cost from week one
+- Skepticism → five-tier HITL (ADR-017) with audit logs, circuit breakers, honesty badges
+**Brand tokens:** Navy #070A40 background, Red #E63946 accent, Cyan #00BFFF subsection headers, Arial type scale, 4px grid spacing between panels
+**Accessibility:** Contrast ratio ≥ 4.5:1, focusable element order logical, alt text for all data visual elements
+
+#Carousel Card 3: Policy
+**Title:** Policy Is Moving
+**Visual:** Four panels vertical stack, navy background (#070A40), red accent bar (#E63946) left edge, cyan subsection headers (#00BFFF)
+**Content:**
+- DPA 2017/2024: the floor for any agent handling personal data
+- MACRA: answers our gate model gives mechanically: who authorized this action, by name, is it logged
+- National AI Strategy consultation: the moment to argue governance belongs in architecture, not policy documents alone
+- SADC Agentic AI Governance Framework: a design that satisfies Malawi should travel regionally
+- UNDP and development partners: fund pilots, so they care most about the 90-day, visible-cost answer
+**Brand tokens:** Navy #070A40 background, Red #E63946 accent, Cyan #00BFFF subsection headers, Arial type scale, 4px grid spacing between panels
+**Accessibility:** Semantic heading hierarchy (H2→H3→H4 within card), contrast ≥ 4.5:1, all text resizable to 200% without loss of content
+
+#Carousel Card 4: Adoption
+**Title:** Install the Gates First
+**Visual:** Four panels vertical stack, navy background (#070A40), red accent bar (#E63946) left edge, cyan subsection headers (#00BFFF)
+**Content:**
+- You do not need perfect regulation to start
+- You need: a registry of who can do what, one queue with leases and a dead-letter path, a five-tier approval matrix, and an audit log
+- Governance in the architecture, not the prompt
+- Brief the regulator with structure, not slides: show the registry, the approval matrix, and a decision's audit trail
+**Brand tokens:** Navy #070A40 background, Red #E63946 accent, Cyan #00BFFF subsection headers, Arial type scale, 4px grid spacing between panels
+**Accessibility:** Minimum tap target 44px on mobile, color not sole means of communication (icons + text for each gate), focus states visible
+
+#CTA End Card
+**Title:** Download the Malawi Agentic AI Monitor
+**Visual:** Navy background (#070A40), cyan headline, red CTA button, white body text, official LightSpeed logo top-left, tagline "ASPIRE. ACT. ACHIEVE." in cyan below headline
+**Content:** "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context."
+**Brand tokens:** Navy #070A40 background, Cyan #00BFFF headline, Red #E63946 CTA button, Arial type scale (36px headline, 18px body), 4px grid spacing, official logos, tagline "ASPIRE. ACT. ACHIEVE."
+**Accessibility:** Contrast ≥ 4.5:1 (white text on navy passes for large text; body text ≥ 18px meets 3:1 for large), CTA button has visible focus state, alt text on logo

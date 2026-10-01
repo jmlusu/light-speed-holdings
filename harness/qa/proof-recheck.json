@@ -1,0 +1,19 @@
+{
+  "target": "http://localhost:3001/proof",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 6844,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 17,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\proof-recheck-1280x800.png"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+bugs:
+  - id: BUG-93e21736a
+    date: 2026-09-25
+    script: scripts/harness-change.ps1
+    symptom: INDEX.json regenerated in different order on every platform; Get-ChildItem enumeration order unstable across Windows PowerShell 5.1 vs PowerShell 7.x
+    root_cause: "Get-IndexEntries returned entries in Get-ChildItem directory-enumeration order, not deterministic across platforms; lint compared serialised JSON strings which differ across PowerShell editions"
+    fix: "scripts/harness-change.ps1: Get-IndexEntries now returns `$entries | Sort-Object id`; scripts/lint-ecl.ps1: canonicaliser parses both sides, sorts by id, and re-serialises"
+    principle: "Never let a generated file's byte layout depend on filesystem enumeration order. Sort explicitly at generation time *and* compare semantically, not as strings."
+
+  - id: BUG-d75423bb7
+    date: 2026-09-25
+    script: scripts/capture-fix.ps1
+    symptom: Bug records wrote literal `${sha}` instead of the resolved commit hash
+    root_cause: 'Variables written with leading backtick `` `${sha}` `` in here-string `(`@"..."@)` — PowerShell treats backtick before `$` as escape, emitting literal `$` with no substitution'
+    fix: 'Removed the backticks so every variable (`$sha`, `$title`, `$body`, `$state`, `$subject`) expands normally inside the here-string. Also gained conventional-commit fallback: commits whose subject matches `^fix(\([^)]*\))?:` and reference no issue are captured under a record id derived from the 9-character short SHA'
+    principle: "In PowerShell, a backtick before `$` suppresses substitution. Inside double-quoted here-strings, write `$var` (or `${var}`) without a leading backtick — and never emit a template placeholder from a script that had the value available."
+
+  - id: BUG-81c94142a
+    date: 2026-09-26
+    script: scripts/harness-change.ps1
+    symptom: INDEX.json committed while two parking directories existed only as untracked files; CI checks out a clean tree missing these dirs (38 entries vs 36)
+    root_cause: "harness/changes/INDEX.json regenerated and committed while these two directories existed only as untracked working files; nobody noticed they had never been staged. Every other directory under harness/changes/parking/ is tracked."
+    fix: "`git add` the two directories so the committed index and a clean checkout agree. No index content changed — the entries were already correct."
+    principle: "A generated index is only as good as the inputs that were actually committed. Never regenerate and commit a manifest while its inputs are untracked — verify with a clean checkout, not the working tree."
+
+  - id: BUG-ff0d33a7f
+    date: 2026-09-27
+    script: scripts/sync-brand.ps1
+    symptom: "Three defects after BUG-9d688fae: (1) 31 mirror files still stale because earlier resync hadn't covered them; (2) canonical SVG at source contained trailing whitespace, so every future sync would regenerate drift at the source; (3) `-Verify` path bug reported `$mirror$rel` instead of the actual failing destination `$dst$rel`, pointing diagnostics at the wrong tree and masking real failures"
+    root_cause: "(1) earlier resync hadn't covered all 31 mirrors; (2) canonical source had trailing whitespace not caught; (3) Verify message path used wrong variable prefix"
+    fix: "(1) Resynced the 31 stale mirror files, stripped the whitespace in the canonical SVG at source (not the mirror), and fixed the Verify message path to `$dst$rel`"
+    principle: "Canonical source is the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them. Brand tokens are the single source of truth — never invent brand colors/fonts."
+
+  - id: BUG-9d688faee
+    date: 2026-09-27
+    script: (pre-commit hook)
+    symptom: Slow synchronous post-commit graph-rebuild hook (~27 min run) blocked the post-commit stage before pre-commit could restore its stash; the hook process was killed (shell timeout) and the restore never ran, silently reverting every unstaged tracked edit
+    root_cause: "Pre-commit's stash→restore cycle for the hook stages: a slow synchronous post-commit graph-rebuild hook (~27 min run) blocked the post-commit stage before pre-commit could restore its stash; the hook process was killed (shell timeout) and the restore never ran"
+    fix: "Re‑applied and re-committed the recovered 194-file change set (tracked prune deletions + canonical logo overwrites + sync-brand script rewrite). Root cause of the loss class was fixed separately by backgrounding that rebuild hook via a backgrounded hook wrapper so the hook exits in <1 s and the stash restore always completes."
+    principle: "Background long-running hooks so they exit quickly (<1 s) and the stash restore always completes; never let a post-commit hook block the pipeline for 27 minutes."
+
+  - id: BUG-84e037f13
+    date: 2026-09-25
+    script: scripts/lint-ecl.ps1
+    symptom: INDEX.json lint compared JSON strings, so serialisation differences looked like drift. `ConvertTo-Json -Depth 8 -Compress` output is not stable across PowerShell versions — empty-array rendering, escaping of non-ASCII, and number formatting differ between Windows PowerShell 5.1 and PowerShell 7.x. Two content-identical indexes therefore serialised to different strings, and the string comparison reported drift that did not exist
+    root_cause: "JSON serialisation is an implementation detail of the runtime that produced it. Compare parsed structures, never the serialised text — especially across PowerShell editions."
+    principle: "JSON serialisation is an implementation detail of the runtime that produced it. Compare parsed structures, never the serialised text — especially across PowerShell editions."

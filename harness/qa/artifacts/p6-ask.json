@@ -1,0 +1,19 @@
+{
+  "target": "http://localhost:3001/ask",
+  "checks": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 3298,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 7,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\artifacts\\p6-ask-390x844.png"
+    }
+  ]
+}

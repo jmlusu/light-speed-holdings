@@ -1,0 +1,5 @@
+docs/wayfinder/45-health-anomaly-monitor.md {'issue': True, 'status_broad': True, 'owner_broad': True, 'date_broad': True, 'rel_broad': True, 'status_strict': True, 'owner_strict': True, 'date_strict': True, 'rel_strict': True}
+docs/wayfinder/46-revenue-attribution-model.md {'issue': False, 'status_broad': True, 'owner_broad': True, 'date_broad': True, 'rel_broad': True, 'status_strict': False, 'owner_strict': False, 'date_strict': False, 'rel_strict': False}
+docs/wayfinder/48-searchable-execution-timeline.md {'issue': True, 'status_broad': True, 'owner_broad': False, 'date_broad': True, 'rel_broad': False, 'status_strict': True, 'owner_strict': False, 'date_strict': True, 'rel_strict': False}
+docs/wayfinder/50-command-bar-and-voice-scope.md {'issue': True, 'status_broad': True, 'owner_broad': True, 'date_broad': True, 'rel_broad': True, 'status_strict': True, 'owner_strict': True, 'date_strict': True, 'rel_strict': True}
+map2 {'label': True, 'tickets': True, 'decisions': True, 'notspec': True, 'oos': True, 'dest': True, 'notes': True}
