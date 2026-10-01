@@ -237,7 +237,7 @@ const serviceFamilies: OfferFamily[] = [
     eyebrow: 'OFFER E // PLATFORM LICENSING',
     title: 'Platform Licensing',
     narrative:
-      'The same 152-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible. For agencies: white-label agent teams for your clients.',
+      'The same 90-agent orchestration engine that runs LightSpeed Holdings can run on your infrastructure. License the AI Company Builder, get one-on-one onboarding, and operate your own governed AI workforce — self-hosted, provider-agnostic, and extensible. For agencies: white-label agent teams for your clients.',
     badges: [{ label: 'FIELDABLE IN 2026 — PROVEN IN-HOUSE', tone: 'fieldable' }],
     rows: [
       {

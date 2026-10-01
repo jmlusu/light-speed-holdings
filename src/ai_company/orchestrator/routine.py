@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_ROUTINES_YAML = "config/company/routines.yaml"
 DEFAULT_PROMPT_DIR = "templates/pharos/routines"
 DEFAULT_ROUTINE_INTERVAL_SECONDS = 900.0
-DEFAULT_RECEIVER_ID = "content_writer"
+DEFAULT_RECEIVER_ID = "content_creator"
 
 _UTC = timezone.utc
 
@@ -232,7 +232,7 @@ class RoutineStore:
             default = Routine(
                 id="pharos_default_brief",
                 name="Pharos Default Brief",
-                receiver_id="content_writer",
+                receiver_id="content_creator",
                 schedule_day=1,
                 time_utc="04:00",
                 enabled=True,

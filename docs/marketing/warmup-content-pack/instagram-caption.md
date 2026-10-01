@@ -13,7 +13,7 @@
 **Title card:** "The 7 layers of an AI-native enterprise"
 **Cards 2-8:** one layer per card — Human, Agents, Orchestration, Memory, Tools,
 Governance, Value — each with its core design question.
-**Final card:** LightSpeed operating proof + CTA (152 agents, 20 departments,
+**Final card:** LightSpeed operating proof + CTA (90 agents, 20 departments,
 5-tier human approval, audit trails) + site link.
 
 Card copy is deliberately short (one design question per card) — the caption does
@@ -33,7 +33,7 @@ Tools — how do agents act?
 Governance — how are they controlled?
 Value — what outcomes come out?
 
-LightSpeed Holdings Limited™ operates on this framework today: 152 agents across
+LightSpeed Holdings Limited™ operates on this framework today: 90 agents across
 20 departments, five-tier human-in-the-loop approvals, and immutable audit
 trails.
 
@@ -49,7 +49,7 @@ https://lightspeedholdings.com
 
 ## Story copy (2 slides)
 
-**Story 1 (visual):** "152 agents. 20 departments. Five tiers of human approval.
+**Story 1 (visual):** "90 agents. 20 departments. Five tiers of human approval.
 This is what governed AI looks like."
 **Story 2 (interaction):** "Which layer do you think most organizations skip?
 Vote: Governance or Memory." (poll sticker — education test, drives replies)
@@ -72,7 +72,7 @@ Vote: Governance or Memory." (poll sticker — education test, drives replies)
 | Claim | Source |
 |-------|--------|
 | H-A-O-M-T-G-V seven layers | `docs/Pharos/h-a-o-m-t-g-v-framework.md:16-35` |
-| 152 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
+| 90 agents, 20 departments | `company-registry.yaml` (counted 2026-09-17) |
 | 5-tier HITL, audit trails | `docs/Pharos/manifesto-draft.md:64-80` |
 | Malawi / constrained environments | `docs/Pharos/positioning.md:73` |
 | Website | `docs/BRAND_DEPLOYMENT_GUIDE.md:46` |

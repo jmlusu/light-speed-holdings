@@ -19,7 +19,7 @@ Department: Consulting
 
 Reports To: chief_of_staff
 
-Direct Reports: interview_agent, workflow_mapper, opportunity_identifier
+
 
 
 ---

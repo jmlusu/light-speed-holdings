@@ -65,7 +65,7 @@ Start a conversation
 | 4. How we do it | **The LIGHTSPEED System** | ❌ **MISSING** — Section 03 absent | FAIL |
 | 5. What we have built | **AI Workforce** | ❌ **MISSING** — Section 05 absent | FAIL |
 | 6. Who we help | Industries | ✅ IndustriesSection: 5 sectors with metrics | PASS |
-| 7. Why trust us | Evidence/Case Studies | ✅ ProofSection: stats (152 agents, 8 partners) + 3 case studies + partner marquee | PASS |
+| 7. Why trust us | Evidence/Case Studies | ✅ ProofSection: stats (90 agents, 8 partners) + 3 case studies + partner marquee | PASS |
 | 8. Start a conversation | Conversion/CTA | ❌ **MISSING** — No dedicated CTA section with form | FAIL |
 
 ### Progressive Disclosure Score: **4/8 stages complete (50%)**
@@ -186,7 +186,7 @@ CTA
 | **Hero** | ✅ "distance between strategy and execution" | ⚠️ Implied | ✅ "architect sovereign, governed AI systems" | ❌ | ❌ | ❌ | ✅ Dual CTA | PARTIAL |
 | **Services** | ❌ | ❌ | ❌ | ✅ 6 capabilities | ✅ Status badges | ❌ | ✅ "Learn more" | PARTIAL |
 | **Industries** | ❌ | ❌ | ❌ | ❌ | ✅ Stats per industry | ❌ | ✅ "Learn more" | PARTIAL |
-| **Proof** | ❌ | ❌ | ❌ | ❌ | ✅ 152 agents, 8 partners, 3 case studies | ✅ Case study descriptions | ❌ | PARTIAL |
+| **Proof** | ❌ | ❌ | ❌ | ❌ | ✅ 90 agents, 8 partners, 3 case studies | ✅ Case study descriptions | ❌ | PARTIAL |
 | **Insights** | ❌ | ✅ Excerpts imply insights | ❌ | ❌ | ❌ | ❌ | ✅ "Read more" / "View All" | PARTIAL |
 
 ### Content Strategy Score: **0/7 sections fully compliant (0%)**

@@ -44,7 +44,7 @@ Owns the social media digital identity, the Digital Asset Register, account prov
 
 - Ensure 2FA and unique passwords on every account.
 
-- Coordinate publishing and engagement operations with content_writer and content_creator.
+- Coordinate publishing and engagement operations with content_creator.
 
 - Maintain a consistent name (LIGHTSPEED HOLDINGS LIMITED) and @lightspeedholdings handle across platforms.
 

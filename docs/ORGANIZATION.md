@@ -2,7 +2,7 @@
 
 ## Structure
 
-Light Speed Holdings is organized as a hierarchical AI company with 152 agents (one human CEO + 151 AI agents) across 20 departments.
+Light Speed Holdings is organized as a hierarchical AI company with 90 agents (one human CEO + 89 AI agents) across 20 departments.
 
 ```
                      human-ceo
@@ -40,7 +40,7 @@ Owns operations. Responsible for business process execution, workflows, and inte
 Owns AI research, model selection, and prompt engineering strategy.
 
 ### Executive Cabinet
-The full executive layer (19 executives across 14 operating departments plus the Executive office): CEO, Chief of Staff, CEO Advisor, CTO, CFO, COO, CAIO, CMO, CPO, CSO, CISO, CDO, CIO, CLO, HR, Sales, Customer Success, Consulting, and the Legal Advisor. See `company-registry.yaml` for `reports_to` chains.
+The executive layer in `company-registry.yaml` (executives + department heads with `reports_to` chains): CEO, Chief of Staff, CEO Advisor, CTO, CFO, COO, CAIO, CMO, CPO, CSO, CISO, CDO, CIO, CLO, HR, Sales, Customer Success, Consulting, and the Legal Advisor. See `company-registry.yaml` for exact membership.
 
 ### Department Heads
 Each department has an executive owner and one or more specialist agents. Department heads make decisions within their domain and escalate cross-department issues to the Chief of Staff.
@@ -52,27 +52,27 @@ Task-level executors. Each specialist has defined tools, permissions, and a narr
 
 | Department | Executive | Example Specialists | Focus |
 |-----------|-----------|---------------------|-------|
-| Technology (27) | `cto` | `lead-backend`, `lead-frontend`, `devops-lead`, `software-architect` | Building and maintaining systems |
-| AI Research (13) | `caio` | `ml-engineer`, `prompt-engineer`, `red-team-engineer`, `mlops-engineer` | Model strategy and research |
-| Operations (11) | `coo` | `workflow-owner`, `orchestration-owner`, `capacity-planner`, `vendor-manager` | Business process execution |
-| Security (11) | `ciso` | `security-architect`, `penetration-testing-lead`, `soc2-audit-readiness-analyst` | Security and hardening |
-| Product (9) | `cpo` | `product-owner`, `product-designer`, `ux-research-lead` | Product vision and delivery |
-| Marketing (11) | `cmo` | `content-creator`, `brand-strategist`, `growth-hacker`, `social-media-manager` | Demand generation and brand |
+| Technology (13) | `cto` | `lead-backend`, `lead-frontend`, `devops-lead` | Building and maintaining systems |
+| AI Research (7) | `caio` | `ml-engineer`, `prompt-engineer`, `red-team-engineer` | Model strategy and research |
+| Operations (6) | `coo` | `workflow-owner`, `orchestration-owner`, `platform-reliability-engineer` | Business process execution |
+| Security (7) | `ciso` | `security-architect`, `security-compliance-lead` | Security and hardening |
+| Product (5) | `cpo` | `product-owner`, `product-designer`, `ux-research-lead` | Product vision and delivery |
+| Marketing (9) | `cmo` | `content-creator`, `product-marketing-manager`, `growth-hacker` | Demand generation and brand |
 | Board (7) | `board-chair` | `board-strategy`, `board-finance`, `board-technology` | Governance oversight |
-| People (6) | `hr` | `hr-owner`, `recruiter`, `learning-development-lead` | Workforce and culture |
-| Sales (6) | `sales` | `sales-owner`, `solutions-engineer`, `business-developer` | Revenue generation |
+| People (4) | `hr` | `hr-owner`, `recruiter`, `culture-values-officer` | Workforce and culture |
+| Sales (3) | `sales` | `sales-owner`, `solutions-engineer` | Revenue generation |
 | Executive (5) | `human-ceo`, `chief-of-staff`, `ceo-advisor` | `internal-comms-lead`, `ai-ethics-board-chair` | CEO and coordination |
-| Data (5) | `cdo` | `data-engineer`, `business-intelligence-engineer`, `data-scientist` | Data processing and analytics |
-| Legal (5) | `clo`, `legal` | `legal-owner`, `data-privacy-officer`, `compliance-officer` | Contracts, compliance, risk |
-| QA (5) | `qa-lead` (reports to `cto`) | `qa-engineer`, `test-engineering-lead`, `release-manager` | Quality assurance |
-| Strategy (4) | `cso` | `market-analyst`, `head-of-competitive-intelligence` | Corporate strategy |
-| Consulting (4) | `consulting-lead` | `opportunity-identifier`, `workflow-mapper`, `interview-agent` | Client consulting |
-| Finance (3) | `cfo` | `financial-analyst`, `investor-relations-lead` | Financials and fundraising |
-| Customer Success (3) | `customer-success` | `support-agent`, `customer-success-owner` | Customer retention and support |
+| Data (3) | `cdo` | `data-engineer`, `business-intelligence-engineer` | Data processing and analytics |
+| Legal (3) | `clo` | `data-privacy-officer`, `legal-owner` | Contracts, compliance, risk |
+| QA (3) | `qa-lead` (reports to `cto`) | `test-engineering-lead`, `release-manager` | Quality assurance |
+| Strategy (2) | `cso` | `market-analyst` | Corporate strategy |
+| Consulting (1) | `consulting-lead` | — | Client consulting |
+| Finance (2) | `cfo` | `financial-analyst` | Financials and fundraising |
+| Customer Success (2) | `customer-success` | `customer-success-owner` | Customer retention and support |
 | IT (1) | `cio` | — | IT infrastructure |
 | Business Development (1) | `head-of-business-development` (reports to `chief-of-staff`) | — | Partnerships and growth |
 
-Counts in parentheses are live registry headcounts; `docs/AGENT-REGISTRY-TABLE.md` is the generator-maintained reference that stays in sync.
+Counts in parentheses are live registry headcounts (post-trim, 2026-09-23); `docs/AGENT-REGISTRY-TABLE.md` is the generator-maintained reference that stays in sync.
 
 ## Decision Authority
 

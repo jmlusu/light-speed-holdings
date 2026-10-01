@@ -58,7 +58,7 @@ credibility, or an AI company, or a live SME. Almost no one stacks all of these:
 
 1. **Accenture-grade Fortune 500 delivery discipline** (Comcast, Verizon, Bank of America, Duke Energy, CMS)
 2. **Development-sector M&E authority** (Director of Data Systems, Last Mile Health)
-3. **An operating AI-native company** (Lightspeed Holdings: 152 agents, 20 departments, 5-tier HITL, audit trails)
+3. **An operating AI-native company** (Lightspeed Holdings: 90 agents, 20 departments, 5-tier HITL, audit trails)
 4. **A real, non-tech small business** running agentic tools (J&S StopOver Bar)
 
 ## The Four Reservations — Trust-by-Engineering

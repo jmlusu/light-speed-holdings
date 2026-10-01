@@ -1,6 +1,6 @@
 # Pillar 01 — Social Pack (Atomized)
 
-**Source pillar:** `docs/Pharos/pillars/01-built-a-152-agent-company.md`
+**Source pillar:** `docs/Pharos/pillars/01-built-a-90-agent-company.md`
 **Pack status:** Draft — awaiting CEO approval (#189/#195/#196); post only after #194 accounts exist
 **Voice:** Builder register, CEO-voice first person, no emojis, no hype. `™` on first mention of LightSpeed Holdings Limited. Tagline verbatim: `ASPIRE. ACT. ACHIEVE.` (on-image only where a tagline slot exists).
 **Claims source:** pillar claims_ledger + registry direct count 2026-09-16 (fact checklist at bottom).
@@ -17,9 +17,9 @@
 **Characters:** 2,258 chars (within LinkedIn 3,000 limit)
 
 ```text
-We built a 152-agent company. The hardest part was the governance, not the AI.
+We built a 90-agent company. The hardest part was the governance, not the AI.
 
-LightSpeed Holdings Limited™ runs 151 AI agents across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails, RACI matrices, and a board that exercises genuine oversight. Verified by direct count of the company registry on 17 September 2026.
+LightSpeed Holdings Limited™ runs 89 AI agents across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails, RACI matrices, and a board that exercises genuine oversight. Verified by direct count of the company registry on 17 September 2026.
 
 That number was never the point. The point is what it took to make it safe.
 
@@ -70,7 +70,7 @@ The LinkedIn carousel companion uses the same five-slide square set as the Insta
 **Characters:** 263 chars (within X 280 limit)
 
 ```text
-We run a company where 151 AI agents work across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails and a board that exercises genuine oversight. Verified by direct count of the registry, 17 September 2026. #AgenticAI
+We run a company where 89 AI agents work across 20 departments, under a five-tier human-in-the-loop approval system, with immutable audit trails and a board that exercises genuine oversight. Verified by direct count of the registry, 17 September 2026. #AgenticAI
 ```
 
 ### Post 2 (registry — the easy part)
@@ -167,8 +167,8 @@ tagline: ASPIRE. ACT. ACHIEVE.
 **Format:** Boardroom voiceover, no hype. Registry walkthrough + one approval-queue view.
 
 ```text
-[OPEN 0:00–0:10] On screen: company registry scrolling, 152 agents.
-VO: We run a company where 151 AI agents work across 20 departments. Verified by direct count of the registry. The agents were the easy part.
+[OPEN 0:00–0:10] On screen: company registry scrolling, 90 agents.
+VO: We run a company where 89 AI agents work across 20 departments. Verified by direct count of the registry. The agents were the easy part.
 
 [0:10–0:25] On screen: H-A-O-M-T-G-V layer diagram.
 VO: The operating system has seven layers: Human, Agents, Orchestration, Memory, Tools, Governance, Value. Each layer is a design question.
@@ -194,7 +194,7 @@ Every claim above is verbatim-consistent with the source pillar body and ledger:
 
 | Claim | Source |
 |-------|--------|
-| 152 agents across 20 departments | `company-registry.yaml` (direct count 2026-09-17); `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `docs/Pharos/README.md:23` |
+| 90 agents across 20 departments | `company-registry.yaml` (direct count 2026-09-17); `docs/Pharos/positioning.md:61`; `docs/Pharos/manifesto-draft.md:107-109`; `docs/Pharos/README.md:23` |
 | 5-tier HITL approval system, immutable audit trails, RACI matrices, board oversight | `docs/Pharos/manifesto-draft.md:107-109`; `docs/APPROVAL-UX-SPEC.md:9-12, 16-22` |
 | H-A-O-M-T-G-V framework: Human, Agents, Orchestration, Memory, Tools, Governance, Value | `docs/Pharos/positioning.md:41-52` |
 | J&S StopOver Bar — real, non-tech SME running agentic decision support | `docs/Pharos/case-study-pipeline.md:7-12` |

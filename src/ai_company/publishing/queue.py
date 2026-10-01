@@ -177,7 +177,7 @@ class PublishQueue:
                         id=record.id,
                         name=f"Publish '{record.title}' to {platform}",
                         sender_id="publish-queue",
-                        receiver_id="content_writer",
+                        receiver_id="content_creator",
                         instruction=(
                             f"Review and publish the queued artifact '{record.title}' "
                             f"to {platform}. Queue record: {record.id} (status={record.status})."

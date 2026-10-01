@@ -5,7 +5,7 @@
 **Status:** COMPLETE — capability-gap recommendations are inputs to skill curation
 **Date:** 2026-09-06
 **Source:** We Lead Out services positioning (10 Salesforce domains), mapped against the
-Light Speed Holdings registry (131 agents).
+Light Speed Holdings registry (90 agents).
 
 ---
 
@@ -23,16 +23,16 @@ rather than a new-agent recommendation (skills are cheaper and swappable).
 
 | # | WLO Salesforce domain | LSH lead agent | Supporting agents | LSH readiness |
 |---|------------------------|----------------|-------------------|---------------|
-| 1 | **Agentforce** (agentic AI in Salesforce) | llm-platform-owner | ai-safety-lead, prompt-engineer, conversation-designer, red-team-engineer | Strong — core competency |
-| 2 | **AI & Automation** (Flow, Einstein, LLM integration) | workflow-mapper | workflow-owner, prompt-engineer, integration-engineer | Strong |
-| 3 | **Data Cloud** (unify + segment + activate) | data-engineer | data-scientist, business-intelligence-engineer, data-privacy-officer | Strong |
+| 1 | **Agentforce** (agentic AI in Salesforce) | llm-platform-owner | ai-safety-lead, prompt-engineer, solutions-engineer, red-team-engineer | Strong — core competency |
+| 2 | **AI & Automation** (Flow, Einstein, LLM integration) | workflow-owner | prompt-engineer, integration-engineer | Strong |
+| 3 | **Data Cloud** (unify + segment + activate) | data-engineer | business-intelligence-engineer, data-privacy-officer | Strong |
 | 4 | **Core Platform** (objects, security, automation) | solution-architect | lead-backend, security-architect, qa-lead | Strong |
-| 5 | **Service Cloud** (omnichannel, knowledge, bots) | support-agent | conversation-designer, customer-success-owner | Medium — needs service-cloud skill |
+| 5 | **Service Cloud** (omnichannel, knowledge, bots) | customer-success-owner | solutions-engineer | Medium — needs service-cloud skill |
 | 6 | **Sales Cloud** (pipeline, lead mgmt) | sales-owner | revenue-operations-analyst, solutions-engineer | Strong for methodology; skill needed for native UI |
-| 7 | **Marketing Automation** (journeys, ROI) | marketing-owner | content-writer, growth-hacker, ux-analytics-lead | Medium |
-| 8 | **Financial Services Cloud** (FSC) | integration-engineer | data-privacy-officer, compliance-officer, solution-architect | Gap — needs FSC + financial-subject expertise |
-| 9 | **Education Cloud** (admissions, alumni) | data-engineer | survey-researcher, technical-documentation-lead | Gap — needs Education Cloud skill |
-| 10 | **Managed Support** (admin, enhance, resolve) | customer-success-owner | support-agent, developer-experience-engineer | Strong |
+| 7 | **Marketing Automation** (journeys, ROI) | marketing-owner | content-creator, growth-hacker | Medium |
+| 8 | **Financial Services Cloud** (FSC) | integration-engineer | data-privacy-officer, solution-architect | Gap — needs FSC + financial-subject expertise |
+| 9 | **Education Cloud** (admissions, alumni) | data-engineer | business-intelligence-engineer, technical-documentation-lead | Gap — needs Education Cloud skill |
+| 10 | **Managed Support** (admin, enhance, resolve) | customer-success-owner | platform-engineer | Strong |
 
 **Legend:** *Strong* = direct agent capability today · *Medium* = works, but needs
 a domain skill pack · *Gap* = advisory recommended before client promises.
@@ -61,7 +61,7 @@ a domain skill pack · *Gap* = advisory recommended before client promises.
 | P1 | Native Salesforce UI / config depth | Add a "Salesforce expert" skill pack combining Flow + Agentforce + setup patterns | 4, 5, 6, 7 |
 | P2 | Financial-services domain terms | Add FSC skill (wealth mgmt flows, compliance surfaces, advisor tooling) | 8 |
 | P2 | Education-domain terms | Add Education Cloud skill (admissions, student 360, alumni) | 9 |
-| P3 | Marketing ROI accounting | Reuse ux-analytics-lead + revenue-operations-analyst patterns inside marketing compositions | 7 |
+| P3 | Marketing ROI accounting | Reuse business-intelligence-engineer + revenue-operations-analyst patterns inside marketing compositions | 7 |
 
 ---
 

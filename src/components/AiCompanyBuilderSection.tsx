@@ -59,11 +59,11 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
         </p>
       </div>
 
-      {/* Strategic Infographic Banner: 152-Agent Governed Swarm Architecture */}
+      {/* Strategic Infographic Banner: 90-Agent Governed Swarm Architecture */}
       <div className="relative rounded-3xl overflow-hidden mb-12 border border-ls-grey-dark shadow-2xl group">
         <img
           src={aiSwarmInfographic}
-          alt="152-Agent Workforce Infographic"
+          alt="90-Agent Workforce Infographic"
           className="w-full h-[260px] sm:h-[380px] object-cover brightness-[0.75] contrast-[1.1] transition-transform duration-700 group-hover:scale-105"
           referrerPolicy="no-referrer"
         />
@@ -72,7 +72,7 @@ export const AiCompanyBuilderSection: React.FC<AiCompanyBuilderSectionProps> = (
             <StatusLedPip status="emerald" isLight={isLight} />
             <span className="text-[10px] font-body text-ls-red/40 font-bold uppercase tracking-widest">[ INFOGRAPHIC // SYSTEM ARCHITECTURE ]</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold font-display text-ls-white">Governed 152-Agent Swarm &amp; 20-Department Topology</h2>
+          <h2 className="text-xl sm:text-2xl font-bold font-display text-ls-white">Governed 90-Agent Swarm &amp; 20-Department Topology</h2>
           <p className="text-xs sm:text-sm text-ls-grey-light-text font-body mt-1">Autonomous execution swarms operating under human CEO executive oversight and 5-tier HITL gates.</p>
         </div>
       </div>

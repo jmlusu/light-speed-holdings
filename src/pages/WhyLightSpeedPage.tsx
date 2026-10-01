@@ -90,7 +90,7 @@ export const WhyLightSpeedPage: React.FC<WhyLightSpeedPageProps> = ({ theme, onR
           theme={theme}
           eyebrow="THE DIFFERENCE"
           title="How LightSpeed Works Differently"
-          lead="We are not an IT consultancy that added AI. Our own operating model — 152 agents across 20 departments — is the proof that agentic systems work in production, under real constraints."
+          lead="We are not an IT consultancy that added AI. Our own operating model — 90 agents across 20 departments — is the proof that agentic systems work in production, under real constraints."
         />
         <div className="mt-8">
           <Reveal>
@@ -112,7 +112,7 @@ export const WhyLightSpeedPage: React.FC<WhyLightSpeedPageProps> = ({ theme, onR
                   <p className={`mt-3 text-sm leading-relaxed ${
                     isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
                   }`}>
-                    We ship working systems — websites, dashboards, agentic workflows, data pipelines — not just documents. LightSpeed Holdings runs its own 152-agent operation daily. The platform we deploy to clients is the same system that runs our business, with five-tier human approval gates, immutable SHA-256 audit trails, and cost tracking held to ≤10% of revenue.
+                    We ship working systems — websites, dashboards, agentic workflows, data pipelines — not just documents. LightSpeed Holdings runs its own 90-agent operation daily. The platform we deploy to clients is the same system that runs our business, with five-tier human approval gates, immutable SHA-256 audit trails, and cost tracking held to ≤10% of revenue.
                   </p>
                 </div>
                 <div className="lg:w-auto flex-shrink-0">

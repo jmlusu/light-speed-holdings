@@ -14,9 +14,9 @@ Provenance read against repo root `C:\Users\jmlus\light-speed-holdings` (this wo
 
 | Claim | Location | Class | Evidence / Note |
 |---|---|---|---|
-| Proof strip: 152 Verified Agent Configurations / 2,373 Automated Regression Tests / 20 Departments Onboarded / 5-Tier (Human Approval Gates) | HomePage.tsx:31-35; HeroSection.tsx:79,170 | (a) | 152 & 20 verified via company-registry.yaml (152 agent ids, 20 distinct departments), reports/evidence-2026-09-14.json, docs/source-of-truth.yaml (152 = 151 AI + 1 human CEO). 2,373 documented live `pytest --collect-only` on 2026-09-10 (results/use-case-fact-pack.md:79); caveat: static `def test_` count is 2,211 + 25 parametrize decorators. 5-Tier backed by src/ai_company/executor/hitl_gate.py + tests. |
-| "...every decision auditable" | HeroSection.tsx:79 | (b) — RESOLVED | Absolute quality claim; audit-trail design exists but no support that all 152 agents' decisions are auditable. **Remediated 2026-09-16:** copy now reads "decision logs auditable on request" (HeroSection.tsx:79). |
-| "One human CEO directs 140+ AI agents" | siteContent.ts:38 | (b) — RESOLVED | Internal inconsistency: canonical is 152 (151 AI + 1 human CEO) per docs/source-of-truth.yaml. **Remediated:** site now uses canonical 152. |
+| Proof strip: 90 Verified Agent Configurations / 2,373 Automated Regression Tests / 20 Departments Onboarded / 5-Tier (Human Approval Gates) | HomePage.tsx:31-35; HeroSection.tsx:79,170 | (a) | 90 & 20 verified via company-registry.yaml (90 agent ids, 20 distinct departments), docs/source-of-truth.yaml (90 = 89 AI + 1 human CEO); counted 2026-09-23. 2,373 documented live `pytest --collect-only` on 2026-09-10 (results/use-case-fact-pack.md:79); caveat: static `def test_` count is 2,211 + 25 parametrize decorators. 5-Tier backed by src/ai_company/executor/hitl_gate.py + tests. |
+| "...every decision auditable" | HeroSection.tsx:79 | (b) — RESOLVED | Absolute quality claim; audit-trail design exists but no support that all 90 agents' decisions are auditable. **Remediated 2026-09-16:** copy now reads "decision logs auditable on request" (HeroSection.tsx:79). |
+| "One human CEO directs 140+ AI agents" | siteContent.ts:38 | (b) — RESOLVED | Internal inconsistency: canonical is 90 (89 AI + 1 human CEO) per docs/source-of-truth.yaml (counted 2026-09-23). **Remediated:** site now uses canonical 90. |
 | "10-day turnaround, ≥4.5/5 satisfaction, 30-day support window" | siteContent.ts:124 | (b) | Labeled commitment; no published satisfaction/measurement data. |
 | "20-25 paid clients and 8 lighthouse clients in first 12 months" | siteContent.ts:125 | (b) | Forward target, not a delivered result; check whether surfaced to page. |
 | "We target 99.99% platform uptime" | siteContent.ts:96 | (b) | Target, not measured; no SLO artifacts on site. Copy is explicitly hedged ("We target") and framed as an internal practice note — acceptable as a stated goal, not a delivered result. |
@@ -29,11 +29,11 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 
 | Claim | Location | Class | Evidence / Note |
 |---|---|---|---|
-| "Governed 152-Agent Swarm & 20-Department Topology" + "5-tier HITL gates" | AiCompanyBuilderSection.tsx:75-76 | (a) | Registry + hitl_gate.py backing as above. |
-| FOW-01 "1-human, 151-agent organisation"; FOW-03 "proven in-house daily" | siteContent.ts:665-666 | (a) | 152 registry-verified; daily operation corroborated by evidence probes + repo-audit. |
+| "Governed 90-Agent Swarm & 20-Department Topology" + "5-tier HITL gates" | AiCompanyBuilderSection.tsx:75-76 | (a) | Registry + hitl_gate.py backing as above. |
+| FOW-01 "1-human, 89-agent organisation"; FOW-03 "proven in-house daily" | siteContent.ts:665-666 | (a) | 90 registry-verified; daily operation corroborated by evidence probes + repo-audit. |
 | "10x-100x operational throughput with sub-second verified dispatch" | AiCompanyBuilderSection.tsx:246 | (b) — RESOLVED | Absolute performance claim, no bench artifact. **Remediated:** copy now reads "Designed for 10x–100x operational throughput with sub-second verified dispatch" (design intent, not measured). |
 | "Sub-second latency SLA guarantees" | AiCompanyBuilderSection.tsx:418 | (b) — RESOLVED | SLA stated but no measurement/provenance. **Remediated:** now "Sub-second latency SLAs (target)". |
-| Simulated console: "Entire AI Company generated in 1.42s", "2,373 tests passing", "342 Workflow Dispatch & Escalation Channels", "1,280 indexed memory vectors", "152 agents / 20 departments / 1 board" | AiCompanyBuilderOsExplorer.tsx:61-96,255,304,308 | (b) — RESOLVED | Typing-animation demo output; not a tagged measured run. 2,373 is documented (see Home), remainder unverifiable. **Remediated:** terminal header now labels output "SIMULATED OUTPUT — NOT A LIVE RUN" (AiCompanyBuilderOsExplorer.tsx:393). |
+| Simulated console: "Entire AI Company generated in 1.42s", "2,373 tests passing", "342 Workflow Dispatch & Escalation Channels", "1,280 indexed memory vectors", "90 agents / 20 departments / 1 board" | AiCompanyBuilderOsExplorer.tsx:61-96,255,304,308 | (b) — RESOLVED | Typing-animation demo output; not a tagged measured run. 2,373 is documented (see Home), remainder unverifiable. **Remediated:** terminal header now labels output "SIMULATED OUTPUT — NOT A LIVE RUN" (AiCompanyBuilderOsExplorer.tsx:393). |
 | 90-day pilot → full scale; "2-Week Advisory Sprint to 90-Day Co-Built Pilot" | siteContent.ts:638; OfferingDetailCard.tsx:242; PillarNavigationCard.tsx:17 | (b) | Engagement-model offer, not a result claim. |
 | Licensing: MWK 3,500,000 (~$2,000) + $200/mo support | siteContent.ts:642; OfferingsPage.tsx:247,263 | (b) | Internally consistent MWK/USD; pricing is offer, not evidence. |
 
@@ -55,7 +55,7 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 
 | Claim | Location | Class | Evidence / Note |
 |---|---|---|---|
-| Agentic AI: "152-agent operation runs daily" proof label | siteContent.ts:248 | (a) | Registry + evidence probes. |
+| Agentic AI: "90-agent operation runs daily" proof label | siteContent.ts:248 | (a) | Registry + evidence probes. |
 | Digital Transformation: "Fieldable in 2026 — ready for client engagement"; pricing "to be validated with prospects" | siteContent.ts:1141; useCaseCatalogData.ts:107 | (b) — RESOLVED | Past-tense "pricing validated against real prospects" removed 2026-09-16; reverified 2026-09-23 — src now future-tense, matches USE-CASE-CATALOG.md:76. |
 | Data & Intelligence: "In pilot with UNDP Malawi stakeholders" | siteContent.ts:331 | (b) | Self-reported pilot; no external or repo artifact. |
 | Automation: "gated on G1-G4 security review" | siteContent.ts:372 | (b) | Process claim; G1-G4 policy exists. |
@@ -79,7 +79,7 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 |---|---|---|---|
 | METRICS 144 / 2,373 / 20 / 5-TIER with explicit sources | EvidencePage.tsx:31-52 | (a) | Sources verified (company-registry.yaml, pytest collection doc, hitl_gate.py). |
 | PC-01 J&S StopOver Bar "world's smallest AI-native bar" | EvidencePage.tsx:103; siteContent.ts:726 | (b) — RESOLVED | Unsupported superlative; no sizing data. **Remediated:** superlative removed from EvidencePage.tsx:103, siteContent.ts:726, and useCaseCatalogData.ts:470 — now "A real, non-tech SME in Malawi running agentic decision support…". |
-| PC-04 Meta-deployment: "152 agents / 20 departments / five-tier... operating daily" | EvidencePage.tsx:110; siteContent.ts:732 | (a) | Registry + evidence probes + repo-audit (own operations). |
+| PC-04 Meta-deployment: "90 agents / 20 departments / five-tier... operating daily" | EvidencePage.tsx:110; siteContent.ts:732 | (a) | Registry + evidence probes + repo-audit (own operations). |
 | PC-02 Health: "in pilot... no confirmed partnership" | EvidencePage.tsx:117 | (a) | Matches Industry.Healthcare disclaimer. |
 | PC-03 "No signed engagement exists" (VSLA) | EvidencePage.tsx:124 | (a) | Matches industry-financial honesty statement. |
 | PC-05 Partnership with Ministry of Agriculture "in pilot development" | EvidencePage.tsx:131 | (b) | Self-reported; internal case-study pipeline only. |
@@ -114,7 +114,7 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 | Comparison table "9-month review cycles" (industry generic) | CoreOfferingsSection.tsx:232 | (b) — RESOLVED | Illustrative figure, no source. **Remediated:** figure removed — now "infrequent review cycles". |
 | "All hosted in-region, compliant with Malawi DPA" | OfferingsPage.tsx:155; siteContent.ts:330 | (b) | Policy claim. |
 | OH B1 hosting "MWK 100,000/mo recurring" | OfferingsPage.tsx:148 | (b) | Pricing offer. |
-| Haomtgv Governance tab rings: "100% Statutory Compliance // Zero Ungoverned State Changes"; "<180ms" routing; "0.00% (Strict Air-Gap)"; "100% BLOCKED EGRESS"; "5 Discrete Risk Tiers // 0% Hallucinated Commits"; "48hr → 14.2s mobile money settlement audit; 25k+ smallholders served"; "Tested across 152 agents running daily"; "PROVEN IN PRODUCTION" | HaomtgvGovernanceFramework.tsx:96,144,146,223,237-246,243-246,452,461,768,1002,1005 | (b) — RESOLVED | **Remediated:** :96 → "Policy-mapped Compliance // No Ungoverned State Changes"; :144 → "<180ms" removed (design description only) & :146 → "Sub-Second Local Dispatch // Race-Condition-Free by Design"; :223 → "0% Hallucinated Commits (internal tests)"; :246 → "SHA-256 Hash Chaining // Field deployments pending" + principle "In Design for Field Use"; :452 → "STRICT AIR-GAP POSTURE"; :461 → "PROVEN IN-HOUSE OPERATIONS"; :768 → "0.00% (Strict Air-Gap Policy)"; :1002 → "<180ms) target"; :1005 → "egress blocked by design"; :1282 → "PROVEN IN-HOUSE: Operating daily…". |
+| Haomtgv Governance tab rings: "100% Statutory Compliance // Zero Ungoverned State Changes"; "<180ms" routing; "0.00% (Strict Air-Gap)"; "100% BLOCKED EGRESS"; "5 Discrete Risk Tiers // 0% Hallucinated Commits"; "48hr → 14.2s mobile money settlement audit; 25k+ smallholders served"; "Tested across 90 agents running daily"; "PROVEN IN PRODUCTION" | HaomtgvGovernanceFramework.tsx:96,144,146,223,237-246,243-246,452,461,768,1002,1005 | (b) — RESOLVED | **Remediated:** :96 → "Policy-mapped Compliance // No Ungoverned State Changes"; :144 → "<180ms" removed (design description only) & :146 → "Sub-Second Local Dispatch // Race-Condition-Free by Design"; :223 → "0% Hallucinated Commits (internal tests)"; :246 → "SHA-256 Hash Chaining // Field deployments pending" + principle "In Design for Field Use"; :452 → "STRICT AIR-GAP POSTURE"; :461 → "PROVEN IN-HOUSE OPERATIONS"; :768 → "0.00% (Strict Air-Gap Policy)"; :1002 → "<180ms) target"; :1005 → "egress blocked by design"; :1282 → "PROVEN IN-HOUSE: Operating daily…". |
 | "48hr → 14.2s mobile money settlement audit; 25k+ smallholders served"; "48h → 14.2s Latency Collapse" | HaomtgvGovernanceFramework.tsx:244,246 | (b) — RESOLVED | No repo artifact. **Remediated:** 14.2s/25k claims removed entirely — replaced with "In Design for Field Use: mobile money settlement audit and smallholder-serving workflows are under development, not yet delivered." / "Field deployments pending". |
 
 ## 10. Contact / Footer
@@ -130,7 +130,7 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 
 | Item | Claimed | Verified | Source / Note |
 |---|---|---|---|
-| Agent configurations | 152 | 152 | company-registry.yaml (AGENT_IDS=152); docs/source-of-truth.yaml (151 AI + 1 human CEO); reports/evidence-2026-09-14.json registry.parse agents=152; cards.reconcile registry=152 live=152 |
+| Agent configurations | 90 | 90 | company-registry.yaml (AGENT_IDS=90); docs/source-of-truth.yaml (89 AI + 1 human CEO); counted 2026-09-23; cards.reconcile registry=90 live=90 |
 | Departments | 20 | 20 | company-registry.yaml DISTINCT_DEPARTMENTS=20; evidence json tree.departments company=20 config=20 |
 | Regression tests | 2,373 | 2,373 (documented), 2,211 + 25 parametrize (static) | results/use-case-fact-pack.md:79 live `pytest --collect-only -q` 2026-09-10; static count differs — recommend re-run before quoting |
 | HITL gates | 5-TIER | code exists | src/ai_company/executor/hitl_gate.py + tier-enforcement tests |
@@ -144,7 +144,7 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 
 ## 12. Contradiction / Consistency Notes
 
-- `siteContent.ts:38` "140+ AI agents" vs canonical 144 everywhere else. **RESOLVED:** site now uses 144.
+- `siteContent.ts:38` "140+ AI agents" vs canonical 90 everywhere else. **RESOLVED:** site now uses 90.
 - `siteContent.ts:290` pricing "validated against real prospects" (past) vs `USE-CASE-CATALOG.md:76` "is to be validated with prospects before publishing" (future). — see ticket (b / CONTRADICTION row §5); aligned 2026-09-16 to future-tense; reverified 2026-09-23 (now (b) — RESOLVED).
 - OfferingDetailCard.tsx:182-190 "delivered to … commercial banking, national revenue authorities, transport corridors" vs EvidencePage.tsx:380 "Nothing has been delivered to paying clients yet". **RESOLVED:** benchmark box now "Verified In-House Reference… not client deployments."
 - USE-CASE-CATALOG.md:506 "All claims trace to real repository files" is itself violated by Pharos download counts, 14.2s/25k, and benchmark telemetry. **RESOLVED:** all three clusters removed/hedged.

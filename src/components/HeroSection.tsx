@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <p className={`text-justify max-w-2xl text-base sm:text-lg font-bold leading-relaxed ${
               isLight ? 'text-ls-navy' : 'text-ls-white'
             }`}>
-              <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 152 agents, 20 departments, five-tier human approval, every decision auditable.
+              <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 90 agents, 20 departments, five-tier human approval, every decision auditable.
             </p>
             <p className={`text-justify max-w-2xl text-xs sm:text-sm leading-relaxed ${
               isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'
@@ -167,7 +167,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div>
               <span className={`text-[11px] font-body font-bold block ${'text-ls-grey-light-text'}`}>Agent Fleet</span>
               <span className="text-sm font-bold font-body text-ls-red">
-                <StatCounter to={152} format="comma" /> Configurations
+                <StatCounter to={90} format="comma" /> Configurations
               </span>
             </div>
             <div>

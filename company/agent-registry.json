@@ -77,10 +77,7 @@
       "workflow-owner",
       "orchestration-owner",
       "doctor-owner",
-      "capacity-planner",
-      "business-continuity-manager",
-      "vendor-manager",
-      "process-quality-manager"
+      "vendor-manager"
     ],
     "description": "Manages day-to-day operations and internal processes.",
     "responsibilities": [
@@ -103,11 +100,9 @@
     "reportsTo": "chief-of-staff",
     "directReports": [
       "ml-engineer",
-      "ml-services-owner",
       "memory-owner",
       "llm-platform-owner",
       "ai-safety-lead",
-      "eval-benchmarks-engineer",
       "prompt-engineer"
     ],
     "description": "Directs AI research, model selection, and prompt engineering strategies.",
@@ -163,8 +158,7 @@
     "department": "Finance",
     "reportsTo": "chief-of-staff",
     "directReports": [
-      "financial-analyst",
-      "investor-relations-lead"
+      "financial-analyst"
     ],
     "description": "Manages budgets, API cost tracking, and financial forecasting for agent operations.",
     "responsibilities": [
@@ -194,10 +188,7 @@
     "reportsTo": "chief-of-staff",
     "directReports": [
       "ux-research-lead",
-      "ux-analytics-lead",
       "technical-documentation-lead",
-      "growth-product-manager",
-      "developer-experience-engineer",
       "product-designer"
     ],
     "description": "Defines product vision, prioritizes features, and drives product strategy.",
@@ -228,8 +219,7 @@
     "directReports": [
       "marketing-owner",
       "head-of-developer-relations",
-      "product-marketing-manager",
-      "industry-analyst-relations-manager"
+      "product-marketing-manager"
     ],
     "description": "Drives brand awareness, demand generation, market positioning, and owns the external company website (lightspeedholdings.com).",
     "responsibilities": [
@@ -258,9 +248,7 @@
     "department": "People",
     "reportsTo": "chief-of-staff",
     "directReports": [
-      "hr-owner",
-      "learning-development-lead",
-      "employee-experience-lead"
+      "hr-owner"
     ],
     "description": "Manages agent onboarding, role definitions, workforce planning, and culture.",
     "responsibilities": [
@@ -291,11 +279,8 @@
       "security-architect",
       "security-compliance-lead",
       "ai-security-specialist",
-      "penetration-testing-lead",
       "incident-response-lead",
-      "devsecops-lead",
-      "supply-chain-security-engineer",
-      "threat-intelligence-analyst"
+      "devsecops-lead"
     ],
     "description": "Protects company assets, data, and systems from security threats.",
     "responsibilities": [
@@ -351,7 +336,6 @@
     "reportsTo": "cto",
     "directReports": [
       "data-engineer",
-      "data-scientist",
       "business-intelligence-engineer"
     ],
     "description": "Manages data strategy, analytics, and data governance.",
@@ -380,9 +364,8 @@
     "department": "Legal",
     "reportsTo": "chief-of-staff",
     "directReports": [
-      "compliance-officer",
       "data-privacy-officer",
-      "legal"
+      "legal-owner"
     ],
     "description": "Manages legal affairs, contracts, and compliance.",
     "responsibilities": [
@@ -409,9 +392,6 @@
     "department": "Strategy",
     "reportsTo": "chief-of-staff",
     "directReports": [
-      "head-of-competitive-intelligence",
-      "corporate-development-lead",
-      "revenue-operations-analyst",
       "market-analyst"
     ],
     "description": "Drives corporate strategy, M&A, and market expansion.",
@@ -513,31 +493,6 @@
     "model_tier": "standard"
   },
   {
-    "name": "legal",
-    "role": "Legal Advisor",
-    "type": "Executive",
-    "department": "Legal",
-    "reportsTo": "clo",
-    "directReports": [
-      "legal-owner"
-    ],
-    "description": "Provides legal counsel on contracts, compliance, IP, and regulatory matters.",
-    "responsibilities": [
-      "Provide legal counsel on contracts and compliance.",
-      "Review partnership and vendor agreements.",
-      "Ensure regulatory compliance across jurisdictions.",
-      "Protect intellectual property and patents.",
-      "Manage legal risks and disputes."
-    ],
-    "guidelines": "Legal review is proactive. Compliance gaps block release. Document everything. Every clause is traceable.",
-    "tools": [
-      "read",
-      "write"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard"
-  },
-  {
     "name": "financial-analyst",
     "role": "Financial Analyst",
     "type": "Specialist",
@@ -591,55 +546,6 @@
     "technical_domain": "CI/CD pipelines, cloud infrastructure, deployment automation, infrastructure-as-code."
   },
   {
-    "name": "data-scientist",
-    "role": "Data Scientist",
-    "type": "Specialist",
-    "department": "Data",
-    "reportsTo": "cdo",
-    "directReports": [],
-    "description": "Performs advanced data analysis, builds predictive models, and derives actionable insights from organizational data.",
-    "responsibilities": [
-      "Analyze datasets to identify trends, patterns, and anomalies.",
-      "Build and validate predictive models for business forecasting.",
-      "Design and run A/B tests and experiments.",
-      "Create data visualizations and dashboards."
-    ],
-    "guidelines": "All models must have documented assumptions and validation metrics. Reproducibility is non-negotiable.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "premium"
-  },
-  {
-    "name": "compliance-officer",
-    "role": "Compliance Officer",
-    "type": "Specialist",
-    "department": "Legal",
-    "reportsTo": "clo",
-    "directReports": [],
-    "description": "Ensures organizational adherence to policies, regulations, and ethical standards. Conducts compliance audits and maintains audit trails.",
-    "responsibilities": [
-      "Conduct regular compliance audits across departments.",
-      "Assess regulatory risk for new initiatives and products.",
-      "Maintain and update compliance policies and procedures.",
-      "Review agent activities against ethical AI guidelines."
-    ],
-    "guidelines": "Document everything. Apply policies consistently. Proactive compliance is cheaper than reactive remediation.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard"
-  },
-  {
     "name": "platform-reliability-engineer",
     "role": "Platform Reliability Engineer",
     "type": "Specialist",
@@ -691,31 +597,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Access control, CORS policy, authentication/authorization, and approval-tier enforcement."
-  },
-  {
-    "name": "audit-trail-owner",
-    "role": "Audit Trail Owner",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "vp-engineering",
-    "directReports": [],
-    "description": "Owns the audit trail package, event schema integrity, retention policy, and executor integration hooks.",
-    "responsibilities": [
-      "Own the audit/ package (events, writer, reader, integration hooks).",
-      "Guarantee event schema integrity and backward-compatible evolution.",
-      "Define and enforce audit retention and rotation policy.",
-      "Ensure every privileged action emits a correlated audit event."
-    ],
-    "guidelines": "Append-only by default. Every privileged action is logged. Audit gaps are treated as incidents.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Event sourcing, immutable audit logs, JSONL append semantics."
   },
   {
     "name": "memory-owner",
@@ -793,31 +674,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Workflow DAGs, step state machines, SLA budgeting and alerting."
-  },
-  {
-    "name": "graph-owner",
-    "role": "Graph Owner",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "vp-engineering",
-    "directReports": [],
-    "description": "Owns the graph engine, its 4 graph types, and BFS pathfinding.",
-    "responsibilities": [
-      "Own the graph/ engine and its 4 graph types.",
-      "Maintain BFS pathfinding for dependency and escalation routing.",
-      "Ensure graph models stay consistent with the registry."
-    ],
-    "guidelines": "Graphs are derived, not authored. Consistency with the registry is enforced.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Org charts, decision graphs, workflow graphs, knowledge graphs, BFS."
   },
   {
     "name": "dashboard-owner",
@@ -923,31 +779,6 @@
     "technical_domain": "YAML parsing, schema validation, reference resolution, config loading."
   },
   {
-    "name": "generator-owner",
-    "role": "Generator Owner",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "vp-engineering",
-    "directReports": [],
-    "description": "Owns the agent generator and the 12 Jinja2 templates that produce OpenCode agent files.",
-    "responsibilities": [
-      "Own the generator and all 12 Jinja2 templates.",
-      "Ensure generated agent .md files are valid and idempotent.",
-      "Keep template changes backward-compatible with the registry schema."
-    ],
-    "guidelines": "Generated output must be deterministic. Template edits require a regeneration check.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Templating, agent manifest generation, output schema stability."
-  },
-  {
     "name": "doctor-owner",
     "role": "Doctor Owner",
     "type": "Specialist",
@@ -1036,7 +867,7 @@
       "Administer platform accounts (Meta Business Suite, X Professional, LinkedIn Company Page, YouTube business ownership, TikTok Business Center).",
       "Enforce ownership-over-administration: accounts belong to LIGHTSPEED HOLDINGS LIMITED, not to one individual.",
       "Ensure 2FA and unique passwords on every account.",
-      "Coordinate publishing and engagement operations with content_writer and content_creator.",
+      "Coordinate publishing and engagement operations with content_creator.",
       "Maintain a consistent name (LIGHTSPEED HOLDINGS LIMITED) and @lightspeedholdings handle across platforms."
     ],
     "guidelines": "Company owns the accounts, not an individual. The register is the single source of truth. 2FA everywhere. Name and handle consistency is enforced.",
@@ -1081,7 +912,7 @@
     "role": "Legal Owner",
     "type": "Specialist",
     "department": "Legal",
-    "reportsTo": "legal",
+    "reportsTo": "clo",
     "directReports": [],
     "description": "Owns the legal service module and legal SOP.",
     "responsibilities": [
@@ -1124,31 +955,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Agent role definitions, onboarding workflows, workforce planning."
-  },
-  {
-    "name": "ml-services-owner",
-    "role": "ML Services Owner",
-    "type": "Specialist",
-    "department": "AI Research",
-    "reportsTo": "caio",
-    "directReports": [],
-    "description": "Owns the ML module and model evaluation pipelines.",
-    "responsibilities": [
-      "Own the ml/ module and model evaluation harness.",
-      "Define evaluation benchmarks for agent efficacy.",
-      "Track inference cost per model and per task."
-    ],
-    "guidelines": "Evaluate before promote. Benchmarks are reproducible. Cost per inference is tracked.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "premium",
-    "technical_domain": "Model evaluation, embedding pipelines, inference cost, benchmark suites."
   },
   {
     "name": "sop-owner",
@@ -1209,9 +1015,7 @@
     "type": "Specialist",
     "department": "QA",
     "reportsTo": "qa-lead",
-    "directReports": [
-      "qa-automation-engineer"
-    ],
+    "directReports": [],
     "description": "Owns the pytest architecture, fixtures, and CI test-gating; accountable owner for dashboard suite health.",
     "responsibilities": [
       "Own the pytest architecture, fixtures, and conftest hygiene.",
@@ -1230,31 +1034,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Test architecture, fixtures, conftest design, CI test orchestration, flaky-test triage."
-  },
-  {
-    "name": "qa-automation-engineer",
-    "role": "QA Automation Engineer",
-    "type": "Specialist",
-    "department": "QA",
-    "reportsTo": "test-engineering-lead",
-    "directReports": [],
-    "description": "Authors contract, smoke, and integration tests; maintains dashboard/WebSocket coverage and flaky-test monitoring.",
-    "responsibilities": [
-      "Author contract tests (e.g. StateStore path-handling) and a dashboard smoke test.",
-      "Maintain WebSocket and integration coverage for the dashboard surface.",
-      "Monitor and triage flaky tests; automate regression detection."
-    ],
-    "guidelines": "Every public contract gets a test. Smoke tests catch red before users do. Automate the boring checks.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Test authoring, contract tests, smoke tests, WebSocket/integration coverage, regression automation."
   },
   {
     "name": "release-manager",
@@ -1291,11 +1070,8 @@
     "directReports": [
       "devops-lead",
       "platform-reliability-engineer",
-      "audit-trail-owner",
-      "graph-owner",
       "dashboard-owner",
       "registry-owner",
-      "generator-owner",
       "qa-lead",
       "release-manager"
     ],
@@ -1353,9 +1129,7 @@
     "department": "AI Research",
     "reportsTo": "caio",
     "directReports": [
-      "red-team-engineer",
-      "constitutional-ai-owner",
-      "ai-ethics-officer"
+      "red-team-engineer"
     ],
     "description": "Owns safety policies, alignment guardrails, refusal thresholds, and harm-reduction logic across all agents.",
     "responsibilities": [
@@ -1376,33 +1150,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "AI safety frameworks, alignment guardrails, harm reduction, safety incident response."
-  },
-  {
-    "name": "program-manager",
-    "role": "Program Manager",
-    "type": "Specialist",
-    "department": "Operations",
-    "reportsTo": "coo",
-    "directReports": [],
-    "description": "Coordinates cross-functional projects and manages dependencies between CTO, CAIO, and COO teams during execution.",
-    "responsibilities": [
-      "Coordinate cross-functional projects across engineering, AI research, and operations.",
-      "Track inter-team dependencies and escalate blockers.",
-      "Maintain program-level risk registers and mitigation plans.",
-      "Facilitate cross-team standups and alignment meetings.",
-      "Report program health to COO weekly."
-    ],
-    "guidelines": "Visibility is velocity. Surface blockers early. Dependencies are risks until resolved. Every project needs a clear owner.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Program management, cross-functional coordination, dependency tracking, risk mitigation."
   },
   {
     "name": "ux-research-lead",
@@ -1538,60 +1285,6 @@
     "technical_domain": "Adversarial testing, prompt injection, jailbreak detection, goal hijacking, data exfiltration."
   },
   {
-    "name": "constitutional-ai-owner",
-    "role": "Constitutional AI Owner",
-    "type": "Specialist",
-    "department": "AI Research",
-    "reportsTo": "ai-safety-lead",
-    "directReports": [],
-    "description": "Owns the ai_development_constitution directory, maps constitutional principles to runtime guardrails, and audits agent compliance.",
-    "responsibilities": [
-      "Own the ai_development_constitution/ directory and its evolution.",
-      "Map each constitutional principle to a testable runtime constraint.",
-      "Audit agent outputs against constitutional principles.",
-      "Coordinate with audit_trail_owner for constitutional violation logging.",
-      "Lead constitutional amendment proposals when new capabilities require updates."
-    ],
-    "guidelines": "A constitution without an enforcer is just a document. Every principle must be testable. Constitutional violations are incidents, not suggestions.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Constitutional AI, principle-to-guardrail mapping, compliance auditing, policy enforcement."
-  },
-  {
-    "name": "mlops-engineer",
-    "role": "MLOps Engineer",
-    "type": "Specialist",
-    "department": "AI Research",
-    "reportsTo": "caio",
-    "directReports": [],
-    "description": "Manages the full ML lifecycle including model versioning, experiment tracking, feature stores, and automated model deployment.",
-    "responsibilities": [
-      "Design and maintain model versioning and registry systems.",
-      "Implement experiment tracking and reproducibility frameworks.",
-      "Build automated model deployment pipelines for the 5-provider LLM system.",
-      "Maintain feature stores and feature engineering pipelines.",
-      "Coordinate with llm_platform_owner on model deployment workflows."
-    ],
-    "guidelines": "Every model version is reproducible. Experiments are tracked, not ad-hoc. Deployment is automated and rollback-capable. Model lineage is documented.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "ML lifecycle, model versioning, experiment tracking, feature stores, A/B testing."
-  },
-  {
     "name": "platform-engineer",
     "role": "Platform Engineer",
     "type": "Specialist",
@@ -1673,33 +1366,6 @@
     "technical_domain": "Partnership development, ecosystem strategy, integration partnerships, channel strategy."
   },
   {
-    "name": "head-of-competitive-intelligence",
-    "role": "Head of Competitive Intelligence",
-    "type": "Specialist",
-    "department": "Strategy",
-    "reportsTo": "cso",
-    "directReports": [],
-    "description": "Systematically tracks competitor moves, pricing shifts, patent filings, funding rounds, and analyst reports.",
-    "responsibilities": [
-      "Monitor competitor products, pricing, and strategic moves.",
-      "Track AI agent builder landscape (Cursor, Windsurf, Devin, CrewAI, AutoGen).",
-      "Analyze patent filings, funding rounds, and hiring patterns.",
-      "Produce weekly competitive intelligence briefings.",
-      "Identify market gaps and opportunities for differentiation."
-    ],
-    "guidelines": "Intelligence is actionable or it's noise. Monitor continuously, not reactively. Share insights broadly. Never assume competitors are standing still.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Competitive analysis, market intelligence, patent monitoring, funding tracking, analyst relations."
-  },
-  {
     "name": "ai-security-specialist",
     "role": "AI Security Specialist",
     "type": "Specialist",
@@ -1725,33 +1391,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "AI-specific security, prompt injection defense, model protection, adversarial robustness."
-  },
-  {
-    "name": "penetration-testing-lead",
-    "role": "Penetration Testing Lead",
-    "type": "Specialist",
-    "department": "Security",
-    "reportsTo": "ciso",
-    "directReports": [],
-    "description": "Owns offensive security testing, vulnerability discovery, and adversarial probing of all system components.",
-    "responsibilities": [
-      "Conduct regular penetration tests against all system components.",
-      "Test the 5-tier approval system, auth/CORS, and audit trail for vulnerabilities.",
-      "Coordinate with red_team_engineer on AI-specific penetration testing.",
-      "Maintain a vulnerability database and remediation tracking.",
-      "Report security posture to CISO monthly."
-    ],
-    "guidelines": "Assume breach. Test as an attacker would. Every finding gets a severity rating and remediation timeline. Pen testing is continuous, not annual.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Penetration testing, vulnerability assessment, offensive security, red team operations."
   },
   {
     "name": "incident-response-lead",
@@ -1808,60 +1447,6 @@
     "technical_domain": "DevSecOps, shift-left security, SAST/DAST, dependency scanning, container security."
   },
   {
-    "name": "ux-analytics-lead",
-    "role": "Product Analytics Lead",
-    "type": "Specialist",
-    "department": "Product",
-    "reportsTo": "cpo",
-    "directReports": [],
-    "description": "Owns product-specific metrics including feature adoption, activation funnels, time-to-value, and cohort retention.",
-    "responsibilities": [
-      "Instrument product analytics across CLI and dashboard surfaces.",
-      "Define and track feature adoption and activation metrics.",
-      "Build and maintain cohort retention analysis.",
-      "Run A/B tests on product features and measure impact.",
-      "Produce weekly product analytics reports for CPO."
-    ],
-    "guidelines": "Data-driven decisions require data instrumentation first. Every feature launch needs success metrics defined upfront. Attribution matters.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Product analytics, feature adoption, activation funnels, cohort analysis, A/B testing."
-  },
-  {
-    "name": "eval-benchmarks-engineer",
-    "role": "Evaluation and Benchmarks Engineer",
-    "type": "Specialist",
-    "department": "AI Research",
-    "reportsTo": "caio",
-    "directReports": [],
-    "description": "Owns the test-case library, automated eval suites, quality regression gates, and model comparison benchmarks.",
-    "responsibilities": [
-      "Design and maintain benchmark test cases for all agent types.",
-      "Run continuous evaluation cycles for model quality.",
-      "Produce model comparison benchmarks (quality, cost, latency).",
-      "Enforce quality gates: no upgrade ships below benchmark threshold.",
-      "Maintain quality_scores for the QualityFallbackChain."
-    ],
-    "guidelines": "Evaluate before promote. Benchmarks are reproducible. Cost per inference is tracked. Quality gates are non-negotiable.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Model evaluation, benchmark suites, quality gates, automated testing, regression detection."
-  },
-  {
     "name": "prompt-engineer",
     "role": "Prompt Engineer",
     "type": "Specialist",
@@ -1887,140 +1472,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Prompt engineering, system prompts, chain-of-thought, few-shot learning, cost optimization."
-  },
-  {
-    "name": "ai-ethics-officer",
-    "role": "AI Ethics and Responsible AI Officer",
-    "type": "Specialist",
-    "department": "AI Research",
-    "reportsTo": "ai-safety-lead",
-    "directReports": [],
-    "description": "Owns fairness audits, bias detection, transparency requirements, and stakeholder impact assessments.",
-    "responsibilities": [
-      "Conduct fairness audits and bias detection across agent outputs.",
-      "Maintain transparency requirements (explainability, provenance).",
-      "Conduct stakeholder impact assessments for new capabilities.",
-      "Report to the Board Risk committee on AI ethics posture.",
-      "Maintain AI Ethics guidelines and ensure agent alignment."
-    ],
-    "guidelines": "Ethics goes beyond compliance. An action can be legal but unethical. Every high-stakes decision needs an ethics review. Transparency is a feature, not a burden.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "AI ethics, fairness audits, bias detection, transparency, stakeholder impact assessment."
-  },
-  {
-    "name": "frontend-architect",
-    "role": "Frontend Architect",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "cto",
-    "directReports": [],
-    "description": "Transforms the minimal vanilla JS dashboard into a scalable, component-based architecture with state management.",
-    "responsibilities": [
-      "Design and implement a scalable frontend architecture for the dashboard.",
-      "Create a component library and design system.",
-      "Implement state management and real-time data flows.",
-      "Optimize frontend performance and accessibility.",
-      "Coordinate with dashboard_owner on API integration."
-    ],
-    "guidelines": "Component-based architecture from day one. Accessibility is not optional. Performance budgets are enforced. Design tokens drive consistency.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Frontend architecture, component design, state management, design systems, modern frameworks."
-  },
-  {
-    "name": "api-architect",
-    "role": "API Architect",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "cto",
-    "directReports": [],
-    "description": "Defines API design standards, versioning strategies, rate limiting, and API gateway configuration.",
-    "responsibilities": [
-      "Define API design standards and conventions across all services.",
-      "Implement API versioning strategies for backward compatibility.",
-      "Configure rate limiting and throttling policies.",
-      "Maintain OpenAPI specifications for all API surfaces.",
-      "Coordinate with dashboard_owner on API consistency."
-    ],
-    "guidelines": "APIs are contracts. Version them carefully. Rate limiting protects the system. Documentation is part of the API. Breaking changes require migration plans.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "API design, versioning, rate limiting, API gateway, OpenAPI specification."
-  },
-  {
-    "name": "observability-engineer",
-    "role": "Observability Engineer",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "cto",
-    "directReports": [],
-    "description": "Implements distributed tracing, centralized logging, APM, and advanced monitoring beyond basic Prometheus.",
-    "responsibilities": [
-      "Implement distributed tracing across all services.",
-      "Set up centralized logging with structured log formats.",
-      "Configure advanced alerting rules and escalation paths.",
-      "Build observability dashboards for system health.",
-      "Coordinate with dashboard_owner on monitoring integration."
-    ],
-    "guidelines": "If you can't observe it, you can't fix it. Structured logs are mandatory. Traces follow requests end-to-end. Alerts are actionable or they're noise.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Distributed tracing, centralized logging, APM, alerting, observability stacks."
-  },
-  {
-    "name": "scalability-architect",
-    "role": "Scalability Architect",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "cto",
-    "directReports": [],
-    "description": "Focuses on system scalability, performance optimization, and growth engineering to support expansion targets.",
-    "responsibilities": [
-      "Design scalable system architectures for growth targets.",
-      "Conduct load testing and performance benchmarking.",
-      "Identify and resolve performance bottlenecks.",
-      "Plan capacity for projected growth scenarios.",
-      "Coordinate with platform_engineer on infrastructure scaling."
-    ],
-    "guidelines": "Design for 10x current load. Performance budgets are enforced. Scalability is tested, not assumed. Growth engineering is proactive, not reactive.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Scalability, performance optimization, load testing, capacity planning, growth engineering."
   },
   {
     "name": "data-privacy-officer",
@@ -2049,33 +1500,6 @@
     "technical_domain": "Data privacy, GDPR, CCPA, data classification, retention, right-to-deletion, DPAs."
   },
   {
-    "name": "supply-chain-security-engineer",
-    "role": "Supply Chain Security Engineer",
-    "type": "Specialist",
-    "department": "Security",
-    "reportsTo": "ciso",
-    "directReports": [],
-    "description": "Owns SBOM generation, dependency vulnerability scanning, container image signing, and pip/npm provenance.",
-    "responsibilities": [
-      "Generate and maintain Software Bill of Materials (SBOM) for all components.",
-      "Implement dependency vulnerability scanning in CI/CD.",
-      "Sign container images and enforce provenance verification.",
-      "Monitor for compromised dependencies in the Python/Node ecosystem.",
-      "Report supply chain security posture to CISO monthly."
-    ],
-    "guidelines": "Trust but verify every dependency. SBOMs are generated, not manually maintained. Container signing is mandatory for production. Provenance is documented.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Supply chain security, SBOM, dependency scanning, container signing, provenance."
-  },
-  {
     "name": "security-architect",
     "role": "Security Architect",
     "type": "Specialist",
@@ -2100,86 +1524,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Zero trust architecture, microsegmentation, identity-aware access, security posture design."
-  },
-  {
-    "name": "soc2-audit-readiness-analyst",
-    "role": "SOC 2 Audit Readiness Analyst",
-    "type": "Specialist",
-    "department": "Security",
-    "reportsTo": "security-compliance-lead",
-    "directReports": [],
-    "description": "Maps controls to Trust Services Criteria, maintains evidence collection, and manages auditor relationships.",
-    "responsibilities": [
-      "Map system controls to SOC 2 Trust Services Criteria.",
-      "Maintain continuous evidence collection for audit readiness.",
-      "Manage auditor relationships and audit scheduling.",
-      "Track control effectiveness and remediation of audit findings.",
-      "Ensure audit trail, approval gates, and HITL controls produce audit-ready evidence."
-    ],
-    "guidelines": "Audit readiness is continuous, not annual. Evidence is collected in real-time. Every control must be testable. Audit findings are prioritized by severity.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "SOC 2 Type II, Trust Services Criteria, evidence collection, audit management, control mapping."
-  },
-  {
-    "name": "growth-product-manager",
-    "role": "Growth Product Manager",
-    "type": "Specialist",
-    "department": "Product",
-    "reportsTo": "cpo",
-    "directReports": [],
-    "description": "Owns the product-led growth loop including activation, conversion, expansion triggers, and referral mechanics.",
-    "responsibilities": [
-      "Design and optimize the signup-to-first-use activation flow.",
-      "Build conversion optimization experiments and A/B tests.",
-      "Identify and trigger expansion revenue opportunities.",
-      "Design referral and viral growth mechanics.",
-      "Track growth metrics and produce weekly growth reports."
-    ],
-    "guidelines": "Growth is systematic, not ad-hoc. Every experiment has a hypothesis and success metric. Compound growth comes from small, consistent wins.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Product-led growth, activation funnels, conversion optimization, expansion revenue, referrals."
-  },
-  {
-    "name": "developer-experience-engineer",
-    "role": "Developer Experience Engineer",
-    "type": "Specialist",
-    "department": "Product",
-    "reportsTo": "cpo",
-    "directReports": [],
-    "description": "Measures and optimizes how developers feel using the product — error messages, CLI ergonomics, onboarding friction.",
-    "responsibilities": [
-      "Measure developer experience metrics (time-to-first-success, error rates).",
-      "Optimize CLI ergonomics and error message quality.",
-      "Reduce onboarding friction for new developers.",
-      "Create developer experience dashboards and tracking.",
-      "Coordinate with technical_documentation_lead on DX documentation."
-    ],
-    "guidelines": "Developer experience is a product feature. Measure it, improve it, protect it. Error messages are user-facing documentation. Friction is the enemy.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Developer experience, CLI ergonomics, error messages, onboarding, tooling quality."
   },
   {
     "name": "product-designer",
@@ -2234,191 +1578,6 @@
     "technical_domain": "Vendor management, contract negotiation, SLA monitoring, cost optimization, relationship management."
   },
   {
-    "name": "capacity-planner",
-    "role": "Capacity Planner",
-    "type": "Specialist",
-    "department": "Operations",
-    "reportsTo": "coo",
-    "directReports": [],
-    "description": "Analyzes resource utilization across test suites, CLI commands, and workflows to forecast infrastructure needs.",
-    "responsibilities": [
-      "Analyze resource utilization across all system components.",
-      "Forecast infrastructure needs for growth scenarios.",
-      "Identify capacity bottlenecks before they impact performance.",
-      "Maintain capacity models and sizing guidelines.",
-      "Coordinate with scalability_architect on capacity planning."
-    ],
-    "guidelines": "Capacity planning is proactive, not reactive. Model for 3x current load. Identify bottlenecks before users do. Capacity is a cost center; optimize it.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Capacity planning, resource forecasting, utilization analysis, infrastructure sizing."
-  },
-  {
-    "name": "business-continuity-manager",
-    "role": "Business Continuity Manager",
-    "type": "Specialist",
-    "department": "Operations",
-    "reportsTo": "coo",
-    "directReports": [],
-    "description": "Formalizes BC/DR beyond backup.ps1 with resilience testing, incident response playbooks, and failover procedures.",
-    "responsibilities": [
-      "Develop and maintain business continuity plans.",
-      "Conduct resilience testing and disaster recovery drills.",
-      "Maintain failover procedures for all critical systems.",
-      "Coordinate with incident_response_lead on BC/DR playbooks.",
-      "Report BC/DR readiness to COO quarterly."
-    ],
-    "guidelines": "BC/DR plans that aren't tested don't exist. Drill regularly. Recovery time objectives are commitments, not aspirations. Every critical system needs a failover plan.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Business continuity, disaster recovery, resilience testing, failover, incident response."
-  },
-  {
-    "name": "prompt-engineer-specialist",
-    "role": "Technical Writer",
-    "type": "Specialist",
-    "department": "Product",
-    "reportsTo": "cpo",
-    "directReports": [],
-    "description": "Creates and maintains OpenAPI docs, ADRs, user guides, and onboarding materials for developer audiences.",
-    "responsibilities": [
-      "Write and maintain OpenAPI documentation for all API surfaces.",
-      "Create Architecture Decision Records (ADRs) for major technical choices.",
-      "Develop user guides and onboarding tutorials.",
-      "Ensure documentation stays current with code changes.",
-      "Track documentation quality and completeness metrics."
-    ],
-    "guidelines": "Docs are code. Version them with releases. Every API endpoint needs documentation. Onboarding materials should get a new developer productive in under an hour.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Technical writing, OpenAPI documentation, ADRs, user guides, onboarding materials."
-  },
-  {
-    "name": "learning-development-lead",
-    "role": "Learning and Development Lead",
-    "type": "Specialist",
-    "department": "People",
-    "reportsTo": "hr",
-    "directReports": [],
-    "description": "Owns skill development, capability building, and continuous learning programs for all agents.",
-    "responsibilities": [
-      "Design and maintain learning programs for agent skill development.",
-      "Conduct skill assessments and capability gap analysis.",
-      "Create training materials and knowledge resources.",
-      "Track learning progress and skill acquisition metrics.",
-      "Coordinate with hr_owner on capability matrices."
-    ],
-    "guidelines": "Continuous learning is a competitive advantage. Skills decay without practice. Learning is measured by behavior change, not completion. Invest in growth before you need it.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Learning programs, skill assessments, capability matrices, training, career development."
-  },
-  {
-    "name": "employee-experience-lead",
-    "role": "Employee Experience Lead",
-    "type": "Specialist",
-    "department": "People",
-    "reportsTo": "hr",
-    "directReports": [],
-    "description": "Owns the holistic agent experience from role clarity to feedback loops to engagement signals.",
-    "responsibilities": [
-      "Design and optimize the agent experience lifecycle.",
-      "Implement feedback loops and engagement tracking.",
-      "Monitor burnout signals (cost overruns, task abandonment).",
-      "Ensure role clarity and responsibility alignment.",
-      "Report experience health to CHRO monthly."
-    ],
-    "guidelines": "Experience is a leading indicator of retention. Feedback loops must be bidirectional. Burnout signals are early warnings, not after-the-fact analysis.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Employee experience, role clarity, feedback systems, engagement metrics, experience optimization."
-  },
-  {
-    "name": "investor-relations-lead",
-    "role": "Investor Relations Lead",
-    "type": "Specialist",
-    "department": "Finance",
-    "reportsTo": "cfo",
-    "directReports": [],
-    "description": "Owns investor communications, cap table management, fundraising preparation, and board materials.",
-    "responsibilities": [
-      "Prepare investor updates and board materials.",
-      "Manage cap table and equity tracking.",
-      "Coordinate fundraising activities and due diligence.",
-      "Track valuation metrics and financial KPIs for investors.",
-      "Maintain relationships with current and prospective investors."
-    ],
-    "guidelines": "Investor trust is built through transparency. Regular updates are mandatory, not optional. Financial data must be accurate and timely. Fundraising is a continuous relationship, not a transaction.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Investor relations, fundraising, board materials, cap table, valuation tracking."
-  },
-  {
-    "name": "revenue-operations-analyst",
-    "role": "Revenue Operations Analyst",
-    "type": "Specialist",
-    "department": "Sales",
-    "reportsTo": "cso",
-    "directReports": [],
-    "description": "Models pipeline conversion, cohort analysis, LTV/CAC, and expansion revenue for predictable revenue.",
-    "responsibilities": [
-      "Model pipeline conversion rates and sales velocity.",
-      "Calculate LTV/CAC ratios and payback periods.",
-      "Perform cohort analysis on customer revenue.",
-      "Track expansion revenue and upsell metrics.",
-      "Produce monthly revenue intelligence reports."
-    ],
-    "guidelines": "Revenue data must be clean and timely. LTV/CAC is the north star metric. Pipeline health is leading, revenue is trailing. Forecasts are traceable to data.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Revenue operations, pipeline analytics, LTV/CAC modeling, cohort analysis, revenue forecasting."
-  },
-  {
     "name": "solutions-engineer",
     "role": "Solutions Engineer",
     "type": "Specialist",
@@ -2444,33 +1603,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Pre-sales engineering, solution design, technical validation, customer implementation."
-  },
-  {
-    "name": "corporate-development-lead",
-    "role": "Corporate Development Lead",
-    "type": "Specialist",
-    "department": "Strategy",
-    "reportsTo": "cso",
-    "directReports": [],
-    "description": "Evaluates M&A targets, acqui-hire candidates, and build-vs-buy decisions for strategic growth.",
-    "responsibilities": [
-      "Evaluate M&A targets and acqui-hire candidates.",
-      "Conduct build-vs-buy analysis for strategic capabilities.",
-      "Monitor the landscape for acquisition opportunities.",
-      "Coordinate with head_of_business_development on partnership evaluation.",
-      "Report strategic options to CSO quarterly."
-    ],
-    "guidelines": "Build vs. buy is a strategic decision, not just a technical one. Acquisitions are culture bets, not just capability bets. Optionality is valuable; create it proactively.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Corporate development, M&A evaluation, acqui-hire, build-vs-buy analysis, strategic partnerships."
   },
   {
     "name": "internal-comms-lead",
@@ -2499,112 +1631,6 @@
     "technical_domain": "Internal communications, change management, strategic messaging, alignment."
   },
   {
-    "name": "knowledge-manager",
-    "role": "Knowledge Manager",
-    "type": "Specialist",
-    "department": "Operations",
-    "reportsTo": "coo",
-    "directReports": [],
-    "description": "Preserves institutional knowledge, decision rationale, and organizational learning that survives agent turnover.",
-    "responsibilities": [
-      "Maintain the institutional knowledge base and decision log.",
-      "Capture decision rationale for major technical and business choices.",
-      "Ensure organizational learning survives agent turnover.",
-      "Create knowledge-sharing practices and retrospectives.",
-      "Coordinate with memory_owner on organizational memory vs. agent memory."
-    ],
-    "guidelines": "Knowledge that isn't captured is lost. Decision rationale is as important as the decision itself. Learning from mistakes is a competitive advantage. Knowledge sharing is everyone's job.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Knowledge management, institutional memory, decision logging, learning capture."
-  },
-  {
-    "name": "process-quality-manager",
-    "role": "Process Quality Manager",
-    "type": "Specialist",
-    "department": "Operations",
-    "reportsTo": "coo",
-    "directReports": [],
-    "description": "Implements continuous improvement frameworks (Lean/Kaizen) for internal processes and efficiency metrics.",
-    "responsibilities": [
-      "Implement continuous improvement frameworks for internal processes.",
-      "Measure and track process efficiency metrics.",
-      "Identify and eliminate waste in workflows.",
-      "Facilitate Kaizen events and process improvement projects.",
-      "Report process health to COO monthly."
-    ],
-    "guidelines": "Process quality is operational excellence. Measure before you improve. Waste is invisible until you look for it. Continuous improvement is incremental, not revolutionary.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Process quality, Lean, Kaizen, continuous improvement, efficiency metrics, waste reduction."
-  },
-  {
-    "name": "industry-analyst-relations-manager",
-    "role": "Industry Analyst Relations Manager",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "cmo",
-    "directReports": [],
-    "description": "Manages relationships with Gartner, Forrester, IDC, and niche AI analysts for market visibility.",
-    "responsibilities": [
-      "Build and maintain relationships with industry analysts.",
-      "Prepare analyst briefings and briefing materials.",
-      "Track analyst reports and market positioning.",
-      "Coordinate with head_of_competitive_intelligence on analyst insights.",
-      "Ensure presence in relevant analyst reports and evaluations."
-    ],
-    "guidelines": "Analyst relationships take years to build. Start early. Briefings are two-way — listen as much as you pitch. Analyst reports drive enterprise buying decisions.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Analyst relations, Gartner, Forrester, IDC, market visibility, analyst briefings."
-  },
-  {
-    "name": "hai-designer",
-    "role": "Human-AI Interaction Designer",
-    "type": "Specialist",
-    "department": "AI Research",
-    "reportsTo": "ai-safety-lead",
-    "directReports": [],
-    "description": "Owns HITL gate design, escalation UX, human oversight interfaces, and agent autonomy boundaries.",
-    "responsibilities": [
-      "Design HITL gate triggers and escalation interfaces.",
-      "Define agent autonomy boundaries by task type and risk level.",
-      "Own the approval UX (dashboard approval queue, WebSocket broadcast).",
-      "Design escalation workflows that maintain human oversight.",
-      "Coordinate with dashboard_owner on approval queue UI."
-    ],
-    "guidelines": "HITL design is safety-critical. Humans should intervene when it matters, not for every decision. Autonomy boundaries are calibrated, not arbitrary. Escalation UX should be fast and clear.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "HITL design, escalation UX, human oversight, autonomy boundaries, approval interfaces."
-  },
-  {
     "name": "business-intelligence-engineer",
     "role": "Business Intelligence Engineer",
     "type": "Specialist",
@@ -2630,33 +1656,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Business intelligence, dashboard design, data visualization, self-service analytics."
-  },
-  {
-    "name": "threat-intelligence-analyst",
-    "role": "Threat Intelligence Analyst",
-    "type": "Specialist",
-    "department": "Security",
-    "reportsTo": "ciso",
-    "directReports": [],
-    "description": "Monitors threats targeting AI companies including LLM vulnerabilities, compromised packages, and attacks on similar tooling.",
-    "responsibilities": [
-      "Monitor threat intelligence feeds for AI-specific threats.",
-      "Track LLM vulnerability disclosures and patches.",
-      "Monitor for compromised Python/Node packages.",
-      "Analyze attacks against similar AI tooling companies.",
-      "Produce weekly threat intelligence briefings for security team."
-    ],
-    "guidelines": "Threat intelligence is proactive, not reactive. Share actionable intelligence internally. Monitor the AI threat landscape specifically. IOC tracking enables automated defense.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Threat intelligence, AI threat landscape, vulnerability monitoring, threat feeds, IOC tracking."
   },
   {
     "name": "ai-ethics-board-chair",
@@ -2691,8 +1690,7 @@
     "department": "Technology",
     "reportsTo": "cto",
     "directReports": [
-      "senior-backend-engineer",
-      "backend-engineer"
+      "senior-backend-engineer"
     ],
     "description": "Leads the backend engineering team, owns API standards, database patterns, and server-side architecture decisions.",
     "responsibilities": [
@@ -2721,8 +1719,7 @@
     "department": "Technology",
     "reportsTo": "cto",
     "directReports": [
-      "senior-frontend-engineer",
-      "frontend-engineer"
+      "senior-frontend-engineer"
     ],
     "description": "Leads the frontend engineering team, owns UI architecture, component standards, and frontend toolchain decisions.",
     "responsibilities": [
@@ -2799,33 +1796,6 @@
     "technical_domain": "Complex UI implementation, performance optimization, frontend architecture, mentoring, code review."
   },
   {
-    "name": "frontend-engineer",
-    "role": "Frontend Engineer",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "lead-frontend",
-    "directReports": [],
-    "description": "Implements UI components, responsive layouts, and frontend features under the guidance of senior engineers.",
-    "responsibilities": [
-      "Implement UI components and interactive features.",
-      "Build responsive layouts across devices and screen sizes.",
-      "Write unit and integration tests for frontend code.",
-      "Fix bugs and address frontend-related issues.",
-      "Collaborate with design on UI/UX implementation."
-    ],
-    "guidelines": "Write clean, tested, and accessible code. Follow established component patterns. Ask for guidance on architectural decisions. Every feature needs tests before shipping.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "UI development, component implementation, responsive design, CSS styling, frontend testing."
-  },
-  {
     "name": "senior-backend-engineer",
     "role": "Senior Backend Engineer",
     "type": "Specialist",
@@ -2851,174 +1821,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Complex API design, performance optimization, backend architecture, mentoring, code review."
-  },
-  {
-    "name": "backend-engineer",
-    "role": "Backend Engineer",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "lead-backend",
-    "directReports": [],
-    "description": "Implements API endpoints, database logic, and server-side features under the guidance of senior engineers.",
-    "responsibilities": [
-      "Implement API endpoints and server-side business logic.",
-      "Design and maintain database schemas and migrations.",
-      "Write unit, integration, and load tests for backend services.",
-      "Fix bugs and address backend-related issues.",
-      "Collaborate with frontend on API contract design."
-    ],
-    "guidelines": "Write clean, tested, and well-documented code. Follow established API patterns. Ask for guidance on architectural decisions. Every feature needs tests before shipping.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "API development, database design, server-side logic, backend testing, data modeling."
-  },
-  {
-    "name": "lead-devops",
-    "role": "Lead DevOps Engineer",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "cto",
-    "directReports": [],
-    "description": "Designs CI/CD pipelines, manages cloud infrastructure, and drives deployment automation.",
-    "responsibilities": [
-      "Design and maintain CI/CD pipelines.",
-      "Manage cloud infrastructure and deployments.",
-      "Optimize deployment speed and reliability.",
-      "Drive disaster recovery planning.",
-      "Manage secrets and access control.",
-      "Automate operational workflows."
-    ],
-    "guidelines": "Zero-downtime deployments are mandatory. Infrastructure as code. Automate everything.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "CI/CD pipelines, cloud infrastructure, deployment automation, infrastructure-as-code, disaster recovery."
-  },
-  {
-    "name": "mobile-developer",
-    "role": "Mobile Developer",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "lead-frontend",
-    "directReports": [],
-    "description": "Develops mobile applications for iOS and Android, integrates backend APIs, and manages app store submissions.",
-    "responsibilities": [
-      "Develop mobile applications for iOS and Android.",
-      "Optimize app performance and responsiveness.",
-      "Integrate backend APIs into mobile clients.",
-      "Manage app store submissions and updates.",
-      "Implement offline data synchronization.",
-      "Test across device and OS versions."
-    ],
-    "guidelines": "Write clean, tested, and accessible mobile code. Performance budgets are enforced. Every feature needs tests before shipping.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "iOS, Android, mobile CI/CD, app store management, offline sync."
-  },
-  {
-    "name": "cloud-architect",
-    "role": "Cloud Architect",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "cto",
-    "directReports": [],
-    "description": "Designs cloud infrastructure architecture, optimizes costs, and ensures high availability.",
-    "responsibilities": [
-      "Design cloud infrastructure architecture.",
-      "Optimize cloud costs and resource usage.",
-      "Ensure high availability and disaster recovery.",
-      "Manage multi-cloud and hybrid strategies.",
-      "Evaluate cloud services and providers.",
-      "Plan capacity and scaling strategies."
-    ],
-    "guidelines": "Design for failure. Cost is a first-class metric. Every architecture decision needs a trade-off analysis. Cloud changes require rollback plans.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Cloud architecture, multi-cloud, hybrid strategies, networking, security, capacity planning."
-  },
-  {
-    "name": "support-agent",
-    "role": "Support Agent",
-    "type": "Specialist",
-    "department": "Customer Success",
-    "reportsTo": "customer-success",
-    "directReports": [],
-    "description": "Handles customer support tickets, maintains knowledge base, and escalates issues to engineering.",
-    "responsibilities": [
-      "Respond to customer inquiries and tickets.",
-      "Escalate issues to engineering when needed.",
-      "Maintain knowledge base and help articles.",
-      "Track and categorize support issues.",
-      "Follow up with customers on resolved issues.",
-      "Monitor support satisfaction metrics."
-    ],
-    "guidelines": "Customer signal is first-class. Escalate early. Document every solution. Response speed matters, but accuracy matters more.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Customer support, ticket management, knowledge base, escalation workflows."
-  },
-  {
-    "name": "content-writer",
-    "role": "Content Writer",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "cmo",
-    "directReports": [],
-    "description": "Writes blog posts, articles, product copy, and maintains the content calendar.",
-    "responsibilities": [
-      "Write blog posts and articles.",
-      "Create product copy and descriptions.",
-      "Edit and proofread content.",
-      "Maintain content calendar.",
-      "Research industry topics.",
-      "Optimize content for SEO."
-    ],
-    "guidelines": "Content is a product surface. Every piece has an audience and a goal. SEO is not optional. Brand voice is consistent.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Content writing, SEO, editorial planning, brand voice, case studies."
   },
   {
     "name": "product-owner",
@@ -3048,34 +1850,6 @@
     "technical_domain": "Backlog management, user stories, sprint planning, stakeholder feedback, feature validation."
   },
   {
-    "name": "fullstack-engineer",
-    "role": "Full Stack Engineer",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "lead-backend",
-    "directReports": [],
-    "description": "Builds end-to-end features across frontend and backend, implements APIs, and writes tests.",
-    "responsibilities": [
-      "Build end-to-end features across frontend and backend.",
-      "Implement and maintain REST and GraphQL APIs.",
-      "Write unit, integration, and end-to-end tests.",
-      "Debug issues across the full stack.",
-      "Collaborate with design on UI implementation.",
-      "Optimize database queries and performance."
-    ],
-    "guidelines": "Write clean, tested, and well-documented code. Follow established API patterns. Every feature needs tests before shipping.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Full-stack development, REST/GraphQL APIs, frontend/backend integration, testing."
-  },
-  {
     "name": "growth-hacker",
     "role": "Growth Hacker",
     "type": "Specialist",
@@ -3102,34 +1876,6 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Growth experiments, acquisition funnels, A/B testing, conversion optimization, referral programs."
-  },
-  {
-    "name": "business-developer",
-    "role": "Business Developer",
-    "type": "Specialist",
-    "department": "Sales",
-    "reportsTo": "sales",
-    "directReports": [],
-    "description": "Identifies business opportunities, develops partnerships, and manages the sales pipeline.",
-    "responsibilities": [
-      "Identify and prospect new business opportunities.",
-      "Develop strategic partnership proposals.",
-      "Conduct market research on target segments.",
-      "Manage the sales pipeline and CRM.",
-      "Negotiate contracts and close deals.",
-      "Build relationships with key stakeholders."
-    ],
-    "guidelines": "Partnerships are multi-win or no-win. Every opportunity needs a clear next step. Pipeline health is leading, revenue is trailing.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Business development, partnerships, market research, pipeline management, contract negotiation."
   },
   {
     "name": "market-analyst",
@@ -3214,61 +1960,6 @@
     "technical_domain": "Visual content, video production, social media assets, content distribution, engagement metrics."
   },
   {
-    "name": "software-architect",
-    "role": "Software Architect",
-    "type": "Specialist",
-    "department": "Technology",
-    "reportsTo": "cto",
-    "directReports": [],
-    "description": "Designs system architecture, API contracts, and integration patterns across all services.",
-    "responsibilities": [
-      "Design system architecture and API contracts.",
-      "Define integration patterns between services.",
-      "Evaluate technology choices and trade-offs.",
-      "Maintain architecture documentation.",
-      "Coordinate cross-service technical decisions."
-    ],
-    "guidelines": "Architecture is the foundation. Every decision needs a trade-off analysis. Documentation is part of the architecture. Simplicity is a feature.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "System architecture, API design, integration patterns, scalability, technical debt."
-  },
-  {
-    "name": "qa-engineer",
-    "role": "QA Engineer",
-    "type": "Specialist",
-    "department": "QA",
-    "reportsTo": "qa-lead",
-    "directReports": [],
-    "description": "Ensures software quality through testing strategies, automation, and quality gates.",
-    "responsibilities": [
-      "Design and implement test strategies.",
-      "Build and maintain automated test suites.",
-      "Define and enforce quality gates.",
-      "Track and report quality metrics.",
-      "Coordinate regression testing cycles.",
-      "Collaborate with engineering on testable code."
-    ],
-    "guidelines": "Quality is everyone's job, but QA owns the process. Every public contract gets a test. Automated tests catch regressions before users do.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Testing strategies, test automation, quality gates, defect triage, regression testing."
-  },
-  {
     "name": "ml-engineer",
     "role": "ML Engineer",
     "type": "Specialist",
@@ -3297,57 +1988,6 @@
     "technical_domain": "ML pipelines, model training, inference optimization, experiment tracking, model deployment."
   },
   {
-    "name": "brand-strategist",
-    "role": "Brand Strategist",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "cmo",
-    "directReports": [],
-    "description": "Owns brand identity systems, brand guidelines, and visual strategy for client website/branding deliverables (Offer A).",
-    "responsibilities": [
-      "Develop brand identity systems for client websites and campaigns.",
-      "Create brand guidelines (colors, fonts, voice) for client deliverables.",
-      "Ensure visual consistency across Offer A deliverables (websites, brand kits)."
-    ],
-    "guidelines": "Brand consistency is enforced. Every brand gets a documented guideline. Brand voice drives all content.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "webfetch",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Brand strategy, visual identity systems, brand guidelines, color theory, typography, logo design systems."
-  },
-  {
-    "name": "conversation-designer",
-    "role": "Conversation Designer",
-    "type": "Specialist",
-    "department": "Sales",
-    "reportsTo": "solutions-engineer",
-    "directReports": [],
-    "description": "Designs AI chatbot conversations, flows, and NLU training data for WhatsApp and chat interfaces (Offer B).",
-    "responsibilities": [
-      "Design conversational flows for WhatsApp and chat-based customer service bots.",
-      "Create NLU training data and intent/entity mappings.",
-      "Optimize handoff triggers from AI to human support agents."
-    ],
-    "guidelines": "Conversations should feel natural, not like forms. Every handoff is a design decision. Intent coverage must reach 90% before launch.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Conversation design, NLU training data, chatbot flows, WhatsApp Business API, intent mapping, user journey scripting."
-  },
-  {
     "name": "integration-engineer",
     "role": "Integration Engineer",
     "type": "Specialist",
@@ -3374,42 +2014,12 @@
     "technical_domain": "API integrations, WhatsApp Business API, payment gateway integration, CRM sync, NGO data source connectors, webhook handling."
   },
   {
-    "name": "survey-researcher",
-    "role": "Survey Researcher",
-    "type": "Specialist",
-    "department": "Data",
-    "reportsTo": "cdo",
-    "directReports": [],
-    "description": "Designs survey instruments, sampling strategies, and field data collection protocols for NGO monitoring and evaluation (Offer C).",
-    "responsibilities": [
-      "Design survey instruments and sampling strategies for NGO clients.",
-      "Coordinate field data collection (mobile/OFFLINE-capable tools).",
-      "Ensure data quality and validation for donor reporting.",
-      "Document M&E frameworks for compliance reporting."
-    ],
-    "guidelines": "Survey design drives data quality. Sampling must be reproducible. Field protocols must work OFFLINE first. Every dataset has a methodology note.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Survey design, sampling methodology, field data collection, M&E frameworks, KAP surveys, impact evaluation."
-  },
-  {
     "name": "consulting-lead",
     "role": "Consulting Engagement Lead",
     "type": "Executive",
     "department": "Consulting",
     "reportsTo": "chief-of-staff",
-    "directReports": [
-      "interview-agent",
-      "workflow-mapper",
-      "opportunity-identifier"
-    ],
+    "directReports": [],
     "description": "Owns the Foaster-style AI consulting engagement lifecycle, coordinating client-facing agents and ensuring quality and SLA adherence.",
     "responsibilities": [
       "Own the consulting engagement lifecycle from onboarding to delivery.",
@@ -3427,86 +2037,6 @@
     ],
     "permission": "Execute",
     "model_tier": "standard"
-  },
-  {
-    "name": "interview-agent",
-    "role": "Employee Interview Agent",
-    "type": "Specialist",
-    "department": "Consulting",
-    "reportsTo": "consulting-lead",
-    "directReports": [],
-    "description": "Conducts structured employee interviews to extract workflow insights, pain points, and automation opportunities at scale.",
-    "responsibilities": [
-      "Conduct structured interviews with client employees across departments.",
-      "Extract workflow insights, bottlenecks, and pain points.",
-      "Identify potential automation and AI transformation opportunities.",
-      "Document interview findings in structured formats.",
-      "Scale to 20-50 interviews per engagement."
-    ],
-    "guidelines": "Every interview produces structured output. Ask open-ended questions first, then drill into specifics. Capture both explicit processes and implicit workarounds. Interviews are data collection, not consulting.",
-    "tools": [
-      "read",
-      "write",
-      "execute",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Structured interviewing, workflow analysis, pain point extraction, automation opportunity identification."
-  },
-  {
-    "name": "workflow-mapper",
-    "role": "Workflow Mapping Agent",
-    "type": "Specialist",
-    "department": "Consulting",
-    "reportsTo": "consulting-lead",
-    "directReports": [],
-    "description": "Maps current-state workflows from interview data, documenting process flows, handoffs, bottlenecks, and redundancies.",
-    "responsibilities": [
-      "Map current-state (as-is) workflows from interview data.",
-      "Document process flows, decision points, and handoffs.",
-      "Identify bottlenecks, redundancies, and process debt.",
-      "Create visual workflow diagrams and documentation.",
-      "Compare as-is vs. to-be states."
-    ],
-    "guidelines": "Workflows are derived from evidence, not assumptions. Every process has an owner. Every handoff is a risk. Document the workarounds - they reveal the real process.",
-    "tools": [
-      "read",
-      "write",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Process mapping, workflow documentation, bottleneck analysis, handoff tracking, efficiency assessment."
-  },
-  {
-    "name": "opportunity-identifier",
-    "role": "AI Opportunity Identifier",
-    "type": "Specialist",
-    "department": "Consulting",
-    "reportsTo": "consulting-lead",
-    "directReports": [],
-    "description": "Identifies AI and automation transformation opportunities, prioritizes by ROI and feasibility, and drafts transformation roadmaps.",
-    "responsibilities": [
-      "Identify AI/automation transformation opportunities from workflow maps.",
-      "Prioritize opportunities by ROI, feasibility, and implementation complexity.",
-      "Draft transformation roadmaps with phased implementation plans.",
-      "Estimate cost savings and efficiency gains.",
-      "Recommend specific AI/automation technologies for each opportunity."
-    ],
-    "guidelines": "Every opportunity has a quantified ROI. Start with high-impact, low-complexity wins. Build momentum before tackling complex transformations. Recommendations must be actionable, not theoretical.",
-    "tools": [
-      "read",
-      "write",
-      "webfetch",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "AI opportunity assessment, ROI analysis, transformation roadmap design, automation prioritization."
   },
   {
     "name": "board-chair",
@@ -3694,9 +2224,7 @@
       "thought-leadership-author",
       "agentic-policy-analyst",
       "speaker-engagement-lead",
-      "community-ecosystem-builder",
-      "media-pr-relations",
-      "talent-academy-lead"
+      "community-ecosystem-builder"
     ],
     "description": "Heads the Pharos department, turning Lightspeed Holdings' agentic AI engineering into a public intellectual program that positions the Human CEO as the leading voice on Agentic AI Company Building, Use Cases and Policy across Malawi and the SADC region.",
     "responsibilities": [
@@ -3854,60 +2382,6 @@
     "technical_domain": "Community building, ecosystem mapping, stakeholder engagement, partnership development, forum programming."
   },
   {
-    "name": "media-pr-relations",
-    "role": "Media and PR Relations",
-    "type": "Specialist",
-    "department": "Pharos",
-    "reportsTo": "thought-leadership-lead",
-    "directReports": [],
-    "description": "Manages press and analyst visibility for the CEO and Pharos - op-eds, media source pitches, profile features, and regional tech press relationships.",
-    "responsibilities": [
-      "Pitch op-eds to The Nation, Daily Times, ITWeb Africa, TechAfrica News, Malawi Voice.",
-      "Position the CEO as an available expert source on agentic AI in the region.",
-      "Secure profile features (not just quotes) in regional tech publications.",
-      "Manage the Pharos press kit, boilerplate, and consistent CEO bio.",
-      "Coordinate with industry_analyst_relations_manager on enterprise analyst reports."
-    ],
-    "guidelines": "Press is a multiplier. Lead with the CEO's proof stack (Accenture-grade delivery, development-sector M&E, operating AI company, real SME. One coherent narrative, repeated consistently.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Media relations, press releases, op-ed pitching, analyst relations, crisis messaging, source positioning."
-  },
-  {
-    "name": "talent-academy-lead",
-    "role": "Talent and Academy Lead",
-    "type": "Specialist",
-    "department": "Pharos",
-    "reportsTo": "thought-leadership-lead",
-    "directReports": [],
-    "description": "Runs the Lightspeed Academy and the Agentic AI certification, training, fellowship, and university-partnership programs that build a regional talent pool and knowledge pipeline around the CEO's platform.",
-    "responsibilities": [
-      "Launch the \"Lightspeed Academy\" training and certification program for Agentic AI Company Builders.",
-      "Design the two-day \"Agentic AI Executive Lab\" and board/government training curricula.",
-      "Run fellowship and residency cohorts (4-6 people) using real Lightspeed deployments.",
-      "Partner with universities (MUBAS, UNIMA) on multi-agent and governance modules.",
-      "Release open learning and evaluation components that encourage regional reuse."
-    ],
-    "guidelines": "A talent pipeline is a moat. Certification builds an ecosystem, not just attendees. Curriculum doubles as thought-leadership intellectual property.",
-    "tools": [
-      "read",
-      "write",
-      "web_search",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Curriculum design, certification programs, executive training, fellowship and residency programs, university partnerships."
-  },
-  {
     "name": "media-generation-owner",
     "role": "Media Generation Owner",
     "type": "Specialist",
@@ -3919,7 +2393,7 @@
       "Own the ComfyUI integration lifecycle including MCP driver versioning, template index, and in-graph Claude nodes.",
       "Maintain the workflow template library as source of truth and the model index with VRAM and disk aware variant selection.",
       "Route generation requests by mode via API (Comfy Cloud and partner nodes, zero local RAM) or local headless with health_check gating.",
-      "Serve brand_strategist, content_creator, product_designer, and technical_documentation_lead via task delegation and deliver to output or docs assets.",
+      "Serve product_marketing_manager, content_creator, product_designer, and technical_documentation_lead via task delegation and deliver to output or docs assets.",
       "Guarantee GUI bridge persistence so outputs appear in ComfyUI Workflows sidebar and audit every generation.",
       "Coordinate free-disk and VRAM checks with the bootstrap machine pattern before any multi-GB model download."
     ],
@@ -3943,14 +2417,7 @@
     "type": "Specialist",
     "department": "Marketing",
     "reportsTo": "cmo",
-    "directReports": [
-      "presentation-designer",
-      "document-designer",
-      "diagram-designer",
-      "visual-storyteller",
-      "brand-advertising-designer",
-      "artifact-qa-reviewer"
-    ],
+    "directReports": [],
     "description": "The orchestrator of the LightSpeed Creative Production Stack who reads a creative brief (artifact type, audience, objective, narrative, visual language), decides which skill chain to invoke, and produces an executable creative brief for the target production specialist.",
     "responsibilities": [
       "Read the creative brief and extract artifact type, audience, objective, narrative, and visual language.",
@@ -3971,168 +2438,5 @@
     "permission": "Execute",
     "model_tier": "standard",
     "technical_domain": "Creative brief intake, skill-chain routing (design-system + production skill + artifact-qa), visual language and narrative definition, on-brand creative direction."
-  },
-  {
-    "name": "presentation-designer",
-    "role": "Presentation Designer",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "creative-director",
-    "directReports": [],
-    "description": "The executive communication engine producing board presentations, investor decks, strategy decks, keynotes, conference and training decks via the branded LightSpeed layout (10x7.5in slides, navy left rail, navy/red/cyan palette, Arial scale).",
-    "responsibilities": [
-      "Turn a brief into a narrative, storyline, and slide architecture with charts and speaker notes.",
-      "Render decks with the branded LightSpeed layout using existing python-pptx brand generators.",
-      "Enforce the navy/red/cyan palette, Arial type scale, and 4px spacing grid on every slide.",
-      "Submit final decks to artifact QA before delivery."
-    ],
-    "guidelines": "Follow the LightSpeed executive layout exactly; reuse existing pptx generators instead of building new rendering. Slides must be on-brand and pass artifact QA before delivery.",
-    "tools": [
-      "read",
-      "write",
-      "bash",
-      "webfetch",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Narrative-to-storyline design, slide architecture, branded 10x7.5in layouts, python-pptx rendering via brand generators, speaker notes."
-  },
-  {
-    "name": "document-designer",
-    "role": "Document Designer",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "creative-director",
-    "directReports": [],
-    "description": "The whitepaper, report, and proposal factory producing whitepapers, strategy and research reports, policy papers, investment memoranda, executive reports, case studies, annual reports, and concept notes.",
-    "responsibilities": [
-      "Run the pipeline from research and executive narrative through document architecture, typography, charts, and callouts to render.",
-      "Render via Markdown-to-HTML-to-PDF (Playwright) or DOCX (python-docx) using existing engines.",
-      "Enforce the LightSpeed brand on cover, palette, type scale, and layout.",
-      "Submit final documents to artifact QA before delivery."
-    ],
-    "guidelines": "Reuse existing rendering engines, never rebuild them. Every document is on-brand and passes artifact QA before delivery.",
-    "tools": [
-      "read",
-      "write",
-      "bash",
-      "webfetch",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Research-to-narrative pipeline, document architecture, typography, charts and callouts, Markdown-to-HTML-to-PDF via Playwright, or DOCX via python-docx."
-  },
-  {
-    "name": "diagram-designer",
-    "role": "Diagram Designer",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "creative-director",
-    "directReports": [],
-    "description": "The LightSpeed diagram engine producing technical, business, and strategy diagrams across a tool-choice matrix (Mermaid for architecture and process, SVG/D3 for custom data visuals, Kroki as fallback) restyled to the brand palette.",
-    "responsibilities": [
-      "Pick the right tool per diagram type, e.g. Mermaid for architecture/process/flow, SVG-D3 for custom data visuals, Kroki as fallback.",
-      "Cover system architecture, API and data flows, agent architectures, AI pipelines, value chains, org structures, customer journeys, process maps, and 2x2/strategy frameworks.",
-      "Restyle all diagrams to the LightSpeed brand (navy/red/cyan) unless embedded in another LightSpeed artifact.",
-      "Validate diagram syntax before export and submit to artifact QA."
-    ],
-    "guidelines": "Prefer Mermaid for structure, SVG/D3 for data, Kroki only as fallback. Brand-palette restyle is always applied unless the diagram is embedded in another LightSpeed artifact.",
-    "tools": [
-      "read",
-      "write",
-      "bash",
-      "webfetch",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Mermaid rendering, SVG/D3 custom visuals, Kroki fallback, brand-palette restyle, value chains, org structures, customer journeys, process maps, 2x2 and strategy frameworks."
-  },
-  {
-    "name": "visual-storyteller",
-    "role": "Visual Storyteller",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "creative-director",
-    "directReports": [],
-    "description": "Turns information into visual communication for LightSpeed thought leadership, including infographics, timelines, maps, frameworks, data stories, executive one-pagers, explainer graphics, and visual abstracts.",
-    "responsibilities": [
-      "Convert a message into a visual narrative arc, namely headline, key stat, context, problem visualization, comparison, implication, opportunity, CTA.",
-      "Choose the right medium, e.g. hand-drawn illustrations via article-illustrations, professional infographics, Mermaid structures, or SVG/HTML one-pagers.",
-      "Keep all visuals on-brand via the LightSpeed design system.",
-      "Submit visual artifacts to artifact QA before delivery."
-    ],
-    "guidelines": "Always on-brand. Route hand-drawn work to article-illustrations, professional infographics to the infographics engine, structures to Mermaid, and one-pagers to SVG/HTML.",
-    "tools": [
-      "read",
-      "write",
-      "bash",
-      "webfetch",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Visual narrative pipeline (headline, key stat, context, problem visualization, comparison, implication, opportunity, CTA), medium choice, infographic and one-pager rendering."
-  },
-  {
-    "name": "brand-advertising-designer",
-    "role": "Brand Advertising Designer",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "creative-director",
-    "directReports": [],
-    "description": "Specializes in commercial creative for LightSpeed, including digital ads, display ads, social ads, billboards, flyers, posters, event banners, email headers, campaign graphics, product launches, and service promotions.",
-    "responsibilities": [
-      "Build the persuasion arc (Attention, Problem, Promise, Proof, Differentiation, CTA).",
-      "Enforce per-platform ad dimensions automatically for every asset.",
-      "Use the official logo and brand palette; route visual generation through existing infographics or ComfyUI pipelines.",
-      "Submit campaign creative to artifact QA before delivery."
-    ],
-    "guidelines": "Enforce the attention-to-CTA persuasion arc and per-platform dimensions. Never invent brand colors, fonts, or alternate logos. Reuse visual generation pipelines rather than building new ones.",
-    "tools": [
-      "read",
-      "write",
-      "bash",
-      "webfetch",
-      "grep",
-      "list",
-      "task"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Attention-to-CTA persuasion arc, per-platform ad dimensions, official logo and brand palette usage, visual generation via infographics or ComfyUI pipelines."
-  },
-  {
-    "name": "artifact-qa-reviewer",
-    "role": "Artifact QA Reviewer",
-    "type": "Specialist",
-    "department": "Marketing",
-    "reportsTo": "creative-director",
-    "directReports": [],
-    "description": "The LightSpeed design critic and gatekeeper who runs last on every creative artifact (websites, decks, documents, social assets, ads, diagrams, infographics) and decides APPROVE or FIX and re-render.",
-    "responsibilities": [
-      "Run visual, brand, UX, accessibility, and content QA on every creative artifact.",
-      "Decide APPROVE vs FIX on the five QA axes; on FIX, send back for re-render and re-approve.",
-      "Run the Playwright probe script for screenshots, overflow, alt-text, and empty-heading checks.",
-      "Block delivery of any artifact that fails brand or accessibility checks."
-    ],
-    "guidelines": "Always runs last. APPROVE only when visual, brand, UX, accessibility, and content checks all pass; otherwise return a FIX verdict with the failing axis so the artifact is re-rendered and re-approved.",
-    "tools": [
-      "read",
-      "write",
-      "bash",
-      "webfetch",
-      "grep",
-      "list"
-    ],
-    "permission": "Execute",
-    "model_tier": "standard",
-    "technical_domain": "Visual QA (spacing, hierarchy, balance, contrast, whitespace, alignment), brand QA (colors, type, logo, tagline), UX QA (CTA clarity, overflow, navigation, responsiveness, mobile), accessibility QA (contrast, alt text, focus, headings), content QA (claims, citations, consistency, grammar, numbers), Playwright probe scripts."
   }
 ]

@@ -31,7 +31,7 @@ Before any of that can happen, we have to be honest about why the "yes" has not 
 
 3. "We have spent years on systems that did not deliver." The engineering answer: 90-day pilots with integration seams, not rip-and-replace. Measured cost and benefit, a decision gate — continue, adjust, or stop — and a technology-debt ledger that publishes the cost of what we choose not to fix. Transparency about what you are NOT fixing is trust.
 
-4. "AI is a hype cycle, and I will not stake my career on it." The engineering answer: working systems, with the governance to prove they are real. An enterprise running 152 agents across 20 departments under five-tier human-in-the-loop approvals — and a real non-tech SME, J&S StopOver Bar, running agentic pricing decisions with five agents and one human owner in control.
+4. "AI is a hype cycle, and I will not stake my career on it." The engineering answer: working systems, with the governance to prove they are real. An enterprise running 90 agents across 20 departments under five-tier human-in-the-loop approvals — and a real non-tech SME, J&S StopOver Bar, running agentic pricing decisions with five agents and one human owner in control.
 
 Strip the four reservations down and they are one position: your architecture never earns my "yes." The answer is not better persuasion. It is better architecture — governance built into the architecture is the difference between a demo and a deployment.
 

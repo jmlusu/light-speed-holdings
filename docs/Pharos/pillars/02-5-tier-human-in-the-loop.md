@@ -1,10 +1,10 @@
 ---
-title: "How Our Agents Ask Permission: The 5-Tier Approval System Behind 152 Agents"
+title: "How Our Agents Ask Permission: The 5-Tier Approval System Behind 90 Agents"
 status: Draft — awaiting CEO approval
 word_count: 1965 (body)
 pillar: Governance
 claims_ledger:
-  - claim: "152 agents across 20 departments"
+  - claim: "90 agents across 20 departments"
     source: "docs/Pharos/positioning.md:61; docs/Pharos/manifesto-draft.md:107-109; company-registry.yaml (direct count 2026-09-17)"
   - claim: "Five tiers: Auto / Notify / Single Approve / Dual Approve / CEO Only"
     source: "docs/APPROVAL-UX-SPEC.md:16-22"
@@ -23,7 +23,7 @@ atomization:
   - "1 YouTube script (4-6 min) — live approval queue demo, one pending Tier 3 card resolving end-to-end"
 ---
 
-# How Our Agents Ask Permission: The 5-Tier Approval System Behind 152 Agents
+# How Our Agents Ask Permission: The 5-Tier Approval System Behind 90 Agents
 
 *Pillar 02 of the Pharos Governance series — a technical but human-readable
 walkthrough of how we keep humans in the loop without slowing agents to a
@@ -37,7 +37,7 @@ Let me start with the design principle that governs everything else:
 
 **Friction scales with risk.**
 
-A 152-agent company operating 20 departments cannot ask a human for permission
+A 90-agent company operating 20 departments cannot ask a human for permission
 on every action. Nobody would work there — the humans would drown in
 notifications and the agents would be useless. But a company that lets agents
 act without gates is not a company; it is an ungoverned process running at
@@ -117,7 +117,7 @@ where organizational design meets the founders themselves.
 ## Why the timeout rule is the whole ballgame
 
 Most systems treat a timeout as a fallback: if nobody answered, the request
-eventually proceeds or dies. If you run a 152-agent company for even one day
+eventually proceeds or dies. If you run a 90-agent company for even one day
 with that rule, you will see the flaw instantly. A fallback deadline is a
 pressure release valve for the humans — and pressure release valves, when
 agents are involved, become default permission.
@@ -234,7 +234,7 @@ But the alternative is worse, and I can describe it from experience: post-hoc
 review. Architecture that never earns a Chief Risk Officer's or a minister's
 "yes." A governance layer built after the incident, playing catch-up, while
 the agent that caused the problem is still running. The cost of the queue is
-the price of the permission. It is the discipline that makes a 152-agent
+the price of the permission. It is the discipline that makes a 90-agent
 company deployable outside a laboratory — and it is the discipline that makes
 the H-A-O-M-T-G-V framework worth publishing at all.
 

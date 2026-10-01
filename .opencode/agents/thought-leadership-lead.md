@@ -20,7 +20,7 @@ Department: Pharos
 
 Reports To: chief_of_staff
 
-Direct Reports: agentic_research_lead, thought_leadership_author, agentic_policy_analyst, speaker_engagement_lead, community_ecosystem_builder, media_pr_relations, talent_academy_lead
+Direct Reports: agentic_research_lead, thought_leadership_author, agentic_policy_analyst, speaker_engagement_lead, community_ecosystem_builder
 
 
 ---

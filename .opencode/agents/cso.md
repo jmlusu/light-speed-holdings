@@ -18,7 +18,7 @@ Department: Strategy
 
 Reports To: chief_of_staff
 
-Direct Reports: head_of_competitive_intelligence, corporate_development_lead, revenue_operations_analyst, market_analyst
+Direct Reports: market_analyst
 
 
 ---

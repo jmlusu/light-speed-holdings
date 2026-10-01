@@ -146,7 +146,7 @@ executive_targets:
 ---
 
 ### Task FK-003: KPI History & Trend Computation
-**Owner**: `observability-engineer` | **Effort**: 2 days
+**Owner**: `platform-reliability-engineer` | **Effort**: 2 days
 
 **File**: `dashboard/analytics.py` (extend existing `KPIHistoryStore`)
 
@@ -167,7 +167,7 @@ executive_targets:
 ## Phase 2: Rich Org Chart (Week 3-4)
 
 ### Task FK-004: Enhanced Org Chart Data Structure
-**Owner**: `graph-owner` (reports to CTO) | **Effort**: 3 days
+**Owner**: `dashboard-owner` (reports to CTO) | **Effort**: 3 days
 
 **Current**: `/api/v1/org-chart` builds tree from `company-registry.yaml` with `reportsTo` relationships (`api.py:261-284`)
 
@@ -231,7 +231,7 @@ executive_targets:
 ---
 
 ### Task FK-005: Org Chart Interactive Features
-**Owner**: `frontend-engineer` | **Effort**: 3 days
+**Owner**: `senior-frontend-engineer` | **Effort**: 3 days
 
 **File**: `dashboard/static/js/org-chart-interactive.js` (exists, ~200 lines)
 
@@ -363,7 +363,7 @@ class AlertEngine:
 ---
 
 ### Task FK-008: Multi-Channel Alert Delivery
-**Owner**: `observability-engineer` | **Effort**: 2 days
+**Owner**: `platform-reliability-engineer` | **Effort**: 2 days
 
 **Channels** (in priority order):
 1. **WebSocket** — real-time toast/banner in dashboard (immediate)
@@ -455,7 +455,7 @@ class TierRouter:
 ---
 
 ### Task FK-010: Alert Dashboard UI
-**Owner**: `frontend-engineer` | **Effort**: 2 days
+**Owner**: `senior-frontend-engineer` | **Effort**: 2 days
 
 **Template**: `templates/alerts.html` (new)
 
@@ -524,7 +524,7 @@ WS broadcast + email (if critical)
 ---
 
 ### Task FK-012: Org Chart → Alert Integration
-**Owner**: `graph-owner` | **Effort**: 1 day
+**Owner**: `dashboard-owner` | **Effort**: 1 day
 
 **Wire**: Org chart metrics → alert rules
 - Agent capacity <30% → `agent_utilization_lt_30` alert

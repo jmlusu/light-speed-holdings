@@ -19,8 +19,8 @@ These are the **organization agent roster**. Anything not in this list is reject
 by the runtime (`Unknown agent type`).
 
 Examples: `security-compliance-lead`, `platform-reliability-engineer`,
-`platform-engineer`, `backend-engineer`, `fullstack-engineer`, `security-architect`,
-`audit-trail-owner`, `dashboard-owner`, `qa-engineer`, `general`, `explore`, and any
+`platform-engineer`, `senior-backend-engineer`, `senior-frontend-engineer`, `security-architect`,
+`dashboard-owner`, `test-engineering-lead`, `general`, `explore`, and any
 other agent whose card defines a `mode: subagent` and a `subagent_type`.
 
 **Source of truth:** the `task` tool's `subagent_type` enumeration in the agent's
@@ -61,7 +61,7 @@ Apply these guardrails on **every** delegation:
    system prompt). If the name is not in that list: **do not call `task`** with it.
 
 2. **Confuse-proof the fallback.** When a name is invalid as a `subagent_type`, pick a
-   *different*, valid roster entry (e.g. `platform-engineer`, `backend-engineer`,
+   *different*, valid roster entry (e.g. `platform-engineer`, `senior-backend-engineer`,
    `general`) OR do the work directly. Do **not** claim the original specialist was
    deployed, and do not silently map a skill name onto a subagent call.
 

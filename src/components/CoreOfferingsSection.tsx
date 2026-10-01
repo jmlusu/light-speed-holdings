@@ -75,7 +75,7 @@ const coreCapabilities: CoreCapability[] = [
     eyebrow: 'CORE OFFERING 03 // AGENT ARCHITECTURE',
     tagline: 'Structured Multi-Agent Team Engineering',
     desc: 'We build teams of specialized AI agents, each with strict boundaries: limited tools, set budgets, and full audit trails. Every action is logged, checked, and executed through a structured workflow. No black boxes, no unreviewed outputs.',
-    metrics: '152 Verified Agent Configurations in Production',
+    metrics: '90 Verified Agent Configurations in Production',
     inputContract: 'Policy bounds from Offering 01 and contextual knowledge from Offering 02',
     outputContract: 'Structured Transaction Payloads, Reconciled Ledgers, Exception Alerts',
     upstreamSource: 'Driven by Strategy policies (01) and grounded in Intelligence graphs (02)',

@@ -13,7 +13,7 @@ Python CLI for creating and orchestrating AI agent hierarchies. One human CEO su
 git clone https://github.com/light-speed-holdings/ai-company.git
 uv sync --extra dev            # Creates .venv and installs project + dev deps from uv.lock
 
-# Bootstrap the company from config (generates 152 agents)
+# Bootstrap the company from config (generates 90 agents)
 uv run ai-company company run
 
 # List all agents
@@ -27,7 +27,7 @@ uv run ai-company dashboard
 
 ```bash
 uv run ai-company company run            # 1. Bootstrap the company
-uv run ai-company agents list            # 2. See all 152 agents
+uv run ai-company agents list            # 2. See all 90 agents
 uv run ai-company orchestrator tick      # 3. Check what needs attention
 uv run ai-company dashboard              # 4. Open the live dashboard
 ```
@@ -38,7 +38,7 @@ uv run ai-company dashboard              # 4. Open the live dashboard
 
 ### Core Capabilities
 
-- **151 AI Agents** across 20 departments with defined reporting chains
+- **89 AI Agents** across 20 departments with defined reporting chains
 - **30+ CLI Commands** covering orchestration, execution, memory, graphs, and more
 - **5-Tier Approval System** with human-in-the-loop safety gates
 - **Audit Trail** with JSONL writer, query/filter, and executor integration
@@ -93,7 +93,7 @@ uv run ai-company dashboard              # 4. Open the live dashboard
       specialists  specialists specialists
 ```
 
-1. **Define** agents in `company-registry.yaml` (152 agents across 20 departments; synced to
+1. **Define** agents in `company-registry.yaml` (90 agents across 20 departments; synced to
 `company/agent-registry.json`)
 2. **Generate** OpenCode-compatible markdown files via Jinja2 templates
 3. **Orchestrate** tasks through a scheduler, escalation rules, and approval gates
@@ -177,7 +177,7 @@ All configuration lives in `company/`:
 
 | File | Purpose |
 |------|---------|
-| `company-registry.yaml` | Single source of truth for all 152 agents |
+| `company-registry.yaml` | Single source of truth for all 90 agents |
 | `company/agent-registry.json` | Generated registry (synced from `company-registry.yaml`) |
 | `company/models.yaml` | LLM provider configuration (9 providers, 3 tiers) |
 | `company/departments.yaml` | 20 departments with executives and agents |
@@ -358,7 +358,7 @@ The backend CLI, orchestrator engine, and FastAPI server are powered by Python 3
 # Create virtual environment (.venv) and install dependencies
 uv sync --extra dev
 
-# Bootstrap the 151 AI agents from company-registry.yaml
+# Bootstrap the 89 AI agents from company-registry.yaml
 uv run ai-company company run
 
 # Verify registered agents

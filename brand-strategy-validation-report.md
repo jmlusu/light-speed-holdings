@@ -122,7 +122,7 @@
 | **Regional expertise demonstration** | Deep expertise across SADC sectors | Industries section covers Agriculture, Public Health, Financial Inclusion, SME, Government — with Malawi-specific case studies | **MET** |
 | **Local context awareness** | Understanding of regional challenges | References Malawi pilot projects, Chichewa IVR, VSLA/SACCOS, Airtel/TNM mobile money | **MET** |
 | **Avoiding stereotypes** | No reductive or patronizing representations | Focus on enterprise, engineering, infrastructure — avoids "aid" narrative | **MET** |
-| **Tangible impact stats** | Concrete numbers and outcomes | 152 agents in production, 3.5M farmers targeted, 50 Malawian ML engineers, 8 institutional partners | **MET** |
+| **Tangible impact stats** | Concrete numbers and outcomes | 90 agents in production, 3.5M farmers targeted, 50 Malawian ML engineers, 8 institutional partners | **MET** |
 | **Regional partnerships** | SADC-wide collaboration evidence | Partners include UNDP, World Bank, MINAG, MACRA, ICTAM, COMESA, MUBAS, UNIMA | **MET** |
 
 **Assessment:** The website **effectively** communicates SADC/Africa market relevance without stereotyping. The Malawi-centric focus is appropriate given the company's operational base, and the regional partner network demonstrates broader SADC relevance. The language focuses on enterprise and governance rather than need-based framing.

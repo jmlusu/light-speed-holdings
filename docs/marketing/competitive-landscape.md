@@ -17,7 +17,7 @@ Next update: Monthly (first refresh due 2026-10-16; see [Intelligence Franchise]
 
 **Estimates:** Where a fact is reasoned rather than disclosed (e.g., dollar-converted pricing), it is labeled `(estimate)`.
 
-**LightSpeed baseline (internal):** Wedge = human-led, governed agentic organizations; 152-agent hierarchy (151 AI + 1 human CEO) across 20 departments; 5-tier human-in-the-loop (HITL) approvals; immutable audit trails; RBAC; H→A→O→M→T→G→V framework; Malawi-first local context (MWK pricing, mobile-money rails, WhatsApp-native, offline-first PWA); CEO-as-operator; North Star "Agentic AI-Native Enterprise Transformation for Africa". Public pricing disclosed: licensing MWK 3,500,000 (~$2,000) + $200/mo support; minimum viable deployment MWK 150,000 (~$85); OH B1 hosting MWK 100,000/mo (dollar conversions estimate). Honest status: no paying clients delivered yet; proof stack is internal (2,373 automated regression tests, 152 verified agent configs, 5-tier gates).
+**LightSpeed baseline (internal):** Wedge = human-led, governed agentic organizations; 90-agent hierarchy (89 AI + 1 human CEO) across 20 departments; 5-tier human-in-the-loop (HITL) approvals; immutable audit trails; RBAC; H→A→O→M→T→G→V framework; Malawi-first local context (MWK pricing, mobile-money rails, WhatsApp-native, offline-first PWA); CEO-as-operator; North Star "Agentic AI-Native Enterprise Transformation for Africa". Public pricing disclosed: licensing MWK 3,500,000 (~$2,000) + $200/mo support; minimum viable deployment MWK 150,000 (~$85); OH B1 hosting MWK 100,000/mo (dollar conversions estimate). Honest status: no paying clients delivered yet; proof stack is internal (2,373 automated regression tests, 90 verified agent configs, 5-tier gates).
 
 ---
 
@@ -154,7 +154,7 @@ The AI market LightSpeed operates in has three structural facts:
 - **Positioning:** AI value thesis — "only 10% of AI transformation value comes from the AI application itself... 70% — workflow redesign, culture, governance, and human-AI collaboration" (directly overlaps LightSpeed's org-transformation narrative at the *messaging* level)
 - **Public pricing:** Not publicly disclosed; enterprise day-rate model `(estimate)`
 - **Strengths:** Global credibility; Africa presence; governance-as-message; research machine (July 2026: Africa has only ~62,000 AI specialists ≈ 5% of global AI workforce)
-- **Gap vs. LightSpeed wedge:** Sells strategy/advice + large-program delivery at enterprise prices; does not sell a deployable 152-agent governed org with Malawi-first operations. Its own data (70% of value = workflow/governance/culture) validates LightSpeed's narrative but LightSpeed can execute it locally at MWK price points.
+- **Gap vs. LightSpeed wedge:** Sells strategy/advice + large-program delivery at enterprise prices; does not sell a deployable 90-agent governed org with Malawi-first operations. Its own data (70% of value = workflow/governance/culture) validates LightSpeed's narrative but LightSpeed can execute it locally at MWK price points.
 - Sources: https://www.bcg.com/capabilities/artificial-intelligence (accessed 2026-09-16); https://www.bcg.com/africa (accessed 2026-09-16); https://www.bcg.com/publications/2026/advancing-africas-digital-and-ai-future-through-investment (accessed 2026-09-16); https://careers.bcg.com/global/en/job/25772/AI-Tech-Consultant-Johannesburg-BCG-Platinion (accessed 2026-09-16)
 
 ### B3. Deloitte Africa
@@ -261,7 +261,7 @@ The AI market LightSpeed operates in has three structural facts:
 
 | Player | Verdict | Rationale |
 |--------|---------|-----------|
-| **LightSpeed Holdings** | — | Governed agentic orgs (152 agents, 5-tier HITL, audit trails, RBAC) + Malawi-first ops (MWK, mobile money, WhatsApp-native, offline-first) + transparent pricing + CEO-as-operator. Category is empty locally. |
+| **LightSpeed Holdings** | — | Governed agentic orgs (90 agents, 5-tier HITL, audit trails, RBAC) + Malawi-first ops (MWK, mobile money, WhatsApp-native, offline-first) + transparent pricing + CEO-as-operator. Category is empty locally. |
 | Polsia | **Head-to-head (product shape)** | Same "AI runs the company" category, opposite philosophy (autonomy without governance). Prospects will benchmark us against it. Win on trust, accountability, local operations, compliance. |
 | Qhala | **Head-to-head (local transformation)** | Already delivers in Malawi with "locally grounded transformation" narrative. Win on productized governed org vs. consulting hours, transparent MWK pricing, agentic-org depth. |
 | Deloitte Africa | **Head-to-head (messaging)** | Explicit "GenAI and agentic AI" + governance language at enterprise scale/pricing. Win on Malawi-first product, MWK price, deployable org vs. advisory. Avoid chasing their enterprise scale in phase 1. |

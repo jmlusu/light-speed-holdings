@@ -12,7 +12,7 @@
 
 | Time | Visual | Audio |
 |------|--------|-------|
-| 0-3s | Hook: "152 agents" on navy card, red accent | "151 AI agents work for this company. A human approves every high-risk move." |
+| 0-3s | Hook: "90 agents" on navy card, red accent | "89 AI agents work for this company. A human approves every high-risk move." |
 | 3-10s | Cut to simple whiteboard-style flow | "Most organizations fear AI because it acts without accountability. So we built the accountability in." |
 | 10-22s | Animate the seven-layer stack H-A-O-M-T-G-V, then zoom into the Governance tier | "Every agent action sits on a seven-layer framework. High-risk actions pause and climb five approval tiers. Every decision is written to an immutable audit trail." |
 | 22-27s | CTA card: logo, tagline, cyan line | "We built and run this in Malawi — 20 departments, one accountable human chain." |
@@ -38,7 +38,7 @@
 
 | Claim | Source |
 |-------|--------|
-| 152 agents | `company-registry.yaml` (counted 2026-09-17) |
+| 90 agents | `company-registry.yaml` (counted 2026-09-17) |
 | Human approves every high-risk move (5-tier HITL) | `docs/Pharos/manifesto-draft.md:64-80` |
 | Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `audit_trail_owner` |
 | Seven-layer H-A-O-M-T-G-V | `docs/Pharos/h-a-o-m-t-g-v-framework.md:16-35` |

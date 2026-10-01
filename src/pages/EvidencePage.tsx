@@ -107,7 +107,7 @@ const PROOF_CASES: ProofCardData[] = [
     title: 'Lightspeed Holdings — The Meta Case Study',
     badge: 'Proven in-house.',
     tone: 'cyan',
-    text: 'The company is its own first customer. 152 agents across 20 departments, five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — operating daily. Not a demo; an operating company that builds the tooling it uses.',
+    text: 'The company is its own first customer. 90 agents across 20 departments, five-tier HITL approvals, immutable audit trails, RACI matrices, and governance controls mapped to regulatory requirements — operating daily. Not a demo; an operating company that builds the tooling it uses.',
   },
   {
     id: 'PC-02',
