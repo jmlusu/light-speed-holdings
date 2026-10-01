@@ -66,12 +66,13 @@ if ($Verify) {
         # Nested duplicate dirs: dir name == parent name (historic Copy-Item bug).
         $nested += Get-ChildItem -LiteralPath $mirror -Directory -Recurse |
             Where-Object { $_.Name -eq $_.Parent.Name } |
+            Sort-Object FullName |
             ForEach-Object { $_.FullName }
         foreach ($dir in $syncDirs) {
             $src = Join-Path $canonical $dir
             if (-not (Test-Path -LiteralPath $src)) { continue }
             $dst = Join-Path $mirror $dir
-            foreach ($file in Get-ChildItem -LiteralPath $src -Recurse -File) {
+            foreach ($file in (Get-ChildItem -LiteralPath $src -Recurse -File | Sort-Object FullName)) {
                 $rel = $file.FullName.Substring($src.Length)
                 $mirrorFile = Join-Path $dst $rel
                 if (-not (Test-Path -LiteralPath $mirrorFile)) {
@@ -107,7 +108,8 @@ foreach ($mirror in $mirrors) {
         # Remove nested duplicates first (historic bug: Copy-Item merged src dir
         # into existing dst, creating dst/<dir>/<dir>).
         $nestedDirs = Get-ChildItem -LiteralPath $mirror -Directory -Recurse |
-            Where-Object { $_.Name -eq $_.Parent.Name -and $syncDirs -contains $_.Name }
+            Where-Object { $_.Name -eq $_.Parent.Name -and $syncDirs -contains $_.Name } |
+            Sort-Object FullName
         foreach ($d in $nestedDirs) {
             Write-Host "[prune] nested: $($d.FullName)"
             if (-not $DryRun) { Remove-Item -LiteralPath $d.FullName -Recurse -Force }
@@ -123,7 +125,8 @@ foreach ($mirror in $mirrors) {
                     ForEach-Object { $_.FullName.Substring($src.Length) }
             }
             $extra = Get-ChildItem -LiteralPath $dst -Recurse -File |
-                Where-Object { $canonicalFiles -notcontains $_.FullName.Substring($dst.Length) }
+                Where-Object { $canonicalFiles -notcontains $_.FullName.Substring($dst.Length) } |
+                Sort-Object FullName
             foreach ($f in $extra) {
                 Write-Host "[prune] $($f.FullName)"
                 if (-not $DryRun) { Remove-Item -LiteralPath $f.FullName -Force }

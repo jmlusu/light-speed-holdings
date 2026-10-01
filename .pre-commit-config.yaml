@@ -69,7 +69,18 @@ repos:
         always_run: true
         stages: [post-commit]
 
-  # ── Documentation drift validation ─────────────────────────────────
+  # PowerShell anti-pattern scan
+  # FAIL: backtick-before-dollar (BUG-d75423bb7); WARN: unsorted Get-ChildItem (BUG-93e21736a)
+  - repo: local
+    hooks:
+      - id: ps-antipattern
+        name: powershell anti-pattern scan
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/scan-ps-antipatterns.ps1
+        language: system
+        files: '\.ps1$'
+        stages: [pre-commit]
+
+  # Documentation drift validation ─────────────────────────────────
   - repo: local
     hooks:
       - id: validate-drift
