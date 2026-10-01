@@ -2,47 +2,44 @@
 
 ## Intake Review
 
-- Intake type: Structured Change
+- Intake type: Small Change
 - Input shape: requirement-first
-- Questions asked this round: 1 (brief confirmation — resolved; see Resolved Clarifications)
+- Questions asked this round: 1 (scope of "add remote to the Malawi track")
 
 ## Goal And Evidence
 
-- Real problem or user request: Author the authoritative "LightSpeed AI Company Builder + Web Experience Architecture v2.0" document plus 9 supporting artifacts, new ADRs, and Mermaid diagrams under `docs/architecture/`. Establish discovery → current-state baseline → target model → migration path before any code rewrite. Assemble relevant agents per §33 work allocation.
-- Current behavior: `docs/architecture/` contains only `LS-MEM-RECONNAISSANCE.md`. No v2 deliverables exist. Hybrid repo (Python builder + React site) with completed 152→90 registry trim but residual doc drift and route/redirect conflicts.
-- Source of evidence: This session's discovery (registry 90/90/90, App.tsx routes, vercel.json, departments.yaml, source-of-truth.yaml, docs/adr/*, active ECL baseline in summary.md).
+- Real problem or user request: Add remote to the Malawi job-search track so the scheduled Malawi track deliberately captures international remote roles for its usual queries.
+- Current behavior: `init_scheduler` registers 4 default `ScrapeConfig`s in `src/ai_company/athena/scheduler/jobs.py:330-358`. The two Malawi configs ("software engineer", "data scientist", location "Lilongwe, Malawi") use `sources=None`, which fans out across all 13 scrapers — including remote boards — so remote roles already surface, but incidentally and not curated to remote-only boards.
+- Source of evidence: User request; `git show origin/main:src/ai_company/athena/scheduler/jobs.py`; `src/ai_company/athena/scrapers/*.py` source topology (remote.py hosts LINKEDIN/INDEED/GLASSDOOR/REMOTE_OK/WE_WORK_REMOTELY/REMOTE_CO; the three remote-only boards are REMOTE_OK/WE_WORK_REMOTELY/REMOTE_CO).
 
 ## User Scenarios And Success
 
-- Primary user/system scenario: CEO/architect reads primary v2 doc and can navigate to each of the 9 supporting artifacts, ADRs, and diagrams for implementation planning; engineering team uses roadmap + route migration for execution.
-- Success criteria:
-  - Primary doc exists at `docs/architecture/LIGHTSPEED_AI_COMPANY_BUILDER_WEB_ARCHITECTURE_V2.md` with Mermaid diagrams.
-  - All 9 supporting artifacts exist with the exact filenames from the brief §34.
-  - New ADRs recorded (continue from 025; resolve 020 collision).
-  - Baseline numbers (90 agents / 20 departments / route inventory) are accurate and cross-referenced.
-- Acceptance criteria: Files present, internally consistent counts, lint-ecl green, no registry/code mutation unless separately approved.
+- Primary user/system scenario: On each 4-hour scrape cycle, the Malawi track now finds curated remote software-engineer and data-scientist roles from RemoteOK, WeWorkRemotely, and Remote.co in addition to the local Malawi listings.
+- Success criteria: `init_scheduler` registers two additional configs mirroring the Malawi queries with `location="Remote"` restricted to `[REMOTE_OK, WE_WORK_REMOTELY, REMOTE_CO]`; existing configs untouched.
+- Acceptance criteria: ruff + mypy pass on the file; athena test suite passes; no model/API/frontend changes; ECL harness documents the change; PR to `main` runs the 10 CI checks.
 
 ## Non-Goals
 
-- Regenerating agent cards or changing `company-registry.yaml`.
-- Implementing route code changes (migration is documented, not executed, in this change).
-- Deploying or comparing live deployment URLs via network unless user requests it.
+- Structured remote/work-mode flag on `Job` and dashboard filtering — deferred.
+- `location=remote` inside the malawijobs board scrapers — deferred.
+- Changing the existing 4 default configs or their sources.
 
 ## Constraints
 
-- One active ECL change (this one). Do not hand-edit INDEX.json.
-- Docs-only / harness-only writes under `docs/architecture/`, `docs/adr/` (or agreed ADR path), and this change folder.
-- Canonical tool vocabulary and safety boundaries from AGENTS.md §8–9 apply to any delegated work.
+- Scheduler-only change; no edits to models, schemas, API routes, or frontend.
+- Do not commit unrelated working-tree changes (e.g. `orchestrator/approvals.yaml`, executor loop, registry files).
+- Commit only `src/ai_company/athena/scheduler/jobs.py` plus the ECL harness files for this change.
+- PR to `main` is protected: 10 CI checks (ruff, mypy, pytest ubuntu+windows, ECL harness lint, bandit, uv-audit, generated-files drift, archify, version sync).
 
 ## Assumptions
 
-- Brief §34 deliverable filenames confirmed against user-provided full brief (2026-09-24).
-- ADRs: continue numbering from 025; preferred location `docs/adr/` (existing convention) with cross-link from `docs/architecture/`.
+- Local `main` was reconciled with `origin/main` (athena sources present in the working tree at `371244b1`).
+- `JobSource.REMOTE_OK`, `JobSource.WE_WORK_REMOTELY`, `JobSource.REMOTE_CO` exist in `src/ai_company/athena/models/enums.py` (verified at lines 17-19).
 
 ## Open Questions
 
-- None blocking. (Decision framework §37 applied per recommendation.)
+- None.
 
 ## Resolved Clarifications
 
-- 2026-09-24: Full brief provided by user. §34 filenames locked (match plan.md exactly). ADR path = `docs/architecture/adr/` per §35 (not docs/adr/). Nine supporting artifacts + primary + 12 Mermaid diagrams + ADRs confirmed. Deployment comparison (GitHub/Vercel/AI Studio) is in-scope per §7.4.
+- User selected "Curated Malawi+Remote scheduled scrapes (Recommended)" over a structured remote flag / dashboard filter for this round.
