@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from ai_company.executor.tool_runner import ToolRunner
+from ai_company.executor.tool_runner import _DEFAULT_ALLOWED_COMMANDS, ToolRunner
 from ai_company.orchestrator.tier_rules import (
     TOOL_DEFAULT_TIERS,
     ApprovalTier,
@@ -87,6 +87,22 @@ class TestToolVocabulary:
         for url in ("file:///etc/passwd", "javascript:alert(1)", "ftp://example.com/x"):
             result = runner._webfetch({"url": url})
             assert "error" in result
+
+    def test_tool_runner_allowlist_comfyui(self) -> None:
+        """ADR-018: comfyui-mcp and comfyui must be in the ToolRunner allowlist.
+
+        Both the YAML config (config/tool_allowlist.yaml) and the hardcoded
+        _DEFAULT_ALLOWED_COMMANDS fallback must include these commands so that
+        media_generation_owner can invoke ComfyUI MCP via 'bash' tool.
+        """
+        # Test the hardcoded default allowlist
+        assert "comfyui-mcp" in _DEFAULT_ALLOWED_COMMANDS
+        assert "comfyui" in _DEFAULT_ALLOWED_COMMANDS
+
+        # Test the YAML config is loadable and contains the commands
+        runner = ToolRunner(project_root=".")
+        assert "comfyui-mcp" in runner.allowed_commands
+        assert "comfyui" in runner.allowed_commands
 
 
 class TestCanonicalTierRules:
