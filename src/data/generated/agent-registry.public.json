@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-09-24T17:28:51Z",
+  "generated_at": "2026-10-01T12:54:54Z",
   "source": "company-registry.yaml",
   "meta": {
     "agents": 90,
@@ -2625,7 +2625,7 @@
       "type": "board",
       "department": "Board",
       "department_id": "board",
-      "reports_to": null,
+      "reports_to": "board",
       "mission": "Presides over all board meetings, sets agendas, and ensures governance standards are upheld.",
       "tools": [
         "read"

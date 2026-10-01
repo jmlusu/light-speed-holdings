@@ -262,6 +262,7 @@ function Invoke-Clean {
 
     foreach ($pattern in $dirs) {
         Get-ChildItem -Path $ProjectRoot -Filter $pattern -Recurse -Directory -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending |
             Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
     }
 

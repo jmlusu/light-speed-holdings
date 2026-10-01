@@ -1,7 +1,7 @@
 # LightSpeed Holdings Brand Guidelines
 
-**Version:** 1.0.0
-**Source of truth:** `brand/tokens/brand-tokens.json` (machine-readable), `static/brand/BRAND_GUIDELINES.md` (quick reference).
+**Version:** 1.0.1
+**Source of truth:** `brand/tokens/brand-tokens.json` (machine-readable), `brand/tokens.md` (human-readable overview), `static/brand/BRAND_GUIDELINES.md` (quick reference).
 **Owner:** Brand Strategist / CMO.
 **Applies to:** All public-facing and operational touchpoints. Agents creating any artifact (website, deck, document, social post, ad, diagram, infographic) MUST load the `ls-design-system` skill before producing creative output.
 

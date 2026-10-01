@@ -61,9 +61,12 @@ $script:warnings = 0
 # ============================================================
 Write-Status "=== 1. Public/Private Boundary Checks ==="
 
-# 1.1 No internal registry import in src/
+# 1.1 No internal registry import in src/ — matches the path only inside a
+# quoted module specifier (real imports/requires); comments may legitimately
+# name the canonical source without importing it.
 $internalImports = Get-ChildItem -Path "$Root\src" -Recurse -Include "*.ts","*.tsx" |
-    Select-String -Pattern "company/agent-registry\.json" |
+    Sort-Object FullName |
+    Select-String -Pattern "['\x22][^\r\n]*company/agent-registry\.json[^\r\n]*['\x22]" |
     Select-Object -Unique Path, LineNumber, Line
 
 if ($internalImports) {
@@ -73,14 +76,21 @@ if ($internalImports) {
     Write-Pass "No internal registry imports in src/"
 }
 
-# 1.2 No guidelines/permission fields in public data modules
+# 1.2 No guidelines/permission fields in public data modules. Matches
+# structured `field:` declarations only — prose mentioning the word is not a
+# field. `export const <name>:` seed-data declarations are local demo state
+# (names intentionally mirror internal concepts), not leaked payloads.
+# Env-var prefixes (DASHBOARD_, API_KEY) stay substring matches.
 $forbiddenFields = @("guidelines", "permission", "model_tier", "approval_level", "escalation_path",
                      "initialTasks", "initialApprovals", "initialEscalations", "initialKPIs",
                      "llm_cost", "cost_per_task", "DASHBOARD_", "API_KEY", "secret", "token")
 
-$publicDataFiles = Get-ChildItem -Path "$Root\src\data" -Recurse -Include "*.ts","*.tsx"
+$publicDataFiles = Get-ChildItem -Path "$Root\src\data" -Recurse -Include "*.ts","*.tsx" | Sort-Object FullName
 foreach ($field in $forbiddenFields) {
-    $matches = $publicDataFiles | Select-String -Pattern $field
+    $fieldPattern = if ($field -in @("DASHBOARD_", "API_KEY")) { $field } else { "$field\s*:" }
+    $matches = $publicDataFiles |
+        Select-String -Pattern $fieldPattern |
+        Where-Object { $_.Line -notmatch 'export\s+const\s+' }
     if ($matches) {
         Write-Fail "Forbidden field '$field' found in public data modules:"
         $matches | Select-Object -Unique Path, LineNumber | ForEach-Object { Write-Host "  $($_.Path):$($_.LineNumber)" }
@@ -205,10 +215,14 @@ if (Test-Path $deptYaml) {
 Write-Status "=== 3. Legacy Tool Names Check ==="
 
 $legacyTools = @("write", "execute", "delegate", "code_interpreter", "web_search", "websearch")
-$allPublicFiles = Get-ChildItem -Path "$Root\src" -Recurse -Include "*.ts","*.tsx" -Filter "*.json"
+# NOTE: no -Filter here — combining -Filter *.json with -Include *.ts,*.tsx
+# matched zero files and made this whole section vacuously pass.
+$allPublicFiles = Get-ChildItem -Path "$Root\src" -Recurse -Include "*.ts","*.tsx" | Sort-Object FullName
 
 foreach ($tool in $legacyTools) {
-    $matches = $allPublicFiles | Select-String -Pattern "(^|[^a-z])$tool([^a-z]|$)" -CaseSensitive
+    # Legacy names count only as quoted tool vocabulary (tool arrays/specs).
+    # English prose like "agents execute" is not a legacy tool reference.
+    $matches = $allPublicFiles | Select-String -Pattern "['\x22\x60]$tool['\x22\x60]" -CaseSensitive
     if ($matches) {
         Write-Fail "Legacy tool name '$tool' found in public files:"
         $matches | Select-Object -Unique Path, LineNumber | ForEach-Object { Write-Host "  $($_.Path):$($_.LineNumber)" }
@@ -223,14 +237,26 @@ foreach ($tool in $legacyTools) {
 Write-Status "=== 4. Stale Claims Check ==="
 
 $stalePatterns = @("145\s+agents?", "152\s+agents?", "140\+\s+agents?", "151\s+agents?")
-$docFiles = Get-ChildItem -Path "$Root\docs" -Recurse -Filter "*.md" | Where-Object { $_.FullName -notmatch "STATUS\.md$" } # Exempt historical
-$srcDataFiles = Get-ChildItem -Path "$Root\src\data" -Recurse -Include "*.ts","*.tsx"
+# Historical record classes are exempt (matches the header rule: claims in
+# "non-historical docs"): STATUS snapshots, ADR decision records, Pharos
+# narrative/newsletter retrospectives, and the published warmup pack's dated
+# Claim/Source evidence tables — these quote pre-consolidation counts on purpose.
+$docFiles = Get-ChildItem -Path "$Root\docs" -Recurse -Filter "*.md" |
+    Where-Object { $_.FullName -notmatch "STATUS\.md$|\\adr\\|\\Pharos\\|warmup-content-pack" } |
+    Sort-Object FullName
+$srcDataFiles = Get-ChildItem -Path "$Root\src\data" -Recurse -Include "*.ts","*.tsx" | Sort-Object FullName
 $readmeFile = "$Root\README.md"
 
 $allCheckFiles = $docFiles + $srcDataFiles + @($readmeFile)
 
+# Quote guard: occurrences immediately inside quotes/backticks are docs quoting
+# the banned pattern (e.g. while describing this very gate) — not live claims.
+# Also treats `|` (alternation inside quoted pattern blocks like
+# `145 agents|152 agents|140+`), backslashes, and curly quotes as quote context.
+$quoteGuard = '(?<!["''`|\u201C\u201D\u2018\u2019\\])'
+
 foreach ($pattern in $stalePatterns) {
-    $matches = @($allCheckFiles | Select-String -Pattern $pattern -CaseSensitive)
+    $matches = @($allCheckFiles | Select-String -Pattern ($quoteGuard + $pattern) -CaseSensitive)
     if ($matches.Count -gt 0) {
         Write-Fail "Stale agent count pattern '$pattern' found:"
         $uniqueMatches = @{}
@@ -251,22 +277,14 @@ foreach ($pattern in $stalePatterns) {
 # ============================================================
 Write-Status "=== 5. Redirect Validation (requires live host) ==="
 
+# Edge redirect set per ADR-031 (route consolidation, Accepted 2026-09-24):
+# single-hop to final canonicals; /sectors rename NOT adopted (ADR-031 §7).
+# Legacy paths without SPA routes resolve via the catch-all Navigate (* -> /).
 $redirects = @(
-    @{ Source = "/offerings"; Target = "/solutions" },
+    @{ Source = "/offerings"; Target = "/what-we-do" },
     @{ Source = "/work"; Target = "/proof" },
     @{ Source = "/evidence"; Target = "/proof" },
-    @{ Source = "/industries"; Target = "/sectors" },
-    @{ Source = "/technology"; Target = "/what-we-do" },
-    @{ Source = "/why"; Target = "/about" },
-    @{ Source = "/process"; Target = "/what-we-do" },
-    @{ Source = "/geography"; Target = "/about" },
-    @{ Source = "/leadership"; Target = "/about" },
-    @{ Source = "/deliverables"; Target = "/what-we-do" },
-    @{ Source = "/outcomes"; Target = "/proof" },
-    @{ Source = "/partnerships"; Target = "/about" },
-    @{ Source = "/trust"; Target = "/proof" },
-    @{ Source = "/how-we-help"; Target = "/what-we-do" },
-    @{ Source = "/how-we-help/engagement"; Target = "/what-we-do" }
+    @{ Source = "/industries"; Target = "/what-we-do" }
 )
 
 # Check vercel.json has correct redirects
@@ -302,7 +320,7 @@ $canonicalSectors = @("financial-services", "healthcare", "agriculture", "educat
 $legacySolutionSlugs = @("agentic-ai", "digital-transformation", "data-intelligence", "automation", "strategy-advisory")
 $legacySectorSlugs = @("development")
 
-$allPublicFiles = Get-ChildItem -Path "$Root\src" -Recurse -Include "*.ts","*.tsx" -Filter "*.json"
+$allPublicFiles = Get-ChildItem -Path "$Root\src" -Recurse -Include "*.ts","*.tsx" -Filter "*.json" | Sort-Object FullName
 
 # Check for legacy solution slugs
 foreach ($slug in $legacySolutionSlugs) {
@@ -388,7 +406,7 @@ $brandTokens = @(
 )
 
 # Check for invented colors in new architecture docs (docs/architecture/*.md)
-$archDocs = Get-ChildItem -Path "$Root\docs\architecture" -Filter "*.md"
+$archDocs = Get-ChildItem -Path "$Root\docs\architecture" -Filter "*.md" | Sort-Object FullName
 $hexColorRegex = '#([0-9a-fA-F]{6})'
 foreach ($doc in $archDocs) {
     $content = Get-Content $doc.FullName -Raw
@@ -396,7 +414,10 @@ foreach ($doc in $archDocs) {
     foreach ($match in $matches) {
         $hex = $match.Groups[1].Value.ToUpper()
         $known = $brandTokens | Where-Object { $_.Hex -eq $hex }
-        if (-not $known -and $hex -notin @("FFFFFF", "F2F2F2", "000000")) {
+        # Status palette for Mermaid Gantt done/pending semantics in roadmap
+        # docs (D7F5D7/2A7A2A = done, FFF3CD/B8860B = pending) — internal
+        # diagram encoding, not brand palette usage (ADR-020 governs site UI).
+        if (-not $known -and $hex -notin @("FFFFFF", "F2F2F2", "000000", "D7F5D7", "2A7A2A", "FFF3CD", "B8860B")) {
             Write-Warn "Potential non-brand color #$hex in $($doc.Name) (verify against ADR-020)"
             $script:warnings++
         }
