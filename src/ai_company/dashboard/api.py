@@ -21,6 +21,7 @@ from fastapi import (
     Request,
     Response,
 )
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field, field_validator
 
 if TYPE_CHECKING:
@@ -48,14 +49,41 @@ from ai_company.dashboard.models import (
 )
 from ai_company.dashboard.repository import get_state_store
 from ai_company.data import get_database
+from ai_company.monitoring.evidence_metrics import get_store_metrics
 from ai_company.security.rbac import Role, require_role
 
-if TYPE_CHECKING:
-    from ai_company.orchestrator.message_bus import MessageBus
-
 logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/api/v1", tags=["dashboard"])
 router.include_router(athena_router)
+
+# ── Evidence Store Metrics Endpoint ───────────────────────────────────────
+
+
+@router.get("/metrics/evidence", response_class=PlainTextResponse)
+async def get_evidence_metrics() -> str:
+    """Prometheus metrics endpoint for evidence store monitoring."""
+    metrics = get_store_metrics()
+
+    lines = []
+    for store_name, data in metrics["stores"].items():
+        lines.append(f'evidence_store_size_bytes{{store="{store_name}"}} {data["size_bytes"]}')
+        lines.append(
+            f'evidence_store_events_total{{store="{store_name}",event_type="total"}} {data["event_count"]}'
+        )
+        lines.append(
+            f'evidence_store_age_seconds{{store="{store_name}"}} {data["age_seconds"]:.0f}'
+        )
+        lines.append(
+            f'evidence_store_max_size_bytes{{store="{store_name}"}} {data["max_size_bytes"]}'
+        )
+        lines.append(f'evidence_store_usage_pct{{store="{store_name}"}} {data["usage_pct"]:.2f}')
+
+    for alert in metrics["alerts"]:
+        lines.append(f'evidence_store_alert{{message="{alert}"}} 1')
+
+    return "\n".join(lines) + "\n"
+
 
 # Module-level MessageBus instance. All task read/write operations are routed
 # through this bus instead of touching `.opencode/inbox.json` directly (GAP-011).
