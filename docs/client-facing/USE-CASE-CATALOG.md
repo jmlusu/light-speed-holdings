@@ -350,6 +350,29 @@ Full record: `docs/case-studies/social-media-automation-os.md`.
 
 ---
 
+## Lightspeed Scroll Page — In-House Brand Build
+
+**Honesty badge:** Proven in-house — shipped, verified, evidence archived. Not a
+client deliverable and not yet serving a live audience; the page is LightSpeed's
+own flagship brand page acting as Offer A (digital presence) demo material.
+
+A full scroll-craft page built on LightSpeed's own creative stack: 6-act
+chaptered-editorial grammar (`flow > pin > flow > scrub > flow > pin`, ~9.8 vh),
+folio-in-the-margin nav, and the raising-flags close over a night horizon —
+navy/crimson/cyan, Arial, verbatim copy, one accent region. Verified by five
+deterministic Playwright lab runs (desktop + mobile 375×812, normal +
+reduced-motion): 30 frames each, all settled, `failed: []`, 0 console errors;
+worst-frame contrast 15.97:1 headline / 4.45:1 CTA; focus check PASS in both
+modes. The fingerprint registry proves it distinct from any prior build.
+
+**What it demonstrates:** The creative stack end-to-end (design-system →
+production → QA), machine-verifiable evidence rather than prose claims, and the
+"proven in-house" honesty rung applied to a tangible portfolio artifact.
+
+Full record + evidence artifacts: `docs/case-studies/lightspeed-scroll-page/`.
+
+---
+
 ## Pilots in Development
 
 ### Health / M&E — Clinic Supply Chain Monitoring
@@ -491,6 +514,7 @@ Every factual claim in this document traces to one or more authoritative source 
 | **J&S StopOver Bar** | `docs/Pharos/case-study-pipeline.md:7-28` (live proof, non-client) | Not a paid client; live proof |
 | **Meta Case Study** | `docs/Pharos/case-study-pipeline.md:43-46` (151 AI agents + CEO, governance mapped) | Proven in-house |
 | **Social Media Automation OS** | `docs/case-studies/social-media-automation-os.md` (engagement record, team, guardrails); client scaffolding reviewed at intake | MEDIUM risk — engagement in progress, no shipped deployment yet |
+| **Lightspeed Scroll Page** | `docs/case-studies/lightspeed-scroll-page/README.md` (build record, evidence index); `scrollcraft/FINGERPRINTS.md` (registry row) | Proven in-house — shipped, lab-verified, no live audience |
 | **Health/M&E Pilot** | `docs/Pharos/case-study-pipeline.md:31-34` (composing evidence) | HIGH risk — no confirmed partnership signed |
 | **VSLA/SACCO Pilot** | `docs/Pharos/case-study-pipeline.md:37-40` (COMESA/IDEA seeking) | HIGH risk — no signed engagement |
 | **Ministry of Agriculture — Farmer Advisory** | `USE-CASE-CATALOG.md:204-214` (piloting listed) | MEDIUM risk — piloting |

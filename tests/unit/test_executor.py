@@ -14,6 +14,7 @@ from ai_company.executor.context import (
     parse_agent_spec,
 )
 from ai_company.executor.hitl_gate import HITLGate
+from ai_company.executor.loop import Executor
 from ai_company.executor.prompts import build_system_prompt_typed, build_user_prompt_typed
 from ai_company.executor.tool_runner import ToolRunner
 from ai_company.orchestrator.approval import ApprovalGate

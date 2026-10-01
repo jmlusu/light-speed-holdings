@@ -56,7 +56,7 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 | Claim | Location | Class | Evidence / Note |
 |---|---|---|---|
 | Agentic AI: "152-agent operation runs daily" proof label | siteContent.ts:248 | (a) | Registry + evidence probes. |
-| Digital Transformation: "Fieldable in 2026 — pricing validated against real prospects before publishing" | siteContent.ts:290; OfferingsPage.tsx:63 | (b / CONTRADICTION) | Honesty-badged, but USE-CASE-CATALOG.md:76 says pricing "is to be validated with prospects before publishing" — tension with site's past-tense claim. |
+| Digital Transformation: "Fieldable in 2026 — ready for client engagement"; pricing "to be validated with prospects" | siteContent.ts:1141; useCaseCatalogData.ts:107 | (b) — RESOLVED | Past-tense "pricing validated against real prospects" removed 2026-09-16; reverified 2026-09-23 — src now future-tense, matches USE-CASE-CATALOG.md:76. |
 | Data & Intelligence: "In pilot with UNDP Malawi stakeholders" | siteContent.ts:331 | (b) | Self-reported pilot; no external or repo artifact. |
 | Automation: "gated on G1-G4 security review" | siteContent.ts:372 | (b) | Process claim; G1-G4 policy exists. |
 | Strategy & Advisory: "90-day pilot window" | siteContent.ts:411 | (b) | Offer, not result. |
@@ -145,10 +145,11 @@ No metric claims. AboutSection.tsx is qualitative ("institutional charter // sov
 ## 12. Contradiction / Consistency Notes
 
 - `siteContent.ts:38` "140+ AI agents" vs canonical 144 everywhere else. **RESOLVED:** site now uses 144.
-- `siteContent.ts:290` pricing "validated against real prospects" (past) vs `USE-CASE-CATALOG.md:76` "is to be validated with prospects before publishing" (future). — see ticket (b / CONTRADICTION row §5); aligned 2026-09-16 to future-tense.
+- `siteContent.ts:290` pricing "validated against real prospects" (past) vs `USE-CASE-CATALOG.md:76` "is to be validated with prospects before publishing" (future). — see ticket (b / CONTRADICTION row §5); aligned 2026-09-16 to future-tense; reverified 2026-09-23 (now (b) — RESOLVED).
 - OfferingDetailCard.tsx:182-190 "delivered to … commercial banking, national revenue authorities, transport corridors" vs EvidencePage.tsx:380 "Nothing has been delivered to paying clients yet". **RESOLVED:** benchmark box now "Verified In-House Reference… not client deployments."
 - USE-CASE-CATALOG.md:506 "All claims trace to real repository files" is itself violated by Pharos download counts, 14.2s/25k, and benchmark telemetry. **RESOLVED:** all three clusters removed/hedged.
+- `siteContent.ts` claim:034 National AI Strategy consultation submission "published" vs artifact `national-ai-strategy-comments.md` Status DRAFT. **RESOLVED 2026-09-23:** re-badged to "prepared / drafted for submission" at siteContent.ts:583/626/852/867, useCaseCatalogData.ts:381, EvidencePage.tsx:162. Group 3 partners/pilots rows 025/029/030/040/042 verified already hedged (no copy change).
 
 ## 13. Tally
 
-Total: 65 classified claims — (a) 18, (b) 29, (c) 18. As of 2026-09-16: all 18 (c) rows remediated to (b) — hedged or labeled (verified `npm run build` + `npm run lint` green).
+Total: 67 classified claims — (a) 18, qualified (b) 26, (b) — RESOLVED 23, (b / CONTRADICTION) 0. This reconciled count (67 vs the previously declared 65) is canonical per `research/site-claims-index.yaml` and `research/site-claims-audit.md`. As of 2026-09-16: all 18 legacy (c) rows remediated to (b) — hedged or labeled (verified `npm run build` + `npm run lint` green). Claim:024 reclassified to (b) — RESOLVED on 2026-09-23 (future-tense verified in src; see §12). Claim:034 reclassified to (b) — RESOLVED on 2026-09-23 (copy re-badged "published" → "prepared / drafted for submission"; see §12).

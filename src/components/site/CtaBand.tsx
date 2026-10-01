@@ -10,6 +10,8 @@ interface CtaBandProps {
   ctaLabel?: string;
   ctaTo?: string;
   id?: string;
+  onRequestBriefing?: (summary?: string) => void;
+  ctaLevel?: 'primary' | 'secondary' | 'lowFriction';
 }
 
 /**
@@ -24,8 +26,18 @@ export const CtaBand: React.FC<CtaBandProps> = ({
   ctaLabel = 'Book an Executive Briefing',
   ctaTo = '/contact',
   id,
+  onRequestBriefing,
+  ctaLevel = 'primary',
 }) => {
   const isLight = theme === 'light';
+  const ctaClasses = {
+    primary:
+      'inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]',
+    secondary:
+      'inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase border border-ls-red text-ls-red shadow-lg shadow-ls-red/20 transition-all cursor-pointer hover:bg-ls-red/10 hover:scale-[1.01] active:scale-[0.99]',
+    lowFriction:
+      'inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-full font-medium text-xs tracking-wider border border-ls-cyan/30 text-ls-cyan/40 bg-ls-cyan/5 transition-all cursor-pointer hover:bg-ls-cyan/10 hover:scale-[1.01] active:scale-[0.99]',
+  }[ctaLevel];
   return (
     <section
       id={id}
@@ -53,13 +65,24 @@ export const CtaBand: React.FC<CtaBandProps> = ({
               {text}
             </p>
             <div className="pt-2">
-              <Link
-                to={ctaTo}
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {ctaLabel}
-                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-              </Link>
+              {onRequestBriefing ? (
+                <button
+                  type="button"
+                  onClick={() => onRequestBriefing(ctaLabel)}
+                  className={ctaClasses}
+                >
+                  {ctaLabel}
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
+              ) : (
+                <Link
+                  to={ctaTo}
+                  className={ctaClasses}
+                >
+                  {ctaLabel}
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </Link>
+              )}
               <p className={`text-[11px] font-body mt-3 font-medium ${
                 isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
               }`}>

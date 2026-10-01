@@ -1,0 +1,969 @@
+
+> lightspeed-holdings@1.0.0 dev
+> vite --port 3000 --host
+
+
+  [32m[1mVITE[22m v6.4.3[39m  [2mready in [0m[1m2760[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.30.112.1:[1m3000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.136:[1m3000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.19.48.1:[1m3000[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m3:55:49 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:55:49 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:55:49 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:55:49 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:55:49 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:55:49 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:56:18 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:56:18 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:56:18 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:56:18 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:56:18 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:56:18 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?search=&location=&limit=20&offset=0[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?search=&location=&limit=20&offset=0[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:07 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:08 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:08 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:08 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:08 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m3:57:08 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/summary.md[22m
+[2m4:01:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/.gitkeep[22m
+[2m4:01:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/plan.md[22m
+[2m4:01:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/spec.md[22m
+[2m4:01:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/summary.md[22m
+[2m4:01:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/tasks.md[22m
+[2m4:01:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/reviews/review.md[22m
+[2m4:01:16 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/INDEX.json[22m
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:01:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:03:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/STATUS.md[22m
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:04:05 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/client-facing/USE-CASE-CATALOG.md[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-asset-register.md[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-identity-setup.md[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/warmup-log.md[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mhr/onboarding_requests.yaml[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/AGENT-REGISTRY-TABLE.md[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/executor/loop.py[22m
+[2m4:05:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_executor.py[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/INDEX.json[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/summary.md[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/AGENT-REGISTRY-TABLE.md[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/client-facing/USE-CASE-CATALOG.md[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-asset-register.md[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mhr/onboarding_requests.yaml[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/executor/loop.py[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_executor.py[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-identity-setup.md[22m
+[2m4:05:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/warmup-log.md[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/AGENT-REGISTRY-TABLE.md[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/client-facing/USE-CASE-CATALOG.md[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-asset-register.md[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mhr/onboarding_requests.yaml[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/executor/loop.py[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_executor.py[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-identity-setup.md[22m
+[2m4:05:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/warmup-log.md[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/AGENT-REGISTRY-TABLE.md[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/client-facing/USE-CASE-CATALOG.md[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-asset-register.md[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mhr/onboarding_requests.yaml[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/executor/loop.py[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_executor.py[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-identity-setup.md[22m
+[2m4:05:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/warmup-log.md[22m
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:06:04 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/client-facing/USE-CASE-CATALOG.md[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-asset-register.md[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mhr/onboarding_requests.yaml[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/digital-identity-setup.md[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/marketing/warmup-log.md[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/AGENT-REGISTRY-TABLE.md[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/executor/loop.py[22m
+[2m4:22:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_executor.py[22m
+[2m4:22:57 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:22:57 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:22:57 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:22:57 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:22:57 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:22:57 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/STATUS.md[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/INDEX.json[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/store.py[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_athena_store.py[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/.gitkeep[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/reviews/review.md[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/plan.md[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/spec.md[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/summary.md[22m
+[2m4:45:43 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/tasks.md[22m
+[2m4:45:53 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:45:53 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:45:53 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:45:53 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:45:53 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:45:53 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/INDEX.json[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/store.py[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_athena_store.py[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/STATUS.md[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/.gitkeep[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/plan.md[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/spec.md[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/summary.md[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/tasks.md[22m
+[2m4:46:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store/reviews/review.md[22m
+[2m4:46:12 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:46:12 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:46:12 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:46:12 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/pipeline[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:46:12 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/jobs?limit=100[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m4:46:12 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/v1/athena/stats/scraping[39m
+Error: connect ECONNREFUSED 127.0.0.1:8787
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16)
+[2m5:57:51 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx[22m
+[2m5:59:08 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m5:59:32 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m5:59:42 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/WhyLightSpeedPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:24:34
+[33m  38 |  import { PrivacyPage } from "./pages/PrivacyPage";
+  39 |  import { TermsPage } from "./pages/TermsPage";
+  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+     |                                     ^
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 25)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m5:59:46 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/pages/GeographyPage.tsx[22m
+[2m5:59:47 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/WhyLightSpeedPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:24:34
+[33m  38 |  import { PrivacyPage } from "./pages/PrivacyPage";
+  39 |  import { TermsPage } from "./pages/TermsPage";
+  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+     |                                     ^
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";[39m
+[2m5:59:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/pages/ResourcesPage.tsx[22m
+[2m5:59:57 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/WhyLightSpeedPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:24:34
+[33m  38 |  import { PrivacyPage } from "./pages/PrivacyPage";
+  39 |  import { TermsPage } from "./pages/TermsPage";
+  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+     |                                     ^
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 25)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m6:00:01 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/pages/EventsPage.tsx[22m
+[2m6:00:01 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/App.tsx[22m
+[2m6:00:12 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/WhyLightSpeedPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:24:34
+[33m  38 |  import { PrivacyPage } from "./pages/PrivacyPage";
+  39 |  import { TermsPage } from "./pages/TermsPage";
+  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+     |                                     ^
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";[39m
+[2m6:00:12 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/WhyLightSpeedPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:24:34
+[33m  38 |  import { PrivacyPage } from "./pages/PrivacyPage";
+  39 |  import { TermsPage } from "./pages/TermsPage";
+  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+     |                                     ^
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 25)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m6:00:16 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/GeographyPage.tsx, /src/index.css[22m
+[2m6:00:27 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+[2m6:00:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/EventsPage.tsx, /src/index.css[22m
+[2m6:00:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/GeographyPage.tsx, /src/index.css[22m
+[2m6:00:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/pages/CareersPage.tsx[22m
+[2m6:00:27 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 27)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+[2m6:00:27 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+[2m6:00:38 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/SiteFooter.tsx, /src/index.css[22m
+[2m6:00:58 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+[2m6:00:59 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 27)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m6:00:59 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/NewsPage.tsx[22m
+[2m6:00:59 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/pages/LeadershipPage.tsx[22m
+[2m6:01:00 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+[2m6:01:00 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 27)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m6:01:02 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/pages/FAQPage.tsx[22m
+[2m6:01:13 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+[2m6:01:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/SiteLayout.tsx, /src/index.css[22m
+[2m6:01:13 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 27)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+[2m6:01:13 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+[2m6:01:50 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/summary.md[22m
+[2m6:01:50 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/plan.md[22m
+[2m6:01:50 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/spec.md[22m
+[2m6:01:50 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/tasks.md[22m
+[2m6:01:50 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/reviews/review.md[22m
+[2m6:02:01 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+[2m6:02:01 pm[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "./pages/ProcessPage" from "src/App.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/jmlus/light-speed-holdings/src/App.tsx[39m:26:28
+[33m  40 |  import { WhyLightSpeedPage } from "./pages/WhyLightSpeedPage";
+  41 |  import { HowWeHelpPage } from "./pages/HowWeHelpPage";
+  42 |  import { ProcessPage } from "./pages/ProcessPage";
+     |                               ^
+  43 |  import { GeographyPage } from "./pages/GeographyPage";
+  44 |  import { LeadershipPage } from "./pages/LeadershipPage";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 27)
+      at async TransformPluginContext.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/jmlus/light-speed-holdings/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m6:02:11 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/LeadershipPage.tsx, /src/index.css[22m
+[2m6:02:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/LeadershipPage.tsx, /src/index.css[22m
+[2m6:08:29 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:09:08 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:10:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m6:12:14 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m6:13:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m6:13:15 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/FloatingNav.tsx, /src/index.css[22m
+[2m6:13:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/FloatingNav.tsx, /src/index.css[22m
+[2m6:14:06 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/SiteLayout.tsx, /src/index.css[22m
+[2m6:16:09 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m6:17:52 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:20:41 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:21:41 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/HaomtgvGovernanceFramework.tsx, /src/index.css[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/agentic-policy-analyst.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/agentic-research-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-ethics-board-chair.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-ethics-officer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-safety-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-security-specialist.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/api-architect.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/artifact-qa-reviewer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/audit-trail-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/backend-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-chair.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-customer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-finance.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-product.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-risk.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-strategy.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-technology.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/brand-advertising-designer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/brand-strategist.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/business-continuity-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/business-developer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/business-intelligence-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/caio.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/capacity-planner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cdo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ceo-advisor.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cfo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/chief-of-staff.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cio.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ciso.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/clo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cloud-architect.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cmo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/community-ecosystem-builder.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/compliance-officer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/constitutional-ai-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/consulting-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/content-creator.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/content-writer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/conversation-designer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/coo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/corporate-development-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cpo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/creative-director.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cso.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cto.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/culture-values-officer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/customer-success-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/customer-success.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/dashboard-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/data-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/data-privacy-officer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/decision-engine-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/data-scientist.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/developer-experience-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/devsecops-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/devops-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/document-designer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/diagram-designer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/doctor-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/employee-experience-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/eval-benchmarks-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/financial-analyst.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/frontend-architect.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/frontend-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/fullstack-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/generator-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/graph-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/growth-hacker.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/growth-product-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/hai-designer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/head-of-business-development.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/operating-standards.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/human-ceo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/head-of-competitive-intelligence.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/head-of-developer-relations.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/hr-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/hr.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/human-ceo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/incident-response-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/industry-analyst-relations-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/integration-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/internal-comms-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/interview-agent.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/investor-relations-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/knowledge-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/lead-backend.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/lead-devops.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/lead-frontend.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/learning-development-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/legal-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/legal.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/llm-platform-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/market-analyst.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/marketing-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/media-generation-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/media-pr-relations.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/memory-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ml-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ml-services-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/mlops-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/mobile-developer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/observability-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/opportunity-identifier.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/orchestration-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/penetration-testing-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/platform-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/platform-reliability-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/presentation-designer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/process-quality-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/product-designer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/product-marketing-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/product-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/program-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/prompt-engineer-specialist.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/prompt-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/qa-automation-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/qa-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/qa-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/recruiter.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/red-team-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/registry-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/release-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/revenue-operations-analyst.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/sales-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/sales.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/scalability-architect.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/security-architect.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/security-compliance-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/senior-backend-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/senior-frontend-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/soc2-audit-readiness-analyst.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/social-media-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/software-architect.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/solution-architect.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/solutions-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/sop-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/speaker-engagement-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/supply-chain-security-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/support-agent.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/survey-researcher.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/talent-academy-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/technical-documentation-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/test-engineering-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/thought-leadership-author.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/thought-leadership-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/threat-intelligence-analyst.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ux-analytics-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ux-research-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/vendor-manager.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/visual-storyteller.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/vp-engineering.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/workflow-mapper.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/workflow-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/caio.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cfo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/chief-of-staff.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/coo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cto.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/human-ceo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cmo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cpo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cio.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ciso.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/hr.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cdo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/clo.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cso.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ceo-advisor.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/customer-success.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/sales.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/legal.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/financial-analyst.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/devops-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/compliance-officer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/data-scientist.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/platform-reliability-engineer.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/security-compliance-lead.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/audit-trail-owner.md[22m
+[2m6:25:21 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/memory-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/decision-engine-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/workflow-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/graph-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/dashboard-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/llm-platform-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/orchestration-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/registry-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/generator-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/doctor-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/sales-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/marketing-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/customer-success-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/social-media-manager.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/legal-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/hr-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ml-services-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/qa-lead.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/sop-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/test-engineering-lead.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/qa-automation-engineer.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/release-manager.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/vp-engineering.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-safety-lead.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/data-engineer.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/program-manager.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ux-research-lead.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/head-of-developer-relations.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/technical-documentation-lead.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/culture-values-officer.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/red-team-engineer.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/constitutional-ai-owner.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/mlops-engineer.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/platform-engineer.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/product-marketing-manager.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/head-of-business-development.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-security-specialist.md[22m
+[2m6:25:22 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/head-of-competitive-intelligence.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/incident-response-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/penetration-testing-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/devsecops-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ux-analytics-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/eval-benchmarks-engineer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-ethics-officer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/prompt-engineer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/api-architect.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/frontend-architect.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/observability-engineer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/scalability-architect.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/data-privacy-officer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/supply-chain-security-engineer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/security-architect.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/soc2-audit-readiness-analyst.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/developer-experience-engineer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/growth-product-manager.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/product-designer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/vendor-manager.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/business-continuity-manager.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/capacity-planner.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/learning-development-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/prompt-engineer-specialist.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/employee-experience-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/investor-relations-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/revenue-operations-analyst.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/corporate-development-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/solutions-engineer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/internal-comms-lead.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/knowledge-manager.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/industry-analyst-relations-manager.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/process-quality-manager.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/business-intelligence-engineer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/hai-designer.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ai-ethics-board-chair.md[22m
+[2m6:25:23 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/threat-intelligence-analyst.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/lead-backend.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/lead-frontend.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/senior-frontend-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/solution-architect.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/backend-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/frontend-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/senior-backend-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/lead-devops.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/mobile-developer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/cloud-architect.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/support-agent.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/content-writer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/product-owner.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/fullstack-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/growth-hacker.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/business-developer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/market-analyst.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/recruiter.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/content-creator.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/software-architect.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/ml-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/qa-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/brand-strategist.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/conversation-designer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/integration-engineer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/consulting-lead.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/survey-researcher.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/interview-agent.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/workflow-mapper.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-chair.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/opportunity-identifier.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-finance.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-risk.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-strategy.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-technology.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-customer.md[22m
+[2m6:25:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/board-product.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/agentic-research-lead.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/thought-leadership-lead.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/agentic-policy-analyst.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/thought-leadership-author.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/community-ecosystem-builder.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/media-pr-relations.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/speaker-engagement-lead.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/media-generation-owner.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/talent-academy-lead.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/creative-director.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/presentation-designer.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/diagram-designer.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/document-designer.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/visual-storyteller.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/artifact-qa-reviewer.md[22m
+[2m6:25:25 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.opencode/agents/brand-advertising-designer.md[22m
+[2m6:25:26 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mdocs/AGENT-REGISTRY-TABLE.md[22m
+[2m6:27:18 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:28:01 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:28:41 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:30:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m6:30:37 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m6:30:48 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m6:33:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/summary.md[22m
+[2m6:36:10 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/plan.md[22m
+[2m6:36:10 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/spec.md[22m
+[2m6:36:10 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/summary.md[22m
+[2m6:36:10 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/tasks.md[22m
+[2m6:52:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/summary.md[22m
+[2m6:52:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/reviews/review.md[22m
+[2m6:52:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/plan.md[22m
+[2m6:52:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/spec.md[22m
+[2m6:52:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/tasks.md[22m
+[2m6:52:48 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m6:57:27 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/spec.md[22m
+[2m7:02:57 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mharness/changes/active/plan.md[22m
+[2m7:04:20 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/WorkPage.tsx, /src/index.css, /src/pages/SolutionsPage.tsx, /src/pages/IndustriesPage.tsx, /src/pages/IndustryDetailPage.tsx, /src/pages/TechnologyPage.tsx, /src/pages/HomePage.tsx, /src/pages/SolutionDetailPage.tsx, /src/pages/ProofPage.tsx, /src/pages/WhatWeDoPage.tsx, /src/components/site/HonestyBadge.tsx, /src/pages/HowWeHelpPage.tsx, /src/pages/DeliverablesPage.tsx, /src/pages/OutcomesPage.tsx, /src/pages/TrustPage.tsx, /src/pages/PartnershipsPage.tsx, /src/pages/GeographyPage.tsx, /src/pages/ResourcesPage.tsx, /src/pages/EventsPage.tsx, /src/pages/NewsPage.tsx, /src/pages/CareersPage.tsx, /src/pages/WhyLightSpeedPage.tsx, /src/pages/LeadershipPage.tsx, /src/pages/FAQPage.tsx, /src/pages/ProcessPage.tsx[22m
+[2m7:29:31 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/dashboard/api.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/api/routes.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/api/schemas.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/api/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/ats/keywords.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/ats/scorer.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/ats/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/automation/browser.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/automation/form_filler.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/automation/submitter.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/automation/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/documents/generator.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/documents/humanizer.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/documents/parser.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/documents/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/matching/embeddings.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/matching/engine.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/matching/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/models/enums.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/models/jobs.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/models/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/scheduler/jobs.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/scheduler/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/scrapers/base.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/scrapers/consultancy.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/scrapers/lilongwe.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/scrapers/remote.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/scrapers/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/store.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/ai_company/athena/__init__.py[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/athena/Dashboard.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/athena/DocumentEditor.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/athena/JobDetail.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/athena/JobList.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/athena/AreaChart.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/athena/AthenaLayout.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/athena/ATSGauge.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/athena/JobCard.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/athena/MetricCard.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/athena/PipelineColumn.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/athena/SkillTags.tsx, /src/index.css[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/athena/api.ts[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/athena/types.ts[22m
+[2m7:29:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/athena/utils.ts[22m
+[2m7:30:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_athena_api.py[22m
+[2m7:30:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_athena_matching.py[22m
+[2m7:30:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_athena_scorer.py[22m
+[2m7:30:05 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtests/unit/test_athena_store.py[22m
+[2m7:31:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpyproject.toml[22m
+[2m7:32:30 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpyproject.toml[22m
+[2m7:34:53 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m7:36:13 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m7:37:28 pm[22m [36m[1m[vite][22m[39m [32mvite.config.ts changed, restarting server...[39m
+[2m7:37:31 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because vite config has changed
+[2m7:37:31 pm[22m [36m[1m[vite][22m[39m server restarted.
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.30.112.1:[1m3000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.111:[1m3000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.19.48.1:[1m3000[22m/[39m
+[2m8:55:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mscrollcraft/builds/lightspeed/index.html[22m
+[2m8:55:49 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mwhitepaper/lightspeed-malawi-investor-deck.html[22m
+[2m8:56:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mscrollcraft/builds/lightspeed/index.html[22m
+[2m8:56:54 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mwhitepaper/lightspeed-malawi-investor-deck.html[22m

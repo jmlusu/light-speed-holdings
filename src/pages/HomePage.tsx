@@ -43,13 +43,18 @@ const THESIS_COLUMNS = [
   },
   {
     num: '02',
-    title: 'Ship, Don’t Promise',
+    title: 'Ship, Don\u2019t Promise',
     body: 'Every claim on this site is labeled Proven in-house, In pilot, Fieldable, or In development — and the tests that gate our own work are published. We never blur the two.',
   },
   {
     num: '03',
     title: 'Governed by Design',
     body: 'Five-tier human approval, immutable audit trails, and regional compliance are the architecture of the workforce, not bolt-ons. Trust is what scales.',
+  },
+  {
+    num: '04',
+    title: 'Research Informed',
+    body: 'Pharos turns engineering into public intellectual work. The SADC Agentic AI Governance Framework and Malawi\u2019s National AI Strategy consultation position LightSpeed as a source of policy, not just product. Every finding is dated, benchmarks are regenerated on each release, and no claim is fabricated.',
   },
 ];
 
@@ -352,6 +357,42 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onRequestBriefing }) 
             About LightSpeed
             <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
           </Link>
+        </div>
+      </section>
+
+      {/* Who we work with */}
+      <section aria-labelledby="who-work-heading" className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-4 ${sectionBorder}`}>
+        <SectionHeading
+          theme={theme}
+          eyebrow="WHO WE WORK WITH"
+          title="Organisations We Partner With"
+          lead="SMEs, NGOs, government agencies, donor organisations, financial services providers, healthcare organisations, and growth companies across Malawi and SADC. We also license the AI Company Builder platform to organisations that want their own governed AI workforce."
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="p-4 border rounded-xl h-full">
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">SMEs</span>
+            <p className="mt-2 text-sm leading-relaxed">Small and medium enterprises building digital presence and automating operations</p>
+          </div>
+          <div className="p-4 border rounded-xl h-full">
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">NGOs</span>
+            <p className="mt-2 text-sm leading-relaxed">Non-governmental organisations driving development impact</p>
+          </div>
+          <div className="p-4 border rounded-xl h-full">
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">Government</span>
+            <p className="mt-2 text-sm leading-relaxed">Malawi government agencies and SADC institutions</p>
+          </div>
+          <div className="p-4 border rounded-xl h-full">
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">Donor Organisations</span>
+            <p className="mt-2 text-sm leading-relaxed">Donor bodies requiring compliant AI workflows</p>
+          </div>
+          <div className="p-4 border rounded-xl h-full">
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">Healthcare</span>
+            <p className="mt-2 text-sm leading-relaxed">Hospitals and clinics across Malawi and SADC</p>
+          </div>
+          <div className="p-4 border rounded-xl h-full">
+            <span className="font-body text-[10px] font-bold tracking-widest text-ls-cyan">Financial Services</span>
+            <p className="mt-2 text-sm leading-relaxed">Banks, microfinance, and insurance institutions</p>
+          </div>
         </div>
       </section>
 

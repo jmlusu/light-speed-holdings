@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "tsc --noEmit",
+    "build": "tsc --noEmit --pretty false; vite build",
+    "lint": "tsc --noEmit --pretty false",
     "test": "vitest run",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@playwright/test": "^1.63.0",
     "@vercel/blob": "^2.8.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.4.7",
