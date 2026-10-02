@@ -175,10 +175,6 @@ exclude = [
     "scripts/",
     "results/",
     "tests/",
-    "src/ai_company/audit/",
-    "src/ai_company/monitoring/",
-    "src/ai_company/orchestrator/dead_letter.py",
-    "src/ai_company/orchestrator/escalation_events.py",
 ]
 
 [[tool.mypy.overrides]]
