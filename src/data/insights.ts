@@ -71,7 +71,7 @@ export const insightArticles: InsightArticle[] = [
       },
       {
         kind: 'quote',
-        text: 'Malawi first. Prove it. Then the world.',
+        text: 'We build AI-native companies.',
         cite: 'LightSpeed Holdings north star',
       },
       { kind: 'h', text: 'Honest status' },

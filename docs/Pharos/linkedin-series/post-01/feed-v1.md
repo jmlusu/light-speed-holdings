@@ -1,6 +1,6 @@
 # Feed v1: Post 1 - What is an AI-Native Organization?
 
-Derived 2026-09-28 from `draft-v1.md` `## LinkedIn Article (v1)` (CEO-approved). CEO decision: publish as LinkedIn **feed post**, `format_linkedin` 3,000-char cap (title counts). Verbatim extracts only: no new claims.
+Derived 2026-10-02 from `draft-v1.md` `## LinkedIn Article (v1)` (CEO-approved). CEO decision: publish as LinkedIn **feed post**, `format_linkedin` 3,000-char cap (title counts). Verbatim extracts only: no new claims.
 
 ---
 

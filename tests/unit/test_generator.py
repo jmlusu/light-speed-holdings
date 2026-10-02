@@ -351,3 +351,52 @@ def test_generate_all_does_not_write_real_table(tmp_path: Path, templates_dir: P
     assert "135 across" in content or "Total Agents" in content, (
         "Temp table should have correct count"
     )
+
+
+def test_registry_media_owner(real_generator: AgentGenerator) -> None:
+    """ADR-018: media_generation_owner must exist in registry and generate a valid agent card.
+
+    Verifies:
+    1. The agent exists in company-registry.yaml with correct fields
+    2. The generated agent card has valid OpenCode frontmatter
+    3. The card includes the expected permissions (bash for comfyui-mcp execution)
+    """
+    # Load registry and find the agent
+    data = real_generator.load_registry()
+    agents = data.get("company", {}).get("agents", [])
+    media_owner = next((a for a in agents if a["id"] == "media_generation_owner"), None)
+    assert media_owner is not None, "media_generation_owner not found in registry"
+
+    # Verify required registry fields
+    assert media_owner["type"] == "specialist"
+    assert media_owner["department"] == "Marketing"
+    assert media_owner["reports_to"] == "cmo"
+    assert media_owner["model_tier"] == "standard"
+    assert "bash" in media_owner["tools"], "media_generation_owner must have bash tool for comfyui-mcp"
+
+    # Generate all agents and verify the card
+    real_generator.generate_all()
+    generated_file = real_generator.output_dir / "media-generation-owner.md"
+    assert generated_file.exists(), "Generated agent card not found"
+
+    content = generated_file.read_text(encoding="utf-8")
+    assert content.startswith("---"), "Missing YAML frontmatter"
+
+    parts = content.split("---", 2)
+    assert len(parts) >= 3, "Malformed frontmatter"
+    frontmatter = yaml.safe_load(parts[1])
+    assert isinstance(frontmatter, dict)
+
+    # Required OpenCode fields
+    assert "description" in frontmatter
+    assert frontmatter["mode"] == "subagent"
+    assert "permission" in frontmatter
+    assert isinstance(frontmatter["permission"], dict)
+
+    # bash must be allowed (for comfyui-mcp execution via bash tool)
+    assert frontmatter["permission"].get("bash") == "allow", (
+        "media_generation_owner must have bash: allow permission for comfyui-mcp"
+    )
+
+    # Verify description mentions ComfyUI/MCP
+    assert "ComfyUI" in frontmatter["description"] or "comfyui" in frontmatter["description"].lower()

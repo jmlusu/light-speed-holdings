@@ -31,6 +31,8 @@ dependencies = [
       "psutil>=5.9",
       # Observability — OTel API (zero-cost NoOp when disabled)
       "opentelemetry-api>=1.25",
+      # Metrics
+      "prometheus-client>=0.19",
       "python-docx>=1.2.0",
 ]
 

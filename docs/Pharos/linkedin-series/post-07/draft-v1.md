@@ -6,11 +6,11 @@
 
 ## Hook
 
-Financial inclusion is the policy goal: extending affordable, reliable, safe financial services to those outside the formal system. AI-native architecture is not the goal; it is the architecture that makes the goal scalable, auditable, and accountable. The design question is not "can AI expand financial inclusion?" but "how is the architecture designed so that agents expand inclusion under sovereign data defaults, visible variable cost, and five-tier HITL governance?" This post is about the G (Governance) layer in financial inclusion contexts, and what it means for Malawi and SADC institutions.
+Financial inclusion is the policy goal: extending affordable, reliable, safe financial services to those outside the formal system. AI-native architecture is not the goal; it is the architecture that makes the goal scalable, auditable, and accountable. The design question is not "can AI expand financial inclusion?" but "how is the architecture designed so that agents expand inclusion under sovereign data defaults, visible variable cost, and five-tier HITL governance?" LightSpeed Holdings™ operates this architecture in production. This post is about the G (Governance) layer in financial inclusion contexts, and what it means for Malawi and SADC institutions.
 
 ## H - Human Purpose (Review)
 
-Human purpose is the constitutional layer: strategy, ethics, leadership, relationships, and final accountability stay with named agents. In financial inclusion the stakes are higher, because a misclassified transaction, a deferred compliance check, or an unapproved loan product has real human consequences for low-income populations building financial trust. The five-tier approval matrix (ADR-017) moves every agentic decision through autonomous → HITL-approved → reviewed → snoozed → cleared, and in financial contexts the tier assignment is usually Tier 3 (reviewed) or Tier 4 (snoozed), since new product launches, interest rate changes, credit policy expansions require explicit human sign-off before any agent acts. Hand authority to agents without a sign-off path and communities lose trust, so speed without accountability is a financial incident waiting for a date; in our architecture that principle is not a value statement but a mechanism.
+Human purpose is the constitutional layer: strategy, ethics, leadership, relationships, and final accountability stay with named humans. In financial inclusion the stakes are higher, because a misclassified transaction, a deferred compliance check, or an unapproved loan product has real human consequences for low-income populations building financial trust. The five-tier approval matrix (ADR-017) moves every agentic decision through autonomous → HITL-approved → reviewed → snoozed → cleared, and in financial contexts the tier assignment is usually Tier 3 (reviewed) or Tier 4 (snoozed), since new product launches, interest rate changes, credit policy expansions require explicit human sign-off before any agent acts. Hand authority to agents without a sign-off path and communities lose trust, so speed without accountability is a financial incident waiting for a date; in our architecture that principle is not a value statement but a mechanism.
 
 ## A - Agentic Workforce (Review)
 
@@ -62,7 +62,7 @@ The sequence is the design discipline: install authorization and scope before yo
 
 ### What Comes Next
 
-Post 7 completes the G layer introduction. Post 8 will focus on the policy and regulatory framework specific to Malawi and SADC. Post 9 will revisit the V (Value & Impact) layer with measurement frameworks for financial inclusion. Post 10 will close the G layer with decision rights matrices. And Post 11 will close the entire series with lessons from building LightSpeed Holdings™.
+Post 8 covers AI governance in Malawi specifically: DPA 2017/2024 compliance, MACRA engagement, the four reservations answered with architecture rather than reassurance, and the SADC Agentic AI Governance Framework. Post 9 revisits V (Value & Impact) with measurement frameworks. Post 10 closes G with decision rights matrices. Post 11 closes the series with lessons from building LightSpeed Holdings™.
 
 **Follow along** if you are designing, governing, or procuring AI systems in financial inclusion in Malawi and SADC: we publish the architecture, the metrics, and the failure paths, not just the outcomes.
 
@@ -76,7 +76,7 @@ Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Ma
 
 ## Voice Checklist (Per CEO Review)
 
-- [ ] No emojis in text
+- [x] No emojis in text
 - [x] `™` on first mention of "LightSpeed Holdings"
 - [x] Every claim traceable to registry/results/Pharos artifact
 - [x] Framework layer (H-A-O-M-T-G-V) explicitly named (here: G - Governance)

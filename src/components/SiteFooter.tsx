@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CTAS } from '../data/ctas';
+import Logo from '@/components/site/Logo.tsx';
 
 interface SiteFooterProps {
   theme: 'light' | 'dark';
@@ -64,9 +65,9 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
       <div className={`flex flex-wrap items-start justify-between gap-x-8 gap-y-6 pb-10 mb-10 border-b ${borderClsSub}`}>
         <div>
           <div className="inline-flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full border border-ls-white/30 bg-ls-red flex items-center justify-center text-ls-white shadow-md">
-              <span className="font-black text-sm tracking-widest font-sans">LS</span>
-            </div>
+            <Link to="/" className="flex items-center gap-2.5 group cursor-pointer">
+              <Logo size={36} showText theme={theme} />
+            </Link>
             <div className="flex flex-col">
               <span className={`text-xs font-black tracking-widest font-sans ${brandCls}`}>
                 LightSpeed Holdings™
@@ -77,13 +78,13 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
             </div>
           </div>
           <p className={`mt-4 max-w-sm text-xs leading-relaxed ${textCls}`}>
-            LightSpeed Holdings Limited builds and governs agentic AI systems for organizations — proving the model in Malawi first, then across SADC and beyond.
+            LightSpeed Holdings Limited builds and governs agentic AI systems for organizations — AI-native companies that ship.
           </p>
         </div>
 
         <div className={`text-xs leading-relaxed max-w-xs ${textCls}`}>
           <span className={`font-body text-[10px] font-bold tracking-widest text-ls-red`}>NORTH STAR</span>
-          <p className="mt-2">Malawi first. Prove it. Then the world.</p>
+          <p className="mt-2">We build AI-native companies.</p>
         </div>
       </div>
 
@@ -108,7 +109,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
 
       <div className={`mt-12 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-body ${borderCls} ${textClsMuted}`}>
         <span>LightSpeed Holdings Limited. All rights reserved.</span>
-        <span className="font-bold tracking-wider">PROOF, THEN SCALE. - MALAWI FIRST.</span>
+        <span className="font-bold tracking-wider">AI-NATIVE COMPANIES.</span>
       </div>
     </footer>
   );

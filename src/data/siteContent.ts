@@ -39,7 +39,7 @@ export const company = {
   shortName: 'LightSpeed Holdings',
   location: 'Lilongwe, Malawi',
   tagline: 'ASPIRE. ACT. ACHIEVE.',
-  northStar: 'Malawi first. Prove it. Then the world.',
+  northStar: 'We build AI-native companies.',
   heroHeadline: 'Build the intelligent enterprise.',
   heroSubline:
     'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems — in Malawi, across SADC, and beyond.',

@@ -1,4 +1,5 @@
-"""Dead-letter queue for stale tasks (GAP-017).
+"""
+Dead-letter queue for stale tasks (GAP-017).
 
 Tasks that remain ``in_progress`` beyond their lease (or, for legacy
 tasks without a lease, beyond ``STALE_THRESHOLD_MINUTES``) are considered
@@ -8,6 +9,9 @@ retry.
 Persistence is lock-guarded and atomic via :class:`FileStore`, moves are
 deduplicated by task id, and staleness is lease-aware so a live executor
 whose heartbeat is refreshing its lease is never raced by the detector.
+
+Evidence separation (AGENTS.md §9.3): entries are also appended to
+orchestrator/dead_letter.jsonl for auditor access (read-only).
 """
 
 from __future__ import annotations
@@ -24,6 +28,8 @@ from ai_company.store.file_store import FileStore
 if TYPE_CHECKING:
     from ai_company.orchestrator.message_bus import MessageBus
 
+from ai_company.orchestrator.dead_letter import get_dead_letter_store
+
 logger = logging.getLogger(__name__)
 
 # Default fallback threshold for legacy tasks without a lease: 30 minutes
@@ -33,18 +39,24 @@ STALE_THRESHOLD_MINUTES: int = 30
 STALE_RETRY_MAX: int = 3
 
 DEFAULT_DLQ_PATH: str = ".opencode/dead_letter.json"
+DEFAULT_DLQ_EVIDENCE_PATH: str = "orchestrator/dead_letter.jsonl"
 
 
 class DeadLetterQueue:
     """Manages the dead-letter file for stale / failed tasks."""
 
-    def __init__(self, dlq_path: str = DEFAULT_DLQ_PATH) -> None:
+    def __init__(
+        self, dlq_path: str = DEFAULT_DLQ_PATH, evidence_path: str = DEFAULT_DLQ_EVIDENCE_PATH
+    ) -> None:
         self.dlq_path = Path(dlq_path)
         self.dlq_path.parent.mkdir(parents=True, exist_ok=True)
         self._store = FileStore(self.dlq_path.parent, backup=True)
         self._name = self.dlq_path.name
         if not self._store.exists(self._name):
             self._store.write_json(self._name, [])
+
+        # Evidence-separation compliant JSONL store (append-only, auditor read-only)
+        self._evidence_store = get_dead_letter_store(evidence_path)
 
     # ── Persistence ──────────────────────────────────────────────────
 
@@ -70,6 +82,8 @@ class DeadLetterQueue:
         crash between the DLQ move and the inbox deletion can never create
         duplicate entries.  A ``dead_letter`` wrapper is returned
         containing the original task data plus metadata (moved_at, reason).
+
+        Also appends to the evidence-separation JSONL store (orchestrator/dead_letter.jsonl).
         """
         now = datetime.now(timezone.utc).isoformat()
         entry = {
@@ -88,6 +102,24 @@ class DeadLetterQueue:
 
         self._update_entries(_updater)
         logger.warning("Task %s moved to DLQ: %s", task_id, reason)
+
+        # Also append to evidence-separation JSONL store
+        try:
+            from ai_company.orchestrator.dead_letter import DeadLetterEntry, get_dead_letter_store
+
+            evidence_store = get_dead_letter_store()
+            evidence_entry = DeadLetterEntry(
+                id=f"dlq-{task_id}",
+                task_id=str(task_id),
+                agent_id=task_data.get("agent_id", "unknown"),
+                payload=task_data,
+                failure_reason=reason,
+                attempt_count=task_data.get("retry_count", 0) + 1,
+            )
+            evidence_store.append(evidence_entry)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to write DLQ entry to evidence store: %s", exc)
+
         return entry
 
     def has_task(self, task_id: str) -> bool:
@@ -129,6 +161,14 @@ class DeadLetterQueue:
         self._update_entries(_updater)
         if restored is not None:
             logger.info("Task %s removed from DLQ for retry.", task_id)
+            # Mark as resolved in evidence store
+            try:
+                from ai_company.orchestrator.dead_letter import get_dead_letter_store
+
+                evidence_store = get_dead_letter_store()
+                evidence_store.mark_resolved(f"dlq-{task_id}", "requeued for retry")
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to mark DLQ entry as resolved in evidence store: %s", exc)
         return restored
 
     def clear(self) -> int:
@@ -181,6 +221,24 @@ class DeadLetterQueue:
         # Step 2: Delete from inbox (atomic under inbox lock)
         bus.delete_task(task_id)
         logger.warning("Task %s moved to DLQ atomically: %s", task_id, reason)
+
+        # Also append to evidence-separation JSONL store
+        try:
+            from ai_company.orchestrator.dead_letter import DeadLetterEntry, get_dead_letter_store
+
+            evidence_store = get_dead_letter_store()
+            evidence_entry = DeadLetterEntry(
+                id=f"dlq-{task_id}",
+                task_id=task_id,
+                agent_id=task_data.get("agent_id", "unknown"),
+                payload=task_data,
+                failure_reason=reason,
+                attempt_count=task_data.get("retry_count", 0) + 1,
+            )
+            evidence_store.append(evidence_entry)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to write DLQ entry to evidence store: %s", exc)
+
         return entry
 
 

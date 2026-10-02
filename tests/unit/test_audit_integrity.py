@@ -5,8 +5,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from ai_company.audit.events import AuditEvent, AuditEventType
-from ai_company.audit.integrity import verify_audit_chain
+from ai_company.audit.integrity import check_jsonl, main, verify_audit_chain
 from ai_company.audit.writer import _ZERO_HASH, AuditWriter
 
 
@@ -152,3 +154,104 @@ def _first_line(path: Path) -> str:
             if line.strip():
                 return line
     raise AssertionError("empty file")
+
+
+class TestEvidenceStoreCheck:
+    """Structural validation for append-only stores with no chain fields."""
+
+    def test_valid_store_passes(self, tmp_path: Path) -> None:
+        store = tmp_path / "escalation_events.jsonl"
+        store.write_text('{"event_id":"a"}\n{"event_id":"b"}\n', encoding="utf-8")
+        result = check_jsonl(store)
+        assert result["ok"] is True
+        assert result["records"] == 2
+        assert result["errors"] == []
+
+    def test_malformed_json_detected(self, tmp_path: Path) -> None:
+        store = tmp_path / "dead_letter.jsonl"
+        store.write_text('{"id":"a"}\nNOT JSON\n{"id":"b"}\n', encoding="utf-8")
+        result = check_jsonl(store)
+        assert result["ok"] is False
+        assert any("malformed JSON" in e for e in result["errors"]), result["errors"]
+
+    def test_non_object_line_detected(self, tmp_path: Path) -> None:
+        store = tmp_path / "store.jsonl"
+        store.write_text('{"id":"a"}\n[1,2,3]\n', encoding="utf-8")
+        result = check_jsonl(store)
+        assert result["ok"] is False
+        assert any("not a JSON object" in e for e in result["errors"]), result["errors"]
+
+    def test_missing_file_is_not_ok(self, tmp_path: Path) -> None:
+        result = check_jsonl(tmp_path / "absent.jsonl")
+        assert result["ok"] is False
+        assert any("file not found" in e for e in result["errors"])
+
+    def test_blank_lines_are_skipped(self, tmp_path: Path) -> None:
+        store = tmp_path / "store.jsonl"
+        store.write_text('{"id":"a"}\n\n   \n{"id":"b"}\n', encoding="utf-8")
+        result = check_jsonl(store)
+        assert result["ok"] is True
+        assert result["records"] == 2
+
+    def test_chain_verifier_gives_false_assurance_on_unchained_stores(self, tmp_path: Path) -> None:
+        """Regression guard for the documented limitation.
+
+        An append-only evidence store carries no ``__seq``/``__prev_hash``, so
+        ``verify_audit_chain`` reports success without inspecting any link: it
+        cannot distinguish an intact store from one whose record was altered.
+        ``check`` catches structural corruption (malformed JSON, non-object
+        lines) but not altered field values. This is why the DR runbook uses
+        ``check`` for these stores and reserves ``verify`` for the AuditWriter
+        trail, the only hash-chained store.
+        """
+        intact = tmp_path / "escalation_events.jsonl"
+        intact.write_text('{"event_id":"a","severity":"high"}\n', encoding="utf-8")
+        altered = tmp_path / "altered_events.jsonl"
+        altered.write_text('{"event_id":"a","severity":"critical"}\n', encoding="utf-8")
+
+        assert verify_audit_chain(intact)["ok"] is True
+        assert verify_audit_chain(altered)["ok"] is True
+        assert check_jsonl(intact)["ok"] is True
+        assert check_jsonl(altered)["ok"] is True
+
+
+class TestIntegrityCli:
+    """Exit codes must be usable as a gate in CI and operator runbooks."""
+
+    def test_check_returns_zero_for_valid_store(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        store = tmp_path / "store.jsonl"
+        store.write_text('{"id":"a"}\n', encoding="utf-8")
+        assert main(["check", str(store)]) == 0
+        assert "Integrity OK" in capsys.readouterr().out
+
+    def test_check_returns_nonzero_for_corrupt_store(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        store = tmp_path / "store.jsonl"
+        store.write_text("BROKEN\n", encoding="utf-8")
+        assert main(["check", str(store)]) == 1
+        assert "INTEGRITY CHECK FAILED" in capsys.readouterr().err
+
+    def test_verify_returns_nonzero_for_tampered_chain(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        log_file = tmp_path / "audit.jsonl"
+        AuditWriter(path=log_file).write_batch([_event(task_id="t-1"), _event(task_id="t-2")])
+        lines = log_file.read_text(encoding="utf-8").splitlines()
+        data = json.loads(lines[0])
+        data["task_id"] = "tampered"
+        lines[0] = json.dumps(data, ensure_ascii=False)
+        log_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+        assert main(["verify", str(log_file)]) == 1
+        assert "INTEGRITY CHECK FAILED" in capsys.readouterr().err
+
+    def test_verify_returns_zero_for_intact_chain(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        log_file = tmp_path / "audit.jsonl"
+        AuditWriter(path=log_file).write_batch([_event(task_id="t-1"), _event(task_id="t-2")])
+        assert main(["verify", str(log_file)]) == 0
+        assert "Integrity OK" in capsys.readouterr().out

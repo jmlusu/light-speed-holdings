@@ -21,6 +21,8 @@
 | **kie.ai** | api.kie.ai · kieai.redpandaai.co | Base64 images + prompts (scroll-craft image gen) | `KIE_AI_API_KEY` | 2026-09-23 | 2026-12-22 | **RETIRED with skills** — do not reinstall |
 | **Greptile** | greptile | PR bodies, diffs, comments, repo content (greploop review) | GitHub/Greptile token | 2026-09-23 | 2026-12-22 | **RETIRED with skills** — do not reinstall |
 | **Xiaomi MiMo** | api.xiaomimimo.com | Source files, prompts and task context sent to the MiMo API (LLM provider) and to the MiMo Code CLI | `MIMO_API_KEY` (Bearer) | 2026-09-25 | 2026-12-24 | **Active allow-list** — CEO/CISO approval for model provider + MiMo Code CLI; re-sign before 2026-12-24 |
+| **Google AI / Gemini Image API** | generativelanguage.googleapis.com | Prompts, brand tokens, reference images for image generation | `GEMINI_API_KEY` (Bearer) | 2026-10-01 | 2026-12-30 | **Active allow-list** — CEO/CISO approval for AI-generated imagery (ADR-018); re-sign before 2026-12-30 |
+| **Comfy Cloud** | cloud.comfy.org | Workflow JSON, prompts, model params for ComfyUI partner API nodes (Nano Banana, Seedance) | `COMFY_API_KEY` (Bearer) | 2026-10-01 | 2026-12-30 | **Active allow-list** — CEO/CISO approval for AI-generated imagery (ADR-018); re-sign before 2026-12-30 |
 
 **Tier B (public research — generally OK, disclose in skill description):** webfetch to public docs, arXiv/OpenAlex/CrossRef/PubMed, Kroki diagram fallback, skills.sh / marketplace discovery (`find-skills`, `global-chat-agent-discovery`, `using-agent-skills`). Still subject to stop-and-report if they unexpectedly POST local project files.
 
@@ -53,5 +55,6 @@ Git snapshot before purge: `a179b62e`.
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-10-01 | Allow-list Google AI / Gemini Image API and Comfy Cloud for AI-generated imagery (ADR-018) | CEO / Chief of Staff |
 | 2026-09-25 | Allow-list Xiaomi MiMo (`api.xiaomimimo.com`) for LLM provider + MiMo Code CLI | CEO / Chief of Staff |
 | 2026-09-23 | Initial allow-list; retire claude-mem / scroll-craft / greploop | CEO / Chief of Staff |

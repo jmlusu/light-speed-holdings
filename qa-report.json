@@ -1,5 +1,5 @@
 {
-  "target": "http://localhost:3000/",
+  "target": "C:\\Users\\jmlus\\light-speed-holdings\\test_placement.md",
   "checks": [
     {
       "viewport": {
@@ -7,13 +7,13 @@
         "height": 800
       },
       "scrollWidth": 1280,
-      "scrollHeight": 12806,
+      "scrollHeight": 1286,
       "horizontalOverflowPx": 0,
       "imgCount": 0,
       "missingAltCount": 0,
-      "headingCount": 44,
+      "headingCount": 0,
       "emptyHeadingCount": 0,
-      "screenshot": "qa-home-1280x800.png"
+      "screenshot": "qa-1280x800.png"
     },
     {
       "viewport": {
@@ -21,13 +21,13 @@
         "height": 667
       },
       "scrollWidth": 375,
-      "scrollHeight": 21280,
+      "scrollHeight": 1646,
       "horizontalOverflowPx": 0,
       "imgCount": 0,
       "missingAltCount": 0,
-      "headingCount": 44,
+      "headingCount": 0,
       "emptyHeadingCount": 0,
-      "screenshot": "qa-home-375x667.png"
+      "screenshot": "qa-375x667.png"
     }
   ]
 }

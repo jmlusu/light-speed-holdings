@@ -171,12 +171,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
               <p className={`text-justify text-base sm:text-lg font-bold leading-relaxed ${
                 isLight ? 'text-ls-navy' : 'text-ls-white'
               }`}>
-                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds and operates agentic AI systems from Malawi for organizations across SADC — 90 agents, 20 departments, five-tier human approval, every decision auditable.
+                <span className="text-ls-red font-extrabold">LightSpeed Holdings</span> builds AI-native companies — 90 agents, 20 departments, five-tier human approval, every decision auditable.
               </p>
               <p className={`text-justify text-xs sm:text-sm leading-relaxed ${
                 isLight ? 'text-ls-navy font-medium' : 'text-ls-grey-light-text'
               }`}>
-                Strategy — Build — Govern — Research & Policy. We prove the model in Malawi first with shipped work — websites, automation, reporting, and marketing — for the organizations that need them most.
+                Strategy — Build — Govern — Research & Policy. We build AI-native companies with shipped work — websites, automation, reporting, and marketing — for the organizations that need them most.
               </p>
             </div>
 
