@@ -12,12 +12,15 @@ import logging
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import yaml
 from pydantic import BaseModel, Field
 
 from ai_company.utils.file_lock import atomic_write, file_lock
+
+if TYPE_CHECKING:
+    from ai_company.orchestrator.escalation_events import EscalationEventStore
 
 logger = logging.getLogger(__name__)
 
