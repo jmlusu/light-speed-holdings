@@ -66,7 +66,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ theme }) => {
         <div>
           <div className="inline-flex items-center gap-2.5">
             <Link to="/" className="flex items-center gap-2.5 group cursor-pointer">
-              <Logo size={36} showText theme={theme} />
+              <Logo size={36} showText theme={theme} instance="repeat" />
             </Link>
             <div className="flex flex-col">
               <span className={`text-xs font-black tracking-widest font-sans ${brandCls}`}>

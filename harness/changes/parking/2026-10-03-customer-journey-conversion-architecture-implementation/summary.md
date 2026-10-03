@@ -1,8 +1,8 @@
-﻿---
+---
 title: "Customer Journey Conversion Architecture Implementation"
 slug: "customer-journey-conversion-architecture-implementation"
-status: "in_progress"
-location: "active"
+status: "parked"
+location: "parking"
 phase: "implement"
 intake_status: "approved"
 spec_review: "approved"
@@ -12,7 +12,7 @@ files: []
 tags: ["customer-journey", "frontend", "ux", "conversion", "analytics"]
 validation_status: "unknown"
 created_at: "2026-09-29"
-updated_at: "2026-09-29"
+updated_at: "2026-10-03"
 session_id: "0d4ecacf-7295-4c5d-87c5-6785054a31f2"
 owner_agent: "jmlus"
 claimed_at: "2026-09-29"

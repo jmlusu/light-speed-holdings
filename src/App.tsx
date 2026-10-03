@@ -17,6 +17,11 @@ import { ContactPage } from './pages/ContactPage';
 import { AskLightSpeed } from './components/AskLightSpeed';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { AthenaDashboard } from './pages/athena/Dashboard';
+import { JobList } from './pages/athena/JobList';
+import { JobDetail } from './pages/athena/JobDetail';
+import { DocumentEditor } from './pages/athena/DocumentEditor';
+import { AthenaLayout } from './components/athena/AthenaLayout';
 
 const HomePageRoute = withSite(HomePage);
 const WhatWeDoPageRoute = withSite(WhatWeDoPage);

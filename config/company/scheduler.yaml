@@ -9,8 +9,8 @@ scheduler:
   cycles:
     daily_briefing:
       enabled: true
-      time_utc: "06:00"
-      description: "Generate daily briefing for CEO review"
+      cron_expression: "0 4,8,12,15,18 * * *"
+      description: "Generate daily briefing for CEO review (5x daily at CAT business hours: 06:00, 10:00, 14:00, 17:00, 20:00 CAT)"
       command: "orchestrator briefing"
       output: ".opencode/daily_briefing.md"
     kpi_snapshot:

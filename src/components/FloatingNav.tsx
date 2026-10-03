@@ -42,7 +42,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
         >
           <div className="flex items-center gap-3">
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5 group cursor-pointer">
-              <Logo size={32} showText theme={theme} />
+              <Logo size={32} showText theme={theme} instance="first" />
             </Link>
           </div>
 

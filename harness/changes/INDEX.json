@@ -274,6 +274,37 @@
     "updated_at": "2026-09-22"
   },
   {
+    "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+    "title": "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "ci-cd",
+      "dependencies",
+      "monitoring"
+    ],
+    "files": [
+      "["
+    ],
+    "tags": [
+      "dependencies",
+      "security",
+      "ci-cd",
+      "monitoring",
+      "retroactive"
+    ],
+    "decisions": [
+      "- **Lockfile-only upgrade**: `uv lock --upgrade-package fastapi --upgrade-package starlette` instead of a full `uv lock --upgrade`, keeping blast radius minimal and avoiding unrelated version churn.",
+      "- **No pin added for fastapi/starlette**: constraints were already satisfiable; staleness was the root cause, not under-constraining.",
+      "- **PR #155 merged rather than closed-as-superseded**: GitHub reported CLEAN/MERGEABLE and all checks green once uv.lock was excluded from the Generated Files Drift Check (`392c347`); merging installs nothing new today and stops Dependabot churn.",
+      "- **Concurrent session's 22 dirty working-tree files left untouched**: verified zero overlap with this change's changeset; ownership belongs to the parallel session (task-event system, OmniRoute routing, doctor checks, dashboard org-health).",
+      "- **httpx2 migration deferred to a tracked follow-up issue** (not bundled here): httpx is unmaintained upstream; starlette ≥1.2 emits a deprecation warning for its TestClient fallback path."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+    "updated_at": "2026-08-26"
+  },
+  {
     "id": "2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
     "title": "fix(athena): serialize Decimal salary ranges in JSONL store",
     "status": "completed",
@@ -298,33 +329,6 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
     "updated_at": "2026-09-22"
-  },
-  {
-    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
-    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "site-frontend",
-      "enquiry-api"
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      "site",
-      "conversion",
-      "content",
-      "phase-1"
-    ],
-    "decisions": [
-      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
-      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
-      "- No LLM; no new backend email provider; brand tokens unchanged."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
-    "updated_at": "2026-09-23"
   },
   {
     "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
@@ -512,35 +516,63 @@
     "updated_at": "2026-09-25"
   },
   {
-    "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
-    "title": "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
+    "id": "2026-09-25-ls-mem-phase-3-data-model",
+    "title": "LS-MEM Phase 3 Data Model",
+    "status": "completed",
+    "location": "archive",
+    "modules": [],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "lsmem",
+      "memory",
+      "data-model",
+      "schema",
+      "sqlite",
+      "fts5"
+    ],
+    "decisions": [
+      "1. Versioned schema with forward-only migrations (no silent DDL drift).",
+      "2. All 13 memory types modeled in one core table with a `type` constraint",
+      "rather than per-type tables.",
+      "3. Record field set preserves every concept from handoff §8's example JSON",
+      "(provenance, `verified_by`, `approved_for_external_use`, etc.) while",
+      "adding storage columns justified by the threat model (classification,",
+      "redaction state, soft-delete columns).",
+      "4. Schema document is the contract implemented by the Phase \"Implementation\"",
+      "change (`src/ai_company/lsmem/engine.py` schema DDL)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-25-ls-mem-phase-3-data-model",
+    "updated_at": "2026-09-25"
+  },
+  {
+    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
     "status": "completed",
     "location": "archive",
     "modules": [
-      "ci-cd",
-      "dependencies",
-      "monitoring"
+      "site-frontend",
+      "enquiry-api"
     ],
     "files": [
-      "["
+      ""
     ],
     "tags": [
-      "dependencies",
-      "security",
-      "ci-cd",
-      "monitoring",
-      "retroactive"
+      "site",
+      "conversion",
+      "content",
+      "phase-1"
     ],
     "decisions": [
-      "- **Lockfile-only upgrade**: `uv lock --upgrade-package fastapi --upgrade-package starlette` instead of a full `uv lock --upgrade`, keeping blast radius minimal and avoiding unrelated version churn.",
-      "- **No pin added for fastapi/starlette**: constraints were already satisfiable; staleness was the root cause, not under-constraining.",
-      "- **PR #155 merged rather than closed-as-superseded**: GitHub reported CLEAN/MERGEABLE and all checks green once uv.lock was excluded from the Generated Files Drift Check (`392c347`); merging installs nothing new today and stops Dependabot churn.",
-      "- **Concurrent session's 22 dirty working-tree files left untouched**: verified zero overlap with this change's changeset; ownership belongs to the parallel session (task-event system, OmniRoute routing, doctor checks, dashboard org-health).",
-      "- **httpx2 migration deferred to a tracked follow-up issue** (not bundled here): httpx is unmaintained upstream; starlette ≥1.2 emits a deprecation warning for its TestClient fallback path."
+      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
+      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
+      "- No LLM; no new backend email provider; brand tokens unchanged."
     ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
-    "updated_at": "2026-08-26"
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "updated_at": "2026-09-23"
   },
   {
     "id": "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
@@ -797,38 +829,6 @@
     "updated_at": "2026-09-25"
   },
   {
-    "id": "2026-09-25-ls-mem-phase-3-data-model",
-    "title": "LS-MEM Phase 3 Data Model",
-    "status": "completed",
-    "location": "archive",
-    "modules": [],
-    "files": [
-      ""
-    ],
-    "tags": [
-      "lsmem",
-      "memory",
-      "data-model",
-      "schema",
-      "sqlite",
-      "fts5"
-    ],
-    "decisions": [
-      "1. Versioned schema with forward-only migrations (no silent DDL drift).",
-      "2. All 13 memory types modeled in one core table with a `type` constraint",
-      "rather than per-type tables.",
-      "3. Record field set preserves every concept from handoff §8's example JSON",
-      "(provenance, `verified_by`, `approved_for_external_use`, etc.) while",
-      "adding storage columns justified by the threat model (classification,",
-      "redaction state, soft-delete columns).",
-      "4. Schema document is the contract implemented by the Phase \"Implementation\"",
-      "change (`src/ai_company/lsmem/engine.py` schema DDL)."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-25-ls-mem-phase-3-data-model",
-    "updated_at": "2026-09-25"
-  },
-  {
     "id": "2026-09-26-immersive-3d-homepage-rebuild-full-webgl-lusion-igloo-class",
     "title": "Immersive 3D homepage rebuild - full WebGL (lusion/igloo class)",
     "status": "parked",
@@ -857,6 +857,63 @@
     "validation_status": "unknown",
     "path": "harness/changes/parking/2026-09-26-immersive-3d-homepage-rebuild-full-webgl-lusion-igloo-class",
     "updated_at": "2026-09-26"
+  },
+  {
+    "id": "2026-09-29-linkedin-ai-native-series",
+    "title": "LinkedIn AI-Native Series",
+    "status": "parked",
+    "location": "parking",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- Research evidence matrices completed and verified per existing files.",
+      "- Drafts v1 produced for Posts 1–3 in \"builder-writer-advocate\" voice, no emojis, `™` on first company mention, claims traceable to registry/results/Pharos artifacts.",
+      "- Framework layer (H-A-O-M-T-G-V) explicitly named in each draft (H, A, O respectively).",
+      "- Malawi/SADC context present in each draft (sovereign data, low-bandwidth, 90-day pilot).",
+      "- CTA aligned: Build / Evidence / Shape in all three drafts.",
+      "- Visual production: `ls-visual-storytelling` leads hero visual, `k-dense-infographics` produces carousel cards; both feed mandatory `ls-artifact-qa` gate.",
+      "- CEO review batch: Posts 1–3 together, 48h SLA via G2 gate. Decision: **approved 2026-09-28**.",
+      "- Card selection (visuals): P1 = Definition / 5-Tier HITL / CTA; P2 = 90 Agents / 8 Products / CTA; P3 = Orchestration Layer / Org Metrics / CTA. Rhythm navy → white → navy.",
+      "- Renderer: Pillow generator with exact token-palette snap (canonical `brand/tokens/brand-tokens.json` first); icon logo on navy (alpha-trimmed), full logo on white (near-white bg normalized to avoid grey box).",
+      "- ™ in visuals: P2 cover \"LightSpeed Holdings Limited™\", P3 hero \"LightSpeed™ AI-native org structure\".",
+      "- Queue rebuild (Step 7): pre-existing records were wrong — Post 1 marked `posted` without ever publishing (dry-run misrecorded), Post 2 held the X-thread text (🤖 `1/9…9/9`), Post 3 held draft checklist metadata. Queue cleared via `PublishQueue.clear()` and re-enqueued through the public API.",
+      "- Publish format decision (CEO, 2026-09-28): **LinkedIn feed post, 3,000-char cap** — `format_linkedin` unchanged, no article API. Queued bodies must pass `truncated=False` so the internal `[continued in queue]` marker never publishes. Full long-form articles remain canonical in `draft-v1.md`; feed bodies are verbatim condensations (no new claims) in each `post-0N/feed-v1.md`, enqueued with the draft's Hashtags line (combined title+body: 2,775 / 2,926 / 2,753 chars)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/parking/2026-09-29-linkedin-ai-native-series",
+    "updated_at": "2026-09-29"
+  },
+  {
+    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
+    "title": "Customer Journey Conversion Architecture Implementation",
+    "status": "parked",
+    "location": "parking",
+    "modules": [
+      "src/components",
+      "src/pages",
+      "src/data",
+      "src/hooks",
+      "src/lib"
+    ],
+    "files": [],
+    "tags": [
+      "customer-journey",
+      "frontend",
+      "ux",
+      "conversion",
+      "analytics"
+    ],
+    "decisions": [],
+    "validation_status": "unknown",
+    "path": "harness/changes/parking/2026-10-03-customer-journey-conversion-architecture-implementation",
+    "updated_at": "2026-10-03"
   },
   {
     "id": "2026-08-08-sprint-4-quality-completeness",
@@ -1169,38 +1226,6 @@
     "updated_at": "2026-08-17"
   },
   {
-    "id": "2026-09-29-linkedin-ai-native-series",
-    "title": "LinkedIn AI-Native Series",
-    "status": "parked",
-    "location": "parking",
-    "modules": [
-      ""
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      ""
-    ],
-    "decisions": [
-      "- Research evidence matrices completed and verified per existing files.",
-      "- Drafts v1 produced for Posts 1–3 in \"builder-writer-advocate\" voice, no emojis, `™` on first company mention, claims traceable to registry/results/Pharos artifacts.",
-      "- Framework layer (H-A-O-M-T-G-V) explicitly named in each draft (H, A, O respectively).",
-      "- Malawi/SADC context present in each draft (sovereign data, low-bandwidth, 90-day pilot).",
-      "- CTA aligned: Build / Evidence / Shape in all three drafts.",
-      "- Visual production: `ls-visual-storytelling` leads hero visual, `k-dense-infographics` produces carousel cards; both feed mandatory `ls-artifact-qa` gate.",
-      "- CEO review batch: Posts 1–3 together, 48h SLA via G2 gate. Decision: **approved 2026-09-28**.",
-      "- Card selection (visuals): P1 = Definition / 5-Tier HITL / CTA; P2 = 90 Agents / 8 Products / CTA; P3 = Orchestration Layer / Org Metrics / CTA. Rhythm navy → white → navy.",
-      "- Renderer: Pillow generator with exact token-palette snap (canonical `brand/tokens/brand-tokens.json` first); icon logo on navy (alpha-trimmed), full logo on white (near-white bg normalized to avoid grey box).",
-      "- ™ in visuals: P2 cover \"LightSpeed Holdings Limited™\", P3 hero \"LightSpeed™ AI-native org structure\".",
-      "- Queue rebuild (Step 7): pre-existing records were wrong — Post 1 marked `posted` without ever publishing (dry-run misrecorded), Post 2 held the X-thread text (🤖 `1/9…9/9`), Post 3 held draft checklist metadata. Queue cleared via `PublishQueue.clear()` and re-enqueued through the public API.",
-      "- Publish format decision (CEO, 2026-09-28): **LinkedIn feed post, 3,000-char cap** — `format_linkedin` unchanged, no article API. Queued bodies must pass `truncated=False` so the internal `[continued in queue]` marker never publishes. Full long-form articles remain canonical in `draft-v1.md`; feed bodies are verbatim condensations (no new claims) in each `post-0N/feed-v1.md`, enqueued with the draft's Hashtags line (combined title+body: 2,775 / 2,926 / 2,753 chars)."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/parking/2026-09-29-linkedin-ai-native-series",
-    "updated_at": "2026-09-29"
-  },
-  {
     "id": "2026-09-26-ls-mem-completion",
     "title": "LS-MEM Completion",
     "status": "completed",
@@ -1237,6 +1262,31 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-26-ls-mem-completion",
     "updated_at": "2026-09-26"
+  },
+  {
+    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
+    "title": "Customer Journey Conversion Architecture Implementation",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "src/components",
+      "src/pages",
+      "src/data",
+      "src/hooks",
+      "src/lib"
+    ],
+    "files": [],
+    "tags": [
+      "customer-journey",
+      "frontend",
+      "ux",
+      "conversion",
+      "analytics"
+    ],
+    "decisions": [],
+    "validation_status": "unknown",
+    "path": "harness/changes/archive/2026-10-03-customer-journey-conversion-architecture-implementation",
+    "updated_at": "2026-10-03"
   }
 ]
 

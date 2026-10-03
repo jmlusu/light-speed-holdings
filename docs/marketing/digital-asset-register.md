@@ -1,41 +1,19 @@
-# Digital Asset Register — LIGHTSPEED HOLDINGS
+# Digital Asset Register - LIGHTSPEED HOLDINGS
 
-**Owner:** `social_media_manager` (registry `company-registry.yaml:928`), confirmed accountable owner 2026-09-22 (see [#194](https://github.com/jmlusu/light-speed-holdings/issues/194) gate decision 3).
-**Status:** Active â€” provisioning in progress under [#194](https://github.com/jmlusu/light-speed-holdings/issues/194); platforms claim on `info.lightspeed@gmail.com` per the phase plan in `docs/marketing/digital-identity-setup.md`. **Domain control deferred:** `lightspeedholdings.com` is Afternic-parked (for-sale lander, null MX); Resend sending-domain work parked until the domain is settled (see [#194](https://github.com/jmlusu/light-speed-holdings/issues/194)).
-**Purpose:** Single source of truth for every platform account: ownership, 2FA state, and provisioning status.
-**Security:** No passwords or secrets live in this file. Credentials belong in the password manager only.
+**Owner:** social_media_manager (registry company-registry.yaml:928).
+**Purpose:** single source of truth for provisioning, ownership, 2FA, assets and verification. Passwords stored only in Bitwarden (org LIGHTSPEED HOLDINGS, collection Social Media Accounts).
+**Rule:** verification requires public URL captured, admin role confirmed, and short verification note.
 
-Update the `Status` column as provisioning moves through the [phase plan](digital-identity-setup.md#phase-plan). When a platform ships, set `Status: Live` and add the public URL to the `URL` column.
+| Platform | Display Name | Username/Handle | Company Email | Account Type | 2FA Enabled | Status | URL | Last Verified | Profile Image | Cover/Banner | Owner | Admins | Category | Bio/Description | Website | Business Manager | Launch Status | Verification |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Website | LightSpeed Holdings | https://lightspeedholdings.com | info.lightspeedholdings@gmail.com | Company site | N/A | Pending | TBD | TBD | N/A | N/A | CEO | TBD | Company site | Landing site (Afternic-parked) | https://lightspeedholdings.com | N/A | Draft | - |
+| LinkedIn | LightSpeed Holdings Limited | @lightspeedholdings | info.lightspeedholdings@gmail.com | Company Page | Yes | Pending (#194) | - | TBD | lightspeed-logo-primary.png | linkedin-banner.png | Founder | Founder & CEO (Jack Mlusu) | Management Consulting / AI | Master description | lightspeedholdings.com | N/A | Draft | - |
+| Facebook | Lightspeed Holdings Limited | @lightspeedholdings | info.lightspeedholdings@gmail.com | Company Page | Yes | Live | https://www.facebook.com/lightspeedholdings | 2026-10-03 | facebook-profile.png | facebook-cover.png | Founder | Founder (admin) | Consulting/IT/Business Service | Master description | lightspeedholdings.com | Meta Business Suite | Live | 2026-10-03 - public URL https://www.facebook.com/lightspeedholdings - admin role confirmed - verified by human |
+| Instagram | LightSpeed Holdings AI | @lightspeedholdingsAI | info.lightspeedholdings@gmail.com | Professional/Business | Yes | Live | https://www.instagram.com/lightspeedholdingsai | 2026-10-03 | instagram-profile.png | instagram-story.png | Founder | Founder | Professional/Business | Master description + IG variant | lightspeedholdings.com | Meta Business Suite | Live | 2026-10-03 - public URL https://www.instagram.com/lightspeedholdingsai - admin role confirmed - verified by human |
+| X | @lightspeedholdings | @lightspeedholdings | info.lightspeedholdings@gmail.com | X Professional (Business) | Yes | Pending (#194) | - | TBD | twitter-profile.png | twitter-header.png | Founder | Founder | Business | Short punchy | lightspeedholdings.com | N/A | Draft | - |
+| TikTok | @lightspeedholdings | @lightspeedholdings | info.lightspeedholdings@gmail.com | Business Account | Yes | Pending (#194) | - | TBD | tiktok-profile.png | N/A | Founder | Founder | Business | Conversational | lightspeedholdings.com | TikTok Business Center | Draft | - |
+| YouTube | LightSpeed Holdings | @lightspeedholdings | info.lightspeedholdings@gmail.com | Company Channel | Yes | Pending (#194) | - | TBD | youtube-profile.png | youtube-channel-art.png | Founder | Founder | Company | Longer company description | lightspeedholdings.com | YouTube Studio | Draft | - |
+| Threads | @lightspeedholdings | @lightspeedholdings | info.lightspeedholdings@gmail.com | Account (claimed/activated) | Yes | Live | https://www.threads.net/@lightspeedholdings | 2026-10-03 | avatar-1024.png | N/A | Founder | Founder | Company | Master description | lightspeedholdings.com | N/A | Live | 2026-10-03 - public URL https://www.threads.net/@lightspeedholdings - admin role confirmed - verified by human |
+| Substack | LightSpeed Holdings | TBD | info.lightspeedholdings@gmail.com | Publication | Yes | Pending (#194) | - | TBD | avatar-1024.png | N/A | social_media_manager | Founder | Publication | Notes/insights | lightspeedholdings.com | N/A | Draft | - |
+| Resend | LightSpeed Holdings (sending) | N/A | info.lightspeedholdings@gmail.com | Email delivery | Yes | Pending (#194/#192) | - | TBD | N/A | N/A | social_media_manager | Founder | Sending | Domain parked until settled | N/A | N/A | Blocked | - |
 
-## Platform matrix
-
-| Platform | URL | Username / Handle | Email | Owner | 2FA | Status | Administrators | Profile image | Cover image | Category | Biography | Website | Business-manager relationship | Launch status |
-|----------|-----|-------------------|-------|-------|-----|--------|----------------|---------------|-------------|----------|-----------|---------|-------------------------------|---------------|
-| Facebook | — | Lightspeed Holdings Limited | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | TBD | Lightspeed logo | Branded cover (AI. STRATEGY. TRANSFORMATION.) | Consulting / IT / Business Service | Master description → FB variant | lightspeedholdings.com | Meta Business Suite | Draft |
-| Instagram | — | @lightspeedholdings | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | TBD | Lightspeed logo | — | Professional/Business | Master description → IG variant | lightspeedholdings.com | Meta Business Suite | Draft |
-| X | — | @lightspeedholdings | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | TBD | Lightspeed logo | Branded header | Professional → Business | Master description → X variant | lightspeedholdings.com | — | Draft |
-| LinkedIn | — | LightSpeed Holdings Limited | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | Founder as admin | Lightspeed logo | Branded cover | AI / Management Consulting / Technology | Master description → LinkedIn variant | lightspeedholdings.com | LinkedIn company administration | Draft |
-| TikTok | — | @lightspeedholdings | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | TBD | Lightspeed logo | — | Business Account | Master description → TikTok variant | lightspeedholdings.com | TikTok Business Center | Draft |
-| YouTube | — | LightSpeed Holdings (@lightspeedholdings) | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | TBD | Lightspeed logo | Branded banner | Company channel | Master description → YouTube variant | lightspeedholdings.com | Google business ownership | Draft |
-| Threads | — | @lightspeedholdings | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | TBD | Lightspeed logo | — | Company | Master description → Threads variant | lightspeedholdings.com | — | Reserved (Tier 3 — claim now, activate later) |
-| Substack | — | @lightspeedholdings | info.lightspeed@gmail.com | Company | Yes | Pending (#194) | TBD | Lightspeed logo | Branded cover | Publication — long-form archive / discovery | Master description → Substack variant | lightspeedholdings.com | — | Draft (delivery stays on Resend; see [#192](https://github.com/jmlusu/light-speed-holdings/issues/192)) |
-| Resend | resend.com | — | info.lightspeed@gmail.com | Company | Yes | Account created; sending domain unverified (#194) | Founder | — | — | Email delivery (broadcast + contacts/segments) | — | resend.com | — | Blocked — requires a verified company sending domain |
-
-## Identity standard
-
-- **Name:** LIGHTSPEED HOLDINGS LIMITED (brand: LIGHTSPEED)
-- **Username:** `@lightspeedholdings` (fallback `@lightspeedholdingsmw` → `@lightspeedhq`)
-- **Tagline:** ASPIRE. ACT. ACHIEVE.
-- **Positioning:** AI. Strategy. Transformation.
-
-## Reserve list
-
-Claim for brand protection (do not necessarily use): `lightspeedholdings`, `lightspeedholdingsmw`, `lightspeedhq`, `lightspeedai`, `lightspeedafrica`.
-
-## Change log
-
-| Date | Change |
-|------|--------|
-| 2026-09-19 | #189 conflict resolved — `social_media_manager` confirmed as register owner (agent committed in `f7dfc8aa`); stale "uncommitted / ownership unresolved" banner removed. Live handles continue to be recorded in the `URL` column per the `Live` status rule. |
-| 2026-09-17 | Register created from `social-media/LIGHTSPEED-SOCIAL-MEDIA-SETUP.md` (normalized to `docs/marketing/`). All platforms Pending — blocked by #194. |
-| 2026-09-22 | Owner conflict resolved -> `social_media_manager` confirmed accountable owner (see #194 gate decision 3). Domain control deferred; platforms proceed on `info.lightspeed@gmail.com`. Per-platform setup hand-off shipped in `provisioning-runbook.md`. |
