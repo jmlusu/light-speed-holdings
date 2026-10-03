@@ -55,11 +55,12 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 
 ```bash
 uv sync --extra dev            # Install project + dev deps (creates .venv, respects uv.lock)
-pre-commit install --hook-type pre-commit --hook-type post-commit  # Enable git hooks (ruff, mypy, bandit, post-commit capture-fix)
+pre-commit install --hook-type pre-commit --hook-type post-commit  # Enable git hooks (ruff, mypy, bandit, post-commit graph rebuild)
 ai-company --help            # CLI entry point (uv run ai-company --help if venv not activated)
 uv run ruff check src/       # Lint
 uv run mypy src/             # Type check
 uv run pytest                # Tests
+uv run graphify update .     # Keep the knowledge graph fresh (AST-only, no API cost)
 uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"  # Regenerate agents
 ```
 
@@ -102,6 +103,7 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 7 Safety Boundaries
 
@@ -149,7 +151,7 @@ Skills must not send LightSpeed local data (code, diffs, docs, screenshots, prom
 
 An agent performing an audit must treat its evidence set as read-only: **never write, move, rename, or delete any file inside the evidence directory it is auditing**, and never write its own audit output there. The auditor's read set and write set must be disjoint for the whole run, so findings stay re-derivable from an untouched evidence set and can be independently re-checked.
 
-- **Evidence directory** — any path consumed as evidence: `reports/evidence/`, `audit/*.jsonl`, `.opencode/audit/*`, `harness/changes/*/reviews/`, downloaded `audit-evidence` CI artifacts, `orchestrator/escalation_events.jsonl`, `orchestrator/dead_letter.jsonl`, `reports/evidence/audit-*.jsonl`.
+- **Evidence directory** — any path consumed as evidence: `reports/evidence/`, `audit/*.jsonl`, `.opencode/audit/*`, `harness/changes/*/reviews/`, downloaded `audit-evidence` CI artifacts.
 - **Where output goes** — a directory outside the evidence set (for the weekly audit: `reports/repo-audit-<AUDIT_DATE>.md`, with evidence at `reports/evidence/<AUDIT_DATE>.json`), or a path outside the repository.
 - **On violation** — discard the run, re-fetch evidence from a fresh clone or CI artifact, re-run, and report the incident alongside the findings.
 
@@ -162,6 +164,7 @@ An agent performing an audit must treat its evidence set as read-only: **never w
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
 | Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Graphify graph freshness | `uv run graphify update .` (auto-runs on post-commit hook) |
 
 ## 11 Security — Key Rotation Procedure
 
@@ -196,7 +199,7 @@ See also: [docs/DASHBOARD_KEY_ROTATION.md](docs/DASHBOARD_KEY_ROTATION.md) for d
 **LLM Provider keys:**
 - `OPENCODE_API_KEY` — primary (Big Pickle)
 - `GEMINI_API_KEY` — fallback (gemini-3.5-flash)
-- Optional: `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `MIMO_API_KEY`
+- Optional: `DEEPSEEK_API_KEY`, `KIMI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`
 
 **Verification commands:**
 ```bash
@@ -249,3 +252,16 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes `scripts/visual_check.js` (Playwright; `npx playwright install chromium` once) |
 
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
