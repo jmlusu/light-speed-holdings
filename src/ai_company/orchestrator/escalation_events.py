@@ -139,21 +139,32 @@ class EscalationEventStore:
             return len(rotated_events)
 
 
-# Module-level singleton
-_escalation_event_store: Optional["EscalationEventStore"] = None
+_STORE_CACHE: "dict[str, EscalationEventStore]" = {}
 
 
 def get_escalation_event_store(
     path: str = "orchestrator/escalation_events.jsonl",
 ) -> "EscalationEventStore":
-    """Get the module-level singleton EscalationEventStore."""
-    global _escalation_event_store
-    if _escalation_event_store is None:
-        _escalation_event_store = EscalationEventStore(path)
-    return _escalation_event_store
+    """Return an ``EscalationEventStore`` bound to ``path``.
+
+    Stores are cached per resolved ``path`` rather than once per module.
+    Previously a single module-level instance was cached and ``path`` was
+    ignored on every call after the first, which silently routed all callers —
+    including ones pointing at isolated directories — into whichever file
+    happened to be used first.
+
+    Caching per path keeps one store (and therefore one lock) per file, so
+    concurrent writers to the same file still serialise through the same
+    ``RLock`` while callers using different paths stay fully isolated.
+    """
+    key = str(Path(path).expanduser().resolve())
+    store = _STORE_CACHE.get(key)
+    if store is None:
+        store = EscalationEventStore(path)
+        _STORE_CACHE[key] = store
+    return store
 
 
 def reset_escalation_event_store() -> None:
-    """Reset the module-level singleton (used by tests)."""
-    global _escalation_event_store
-    _escalation_event_store = None
+    """Drop all cached stores so subsequent lookups rebuild them."""
+    _STORE_CACHE.clear()

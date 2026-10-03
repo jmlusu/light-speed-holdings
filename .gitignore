@@ -1,138 +1,22 @@
-# ==========================================
-# Secrets & Environment Configuration
-# ==========================================
-.env
-.env.*
-!.env.example
-!.env.staging.example
-
-# ==========================================
-# Build Artifacts & Dependencies
-# ==========================================
+.google notebook artifacts/
+static/brand/social/facebook-cover-2800x1128.jpg
+static/brand/social/facebook-cover-2560x1024.jpg
+static/brand/social/facebook-cover-1640x664_1.jpg
+.env*
+.env.local
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.python-version
+.pytest_cache/
+.hg/
+.DS_Store
 node_modules/
 dist/
 build/
-.tmp/
-*.tsbuildinfo
-
-# Python & Virtual Environments
-__pycache__/
-*.py[cod]
-*$py.class
 *.egg-info/
-*.egg
-.eggs/
-.venv/
-venv/
-env/
-
-# ==========================================
-# IDE & System Files
-# ==========================================
 .vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-
-# ==========================================
-# Testing, Coverage & Quality Tools
-# ==========================================
-.pytest_cache/
-.pytest_tmp*/
-.pytest-benchmark/
-.benchmarks/
-.benchmarks-*.json
-.coverage
-htmlcov/
-coverage.xml
-cov_gate.log
-pytest-run*.log
-.mypy_cache/
-.ruff_cache/
-.hypothesis/
-
-# ==========================================
-# OpenCode Runtime State & Generated Output
-# ==========================================
-.opencode/inbox*.json
-.opencode/pending_approvals.json
-.opencode/audit
-.opencode/audit.jsonl
-.opencode/config.json
-.opencode/dead_letter.json
-.opencode/daily_briefing.md
-.opencode/opencode.json
-.opencode/*.audit-tmp-*
-.opencode/decompositions/
-.opencode/suspended_states/
-.agents/skills-staging/
-workflows/instances/
-memory/*.json
-memory/vector_index/
-/data/
-logs/
-results/
-/orchestrator/
-.playwright-cli/
-
-# ==========================================
-# MiMo Code Runtime State (project config is tracked)
-# ==========================================
-.mimocode/*
-!.mimocode/mimocode.jsonc
-/mimocode.json
-/mimocode.jsonc
-*.bak
-*.executor-bak
-backup/
-backups/
-
-# SQLite databases
-data/*.db
-data/*.db-shm
-data/*.db-wal
-data/*.db-journal
-
-# LS-MEM local memory store (never commit)
-.lightspeed/memory/
-.lightspeed/memory.db
-.lightspeed/memory.db-shm
-.lightspeed/memory.db-wal
-.lightspeed/memory.db-journal
-
-# ==========================================
-# Whitelisted OpenCode Agent Specifications & Metadata
-# ==========================================
-!.opencode/agents/
-!.opencode/skills/
-!.opencode/plans/
-!.opencode/plugins/
-!.opencode/reminders/
-!.opencode/operating-standards.md
-!company-registry.yaml
-!AGENTS.md
-!metadata.json
-!package.json
-!tsconfig.json
-!vite.config.ts
-
-# ==========================================
-# Binaries & Large Executables
-# ==========================================
-/bin/
-/models/
-*.gguf
-
-# Debug & Temp Logs
-*.err
-dashboard.log
-dev-server.log
-*_errors.txt
-*_output.txt
-run.json
-dashboard/alerts.json
-
-# Athena runtime data (jobs cache, embeddings)
-company/athena/
+.cache/
+.backups/
