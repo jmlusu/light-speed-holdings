@@ -76,7 +76,7 @@ foreach ($claimName in $manifest.claims.PSObject.Properties.Name) {
             continue
         }
 
-        $files = Get-ChildItem -Path $scopeFull -Filter $scopeFilter -File -ErrorAction SilentlyContinue
+        $files = Get-ChildItem -Path $scopeFull -Filter $scopeFilter -File -ErrorAction SilentlyContinue | Sort-Object FullName
         foreach ($file in $files) {
             $checked++
             $content = Get-Content -LiteralPath $file.FullName -Raw -ErrorAction SilentlyContinue

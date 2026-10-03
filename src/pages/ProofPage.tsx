@@ -1,10 +1,12 @@
-import React from 'react';
-import { ArrowRight, CheckCircle2, ShieldCheck, GitBranch, Database, FileCheck } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
 import { Reveal } from '../components/Reveal';
-import { workCaseStudies, workPolicy } from '../data/siteContent';
+import { proofCaseStudies, proofPolicy, outcomeCategories, trustEvidence } from '../data/siteContent';
+import { liveTestCount } from '../data/metrics';
+import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 interface ProofPageProps {
   theme: 'light' | 'dark';
@@ -19,17 +21,34 @@ interface Metric {
 
 const PLATFORM_METRICS: Metric[] = [
   { value: '90', label: 'Canonical AI Agents', source: 'company-registry.yaml' },
-  { value: '2,557', label: 'Automated Regression Tests', source: 'pytest test suite' },
+  { value: liveTestCount.toLocaleString('en-US'), label: 'Automated Regression Tests', source: 'pytest test suite' },
   { value: '20', label: 'Departments Modeled', source: 'company-registry.yaml' },
   { value: '5-Tier', label: 'Human Approval Gates', source: 'ApprovalGate matrix' },
 ];
 
+
+
+const badgeTone = (badge: string) =>
+  badge.includes('Proven') || badge.includes('Published')
+    ? 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
+    : badge.includes('Proposed')
+      ? 'border-ls-grey-light-text/40 bg-ls-grey-dark/10 text-ls-grey-light-text'
+      : 'border-ls-red/40 bg-ls-red/10 text-ls-red';
+
 export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }) => {
   const isLight = theme === 'light';
 
+  useEffect(() => {
+    trackJourneyEvent({ eventType: 'proof_view', journeyStage: 'consideration' });
+  }, []);
+
+  const sectionShell = `px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-12 border-t scroll-mt-28 ${
+    isLight ? 'border-ls-grey-dark/30' : 'border-ls-white/10'
+  }`;
+
   return (
     <>
-      {/* 1. EXECUTIVE OUTCOME (Above the fold: what/who/why/next in 5s) */}
+      {/* PAGE INTRO — above the fold: what/who/why/next in 5s */}
       <PageIntro
         theme={theme}
         eyebrow="PROOF &amp; EVIDENCE"
@@ -58,12 +77,8 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
         </div>
       </PageIntro>
 
-      {/* 2. THE INSTITUTIONAL PROBLEM */}
-      <section
-        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-12 border-t ${
-          isLight ? 'border-ls-grey-dark/30' : 'border-ls-white/10'
-        }`}
-      >
+      {/* THE INSTITUTIONAL PROBLEM (preamble — unanchored) */}
+      <section className={sectionShell}>
         <SectionHeading
           theme={theme}
           eyebrow="THE INSTITUTIONAL PROBLEM"
@@ -119,65 +134,8 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
         </div>
       </section>
 
-      {/* 3. LIGHTSPEED'S APPROACH */}
-      <section
-        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-12 border-t ${
-          isLight ? 'border-ls-grey-dark/30' : 'border-ls-white/10'
-        }`}
-      >
-        <SectionHeading
-          theme={theme}
-          eyebrow="LIGHTSPEED'S APPROACH"
-          title="The 4-Tier Honesty Ladder"
-          lead="We classify every single capability on this website into one of four verified honesty tiers. We never pretend an R&amp;D concept is a battle-tested product."
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-cyan/10 text-ls-cyan border border-ls-cyan/30 uppercase">
-              Proven
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">Proven In-House</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Running in our daily operations, validated against 2,557 automated tests, and generating verified audit receipts.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-red/10 text-ls-red border border-ls-red/30 uppercase">
-              Pilot
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">Active Pilot</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Under active deployment trial with early partner organizations under governed human CEO oversight.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-grey-light/20 text-ls-grey-light-text border border-ls-grey-light/30 uppercase">
-              Fieldable
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">Fieldable in 2026</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Architecturally complete, tested in simulation, and ready for immediate deployment on client infrastructure.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest bg-ls-navy/40 text-ls-grey-dark border border-ls-grey-dark/40 uppercase">
-              Development
-            </span>
-            <h4 className="mt-3 text-base font-bold font-display">In Development</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Active engineering track. We describe the architectural intent without making commercial availability claims.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. PROOF AND EVIDENCE (METRICS + CASE STUDIES + POLICY TRACK) */}
-      <section
-        id="metrics"
-        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-12 border-t ${
-          isLight ? 'border-ls-grey-dark/30' : 'border-ls-white/10'
-        }`}
-      >
+      {/* 1. #metrics — platform metrics (single-sourced from metrics.ts) */}
+      <section id="metrics" className={sectionShell}>
         <SectionHeading
           theme={theme}
           eyebrow="PLATFORM METRICS"
@@ -200,126 +158,162 @@ export const ProofPage: React.FC<ProofPageProps> = ({ theme, onRequestBriefing }
             </div>
           ))}
         </div>
-
-        {/* Shipped Case Studies */}
-        <div className="mt-16 pt-12 border-t border-inherit">
-          <h3 className="text-xl sm:text-2xl font-bold font-display">Shipped Engagements &amp; In-House Systems</h3>
-          <p className={`mt-1 text-xs sm:text-sm max-w-xl ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-            Concrete deliverables built and operated by our agent workforce.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            {workCaseStudies.map((card) => (
-              <div
-                key={card.id}
-                className={`rounded-3xl p-6 sm:p-8 border flex flex-col justify-between ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-body text-xs font-black tracking-widest text-ls-red uppercase">{card.id}</span>
-                    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-body text-[10px] font-bold tracking-widest ${
-                      card.badge.includes('Proven')
-                        ? 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
-                        : 'border-ls-red/40 bg-ls-red/10 text-ls-red'
-                    }`}>
-                      {card.badge}
-                    </span>
-                  </div>
-                  <h4 className="mt-3 text-lg sm:text-xl font-bold font-display">{card.title}</h4>
-                  <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-                    {card.text}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Regional Policy Track */}
-        <div className="mt-16 pt-12 border-t border-inherit">
-          <h3 className="text-xl sm:text-2xl font-bold font-display">Regional Policy &amp; Standards Track</h3>
-          <p className={`mt-1 text-xs sm:text-sm max-w-xl ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-            Collaborations and governance frameworks establishing regional compliance and data residency standards.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            {workPolicy.map((card) => (
-              <div
-                key={card.id}
-                className={`rounded-3xl p-6 sm:p-7 border flex flex-col justify-between ${
-                  isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
-                }`}
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="font-body text-[10px] font-black tracking-widest text-ls-red uppercase">{card.id}</span>
-                    <span className={`font-body text-[9px] font-bold tracking-widest rounded-full px-2.5 py-0.5 border ${
-                      card.badge.includes('Published') || card.badge.includes('Proven')
-                        ? 'border-ls-cyan/40 bg-ls-cyan/10 text-ls-cyan'
-                        : card.badge.includes('Proposed')
-                          ? 'border-ls-grey-light-text/40 bg-ls-grey-dark/10 text-ls-grey-light-text'
-                          : 'border-ls-red/40 bg-ls-red/10 text-ls-red'
-                    }`}>
-                      {card.badge}
-                    </span>
-                  </div>
-                  <h4 className="mt-3 font-display font-bold text-base sm:text-lg tracking-tight">{card.title}</h4>
-                  <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
-                    isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
-                  }`}>
-                    {card.text}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
-      {/* 5. ENGAGEMENT PATH */}
-      <section
-        className={`px-4 sm:px-8 max-w-7xl mx-auto w-full pt-16 sm:pt-20 pb-16 border-t ${
-          isLight ? 'border-ls-grey-dark/30' : 'border-ls-white/10'
-        }`}
-      >
+      {/* 2. #cases — case studies */}      {/* 3. #cases — case studies */}
+      <section id="cases" className={sectionShell}>
         <SectionHeading
           theme={theme}
-          eyebrow="HOW TO VERIFY"
-          title="Verify Our Systems Before You Commit"
-          lead="We offer transparent inspection paths for executive teams, technical auditors, and compliance officers."
+          eyebrow="CASE STUDIES"
+          title="Shipped Engagements &amp; In-House Systems"
+          lead="Concrete deliverables built and operated by our agent workforce."
         />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <GitBranch className="w-6 h-6 text-ls-red mb-3" />
-            <h4 className="font-bold text-base font-display">1. Code &amp; Test Suite Review</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Technical teams can inspect our CI pipelines, ruff/mypy/bandit linting reports, and the 2,557 automated regression tests.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <ShieldCheck className="w-6 h-6 text-ls-cyan mb-3" />
-            <h4 className="font-bold text-base font-display">2. Governance Walkthrough</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Review the 5-tier Human-in-the-Loop approval gate, immutable SHA-256 audit trails, and data processing agreements.
-            </p>
-          </div>
-          <div className={`p-6 rounded-3xl border ${isLight ? 'bg-ls-white border-ls-grey-dark/20' : 'bg-ls-navy border-ls-white/15'}`}>
-            <FileCheck className="w-6 h-6 text-ls-red mb-3" />
-            <h4 className="font-bold text-base font-display">3. 90-Day Governed Pilot</h4>
-            <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Deploy a low-risk, bounded pilot with explicit milestone deliverables, fixed Kwacha/USD pricing, and human CEO sign-off.
-            </p>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          {proofCaseStudies.map((card) => (
+            <div
+              key={card.id}
+              className={`rounded-3xl p-6 sm:p-8 border flex flex-col justify-between ${
+                isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="font-body text-xs font-black tracking-widest text-ls-red uppercase">{card.id}</span>
+                  <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-body text-[10px] font-bold tracking-widest ${badgeTone(card.badge)}`}>
+                    {card.badge}
+                  </span>
+                </div>
+                <h4 className="mt-3 text-lg sm:text-xl font-bold font-display">{card.title}</h4>
+                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                  {card.text}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* 6. CLEAR CTA */}
+      {/* 4. #outcomes — outcome categories (claims lifted from case studies) */}
+      <section id="outcomes" className={sectionShell}>
+        <SectionHeading
+          theme={theme}
+          eyebrow="OUTCOMES"
+          title="What the Work Actually Changed"
+          lead="Measured outcomes from the engagements above — each tied to its case study and sector."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          {outcomeCategories.map((card) => (
+            <div
+              key={card.id}
+              className={`rounded-3xl p-6 border flex flex-col justify-between h-full ${
+                isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="font-body text-xs font-black tracking-widest text-ls-red uppercase">{card.id}</span>
+                  <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-body text-[10px] font-bold tracking-widest ${badgeTone(card.proof)}`}>
+                    {card.proof}
+                  </span>
+                </div>
+                <h4 className="mt-3 text-base sm:text-lg font-bold font-display">{card.title}</h4>
+                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                  {card.claim}
+                </p>
+              </div>
+              <div className="mt-4 flex items-center gap-3">
+                <a
+                  href={`/sectors#${card.sector}`}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-bold font-body uppercase tracking-widest text-ls-red hover:underline"
+                >
+                  See sector evidence
+                  <ChevronRight className="w-3 h-3" aria-hidden="true" />
+                </a>
+                <a
+                  href="#cases"
+                  className={`inline-flex items-center gap-1.5 text-[11px] font-bold font-body uppercase tracking-widest hover:underline ${
+                    isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                  }`}
+                >
+                  Case study {card.caseStudyId.toUpperCase()}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. #trust — trust band */}
+      <section id="trust" className={sectionShell}>
+        <SectionHeading
+          theme={theme}
+          eyebrow="TRUST &amp; GOVERNANCE"
+          title="Controls You Can Audit"
+          lead="The institutional guardrails behind every claim on this page — permissioning, integrity, and sovereignty by default."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {trustEvidence.map((card) => (
+            <div
+              key={card.id}
+              className={`rounded-3xl p-6 border h-full ${
+                isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-body text-[10px] font-black tracking-widest text-ls-red uppercase">{card.id}</span>
+                <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-body text-[10px] font-bold tracking-widest ${badgeTone(card.proof)}`}>
+                  {card.proof}
+                </span>
+              </div>
+              <h4 className="mt-3 text-base font-bold font-display">{card.title}</h4>
+              <p className={`mt-2 text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                {card.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 6. #policy — regional policy & standards track */}
+      <section id="policy" className={sectionShell}>
+        <SectionHeading
+          theme={theme}
+          eyebrow="POLICY TRACK"
+          title="Regional Policy &amp; Standards Track"
+          lead="Collaborations and governance frameworks establishing regional compliance and data residency standards."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          {proofPolicy.map((card) => (
+            <div
+              key={card.id}
+              className={`rounded-3xl p-6 sm:p-7 border flex flex-col justify-between ${
+                isLight ? 'bg-ls-white border-ls-grey-dark/30 shadow-md' : 'bg-ls-navy border-ls-white/15 shadow-xl'
+              }`}
+            >
+              <div>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="font-body text-[10px] font-black tracking-widest text-ls-red uppercase">{card.id}</span>
+                  <span className={`font-body text-[9px] font-bold tracking-widest rounded-full px-2.5 py-0.5 border ${badgeTone(card.badge)}`}>
+                    {card.badge}
+                  </span>
+                </div>
+                <h4 className="mt-3 font-display font-bold text-base sm:text-lg tracking-tight">{card.title}</h4>
+                <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${
+                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                }`}>
+                  {card.text}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CLEAR CTA */}      {/* CLEAR CTA */}
       <CtaBand
         theme={theme}
         title="Schedule an Executive Proof Walkthrough"
         text="Meet with our CEO to inspect the running agent platform, verify our audit logs, and discuss your institution's specific automation requirements."
-        ctaLabel="Book an Executive Briefing"
-        ctaTo="/contact"
       />
     </>
   );

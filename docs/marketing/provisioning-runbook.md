@@ -1,7 +1,7 @@
 # Provisioning Runbook — LIGHTSPEED HOLDINGS (hand-off kit for #194)
 
 **Owner:** `social_media_manager` (registry `company-registry.yaml:928`), confirmed accountable owner 2026-09-22.
-**Gate decisions (see [#194](https://github.com/jmlusu/light-speed-holdings/issues/194) comment 2026-09-22):** domain work **deferred** (platforms claim on `info.lightspeed@gmail.com`); password manager **Bitwarden**; owner = **`social_media_manager`**.
+**Gate decisions (see [#194](https://github.com/jmlusu/light-speed-holdings/issues/194) comment 2026-09-22):** domain work **deferred** (platforms claim on `info.lightspeedholdings@gmail.com`); password manager **Bitwarden**; owner = **`social_media_manager`**.
 **Purpose:** everything the operator needs to execute Phase 0–4 of `docs/marketing/digital-identity-setup.md` — exact fill values, paste-ready bios, and the asset manifest. Complement (not replace) `docs/marketing/provisioning-kit.md`.
 **Blocked by:** nothing for Phase 0/1 — platforms proceed on the Gmail identity. Resend sending-domain work stays parked pending a company domain (ties to #192).
 
@@ -11,7 +11,7 @@
 
 - [ ] Create Bitwarden org vault **"LIGHTSPEED HOLDINGS"** (or a dedicated free org).
 - [ ] Create collection **"Social Media Accounts"**; add the operators who need access under the delegated-access model (§ Ownership model in `digital-identity-setup.md`).
-- [ ] Secure `info.lightspeed@gmail.com`:
+- [ ] Secure `info.lightspeedholdings@gmail.com`:
   - [ ] 2-Step Verification **on** (Authenticator app + backup codes saved to Bitwarden).
   - [ ] Recovery phone added.
   - [ ] Recovery email added.
@@ -30,7 +30,7 @@ Work order: **Facebook → Instagram → LinkedIn → X → TikTok → YouTube �
 |---|---|
 | Company / brand name | LIGHTSPEED HOLDINGS LIMITED (brand: LIGHTSPEED) |
 | Primary username | `@lightspeedholdings` (fallbacks `@lightspeedholdingsmw` → `@lightspeedhq`) |
-| Email | `info.lightspeed@gmail.com` |
+| Email | `info.lightspeedholdings@gmail.com` |
 | Website | `https://lightspeedholdings.com` (parked lander today; refresh once domain live) |
 | Tagline | ASPIRE. ACT. ACHIEVE. |
 | Positioning | AI. Strategy. Transformation. |
@@ -42,7 +42,7 @@ Work order: **Facebook → Instagram → LinkedIn → X → TikTok → YouTube �
 
 - Name: **Lightspeed Holdings Limited** · Category: Consulting / Information Technology / Business Service.
 - Personal profile is only the administrator; the Page is owned by the company.
-- Profile image: `avatar-1024.png` · Cover: branded cover — **AI. STRATEGY. TRANSFORMATION.** (gap: use `static/brand/social/templates/facebook-group-cover.png` or regenerate via `python static/brand/templates/generate-social-assets.py`).
+- Profile image: `facebook-profile.png` (1080×1080) — larger, icon+logo clearer. Cover: `facebook-cover.png` (1640×664) — larger text and full logo (regenerate via `python static/brand/templates/generate-social-assets.py --platform facebook` if needed).
 - Bio: use the **Facebook variant** below; website `https://lightspeedholdings.com`.
 - Register: set `Status: Live`, `URL: https://www.facebook.com/…`, admins.
 
@@ -83,16 +83,26 @@ Work order: **Facebook → Instagram → LinkedIn → X → TikTok → YouTube �
 - About: **YouTube variant**; Google business ownership (Phase 2).
 - Register: set `Live` + URL + admins.
 
-### 7. Threads (reserve only)
+### 7. Threads (claimed and activated)
 
-- Handle: `@lightspeedholdings` (reserve now; activation/publishing not required yet). Tie to the IG account.
+- Handle: `@lightspeedholdings` — **claimed and activated** (tie to IG account).
 - Profile: `avatar-1024.png`.
-- Register: keep `Status: Reserved` but confirm the handle is claimed; add URL when resolvable.
+- Register: set `Status: Live`, public URL captured, admin role confirmed, add short verification note.
 
-### 8. Substack + Resend (stand up now; delivery later)
+### 8. Substack (stand up now)
 
-- Substack: create publication **@lightspeedholdings** on `info.lightspeed@gmail.com`; set `email-newsletter-header.png` as the header; archive/land long-form before broadcast migration. Delivery stays on **Resend** (#192).
-- Resend: account exists (`resend.com`, row in register). Sending domain **parked** until the company domain is settled — DKIM/SPF/DMARC records then land in #194.
+- **Owner:** `social_media_manager`
+- Create publication **@lightspeedholdings** on `info.lightspeedholdings@gmail.com`; set `email-newsletter-header.png` as the header; archive/land long-form before broadcast migration.
+- 2FA enabled; credentials stored in Bitwarden.
+- Register: set `Status: Live` (or In Progress as appropriate), public URL captured, admin role confirmed, short verification note.
+
+### 9. Resend stand-up (stand up now; delivery later)
+
+- **Owner:** `social_media_manager`
+- Account setup on `resend.com` (ties to #317/#192). 
+- Sending domain **parked** until the company domain is settled — DKIM/SPF/DMARC records to land in #194.
+- 2FA enabled; credentials stored in Bitwarden.
+- Register: public URL captured (if applicable), admin role confirmed, short verification note, status updated appropriately.
 
 ## Bio variants (paste-ready, from the master description)
 
@@ -114,7 +124,10 @@ Master: *LIGHTSPEED HOLDINGS is an AI-native management and technology company h
 - TikTok Business Center: add admins, two-step verification.
 - YouTube/Google: business-ownership verification on the channel.
 - LinkedIn: confirm company administration (founder admin).
-- X: Professional Account → Business category confirmed.
+- X: Professional Account + Business category confirmed.
+- Threads: claimed and activated; admin role confirmed; 2FA on.
+- Substack: publication created; admin confirmed; 2FA on; public URL captured; short verification note added.
+- Resend: account setup confirmed; admin role confirmed; 2FA on; public URL captured if applicable; short verification note added.
 - No ads until ownership, permissions, and security are all set (platform guidance).
 
 ## Phase 3 — Branding (assets ready)

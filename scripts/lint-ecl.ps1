@@ -14,6 +14,13 @@ function Fail([string]$Message) {
   exit 1
 }
 
+# PowerShell anti-pattern gate: delegates to the standalone scanner
+# (FAIL: backtick-before-dollar; WARN: unsorted Get-ChildItem)
+& (Join-Path $PSScriptRoot "scan-ps-antipatterns.ps1")
+if ($LASTEXITCODE -ne 0) {
+  exit 1
+}
+
 if (-not (Test-Path -LiteralPath $Changes)) {
   Fail "Missing harness/changes. Run ecl-harness-engineer or create ECL harness structure."
 }

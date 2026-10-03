@@ -1,0 +1,426 @@
+# LiteLLM Proxy Configuration for LightSpeed Remote Autonomous Runtime
+# Deploy on Render (always-on) or Cloudflare Worker
+# Zero-card providers only: Gemini (AI Studio) + Cloudflare Workers AI + Groq + OpenRouter
+
+model_list:
+  # ─────────────────────────────────────────────────────────────────
+  # TIER 1: Complex reasoning, long context (premium tasks)
+  # ─────────────────────────────────────────────────────────────────
+  - model_name: "gemini-flash"
+    litellm_params:
+      model: "gemini/gemini-2.5-flash"
+      api_key: "os.environ/GEMINI_API_KEY"
+      # Optional: custom endpoint for AI Studio
+      # api_base: "https://generativelanguage.googleapis.com/v1beta/openai"
+    model_info:
+      max_tokens: 1048576
+      max_input_tokens: 1048576
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: true
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 1000000
+    rpm: 1500
+    priority: 1
+    tags: ["premium", "reasoning", "long-context", "google"]
+
+  - model_name: "gemini-flash-lite"
+    litellm_params:
+      model: "gemini/gemini-2.5-flash-lite"
+      api_key: "os.environ/GEMINI_API_KEY"
+    model_info:
+      max_tokens: 1048576
+      max_input_tokens: 1048576
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: true
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 1000000
+    rpm: 1500
+    priority: 2
+    tags: ["premium", "high-volume", "long-context", "google"]
+
+  # ─────────────────────────────────────────────────────────────────
+  # TIER 2: Edge inference, tool calling (standard tasks)
+  # ─────────────────────────────────────────────────────────────────
+  - model_name: "cf-llama-3.3-70b"
+    litellm_params:
+      model: "cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+      api_key: "os.environ/CLOUDFLARE_API_TOKEN"
+      api_base: "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run"
+      # Account ID from env
+      custom_llm_provider: "cloudflare"
+    model_info:
+      max_tokens: 131072
+      max_input_tokens: 131072
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 1000000
+    rpm: 300
+    priority: 3
+    tags: ["standard", "tool-calling", "edge", "cloudflare", "llama"]
+
+  - model_name: "cf-qwen-2.5-coder-32b"
+    litellm_params:
+      model: "cloudflare/@cf/qwen/qwen2.5-coder-32b-instruct"
+      api_key: "os.environ/CLOUDFLARE_API_TOKEN"
+      api_base: "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run"
+      custom_llm_provider: "cloudflare"
+    model_info:
+      max_tokens: 32768
+      max_input_tokens: 32768
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 1000000
+    rpm: 300
+    priority: 4
+    tags: ["standard", "coding", "edge", "cloudflare", "qwen"]
+
+  - model_name: "cf-mistral-small-3.1"
+    litellm_params:
+      model: "cloudflare/@cf/mistral/mistral-small-3.1-24b-instruct"
+      api_key: "os.environ/CLOUDFLARE_API_TOKEN"
+      api_base: "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run"
+      custom_llm_provider: "cloudflare"
+    model_info:
+      max_tokens: 32768
+      max_input_tokens: 32768
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: true
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 1000000
+    rpm: 300
+    priority: 5
+    tags: ["standard", "vision", "tool-calling", "edge", "cloudflare", "mistral"]
+
+  - model_name: "cf-deepseek-v4-flash"
+    litellm_params:
+      model: "cloudflare/@cf/deepseek/deepseek-v4-flash"
+      api_key: "os.environ/CLOUDFLARE_API_TOKEN"
+      api_base: "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run"
+      custom_llm_provider: "cloudflare"
+    model_info:
+      max_tokens: 1000000
+      max_input_tokens: 1000000
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 1000000
+    rpm: 300
+    priority: 6
+    tags: ["premium", "reasoning", "1m-context", "edge", "cloudflare", "deepseek"]
+
+  # ─────────────────────────────────────────────────────────────────
+  # TIER 3: Speed-critical, high-throughput (fast tasks)
+  # ─────────────────────────────────────────────────────────────────
+  - model_name: "groq-gpt-oss-120b"
+    litellm_params:
+      model: "groq/openai/gpt-oss-120b"
+      api_key: "os.environ/GROQ_API_KEY"
+    model_info:
+      max_tokens: 131072
+      max_input_tokens: 131072
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 8000
+    rpm: 30
+    priority: 7
+    tags: ["fast", "speed", "groq", "gpt-oss"]
+
+  - model_name: "groq-qwen-2.5-coder-32b"
+    litellm_params:
+      model: "groq/qwen/qwen2.5-coder-32b"
+      api_key: "os.environ/GROQ_API_KEY"
+    model_info:
+      max_tokens: 32768
+      max_input_tokens: 32768
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 8000
+    rpm: 30
+    priority: 8
+    tags: ["fast", "coding", "groq", "qwen"]
+
+  - model_name: "groq-llama-3.3-70b"
+    litellm_params:
+      model: "groq/llama-3.3-70b-versatile"
+      api_key: "os.environ/GROQ_API_KEY"
+    model_info:
+      max_tokens: 131072
+      max_input_tokens: 131072
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 8000
+    rpm: 30
+    priority: 9
+    tags: ["fast", "groq", "llama"]
+
+  - model_name: "groq-mixtral-8x7b"
+    litellm_params:
+      model: "groq/mixtral-8x7b-32768"
+      api_key: "os.environ/GROQ_API_KEY"
+    model_info:
+      max_tokens: 32768
+      max_input_tokens: 32768
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 8000
+    rpm: 30
+    priority: 10
+    tags: ["fast", "groq", "mixtral"]
+
+  # ─────────────────────────────────────────────────────────────────
+  # TIER 4: Model diversity, frontier fallbacks (last resort)
+  # ─────────────────────────────────────────────────────────────────
+  - model_name: "openrouter-free"
+    litellm_params:
+      model: "openrouter/openrouter/free"
+      api_key: "os.environ/OPENROUTER_API_KEY"
+      # OpenRouter auto-selects best free model
+    model_info:
+      max_tokens: 1000000
+      max_input_tokens: 1000000
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: true
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 100000
+    rpm: 20
+    priority: 11
+    tags: ["fallback", "diversity", "openrouter", "free"]
+
+  - model_name: "openrouter-nemotron-3-ultra"
+    litellm_params:
+      model: "openrouter/nvidia/nemotron-3-ultra"
+      api_key: "os.environ/OPENROUTER_API_KEY"
+    model_info:
+      max_tokens: 1000000
+      max_input_tokens: 1000000
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 100000
+    rpm: 20
+    priority: 12
+    tags: ["fallback", "reasoning", "openrouter", "nvidia"]
+
+  - model_name: "openrouter-glm-5.2"
+    litellm_params:
+      model: "openrouter/zai/glm-5.2"
+      api_key: "os.environ/OPENROUTER_API_KEY"
+    model_info:
+      max_tokens: 198000
+      max_input_tokens: 198000
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 100000
+    rpm: 20
+    priority: 13
+    tags: ["fallback", "reasoning", "openrouter", "zai"]
+
+  - model_name: "openrouter-kimi-k2.7-code"
+    litellm_params:
+      model: "openrouter/moonshot/kimi-k2.7-code"
+      api_key: "os.environ/OPENROUTER_API_KEY"
+    model_info:
+      max_tokens: 262144
+      max_input_tokens: 262144
+      max_output_tokens: 8192
+      supports_function_calling: true
+      supports_vision: false
+      supports_json_mode: true
+      supports_streaming: true
+      mode: "chat"
+    tpm: 100000
+    rpm: 20
+    priority: 14
+    tags: ["fallback", "coding", "openrouter", "moonshot"]
+
+
+# ─────────────────────────────────────────────────────────────────
+# ROUTER SETTINGS
+# ─────────────────────────────────────────────────────────────────
+router_settings:
+  # Primary routing strategy
+  routing_strategy: "cost-based-routing"
+  # Alternative: "latency-based-routing" for speed-critical workloads
+  
+  # Fallback chains — ordered by preference
+  fallbacks:
+    # Premium reasoning tasks
+    - "gemini-flash": ["cf-llama-3.3-70b", "groq-gpt-oss-120b", "openrouter-free"]
+    - "gemini-flash-lite": ["cf-llama-3.3-70b", "groq-gpt-oss-120b", "openrouter-free"]
+    
+    # Standard tool-calling tasks
+    - "cf-llama-3.3-70b": ["groq-gpt-oss-120b", "gemini-flash", "openrouter-free"]
+    - "cf-qwen-2.5-coder-32b": ["groq-qwen-2.5-coder-32b", "cf-llama-3.3-70b", "openrouter-free"]
+    - "cf-mistral-small-3.1": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
+    - "cf-deepseek-v4-flash": ["gemini-flash", "openrouter-nemotron-3-ultra", "groq-gpt-oss-120b"]
+    
+    # Speed-critical tasks
+    - "groq-gpt-oss-120b": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
+    - "groq-qwen-2.5-coder-32b": ["cf-qwen-2.5-coder-32b", "groq-llama-3.3-70b", "openrouter-free"]
+    - "groq-llama-3.3-70b": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
+    - "groq-mixtral-8x7b": ["cf-llama-3.3-70b", "gemini-flash", "openrouter-free"]
+    
+    # Fallback chain
+    - "openrouter-free": ["openrouter-nemotron-3-ultra", "openrouter-glm-5.2", "openrouter-kimi-k2.7-code"]
+    - "openrouter-nemotron-3-ultra": ["openrouter-glm-5.2", "openrouter-free", "gemini-flash"]
+    - "openrouter-glm-5.2": ["openrouter-nemotron-3-ultra", "openrouter-free", "gemini-flash"]
+    - "openrouter-kimi-k2.7-code": ["cf-qwen-2.5-coder-32b", "groq-qwen-2.5-coder-32b", "openrouter-free"]
+
+  # Retry configuration
+  num_retries: 3
+  retry_after: 60  # seconds
+  
+  # Timeout for model calls
+  request_timeout: 120  # seconds
+  
+  # Fallback on specific errors
+  fallback_on:
+    - "rate_limit"
+    - "timeout"
+    - "api_error"
+    - "context_length_exceeded"
+    - "invalid_request_error"
+
+
+# ─────────────────────────────────────────────────────────────────
+# PLUGINS
+# ─────────────────────────────────────────────────────────────────
+plugins:
+  # Cost guard — hard cap at $0/day (free tiers only)
+  - "plugins.cost_guard.CostGuardPlugin"
+    config:
+      daily_budget_usd: 0.00
+      alert_threshold_usd: 0.00
+      # Budget reset at midnight UTC
+      budget_reset_timezone: "UTC"
+      # Track per-model costs
+      track_per_model: true
+      # Block requests when budget exceeded
+      block_on_budget_exceeded: true
+  
+  # Region-aware routing — prefer edge near Malawi
+  - "plugins.region_router.RegionRouterPlugin"
+    config:
+      # Prefer African/European edge locations
+      prefer_regions: ["africa", "europe", "middle-east"]
+      # Map model to preferred regions
+      model_region_preferences:
+        "cf-llama-3.3-70b": ["europe", "africa"]
+        "cf-qwen-2.5-coder-32b": ["europe", "africa"]
+        "cf-mistral-small-3.1": ["europe", "africa"]
+        "cf-deepseek-v4-flash": ["europe", "africa"]
+        "gemini-flash": ["europe", "africa", "us-east"]
+        "gemini-flash-lite": ["europe", "africa", "us-east"]
+        "groq-gpt-oss-120b": ["us-east", "europe"]
+        "groq-qwen-2.5-coder-32b": ["us-east", "europe"]
+        "groq-llama-3.3-70b": ["us-east", "europe"]
+        "groq-mixtral-8x7b": ["us-east", "europe"]
+        "openrouter-free": ["europe", "us-east"]
+  
+  # Rate limit awareness — respect provider limits
+  - "plugins.rate_limit_aware.RateLimitAwarePlugin"
+    config:
+      # Track rate limits per provider
+      track_per_provider: true
+      # Backoff strategy
+      backoff_strategy: "exponential"
+      max_backoff: 300
+  
+  # Observability
+  - "plugins.prometheus.PrometheusPlugin"
+    config:
+      port: 9090
+      path: "/metrics"
+  
+  # Structured logging
+  - "plugins.json_logging.JsonLoggingPlugin"
+    config:
+      log_level: "INFO"
+      include_request_body: false
+      include_response_body: false
+
+
+# ─────────────────────────────────────────────────────────────────
+# GENERAL SETTINGS
+# ─────────────────────────────────────────────────────────────────
+general_settings:
+  # Master key for LiteLLM proxy (optional, for admin access)
+  master_key: "os.environ/LITELLM_MASTER_KEY"
+  
+  # Enable debug mode
+  debug: false
+  
+  # Default model if none specified
+  default_model: "gemini-flash"
+  
+  # Maximum concurrent requests
+  max_concurrent_requests: 100
+  
+  # Enable caching for deterministic queries
+  enable_cache: true
+  cache_ttl: 3600  # 1 hour
+  
+  # Health check endpoint
+  health_check_path: "/health"
+  health_check_interval: 30
+
+
+# ─────────────────────────────────────────────────────────────────
+# ENVIRONMENT VARIABLES REQUIRED
+# ─────────────────────────────────────────────────────────────────
+# Set these in Render/Cloudflare environment:
+#
+# GEMINI_API_KEY=your_google_ai_studio_key
+# CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+# CLOUDFLARE_ACCOUNT_ID=your_cloudflare_account_id
+# GROQ_API_KEY=your_groq_api_key
+# OPENROUTER_API_KEY=your_openrouter_api_key
+# LITELLM_MASTER_KEY=your_litellm_master_key (optional)
+#
+# All keys are free-tier compatible — no credit card required

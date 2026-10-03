@@ -1,98 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { CtaBand } from '../components/site/CtaBand';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { Reveal } from '../components/Reveal';
-import { HonestyLabel } from '../data/siteContent';
+import { sectors, sectorTierLegend } from '../data/sector-registry';
+import { solutions } from '../data/siteContent';
+import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 interface SectorsPageProps {
   theme: 'light' | 'dark';
   onRequestBriefing?: (summary?: string) => void;
 }
 
-const PROVEN: HonestyLabel = { label: 'PROVEN EXPERIENCE', tone: 'proven' };
-const CURRENT: HonestyLabel = { label: 'CURRENT CAPABILITY', tone: 'pilot' };
-const DEMO: HonestyLabel = { label: 'DEMONSTRATION', tone: 'fieldable' };
-const FUTURE: HonestyLabel = { label: 'FUTURE OPPORTUNITY', tone: 'development' };
-
-interface Sector {
-  name: string;
-  evidence: string;
-  tier: HonestyLabel;
-}
-
-const SECTORS: Sector[] = [
-  {
-    name: 'Government and Public Sector',
-    evidence:
-      'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with immutable audit trails. Advisory work on Malawi\u2019s National AI Strategy consultation.',
-    tier: CURRENT,
-  },
-  {
-    name: 'Development and Donor Organizations',
-    evidence:
-      'Donor reporting automation with GDPR-level data handling as the default posture for UN and development data flows. Engagements priced in USD for international partners.',
-    tier: CURRENT,
-  },
-  {
-    name: 'Financial Services',
-    evidence:
-      'Governed multi-agent compliance automation for a regional financial institution: regulatory reporting across 14 departments with full audit trails, cutting reporting time by 40%.',
-    tier: PROVEN,
-  },
-  {
-    name: 'Agriculture',
-    evidence:
-      'WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking — serving 1,200 members in pilot.',
-    tier: CURRENT,
-  },
-  {
-    name: 'SMEs and Entrepreneurs',
-    evidence:
-      'Mobile-first websites and e-commerce stores with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one, delivered at local cost from Malawi.',
-    tier: CURRENT,
-  },
-  {
-    name: 'Technology Companies',
-    evidence:
-      'The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by 2,557 automated regression tests.',
-    tier: PROVEN,
-  },
-  {
-    name: 'Telecommunications',
-    evidence:
-      'Mobile-money rails (Airtel Money, TNM Mpamba) integrated into delivered platforms. No direct telco operator engagement yet.',
-    tier: DEMO,
-  },
-  {
-    name: 'Health',
-    evidence:
-      'Offline-first, sovereignty-first architecture is designed for clinical data — but LightSpeed has no health-sector deployment yet. Listed honestly as a roadmap target.',
-    tier: FUTURE,
-  },
-  {
-    name: 'Energy',
-    evidence:
-      'No energy-sector engagement to date. The governance model and offline-first stack apply directly when the first partner appears.',
-    tier: FUTURE,
-  },
-];
-
-const TIERS: { tier: HonestyLabel; desc: string }[] = [
-  { tier: PROVEN, desc: 'Delivered engagements with named, measurable outcomes.' },
-  { tier: CURRENT, desc: 'Running pilots or capability we can deploy now.' },
-  { tier: DEMO, desc: 'Working demonstration without a live client engagement.' },
-  { tier: FUTURE, desc: 'Roadmap target — no evidence yet, and we say so.' },
-];
+/** Resolve a solution slug to its display title (falls back to the slug). */
+const solutionTitle = (slug: string): string =>
+  solutions.find((s) => s.slug === slug)?.title ?? slug;
 
 /**
- * /sectors per MASTER_SPEC §11: useful without becoming a generic industry
- * list. Nine sectors, each carrying an evidence tier — only claim sector
- * experience where evidence exists.
+ * /sectors per CUSTOMER_JOURNEY_CONVERSION_ARCHITECTURE §12: five canonical
+ * sectors from `sector-registry.ts`, each carrying one of four evidence
+ * tiers — only claim sector experience where evidence exists. Each card
+ * cross-links onward to the solutions that serve it (no dead ends).
  */
 export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
   const isLight = theme === 'light';
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    const id = hash.replace('#', '');
+    if (!id) return;
+    trackJourneyEvent({
+      eventType: 'sector_view',
+      sector: id,
+      journeyStage: 'exploration',
+      route: '/sectors',
+    });
+  }, [hash]);
 
   return (
     <>
@@ -100,7 +46,7 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="SECTORS"
         title="Sectors We Serve — With the Evidence to Back It"
-        lead="Nine sectors across Malawi and SADC. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show."
+        lead="Five sectors across Malawi and SADC. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show — and every card links to the solutions that serve it."
       />
 
       {/* Evidence tier legend */}
@@ -113,7 +59,7 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
         />
         <Reveal>
           <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4`}>
-            {TIERS.map(({ tier, desc }) => (
+            {sectorTierLegend.map(({ tier, desc }) => (
               <div
                 key={tier.label}
                 className={`rounded-2xl p-5 border ${isLight ? 'bg-ls-white border-ls-grey-dark/60 shadow-sm' : 'bg-ls-navy border-ls-white/10 shadow-lg'}`}
@@ -131,10 +77,11 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
       {/* Sector cards */}
       <section className="px-4 sm:px-8 max-w-7xl mx-auto w-full pt-10 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SECTORS.map((sector, idx) => (
-            <Reveal key={sector.name} delay={(idx % 3) * 0.06}>
+          {sectors.map((sector, idx) => (
+            <Reveal key={sector.id} delay={(idx % 3) * 0.06}>
               <div
-                className={`rounded-3xl p-6 border h-full flex flex-col gap-4 ${
+                id={sector.id}
+                className={`rounded-3xl p-6 border h-full flex flex-col gap-4 scroll-mt-28 ${
                   isLight
                     ? 'bg-ls-white/95 border-ls-grey-dark shadow-md'
                     : 'bg-ls-navy/80 border-ls-white/15 shadow-xl'
@@ -146,22 +93,78 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
                       isLight ? 'text-ls-navy' : 'text-ls-white'
                     }`}
                   >
-                    {sector.name}
+                    {sector.title}
                   </h3>
-                  <HonestyBadge label={sector.tier} />
+                  <HonestyBadge label={sector.status} />
                 </div>
                 <p
                   className={`text-sm leading-relaxed ${
                     isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
                   }`}
                 >
+                  {sector.description}
+                </p>
+                <p
+                  className={`text-xs leading-relaxed ${
+                    isLight ? 'text-ls-grey-dark/90' : 'text-ls-grey-light-text/90'
+                  }`}
+                >
+                  <span className="font-body font-bold tracking-widest text-ls-red text-[9px]">
+                    EVIDENCE{' '}
+                  </span>
                   {sector.evidence}
                 </p>
+                {sector.region && sector.region.length > 0 && (
+                  <p
+                    className={`font-body text-[10px] font-bold tracking-widest uppercase ${
+                      isLight ? 'text-ls-grey-dark/80' : 'text-ls-grey-light-text/80'
+                    }`}
+                  >
+                    {sector.region.join(' · ')}
+                  </p>
+                )}
+                {sector.relevantSolutions && sector.relevantSolutions.length > 0 && (
+                  <div
+                    className={`mt-auto pt-4 border-t flex flex-wrap items-center gap-2 ${
+                      isLight ? 'border-ls-grey-dark/60' : 'border-ls-white/10'
+                    }`}
+                  >
+                    <span
+                      className={`font-body text-[9px] font-bold tracking-widest ${
+                        isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
+                      }`}
+                    >
+                      SOLUTIONS FOR THIS SECTOR
+                    </span>
+                    {sector.relevantSolutions.map((slug) => (
+                      <Link
+                        key={slug}
+                        to={`/solutions#${slug}`}
+                        className={`font-body text-[10px] font-bold px-2.5 py-1 rounded-full border transition-colors hover:border-ls-red hover:text-ls-red ${
+                          isLight
+                            ? 'border-ls-grey-dark/70 text-ls-navy'
+                            : 'border-ls-white/25 text-ls-white'
+                        }`}
+                      >
+                        {solutionTitle(slug)}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </Reveal>
           ))}
         </div>
       </section>
+
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/proof', label: 'Proof' },
+          { to: '/solutions', label: 'Solutions' },
+          { to: '/insights', label: 'Insights' },
+        ]}
+      />
 
       <CtaBand theme={theme} />
     </>

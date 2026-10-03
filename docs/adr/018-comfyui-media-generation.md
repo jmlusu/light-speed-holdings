@@ -1,7 +1,8 @@
 # ADR-018: ComfyUI Media Generation — `media_generation_owner` + `bash:comfyui-mcp` Allowlist
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-09-03
+**Accepted:** 2026-10-01
 **Deciders:** CTO, CMO, CISO, Human CEO
 **Technical Domain:** Marketing / Technology (Media Generation)
 

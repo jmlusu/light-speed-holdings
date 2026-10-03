@@ -134,7 +134,7 @@ flowchart TD
 
     Archive["📁 Archive ECLs\n\n- parking/ → completed/ on slot release\n- INDEX.json reindex\n- lint-ecl.ps1 validation"]
 
-    Closeout["✅ Closeout\n\n- `harness-change.ps1 close completed`\n- Git commit with all 64 files\n- Post-commit: graphify update, lint, test"]
+    Closeout["✅ Closeout\n\n- `harness-change.ps1 close completed`\n- Git commit with all 64 files\n- Post-commit: lint, test"]
 
     %% Flow connections
     Start --> Part1Trigger

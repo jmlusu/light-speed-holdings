@@ -1,0 +1,84 @@
+cli\test_cli_commands.py:130:gen.generate_all.return_value = ["qa_engineer.md"]
+cli\test_cli_commands.py:133:patch("ai_company.generator.AgentGenerator", return_value=gen),
+cli\test_cli_commands.py:200:# ?? doctor ?????????????????????????????????????????????????????????????
+cli\test_cli_commands.py:203:def test_doctor_run_prints_health_table() -> None:
+cli\test_cli_commands.py:204:with patch("ai_company.cli.doctor.run_all_checks", return_value=[]):
+cli\test_cli_commands.py:205:result = runner.invoke(app, ["doctor", "run"])
+cli\test_cli_commands.py:229:with patch("ai_company.generator.AgentGenerator", return_value=gen):
+cli\test_cli_help.py:64:"doctor",
+e2e\test_command_center.py:9:uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
+memory\test_git_safety.py:61:subprocess.run(["git", "init"], cwd=repo, capture_output=True, check=True)
+unit\test_cli_commands.py:32:"doctor",
+unit\test_dashboard_integration.py:564:"/api/v1/agents/lead-engineering/reports-to",
+unit\test_dashboard_integration.py:577:"/api/v1/agents/lead-engineering/reports-to",
+unit\test_dashboard_integration.py:590:"/api/v1/agents/lead-engineering/reports-to",
+unit\test_dashboard_integration.py:612:"/api/v1/agents/lead-engineering/reports-to",
+unit\test_dashboard_integration.py:620:"/api/v1/agents/nonexistent/reports-to",
+unit\test_doctor.py:1:"""Tests for the doctor diagnostics module."""
+unit\test_doctor.py:12:from ai_company.doctor.checks import (
+unit\test_drift_sweep.py:10:from ai_company.doctor import drift_sweep
+unit\test_drift_sweep.py:11:from ai_company.doctor.checks import check_drift_sweep
+unit\test_drift_sweep.py:78:"ai_company.doctor.drift_sweep.run_sweep",
+unit\test_drift_sweep.py:92:"ai_company.doctor.drift_sweep.run_sweep",
+unit\test_drift_sweep.py:106:"ai_company.doctor.drift_sweep.run_sweep",
+unit\test_executor.py:181:def test_write_file(self, tmp_path: Path) -> None:
+unit\test_generator.py:1:"""Tests for the AgentGenerator."""
+unit\test_generator.py:10:from ai_company.generator import AgentGenerator
+unit\test_generator.py:61:def generator(sample_registry: Path, templates_dir: Path, tmp_path: Path) -> AgentGenerator:
+unit\test_generator.py:62:return AgentGenerator(
+unit\test_generator.py:80:def test_load_registry(generator: AgentGenerator) -> None:
+unit\test_generator.py:87:def test_generate_all(generator: AgentGenerator) -> None:
+unit\test_generator.py:88:results = generator.generate_all()
+unit\test_generator.py:96:def test_generate_file_content(generator: AgentGenerator) -> None:
+unit\test_generator.py:97:results = generator.generate_all()
+unit\test_generator.py:109:def test_permission_block_read_only(generator: AgentGenerator) -> None:
+unit\test_generator.py:110:results = generator.generate_all()
+unit\test_generator.py:118:def test_permission_block_full_access(generator: AgentGenerator) -> None:
+unit\test_generator.py:119:results = generator.generate_all()
+unit\test_generator.py:137:def real_generator(tmp_path: Path, templates_dir: Path) -> AgentGenerator:
+unit\test_generator.py:139:return AgentGenerator(
+unit\test_generator.py:147:def test_generated_filenames_use_hyphens(real_generator: AgentGenerator) -> None:
+unit\test_generator.py:149:real_generator.generate_all()
+unit\test_generator.py:156:def test_generated_filenames_validate_naming(real_generator: AgentGenerator) -> None:
+unit\test_generator.py:157:"""validate_naming() must return zero errors after generate_all()."""
+unit\test_generator.py:158:real_generator.generate_all()
+unit\test_generator.py:163:def test_all_registry_agents_are_generated(real_generator: AgentGenerator) -> None:
+unit\test_generator.py:169:real_generator.generate_all()
+unit\test_generator.py:228:def test_registry_references_resolve(real_generator: AgentGenerator) -> None:
+unit\test_generator.py:267:def test_opencode_frontmatter_valid(real_generator: AgentGenerator) -> None:
+unit\test_generator.py:269:real_generator.generate_all()
+unit\test_generator.py:304:def test_validate_generated_accepts_new_format(real_generator: AgentGenerator) -> None:
+unit\test_generator.py:306:real_generator.generate_all()
+unit\test_generator.py:313:gen = AgentGenerator(
+unit\test_generator.py:329:def test_generate_all_does_not_write_real_table(tmp_path: Path, templates_dir: Path) -> None:
+unit\test_generator.py:330:"""generate_all() with tmp_path table_path must not touch docs/AGENT-REGISTRY-TABLE.md."""
+unit\test_generator.py:335:gen = AgentGenerator(
+unit\test_generator.py:341:gen.generate_all()
+unit\test_generator.py:344:assert mtime_after == mtime_before, "generate_all() modified the real table file"
+unit\test_omniroute_integration.py:12:- Doctor: check_omniroute_health when key is set / not set / unreachable
+unit\test_omniroute_integration.py:741:# Doctor: check_omniroute_health
+unit\test_omniroute_integration.py:746:"""Test the OmniRoute health check in the doctor module."""
+unit\test_omniroute_integration.py:749:from ai_company.doctor.checks import check_omniroute_health
+unit\test_omniroute_integration.py:758:from ai_company.doctor.checks import check_omniroute_health
+unit\test_omniroute_integration.py:775:from ai_company.doctor.checks import check_omniroute_health
+unit\test_omniroute_integration.py:787:from ai_company.doctor.checks import check_omniroute_health
+unit\test_onboarding.py:10:from ai_company.hr.onboarding import (
+unit\test_onboarding.py:223:def broken_generate_all(self_gen: object) -> list[Path]:
+unit\test_onboarding.py:226:from ai_company.generator import AgentGenerator
+unit\test_onboarding.py:228:monkeypatch.setattr(AgentGenerator, "generate_all", broken_generate_all)
+unit\test_onboarding.py:272:from ai_company.hr.onboarding import (  # noqa: E402
+unit\test_repo_write.py:9:from ai_company.store.repo_write import (
+unit\test_repo_write.py:36:result = write_file(target, "first")
+unit\test_repo_write.py:44:result2 = write_file(target, "second")
+unit\test_repo_write.py:50:write_file(target, "v1")
+unit\test_repo_write.py:51:write_file(target, "v2")
+unit\test_repo_write.py:60:write_file(target, "base")
+unit\test_repo_write.py:62:result = write_file(target, "updated", expected_digest=digest)
+unit\test_repo_write.py:68:write_file(target, "base")
+unit\test_repo_write.py:74:write_file(target, "mine", expected_digest=stale)
+unit\test_repo_write.py:82:write_file(target, "base")
+unit\test_repo_write.py:86:write_file(target, "x", expected_digest=stale)
+unit\test_repo_write.py:100:result = write_file(target, "attempt", owner="task-9", claimed_by_owner=True)
+unit\test_repo_write.py:106:res = write_file(mine, "ok", owner="task-1", claimed_by_owner=True)
+unit\test_repo_write.py:114:result = write_file(target, "plain")  # owner=None => no ownership check
+unit\test_unified_onboarding.py:10:from ai_company.services.onboarding import (

@@ -17,6 +17,7 @@ import hashlib
 import json
 import logging
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -134,3 +135,95 @@ def verify_audit_chain(path: str | Path) -> dict[str, Any]:
         "files": [str(f) for f in files],
         "errors": errors,
     }
+
+
+def check_jsonl(path: str | Path) -> dict[str, Any]:
+    """Structurally validate an append-only JSONL evidence store.
+
+    The evidence stores (escalation events, dead-letter queue, daily audit
+    export) are append-only but are **not** hash chained, so
+    :func:`verify_audit_chain` cannot attest to them: it finds no ``__seq`` /
+    ``__prev_hash`` keys and reports success without inspecting any link. Use
+    this function for those stores to confirm every line is a well-formed JSON
+    object, and :func:`verify_audit_chain` only for the AuditWriter trail.
+
+    Returns a dict::
+
+        {"ok": bool, "records": int, "file": str, "errors": list[str]}
+    """
+    target = Path(path)
+    result: dict[str, Any] = {"ok": True, "records": 0, "file": str(target), "errors": []}
+
+    if not target.exists():
+        result["ok"] = False
+        result["errors"].append(f"file not found: {target}")
+        return result
+
+    try:
+        with open(target, "r", encoding="utf-8") as fh:
+            for line_no, raw in enumerate(fh, start=1):
+                if not raw.strip():
+                    continue
+                result["records"] += 1
+                try:
+                    record = json.loads(raw)
+                except json.JSONDecodeError as exc:
+                    result["ok"] = False
+                    result["errors"].append(f"[{target.name}:{line_no}] malformed JSON: {exc}")
+                    continue
+                if not isinstance(record, dict):
+                    result["ok"] = False
+                    result["errors"].append(f"[{target.name}:{line_no}] line is not a JSON object")
+    except OSError as exc:
+        result["ok"] = False
+        result["errors"].append(f"[{target.name}] unreadable: {exc}")
+
+    return result
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI entry point for integrity verification.
+
+    ``verify`` walks the AuditWriter hash chain; ``check`` structurally
+    validates append-only evidence stores that carry no chain fields.
+    """
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Verify LightSpeed audit evidence integrity")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    verify_parser = sub.add_parser(
+        "verify", help="Verify the AuditWriter __seq/__prev_hash hash chain"
+    )
+    verify_parser.add_argument("paths", nargs="+", help="AuditWriter trail file(s)")
+
+    check_parser = sub.add_parser(
+        "check", help="Structurally validate append-only JSONL evidence stores"
+    )
+    check_parser.add_argument("paths", nargs="+", help="Evidence store JSONL file(s)")
+
+    args = parser.parse_args(argv)
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
+    results = (
+        [verify_audit_chain(p) for p in args.paths]
+        if args.command == "verify"
+        else [check_jsonl(p) for p in args.paths]
+    )
+
+    ok = True
+    for result in results:
+        print(json.dumps(result, indent=2))
+        if not result["ok"]:
+            ok = False
+
+    if not ok:
+        print("INTEGRITY CHECK FAILED", file=sys.stderr)
+        return 1
+
+    print("Integrity OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

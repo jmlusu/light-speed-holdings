@@ -56,7 +56,6 @@ pytest-run*.log
 # ==========================================
 # OpenCode Runtime State & Generated Output
 # ==========================================
-graphify-out/
 .opencode/inbox*.json
 .opencode/pending_approvals.json
 .opencode/audit
@@ -77,6 +76,14 @@ logs/
 results/
 /orchestrator/
 .playwright-cli/
+
+# ==========================================
+# MiMo Code Runtime State (project config is tracked)
+# ==========================================
+.mimocode/*
+!.mimocode/mimocode.jsonc
+/mimocode.json
+/mimocode.jsonc
 *.bak
 *.executor-bak
 backup/
@@ -126,3 +133,6 @@ dev-server.log
 *_output.txt
 run.json
 dashboard/alerts.json
+
+# Athena runtime data (jobs cache, embeddings)
+company/athena/

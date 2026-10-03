@@ -9,8 +9,8 @@ scheduler:
   cycles:
     daily_briefing:
       enabled: true
-      time_utc: "06:00"
-      description: "Generate daily briefing for CEO review"
+      cron_expression: "0 4,8,12,15,18 * * *"
+      description: "Generate daily briefing for CEO review (5x daily at CAT business hours: 06:00, 10:00, 14:00, 17:00, 20:00 CAT)"
       command: "orchestrator briefing"
       output: ".opencode/daily_briefing.md"
     kpi_snapshot:
@@ -27,7 +27,7 @@ scheduler:
       enabled: true
       time_utc: "03:00"
       description: "Consolidate memory entries, prune stale context"
-      command: "memory consolidate"
+      command: "knowledge consolidate"
     escalation_review:
       enabled: true
       time_utc: "08:00"
@@ -42,6 +42,12 @@ scheduler:
       output: "results/weekly-report-{date}.json"
 
   # Human review checkpoints
+  linkedin_series_reminder:
+      enabled: true
+      interval_minutes: 2880
+      time_utc: "05:00"
+      description: "Reminder for LinkedIn AI-Native Series — fires every 2 days at 5:00 UTC (7:00 AM CAT)"
+      command: "orchestrator linkedin-reminder"
   human_checkpoints:
     morning_briefing:
       time_utc: "06:30"

@@ -1,0 +1,102 @@
+﻿ M .github/workflows/ci.yml
+ M .github/workflows/repo-audit.yml
+ M .gitignore
+ M .opencode/agents/board-chair.md
+ D .opencode/plugins/graphify.js
+ M .vercelignore
+ M AGENTS.md
+ D BRAND_AUDIT_REPORT.md
+ M JEV_INTEGRATION_BRIEF.md
+ D QA_ANALYSIS.md
+ D SITEMAP.md
+ D accessibility-checklist.md
+ M brand/guidelines/brand-guidelines.md
+ M company-registry.yaml
+ M company/agent-registry.json
+ M config/company/routines.yaml
+ M config/company/scheduler.yaml
+ M docs/AGENT-REGISTRY-TABLE.md
+ M docs/DASHBOARD-HARDENING-C4-C5-SPEC.md
+ M docs/DEVELOPER-GUIDE.md
+ M docs/architecture/LS-MEM-RECONNAISSANCE.md
+ M docs/architecture/PUBLIC_AGENT_REGISTRY_SCHEMA.md
+ M docs/venture-studio/09-diagram.md
+ M docs/wayfinder/48-searchable-execution-timeline.md
+ M harness/changes/parking/2026-09-22-narrative-and-positioning-track-lightspeed-narrative-positioning-document/plan.md
+ M harness/changes/parking/2026-09-22-narrative-and-positioning-track-lightspeed-narrative-positioning-document/spec.md
+ M hr/onboarding_requests.yaml
+ M knowledge/technology/bug-fixes/BUG-9d688faee.md
+ M knowledge/technology/bug-fixes/BUG-da80ea477.md
+ M orchestrator/approvals.yaml
+ D performance-testing-matrix.md
+ M pyproject.toml
+ M reports/evidence-2026-09-14.json
+ M reports/evidence-2026-09-20.json
+ M reports/repo-audit-2026-09-14.md
+ M reports/repo-audit-2026-09-20.md
+ M scripts/capture-fix.ps1
+ D scripts/graphify-bg.ps1
+ M src/ai_company/executor/loop.py
+ M src/ai_company/hr/onboarding.py
+ M src/ai_company/memory/integration.py
+ M src/ai_company/services/onboarding.py
+ D temp_issue_207.md
+ D temp_issue_208.md
+ M tests/memory/test_dual_path_hash.py
+ M tests/unit/test_onboarding.py
+ M tests/unit/test_registry.py
+ M uv.lock
+?? .agents/skills/arxiv/
+?? .agents/skills/claude-code/
+?? .agents/skills/codex/
+?? .agents/skills/compose-next/
+?? .agents/skills/data-analytics/
+?? .agents/skills/deep-research/
+?? .agents/skills/docx-official/
+?? .agents/skills/grok-build/
+?? .agents/skills/html-to-video-pipeline/
+?? .agents/skills/learn-everything/
+?? .agents/skills/loop/
+?? .agents/skills/mate/
+?? .agents/skills/memory-search/
+?? .agents/skills/mimocode-docs/
+?? .agents/skills/modern-python-toolchain/
+?? .agents/skills/pdf-official/
+?? .agents/skills/playwright/
+?? .agents/skills/pptx-official/
+?? .agents/skills/product-design/
+?? .agents/skills/research-paper-writing/
+?? .agents/skills/sales/
+?? .agents/skills/skill-creator/
+?? .agents/skills/super-research/
+?? .agents/skills/wayfinder/map_template.md
+?? .agents/skills/xlsx-official/
+?? Clean-LSMEM.ps1
+?? audit/
+?? brand/tokens.md
+?? debug_analysis.py
+?? debug_git.py
+?? docs/Pharos/linkedin-series/
+?? docs/superpowers/plans/
+?? docs/wayfinder/map2-scraper-discovery-gap-analysis.md
+?? enqueue_post1.py
+?? enqueue_post2.py
+?? enqueue_post3.py
+?? harness/changes/active/plan.md
+?? harness/changes/active/reviews/
+?? harness/changes/active/spec.md
+?? harness/changes/active/summary.md
+?? harness/changes/active/tasks.md
+?? lightspeed-aistudio-opencode-handoff-directive.md
+?? lightspeed-opencode-migration-directive.md
+?? openapi.json
+?? preview.log
+?? static/brand/templates/generate-linkedin-series-visuals.py
+?? temp_types.py
+?? temp_verify.py
+?? templates/pharos/routines/linkedin-series-reminder.md
+?? tests/test_scraper_inventory.py
+?? tests/test_subagent_framework.py
+?? tests/test_wayfinder_structure.py
+?? tests/test_wayfinder_template.py
+?? tmp/

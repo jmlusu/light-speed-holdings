@@ -278,7 +278,7 @@ All 31 files under `src/pages/` are either live or in §3.1 — no additional or
 | 3D | `three` via `ThreeCanvas` in `SiteLayout` | Keep; measure before optimizing |
 | Charts | `recharts` unused | Remove |
 | Tests | Vitest + `@testing-library/jest-dom` (one unit test) | Add route inventory / redirect unit test in implement phase |
-| E2E | `@playwright/test` dep present; no site route config at repo root | Optional: one redirect assertion suite post-migration |
+| E2E | `@playwright/test` dep absent at repo root (never added); no site route config | Optional: one redirect assertion suite post-migration |
 | Edge | Vercel `vercel.json` | Keep; fix redirects (§2) |
 
 **Explicit non-goals:** no Next.js/Astro migration, no router library swap, no design-system rewrite — brief §29 requires evidence-first architecture changes only.

@@ -79,7 +79,7 @@ Add a `ReportStore` abstraction (new module under `store/`) that:
 
 ### What I found
 
-I searched the entire repo (docs, scripts, harness, source, graphify output)
+I searched the entire repo (docs, scripts, harness, source)
 for `path-of-rpg`, `FLORA`, and likely variants. There is **no definition** of
 either codename in this codebase. The only near-matches were false positives
 ("path of the JSONL file").

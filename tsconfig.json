@@ -17,9 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/lib/athena/*": ["src/lib/athena/*"],
-      "@/components/athena/*": ["src/components/athena/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src"]

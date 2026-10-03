@@ -1,6 +1,8 @@
 """LS-MEM CLI — Typer entrypoint for `ai-company memory` commands."""
 
+import contextlib
 import json
+import sys
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -15,6 +17,18 @@ from .engine import EngineConfig, LSMEMEngine
 from .gateway import GatewayConfig, PermissionGateway
 from .redaction import SecretScanner
 from .scoring import MemoryScorer
+
+
+def _ensure_utf8_stdio() -> None:
+    """Force UTF-8 stdio so rich glyphs (✓/✗) don't crash legacy Windows consoles."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            with contextlib.suppress(ValueError, OSError):
+                reconfigure(encoding="utf-8", errors="replace")
+
+
+_ensure_utf8_stdio()
 
 app = typer.Typer(name="memory", help="LS-MEM — LightSpeed Memory Engine")
 console = Console()

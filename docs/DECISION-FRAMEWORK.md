@@ -85,7 +85,7 @@ Concrete, owned, time-bound steps.
 Every decision using this framework should be saved as a decision record in the memory engine:
 
 ```bash
-ai-company memory add --type semantic --content "Decision: [title]. Recommendation: [option]. Rationale: [brief reason]."
+ ai-company knowledge add --memory-type semantic --content "Decision: [title]. Recommendation: [option]. Rationale: [brief reason]."
 ```
 
 ## Approval Matrix

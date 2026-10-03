@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { ShieldCheck, Clock, Globe2, Send, CheckCircle2, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTurnstile } from '../hooks/useTurnstile';
 import { ENQUIRY_SLA_COPY, ENQUIRY_GENERIC_ERROR, enquiryPayload } from '../lib/enquiry';
+import { trackJourneyEvent } from '../hooks/useJourneyEvents';
 
 interface ContactSectionProps {
   theme: 'light' | 'dark';
@@ -30,6 +31,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
   const [referenceId, setReferenceId] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState('');
   const [currentStep, setCurrentStep] = useState(1);
+  const startedRef = useRef(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const { containerRef, siteKey, reset } = useTurnstile(
     'contact',
@@ -67,8 +69,18 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
     e.preventDefault();
     if (submitting) return;
     if (currentStep < 5) {
-      if (canAdvance()) nextStep();
+      if (canAdvance()) {
+        if (currentStep === 1 && !startedRef.current) {
+          startedRef.current = true;
+          trackJourneyEvent({ eventType: 'contact_started', journeyStage: 'conversion' });
+        }
+        nextStep();
+      }
       return;
+    }
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackJourneyEvent({ eventType: 'contact_started', journeyStage: 'conversion' });
     }
     setSubmitting(true);
     setSubmitError(null);
@@ -95,6 +107,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
         const data = (await res.json()) as { referenceId?: string };
         setReferenceId(data.referenceId ?? null);
         setContactSubmitted(true);
+        trackJourneyEvent({ eventType: 'contact_completed', journeyStage: 'conversion' });
       } else {
         const data = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
         setSubmitError(data?.error?.message ?? ENQUIRY_GENERIC_ERROR);
@@ -134,7 +147,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
           <p className={`text-justify text-sm sm:text-base leading-relaxed ${
             isLight ? 'text-ls-grey-dark font-medium' : 'text-ls-grey-light-text'
           }`}>
-            We will be honest about whether we can help — and exactly what it takes to start. A human reviews every submission and responds within 12 business hours.
+            We will be honest about whether we can help — and exactly what it takes to start. A human reviews every submission and responds within two business days.
           </p>
 
           <div className={`space-y-4 pt-4 border-t ${isLight ? 'border-ls-grey-dark' : 'border-ls-white/15'}`}>
@@ -422,7 +435,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
                       >
                         {currentStep < 5 ? (
                           <>
-                            <span>Next Step</span>
+                            <span>Continue — {steps[currentStep].name}</span>
                             <ChevronRight className="w-3.5 h-3.5" />
                           </>
                         ) : (

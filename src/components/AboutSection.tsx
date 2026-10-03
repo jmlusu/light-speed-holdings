@@ -11,6 +11,8 @@ import {
   Award,
   Lock
 } from 'lucide-react';
+import { leadership } from '../data/leadership';
+import { CTAS } from '../data/ctas';
 
 interface AboutSectionProps {
   onOpenContactModal: (intent?: string) => void;
@@ -199,31 +201,36 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           <span className="text-[10px] font-body text-ls-grey-light-text uppercase">TIER 5 SIGNATURE</span>
         </div>
 
-        <div className={`p-6 rounded-2xl border flex flex-col sm:flex-row items-start gap-6 ${
-          isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
-        }`}>
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-ls-red to-ls-red/85 text-ls-navy font-extrabold text-xl font-body flex items-center justify-center shrink-0 shadow-lg shadow-ls-red/20 border border-ls-red/40">
-            JM
-          </div>
-          <div className="space-y-2">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Jack Mlusu</h3>
-                <span className="w-2 h-2 rounded-full bg-ls-emerald" />
-              </div>
-              <span className="text-xs font-body text-ls-red font-extrabold uppercase tracking-wider">Founder & Chief Executive Officer</span>
+        {leadership.map((leader) => (
+          <div
+            key={leader.id}
+            className={`p-6 rounded-2xl border flex flex-col sm:flex-row items-start gap-6 ${
+              isLight ? 'flight-deck-well-light' : 'flight-deck-well-dark'
+            }`}
+          >
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-ls-red to-ls-red/85 text-ls-navy font-extrabold text-xl font-body flex items-center justify-center shrink-0 shadow-lg shadow-ls-red/20 border border-ls-red/40">
+              {leader.initials}
             </div>
-            <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-              Founder of LightSpeed Holdings Limited and architect of the Pharos Policy Track. Leading human-in-the-loop executive authority overseeing sovereign digital transformation, SADC policy submissions, and agentic AI deployments across Africa.
-            </p>
+            <div className="space-y-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className={`text-lg font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>{leader.name}</h3>
+                  <span className="w-2 h-2 rounded-full bg-ls-emerald" />
+                </div>
+                <span className="text-xs font-body text-ls-red font-extrabold uppercase tracking-wider">{leader.title}</span>
+              </div>
+              <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                {leader.bio}
+              </p>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
       {/* CTA */}
       <div className="text-center pt-4">
         <button
-          onClick={() => onOpenContactModal('Start a Conversation')}
+          onClick={() => onOpenContactModal(CTAS.primary.label)}
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-ls-red hover:bg-ls-red/40 text-ls-navy font-extrabold font-body text-xs uppercase tracking-wider transition-all shadow-xl shadow-ls-red/20 active:scale-95"
         >
           <span>Partner with LightSpeed Holdings Limited</span>
