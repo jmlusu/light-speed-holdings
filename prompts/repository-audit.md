@@ -21,7 +21,7 @@ plus your own analysis, into the repository-audit report the Human CEO will read
 
 ### Inputs
 
-- `reports/evidence-<AUDIT_DATE>.json` — deterministic scan results: registry
+- `reports/evidence/<AUDIT_DATE>.json` — deterministic scan results: registry
   parse, card reconciliation, lint/test collection, doc-drift, orphan/stale/
   redundant counts, git state, and probe severities.
 - `reports/repo-audit-<AUDIT_DATE>.md` — a stub report. Overwrite/replace it

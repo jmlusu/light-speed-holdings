@@ -1,18 +1,18 @@
 {
-  "run_id": "35505778874",
-  "date": "2026-09-20",
+  "run_id": "37200026812",
+  "date": "2026-10-04",
   "mode": "full",
   "probe_count": 22,
   "probes": [
     {
       "name": "registry.parse",
       "status": "ok",
-      "detail": "agents=152"
+      "detail": "agents=90"
     },
     {
       "name": "cards.reconcile",
       "status": "ok",
-      "detail": "registry=152 live=152 bak=0 orphan=[] missing=[]"
+      "detail": "registry=90 live=90 bak=0 orphan=[] missing=[]"
     },
     {
       "name": "cards.tools",
@@ -37,7 +37,7 @@
     {
       "name": "drift.manifest",
       "status": "ok",
-      "detail": "{ |   \"status\": \"clean\", |   \"drifts\": [], |   \"warnings\": [], |   \"checked\": 87, |   \"timestamp\": \"2026-09-20T10:42:07.6048665+00:00\" | }"
+      "detail": "{ |   \"drifts\": [], |   \"checked\": 87, |   \"status\": \"clean\", |   \"warnings\": [], |   \"timestamp\": \"2026-10-04T11:50:21.9823692+00:00\" | }"
     },
     {
       "name": "drift.manifest",
@@ -75,6 +75,11 @@
       "detail": "orchestrator/escalation.yaml ignored while required by cli/validate.py"
     },
     {
+      "name": "gitignore.graphify",
+      "status": "ok",
+      "detail": "ignored=True tracked_files=0"
+    },
+    {
       "name": "gitignore..playwright-cli",
       "status": "ok",
       "detail": ".playwright-cli/ present"
@@ -96,8 +101,18 @@
     },
     {
       "name": "ecl.active",
+      "status": "warn",
+      "detail": "active change files=0"
+    },
+    {
+      "name": "graphify.update",
       "status": "ok",
-      "detail": "active change files=5"
+      "detail": "  AST extraction: 1700/1801 uncached files (94%) [4 workers] |   AST extraction: 1800/1801 uncached files (99%) [4 workers] |   AST extraction: 1801/1801 uncached files (100%) [4 workers] | Graph has 31157 nodes (above 5000 limit). Building aggregated community view... | graph.html written (aggregated: 1986 community nodes, 1798 cross-community edges) | Tip: run with --obsidian for full node-level detail. | [graphify watch] Rebuilt: 31157 nodes, 46867 edges, 1986 communities | [graphify watch] g"
+    },
+    {
+      "name": "graphify.graph",
+      "status": "ok",
+      "detail": "nodes=31157 edges=0"
     }
   ],
   "severity_totals": {
@@ -105,5 +120,5 @@
     "major": 0,
     "minor": 0
   },
-  "generated_at": "2026-09-20T10:42:53Z"
+  "generated_at": "2026-10-04T11:51:06Z"
 }
