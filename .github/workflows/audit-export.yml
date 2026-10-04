@@ -23,6 +23,7 @@ permissions:
 jobs:
   export-audit:
     name: Export Audit Database
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -41,7 +42,8 @@ jobs:
         env:
           ALL_TABLES: ${{ inputs.all-tables }}
         run: |
-          export AUDIT_DATE="${{ inputs.date || $(date -u +%F) }}"
+          AUDIT_DATE="${{ inputs.date }}"
+          if [ -z "$AUDIT_DATE" ]; then AUDIT_DATE="$(date -u +%F)"; fi
           echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
           FLAGS=""
           if [ "$ALL_TABLES" = "true" ]; then FLAGS="--all-tables"; fi
