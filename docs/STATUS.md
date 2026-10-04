@@ -154,6 +154,8 @@
 
 ## Recent Work
 
+- **2026-10-04**: Issue 5 fix — daily audit evidence export repointed from the 0-row tracked decoy `audit/audit.db` to the canonical hash-chained trail (`.opencode/audit`), with a local export runner (`scripts/export-audit-evidence.ps1`) + run log and a CI freshness guard (trail is gitignored). Decisions D-a..D-f recorded. ECL `audit-export-reads-canonical-jsonl-trail` closed `completed` (archived at `harness/changes/archive/2026-10-04-audit-export-reads-canonical-jsonl-trail`). Gates: ruff ✅, mypy 265 files ✅, pytest **2624 passed**, lint-ecl ✅; AC-1 (41 lines 2026-10-04) ✅, AC-2 (quiet day no file + exit 0) ✅, AC-3/4/5 unit-tested ✅, AC-6 (audit/ empty) ✅, AC-7 (4 evidence files tracked, 46/84/41 lines) ✅, AC-8 (workflow_dispatch guard) ✅. Concurrent session committed merge `feature/external-website-updates` during work; subsequent push fast-forward. Task Scheduler: manual runs only (user decision). `harness/evolution/pending.md` (5 pending archives) noted per D-f.
+
 - **2026-09-24**: LS-MEM Phase 2 kicked off — Phase 0 recon complete, Phase 1 threat model approved (CEO/security sign-off 2026-09-24), Phase 2 architecture opened under active ECL "LS-MEM Phase 2 - Architecture" targeting `docs/architecture/LS-MEM-ARCHITECTURE.md` (18 subsystems, offline-capable). Locked: dual skill paths, SQLite engine + JSON MemoryStore bridge (ADR-025); `.lightspeed/memory/` gitignored (threat-model Critical resolved); LS-MEM sanctioned as replacement for retired `claude-mem-*` stack; `tree-ring-memory` vs `ls-memory` distinction documented. Threat model `docs/security/LS-MEM-THREAT-MODEL.md` approved; handoff + recon docs linked. ECL: active — not yet archived.
 
 - **2026-09-24**: Architecture v2.0 docs ECL closed `completed` after T020 human sign-off (Architecture Lead + CEO). Primary + 9 support docs + ADRs 025–035 archived under `harness/changes/archive/2026-09-24-lightspeed-ai-company-builder-web-experience-architecture-v2-0`. Also archived Brand Psychology Part 1 same day. Active slot empty; follow-up implementation ECL (P2 public registry transform) not yet opened.
@@ -234,4 +236,3 @@ Point-in-time audit reports. These are frozen snapshots — refer to `STATUS.md`
 - **Change closed**: via harness-change.ps1, phase ? validate, validation_status: pass
 
 - **2026-09-27**: Three.js strip + 4-auditor read-only audit completed; ADR-037 written; ADR-036 superseded; remediation plan executed; repo tree clean (no three refs).
-

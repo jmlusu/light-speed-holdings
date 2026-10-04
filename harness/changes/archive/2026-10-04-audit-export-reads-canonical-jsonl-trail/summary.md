@@ -1,9 +1,9 @@
 ---
 title: "Audit export reads canonical JSONL trail"
 slug: "audit-export-reads-canonical-jsonl-trail"
-status: "in_progress"
-location: "active"
-phase: "plan"
+status: "completed"
+location: "archive"
+phase: "implement"
 intake_status: "complete"
 spec_review: "approved"
 plan_review: "approved"
@@ -24,7 +24,7 @@ tags:
   - "audit"
   - "evidence"
   - "issue-5"
-validation_status: "unknown"
+validation_status: "pass"
 created_at: "2026-10-04"
 updated_at: "2026-10-04"
 session_id: "7611da92-f453-48cc-9baa-1915055b9926"
@@ -49,7 +49,7 @@ Issue 5 fix in progress: daily audit evidence export repointed from the 0-row tr
 
 ## Validation
 
-- Pending (T011-T013: targeted tests, ruff/mypy/pytest/lint-ecl, manual AC run).
+- All targeted tests pass (10/10). `ruff check src/` and `mypy src/` clean. Manual AC verified: export produces non-empty JSONL for 2026-10-01/03/04, exit 0 on quiet day.
 
 ## Next Step
 

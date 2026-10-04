@@ -18,15 +18,15 @@
 - [x] T006 [P] Add `tests/unit/test_audit_export_trail.py` covering AC-1/2/3/4/5 with tmp trail fixtures (incl. synthetic `audit.1`).
 - [x] T007 Create `scripts/export-audit-evidence.ps1` (run export, append run log, `-Date`, `-Commit` with push + rebase fallback).
 - [x] T008 Rework `.github/workflows/audit-export.yml` into the freshness guard; drop `setup-uv`/`uv sync`, drop `date`/`all-tables` inputs, keep artifact + deploy-key commit steps.
-- [ ] T009 `git rm --cached audit/audit.db` and add `audit/` to `.gitignore`.
+- [x] T009 `git rm --cached audit/audit.db` and add `audit/` to `.gitignore`.
 - [x] T010 Backfill evidence: export 2026-10-01 (46), 2026-10-03 (84), 2026-10-04 (41); skip 10-02; seed `reports/evidence/audit-export-runs.jsonl`.
 
 ## Validation
 
 - [x] T011 Targeted tests: `uv run pytest tests/unit/test_audit_export_trail.py tests/unit/test_evidence_separation.py`.
 - [x] T012 Full gates: `uv run ruff check src/`, `uv run mypy src/`, `uv run pytest`, `pwsh scripts/lint-ecl.ps1`.
-- [ ] T013 Manual AC run: AC-1/AC-2/AC-3/AC-4 exit codes and line counts; AC-6 `git status` snapshot; AC-7 non-empty tracked evidence; AC-8 guard dry-run via `workflow_dispatch`.
-- [ ] T014 ECL: record `validation_status: pass`, `phase: validate`, run `close completed`, update `docs/STATUS.md` handoff (note `harness/evolution/pending.md`).
+- [x] T013 Manual AC run: AC-1/AC-2/AC-3/AC-4 exit codes and line counts; AC-6 `git status` snapshot; AC-7 non-empty tracked evidence; AC-8 guard dry-run via `workflow_dispatch`.
+- [x] T014 ECL: record `validation_status: pass`, `phase: validate`, run `close completed`, update `docs/STATUS.md` handoff (note `harness/evolution/pending.md`).
 
 ## Deferred Tasks
 
