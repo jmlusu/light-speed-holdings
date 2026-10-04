@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" role="img" aria-label="Malawi Government logo placeholder">
+  <rect x="4" y="14" width="40" height="36" rx="4" fill="none" stroke="#6B7280" stroke-width="3"/>
+  <line x1="4" y1="32" x2="44" y2="32" stroke="#6B7280" stroke-width="3"/>
+  <text x="56" y="28" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#6B7280">MALAWI</text>
+  <text x="56" y="46" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" fill="#6B7280">GOVERNMENT</text>
+</svg>

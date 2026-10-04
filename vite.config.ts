@@ -28,5 +28,15 @@ export default defineConfig(({ mode }) => {
       port: 3000,
       allowedHosts: true,
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-ui': ['lucide-react', 'recharts', 'clsx', 'tailwind-merge'],
+          },
+        },
+      },
+    },
   };
 });

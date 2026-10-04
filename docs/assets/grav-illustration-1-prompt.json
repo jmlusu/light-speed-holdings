@@ -1,0 +1,41 @@
+{
+  "illustrationId": "grav-yaml-to-agents",
+  "title": "From YAML to Live Agents",
+  "dimensions": "1920x1080",
+  "aspectRatio": "16:9",
+  "skill": "article-illustrations",
+  "prompt": "Generate one standalone 16:9 horizontal article illustration.\n\nVisual DNA:\nPure white background. Minimalist black hand-drawn line art. Slightly wobbly pen lines. Lots of empty white space. Sparse red/orange/blue handwritten English annotations. Clean absurd product-sketch feeling. No gradients, no shadows, no paper texture, no complex background, no commercial vector style, no PPT infographic look, no cute mascot poster, no children's illustration, no realistic UI.\n\nRecurring IP character required:\nGrav, a small round floating figure with dot eyes, a single thin bent antenna with a tiny circle tip, thin dangling stick legs that never touch surfaces, and a slightly uneven hand-drawn body shape. Grav always hovers slightly above any surface — there is always a visible gap between Grav and the ground. Grav must perform the core conceptual action, not decorate the scene. Make Grav calm, deadpan, focused, and slightly bizarre — not cute.\n\nTheme:\nFrom YAML to Live Agents — the absurdly simple pipeline that produces rigorous results\n\nStructure type:\nWorkflow / Pipeline\n\nCore idea:\nA simple YAML file goes into a strange Jinja2 machine and emerges as a production-ready OpenCode agent, with validation built in\n\nComposition:\nLeft: Grav hovering over a \"YAML\" cardboard box, dropping in a structured document. Middle: Grav suspended inside a strange Jinja2 Machine — gears made of {{ }} — with cyan sparks flying. Right: Grav floating out holding a polished .md agent card (navy border, cyan title). Orange arrows connect stages. Red label on machine: \"Validation\". Blue label on output: \"Type-safe\".\n\nSuggested elements:\ncardboard box labeled YAML / strange machine with {{ }} gears / polished .md agent card / orange flow arrows / red validation stamp\n\nEnglish handwritten labels:\nYAML Registry / Jinja2 Render / Validation Gate / OpenCode Agent / MessageBus Ready\n\nColor use:\nBlack for main line art and Grav. Orange for main flow/path/arrows. Red only for key warnings/problems/results. Blue only for supplementary notes or feedback/system state.\n\nConstraints:\nOne image explains only one core structure. Keep the main subject around 40%-60% of the canvas. Preserve at least 35% white space. No title bar at the top. No border or frame. Maximum 5-8 annotation labels. Each label is 2-5 words. The style should feel like a senior engineer's casual whiteboard sketch — absurd, clean, memorable.",
+  "qaChecklist": [
+    "Image is 16:9 landscape format (1920x1080)",
+    "Background is clean white (#FFFFFF)",
+    "Grav is present",
+    "Grav is floating (visible gap between body and any surface)",
+    "Grav performs the core action (not just decoration)",
+    "Composition is an original metaphor for the current article",
+    "Scene is absurd, creative, and memorable",
+    "Clean and uncluttered — main subject doesn't exceed ~60% of canvas",
+    "One core structure per image",
+    "Annotations are sparse, short, and readable (max 8 labels, 2-5 words each)",
+    "Orange used only for main paths or arrows",
+    "Red used only for highlights, problems, warnings, or results (Validation Gate)",
+    "Blue used only for supplementary notes, feedback, or system state (Type-safe)",
+    "At least 35% whitespace preserved",
+    "No title bar, no border, no frame"
+  ],
+  "postRender": {
+    "paletteCheck": true,
+    "checkCommand": "uv run python .agents/skills/ls-visual-storytelling/scripts/check_brand_palette.py docs/assets/grav-yaml-to-agents.png --tolerance 3",
+    "expectedResult": "PASS",
+    "note": "Grav style is carve-out for visual style, but accent colors must map to LS tokens post-render. Run palette checker after generation."
+  },
+  "outputPath": "docs/assets/grav-yaml-to-agents.png",
+  "brandTokens": {
+    "navy": "#070A40",
+    "red": "#E63946",
+    "cyan": "#00BFFF",
+    "lightGrey": "#F2F2F2",
+    "white": "#FFFFFF",
+    "darkGrey": "#6B7280",
+    "lightTextGrey": "#9CA3AF"
+  }
+}

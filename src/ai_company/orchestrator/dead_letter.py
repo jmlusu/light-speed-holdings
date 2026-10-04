@@ -194,19 +194,30 @@ class DeadLetterStore:
             return len(rotated_entries)
 
 
-# Module-level singleton
-_dead_letter_store: Optional["DeadLetterStore"] = None
+_STORE_CACHE: "dict[str, DeadLetterStore]" = {}
 
 
 def get_dead_letter_store(path: str = "orchestrator/dead_letter.jsonl") -> "DeadLetterStore":
-    """Get the module-level singleton DeadLetterStore."""
-    global _dead_letter_store
-    if _dead_letter_store is None:
-        _dead_letter_store = DeadLetterStore(path)
-    return _dead_letter_store
+    """Return a ``DeadLetterStore`` bound to ``path``.
+
+    Stores are cached per resolved ``path`` rather than once per module.
+    Previously a single module-level instance was cached and ``path`` was
+    ignored on every call after the first, which silently routed all callers —
+    including ``DeadLetterQueue`` instances pointing at isolated directories —
+    into whichever file happened to be used first.
+
+    Caching per path keeps one store (and therefore one lock) per file, so
+    concurrent writers to the same file still serialise through the same
+    ``RLock`` while callers using different paths stay fully isolated.
+    """
+    key = str(Path(path).expanduser().resolve())
+    store = _STORE_CACHE.get(key)
+    if store is None:
+        store = DeadLetterStore(path)
+        _STORE_CACHE[key] = store
+    return store
 
 
 def reset_dead_letter_store() -> None:
-    """Reset the module-level singleton (used by tests)."""
-    global _dead_letter_store
-    _dead_letter_store = None
+    """Drop all cached stores so subsequent lookups rebuild them."""
+    _STORE_CACHE.clear()

@@ -1,9 +1,7 @@
-import { get, put } from '@vercel/blob';
-import { createHash } from 'node:crypto';
 import nodemailer from 'nodemailer';
 
 export const config = {
-  runtime: 'edge'
+  runtime: 'nodejs'
 };
 
 const SMTP_HOST = process.env.SMTP_HOST;
@@ -37,11 +35,7 @@ interface EnquiryFields {
   turnstileToken?: string;
 }
 
-export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== 'POST') {
-    return json({ error: { code: 'method_not_allowed' } }, 405);
-  }
-
+export async function POST(req: Request): Promise<Response> {
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -89,9 +83,6 @@ export default async function handler(req: Request): Promise<Response> {
   if (!delivery.ok) {
     return json({ error: { code: 'provider_unavailable' } }, 502);
   }
-
-  const referenceId = crypto.randomUUID();
-  const sentAt = new Date().toISOString();
 
   return json({ status: 'recorded', referenceId, sentAt }, 201);
 }

@@ -95,11 +95,15 @@ class EscalationManager:
     def __init__(
         self,
         config_path: str = "orchestrator/escalation.yaml",
-        events_path: str = "orchestrator/escalation_events.jsonl",
+        events_path: Optional[str] = None,
     ):
         self.config_path = Path(config_path)
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        self.events_path = Path(events_path)
+        self.events_path = (
+            Path(events_path)
+            if events_path is not None
+            else self.config_path.parent / "escalation_events.jsonl"
+        )
         self.events_path.parent.mkdir(parents=True, exist_ok=True)
         self.rules: List[EscalationRule] = []
         self.events: List[EscalationEvent] = []

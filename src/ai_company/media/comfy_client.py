@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class HealthCheckResult:
     """Result of a ComfyUI health check."""
+
     status: str  # "healthy", "degraded", "unavailable"
     vram_free_mb: int = 0
     disk_free_gb: float = 0.0
@@ -34,6 +35,7 @@ class HealthCheckResult:
 @dataclass
 class GenerationResult:
     """Result of an image generation request."""
+
     status: str  # "generated", "unavailable", "error"
     output_paths: list[str] = field(default_factory=list)
     workflow_name: str = ""
@@ -75,7 +77,9 @@ class ComfyClient:
         self.host = host
         self.port = port
         self.timeout = timeout
-        self.workflow_templates_dir = Path(workflow_templates_dir) if workflow_templates_dir else None
+        self.workflow_templates_dir = (
+            Path(workflow_templates_dir) if workflow_templates_dir else None
+        )
         self._workflow_cache: dict[str, dict[str, Any]] = {}
 
     def health_check(self) -> HealthCheckResult:
@@ -131,7 +135,7 @@ class ComfyClient:
         # Check disk space
         try:
             disk_usage = shutil.disk_usage(".")
-            disk_free_gb = disk_usage.free / (1024 ** 3)
+            disk_free_gb = disk_usage.free / (1024**3)
         except OSError:
             disk_free_gb = 0.0
 
@@ -139,6 +143,7 @@ class ComfyClient:
         vram_free_mb = 0
         try:
             import torch
+
             if torch.cuda.is_available():
                 vram_total = torch.cuda.get_device_properties(0).total_memory
                 vram_free_mb = (vram_total - torch.cuda.memory_allocated(0)) // (1024 * 1024)
@@ -315,6 +320,7 @@ class ComfyClient:
         try:
             # Write workflow to temp file for MCP
             import tempfile
+
             with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
                 json.dump(workflow, f)
                 workflow_path = f.name
@@ -358,7 +364,9 @@ class ComfyClient:
             )
 
         except subprocess.TimeoutExpired:
-            return GenerationResult(status="error", error=f"Generation timed out after {self.timeout}s")
+            return GenerationResult(
+                status="error", error=f"Generation timed out after {self.timeout}s"
+            )
         except FileNotFoundError:
             return GenerationResult(status="unavailable", error="npx not found. Install Node.js.")
         except (subprocess.SubprocessError, OSError) as exc:

@@ -1,0 +1,207 @@
+{
+  "campaignId": "build-your-agent-company-2026-q4",
+  "campaignName": "Build Your Agent Company",
+  "skill": "ls-brand-advertising",
+  "persuasionArc": {
+    "attention": "Deploy an agent company in 5 minutes",
+    "problem": "Agent sprawl, no governance, runaway costs",
+    "promise": "YAML-defined, type-safe, auditable hierarchies",
+    "proof": "37 agents, 3 offers, 1 CLI",
+    "differentiation": "Only platform with HITL governance + cost transparency + Malawi/SADC presence",
+    "cta": "Start Free → lightspeedholdings.com"
+  },
+  "brandTokens": {
+    "navy": "#070A40",
+    "red": "#E63946",
+    "cyan": "#00BFFF",
+    "lightGrey": "#F2F2F2",
+    "white": "#FFFFFF"
+  },
+  "logo": {
+    "source": "brand/logos/fulllogo/fulllogo.png",
+    "clearSpace": "1x height of 'L' in LIGHTSPEED on all sides",
+    "placement": "top-left or bottom-right per platform"
+  },
+  "colorRules": {
+    "dominant": "navy (#070A40)",
+    "headline": "cyan (#00BFFF) or white (#FFFFFF)",
+    "cta": "red (#E63946) reserved for CTA button only",
+    "accent": "cyan (#00BFFF) for diagram elements",
+    "background": "navy (#070A40) dominant"
+  },
+  "assets": [
+    {
+      "id": "campaign-hero",
+      "platform": "Website Hero",
+      "dimensions": "1200x600",
+      "filename": "campaign-hero-1200x600.png",
+      "brief": "Website hero banner matching site breakpoints. Navy background, cyan headline, red CTA button, simplified 3-node architecture diagram (Registry → Generator → Orchestrator) in brand palette. Logo top-left. Safe zones respected.",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "subhead": "YAML-defined. Type-safe. Auditable. Governance built in.",
+        "cta": "Start Free"
+      },
+      "safeZones": "Content ≥15% inset from edges (180px horizontal, 90px vertical)"
+    },
+    {
+      "id": "campaign-linkedin",
+      "platform": "LinkedIn Feed",
+      "dimensions": "1200x627",
+      "filename": "campaign-linkedin-1200x627.png",
+      "brief": "LinkedIn feed ad. Professional B2B tone. Navy background, clean geometric diagram, cyan headline, red CTA. Text safe zones: ≥15% inset (180px horizontal, 94px vertical). Logo top-left.",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "subhead": "37 agents. 3 offers. 1 CLI. Governance included.",
+        "cta": "Start Free → lightspeedholdings.com"
+      },
+      "safeZones": "Content ≥15% inset from edges (180px horizontal, 94px vertical)"
+    },
+    {
+      "id": "campaign-instagram-feed",
+      "platform": "Instagram Feed",
+      "dimensions": "1080x1080",
+      "filename": "campaign-instagram-1080x1080.png",
+      "brief": "Instagram feed post (square). Centered composition. Navy background, diagram centered, headline above, CTA below. Logo bottom-right. Text safe zones: ≥15% inset (162px all sides).",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "subhead": "YAML → Generator → Orchestrator. Done.",
+        "cta": "Link in bio → lightspeedholdings.com"
+      },
+      "safeZones": "Content ≥15% inset from edges (162px all sides)"
+    },
+    {
+      "id": "campaign-instagram-story",
+      "platform": "Instagram Story",
+      "dimensions": "1080x1920",
+      "filename": "campaign-ig-story-1080x1920.png",
+      "brief": "Instagram story (vertical 9:16). Top: logo + headline. Middle: vertical flow diagram (Registry → Generator → Orchestrator). Bottom: CTA button. Safe zones: ≥15% inset (162px horizontal, 288px vertical top/bottom). Swipe-up CTA.",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "body": "Registry → Generator → Orchestrator\n37 agents • 3 offers • 1 CLI\nHITL governance built in",
+        "cta": "Swipe Up → lightspeedholdings.com"
+      },
+      "safeZones": "Content ≥15% inset (162px horizontal, 288px vertical)"
+    },
+    {
+      "id": "campaign-facebook",
+      "platform": "Facebook Feed",
+      "dimensions": "1200x628",
+      "filename": "campaign-facebook-1200x628.png",
+      "brief": "Facebook feed ad. Similar to LinkedIn but slightly taller. Navy background, diagram, cyan headline, red CTA. Logo top-left. Text safe zones: ≥15% inset (180px horizontal, 94px vertical).",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "subhead": "Agent sprawl? No governance? Runaway costs? Fixed.",
+        "cta": "Learn More → lightspeedholdings.com"
+      },
+      "safeZones": "Content ≥15% inset from edges (180px horizontal, 94px vertical)"
+    },
+    {
+      "id": "campaign-twitter",
+      "platform": "X / Twitter",
+      "dimensions": "1600x900",
+      "filename": "campaign-twitter-1600x900.png",
+      "brief": "X/Twitter post (16:9). Wide format. Navy background, horizontal diagram spanning width, headline left, CTA right. Logo top-left. Safe zones: ≥15% inset (240px horizontal, 135px vertical).",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "subhead": "YAML-defined. Type-safe. Auditable. 37 agents, 3 offers, 1 CLI.",
+        "cta": "Start Free → lightspeedholdings.com"
+      },
+      "safeZones": "Content ≥15% inset from edges (240px horizontal, 135px vertical)"
+    },
+    {
+      "id": "campaign-gdn-300x250",
+      "platform": "Google Display Network",
+      "dimensions": "300x250",
+      "filename": "campaign-gdn-300x250.png",
+      "brief": "Medium rectangle. Compact layout. Navy background, minimal diagram (3 small nodes), short headline, prominent red CTA. Logo small top-left. Safe zones: ≥15% inset (45px horizontal, 38px vertical).",
+      "copy": {
+        "headline": "Agent company in 5 min",
+        "subhead": "YAML. Type-safe. Governed.",
+        "cta": "Start Free"
+      },
+      "safeZones": "Content ≥15% inset (45px horizontal, 38px vertical)"
+    },
+    {
+      "id": "campaign-gdn-728x90",
+      "platform": "Google Display Network",
+      "dimensions": "728x90",
+      "filename": "campaign-gdn-728x90.png",
+      "brief": "Leaderboard. Horizontal strip. Navy background, logo left, headline center, CTA right. No diagram (too narrow). Safe zones: ≥15% inset (109px horizontal, 14px vertical).",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "cta": "Start Free →"
+      },
+      "safeZones": "Content ≥15% inset (109px horizontal, 14px vertical)"
+    },
+    {
+      "id": "campaign-gdn-336x280",
+      "platform": "Google Display Network",
+      "dimensions": "336x280",
+      "filename": "campaign-gdn-336x280.png",
+      "brief": "Large rectangle. Navy background, compact diagram, headline, CTA. Logo top-left. Safe zones: ≥15% inset (50px horizontal, 42px vertical).",
+      "copy": {
+        "headline": "Agent company in 5 minutes",
+        "subhead": "37 agents • 3 offers • 1 CLI",
+        "cta": "Start Free"
+      },
+      "safeZones": "Content ≥15% inset (50px horizontal, 42px vertical)"
+    },
+    {
+      "id": "campaign-gdn-970x250",
+      "platform": "Google Display Network",
+      "dimensions": "970x250",
+      "filename": "campaign-gdn-970x250.png",
+      "brief": "Billboard. Wide horizontal. Navy background, horizontal diagram, headline left, CTA right. Logo top-left. Safe zones: ≥15% inset (146px horizontal, 38px vertical).",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "subhead": "YAML-defined hierarchies. Type-safe. HITL governed.",
+        "cta": "Start Free → lightspeedholdings.com"
+      },
+      "safeZones": "Content ≥15% inset (146px horizontal, 38px vertical)"
+    },
+    {
+      "id": "campaign-billboard",
+      "platform": "Print Billboard",
+      "dimensions": "1400x600",
+      "filename": "campaign-billboard-1400x600.png",
+      "brief": "Print billboard (12:5 ratio). High resolution (300dpi, CMYK). Navy background, large diagram, large headline, prominent CTA. Logo bottom-right. Safe zones: ≥15% inset (210px horizontal, 90px vertical).",
+      "copy": {
+        "headline": "Deploy an agent company in 5 minutes",
+        "subhead": "LightSpeed Holdings Limited™ — ASPIRE. ACT. ACHIEVE.",
+        "cta": "lightspeedholdings.com"
+      },
+      "safeZones": "Content ≥15% inset (210px horizontal, 90px vertical)",
+      "printSpecs": {
+        "dpi": 300,
+        "colorMode": "CMYK",
+        "bleed": "3mm all sides"
+      }
+    }
+  ],
+  "generationBriefTemplate": {
+    "mode": "api",
+    "model": "gemini-2.5-flash-image",
+    "prompt": "Professional B2B tech campaign hero. Navy background (#070A40). Clean geometric diagram showing three connected nodes: 'Registry (YAML)' → 'Generator (Jinja2)' → 'Orchestrator (MessageBus)'. Nodes in navy with cyan borders, connections in cyan. Subtle grid pattern. LightSpeed logo top-left. Headline '{HEADLINE}' in cyan. Red CTA button '{CTA}'. Corporate, trustworthy, engineering-led aesthetic. No people, no stock photos.",
+    "brandPalette": ["#070A40", "#E63946", "#00BFFF", "#F2F2F2"],
+    "clearSpace": "official logo clear-space rules (1x 'L' height)",
+    "outputPath": "docs/assets/campaign-2026-q4/",
+    "expiresAt": "2026-12-31T23:59:59Z"
+  },
+  "qaGates": [
+    "Dimension-exact per platform specification",
+    "Logo is official asset from brand/logos/, clear space respected",
+    "Brand palette only: navy #070A40, red #E63946, cyan #00BFFF, lightGrey #F2F2F2, white #FFFFFF",
+    "Red reserved for CTA button only",
+    "Text within safe zones (≥15% inset), no clipping/overflow",
+    "Persuasion arc complete: Attention→Problem→Promise→Proof→Differentiation→CTA",
+    "Proof is real, traceable fact (37 agents, 3 offers, 1 CLI from company-registry.yaml)",
+    "Contrast ≥ 4.5:1 for all copy (cyan on navy, white on navy, white on red)",
+    "No generic stock-photo AI vibe; brand-consistent graphics only"
+  ],
+  "contact": {
+    "name": "Jack Mlusu",
+    "email": "jmlusu@gmail.com",
+    "phone": "+265 (0) 980 016 004",
+    "website": "lightspeedholdings.com"
+  }
+}
