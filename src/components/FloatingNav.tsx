@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
+import { PRIMARY_CTA_LABEL } from '../data/ctas';
+import Logo from '@/components/site/Logo.tsx';
 
 interface FloatingNavProps {
   onRequestBriefing: (summary?: string) => void;
@@ -40,22 +42,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
         >
           <div className="flex items-center gap-3">
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5 group cursor-pointer">
-              <div className="w-8 h-8 rounded-full border border-ls-white/30 bg-ls-red flex items-center justify-center text-ls-white shadow-md group-hover:scale-105 transition-all">
-                <Shield className="w-4 h-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className={`text-xs font-black tracking-widest font-sans flex items-center gap-1.5 ${
-                  isLight ? 'text-ls-navy' : 'text-ls-white'
-                }`}>
-                  LightSpeed
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-ls-red shadow-[0_0_6px_rgba(230,57,70,0.9)]" />
-                </span>
-                <span className={`text-[9px] font-body tracking-wider hidden sm:inline font-bold ${
-                  isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'
-                }`}>
-                  AI-NATIVE COMPANY BUILDER
-                </span>
-              </div>
+              <Logo size={32} showText theme={theme} instance="first" />
             </Link>
           </div>
 
@@ -91,11 +78,11 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onRequestBriefing('Book an Executive Briefing');
+                onRequestBriefing(PRIMARY_CTA_LABEL);
               }}
               className="ripple-on flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs tracking-wider transition-all cursor-pointer shadow-md bg-ls-red hover:bg-ls-red/90 text-ls-white shadow-ls-red/25 border-t border-ls-white/20 active:scale-95"
             >
-              <span>Book a Briefing</span>
+              <span>{PRIMARY_CTA_LABEL}</span>
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -130,11 +117,11 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onRequestBriefing('Book an Executive Briefing');
+                onRequestBriefing(PRIMARY_CTA_LABEL);
               }}
               className="ripple-on w-full py-3 rounded-full font-bold text-xs tracking-widest bg-ls-red text-ls-white flex items-center justify-center gap-2 shadow-md hover:bg-ls-red/90 transition-all mt-2"
             >
-              <span>Book an Executive Briefing</span>
+              <span>{PRIMARY_CTA_LABEL}</span>
             </button>
           </div>
         )}

@@ -326,6 +326,17 @@ engine = EmbeddingEngine()
 embeddings = engine.encode(["task description", "another task"])
 ```
 
+### Vector Search Opt-In Pattern (added 2026-09-27)
+
+To avoid loading the 52 MB vector index into every LLM request context, vector embedding search is **opt-in only** by default:
+
+- **Default**: Memory recall uses fast keyword/substring matching. No vector index is loaded.
+- **Enable when needed**: Call `store.enable_vector_search(embedding_engine, index_dir)` after `init_memory()` if semantic similarity search is required for a task.
+- **Feature flag**: Set `AI_COMPANY_LEARNING_ENABLED=0` to disable the continuous-learning pipeline entirely and skip vector store initialization.
+- **Best practice**: Only enable vector search for tasks that specifically need semantic similarity matching. Keep it disabled for general task execution to maintain optimal performance.
+
+See `src/ai_company/memory/integration.py` and `src/ai_company/executor/loop.py` for the implementation details.
+
 ### Tests
 
 Tests are in `tests/unit/test_ml.py`. The embedding test is skipped when the HuggingFace model cannot be downloaded.

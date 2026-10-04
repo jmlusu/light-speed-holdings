@@ -36,9 +36,10 @@ ai-company <domain> <action> [args] [options]
 | `executor` | Task execution | `ai-company executor tick` |
 | `graph` | Knowledge graphs | `ai-company graph list` |
 | `hr` | HR operations | `ai-company hr list-agents` |
+| `knowledge` | Legacy JSON knowledge store | `ai-company knowledge list` |
 | `legal` | Legal operations | `ai-company legal list-contracts` |
 | `marketing` | Marketing ops | `ai-company marketing list-campaigns` |
-| `memory` | Memory engine | `ai-company memory list` |
+| `memory` | LS-MEM memory engine | `ai-company memory status` |
 | `orchestrator` | Coordination | `ai-company orchestrator tick` |
 | `sales` | Sales operations | `ai-company sales list-leads` |
 | `specialists` | Specialist agents | `ai-company specialists list` |
@@ -50,14 +51,14 @@ ai-company <domain> <action> [args] [options]
 |------|---------|---------|
 | `list` | Show all items | `ai-company agents list` |
 | `show` / `get` | Show one item | `ai-company agents show lead-engineer` |
-| `create` / `add` | Create new item | `ai-company memory add ...` |
+| `create` / `add` | Create new item | `ai-company knowledge add ...` |
 | `remove` / `delete` | Delete item | `ai-company orchestrator escalation remove <id>` |
 | `run` | Execute an operation | `ai-company doctor run` |
 | `tick` | Run one cycle | `ai-company orchestrator tick` |
 | `start` | Start continuous loop | `ai-company executor start` |
 | `status` | Show current state | `ai-company executor status` |
 | `evaluate` | Assess something | `ai-company decision evaluate "..."` |
-| `search` | Find by query | `ai-company memory search --query "..."` |
+| `search` | Find by query | `ai-company knowledge search "..."` |
 
 ### Subcommand Groups
 

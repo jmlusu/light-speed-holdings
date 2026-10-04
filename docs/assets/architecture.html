@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>LightSpeed Holdings — Agent Company Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --ls-navy: #070A40;
+            --ls-red: #E63946;
+            --ls-cyan: #00BFFF;
+            --ls-grey-light: #F2F2F2;
+            --ls-white: #FFFFFF;
+            --ls-dark-grey: #6B7280;
+            --ls-light-text-grey: #9CA3AF;
+            --bg-primary: var(--ls-white);
+            --bg-secondary: var(--ls-grey-light);
+            --text-primary: var(--ls-navy);
+            --text-secondary: var(--ls-dark-grey);
+            --border-color: var(--ls-light-text-grey);
+            --accent-cyan: var(--ls-cyan);
+            --accent-red: var(--ls-red);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: var(--ls-navy);
+                --bg-secondary: #0a0e2a;
+                --text-primary: var(--ls-white);
+                --text-secondary: var(--ls-light-text-grey);
+                --border-color: #374151;
+            }
+        }
+
+        [data-theme="light"] {
+            --bg-primary: var(--ls-white);
+            --bg-secondary: var(--ls-grey-light);
+            --text-primary: var(--ls-navy);
+            --text-secondary: var(--ls-dark-grey);
+            --border-color: var(--ls-light-text-grey);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: var(--ls-navy);
+            --bg-secondary: #0a0e2a;
+            --text-primary: var(--ls-white);
+            --text-secondary: var(--ls-light-text-grey);
+            --border-color: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            height: 48px;
+            width: auto;
+        }
+
+        h1 {
+            font-size: 32pt;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14pt;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--border-color);
+            border-color: var(--accent-cyan);
+        }
+
+        .theme-toggle:focus {
+            outline: 2px solid var(--accent-cyan);
+            outline-offset: 2px;
+        }
+
+        .theme-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        .diagram-wrapper {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 48px;
+            overflow: auto;
+            min-height: 600px;
+        }
+
+        .mermaid {
+            text-align: center;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 32px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13pt;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 12pt;
+            color: var(--text-secondary);
+        }
+
+        .brand-notice {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trademark {
+            font-size: 10pt;
+            vertical-align: super;
+            color: var(--accent-cyan);
+        }
+
+        .source-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .source-link:hover {
+            color: var(--accent-red);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 24pt;
+            }
+
+            .diagram-wrapper {
+                padding: 24px 16px;
+                border-radius: 8px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .theme-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="../../brand/logos/fulllogo/fulllogo.png" alt="LightSpeed Holdings Limited™" class="logo" loading="lazy">
+            </div>
+            <h1>Agent Company Architecture</h1>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light theme" aria-pressed="false">
+                <span class="theme-icon" aria-hidden="true">
+                    <svg id="sunIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="moonIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </span>
+                <span id="themeText">Dark Mode</span>
+            </button>
+        </header>
+
+        <div class="diagram-wrapper" role="img" aria-label="LightSpeed Agent Company Architecture Diagram showing five layers: Registry, Generator, Output, Runtime, and Governance">
+            <div class="mermaid" id="architectureDiagram">
+flowchart TB
+    subgraph Registry["Registry Layer"]
+        YAML["company-registry.yaml\n(Source of Truth)"]
+    end
+
+    subgraph Generator["Generator Layer"]
+        GEN["AgentGenerator\nReads YAML → Renders agent.md.j2"]
+    end
+
+    subgraph Output["Output Layer"]
+        MD[".opencode/agents/*.md\nOpenCode-native"]
+        YAML_OUT["company/*.yaml\nDeployed config"]
+    end
+
+    subgraph Runtime["Runtime Layer"]
+        BUS["MessageBus\n.opencode/inbox.json"]
+        EXEC["Executor Loop\nTask → Agent → Result"]
+    end
+
+    subgraph Governance["Governance Layer"]
+        GATE["ApprovalGate\nHITL + Expiry Sweep"]
+        AUDIT["AuditLog\nEscalation Events"]
+        DLQ["Dead Letter Queue"]
+    end
+
+    YAML --> GEN
+    GEN --> MD
+    GEN --> YAML_OUT
+    MD --> BUS
+    YAML_OUT --> BUS
+    BUS --> EXEC
+    EXEC --> GATE
+    GATE --> AUDIT
+    EXEC -.-> DLQ
+
+    style GATE fill:#E63946,color:#fff
+    style YAML fill:#070A40,color:#fff
+    style GEN fill:#00BFFF,color:#070A40
+    style BUS fill:#F2F2F2,color:#070A40
+    style MD fill:#FFFFFF,color:#070A40
+    style YAML_OUT fill:#FFFFFF,color:#070A40
+    style EXEC fill:#F2F2F2,color:#070A40
+    style AUDIT fill:#F2F2F2,color:#070A40
+    style DLQ fill:#F2F2F2,color:#E63946
+            </div>
+        </div>
+
+        <div class="legend" role="list" aria-label="Diagram layer legend">
+            <div class="legend-item" role="listitem">
+                <span class="legend-color" style="background: #070A40;"></span>
+                <span>Registry Layer — Source of Truth</span>
+            </div>
+            <div class="legend-item" role="listitem">
+                <span class="legend-color" style="background: #00BFFF;"></span>
+                <span>Generator Layer — Jinja2 Rendering</span>
+            </div>
+            <div class="legend-item" role="listitem">
+                <span class="legend-color" style="background: #FFFFFF; border-color: #070A40;"></span>
+                <span>Output Layer — OpenCode Agents + Config</span>
+            </div>
+            <div class="legend-item" role="listitem">
+                <span class="legend-color" style="background: #F2F2F2;"></span>
+                <span>Runtime Layer — MessageBus + Executor</span>
+            </div>
+            <div class="legend-item" role="listitem">
+                <span class="legend-color" style="background: #E63946;"></span>
+                <span>Governance Layer — ApprovalGate (HITL)</span>
+            </div>
+            <div class="legend-item" role="listitem">
+                <span class="legend-color" style="background: #F2F2F2; border-color: #E63946;"></span>
+                <span>Dead Letter Queue — Failed Tasks</span>
+            </div>
+        </div>
+
+        <footer>
+            <div class="brand-notice">
+                <span>LightSpeed Holdings Limited</span>
+                <span class="trademark">™</span>
+            </div>
+            <a href="https://lightspeedholdings.com" class="source-link" target="_blank" rel="noopener">lightspeedholdings.com</a>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#070A40',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#070A40',
+                lineColor: '#6B7280',
+                secondaryColor: '#00BFFF',
+                tertiaryColor: '#F2F2F2',
+                background: 'transparent',
+                mainBkg: 'transparent',
+                secondBkg: '#F2F2F2',
+                tertiaryBkg: '#FFFFFF',
+                textColor: '#070A40',
+                nodeTextColor: '#070A40',
+                clusterBkg: '#F2F2F2',
+                clusterBorder: '#070A40',
+                edgeLabelBackground: '#FFFFFF'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            securityLevel: 'loose',
+            fontFamily: 'Arial, Helvetica, sans-serif'
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeText = document.getElementById('themeText');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to system preference
+        function getInitialTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved) return saved;
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            if (theme === 'dark') {
+                themeText.textContent = 'Light Mode';
+                sunIcon.style.display = 'inline-block';
+                moonIcon.style.display = 'none';
+                themeToggle.setAttribute('aria-pressed', 'true');
+            } else {
+                themeText.textContent = 'Dark Mode';
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'inline-block';
+                themeToggle.setAttribute('aria-pressed', 'false');
+            }
+            // Re-render mermaid with new theme colors
+            setTimeout(() => {
+                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+            }, 100);
+        }
+
+        // Initialize
+        applyTheme(getInitialTheme());
+
+        // Toggle handler
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                applyTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Keyboard support for theme toggle
+        themeToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                themeToggle.click();
+            }
+        });
+    </script>
+</body>
+</html>

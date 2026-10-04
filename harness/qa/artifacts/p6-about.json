@@ -1,0 +1,19 @@
+{
+  "target": "http://localhost:3001/about",
+  "checks": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 4373,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 16,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\artifacts\\p6-about-390x844.png"
+    }
+  ]
+}

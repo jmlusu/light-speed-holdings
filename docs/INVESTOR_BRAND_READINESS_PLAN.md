@@ -49,7 +49,7 @@ Every point where an investor encounters the LightSpeed Holdings brand:
 | 3 | **Email Signatures** | No standard | Deploy Email Signature 2 (navy border) org-wide | HIGH |
 | 4 | **Business Cards** | Not printed | Order Business Card Design 1 for all executives | HIGH |
 | 5 | **Letterhead** | Does not exist | Deploy Letterhead 1 (navy header bar) as standard | HIGH |
-| 6 | **Website / Landing Page** | `static/index.html` has "LS" placeholder | Replace with official logo; full brand refresh | HIGH |
+| 6 | **Website / Landing Page** | `static/index.html` had "LS" placeholder (obsolete — root `static/` PWA removed 2026-09-27) | Replace with official logo; full brand refresh | HIGH |
 | 7 | **Social Media Profiles** | No assets deployed | Apply Facebook Cover Page 3; create LinkedIn/Twitter equivalents | MEDIUM |
 | 8 | **Press / Media Kit** | Does not exist | Create downloadable press kit | MEDIUM |
 | 9 | **Board Meeting Materials** | J.A.R.V.I.S. dashboard only | Create branded board deck template | HIGH |
@@ -304,7 +304,7 @@ as outlined in the included brand guidelines.
 | 1.5 | Build board meeting template | IR Lead | ☐ TODO | `.pptx` master with branded slides |
 | 1.6 | Deploy Email Signature 2 org-wide | IR Lead + IT | ☐ TODO | HTML signature for all team members |
 | 1.7 | Order business cards (Design 1) | IR Lead | ☐ TODO | For CEO, CFO, and key executives |
-| 1.8 | Update `static/index.html` logo | IR Lead + Eng | ☐ TODO | Replace "LS" placeholder with `icononly.png` |
+| 1.8 | Update `static/index.html` logo | IR Lead + Eng | ☐ obsolete — root `static/` PWA removed 2026-09-27 | Replace "LS" placeholder with `icononly.png` |
 
 ### Phase 2 — Pre-Fundraise (4–6 Weeks Before Raise)
 

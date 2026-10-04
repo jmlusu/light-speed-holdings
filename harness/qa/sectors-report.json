@@ -1,0 +1,33 @@
+{
+  "target": "http://localhost:3001/sectors",
+  "checks": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "scrollWidth": 1280,
+      "scrollHeight": 2788,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 12,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\sectors-probe-1280x800.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "scrollHeight": 4496,
+      "horizontalOverflowPx": 0,
+      "imgCount": 0,
+      "missingAltCount": 0,
+      "headingCount": 12,
+      "emptyHeadingCount": 0,
+      "screenshot": "harness\\qa\\sectors-probe-390x844.png"
+    }
+  ]
+}

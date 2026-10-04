@@ -96,7 +96,7 @@ def _shrink_to_fit(draw, text, font, max_width, bold):
     return font
 
 
-def create_profile_image(size, output_path, variant="default"):
+def create_profile_image(size, output_path, variant="default", size_factor=None):
     """Create a profile image with the icon logo on navy background.
 
     variant="ring" adds a cyan medallion ring around the icon (Instagram avatar).
@@ -120,8 +120,9 @@ def create_profile_image(size, output_path, variant="default"):
     icon_path = os.path.join(LOGO_DIR, "icononly_transparent.png")
     if os.path.exists(icon_path):
         icon = Image.open(icon_path).convert("RGBA")
-        # Calculate size to fit (50% of canvas), preserving aspect ratio
-        icon_w = int(size * 0.5)
+        # Calculate size to fit (50% of canvas default), preserving aspect ratio
+        sf = size_factor if size_factor is not None else 0.5
+        icon_w = int(size * sf)
         icon_h = int(icon.height * (icon_w / icon.width))
         icon = icon.resize((icon_w, icon_h), Image.Resampling.LANCZOS)
         # Center
@@ -147,7 +148,7 @@ def create_profile_image(size, output_path, variant="default"):
     print(f"Created: {output_path}")
 
 
-def create_banner_image(width, height, output_path, platform="linkedin"):
+def create_banner_image(width, height, output_path, platform="linkedin", larger=False, max_text_width_factor=None):
     """Create a banner image with navy background, logo, company name, and tagline."""
     img = Image.new("RGB", (width, height), NAVY)
     draw = ImageDraw.Draw(img)
@@ -160,12 +161,13 @@ def create_banner_image(width, height, output_path, platform="linkedin"):
     bar_height = max(4, height // 50)
     draw.rectangle([(0, height - bar_height), (width, height)], fill=RED)
 
-    # Load full logo
-    full_logo_path = os.path.join(FULL_LOGO_DIR, "fulllogo_transparent.png")
-    if os.path.exists(full_logo_path):
-        logo = Image.open(full_logo_path).convert("RGBA")
-        # Scale logo to fit banner height (40%)
-        logo_height = int(height * 0.35)
+    # Load icon-only logo (requested: icon only)
+    icon_logo_path = os.path.join(LOGO_DIR, "icononly_transparent.png")
+    if os.path.exists(icon_logo_path):
+        logo = Image.open(icon_logo_path).convert("RGBA")
+        # Scale logo to fit banner height (40% default, larger if requested)
+        logo_scale = 0.5 if larger else 0.35
+        logo_height = int(height * logo_scale)
         logo_width = int(logo.width * (logo_height / logo.height))
         logo = logo.resize((logo_width, logo_height), Image.Resampling.LANCZOS)
 
@@ -174,14 +176,20 @@ def create_banner_image(width, height, output_path, platform="linkedin"):
         logo_y = (height - logo_height) // 2 - bar_height // 2
         img.paste(logo, (padding, logo_y), logo)
 
-        # Company name to the right of logo
+        # Company name aligned with icon center (vertical alignment)
         text_x = padding + logo_width + int(width * 0.03)
     else:
         text_x = int(width * 0.05)
 
+    max_text_w_factor = max_text_width_factor if max_text_width_factor is not None else 0.9
+    max_text_width = int(width * max_text_w_factor) - text_x if (int(width * max_text_w_factor) > text_x) else int(width * 0.9)
+
     # Company name
     try:
-        name_font_size = int(height * 0.18) if platform == "twitter" else int(height * 0.15)
+        if larger:
+            name_font_size = int(height * 0.22)
+        else:
+            name_font_size = int(height * 0.16) if platform == "twitter" else int(height * 0.13)
         name_font = ImageFont.truetype("arialbd.ttf", name_font_size)
     except OSError:
         try:
@@ -189,19 +197,32 @@ def create_banner_image(width, height, output_path, platform="linkedin"):
         except OSError:
             name_font = ImageFont.load_default()
 
-    company_name = "LIGHTSPEED HOLDINGS"
-    name_y = int(height * 0.25)
+    company_name = "LIGHTSPEED HOLDINGS LIMITED"
+    name_font = _shrink_to_fit(draw, company_name, name_font, max_text_width, True)
+    name_font_size = getattr(name_font, "size", name_font_size)
+    # Align text vertically with icon center
+    if 'logo' in locals() and logo:
+        name_box = draw.textbbox((0, 0), company_name, font=name_font)
+        name_h = name_box[3] - name_box[1]
+        name_y = logo_y + (logo_height - name_h) // 2
+    else:
+        name_y = int(height * 0.25)
     draw.text((text_x, name_y), company_name, fill=WHITE, font=name_font)
 
     # Tagline
     try:
-        tagline_font_size = int(height * 0.07)
+        tagline_font_size = int(height * 0.09) if larger else int(height * 0.07)
         tagline_font = ImageFont.truetype("arial.ttf", tagline_font_size)
     except OSError:
         tagline_font = ImageFont.load_default()
 
     tagline = "Aspire. Act. Achieve."
-    tagline_y = name_y + name_font_size + int(height * 0.03)
+    if 'logo' in locals() and logo:
+        tagline_box = draw.textbbox((0, 0), tagline, font=tagline_font)
+        tagline_h = tagline_box[3] - tagline_box[1]
+        tagline_y = logo_y + (logo_height - tagline_h) // 2 + int(height * 0.08)
+    else:
+        tagline_y = name_y + name_font_size + int(height * 0.03)
     draw.text((text_x, tagline_y), tagline, fill=CYAN, font=tagline_font)
 
     _snap_to_palette(img)
@@ -401,6 +422,7 @@ def main():
             "instagram",
             "tiktok",
             "youtube",
+            "facebook",
         ],
         help="Generate assets for one platform only; repeatable. Omit to generate all platforms.",
     )
@@ -418,6 +440,14 @@ def main():
         create_profile_image(400, os.path.join(OUTPUT_DIR, "linkedin-profile.png"))
         create_banner_image(
             1584, 396, os.path.join(OUTPUT_DIR, "linkedin-banner.png"), platform="linkedin"
+        )
+
+    # Facebook
+    if want("facebook") or platforms is None:
+        print("\n=== Facebook ===")
+        create_profile_image(1080, os.path.join(OUTPUT_DIR, "facebook-profile.png"), size_factor=0.90)
+        create_banner_image(
+            1640, 664, os.path.join(OUTPUT_DIR, "facebook-cover.png"), platform="facebook", larger=False, max_text_width_factor=0.85
         )
 
     # Twitter/X

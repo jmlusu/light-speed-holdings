@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import datetime
 import logging
+import re
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +24,58 @@ from ai_company.registry.loader import load_yaml_cached
 from ai_company.store import repo_write
 
 logger = logging.getLogger(__name__)
+
+# --- PowerShell anti-pattern guard (scanned in generated agent content) ---
+
+_PS_ANTIPATTERNS = [
+    # 1. Backtick before $ inside a string (suppresses substitution); lookbehind
+    # skips correct markdown code spans like ``$Name``
+    (re.compile(r"(?<!`)`\$"), "backtick-escape-in-here-string"),
+    # 2. ConvertTo-Json -Compress comparison without object parsing
+    (
+        re.compile(r"ConvertTo-Json\s+-\s*Depth\s+\d+\s*-\s*Compress"),
+        "convert-to-json-compress-without-parsing",
+    ),
+    # 3. Get-ChildItem without Sort-Object id
+    (re.compile(r"Get-ChildItem(?!\s.*Sort-Object\s+id)"), "get-childitem-without-sort-by-id"),
+    # 4. Unstable JSON serialisation disclaimer pattern
+    (
+        re.compile(r"JSON serialisation is an implementation detail", re.IGNORECASE),
+        "json-serialisation-implementation-detail",
+    ),
+]
+
+_ANTIPATTERN_SUMMARY = {
+    "backtick-escape-in-here-string": (
+        "BUG-d75423bb7: Backtick before `$` in here-strings suppresses substitution. "
+        "Write `$var` without leading backtick inside `(`@`...`@)`."
+    ),
+    "convert-to-json-compress-without-parsing": (
+        "BUG-84e037f13: `ConvertTo-Json -Compress` output is NOT stable across PowerShell versions. "
+        "Always parse both sides into objects, sort by `id`, and compare property-by-property."
+    ),
+    "get-childitem-without-sort-by-id": (
+        "BUG-93e21736a: `Get-ChildItem` enumeration order is NOT stable across platforms. "
+        "Always `Sort-Object id` at generation time, and compare semantically, not as strings."
+    ),
+    "json-serialisation-implementation-detail": (
+        "BUG-84e037f13: JSON serialisation is an implementation detail of the runtime. "
+        "Compare parsed structures, never the serialised text — especially across PowerShell editions."
+    ),
+}
+
+
+def _check_anti_patterns(content: str) -> list[dict[str, str]]:
+    """Scan content for known PowerShell anti-patterns.
+
+    Returns list of {pattern, message} dicts. Empty list means clean.
+    """
+    findings: list[dict[str, str]] = []
+    for pattern, label in _PS_ANTIPATTERNS:
+        if pattern.search(content):
+            findings.append({"pattern": label, "message": _ANTIPATTERN_SUMMARY[label]})
+    return findings
+
 
 # Tool name mapping: registry names → OpenCode v2 permission keys
 # Legacy aliases (websearch, edit) are kept so older
@@ -249,6 +302,14 @@ class AgentGenerator:
                 agent["tools"] = self._normalize_tools(raw_tools)
                 agent["permission"] = self._build_permission(raw_tools)
             rendered = template.render(company=company_name, **agent)
+            # Check generated content for known PowerShell anti-patterns
+            anti_findings = _check_anti_patterns(rendered)
+            if anti_findings:
+                logger.warning(
+                    "Agent %s generated with PowerShell anti-pattern findings: %s",
+                    agent.get("id", "unknown"),
+                    anti_findings,
+                )
             safe_id = agent["id"].replace("_", "-")
             out_file = self.output_dir / f"{safe_id}.md"
             repo_write.write_file(out_file, rendered)
@@ -568,5 +629,18 @@ class AgentGenerator:
                 logger.warning("  %s", err)
         else:
             logger.info("All generated agents passed validation.")
+
+        # Check for PowerShell anti-patterns in all generated content
+        anti_findings: list[dict[str, str]] = []
+        for _agent_name, content in rendered_specs:
+            findings = _check_anti_patterns(content)
+            anti_findings.extend(findings)
+        if anti_findings:
+            logger.warning(
+                "Generated agents contain PowerShell anti-pattern findings: %s",
+                anti_findings,
+            )
+        else:
+            logger.info("No PowerShell anti-patterns detected in generated content.")
 
         return generated

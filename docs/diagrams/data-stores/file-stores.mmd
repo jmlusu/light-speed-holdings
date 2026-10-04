@@ -1,0 +1,57 @@
+graph LR
+    %% ── Styling ──────────────────────────────────────────────
+    classDef jsonl fill:#5B9E5E,stroke:#3A6B3C,color:#FFFFFF,font-weight:bold
+    classDef json fill:#D4A04A,stroke:#A07830,color:#FFFFFF,font-weight:bold
+    classDef yaml fill:#E67E22,stroke:#B85D12,color:#FFFFFF,font-weight:bold
+    classDef dir fill:#9B59B6,stroke:#7D3C9A,color:#FFFFFF,font-weight:bold
+
+    %% ── Abstractions ──────────────────────────────────────────
+    FILESTORE["FileStore<br/>src/ai_company/store/file_store.py<br/>atomic writes · FileLock · .bak backups · corruption recovery"]:::dir
+    ATHENASTORE["AthenaStore<br/>src/ai_company/athena/store.py<br/>JSONL with FileLock"]:::dir
+    DLQ["DeadLetterStore<br/>orchestrator/dead_letter.py<br/>+ executor/dead_letter.py"]:::dir
+    ESCW["Escalation JSONL store<br/>orchestrator/escalation_events.py"]:::dir
+    AUDW["AuditWriter<br/>src/ai_company/audit/writer.py"]:::dir
+
+    %% ── Audit and Events (JSONL) ─────────────────────────────
+    subgraph AUDIT ["Audit trail and evidence (JSONL)"]
+        OPENCODE_AUDIT[".opencode/audit<br/>single JSONL file, 3.7 MB<br/>canonical trail (tickets #59 / #71)"]:::jsonl
+        ORCH_ESC["orchestrator/escalation_events.jsonl"]:::jsonl
+        ORCH_DLQ["orchestrator/dead_letter.jsonl<br/>created on demand"]:::jsonl
+        EVIDENCE["reports/evidence/<br/>audit_log-*.jsonl · audit_meta-*.jsonl<br/>*.json snapshots"]:::jsonl
+    end
+
+    %% ── Runtime state (JSON) ──────────────────────────────────
+    subgraph STATE ["Runtime state (JSON)"]
+        INBOX[".opencode/inbox.json<br/>legacy task inbox, 116 KB"]:::json
+        WF_INST["workflows/instances/*.json<br/>3719 workflow instance files"]:::json
+    end
+
+    %% ── Athena (JSONL) ────────────────────────────────────────
+    subgraph ATHENA ["Athena (JSONL + cache)"]
+        ATHENA_JOBS["company/athena/jobs.jsonl"]:::jsonl
+        ATHENA_PROF["company/athena/user_profiles.jsonl"]:::jsonl
+        ATHENA_SCRAPE["company/athena/scrape_jobs.jsonl"]:::jsonl
+        ATHENA_CACHE["company/athena/embeddings_cache/"]:::json
+    end
+
+    %% ── Config (YAML/JSON) ────────────────────────────────────
+    subgraph CONFIG ["Configuration and catalog"]
+        REGISTRY["company-registry.yaml"]:::yaml
+        CATALOG["data/catalog/<br/>assets.yaml · lineage.yaml<br/>quality_rules.yaml · README.md"]:::yaml
+        SCHEMAS["data/catalog/schemas/*.json<br/>9 JSON schemas"]:::json
+        BRAND["brand/tokens/<br/>brand-tokens.json · brand-tokens.css"]:::json
+        ENV[".env · .env.example<br/>.env.local · .env.staging.example"]:::yaml
+    end
+
+    %% ── Connections ───────────────────────────────────────────
+    FILESTORE -->|manages| WF_INST
+    FILESTORE -->|manages| INBOX
+    FILESTORE -->|manages| CATALOG
+    FILESTORE -->|manages| REGISTRY
+    ATHENASTORE -->|manages| ATHENA_JOBS
+    ATHENASTORE -->|manages| ATHENA_PROF
+    ATHENASTORE -->|manages| ATHENA_SCRAPE
+    ATHENASTORE -->|manages| ATHENA_CACHE
+    DLQ -->|appends| ORCH_DLQ
+    ESCW -->|appends| ORCH_ESC
+    AUDW -->|appends| OPENCODE_AUDIT

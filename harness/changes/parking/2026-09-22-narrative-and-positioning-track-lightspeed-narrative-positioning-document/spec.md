@@ -10,7 +10,7 @@
 
 - Real problem or user request: Create a canonical Narrative & Positioning Document that becomes the single source of truth for all 152 agents (151 AI + 1 human CEO) across 20 departments, replacing fragmented positioning across Pharos, USE-CASE-CATALOG, MISSION_AND_VISION, and brand system.
 - Current behavior: Positioning is scattered: `docs/Pharos/positioning.md` (North Star + 3 territories + H→A→O→M→T→G→V framework), `docs/client-facing/USE-CASE-CATALOG.md` ("The AI-native company builder for Southern Africa" + "ASPIRE. ACT. ACHIEVE." tagline), `docs/MISSION_AND_VISION.md` (mission "Prove agentic AI works in Malawi...", vision "Malawi first. Prove it. Then the world.", 140+ AI agents claim vs 152 canonical), and brand system (`brand/tokens/brand-tokens.json` navy/red/cyan palette, Arial type scale, 4px grid).
-- Source of evidence: All read during recon (STATUS.md, ECL.md, Pharos/README.md, Pharos/positioning.md, MISSION_AND_VISION.md, source-of-truth.yaml, README.md, USE-CASE-CATALOG.md, brand-guidelines.md, company-registry.yaml); graphify query on graphify-out/graph.json; grep for "Strategy...Build...Govern...Research" (0 matches — "Strategic thesis" missing entirely).
+- Source of evidence: All read during recon (STATUS.md, ECL.md, Pharos/README.md, Pharos/positioning.md, MISSION_AND_VISION.md, source-of-truth.yaml, README.md, USE-CASE-CATALOG.md, brand-guidelines.md, company-registry.yaml); grep for "Strategy...Build...Govern...Research" (0 matches — "Strategic thesis" missing entirely).
 
 ## User Scenarios And Success
 

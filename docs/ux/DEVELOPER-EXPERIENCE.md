@@ -81,7 +81,7 @@ All configuration lives in `company/`:
 | File | Purpose | Format |
 |------|---------|--------|
 | `agent-registry.json` | Agent definitions (single source of truth) | JSON |
-| `models.yaml` | LLM provider routing (9 providers) | YAML |
+| `models.yaml` | LLM provider routing (10 providers) | YAML |
 | `departments.yaml` | Department structure | YAML |
 | `config/kpis.yaml` | Department KPI definitions | YAML |
 | `workflows.yaml` | Workflow definitions | YAML |

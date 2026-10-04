@@ -231,14 +231,27 @@ The runtime persists shared state as JSON/YAML. The `ops_lead` owns hygiene:
 | `company-registry.yaml` | Agent source of truth | Edit only via registry PR; never hand-edit generated agents |
 | `config/**/*.yaml` | Routing, approvals, KPIs | Validate with `ai-company doctor run` after change |
 | `audit/*.jsonl` | Audit trail | Rotate monthly; archive older than 90 days |
+| `reports/evidence/` | Weekly audit evidence | Rotate weekly; retain 90 days; commit to git |
+| `orchestrator/escalation_events.jsonl` | Escalation event trail | Rotate monthly; retain 30 days; commit to git |
+| `orchestrator/dead_letter.jsonl` | Dead-letter queue trail | Rotate monthly; retain 90 days; commit to git |
+| `reports/evidence/audit-*.jsonl` | Audit DB export trail | Rotate daily; retain 90 days; commit to git |
 | `config/decision/*.yaml` | Approval matrix | Review on any org change |
 
 ### 7.2 Hygiene Procedure
 
-1. **Daily**: `ops_lead` runs `ai-company doctor run`; clears resolved tasks from inbox
-2. **Weekly**: Verify no orphaned state files; reconcile audit log counts
-3. **Monthly**: Rotate audit logs; archive completed workflows
+1. **Daily**: `ops_lead` runs `ai-company doctor run`; clears resolved tasks from inbox; runs `ai-company audit export` to export audit DB to `reports/evidence/`
+2. **Weekly**: Verify no orphaned state files; reconcile audit log counts; verify evidence directory integrity
+3. **Monthly**: Rotate audit logs; archive completed workflows; rotate `escalation_events.jsonl` and `dead_letter.jsonl` (retain 30/90 days)
 4. **On change**: Regenerate agents (`ai-company generate`) and re-run doctor
+
+### 7.3 Evidence Directory Rotation (New)
+
+| Evidence Path | Rotation | Retention | Rotation Method |
+|---------------|----------|-----------|-----------------|
+| `reports/evidence/` | Weekly (via cron) | 90 days | Git commit + artifact upload |
+| `orchestrator/escalation_events.jsonl` | Monthly | 30 days | `EscalationEventStore.rotate(30)` |
+| `orchestrator/dead_letter.jsonl` | Monthly | 90 days | `DeadLetterStore.rotate(90)` |
+| `reports/evidence/audit-*.jsonl` | Daily (via cron) | 90 days | Git commit + artifact upload |
 
 ## 8. Dead-Letter Handling
 

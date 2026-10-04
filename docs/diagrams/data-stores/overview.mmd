@@ -1,0 +1,67 @@
+graph TB
+    %% ── Styling ──────────────────────────────────────────────
+    classDef sqlite fill:#4A90D9,stroke:#2C5F8A,color:#FFFFFF,font-weight:bold
+    classDef jsonl fill:#5B9E5E,stroke:#3A6B3C,color:#FFFFFF,font-weight:bold
+    classDef json fill:#D4A04A,stroke:#A07830,color:#FFFFFF,font-weight:bold
+    classDef yaml fill:#E67E22,stroke:#B85D12,color:#FFFFFF,font-weight:bold
+    classDef abstraction fill:#6B3FA0,stroke:#4A2D70,color:#FFFFFF,font-weight:bold
+    classDef code fill:#2C3E50,stroke:#1A252F,color:#FFFFFF,font-weight:bold
+
+    %% ── Core Applications ─────────────────────────────────────
+    CORE["AI Company Builder<br/>Core System"]
+    WORKFLOW["WorkflowEngine"]
+    ATHENA["Athena System"]
+
+    %% ── Storage Abstractions ───────────────────────────────────
+    FILESTORE["FileStore<br/>Atomic I/O, Locking, Backups"]
+    DATABASE["Database<br/>SQLite aiosqlite / sqlite3"]
+
+    %% ── SQLite Databases ─────────────────────────────────────
+    AICOMPANY_DB[("data/ai_company.db<br/>Schema v5")]:::sqlite
+
+    %% ── SQLite-Backed Stores ──────────────────────────────────
+    TASKSTORE["TaskStore"]:::abstraction
+    AUDITSTORE["AuditStore"]:::abstraction
+    ESCSTORE["EscalationStore"]:::abstraction
+    KPIPIPE["KPIPipeline"]:::abstraction
+    COSTANAL["CostAnalytics"]:::abstraction
+    AGENTPERF["AgentPerformanceAnalytics"]:::abstraction
+
+    %% ── File Stores ───────────────────────────────────────────
+    INBOX[".opencode/inbox.json<br/>Legacy"]:::json
+    AUDIT_DIR[".opencode/audit/*.jsonl"]:::jsonl
+    ORCH_ESC["orchestrator/escalation_events.jsonl"]:::jsonl
+    ORCH_DLQ["orchestrator/dead_letter.jsonl"]:::jsonl
+    EVIDENCE["reports/evidence/audit-*.jsonl"]:::jsonl
+    WF_INST["workflows/instances/*.json"]:::json
+    ATHENA_DIR["company/athena/*.jsonl"]:::jsonl
+    BRAND_TOK["brand/tokens/*.json"]:::json
+    CATALOG["data/catalog/*.yaml<br/>schemas/*.json"]:::yaml
+    ENV[".env / .env.*"]:::yaml
+    REGISTRY["company-registry.yaml"]:::yaml
+
+    %% ── Connections ───────────────────────────────────────────
+    CORE --> DATABASE
+    CORE --> FILESTORE
+    WORKFLOW --> FILESTORE
+    ATHENA --> FILESTORE
+
+    DATABASE --> AICOMPANY_DB
+
+    TASKSTORE --> AICOMPANY_DB
+    AUDITSTORE --> AICOMPANY_DB
+    ESCSTORE --> AICOMPANY_DB
+    KPIPIPE --> AICOMPANY_DB
+    COSTANAL --> AICOMPANY_DB
+    AGENTPERF --> AICOMPANY_DB
+
+    FILESTORE --> WF_INST
+    FILESTORE --> ATHENA_DIR
+    FILESTORE --> INBOX
+    FILESTORE --> AUDIT_DIR
+
+    %% ── Direct File Access ────────────────────────────────────
+    CORE --> REGISTRY
+    CORE --> CATALOG
+    CORE --> BRAND_TOK
+    CORE --> ENV

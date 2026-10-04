@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./brand/brand-tokens.css";
 
+/* Class-based dark mode: the app theme toggles .dark on <html> (App.tsx),
+   so `dark:` utilities must follow the class, not the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: Arial, "Helvetica Neue", Helvetica, sans-serif;
   --font-display: Arial, "Helvetica Neue", Helvetica, sans-serif;
@@ -27,23 +31,85 @@
   }
 
   /* Light mode: Morning Mist / Alabaster */
-  html:not(.dark), html:not(.dark) body {
-    background-color: #F7F8F9;
-    color: #121518;
+  html:not(.dark) {
+    background-color: var(--ls-bg-light);
+    color: var(--ls-text-light);
   }
 
   /* Dark mode: Slate / Deep Mineral */
-  html.dark, html.dark body {
-    background-color: #121518;
-    color: #F7F8F9;
+  html.dark {
+    background-color: var(--ls-bg-dark);
+    color: var(--ls-text-dark);
   }
 
   /* Smooth transitions for theme changes */
   *, ::before, ::after {
     transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: var(--ease-spatial);
     transition-duration: 300ms;
   }
+}
+
+/* ── Motion Utilities ────────────────────────────────────── */
+/* Slow to the eye. Fast to the mind. */
+
+@layer utilities {
+  .transition-slow {
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .transition-medium {
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .transition-fast {
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ease-spatial {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ease-out-expo {
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ease-in-expo {
+    transition-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+  }
+
+  /* Reveal animations */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 600ms var(--ease-out-expo), transform 600ms var(--ease-out-expo);
+  }
+  .reveal-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-fade {
+    opacity: 0;
+    transition: opacity 500ms var(--ease-out-expo);
+  }
+  .reveal-fade.is-visible {
+    opacity: 1;
+  }
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 500ms var(--ease-out-expo), transform 500ms var(--ease-out-expo);
+  }
+  .reveal-scale.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger delays */
+  .delay-1 { transition-delay: 50ms; }
+  .delay-2 { transition-delay: 100ms; }
+  .delay-3 { transition-delay: 150ms; }
+  .delay-4 { transition-delay: 200ms; }
+  .delay-5 { transition-delay: 250ms; }
+  .delay-6 { transition-delay: 300ms; }
 }
 
 /* ── Reduced Motion ──────────────────────────────────────── */
@@ -57,6 +123,11 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .reveal-up, .reveal-fade, .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* ── Custom Scrollbar ────────────────────────────────────── */
@@ -68,11 +139,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(230, 57, 70, 0.3);
+  background: rgba(var(--ls-red-rgb), 0.3);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(230, 57, 70, 0.6);
+  background: rgba(var(--ls-red-rgb), 0.6);
 }
 
 /* ── Skip Link ──────────────────────────────────────────── */
@@ -82,80 +153,71 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
-  padding: 8px 16px;
-  background: #070A40;
-  color: #FFFFFF;
-  border-radius: 0 0 8px 8px;
+  padding: var(--ls-space-4) var(--ls-space-2);
+  background: var(--ls-navy);
+  color: var(--ls-white);
+  border-radius: var(--ls-radius-sm) var(--ls-radius-sm) 0 0;
   font-size: 14px;
   text-decoration: none;
-  transition: top 0.2s ease;
+  transition: top 0.2s var(--ease-spatial);
 }
 .skip-link:focus {
   top: 0;
 }
 
-/* ── Ambient Mist Effect (CSS-only) ─────────────────────── */
-.ambient-mist {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.ambient-mist-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.12;
-}
-
-/* Light mode mist */
-.ambient-mist-light .ambient-mist-blob-1 {
-  width: 500px; height: 500px;
-  top: -10%; left: -5%;
-  background: rgba(0, 191, 255, 0.4);
-}
-.ambient-mist-light .ambient-mist-blob-2 {
-  width: 400px; height: 400px;
-  top: 30%; right: -5%;
-  background: rgba(7, 10, 64, 0.08);
-}
-.ambient-mist-light .ambient-mist-blob-3 {
-  width: 300px; height: 300px;
-  bottom: -5%; left: 20%;
-  background: rgba(230, 57, 70, 0.06);
-}
-
-/* Dark mode mist */
-.ambient-mist-dark .ambient-mist-blob-1 {
-  width: 600px; height: 600px;
-  top: -15%; left: -10%;
-  background: rgba(0, 191, 255, 0.3);
-}
-.ambient-mist-dark .ambient-mist-blob-2 {
-  width: 500px; height: 500px;
-  top: 25%; right: -10%;
-  background: rgba(230, 57, 70, 0.1);
-}
-.ambient-mist-dark .ambient-mist-blob-3 {
-  width: 400px; height: 400px;
-  bottom: -10%; left: 15%;
-  background: rgba(7, 10, 64, 0.5);
-}
-
 /* ── Focus Visible ──────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid #00BFFF;
+  outline: 2px solid var(--ls-cyan);
   outline-offset: 2px;
 }
 
 /* ── Selection ──────────────────────────────────────────── */
 ::selection {
-  background: rgba(230, 57, 70, 0.2);
-  color: #E63946;
+  background: rgba(var(--ls-red-rgb), 0.2);
+  color: var(--ls-red);
 }
 html.dark ::selection {
-  background: rgba(0, 191, 255, 0.2);
-  color: #00BFFF;
+  background: rgba(var(--ls-cyan-rgb), 0.2);
+  color: var(--ls-cyan);
+}
+
+/* ── Calm Intelligence Surface Utilities ────────────────── */
+@layer utilities {
+  /* Mist atmosphere */
+  .surface-mist {
+    background: linear-gradient(180deg, var(--ls-bg-light) 0%, var(--ls-mist-subtle) 100%);
+  }
+  html.dark .surface-mist {
+    background: linear-gradient(180deg, var(--ls-bg-dark) 0%, var(--ls-mineral-elevated) 100%);
+  }
+
+  /* Water reflection */
+  .surface-water {
+    background: var(--ls-water-reflection);
+  }
+
+  /* Stone texture */
+  .surface-stone {
+    background-image: radial-gradient(ellipse at center, var(--ls-stone-texture) 0%, transparent 70%);
+  }
+
+  /* Light glow */
+  .surface-glow {
+    box-shadow: 
+      0 0 40px rgba(var(--ls-red-rgb), 0.03),
+      0 0 80px rgba(var(--ls-cyan-rgb), 0.02);
+  }
+  html.dark .surface-glow {
+    box-shadow: 
+      0 0 40px rgba(var(--ls-red-rgb), 0.05),
+      0 0 80px rgba(var(--ls-cyan-rgb), 0.03);
+  }
+
+  /* Restrained shadows */
+  .shadow-calm-sm { box-shadow: var(--ls-shadow-sm); }
+  .shadow-calm-md { box-shadow: var(--ls-shadow-md); }
+  .shadow-calm-lg { box-shadow: var(--ls-shadow-lg); }
+  .shadow-calm-xl { box-shadow: var(--ls-shadow-xl); }
+  .shadow-calm-red { box-shadow: var(--ls-shadow-red); }
+  .shadow-calm-cyan { box-shadow: var(--ls-shadow-cyan); }
 }

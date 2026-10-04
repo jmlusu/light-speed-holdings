@@ -202,11 +202,6 @@ jobs:
               rec(f"gitignore.{cfg.replace('/', '.')}",
                   "fail" if cfg in gitignore else "ok",
                   f"{cfg} ignored while required by cli/validate.py")
-          tracked_graph = subprocess.run(["git", "ls-files", "graphify-out"],
-                                         capture_output=True, text=True, timeout=60).stdout.strip()
-          rec("gitignore.graphify",
-              "warn" if ("graphify-out" not in gitignore or tracked_graph) else "ok",
-              f"ignored={'graphify-out' in gitignore} tracked_files={len(tracked_graph.splitlines())}")
 
           # 11. Unignored runner/build artifacts
           for d in (".playwright-cli", "screenshots", "results"):
@@ -221,16 +216,6 @@ jobs:
           # 13. ECL harness state (recursive: change files live in nested dirs)
           active_files = list((root / "harness" / "changes" / "active").glob("**/*.md"))
           rec("ecl.active", "ok" if active_files else "warn", f"active change files={len(active_files)}")
-
-          # 14. Knowledge graph freshness
-          sh("graphify.update", ["uv", "run", "graphify", "update", "."], timeout=900)
-          gj = root / "graphify-out" / "graph.json"
-          if gj.exists():
-              try:
-                  gdata = json.loads(gj.read_text(encoding="utf-8"))
-                  rec("graphify.graph", "ok", f"nodes={len(gdata.get('nodes', []))} edges={len(gdata.get('edges', []))}")
-              except Exception:  # noqa: BLE001
-                  rec("graphify.graph", "warn", f"graph.json size={gj.stat().st_size} bytes")
 
           # Severity mapping for the scan-only fallback report
           sev_map = {
@@ -289,6 +274,7 @@ jobs:
       MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      MIMO_API_KEY: ${{ secrets.MIMO_API_KEY }}
     outputs:
       date: ${{ steps.stub.outputs.date }}
       report_ok: ${{ steps.verify.outputs.report_ok }}

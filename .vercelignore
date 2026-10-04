@@ -26,8 +26,39 @@ uv.lock
 /node_modules/
 /dist/
 
-# Brand assets (not needed for build - favicon is in /public)
-/brand/
+# Secrets & deploy state
+.env*
+.vercel/
+*.log
+
+# Large non-site directories
+/open-design/
+/lab/
+/scrollcraft/
+/bin/
+/Branding landing page/
+/output/
+/tmp/
+/reports/
+/research/
+/evals/
+/knowledge/
+/prompts/
+/proposal-deliverables/
+/scripts/
+/survey/
+/tasks/
+/templates/
+/whitepaper/
+/diagrams/
+/.mimocode/
+/.playwright-cli/
+/.lightspeed/
+/.vscode/
+/.google notebook artifacts/
+/.pytest_tmp*/
+
+# Brand mirror (build needs /brand/tokens/ only — imports from src/pages & src/components)
 /static/
 
 # Docs, harness, configs
@@ -46,7 +77,6 @@ uv.lock
 /hr/
 /board/
 /workflows/
-/graphify-out/
 /.benchmarks/
 /.hypothesis/
 /.ai-company/

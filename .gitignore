@@ -126,3 +126,29 @@ dev-server.log
 *_output.txt
 run.json
 dashboard/alerts.json
+
+# ==========================================
+# .mimocode — project config tracked, runtime ignored
+# (bare mimocode.jsonc / mimocode.json patterns are forbidden here:
+#  they would defeat the negation below — see test_mimo_provider)
+# ==========================================
+.mimocode/*
+!.mimocode/mimocode.jsonc
+/mimocode.jsonc
+/mimocode.json
+
+# ==========================================
+# Local artifacts (2026-10-04)
+# ==========================================
+.google notebook artifacts/
+static/brand/social/facebook-cover-2800x1128.jpg
+static/brand/social/facebook-cover-2560x1024.jpg
+static/brand/social/facebook-cover-1640x664_1.jpg
+.python-version
+.hg/
+.cache/
+.backups/
+.vercel
+*.log
+output/
+evals/jev-validation/results/

@@ -115,7 +115,7 @@ All marketing materials must adhere to:
 
 - Company name: "Light Speed Holdings" (not "LightSpeed" or "LSH")
 - Product name: "AI Company Builder" (not "AI Company" or "the tool")
-- Logo usage: Per brand assets in `static/` directory
+- Logo usage: Per brand assets in `brand/**`
 - Color palette: Consistent with dashboard and website design
 - Typography: Professional, readable fonts for all published content
 
@@ -253,7 +253,7 @@ Handoff is recorded as a `MessageBus` task (`sender_id: cmo`, `receiver_id: sale
 - `docs/USER-GUIDE.md` - User-facing documentation
 - `CHANGELOG.md` - Product updates for marketing announcements
 - `docs/COMPANY-CONSTITUTION.md` - Brand values and messaging guidelines
-- `static/` - Brand assets (logo, design system)
+- `brand/` - Brand assets (logo, design system; see `brand/CANONICAL_SOURCES.md`)
 
 ---
 

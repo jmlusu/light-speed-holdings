@@ -4,10 +4,13 @@ import { Cpu, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { PageIntro } from '../components/site/PageIntro';
 import { SectionHeading } from '../components/site/SectionHeading';
 import { CtaBand } from '../components/site/CtaBand';
+import { RelatedLinks } from '../components/site/RelatedLinks';
 import { HonestyBadge } from '../components/site/HonestyBadge';
 import { Reveal } from '../components/Reveal';
 import { OFFER_FAMILIES } from '../data/useCaseCatalogData';
-import { solutions, GOVERNANCE_SOLUTION } from '../data/siteContent';
+import { solutions, GOVERNANCE_SOLUTION, honestyLabel } from '../data/siteContent';
+import { getSectorsBySolution } from '../data/sector-registry';
+import { CTAS } from '../data/ctas';
 
 interface WhatWeDoPageProps {
   theme: 'light' | 'dark';
@@ -32,10 +35,10 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            onClick={() => onRequestBriefing?.('Request an AI Readiness Assessment')}
+            onClick={() => onRequestBriefing?.(CTAS.assessment.label)}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xs tracking-widest uppercase bg-ls-red text-ls-white shadow-lg shadow-ls-red/30 transition-all cursor-pointer hover:bg-ls-red/90"
           >
-            Request an AI Readiness Assessment
+            {CTAS.assessment.label}
             <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
           <a
@@ -46,7 +49,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                 : 'border-ls-white/20 text-ls-white hover:bg-ls-white/5'
             }`}
           >
-            View Service Catalog
+            {CTAS.catalog.label}
           </a>
         </div>
       </PageIntro>
@@ -212,7 +215,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                   : isLight ? 'text-ls-navy hover:text-ls-red' : 'text-ls-white hover:text-ls-red'
               }`}
             >
-              Solutions (6 Domains)
+              Solutions ({solutions.length + 1} Domains)
             </button>
           </div>
         </div>
@@ -233,7 +236,7 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                       <span className="px-2.5 py-1 rounded-md bg-ls-red/10 text-ls-red text-xs font-black font-body">
                         OFFER {family.letter}
                       </span>
-                      <HonestyBadge label={{ label: family.honestyBadge, tone: 'fieldable' }} />
+                      <HonestyBadge label={honestyLabel(family.honestyBadge)} />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold font-display mt-2">{family.title}</h3>
                     <p className={`text-xs sm:text-sm mt-1 max-w-2xl ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
@@ -299,6 +302,24 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
                   <p className={`mt-2 text-xs sm:text-sm leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
                     {sol.oneLiner}
                   </p>
+                  {getSectorsBySolution(sol.slug).length > 0 && (
+                    <p className={`mt-3 text-[11px] leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
+                      <span className="font-body text-[9px] font-bold tracking-widest text-ls-red">
+                        WORKS IN{' '}
+                      </span>
+                      {getSectorsBySolution(sol.slug).map((s, i) => (
+                        <React.Fragment key={s.id}>
+                          {i > 0 && ' · '}
+                          <Link
+                            to={`/sectors#${s.id}`}
+                            className={`font-medium hover:text-ls-red hover:underline ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}
+                          >
+                            {s.title}
+                          </Link>
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  )}
                 </div>
                 <div className="pt-5 mt-5 border-t border-inherit flex items-center justify-between">
                   <Link
@@ -403,13 +424,22 @@ export const WhatWeDoPage: React.FC<WhatWeDoPageProps> = ({ theme, onRequestBrie
         </div>
       </section>
 
+      <RelatedLinks
+        theme={theme}
+        links={[
+          { to: '/proof', label: 'Proof' },
+          { to: '/solutions', label: 'Solutions' },
+          { to: '/sectors', label: 'Sectors' },
+        ]}
+      />
+
       {/* 6. CLEAR CTA */}
       <CtaBand
         theme={theme}
-        title="Request an AI Readiness Assessment"
+        title={CTAS.assessment.label}
         text="Speak with our executive team. We will evaluate your data and workflow readiness honestly — and determine exactly which service tier fits your goals."
-        ctaLabel="Request an AI Readiness Assessment"
-        ctaTo="/contact"
+        ctaLabel={CTAS.assessment.label}
+        ctaTo={CTAS.assessment.to}
       />
     </>
   );

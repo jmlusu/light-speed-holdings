@@ -1,0 +1,76 @@
+name: Daily Audit Export
+
+on:
+  schedule:
+    # Daily at 07:00 UTC (after the weekly repo-audit at 06:00 UTC)
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Date to export (YYYY-MM-DD), defaults to today"
+        required: false
+        type: string
+      all-tables:
+        description: "Export all tables instead of just audit_log"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  export-audit:
+    name: Export Audit Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Run audit export
+        id: export
+        env:
+          ALL_TABLES: ${{ inputs.all-tables }}
+        run: |
+          export AUDIT_DATE="${{ inputs.date || $(date -u +%F) }}"
+          echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
+          FLAGS=""
+          if [ "$ALL_TABLES" = "true" ]; then FLAGS="--all-tables"; fi
+          uv run python -m ai_company.audit.export $FLAGS --date "$AUDIT_DATE"
+
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: audit-evidence
+          path: reports/evidence/*-${{ steps.export.outputs.date }}.jsonl
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Commit evidence
+        if: always()
+        run: |
+          export AUDIT_DATE="${{ steps.export.outputs.date }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          shopt -s nullglob
+          FILES=(reports/evidence/*"${AUDIT_DATE}".jsonl)
+          if [ ${#FILES[@]} -eq 0 ]; then
+            echo "No evidence files produced for ${AUDIT_DATE}."
+          else
+            git add "${FILES[@]}"
+            if git diff --cached --quiet; then
+              echo "No new audit evidence to commit."
+            else
+              git commit -m "audit: daily evidence export ${AUDIT_DATE}"
+              git push -u origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+            fi
+          fi

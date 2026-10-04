@@ -215,3 +215,60 @@ export interface CatalogPolicyItem {
   summary: string;
   description: string;
 }
+
+export type ContentMediaType = 'screenshot' | 'brand-mark' | 'diagram' | 'metrics' | 'illustration';
+
+export interface ScreenshotMedia {
+  kind: 'screenshot';
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  tone: 'light' | 'dark';
+}
+
+export interface BrandMedia {
+  kind: 'brand-mark';
+  src: string;
+  alt: '';
+  width: number;
+  height: number;
+}
+
+export interface DiagramMedia {
+  kind: 'diagram';
+  alt: string;
+  tone: 'light' | 'dark';
+}
+
+export interface MetricMedia {
+  kind: 'metrics';
+  alt: string;
+  tone: 'light' | 'dark';
+}
+
+export interface IllustrationMedia {
+  kind: 'illustration';
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  tone: 'light' | 'dark';
+}
+
+export type ContentMedia =
+  | ScreenshotMedia
+  | BrandMedia
+  | DiagramMedia
+  | MetricMedia
+  | IllustrationMedia;
+
+export interface ContentMediaSet {
+  hero?: ContentMedia;
+  gallery?: ContentMedia[];
+  thumbnail?: ContentMedia;
+}
+
+export interface MediaFeatureFlag {
+  enabled: boolean;
+}

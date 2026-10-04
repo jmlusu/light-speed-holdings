@@ -60,6 +60,25 @@ If your harness appears here, read its reference file for special instructions:
 - Hermes Agent: `references/hermes-tools.md`
 - Muse: `references/muse-tools.md`
 
-## User Instructions
+## PowerShell Anti-Pattern Review (Mandatory Before Touching .ps1 Files)
+
+**Before responding to any task that involves modifying a PowerShell script (`*.ps1`), you MUST review the anti-pattern knowledge base:**
+
+1. Read `docs/anti-patterns/powershell/` — all 5 files cover the canonical failure modes
+2. **Specifically verify your changes do not contain:**
+   - a) Backtick before `$` inside here-strings (`@"...`@`) — e.g. `` `${sha}` ``
+   - b) `ConvertTo-Json -Compress` comparison without first parsing to objects and sorting by `id`
+   - c) `Get-ChildItem` enumeration without explicit `Sort-Object id` or equivalent deterministic key
+   - d) Assuming `ConvertTo-Json` output is stable across PowerShell 5.1 vs 7.x
+3. Run the verification lint: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/lint-ecl.ps1`
+4. If any of the above patterns are present in your changes, **stop and fix them before proceeding**
+
+**Reference Bugs (for context):**
+- BUG-93e21736a: Unstable directory enumeration order
+- BUG-d75423bb7: Backtick before `$` in here-strings
+- BUG-84e037f13: Unstable JSON serialisation comparison
+- BUG-81c94142a: INDEX.json committed with untracked inputs
+- BUG-ff0d33a7f: Canonical source drift / Verify path bug
+- BUG-9d688faee: Hook timeout blocking stash restore
 
 User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, etc, direct requests) take precedence over skills, which in turn override default behavior. Only skip skill workflows or instructions when your human partner has explicitly told you to.

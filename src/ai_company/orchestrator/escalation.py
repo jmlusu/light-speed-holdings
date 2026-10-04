@@ -6,15 +6,21 @@ Security hardening:
 - Atomic writes to prevent corruption
 """
 
+from __future__ import annotations
+
 import logging
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import yaml
 from pydantic import BaseModel, Field
 
 from ai_company.utils.file_lock import atomic_write, file_lock
+
+if TYPE_CHECKING:
+    from ai_company.orchestrator.escalation_events import EscalationEventStore
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +43,7 @@ class EscalationEvent(BaseModel):
     reason: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     resolved: bool = False
+    correlation_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
 
 class TimelineEntry(BaseModel):
@@ -85,13 +92,36 @@ class Postmortem(BaseModel):
 
 
 class EscalationManager:
-    def __init__(self, config_path: str = "orchestrator/escalation.yaml"):
+    def __init__(
+        self,
+        config_path: str = "orchestrator/escalation.yaml",
+        events_path: Optional[str] = None,
+    ):
         self.config_path = Path(config_path)
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
+        self.events_path = (
+            Path(events_path)
+            if events_path is not None
+            else self.config_path.parent / "escalation_events.jsonl"
+        )
+        self.events_path.parent.mkdir(parents=True, exist_ok=True)
         self.rules: List[EscalationRule] = []
         self.events: List[EscalationEvent] = []
+        self._event_store: Optional["EscalationEventStore"] = (
+            None  # Lazy init to avoid circular import
+        )
+        self._events_path = str(self.events_path)
         self._load_config()
         self._load_events()
+
+    @property
+    def _event_store_lazy(self) -> "EscalationEventStore":
+        """Lazy initialization of event store to avoid circular import."""
+        if self._event_store is None:
+            from ai_company.orchestrator.escalation_events import get_escalation_event_store
+
+            self._event_store = get_escalation_event_store(self._events_path)
+        return self._event_store
 
     def _load_config(self) -> None:
         if self.config_path.exists():
@@ -106,20 +136,16 @@ class EscalationManager:
                 yaml.dump(data, f, default_flow_style=False)
 
     def _load_events(self) -> None:
-        """Load persisted escalation events from the YAML file."""
-        if not self.config_path.exists():
-            return
+        """Load persisted escalation events from the JSONL store (evidence-separation compliant)."""
         try:
-            with file_lock(self.config_path):
-                with open(self.config_path, "r", encoding="utf-8") as f:
-                    data = yaml.safe_load(f) or {}
-                raw_events = data.get("events", [])
-                self.events = [EscalationEvent(**e) for e in raw_events]
-        except (yaml.YAMLError, KeyError):
+            self.events = self._event_store_lazy.list_all()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to load escalation events from JSONL store: %s", exc)
             self.events = []
 
     def _save_events(self) -> None:
-        """Persist escalation events back to the YAML file."""
+        """Persist escalation events to both YAML (config) and JSONL (evidence) stores."""
+        # Save to YAML config (for config compatibility)
         with file_lock(self.config_path):
             if self.config_path.exists():
                 try:
@@ -142,6 +168,13 @@ class EscalationManager:
 
             with atomic_write(self.config_path) as f:
                 yaml.dump(data, f, default_flow_style=False)
+
+        # Also append to JSONL evidence store (append-only, auditor read-only)
+        try:
+            for event in self.events:
+                self._event_store_lazy.append(event)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to append escalation event to JSONL store: %s", exc)
 
     def add_rule(
         self,

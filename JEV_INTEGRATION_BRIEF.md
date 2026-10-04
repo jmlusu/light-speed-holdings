@@ -140,7 +140,7 @@ company-registry.yaml  →  Jinja2 (agent.md.j2)  →  .opencode/agents/*.md
 | Message bus (JSON queue) | Sub-millisecond classification/routing per task | Low (middleware) |
 | Orchestrator | Replace LLM-based routing with calibrated decisions | Medium (new service) |
 | Specialist agents | Jev as "System 1" front-end; LLMs as "System 2" reasoners | High (architectural shift) |
-| Observability (graphify) | Log distributions, confidence, calibration drift | Medium (instrumentation) |
+| Observability | Log distributions, confidence, calibration drift | Medium (instrumentation) |
 
 ---
 

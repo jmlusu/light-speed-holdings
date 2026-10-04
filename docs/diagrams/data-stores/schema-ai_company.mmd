@@ -1,0 +1,167 @@
+erDiagram
+    tasks {
+        TEXT id PK
+        TEXT name
+        TEXT description
+        TEXT assignee
+        TEXT sender_id
+        TEXT receiver_id
+        TEXT instruction
+        TEXT status
+        TEXT priority
+        TEXT dependencies
+        TEXT due_date
+        TEXT tags
+        TEXT created_at
+        TEXT updated_at
+        TEXT completed_at
+        TEXT result
+        INTEGER requires_approval
+        TEXT approved_by
+        TEXT correlation_id
+        TEXT parent_task_id FK
+        TEXT acknowledged_by
+        TEXT raw_json
+        TEXT claimed_by
+        TEXT lease_expires_at
+    }
+
+    audit_events {
+        TEXT event_id PK
+        TEXT timestamp
+        TEXT event_type
+        TEXT agent_id
+        TEXT task_id FK
+        TEXT tool
+        TEXT args
+        TEXT result
+        TEXT metadata
+        TEXT severity
+    }
+
+    memory_entries {
+        TEXT id PK
+        TEXT memory_type
+        TEXT content
+        TEXT content_search
+        TEXT metadata
+        TEXT agent_id
+        TEXT tags
+        TEXT created_at
+        INTEGER access_count
+    }
+
+    escalation_events {
+        TEXT task_id PK, FK
+        TEXT rule_id PK
+        TEXT timestamp PK
+        TEXT from_agent
+        TEXT to_agent
+        TEXT reason
+        INTEGER resolved
+    }
+
+    kpi_values {
+        INTEGER id PK
+        TEXT timestamp
+        TEXT department
+        TEXT kpi_key
+        REAL current_value
+        REAL target_value
+        TEXT unit
+        TEXT status
+    }
+
+    cost_records {
+        INTEGER id PK
+        TEXT timestamp
+        TEXT model
+        TEXT provider
+        TEXT agent_name
+        TEXT task_id FK
+        INTEGER prompt_tokens
+        INTEGER completion_tokens
+        REAL cost_usd
+        INTEGER iteration
+        TEXT metadata
+    }
+
+    cost_aggregations {
+        INTEGER id PK
+        TEXT period
+        TEXT period_key
+        TEXT period_type
+        REAL total_cost_usd
+        INTEGER total_prompt_tokens
+        INTEGER total_completion_tokens
+        INTEGER total_calls
+        TEXT by_model
+        TEXT by_agent
+        TEXT computed_at
+    }
+
+    agent_performance_metrics {
+        INTEGER id PK
+        TEXT agent_id
+        INTEGER period_days
+        TEXT period_start
+        TEXT period_end
+        INTEGER tasks_sent
+        INTEGER tasks_received
+        INTEGER tasks_completed
+        INTEGER tasks_failed
+        REAL completion_rate_pct
+        REAL error_rate_pct
+        TEXT sent_by_status
+        TEXT received_by_status
+        TEXT audit_events
+        TEXT tool_usage
+        REAL total_cost_usd
+        INTEGER prompt_tokens
+        INTEGER completion_tokens
+        INTEGER llm_calls
+        INTEGER error_events
+        TEXT computed_at
+    }
+
+    revenue_transactions {
+        TEXT id PK
+        TEXT client_id
+        TEXT project_id
+        TEXT offer_id
+        TEXT service_name
+        TEXT currency
+        REAL amount
+        TEXT payment_method
+        TEXT status
+        TEXT installment_type
+        REAL exchange_rate
+        TEXT linked_task_id FK
+        TEXT reference
+        TEXT recorded_by
+        TEXT timestamp
+    }
+
+    project_costs {
+        TEXT id PK
+        TEXT project_id
+        TEXT cost_type
+        REAL amount_usd
+        REAL amount_mwk
+        TEXT description
+        TEXT agent_id
+        TEXT model
+        INTEGER tokens
+        TEXT timestamp
+    }
+
+    schema_meta {
+        TEXT key PK
+        TEXT value
+    }
+
+    tasks ||--o{ tasks : "parent_task_id"
+    tasks ||--o{ audit_events : "task_id"
+    tasks ||--o{ escalation_events : "task_id"
+    tasks ||--o{ cost_records : "task_id"
+    tasks ||--o{ revenue_transactions : "linked_task_id"

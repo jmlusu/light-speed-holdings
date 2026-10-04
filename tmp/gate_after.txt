@@ -1,0 +1,3 @@
+﻿ M company-registry.yaml
+ M company/agent-registry.json
+ M docs/AGENT-REGISTRY-TABLE.md

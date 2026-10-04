@@ -79,9 +79,9 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 | 3.2 | Order business cards for executives (500 qty) | 🔲 TODO | CFO | — |
 | 3.3 | Order letterheads (500 qty) | 🔲 TODO | CFO | — |
 | 3.4 | Create `brand-tokens.css` with official color palette | 🔲 TODO | Product Designer | 2.9 |
-| 3.5 | Update `static/manifest.json` theme color to brand navy | 🔲 TODO | Engineering | 2.9 |
+| 3.5 | Update `static/manifest.json` theme color to brand navy | ✅ N/A — obsolete (root `static/` PWA removed 2026-09-27) | Engineering | 2.9 |
 | 3.6 | Generate favicon from official icononly mark | 🔲 TODO | Engineering | — |
-| 3.7 | Update `static/css/mobile.css` brand color variables | 🔲 TODO | Engineering | 2.9 |
+| 3.7 | Update `static/css/mobile.css` brand color variables | ✅ N/A — obsolete (root `static/` PWA removed 2026-09-27) | Engineering | 2.9 |
 | 3.8 | Create LinkedIn company page assets (profile + banner) | ✅ Done | Content Creator | — |
 | 3.9 | Create Twitter/X profile assets (profile + header) | ✅ Done | Content Creator | — |
 | 3.10 | Create GitHub organization logo from official assets | 🔲 TODO | Engineering | — |
