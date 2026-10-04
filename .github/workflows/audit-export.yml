@@ -1,20 +1,17 @@
 name: Daily Audit Export
 
+# Decision D-a: CI is a freshness GUARD only.  The canonical trail
+# (.opencode/audit) is gitignored, so CI can never export it; the local runner
+# scripts/export-audit-evidence.ps1 (Task Scheduler) appends to
+# reports/evidence/audit-export-runs.jsonl and commits the dated evidence.
+# This workflow fails when the runner has not run within 36h or its evidence
+# is missing.  workflow_dispatch re-runs the guard (no inputs).
+
 on:
   schedule:
     # Daily at 07:00 UTC (after the weekly repo-audit at 06:00 UTC)
     - cron: "0 7 * * *"
   workflow_dispatch:
-    inputs:
-      date:
-        description: "Date to export (YYYY-MM-DD), defaults to today"
-        required: false
-        type: string
-      all-tables:
-        description: "Export all tables instead of just audit_log"
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: write
@@ -22,38 +19,51 @@ permissions:
 
 jobs:
   export-audit:
-    name: Export Audit Database
+    name: Guard Audit Export Freshness
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v7
-        with:
-          python-version: "3.12"
-          enable-cache: true
-
-      - name: Install dependencies
-        run: uv sync --frozen --extra dev
-
-      - name: Run audit export
-        id: export
-        env:
-          ALL_TABLES: ${{ inputs.all-tables }}
+      - name: Check export freshness
+        id: guard
         run: |
-          AUDIT_DATE="${{ inputs.date }}"
-          if [ -z "$AUDIT_DATE" ]; then AUDIT_DATE="$(date -u +%F)"; fi
-          echo "date=$AUDIT_DATE" >> "$GITHUB_OUTPUT"
-          FLAGS=""
-          if [ "$ALL_TABLES" = "true" ]; then FLAGS="--all-tables"; fi
-          uv run python -m ai_company.audit.export $FLAGS --date "$AUDIT_DATE"
+          RUN_LOG="reports/evidence/audit-export-runs.jsonl"
+          if [ ! -s "$RUN_LOG" ]; then
+            echo "::error::Run log missing or empty - local exporter (scripts/export-audit-evidence.ps1) has never run"
+            exit 1
+          fi
+          LAST="$(tail -n 1 "$RUN_LOG")"
+          RUN_DATE="$(jq -r '.date' <<<"$LAST")"
+          EVENTS="$(jq -r '.events' <<<"$LAST")"
+          RUN_AT="$(jq -r '.run_at' <<<"$LAST")"
+          if [ -z "$RUN_DATE" ] || [ "$RUN_DATE" = "null" ] || [ -z "$RUN_AT" ] || [ "$RUN_AT" = "null" ]; then
+            echo "::error::Malformed run-log line: $LAST"
+            exit 1
+          fi
+          echo "date=$RUN_DATE" >> "$GITHUB_OUTPUT"
+          echo "events=$EVENTS" >> "$GITHUB_OUTPUT"
+          AGE="$(( $(date -u +%s) - $(date -u -d "$RUN_AT" +%s) ))"
+          if [ "$AGE" -gt 129600 ]; then
+            echo "::error::Last export run was $(( AGE / 3600 ))h ago ($RUN_AT) - stale; run scripts/export-audit-evidence.ps1"
+            exit 1
+          fi
+          if [ "$EVENTS" -gt 0 ]; then
+            FILE="reports/evidence/audit-$RUN_DATE.jsonl"
+            if [ ! -s "$FILE" ]; then
+              echo "::error::Expected evidence file missing or empty: $FILE (events=$EVENTS)"
+              exit 1
+            fi
+          fi
+          echo "Freshness OK: $EVENTS events for $RUN_DATE (age ${AGE}s)"
 
       - name: Upload evidence artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: audit-evidence
-          path: reports/evidence/*-${{ steps.export.outputs.date }}.jsonl
+          path: reports/evidence/*-${{ steps.guard.outputs.date }}.jsonl
           if-no-files-found: warn
           retention-days: 90
 
@@ -62,13 +72,13 @@ jobs:
         env:
           REPO_AUDIT_DEPLOY_KEY: ${{ secrets.REPO_AUDIT_DEPLOY_KEY }}
         run: |
-          export AUDIT_DATE="${{ steps.export.outputs.date }}"
+          export AUDIT_DATE="${{ steps.guard.outputs.date }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           shopt -s nullglob
           FILES=(reports/evidence/*"${AUDIT_DATE}".jsonl)
           if [ ${#FILES[@]} -eq 0 ]; then
-            echo "No evidence files produced for ${AUDIT_DATE}."
+            echo "No evidence files present for ${AUDIT_DATE}."
           else
             git add "${FILES[@]}"
             if git diff --cached --quiet; then

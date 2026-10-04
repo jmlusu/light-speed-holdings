@@ -45,7 +45,7 @@ sequenceDiagram
     Note over GH,Exp: Daily Audit Export (07:00 UTC)
 
     GH2->>Exp: Trigger audit-export workflow
-    Exp->>Exp: Read audit/audit.db
+    Exp->>Exp: Read canonical trail .opencode/audit (filter by date)
     Exp->>Exp: Export to reports/evidence/audit-<date>.jsonl
     Exp->>Art: Upload audit-<date>.jsonl artifact
     Exp->>GH2: Commit evidence file
@@ -143,23 +143,30 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    participant GH as GitHub Actions (cron 07:00 UTC)
-    participant Exp as Export Job
-    participant DB as audit/audit.db
+    participant Sch as Task Scheduler (local, daily)
+    participant Exp as export-audit-evidence.ps1
+    participant Trail as .opencode/audit (+ rotated)
     participant EV as reports/evidence/
-    participant AW as AuditWriter
+    participant GH as GitHub Actions (guard, 07:00 UTC)
     participant Art as Artifact Store
-    participant GH2 as GitHub (commit)
 
-    Note over GH,GH2: Daily Audit Export (07:00 UTC)
+    Note over Sch,EV: Daily Audit Export — local (trail is gitignored, CI cannot read it)
 
-    GH->>Exp: Trigger audit-export workflow
-    Exp->>Exp: Read date from input (or today)
-    Exp->>DB: SELECT * FROM audit_log ORDER BY timestamp
-    Exp->>EV: Write audit-<date>.jsonl
-    EV->>AW: Write AuditEvent(EVIDENCE_EXPORTED, correlation_id=export_batch_id)
-    EV->>Art: Upload artifact (90-day retention)
-    EV->>GH2: Commit evidence files
+    Sch->>Exp: Run export for UTC date
+    Exp->>Trail: Read active + rotated files (get_audit_path())
+    Trail-->>Exp: Raw hash-chained JSONL lines
+    Exp->>EV: Filter date, write audit-<date>.jsonl (skipped when 0 events)
+    Exp->>EV: Append audit-export-runs.jsonl run marker
+    Exp->>EV: Commit + push evidence (-Commit flag)
+
+    Note over GH,Art: CI Freshness Guard — checks, does not export
+
+    GH->>EV: Read newest audit-export-runs.jsonl entry
+    alt run_at older than 36h, or events > 0 with missing/empty dated file
+        GH-->>GH: Workflow fails
+    else fresh
+        GH->>Art: Upload audit-evidence artifact
+    end
 
     Note over GH2,AW: Auditor Consumption
 

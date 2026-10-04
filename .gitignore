@@ -88,6 +88,9 @@ data/*.db-shm
 data/*.db-wal
 data/*.db-journal
 
+# Legacy decoy audit DB at repo root (canonical trail: .opencode/audit)
+/audit/
+
 # LS-MEM local memory store (never commit)
 .lightspeed/memory/
 .lightspeed/memory.db
@@ -128,9 +131,9 @@ run.json
 dashboard/alerts.json
 
 # ==========================================
-# .mimocode GÇö project config tracked, runtime ignored
+# .mimocode Gï¿½ï¿½ project config tracked, runtime ignored
 # (bare mimocode.jsonc / mimocode.json patterns are forbidden here:
-#  they would defeat the negation below GÇö see test_mimo_provider)
+#  they would defeat the negation below Gï¿½ï¿½ see test_mimo_provider)
 # ==========================================
 .mimocode/*
 !.mimocode/mimocode.jsonc

@@ -26,7 +26,7 @@ This ADR documents the architectural decisions for implementing evidence separat
 |-------|------|---------|-----------|
 | **Escalation Events** | `orchestrator/escalation_events.jsonl` | All escalation lifecycle events (trigger, resolve, postmortem) | 30 days |
 | **Dead-Letter Queue** | `orchestrator/dead_letter.jsonl` | Task failures, retries, resolutions | 90 days |
-| **Audit Export** | `reports/evidence/audit-<date>.jsonl` | Daily SQLite `audit/audit.db` → JSONL export | 90 days |
+| **Audit Export** | `reports/evidence/audit-<date>.jsonl` | Daily export of the canonical AuditWriter trail (`get_audit_path()` → `<data root>/.opencode/audit` + rotated siblings) | 90 days |
 
 **Why JSONL?**
 - Append-only by design — natural fit for evidence trails
@@ -37,7 +37,7 @@ This ADR documents the architectural decisions for implementing evidence separat
 
 > **Integrity guarantee (scope limit).** These three stores are append-only and
 > structurally checked, but they are **not** hash chained: unlike
-> `AuditWriter` (`.opencode/audit/audit.jsonl`), they do not write
+> `AuditWriter` (`.opencode/audit`), they do not write
 > `__seq` / `__prev_hash`, so `verify_audit_chain` cannot attest to them and
 > reports success without inspecting any link. Only the AuditWriter trail is
 > tamper-evident today. Adding chaining to these stores is tracked as follow-up
@@ -60,6 +60,13 @@ Every event across all three stores carries a `correlation_id` (UUID v7, time-or
 - Audit export batch → originating audit run
 
 This enables end-to-end forensic tracing from escalation → dead-letter → audit export.
+
+> **Scope note (2026-10-04).** `escalation_events` and `dead_letter` records carry
+> `correlation_id`. The `AuditEvent` schema on the AuditWriter trail
+> (`src/ai_company/audit/events.py`) does **not** yet — trail lines carry `__seq` /
+> `__prev_hash` instead. The audit-export batch link (and the `EVIDENCE_EXPORTED`
+> event shown in the sequence diagram) is aspirational until `AuditEvent` gains
+> the field; tracked as `gh #409` / `gh #403`.
 
 ### 4. Rotation Strategy
 
@@ -126,10 +133,11 @@ Alert rules:
 |-------|------|-------|--------|
 | 1 | Create JSONL stores (`escalation_events.py`, `dead_letter.py`, `export.py`) | Done | ✅ |
 | 2 | Integrate with `EscalationManager`, `DeadLetterQueue`, `AuditWriter` | Done | ✅ |
-| 3 | Add `correlation_id` to all schemas + propagation | Done | ✅ |
+| 3 | Add `correlation_id` to all schemas + propagation | Escalation + dead-letter done; `AuditEvent` pending (`gh #409`) | 🔄 |
 | 4 | Add Prometheus metrics + alert rules | In progress | 🔄 |
 | 5 | Add rotation atomicity (temp file + `os.replace`) | Planned | ⏳ |
 | 7 | Create ADR + sequence diagram + DR runbook | This ADR | ✅ |
+| 8 | Repoint export at canonical JSONL trail + local runner + CI freshness guard | ECL `audit-export-reads-canonical-jsonl-trail` | 🔄 |
 
 ---
 
