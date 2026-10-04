@@ -1,0 +1,48 @@
+# Data Flow - Databases and File Stores
+
+How data flows between components and stores.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Core as AI Company Builder
+    participant TaskStore
+    participant AuditStore
+    participant EscalationStore
+    participant KPIPipeline
+    participant CostAnalytics
+    participant AgentPerf as AgentPerformanceAnalytics
+    participant FileStore
+    participant WorkflowEngine
+    participant Athena
+
+    User->>Core: Submit task/request
+    Core->>TaskStore: Create/update task
+    TaskStore->>Core: Task persisted (SQLite)
+
+    Core->>AuditStore: Record audit event
+    AuditStore->>Core: Event persisted
+
+    alt Escalation needed
+        Core->>EscalationStore: Record escalation
+        EscalationStore->>Core: Persisted
+    end
+
+    alt Workflow execution
+        Core->>WorkflowEngine: Execute workflow
+        WorkflowEngine->>FileStore: Persist instance state (workflows/instances/*.json)
+        FileStore->>WorkflowEngine: State saved
+    end
+
+    alt Athena operation
+        Core->>Athena: Process request
+        Athena->>FileStore: Append to JSONL (company/athena/*.jsonl)
+        FileStore->>Athena: Persisted
+    end
+
+    Core->>KPIPipeline: Record/update KPI
+    Core->>CostAnalytics: Record cost
+    Core->>AgentPerf: Update metrics
+
+    Note over FileStore: Atomic writes, file locking, backups (.bak), corruption recovery
+```

@@ -16,7 +16,7 @@ import logging
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from ai_company.orchestrator.escalation import EscalationEvent
 

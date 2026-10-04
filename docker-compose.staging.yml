@@ -14,10 +14,11 @@ services:
       target: runtime
     container_name: ai-company-dashboard-staging
     ports:
-      - "8421:8420"
+      - "${STAGING_DASHBOARD_PORT:-8421}:8420"
     volumes:
       - ./.opencode:/app/.opencode
       - ./company:/app/company
+      - ./orchestrator:/app/orchestrator
       - ./logs:/app/logs
     environment:
       - AI_COMPANY_LOG_JSON=1
@@ -55,10 +56,13 @@ services:
       dockerfile: Dockerfile
       target: runtime
     container_name: ai-company-worker-staging
-    command: ["python", "-m", "ai_company.cli.main", "orchestrator", "tick"]
+    # `tick` is a single cycle that exits 0; loop it at a 60s cadence so
+    # restart:unless-stopped doesn't hot-loop (writes FileStore backups each tick).
+    command: ["sh", "-c", "while true; do python -m ai_company.cli.main orchestrator tick; sleep 60; done"]
     volumes:
       - ./.opencode:/app/.opencode
       - ./company:/app/company
+      - ./orchestrator:/app/orchestrator
       - ./logs:/app/logs
     environment:
       - AI_COMPANY_LOG_JSON=1
@@ -72,6 +76,10 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - MIMO_API_KEY=${MIMO_API_KEY:-}
     restart: unless-stopped
+    # Dockerfile HEALTHCHECK probes :8420 (dashboard-only); the worker runs
+    # ticks, not a server, so it would never pass it.
+    healthcheck:
+      disable: true
     profiles:
       - staging
     networks:

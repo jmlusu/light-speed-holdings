@@ -17,6 +17,11 @@ import { ContactPage } from './pages/ContactPage';
 import { AskLightSpeed } from './components/AskLightSpeed';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { Architecture } from './pages/Architecture';
+import { Build } from './pages/Build';
+import { OfferB } from './pages/OfferB';
+import { OfferC } from './pages/OfferC';
+import { OfferE } from './pages/OfferE';
 import { AthenaDashboard } from './pages/athena/Dashboard';
 import { JobList } from './pages/athena/JobList';
 import { JobDetail } from './pages/athena/JobDetail';
@@ -95,6 +100,11 @@ export const App: React.FC = () => {
           { path: 'ask', element: <AskLightSpeed /> },
           { path: 'legal/privacy', element: <PrivacyPageRoute /> },
           { path: 'legal/terms', element: <TermsPageRoute /> },
+          { path: 'architecture', element: <Architecture /> },
+          { path: 'build', element: <Build /> },
+          { path: 'offer-b', element: <OfferB /> },
+          { path: 'offer-c', element: <OfferC /> },
+          { path: 'offer-e', element: <OfferE /> },
           { path: '*', element: <Navigate to="/" replace /> },
         ],
       },
