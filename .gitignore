@@ -88,6 +88,9 @@ data/*.db-shm
 data/*.db-wal
 data/*.db-journal
 
+# Legacy decoy audit DB at repo root (canonical trail: .opencode/audit)
+/audit/
+
 # LS-MEM local memory store (never commit)
 .lightspeed/memory/
 .lightspeed/memory.db
@@ -128,9 +131,9 @@ run.json
 dashboard/alerts.json
 
 # ==========================================
-# .mimocode — project config tracked, runtime ignored
+# .mimocode G�� project config tracked, runtime ignored
 # (bare mimocode.jsonc / mimocode.json patterns are forbidden here:
-#  they would defeat the negation below — see test_mimo_provider)
+#  they would defeat the negation below G�� see test_mimo_provider)
 # ==========================================
 .mimocode/*
 !.mimocode/mimocode.jsonc
@@ -149,6 +152,8 @@ static/brand/social/facebook-cover-1640x664_1.jpg
 .cache/
 .backups/
 .vercel
+# Athena runtime data (jobs cache, embeddings)
+company/athena/
 *.log
 output/
 evals/jev-validation/results/

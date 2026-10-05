@@ -26,7 +26,7 @@ from ai_company.audit.writer import _ZERO_HASH
 logger = logging.getLogger(__name__)
 
 
-def _ordered_files(path: Path) -> list[Path]:
+def ordered_audit_files(path: Path) -> list[Path]:
     """Return the trail files in chronological order (oldest → newest).
 
     Rotation produces ``audit.1.jsonl`` … ``audit.N.jsonl`` (oldest = highest
@@ -37,6 +37,8 @@ def _ordered_files(path: Path) -> list[Path]:
     suffix = path.suffix
     pattern = re.compile(rf"^{re.escape(stem)}\.(\d+){re.escape(suffix)}$")
     parent = path.parent
+    if not parent.is_dir():
+        return []
     rotated: list[tuple[int, Path]] = []
     for candidate in parent.iterdir():
         match = pattern.match(candidate.name)
@@ -47,6 +49,10 @@ def _ordered_files(path: Path) -> list[Path]:
     if path.exists() and path.stat().st_size > 0:
         ordered.append(path)
     return ordered
+
+
+# Backward-compatible alias (internal callers + older imports).
+_ordered_files = ordered_audit_files
 
 
 def verify_audit_chain(path: str | Path) -> dict[str, Any]:
@@ -62,7 +68,7 @@ def verify_audit_chain(path: str | Path) -> dict[str, Any]:
     """
     root = Path(path)
     errors: list[str] = []
-    files = _ordered_files(root)
+    files = ordered_audit_files(root)
     if not files:
         return {"ok": True, "events": 0, "files": [], "errors": []}
 
