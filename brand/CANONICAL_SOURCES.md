@@ -1,7 +1,7 @@
 # LightSpeed Brand — Canonical Sources Registry
 
 **Owner:** Brand Strategist | **Maintainer:** Chief of Staff
-**Last updated:** 2026-09-16 (Ticket #309)
+**Last updated:** 2026-10-05 (Ticket #309 / Website Transformation Directive, Phase 2)
 
 ## The Rule
 
@@ -22,7 +22,8 @@ digital masters.
 
 | Mirror path | Purpose | Sync source |
 |-------------|---------|-------------|
-| `static/brand/logos/**` | Runtime builds, image imports | `brand/logos/**` |
+| `static/brand/logo/**` | New logo system, runtime builds | `brand/logo/**` |
+| `static/brand/logos/**` | Runtime builds, image imports (legacy) | `brand/logos/**` |
 | `static/brand/print/**` | Print asset copies | `brand/print/**` |
 | `static/brand/guidelines/**` | Guideline copies | `brand/guidelines/**` |
 | `static/brand/tokens/**` | Token copies | `brand/tokens/**` |
@@ -39,10 +40,12 @@ Mirror-only content that has no canonical source (kept in mirrors):
 
 | Asset | Canonical path | Notes |
 |-------|----------------|-------|
+| **New logo system (Directive §6)** | `brand/logo/**` | 8 variants (`logo-full`, `logo-dark-bg`, `logo-light-bg`, `logo-mark`, `logo-mark-mono`, `logo-favicon`, `logo-avatar`, `logo-og`) in SVG + PNG. Canonical public brand mark. |
 | Design tokens (JSON) | `brand/tokens/brand-tokens.json` | Full palette, type scale, spacing, logo specs |
 | Design tokens (CSS) | `brand/tokens/brand-tokens.css` | Web/runtime variables |
 | Brand guidelines | `brand/guidelines/brand-guidelines.md` | Human-readable system |
-| Logo suite | `brand/logos/fulllogo/**`, `brand/logos/icononly/**`, `brand/logos/grayscale/**`, `brand/logos/textonly/**` | Never recreate; official files only |
+| Logo suite (legacy, deprecated) | `brand/logos/fulllogo/**`, `brand/logos/icononly/**`, `brand/logos/grayscale/**`, `brand/logos/textonly/**` | Official legacy files only; kept until site references migrate to `brand/logo/`. Never recreate. |
+| Archived logo explorations | `.archive/brand/logos/**` | Style explorations (Glassmorphism, Skeuomorphism, Analog Nostalgia, icononly experiments) removed from `brand/logos/` + mirrors on 2026-10-05. Historical only. |
 | Print masters | `brand/print/**` | Letterheads, business cards, signatures |
 | Digital/social covers | `brand/digital/**` | SVG/PDF masters |
 | This registry | `brand/CANONICAL_SOURCES.md` | You are here |
@@ -53,7 +56,11 @@ Mirror-only content that has no canonical source (kept in mirrors):
 ```powershell
 pwsh scripts/sync-brand.ps1          # copy canonical -> both mirrors (no delete)
 pwsh scripts/sync-brand.ps1 -DryRun  # preview what would be copied
+pwsh scripts/sync-brand.ps1 -Prune   # delete mirror-only files in sync dirs
+pwsh scripts/sync-brand.ps1 -Verify  # hash-compare mirrors vs canonical (exit 1 on drift)
 ```
+
+Sync dirs: `logo`, `tokens`, `guidelines`, `logos`, `print`, `digital`.
 
 Run after adding/changing any canonical asset, then verify with
 `git status` that the mirrors picked up the change.

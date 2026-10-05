@@ -1,0 +1,177 @@
+{
+  "version": "1.0",
+  "description": "Canonical sector registry per Directive §12. 10 target sectors with evidence classification per §23.",
+  "lastUpdated": "2026-10-05",
+  "sectors": [
+    {
+      "id": "financial-services",
+      "title": "Financial Services",
+      "description": "Risk classification, audit trails, and regulatory reporting for banks, microfinance, SACCOs, and mobile-money institutions across Malawi and African markets.",
+      "keyUseCases": [
+        "Continuous compliance monitoring and regulatory reporting",
+        "Automated risk analysis and credit scoring",
+        "Audit trail generation with SHA-256 sealing",
+        "Central bank reporting automation",
+        "Mobile-money reconciliation and reporting"
+      ],
+      "honestyBadge": "PROVEN IN-HOUSE",
+      "honestyNote": "Governed multi-agent compliance automation for a regional financial institution: regulatory reporting across 14 departments with full audit trails, cutting reporting time by 40%.",
+      "iconName": "Building2",
+      "region": ["Africa", "Malawi"],
+      "relevantSolutions": ["ai-company-builder", "enterprise-deployment", "business-automation"]
+    },
+    {
+      "id": "healthcare-public-health",
+      "title": "Healthcare & Public Health",
+      "description": "Data pipelines, reporting automation, clinic supply-chain monitoring, and decision support for health systems across African markets.",
+      "keyUseCases": [
+        "Clinic supply chain monitoring with Z-score anomaly detection",
+        "Donor-ready M&E reports from Kobo and DHIS2 data",
+        "Interactive program dashboards (mobile-friendly, NGO-grade)",
+        "Citizen-query agents for public health information",
+        "Billing compliance and patient scheduling automation"
+      ],
+      "honestyBadge": "FUTURE",
+      "honestyNote": "Offline-first, sovereignty-first architecture is designed for clinical data — but LightSpeed has no healthcare deployment yet. Listed honestly as a roadmap target.",
+      "iconName": "Activity",
+      "region": ["Africa", "Malawi"],
+      "relevantSolutions": ["enterprise-deployment", "business-automation", "ai-governance-policy"]
+    },
+    {
+      "id": "agriculture-agritech",
+      "title": "Agriculture & Agritech",
+      "description": "Supply-chain intelligence, mobile-money coordination, weather and soil advisory, and climate-data pipelines for rural economies.",
+      "keyUseCases": [
+        "WhatsApp-native coordination for agricultural cooperatives",
+        "Mobile-money micro-loan risk assessment for smallholders",
+        "Agentic weather and soil advisory (Ulangizi-style chatbot patterns)",
+        "Supply chain monitoring and procurement automation",
+        "Chichewa-language farmer advisory agents"
+      ],
+      "honestyBadge": "PILOT",
+      "honestyNote": "WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking — serving 1,200 members in pilot. Chichewa language foundation being built via piloting initiative.",
+      "iconName": "Sprout",
+      "region": ["Malawi", "Mozambique", "SADC"],
+      "relevantSolutions": ["digital-presence", "business-automation", "enterprise-deployment"]
+    },
+    {
+      "id": "education-academia",
+      "title": "Education & Academia",
+      "description": "Student management, credential verification, data-driven policy, and research tooling for schools, universities, and research institutions.",
+      "keyUseCases": [
+        "Agent-driven student management and credential verification",
+        "GDPR-level data protection for student records",
+        "Research synthesis and literature review automation",
+        "University AI capacity building programs",
+        "Policy analysis for education ministries"
+      ],
+      "honestyBadge": "PILOT",
+      "honestyNote": "Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with immutable audit trails. Advisory work on Malawi's National AI Strategy consultation.",
+      "iconName": "GraduationCap",
+      "region": ["Africa", "Malawi"],
+      "relevantSolutions": ["ai-company-builder", "enterprise-deployment", "business-automation", "research-applied-ai"]
+    },
+    {
+      "id": "government-public-sector",
+      "title": "Government & Public Sector",
+      "description": "Digital services, compliance automation, citizen-query agents, legislative summarization, and data-driven policy for ministries and agencies.",
+      "keyUseCases": [
+        "Compliance monitoring and regulatory reporting for government agencies",
+        "Contract review and legal document analysis at scale",
+        "Citizen-query agents for public service information",
+        "Legislative summarization and policy analysis",
+        "HR and personnel management automation"
+      ],
+      "honestyBadge": "CURRENT CAPABILITY",
+      "honestyNote": "Advisory work on Malawi's National AI Strategy consultation. Policy-level engagement so far — no ministerial production deployment claimed. Governance framework mapped to Malawi DPA & SADC standards.",
+      "iconName": "Landmark",
+      "region": ["Africa", "Malawi"],
+      "relevantSolutions": ["ai-company-builder", "enterprise-deployment", "boardroom-briefing", "ai-governance-policy"]
+    },
+    {
+      "id": "regulators-standards-institutions",
+      "title": "Regulators & Standards Institutions",
+      "description": "AI governance frameworks, regulatory monitoring, standards development, and policy implementation for central banks, communications regulators, and standards bodies.",
+      "keyUseCases": [
+        "SADC Agentic AI Governance Framework development",
+        "Regulatory monitoring and compliance reporting",
+        "Standards development for AI deployment",
+        "Central bank reporting rule automation",
+        "Cross-border regulatory coordination"
+      ],
+      "honestyBadge": "DEMONSTRATION",
+      "honestyNote": "SADC Agentic AI Governance Framework authored by CEO Jack Mlusu and submitted to digital ministers, MACRA, CRASA, central banks, and regional development banks. Aligned with AU Continental AI Strategy. In active development.",
+      "iconName": "Scale",
+      "region": ["Malawi", "SADC", "Africa"],
+      "relevantSolutions": ["ai-governance-policy", "research-applied-ai", "strategy-executive-advisory"]
+    },
+    {
+      "id": "research-universities",
+      "title": "Research & Universities",
+      "description": "Applied AI research collaboration, research tooling, evidence generation, and sovereign AI talent pipeline development with Malawian and SADC universities.",
+      "keyUseCases": [
+        "Applied AI research partnerships with MUBAS and UNIMA",
+        "Research synthesis and evidence generation tooling",
+        "Sovereign agentic-AI talent pipeline certification",
+        "Model evaluation and benchmarking on local infrastructure",
+        "Open-weight model research for African contexts"
+      ],
+      "honestyBadge": "DEMONSTRATION",
+      "honestyNote": "University & Talent Capacity Building in active development. Training and certification programs in partnership with Malawian universities (MUBAS, UNIMA). Builds a sovereign agentic-AI talent pipeline across Africa.",
+      "iconName": "FlaskConical",
+      "region": ["Malawi", "SADC", "Africa"],
+      "relevantSolutions": ["research-applied-ai", "ai-company-builder-deployment", "strategy-executive-advisory"]
+    },
+    {
+      "id": "smes-private-enterprise",
+      "title": "SMEs & Private Enterprise",
+      "description": "Mobile-first digital presence, AI-native operating models, automation, and agentic workflows priced for the local market — 'Company-in-a-Box' capability.",
+      "keyUseCases": [
+        "AI-powered inventory, sales, and profitability monitoring (J&S StopOver Bar)",
+        "Booking and guest communication automation for hospitality",
+        "Lightweight agent sets for Marketing, Sales, Compliance, Finance, HR",
+        "WhatsApp-native customer service for SMEs",
+        "Mobile-first websites and e-commerce with local payment rails"
+      ],
+      "honestyBadge": "FIELDABLE",
+      "honestyNote": "J&S StopOver Bar provides live proof-of-concept — a real, non-tech SME in Malawi running agentic decision support. Mobile-first websites and e-commerce stores with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.",
+      "iconName": "Building2",
+      "region": ["Africa", "Malawi"],
+      "relevantSolutions": ["digital-presence", "business-automation", "ai-company-builder-deployment", "intelligent-automation"]
+    },
+    {
+      "id": "development-nonprofit-organizations",
+      "title": "Development & Nonprofit Organizations",
+      "description": "Donor reporting automation, M&E pipelines, compliance workflows, and program dashboards for UN agencies, INGOs, and development partners.",
+      "keyUseCases": [
+        "Automated donor-ready reports from Kobo and DHIS2 data",
+        "Data cleaning and analysis for program reporting",
+        "Interactive program KPI dashboards (mobile-friendly)",
+        "Survey design, data collection, and analysis",
+        "Compliance workflows for donor data sovereignty"
+      ],
+      "honestyBadge": "PILOT",
+      "honestyNote": "Donor reporting automation with GDPR-level data handling as the default posture for UN and development data flows. Engagements priced in USD for international partners. Governance note: Tier-1 sensitive data requires explicit cross-border consent workflow.",
+      "iconName": "Users",
+      "region": ["Malawi", "SADC", "Global"],
+      "relevantSolutions": ["business-automation", "data-decision-intelligence", "enterprise-deployment", "ai-governance-policy"]
+    },
+    {
+      "id": "technology-digital-businesses",
+      "title": "Technology & Digital Businesses",
+      "description": "AI-native operating models, agentic workflows, governance frameworks, and platform licensing for tech firms building governed AI workforces.",
+      "keyUseCases": [
+        "AI Company Builder platform licensing and self-hosted deployment",
+        "Agentic workflow design and multi-agent orchestration",
+        "Governance framework implementation (5-tier approval, audit trails)",
+        "White-label agent setup for agencies (E2)",
+        "Local Ollama model deployment for zero-API-cost operations"
+      ],
+      "honestyBadge": "PROVEN IN-HOUSE",
+      "honestyNote": "The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by 2,566 automated regression tests. LightSpeed Holdings is its own first customer.",
+      "iconName": "Cpu",
+      "region": ["Malawi", "SADC", "Global"],
+      "relevantSolutions": ["ai-company-builder", "ai-company-builder-deployment", "enterprise-deployment", "intelligent-automation"]
+    }
+  ]
+}

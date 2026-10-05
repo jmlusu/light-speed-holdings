@@ -8,7 +8,7 @@
 
 .DESCRIPTION
     brand/ at the repo root is the single source of truth. This script copies
-    the canonical subdirectories (tokens, guidelines, logos, print, digital)
+    the canonical subdirectories (logo, tokens, guidelines, logos, print, digital)
     into the two deployment mirrors. Mirror-only content (static/brand/templates,
     static/brand/social, static/brand/BRAND_GUIDELINES.md, public/brand/... )
     is preserved.
@@ -17,7 +17,7 @@
     Preview prune/copy without writing anything.
 
 .PARAMETER Prune
-    Delete files in the five sync directories that do not exist in canonical
+    Delete files in the six sync directories that do not exist in canonical
     (removes drift and historic nested-copy damage).
 
 .PARAMETER Verify
@@ -39,7 +39,8 @@ $mirrors = @(
 )
 
 # Subdirectories that have a canonical source and should exist in every mirror.
-$syncDirs = @("tokens", "guidelines", "logos", "print", "digital")
+# "logo" = new canonical logo system (Directive §6); "logos" = legacy suite.
+$syncDirs = @("logo", "tokens", "guidelines", "logos", "print", "digital")
 
 # Mirror-only content that prune must never delete.
 $mirrorOnly = @("templates", "social")

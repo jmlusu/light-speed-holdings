@@ -31,7 +31,7 @@ export const CAPABILITIES: readonly Capability[] = [
   {
     id: 'research-policy',
     title: 'Research & Policy',
-    description: 'Develop evidence, research, market intelligence, policy analysis, and practical guidance for AI adoption in Malawi, SADC, and Africa.',
+    description: 'Develop evidence, research, market intelligence, policy analysis, and practical guidance for AI adoption in Malawi and Africa.',
     icon: '📊',
   },
 ];

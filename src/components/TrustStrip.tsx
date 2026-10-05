@@ -95,20 +95,20 @@ export const TrustStrip: React.FC<TrustStripProps> = ({ className = '' }) => {
     >
       <div style={{ maxWidth: 'var(--layout-web-max-width, 1200px)', margin: '0 auto' } as React.CSSProperties}>
         <header className="ls-trust-strip__header" style={{ marginBottom: 'var(--spacing-48, 48px)' } as React.CSSProperties}>
-          <h2
-            id="trust-title"
-            className="ls-trust-strip__title"
-            style={{
-              fontFamily: 'var(--font-display, Arial)',
-              fontWeight: 700,
-              fontSize: 'var(--size-title-xl, 32pt)',
-              lineHeight: 1.2,
-              color: 'var(--color-navy, #070A40)',
-              margin: 0,
-            } as React.CSSProperties}
-          >
-            Trusted by Organizations Across Malawi & SADC
-          </h2>
+<h2
+              id="trust-title"
+              className="ls-trust-strip__title"
+              style={{
+                fontFamily: 'var(--font-display, Arial)',
+                fontWeight: 700,
+                fontSize: 'var(--size-title-xl, 32pt)',
+                lineHeight: 1.2,
+                color: 'var(--color-navy, #070A40)',
+                margin: 0,
+              } as React.CSSProperties}
+            >
+              Trusted by Organizations Across Malawi
+            </h2>
         </header>
 
         <div

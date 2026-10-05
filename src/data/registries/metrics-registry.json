@@ -1,0 +1,191 @@
+{
+  "version": "1.0",
+  "description": "Canonical metrics registry per Directive §22. Single source of truth for all metric displays — no hard-coded values in pages.",
+  "lastUpdated": "2026-10-05",
+  "metrics": {
+    "agentCount": {
+      "value": 90,
+      "label": "Total Roles",
+      "breakdown": "89 AI agents + 1 Human CEO",
+      "source": "company-registry.yaml",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Canonical operating model role count. Historical artifacts may reference 89, 90, 127, 143, 144, 152 — these are not equivalent."
+    },
+    "aiAgentCount": {
+      "value": 89,
+      "label": "AI Agents",
+      "source": "company-registry.yaml (type: executive/specialist excluding human_ceo)",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Count of AI agents in the operating model"
+    },
+    "humanCeoCount": {
+      "value": 1,
+      "label": "Human CEO",
+      "source": "company-registry.yaml (human_ceo agent)",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Single Human CEO with final authority"
+    },
+    "departmentCount": {
+      "value": 20,
+      "label": "Departments",
+      "source": "company-registry.yaml (unique department values)",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Number of departments in the model registry"
+    },
+    "approvalTiers": {
+      "value": 5,
+      "label": "Approval Tiers",
+      "breakdown": "Auto → Lead → Executive → CEO → Board",
+      "source": "company-registry.yaml (approval_level field values)",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Five-tier human-in-the-loop approval matrix"
+    },
+    "governanceGates": {
+      "value": 4,
+      "label": "Governance Gates",
+      "breakdown": "Contract, DPA, Compliance, Security",
+      "source": "src/data/useCaseCatalogData.ts (CATALOG_METHOD.governancePillars)",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Mandatory gates before any engagement begins"
+    },
+    "testCount": {
+      "value": 2566,
+      "label": "Regression Tests",
+      "source": "src/data/metrics.ts (liveTestCount); uv run pytest",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Verified automated regression test count (post-Step 1 strip). Legacy pytest count: 2,557 (retained for audit trail)."
+    },
+    "sectorCount": {
+      "value": 10,
+      "label": "Target Sectors",
+      "source": "WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md (§12)",
+      "classification": "VERIFIED",
+      "description": "Canonical target sectors per Directive §12"
+    },
+    "solutionCount": {
+      "value": 8,
+      "label": "Solution Families",
+      "source": "WEBSITE TRANSFORMATION & REPOSITORY CONSOLIDATION DIRECTIVE.md (§16)",
+      "classification": "VERIFIED",
+      "description": "Canonical solution families per Directive §16"
+    },
+    "useCaseCount": {
+      "value": 20,
+      "label": "Documented Use Cases",
+      "source": "src/data/registries/use-case-registry.json",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Total documented use cases across all statuses"
+    },
+    "liveUseCases": {
+      "value": 1,
+      "label": "LIVE Use Cases",
+      "source": "src/data/registries/use-case-registry.json (status: LIVE)",
+      "classification": "LIVE",
+      "description": "Use cases with live external deployment (J&S StopOver Bar)"
+    },
+    "provenInHouseUseCases": {
+      "value": 2,
+      "label": "PROVEN IN-HOUSE Use Cases",
+      "source": "src/data/registries/use-case-registry.json (status: PROVEN_IN_HOUSE)",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Use cases verified running inside LightSpeed operations"
+    },
+    "pilotUseCases": {
+      "value": 6,
+      "label": "PILOT Use Cases",
+      "source": "src/data/registries/use-case-registry.json (status: PILOT)",
+      "classification": "PILOT",
+      "description": "Use cases in active pilot with real users/data"
+    },
+    "demonstrationUseCases": {
+      "value": 7,
+      "label": "DEMONSTRATION Use Cases",
+      "source": "src/data/registries/use-case-registry.json (status: DEMONSTRATION)",
+      "classification": "DEMONSTRATION",
+      "description": "Working demonstrations without live client engagement"
+    },
+    "fieldableUseCases": {
+      "value": 1,
+      "label": "FIELDABLE Use Cases",
+      "source": "src/data/registries/use-case-registry.json (status: FIELDABLE)",
+      "classification": "FIELDABLE",
+      "description": "Use cases ready for deployment in 2026"
+    },
+    "futureUseCases": {
+      "value": 0,
+      "label": "FUTURE Use Cases",
+      "source": "src/data/registries/use-case-registry.json (status: FUTURE)",
+      "classification": "FUTURE",
+      "description": "Roadmap targets with no evidence yet"
+    },
+    "faqCount": {
+      "value": 28,
+      "label": "FAQ Entries",
+      "source": "src/data/registries/faq-registry.json",
+      "classification": "VERIFIED",
+      "description": "Canonical FAQ count per Directive §18"
+    },
+    "claimCount": {
+      "value": 24,
+      "label": "Governed Claims",
+      "source": "src/data/registries/claims-registry.json",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Total governed claims in the claims registry"
+    },
+    "capabilityCount": {
+      "value": 4,
+      "label": "Core Capabilities",
+      "source": "src/data/capabilities.ts (CAPABILITIES array)",
+      "classification": "PROVEN_IN_HOUSE",
+      "description": "Strategy, Build, Govern, Research & Policy"
+    },
+    "offerFamilyCount": {
+      "value": 5,
+      "label": "Offer Families (Catalog)",
+      "source": "src/data/useCaseCatalogData.ts (OFFER_FAMILIES array)",
+      "classification": "FIELDABLE",
+      "description": "A: Digital Presence, B: Business Process Automation, C: Data/Analytics/Donor Reporting, D: Digital Marketing, E: Platform Licensing"
+    },
+    "enterpriseCapabilityCount": {
+      "value": 7,
+      "label": "Enterprise Capabilities",
+      "source": "src/data/useCaseCatalogData.ts (ENTERPRISE_CAPABILITIES array)",
+      "classification": "DEMONSTRATION",
+      "description": "Strategy & Roadmap, AI Design Sprint, Forward-Deployed Engineers, Venture Co-Build, Platform Licensing (Managed), Industry Accelerators, Client Portal"
+    },
+    "platformScenarioCount": {
+      "value": 8,
+      "label": "Platform Scenarios (FOW)",
+      "source": "src/data/useCaseCatalogData.ts (PLATFORM_SCENARIOS array)",
+      "classification": "MIXED",
+      "description": "FOW-01 through FOW-08 (Proven In-House, Demonstration mix)"
+    },
+    "industryVerticalCount": {
+      "value": 6,
+      "label": "Industry Verticals (Catalog)",
+      "source": "src/data/useCaseCatalogData.ts (CATALOG_INDUSTRIES array)",
+      "classification": "MIXED",
+      "description": "Agriculture, Health, FinTech, SME, Government, plus Education/Research"
+    },
+    "policyCount": {
+      "value": 3,
+      "label": "Policy Initiatives",
+      "source": "src/data/useCaseCatalogData.ts (CATALOG_POLICIES array)",
+      "classification": "MIXED",
+      "description": "National AI Strategy, SADC Framework, University Capacity Building"
+    }
+  },
+  "derivedMetrics": {
+    "totalAgentsPlusHuman": "90 = 89 + 1",
+    "agentsPerDepartment": "4.5 (average)",
+    "approvalTiersPerDepartment": "0.25",
+    "testsPerAgent": "28.5",
+    "sectorsPerSolution": "1.25",
+    "useCasesPerSector": "2.0"
+  },
+  "auditTrail": {
+    "legacyPytestCount": 2557,
+    "legacyAgentCounts": [89, 90, 127, 143, 144, 152],
+    "note": "Legacy values retained for audit trail only. See LEGACY_INVENTORY.md and Directive §2 Absolute Business Facts."
+  }
+}

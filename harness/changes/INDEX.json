@@ -274,6 +274,37 @@
     "updated_at": "2026-09-22"
   },
   {
+    "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+    "title": "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "ci-cd",
+      "dependencies",
+      "monitoring"
+    ],
+    "files": [
+      "["
+    ],
+    "tags": [
+      "dependencies",
+      "security",
+      "ci-cd",
+      "monitoring",
+      "retroactive"
+    ],
+    "decisions": [
+      "- **Lockfile-only upgrade**: `uv lock --upgrade-package fastapi --upgrade-package starlette` instead of a full `uv lock --upgrade`, keeping blast radius minimal and avoiding unrelated version churn.",
+      "- **No pin added for fastapi/starlette**: constraints were already satisfiable; staleness was the root cause, not under-constraining.",
+      "- **PR #155 merged rather than closed-as-superseded**: GitHub reported CLEAN/MERGEABLE and all checks green once uv.lock was excluded from the Generated Files Drift Check (`392c347`); merging installs nothing new today and stops Dependabot churn.",
+      "- **Concurrent session's 22 dirty working-tree files left untouched**: verified zero overlap with this change's changeset; ownership belongs to the parallel session (task-event system, OmniRoute routing, doctor checks, dashboard org-health).",
+      "- **httpx2 migration deferred to a tracked follow-up issue** (not bundled here): httpx is unmaintained upstream; starlette ≥1.2 emits a deprecation warning for its TestClient fallback path."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+    "updated_at": "2026-08-26"
+  },
+  {
     "id": "2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
     "title": "fix(athena): serialize Decimal salary ranges in JSONL store",
     "status": "completed",
@@ -298,33 +329,6 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
     "updated_at": "2026-09-22"
-  },
-  {
-    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
-    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "site-frontend",
-      "enquiry-api"
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      "site",
-      "conversion",
-      "content",
-      "phase-1"
-    ],
-    "decisions": [
-      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
-      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
-      "- No LLM; no new backend email provider; brand tokens unchanged."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
-    "updated_at": "2026-09-23"
   },
   {
     "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
@@ -544,98 +548,31 @@
     "updated_at": "2026-09-25"
   },
   {
-    "id": "2026-09-26-ls-mem-completion",
-    "title": "LS-MEM Completion",
+    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
     "status": "completed",
     "location": "archive",
     "modules": [
-      "src/ai_company/cli/main.py",
-      "src/ai_company/lsmem",
-      "docs/LS-MEM-USER-GUIDE.md",
-      "docs/security/LS-MEM-SECURITY-VERIFICATION.md"
+      "site-frontend",
+      "enquiry-api"
     ],
     "files": [
-      "src/ai_company/cli/main.py",
-      "src/ai_company/lsmem/audit.py",
-      "src/ai_company/lsmem/cli.py",
-      "tests/unit/test_cli_commands.py",
-      "tests/memory/test_audit_chain_head.py",
-      "tests/memory/test_cli_stdio.py"
+      ""
     ],
     "tags": [
-      "ls-mem",
-      "cli",
-      "audit-chain",
-      "security",
-      "docs"
-    ],
-    "decisions": [
-      "- CEO decision 1 (2026-09-26): LS-MEM takes `ai-company memory`; legacy JSON CLI moves to `ai-company knowledge`.",
-      "- CEO decision 2 (2026-09-26): no `.opencode/tools/` directory; skill scripts are the tool surface (recorded as approved deviation in security report §33).",
-      "- CEO decision 3 (2026-09-26): single conventional commit at close, LS-MEM files only, no push.",
-      "- CEO decision 4 (2026-09-26): no global skill copy at `C:\\Users\\jmlus\\.agents\\skills\\ls-memory`.",
-      "- CEO decision 5 (2026-09-26): ECL lifecycle open + archive (this close).",
-      "- Concurrent-session record hygiene (2026-09-26): homepage session's `active/` plan/summary/review preserved into its parking dir before this change's record was restored; parking status/location front-matter kept at parked/parking."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-26-ls-mem-completion",
-    "updated_at": "2026-09-26"
-  },
-  {
-    "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
-    "title": "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "ci-cd",
-      "dependencies",
-      "monitoring"
-    ],
-    "files": [
-      "["
-    ],
-    "tags": [
-      "dependencies",
-      "security",
-      "ci-cd",
-      "monitoring",
-      "retroactive"
-    ],
-    "decisions": [
-      "- **Lockfile-only upgrade**: `uv lock --upgrade-package fastapi --upgrade-package starlette` instead of a full `uv lock --upgrade`, keeping blast radius minimal and avoiding unrelated version churn.",
-      "- **No pin added for fastapi/starlette**: constraints were already satisfiable; staleness was the root cause, not under-constraining.",
-      "- **PR #155 merged rather than closed-as-superseded**: GitHub reported CLEAN/MERGEABLE and all checks green once uv.lock was excluded from the Generated Files Drift Check (`392c347`); merging installs nothing new today and stops Dependabot churn.",
-      "- **Concurrent session's 22 dirty working-tree files left untouched**: verified zero overlap with this change's changeset; ownership belongs to the parallel session (task-event system, OmniRoute routing, doctor checks, dashboard org-health).",
-      "- **httpx2 migration deferred to a tracked follow-up issue** (not bundled here): httpx is unmaintained upstream; starlette ≥1.2 emits a deprecation warning for its TestClient fallback path."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
-    "updated_at": "2026-08-26"
-  },
-  {
-    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
-    "title": "Customer Journey Conversion Architecture Implementation",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "src/components",
-      "src/pages",
-      "src/data",
-      "src/hooks",
-      "src/lib"
-    ],
-    "files": [],
-    "tags": [
-      "customer-journey",
-      "frontend",
-      "ux",
+      "site",
       "conversion",
-      "analytics"
+      "content",
+      "phase-1"
     ],
-    "decisions": [],
+    "decisions": [
+      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
+      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
+      "- No LLM; no new backend email provider; brand tokens unchanged."
+    ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-10-03-customer-journey-conversion-architecture-implementation",
-    "updated_at": "2026-10-04"
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "updated_at": "2026-09-23"
   },
   {
     "id": "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
@@ -669,6 +606,30 @@
     ],
     "validation_status": "unknown",
     "path": "harness/changes/archive/2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
+    "updated_at": "2026-08-17"
+  },
+  {
+    "id": "2026-08-17-phase-b-opentelemetry-tracing-40",
+    "title": "Phase B: OpenTelemetry Tracing (#40)",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- ADR-016: OTel API (not full SDK) as the tracing interface; lightweight in-memory exporter as default",
+      "- Correlation ID ContextVar maps to OTel span trace_id/span_id",
+      "- 100% span coverage on critical path: executor→agent loop→LLM call→tool execution",
+      "- No OTLP exporter in core deps; optional `opentelemetry-exporter-otlp` extra"
+    ],
+    "validation_status": "unknown",
+    "path": "harness/changes/archive/2026-08-17-phase-b-opentelemetry-tracing-40",
     "updated_at": "2026-08-17"
   },
   {
@@ -1265,52 +1226,66 @@
     "updated_at": "2026-08-17"
   },
   {
-    "id": "2026-08-17-phase-b-opentelemetry-tracing-40",
-    "title": "Phase B: OpenTelemetry Tracing (#40)",
+    "id": "2026-09-26-ls-mem-completion",
+    "title": "LS-MEM Completion",
     "status": "completed",
     "location": "archive",
     "modules": [
-      ""
+      "src/ai_company/cli/main.py",
+      "src/ai_company/lsmem",
+      "docs/LS-MEM-USER-GUIDE.md",
+      "docs/security/LS-MEM-SECURITY-VERIFICATION.md"
     ],
     "files": [
-      ""
+      "src/ai_company/cli/main.py",
+      "src/ai_company/lsmem/audit.py",
+      "src/ai_company/lsmem/cli.py",
+      "tests/unit/test_cli_commands.py",
+      "tests/memory/test_audit_chain_head.py",
+      "tests/memory/test_cli_stdio.py"
     ],
     "tags": [
-      ""
+      "ls-mem",
+      "cli",
+      "audit-chain",
+      "security",
+      "docs"
     ],
     "decisions": [
-      "- ADR-016: OTel API (not full SDK) as the tracing interface; lightweight in-memory exporter as default",
-      "- Correlation ID ContextVar maps to OTel span trace_id/span_id",
-      "- 100% span coverage on critical path: executor→agent loop→LLM call→tool execution",
-      "- No OTLP exporter in core deps; optional `opentelemetry-exporter-otlp` extra"
-    ],
-    "validation_status": "unknown",
-    "path": "harness/changes/archive/2026-08-17-phase-b-opentelemetry-tracing-40",
-    "updated_at": "2026-08-17"
-  },
-  {
-    "id": "2026-10-04-audit-export-reads-canonical-jsonl-trail",
-    "title": "Audit export reads canonical JSONL trail",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      ""
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      ""
-    ],
-    "decisions": [
-      "- D-a: Export runs locally (`scripts/export-audit-evidence.ps1` + Task Scheduler); CI workflow becomes a freshness guard only.",
-      "- D-b: Untrack `audit/audit.db` and gitignore `audit/` only; `.lightspeed/memory/*` stays tracked.",
-      "- D-c: Zero-row day → no file, exit 0; missing source → exit 1.",
-      "- D-d: Run log `reports/evidence/audit-export-runs.jsonl` distinguishes quiet day from \"didn't run\".",
-      "- D-e: Backfill last 3 active days: 2026-10-01 (46), 2026-10-03 (84), 2026-10-04 (41); skip 10-02 (0)."
+      "- CEO decision 1 (2026-09-26): LS-MEM takes `ai-company memory`; legacy JSON CLI moves to `ai-company knowledge`.",
+      "- CEO decision 2 (2026-09-26): no `.opencode/tools/` directory; skill scripts are the tool surface (recorded as approved deviation in security report §33).",
+      "- CEO decision 3 (2026-09-26): single conventional commit at close, LS-MEM files only, no push.",
+      "- CEO decision 4 (2026-09-26): no global skill copy at `C:\\Users\\jmlus\\.agents\\skills\\ls-memory`.",
+      "- CEO decision 5 (2026-09-26): ECL lifecycle open + archive (this close).",
+      "- Concurrent-session record hygiene (2026-09-26): homepage session's `active/` plan/summary/review preserved into its parking dir before this change's record was restored; parking status/location front-matter kept at parked/parking."
     ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-10-04-audit-export-reads-canonical-jsonl-trail",
+    "path": "harness/changes/archive/2026-09-26-ls-mem-completion",
+    "updated_at": "2026-09-26"
+  },
+  {
+    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
+    "title": "Customer Journey Conversion Architecture Implementation",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "src/components",
+      "src/pages",
+      "src/data",
+      "src/hooks",
+      "src/lib"
+    ],
+    "files": [],
+    "tags": [
+      "customer-journey",
+      "frontend",
+      "ux",
+      "conversion",
+      "analytics"
+    ],
+    "decisions": [],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-10-03-customer-journey-conversion-architecture-implementation",
     "updated_at": "2026-10-04"
   }
 ]

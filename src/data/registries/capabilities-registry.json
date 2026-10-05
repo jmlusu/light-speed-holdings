@@ -1,0 +1,382 @@
+{
+  "version": "1.0",
+  "description": "Canonical capabilities registry per Directive §15 and §16. Core capabilities from capabilities.ts plus solution-specific capabilities.",
+  "lastUpdated": "2026-10-05",
+  "coreCapabilities": [
+    {
+      "id": "strategy",
+      "title": "Strategy",
+      "description": "Turn organizational priorities into executable strategies, operating models, roadmaps, and AI opportunities.",
+      "icon": "🎯",
+      "source": "src/data/capabilities.ts",
+      "solutions": ["strategy-executive-advisory", "ai-governance-policy", "research-applied-ai"]
+    },
+    {
+      "id": "build",
+      "title": "Build",
+      "description": "Design and build AI-native workflows, applications, agentic systems, data products, automation, and digital operating capabilities.",
+      "icon": "🔨",
+      "source": "src/data/capabilities.ts",
+      "solutions": ["ai-agentic-systems", "intelligent-automation", "digital-transformation", "ai-company-builder-deployment"]
+    },
+    {
+      "id": "govern",
+      "title": "Govern",
+      "description": "Establish controls, architecture, policies, standards, risk management, security, data governance, and decision rights for responsible AI adoption.",
+      "icon": "🛡️",
+      "source": "src/data/capabilities.ts",
+      "solutions": ["ai-governance-policy", "enterprise-deployment", "ai-agentic-systems"]
+    },
+    {
+      "id": "research-policy",
+      "title": "Research & Policy",
+      "description": "Develop evidence, research, market intelligence, policy analysis, and practical guidance for AI adoption in Malawi, SADC, and Africa.",
+      "icon": "📊",
+      "source": "src/data/capabilities.ts",
+      "solutions": ["research-applied-ai", "ai-governance-policy", "strategy-executive-advisory"]
+    }
+  ],
+  "solutionCapabilities": {
+    "ai-agentic-systems": [
+      {
+        "id": "multi-agent-orchestration",
+        "title": "Multi-Agent Orchestration",
+        "description": "90 agents, 20 departments, each with explicit role definitions and approval thresholds."
+      },
+      {
+        "id": "approval-matrix",
+        "title": "5-Tier Approval Matrix",
+        "description": "Auto through CEO sign-off with configurable thresholds and expiration sweeps."
+      },
+      {
+        "id": "immutable-audit-trails",
+        "title": "Immutable Audit Trails",
+        "description": "SHA-256 sealed, append-only JSONL event logs for every agent action."
+      },
+      {
+        "id": "agent-registry",
+        "title": "Agent Registry & Role Definitions",
+        "description": "Canonical YAML registry with 90 agents, schema validation, reference resolution."
+      },
+      {
+        "id": "model-routing",
+        "title": "Governed Model Routing",
+        "description": "Local/Open-Weight → Mid-tier → Premium → Human routing with cost tracking."
+      },
+      {
+        "id": "memory-persistence",
+        "title": "Memory & Context Persistence",
+        "description": "6-type memory store (episodic, semantic, procedural, relational, temporal, aggregate) with recall-before-execute."
+      }
+    ],
+    "intelligent-automation": [
+      {
+        "id": "whatsapp-native",
+        "title": "WhatsApp-Native Conversational Agents",
+        "description": "Assistants your team already uses — no app downloads required."
+      },
+      {
+        "id": "document-pipelines",
+        "title": "Document & Report Generation Pipelines",
+        "description": "Template-driven report generation (donor reports, payroll letters, certificates)."
+      },
+      {
+        "id": "form-automation",
+        "title": "Form & Survey Automation",
+        "description": "Kobo/Google-Forms-to-spreadsheet pipeline, auto-alerts, summary dashboards."
+      },
+      {
+        "id": "internal-tools",
+        "title": "Internal Tool & Dashboard Development",
+        "description": "Custom web dashboards for stock, sales, students, patients, or members."
+      },
+      {
+        "id": "mobile-money-integration",
+        "title": "Mobile-Money Integration",
+        "description": "Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one."
+      },
+      {
+        "id": "offline-first",
+        "title": "Offline-First Operation",
+        "description": "Self-hosted orchestration with local infrastructure for low-bandwidth environments."
+      }
+    ],
+    "data-decision-intelligence": [
+      {
+        "id": "data-cleaning",
+        "title": "Automated Data Cleaning & Analysis",
+        "description": "Clean dataset + insights report (Excel/PDF) from raw Kobo/DHIS2 exports."
+      },
+      {
+        "id": "donor-reports",
+        "title": "Donor/Project Report Generation",
+        "description": "Narrative + data-visualized quarterly/annual reports compliant with donor templates."
+      },
+      {
+        "id": "interactive-dashboards",
+        "title": "Interactive Program KPI Dashboards",
+        "description": "Live web dashboards for program KPIs (mobile-friendly, NGO-grade)."
+      },
+      {
+        "id": "survey-analysis",
+        "title": "Survey Design, Collection & Analysis",
+        "description": "Questionnaire design, data collection setup, analysis, recommendations."
+      },
+      {
+        "id": "gdpr-data-protection",
+        "title": "GDPR-Level Data Protection & Sovereignty",
+        "description": "Malawi Data Protection Act 2017/2024 compliance as default posture."
+      },
+      {
+        "id": "cross-border-consent",
+        "title": "Cross-Border Consent Workflows",
+        "description": "Explicit consent workflows for LLM provider APIs with Tier-1 sensitive data."
+      }
+    ],
+    "digital-transformation": [
+      {
+        "id": "mobile-first-web",
+        "title": "Mobile-First Responsive Web Development",
+        "description": "Responsive websites built for mobile-first users across Malawi and SADC."
+      },
+      {
+        "id": "ecommerce-local-payments",
+        "title": "E-Commerce with Local Payment Rails",
+        "description": "Product catalog, Airtel Money/Mpamba checkout, order notifications."
+      },
+      {
+        "id": "brand-identity",
+        "title": "Brand Identity & Design Systems",
+        "description": "Cohesive brand identities designed for the African market."
+      },
+      {
+        "id": "google-business",
+        "title": "Google Business & Listings Management",
+        "description": "Map listing, business info management, review setup."
+      },
+      {
+        "id": "bilingual-content",
+        "title": "Bilingual Content (Chichewa + English)",
+        "description": "Content calendar, posts, community management in both languages."
+      },
+      {
+        "id": "social-media-ads",
+        "title": "Social Media Management & Ad Campaigns",
+        "description": "Campaign setup, pixel, tracking, optimization on Facebook/Google."
+      }
+    ],
+    "strategy-executive-advisory": [
+      {
+        "id": "ai-strategy-roadmap",
+        "title": "AI Strategy & Roadmap Generation",
+        "description": "Structured discovery → roadmap generation; assessment templates, ROI modeling."
+      },
+      {
+        "id": "ai-design-sprint",
+        "title": "AI Design Sprint (5-Day)",
+        "description": "5-day concept-to-prototype engagement: kickoff → research → prototype → demo → backlog."
+      },
+      {
+        "id": "boardroom-briefing",
+        "title": "Executive Boardroom Briefing",
+        "description": "Focused session presenting AI Company Builder platform, governance model, and engagement roadmap."
+      },
+      {
+        "id": "roi-modeling",
+        "title": "ROI Modeling & Assessment Templates",
+        "description": "Quantified value models tied to customer workflows and decisions."
+      },
+      {
+        "id": "forward-deployed-engineers",
+        "title": "Forward-Deployed Engineers",
+        "description": "Embed AI agents within client teams as consulting capacity."
+      },
+      {
+        "id": "venture-co-build",
+        "title": "Venture Co-Build",
+        "description": "Build AI-native ventures from scratch; equity stakes + consulting."
+      }
+    ],
+    "ai-governance-policy": [
+      {
+        "id": "risk-classified-approval",
+        "title": "Risk-Classified Approval Matrix",
+        "description": "5×5 likelihood × impact matrix mapped to 4 risk levels; 25 distinct actions risk-gated."
+      },
+      {
+        "id": "governance-gates",
+        "title": "4 Governance Gates (G1–G4)",
+        "description": "Contract, DPA, Compliance Review, Security Assessment — mandatory before work begins."
+      },
+      {
+        "id": "audit-trails-governance",
+        "title": "Immutable Audit Trails",
+        "description": "Append-only JSONL audit events — correlated, queryable, never overwritten."
+      },
+      {
+        "id": "rbac-key-rotation-governance",
+        "title": "RBAC with 90-Day Key Rotation",
+        "description": "Dashboard permissions separate admin, approve, run roles; API keys rotate on 90-day cycle."
+      },
+      {
+        "id": "ai-ethics-board",
+        "title": "AI Ethics Board Review",
+        "description": "Tier 3+ deliverables require AI Ethics Board review before delivery."
+      },
+      {
+        "id": "sadc-au-alignment",
+        "title": "SADC/AU Policy Framework Alignment",
+        "description": "SADC Agentic AI Governance Framework aligned with AU Continental AI Strategy."
+      }
+    ],
+    "research-applied-ai": [
+      {
+        "id": "applied-ai-research",
+        "title": "Applied AI Research & Experimentation",
+        "description": "Engineering observations → public intellectual work via Pharos."
+      },
+      {
+        "id": "african-ai-economics",
+        "title": "African AI Economics & Open-Weight Research",
+        "description": "Cost models for local inference vs. API dependency in African contexts."
+      },
+      {
+        "id": "ai-governance-research",
+        "title": "AI Governance & Policy Research",
+        "description": "Regulatory frameworks, standards development, policy analysis for SADC/AU."
+      },
+      {
+        "id": "sadc-technology-studies",
+        "title": "SADC Technology & Digital Transformation Studies",
+        "description": "Regional digital transformation, Malawi technology landscape, sovereign AI."
+      },
+      {
+        "id": "resource-constrained-deployment",
+        "title": "Resource-Constrained Deployment Research",
+        "description": "Low-bandwidth, intermittent connectivity, local compute optimization."
+      },
+      {
+        "id": "university-capacity-building",
+        "title": "University Capacity Building & Certification",
+        "description": "Training programs with MUBAS, UNIMA for sovereign agentic-AI talent pipeline."
+      }
+    ],
+    "ai-company-builder-deployment": [
+      {
+        "id": "platform-licensing",
+        "title": "AI Company Builder License (E1)",
+        "description": "One-on-one onboarding, your own governed AI company running on your laptop/VPS."
+      },
+      {
+        "id": "white-label-agents",
+        "title": "Agent Setup for Agencies (E2)",
+        "description": "White-label: we stand up agent teams for your agency's clients."
+      },
+      {
+        "id": "provider-agnostic",
+        "title": "Provider-Agnostic Model Routing",
+        "description": "9 LLM providers + free local Ollama models; route by tier and budget."
+      },
+      {
+        "id": "rbac-client-portal",
+        "title": "RBAC & Client Portal Access",
+        "description": "Role-based access control with read-only client dashboard: project status, costs, deliverables."
+      },
+      {
+        "id": "support-retainer",
+        "title": "Support Retainer",
+        "description": "MWK 350,000/mo (~$200/mo) recurring support for licensed deployments."
+      },
+      {
+        "id": "extensible-configuration",
+        "title": "Extensible Agent & Workflow Configuration",
+        "description": "YAML-based agent registry, workflow definitions, department structures — fully configurable."
+      }
+    ],
+    "enterprise-deployment": [
+      {
+        "id": "rbac-enterprise",
+        "title": "Enterprise RBAC",
+        "description": "Role-based access control across all agent operations."
+      },
+      {
+        "id": "approval-governance-enterprise",
+        "title": "5-Tier Approval Governance",
+        "description": "Multi-tier human approval for every consequential action."
+      },
+      {
+        "id": "offline-sovereignty",
+        "title": "Offline-First Sovereignty",
+        "description": "Self-hosted orchestration with local infrastructure; Zero-Cloud Boundary option."
+      },
+      {
+        "id": "managed-deployment",
+        "title": "Managed Deployment with RBAC + Client Portals",
+        "description": "Platform Licensing (Managed) — full deployment with client portals."
+      },
+      {
+        "id": "industry-accelerators",
+        "title": "Industry Accelerators",
+        "description": "Per-vertical agent presets, prompt packs, KPI dashboards."
+      }
+    ]
+  },
+  "platformCapabilities": [
+    {
+      "id": "message-bus",
+      "title": "MessageBus Task Queue",
+      "description": "JSON-based task queue at .opencode/inbox.json with executor loop lifecycle."
+    },
+    {
+      "id": "registry-loader",
+      "title": "Registry Loader, Parser, Resolver, Validator",
+      "description": "YAML parsing, schema validation, reference resolution across 19 configs — catches dangling refs and circular deps at load time."
+    },
+    {
+      "id": "memory-engine",
+      "title": "6-Type Memory Engine",
+      "description": "Episodic, semantic, procedural, relational, temporal, aggregate memory with consolidation and forgetting policies."
+    },
+    {
+      "id": "llm-platform",
+      "title": "Multi-Provider LLM Platform",
+      "description": "9 providers + Ollama; cost tracking, provider routing, circuit breakers, model tier routing."
+    },
+    {
+      "id": "dashboard-api",
+      "title": "Dashboard REST API + WebSocket",
+      "description": "7-department KPI collectors, analytics layer, CORS lockdown, auth enforcement."
+    },
+    {
+      "id": "decision-engine",
+      "title": "Decision Engine & Approval Matrix",
+      "description": "5-tier approval matrix, risk assessment, decision-tree navigation, tier-rule enforcement."
+    },
+    {
+      "id": "workflow-engine",
+      "title": "Workflow Engine (9 Definitions)",
+      "description": "Workflow DAGs, step state machines, SLA budgeting and alerting, idempotency."
+    },
+    {
+      "id": "doctor-diagnostics",
+      "title": "Doctor Diagnostics Suite",
+      "description": "Health checks, dependency checks, drift detection, self-healing recommendations."
+    }
+  ],
+  "toolVocabulary": [
+    "read",
+    "edit",
+    "grep",
+    "list",
+    "bash",
+    "webfetch",
+    "task"
+  ],
+  "legacyToolAliases": [
+    "write → edit",
+    "execute → bash",
+    "delegate → task",
+    "web_search/websearch → webfetch",
+    "code_interpreter → removed"
+  ]
+}

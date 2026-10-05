@@ -1,0 +1,68 @@
+{
+  "version": "1.0",
+  "description": "Canonical CTA registry per Directive §34. Single primary CTA, secondary, and contextual CTAs — no random alternation.",
+  "lastUpdated": "2026-10-05",
+  "ctas": {
+    "primary": {
+      "label": "START A CONVERSATION",
+      "to": "/contact",
+      "description": "Primary conversion CTA — every high-intent button funnels here",
+      "variant": "primary",
+      "usage": "Hero sections, final CTA bars, high-intent conversion points"
+    },
+    "secondary": {
+      "label": "REQUEST AN AI READINESS ASSESSMENT",
+      "to": "/contact",
+      "description": "What We Do above-the-fold assessment request",
+      "variant": "secondary",
+      "usage": "What We Do page, service pages, solution detail pages"
+    },
+    "contextual": [
+      {
+        "label": "EXPLORE AI COMPANY BUILDER",
+        "to": "/ai-company-builder",
+        "description": "AI Company Builder product tour entry point",
+        "variant": "outline",
+        "usage": "AI Company Builder page, homepage product section, solution cards"
+      },
+      {
+        "label": "EXPLORE USE CASES",
+        "to": "/use-cases",
+        "description": "Use Case explorer entry point",
+        "variant": "outline",
+        "usage": "Use Cases page, sector pages, homepage use case section"
+      },
+      {
+        "label": "EXPLORE SOLUTIONS",
+        "to": "/solutions",
+        "description": "Solutions catalog entry point",
+        "variant": "outline",
+        "usage": "Solutions page, What We Do page, homepage solutions section"
+      },
+      {
+        "label": "READ PHAROS INSIGHTS",
+        "to": "/insights",
+        "description": "Pharos thought leadership entry point",
+        "variant": "outline",
+        "usage": "Insights page, homepage insights section, article CTAs"
+      }
+    ],
+    "retired": [
+      "Book Briefing",
+      "Executive Briefing",
+      "Book a Briefing",
+      "Contact Us",
+      "Get Started",
+      "Request Demo",
+      "Schedule Call"
+    ],
+    "rules": [
+      "Primary CTA (START A CONVERSATION) must be visually dominant on every high-intent conversion point",
+      "Secondary CTA (REQUEST AN AI READINESS ASSESSMENT) used for assessment-focused entry points",
+      "Contextual CTAs used only in their designated contexts — never as generic replacements",
+      "Retired phrasing must not return — enforce via lint/check",
+      "CTA labels are canonical — do not vary capitalization, wording, or punctuation",
+      "All CTAs route to /contact except contextual exploration CTAs which route to their respective sections"
+    ]
+  }
+}

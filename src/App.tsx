@@ -22,11 +22,7 @@ import { Build } from './pages/Build';
 import { OfferB } from './pages/OfferB';
 import { OfferC } from './pages/OfferC';
 import { OfferE } from './pages/OfferE';
-import { AthenaDashboard } from './pages/athena/Dashboard';
-import { JobList } from './pages/athena/JobList';
-import { JobDetail } from './pages/athena/JobDetail';
-import { DocumentEditor } from './pages/athena/DocumentEditor';
-import { AthenaLayout } from './components/athena/AthenaLayout';
+
 
 const HomePageRoute = withSite(HomePage);
 const WhatWeDoPageRoute = withSite(WhatWeDoPage);
@@ -41,10 +37,7 @@ const ContactPageRoute = withSite(ContactPage);
 const PrivacyPageRoute = withSite(PrivacyPage);
 const TermsPageRoute = withSite(TermsPage);
 
-const AthenaDashboardRoute = AthenaDashboard;
-const JobListRoute = JobList;
-const JobDetailRoute = JobDetail;
-const DocumentEditorRoute = DocumentEditor;
+
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>(() => {
@@ -108,19 +101,7 @@ export const App: React.FC = () => {
           { path: '*', element: <Navigate to="/" replace /> },
         ],
       },
-      {
-        path: '/athena',
-        element: <AthenaLayout />,
-        children: [
-          { index: true, element: <AthenaDashboardRoute /> },
-          { path: 'jobs', element: <JobListRoute /> },
-          { path: 'jobs/:id', element: <JobDetailRoute /> },
-          { path: 'applications', element: <JobListRoute /> },
-          { path: 'analytics', element: <AthenaDashboardRoute /> },
-          { path: 'settings', element: <AthenaDashboardRoute /> },
-          { path: 'documents', element: <DocumentEditorRoute documentType="resume" /> },
-        ],
-      },
+
     ])
   );
 
