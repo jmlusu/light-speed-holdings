@@ -7,6 +7,10 @@ export interface CompanyIdentity {
   founded: string;
   location: string;
   website: string;
+  trademarkDomain: string;
 }
 
-export const companyIdentity = raw.company as CompanyIdentity;
+export const companyIdentity = {
+  ...raw.company,
+  trademarkDomain: raw.company.website,
+} as CompanyIdentity;

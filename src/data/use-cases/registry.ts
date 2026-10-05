@@ -8,6 +8,7 @@ export type SolutionCategory = 'Strategy' | 'Agentic Automation' | 'Data & Intel
 
 export interface UseCase {
   id: string;
+  slug: string;
   title: string;
   problem: string;
   workflow: string;
@@ -25,32 +26,29 @@ export interface UseCase {
   solutionCategory?: SolutionCategory[];
 }
 
-export interface UseCasesRegistry {
-  version: string;
-  description: string;
-  lastUpdated: string;
-  useCases: UseCase[];
-}
+const useCases = raw.useCases.map((uc: any) => ({
+  ...uc,
+  slug: uc.id,
+})) as UseCase[];
 
-const data = raw as unknown as UseCasesRegistry;
-export const useCasesRegistry = data;
+export const useCasesRegistry = useCases;
 
 export function getUseCasesByStatus(status: UseCaseStatus): UseCase[] {
-  return data.useCases.filter(uc => uc.status === status);
+  return useCases.filter(uc => uc.status === status);
 }
 
 export function getUseCasesBySector(sector: string): UseCase[] {
-  return data.useCases.filter(uc => uc.sector === sector);
+  return useCases.filter(uc => uc.sector === sector);
 }
 
 export function getUseCasesBySolution(solution: string): UseCase[] {
-  return data.useCases.filter(uc => uc.solution === solution);
+  return useCases.filter(uc => uc.solution === solution);
 }
 
 export function getUseCasesByProblemCategory(category: ProblemCategory): UseCase[] {
-  return data.useCases.filter(uc => uc.problemCategory?.includes(category));
+  return useCases.filter(uc => uc.problemCategory?.includes(category));
 }
 
 export function getFeaturedUseCases(): UseCase[] {
-  return data.useCases.filter(uc => uc.status === 'LIVE' || uc.status === 'PROVEN_IN_HOUSE');
+  return useCases.filter(uc => uc.status === 'LIVE' || uc.status === 'PROVEN_IN_HOUSE');
 }

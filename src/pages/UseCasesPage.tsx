@@ -60,10 +60,10 @@ export const UseCasesPage: React.FC = () => {
       cases = cases.filter(uc => uc.status === statusFilter);
     }
     if (problemFilter !== 'all') {
-      cases = cases.filter(uc => uc.problemCategory.includes(problemFilter));
+      cases = cases.filter(uc => uc.problemCategory?.includes(problemFilter) ?? false);
     }
     if (solutionFilter !== 'all') {
-      cases = cases.filter(uc => uc.solutionCategory.includes(solutionFilter));
+      cases = cases.filter(uc => uc.solutionCategory?.includes(solutionFilter) ?? false);
     }
     if (sectorFilter !== 'all') {
       cases = cases.filter(uc => uc.sector.includes(sectorFilter));
@@ -291,7 +291,7 @@ const UseCaseCard: React.FC<UseCaseCardProps> = ({ useCase }) => {
           {useCase.problem}
         </Text>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: tokens.spacing[1], marginBottom: tokens.spacing[3] }}>
-          {useCase.problemCategory.slice(0, 2).map(cat => (
+          {(useCase.problemCategory || []).slice(0, 2).map(cat => (
             <span
               key={cat}
               style={{

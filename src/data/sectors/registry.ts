@@ -12,11 +12,4 @@ export interface Sector {
   relevantSolutions: string[];
 }
 
-export interface SectorsRegistry {
-  version: string;
-  description: string;
-  lastUpdated: string;
-  sectors: Sector[];
-}
-
-export const sectorsRegistry = raw as SectorsRegistry;
+export const sectorsRegistry = raw.sectors as Sector[];

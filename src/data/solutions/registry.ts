@@ -10,11 +10,4 @@ export interface Solution {
   cta: string;
 }
 
-export interface SolutionsRegistry {
-  version: string;
-  description: string;
-  lastUpdated: string;
-  solutions: Solution[];
-}
-
-export const solutionsRegistry = raw as SolutionsRegistry;
+export const solutionsRegistry = raw.solutions as Solution[];
