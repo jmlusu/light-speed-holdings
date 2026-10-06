@@ -52,7 +52,7 @@ def test_cmd_starts_with_server_path() -> None:
 
 def test_cmd_model_context_batch_and_threads() -> None:
     cmd = _cmd()
-    expected_model_path = str(Path(_SCRIPT).parents[1] / "models" / MODEL["file"])
+    expected_model_path = str(Path(_SCRIPT).parents[2] / "models" / MODEL["file"])
     pairs = dict(zip(cmd, cmd[1:], strict=False))
     assert pairs["-m"] == expected_model_path
     assert pairs["-c"] == str(MODEL["ctx"])
