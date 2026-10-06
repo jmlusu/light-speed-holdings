@@ -79,8 +79,8 @@ Installed hooks: trailing-whitespace, end-of-file-fixer, check-yaml, ruff (lint+
 ### Disaster Recovery
 
 ```powershell
-.\scripts\backup.ps1                  # Backup .opencode/, company/, results/
-.\scripts\backup.ps1 -KeepCount 14    # Keep 14 days of backups
+.\scripts\deploy\backup.ps1                    # Backup .opencode/, company/, results/ (to ~/.lightspeed/backups)
+.\scripts\deploy\backup.ps1 -RetentionDays 14  # Keep 14 days of backups
 ```
 
 ### Staging Environment

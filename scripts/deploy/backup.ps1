@@ -10,11 +10,12 @@
     - logs/         (structured log files)
     - memory/       (memory store, if exists)
 
-    Backups are stored in a backupper/ directory with rotation.
+    Backups are stored outside the repo (~/.lightspeed/backups) with rotation.
     Optional: Upload to cloud storage (S3/GCS) for offsite redundancy.
 
 .PARAMETER BackupDir
-    Where to store backups locally. Default: ./backups
+    Where to store backups locally. Default: ~/.lightspeed/backups
+    (outside the repo, so backups never pollute the working tree).
 
 .PARAMETER RetentionDays
     Delete local backups older than this many days. Default: 30
@@ -44,17 +45,17 @@
     Show what would be backed up without actually creating archives.
 
 .EXAMPLE
-    .\scripts\backup.ps1
-    .\scripts\backup.ps1 -RetentionDays 7
-    .\scripts\backup.ps1 -CloudProvider S3 -CloudBucket my-backups-bucket
-    .\scripts\backup.ps1 -CloudProvider GCS -CloudBucket my-gcs-bucket -CloudPrefix backups/
-    .\scripts\backup.ps1 -BackupS3 -S3Bucket my-backups-bucket -S3Region us-east-1
-    .\scripts\backup.ps1 -DryRun
+    .\scripts\deploy\backup.ps1
+    .\scripts\deploy\backup.ps1 -RetentionDays 7
+    .\scripts\deploy\backup.ps1 -CloudProvider S3 -CloudBucket my-backups-bucket
+    .\scripts\deploy\backup.ps1 -CloudProvider GCS -CloudBucket my-gcs-bucket -CloudPrefix backups/
+    .\scripts\deploy\backup.ps1 -BackupS3 -S3Bucket my-backups-bucket -S3Region us-east-1
+    .\scripts\deploy\backup.ps1 -DryRun
 #>
 
 [CmdletBinding()]
 param(
-    [string]$BackupDir = "./backups",
+    [string]$BackupDir = "",
     [int]$RetentionDays = 30,
     [ValidateSet('None', 'S3', 'GCS')]
     [string]$CloudProvider = 'None',
@@ -70,6 +71,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+
+# ── Default backup location lives outside the repo ──────────
+if ([string]::IsNullOrWhiteSpace($BackupDir)) {
+    $BackupDir = Join-Path $HOME ".lightspeed\backups"
+}
 
 # ── Handle alias parameters for S3 (T011) ───────────────────────
 if ($BackupS3) {
@@ -179,11 +185,11 @@ if (-not $DryRun -and $CloudProvider -ne 'None' -and $archives.Count -gt 0) {
         try {
             if ($CloudProvider -eq 'S3') {
                 Write-Host "  Uploading to s3://$CloudBucket/$cloudPath" -ForegroundColor Green
-                $awsCmd = "aws s3 cp $archivePath `\"s3://$CloudBucket/$cloudPath`\" --only-show-errors"
+                $awsArgs = @('s3', 'cp', $archivePath, "s3://$CloudBucket/$cloudPath", '--only-show-errors')
                 if ($CloudRegion) {
-                    $awsCmd += " --region $CloudRegion"
+                    $awsArgs += @('--region', $CloudRegion)
                 }
-                Invoke-Expression $awsCmd
+                & aws @awsArgs
             } elseif ($CloudProvider -eq 'GCS') {
                 Write-Host "  Uploading to gs://$CloudBucket/$cloudPath" -ForegroundColor Green
                 gsutil -q cp $archivePath "gs://$CloudBucket/$cloudPath"
