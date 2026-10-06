@@ -45,6 +45,9 @@ qa-report*.json
 tmp/
 lab/
 
+# Local agent-tool state (never commit)
+.crush/
+
 # ==========================================
 # Testing, Coverage & Quality Tools
 # ==========================================
