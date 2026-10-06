@@ -24,44 +24,6 @@
     "updated_at": "2026-09-04"
   },
   {
-    "id": "2026-08-30-cleanup-dummy-tasks",
-    "title": "Remove Dummy Tasks & Wire Real Organizational Data",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      ""
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      ""
-    ],
-    "decisions": [
-      "- Demo/test detection must key on demonstrable markers only:",
-      "`proj-acme-chatbot` in instruction/id, instruction starting with `Test `,",
-      "and task ids starting with `test-`/`verify-`.",
-      "- Routing a task to the real `test-agent` receiver is legitimate and must NOT",
-      "mark it as dummy. The earlier over-broad receiver-name heuristic was removed",
-      "because it false-positived on the real `test-agent` and broke the test suite.",
-      "- SQL cleanup predicates use case-sensitive `instr()`/`GLOB` (not `LIKE`) so",
-      "real lowercase `test ...` instructions are never deleted at the DB level.",
-      "- `GET /api/v1/tasks` and `/api/v1/tasks/paginated` accept an `include_test`",
-      "query param (default `false`); `_read_all_tasks(include_test=...)` is the",
-      "single read filter (SQLite-first, inbox-file fallback).",
-      "- `scripts/restore_acme_tasks.py` and `scripts/backfill_decompositions.py`",
-      "both BELONG to this feature and are kept with fixes: all restore tasks carry",
-      "the `proj-acme-chatbot` marker (one previously lacked it and would survive",
-      "cleanup); backfill now uses the guaranteed DB path and skips demo/test",
-      "subtasks.",
-      "- `monitoring.py` `event_type != \"task_completed\"` alignment is correct:",
-      "`AuditEventType.TASK_COMPLETED` is the canonical `\"task_completed\"`."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-08-30-cleanup-dummy-tasks",
-    "updated_at": "2026-08-30"
-  },
-  {
     "id": "2026-08-30-dashboard-hardening-c4-task-flow-and-reports-views-c5-reportstore",
     "title": "Dashboard Hardening: C4 Task Flow and Reports Views, C5 ReportStore",
     "status": "completed",
@@ -300,37 +262,6 @@
     "updated_at": "2026-09-22"
   },
   {
-    "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
-    "title": "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "ci-cd",
-      "dependencies",
-      "monitoring"
-    ],
-    "files": [
-      "["
-    ],
-    "tags": [
-      "dependencies",
-      "security",
-      "ci-cd",
-      "monitoring",
-      "retroactive"
-    ],
-    "decisions": [
-      "- **Lockfile-only upgrade**: `uv lock --upgrade-package fastapi --upgrade-package starlette` instead of a full `uv lock --upgrade`, keeping blast radius minimal and avoiding unrelated version churn.",
-      "- **No pin added for fastapi/starlette**: constraints were already satisfiable; staleness was the root cause, not under-constraining.",
-      "- **PR #155 merged rather than closed-as-superseded**: GitHub reported CLEAN/MERGEABLE and all checks green once uv.lock was excluded from the Generated Files Drift Check (`392c347`); merging installs nothing new today and stops Dependabot churn.",
-      "- **Concurrent session's 22 dirty working-tree files left untouched**: verified zero overlap with this change's changeset; ownership belongs to the parallel session (task-event system, OmniRoute routing, doctor checks, dashboard org-health).",
-      "- **httpx2 migration deferred to a tracked follow-up issue** (not bundled here): httpx is unmaintained upstream; starlette ≥1.2 emits a deprecation warning for its TestClient fallback path."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
-    "updated_at": "2026-08-26"
-  },
-  {
     "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
     "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
     "status": "completed",
@@ -358,21 +289,67 @@
     "updated_at": "2026-09-23"
   },
   {
-    "id": "2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
-    "title": "Narrative and Positioning Track - LightSpeed Narrative & Positioning Document",
+    "id": "2026-08-30-cleanup-dummy-tasks",
+    "title": "Remove Dummy Tasks & Wire Real Organizational Data",
     "status": "completed",
     "location": "archive",
-    "modules": [],
-    "files": [],
-    "tags": [],
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
     "decisions": [
-      "- Canonical agent count is 152 (151 AI + 1 human CEO); registry table header aligned to that figure.",
-      "- Conflicts from stash pop resolved to Updated upstream (newer) side; stashed 144-agent snapshot discarded.",
-      "- Parked clarifications closed with no action: three unmapped LCA role titles have zero repo occurrences; Content Architecture Council stays registry-only (no generated agent cards).",
-      "- No LLM integration for Ask LightSpeed in this change (rule-based discovery retained)."
+      "- Demo/test detection must key on demonstrable markers only:",
+      "`proj-acme-chatbot` in instruction/id, instruction starting with `Test `,",
+      "and task ids starting with `test-`/`verify-`.",
+      "- Routing a task to the real `test-agent` receiver is legitimate and must NOT",
+      "mark it as dummy. The earlier over-broad receiver-name heuristic was removed",
+      "because it false-positived on the real `test-agent` and broke the test suite.",
+      "- SQL cleanup predicates use case-sensitive `instr()`/`GLOB` (not `LIKE`) so",
+      "real lowercase `test ...` instructions are never deleted at the DB level.",
+      "- `GET /api/v1/tasks` and `/api/v1/tasks/paginated` accept an `include_test`",
+      "query param (default `false`); `_read_all_tasks(include_test=...)` is the",
+      "single read filter (SQLite-first, inbox-file fallback).",
+      "- `scripts/restore_acme_tasks.py` and `scripts/backfill_decompositions.py`",
+      "both BELONG to this feature and are kept with fixes: all restore tasks carry",
+      "the `proj-acme-chatbot` marker (one previously lacked it and would survive",
+      "cleanup); backfill now uses the guaranteed DB path and skips demo/test",
+      "subtasks.",
+      "- `monitoring.py` `event_type != \"task_completed\"` alignment is correct:",
+      "`AuditEventType.TASK_COMPLETED` is the canonical `\"task_completed\"`."
     ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "path": "harness/changes/archive/2026-08-30-cleanup-dummy-tasks",
+    "updated_at": "2026-08-30"
+  },
+  {
+    "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
+    "title": "Client Site Phase 3 - Trust Evidence and Related Content",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "site-frontend"
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      "site",
+      "trust",
+      "content",
+      "phase-3"
+    ],
+    "decisions": [
+      "- Reuse existing proven claims only (governance gates, HITL matrix, audit trails, DPA posture) — no invented certifications or third-party seals.",
+      "- Shared `RelatedLinks` component replaces ad-hoc related strips on News/Insights and is extended to Trust, FAQ, Leadership, Resources, Events.",
+      "- Wire Trust/FAQ/Leadership `CtaBand` to `onRequestBriefing` (props already present on Trust; FAQ/Leadership currently discard the prop)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
     "updated_at": "2026-09-23"
   },
   {
@@ -612,32 +589,6 @@
     "updated_at": "2026-10-04"
   },
   {
-    "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
-    "title": "Client Site Phase 3 - Trust Evidence and Related Content",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "site-frontend"
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      "site",
-      "trust",
-      "content",
-      "phase-3"
-    ],
-    "decisions": [
-      "- Reuse existing proven claims only (governance gates, HITL matrix, audit trails, DPA posture) — no invented certifications or third-party seals.",
-      "- Shared `RelatedLinks` component replaces ad-hoc related strips on News/Insights and is extended to Trust, FAQ, Leadership, Resources, Events.",
-      "- Wire Trust/FAQ/Leadership `CtaBand` to `onRequestBriefing` (props already present on Trust; FAQ/Leadership currently discard the prop)."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
-    "updated_at": "2026-09-23"
-  },
-  {
     "id": "2026-10-04-audit-export-reads-canonical-jsonl-trail",
     "title": "Audit export reads canonical JSONL trail",
     "status": "completed",
@@ -661,6 +612,55 @@
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-10-04-audit-export-reads-canonical-jsonl-trail",
     "updated_at": "2026-10-04"
+  },
+  {
+    "id": "2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "title": "Narrative and Positioning Track - LightSpeed Narrative & Positioning Document",
+    "status": "completed",
+    "location": "archive",
+    "modules": [],
+    "files": [],
+    "tags": [],
+    "decisions": [
+      "- Canonical agent count is 152 (151 AI + 1 human CEO); registry table header aligned to that figure.",
+      "- Conflicts from stash pop resolved to Updated upstream (newer) side; stashed 144-agent snapshot discarded.",
+      "- Parked clarifications closed with no action: three unmapped LCA role titles have zero repo occurrences; Content Architecture Council stays registry-only (no generated agent cards).",
+      "- No LLM integration for Ask LightSpeed in this change (rule-based discovery retained)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-23-narrative-and-positioning-track-lightspeed-narrative-positioning-document",
+    "updated_at": "2026-09-23"
+  },
+  {
+    "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+    "title": "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "ci-cd",
+      "dependencies",
+      "monitoring"
+    ],
+    "files": [
+      "["
+    ],
+    "tags": [
+      "dependencies",
+      "security",
+      "ci-cd",
+      "monitoring",
+      "retroactive"
+    ],
+    "decisions": [
+      "- **Lockfile-only upgrade**: `uv lock --upgrade-package fastapi --upgrade-package starlette` instead of a full `uv lock --upgrade`, keeping blast radius minimal and avoiding unrelated version churn.",
+      "- **No pin added for fastapi/starlette**: constraints were already satisfiable; staleness was the root cause, not under-constraining.",
+      "- **PR #155 merged rather than closed-as-superseded**: GitHub reported CLEAN/MERGEABLE and all checks green once uv.lock was excluded from the Generated Files Drift Check (`392c347`); merging installs nothing new today and stops Dependabot churn.",
+      "- **Concurrent session's 22 dirty working-tree files left untouched**: verified zero overlap with this change's changeset; ownership belongs to the parallel session (task-event system, OmniRoute routing, doctor checks, dashboard org-health).",
+      "- **httpx2 migration deferred to a tracked follow-up issue** (not bundled here): httpx is unmaintained upstream; starlette ≥1.2 emits a deprecation warning for its TestClient fallback path."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
+    "updated_at": "2026-08-26"
   },
   {
     "id": "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
@@ -697,8 +697,8 @@
     "updated_at": "2026-08-17"
   },
   {
-    "id": "2026-08-17-phase-b-async-approval-engine-42",
-    "title": "Phase B: Async Approval Engine (#42)",
+    "id": "2026-08-17-phase-b-opentelemetry-tracing-40",
+    "title": "Phase B: OpenTelemetry Tracing (#40)",
     "status": "completed",
     "location": "archive",
     "modules": [
@@ -711,17 +711,13 @@
       ""
     ],
     "decisions": [
-      "- **ADR-017**: File-based suspend store (not Temporal) — single-machine constraint",
-      "- Conversation history serialized as JSON strings in `.opencode/suspended_states/{task_id}.json`",
-      "- WebSocket broadcast fires immediately on park (sync→async bridge from executor)",
-      "- Optional webhook POST to configurable URL in `company/config/webhooks.yaml`",
-      "- 30-day retention with daemon governance sweep",
-      "- `SuspendedState` model: conversation_history, iterations_completed, tool_results, cost accumulators",
-      "- `AgentLoop.run()` accepts `resumed_state` kwarg for state restoration",
-      "- Agent loop snapshots state before `run_plan()` so HITLParked can capture it"
+      "- ADR-016: OTel API (not full SDK) as the tracing interface; lightweight in-memory exporter as default",
+      "- Correlation ID ContextVar maps to OTel span trace_id/span_id",
+      "- 100% span coverage on critical path: executor→agent loop→LLM call→tool execution",
+      "- No OTLP exporter in core deps; optional `opentelemetry-exporter-otlp` extra"
     ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-08-17-phase-b-async-approval-engine-42",
+    "validation_status": "unknown",
+    "path": "harness/changes/archive/2026-08-17-phase-b-opentelemetry-tracing-40",
     "updated_at": "2026-08-17"
   },
   {
@@ -923,30 +919,6 @@
     "updated_at": "2026-09-26"
   },
   {
-    "id": "2026-08-17-phase-b-opentelemetry-tracing-40",
-    "title": "Phase B: OpenTelemetry Tracing (#40)",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      ""
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      ""
-    ],
-    "decisions": [
-      "- ADR-016: OTel API (not full SDK) as the tracing interface; lightweight in-memory exporter as default",
-      "- Correlation ID ContextVar maps to OTel span trace_id/span_id",
-      "- 100% span coverage on critical path: executor→agent loop→LLM call→tool execution",
-      "- No OTLP exporter in core deps; optional `opentelemetry-exporter-otlp` extra"
-    ],
-    "validation_status": "unknown",
-    "path": "harness/changes/archive/2026-08-17-phase-b-opentelemetry-tracing-40",
-    "updated_at": "2026-08-17"
-  },
-  {
     "id": "2026-09-29-linkedin-ai-native-series",
     "title": "LinkedIn AI-Native Series",
     "status": "parked",
@@ -977,6 +949,31 @@
     "validation_status": "pass",
     "path": "harness/changes/parking/2026-09-29-linkedin-ai-native-series",
     "updated_at": "2026-09-29"
+  },
+  {
+    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
+    "title": "Customer Journey Conversion Architecture Implementation",
+    "status": "parked",
+    "location": "parking",
+    "modules": [
+      "src/components",
+      "src/pages",
+      "src/data",
+      "src/hooks",
+      "src/lib"
+    ],
+    "files": [],
+    "tags": [
+      "customer-journey",
+      "frontend",
+      "ux",
+      "conversion",
+      "analytics"
+    ],
+    "decisions": [],
+    "validation_status": "unknown",
+    "path": "harness/changes/parking/2026-10-03-customer-journey-conversion-architecture-implementation",
+    "updated_at": "2026-10-03"
   },
   {
     "id": "2026-10-06-new-customer-journey-unknown",
@@ -1302,29 +1299,32 @@
     "updated_at": "2026-08-17"
   },
   {
-    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
-    "title": "Customer Journey Conversion Architecture Implementation",
-    "status": "parked",
-    "location": "parking",
+    "id": "2026-08-17-phase-b-async-approval-engine-42",
+    "title": "Phase B: Async Approval Engine (#42)",
+    "status": "completed",
+    "location": "archive",
     "modules": [
-      "src/components",
-      "src/pages",
-      "src/data",
-      "src/hooks",
-      "src/lib"
+      ""
     ],
-    "files": [],
+    "files": [
+      ""
+    ],
     "tags": [
-      "customer-journey",
-      "frontend",
-      "ux",
-      "conversion",
-      "analytics"
+      ""
     ],
-    "decisions": [],
-    "validation_status": "unknown",
-    "path": "harness/changes/parking/2026-10-03-customer-journey-conversion-architecture-implementation",
-    "updated_at": "2026-10-03"
+    "decisions": [
+      "- **ADR-017**: File-based suspend store (not Temporal) — single-machine constraint",
+      "- Conversation history serialized as JSON strings in `.opencode/suspended_states/{task_id}.json`",
+      "- WebSocket broadcast fires immediately on park (sync→async bridge from executor)",
+      "- Optional webhook POST to configurable URL in `company/config/webhooks.yaml`",
+      "- 30-day retention with daemon governance sweep",
+      "- `SuspendedState` model: conversation_history, iterations_completed, tool_results, cost accumulators",
+      "- `AgentLoop.run()` accepts `resumed_state` kwarg for state restoration",
+      "- Agent loop snapshots state before `run_plan()` so HITLParked can capture it"
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-08-17-phase-b-async-approval-engine-42",
+    "updated_at": "2026-08-17"
   },
   {
     "id": "2026-10-07-2026-10-06-repository-sanitization",
@@ -1348,6 +1348,23 @@
     ],
     "validation_status": "pass",
     "path": "harness/changes/archive/2026-10-07-2026-10-06-repository-sanitization",
+    "updated_at": "2026-10-07"
+  },
+  {
+    "id": "2026-10-07-2026-10-07-decommission-followups",
+    "title": "Decommission follow-ups",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [],
+    "tags": [
+      ""
+    ],
+    "decisions": [],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-10-07-2026-10-07-decommission-followups",
     "updated_at": "2026-10-07"
   }
 ]
