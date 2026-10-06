@@ -5,6 +5,7 @@
 .env.*
 !.env.example
 !.env.staging.example
+opencode.local.json
 
 # ==========================================
 # Build Artifacts & Dependencies
@@ -35,6 +36,14 @@ env/
 *.swo
 .DS_Store
 Thumbs.db
+
+# QA artifacts (security sanitization)
+qa-*.png
+qa-report*.json
+
+# Temp directories
+tmp/
+lab/
 
 # ==========================================
 # Testing, Coverage & Quality Tools
