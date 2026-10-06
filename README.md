@@ -435,11 +435,11 @@ A comprehensive PowerPoint presentation showcasing all major milestones is avail
 ```bash
 # Generate the milestones deck (Node.js)
 npm install
-node scripts/generate-milestones-deck.js
+node scripts/build/generate-milestones-deck.js
 
 # Or using Python
 uv sync --extra dev
-uv run python scripts/generate-milestones-deck.py
+uv run python scripts/build/generate-milestones-deck.py
 ```
 
 The presentation includes 15 slides covering:
