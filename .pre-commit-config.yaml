@@ -63,7 +63,7 @@ repos:
     hooks:
       - id: capture-fix
         name: capture bug-fix record
-        entry: pwsh -File scripts/capture-fix.ps1
+        entry: pwsh -File scripts/maintenance/capture-fix.ps1
         language: system
         pass_filenames: false
         always_run: true
@@ -75,7 +75,7 @@ repos:
     hooks:
       - id: ps-antipattern
         name: powershell anti-pattern scan
-        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/scan-ps-antipatterns.ps1
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/scan-ps-antipatterns.ps1
         language: system
         files: '\.ps1$'
         stages: [pre-commit]
@@ -85,7 +85,7 @@ repos:
     hooks:
       - id: validate-drift
         name: validate-doc-drift
-        entry: pwsh -File scripts/validate-drift.ps1
+        entry: pwsh -File scripts/maintenance/validate-drift.ps1
         language: system
         pass_filenames: false
         always_run: true

@@ -44,7 +44,7 @@ def test_release_workflow_exists():
 
 
 def test_release_script_exists():
-    path = Path("scripts/release.ps1")
+    path = Path("scripts/deploy/release.ps1")
     assert path.exists(), "release.ps1 script must exist"
     content = path.read_text(encoding="utf-8")
     assert "BumpType" in content, "release.ps1 must accept BumpType parameter"

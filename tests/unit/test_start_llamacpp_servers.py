@@ -13,7 +13,7 @@ import importlib.util
 from pathlib import Path
 from types import ModuleType
 
-_SCRIPT = Path(__file__).parents[2] / "scripts" / "start_llamacpp_servers.py"
+_SCRIPT = Path(__file__).parents[2] / "scripts" / "dev" / "start_llamacpp_servers.py"
 
 
 def _load_module() -> ModuleType:

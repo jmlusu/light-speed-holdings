@@ -12,7 +12,7 @@ opencode.local.json
 # ==========================================
 node_modules/
 dist/
-build/
+/build/
 .tmp/
 *.tsbuildinfo
 

@@ -4,8 +4,8 @@ $Root = (Get-Location).Path
 $Changes = Join-Path $Root "harness/changes"
 $Active = Join-Path $Changes "active"
 $IndexPath = Join-Path $Changes "INDEX.json"
-$HarnessChange = Join-Path $Root "scripts/harness-change.ps1"
-$HarnessEvolve = Join-Path $Root "scripts/harness-evolve.ps1"
+$HarnessChange = Join-Path $Root "scripts/maintenance/harness-change.ps1"
+$HarnessEvolve = Join-Path $Root "scripts/maintenance/harness-evolve.ps1"
 $StatusPath = Join-Path $Root "docs/STATUS.md"
 $EvolutionState = Join-Path $Root "harness/evolution/state.json"
 
@@ -76,7 +76,7 @@ if (Test-Path -LiteralPath (Join-Path $Active "summary.md")) {
 }
 
 if (-not (Test-Path -LiteralPath $IndexPath)) {
-  Fail "Missing harness/changes/INDEX.json. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
+  Fail "Missing harness/changes/INDEX.json. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/harness-change.ps1 reindex"
 }
 $actual = Get-Content -Encoding UTF8 -Raw -LiteralPath $IndexPath
 $expected = (& $HarnessChange index-json) -join "`n"
@@ -135,7 +135,8 @@ $ArchiveExceptions = @(
   "2026-08-17-phase-b-opentelemetry-tracing-40",
   "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
   "2026-08-31-ceo-alert-center",
-  "2026-08-31-executive-kpi-scorecard-rich-org-chart"
+  "2026-08-31-executive-kpi-scorecard-rich-org-chart",
+  "2026-10-03-customer-journey-conversion-architecture-implementation"
 )
 $ArchiveRoot = Join-Path $Changes "archive"
 foreach ($dir in (Get-ChildItem -LiteralPath $ArchiveRoot -Directory | Sort-Object Name)) {
