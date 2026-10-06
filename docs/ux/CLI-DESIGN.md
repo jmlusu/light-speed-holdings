@@ -39,7 +39,7 @@ ai-company <domain> <action> [args] [options]
 | `knowledge` | Legacy JSON knowledge store | `ai-company knowledge list` |
 | `legal` | Legal operations | `ai-company legal list-contracts` |
 | `marketing` | Marketing ops | `ai-company marketing list-campaigns` |
-| `memory` | LS-MEM memory engine | `ai-company memory status` |
+| `memory` | JSON memory store | `ai-company memory list` |
 | `orchestrator` | Coordination | `ai-company orchestrator tick` |
 | `sales` | Sales operations | `ai-company sales list-leads` |
 | `specialists` | Specialist agents | `ai-company specialists list` |

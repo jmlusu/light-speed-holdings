@@ -165,18 +165,19 @@ class TestCommandSmokeTests:
         assert result.exit_code == 0, result.output
         assert "Memory Store Summary" in result.output
 
-    def test_memory_status_lsmem_runs(
+    def test_memory_list_legacy_runs(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Root ``memory status`` reaches the LS-MEM engine in an empty temp workspace.
+        """Root ``memory list`` reaches the legacy JSON store in an empty temp workspace.
 
-        Proves the wiring flip: ``memory`` resolves to ``ai_company.lsmem.cli``
-        (not the legacy JSON CLI), and LS-MEM bootstraps its own workspace.
+        Proves the wiring: ``memory`` resolves to ``ai_company.cli.memory``
+        (LS-MEM was decommissioned 2026-10-07), and the legacy store renders
+        its summary against an empty workspace.
         """
         monkeypatch.chdir(tmp_path)
-        result = runner.invoke(app, ["memory", "status"])
+        result = runner.invoke(app, ["memory", "list"])
         assert result.exit_code == 0, result.output
-        assert "LS-MEM Engine Status" in result.output
+        assert "Memory Store" in result.output
 
     def test_governance_report_runs(self, tmp_path: Path) -> None:
         """``governance report --json`` works against a temp SQLite database."""
