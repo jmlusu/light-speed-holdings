@@ -433,11 +433,7 @@ make clean             # Remove caches and build artifacts
 A comprehensive PowerPoint presentation showcasing all major milestones is available:
 
 ```bash
-# Generate the milestones deck (Node.js)
-npm install
-node scripts/build/generate-milestones-deck.js
-
-# Or using Python
+# Generate the milestones deck (writes docs/milestones-deck.pptx)
 uv sync --extra dev
 uv run python scripts/build/generate-milestones-deck.py
 ```
