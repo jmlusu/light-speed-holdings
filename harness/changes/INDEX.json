@@ -274,6 +274,32 @@
     "updated_at": "2026-09-22"
   },
   {
+    "id": "2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
+    "title": "fix(athena): serialize Decimal salary ranges in JSONL store",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "athena"
+    ],
+    "files": [
+      "src/ai_company/athena/store.py",
+      "tests/unit/test_athena_store.py"
+    ],
+    "tags": [
+      "fix",
+      "athena",
+      "bugfix",
+      "serialization"
+    ],
+    "decisions": [
+      "- Serialize `Decimal` as `str(data)` in `_serialize` instead of `float(data)`: lossless round-trip, pydantic coerces `str` -> `Decimal` on load, and no precision loss on currency values.",
+      "- Bug fix exposed only via the Athena quick-start walkthrough (profile -> job -> match -> ATS score -> stats), not by the unit suite - hence the regression test."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
+    "updated_at": "2026-09-22"
+  },
+  {
     "id": "2026-08-26-dependency-remediation-fastapi-starlette-upgrade-and-monitoring-streak-fix",
     "title": "Dependency remediation fastapi starlette upgrade and monitoring streak fix",
     "status": "completed",
@@ -305,55 +331,30 @@
     "updated_at": "2026-08-26"
   },
   {
-    "id": "2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
-    "title": "fix(athena): serialize Decimal salary ranges in JSONL store",
+    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
     "status": "completed",
     "location": "archive",
     "modules": [
-      "athena"
-    ],
-    "files": [
-      "src/ai_company/athena/store.py",
-      "tests/unit/test_athena_store.py"
-    ],
-    "tags": [
-      "fix",
-      "athena",
-      "bugfix",
-      "serialization"
-    ],
-    "decisions": [
-      "- Serialize `Decimal` as `str(data)` in `_serialize` instead of `float(data)`: lossless round-trip, pydantic coerces `str` -> `Decimal` on load, and no precision loss on currency values.",
-      "- Bug fix exposed only via the Athena quick-start walkthrough (profile -> job -> match -> ATS score -> stats), not by the unit suite - hence the regression test."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-22-fix-athena-serialize-decimal-salary-ranges-in-jsonl-store",
-    "updated_at": "2026-09-22"
-  },
-  {
-    "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
-    "title": "Client Site Phase 3 - Trust Evidence and Related Content",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "site-frontend"
+      "site-frontend",
+      "enquiry-api"
     ],
     "files": [
       ""
     ],
     "tags": [
       "site",
-      "trust",
+      "conversion",
       "content",
-      "phase-3"
+      "phase-1"
     ],
     "decisions": [
-      "- Reuse existing proven claims only (governance gates, HITL matrix, audit trails, DPA posture) — no invented certifications or third-party seals.",
-      "- Shared `RelatedLinks` component replaces ad-hoc related strips on News/Insights and is extended to Trust, FAQ, Leadership, Resources, Events.",
-      "- Wire Trust/FAQ/Leadership `CtaBand` to `onRequestBriefing` (props already present on Trust; FAQ/Leadership currently discard the prop)."
+      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
+      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
+      "- No LLM; no new backend email provider; brand tokens unchanged."
     ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
     "updated_at": "2026-09-23"
   },
   {
@@ -548,31 +549,118 @@
     "updated_at": "2026-09-25"
   },
   {
-    "id": "2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
-    "title": "Client Site Phase 1 - Content Population and Conversion Mechanics",
+    "id": "2026-09-26-ls-mem-completion",
+    "title": "LS-MEM Completion",
     "status": "completed",
     "location": "archive",
     "modules": [
-      "site-frontend",
-      "enquiry-api"
+      "src/ai_company/cli/main.py",
+      "src/ai_company/lsmem",
+      "docs/LS-MEM-USER-GUIDE.md",
+      "docs/security/LS-MEM-SECURITY-VERIFICATION.md"
+    ],
+    "files": [
+      "src/ai_company/cli/main.py",
+      "src/ai_company/lsmem/audit.py",
+      "src/ai_company/lsmem/cli.py",
+      "tests/unit/test_cli_commands.py",
+      "tests/memory/test_audit_chain_head.py",
+      "tests/memory/test_cli_stdio.py"
+    ],
+    "tags": [
+      "ls-mem",
+      "cli",
+      "audit-chain",
+      "security",
+      "docs"
+    ],
+    "decisions": [
+      "- CEO decision 1 (2026-09-26): LS-MEM takes `ai-company memory`; legacy JSON CLI moves to `ai-company knowledge`.",
+      "- CEO decision 2 (2026-09-26): no `.opencode/tools/` directory; skill scripts are the tool surface (recorded as approved deviation in security report §33).",
+      "- CEO decision 3 (2026-09-26): single conventional commit at close, LS-MEM files only, no push.",
+      "- CEO decision 4 (2026-09-26): no global skill copy at `C:\\Users\\jmlus\\.agents\\skills\\ls-memory`.",
+      "- CEO decision 5 (2026-09-26): ECL lifecycle open + archive (this close).",
+      "- Concurrent-session record hygiene (2026-09-26): homepage session's `active/` plan/summary/review preserved into its parking dir before this change's record was restored; parking status/location front-matter kept at parked/parking."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-09-26-ls-mem-completion",
+    "updated_at": "2026-09-26"
+  },
+  {
+    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
+    "title": "Customer Journey Conversion Architecture Implementation",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "src/components",
+      "src/pages",
+      "src/data",
+      "src/hooks",
+      "src/lib"
+    ],
+    "files": [],
+    "tags": [
+      "customer-journey",
+      "frontend",
+      "ux",
+      "conversion",
+      "analytics"
+    ],
+    "decisions": [],
+    "validation_status": "unknown",
+    "path": "harness/changes/archive/2026-10-03-customer-journey-conversion-architecture-implementation",
+    "updated_at": "2026-10-04"
+  },
+  {
+    "id": "2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
+    "title": "Client Site Phase 3 - Trust Evidence and Related Content",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      "site-frontend"
     ],
     "files": [
       ""
     ],
     "tags": [
       "site",
-      "conversion",
+      "trust",
       "content",
-      "phase-1"
+      "phase-3"
     ],
     "decisions": [
-      "- Reuse `/api/enquiry` + Turnstile (`form: contact|briefing`) for newsletter and speaking inquiry — no new edge action required in this change.",
-      "- Resource cards open the existing Executive Briefing modal prefilled with the resource title (honest gate until real PDFs exist).",
-      "- No LLM; no new backend email provider; brand tokens unchanged."
+      "- Reuse existing proven claims only (governance gates, HITL matrix, audit trails, DPA posture) — no invented certifications or third-party seals.",
+      "- Shared `RelatedLinks` component replaces ad-hoc related strips on News/Insights and is extended to Trust, FAQ, Leadership, Resources, Events.",
+      "- Wire Trust/FAQ/Leadership `CtaBand` to `onRequestBriefing` (props already present on Trust; FAQ/Leadership currently discard the prop)."
     ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-23-client-site-phase-1-content-population-and-conversion-mechanics",
+    "path": "harness/changes/archive/2026-09-23-client-site-phase-3-trust-evidence-and-related-content",
     "updated_at": "2026-09-23"
+  },
+  {
+    "id": "2026-10-04-audit-export-reads-canonical-jsonl-trail",
+    "title": "Audit export reads canonical JSONL trail",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- D-a: Export runs locally (`scripts/export-audit-evidence.ps1` + Task Scheduler); CI workflow becomes a freshness guard only.",
+      "- D-b: Untrack `audit/audit.db` and gitignore `audit/` only; `.lightspeed/memory/*` stays tracked.",
+      "- D-c: Zero-row day → no file, exit 0; missing source → exit 1.",
+      "- D-d: Run log `reports/evidence/audit-export-runs.jsonl` distinguishes quiet day from \"didn't run\".",
+      "- D-e: Backfill last 3 active days: 2026-10-01 (46), 2026-10-03 (84), 2026-10-04 (41); skip 10-02 (0)."
+    ],
+    "validation_status": "pass",
+    "path": "harness/changes/archive/2026-10-04-audit-export-reads-canonical-jsonl-trail",
+    "updated_at": "2026-10-04"
   },
   {
     "id": "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
@@ -606,30 +694,6 @@
     ],
     "validation_status": "unknown",
     "path": "harness/changes/archive/2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
-    "updated_at": "2026-08-17"
-  },
-  {
-    "id": "2026-08-17-phase-b-opentelemetry-tracing-40",
-    "title": "Phase B: OpenTelemetry Tracing (#40)",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      ""
-    ],
-    "files": [
-      ""
-    ],
-    "tags": [
-      ""
-    ],
-    "decisions": [
-      "- ADR-016: OTel API (not full SDK) as the tracing interface; lightweight in-memory exporter as default",
-      "- Correlation ID ContextVar maps to OTel span trace_id/span_id",
-      "- 100% span coverage on critical path: executor→agent loop→LLM call→tool execution",
-      "- No OTLP exporter in core deps; optional `opentelemetry-exporter-otlp` extra"
-    ],
-    "validation_status": "unknown",
-    "path": "harness/changes/archive/2026-08-17-phase-b-opentelemetry-tracing-40",
     "updated_at": "2026-08-17"
   },
   {
@@ -859,6 +923,30 @@
     "updated_at": "2026-09-26"
   },
   {
+    "id": "2026-08-17-phase-b-opentelemetry-tracing-40",
+    "title": "Phase B: OpenTelemetry Tracing (#40)",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [
+      ""
+    ],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- ADR-016: OTel API (not full SDK) as the tracing interface; lightweight in-memory exporter as default",
+      "- Correlation ID ContextVar maps to OTel span trace_id/span_id",
+      "- 100% span coverage on critical path: executor→agent loop→LLM call→tool execution",
+      "- No OTLP exporter in core deps; optional `opentelemetry-exporter-otlp` extra"
+    ],
+    "validation_status": "unknown",
+    "path": "harness/changes/archive/2026-08-17-phase-b-opentelemetry-tracing-40",
+    "updated_at": "2026-08-17"
+  },
+  {
     "id": "2026-09-29-linkedin-ai-native-series",
     "title": "LinkedIn AI-Native Series",
     "status": "parked",
@@ -891,29 +979,17 @@
     "updated_at": "2026-09-29"
   },
   {
-    "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
-    "title": "Customer Journey Conversion Architecture Implementation",
+    "id": "2026-10-06-new-customer-journey-unknown",
+    "title": "new-customer-journey-unknown",
     "status": "parked",
     "location": "parking",
-    "modules": [
-      "src/components",
-      "src/pages",
-      "src/data",
-      "src/hooks",
-      "src/lib"
-    ],
+    "modules": [],
     "files": [],
-    "tags": [
-      "customer-journey",
-      "frontend",
-      "ux",
-      "conversion",
-      "analytics"
-    ],
+    "tags": [],
     "decisions": [],
     "validation_status": "unknown",
-    "path": "harness/changes/parking/2026-10-03-customer-journey-conversion-architecture-implementation",
-    "updated_at": "2026-10-03"
+    "path": "harness/changes/parking/2026-10-06-new-customer-journey-unknown",
+    "updated_at": "2026-10-06"
   },
   {
     "id": "2026-08-08-sprint-4-quality-completeness",
@@ -1226,48 +1302,10 @@
     "updated_at": "2026-08-17"
   },
   {
-    "id": "2026-09-26-ls-mem-completion",
-    "title": "LS-MEM Completion",
-    "status": "completed",
-    "location": "archive",
-    "modules": [
-      "src/ai_company/cli/main.py",
-      "src/ai_company/lsmem",
-      "docs/LS-MEM-USER-GUIDE.md",
-      "docs/security/LS-MEM-SECURITY-VERIFICATION.md"
-    ],
-    "files": [
-      "src/ai_company/cli/main.py",
-      "src/ai_company/lsmem/audit.py",
-      "src/ai_company/lsmem/cli.py",
-      "tests/unit/test_cli_commands.py",
-      "tests/memory/test_audit_chain_head.py",
-      "tests/memory/test_cli_stdio.py"
-    ],
-    "tags": [
-      "ls-mem",
-      "cli",
-      "audit-chain",
-      "security",
-      "docs"
-    ],
-    "decisions": [
-      "- CEO decision 1 (2026-09-26): LS-MEM takes `ai-company memory`; legacy JSON CLI moves to `ai-company knowledge`.",
-      "- CEO decision 2 (2026-09-26): no `.opencode/tools/` directory; skill scripts are the tool surface (recorded as approved deviation in security report §33).",
-      "- CEO decision 3 (2026-09-26): single conventional commit at close, LS-MEM files only, no push.",
-      "- CEO decision 4 (2026-09-26): no global skill copy at `C:\\Users\\jmlus\\.agents\\skills\\ls-memory`.",
-      "- CEO decision 5 (2026-09-26): ECL lifecycle open + archive (this close).",
-      "- Concurrent-session record hygiene (2026-09-26): homepage session's `active/` plan/summary/review preserved into its parking dir before this change's record was restored; parking status/location front-matter kept at parked/parking."
-    ],
-    "validation_status": "pass",
-    "path": "harness/changes/archive/2026-09-26-ls-mem-completion",
-    "updated_at": "2026-09-26"
-  },
-  {
     "id": "2026-10-03-customer-journey-conversion-architecture-implementation",
     "title": "Customer Journey Conversion Architecture Implementation",
-    "status": "completed",
-    "location": "archive",
+    "status": "parked",
+    "location": "parking",
     "modules": [
       "src/components",
       "src/pages",
@@ -1284,8 +1322,33 @@
       "analytics"
     ],
     "decisions": [],
+    "validation_status": "unknown",
+    "path": "harness/changes/parking/2026-10-03-customer-journey-conversion-architecture-implementation",
+    "updated_at": "2026-10-03"
+  },
+  {
+    "id": "2026-10-07-2026-10-06-repository-sanitization",
+    "title": "Repository Sanitization",
+    "status": "completed",
+    "location": "archive",
+    "modules": [
+      ""
+    ],
+    "files": [],
+    "tags": [
+      ""
+    ],
+    "decisions": [
+      "- **Q8 (scroll-craft):** DELETE — confirmed retired 2026-09-23, ~1 GB removed",
+      "- **Q2 (open-design):** SUBMODULE — `.gitmodules` declared (origin verified)",
+      "- **Q5 (agent registry):** YAML→JSON — verified in sync; `.bak` copies removed/archived",
+      "- **Q7 (package manager):** NPM — `bun.lock` removed, guard flipped to refuse bun",
+      "- **Q1 (static/brand/tokens/):** KEEP as build artifact — mirrors verified identical",
+      "- **Q4 (memory impl):** DEFERRED — evidence contradicts the premise (see below)"
+    ],
     "validation_status": "pass",
-    "path": "harness/changes/archive/2026-10-03-customer-journey-conversion-architecture-implementation",
-    "updated_at": "2026-10-04"
+    "path": "harness/changes/archive/2026-10-07-2026-10-06-repository-sanitization",
+    "updated_at": "2026-10-07"
   }
 ]
+

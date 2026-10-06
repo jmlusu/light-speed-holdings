@@ -1,8 +1,8 @@
 ---
 title: "new-customer-journey-unknown"
 slug: "new-customer-journey-unknown"
-status: "in_progress"
-location: "active"
+status: "parked"
+location: "parking"
 phase: "intake"
 intake_status: "pending"
 spec_review: "pending"
@@ -12,7 +12,7 @@ files: []
 tags: []
 validation_status: "unknown"
 created_at: "2026-10-05"
-updated_at: "2026-10-05"
+updated_at: "2026-10-06"
 session_id: "27e7f3c1-766c-4f01-b184-7351877e3069"
 owner_agent: "jmlus"
 claimed_at: "2026-10-05"
@@ -35,3 +35,4 @@ Pending.
 ## Next Step
 
 - Run Intake Review, then update `spec.md` and `plan.md`.
+
