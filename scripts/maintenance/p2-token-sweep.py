@@ -28,7 +28,7 @@ import argparse
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 SRC_DIR = ROOT / "src"
 INDEX_HTML = ROOT / "index.html"
 CSS_PATH = SRC_DIR / "index.css"

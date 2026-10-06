@@ -60,7 +60,7 @@ def _project_root() -> Path:
 
         return get_project_root()
     except Exception:  # noqa: BLE001 - defensive fallback when package import fails
-        return Path(__file__).resolve().parent.parent
+        return Path(__file__).resolve().parent.parent.parent
 
 
 def _load_json(path: Path) -> object:

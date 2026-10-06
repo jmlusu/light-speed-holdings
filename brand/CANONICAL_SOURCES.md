@@ -54,10 +54,10 @@ Mirror-only content that has no canonical source (kept in mirrors):
 ## Sync Command
 
 ```powershell
-pwsh scripts/sync-brand.ps1          # copy canonical -> both mirrors (no delete)
-pwsh scripts/sync-brand.ps1 -DryRun  # preview what would be copied
-pwsh scripts/sync-brand.ps1 -Prune   # delete mirror-only files in sync dirs
-pwsh scripts/sync-brand.ps1 -Verify  # hash-compare mirrors vs canonical (exit 1 on drift)
+pwsh scripts/build/sync-brand.ps1          # copy canonical -> both mirrors (no delete)
+pwsh scripts/build/sync-brand.ps1 -DryRun  # preview what would be copied
+pwsh scripts/build/sync-brand.ps1 -Prune   # delete mirror-only files in sync dirs
+pwsh scripts/build/sync-brand.ps1 -Verify  # hash-compare mirrors vs canonical (exit 1 on drift)
 ```
 
 Sync dirs: `logo`, `tokens`, `guidelines`, `logos`, `print`, `digital`.

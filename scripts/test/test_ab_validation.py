@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from ai_company.executor.ab_testing import (
     ExperimentMetrics,
@@ -104,7 +104,7 @@ def run_validation():
         ],
         capture_output=True,
         text=True,
-        cwd=Path(__file__).parent.parent,
+        cwd=Path(__file__).parent.parent.parent,
     )
 
     print(result.stdout)

@@ -12,12 +12,12 @@ from pathlib import Path
 import httpx
 import yaml
 
-MODELS_DIR = Path(__file__).parent.parent / "models"
+MODELS_DIR = Path(__file__).parent.parent.parent / "models"
 
 
 def load_model_config() -> dict:
     """Load llamacpp provider config from company/models.yaml."""
-    config_path = Path(__file__).parent.parent / "company" / "models.yaml"
+    config_path = Path(__file__).parent.parent.parent / "company" / "models.yaml"
     with open(config_path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     return data["providers"]["llamacpp"]

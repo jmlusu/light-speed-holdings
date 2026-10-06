@@ -23,7 +23,7 @@ def main():
     print("=" * 50)
 
     # Get the project root
-    project_root = Path(__file__).parent.parent
+    project_root = Path(__file__).parent.parent.parent
 
     # Files to check
     files_to_check = [

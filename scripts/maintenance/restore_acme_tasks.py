@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from ai_company.data import TaskStore, init_database
 from ai_company.models.task import Task, TaskPriority

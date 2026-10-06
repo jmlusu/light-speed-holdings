@@ -27,7 +27,7 @@ if ($Push -and -not $Commit) {
     exit 1
 }
 
-$Root = Split-Path -Parent $PSScriptRoot
+$Root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $EvidenceDir = Join-Path $Root "reports\evidence"
 $ExportFile = Join-Path $EvidenceDir "audit-$Date.jsonl"
 $RunLog = Join-Path $EvidenceDir "audit-export-runs.jsonl"

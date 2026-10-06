@@ -15,7 +15,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-Set-Location (Split-Path $PSScriptRoot -Parent)
+Set-Location (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent)
 
 Write-Host "=== AI Company Builder Release ===" -ForegroundColor Cyan
 Write-Host "Bump type: $BumpType"

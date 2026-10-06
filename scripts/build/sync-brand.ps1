@@ -31,7 +31,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$root = Split-Path -Parent $PSScriptRoot
+$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $canonical = Join-Path $root "brand"
 $mirrors = @(
     (Join-Path $root "static\brand"),

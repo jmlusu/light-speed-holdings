@@ -442,7 +442,7 @@ def create_presentation():
     p3.font.color.rgb = C["mg"]
 
     # Save
-    out = os.path.join(os.path.dirname(__file__), "..", "docs", "milestones-deck.pptx")
+    out = os.path.join(os.path.dirname(__file__), "..", "..", "docs", "milestones-deck.pptx")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     prs.save(out)
     print(f"Presentation created: {out}")

@@ -2,7 +2,7 @@
 # Gate for known historical failure modes (see knowledge/technology/bugs/registry.yaml):
 #   FAIL: backtick immediately before dollar in a string (suppresses substitution) - BUG-d75423bb7
 #   WARN: Get-ChildItem with no Sort-Object (enumeration order unstable) - BUG-93e21736a
-# Usage: pwsh -NoProfile -File scripts/scan-ps-antipatterns.ps1 [-Path <dir>]
+# Usage: pwsh -NoProfile -File scripts/maintenance/scan-ps-antipatterns.ps1 [-Path <dir>]
 param(
   [string]$Path = $PSScriptRoot
 )

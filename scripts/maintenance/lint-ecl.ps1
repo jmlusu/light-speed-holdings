@@ -15,8 +15,10 @@ function Fail([string]$Message) {
 }
 
 # PowerShell anti-pattern gate: delegates to the standalone scanner
-# (FAIL: backtick-before-dollar; WARN: unsorted Get-ChildItem)
-& (Join-Path $PSScriptRoot "scan-ps-antipatterns.ps1")
+# (FAIL: backtick-before-dollar; WARN: unsorted Get-ChildItem).
+# Pass scripts/ explicitly: the scanner defaults to its own directory,
+# which changed from scripts/ to scripts/maintenance/ in the consolidation.
+& (Join-Path $PSScriptRoot "scan-ps-antipatterns.ps1") (Split-Path -Parent $PSScriptRoot)
 if ($LASTEXITCODE -ne 0) {
   exit 1
 }

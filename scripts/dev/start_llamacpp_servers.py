@@ -12,7 +12,7 @@ import sys
 import time
 from pathlib import Path
 
-MODELS_DIR = Path(__file__).parent.parent / "models"
+MODELS_DIR = Path(__file__).parent.parent.parent / "models"
 
 # Priority models (keep warm based on workload: 30% coding, 40% reasoning, 30% general)
 PRIORITY_MODELS = [
@@ -73,7 +73,7 @@ processes: list[tuple[dict, subprocess.Popen]] = []
 def find_llama_server() -> str | None:
     """Find llama-server executable."""
     # Check project bin directory first
-    project_bin = Path(__file__).parent.parent / "bin" / "llama-server.exe"
+    project_bin = Path(__file__).parent.parent.parent / "bin" / "llama-server.exe"
     if project_bin.exists():
         return str(project_bin)
 

@@ -20,7 +20,7 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 SCAN_DIRS = (ROOT / "src" / "components", ROOT / "src" / "pages")
 # A success-state toggle that must be backed by a real send in the same file.
 SUBMIT_TOGGLE = re.compile(r"set\w*[Ss]ubmitted\s*\(\s*[Tt]rue\s*\)")

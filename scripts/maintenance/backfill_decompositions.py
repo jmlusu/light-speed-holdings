@@ -12,7 +12,7 @@ import uuid
 from pathlib import Path
 
 # Add project root to path
-project_root = Path(__file__).resolve().parent.parent
+project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
 from ai_company.data import TaskStore, init_database  # noqa: E402

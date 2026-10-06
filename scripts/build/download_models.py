@@ -189,12 +189,12 @@ def download_model(model: dict, models_dir: Path, hf_token: Optional[str] = None
 
 
 def main():
-    models_dir = Path(__file__).parent.parent / "models"
+    models_dir = Path(__file__).parent.parent.parent / "models"
     models_dir.mkdir(exist_ok=True)
 
     # Read HF_TOKEN from .env
     hf_token = None
-    env_path = Path(__file__).parent.parent / ".env"
+    env_path = Path(__file__).parent.parent.parent / ".env"
     if env_path.exists():
         env_content = env_path.read_text()
         for line in env_content.splitlines():
