@@ -23,7 +23,7 @@ services:
       - AI_COMPANY_LOG_JSON=1
       - DASHBOARD_AUTH_MODE=${DASHBOARD_AUTH_MODE:-api_key}
       - DASHBOARD_HOST=${DASHBOARD_HOST:-0.0.0.0}
-      - DASHBOARD_CORS_ORIGINS=${DASHBOARD_CORS_ORIGINS:-http://localhost,http://localhost:3000,http://127.0.0.1,http://127.0.0.1:3000}
+      - DASHBOARD_CORS_ORIGINS=${DASHBOARD_CORS_ORIGINS:-http://localhost,http://localhost:3000,http://127.0.0.1,http://127.0.0.1:3000,http://localhost:1440,http://127.0.0.1:1440,http://localhost:1441,http://127.0.0.1:1441}
       - DASHBOARD_RATE_LIMIT=${DASHBOARD_RATE_LIMIT:-200}
       - AI_COMPANY_ENV=production
       - DASHBOARD_API_KEY=${DASHBOARD_API_KEY:-}
