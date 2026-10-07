@@ -1,9 +1,9 @@
 # Competitive Landscape Scan — Agentic AI & Digital Transformation Market (Malawi, SADC)
 
-Ticket: #310 — Competitor Landscape Scan
-Status: Baseline v1 (state as of 2026-09-16)
+Ticket: #310 — Competitor Landscape Scan; Oct refresh: T4 #420 (part of map #416)
+Status: Baseline v2 (state as of 2026-10-07; v1 was 2026-09-16 — see [October 2026 Delta](#8-october-2026-delta--v2-refresh-t4-420) for what changed)
 Owner: Head of Competitive Intelligence
-Next update: Monthly (first refresh due 2026-10-16; see [Intelligence Franchise](#7-intelligence-franchise-monthly-cadence))
+Next update: Monthly (next refresh due 2026-11-16; see [Intelligence Franchise](#7-intelligence-franchise-monthly-cadence))
 
 ---
 
@@ -17,7 +17,7 @@ Next update: Monthly (first refresh due 2026-10-16; see [Intelligence Franchise]
 
 **Estimates:** Where a fact is reasoned rather than disclosed (e.g., dollar-converted pricing), it is labeled `(estimate)`.
 
-**LightSpeed baseline (internal):** Wedge = human-led, governed agentic organizations; 90-agent hierarchy (89 AI + 1 human CEO) across 20 departments; 5-tier human-in-the-loop (HITL) approvals; immutable audit trails; RBAC; H→A→O→M→T→G→V framework; Malawi-first local context (MWK pricing, mobile-money rails, WhatsApp-native, offline-first PWA); CEO-as-operator; North Star "Agentic AI-Native Enterprise Transformation for Africa". Public pricing disclosed: licensing MWK 3,500,000 (~$2,000) + $200/mo support; minimum viable deployment MWK 150,000 (~$85); OH B1 hosting MWK 100,000/mo (dollar conversions estimate). Honest status: no paying clients delivered yet; proof stack is internal (2,373 automated regression tests, 90 verified agent configs, 5-tier gates).
+**LightSpeed baseline (internal):** Wedge = human-led, governed agentic organizations; 90-agent hierarchy (89 AI + 1 human CEO) across 20 departments (confirmed canonical 90/20 per ADR-025 registry trim 152→90, accepted 2026-09-24 — the Sept figure carries forward unchanged); 5-tier human-in-the-loop (HITL) approvals; immutable audit trails; RBAC; H→A→O→M→T→G→V framework; Malawi-first local context (MWK pricing, mobile-money rails, WhatsApp-native, offline-first PWA); CEO-as-operator; North Star "Agentic AI-Native Enterprise Transformation for Africa". Public pricing disclosed: licensing MWK 3,500,000 (~$2,000) + $200/mo support; minimum viable deployment MWK 150,000 (~$85); OH B1 hosting MWK 100,000/mo (dollar conversions estimate). Honest status: no paying clients delivered yet; proof stack is internal (test-count figure from v1 not re-run for v2 — re-verify next cycle; 90 verified agent configs).
 
 ---
 
@@ -41,7 +41,8 @@ The AI market LightSpeed operates in has three structural facts:
 - **Public pricing:** Not publicly disclosed
 - **Strengths:** Voice/ASR capability in African languages; AfCFTA angle; fresh, well-branded presence
 - **Gap vs. LightSpeed wedge:** Sells AI products/labs, not governed organizations. No HITL governance offering, no org-level transformation, no audit-trail/RBAC product. Substantive overlap on "autonomous agents" language, but no governance layer or Malawi-first ops model.
-- Source: https://rexplore.ai/ (accessed 2026-09-16)
+- **Oct 2026 delta:** Most active local agent/voice builder — NVIDIA Inception Program member (announced 13 Aug 2026, pre-baseline, absent from v1); public GitHub org (`rexplore-ai`: Voxtra voice infra, Luso8 Kamailio, docs); 3 open Lilongwe roles (SWE, Voice-Infra Scientist, BDM); Chichewa-Tumbuka corpus refresh ~Sept 2026. Still no HITL/governance product, no public pricing found. Verdict: stays Avoid/Watch, messaging overlap sharpening.
+- Source: https://rexplore.ai/ (accessed 2026-09-16); https://rexplore.ai/blog, https://github.com/rexplore-ai, https://rexplore.ai/careers (accessed 2026-10-07)
 
 ### A2. Hyets
 
@@ -71,7 +72,8 @@ The AI market LightSpeed operates in has three structural facts:
 - **Public pricing:** Not publicly disclosed
 - **Strengths:** Social-impact/agriculture niche; local-language AI; fresh founding team energy
 - **Gap vs. LightSpeed wedge:** Point solutions for agriculture and analytics; no organization-building product; no governance offering. Agriculture niche is complementary rather than competitive.
-- Sources: https://linkedin.com/company/tensorview (accessed 2026-09-16); https://vc4a.com/ventures/tensorview/ (accessed 2026-09-16); https://tensorview.africa (published homepage)
+- Sources: https://linkedin.com/company/tensorview (accessed 2026-09-16); https://vc4a.com/ventures/tensorview/ (accessed 2026-09-16); https://tensorview.africa (published homepage — access date unrecorded in v1, re-verify Nov cycle)
+- **Oct 2026 delta:** No verifiable Sept–Oct move found (site/press static 2026-09-17→2026-10-07). Adjacent signal: Seed Co Malawi upgraded the Seedney app with AI crop diagnosis/weather/variety advice (reported 29 Sept 2026) — point-AI in agriculture, Tensorview's lane; validates vernacular farmer-AI demand LightSpeed can orchestrate, not replicate. Source: https://www.malawivoice.com/ (accessed 2026-10-07; efficacy vendor claim).
 
 ### A5. NxtGen Labs
 
@@ -127,7 +129,8 @@ The AI market LightSpeed operates in has three structural facts:
 
 - **Category:** Regional AI infrastructure company (Johannesburg, HQ; founded 2022, ~27 staff across 7 countries per LinkedIn aggregated data)
 - **What they sell:** Vulavula API (speech-to-text, translation, text analysis across African languages), Inkuba-LM small language models, contact-centre call analytics, voice generation (announced Sep 2026); claims 60% less compute/data to adapt a model language `(vendor claim)`
-- **Public pricing:** API platform; per-use pricing not publicly disclosed
+- **Public pricing:** Vulavula API tiers now public (fills v1 gap — verified 2026-10-07): Free 100 calls; Dev $9.99/1k calls; SMME $49.99 ($39.99 promo)/10k calls; Enterprise custom/500k+ calls. Transcribe+Translate, codeswitching, contact-centre positioning.
+- **Oct 2026 delta:** Pricing live at https://lelapa.ai/pricing and https://docs.lelapa.ai/overview/plans.md (accessed 2026-10-07) — vernacular-voice cost anchor now quantifiable; cost the Lelapa layer into WhatsApp-native proposals. Verdict unchanged: **Win (partner)**.
 - **Positioning:** "Language AI infrastructure designed for the real world: constrained compute, fragmented data, multilingual environments"; bridging institutions and vernacular-speaking customers; exporting resource-efficient AI methodology beyond Africa
 - **Strengths:** Deep research pedigree (Deep Learning Indaba, Masakhane founders); live product (Vulavula) with telecoms/financial-services focus; strong policy influence; 11k+ LinkedIn followers
 - **Gap vs. LightSpeed wedge:** Infrastructure/product layer, not org transformation. No HITL governance product for whole organizations. **More partner than competitor** — LightSpeed's WhatsApp-native, vernacular customer interface maps directly onto Lelapa's language layer.
@@ -142,10 +145,11 @@ The AI market LightSpeed operates in has three structural facts:
 - **Category:** International agentic-AI company (Los Angeles; founded 2025, ~8 staff per LinkedIn aggregated data; backed by True Ventures & Offline Ventures)
 - **What they sell:** "The AI that runs companies" — autonomous operation of a business; pricing model: **3% of customer payments** (publicly disclosed)
 - **Positioning:** Radical autonomy: "80% autonomous. Soon 95%." Founder Ben Broca (built $100M+ business at CloudKitchens); launched Dec 2025, "8 weeks in production"
-- **Public pricing:** 3% of customer payments (revenue-share model)
+- **Public pricing:** 3% of customer payments per public deck; May–Sept 2026 secondaries report a hybrid $49/mo + 20% revenue-share model — pricing page drift since v1, treat hybrid as third-party snapshot until re-verified on primary. $30M Series A at ~$250M (Sound/True/Tekton, May 2026, pre-baseline); ~$10M ARR / 7,600 businesses and weak Trustpilot scores are vendor/secondary claims, not independently verified.
+- **Oct 2026 delta:** Autonomy-without-governance narrative unchanged; user-dissatisfaction and credit-burn critiques in secondaries sharpen LightSpeed's trust counter-narrative. Verdict unchanged: **Head-to-head (product shape)** — update row with hybrid pricing.
 - **Strengths:** Clear provocative narrative; VC backing; revenue-share pricing lowers upfront friction; media presence
 - **Gap vs. LightSpeed wedge:** Sells autonomy **without governance** — no human-led HITL layer, no audit trails, no RBAC, no local/Malawi context, no mobile-money/offline-first adaptation. Its core pitch (fewer humans) is the opposite of LightSpeed's governed, human-led framing. Expect prospects to use Polsia as the benchmark question: "why not just let AI run it?" LightSpeed's answer = trust-by-engineering, accountability, Malawi-first operations.
-- Sources: https://polsia.com/deck (accessed 2026-09-16); https://linkedin.com/company/polsia (accessed 2026-09-16)
+- Sources: https://polsia.com/deck (accessed 2026-09-16; 3% line verified); https://linkedin.com/company/polsia (accessed 2026-09-16); https://www.cbinsights.com/company/polsia; https://dealroom.co/companies/polsia; https://thedeveloperstory.com/2026/05/21/solo-founder-ben-cera-raises-30m-for-polsia-an-ai-platform-that-runs-7-600-businesses-with-zero-staff (all accessed 2026-10-07; funding verified, ARR/counts/satisfaction vendor claim or third-party snapshot)
 
 ### B2. BCG / BCG X
 
