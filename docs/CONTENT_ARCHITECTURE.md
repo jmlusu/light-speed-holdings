@@ -43,9 +43,9 @@ export interface CompanyIdentity {
   legalName: string;           // "LightSpeed Holdings Limited"
   shortName: string;           // "LightSpeed Holdings"
   trademarkDomain: string;     // "LightSpeed Holdings Limited™"
-  tagline: string;             // "ASPIRE. ACT. ACHIEVE."
-  positioning: string;         // "The AI-native company builder for Southern Africa."
-  geographicProgression: string[];  // ["Malawi", "SADC", "Africa"]
+  tagline: string;             // "MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY"
+  positioning: string;         // "The AI-native company builder for Africa."
+  geographicProgression: string[];  // ["Malawi", "Africa"]
   northStar: string;           // "We build AI-native companies."
   heroHeadline: string;
   heroSubline: string;

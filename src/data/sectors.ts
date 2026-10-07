@@ -45,7 +45,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.current,
     evidence:
       'Agent-driven student management at the University of Malawi — 3 departments onboarded, 5,000 records processed with immutable audit trails. Advisory work on Malawi\u2019s National AI Strategy consultation.',
-    region: ['Malawi', 'SADC'],
+    region: ['Malawi', 'Africa'],
   },
   {
     id: 'development-donors',
@@ -55,7 +55,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.current,
     evidence:
       'Donor reporting automation with GDPR-level data handling as the default posture for UN and development data flows. Engagements priced in USD for international partners.',
-    region: ['Malawi', 'SADC', 'Global'],
+    region: ['Malawi', 'Africa', 'Global'],
   },
   {
     id: 'health',
@@ -65,7 +65,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.future,
     evidence:
       'Offline-first, sovereignty-first architecture is designed for clinical data — but LightSpeed has no health-sector deployment yet. Listed honestly as a roadmap target.',
-    region: ['Malawi', 'SADC'],
+    region: ['Malawi', 'Africa'],
   },
   {
     id: 'financial-services',
@@ -75,7 +75,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.proven,
     evidence:
       'Governed multi-agent compliance automation for a regional financial institution: regulatory reporting across 14 departments with full audit trails, cutting reporting time by 40%.',
-    region: ['Malawi', 'SADC'],
+    region: ['Malawi', 'Africa'],
   },
   {
     id: 'agriculture',
@@ -85,7 +85,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.current,
     evidence:
       'WhatsApp-native coordination platform for agricultural cooperatives across Malawi and Mozambique, with mobile-money payments and supply chain tracking — serving 1,200 members in pilot.',
-    region: ['Malawi', 'Mozambique', 'SADC'],
+    region: ['Malawi', 'Mozambique', 'Africa'],
   },
   {
     id: 'energy',
@@ -95,7 +95,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.future,
     evidence:
       'No energy-sector engagement to date. The governance model and offline-first stack apply directly when the first partner appears.',
-    region: ['Malawi', 'SADC'],
+    region: ['Malawi', 'Africa'],
   },
   {
     id: 'telecommunications',
@@ -105,7 +105,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.demonstration,
     evidence:
       'Mobile-money rails (Airtel Money, TNM Mpamba) integrated into delivered platforms. No direct telco operator engagement yet.',
-    region: ['Malawi', 'SADC'],
+    region: ['Malawi', 'Africa'],
   },
   {
     id: 'smes-entrepreneurs',
@@ -115,7 +115,7 @@ export const sectors: Sector[] = [
     status: SECTOR_TIERS.current,
     evidence:
       'Mobile-first websites and e-commerce stores with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one, delivered at local cost from Malawi.',
-    region: ['Malawi', 'SADC'],
+    region: ['Malawi', 'Africa'],
   },
   {
     id: 'technology-companies',
@@ -124,7 +124,7 @@ export const sectors: Sector[] = [
       'AI-native operating models, agentic workflows, and governance frameworks for tech firms.',
     status: SECTOR_TIERS.proven,
     evidence: `The AI Company Builder platform itself: a 90-agent registry, 5-tier approval matrix, and immutable audit trails verified by ${liveTestCount.toLocaleString('en-US')} automated regression tests.`,
-    region: ['Malawi', 'SADC', 'Global'],
+    region: ['Malawi', 'Africa', 'Global'],
   },
 ];
 

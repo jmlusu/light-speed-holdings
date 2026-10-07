@@ -62,7 +62,7 @@
       "tools": ["WhatsApp Business API", "Airtel Money/TNM Mpamba APIs", "Local Ollama models for Chichewa", "Offline-first sync"],
       "humanApproval": "Tier 2 (Cooperative Lead) for procurement decisions; Tier 1 (Auto) for advisory and tracking",
       "output": "Coordinated cooperative operations with mobile payments, supply visibility, and farmer advisory in local language",
-      "businessValue": "First WhatsApp-native, mobile-money-integrated, Chichewa-capable platform for SADC agricultural cooperatives — serving 1,200 members in pilot",
+      "businessValue": "First WhatsApp-native, mobile-money-integrated, Chichewa-capable platform for African agricultural cooperatives — serving 1,200 members in pilot",
       "sector": "agriculture-agritech",
       "solution": "intelligent-automation",
       "status": "PILOT"
@@ -109,7 +109,7 @@
       "orchestration": "Mobile money webhooks trigger reconciliation; savings agents aggregate group data; credit scoring runs on aggregated financial behavior",
       "tools": ["Airtel Money API", "TNM Mpamba API", "Credit scoring models", "WhatsApp notifications for members"],
       "humanApproval": "Tier 3 (Institution Lead) for loan approvals; Tier 2 (Group Coordinator) for savings validation; Tier 1 (Auto) for reconciliation",
-      "output": "Automated savings tracking, reconciled mobile money records, credit scores for smallholder farmers — targeting financial inclusion across COMESA/SADC",
+      "output": "Automated savings tracking, reconciled mobile money records, credit scores for smallholder farmers — targeting financial inclusion across COMESA/Africa",
       "businessValue": "Addresses financial inclusion gap for informal savings groups; enables micro-finance at scale with mobile-money rails",
       "sector": "financial-services",
       "solution": "intelligent-automation",

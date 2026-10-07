@@ -114,7 +114,7 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
     honestyBadge: 'Fieldable in 2026' as const,
     oneLiner: 'African operating realities-first digital presence.',
     nav: 'Digital Presence',
-    lead: 'Mobile-first websites and e-commerce built for Southern Africa.',
+    lead: 'Mobile-first websites and e-commerce built for African operating realities.',
     capabilities: [
       { title: 'Mobile-First Design', desc: 'Responsive websites built for mobile-first users across Malawi and African markets.' },
       { title: 'Payment Integration', desc: 'Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.' },

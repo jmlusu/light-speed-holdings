@@ -16,7 +16,7 @@ honesty_classification: >
 
 # Positioning
 
-LightSpeed Holdings Limited™ is an AI-native company builder headquartered in Lilongwe, Malawi. The company operates a governed 90-agent, 20-department orchestration platform — the same system it sells to clients — making it both builder and proof of its own product. The leading positioning line is: **"The AI-native company builder for Southern Africa."** Five offer families (digital presence, business automation, data and analytics, digital marketing, and platform licensing) serve enterprise, government, donor, SME, and diaspora clients across Malawi and the SADC region. The tagline is **"ASPIRE. ACT. ACHIEVE."** Nothing has been delivered to paying clients yet — all offers are fieldable in 2026 or in pilot; every proof point is honesty-badged. This catalog is the master content source for the client-facing website.
+LightSpeed Holdings Limited™ is an AI-native company builder headquartered in Lilongwe, Malawi. The company operates a governed 90-agent, 20-department orchestration platform — the same system it sells to clients — making it both builder and proof of its own product. The leading positioning line is: **"The AI-native company builder for Africa."** Five offer families (digital presence, business automation, data and analytics, digital marketing, and platform licensing) serve enterprise, government, donor, SME, and diaspora clients across Malawi and African markets. The tagline is **"MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY."** Nothing has been delivered to paying clients yet — all offers are fieldable in 2026 or in pilot; every proof point is honesty-badged. This catalog is the master content source for the client-facing website.
 
 ---
 
@@ -232,7 +232,7 @@ Monitor clinic supply chains, auto-generate procurement requests on anomaly dete
 
 ### Financial Inclusion (VSLA / SACCO / Mobile Money)
 
-Agentic workflows over Airtel Money and TNM Mpamba rails, serving informal savings groups (VSLA/SACCO) and micro-finance institutions. Micro-loan risk assessment for smallholder farmers, automated savings tracking, and mobile-money reconciliation — built for the dual-economy reality of Southern Africa.
+Agentic workflows over Airtel Money and TNM Mpamba rails, serving informal savings groups (VSLA/SACCO) and micro-finance institutions. Micro-loan risk assessment for smallholder farmers, automated savings tracking, and mobile-money reconciliation — built for the dual-economy reality of Africa.
 
 **Key use cases:**
 

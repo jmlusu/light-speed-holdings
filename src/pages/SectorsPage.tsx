@@ -46,7 +46,7 @@ export const SectorsPage: React.FC<SectorsPageProps> = ({ theme }) => {
         theme={theme}
         eyebrow="SECTORS"
         title="Sectors We Serve — With the Evidence to Back It"
-        lead="Five sectors across Malawi and SADC. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show — and every card links to the solutions that serve it."
+        lead="Five sectors across Malawi and Africa. Every sector card carries an evidence tier: proven experience, current capability, demonstration, or future opportunity. We only claim what we can show — and every card links to the solutions that serve it."
       />
 
       {/* Evidence tier legend */}

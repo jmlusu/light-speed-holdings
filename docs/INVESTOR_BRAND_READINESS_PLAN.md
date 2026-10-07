@@ -20,7 +20,7 @@ LightSpeed Holdings Limited has received official branding materials from the CE
 | Element | Value |
 |---------|-------|
 | **Company Name** | LIGHTSPEED HOLDINGS LIMITED |
-| **Tagline** | ASPIRE. ACT. ACHIEVE |
+| **Tagline** | MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY |
 | **Primary Color** | Dark Navy (#070A40) |
 | **Accent Colors** | Signal Red, Cyan Blue (#00BFFF) |
 | **Logo Symbol** | Lighthouse/shield emblem with signal waves |

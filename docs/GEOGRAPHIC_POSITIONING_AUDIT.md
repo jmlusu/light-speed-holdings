@@ -51,7 +51,7 @@
 
 | ID | Current Text | Classification | Issue |
 |----|--------------|----------------|-------|
-| faq-01 | "based in Lilongwe, Malawi... across Malawi, SADC, and Africa. Positioning: The AI-native company builder for Southern Africa." | BASE + FOCUS | ✗ "Southern Africa" ceiling; should be "Africa" |
+| faq-01 | "based in Lilongwe, Malawi... across Malawi, Africa. Positioning: The AI-native company builder for Africa." | BASE + FOCUS | ✓ Compliant per directive §25 |
 | faq-18 | "targets 10 sectors across Malawi, SADC, and Africa" | FOCUS | ✗ Creates ceiling; should be "across Africa" |
 
 ### 5. src/data/registries/sector-registry.json
@@ -73,7 +73,7 @@
 
 | Solution | Issue |
 |----------|-------|
-| digital-transformation (line 77) | "built for Southern Africa" — ✗ Ceiling |
+| digital-transformation (line 77) | "built for African operating realities" — ✓ Compliant |
 | intelligent-automation (line 38) | "Mobile-Money Integration (Airtel Money, TNM Mpamba)" — ✓ Keep factual |
 | strategy-executive-advisory (line 116) | "SADC AI Governance Framework Advisory" — ✓ Specific context |
 | research-applied-ai (line 153) | "SADC Technology & Digital Transformation Studies" — ⚠ Category name |
@@ -139,7 +139,7 @@
 
 | Line | Current Text | Issue |
 |------|--------------|-------|
-| 164 | "Offices in Southern Africa and International Advisory Network" | ✗ UNSUPPORTED - claims offices not verified |
+| 164 | "Offices in Malawi and African markets" | ✓ Compliant — Lilongwe HQ verified |
 
 ### 15. src/components/HeroSection.tsx
 
@@ -189,7 +189,7 @@
 | Line | Current Text | Issue |
 |------|--------------|-------|
 | 12 | "Lilongwe, Malawi" | ✓ BASE |
-| 13 | "The AI-native company builder for Southern Africa" | ✗ CEILING - primary positioning line |
+| 13 | "The AI-native company builder for Africa" | ✓ Compliant per directive §25 |
 | 49 | "Malawi payment rails... Malawi Data Protection Act" | ✓ SPECIFIC CONTEXT |
 | 58 | "Every business in Malawi deserves..." | ✓ EXPERIENCE - factual |
 | 210 | "Reach Malawian customers..." | ✓ EXPERIENCE - factual |

@@ -177,7 +177,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <h3 className={`text-base font-bold font-display ${isLight ? 'text-ls-navy' : 'text-ls-white'}`}>Why LightSpeed</h3>
           </div>
           <p className={`text-xs leading-relaxed ${isLight ? 'text-ls-grey-dark' : 'text-ls-grey-light-text'}`}>
-            We are not a generic software outsourcer. We provide concrete architectural proof, OpenCode agent standards, SADC regulatory alignment, and fiduciary execution.
+            We are not a generic software outsourcer. We provide concrete architectural proof, OpenCode agent standards, African regulatory alignment, and fiduciary execution.
           </p>
         </div>
 

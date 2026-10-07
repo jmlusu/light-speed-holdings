@@ -46,9 +46,9 @@ Where layers disagree, the canonical JSON wins and the divergence is recorded in
 
 ### Core Positioning
 - **Company:** LightSpeed Holdings Limited
-- **Tagline:** ASPIRE. ACT. ACHIEVE.
-- **Positioning:** "The AI-native company builder for Southern Africa."
-- **Geographic Progression:** Malawi → SADC → Africa
+- **Tagline:** MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY
+- **Positioning:** "The AI-native company builder for Africa."
+- **Geographic Progression:** Malawi → Africa
 - **North Star:** "We build AI-native companies."
 
 ### Visual Essence: CALM INTELLIGENCE

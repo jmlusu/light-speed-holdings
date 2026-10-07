@@ -15,7 +15,7 @@
 | **Builder-Advocate Tone** | "We built this agent hierarchy. Here's the architecture. Here's the cost. Here's what broke." |
 | **CEO Voice** | First-person insights, policy commentary, speaking highlights, behind-the-scenes |
 | **Company Voice** | Case studies, technical artifacts, deployment proof, team spotlights |
-| **Tagline Integration** | "ASPIRE. ACT. ACHIEVE." as closing sign-off or section headers |
+| **Tagline Integration** | "MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY" as closing sign-off or section headers |
 | **Formatting** | No emojis. Clean line breaks. Numbered frameworks. Bold key metrics. |
 
 **Voice Principles:**
