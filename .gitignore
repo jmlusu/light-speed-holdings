@@ -83,7 +83,9 @@ graphify-out/
 .agents/skills-staging/
 workflows/instances/
 memory/*.json
+memory/*.yaml
 memory/vector_index/
+memory/embeddings/
 /data/
 logs/
 results/
