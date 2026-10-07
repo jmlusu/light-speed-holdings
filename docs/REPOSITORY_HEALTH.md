@@ -1,30 +1,34 @@
-# Repository Health — Post-Sanitization (2026-10-06)
+# Repository Health — Post-Sanitization (2026-10-06, refreshed 2026-10-07)
 
 > Produced by Stage 8 of the 2026-10-06 repository sanitization
 > (ECL change `2026-10-06-repository-sanitization`, LightSpeed Phased
 > Approval & Rollback Protocol). BEFORE numbers come from `repo-audit/`
-> (2026-10-06); AFTER numbers are measured on this tree.
+> (2026-10-06); AFTER numbers are measured on this tree. Refreshed
+> 2026-10-07: residue sweep + live-runtime-state untracking; AFTER
+> numbers re-measured.
 
 ## BEFORE → AFTER
 
 | Metric | Before | After |
 |--------|--------|-------|
 | Tracked root files | ~107 | **32** (`git ls-tree HEAD`) |
-| Top-level entries | 69 dirs + files | 76 entries (dirs consolidated, files fewer) |
+| Top-level entries | 69 dirs + files | 74 entries (41 dirs + 32 files + 1 submodule, re-counted 2026-10-07) |
 | `scripts/` layout | 49 flat files, 6 languages | `dev/`, `build/`, `test/`, `deploy/`, `maintenance/`, `research/` + `scripts/health_check.py` |
 | Retired skill corpus (tracked) | ~1,020 MB (scroll-craft 692 + scrollcraft 32 + lab 216 + case-study artifacts 79) | **0** (removed; history preserves) |
-| Cache/tmp/build waste on disk | ~290 MB caches + 6.9 MB `dist/` + notebook strays | **0** (deleted; all gitignored) |
+| Cache/tmp/build waste on disk | ~290 MB caches + 6.9 MB `dist/` + notebook strays | **0** after 2026-10-07 re-sweep (56 `__pycache__`, 110 MB `.mypy_cache`, 2,012 `.bak` ≈ 137 MB removed; caches regrow during dev — all gitignored) |
 | In-repo backups | 85 MB (`backups/`) | **0** (output → `~/.lightspeed/backups`) |
 | `git_ls_files.txt` / tracked logs / QA pngs | tracked | untracked + gitignored |
-| Registry backups in `company/` | 3 hand-made `.bak` files | 0 (superseded deleted; hybrid archived to `docs/archive/`) |
+| Registry backups in `company/` | 3 hand-made `.bak` files | 0 (superseded deleted; hybrid copy swept from `docs/archive/` 2026-10-07, no references) |
 | Package-manager lockfiles | 2 (`bun.lock` + `package-lock.json`) + guard script enforcing bun | 1 (`package-lock.json`); guard enforces npm |
 | `open-design` gitlink | no `.gitmodules` (fresh clones broken) | declared submodule (`.gitmodules`, origin verified) |
 | `.env.example` | personal path + 6 duplicate keys | clean template |
 | Brand mirrors | 3 identical copies, undocumented sync state | `brand/` canonical; mirrors verified byte-identical by `sync-brand -Verify`; do-not-edit rule in `brand/CANONICAL_SOURCES.md` |
 | `Branding landing page/` (superseded) | root dir, 52 files | `docs/archive/branding-landing-page/` |
-| Cumulative diff vs `cleanup/c0-baseline` | — | 433 files, +2,796 / −20,771 |
+| Cumulative diff vs `cleanup/c0-baseline` | — | 745 files, +5,955 / −71,142 (measured at `552c6cb8`, 2026-10-07; excludes this doc's update) |
 
 ## Validation (this tree)
+
+All gates re-run 2026-10-07 — **PASS** (`scripts/health_check.py` + `sync-registry --verify`):
 
 - `ruff check src/` — **PASS**
 - `mypy src/` — **PASS** (236 files, no issues)
@@ -47,6 +51,7 @@
 3. ~1.1 GB of tracked dead weight removed across 11 atomic commits, each independently revertable (`cleanup/c0-baseline` → `cleanup/c7-large-tools`).
 4. Policy-as-code: backup output banished from the tree, bun/npm dispute resolved in favor of npm with an executable guard, submodule declared.
 5. Governance docs match reality again (AGENTS.md §9.2 retirement claim is now true).
+6. Refresh (2026-10-07): regenerated residue swept (~130 MB caches + 6.8 MB dated backups, 2,012 files); live runtime state (`orchestrator/approvals.yaml`, `memory/memory-index.yaml`) untracked — restored to HEAD first (dropped +411 pytest `hitl-*` scaffold lines), files remain on disk as working state; README's stale LS-MEM `memory remember` row fixed.
 
 ## Regressions
 
@@ -54,10 +59,10 @@ None known. Every stage validated with ruff + targeted pytest + generator round-
 
 ## Known Limitations / Remaining Technical Debt
 
-1. **Memory duality (Q4):** `src/ai_company/memory/` (legacy JSON store) is still imported by the executor, dashboard, MCP server, doctor, and CLI — `lsmem/` has NOT replaced it in code despite the LS-MEM completion record. Consolidation deferred; needs a human architecture decision. Do not delete either.
-2. **Runtime-state relocation (D-6):** root `orchestrator/` + `memory/` still hold live state (approvals, vector index). Untracked junk (`.bak`, `.tmp`, `RUN2GENERATED`) is deletable anytime; relocating tracked/live paths needs code + config changes. Deferred.
-3. **Milestones deck duality (Q3):** `generate-milestones-deck.py` runs on the installed toolchain (`python-pptx` present); the `.js` twin needs `pptxgenjs`, which is not installed. Neither is referenced anywhere. Awaiting owner pick.
-4. **`tmp/` tracked scratch:** ~40 tracked files (`mut_backup/`, probe outputs, hash logs) look like another session's scaffolding. Left untouched; needs owner triage.
+1. **Memory duality (Q4):** **RESOLVED 2026-10-07** — LS-MEM decommissioned in `42284c54` (`src/ai_company/lsmem/` removed; residue swept); `src/ai_company/memory/` (legacy JSON store) is the sole engine, still imported by executor, dashboard, MCP server, doctor, and CLI. README's stale `memory remember` row fixed in `a1bdf5b5`. Follow-up: `docs/STATUS.md` still carries pre-decommission LS-MEM text.
+2. **Runtime-state relocation (D-6):** **partially resolved 2026-10-07** — `orchestrator/approvals.yaml` + `memory/memory-index.yaml` untracked in `1f9944cf` (files stay in place as working state, now covered by gitignore `/orchestrator/` + `memory/*.yaml`); approvals restored to HEAD first (ledger of truth remains `.opencode/audit`). Full relocation to `data/` deferred: survey found ~93 refs across 21 files for `orchestrator/` paths plus 12 refs to `memory-index.yaml` — needs code + config indirection.
+3. **Milestones deck duality (Q3):** **RESOLVED** — `.js` twin (`scripts/build/generate-milestones-deck.js`) deleted in `70921d50`; the Python generator is canonical.
+4. **`tmp/` tracked scratch:** **RESOLVED** — 126 files deleted in `d77ea526`; `git ls-files tmp/` = 0.
 5. **`whitepaper/` outputs:** out of this cleanup's scope; revisit.
 6. **Fresh-clone verification** of the open-design submodule pin is a Stage 9 item.
-7. **Pre-existing working-tree changes untouched:** brand tokens, site content (`AboutSection`, `SectorsPage`, `WhatWeDoPage`, registries), `harness/changes/INDEX.json`, `orchestrator/approvals.yaml`, `hr/onboarding_requests.yaml`, `.archive/athena/` deletions — all belong to other in-flight work and were never staged here.
+7. **Pre-existing working-tree changes untouched:** `hr/onboarding_requests.yaml` (onboarding intake state) remains modified by other in-flight work and was never staged here. The rest of the previously dirty set (brand tokens, site content, `.archive/athena/` deletions, `repo-audit/`, knowledge bug-fix records) was landed by a concurrent remediation session in `526f33d5`.
