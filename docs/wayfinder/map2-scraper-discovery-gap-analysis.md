@@ -97,7 +97,7 @@ Three follow-on maps are suggested by the evidence above:
 - **`company-registry.yaml` / `company/agent-registry.json`** - the planning registry; currently silent on scraping (0 scrape/crawl/athena/tls/junta matches). Closing Gap 3 means adding a routing key here so scraper decisions become wayfinder tickets. (Registry files are owned by parallel agents - this map only records the gap, it does not edit them.)
 - **Harness ECL pipeline** (`harness/changes/archive/2026-09-21-athena-mvp-...`, `2026-09-22-fix-athena-serialize-...`) - where scraper changes were actually planned historically; the natural seam to wire wayfinder tickets into.
 - **Scraper script dirs (missing)** - `.agents/skills/junta-leiloeiro/scripts/scraper/`, `company/junta-leiloeiro/`: integration cannot be verified until the `wayfinder:task` ticket locates them or confirms their absence.
-- **Test suite** - `tests/` contains scraper/athena tests (e.g. `tests/test_scraper_inventory.py`); tests are owned by a parallel agent and are read-only for this map - ticket answers should reference, not modify, them.
+- **Test suite** - `tests/` no longer contains scraper/athena inventory tests: `tests/test_scraper_inventory.py` was retired 2026-10-07 (removed in `4bb64572` because `company/athena/` is gitignored and can never exist in a clone — see `docs/REPOSITORY_HEALTH.md`). Tests are owned by a parallel agent and are read-only for this map - ticket answers should reference, not modify, them.
 
 ## Decisions so far
 

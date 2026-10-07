@@ -1,0 +1,765 @@
+{
+  "package": "POST_CLEANUP_EVIDENCE",
+  "schema_version": "1.1",
+  "generated_at_local": "2026-10-07 (decision closure D1/D3/D4 applied)",
+  "report_head": "4bb64572",
+  "evidence_baseline_head": "56a42b27",
+  "branch": "feat/athena-archive-and-design-system",
+  "branch_sync_with_origin": "4_ahead_unpushed_by_design",
+  "predecessor_audit": {
+    "file": "repo-audit/cleanup-status/CLEANUP_STATUS_REPORT.md",
+    "head": "be7d1848",
+    "readiness_score": 72,
+    "readiness_label": "READY WITH CONDITIONS"
+  },
+  "baseline": {
+    "tag": "cleanup/c0-baseline",
+    "object": "048627ad",
+    "committed_at": "2026-10-05T23:40:00+02:00",
+    "tracked_files": 4187
+  },
+  "diff_baseline_to_head": {
+    "command": "git diff --shortstat cleanup/c0-baseline..HEAD",
+    "files_changed": 754,
+    "insertions": 7359,
+    "deletions": 71486,
+    "tracked_files_head": 3708,
+    "tracked_files_delta": -479,
+    "tracked_files_delta_pct": -11.4,
+    "measured_at": "c40decf0"
+  },
+  "overall_verdict": {
+    "label": "READY",
+    "p0_discharged": 3,
+    "p0_total": 3,
+    "conditions_narrowed_from": 3,
+    "conditions_narrowed_to": 0,
+    "remaining_condition": null,
+    "suite_real_failures_at_head": 0,
+    "improvement_note": "All three P0 conditions and all four P1 findings are discharged with evidence. P0-1 closed by fixing the test fixture that rewrote hr/onboarding_requests.yaml; full-suite run 5 exits 0 with a byte-clean tree."
+  },
+  "findings": [
+    {
+      "id": "P0-1",
+      "title": "Working tree dirty at audit time",
+      "verdict": "CLOSED",
+      "evidence_class": "live_state",
+      "causes_remaining": 0,
+      "causes_cleared": 1,
+      "causes": [
+        {
+          "cause": "concurrent_session_changes",
+          "remediable_here": false,
+          "status": "CLEARED - all foreign changes landed under the other session's own commits",
+          "reason_blocked_this_change": "AGENTS.md section 7 forbids sweeping unrelated user changes; standing instruction was 'proceed, exclude foreign changes'.",
+          "foreign_state_excluded_then": {
+            "staged": [
+              "tests/test_scraper_inventory.py (deleted)"
+            ],
+            "unstaged": [
+              "docs/AGENT-REGISTRY-TABLE.md",
+              "docs/REPOSITORY_HEALTH.md",
+              "scripts/health_check.py",
+              "hr/onboarding_requests.yaml"
+            ]
+          },
+          "landed_by_commits": [
+            "98c1a535",
+            "fdceab26",
+            "93ade052",
+            "4bb64572"
+          ]
+        },
+        {
+          "cause": "test_suite_rewrites_tracked_file",
+          "remediable_here": true,
+          "status": "FIXED - D1, proven by full-suite run 5 (exit 0, file byte-identical)",
+          "file": "hr/onboarding_requests.yaml",
+          "root_cause": [
+            "src/ai_company/hr/onboarding.py:343 -> OnboardingManager.__init__(..., data_dir=\"hr\") (CWD-relative default); _RequestStore(data_dir) writes hr/onboarding_requests.yaml",
+            "tests/unit/test_onboarding.py:55 (manager fixture) and :71 (_make_manager) constructed OnboardingManager WITHOUT data_dir, hitting the default and rewriting the tracked file"
+          ],
+          "effect": "previously: created_at/updated_at rewritten on every uv run pytest run; now unchanged",
+          "reproduces": "no longer reproduces - run 5 left the file byte-identical",
+          "last_committed_by": "5ab90eda (PR #412, 2026-10-04, unrelated)",
+          "recommended_owner_action": "none - closed",
+          "root_cause_established_by": "bisection, not inspection: baseline SHA256 recorded, each candidate file run against a restored file - test_dashboard_integration.py CLEAN, test_onboarding.py DIRTIES, test_unified_onboarding.py CLEAN (the latter already passes data_dir=str(tmp_path))",
+          "fix": "tests/unit/test_onboarding.py now passes data_dir=str(tmp_path / \"hr\") at both construction sites. No runtime/source default changed; file remains tracked; no .gitignore entry added."
+        }
+      ],
+      "tree_state_at_report": {
+        "clean": true,
+        "tracked_modifications": [],
+        "untracked_deliverables": [],
+        "deliverables_commit": "d507c1ab (+ fix-up c40decf0)",
+        "deliverables_note": "the three POST_CLEANUP_* deliverables are committed, not part of the residue"
+      },
+      "cleanup_owned_set_landed": {
+        "commit": "526f33d54fa431f4e4a2712c3226781c81999cac",
+        "files": 97,
+        "insertions": 2150,
+        "deletions": 13524,
+        "foreign_leak_check": "empty"
+      },
+      "proof_run": {
+        "run": 5,
+        "head": "c40decf0",
+        "cmd": "uv run pytest -q",
+        "result": "0 failed, 2511 passed, 2 skipped, 67 deselected",
+        "exit": 0,
+        "duration_s": 411.15,
+        "tree_after": "CLEAN - hr/onboarding_requests.yaml SHA256 unchanged",
+        "only_dirty_path": "tests/unit/test_onboarding.py (the D1 fix, unstaged at run time)"
+      }
+    },
+    {
+      "id": "P0-2",
+      "title": "Full pytest not verified",
+      "verdict": "CLOSED",
+      "failures_verdict": "PRE_EXISTING",
+      "evidence_class": "command_derived",
+      "runs": [
+        {
+          "n": 1,
+          "log": "%TEMP%\\opencode\\pytest-full.log",
+          "log_mtime": "2026-10-07T03:08:05",
+          "head_context": "be7d1848 lineage",
+          "failed": 5,
+          "passed": 2512,
+          "skipped": 1,
+          "deselected": 67,
+          "collected_total": 2585,
+          "duration_s": 253.88,
+          "exit": 1
+        },
+        {
+          "n": 2,
+          "log": "stdout",
+          "head_context": "16c69940",
+          "failed": 5,
+          "passed": 2511,
+          "skipped": 2,
+          "deselected": 67,
+          "collected_total": 2585,
+          "duration_s": 303.55,
+          "exit": 1
+        },
+        {
+          "n": 3,
+          "log": "%TEMP%\\opencode\\pytest-final.log",
+          "head_context": "56a42b27",
+          "failed": 5,
+          "passed": 2511,
+          "skipped": 2,
+          "deselected": 67,
+          "collected_total": 2585,
+          "duration_s": 311.68,
+          "exit": 1,
+          "note": "last run with tests/test_scraper_inventory.py present"
+        },
+        {
+          "n": 4,
+          "log": "%TEMP%\\opencode\\pytest-post4bb.log",
+          "head_context": "4bb64572",
+          "failed": 1,
+          "passed": 2510,
+          "skipped": 2,
+          "deselected": 67,
+          "collected_total": 2580,
+          "duration_s": 287.76,
+          "exit": 1,
+          "is_final": true,
+          "delta_note": "collected_total 2585 -> 2580 = exactly 5 fewer, because 4bb64572 deleted the five scraper-inventory tests",
+          "single_failure": {
+            "node": "tests/performance/test_dashboard_performance.py::TestAPIPerformance::test_endpoint_response_time_p95[/api/v1/dashboard]",
+            "classification": "KNOWN_FLAKE",
+            "evidence": [
+              "assertion is timing-based: assert p95 < 200 (test_dashboard_performance.py:85)",
+              "project's own health gate excludes it by design: scripts/health_check.py:61 -> -k \"not test_endpoint_response_time_p95\" inside check_pytest()",
+              "did not fail in runs 1-3 (grep of both saved logs returns no occurrence)",
+              "re-run in isolation x3 immediately after failing under full-suite load: 10 passed in 9.16s / 9.60s / 8.49s - 3/3 passed",
+              "commit 4bb64572 message references keeping the documented endpoint perf-flake exclusion"
+            ]
+          }
+        },
+        {
+          "run": 5,
+          "head": "c40decf0",
+          "when_local": "2026-10-07, after D1 fix",
+          "result": "0 failed, 2511 passed, 2 skipped, 67 deselected",
+          "exit": 0,
+          "duration_s": 411.15,
+          "note": "first run in this change to exit 0 AND leave the tree byte-clean"
+        }
+      ],
+      "real_failures_at_report_head": 0,
+      "failing_tests_runs_1_to_3": [
+        "tests/test_scraper_inventory.py::test_scrape_jobs_jsonl_is_valid",
+        "tests/test_scraper_inventory.py::test_jobs_jsonl_is_valid",
+        "tests/test_scraper_inventory.py::test_user_profiles_jsonl_is_valid",
+        "tests/test_scraper_inventory.py::test_inventory_covers_all_jsonl_datasets",
+        "tests/test_scraper_inventory.py::test_scraper_script_dirs_reporting_matches_filesystem"
+      ],
+      "exception": "FileNotFoundError for company/athena/{jobs,scrape_jobs,user_profiles}.jsonl",
+      "pre_existing_proof": [
+        {
+          "line": 1,
+          "claim": "root cause predates cleanup",
+          "command": "git merge-base --is-ancestor d2fa83aa cleanup/c0-baseline",
+          "exit_code": 0,
+          "root_cause_commit": "d2fa83aa",
+          "root_cause_subject": "feat: archive Athena, add design system, UseCasesPage, CTA, registries, docs",
+          "root_cause_date": "2026-10-05T23:25:00+02:00"
+        },
+        {
+          "line": 2,
+          "claim": "data can never be present",
+          "command": "git check-ignore -v company/athena/jobs.jsonl company/athena/scrape_jobs.jsonl",
+          "result": ".gitignore:170:company/athena/",
+          "files_on_disk": [],
+          "implication": "absent in any fresh clone; failure is structural"
+        },
+        {
+          "line": 3,
+          "claim": "no cleanup commit touched the test",
+          "last_commit_touching_test": "3e36b00c",
+          "last_commit_date": "2026-09-28T17:59:14+02:00",
+          "last_commit_subject": "SCR-02: test isolation, registry CP1252 fixes, Wayfinder Map 2 gap analysis (#366)"
+        },
+        {
+          "line": 4,
+          "claim": "restore-and-rerun proves causation",
+          "method": "temporarily restored the three .jsonl files BOM-free at the ignored path, re-ran the 5 tests, all 5 passed, temporary restores deleted, directory confirmed clean"
+        },
+        {
+          "line": 5,
+          "claim": "identical failure set across runs 1-3",
+          "verified": true
+        }
+      ],
+      "post_deletion_state": "tests/test_scraper_inventory.py (176 lines, 5 tests) removed by concurrent commit 4bb64572. CEO decision D3 = formally retire the coverage (not restore it); recorded in POST_CLEANUP_VERIFICATION_REPORT.md section 4.7, with two dangling doc references cleared.",
+      "code_changes_made": false,
+      "decision_recorded": "Report as-is, no code change (user decision 2 of 4)."
+    },
+    {
+      "id": "P0-2.skips",
+      "title": "Skip observations",
+      "verdict": "NON_MATERIAL_ONE_OPEN_MICRO_OBSERVATION",
+      "current_skips": [
+        {
+          "node": "tests/memory/test_git_safety.py:109",
+          "reason": "LS-MEM package not yet created",
+          "root_cause_commit": "42284c54",
+          "root_cause_subject": "refactor(memory): decommission LS-MEM engine",
+          "root_cause_date": "2026-10-07T00:49",
+          "deleted_path": "src/ai_company/lsmem/",
+          "path_exists_now": false,
+          "path_existed_at_c0": true,
+          "is_ancestor_of_be7d1848": true
+        },
+        {
+          "node": "tests/docs/test_doc_drift.py:223",
+          "reason": "No static source file",
+          "parametrized_over": "docs/source-of-truth.yaml",
+          "manifest_line": 13,
+          "dynamic_claims": 1,
+          "manifest_last_changed_by": "5ab90eda",
+          "manifest_last_changed_date": "2026-10-04"
+        }
+      ],
+      "delta_1_to_2": {
+        "observed": true,
+        "attributable_from_git_evidence": false,
+        "checked": "git log --since='2026-10-07 03:00' -- tests/ docs/source-of-truth.yaml -> empty",
+        "classification": "non_material",
+        "unchanged_across_runs": [
+          "deselected 67",
+          "failure_set 5 identical in runs 1-3"
+        ],
+        "honesty_note": "reported as an unexplained observation rather than labelled pre-existing (AGENTS.md section 9)"
+      }
+    },
+    {
+      "id": "P0-3",
+      "title": "open-design submodule uninitialized",
+      "verdict": "CLOSED",
+      "fix_type": "config_only",
+      "commands": [
+        {
+          "cmd": "git submodule init",
+          "exit": 0
+        },
+        {
+          "cmd": "git submodule status",
+          "output": " 6fd2f60802232e0fdb29121a6b3e745d2fe9ff42 open-design (6fd2f60)"
+        }
+      ],
+      "gitlink_already_in_head": true,
+      "on_disk_content_matched_gitlink": true,
+      "creates_commit": false,
+      "residual_for_fresh_clones": "git submodule update --init open-design (documented in rollback runbook section 3.5)"
+    },
+    {
+      "id": "P1-1",
+      "title": "Registry tool-vocabulary drift",
+      "verdict": "CLOSED",
+      "commit": "16c69940",
+      "file": "company-registry.yaml",
+      "safety_regex": "(?m)^(\\s*-\\s+)(write|execute|delegate|web_search)(\\s*)$",
+      "replacements": {
+        "found": 145,
+        "replaced": 145,
+        "residual": 0,
+        "by_rule": {
+          "write->edit": 83,
+          "execute->bash": 49,
+          "web_search->webfetch": 11,
+          "delegate->task": 2
+        }
+      },
+      "unchanged_lines": 3993,
+      "encoding": {
+        "newline": "LF",
+        "bom": false
+      },
+      "registry_tool_counts_after": {
+        "read": 90,
+        "edit": 83,
+        "grep": 65,
+        "list": 65,
+        "bash": 50,
+        "webfetch": 18,
+        "task": 4,
+        "total": 375,
+        "legacy": 0,
+        "agent_count": 90
+      },
+      "generator": {
+        "command": "uv run python -c \"from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()\"",
+        "exit": 0,
+        "changed_files": 0,
+        "changed_agent_cards": 0,
+        "legacy_lines_in_generated_cards": 0,
+        "reverified_at_head": "4bb64572",
+        "decisive_proof": "zero card diffs proves no agent permission surface moved"
+      },
+      "map_consumers": {
+        "file": "src/ai_company/generator.py",
+        "map": "_TOOL_MAP line 84",
+        "consumed": [
+          "line 159",
+          "line 167"
+        ],
+        "semantics": ".get(t, t) identity fallback; retained as back-compat shim"
+      },
+      "follow_on_not_changed": [
+        {
+          "file": "company/registry-templates/consulting-firm/company-registry.yaml",
+          "legacy_lines": 30,
+          "scope": "out of agreed P1-1 scope (company-registry.yaml only)"
+        },
+        {
+          "file": "hr/onboarding_requests.yaml",
+          "legacy_lines": 2,
+          "scope": "runtime data"
+        }
+      ]
+    },
+    {
+      "id": "P1-2",
+      "title": "Phase approval records / manifests / rollback runbook",
+      "verdict": "CLOSED",
+      "sub_items": [
+        {
+          "name": "rollback_runbook",
+          "status": "CLOSED",
+          "file": "repo-audit/cleanup-status/CLEANUP_ROLLBACK_RUNBOOK.md",
+          "commit": "56a42b27",
+          "insertions": 234
+        },
+        {
+          "name": "change_manifest",
+          "status": "CLOSED",
+          "file": "repo-audit/cleanup-status/CLEANUP_FILE_MANIFEST.txt",
+          "pre_existing": true
+        },
+        {
+          "name": "phase_approval_records",
+          "status": "CLOSED_SIGNED_AS_AFTER_THE_FACT_RECONSTRUCTION",
+          "reason": null,
+          "signed_by": "Human CEO",
+          "signed_on": "2026-10-07",
+          "option_chosen": "a - sign the reconstructed section 1 table as an after-the-fact record",
+          "establishes": "accepts the git-derived section 1 table as the after-the-fact record for this cleanup",
+          "does_not_establish": "does NOT convert a retrospective reconstruction into contemporaneous approval; the cleanup phases were still executed without prior approval paperwork",
+          "standing_condition": "option b imposed by this decision: every future phase must carry an approval record written before the phase begins",
+          "recorded_in": "repo-audit/cleanup-status/CLEANUP_ROLLBACK_RUNBOOK.md (provenance disclaimer + section 1 header + section 6)"
+        }
+      ],
+      "tag_inventory": {
+        "total": 14,
+        "cleanup_tags": 12,
+        "backup_tags": 2,
+        "all_resolve": true,
+        "c11": {
+          "name": "cleanup/c11-landing",
+          "type": "annotated",
+          "tag_object": "7fdcd5f20faf1f78cf76213199b36481239c4800",
+          "peeled": "526f33d54fa431f4e4a2712c3226781c81999cac",
+          "message_bytes": 1036,
+          "newlines_preserved": true,
+          "bom_in_message": false
+        },
+        "backup_tags_detail": [
+          {
+            "name": "backup/pre-history-purge-one-skill",
+            "sha": "1f3120d290dbed143133a99a1fc30556a87048ac",
+            "type": "commit"
+          },
+          {
+            "name": "backup/pre-strip-bulk-tag",
+            "sha": "22b7d0e2b1397dc74a37306968e5c3839c4d8063",
+            "type": "commit"
+          }
+        ]
+      },
+      "rollback_drill": {
+        "tags_resolve": "PASS",
+        "c11_peels": "PASS",
+        "git_diff_reconstructible": "PASS",
+        "inspect_branch_create_delete": {
+          "status": "PASS_RUN_AND_VERIFIED",
+          "steps": [
+            "git switch -c inspect/c7 cleanup/c7-large-tools",
+            "head on branch: c3d2002d chore(repo): remove retired scroll-craft corpus (~1 GB)",
+            "tracked files on branch: 3922",
+            "git switch feat/athena-archive-and-design-system",
+            "git branch -d inspect/c7 -> Deleted branch inspect/c7 (was c3d2002d)"
+          ],
+          "leftover_branches": []
+        },
+        "end_to_end_rollback": "NOT_RUN (destructive; requires CEO authority per rollback authority matrix)"
+      }
+    },
+    {
+      "id": "P1-3",
+      "title": "Uncommitted brand-token and positioning edits",
+      "verdict": "CLOSED",
+      "resolved_by_commit": "526f33d5",
+      "tagline_consistency": [
+        {
+          "file": "brand/tokens/brand-tokens.json",
+          "line": 6,
+          "value": "ASPIRE. ACT. ACHIEVE."
+        },
+        {
+          "file": "src/data/siteContent.ts",
+          "line": 41,
+          "value": "ASPIRE. ACT. ACHIEVE."
+        },
+        {
+          "file": "src/data/siteContent.ts",
+          "line": 47,
+          "value": "Aspire. Act. Achieve.",
+          "note": "sentence case, intentional"
+        },
+        {
+          "file": "docs/NARRATIVE-AND-POSITIONING.md",
+          "lines": [
+            19,
+            33,
+            58,
+            86
+          ],
+          "consistent": true
+        }
+      ],
+      "edit_made": false
+    },
+    {
+      "id": "P1-4",
+      "title": "57x openai.yaml duplication unexamined",
+      "verdict": "CLOSED_REPORT_ONLY",
+      "recommendation": "RETAIN_NO_ACTION",
+      "files_count": 57,
+      "unique_sha256": 57,
+      "duplication_exists": false,
+      "size_bytes_range": [
+        94,
+        363
+      ],
+      "structure": {
+        "interface": 57,
+        "policy_allow_implicit_invocation": 48,
+        "optional": [
+          "icon_*",
+          "default_prompt"
+        ]
+      },
+      "in_repo_references": 0,
+      "sibling_provider_variants": 0,
+      "audit_wording_correction": "'duplicated' is a misnomer - 57 distinct per-agent config stubs, not 57 copies of one file",
+      "files_moved_or_deleted": 0,
+      "decision_recorded": "Examine + report only (user decision 4 of 4)."
+    }
+  ],
+  "validation_matrix_at_head": {
+    "head": "4bb64572",
+    "ruff": {
+      "cmd": "uv run ruff check src/",
+      "result": "All checks passed!",
+      "exit": 0,
+      "status": "PASS"
+    },
+    "mypy": {
+      "cmd": "uv run mypy src/",
+      "result": "no issues found in 225 source files",
+      "exit": 0,
+      "status": "PASS"
+    },
+    "pytest": {
+      "cmd": "uv run pytest -q",
+      "result": "0 failed, 2511 passed, 2 skipped, 67 deselected",
+      "exit": 0,
+      "status": "PASS",
+      "duration_s": 411.15,
+      "real_failures": 0,
+      "head": "c40decf0",
+      "note": "run 5; gates in the other rows were run at 4bb64572"
+    },
+    "generator": {
+      "cmd": "AgentGenerator().generate_all()",
+      "exit": 0,
+      "changed_files": 0,
+      "changed_agent_cards": 0,
+      "status": "PASS"
+    },
+    "lint_ecl": {
+      "cmd": "pwsh scripts/maintenance/lint-ecl.ps1",
+      "result": "ECL lint passed; ps-antipattern scan 22 files, 0 failures, 0 warnings",
+      "exit": 0,
+      "status": "PASS"
+    },
+    "registry_legacy_residual": 0,
+    "submodule": {
+      "status": "PASS",
+      "output": " 6fd2f60802232e0fdb29121a6b3e745d2fe9ff42 open-design (6fd2f60)"
+    },
+    "tags": {
+      "resolve": "PASS",
+      "c11_peels_to": "526f33d5",
+      "count": 14
+    },
+    "tree": {
+      "clean": true,
+      "status": "CLEAN_P0_1_CLOSED",
+      "tracked_modifications": [],
+      "proof": "full-suite run 5 left hr/onboarding_requests.yaml byte-identical (SHA256 unchanged)"
+    },
+    "sync": {
+      "status": "4_ahead_unpushed_by_design",
+      "ahead_commits": [
+        "d507c1ab",
+        "c40decf0",
+        "decision-closure commit"
+      ],
+      "note": "push excluded by the governing protocol; the earlier in_sync reading predated the deliverables; ahead count is stale-prone - recompute with git status -sb at application time (4 ahead at 363c1aec); ahead_commits above is historical"
+    },
+    "final_head": "363c1aec",
+    "final_head_note": "F1-F9 compliance corrections land in a later commit whose sha will be restated by FINAL_CLEANUP_SIGNOFF.md"
+  },
+  "commits_from_this_change": [
+    {
+      "sha": "526f33d5",
+      "purpose": "P0-1 landing of cleanup-owned Class A/B working-tree changes (97 files)"
+    },
+    {
+      "sha": "16c69940",
+      "purpose": "P1-1 tool-vocabulary normalization in company-registry.yaml"
+    },
+    {
+      "sha": "56a42b27",
+      "purpose": "P1-2 phase records + rollback runbook"
+    },
+    {
+      "sha": "d507c1ab",
+      "purpose": "the three POST_CLEANUP_* verification deliverables (docs only, no source change)"
+    },
+    {
+      "commit": "c40decf0",
+      "purpose": "deliverable fix-up: corrected stale two-causes framing in report section 3/3.1 + JSON tree_state_at_report"
+    },
+    {
+      "commit": "decision-closure commit (see git log; hash unknowable before commit)",
+      "purpose": "D1 fixture fix, D3 retirement records, D4 runbook sign-off, decision closure across all three deliverables"
+    },
+    {
+      "sha": "363c1aec",
+      "purpose": "D4 standing policy adopted in the runbook ('Standing policy for future phases (D4, adopted 2026-10-07)'); decision-closure follow-up commit"
+    }
+  ],
+  "concurrency_observations": [
+    {
+      "id": "C1",
+      "severity": "MATERIAL_RESOLVED",
+      "title": "Failing test file deleted by the concurrent session",
+      "file": "tests/test_scraper_inventory.py",
+      "lines": 176,
+      "landed_commit": "4bb64572",
+      "landed_at": "2026-10-07T04:02:46+02:00",
+      "landed_subject": "test: drop scraper inventory tests missed by Athena archive",
+      "was_staged_then_committed": true,
+      "produced_by_this_change": false,
+      "swept_into_any_commit_of_this_change": false,
+      "last_commit_to_file_before_deletion": "3e36b00c",
+      "resolution_type": "test_removal_not_bug_fix",
+      "implication": "the 5 P0-2 failures disappeared because the test was removed; root cause (missing company/athena/*.jsonl fixture, .gitignore:170) is unchanged, so the coverage gap is now untested rather than failing",
+      "evidence_basis": "pre-existing classification captured in runs 1-3 against HEADs where the file exists; run 4 documents post-deletion state",
+      "recorded_for_ceo": "if scraper inventory coverage is needed again it must return with a checked-in fixture or an explicit xfail with a written reason - the original tests cannot pass without data .gitignore forbids committing"
+    },
+    {
+      "id": "C2",
+      "severity": "INFORMATIONAL",
+      "title": "Push activity attributed entirely to the concurrent session",
+      "branch_state": "in_sync_with_origin",
+      "pushed_by_this_change": false,
+      "pushed_by_concurrent_session": [
+        "16c69940",
+        "56a42b27",
+        "and earlier commits"
+      ],
+      "git_operations_performed_by_this_change": [
+        "pathspec-scoped commits",
+        "branch create/delete (rollback drill)",
+        "submodule init"
+      ],
+      "git_operations_explicitly_not_performed": [
+        "push",
+        "amend",
+        "force-push",
+        "stash",
+        "history rewrite",
+        "tag movement"
+      ]
+    }
+  ],
+  "known_artifacts_and_limitations": [
+    {
+      "id": "A1",
+      "cosmetic": true,
+      "title": "BOM in commit 526f33d5 subject line",
+      "detail": "first character of the subject is U+FEFF from a Windows encoding mistake",
+      "action": "documented_not_repaired",
+      "why_not_repaired": "amending would rewrite 16c69940, 98c1a535, fdceab26, 56a42b27 and 4bb64572; branch is shared and fully pushed",
+      "impact": "display only"
+    },
+    {
+      "id": "A2",
+      "title": "skip count delta 1 -> 2",
+      "detail": "unattributable from git evidence; recorded as open micro-observation",
+      "ref": "findings[P0-2.skips].delta_1_to_2"
+    },
+    {
+      "id": "A3",
+      "title": "approval records remain absent",
+      "detail": "historical: P1-2 partial; needs CEO decision; current: CLOSED — discharged by D1/D3/D4 decision closure (050532af, 363c1aec)",
+      "ref": "findings[P1-2].sub_items[phase_approval_records]"
+    },
+    {
+      "id": "A4",
+      "title": "P0-1 remains open on one residue",
+      "detail": "historical: pytest rewrites hr/onboarding_requests.yaml; concurrent-session cause cleared; current: CLOSED — discharged by D1/D3/D4 decision closure (050532af, 363c1aec)",
+      "ref": "findings[P0-1]"
+    },
+    {
+      "id": "A5",
+      "title": "five scraper-inventory tests deleted not fixed",
+      "detail": "historical: root cause now untested; re-introduction requires fixture or xfail with written reason; current: CLOSED — discharged by D1/D3/D4 decision closure (050532af, 363c1aec)",
+      "ref": "findings[P0-2].post_deletion_state"
+    },
+    {
+      "id": "A6",
+      "title": "one documented perf flake remains in suite",
+      "detail": "test_endpoint_response_time_p95 excluded by project's own health gate; passes 3/3 in isolation",
+      "ref": "findings[P0-2].runs[3].single_failure"
+    },
+    {
+      "id": "A7",
+      "title": "two out-of-scope files still carry legacy tool names",
+      "detail": "registry template (30 lines) + runtime hr/ data (2 lines)",
+      "ref": "findings[P1-1].follow_on_not_changed"
+    },
+    {
+      "id": "A8",
+      "title": "evidence separation honoured",
+      "detail": "AGENTS.md section 9.3 - this change wrote only its own deliverables and the rollback runbook; no writes into reports/evidence/, audit/*.jsonl, .opencode/audit/*, harness/changes/*/reviews/, or the audit's own CLEANUP_* evidence files"
+    }
+  ],
+  "scope_exclusions_honoured": [
+    "no architecture redesign",
+    "no replacement of the 5-tier permission model",
+    "no 90-agent roster changes",
+    "no history rewrite, no push, no amend, no force-push, no stash",
+    "no hand-editing of generated agent cards",
+    "no edits to the five scraper-inventory tests; tests/unit/test_onboarding.py is the sole test file edit (D1, 050532af)",
+    "no sweeping of concurrent-session changes (AGENTS.md section 7)",
+    "no deletion or dedup of the 57 openai.yaml files",
+    "no backup or cleanup tag movement"
+  ],
+  "governing_documents": [
+    "docs/directives/LIGHTSPEED PHASED APPROVAL & ROLLBACK PROTOCOL.md",
+    "AGENTS.md sections 7, 8, 9, 9.3"
+  ],
+  "recommended_decisions": [
+    {
+      "id": "D1",
+      "owner": "engineering (CEO-approved)",
+      "decision": "stop the test suite rewriting hr/onboarding_requests.yaml (temp path under pytest, or untrack as done for approvals.yaml / memory-index.yaml in 1f9944cf)",
+      "unblocks": "P0-1",
+      "status": "RESOLVED_FIXED",
+      "chosen": "fix the rewrite at source rather than report it",
+      "outcome": "tests/unit/test_onboarding.py passes data_dir=str(tmp_path / \"hr\") at both OnboardingManager construction sites; root cause established by bisection; run 5 exits 0 with a byte-clean tree -> P0-1 CLOSED"
+    },
+    {
+      "id": "D3",
+      "owner": "CEO",
+      "decision": "note that tests/test_scraper_inventory.py was removed as a CI unblock rather than fixed; decide whether coverage should be reintroduced with a fixture or formally retired",
+      "unblocks": "clean resolution of C1",
+      "status": "RESOLVED_RETIRED",
+      "gate_label": "TESTS RETIRED",
+      "chosen": "formally retire the coverage (not restore it)",
+      "outcome": "5 test names recorded; restoration rejected because company/athena/ is gitignored (.gitignore:170) and can never exist in a clone - restoring would mean asserting against fabricated data; two dangling doc references cleared; coverage gap accepted explicitly and left unguarded until tracked fixtures exist",
+      "deleted_tests": [
+        "test_scrape_jobs_jsonl_is_valid",
+        "test_jobs_jsonl_is_valid",
+        "test_user_profiles_jsonl_is_valid",
+        "test_inventory_covers_all_jsonl_datasets",
+        "test_scraper_script_dirs_reporting_matches_filesystem"
+      ],
+      "refs_cleared": [
+        "docs/wayfinder/map2-scraper-discovery-gap-analysis.md",
+        "docs/superpowers/plans/2026-09-28-wayfinder-map2-scraper-discovery-gap-analysis.md"
+      ]
+    },
+    {
+      "id": "D4",
+      "owner": "CEO",
+      "decision": "sign the git-derived phase reconstruction as an after-the-fact record, or accept the gap and require contemporaneous records going forward",
+      "unblocks": "P1-2 phase_approval_records",
+      "status": "RESOLVED_SIGNED",
+      "chosen": "a - sign the git-derived phase reconstruction as an after-the-fact record",
+      "outcome": "runbook provenance disclaimer + section 1 header signed 2026-10-07; section 6 flipped to CLOSED; contemporaneous-approval condition imposed on future phases -> P1-2 CLOSED",
+      "standing_condition": "every future phase must carry an approval record written before the phase begins"
+    }
+  ],
+  "ceo_decision_closure": {
+    "date": "2026-10-07",
+    "decisions": [
+      "D1",
+      "D3",
+      "D4"
+    ],
+    "result": "all seven conditions (3 P0 + 4 P1) discharged; overall verdict READY",
+    "evidence_separation": "AGENTS.md 9.3 honoured: this change wrote only its own three deliverables, the rollback runbook, one test fixture, and two docs lines cleared for D3"
+  }
+}

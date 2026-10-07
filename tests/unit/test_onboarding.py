@@ -56,6 +56,7 @@ def manager(sample_registry: Path, tmp_path: Path) -> OnboardingManager:
         registry_path=str(sample_registry),
         templates_dir=str(Path(__file__).resolve().parents[2] / "templates"),
         output_dir=str(tmp_path / "agents"),
+        data_dir=str(tmp_path / "hr"),
         approval_config_path=str(tmp_path / "approvals.yaml"),
         json_path=str(tmp_path / "agent-registry.json"),
         table_path=str(tmp_path / "AGENT-REGISTRY-TABLE.md"),
@@ -70,6 +71,7 @@ def _make_manager(tmp_path: Path | None = None) -> OnboardingManager:
         tmp_path = Path(tempfile.mkdtemp())
     return OnboardingManager(
         registry_path="/dev/null",
+        data_dir=str(tmp_path / "hr"),
         approval_config_path=str(tmp_path / "approvals.yaml"),
     )
 
