@@ -105,7 +105,7 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 > **4.5 mechanism (resolved in #309):** Windows + git cannot track symlinks
 > reliably in this repo (pre-existing duplicates in `brand/`, `static/brand/`,
 > `public/brand/` prove it). Mechanism = **copy-on-sync**:
-> `pwsh scripts/sync-brand.ps1` overlays `brand/**` → `static/brand/**` →
+> `pwsh scripts/build/sync-brand.ps1` overlays `brand/**` → `static/brand/**` →
 > `public/brand/**`. Canonical-path registry: `brand/CANONICAL_SOURCES.md`.
 
 ### Phase 5: Governance & Verification 📋 PLANNED

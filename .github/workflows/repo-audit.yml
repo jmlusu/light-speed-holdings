@@ -147,7 +147,7 @@ jobs:
 
           # 6. Doc drift manifest (docs/source-of-truth.yaml)
           r = sh("drift.manifest", ["pwsh", "-NoProfile", "-File",
-                                    "scripts/validate-drift.ps1", "-Json"], timeout=600)
+                                    "scripts/maintenance/validate-drift.ps1", "-Json"], timeout=600)
           if r is not None:
               try:
                   drift = json.loads(r.stdout.strip())

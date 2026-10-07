@@ -14,9 +14,9 @@
     Print detailed output for each check.
 
 .EXAMPLE
-    .\scripts\validate-drift.ps1
-    .\scripts\validate-drift.ps1 -Json
-    .\scripts\validate-drift.ps1 -Verbose
+    .\scripts\maintenance\validate-drift.ps1
+    .\scripts\maintenance\validate-drift.ps1 -Json
+    .\scripts\maintenance\validate-drift.ps1 -Verbose
 #>
 
 [CmdletBinding()]

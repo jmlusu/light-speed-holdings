@@ -18,7 +18,7 @@ $IndexPath = Join-Path $Changes "INDEX.json"
 $Template = Join-Path $Root "harness/templates/change"
 $Evolution = Join-Path $Root "harness/evolution"
 $EvolutionPending = Join-Path $Evolution "pending.md"
-$HarnessEvolve = Join-Path $Root "scripts/harness-evolve.ps1"
+$HarnessEvolve = Join-Path $Root "scripts/maintenance/harness-evolve.ps1"
 
 function Ensure-Dirs {
   foreach ($dir in @($Changes, $Active, $Parking, $Archive, $Template, (Join-Path $Template "reviews"), $Evolution, (Join-Path $Evolution "proposals"))) {
@@ -555,7 +555,7 @@ function Show-Context {
   }
   Write-Output ""
   Write-Output "History index:"
-  if (Test-Path -LiteralPath $IndexPath) { Write-Output "- harness/changes/INDEX.json" } else { Write-Output "- Run scripts/harness-change.ps1 reindex" }
+  if (Test-Path -LiteralPath $IndexPath) { Write-Output "- harness/changes/INDEX.json" } else { Write-Output "- Run scripts/maintenance/harness-change.ps1 reindex" }
 }
 
 Ensure-Dirs

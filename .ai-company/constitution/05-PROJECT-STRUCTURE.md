@@ -343,7 +343,7 @@ ai-company/                              # Project root
 |----------|-----------|-------------------|
 | `.opencode/agents/*.md` | `generator.py` | `python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"` |
 | `.opencode/config/*.yaml` | `builder/__init__.py` | `ai-company company run` |
-| `harness/changes/INDEX.json` | `harness-change.ps1` | `.\scripts\harness-change.ps1 reindex` |
+| `harness/changes/INDEX.json` | `harness-change.ps1` | `.\scripts\maintenance\harness-change.ps1 reindex` |
 
 ### 6.2 Manual (Edit Freely)
 

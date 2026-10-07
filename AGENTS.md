@@ -45,10 +45,10 @@ This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, 
 ### Quick Start (New Developers)
 
 ```powershell
-.\scripts\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
-.\scripts\dev.ps1 status    # Show project status
-.\scripts\dev.ps1 test      # Run test suite
-.\scripts\dev.ps1 lint      # Run linter + type checker
+.\scripts\dev\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
+.\scripts\dev\dev.ps1 status    # Show project status
+.\scripts\dev\dev.ps1 test      # Run test suite
+.\scripts\dev\dev.ps1 lint      # Run linter + type checker
 ```
 
 ### Manual Setup

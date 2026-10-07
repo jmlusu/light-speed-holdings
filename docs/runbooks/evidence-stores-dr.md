@@ -79,7 +79,7 @@ git checkout <last-known-good-commit> -- orchestrator/escalation_events.jsonl
 # 4. If no Git history, rebuild from source systems:
 #    a) Escalation events → re-run from orchestrator/escalation.yaml config
 #    b) Dead-letter → re-scan inbox for stale tasks
-#    c) Audit export → re-run scripts/export-audit-evidence.ps1 (source: .opencode/audit trail)
+#    c) Audit export → re-run scripts/deploy/export-audit-evidence.ps1 (source: .opencode/audit trail)
 
 # 4a. Rebuild escalation events from config
 python -c "

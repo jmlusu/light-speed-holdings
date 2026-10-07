@@ -482,7 +482,7 @@ This section describes how anyone — human or agent — can contribute to the C
 2. **Follow the heading hierarchy** — do not create orphaned `###` or `####` headings.
 3. **Add a version history entry** in both the new file's version table and any parent guide's version table.
 4. **Update all cross-references** that may be affected.
-5. **Run the ECL lint check** before submitting: `pwsh scripts/lint-ecl.ps1`.
+5. **Run the ECL lint check** before submitting: `pwsh scripts/maintenance/lint-ecl.ps1`.
 
 ### 8.3 How to Report an Error
 

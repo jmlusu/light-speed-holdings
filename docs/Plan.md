@@ -49,7 +49,7 @@
 ## Verification standard (every change)
 
 - `npm run build` (tsc) + `npm test` green
-- `python scripts/check-site-form-backend.py` green
+- `python scripts/test/check-site-form-backend.py` green
 - Playwright 390px + keyboard + visible focus + zero console errors
 - Before/after screenshots; `ls-artifact-qa` APPROVE on visual work
 - Appendix A checklist in PR; §7.1 tokens only

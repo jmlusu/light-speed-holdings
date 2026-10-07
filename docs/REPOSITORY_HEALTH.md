@@ -58,7 +58,7 @@ None known. Every stage validated with ruff + targeted pytest + generator round-
 
 ## Known Limitations / Remaining Technical Debt
 
-1. **Memory duality (Q4):** **RESOLVED 2026-10-07** — LS-MEM decommissioned in `42284c54` (`src/ai_company/lsmem/` removed; residue swept); `src/ai_company/memory/` (legacy JSON store) is the sole engine, still imported by executor, dashboard, MCP server, doctor, and CLI. README's stale `memory remember` row fixed in `a1bdf5b5`. Follow-up: `docs/STATUS.md` still carries pre-decommission LS-MEM text.
+1. **Memory duality (Q4):** **RESOLVED 2026-10-07** — LS-MEM decommissioned in `42284c54` (`src/ai_company/lsmem/` removed; residue swept); `src/ai_company/memory/` (legacy JSON store) is the sole engine, still imported by executor, dashboard, MCP server, doctor, and CLI. README's stale `memory remember` row fixed in `a1bdf5b5`. Follow-up closed 2026-10-07: `docs/STATUS.md` LS-MEM entries now carry superseded-correction notes.
 2. **Runtime-state relocation (D-6):** **partially resolved 2026-10-07** — `orchestrator/approvals.yaml` + `memory/memory-index.yaml` untracked in `1f9944cf` (files stay in place as working state, now covered by gitignore `/orchestrator/` + `memory/*.yaml`); approvals restored to HEAD first (ledger of truth remains `.opencode/audit`). Full relocation to `data/` deferred: survey found ~93 refs across 21 files for `orchestrator/` paths plus 12 refs to `memory-index.yaml` — needs code + config indirection.
 3. **Milestones deck duality (Q3):** **RESOLVED** — `.js` twin (`scripts/build/generate-milestones-deck.js`) deleted in `70921d50`; the Python generator is canonical.
 4. **`tmp/` tracked scratch:** **RESOLVED** — 126 files deleted in `d77ea526`; `git ls-files tmp/` = 0.

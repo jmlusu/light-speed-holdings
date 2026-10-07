@@ -71,9 +71,9 @@ If the plan or spec contains undefined codenames, abbreviations, or domain terms
 Before closing active work:
 
 1. Update `docs/STATUS.md` from active change files (summary, spec, plan, tasks, reviews).
-2. Run `.\scripts\harness-change.ps1 close completed` to archive and rebuild INDEX.
+2. Run `.\scripts\maintenance\harness-change.ps1 close completed` to archive and rebuild INDEX.
 3. After close, update `docs/STATUS.md` with archive path.
-4. Run `.\scripts\lint-ecl.ps1` to confirm consistency.
+4. Run `.\scripts\maintenance\lint-ecl.ps1` to confirm consistency.
 
 ## 8 Failure Feedback
 
@@ -128,15 +128,15 @@ Scoring: archive evidence (0-40), project relevance (0-30), rule clarity impact 
 
 | Command | Script | Purpose |
 |---------|--------|---------|
-| `.\scripts\harness-change.ps1 new "Title"` | harness-change.ps1 | Create new active change |
-| `.\scripts\harness-change.ps1 status` | harness-change.ps1 | Show active change status |
-| `.\scripts\harness-change.ps1 close completed` | harness-change.ps1 | Archive active change |
-| `.\scripts\harness-change.ps1 park` | harness-change.ps1 | Park active change |
-| `.\scripts\harness-change.ps1 resume <id>` | harness-change.ps1 | Resume parked change |
-| `.\scripts\harness-change.ps1 reindex` | harness-change.ps1 | Rebuild INDEX.json |
-| `.\scripts\harness-evolve.ps1 check` | harness-evolve.ps1 | Check auto-evolve threshold |
-| `.\scripts\harness-evolve.ps1 mark-complete` | harness-evolve.ps1 | Mark evolution complete |
-| `.\scripts\lint-ecl.ps1` | lint-ecl.ps1 | Validate ECL structure |
+| `.\scripts\maintenance\harness-change.ps1 new "Title"` | harness-change.ps1 | Create new active change |
+| `.\scripts\maintenance\harness-change.ps1 status` | harness-change.ps1 | Show active change status |
+| `.\scripts\maintenance\harness-change.ps1 close completed` | harness-change.ps1 | Archive active change |
+| `.\scripts\maintenance\harness-change.ps1 park` | harness-change.ps1 | Park active change |
+| `.\scripts\maintenance\harness-change.ps1 resume <id>` | harness-change.ps1 | Resume parked change |
+| `.\scripts\maintenance\harness-change.ps1 reindex` | harness-change.ps1 | Rebuild INDEX.json |
+| `.\scripts\maintenance\harness-evolve.ps1 check` | harness-evolve.ps1 | Check auto-evolve threshold |
+| `.\scripts\maintenance\harness-evolve.ps1 mark-complete` | harness-evolve.ps1 | Mark evolution complete |
+| `.\scripts\maintenance\lint-ecl.ps1` | lint-ecl.ps1 | Validate ECL structure |
 
 ## 11 Rules
 

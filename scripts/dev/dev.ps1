@@ -11,10 +11,10 @@
     Default is "all" (full onboarding).
 
 .EXAMPLE
-    .\scripts\dev.ps1              # Full onboarding
-    .\scripts\dev.ps1 setup        # Just setup
-    .\scripts\dev.ps1 test         # Run tests only
-    .\scripts\dev.ps1 status       # Show project status
+    .\scripts\dev\dev.ps1              # Full onboarding
+    .\scripts\dev\dev.ps1 setup        # Just setup
+    .\scripts\dev\dev.ps1 test         # Run tests only
+    .\scripts\dev\dev.ps1 status       # Show project status
 #>
 
 param(
@@ -140,9 +140,9 @@ function Invoke-Setup {
 
     Write-Host "`n==> Setup complete!" -ForegroundColor Green
     Write-Host "    Activate the venv: .venv\Scripts\Activate.ps1" -ForegroundColor Gray
-    Write-Host "    Run tests:         .\scripts\dev.ps1 test" -ForegroundColor Gray
-    Write-Host "    Run linter:        .\scripts\dev.ps1 lint" -ForegroundColor Gray
-    Write-Host "    Check status:      .\scripts\dev.ps1 status" -ForegroundColor Gray
+    Write-Host "    Run tests:         .\scripts\dev\dev.ps1 test" -ForegroundColor Gray
+    Write-Host "    Run linter:        .\scripts\dev\dev.ps1 lint" -ForegroundColor Gray
+    Write-Host "    Check status:      .\scripts\dev\dev.ps1 status" -ForegroundColor Gray
 }
 
 function Invoke-Test {
@@ -207,7 +207,7 @@ function Invoke-Status {
     if (Test-Path $venvPath) {
         Write-Host "  Virtual env:     .venv/ (active)" -ForegroundColor Green
     } else {
-        Write-Host "  Virtual env:     NOT SET UP — run: .\scripts\dev.ps1 setup" -ForegroundColor Red
+        Write-Host "  Virtual env:     NOT SET UP — run: .\scripts\dev\dev.ps1 setup" -ForegroundColor Red
     }
 
     # Dependencies installed?
@@ -215,7 +215,7 @@ function Invoke-Status {
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  Package:         installed (editable)" -ForegroundColor Green
     } else {
-        Write-Host "  Package:         NOT INSTALLED — run: .\scripts\dev.ps1 setup" -ForegroundColor Red
+        Write-Host "  Package:         NOT INSTALLED — run: .\scripts\dev\dev.ps1 setup" -ForegroundColor Red
     }
 
     # Agent count

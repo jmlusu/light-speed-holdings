@@ -295,8 +295,8 @@ Checklist for closing the **documentation** ECL (P1 gate) and the overall archit
 
 ### 6.3 Lint, drift, and counts
 
-- [ ] `pwsh scripts/lint-ecl.ps1` green
-- [ ] `pwsh scripts/validate-drift.ps1` green (source-of-truth 90/20)
+- [ ] `pwsh scripts/maintenance/lint-ecl.ps1` green
+- [ ] `pwsh scripts/maintenance/validate-drift.ps1` green (source-of-truth 90/20)
 - [ ] Registry triple-count 90/90/90 re-verified at P1 entry
 - [ ] Grep of new architecture docs: **no stale 145/152/140+ claims** except intentional historical citations (footnoted)
 - [ ] Mermaid blocks parse-clean (no unclosed fences)

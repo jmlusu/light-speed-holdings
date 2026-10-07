@@ -23,9 +23,9 @@ Formulas:
     KPI-004 = completed / (completed + failed) x 100 over the 30-day window
 
 Usage:
-    python scripts/compute_company_kpis.py             # verify only
-    python scripts/compute_company_kpis.py --write     # refresh kpis.yaml
-    python scripts/compute_company_kpis.py --days 7    # custom window
+    python scripts/maintenance/compute_company_kpis.py             # verify only
+    python scripts/maintenance/compute_company_kpis.py --write     # refresh kpis.yaml
+    python scripts/maintenance/compute_company_kpis.py --days 7    # custom window
 """
 
 from __future__ import annotations

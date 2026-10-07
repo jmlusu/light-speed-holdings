@@ -553,8 +553,8 @@ Supporting ADR templates (Context / Decision / Alternatives / Rationale / Conseq
 ### A. Validation commands (P1 gate)
 
 ```powershell
-pwsh scripts/lint-ecl.ps1
-pwsh scripts/validate-drift.ps1
+pwsh scripts/maintenance/lint-ecl.ps1
+pwsh scripts/maintenance/validate-drift.ps1
 # Mermaid: exactly 12 ```mermaid fences labeled D1–D12 in this file
 # Counts: no live 145/152/140+ in new architecture docs (T015)
 ```

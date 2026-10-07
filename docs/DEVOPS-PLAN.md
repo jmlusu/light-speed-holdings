@@ -195,7 +195,7 @@ jobs:
       - name: Install pwsh
         uses: android-for-host/setup-powershell@v1
       - name: Lint ECL
-        run: pwsh scripts/lint-ecl.ps1
+        run: pwsh scripts/maintenance/lint-ecl.ps1
 ```
 
 ### 2.2 Why each stage matters

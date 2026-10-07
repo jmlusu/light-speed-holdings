@@ -7,10 +7,10 @@
 | Canonical source | Responsibility |
 |---|---|
 | [`DEVICE-SETUP.md`](DEVICE-SETUP.md) | Fresh-machine phases 0–6 (staff) |
-| [`../scripts/dev.ps1`](../scripts/dev.ps1) | All-in-one staff onboarding (setup/lint/test/generate/status) |
-| [`../scripts/seed-agents.ps1`](../scripts/seed-agents.ps1) | Regenerate the 18 executive + board agent cards via the factory |
-| [`../scripts/bootstrap-company.ps1`](../scripts/bootstrap-company.ps1) | Client/company folder scaffolding (**pre-governance only**) |
-| [`../scripts/remind-bootstrap.ps1`](../scripts/remind-bootstrap.ps1) | Re-reminder time-boxing alias |
+| [`../scripts/dev/dev.ps1`](../scripts/dev/dev.ps1) | All-in-one staff onboarding (setup/lint/test/generate/status) |
+| [`../scripts/maintenance/seed-agents.ps1`](../scripts/maintenance/seed-agents.ps1) | Regenerate the 18 executive + board agent cards via the factory |
+| [`../scripts/maintenance/bootstrap-company.ps1`](../scripts/maintenance/bootstrap-company.ps1) | Client/company folder scaffolding (**pre-governance only**) |
+| [`../scripts/maintenance/remind-bootstrap.ps1`](../scripts/maintenance/remind-bootstrap.ps1) | Re-reminder time-boxing alias |
 | [`sop-hr-onboarding.md`](sop-hr-onboarding.md) | SOP-HR-001: adding **AI agents** to the hierarchy (not human staff) |
 
 Client **governance** (Signed Contract, DPA, Compliance Risk Assessment, Security
@@ -70,7 +70,7 @@ uv run ai-company bootstrap
 Option B (all-in-one: setup + lint + test + generate + status):
 
 ```powershell
-.\scripts\dev.ps1
+.\scripts\dev\dev.ps1
 ```
 
 Both are idempotent — safe to re-run. What they do:
@@ -81,7 +81,7 @@ Both are idempotent — safe to re-run. What they do:
 4. Install pre-commit hooks (`pre-commit install` with pre-commit + post-commit)
 5. Verify Python ≥ 3.12, Ollama, opencode CLI, Git, and required env vars
 
-`.\scripts\dev.ps1` accepts a single action: `setup`, `test`, `lint`, `status`,
+`.\scripts\dev\dev.ps1` accepts a single action: `setup`, `test`, `lint`, `status`,
 `clean`, `generate`, or `all` (default).
 
 ### Phase 4 — Generate agents
@@ -123,12 +123,12 @@ uv run ai-company dashboard        # FastAPI dashboard at localhost:8420
 
 - Regenerate the canonical executive/board card set via the factory:
   ```powershell
-  .\scripts\seed-agents.ps1          # -DryRun to review all 18 first
+  .\scripts\maintenance\seed-agents.ps1          # -DryRun to review all 18 first
   ```
-  (`seed-agents.ps1` passes each agent spec to `scripts/new-agent.ps1`; safe to
+  (`seed-agents.ps1` passes each agent spec to `scripts/maintenance/new-agent.ps1`; safe to
   re-run, the factory de-duplicates by name.)
 - `git diff --exit-code` after regeneration — committed cards must match output.
-- Confirm `.\scripts\dev.ps1 status` reports: venv active, package installed,
+- Confirm `.\scripts\dev\dev.ps1 status` reports: venv active, package installed,
   agents generated, tests present.
 
 ---
@@ -146,7 +146,7 @@ step — they run later through `client_intake` / `ApprovalGate`.
 New-Item -ItemType Directory -Path C:\path\to\<client> -Force
 
 # 2. Scaffold from the template
-Copy-Item scripts\bootstrap-company.ps1 C:\path\to\<client>\
+Copy-Item scripts\maintenance\bootstrap-company.ps1 C:\path\to\<client>\
 cd C:\path\to\<client>
 .\bootstrap-company.ps1
 ```

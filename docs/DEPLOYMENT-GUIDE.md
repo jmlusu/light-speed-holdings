@@ -469,7 +469,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: uv sync --extra dev --frozen
-      - run: pwsh scripts/lint-ecl.ps1
+      - run: pwsh scripts/maintenance/lint-ecl.ps1
 ```
 
 ### GitHub Actions Autonomous Cycle
@@ -718,7 +718,7 @@ Follow [Semantic Versioning](https://semver.org/):
 5. **Run release script:**
    ```bash
    # Windows
-   powershell -File scripts/release.ps1 -Version 0.3.0
+   powershell -File scripts/deploy/release.ps1 -Version 0.3.0
 
    # Linux/macOS
    ./scripts/release.sh 0.3.0
@@ -731,8 +731,8 @@ Follow [Semantic Versioning](https://semver.org/):
 
 ### Release Script
 
-```powershell
-# scripts/release.ps1
+   ```powershell
+   # scripts/deploy/release.ps1
 param(
     [Parameter(Mandatory=$true)]
     [string]$Version

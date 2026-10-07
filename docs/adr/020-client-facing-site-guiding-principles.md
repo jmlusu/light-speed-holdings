@@ -52,7 +52,7 @@ Human CMO/CEO ratified (2026-09-15, no redlines):
 
 - Wayfinder T2 (#253) closed; T5 (#256, enquiry backend research) and T6 (#257,
   token/component migration grilling) are unblocked.
-- The fake-form guard (`scripts/check-site-form-backend.py`) and the Appendix A PR
+- The fake-form guard (`scripts/test/check-site-form-backend.py`) and the Appendix A PR
   template now have ratified SLA copy and ownership to enforce against.
 - Any deviation from section 7.1 tokens on lightspeedholdings.com is a violation,
   not a stylistic choice.
