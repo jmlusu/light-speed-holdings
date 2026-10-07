@@ -39,6 +39,28 @@ class TestCORSConfiguration:
         acao = resp.headers.get("access-control-allow-origin", "")
         assert acao == "http://localhost:3000"
 
+    def test_default_cors_allows_vite_app_origins(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Default config should allow the Vite app origins (1440 prod / 1441 dev)."""
+        monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)
+        from ai_company.dashboard.app import create_app
+
+        app = create_app()
+        client = TestClient(app)
+        for origin in (
+            "http://localhost:1440",
+            "http://127.0.0.1:1440",
+            "http://localhost:1441",
+            "http://127.0.0.1:1441",
+        ):
+            resp = client.options(
+                "/api/v1/dashboard",
+                headers={
+                    "Origin": origin,
+                    "Access-Control-Request-Method": "GET",
+                },
+            )
+            assert resp.headers.get("access-control-allow-origin", "") == origin
+
     def test_default_cors_is_not_wildcard(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Default CORS must never reflect '*'."""
         monkeypatch.delenv("DASHBOARD_CORS_ORIGINS", raising=False)

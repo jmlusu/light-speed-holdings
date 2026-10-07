@@ -446,6 +446,11 @@ def create_app() -> FastAPI:
         "http://localhost:3000",
         "http://127.0.0.1",
         "http://127.0.0.1:3000",
+        # Vite client app: production port 1440, dev port 1441.
+        "http://localhost:1440",
+        "http://127.0.0.1:1440",
+        "http://localhost:1441",
+        "http://127.0.0.1:1441",
     ]
     origins_raw = os.environ.get("DASHBOARD_CORS_ORIGINS", "")
     origins = [o.strip() for o in origins_raw.split(",") if o.strip()]

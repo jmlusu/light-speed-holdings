@@ -250,7 +250,7 @@ Default: `1280x800` (desktop). Configurable via `--viewport WxH` (multiple allow
 - name: Visual QA
   run: |
     npx playwright install chromium
-    node harness/qa/visual_check.cjs http://localhost:3000 --viewport 1280x800 --viewport 375x667 --json visual-report.json
+    node harness/qa/visual_check.cjs http://localhost:1441 --viewport 1280x800 --viewport 375x667 --json visual-report.json
 ```
 
 ---

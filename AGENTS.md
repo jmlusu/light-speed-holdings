@@ -210,6 +210,43 @@ curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" http://localhost:8421/health
 curl -H "X-API-Key: \$DASHBOARD_ADMIN_KEY" https://api.example.com/health
 ```
 
+## 12 Ports — Vite App and Server Monitoring
+
+**Assigned ports (2026-10-07):**
+- Development (`npm run dev`): **http://localhost:1441** — `vite.config.ts` → `server.port`
+- Production preview (`npm run preview`, serves `dist/`): **http://localhost:1440** — `vite.config.ts` → `preview.port`
+- Dashboard CORS allowlists include both origins (legacy `:3000` retained) in `src/ai_company/dashboard/app.py`, `docker-compose.yml`, `docker-compose.staging.yml`, `.env.staging.example`.
+- Updated references: `README.md` (scripts table), `check_server.py`, `docs/IMAGE_SPEC.md` (QA probe URL).
+
+**Monitoring session 2026-10-07, 22:15–22:29 (10+ min, 20 probe cycles, 120 HTTP probes):** both ports stayed listening; 119/120 probes HTTP 200 across `/`, `/insights`, `/solutions` on each port; `dev.log` and `preview.log` scans: **0 error matches**; no crashes, no port drift, no EADDRINUSE.
+
+**Issue found and fixed:**
+
+1. **Dev cold-start probe timeout (1 failure — cycle 1, `:1441/` returned ERR).** The first request after `npm run dev` exceeded the 15 s probe timeout while Vite optimized the 1676-module dependency graph. Re-measured cold start: port binds in ~2.5 s, first request completes in ~6.3 s and returns 200; subsequent requests ~8 ms. **Fix:** documented here — automated health checks and QA probes must tolerate the first dev request (retry once after the `VITE ready in ...` log line, allow ≥30 s timeout). No code change required; reproduced deterministically (warm dep cache ≈ 6 s, cold ≈ >15 s).
+
+**Servers were stopped and ports 1440/1441 released after the session.**
+
+## 13 Application Boundary — CEO Dashboard vs Vite/React App
+
+The CEO Dashboard (internal) and the Vite/React app (external, §12) are **two independent applications**: different runtimes, servers, health checks, and deploy targets. Never serve one on the other's assigned port and never treat them as the same service.
+
+| | CEO Dashboard (internal) | Vite/React app (external) |
+|---|---|---|
+| Runtime | FastAPI/uvicorn via `ai-company dashboard` (`src/ai_company/dashboard/`) | Vite dev/preview (repo-root `src/`); static `dist/` on Vercel |
+| Production port | **8420** — `Dockerfile` (`EXPOSE 8420`, CMD `--port 8420`, healthcheck `:8420`), `docker-compose.yml` `8420:8420` | **443** at `lightspeedholdings.com` (Vercel) |
+| Development port | **8421** — `docker-compose.staging.yml` host `${STAGING_DASHBOARD_PORT:-8421}` → container 8420; local: `uv run ai-company dashboard --port 8421`; tests default `http://localhost:8421` | **1441** (dev) / **1440** (preview), §12 |
+| Health check | `GET /health` (JSON) | `GET /` (SPA) |
+
+**Rules:**
+
+1. **Port assignment is hard:** dashboard production = **8420**, dashboard development = **8421**. Do not repoint either.
+2. In Docker the dashboard container always listens on 8420; development/staging maps host 8421 → container 8420.
+3. The Vite/React app never occupies 8420/8421; the dashboard never occupies 1440/1441.
+4. CORS allowlist entries (incl. legacy `:3000`/`:5173`) are permitted browser origins, not port assignments.
+5. Bare `uv run ai-company dashboard` still defaults to 8420 (legacy local default); development launches must pass `--port 8421`.
+
+**Transient conflict (2026-10-07):** host 8421 is currently held by the unrelated `athena-frontend-staging` container (separate project), so the staging dashboard is temporarily published on 8422. The assigned development port remains 8421 — restore the default mapping when Athena no longer needs 8421.
+
 ## Agent skills
 
 ### Dispatch guardrails (subagents vs. skills) — READ BEFORE DELEGATING

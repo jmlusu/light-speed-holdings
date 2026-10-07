@@ -342,10 +342,10 @@ npm run lint
 #### Key React Scripts
 | Script | Command | Purpose |
 |--------|---------|---------|
-| `dev` | `vite` | Starts dev server on `http://localhost:3000` |
+| `dev` | `vite` | Starts dev server on `http://localhost:1441` |
 | `build` | `tsc && vite build` | Compiles TypeScript and builds production distribution |
 | `lint` | `tsc --noEmit` | Validates TypeScript type safety with zero code generation |
-| `preview` | `vite preview` | Serves production build locally for verification |
+| `preview` | `vite preview` | Serves production build on `http://localhost:1440` for verification |
 
 ---
 
