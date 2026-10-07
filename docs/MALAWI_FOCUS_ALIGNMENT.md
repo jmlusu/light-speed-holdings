@@ -150,7 +150,7 @@ Pipeline credibility needs names, not aspirations. Initial targets are drawn fro
 - **Weekly (chief-of-staff):** department alignment score, delivery turnaround, revenue vs. plan.
 - **Monthly (cso + cfo):** pivot scorecard vs. Section 3 metrics; cost guardrails; pipeline accuracy review.
 - **Quarterly (board-strategy):** strategic review of the pivot — approve, course-correct, or escalate. Board reviews global client readiness once year-one Malawi metrics clear the Section 5.4 working targets.
-- **Any source change** runs the repo gates: `ruff check src/ && mypy src/ && pytest`; doc changes run `pwsh scripts/lint-ecl.ps1`.
+- **Any source change** runs the repo gates: `ruff check src/ && mypy src/ && pytest`; doc changes run `pwsh scripts/maintenance/lint-ecl.ps1`.
 
 ---
 

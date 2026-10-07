@@ -82,7 +82,7 @@ main (protected trunk)
 ### Release Process
 1. Ensure `production` is green
 2. `git checkout production && git pull`
-3. `scripts/release.ps1` (or manual tag `vX.Y.Z`)
+3. `scripts/deploy/release.ps1` (or manual tag `vX.Y.Z`)
 4. Release workflow: version sync → Trivy → build → PyPI + GHCR → GitHub Release → canary deploy
 
 ## Naming Conventions

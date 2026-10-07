@@ -20,7 +20,7 @@ GREY = (242, 242, 242)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # Canonical logos live in brand/logos/ (repo root). Fall back to the
-# static/brand mirror for checkouts that have not run scripts/sync-brand.ps1.
+# static/brand mirror for checkouts that have not run scripts/build/sync-brand.ps1.
 BRAND_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "..", "brand"))
 
 
@@ -148,7 +148,9 @@ def create_profile_image(size, output_path, variant="default", size_factor=None)
     print(f"Created: {output_path}")
 
 
-def create_banner_image(width, height, output_path, platform="linkedin", larger=False, max_text_width_factor=None):
+def create_banner_image(
+    width, height, output_path, platform="linkedin", larger=False, max_text_width_factor=None
+):
     """Create a banner image with navy background, logo, company name, and tagline."""
     img = Image.new("RGB", (width, height), NAVY)
     draw = ImageDraw.Draw(img)
@@ -182,7 +184,11 @@ def create_banner_image(width, height, output_path, platform="linkedin", larger=
         text_x = int(width * 0.05)
 
     max_text_w_factor = max_text_width_factor if max_text_width_factor is not None else 0.9
-    max_text_width = int(width * max_text_w_factor) - text_x if (int(width * max_text_w_factor) > text_x) else int(width * 0.9)
+    max_text_width = (
+        int(width * max_text_w_factor) - text_x
+        if (int(width * max_text_w_factor) > text_x)
+        else int(width * 0.9)
+    )
 
     # Company name
     try:
@@ -201,7 +207,7 @@ def create_banner_image(width, height, output_path, platform="linkedin", larger=
     name_font = _shrink_to_fit(draw, company_name, name_font, max_text_width, True)
     name_font_size = getattr(name_font, "size", name_font_size)
     # Align text vertically with icon center
-    if 'logo' in locals() and logo:
+    if "logo" in locals() and logo:
         name_box = draw.textbbox((0, 0), company_name, font=name_font)
         name_h = name_box[3] - name_box[1]
         name_y = logo_y + (logo_height - name_h) // 2
@@ -217,7 +223,7 @@ def create_banner_image(width, height, output_path, platform="linkedin", larger=
         tagline_font = ImageFont.load_default()
 
     tagline = "Aspire. Act. Achieve."
-    if 'logo' in locals() and logo:
+    if "logo" in locals() and logo:
         tagline_box = draw.textbbox((0, 0), tagline, font=tagline_font)
         tagline_h = tagline_box[3] - tagline_box[1]
         tagline_y = logo_y + (logo_height - tagline_h) // 2 + int(height * 0.08)
@@ -445,9 +451,16 @@ def main():
     # Facebook
     if want("facebook") or platforms is None:
         print("\n=== Facebook ===")
-        create_profile_image(1080, os.path.join(OUTPUT_DIR, "facebook-profile.png"), size_factor=0.90)
+        create_profile_image(
+            1080, os.path.join(OUTPUT_DIR, "facebook-profile.png"), size_factor=0.90
+        )
         create_banner_image(
-            1640, 664, os.path.join(OUTPUT_DIR, "facebook-cover.png"), platform="facebook", larger=False, max_text_width_factor=0.85
+            1640,
+            664,
+            os.path.join(OUTPUT_DIR, "facebook-cover.png"),
+            platform="facebook",
+            larger=False,
+            max_text_width_factor=0.85,
         )
 
     # Twitter/X

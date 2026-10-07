@@ -16,11 +16,15 @@ from typing import Any
 from ai_company.data import CostAnalytics, database_is_usable
 
 try:
-    from ai_company.paths import get_project_root
+    from ai_company.paths import get_project_root, state_path
 except ImportError:  # pragma: no cover - fallback when paths module unavailable
 
     def get_project_root() -> Path:
         return Path(__file__).resolve().parents[2]
+
+    def state_path(rel: str | Path, base: str | Path = ".") -> str | Path:
+        # Identity fallback: no relocation when ai_company.paths is unavailable.
+        return rel
 
 
 logger = logging.getLogger(__name__)
@@ -133,7 +137,7 @@ class CostTracker:
         self.daily_budget = daily_budget_usd
         self.task_budget = task_budget_usd
 
-        # Aggregated summary export path (defaults to orchestrator/cost_tracker.json
+        # Aggregated summary export path (defaults to data/orchestrator/cost_tracker.json
         # under the project root so the CEO dashboard can read real spend data).
         self._export_path: Path | None = Path(export_path) if export_path else None
 
@@ -449,19 +453,23 @@ class CostTracker:
         except OSError:
             pass
 
-    # ── Aggregated summary export (orchestrator/cost_tracker.json) ─────
+    # ── Aggregated summary export (data/orchestrator/cost_tracker.json) ──
 
     def _resolve_export_path(self) -> Path | None:
         """Return the path for the aggregated cost summary file.
 
         Uses an explicitly-provided ``export_path`` if given, otherwise defaults
-        to ``<project_root>/orchestrator/cost_tracker.json`` so the CEO dashboard
-        can read real spend data without touching raw JSONL.
+        to ``<project_root>/data/orchestrator/cost_tracker.json`` (D-6
+        relocation) so the CEO dashboard can read real spend data without
+        touching raw JSONL.
         """
         if self._export_path is not None:
             return self._export_path
         try:
-            return get_project_root() / "orchestrator" / "cost_tracker.json"
+            project_root = get_project_root()
+            return project_root / str(
+                state_path("orchestrator/cost_tracker.json", base=project_root)
+            )
         except Exception:  # noqa: BLE001 - best-effort resolution
             return None
 
@@ -488,7 +496,7 @@ class CostTracker:
         return 0.0
 
     def _export_summary(self) -> None:
-        """Write the aggregated cost summary to ``orchestrator/cost_tracker.json``.
+        """Write the aggregated cost summary to ``data/orchestrator/cost_tracker.json``.
 
         This file is the single source of truth that the CEO dashboard reads
         for real (not dummy) cost data.  The export is best-effort: any I/O

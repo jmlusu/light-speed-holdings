@@ -21,17 +21,17 @@
     so you can review all 18 outputs before writing anything to disk.
 
 .EXAMPLE
-    .\scripts\seed-agents.ps1 -DryRun
+    .\scripts\maintenance\seed-agents.ps1 -DryRun
     # Review everything first
 
 .EXAMPLE
-    .\scripts\seed-agents.ps1
+    .\scripts\maintenance\seed-agents.ps1
     # Regenerate all 18 agents for real
 #>
 
 [CmdletBinding()]
 param(
-    [string]$FactoryPath = ".\scripts\new-agent.ps1",
+    [string]$FactoryPath = ".\scripts\maintenance\new-agent.ps1",
 
     [switch]$DryRun
 )

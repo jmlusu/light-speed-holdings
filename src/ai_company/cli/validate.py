@@ -7,6 +7,8 @@ from pathlib import Path
 import typer
 import yaml
 
+from ai_company.paths import state_path
+
 app = typer.Typer(help="Validate agent naming conventions and config references")
 
 
@@ -261,9 +263,9 @@ def references(
 
 
 _REQUIRED_CONFIG_FILES: list[str] = [
-    "orchestrator/approvals.yaml",
-    "orchestrator/escalation.yaml",
-    "orchestrator/scheduler.yaml",
+    "data/orchestrator/approvals.yaml",
+    "data/orchestrator/escalation.yaml",
+    "data/orchestrator/scheduler.yaml",
     "company/agent-registry.json",
     "company/departments.yaml",
     "company/config/kpis.yaml",
@@ -326,7 +328,9 @@ def config(
     typer.echo("=" * 60)
 
     for rel_path in _REQUIRED_CONFIG_FILES:
-        filepath = root / rel_path
+        # D-6: idempotent relocating resolve (also covers pre-migration roots),
+        # anchored to the project root like the rest of this command.
+        filepath = root / Path(str(state_path(rel_path, base=root)))
         if not filepath.exists():
             typer.echo(f"  FAIL  {rel_path} -- FILE NOT FOUND")
             failed += 1
@@ -368,7 +372,8 @@ def config(
         "warnings": warned,
         "files_checked": len(_REQUIRED_CONFIG_FILES),
     }
-    report_path = root / "orchestrator" / "config-validation-report.json"
+    # D-6: report lands next to the (relocated) runtime state.
+    report_path = root / str(state_path("orchestrator/config-validation-report.json", base=root))
     report_path.parent.mkdir(parents=True, exist_ok=True)
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)

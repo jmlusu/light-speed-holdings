@@ -20,7 +20,7 @@ def _make_tracker(tmp_path: Path, **kwargs: object) -> CostTracker:
     """Create a CostTracker writing into ``tmp_path/results``."""
     return CostTracker(
         results_dir=str(tmp_path / "results"),
-        export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+        export_path=str(tmp_path / "data" / "orchestrator" / "cost_tracker.json"),
         **kwargs,
     )
 
@@ -333,11 +333,11 @@ class TestRecordsBounded:
 
 
 class TestExportSummary:
-    """The aggregated summary export to orchestrator/cost_tracker.json."""
+    """The aggregated summary export to data/orchestrator/cost_tracker.json."""
 
     def test_export_summary_file_created(self, tmp_path: Path) -> None:
         _make_tracker(tmp_path)
-        export_file = tmp_path / "orchestrator" / "cost_tracker.json"
+        export_file = tmp_path / "data" / "orchestrator" / "cost_tracker.json"
         assert export_file.exists()
         data = json.loads(export_file.read_text())
         assert data["total_spent"] == 0.0
@@ -354,7 +354,7 @@ class TestExportSummary:
             prompt_tokens=1000,
             completion_tokens=500,
         )
-        export_file = tmp_path / "orchestrator" / "cost_tracker.json"
+        export_file = tmp_path / "data" / "orchestrator" / "cost_tracker.json"
         data = json.loads(export_file.read_text())
         assert data["total_spent"] > 0
         assert data["llm_spend"] == data["total_spent"]
@@ -374,13 +374,17 @@ class TestExportSummary:
             prompt_tokens=1000,
             completion_tokens=500,
         )
-        first_export = json.loads((tmp_path / "orchestrator" / "cost_tracker.json").read_text())
+        first_export = json.loads(
+            (tmp_path / "data" / "orchestrator" / "cost_tracker.json").read_text()
+        )
 
         # New tracker pointing at same results dir replays the log and re-exports.
         CostTracker(
             results_dir=str(tmp_path / "results"),
-            export_path=str(tmp_path / "orchestrator" / "cost_tracker.json"),
+            export_path=str(tmp_path / "data" / "orchestrator" / "cost_tracker.json"),
         )
-        restarted_export = json.loads((tmp_path / "orchestrator" / "cost_tracker.json").read_text())
+        restarted_export = json.loads(
+            (tmp_path / "data" / "orchestrator" / "cost_tracker.json").read_text()
+        )
         assert restarted_export["call_count"] == first_export["call_count"]
         assert restarted_export["total_spent"] == pytest.approx(first_export["total_spent"])

@@ -45,7 +45,7 @@ Archive gates:
 - `spec_review` must be resolved (value `approved` or equivalent recorded in reviews/) before archiving. Leaving `spec_review: "pending"` in an archived change is a gap.
 - The full non-e2e test suite must run to completion and be listed in `validation_results` at archive. Closing with "full suite as the Next Step" is invalid — the full suite is a prerequisite for close, not a follow-up task.
 - Verification hint: when a live dashboard/daemon process or parallel AI sessions share the machine, run the full suite with an isolated `pytest --basetemp=<unique>` path and snapshot `git status` before/after the run to prove no concurrent-writer interference.
-- Archive hygiene: git-restore known side-effect files before archive (`docs/AGENT-REGISTRY-TABLE.md`, `hr/onboarding_requests.yaml`, `orchestrator/approvals.yaml`). Test runs and scaffolding may leave these dirty; they must not be committed as part of a change.
+- Archive hygiene: git-restore known side-effect files before archive (`docs/AGENT-REGISTRY-TABLE.md`, `hr/onboarding_requests.yaml`, `data/orchestrator/approvals.yaml`). Test runs and scaffolding may leave these dirty; they must not be committed as part of a change.
 - When a change is parked, its test failures should not be counted as baseline by other changes. Tag parked failures (e.g., `parked:<change-id>`) to keep baselines isolated.
 - If `pyproject.toml` is in the changeset, `uv.lock` must also be updated in the same commit. Lockfile atomicity prevents `--frozen` workflow breakage.
 
@@ -71,9 +71,9 @@ If the plan or spec contains undefined codenames, abbreviations, or domain terms
 Before closing active work:
 
 1. Update `docs/STATUS.md` from active change files (summary, spec, plan, tasks, reviews).
-2. Run `.\scripts\harness-change.ps1 close completed` to archive and rebuild INDEX.
+2. Run `.\scripts\maintenance\harness-change.ps1 close completed` to archive and rebuild INDEX.
 3. After close, update `docs/STATUS.md` with archive path.
-4. Run `.\scripts\lint-ecl.ps1` to confirm consistency.
+4. Run `.\scripts\maintenance\lint-ecl.ps1` to confirm consistency.
 
 ## 8 Failure Feedback
 
@@ -128,15 +128,15 @@ Scoring: archive evidence (0-40), project relevance (0-30), rule clarity impact 
 
 | Command | Script | Purpose |
 |---------|--------|---------|
-| `.\scripts\harness-change.ps1 new "Title"` | harness-change.ps1 | Create new active change |
-| `.\scripts\harness-change.ps1 status` | harness-change.ps1 | Show active change status |
-| `.\scripts\harness-change.ps1 close completed` | harness-change.ps1 | Archive active change |
-| `.\scripts\harness-change.ps1 park` | harness-change.ps1 | Park active change |
-| `.\scripts\harness-change.ps1 resume <id>` | harness-change.ps1 | Resume parked change |
-| `.\scripts\harness-change.ps1 reindex` | harness-change.ps1 | Rebuild INDEX.json |
-| `.\scripts\harness-evolve.ps1 check` | harness-evolve.ps1 | Check auto-evolve threshold |
-| `.\scripts\harness-evolve.ps1 mark-complete` | harness-evolve.ps1 | Mark evolution complete |
-| `.\scripts\lint-ecl.ps1` | lint-ecl.ps1 | Validate ECL structure |
+| `.\scripts\maintenance\harness-change.ps1 new "Title"` | harness-change.ps1 | Create new active change |
+| `.\scripts\maintenance\harness-change.ps1 status` | harness-change.ps1 | Show active change status |
+| `.\scripts\maintenance\harness-change.ps1 close completed` | harness-change.ps1 | Archive active change |
+| `.\scripts\maintenance\harness-change.ps1 park` | harness-change.ps1 | Park active change |
+| `.\scripts\maintenance\harness-change.ps1 resume <id>` | harness-change.ps1 | Resume parked change |
+| `.\scripts\maintenance\harness-change.ps1 reindex` | harness-change.ps1 | Rebuild INDEX.json |
+| `.\scripts\maintenance\harness-evolve.ps1 check` | harness-evolve.ps1 | Check auto-evolve threshold |
+| `.\scripts\maintenance\harness-evolve.ps1 mark-complete` | harness-evolve.ps1 | Mark evolution complete |
+| `.\scripts\maintenance\lint-ecl.ps1` | lint-ecl.ps1 | Validate ECL structure |
 
 ## 11 Rules
 

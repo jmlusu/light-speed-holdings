@@ -35,7 +35,7 @@ T4 #255 (homepage prototype)   — OPEN, unblocked, product-designer
 3. before/after screenshots via `before-and-after` skill for every changed surface.
 4. Appendix A checklist completed in PR description (`.github/PULL_REQUEST_TEMPLATE.md`).
 5. `ls-artifact-qa` APPROVE on any visual work.
-6. `python scripts/check-site-form-backend.py` green.
+6. `python scripts/test/check-site-form-backend.py` green.
 7. Tokens ONLY: navy #070A40 / red #E63946 / cyan #00BFFF / white / #F2F2F2 + Arial scale; no gray/zinc/slate/stone/neutral/amber/emerald/custom hex on the public SPA.
 8. Local form tests use the dev-only stub on `/api/enquiry` (Vite dev middleware returning 201, excluded from prod builds); NEVER hit the live worker during tests.
 9. Working agent signs `.ai-company/state/WEBSITE_PRINCIPLES_ACKNOWLEDGMENTS.md` (15/15) before merge.

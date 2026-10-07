@@ -222,9 +222,11 @@ class TestSchedulerFullCycle:
         _setup_test_files(tmp_path)
 
         # Set up scheduler with a due task — use the default config path
-        # that the Executor's Scheduler will also read from
-        config_path = tmp_path / "orchestrator" / "scheduler.yaml"
-        scheduler = Scheduler(config_path=str(config_path))
+        # that the Executor's Scheduler will also read from. D-6: the
+        # default resolves through state_path, so both schedulers target
+        # data/orchestrator/scheduler.yaml (an absolute legacy path would
+        # bypass relocation and diverge from the Executor's instance).
+        scheduler = Scheduler()
         scheduler.add_task(
             task_id="s-cycle",
             name="Cycle Report",
@@ -265,7 +267,7 @@ class TestSchedulerFullCycle:
         assert cycle_tasks[0]["status"] == "completed"
 
         # Verify scheduler marks it completed (next_run rescheduled)
-        scheduler2 = Scheduler(config_path=str(config_path))
+        scheduler2 = Scheduler()
         s_task = scheduler2.tasks[0]
         assert s_task.last_run is not None
         assert s_task.next_run > datetime.now() + timedelta(minutes=50)

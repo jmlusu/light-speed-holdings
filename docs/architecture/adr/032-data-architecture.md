@@ -7,7 +7,7 @@
 
 ## Context
 
-Org facts (agents, departments, KPIs, templates) must not be asserted in prose alone. The SPA currently imports internal registry JSON and hard-codes several proof metrics in components. Editorial content lives in `src/data/*.ts`. Drift gates already exist via `docs/source-of-truth.yaml` + `scripts/validate-drift.ps1`. Stale counts (145/152) persist in non-exempt docs.
+Org facts (agents, departments, KPIs, templates) must not be asserted in prose alone. The SPA currently imports internal registry JSON and hard-codes several proof metrics in components. Editorial content lives in `src/data/*.ts`. Drift gates already exist via `docs/source-of-truth.yaml` + `scripts/maintenance/validate-drift.ps1`. Stale counts (145/152) persist in non-exempt docs.
 
 ## Decision
 

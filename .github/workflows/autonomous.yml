@@ -51,7 +51,7 @@ jobs:
         if: inputs.mode != 'executor-only'
         run: uv run python -m ai_company.cli.main orchestrator tick
 
-      # The scheduler (orchestrator/scheduler.yaml) is empty, so seed one real
+      # The scheduler (data/orchestrator/scheduler.yaml) is empty, so seed one real
       # task each run. .opencode/inbox.json is gitignored and the runner
       # workspace is ephemeral, so seeding is the sanctioned way to give the
       # workforce something to do inside a CI run.

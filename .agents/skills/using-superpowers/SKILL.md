@@ -70,7 +70,7 @@ If your harness appears here, read its reference file for special instructions:
    - b) `ConvertTo-Json -Compress` comparison without first parsing to objects and sorting by `id`
    - c) `Get-ChildItem` enumeration without explicit `Sort-Object id` or equivalent deterministic key
    - d) Assuming `ConvertTo-Json` output is stable across PowerShell 5.1 vs 7.x
-3. Run the verification lint: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/lint-ecl.ps1`
+3. Run the verification lint: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/lint-ecl.ps1`
 4. If any of the above patterns are present in your changes, **stop and fix them before proceeding**
 
 **Reference Bugs (for context):**

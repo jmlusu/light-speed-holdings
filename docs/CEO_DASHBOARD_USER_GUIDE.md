@@ -3027,9 +3027,9 @@ The following issues are tracked and documented in `knowledge/technology/dashboa
 
 | Symptom | What to Check |
 |---------|---------------|
-| **"No data showing" / blank dashboard** | Check that the SQLite database exists and has records, or that `.opencode/inbox.json` contains task data. Run `uv run python scripts/compute_company_kpis.py` to verify KPI computation. |
+| **"No data showing" / blank dashboard** | Check that the SQLite database exists and has records, or that `.opencode/inbox.json` contains task data. Run `uv run python scripts/maintenance/compute_company_kpis.py` to verify KPI computation. |
 | **KPIs show "n/a" or null** | Some KPIs (KPI-001, KPI-002, KPI-005) have no data source yet — this is expected. KPI-003 and KPI-004 compute from `.opencode/inbox.json`. Verify inbox.json is populated. |
-| **Stale data / "last updated" timestamp is old** | The dashboard polls every 10 seconds. If data hasn't changed, the timestamp is correct. If you suspect a data pipeline issue, run `python scripts/compute_company_kpis.py --write` to refresh computed values. |
+| **Stale data / "last updated" timestamp is old** | The dashboard polls every 10 seconds. If data hasn't changed, the timestamp is correct. If you suspect a data pipeline issue, run `python scripts/maintenance/compute_company_kpis.py --write` to refresh computed values. |
 | **Health score is missing** | Health score requires at least one task in the database. Check that `config/org_health.yaml` weights sum to 1.0. Verify SQLite is accessible. |
 | **Charts show no data** | Confirm the relevant data source (inbox.json or SQLite) has records. Check the browser console (F12) for API errors logged by `fetchJSON()`. |
 
@@ -3552,7 +3552,7 @@ This section describes how anyone — human or agent — can contribute to the C
 2. **Follow the heading hierarchy** — do not create orphaned `###` or `####` headings.
 3. **Add a version history entry** in both the new file's version table and any parent guide's version table.
 4. **Update all cross-references** that may be affected.
-5. **Run the ECL lint check** before submitting: `pwsh scripts/lint-ecl.ps1`.
+5. **Run the ECL lint check** before submitting: `pwsh scripts/maintenance/lint-ecl.ps1`.
 
 ### 8.3 How to Report an Error
 
@@ -3614,7 +3614,7 @@ The **Org Health Score** ([see Glossary](#glossary)) is a weighted composite of 
 
 | Term | Definition |
 |------|------------|
-| **Approval Gate** | A human-in-the-loop checkpoint that requires explicit CEO approval before an agent action proceeds. Implemented via `orchestrator/approvals.yaml`. |
+| **Approval Gate** | A human-in-the-loop checkpoint that requires explicit CEO approval before an agent action proceeds. Implemented via `data/orchestrator/approvals.yaml`. |
 | **Command Bar** | A keyboard-activated search overlay (`Ctrl + K`) for quick navigation to pages, agents, and tasks. |
 | **Escalation** | An issue that exceeds an agent's authority or capability and is routed to the CEO for resolution. Stored in `.opencode/inbox.json` with status `escalated`. |
 | **JARVIS Theme** | The dashboard's dark visual theme — dark gray backgrounds with neon cyan and green accents. Defined in the Tailwind config and `style.css`. |

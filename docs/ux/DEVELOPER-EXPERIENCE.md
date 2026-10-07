@@ -253,9 +253,9 @@ Layer 2: Logs
 
 Layer 3: Data Files
   └─ .opencode/inbox.json (task queue)
-  └─ orchestrator/approvals.yaml (approval state)
-  └─ orchestrator/escalation.yaml (escalation events)
-  └─ orchestrator/scheduler.yaml (scheduled tasks)
+  └─ data/orchestrator/approvals.yaml (approval state)
+  └─ data/orchestrator/escalation.yaml (escalation events)
+  └─ data/orchestrator/scheduler.yaml (scheduled tasks)
 
 Layer 4: API Inspection
   └─ curl http://localhost:8420/api/v1/dashboard
@@ -278,7 +278,7 @@ LOG_LEVEL=DEBUG ai-company orchestrator tick
 cat .opencode/inbox.json | python -m json.tool
 
 # Inspect approval state
-cat orchestrator/approvals.yaml
+cat data/orchestrator/approvals.yaml
 
 # Test specific API endpoint
 curl http://localhost:8420/api/v1/dashboard | python -m json.tool

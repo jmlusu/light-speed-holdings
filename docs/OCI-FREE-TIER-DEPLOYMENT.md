@@ -140,7 +140,7 @@ sudo bash /opt/ai-company/deploy/oci/setup-vm.sh /opt/ai-company
 ```
 
 If you did **not** pass `-Deploy` to the provisioner, copy the repo over first
-(the app's own `scripts/backup.ps1 -CloudProvider` won't help here; use rsync/scp):
+(the app's own `scripts/deploy/backup.ps1 -CloudProvider` won't help here; use rsync/scp):
 
 ```powershell
 rsync -az --exclude-from .gitignore --exclude .venv --exclude node_modules `

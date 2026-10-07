@@ -25,6 +25,7 @@ import logging
 from pathlib import Path
 from typing import Any, Iterator
 
+from ai_company.paths import state_path
 from ai_company.store.file_store import FileStore
 
 logger = logging.getLogger(__name__)
@@ -33,11 +34,21 @@ logger = logging.getLogger(__name__)
 # Paths are stored relative to the project root (``base_dir``).  Anything
 # not in this set is rejected, closing the "forbidden path" gap that raw
 # ``open()`` calls left open.
+#
+# Since D-6 the runtime-state files live under ``data/orchestrator/``;
+# the legacy ``orchestrator/...`` forms stay allowlisted so a deployment
+# where self-migration failed (e.g. a running daemon holds file locks)
+# keeps working against the old location. ``_resolve`` maps legacy-form
+# inputs through :func:`ai_company.paths.state_path` before this check.
 _ALLOWED_REL_PATHS: frozenset[str] = frozenset(
     {
         # Task inbox
         ".opencode/inbox.json",
         # Approval / escalation / scheduler / device stores
+        "data/orchestrator/approvals.yaml",
+        "data/orchestrator/escalation.yaml",
+        "data/orchestrator/scheduler.yaml",
+        "data/orchestrator/devices.yaml",
         "orchestrator/approvals.yaml",
         "orchestrator/escalation.yaml",
         "orchestrator/scheduler.yaml",
@@ -50,6 +61,7 @@ _ALLOWED_REL_PATHS: frozenset[str] = frozenset(
         # Company-level KPIs
         "config/company/kpis.yaml",
         # Cost & analytics
+        "data/orchestrator/cost_tracker.json",
         "orchestrator/cost_tracker.json",
         # Audit log (read-only usage by dashboard metrics). Canonical trail
         # is the single JSONL file `.opencode/audit` (tickets #59 / #71) —
@@ -64,9 +76,16 @@ _ALLOWED_REL_PATHS: frozenset[str] = frozenset(
 
 # Directory prefixes that are permitted (for globbed snapshot reads).
 _ALLOWED_PREFIXES: tuple[str, ...] = (
+    "data/orchestrator/kpi_snapshots/",
     "orchestrator/kpi_snapshots/",
     "memory/",
     ".opencode/decompositions/",
+)
+
+# Prefixes accepted for a resolved snapshot file (D-6 target + legacy).
+_SNAPSHOT_PREFIXES: tuple[str, ...] = (
+    "data/orchestrator/kpi_snapshots/",
+    "orchestrator/kpi_snapshots/",
 )
 
 
@@ -114,6 +133,10 @@ class StateStore:
             StateStoreError: If the path is not an allowed state file.
         """
         try:
+            # D-6: map legacy ``orchestrator/...`` inputs to their relocated
+            # ``data/orchestrator/...`` home (this also triggers the one-time
+            # self-migration of an existing legacy tree).
+            rel_path = state_path(rel_path, base=self._base)
             candidate = (self._base / rel_path).resolve()
             rel = str(candidate.relative_to(self._base.resolve())).replace("\\", "/")
         except ValueError:
@@ -213,7 +236,7 @@ class StateStore:
         """Read a single KPI snapshot JSON file (must live in the allowed
         snapshot prefix)."""
         rel = str(path.resolve().relative_to(self._base)).replace("\\", "/")
-        if not rel.startswith("orchestrator/kpi_snapshots/"):
+        if not rel.startswith(_SNAPSHOT_PREFIXES):
             raise StateStoreError(f"Path not permitted by StateStore: {rel}")
         if not path.exists():
             return None

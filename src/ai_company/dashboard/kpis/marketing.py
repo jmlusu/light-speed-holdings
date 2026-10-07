@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from ai_company.dashboard.kpis.base import KPICollector
+from ai_company.paths import state_path
 
 
 class MarketingKPICollector(KPICollector):
@@ -84,16 +86,13 @@ class MarketingKPICollector(KPICollector):
             tasks_quality = "error"
             tasks_error = "No task data available (SQLite and MessageBus both unavailable)"
 
-        # Data quality for campaign/content files
-        campaigns_missing = not (
-            self.root / "orchestrator" / "marketing" / "campaigns.json"
-        ).exists()
-        content_missing = not (
-            self.root / "orchestrator" / "marketing" / "content_log.json"
-        ).exists()
-        subscribers_missing = not (
-            self.root / "orchestrator" / "marketing" / "pharos_subscribers.json"
-        ).exists()
+        # Data quality for campaign/content files. D-6: resolve through
+        # state_path so the checks match the post-migration locations
+        # that _load_json reads from.
+        marketing_dir = self.root / Path(str(state_path("orchestrator/marketing", base=self.root)))
+        campaigns_missing = not (marketing_dir / "campaigns.json").exists()
+        content_missing = not (marketing_dir / "content_log.json").exists()
+        subscribers_missing = not (marketing_dir / "pharos_subscribers.json").exists()
         if campaigns_missing and content_missing:
             marketing_file_quality = "error"
             marketing_file_error = "Marketing data files missing"

@@ -2,7 +2,7 @@
 Append-only JSONL store for escalation events.
 
 This module provides an evidence-separation compliant store for escalation events.
-Events are written to a JSONL file (orchestrator/escalation_events.jsonl) that
+Events are written to a JSONL file (data/orchestrator/escalation_events.jsonl) that
 is read-only for auditors. The escalation/approval systems write events here;
 auditors read from this path but never write to it.
 
@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import List
 
 from ai_company.orchestrator.escalation import EscalationEvent
+from ai_company.paths import state_path
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,8 @@ class EscalationEventStore:
     """
 
     def __init__(self, path: str = "orchestrator/escalation_events.jsonl"):
-        self.path = Path(path)
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        self.path = Path(str(state_path(path)))
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
 
@@ -156,8 +158,12 @@ def get_escalation_event_store(
     Caching per path keeps one store (and therefore one lock) per file, so
     concurrent writers to the same file still serialise through the same
     ``RLock`` while callers using different paths stay fully isolated.
+
+    Paths are mapped through :func:`state_path` before the cache key is
+    computed so legacy ``orchestrator/`` and new ``data/orchestrator/``
+    callers share one store (and one lock) per file.
     """
-    key = str(Path(path).expanduser().resolve())
+    key = str(Path(str(state_path(path))).expanduser().resolve())
     store = _STORE_CACHE.get(key)
     if store is None:
         store = EscalationEventStore(path)

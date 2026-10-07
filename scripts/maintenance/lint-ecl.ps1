@@ -34,11 +34,11 @@ foreach ($dir in @("active", "parking", "archive")) {
 }
 
 if (-not (Test-Path -LiteralPath $HarnessChange)) {
-  Fail "Missing scripts/harness-change.ps1."
+  Fail "Missing scripts/maintenance/harness-change.ps1."
 }
 
 if (-not (Test-Path -LiteralPath $HarnessEvolve)) {
-  Fail "Missing scripts/harness-evolve.ps1."
+  Fail "Missing scripts/maintenance/harness-evolve.ps1."
 }
 
 if (-not (Test-Path -LiteralPath $EvolutionState)) {
@@ -96,7 +96,7 @@ if ((Compare-Object $actualObj $expectedObj -Property id,title,status,location,m
   $expectedObj | ConvertTo-Json -Depth 8 -Compress
   Write-Output "--- actual (INDEX.json) ---"
   $actualObj | ConvertTo-Json -Depth 8 -Compress
-  Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
+  Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/harness-change.ps1 reindex"
 }
 
 # Version consistency gate: pyproject.toml is canonical; CHANGELOG.md, API-REFERENCE.md, docs/STATUS.md must match

@@ -7,7 +7,7 @@
 #   * KPI-003 / KPI-004 — computed at REQUEST TIME by
 #       ai_company.dashboard.data_service.get_company_kpi_summary()
 #     (SQLite-first, then .opencode/inbox.json).  The `current` values below are
-#     the latest snapshots computed by scripts/compute_company_kpis.py from the
+#     the latest snapshots computed by scripts/maintenance/compute_company_kpis.py from the
 #     stable file sources, used as a real fallback for the raw /api/ceo-dashboard
 #     pass-through and as a documented reference value.
 #   * KPI-001 / KPI-002 / KPI-005 — NO real source exists in the repo yet, so
@@ -16,8 +16,8 @@
 #     `formula`/`source` that would unlock a computed value.
 #
 # Regenerate / verify the snapshots (from the ai-company root):
-#   python scripts/compute_company_kpis.py            # verify only (no writes)
-#   python scripts/compute_company_kpis.py --write    # refresh current/computed_at
+#   python scripts/maintenance/compute_company_kpis.py            # verify only (no writes)
+#   python scripts/maintenance/compute_company_kpis.py --write    # refresh current/computed_at
 #
 kpis:
   company:

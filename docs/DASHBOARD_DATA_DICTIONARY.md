@@ -163,7 +163,7 @@ All endpoints live under the router prefix **`/api/v1`**. Response models are Py
 
 | Method | Path | Response Model | Description |
 |--------|------|----------------|-------------|
-| GET | `/api/v1/scheduler` | `list[dict]` | All scheduled and recurring tasks from `orchestrator/scheduler.yaml`. |
+| GET | `/api/v1/scheduler` | `list[dict]` | All scheduled and recurring tasks from `data/orchestrator/scheduler.yaml`. |
 
 ### 3.11 Org Health
 
@@ -288,7 +288,7 @@ Returned by `GET /api/v1/dashboard`.
 | `pending_approvals` | `int` | `0` | Non-expired approval requests with `status == "pending"` |
 | `open_escalations` | `int` | `0` | Escalation events with `resolved == false` |
 | `total_agents` | `int` | `0` | Count of agents in `company/agent-registry.json` |
-| `scheduled_tasks` | `int` | `0` | Tasks in `orchestrator/scheduler.yaml` |
+| `scheduled_tasks` | `int` | `0` | Tasks in `data/orchestrator/scheduler.yaml` |
 | `uptime_seconds` | `float` | `0` | Seconds since API server boot |
 | `computed_at` | `Optional[str]` | `None` | ISO-8601 UTC timestamp of computation |
 | `source` | `dict[str, str]` | `{}` | Map of logical name → file path (see §5) |
@@ -298,11 +298,11 @@ Returned by `GET /api/v1/dashboard`.
 
 | Key | Value |
 |-----|-------|
-| `tasks` | `orchestrator/inbox.json` |
+| `tasks` | `.opencode/inbox.json` |
 | `agents` | `company-registry.yaml` |
-| `approvals` | `orchestrator/approvals.yaml` |
-| `escalations` | `orchestrator/escalation.yaml` |
-| `scheduler` | `orchestrator/scheduler.yaml` |
+| `approvals` | `data/orchestrator/approvals.yaml` |
+| `escalations` | `data/orchestrator/escalation.yaml` |
+| `scheduler` | `data/orchestrator/scheduler.yaml` |
 
 ### 4.2 `AgentSummary`
 
@@ -548,15 +548,15 @@ The `KPIs` model (endpoint §3.1) aggregates data from five distinct operational
 
 | Field | Source File | Source Module | Computation |
 |-------|-----------|---------------|-------------|
-| `pending_tasks` | `orchestrator/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "pending")` |
-| `in_progress_tasks` | `orchestrator/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "in_progress")` |
-| `completed_tasks` | `orchestrator/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "completed")` |
-| `failed_tasks` | `orchestrator/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "failed")` |
-| `escalated_tasks` | `orchestrator/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "escalated")` |
-| `pending_approvals` | `orchestrator/approvals.yaml` | `yaml.safe_load()` | Count of requests where `status == "pending"` AND (`expires_at` is null OR `expires_at > now`) |
-| `open_escalations` | `orchestrator/escalation.yaml` | `yaml.safe_load()` | Count of events where `resolved == false` |
+| `pending_tasks` | `.opencode/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "pending")` |
+| `in_progress_tasks` | `.opencode/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "in_progress")` |
+| `completed_tasks` | `.opencode/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "completed")` |
+| `failed_tasks` | `.opencode/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "failed")` |
+| `escalated_tasks` | `.opencode/inbox.json` (via MessageBus) | `api.py → _read_all_tasks()` | `count(t for t in tasks if status == "escalated")` |
+| `pending_approvals` | `data/orchestrator/approvals.yaml` | `yaml.safe_load()` | Count of requests where `status == "pending"` AND (`expires_at` is null OR `expires_at > now`) |
+| `open_escalations` | `data/orchestrator/escalation.yaml` | `yaml.safe_load()` | Count of events where `resolved == false` |
 | `total_agents` | `company/agent-registry.json` | `api.py → _load_registry()` | `len(registry)` |
-| `scheduled_tasks` | `orchestrator/scheduler.yaml` | `yaml.safe_load()` | `len(scheduler_data.get("tasks", []))` |
+| `scheduled_tasks` | `data/orchestrator/scheduler.yaml` | `yaml.safe_load()` | `len(scheduler_data.get("tasks", []))` |
 | `uptime_seconds` | In-memory | `time.time() - _START_TIME` | Seconds since the API process started |
 | `computed_at` | Runtime | `datetime.now(timezone.utc).isoformat()` | Computed at request time |
 | `source` | Static map | Hardcoded in `api.py` | Logical name → file path |
@@ -583,7 +583,7 @@ Every API response that aggregates data includes a `data_quality` dict. The dash
 | `kpi_source` | `"live_collectors"` | KPI data came from the 8 department collector classes. |
 | `task_source` | `"message_bus"` | Tasks read through MessageBus. |
 | `agent_source` | `"registry"` | Agent data from registry JSON. |
-| `cost_source` | `"cost_tracker"` | Cost data from `orchestrator/cost_tracker.json`. |
+| `cost_source` | `"cost_tracker"` | Cost data from `data/orchestrator/cost_tracker.json`. |
 | `completeness` | `"full"` or `"partial"` | `"full"` when all sections loaded without error; `"partial"` when any section raised. |
 | `notes` | string | Semicolon-delimited error messages from any failed sections, or `"All sections loaded"`. |
 
@@ -638,10 +638,10 @@ Source: `GET /api/v1/dashboard` response model (`Pydantic KPIs` in `src/ai_compa
 
 **Computation logic** (from `api.py:get_dashboard`):
 - Task counts: read via `MessageBus` (`_read_all_tasks()`), counted by status.
-- Pending approvals: loaded from `orchestrator/approvals.yaml`, filtered to `status == "pending"` and not expired.
-- Open escalations: loaded from `orchestrator/escalation.yaml`, filtered to `resolved == false`.
+- Pending approvals: loaded from `data/orchestrator/approvals.yaml`, filtered to `status == "pending"` and not expired.
+- Open escalations: loaded from `data/orchestrator/escalation.yaml`, filtered to `resolved == false`.
 - Total agents: count of entries in `company/agent-registry.json`.
-- Scheduled tasks: count of entries under `tasks` key in `orchestrator/scheduler.yaml`.
+- Scheduled tasks: count of entries under `tasks` key in `data/orchestrator/scheduler.yaml`.
 - Uptime: `time.time() - _START_TIME` (module start timestamp).
 
 ### 7.2 Department KPI Collectors
@@ -674,7 +674,7 @@ All collectors inherit from `KPICollector` (`src/ai_company/dashboard/kpis/base.
 | `failed_tasks` | 0 | count | no | Tasks in failed state |
 | `open_escalations` | 0 | count | no | Unresolved escalation events |
 | `total_tasks` | — | count | — | All tasks (all statuses) |
-| `scheduled_tasks` | — | count | — | Tasks in `orchestrator/scheduler.yaml` |
+| `scheduled_tasks` | — | count | — | Tasks in `data/orchestrator/scheduler.yaml` |
 | `sop_current` | 1 | bool | yes | Engineering SOP updated within 90 days |
 | `sop_freshness_pct` | 100 | `%` | yes | `(90 - days_old) / 90 × 100` when current |
 
@@ -784,7 +784,7 @@ All collectors inherit from `KPICollector` (`src/ai_company/dashboard/kpis/base.
 | `registry_agent_count` | — | count | — | Agents declared in `company-registry.yaml` |
 | `generated_agent_count` | same as `registry_agent_count` | count | yes | Agent `.md` files in `.opencode/agents/` |
 | `agent_sync_status` | 1 | bool | yes | `generated_agent_count == registry_agent_count` |
-| `scheduled_tasks` | — | count | — | Tasks in `orchestrator/scheduler.yaml` |
+| `scheduled_tasks` | — | count | — | Tasks in `data/orchestrator/scheduler.yaml` |
 | `open_escalations` | 0 | count | no | Unresolved escalation events |
 | `escalation_rate_pct` | 15 | `%` | no | `open_escalations / max(inbox_total, 1) × 100` |
 
@@ -795,18 +795,18 @@ Source: `GET /api/v1/company-kpis` via `data_service.get_company_kpi_summary()`.
 | KPI ID | Name | Target | Source | Description |
 |--------|------|--------|--------|-------------|
 | KPI-001 | ARR | $100,000 | SQLite `revenue_transactions` table | Annual Recurring Revenue |
-| KPI-002 | CSAT | 9.0 | `orchestrator/cs/surveys.json` | Customer Satisfaction |
+| KPI-002 | CSAT | 9.0 | `data/orchestrator/cs/surveys.json` | Customer Satisfaction |
 | KPI-003 | Agent Utilization Rate | 80% | Computed from tasks | Active agents / registered |
 | KPI-004 | Build Success Rate | 95% | Computed from tasks | completed / (completed+failed) |
-| KPI-005 | eNPS | 50 | `orchestrator/hr/enps.json` | Employee Net Promoter Score |
+| KPI-005 | eNPS | 50 | `data/orchestrator/hr/enps.json` | Employee Net Promoter Score |
 
 **Collector registry** (`COMPANY_KPI_COLLECTORS`):
 
 | KPI ID | Collector function | Data source |
 |--------|-------------------|-------------|
-| KPI-001 | `collect_arr` | SQLite → file (`orchestrator/finance/revenue.json`) |
-| KPI-002 | `collect_csat` | SQLite → file (`orchestrator/cs/surveys.json`) |
-| KPI-005 | `collect_enps` | File (`orchestrator/hr/enps.json`) |
+| KPI-001 | `collect_arr` | SQLite → file (`data/orchestrator/finance/revenue.json`) |
+| KPI-002 | `collect_csat` | SQLite → file (`data/orchestrator/cs/surveys.json`) |
+| KPI-005 | `collect_enps` | File (`data/orchestrator/hr/enps.json`) |
 
 Each collector returns `{"current": value|None, "source": str|None, "data_quality": "real"|"no_data", "computed_at": str|None, "data_gap": str|None}`.
 
@@ -866,10 +866,10 @@ Source: `GET /api/v1/kpis/alerts` → `AlertEngine` in `src/ai_company/dashboard
 | `company/departments.yaml` | YAML | Department list, department coverage | HR KPIs |
 | `company/config/kpis.yaml` | YAML | KPI definitions (targets, units, frequencies) | Finance KPIs, KPI summary endpoints |
 | `config/company/kpis.yaml` | YAML | Company-level KPIs (ARR, CSAT, eNPS targets) | Company KPI chart, CEO Dashboard |
-| `orchestrator/approvals.yaml` | YAML | Pending approvals count, approval list | Approvals page, Dashboard KPIs |
-| `orchestrator/escalation.yaml` | YAML | Open escalations, escalation list | Escalations page, Engineering/Legal/Operations KPIs |
-| `orchestrator/scheduler.yaml` | YAML | Scheduled tasks | Engineering/Operations KPIs, Scheduler endpoint |
-| `orchestrator/cost_tracker.json` | JSON | Cost summary, budget utilization | Costs page, Finance KPIs |
+| `data/orchestrator/approvals.yaml` | YAML | Pending approvals count, approval list | Approvals page, Dashboard KPIs |
+| `data/orchestrator/escalation.yaml` | YAML | Open escalations, escalation list | Escalations page, Engineering/Legal/Operations KPIs |
+| `data/orchestrator/scheduler.yaml` | YAML | Scheduled tasks | Engineering/Operations KPIs, Scheduler endpoint |
+| `data/orchestrator/cost_tracker.json` | JSON | Cost summary, budget utilization | Costs page, Finance KPIs |
 | `.opencode/audit` (directory) | JSONL | Agent analytics, model telemetry, per-agent task costs | Command Center, `/metrics`, model telemetry endpoint |
 | `results/cost_log.jsonl` | JSONL | Cost analytics (SQLite backfill) | Costs page |
 | `.opencode/audit.jsonl` | JSONL | Legacy audit trail | Audit timeline (fallback) |
@@ -878,17 +878,17 @@ Source: `GET /api/v1/kpis/alerts` → `AlertEngine` in `src/ai_company/dashboard
 | `.opencode/agents/*.md` | Markdown | Agent count, agent sync status | Operations KPIs, health check |
 | `company/models.yaml` | YAML | Model routing | Command Center model telemetry, model endpoints |
 | `config/org_health.yaml` | YAML | Org health component weights, band thresholds | Org Health composite score |
-| `orchestrator/devices.yaml` | YAML | Push notification devices | Mobile API (register/unregister) |
-| `orchestrator/marketing/campaigns.json` | JSON | Campaign count, marketing KPIs | Marketing KPIs |
-| `orchestrator/marketing/content_log.json` | JSON | Content pieces produced, quality scores | Marketing KPIs |
-| `orchestrator/sales/pipeline.json` | JSON | Pipeline value, deal count, win rate | Sales KPIs |
-| `orchestrator/sales/leads.json` | JSON | New leads | Sales KPIs |
-| `orchestrator/cs/tickets.json` | JSON | Ticket counts, resolution time, CS task completion | Customer Success KPIs |
-| `orchestrator/cs/surveys.json` | JSON | CSAT scores | Company KPIs (KPI-002), Customer Success KPIs |
-| `orchestrator/legal/contracts.json` | JSON | Contract reviews, compliance | Legal KPIs |
-| `orchestrator/legal/compliance_log.json` | JSON | Compliance score | Legal KPIs |
-| `orchestrator/hr/enps.json` | JSON | eNPS score | Company KPIs (KPI-005) |
-| `orchestrator/finance/revenue.json` | JSON | ARR (file fallback when SQLite unavailable) | Company KPIs (KPI-001) |
+| `data/orchestrator/devices.yaml` | YAML | Push notification devices | Mobile API (register/unregister) |
+| `data/orchestrator/marketing/campaigns.json` | JSON | Campaign count, marketing KPIs | Marketing KPIs |
+| `data/orchestrator/marketing/content_log.json` | JSON | Content pieces produced, quality scores | Marketing KPIs |
+| `data/orchestrator/sales/pipeline.json` | JSON | Pipeline value, deal count, win rate | Sales KPIs |
+| `data/orchestrator/sales/leads.json` | JSON | New leads | Sales KPIs |
+| `data/orchestrator/cs/tickets.json` | JSON | Ticket counts, resolution time, CS task completion | Customer Success KPIs |
+| `data/orchestrator/cs/surveys.json` | JSON | CSAT scores | Company KPIs (KPI-002), Customer Success KPIs |
+| `data/orchestrator/legal/contracts.json` | JSON | Contract reviews, compliance | Legal KPIs |
+| `data/orchestrator/legal/compliance_log.json` | JSON | Compliance score | Legal KPIs |
+| `data/orchestrator/hr/enps.json` | JSON | eNPS score | Company KPIs (KPI-005) |
+| `data/orchestrator/finance/revenue.json` | JSON | ARR (file fallback when SQLite unavailable) | Company KPIs (KPI-001) |
 | `config/workflows/workflows.yaml` | YAML | Workflow definitions | Mission Control |
 | `docs/sop/*.md` | Markdown | SOP freshness (8 departments) | Engineering/Legal/CS/Operations KPIs |
 | `data/ai_company.db` | SQLite | Tasks, audit events, costs, KPI history, escalations, revenue, project costs, search index, agent performance analytics | All dashboard pages (preferred data source) |

@@ -200,7 +200,7 @@ open-design --version
 cat brand/tokens/brand-tokens.json
 
 # Sync canonical assets
-pwsh scripts/sync-brand.ps1
+pwsh scripts/build/sync-brand.ps1
 ```
 
 ### Agent Not Routing Correctly

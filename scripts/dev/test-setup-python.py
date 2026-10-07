@@ -46,7 +46,7 @@ def main():
         print("✅ All checks passed!")
         print("\nTo generate the milestones deck:")
         print("1. Run: uv sync --extra dev (installs python-pptx)")
-        print("2. Run: uv run python scripts/generate-milestones-deck.py")
+        print("2. Run: uv run python scripts/build/generate-milestones-deck.py")
         print("3. Or run: generate-deck-python.bat (Windows)")
         print("4. Or run: .\\generate-deck-python.ps1 (PowerShell)")
         return 0

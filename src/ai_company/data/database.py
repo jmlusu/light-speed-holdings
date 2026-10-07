@@ -98,7 +98,7 @@ CREATE INDEX IF NOT EXISTS idx_memory_type ON memory_entries(memory_type);
 CREATE INDEX IF NOT EXISTS idx_memory_agent ON memory_entries(agent_id);
 CREATE INDEX IF NOT EXISTS idx_memory_created ON memory_entries(created_at);
 
--- Escalation events (replaces orchestrator/escalation.yaml)
+-- Escalation events (replaces data/orchestrator/escalation.yaml)
 CREATE TABLE IF NOT EXISTS escalation_events (
     task_id         TEXT NOT NULL,
     rule_id         TEXT NOT NULL,

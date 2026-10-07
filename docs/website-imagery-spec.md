@@ -674,7 +674,7 @@ src/
 ### Phase 1: Brand Foundation (Do First)
 ```bash
 # Sync brand tokens to mirrors
-pwsh scripts/sync-brand.ps1
+pwsh scripts/build/sync-brand.ps1
 
 # Verify tokens
 cat brand/tokens/brand-tokens.json

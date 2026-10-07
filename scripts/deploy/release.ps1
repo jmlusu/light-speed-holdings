@@ -6,8 +6,8 @@
 .PARAMETER BumpType
     Version bump type: patch (default), minor, or major.
 .EXAMPLE
-    .\scripts\release.ps1
-    .\scripts\release.ps1 -BumpType minor
+    .\scripts\deploy\release.ps1
+    .\scripts\deploy\release.ps1 -BumpType minor
 #>
 param(
     [ValidateSet("patch", "minor", "major")]

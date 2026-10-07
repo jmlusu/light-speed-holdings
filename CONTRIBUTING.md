@@ -103,7 +103,7 @@ The canonical manifest is at `docs/source-of-truth.yaml`.
 
 ### How It Works
 
-1. **Pre-commit hook** runs `scripts/validate-drift.ps1` on every commit
+1. **Pre-commit hook** runs `scripts/maintenance/validate-drift.ps1` on every commit
 2. If drift is detected, the commit is blocked
 3. Fix the stale documentation before committing
 
@@ -123,7 +123,7 @@ If your PR changes:
 | `company-registry.yaml` | CEO / Chief of Staff | Canonical agent definitions |
 | `company/departments.yaml` | CEO / Chief of Staff | Canonical department list |
 | `docs/source-of-truth.yaml` | Knowledge Manager | Manifest accuracy |
-| `scripts/validate-drift.ps1` | DevOps Lead | Script maintenance |
+| `scripts/maintenance/validate-drift.ps1` | DevOps Lead | Script maintenance |
 | `tests/docs/test_doc_drift.py` | QA Lead | Test maintenance |
 | Active docs (`docs/*.md`, `README.md`) | Technical Documentation Lead | Content accuracy |
 | Archived docs (`docs/archive/`) | N/A | Historical records — do not update |
@@ -131,7 +131,7 @@ If your PR changes:
 ### Running Validation Manually
 
 ```powershell
-.\scripts\validate-drift.ps1           # PowerShell
+.\scripts\maintenance\validate-drift.ps1           # PowerShell
 uv run pytest tests/docs/test_doc_drift.py -v  # pytest
 ```
 

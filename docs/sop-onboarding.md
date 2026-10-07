@@ -38,7 +38,7 @@ onboarding new **AI agents** into the company hierarchy — that is
 |------|------------|
 | Onboarding (staff) | End-to-end provisioning of a fresh developer machine against this repo |
 | Onboarding (client) | Folder-skeleton scaffold for a new client / venture company, before approval gates |
-| Bootstrap | `ai-company bootstrap` / `scripts/dev.ps1` idempotent dev-machine setup |
+| Bootstrap | `ai-company bootstrap` / `scripts/dev/dev.ps1` idempotent dev-machine setup |
 | Generate | `ai-company generate` — `company-registry.yaml` → `company/agent-registry.json` + `.opencode/agents/*.md` |
 | Company run | `ai-company company run` — `BootstrapEngine` directory + config scaffolding |
 
@@ -50,7 +50,7 @@ onboarding new **AI agents** into the company hierarchy — that is
 | DevOps Lead | Owns the provisioning flow; verifies prerequisites and idempotency |
 | Platform Engineer | Toolchain and bootstrap-path validation (Git / Ollama / opencode CLI / uv) |
 | Security / Compliance Lead | Secrets step, placeholder detection, gitignore posture |
-| Solutions Engineer | Client-scaffolding procedure (`scripts/bootstrap-company.ps1`) |
+| Solutions Engineer | Client-scaffolding procedure (`scripts/maintenance/bootstrap-company.ps1`) |
 | Test Engineering Lead | Verification gate (doctor, agents list, validate, pytest) |
 | Human Operator | Final confirmation that onboarding completed cleanly |
 
@@ -106,7 +106,7 @@ uv run ai-company bootstrap
 Option B (all-in-one: setup + lint + test + generate + status):
 
 ```powershell
-.\scripts\dev.ps1
+.\scripts\dev\dev.ps1
 ```
 
 Both are idempotent — safe to re-run. What they do:
@@ -117,7 +117,7 @@ Both are idempotent — safe to re-run. What they do:
 4. Install pre-commit hooks (`pre-commit install` with pre-commit + post-commit)
 5. Verify Python ≥ 3.12, Ollama, opencode CLI, Git, and required env vars
 
-`.\scripts\dev.ps1` accepts a single action: `setup`, `test`, `lint`, `status`,
+`.\scripts\dev\dev.ps1` accepts a single action: `setup`, `test`, `lint`, `status`,
 `clean`, `generate`, or `all` (default).
 
 **Expected Result:** `.venv` present, deps synced, hooks installed, all checks green.
@@ -168,12 +168,12 @@ suite green, regenerated cards produce a clean `git diff`.
 
 - Regenerate the canonical executive/board card set via the factory:
   ```powershell
-  .\scripts\seed-agents.ps1          # -DryRun to review all 18 first
+  .\scripts\maintenance\seed-agents.ps1          # -DryRun to review all 18 first
   ```
-  (`seed-agents.ps1` passes each agent spec to `scripts/new-agent.ps1`; safe to
+  (`seed-agents.ps1` passes each agent spec to `scripts/maintenance/new-agent.ps1`; safe to
   re-run, the factory de-duplicates by name.)
 - `git diff --exit-code` after regeneration — committed cards must match output.
-- Confirm `.\scripts\dev.ps1 status` reports: venv active, package installed,
+- Confirm `.\scripts\dev\dev.ps1 status` reports: venv active, package installed,
   agents generated, tests present.
 
 **Expected Result:** Default card set regenerates cleanly; status report green.
@@ -189,7 +189,7 @@ step — they run later through `client_intake` / `ApprovalGate`.
 New-Item -ItemType Directory -Path C:\path\to\<client> -Force
 
 # 2. Scaffold from the template
-Copy-Item scripts\bootstrap-company.ps1 C:\path\to\<client>\
+Copy-Item scripts\maintenance\bootstrap-company.ps1 C:\path\to\<client>\
 cd C:\path\to\<client>
 .\bootstrap-company.ps1
 ```
@@ -246,10 +246,10 @@ pending via `client_intake`.
 
 - `docs/ONBOARDING.md` — Comprehensive onboarding reference (this SOP's runbook)
 - `docs/DEVICE-SETUP.md` — Fresh-machine phases 0–6 (staff)
-- `scripts/dev.ps1` — All-in-one staff onboarding script
-- `scripts/seed-agents.ps1` — 18-agent card regenerator via `scripts/new-agent.ps1`
-- `scripts/bootstrap-company.ps1` — Client pre-governance folder scaffold
-- `scripts/remind-bootstrap.ps1` — Re-reminder time-boxing alias
+- `scripts/dev/dev.ps1` — All-in-one staff onboarding script
+- `scripts/maintenance/seed-agents.ps1` — 18-agent card regenerator via `scripts/maintenance/new-agent.ps1`
+- `scripts/maintenance/bootstrap-company.ps1` — Client pre-governance folder scaffold
+- `scripts/maintenance/remind-bootstrap.ps1` — Re-reminder time-boxing alias
 - `docs/sop-hr-onboarding.md` — SOP-HR-001: onboarding **AI agents** into the hierarchy
 - `docs/legal/client-onboarding-policy.md` — POL-CL-001 G1–G4 governance gates
 - `company-registry.yaml` — Agent source of truth
