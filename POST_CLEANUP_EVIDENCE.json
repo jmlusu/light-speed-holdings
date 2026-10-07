@@ -1,11 +1,11 @@
 {
   "package": "POST_CLEANUP_EVIDENCE",
   "schema_version": "1.1",
-  "generated_at_local": "2026-10-07",
+  "generated_at_local": "2026-10-07 (decision closure D1/D3/D4 applied)",
   "report_head": "4bb64572",
   "evidence_baseline_head": "56a42b27",
   "branch": "feat/athena-archive-and-design-system",
-  "branch_sync_with_origin": "in_sync",
+  "branch_sync_with_origin": "2_ahead_unpushed_by_design",
   "predecessor_audit": {
     "file": "repo-audit/cleanup-status/CLEANUP_STATUS_REPORT.md",
     "head": "be7d1848",
@@ -20,30 +20,31 @@
   },
   "diff_baseline_to_head": {
     "command": "git diff --shortstat cleanup/c0-baseline..HEAD",
-    "files_changed": 751,
-    "insertions": 6372,
+    "files_changed": 754,
+    "insertions": 7359,
     "deletions": 71486,
-    "tracked_files_head": 3705,
-    "tracked_files_delta": -482,
-    "tracked_files_delta_pct": -11.5
+    "tracked_files_head": 3708,
+    "tracked_files_delta": -479,
+    "tracked_files_delta_pct": -11.4,
+    "measured_at": "c40decf0"
   },
   "overall_verdict": {
-    "label": "READY WITH CONDITIONS",
-    "p0_discharged": 2,
+    "label": "READY",
+    "p0_discharged": 3,
     "p0_total": 3,
     "conditions_narrowed_from": 3,
-    "conditions_narrowed_to": 1,
-    "remaining_condition": "P0-1 - test suite rewrites hr/onboarding_requests.yaml",
+    "conditions_narrowed_to": 0,
+    "remaining_condition": null,
     "suite_real_failures_at_head": 0,
-    "improvement_note": "Conditions went from three open-ended items to one specific, testable fix."
+    "improvement_note": "All three P0 conditions and all four P1 findings are discharged with evidence. P0-1 closed by fixing the test fixture that rewrote hr/onboarding_requests.yaml; full-suite run 5 exits 0 with a byte-clean tree."
   },
   "findings": [
     {
       "id": "P0-1",
       "title": "Working tree dirty at audit time",
-      "verdict": "OPEN_NARROWED",
+      "verdict": "CLOSED",
       "evidence_class": "live_state",
-      "causes_remaining": 1,
+      "causes_remaining": 0,
       "causes_cleared": 1,
       "causes": [
         {
@@ -52,7 +53,9 @@
           "status": "CLEARED - all foreign changes landed under the other session's own commits",
           "reason_blocked_this_change": "AGENTS.md section 7 forbids sweeping unrelated user changes; standing instruction was 'proceed, exclude foreign changes'.",
           "foreign_state_excluded_then": {
-            "staged": ["tests/test_scraper_inventory.py (deleted)"],
+            "staged": [
+              "tests/test_scraper_inventory.py (deleted)"
+            ],
             "unstaged": [
               "docs/AGENT-REGISTRY-TABLE.md",
               "docs/REPOSITORY_HEALTH.md",
@@ -60,29 +63,35 @@
               "hr/onboarding_requests.yaml"
             ]
           },
-          "landed_by_commits": ["98c1a535", "fdceab26", "93ade052", "4bb64572"]
+          "landed_by_commits": [
+            "98c1a535",
+            "fdceab26",
+            "93ade052",
+            "4bb64572"
+          ]
         },
         {
           "cause": "test_suite_rewrites_tracked_file",
-          "remediable_here": false,
-          "status": "REMAINING - sole cause of P0-1",
+          "remediable_here": true,
+          "status": "FIXED - D1, proven by full-suite run 5 (exit 0, file byte-identical)",
           "file": "hr/onboarding_requests.yaml",
           "root_cause": [
-            "src/ai_company/orchestrator/hr.py:16 -> HR_DIR = Path(\"hr\") (CWD-relative)",
-            "src/ai_company/orchestrator/onboarding.py:280 -> _REQUESTS_FILE = \"onboarding_requests.yaml\"",
-            "src/ai_company/orchestrator/onboarding.py:283 -> write_yaml(...)"
+            "src/ai_company/hr/onboarding.py:343 -> OnboardingManager.__init__(..., data_dir=\"hr\") (CWD-relative default); _RequestStore(data_dir) writes hr/onboarding_requests.yaml",
+            "tests/unit/test_onboarding.py:55 (manager fixture) and :71 (_make_manager) constructed OnboardingManager WITHOUT data_dir, hitting the default and rewriting the tracked file"
           ],
-          "effect": "created_at/updated_at rewritten on every uv run pytest run (observed 2026-09-28 -> 2026-10-07T01:21:37Z); only timestamps change",
-          "reproduces": "every full pytest run, unconditionally",
+          "effect": "previously: created_at/updated_at rewritten on every uv run pytest run; now unchanged",
+          "reproduces": "no longer reproduces - run 5 left the file byte-identical",
           "last_committed_by": "5ab90eda (PR #412, 2026-10-04, unrelated)",
-          "recommended_owner_action": "point HR_DIR at a temp path under pytest, or untrack the file as already done for approvals.yaml and memory-index.yaml in 1f9944cf"
+          "recommended_owner_action": "none - closed",
+          "root_cause_established_by": "bisection, not inspection: baseline SHA256 recorded, each candidate file run against a restored file - test_dashboard_integration.py CLEAN, test_onboarding.py DIRTIES, test_unified_onboarding.py CLEAN (the latter already passes data_dir=str(tmp_path))",
+          "fix": "tests/unit/test_onboarding.py now passes data_dir=str(tmp_path / \"hr\") at both construction sites. No runtime/source default changed; file remains tracked; no .gitignore entry added."
         }
       ],
       "tree_state_at_report": {
-        "clean": false,
-        "tracked_modifications": ["hr/onboarding_requests.yaml"],
+        "clean": true,
+        "tracked_modifications": [],
         "untracked_deliverables": [],
-        "deliverables_commit": "d507c1ab",
+        "deliverables_commit": "d507c1ab (+ fix-up c40decf0)",
         "deliverables_note": "the three POST_CLEANUP_* deliverables are committed, not part of the residue"
       },
       "cleanup_owned_set_landed": {
@@ -91,6 +100,16 @@
         "insertions": 2150,
         "deletions": 13524,
         "foreign_leak_check": "empty"
+      },
+      "proof_run": {
+        "run": 5,
+        "head": "c40decf0",
+        "cmd": "uv run pytest -q",
+        "result": "0 failed, 2511 passed, 2 skipped, 67 deselected",
+        "exit": 0,
+        "duration_s": 411.15,
+        "tree_after": "CLEAN - hr/onboarding_requests.yaml SHA256 unchanged",
+        "only_dirty_path": "tests/unit/test_onboarding.py (the D1 fix, unstaged at run time)"
       }
     },
     {
@@ -105,30 +124,50 @@
           "log": "%TEMP%\\opencode\\pytest-full.log",
           "log_mtime": "2026-10-07T03:08:05",
           "head_context": "be7d1848 lineage",
-          "failed": 5, "passed": 2512, "skipped": 1, "deselected": 67,
-          "collected_total": 2585, "duration_s": 253.88, "exit": 1
+          "failed": 5,
+          "passed": 2512,
+          "skipped": 1,
+          "deselected": 67,
+          "collected_total": 2585,
+          "duration_s": 253.88,
+          "exit": 1
         },
         {
           "n": 2,
           "log": "stdout",
           "head_context": "16c69940",
-          "failed": 5, "passed": 2511, "skipped": 2, "deselected": 67,
-          "collected_total": 2585, "duration_s": 303.55, "exit": 1
+          "failed": 5,
+          "passed": 2511,
+          "skipped": 2,
+          "deselected": 67,
+          "collected_total": 2585,
+          "duration_s": 303.55,
+          "exit": 1
         },
         {
           "n": 3,
           "log": "%TEMP%\\opencode\\pytest-final.log",
           "head_context": "56a42b27",
-          "failed": 5, "passed": 2511, "skipped": 2, "deselected": 67,
-          "collected_total": 2585, "duration_s": 311.68, "exit": 1,
+          "failed": 5,
+          "passed": 2511,
+          "skipped": 2,
+          "deselected": 67,
+          "collected_total": 2585,
+          "duration_s": 311.68,
+          "exit": 1,
           "note": "last run with tests/test_scraper_inventory.py present"
         },
         {
           "n": 4,
           "log": "%TEMP%\\opencode\\pytest-post4bb.log",
           "head_context": "4bb64572",
-          "failed": 1, "passed": 2510, "skipped": 2, "deselected": 67,
-          "collected_total": 2580, "duration_s": 287.76, "exit": 1,
+          "failed": 1,
+          "passed": 2510,
+          "skipped": 2,
+          "deselected": 67,
+          "collected_total": 2580,
+          "duration_s": 287.76,
+          "exit": 1,
           "is_final": true,
           "delta_note": "collected_total 2585 -> 2580 = exactly 5 fewer, because 4bb64572 deleted the five scraper-inventory tests",
           "single_failure": {
@@ -142,6 +181,15 @@
               "commit 4bb64572 message references keeping the documented endpoint perf-flake exclusion"
             ]
           }
+        },
+        {
+          "run": 5,
+          "head": "c40decf0",
+          "when_local": "2026-10-07, after D1 fix",
+          "result": "0 failed, 2511 passed, 2 skipped, 67 deselected",
+          "exit": 0,
+          "duration_s": 411.15,
+          "note": "first run in this change to exit 0 AND leave the tree byte-clean"
         }
       ],
       "real_failures_at_report_head": 0,
@@ -189,16 +237,7 @@
           "verified": true
         }
       ],
-      "post_deletion_state": {
-        "deleting_commit": "4bb64572",
-        "deleting_commit_date": "2026-10-07T04:02:46+02:00",
-        "deleting_commit_subject": "test: drop scraper inventory tests missed by Athena archive",
-        "deleting_commit_author": "LSAI Remediation Bot",
-        "made_by_this_change": false,
-        "root_cause_fixed": false,
-        "root_cause_note": "commit adds no company/athena/*.jsonl fixture; .gitignore:170 still excludes the directory",
-        "residue_nature": "untested rather than failing"
-      },
+      "post_deletion_state": "tests/test_scraper_inventory.py (176 lines, 5 tests) removed by concurrent commit 4bb64572. CEO decision D3 = formally retire the coverage (not restore it); recorded in POST_CLEANUP_VERIFICATION_REPORT.md section 4.7, with two dangling doc references cleared.",
       "code_changes_made": false,
       "decision_recorded": "Report as-is, no code change (user decision 2 of 4)."
     },
@@ -233,7 +272,10 @@
         "attributable_from_git_evidence": false,
         "checked": "git log --since='2026-10-07 03:00' -- tests/ docs/source-of-truth.yaml -> empty",
         "classification": "non_material",
-        "unchanged_across_runs": ["deselected 67", "failure_set 5 identical in runs 1-3"],
+        "unchanged_across_runs": [
+          "deselected 67",
+          "failure_set 5 identical in runs 1-3"
+        ],
         "honesty_note": "reported as an unexplained observation rather than labelled pre-existing (AGENTS.md section 9)"
       }
     },
@@ -243,8 +285,14 @@
       "verdict": "CLOSED",
       "fix_type": "config_only",
       "commands": [
-        {"cmd": "git submodule init", "exit": 0},
-        {"cmd": "git submodule status", "output": " 6fd2f60802232e0fdb29121a6b3e745d2fe9ff42 open-design (6fd2f60)"}
+        {
+          "cmd": "git submodule init",
+          "exit": 0
+        },
+        {
+          "cmd": "git submodule status",
+          "output": " 6fd2f60802232e0fdb29121a6b3e745d2fe9ff42 open-design (6fd2f60)"
+        }
       ],
       "gitlink_already_in_head": true,
       "on_disk_content_matched_gitlink": true,
@@ -259,14 +307,32 @@
       "file": "company-registry.yaml",
       "safety_regex": "(?m)^(\\s*-\\s+)(write|execute|delegate|web_search)(\\s*)$",
       "replacements": {
-        "found": 145, "replaced": 145, "residual": 0,
-        "by_rule": {"write->edit": 83, "execute->bash": 49, "web_search->webfetch": 11, "delegate->task": 2}
+        "found": 145,
+        "replaced": 145,
+        "residual": 0,
+        "by_rule": {
+          "write->edit": 83,
+          "execute->bash": 49,
+          "web_search->webfetch": 11,
+          "delegate->task": 2
+        }
       },
       "unchanged_lines": 3993,
-      "encoding": {"newline": "LF", "bom": false},
+      "encoding": {
+        "newline": "LF",
+        "bom": false
+      },
       "registry_tool_counts_after": {
-        "read": 90, "edit": 83, "grep": 65, "list": 65, "bash": 50, "webfetch": 18, "task": 4,
-        "total": 375, "legacy": 0, "agent_count": 90
+        "read": 90,
+        "edit": 83,
+        "grep": 65,
+        "list": 65,
+        "bash": 50,
+        "webfetch": 18,
+        "task": 4,
+        "total": 375,
+        "legacy": 0,
+        "agent_count": 90
       },
       "generator": {
         "command": "uv run python -c \"from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()\"",
@@ -277,32 +343,84 @@
         "reverified_at_head": "4bb64572",
         "decisive_proof": "zero card diffs proves no agent permission surface moved"
       },
-      "map_consumers": {"file": "src/ai_company/generator.py", "map": "_TOOL_MAP line 84", "consumed": ["line 159", "line 167"], "semantics": ".get(t, t) identity fallback; retained as back-compat shim"},
+      "map_consumers": {
+        "file": "src/ai_company/generator.py",
+        "map": "_TOOL_MAP line 84",
+        "consumed": [
+          "line 159",
+          "line 167"
+        ],
+        "semantics": ".get(t, t) identity fallback; retained as back-compat shim"
+      },
       "follow_on_not_changed": [
-        {"file": "company/registry-templates/consulting-firm/company-registry.yaml", "legacy_lines": 30, "scope": "out of agreed P1-1 scope (company-registry.yaml only)"},
-        {"file": "hr/onboarding_requests.yaml", "legacy_lines": 2, "scope": "runtime data"}
+        {
+          "file": "company/registry-templates/consulting-firm/company-registry.yaml",
+          "legacy_lines": 30,
+          "scope": "out of agreed P1-1 scope (company-registry.yaml only)"
+        },
+        {
+          "file": "hr/onboarding_requests.yaml",
+          "legacy_lines": 2,
+          "scope": "runtime data"
+        }
       ]
     },
     {
       "id": "P1-2",
       "title": "Phase approval records / manifests / rollback runbook",
-      "verdict": "PARTIAL",
+      "verdict": "CLOSED",
       "sub_items": [
-        {"name": "rollback_runbook", "status": "CLOSED", "file": "repo-audit/cleanup-status/CLEANUP_ROLLBACK_RUNBOOK.md", "commit": "56a42b27", "insertions": 234},
-        {"name": "change_manifest", "status": "CLOSED", "file": "repo-audit/cleanup-status/CLEANUP_FILE_MANIFEST.txt", "pre_existing": true},
-        {"name": "phase_approval_records", "status": "OPEN_CANNOT_BE_CLOSED_BY_RECONSTRUCTION", "reason": "CLEANUP_STATUS_REPORT.md section 1 records 'NOT FOUND anywhere in tree'; retroactively creating them would fabricate evidence"}
+        {
+          "name": "rollback_runbook",
+          "status": "CLOSED",
+          "file": "repo-audit/cleanup-status/CLEANUP_ROLLBACK_RUNBOOK.md",
+          "commit": "56a42b27",
+          "insertions": 234
+        },
+        {
+          "name": "change_manifest",
+          "status": "CLOSED",
+          "file": "repo-audit/cleanup-status/CLEANUP_FILE_MANIFEST.txt",
+          "pre_existing": true
+        },
+        {
+          "name": "phase_approval_records",
+          "status": "CLOSED_SIGNED_AS_AFTER_THE_FACT_RECONSTRUCTION",
+          "reason": null,
+          "signed_by": "Human CEO",
+          "signed_on": "2026-10-07",
+          "option_chosen": "a - sign the reconstructed section 1 table as an after-the-fact record",
+          "establishes": "accepts the git-derived section 1 table as the after-the-fact record for this cleanup",
+          "does_not_establish": "does NOT convert a retrospective reconstruction into contemporaneous approval; the cleanup phases were still executed without prior approval paperwork",
+          "standing_condition": "option b imposed by this decision: every future phase must carry an approval record written before the phase begins",
+          "recorded_in": "repo-audit/cleanup-status/CLEANUP_ROLLBACK_RUNBOOK.md (provenance disclaimer + section 1 header + section 6)"
+        }
       ],
       "tag_inventory": {
-        "total": 14, "cleanup_tags": 12, "backup_tags": 2, "all_resolve": true,
+        "total": 14,
+        "cleanup_tags": 12,
+        "backup_tags": 2,
+        "all_resolve": true,
         "c11": {
-          "name": "cleanup/c11-landing", "type": "annotated",
+          "name": "cleanup/c11-landing",
+          "type": "annotated",
           "tag_object": "7fdcd5f20faf1f78cf76213199b36481239c4800",
           "peeled": "526f33d54fa431f4e4a2712c3226781c81999cac",
-          "message_bytes": 1036, "newlines_preserved": true, "bom_in_message": false
+          "message_bytes": 1036,
+          "newlines_preserved": true,
+          "bom_in_message": false
         },
         "backup_tags_detail": [
-          {"name": "backup/pre-history-purge-one-skill", "sha": "1f3120d290dbed143133a99a1fc30556a87048ac", "type": "commit"},
-          {"name": "backup/pre-strip-bulk-tag", "sha": "22b7d0e2b1397dc74a37306968e5c3839c4d8063", "type": "commit"}
+          {
+            "name": "backup/pre-history-purge-one-skill",
+            "sha": "1f3120d290dbed143133a99a1fc30556a87048ac",
+            "type": "commit"
+          },
+          {
+            "name": "backup/pre-strip-bulk-tag",
+            "sha": "22b7d0e2b1397dc74a37306968e5c3839c4d8063",
+            "type": "commit"
+          }
         ]
       },
       "rollback_drill": {
@@ -329,10 +447,32 @@
       "verdict": "CLOSED",
       "resolved_by_commit": "526f33d5",
       "tagline_consistency": [
-        {"file": "brand/tokens/brand-tokens.json", "line": 6, "value": "ASPIRE. ACT. ACHIEVE."},
-        {"file": "src/data/siteContent.ts", "line": 41, "value": "ASPIRE. ACT. ACHIEVE."},
-        {"file": "src/data/siteContent.ts", "line": 47, "value": "Aspire. Act. Achieve.", "note": "sentence case, intentional"},
-        {"file": "docs/NARRATIVE-AND-POSITIONING.md", "lines": [19, 33, 58, 86], "consistent": true}
+        {
+          "file": "brand/tokens/brand-tokens.json",
+          "line": 6,
+          "value": "ASPIRE. ACT. ACHIEVE."
+        },
+        {
+          "file": "src/data/siteContent.ts",
+          "line": 41,
+          "value": "ASPIRE. ACT. ACHIEVE."
+        },
+        {
+          "file": "src/data/siteContent.ts",
+          "line": 47,
+          "value": "Aspire. Act. Achieve.",
+          "note": "sentence case, intentional"
+        },
+        {
+          "file": "docs/NARRATIVE-AND-POSITIONING.md",
+          "lines": [
+            19,
+            33,
+            58,
+            86
+          ],
+          "consistent": true
+        }
       ],
       "edit_made": false
     },
@@ -344,8 +484,18 @@
       "files_count": 57,
       "unique_sha256": 57,
       "duplication_exists": false,
-      "size_bytes_range": [94, 363],
-      "structure": {"interface": 57, "policy_allow_implicit_invocation": 48, "optional": ["icon_*", "default_prompt"]},
+      "size_bytes_range": [
+        94,
+        363
+      ],
+      "structure": {
+        "interface": 57,
+        "policy_allow_implicit_invocation": 48,
+        "optional": [
+          "icon_*",
+          "default_prompt"
+        ]
+      },
       "in_repo_references": 0,
       "sibling_provider_variants": 0,
       "audit_wording_correction": "'duplicated' is a misnomer - 57 distinct per-agent config stubs, not 57 copies of one file",
@@ -355,22 +505,93 @@
   ],
   "validation_matrix_at_head": {
     "head": "4bb64572",
-    "ruff": {"cmd": "uv run ruff check src/", "result": "All checks passed!", "exit": 0, "status": "PASS"},
-    "mypy": {"cmd": "uv run mypy src/", "result": "no issues found in 225 source files", "exit": 0, "status": "PASS"},
-    "pytest": {"cmd": "uv run pytest -q", "result": "1 failed, 2510 passed, 2 skipped, 67 deselected", "exit": 1, "status": "PASS_WITH_DOCUMENTED_FLAKE", "duration_s": 287.76, "real_failures": 0},
-    "generator": {"cmd": "AgentGenerator().generate_all()", "exit": 0, "changed_files": 0, "changed_agent_cards": 0, "status": "PASS"},
-    "lint_ecl": {"cmd": "pwsh scripts/maintenance/lint-ecl.ps1", "result": "ECL lint passed; ps-antipattern scan 22 files, 0 failures, 0 warnings", "exit": 0, "status": "PASS"},
+    "ruff": {
+      "cmd": "uv run ruff check src/",
+      "result": "All checks passed!",
+      "exit": 0,
+      "status": "PASS"
+    },
+    "mypy": {
+      "cmd": "uv run mypy src/",
+      "result": "no issues found in 225 source files",
+      "exit": 0,
+      "status": "PASS"
+    },
+    "pytest": {
+      "cmd": "uv run pytest -q",
+      "result": "0 failed, 2511 passed, 2 skipped, 67 deselected",
+      "exit": 0,
+      "status": "PASS",
+      "duration_s": 411.15,
+      "real_failures": 0,
+      "head": "c40decf0",
+      "note": "run 5; gates in the other rows were run at 4bb64572"
+    },
+    "generator": {
+      "cmd": "AgentGenerator().generate_all()",
+      "exit": 0,
+      "changed_files": 0,
+      "changed_agent_cards": 0,
+      "status": "PASS"
+    },
+    "lint_ecl": {
+      "cmd": "pwsh scripts/maintenance/lint-ecl.ps1",
+      "result": "ECL lint passed; ps-antipattern scan 22 files, 0 failures, 0 warnings",
+      "exit": 0,
+      "status": "PASS"
+    },
     "registry_legacy_residual": 0,
-    "submodule": {"status": "PASS", "output": " 6fd2f60802232e0fdb29121a6b3e745d2fe9ff42 open-design (6fd2f60)"},
-    "tags": {"resolve": "PASS", "c11_peels_to": "526f33d5", "count": 14},
-    "tree": {"clean": false, "status": "NON_CLEAN_P0_1_OPEN_NARROWED", "tracked_modifications": ["hr/onboarding_requests.yaml"]},
-    "sync": {"status": "in_sync_with_origin"}
+    "submodule": {
+      "status": "PASS",
+      "output": " 6fd2f60802232e0fdb29121a6b3e745d2fe9ff42 open-design (6fd2f60)"
+    },
+    "tags": {
+      "resolve": "PASS",
+      "c11_peels_to": "526f33d5",
+      "count": 14
+    },
+    "tree": {
+      "clean": true,
+      "status": "CLEAN_P0_1_CLOSED",
+      "tracked_modifications": [],
+      "proof": "full-suite run 5 left hr/onboarding_requests.yaml byte-identical (SHA256 unchanged)"
+    },
+    "sync": {
+      "status": "2_ahead_unpushed_by_design",
+      "ahead_commits": [
+        "d507c1ab",
+        "c40decf0",
+        "decision-closure commit"
+      ],
+      "note": "push excluded by the governing protocol; the earlier in_sync reading predated the deliverables"
+    },
+    "final_head": "c40decf0"
   },
   "commits_from_this_change": [
-    {"sha": "526f33d5", "purpose": "P0-1 landing of cleanup-owned Class A/B working-tree changes (97 files)"},
-    {"sha": "16c69940", "purpose": "P1-1 tool-vocabulary normalization in company-registry.yaml"},
-    {"sha": "56a42b27", "purpose": "P1-2 phase records + rollback runbook"},
-    {"sha": "d507c1ab", "purpose": "the three POST_CLEANUP_* verification deliverables (docs only, no source change)"}
+    {
+      "sha": "526f33d5",
+      "purpose": "P0-1 landing of cleanup-owned Class A/B working-tree changes (97 files)"
+    },
+    {
+      "sha": "16c69940",
+      "purpose": "P1-1 tool-vocabulary normalization in company-registry.yaml"
+    },
+    {
+      "sha": "56a42b27",
+      "purpose": "P1-2 phase records + rollback runbook"
+    },
+    {
+      "sha": "d507c1ab",
+      "purpose": "the three POST_CLEANUP_* verification deliverables (docs only, no source change)"
+    },
+    {
+      "commit": "c40decf0",
+      "purpose": "deliverable fix-up: corrected stale two-causes framing in report section 3/3.1 + JSON tree_state_at_report"
+    },
+    {
+      "commit": "decision-closure commit (see git log; hash unknowable before commit)",
+      "purpose": "D1 fixture fix, D3 retirement records, D4 runbook sign-off, decision closure across all three deliverables"
+    }
   ],
   "concurrency_observations": [
     {
@@ -397,20 +618,77 @@
       "title": "Push activity attributed entirely to the concurrent session",
       "branch_state": "in_sync_with_origin",
       "pushed_by_this_change": false,
-      "pushed_by_concurrent_session": ["16c69940", "56a42b27", "and earlier commits"],
-      "git_operations_performed_by_this_change": ["pathspec-scoped commits", "branch create/delete (rollback drill)", "submodule init"],
-      "git_operations_explicitly_not_performed": ["push", "amend", "force-push", "stash", "history rewrite", "tag movement"]
+      "pushed_by_concurrent_session": [
+        "16c69940",
+        "56a42b27",
+        "and earlier commits"
+      ],
+      "git_operations_performed_by_this_change": [
+        "pathspec-scoped commits",
+        "branch create/delete (rollback drill)",
+        "submodule init"
+      ],
+      "git_operations_explicitly_not_performed": [
+        "push",
+        "amend",
+        "force-push",
+        "stash",
+        "history rewrite",
+        "tag movement"
+      ]
     }
   ],
   "known_artifacts_and_limitations": [
-    {"id": "A1", "cosmetic": true, "title": "BOM in commit 526f33d5 subject line", "detail": "first character of the subject is U+FEFF from a Windows encoding mistake", "action": "documented_not_repaired", "why_not_repaired": "amending would rewrite 16c69940, 98c1a535, fdceab26, 56a42b27 and 4bb64572; branch is shared and fully pushed", "impact": "display only"},
-    {"id": "A2", "title": "skip count delta 1 -> 2", "detail": "unattributable from git evidence; recorded as open micro-observation", "ref": "findings[P0-2.skips].delta_1_to_2"},
-    {"id": "A3", "title": "approval records remain absent", "detail": "P1-2 partial; needs CEO decision", "ref": "findings[P1-2].sub_items[phase_approval_records]"},
-    {"id": "A4", "title": "P0-1 remains open on one residue", "detail": "pytest rewrites hr/onboarding_requests.yaml; concurrent-session cause cleared", "ref": "findings[P0-1]"},
-    {"id": "A5", "title": "five scraper-inventory tests deleted not fixed", "detail": "root cause now untested; re-introduction requires fixture or xfail with written reason", "ref": "findings[P0-2].post_deletion_state"},
-    {"id": "A6", "title": "one documented perf flake remains in suite", "detail": "test_endpoint_response_time_p95 excluded by project's own health gate; passes 3/3 in isolation", "ref": "findings[P0-2].runs[3].single_failure"},
-    {"id": "A7", "title": "two out-of-scope files still carry legacy tool names", "detail": "registry template (30 lines) + runtime hr/ data (2 lines)", "ref": "findings[P1-1].follow_on_not_changed"},
-    {"id": "A8", "title": "evidence separation honoured", "detail": "AGENTS.md section 9.3 - this change wrote only its own deliverables and the rollback runbook; no writes into reports/evidence/, audit/*.jsonl, .opencode/audit/*, harness/changes/*/reviews/, or the audit's own CLEANUP_* evidence files"}
+    {
+      "id": "A1",
+      "cosmetic": true,
+      "title": "BOM in commit 526f33d5 subject line",
+      "detail": "first character of the subject is U+FEFF from a Windows encoding mistake",
+      "action": "documented_not_repaired",
+      "why_not_repaired": "amending would rewrite 16c69940, 98c1a535, fdceab26, 56a42b27 and 4bb64572; branch is shared and fully pushed",
+      "impact": "display only"
+    },
+    {
+      "id": "A2",
+      "title": "skip count delta 1 -> 2",
+      "detail": "unattributable from git evidence; recorded as open micro-observation",
+      "ref": "findings[P0-2.skips].delta_1_to_2"
+    },
+    {
+      "id": "A3",
+      "title": "approval records remain absent",
+      "detail": "P1-2 partial; needs CEO decision",
+      "ref": "findings[P1-2].sub_items[phase_approval_records]"
+    },
+    {
+      "id": "A4",
+      "title": "P0-1 remains open on one residue",
+      "detail": "pytest rewrites hr/onboarding_requests.yaml; concurrent-session cause cleared",
+      "ref": "findings[P0-1]"
+    },
+    {
+      "id": "A5",
+      "title": "five scraper-inventory tests deleted not fixed",
+      "detail": "root cause now untested; re-introduction requires fixture or xfail with written reason",
+      "ref": "findings[P0-2].post_deletion_state"
+    },
+    {
+      "id": "A6",
+      "title": "one documented perf flake remains in suite",
+      "detail": "test_endpoint_response_time_p95 excluded by project's own health gate; passes 3/3 in isolation",
+      "ref": "findings[P0-2].runs[3].single_failure"
+    },
+    {
+      "id": "A7",
+      "title": "two out-of-scope files still carry legacy tool names",
+      "detail": "registry template (30 lines) + runtime hr/ data (2 lines)",
+      "ref": "findings[P1-1].follow_on_not_changed"
+    },
+    {
+      "id": "A8",
+      "title": "evidence separation honoured",
+      "detail": "AGENTS.md section 9.3 - this change wrote only its own deliverables and the rollback runbook; no writes into reports/evidence/, audit/*.jsonl, .opencode/audit/*, harness/changes/*/reviews/, or the audit's own CLEANUP_* evidence files"
+    }
   ],
   "scope_exclusions_honoured": [
     "no architecture redesign",
@@ -428,8 +706,54 @@
     "AGENTS.md sections 7, 8, 9, 9.3"
   ],
   "recommended_decisions": [
-    {"id": "D1", "owner": "engineering", "decision": "stop the test suite rewriting hr/onboarding_requests.yaml (temp path under pytest, or untrack as done for approvals.yaml / memory-index.yaml in 1f9944cf)", "unblocks": "P0-1", "status": "OPEN - sole remaining action"},
-    {"id": "D3", "owner": "CEO", "decision": "note that tests/test_scraper_inventory.py was removed as a CI unblock rather than fixed; decide whether coverage should be reintroduced with a fixture or formally retired", "unblocks": "clean resolution of C1", "status": "OPEN_NOTING"},
-    {"id": "D4", "owner": "CEO", "decision": "sign the git-derived phase reconstruction as an after-the-fact record, or accept the gap and require contemporaneous records going forward", "unblocks": "P1-2 phase_approval_records", "status": "OPEN"}
-  ]
+    {
+      "id": "D1",
+      "owner": "engineering (CEO-approved)",
+      "decision": "stop the test suite rewriting hr/onboarding_requests.yaml (temp path under pytest, or untrack as done for approvals.yaml / memory-index.yaml in 1f9944cf)",
+      "unblocks": "P0-1",
+      "status": "RESOLVED_FIXED",
+      "chosen": "fix the rewrite at source rather than report it",
+      "outcome": "tests/unit/test_onboarding.py passes data_dir=str(tmp_path / \"hr\") at both OnboardingManager construction sites; root cause established by bisection; run 5 exits 0 with a byte-clean tree -> P0-1 CLOSED"
+    },
+    {
+      "id": "D3",
+      "owner": "CEO",
+      "decision": "note that tests/test_scraper_inventory.py was removed as a CI unblock rather than fixed; decide whether coverage should be reintroduced with a fixture or formally retired",
+      "unblocks": "clean resolution of C1",
+      "status": "RESOLVED_RETIRED",
+      "chosen": "formally retire the coverage (not restore it)",
+      "outcome": "5 test names recorded; restoration rejected because company/athena/ is gitignored (.gitignore:170) and can never exist in a clone - restoring would mean asserting against fabricated data; two dangling doc references cleared; coverage gap accepted explicitly and left unguarded until tracked fixtures exist",
+      "deleted_tests": [
+        "test_scrape_jobs_jsonl_is_valid",
+        "test_jobs_jsonl_is_valid",
+        "test_user_profiles_jsonl_is_valid",
+        "test_inventory_covers_all_jsonl_datasets",
+        "test_scraper_script_dirs_reporting_matches_filesystem"
+      ],
+      "refs_cleared": [
+        "docs/wayfinder/map2-scraper-discovery-gap-analysis.md",
+        "docs/superpowers/plans/2026-09-28-wayfinder-map2-scraper-discovery-gap-analysis.md"
+      ]
+    },
+    {
+      "id": "D4",
+      "owner": "CEO",
+      "decision": "sign the git-derived phase reconstruction as an after-the-fact record, or accept the gap and require contemporaneous records going forward",
+      "unblocks": "P1-2 phase_approval_records",
+      "status": "RESOLVED_SIGNED",
+      "chosen": "a - sign the git-derived phase reconstruction as an after-the-fact record",
+      "outcome": "runbook provenance disclaimer + section 1 header signed 2026-10-07; section 6 flipped to CLOSED; contemporaneous-approval condition imposed on future phases -> P1-2 CLOSED",
+      "standing_condition": "every future phase must carry an approval record written before the phase begins"
+    }
+  ],
+  "ceo_decision_closure": {
+    "date": "2026-10-07",
+    "decisions": [
+      "D1",
+      "D3",
+      "D4"
+    ],
+    "result": "all seven conditions (3 P0 + 4 P1) discharged; overall verdict READY",
+    "evidence_separation": "AGENTS.md 9.3 honoured: this change wrote only its own three deliverables, the rollback runbook, one test fixture, and two docs lines cleared for D3"
+  }
 }

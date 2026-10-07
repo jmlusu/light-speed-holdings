@@ -1,6 +1,6 @@
 # LIGHTSPEED CLEANUP — PHASE RECORDS & ROLLBACK RUNBOOK
 
-**Prepared:** 2026-10-07 · **Status:** P1-2 partial closure (rollback runbook added; see §6 for the approval-record gap)
+**Prepared:** 2026-10-07 · **Status:** P1-2 closed (runbook added; §1 reconstruction signed off as an after-the-fact record — see §6)
 **Governing process:** `docs/directives/LIGHTSPEED PHASED APPROVAL & ROLLBACK PROTOCOL.md`
 **Companion evidence:** `CLEANUP_STATUS_REPORT.md`, `CLEANUP_EVIDENCE.json`, `CLEANUP_FILE_MANIFEST.txt`, `CLEANUP_STATUS_SUMMARY.md`
 
@@ -11,16 +11,26 @@
 > captured on 2026-10-07. It records what *is verifiable*; it is **not** a substitute for
 > approval paperwork that was never written, and no phase should be read as "approved" on the
 > strength of this table alone. §2 onward (the rollback procedures) is actionable as written.
+>
+> **After-the-fact sign-off (2026-10-07, Human CEO).** The Human CEO has signed the §1 table as
+> an *after-the-fact* record, closing the phase-approval sub-item of P1-2. This sign-off
+> **ratifies the reconstruction**, it does not convert it into contemporaneous approval: the
+> phases were still executed without prior authorisation records, and that fact is not erased.
+> Going forward (P1-2 condition b), every phase must carry a contemporaneous approval record
+> written *before* the phase begins.
 
 ---
 
 ## 1. Phase records (reconstructed from git)
 
+**Signed off as an after-the-fact record by the Human CEO on 2026-10-07** (see the provenance
+disclaimer above for what this sign-off does and does not establish).
+
 **Tag inventory:** 14 tags — 12 `cleanup/*` (c0–c11) + 2 `backup/*`. All 14 are present and
 resolvable; no tag points at a missing object.
 
-**Range:** `cleanup/c0-baseline` (`048627ad`, 4187 tracked files) → HEAD (`fdceab26`, 3705
-tracked files) = **749 files changed, +6128 / −71310**.
+**Range:** `cleanup/c0-baseline` (`048627ad`, 4187 tracked files) → HEAD (`c40decf0`, 3708
+tracked files) = **754 files changed, +7359 / −71486**.
 
 | Phase | Tag object | Target commit | Created (+0200) | Scope (per commit subject/tag message) | Rollback action |
 |---|---|---|---|---|---|
@@ -204,7 +214,7 @@ These are outside git and are silently unrecoverable through any procedure above
 
 ---
 
-## 6. Known gap (why this is only a partial P1-2 closure)
+## 6. Closure of P1-2
 
 The original P1-2 finding was "**no phase approval records / manifests / rollback runbook**"
 (`CLEANUP_STATUS_REPORT.md` §9, row P1-2). Status after this document:
@@ -213,9 +223,9 @@ The original P1-2 finding was "**no phase approval records / manifests / rollbac
 |---|---|---|
 | Rollback runbook | **CLOSED** | §2–§5 above, executable as written |
 | Change manifest | **CLOSED** (pre-existing) | `CLEANUP_FILE_MANIFEST.txt` already covered this |
-| Phase approval records | **OPEN — cannot be closed by reconstruction** | No approval paperwork was written during the cleanup and none can be created retroactively. §1 is explicitly labeled as a git-derived reconstruction, not an approval record. Closing this sub-item requires either (a) the CEO signing off on the reconstructed §1 table as an *after-the-fact* record, or (b) accepting the gap and requiring contemporaneous approval records for all future phases. |
+| Phase approval records | **CLOSED** — signed as an after-the-fact reconstruction (2026-10-07, Human CEO) | §1 signed off above. The reconstruction was never contemporaneous approval and the sign-off does not make it so; it accepts the gap for this cleanup and imposes option (b) going forward — every future phase must have an approval record written *before* it starts. |
 
-Recorded as **P1-2 PARTIAL** in `POST_CLEANUP_VERIFICATION_REPORT.md`.
+Recorded as **P1-2 CLOSED** in `POST_CLEANUP_VERIFICATION_REPORT.md`.
 
 ---
 
@@ -226,7 +236,7 @@ Recorded as **P1-2 PARTIAL** in `POST_CLEANUP_VERIFICATION_REPORT.md`.
 | All 14 tags resolve to objects | PASS | 2026-10-07 |
 | `cleanup/c11-landing` peels to `526f33d54fa431f4e4a2712c3226781c81999cac` | PASS | 2026-10-07 |
 | `inspect/*` branch created and deleted cleanly | PASS | 2026-10-07 (this document's author) |
-| `git diff cleanup/c0-baseline..HEAD --stat` reconstructible | PASS — 749 files, +6128/−71310 | 2026-10-07 |
+| `git diff cleanup/c0-baseline..HEAD --stat` reconstructible | PASS — 754 files, +7359/−71486 | 2026-10-07 |
 | Post-rollback gate (`ruff`/`mypy`/`pytest`/generator/`lint-ecl`) | NOT RUN — no rollback performed | — |
 
 The drill in this table confirms the *tag chain and diff are intact*, i.e. rollback is

@@ -145,6 +145,9 @@ def test_scraper_data_inventory():
 **Step 2: Run test to verify it fails**
 Run: `pytest test_scraper_inventory.py -v`
 Expected: FAIL
+> **Retired 2026-10-07:** `tests/test_scraper_inventory.py` no longer exists (removed in
+> `4bb64572`; `company/athena/` is gitignored so the inventory it asserted against can never
+> exist in a clone). This step cannot be executed — treat it as a historical instruction only.
 
 **Step 3: Write minimal implementation** — [create script that inventories scraper data]
 

@@ -1,9 +1,8 @@
 # POST-CLEANUP VERIFICATION REPORT
 
 **Package:** `POST_CLEANUP_VERIFICATION_REPORT.md` · `POST_CLEANUP_EVIDENCE.json` · `POST_CLEANUP_CEO_SUMMARY.md`
-**Prepared:** 2026-10-07 · **Branch:** `feat/athena-archive-and-design-system` · **Report HEAD:** `4bb64572`
-**Evidence baseline for this change's work:** `56a42b27` (superseded — see §4.5)
-**Baseline:** tag `cleanup/c0-baseline` = `048627ad` (2026-10-05 23:40 +0200)
+**Prepared:** 2026-10-07 · **Branch:** `feat/athena-archive-and-design-system` · **Evidence HEAD:** `4bb64572`
+**Final HEAD after decision closure:** `c40decf0` (+ this commit) · **Baseline:** tag `cleanup/c0-baseline` = `048627ad` (2026-10-05 23:40 +0200)
 **Predecessor:** `repo-audit/cleanup-status/CLEANUP_STATUS_REPORT.md` (HEAD `be7d1848`, readiness 72/100, READY WITH CONDITIONS)
 
 **Method:** every P0/P1 condition from the 2026-10-07 cleanup audit was re-tested against the live
@@ -18,34 +17,37 @@ a doc claim, or a prior report's assertion.
 
 | ID | Condition | Verdict | Evidence |
 |---|---|---|---|
-| **P0-1** | Working tree dirty at audit time | **OPEN** (narrowed) | `git status --short` non-empty; cause narrowed from two to **one** — test-suite residue (§3) |
-| **P0-2** | Full `pytest` not verified | **CLOSED** | Full suite run **4×**; 2585→2580 tests; 5 failures proven **PRE-EXISTING** with git-history + restore-and-rerun evidence (§4); 1 remaining failure is a **documented flake** (§4.6) |
+| **P0-1** | Working tree dirty at audit time | **CLOSED** | Fixed at `tests/unit/test_onboarding.py` (D1); full `pytest` now leaves the tree **byte-clean** — 2511 passed / 0 failed, `hr/onboarding_requests.yaml` hash unchanged (§3.3, run 5) |
+| **P0-2** | Full `pytest` not verified | **CLOSED** | Full suite run **5×**; 2585→2580 tests; 5 failures proven **PRE-EXISTING** with git-history + restore-and-rerun evidence (§4); 1 historical failure is a **documented flake** (§4.6) |
 | **P0-3** | `open-design` submodule uninitialized | **CLOSED** | `git submodule init` → `git submodule status` clean at `6fd2f60` (§5) |
 | **P1-1** | Registry tool-vocabulary drift | **CLOSED** | `16c69940`: 145/145 legacy lines normalized, 0 residual, 0 agent-card diffs on regenerate (§6.1) |
-| **P1-2** | No phase approval records / manifests / rollback runbook | **PARTIAL** | Runbook added (`56a42b27`); manifest pre-existed; approval records **cannot** be reconstructed (§6.2) |
+| **P1-2** | No phase approval records / manifests / rollback runbook | **CLOSED** | Runbook added (`56a42b27`); manifest pre-existed; §1 reconstruction **signed by the Human CEO as an after-the-fact record** on 2026-10-07 (D4, §6.2) |
 | **P1-3** | Uncommitted brand-token + positioning edits | **CLOSED** | Landed in `526f33d5`; tagline verified consistent across 4 source files (§6.3) |
 | **P1-4** | 57× `openai.yaml` duplication unexamined | **CLOSED** | All 57 files examined: **57 unique SHA256 = zero duplication**; retain, no action (§6.4) |
 
-**Overall: READY WITH CONDITIONS — conditions narrowed from three to one.**
-P0-2 and P0-3 are fully discharged with evidence. P0-1 remains **OPEN by design**, but its cause has
-narrowed during this change: the concurrent session's foreign changes have all landed, leaving only
-the test suite's own rewrite of `hr/onboarding_requests.yaml` (§3.2) — plus this change's two
-untracked deliverables. That single residue is not remediable from inside this change without
-overstepping `AGENTS.md` §7 or making a runtime-code change that was explicitly placed out of scope.
+**Overall: READY — all seven conditions discharged.**
+P0-2, P0-3, P1-1, P1-3 and P1-4 were already closed with evidence. P0-1 closed on run 5: the
+test-suite rewrite that was the sole remaining cause is fixed at source, so a full suite run no
+longer dirties the tree. P1-2 closed on the CEO's after-the-fact sign-off of the §1 reconstruction
+(D4), with the standing condition that future phases carry contemporaneous approval records.
+The 5 deleted scraper-inventory tests are **formally retired** (D3, §4.7) — not restored.
 
 ---
 
 ## 2. Scope and provenance
 
-**In scope:** the three P0 conditions and four P1 findings raised by the 2026-10-07 audit, plus the
-evidence package requested for CEO sign-off.
+**In scope:** the three P0 conditions and four P1 findings raised by the 2026-10-07 audit, the
+evidence package requested for CEO sign-off, and the three CEO decisions taken afterwards
+(D1 fix `hr/`, D3 retire the deleted tests, D4 sign the reconstruction — §11).
 
-**Deliberately out of scope** (unchanged from the governing decisions for this change):
+**Deliberately out of scope** (governing decisions for this change):
 
 - No architecture redesign; no replacement of the 5-tier permission model; no changes to the 90-agent roster.
 - No history rewrite, no `git push`, no amend, no force-push, no stash created.
 - No hand-editing of generated agent cards (`.opencode/agents/*.md` are generator output only).
-- No edits to the five failing tests, their fixtures, or the audit's original evidence files.
+- No edits to the audit's original evidence files, and no restore of the five deleted tests (D3 chose retirement).
+- The only test edit is the D1 fixture fix in `tests/unit/test_onboarding.py` (§3.2) — one file, two
+  constructor arguments, no runtime/source default changed.
 - No sweeping of concurrent-session changes into this change's commits (`AGENTS.md` §7).
 - No deletion or deduplication of the 57 `openai.yaml` files (P1-4 decided *examine + report only*).
 - Backup and cleanup tags never moved or re-pointed.
@@ -61,13 +63,17 @@ evidence package requested for CEO sign-off.
 | `16c69940` | P1-1 tool-vocabulary normalization in `company-registry.yaml` |
 | `56a42b27` | P1-2 phase records + rollback runbook |
 | tag `cleanup/c11-landing` | annotated tag object `7fdcd5f2` → `526f33d5`, message fixed |
+| `d507c1ab` | the three root-level deliverables |
+| `c40decf0` | deliverable fix-up (stale two-causes framing in §3/§3.1) |
+| *(this commit)* | D1 fixture fix, D3 retirement records, D4 sign-off, decision closure |
 
 ---
 
-## 3. P0-1 — Working tree cleanliness · **OPEN**
+## 3. P0-1 — Working tree cleanliness · **CLOSED**
 
-Two independent causes existed when this change began. **One has since cleared** (§3.1 — all
-concurrent-session changes landed) and **one remains** (§3.2 — test-suite residue).
+Two independent causes existed when this change began. **One cleared by itself** (§3.1 — all
+concurrent-session changes landed) and **one was fixed at source** (§3.2 → D1, proven clean by
+run 5 in §3.3).
 
 ### 3.1 Concurrent-session changes (excluded by decision, now landed)
 
@@ -90,26 +96,40 @@ Unstaged:    modified:   docs/AGENT-REGISTRY-TABLE.md        ← foreign, landed
 Every commit from this change was pathspec-scoped (`git commit -F <msg> -- <paths>`) after
 re-checking `git status --short`, so no foreign line entered any of its commits.
 
-**Status at report HEAD:** those foreign changes have all landed. The only remaining *tracked*
-modification is `hr/onboarding_requests.yaml` — the test-suite residue of §3.2. **P0-1's remaining
-cause has therefore narrowed from two to one.** (This change's own deliverables are committed at
-`d507c1ab` and are not part of the residue.)
+**Status after D1:** P0-1 is **CLOSED**. The sole remaining tracked modification was
+`hr/onboarding_requests.yaml`, fixed at source in §3.2; run 5 (§3.3) leaves the tree byte-clean.
 
-### 3.2 The test suite rewrites a tracked file (root cause of recurring dirt)
+### 3.2 The test suite rewrites a tracked file — root cause (now fixed, D1)
 
-`uv run pytest` makes the tree dirty on **every** run, unconditionally:
+`uv run pytest` used to make the tree dirty on **every** run. Root cause, established by
+bisection rather than inspection:
 
-- `src/ai_company/orchestrator/hr.py:16` → `HR_DIR = Path("hr")`, CWD-relative.
-- `src/ai_company/orchestrator/onboarding.py:280,283` → `_REQUESTS_FILE = "onboarding_requests.yaml"`, `write_yaml(...)`.
-- Effect: `hr/onboarding_requests.yaml` `created_at` / `updated_at` rewritten (observed
-  `2026-09-28` → `2026-10-07T01:21:37Z`). Only timestamps change; content is otherwise identical.
+- `src/ai_company/hr/onboarding.py:343` → `OnboardingManager.__init__(..., data_dir="hr")`,
+  a CWD-relative default; `_RequestStore(data_dir)` then writes `hr/onboarding_requests.yaml`.
+- `tests/unit/test_onboarding.py:55` (`manager` fixture) and `:71` (`_make_manager`) constructed
+  `OnboardingManager` **without `data_dir`**, so they hit that default and rewrote the tracked
+  file. (`tests/unit/test_unified_onboarding.py` already passed `data_dir=str(tmp_path)` and was
+  clean — confirmed by running each file against a restored baseline.)
+- Effect was timestamp-only: `created_at` / `updated_at` rewritten; content otherwise identical.
 - Last committed by unrelated PR #412 (`5ab90eda`, 2026-10-04).
 
-**Consequence:** P0-1 cannot close while running the suite dirties tracked state. Fixing it means
-changing test/runtime code — outside this change's authority (user decision: *report as-is*).
-**Recommended owner action:** point `HR_DIR` at a temp path under `pytest`, or gitignore the
-file and stop tracking it (as was already done for `approvals.yaml` and `memory-index.yaml`
-in `1f9944cf`).
+**Bisection evidence:** with the baseline hash recorded, the three candidate files were run
+individually against a restored `hr/onboarding_requests.yaml` —
+`test_dashboard_integration.py` CLEAN, `test_onboarding.py` **DIRTIES**, `test_unified_onboarding.py`
+CLEAN. The two offending constructions were then given `data_dir=str(tmp_path / "hr")`.
+
+**Fix (D1):** `tests/unit/test_onboarding.py` now passes `data_dir` at both construction sites.
+No runtime/source default was changed, the file remains tracked, and no `.gitignore` entry was
+added — the fix is scoped to the test that caused the write.
+
+### 3.3 Run 5 — proof P0-1 is closed
+
+| Run | When (local) | HEAD | Result | Time | Tree after |
+|---|---|---|---|---|---|
+| **5** | 2026-10-07, after D1 fix | **`c40decf0`** | **0 failed, 2511 passed, 2 skipped, 67 deselected** | **411.15 s** | **CLEAN — `hr/onboarding_requests.yaml` SHA256 unchanged** |
+
+Run 5 is the first run in this change to exit 0 **and** leave the working tree clean. The only
+path dirty afterward was `tests/unit/test_onboarding.py` itself (the fix, unstaged at run time).
 
 ---
 
@@ -123,10 +143,11 @@ in `1f9944cf`).
 | 2 | 2026-10-07, after `16c69940` | `16c69940` | **5 failed, 2511 passed, 2 skipped, 67 deselected** | 303.55 s |
 | 3 | 2026-10-07, at this change's final HEAD | **`56a42b27`** | **5 failed, 2511 passed, 2 skipped, 67 deselected** | **311.68 s** |
 | **4** | 2026-10-07 04:05, after concurrent commit `4bb64572` | **`4bb64572`** | **1 failed, 2510 passed, 2 skipped, 67 deselected** | **287.76 s** |
+| **5** | 2026-10-07, after D1 fix | **`c40decf0`** | **0 failed, 2511 passed, 2 skipped, 67 deselected** | **411.15 s** |
 
 Runs 1–3 totalled **2585** collected (5 + passed + skipped + 67 deselected), matching the audit's
-figure exactly. Run 4 totals **2580** — exactly 5 fewer, because `4bb64572` deleted the five
-scraper-inventory tests (§4.5). Exit code 1 in every run.
+figure exactly. Runs 4–5 total **2580** — exactly 5 fewer, because `4bb64572` deleted the five
+scraper-inventory tests (§4.5, retired per D3 in §4.7). Exit code 1 in runs 1–4, **0 in run 5**.
 
 ### 4.2 The five failures — identical in all three runs
 
@@ -228,6 +249,22 @@ introduced by any commit in this change or in `4bb64572`.
 1 failure = documented flake; 5 previous failures = removed by test deletion; root cause of the 5
 remains unaddressed and is now **untested** rather than merely failing.
 
+**Run 5 (§3.3) confirms:** `0 failed, 2511 passed` — the flake did not recur, and the suite now
+exits 0.
+
+### 4.7 D3 — the five deleted tests: **FORMALLY RETIRED**
+
+`tests/test_scraper_inventory.py` (176 lines, 5 tests) was deleted by the concurrent session in
+`4bb64572`. CEO decision **D3 = formally retire the coverage** (not restore it).
+
+| Check | Result |
+|---|---|
+| Deleted tests | `test_scrape_jobs_jsonl_is_valid`, `test_jobs_jsonl_is_valid`, `test_user_profiles_jsonl_is_valid`, `test_inventory_covers_all_jsonl_datasets`, `test_scraper_script_dirs_reporting_matches_filesystem` |
+| Why restoration was rejected | The data they assert against (`company/athena/*.jsonl`) is **gitignored** (`.gitignore:170`) and can never exist in a clone. Restoring the tests would require inventing a fixture — asserting against fabricated data tests less than it appears to. |
+| Dangling references cleared | `docs/wayfinder/map2-scraper-discovery-gap-analysis.md` and `docs/superpowers/plans/2026-09-28-wayfinder-map2-scraper-discovery-gap-analysis.md` updated to state the file is retired, so no future agent is sent to run a test that no longer exists |
+| Prior record | `docs/REPOSITORY_HEALTH.md:43` already records `RESOLVED 2026-10-07 — module removed` |
+| Coverage gap | **Accepted, explicit:** the scraper-inventory JSONL contract (3 datasets + script-dir reporting) is now **unguarded**. If scraper work resumes, re-derive coverage against data that is actually tracked. |
+
 ---
 
 ## 5. P0-3 — Submodule `open-design` · **CLOSED**
@@ -268,7 +305,7 @@ locations — `company/registry-templates/consulting-firm/company-registry.yaml`
 tracked template files, referenced only by two docs) and `hr/onboarding_requests.yaml` (2 lines,
 runtime data). The template file was outside the agreed P1-1 scope (`company-registry.yaml` only).
 
-### 6.2 P1-2 — Phase approval records / manifests / rollback runbook · **PARTIAL**
+### 6.2 P1-2 — Phase approval records / manifests / rollback runbook · **CLOSED**
 
 New: `repo-audit/cleanup-status/CLEANUP_ROLLBACK_RUNBOOK.md` (`56a42b27`) — phase table c0–c11
 reconstructed from git, rollback procedures (pre-rollback capture, tag inspection, full phase
@@ -279,13 +316,21 @@ authority matrix, and an explicit “what rollback does NOT restore” section.
 |---|---|
 | Rollback runbook | **CLOSED** |
 | Change manifest | **CLOSED** — `CLEANUP_FILE_MANIFEST.txt` pre-existed |
-| Phase approval records | **OPEN — cannot be closed by reconstruction** |
+| Phase approval records | **CLOSED — signed as an after-the-fact reconstruction (D4)** |
 
-No approval paperwork was written during the cleanup (`CLEANUP_STATUS_REPORT.md` §1: “NOT FOUND
-anywhere in tree”). None can be created retroactively without fabricating evidence. The runbook's
-§1 table is therefore explicitly labeled a **git-derived reconstruction, not an approval record**.
-Closing this sub-item needs a CEO decision: either sign the reconstruction as an after-the-fact
-record, or accept the gap and require contemporaneous records for future phases.
+**D4 executed 2026-10-07 (Human CEO):** the runbook's §1 reconstruction is signed off as an
+after-the-fact record, choosing option (a) of the two the runbook offered. The sign-off is
+recorded in the runbook's provenance disclaimer and §1 header, and §6 there now reads CLOSED.
+
+**What the signature does and does not establish** (kept explicit so the record stays honest):
+
+- It **does** accept the git-derived §1 table as the after-the-fact record for this cleanup,
+  closing P1-2's third sub-item.
+- It **does not** convert a retrospective reconstruction into contemporaneous approval. The
+  cleanup phases were still executed without prior approval paperwork, and that fact stands.
+- **Standing condition (option b, imposed by this decision):** every future phase must carry an
+  approval record written *before* the phase begins. This is now the repo's obligation, not an
+  observation.
 
 **Tag inventory verified:** 14 tags resolve — 12 `cleanup/*` (c0–c11) + 2 `backup/*`.
 `cleanup/c11-landing` = annotated tag `7fdcd5f20faf1f78cf76213199b36481239c4800` →
@@ -362,23 +407,23 @@ created **no stash**; the only git writes it performed were pathspec-scoped comm
 
 ---
 
-## 8. Validation matrix (all at report HEAD `4bb64572`)
+## 8. Validation matrix (gates at `4bb64572`; tree/test state at final HEAD `c40decf0`)
 
 | Gate | Command | Result |
 |---|---|---|
 | Lint | `uv run ruff check src/` | **PASS** — All checks passed |
 | Type check | `uv run mypy src/` | **PASS** — no issues in 225 source files |
-| Tests (run 4) | `uv run pytest -q` | **2510 passed, 2 skipped, 1 failed, 67 deselected** (2580 total); the 1 failure is a **documented flake** (§4.6) → **0 real failures** |
+| Tests (run 5) | `uv run pytest -q` | **2511 passed, 2 skipped, 0 failed, 67 deselected** (2580 total) → **PASS, exit 0** (§3.3) |
 | Generator | `…AgentGenerator().generate_all()` | **PASS** — exit 0, **0 changed files** |
 | Harness/docs lint | `pwsh scripts/maintenance/lint-ecl.ps1` | **PASS** — `ECL lint passed`, 0 failures / 0 warnings (22 files) |
 | Registry vocabulary | residual legacy tool lines | **0** of 145 |
 | Submodule | `git submodule status` | **PASS** — `6fd2f60` clean |
 | Tags | 14 tags resolve; `c11` peels to `526f33d5` | **PASS** |
-| Tree | `git status --short` | **NON-CLEAN — P0-1 OPEN**, narrowed to one cause (§3.2) |
-| Sync | `git status -sb` | **in sync with origin** (all pushes by the other session) |
+| Tree after full suite | `git status --short` + SHA256 of `hr/onboarding_requests.yaml` | **CLEAN** — hr file byte-identical to pre-run (§3.3) |
+| Sync | `git status -sb` | **2 ahead of origin, deliberately unpushed** (`d507c1ab`, `c40decf0`) — push excluded by the governing protocol |
 
 **Diff against baseline:** `git diff --shortstat cleanup/c0-baseline..HEAD` →
-**751 files changed, 6372 insertions(+), 71486 deletions(−)**; tracked files **4187 → 3705 (−482, −11.5%)**.
+**754 files changed, 7359 insertions(+), 71486 deletions(−)**; tracked files **4187 → 3708 (−479, −11.4%)**.
 
 ---
 
@@ -390,11 +435,14 @@ created **no stash**; the only git writes it performed were pathspec-scoped comm
    `56a42b27`, `4bb64572`) and the branch is shared and fully pushed. Impact: display only.
 2. **Skip-count delta 1 → 2 between run 1 and runs 2–3** is unattributable from git evidence and is
    reported as an open micro-observation (§4.4).
-3. **Approval records remain absent** — P1-2 partial (§6.2).
-4. **P0-1 remains open on one residue** — pytest rewrites `hr/onboarding_requests.yaml` (§3.2). The
-   concurrent-session cause has cleared since all foreign changes landed (§3.1).
-5. **The five scraper-inventory tests are deleted, not fixed** (§4.5) — the root cause is now
-   untested. Re-introducing coverage requires a fixture or an `xfail` with a written reason.
+3. **Approval records were absent — now signed as an after-the-fact reconstruction** (D4, §6.2).
+   The cleanup still ran without contemporaneous approval; the signature closes the sub-item and
+   imposes contemporaneous records on all future phases.
+4. **P0-1 was dirty, and is now closed** (§3.2/§3.3): the test fixtures that rewrote
+   `hr/onboarding_requests.yaml` now pass `data_dir` to a temp path. A full-suite run leaves the
+   tree byte-clean; run 5 is the proof.
+5. **The five scraper-inventory tests are retired, not restored** (D3, §4.7) — the coverage gap is
+   accepted explicitly. Re-introducing it requires real tracked fixtures, not a fabricated JSONL.
 6. **One documented perf flake remains in the suite** — `test_endpoint_response_time_p95`, already
    excluded by the project's own health gate (§4.6); passes 3/3 in isolation.
 7. **Two out-of-scope files still carry legacy tool names** — registry template + runtime
@@ -408,21 +456,24 @@ created **no stash**; the only git writes it performed were pathspec-scoped comm
 
 ## 10. Recommendation
 
-**Sign off on:** P0-2 (CLOSED — 5 failures PRE-EXISTING, suite now at 0 real failures), P0-3
-(CLOSED), P1-1 (CLOSED), P1-3 (CLOSED), P1-4 (CLOSED — retain, zero duplication), and the P1-2
-runbook.
+**Sign off on all seven:** P0-1 (CLOSED — fixed at source, run 5 exits 0 with a byte-clean tree),
+P0-2 (CLOSED — 5 failures PRE-EXISTING; suite now at 0 real failures), P0-3 (CLOSED), P1-1
+(CLOSED), P1-2 (CLOSED — runbook + signed reconstruction), P1-3 (CLOSED), P1-4 (CLOSED — retain,
+zero duplication).
 
-**Hold P0-1 OPEN** — now down to a single owner action:
-1. Stop the test suite from rewriting `hr/onboarding_requests.yaml` (temp path under pytest, or
-   untrack it as was done for `approvals.yaml` / `memory-index.yaml` in `1f9944cf`). The concurrent
-   session's changes have landed, so nothing else blocks cleanliness.
+**Overall readiness: READY — all three P0 conditions and all four P1 findings discharged with
+evidence.** This is an improvement on the predecessor audit's 72/100 READY WITH CONDITIONS: the
+three open-ended conditions are now closed with reproducible proof, not narrowed.
 
-**Note for the record** on the deletion of `tests/test_scraper_inventory.py` (§4.5/§7.1): accepted as
-a candid CI-unblocking move, but the underlying fixture gap is now untested rather than fixed.
+---
 
-**Decide** on the P1-2 approval-record gap (§6.2) — sign the git-derived reconstruction or require
-contemporaneous records going forward.
+## 11. CEO decision closure (2026-10-07)
 
-**Overall readiness: READY WITH CONDITIONS — 2 of 3 P0 conditions discharged with evidence; the
-third is narrowed to one concrete action.** This is an improvement on the predecessor audit's 72/100
-READY WITH CONDITIONS: conditions went from three open-ended items to one specific, testable fix.
+| # | Decision | Action taken | Result |
+|---|---|---|---|
+| **D1** | Fix the `hr/` rewrite rather than report it | `tests/unit/test_onboarding.py` passes `data_dir=str(tmp_path / "hr")` at both `OnboardingManager` construction sites; root cause established by bisection (§3.2) | **P0-1 CLOSED** — run 5: 0 failed, hr file byte-identical (§3.3) |
+| **D3** | Formally retire the 5 deleted tests (not restore) | Retired in §4.7; two dangling doc references cleared so no agent is sent to run a non-existent test; coverage gap recorded explicitly | **Recorded** — gap accepted, `.gitignore:170` remains the structural cause |
+| **D4** | Sign the git-derived phase reconstruction | Runbook provenance disclaimer + §1 header signed as an after-the-fact record; §6 flipped to CLOSED; contemporaneous-approval condition imposed on future phases | **P1-2 CLOSED** |
+
+No push, no amend, no force-push, no stash, no tag re-point, no hand-edit of generated agent
+cards. Every commit pathspec-scoped after re-checking `git status --short` (`AGENTS.md` §7).
