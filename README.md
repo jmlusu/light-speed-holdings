@@ -145,7 +145,7 @@ uv run ai-company dashboard              # 4. Open the live dashboard
 | `ai-company graph show org_chart` | View the organization chart |
 | `ai-company knowledge list` | List legacy knowledge store entries |
 | `ai-company knowledge search` | Search legacy knowledge store entries |
-| `ai-company memory remember "..."` | Store a memory in the LS-MEM engine |
+| `ai-company memory add --memory-type semantic --content "..."` | Store a memory in the JSON memory store |
 | `ai-company workflows list` | List available workflows |
 
 ### Department CLIs
