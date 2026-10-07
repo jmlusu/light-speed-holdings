@@ -121,7 +121,7 @@ type ContentMedia =
 - All `Logo1.*`, `Logo2.*`, `Logo3.*` variants (use `fulllogo/` canonical)
 - All `*_nobuffer*`, `*_nobuffer_legacy*` variants
 
-**Action required:** Run `pwsh scripts/sync-brand.ps1` after cleanup so mirrors pick up canonical-only set.
+**Action required:** Run `pwsh scripts/build/sync-brand.ps1` after cleanup so mirrors pick up canonical-only set.
 
 ---
 

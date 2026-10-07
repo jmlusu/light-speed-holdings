@@ -36,7 +36,7 @@ def test_write_then_read_json_roundtrip(store: StateStore, tmp_path: Path) -> No
 def test_write_yaml_roundtrip(store: StateStore, tmp_path: Path) -> None:
     """A YAML write is readable back and lands under base_dir."""
     store.write_yaml("orchestrator/escalation.yaml", {"events": [{"task_id": "t1"}]})
-    on_disk = tmp_path / "orchestrator" / "escalation.yaml"
+    on_disk = tmp_path / "data" / "orchestrator" / "escalation.yaml"
     assert on_disk.exists()
     assert store.read_yaml("orchestrator/escalation.yaml") == {"events": [{"task_id": "t1"}]}
 

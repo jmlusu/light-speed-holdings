@@ -133,7 +133,7 @@ Agents can work in parallel with no friction:
 - [ ] `ai-company --help` + `ai-company <command> --help` — CLI commands responsive
 - [ ] `pytest` — models/orchestrator tests pass
 - [ ] `ruff check src/ && mypy src/ && pytest` — full source verification
-- [ ] `pwsh scripts/lint-ecl.ps1` — harness/docs linting
+- [ ] `pwsh scripts/maintenance/lint-ecl.ps1` — harness/docs linting
 - [ ] Generated agent files have valid YAML frontmatter, mode ∈ {primary, subagent}, permission dict valid
 - [ ] No PowerShell anti-patterns in generated content
 - [ ] Filenames use hyphens, not underscores

@@ -90,7 +90,7 @@ def backfill(
         TaskStore,
         init_database,
     )
-    from ai_company.paths import get_audit_path, get_database_path, get_project_root
+    from ai_company.paths import get_audit_path, get_database_path, get_project_root, state_path
 
     # Source telemetry files live under the project root (independent of the
     # data root override, which only relocates the runtime SQLite database).
@@ -125,10 +125,10 @@ def backfill(
         typer.echo(f"  [skip] cost_records: {exc}")
     typer.echo(f"  cost_records: {counts.get('cost_records', 0)}")
 
-    # Escalations (orchestrator/escalation.yaml)
+    # Escalations (data/orchestrator/escalation.yaml — D-6 relocation)
     try:
         counts["escalations"] = EscalationStore(db).import_from_yaml(
-            root / "orchestrator" / "escalation.yaml"
+            root / str(state_path("orchestrator/escalation.yaml", base=root))
         )
     except Exception as exc:  # noqa: BLE001
         typer.echo(f"  [skip] escalations: {exc}")

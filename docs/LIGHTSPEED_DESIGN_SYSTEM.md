@@ -25,7 +25,7 @@ There is exactly **one machine-readable token source**:
 |-------|------|------|
 | **Canonical (source of truth)** | `brand/tokens/brand-tokens.json` | The only machine-readable token file. Edit this first, always. |
 | Canonical CSS mirror | `brand/tokens/brand-tokens.css` | CSS `:root` projection of the JSON (colors, pt type scale, spacing, grid, radius, layout). |
-| Propagation mirrors | `static/brand/`, `public/brand/` | Generated mirrors kept in sync by `scripts/sync-brand.ps1`. |
+| Propagation mirrors | `static/brand/`, `public/brand/` | Generated mirrors kept in sync by `scripts/build/sync-brand.ps1`. |
 | App bridge | `src/brand/brand-tokens.css` | Tailwind v4 `@theme` + `:root` variables consumed by the site (adds `--ls-*` extended tokens). |
 | TypeScript tokens | `packages/design-system/src/tokens/*.ts` | TS projections used by components (`colors.ts`, `typography.ts`, `spacing.ts`, `visual.ts`). |
 | Documentation | **This file** | Human-readable authority; updated in the same change as any token edit. |
@@ -584,7 +584,7 @@ Use `honestyLabel()` / `TONE_STYLES` in `src/data/siteContent.ts` to derive tone
 Geometric "L" formed by two interlocking forward-moving planes, with a red acceleration element and a cyan core — light speed, forward momentum, sovereign focus.
 
 ### Files
-Canonical location: **`brand/logo/`** (populated — 8 variants, SVG + PNG siblings, mirrored to `static/brand/logo/` and `public/brand/logo/` via `scripts/sync-brand.ps1`). The legacy `brand/logos/` tree is **DEPRECATED**: do not add files there and do not reference it in new work; style explorations are archived at `.archive/brand/logos/`.
+Canonical location: **`brand/logo/`** (populated — 8 variants, SVG + PNG siblings, mirrored to `static/brand/logo/` and `public/brand/logo/` via `scripts/build/sync-brand.ps1`). The legacy `brand/logos/` tree is **DEPRECATED**: do not add files there and do not reference it in new work; style explorations are archived at `.archive/brand/logos/`.
 
 Required variants (canonical filenames in `brand/logo/`):
 
@@ -831,8 +831,8 @@ Entry stylesheet `src/index.css`:
 2. Update the canonical CSS mirror **`brand/tokens/brand-tokens.css`**
 3. Update TS projections: `packages/design-system/src/tokens/*.ts`
 4. Update the app bridge **`src/brand/brand-tokens.css`** (`@theme` + `:root`)
-5. Run **`pwsh scripts/sync-brand.ps1`** to propagate to `static/brand/` and `public/brand/` mirrors
-6. Verify: **`pwsh scripts/sync-brand.ps1 -Verify`** — exits 1 on mirror drift; CI must stay green
+5. Run **`pwsh scripts/build/sync-brand.ps1`** to propagate to `static/brand/` and `public/brand/` mirrors
+6. Verify: **`pwsh scripts/build/sync-brand.ps1 -Verify`** — exits 1 on mirror drift; CI must stay green
 7. Update **this document** (and `brand/tokens.md` if naming/notes changed) in the same change
 8. Brand-affecting changes additionally require an ADR + CEO sign-off (Change Process above)
 
@@ -849,9 +849,9 @@ Entry stylesheet `src/index.css`:
 ## Quality Assurance
 
 ### Automated Checks (actual CI — no aspirational entries)
-- **Token mirror drift** — `pwsh scripts/sync-brand.ps1 -Verify` exits 1 when `static/brand/` or `public/brand/` diverge from canonical
-- **Site Build + Principles Gate** (`.github/workflows/site-principles-gate.yml`, every PR to `main`) — `bun run build` (TypeScript check + Vite build, zero TS errors) and `scripts/check-site-form-backend.py` (fails fake-success contact/brief forms)
-- **Repository CI** (`.github/workflows/ci.yml`) — `ruff`, `mypy`, `pytest` (coverage ≥ 72%), Playwright e2e, `pwsh scripts/lint-ecl.ps1`, security scan
+- **Token mirror drift** — `pwsh scripts/build/sync-brand.ps1 -Verify` exits 1 when `static/brand/` or `public/brand/` diverge from canonical
+- **Site Build + Principles Gate** (`.github/workflows/site-principles-gate.yml`, every PR to `main`) — `bun run build` (TypeScript check + Vite build, zero TS errors) and `scripts/test/check-site-form-backend.py` (fails fake-success contact/brief forms)
+- **Repository CI** (`.github/workflows/ci.yml`) — `ruff`, `mypy`, `pytest` (coverage ≥ 72%), Playwright e2e, `pwsh scripts/maintenance/lint-ecl.ps1`, security scan
 - **Pre-commit hooks** — trailing-whitespace, end-of-file-fixer, check-yaml, `ruff`, `mypy`, `bandit`
 - **Site test stack** — Vitest (`^5`) + Playwright (`^1.63`)
 
@@ -864,7 +864,7 @@ Entry stylesheet `src/index.css`:
 
 ---
 
-*This document is the single source of truth for design. Canonical tokens live in `brand/tokens/`; `static/brand/` and `public/brand/` are mirrors managed by `scripts/sync-brand.ps1`; `src/brand/` is the application bridge. Update this document first, then propagate via the token-change procedure above.*
+*This document is the single source of truth for design. Canonical tokens live in `brand/tokens/`; `static/brand/` and `public/brand/` are mirrors managed by `scripts/build/sync-brand.ps1`; `src/brand/` is the application bridge. Update this document first, then propagate via the token-change procedure above.*
 
 ---
 

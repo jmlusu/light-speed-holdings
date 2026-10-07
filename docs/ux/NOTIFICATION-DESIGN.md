@@ -318,7 +318,7 @@ preferences:
 
 ## 9. Notification History
 
-Stored in `orchestrator/notifications.json`:
+Stored in `data/orchestrator/notifications.json`:
 
 ```json
 [

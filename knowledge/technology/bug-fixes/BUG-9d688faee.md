@@ -33,7 +33,7 @@ exits in <1 s and the stash restore always completes.
 ## Files Changed
 
 ~194 files: tracked mirror prune deletions, `brand/logos/*` overwrites,
-`scripts/sync-brand.ps1`.
+`scripts/build/sync-brand.ps1`.
 
 ## Diagnostic Commands
 

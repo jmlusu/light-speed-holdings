@@ -1,6 +1,6 @@
 # docs/source-of-truth.yaml
 # Maps factual claims in documentation to their authoritative source files.
-# Used by scripts/validate-drift.ps1 and tests/docs/test_doc_drift.py
+# Used by scripts/maintenance/validate-drift.ps1 and tests/docs/test_doc_drift.py
 #
 # When a source file changes, the validation script reads this manifest,
 # extracts the current value via the extractor, and verifies that all

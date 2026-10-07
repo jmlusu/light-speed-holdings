@@ -177,7 +177,7 @@ Add `media: ContentMediaSet` to:
 
 | Step | Tool | Input | Output |
 |------|------|-------|--------|
-| 1. Brand sync | `scripts/sync-brand.ps1` | `brand/**` | `public/brand/**`, `static/brand/**` |
+| 1. Brand sync | `scripts/build/sync-brand.ps1` | `brand/**` | `public/brand/**`, `static/brand/**` |
 | 2. Screenshot gen | `visual_check.cjs` (CI) | Staging URLs | `public/assets/screenshots/**` |
 | 3. Illustration gen | `article-illustrations` / `k-dense-infographics` | Briefs | `public/assets/illustrations/**` |
 | 4. Vite build | `vite build` | `public/**` + `src/**` | `dist/**` (hashed filenames) |
@@ -389,7 +389,7 @@ return (
 - [ ] Ensure `alt` quality per §2.3
 
 ### Pipeline
-- [ ] Run `pwsh scripts/sync-brand.ps1` — verify `public/brand/logos/**` populated
+- [ ] Run `pwsh scripts/build/sync-brand.ps1` — verify `public/brand/logos/**` populated
 - [ ] Generate Playwright screenshots for all 7 pages at 3 viewports
 - [ ] Generate/commission illustrations for hero slots
 - [ ] Configure `VITE_CONTENT_MEDIA_ENABLED` in Cloudflare Pages (staging → prod)
@@ -442,7 +442,7 @@ return (
 
 ```bash
 # Sync brand assets
-pwsh scripts/sync-brand.ps1
+pwsh scripts/build/sync-brand.ps1
 
 # Visual QA (3 viewports)
 node harness/qa/visual_check.cjs https://staging.lightspeedholdings.com \

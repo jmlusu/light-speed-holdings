@@ -47,7 +47,7 @@ Based on `api.py` (1178 lines total), the dashboard REST API includes the follow
 #### Approval Management:
 - **GET /api/v1/approvals** (line 335) - List pending approvals
   - Parameters: None (filtering done internally for expiration)
-  - Dependencies: `orchestrator/approvals.yaml`, current timestamp validation
+  - Dependencies: `data/orchestrator/approvals.yaml`, current timestamp validation
 
 - **POST /api/v1/approvals/{request_id}/approve** (line 348) - Approve request
   - Parameters: `ApprovalDecision` (approved_by, notes)
@@ -58,7 +58,7 @@ Based on `api.py` (1178 lines total), the dashboard REST API includes the follow
 
 #### Escalation Management:
 - **GET /api/v1/escalations** (line 385) - List unresolved escalations
-  - Dependencies: `orchestrator/escalation.yaml`
+  - Dependencies: `data/orchestrator/escalation.yaml`
 
 - **POST /api/v1/escalations/{task_id}/resolve** (line 393) - Resolve escalation
   - Dependencies: State update, audit logging via `log_escalation`
@@ -75,7 +75,7 @@ Based on `api.py` (1178 lines total), the dashboard REST API includes the follow
 
 #### Scheduler & KPI Analytics:
 - **GET /api/v1/scheduler** (line 465) - Scheduled tasks list
-  - Dependencies: `orchestrator/scheduler.yaml`
+  - Dependencies: `data/orchestrator/scheduler.yaml`
 
 - **GET /api/v1/departments/{dept_name}/kpis** (line 475) - Department KPI definitions
   - Dependencies: `company/config/kpis.yaml`
@@ -112,7 +112,7 @@ Based on `api.py` (1178 lines total), the dashboard REST API includes the follow
 
 **7 Department Collectors**:
 1. **EngineeringKPICollector** (engineering.py) - 56 lines
-   - Sources: `.opencode/inbox.json`, `orchestrator/escalation.yaml`, `orchestrator/scheduler.yaml`
+   - Sources: `.opencode/inbox.json`, `data/orchestrator/escalation.yaml`, `data/orchestrator/scheduler.yaml`
    - KPIs: task_completion_rate, failure_rate, escalation_rate, pending_tasks, etc.
 
 2. **HRKPICollector** (hr.py) - 62 lines
@@ -120,7 +120,7 @@ Based on `api.py` (1178 lines total), the dashboard REST API includes the follow
    - KPIs: onboarding_completion, turnover_rate, employee_satisfaction, etc.
 
 3. **FinanceKPICollector** (finance.py) - 65 lines
-   - Sources: `company/config/kpis.yaml`, `orchestrator/cost_tracker.json`, `company/agent-registry.json`
+   - Sources: `company/config/kpis.yaml`, `data/orchestrator/cost_tracker.json`, `company/agent-registry.json`
    - KPIs: budget_utilization, estimated_llm_spend, cost_per_agent, etc.
 
 4. **MarketingKPICollector** (marketing.py) - 58 lines
@@ -211,10 +211,10 @@ def _get_store() -> Any:
 | Data Source | File Path | Purpose | Dependencies |
 |-------------|-----------|---------|-------------|
 | Inbox.json | `.opencode/inbox.json` | Task queue | MessageBus, StateStore |
-| Approvals.yaml | `orchestrator/approvals.yaml` | Approval requests | StateStore, audit logging |
-| Escalation.yaml | `orchestrator/escalation.yaml` | Escalation events | StateStore, audit logging |
-| Scheduler.yaml | `orchestrator/scheduler.yaml` | Scheduled tasks | StateStore |
-| Cost tracker | `orchestrator/cost_tracker.json` | Financial data | StateStore |
+| Approvals.yaml | `data/orchestrator/approvals.yaml` | Approval requests | StateStore, audit logging |
+| Escalation.yaml | `data/orchestrator/escalation.yaml` | Escalation events | StateStore, audit logging |
+| Scheduler.yaml | `data/orchestrator/scheduler.yaml` | Scheduled tasks | StateStore |
+| Cost tracker | `data/orchestrator/cost_tracker.json` | Financial data | StateStore |
 | KPIs config | `company/config/kpis.yaml` | KPI definitions | StateStore |
 | Departments | `company/departments.yaml` | Department data | StateStore |
 | Registry | `company/agent-registry.json` | Agent metadata | StateStore |

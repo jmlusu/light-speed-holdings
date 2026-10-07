@@ -30,8 +30,8 @@ graph TB
     %% ── File Stores ───────────────────────────────────────────
     INBOX[".opencode/inbox.json<br/>Legacy"]:::json
     AUDIT_DIR[".opencode/audit/*.jsonl"]:::jsonl
-    ORCH_ESC["orchestrator/escalation_events.jsonl"]:::jsonl
-    ORCH_DLQ["orchestrator/dead_letter.jsonl"]:::jsonl
+    ORCH_ESC["data/orchestrator/escalation_events.jsonl"]:::jsonl
+    ORCH_DLQ["data/orchestrator/dead_letter.jsonl"]:::jsonl
     EVIDENCE["reports/evidence/audit-*.jsonl"]:::jsonl
     WF_INST["workflows/instances/*.json"]:::json
     ATHENA_DIR["company/athena/*.jsonl"]:::jsonl

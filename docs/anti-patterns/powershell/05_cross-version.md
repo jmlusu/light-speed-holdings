@@ -9,7 +9,7 @@ PowerShell version drift across developer machines and CI environments:
 - PowerShell 7.x (used on CI/Linux servers, also installed alongside 5.1 on Windows)
 - Scripts written for one version often fail or produce different output on the other
 
-The project's ECL lint (`scripts/lint-ecl.ps1`) and all harness scripts must work identically on both PowerShell 5.1 and 7.x.
+The project's ECL lint (`scripts/maintenance/lint-ecl.ps1`) and all harness scripts must work identically on both PowerShell 5.1 and 7.x.
 
 ## Anti-Pattern Code
 ```powershell

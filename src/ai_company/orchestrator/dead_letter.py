@@ -2,7 +2,7 @@
 Append-only JSONL store for dead-letter queue entries.
 
 This module provides an evidence-separation compliant store for dead-letter
-queue entries. Entries are written to a JSONL file (orchestrator/dead_letter.jsonl)
+queue entries. Entries are written to a JSONL file (data/orchestrator/dead_letter.jsonl)
 that is read-only for auditors. The executor writes entries here; auditors
 read from this path but never write to it.
 
@@ -20,6 +20,8 @@ from pathlib import Path
 from typing import Any, List, Optional
 
 from pydantic import BaseModel, Field
+
+from ai_company.paths import state_path
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +55,8 @@ class DeadLetterStore:
     """
 
     def __init__(self, path: str = "orchestrator/dead_letter.jsonl"):
-        self.path = Path(path)
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        self.path = Path(str(state_path(path)))
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
 
@@ -209,8 +212,12 @@ def get_dead_letter_store(path: str = "orchestrator/dead_letter.jsonl") -> "Dead
     Caching per path keeps one store (and therefore one lock) per file, so
     concurrent writers to the same file still serialise through the same
     ``RLock`` while callers using different paths stay fully isolated.
+
+    Paths are mapped through :func:`state_path` before the cache key is
+    computed so legacy ``orchestrator/`` and new ``data/orchestrator/``
+    callers share one store (and one lock) per file.
     """
-    key = str(Path(path).expanduser().resolve())
+    key = str(Path(str(state_path(path))).expanduser().resolve())
     store = _STORE_CACHE.get(key)
     if store is None:
         store = DeadLetterStore(path)

@@ -12,7 +12,7 @@ from typing import Any
 import yaml
 
 from ai_company.data.database import Database
-from ai_company.paths import get_project_root
+from ai_company.paths import get_project_root, state_path
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,8 @@ class KPICollector(ABC):
         Returns ``[]`` for ``.json`` files or ``{}`` for missing data.
         Never raises on missing files — logs a debug message instead.
         """
-        path = self.root / rel_path
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        path = self.root / Path(str(state_path(rel_path, base=self.root)))
         if not path.exists():
             logger.debug("JSON file not found, returning empty: %s", path)
             return []
@@ -78,7 +79,8 @@ class KPICollector(ABC):
 
         Returns ``{}`` when the file is absent or empty. Never raises.
         """
-        path = self.root / rel_path
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        path = self.root / Path(str(state_path(rel_path, base=self.root)))
         if not path.exists():
             logger.debug("YAML file not found, returning empty: %s", path)
             return {}

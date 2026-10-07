@@ -15,6 +15,8 @@ from typing import Any, TypedDict
 
 from prometheus_client import REGISTRY, Counter, Gauge, Histogram
 
+from ai_company.paths import LEGACY_STATE_PREFIX, STATE_PREFIX
+
 logger = logging.getLogger(__name__)
 
 # ── Evidence Store Metrics ──────────────────────────────────────────────
@@ -74,12 +76,12 @@ class StoreConfig(TypedDict):
 
 EVIDENCE_STORES: dict[str, StoreConfig] = {
     "escalation_events": {
-        "path": "orchestrator/escalation_events.jsonl",
+        "path": "data/orchestrator/escalation_events.jsonl",
         "retention_days": 30,
         "max_size_bytes": 100 * 1024 * 1024,  # 100 MB
     },
     "dead_letter": {
-        "path": "orchestrator/dead_letter.jsonl",
+        "path": "data/orchestrator/dead_letter.jsonl",
         "retention_days": 90,
         "max_size_bytes": 100 * 1024 * 1024,  # 100 MB
     },
@@ -95,11 +97,28 @@ EVIDENCE_STORES: dict[str, StoreConfig] = {
 
 
 def resolve_store_files(path_spec: str) -> list[Path]:
-    """Resolve a store path spec (fixed path or glob pattern) to existing files."""
-    if "*" in path_spec:
-        return sorted(p for p in Path().glob(path_spec) if p.is_file())
-    candidate = Path(path_spec)
-    return [candidate] if candidate.is_file() else []
+    """Resolve a store path spec (fixed path or glob pattern) to existing files.
+
+    D-6: checks both the relocated ``data/orchestrator/`` location and the
+    legacy ``orchestrator/`` location. Deliberately read-only — an audit must
+    never migrate or move its own evidence files (AGENTS.md §9.3); the one-time
+    relocation happens on the write path instead.
+    """
+    specs = [path_spec]
+    if path_spec.startswith(STATE_PREFIX):
+        specs.append(LEGACY_STATE_PREFIX + path_spec[len(STATE_PREFIX) :])
+    elif path_spec.startswith(LEGACY_STATE_PREFIX):
+        specs.append(STATE_PREFIX + path_spec[len(LEGACY_STATE_PREFIX) :])
+
+    found: set[Path] = set()
+    for spec in specs:
+        if "*" in spec:
+            found.update(p for p in Path().glob(spec) if p.is_file())
+        else:
+            candidate = Path(spec)
+            if candidate.is_file():
+                found.add(candidate)
+    return sorted(found)
 
 
 def count_store_events(path: Path) -> int:

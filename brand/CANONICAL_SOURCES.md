@@ -12,7 +12,7 @@ digital masters.
 - Agents, skills, and generators MUST read from `brand/**`.
 - `static/brand/**` and `public/brand/**` are **runtime/web mirrors** for
   deployment. Never hand-edit assets in a mirror — regenerate or copy from
-  canonical via `scripts/sync-brand.ps1`.
+  canonical via `scripts/build/sync-brand.ps1`.
 - A symlink is deliberately NOT used: Windows + git cannot track symlinks
   reliably in this repo, and Vite/Vercel deploy from `public/` while other
   static surfaces read `static/`. A committed copy-on-sync script is the

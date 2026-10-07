@@ -15,8 +15,8 @@ graph LR
     %% ── Audit and Events (JSONL) ─────────────────────────────
     subgraph AUDIT ["Audit trail and evidence (JSONL)"]
         OPENCODE_AUDIT[".opencode/audit<br/>single JSONL file, 3.7 MB<br/>canonical trail (tickets #59 / #71)"]:::jsonl
-        ORCH_ESC["orchestrator/escalation_events.jsonl"]:::jsonl
-        ORCH_DLQ["orchestrator/dead_letter.jsonl<br/>created on demand"]:::jsonl
+        ORCH_ESC["data/orchestrator/escalation_events.jsonl"]:::jsonl
+        ORCH_DLQ["data/orchestrator/dead_letter.jsonl<br/>created on demand"]:::jsonl
         EVIDENCE["reports/evidence/<br/>audit_log-*.jsonl · audit_meta-*.jsonl<br/>*.json snapshots"]:::jsonl
     end
 

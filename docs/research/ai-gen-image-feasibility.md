@@ -52,7 +52,7 @@ These generate on-brand raster/vector assets with **zero network calls** (import
 - `static/brand/templates/generate-social-assets.py` (PIL; profile/banner/avatar assets)
 - `static/brand/templates/generate-linkedin-series-visuals.py` (PIL)
 - `static/brand/templates/generate-board-meeting.py`, `generate-pitch-deck.py`, `generate-post-templates.py`, `templates/social-templates/generate-social-templates.py`
-- `scripts/generate-milestones-deck.py` / `.js`
+- `scripts/build/generate-milestones-deck.py` (the `.js` twin was deleted; Python is canonical)
 - `static/brand/templates/generate-linkedin-series-visuals.py` is currently in the working tree's modified set — in active use.
 
 These are *templated* renders (shapes/text/brand tokens), not AI image synthesis. The SPA already ships 54 raster images (`public/` + `src/`: 29 .png, 16 .jpeg, 9 .jpg) plus 17 .svg.

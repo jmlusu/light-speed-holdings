@@ -2,7 +2,7 @@
 
 Uses FileStore for atomic persistence of approval requests.
 
-Store contract (ticket #58) — ``orchestrator/approvals.yaml`` is a *working*
+Store contract (ticket #58) — ``data/orchestrator/approvals.yaml`` is a *working*
 store, not the ledger:
 
 - **Anchoring**: every request has a stable, unique ``id``. The gate refuses
@@ -36,6 +36,7 @@ from typing import Any, List, Optional
 from pydantic import BaseModel, Field, field_validator
 
 from ai_company.audit.events import AuditEventType
+from ai_company.paths import state_path
 from ai_company.store.file_store import FileStore
 
 logger = logging.getLogger(__name__)
@@ -117,6 +118,8 @@ class ApprovalGate:
         config_path: str = "orchestrator/approvals.yaml",
         retain_days: int = 30,
     ):
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        config_path = str(state_path(config_path))
         self._store = FileStore(_path_parent(config_path), backup=True)
         self._config_name = _path_name(config_path)
         self.retain_days = retain_days
