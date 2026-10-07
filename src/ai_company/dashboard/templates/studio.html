@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Studio Scorecard — CEO Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6" x-data="studioScorecard()" x-init="init()">
+  <div>
+    <h2 class="text-xl font-semibold font-display text-jarvis-text">Studio Scorecard v1</h2>
+    <p class="text-sm text-jarvis-muted mt-1">Live internal telemetry only — evidenced, qualified, or no data (ADR-033).</p>
+  </div>
+
+  <div x-show="baseline && baseline.active" class="jarvis-glass rounded-xl p-4 border border-jarvis-cyan/30">
+    <p class="text-sm text-jarvis-cyan" x-text="baseline.note || 'Baseline: measurement only, no targets yet.'"></p>
+  </div>
+
+  <div x-show="error" class="jarvis-glass rounded-xl p-5 border border-red-500/30">
+    <p class="text-sm text-red-400" x-text="error"></p>
+  </div>
+
+  <!-- Row 1 — Blueprint four -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <template x-for="card in bigFour" :key="card.id">
+      <div class="jarvis-glass rounded-xl p-5">
+        <p class="text-xs uppercase tracking-wide text-jarvis-muted" x-text="card.label"></p>
+        <p class="text-3xl font-semibold font-display text-jarvis-text mt-2" x-text="card.display"></p>
+        <p class="text-xs mt-2" :class="bandClass(card.band)" x-text="card.sub"></p>
+      </div>
+    </template>
+  </div>
+
+  <!-- Row 2 — Portfolio -->
+  <div class="jarvis-glass rounded-xl p-5">
+    <h3 class="text-sm font-semibold text-jarvis-text mb-4">Portfolio</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <template x-for="v in ventureCards" :key="v.id">
+        <div class="rounded-lg border border-white/[0.08] p-4">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-semibold text-jarvis-text" x-text="v.name"></p>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-white/[0.06] text-jarvis-muted" x-text="v.stage || '—'"></span>
+          </div>
+          <p class="text-xs text-jarvis-muted mt-1 font-mono" x-text="'ATC ' + (v.atcDisplay || 'no data') + ' · velocity ' + (v.velDisplay || 'no data')"></p>
+          <p class="text-xs text-jarvis-muted mt-1 font-mono" x-text="v.tasks + ' tasks in window'"></p>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <!-- Row 3 — Risk strip -->
+  <div class="jarvis-glass rounded-xl p-5">
+    <h3 class="text-sm font-semibold text-jarvis-text mb-4">Risk strip</h3>
+    <div class="flex flex-wrap gap-2 text-xs font-mono">
+      <span class="px-2 py-1 rounded bg-white/[0.06] text-jarvis-muted" x-text="'expired approvals: ' + riskText('expired_approvals')"></span>
+      <span class="px-2 py-1 rounded bg-white/[0.06] text-jarvis-muted" x-text="'pending approvals: ' + riskText('pending_approvals')"></span>
+      <span class="px-2 py-1 rounded bg-white/[0.06] text-jarvis-muted" x-text="'open escalations: ' + riskText('open_escalations')"></span>
+      <span class="px-2 py-1 rounded" :class="risk.cost_overrun ? 'bg-red-500/20 text-red-400' : 'bg-white/[0.06] text-jarvis-muted'" x-text="costText()"></span>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function studioScorecard() {
+  return {
+    bigFour: [], ventureCards: [], risk: {}, baseline: {}, error: '',
+    async init() {
+      try {
+        const res = await fetch('/api/v1/studio-scorecard');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        this.render(await res.json());
+      } catch (e) {
+        this.error = 'Studio scorecard unavailable: ' + e.message;
+      }
+    },
+    fmtKpi(kpi, suffix) {
+      if (!kpi || kpi.current === null || kpi.current === undefined)
+        return { display: 'no data', sub: (kpi && kpi.error) || 'no evidence yet', band: 'no_data' };
+      const sub = (kpi.baseline === 'measurement_only' ? 'baseline · ' : '')
+        + (kpi.error || ('target ' + (kpi.target === null ? '—' : kpi.target + suffix)));
+      return { display: kpi.current + suffix, sub: sub, band: kpi.band || kpi.status };
+    },
+    render(data) {
+      const k = data.kpis || {};
+      const atc = this.fmtKpi(k.atc_rate, '%');
+      const corr = this.fmtKpi(k.correction_per_1k, ' /1k');
+      const cap = this.fmtKpi(k.capital_efficiency, '×');
+      const vel = this.studioVelocity(data.ventures || {});
+      this.bigFour = [
+        { id: 'atc', label: 'ATC rate', ...atc },
+        { id: 'vel', label: 'Velocity to MVP', ...vel },
+        { id: 'corr', label: 'Correction ratio', ...corr },
+        { id: 'cap', label: 'Capital efficiency', ...cap },
+      ];
+      this.baseline = data.baseline || {};
+      this.risk = data.risk || {};
+      this.ventureCards = Object.entries(data.ventures || {}).map(([id, v]) => ({
+        id: id, name: v.name || id, stage: v.stage,
+        atcDisplay: (v.atc === null || v.atc === undefined) ? null : v.atc + '%',
+        velDisplay: (v.velocity_days && v.velocity_days.current !== null && v.velocity_days.current !== undefined)
+          ? v.velocity_days.current + 'd' : null,
+        tasks: v.task_count || 0,
+      }));
+      if (data.error) this.error = data.error;
+    },
+    studioVelocity(ventures) {
+      const vals = Object.values(ventures)
+        .map(v => v.velocity_days && v.velocity_days.current)
+        .filter(x => x !== null && x !== undefined);
+      if (!vals.length) return { display: 'no data', sub: 'no gate timestamps yet', band: 'no_data' };
+      const avg = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+      return { display: avg + 'd', sub: 'mean across ' + vals.length + ' venture(s)', band: avg < 60 ? 'green' : (avg <= 90 ? 'watch' : 'block_scale') };
+    },
+    bandClass(band) {
+      if (band === 'green') return 'text-emerald-400';
+      if (band === 'watch' || band === 'attention') return 'text-amber-400';
+      if (band === 'block_scale' || band === 'critical' || band === 'above_target' || band === 'below_target') return 'text-red-400';
+      return 'text-jarvis-muted';
+    },
+    riskText(key) {
+      const v = this.risk[key];
+      return (v === null || v === undefined) ? '—' : String(v);
+    },
+    costText() {
+      if (this.risk.total_spent === undefined) return 'cost: —';
+      return 'spent $' + this.risk.total_spent + ' / budget $' + (this.risk.total_budget || 0)
+        + (this.risk.cost_overrun ? ' · OVERRUN' : '');
+    },
+  };
+}
+</script>
+{% endblock %}
