@@ -42,7 +42,7 @@ export const company = {
   northStar: 'We build AI-native companies.',
   heroHeadline: 'Build the intelligent enterprise.',
   heroSubline:
-    'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems — in Malawi, across SADC, and beyond.',
+    'LightSpeed Holdings helps organisations design, build and govern AI-native businesses, intelligent workflows and agentic systems — in Malawi, across Africa and beyond.',
   valueCycle: capabilityTitles,
   thesis: 'Aspire. Act. Achieve.',
 };
@@ -59,14 +59,14 @@ export const insightCategories: string[] = [
   'Digital transformation',
   'African AI',
   'Malawi technology',
-  'SADC technology',
+  'African technology',
   'Market intelligence',
   'Operating models',
   'AI implementation',
 ];
 
 export const insightTeasers: { title: string; topic: string; to: string }[] = [
-  { title: 'The SADC AI Opportunity', topic: 'AI IN AFRICA', to: '/insights/sadc-ai-opportunity' },
+  { title: 'The AI Opportunity in Africa', topic: 'AI IN AFRICA', to: '/insights/sadc-ai-opportunity' },
   { title: 'What Agentic AI Means for African Governments', topic: 'AGENTIC AI', to: '/insights/agentic-ai-african-governments' },
   { title: 'From Digital Transformation to AI-Native Transformation', topic: 'DIGITAL TRANSFORMATION', to: '/insights/digital-to-ai-native-transformation' },
 ];
@@ -108,15 +108,15 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
   {
     slug: 'digital-presence',
     title: 'Digital Presence',
-    description: 'Mobile-first websites, e-commerce stores, and brand identities built for Southern Africa — with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.',
+    description: 'Mobile-first websites, e-commerce stores, and brand identities built for African operating realities — with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.',
     eyebrow: 'MOBILE-FIRST DESIGN',
     proof: { label: 'Fieldable in 2026', tone: 'fieldable' as const },
     honestyBadge: 'Fieldable in 2026' as const,
-    oneLiner: 'Southern Africa-first digital presence.',
+    oneLiner: 'African operating realities-first digital presence.',
     nav: 'Digital Presence',
-    lead: 'Mobile-first websites and e-commerce built for Southern Africa.',
+    lead: 'Mobile-first websites and e-commerce built for African operating realities.',
     capabilities: [
-      { title: 'Mobile-First Design', desc: 'Responsive websites built for mobile-first users across Malawi and SADC.' },
+      { title: 'Mobile-First Design', desc: 'Responsive websites built for mobile-first users across Malawi and African markets.' },
       { title: 'Payment Integration', desc: 'Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.' },
       { title: 'Brand Identity', desc: 'Cohesive brand identities designed for the African market.' },
     ],
@@ -127,8 +127,8 @@ description: 'Build governed AI companies with 90 agents and 1 human CEO. A 5-ti
     ],
     spec: {
       problem:
-        'Selling online in Southern Africa requires mobile-first sites and mobile-money checkout — not foreign-card-only stores.',
-      audience: 'Malawian and SADC SMEs, retailers, and brands serving mobile-first customers.',
+        'Selling online in African markets requires mobile-first sites and mobile-money checkout — not foreign-card-only stores.',
+      audience: 'Malawian and African SMEs, retailers, and brands serving mobile-first customers.',
       changes:
         'Customers browse and pay with Airtel Money, TNM Mpamba, or PayChangu from day one.',
       builds: 'Mobile-first websites, e-commerce stores, and cohesive brand identities.',

@@ -161,7 +161,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ theme }) => {
             </div>
             <div className={`flex items-center gap-3 text-xs font-medium ${isLight ? 'text-ls-navy' : 'text-ls-grey-light-text'}`}>
               <Globe2 className="w-4 h-4 text-ls-cyan shrink-0" />
-              <span>Offices in Southern Africa and International Advisory Network</span>
+              <span>International Advisory Network</span>
             </div>
           </div>
         </div>

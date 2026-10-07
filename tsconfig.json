@@ -17,7 +17,21 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@lightspeed/design-system": ["packages/design-system/src/index.ts"],
+      "@lightspeed/design-system/*": ["packages/design-system/src/*"],
+      "@lightspeed/data/company": ["src/data/company/registry.ts"],
+      "@lightspeed/data/metrics": ["src/data/metrics.ts"],
+      "@lightspeed/data/capabilities": ["src/data/capabilities.ts"],
+      "@lightspeed/data/solutions": ["src/data/solutions/registry.ts"],
+      "@lightspeed/data/use-cases": ["src/data/use-cases/registry.ts"],
+      "@lightspeed/data/sectors": ["src/data/sectors/registry.ts"],
+      "@lightspeed/data/insights": ["src/data/insights.ts"],
+      "@lightspeed/data/faqs": ["src/data/faqs.ts"],
+      "@lightspeed/data/claims": ["src/data/registries/claims-registry.json"],
+      "@lightspeed/data/governance": ["src/data/governance.ts"],
+      "@lightspeed/data/media": ["src/data/registries/media-registry.json"],
+      "@lightspeed/data/ctas": ["src/data/ctas/registry.ts"]
     }
   },
   "include": ["src"]

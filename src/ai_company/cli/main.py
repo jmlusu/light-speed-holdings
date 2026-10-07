@@ -42,7 +42,7 @@ _LAZY_SUB_APPS: dict[str, tuple[str, str, str]] = {
         "Data governance — ownership, retention, compliance",
     ),
     "workflows": ("ai_company.cli.workflows", "app", "Manage workflows"),
-    "memory": ("ai_company.lsmem.cli", "app", "Manage company memory (LS-MEM)"),
+    "memory": ("ai_company.cli.memory", "app", "Manage company memory"),
     "knowledge": ("ai_company.cli.memory", "app", "Manage legacy JSON knowledge store"),
     "executives": ("ai_company.cli.executives", "app", "Manage executives"),
     "departments": ("ai_company.cli.departments", "app", "Manage departments"),

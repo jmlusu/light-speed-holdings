@@ -1,5 +1,13 @@
 # Case Study — LightSpeed Holdings Scroll Page (In-House Brand Build)
 
+> **Retirement note (2026-10-06):** the `scroll-craft` skill was retired on
+> 2026-09-23 (AGENTS.md §9.2). Its skill artifacts
+> (`.opencode/skills/scroll-craft/`), the `scrollcraft/` workspace, the
+> `lab/` screenshot corpus, and this case study's `artifacts/` snapshot
+> were removed from the repo in the 2026-10-06 sanitization; Git history
+> preserves them. Paths below are the historical record of where the
+> build lived, not live locations.
+
 **Document ID:** CASE-LSP-001
 **Author:** creative-director / frontend-engineer synthesis (scroll-craft skill)
 **Owner:** cmo

@@ -69,7 +69,7 @@ LinkedIn post   produces        pillar to       all platforms   engagement
 - **Owner:** CEO (or Thought Leadership Lead ghostwrite → CEO approve)
 - **Length:** 1500-2000 words
 - **Structure:** Hook → Framework → Proof → Principle → CTA
-- **Brand:** No emojis, "ASPIRE. ACT. ACHIEVE." sign-off
+- **Brand:** No emojis, "MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY" sign-off
 - **Review:** 24-hr legal SLA if policy content
 
 #### 2B. X Thread (Monday 7:30 AM)

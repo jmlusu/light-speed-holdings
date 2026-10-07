@@ -440,21 +440,25 @@ ai-company knowledge search --memory-type episodic --tags "incident"
 ai-company knowledge consolidate semantic
 ```
 
-#### LS-MEM memory engine
+#### Memory engine
 
-`ai-company memory` now runs LS-MEM, the local-first memory engine (SQLite + FTS5
-search, classification tiers, tamper-evident audit chain). Quickstart:
+`ai-company memory` runs the JSON memory store (6 types: episodic,
+semantic, procedural, relational, temporal, aggregate). Quickstart:
 
 ```bash
-# Store a memory (--type and --title are required)
-ai-company memory remember "lesson" --type observation --title "Lesson learned" --project my-proj
+# List stored memories by type
+ai-company memory list
+ai-company memory list --memory-type episodic
 
-# Search memories (FTS5), scoped to a project
-ai-company memory search "lesson" --project my-proj
+# Search memories
+ai-company memory search "lesson"
 
-# Engine status and statistics
-ai-company memory status
+# Consolidate a memory type into an aggregate summary
+ai-company memory consolidate semantic
 ```
+
+> LS-MEM (the SQLite + FTS5 experiment) was decommissioned on 2026-10-07;
+> the JSON store is the single memory engine again.
 
 ### Workflow Engine
 

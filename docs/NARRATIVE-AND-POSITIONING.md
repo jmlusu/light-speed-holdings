@@ -6,7 +6,7 @@
 
 ## 1. What LightSpeed Is
 
-LightSpeed Holdings is the AI-native company builder for Southern Africa. At the center is Jacob "Jack" Mlusu, an AI-Native Enterprise Transformation leader who helps governments, corporations, and development institutions design, govern, and deploy Agentic AI organizations across Malawi and the SADC region. This is not theory — it is an operating reality.
+LightSpeed Holdings is the AI-native company builder for Africa. At the center is Jacob "Jack" Mlusu, an AI-Native Enterprise Transformation leader who helps governments, corporations, and development institutions design, govern, and deploy Agentic AI organizations across Malawi and African markets. This is not theory — it is an operating reality.
 
 One human CEO directs a workforce of 89 AI agents across 20 departments. This is the canonical count: 90 agents total (89 AI + 1 human CEO), 20 departments, as verified in `source-of-truth.yaml` and `company-registry.yaml`. The CEO sets vision and makes final decisions on high-stakes matters; the agentic workforce executes. Every major decision needs a clear owner. This structure — a human CEO directing AI agents — is the differentiated proof point that positions LightSpeed not as a services firm but as a living, breathing AI-native enterprise.
 
@@ -18,7 +18,7 @@ The mandate is Malawi first. As the North Star states: "Malawi first. Prove it. 
 
 The brand operates in the confirmed palette: navy #070A40, red #E63946, cyan #00BFFF, Arial type scale, 4px grid. The tagline is "ASPIRE. ACT. ACHIEVE." with ™ on first mention of "LightSpeed Holdings Limited™." No emojis. No generic AI commentary. No off-palette colors. Every statement is evidence-led, grounded in the already-deployed infrastructure, and verifiable through the audit trail.
 
-This is the AI-native company builder for Southern Africa. Proven in Malawi. Designed to scale into SADC. Built to be the reference point for how African organizations transition from traditional human-operated companies into governed AI-native enterprises — powered by human leadership and agentic AI systems.
+This is the AI-native company builder for Africa. Proven in Malawi. Designed to scale into Africa. Built to be the reference point for how African organizations transition from traditional human-operated companies into governed AI-native enterprises — powered by human leadership and agentic AI systems.
 
 ---
 
@@ -28,7 +28,7 @@ LightSpeed Holdings does not position itself as a technology company that happen
 
 The evidence is gathered at every step. Every client engagement produces NPS and CSAT scores, ROI calculations tracked by the CFO, and operational metrics that determine whether a service graduates from proof-of-concept to licensed infrastructure. The Malawi clinic that now answers patients on WhatsApp; the NGO whose donor report lands on time instead of weeks later; the agency that licenses Offer E and builds for its own clients—these are not case studies assembled after the fact. They are shipped artifacts, measured in real time, and published with named metrics. The Four Reservations—low-bandwidth reality, data protection, technology debt, skepticism of AI—are not abstract objections but engineering challenges answered by the architecture Lightspeed has built: offline-first PWA queues, sovereign in-country processing under Malawi's Data Protection Act 2017 and GDPR-level rigour, 90-day pilot integration with visible variable cost, and 5-tier HITL governance with immutable audit trails.
 
-From this evidence base, policy insights emerge. The H→A→O→M→T→G→V framework—Human→Agents→Orchestration→Memory→Tools→Governance→Value—maps the architecture of every deployed service, and the reservations doctrine translates lived experience into governance guidance for governments and institutions across Southern Africa. The thesis is that responsible agentic AI is not invented in boardrooms and parachuted into emerging markets; it is derived from the dirt of deployment, the constraint of connectivity, and the rigor of measurement. LightSpeed builds in Malawi, measures what matters, and scales the resulting policy insights to the SADC region—because the proof point, once validated in constrained environments, becomes the standard for everyone.
+From this evidence base, policy insights emerge. The H→A→O→M→T→G→V framework—Human→Agents→Orchestration→Memory→Tools→Governance→Value—maps the architecture of every deployed service, and the reservations doctrine translates lived experience into governance guidance for governments and institutions across Africa. The thesis is that responsible agentic AI is not invented in boardrooms and parachuted into emerging markets; it is derived from the dirt of deployment, the constraint of connectivity, and the rigor of measurement. LightSpeed builds in Malawi, measures what matters, and scales the resulting policy insights to the Africa region—because the proof point, once validated in constrained environments, becomes the standard for everyone.
 
 ASPIRE. ACT. ACHIEVE.
 
@@ -89,7 +89,7 @@ ASPIRE. ACT. ACHIEVE.
 
 ### 3.9 Integration with Existing Positioning Assets
 
-- **USE-CASE-CATALOG.md** positioning node: "The AI-native company builder for Southern Africa" / tagline "ASPIRE. ACT. ACHIEVE." / honesty_classification (all claims fieldable 2026 or in pilot).
+- **USE-CASE-CATALOG.md** positioning node: "The AI-native company builder for Africa" / tagline "MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY" / honesty_classification (all claims fieldable 2026 or in pilot).
 - **MISSION_AND_VISION.md**: mission "Prove agentic AI works in Malawi by shipping real services...", vision "Every organization... operating with intelligent AI agents", North Star "Malawi first. Prove it. Then the world.", core values (Innovation Through Iteration, Transparency in All Operations).
 - **Pharos positioning.md**: three intellectual territories (AI Company Building / Agentic AI Use Cases / AI Governance & Policy) + H→A→O→M→T→G→V framework + explicit "NOT to position as AI Expert / AI Consultant / Generative AI Specialist / AI Engineer".
 - **Brand tokens** (navy/red/cyan, Arial, 4px grid) are the single source of truth — never invent brand colors/fonts (brand-guidelines.md §6).
@@ -122,7 +122,7 @@ LightSpeed Holdings orchestrates AI-driven growth across Malawi, SADC, and Afric
 
 The following claims are valid and supported by existing assets:
 
-- LightSpeed is an AI-native company builder for Southern Africa (per USE-CASE-CATALOG.md positioning node).
+- LightSpeed is an AI-native company builder for Africa (per USE-CASE-CATALOG.md positioning node).
 - The CEO is positioned as an AI-Native Enterprise Transformation leader (per Pharos positioning.md North Star: "Jacob 'Jack' Mlusu is an AI-Native Enterprise Transformation leader...").
 - The H→A→O→M→T→G→V framework (Human → Agents → Orchestration → Memory → Tools → Governance → Value) exists as the intellectual architecture (per Pharos positioning.md).
 - Three intellectual territories exist: AI Company Building / Agentic AI Use Cases / AI Governance & Policy (per Pharos positioning.md explicit territory list).
@@ -150,7 +150,7 @@ The following claims are prohibited and would violate the claims governance fram
 
 ## 8. Who It Serves
 
-LightSpeed Holdings serves Malawian clinics and health workers, embodying our mission to empower frontline health workers across Malawi. We also serve Southern African enterprises and NGOs seeking intelligent automation of knowledge work, as well as global organizations pursuing agentic AI transformation. Our platform serves any organization that needs intelligent AI agents to automate knowledge work, embodying the AI Company Constitution's "Customer First" principle and "Automation before Manual Work" principle.
+LightSpeed Holdings serves Malawian clinics and health workers, embodying our mission to empower frontline health workers across Malawi. We also serve African enterprises and NGOs seeking intelligent automation of knowledge work, as well as global organizations pursuing agentic AI transformation. Our platform serves any organization that needs intelligent AI agents to automate knowledge work, embodying the AI Company Constitution's "Customer First" principle and "Automation before Manual Work" principle.
 
 ---
 
@@ -170,7 +170,7 @@ LightSpeed Holdings serves Malawian clinics and health workers, embodying our mi
 
 (d) Brand-compliance checklist (12 items from brand-guidelines.md §9).
 
-(h) Integration with USE-CASE-CATALOG positioning ("The AI-native company builder for Southern Africa" / "ASPIRE. ACT. ACHIEVE.").
+(h) Integration with USE-CASE-CATALOG positioning ("The AI-native company builder for Africa" / "MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY").
 
 (i) Integration with MISSION_AND_VISION (mission/vision/values).
 

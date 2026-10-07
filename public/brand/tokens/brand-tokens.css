@@ -64,3 +64,114 @@
   --ls-slide-width: 10in;
   --ls-slide-height: 7.5in;
 }
+
+/* ── Tailwind v4 theme — generates bg-ls-*, text-ls-*, border-ls-*,
+      font-*, rounded-* utilities. Merged 2026-10-05 from the retired
+      src/brand/brand-tokens.css (archived at
+      .archive/design-system/src-brand-brand-tokens.css). Directive §5. */
+@theme {
+  /* ── Brand Colors (Tailwind v4 custom palette) ─────────── */
+  --color-ls-navy: #070A40;
+  --color-ls-red: #E63946;
+  --color-ls-cyan: #00BFFF;
+  --color-ls-mist: #F7F8F9;
+  --color-ls-slate: #121518;
+  --color-ls-white: #FFFFFF;
+  --color-ls-grey-dark: #6B7280;
+  --color-ls-grey-light-text: #9CA3AF;
+
+  /* ── Calm Intelligence Extended Palette ─────────────────── */
+  /* Morning Mist / Alabaster (Light) */
+  --color-ls-mist-light: #F7F8F9;
+  --color-ls-alabaster: #FAFAFA;
+  --color-ls-mist-subtle: #F0F1F3;
+  /* Slate / Deep Mineral (Dark) */
+  --color-ls-slate-deep: #0D1013;
+  --color-ls-mineral: #1A1D21;
+  --color-ls-mineral-elevated: #22262A;
+  /* Natural Metaphors */
+  --color-ls-stone: #3A3F45;
+  --color-ls-water: #1A5C7A;
+  --color-ls-reflection: #E8F0F8;
+  --color-ls-light: #FFFFFF;
+
+  /* ── Fonts ─────────────────────────────────────────────── */
+  --font-display: Arial, sans-serif;
+  --font-body: Arial, sans-serif;
+  --font-caption: Arial, sans-serif;
+
+  /* ── Radii ─────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+}
+
+/* ── Merged additions from the retired src copy (archived) ──
+   Values identical to the duplicate blocks above are not repeated;
+   where the two files diverged, the canonical values above win
+   (e.g. --ls-grey-light: #F2F2F2 and the pt type scale). */
+:root {
+  /* ── Light Mode (Morning Mist / Alabaster) ─────────────── */
+  --ls-bg-light: #F7F8F9;
+  --ls-surface-light: #FFFFFF;
+  --ls-surface-elevated-light: #FAFAFA;
+  --ls-text-light: #121518;
+  --ls-text-secondary-light: #6B7280;
+  --ls-text-muted-light: #9CA3AF;
+  --ls-border-light: #E5E7EB;
+  --ls-border-subtle-light: #F0F1F3;
+
+  /* ── Dark Mode (Slate / Deep Mineral) ──────────────────── */
+  --ls-bg-dark: #121518;
+  --ls-surface-dark: #1A1D21;
+  --ls-surface-elevated-dark: #22262A;
+  --ls-text-dark: #F7F8F9;
+  --ls-text-secondary-dark: #9CA3AF;
+  --ls-text-muted-dark: #6B7280;
+  --ls-border-dark: #2A2D31;
+  --ls-border-subtle-dark: #1F2226;
+
+  /* ── Calm Intelligence Visual Language ─────────────────── */
+  --ls-mist-opacity: 0.08;
+  --ls-mist-opacity-hover: 0.15;
+  --ls-water-reflection: linear-gradient(135deg, rgba(0,191,255,0.03) 0%, rgba(7,10,64,0.05) 100%);
+  --ls-stone-texture: rgba(58,63,69,0.03);
+  --ls-light-glow: rgba(255,255,255,0.02);
+
+  /* ── RGB channels (for rgba() usage) ──────────────────── */
+  --ls-navy-rgb: 7, 10, 64;
+  --ls-red-rgb: 230, 57, 70;
+  --ls-cyan-rgb: 0, 191, 255;
+  --ls-mist-rgb: 247, 248, 249;
+  --ls-slate-rgb: 18, 21, 24;
+
+  /* ── Typography additions ──────────────────────────────── */
+  --ls-weight-semibold: 600;
+
+  /* ── Spacing addition ──────────────────────────────────── */
+  --ls-space-10: 128px;
+
+  /* ── Radius additions ──────────────────────────────────── */
+  --ls-radius-xl: 24px;
+  --ls-radius-2xl: 32px;
+  --ls-radius-full: 9999px;
+
+  /* ── Motion — Slow to the eye. Fast to the mind. ───────── */
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-medium: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spatial: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* ── Shadows — Restrained depth ───────────────────────── */
+  --ls-shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+  --ls-shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+  --ls-shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+  --ls-shadow-xl: 0 16px 48px rgba(0,0,0,0.1);
+  --ls-shadow-red: 0 8px 24px rgba(230,57,70,0.15);
+  --ls-shadow-cyan: 0 8px 24px rgba(0,191,255,0.15);
+}

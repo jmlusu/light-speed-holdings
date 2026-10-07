@@ -39,10 +39,10 @@ doctor: ## Run system diagnostics
 	uv run ai-company doctor run
 
 backup: ## Run backup script (creates timestamped archives)
-	powershell -ExecutionPolicy Bypass -File scripts/backup.ps1
+	powershell -ExecutionPolicy Bypass -File scripts/deploy/backup.ps1
 
 backup-dry: ## Preview backup without creating archives
-	powershell -ExecutionPolicy Bypass -File scripts/backup.ps1 -DryRun
+	powershell -ExecutionPolicy Bypass -File scripts/deploy/backup.ps1 -DryRun
 
 lock: ## Generate uv.lock from pyproject.toml
 	uv lock

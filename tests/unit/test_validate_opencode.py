@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_SCRIPT_PATH = _REPO_ROOT / "scripts" / "validate_opencode.py"
+_SCRIPT_PATH = _REPO_ROOT / "scripts" / "maintenance" / "validate_opencode.py"
 
 
 def _load_validator() -> Any:

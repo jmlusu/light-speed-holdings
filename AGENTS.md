@@ -79,8 +79,8 @@ Installed hooks: trailing-whitespace, end-of-file-fixer, check-yaml, ruff (lint+
 ### Disaster Recovery
 
 ```powershell
-.\scripts\backup.ps1                  # Backup .opencode/, company/, results/
-.\scripts\backup.ps1 -KeepCount 14    # Keep 14 days of backups
+.\scripts\deploy\backup.ps1                    # Backup .opencode/, company/, results/ (to ~/.lightspeed/backups)
+.\scripts\deploy\backup.ps1 -RetentionDays 14  # Keep 14 days of backups
 ```
 
 ### Staging Environment
@@ -101,7 +101,7 @@ Staging dashboard runs on host port **8421** (maps to container 8420; production
 | CLI commands | `ai-company --help` + `ai-company <command> --help` |
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
-| Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
 
 ## 7 Safety Boundaries
 
@@ -161,7 +161,7 @@ An agent performing an audit must treat its evidence set as read-only: **never w
 | CLI commands | `ai-company --help` + `ai-company <command> --help` |
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
-| Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
 
 ## 11 Security — Key Rotation Procedure
 
@@ -246,6 +246,6 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Orchestrator | `ls-creative-director` | Brief intake (artifact/audience/objective/narrative/visual language) → routes to one production skill + support skills |
 | Production | `ls-frontend-design`, `ls-presentation-design`, `ls-document-design`, `ls-social-media-design`, `ls-brand-advertising` | Generate the artifact, delegating rendering to existing engines (python-pptx, Vite React SPA at repo-root `src/`, k-dense-*, Playwright) |
 | Support | `ls-diagramming`, `ls-documentation-engineering`, `ls-visual-storytelling` | Diagram/graphic/doc-IA assets used inside produced artifacts |
-| Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes `scripts/visual_check.js` (Playwright; `npx playwright install chromium` once) |
+| Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes Playwright visual checks via `ls-artifact-qa` skill (see `.agents/skills/ls-artifact-qa/`) |
 
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.

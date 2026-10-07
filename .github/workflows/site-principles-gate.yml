@@ -6,7 +6,7 @@ name: Site Build + Principles Gate
 # Non-site PRs still get a fast green run (build is ~15s).
 # Enforces the automatable subset of Appendix A checks:
 #   check 6 — zero TypeScript/build errors (bun run build = tsc + vite) and
-#             no fake-success form states (scripts/check-site-form-backend.py).
+#             no fake-success form states (scripts/test/check-site-form-backend.py).
 
 on:
   pull_request:
@@ -49,4 +49,4 @@ jobs:
         run: bun run test
 
       - name: Reject fake-success forms — Appendix A check 6 (§10)
-        run: python3 scripts/check-site-form-backend.py
+        run: python3 scripts/test/check-site-form-backend.py

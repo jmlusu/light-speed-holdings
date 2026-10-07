@@ -4,7 +4,7 @@
 **Sponsor:** CEO (Human)
 **Created:** 2026-08-27
 **Status:** ACTIVE
-**Tagline:** ASPIRE. ACT. ACHIEVE.
+**Tagline:** MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY.
 
 ---
 
@@ -177,7 +177,7 @@ This roadmap tracks the organization-wide adoption of official LightSpeed Holdin
 | Element | Value |
 |---------|-------|
 | **Company Name** | LIGHTSPEED HOLDINGS LIMITED |
-| **Tagline** | ASPIRE. ACT. ACHIEVE. |
+| **Tagline** | MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY |
 | **Primary Color** | Dark Navy `#070A40` |
 | **Accent — Red** | `#E63946` |
 | **Accent — Cyan** | `#00BFFF` |

@@ -15,9 +15,9 @@ The active project lives at the repository root
 | `company-registry.yaml` | Single source of truth for agents (90 agents, 20 departments) |
 | `templates/` | Jinja2 templates used by the generator |
 | `docs/` | Architecture, status, ECL, and planning documents |
-| `scripts/` | `dev.ps1`, `backup.ps1`, ECL harness scripts |
+| `scripts/` | Purpose dirs: `dev/`, `build/`, `test/`, `deploy/`, `maintenance/`, `research/` + canonical `scripts/health_check.py` |
 | `.opencode/` | Runtime data: `agents/*.md`, `inbox.json`, `dead_letter.json` |
-| `harness/` | ECL change tracking (currently inactive) |
+| `harness/` | ECL change tracking (see `harness/changes/active/` for current work) |
 
 The core workflow is: `company-registry.yaml → Jinja2 template → .opencode/agents/*.md + company/*.yaml`.
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full module hierarchy and data flow.
@@ -35,13 +35,13 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full module hierarchy and data fl
 PowerShell (recommended on Windows):
 
 ```powershell
-.\scripts\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
-.\scripts\dev.ps1 setup     # venv + deps + pre-commit + agent generation
-.\scripts\dev.ps1 test      # Run test suite (with coverage)
-.\scripts\dev.ps1 lint      # ruff check + format check + mypy
-.\scripts\dev.ps1 status    # Show project status
-.\scripts\dev.ps1 generate  # Regenerate agents from company-registry.yaml
-.\scripts\dev.ps1 clean     # Remove build/cache artifacts
+.\scripts\dev\dev.ps1           # Full onboarding: venv, deps, lint, tests, agents
+.\scripts\dev\dev.ps1 setup     # venv + deps + pre-commit + agent generation
+.\scripts\dev\dev.ps1 test      # Run test suite (with coverage)
+.\scripts\dev\dev.ps1 lint      # ruff check + format check + mypy
+.\scripts\dev\dev.ps1 status    # Show project status
+.\scripts\dev\dev.ps1 generate  # Regenerate agents from company-registry.yaml
+.\scripts\dev\dev.ps1 clean     # Remove build/cache artifacts
 ```
 
 Manual setup (bash):
@@ -83,7 +83,7 @@ uv run ai-company dashboard kpi list   # View KPIs
 | CLI commands | `ai-company --help` + `ai-company <command> --help` |
 | Models / orchestrator | `pytest` |
 | Any source change | `ruff check src/ && mypy src/ && pytest` |
-| Harness / docs | `pwsh scripts/lint-ecl.ps1` |
+| Harness / docs | `pwsh scripts/maintenance/lint-ecl.ps1` |
 
 ## 6 ECL Change Lifecycle
 
@@ -96,12 +96,12 @@ active -> park -> parking/YYYY-MM-DD-slug -> resume -> active
 ```
 
 ```powershell
-.\scripts\harness-change.ps1 new "Title"     # Create a change
-.\scripts\harness-change.ps1 status          # Show active change
-.\scripts\harness-change.ps1 close completed # Archive + rebuild INDEX
-.\scripts\harness-change.ps1 park            # Park active change
-.\scripts\harness-evolve.ps1 check           # Check auto-evolve threshold
-.\scripts\lint-ecl.ps1                       # Validate ECL structure
+.\scripts\maintenance\harness-change.ps1 new "Title"     # Create a change
+.\scripts\maintenance\harness-change.ps1 status          # Show active change
+.\scripts\maintenance\harness-change.ps1 close completed # Archive + rebuild INDEX
+.\scripts\maintenance\harness-change.ps1 park            # Park active change
+.\scripts\maintenance\harness-evolve.ps1 check           # Check auto-evolve threshold
+.\scripts\maintenance\lint-ecl.ps1                       # Validate ECL structure
 ```
 
 Rules: only one active change at a time; never hand-edit `harness/changes/INDEX.json`; active change files override `docs/STATUS.md` for the current task. See [ECL.md](ECL.md) for the full manual.
@@ -124,8 +124,8 @@ Rules: only one active change at a time; never hand-edit `harness/changes/INDEX.
 ## 8 Backups
 
 ```powershell
-.\scripts\backup.ps1                  # Backup .opencode/, company/, results/
-.\scripts\backup.ps1 -KeepCount 14    # Keep 14 days of backups
+.\scripts\deploy\backup.ps1                    # Backup .opencode/, company/, results/ (to ~/.lightspeed/backups)
+.\scripts\deploy\backup.ps1 -RetentionDays 14  # Keep 14 days of backups
 ```
 
 ## 9 Staging

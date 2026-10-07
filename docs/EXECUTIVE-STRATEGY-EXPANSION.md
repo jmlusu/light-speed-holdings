@@ -15,7 +15,7 @@ To transition LightSpeed Holdings from internal framework development to sustain
 
 ## 2. SADC Regional Ecosystem Leadership
 
-LightSpeed is uniquely positioned to define the standard for enterprise AI across the Southern African Development Community (SADC) by addressing regional realities rather than Silicon Valley assumptions.
+LightSpeed is uniquely positioned to define the standard for enterprise AI across Africa by addressing regional realities rather than Silicon Valley assumptions.
 
 ### Strategic Execution Details
 - **Low-Bandwidth & Edge Resilience**: Highlighting our architectural strengths—file-based atomic stores (`FileStore`), local-first Whisper transcription, and lightweight Docker compose profiles—that allow enterprises with intermittent connectivity or strict data residency mandates to operate seamlessly.

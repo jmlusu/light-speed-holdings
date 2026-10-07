@@ -1,0 +1,190 @@
+{
+  "version": "1.0",
+  "description": "Canonical solution registry per Directive §16. 8 solution families with capabilities, use cases, and CTAs.",
+  "lastUpdated": "2026-10-05",
+  "solutions": [
+    {
+      "slug": "ai-agentic-systems",
+      "title": "AI & Agentic Systems",
+      "description": "Build governed multi-agent orchestration platforms where AI agents execute specialized roles across departments, with human CEO oversight, immutable audit trails, and deterministic routing.",
+      "eyebrow": "AI OPERATING MODEL",
+      "capabilities": [
+        "Multi-Agent Orchestration (90 agents, 20 departments)",
+        "5-Tier Human-in-the-Loop Approval Matrix",
+        "Immutable SHA-256 Sealed Audit Trails",
+        "Agent Registry & Role Definitions",
+        "Model Routing (Local/Open-Weight → Premium)",
+        "Memory & Context Persistence"
+      ],
+      "useCases": [
+        "AI Company Builder Platform Deployment",
+        "Enterprise Agent Workforce Automation",
+        "Solo Founder AI Operating Model (FOW-01)",
+        "Consulting Firm Delivery Backbone (FOW-03)",
+        "Non-Profit Full Capability with Minimal Staff (FOW-04)"
+      ],
+      "cta": "Explore AI Company Builder"
+    },
+    {
+      "slug": "intelligent-automation",
+      "title": "Intelligent Automation",
+      "description": "WhatsApp-native assistants, automated document pipelines, and intelligent form workflows that connect teams to tools without app downloads — running on infrastructure people already use.",
+      "eyebrow": "WORKFLOW AUTOMATION",
+      "capabilities": [
+        "WhatsApp-Native Conversational Agents",
+        "Document & Report Generation Pipelines",
+        "Form & Survey Automation (Kobo/Google Forms → Dashboard)",
+        "Internal Tool & Dashboard Development",
+        "Mobile-Money Integration (Airtel Money, TNM Mpamba)",
+        "Offline-First Operation on Local Infrastructure"
+      ],
+      "useCases": [
+        "WhatsApp Customer Chatbot (B1)",
+        "AI Document/Report Generator (B2)",
+        "Form + Survey Automation (B3)",
+        "Internal Tool / Dashboard (B4)",
+        "Agricultural Cooperative Coordination (ws-02)",
+        "VSLA/SACCO Mobile Money Workflows"
+      ],
+      "cta": "Explore Business Automation"
+    },
+    {
+      "slug": "data-decision-intelligence",
+      "title": "Data & Decision Intelligence",
+      "description": "Automate donor-ready reports from Kobo and DHIS2 data in hours, not weeks. Clean data, generate narrative reports against donor templates, and build interactive dashboards accessible on mobile.",
+      "eyebrow": "DATA & ANALYTICS",
+      "capabilities": [
+        "Automated Data Cleaning & Analysis",
+        "Donor/Project Report Generation (Compliant Templates)",
+        "Interactive Program KPI Dashboards",
+        "Survey Design, Collection & Analysis",
+        "GDPR-Level Data Protection & Sovereignty",
+        "Cross-Border Consent Workflows for LLM APIs"
+      ],
+      "useCases": [
+        "Data Cleaning & Analysis (C1)",
+        "Donor/Project Reports (C2)",
+        "Interactive Dashboard (C3)",
+        "Survey Design + Analysis (C4)",
+        "Health/M&E Clinic Supply Chain Monitoring",
+        "Agricultural Cooperative Supply Chain Tracking"
+      ],
+      "cta": "Explore Data & Decision Intelligence"
+    },
+    {
+      "slug": "digital-transformation",
+      "title": "Digital Transformation",
+      "description": "Mobile-first websites, e-commerce stores, and brand identities built for African operating realities — with Airtel Money, TNM Mpamba, and PayChangu checkout built in from day one.",
+      "eyebrow": "MOBILE-FIRST DESIGN",
+      "capabilities": [
+        "Mobile-First Responsive Web Development",
+        "E-Commerce with Local Payment Rails",
+        "Brand Identity & Design Systems",
+        "Google Business & Listings Management",
+        "Bilingual Content (Chichewa + English)",
+        "Social Media Management & Ad Campaigns"
+      ],
+      "useCases": [
+        "Business Website (A1)",
+        "E-Commerce / Online Store (A2)",
+        "Brand Identity (A3)",
+        "Google Business + Listings (A4)",
+        "Social Media Management (D1)",
+        "Content Pack (D2)",
+        "Google/Facebook Ads Setup (D3)"
+      ],
+      "cta": "Explore Digital Presence"
+    },
+    {
+      "slug": "strategy-executive-advisory",
+      "title": "Strategy & Executive Advisory",
+      "description": "Structured discovery, AI readiness assessments, boardroom briefings, and roadmap generation — helping leadership teams move from problem to governed AI deployment with clarity.",
+      "eyebrow": "EXECUTIVE ADVISORY",
+      "capabilities": [
+        "AI Strategy & Roadmap Generation",
+        "AI Design Sprint (5-Day Concept-to-Prototype)",
+        "Executive Boardroom Briefing Sessions",
+        "ROI Modeling & Assessment Templates",
+        "Forward-Deployed Engineer Embedding",
+        "Venture Co-Build (Equity + Consulting)"
+      ],
+      "useCases": [
+        "Board Presentation & Platform Deep-Dive",
+        "Governance Model Deep-Dive",
+        "Engagement Roadmap Planning",
+        "AI Readiness Assessment",
+        "SADC AI Governance Framework Advisory",
+        "National AI Strategy Consultation"
+      ],
+      "cta": "Request a Boardroom Briefing"
+    },
+    {
+      "slug": "ai-governance-policy",
+      "title": "AI Governance & Policy",
+      "description": "Establish controls, architecture, policies, standards, risk management, and decision rights for responsible AI adoption — aligned with Malawi DPA, SADC frameworks, and AU Continental AI Strategy.",
+      "eyebrow": "GOVERNANCE & POLICY",
+      "capabilities": [
+        "5-Tier Risk-Classified Approval Matrix",
+        "4 Governance Gates (Contract, DPA, Compliance, Security)",
+        "Immutable Audit Trails with Expiry Sweeps",
+        "RBAC with 90-Day Key Rotation",
+        "AI Ethics Board Review (Tier 3+)",
+        "SADC/AU Policy Framework Alignment"
+      ],
+      "useCases": [
+        "Compliance Automation for Financial Services",
+        "Risk Classification & Audit Trail Generation",
+        "Government Compliance Monitoring (FOW-05)",
+        "Data Protection & Sovereignty Implementation",
+        "Regulatory Reporting Automation",
+        "AI Ethics Board Review Workflows"
+      ],
+      "cta": "View Governance Details"
+    },
+    {
+      "slug": "research-applied-ai",
+      "title": "Research & Applied AI",
+      "description": "Develop evidence, research, market intelligence, policy analysis, and practical guidance for AI adoption in Malawi and Africa — turning engineering observations into public intellectual work via Pharos.",
+      "eyebrow": "RESEARCH & POLICY",
+      "capabilities": [
+        "Applied AI Research & Experimentation",
+        "African AI Economics & Open-Weight Model Research",
+        "AI Governance & Policy Research",
+        "African Technology & Digital Transformation Studies",
+        "Sovereign AI & Resource-Constrained Deployment Research",
+        "University Capacity Building & Certification"
+      ],
+      "useCases": [
+        "Pharos Insight Publication (Agentic AI, African AI, AI Governance)",
+        "SADC Agentic AI Governance Framework",
+        "National AI Strategy Consultation Submission",
+        "University Talent Pipeline Development",
+        "Model Comparison & Benchmarking on Local Infra",
+        "Open-Weight Model Routing Optimization"
+      ],
+      "cta": "Read Pharos Insights"
+    },
+    {
+      "slug": "ai-company-builder-deployment",
+      "title": "AI Company Builder Deployment",
+      "description": "License and deploy the same 90-agent orchestration engine that runs LightSpeed Holdings on your infrastructure — self-hosted, provider-agnostic, with one-on-one onboarding and support.",
+      "eyebrow": "PLATFORM LICENSING",
+      "capabilities": [
+        "AI Company Builder License (E1) — Self-Hosted on Your Laptop/VPS",
+        "Agent Setup for Agencies (E2) — White-Label",
+        "Provider-Agnostic Model Routing (9 LLM Providers + Ollama)",
+        "RBAC & Client Portal Access",
+        "Support Retainer (MWK 350,000/mo)",
+        "Extensible Agent & Workflow Configuration"
+      ],
+      "useCases": [
+        "Solo Founder AI Workforce (FOW-01)",
+        "Tech-Savvy Founder Self-Deployment",
+        "Local Tech Agency White-Label",
+        "Diaspora Entrepreneur Operations",
+        "Software Developer Agent Teams"
+      ],
+      "cta": "Explore AI Company Builder"
+    }
+  ]
+}

@@ -36,9 +36,9 @@ company:
       tasks; delegate them to the appropriate executive.
     tools:
     - read
-    - write
-    - execute
-    - delegate
+    - edit
+    - bash
+    - task
     approval_level: exec
     escalation_path:
     - human_ceo
@@ -82,8 +82,8 @@ company:
     guidelines: Prioritize clean, maintainable, and well-tested code.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     approval_level: exec
     escalation_path:
     - chief_of_staff
@@ -118,8 +118,8 @@ company:
     guidelines: Focus on efficiency and process automation.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     approval_level: exec
     escalation_path:
     - chief_of_staff
@@ -154,8 +154,8 @@ company:
     guidelines: Stay updated on the latest AI advancements and apply them practically.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - webfetch
     approval_level: exec
     escalation_path:
@@ -198,8 +198,8 @@ company:
       clear owner.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: premium
     approval_level: ceo
     escalation_path:
@@ -239,8 +239,8 @@ company:
       Cost is a first-class metric.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -286,7 +286,7 @@ company:
       Ship incrementally, measure continuously.
     tools:
     - read
-    - write
+    - edit
     - webfetch
     model_tier: standard
     approval_level: exec
@@ -332,7 +332,7 @@ company:
       and success metric. Brand consistency is enforced.
     tools:
     - read
-    - write
+    - edit
     - webfetch
     model_tier: standard
     approval_level: exec
@@ -374,8 +374,8 @@ company:
       prevents conflict. Invest in growth before you need it.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -420,8 +420,8 @@ company:
       finding gets a severity rating and remediation timeline.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -460,8 +460,8 @@ company:
       operational work. Document everything.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -502,8 +502,8 @@ company:
       Data-driven decisions require data instrumentation first.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -545,7 +545,7 @@ company:
       is traceable. Legal review is proactive, not reactive.
     tools:
     - read
-    - write
+    - edit
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -584,7 +584,7 @@ company:
       owner and success metric. Competitive intelligence is continuous.
     tools:
     - read
-    - write
+    - edit
     - webfetch
     model_tier: standard
     approval_level: exec
@@ -625,7 +625,7 @@ company:
       decide. Every brief is fact-based.
     tools:
     - read
-    - write
+    - edit
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -664,8 +664,8 @@ company:
       must be measurable. Retention is cheaper than acquisition.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -703,8 +703,8 @@ company:
       output; pipeline is the input. No silent data loss on stage transitions.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -741,8 +741,8 @@ company:
       to source data. Flag anomalies immediately.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: premium
@@ -794,8 +794,8 @@ company:
       everything.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -840,8 +840,8 @@ company:
       DLQ entries must be replayable. Breakers must fail safe.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -888,7 +888,7 @@ company:
       Every privileged tool call must pass tier gating.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -931,8 +931,8 @@ company:
       is a feature, not a failure.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -973,7 +973,7 @@ company:
       silent approvals.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -1015,8 +1015,8 @@ company:
       Idempotency is mandatory.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1057,8 +1057,8 @@ company:
       must be real-time.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1103,8 +1103,8 @@ company:
       by tier and budget.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1145,8 +1145,8 @@ company:
       must be replayable.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1189,8 +1189,8 @@ company:
       non-negotiable.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1232,8 +1232,8 @@ company:
       Never mask a real failure.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1272,8 +1272,8 @@ company:
       loss on stage transitions.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1310,8 +1310,8 @@ company:
       is enforced.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1358,7 +1358,7 @@ company:
       single source of truth. 2FA everywhere. Name and handle consistency is enforced.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     - webfetch
@@ -1401,8 +1401,8 @@ company:
       must be measurable.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1439,7 +1439,7 @@ company:
       is traceable.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -1476,8 +1476,8 @@ company:
       (agent) decisions.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1520,7 +1520,7 @@ company:
       RACI must match reality.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -1566,8 +1566,8 @@ company:
       \ ship on red. Gate every merge on green."
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1610,8 +1610,8 @@ company:
       Flaky tests are bugs.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1654,8 +1654,8 @@ company:
       a failure. Gate every merge.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1707,8 +1707,8 @@ company:
       path. Unblock before adding work.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1753,8 +1753,8 @@ company:
       and alerting. Document every transformation.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1801,8 +1801,8 @@ company:
       requires a safety review before deployment. No exceptions.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -1845,7 +1845,7 @@ company:
       ships without at least one user validation. Research is continuous, not one-off.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -1888,7 +1888,7 @@ company:
       needs docs. Version docs with code. Never ship undocumented features.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -1932,8 +1932,8 @@ company:
       delivery.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - webfetch
     - grep
     - list
@@ -1978,7 +1978,7 @@ company:
       Culture is what you do, not what you say. Protect the culture fiercely.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -2021,8 +2021,8 @@ company:
       testing is a safety function, not a QA function. Document every finding.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2068,8 +2068,8 @@ company:
       rollback plans.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2112,8 +2112,8 @@ company:
       a narrative. Pricing reflects value, not cost. Competitive intelligence is continuous.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -2156,8 +2156,8 @@ company:
       ROI rigorously.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -2200,8 +2200,8 @@ company:
       LLM interaction is a potential attack surface. Defense-in-depth is mandatory.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2246,8 +2246,8 @@ company:
       playbooks before you need them.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2291,8 +2291,8 @@ company:
       technical debt.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2335,8 +2335,8 @@ company:
       costs money. Quality and cost are both first-class metrics.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2380,7 +2380,7 @@ company:
       Retention policies are enforced, not suggested. Every DPA is reviewed annually.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -2422,7 +2422,7 @@ company:
       Least privilege is the baseline. Security architecture evolves with the system.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -2467,7 +2467,7 @@ company:
       edge cases.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -2510,7 +2510,7 @@ company:
       are reviewed annually. Vendor risk is company risk.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -2554,8 +2554,8 @@ company:
       later.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2599,7 +2599,7 @@ company:
       and action.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -2642,8 +2642,8 @@ company:
       needs a data owner.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2689,7 +2689,7 @@ company:
       \ product pressure is essential."
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -2734,8 +2734,8 @@ company:
       debt is tracked and prioritized.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2779,8 +2779,8 @@ company:
       composable. Performance budgets are enforced. Design tokens drive consistency.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2824,8 +2824,8 @@ company:
       Customer-facing solutions must be production-ready from day one.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2870,8 +2870,8 @@ company:
       contracts are well-defined.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2916,8 +2916,8 @@ company:
       design decision needs a trade-off analysis.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -2962,7 +2962,7 @@ company:
       feature has success metrics defined upfront.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -3006,8 +3006,8 @@ company:
       and success metric. Compound growth comes from small, consistent wins.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -3050,8 +3050,8 @@ company:
       reactively. Share insights broadly. Data drives recommendations.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -3096,7 +3096,7 @@ company:
       matters more.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -3140,7 +3140,7 @@ company:
       Every piece has a distribution plan. Brand consistency is enforced.
     tools:
     - read
-    - write
+    - edit
     - grep
     - list
     model_tier: standard
@@ -3183,8 +3183,8 @@ company:
       is automated and rollback-capable. Model lineage is documented.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -3227,8 +3227,8 @@ company:
       failures escalate to HITL before client impact.
     tools:
     - read
-    - write
-    - execute
+    - edit
+    - bash
     - grep
     - list
     model_tier: standard
@@ -3273,9 +3273,9 @@ company:
       is non-negotiable.
     tools:
     - read
-    - write
-    - execute
-    - delegate
+    - edit
+    - bash
+    - task
     model_tier: standard
     approval_level: exec
     escalation_path:
@@ -3587,8 +3587,8 @@ company:
       never just a commentator.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: premium
@@ -3638,8 +3638,8 @@ company:
       or do not publish. Research feeds every other Pharos artifact.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -3689,8 +3689,8 @@ company:
       The CEO's public voice is builder-advocate; lead with proof, then principle.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -3743,8 +3743,8 @@ company:
       SADC realities (connectivity, dual economies, data sovereignty).
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: premium
@@ -3794,8 +3794,8 @@ company:
       study or relationship. Pitch outcomes (governed deployment), not jargon.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -3846,8 +3846,8 @@ company:
       deals. Every interaction is tracked. Serve the network to lead it.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     model_tier: standard
@@ -3904,7 +3904,7 @@ company:
       Local mode requires an explicit opt-in and a passing health_check.
     tools:
     - read
-    - write
+    - edit
     - bash
     - webfetch
     - grep
@@ -3964,8 +3964,8 @@ company:
       single source of truth.
     tools:
     - read
-    - write
-    - web_search
+    - edit
+    - webfetch
     - grep
     - list
     - task

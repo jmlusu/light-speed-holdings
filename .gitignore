@@ -5,13 +5,14 @@
 .env.*
 !.env.example
 !.env.staging.example
+opencode.local.json
 
 # ==========================================
 # Build Artifacts & Dependencies
 # ==========================================
 node_modules/
 dist/
-build/
+/build/
 .tmp/
 *.tsbuildinfo
 
@@ -35,6 +36,17 @@ env/
 *.swo
 .DS_Store
 Thumbs.db
+
+# QA artifacts (security sanitization)
+qa-*.png
+qa-report*.json
+
+# Temp directories
+tmp/
+lab/
+
+# Local agent-tool state (never commit)
+.crush/
 
 # ==========================================
 # Testing, Coverage & Quality Tools
@@ -71,7 +83,9 @@ graphify-out/
 .agents/skills-staging/
 workflows/instances/
 memory/*.json
+memory/*.yaml
 memory/vector_index/
+memory/embeddings/
 /data/
 logs/
 results/

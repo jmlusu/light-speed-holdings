@@ -1,0 +1,165 @@
+$ErrorActionPreference = "Stop"
+
+$Root = (Get-Location).Path
+$Changes = Join-Path $Root "harness/changes"
+$Active = Join-Path $Changes "active"
+$IndexPath = Join-Path $Changes "INDEX.json"
+$HarnessChange = Join-Path $Root "scripts/maintenance/harness-change.ps1"
+$HarnessEvolve = Join-Path $Root "scripts/maintenance/harness-evolve.ps1"
+$StatusPath = Join-Path $Root "docs/STATUS.md"
+$EvolutionState = Join-Path $Root "harness/evolution/state.json"
+
+function Fail([string]$Message) {
+  Write-Error $Message
+  exit 1
+}
+
+# PowerShell anti-pattern gate: delegates to the standalone scanner
+# (FAIL: backtick-before-dollar; WARN: unsorted Get-ChildItem).
+# Pass scripts/ explicitly: the scanner defaults to its own directory,
+# which changed from scripts/ to scripts/maintenance/ in the consolidation.
+& (Join-Path $PSScriptRoot "scan-ps-antipatterns.ps1") (Split-Path -Parent $PSScriptRoot)
+if ($LASTEXITCODE -ne 0) {
+  exit 1
+}
+
+if (-not (Test-Path -LiteralPath $Changes)) {
+  Fail "Missing harness/changes. Run ecl-harness-engineer or create ECL harness structure."
+}
+
+foreach ($dir in @("active", "parking", "archive")) {
+  if (-not (Test-Path -LiteralPath (Join-Path $Changes $dir))) {
+    Fail "Missing harness/changes/$dir."
+  }
+}
+
+if (-not (Test-Path -LiteralPath $HarnessChange)) {
+  Fail "Missing scripts/harness-change.ps1."
+}
+
+if (-not (Test-Path -LiteralPath $HarnessEvolve)) {
+  Fail "Missing scripts/harness-evolve.ps1."
+}
+
+if (-not (Test-Path -LiteralPath $EvolutionState)) {
+  Fail "Missing harness/evolution/state.json."
+}
+
+if (-not (Test-Path -LiteralPath $StatusPath)) {
+  Fail "Missing docs/STATUS.md. Create a lightweight handoff summary; active change files override it when present."
+}
+
+if (Test-Path -LiteralPath (Join-Path $Active "summary.md")) {
+  foreach ($file in @("summary.md", "spec.md", "plan.md", "tasks.md")) {
+    if (-not (Test-Path -LiteralPath (Join-Path $Active $file))) {
+      Fail "Active change missing $file."
+    }
+  }
+  if (-not (Test-Path -LiteralPath (Join-Path $Active "reviews"))) {
+    Fail "Active change missing reviews/."
+  }
+  $summary = Get-Content -Encoding UTF8 -Raw -LiteralPath (Join-Path $Active "summary.md")
+  $spec = Get-Content -Encoding UTF8 -Raw -LiteralPath (Join-Path $Active "spec.md")
+  $tasks = Get-Content -Encoding UTF8 -Raw -LiteralPath (Join-Path $Active "tasks.md")
+  $review = ""
+  $reviewPath = Join-Path $Active "reviews/review.md"
+  if (Test-Path -LiteralPath $reviewPath) { $review = Get-Content -Encoding UTF8 -Raw -LiteralPath $reviewPath }
+  $phase = [regex]::Match($summary, '(?m)^phase:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  $planReview = [regex]::Match($summary, '(?m)^plan_review:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  if ($phase -match "^(implement|validate)$" -and $spec -match "\[NEEDS CLARIFICATION:") {
+    Fail "Active spec.md still has high-impact [NEEDS CLARIFICATION] markers. Resolve them or move phase back to intake/plan."
+  }
+  if ($phase -match "^(implement|validate)$" -and $planReview -ne "approved" -and $review -notmatch "(?is)Plan Review.*Status:\s*approved") {
+    Fail "Active change cannot enter implementation until plan_review is approved in summary.md or an equivalent approved Plan Review is recorded."
+  }
+  if ($tasks -match "(?m)^- \[[ xX]\] (?!T\d{3})") {
+    Fail "tasks.md contains executable task lines without T### ids. Use '- [ ] T001 [P?] [US?] Action with target path and validation note'."
+  }
+}
+
+if (-not (Test-Path -LiteralPath $IndexPath)) {
+  Fail "Missing harness/changes/INDEX.json. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/harness-change.ps1 reindex"
+}
+$actual = Get-Content -Encoding UTF8 -Raw -LiteralPath $IndexPath
+$expected = (& $HarnessChange index-json) -join "`n"
+# Get-ChildItem directory order is not guaranteed across platforms (Windows PowerShell 5.1 vs Ubuntu PowerShell 7.x).
+# Parse both sides as objects, sort by id, and compare property-by-property
+# to avoid ConvertTo-Json serialization differences between PowerShell versions.
+$canonical = { param([string]$S)
+  if (-not $S -or $S -eq '""') { return @() }
+  return ($S | ConvertFrom-Json | Sort-Object id)
+}
+$actualObj = & $canonical $actual
+$expectedObj = & $canonical $expected
+if ((Compare-Object $actualObj $expectedObj -Property id,title,status,location,modules,files,tags,decisions,validation_status,path,updated_at) -ne $null) {
+  Write-Output "--- expected (index-json) ---"
+  $expectedObj | ConvertTo-Json -Depth 8 -Compress
+  Write-Output "--- actual (INDEX.json) ---"
+  $actualObj | ConvertTo-Json -Depth 8 -Compress
+  Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
+}
+
+# Version consistency gate: pyproject.toml is canonical; CHANGELOG.md, API-REFERENCE.md, docs/STATUS.md must match
+$PyProject = Join-Path $Root "pyproject.toml"
+if (Test-Path -LiteralPath $PyProject) {
+  $content = Get-Content -Encoding UTF8 -Raw -LiteralPath $PyProject
+  $versionMatch = [regex]::Match($content, '(?m)^version\s*=\s*"([^"]+)"')
+  if ($versionMatch.Success) {
+    $canonicalVersion = $versionMatch.Groups[1].Value
+    $refs = @(
+      @{Path = (Join-Path $Root "CHANGELOG.md"); Pattern = "(?m)^#+\s*Changelog.*?\n##\s*\[([^\]]+)\]"; Name = "CHANGELOG.md"},
+      @{Path = (Join-Path $Root "docs/API-REFERENCE.md"); Pattern = "(?m)^#+\s*API Reference.*?\nVersion:\s*([^\s\n]+)"; Name = "docs/API-REFERENCE.md"},
+      @{Path = (Join-Path $Root "docs/STATUS.md"); Pattern = "(?m)\*\*Version\*\*\s*\|\s*([^\s\n|]+)"; Name = "docs/STATUS.md"}
+    )
+    foreach ($ref in $refs) {
+      if (Test-Path -LiteralPath $ref.Path) {
+        $refContent = Get-Content -Encoding UTF8 -Raw -LiteralPath $ref.Path
+        $refMatch = [regex]::Match($refContent, $ref.Pattern)
+        if ($refMatch.Success) {
+          $refVersion = $refMatch.Groups[1].Value
+          if ($refVersion -ne $canonicalVersion) {
+            Fail "Version mismatch: pyproject.toml ($canonicalVersion) != $($ref.Name) ($refVersion)"
+          }
+        }
+      }
+    }
+  }
+}
+
+# C1: Archive front-matter gate. Every completed archived change must have
+# validation_status: "pass", phase in {validate, implement}, and spec_review != "pending".
+# Pre-existing archives that honestly retain unresolved validation or spec state
+# (recorded before this gate existed) are allowlisted so the gate fails only on
+# NEW violations. Do not add entries here without evidence that the change is
+# genuinely unresolvable in the current pass.
+$ArchiveExceptions = @(
+  "2026-08-11-sprint-7-tool-vocabulary-hitl-expiry-quality-hardening-doc-reconciliation",
+  "2026-08-17-phase-b-opentelemetry-tracing-40",
+  "2026-08-17-security-hardening-env-key-sanitization-dashboard-auth-finalization-trivy-scanning-s3-backup-canary-release",
+  "2026-08-31-ceo-alert-center",
+  "2026-08-31-executive-kpi-scorecard-rich-org-chart",
+  "2026-10-03-customer-journey-conversion-architecture-implementation"
+)
+$ArchiveRoot = Join-Path $Changes "archive"
+foreach ($dir in (Get-ChildItem -LiteralPath $ArchiveRoot -Directory | Sort-Object Name)) {
+  $sumPath = Join-Path $dir.FullName "summary.md"
+  if (-not (Test-Path -LiteralPath $sumPath)) { continue }
+  $sumText = Get-Content -Encoding UTF8 -Raw -LiteralPath $sumPath
+  $sumStatus = [regex]::Match($sumText, '(?m)^status:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  if ($sumStatus -ne "completed") { continue }
+  if ($ArchiveExceptions -contains $dir.Name) { continue }
+  $valStatus = [regex]::Match($sumText, '(?m)^validation_status:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  $sumPhase = [regex]::Match($sumText, '(?m)^phase:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  $specReview = [regex]::Match($sumText, '(?m)^spec_review:\s*"?([^"\r\n]+)"?').Groups[1].Value
+  if ($valStatus -ne "pass") {
+    Fail "$($dir.Name): validation_status is '$valStatus', expected 'pass'. Remediate with evidence or allowlist honestly."
+  }
+  if ($sumPhase -notin @("validate", "implement")) {
+    Fail "$($dir.Name): phase is '$sumPhase', expected 'validate' or 'implement'."
+  }
+  if ($specReview -eq "pending") {
+    Fail "$($dir.Name): spec_review is 'pending' on a completed archive. Resolve the review before completion."
+  }
+}
+
+Write-Output "ECL lint passed."

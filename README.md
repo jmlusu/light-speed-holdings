@@ -145,7 +145,7 @@ uv run ai-company dashboard              # 4. Open the live dashboard
 | `ai-company graph show org_chart` | View the organization chart |
 | `ai-company knowledge list` | List legacy knowledge store entries |
 | `ai-company knowledge search` | Search legacy knowledge store entries |
-| `ai-company memory remember "..."` | Store a memory in the LS-MEM engine |
+| `ai-company memory add --memory-type semantic --content "..."` | Store a memory in the JSON memory store |
 | `ai-company workflows list` | List available workflows |
 
 ### Department CLIs
@@ -433,13 +433,9 @@ make clean             # Remove caches and build artifacts
 A comprehensive PowerPoint presentation showcasing all major milestones is available:
 
 ```bash
-# Generate the milestones deck (Node.js)
-npm install
-node scripts/generate-milestones-deck.js
-
-# Or using Python
+# Generate the milestones deck (writes docs/milestones-deck.pptx)
 uv sync --extra dev
-uv run python scripts/generate-milestones-deck.py
+uv run python scripts/build/generate-milestones-deck.py
 ```
 
 The presentation includes 15 slides covering:

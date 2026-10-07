@@ -1,8 +1,0 @@
-e2e\test_command_center.py:9:uv run python -c "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
-unit\test_generator.py:62:return AgentGenerator(
-unit\test_generator.py:139:return AgentGenerator(
-unit\test_generator.py:313:gen = AgentGenerator(
-unit\test_generator.py:335:gen = AgentGenerator(
-unit\test_registry.py:446:count = sync_registry()
-unit\test_registry.py:456:count = sync_registry(json_path=json_out)
-unit\test_registry.py:470:sync_registry(json_path=json_out)

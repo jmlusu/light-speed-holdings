@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "description": "Canonical company identity registry",
+  "lastUpdated": "2026-10-05",
+  "company": {
+    "name": "LightSpeed Holdings",
+    "tagline": "AI Company Builder",
+    "description": "Build and orchestrate AI agent hierarchies for your organization",
+    "founded": "2024",
+    "location": "Malawi",
+    "website": "https://lightspeedholdings.com"
+  }
+}

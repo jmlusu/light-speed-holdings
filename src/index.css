@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./brand/brand-tokens.css";
+@import "../brand/tokens/brand-tokens.css";
 
 /* Class-based dark mode: the app theme toggles .dark on <html> (App.tsx),
    so `dark:` utilities must follow the class, not the OS preference. */
@@ -203,12 +203,12 @@ html.dark ::selection {
 
   /* Light glow */
   .surface-glow {
-    box-shadow: 
+    box-shadow:
       0 0 40px rgba(var(--ls-red-rgb), 0.03),
       0 0 80px rgba(var(--ls-cyan-rgb), 0.02);
   }
   html.dark .surface-glow {
-    box-shadow: 
+    box-shadow:
       0 0 40px rgba(var(--ls-red-rgb), 0.05),
       0 0 80px rgba(var(--ls-cyan-rgb), 0.03);
   }

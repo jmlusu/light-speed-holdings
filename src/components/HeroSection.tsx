@@ -20,8 +20,8 @@ const HERO_CARDS = [
     body: 'We know Malawi\'s institutions, business realities, infrastructure, and talent pool from the inside.',
   },
   {
-    title: 'Regional SADC',
-    body: 'Our systems account for SADC corridor dynamics, trade patterns, and national regulatory differences.',
+    title: 'Regional Africa',
+    body: 'Our systems account for African corridor dynamics, trade patterns, and national regulatory differences.',
   },
   {
     title: 'Global Standards',
@@ -53,7 +53,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme, onRequestBriefi
               : 'bg-ls-navy border-ls-red/40 text-ls-grey-light-text shadow-ls-navy/40'
           }`}>
             <span className="w-2 h-2 rounded-full bg-ls-red shadow-sm shadow-ls-red/80" />
-            <span>MALAWI-ROOTED, SADC-FOCUSED, GLOBAL CAPABILITY</span>
+            <span>MALAWI-BASED, AFRICA-FOCUSED, GLOBAL CAPABILITY</span>
           </div>
 
           <h1 className={`text-4xl sm:text-6xl md:text-7xl font-black tracking-tight font-display leading-[1.04] ${

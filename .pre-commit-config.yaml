@@ -15,10 +15,8 @@ repos:
         # full-repo-audit-2026-05-23.md quotes standard AWS example keys and an
         # ellipsis placeholder inside a security-scan writeup; the key block is
         # explicitly documented as non-live example material (see issue #72).
-        # lsmem redaction files intentionally embed PEM markers: redaction.py
-        # holds the detection regexes and test_redaction.py holds synthetic
-        # fixture keys the scanner must redact. No live key material.
-        exclude: ^(\.agents/skills/docs/maintainers/full-repo-audit-2026-05-23\.md|tests/memory/test_redaction\.py|src/ai_company/lsmem/redaction\.py)$
+        # (LS-MEM redaction exclusions removed with the 2026-10-07 decommission.)
+        exclude: ^(\.agents/skills/docs/maintainers/full-repo-audit-2026-05-23\.md)$
 
   # ── Ruff: lint + format ────────────────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -63,7 +61,7 @@ repos:
     hooks:
       - id: capture-fix
         name: capture bug-fix record
-        entry: pwsh -File scripts/capture-fix.ps1
+        entry: pwsh -File scripts/maintenance/capture-fix.ps1
         language: system
         pass_filenames: false
         always_run: true
@@ -75,7 +73,7 @@ repos:
     hooks:
       - id: ps-antipattern
         name: powershell anti-pattern scan
-        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/scan-ps-antipatterns.ps1
+        entry: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/scan-ps-antipatterns.ps1
         language: system
         files: '\.ps1$'
         stages: [pre-commit]
@@ -85,7 +83,7 @@ repos:
     hooks:
       - id: validate-drift
         name: validate-doc-drift
-        entry: pwsh -File scripts/validate-drift.ps1
+        entry: pwsh -File scripts/maintenance/validate-drift.ps1
         language: system
         pass_filenames: false
         always_run: true

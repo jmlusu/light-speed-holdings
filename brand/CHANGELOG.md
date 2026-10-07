@@ -6,6 +6,38 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.2.0] - 2026-10-05
+
+### Added
+- **New canonical logo system (Directive §6)** — `brand/logo/` with 8 variants,
+  SVG + PNG siblings (16 files): `logo-full`, `logo-dark-bg`, `logo-light-bg`,
+  `logo-mark`, `logo-mark-mono`, `logo-favicon`, `logo-avatar`, `logo-og`.
+  Vectorized from the approved `LightSpeed Holdings New Logo.png` (no redesigns);
+  verified mean ΔE 2.60 vs source, 98.95% of pixels within 32/255.
+  Artwork palette (distinct from UI tokens): bg `#02062F`, navy `#070A40`,
+  speed gradient `#01AFFD→#01DFFD`, red `#FD0231–#FD315D`.
+- **Web entry points** — `public/favicon.svg`, `public/favicon.ico` (6 sizes),
+  `public/og-default.png`, `og:image` meta in `index.html`.
+- **Sync coverage** — `scripts/sync-brand.ps1` `$syncDirs` now includes `logo`;
+  both mirrors synced (`static/brand/logo/`, `public/brand/logo/`) and verified.
+
+### Changed
+- **Design tokens merged** — legacy `src/brand/brand-tokens.css` `@theme` block
+  merged into `brand/tokens/brand-tokens.css` (canonical); `src/index.css` now
+  imports the canonical token file. Orange/zinc athena surfaces remapped to the
+  brand palette; `src/brand/design-decisions.md` marked SUPERSEDED.
+- **Registry updated** — `brand/CANONICAL_SOURCES.md` documents the new logo
+  system, the deprecated legacy suite, and the exploration archive.
+
+### Removed
+- **Logo style explorations archived** to `.archive/brand/logos/` —
+  Glassmorphism, Skeuomorphism, Analog Nostalgia & Tech-Retro, and three
+  icononly experiment JPEGs — from canonical plus both mirrors (pruned via
+  `sync-brand.ps1 -Prune`). The official legacy suite (`fulllogo`, `icononly`,
+  `grayscale`, `textonly`) stays in place until site references migrate.
+
+---
+
 ## [1.1.0] - 2026-09-17
 
 ### Changed
