@@ -19,6 +19,15 @@
 > Going forward (P1-2 condition b), every phase must carry a contemporaneous approval record
 > written *before* the phase begins.
 
+**Standing policy for future phases (D4, adopted 2026-10-07):**
+
+> Phase approvals, validation evidence, and rollback checkpoints must be captured
+> contemporaneously and must not be reconstructed as historical facts after the event.
+
+This policy applies to every phase after c11. It does not alter §1 above, which remains a
+labelled retrospective reconstruction, and it does not create or imply any approval record for
+the 2026-10-06 → 2026-10-07 cleanup itself.
+
 ---
 
 ## 1. Phase records (reconstructed from git)
