@@ -10,7 +10,7 @@ Scans the client-facing SPA only: src/components and src/pages. The internal
 product/dashboard (src/ai_company) is out of scope and never scanned.
 
 Usage:
-    python scripts/check-site-form-backend.py
+    python scripts/test/check-site-form-backend.py
 Exit code 0 = pass, 1 = violation found.
 """
 

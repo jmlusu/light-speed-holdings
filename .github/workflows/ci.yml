@@ -181,7 +181,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: pwsh -NoProfile -File scripts/lint-ecl.ps1
+      - run: pwsh -NoProfile -File scripts/maintenance/lint-ecl.ps1
 
   security:
     name: Security (bandit)
