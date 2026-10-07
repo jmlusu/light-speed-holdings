@@ -5,7 +5,7 @@
 To transition LightSpeed Holdings from internal framework development to sustainable commercial growth, we are executing a deliberate **30% engineering capacity pivot** away from core framework extensions toward productizing our mature modules.
 
 ### Strategic Execution Details
-- **Module Packaging**: Consolidating our standalone engineering achievements—specifically **Pharos** (content intelligence & research routines), **J.A.R.V.I.S.** (control plane, command center UI, and Alert Store), and our **Multi-Agent Workflow Engine** (145 specialized agents across 20 departments)—into three standardized enterprise deployment tiers:
+- **Module Packaging**: Consolidating our standalone engineering achievements—specifically **Pharos** (content intelligence & research routines), **J.A.R.V.I.S.** (control plane, command center UI, and Alert Store), and our **Multi-Agent Workflow Engine** (90 specialized agents — 89 AI + 1 human CEO — across 20 departments)—into three standardized enterprise deployment tiers:
   1. *Core Tier*: Autonomous task execution and basic monitoring for SMBs.
   2. *Professional Tier*: Full J.A.R.V.I.S. control plane, Pharos content pipelines, and multi-department agent collaboration.
   3. *Sovereign Enterprise Tier*: On-premise / isolated cloud deployment, custom model routing (OpenAI, Gemini, LlamaCPP), advanced RBAC, and dedicated audit logging.

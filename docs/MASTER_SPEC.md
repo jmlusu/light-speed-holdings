@@ -108,9 +108,9 @@ The current canonical LightSpeed operating model is **90 AI agents**.
 
 Do not use:
 
-- 127 agents
-- 144 agents
-- 152 agents
+- `127 agents`
+- `144 agents`
+- `152 agents`
 
 unless explicitly requested for historical comparison.
 

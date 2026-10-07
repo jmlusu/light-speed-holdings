@@ -57,7 +57,7 @@ https://lightspeedholdings.com
 
 | Claim | Source |
 |-------|--------|
-| 90 agents, 20 departments | `company-registry.yaml` (152 agent entries, 20 departments — counted 2026-09-17) |
+| 90 agents, 20 departments | `company-registry.yaml` (90 agent entries, 20 departments — counted 2026-09-17, reconciled #421) |
 | Defined reporting chain per department | `company-registry.yaml` (`reports_to` on every agent) |
 | 5-tier HITL approvals | `docs/Pharos/manifesto-draft.md:64-80`; registry `decision_engine_owner` |
 | Immutable audit trails | `docs/Pharos/manifesto-draft.md:64-80`; registry `audit_trail_owner` |

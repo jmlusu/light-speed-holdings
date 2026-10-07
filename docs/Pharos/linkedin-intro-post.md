@@ -92,10 +92,11 @@ clickable link. Tag once, not on every mention.
 | Website `lightspeedholdings.com` | `docs/BRAND_DEPLOYMENT_GUIDE.md:46`; `docs/SOCIAL_MEDIA_UPLOAD_CHECKLIST.md:17` |
 
 **Ground-truth check (2026-09-17):** The "90 agents / 20 departments" claim is
-**CORRECT**. Programmatic count of `company-registry.yaml`: 152 agent entries,
+**CORRECT**. Programmatic count of `company-registry.yaml`: 90 agent entries,
 20 distinct departments (AI Research, Board, Business Development, Consulting,
 Customer Success, Data, Executive, Finance, IT, Legal, Marketing, Operations,
-People, Pharos, Product, QA, Sales, Security, Strategy, Technology). No
+People, Pharos, Product, QA, Sales, Security, Strategy, Technology). (The 152
+figure was the pre-trim roster, retired 2026-09-24 per ADR-025; reconciled #421.) No
 correction to the post text was required.
 
 ## Review & Approval Checklist (Human CEO)

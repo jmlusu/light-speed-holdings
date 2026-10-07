@@ -112,9 +112,9 @@ LightSpeed Holdings orchestrates AI-driven growth across Malawi, SADC, and Afric
 
 (d) **Three intellectual territories from Pharos positioning** — (1) AI Company Building: structuring agent-orchestrated enterprises; (2) Agentic AI Use Cases: practical multi-agent deployments, workflow automation to policy drafting; (3) AI Governance & Policy: evidence-backed regulatory guidance for SADC ministries and central banks.
 
-(e) **Malawi HQ, 90 agents, 20 departments** — Lilongwe headquarters; 90 agents (89 AI + 1 human CEO) across 20 departments; local proximity enables real-time policy feedback loops impossible for remote firms; company/departments.yaml has 19 (missing Pharos) — must be reconciled per source-of-truth.yaml commentary.
+(e) **Malawi HQ, 90 agents, 20 departments** — Lilongwe headquarters; 90 agents (89 AI + 1 human CEO) across 20 departments; local proximity enables real-time policy feedback loops impossible for remote firms; `company/departments.yaml` reconciled at 20 entries (incl. Pharos) per #421.
 
-(f) **90 agents / 20 departments** — company registry lists 90 agents (89 AI + 1 human CEO) across 20 departments; source-of-truth.yaml canonical; company/departments.yaml has 19 missing Pharos — noted in claims section.
+(f) **90 agents / 20 departments** — company registry lists 90 agents (89 AI + 1 human CEO) across 20 departments; source-of-truth.yaml canonical; `company/departments.yaml` reconciled at 20 entries (incl. Pharos) per #421.
 
 ---
 
@@ -139,8 +139,8 @@ The following claims are valid and supported by existing assets:
 The following claims are prohibited and would violate the claims governance framework:
 
 - Do **NOT** position LightSpeed as AI Expert / AI Consultant / Generative AI Specialist / AI Engineer (per Pharos positioning.md explicit "NOT to position as" list).
-- Do **NOT** claim "140+ AI agents" without noting the canonical 90 count (reconcile mission/vision text vs registry; mission/vision text says "140+ AI agents" while canonical registry/source-of-truth say 152).
-- Do **NOT** claim "company/departments.yaml has 20 departments" — it has 19 (missing pharos) per source-of-truth.yaml commentary; this discrepancy must be documented, not obscured.
+- Do **NOT** claim "140+ AI agents" without noting the canonical 90 count (reconcile mission/vision text vs registry; mission/vision text says "140+ AI agents" while canonical registry/source-of-truth say 90 — 89 AI + 1 human CEO).
+- Do **NOT** claim "company/departments.yaml has 19 departments (missing Pharos)" — reconciled at 20 entries (incl. Pharos) per #421; the old discrepancy note is retired, not restated as fact.
 - Do **NOT** use off-palette colors in any agent-generated artifact (per brand-guidelines.md "Do NOT add new colors without a documented brand decision").
 - Do **NOT** omit the "™" symbol on first mention of "LightSpeed Holdings Limited™" (per brand-guidelines.md trademark rule).
 - Do **NOT** use emojis or generic AI commentary in public content (per brand-guidelines.md voice rules: "no emojis, no generic AI commentary").
@@ -174,7 +174,7 @@ LightSpeed Holdings serves Malawian clinics and health workers, embodying our mi
 
 (i) Integration with MISSION_AND_VISION (mission/vision/values).
 
-(j) source-of-truth.yaml claims (20 departments, 90 agents); company/departments.yaml has 19 (missing Pharos) — noted in claims section.
+(j) source-of-truth.yaml claims (20 departments, 90 agents); `company/departments.yaml` reconciled at 20 entries (incl. Pharos) per #421.
 
 ---
 
