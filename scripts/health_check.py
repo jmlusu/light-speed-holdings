@@ -12,7 +12,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -49,12 +48,19 @@ def check_mypy() -> bool:
 
 def check_pytest() -> bool:
     """Check critical pytest suite passes."""
-    code, out, err = run_cmd([
-        "uv", "run", "pytest", "--tb=line", "-q", "-x",
-        "--ignore=tests/integration",
-        "--ignore=tests/test_scraper_inventory.py",
-        "-k", "not test_scrape_jobs_jsonl_is_valid and not test_jobs_jsonl_is_valid and not test_endpoint_response_time_p95 and not test_user_profiles_jsonl_is_valid"
-    ])
+    code, out, err = run_cmd(
+        [
+            "uv",
+            "run",
+            "pytest",
+            "--tb=line",
+            "-q",
+            "-x",
+            "--ignore=tests/integration",
+            "-k",
+            "not test_endpoint_response_time_p95",
+        ]
+    )
     if code != 0:
         print(f"pytest FAILED:\n{out}\n{err}", file=sys.stderr)
         return False
@@ -64,10 +70,15 @@ def check_pytest() -> bool:
 
 def check_generator() -> bool:
     """Check agent generator round-trip works."""
-    code, out, err = run_cmd([
-        "uv", "run", "python", "-c",
-        "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()"
-    ])
+    code, out, err = run_cmd(
+        [
+            "uv",
+            "run",
+            "python",
+            "-c",
+            "from ai_company.generator import AgentGenerator; AgentGenerator().generate_all()",
+        ]
+    )
     if code != 0:
         print(f"generator FAILED:\n{out}\n{err}", file=sys.stderr)
         return False

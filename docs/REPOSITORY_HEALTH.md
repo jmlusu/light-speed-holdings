@@ -40,9 +40,8 @@ All gates re-run 2026-10-07 — **PASS** (`scripts/health_check.py` + `sync-regi
 
 ### Known pre-existing failures (not caused by this cleanup)
 
-- `tests/test_scraper_inventory.py` — `company/athena/*.jsonl` absent (Athena archived; data files deleted in-flight by the owner — left untouched)
-- `test_endpoint_response_time_p95[/api/v1/dashboard]` — perf flake (210 ms vs 200 ms budget, single slow first request)
-- (Both excluded in `scripts/health_check.py` with reasons.)
+- `tests/test_scraper_inventory.py` — **RESOLVED 2026-10-07**: module removed. The Athena archive (`d2fa83aa`) deleted `company/athena/*.jsonl` and the Athena unit tests but missed this one, leaving the required CI Test jobs red; `scripts/health_check.py` exclusions for it dropped in the same change.
+- `test_endpoint_response_time_p95[/api/v1/dashboard]` — perf flake (210 ms vs 200 ms budget, single slow first request); still excluded in `scripts/health_check.py`.
 
 ## Improvements
 
