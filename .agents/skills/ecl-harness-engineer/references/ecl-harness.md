@@ -520,7 +520,7 @@ Use these templates only when the selected command surface is PowerShell. Keep t
 Windows PowerShell 5.1 and PowerShell 7; avoid non-ASCII marker literals and ambiguous method
 overloads in `.ps1` templates.
 
-### 5.1 `scripts/harness-change.ps1`
+### 5.1 `scripts/maintenance/harness-change.ps1`
 
 ```powershell
 param(
@@ -543,7 +543,7 @@ $IndexPath = Join-Path $Changes "INDEX.json"
 $Template = Join-Path $Root "harness/templates/change"
 $Evolution = Join-Path $Root "harness/evolution"
 $EvolutionPending = Join-Path $Evolution "pending.md"
-$HarnessEvolve = Join-Path $Root "scripts/harness-evolve.ps1"
+$HarnessEvolve = Join-Path $Root "scripts/maintenance/harness-evolve.ps1"
 
 function Ensure-Dirs {
   foreach ($dir in @($Changes, $Active, $Parking, $Archive, $Template, (Join-Path $Template "reviews"), $Evolution, (Join-Path $Evolution "proposals"))) {
@@ -1025,7 +1025,7 @@ function Show-Context {
   }
   Write-Output ""
   Write-Output "History index:"
-  if (Test-Path -LiteralPath $IndexPath) { Write-Output "- harness/changes/INDEX.json" } else { Write-Output "- Run scripts/harness-change.ps1 reindex" }
+  if (Test-Path -LiteralPath $IndexPath) { Write-Output "- harness/changes/INDEX.json" } else { Write-Output "- Run scripts/maintenance/harness-change.ps1 reindex" }
 }
 
 Ensure-Dirs
@@ -1044,7 +1044,7 @@ switch ($Command) {
 }
 ```
 
-### 5.2 `scripts/harness-evolve.ps1`
+### 5.2 `scripts/maintenance/harness-evolve.ps1`
 
 ```powershell
 param(
@@ -1117,7 +1117,7 @@ function Test-AutoEvolveArchive($Item) {
 
 function Get-ArchiveItems {
   if (-not (Test-Path -LiteralPath $IndexPath)) {
-    throw "Missing harness/changes/INDEX.json. Run scripts/harness-change.ps1 reindex first."
+    throw "Missing harness/changes/INDEX.json. Run scripts/maintenance/harness-change.ps1 reindex first."
   }
   $raw = Get-Content -Encoding UTF8 -Raw -LiteralPath $IndexPath
   if ([string]::IsNullOrWhiteSpace($raw)) { return @() }
@@ -1269,7 +1269,7 @@ switch ($Command) {
 }
 ```
 
-### 5.3 `scripts/lint-ecl.ps1`
+### 5.3 `scripts/maintenance/lint-ecl.ps1`
 
 ```powershell
 $ErrorActionPreference = "Stop"
@@ -1278,8 +1278,8 @@ $Root = (Get-Location).Path
 $Changes = Join-Path $Root "harness/changes"
 $Active = Join-Path $Changes "active"
 $IndexPath = Join-Path $Changes "INDEX.json"
-$HarnessChange = Join-Path $Root "scripts/harness-change.ps1"
-$HarnessEvolve = Join-Path $Root "scripts/harness-evolve.ps1"
+$HarnessChange = Join-Path $Root "scripts/maintenance/harness-change.ps1"
+$HarnessEvolve = Join-Path $Root "scripts/maintenance/harness-evolve.ps1"
 $StatusPath = Join-Path $Root "docs/STATUS.md"
 $EvolutionState = Join-Path $Root "harness/evolution/state.json"
 
@@ -1299,11 +1299,11 @@ foreach ($dir in @("active", "parking", "archive")) {
 }
 
 if (-not (Test-Path -LiteralPath $HarnessChange)) {
-  Fail "Missing scripts/harness-change.ps1."
+  Fail "Missing scripts/maintenance/harness-change.ps1."
 }
 
 if (-not (Test-Path -LiteralPath $HarnessEvolve)) {
-  Fail "Missing scripts/harness-evolve.ps1."
+  Fail "Missing scripts/maintenance/harness-evolve.ps1."
 }
 
 if (-not (Test-Path -LiteralPath $EvolutionState)) {
@@ -1343,12 +1343,12 @@ if (Test-Path -LiteralPath (Join-Path $Active "summary.md")) {
 }
 
 if (-not (Test-Path -LiteralPath $IndexPath)) {
-  Fail "Missing harness/changes/INDEX.json. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
+  Fail "Missing harness/changes/INDEX.json. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/harness-change.ps1 reindex"
 }
 $actual = Get-Content -Encoding UTF8 -Raw -LiteralPath $IndexPath
 $expected = (& $HarnessChange index-json) -join "`n"
 if ($actual.Trim() -ne $expected.Trim()) {
-  Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex"
+  Fail "harness/changes/INDEX.json is stale. Run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/harness-change.ps1 reindex"
 }
 
 Write-Output "ECL lint passed."
@@ -1415,9 +1415,9 @@ bash scripts/lint-encoding.sh
 For the PowerShell profile:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-change.ps1 reindex
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness-evolve.ps1 check
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/lint-ecl.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/harness-change.ps1 reindex
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/harness-evolve.ps1 check
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/maintenance/lint-ecl.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/lint-encoding.ps1
 ```
 

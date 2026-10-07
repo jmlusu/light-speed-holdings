@@ -50,7 +50,7 @@ What it does (idempotent — safe to re-run):
 4. Installs pre-commit hooks
 5. Verifies Python ≥ 3.12, Ollama, opencode CLI, Git, and required env vars
 
-> Alternative all-in-one onboarding: `.\scripts\dev.ps1`
+> Alternative all-in-one onboarding: `.\scripts\dev\dev.ps1`
 > (setup + lint + test + generate + status).
 
 ## 5. Generate agents (Phase 4)

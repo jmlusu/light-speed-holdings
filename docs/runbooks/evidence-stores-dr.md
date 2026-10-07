@@ -13,8 +13,8 @@ This runbook covers disaster recovery for the three evidence-separation stores m
 
 | Store | Path | Purpose | Retention |
 |-------|------|---------|-----------|
-| Escalation Events | `orchestrator/escalation_events.jsonl` | Escalation lifecycle events | 30 days |
-| Dead-Letter Queue | `orchestrator/dead_letter.jsonl` | Task failures, retries, resolutions | 90 days |
+| Escalation Events | `data/orchestrator/escalation_events.jsonl` | Escalation lifecycle events | 30 days |
+| Dead-Letter Queue | `data/orchestrator/dead_letter.jsonl` | Task failures, retries, resolutions | 90 days |
 | Audit Export | `reports/evidence/audit-*.jsonl` | Daily SQLite export | 90 days |
 
 **Golden Rule**: Evidence stores are **append-only**. Never modify in place. Recovery = restore from source, not edit in place.
@@ -31,22 +31,22 @@ This runbook covers disaster recovery for the three evidence-separation stores m
 
 ```bash
 # 1. Identify affected store
-ls -la orchestrator/escalation_events.jsonl
-ls -la orchestrator/dead_letter.jsonl
+ls -la data/orchestrator/escalation_events.jsonl
+ls -la data/orchestrator/dead_letter.jsonl
 ls -la reports/evidence/audit-*.jsonl
 
 # 2. Verify with integrity checker
-python -m ai_company.audit.integrity check orchestrator/escalation_events.jsonl
+python -m ai_company.audit.integrity check data/orchestrator/escalation_events.jsonl
 
 # 3. Restore from Git (preferred — Git is source of truth)
-git checkout HEAD -- orchestrator/escalation_events.jsonl
+git checkout HEAD -- data/orchestrator/escalation_events.jsonl
 
 # 4. If Git also corrupted, restore from GitHub Artifact
 # Go to GitHub Actions → audit-export workflow → Download artifact
 # Unzip to reports/evidence/
 
 # 5. Verify integrity after restore
-python -m ai_company.audit.integrity check orchestrator/escalation_events.jsonl
+python -m ai_company.audit.integrity check data/orchestrator/escalation_events.jsonl
 ```
 
 **Verification**: The three evidence stores (escalation events, dead-letter queue, audit
@@ -71,15 +71,15 @@ git clone https://github.com/jmlusu/light-speed-holdings.git recovery-repo
 cd recovery-repo
 
 # 2. Check if any evidence files exist in Git history
-git log --oneline --all -- orchestrator/escalation_events.jsonl | head -5
+git log --oneline --all -- data/orchestrator/escalation_events.jsonl | head -5
 
 # 3. If Git has history, restore from latest clean commit
-git checkout <last-known-good-commit> -- orchestrator/escalation_events.jsonl
+git checkout <last-known-good-commit> -- data/orchestrator/escalation_events.jsonl
 
 # 4. If no Git history, rebuild from source systems:
-#    a) Escalation events → re-run from orchestrator/escalation.yaml config
+#    a) Escalation events → re-run from data/orchestrator/escalation.yaml config
 #    b) Dead-letter → re-scan inbox for stale tasks
-#    c) Audit export → re-run scripts/export-audit-evidence.ps1 (source: .opencode/audit trail)
+#    c) Audit export → re-run scripts/deploy/export-audit-evidence.ps1 (source: .opencode/audit trail)
 
 # 4a. Rebuild escalation events from config
 python -c "
@@ -103,8 +103,8 @@ python -m ai_company.audit.export --date $(date -u +%F)
 # 6. Verify all stores
 # The AuditWriter trail is the only hash-chained store.
 python -m ai_company.audit.integrity verify .opencode/audit/audit.jsonl
-python -m ai_company.audit.integrity check orchestrator/escalation_events.jsonl
-python -m ai_company.audit.integrity check orchestrator/dead_letter.jsonl
+python -m ai_company.audit.integrity check data/orchestrator/escalation_events.jsonl
+python -m ai_company.audit.integrity check data/orchestrator/dead_letter.jsonl
 python -m ai_company.audit.integrity check reports/evidence/audit-$(date -u +%F).jsonl
 ```
 
@@ -119,7 +119,7 @@ python -m ai_company.audit.integrity check reports/evidence/audit-$(date -u +%F)
 gh run list --workflow=audit-export.yml --limit=5
 
 # 2. Check for partial rotation files
-ls -la orchestrator/*.rotated-*.jsonl
+ls -la data/orchestrator/*.rotated-*.jsonl
 ls -la reports/evidence/*.rotated-*.jsonl
 
 # 2. If rotation interrupted, check for temp files
@@ -127,11 +127,11 @@ ls -la /tmp/.audit-tmp-* /tmp/.escalation-tmp-* /tmp/.dlq-tmp-*
 
 # 3. Recover: If temp file exists, complete the rotation
 # Example for escalation_events:
-mv orchestrator/escalation_events.jsonl.tmp orchestrator/escalation_events.jsonl
+mv data/orchestrator/escalation_events.jsonl.tmp data/orchestrator/escalation_events.jsonl
 
 # 4. If main file truncated, restore from last rotation
-ls -la orchestrator/escalation_events.rotated-*.jsonl | tail -1
-cp orchestrator/escalation_events.rotated-<latest>.jsonl orchestrator/escalation_events.jsonl
+ls -la data/orchestrator/escalation_events.rotated-*.jsonl | tail -1
+cp data/orchestrator/escalation_events.rotated-<latest>.jsonl data/orchestrator/escalation_events.jsonl
 
 # 5. If no rotation file, rebuild from Git (Scenario 1)
 ```
@@ -144,8 +144,8 @@ cp orchestrator/escalation_events.rotated-<latest>.jsonl orchestrator/escalation
 
 ```bash
 # 1. Check correlation_id presence
-grep -c correlation_id orchestrator/escalation_events.jsonl
-grep -c correlation_id orchestrator/dead_letter.jsonl
+grep -c correlation_id data/orchestrator/escalation_events.jsonl
+grep -c correlation_id data/orchestrator/dead_letter.jsonl
 grep -c correlation_id reports/evidence/audit-*.jsonl
 
 # 2. If missing, rebuild correlation_id from timestamps
@@ -179,8 +179,8 @@ from collections import defaultdict
 
 def check_chains():
     stores = {
-        'escalation': 'orchestrator/escalation_events.jsonl',
-        'dead_letter': 'orchestrator/dead_letter.jsonl',
+        'escalation': 'data/orchestrator/escalation_events.jsonl',
+        'dead_letter': 'data/orchestrator/dead_letter.jsonl',
         'audit': 'reports/evidence/audit-*.jsonl'
     }
     for name, path in stores.items():
@@ -223,8 +223,8 @@ gh api repos/jmlusu/light-speed-holdings/actions/artifacts --per_page=100
 After ANY recovery, run this checklist:
 
 - [ ] `python -m ai_company.audit.integrity verify .opencode/audit/audit.jsonl` → OK (hash chain)
-- [ ] `python -m ai_company.audit.integrity check orchestrator/escalation_events.jsonl` → OK
-- [ ] `python -m ai_company.audit.integrity check orchestrator/dead_letter.jsonl` → OK
+- [ ] `python -m ai_company.audit.integrity check data/orchestrator/escalation_events.jsonl` → OK
+- [ ] `python -m ai_company.audit.integrity check data/orchestrator/dead_letter.jsonl` → OK
 - [ ] `python -m ai_company.audit.integrity check reports/evidence/audit-$(date -u +%F).jsonl` → OK
 - [ ] `python -m pytest tests/unit/test_evidence_separation.py -xvs` → 9 passed
 - [ ] `python -m pytest tests/unit/test_alert_center_api.py tests/unit/test_dashboard_escalation_audit.py` → 12 passed
@@ -252,8 +252,8 @@ After ANY recovery, run this checklist:
 python -m ai_company.audit.integrity verify .opencode/audit/audit.jsonl
 
 # Structurally verify append-only evidence stores (no chain fields)
-python -m ai_company.audit.integrity check orchestrator/escalation_events.jsonl
-python -m ai_company.audit.integrity check orchestrator/dead_letter.jsonl
+python -m ai_company.audit.integrity check data/orchestrator/escalation_events.jsonl
+python -m ai_company.audit.integrity check data/orchestrator/dead_letter.jsonl
 
 # Export audit DB
 python -m ai_company.audit.export --date $(date -u +%F)
@@ -269,7 +269,7 @@ get_dead_letter_store().rotate(90)
 # Check correlation IDs
 python -c "
 import json, glob
-for f in glob.glob('orchestrator/*.jsonl') + glob.glob('reports/evidence/*.jsonl'):
+for f in glob.glob('data/orchestrator/*.jsonl') + glob.glob('reports/evidence/*.jsonl'):
     with open(f) as fp:
         cids = [json.loads(l).get('correlation_id') for l in fp if l.strip()]
     print(f'{f}: {len(set([c for c in cids if c]))} unique correlation_ids')

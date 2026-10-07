@@ -24,7 +24,7 @@ the proof seeds a small controlled batch instead of the old stale placeholders.
 3. **Provider reachability** — the executor needs at least one configured provider.
    Standard tier tries `GEMINI_API_KEY` → `OPENCODE_API_KEY` → local `ollama`.
    Check at least one is present in the environment (do not print the value).
-4. `scripts/backup.ps1` → snapshot of `.opencode/`, `company/`, `results/`.
+4. `scripts/deploy/backup.ps1` → snapshot of `.opencode/`, `company/`, `results/`.
 5. Port check: `8421` free for the dashboard (isolated from prod `8420`).
 6. **Canary**: seed + tick ONE trivial task (see §4) via a single
    `executor tick` — proves provider auth end-to-end before the daemon run.

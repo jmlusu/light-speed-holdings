@@ -273,8 +273,8 @@ The `EscalationManager` defines automated escalation rules:
 - All code changes must be traceable to a Task in the `MessageBus`
 - Cost tracking logs (`results/cost_log.jsonl`) must be retained for 90 days
 - Postmortems must be completed within 48 hours of SEV-1/SEV-2 incidents
-- HITL approval records in `orchestrator/approvals.yaml` must not be manually edited
-- Escalation events must be logged in `orchestrator/escalation.yaml`
+- HITL approval records in `data/orchestrator/approvals.yaml` must not be manually edited
+- Escalation events must be logged in `data/orchestrator/escalation.yaml`
 
 ## 11. Related Documents
 

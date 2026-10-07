@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, List, Optional
 import yaml
 from pydantic import BaseModel, Field
 
+from ai_company.paths import state_path
 from ai_company.utils.file_lock import atomic_write, file_lock
 
 if TYPE_CHECKING:
@@ -97,10 +98,11 @@ class EscalationManager:
         config_path: str = "orchestrator/escalation.yaml",
         events_path: Optional[str] = None,
     ):
-        self.config_path = Path(config_path)
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        self.config_path = Path(str(state_path(config_path)))
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
         self.events_path = (
-            Path(events_path)
+            Path(str(state_path(events_path)))
             if events_path is not None
             else self.config_path.parent / "escalation_events.jsonl"
         )
@@ -255,7 +257,8 @@ class PostmortemStore:
     """
 
     def __init__(self, storage_dir: str = "orchestrator/postmortems"):
-        self.storage_dir = Path(storage_dir)
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        self.storage_dir = Path(str(state_path(storage_dir)))
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
     def save(self, postmortem: Postmortem) -> Path:

@@ -431,7 +431,7 @@ def postmortem_create(
         status="draft",
     )
     store.save(pm)
-    typer.echo(f"Postmortem '{incident_id}' created at orchestrator/postmortems/{incident_id}.json")
+    typer.echo(f"Postmortem '{incident_id}' created at {store.storage_dir}/{incident_id}.json")
 
 
 @postmortem_app.command("update")

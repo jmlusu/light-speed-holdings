@@ -78,7 +78,7 @@ flowchart TD
     classDef tgt fill:#070A40,stroke:#00BFFF,color:#fff
     classDef stop fill:#E63946,stroke:#070A40,color:#fff
 
-    M[(main)]:::main -->|"git tag v*<br/>or scripts/release.ps1<br/>or workflow_dispatch"| R["Release · release.yml"]:::acc
+    M[(main)]:::main -->|"git tag v*<br/>or scripts/deploy/release.ps1<br/>or workflow_dispatch"| R["Release · release.yml"]:::acc
     R --> VC{"Semver validation<br/>git tag == pyproject.toml == CHANGELOG"}:::stop
     VC -->|fail| ABORT["Abort release"]:::stop
     VC -->|pass| TRIVY["Container scan · Trivy<br/>SARIF → GitHub Security tab"]:::job

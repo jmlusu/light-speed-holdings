@@ -51,7 +51,7 @@ def _find_numbers_in_text(text: str, pattern: str) -> list[int]:
 def _expected_number(current_value: str | int) -> int | None:
     """Extract the first numeric portion of a claim's current_value.
 
-    Mirrors scripts/validate-drift.ps1, which compares the numeric portion of
+    Mirrors scripts/maintenance/validate-drift.ps1, which compares the numeric portion of
     the expected value (e.g. ``>=3.12`` -> 3) against numbers found in docs.
     """
     num_match = re.search(r"\d+", str(current_value))

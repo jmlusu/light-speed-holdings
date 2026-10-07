@@ -68,7 +68,7 @@ function Test-AutoEvolveArchive($Item) {
 
 function Get-ArchiveItems {
   if (-not (Test-Path -LiteralPath $IndexPath)) {
-    throw "Missing harness/changes/INDEX.json. Run scripts/harness-change.ps1 reindex first."
+    throw "Missing harness/changes/INDEX.json. Run scripts/maintenance/harness-change.ps1 reindex first."
   }
   $raw = Get-Content -Encoding UTF8 -Raw -LiteralPath $IndexPath
   if ([string]::IsNullOrWhiteSpace($raw)) { return @() }

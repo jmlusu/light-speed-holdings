@@ -288,10 +288,10 @@
 |-------|---------|----------|
 | Lint + Typecheck | `ruff check src/ && mypy src/` | Clean |
 | Tests | `pytest` | All pass |
-| Drift | `pwsh scripts/validate-drift.ps1` | 90/20 green |
-| Redirect Matrix | `pwsh scripts/verify-redirects.ps1` | All single-hop |
-| Boundary | `pwsh scripts/validate-architecture.ps1` | Zero violations |
-| Count Audit | `pwsh scripts/lint-ecl.ps1` | Clean |
+| Drift | `pwsh scripts/maintenance/validate-drift.ps1` | 90/20 green |
+| Redirect Matrix | (retired with `scripts/verify-redirects.ps1`; no automated replacement) | — |
+| Boundary | `pwsh scripts/maintenance/validate-architecture.ps1` | Zero violations |
+| Count Audit | `pwsh scripts/maintenance/lint-ecl.ps1` | Clean |
 | Accessibility | `npm run a11y` (Playwright) | WCAG AA |
 
 ### P7.2 — Canonical Host Cutover (Artifact 3 Ruling 4)

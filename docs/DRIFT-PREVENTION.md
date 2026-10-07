@@ -34,7 +34,7 @@ record historical state and should not be updated.
 
 1. **Identify affected claims** — Check `docs/source-of-truth.yaml` for claims that reference the changed file
 2. **Update dependent docs** — For each affected claim, update all docs listed in the `docs:` field
-3. **Run validation** — `.\scripts\validate-drift.ps1` and `uv run pytest tests/docs/test_doc_drift.py -v`
+3. **Run validation** — `.\scripts\maintenance\validate-drift.ps1` and `uv run pytest tests/docs/test_doc_drift.py -v`
 4. **Commit together** — Source file and doc updates must be in the same commit
 
 ### Adding a New Claim
@@ -56,7 +56,7 @@ record historical state and should not be updated.
 |-------|-------|-------|---------|
 | Pre-commit | ~2s | All claims | `pre-commit run validate-drift --all-files` |
 | pytest | ~10s | All claims + anti-patterns | `pytest tests/docs/test_doc_drift.py -v` |
-| Manual | ~5s | All claims | `.\scripts\validate-drift.ps1` |
+| Manual | ~5s | All claims | `.\scripts\maintenance\validate-drift.ps1` |
 
 ## Troubleshooting
 

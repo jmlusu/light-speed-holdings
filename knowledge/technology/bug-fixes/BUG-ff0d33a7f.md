@@ -30,17 +30,17 @@ to `$dst$rel`.
 
 31 files under `static/brand/` + `public/brand/`,
 `brand/logos/icononly/fullcolor_logo_icon_nobackground.svg`,
-`scripts/sync-brand.ps1`.
+`scripts/build/sync-brand.ps1`.
 
 ## Diagnostic Commands
 
 ```powershell
-pwsh scripts/sync-brand.ps1 -Verify   # was: wrong-path report / drift
+pwsh scripts/build/sync-brand.ps1 -Verify   # was: wrong-path report / drift
 ```
 
 ## Verification
 
-`pwsh scripts/sync-brand.ps1 -Verify` → **Verify OK** (mirrors byte-identical
+`pwsh scripts/build/sync-brand.ps1 -Verify` → **Verify OK** (mirrors byte-identical
 to canonical, no nested directories); `bun run build` + `bun run test` green.
 
 ## Link an Issue

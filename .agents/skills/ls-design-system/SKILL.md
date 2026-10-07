@@ -19,7 +19,7 @@ The single source of truth for creating on-brand LightSpeed Holdings artifacts.
 **Canonical source of truth is `brand/**` (repo root).** `static/brand/**` and
 `public/brand/**` are runtime mirrors — never hand-edit assets there, and never
 read old versions from them for new work. See `brand/CANONICAL_SOURCES.md`.
-Run `pwsh scripts/sync-brand.ps1` after changing a canonical asset so mirrors
+Run `pwsh scripts/build/sync-brand.ps1` after changing a canonical asset so mirrors
 pick it up.
 
 | Asset | Canonical path | Mirror copy |

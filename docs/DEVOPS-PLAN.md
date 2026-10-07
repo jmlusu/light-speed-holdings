@@ -195,7 +195,7 @@ jobs:
       - name: Install pwsh
         uses: android-for-host/setup-powershell@v1
       - name: Lint ECL
-        run: pwsh scripts/lint-ecl.ps1
+        run: pwsh scripts/maintenance/lint-ecl.ps1
 ```
 
 ### 2.2 Why each stage matters
@@ -276,7 +276,7 @@ jobs:
           path: |
             .opencode/inbox.json
             .opencode/cycle-state.json
-            orchestrator/scheduler.yaml
+            data/orchestrator/scheduler.yaml
           key: cycle-state-${{ github.run_number }}
           restore-keys: |
             cycle-state-
@@ -359,7 +359,7 @@ jobs:
 │                                                     │
 │  .opencode/inbox.json        ← Task queue           │
 │  .opencode/cycle-state.json  ← Cycle metadata       │
-│  orchestrator/scheduler.yaml ← Scheduled tasks      │
+│  data/orchestrator/scheduler.yaml ← Scheduled tasks      │
 │                                                     │
 │  Persisted via: actions/cache (cross-run)           │
 │  Backed up via: upload-artifact (30-day retention)  │
@@ -985,7 +985,7 @@ coverage.xml
 logs/
 .opencode/inbox.json
 .opencode/cycle-state.json
-orchestrator/scheduler.yaml
+data/orchestrator/scheduler.yaml
 
 # OS
 .DS_Store

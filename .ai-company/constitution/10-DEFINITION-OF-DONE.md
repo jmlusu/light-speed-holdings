@@ -175,7 +175,7 @@ ruff check src/ && mypy src/ && pytest
 ruff check src/
 mypy src/
 pytest
-pwsh scripts/lint-ecl.ps1
+pwsh scripts/maintenance/lint-ecl.ps1
 ```
 
 ---

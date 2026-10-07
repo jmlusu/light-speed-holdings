@@ -4,9 +4,9 @@
 # Task Scheduler) is the exporter; CI only runs a freshness guard (decision D-a).
 #
 # Usage:
-#   .\scripts\export-audit-evidence.ps1                 # today (UTC), no commit
-#   .\scripts\export-audit-evidence.ps1 -Date 2026-10-03 # backfill a date
-#   .\scripts\export-audit-evidence.ps1 -Commit -Push    # export + commit + push
+#   .\scripts\deploy\export-audit-evidence.ps1                 # today (UTC), no commit
+#   .\scripts\deploy\export-audit-evidence.ps1 -Date 2026-10-03 # backfill a date
+#   .\scripts\deploy\export-audit-evidence.ps1 -Commit -Push    # export + commit + push
 param(
     [string]$Date = "",
     [switch]$Commit,

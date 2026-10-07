@@ -262,7 +262,7 @@ Concrete demo-to-evidence mappings:
 
 | Concern | Canonical file | Consumers |
 |---------|----------------|-----------|
-| Numeric claims (agents, depts, KPIs, templates, providers) | `docs/source-of-truth.yaml` ← `company-registry.yaml`, `company/config/kpis.yaml`, etc. | `scripts/validate-drift.ps1`, README, site metric export |
+| Numeric claims (agents, depts, KPIs, templates, providers) | `docs/source-of-truth.yaml` ← `company-registry.yaml`, `company/config/kpis.yaml`, etc. | `scripts/maintenance/validate-drift.ps1`, README, site metric export |
 | Public evidence arrays | `src/data/siteContent.ts` (`workCaseStudies`, `workPolicy`, `trustEvidence`, `honestyPolicy`, `outcomeCategories`, `insightTeasers`) | ProofPage, TrustPage→Proof, HomePage, Insights |
 | Builder-mirrored org data | `src/data/companyData.ts` | AiCompanyBuilderPage, homepage spotlight |
 | Claims ledger / honesty review | ADR-020 evidence ledger + Appendix A gate (wayfinder T1/T8 — track location in migration) | Review gate |

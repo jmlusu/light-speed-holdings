@@ -321,7 +321,7 @@ start pending evolution and must not block ordinary user work.
 ## Prompt 30: Partial Auto-Evolve Cannot Close Completed
 
 ```text
-An agent starts auto-evolve, fixes a bug in scripts/harness-evolve.ps1, writes a keep result for
+An agent starts auto-evolve, fixes a bug in scripts/maintenance/harness-evolve.ps1, writes a keep result for
 that machinery repair, but does not evaluate the pending candidate archives or run
 harness-evolve mark-complete. Can it close the auto-evolve change as completed?
 ```

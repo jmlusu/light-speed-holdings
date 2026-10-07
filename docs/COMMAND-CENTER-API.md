@@ -87,8 +87,8 @@ Aggregated executive briefing — priority-ordered attention items for the CEO.
 | `summary.types` | Breakdown by item type |
 
 **Data sources** (in priority order):
-1. Escalation alerts from SQLite `escalation_events` table (fallback: `orchestrator/escalation.yaml`)
-2. Pending approvals from `orchestrator/approvals.yaml`
+1. Escalation alerts from SQLite `escalation_events` table (fallback: `data/orchestrator/escalation.yaml`)
+2. Pending approvals from `data/orchestrator/approvals.yaml`
 3. Failed tasks from MessageBus inbox
 4. Revenue/cost alerts from KPI data
 5. Workflow step failures

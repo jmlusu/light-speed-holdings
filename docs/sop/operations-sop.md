@@ -232,8 +232,8 @@ The runtime persists shared state as JSON/YAML. The `ops_lead` owns hygiene:
 | `config/**/*.yaml` | Routing, approvals, KPIs | Validate with `ai-company doctor run` after change |
 | `audit/*.jsonl` | Audit trail | Rotate monthly; archive older than 90 days |
 | `reports/evidence/` | Weekly audit evidence | Rotate weekly; retain 90 days; commit to git |
-| `orchestrator/escalation_events.jsonl` | Escalation event trail | Rotate monthly; retain 30 days; commit to git |
-| `orchestrator/dead_letter.jsonl` | Dead-letter queue trail | Rotate monthly; retain 90 days; commit to git |
+| `data/orchestrator/escalation_events.jsonl` | Escalation event trail | Rotate monthly; retain 30 days; commit to git |
+| `data/orchestrator/dead_letter.jsonl` | Dead-letter queue trail | Rotate monthly; retain 90 days; commit to git |
 | `reports/evidence/audit-*.jsonl` | Audit DB export trail | Rotate daily; retain 90 days; commit to git |
 | `config/decision/*.yaml` | Approval matrix | Review on any org change |
 
@@ -249,8 +249,8 @@ The runtime persists shared state as JSON/YAML. The `ops_lead` owns hygiene:
 | Evidence Path | Rotation | Retention | Rotation Method |
 |---------------|----------|-----------|-----------------|
 | `reports/evidence/` | Weekly (via cron) | 90 days | Git commit + artifact upload |
-| `orchestrator/escalation_events.jsonl` | Monthly | 30 days | `EscalationEventStore.rotate(30)` |
-| `orchestrator/dead_letter.jsonl` | Monthly | 90 days | `DeadLetterStore.rotate(90)` |
+| `data/orchestrator/escalation_events.jsonl` | Monthly | 30 days | `EscalationEventStore.rotate(30)` |
+| `data/orchestrator/dead_letter.jsonl` | Monthly | 90 days | `DeadLetterStore.rotate(90)` |
 | `reports/evidence/audit-*.jsonl` | Daily (via cron) | 90 days | Git commit + artifact upload |
 
 ## 8. Dead-Letter Handling
