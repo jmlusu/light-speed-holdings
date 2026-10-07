@@ -198,7 +198,7 @@ jobs:
 
           # 10. Ignored-but-required configs (blocks a fresh clone)
           gitignore = (root / ".gitignore").read_text(encoding="utf-8") if (root / ".gitignore").exists() else ""
-          for cfg in ("orchestrator/scheduler.yaml", "orchestrator/escalation.yaml"):
+          for cfg in ("data/orchestrator/scheduler.yaml", "data/orchestrator/escalation.yaml"):
               rec(f"gitignore.{cfg.replace('/', '.')}",
                   "fail" if cfg in gitignore else "ok",
                   f"{cfg} ignored while required by cli/validate.py")

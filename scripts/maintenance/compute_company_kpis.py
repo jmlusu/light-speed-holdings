@@ -15,7 +15,7 @@ Stable sources ONLY (the SQLite DB is treated as volatile mid-cleanup):
     company-registry.yaml         registered agents (135)
     .opencode/audit               task-created event log (throughput, supporting)
     company/departments.yaml      declared departments (coverage, supporting)
-    orchestrator/cost_tracker.json cost (currently all zeros -> n/a, supporting)
+    data/orchestrator/cost_tracker.json cost (currently all zeros -> n/a, supporting)
 
 Formulas:
     KPI-003 = distinct active agents in the 30-day task window / registered
@@ -36,6 +36,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from ai_company.paths import state_path
+
 try:
     import yaml
 except ImportError:  # pragma: no cover - venv always has pyyaml
@@ -47,6 +49,7 @@ INBOX_JSON = ".opencode/inbox.json"
 AUDIT_JSONL = ".opencode/audit"
 REGISTRY_YAML = "company-registry.yaml"
 DEPARTMENTS_YAML = "company/departments.yaml"
+# D-6: legacy input form; state_path() maps/migrates to data/orchestrator/ at read time.
 COST_TRACKER_JSON = "orchestrator/cost_tracker.json"
 
 # KPI-003 / KPI-004 are the only company KPIs with a real source today.
@@ -186,7 +189,7 @@ def compute(root: Path, days: int) -> dict:
         result["supporting"]["departments_declared"] = len(declared_ids)
 
     # ── Supporting: cost (real file, currently zeros) ──────────────────
-    cost = _load_json(root / COST_TRACKER_JSON)
+    cost = _load_json(root / str(state_path(COST_TRACKER_JSON, base=root)))
     if isinstance(cost, dict):
         result["supporting"]["cost_total_spent"] = cost.get("total_spent", 0)
         result["supporting"]["cost_llm_spend"] = cost.get("llm_spend", 0)

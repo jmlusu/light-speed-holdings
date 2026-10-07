@@ -138,7 +138,7 @@ COPY company/ company/
 COPY templates/ templates/
 
 # Create necessary directories
-RUN mkdir -p .opencode/agents .opencode/config orchestrator/postmortems
+RUN mkdir -p .opencode/agents .opencode/config data/orchestrator/postmortems
 
 # Expose dashboard port
 EXPOSE 8420
@@ -592,8 +592,8 @@ chmod 700 company/
 chmod 600 company/*.yaml company/*.json
 
 # Restrict orchestrator data
-chmod 700 orchestrator/
-chmod 600 orchestrator/*.yaml
+chmod 700 data/orchestrator/
+chmod 600 data/orchestrator/*.yaml
 
 # Restrict task inbox
 chmod 600 .opencode/inbox.json
@@ -658,10 +658,10 @@ sudo journalctl -u ai-company-dashboard -n 100
 |------|----------|-----------|
 | Agent registry | `company/agent-registry.json` | Daily |
 | Task inbox | `.opencode/inbox.json` | Every 6 hours |
-| Approval requests | `orchestrator/approvals.yaml` | Every 6 hours |
-| Escalation events | `orchestrator/escalation.yaml` | Every 6 hours |
-| Scheduled tasks | `orchestrator/scheduler.yaml` | Daily |
-| Postmortems | `orchestrator/postmortems/` | Daily |
+| Approval requests | `data/orchestrator/approvals.yaml` | Every 6 hours |
+| Escalation events | `data/orchestrator/escalation.yaml` | Every 6 hours |
+| Scheduled tasks | `data/orchestrator/scheduler.yaml` | Daily |
+| Postmortems | `data/orchestrator/postmortems/` | Daily |
 | Memory store | `memory/` | Daily |
 | Config files | `company/` | On change |
 
@@ -672,7 +672,7 @@ BACKUP_DIR="/backups/ai-company/$(date +%Y%m%d)"
 mkdir -p "$BACKUP_DIR"
 cp -r company/ "$BACKUP_DIR/"
 cp -r .opencode/ "$BACKUP_DIR/"
-cp -r orchestrator/ "$BACKUP_DIR/"
+cp -r data/orchestrator/ "$BACKUP_DIR/"
 cp -r memory/ "$BACKUP_DIR/"
 ```
 

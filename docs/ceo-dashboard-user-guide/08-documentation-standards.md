@@ -544,7 +544,7 @@ The **Org Health Score** ([see Glossary](#glossary)) is a weighted composite of 
 
 | Term | Definition |
 |------|------------|
-| **Approval Gate** | A human-in-the-loop checkpoint that requires explicit CEO approval before an agent action proceeds. Implemented via `orchestrator/approvals.yaml`. |
+| **Approval Gate** | A human-in-the-loop checkpoint that requires explicit CEO approval before an agent action proceeds. Implemented via `data/orchestrator/approvals.yaml`. |
 | **Command Bar** | A keyboard-activated search overlay (`Ctrl + K`) for quick navigation to pages, agents, and tasks. |
 | **Escalation** | An issue that exceeds an agent's authority or capability and is routed to the CEO for resolution. Stored in `.opencode/inbox.json` with status `escalated`. |
 | **JARVIS Theme** | The dashboard's dark visual theme — dark gray backgrounds with neon cyan and green accents. Defined in the Tailwind config and `style.css`. |

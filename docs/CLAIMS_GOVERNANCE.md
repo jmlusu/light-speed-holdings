@@ -211,9 +211,9 @@ export interface ClaimRegistryEntry {
 |---------------|---------|--------|
 | Contracts/MOUs | `reports/evidence/contracts/` (encrypted) | Legal Owner only |
 | Client Data | `reports/evidence/client-data/` (encrypted) | Legal Owner + CISO |
-| System Logs | `orchestrator/`, `data/ai_company.db` | Dashboard Owner + Orchestration Owner |
+| System Logs | `data/orchestrator/`, `data/ai_company.db` | Dashboard Owner + Orchestration Owner |
 | Test Results | `tests/`, CI artifacts | Test Engineering Lead |
-| Audit Trails | `orchestrator/audit_events.jsonl` | Audit Owner + CISO |
+| Audit Trails | `.opencode/audit` | Audit Owner + CISO |
 | Registry Data | `company-registry.yaml`, `data/*.ts` | Registry Owner |
 | Pilot Agreements | `reports/evidence/pilots/` (encrypted) | Consulting Lead + Legal Owner |
 | Research Citations | `data/insights/` + bibliography | Thought Leadership Lead |

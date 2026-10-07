@@ -45,7 +45,7 @@ Archive gates:
 - `spec_review` must be resolved (value `approved` or equivalent recorded in reviews/) before archiving. Leaving `spec_review: "pending"` in an archived change is a gap.
 - The full non-e2e test suite must run to completion and be listed in `validation_results` at archive. Closing with "full suite as the Next Step" is invalid — the full suite is a prerequisite for close, not a follow-up task.
 - Verification hint: when a live dashboard/daemon process or parallel AI sessions share the machine, run the full suite with an isolated `pytest --basetemp=<unique>` path and snapshot `git status` before/after the run to prove no concurrent-writer interference.
-- Archive hygiene: git-restore known side-effect files before archive (`docs/AGENT-REGISTRY-TABLE.md`, `hr/onboarding_requests.yaml`, `orchestrator/approvals.yaml`). Test runs and scaffolding may leave these dirty; they must not be committed as part of a change.
+- Archive hygiene: git-restore known side-effect files before archive (`docs/AGENT-REGISTRY-TABLE.md`, `hr/onboarding_requests.yaml`, `data/orchestrator/approvals.yaml`). Test runs and scaffolding may leave these dirty; they must not be committed as part of a change.
 - When a change is parked, its test failures should not be counted as baseline by other changes. Tag parked failures (e.g., `parked:<change-id>`) to keep baselines isolated.
 - If `pyproject.toml` is in the changeset, `uv.lock` must also be updated in the same commit. Lockfile atomicity prevents `--frozen` workflow breakage.
 

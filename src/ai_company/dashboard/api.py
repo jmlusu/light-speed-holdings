@@ -521,7 +521,10 @@ _MAX_APPROVALS_LINES = 500
 
 def _load_yaml(path: str | Path) -> Any:
     data = _get_store().read_yaml(path, default={})
-    if str(path) == "orchestrator/approvals.yaml" and isinstance(data, dict):
+    if str(path) in (
+        "orchestrator/approvals.yaml",
+        "data/orchestrator/approvals.yaml",
+    ) and isinstance(data, dict):
         requests = data.get("requests", [])
         if len(requests) > _MAX_APPROVALS_LINES:
             logger.warning(
@@ -683,11 +686,11 @@ def get_dashboard(background_tasks: BackgroundTasks) -> KPIs:
         uptime_seconds=time.time() - _START_TIME,
         computed_at=datetime.now(timezone.utc).isoformat(),
         source={
-            "tasks": "orchestrator/inbox.json",
+            "tasks": ".opencode/inbox.json",
             "agents": "company-registry.yaml",
-            "approvals": "orchestrator/approvals.yaml",
-            "escalations": "orchestrator/escalation.yaml",
-            "scheduler": "orchestrator/scheduler.yaml",
+            "approvals": "data/orchestrator/approvals.yaml",
+            "escalations": "data/orchestrator/escalation.yaml",
+            "scheduler": "data/orchestrator/scheduler.yaml",
         },
         data_quality={
             "completeness": "all_fields",
@@ -2122,12 +2125,12 @@ def get_ceo_dashboard(background_tasks: BackgroundTasks) -> dict[str, Any]:
         },
         "source": {
             "kpi_snapshot": "ai_company.dashboard.kpis.collect_all_kpis",
-            "tasks": "orchestrator/inbox.json",
+            "tasks": ".opencode/inbox.json",
             "agents": "company-registry.yaml",
-            "costs": "orchestrator/cost_tracker.json",
-            "escalations": "orchestrator/escalation.yaml",
-            "approvals": "orchestrator/approvals.yaml",
-            "scheduler": "orchestrator/scheduler.yaml",
+            "costs": "data/orchestrator/cost_tracker.json",
+            "escalations": "data/orchestrator/escalation.yaml",
+            "approvals": "data/orchestrator/approvals.yaml",
+            "scheduler": "data/orchestrator/scheduler.yaml",
         },
         "company_health": {
             "departments": {dept: data.get("kpis", {}) for dept, data in departments.items()},

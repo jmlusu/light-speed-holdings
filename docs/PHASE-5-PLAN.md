@@ -137,7 +137,7 @@ for attempt in range(max_retries):
 
 ### Recovery Procedures
 
-1. **Corrupted task queue**: Rebuild from `orchestrator/escalation.yaml` and `orchestrator/approvals.yaml`
+1. **Corrupted task queue**: Rebuild from `data/orchestrator/escalation.yaml` and `data/orchestrator/approvals.yaml`
 2. **Missing agent files**: Regenerate from `company/agent-registry.json`
 3. **Provider failure**: Automatic fallback to next provider in tier
 4. **Dashboard down**: Restart via systemd or Docker health check

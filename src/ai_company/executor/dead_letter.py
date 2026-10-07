@@ -11,7 +11,7 @@ deduplicated by task id, and staleness is lease-aware so a live executor
 whose heartbeat is refreshing its lease is never raced by the detector.
 
 Evidence separation (AGENTS.md §9.3): entries are also appended to
-orchestrator/dead_letter.jsonl for auditor access (read-only).
+data/orchestrator/dead_letter.jsonl for auditor access (read-only).
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ STALE_THRESHOLD_MINUTES: int = 30
 STALE_RETRY_MAX: int = 3
 
 DEFAULT_DLQ_PATH: str = ".opencode/dead_letter.json"
-DEFAULT_DLQ_EVIDENCE_PATH: str = "orchestrator/dead_letter.jsonl"
+DEFAULT_DLQ_EVIDENCE_PATH: str = "data/orchestrator/dead_letter.jsonl"
 
 
 class DeadLetterQueue:
@@ -83,7 +83,7 @@ class DeadLetterQueue:
         duplicate entries.  A ``dead_letter`` wrapper is returned
         containing the original task data plus metadata (moved_at, reason).
 
-        Also appends to the evidence-separation JSONL store (orchestrator/dead_letter.jsonl).
+        Also appends to the evidence-separation JSONL store (data/orchestrator/dead_letter.jsonl).
         """
         now = datetime.now(timezone.utc).isoformat()
         entry = {

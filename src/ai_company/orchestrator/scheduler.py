@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any, Callable, List, Optional
 
 from pydantic import BaseModel, Field
 
+from ai_company.paths import state_path
 from ai_company.store.file_store import FileStore
 
 if TYPE_CHECKING:
@@ -35,7 +36,8 @@ class ScheduledTask(BaseModel):
 
 class Scheduler:
     def __init__(self, config_path: str = "orchestrator/scheduler.yaml"):
-        self.config_path = Path(config_path)
+        # D-6: relocate legacy orchestrator/ state to data/orchestrator/.
+        self.config_path = Path(str(state_path(config_path)))
         self._store = FileStore(self.config_path.parent, backup=True)
         self._config_name = self.config_path.name
         self.tasks: List[ScheduledTask] = []

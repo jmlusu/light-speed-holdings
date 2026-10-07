@@ -595,7 +595,7 @@ ai-company executor start --poll-interval 5.0
 Tasks requiring approval are routed through the approval gate:
 
 1. Agent submits an action requiring approval
-2. Approval request appears in `orchestrator/approvals.yaml`
+2. Approval request appears in `data/orchestrator/approvals.yaml`
 3. Human approves/rejects via CLI or dashboard
 4. Executor continues or aborts based on decision
 
@@ -889,8 +889,8 @@ ai-company <command> <subcommand> --help  # Subcommand help
 ### Logs
 
 The dashboard logs to stdout when running. For debugging, check:
-- `orchestrator/approvals.yaml` — pending approval requests
-- `orchestrator/escalation.yaml` — escalation events
-- `orchestrator/scheduler.yaml` — scheduled task definitions
+- `data/orchestrator/approvals.yaml` — pending approval requests
+- `data/orchestrator/escalation.yaml` — escalation events
+- `data/orchestrator/scheduler.yaml` — scheduled task definitions
 - `.opencode/inbox.json` — task queue
-- `orchestrator/postmortems/` — incident postmortem records
+- `data/orchestrator/postmortems/` — incident postmortem records

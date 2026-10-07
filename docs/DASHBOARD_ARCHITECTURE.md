@@ -83,10 +83,10 @@
 │  │                                                                       │  │
 │  │  Data Sources:                                                        │  │
 │  │    ├── .opencode/inbox.json          (MessageBus → tasks)             │  │
-│  │    ├── orchestrator/approvals.yaml   (approval queue)                 │  │
-│  │    ├── orchestrator/escalation.yaml  (escalations)                    │  │
-│  │    ├── orchestrator/scheduler.yaml   (scheduled tasks)                │  │
-│  │    ├── orchestrator/cost_tracker.json (LLM costs)                     │  │
+│  │    ├── data/orchestrator/approvals.yaml   (approval queue)                 │  │
+│  │    ├── data/orchestrator/escalation.yaml  (escalations)                    │  │
+│  │    ├── data/orchestrator/scheduler.yaml   (scheduled tasks)                │  │
+│  │    ├── data/orchestrator/cost_tracker.json (LLM costs)                     │  │
 │  │    ├── company/config/kpis.yaml      (KPI definitions)                │  │
 │  │    ├── company/departments.yaml      (departments)                    │  │
 │  │    └── company/agent-registry.json   (agent metadata)                 │  │
@@ -179,10 +179,10 @@ graph TB
     %% ── Data Layer ──────────────────────────────────────────
     subgraph DATA ["💾 Data Sources"]
         INBOX[".opencode/inbox.json<br/>MessageBus"]
-        APPROVALS["orchestrator/approvals.yaml"]
-        ESCALATIONS["orchestrator/escalation.yaml"]
-        SCHEDULER["orchestrator/scheduler.yaml"]
-        COSTS["orchestrator/cost_tracker.json"]
+        APPROVALS["data/orchestrator/approvals.yaml"]
+        ESCALATIONS["data/orchestrator/escalation.yaml"]
+        SCHEDULER["data/orchestrator/scheduler.yaml"]
+        COSTS["data/orchestrator/cost_tracker.json"]
         KPIS["company/config/kpis.yaml"]
         DEPARTMENTS["company/departments.yaml"]
         REGISTRY["company/agent-registry.json"]

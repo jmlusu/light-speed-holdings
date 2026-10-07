@@ -267,7 +267,9 @@ class TestTasks:
 
 class TestApprovals:
     def test_approve_request(self, setup_dashboard_data: None, tmp_path: Path) -> None:
-        approvals_path = tmp_path / "orchestrator/approvals.yaml"
+        # D-6: state lives under data/orchestrator/ (StateStore maps legacy inputs).
+        approvals_path = tmp_path / "data" / "orchestrator" / "approvals.yaml"
+        approvals_path.parent.mkdir(parents=True, exist_ok=True)
         data = {
             "requests": [
                 {

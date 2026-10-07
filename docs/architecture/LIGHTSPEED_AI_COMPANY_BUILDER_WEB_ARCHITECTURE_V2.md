@@ -86,7 +86,7 @@ Five layers, one-way data flow public←private through a single transform (boun
 | Layer | Name | Contents | Trust |
 |------:|------|----------|-------|
 | L1 | Internal SoT | `company-registry.yaml`, `company/departments.yaml`, generator + validator, CI/pre-commit | Private |
-| L2 | Internal runtime | `company/agent-registry.json`, orchestrator/inbox/approvals, dashboard (RBAC), memory, security | Private |
+| L2 | Internal runtime | `company/agent-registry.json`, `.opencode/inbox.json`, `data/orchestrator/` (approvals), dashboard (RBAC), memory, security | Private |
 | L3 | Public transform | Allowlist projection → `src/data/generated/agent-registry.public.json` (**Ruling 2**) | Boundary |
 | L4 | Public data modules | `src/data/*.ts` + `siteContent` editorial; typed `PublicAgent` (no `guidelines`/`permission`) | Public |
 | L5 | Public experience | Vercel SPA routes, builder UX, Ask, proof surfaces | Public |

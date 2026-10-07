@@ -18,7 +18,9 @@ services:
     volumes:
       - ./.opencode:/app/.opencode
       - ./company:/app/company
+      # D-6: mount both forms so in-container state_path() can self-migrate host state.
       - ./orchestrator:/app/orchestrator
+      - ./data/orchestrator:/app/data/orchestrator
       - ./logs:/app/logs
     environment:
       - AI_COMPANY_LOG_JSON=1
@@ -62,7 +64,9 @@ services:
     volumes:
       - ./.opencode:/app/.opencode
       - ./company:/app/company
+      # D-6: mount both forms so in-container state_path() can self-migrate host state.
       - ./orchestrator:/app/orchestrator
+      - ./data/orchestrator:/app/data/orchestrator
       - ./logs:/app/logs
     environment:
       - AI_COMPANY_LOG_JSON=1
