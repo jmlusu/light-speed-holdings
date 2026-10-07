@@ -81,11 +81,9 @@
       "tree_state_at_report": {
         "clean": false,
         "tracked_modifications": ["hr/onboarding_requests.yaml"],
-        "untracked_deliverables": [
-          "POST_CLEANUP_VERIFICATION_REPORT.md",
-          "POST_CLEANUP_EVIDENCE.json",
-          "POST_CLEANUP_CEO_SUMMARY.md"
-        ]
+        "untracked_deliverables": [],
+        "deliverables_commit": "d507c1ab",
+        "deliverables_note": "the three POST_CLEANUP_* deliverables are committed, not part of the residue"
       },
       "cleanup_owned_set_landed": {
         "commit": "526f33d54fa431f4e4a2712c3226781c81999cac",
@@ -371,7 +369,8 @@
   "commits_from_this_change": [
     {"sha": "526f33d5", "purpose": "P0-1 landing of cleanup-owned Class A/B working-tree changes (97 files)"},
     {"sha": "16c69940", "purpose": "P1-1 tool-vocabulary normalization in company-registry.yaml"},
-    {"sha": "56a42b27", "purpose": "P1-2 phase records + rollback runbook"}
+    {"sha": "56a42b27", "purpose": "P1-2 phase records + rollback runbook"},
+    {"sha": "d507c1ab", "purpose": "the three POST_CLEANUP_* verification deliverables (docs only, no source change)"}
   ],
   "concurrency_observations": [
     {

@@ -66,7 +66,8 @@ evidence package requested for CEO sign-off.
 
 ## 3. P0-1 — Working tree cleanliness · **OPEN**
 
-Two independent causes, neither removable from inside this change:
+Two independent causes existed when this change began. **One has since cleared** (§3.1 — all
+concurrent-session changes landed) and **one remains** (§3.2 — test-suite residue).
 
 ### 3.1 Concurrent-session changes (excluded by decision, now landed)
 
@@ -91,7 +92,8 @@ re-checking `git status --short`, so no foreign line entered any of its commits.
 
 **Status at report HEAD:** those foreign changes have all landed. The only remaining *tracked*
 modification is `hr/onboarding_requests.yaml` — the test-suite residue of §3.2. **P0-1's remaining
-cause has therefore narrowed from two to one** (plus this change's own two untracked deliverables).
+cause has therefore narrowed from two to one.** (This change's own deliverables are committed at
+`d507c1ab` and are not part of the residue.)
 
 ### 3.2 The test suite rewrites a tracked file (root cause of recurring dirt)
 
