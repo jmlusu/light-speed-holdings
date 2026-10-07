@@ -1,8 +1,8 @@
 # Post-Cleanup Verification — CEO Summary
 
 **Date:** 2026-10-07
-**Evidence HEAD:** `4bb64572` · **Final HEAD:** `c40decf0` + decision-closure commit · **Baseline:** `cleanup/c0-baseline` = `048627ad` (4187 tracked files)
-**Branch:** `feat/athena-archive-and-design-system` (2 ahead of origin, deliberately unpushed)
+**Evidence HEAD:** `4bb64572` · **Final HEAD:** `363c1aec` (+ this commit) · **Baseline:** `cleanup/c0-baseline` = `048627ad` (4187 tracked files)
+**Branch:** `feat/athena-archive-and-design-system` (4 ahead of origin at `363c1aec`, deliberately unpushed)
 **Predecessor audit:** `repo-audit/cleanup-status/CLEANUP_STATUS_REPORT.md` — 72/100, READY WITH CONDITIONS
 **Full evidence:** [`POST_CLEANUP_VERIFICATION_REPORT.md`](POST_CLEANUP_VERIFICATION_REPORT.md) · [`POST_CLEANUP_EVIDENCE.json`](POST_CLEANUP_EVIDENCE.json)
 
@@ -25,7 +25,7 @@
 | P1-3 | Brand/positioning edits uncommitted | **CLOSED** — landed, tagline consistent |
 | P1-4 | "57× openai.yaml duplication" | **CLOSED — RETAIN** (zero duplication; the wording was wrong) |
 
-**Scale:** 754 files changed · +7,359 / −71,486 · tracked files **4187 → 3708 (−479, −11.4%)**
+**Scale:** 754 files changed (baseline `cleanup/c0-baseline` → `c40decf0`, the measurement endpoint) · +7,359 / −71,486 · tracked files **4187 → 3708 (−479, −11.4%)**
 
 ---
 
@@ -46,7 +46,7 @@
 
 ### P0-2 · Full pytest verified — 5 failures are PRE-EXISTING ✅
 
-Five tests in `tests/test_scraper_inventory.py` fail because `company/athena/*.jsonl` do not exist. Five independent proofs:
+Five tests in `tests/test_scraper_inventory.py` failed (runs 1–3) because `company/athena/*.jsonl` did not exist; removed in `4bb64572`. Five independent proofs:
 
 1. Root-cause commit `d2fa83aa` (2026-10-05 23:25) is an **ancestor of the baseline tag** → pre-dates cleanup. Exit 0.
 2. `.gitignore:170 company/athena/` → the data **can never exist** in any clone; none on disk.
@@ -92,7 +92,7 @@ You signed the runbook's git-derived §1 table as an after-the-fact record, clos
 | ID | Owner | Decision | Status |
 |---|---|---|---|
 | **D1** | Engineering | Stop pytest rewriting `hr/onboarding_requests.yaml` rather than just reporting it. | **RESOLVED — fixed at source, run 5 proves it** |
-| **D3** | CEO | Reintroduce the scraper-inventory coverage with a fixture, or formally retire it. | **RESOLVED — RETIRED, gap accepted** |
+| **D3** | CEO | Reintroduce the scraper-inventory coverage with a fixture, or formally retire it. | **RESOLVED — TESTS RETIRED (formally retired), gap accepted** |
 | **D4** | CEO | Sign the git-derived phase reconstruction, or accept the gap and require contemporaneous records. | **RESOLVED — SIGNED (option a) + option b imposed going forward** |
 
 ---

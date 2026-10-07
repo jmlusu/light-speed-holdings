@@ -21,8 +21,7 @@
 
 **Standing policy for future phases (D4, adopted 2026-10-07):**
 
-> Phase approvals, validation evidence, and rollback checkpoints must be captured
-> contemporaneously and must not be reconstructed as historical facts after the event.
+> Phase approvals, validation evidence, and rollback checkpoints must be captured contemporaneously and must not be reconstructed as historical facts after the event.
 
 This policy applies to every phase after c11. It does not alter §1 above, which remains a
 labelled retrospective reconstruction, and it does not create or imply any approval record for
@@ -38,8 +37,8 @@ disclaimer above for what this sign-off does and does not establish).
 **Tag inventory:** 14 tags — 12 `cleanup/*` (c0–c11) + 2 `backup/*`. All 14 are present and
 resolvable; no tag points at a missing object.
 
-**Range:** `cleanup/c0-baseline` (`048627ad`, 4187 tracked files) → HEAD (`c40decf0`, 3708
-tracked files) = **754 files changed, +7359 / −71486**.
+**Range:** `cleanup/c0-baseline` (`048627ad`, 4187 tracked files) → `c40decf0` (the
+measurement endpoint, 3708 tracked files) = **754 files changed, +7359 / −71486**.
 
 | Phase | Tag object | Target commit | Created (+0200) | Scope (per commit subject/tag message) | Rollback action |
 |---|---|---|---|---|---|
@@ -186,8 +185,7 @@ pwsh scripts/maintenance/lint-ecl.ps1
 git status --short
 ```
 
-Note: `uv run pytest -q` rewrites `hr/onboarding_requests.yaml` timestamps (see §5). Discard that
-diff with `git checkout -- hr/onboarding_requests.yaml` before judging tree cleanliness.
+Note: since `050532af`, `uv run pytest -q` no longer rewrites `hr/onboarding_requests.yaml` (`data_dir=str(tmp_path / "hr")`). Use `git checkout -- hr/onboarding_requests.yaml` only to discard genuine manual edits to that file.
 
 ---
 
@@ -245,7 +243,7 @@ Recorded as **P1-2 CLOSED** in `POST_CLEANUP_VERIFICATION_REPORT.md`.
 | All 14 tags resolve to objects | PASS | 2026-10-07 |
 | `cleanup/c11-landing` peels to `526f33d54fa431f4e4a2712c3226781c81999cac` | PASS | 2026-10-07 |
 | `inspect/*` branch created and deleted cleanly | PASS | 2026-10-07 (this document's author) |
-| `git diff cleanup/c0-baseline..HEAD --stat` reconstructible | PASS — 754 files, +7359/−71486 | 2026-10-07 |
+| `git diff cleanup/c0-baseline..c40decf0 --stat` reconstructible | PASS — 754 files, +7359/−71486 (measured at `c40decf0`) | 2026-10-07 |
 | Post-rollback gate (`ruff`/`mypy`/`pytest`/generator/`lint-ecl`) | NOT RUN — no rollback performed | — |
 
 The drill in this table confirms the *tag chain and diff are intact*, i.e. rollback is

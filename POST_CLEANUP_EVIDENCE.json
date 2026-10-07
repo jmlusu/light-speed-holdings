@@ -5,7 +5,7 @@
   "report_head": "4bb64572",
   "evidence_baseline_head": "56a42b27",
   "branch": "feat/athena-archive-and-design-system",
-  "branch_sync_with_origin": "2_ahead_unpushed_by_design",
+  "branch_sync_with_origin": "4_ahead_unpushed_by_design",
   "predecessor_audit": {
     "file": "repo-audit/cleanup-status/CLEANUP_STATUS_REPORT.md",
     "head": "be7d1848",
@@ -557,15 +557,16 @@
       "proof": "full-suite run 5 left hr/onboarding_requests.yaml byte-identical (SHA256 unchanged)"
     },
     "sync": {
-      "status": "2_ahead_unpushed_by_design",
+      "status": "4_ahead_unpushed_by_design",
       "ahead_commits": [
         "d507c1ab",
         "c40decf0",
         "decision-closure commit"
       ],
-      "note": "push excluded by the governing protocol; the earlier in_sync reading predated the deliverables"
+      "note": "push excluded by the governing protocol; the earlier in_sync reading predated the deliverables; ahead count is stale-prone - recompute with git status -sb at application time (4 ahead at 363c1aec); ahead_commits above is historical"
     },
-    "final_head": "c40decf0"
+    "final_head": "363c1aec",
+    "final_head_note": "F1-F9 compliance corrections land in a later commit whose sha will be restated by FINAL_CLEANUP_SIGNOFF.md"
   },
   "commits_from_this_change": [
     {
@@ -591,6 +592,10 @@
     {
       "commit": "decision-closure commit (see git log; hash unknowable before commit)",
       "purpose": "D1 fixture fix, D3 retirement records, D4 runbook sign-off, decision closure across all three deliverables"
+    },
+    {
+      "sha": "363c1aec",
+      "purpose": "D4 standing policy adopted in the runbook ('Standing policy for future phases (D4, adopted 2026-10-07)'); decision-closure follow-up commit"
     }
   ],
   "concurrency_observations": [
@@ -657,19 +662,19 @@
     {
       "id": "A3",
       "title": "approval records remain absent",
-      "detail": "P1-2 partial; needs CEO decision",
+      "detail": "historical: P1-2 partial; needs CEO decision; current: CLOSED — discharged by D1/D3/D4 decision closure (050532af, 363c1aec)",
       "ref": "findings[P1-2].sub_items[phase_approval_records]"
     },
     {
       "id": "A4",
       "title": "P0-1 remains open on one residue",
-      "detail": "pytest rewrites hr/onboarding_requests.yaml; concurrent-session cause cleared",
+      "detail": "historical: pytest rewrites hr/onboarding_requests.yaml; concurrent-session cause cleared; current: CLOSED — discharged by D1/D3/D4 decision closure (050532af, 363c1aec)",
       "ref": "findings[P0-1]"
     },
     {
       "id": "A5",
       "title": "five scraper-inventory tests deleted not fixed",
-      "detail": "root cause now untested; re-introduction requires fixture or xfail with written reason",
+      "detail": "historical: root cause now untested; re-introduction requires fixture or xfail with written reason; current: CLOSED — discharged by D1/D3/D4 decision closure (050532af, 363c1aec)",
       "ref": "findings[P0-2].post_deletion_state"
     },
     {
@@ -696,7 +701,7 @@
     "no 90-agent roster changes",
     "no history rewrite, no push, no amend, no force-push, no stash",
     "no hand-editing of generated agent cards",
-    "no edits to the five failing tests or their fixtures",
+    "no edits to the five scraper-inventory tests; tests/unit/test_onboarding.py is the sole test file edit (D1, 050532af)",
     "no sweeping of concurrent-session changes (AGENTS.md section 7)",
     "no deletion or dedup of the 57 openai.yaml files",
     "no backup or cleanup tag movement"
@@ -721,6 +726,7 @@
       "decision": "note that tests/test_scraper_inventory.py was removed as a CI unblock rather than fixed; decide whether coverage should be reintroduced with a fixture or formally retired",
       "unblocks": "clean resolution of C1",
       "status": "RESOLVED_RETIRED",
+      "gate_label": "TESTS RETIRED",
       "chosen": "formally retire the coverage (not restore it)",
       "outcome": "5 test names recorded; restoration rejected because company/athena/ is gitignored (.gitignore:170) and can never exist in a clone - restoring would mean asserting against fabricated data; two dangling doc references cleared; coverage gap accepted explicitly and left unguarded until tracked fixtures exist",
       "deleted_tests": [

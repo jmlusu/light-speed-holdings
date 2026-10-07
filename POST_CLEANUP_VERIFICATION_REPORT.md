@@ -2,7 +2,8 @@
 
 **Package:** `POST_CLEANUP_VERIFICATION_REPORT.md` · `POST_CLEANUP_EVIDENCE.json` · `POST_CLEANUP_CEO_SUMMARY.md`
 **Prepared:** 2026-10-07 · **Branch:** `feat/athena-archive-and-design-system` · **Evidence HEAD:** `4bb64572`
-**Final HEAD after decision closure:** `c40decf0` (+ this commit) · **Baseline:** tag `cleanup/c0-baseline` = `048627ad` (2026-10-05 23:40 +0200)
+**Final HEAD after decision closure:** `363c1aec` (+ this commit) · **Baseline:** tag `cleanup/c0-baseline` = `048627ad` (2026-10-05 23:40 +0200)
+> **Note:** F1–F9 compliance corrections land in a later commit whose SHA will be restated by `FINAL_CLEANUP_SIGNOFF.md`.
 **Predecessor:** `repo-audit/cleanup-status/CLEANUP_STATUS_REPORT.md` (HEAD `be7d1848`, readiness 72/100, READY WITH CONDITIONS)
 
 **Method:** every P0/P1 condition from the 2026-10-07 cleanup audit was re-tested against the live
@@ -66,6 +67,7 @@ evidence package requested for CEO sign-off, and the three CEO decisions taken a
 | `d507c1ab` | the three root-level deliverables |
 | `c40decf0` | deliverable fix-up (stale two-causes framing in §3/§3.1) |
 | *(this commit)* | D1 fixture fix, D3 retirement records, D4 sign-off, decision closure |
+| `363c1aec` | D4 standing policy adopted in the rollback runbook ('Standing policy for future phases (D4, adopted 2026-10-07)'); decision-closure follow-up commit |
 
 ---
 
@@ -252,7 +254,7 @@ remains unaddressed and is now **untested** rather than merely failing.
 **Run 5 (§3.3) confirms:** `0 failed, 2511 passed` — the flake did not recur, and the suite now
 exits 0.
 
-### 4.7 D3 — the five deleted tests: **FORMALLY RETIRED**
+### 4.7 D3 — the five deleted tests: **TESTS RETIRED**
 
 `tests/test_scraper_inventory.py` (176 lines, 5 tests) was deleted by the concurrent session in
 `4bb64572`. CEO decision **D3 = formally retire the coverage** (not restore it).
@@ -264,6 +266,8 @@ exits 0.
 | Dangling references cleared | `docs/wayfinder/map2-scraper-discovery-gap-analysis.md` and `docs/superpowers/plans/2026-09-28-wayfinder-map2-scraper-discovery-gap-analysis.md` updated to state the file is retired, so no future agent is sent to run a test that no longer exists |
 | Prior record | `docs/REPOSITORY_HEALTH.md:43` already records `RESOLVED 2026-10-07 — module removed` |
 | Coverage gap | **Accepted, explicit:** the scraper-inventory JSONL contract (3 datasets + script-dir reporting) is now **unguarded**. If scraper work resumes, re-derive coverage against data that is actually tracked. |
+
+`company/athena/` is gitignored (`.gitignore:170`) and absent from disk, so the five retired tests could never pass in a fresh clone — effective passing coverage for this contract is zero, and the scraper inventory remains unguarded until tracked fixtures exist.
 
 ---
 
@@ -331,6 +335,9 @@ recorded in the runbook's provenance disclaimer and §1 header, and §6 there no
 - **Standing condition (option b, imposed by this decision):** every future phase must carry an
   approval record written *before* the phase begins. This is now the repo's obligation, not an
   observation.
+
+The runbook carries this policy as the block **"Standing policy for future phases (D4, adopted
+2026-10-07)"** (`CLEANUP_ROLLBACK_RUNBOOK.md`, landed in `363c1aec`).
 
 **Tag inventory verified:** 14 tags resolve — 12 `cleanup/*` (c0–c11) + 2 `backup/*`.
 `cleanup/c11-landing` = annotated tag `7fdcd5f20faf1f78cf76213199b36481239c4800` →
@@ -407,7 +414,7 @@ created **no stash**; the only git writes it performed were pathspec-scoped comm
 
 ---
 
-## 8. Validation matrix (gates at `4bb64572`; tree/test state at final HEAD `c40decf0`)
+## 8. Validation matrix (gates at `4bb64572`; tree/test state at final HEAD `363c1aec`)
 
 | Gate | Command | Result |
 |---|---|---|
@@ -420,10 +427,10 @@ created **no stash**; the only git writes it performed were pathspec-scoped comm
 | Submodule | `git submodule status` | **PASS** — `6fd2f60` clean |
 | Tags | 14 tags resolve; `c11` peels to `526f33d5` | **PASS** |
 | Tree after full suite | `git status --short` + SHA256 of `hr/onboarding_requests.yaml` | **CLEAN** — hr file byte-identical to pre-run (§3.3) |
-| Sync | `git status -sb` | **2 ahead of origin, deliberately unpushed** (`d507c1ab`, `c40decf0`) — push excluded by the governing protocol |
+| Sync | `git status -sb` | **4 ahead of origin, deliberately unpushed** — push excluded by the governing protocol; recompute with `git status -sb` at application time (ahead 4 at `363c1aec`, may change) |
 
-**Diff against baseline:** `git diff --shortstat cleanup/c0-baseline..HEAD` →
-**754 files changed, 7359 insertions(+), 71486 deletions(−)**; tracked files **4187 → 3708 (−479, −11.4%)**.
+**Diff against baseline (measured 2026-10-07 at `c40decf0`):** `git diff --shortstat cleanup/c0-baseline..c40decf0` →
+**754 files changed, 7359 insertions(+), 71486 deletions(−)** (baseline → `c40decf0`); tracked files **4187 → 3708 (−479, −11.4%)**.
 
 ---
 
