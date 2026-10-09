@@ -2,7 +2,7 @@
 LightSpeed Holdings — Board Meeting Template Generator
 Creates a 10-slide board meeting deck using python-pptx.
 Brand: LightSpeed Holdings Limited | Tagline: Aspire. Act. Achieve.
-Colors: Navy #070A40, Red #E63946, Cyan #00BFFF, Grey #F2F2F2
+Colors: Navy #070A40, Red #DC3641, Cyan #00BFFF, Grey #F2F2F2
 """
 
 import os
