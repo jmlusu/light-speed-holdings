@@ -230,7 +230,6 @@ class AssetPipeline:
         self._metrics.cache_misses += 1
         return None
 
-
     def _is_expired(self, entry: AssetCacheEntry) -> bool:
         """Check if a cache entry has expired based on TTL."""
         return (time.time() - entry.metadata.created_at) > self._ttl_seconds
@@ -378,7 +377,7 @@ class AssetPipeline:
                         ratio = 1.0
                     new_width = int(width * ratio)
                     new_height = int(height * ratio)
-                    img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)  # type: ignore
+                    img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
                 else:
                     new_width, new_height = width, height
 
@@ -400,10 +399,10 @@ class AssetPipeline:
                 if out_format in ("JPEG", "JPG") and img.mode == "RGBA":
                     background = Image.new("RGB", img.size, (255, 255, 255))
                     background.paste(img, mask=img.split()[3])
-                    img = background  # type: ignore
+                    img = background
 
                 if out_format == "PNG" and img.mode != "RGBA":
-                    img = img.convert("RGBA")  # type: ignore
+                    img = img.convert("RGBA")
 
                 img.save(output_path, format=out_format, **save_kwargs)
 

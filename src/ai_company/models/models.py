@@ -551,6 +551,12 @@ class Task(EntityBase):
     claimed_files: list[str] = Field(default_factory=list)
     session_id: str = ""
 
+    # Studio scorecard fields
+    venture_id: str = "studio-core"
+    manual_intervention: bool = False
+    cost_usd: float = 0.0
+    model_id: str = ""
+
 
 # ---------------------------------------------------------------------------
 # TaskResult — structured execution output
