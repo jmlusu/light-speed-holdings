@@ -377,7 +377,7 @@ class AssetPipeline:
                         ratio = 1.0
                     new_width = int(width * ratio)
                     new_height = int(height * ratio)
-                    img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                    processed_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
                 else:
                     new_width, new_height = width, height
 
@@ -396,15 +396,16 @@ class AssetPipeline:
                     save_kwargs["method"] = 6  # Best compression
 
                 # Convert RGBA to RGB for JPEG if needed
-                if out_format in ("JPEG", "JPG") and img.mode == "RGBA":
-                    background = Image.new("RGB", img.size, (255, 255, 255))
-                    background.paste(img, mask=img.split()[3])
-                    img = background
+                processed_img = img
+                if out_format in ("JPEG", "JPG") and processed_img.mode == "RGBA":
+                    background = Image.new("RGB", processed_img.size, (255, 255, 255))
+                    background.paste(processed_img, mask=processed_img.split()[3])
+                    processed_img = background
 
-                if out_format == "PNG" and img.mode != "RGBA":
-                    img = img.convert("RGBA")
+                if out_format == "PNG" and processed_img.mode != "RGBA":
+                    processed_img = processed_img.convert("RGBA")
 
-                img.save(output_path, format=out_format, **save_kwargs)
+                processed_img.save(output_path, format=out_format, **save_kwargs)
 
                 # Update metrics
                 self._metrics.total_resize_operations += 1

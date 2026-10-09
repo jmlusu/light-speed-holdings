@@ -387,7 +387,7 @@ class TestKPICollect:
         assert "collected_at" in data
         assert "departments" in data
         depts = data["departments"]
-        assert len(depts) == 8  # All 8 departments
+        assert len(depts) == 9  # All 9 departments
         assert "engineering" in depts
         assert "hr" in depts
         assert "finance" in depts
