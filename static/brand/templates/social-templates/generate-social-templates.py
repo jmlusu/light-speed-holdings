@@ -12,7 +12,7 @@ Templates:
   6. Thread Header (1200x675, 16:9)
 
 Brand: LightSpeed Holdings Limited | Tagline: ASPIRE. ACT. ACHIEVE.
-Tokens: brand/tokens/brand-tokens.json (navy #070A40, red #E63946, cyan #00BFFF).
+Tokens: brand/tokens/brand-tokens.json (navy #070A40, red #DC3641, cyan #00BFFF).
 
 Usage:
   python generate-social-templates.py                        # all 6 demo set
@@ -28,7 +28,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 # Brand colors (from brand/tokens/brand-tokens.json)
 NAVY = (7, 10, 64)
-RED = (230, 57, 70)
+RED = (220, 54, 65)
 CYAN = (0, 191, 255)
 WHITE = (255, 255, 255)
 GREY_LIGHT = (242, 242, 242)
@@ -52,8 +52,8 @@ def _canonical_or_mirror(*parts):
     return mirror
 
 
-LOGO_DIR = _canonical_or_mirror("logos", "icononly")
-FULL_LOGO_DIR = _canonical_or_mirror("logos", "fulllogo")
+LOGO_DIR = _canonical_or_mirror("logo")
+FULL_LOGO_DIR = _canonical_or_mirror("logo")
 DEFAULT_OUT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "social", "templates"))
 
 RAIL_W = 48  # brand standard navy left rail
@@ -114,7 +114,7 @@ def _text(draw, xy, text, font, fill, anchor="la"):
 
 def _paste_icon(img, x, y, height):
     """Paste the icon-only logo at (x, y) with given height; returns (w, h)."""
-    icon_path = os.path.join(LOGO_DIR, "icononly_transparent.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
     if os.path.exists(icon_path):
         icon = Image.open(icon_path).convert("RGBA")
         w = int(icon.width * (height / icon.height))
@@ -126,7 +126,7 @@ def _paste_icon(img, x, y, height):
 
 def _paste_full_logo(img, x, y, height):
     """Paste the full transparent logo at (x, y) with given height."""
-    logo_path = os.path.join(FULL_LOGO_DIR, "fulllogo_transparent.png")
+    logo_path = os.path.join(FULL_LOGO_DIR, "logo-full.png")
     if os.path.exists(logo_path):
         logo = Image.open(logo_path).convert("RGBA")
         w = int(logo.width * (height / logo.height))

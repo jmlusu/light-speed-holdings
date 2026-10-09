@@ -40,11 +40,11 @@ missing.
 
 LOGOS
 -----
-Logo files are resolved canonical-first (`brand/logos/**`) with a fallback to
-the runtime mirror (`static/brand/logos/**`) — same pattern as
-`static/brand/templates/generate-social-assets.py`. Icon logo: `icononly/
-icononly_transparent.png` (dark surfaces). Full logo: `fulllogo/
-fulllogo_transparent.png` (light surfaces).
+Logo files are resolved canonical-first (`brand/logo/**`) with a fallback to
+the runtime mirror (`static/brand/logo/**`) — same pattern as
+`static/brand/templates/generate-social-assets.py`. Icon logo: `logo/
+logo-mark.png` (dark surfaces). Full logo: `logo/
+logo-full.png` (light surfaces).
 
 USAGE
 -----
@@ -113,7 +113,7 @@ def _canonical_or_mirror(*parts: str) -> str:
 
 FALLBACK_COLORS: dict[str, tuple[int, int, int]] = {
     "navy": (7, 10, 64),  # #070A40 primary surfaces
-    "red": (230, 57, 70),  # #E63946 accent / CTA / key numbers
+    "red": (220, 54, 65),  # #DC3641 accent / CTA / key numbers
     "cyan": (0, 191, 255),  # #00BFFF secondary accent / links on dark
     "grey-light": (242, 242, 242),  # #F2F2F2 card backgrounds
     "white": (255, 255, 255),  # #FFFFFF text on navy / clean bg
@@ -516,7 +516,7 @@ def generate_linkedin_carousel(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logos", "icononly", "icononly_transparent.png"),
+        ("logo", "logo-mark.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -575,7 +575,7 @@ def generate_youtube_thumbnail(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logos", "icononly", "icononly_transparent.png"),
+        ("logo", "logo-mark.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -629,7 +629,7 @@ def generate_reels_shorts_cover(
     # Logo top-right (min 32px icon; 96px for template presence)
     _paste_logo(
         img,
-        ("logos", "icononly", "icononly_transparent.png"),
+        ("logo", "logo-mark.png"),
         target_width=96,
         position="top-right",
         margin=24,
@@ -692,7 +692,7 @@ def generate_quote_card(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logos", "icononly", "icononly_transparent.png"),
+        ("logo", "logo-mark.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -763,7 +763,7 @@ def generate_stat_card(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_dark)
     _paste_logo(
         img,
-        ("logos", "fulllogo", "fulllogo_transparent.png"),
+        ("logo", "logo-full.png"),
         target_width=300,
         position="bottom-right",
         margin=24,
@@ -820,7 +820,7 @@ def generate_thread_header(
     draw.text((CONTENT_INSET, height - 40), tagline, font=caption_font, fill=grey_light_text)
     _paste_logo(
         img,
-        ("logos", "icononly", "icononly_transparent.png"),
+        ("logo", "logo-mark.png"),
         target_width=96,
         position="bottom-right",
         margin=24,
@@ -871,7 +871,7 @@ def generate_lower_third_video_overlay(
     # Logo — Icon Only (48px), right side, vertically centered, clear space
     _paste_logo(
         img,
-        ("logos", "icononly", "icononly_transparent.png"),
+        ("logo", "logo-mark.png"),
         target_width=48,
         position="center-right",
         margin=64,
@@ -942,7 +942,7 @@ def generate_hook_card(
     # Logo top-right (Icon Only, 96px)
     _paste_logo(
         img,
-        ("logos", "icononly", "icononly_transparent.png"),
+        ("logo", "logo-mark.png"),
         target_width=96,
         position="top-right",
         margin=24,
@@ -1041,7 +1041,7 @@ def generate_end_screen_cta(
     # Logo + tagline bottom center
     _paste_logo(
         img,
-        ("logos", "fulllogo", "fulllogo_transparent.png"),
+        ("logo", "logo-full.png"),
         target_width=360,
         position="center",
         margin=120,
@@ -1144,7 +1144,7 @@ def generate_facebook_group_cover(
     )
 
     # Full logo (transparent) centered below the description
-    logo_path = _canonical_or_mirror("logos", "fulllogo", "fulllogo_transparent.png")
+    logo_path = _canonical_or_mirror("logo", "logo-full.png")
     if os.path.exists(logo_path):
         logo = Image.open(logo_path).convert("RGBA")
         target_w = 240
@@ -1230,7 +1230,7 @@ def generate_email_newsletter_header(
     draw.rectangle([0, 0, 4, height], fill=cyan)
 
     # Full logo (transparent) left, 140px wide (>= 120px min), vertically centered
-    logo_path = _canonical_or_mirror("logos", "fulllogo", "fulllogo_transparent.png")
+    logo_path = _canonical_or_mirror("logo", "logo-full.png")
     if os.path.exists(logo_path):
         logo = Image.open(logo_path).convert("RGBA")
         target_w = 140

@@ -2,7 +2,7 @@
 LightSpeed Holdings - Social Media Asset Generator
 Creates platform profile, banner, story and channel-art images using Pillow.
 Brand: LightSpeed Holdings Limited | Tagline: ASPIRE. ACT. ACHIEVE.
-Colors: Navy #070A40, Red #E63946, Cyan #00BFFF, Grey #F2F2F2
+Colors: Navy #070A40, Red #DC3641, Cyan #00BFFF, Grey #F2F2F2
 Platforms: LinkedIn, Twitter/X, GitHub, Instagram, TikTok, YouTube.
 """
 
@@ -13,13 +13,13 @@ from PIL import Image, ImageDraw, ImageFont
 
 # Brand Colors
 NAVY = (7, 10, 64)
-RED = (230, 57, 70)
+RED = (220, 54, 65)
 CYAN = (0, 191, 255)
 WHITE = (255, 255, 255)
 GREY = (242, 242, 242)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Canonical logos live in brand/logos/ (repo root). Fall back to the
+# Canonical logos live in brand/logo/ (repo root). Fall back to the
 # static/brand mirror for checkouts that have not run scripts/build/sync-brand.ps1.
 BRAND_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "..", "brand"))
 
@@ -32,8 +32,8 @@ def _canonical_or_mirror(*parts):
     return mirror
 
 
-LOGO_DIR = _canonical_or_mirror("logos", "icononly")
-FULL_LOGO_DIR = _canonical_or_mirror("logos", "fulllogo")
+LOGO_DIR = _canonical_or_mirror("logo")
+FULL_LOGO_DIR = _canonical_or_mirror("logo")
 OUTPUT_DIR = os.path.join(SCRIPT_DIR, "..", "social")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -117,7 +117,7 @@ def create_profile_image(size, output_path, variant="default", size_factor=None)
         draw.ellipse(bbox, outline=CYAN, width=ring_width)
 
     # Load icon logo
-    icon_path = os.path.join(LOGO_DIR, "icononly_transparent.png")
+    icon_path = os.path.join(LOGO_DIR, "logo-mark.png")
     if os.path.exists(icon_path):
         icon = Image.open(icon_path).convert("RGBA")
         # Calculate size to fit (50% of canvas default), preserving aspect ratio
@@ -164,7 +164,7 @@ def create_banner_image(
     draw.rectangle([(0, height - bar_height), (width, height)], fill=RED)
 
     # Load icon-only logo (requested: icon only)
-    icon_logo_path = os.path.join(LOGO_DIR, "icononly_transparent.png")
+    icon_logo_path = os.path.join(LOGO_DIR, "logo-mark.png")
     if os.path.exists(icon_logo_path):
         logo = Image.open(icon_logo_path).convert("RGBA")
         # Scale logo to fit banner height (40% default, larger if requested)
@@ -248,7 +248,7 @@ def create_story_image(width, height, output_path):
 
     # Full logo, centered upper-middle
     logo_h = int(height * 0.115)
-    full_logo_path = os.path.join(FULL_LOGO_DIR, "fulllogo_transparent.png")
+    full_logo_path = os.path.join(FULL_LOGO_DIR, "logo-full.png")
     if os.path.exists(full_logo_path):
         logo = Image.open(full_logo_path).convert("RGBA")
         logo_w = int(logo.width * (logo_h / logo.height))
@@ -343,7 +343,7 @@ def create_youtube_channel_art(width, height, output_path):
 
     # Full logo left, inside the safe area
     logo_h = int(height * 0.26)
-    full_logo_path = os.path.join(FULL_LOGO_DIR, "fulllogo_transparent.png")
+    full_logo_path = os.path.join(FULL_LOGO_DIR, "logo-full.png")
     if os.path.exists(full_logo_path):
         logo = Image.open(full_logo_path).convert("RGBA")
         logo_w = int(logo.width * (logo_h / logo.height))

@@ -10,7 +10,7 @@
 ```css
 /* Primary */
 --navy: #070A40;           /* Dominant: backgrounds, headlines, rails */
---red: #E63946;            /* Accent (10%): signal waves, CTAs, highlights */
+--red: #DC3641;            /* Accent (10%): signal waves, CTAs, highlights */
 --cyan: #00BFFF;           /* Accent (10%): shield base, links on dark */
 
 /* Neutrals */
@@ -71,7 +71,7 @@
 - Headline: `--size-title-md` (24pt), Navy, `--font-display`
 - Body: `--size-body` (14pt), Grey-dark, `--font-body`
 - Visual: Diagram/stat/chart (centered, max 80% width)
-- Red accent: Key numbers/metrics in Red (`#E63946`)
+- Red accent: Key numbers/metrics in Red (`#DC3641`)
 
 ### Slide 5: CTA
 - Background: Navy
@@ -145,7 +145,7 @@
 ### Layout
 - Background: White
 - Left rail: 48px Navy
-- Metric number: `--size-display-xl` (36pt), Red (`#E63946`), `--font-display`
+- Metric number: `--size-display-xl` (36pt), Red (`#DC3641`), `--font-display`
 - Metric label: `--size-title-sm` (18pt), Navy, `--font-display`
 - Context: `--size-body` (14pt), Grey-dark, 2 lines max
 - Visual: Small chart/icon in Cyan (top-right area)

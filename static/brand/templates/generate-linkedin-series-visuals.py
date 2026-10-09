@@ -149,7 +149,7 @@ def load_tokens() -> dict:
 
 COLORS = {
     "navy": "#070A40",
-    "red": "#E63946",
+    "red": "#DC3641",
     "cyan": "#00BFFF",
     "grey-light": "#F2F2F2",
     "white": "#FFFFFF",
@@ -275,9 +275,9 @@ def paste_logo(dark_surface: bool, target_h: int) -> Image.Image:
     not snap to grey-light against the white content card.
     """
     if dark_surface:
-        path = _canonical_or_mirror("logos", "icononly", "icononly_transparent.png")
+        path = _canonical_or_mirror("logo", "logo-mark.png")
     else:
-        path = _canonical_or_mirror("logos", "fulllogo", "fulllogo_transparent.png")
+        path = _canonical_or_mirror("logo", "logo-full.png")
     logo = Image.open(path).convert("RGBA")
     bbox = logo.getbbox()
     if bbox:

@@ -15,6 +15,7 @@ from ai_company.dashboard.kpis.legal import LegalKPICollector
 from ai_company.dashboard.kpis.marketing import MarketingKPICollector
 from ai_company.dashboard.kpis.org_health import OrgHealthKPICollector
 from ai_company.dashboard.kpis.sales import SalesKPICollector
+from ai_company.dashboard.kpis.studio import StudioScorecardCollector
 from ai_company.data.database import Database
 from ai_company.paths import get_project_root
 
@@ -27,6 +28,7 @@ ALL_COLLECTORS: list[type[KPICollector]] = [
     CustomerSuccessKPICollector,
     LegalKPICollector,
     OrgHealthKPICollector,
+    StudioScorecardCollector,
 ]
 
 
