@@ -89,21 +89,24 @@ Expected: FAIL with "function not defined"
 ```python
 #!/usr/bin/env python3
 """Read and validate wayfinder map structure."""
+
 import re
+
 
 def validate_wayfinder_map(filepath):
     with open(filepath) as f:
         content = f.read()
 
     # Check for wayfinder:map label
-    assert re.search(r'wayfinder:map', content), "Missing wayfinder:map label"
+    assert re.search(r"wayfinder:map", content), "Missing wayfinder:map label"
 
     # Check for child tickets with wayfinder:<type> labels
-    assert re.search(r'wayfinder:(research|prototype|grilling|task)', content), \
+    assert re.search(r"wayfinder:(research|prototype|grilling|task)", content), (
         "Missing wayfinder:<type> labels on child tickets"
+    )
 
     # Check for Decisions-so-far section
-    assert re.search(r'Decisions so far', content), "Missing 'Decisions so far' section"
+    assert re.search(r"Decisions so far", content), "Missing 'Decisions so far' section"
 
     return True
 ```
@@ -154,7 +157,9 @@ Expected: FAIL
 ```python
 #!/usr/bin/env python3
 """Inventory scraper subsystems and their data formats."""
+
 import json
+
 
 def inventory_scrapers():
     sources = []
@@ -163,28 +168,34 @@ def inventory_scrapers():
     with open("company/athena/scrape_jobs.jsonl") as f:
         for line in f:
             record = json.loads(line)
-            sources.append({
-                "source": record.get("source"),
-                "query": record.get("query"),
-                "status": record.get("status"),
-                "jobs_found": record.get("jobs_found"),
-            })
+            sources.append(
+                {
+                    "source": record.get("source"),
+                    "query": record.get("query"),
+                    "status": record.get("status"),
+                    "jobs_found": record.get("jobs_found"),
+                }
+            )
 
     # Read jobs.jsonl
     with open("company/athena/jobs.jsonl") as f:
         for line in f:
             record = json.loads(line)
-            sources.append({
-                "source": record.get("source"),
-                "id": record.get("id"),
-            })
+            sources.append(
+                {
+                    "source": record.get("source"),
+                    "id": record.get("id"),
+                }
+            )
 
     # List junta-leiloeiro scraper scripts
     import os
+
     scraper_dir = ".agents/skills/junta-leiloeiro/scripts/scraper/"
     scripts = os.listdir(scraper_dir) if os.path.exists(scraper_dir) else []
 
     return sources
+
 
 # Usage
 sources = inventory_scrapers()

@@ -162,9 +162,7 @@ Edit [`tools/scripts/auto_categorize_skills.py`](../../tools/scripts/auto_catego
 
 ```python
 CATEGORY_KEYWORDS = {
-    'your-category': [
-        'keyword1', 'keyword2', 'exact phrase', 'another-keyword'
-    ],
+    "your-category": ["keyword1", "keyword2", "exact phrase", "another-keyword"],
     # ... other categories
 }
 ```

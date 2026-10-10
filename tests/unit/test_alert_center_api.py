@@ -20,6 +20,7 @@ from ai_company.dashboard.app import app
 
 def _alert(rule_name: str = "High failure rate") -> Alert:
     from datetime import datetime, timezone
+
     return Alert(
         rule_name=rule_name,
         department="engineering",

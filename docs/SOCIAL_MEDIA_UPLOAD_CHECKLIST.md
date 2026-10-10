@@ -30,7 +30,7 @@ Then proceed with the per-platform uploads below.
 - [ ] **Name:** LIGHTSPEED HOLDINGS LIMITED
 - [ ] **Tagline:** ASPIRE. ACT. ACHIEVE.
 - [ ] **About:** One-para company description (can draft later)
-- [ ] **Website:** https://lightspeedholdings.com
+- [ ] **Website:** https://lightspeedholdings.vercel.app
 - [ ] Click **Save/Apply** — verify both images render
 
 ## Twitter/X
@@ -40,7 +40,7 @@ Then proceed with the per-platform uploads below.
 - [ ] **Header:** Change header → Upload `twitter-header.png` (1500×500)
 - [ ] **Display name:** LIGHTSPEED HOLDINGS
 - [ ] **Bio:** "Aspire. Act. Achieve." + short company line
-- [ ] **Website:** https://lightspeedholdings.com
+- [ ] **Website:** https://lightspeedholdings.vercel.app
 - [ ] Click **Save** — verify both images render
 
 ## Optional — GitHub

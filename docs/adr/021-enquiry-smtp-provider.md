@@ -5,7 +5,7 @@
 
 ## Context
 
-The v1 enquiry backend (B-1, PR #263) integrated Resend as the email delivery provider. After launch the owner has no verified sending domain (the intended domain `lightspeedholdings.com` is parked/not in production), so Resend cannot send from a branded address. Requiring a domain purchase before the enquiry form works delays first value.
+The v1 enquiry backend (B-1, PR #263) integrated Resend as the email delivery provider. After launch the owner has no verified sending domain (the intended `.com` send-from domain is parked/not in production), so Resend cannot send from a branded address. Requiring a domain purchase before the enquiry form works delays first value.
 
 ## Decision
 

@@ -53,11 +53,14 @@ Every architecture gap resolution must meet these criteria:
 def test_get_pending_tasks_returns_pending_only():
     """Only tasks with status='pending' are returned."""
 
+
 def test_get_pending_tasks_empty_inbox():
     """Empty inbox returns empty list, not error."""
 
+
 def test_update_status_persists_to_file():
     """Status change is written to inbox.json."""
+
 
 def test_update_status_with_result():
     """Result dict is stored alongside status."""
@@ -103,17 +106,22 @@ def test_update_status_with_result():
 def test_read_write_json_roundtrip(tmp_path):
     """Write JSON, read back, verify equality."""
 
+
 def test_read_write_yaml_roundtrip(tmp_path):
     """Write YAML, read back, verify equality."""
+
 
 def test_atomic_write_no_corruption(tmp_path):
     """Simulate crash during write; original file intact."""
 
+
 def test_concurrent_writes(tmp_path):
     """10 threads writing to same file; no corruption."""
 
+
 def test_missing_file_returns_none(tmp_path):
     """Read non-existent file returns None, not exception."""
+
 
 def test_auto_creates_parent_directories(tmp_path):
     """Write to nested path creates directories automatically."""
@@ -150,17 +158,22 @@ def test_auto_creates_parent_directories(tmp_path):
 
 ```python
 # tests/unit/test_tool_runner.py
-@pytest.mark.parametrize("tool,expected_tier", [
-    ("read", 0),
-    ("write", 2),
-    ("execute", 3),
-    ("code_interpreter", 3),
-])
+@pytest.mark.parametrize(
+    "tool,expected_tier",
+    [
+        ("read", 0),
+        ("write", 2),
+        ("execute", 3),
+        ("code_interpreter", 3),
+    ],
+)
 def test_classify_tool_action(tool, expected_tier):
     """Each tool maps to correct tier."""
 
+
 def test_tier0_auto_approved(runner, hitl_gate):
     """Tier 0 actions never trigger HITL."""
+
 
 def test_backward_compat_without_classifier():
     """Without tier classifier, DANGEROUS_TOOLS still works."""
@@ -199,8 +212,10 @@ def test_backward_compat_without_classifier():
 def test_hitl_request_returns_immediately():
     """request() completes in < 100ms, no blocking."""
 
+
 def test_executor_skips_awaiting_tasks():
     """While task A awaits approval, task B is processed."""
+
 
 def test_timeout_auto_denies():
     """After timeout, awaiting task is auto-denied."""
@@ -237,8 +252,10 @@ def test_timeout_auto_denies():
 def test_episodic_memory_stored_on_completion(memory_engine):
     """Successful task creates episodic memory."""
 
+
 def test_memory_context_enriches_prompt(memory_engine):
     """Relevant memories are included in agent prompt."""
+
 
 def test_consolidation_merges_related_memories(memory_engine):
     """Consolidation reduces memory count."""

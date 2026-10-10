@@ -57,7 +57,12 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle,
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    PageBreak,
+    Table,
+    TableStyle,
 )
 from reportlab.lib import colors
 
@@ -65,9 +70,12 @@ styles = getSampleStyleSheet()
 body = ParagraphStyle("body", parent=styles["BodyText"], fontSize=10, leading=14)
 
 doc = SimpleDocTemplate(
-    "report.pdf", pagesize=letter,
-    leftMargin=0.9 * inch, rightMargin=0.9 * inch,
-    topMargin=0.9 * inch, bottomMargin=1.0 * inch,
+    "report.pdf",
+    pagesize=letter,
+    leftMargin=0.9 * inch,
+    rightMargin=0.9 * inch,
+    topMargin=0.9 * inch,
+    bottomMargin=1.0 * inch,
     title="Q3 platform reliability",
     author="Reliability team",
 )
@@ -84,25 +92,27 @@ story = [
 ]
 
 data = [
-    ["Region",   "Uptime", "P99 latency", "Incidents"],
-    ["us-east",  "99.98%", "180 ms",      "1"],
-    ["us-west",  "99.92%", "210 ms",      "3"],
-    ["eu-west",  "99.95%", "240 ms",      "2"],
-    ["ap-south", "99.89%", "410 ms",      "5"],
+    ["Region", "Uptime", "P99 latency", "Incidents"],
+    ["us-east", "99.98%", "180 ms", "1"],
+    ["us-west", "99.92%", "210 ms", "3"],
+    ["eu-west", "99.95%", "240 ms", "2"],
+    ["ap-south", "99.89%", "410 ms", "5"],
 ]
-tbl = Table(data, hAlign="LEFT",
-            colWidths=[1.2*inch, 0.9*inch, 1.1*inch, 0.9*inch])
-tbl.setStyle(TableStyle([
-    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#26324A")),
-    ("TEXTCOLOR",  (0, 0), (-1, 0), colors.whitesmoke),
-    ("FONTNAME",   (0, 0), (-1, 0), "Helvetica-Bold"),
-    ("ALIGN",      (1, 0), (-1, -1), "RIGHT"),
-    ("ROWBACKGROUNDS", (0, 1), (-1, -1),
-        [colors.HexColor("#F5F7FB"), colors.white]),
-    ("GRID",       (0, 0), (-1, -1), 0.25, colors.HexColor("#D0D5DD")),
-    ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
-    ("TOPPADDING",    (0, 0), (-1, 0), 6),
-]))
+tbl = Table(data, hAlign="LEFT", colWidths=[1.2 * inch, 0.9 * inch, 1.1 * inch, 0.9 * inch])
+tbl.setStyle(
+    TableStyle(
+        [
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#26324A")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.HexColor("#F5F7FB"), colors.white]),
+            ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#D0D5DD")),
+            ("BOTTOMPADDING", (0, 0), (-1, 0), 6),
+            ("TOPPADDING", (0, 0), (-1, 0), 6),
+        ]
+    )
+)
 story.append(tbl)
 story.append(PageBreak())
 story.append(Paragraph("Appendix — incidents", styles["Heading1"]))
@@ -126,9 +136,9 @@ def chrome(canv, doc):
     canv.setFont("Helvetica", 8)
     canv.setFillGray(0.4)
     canv.drawString(0.9 * inch, 0.5 * inch, "Q3 platform reliability")
-    canv.drawRightString(letter[0] - 0.9 * inch, 0.5 * inch,
-                         f"Page {doc.page}")
+    canv.drawRightString(letter[0] - 0.9 * inch, 0.5 * inch, f"Page {doc.page}")
     canv.restoreState()
+
 
 doc.build(story, onFirstPage=chrome, onLaterPages=chrome)
 ```
@@ -175,34 +185,36 @@ from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 
 CJK_TTF_CANDIDATES = {
     "Darwin": [
-        "/System/Library/Fonts/STHeiti Light.ttc",        # sans; 简/繁/日
-        "/System/Library/Fonts/STHeiti Medium.ttc",       # heavier weight
+        "/System/Library/Fonts/STHeiti Light.ttc",  # sans; 简/繁/日
+        "/System/Library/Fonts/STHeiti Medium.ttc",  # heavier weight
         "/System/Library/Fonts/Supplemental/Songti.ttc",  # serif; full 简, partial 繁
-        "/Library/Fonts/Arial Unicode.ttf",               # widest coverage; macOS 11+ usually not preinstalled (comes with Office)
+        "/Library/Fonts/Arial Unicode.ttf",  # widest coverage; macOS 11+ usually not preinstalled (comes with Office)
     ],
     "Windows": [
-        r"C:\Windows\Fonts\msyh.ttc",    # 微软雅黑 sans
+        r"C:\Windows\Fonts\msyh.ttc",  # 微软雅黑 sans
         r"C:\Windows\Fonts\simhei.ttf",  # 黑体 sans
         r"C:\Windows\Fonts\simsun.ttc",  # 宋体 serif
     ],
     "Linux": [
-        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",       # Debian/Ubuntu
-        "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc",     # Fedora/RHEL
-        "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",            # Arch
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # Debian/Ubuntu
+        "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc",  # Fedora/RHEL
+        "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",  # Arch
         "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
     ],
 }
+
 
 def resolve_cjk_font():
     for p in CJK_TTF_CANDIDATES.get(platform.system(), []):
         if os.path.exists(p):
             try:
                 pdfmetrics.registerFont(TTFont("CJK", p))
-                return "CJK"              # embedded -> renders on any device
+                return "CJK"  # embedded -> renders on any device
             except Exception:
-                continue                  # unparseable face: try the next one
+                continue  # unparseable face: try the next one
     pdfmetrics.registerFont(UnicodeCIDFont("STSong-Light"))
-    return "STSong-Light"                 # ships with reportlab, never fails
+    return "STSong-Light"  # ships with reportlab, never fails
+
 
 CJK_FONT = resolve_cjk_font()
 c.setFont(CJK_FONT, 14)
@@ -253,15 +265,22 @@ Platypus:
 
 ```python
 from reportlab.platypus import Image
+
 story.append(Image("chart.png", width=4 * inch, height=2.5 * inch))
 ```
 
 Canvas:
 
 ```python
-c.drawImage("logo.png", 20 * mm, H - 20 * mm,
-            width=30 * mm, height=15 * mm,
-            preserveAspectRatio=True, mask="auto")
+c.drawImage(
+    "logo.png",
+    20 * mm,
+    H - 20 * mm,
+    width=30 * mm,
+    height=15 * mm,
+    preserveAspectRatio=True,
+    mask="auto",
+)
 ```
 
 `mask="auto"` respects PNG transparency; pass `mask=None` for a solid white
@@ -305,7 +324,8 @@ c.setFont("Helvetica-Bold", 28)
 c.drawCentredString(letter[0] / 2, 350, "Grace Chen")
 c.setFont("Helvetica", 12)
 c.drawCentredString(letter[0] / 2, 320, "has completed the 2026 program")
-c.save(); buf.seek(0)
+c.save()
+buf.seek(0)
 
 # 2. merge onto the template
 tmpl = PdfReader("certificate_template.pdf")
@@ -332,13 +352,16 @@ On an existing PDF:
 
 ```python
 from pypdf import PdfReader, PdfWriter
+
 reader = PdfReader("draft.pdf")
 writer = PdfWriter(clone_from=reader)
-writer.add_metadata({
-    "/Title": "Employment offer — Chen",
-    "/Author": "HR",
-    "/Subject": "Offer 2026-0142",
-})
+writer.add_metadata(
+    {
+        "/Title": "Employment offer — Chen",
+        "/Author": "HR",
+        "/Subject": "Offer 2026-0142",
+    }
+)
 with open("final.pdf", "wb") as fh:
     writer.write(fh)
 ```

@@ -216,7 +216,7 @@ If you are located in the European Economic Area (EEA), United Kingdom, or Switz
 
 | Right | Description | How to Exercise |
 |-------|-------------|----------------|
-| Access | Request a copy of your data | Email us at privacy@lightspeedholdings.com |
+| Access | Request a copy of your data | Email us at privacy@lightspeedholdings.vercel.app |
 | Rectification | Correct inaccurate data | Update your local data or contact us |
 | Erasure | Request deletion of your data | Delete local files or contact us |
 | Restriction | Restrict processing of your data | Contact us |
@@ -239,7 +239,7 @@ If you are a California resident, you have the following rights under the Califo
 
 To exercise any of these rights, please contact us at:
 
-**Email**: privacy@lightspeedholdings.com
+**Email**: privacy@lightspeedholdings.vercel.app
 **Subject Line**: Privacy Rights Request
 
 We will respond to your request within 30 days. We may need to verify your identity before processing your request.
@@ -290,8 +290,8 @@ We may update this Privacy Policy from time to time. When we make material chang
 If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:
 
 **Light Speed Holdings**
-**Email**: privacy@lightspeedholdings.com
-**Website**: https://lightspeedholdings.com
+**Email**: privacy@lightspeedholdings.vercel.app
+**Website**: https://lightspeedholdings.vercel.app
 **Address**: [Company address]
 
 For data protection inquiries, please include "Privacy Policy" in your subject line.

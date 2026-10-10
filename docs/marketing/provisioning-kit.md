@@ -2,7 +2,7 @@
 
 **Owner:** `social_media_manager` (registry `company-registry.yaml:928`). **Reconciled (2026-09-19):** `social_media_manager` is the confirmed owner; see the #189 reconciliation record in the Digital Asset Register.
 **Purpose:** everything needed to go from "accounts provisioned" to "publishing" within 48 hours. Fires the moment [#194](https://github.com/jmlusu/light-speed-holdings/issues/194) clears and the Digital Asset Register shows all Tier 1–3 platforms `Live`.
-**Blocked by:** [#194](https://github.com/jmlusu/light-speed-holdings/issues/194) (accounts provisioned), domain control of `lightspeedholdings.com` (sending-domain work), and [#192](https://github.com/jmlusu/light-speed-holdings/issues/192) (Resend sending domain). Content below is ready to ship the day accounts go live.
+**Blocked by:** [#194](https://github.com/jmlusu/light-speed-holdings/issues/194) (accounts provisioned), domain control of the branded `.com` domain (sending-domain work), and [#192](https://github.com/jmlusu/light-speed-holdings/issues/192) (Resend sending domain). Content below is ready to ship the day accounts go live.
 
 ## 1. Pre-flight dependencies (must be true before Day 0)
 
@@ -10,7 +10,7 @@
 |---|---|---|---|
 | All Tier 1–3 accounts provisioned + 2FA + business ownership | Pending (#194) | `social_media_manager` | `digital-asset-register.md` |
 | `info.lightspeed@gmail.com` secured (2FA, recovery phone/email, passkey) | Pending (#194) | `social_media_manager` | Phase 0, `digital-identity-setup.md` |
-| Domain `lightspeedholdings.com` under company control (currently an Afternic for-sale lander) | Unresolved (#194) | CEO | `digital-identity-setup.md` |
+| Branded `.com` domain under company control (currently an Afternic for-sale lander) | Unresolved (#194) | CEO | `digital-identity-setup.md` |
 | Resend sending domain verified (needs company domain) | Blocked (#194/#192) | `social_media_manager` | `digital-asset-register.md` (Resend row) |
 | 10–15 post buffer + 3–5 short videos drafted, QA'd, scheduled | **Ready (this kit)** | `social_media_manager` | Section 4 + Section 5 below |
 | Brand asset package staged (logo, banners, cover images, templates) | Pending (#194) | `social_media_manager` | `static/brand/social/`, Phase 3 |
@@ -22,7 +22,7 @@ Work order per `digital-identity-setup.md` **Phase plan**: Facebook → Instagra
 1. **Account claim** — exact name from the identity rules; username `@lightspeedholdings` (fallbacks `@lightspeedholdingsmw` → `@lightspeedhq`). Claim every platform even if not active yet.
 2. **Security** — company-owned root account only; 2FA enabled; credentials in the password manager only (never in the register).
 3. **Business ownership** — Meta Business Suite (FB+IG), TikTok Business Center, YouTube/Google business ownership, LinkedIn company administration, X Professional Account.
-4. **Branding** — logo, branded cover/banner, platform bio variant from the master description, website (`lightspeedholdings.com` or the afternic-bypass placeholder until domain resolves), contact info.
+4. **Branding** — logo, branded cover/banner, platform bio variant from the master description, website (`lightspeedholdings.vercel.app` or the afternic-bypass placeholder until domain resolves), contact info.
 5. **Register update** — set `Status: Live`, add the public URL to the `URL` column, record administrators.
 
 Platform-specific notes (from `digital-identity-setup.md` § Platform guidance):
@@ -36,7 +36,7 @@ Platform-specific notes (from `digital-identity-setup.md` § Platform guidance):
 | TikTok | `@lightspeedholdings` Business Account → TikTok Business Center (two-step verification per platform guidance) — "60 seconds of AI" format |
 | YouTube | Company channel **LIGHTSPEED HOLDINGS** `@lightspeedholdings`; long-form home for adapted shorts |
 | Threads | Reserve `@lightspeedholdings`; activation not required immediately |
-| Email (gmail → domain) | Start `info.lightspeed@gmail.com`; migrate to `info@lightspeedholdings.com` (+ `hello@`, `contact@`, `admin@`) when domain exists; `social@`/`digital@` for account management |
+| Email (gmail → domain) | Start `info.lightspeed@gmail.com`; migrate to `info@lightspeedholdings.vercel.app` (+ `hello@`, `contact@`, `admin@`) when domain exists; `social@`/`digital@` for account management |
 | Resend | Needs a verified company sending domain before broadcast delivery; blocked by #194/#192 |
 
 ## 3. Day-0 launch sequence

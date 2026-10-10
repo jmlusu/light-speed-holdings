@@ -438,11 +438,11 @@ Use custom pylint checkers or ruff rules:
 import ast, sys, pathlib
 
 LAYER_ORDER = {
-    'models': 0,
-    'utils': 1,
-    'services': 2,
-    'api': 3,
-    'cli': 4,
+    "models": 0,
+    "utils": 1,
+    "services": 2,
+    "api": 3,
+    "cli": 4,
 }
 # ... validate imports against layer order
 ```

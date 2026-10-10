@@ -16,7 +16,7 @@
 | 5 | 55–70s | Money/recurring revenue icons: 8 products | "It means 8 recurring revenue products fund the agent economy." |
 | 6 | 70–85s | Malawi flag + LightSpeed split screen | "For Malawi and SADC: sovereign data defaults, offline-first, visible variable cost." |
 | 7 | 85–90s | Call to action: Malawi Agentic AI Monitor | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context." |
-| 8 | 90s | Fade to black, website URL | "LightspeedHoldings.com" |
+| 8 | 90s | Fade to black, website URL | "LightspeedHoldings.vercel.app" |
 
 ## Script Narrative (Full)
 

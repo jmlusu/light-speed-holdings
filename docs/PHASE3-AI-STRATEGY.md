@@ -77,13 +77,7 @@ class TokenCounter:
             "ollama": OllamaTokenCounter(),  # Uses tokenizer.json
         }
 
-    def count_tokens(
-        self,
-        text: str,
-        provider: str,
-        model: str,
-        role: str = "user"
-    ) -> TokenCount:
+    def count_tokens(self, text: str, provider: str, model: str, role: str = "user") -> TokenCount:
         """Count tokens with provider-specific tokenizers."""
         counter = self._counters.get(provider)
         if not counter:
@@ -126,12 +120,14 @@ class TokenCounter:
 @dataclass(frozen=True)
 class CostEstimate:
     """Pre-request cost estimate."""
+
     prompt_tokens: int
     completion_tokens: int  # Predicted based on task complexity
     estimated_cost_usd: float
     within_budget: bool
     budget_remaining_usd: float
     recommended_model: str | None  # If over budget, suggest cheaper alternative
+
 
 class CostCalculator:
     """Calculates costs with cache-aware pricing."""
@@ -162,29 +158,21 @@ class CostCalculator:
     ) -> CostEstimate:
         """Estimate cost before making the API call."""
         # Count input tokens
-        system_tokens = self._counter.count_tokens(
-            system_prompt, provider, model, "system"
-        )
-        user_tokens = self._counter.count_tokens(
-            user_prompt, provider, model, "user"
-        )
+        system_tokens = self._counter.count_tokens(system_prompt, provider, model, "system")
+        user_tokens = self._counter.count_tokens(user_prompt, provider, model, "user")
         prompt_tokens = system_tokens.tokens + user_tokens.tokens
 
         # Predict output tokens based on task complexity
-        completion_tokens = self._predict_output_tokens(
-            user_prompt, model, max_output_tokens
-        )
+        completion_tokens = self._predict_output_tokens(user_prompt, model, max_output_tokens)
 
         # Calculate cost with cache discount
-        base_cost = self._tracker.estimate_cost(
-            model, prompt_tokens, completion_tokens
-        )
+        base_cost = self._tracker.estimate_cost(model, prompt_tokens, completion_tokens)
 
         # Apply cache hit discount if applicable
         cache_rate = self._cache_hit_rates.get(model, 0.0)
-        cached_cost = self._tracker.estimate_cost(
-            model, prompt_tokens, completion_tokens
-        ) * (1 - cache_rate * 0.5)  # 50% discount on cached tokens
+        cached_cost = self._tracker.estimate_cost(model, prompt_tokens, completion_tokens) * (
+            1 - cache_rate * 0.5
+        )  # 50% discount on cached tokens
 
         # Check budget
         within_budget, reason = self._tracker.check_budget(task_id, cached_cost)
@@ -196,7 +184,9 @@ class CostCalculator:
             estimated_cost_usd=cached_cost,
             within_budget=within_budget,
             budget_remaining_usd=max(0, budget_remaining),
-            recommended_model=self._suggest_cheaper_model(model, cached_cost, budget_remaining) if not within_budget else None,
+            recommended_model=self._suggest_cheaper_model(model, cached_cost, budget_remaining)
+            if not within_budget
+            else None,
         )
 
     def _predict_output_tokens(
@@ -252,8 +242,7 @@ class CostCalculator:
 
         # Find current tier
         current_tier = next(
-            (i for i, (m, _) in enumerate(cost_tiers) if m == current_model),
-            len(cost_tiers) - 1
+            (i for i, (m, _) in enumerate(cost_tiers) if m == current_model), len(cost_tiers) - 1
         )
 
         # Find cheapest model within budget
@@ -638,10 +627,7 @@ class DocumentRetriever:
         )
 
         # Filter by score threshold
-        return [
-            doc for doc, score in results
-            if score >= self._score_threshold
-        ]
+        return [doc for doc, score in results if score >= self._score_threshold]
 
 
 # src/ai_company/rag/augmenter.py
@@ -723,6 +709,7 @@ Use this context to inform your response. Cite specific documents when referenci
 @dataclass
 class TaskOutcome:
     """Records the outcome of a task for learning."""
+
     task_id: str
     agent_name: str
     model_used: str
@@ -743,6 +730,7 @@ class TaskOutcome:
     task_type: str
     complexity: str
     timestamp: str
+
 
 class OutcomeTracker:
     """Tracks task outcomes for learning."""
@@ -915,6 +903,7 @@ class PromptOptimizer:
 @dataclass
 class ProviderHealth:
     """Comprehensive health metrics for an LLM provider."""
+
     provider_id: str
     timestamp: str
 
@@ -940,6 +929,7 @@ class ProviderHealth:
     # Circuit breaker state
     circuit_state: str
     consecutive_failures: int
+
 
 class HealthMonitor:
     """Monitors provider health and makes routing recommendations."""
@@ -1184,14 +1174,14 @@ class CostDashboard:
         for model, stats in summary["by_model"].items():
             if stats["cost_usd"] > summary["total_cost_usd"] * 0.5:
                 insights.append(
-                    f"{model} accounts for {stats['cost_usd']/summary['total_cost_usd']:.1%} "
+                    f"{model} accounts for {stats['cost_usd'] / summary['total_cost_usd']:.1%} "
                     f"of total cost (${stats['cost_usd']:.4f})"
                 )
 
         # Check for high token usage
-        avg_tokens = (
-            summary["total_prompt_tokens"] + summary["total_completion_tokens"]
-        ) / max(summary["call_count"], 1)
+        avg_tokens = (summary["total_prompt_tokens"] + summary["total_completion_tokens"]) / max(
+            summary["call_count"], 1
+        )
 
         if avg_tokens > 2000:
             insights.append(
@@ -1310,6 +1300,7 @@ class AgentEvaluator:
 @dataclass
 class TestCase:
     """A test case for agent evaluation."""
+
     id: str
     name: str
     description: str

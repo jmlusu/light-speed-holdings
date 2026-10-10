@@ -18,6 +18,7 @@ Usage:
 
 Exit code 0 on success, 2 on argument or I/O errors.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -28,8 +29,10 @@ from pathlib import Path
 try:
     from lxml import etree as _et
 except ImportError as exc:  # pragma: no cover
-    sys.stderr.write("explode.py needs `lxml`. Run with `uv run explode.py` (auto-installs) "
-                     "or: pip install lxml\n")
+    sys.stderr.write(
+        "explode.py needs `lxml`. Run with `uv run explode.py` (auto-installs) "
+        "or: pip install lxml\n"
+    )
     raise
 
 XML_KINDS = frozenset({".xml", ".rels"})
@@ -47,7 +50,8 @@ def _phase_dump(archive: Path, target: Path) -> list[Path]:
             if not out.is_relative_to(resolved_target):
                 sys.stderr.write(
                     f"explode: refusing to extract {member.filename!r}: "
-                    "path escapes the target directory\n")
+                    "path escapes the target directory\n"
+                )
                 raise SystemExit(2)
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(zf.read(member))
@@ -111,13 +115,12 @@ def explode(archive: Path, target: Path, *, verbatim: bool = False) -> int:
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Explode a .docx into a browsable folder of XML."
-    )
+    parser = argparse.ArgumentParser(description="Explode a .docx into a browsable folder of XML.")
     parser.add_argument("archive", type=Path, help="Source .docx archive")
     parser.add_argument("target", type=Path, help="Destination folder")
     parser.add_argument(
-        "--verbatim", action="store_true",
+        "--verbatim",
+        action="store_true",
         help="Skip pretty-printing (dump bytes exactly as stored).",
     )
     return parser.parse_args(argv)

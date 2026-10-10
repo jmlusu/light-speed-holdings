@@ -184,6 +184,7 @@ Dark mode toggles via `.dark` class on `<html>` (class-based, not OS preference)
 
 ```python
 import json
+
 tokens = json.load(open("brand/tokens/brand-tokens.json"))
 navy = tokens["color"]["navy"]["value"]  # "#070A40"
 ```

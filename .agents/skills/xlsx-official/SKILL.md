@@ -159,8 +159,9 @@ explicitly.
    and read the cells you expect to be non-zero:
    ```python
    from openpyxl import load_workbook
-   wb = load_workbook('output.xlsx', data_only=True)
-   assert wb['Summary']['B10'].value == expected_total
+
+   wb = load_workbook("output.xlsx", data_only=True)
+   assert wb["Summary"]["B10"].value == expected_total
    ```
 
 4. **Visual sanity.** Render a PDF and scan the first and last sheets for:

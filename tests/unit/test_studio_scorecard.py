@@ -54,9 +54,7 @@ def _write_inbox(root: Path, tasks: list[dict[str, Any]]) -> None:
 
 
 def _write_tracker(root: Path, tracker: dict[str, Any]) -> None:
-    (root / "company" / "studio_tracker.yaml").write_text(
-        yaml.dump(tracker), encoding="utf-8"
-    )
+    (root / "company" / "studio_tracker.yaml").write_text(yaml.dump(tracker), encoding="utf-8")
 
 
 def _base_tracker() -> dict[str, Any]:
@@ -124,17 +122,19 @@ def test_collector_never_raises_on_missing_files(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_atc_denominator_rule(
-    project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_atc_denominator_rule(project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _write_tracker(project, _base_tracker())
     _stub_audit(monkeypatch, [])
     _write_inbox(
         project,
         [
             {"id": "c1", "status": "completed", "venture_id": "venture-a"},
-            {"id": "c2", "status": "completed", "venture_id": "venture-a",
-             "manual_intervention": True},  # forced completion = failure
+            {
+                "id": "c2",
+                "status": "completed",
+                "venture_id": "venture-a",
+                "manual_intervention": True,
+            },  # forced completion = failure
             {"id": "f1", "status": "failed", "venture_id": "venture-a"},
             {"id": "p1", "status": "pending", "venture_id": "venture-a"},
         ],
@@ -153,9 +153,7 @@ def test_atc_denominator_rule(
 # ---------------------------------------------------------------------------
 
 
-def test_velocity_requires_gate_review(
-    project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_velocity_requires_gate_review(project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     tracker = _base_tracker()
     tracker["ventures"] = {
         "venture-a": {
@@ -173,9 +171,7 @@ def test_velocity_requires_gate_review(
     assert snap["ventures"]["venture-a"]["velocity_days"]["status"] == "no_data"
 
 
-def test_velocity_net_of_pauses(
-    project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_velocity_net_of_pauses(project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     tracker = _base_tracker()
     tracker["ventures"] = {
         "venture-a": {
@@ -200,9 +196,7 @@ def test_velocity_net_of_pauses(
 # ---------------------------------------------------------------------------
 
 
-def test_correction_ratio_measurement_only(
-    project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_correction_ratio_measurement_only(project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _write_tracker(project, _base_tracker())
     now = "2026-10-07T12:00:00+00:00"
     events = [_audit_event("tool_call", now) for _ in range(10)]
@@ -221,9 +215,7 @@ def test_correction_ratio_measurement_only(
 # ---------------------------------------------------------------------------
 
 
-def test_capital_withheld_until_ratified(
-    project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_capital_withheld_until_ratified(project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     tracker = _base_tracker()
     tracker["cfo"] = {"ratified": False, "contracted_arr_usd": 50000.0}
     tracker["ventures"] = {"venture-a": {"capital_consumed_usd": 10000.0}}
@@ -233,9 +225,7 @@ def test_capital_withheld_until_ratified(
     assert snap["kpis"]["capital_efficiency"]["current"] is None
 
 
-def test_capital_ratio_when_ratified(
-    project: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_capital_ratio_when_ratified(project: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     tracker = _base_tracker()
     tracker["cfo"] = {
         "ratified": True,
@@ -260,8 +250,14 @@ def test_task_model_backward_compatible() -> None:
     assert t.venture_id == "studio-core"
     assert t.manual_intervention is False
     assert t.cost_usd == 0.0
-    stamped = Task(id="y", status="completed", venture_id="venture-b",
-                   model_id="m", cost_usd=0.5, manual_intervention=True)
+    stamped = Task(
+        id="y",
+        status="completed",
+        venture_id="venture-b",
+        model_id="m",
+        cost_usd=0.5,
+        manual_intervention=True,
+    )
     assert stamped.model_dump()["venture_id"] == "venture-b"
 
 

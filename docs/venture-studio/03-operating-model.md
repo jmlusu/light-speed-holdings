@@ -82,7 +82,7 @@ The studio does not replace the operating company; it **packages** it.
 | Governance | 5-tier HITL, audit, RBAC | Same gates for every venture MVP |
 | Orchestration | MessageBus, executor, workflows | Multi-tenant or template isolation per venture |
 | Evidence | Org Health / department KPIs (CEO dashboard) | Per-venture scorecard + studio rollup (Part 5) |
-| Public surface | lightspeedholdings.com + AI Company Builder (ADR-030) | Venture landing pages inherit brand + honesty policy |
+| Public surface | lightspeedholdings.vercel.app + AI Company Builder (ADR-030) | Venture landing pages inherit brand + honesty policy |
 
 ---
 

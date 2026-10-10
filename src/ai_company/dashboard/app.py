@@ -348,15 +348,30 @@ def _tab_context(active_tab: str) -> dict[str, Any]:
 async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Lifespan handler for FastAPI dashboard app."""
     try:
+        import os
+
         from ai_company.audit.integration import init_audit
-        from ai_company.dashboard.repository import get_state_store  # noqa: E402
-        from ai_company.data import init_database  # noqa: E402
+        from ai_company.dashboard.repository import (  # noqa: E402
+            configure_state_store,
+            get_state_store,
+        )
+        from ai_company.data import init_database
+        from ai_company.paths import DASHBOARD_DATA_DIR_ENV
+
+        # Option B (explicit config): bind the dashboard state root from
+        # configuration rather than the import-time cwd. Defaults to the
+        # deterministic project root; override via DASHBOARD_DATA_DIR.
+        dashboard_data_dir = os.environ.get(DASHBOARD_DATA_DIR_ENV)
+        if dashboard_data_dir:
+            configure_state_store(dashboard_data_dir)
 
         store = get_state_store()
         db_path = Path(store.base_dir) / "data" / "ai_company.db"
         db = init_database(db_path)
         logger.info("SQLite database initialised: %s", db.path)
-        # Initialize audit trail at the canonical path (ticket #59)
+        # Initialize audit trail at the canonical path (ticket #59).
+        # Use DASHBOARD_DATA_DIR when set (e.g. test environments using tmp_path),
+        # otherwise fall back to the project root-aware default.
         audit_dir = Path(store.base_dir) / ".opencode" / "audit"
         audit_dir.parent.mkdir(parents=True, exist_ok=True)
         init_audit(audit_dir, database=db)

@@ -22,6 +22,19 @@ from ai_company.models.task import Task
 
 logger = logging.getLogger(__name__)
 
+# ── Terminal task states (single source of truth) ───────────────────
+# ATC and unit cost share this denominator (T1 decision 1): a task
+# "entered" the funnel once it reaches a terminal state. Completed,
+# failed, timeout, cancelled and escalated all count; pending/in-progress
+# tasks do not.
+TERMINAL_STATUSES = frozenset({"completed", "failed", "timeout", "cancelled", "escalated"})
+
+
+def terminal_count(status_counts: dict[str, int]) -> int:
+    """Total tasks whose status is terminal, from a status->count mapping."""
+    return sum(cnt for status, cnt in status_counts.items() if status in TERMINAL_STATUSES)
+
+
 # ── Demo/test detection predicates ──────────────────────────────────
 # These MUST stay in lock-step with TaskStore.is_test_task(). The refined
 # contract is case-sensitive on demonstrable markers only:

@@ -8,6 +8,7 @@ Usage:
     python render_pdf.py deck.pptx                  # writes deck.pdf beside it
     python render_pdf.py deck.pptx --out ./out/     # writes ./out/deck.pdf
 """
+
 from __future__ import annotations
 
 import argparse
@@ -24,8 +25,9 @@ from soffice_bridge import BridgeError, translate  # noqa: E402
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source", type=Path)
-    ap.add_argument("--out", type=Path, default=None,
-                    help="destination directory (default: alongside source)")
+    ap.add_argument(
+        "--out", type=Path, default=None, help="destination directory (default: alongside source)"
+    )
     ns = ap.parse_args(argv)
 
     try:

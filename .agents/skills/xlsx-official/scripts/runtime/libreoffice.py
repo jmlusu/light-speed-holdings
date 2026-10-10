@@ -40,7 +40,9 @@ def locate_libreoffice() -> Path:
 
     Raises ``LibreOfficeNotFound`` with an install hint when nothing works.
     """
-    bundled = os.environ.get("MIMO_SOFFICE")  # bundled runtime: use only when present, else fall through
+    bundled = os.environ.get(
+        "MIMO_SOFFICE"
+    )  # bundled runtime: use only when present, else fall through
     if bundled and Path(bundled).is_file():
         return Path(bundled)
 

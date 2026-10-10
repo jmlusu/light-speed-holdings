@@ -1,6 +1,6 @@
 # LightSpeed Holdings — Website Imagery Specification
 
-**Project:** lightspeedholdings.com external client-facing website
+**Project:** lightspeedholdings.vercel.app external client-facing website
 **Brand System:** LightSpeed Design System (navy `#070A40`, red `#E63946`, cyan `#00BFFF`, Arial, 4px grid)
 **Canonical Assets:** `brand/` (tokens, logos, guidelines) — mirrors at `static/brand/`, `public/brand/`
 **Production Stack:** `ls-creative-director` → `ls-design-system` → production skills → `ls-artifact-qa`
@@ -13,7 +13,7 @@
 | Role | Agent | Responsibility |
 |------|-------|----------------|
 | Creative Director | `creative-director` | Brief intake → routes to production skills → ensures QA |
-| Brand Owner | `cmo` | Owns lightspeedholdings.com, brand awareness, demand gen |
+| Brand Owner | `cmo` | Owns lightspeedholdings.vercel.app, brand awareness, demand gen |
 | Frontend Lead | `lead-frontend` | Implements in Vite React SPA (`src/pages/*.tsx`, `src/components/*.tsx`) |
 | Product Designer | `product-designer` | Visual systems, interaction design, design-to-code handoff |
 
@@ -523,7 +523,7 @@ One image explains only one core structure. Keep the main subject around 40%-60%
 | **Promise** | "YAML-defined, type-safe, auditable hierarchies" |
 | **Proof** | "37 agents, 3 offers, 1 CLI" |
 | **Differentiation** | "Only platform with HITL governance + cost transparency + Malawi/SADC presence" |
-| **CTA** | "Start Free → lightspeedholdings.com" |
+| **CTA** | "Start Free → lightspeedholdings.vercel.app" |
 
 #### Platform Dimensions (Enforce Exactly)
 

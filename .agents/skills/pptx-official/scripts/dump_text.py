@@ -22,6 +22,7 @@ Output formats:
     md               — top-level heading per slide, bullets preserved,
                        notes emitted as a "> " block, tables as pipes
 """
+
 from __future__ import annotations
 
 import argparse
@@ -65,7 +66,7 @@ try:
         for prefix, uri in NS.items():
             marker = "{" + uri + "}"
             if raw.startswith(marker):
-                return f"{prefix}:{raw[len(marker):]}"
+                return f"{prefix}:{raw[len(marker) :]}"
         return raw
 
 except ImportError:
@@ -87,11 +88,12 @@ except ImportError:
         for prefix, uri in NS.items():
             marker = "{" + uri + "}"
             if raw.startswith(marker):
-                return f"{prefix}:{raw[len(marker):]}"
+                return f"{prefix}:{raw[len(marker) :]}"
         return raw
 
 
 # ---------------------------------------------------------- archive helpers
+
 
 def _resolve(base: str, target: str) -> str:
     """Resolve a rels-file `Target` (which may include `../`) against a
@@ -129,8 +131,11 @@ def _read_rels(zf: zipfile.ZipFile, rels_path: str) -> dict[str, str]:
 
 def _ordered_slide_parts(zf: zipfile.ZipFile) -> list[str]:
     if _PRESENTATION not in zf.namelist():
-        return sorted(name for name in zf.namelist()
-                      if name.startswith("ppt/slides/slide") and name.endswith(".xml"))
+        return sorted(
+            name
+            for name in zf.namelist()
+            if name.startswith("ppt/slides/slide") and name.endswith(".xml")
+        )
     presentation = _parse(zf.read(_PRESENTATION))
     rels = _read_rels(zf, _PRESENTATION_RELS)
     order: list[str] = []
@@ -154,6 +159,7 @@ def _notes_for(zf: zipfile.ZipFile, slide_part: str) -> str | None:
 
 
 # --------------------------------------------------------- content extractors
+
 
 def _run_text(run) -> str:
     return "".join(t.text for t in _findall(run, "./a:t") if t.text)
@@ -184,9 +190,9 @@ def _slide_title(slide) -> str:
     return ""
 
 
-def _paragraphs_with_bullet_flag(slide,
-                                 skip_title: bool = False
-                                 ) -> Iterable[tuple[str, bool, int]]:
+def _paragraphs_with_bullet_flag(
+    slide, skip_title: bool = False
+) -> Iterable[tuple[str, bool, int]]:
     """Yield (text, has_bullet, indent_level) for every non-empty paragraph."""
     for sp in _findall(slide, ".//p:sp"):
         if skip_title:
@@ -270,6 +276,7 @@ def _notes_lines(zf: zipfile.ZipFile, notes_part: str) -> list[str]:
 
 # ------------------------------------------------------------- output modes
 
+
 def _render_plain(slide, *, include_tables: bool) -> list[str]:
     out = [text for text, _bullet, _lvl in _paragraphs_with_bullet_flag(slide)]
     if include_tables:
@@ -293,11 +300,14 @@ def _render_markdown(slide, slide_number: int) -> list[str]:
 Renderer = Callable[..., list[str]]
 
 
-def dump(path: Path, *,
-         fmt: str = "plain",
-         include_tables: bool = False,
-         include_notes: bool = False,
-         numbered: bool = False) -> str:
+def dump(
+    path: Path,
+    *,
+    fmt: str = "plain",
+    include_tables: bool = False,
+    include_notes: bool = False,
+    numbered: bool = False,
+) -> str:
     if not path.is_file():
         raise SystemExit(f"{path} is not a file")
 
@@ -341,23 +351,30 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source", type=Path)
     ap.add_argument("--out", type=Path, default=None)
-    ap.add_argument("--format", dest="fmt", choices=("plain", "md"),
-                    default="plain",
-                    help="output format (default: plain)")
-    ap.add_argument("--notes", action="store_true",
-                    help="include speaker notes")
-    ap.add_argument("--tables", action="store_true",
-                    help="include table cells (tab-separated, plain mode only)")
-    ap.add_argument("--numbered", action="store_true",
-                    help="prefix each slide's first line with 'N: '")
+    ap.add_argument(
+        "--format",
+        dest="fmt",
+        choices=("plain", "md"),
+        default="plain",
+        help="output format (default: plain)",
+    )
+    ap.add_argument("--notes", action="store_true", help="include speaker notes")
+    ap.add_argument(
+        "--tables", action="store_true", help="include table cells (tab-separated, plain mode only)"
+    )
+    ap.add_argument(
+        "--numbered", action="store_true", help="prefix each slide's first line with 'N: '"
+    )
     ns = ap.parse_args(argv)
 
     try:
-        text = dump(ns.source,
-                    fmt=ns.fmt,
-                    include_tables=ns.tables,
-                    include_notes=ns.notes,
-                    numbered=ns.numbered)
+        text = dump(
+            ns.source,
+            fmt=ns.fmt,
+            include_tables=ns.tables,
+            include_notes=ns.notes,
+            numbered=ns.numbered,
+        )
     except zipfile.BadZipFile as exc:
         print(f"error: {ns.source} is not a valid .pptx: {exc}", file=sys.stderr)
         return 2

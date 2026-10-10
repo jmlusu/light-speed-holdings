@@ -13,6 +13,7 @@ Usage:
     uv run transcode.py <input> --to pdf
     uv run transcode.py <input> --to png --dpi 200 --out-dir out/
 """
+
 from __future__ import annotations
 
 import argparse
@@ -48,7 +49,9 @@ class LibreOfficeBackend:
         override = os.environ.get(cls._ENV_OVERRIDE)
         if override:
             return override
-        bundled = os.environ.get("MIMO_SOFFICE")  # bundled runtime: use only when present, else fall through
+        bundled = os.environ.get(
+            "MIMO_SOFFICE"
+        )  # bundled runtime: use only when present, else fall through
         if bundled and Path(bundled).is_file():
             return bundled
         for candidate in ("soffice", "libreoffice"):
@@ -70,15 +73,16 @@ class LibreOfficeBackend:
                 self._executable,
                 "--headless",
                 f"-env:UserInstallation={Path(profile).as_uri()}",  # bare file://{path} breaks on Windows
-                "--convert-to", target_fmt,
-                "--outdir", str(out_dir),
+                "--convert-to",
+                target_fmt,
+                "--outdir",
+                str(out_dir),
                 str(source),
             ]
             proc = subprocess.run(cmd, capture_output=True, text=True)
             if proc.returncode != 0:
                 raise BackendFailure(
-                    f"soffice exit {proc.returncode}\n"
-                    f"stdout: {proc.stdout}\nstderr: {proc.stderr}"
+                    f"soffice exit {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}"
                 )
         # soffice writes <stem>.<target_fmt_without_options> in --outdir.
         core = target_fmt.split(":", 1)[0]
@@ -131,13 +135,10 @@ class Transcode:
                 "pdftoppm (Poppler) is not on PATH. Install poppler-utils, "
                 "or convert only as far as PDF."
             )
-        cmd = ["pdftoppm", "-png", "-r", str(self.dpi),
-               str(pdf), str(out_dir / pdf.stem)]
+        cmd = ["pdftoppm", "-png", "-r", str(self.dpi), str(pdf), str(out_dir / pdf.stem)]
         proc = subprocess.run(cmd, capture_output=True, text=True)
         if proc.returncode != 0:
-            raise BackendFailure(
-                f"pdftoppm exit {proc.returncode}: {proc.stderr}"
-            )
+            raise BackendFailure(f"pdftoppm exit {proc.returncode}: {proc.stderr}")
         pages = sorted(out_dir.glob(f"{pdf.stem}-*.png"))
         if not pages:
             raise BackendFailure("pdftoppm produced no PNG output.")
@@ -155,10 +156,21 @@ class Transcode:
         with tempfile.TemporaryDirectory(prefix="pypdfium2-render-") as scratch_str:
             scratch = Path(scratch_str)
             proc = subprocess.run(
-                [os.environ["MIMO_PYTHON"], "-m", "pypdfium2_cli", "render", str(pdf),
-                 "--output", str(scratch), "--format", "png",
-                 "--scale", str(self.dpi / 72.0)],
-                capture_output=True, text=True,
+                [
+                    os.environ["MIMO_PYTHON"],
+                    "-m",
+                    "pypdfium2_cli",
+                    "render",
+                    str(pdf),
+                    "--output",
+                    str(scratch),
+                    "--format",
+                    "png",
+                    "--scale",
+                    str(self.dpi / 72.0),
+                ],
+                capture_output=True,
+                text=True,
             )
             if proc.returncode != 0:
                 raise BackendFailure(
@@ -179,16 +191,20 @@ class Transcode:
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Transcode Office documents via LibreOffice."
-    )
+    parser = argparse.ArgumentParser(description="Transcode Office documents via LibreOffice.")
     parser.add_argument("source", type=Path, help="Input file")
-    parser.add_argument("--to", dest="target", required=True,
-                        help="Target format: docx, pdf, png, odt, html, txt")
-    parser.add_argument("--out-dir", type=Path, default=None,
-                        help="Directory for the produced file (default: source's).")
-    parser.add_argument("--dpi", type=int, default=150,
-                        help="Rasterisation DPI for PNG target (default 150).")
+    parser.add_argument(
+        "--to", dest="target", required=True, help="Target format: docx, pdf, png, odt, html, txt"
+    )
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        default=None,
+        help="Directory for the produced file (default: source's).",
+    )
+    parser.add_argument(
+        "--dpi", type=int, default=150, help="Rasterisation DPI for PNG target (default 150)."
+    )
     return parser.parse_args(argv)
 
 

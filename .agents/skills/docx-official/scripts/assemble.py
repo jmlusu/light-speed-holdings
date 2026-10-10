@@ -18,6 +18,7 @@ Alternate implementation notes:
 Usage:
     uv run assemble.py <source_dir> <destination.docx> [--sanity]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -29,8 +30,10 @@ from typing import Iterable
 try:
     from lxml import etree as _et
 except ImportError as exc:  # pragma: no cover
-    sys.stderr.write("assemble.py needs `lxml`. Run with `uv run assemble.py` (auto-installs) "
-                     "or: pip install lxml\n")
+    sys.stderr.write(
+        "assemble.py needs `lxml`. Run with `uv run assemble.py` (auto-installs) "
+        "or: pip install lxml\n"
+    )
     raise
 
 _CONTENT_TYPES_NAME = "[Content_Types].xml"
@@ -94,9 +97,7 @@ def _sanity_check(archive: Path) -> list[str]:
             corrupt = zf.testzip()
             if corrupt is not None:
                 problems.append(f"CRC error on {corrupt}")
-            for required in (
-                _CONTENT_TYPES_NAME, "_rels/.rels", "word/document.xml"
-            ):
+            for required in (_CONTENT_TYPES_NAME, "_rels/.rels", "word/document.xml"):
                 if required not in names:
                     problems.append(f"missing required part: {required}")
     except zipfile.BadZipFile as exc:
@@ -141,7 +142,8 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("source", type=Path, help="Exploded source directory")
     parser.add_argument("destination", type=Path, help="Output .docx path")
     parser.add_argument(
-        "--sanity", action="store_true",
+        "--sanity",
+        action="store_true",
         help="Verify the produced archive is a valid ZIP with the required parts.",
     )
     return parser.parse_args(argv)

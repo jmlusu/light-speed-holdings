@@ -7,6 +7,7 @@ The dataset has three variables: X, Y, W (a categorical confounder).
 
 An audit-first analyst catches this. A one-liner "compute correlation" analyst reports the misleading positive.
 """
+
 import csv
 import random
 from pathlib import Path

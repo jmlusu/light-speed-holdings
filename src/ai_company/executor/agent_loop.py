@@ -282,6 +282,7 @@ class AgentLoop:
                     "max_summary_tokens": self.config.max_summary_tokens,
                     "max_total_tokens": self.config.max_history_tokens,
                 },
+                task_id=task_id,
             )
             history_manager.add_turn(initial_user)
 

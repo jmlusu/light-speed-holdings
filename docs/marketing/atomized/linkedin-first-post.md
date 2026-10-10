@@ -9,7 +9,6 @@ We operate on the H-A-O-M-T-G-V framework: 90 agents across 20 departments, five
 
 No hype. The architecture is the answer.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AINative #AIGovernance #AITransformation #Malawi #SADC
-

@@ -28,14 +28,10 @@ def packaging_order(root: Path) -> Iterator[Path]:
     """
     special = root / CONTENT_TYPES_ENTRY
     if not special.is_file():
-        raise FileNotFoundError(
-            f"{special} not found — {root} does not look like an exploded xlsx"
-        )
+        raise FileNotFoundError(f"{special} not found — {root} does not look like an exploded xlsx")
     yield special
 
-    remaining = sorted(
-        (p for p in root.rglob("*") if p.is_file() and p != special)
-    )
+    remaining = sorted((p for p in root.rglob("*") if p.is_file() and p != special))
     yield from remaining
 
 
@@ -54,9 +50,7 @@ def assemble_package(source_dir: Path, target: Path) -> int:
             arcname = _relative(member, source_dir)
             info = zipfile.ZipInfo(arcname)
             info.compress_type = (
-                zipfile.ZIP_STORED
-                if arcname == CONTENT_TYPES_ENTRY
-                else zipfile.ZIP_DEFLATED
+                zipfile.ZIP_STORED if arcname == CONTENT_TYPES_ENTRY else zipfile.ZIP_DEFLATED
             )
             archive.writestr(info, member.read_bytes())
             written += 1
@@ -65,8 +59,7 @@ def assemble_package(source_dir: Path, target: Path) -> int:
 
 def _parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Assemble XML parts into an xlsx.")
-    p.add_argument("source", type=Path,
-                   help="directory previously produced by explode.py")
+    p.add_argument("source", type=Path, help="directory previously produced by explode.py")
     p.add_argument("target", type=Path, help="output .xlsx path")
     return p
 

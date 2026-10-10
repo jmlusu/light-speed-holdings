@@ -43,7 +43,7 @@ The CEO signature is already filled in with:
 - **Title:** Founder & CEO
 - **Email:** jmlusu@gmail.com
 - **Phone:** +265 (0) 980 016 004
-- **Web:** lightspeedholdings.com
+- **Web:** lightspeedholdings.vercel.app
 
 ### Team Template
 Team members should replace these placeholders:

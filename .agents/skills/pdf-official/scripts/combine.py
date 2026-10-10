@@ -32,6 +32,7 @@ def _stream_pages(sources: list[Path]) -> Iterator[tuple[Path, int, object]]:
 
 def _copy_metadata(target, source: Path) -> None:
     from pypdf import PdfReader
+
     reader = PdfReader(str(source))
     md = reader.metadata or {}
     if md:
@@ -42,8 +43,7 @@ def _main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="Combine PDFs.")
     ap.add_argument("sources", nargs="+", type=Path)
     ap.add_argument("--out", type=Path, required=True)
-    ap.add_argument("--preserve-metadata", choices=("FIRST", "NONE"),
-                    default="NONE")
+    ap.add_argument("--preserve-metadata", choices=("FIRST", "NONE"), default="NONE")
     ns = ap.parse_args(argv)
 
     missing = [p for p in ns.sources if not p.exists()]

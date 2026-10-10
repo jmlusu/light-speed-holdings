@@ -15,7 +15,7 @@ LightSpeed Holdings AI operates on this framework today: 90 agents across 20 dep
 
 We built and run it in Malawi, for resource-constrained environments. No hype — the architecture is the answer. If you're building or regulating agentic AI in Africa, follow along.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AIGovernance #AINativeCompany #Malawi #SADC #LightSpeedHoldingsAI
 
@@ -26,4 +26,3 @@ Story 2: "Which layer do you think most organizations skip? Vote: Governance or 
 ## Assets
 - Profile: static/brand/social/instagram-profile.png
 - Story: static/brand/social/instagram-story.png
-

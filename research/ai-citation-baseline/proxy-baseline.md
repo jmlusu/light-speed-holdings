@@ -15,7 +15,7 @@ losing to. Real numbers come only from the CEO's live run of `harness.ps1` (READ
 
 ### P1 — "What is Lightspeed Holdings?" (k01)
 - **Surfaced entities:** Lightspeed Commerce (Montreal POS company, `lightspeedhq.com`),
-  Lightspeed Financial Services LLC. **lightspeedholdings.com did NOT surface.**
+  Lightspeed Financial Services LLC. **the lightspeedholdings .com domain did NOT surface.**
 - **Reading:** full brand collision — a searcher asking about us gets the Canadian POS
   company. Expect real engines to name Lightspeed Commerce and say **nothing** about us:
   `named=n`, mostly score 1/0. Highest-priority fix for #315: differentiate the brand at
@@ -25,7 +25,7 @@ losing to. Real numbers come only from the CEO's live run of `harness.ps1` (READ
 - **Surfaced entities:** correct LinkedIn profile (`linkedin.com/in/jack-mlusu-50027428`,
   Lilongwe, strategy/transformation) — surfaced correctly; plus homonym noise
   (unrelated names, people-search sites).
-- **Reading:** the name is indexed. **lightspeedholdings.com did not surface next to it.**
+- **Reading:** the name is indexed. **the .com domain did not surface next to it.**
   Expect k02 to be our **best-scoring** keyword — possibly score 2 (named, right LinkedIn)
   but with `cited_correct` depending on whether engines cite his LightSpeed role. This is
   the one keyword with a realistic path to score 3 today.

@@ -18,6 +18,7 @@ Flags:
                without --strict, a warning is printed and the archive is
                still written (useful when debugging bad trees).
 """
+
 from __future__ import annotations
 
 import argparse
@@ -56,8 +57,7 @@ def assemble(source_dir: Path, target: Path, *, strict: bool = False) -> int:
         message = f"{CONTENT_TYPES} missing from {source_dir}"
         if strict:
             raise SystemExit(f"error: {message}")
-        print(f"warning: {message}; output will not be valid OOXML",
-              file=sys.stderr)
+        print(f"warning: {message}; output will not be valid OOXML", file=sys.stderr)
 
     target.parent.mkdir(parents=True, exist_ok=True)
 
@@ -73,8 +73,7 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source_dir", type=Path)
     ap.add_argument("target", type=Path)
-    ap.add_argument("--strict", action="store_true",
-                    help="fail if [Content_Types].xml is missing")
+    ap.add_argument("--strict", action="store_true", help="fail if [Content_Types].xml is missing")
     ns = ap.parse_args(argv)
 
     count = assemble(ns.source_dir, ns.target, strict=ns.strict)

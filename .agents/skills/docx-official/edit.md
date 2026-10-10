@@ -15,6 +15,7 @@ Both share the same golden rule: **never overwrite the original file until the n
 
 ```python
 from docx import Document
+
 doc = Document("template.docx")
 
 for i, p in enumerate(doc.paragraphs):
@@ -31,6 +32,7 @@ You want to know exactly which paragraph indexes carry each placeholder before e
 import re
 
 PLACEHOLDER = re.compile(r"\{\{\s*(\w+)\s*\}\}")
+
 
 def substitute(paragraph, mapping):
     """Replace {{key}} tokens across split runs, preserving the first run's format."""
@@ -60,8 +62,12 @@ for table in doc.tables:
 
 # Headers/footers live under sections:
 for section in doc.sections:
-    for container in (section.header, section.footer,
-                      section.first_page_header, section.first_page_footer):
+    for container in (
+        section.header,
+        section.footer,
+        section.first_page_header,
+        section.first_page_footer,
+    ):
         for p in container.paragraphs:
             substitute(p, mapping)
 ```
@@ -76,12 +82,14 @@ for section in doc.sections:
 from copy import deepcopy
 from docx.oxml.ns import qn
 
+
 def insert_paragraph_after(paragraph, text="", style=None):
-    new_p = deepcopy(paragraph._p)                # copy formatting scaffolding
+    new_p = deepcopy(paragraph._p)  # copy formatting scaffolding
     for r in new_p.findall(qn("w:r")):
-        new_p.remove(r)                           # blank out the text
+        new_p.remove(r)  # blank out the text
     paragraph._p.addnext(new_p)
     from docx.text.paragraph import Paragraph
+
     new_paragraph = Paragraph(new_p, paragraph._parent)
     if style:
         new_paragraph.style = style
@@ -108,14 +116,14 @@ For a table row template:
 ```python
 from copy import deepcopy
 
-template_row = table.rows[1]                       # row index 1 is the template
+template_row = table.rows[1]  # row index 1 is the template
 for record in records:
     new_row = deepcopy(template_row._tr)
     table._tbl.append(new_row)
     row = table.rows[-1]
     for cell, key in zip(row.cells, ("name", "role", "email")):
-        cell.text = str(record[key])               # replaces the cell's text
-table._tbl.remove(template_row._tr)                # remove the leftover template row
+        cell.text = str(record[key])  # replaces the cell's text
+table._tbl.remove(template_row._tr)  # remove the leftover template row
 ```
 
 `cell.text = ...` resets the cell to a single plain run. If the template cell
@@ -214,6 +222,7 @@ uv run scripts/assemble.py exploded/ commented.docx
 
 ```python
 from docx import Document
+
 doc = Document("reviewed.docx")
 
 part = doc.part.related_parts
@@ -224,9 +233,14 @@ for rel_id, rel in doc.part.rels.items():
         break
 
 if comments is not None:
-    for el in comments.element.iter("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}comment"):
+    for el in comments.element.iter(
+        "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}comment"
+    ):
         author = el.get("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}author")
-        text = "".join(t.text or "" for t in el.iter("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t"))
+        text = "".join(
+            t.text or ""
+            for t in el.iter("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t")
+        )
         print(author, "→", text)
 ```
 

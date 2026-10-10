@@ -38,7 +38,7 @@ uv run ai-company dashboard              # 4. Open the live dashboard
 
 ### Core Capabilities
 
-- **89 AI Agents** across 20 departments with defined reporting chains
+- **90 Agents** (89 AI + 1 Human CEO) across 20 departments with defined reporting chains
 - **30+ CLI Commands** covering orchestration, execution, memory, graphs, and more
 - **5-Tier Approval System** with human-in-the-loop safety gates
 - **Audit Trail** with JSONL writer, query/filter, and executor integration
@@ -359,7 +359,7 @@ The backend CLI, orchestrator engine, and FastAPI server are powered by Python 3
 # Create virtual environment (.venv) and install dependencies
 uv sync --extra dev
 
-# Bootstrap the 89 AI agents from company-registry.yaml
+# Bootstrap the 90 agents (89 AI + 1 Human CEO) from company-registry.yaml
 uv run ai-company company run
 
 # Verify registered agents

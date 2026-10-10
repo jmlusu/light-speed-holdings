@@ -1,6 +1,6 @@
 # WEBSITE PRINCIPLES ACKNOWLEDGMENTS
 
-Authority: CMO mandate — "LightSpeed Holdings — Guiding Principles for the Client-Facing Website (lightspeedholdings.com)", version 1.0.
+Authority: CMO mandate — "LightSpeed Holdings — Guiding Principles for the Client-Facing Website (lightspeedholdings.vercel.app)", version 1.0.
 Scope: All agents, skills, and humans working on the client-facing website. Supersedes any prior website guidance.
 Created: 2026-09-15 by wayfinder T8 (~issue #259).
 

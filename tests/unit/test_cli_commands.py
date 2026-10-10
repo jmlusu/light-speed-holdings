@@ -165,9 +165,7 @@ class TestCommandSmokeTests:
         assert result.exit_code == 0, result.output
         assert "Memory Store Summary" in result.output
 
-    def test_memory_list_legacy_runs(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_memory_list_legacy_runs(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
         """Root ``memory list`` reaches the legacy JSON store in an empty temp workspace.
 
         Proves the wiring: ``memory`` resolves to ``ai_company.cli.memory``

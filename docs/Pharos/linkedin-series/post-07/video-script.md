@@ -15,7 +15,7 @@
 | 4 | 40–55s | HITL governance flow diagram: autonomous → approved → reviewed → snoozed → cleared | "Five-tier human-in-the-loop governance ensures every agentic action is accountable." |
 | 5 | 55–70s | Malawi flag + LightSpeed logo split screen | "For Malawi and SADC financial institutions: sovereign data defaults, 90-day pilot, visible variable cost, no lock-in." |
 | 6 | 70–85s | Call to action: Malawi Agentic AI Monitor cover | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context." |
-| 7 | 85–90s | Fade to black, website URL | "LightspeedHoldings.com" |
+| 7 | 85–90s | Fade to black, website URL | "LightspeedHoldings.vercel.app" |
 
 ## Script Narrative (Full)
 

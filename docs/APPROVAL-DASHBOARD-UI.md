@@ -347,11 +347,13 @@ class ApprovalItem(BaseModel):
     escalated_from: Optional[str] = None
     responded_at: Optional[str] = None
 
+
 class ApprovalSignatureItem(BaseModel):
     approver_id: str
     decision: str
     decided_at: str
     notes: Optional[str] = None
+
 
 class ApprovalDecision(BaseModel):
     approved_by: str = "human-ceo"

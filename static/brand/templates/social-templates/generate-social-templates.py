@@ -246,7 +246,7 @@ def _carousel_cta(img, draw, headline, subtext, url, cta):
 def generate_carousel(out_dir, title, subtitle, bodies, stat=None, ctas=None, visual=None):
     """Write the 5-slide carousel set. bodies: list of 3 content headlines,
     each optionally "Headline||body". ctas: (headline, subtext, url, cta)."""
-    ctas = ctas or ("Ready to Build?", None, "lightspeedholdings.com", "Get Started")
+    ctas = ctas or ("Ready to Build?", None, "lightspeedholdings.vercel.app", "Get Started")
     files = []
     img = Image.new("RGB", (1080, 1080), NAVY)
     _carousel_cover(img, ImageDraw.Draw(img), title, subtitle)

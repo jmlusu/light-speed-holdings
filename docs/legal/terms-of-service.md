@@ -259,8 +259,8 @@ Notices to Light Speed Holdings shall be sent to the contact information provide
 For questions about these Terms, contact:
 
 **Light Speed Holdings**
-Email: legal@lightspeedholdings.com
-Website: https://lightspeedholdings.com
+Email: legal@lightspeedholdings.vercel.app
+Website: https://lightspeedholdings.vercel.app
 
 ---
 

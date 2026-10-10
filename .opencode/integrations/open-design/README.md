@@ -61,13 +61,15 @@ This document describes how LightSpeed Holdings integrates with Open Design (ope
 brand_tokens = load("brand/tokens/brand-tokens.json")
 
 # Apply to Open Design
-open_design.set_brand({
-    "primary": brand_tokens["color"]["navy"]["value"],      # #070A40
-    "accent1": brand_tokens["color"]["red"]["value"],       # #E63946
-    "accent2": brand_tokens["color"]["cyan"]["value"],      # #00BFFF
-    "typography": brand_tokens["typography"]["display"]["family"],  # Arial
-    "spacing": brand_tokens["spacing"]["baseUnit"]          # 4px
-})
+open_design.set_brand(
+    {
+        "primary": brand_tokens["color"]["navy"]["value"],  # #070A40
+        "accent1": brand_tokens["color"]["red"]["value"],  # #E63946
+        "accent2": brand_tokens["color"]["cyan"]["value"],  # #00BFFF
+        "typography": brand_tokens["typography"]["display"]["family"],  # Arial
+        "spacing": brand_tokens["spacing"]["baseUnit"],  # 4px
+    }
+)
 ```
 
 ### 2. Creative Brief Intake

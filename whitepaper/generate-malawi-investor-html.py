@@ -1,4 +1,5 @@
 """Generate Malawi Investor Deck as HTML."""
+
 import os
 
 HTML = r"""<!DOCTYPE html>
@@ -383,7 +384,7 @@ HTML = r"""<!DOCTYPE html>
     Jack Mlusu, Founder &amp; CEO<br>
     jmlusu@gmail.com<br>
     +265 (0) 980 016 004<br>
-    lightspeedholdings.com
+    lightspeedholdings.vercel.app
   </p>
 </div>
 

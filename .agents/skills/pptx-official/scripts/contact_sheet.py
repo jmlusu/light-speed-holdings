@@ -12,6 +12,7 @@ Usage:
     python contact_sheet.py deck.pptx --limit 24  # first 24 slides only
     python contact_sheet.py deck.pptx --out preview.jpg
 """
+
 from __future__ import annotations
 
 import argparse
@@ -25,7 +26,9 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 from soffice_bridge import (  # noqa: E402
-    BridgeError, _invoke, _rasterize,
+    BridgeError,
+    _invoke,
+    _rasterize,
 )
 
 
@@ -51,6 +54,7 @@ _FONT_CANDIDATES = (
 
 def _load_label_font():
     from PIL import ImageFont
+
     for candidate in _FONT_CANDIDATES:
         if Path(candidate).is_file():
             try:
@@ -66,11 +70,13 @@ def _rasterise_pages(pdf: Path, out_dir: Path, dpi: int) -> list[Path]:
     return _rasterize(pdf, out_dir, "jpg", dpi=dpi)
 
 
-def build_sheet(source: Path,
-                out: Path | None = None,
-                *,
-                options: SheetOptions = SheetOptions(),
-                limit: int | None = None) -> Path:
+def build_sheet(
+    source: Path,
+    out: Path | None = None,
+    *,
+    options: SheetOptions = SheetOptions(),
+    limit: int | None = None,
+) -> Path:
     from PIL import Image, ImageDraw
 
     if not source.is_file():
@@ -92,10 +98,12 @@ def build_sheet(source: Path,
         for page in pages:
             im = Image.open(page).convert("RGB")
             ratio = options.tile_width / im.width
-            tiles.append(im.resize(
-                (options.tile_width, int(im.height * ratio)),
-                Image.LANCZOS,
-            ))
+            tiles.append(
+                im.resize(
+                    (options.tile_width, int(im.height * ratio)),
+                    Image.LANCZOS,
+                )
+            )
 
         tile_h = tiles[0].height
         rows = (len(tiles) + options.columns - 1) // options.columns
@@ -115,8 +123,7 @@ def build_sheet(source: Path,
                 [x, band_y, x + options.tile_width, band_y + options.label_height],
                 fill=options.label_bg,
             )
-            draw.text((x + 8, band_y + 3), f"Slide {index + 1}",
-                      fill=options.label_fg, font=font)
+            draw.text((x + 8, band_y + 3), f"Slide {index + 1}", fill=options.label_fg, font=font)
 
         canvas.save(out, "JPEG", quality=88, optimize=True)
     return out
@@ -125,15 +132,15 @@ def build_sheet(source: Path,
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source", type=Path)
-    ap.add_argument("--out", type=Path, default=None,
-                    help="output JPEG (default: <stem>.contact-sheet.jpg)")
+    ap.add_argument(
+        "--out", type=Path, default=None, help="output JPEG (default: <stem>.contact-sheet.jpg)"
+    )
     ap.add_argument("--cols", type=int, default=3, help="tiles per row (default 3)")
-    ap.add_argument("--tile", type=int, default=300,
-                    help="tile width in pixels (default 300)")
-    ap.add_argument("--limit", type=int, default=None,
-                    help="only include the first N slides")
-    ap.add_argument("--dpi", type=int, default=96,
-                    help="rasterise DPI before downscale (default 96)")
+    ap.add_argument("--tile", type=int, default=300, help="tile width in pixels (default 300)")
+    ap.add_argument("--limit", type=int, default=None, help="only include the first N slides")
+    ap.add_argument(
+        "--dpi", type=int, default=96, help="rasterise DPI before downscale (default 96)"
+    )
     ns = ap.parse_args(argv)
 
     try:

@@ -66,10 +66,9 @@ class FinanceKPICollector(KPICollector):
             overall_roi = revenue_data.get("overall_roi")
             if total_revenue and total_cost_rev and total_revenue > 0:
                 revenue_margin = round((total_revenue - total_cost_rev) / total_revenue * 100, 1)
-            revenue_attr = revenue_data.get("by_department", [])
-            total_tasks = sum(d.get("tasks", 0) for d in revenue_attr)
-            if total_tasks > 0 and total_revenue is not None:
-                revenue_per_task = round(total_revenue / total_tasks, 2)
+            entered_tasks = revenue_data.get("entered_tasks") or 0
+            if total_revenue is not None and entered_tasks > 0:
+                revenue_per_task = round(total_revenue / entered_tasks, 2)
 
         return {
             "department": self.department,

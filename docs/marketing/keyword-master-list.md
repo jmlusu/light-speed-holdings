@@ -134,7 +134,7 @@ utm_content=format (video|carousel|thread|article|short|reel)
 utm_term=keyword (primary keyword for the piece)
 ```
 
-Example: `https://lightspeedholdings.com/blog/agent-hierarchy?utm_source=linkedin&utm_medium=organic&utm_campaign=pillar1-week1&utm_content=carousel&utm_term=ai-agent-hierarchy`
+Example: `https://lightspeedholdings.vercel.app/blog/agent-hierarchy?utm_source=linkedin&utm_medium=organic&utm_campaign=pillar1-week1&utm_content=carousel&utm_term=ai-agent-hierarchy`
 
 ---
 

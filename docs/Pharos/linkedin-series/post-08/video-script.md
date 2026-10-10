@@ -15,7 +15,7 @@
 | 4 | 38–52s | Policy landscape timeline: Strategy → Act → Law; MACRA/SADC/UNDP markers | "DPA 2017/2024, MACRA, the National AI Strategy consultation, the SADC framework." |
 | 5 | 52–64s | Governance mechanism diagram: registry → queue → approval matrix → audit log | "You do not need perfect regulation to install gates. You need a registry, a queue, an approval matrix, and an audit log." |
 | 6 | 64–80s | Call to action: Malawi Agentic AI Monitor cover | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context." |
-| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.com" |
+| 7 | 80–90s | Fade to black, website URL | "LightspeedHoldings.vercel.app" |
 
 ## Script Narrative (Full)
 

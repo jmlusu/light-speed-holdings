@@ -112,9 +112,10 @@
 | Element | Frontend Binding | API Field | Source | Fallback |
 |---------|-----------------|-----------|--------|----------|
 | **Total Spent** | `costSummary.total` | `total_spent` | SQLite `CostAnalytics.total_cost()` | `data/orchestrator/cost_tracker.json` → `total_spent` |
-| **Avg Cost / Task** | `costSummary.avgPerTask` | `avg_cost_per_task` | `total_spent / completed_tasks` | 0 |
+| **Avg Cost / Task** | `costSummary.avgPerTask` | `avg_cost_per_task` | `total_spent / entered_tasks` — terminal statuses per `TERMINAL_STATUSES` (shares ATC's denominator, T1 decision 1) | 0 |
 | **Total Tasks** | `costSummary.totalTasks` | `total_tasks` | SQLite `TaskStore.count()` | `len(tasks)` from inbox |
 | **Completed Tasks** | — | `completed_tasks` | SQLite `TaskStore.count_by_status()["completed"]` | Count from inbox |
+| **Entered Tasks** | — | `entered_tasks` | SQLite `TaskStore.count_by_status()` filtered to `TERMINAL_STATUSES` (`data.task_store`) | Count of terminal tasks from inbox |
 | **LLM Spend** | — | `llm_spend` | SQLite `CostAnalytics.total_cost()` | `data/orchestrator/cost_tracker.json` → `llm_spend` |
 | **Budget** | — | `total_budget` | — | `data/orchestrator/cost_tracker.json` → `total_budget` |
 | **Budget Utilization %** | `this.budgetPct` | `budget_utilization` | `(total_spent / total_budget) * 100` | 0 |

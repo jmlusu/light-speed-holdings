@@ -119,9 +119,9 @@ def _flatten_via_qpdf(target_pdf: Path) -> bool:
     # --generate-appearances first: we set /NeedAppearances when filling, and
     # qpdf refuses to flatten fields whose appearances are marked stale.
     proc = subprocess.run(
-        [qpdf, "--generate-appearances", "--flatten-annotations=all",
-         str(target_pdf), str(flat)],
-        capture_output=True, text=True,
+        [qpdf, "--generate-appearances", "--flatten-annotations=all", str(target_pdf), str(flat)],
+        capture_output=True,
+        text=True,
     )
     # qpdf exit 3 = completed with warnings; the output is still written.
     if proc.returncode not in (0, 3):
@@ -158,8 +158,7 @@ def _main(argv: list[str]) -> int:
         print(f"error: {err}", file=sys.stderr)
         return 1
     if not fields:
-        print("error: no AcroForm fields; use overlay_text.py instead",
-              file=sys.stderr)
+        print("error: no AcroForm fields; use overlay_text.py instead", file=sys.stderr)
         return 1
 
     problems = _validate(fields, values)

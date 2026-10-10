@@ -278,6 +278,7 @@ New collector subclassing `KPICollector`:
 
 from ai_company.dashboard.kpis.base import KPICollector
 
+
 class RevenueCollector(KPICollector):
     department = "revenue"
 

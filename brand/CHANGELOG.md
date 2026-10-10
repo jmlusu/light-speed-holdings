@@ -120,11 +120,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - 3 real decisions: ratify first client pilots, SaaS $49–$299 band, Y1 $120K ARR target
 - **One-pager** (`one-pager.html`) — real metrics/mission/solution; logo → relative `../logos/fulllogo/fulllogo.png`
 - **Investor update email** (`investor-update-email.html`) — real highlights/metrics/outlook
-- **Email signatures** — CEO pre-filled; image URLs updated to `lightspeedholdings.com/brand/...` (must be hosted before send)
+- **Email signatures** — CEO pre-filled; image URLs updated to `lightspeedholdings.vercel.app/brand/...` (must be hosted before send)
 
 ### Pending
 - CFO sign-off on revenue projections (blocking 2.7)
-- Host brand assets at `lightspeedholdings.com/brand/` so email/signature images resolve (blocking 2.5)
+- Host brand assets at `lightspeedholdings.vercel.app/brand/` so email/signature images resolve (blocking 2.5)
 - Team member details for remaining signature/template placeholders
 
 ---

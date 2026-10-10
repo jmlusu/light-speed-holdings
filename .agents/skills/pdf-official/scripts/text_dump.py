@@ -66,8 +66,7 @@ def _page_count(path: Path) -> int:
         from pypdf import PdfReader
         from pypdf.errors import PdfReadError
     except ImportError:
-        raise RuntimeError(
-            "pypdf is required to validate --select (pip install pypdf)")
+        raise RuntimeError("pypdf is required to validate --select (pip install pypdf)")
     try:
         reader = PdfReader(str(path))
         if reader.is_encrypted and reader.decrypt("") == 0:
@@ -111,8 +110,7 @@ def _dump_via_poppler(path: Path, pages: list[int], layout: bool) -> str:
     if layout:
         base.append("-layout")
     if not pages:
-        proc = subprocess.run([*base, str(path), "-"],
-                              check=True, capture_output=True)
+        proc = subprocess.run([*base, str(path), "-"], check=True, capture_output=True)
         return proc.stdout.decode("utf-8", errors="replace")
     # pdftotext only takes one -f/-l window, so run once per contiguous
     # range — "1-3,7" must not silently dump pages 4-6.
@@ -120,7 +118,9 @@ def _dump_via_poppler(path: Path, pages: list[int], layout: bool) -> str:
     for start, end in _contiguous_runs(pages):
         proc = subprocess.run(
             [*base, "-f", str(start), "-l", str(end), str(path), "-"],
-            check=True, capture_output=True)
+            check=True,
+            capture_output=True,
+        )
         chunks.append(proc.stdout.decode("utf-8", errors="replace"))
     return "".join(chunks)
 

@@ -1537,7 +1537,7 @@ def build():
         Inches(5.0),
         Inches(10),
         Inches(0.4),
-        "info@lightspeedholdings.com  |  lightspeedholdings.com",
+        "info@lightspeedholdings.vercel.app  |  lightspeedholdings.vercel.app",
         size=12,
         color=LTCYAN,
         align=1,

@@ -36,14 +36,19 @@ from runtime.libreoffice import (  # noqa: E402
 try:
     from openpyxl import load_workbook
 except ImportError:
-    print(json.dumps({"ok": False, "reason": "openpyxl is not installed"}),
-          file=sys.stderr)
+    print(json.dumps({"ok": False, "reason": "openpyxl is not installed"}), file=sys.stderr)
     sys.exit(2)
 
 
 ERROR_TOKENS: tuple[str, ...] = (
-    "#VALUE!", "#DIV/0!", "#REF!", "#NAME?",
-    "#NULL!", "#NUM!", "#N/A", "#GETTING_DATA",
+    "#VALUE!",
+    "#DIV/0!",
+    "#REF!",
+    "#NAME?",
+    "#NULL!",
+    "#NUM!",
+    "#N/A",
+    "#GETTING_DATA",
 )
 
 
@@ -59,27 +64,24 @@ def _force_full_calc(source: Path, dest: Path) -> None:
     xl/workbook.xml, so LibreOffice recalculates even formulas that already
     carry a stale cached value (its default for Excel files is "never
     recalculate on load")."""
-    with zipfile.ZipFile(source) as zin, \
-            zipfile.ZipFile(dest, "w", zipfile.ZIP_DEFLATED) as zout:
+    with zipfile.ZipFile(source) as zin, zipfile.ZipFile(dest, "w", zipfile.ZIP_DEFLATED) as zout:
         for item in zin.infolist():
             data = zin.read(item)
             if item.filename == "xl/workbook.xml":
                 text = data.decode("utf-8")
                 if "<calcPr" in text:
                     if "fullCalcOnLoad" in text:
-                        text = re.sub(r'fullCalcOnLoad="[^"]*"',
-                                      'fullCalcOnLoad="1"', text, count=1)
+                        text = re.sub(
+                            r'fullCalcOnLoad="[^"]*"', 'fullCalcOnLoad="1"', text, count=1
+                        )
                     else:
-                        text = text.replace(
-                            "<calcPr", '<calcPr fullCalcOnLoad="1"', 1)
+                        text = text.replace("<calcPr", '<calcPr fullCalcOnLoad="1"', 1)
                 else:
                     # calcPr must follow definedNames/externalReferences/sheets
                     # in the CT_Workbook sequence; insert after the last one present.
-                    for anchor in ("</definedNames>", "</externalReferences>",
-                                   "</sheets>"):
+                    for anchor in ("</definedNames>", "</externalReferences>", "</sheets>"):
                         if anchor in text:
-                            text = text.replace(
-                                anchor, anchor + '<calcPr fullCalcOnLoad="1"/>', 1)
+                            text = text.replace(anchor, anchor + '<calcPr fullCalcOnLoad="1"/>', 1)
                             break
                 data = text.encode("utf-8")
             zout.writestr(item, data)
@@ -100,16 +102,17 @@ def bake_workbook(path: Path, timeout_seconds: float) -> None:
             [
                 "--headless",
                 "--calc",
-                "--convert-to", "xlsx",
-                "--outdir", str(out_dir),
+                "--convert-to",
+                "xlsx",
+                "--outdir",
+                str(out_dir),
                 str(patched),
             ],
             timeout=timeout_seconds,
         )
         if not result.ok:
             raise BakeFailed(
-                f"soffice returned {result.returncode}: "
-                f"{result.stderr.strip() or '(no stderr)'}"
+                f"soffice returned {result.returncode}: {result.stderr.strip() or '(no stderr)'}"
             )
 
         produced = out_dir / path.name
@@ -117,8 +120,7 @@ def bake_workbook(path: Path, timeout_seconds: float) -> None:
             fallback = next(out_dir.glob("*.xlsx"), None)
             if fallback is None:
                 raise BakeFailed(
-                    "LibreOffice produced no xlsx. stderr: "
-                    + (result.stderr.strip() or "(empty)")
+                    "LibreOffice produced no xlsx. stderr: " + (result.stderr.strip() or "(empty)")
                 )
             produced = fallback
 
@@ -184,8 +186,12 @@ def _parser() -> argparse.ArgumentParser:
         description="Recalculate and re-save an xlsx via headless LibreOffice.",
     )
     p.add_argument("workbook", type=Path)
-    p.add_argument("--timeout", type=float, default=30.0,
-                   help="seconds to allow LibreOffice to complete (default: 30)")
+    p.add_argument(
+        "--timeout",
+        type=float,
+        default=30.0,
+        help="seconds to allow LibreOffice to complete (default: 30)",
+    )
     return p
 
 
@@ -198,8 +204,7 @@ def main(argv: list[str] | None = None) -> int:
     path = args.workbook.expanduser().resolve()
 
     if not path.exists():
-        _report({"status": "failed", "path": str(path),
-                 "reason": "file does not exist"})
+        _report({"status": "failed", "path": str(path), "reason": "file does not exist"})
         return 1
 
     try:
@@ -211,12 +216,18 @@ def main(argv: list[str] | None = None) -> int:
     try:
         bake_workbook(path, args.timeout)
     except subprocess.TimeoutExpired:
-        _report({"status": "failed", "path": str(path),
-                 "reason": f"LibreOffice exceeded {args.timeout}s timeout"})
+        _report(
+            {
+                "status": "failed",
+                "path": str(path),
+                "reason": f"LibreOffice exceeded {args.timeout}s timeout",
+            }
+        )
         return 4
     except zipfile.BadZipFile as exc:
-        _report({"status": "failed", "path": str(path),
-                 "reason": f"not a valid xlsx (zip) file: {exc}"})
+        _report(
+            {"status": "failed", "path": str(path), "reason": f"not a valid xlsx (zip) file: {exc}"}
+        )
         return 4
     except BakeFailed as exc:
         _report({"status": "failed", "path": str(path), "reason": str(exc)})
@@ -226,17 +237,18 @@ def main(argv: list[str] | None = None) -> int:
         breakdowns, error_count = collect_error_cells(path)
         formula_count = count_formulas(path)
     except Exception as exc:  # noqa: BLE001
-        _report({"status": "failed", "path": str(path),
-                 "reason": f"post-bake scan failed: {exc}"})
+        _report({"status": "failed", "path": str(path), "reason": f"post-bake scan failed: {exc}"})
         return 5
 
-    _report({
-        "status": "clean" if error_count == 0 else "errors_present",
-        "path": str(path),
-        "formula_count": formula_count,
-        "error_count": error_count,
-        "error_breakdown": [asdict(b) for b in breakdowns],
-    })
+    _report(
+        {
+            "status": "clean" if error_count == 0 else "errors_present",
+            "path": str(path),
+            "formula_count": formula_count,
+            "error_count": error_count,
+            "error_breakdown": [asdict(b) for b in breakdowns],
+        }
+    )
     return 0
 
 

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://ecosystems.lightspeedholdings.com/schemas/config.json",
+  "$schema": "https://ecosystems.lightspeedholdings.vercel.app/schemas/config.json",
   "version": "0.9.0",
   "integration": {
     "name": "LightSpeed Holdings Limited Ecosystems",

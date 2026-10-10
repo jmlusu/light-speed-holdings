@@ -802,7 +802,7 @@ def create_thank_you_slide(prs):
         Inches(4.3),
         Inches(8),
         Inches(1.5),
-        "Jack Mlusu, Founder & CEO\njmlusu@gmail.com\n+265 (0) 980 016 004\nlightspeedholdings.com",
+        "Jack Mlusu, Founder & CEO\njmlusu@gmail.com\n+265 (0) 980 016 004\nlightspeedholdings.vercel.app",
         font_size=14,
         color=WHITE,
         alignment=PP_ALIGN.CENTER,

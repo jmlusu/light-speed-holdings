@@ -43,7 +43,7 @@ We are building the measurement and the governance together, and publishing both
 If you are a policymaker, CIO, or enterprise leader in Malawi or SADC making
 sense of agentic AI — let us connect.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 ---
 

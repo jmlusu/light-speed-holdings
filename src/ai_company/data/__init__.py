@@ -18,7 +18,7 @@ from ai_company.data.database import (
 from ai_company.data.escalation_store import EscalationStore
 from ai_company.data.governance import DataGovernance, GovernanceScheduler
 from ai_company.data.kpi_pipeline import KPIPipeline
-from ai_company.data.task_store import TaskStore
+from ai_company.data.task_store import TERMINAL_STATUSES, TaskStore, terminal_count
 
 __all__ = [
     "Database",
@@ -27,6 +27,8 @@ __all__ = [
     "reset_database",
     "database_is_usable",
     "TaskStore",
+    "TERMINAL_STATUSES",
+    "terminal_count",
     "AuditStore",
     "EscalationStore",
     "DataGovernance",

@@ -58,10 +58,10 @@ To get started: what's the core challenge keeping you up at night?`;
 const PROBLEM_QUESTIONS = [
   'We need to build AI-native operations but lack the expertise',
   'Our current systems are manual and we want to automate',
-  'We need governance and compliance automation for our AI deployments',
-  'We want to deploy AI agents across multiple departments',
-  'We need executive-level AI strategy and a boardroom briefing',
-  'We need digital presence and e-commerce with mobile money checkout',
+  'We need governance and compliance automation for our AI deployments — aligned with HAOMTGV pillar H: Human CEOs owning outcomes',
+  'We want to deploy AI agents across multiple departments — aligned with HAOMTGV pillar A: 90 specialized agents with canonical 7 tools',
+  'We need executive-level AI strategy and a boardroom briefing — aligned with HAOMTGV pillar O: 5-tier HITL approval matrix',
+  'We need digital presence and e-commerce with mobile money checkout — aligned with HAOMTGV pillar M: shared semantic memory system',
 ];
 
 const CONTEXT_QUESTIONS = [
@@ -205,6 +205,7 @@ export const AskLightSpeed: React.FC = () => {
     if (agentCount > 0) {
       text += `\nI also identified ${agentCount} agent${agentCount > 1 ? 's' : ''} from our 90-agent workforce for this engagement.\n`;
     }
+    text += `\nHAOMTGV alignment: pillars H (Human CEOs), A (Agents), O (Operating Model), M (Memory), T (Tools), G (Governance), V (Visuals) guide every engagement through our 5-tier HITL and 4 governance gates (G1–G4).\n`;
     text += `\nWould you like to start a conversation?`;
     return text;
   }, []);

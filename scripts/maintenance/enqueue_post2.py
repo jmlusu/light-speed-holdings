@@ -27,10 +27,10 @@ body_post2 = """The number 90 isn't random -- it's the canonical count of AI age
 
 # Enqueue Post 2
 record = queue.enqueue(
-    platform='linkedin',
-    title='What does 90 AI agents actually mean?',
+    platform="linkedin",
+    title="What does 90 AI agents actually mean?",
     body=body_post2,
-    notes='Post 2 of AI-Native Organizations series, approved by CEO'
+    notes="Post 2 of AI-Native Organizations series, approved by CEO",
 )
 
 print(f"Enqueued Post 2: {record.id}")

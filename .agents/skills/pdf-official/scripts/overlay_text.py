@@ -49,6 +49,7 @@ from pathlib import Path
 
 # ---------------------------------------------------------------- types
 
+
 @dataclass
 class Mark:
     page: int
@@ -70,6 +71,7 @@ class Plan:
 
 
 # ---------------------------------------------------------------- parsing
+
 
 def _parse_plan(raw: dict) -> Plan:
     geometry = raw.get("geometry")
@@ -101,13 +103,16 @@ def _parse_plan(raw: dict) -> Plan:
         page = entry.get("page")
         if not isinstance(page, int) or page < 1:
             raise ValueError(f"marks[{i}].page must be a positive int")
-        marks.append(Mark(
-            page=page, kind=kind,
-            box=tuple(float(v) for v in box),
-            text=entry.get("text"),
-            font=entry.get("font", "Helvetica"),
-            font_size=float(entry.get("font_size", 10.0)),
-        ))
+        marks.append(
+            Mark(
+                page=page,
+                kind=kind,
+                box=tuple(float(v) for v in box),
+                text=entry.get("text"),
+                font=entry.get("font", "Helvetica"),
+                font_size=float(entry.get("font_size", 10.0)),
+            )
+        )
 
     return Plan(
         geometry=geometry,
@@ -120,6 +125,7 @@ def _parse_plan(raw: dict) -> Plan:
 
 
 # ---------------------------------------------------------------- validation
+
 
 def _lint_boxes(plan: Plan) -> list[str]:
     problems: list[str] = []
@@ -140,9 +146,7 @@ def _lint_text_heights(plan: Plan) -> list[str]:
             continue
         _, y0, _, y1 = m.box
         if (y1 - y0) < m.font_size * 0.9:
-            problems.append(
-                f"marks[{i}].box height {y1 - y0:.1f} < font_size {m.font_size}"
-            )
+            problems.append(f"marks[{i}].box height {y1 - y0:.1f} < font_size {m.font_size}")
     return problems
 
 
@@ -159,9 +163,7 @@ def _lint_overlaps(plan: Plan) -> list[str]:
                 ax0, ay0, ax1, ay1 = ma.box
                 bx0, by0, bx1, by1 = mb.box
                 if ax0 < bx1 and bx0 < ax1 and ay0 < by1 and by0 < ay1:
-                    problems.append(
-                        f"page {page}: marks[{ia}] and marks[{ib}] overlap"
-                    )
+                    problems.append(f"page {page}: marks[{ia}] and marks[{ib}] overlap")
     return problems
 
 
@@ -170,6 +172,7 @@ def _lint(plan: Plan) -> list[str]:
 
 
 # ---------------------------------------------------------------- coordinates
+
 
 def _to_pdf_box(mark: Mark, plan: Plan) -> tuple[float, float, float, float]:
     """Return (x0, y0_from_bottom, x1, y1_from_bottom) in PDF points."""
@@ -184,6 +187,7 @@ def _to_pdf_box(mark: Mark, plan: Plan) -> tuple[float, float, float, float]:
 
 
 # ---------------------------------------------------------------- rendering
+
 
 def _draw_overlay_for_page(plan: Plan, marks: list[Mark]) -> bytes:
     from reportlab.pdfgen import canvas
@@ -247,9 +251,7 @@ def _apply_overlays(pdf_path: Path, plan: Plan, out_path: Path) -> None:
     by_page: dict[int, list[Mark]] = {}
     for m in plan.marks:
         if m.page > total_pages:
-            raise ValueError(
-                f"marks reference page {m.page}, only {total_pages} pages exist"
-            )
+            raise ValueError(f"marks reference page {m.page}, only {total_pages} pages exist")
         by_page.setdefault(m.page, []).append(m)
 
     writer = PdfWriter()
@@ -266,6 +268,7 @@ def _apply_overlays(pdf_path: Path, plan: Plan, out_path: Path) -> None:
 
 
 # ---------------------------------------------------------------- CLI
+
 
 def _main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="Overlay text/checks onto a PDF.")
@@ -301,13 +304,15 @@ def _main(argv: list[str]) -> int:
     problems = _lint(plan)
     try:
         from pypdf import PdfReader
+
         total_pages = len(PdfReader(str(ns.path)).pages)
     except Exception:
         total_pages = None  # unreadable here; _apply_overlays still checks
     if total_pages is not None:
         problems += [
             f"marks[{i}] references page {m.page}, only {total_pages} pages exist"
-            for i, m in enumerate(plan.marks) if m.page > total_pages
+            for i, m in enumerate(plan.marks)
+            if m.page > total_pages
         ]
     if problems:
         print("validation failed:", file=sys.stderr)

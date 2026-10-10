@@ -28,6 +28,7 @@ Usage:
     python insert_slide.py unpacked/ --clone slide3.xml
     python insert_slide.py unpacked/ --blank-from slideLayout5.xml
 """
+
 from __future__ import annotations
 
 import argparse
@@ -38,9 +39,11 @@ from pathlib import Path
 
 try:
     from lxml import etree
+
     _HAS_LXML = True
 except ImportError:
     from xml.etree import ElementTree as etree  # type: ignore
+
     _HAS_LXML = False
 
 NS = {
@@ -49,12 +52,9 @@ NS = {
     "p": "http://schemas.openxmlformats.org/presentationml/2006/main",
     "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
 }
-CT_SLIDE = ("application/vnd.openxmlformats-officedocument."
-            "presentationml.slide+xml")
-REL_TYPE_SLIDE = ("http://schemas.openxmlformats.org/officeDocument/2006/"
-                  "relationships/slide")
-REL_TYPE_LAYOUT = ("http://schemas.openxmlformats.org/officeDocument/2006/"
-                   "relationships/slideLayout")
+CT_SLIDE = "application/vnd.openxmlformats-officedocument.presentationml.slide+xml"
+REL_TYPE_SLIDE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
+REL_TYPE_LAYOUT = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
 
 _EMPTY_SLIDE_XML = b"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"\
@@ -83,18 +83,17 @@ class InsertionError(RuntimeError):
 
 # ---------- XML helpers -----------------------------------------------------
 
+
 def _parse(path: Path):
     return etree.parse(str(path))
 
 
 def _write(tree, path: Path) -> None:
     if _HAS_LXML:
-        tree.write(str(path), xml_declaration=True, encoding="UTF-8",
-                   standalone=True)
+        tree.write(str(path), xml_declaration=True, encoding="UTF-8", standalone=True)
     else:
         # ElementTree doesn't emit standalone="yes" by itself
-        blob = etree.tostring(tree.getroot(), encoding="UTF-8",
-                              xml_declaration=True)
+        blob = etree.tostring(tree.getroot(), encoding="UTF-8", xml_declaration=True)
         if not blob.endswith(b"\n"):
             blob += b"\n"
         path.write_bytes(blob)
@@ -119,6 +118,7 @@ def _rels_element(id_: str, rel_type: str, target: str):
 
 
 # ---------- ID allocation ---------------------------------------------------
+
 
 def _next_slide_number(slides_dir: Path) -> int:
     highest = 0
@@ -154,8 +154,8 @@ def _next_sld_id(presentation_root, hint: int) -> int:
 
 # ---------- Content_Types.xml maintenance -----------------------------------
 
-def _register_content_type(ct_path: Path, part_name: str,
-                           content_type: str) -> None:
+
+def _register_content_type(ct_path: Path, part_name: str, content_type: str) -> None:
     tree = _parse(ct_path)
     root = tree.getroot()
     for override in _findall(root, "./ct:Override"):
@@ -174,12 +174,15 @@ def _register_content_type(ct_path: Path, part_name: str,
 
 # ---------- slide creation --------------------------------------------------
 
+
 def _make_layout_rels(new_slide_rels: Path, layout_name: str) -> None:
     qname_root = "{" + NS["pkg"] + "}Relationships"
-    root = etree.Element(qname_root) if not _HAS_LXML else etree.Element(
-        qname_root, nsmap={None: NS["pkg"]})
-    root.append(_rels_element("rId1", REL_TYPE_LAYOUT,
-                              f"../slideLayouts/{layout_name}"))
+    root = (
+        etree.Element(qname_root)
+        if not _HAS_LXML
+        else etree.Element(qname_root, nsmap={None: NS["pkg"]})
+    )
+    root.append(_rels_element("rId1", REL_TYPE_LAYOUT, f"../slideLayouts/{layout_name}"))
     tree = etree.ElementTree(root) if not _HAS_LXML else etree.ElementTree(root)
     _write(tree, new_slide_rels)
 
@@ -221,6 +224,7 @@ def _create_blank(unpacked: Path, layout_name: str) -> Path:
 
 # ---------- top-level -------------------------------------------------------
 
+
 def insert(unpacked: Path, mode: str, name: str) -> tuple[Path, str, int]:
     """Insert a slide and return (new_slide_path, rId, numeric_id)."""
     if not unpacked.is_dir():
@@ -240,8 +244,7 @@ def insert(unpacked: Path, mode: str, name: str) -> tuple[Path, str, int]:
     pres_rels_tree = _parse(pres_rels_path)
     pres_rels_root = pres_rels_tree.getroot()
     new_rid = _next_rid(pres_rels_root)
-    pres_rels_root.append(_rels_element(
-        new_rid, REL_TYPE_SLIDE, f"slides/{slide_path.name}"))
+    pres_rels_root.append(_rels_element(new_rid, REL_TYPE_SLIDE, f"slides/{slide_path.name}"))
     _write(pres_rels_tree, pres_rels_path)
 
     # Register in Content_Types.xml
@@ -265,14 +268,19 @@ def insert(unpacked: Path, mode: str, name: str) -> tuple[Path, str, int]:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("unpacked", type=Path,
-                    help="path to the exploded tree (as produced by explode.py)")
+    ap.add_argument(
+        "unpacked", type=Path, help="path to the exploded tree (as produced by explode.py)"
+    )
     group = ap.add_mutually_exclusive_group(required=True)
-    group.add_argument("--clone", metavar="slideN.xml",
-                       help="duplicate an existing slide by file name")
-    group.add_argument("--blank-from", metavar="slideLayoutN.xml",
-                       dest="blank_from",
-                       help="create a blank slide bound to the given layout")
+    group.add_argument(
+        "--clone", metavar="slideN.xml", help="duplicate an existing slide by file name"
+    )
+    group.add_argument(
+        "--blank-from",
+        metavar="slideLayoutN.xml",
+        dest="blank_from",
+        help="create a blank slide bound to the given layout",
+    )
     ns = ap.parse_args(argv)
 
     mode = "clone" if ns.clone else "blank"

@@ -346,7 +346,7 @@ class NotificationPreferences(BaseModel):
     system_alert: bool = True
     delegation: bool = False
     quiet_hours_start: Optional[str] = None  # "22:00"
-    quiet_hours_end: Optional[str] = None    # "07:00"
+    quiet_hours_end: Optional[str] = None  # "07:00"
     timezone: str = "UTC"
 
 
@@ -547,6 +547,7 @@ class NotificationService:
             existing.update(registration)
         else:
             import uuid
+
             registration.setdefault("device_id", f"dev_{uuid.uuid4().hex[:12]}")
             registration.setdefault("registered_at", datetime.now(timezone.utc).isoformat())
             self._devices.append(registration)
@@ -565,9 +566,9 @@ class NotificationService:
     def get_devices_for_notification(self, notification_type: str) -> list[dict]:
         """Get active devices that have this notification type enabled."""
         return [
-            d for d in self._devices
-            if d.get("is_active", True)
-            and d.get("preferences", {}).get(notification_type, False)
+            d
+            for d in self._devices
+            if d.get("is_active", True) and d.get("preferences", {}).get(notification_type, False)
         ]
 
     def dispatch(self, event: NotificationEvent) -> int:
@@ -585,8 +586,11 @@ Notifications are triggered as background tasks from the existing dashboard API 
 # In api.py — existing approval endpoint already broadcasts via WebSocket
 # Add notification dispatch as additional background task
 
+
 @router.post("/approvals/{request_id}/approve")
-def approve_request(request_id: str, body: ApprovalDecision | None = None, background_tasks: BackgroundTasks = None) -> dict:
+def approve_request(
+    request_id: str, body: ApprovalDecision | None = None, background_tasks: BackgroundTasks = None
+) -> dict:
     # ... existing approval logic ...
 
     # Dispatch push notification (new)
@@ -737,11 +741,13 @@ def service(tmp_path, monkeypatch):
 
 
 def test_register_device(service):
-    result = service.register_device({
-        "device_token": "test_token_123",
-        "platform": "android",
-        "preferences": {"escalations": True, "approvals": True},
-    })
+    result = service.register_device(
+        {
+            "device_token": "test_token_123",
+            "platform": "android",
+            "preferences": {"escalations": True, "approvals": True},
+        }
+    )
     assert result["device_id"].startswith("dev_")
     assert result["platform"] == "android"
 
@@ -754,14 +760,18 @@ def test_unregister_device(service):
 
 
 def test_get_devices_filters_by_type(service):
-    service.register_device({
-        "device_token": "tok_1",
-        "preferences": {"escalations": True, "approvals": False},
-    })
-    service.register_device({
-        "device_token": "tok_2",
-        "preferences": {"escalations": False, "approvals": True},
-    })
+    service.register_device(
+        {
+            "device_token": "tok_1",
+            "preferences": {"escalations": True, "approvals": False},
+        }
+    )
+    service.register_device(
+        {
+            "device_token": "tok_2",
+            "preferences": {"escalations": False, "approvals": True},
+        }
+    )
 
     escalation_devices = service.get_devices_for_notification("escalations")
     assert len(escalation_devices) == 1
@@ -773,10 +783,12 @@ def test_get_devices_filters_by_type(service):
 
 
 def test_dispatch_returns_count(service):
-    service.register_device({
-        "device_token": "tok_1",
-        "preferences": {"escalations": True},
-    })
+    service.register_device(
+        {
+            "device_token": "tok_1",
+            "preferences": {"escalations": True},
+        }
+    )
     event = NotificationEvent(
         type="escalations",
         title="Test",
@@ -799,11 +811,14 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_register_and_check_status(async_client: AsyncClient):
     # Register device
-    reg = await async_client.post("/api/v1/mobile/notifications/register", json={
-        "device_token": "test_fcm_token",
-        "platform": "android",
-        "preferences": {"escalations": True},
-    })
+    reg = await async_client.post(
+        "/api/v1/mobile/notifications/register",
+        json={
+            "device_token": "test_fcm_token",
+            "platform": "android",
+            "preferences": {"escalations": True},
+        },
+    )
     assert reg.status_code == 200
     device_id = reg.json()["device_id"]
 
@@ -817,14 +832,20 @@ async def test_register_and_check_status(async_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_unregister_device(async_client: AsyncClient):
-    await async_client.post("/api/v1/mobile/notifications/register", json={
-        "device_token": "tok_to_remove",
-        "platform": "ios",
-    })
+    await async_client.post(
+        "/api/v1/mobile/notifications/register",
+        json={
+            "device_token": "tok_to_remove",
+            "platform": "ios",
+        },
+    )
 
-    result = await async_client.delete("/api/v1/mobile/notifications/unregister", json={
-        "device_token": "tok_to_remove",
-    })
+    result = await async_client.delete(
+        "/api/v1/mobile/notifications/unregister",
+        json={
+            "device_token": "tok_to_remove",
+        },
+    )
     assert result.status_code == 200
     assert result.json()["removed"] == 1
 ```

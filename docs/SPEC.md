@@ -299,9 +299,9 @@
 **Task:** Declare Vercel SPA from `main` as sole production origin; redirect/re-scope `ai.studio`
 
 **Acceptance Criteria:**
-- [ ] Production traffic serves from Vercel `main` build
-- [ ] `lightspeedholdings.ai.studio` redirects or re-scoped
-- [ ] Remote GitHub README shows 90 agents / 20 departments
+- [x] Production traffic serves from Vercel `main` build
+- [x] `lightspeedholdings.ai.studio` re-scoped as separate marketing stack (ADR-035: separate titles, not guaranteed same build as Vercel)
+- [x] Remote GitHub README shows 90 agents / 20 departments
 
 ---
 

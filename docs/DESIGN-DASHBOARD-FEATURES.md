@@ -234,12 +234,14 @@ function onboardingStudio() {
 
 ```python
 # In _tab_context() in app.py:
-{
-    "id": "onboarding",
-    "label": "Onboarding",
-    "href": "/onboarding",
-    "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">...</svg>',
-},
+(
+    {
+        "id": "onboarding",
+        "label": "Onboarding",
+        "href": "/onboarding",
+        "icon": '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">...</svg>',
+    },
+)
 ```
 
 ---
@@ -404,11 +406,11 @@ Integrated into the KPIs tab as a "Health Monitor" section, or standalone page. 
 ```python
 class Anomaly(BaseModel):
     timestamp: str
-    component: str          # "task_success_rate" | "agent_utilization" | etc.
+    component: str  # "task_success_rate" | "agent_utilization" | etc.
     previous_value: float
     current_value: float
-    change_pct: float       # percent change
-    severity: str           # "info" | "warning" | "critical"
+    change_pct: float  # percent change
+    severity: str  # "info" | "warning" | "critical"
     message: str
 ```
 
@@ -504,10 +506,11 @@ class RevenueAttribution(BaseModel):
     agent_id: str
     department: str
     tasks_completed: int
-    revenue_attributed: float      # USD
-    cost_incurred: float           # USD (LLM cost)
-    roi: float                     # revenue / cost
+    revenue_attributed: float  # USD
+    cost_incurred: float  # USD (LLM cost)
+    roi: float  # revenue / cost
     revenue_per_task: float
+
 
 class RevenueSummary(BaseModel):
     total_revenue: float
@@ -715,7 +718,7 @@ class TimelineEntry(BaseModel):
     task_id: str
     agent_id: str
     instruction: str
-    status: str                    # completed | failed | in_progress
+    status: str  # completed | failed | in_progress
     started_at: str
     completed_at: str | None
     duration_seconds: float
@@ -724,6 +727,7 @@ class TimelineEntry(BaseModel):
     completion_tokens: int
     tool_calls: list[ToolCallSummary]
     error: str | None
+
 
 class ToolCallSummary(BaseModel):
     tool: str
@@ -809,17 +813,18 @@ Global Cmd+K (Ctrl+K) command palette overlay. Fuzzy search across all entities.
 **Search Response** (NEW):
 ```python
 class SearchResult(BaseModel):
-    type: str           # "agent" | "task" | "kpi" | "department"
+    type: str  # "agent" | "task" | "kpi" | "department"
     id: str
     title: str
     subtitle: str
     url: str
     icon: str
 
+
 class SearchResponse(BaseModel):
     results: list[SearchResult]
-    actions: list[SearchResult]   # quick commands
-    recent: list[SearchResult]    # recently accessed
+    actions: list[SearchResult]  # quick commands
+    recent: list[SearchResult]  # recently accessed
 ```
 
 ### Alpine.js Component Pattern

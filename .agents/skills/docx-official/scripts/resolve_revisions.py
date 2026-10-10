@@ -20,6 +20,7 @@ Alternate implementation notes:
 Usage:
     uv run resolve_revisions.py <input.docx> <output.docx>
 """
+
 from __future__ import annotations
 
 import argparse
@@ -31,8 +32,10 @@ from typing import Iterable
 try:
     from lxml import etree as _et
 except ImportError as exc:  # pragma: no cover
-    sys.stderr.write("resolve_revisions.py needs `lxml`. Run with `uv run resolve_revisions.py` "
-                     "(auto-installs) or: pip install lxml\n")
+    sys.stderr.write(
+        "resolve_revisions.py needs `lxml`. Run with `uv run resolve_revisions.py` "
+        "(auto-installs) or: pip install lxml\n"
+    )
     raise
 
 _W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -42,14 +45,24 @@ _W = f"{{{_W_NS}}}"
 _KEEP_CONTENT = (f"{_W}ins", f"{_W}moveTo")
 # Elements that behave like "drop the whole subtree" on accept.
 _DROP_SUBTREE = (
-    f"{_W}del", f"{_W}moveFrom",
-    f"{_W}moveFromRangeStart", f"{_W}moveFromRangeEnd",
-    f"{_W}moveToRangeStart", f"{_W}moveToRangeEnd",
-    f"{_W}pPrChange", f"{_W}rPrChange", f"{_W}sectPrChange",
-    f"{_W}tblPrChange", f"{_W}tblPrExChange",
-    f"{_W}tcPrChange", f"{_W}trPrChange",
-    f"{_W}tblGridChange", f"{_W}numberingChange",
-    f"{_W}cellIns", f"{_W}cellDel", f"{_W}cellMerge",
+    f"{_W}del",
+    f"{_W}moveFrom",
+    f"{_W}moveFromRangeStart",
+    f"{_W}moveFromRangeEnd",
+    f"{_W}moveToRangeStart",
+    f"{_W}moveToRangeEnd",
+    f"{_W}pPrChange",
+    f"{_W}rPrChange",
+    f"{_W}sectPrChange",
+    f"{_W}tblPrChange",
+    f"{_W}tblPrExChange",
+    f"{_W}tcPrChange",
+    f"{_W}trPrChange",
+    f"{_W}tblGridChange",
+    f"{_W}numberingChange",
+    f"{_W}cellIns",
+    f"{_W}cellDel",
+    f"{_W}cellMerge",
 )
 
 
@@ -123,10 +136,12 @@ def _parts_to_touch(zf: zipfile.ZipFile) -> Iterable[str]:
         if not name.endswith(".xml"):
             continue
         base = Path(name).name
-        if (
-            base in {"document.xml", "footnotes.xml", "endnotes.xml", "comments.xml"}
-            or base.startswith(("header", "footer"))
-        ):
+        if base in {
+            "document.xml",
+            "footnotes.xml",
+            "endnotes.xml",
+            "comments.xml",
+        } or base.startswith(("header", "footer")):
             yield name
 
 
@@ -134,9 +149,7 @@ def _transform_bytes(payload: bytes) -> bytes:
     parser = _et.XMLParser(remove_blank_text=False, resolve_entities=False)
     root = _et.fromstring(payload, parser)
     _resolve(root)
-    return _et.tostring(
-        root, xml_declaration=True, encoding="UTF-8", standalone=True
-    )
+    return _et.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
 
 
 def resolve_revisions(source: Path, destination: Path) -> int:
@@ -146,9 +159,14 @@ def resolve_revisions(source: Path, destination: Path) -> int:
     destination.parent.mkdir(parents=True, exist_ok=True)
 
     touched = 0
-    with zipfile.ZipFile(source) as zin, zipfile.ZipFile(
-        destination, "w", compression=zipfile.ZIP_DEFLATED,
-    ) as zout:
+    with (
+        zipfile.ZipFile(source) as zin,
+        zipfile.ZipFile(
+            destination,
+            "w",
+            compression=zipfile.ZIP_DEFLATED,
+        ) as zout,
+    ):
         candidates = set(_parts_to_touch(zin))
         for info in zin.infolist():
             data = zin.read(info)
@@ -159,9 +177,7 @@ def resolve_revisions(source: Path, destination: Path) -> int:
                         touched += 1
                     data = updated
                 except _et.XMLSyntaxError as exc:
-                    sys.stderr.write(
-                        f"resolve_revisions: skipping {info.filename}: {exc}\n"
-                    )
+                    sys.stderr.write(f"resolve_revisions: skipping {info.filename}: {exc}\n")
             zout.writestr(info, data)
 
     print(f"resolve_revisions: {touched} part(s) rewritten → {destination}")

@@ -100,6 +100,57 @@ class TestGetCostSummary:
         assert by_agent["cfo"]["total_cost"] == pytest.approx(0.5)
         assert len(summary["cost_trend"]) == 1
 
+    def test_avg_cost_uses_terminal_denominator(self, db: Database, tmp_path: Path) -> None:
+        """Unit cost shares ATC's denominator: terminal tasks, not completed-only.
+
+        A failed task still consumed spend, so it belongs in the denominator
+        (T1 decision 1 — single source of truth for entered tasks).
+        """
+        inbox = [
+            {
+                "id": "task-1",
+                "name": "First",
+                "sender_id": "ceo",
+                "receiver_id": "cto",
+                "status": "completed",
+            },
+            {
+                "id": "task-2",
+                "name": "Second",
+                "sender_id": "ceo",
+                "receiver_id": "cfo",
+                "status": "failed",
+            },
+            {
+                "id": "task-3",
+                "name": "Third",
+                "sender_id": "ceo",
+                "receiver_id": "cfo",
+                "status": "pending",
+            },
+        ]
+        path = tmp_path / "inbox.json"
+        path.write_text(json.dumps(inbox), encoding="utf-8")
+        assert TaskStore(db).import_json(path) == 3
+
+        CostAnalytics(db).record_usage(
+            model="gpt-x",
+            provider="opencode",
+            agent_name="cto",
+            task_id="task-1",
+            prompt_tokens=100,
+            completion_tokens=50,
+            cost_usd=1.0,
+        )
+
+        summary = get_cost_summary(database=db)
+        assert summary is not None
+        assert summary["completed_tasks"] == 1
+        assert summary["total_tasks"] == 3
+        # Terminal = completed + failed; pending is excluded.
+        assert summary["entered_tasks"] == 2
+        assert summary["avg_cost_per_task"] == pytest.approx(0.5)
+
 
 class TestGetKpiHistory:
     def test_returns_none_when_no_entries(self, db: Database) -> None:

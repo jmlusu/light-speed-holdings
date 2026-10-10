@@ -74,9 +74,9 @@ To find where each image sits inline: iterate `doc.element.iter(qn("w:drawing"))
 
 ```python
 props = doc.core_properties
-print("title:",   props.title)
-print("author:",  props.author)
-print("modified:", props.modified)      # datetime
+print("title:", props.title)
+print("author:", props.author)
+print("modified:", props.modified)  # datetime
 print("revision:", props.revision)
 print("keywords:", props.keywords)
 print("subject:", props.subject)
@@ -95,7 +95,7 @@ Each lives in its own part. See `edit.md` → *Reading existing comments* for th
 from docx.oxml.ns import qn
 
 insertions = doc.element.findall(f".//{qn('w:ins')}")
-deletions  = doc.element.findall(f".//{qn('w:del')}")
+deletions = doc.element.findall(f".//{qn('w:del')}")
 print(f"{len(insertions)} pending insertions, {len(deletions)} pending deletions")
 ```
 
@@ -165,11 +165,12 @@ Then feed `report.txt` to your LLM. If you need heading structure preserved for 
 ```python
 import re
 from docx import Document
+
 doc = Document("contract.docx")
 for i, p in enumerate(doc.paragraphs):
     if re.search(r"\bliabilit", p.text, re.I):
         section = "unknown"
-        for prev in doc.paragraphs[max(0, i-20):i]:
+        for prev in doc.paragraphs[max(0, i - 20) : i]:
             if prev.style.name.startswith("Heading"):
                 section = prev.text
         print(f"[{section}] {p.text.strip()}")
@@ -180,6 +181,7 @@ for i, p in enumerate(doc.paragraphs):
 ```python
 import re
 from docx import Document
+
 EXPECTED = {"client", "date", "amount", "contact_email"}
 doc = Document("template.docx")
 found = set()
@@ -191,9 +193,9 @@ for table in doc.tables:
         for cell in row.cells:
             found.update(tokens.findall(cell.text))
 missing = EXPECTED - found
-extra   = found - EXPECTED
+extra = found - EXPECTED
 print("missing:", missing)
-print("extra:",   extra)
+print("extra:", extra)
 ```
 
 Run this before every batch merge — catches typos in placeholder names that would otherwise silently leave literal `{{amount}}` in the shipped document.

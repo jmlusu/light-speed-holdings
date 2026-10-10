@@ -69,7 +69,7 @@ with pdfplumber.open("statement.pdf") as pdf:
 
     # words with their bounding boxes
     for w in page.extract_words():
-        print(w['x0'], w['top'], w['text'])
+        print(w["x0"], w["top"], w["text"])
 ```
 
 Layout kwargs matter on tight columns:
@@ -89,11 +89,13 @@ import csv
 
 with pdfplumber.open("earnings.pdf") as pdf:
     for pi, page in enumerate(pdf.pages, start=1):
-        tables = page.extract_tables({
-            "vertical_strategy":   "lines",
-            "horizontal_strategy": "lines",
-            "snap_tolerance":      4,
-        })
+        tables = page.extract_tables(
+            {
+                "vertical_strategy": "lines",
+                "horizontal_strategy": "lines",
+                "snap_tolerance": 4,
+            }
+        )
         for tj, rows in enumerate(tables, start=1):
             with open(f"page{pi}_table{tj}.csv", "w", newline="") as fh:
                 csv.writer(fh).writerows(rows)
@@ -102,11 +104,13 @@ with pdfplumber.open("earnings.pdf") as pdf:
 Text-only alignment (invoice-style tables):
 
 ```python
-tables = page.extract_tables({
-    "vertical_strategy":   "text",
-    "horizontal_strategy": "text",
-    "min_words_vertical":  2,
-})
+tables = page.extract_tables(
+    {
+        "vertical_strategy": "text",
+        "horizontal_strategy": "text",
+        "min_words_vertical": 2,
+    }
+)
 ```
 
 Debug misdetection visually:
@@ -149,7 +153,8 @@ pypdf (pure Python — decoders limited to common filters):
 from pathlib import Path
 from pypdf import PdfReader
 
-out = Path("images"); out.mkdir(exist_ok=True)
+out = Path("images")
+out.mkdir(exist_ok=True)
 for pi, page in enumerate(PdfReader("catalog.pdf").pages, start=1):
     for ii, img in enumerate(page.images, start=1):
         (out / f"p{pi}_i{ii}_{img.name}").write_bytes(img.data)
@@ -172,7 +177,7 @@ import pypdfium2 as pdfium
 import pytesseract
 
 for i, page in enumerate(pdfium.PdfDocument("scan.pdf"), start=1):
-    img = page.render(scale=4.0).to_pil()           # ~288 DPI
+    img = page.render(scale=4.0).to_pil()  # ~288 DPI
     print(pytesseract.image_to_string(img, lang="eng"))
 ```
 
@@ -188,6 +193,7 @@ Accuracy tips:
 
 ```python
 from pypdf import PdfReader
+
 reader = PdfReader("locked.pdf")
 if reader.is_encrypted:
     if reader.decrypt("password") == 0:

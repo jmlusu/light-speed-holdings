@@ -32,7 +32,7 @@ const FOOTER_NAV = {
   social: [
     { label: 'LinkedIn', href: 'https://linkedin.com/company/lightspeedholdings', external: true },
     { label: 'X / Twitter', href: 'https://twitter.com/lightspeedhq', external: true },
-    { label: 'Email', href: 'mailto:contact@lightspeedholdings.com', external: true },
+    { label: 'Email', href: 'mailto:contact@lightspeedholdings.vercel.app', external: true },
   ],
 };
 

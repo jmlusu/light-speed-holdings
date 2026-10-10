@@ -376,5 +376,5 @@ Known Limitations:
 
 Feedback:
 If you encounter accessibility barriers, please contact us at
-[accessibility@lightspeedholdings.com].
+[accessibility@lightspeedholdings.vercel.app].
 ```

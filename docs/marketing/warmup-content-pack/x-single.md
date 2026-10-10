@@ -13,7 +13,7 @@
 An AI-native organization is a governance question before it is a technology
 question. 90 agents, 20 departments, five-tier human approval, immutable audit
 trails. If institutions set the rules, builders must show what accountability
-looks like. https://lightspeedholdings.com
+looks like. https://lightspeedholdings.vercel.app
 
 *(277 characters, including the domain — verified 2026-09-16)*
 

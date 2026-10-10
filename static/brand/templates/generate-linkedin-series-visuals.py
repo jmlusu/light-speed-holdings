@@ -57,7 +57,7 @@ LAYER_NAMES = {
     "O": "O — ORCHESTRATION & ORGANIZATION",
 }
 TAGLINE = "ASPIRE. ACT. ACHIEVE."
-SERIES_URL = "lightspeedholdings.com"
+SERIES_URL = "lightspeedholdings.vercel.app"
 BUTTON_LABEL = "Download the Malawi Agentic AI Monitor"
 
 POSTS = [

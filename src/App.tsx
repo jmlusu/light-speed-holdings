@@ -98,7 +98,6 @@ export const App: React.FC = () => {
           { path: 'offer-b', element: <OfferB /> },
           { path: 'offer-c', element: <OfferC /> },
           { path: 'offer-e', element: <OfferE /> },
-          { path: '*', element: <Navigate to="/" replace /> },
         ],
       },
 

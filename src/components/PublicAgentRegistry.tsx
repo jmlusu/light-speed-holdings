@@ -42,7 +42,7 @@ export const PublicAgentRegistry: React.FC<PublicAgentRegistryProps> = ({ theme 
 
   // Group agents by department
   const agentsByDept = useMemo(() => {
-    const filtered = publicAgents.filter(agent => 
+    const filtered = publicAgents.filter(agent =>
       agent.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
       agent.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       agent.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -64,13 +64,13 @@ export const PublicAgentRegistry: React.FC<PublicAgentRegistryProps> = ({ theme 
     return counts;
   }, [agentsByDept]);
 
-  const totalVisible = useMemo(() => 
+  const totalVisible = useMemo(() =>
     Object.values(agentsByDept).reduce((sum, agents) => sum + agents.length, 0),
   [agentsByDept]);
 
   const toggleDept = (dept: string) => {
-    setExpandedDepts(prev => prev.includes(dept) 
-      ? prev.filter(d => d !== dept) 
+    setExpandedDepts(prev => prev.includes(dept)
+      ? prev.filter(d => d !== dept)
       : [...prev, dept]
     );
   };
@@ -130,8 +130,8 @@ export const PublicAgentRegistry: React.FC<PublicAgentRegistryProps> = ({ theme 
         </div>
 
         {/* Public Knowledge Boundary Notice */}
-        <div className={`p-4 rounded-2xl border flex items-start gap-3 ${isLight 
-          ? 'bg-ls-cyan/5 border-ls-cyan/20 text-ls-grey-dark' 
+        <div className={`p-4 rounded-2xl border flex items-start gap-3 ${isLight
+          ? 'bg-ls-cyan/5 border-ls-cyan/20 text-ls-grey-dark'
           : 'bg-ls-cyan/5 border-ls-cyan/20 text-ls-grey-light-text'}`} role="note">
           <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5 text-ls-cyan" aria-hidden="true" />
           <div className="text-sm leading-relaxed">
@@ -150,7 +150,7 @@ export const PublicAgentRegistry: React.FC<PublicAgentRegistryProps> = ({ theme 
             if (!agents || agents.length === 0) return null;
             const isExpanded = expandedDepts.includes(dept);
             const colors = DEPARTMENT_COLORS[dept] || { light: 'bg-ls-slate/10 text-ls-slate border-ls-slate/30', dark: 'bg-ls-slate/10 text-ls-slate border-ls-slate/30' };
-            
+
             return (
               <div key={dept} className="space-y-4">
                 <button
@@ -268,44 +268,59 @@ export const PublicAgentRegistry: React.FC<PublicAgentRegistryProps> = ({ theme 
                 <p className="text-sm leading-relaxed">{selectedAgent.description}</p>
               </div>
               <div className="pt-4 border-t">
-                <h4 className="font-bold text-sm mb-3">Public Responsibilities</h4>
-                <ul className="space-y-2">
-                  {selectedAgent.publicResponsibilities.map((resp, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm">
-                      <span className="w-1.5 h-1.5 rounded-full bg-ls-red mt-1.5 shrink-0" />
-                      <span>{resp}</span>
-                    </li>
-                  ))}
-                </ul>
+                <h4 className="font-bold text-sm mb-3">HAOMTGV Pillar Alignment</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="px-2 py-1 rounded text-[9px] font-medium bg-ls-navy/20 text-ls-navy">H</span>
+                    <span className="text-xs text-ls-white/60">Human CEOs</span>
+                  </div>
+                  <div>
+                    <span className="px-2 py-1 rounded text-[9px] font-medium bg-ls-red/20 text-ls-red">A</span>
+                    <span className="text-xs text-ls-white/60">Agents</span>
+                  </div>
+                  <div>
+                    <span className="px-2 py-1 rounded text-[9px] font-medium bg-ls-navy/20 text-ls-navy">O</span>
+                    <span className="text-xs text-ls-white/60">Operating Model</span>
+                  </div>
+                  <div>
+                    <span className="px-2 py-1 rounded text-[9px] font-medium bg-ls-navy/20 text-ls-navy">M</span>
+                    <span className="text-xs text-ls-white/60">Memory</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  <div>
+                    <span className="px-2 py-1 rounded text-[9px] font-medium bg-ls-navy/20 text-ls-navy">T</span>
+                    <span className="text-xs text-ls-white/60">Tools</span>
+                  </div>
+                  <div>
+                    <span className="px-2 py-1 rounded text-[9px] font-medium bg-ls-navy/20 text-ls-navy">G</span>
+                    <span className="text-xs text-ls-white/60">Governance</span>
+                  </div>
+                  <div>
+                    <span className="px-2 py-1 rounded text-[9px] font-medium bg-ls-navy/20 text-ls-navy">V</span>
+                    <span className="text-xs text-ls-white/60">Visuals</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h4 className="font-bold text-sm mb-3">Capabilities</h4>
+              <div className="pt-4 border-t">
+                <h4 className="font-bold text-sm mb-3">Canonical 7 Tools Only</h4>
                 <div className="flex flex-wrap gap-2">
-                  {selectedAgent.capabilities.map((cap, i) => (
-                    <span key={i} className={`px-2.5 py-1 rounded-full text-xs font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>
-                      {cap}
-                    </span>
-                  ))}
+                  <span key={1} className={`px-2 py-1 rounded-full text-[9px] font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>read</span>
+                  <span key={2} className={`px-2 py-1 rounded-full text-[9px] font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>edit</span>
+                  <span key={3} className={`px-2 py-1 rounded-full text-[9px] font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>bash</span>
+                  <span key={4} className={`px-2 py-1 rounded-full text-[9px] font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>task</span>
+                  <span key={5} className={`px-2 py-1 rounded-full text-[9px] font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>webfetch</span>
+                  <span key={6} className={`px-2 py-1 rounded-full text-[9px] font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>code-structure</span>
+                  <span key={7} className={`px-2 py-1 rounded-full text-[9px] font-medium ${isLight ? 'bg-ls-grey-light/50 text-ls-grey-dark border-ls-grey-dark/20' : 'bg-ls-white/5 text-ls-grey-light-text border-ls-white/10'}`}>jq</span>
                 </div>
+                <p className="text-xs text-ls-white/60 mt-3">Only these 7 tools are canonical; all others are rejected at runtime.</p>
               </div>
-              {selectedAgent.technicalDomain && (
-                <div className="pt-4 border-t">
-                  <h4 className="font-bold text-sm mb-2">Technical Domain</h4>
-                  <p className="text-sm opacity-70">{selectedAgent.technicalDomain}</p>
-                </div>
-              )}
-              <div className="pt-4 border-t flex items-center gap-4">
-                <span className={`px-2 py-1 rounded-full text-[10px] font-bold tracking-wider ${isLight ? HONESTY_LABELS[selectedAgent.honestyStatus].light : HONESTY_LABELS[selectedAgent.honestyStatus].dark}`}>
-                  {HONESTY_LABELS[selectedAgent.honestyStatus].label}
-                </span>
-                {selectedAgent.modelTier && (
-                  <span className={`px-2 py-1 rounded-full text-[10px] font-bold tracking-wider ${isLight ? 'bg-ls-amber/10 text-ls-amber border-ls-amber/30' : 'bg-ls-amber/10 text-ls-amber border-ls-amber/30'}`}>
-                    {selectedAgent.modelTier === 'premium' ? 'Premium Model' : 'Standard Model'}
-                  </span>
-                )}
-                <span className={`px-2 py-1 rounded-full text-[10px] font-bold tracking-wider ${isLight ? 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/30' : 'bg-ls-cyan/10 text-ls-cyan border-ls-cyan/30'}`}>
-                  Reports to: {selectedAgent.reportsTo}
-                </span>
+              <div className="pt-4 border-t">
+                <h4 className="font-bold text-sm mb-3">HAOMTGV Compliance</h4>
+                <p className="text-sm opacity-70">
+                  This agent operates within the 5-tier HITL approval matrix (G1–G4 gates enforce Contract, DPA, Compliance, Security).
+                  Every action generates append-only JSONL audit events with SHA-256 seals (CLAIM: registry.agents).
+                </p>
               </div>
             </div>
           </div>
@@ -321,8 +336,8 @@ function PublicAgentCard({ agent, theme, onClick }: { agent: PublicAgent; theme:
   return (
     <button
       onClick={() => onClick(agent)}
-      className={`group p-4 rounded-2xl border transition-all cursor-pointer h-full flex flex-col ${isLight 
-        ? 'bg-ls-white/95 border-ls-grey-dark shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:border-ls-red/50' 
+      className={`group p-4 rounded-2xl border transition-all cursor-pointer h-full flex flex-col ${isLight
+        ? 'bg-ls-white/95 border-ls-grey-dark shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:border-ls-red/50'
         : 'bg-ls-navy/80 border-ls-white/15 shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:border-ls-red/50'}`}
     >
       <div className="flex items-start justify-between gap-3 mb-3">

@@ -16,13 +16,13 @@
 
 ## Website build series (parts 6–10)
 
-Second series covering the lightspeedholdings.com build. Renumbered from 01–05 on 2026-09-26 to clear a numbering collision with Parts 2–5 above; no inbound links changed (the files were unreferenced).
+Second series covering the lightspeedholdings.vercel.app build. Renumbered from 01–05 on 2026-09-26 to clear a numbering collision with Parts 2–5 above; no inbound links changed (the files were unreferenced).
 
 | Part | Document | Audience | Summary |
 |------|----------|----------|---------|
 | 6 | [Team structure](06-team-structure.md) | CEO, HR | Executive leadership and delivery roles behind the site and studio |
 | 7 | [Website story](07-website-story.md) | CEO, CMO, Pharos | "Build the Intelligent Enterprise" narrative and page story |
-| 8 | [Sitemap](08-sitemap.md) | CMO, Product | Root-level information architecture for lightspeedholdings.com |
+| 8 | [Sitemap](08-sitemap.md) | CMO, Product | Root-level information architecture for lightspeedholdings.vercel.app |
 | 9 | [Diagram](09-diagram.md) | CTO, Platform | Mermaid website architecture and venture-studio execution flow |
 | 10 | [Rationale & defense](10-rationale-defense.md) | CEO, Board | Defense of every website element against the four reservations |
 

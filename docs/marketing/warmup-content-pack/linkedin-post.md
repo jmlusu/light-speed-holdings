@@ -37,7 +37,7 @@ humans stay accountable for what matters?
 If you are building, governing, or regulating agentic AI in Southern Africa, let
 us connect.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AIGovernance #AINativeCompany #Malawi #SADC
 
@@ -64,4 +64,4 @@ https://lightspeedholdings.com
 | Board oversight | `company-registry.yaml` (`human_ceo` reports_to `board`; Board dept. agents); `docs/Pharos/manifesto-draft.md:110` |
 | H-A-O-M-T-G-V framework | `docs/Pharos/positioning.md:41-52`; `docs/Pharos/h-a-o-m-t-g-v-framework.md` |
 | Built in Malawi for constrained environments | `docs/Pharos/positioning.md:73` (offline-first, WhatsApp-native); `docs/Pharos/manifesto-draft.md:32-41` |
-| Website | `lightspeedholdings.com` — `docs/BRAND_DEPLOYMENT_GUIDE.md:46` |
+| Website | `lightspeedholdings.vercel.app` — `docs/BRAND_DEPLOYMENT_GUIDE.md:46` |

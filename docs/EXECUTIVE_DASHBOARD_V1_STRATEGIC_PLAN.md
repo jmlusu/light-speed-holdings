@@ -107,6 +107,7 @@ The AI Company Builder already possesses **all foundational components** needed 
 ```python
 # File: src/ai_company/dashboard/executive.py (NEW)
 
+
 class ExecutiveDashboardService:
     """Single service aggregating all executive dashboard capabilities."""
 
@@ -191,11 +192,13 @@ class ExecutiveKPISnapshot(BaseModel):
     cost_summary: CostSummary
     velocity_indicators: VelocityIndicators
 
+
 # Organization Chart
 class OrgChartResponse(BaseModel):
     nodes: list[ExecutiveOrgNode]  # Extends OrgNode with metrics
     reporting_lines: list[ReportingLine]
     team_metrics: dict[str, TeamMetrics]
+
 
 # AI Executive Status
 class AIExecutiveStatus(BaseModel):
@@ -206,6 +209,7 @@ class AIExecutiveStatus(BaseModel):
     quality_scores: dict[str, float]  # By agent
     error_rates: dict[str, float]
 
+
 # Executive Pipeline
 class ExecutivePipeline(BaseModel):
     stages: list[PipelineStage]  # backlog → ready → in_progress → review → done
@@ -213,11 +217,13 @@ class ExecutivePipeline(BaseModel):
     resource_allocation: dict[str, int]  # agent -> active task count
     sla_risks: list[SLARisk]
 
+
 # Activity Feed
 class ActivityFeed(BaseModel):
     events: list[ActivityEvent]
     filters_applied: ActivityFilters
     real_time: bool
+
 
 # Risk Alert Center
 class RiskAlertCenter(BaseModel):

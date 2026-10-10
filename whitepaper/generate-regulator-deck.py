@@ -11,6 +11,7 @@ Colors: Navy #070A40, Red #E63946, Cyan #00BFFF, Grey #F2F2F2
 """
 
 import os
+
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
@@ -48,8 +49,19 @@ def add_shape(slide, shape_type, left, top, width, height, fill_color=None, line
     return shape
 
 
-def add_text_box(slide, left, top, width, height, text, font_size=14, bold=False,
-                 color=NAVY, alignment=PP_ALIGN.LEFT, font_name="Arial"):
+def add_text_box(
+    slide,
+    left,
+    top,
+    width,
+    height,
+    text,
+    font_size=14,
+    bold=False,
+    color=NAVY,
+    alignment=PP_ALIGN.LEFT,
+    font_name="Arial",
+):
     txBox = slide.shapes.add_textbox(left, top, width, height)
     tf = txBox.text_frame
     tf.word_wrap = True
@@ -80,25 +92,72 @@ def add_bullet_list(slide, left, top, width, height, items, font_size=12, color=
 
 def add_kpi_card(slide, x, y, value, label):
     add_shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, Inches(2.8), Inches(1.3), fill_color=GREY)
-    add_text_box(slide, x + Inches(0.15), y + Inches(0.15), Inches(2.5), Inches(0.6),
-                 value, font_size=26, bold=True, color=NAVY, alignment=PP_ALIGN.CENTER)
-    add_text_box(slide, x + Inches(0.15), y + Inches(0.75), Inches(2.5), Inches(0.4),
-                 label, font_size=11, color=DARK_GREY, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        x + Inches(0.15),
+        y + Inches(0.15),
+        Inches(2.5),
+        Inches(0.6),
+        value,
+        font_size=26,
+        bold=True,
+        color=NAVY,
+        alignment=PP_ALIGN.CENTER,
+    )
+    add_text_box(
+        slide,
+        x + Inches(0.15),
+        y + Inches(0.75),
+        Inches(2.5),
+        Inches(0.4),
+        label,
+        font_size=11,
+        color=DARK_GREY,
+        alignment=PP_ALIGN.CENTER,
+    )
 
 
 def add_callout(slide, top, text, height=1.5):
-    add_shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(top), Inches(8.0), Inches(height),
-              fill_color=GREY)
-    add_text_box(slide, Inches(1.3), Inches(top + 0.2), Inches(7.4), Inches(height - 0.3),
-                 text, font_size=13, bold=True, color=NAVY, alignment=PP_ALIGN.CENTER)
+    add_shape(
+        slide,
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(1.0),
+        Inches(top),
+        Inches(8.0),
+        Inches(height),
+        fill_color=GREY,
+    )
+    add_text_box(
+        slide,
+        Inches(1.3),
+        Inches(top + 0.2),
+        Inches(7.4),
+        Inches(height - 0.3),
+        text,
+        font_size=13,
+        bold=True,
+        color=NAVY,
+        alignment=PP_ALIGN.CENTER,
+    )
 
 
 def add_content_slide(prs, title):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_shape(slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY)
-    add_text_box(slide, Inches(0.5), Inches(0.4), Inches(9), Inches(0.6),
-                 title, font_size=28, bold=True, color=NAVY)
+    add_shape(
+        slide, MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(0.15), Inches(7.5), fill_color=NAVY
+    )
+    add_text_box(
+        slide,
+        Inches(0.5),
+        Inches(0.4),
+        Inches(9),
+        Inches(0.6),
+        title,
+        font_size=28,
+        bold=True,
+        color=NAVY,
+    )
     return slide
 
 
@@ -107,28 +166,77 @@ def create_title_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, NAVY)
 
-    add_text_box(slide, Inches(1), Inches(1.4), Inches(8), Inches(0.6),
-                 "LIGHTSPEED HOLDINGS LIMITED\u2122", font_size=32, bold=True, color=WHITE,
-                 alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(1.4),
+        Inches(8),
+        Inches(0.6),
+        "LIGHTSPEED HOLDINGS LIMITED\u2122",
+        font_size=32,
+        bold=True,
+        color=WHITE,
+        alignment=PP_ALIGN.CENTER,
+    )
 
-    add_text_box(slide, Inches(1), Inches(2.1), Inches(8), Inches(0.5),
-                 "Aspire. Act. Achieve.", font_size=18, color=CYAN,
-                 alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(2.1),
+        Inches(8),
+        Inches(0.5),
+        "Aspire. Act. Achieve.",
+        font_size=18,
+        color=CYAN,
+        alignment=PP_ALIGN.CENTER,
+    )
 
-    add_shape(slide, MSO_SHAPE.RECTANGLE, Inches(3.5), Inches(2.8), Inches(3), Inches(0.04),
-              fill_color=RED)
+    add_shape(
+        slide,
+        MSO_SHAPE.RECTANGLE,
+        Inches(3.5),
+        Inches(2.8),
+        Inches(3),
+        Inches(0.04),
+        fill_color=RED,
+    )
 
-    add_text_box(slide, Inches(1), Inches(3.2), Inches(8), Inches(1),
-                 "Regulator Briefing\nMalawi\u2019s Governed AI-Native Potential",
-                 font_size=24, bold=False, color=WHITE, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(3.2),
+        Inches(8),
+        Inches(1),
+        "Regulator Briefing\nMalawi\u2019s Governed AI-Native Potential",
+        font_size=24,
+        bold=False,
+        color=WHITE,
+        alignment=PP_ALIGN.CENTER,
+    )
 
-    add_text_box(slide, Inches(1), Inches(4.9), Inches(8), Inches(0.5),
-                 "Open by design. Governed by construction.",
-                 font_size=14, color=CYAN, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(4.9),
+        Inches(8),
+        Inches(0.5),
+        "Open by design. Governed by construction.",
+        font_size=14,
+        color=CYAN,
+        alignment=PP_ALIGN.CENTER,
+    )
 
-    add_text_box(slide, Inches(1), Inches(5.8), Inches(8), Inches(0.5),
-                 "September 2026  |  Prepared for Malawi regulators (MACRA / DPA)",
-                 font_size=12, color=LIGHT_TEXT, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(5.8),
+        Inches(8),
+        Inches(0.5),
+        "September 2026  |  Prepared for Malawi regulators (MACRA / DPA)",
+        font_size=12,
+        color=LIGHT_TEXT,
+        alignment=PP_ALIGN.CENTER,
+    )
 
 
 # ── SLIDE 2: PURPOSE ────────────────────────────────────────
@@ -142,10 +250,17 @@ def create_purpose_slide(prs):
         "What compliance means to us  \u2014  Data Protection Act (2024) + GDPR from day one",
         "Why the regulator matters  \u2014  we want to be tested, then held to account",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(3.5), items, font_size=14, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(3.5), items, font_size=14, color=NAVY
+    )
 
-    add_callout(slide, 5.1, "This briefing is a transparency artifact.\n"
-                            "We publish how we work \u2014 and invite scrutiny.", height=1.5)
+    add_callout(
+        slide,
+        5.1,
+        "This briefing is a transparency artifact.\n"
+        "We publish how we work \u2014 and invite scrutiny.",
+        height=1.5,
+    )
 
 
 # ── SLIDE 3: POLICY WINDOW ──────────────────────────────────
@@ -162,18 +277,30 @@ def create_policy_slide(prs):
         "MACRA published a draft AI regulatory framework for public comment (Sept 2026) \u2014 agentic transparency & consumer protection",
         "Regional anchors: AU Continental AI Strategy (2024); SADC agentic-AI governance framework in drafting",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.2), Inches(8.5), Inches(4.6), items, font_size=12, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.2), Inches(8.5), Inches(4.6), items, font_size=12, color=NAVY
+    )
 
-    add_callout(slide, 5.9, "LightSpeed wants to co-build this regime \u2014 not wait for it.", height=1.2)
+    add_callout(
+        slide, 5.9, "LightSpeed wants to co-build this regime \u2014 not wait for it.", height=1.2
+    )
 
 
 # ── SLIDE 4: WHO WE ARE ─────────────────────────────────────
 def create_who_we_are_slide(prs):
     slide = add_content_slide(prs, "WHO WE ARE \u2014 THE AI-NATIVE STUDIO")
 
-    add_text_box(slide, Inches(0.8), Inches(1.15), Inches(8.5), Inches(0.5),
-                 "One human CEO owns the outcome. 150+ AI agents execute the work.",
-                 font_size=15, bold=False, color=NAVY)
+    add_text_box(
+        slide,
+        Inches(0.8),
+        Inches(1.15),
+        Inches(8.5),
+        Inches(0.5),
+        "One human CEO owns the outcome. 150+ AI agents execute the work.",
+        font_size=15,
+        bold=False,
+        color=NAVY,
+    )
 
     items = [
         "Delivery pipeline: client brief \u2192 task queue \u2192 assigned agents \u2192 human CEO review \u2192 client deliverable",
@@ -182,7 +309,9 @@ def create_who_we_are_slide(prs):
         "We win on speed, cost, and 24/7 capacity \u2014 never by impersonating human staff",
         "Established track record (We Lead Out \u2014 5.0 AppExchange rating; 20+ projects shipped)",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.8), Inches(8.5), Inches(3.4), items, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.8), Inches(8.5), Inches(3.4), items, font_size=13, color=NAVY
+    )
 
     add_kpi_card(slide, Inches(0.8), Inches(5.4), "150+", "AI Agents")
     add_kpi_card(slide, Inches(3.9), Inches(5.4), "20", "Departments")
@@ -201,46 +330,108 @@ def create_delivery_slide(prs):
         "5.  Human review \u2014 CEO / executive sign-off on every deliverable",
         "6.  Handover \u2014 client receives a usable artifact + its audit trail",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(3.8), steps, font_size=14, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(3.8), steps, font_size=14, color=NAVY
+    )
 
-    add_callout(slide, 5.3, "Humans approve. Agents execute. The audit trail proves both.",
-                height=1.5)
+    add_callout(
+        slide, 5.3, "Humans approve. Agents execute. The audit trail proves both.", height=1.5
+    )
 
 
 # ── SLIDE 6: OFFERS ─────────────────────────────────────────
 def add_offer_card(slide, x, y, title, price, body):
     add_shape(slide, MSO_SHAPE.ROUNDED_RECTANGLE, x, y, Inches(2.9), Inches(2.6), fill_color=GREY)
-    add_text_box(slide, x + Inches(0.15), y + Inches(0.1), Inches(2.6), Inches(0.4),
-                 title, font_size=12, bold=True, color=RED)
-    add_text_box(slide, x + Inches(0.15), y + Inches(0.5), Inches(2.6), Inches(0.3),
-                 price, font_size=10, color=NAVY)
-    add_text_box(slide, x + Inches(0.15), y + Inches(0.9), Inches(2.6), Inches(1.6),
-                 body, font_size=10, color=DARK_GREY)
+    add_text_box(
+        slide,
+        x + Inches(0.15),
+        y + Inches(0.1),
+        Inches(2.6),
+        Inches(0.4),
+        title,
+        font_size=12,
+        bold=True,
+        color=RED,
+    )
+    add_text_box(
+        slide,
+        x + Inches(0.15),
+        y + Inches(0.5),
+        Inches(2.6),
+        Inches(0.3),
+        price,
+        font_size=10,
+        color=NAVY,
+    )
+    add_text_box(
+        slide,
+        x + Inches(0.15),
+        y + Inches(0.9),
+        Inches(2.6),
+        Inches(1.6),
+        body,
+        font_size=10,
+        color=DARK_GREY,
+    )
 
 
 def create_offers_slide(prs):
     slide = add_content_slide(prs, "WHAT WE DELIVER \u2014 FIVE OFFERS")
 
-    add_offer_card(slide, Inches(0.5), Inches(1.2),
-                   "Offer A: Digital Presence", "From MWK 150,000 (~$85)",
-                   "Websites, e-commerce, brand identity, Google Business, social media kit")
-    add_offer_card(slide, Inches(3.55), Inches(1.2),
-                   "Offer B: Process Automation", "From MWK 900,000 (~$500)",
-                   "WhatsApp chatbots, document generators, survey automation, dashboards")
-    add_offer_card(slide, Inches(6.6), Inches(1.2),
-                   "Offer E: Platform Licensing", "$49\u2013$299/mo (SaaS)",
-                   "AI Company Builder for agencies & developers \u2014 licensed, audited use")
+    add_offer_card(
+        slide,
+        Inches(0.5),
+        Inches(1.2),
+        "Offer A: Digital Presence",
+        "From MWK 150,000 (~$85)",
+        "Websites, e-commerce, brand identity, Google Business, social media kit",
+    )
+    add_offer_card(
+        slide,
+        Inches(3.55),
+        Inches(1.2),
+        "Offer B: Process Automation",
+        "From MWK 900,000 (~$500)",
+        "WhatsApp chatbots, document generators, survey automation, dashboards",
+    )
+    add_offer_card(
+        slide,
+        Inches(6.6),
+        Inches(1.2),
+        "Offer E: Platform Licensing",
+        "$49\u2013$299/mo (SaaS)",
+        "AI Company Builder for agencies & developers \u2014 licensed, audited use",
+    )
 
-    add_offer_card(slide, Inches(0.5), Inches(4.0),
-                   "Offer C: Data & Reporting", "From MWK 700,000 (~$400)",
-                   "Data cleaning, donor reports, dashboards, survey design \u2014 NGO reporting edge")
-    add_offer_card(slide, Inches(3.55), Inches(4.0),
-                   "Offer D: Digital Marketing", "From MWK 350,000/mo (~$200/mo)",
-                   "Social media management, content packs, Google/Facebook ad campaigns")
+    add_offer_card(
+        slide,
+        Inches(0.5),
+        Inches(4.0),
+        "Offer C: Data & Reporting",
+        "From MWK 700,000 (~$400)",
+        "Data cleaning, donor reports, dashboards, survey design \u2014 NGO reporting edge",
+    )
+    add_offer_card(
+        slide,
+        Inches(3.55),
+        Inches(4.0),
+        "Offer D: Digital Marketing",
+        "From MWK 350,000/mo (~$200/mo)",
+        "Social media management, content packs, Google/Facebook ad campaigns",
+    )
 
-    add_text_box(slide, Inches(0.5), Inches(6.8), Inches(9), Inches(0.4),
-                 "Dual-currency: MWK for local SMEs  |  USD for NGOs & international clients",
-                 font_size=12, bold=True, color=NAVY, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(0.5),
+        Inches(6.8),
+        Inches(9),
+        Inches(0.4),
+        "Dual-currency: MWK for local SMEs  |  USD for NGOs & international clients",
+        font_size=12,
+        bold=True,
+        color=NAVY,
+        alignment=PP_ALIGN.CENTER,
+    )
 
 
 # ── SLIDE 7: POTENTIAL FOR MALAWI ───────────────────────────
@@ -255,10 +446,13 @@ def create_potential_slide(prs):
         "A proven Malawi playbook that SADC neighbours (16 states, 300M+ people) can adopt",
         "First customer-facing proof targeted by 90 days \u2014 MWK 5,000,000 revenue target",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=14, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=14, color=NAVY
+    )
 
-    add_callout(slide, 5.7, "If governed AI-native delivery works in Malawi, it works anywhere.",
-                height=1.3)
+    add_callout(
+        slide, 5.7, "If governed AI-native delivery works in Malawi, it works anywhere.", height=1.3
+    )
 
 
 # ── SLIDE 8: GOVERNANCE ─────────────────────────────────────
@@ -273,7 +467,9 @@ def create_governance_slide(prs):
         "Programmatic kill switches, circuit breakers, and rate limiters on agent execution",
         "Separation of duties: proposer \u2260 approver \u2260 executor",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY
+    )
 
     add_kpi_card(slide, Inches(0.8), Inches(5.6), "5", "Approval Tiers")
     add_kpi_card(slide, Inches(3.9), Inches(5.6), "100%", "High-Stakes Human Review")
@@ -292,10 +488,17 @@ def create_data_protection_slide(prs):
         "High-risk processing subject to Data Protection Impact Assessment (DPIA)",
         "Respects the right not to be subject to solely automated decisions with significant effects",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY
+    )
 
-    add_callout(slide, 5.7, "We treat the DPA\u2019s automated-decision and DPIA duties as the "
-                            "specification for agentic systems.", height=1.3)
+    add_callout(
+        slide,
+        5.7,
+        "We treat the DPA\u2019s automated-decision and DPIA duties as the "
+        "specification for agentic systems.",
+        height=1.3,
+    )
 
 
 # ── SLIDE 10: TRANSPARENCY & CONSUMER PROTECTION ────────────
@@ -310,10 +513,16 @@ def create_transparency_slide(prs):
         "Consent-based data use; customer data serves the service, not ad models",
         "Aligned with MACRA\u2019s draft framework themes: agentic transparency + consumer protection",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY
+    )
 
-    add_callout(slide, 5.7, "A consumer should never need to guess whether they are talking to a machine \u2014 or to whom they can complain.",
-                height=1.3)
+    add_callout(
+        slide,
+        5.7,
+        "A consumer should never need to guess whether they are talking to a machine \u2014 or to whom they can complain.",
+        height=1.3,
+    )
 
 
 # ── SLIDE 11: AUDIT & ACCOUNTABILITY ────────────────────────
@@ -328,7 +537,9 @@ def create_audit_slide(prs):
         "Agency-as-instrument: agents hold no legal personality; liability rests with LightSpeed Holdings Limited as the deploying entity",
         "Regulator access: technical read of control architecture, on demand",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY
+    )
 
     add_kpi_card(slide, Inches(0.8), Inches(5.6), "1,800+", "Automated Tests")
     add_kpi_card(slide, Inches(3.9), Inches(5.6), "100%", "Actions Logged")
@@ -346,10 +557,16 @@ def create_alignment_slide(prs):
         "AU Continental AI Strategy (2024)  \u2014  aligned operational posture",
         "Cross-border principle  \u2014  agents hosted in Malawi execute abroad under documented, consent-based flows",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=13, color=NAVY
+    )
 
-    add_callout(slide, 5.7, "We do not wait for the rules to be written. We build the controls the rules will require.",
-                height=1.3)
+    add_callout(
+        slide,
+        5.7,
+        "We do not wait for the rules to be written. We build the controls the rules will require.",
+        height=1.3,
+    )
 
 
 # ── SLIDE 13: WORKING WITH THE REGULATOR ────────────────────
@@ -363,10 +580,16 @@ def create_regulator_slide(prs):
         "Transparency on demand  \u2014  we publish how we work and open the control architecture to review",
         "Report line  \u2014  a named compliance contact for the regulator to reach at any time",
     ]
-    add_bullet_list(slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=14, color=NAVY)
+    add_bullet_list(
+        slide, Inches(0.8), Inches(1.3), Inches(8.5), Inches(4.2), items, font_size=14, color=NAVY
+    )
 
-    add_callout(slide, 5.7, "The ask is simple: engage with us, test us, then hold us to the standard we publish.",
-                height=1.3)
+    add_callout(
+        slide,
+        5.7,
+        "The ask is simple: engage with us, test us, then hold us to the standard we publish.",
+        height=1.3,
+    )
 
 
 # ── SLIDE 14: THANK YOU ─────────────────────────────────────
@@ -374,25 +597,67 @@ def create_thank_you_slide(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, NAVY)
 
-    add_text_box(slide, Inches(1), Inches(1.9), Inches(8), Inches(1),
-                 "THANK YOU", font_size=36, bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(1.9),
+        Inches(8),
+        Inches(1),
+        "THANK YOU",
+        font_size=36,
+        bold=True,
+        color=WHITE,
+        alignment=PP_ALIGN.CENTER,
+    )
 
-    add_text_box(slide, Inches(1), Inches(3.1), Inches(8), Inches(0.6),
-                 "Aspire. Act. Achieve.", font_size=18, color=CYAN, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(3.1),
+        Inches(8),
+        Inches(0.6),
+        "Aspire. Act. Achieve.",
+        font_size=18,
+        color=CYAN,
+        alignment=PP_ALIGN.CENTER,
+    )
 
-    add_shape(slide, MSO_SHAPE.RECTANGLE, Inches(3.5), Inches(3.9), Inches(3), Inches(0.04),
-              fill_color=RED)
+    add_shape(
+        slide,
+        MSO_SHAPE.RECTANGLE,
+        Inches(3.5),
+        Inches(3.9),
+        Inches(3),
+        Inches(0.04),
+        fill_color=RED,
+    )
 
-    add_text_box(slide, Inches(1), Inches(4.2), Inches(8), Inches(1.5),
-                 "Jack Mlusu, Founder & CEO\n"
-                 "jmlusu@gmail.com\n"
-                 "+265 (0) 980 016 004\n"
-                 "lightspeedholdings.com",
-                 font_size=14, color=WHITE, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(4.2),
+        Inches(8),
+        Inches(1.5),
+        "Jack Mlusu, Founder & CEO\n"
+        "jmlusu@gmail.com\n"
+        "+265 (0) 980 016 004\n"
+        "lightspeedholdings.vercel.app",
+        font_size=14,
+        color=WHITE,
+        alignment=PP_ALIGN.CENTER,
+    )
 
-    add_text_box(slide, Inches(1), Inches(6.3), Inches(8), Inches(0.5),
-                 "Open by design. Governed by construction.",
-                 font_size=12, color=CYAN, alignment=PP_ALIGN.CENTER)
+    add_text_box(
+        slide,
+        Inches(1),
+        Inches(6.3),
+        Inches(8),
+        Inches(0.5),
+        "Open by design. Governed by construction.",
+        font_size=12,
+        color=CYAN,
+        alignment=PP_ALIGN.CENTER,
+    )
 
 
 def main():

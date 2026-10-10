@@ -53,6 +53,7 @@ Author a document:
 
 ```python
 from docx import Document
+
 doc = Document()
 doc.add_heading("Q3 Financial Review", 0)
 doc.add_paragraph("Revenue rose 12% YoY.")

@@ -37,8 +37,8 @@ prs = Presentation("template.pptx")
 
 # Slides are ordered as they appear in the deck.
 slide = prs.slides[0]
-slide.shapes.title.text = "Q3 Product Review"                 # replace the title placeholder
-slide.placeholders[1].text = "What shipped, what slipped"     # replace the subtitle
+slide.shapes.title.text = "Q3 Product Review"  # replace the title placeholder
+slide.placeholders[1].text = "What shipped, what slipped"  # replace the subtitle
 
 # Iterate the placeholders when you don't know the layout by heart:
 for ph in slide.placeholders:
@@ -82,12 +82,14 @@ FILLS = {
     "{{stat_label}}": "YoY revenue growth",
 }
 
+
 def replace_in_runs(paragraph, mapping):
     """Replace tokens while preserving each run's styling."""
     for run in paragraph.runs:
         for key, value in mapping.items():
             if key in run.text:
                 run.text = run.text.replace(key, value)
+
 
 prs = Presentation("template.pptx")
 for slide in prs.slides:
@@ -107,6 +109,7 @@ PowerPoint, or by joining runs before replacement:
 ```python
 def joined_text(paragraph):
     return "".join(r.text for r in paragraph.runs)
+
 
 def replace_and_rewrite(paragraph, mapping):
     text = joined_text(paragraph)
@@ -129,9 +132,9 @@ Replace them with:
 from pptx.util import Inches
 
 for ph in slide.placeholders:
-    if ph.placeholder_format.type != 18:      # PP_PLACEHOLDER.PICTURE
+    if ph.placeholder_format.type != 18:  # PP_PLACEHOLDER.PICTURE
         continue
-    ph.insert_picture("photo.png")            # keeps the placeholder's crop and position
+    ph.insert_picture("photo.png")  # keeps the placeholder's crop and position
 ```
 
 If the template uses a plain image shape (not a picture placeholder),
@@ -170,6 +173,7 @@ for shape in list(slide.shapes):
 
 ```python
 from pptx import Presentation
+
 prs = Presentation("input.pptx")
 for i, s in enumerate(prs.slides):
     title = s.shapes.title.text if s.shapes.title else "(no title)"
@@ -186,6 +190,7 @@ XML flow (see below), or use this recipe based on
 import copy
 from pptx import Presentation
 
+
 def duplicate_slide(prs, index):
     """Duplicate the slide at `index` (0-based); returns the new Slide."""
     src = prs.slides[index]
@@ -199,13 +204,12 @@ def duplicate_slide(prs, index):
 
     # copy speaker notes
     if src.has_notes_slide:
-        new_slide.notes_slide.notes_text_frame.text = (
-            src.notes_slide.notes_text_frame.text
-        )
+        new_slide.notes_slide.notes_text_frame.text = src.notes_slide.notes_text_frame.text
     return new_slide
 
+
 prs = Presentation("input.pptx")
-duplicate_slide(prs, 3)      # duplicates slide index 3 to the end
+duplicate_slide(prs, 3)  # duplicates slide index 3 to the end
 prs.save("output.pptx")
 ```
 
@@ -219,6 +223,7 @@ media needs.
 ```python
 from pptx import Presentation
 
+
 def move_slide(prs, old_index, new_index):
     """Move slide `old_index` to `new_index` (both 0-based)."""
     xml_slides = prs.slides._sldIdLst
@@ -226,8 +231,9 @@ def move_slide(prs, old_index, new_index):
     xml_slides.remove(slides[old_index])
     xml_slides.insert(new_index, slides[old_index])
 
+
 prs = Presentation("input.pptx")
-move_slide(prs, 5, 1)         # move slide 6 to position 2
+move_slide(prs, 5, 1)  # move slide 6 to position 2
 prs.save("output.pptx")
 ```
 
@@ -236,12 +242,14 @@ prs.save("output.pptx")
 ```python
 from pptx import Presentation
 
+
 def delete_slide(prs, index):
     slides = list(prs.slides._sldIdLst)
     prs.slides._sldIdLst.remove(slides[index])
 
+
 prs = Presentation("input.pptx")
-delete_slide(prs, 0)          # drops the title slide
+delete_slide(prs, 0)  # drops the title slide
 prs.save("output.pptx")
 ```
 

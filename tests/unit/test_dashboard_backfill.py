@@ -9,7 +9,7 @@ import pytest
 from typer.testing import CliRunner
 
 from ai_company.cli.dashboard import app
-from ai_company.paths import AI_COMPANY_ROOT_ENV
+from ai_company.paths import AI_COMPANY_ROOT_ENV, DASHBOARD_DATA_DIR_ENV
 
 runner = CliRunner()
 
@@ -116,6 +116,7 @@ def project_root(tmp_path: Path) -> Path:
 def _run_backfill(project_root: Path, db_path: Path, monkeypatch: pytest.MonkeyPatch):
     """Invoke the backfill command anchored at a fake project root."""
     monkeypatch.setenv(AI_COMPANY_ROOT_ENV, str(project_root))
+    monkeypatch.setenv(DASHBOARD_DATA_DIR_ENV, str(project_root))
     return runner.invoke(app, ["backfill", "--db-path", str(db_path)])
 
 

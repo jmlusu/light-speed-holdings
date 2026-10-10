@@ -31,6 +31,7 @@ from ai_company.data import (
     KPIPipeline,
     TaskStore,
     get_database,
+    terminal_count,
 )
 from ai_company.data.database import Database
 from ai_company.paths import get_project_root
@@ -152,12 +153,14 @@ def get_cost_summary(database: Database | None = None) -> dict[str, Any] | None:
 
     total_tasks = 0
     completed_tasks = 0
+    entered_tasks = 0
     try:
         task_store = TaskStore(db)
         if task_store.count() > 0:
             statuses = task_store.count_by_status()
             total_tasks = sum(statuses.values())
             completed_tasks = statuses.get("completed", 0)
+            entered_tasks = terminal_count(statuses)
     except Exception:  # noqa: BLE001 - task counts are best-effort here
         logger.warning("SQLite task counts unavailable for cost summary", exc_info=True)
 
@@ -179,9 +182,13 @@ def get_cost_summary(database: Database | None = None) -> dict[str, Any] | None:
     return {
         "total_spent": round(total_spent, 6),
         "llm_spend": round(total_spent, 6),
-        "avg_cost_per_task": round(total_spent / completed_tasks, 6) if completed_tasks else 0.0,
+        # Unit cost shares ATC's denominator: spend / terminal tasks entered
+        # (T1 decision 1), not completed-only — failed/timed-out/cancelled
+        # spend belongs to a denominator that includes those tasks.
+        "avg_cost_per_task": round(total_spent / entered_tasks, 6) if entered_tasks else 0.0,
         "total_tasks": total_tasks,
         "completed_tasks": completed_tasks,
+        "entered_tasks": entered_tasks,
         "per_agent_costs": per_agent_costs,
         "cost_trend": cost_trend,
         "budget": budget,

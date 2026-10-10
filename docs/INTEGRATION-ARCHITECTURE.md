@@ -179,9 +179,9 @@ src/ai_company/audit/
 **Current code** (entire class is 31 lines):
 ```python
 class MessageBus:
-    def send_task(self, task): ...       # append to JSON
-    def get_inbox(self, agent_id): ...   # filter by receiver
-    def get_sent(self, agent_id): ...    # filter by sender
+    def send_task(self, task): ...  # append to JSON
+    def get_inbox(self, agent_id): ...  # filter by receiver
+    def get_sent(self, agent_id): ...  # filter by sender
 ```
 
 **What the Integration Architecture spec requires**:

@@ -24,14 +24,19 @@ from xml.etree import ElementTree as ET
 try:
     from openpyxl import load_workbook
 except ImportError:
-    print(json.dumps({"ok": False, "reason": "openpyxl is not installed"}),
-          file=sys.stderr)
+    print(json.dumps({"ok": False, "reason": "openpyxl is not installed"}), file=sys.stderr)
     sys.exit(2)
 
 
 ERROR_TOKENS: tuple[str, ...] = (
-    "#VALUE!", "#DIV/0!", "#REF!", "#NAME?",
-    "#NULL!", "#NUM!", "#N/A", "#GETTING_DATA",
+    "#VALUE!",
+    "#DIV/0!",
+    "#REF!",
+    "#NAME?",
+    "#NULL!",
+    "#NUM!",
+    "#N/A",
+    "#GETTING_DATA",
 )
 
 
@@ -49,7 +54,7 @@ class StepResult:
 @dataclass
 class AuditReport:
     path: str
-    status: str = "ok"                # "ok" | "warnings" | "failed"
+    status: str = "ok"  # "ok" | "warnings" | "failed"
     steps: list[StepResult] = field(default_factory=list)
 
     def append(self, step: StepResult) -> None:
@@ -188,8 +193,11 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     if not args.workbook.exists():
-        print(json.dumps({"path": str(args.workbook), "status": "failed",
-                          "reason": "no such file"}, indent=2))
+        print(
+            json.dumps(
+                {"path": str(args.workbook), "status": "failed", "reason": "no such file"}, indent=2
+            )
+        )
         return 1
 
     report = run_audit(args.workbook)

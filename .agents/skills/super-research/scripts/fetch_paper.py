@@ -13,6 +13,7 @@ Usage:
   fetch_paper.py 2504.17192 --latex --out-dir paper_src/
   fetch_paper.py --doi 10.18653/v1/2020.acl-main.1
 """
+
 import argparse
 import gzip
 import html
@@ -63,10 +64,15 @@ def http_get(url, retries=3):
 
 
 def html_to_text(page):
-    page = re.sub(r"<(script|style|nav|header|footer)[^>]*>.*?</\1>", " ",
-                  page, flags=re.DOTALL | re.IGNORECASE)
-    page = re.sub(r"<(p|div|h[1-6]|li|tr|section|figcaption)\b", "\n<\\1", page,
-                  flags=re.IGNORECASE)
+    page = re.sub(
+        r"<(script|style|nav|header|footer)[^>]*>.*?</\1>",
+        " ",
+        page,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    page = re.sub(
+        r"<(p|div|h[1-6]|li|tr|section|figcaption)\b", "\n<\\1", page, flags=re.IGNORECASE
+    )
     text = re.sub(r"<[^>]+>", " ", page)
     text = html.unescape(text)
     text = re.sub(r"[ \t]+", " ", text)
@@ -165,8 +171,11 @@ def main():
     ap.add_argument("paper", nargs="?", help="arXiv id or arxiv.org URL")
     ap.add_argument("--doi")
     ap.add_argument("--out")
-    ap.add_argument("--latex", action="store_true",
-                    help="download original LaTeX source (e-print) instead of text")
+    ap.add_argument(
+        "--latex",
+        action="store_true",
+        help="download original LaTeX source (e-print) instead of text",
+    )
     ap.add_argument("--out-dir", default=None, help="extraction dir for --latex")
     args = ap.parse_args()
 
@@ -179,11 +188,17 @@ def main():
         aid = m.group(1)
         info = fetch_latex(aid, args.out_dir or f"arxiv_{aid.replace('.', '_')}_src")
         if not info:
-            print("[error] could not fetch LaTeX source (try without --latex for text)", file=sys.stderr)
+            print(
+                "[error] could not fetch LaTeX source (try without --latex for text)",
+                file=sys.stderr,
+            )
             sys.exit(1)
         print(json.dumps(info, indent=2))
-        print(f"[info] extracted {len(info['tex_files'])} .tex files to {info['dir']}, "
-              f"main: {info['main']}", file=sys.stderr)
+        print(
+            f"[info] extracted {len(info['tex_files'])} .tex files to {info['dir']}, "
+            f"main: {info['main']}",
+            file=sys.stderr,
+        )
         return
 
     text = None

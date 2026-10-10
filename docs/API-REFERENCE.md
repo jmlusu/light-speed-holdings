@@ -879,6 +879,7 @@ import asyncio
 import json
 import websockets
 
+
 async def dashboard_listener():
     # Key must resolve to at least the "run" role (see Authentication section)
     uri = "ws://localhost:8420/ws/v1/dashboard?api_key=API_KEY"
@@ -899,6 +900,7 @@ async def dashboard_listener():
                 print("Alert:", data["payload"])
 
             await asyncio.sleep(30)
+
 
 asyncio.run(dashboard_listener())
 ```

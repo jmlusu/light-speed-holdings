@@ -29,9 +29,7 @@ def explode_package(source: Path, target: Path, force: bool) -> int:
 
     if _directory_is_dirty(target):
         if not force:
-            raise FileExistsError(
-                f"{target} is non-empty; pass --force to overwrite"
-            )
+            raise FileExistsError(f"{target} is non-empty; pass --force to overwrite")
         shutil.rmtree(target)
 
     target.mkdir(parents=True, exist_ok=True)
@@ -47,8 +45,11 @@ def _parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Explode an xlsx into XML parts.")
     p.add_argument("workbook", type=Path)
     p.add_argument("destination", type=Path)
-    p.add_argument("--force", action="store_true",
-                   help="overwrite the destination directory if it is non-empty")
+    p.add_argument(
+        "--force",
+        action="store_true",
+        help="overwrite the destination directory if it is non-empty",
+    )
     return p
 
 

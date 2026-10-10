@@ -129,11 +129,13 @@ from ai_company.models.task import Task
 # Module-level logger
 logger = logging.getLogger(__name__)
 
+
 # Pydantic models with ConfigDict
 class EntityBase(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(..., min_length=1)
     name: str = Field(default="")
+
 
 # Type hints on all public functions
 def process_task(task: Task) -> dict[str, Any]:
@@ -234,6 +236,7 @@ import typer
 
 app = typer.Typer(help="My new command")
 
+
 @app.command()
 def do_something(name: str) -> None:
     """Do something useful."""
@@ -243,6 +246,7 @@ def do_something(name: str) -> None:
 2. Register in `src/ai_company/cli/main.py`:
 ```python
 from ai_company.cli.my_command import app as my_command_app
+
 app.add_typer(my_command_app, name="my-command", help="My new command")
 ```
 
@@ -254,6 +258,7 @@ app.add_typer(my_command_app, name="my-command", help="My new command")
 ```python
 class MyModel(EntityBase):
     """Description of what this model represents."""
+
     field: str = Field(default="", description="Field description")
     count: int = Field(default=0, ge=0)
 ```

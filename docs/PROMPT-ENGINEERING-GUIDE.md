@@ -318,6 +318,7 @@ Test prompt builders with known inputs:
 from ai_company.executor.prompts import build_system_prompt_typed
 from ai_company.executor.context import AgentContext
 
+
 def test_system_prompt_includes_tool_list():
     agent = AgentContext(
         name="test_agent",

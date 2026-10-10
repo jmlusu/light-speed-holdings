@@ -9,6 +9,7 @@ Alternate implementation notes:
 Usage:
     uv run render_pdf.py <input.docx> [--out-dir out/]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -26,7 +27,9 @@ def _find_soffice() -> str:
     override = os.environ.get("DOCX_SKILL_SOFFICE")
     if override:
         return override
-    bundled = os.environ.get("MIMO_SOFFICE")  # bundled runtime: use only when present, else fall through
+    bundled = os.environ.get(
+        "MIMO_SOFFICE"
+    )  # bundled runtime: use only when present, else fall through
     if bundled and Path(bundled).is_file():
         return bundled
     for candidate in ("soffice", "libreoffice"):
@@ -53,15 +56,16 @@ def render_pdf(source: Path, out_dir: Path | None = None) -> Path:
             soffice,
             "--headless",
             f"-env:UserInstallation={Path(scratch).as_uri()}",  # bare file://{path} breaks on Windows
-            "--convert-to", "pdf",
-            "--outdir", str(dest_dir),
+            "--convert-to",
+            "pdf",
+            "--outdir",
+            str(dest_dir),
             str(source),
         ]
         proc = subprocess.run(cmd, capture_output=True, text=True)
         if proc.returncode != 0:
             raise RuntimeError(
-                f"soffice exit {proc.returncode}\n"
-                f"stdout: {proc.stdout}\nstderr: {proc.stderr}"
+                f"soffice exit {proc.returncode}\nstdout: {proc.stdout}\nstderr: {proc.stderr}"
             )
 
     produced = dest_dir / f"{source.stem}.pdf"
@@ -71,12 +75,14 @@ def render_pdf(source: Path, out_dir: Path | None = None) -> Path:
 
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Render a .docx to PDF for visual review."
-    )
+    parser = argparse.ArgumentParser(description="Render a .docx to PDF for visual review.")
     parser.add_argument("source", type=Path, help="Source .docx file")
-    parser.add_argument("--out-dir", type=Path, default=None,
-                        help="Where to write the PDF (default: alongside source).")
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        default=None,
+        help="Where to write the PDF (default: alongside source).",
+    )
     return parser.parse_args(argv)
 
 

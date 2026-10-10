@@ -403,7 +403,7 @@ pharos/linkedin-series/post-01/
 ### Risk
 
 15. **Platform Readiness** — LinkedIn company page still `Pending (#194)`. CEO personal profile is live. Proceed on personal only?
-16. **Domain/Email** — `lightspeedholdings.com` parked (Afternic). Substack on `info.lightspeed@gmail.com` acceptable for launch?
+16. **Domain/Email** — branded `.com` domain parked (Afternic). Substack on `info.lightspeed@gmail.com` acceptable for launch?
 
 ---
 

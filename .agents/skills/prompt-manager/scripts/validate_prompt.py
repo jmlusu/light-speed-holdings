@@ -16,6 +16,7 @@ import sys
 try:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
     from scripts.validate_skill import main as validate_skill
+
     HAS_BUNDLED = True
 except ImportError:
     HAS_BUNDLED = False
@@ -36,7 +37,9 @@ def check_skill_md(text):
     errors = []
 
     if not text.startswith("---"):
-        errors.append("ERROR: frontmatter missing or malformed: SKILL.md must start with '---' delimited YAML")
+        errors.append(
+            "ERROR: frontmatter missing or malformed: SKILL.md must start with '---' delimited YAML"
+        )
         return errors
 
     # Check for matching --- delimiters
@@ -52,7 +55,9 @@ def check_skill_md(text):
 
     fm_block = match.group(1)
     if "<" in fm_block or ">" in fm_block:
-        errors.append("ERROR: frontmatter contains XML angle brackets (< >) — forbidden for security")
+        errors.append(
+            "ERROR: frontmatter contains XML angle brackets (< >) — forbidden for security"
+        )
 
     # Check name field
     name_value = None
@@ -60,9 +65,9 @@ def check_skill_md(text):
     for line in fm_block.splitlines():
         stripped = line.strip()
         if stripped.startswith("name:"):
-            name_value = stripped.split(":", 1)[1].strip().strip('"\'')
+            name_value = stripped.split(":", 1)[1].strip().strip("\"'")
         if stripped.startswith("description:"):
-            description_value = stripped.split(":", 1)[1].strip().strip('"\'')
+            description_value = stripped.split(":", 1)[1].strip().strip("\"'")
 
     # Check name
     if not name_value:
@@ -82,9 +87,13 @@ def check_skill_md(text):
         else:
             lowered = description_value.lower()
             if len(description_value) < 40:
-                warnings.append(f"WARNING: description is very short ({len(description_value)} chars) — likely too vague to trigger")
+                warnings.append(
+                    f"WARNING: description is very short ({len(description_value)} chars) — likely too vague to trigger"
+                )
             if not any(cue in lowered for cue in ("use when", "use this", "use for", "trigger")):
-                warnings.append("WARNING: description has no obvious WHEN clause (e.g. 'Use when ...') — add trigger conditions")
+                warnings.append(
+                    "WARNING: description has no obvious WHEN clause (e.g. 'Use when ...') — add trigger conditions"
+                )
 
     return errors
 
@@ -114,7 +123,9 @@ def main():
         for w in __import__("re").finditer(r"(?:scripts|references|assets)/[\w./-]*\w", text):
             rel = w.group(0)
             if not os.path.exists(os.path.join(skill_dir, rel)):
-                warnings.append(f"WARNING: SKILL.md references {rel!r} but it does not exist in the skill folder")
+                warnings.append(
+                    f"WARNING: SKILL.md references {rel!r} but it does not exist in the skill folder"
+                )
 
     # Report
     for msg in errors:

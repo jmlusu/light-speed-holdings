@@ -15,7 +15,7 @@
 | 4 | 36–52s | Six lesson chips building: Registry / Failures / Autonomy / One standard / Sovereignty / Cost | "Six lessons: the registry is the product. Reliability failures are governance data. Autonomy is earned per action class." |
 | 5 | 52–66s | Inversion arrow: Registry → Queue → KPIs → Forbidden list → Tier → Agents | "Starting again, I would invert: registry, queue, three honest KPIs, forbidden list, one tier - then agents." |
 | 6 | 66–80s | Framework final: H → A → O → M → T → G → V with 90 / 20 / 5 counters | "Ninety agents, twenty departments, five-tier governance. Capability with discipline is a company you can hand to an auditor." |
-| 7 | 80–90s | Call to action + fade: Malawi Agentic AI Monitor, website URL | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context. LightspeedHoldings.com" |
+| 7 | 80–90s | Call to action + fade: Malawi Agentic AI Monitor, website URL | "Download the Malawi Agentic AI Monitor to explore how these patterns apply in-Malawi context. LightspeedHoldings.vercel.app" |
 
 ## Script Narrative (Full)
 

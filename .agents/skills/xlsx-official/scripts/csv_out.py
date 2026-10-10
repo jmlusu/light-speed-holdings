@@ -44,16 +44,12 @@ def resolve_targets(workbook, selector: str | None) -> list[str]:
         index = int(selector)
         if 0 <= index < len(names):
             return [names[index]]
-        raise SheetSelectionError(
-            f"sheet index {index} out of range 0..{len(names) - 1}"
-        )
+        raise SheetSelectionError(f"sheet index {index} out of range 0..{len(names) - 1}")
 
     if selector in names:
         return [selector]
 
-    raise SheetSelectionError(
-        f"worksheet '{selector}' not found; available: {names}"
-    )
+    raise SheetSelectionError(f"worksheet '{selector}' not found; available: {names}")
 
 
 # --- writer ---------------------------------------------------------------
@@ -92,12 +88,11 @@ def _extension_for(delimiter: str) -> str:
 def _parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Flatten an xlsx into CSV/TSV files.")
     p.add_argument("workbook", type=Path)
-    p.add_argument("destination", type=Path,
-                   help="output file (single sheet) or directory (all sheets)")
-    p.add_argument("--sheet",
-                   help="worksheet name or 0-based index; omit for all sheets")
-    p.add_argument("--delimiter", default=",",
-                   help="',' (default), 'tab', or a single character")
+    p.add_argument(
+        "destination", type=Path, help="output file (single sheet) or directory (all sheets)"
+    )
+    p.add_argument("--sheet", help="worksheet name or 0-based index; omit for all sheets")
+    p.add_argument("--delimiter", default=",", help="',' (default), 'tab', or a single character")
     return p
 
 

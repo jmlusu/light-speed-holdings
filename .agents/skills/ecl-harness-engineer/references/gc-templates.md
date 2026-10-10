@@ -67,7 +67,9 @@ def get_git_last_modified(filepath: str) -> Optional[datetime]:
     try:
         result = subprocess.run(
             ["git", "log", "-1", "--format=%aI", "--", filepath],
-            capture_output=True, text=True, timeout=10
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         if result.returncode == 0 and result.stdout.strip():
             return datetime.fromisoformat(result.stdout.strip())
@@ -92,17 +94,19 @@ def extract_code_references(doc_path: str) -> List[str]:
         return references
 
     # Match backtick-quoted file paths
-    backtick_pattern = r'`([a-zA-Z0-9_./\-]+\.(go|ts|tsx|js|jsx|py|rs))(?::\d+(?:-\d+)?)?`'
+    backtick_pattern = r"`([a-zA-Z0-9_./\-]+\.(go|ts|tsx|js|jsx|py|rs))(?::\d+(?:-\d+)?)?`"
     references.extend(m[0] for m in re.findall(backtick_pattern, content))
 
     # Match markdown link targets
-    link_pattern = r'\]\((?:\.\.?/)*([a-zA-Z0-9_./\-]+\.(go|ts|tsx|js|jsx|py|rs))(?::\d+(?:-\d+)?)?\)'
+    link_pattern = (
+        r"\]\((?:\.\.?/)*([a-zA-Z0-9_./\-]+\.(go|ts|tsx|js|jsx|py|rs))(?::\d+(?:-\d+)?)?\)"
+    )
     references.extend(m[0] for m in re.findall(link_pattern, content))
 
     # Deduplicate, strip line numbers
     cleaned = set()
     for ref in references:
-        clean = re.sub(r':\d+(-\d+)?$', '', ref)
+        clean = re.sub(r":\d+(-\d+)?$", "", ref)
         cleaned.add(clean)
     return list(cleaned)
 
@@ -133,10 +137,7 @@ def find_doc_to_code_mapping(project_root: Path) -> Dict[str, List[str]]:
     return mapping
 
 
-def check_staleness(
-    project_root: Path,
-    threshold_days: int = 14
-) -> List[Dict]:
+def check_staleness(project_root: Path, threshold_days: int = 14) -> List[Dict]:
     """Check all docs for staleness relative to referenced code."""
     mapping = find_doc_to_code_mapping(project_root)
     threshold = timedelta(days=threshold_days)
@@ -151,31 +152,39 @@ def check_staleness(
         for code_ref in code_refs:
             code_path = str(project_root / code_ref)
             if not os.path.exists(code_path):
-                stale_refs.append({
-                    "file": code_ref,
-                    "reason": "file_deleted",
-                    "detail": f"Referenced file no longer exists"
-                })
+                stale_refs.append(
+                    {
+                        "file": code_ref,
+                        "reason": "file_deleted",
+                        "detail": f"Referenced file no longer exists",
+                    }
+                )
                 continue
 
             code_modified = get_git_last_modified(code_ref)
             if code_modified and code_modified > doc_modified + threshold:
                 days_behind = (code_modified - doc_modified).days
-                stale_refs.append({
-                    "file": code_ref,
-                    "reason": "code_newer",
-                    "detail": f"Code updated {days_behind} days after doc",
-                    "code_date": code_modified.isoformat(),
-                    "doc_date": doc_modified.isoformat()
-                })
+                stale_refs.append(
+                    {
+                        "file": code_ref,
+                        "reason": "code_newer",
+                        "detail": f"Code updated {days_behind} days after doc",
+                        "code_date": code_modified.isoformat(),
+                        "doc_date": doc_modified.isoformat(),
+                    }
+                )
 
         if stale_refs:
-            findings.append({
-                "doc": doc_path,
-                "doc_last_modified": doc_modified.isoformat(),
-                "stale_references": stale_refs,
-                "severity": "high" if any(r["reason"] == "file_deleted" for r in stale_refs) else "medium"
-            })
+            findings.append(
+                {
+                    "doc": doc_path,
+                    "doc_last_modified": doc_modified.isoformat(),
+                    "stale_references": stale_refs,
+                    "severity": "high"
+                    if any(r["reason"] == "file_deleted" for r in stale_refs)
+                    else "medium",
+                }
+            )
 
     return findings
 
@@ -183,8 +192,9 @@ def check_staleness(
 def main():
     parser = argparse.ArgumentParser(description="Detect stale documentation")
     parser.add_argument("project_root", help="Project root directory")
-    parser.add_argument("--threshold", type=int, default=14,
-                        help="Days threshold for staleness (default: 14)")
+    parser.add_argument(
+        "--threshold", type=int, default=14, help="Days threshold for staleness (default: 14)"
+    )
     parser.add_argument("--json", action="store_true", help="Output as JSON")
     args = parser.parse_args()
 
@@ -256,17 +266,13 @@ def extract_links(md_path: Path) -> List[Dict]:
     links = []
 
     # [text](target) — skip external URLs
-    link_pattern = r'\[([^\]]*)\]\(([^)]+)\)'
+    link_pattern = r"\[([^\]]*)\]\(([^)]+)\)"
     for match in re.finditer(link_pattern, content):
         target = match.group(2)
         if target.startswith(("http://", "https://", "mailto:")):
             continue
-        line_num = content[:match.start()].count('\n') + 1
-        links.append({
-            "text": match.group(1),
-            "target": target,
-            "line": line_num
-        })
+        line_num = content[: match.start()].count("\n") + 1
+        links.append({"text": match.group(1), "target": target, "line": line_num})
 
     return links
 
@@ -292,7 +298,7 @@ def resolve_link(md_path: Path, target: str, project_root: Path) -> Dict:
         return {
             "valid": False,
             "reason": "file_not_found",
-            "resolved_path": str(resolved.relative_to(project_root))
+            "resolved_path": str(resolved.relative_to(project_root)),
         }
 
     if anchor and resolved.suffix == ".md":
@@ -309,11 +315,11 @@ def check_anchor(md_path: Path, anchor: str) -> Dict:
         return {"valid": False, "reason": "cannot_read_file"}
 
     # Generate anchors from headings (GitHub-style)
-    headings = re.findall(r'^#{1,6}\s+(.+)$', content, re.MULTILINE)
+    headings = re.findall(r"^#{1,6}\s+(.+)$", content, re.MULTILINE)
     anchors = set()
     for h in headings:
-        slug = re.sub(r'[^\w\s-]', '', h.lower())
-        slug = re.sub(r'[\s]+', '-', slug).strip('-')
+        slug = re.sub(r"[^\w\s-]", "", h.lower())
+        slug = re.sub(r"[\s]+", "-", slug).strip("-")
         anchors.add(slug)
 
     if anchor.lower() in anchors:
@@ -322,7 +328,7 @@ def check_anchor(md_path: Path, anchor: str) -> Dict:
         "valid": False,
         "reason": "anchor_not_found",
         "anchor": anchor,
-        "available_anchors": sorted(anchors)[:10]
+        "available_anchors": sorted(anchors)[:10],
     }
 
 
@@ -340,10 +346,9 @@ def check_all_links(project_root: Path) -> List[Dict]:
                 broken.append({**link, **result})
 
         if broken:
-            findings.append({
-                "file": str(md_file.relative_to(project_root)),
-                "broken_links": broken
-            })
+            findings.append(
+                {"file": str(md_file.relative_to(project_root)), "broken_links": broken}
+            )
 
     return findings
 
@@ -416,15 +421,11 @@ def extract_documented_interfaces(doc_path: Path) -> List[Dict]:
 
     # Match backtick-quoted type names with file references
     # Pattern: `TypeName` ... `file.go:line`
-    type_pattern = r'`([A-Z][a-zA-Z0-9]+(?:Interface|Service|Provider|Handler|Repository|Store|Manager|Client)?)`'
+    type_pattern = r"`([A-Z][a-zA-Z0-9]+(?:Interface|Service|Provider|Handler|Repository|Store|Manager|Client)?)`"
     for match in re.finditer(type_pattern, content):
         name = match.group(1)
-        line_num = content[:match.start()].count('\n') + 1
-        interfaces.append({
-            "name": name,
-            "doc_file": str(doc_path),
-            "doc_line": line_num
-        })
+        line_num = content[: match.start()].count("\n") + 1
+        interfaces.append({"name": name, "doc_file": str(doc_path), "doc_line": line_num})
 
     return interfaces
 
@@ -433,18 +434,19 @@ def find_type_in_code_go(project_root: Path, type_name: str) -> Optional[Dict]:
     """Find a Go type/interface definition in code."""
     try:
         result = subprocess.run(
-            ["grep", "-rn", f"type {type_name} ", "--include=*.go",
-             str(project_root)],
-            capture_output=True, text=True, timeout=10
+            ["grep", "-rn", f"type {type_name} ", "--include=*.go", str(project_root)],
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         if result.returncode == 0 and result.stdout.strip():
-            first_match = result.stdout.strip().split('\n')[0]
-            parts = first_match.split(':', 2)
+            first_match = result.stdout.strip().split("\n")[0]
+            parts = first_match.split(":", 2)
             if len(parts) >= 2:
                 return {
                     "file": str(Path(parts[0]).relative_to(project_root)),
                     "line": int(parts[1]),
-                    "definition": parts[2].strip() if len(parts) > 2 else ""
+                    "definition": parts[2].strip() if len(parts) > 2 else "",
                 }
     except Exception:
         pass
@@ -457,22 +459,31 @@ def find_type_in_code_ts(project_root: Path, type_name: str) -> Optional[Dict]:
         patterns = [
             f"(export )?interface {type_name}",
             f"(export )?class {type_name}",
-            f"(export )?type {type_name}"
+            f"(export )?type {type_name}",
         ]
         for pattern in patterns:
             result = subprocess.run(
-                ["grep", "-rn", "-E", pattern, "--include=*.ts", "--include=*.tsx",
-                 str(project_root)],
-                capture_output=True, text=True, timeout=10
+                [
+                    "grep",
+                    "-rn",
+                    "-E",
+                    pattern,
+                    "--include=*.ts",
+                    "--include=*.tsx",
+                    str(project_root),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
             )
             if result.returncode == 0 and result.stdout.strip():
-                first_match = result.stdout.strip().split('\n')[0]
-                parts = first_match.split(':', 2)
+                first_match = result.stdout.strip().split("\n")[0]
+                parts = first_match.split(":", 2)
                 if len(parts) >= 2:
                     return {
                         "file": str(Path(parts[0]).relative_to(project_root)),
                         "line": int(parts[1]),
-                        "definition": parts[2].strip() if len(parts) > 2 else ""
+                        "definition": parts[2].strip() if len(parts) > 2 else "",
                     }
     except Exception:
         pass
@@ -483,18 +494,19 @@ def find_type_in_code_py(project_root: Path, type_name: str) -> Optional[Dict]:
     """Find a Python class definition in code."""
     try:
         result = subprocess.run(
-            ["grep", "-rn", f"class {type_name}", "--include=*.py",
-             str(project_root)],
-            capture_output=True, text=True, timeout=10
+            ["grep", "-rn", f"class {type_name}", "--include=*.py", str(project_root)],
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
         if result.returncode == 0 and result.stdout.strip():
-            first_match = result.stdout.strip().split('\n')[0]
-            parts = first_match.split(':', 2)
+            first_match = result.stdout.strip().split("\n")[0]
+            parts = first_match.split(":", 2)
             if len(parts) >= 2:
                 return {
                     "file": str(Path(parts[0]).relative_to(project_root)),
                     "line": int(parts[1]),
-                    "definition": parts[2].strip() if len(parts) > 2 else ""
+                    "definition": parts[2].strip() if len(parts) > 2 else "",
                 }
     except Exception:
         pass
@@ -515,7 +527,9 @@ def detect_project_lang(project_root: Path) -> str:
 def check_interface_drift(project_root: Path, doc_path: Optional[str] = None) -> List[Dict]:
     """Check for interface drift between docs and code."""
     lang = detect_project_lang(project_root)
-    finder = {"go": find_type_in_code_go, "ts": find_type_in_code_ts, "py": find_type_in_code_py}[lang]
+    finder = {"go": find_type_in_code_go, "ts": find_type_in_code_ts, "py": find_type_in_code_py}[
+        lang
+    ]
 
     # Collect docs to check
     if doc_path:
@@ -540,15 +554,17 @@ def check_interface_drift(project_root: Path, doc_path: Optional[str] = None) ->
 
             code_loc = finder(project_root, iface["name"])
             if not code_loc:
-                findings.append({
-                    "type_name": iface["name"],
-                    "documented_in": str(df.relative_to(project_root)),
-                    "doc_line": iface["doc_line"],
-                    "status": "not_found_in_code",
-                    "severity": "high",
-                    "suggestion": f"Type '{iface['name']}' referenced in docs but not found in code. "
-                                  f"It may have been renamed, deleted, or the doc is outdated."
-                })
+                findings.append(
+                    {
+                        "type_name": iface["name"],
+                        "documented_in": str(df.relative_to(project_root)),
+                        "doc_line": iface["doc_line"],
+                        "status": "not_found_in_code",
+                        "severity": "high",
+                        "suggestion": f"Type '{iface['name']}' referenced in docs but not found in code. "
+                        f"It may have been renamed, deleted, or the doc is outdated.",
+                    }
+                )
 
     return findings
 
@@ -624,12 +640,13 @@ def run_gc(project_root: Path, checks: list, threshold_days: int = 14) -> dict:
         "project_root": str(project_root),
         "checks_run": checks,
         "results": {},
-        "summary": {"total_issues": 0, "high": 0, "medium": 0, "low": 0}
+        "summary": {"total_issues": 0, "high": 0, "medium": 0, "low": 0},
     }
 
     if "stale" in checks:
         # Run stale doc detection
         from gc_stale_docs import check_staleness
+
         stale = check_staleness(project_root, threshold_days)
         report["results"]["stale_docs"] = stale
         for item in stale:
@@ -639,6 +656,7 @@ def run_gc(project_root: Path, checks: list, threshold_days: int = 14) -> dict:
     if "links" in checks:
         # Run broken link detection
         from gc_broken_links import check_all_links
+
         broken = check_all_links(project_root)
         report["results"]["broken_links"] = broken
         for item in broken:
@@ -649,6 +667,7 @@ def run_gc(project_root: Path, checks: list, threshold_days: int = 14) -> dict:
     if "drift" in checks:
         # Run interface drift detection
         from gc_interface_drift import check_interface_drift
+
         drift = check_interface_drift(project_root)
         report["results"]["interface_drift"] = drift
         for item in drift:
@@ -661,10 +680,10 @@ def run_gc(project_root: Path, checks: list, threshold_days: int = 14) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Documentation garbage collection")
     parser.add_argument("project_root", help="Project root directory")
-    parser.add_argument("--checks", default="stale,links,drift",
-                        help="Comma-separated checks to run (default: all)")
-    parser.add_argument("--threshold", type=int, default=14,
-                        help="Staleness threshold in days")
+    parser.add_argument(
+        "--checks", default="stale,links,drift", help="Comma-separated checks to run (default: all)"
+    )
+    parser.add_argument("--threshold", type=int, default=14, help="Staleness threshold in days")
     parser.add_argument("--json", action="store_true")
     parser.add_argument("-o", "--output", help="Write report to file")
     args = parser.parse_args()
@@ -695,7 +714,9 @@ def format_report(report: dict) -> str:
 
     lines.append(f"Documentation GC Report — {report['timestamp'][:10]}")
     lines.append(f"{'=' * 50}")
-    lines.append(f"Total issues: {total} (🔴 {s['high']} high, 🟡 {s['medium']} medium, 🟢 {s['low']} low)")
+    lines.append(
+        f"Total issues: {total} (🔴 {s['high']} high, 🟡 {s['medium']} medium, 🟢 {s['low']} low)"
+    )
     lines.append("")
 
     for check_name, results in report["results"].items():

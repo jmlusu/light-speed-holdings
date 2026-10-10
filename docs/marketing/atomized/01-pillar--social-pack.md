@@ -6,7 +6,7 @@
 **Claims source:** pillar claims_ledger + registry direct count 2026-09-16 (fact checklist at bottom).
 **Template system:** P1 foundational templates (ticket #311) — canonical PNGs at `static/brand/social/templates/`. Slot keys per `static/brand/templates/social-templates/GENERATED-P1.md`.
 
-**ADD fact (flagged once per pack):** the Malawi Agentic AI Monitor subscription URL is not stated in the pillar ("subscribe at the link below"). This pack uses the established site root `https://lightspeedholdings.com` (`docs/BRAND_DEPLOYMENT_GUIDE.md:46`). `ADD: Malawi Agentic AI Monitor subscription URL — requires pillar update.`
+**ADD fact (flagged once per pack):** the Malawi Agentic AI Monitor subscription URL is not stated in the pillar ("subscribe at the link below"). This pack uses the established site root `https://lightspeedholdings.vercel.app` (`docs/BRAND_DEPLOYMENT_GUIDE.md:46`). `ADD: Malawi Agentic AI Monitor subscription URL — requires pillar update.`
 
 ---
 
@@ -41,7 +41,7 @@ Most "AI transformation" fails for one structural reason: the architecture never
 
 If you are a policymaker, a regulator, a CIO, a development partner, or an African enterprise leader making sense of agentic AI: let us build the measurement and the governance together. Published monthly in the Malawi Agentic AI Monitor.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 
 #AgenticAI #AIGovernance #AINativeCompany #Malawi #SADC
 ```
@@ -100,7 +100,7 @@ Proof, not promise. J&S StopOver Bar — "The World's Smallest AI-Native Bar" �
 ```text
 The window is open and narrow. Malawi's first National AI Strategy is being drafted now, and the UNESCO AI Readiness Assessment was validated in July 2026. Whoever shows working, governed agentic systems helps define the next decade.
 
-https://lightspeedholdings.com
+https://lightspeedholdings.vercel.app
 ```
 
 ---
@@ -182,7 +182,7 @@ VO: And the proof is not a laboratory. A real small business in Malawi runs agen
 [1:05–1:25] On screen: National AI Strategy drafting / UNESCO RAM timeline.
 VO: The window is open and narrow. The region's institutions are drafting the standards of the next decade — and they are looking for people who have built these systems.
 
-[1:25–1:30] End card: https://lightspeedholdings.com.
+[1:25–1:30] End card: https://lightspeedholdings.vercel.app.
 VO: Let us build the measurement and the governance together.
 ```
 
