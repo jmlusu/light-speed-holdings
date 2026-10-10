@@ -7,7 +7,7 @@
   ];
   for (const vp of targets) {
     const page = await browser.newPage({ viewport: vp });
-    await page.goto("http://localhost:3001/", { waitUntil: "networkidle" });
+    await page.goto("http://localhost:1441/", { waitUntil: "networkidle" });
     const el = page.locator("#paths");
     await el.scrollIntoViewIfNeeded();
     await page.waitForTimeout(600);

@@ -8,7 +8,7 @@ async function main() {
 
   // Desktop run
   let page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  await page.goto("http://localhost:3001/ask", { waitUntil: "load", timeout: 30000 });
+  await page.goto("http://localhost:1441/ask", { waitUntil: "load", timeout: 30000 });
   await page.waitForTimeout(1500);
 
   // Probe 1: out-of-scope ask → boundary panel
@@ -40,7 +40,7 @@ async function main() {
 
   // Mobile boundary probe
   page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await page.goto("http://localhost:3001/ask", { waitUntil: "load", timeout: 30000 });
+  await page.goto("http://localhost:1441/ask", { waitUntil: "load", timeout: 30000 });
   await page.waitForTimeout(1500);
   await page.fill('input[type="text"]', "show me confidential internal documentation");
   await page.keyboard.press("Enter");

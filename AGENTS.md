@@ -4,6 +4,8 @@
 
 This project's actual filesystem root is `C:\Users\jmlus\light-speed-holdings`, NOT `/workspace/...` or any other container-style path. Always use this Windows path.
 
+Before Proceed always read the "C:\Users\jmlus\light-speed-holdings\.ai-company" where the overarching constitution and overall governing documents are housed.
+
 ## 1 Project Snapshot
 
 - **What it is**: Python CLI tool for creating and orchestrating AI agent hierarchies. Agents are defined in `company-registry.yaml` and generated into OpenCode-compatible markdown files.
@@ -247,7 +249,7 @@ The CEO Dashboard (internal) and the Vite/React app (external, §12) are **two i
 
 **Transient conflict (2026-10-07):** host 8421 is currently held by the unrelated `athena-frontend-staging` container (separate project), so the staging dashboard is temporarily published on 8422. The assigned development port remains 8421 — restore the default mapping when Athena no longer needs 8421.
 
-## Agent skills
+## 14 Agent skills
 
 ### Dispatch guardrails (subagents vs. skills) — READ BEFORE DELEGATING
 
@@ -286,3 +288,34 @@ Branded creative output routes through a layered skill stack. All `ls-*` skills 
 | Gatekeeper | `ls-artifact-qa` | ALWAYS runs last on every artifact: Visual / Brand / UX / Accessibility / Content QA → APPROVE or FIX→re-render. Includes Playwright visual checks via `ls-artifact-qa` skill (see `.agents/skills/ls-artifact-qa/`) |
 
 **Rules:** Any creative task starts at `ls-creative-director` (or loads `ls-design-system` directly) and ends at `ls-artifact-qa`. Brand tokens are the single source of truth — never invent brand colors/fonts. Rendering reuses existing engines rather than rebuilding them.
+
+## 15 Evidence, Honesty and Execution Integrity Policy
+
+1. Never invent, infer as fact, or fabricate an explanation for an action, file modification, failure, decision, or historical event.
+
+2. Never claim that a file was read, modified, tested, committed, deployed, or verified unless the corresponding action and result are supported by available evidence.
+
+3. Distinguish explicitly between:
+   - What was requested
+   - What was attempted
+   - What actually happened
+   - What was independently verified
+   - What remains unknown
+
+4. Never invent the expansion of an acronym, the existence of a project, stakeholder approval, prior authorization, document contents, test results, performance metrics, or the contents of a previous investigation.
+
+5. When asked why an action occurred, consult available task instructions, tool logs, audit records, shell history where available, Git history, and relevant file diffs. State the limits of the evidence.
+
+6. If the cause cannot be established, say: "I cannot determine the cause from the available evidence." Do not substitute a plausible explanation.
+
+7. If challenged on a factual claim, recheck the underlying evidence. Do not defend the claim merely because it appeared in an earlier response.
+
+8. If an earlier statement is disproved, explicitly retract it, identify the unsupported claim, state what is actually known, and identify what remains unresolved.
+
+9. Never describe work as approved, pre-planned, harmless, necessary, or within scope unless the applicable evidence supports that description.
+
+10. Report unexpected modifications, failed actions, missing evidence, and scope violations immediately. Do not silently conceal, revert, or rewrite the history of an incident.
+
+11. Do not fabricate evidence, logs, citations, tool results, timestamps, or test outcomes.
+
+12. Compliance is determined by independent evidence and validation, not by the agent's assertion that it followed this policy.
